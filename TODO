@@ -1,3 +1,6 @@
+Transforming with an invalid quaternion creates an invalid vector or point.
+We must not do it.
+
 Is it necessary to copy new_coords in Pedestrain::genMoveOperation()?
 
 Debug broadcasting of perception ops, as a Character seems only to be able

@@ -419,8 +419,6 @@ void WorldRouter::operation(const RootOperation & op)
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 // Calculate square distance to target
-                std::cout << "Distance from " << fromEnt->getId() << " to "
-                          << (*I)->getId() << std::endl << std::flush;
                 float dist = squareDistance(fromEnt->m_location, (*I)->m_location);
                 float view_factor = fromSquSize / dist;
 #if 0

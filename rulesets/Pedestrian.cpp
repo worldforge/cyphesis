@@ -150,29 +150,36 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
             debug( std::cout << "target achieved";);
             new_coords = target;
             if (m_collRefChange) {
+                static const Quaternion identity(Quaternion().identity());
                 debug(std::cout << "CONTACT " << m_collEntity->getId()
                                 << std::endl << std::flush;);
                 if (m_collEntity == new_loc.m_loc->m_location.m_loc) {
                     debug(std::cout << "OUT" << target
                                     << new_loc.m_loc->m_location.m_pos
                                     << std::endl << std::flush;);
+                    const Quaternion & collOrientation = loc.m_loc->m_location.m_orientation.isValid() ?
+                                                         loc.m_loc->m_location.m_orientation :
+                                                         identity;
                     // FIXME take account of orientation
-                    new_coords = new_coords.toParentCoords(loc.m_loc->m_location.m_pos, loc.m_loc->m_location.m_orientation);
-                    m_orientation *= loc.m_loc->m_location.m_orientation;
-                    m_velocity.rotate(loc.m_loc->m_location.m_orientation);
+                    new_coords = new_coords.toParentCoords(loc.m_loc->m_location.m_pos, collOrientation);
+                    m_orientation *= collOrientation;
+                    m_velocity.rotate(collOrientation);
                     // FIXME velocity take account of orientation
                     if (m_targetPos.isValid()) {
-                        m_targetPos = m_targetPos.toParentCoords(loc.m_loc->m_location.m_pos, loc.m_loc->m_location.m_orientation);
+                        m_targetPos = m_targetPos.toParentCoords(loc.m_loc->m_location.m_pos, collOrientation);
                     }
                 } else if (m_collEntity->m_location.m_loc == new_loc.m_loc) {
                     debug(std::cout << "IN" << std::endl << std::flush;);
                     // FIXME take account of orientation
-                    new_coords = new_coords.toLocalCoords(m_collEntity->m_location.m_pos, m_collEntity->m_location.m_orientation);
-                    m_orientation /= m_collEntity->m_location.m_orientation;
-                    m_velocity.rotate(m_collEntity->m_location.m_orientation.inverse());
+                    const Quaternion & collOrientation = m_collEntity->m_location.m_orientation.isValid() ?
+                                                         m_collEntity->m_location.m_orientation :
+                                                         identity;
+                    new_coords = new_coords.toLocalCoords(m_collEntity->m_location.m_pos, collOrientation);
+                    m_orientation /= collOrientation;
+                    m_velocity.rotate(collOrientation.inverse());
                     // FIXME velocity take account of orientation
                     if (m_targetPos.isValid()) {
-                        m_targetPos = m_targetPos.toLocalCoords(m_collEntity->m_location.m_pos, m_collEntity->m_location.m_orientation);
+                        m_targetPos = m_targetPos.toLocalCoords(m_collEntity->m_location.m_pos, collOrientation);
                     }
                 } else {
                     std::string msg = std::string("BAD COLLISION: ")

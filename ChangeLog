@@ -1,5 +1,12 @@
 2004-09-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Pedestrian.cpp: Make sure not to transform things
+	  with an invalid quaternion.
+
+	* server/WorldRouter.cpp: Remove excessive debugging output.
+
+2004-09-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Switch to new distance algorithm for
 	  broadcasts.
 
