@@ -1,12 +1,6 @@
-direction is probably not being set correctly on destination ops because
-it is calculated before the updated position is checked.
-First call to genMoveOperation tells us where we currently are,
-and we need to get it from this.
-
-genMoveOperation will always return NULL if updateNeeded() returns
-false, and never otherwise, so we can avoid a bunch of checking
-in the Character.cpp code by only calling genMoveOperation if
-it is apropriate.
+Definitly still some collision bugs in there. In a cluttered space, character
+does not seem to be able to move at all, even though there is clearly
+sufficient space.
 
 Looks like zero collision time results in move then stop being sent
 almost immediatly. Check for it, and send nothing.
