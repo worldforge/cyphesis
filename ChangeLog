@@ -1,3 +1,7 @@
+2003-08-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/World.cpp: Add lots more terrain to stress test clients.
+
 2003-08-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Vector3D.cpp, rulesets/Py_Quaternion.cpp,
