@@ -1,22 +1,16 @@
-Currently we have to copy broadcast ops. This isn't necessary. It should be
-ok to just modify the TO, if we modify the method to take a non-const
-reference to the op.
-
 Currently no mechanism to inform client/mind that the ID they just
 specified is gone. Need to think of something, and make sure mind
 deals correctly.
 
 Can Property mechanism be used to handle raw Python data as properties?
 
-Property::add() is quite often just:
-    get(ent[s]);
-Should this be the default in the base class?
-
 Sort out the issue of un-initialised POS, ORIENTATION and BBOX in the
 database.
 
 MemEntity needs some kind of reference flag/count if a python object
-is holding a reference.
+is holding a reference. Probably as well to ref-count all IG entities,
+then we can hold a reference in the op queue, and avoid lookup up the
+FROM at dispatch time. Would also allow entities to hold pointers.
 
 Fix unit_vector_to in python interface to make sure it doesn't cause
 a normalise() abort(). Probably re-write to use relativePosition() which
@@ -32,16 +26,8 @@ We must not do it. See FIXME in WorldRouter.cpp.
 
 Is it necessary to copy new_coords in Pedestrain::genMoveOperation()?
 
-Debug broadcasting of perception ops, as a Character seems only to be able
-to see itself near the origin. Orientation is making a huge difference
-to whether the character can see itself. That is wrong. The wrong
-orientating is getting used in relativePosition() somewhere.
-
 Sort out trees thrashing database. Postpone until we have done something
 about database transactions.
-
-Make sure that terrain modified points does not contain any points still
-listed as created points.
 
 Consider moving destroy() functionality of Connection into the destructor,
 thus allowing Connection to be accessed via its BaseEntity interface
@@ -49,9 +35,6 @@ in CommClient. Potentially allows more flexibility in use of
 various server classes.
 
 Make Connection::verifyCredentials() protected.
-
-Track down anywhere where a normal mind is setting TO on IG operations sent
-to body.
 
 Centralise serialno assigment on IG ops, checking for 0 to see if we should?
 
