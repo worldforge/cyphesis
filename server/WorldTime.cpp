@@ -1,3 +1,7 @@
+// This file may be redistributed and modified only under the terms of
+// the GNU Lesser General Public License (See COPYING for details).
+// Copyright (C) 2000 Alistair Riddoch
+
 #include "WorldTime.h"
 
 // time_info={'always': [range(1,13),'seasonal'],;
