@@ -25,7 +25,7 @@ else
 
 cyphesis_LDADD = ../physics/libphysics.a ../rulesets/librulesets.a ../modules/libmodules.a ../common/libcommon.a
 
-LIBS = -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -lpython1.5 -ldl -lm -lpthread -lvarconf -lsigc # -lefence
+LIBS = -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -lpython1.5 -ldl -lm -lpthread -lvarconf -lsigc -ldb_cxx # -lefence
 
 cyphesis_LDFLAGS = -export-dynamic
 

@@ -418,6 +418,8 @@ list<string> rulesets;
 
 #include <rulesets/EntityFactory.h>
 
+bool exit_flag=false;
+
 int main(int argc, char ** argv)
 {
     if (install_directory=="NONE") {
@@ -451,6 +453,13 @@ int main(int argc, char ** argv)
         EntityFactory::instance()->readRuleset(install_directory + "/share/cyphesis/" + ruleset);
         rulesets.push_back(ruleset);
     };
+
+    if (global_conf->findItem("cyphesis", "restricted")) {
+        Persistance::restricted=global_conf->getItem("cyphesis","restricted");
+        if (Persistance::restricted) {
+            cout << "Running in restricted mode" << endl << flush;
+        }
+    }
     
 
     init_python_api();
@@ -477,7 +486,6 @@ int main(int argc, char ** argv)
         cout << "consts::debug_level>=1:, logging to" << log_name << endl;
         //s.server.world.queue_fp.open(log_name,ios::out);
     }
-    int exit_flag=0;
     while (!exit_flag) {
         try {
             s.loop();
@@ -488,4 +496,6 @@ int main(int argc, char ** argv)
             cerr << "         : Continuing..." << endl;
         }
     }
+    Persistance::shutdown();
+    return 0;
 }

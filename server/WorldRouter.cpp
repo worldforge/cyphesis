@@ -12,6 +12,7 @@
 
 #include "WorldRouter.h"
 #include "ServerRouting.h"
+#include "server.h"
 
 #include <rulesets/Thing.h>
 #include <rulesets/EntityFactory.h>
@@ -56,7 +57,7 @@ inline void WorldRouter::add_operation_to_queue(RootOperation & op,
     double t = world_info::time;
     if (t > halt_time) {
         cout << "Exiting for memory leak and profiler report" << endl << flush;
-        exit(0);
+        exit_flag = true;
     }
     t = t + op.GetFutureSeconds();
     op.SetSeconds(t);

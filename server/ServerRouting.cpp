@@ -32,6 +32,9 @@ void ServerRouting::addObject(Object * obj) const
     omap["parents"] = plist;
     omap["clients"] = comm_server->numClients();
     omap["uptime"] = world->upTime();
+    if (Persistance::restricted) {
+        omap["restricted"] = "true";
+    }
     
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }

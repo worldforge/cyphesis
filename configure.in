@@ -164,4 +164,5 @@ AC_OUTPUT([
 	server/Makefile
 	client/Makefile
 	watchdog/Makefile
+	tools/Makefile
 ])

@@ -9,4 +9,6 @@ extern string install_directory;
 
 extern list<string> rulesets;
 
+extern bool exit_flag;
+
 #endif /* SERVER_H */

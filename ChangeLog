@@ -1,3 +1,26 @@
+2001-03-15  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* common/persistance.*: Added restricted mode set by config file,
+	  which prevents users from being able to create accounts.
+
+	* server/ServerRouting.cpp: Added restricted flag to the
+	  server Object passed to client as result of a Get operation, so
+	  the client can report it to the user.
+
+	* tools/cypasswd.cpp: Added tool to administrate password database
+	  table.
+
+	* server/server.*: Added exit flag to ensure that of exit is requested
+	  database is shutdown properlly.
+
+	* server/WorldRouter.cpp: Maintenance shutdown is now done cleanly.
+
+	* server/Connection.cpp: Added code to handle accounts using the
+	  persistance system. Accounts would now be handled by the
+	  database if the persistance code was complete.
+
+	* common/persistance.*: More work on database code.
+
 2001-03-14  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* common/persistance.*: More progress on database persistance code.

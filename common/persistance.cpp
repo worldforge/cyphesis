@@ -17,6 +17,7 @@
 #include "persistance.h"
 
 Persistance * Persistance::m_instance = NULL;
+bool Persistance::restricted = false;
 
 Persistance * Persistance::instance()
 {
@@ -24,6 +25,19 @@ Persistance * Persistance::instance()
         m_instance = new Persistance();
     }
     return m_instance;
+}
+
+void Persistance::save_admin_account(Account * adm)
+{
+    std::ofstream adm_file("/tmp/admin.xml", ios::out, 0600);
+    adm_file << "<atlas>" << endl << "<map>" << endl;
+    adm_file << "    <string name=\"password\">" << adm->password << "</string>" << endl;
+    adm_file << "    <string name=\"id\">" << adm->fullid << "</string>" << endl;
+    adm_file << "    <list name=\"parents\">" << endl;
+    adm_file << "    <string>admin</string>" << endl;
+    adm_file << "    </list>" << endl;
+    adm_file << "</map>" << endl << "</atlas>" << endl << flush;
+    adm_file.close();
 }
 
 #ifdef HAVE_LIBDB_CXX
@@ -47,6 +61,13 @@ bool Persistance::init()
     return ((i == 0) && (j == 0));
 }
 
+void Persistance::shutdown()
+{
+    Persistance * p = instance();
+    p->account_db.close(0);
+    p->world_db.close(0);
+}
+
 Account * Persistance::load_admin_account()
 {
     Persistance * p = instance();
@@ -54,14 +75,9 @@ Account * Persistance::load_admin_account()
     if ((adm = p->getAccount("admin")) == NULL) {
         adm = new Admin(NULL, "admin", "test");
         save_admin_account(adm);
+        p->putAccount(adm);
     }
     return adm;
-}
-
-void Persistance::save_admin_account(Account * adm)
-{
-    Persistance * p = instance();
-    p->putAccount(adm);
 }
 
 Account * Persistance::getAccount(const std::string & name)
@@ -80,7 +96,8 @@ Atlas::Message::Object Persistance::getObject(Db & db, const char * key)
     return Atlas::Message::Object();
 }
 
-bool Persistance::putObject(Db & db, const Atlas::Message::Object & o, const char * keystr)
+bool Persistance::putObject(Db & db, const Atlas::Message::Object & o,
+                            const char * keystr)
 {
     std::strstream str;
 
@@ -118,30 +135,12 @@ Account * Persistance::load_admin_account()
     return(adm);
 }
 
-void Persistance::save_admin_account(Account * adm)
-{
-    std::ofstream adm_file("/tmp/admin.xml", ios::out, 0600);
-    adm_file << "<atlas>" << endl << "<map>" << endl;
-    adm_file << "    <string name=\"password\">" << adm->password << "</string>" << endl;
-    adm_file << "    <string name=\"id\">" << adm->fullid << "</string>" << endl;
-    adm_file << "    <list name=\"parents\">" << endl;
-    adm_file << "    <string>admin</string>" << endl;
-    adm_file << "    </list>" << endl;
-    adm_file << "</map>" << endl << "</atlas>" << endl << flush;
-    adm_file.close();
-}
-
-Account * Persistance::getAccount(const std::string & name)
-{
-    return NULL;
-}
+Account * Persistance::getAccount(const std::string & name) { return NULL; }
 
 void Persistance::putAccount(const Account * ac) { }
 
-bool Persistance::init()
-{
-    instance();
-    return true;
-}
+bool Persistance::init() { return true; }
+
+void Persistance::shutdown() { }
 
 #endif // HAVE_LIBDB_CXX

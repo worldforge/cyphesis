@@ -20,6 +20,7 @@
 #include <rulesets/Character.h>
 #include <rulesets/ExternalMind.h>
 #include <common/debug.h>
+#include <common/persistance.h>
 
 #include "Connection.h"
 #include "ServerRouting.h"
@@ -108,7 +109,10 @@ oplist Connection::Operation(const Login & op)
         string account_id = account.AsMap().find("id")->second.AsString();
         string password = account.AsMap().find("password")->second.AsString();
 
-        Player * player = (Player *)server->get_object(account_id);
+        Account * player = (Player *)server->get_object(account_id);
+        if (player == NULL) {
+            player = Persistance::instance()->getAccount(account_id);
+        }
         if (player && (account_id.size()!=0) && (password==player->password)) {
             add_object(player);
             fdict_t::const_iterator I;
@@ -134,13 +138,19 @@ oplist Connection::Operation(const Create & op)
     debug(cout << "Got create op" << endl << flush;);
     const Object & account = op.GetArgs().front();
 
+    if (Persistance::restricted) {
+        return error(op, "Account creation on this server is restricted");
+    }
+
     if (account.IsMap()) {
         string account_id = account.AsMap().find("id")->second.AsString();
         string password = account.AsMap().find("password")->second.AsString();
 
         if ((NULL==server->get_object(account_id)) && 
+            (NULL==Persistance::instance()->getAccount(account_id)) &&
             (account_id.size() != 0) && (password.size() != 0)) {
             Account * player = add_player(account_id, password);
+            Persistance::instance()->putAccount(player);
             Info * info = new Info();
             *info = Info::Instantiate();
             Object::ListType args(1,player->asObject());

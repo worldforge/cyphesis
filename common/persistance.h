@@ -36,6 +36,9 @@ class Persistance {
     static void save_admin_account(Account *);
     static Persistance * instance();
     static bool init();
+    static void shutdown();
+
+    static bool restricted;
 
     Account * getAccount(const std::string &);
     void putAccount(const Account *);
