@@ -53,7 +53,7 @@ class EntityFactory {
 
     void installFactory(const std::string &, const std::string &, FactoryBase*);
     void installClass(const std::string &, const std::string&);
-    FactoryBase * getFactory(const std::string &);
+    FactoryBase * getNewFactory(const std::string &);
 };
 
 #endif // SERVER_ENTITY_FACTORY_H

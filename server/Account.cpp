@@ -76,12 +76,15 @@ void Account::addCharacter(Entity * chr)
     m_destroyedConnections[chr->getId()] = con;
 }
 
-Entity * Account::addCharacter(const std::string & typestr,
+Entity * Account::addNewCharacter(const std::string & typestr,
                                const Element::MapType & ent)
 {
     BaseWorld & world = m_connection->m_server.m_world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
-    Entity * chr = world.addObject(typestr, ent);
+    Entity * chr = world.addNewObject(typestr, ent);
+    if (chr == 0) {
+        return 0;
+    }
     debug(std::cout << "Added" << std::endl << std::flush;);
     if (!chr->m_location.isValid()) {
         debug(std::cout << "Setting location" << std::endl << std::flush;);
@@ -198,7 +201,11 @@ OpVector Account::CreateOperation(const Create & op)
     debug( std::cout << "Account creating a " << typestr << " object"
                      << std::endl << std::flush; );
 
-    BaseEntity * obj = addCharacter(typestr, entmap);
+    BaseEntity * obj = addNewCharacter(typestr, entmap);
+
+    if (obj == 0) {
+        return error(op, "Character creation failed");
+    }
 
     Info * info = new Info(Info::Instantiate());
     Element::ListType & info_args = info->getArgs();

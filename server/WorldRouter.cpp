@@ -146,14 +146,17 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
     return (obj);
 }
 
-Entity * WorldRouter::addObject(const std::string & typestr,
-                                const Element::MapType & ent)
+Entity * WorldRouter::addNewObject(const std::string & typestr,
+                                   const Element::MapType & ent)
 {
-    debug(std::cout << "WorldRouter::addObject(std::string, ent)" << std::endl
-                    << std::flush;);
+    debug(std::cout << "WorldRouter::addNewObject(std::string, ent)"
+                    << std::endl << std::flush;);
     std::string id;
     Database::instance()->getEntityId(id);
     Entity * obj = EntityFactory::instance()->newEntity(id, typestr, ent);
+    if (obj == 0) {
+        return 0;
+    }
     return addObject(obj);
 }
 

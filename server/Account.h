@@ -16,8 +16,8 @@ class Account : public OOGThing {
     EntityDict m_charactersDict;
     ConMap m_destroyedConnections;
 
-    Entity * addCharacter(const std::string &,
-                          const Atlas::Message::Element::MapType &);
+    Entity * addNewCharacter(const std::string &,
+                             const Atlas::Message::Element::MapType &);
   protected:
     void characterDestroyed(std::string);
 

@@ -49,8 +49,8 @@ class BaseWorld : public OOGThing {
 
     virtual int idle() = 0;
     virtual Entity * addObject(Entity * obj, bool setup = true) = 0;
-    virtual Entity * addObject(const std::string &,
-                               const Atlas::Message::Element::MapType &) = 0;
+    virtual Entity * addNewObject(const std::string &,
+                                  const Atlas::Message::Element::MapType &) = 0;
     virtual void setSerialnoOp(RootOperation &) = 0;
     virtual OpVector message(RootOperation & op, const Entity * obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;

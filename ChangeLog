@@ -1,3 +1,16 @@
+2003-09-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp: Be much stricter about missing types,
+	  and missing parents of types. Refuse to add types or instances
+	  which have non-existant parents.
+
+	* common/BaseWorld.h, rulesets/Thing.cpp, server/Account.cpp,
+	  server/Account.h, server/EntityFactory.h,
+	  server/WorldRouter.cpp, server/WorldRouter.h:
+	  Change names of functions used to add new objects to the world
+	  to reflect that they do this. Handle failure to create an
+	  entity.
+
 2003-09-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cyloadrules.cpp: Fix tool so that it detects if it

@@ -69,34 +69,27 @@ Entity * EntityFactory::newEntity(const std::string & id,
     Element::MapType attributes;
     FactoryDict::const_iterator I = m_factories.find(type);
     PersistorBase * pc = 0;
-    if (I != m_factories.end()) {
-        FactoryBase * factory = I->second;
-        thing = factory->newPersistantThing(id, &pc);
-        // FIXME Avoid this copy
-        attributes = factory->m_attributes;
-        // Sort out python object
-        if ((factory->m_language == "python") && (!factory->m_script.empty())) {
-            debug(std::cout << "Class " << type << " has a python class"
-                            << std::endl << std::flush;);
-            Create_PyEntity(thing, factory->m_script, type);
-        }
-    } else {
-        // This should be tolerated less
-        if (type.empty()) {
-            log(ERROR, "Empty type passed to EntityFactory::newEntity");
-        } else {
-            std::string msg = std::string("Unknown type ") + type + " passed to EntityFactory::newEntity";
-            log(ERROR, msg.c_str());
-        }
-        thing = new Thing(id);
+    if (I == m_factories.end()) {
+        return 0;
+    }
+    FactoryBase * factory = I->second;
+    thing = factory->newPersistantThing(id, &pc);
+    // FIXME Avoid this copy
+    attributes = factory->m_attributes;
+    // Sort out python object
+    if ((factory->m_language == "python") && (!factory->m_script.empty())) {
+        debug(std::cout << "Class " << type << " has a python class"
+                        << std::endl << std::flush;);
+        Create_PyEntity(thing, factory->m_script, type);
     }
     debug( std::cout << "[" << type << " " << thing->getName() << "]"
                      << std::endl << std::flush;);
-    // thing->setId(id);
     thing->setType(type);
     // merge attributes from the creation op over default attributes.
     // FIXME Is it practical to avoid this merge copy by calling merge twice?
     // Might cause a problem with getLocation
+    // How about we restrict getLocation to just loc, pos and vel, and
+    // then dictate that the rule may not provide defaults for these?
     Element::MapType::const_iterator K = entmap.begin();
     for (; K != entmap.end(); K++) {
         attributes[K->first] = K->second;
@@ -135,12 +128,28 @@ void EntityFactory::installBaseClasses()
 
     Element::MapType::const_iterator I = ruleTable.begin();
     for(; I != ruleTable.end(); ++I) {
-        const std::string & type = I->first;
+        const std::string & className = I->first;
         const Element::MapType & classDesc = I->second.asMap();
         Element::MapType::const_iterator J = classDesc.find("parent");
-        if ((J == classDesc.end()) || (!J->second.isString())) { continue; }
+        if ((J == classDesc.end()) || (!J->second.isString())) {
+            std::string msg = std::string("Rule \"") + className 
+                              + "\" has no parent. Skipping.";
+            log(ERROR, msg.c_str());
+            continue;
+        }
         const std::string & parent = J->second.asString();
-        FactoryBase * f = getFactory(parent);
+        // Get the new factory for this rule
+        FactoryBase * f = getNewFactory(parent);
+        if (f == 0) {
+            std::string msg = std::string("Rule \"") + className 
+                              + "\" has non existant parent \"" + parent
+                              + "\". Skipping.";
+            log(ERROR, msg.c_str());
+            continue;
+        }
+
+        // Establish whether this rule has an associated script, and
+        // if so, use it.
         J = classDesc.find("script");
         if ((J != classDesc.end()) && (J->second.isMap())) {
             const Element::MapType & script = J->second.asMap();
@@ -153,6 +162,9 @@ void EntityFactory::installBaseClasses()
                 }
             }
         }
+
+        // Establish whether this rule has an associated mind rule,
+        // and handle it.
         J = classDesc.find("mind");
         if ((J != classDesc.end()) && (J->second.isMap())) {
             const Element::MapType & script = J->second.asMap();
@@ -162,23 +174,27 @@ void EntityFactory::installBaseClasses()
                 // language is unused. might need it one day
                 // J = script.find("language");
                 // if ((J != script.end()) && (J->second.isString())) {
-                    // const std::string mindLang = J->second.asString();
+                    // const std::string & mindLang = J->second.asString();
                 // }
-                MindFactory::instance()->addMindType(type, mindType);
+                MindFactory::instance()->addMindType(className, mindType);
             }
         }
+
+        // Store the default attribute for entities create by this rule.
         J = classDesc.find("attributes");
         if ((J != classDesc.end()) && (J->second.isMap())) {
             f->m_attributes = J->second.asMap();
         }
+        // Check whether it should be available to players.
         J = classDesc.find("playable");
         if ((J != classDesc.end()) && (J->second.isInt())) {
-            Player::playableTypes.insert(type);
+            Player::playableTypes.insert(className);
         }
-        installFactory(parent, type, f);
-        debug(std::cout << "INSTALLING " << type << ":" << parent
+        debug(std::cout << "INSTALLING " << className << ":" << parent
                         << "{" << f->m_script << "." << f->m_language << "}"
                         << std::endl << std::flush;);
+        // Install the factory in place.
+        installFactory(parent, className, f);
     }
 }
 
@@ -199,15 +215,14 @@ void EntityFactory::installFactory(const std::string & parent,
 
 }
 
-FactoryBase * EntityFactory::getFactory(const std::string & parent)
+FactoryBase * EntityFactory::getNewFactory(const std::string & parent)
 {
     FactoryDict::const_iterator I = m_factories.find(parent);
     if (I == m_factories.end()) {
         std::string msg = std::string("Failed to find factory for ") + parent
                      + " while installing a new type which inherits from it.";
-        log(WARNING, msg.c_str());
-        // FIXME Don't creat another FSCKing factory here
-        return new PersistantThingFactory<Thing>();
+        log(ERROR, msg.c_str());
+        return 0;
     }
     return I->second->duplicateFactory();
 }

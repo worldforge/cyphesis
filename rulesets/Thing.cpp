@@ -119,7 +119,11 @@ OpVector Thing::CreateOperation(const Create & op)
         const std::string & type = parents.front().asString();
         debug( std::cout << getId() << " creating " << type;);
 
-        Entity * obj = m_world->addObject(type,ent);
+        Entity * obj = m_world->addNewObject(type,ent);
+
+        if (obj == 0) {
+            return error(op, "Create op failed.");
+        }
 
         Create c(op);
         Element::ListType & args = c.getArgs();
