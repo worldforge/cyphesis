@@ -4,9 +4,10 @@
 
 #include "Database.h"
 
-#include "stringstream.h"
+#include "log.h"
 #include "debug.h"
 #include "globals.h"
+#include "stringstream.h"
 
 #include <Atlas/Message/Encoder.h>
 #include <Atlas/Codecs/XML.h>
@@ -66,7 +67,7 @@ bool Database::initConnection(bool createDatabase)
     delete [] conninfo;
 
     if (m_connection->Status() != CONNECTION_OK) {
-        std::cerr << "Database connection failed" << std::endl << std::flush;
+        log(ERROR, "Database connection failed");
         return false;
     }
 
@@ -89,14 +90,12 @@ bool Database::initAccount(bool createTables)
             // status = m_connection->ExecCommandOk("CREATE TABLE account ( id varchar(80), type varchar(80), password varchar(80) };");
             status = m_connection->ExecCommandOk("CREATE TABLE account ( id varchar(80)  PRIMARY KEY, contents text );");
             if (!status) {
-                std::cerr << "Error creating account table in database"
-                          << std::endl << std::flush;
+                log(ERROR, "Error creating account table in database");
                 reportError();
                 return false;
             }
         } else {
-            std::cerr << "Account table does not exist in database"
-                      << std::endl << std::flush;
+            log(ERROR, "Account table does not exist in database");
             return false;
         }
     }
@@ -114,14 +113,12 @@ bool Database::initWorld(bool createTables)
         if (createTables) {
             status = m_connection->ExecCommandOk("CREATE TABLE world ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-                std::cerr << "Error creating world table in database"
-                          << std::endl << std::flush;
+                log(ERROR, "Error creating world table in database");
                 reportError();
                 return false;
             }
         } else {
-            std::cerr << "World table does not exist in database"
-                      << std::endl << std::flush;
+            log(ERROR, "World table does not exist in database");
             return false;
         }
     }
@@ -139,14 +136,12 @@ bool Database::initMind(bool createTables)
         if (createTables) {
             status = m_connection->ExecCommandOk("CREATE TABLE mind ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-                std::cerr << "Error creating mind table in database"
-                          << std::endl << std::flush;
+                log(ERROR, "Error creating mind table in database");
                 reportError();
                 return false;
             }
         } else {
-            std::cerr << "Mind table does not exist in database"
-                      << std::endl << std::flush;
+            log(ERROR, "Mind table does not exist in database");
             return false;
         }
     }
@@ -164,14 +159,12 @@ bool Database::initServer(bool createTables)
         if (createTables) {
             status = m_connection->ExecCommandOk("CREATE TABLE server ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-                std::cerr << "Error creating server table in database"
-                          << std::endl << std::flush;
+                log(ERROR, "Error creating server table in database");
                 reportError();
                 return false;
             }
         } else {
-            std::cerr << "Server table does not exist in database"
-                      << std::endl << std::flush;
+            log(ERROR, "Server table does not exist in database");
             return false;
         }
     }
@@ -189,14 +182,12 @@ bool Database::initRule(bool createTables)
         if (createTables) {
             status = m_connection->ExecCommandOk("CREATE TABLE rules ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-                std::cerr << "Error creating rules table in database"
-                          << std::endl << std::flush;
+                log(ERROR, "Error creating rules table in database");
                 reportError();
                 return false;
             }
         } else {
-            std::cerr << "Server table does not exist in database"
-                      << std::endl << std::flush;
+            log(ERROR, "Server table does not exist in database");
             return false;
         }
     }
@@ -230,8 +221,7 @@ bool Database::decodeObject(const std::string & data,
     codec.Poll();
 
     if (!m_d.check()) {
-        std::cerr << "WARNING: Database entry does not appear to be decodable"
-                  << std::endl << std::flush;
+        log(WARNING, "Database entry does not appear to be decodable");
         return false;
     }
     
@@ -379,6 +369,6 @@ bool Database::clearTable(const std::string & table)
 
 void Database::reportError()
 {
-    std::cerr << "DATABASE ERROR: " << m_connection->ErrorMessage()
-              << std::endl << std::flush;
+    std::string msg = std::string("DATABASE ERROR: ") + m_connection->ErrorMessage();
+    log(ERROR, msg.c_str());
 }

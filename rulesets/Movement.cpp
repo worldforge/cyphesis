@@ -2,15 +2,16 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Move.h>
-
-#include <common/Tick.h>
+#include "Movement.h"
 
 #include "Character.h"
-#include "Movement.h"
 
 #include <common/const.h>
 #include <common/debug.h>
+
+#include <common/Tick.h>
+
+#include <Atlas/Objects/Operation/Move.h>
 
 using Atlas::Message::Object;
 

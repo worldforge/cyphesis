@@ -3,6 +3,7 @@
 // Copyright (C) 2001 Alistair Riddoch
 
 #include "CharacterClient.h"
+
 #include "ClientConnection.h"
 
 CharacterClient::CharacterClient(const std::string & id,

@@ -27,6 +27,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 libcyphesis_la_SOURCES = Database.cpp Database.h \
 			 stringstream.h debug.h \
 			 globals.cpp globals.h \
+			 log.cpp log.h \
 			 accountbase.h
 
 libcyphesisincludedir = $(includedir)/cyphesis

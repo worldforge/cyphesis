@@ -6,6 +6,7 @@
 #define ENTITY_H
 
 #include <modules/Location.h>
+
 #include <common/BaseEntity.h>
 
 class BaseWorld;

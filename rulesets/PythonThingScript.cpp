@@ -10,6 +10,7 @@
 #include "Thing.h"
 
 #include <common/BaseWorld.h>
+#include <common/log.h>
 #include <common/debug.h>
 
 using Atlas::Objects::Operation::RootOperation;
@@ -83,8 +84,7 @@ bool PythonThingScript::Operation(const std::string & op_type,
             debug( std::cout << "No method to be found for " << std::endl
                              << std::flush;);
         } else {
-            std::cerr << "Reporting python error for " << std::endl
-                      << std::flush;
+            log(ERROR, "Reporting python error");
             PyErr_Print();
         }
     }

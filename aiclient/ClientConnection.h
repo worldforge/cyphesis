@@ -5,12 +5,12 @@
 #ifndef CLIENT_CONNECTION_H
 #define CLIENT_CONNECTION_H
 
+#include <common/operations.h>
+#include <common/types.h>
+
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Codec.h>
-
-#include <common/operations.h>
-#include <common/types.h>
 
 #include <fstream>
 

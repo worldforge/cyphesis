@@ -8,11 +8,12 @@
 #include "Py_Oplist.h"
 #include "Py_Thing.h"
 
-#include <common/debug.h>
-
 #include "Entity.h"
 #include "BaseMind.h"
 #include "MemMap_methods.h"
+
+#include <common/log.h>
+#include <common/debug.h>
 
 using Atlas::Objects::Operation::RootOperation;
 
@@ -88,8 +89,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
             debug( std::cout << "No method to be found for " << std::endl
                              << std::flush;);
         } else {
-            std::cerr << "Reporting python error for " << std::endl
-                      << std::flush;
+            log(ERROR, "Reporting python error");
             PyErr_Print();
         }
     }

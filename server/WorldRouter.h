@@ -5,16 +5,18 @@
 #ifndef SERVER_WORLD_ROUTER_H
 #define SERVER_WORLD_ROUTER_H
 
-#include <sys/time.h>
-#include <unistd.h>
+#include <common/BaseWorld.h>
+#include <common/globals.h>
+
+extern "C" {
+    #include <sys/time.h>
+    #include <unistd.h>
+}
 
 class WorldRouter;
 class ServerRouting;
 class Entity;
 class World;
-
-#include <common/BaseWorld.h>
-#include <common/globals.h>
 
 class WorldRouter : public BaseWorld {
   private:

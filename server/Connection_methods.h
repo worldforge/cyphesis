@@ -6,6 +6,7 @@
 #define SERVER_CONNECTION_METHODS_H
 
 #include "Connection.h"
+
 #include "CommClient.h"
 #include "CommServer.h"
 

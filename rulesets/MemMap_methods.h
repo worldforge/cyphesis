@@ -5,17 +5,20 @@
 #ifndef RULESETS_MEM_MAP_METHODS_H
 #define RULESETS_MEM_MAP_METHODS_H
 
+#include "MemMap.h"
+
+#include "Entity.h"
+#include "Script.h"
+
+#include <modules/Location.h>
+
+#include <common/debug.h>
+
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Look.h>
 
 using Atlas::Objects::Operation::Look;
-
-#include "Entity.h"
-#include "MemMap.h"
-#include "Script.h"
-#include <modules/Location.h>
-#include <common/debug.h>
 
 static const bool debug_flag = false;
 

@@ -5,20 +5,9 @@
 #ifndef COMMON_LOG_H
 #define COMMON_LOG_H
 
-#include <fstream.h>
+typedef enum log_level { INFO, NOTICE, WARNING, ERROR, CRITICAL } LogLevel;
 
-namespace common {
-    namespace log {
-
-        extern ofstream inform_fp;
-        extern ofstream debug_fp;
-        extern ofstream thinking_fp;
-
-        void debugn(int level, char * msg, int op=0);
-        void inform(char * msg, int op);
-        void thinking(char * msg);
-
-    }
-}
+void initLogger();
+void log(LogLevel, const char * msg);
 
 #endif // COMMON_LOG_H

@@ -9,6 +9,7 @@
 
 #include <rulesets/Entity.h>
 
+#include <common/log.h>
 #include <common/const.h>
 #include <common/Database.h>
 
@@ -81,14 +82,16 @@ Account * Persistance::getAccount(const std::string & name)
     Object::MapType::const_iterator I = account.find("id"),
                                     J = account.find("password");
     if ((I == account.end()) || (J == account.end())){
-        std::cerr << "WARNING: Database account entry " << name
-                  << " is missing fields." << std::endl << std::flush;
+        std::string msg  = std::string("Database account entry ") + name
+                         + " is missing fields.";
+        log(ERROR, msg.c_str());
         return NULL;
     }
     const Object & acn = I->second, & acp = J->second;
     if (!acn.IsString() || !acp.IsString()) {
-        std::cerr << "WARNING: Database account entry " << name
-                  << " is corrupt." << std::endl << std::flush;
+        std::string msg = std::string("Database account entry ") + name
+                        + " is corrupt.";
+        log(ERROR, msg.c_str());
         return NULL;
     }
     if (acn.AsString() == "admin") {

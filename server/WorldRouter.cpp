@@ -3,23 +3,24 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "WorldRouter.h"
+
 #include "ServerRouting.h"
 #include "EntityFactory.h"
 
 #include <rulesets/World.h>
 
-#include <common/Setup.h>
-
+#include <common/log.h>
 #include <common/debug.h>
 #include <common/const.h>
 #include <common/globals.h>
 #include <common/stringstream.h>
+#include <common/BaseWorld.h>
+#include <common/globals.h>
+
+#include <common/Setup.h>
 
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
-
-#include <common/BaseWorld.h>
-#include <common/globals.h>
 
 using Atlas::Message::Object;
 
@@ -191,11 +192,13 @@ inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) con
         if ((parent == "sight") || (parent == "sound")) {
             return perceptives;
         }
-        std::cerr << "WARNING: Broadcasting " << parent << " op from "
-                  << op.GetFrom() << std::endl << std::flush;
+        std::string msg = std::string("Broadcasting ") + parent + " op from "
+                                                       + op.GetFrom();
+        log(WARNING, msg.c_str());
     } else {
-        std::cerr << "ERROR: Broadcasting op with no parent from "
-                  << op.GetFrom() << std::endl << std::flush;
+        std::string msg = std::string("Broadcasting op with no parent from ")
+                                                       + op.GetFrom();
+        log(ERROR, msg.c_str());
     }
     return objectList;
 }
@@ -232,8 +235,8 @@ OpVector WorldRouter::operation(const RootOperation * op_ptr)
         // longer be present, so this check can be removed
         // after some testing. 2002-05-18
         if (to_entity == NULL) {
-            std::cerr << "CRITICAL: Op to=" << to << " is NULL"
-                      << std::endl << std::flush;
+            std::string msg = std::string("CRITICAL: Op to=") + to + " is NULL";
+            log(CRITICAL, msg.c_str());
             return OpVector();
         }
         deliverTo(op, to_entity);
@@ -260,8 +263,9 @@ OpVector WorldRouter::operation(const RootOperation * op_ptr)
             // longer be present, so this check can be removed
             // after some testing. 2002-05-18
             if (J->second == NULL) {
-                std::cerr << "CRITICAL: Op from=" << from << " is NULL"
-                          << std::endl << std::flush;
+                std::string msg = std::string("CRITICAL: Op from=") + from
+                                + " is NULL";
+                log(CRITICAL, msg.c_str());
                 return OpVector();
             }
             EntitySet::const_iterator I;
@@ -269,7 +273,7 @@ OpVector WorldRouter::operation(const RootOperation * op_ptr)
                 if ((!J->second->location.inRange((*I)->location,
                                                        consts::sight_range))) {
                     debug(std::cout << "Op from " <<from<< " cannot be seen by "
-                                   << (*I)->getId() << std::endl << std::flush;);
+                                  << (*I)->getId() << std::endl << std::flush;);
                     continue;
                 }
                 newop.SetTo((*I)->getId());
@@ -336,12 +340,12 @@ int WorldRouter::idle()
             operation(op);
         }
         catch (...) {
-            std::cerr << "EXCEPTION: Caught in world.idle()" << std::endl;
-            std::cerr << "         : Thrown while processing ";
-            std::cerr << op->GetParents().front().AsString();
-            std::cerr << " operation sent to " << op->GetTo();
-            std::cerr << " from " << op->GetFrom() << "." << std::endl
-                      << std::flush;
+            std::string msg = std::string("Exception caught in world.idle()")
+                            + " thrown while processing "
+                            + op->GetParents().front().AsString()
+                            + " operation sent to " + op->GetTo()
+                            + " from " + op->GetFrom() + ".";
+            log(ERROR, msg.c_str());
         }
         delete op;
     }

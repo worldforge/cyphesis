@@ -3,59 +3,68 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "log.h"
-#include "const.h"
+#include "globals.h"
 
-namespace common {
-namespace log {
+#include <iostream>
 
-#if 0
+extern "C" {
+  #include <syslog.h>
+}
 
-ofstream inform_fp;
-ofstream debug_fp;
-ofstream thinking_fp;
-
-void debug(int level, char * msg, int op=0)
+void initLogger()
 {
-    if (consts::debug_level>=level) {
-        if (debug_fp) {
-            debug_fp << msg << endl;
-            if (op!=0) {
-                debug_fp << op << endl;
-            }
-            debug_fp << flush;
-        } else {
-            cout << msg;
-            if (op!=0) {
-                cout << op;
-            }
-        }
+    if (daemon_flag) {
+        openlog("WorldForge Cyphesis", LOG_PID, LOG_USER);
     }
 }
 
-void inform(char * msg, int op)
+void log(LogLevel lvl, const char * msg)
 {
-    if (consts::debug_level) {
-        if (inform_fp) {
-            inform_fp << msg << endl << op << endl << flush;
-        }
-        else {
-            cout << msg;
-        }
+    if (daemon_flag) {
+        int type;
+        switch (lvl) {
+            case INFO:
+                type = LOG_INFO;
+                break;
+            case NOTICE:
+                type = LOG_NOTICE;
+                break;
+            case WARNING:
+                type = LOG_WARNING;
+                break;
+            case ERROR:
+                type = LOG_ERR;
+                break;
+            case CRITICAL:
+                type = LOG_CRIT;
+                break;
+            default:
+                type = LOG_CRIT;
+                break;
+        };
+        syslog(type, msg);
+    } else {
+        char * type;
+        switch (lvl) {
+            case INFO:
+                type = "INFO";
+                break;
+            case NOTICE:
+                type = "NOTICE";
+                break;
+            case WARNING:
+                type = "WARNING";
+                break;
+            case ERROR:
+                type = "ERROR";
+                break;
+            case CRITICAL:
+                type = "CRITICAL";
+                break;
+            default:
+                type = "UNKNOWN";
+                break;
+        };
+        std::cerr << type << ": " << msg << std::endl << std::flush;
     }
-}
-
-void thinking(char * msg)
-{
-    if (consts::debug_thinking) {
-        if (thinking_fp) {
-            thinking_fp << msg << endl << flush;
-        } else {
-            cout << msg;
-        }
-    }
-}
-
-#endif
-
-}
 }

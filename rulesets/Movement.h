@@ -5,10 +5,17 @@
 #ifndef RULESETS_MOVEMENT_H
 #define RULESETS_MOVEMENT_H
 
-class Character;
-
 #include <physics/Vector3D.h>
 #include <physics/Quaternion.h>
+
+#include <Atlas/Objects/Operation/Move.h>
+
+class Entity;
+class Thing;
+class Character;
+class Location;
+
+using Atlas::Objects::Operation::Move;
 
 class Movement {
   protected:

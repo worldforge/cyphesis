@@ -2,21 +2,23 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Login.h>
-#include <Atlas/Objects/Operation/Sight.h>
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Info.h>
-
-#include <common/debug.h>
-
-#include <rulesets/Character.h>
-
 #include "Account.h"
+
 #include "Connection_methods.h"
 #include "WorldRouter.h"
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "ExternalMind.h"
+
+#include <rulesets/Character.h>
+
+#include <common/log.h>
+#include <common/debug.h>
+
+#include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Sight.h>
+#include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Info.h>
 
 static const bool debug_flag = false;
 
@@ -229,10 +231,10 @@ OpVector Account::LookOperation(const Look & op)
 void Account::checkCharacters()
 {
     if (world == NULL) {
-        std::cerr << "WARNING: Account " << getId()
-                  << " beging asked to check characters" << std::endl
-                  << "but it is not currently connected to a world"
-                  << std::endl << std::flush;
+        std::string msg = std::string("WARNING: Account ") + getId()
+                        + " beging asked to check characters"
+                        + "but it is not currently connected to a world";
+        log(WARNING, msg.c_str());
         return;
     }
     std::set<std::string> obsoleteChars;
@@ -246,8 +248,6 @@ void Account::checkCharacters()
     }
     std::set<std::string>::iterator J = obsoleteChars.begin();
     for(; J != obsoleteChars.end(); J++) {
-        std::cout << "Removing character " << *J << " from account "
-                  << getId() << std::endl << std::flush;
         charactersDict.erase(*J);
     }
 }

@@ -6,6 +6,7 @@
 #define RULESETS_PY_OPTIME_H
 
 #include <Atlas/Objects/Operation/RootOperation.h>
+
 #include <Python.h>
 
 typedef struct {

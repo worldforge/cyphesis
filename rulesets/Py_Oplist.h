@@ -6,6 +6,7 @@
 #define RULESETS_PY_OPLIST_H
 
 #include <common/types.h>
+
 #include <Python.h>
 
 typedef struct {

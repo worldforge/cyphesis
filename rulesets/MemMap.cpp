@@ -2,15 +2,15 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Look.h>
-
-#include <modules/Location.h>
-#include <common/debug.h>
-
 #include "Entity.h"
 #include "MemMap.h"
 #include "MemMap_methods.h"
 #include "Script.h"
+
+#include <modules/Location.h>
+#include <common/debug.h>
+
+#include <Atlas/Objects/Operation/Look.h>
 
 using Atlas::Objects::Operation::Look;
 

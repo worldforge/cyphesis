@@ -12,11 +12,15 @@
 #include <rulesets/Character.h>
 #include <rulesets/BaseMind.h>
 
+#include <common/debug.h>
+
 #include <common/Load.h>
 #include <common/Save.h>
 
 #include <Atlas/Objects/Operation/Info.h>
 #include <Atlas/Objects/Operation/Logout.h>
+
+static const bool debug_flag = true;
 
 using Atlas::Message::Object;
 
@@ -89,11 +93,13 @@ OpVector Admin::SaveOperation(const Save & op)
         if (c == NULL) {
             continue;
         }
-        std::cout << "Dumping character to database" << std::endl << std::flush;
+        debug(std::cout << "Dumping character to database" << std::endl
+                        << std::flush;);
         if (c->mind == NULL) { continue; }
         OpVector res = c->mind->SaveOperation(op);
         if ((!res.empty()) && (!res.front()->GetArgs().empty())) {
-            std::cout << "Dumping mind to database" << std::endl << std::flush;
+            debug(std::cout << "Dumping mind to database" << std::endl
+                            << std::flush;);
             Object::MapType & mindmap = res.front()->GetArgs().front().AsMap();
             p->putMind(c->getId(), mindmap);
             ++mind_count;

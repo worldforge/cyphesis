@@ -3,13 +3,15 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "ObserverClient.h"
+
 #include "define_world.h"
 
 #include <common/accountbase.h>
 #include <common/const.h>
 
-#include <unistd.h>
 #include <iostream>
+
+#include <unistd.h>
 
 using Atlas::Message::Object;
 

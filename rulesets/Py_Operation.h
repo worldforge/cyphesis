@@ -6,6 +6,7 @@
 #define RULESETS_PY_OPERATION_H
 
 #include <Atlas/Objects/Operation/RootOperation.h>
+
 #include <Python.h>
 
 namespace Atlas { namespace Objects { namespace Operation {

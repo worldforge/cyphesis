@@ -3,12 +3,13 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "Plant.h"
-#include "Script.h"
 
-#include <common/Tick.h>
+#include "Script.h"
 
 #include <common/const.h>
 #include <common/random.h>
+
+#include <common/Tick.h>
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
@@ -18,7 +19,6 @@ using Atlas::Message::Object;
 Plant::Plant() : fruits(0), radius(1), fruitName("seed")
 {
     // Default to a 1m cube
-    std::cout << "CREATING PLANT" << std::endl << std::flush;
     location.bBox = BBox(Vector3D(-0.5, -0.5, 0), Vector3D(0.5, 0.5, 1));
 
     subscribe("tick", OP_TICK);

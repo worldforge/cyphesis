@@ -2,9 +2,12 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <common/BaseEntity.h>
+#ifndef CLIENT_COMM_CLIENT_H
+#define CLIENT_COMM_CLIENT_H
 
 #include "ClientConnection.h"
+
+#include <common/BaseEntity.h>
 
 class CreatorClient;
 
@@ -39,3 +42,5 @@ class CommClient : public BaseEntity {
         };
     }
 };
+
+#endif // CLIENT_COMM_CLIENT_H

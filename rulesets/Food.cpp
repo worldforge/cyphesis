@@ -2,15 +2,15 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Login.h>
-#include <Atlas/Objects/Operation/Set.h>
+#include "Food.h"
+#include "Script.h"
 
 #include <common/Eat.h>
 #include <common/Fire.h>
 #include <common/Nourish.h>
 
-#include "Food.h"
-#include "Script.h"
+#include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Set.h>
 
 Food::Food()
 {

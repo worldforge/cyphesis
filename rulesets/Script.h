@@ -5,11 +5,11 @@
 #ifndef RULESETS_SCRIPT_H
 #define RULESETS_SCRIPT_H
 
-#include <string>
+#include <common/types.h>
 
 #include <Atlas/Objects/Operation/RootOperation.h>
 
-#include <common/types.h>
+#include <string>
 
 class Entity;
 

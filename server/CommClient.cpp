@@ -4,13 +4,13 @@
 
 #include "CommClient.h"
 #include "CommServer.h"
+#include "Connection.h"
 
-#include <iostream>
-
+#include <common/log.h>
 #include <common/debug.h>
 #include <common/utility.h>
 
-#include "Connection.h"
+#include <iostream>
 
 using Atlas::Message::Object;
 
@@ -66,7 +66,7 @@ bool CommClient::negotiate()
 
     // Check if negotiation failed
     if (accept->GetState() == Atlas::Net::StreamAccept::FAILED) {
-        std::cerr << "Failed to negotiate" << std::endl;
+        log(NOTICE, "Failed to negotiate");
         return true;
     }
     // Negotiation was successful

@@ -304,8 +304,8 @@ class Vector3D {
         // This check is required to make sure we don't accidentally
         // get stuck in an entity outside its bbox.
         if (enter > 0) {
-            std::cout << "We are " << enter << " outside our containers bbox"
-                      << std::endl << std::flush;
+            // debug(std::cout<<"We are "<<enter<<" outside our containers bbox"
+                           // << std::endl << std::flush;);
             return -1;
         }
         return leave;

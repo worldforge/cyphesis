@@ -2,8 +2,9 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/RootOperation.h>
-#include <Atlas/Objects/Entity/AdminEntity.h>
+#include "inheritance.h"
+#include "operations.h"
+
 #include "Chop.h"
 #include "Cut.h"
 #include "Eat.h"
@@ -15,8 +16,7 @@
 #include "Setup.h"
 #include "Tick.h"
 
-#include "inheritance.h"
-#include "operations.h"
+#include <Atlas/Objects/Entity/AdminEntity.h>
 
 void installCustomOperations()
 {

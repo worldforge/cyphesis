@@ -2,13 +2,14 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Delete.h>
+#include "Creator.h"
+
+#include "BaseMind.h"
 
 #include <common/debug.h>
 
-#include "Creator.h"
-#include "BaseMind.h"
+#include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Delete.h>
 
 static const bool debug_flag = false;
 

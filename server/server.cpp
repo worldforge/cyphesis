@@ -3,6 +3,19 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "CommServer.h"
+#include "ServerRouting.h"
+#include "EntityFactory.h"
+#include "Persistance.h"
+
+#include <rulesets/Python_API.h>
+#include <rulesets/MindFactory.h>
+
+#include <common/log.h>
+#include <common/debug.h>
+#include <common/globals.h>
+#include <common/inheritance.h>
+
+#include <common/Load.h>
 
 #include <varconf/Config.h>
 
@@ -13,23 +26,9 @@ extern "C" {
     #include <sys/types.h>
     #include <mcheck.h>
     #include <signal.h>
-    #include <syslog.h>
     #include <fcntl.h>
     #include <unistd.h>
 }
-
-#include <rulesets/Python_API.h>
-#include <rulesets/MindFactory.h>
-
-#include <common/debug.h>
-#include <common/globals.h>
-#include <common/inheritance.h>
-
-#include <common/Load.h>
-
-#include "ServerRouting.h"
-#include "EntityFactory.h"
-#include "Persistance.h"
 
 using Atlas::Message::Object;
 
@@ -84,8 +83,6 @@ int daemonise()
             dup2(new_stdio, STDIN_FILENO);
             dup2(new_stdio, STDOUT_FILENO);
             dup2(new_stdio, STDERR_FILENO);
-            // Initialise syslog for serious errors
-            openlog("WorldForge Cyphesis", LOG_PID, LOG_DAEMON);
             break;
         case -1:
             // Error
@@ -103,7 +100,7 @@ int main(int argc, char ** argv)
     mtrace();
     interactive_signals();
 
-    if (loadConfig(argc, argv)) {
+    if (loadConfig(argc, argv, true)) {
         // Fatal error loading config file
         return 1;
     }
@@ -118,20 +115,15 @@ int main(int argc, char ** argv)
         }
     }
 
+    initLogger();
+
     // Initialise the persistance subsystem. If we have been built with
     // database support, this will open the various databases used to
     // store server data.
     bool dbInit = Persistance::init();
     if (!dbInit) {
-        if (daemon_flag) {
-            syslog(LOG_ERR, "Critical error opening databases. Init failed.");
-        } else {
-            std::cerr << "FATAL: Unable to open the account and world databases"
-                      << std::endl
-                      << "Please ensure that the database tables "
-                      << "can be created or accessed by cyphesis."
-                      << std::endl << std::flush;
-        }
+        log(CRITICAL, "Critical error opening databases. Init failed.");
+        log(INFO, "Please ensure that the database tables can be created or accessed by cyphesis.");
         return 0;
     }
 
@@ -142,8 +134,8 @@ int main(int argc, char ** argv)
     // be created manually by the server administrator.
     if (global_conf->findItem("cyphesis", "restricted")) {
         Persistance::restricted=global_conf->getItem("cyphesis","restricted");
-        if (Persistance::restricted  && !daemon_flag) {
-            std::cout << "Running in restricted mode" << std::endl;
+        if (Persistance::restricted) {
+            log(INFO, "Running in restricted mode");
         }
     }
     // Read the metaserver usage flag from config file.
@@ -181,12 +173,7 @@ int main(int argc, char ** argv)
     CommServer s(rulesets.front(), serverName);
     s.useMetaserver = use_metaserver;
     if (!s.setup(port_num)) {
-        if (daemon_flag) {
-            syslog(LOG_ERR, "Could not create listen socket. Init failed.");
-        } else {
-            std::cerr << "Could not create listen socket."
-                      << std::endl << std::flush;
-        }
+        log(ERROR, "Could not create listen socket. Init failed.");
         return 1;
     }
 
@@ -196,24 +183,18 @@ int main(int argc, char ** argv)
         BaseEntity * admin = s.server.getObject("admin");
         if (admin == NULL) {
             if (!daemon_flag) {
-                std::cout << "CRITICAL: Admin account not found." << std::endl;
+                log(ERROR, "Admin account not found.");
             }
         } else {
-            if (!daemon_flag) {
-                std::cout << "Loading world from database..." << std::flush;
-            }
+            log(INFO, "Loading world from database...");
             OpVector res = admin->LoadOperation(l);
             // Delete the resulting op
             OpVector::iterator I = res.begin();
             for(;I != res.end(); I++) { delete *I; }
-            if (!daemon_flag) {
-                std::cout << " done" << std::endl;
-            }
+            log(INFO, " world loaded");
         }
     }
-    if (!daemon_flag) {
-        std::cout << "Running" << std::endl << std::flush;
-    }
+    log(INFO, "Running");
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
@@ -225,22 +206,14 @@ int main(int argc, char ** argv)
             // exceptions that can be caused  by external influences
             // should be caught close to where they are thrown. If
             // an exception makes it here then it should be debugged.
-            if (daemon_flag) {
-                syslog(LOG_ERR, "Exception caught in main()");
-            } else {
-                std::cerr << "*********** EMERGENCY ***********" << std::endl;
-                std::cerr << "EXCEPTION: Caught in main()" << std::endl;
-                std::cerr << "         : Continuing" << std::endl << std::flush;
-            }
+            log(ERROR, "Exception caught in main()");
         }
     }
     // exit flag has been set so we close down the databases, and indicate
     // to the metaserver (if we are using one) that this server is going down.
     // It is assumed that any preparation for the shutdown that is required
     // by the game has been done before exit flag was set.
-    if (!daemon_flag) {
-        std::cout << "Performing clean shutdown..." << std::endl << std::flush;
-    }
+    log(NOTICE, "Performing clean shutdown...");
 
     s.metaserverTerminate();
 
@@ -264,9 +237,7 @@ int main(int argc, char ** argv)
 
     delete global_conf;
 
-    if (!daemon_flag) {
-        std::cout << "Clean shutdown complete." << std::endl << std::flush;
-    }
+    log(INFO, "Clean shutdown complete.");
     muntrace();
     return 0;
 }

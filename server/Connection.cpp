@@ -2,19 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Login.h>
-#include <Atlas/Objects/Operation/Info.h>
-#include <Atlas/Objects/Operation/Get.h>
-#include <Atlas/Objects/Operation/Appearance.h>
-#include <Atlas/Objects/Operation/Disappearance.h>
-
-#include <rulesets/Character.h>
-#include <common/debug.h>
-#include <common/globals.h>
-#include <common/inheritance.h>
-
 #include "Connection.h"
+
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "CommClient.h"
@@ -22,6 +11,20 @@
 #include "Player.h"
 #include "ExternalMind.h"
 #include "Persistance.h"
+
+#include <rulesets/Character.h>
+
+#include <common/log.h>
+#include <common/debug.h>
+#include <common/globals.h>
+#include <common/inheritance.h>
+
+#include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Info.h>
+#include <Atlas/Objects/Operation/Get.h>
+#include <Atlas/Objects/Operation/Appearance.h>
+#include <Atlas/Objects/Operation/Disappearance.h>
 
 static const bool debug_flag = false;
 
@@ -94,7 +97,6 @@ OpVector Connection::operation(const RootOperation & op)
         debug(std::cout << "[" << from << "]" << std::endl << std::flush;);
         BaseDict::const_iterator I = objects.find(from);
         if (I == objects.end()) {
-            std::cout << from;
             return error(op, "From is illegal");
         }
         BaseEntity * ent = I->second;
@@ -129,9 +131,7 @@ OpVector Connection::LoginOperation(const Login & op)
     // id in case we are dealing with an old client.
     Object::MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.IsString()) {
-        std::cerr << "WARNING: Got Login with no username."
-                  << "Checking for old style Login"
-                  << std::endl << std::flush;
+        log(WARNING, "Got Login with no username. Checking for old style Login");
         I = account.find("id");
         if ((I == account.end()) || !I->second.IsString()) {
             return error(op, "Login is invalid");
@@ -196,9 +196,7 @@ OpVector Connection::CreateOperation(const Create & op)
     }
     Object::MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.IsString()) {
-        std::cerr << "WARNING: Got Create for account with no username."
-                  << "Checking for old style Create."
-                  << std::endl << std::flush;
+        log(WARNING, "Got Create for account with no username. Checking for old style Create.");
         I = account.find("id");
         if ((I == account.end()) || !I->second.IsString()) {
             return error(op, "Account creation is invalid");
@@ -237,9 +235,7 @@ OpVector Connection::LogoutOperation(const Logout & op)
     
     Object::MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.IsString()) {
-        std::cerr << "WARNING: Got Logout with no username."
-                  << "Checking for old style Create."
-                  << std::endl << std::flush;
+        log(WARNING, "Got Logout with no username. Checking for old style Create.");
         I = account.find("id");
         if ((I == account.end()) || !I->second.IsString()) {
             return error(op, "Logout is invalid");

@@ -5,13 +5,13 @@
 #ifndef RULESETS_ENTITY_FACTORY_H
 #define RULESETS_ENTITY_FACTORY_H
 
-namespace Atlas { namespace Message {
-  class Object;
-} }
-
 #include <common/types.h>
 
 #include <sigc++/object.h>
+
+namespace Atlas { namespace Message {
+  class Object;
+} }
 
 class Thing;
 class FactoryBase;

@@ -2,6 +2,12 @@
 // the GNU Lesser General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
+#include "ClientConnection.h"
+
+#include "ClientAccount.h"
+
+#include "common/debug.h"
+
 #include <Atlas/Codec.h>
 #include <Atlas/Message/Object.h>
 #include <Atlas/Net/Stream.h>
@@ -26,11 +32,6 @@ extern "C" {
     #include <unistd.h>
     #include <netdb.h>
 }
-
-#include "ClientConnection.h"
-#include "ClientAccount.h"
-
-#include "common/debug.h"
 
 static bool debug_flag = true;
 

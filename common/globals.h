@@ -21,6 +21,6 @@ extern bool daemon_flag;
 extern int timeoffset;
 extern int port_num;
 
-extern bool loadConfig(int argc, char ** argv);
+bool loadConfig(int argc, char ** argv, bool server = false);
 
 #endif // COMMON_GLOBALS_H

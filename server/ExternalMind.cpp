@@ -3,6 +3,7 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "ExternalMind.h"
+
 #include "Connection_methods.h"
 
 ExternalMind::ExternalMind(Connection & connection, const std::string & id,

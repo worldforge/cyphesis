@@ -134,7 +134,6 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
             } else if (PyFloat_Check(item)) {
                 vector[i] = PyFloat_AsDouble(item);
             } else {
-                std::cerr << i << std::endl << std::flush;
                 PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
                 return -1;
             }

@@ -2,15 +2,16 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Combine.h>
-#include <Atlas/Objects/Operation/Divide.h>
-#include <Atlas/Objects/Operation/Delete.h>
-
 // A stackable object, ie one which can represent multiple object of the
 // same type. Used for things like coins.
 
 #include "Stackable.h"
+
 #include "Script.h"
+
+#include <Atlas/Objects/Operation/Combine.h>
+#include <Atlas/Objects/Operation/Divide.h>
+#include <Atlas/Objects/Operation/Delete.h>
 
 using Atlas::Message::Object;
 

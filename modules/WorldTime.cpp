@@ -2,16 +2,16 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <list>
-#include <map>
-#include <string>
-#include <stdio.h>
-
 #include "WorldTime.h"
 
 #include <common/debug.h>
 
 #include <iostream>
+
+#include <list>
+#include <map>
+#include <string>
+#include <stdio.h>
 
 //timedata time2type(const std::string & t) {
     //return timeInfo[t][1];

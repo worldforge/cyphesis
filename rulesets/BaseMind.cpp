@@ -2,6 +2,22 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include "BaseMind.h"
+
+#include "MemMap_methods.h"
+
+#include <common/utility.h>
+#include <common/debug.h>
+#include <common/op_switch.h>
+#include <common/inheritance.h>
+
+#include <common/Chop.h>
+#include <common/Cut.h>
+#include <common/Eat.h>
+#include <common/Fire.h>
+#include <common/Load.h>
+#include <common/Save.h>
+
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Sound.h>
@@ -16,21 +32,6 @@
 #include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
-
-#include <common/Chop.h>
-#include <common/Cut.h>
-#include <common/Eat.h>
-#include <common/Fire.h>
-#include <common/Load.h>
-#include <common/Save.h>
-
-#include <common/utility.h>
-#include <common/debug.h>
-#include <common/op_switch.h>
-#include <common/inheritance.h>
-
-#include "BaseMind.h"
-#include "MemMap_methods.h"
 
 //static const bool debug_flag = false;
 
@@ -111,11 +112,11 @@ void BaseMind::scriptSubscribe(const std::string & op)
                         << subop << " ops" << std::endl << std::flush;);
         soundSubscribe(subop, subno);
     } else {
-        std::cerr << "Mind script requested subscription to " << op
-                  << " operations, of which the argument is " << subop
-                  << " but op arguments for that kind of op are not yet"
-                  << " supported by the mind scriptig interface"
-                  << std::endl << std::flush;
+        debug(std::cerr << "Mind script requested subscription to " << op
+                        << " operations, of which the argument is " << subop
+                        << " but op arguments for that kind of op are not yet"
+                        << " supported by the mind scriptig interface"
+                        << std::endl << std::flush;);
     }
 }
 

@@ -5,9 +5,9 @@
 #ifndef COMMON_ACCOUNT_BASE_H
 #define COMMON_ACCOUNT_BASE_H
 
-#include <Atlas/Message/Object.h>
-
 #include "Database.h"
+
+#include <Atlas/Message/Object.h>
 
 using Atlas::Message::Object;
 

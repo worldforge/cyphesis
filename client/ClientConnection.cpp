@@ -2,14 +2,14 @@
 // the GNU Lesser General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#include <Atlas/Codecs/XML.h>
-#include <Atlas/Net/Stream.h>
-#include <Atlas/Objects/Encoder.h>
-
 #include "ClientConnection.h"
 
 #include "common/debug.h"
 #include "common/globals.h"
+
+#include <Atlas/Codecs/XML.h>
+#include <Atlas/Net/Stream.h>
+#include <Atlas/Objects/Encoder.h>
 
 static bool debug_flag = false;
 

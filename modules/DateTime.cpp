@@ -2,9 +2,9 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <stdio.h>
-
 #include "DateTime.h"
+
+#include <stdio.h>
 
 // date_pat=re.compile("^|[-:]|\s+");
 

@@ -2,8 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/RootOperation.h>
-
 #include "Chop.h"
 #include "Cut.h"
 #include "Eat.h"

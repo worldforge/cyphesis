@@ -1,5 +1,15 @@
 2002-07-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* ALL: Cleaned up headers into correct order.
+
+	* common/log.h, common/log.cpp: Write some logging code which
+	  handles message of different types using syslog or standard
+	  error, depending on whether we are running as a daemon.
+
+	* ALL: Switched to using log() for all output.
+
+2002-07-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cyloadrules.cpp: Give rules in heigher level rulesets
 	  priority over base rulesets.
 

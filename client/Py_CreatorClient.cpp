@@ -2,6 +2,10 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
+#include "Py_CreatorClient.h"
+
+#include "CreatorClient.h"
+
 #include <rulesets/Py_Operation.h>
 #include <rulesets/Py_WorldTime.h>
 #include <rulesets/Py_Vector3D.h>
@@ -9,9 +13,6 @@
 #include <rulesets/Py_Object.h>
 #include <rulesets/Py_Thing.h>
 #include <rulesets/Py_Map.h>
-
-#include "CreatorClient.h"
-#include "Py_CreatorClient.h"
 
 static PyObject * CreatorClient_as_entity(CreatorClientObject * self, PyObject * args)
 {

@@ -6,6 +6,12 @@
 #include "config.h"
 #endif
 
+#include <common/Load.h>
+#include <common/Save.h>
+#include <common/accountbase.h>
+#include <common/const.h>
+#include <common/globals.h>
+
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Decoder.h>
@@ -14,16 +20,10 @@
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Get.h>
 
-#include <common/Load.h>
-#include <common/Save.h>
-#include <common/accountbase.h>
-#include <common/const.h>
-#include <common/globals.h>
-
 #include <skstream/skstream.h>
 
-#include <stdio.h>
 #include <iostream>
+#include <cstdio>
 
 #ifndef READLINE_CXX_SANE   // defined in config.h
 extern "C" {

@@ -2,11 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Operation/Login.h>
-#include <Atlas/Objects/Entity/GameEntity.h>
-
 #include "EntityFactory.h"
+
 #include "Persistance.h"
 #include "Player.h"
 
@@ -26,6 +23,10 @@
 #include <common/debug.h>
 #include <common/globals.h>
 #include <common/inheritance.h>
+
+#include <Atlas/Message/Object.h>
+#include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Entity/GameEntity.h>
 
 static const bool debug_flag = false;
 
@@ -72,11 +73,11 @@ Thing * EntityFactory::newThing(const std::string & type,
         }
     } else {
         if (type.empty()) {
-            std::cerr << "NOTICE: Empty string type passed to EntityFactory::newThing" << std::endl << std::flush;
+            log(NOTICE, "Empty string type passed to EntityFactory::newThing");
         } else {
             installFactory("thing", type, new ThingFactory<Thing>());
-            std::cerr << "NOTICE: Installing patch-in factory for " << type
-                      << std::endl << std::flush;
+            std::string msg = std::string("Installing patch-in factory for ") + type;
+            log(NOTICE, msg.c_str());
         }
         thing = new Thing();
     }
@@ -184,9 +185,9 @@ FactoryBase * EntityFactory::getFactory(const std::string & parent)
 {
     FactoryDict::const_iterator I = factories.find(parent);
     if (I == factories.end()) {
-        std::cerr << "WARNING: Failed to find factory for type " << parent
-                  << " while installing a new type which inherits from it."
-                  << std::endl << std::flush;
+        std::string msg = std::string("Failed to find factory for ") + parent
+                     + " while installing a new type which inherits from it.";
+        log(WARNING, msg.c_str());
         return new ThingFactory<Thing>();
     }
     return I->second->dupFactory();

@@ -43,7 +43,6 @@ class Location {
         if (distanceRight(other, dist)) {
            dist.set();
         } else {
-           std::cerr << "DISTANCETO returned false" << std::endl << std::flush;
            return Vector3D();
         }
         return dist;

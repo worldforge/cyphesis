@@ -7,6 +7,8 @@
 
 #include <Python.h>
 
+class CreatorClient;
+
 extern PyTypeObject CreatorClient_Type;
 
 typedef struct {

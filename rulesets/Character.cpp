@@ -2,6 +2,27 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include "Character.h"
+
+#include "Pedestrian.h"
+#include "MindFactory.h"
+#include "BaseMind.h"
+#include "Script.h"
+#include "World.h"
+
+#include <common/BaseWorld.h>
+#include <common/op_switch.h>
+#include <common/const.h>
+#include <common/debug.h>
+#include <common/globals.h>
+#include <common/log.h>
+
+#include <common/Setup.h>
+#include <common/Tick.h>
+#include <common/Cut.h>
+#include <common/Eat.h>
+#include <common/Nourish.h>
+
 #include <Atlas/Objects/Operation/Action.h>
 #include <Atlas/Objects/Operation/Sound.h>
 #include <Atlas/Objects/Operation/Set.h>
@@ -15,27 +36,6 @@
 #include <Atlas/Objects/Operation/Error.h>
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
-
-#include <common/Setup.h>
-#include <common/Tick.h>
-#include <common/Cut.h>
-#include <common/Eat.h>
-#include <common/Nourish.h>
-
-#include "Character.h"
-#include "Pedestrian.h"
-
-#include "MindFactory.h"
-#include "BaseMind.h"
-#include "Script.h"
-#include "World.h"
-
-#include <common/BaseWorld.h>
-
-#include <common/op_switch.h>
-#include <common/const.h>
-#include <common/debug.h>
-#include <common/globals.h>
 
 using Atlas::Message::Object;
 
@@ -372,18 +372,18 @@ OpVector Character::mindMoveOperation(const Move & op)
     debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
     const Object::ListType & args = op.GetArgs();
     if ((args.empty()) || (!args.front().IsMap())) {
-        std::cerr << "mindMoveOperation: move op has no argument" << std::endl << std::flush;
+        log(ERROR, "mindMoveOperation: move op has no argument");
         return OpVector();
     }
     const Object::MapType & arg1 = args.front().AsMap();
     Object::MapType::const_iterator I = arg1.find("id");
     if ((I == arg1.end()) || !I->second.IsString()) {
-        std::cerr << "mindMoveOperation: Args has got no id" << std::endl << std::flush;
+        log(ERROR, "mindMoveOperation: Args has got no id");
     }
     const std::string & oname = I->second.AsString();
     EntityDict::const_iterator J = world->getObjects().find(oname);
     if (J == world->getObjects().end()) {
-        std::cerr << "mindMoveOperation: This move op is for a phoney object" << std::endl << std::flush;
+        log(ERROR, "mindMoveOperation: This move op is for a phoney id");
         return OpVector();
     }
     Move * newop = new Move(op);
@@ -429,8 +429,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         }
     }
     catch (Atlas::Message::WrongTypeException) {
-        std::cerr << "EXCEPTION: mindMoveOperation: Malformed move operation"
-                  << std::endl << std::flush;
+        log(ERROR, "EXCEPTION: mindMoveOperation: Malformed move operation");
     }
 
     if (!location_coords.isValid()) {
@@ -558,8 +557,7 @@ OpVector Character::mindMoveOperation(const Move & op)
             moveOp=moveOp2;
         }
         if (moveOp == NULL) {
-            std::cerr << "ERROR: No move operation generated in mindMoveOp"
-                      << std::endl << std::flush;
+            log(ERROR, "No move operation generated in mindMoveOp");
             return OpVector();
         }
         // return moveOp and tickOp;

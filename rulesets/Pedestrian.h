@@ -5,9 +5,9 @@
 #ifndef RULESETS_PEDESTRIAN_H
 #define RULESETS_PEDESTRIAN_H
 
-#include <physics/Vector3D.h>
-
 #include "Movement.h"
+
+#include <physics/Vector3D.h>
 
 class Character;
 

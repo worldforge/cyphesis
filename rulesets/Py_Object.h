@@ -6,6 +6,7 @@
 #define RULESETS_PY_OBJECT_H
 
 #include <Atlas/Message/Object.h>
+
 #include <Python.h>
 
 typedef struct {

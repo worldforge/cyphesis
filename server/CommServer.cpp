@@ -4,21 +4,21 @@
 
 #include "CommClient.h"
 #include "CommServer.h"
+#include "ServerRouting_methods.h"
+#include "protocol_instructions.h"
+
+#include <common/log.h>
+#include <common/debug.h>
 
 #include <varconf/Config.h>
 
 #include <iostream>
 
+#include <cstdio>
+
 extern "C" {
     #include <netdb.h>
 }
-
-#include <cstdio>
-
-#include <common/debug.h>
-
-#include "ServerRouting_methods.h"
-#include "protocol_instructions.h"
 
 using Atlas::Message::Object;
 
@@ -99,7 +99,7 @@ bool CommServer::setup(int port)
     debug(std::cout << "Connecting to metaserver..." << std::endl << std::flush;);
     struct hostent * ms_addr = gethostbyname(mserver.c_str());
     if (ms_addr == NULL) {
-        std::cerr << "metaserver lookup failed. Disabling metaserver." <<std::endl<<std::flush;
+        log(WARNING, "metaserver lookup failed. Disabling metaserver");
         useMetaserver = false;
         return true;
     }
@@ -107,7 +107,7 @@ bool CommServer::setup(int port)
     
     metaFd = socket(AF_INET, SOCK_DGRAM, 0);
     if (metaFd < 0) {
-        std::cerr << "WARNING: Could not create metaserver connection" <<std::endl<<std::flush;
+        log(WARNING, "Could not connect to metaserver. Disabling metaserver");
         useMetaserver = false;
         perror("socket");
     }
@@ -279,7 +279,7 @@ void CommServer::metaserverReply()
     unsigned int        packet_size;
 
     if (recvfrom(metaFd, mesg, MAXLINE, 0, &addr, &addrlen) < 0) {
-        std::cerr << "WARNING: No reply from metaserver" << std::endl << std::flush;
+        log(WARNING, "WARNING: No reply from metaserver");
         return;
     }
     mesg_ptr = unpack_uint32(&command, mesg);

@@ -2,6 +2,9 @@
  * the GNU General Public License (See COPYING for details).
  * Copyright (C) 2000 Alistair Riddoch */
 
+#include <string>
+#include <fstream>
+
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
@@ -9,9 +12,6 @@
 #include <syslog.h>
 #include <sys/wait.h>
 #include <errno.h>
-
-#include <string>
-#include <fstream>
 
 // #define _NO_DAEMON
 

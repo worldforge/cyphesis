@@ -2,15 +2,17 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Move.h>
-
-#include <common/Tick.h>
+#include "Pedestrian.h"
 
 #include "Character.h"
-#include "Pedestrian.h"
 
 #include <common/const.h>
 #include <common/debug.h>
+#include <common/log.h>
+
+#include <common/Tick.h>
+
+#include <Atlas/Objects/Operation/Move.h>
 
 using Atlas::Message::Object;
 
@@ -169,10 +171,11 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                         m_targetPos -= m_collEntity->location.coords;
                     }
                 } else {
-                    std::cerr << "BAD COLLISION: " << m_body.getId()
-                              << " with " << m_collEntity->getId()
-                              << ". Making no coord adjustment"
-                              << std::endl << std::flush;
+                    std::string msg = std::string("BAD COLLISION: ")
+                                    + m_body.getId() + " with "
+                                    + m_collEntity->getId()
+                                    + ". Making no coord adjustment.";
+                    log(ERROR, msg.c_str());
                 }
                 new_loc.ref = m_collEntity;
                 m_collEntity = NULL;

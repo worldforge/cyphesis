@@ -2,6 +2,20 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include "Entity.h"
+#include "Script.h"
+
+#include <common/log.h>
+#include <common/debug.h>
+
+#include <common/Setup.h>
+#include <common/Tick.h>
+#include <common/Chop.h>
+#include <common/Cut.h>
+#include <common/Eat.h>
+#include <common/Nourish.h>
+#include <common/Fire.h>
+
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
@@ -13,19 +27,6 @@
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
-
-#include <common/Setup.h>
-#include <common/Tick.h>
-#include <common/Chop.h>
-#include <common/Cut.h>
-#include <common/Eat.h>
-#include <common/Nourish.h>
-#include <common/Fire.h>
-
-#include "Entity.h"
-#include "Script.h"
-
-#include <common/debug.h>
 
 static const bool debug_flag = false;
 
@@ -206,7 +207,7 @@ void Entity::getLocation(const Object::MapType & entmap,
         }
     }
     catch (Atlas::Message::WrongTypeException) {
-        std::cerr << "ERROR: Bad location data" << std::endl << std::flush;
+        log(ERROR, "getLocation: Bad location data");
     }
 }
 

@@ -6,10 +6,11 @@
 #include "Py_WorldTime.h"
 #include "Py_Thing.h"
 
-#include <common/BaseWorld.h>
-#include <modules/WorldTime.h>
-
 #include "Thing.h"
+
+#include <common/BaseWorld.h>
+
+#include <modules/WorldTime.h>
 
 static PyObject * World_get_time(WorldObject *self, PyObject *args, PyObject *kw)
 {

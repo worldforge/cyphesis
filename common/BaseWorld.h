@@ -5,9 +5,9 @@
 #ifndef COMMON_BASE_WORLD_H
 #define COMMON_BASE_WORLD_H
 
-class Entity;
-
 #include "OOGThing.h"
+
+class Entity;
 
 class BaseWorld : public OOGThing {
   private:

@@ -23,18 +23,10 @@
 #include "Thing.h"
 #include "BaseMind.h"
 
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Move.h>
-#include <Atlas/Objects/Operation/Set.h>
-#include <Atlas/Objects/Operation/Sight.h>
-#include <Atlas/Objects/Operation/Talk.h>
-#include <Atlas/Objects/Operation/Touch.h>
-#include <Atlas/Objects/Operation/Info.h>
-
 #include <common/globals.h>
 #include <common/const.h>
 #include <common/debug.h>
+#include <common/log.h>
 
 #include <common/Tick.h>
 #include <common/Fire.h>
@@ -44,6 +36,15 @@
 #include <common/Eat.h>
 #include <common/Nourish.h>
 #include <common/Generic.h>
+
+#include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Move.h>
+#include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation/Sight.h>
+#include <Atlas/Objects/Operation/Talk.h>
+#include <Atlas/Objects/Operation/Touch.h>
+#include <Atlas/Objects/Operation/Info.h>
 
 static const bool debug_flag = false;
 
@@ -209,22 +210,23 @@ static PyObject * Get_PyClass(const std::string & package,
     PyObject * mod_dict = PyImport_Import(package_name);
     Py_DECREF(package_name);
     if (mod_dict == NULL) {
-        std::cerr << "Cld no find python module " << package << std::endl
-                  << std::flush;
+        std::string msg = std::string("Missing python module ") + package;
+        log(ERROR, msg.c_str());
         PyErr_Print();
         return NULL;
     }
     PyObject * my_class = PyObject_GetAttrString(mod_dict, (char *)type.c_str());
     Py_DECREF(mod_dict);
     if (my_class == NULL) {
-        std::cerr << "Cld not find class " << type << " in module " << package
-                  << std::endl << std::flush;
+        std::string msg = std::string("Missing class ") + package + "." + type;
+        log(ERROR, msg.c_str());
         PyErr_Print();
         return NULL;
     }
     if (PyCallable_Check(my_class) == 0) {
-        std::cerr << "It does not seem to be a class at all" << std::endl
-                  << std::flush;
+        std::string msg = std::string("Could not instance python class ")
+                        + package + "." + type;
+        log(ERROR, msg.c_str());
         Py_DECREF(my_class);
         return NULL;
     }
@@ -237,9 +239,9 @@ static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyClass)
     
     if (pyob == NULL) {
         if (PyErr_Occurred() == NULL) {
-            std::cerr << "Could not get python obj" << std::endl << std::flush;
+            log(ERROR, "Could not create python instance");
         } else {
-            std::cerr << "Reporting python error" << std::endl << std::flush;
+            log(ERROR, "Reporting python error");
             PyErr_Print();
         }
     }
@@ -253,19 +255,21 @@ void Subscribe_Script(T * thing, PyObject * pyclass, const std::string& package)
 {
     PyObject * dmap = PyObject_GetAttrString(pyclass, "__dict__");
     if (dmap == NULL) {
-        std::cerr << "Python class for " << package << " has no __dict__"
-                  << std::endl << std::flush;
+        std::string msg = std::string( "Python class for ") + package
+                        + " has no __dict__";
+        log(ERROR, msg.c_str());
         return;
     }
     if (!PyDict_Check(dmap)) {
-        std::cerr << "Python class for " << package << " is malformed"
-                  << std::endl << std::flush;
+        std::string msg = std::string( "Python class for ") + package
+                        + " is malformed";
+        log(ERROR, msg.c_str());
         return;
     }
     PyObject * keys = PyDict_Keys(dmap);
     if (keys == NULL) {
-        std::cerr << "Error getting attribute list of Python class for "
-                  << package << std::endl << std::flush;
+        std::string msg = std::string("Error getting attribute list of Python class for ") + package;
+        log(ERROR, msg.c_str());
         return;
     }
     for(int i = 0; i < PyList_Size(keys); i++) {

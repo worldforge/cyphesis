@@ -5,6 +5,7 @@
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H
 
+#include "log.h"
 #include "operations.h"
 #include "types.h"
 
@@ -72,12 +73,10 @@ class Inheritance {
     OpNo opEnumerate(const RootOperation & op) const {
         const Atlas::Message::Object::ListType & parents = op.GetParents();
         if (parents.size() != 1) {
-            std::cerr << "This is a weird operation."
-                      << std::endl << std::flush;
+            log(ERROR, "op with no parents");
         }
         if (!parents.begin()->IsString()) {
-            std::cerr << "This op has invalid parent.\n"
-                      << std::endl << std::flush;
+            log(ERROR, "op with non-string parent");
         }
         const std::string & parent = parents.begin()->AsString();
         return opEnumerate(parent);
@@ -95,9 +94,9 @@ class Inheritance {
         const std::string & child = obj->GetId();
         const std::string & parent = obj->GetParents().front().AsString();
         if (atlasObjects.find(child) != atlasObjects.end()) {
-            std::cerr << "ERROR: Installing type " << child << "(" << parent
-                      << ") which was already installed" << std::endl
-                      << std::flush;
+            std::string msg = std::string("Installing type ") + child 
+                            + "(" + parent + ") which was already installed";
+            log(WARNING, msg.c_str());
             delete obj;
             return true;
         }

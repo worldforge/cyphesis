@@ -6,7 +6,6 @@
 #define SERVER_SERVER_ROUTING_H
 
 #include <common/OOGThing.h>
-
 #include <common/serialno.h>
 
 class WorldRouter;

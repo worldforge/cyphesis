@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include "inheritance.h"
+
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Combine.h>
 #include <Atlas/Objects/Operation/Delete.h>
@@ -24,8 +26,6 @@
 #include <Atlas/Objects/Entity/Player.h>
 #include <Atlas/Objects/Entity/Admin.h>
 #include <Atlas/Objects/Entity/GameEntity.h>
-
-#include "inheritance.h"
 
 using Atlas::Message::Object;
 

@@ -2,6 +2,20 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include "Thing.h"
+#include "Script.h"
+
+#include <common/log.h>
+#include <common/const.h>
+#include <common/debug.h>
+#include <common/inheritance.h>
+#include <common/BaseWorld.h>
+
+#include <common/Setup.h>
+#include <common/Tick.h>
+#include <common/Nourish.h>
+#include <common/Fire.h>
+
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
@@ -10,20 +24,6 @@
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
-
-#include <common/Setup.h>
-#include <common/Tick.h>
-#include <common/Nourish.h>
-#include <common/Fire.h>
-
-#include "Thing.h"
-#include "Script.h"
-
-#include <common/BaseWorld.h>
-
-#include <common/const.h>
-#include <common/debug.h>
-#include <common/inheritance.h>
 
 static const bool debug_flag = false;
 
@@ -51,7 +51,9 @@ void Thing::scriptSubscribe(const std::string & op)
                         << std::endl << std::flush;);
         subscribe(op, n);
     } else {
-        std::cout << "SCRIPT requesting subscription to " << op << " but inheritance could not give me a reference" << std::endl << std::flush;
+        std::string msg = std::string("SCRIPT requesting subscription to ")
+                        + op + " but inheritance could not give me a reference";
+        log(ERROR, msg.c_str());
     }
 }
 
@@ -140,7 +142,7 @@ OpVector Thing::CreateOperation(const Create & op)
         return OpVector(1,s);
     }
     catch (Atlas::Message::WrongTypeException) {
-        std::cerr << "EXCEPTION: Malformed object to be created\n";
+        log(ERROR, "EXCEPTION: Malformed object to be created");
         return error(op, "Malformed object to be created\n");
     }
     return OpVector();
@@ -319,7 +321,7 @@ OpVector Thing::MoveOperation(const Move & op)
         return res2;
     }
     catch (Atlas::Message::WrongTypeException) {
-        std::cerr << "EXCEPTION: Malformed object to be moved\n";
+        log(ERROR, "EXCEPTION: Malformed object to be moved");
         return error(op, "Malformed object to be moved\n");
     }
     return OpVector();
@@ -354,7 +356,7 @@ OpVector Thing::SetOperation(const Set & op)
         return res2;
     }
     catch (Atlas::Message::WrongTypeException) {
-        std::cerr << "EXCEPTION: Malformed set operation\n";
+        log(ERROR, "EXCEPTION: Malformed set operation");
         return error(op, "Malformed set operation\n");
     }
     return OpVector();

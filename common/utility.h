@@ -5,6 +5,8 @@
 #ifndef COMMON_UTILITY_H
 #define COMMON_UTILITY_H
 
+#include <Atlas/Objects/Operation/RootOperation.h>
+
 namespace utility {
 
   Atlas::Objects::Root * Object_asRoot(const Atlas::Message::Object &);

@@ -15,7 +15,7 @@ bool daemon_flag = false;
 int timeoffset = 0;
 int port_num = 6767;
 
-bool loadConfig(int argc, char ** argv)
+bool loadConfig(int argc, char ** argv, bool server)
 {
     global_conf = varconf::Config::inst();
 
@@ -65,7 +65,7 @@ bool loadConfig(int argc, char ** argv)
 
     // Config is now loaded. Now set the values of some globals.
 
-    if (global_conf->findItem("cyphesis", "daemon")) {
+    if (global_conf->findItem("cyphesis", "daemon") && server) {
         daemon_flag = global_conf->getItem("cyphesis","daemon");
     }
 

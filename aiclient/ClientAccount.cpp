@@ -2,9 +2,9 @@
 // the GNU Lesser General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Info.h>
-
 #include "ClientAccount.h"
+
+#include <Atlas/Objects/Operation/Info.h>
 
 using Atlas::Message::Object;
 

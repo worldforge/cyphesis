@@ -2,10 +2,12 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include "World.h"
+
+#include <common/log.h>
+
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
-
-#include "World.h"
 
 World::World()
 {
@@ -60,7 +62,7 @@ OpVector World::SetOperation(const Set & op)
         return res2;
     }
     catch (Atlas::Message::WrongTypeException) {
-        std::cerr << "EXCEPTION: Malformed set operation\n";
+        log(ERROR, "EXCEPTION: Malformed set operation");
         return error(op, "Malformed set operation\n");
     }
     return OpVector();
