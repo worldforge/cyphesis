@@ -1,6 +1,6 @@
-// This file may be redistributed and modified only under the terms of
-// the GNU Lesser General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+/* This file may be redistributed and modified only under the terms of
+ * the GNU General Public License (See COPYING for details).
+ * Copyright (C) 2000 Alistair Riddoch */
 
 #include <stdio.h>
 #include <stdlib.h>

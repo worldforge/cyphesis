@@ -1,3 +1,17 @@
+2001-03-16  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* watchdog/*.c: Corrected C++ style comments in c code.
+
+	* */*: Fixed mistake in copyright statement.
+
+	* tools/cypasswd.cpp: Fixed usage message.
+
+	* tools/cycmd.cpp: Added tools for sending administrative commands
+	  to server.
+
+	* server/server.cpp: Send terminate instruction to metaserver on
+	  server shutdown.
+
 2001-03-15  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* server/server.cpp: Increased time between pings to metaserver

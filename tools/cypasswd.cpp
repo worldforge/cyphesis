@@ -1,5 +1,5 @@
 // This file may be redistributed and modified only under the terms of
-// the GNU Lesser General Public License (See COPYING for details).
+// the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
@@ -42,7 +42,7 @@ void usage(char * n)
 {
     // Don't call this once the database is open. It doesn't return so the
     // database will not be closed.
-    std::cout << n << ": -[asd] account" << endl << flush;
+    std::cout << "usage: " << n << " -[asd] account" << endl << flush;
     exit(0);
 }
 

@@ -1,6 +1,6 @@
-// This file may be redistributed and modified only under the terms of
-// the GNU Lesser General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+/* This file may be redistributed and modified only under the terms of
+ * the GNU General Public License (See COPYING for details).
+ * Copyright (C) 2000 Alistair Riddoch */
 
 #include <stdio.h>
 #include <signal.h>
@@ -12,7 +12,7 @@
 
 #include "config.h"
 
-// #define _NO_DAEMON
+/* #define _NO_DAEMON */
 
 char * inst_dir = INSTALLDIR;
 
@@ -258,7 +258,7 @@ int main(int argc, char ** argv)
         signal(SIGHUP, signal_hup);
         signal(SIGTERM, signal_term);
         ret = signal(SIGALRM, signal_alarm);
-	printf("ARlarm %s\n", (ret == SIG_ERR) ? "error" : "set");
+	printf("Alarm %s\n", (ret == SIG_ERR) ? "error" : "set");
         signal(SIGUSR1, signal_user);
 	/* pid = server_start(); */
         for(;;) {
