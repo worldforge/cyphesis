@@ -223,7 +223,7 @@ void Character::TickOperation(const Tick & op, OpVector & res)
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
     const ListType & args = op.getArgs();
-    if ((!args.empty()) && (args.front().isMap())) {
+    if (!args.empty() && args.front().isMap()) {
         // Deal with movement.
         const MapType & arg1 = args.front().asMap();
         MapType::const_iterator I = arg1.find("serialno");
@@ -404,7 +404,7 @@ void Character::mindMoveOperation(const Move & op, OpVector & res)
 {
     debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
     const ListType & args = op.getArgs();
-    if ((args.empty()) || (!args.front().isMap())) {
+    if (args.empty() || !args.front().isMap()) {
         log(ERROR, "mindMoveOperation: move op has no argument");
         return;
     }
@@ -602,11 +602,8 @@ void Character::mindMoveOperation(const Move & op, OpVector & res)
     tickOp->setFutureSeconds(m_movement.getTickAddition(m_location.m_pos));
     debug( std::cout << "Next tick " << tickOp->getFutureSeconds()
                      << std::endl << std::flush;);
-    if (moveOp == NULL) {
-        // FIXME migrate this to being an assert
-        log(ERROR, "No move operation generated in mindMoveOp");
-        return;
-    }
+    assert(moveOp != NULL);
+
     // return moveOp and tickOp;
     res.push_back(moveOp);
     res.push_back(tickOp);
@@ -614,22 +611,22 @@ void Character::mindMoveOperation(const Move & op, OpVector & res)
 
 void Character::mindSetOperation(const Set & op, OpVector & res)
 {
-    // FIXME Segfaults if there are no args.
     const ListType & args = op.getArgs();
-    if (args.front().isMap()) {
-        Set * s = new Set(op);
-        const MapType & amap = args.front().asMap();
-        MapType::const_iterator I = amap.find("id");
-        if (I != amap.end() && I->second.isString()) {
-            const std::string & opid = I->second.asString();
-            s->setTo(opid);
-        } else {
-            if (op.getTo().empty()) {
-                s->setTo(getId());
-            }
-        }
-        res.push_back(s);
+    if (args.empty() || !args.front().isMap()) {
+        return;
     }
+    Set * s = new Set(op);
+    const MapType & amap = args.front().asMap();
+    MapType::const_iterator I = amap.find("id");
+    if (I != amap.end() && I->second.isString()) {
+        const std::string & opid = I->second.asString();
+        s->setTo(opid);
+    } else {
+        if (op.getTo().empty()) {
+            s->setTo(getId());
+        }
+    }
+    res.push_back(s);
 }
 
 void Character::mindSightOperation(const Sight & op, OpVector & res)
@@ -706,15 +703,13 @@ void Character::mindLookOperation(const Look & op, OpVector & res)
     Look * l = new Look(op);
     if (op.getTo().empty()) {
         const ListType & args = op.getArgs();
-        if (args.empty()) {
+        if (args.empty() || !args.front().isMap()) {
             l->setTo(m_world->m_gameWorld.getId());
         } else {
-            if (args.front().isMap()) {
-                const MapType & amap = args.front().asMap();
-                MapType::const_iterator I = amap.find("id");
-                if (I != amap.end() && I->second.isString()) {
-                    l->setTo(I->second.asString());
-                }
+            const MapType & amap = args.front().asMap();
+            MapType::const_iterator I = amap.find("id");
+            if (I != amap.end() && I->second.isString()) {
+                l->setTo(I->second.asString());
             }
         }
     }
@@ -746,17 +741,13 @@ void Character::mindTouchOperation(const Touch & op, OpVector & res)
     // Work out what is being touched.
     const ListType & args = op.getArgs();
     if (op.getTo().empty()) {
-        if (args.empty()) {
+        if (args.empty() || !args.front().isMap()) {
             t->setTo(m_world->m_gameWorld.getId());
         } else {
-            if (args.front().isMap()) {
-                const MapType & amap = args.front().asMap();
-                MapType::const_iterator I = amap.find("id");
-                if (I != amap.end() && I->second.isString()) {
-                    t->setTo(I->second.asString());
-                }
-            } else if (args.front().isString()) {
-                t->setTo(args.front().asString());
+            const MapType & amap = args.front().asMap();
+            MapType::const_iterator I = amap.find("id");
+            if (I != amap.end() && I->second.isString()) {
+                t->setTo(I->second.asString());
             }
         }
     }
@@ -990,9 +981,6 @@ void Character::sendMind(const RootOperation & op, OpVector & res)
             m_mind->operation(op, res);
         }
     }
-
-    // At this point the python code did some conversion.
-    // FIXME to check we really don't care any more.
 }
 
 void Character::mind2body(const RootOperation & op, OpVector & res)

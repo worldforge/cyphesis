@@ -180,7 +180,7 @@ void Connection::operation(const RootOperation & op, OpVector & res)
             Info * info = new Info;
             ListType & info_args = info->getArgs();
             info_args.push_back(MapType());
-            character->addToMessage(info_args.front().asMap());
+            character->addToMessage(info_args.back().asMap());
             info->setRefno(op.getSerialno());
             info->setSerialno(m_server.newSerialNo());
 
@@ -380,7 +380,7 @@ void Connection::GetOperation(const Get & op, OpVector & res)
     const ListType & args = op.getArgs();
 
     Info * info;
-    if (args.empty()) {
+    if (args.empty() || !args.front().isMap()) {
         info = new Info;
         ListType & info_args = info->getArgs();
         info_args.push_back(MapType());
@@ -389,10 +389,6 @@ void Connection::GetOperation(const Get & op, OpVector & res)
         info->setSerialno(m_server.newSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
-        if (!args.front().isMap()) {
-            error(op, "Get op arg is not a map", res);
-            return;
-        }
         MapType::const_iterator I = args.front().asMap().find("id");
         if ((I == args.front().asMap().end()) || (!I->second.isString())) {
             error(op, "Type definition requested with no id", res);

@@ -1,3 +1,6 @@
+Track down anywhere where a normal mind is setting TO on IG operations sent
+to body.
+
 Centralise serialno assigment on IG ops, checking for 0 to see if we should?
 
 Sort out FIXME in Creator::operation().

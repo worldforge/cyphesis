@@ -124,29 +124,27 @@ void Creator::mindLookOperation(const Look & op, OpVector & res)
     Look * l = new Look(op);
     if (op.getTo().empty()) {
         const ListType & args = op.getArgs();
-        if (args.empty()) {
+        if (args.empty() || !args.front().isMap()) {
             l->setTo(m_world->m_gameWorld.getId());
         } else {
-            if (args.front().isMap()) {
-                const MapType & amap = args.front().asMap();
-                MapType::const_iterator I = amap.find("id");
-                if (I != amap.end() && I->second.isString()) {
-                    l->setTo(I->second.asString());
-                } else if ((I = amap.find("name")) != amap.end()) {
-                    if (I->second.isString() && !I->second.asString().empty()) {
-                        Entity * e = m_world->findByName(I->second.asString());
+            const MapType & amap = args.front().asMap();
+            MapType::const_iterator I = amap.find("id");
+            if (I != amap.end() && I->second.isString()) {
+                l->setTo(I->second.asString());
+            } else if ((I = amap.find("name")) != amap.end()) {
+                if (I->second.isString() && !I->second.asString().empty()) {
+                    Entity * e = m_world->findByName(I->second.asString());
+                    if (e != NULL) {
+                        l->setTo(e->getId());
+                    }
+                }
+            } else if ((I = amap.find("parents")) != amap.end()) {
+                if (I->second.isList() && !I->second.asList().empty()) {
+                    const Element & p = I->second.asList().front();
+                    if (p.isString()) {
+                        Entity * e = m_world->findByType(p.asString());
                         if (e != NULL) {
                             l->setTo(e->getId());
-                        }
-                    }
-                } else if ((I = amap.find("parents")) != amap.end()) {
-                    if (I->second.isList() && !I->second.asList().empty()) {
-                        const Element & p = I->second.asList().front();
-                        if (p.isString()) {
-                            Entity * e = m_world->findByType(p.asString());
-                            if (e != NULL) {
-                                l->setTo(e->getId());
-                            }
                         }
                     }
                 }

@@ -1,5 +1,15 @@
 2004-09-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Connection.cpp, rulesets/Creator.cpp, rulesets/Character.cpp:
+	  Check and clean up places where args are checked before querying
+	  their contents.
+
+	* rulesets/Character.cpp: Assert that Movement::getMoveOperation()
+	  always returns an operation, rather than a normal tolerant test.
+	  Remove a FIXME about the Python code operations conversion functions.
+
+2004-09-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.cpp, rulesets/MemMap.cpp: Modify FIXME text so
 	  its clearer which ones are part of the same problem.
 
