@@ -7,6 +7,8 @@
 
 #include "EntityExerciser.h"
 
+#include <Atlas/Message/Element.h>
+
 template <class EntityType>
 class IGEntityExerciser : public EntityExerciser<EntityType> {
   public:

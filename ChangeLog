@@ -1,4 +1,8 @@
-2004-12-03  Al Riddoch  <alriddoch@zepler.org>
+2004-12-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/IGEntityExerciser.h: Add missing Atlas include.
+
+2004-12-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.h: Add missing <list> include.
 
