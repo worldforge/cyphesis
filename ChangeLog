@@ -1,5 +1,17 @@
 2004-07-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseWorld.h, rulesets/Creator.cpp, rulesets/Thing.h,
+	  rulesets/World.cpp, server/WorldRouter.cpp, server/WorldRouter.h:
+	  Modify the world interface to get rid of some pointless
+	  infeffiencies.
+
+	* server/Account.cpp, server/Admin.cpp, server/Connection.cpp,
+	  server/Lobby.cpp, server/ServerRouting.h, server/WorldRouter.cpp,
+	  server/WorldRouter.h: Change getSerialNo to newSerialNo to make it
+	  clear what it does.
+
+2004-07-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.h, common/BaseEntity.cpp, common/refno.h,
 	  server/Account.cpp, rulesets/Creator.cpp, server/WorldRouter.cpp:
 	  Move refno functions which don't need to be methods into

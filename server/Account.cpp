@@ -145,7 +145,7 @@ OpVector Account::LogoutOperation(const Logout & op)
     Element::ListType & args = info.getArgs();
     args.push_back(op.asObject());
     info.setRefno(op.getSerialno());
-    info.setSerialno(m_connection->m_server.getSerialNo());
+    info.setSerialno(m_connection->m_server.newSerialNo());
     info.setFrom(getId());
     info.setTo(getId());
     m_connection->send(info);
@@ -216,7 +216,7 @@ OpVector Account::CreateOperation(const Create & op)
     info_args.push_back(Element::MapType());
     obj->addToObject(info_args.front().asMap());
     info->setRefno(op.getSerialno());
-    info->setSerialno(m_connection->m_server.getSerialNo());
+    info->setSerialno(m_connection->m_server.newSerialNo());
 
     return OpVector(1,info);
 }
@@ -292,7 +292,7 @@ OpVector Account::ImaginaryOperation(const Imaginary & op)
     Element::ListType & sargs = s.getArgs();
     sargs.push_back(op.asObject());
     s.setFrom(getId());
-    s.setSerialno(m_connection->m_server.getSerialNo());
+    s.setSerialno(m_connection->m_server.newSerialNo());
     setRefnoOp(&s, op);
     const Element::MapType & arg = args.front().asMap();
     Element::MapType::const_iterator I = arg.find("loc");
@@ -315,7 +315,7 @@ OpVector Account::TalkOperation(const Talk & op)
     Element::ListType & sargs = s.getArgs();
     sargs.push_back(op.asObject());
     s.setFrom(getId());
-    s.setSerialno(m_connection->m_server.getSerialNo());
+    s.setSerialno(m_connection->m_server.newSerialNo());
     setRefnoOp(&s, op);
     const Element::MapType & arg = args.front().asMap();
     Element::MapType::const_iterator I = arg.find("loc");
@@ -336,7 +336,7 @@ OpVector Account::LookOperation(const Look & op)
         Element::ListType & s_args = s->getArgs();
         s_args.push_back(Element::MapType());
         m_connection->m_server.m_lobby.addToObject(s_args.front().asMap());
-        s->setSerialno(m_connection->m_server.getSerialNo());
+        s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
     }
@@ -352,7 +352,7 @@ OpVector Account::LookOperation(const Look & op)
         Element::ListType & s_args = s->getArgs();
         s_args.push_back(Element::MapType());
         J->second->addToObject(s_args.front().asMap());
-        s->setSerialno(m_connection->m_server.getSerialNo());
+        s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
     }
@@ -364,7 +364,7 @@ OpVector Account::LookOperation(const Look & op)
         Element::ListType & s_args = s->getArgs();
         s_args.push_back(Element::MapType());
         K->second->addToObject(s_args.front().asMap());
-        s->setSerialno(m_connection->m_server.getSerialNo());
+        s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
     }

@@ -40,7 +40,7 @@ class ServerRouting : public OOGThing {
         addObject(a);
     }
 
-    int getSerialNo() {
+    int newSerialNo() {
         return opSerialNo();
     }
 

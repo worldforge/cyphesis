@@ -26,14 +26,14 @@ class WorldRouter : public BaseWorld {
     EntitySet m_perceptives;
     EntitySet m_omnipresentList;
 
-    int getSerialNo() {
+    int newSerialNo() {
         return opSerialNo();
     }
 
     void addOperationToQueue(RootOperation & op, const Entity *);
     RootOperation * getOperationFromQueue();
     const EntitySet & broadcastList(const RootOperation & op) const;
-    inline void updateTime();
+    void updateTime();
     void deliverTo(const RootOperation & op, Entity * e);
     void deliverDeleteTo(const RootOperation & op, Entity * e);
   public:
@@ -48,12 +48,10 @@ class WorldRouter : public BaseWorld {
     void setSerialno(OpVector &);
     void setSerialnoOp(RootOperation &);
 
-    virtual OpVector message(RootOperation & op, const Entity * obj);
-    virtual OpVector message(const RootOperation & op);
-    virtual OpVector operation(const RootOperation & op);
+    void operation(const RootOperation & op);
 
-    virtual void LookOperation(const Look & op);
-
+    virtual void addPerceptive(const std::string &);
+    virtual void message(RootOperation & op, const Entity * obj);
     virtual Entity * findByName(const std::string & name);
     virtual Entity * findByType(const std::string & type);
     virtual float constrainHeight(Entity *, const Vector3D &);

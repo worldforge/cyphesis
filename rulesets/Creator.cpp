@@ -58,9 +58,7 @@ OpVector Creator::operation(const RootOperation & op)
         return MoveOperation((Move &)op);
     }
     if (op_no == OP_SETUP) {
-        Look look;
-        look.setFrom(getId());
-        m_world->LookOperation(look);
+        m_world->addPerceptive(getId());
         return OpVector();
     }
     return sendMind(op);

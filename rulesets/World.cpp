@@ -151,7 +151,7 @@ OpVector World::LookOperation(const Look & op)
 {
     // Let the worldrouter know we have been looked at.
     assert(m_world != 0);
-    m_world->LookOperation(op);
+    m_world->addPerceptive(op.getFrom());
 
     debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
     const EntityDict & eobjects = m_world->getObjects();

@@ -31,7 +31,7 @@ void Lobby::addObject(Account * ac)
     us["loc"] = "lobby";
     a.setFrom(ac->getId());
     a.setTo("lobby");
-    a.setSerialno(m_server.getSerialNo());
+    a.setSerialno(m_server.newSerialNo());
     operation(a);
 
     m_accounts[ac->getId()] = ac;
@@ -50,7 +50,7 @@ void Lobby::delObject(Account * a)
     us["loc"] = "lobby";
     d.setFrom(a->getId());
     d.setTo("lobby");
-    d.setSerialno(m_server.getSerialNo());
+    d.setSerialno(m_server.newSerialNo());
     operation(d);
 
     m_accounts.erase(a->getId());

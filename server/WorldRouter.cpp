@@ -4,7 +4,6 @@
 
 #include "WorldRouter.h"
 
-#include "ServerRouting.h"
 #include "EntityFactory.h"
 
 #include "rulesets/World.h"
@@ -26,7 +25,7 @@
 
 static const bool debug_flag = false;
 
-inline void WorldRouter::updateTime()
+void WorldRouter::updateTime()
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -74,7 +73,7 @@ WorldRouter::~WorldRouter()
     delete &m_gameWorld;
 }
 
-inline void WorldRouter::addOperationToQueue(RootOperation & op,
+void WorldRouter::addOperationToQueue(RootOperation & op,
                          const Entity * obj)
 {
     if (op.getFrom() == "cheat") {
@@ -93,7 +92,7 @@ inline void WorldRouter::addOperationToQueue(RootOperation & op,
     m_operationQueue.insert(I, &op);
 }
 
-inline RootOperation * WorldRouter::getOperationFromQueue()
+RootOperation * WorldRouter::getOperationFromQueue()
 {
     std::list<RootOperation *>::const_iterator I = m_operationQueue.begin();
     if ((I == m_operationQueue.end()) || ((*I)->getSeconds() > m_realTime)) {
@@ -105,16 +104,9 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
     return op;
 }
 
-inline void WorldRouter::setSerialno(OpVector & ops)
-{
-    for (OpVector::const_iterator I = ops.begin(); I != ops.end(); ++I) {
-       (*I)->setSerialno(getSerialNo());
-    }
-}
-
 inline void WorldRouter::setSerialnoOp(RootOperation & op)
 {
-    op.setSerialno(getSerialNo());
+    op.setSerialno(newSerialNo());
 }
 
 float WorldRouter::constrainHeight(Entity * parent, const Vector3D & pos)
@@ -184,8 +176,8 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
         Setup * s = new Setup;
         s->setTo(obj->getId());
         s->setFutureSeconds(-0.1);
-        s->setSerialno(getSerialNo());
-        addOperationToQueue(*s, &m_gameWorld);
+        s->setSerialno(newSerialNo());
+        message(*s, &m_gameWorld);
     }
     return (obj);
 }
@@ -217,16 +209,9 @@ void WorldRouter::delObject(Entity * obj)
     m_eobjects.erase(obj->getId());
 }
 
-OpVector WorldRouter::message(const RootOperation & op)
-{
-    debug(std::cout << "FATAL: Wrong type of WorldRouter message function called" << std::endl << std::flush;);
-    return OpVector();
-}
-
-OpVector WorldRouter::message(RootOperation & op, const Entity * obj)
+void WorldRouter::message(RootOperation & op, const Entity * obj)
 {
     addOperationToQueue(op, obj);
-    return OpVector();
 }
 
 const EntitySet & WorldRouter::broadcastList(const RootOperation & op) const
@@ -291,7 +276,7 @@ void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
     delete e;
 }
 
-OpVector WorldRouter::operation(const RootOperation & op)
+void WorldRouter::operation(const RootOperation & op)
 {
     // const RootOperation & op = *op_ptr;
     const std::string & to = op.getTo();
@@ -305,7 +290,7 @@ OpVector WorldRouter::operation(const RootOperation & op)
         if (I == m_eobjects.end()) {
             debug(std::cerr << "WARNING: Op to=\"" << to << "\""
                             << " does not exist" << std::endl << std::flush;);
-            return OpVector();
+            return;
         }
 
         Entity * to_entity = I->second;
@@ -364,15 +349,12 @@ OpVector WorldRouter::operation(const RootOperation & op)
             }
         }
     }
-                
-    return OpVector();
 }
 
-void WorldRouter::LookOperation(const Look & op)
+void WorldRouter::addPerceptive(const std::string & id)
 {
-    debug(std::cout << "WorldRouter::Operation(Look)" << std::endl << std::flush;);
-    const std::string & from = op.getFrom();
-    EntityDict::const_iterator J = m_eobjects.find(from);
+    debug(std::cout << "WorldRouter::addPerceptive" << std::endl << std::flush;);
+    EntityDict::const_iterator J = m_eobjects.find(id);
     if (J != m_eobjects.end()) {
         m_perceptives.insert(J->second);
     }
@@ -422,9 +404,3 @@ Entity * WorldRouter::findByType(const std::string & type)
     }
     return NULL;
 }
-
-#if 0
-const double WorldRouter::upTime() const {
-    return realTime - timeoffset;
-}
-#endif

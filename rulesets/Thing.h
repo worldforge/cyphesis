@@ -25,7 +25,8 @@ class Thing : public Thing_parent {
     // that serialno is sorted. This allows client serialnos to get
     // in, so that client gets correct usefull refnos back
     OpVector sendWorld(RootOperation * op) const {
-        return m_world->message(*op, this);
+        m_world->message(*op, this);
+        return OpVector();
     }
 
     virtual OpVector SetupOperation(const Setup & op);

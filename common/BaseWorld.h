@@ -59,11 +59,11 @@ class BaseWorld {
     virtual Entity * addNewObject(const std::string &,
                                   const Atlas::Message::Element::MapType &) = 0;
     virtual void setSerialnoOp(RootOperation &) = 0;
-    virtual OpVector message(RootOperation & op, const Entity * obj) = 0;
+    virtual void message(RootOperation & op, const Entity * obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;
     virtual float constrainHeight(Entity *, const Vector3D &) = 0;
-    virtual void LookOperation(const Look & op) = 0;
+    virtual void addPerceptive(const std::string & id) = 0;
 
 
     SigC::Signal1<void, RootOperation *> Dispatching;

@@ -163,7 +163,7 @@ OpVector Admin::GetOperation(const Get & op)
         return error(op, msg.c_str());
     }
     info->setRefno(op.getSerialno());
-    info->setSerialno(m_connection->m_server.getSerialNo());
+    info->setSerialno(m_connection->m_server.newSerialNo());
     return OpVector(1,info);
 }
 

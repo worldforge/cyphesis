@@ -175,7 +175,7 @@ OpVector Connection::operation(const RootOperation & op)
             info_args.push_back(Element::MapType());
             character->addToObject(info_args.front().asMap());
             info->setRefno(op.getSerialno());
-            info->setSerialno(m_server.getSerialNo());
+            info->setSerialno(m_server.newSerialNo());
             OpVector res = ent->externalOperation(op);
             res.insert(res.begin(), info);
             return res;
@@ -248,7 +248,7 @@ OpVector Connection::LoginOperation(const Login & op)
     info_args.push_back(Element::MapType());
     player->addToObject(info_args.front().asMap());
     info->setRefno(op.getSerialno());
-    info->setSerialno(m_server.getSerialNo());
+    info->setSerialno(m_server.newSerialNo());
     debug(std::cout << "Good login" << std::endl << std::flush;);
     return OpVector(1,info);
 }
@@ -299,7 +299,7 @@ OpVector Connection::CreateOperation(const Create & op)
     info_args.push_back(Element::MapType());
     player->addToObject(info_args.front().asMap());
     info->setRefno(op.getSerialno());
-    info->setSerialno(m_server.getSerialNo());
+    info->setSerialno(m_server.newSerialNo());
     debug(std::cout << "Good create" << std::endl << std::flush;);
     return OpVector(1,info);
 }
@@ -312,7 +312,7 @@ OpVector Connection::LogoutOperation(const Logout & op)
         Element::ListType & args = info.getArgs();
         args.push_back(op.asObject());
         info.setRefno(op.getSerialno());
-        info.setSerialno(m_server.getSerialNo());
+        info.setSerialno(m_server.newSerialNo());
         send(info);
         close();
         return OpVector();
@@ -358,7 +358,7 @@ OpVector Connection::GetOperation(const Get & op)
         info_args.push_back(Element::MapType());
         m_server.addToObject(info_args.front().asMap());
         info->setRefno(op.getSerialno());
-        info->setSerialno(m_server.getSerialNo());
+        info->setSerialno(m_server.newSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
         if (!args.front().isMap()) {
@@ -381,7 +381,7 @@ OpVector Connection::GetOperation(const Get & op)
         Element::ListType & iargs = info->getArgs();
         iargs.push_back(o->asObject());
         info->setRefno(op.getSerialno());
-        info->setSerialno(m_server.getSerialNo());
+        info->setSerialno(m_server.newSerialNo());
     }
     
     return OpVector(1,info);
