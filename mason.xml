@@ -385,8 +385,30 @@
     <map name="attributes">
       <float name="mass">20</float>
       <list name="bbox">
-        <float>-0.5</float><float>-0.5</float><float>0</float>
+        <float>-0.5</float><float>-0.5</float><float>-1</float>
         <float>0.5</float><float>0.5</float><float>1</float>
+      </list>
+    </map>
+  </map>
+
+  <map name="board">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="mass">20</float>
+      <list name="bbox">
+        <float>-1</float><float>-0.125</float><float>-0.02</float>
+        <float>1</float><float>0.125</float><float>0.02</float>
+      </list>
+    </map>
+  </map>
+
+  <map name="twobyfour">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="mass">20</float>
+      <list name="bbox">
+        <float>-1</float><float>-0.025</float><float>-0.05</float>
+        <float>1</float><float>0.025</float><float>0.05</float>
       </list>
     </map>
   </map>
