@@ -45,14 +45,6 @@ CYPHESIS_LIBS=-lcyphesis
 CYPHESIS_CFLAGS=
 CYPHESIS_VERSION=$VERSION
 
-
-dnl FIXME This will break if $datadir != $prefix/share
-DATA_DIR="$prefix/share"
-CONF_DIR="$prefix/etc"
-
-AC_SUBST(DATA_DIR)
-AC_SUBST(CONF_DIR)
-
 AC_CHECK_FUNCS([sigset sigaction])
 
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
