@@ -14,6 +14,8 @@ AM_CONFIG_HEADER(config.h)
 
 AM_BINRELOC
 
+AM_CONDITIONAL(BIN_RELOC, test x"$br_cv_binreloc" = xyes)
+
 dnl Need libtool
 
 AC_DISABLE_STATIC

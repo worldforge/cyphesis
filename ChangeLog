@@ -1,5 +1,10 @@
 2005-03-31  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac, common/Makefile.am: Fix paths so code still builds
+	  with BinReloc disabled.
+
+2005-03-31  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Remove some debug output.
 
 	* rulesets/Py_Vector3D.cpp: Add error checking so that normalising

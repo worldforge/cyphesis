@@ -1,6 +1,16 @@
 noinst_LIBRARIES = libcommon.a libtools.a
 
+if BIN_RELOC
+
 INCLUDES = -I$(top_srcdir)
+
+else
+
+INCLUDES = -I$(top_srcdir) -DDATADIR=\"@datadir@\" \
+                           -DSYSCONFDIR=\"@sysconfdir@\" \
+                           -DLOCALSTATEDIR=\"@localstatedir@\"
+
+endif
 
 libcommon_a_SOURCES = const.cpp const.h \
 		      prefix.c prefix.h \
