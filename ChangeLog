@@ -1,3 +1,8 @@
+2004-12-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/goals/common/move.py: Don't try and move to
+	  destination when displacement is pure vertical.
+
 2004-12-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommClient.cpp: Clean up formatting.

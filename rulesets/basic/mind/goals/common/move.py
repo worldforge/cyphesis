@@ -54,8 +54,11 @@ class move_me(Goal):
             return
         # FIXME Destination based movement - currently won't work if
         # a LOC change is required.
+        velocity=distance_to(me.location, location).unit_vector()*self.speed
+        if abs(velocity.z) > 0.99:
+            return
         target=location.copy()
-        target.velocity=distance_to(me.location, location).unit_vector()*self.speed
+        target.velocity=velocity
         if me.location.velocity.is_valid() and me.location.velocity.dot(target.velocity) > 0.8:
             #print "Already on the way"
             return
