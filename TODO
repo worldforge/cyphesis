@@ -15,6 +15,7 @@ ServerRouting in CommServer, the listeners would have to have this reference
 instead - move the specialisation into the listeners.
 
 Does sightFooOperation etc. in BaseMind.h have to be virtual? I think not.
+Yes it does, as its overriden in some client code.
 
 CONTAINS could be some kind of spatial set of buckets for efficiency
 when doing collision detection, but if this is not to be true for all entities
@@ -32,10 +33,6 @@ necessary. ie check to see if we are already moving in the right direction.
 
 Fix Movement/Pedestrian to handle destination based movement where LOC
 changes. Just use distanceTo as the velocity vector.
-
-In an idle loop, time() and gettimeofday() get called straight after each
-other. Stupid. Update time in CommServer::idle, and pass to
-server idle() ?
 
 The spot_something goal is a hack - need something better. Probably need
 some kind of Knowledge about target entity. Give the Knowledge predicate
