@@ -84,12 +84,12 @@ chicken_goals=[(il.avoid,"avoid(['settler','orc','wolf'],10.0)"),
 
 squirrel_goals=[(il.avoid,"avoid(['wolf','crab'],10.0)"),
                 (il.forage,"forage(self, 'acorn')"),
-		(il.forage,"forage(self, 'pinekernel')")]
+                (il.forage,"forage(self, 'pinekernel')")]
 
 wolf_goals=[(il.forage,"forage(self, 'ham')"),
             (il.hunt,"predate(self,'pig',30.0)"),
             (il.hunt,"predate(self,'crab',20.0)"),
-	    (il.hunt,"predate(self,'squirrel',10.0"),
+            (il.hunt,"predate(self,'squirrel',10.0)"),
             (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
 
 crab_goals=[(il.avoid,"avoid('wolf',10.0)"),
@@ -214,7 +214,7 @@ def default(mapeditor):
     squirrel = m.make('squirrel', type='squirrel', desc='test squirrel',
                     xyz=(-32,-15,settlement_height))
     m.know(squirrel,sknowledge)
-    m.learn(squirrel,sknowledge)
+    m.learn(squirrel,squirrel_goals)
 
 #   villagers
     #directions = [[0,1,0],[1,0,0],[0,-1,0],[-1,0,0],

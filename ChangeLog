@@ -1,5 +1,12 @@
 2004-06-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* Fixes to nowhere's commit to define_world.py:
+	  Fix python syntax of wolf goal to predate squirrels.
+	  Fix m.learn for squirrel to use goals, not knowledge.
+	  Replace hard tabs with normal spaces.
+
+2004-06-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* Update birch bounding box to new straight tree model.
 
 2004-06-28  Al Riddoch  <alriddoch@zepler.org>
