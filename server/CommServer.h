@@ -21,6 +21,9 @@ class CommServer {
 
     void idle();
 
+    // Private and unimplemented.
+    CommServer(const CommServer &);
+    CommServer & operator=(const CommServer &);
   public:
     ServerRouting & server;
 

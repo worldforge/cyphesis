@@ -1,5 +1,11 @@
 2003-04-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommServer.h: Prevent copying of CommServer.
+
+	* server/Connection.cpp: Handle setting args more efficiently.
+
+2003-04-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/World.h, rulesets/World.cpp, rulesets/Stackable.h,
 	  rulesets/Stackable.cpp, rulesets/Plant.h,
 	  rulesets/Plant.cpp, rulesets/Line.h, rulesets/Line.cpp,

@@ -297,7 +297,8 @@ OpVector Connection::LogoutOperation(const Logout & op)
     if (op.GetArgs().empty()) {
         // Logging self out
         Info info = Info(Info::Instantiate());
-        info.SetArgs(Element::ListType(1,op.AsObject()));
+        Element::ListType & args = info.GetArgs();
+        args.push_back(op.AsObject());
         info.SetRefno(op.GetSerialno());
         info.SetSerialno(server.getSerialNo());
         send(info);
