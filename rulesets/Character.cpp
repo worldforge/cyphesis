@@ -976,8 +976,6 @@ OpVector Character::sendMind(const RootOperation & op)
         }
         debug(std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
-        debug(std::cout << "Using ops from external mind"
-                        << std::endl << std::flush;);
         return m_externalMind->message(op);
     } else {
         debug(std::cout << "Using ops from local mind"

@@ -27,7 +27,7 @@ OpVector Creator::sendMind(const RootOperation & msg)
     debug( std::cout << "Creator::sendMind" << std::endl << std::flush;);
     // Simpified version of character method sendMind() because local mind
     // of creator is irrelevant
-    if (NULL != m_externalMind) {
+    if (0 != m_externalMind) {
         debug( std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
         return m_externalMind->message(msg);
@@ -49,6 +49,9 @@ OpVector Creator::operation(const RootOperation & op)
     OpNo op_no = opEnumerate(op);
     if (op_no == OP_LOOK) {
         return LookOperation((Look &)op);
+    }
+    if (op_no == OP_MOVE) {
+        return MoveOperation((Move &)op);
     }
     if (op_no == OP_SETUP) {
         Look look;
@@ -89,6 +92,8 @@ OpVector Creator::externalOperation(const RootOperation & op)
 
 OpVector Creator::mindLookOperation(const Look & op)
 {
+    // This overriden version allows the creator to search the world for
+    // entities by type or by name
     debug(std::cout << "Got look up from prived mind from [" << op.getFrom()
                << "] to [" << op.getTo() << "]" << std::endl << std::flush;);
     m_perceptive = true;
