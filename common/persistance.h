@@ -8,39 +8,12 @@
 class Admin;
 class Account;
 
-#ifdef HAVE_LIBDB_CXX
-#include <db3/db_cxx.h>
+#include "database.h"
 
-#include <Atlas/Message/DecoderBase.h>
-
-class Decoder : public Atlas::Message::DecoderBase {
-    virtual void ObjectArrived(const Atlas::Message::Object& obj) {
-        cout << "GOT OBJECT" << endl << flush;
-        m_check = true;
-        m_obj = obj;
-    }
-    bool m_check;
-    Atlas::Message::Object m_obj;
-  public:
-    Decoder() : m_check (false) { }
-    bool check() const { return m_check; }
-    const Atlas::Message::Object & get() { m_check = false; return m_obj; }
-};
-#endif
-
-class Persistance {
+class Persistance : public Database {
   protected:
-    Persistance();
+    Persistance() { }
 
-    static Persistance * m_instance;
-#ifdef HAVE_LIBDB_CXX
-    Db account_db;
-    Db world_db;
-    Decoder m_d;
-
-    bool putObject(Db &, const Atlas::Message::Object &, const char * key);
-    bool getObject(Db &, const char * key, Atlas::Message::Object &);
-#endif
   public:
     static Account * load_admin_account();
     static void save_admin_account(Account *);

@@ -3,6 +3,7 @@ noinst_LIBRARIES = libcommon.a
 libcommon_a_SOURCES = const.cpp const.h \
 		log.cpp log.h \
 		config.h debug.h \
+		database.cpp database.h \
 		persistance.cpp persistance.h \
 		utility.cpp utility.h \
                 WorldInfo.cpp WorldInfo.h \

@@ -1,7 +1,5 @@
 [thing]
 thing		= ""
-house		= "world.objects.buildings.House"
-stonehouse	= "world.objects.building.StoneHouse"
 axe		= "world.objects.tools.Axe"
 sword		= "world.objects.tools.Sword"
 coin		= "world.objects.tools.Coin"
@@ -29,3 +27,5 @@ vodka		= "world.objects.food.Vodka"
 [structure]
 sty		= ""
 tent		= ""
+house		= "world.objects.buildings.House"
+stonehouse	= "world.objects.building.StoneHouse"

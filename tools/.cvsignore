@@ -3,4 +3,5 @@
 Makefile
 Makefile.in
 cycmd
+cydbload
 cypasswd
