@@ -1,3 +1,8 @@
+2004-12-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommClient.cpp, server/Connection.cpp: Move counting
+	  connections into the connection class.
+
 2004-12-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommUnixListener.cpp: Improve recovery from a crash by

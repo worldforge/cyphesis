@@ -40,7 +40,6 @@ CommClient::CommClient(CommServer & svr, int fd, Connection & c) :
             m_connection(c)
 {
     m_clientIos.setTimeout(0,1000);
-    m_commServer.m_server.incClients();
 }
 
 CommClient::~CommClient()
@@ -57,7 +56,6 @@ CommClient::~CommClient()
         delete m_codec;
     }
     m_clientIos.close();
-    m_commServer.m_server.decClients();
 }
 
 void CommClient::setup()

@@ -48,6 +48,8 @@ Connection::Connection(const std::string & id, CommClient & client,
     subscribe("logout", OP_LOGOUT);
     subscribe("create", OP_CREATE);
     subscribe("get", OP_GET);
+
+    m_server.incClients();
 }
 
 Connection::~Connection()
@@ -81,6 +83,8 @@ Connection::~Connection()
             }
         }
     }
+
+    m_server.incClients();
 }
 
 void Connection::send(const Operation & op) const
