@@ -1,3 +1,15 @@
+2004-12-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommMaster.cpp, server/CommMaster.h, server/Master.cpp,
+	  server/Master.h: Handlers for a connection to a master server.
+
+	* server/CommPeer.cpp: Fix comments.
+
+	* server/slave.cpp: Implement connecting to master server on startup.
+
+	* tools/cycmd.cpp: Fix bug handling option to connect to slave instead
+	  of server.
+
 2004-12-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/globals.cpp, common/globals.h: Separate globals for server

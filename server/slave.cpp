@@ -4,6 +4,7 @@
 
 #include "CommServer.h"
 #include "CommSlaveListener.h"
+#include "CommMaster.h"
 #include "ServerRouting.h"
 #include "EntityFactory.h"
 #include "Persistance.h"
@@ -73,12 +74,16 @@ int main(int argc, char ** argv)
         mserver = global_conf->getItem("cyphesis", "metaserver").as_string();
     }
 
-
     std::string serverName;
     if (global_conf->findItem("cyphesis", "servername")) {
         serverName = global_conf->getItem("cyphesis","servername").as_string();
     } else {
         serverName = get_hostname();
+    }
+
+    std::string serverHostname("localhost");
+    if (global_conf->findItem("slave", "server")) {
+        serverHostname = global_conf->getItem("slave","server").as_string();
     }
     
     // Start up the python subsystem.
@@ -116,6 +121,13 @@ int main(int argc, char ** argv)
         return EXIT_SOCKET_ERROR;
     }
     commServer.addSocket(listener);
+
+    CommMaster * master = new CommMaster(commServer, serverHostname);
+    if (master->connect(serverHostname) != 0) {
+        log(ERROR, "Could not connect to master. Init failed.");
+        return EXIT_SOCKET_ERROR;
+    }
+    commServer.addSocket(master);
 
     log(INFO, "Running");
 

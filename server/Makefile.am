@@ -69,6 +69,7 @@ cyslave_SOURCES = \
 		TrustedConnection.cpp TrustedConnection.h \
 		SlaveClientConnection.cpp SlaveClientConnection.h \
 		Peer.cpp Peer.h \
+		Master.cpp Master.h \
 		Idle.cpp Idle.h \
 		CommSocket.cpp CommSocket.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
@@ -80,6 +81,7 @@ cyslave_SOURCES = \
 		CommLocalClient.cpp CommLocalClient.h \
 		CommRemoteClient.cpp CommRemoteClient.h \
 		CommPeer.cpp CommPeer.h \
+		CommMaster.cpp CommMaster.h \
 		CommSlaveClient.cpp CommSlaveClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \

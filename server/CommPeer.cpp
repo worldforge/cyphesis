@@ -22,6 +22,7 @@ CommPeer::CommPeer(CommServer & svr, const std::string & addr) :
 /// \brief Constructor remote peer socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
+/// @param fd Socket file descriptor
 /// @param addr Address of the remote peer.
 CommPeer::CommPeer(CommServer & svr, int fd, const std::string & addr) :
    CommClient(svr, fd, *new Peer(addr, *this, svr.m_server))

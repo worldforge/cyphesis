@@ -96,7 +96,6 @@ int main(int argc, char ** argv)
         mserver = global_conf->getItem("cyphesis", "metaserver").as_string();
     }
 
-
     std::string serverName;
     if (global_conf->findItem("cyphesis", "servername")) {
         serverName = global_conf->getItem("cyphesis","servername").as_string();

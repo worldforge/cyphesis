@@ -43,6 +43,8 @@ package="define_world"
 function="default"
 
 [slave]
+# Server host to connet to
+server="localhost"
 # Unix socket to listen on
 unixport="cyslave.sock"
 # TCP port to listen on

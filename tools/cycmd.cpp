@@ -746,7 +746,7 @@ int main(int argc, char ** argv)
         server = global_conf->getItem("client", "serverhost").as_string();
     }
 
-    int useslave;
+    int useslave = 0;
     if (global_conf->findItem("client", "useslave")) {
         useslave = global_conf->getItem("client", "useslave");
     }
