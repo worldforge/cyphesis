@@ -52,6 +52,21 @@ extern "C" void shutdown_on_signal(int signo)
 #endif
 }
 
+extern "C" void report_segfault(int signo)
+{
+    log(CRITICAL, "Segmentation fault");
+
+#if defined(HAVE_SIGACTION)
+    struct sigaction action;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = SIG_DFL;
+    sigaction(signo, &action, NULL);
+#else
+    signal(signo, SIG_DFL);
+#endif
+}
+
 void interactive_signals()
 {
 #if defined(HAVE_SIGACTION)
@@ -81,12 +96,18 @@ void interactive_signals()
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
     sigaction(SIGPIPE, &action, NULL);
+
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = report_segfault;
+    sigaction(SIGSEGV, &action, NULL);
 #else
     signal(SIGINT, shutdown_on_signal);
     signal(SIGTERM, shutdown_on_signal);
     signal(SIGQUIT, shutdown_on_signal);
     signal(SIGHUP, shutdown_on_signal);
     signal(SIGPIPE, SIG_IGN);
+    signal(SIGSEGV, report_segfault);
 #endif
 }
 
@@ -119,12 +140,18 @@ void daemon_signals()
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
     sigaction(SIGPIPE, &action, NULL);
+
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = report_segfault;
+    sigaction(SIGSEGV, &action, NULL);
 #else
     signal(SIGINT, SIG_IGN);
     signal(SIGTERM, shutdown_on_signal);
     signal(SIGQUIT, SIG_IGN);
     signal(SIGHUP, SIG_IGN);
     signal(SIGPIPE, SIG_IGN);
+    signal(SIGSEGV, report_segfault);
 #endif
 }
 
