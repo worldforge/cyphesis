@@ -94,6 +94,8 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     std::string username;
     std::string accountId;
     bool exit;
+    int monitor_op_count;
+    int monitor_start_time;
 
     void output(const Atlas::Message::Element & item, bool recurse = true);
     void logOp(const Atlas::Objects::Operation::RootOperation &);
@@ -131,7 +133,8 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     bool negotiate();
   public:
     Interactive() : error_flag(false), reply_flag(false), login_flag(false),
-                    encoder(NULL), codec(NULL), exit(false) { }
+                    encoder(NULL), codec(NULL), exit(false),
+                    monitor_op_count(0), monitor_start_time(0) { }
 
     void send(const Atlas::Objects::Operation::RootOperation &);
     bool connect(const std::string & host);
@@ -201,6 +204,7 @@ void Interactive<Stream>::output(const Atlas::Message::Element & item, bool recu
 template <class Stream>
 void Interactive<Stream>::logOp(const Atlas::Objects::Operation::RootOperation & op)
 {
+    ++monitor_op_count;
     std::cout << op.getParents().front().asString() << "(from=\"" << op.getFrom()
               << "\",to=\"" << op.getTo() << "\")" << std::endl << std::flush;
 }
@@ -208,6 +212,14 @@ void Interactive<Stream>::logOp(const Atlas::Objects::Operation::RootOperation &
 template <class Stream>
 void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Appearance& o)
 {
+    if (accountId.empty()) {
+        return;
+    }
+    if (accountId != o.getTo()) {
+        // This is an IG op we are monitoring
+        logOp(o);
+        return;
+    }
     if (o.getArgs().empty()) {
         return;
     }
@@ -249,6 +261,14 @@ void Interactive<Stream>::unknownObjectArrived(const Element & e)
 template <class Stream>
 void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Disappearance& o)
 {
+    if (accountId.empty()) {
+        return;
+    }
+    if (accountId != o.getTo()) {
+        // This is an IG op we are monitoring
+        logOp(o);
+        return;
+    }
     if (o.getArgs().empty()) {
         return;
     }
@@ -327,6 +347,14 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Error& 
 template <class Stream>
 void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sight& o)
 {
+    if (accountId.empty()) {
+        return;
+    }
+    if (accountId != o.getTo()) {
+        // This is an IG op we are monitoring
+        logOp(o);
+        return;
+    }
     reply_flag = true;
     std::cout << "Sight(" << std::endl;
     const Atlas::Message::Element::MapType & ent = o.getArgs().front().asMap();
@@ -343,6 +371,14 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sight& 
 template <class Stream>
 void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sound& o)
 {
+    if (accountId.empty()) {
+        return;
+    }
+    if (accountId != o.getTo()) {
+        // This is an IG op we are monitoring
+        logOp(o);
+        return;
+    }
     reply_flag = true;
     const Atlas::Message::Element::MapType & arg = o.getArgs().front().asMap();
     Atlas::Message::Element::MapType::const_iterator I = arg.find("from");
@@ -619,6 +655,11 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         m.setFrom(accountId);
 
         encoder->streamMessage(&m);
+
+        monitor_op_count = 0;
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        monitor_start_time = tv.tv_sec;
     } else if (cmd == "unmonitor") {
         reply_expected = false;
         Generic m("monitor");
@@ -626,9 +667,14 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         m.setFrom(accountId);
 
         encoder->streamMessage(&m);
+
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        int monitor_time = tv.tv_sec - monitor_start_time;
+        std::cout << monitor_op_count << " operations monitored in " << monitor_time << " seconds = " << monitor_op_count / monitor_time << " operations per second" << std::endl << std::flush;
     } else {
         reply_expected = false;
-        std::cout << cmd << ": Command not know" << std::endl << std::flush;
+        std::cout << cmd << ": Command not known" << std::endl << std::flush;
     }
 
     ios << std::flush;

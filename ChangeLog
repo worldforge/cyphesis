@@ -1,5 +1,11 @@
 2004-05-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: Improve server monitoring by correctly separating
+	  OOG ops from IG ops being monitored, and by calculating number
+	  and rate of ops monitored.
+
+2004-05-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/system.cpp: Add handler for abort signals so they can be
 	  reported in the logs.
 
