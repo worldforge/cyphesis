@@ -10,8 +10,9 @@ ExternalMind::ExternalMind(Connection * connection) : connection(connection)
 {
 }
 
-RootOperation * ExternalMind::message(const RootOperation & msg)
+oplist ExternalMind::message(const RootOperation & msg)
 {
     connection->send(&msg);
-    return(NULL);
+    oplist res;
+    return(res);
 }

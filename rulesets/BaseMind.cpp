@@ -81,16 +81,18 @@ bad_type BaseMind::sound_operation(bad_type op)
 }
 #endif
 
-RootOperation * BaseMind::Operation(const Sound & op)
+oplist BaseMind::Operation(const Sound & op)
 {
     // Deliver argument to Sound_ things
-    return(NULL);
+    oplist res;
+    return(res);
 }
 
-RootOperation * BaseMind::Operation(const Sight & op)
+oplist BaseMind::Operation(const Sight & op)
 {
     // Deliver argument to Sight_ things
-    return(NULL);
+    oplist(res);
+    return(res);
 }
 
 RootOperation * BaseMind::get_op_name_and_sub(RootOperation & op, string & name)
@@ -112,10 +114,11 @@ int BaseMind::call_triggers(RootOperation & op)
     return(0);
 }
 
-RootOperation * BaseMind::operation(RootOperation & op)
+oplist BaseMind::operation(RootOperation & op)
 {
     // This might end up being quite tricky to do
-    return(NULL);
+    oplist res;
+    return(res);
 }
 
 #if 0

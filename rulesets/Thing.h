@@ -24,13 +24,13 @@ class Thing : public BaseEntity {
     virtual ~Thing() { }
 
     virtual void addObject(Message::Object *);
-    RootOperation * send_world(RootOperation * msg);
-    virtual RootOperation * Operation(const Setup & op);
-    virtual RootOperation * Operation(const Tick & op);
-    virtual RootOperation * Operation(const Create & op);
-    virtual RootOperation * Operation(const Delete & op);
-    virtual RootOperation * Operation(const Move & op);
-    virtual RootOperation * Operation(const Set & op);
+    oplist send_world(RootOperation * msg);
+    virtual oplist Operation(const Setup & op);
+    virtual oplist Operation(const Tick & op);
+    virtual oplist Operation(const Create & op);
+    virtual oplist Operation(const Delete & op);
+    virtual oplist Operation(const Move & op);
+    virtual oplist Operation(const Set & op);
 };
 
 class ThingFactory {

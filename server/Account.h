@@ -26,9 +26,9 @@ class Account : public OOG_Thing {
     virtual ~Account() { }
 
     virtual void addObject(Message::Object *);
-    virtual RootOperation * Operation(const Logout & op);
-    virtual RootOperation * Operation(const Create & op);
-    virtual RootOperation * character_error(const Create & op, const Message::Object & ent) = 0;
+    virtual oplist Operation(const Logout & op);
+    virtual oplist Operation(const Create & op);
+    virtual oplist character_error(const Create & op, const Message::Object & ent) = 0;
 
     BaseEntity * add_character(const string &, const Message::Object &);
 };

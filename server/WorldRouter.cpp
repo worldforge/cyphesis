@@ -19,6 +19,7 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
     update_time();
     server->id_dict[fullid]=this;
     fobjects[fullid]=this;
+    perceptives.push_back(this);
     illegal_thing = new Thing();
     illegal_thing->fullid = "illegal";
     illegal_thing->name = "illegal";
@@ -45,17 +46,21 @@ string WorldRouter::get_id(string & name)
     return(full_id);
 }
 
-BaseEntity * WorldRouter::add_object(BaseEntity * obj)
+Thing * WorldRouter::add_object(Thing * obj)
 {
     obj->fullid=get_id(obj->name);
     server->id_dict[obj->fullid]=fobjects[obj->fullid]=obj;
     if (!obj->location) {
+        cout << "set loc " << this  << endl << flush;
         obj->location=Location(this, Vector3D(0,0,0));
+        cout << "loc set with parent " << obj->location.parent->fullid << endl << flush;
     }
-    if (!obj->location.parent) {
+    if (NULL == obj->location.parent) {
+        cout << "set parent" << endl << flush;
         obj->location.parent=this;
     }
     if (obj->location.parent==this /*&& contains[obj->id]*/) {
+        cout << "loc is world" << endl << flush;
         // Nasty kludge
         contains.push_back(obj);
         contains.unique();
@@ -75,10 +80,10 @@ BaseEntity * WorldRouter::add_object(BaseEntity * obj)
     return (obj);
 }
 
-BaseEntity * WorldRouter::add_object(const string & type,
+Thing * WorldRouter::add_object(const string & type,
                                      const Message::Object & ent)
 {
-    BaseEntity * obj;
+    Thing * obj;
     obj = ThingFactory::new_thing(type, ent);
     return add_object(obj);
 }
@@ -97,16 +102,18 @@ bad_type WorldRouter::is_object_deleted(BaseEntity * obj)
     return find_object(obj->fullid)->fullid=="illegal";
 }
 
-RootOperation * WorldRouter::message(const RootOperation & msg)
+oplist WorldRouter::message(const RootOperation & msg)
 {
     cout << "FATAL: Wrong type of WorldRouter message function called" << endl << flush;
     // You may eventually want to remove this as it causes a deliberate segfault
-    return(*(RootOperation **)NULL);
+    //return(*(RootOperation **)NULL);
 }
-RootOperation * WorldRouter::message(RootOperation & msg, BaseEntity * obj)
+
+oplist WorldRouter::message(RootOperation & msg, BaseEntity * obj)
 {
     add_operation_to_queue(msg, obj);
-    return(NULL);
+    oplist res;
+    return(res);
 }
 
 BaseEntity * WorldRouter::get_operation_place(const RootOperation & op)
@@ -133,9 +140,9 @@ BaseEntity * WorldRouter::get_operation_place(const RootOperation & op)
     return NULL;
 }
 
-RootOperation * WorldRouter::operation(const RootOperation * op)
+oplist WorldRouter::operation(const RootOperation * op)
 {
-    RootOperation * res = NULL;
+    oplist res;
     const RootOperation & op_ref = *op;
     string to = op_ref.GetTo();
     cout << "WorldRouter::operation {" << to << "}" << endl << flush;
@@ -146,7 +153,7 @@ RootOperation * WorldRouter::operation(const RootOperation * op)
         cout << 1 << flush;
         if (fobjects.find(to) == fobjects.end()) {
             cout << "FATAL: Op has invalid to" << endl << flush;
-            return(*(RootOperation **)NULL);
+            //return(*(RootOperation **)NULL);
         }
         cout << 2 << flush;
         BaseEntity * d_to = fobjects[to];
@@ -161,8 +168,10 @@ RootOperation * WorldRouter::operation(const RootOperation * op)
                 d_to->destroy();
                 d_to->deleted=1;
             }
-            if (res) {
-                message(*res, d_to);
+            while (res.size() != 0) {
+                RootOperation * ro = res.front();
+                message(*ro, d_to);
+                res.pop_front();
             }
         }
     } else {
@@ -175,24 +184,26 @@ RootOperation * WorldRouter::operation(const RootOperation * op)
         }
     }
                 
-    return(NULL);
+    oplist res2;
+    return(res2);
 }
 
-RootOperation * WorldRouter::operation(const RootOperation & op)
+oplist WorldRouter::operation(const RootOperation & op)
 {
     return(operation(&op));
 }
 
-RootOperation * WorldRouter::Operation(const Look & op)
+oplist WorldRouter::Operation(const Look & op)
 {
     cout << "WorldRouter::Operation(Look)" << endl << flush;
     string from = op.GetFrom();
     if (fobjects.find(from) == fobjects.end()) {
         cout << "FATAL: Op has invalid from" << endl << flush;
-        return(*(RootOperation **)NULL);
+        //return(*(RootOperation **)NULL);
     } else {
         cout << "Adding [" << from << "] to perceptives" << endl << flush;
         perceptives.push_back(fobjects[from]);
+        perceptives.unique();
     }
     return(BaseEntity::Operation(op));
 }

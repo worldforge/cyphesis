@@ -24,7 +24,7 @@ typedef int bad_type; // Remove this to get unset type reporting
 class WorldRouter : public Routing {
     Thing * illegal_thing;
     double real_time;
-    std::list<RootOperation *> operation_queue;
+    oplist operation_queue;
 
   public:
     //dict_t objects;
@@ -38,16 +38,16 @@ class WorldRouter : public Routing {
     virtual ~WorldRouter() { }
 
     string get_id(string & name);
-    virtual BaseEntity * add_object(BaseEntity * obj);
-    virtual BaseEntity * add_object(const string & type, const Message::Object & ent);
+    virtual Thing * add_object(Thing * obj);
+    virtual Thing * add_object(const string & type, const Message::Object & ent);
     virtual void del_object(BaseEntity * obj);
     bad_type is_object_deleted(BaseEntity *);
-    virtual RootOperation * message(RootOperation & msg, BaseEntity * obj);
-    virtual RootOperation * message(const RootOperation & msg);
+    virtual oplist message(RootOperation & msg, BaseEntity * obj);
+    virtual oplist message(const RootOperation & msg);
     BaseEntity * get_operation_place(const RootOperation & op);
-    virtual RootOperation * operation(const RootOperation * op);
-    virtual RootOperation * operation(const RootOperation & op);
-    virtual RootOperation * Operation(const Look & op);
+    virtual oplist operation(const RootOperation * op);
+    virtual oplist operation(const RootOperation & op);
+    virtual oplist Operation(const Look & op);
     bad_type print_queue(bad_type msg);
     void add_operation_to_queue(RootOperation & op, BaseEntity *);
     RootOperation * get_operation_from_queue();

@@ -23,10 +23,10 @@ class Connection : public Routing {
     void disconnect();
     void send(const RootOperation * msg);
 
-    virtual RootOperation * operation(const RootOperation & op);
-    virtual RootOperation * Operation(const Login & obj);
-    virtual RootOperation * Operation(const Logout & obj);
-    virtual RootOperation * Operation(const Create & obj);
+    virtual oplist operation(const RootOperation & op);
+    virtual oplist Operation(const Login & obj);
+    virtual oplist Operation(const Logout & obj);
+    virtual oplist Operation(const Create & obj);
 
     Account * add_player(string &, string &);
 };

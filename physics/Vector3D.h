@@ -27,7 +27,7 @@ class Vector3D {
     Vector3D unit_vector_to_another_vector(Vector3D v);
     double mag();
     double distance(Vector3D v) const;
-    Atlas::Message::Object & asObject() const;
+    Atlas::Message::Object asObject() const;
 };
 
 #endif VECTOR_3D_H

@@ -14,7 +14,7 @@ class Player : public Account {
     virtual ~Player() { }
 
   protected:
-    virtual RootOperation * character_error(const Create & op, const Message::Object & ent);
+    virtual oplist character_error(const Create & op, const Message::Object & ent);
 };
 
 #endif /* PLAYER_H */

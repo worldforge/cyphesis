@@ -16,11 +16,12 @@
 #include "WorldRouter.h"
 
 
-RootOperation * Account::Operation(const Logout & op)
+oplist Account::Operation(const Logout & op)
 {
     cout << "Account logout: " << name << endl;
     connection->disconnect();
-    return(NULL);
+    oplist res;
+    return(res);
 }
 
 void Account::addObject(Message::Object * obj)
@@ -32,24 +33,24 @@ void Account::addObject(Message::Object * obj)
     BaseEntity::addObject(obj);
 }
 
-RootOperation * Account::Operation(const Create & op)
+oplist Account::Operation(const Create & op)
 {
     cout << "Account::Operation(create)" << endl << flush;
     const Message::Object & ent = op.GetArgs().front();
     if (!ent.IsMap()) {
-        return error(op, "Invalid character");
+        return(error(op, "Invalid character"));
     }
     Message::Object::MapType entmap = ent.AsMap();
     if ((entmap.find("parents")==entmap.end()) ||
         !entmap["parents"].IsList() ||
         (entmap["parents"].AsList().size()==0) ||
         !entmap["parents"].AsList().front().IsString() ) {
-        return error(op, "Character has no type");
+        return(error(op, "Character has no type"));
     }
     
-    RootOperation * error = character_error(op, ent);
-    if (error) {
-        return error;
+    oplist error = character_error(op, ent);
+    if (error.size() != 0) {
+        return(error);
     }
     const string & type = entmap["parents"].AsList().front().AsString();
 
@@ -60,15 +61,21 @@ RootOperation * Account::Operation(const Create & op)
     Message::Object::ListType args(1,obj->asObject());
     info->SetArgs(args);
 
-    return(info);
+    oplist res;
+    res.push_back(info);
+    return(res);
 }
 
 BaseEntity * Account::add_character(const string & type, const Message::Object & ent)
 {
-    Thing * chr = (Thing *)world->add_object(type, ent);
+    cout << "Account::Add_character" << endl << flush;
+    Thing * chr = world->add_object(type, ent);
+    cout << "Added" << endl << flush;
     if (!chr->location) {
+        cout << "Setting location" << endl << flush;
         chr->location = Location(world, Vector3D(0,0,0));
     }
+    cout << "[" << chr->location.parent->fullid << "]" << endl << flush;
     if (chr->is_character != 0) {
         Character * pchar = (Character *)chr;
         pchar->player = this;

@@ -20,6 +20,7 @@ typedef enum op_no {
 	OP_LOAD,
 	OP_SAVE,
 	OP_SETUP,
+	OP_ERROR,
 	OP_INVALID
 } op_no_t;
 
@@ -64,12 +65,14 @@ typedef enum op_no {
         case OP_SETUP: \
             _result = _prefix ## Operation((const Setup &)_op); \
             break; \
+        case OP_ERROR: \
+            _result = _prefix ## Operation((const Error &)_op); \
+            break; \
         default: \
             cout << "nothing doing here" << endl; \
             _result = _prefix ## Operation(_op); \
             break; \
     }
-
 
 typedef int bad_type; // Remove this to get unset type reporting
 
@@ -107,6 +110,7 @@ class Sound;
 class Touch;
 class Talk;
 class Look;
+class Error;
 
 class Load : public RootOperation {
   public:
@@ -228,6 +232,8 @@ using namespace Atlas;
 using namespace Objects;
 using namespace Operation;
 
+typedef std::list<RootOperation *> oplist;
+
 //typedef Atlas::Objects::Operation::RootOperation Atlas::Objects::Operation::RootOperation;
 //typedef Atlas::Objects::Operation::Login Atlas::Objects::Operation::Login;
 //typedef Atlas::Objects::Operation::Create Create_op_t;
@@ -263,30 +269,31 @@ class BaseEntity {
 
     virtual Message::Object & asObject();
     virtual void addObject(Message::Object *);
-    virtual RootOperation * external_message(const RootOperation & msg);
-    virtual RootOperation * message(const RootOperation & msg);
-    virtual RootOperation * Operation(const Login & obj) { return NULL; }
-    virtual RootOperation * Operation(const Logout & obj) { return NULL; }
-    virtual RootOperation * Operation(const Create & obj) { return NULL; }
-    virtual RootOperation * Operation(const Delete & obj) { return NULL; }
-    virtual RootOperation * Operation(const Move & obj) { return NULL; }
-    virtual RootOperation * Operation(const Set & obj) { return NULL; }
-    virtual RootOperation * Operation(const Sight & obj) { return NULL; }
-    virtual RootOperation * Operation(const Sound & obj) { return NULL; }
-    virtual RootOperation * Operation(const Touch & obj) { return NULL; }
-    virtual RootOperation * Operation(const Look & obj);
-    virtual RootOperation * Operation(const Load & obj) { return NULL; }
-    virtual RootOperation * Operation(const Save & obj) { return NULL; }
-    virtual RootOperation * Operation(const Setup & obj) { return NULL; }
-    virtual RootOperation * Operation(const RootOperation & obj) { return NULL; }
+    virtual oplist external_message(const RootOperation & msg);
+    virtual oplist message(const RootOperation & msg);
+    virtual oplist Operation(const Login & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Logout & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Create & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Delete & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Move & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Set & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Sight & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Sound & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Touch & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Tick & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Look & obj);
+    virtual oplist Operation(const Load & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Save & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Setup & obj) { oplist res; return(res); }
+    virtual oplist Operation(const RootOperation & obj) { oplist res; return(res); }
     bad_type find_operation(bad_type op_id, char * prefix,bad_type undefined_operation);
     bad_type setup_operation(bad_type op);
     bad_type look_operation(bad_type op);
     bad_type undefined_operation(bad_type op);
     bad_type call_operation(bad_type op);
     op_no_t op_enumerate(const RootOperation * op);
-    virtual RootOperation * operation(const RootOperation & op);
-    virtual RootOperation * external_operation(const RootOperation & op);
+    virtual oplist operation(const RootOperation & op);
+    virtual oplist external_operation(const RootOperation & op);
     //bad_type external_operation(bad_type op);
     bad_type apply_to_operation(method_t method , bad_type msg, BaseEntity * obj);
     bad_type set_refno_op(bad_type op, bad_type ref_op);
@@ -295,7 +302,7 @@ class BaseEntity {
     bad_type set_debug(const char * msg);
     bad_type debug_op(bad_type op, const char * string_message);
     bad_type debug(bad_type msg, const char * string_message);
-    RootOperation * error(const RootOperation & op, const char * string);
+    oplist error(const RootOperation & op, const char * string);
 };
 
 #endif /* BASE_ENTITY_H */

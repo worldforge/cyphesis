@@ -19,9 +19,9 @@ class Admin : public Account {
   public:
     virtual ~Admin() { }
 
-    virtual RootOperation * Operation(const Load & op);
-    virtual RootOperation * Operation(const Save & op);
-    virtual RootOperation * character_error(const Create & op, const Message::Object & ent) { return(NULL); }
+    virtual oplist Operation(const Load & op);
+    virtual oplist Operation(const Save & op);
+    virtual oplist character_error(const Create & op, const Message::Object & ent) { oplist res; return(res); }
     //bad_type code_operation(bad_type op)
 };
 

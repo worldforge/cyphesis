@@ -133,12 +133,12 @@ void BaseEntity::addObject(Message::Object * obj)
         
 }
 
-RootOperation * BaseEntity::external_message(const RootOperation & op)
+oplist BaseEntity::external_message(const RootOperation & op)
 {
     return message(op);
 }
 
-RootOperation * BaseEntity::message(const RootOperation & op)
+oplist BaseEntity::message(const RootOperation & op)
 {
     cout << "BaseEntity::message" << endl << flush;
     return operation(op);
@@ -223,7 +223,7 @@ bad_type BaseEntity::call_operation(bad_type op)
     return None;
 }
 
-RootOperation * BaseEntity::Operation(const Look & op)
+oplist BaseEntity::Operation(const Look & op)
 {
     cout << "look op got all the way to here" << endl << flush;
     Sight * s = new Sight();
@@ -233,7 +233,7 @@ RootOperation * BaseEntity::Operation(const Look & op)
     s->SetTo(op.GetFrom());
 
     // Set refno?
-    return(s);
+    return(oplist(1,s));
     
 }
 
@@ -290,19 +290,22 @@ op_no_t BaseEntity::op_enumerate(const RootOperation * op)
     if ("setup" == parent) {
         return(OP_SETUP);
     }
+    if ("error" == parent) {
+        return(OP_ERROR);
+    }
     return (OP_INVALID);
 }
 
-RootOperation * BaseEntity::operation(const RootOperation & op)
+oplist BaseEntity::operation(const RootOperation & op)
 {
     cout << "BaseEntity::operation" << endl << flush;
-    RootOperation * res = NULL;
+    oplist res;
     op_no_t op_no = op_enumerate(&op);
     OP_SWITCH(op, op_no, res,)
     return(res);
 }
 
-RootOperation * BaseEntity::external_operation(const RootOperation & op)
+oplist BaseEntity::external_operation(const RootOperation & op)
 {
     return operation(op);
 }
@@ -370,7 +373,7 @@ bad_type BaseEntity::debug(bad_type msg, const char * string_message)
     return None;
 }
 
-RootOperation * BaseEntity::error(const RootOperation & op, const char * string)
+oplist BaseEntity::error(const RootOperation & op, const char * string)
 {
     Error * e = new Error();
     *e = Error::Instantiate();
@@ -380,5 +383,5 @@ RootOperation * BaseEntity::error(const RootOperation & op, const char * string)
 
     e->SetArgs(args);
 
-    return(e);
+    return(oplist(1,e));
 }

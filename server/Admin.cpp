@@ -15,22 +15,24 @@
 //}
 //
 
-RootOperation * Admin::Operation(const Save & op)
+oplist Admin::Operation(const Save & op)
 {
     //filename = op[0].id;
     //if (Admin::server.id_dict.has_key(op.to.id)) {
         //Admin::server.id_dict[op.to.id].save(filename);
     //}
-    return(NULL);
+    oplist res;
+    return(res);
 }
 
-RootOperation * Admin::Operation(const Load & op)
+oplist Admin::Operation(const Load & op)
 {
     //filename = op[0].id;
     //if (Admin::server.id_dict.has_key(op.to.id)) {
         //Admin::server.id_dict[op.to.id].load(filename);
     //}
-    return(NULL);
+    oplist res;
+    return(res);
 }
 
 #if 0 

@@ -49,7 +49,7 @@ void Connection::send(const RootOperation * msg)
     comm_client->send(msg);
 }
 
-RootOperation * Connection::operation(const RootOperation & op)
+oplist Connection::operation(const RootOperation & op)
 {
     cout << "Connection::operation" << endl << flush;
     const string & from = op.GetFrom();
@@ -65,10 +65,11 @@ RootOperation * Connection::operation(const RootOperation & op)
             return error(op, "From is illegal");
         }
     }
-    //return call_operation(op);
+    oplist res;
+    return(res);
 }
 
-RootOperation * Connection::Operation(const Login & obj)
+oplist Connection::Operation(const Login & obj)
 {
 
     cout << "Got login op" << endl << flush;
@@ -87,13 +88,13 @@ RootOperation * Connection::Operation(const Login & obj)
             Message::Object::ListType args(1,player->asObject());
             info->SetArgs(args);
             cout << "Good login" << endl << flush;
-            return(info);
+            return(oplist(1,info));
         }
     }
     return(error(obj, "Login is invalid"));
 }
 
-RootOperation * Connection::Operation(const Create & obj)
+oplist Connection::Operation(const Create & obj)
 {
     cout << "Got create op" << endl << flush;
     const Message::Object & account = obj.GetArgs().front();
@@ -110,14 +111,14 @@ RootOperation * Connection::Operation(const Create & obj)
             Message::Object::ListType args(1,player->asObject());
             info->SetArgs(args);
             cout << "Good create" << endl << flush;
-            return(info);
+            return(oplist(1,info));
         }
     }
     return(error(obj, "Account creation is invalid"));
 
 }
 
-RootOperation * Connection::Operation(const Logout & obj)
+oplist Connection::Operation(const Logout & obj)
 {
     const Message::Object & account = obj.GetArgs().front();
     
@@ -132,7 +133,8 @@ RootOperation * Connection::Operation(const Logout & obj)
             operation(l);
         }
     }
-    return(NULL);
+    oplist res;
+    return(res);
 }
 
 Account * Connection::add_player(string & username, string & password)

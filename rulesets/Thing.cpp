@@ -28,28 +28,30 @@ void Thing::addObject(Message::Object * obj)
     BaseEntity::addObject(obj);
 }
 
-RootOperation * Thing::send_world(RootOperation * msg)
+oplist Thing::send_world(RootOperation * msg)
 {
     return world->message(*msg, this);
 }
 
-RootOperation * Thing::Operation(const Setup & op)
+oplist Thing::Operation(const Setup & op)
 {
     RootOperation * tick = new Tick;
     tick->SetTo(fullid);
-    return(tick);
+    return(oplist(1,tick));
 }
 
-RootOperation * Thing::Operation(const Tick & op)
+oplist Thing::Operation(const Tick & op)
 {
-    return(NULL);
+    oplist res;
+    return(res);
 }
 
-RootOperation * Thing::Operation(const Create & op)
+oplist Thing::Operation(const Create & op)
 {
+    oplist res;
     const Message::Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
-       return(NULL);
+       return(res);
     }
     try {
         Message::Object::MapType ent = args.front().AsMap();
@@ -74,78 +76,91 @@ RootOperation * Thing::Operation(const Create & op)
         RootOperation * s = new Sight();
         list<Message::Object> args3(1,c->AsObject());
         s->SetArgs(args3);
-        return(s);
+        res.push_back(s);
     }
     catch (Message::WrongTypeException) {
-        return error(op, "Malformed object to be created\n");
+        return(error(op, "Malformed object to be created\n"));
     }
-    return(NULL);
+    return(res);
 }
 
-RootOperation * Thing::Operation(const Delete & op)
+oplist Thing::Operation(const Delete & op)
 {
     world->del_object(this);
     //log.debug(3,"Deleted: "+str(this)+" now: "+str(Thing::world.objects));
     RootOperation * sight = new Sight;
     list<Message::Object> args(1,op.AsObject());
     sight->SetArgs(args);
-    return(sight);
+    return(oplist(1,sight));
 }
 
-RootOperation * Thing::Operation(const Move & op)
+oplist Thing::Operation(const Move & op)
 {
+    cout << "Thing::move_operation" << endl << flush;
+    oplist res;
     const Message::Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
-       return(NULL);
+       return(res);
     }
     try {
+        cout << 1;
         Message::Object::MapType ent = args.front().AsMap();
-        if (ent.find("parent") == ent.end()) {
+        if (ent.find("loc") == ent.end()) {
             return(error(op, "Move location has no parent"));
         }
-        if (location.parent->fullid!=ent["parent"].AsString()) {
+        cout << 2;
+        string parent=ent["loc"].AsString();
+        if (location.parent->fullid!=parent) {
             //location.parent.contains.remove(this);
             //ent.location.parent.contains.append(this);
         }
-        string parent=ent["parent"].AsString();
+        cout << 3;
         if (world->server->id_dict.find(parent) == world->server->id_dict.end()) {
             return(error(op, "Move location parent invalid"));
         }
+        cout << 4;
         location.parent=world->server->id_dict[parent];
         if (ent.find("pos") == ent.end()) {
             return(error(op, "Move location has no position"));
         }
+        cout << 5;
         Message::Object::ListType vector = ent["pos"].AsList();
         if (vector.size()!=3) {
             return(error(op, "Move location pos is malformed"));
         }
-        int x = vector.front().AsInt();
+        cout << 6;
+        double x = vector.front().AsFloat();
         vector.pop_front();
-        int y = vector.front().AsInt();
+        double y = vector.front().AsFloat();
         vector.pop_front();
-        int z = vector.front().AsInt();
+        double z = vector.front().AsFloat();
         location.coords = Vector3D(x, y, z);
         if (ent.find("velocity") == ent.end()) {
-            return(error(op, "Move location has no"));
+            return(error(op, "Move location has no velocity"));
         }
+        cout << 7;
         vector.clear();
+        cout << 7.5;
         vector = ent["velocity"].AsList();
+        cout << 8;
         if (vector.size()!=3) {
             return(error(op, "Move location pos is malformed"));
         }
-        x = vector.front().AsInt();
+        x = vector.front().AsFloat();
         vector.pop_front();
-        y = vector.front().AsInt();
+        y = vector.front().AsFloat();
         vector.pop_front();
-        z = vector.front().AsInt();
+        z = vector.front().AsFloat();
         location.velocity = Vector3D(x, y, z);
 
+        cout << 9;
         double speed_ratio;
         if (!(location.velocity)) {
             speed_ratio = 0.0;
         } else {
             speed_ratio = location.velocity.mag()/consts::base_velocity;
         }
+        cout << 10;
         if (speed_ratio > 0.5) {
             mode = string("running");
         } else if (speed_ratio > 0.0) {
@@ -153,21 +168,23 @@ RootOperation * Thing::Operation(const Move & op)
         } else {
             mode = string("standing");
         }
+        cout << 11;
         ent["mode"] = Message::Object(mode);
         RootOperation * s = new Sight;
+        *s = Sight::Instantiate();
         Message::Object::ListType args2(1,op.AsObject());
         s->SetArgs(args2);
-        return(s); //+ res + res2;
+        res.push_back(s);
         // I think it might be wise to send a set indicating we have changed
         // modes
     }
     catch (Message::WrongTypeException) {
         return(error(op, "Malformed object to be moved\n"));
     }
-    return(NULL);
+    return(res);
 }
 
-RootOperation * Thing::Operation(const Set & op)
+oplist Thing::Operation(const Set & op)
 {
     //ent=op[0];
     //needTrueValue=["type","contains","instance","id","location","stamp"];
@@ -186,7 +203,8 @@ RootOperation * Thing::Operation(const Set & op)
         //return Message(opSight,opDestroy);
     //}
     //return opSight;
-    return(NULL);
+    oplist res;
+    return(res);
 }
 
 Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)

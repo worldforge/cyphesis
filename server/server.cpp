@@ -99,10 +99,12 @@ void CommClient::setup()
 
 void CommClient::message(const Objects::Operation::RootOperation & obj)
 {
-    Objects::Operation::RootOperation * reply = client->message(obj);
-    if (NULL!=reply) {
+    oplist reply = client->message(obj);
+    while (reply.size() != 0) {
+        Objects::Operation::RootOperation * rep_op = reply.front();
         cout << "sending reply" << endl << flush;
-        send(reply);
+        send(rep_op);
+        reply.pop_front();
     }
 }
 
@@ -170,7 +172,8 @@ int CommServer::setup(int port)
     if (server_fd < 0) {
         return(-1);
     }
-    setsockopt(server_fd, 6, SO_REUSEADDR, NULL, 0);
+    int flag=1;
+    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
     sin.sin_family = AF_INET;
     sin.sin_port = htons(port);
     sin.sin_addr.s_addr = 0L;

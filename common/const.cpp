@@ -7,7 +7,7 @@ namespace consts {
 
   double fzero = 1e-13; //float zero;
 
-  double time_multiplier = 1000.0;
+  double time_multiplier = 1.0;
   // In Real time how many seconds between ticks;
   int basic_tick = time_multiplier*3.0;
   double base_velocity_coefficient = 5.0;

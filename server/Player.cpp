@@ -5,7 +5,7 @@
 
 #include "Player.h"
 
-RootOperation * Player::character_error(const Create & op, const Message::Object & ent)
+oplist Player::character_error(const Create & op, const Message::Object & ent)
 {
     Message::Object::MapType entmap = ent.AsMap();
 
@@ -22,5 +22,6 @@ RootOperation * Player::character_error(const Create & op, const Message::Object
     if ((type!="character") && (type!="farmer") && (type!="smith")) {
         return error(op, "Object of that type cannot be created by this account");
     }
-    return(NULL);
+    oplist res;
+    return(res);
 }

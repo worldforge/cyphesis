@@ -135,12 +135,11 @@ double Vector3D::distance(Vector3D v) const
 using namespace Atlas;
 using namespace Message;
 
-Object & Vector3D::asObject() const
+Object Vector3D::asObject() const
 {
     Object::ListType coords;
     coords.push_back(Object(x));
     coords.push_back(Object(y));
     coords.push_back(Object(z));
-    Object * obj = new Object(coords);
-    return(*obj);
+    return(Object(coords));
 }

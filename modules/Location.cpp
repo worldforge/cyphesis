@@ -1,3 +1,6 @@
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/Operation/Login.h>
+
 #include <Atlas/Message/Object.h>
 
 #include <physics/Vector3D.h>
@@ -6,23 +9,32 @@
 
 #include "Location.h"
 
-Location::Location()
-{
-    Location(NULL, Vector3D(0,0,0), Vector3D(0,0,0));
-}
+#include <common/BaseEntity.h>
 
-Location::Location(BaseEntity * parent, Vector3D coords)
-{
-    Location(parent, coords, Vector3D(0,0,0));
-}
+Location::Location() : parent(NULL) { }
 
-Location::Location(BaseEntity * parent, Vector3D coords, Vector3D velocity) :
-        parent(parent), coords(coords), velocity(velocity) { }
+Location::Location(BaseEntity * parnt, Vector3D crds) :
+        parent(parnt), coords(crds) { }
 
-bool Location::operator!()
+Location::Location(BaseEntity * parnt, Vector3D crds, Vector3D vel) :
+        parent(parnt), coords(crds), velocity(vel) { }
+
+bool Location::operator!() const
 {
-    return(parent==NULL && coords.mag()==0);
+    cout << "operator! " << (parent==NULL && !coords) << endl << flush;
+    return(parent==NULL && !coords);
 }
+#if 0
+void Location::operator=(const Location& loc)
+{
+    cout << "operator= " << endl << flush;
+    cout << "{" << loc.parent << "}" << endl << flush;
+    parent=loc.parent;
+    coords=loc.coords;
+    velocity=loc.velocity;
+    cout << "{" << parent << "}" << endl << flush;
+}
+#endif
 
 using namespace Atlas;
 using namespace Message;
@@ -30,7 +42,11 @@ using namespace Message;
 void Location::addObject(Object * obj)
 {
     Object::MapType & omap = obj->AsMap();
-    omap["loc"] = Object();
+    if (parent!=NULL) {
+        omap["loc"] = Object(parent->fullid);
+    } else {
+        omap["loc"] = Object("");
+    }
     omap["pos"] = coords.asObject();
     omap["velocity"] = velocity.asObject();
 }
