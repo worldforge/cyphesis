@@ -19,7 +19,8 @@
 #include "ServerRouting.h"
 #include "WorldRouter.h"
 #include <common/globals.h>
-#include <rulesets/Entity.h>
+#include <rulesets/Character.h>
+#include <rulesets/BaseMind.h>
 
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::Info;
@@ -42,19 +43,37 @@ oplist Admin::Operation(const Save & op)
 {
     edict_t::const_iterator I;
     Persistance * p = Persistance::instance();
-    DatabaseIterator dbi(p->getWorld());
     Object ent;
+    DatabaseIterator dbi(p->getWorldDb());
     while (dbi.get(ent)) {
         dbi.del();
     }
+    DatabaseIterator dbj(p->getMindDb());
+    while (dbj.get(ent)) {
+        dbj.del();
+    }
     int count = 0;
+    int mind_count = 0;
     for(I = world->eobjects.begin(); I != world->eobjects.end(); I++) {
         p->putEntity(*I->second);
         ++count;
+        if (I->second->isCharacter) {
+            cout << "Dumping character to database" << endl << flush;
+            Character * c = (Character *)I->second;
+            if (c->mind == NULL) { continue; }
+            oplist res = c->mind->Operation(op);
+            if ((res.size() != 0) && (res.front()->GetArgs().size() != 0)) {
+                cout << "Dumping mind to database" << endl << flush;
+                Object & mindmap = res.front()->GetArgs().front();
+                p->putMind(c->fullid, mindmap);
+                ++mind_count;
+            }
+        }
     }
     Object::MapType report;
     report["message"] = "Objects saved to database";
     report["object_count"] = count;
+    report["mind_count"] = mind_count;
     Info * info = new Info(Info::Instantiate());
     Object::ListType args(1,report);
     info->SetArgs(args);
@@ -97,31 +116,36 @@ void Admin::load(Persistance * p, const string & id, int & count)
 oplist Admin::Operation(const Load & op)
 {
     int count = 0;
+    int mind_count = 0;
     Persistance * p = Persistance::instance();
-#if 0
-    DatabaseIterator dbi(p->getWorld());
+
+    // Load the world recursively
+    load(p, "world_0", count);
+
+    // Load the mind states
+    DatabaseIterator dbi(p->getMindDb());
     Object ent;
     while (dbi.get(ent)) {
         const Object::MapType & m = ent.AsMap();
-        Object::MapType::const_iterator I = m.find("parents");
-        const string & type = (I != m.end()) ? I->second.AsList().front().AsString() : "thing";
-        I = m.find("id");
+        Object::MapType::const_iterator I = m.find("id");
         if ((I != m.end()) && (I->second.IsString())) {
             const string & id = I->second.AsString();
-            if (id == "world_0") {
-                // Ignore the world entry. No info required at the moment.
-            } else {
-                world->addObject(type, ent, id);
-                ++count;
+            Entity * ent = world->getObject(id);
+            if ((ent == NULL) || (!ent->isCharacter)) {
+                continue;
             }
+            Character * c = (Character *)ent;
+            if (c->mind == NULL) { continue; }
+            Load l(op);
+            l.SetArgs(Object::ListType(1,ent));
+            c->mind->Operation(l);
+            ++mind_count;
         }
     }
-#else
-    load(p, "world_0", count);
-#endif
     Object::MapType report;
     report["message"] = "Objects loaded from database";
     report["object_count"] = count;
+    report["mind_count"] = mind_count;
     Info * info = new Info(Info::Instantiate());
     Object::ListType args(1,report);
     info->SetArgs(args);

@@ -31,6 +31,7 @@ class MemMap {
     Entity * update(const Object & entity);
     elist_t findByType(const std::string & what);
     elist_t findByLocation(const Location & where, double radius);
+    const Atlas::Message::Object asObject();
 
     std::list<std::string> addHooks;
     std::list<std::string> updateHooks;

@@ -33,6 +33,9 @@ class Persistance : public Database {
     //bool findEntity(const std::string &);
     bool getEntity(const std::string &, Atlas::Message::Object &);
     void putEntity(const Entity &);
+
+    bool getMind(const std::string &, Atlas::Message::Object &);
+    void putMind(const std::string &, const Atlas::Message::Object &);
 };
 
 #endif // PERSISTANCE_H

@@ -34,10 +34,14 @@ class Database {
 
     Db account_db;
     Db world_db;
+    Db mind_db;
+    Db server_db;
     Decoder m_d;
 
     Database() : account_db(NULL, DB_CXX_NO_EXCEPTIONS),
-                 world_db(NULL, DB_CXX_NO_EXCEPTIONS) { }
+                   world_db(NULL, DB_CXX_NO_EXCEPTIONS),
+                    mind_db(NULL, DB_CXX_NO_EXCEPTIONS),
+                  server_db(NULL, DB_CXX_NO_EXCEPTIONS) { }
 
     bool decodeObject(Dbt & data, Atlas::Message::Object &);
     bool putObject(Db &, const Atlas::Message::Object &, const char * key);
@@ -47,10 +51,15 @@ class Database {
 
     bool initAccount(bool create = false);
     bool initWorld(bool create = false);
+    bool initMind(bool create = false);
+    bool initServer(bool create = false);
     void shutdownAccount();
     void shutdownWorld();
+    void shutdownMind();
+    void shutdownServer();
 
-    Db & getWorld() { return world_db; }
+    Db & getWorldDb() { return world_db; }
+    Db & getMindDb() { return mind_db; }
 
     friend DatabaseIterator;
 };

@@ -23,6 +23,8 @@
 #include <common/Cut.h>
 #include <common/Eat.h>
 #include <common/Fire.h>
+#include <common/Load.h>
+#include <common/Save.h>
 
 #include <common/utility.h>
 #include <common/debug.h>
@@ -257,7 +259,7 @@ oplist BaseMind::Operation(const Sight & op)
 
 oplist BaseMind::Operation(const Appearance & op)
 {
-    oplist(res);
+    oplist res;
     script->Operation("appearance", op, res);
     const Object::ListType & args = op.GetArgs();
     Object::ListType::const_iterator I;
@@ -269,10 +271,42 @@ oplist BaseMind::Operation(const Appearance & op)
 
 oplist BaseMind::Operation(const Disappearance & op)
 {
-    oplist(res);
+    oplist res;
     script->Operation("disappearance", op, res);
     // Not quite sure what to do to the map here, but should do something.
     return res;
+}
+
+oplist BaseMind::Operation(const Save & op)
+{
+    oplist(res);
+    script->Operation("save", op, res);
+    Object::MapType emap;
+    if ((res.size() != 0) && (res.front()->GetArgs().size() != 0)) {
+        emap = res.front()->GetArgs().front().AsMap();
+        // FIXME Operations created in python are leaked
+    }
+    Info * i = new Info(Info::Instantiate());
+    emap["map"] = map.asObject();
+    emap["id"] = fullid;
+    i->SetArgs(Object::ListType(1,emap));
+    return oplist(1,i);
+}
+
+oplist BaseMind::Operation(const Load & op)
+{
+    oplist(res);
+    script->Operation("load", op, res);
+    const Object::MapType & emap = op.GetArgs().front().AsMap();
+    Object::MapType::const_iterator I = emap.find("map");
+    if (I != emap.end()) {
+        const Object::MapType & memmap = I->second.AsMap();
+        Object::MapType::const_iterator J = memmap.begin();
+        for(; J != memmap.end(); J++) {
+            map.add(J->second);
+        }
+    }
+    return oplist();
 }
 
 #if 0

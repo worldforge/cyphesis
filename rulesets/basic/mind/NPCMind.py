@@ -78,6 +78,11 @@ class NPCMind(BaseMind):
             result = self.message_queue + result
             self.message_queue = None
         return opTick+result
+    ########## Persistance operations
+    def save_operation(self, op):
+        print "SAVE"
+    def load_operation(self, op):
+        print "LOAD"
     ########## Sight operations
     def sight_create_operation(self, original_op, op):
         #BaseMind version overridden!

@@ -28,7 +28,7 @@ Database * Database::m_instance = NULL;
 bool Database::initAccount(bool create)
 {
     int i = account_db.open("/var/forge/cyphesis/db", "account",
-                               DB_BTREE, DB_CREATE, 0600);
+                               DB_BTREE, create ? DB_CREATE : 0, 0600);
     return (i == 0);
 }
 
@@ -39,6 +39,20 @@ bool Database::initWorld(bool create)
     return (j == 0);
 }
 
+bool Database::initMind(bool create)
+{
+    int k = mind_db.open("/var/forge/cyphesis/db", "mind",
+                             DB_BTREE, create ? DB_CREATE : 0, 0600);
+    return (k == 0);
+}
+
+bool Database::initServer(bool create)
+{
+    int l = server_db.open("/var/forge/cyphesis/db", "server",
+                             DB_BTREE, create ? DB_CREATE : 0, 0600);
+    return (l == 0);
+}
+
 void Database::shutdownAccount()
 {
     account_db.close(0);
@@ -47,6 +61,16 @@ void Database::shutdownAccount()
 void Database::shutdownWorld()
 {
     world_db.close(0);
+}
+
+void Database::shutdownMind()
+{
+    mind_db.close(0);
+}
+
+void Database::shutdownServer()
+{
+    server_db.close(0);
 }
 
 Database * Database::instance()

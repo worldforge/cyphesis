@@ -1,3 +1,19 @@
+2001-04-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/database.*, common/persistance.*: Added new database tables
+	  for mind data, and server data.
+
+	* common/persistance.*, server/Admin.cpp: Implemented saving and
+	  loading of mind state to mind table. Initially only saving the
+	  contents of the memory map is supported.
+
+	* rulesets/MemMap.h: Added asObject() method to convert contents
+	  into Atlas representation.
+
+	* rulesets/BaseMind.*: Added handling of load and save operations
+	  which in conjunction with the Python mind component build an
+	  Atlas representation of the mind state.
+
 2001-04-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/persistance.cpp, server/Admin.cpp: Modified database loading

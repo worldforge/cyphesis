@@ -34,6 +34,8 @@ class BaseMind : public Entity {
 
     virtual oplist Operation(const Sight & op);
     virtual oplist Operation(const Sound & op);
+    virtual oplist Operation(const Save & op);
+    virtual oplist Operation(const Load & op);
     virtual oplist Operation(const Appearance & op);
     virtual oplist Operation(const Disappearance & op);
     //RootOperation * get_op_name_and_sub(RootOperation & op, string & name);

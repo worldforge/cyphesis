@@ -42,6 +42,12 @@ Possible ideas:
   it still does not handle minds and things. Problems with current
   code include velocity being stored, and bounding boxes not being
   recovered.
+  Basic C++ code for supporting saving and loading of mind state is now
+  in place, but support needs to be added into the Python NPCMind
+  class to store the data it requires.
+  Code is still required to store the state of the operation queue.
+  Restoring of accounts from database requires re-connecting characters
+  too.
 
   Get system working as an AI client to another server. This would also
   be a good time to get cyphesis working as a mindless server, without

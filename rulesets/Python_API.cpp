@@ -447,7 +447,7 @@ static PyObject * object_new(PyObject * self, PyObject * args)
 	if ( o == NULL ) {
 		return NULL;
 	}
-	o->m_obj = new Object;
+	o->m_obj = new Object(Object::MapType());
 	return (PyObject *)o;
 }
 

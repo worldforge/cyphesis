@@ -132,3 +132,13 @@ list<Entity *> MemMap::findByLocation(const Location & loc, double radius)
     }
     return res;
 }
+
+const Object MemMap::asObject()
+{
+    Object::MapType omap;
+    edict_t::iterator I = things.begin();
+    for(;I != things.end(); I++) {
+        omap[I->first] = I->second->asObject();
+    }
+    return Object(omap);
+}
