@@ -52,6 +52,10 @@ bool Database::initConnection(bool createDatabase)
     }
     conninfos << "user=" << dbuser << " ";
 
+    if (global_conf->findItem("cyphesis", "dbpasswd")) {
+        conninfos << "password=" << std::string(global_conf->getItem("cyphesis", "dbpasswd")) << " ";
+    }
+
     const std::string cinfo = conninfos.str();
     char * conninfo = new char [cinfo.size() + 1]; // , sizeof(char));
     strcpy(conninfo, cinfo.c_str());

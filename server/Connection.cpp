@@ -248,7 +248,7 @@ oplist Connection::GetOperation(const Get & op)
             return error(op, "Type definition requested with no id");
         }
         const std::string & id = I->second.AsString();
-        std::cout << "Get got for " << id << std::endl << std::flush;
+        debug(std::cout << "Get got for " << id << std::endl << std::flush;);
         Atlas::Objects::Root * o = Inheritance::instance().get(id);
         if (o == NULL) {
             return error(op, "Unknown type definition requested");

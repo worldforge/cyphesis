@@ -1,3 +1,22 @@
+2002-03-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/CreatorClient.cpp: Fix operation semantics for admin
+	  puppetting to new convention.
+
+	* common/Database.cpp: Add optional support for database password.
+
+	* physics/Quaternion.h: Add extra way of setting up a Quaternion.
+
+	* rulesets/MindFactory.cpp, server/Connection.cpp:
+	  Move some output into debugging.
+
+	* rulesets/Python_API.cpp, rulesets/Py_Quaternion.h,
+	  rulesets/Py_Quaternion.h: Add support for quaternions into the
+	  scripting API.
+
+	* rulesets/mason/define_world.py: Switch to using quaternions to
+	  send orientation data to the server.
+
 2002-02-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.h, server/WorldRouter.cpp, server/EntityFactory.h,

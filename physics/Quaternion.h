@@ -11,6 +11,11 @@ class Quaternion {
     double x, y, z, w;
     bool _set;
   public:
+    static const int cX = 0;    // Used to indicate which axis
+    static const int cY = 1;
+    static const int cZ = 2;
+    static const int cW = 3;
+
     Quaternion() : x(0), y(0), z(0), w(0), _set(false) { }
     Quaternion(double x, double y, double z, double w) : x(x), y(y), z(z), w(w),
                                                          _set(true) { }
@@ -27,6 +32,26 @@ class Quaternion {
     double Y() const { return y; }
     double Z() const { return z; }
     double W() const { return w; }
+
+    double & operator[](int index) {
+        switch(index) {
+            case cX:
+                return x;
+            case cY:
+                return y;
+            case cZ:
+                return z;
+            case cW:
+                return w;
+            default:
+                //Throw an exception here maybe
+                return z;
+        }
+    }
+
+    void set() {
+        _set = true;
+    }
 
     operator bool() const {
         return _set;

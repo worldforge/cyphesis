@@ -26,6 +26,8 @@ loadonstartup="true"
 dbname = "cyphesis"
 # Name of the database user in the rdbms
 dbuser = "cyphesis"
+# Password used to access the rdbms, if required
+# dbpasswd = ""
 
 [mason]
 ruleset="acorn"

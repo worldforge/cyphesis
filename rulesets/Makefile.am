@@ -30,6 +30,7 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    Py_Mind.cpp Py_Mind.h \
 			    Py_Map.cpp Py_Map.h \
 			    Py_Vector3D.cpp Py_Vector3D.h \
+			    Py_Quaternion.cpp Py_Quaternion.h \
 			    Py_BBox.cpp Py_BBox.h \
 			    Py_WorldTime.cpp Py_WorldTime.h \
 			    Py_World.cpp Py_World.h \

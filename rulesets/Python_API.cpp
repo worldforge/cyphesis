@@ -10,6 +10,7 @@
 #include "Py_Map.h"
 #include "Py_Location.h"
 #include "Py_Vector3D.h"
+#include "Py_Quaternion.h"
 #include "Py_WorldTime.h"
 #include "Py_World.h"
 #include "Py_Operation.h"
@@ -416,6 +417,75 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
 	return (PyObject *)o;
 }
 
+static PyObject * quaternion_new(PyObject * self, PyObject * args)
+{
+	QuaternionObject *o;
+        Quaternion val;
+
+        PyObject * clist;
+        switch (PyTuple_Size(args)) {
+            case 0:
+                break;
+            case 1:
+                clist = PyTuple_GetItem(args, 0);
+                if ((!PyList_Check(clist)) || (PyList_Size(clist) != 4)) {
+                    PyErr_SetString(PyExc_TypeError, "Quaternion() from single value must a list 4 long");
+                    return NULL;
+                }
+                for(int i = 0; i < 4; i++) {
+                    PyObject * item = PyList_GetItem(clist, i);
+                    if (PyInt_Check(item)) {
+                        val[i] = (double)PyInt_AsLong(item);
+                    } else if (PyFloat_Check(item)) {
+                        val[i] = PyFloat_AsDouble(item);
+                    } else {
+                        PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
+                        return NULL;
+                    }
+                }
+                val.set();
+                break;
+            case 2:
+                {
+                PyObject * v1 = PyTuple_GetItem(args, 0);
+                PyObject * v2 = PyTuple_GetItem(args, 0);
+                if (!PyVector3D_Check(v1) || !PyVector3D_Check(v2)) {
+                    PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take two vectors");
+                    return NULL;
+                }
+                Vector3DObject * from = (Vector3DObject *)v1;
+                Vector3DObject * to = (Vector3DObject *)v2;
+                val = Quaternion(from->coords, to->coords);
+                }
+                break;
+            case 4:
+                for(int i = 0; i < 4; i++) {
+                    PyObject * item = PyTuple_GetItem(args, i);
+                    if (PyInt_Check(item)) {
+                        val[i] = (double)PyInt_AsLong(item);
+                    } else if (PyFloat_Check(item)) {
+                        val[i] = PyFloat_AsDouble(item);
+                    } else {
+                        PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
+                        return NULL;
+                    }
+                }
+                val.set();
+                break;
+            default:
+                PyErr_SetString(PyExc_TypeError, "Quaternion must take list of floats, or ints, 4 ints or 4 floats");
+                return NULL;
+                break;
+        }
+
+	o = newQuaternionObject(args);
+	if ( o == NULL ) {
+		return NULL;
+	}
+        o->rotation = val;
+	return (PyObject *)o;
+}
+
 static PyObject * worldtime_new(PyObject * self, PyObject * args)
 {
 	WorldTimeObject *o;
@@ -779,6 +849,11 @@ static PyMethodDef vector3d_methods[] = {
 	{NULL,		NULL}				/* Sentinel */
 };
 
+static PyMethodDef quaternion_methods[] = {
+	{"Quaternion",	quaternion_new,	METH_VARARGS},
+	{NULL,		NULL}				/* Sentinel */
+};
+
 static PyMethodDef server_methods[] = {
 	{"WorldTime",	worldtime_new,	METH_VARARGS},
 	{NULL,		NULL}				/* Sentinel */
@@ -822,6 +897,11 @@ void init_python_api()
 
     if (Py_InitModule("Vector3D", vector3d_methods) == NULL) {
         fprintf(stderr, "Failed to Create Vector3D module\n");
+        return;
+    }
+
+    if (Py_InitModule("Quaternion", quaternion_methods) == NULL) {
+        fprintf(stderr, "Failed to Create Quaternion module\n");
         return;
     }
 
