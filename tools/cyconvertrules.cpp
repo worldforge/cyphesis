@@ -122,7 +122,7 @@ void FileConverter::objectArrived(const Element & obj)
         }
 
         // The script attribute of the rule is converted unchanged, largely
-        // because additional requirements have not yet been indentified.
+        // because additional requirements have not yet been identified.
         J = ent.find("script");
         if (J != ent.end()) {
             if (!J->second.isMap()) {
@@ -132,6 +132,19 @@ void FileConverter::objectArrived(const Element & obj)
                 continue;
             }
             newObject["script"] = J->second;
+        }
+
+        // The mind attribute of the rule is converted unchanged, largely
+        // because additional requirements have not yet been identified.
+        J = ent.find("mind");
+        if (J != ent.end()) {
+            if (!J->second.isMap()) {
+                std::cerr << "Rule \"" << I->first
+                          << "\" has mind which are not a map."
+                          << std::endl << std::flush;
+                continue;
+            }
+            newObject["mind"] = J->second;
         }
 
         // The playable attribute of the rule is converted unchanged

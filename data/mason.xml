@@ -615,6 +615,10 @@
       </map>
     </map>
     <string name="id">pig</string>
+    <map name="mind">
+      <string name="language">python</string>
+      <string name="name">mind.PigMind</string>
+    </map>
     <list name="parents">
       <string>character</string>
     </list>
@@ -714,6 +718,10 @@
     <map name="attributes">
     </map>
     <string name="id">skeleton</string>
+    <map name="mind">
+      <string name="language">python</string>
+      <string name="name">mind.SkelMind</string>
+    </map>
     <list name="parents">
       <string>character</string>
     </list>
@@ -912,6 +920,10 @@
       </map>
     </map>
     <string name="id">wolf</string>
+    <map name="mind">
+      <string name="language">python</string>
+      <string name="name">mind.WolfMind</string>
+    </map>
     <list name="parents">
       <string>character</string>
     </list>

@@ -1,5 +1,13 @@
 2004-07-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cyconvertrules.cpp: Add code to handle conversion of rules
+	  about minds.
+
+	* Re-convert old rules files to make sure they include the mind
+	  data.
+
+2004-07-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/CreatorClient.cpp, rulesets/BaseMind.cpp,
 	  rulesets/MemEntity.cpp, rulesets/MemEntity.h,
 	  rulesets/MemMap.cpp, rulesets/MemMap.h, rulesets/Py_Map.cpp:
