@@ -12,7 +12,7 @@ class ObserverClient : public CommClient {
   public:
     ObserverClient();
     bool setup();
-    void loadDefault();
+    void load(const std::string &, const std::string &);
     void idle();
 };
 

@@ -138,7 +138,7 @@ static PyObject * MapType_asPyObject(const Fragment::MapType & map)
     PyObject * args_pydict = PyDict_New();
     Fragment::MapType::const_iterator I;
     AtlasObject * item;
-    for(I=map.begin();I!=map.end();I++) {
+    for(I = map.begin(); I != map.end(); I++) {
         const std::string & key = I->first;
         item = newAtlasObject(NULL);
         if (item == NULL) {
@@ -157,9 +157,9 @@ static PyObject * ListType_asPyObject(const Fragment::ListType & list)
 {
     PyObject * args_pylist = PyList_New(list.size());
     Fragment::ListType::const_iterator I;
-    int j=0;
+    int j = 0;
     AtlasObject * item;
-    for(I=list.begin();I!=list.end();I++,j++) {
+    for(I = list.begin(); I != list.end(); I++, j++) {
         item = newAtlasObject(NULL);
         if (item == NULL) {
             PyErr_SetString(PyExc_TypeError,"error creating list");

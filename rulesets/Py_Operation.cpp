@@ -298,7 +298,7 @@ static PyObject * Operation_GetArgs(OperationObject * self, PyObject * args)
     Object::ListType & args_list = self->operation->GetArgs();
     PyObject * args_pylist = PyList_New(args_list.size());
     Object::ListType::const_iterator I;
-    int j=0;
+    int j = 0;
     AtlasObject * item;
     for(I = args_list.begin();I != args_list.end(); I++, j++) {
         item = newAtlasObject(NULL);

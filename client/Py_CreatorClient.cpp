@@ -14,6 +14,10 @@
 #include <rulesets/Py_Thing.h>
 #include <rulesets/Py_Map.h>
 
+#include <common/debug.h>
+
+static const bool debug_flag = true;
+
 static PyObject * CreatorClient_as_entity(CreatorClientObject * self, PyObject * args)
 {
     if (self->m_mind == NULL) {
@@ -87,7 +91,7 @@ static PyObject * CreatorClient_set(CreatorClientObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "Can only set Atlas entity");
         return NULL;
     }
-    self->m_mind->set(id, *entity->m_obj);
+    self->m_mind->sendSet(id, *entity->m_obj);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -105,6 +109,30 @@ static PyObject * CreatorClient_look(CreatorClientObject * self, PyObject * args
     Entity * retval = self->m_mind->look(id);
     if (retval == NULL) {
         PyErr_SetString(PyExc_TypeError, "Entity look failed");
+        return NULL;
+    }
+    ThingObject * ret = newThingObject(NULL);
+    ret->m_thing = retval;
+    return (PyObject *)ret;
+}
+static PyObject * CreatorClient_look_for(CreatorClientObject * self,
+                                         PyObject * args)
+{
+    if (self->m_mind == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid creator make");
+        return NULL;
+    }
+    AtlasObject * ent;
+    if (!PyArg_ParseTuple(args, "O", &ent)) {
+        return NULL;
+    }
+    if (!PyAtlasObject_Check(ent)) {
+        PyErr_SetString(PyExc_TypeError, "Can only look for Atlas description");
+        return NULL;
+    }
+    Entity * retval = self->m_mind->lookFor(*ent->m_obj);
+    if (retval == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Entity look_for failed");
         return NULL;
     }
     ThingObject * ret = newThingObject(NULL);
@@ -137,6 +165,7 @@ static PyMethodDef CreatorClient_methods[] = {
 	{"make",           (PyCFunction)CreatorClient_make, 1},
 	{"set",            (PyCFunction)CreatorClient_set, 1},
 	{"look",           (PyCFunction)CreatorClient_look, 1},
+	{"look_for",       (PyCFunction)CreatorClient_look_for, 1},
 	{"send",           (PyCFunction)CreatorClient_send, 1},
 	{NULL,          NULL}           /* sentinel */
 };
@@ -274,11 +303,54 @@ PyTypeObject CreatorClient_Type = {
 
 CreatorClientObject * newCreatorClientObject(PyObject *arg)
 {
-	CreatorClientObject * self;
-	self = PyObject_NEW(CreatorClientObject, &CreatorClient_Type);
-	if (self == NULL) {
-		return NULL;
-	}
-	self->CreatorClient_attr = NULL;
-	return self;
+    CreatorClientObject * self;
+    self = PyObject_NEW(CreatorClientObject, &CreatorClient_Type);
+    if (self == NULL) {
+        return NULL;
+    }
+    self->CreatorClient_attr = NULL;
+    return self;
+}
+
+bool runClientScript(CreatorClient * c, const std::string & package, const std::string & func)
+{
+    PyObject * package_name = PyString_FromString(package.c_str());
+    PyObject * mod_dict = PyImport_Import(package_name);
+    Py_DECREF(package_name);
+    if (mod_dict == NULL) {
+        std::cerr << "Cld not find python module " << package
+                  << std::endl << std::flush;
+        PyErr_Print();
+        return false;
+    }
+    PyObject * function = PyObject_GetAttrString(mod_dict,
+                                                 (char *)func.c_str());
+    Py_DECREF(mod_dict);
+    if (function == NULL) {
+        std::cerr << "Could not find " << func << " function" << std::endl
+                  << std::flush;
+        PyErr_Print();
+        return false;
+    }
+    if (PyCallable_Check(function) == 0) {
+        std::cerr << "It does not seem to be a function at all" << std::endl
+                  << std::flush;
+        Py_DECREF(function);
+        return false;
+    }
+    CreatorClientObject * editor = newCreatorClientObject(NULL);
+    editor->m_mind = c;
+    PyObject * pyob = PyEval_CallFunction(function, "(O)", editor);
+
+    if (pyob == NULL) {
+        if (PyErr_Occurred() == NULL) {
+            std::cerr << "Could not call function" << std::endl << std::flush;
+        } else {
+            std::cerr << "Reporting python error" << std::endl << std::flush;
+            PyErr_Print();
+        }
+    }
+    Py_DECREF(function);
+    return true;
+
 }

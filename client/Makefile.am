@@ -6,7 +6,6 @@ cyclient_SOURCES = \
 		CommClient.cpp CommClient.h \
 		ObserverClient.cpp ObserverClient.h \
 		ClientConnection.cpp ClientConnection.h \
-		define_world.cpp define_world.h \
 		Py_CreatorClient.cpp Py_CreatorClient.h \
 		client.cpp
 

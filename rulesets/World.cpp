@@ -46,7 +46,7 @@ OpVector World::SetOperation(const Set & op)
     // This is the same as Thing::Operation(Set), except world does not
     // get deleted if its status goes below 0.
     seq++;
-    const Fragment::ListType & args=op.GetArgs();
+    const Fragment::ListType & args = op.GetArgs();
     if (args.empty()) {
        return OpVector();
     }

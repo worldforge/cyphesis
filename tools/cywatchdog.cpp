@@ -161,7 +161,7 @@ void signal_hup(int signo)
     syslog(LOG_NOTICE, "Re-starting server");
     server.s_restart = true;
     last_signal = signo;
-    if (server.s_state==SVR_CLIENT) {
+    if (server.s_state == SVR_CLIENT) {
         server.s_state = SVR_OBSOLETE_CLIENT;
     } else {
         server.s_state = SVR_OBSOLETE;
@@ -192,7 +192,7 @@ void signal_user(int signo)
     last_signal = signo;
     if (server.s_state == SVR_CLIENT) {
         server.s_state = SVR_CLIENT_STALLED;
-    } else if (server.s_state==SVR_RUNNING) {
+    } else if (server.s_state == SVR_RUNNING) {
         server.s_state = SVR_START;
     }
     signal(SIGUSR1, signal_user);

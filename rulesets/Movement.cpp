@@ -28,7 +28,8 @@ Movement::~Movement()
 
 bool Movement::updateNeeded(const Location & location) const
 {
-    return((m_velocity!=Vector3D(0,0,0))||(location.velocity!=Vector3D(0,0,0)));
+    return((m_velocity != Vector3D(0,0,0)) ||
+           (location.velocity != Vector3D(0,0,0)));
 }
 
 void Movement::checkCollisions(const Location & loc)
@@ -69,7 +70,7 @@ void Movement::checkCollisions(const Location & loc)
         }
         double t = loc.timeToExit(oloc);
         if (t == 0) { return; }
-        if (t < 0) { t=0; }
+        if (t < 0) { t = 0; }
         if (t > consts::basic_tick) { return; }
         collTime = t;
         debug(std::cout << "Collision with parent bounding box in "

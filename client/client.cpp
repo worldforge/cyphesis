@@ -8,6 +8,8 @@
 
 #include <common/globals.h>
 
+#include <varconf/Config.h>
+
 #include <iostream>
 
 int main(int argc, char ** argv)
@@ -19,12 +21,22 @@ int main(int argc, char ** argv)
 
     init_python_api();
 
+    std::string package;
+    if (global_conf->findItem("client", "package")) {
+        package = global_conf->getItem("client", "package");
+    }
+
+    std::string function;
+    if (global_conf->findItem("client", "function")) {
+        function = global_conf->getItem("client", "function");
+    }
+
     try {
         ObserverClient & observer = *new ObserverClient();
         if (!observer.setup()) {
             return 1;
         }
-        observer.loadDefault();
+        observer.load(package, function);
         //observer.run();
     }
     catch (...) {

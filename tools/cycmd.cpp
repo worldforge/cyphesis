@@ -213,7 +213,7 @@ void Interactive::prompt()
 
         char * arg = strchr(cmd, ' ');
         if (arg != NULL) {
-            *arg++=0;
+            *arg++ = 0;
             int len = strlen(arg);
             while ((len > 0) && (arg[--len] == ' ')) { arg[len] = 0; }
         } else {

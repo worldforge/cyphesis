@@ -347,10 +347,32 @@ int WorldRouter::idle()
         }
         delete op;
     }
-    if (op==NULL) {
+    if (op == NULL) {
         return 0;
     }
     return 1;
+}
+
+Entity * WorldRouter::findByName(const std::string & name)
+{
+    EntityDict::const_iterator I = eobjects.begin();
+    for(; I != eobjects.end(); ++I) {
+        if (I->second->getName() == name) {
+            return I->second;
+        }
+    }
+    return NULL;
+}
+
+Entity * WorldRouter::findByType(const std::string & type)
+{
+    EntityDict::const_iterator I = eobjects.begin();
+    for(; I != eobjects.end(); ++I) {
+        if (I->second->getType() == type) {
+            return I->second;
+        }
+    }
+    return NULL;
 }
 
 #if 0

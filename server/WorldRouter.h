@@ -59,6 +59,8 @@ class WorldRouter : public BaseWorld {
 
     virtual OpVector LookOperation(const Look & op);
 
+    virtual Entity * findByName(const std::string & name);
+    virtual Entity * findByType(const std::string & type);
 };
 
 #endif // SERVER_WORLD_ROUTER_H

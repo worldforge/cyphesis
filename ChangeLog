@@ -1,3 +1,47 @@
+2002-08-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/globals.cpp: Only persist this sessions command line
+	  options if the user is overriding the installation directory.
+
+	* cyphesis.vconf, client/Py_CreatorClient.cpp,
+	  client/Py_CreatorClient.h, client/client.cpp:
+	  Add client functionality to allow diferent scripts to be run to
+	  perform different functions on the server.
+
+	* client/CharacterClient.cpp: Add debug option.
+
+	* rulesets/Character.h: Make mind operation functions virtual,
+	  so they can be overridden.
+
+	* common/BaseWorld.h, server/WorldRouter.cpp,
+	  server/WorldRouter.h: Add server functions to search for
+	  entities by name or type.
+
+	* rulesets/Creator.h, rulesets/Creator.cpp: Allow creator to
+	  specify a look without an id to search for entities with
+	  a given name or type.
+
+	* client/CreatorClient.cpp, client/CreatorClient.h,
+	  client/ObserverClient.cpp, client/ObserverClient.h,
+	  client/Py_CreatorClient.cpp, rulesets/basic/editor.py,
+	  rulesets/mason/define_world.py:
+	  Add support for looking for entities in the world by name or
+	  type from client script, so client scripts can modify existing
+	  world.
+
+	* rulesets/Entity.cpp, rulesets/Movement.cpp,
+	  rulesets/Py_Object.cpp, rulesets/Py_Operation.cpp,
+	  rulesets/Py_Oplist.cpp, rulesets/Python_API.cpp,
+	  rulesets/Stackable.cpp, rulesets/Thing.cpp,
+	  rulesets/World.cpp, server/Account.cpp,
+	  server/CommServer.cpp, server/Connection.cpp,
+	  server/Player.cpp, server/ServerRouting.cpp,
+	  server/server.cpp, tools/cycmd.cpp,
+	  tools/cywatchdog.cpp: Code formatting cleanups.
+
+	* rulesets/basic/world/objects/tools/Bow.py: Fix up bow so it now
+	  fires correctly.
+
 2002-08-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommServer.cpp: Simplify handling of socket errors,

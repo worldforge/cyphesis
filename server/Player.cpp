@@ -44,7 +44,7 @@ OpVector Player::characterError(const Create& op,const Fragment::MapType& ent) c
     }
 #endif
 
-    const std::string& type= ent.find("parents")->second.AsList().front().AsString(); 
+    const std::string& type = ent.find("parents")->second.AsList().front().AsString(); 
     if (Player::playableTypes.find(type) == Player::playableTypes.end()) {
         return error(op, "You cannot create a character of this type.");
     }

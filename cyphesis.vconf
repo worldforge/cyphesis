@@ -29,5 +29,12 @@ dbname = "cyphesis"
 # Password used to access the rdbms, if required
 # dbpasswd = ""
 
+[client]
+# Client specific options
+# Script package
+package="define_world"
+# Script function
+function="default"
+
 [mason]
 ruleset="basic"

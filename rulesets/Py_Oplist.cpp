@@ -63,11 +63,9 @@ static PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
             return NULL;
         }
         res->ops = new OpVector(*self->ops);
-        // res->ops->merge(*self->ops);
-        for(OpVector::const_iterator I=opl->ops->begin();I!=opl->ops->end();I++) {
+        for(OpVector::const_iterator I = opl->ops->begin(); I != opl->ops->end(); I++) {
             res->ops->push_back(*I);
         }
-        //res->ops->merge(*opl->ops);
         return (PyObject*)res;
     }
     if (PyOperation_Check(other)) {

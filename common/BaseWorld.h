@@ -46,6 +46,8 @@ class BaseWorld : public OOGThing {
                                const std::string & id = std::string()) = 0;
     virtual void setSerialnoOp(RootOperation &) = 0;
     virtual OpVector message(RootOperation & op, const Entity * obj) = 0;
+    virtual Entity * findByName(const std::string & name) = 0;
+    virtual Entity * findByType(const std::string & type) = 0;
 };
 
 #endif // COMMON_BASE_WORLD_H

@@ -67,7 +67,7 @@ bool CommServer::setup(int port)
     if (serverFd < 0) {
         return false;
     }
-    int flag=1;
+    int flag = 1;
     setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
     sin.sin_family = AF_INET;
     sin.sin_port = htons(port);
@@ -260,7 +260,7 @@ void CommServer::removeClient(CommClient * client)
 void CommServer::metaserverKeepalive()
 {
     char         mesg[MAXLINE];
-    unsigned int packet_size=0;
+    unsigned int packet_size = 0;
 
     pack_uint32(SKEEP_ALIVE, mesg, &packet_size);
     sendto(metaFd,mesg,packet_size,0, (sockaddr *)&meta_sa, sizeof(meta_sa));
@@ -270,7 +270,7 @@ void CommServer::metaserverReply()
 {
     char                mesg[MAXLINE];
     char               *mesg_ptr;
-    uint32_t            handshake=0, command=0;
+    uint32_t            handshake = 0, command = 0;
     struct sockaddr	addr;
     socklen_t           addrlen;
     unsigned int        packet_size;
@@ -298,7 +298,7 @@ void CommServer::metaserverReply()
 void CommServer::metaserverTerminate()
 {
     char         mesg[MAXLINE];
-    unsigned int packet_size=0;
+    unsigned int packet_size = 0;
 
     pack_uint32(TERMINATE, mesg, &packet_size);
     sendto(metaFd,mesg,packet_size, 0, (sockaddr *)&meta_sa, sizeof(meta_sa));

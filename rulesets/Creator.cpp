@@ -84,3 +84,44 @@ OpVector Creator::externalOperation(const RootOperation & op)
     }
     return OpVector();
 }
+
+OpVector Creator::mindLookOperation(const Look & op)
+{
+    debug(std::cout << "Got look up from prived mind from [" << op.GetFrom()
+               << "] to [" << op.GetTo() << "]" << std::endl << std::flush;);
+    perceptive = true;
+    Look * l = new Look(op);
+    if (op.GetTo().empty()) {
+        const Fragment::ListType & args = op.GetArgs();
+        if (args.empty()) {
+            l->SetTo(world->getId());
+        } else {
+            if (args.front().IsMap()) {
+                const Fragment::MapType & amap = args.front().AsMap();
+                Fragment::MapType::const_iterator I = amap.find("id");
+                if (I != amap.end() && I->second.IsString()) {
+                    l->SetTo(I->second.AsString());
+                } else if ((I = amap.find("name")) != amap.end()) {
+                    if (I->second.IsString() && !I->second.AsString().empty()) {
+                        Entity * e = world->findByName(I->second.AsString());
+                        if (e != NULL) {
+                            l->SetTo(e->getId());
+                        }
+                    }
+                } else if ((I = amap.find("parents")) != amap.end()) {
+                    if (I->second.IsList() && !I->second.AsList().empty()) {
+                        const Fragment & p = I->second.AsList().front();
+                        if (p.IsString()) {
+                            Entity * e = world->findByType(p.AsString());
+                            if (e != NULL) {
+                                l->SetTo(e->getId());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    debug( std::cout <<"    now to ["<<l->GetTo()<<"]"<<std::endl<<std::flush;);
+    return OpVector(1,l);
+}

@@ -105,7 +105,7 @@ OpVector Thing::CreateOperation(const Create & op)
     if (script->Operation("create", op, res) != 0) {
         return res;
     }
-    const Fragment::ListType & args=op.GetArgs();
+    const Fragment::ListType & args = op.GetArgs();
     if (args.empty()) {
        return OpVector();
     }
@@ -203,7 +203,7 @@ OpVector Thing::MoveOperation(const Move & op)
     if (script->Operation("move", op, res) != 0) {
         return res;
     }
-    const Fragment::ListType & args=op.GetArgs();
+    const Fragment::ListType & args = op.GetArgs();
     if (args.empty()) {
         debug( std::cout << "ERROR: move op has no argument" << std::endl << std::flush;);
         return OpVector();
@@ -332,7 +332,7 @@ OpVector Thing::SetOperation(const Set & op)
     if (script->Operation("set", op, res) != 0) {
         return res;
     }
-    const Fragment::ListType & args=op.GetArgs();
+    const Fragment::ListType & args = op.GetArgs();
     if (args.empty()) {
        return OpVector();
     }

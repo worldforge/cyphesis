@@ -4,7 +4,7 @@
 
 #include "ObserverClient.h"
 
-#include "define_world.h"
+#include "CreatorClient.h"
 
 #include <common/accountbase.h>
 #include <common/const.h>
@@ -50,9 +50,11 @@ bool ObserverClient::setup()
     return true;
 }
 
-void ObserverClient::loadDefault()
+void ObserverClient::load(const std::string & package,
+                          const std::string & function)
 {
-    DefineWorld::define(character);
+    //DefineWorld::define(character);
+    character->runScript(package, function);
 }
 
 void ObserverClient::idle()

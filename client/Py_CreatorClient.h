@@ -7,6 +7,8 @@
 
 #include <Python.h>
 
+#include <string>
+
 class CreatorClient;
 
 extern PyTypeObject CreatorClient_Type;
@@ -20,5 +22,6 @@ typedef struct {
 #define PyCreatorClient_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&CreatorClient_Type)
 
 CreatorClientObject * newCreatorClientObject(PyObject *);
+bool runClientScript(CreatorClient *, const std::string &, const std::string &);
 
 #endif // CLIENT_PY_CREATORCLIENT_H

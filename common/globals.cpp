@@ -21,7 +21,7 @@ bool loadConfig(int argc, char ** argv, bool server)
 
     // See if the user has set the install directory on the command line
     char * home;
-    bool home_dir_config = false;
+    bool home_dir_config = false, store_config = false;
     if ((home = getenv("HOME")) != NULL) {
         home_dir_config = global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
@@ -31,15 +31,15 @@ bool loadConfig(int argc, char ** argv, bool server)
     // chosen are fixed.
     global_conf->getCmdline(argc, argv);
     if (global_conf->findItem("cyphesis", "directory")) {
+        store_config = true;
         share_directory = global_conf->getItem("cyphesis", "directory");
     }
     if (global_conf->findItem("cyphesis", "confdir")) {
+        store_config = true;
         etc_directory = global_conf->getItem("cyphesis", "confdir");
     }
-    if (argc > 1) {
-        if (home != NULL) {
-            global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf");
-        }
+    if (store_config && (home != NULL)) {
+        global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf");
     }
     // Load up the rest of the system config file, and then ensure that
     // settings are overridden in the users config file, and the command line
@@ -70,7 +70,7 @@ bool loadConfig(int argc, char ** argv, bool server)
     }
 
     if (global_conf->findItem("cyphesis", "tcpport")) {
-        port_num=global_conf->getItem("cyphesis","tcpport");
+        port_num = global_conf->getItem("cyphesis","tcpport");
     }
 
     // Load up the rulesets. Rulesets are hierarchical, and are read in until

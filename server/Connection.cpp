@@ -53,10 +53,10 @@ void Connection::send(const RootOperation & msg) const
 Account * Connection::addPlayer(const std::string& username,
                                 const std::string& password)
 {
-    Player * player=new Player(this, username, password);
+    Player * player = new Player(this, username, password);
     addObject(player);
-    player->connection=this;
-    player->world=&server.getWorld();
+    player->connection = this;
+    player->world = &server.getWorld();
     server.addObject(player);
     server.lobby.addObject(player);
     return player;
@@ -187,7 +187,7 @@ OpVector Connection::LoginOperation(const Login & op)
     if (ent == NULL) {
         player = Persistance::instance()->getAccount(username);
         if (player != NULL) {
-            player->world=&server.getWorld();
+            player->world = &server.getWorld();
             server.addObject(player);
         }
     } else {
@@ -207,7 +207,7 @@ OpVector Connection::LoginOperation(const Login & op)
     for (; J != player->getCharacters().end(); J++) {
         addObject(J->second);
     }
-    player->connection=this;
+    player->connection = this;
     server.lobby.addObject(player);
     // Let the client know they have logged in
     Info * info = new Info(Info::Instantiate());

@@ -28,7 +28,7 @@ ServerRouting::ServerRouting(CommServer & server, const std::string & ruleset,
     lobby.setId("lobby");
     Account * adm = Persistance::loadAdminAccount();
     addObject(adm);
-    adm->world=&world;
+    adm->world = &world;
 }
 
 ServerRouting::~ServerRouting()

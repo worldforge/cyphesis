@@ -89,7 +89,7 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
     entmap["pos"] = Vector3D(0,0,0).asObject();
     entmap["loc"] = chr->getId();
     entmap["name"] = "coin";
-    for(int i=0; i < 10; i++) {
+    for(int i = 0; i < 10; i++) {
         Create * c = new Create(Create::Instantiate());
         c->SetArgs(Fragment::ListType(1,entmap));
         c->SetTo(chr->getId());

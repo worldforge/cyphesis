@@ -73,7 +73,8 @@ const Fragment Entity::get(const std::string & aname) const
         return location.bBox.asList();
     } else if (aname == "contains") {
         Fragment::ListType contlist;
-        for(EntitySet::const_iterator I=contains.begin();I!=contains.end();I++){
+        for(EntitySet::const_iterator I = contains.begin();
+            I != contains.end(); I++) {
             contlist.push_back(*I);
         }
         return Fragment(contlist);
@@ -97,7 +98,8 @@ void Entity::set(const std::string & aname, const Fragment & attr)
         name = attr.AsString();
     } else if ((aname == "mass") && attr.IsNum()) {
         mass = attr.AsNum();
-    } else if ((aname=="bbox") && attr.IsList() && (attr.AsList().size()>2)) {
+    } else if ((aname == "bbox") && attr.IsList() &&
+               (attr.AsList().size() > 2)) {
         location.bBox = BBox(attr.AsList());
     } else {
         attributes[aname] = attr;
@@ -156,7 +158,7 @@ void Entity::addToObject(Fragment::MapType & omap) const
 void Entity::merge(const Fragment::MapType & ent)
 {
     const std::set<std::string> & imm = immutables();
-    for (Fragment::MapType::const_iterator I=ent.begin();I!=ent.end();I++) {
+    for(Fragment::MapType::const_iterator I = ent.begin(); I != ent.end(); I++){
         const std::string & key = I->first;
         if (imm.find(key) != imm.end()) continue;
         set(key, I->second);

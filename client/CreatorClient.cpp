@@ -3,10 +3,17 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "CreatorClient.h"
+#include "Py_CreatorClient.h"
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Set.h>
+
+#include <common/debug.h>
+
+static const bool debug_flag = true;
+
+using Atlas::Objects::Operation::RootOperation;
 
 CreatorClient::CreatorClient(const std::string & id, const std::string & name,
                              ClientConnection &c) : CharacterClient(id,name,c)
@@ -16,7 +23,7 @@ CreatorClient::CreatorClient(const std::string & id, const std::string & name,
 Entity * CreatorClient::make(const Fragment & entity)
 {
     if (!entity.IsMap()) {
-        std::cerr << "entity is not map" << std::endl << std::flush;
+        std::cerr << "make: entity is not map" << std::endl << std::flush;
         return NULL;
     }
     Create op(Create::Instantiate());
@@ -75,10 +82,10 @@ Entity * CreatorClient::make(const Fragment & entity)
 }
 
 
-void CreatorClient::set(const std::string & id, const Fragment & entity)
+void CreatorClient::sendSet(const std::string & id, const Fragment & entity)
 {
     if (!entity.IsMap()) {
-        std::cerr << "entity is not map" << std::endl << std::flush;
+        std::cerr << "set: " << id << " entity is not map" << std::endl << std::flush;
         return;
     }
     Set op(Set::Instantiate());
@@ -97,6 +104,19 @@ Entity * CreatorClient::look(const std::string & id)
         op.SetArgs(Fragment::ListType(1,ent));
     }
     op.SetFrom(getId());
+    return sendLook(op);
+}
+
+Entity * CreatorClient::lookFor(const Fragment & ent)
+{
+    Look op(Look::Instantiate());
+    op.SetArgs(Fragment::ListType(1,ent));
+    op.SetFrom(getId());
+    return sendLook(op);
+}
+
+Entity * CreatorClient::sendLook(RootOperation & op)
+{
     OpVector result = sendAndWaitReply(op);
     if (result.empty()) {
         std::cerr << "No reply to look" << std::endl << std::flush;
@@ -127,4 +147,10 @@ Entity * CreatorClient::look(const std::string & id)
     std::cout << "Seen: " << created_id << std::endl << std::flush;
     Entity * obj = map.add(seen);
     return obj;
+}
+
+bool CreatorClient::runScript(const std::string & package,
+                              const std::string & function)
+{
+    return runClientScript(this, package, function);
 }

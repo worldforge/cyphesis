@@ -26,7 +26,7 @@ class Bow(Thing):
         loc2 = Location(target.location.parent,Vector3D(0,0,0))
         loc2.velocity = Vector3D(0,0,0)
         m1 = Operation("move",Entity(ammo,location=loc1),to=ammo)
-        m2 = Operation("move",Entity(ammo,location=loc1),to=ammo)
+        m2 = Operation("move",Entity(ammo,location=loc2),to=ammo)
         m2.time.sadd=time
         t = Operation("set",Entity(to_,status=-1),to=to_)
         t.time.sadd=time

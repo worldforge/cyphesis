@@ -6,6 +6,10 @@
 
 #include "ClientConnection.h"
 
+#include <common/debug.h>
+
+static const bool debug_flag = false;
+
 CharacterClient::CharacterClient(const std::string & id,
                                  const std::string & name,
                                  ClientConnection & c) :

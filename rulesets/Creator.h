@@ -14,6 +14,8 @@ class Creator : public Character {
     virtual OpVector operation(const RootOperation & op);
     virtual OpVector externalOperation(const RootOperation & op);
 
+    virtual OpVector mindLookOperation(const Look & op);
+
     OpVector sendMind(const RootOperation & msg);
 };
 

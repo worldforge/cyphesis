@@ -84,6 +84,9 @@ crab_goals=[(il.avoid,"avoid('wolf',10.0)"),
 lych_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"),
             (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
 
+directions = [[0,0,0.707,0.707],[0,0,0,1],[0,0,-0.707,0.707],[0,0,1,0],
+              [0,0,0.387,0.921],[0,0,-0.387,0.921],[0,0,-0.921,0.387],[0,0,0.921,0.387]]
+
 #observer calls this
 def default(mapeditor):
 #   general things
@@ -91,15 +94,14 @@ def default(mapeditor):
     m=editor(mapeditor)
 
     world=m.look()
-
     m.set(world.id, name="moraf")
 
 # a wall around the world
 
     m.make('boundary',type='boundary',xyz=(-201,-201,settlement_height),bbox=[2,404,50])
     m.make('boundary',type='boundary',xyz=(-201,-201,settlement_height),bbox=[404,2,50])
-    m.make('boundary',type='boundary',xyz=(-201, 200,settlement_height),bbox=[304,2,50])
-    m.make('boundary',type='boundary',xyz=( 200,-201,settlement_height),bbox=[2,204,50])
+    m.make('boundary',type='boundary',xyz=(-201, 200,settlement_height),bbox=[404,2,50])
+    m.make('boundary',type='boundary',xyz=( 200,-201,settlement_height),bbox=[2,404,50])
 
     m.make('willow',type='willow',xyz=(-10,-0,settlement_height))
     m.make('hickory',type='hickory',xyz=(-0,-10,settlement_height))
@@ -171,8 +173,6 @@ def default(mapeditor):
 #   villagers
     #directions = [[0,1,0],[1,0,0],[0,-1,0],[-1,0,0],
                   #[0.7,0.7,0],[0.7,-0.7,0],[-0.7,-0.7,0],[-0.7,0.7,0]]
-    directions = [[0,0,0.707,0.707],[0,0,0,1],[0,0,-0.707,0.707],[0,0,1,0],
-                  [0,0,0.387,0.921],[0,0,-0.387,0.921],[0,0,-0.921,0.387],[0,0,0.921,0.387]]
 
     home1_xyz=(90,-90,settlement_height)
 
@@ -200,22 +200,20 @@ def default(mapeditor):
                     sex='male',orientation=Quaternion(Vector3D([1,0,0]),Vector3D([-1,0,0])).as_list())
     merchant2=m.make('Dylan Searae',type='merchant',desc='the pig merchant',
          xyz=(-28,2,settlement_height),age=probability.fertility_age,sex='male',orientation=Quaternion(Vector3D([1,0,0]),Vector3D([0,-1,0])).as_list())
-    merchants=[merchant, merchant2]
     sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[5,5,3])
-    m.know(merchants,mknowledge)
-    m.know(merchants,village)
-    m.price(merchants,mprices)
+    m.know(merchant,mknowledge)
+    m.know(merchant,village)
+    m.price(merchant,mprices)
     m.own(merchant,sty)
     m.learn(merchant,(il.keep,"keep('pig', 'sty')"))
     m.learn(merchant, (il.sell,"sell_trade('pig', 'market', 'morning')"))
-    m.learn(merchant2,(il.sell,"sell_trade('pig', 'market', 'afternoon')"))
-    m.learn(merchants,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
-    m.learn(merchants,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
+    m.learn(merchant,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
+    m.learn(merchant,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
     piglets=[]
     for i in range(0, 6):
         piglets.append(m.make('pig',type='pig',xyz=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
     m.learn(piglets,pig_goals)
-    m.own(merchants,piglets)
+    m.own(merchant,piglets)
 
     # Warriors - the more adventurous types
 
@@ -269,3 +267,17 @@ def default(mapeditor):
     # I am not sure if we need a guard
     #m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))
     #m.tell_importance(guard,il.defend,'>',il.patrol)
+
+def add_pigs(mapeditor):
+#   general things
+
+    m=editor(mapeditor)
+
+    sty = m.look_for(type='sty')
+    merchant = m.look_for(name='Dyfed Searae')
+
+    piglets=[]
+    for i in range(0, 6):
+        piglets.append(m.make('pig',type='pig',xyz=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
+    m.learn(piglets,pig_goals)
+    m.own(merchant,piglets)

@@ -91,7 +91,7 @@ static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObje
     if (!PyArg_ParseTuple(args, "OO|i", &dict, &item, &remove_empty_key)) {
         return NULL;
     }
-    int flag=0;
+    int flag = 0;
     if (!PyDict_Check(dict)) {
         PyErr_SetString(PyExc_TypeError, "Trying to set item in not dictlist");
         return NULL;
@@ -616,7 +616,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             PyErr_SetString(PyExc_TypeError, "Error in keywords");
             return NULL;
         }
-        int i, size=PyList_Size(keys); 
+        int i, size = PyList_Size(keys); 
         for(i = 0; i < size; i++) {
             char * key = PyString_AsString(PyList_GetItem(keys, i));
             PyObject * val = PyList_GetItem(vals, i);
@@ -750,7 +750,8 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         op->operation = new Nourish(Nourish::Instantiate());
     } else if (strcmp(type, "info") == 0) {
         op->operation = new Info(Info::Instantiate());
-    } else if ((strcmp(type,"thought")==0) || (strcmp(type,"goal_info")==0)) {
+    } else if (strcmp(type, "thought") == 0 ||
+               strcmp(type, "goal_info") == 0) {
         Py_DECREF(op);
         Py_INCREF(Py_None);
         return Py_None;
@@ -814,7 +815,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
 
 static PyObject * set_kw(PyObject * meth_self, PyObject * args)
 {
-    // Takes self, kw, name, default=None
+    // Takes self, kw, name, default = None
     PyObject * self;
     PyObject * kw;
     char * name;
@@ -831,7 +832,7 @@ static PyObject * set_kw(PyObject * meth_self, PyObject * args)
     int i = PyList_Size(attr);
     char * entry;
     PyObject * item;
-    for(i= 0; i < PyList_Size(attr); i++) {
+    for(i = 0; i < PyList_Size(attr); i++) {
         item = PyList_GetItem(attr, i);
         if (!PyString_Check(item)) {
             continue;
