@@ -1,3 +1,10 @@
+2004-09-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.cpp: Added comment about transforming velocity and
+	  orientation.
+
+	* tests/transformtest.cpp: Add more tests for quaternion manipulation.
+
 2004-09-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Creator.cpp: Ensure self-destruct delete ops have

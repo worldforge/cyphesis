@@ -141,6 +141,7 @@ void Entity::destroy()
     for(; I != m_contains.end(); I++) {
         Entity * obj = *I;
         // FIXME take account of orientation
+        // FIXME velocity and orientation  need to be adjusted
         obj->m_location.m_loc = m_location.m_loc;
         obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.m_pos, m_location.m_orientation);
         refContains.insert(obj);
