@@ -243,10 +243,11 @@ oplist Character::Mind_Operation(const Move & op)
     string & oname = arg1["id"].AsString();
     if (world->fobjects.find(oname) == world->fobjects.end()) {
         cout << "This move op is for a phoney object" << endl << flush;
+        return res;
     }
     Thing * obj = (Thing *)world->fobjects[oname];
     if (obj != this) {
-        cout << "Moving something else." << endl << flush;
+        cout << "Moving something else. " << oname << endl << flush;
         double weight = attributes["weight"].AsFloat();
         double oweight = obj->operator[]("weight").AsFloat();
         if ((oweight < 0) || (oweight > weight)) {

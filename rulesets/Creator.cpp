@@ -22,9 +22,6 @@ oplist Creator::send_mind(const RootOperation & msg)
     // Simpified version of character method send_mind() because local mind
     // of creator is irrelevant
     oplist res;
-    if (mind == NULL) {
-        return(res);
-    }
     if ((NULL != external_mind) && (NULL != external_mind->connection)) {
         cout << "Sending to external mind" << endl << flush;
         res = external_mind->message(msg);

@@ -1,5 +1,12 @@
 2000-11-19  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Two small bug fixes. One stops a crash when the client tries
+	  to move an object which does not exist, the other removes an
+	  unnecessary pointer check which stopped the admin client from
+	  working.
+
+2000-11-19  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Filled in BaseMind functionality so it now keeps memory map up		  to date. Added necessary features to Python/C++ interface
 	  for sight operations to be passed onto python code after processing
 	  in C++. Added new type of op switch to deal with operations
