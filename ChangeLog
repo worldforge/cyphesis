@@ -1,3 +1,8 @@
+2002-09-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cyphesis-setup: Re-write of script to handle server setup.
+	  Should handle more weird happenings now.
+
 2002-09-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Admin.cpp: Cleaned up an unimplemented feature, and added it

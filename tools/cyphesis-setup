@@ -1,3 +1,14 @@
+# This file may be redistributed and modified only under the terms of
+# the GNU General Public License (See COPYING for details).
+# Copyright (C) 2002 Alistair Riddoch
+
+# The main purpose of this script is to get round the issue of access to
+# to the database required by cyphesis. We take the opportunity to resolve
+# a number of other issues at the same time. This script works at its
+# best if it is invoked by its absolute path in the directory where
+# cyphesis is installed as the user who will run cyphesis. If it is
+# run differently from this it will need to ask for details.
+
 cat << EOWELCOME
 Welcome to cyphesis.
 
@@ -5,44 +16,116 @@ This script will go through the steps required to configure
 your system so that you can run cyphesis. An important part of this
 process is setting up access to the PostgreSQL RDBMS, so this script
 must be run as root. It is strongly recommended that you run cyphesis
-using a normal user account, and you will need to set up access for this
-account to the database.
+using a normal user account, and this script will help to set up access
+for this account to the database.
 
 This script will remove any existing server rules and maps, but will
 preserve any user accounts in the server.
 
 EOWELCOME
 
-if test `whoami` != "root"; then
-    echo ERROR: $0: This script must be run as root.
+# Check who is running this script. This should either be the user who is
+# going to run cyphesis, or root if extra privs are required to set up
+# database access
+RUNNING_AS=`whoami`
+
+# See if we can work out where the bin directory is.
+if which cyphesis-config > /dev/null 2>&1; then
+    CYPHESIS_BIN=`which cyphesis-config`
+    CYPHESIS_BINDIR=`dirname $CYPHESIS_BIN`
+else
+    CYPHESIS_BINDIR=`dirname $0`
+fi
+
+# Check whether what we have is an absolute path, and if not insist
+# that we are given one. This path is used to work out the locations of
+# other files.
+if test `expr substr $CYPHESIS_BINDIR 1 1` != "/"; then
+    echo FIX Unable to work out path of installation: echo $CYPHESIS_BINDIR
+    echo "Please give the absolute path of bin directory where cyphesis is installed."
+    read -e -p "> " CYPHESIS_BINDIR
+    if test `expr substr $CYPHESIS_BINDIR 1 1` != "/"; then
+        echo $CYPHESIS_BINDIR is not an absolute path.
+        echo Please enter the path begginging with /.
+        exit 1
+    fi
+fi
+
+# Verify our binary path is okay, and report the version of cyphesis we
+# have found.
+if test -x $CYPHESIS_BINDIR/cyphesis-config; then
+    echo Cyphesis version `$CYPHESIS_BINDIR/cyphesis-config --version` detected.
+else
+    echo "ERROR: $0: Unable to find location of cyphesis programs."
     exit 1
 fi
 
-CYPHESIS_BINDIR=`dirname $0`
+# Use this to guess the directory the cyphesis files are in. We are doing
+# this to catch the case where a cyphesis binary package built for 
+# one prefix has been unpacked elsewhere. If bindir, sysconfdir or
+# datadir are not default, this will not help us, but the only time
+# this is likely to happen is if the program has been installed in
+# /usr and /etc, in which case this detection will not be required,
+# as the config and data will all be in the directories compiled
+# into the binary.
+CYPHESIS_PREFIX=`dirname $CYPHESIS_BINDIR`
 
-if test "x$CYPHESIS_BINDIR" != "x"; then
-    PATH=$CYPHESIS_BINDIR:$PATH
+if test `expr substr $CYPHESIS_PREFIX 1 1` != "/"; then
+    echo ERROR: $0: Error occured detecting installation.
+    exit 1
 fi
 
+if test -d $CYPHESIS_PREFIX; then
+    true
+else
+    echo ERROR: $0: Error occured detecting installation.
+    echo Installation directory $CYPHESIS_PREFIX was detected but does not exist.
+    exit 1
+fi
+
+# Check what config and data paths the program was compiled to use, and
+# work out whether they need to be overridden.
+CYPHESIS_COMPILED_CONF_DIR=`$CYPHESIS_BINDIR/cyphesis-config --config-dir`
+CYPHESIS_COMPILED_DATA_DIR=`$CYPHESIS_BINDIR/cyphesis-config --data-dir`
+
+CYPHESIS_CONF_DIR=$CYPHESIS_COMPILED_CONF_DIR
+CYPHESIS_DATA_DIR=$CYPHESIS_COMPILED_DATA_DIR
+
+# Check whether we have the location of the config and data files, and if
+# necessary make a last ditch attempt to get the info from the user.
+if test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
+    true
+else
+    CYPHESIS_CONF_DIR=$CYPHESIS_PREFIX/etc
+    CYPHESIS_DATA_DIR=$CYPHESIS_PREFIX/share
+    if test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
+        true
+    else
+        echo "Please give the absolute path of etc directory where cyphesis config is installed."
+        read -e -p "> " CYPHESIS_CONF_DIR
+        if test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
+            echo ERROR: $0: Unable to find config files for cyphesis in $CYPHESIS_CONF_DIR.
+        fi
+    fi
+    if test -f $CYPHESIS_DATA_DIR/cyphesis/rulesets/basic/hooks/ruleset_import_hooks.py; then
+        true
+    else
+        echo "Please give the absolute path of share directory where cyphesis data is installed."
+        read -e -p "> " CYPHESIS_DATA_DIR
+        if test -f $CYPHESIS_DATA_DIR/cyphesis/rulesets/basic/hooks/ruleset_import_hooks.py; then
+            echo ERROR: $0: Unable to find data files for cyphesis in $CYPHESIS_DATA_DIR.
+        fi
+    fi
+fi
+
+# This section handles allowing the user to override the commands used
+# to create database related things. I do not anticipate that this section
+# will be often used, and I have not tested it heavily.
 CUSTOM_OPTIONS=no
 
 if test "x$1" = "x--custom"; then
     CUSTOM_OPTIONS=yes
 fi
-
-echo Please give the name of the user you want to configure to run cyphesis.
-echo It is not recommended that the server be run as root.
-
-read -e -p 'cyphesis user> ' CYPHESIS_USER
-
-if sudo -u $CYPHESIS_USER true ; then
-    echo Verified user $CYPHESIS_USER okay
-else
-    echo ERROR: $0: User $CYPHESIS_USER does not exist
-    exit 1
-fi
-
-echo
 
 CREATE_USER_CMD=`which createuser 2>/dev/null`
 CREATE_DATABASE_CMD=`which createdb 2>/dev/null`
@@ -77,73 +160,147 @@ if test $CUSTOM_OPTIONS = "yes" ; then
     fi
 fi
 
-if sudo -u $CYPHESIS_USER $POSTGRESQL_QUERY_CMD -c "" template1 ; then
+# If we are not running as root, then assume that the user wants to set
+# up cyphesis for themselves. We cannot attempt to set up access to 
+# PostgreSQL but we can assume that we have access, and set up the
+# necessary database. We then load the rules and world data into tables
+# in the database, and exit.
+if test $RUNNING_AS != "root"; then
+    if $POSTGRESQL_QUERY_CMD -c "" $POSTGRESQL_TEMPLATE; then
+        echo Database account verified okay.
+    else
+        echo You do not seem to have a database account.
+        echo Please contact your system administrator to get access to the database.
+        echo If you run this script as root, it will attempt to set up access to the
+        echo database for you.
+        exit 1
+    fi
+    if $POSTGRESQL_QUERY_CMD -c "" cyphesis ; then
+        echo PostgreSQL database cyphesis already exists.
+    else
+        echo Creating PostgreSQL database.
+        if $CREATE_DATABASE_CMD cyphesis; then 
+            echo PostgreSQL database cyphesis created.
+        else
+            echo Unable to create cyphesis database.
+            echo It is possible that you do not have permission to create databases,
+            echo or another user may already have a database of this name.
+            echo Please see the cyphesis documentation for details of how to use change
+            echo the name of the database cyphesis connects to.
+            exit 1
+        fi
+    fi
+
+    # Currently dropping the rules and world should not have any
+    # negative consequences, as there is no instance specific data
+    # in these tables, and no tools currently exist for the user to
+    # modify them.
+    echo Clearing rules and world data...
+    $POSTGRESQL_QUERY_CMD -c "DROP TABLE rules;" cyphesis> /dev/null 2>&1
+    $POSTGRESQL_QUERY_CMD -c "DROP TABLE world;" cyphesis> /dev/null 2>&1
+    echo Cleared.
+
+    # If the directory we have found the config and data files in is not
+    # the same as the one compiled into the binary, put a config
+    # override in out home directory using the cyconfig command.
+    if test $CYPHESIS_COMPILED_CONF_DIR != $CYPHESIS_CONF_DIR; then
+        if $CYPHESIS_BINDIR/cyconfig --cyphesis:directory=$CYPHESIS_DATA_DIR --cyphesis:confdir=$CYPHESIS_CONF_DIR; then
+            true
+        else
+            echo ERROR: $0: Failed to configure cyphesis config and data directories.
+        fi
+    fi
+
+    echo
+
+    # cyloadrules automatically picks up the right files for the ruleset
+    # set in the main config.
+    echo Loading game rules into database...
+    if $CYPHESIS_BINDIR/cyloadrules; then
+        echo Loaded.
+    else
+        echo ERROR: $0: Unable to load rules into database.
+        exit 1
+    fi
+
+    echo
+
+    # The filename given here is mason specific, but as that is the only
+    # game explicitly supported at this time, this should not be a problem.
+    echo Loading world data into database...
+    if $CYPHESIS_BINDIR/cydbload $CYPHESIS_CONF_DIR/cyphesis/moraf.xml; then
+        echo Loaded.
+    else
+        echo ERROR: $0: Unable to load world into database.
+        exit 1
+    fi
+
+    echo
+    echo This system is now ready to run cyphesis.
+
+    exit 0
+fi
+
+# If we get here, we are running as root, so we assume that we are
+# setting things like database access up for the user. Running cyphesis
+# root is utterly unnecessary, and as cyphesis is largely unaudited
+# potentially dangerous.
+echo Please give the name of the user you want to configure to run cyphesis.
+echo It is not recommended that the server be run as root.
+
+read -e -p '> ' CYPHESIS_USER
+
+if su $CYPHESIS_USER -c true ; then
+    echo Verified user $CYPHESIS_USER okay
+else
+    echo ERROR: $0: User $CYPHESIS_USER does not exist
+    exit 1
+fi
+
+echo
+
+# Check whether the user already has an account. There is more than one
+# reason why this might fail, but we assume if it does that it
+# means the user does not have access. The database account we create
+# has the right to create databases.
+if su $CYPHESIS_USER -c "$POSTGRESQL_QUERY_CMD -c \"\" $POSTGRESQL_TEMPLATE" ; then
     echo PostgreSQL user $CYPHESIS_USER already exists
 else
     echo Creating PostgreSQL account for user $CYPHESIS_USER
-    sudo -u $POSTGRESQL_SUSER $CREATE_USER_CMD -A -d $CYPHESIS_USER || \
+    su $POSTGRESQL_SUSER -c "$CREATE_USER_CMD -A -d $CYPHESIS_USER" || \
         (echo ERROR: $0: Unable to create database account $CYPHESIS_USER ; \
          exit 1)
     echo PostgreSQL user $CYPHESIS_USER created
 fi
 
-if sudo -u $CYPHESIS_USER $POSTGRESQL_QUERY_CMD -c "" cyphesis ; then
+# Check whether a database called cyphesis exists, and the user we are
+# setting up can connect to it. If the database exists, but we cannot
+# connect to it, this will fail. If the user already had a PostgeSQL
+# account, but did not have the right to create databases, this will fail.
+if su $CYPHESIS_USER -c "$POSTGRESQL_QUERY_CMD -c \"\" cyphesis" ; then
     echo PostgreSQL database cyphesis already exists
 else
     echo Creating PostgreSQL database cyphesis as user $CYPHESIS_USER
-    sudo -u $CYPHESIS_USER $CREATE_DATABASE_CMD cyphesis
+    su $CYPHESIS_USER -c "$CREATE_DATABASE_CMD cyphesis"
     echo PostgreSQL database cyphesis created as $CYPHESIS_USER
 fi
 
 echo
 
+# Currently dropping the rules and world should not have any
+# negative consequences, as there is no instance specific data
+# in these tables, and no tools currently exist for the user to
+# modify them.
 echo Clearing rules and world data...
-sudo -u $CYPHESIS_USER $POSTGRESQL_QUERY_CMD -c "DROP TABLE rules;" cyphesis > /dev/null 2>&1
-sudo -u $CYPHESIS_USER $POSTGRESQL_QUERY_CMD -c "DROP TABLE world;" cyphesis > /dev/null 2>&1
+su $CYPHESIS_USER -c "$POSTGRESQL_QUERY_CMD -c \"DROP TABLE rules;\" cyphesis" > /dev/null 2>&1
+su $CYPHESIS_USER -c "$POSTGRESQL_QUERY_CMD -c \"DROP TABLE world;\" cyphesis" > /dev/null 2>&1
 echo Cleared.
 
-CYPHESIS_DIR=""
-
-if cyphesis-config --version > /dev/null ; then
-    true
-else
-    read -e -p "Please give directory where cyphesis has been installed> " CYPHESIS_DIR
-    CYPHESIS_BINDIR=$CYPHESIS_DIR/bin
-    PATH=$CYPHESIS_BINDIR:$PATH
-    if cyphesis-config --version > /dev/null ; then
-        true
-    else
-        echo "ERROR: $0: Unable to find location of cyphesis programs."
-        exit 1
-    fi
-fi
-
-CYPHESIS_COMPILED_CONF_DIR=`cyphesis-config --config-dir`
-CYPHESIS_COMPILED_DATA_DIR=`cyphesis-config --data-dir`
-
-CYPHESIS_CONF_DIR=$CYPHESIS_COMPILED_CONF_DIR
-CYPHESIS_DATA_DIR=$CYPHESIS_COMPILED_DATA_DIR
-
-echo Trying $CYPHESIS_CONF_DIR
-
-if test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
-    true
-else
-    if test "x$CYPHESIS_BINDIR" !=  "x"; then
-        echo TWEAK
-        CYPHESIS_CONF_DIR=`dirname $CYPHESIS_BINDIR`/etc
-        CYPHESIS_DATA_DIR=`dirname $CYPHESIS_BINDIR`/share
-    fi
-    echo "Trying $CYPHESIS_BINDIR -> $CYPHESIS_CONF_DIR"
-    if test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
-        true
-    else
-        echo ERROR: $0: Unable to find config files for cyphesis.
-    fi
-fi
-
+# If the directory we have found the config and data files in is not
+# the same as the one compiled into the binary, put a config
+# override in out home directory using the cyconfig command.
 if test $CYPHESIS_COMPILED_CONF_DIR != $CYPHESIS_CONF_DIR; then
-    if sudo -H -u $CYPHESIS_USER cyconfig --cyphesis:directory=$CYPHESIS_DATA_DIR --cyphesis:confdir=$CYPHESIS_CONF_DIR; then
+    if su - $CYPHESIS_USER -c "$CYPHESIS_BINDIR/cyconfig --cyphesis:directory=$CYPHESIS_DATA_DIR --cyphesis:confdir=$CYPHESIS_CONF_DIR"; then
         true
     else
         echo ERROR: $0: Failed to configure cyphesis config and data directories.
@@ -152,8 +309,10 @@ fi
 
 echo
 
+# cyloadrules automatically picks up the right files for the ruleset
+# set in the main config.
 echo Loading game rules into database...
-if sudo -H -u $CYPHESIS_USER cyloadrules; then
+if su - $CYPHESIS_USER -c "$CYPHESIS_BINDIR/cyloadrules"; then
     echo Loaded.
 else
     echo ERROR: $0: Unable to load rules into database.
@@ -162,11 +321,13 @@ fi
 
 echo
 
+# The filename given here is mason specific, but as that is the only
+# game explicitly supported at this time, this should not be a problem.
 echo Loading world data into database...
-if sudo -H -u $CYPHESIS_USER cydbload $CYPHESIS_CONF_DIR/cyphesis/moraf.xml; then
+if su - $CYPHESIS_USER -c "$CYPHESIS_BINDIR/cydbload $CYPHESIS_CONF_DIR/cyphesis/moraf.xml"; then
     echo Loaded.
 else
-    echo ERROR: $0: Unable to load rules into database.
+    echo ERROR: $0: Unable to load world into database.
     exit 1
 fi
 
