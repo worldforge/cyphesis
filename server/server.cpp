@@ -214,6 +214,8 @@ int main(int argc, char ** argv)
     init_python_api();
     debug(cout << Py_GetPath() << std::endl << flush;);
 
+    { // scope for CommServer
+
     // Create commserver instance that will handle connections from clients.
     // The commserver will create the other server related objects, and the
     // world object pair (World + WorldRouter), and initialise the admin
@@ -282,6 +284,10 @@ int main(int argc, char ** argv)
         std::cout << "Performing clean shutdown..." << std::endl << std::flush;
     }
 
+    s.metaserverTerminate();
+
+    } // close scope of CommServer
+
     shutdown_python_api();
 
     Persistance::shutdown();
@@ -291,7 +297,6 @@ int main(int argc, char ** argv)
 
     delete global_conf;
 
-    s.metaserverTerminate();
     if (!daemon_flag) {
         std::cout << "Clean shutdown complete." << std::endl << std::flush;
     }

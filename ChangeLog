@@ -1,5 +1,15 @@
 2001-10-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Made variable names clearer.
+
+	* server/Connection.cpp: Fixed adding accounts to lobby on login.
+
+	* server/server.cpp: Limited the scope of the CommServer object
+	  so that it is destructed before the rest of shutdown can
+	  take place.
+
+2001-10-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.cpp, server/Lobby.cpp: Fixed OOG chat semantics.
 
 2001-10-09  Al Riddoch  <alriddoch@zepler.org>

@@ -124,7 +124,6 @@ oplist Connection::LoginOperation(const Login & op)
             if (player != NULL) {
                 player->world=&server.getWorld();
                 server.addObject(player);
-                server.lobby.addObject(player);
             }
         }
         if (player && (account_id.size()!=0) && (password==player->password)) {
@@ -135,6 +134,7 @@ oplist Connection::LoginOperation(const Login & op)
                 addObject(I->second);
             }
             player->connection=this;
+            server.lobby.addObject(player);
             Info * info = new Info(Info::Instantiate());
             info->SetArgs(Object::ListType(1,player->asObject()));
             info->SetRefno(op.GetSerialno());

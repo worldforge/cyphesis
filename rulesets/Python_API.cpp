@@ -217,9 +217,9 @@ static PyObject * Get_PyClass(const std::string & package,
     return my_class;
 }
 
-static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyclass)
+static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyClass)
 {
-    PyObject * pyob = PyEval_CallFunction(pyclass,"(O)", pyThing);
+    PyObject * pyob = PyEval_CallFunction(pyClass,"(O)", pyThing);
     
     if (pyob == NULL) {
         if (PyErr_Occurred() == NULL) {
@@ -229,7 +229,7 @@ static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyclass)
             PyErr_Print();
         }
     }
-    Py_DECREF(pyclass);
+    Py_DECREF(pyClass);
     Py_DECREF(pyThing);
     return pyob;
 }
