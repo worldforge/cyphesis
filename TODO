@@ -1,8 +1,8 @@
-Implement consts::enable_database, ie add the option to not touch the database
-at all.
+Add a destroyed flag to Entity, and keep note of when we broadcast from
+a destroyed entity. Make sure that the parent of a destroyed entity is still
+available.
 
-Add propper reference counting to MemEntity. Also make sure stamp is updated
-and checked, and implement Unseen.
+Also make sure stamp is updated in MemMap and checked, and implement Unseen.
 
 Implement trivial combat, and code up a bunny bashing quests for the hard
 of thinking.
