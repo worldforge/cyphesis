@@ -1,5 +1,12 @@
 2004-10-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/ClientConnection.cpp, common/globals.cpp, common/globals.h,
+	  server/CommUnixListener.cpp, tools/cycmd.cpp: Add a global and a
+	  config option for the unix socket filename. Update man pages
+	  to document the config option.
+
+2004-10-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/client.cpp, common/globals.cpp, server/server.cpp,
 	  tools/cycmd.cpp: Get rid of nasy cast, and use string accessor
 	  for varconf variables.

@@ -60,7 +60,7 @@ void CommUnixListener::dispatch()
 /// \brief Create and bind the listen socket.
 int CommUnixListener::setup()
 {
-    m_path = var_directory + "/tmp/cyphesis.sock";
+    m_path = var_directory + "/tmp/" + socket_name;
 
     m_unixListener.open(m_path);
 

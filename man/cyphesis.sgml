@@ -110,6 +110,22 @@ Specifies the port number to use to listen for incoming client connections.
 
     <varlistentry>
      <term><fieldsynopsis>
+       <varname>unixport</varname>
+       <initializer>="cyphesis.sock"</initializer>
+      </fieldsynopsis>
+     </term>
+     <listitem>
+      <para>
+Local liston socket for Unix domain connections.
+      </para>
+      <para>
+Specifies the filename to use to listen for local trusted client connections.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><fieldsynopsis>
        <varname>restricted</varname>
        <initializer>=false</initializer>
       </fieldsynopsis>

@@ -14,6 +14,8 @@ ruleset="mason"
 # servername="Mason server"
 # TCP port to listen on
 tcpport=6767
+# Unix socket to listen on
+unixport="cyphesis.sock"
 # Resticted mode prevents creation of user accounts
 restricted="false"
 # Register server with the meta server
@@ -23,8 +25,6 @@ metaserver="metaserver.worldforge.org"
 daemon="false"
 # Leave control of NPCs to AI client
 useaiclient="false"
-# Account to be used by the AI client
-aiaccount="ai"
 # Database configuration
 # Do not specify a host, unless it is something other than localhost
 # dbserver = "darkstar"

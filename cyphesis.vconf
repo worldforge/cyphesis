@@ -14,6 +14,8 @@ ruleset="mason"
 # servername="Mason server"
 # TCP port to listen on
 tcpport=6767
+# Unix socket to listen on
+unixport="cyphesis.sock"
 # Resticted mode prevents creation of user accounts
 restricted="false"
 # Register server with the meta server

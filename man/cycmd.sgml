@@ -42,17 +42,17 @@ section name on the command line.
    <variablelist>
     <varlistentry>
      <term><fieldsynopsis>
-       <varname>package</varname>
-       <initializer>="define_world"</initializer>
+       <varname>serverhost</varname>
+       <initializer>=hostname</initializer>
       </fieldsynopsis>
      </term>
      <listitem>
       <para>
-Python package which contains the client function.
+Hostname of the server to connect to.
       </para>
       <para>
-This setting provides the name of the Python package which contains the
-function that should run by the client.
+This setting provides the hostname of the system where cyphesis is running
+that <command>cycmd</command> should try and connect to.
       </para>
      </listitem>
     </varlistentry>
@@ -82,6 +82,22 @@ Specifies the port number to use when connecting to the server.
       </para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term><fieldsynopsis>
+       <varname>unixport</varname>
+       <initializer>="cyphesis.sock"</initializer>
+      </fieldsynopsis>
+     </term>
+     <listitem>
+      <para>
+Local liston socket for Unix domain connections.
+      </para>
+      <para>
+Specifies the filename to use to listen for local trusted client connections.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
   </refsect2>
  </refsect1>
 
@@ -175,7 +191,6 @@ definition.
    <varlistentry>
     <term><cmdsynopsis>
       <command>monitor</command>
-      <arg choice="req">typename</arg>
      </cmdsynopsis>
     </term>
     <listitem>
