@@ -138,12 +138,12 @@ will need to ask your systems administrator to create a database account for
 you. Once this has been done, you can run cyphesis-setup, and it will handle
 the rest of the setup process for you.
 
-If cyphesis-setup works, you are now ready to run the server. The server can
-be started by running the cyphesis command. Once the server has been started,
-the client cyclient needs to be run to populate the server. Run cyclient,
-and it will print a list of actions it performs to populate the server with
-a running game, and then exit. The server is now running, and should be ready to
-accept players.
+If cyphesis-setup works, you are now ready to run the server. The server can be
+started by running the cyphesis command. Once the server has been started, the
+client cyclient needs to be run to populate the server. Run cyclient, and it
+will print a list of actions it performs to populate the server with a running
+game, and then exit. The server is now running, and should be ready to accept
+players.
 
 The rest of the information in this file details setting up cyphesis by hand,
 and is intended for users who are interested in how the process works, or user
