@@ -278,7 +278,7 @@ void Thing::MoveOperation(const Move & op, OpVector & res)
         ListType this_as_args(1,this_ent);
         EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
         EntitySet::const_iterator Iend = m_location.m_loc->m_contains.end();
-        for(; I != Iend; I++) {
+        for(; I != Iend; ++I) {
             float oldDist = squareDistance((*I)->m_location.m_pos, oldpos),
                   newDist = squareDistance((*I)->m_location.m_pos, m_location.m_pos),
                   oSquSize = boxSquareSize((*I)->m_location.m_bBox);

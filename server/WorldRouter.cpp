@@ -107,9 +107,9 @@ void WorldRouter::addOperationToQueue(RootOperation & op,
     t = t + op.getFutureSeconds();
     op.setSeconds(t);
     op.setFutureSeconds(0.0);
-    OpQueue::iterator I;
-    for(I = m_operationQueue.begin();
-        (I != m_operationQueue.end()) && ((*I)->getSeconds() <= t) ; I++);
+    OpQueue::iterator I = m_operationQueue.begin();
+    OpQueue::iterator Iend = m_operationQueue.end();
+    for (; (I != Iend) && ((*I)->getSeconds() <= t) ; ++I);
     m_operationQueue.insert(I, &op);
 }
 

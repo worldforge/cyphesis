@@ -1105,7 +1105,7 @@ void Character::sendMind(const RootOperation & op, OpVector & res)
             m_mind->operation(op, mindRes);
             // Discard all the local results
             OpVector::const_iterator Jend = mindRes.end(); 
-            for (OpVector::const_iterator J = mindRes.begin(); J != Jend; J++) {
+            for (OpVector::const_iterator J = mindRes.begin(); J != Jend; ++J) {
                 delete *J;
             }
         }

@@ -70,7 +70,7 @@ static PyObject * Map_find_by_type(PyMap * self, PyObject * args)
     } 
     MemEntityVector::const_iterator Iend = res.end();
     int i = 0;
-    for (MemEntityVector::const_iterator I = res.begin(); I != Iend; I++, i++) {
+    for (MemEntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
         thing = newPyEntity();
         if (thing == NULL) {
             Py_DECREF(list);

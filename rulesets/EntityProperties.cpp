@@ -60,7 +60,7 @@ void ImmutableProperty<EntitySet>::get(Atlas::Message::Element & e)
     e = ListType();
     ListType & contlist = e.asList();
     EntitySet::const_iterator Iend = m_data.end();
-    for (EntitySet::const_iterator I = m_data.begin(); I != Iend; I++) {
+    for (EntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
         contlist.push_back((*I)->getId());
     }
 }
