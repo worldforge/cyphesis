@@ -10,10 +10,11 @@
 #include "rulesets/Plant.h"
 
 #include "common/Database.h"
-#include "common/stringstream.h"
 
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
+
+#include <sstream>
 
 template <class T>
 void Persistor<T>::uEntity(Entity & t, std::string & c)

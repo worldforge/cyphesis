@@ -10,7 +10,6 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/utility.h"
-#include "common/stringstream.h"
 
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Logout.h>
@@ -27,6 +26,7 @@
 #include <Atlas/Codec.h>
 
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 
 static const bool debug_flag = false;

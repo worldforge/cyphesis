@@ -1,5 +1,13 @@
 2004-11-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/stringstream.h, rulesets/MemMap.cpp,
+	  rulesets/World.cpp, server/CommClient.cpp, server/Persistor_impl.h,
+	  server/Restorer_impl.h, server/WorldRouter.cpp, server/server.cpp,
+	  tools/cyisoload.cpp: Switch code to including <sstream> directly
+	  and remove obsolete wrapper header.
+
+2004-11-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Plant.cpp: Quick hack to allow axe to be used to
 	  convert felled tree into a lumber object.
 

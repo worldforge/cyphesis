@@ -9,7 +9,6 @@
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
-#include "common/stringstream.h"
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
@@ -20,6 +19,8 @@
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
+
+#include <sstream>
 
 #include <cassert>
 

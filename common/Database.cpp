@@ -7,7 +7,6 @@
 #include "log.h"
 #include "debug.h"
 #include "globals.h"
-#include "stringstream.h"
 
 #include <Atlas/Message/Encoder.h>
 #include <Atlas/Codecs/XML.h>
@@ -15,6 +14,7 @@
 #include <varconf/Config.h>
 
 #include <iostream>
+#include <sstream>
 
 #include <cassert>
 

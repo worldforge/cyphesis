@@ -12,7 +12,6 @@
 #include "common/debug.h"
 #include "common/const.h"
 #include "common/globals.h"
-#include "common/stringstream.h"
 #include "common/globals.h"
 #include "common/Database.h"
 #include "common/random.h"
@@ -22,6 +21,8 @@
 
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
+
+#include <sstream>
 
 static const bool debug_flag = false;
 

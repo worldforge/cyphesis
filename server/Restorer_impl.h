@@ -10,11 +10,12 @@
 #include "Persistor.h"
 
 #include "common/Database.h"
-#include "common/stringstream.h"
 
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
+
+#include <sstream>
 
 template <class T>
 void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)

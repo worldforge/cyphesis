@@ -27,9 +27,10 @@
 #include "common/inheritance.h"
 #include "common/system.h"
 #include "common/nls.h"
-#include "common/stringstream.h"
 
 #include <varconf/Config.h>
+
+#include <sstream>
 
 static const bool debug_flag = false;
 

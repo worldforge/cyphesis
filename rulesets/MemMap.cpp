@@ -8,9 +8,10 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/stringstream.h"
 
 #include <Atlas/Objects/Operation/Look.h>
+
+#include <sstream>
 
 static const bool debug_flag = false;
 

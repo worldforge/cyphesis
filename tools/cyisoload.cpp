@@ -5,7 +5,6 @@
 #error This file has been removed from the build
 
 #include "common/Database.h"
-#include "common/stringstream.h"
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
@@ -13,6 +12,7 @@
 #include <coal/isoloader.h>
 
 #include <string>
+#include <sstream>
 #include <fstream>
 
 using Atlas::Message::Element;
