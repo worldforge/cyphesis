@@ -60,6 +60,7 @@ BaseEntity * Account::addCharacter(const string & typestr, const Object & ent)
     entmap["parents"] = Object::ListType(1,"coin");
     entmap["pos"] = Vector3D(0,0,0).asObject();
     entmap["loc"] = chr->fullid;
+    entmap["name"] = "coin";
     for(int i=0; i < 10; i++) {
         Create * c = new Create(Create::Instantiate());
         c->SetArgs(Object::ListType(1,entmap));

@@ -44,4 +44,7 @@ void Location::addToObject(Object::MapType & omap) const
     if (bbox) {
         omap["bbox"] = bbox.asObject();
     }
+    if (bmedian) {
+        omap["bmedian"] = bmedian.asObject();
+    }
 }

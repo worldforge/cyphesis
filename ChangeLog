@@ -1,3 +1,13 @@
+2001-07-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp: Fixed setting name of characters startup coin
+	  objects.
+
+	* modules/Location.cpp: Added bounding median to attributes sent
+	  using Atlas.
+
+	* common/BaseEntity.cpp: Always set the id on an entity.
+
 2001-07-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/server.cpp, server/ServerRouting.h, server/ServerRouting.cpp,

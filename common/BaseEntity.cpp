@@ -40,9 +40,7 @@ Object BaseEntity::asObject() const
 void BaseEntity::addToObject(Object::MapType & omap) const
 {
     debug( cout << "BaseEntity::addToObject" << endl << flush;);
-    if (!fullid.empty()) {
-        omap["id"] = fullid;
-    }
+    omap["id"] = fullid;
 }
 
 oplist BaseEntity::externalMessage(const RootOperation & op)

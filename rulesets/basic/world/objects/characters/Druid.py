@@ -3,4 +3,4 @@
 
 from world.objects.Character import Character
 
-class Smith(Character): pass
+class Druid(Character): pass
