@@ -1,5 +1,9 @@
 2005-04-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Motion.h: New base class for handling motion.
+
+2005-04-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* autopackage/default.apspec.in, configure.ac: Update the autopackage
 	  spec so it builds binaries statically, and depends on python.
 
