@@ -472,12 +472,13 @@ OpVector BaseMind::operation(const RootOperation & op)
     while ((look = m_map.lookId()) != NULL) {
         res.push_back(look);
     }
-    OpVector res2 = callOperation(op);
+    OpVector res2;
+    m_script->Operation("call_triggers", op, res2);
     for(OpVector::const_iterator I = res2.begin(); I != res2.end(); I++) {
         res.push_back(*I);
     }
-    res2.clear();
-    m_script->Operation("call_triggers", op, res2);
+    // res2.clear();
+    res2 = callOperation(op);
     for(OpVector::const_iterator I = res2.begin(); I != res2.end(); I++) {
         res.push_back(*I);
     }

@@ -1,5 +1,15 @@
 2004-05-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/BaseMind.cpp: Re-order the way ops are handled to avoid
+	  re-adding deleted entities to memory.
+
+	* Fix greet goals so it works more immediatly.
+
+	* Add a quick client function for populating the world with a minimal
+	  test case for AI memory.
+
+2004-05-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Add to python search path directly, rather
 	  than using an environment hack.
 

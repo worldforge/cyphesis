@@ -303,3 +303,11 @@ def add_pigs(mapeditor):
         piglets.append(m.make('pig',type='pig',xyz=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
     m.learn(piglets,pig_goals)
     m.own(merchant,piglets)
+
+def add_memtest(mapeditor):
+#   general things
+
+    m=editor(mapeditor)
+
+    m.make('settler',type='settler',xyz=(0,5,5))
+    m.make('oak',type='oak',xyz=(5,0,5))
