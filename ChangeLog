@@ -1,3 +1,8 @@
+2004-11-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Print a more friendly message including a URL for
+	  more info if the required WF libraries can't be found.
+
 2004-11-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.h, server/WorldRouter.cpp: Modify operation()

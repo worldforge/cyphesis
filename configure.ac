@@ -165,7 +165,7 @@ PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.94 skstream-0.3 >= 0.2.90 varconf-1.
         SYSTEM_LIBS="$SYSTEM_LIBS $DEPS_LIBS"
     ],
     [
-        AC_MSG_ERROR([Cannot find valid versions of required WorldForge libraries.])
+        AC_MSG_ERROR([Cannot find valid versions of required WorldForge libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
     ])
 
 AM_PATH_PSQL(7.1.0,
