@@ -77,7 +77,7 @@ int CommListener::setup(int port)
 }
 
 /// \brief Accept a new connect to the listen socket.
-bool CommListener::accept()
+int CommListener::accept()
 {
     // Low level socket code to accept a new client connection, and create
     // the associated commclient object.
@@ -89,7 +89,7 @@ bool CommListener::accept()
                            (struct sockaddr *)&sst, &addr_len);
 
     if (asockfd < 0) {
-        return false;
+        return -1;
     }
     debug(std::cout << "Accepted" << std::endl << std::flush;);
     
@@ -119,5 +119,5 @@ bool CommListener::accept()
     // Add this new client to the list.
     m_commServer.add(newcli);
 
-    return true;
+    return 0;
 }

@@ -69,13 +69,13 @@ int CommUnixListener::setup()
 }
 
 /// \brief Accept a new connect to the listen socket.
-bool CommUnixListener::accept()
+int CommUnixListener::accept()
 {
     debug(std::cout << "Local accepting.." << std::endl << std::flush;);
     int asockfd = m_unixListener.accept();
 
     if (asockfd < 0) {
-        return false;
+        return -1;
     }
     debug(std::cout << "Local accepted" << std::endl << std::flush;);
     CommLocalClient * newcli = new CommLocalClient(m_commServer, asockfd);
@@ -85,5 +85,5 @@ bool CommUnixListener::accept()
     // Add this new client to the list.
     m_commServer.add(newcli);
 
-    return true;
+    return 0;
 }

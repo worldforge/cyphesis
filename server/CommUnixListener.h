@@ -21,7 +21,7 @@ class CommUnixListener : public CommSocket {
     /// Filesystem path of the unix socket.
     std::string m_path;
 
-    bool accept();
+    int accept();
 
   public:
     explicit CommUnixListener(CommServer & svr);

@@ -17,7 +17,7 @@ class CommListener : public CommSocket {
     /// skstream object to manage the listen socket.
     tcp_socket_server m_listener;
 
-    bool accept();
+    int accept();
 
   public:
     explicit CommListener(CommServer & svr);
