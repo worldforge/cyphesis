@@ -49,6 +49,8 @@ BaseMind::BaseMind(const std::string & id, const std::string & body_name)
     subscribe("sound", OP_SOUND);
     subscribe("save", OP_SAVE);
     subscribe("load", OP_LOAD);
+    subscribe("tick", OP_TICK);
+    subscribe("setup", OP_SETUP);
     subscribe("appearance", OP_APPEARANCE);
     subscribe("disappearance", OP_DISAPPEARANCE);
 

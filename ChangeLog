@@ -1,5 +1,10 @@
 2002-05-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/BaseMind.cpp: Fix NPC behavoir by ensuring that tick
+	  and setup ops reach scripts.
+
+2002-05-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, rulesets/Movement.cpp, rulesets/Movement.h:
 	  Tweaked movement code to cut down on redundant ticks when movement
 	  has reached destination. Fixed bug where character jumped if it

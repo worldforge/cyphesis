@@ -1,6 +1,3 @@
-  Fix turning when not moving, so it sends an op indicating change in
-  orientation.
-
   For entities which have a bbox, which other entities do not collide
   with, such as geo entities, provide a virtual methods which allows the
   collission code to check whether entities within this bbox should
