@@ -52,14 +52,16 @@ Connection::~Connection()
     assert(!m_obsolete);
     m_obsolete = true;
     ConMap::const_iterator J = m_destroyedConnections.begin();
-    for(; J != m_destroyedConnections.end(); J++) {
+    ConMap::const_iterator Jend = m_destroyedConnections.end();
+    for (; J != Jend; ++J) {
         J->second->disconnect();
         delete J->second;
     }
 
     debug(std::cout << "destroy called" << std::endl << std::flush;);
-    BaseDict::const_iterator I;
-    for(I = m_objects.begin(); I != m_objects.end(); I++) {
+    
+    BaseDict::const_iterator Iend = m_objects.end();
+    for (BaseDict::const_iterator I = m_objects.begin(); I != Iend; ++I) {
         Account * ac = dynamic_cast<Account *>(I->second);
         if (ac != NULL) {
             m_server.m_lobby.delObject(ac);
@@ -251,7 +253,8 @@ void Connection::LoginOperation(const Login & op, OpVector & res)
     // Connect everything up
     addObject(player);
     EntityDict::const_iterator J = player->getCharacters().begin();
-    for (; J != player->getCharacters().end(); J++) {
+    EntityDict::const_iterator Jend = player->getCharacters().end();
+    for (; J != Jend; ++J) {
         addObject(J->second);
     }
     player->m_connection = this;

@@ -17,9 +17,10 @@ Root * Object_asRoot(const Element & o)
     Root * obj;
 
     if (!o.isMap()) return NULL;
-    MapType::const_iterator I = o.asMap().find("objtype");
-    if ((I != o.asMap().end()) &&
-        (I->second.isString())) {
+    const MapType & omap = o.asMap();
+    MapType::const_iterator I = omap.find("objtype");
+    MapType::const_iterator Iend = omap.end();
+    if ((I != Iend) && (I->second.isString())) {
         if ((I->second.asString() == "object") ||
             (I->second.asString() == "obj")) {
             obj = new RootEntity;
@@ -31,8 +32,7 @@ Root * Object_asRoot(const Element & o)
     } else {
         obj = new Root;
     }
-    for (MapType::const_iterator I = o.asMap().begin();
-            I != o.asMap().end(); I++) {
+    for (MapType::const_iterator I = omap.begin(); I != Iend; ++I) {
         obj->setAttr(I->first, I->second);
     }
     return obj;
@@ -41,11 +41,12 @@ Root * Object_asRoot(const Element & o)
 bool Object_asOperation(const MapType & ent, RootOperation & op)
 {
     MapType::const_iterator I = ent.find("objtype");
-    if ((I == ent.end()) || (!I->second.isString()) ||
+    MapType::const_iterator Iend = ent.end();
+    if ((I == Iend) || (!I->second.isString()) ||
         (I->second.asString() != "op")) {
         return false;
     }
-    for (I = ent.begin(); I != ent.end(); ++I) {
+    for (I = ent.begin(); I != Iend; ++I) {
         op.setAttr(I->first, I->second);
     }
     return true;

@@ -141,9 +141,9 @@ PyMessageElement * newPyMessageElement()
 static PyObject * MapType_asPyObject(const MapType & map)
 {
     PyObject * args_pydict = PyDict_New();
-    MapType::const_iterator I;
     PyMessageElement * item;
-    for(I = map.begin(); I != map.end(); I++) {
+    MapType::const_iterator Iend = map.end();
+    for (MapType::const_iterator I = map.begin(); I != Iend; ++I) {
         const std::string & key = I->first;
         item = newPyMessageElement();
         if (item == NULL) {
@@ -161,10 +161,10 @@ static PyObject * MapType_asPyObject(const MapType & map)
 static PyObject * ListType_asPyObject(const ListType & list)
 {
     PyObject * args_pylist = PyList_New(list.size());
-    ListType::const_iterator I;
     int j = 0;
     PyMessageElement * item;
-    for(I = list.begin(); I != list.end(); I++, j++) {
+    ListType::const_iterator Iend = list.end();
+    for (ListType::const_iterator I = list.begin(); I != Iend; ++I, ++j) {
         item = newPyMessageElement();
         if (item == NULL) {
             PyErr_SetString(PyExc_MemoryError,"error creating list");
@@ -285,8 +285,8 @@ Element PyObject_asMessageElement(PyObject * o)
         Element msg(_list);
         ListType & entlist = msg.asList();
         const OpVector & ops = *opl->ops;
-        OpVector::const_iterator I;
-        for(I = ops.begin(); I != ops.end(); I++) {
+        OpVector::const_iterator Iend = ops.end();
+        for (OpVector::const_iterator I = ops.begin(); I != Iend; ++I) {
             entlist.push_back((*I)->asObject());
         }
         return msg;

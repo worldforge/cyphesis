@@ -6,11 +6,6 @@
 
 #include "LineProperty.h"
 
-#include "common/type_utils.h"
-#include "common/debug.h"
-
-static const bool debug_flag = false;
-
 Line::Line(const std::string & id) : Line_parent(id)
 {
     // Default to a 0.1m cube

@@ -64,12 +64,12 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId))
 /// the server, clears the operation queue
 WorldRouter::~WorldRouter()
 {
-    OpQueue::const_iterator I = m_operationQueue.begin();
     { 
         debug(std::cout << "Flushing op queue with " << m_operationQueue.size()
                         << " ops" << std::endl << std::flush;);
     }
-    for (; I != m_operationQueue.end(); I++) {
+    OpQueue::const_iterator Iend = m_operationQueue.end();
+    for (OpQueue::const_iterator I = m_operationQueue.begin(); I != Iend; ++I) {
         delete *I;
     }
     { 
@@ -77,8 +77,8 @@ WorldRouter::~WorldRouter()
                         << " entities" << std::endl << std::flush;);
     }
     m_eobjects.erase(m_gameWorld.getId());
-    EntityDict::const_iterator J = m_eobjects.begin();
-    for(; J != m_eobjects.end(); J++) {
+    EntityDict::const_iterator Jend = m_eobjects.end();
+    for (EntityDict::const_iterator J = m_eobjects.begin(); J != Jend; ++J) {
         delete J->second;
     }
     // This should be deleted here rather than in the base class because
@@ -320,7 +320,8 @@ void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
     OpVector res;
     e->operation(op, res);
     setRefno(res, op);
-    for(OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
+    OpVector::const_iterator Iend = res.end();
+    for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
         setSerialnoOp(**I);
         message(**I, e);
     }
@@ -337,7 +338,8 @@ void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
     OpVector res;
     e->operation(op, res);
     setRefno(res, op);
-    for(OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
+    OpVector::const_iterator Iend = res.end();
+    for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
         RootOperation & newOp = **I;
         setSerialnoOp(newOp);
         if (newOp.getParents().front().asString() == "delete") {
@@ -408,8 +410,9 @@ void WorldRouter::operation(const RootOperation & op)
             log(ERROR, "WorldRouter::operation broadcasting op with missing from");
             std::cerr << op.getParents().front().asString() << " op from "
                       << from << std::endl << std::flush;
-            EntitySet::const_iterator I;
-            for(I = broadcast.begin(); I != broadcast.end(); I++) {
+            EntitySet::const_iterator I = broadcast.begin();
+            EntitySet::const_iterator Iend = broadcast.end();
+            for (; I != Iend; ++I) {
                 newop.setTo((*I)->getId());
                 deliverTo(newop, *I);
             }
@@ -417,8 +420,9 @@ void WorldRouter::operation(const RootOperation & op)
             Entity * fromEnt = J->second;
             assert(fromEnt != NULL);
             float fromSquSize = boxSquareSize(fromEnt->m_location.m_bBox);
-            EntitySet::const_iterator I;
-            for(I = broadcast.begin(); I != broadcast.end(); I++) {
+            EntitySet::const_iterator I = broadcast.begin();
+            EntitySet::const_iterator Iend = broadcast.end();
+            for (; I != Iend; ++I) {
                 // Calculate square distance to target
                 float dist = squareDistance(fromEnt->m_location, (*I)->m_location);
                 float view_factor = fromSquSize / dist;
@@ -502,8 +506,8 @@ bool WorldRouter::idle()
 /// instance with this name was not found.
 Entity * WorldRouter::findByName(const std::string & name)
 {
-    EntityDict::const_iterator I = m_eobjects.begin();
-    for(; I != m_eobjects.end(); ++I) {
+    EntityDict::const_iterator Iend = m_eobjects.end();
+    for (EntityDict::const_iterator I = m_eobjects.begin(); I != Iend; ++I) {
         if (I->second->getName() == name) {
             return I->second;
         }
@@ -519,8 +523,8 @@ Entity * WorldRouter::findByName(const std::string & name)
 /// instance was found.
 Entity * WorldRouter::findByType(const std::string & type)
 {
-    EntityDict::const_iterator I = m_eobjects.begin();
-    for(; I != m_eobjects.end(); ++I) {
+    EntityDict::const_iterator Iend = m_eobjects.end();
+    for(EntityDict::const_iterator I = m_eobjects.begin(); I != Iend; ++I) {
         if (I->second->getType() == type) {
             return I->second;
         }

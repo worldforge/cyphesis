@@ -34,7 +34,8 @@ void Stackable::CombineOperation(const Combine & op, OpVector & res)
         return;
     }
     const ListType & args = op.getArgs();
-    for(ListType::const_iterator I = args.begin(); I!= args.end(); I++) {
+    ListType::const_iterator Iend = args.end();
+    for (ListType::const_iterator I = args.begin(); I != Iend; ++I) {
         const std::string & id = I->asMap().find("id")->second.asString();
         if (id == getId()) { continue; }
         Entity * ent = m_world->getObject(id);
@@ -61,7 +62,8 @@ void Stackable::DivideOperation(const Divide & op, OpVector & res)
         return;
     }
     const ListType & args = op.getArgs();
-    for(ListType::const_iterator I = args.begin(); I!=args.end(); I++) {
+    ListType::const_iterator Iend = args.end();
+    for (ListType::const_iterator I = args.begin(); I != Iend; ++I) {
         const MapType & ent = I->asMap();
         int new_num = 1;
         MapType::const_iterator J = ent.find("num");

@@ -75,7 +75,8 @@ class FileDecoder : public Atlas::Message::DecoderBase {
                 const ListType & contlist = I->second.asList();
                 ListType & worldlist = m_world.find("contains")->second.asList();
                 ListType::const_iterator J = contlist.begin();
-                for (;J != contlist.end(); ++J) {
+                ListType::const_iterator Jend = contlist.end();
+                for (; J != Jend; ++J) {
                     worldlist.push_back(*J);
                 }
                 m_db.updateInWorld(m_world, id);

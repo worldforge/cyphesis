@@ -288,10 +288,10 @@ static PyObject * Operation_getArgs(PyOperation * self)
     // Here we go:- 
     ListType & args_list = self->operation->getArgs();
     PyObject * args_pylist = PyList_New(args_list.size());
-    ListType::const_iterator I;
     int j = 0;
     PyMessageElement * item;
-    for(I = args_list.begin();I != args_list.end(); I++, j++) {
+    ListType::const_iterator Iend = args_list.end();
+    for (ListType::const_iterator I = args_list.begin(); I != Iend; ++I, ++j) {
         item = newPyMessageElement();
         if (item == NULL) {
             PyErr_SetString(PyExc_TypeError,"error creating list");
@@ -340,8 +340,8 @@ static PyObject * Operation_seq_item(PyOperation * self, int item)
 #endif // NDEBUG
     ListType & args_list = self->operation->getArgs();
     ListType::const_iterator I = args_list.begin();
-    int i;
-    for(i = 0; i < item && I != args_list.end(); i++, I++);
+    ListType::const_iterator Iend = args_list.end();
+    for(int i = 0; i < item && I != Iend; ++i, ++I);
     if (I == args_list.end()) {
         PyErr_SetString(PyExc_TypeError,"Not enought op arguments");
         return 0;

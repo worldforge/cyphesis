@@ -31,7 +31,8 @@ class EntityExerciser {
     virtual void subscribeOperations(const std::set<std::string> & ops) {
         Inheritance & i = Inheritance::instance();
         std::set<std::string>::const_iterator I = ops.begin();
-        for(; I != ops.end(); ++I) {
+        std::set<std::string>::const_iterator Iend = ops.end();
+        for (; I != Iend; ++I) {
             OpNo opNo = i.opEnumerate(*I);
             assert(opNo != OP_INVALID);
             subscribeOp(*I);
@@ -297,7 +298,8 @@ inline void EntityExerciser<EntityType>::runOperations()
 template <class EntityType>
 inline void EntityExerciser<EntityType>::flushOperations(OpVector & ops)
 {
-    for(OpVector::const_iterator I = ops.begin(); I != ops.end(); ++I) {
+    OpVector::const_iterator Iend = ops.end();
+    for (OpVector::const_iterator I = ops.begin(); I != Iend; ++I) {
         delete *I;
     }
 }

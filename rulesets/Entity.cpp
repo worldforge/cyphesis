@@ -144,8 +144,8 @@ void Entity::destroy()
 {
     assert(m_location.m_loc != NULL);
     EntitySet & refContains = m_location.m_loc->m_contains;
-    EntitySet::const_iterator I = m_contains.begin();
-    for(; I != m_contains.end(); I++) {
+    EntitySet::const_iterator Iend = m_contains.end();
+    for (EntitySet::const_iterator I = m_contains.begin(); I != Iend; ++I) {
         Entity * obj = *I;
         // FIXME take account of orientation
         // FIXME velocity and orientation  need to be adjusted
@@ -171,7 +171,8 @@ void Entity::destroy()
 void Entity::merge(const MapType & ent)
 {
     const std::set<std::string> & imm = immutables();
-    for(MapType::const_iterator I = ent.begin(); I != ent.end(); I++){
+    MapType::const_iterator Iend = ent.end();
+    for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
         const std::string & key = I->first;
         if (imm.find(key) != imm.end()) continue;
         set(key, I->second);
@@ -196,7 +197,8 @@ void Entity::externalOperation(const RootOperation & op)
 {
     OpVector res;
     operation(op, res);
-    for (OpVector::const_iterator I = res.begin(); I != res.end(); ++I) {
+    OpVector::const_iterator Iend = res.end();
+    for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
         (*I)->setRefno(op.getSerialno());
         sendWorld(*I);
     }

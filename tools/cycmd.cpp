@@ -175,9 +175,10 @@ void Interactive<Stream>::output(const Element & item, bool recurse)
             break;
         case Element::TYPE_LIST:
             if (recurse) {
-                ListType::const_iterator I = item.asList().begin();
                 std::cout << "[ ";
-                for(; I != item.asList().end(); ++I) {
+                ListType::const_iterator I = item.asList().begin();
+                ListType::const_iterator Iend = item.asList().end();
+                for(; I != Iend; ++I) {
                     output(*I, true);
                 }
                 std::cout << " ]";
@@ -187,9 +188,10 @@ void Interactive<Stream>::output(const Element & item, bool recurse)
             break;
         case Element::TYPE_MAP:
             if (recurse) {
-                MapType::const_iterator I = item.asMap().begin();
                 std::cout << "{ ";
-                for(; I != item.asMap().end(); ++I) {
+                MapType::const_iterator I = item.asMap().begin();
+                MapType::const_iterator Iend = item.asMap().end();
+                for(; I != Iend; ++I) {
                     std::cout << I->first << ": ";
                     output(I->second, true);
                 }
@@ -308,10 +310,10 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& o
         return;
     }
     const MapType & ent = o.getArgs().front().asMap();
-    MapType::const_iterator I;
+    MapType::const_iterator Iend = ent.end();
     if (login_flag) {
-        I = ent.find("id");
-        if (I == ent.end() || !I->second.isString()) {
+        MapType::const_iterator I = ent.find("id");
+        if (I == Iend || !I->second.isString()) {
             std::cerr << "ERROR: Response to login does not contain account id"
                       << std::endl << std::flush;
             
@@ -320,7 +322,7 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& o
         }
     } else {
         std::cout << "Info(" << std::endl;
-        for (I = ent.begin(); I != ent.end(); I++) {
+        for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
             const Element & item = I->second;
             std::cout << "     " << I->first << ": ";
             output(item);
@@ -361,8 +363,8 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sight& 
     reply_flag = true;
     std::cout << "Sight(" << std::endl;
     const MapType & ent = o.getArgs().front().asMap();
-    MapType::const_iterator I;
-    for (I = ent.begin(); I != ent.end(); I++) {
+    MapType::const_iterator Iend = ent.end();
+    for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
         const Element & item = I->second;
         std::cout << "      " << I->first << ":";
         output(item);

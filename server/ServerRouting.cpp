@@ -30,8 +30,8 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
 /// Server destructor, implicitly destroys all OOG objects in the server.
 ServerRouting::~ServerRouting()
 {
-    BaseDict::const_iterator I = m_objects.begin();
-    for(; I != m_objects.end(); I++) {
+    BaseDict::const_iterator Iend = m_objects.end();
+    for(BaseDict::const_iterator I = m_objects.begin(); I != Iend; ++I) {
         debug(std::cout << "Del " << I->second->getId() << std::endl
                         << std::flush;);
         delete I->second;

@@ -52,7 +52,7 @@ int Plant::dropFruit(OpVector & res)
     debug(std::cout << "Dropping " << drop << " fruits from "
                     << m_type << " plant." << std::endl << std::flush;);
     float height = m_location.m_bBox.highCorner().z(); 
-    for(int i = 0; i < drop; i++) {
+    for(int i = 0; i < drop; ++i) {
         float rx = m_location.m_pos.x() + uniform( height * m_radius,
                                                   -height * m_radius);
         float ry = m_location.m_pos.y() + uniform( height * m_radius,

@@ -22,8 +22,9 @@ void descendTree(Root * type, Inheritance & i, int & count)
     assert(childrenobj.isList());
     ListType & children = childrenobj.asList();
 
-    ListType::const_iterator I = children.begin();
-    for(; I != children.end(); ++I) {
+    
+    ListType::const_iterator Iend = children.end();
+    for (ListType::const_iterator I = children.begin(); I != Iend; ++I) {
         const Element & e = *I;
         assert(e.isString());
         const std::string & es = e.asString();

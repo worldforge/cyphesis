@@ -67,8 +67,9 @@ bool PythonEntityScript::Operation(const std::string & op_type,
         } else if (PyOplist_Check(ret)) {
             PyOplist * op = (PyOplist*)ret;
             if (op->ops != NULL) {
-                OpVector & o = *op->ops;
-                for (OpVector::iterator I = o.begin(); I != o.end(); ++I) {
+                const OpVector & o = *op->ops;
+                OpVector::const_iterator Iend = o.end();
+                for (OpVector::const_iterator I = o.begin(); I != Iend; ++I) {
                     ret_list.push_back(*I);
                 }
             } else {

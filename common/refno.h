@@ -16,7 +16,8 @@ static inline void setRefnoOp(RootOperation * op, const RootOperation & ref_op)
 
 static inline void setRefno(const OpVector& ret, const RootOperation & ref_op)
 {
-    for(OpVector::const_iterator I = ret.begin(); I != ret.end(); I++) {
+    OpVector::const_iterator Iend = ret.end();
+    for(OpVector::const_iterator I = ret.begin(); I != Iend; ++I) {
         setRefnoOp(*I, ref_op);
     }
 }

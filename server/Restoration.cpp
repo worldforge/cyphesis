@@ -58,8 +58,8 @@ void Restoration::restoreChildren(Entity * loc)
         return;
     }
     std::set<std::string> classes;
-    DatabaseResult::const_iterator I = res.begin();
-    for(; I != res.end(); ++I) {
+    DatabaseResult::const_iterator Iend = res.end();
+    for (DatabaseResult::const_iterator I = res.begin(); I != Iend; ++I) {
         // As we are iterating, we should find the number of the
         // column first, and then use that. Cheaper.
         std::string child_id = I.column("id");
@@ -78,7 +78,8 @@ void Restoration::restoreChildren(Entity * loc)
     res.clear();
     std::list<Entity *> children;
     std::set<std::string>::const_iterator J = classes.begin();
-    for(; J != classes.end(); ++J) {
+    std::set<std::string>::const_iterator Jend = classes.end();
+    for(; J != Jend; ++J) {
         RestoreDict::const_iterator K = m_restorers.find(*J);
         if (K == m_restorers.end()) {
             log(ERROR, "Could not find a restorer for class");
@@ -99,8 +100,8 @@ void Restoration::restoreChildren(Entity * loc)
                             << std::endl << std::flush;);
             continue;
         }
-        DatabaseResult::const_iterator L = res.begin();
-        for(; L != res.end(); ++L) {
+        DatabaseResult::const_iterator Lend = res.end();
+        for (DatabaseResult::const_iterator L = res.begin(); L != Lend; ++L) {
             const char * id = L.column("id");
             if (id == 0) {
                 continue;
@@ -118,7 +119,8 @@ void Restoration::restoreChildren(Entity * loc)
         res.clear();
     }
     std::list<Entity *>::const_iterator L = children.begin();
-    for(; L != children.end(); ++L) {
+    std::list<Entity *>::const_iterator Lend = children.end();
+    for (; L != Lend; ++L) {
         restoreChildren(*L);
     }
 }

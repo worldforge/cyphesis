@@ -21,9 +21,11 @@ typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 void storeTerrain(const std::string & id, const Mercator::Terrain & terrain)
 {
     const Pointstore & points = terrain.getPoints();
-    for (Pointstore::const_iterator I=points.begin(); I != points.end(); ++I) {
+    Pointstore::const_iterator Iend = points.end();
+    for (Pointstore::const_iterator I = points.begin(); I != Iend; ++I) {
         Pointcolumn::const_iterator J = I->second.begin();
-        for (; J != I->second.end(); ++J) {
+        Pointcolumn::const_iterator Jend = I->second.end();
+        for (; J != Jend; ++J) {
             std::vector<int> coords(2);
 
             coords[0] = I->first;
@@ -45,7 +47,8 @@ void loadTerrain(const std::string & id, Mercator::Terrain & terrain)
 {
     DatabaseResult res = Database::instance()->selectArrayRows("terrain", id);
 
-    for (DatabaseResult::const_iterator I = res.begin(); I != res.end(); ++I) {
+    DatabaseResult::const_iterator Iend = res.end();
+    for (DatabaseResult::const_iterator I = res.begin(); I != Iend; ++I) {
         int x = 4, y = 5;
         float h = 3.14159265;
 
@@ -69,10 +72,11 @@ void updateStoredTerrain(const std::string & id,
     Mercator::BasePoint bp;
     debug(std::cout << "Update Stored Terrain" << std::endl << std::flush;);
 
-    PointSet::const_iterator I = modified.begin();
-    for (; I != modified.end(); ++I) {
+    PointSet::const_iterator Iend = modified.end();
+    for (PointSet::const_iterator I = modified.begin(); I != Iend; ++I) {
         std::set<int>::const_iterator J = I->second.begin();
-        for (; J != I->second.end(); ++J) {
+        std::set<int>::const_iterator Jend = I->second.end();
+        for (; J != Jend; ++J) {
             debug(std::cout << "Modified " << I->first << *J
                             << std::endl << std::flush;);
             std::vector<int> coords(2);
@@ -89,9 +93,11 @@ void updateStoredTerrain(const std::string & id,
         }
     }
 
-    for (I = created.begin(); I != created.end(); ++I) {
+    Iend = created.end();
+    for (PointSet::const_iterator I = created.begin(); I != Iend; ++I) {
         std::set<int>::const_iterator J = I->second.begin();
-        for (; J != I->second.end(); ++J) {
+        std::set<int>::const_iterator Jend = I->second.end();
+        for (; J != Jend; ++J) {
             std::cout << "Created " << I->first << "," << *J << std::endl << std::flush;
             std::vector<int> coords(2);
 

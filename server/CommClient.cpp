@@ -107,7 +107,8 @@ void CommClient::message(const RootOperation & op)
 {
     OpVector reply;
     m_connection.operation(op, reply);
-    for(OpVector::const_iterator I = reply.begin(); I != reply.end(); ++I) {
+    OpVector::const_iterator Iend = reply.end();
+    for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
         debug(std::cout << "sending reply" << std::endl << std::flush;);
         send(**I);
         delete *I;
@@ -123,8 +124,8 @@ void CommClient::queue(const OpType & op)
 
 void CommClient::dispatch()
 {
-    DispatchQueue::const_iterator I = m_opQueue.begin();
-    for(; I != m_opQueue.end(); ++I) {
+    DispatchQueue::const_iterator Iend = m_opQueue.end();
+    for(DispatchQueue::const_iterator I = m_opQueue.begin(); I != Iend; ++I) {
         debug(std::cout << "dispatching op" << std::endl << std::flush;);
         message(**I);
         delete *I;
@@ -142,8 +143,8 @@ void CommClient::unknownObjectArrived(const Element& o)
     }
     if (debug_flag) {
         log(ERROR, "An unknown object has arrived from a client.");
-        MapType::const_iterator I;
-        for(I = o.asMap().begin(); I != o.asMap().end(); I++) {
+        MapType::const_iterator Iend = o.asMap().end();
+        for(MapType::const_iterator I = o.asMap().begin(); I != Iend; ++I) {
             std::cerr << I->first << std::endl << std::flush;
             if (I->second.isString()) {
                 std::cerr << I->second.asString() << std::endl << std::flush;

@@ -38,8 +38,8 @@ Inheritance::Inheritance()
 
 void Inheritance::flush()
 {
-    RootDict::const_iterator I;
-    for(I = atlasObjects.begin(); I != atlasObjects.end(); ++I) {
+    RootDict::const_iterator Iend = atlasObjects.end();
+    for (RootDict::const_iterator I = atlasObjects.begin(); I != Iend; ++I) {
         delete I->second;
     }
     atlasObjects.clear();

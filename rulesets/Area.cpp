@@ -4,7 +4,6 @@
 
 #include "Area.h"
 
-#include "common/type_utils.h"
 #include "common/Property.h"
 #include "common/debug.h"
 

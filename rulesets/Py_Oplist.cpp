@@ -67,7 +67,8 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
             return NULL;
         }
         res->ops = new OpVector(*self->ops);
-        for(OpVector::const_iterator I = opl->ops->begin(); I != opl->ops->end(); I++) {
+        OpVector::const_iterator Iend = opl->ops->end();
+        for (OpVector::const_iterator I = opl->ops->begin(); I != Iend; ++I) {
             res->ops->push_back(*I);
         }
         return (PyObject*)res;

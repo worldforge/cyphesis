@@ -392,8 +392,8 @@ void BaseMind::AppearanceOperation(const Appearance & op, OpVector & res)
     if (!m_isAwake) { return; }
     m_script->Operation("appearance", op, res);
     const ListType & args = op.getArgs();
-    ListType::const_iterator I;
-    for(I = args.begin(); I != args.end(); I++) {
+    ListType::const_iterator Iend = args.end();
+    for (ListType::const_iterator I = args.begin(); I != Iend; ++I) {
         MemEntity * me = m_map.getAdd(I->asMap().find("id")->second.asString());
         if (me != 0) {
             me->update(op.getSeconds());
@@ -407,8 +407,8 @@ void BaseMind::DisappearanceOperation(const Disappearance & op, OpVector & res)
     if (!m_isAwake) { return; }
     m_script->Operation("disappearance", op, res);
     const ListType & args = op.getArgs();
-    ListType::const_iterator I;
-    for(I = args.begin(); I != args.end(); I++) {
+    ListType::const_iterator Iend = args.end();
+    for (ListType::const_iterator I = args.begin(); I != Iend; ++I) {
         MemEntity * me = m_map.get(I->asMap().find("id")->second.asString());
         if (me != 0) {
             me->update(op.getSeconds());
@@ -465,7 +465,8 @@ void BaseMind::callSoundOperation(const Sound& op, RootOperation & sub_op,
 
 #if 0
     const MemEntityDict & ents = m_map.getEntities();
-    for (MemEntityDict::const_iterator I = ents.begin(); I != ents.end(); ++I) {
+    MemEntityDict::const_iterator Iend = ents.end();
+    for (MemEntityDict::const_iterator I = ents.begin(); I != Iend; ++I) {
         std::cout << I->second->getId() << ":" << I->second->getType() << " is "
                   << ( I->second->isVisible() ? "visible " : "hid " )
                   << I->second->lastSeen()

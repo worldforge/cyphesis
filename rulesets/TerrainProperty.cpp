@@ -40,11 +40,12 @@ void TerrainProperty::get(Element & ent)
     MapType & terrain = (t["points"] = MapType()).asMap();
 
     const Pointstore & points = m_data.getPoints();
-    Pointstore::const_iterator I = points.begin();
-    for(; I != points.end(); ++I) {
+    Pointstore::const_iterator Iend = points.end();
+    for (Pointstore::const_iterator I = points.begin(); I != Iend; ++I) {
         const Pointcolumn & pointcol = I->second;
         Pointcolumn::const_iterator J = pointcol.begin();
-        for (; J != pointcol.end(); ++J) {
+        Pointcolumn::const_iterator Jend = pointcol.end();
+        for (; J != Jend; ++J) {
             std::stringstream key;
             key << I->first << "x" << J->first;
             ListType & point = (terrain[key.str()] = ListType(3)).asList();
@@ -55,7 +56,6 @@ void TerrainProperty::get(Element & ent)
     }
 }
 
-#if 1
 void TerrainProperty::set(const Element & ent)
 {
     if (!ent.isMap()) {
@@ -69,8 +69,8 @@ void TerrainProperty::set(const Element & ent)
     MapType::const_iterator I = t.find("points");
     if ((I != t.end()) && (I->second.isMap())) {
         const MapType & points = I->second.asMap();
-        MapType::const_iterator I = points.begin();
-        for(; I != points.end(); ++I) {
+        MapType::const_iterator Iend = points.end();
+        for (MapType::const_iterator I = points.begin(); I != Iend; ++I) {
             if (!I->second.isList()) {
                 continue;
             }
@@ -106,4 +106,3 @@ void TerrainProperty::set(const Element & ent)
         }
     }
 }
-#endif

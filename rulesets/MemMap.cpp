@@ -32,8 +32,9 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
     m_checkIterator = m_entities.find(next);
 
     debug( std::cout << this << std::endl << std::flush;);
-    std::vector<std::string>::const_iterator I;
-    for(I = m_addHooks.begin(); I != m_addHooks.end(); I++) {
+    std::vector<std::string>::const_iterator I = m_addHooks.begin();
+    std::vector<std::string>::const_iterator Iend = m_addHooks.end();
+    for (; I != Iend; ++I) {
         m_script->hook(*I, entity);
     }
     return entity;
@@ -78,8 +79,9 @@ void MemMap::updateEntity(MemEntity * entity, const MapType & entmap)
 
     readEntity(entity, entmap);
 
-    std::vector<std::string>::const_iterator K;
-    for(K = m_updateHooks.begin(); K != m_updateHooks.end(); K++) {
+    std::vector<std::string>::const_iterator K = m_updateHooks.begin();
+    std::vector<std::string>::const_iterator Kend = m_updateHooks.end();
+    for (; K != Kend; ++K) {
         m_script->hook(*K, entity);
     }
 }
@@ -154,7 +156,8 @@ void MemMap::del(const std::string & id)
 
         // Add deleted entities children into its parents contains
         EntitySet::const_iterator K = ent->m_contains.begin();
-        for (; K != ent->m_contains.end(); ++K) {
+        EntitySet::const_iterator Kend = ent->m_contains.end();
+        for (; K != Kend; ++K) {
             Entity * cent = *K;
             cent->m_location.m_loc = mloc;
             // FIXME adjust pos and:
@@ -165,8 +168,9 @@ void MemMap::del(const std::string & id)
         }
 
         m_checkIterator = m_entities.find(next);
-        std::vector<std::string>::const_iterator J;
-        for(J = m_deleteHooks.begin(); J != m_deleteHooks.end(); J++) {
+        std::vector<std::string>::const_iterator J = m_deleteHooks.begin();
+        std::vector<std::string>::const_iterator Jend = m_deleteHooks.end();
+        for(; J != Jend; ++J) {
             m_script->hook(*J, ent);
         }
         delete ent;
@@ -218,8 +222,8 @@ void MemMap::addContents(const MapType & entmap)
         return;
     }
     const ListType & contlist = I->second.asList();
-    ListType::const_iterator J = contlist.begin();
-    for(;J != contlist.end(); J++) {
+    ListType::const_iterator Jend = contlist.end();
+    for (ListType::const_iterator J = contlist.begin(); J != Jend; ++J) {
         if (!J->isString()) {
             log(ERROR, "MemMap::addContents, malformed non-string in contains");
             continue;
@@ -266,8 +270,9 @@ MemEntityVector MemMap::findByType(const std::string & what)
 // Find an entity in our memory of a certain type
 {
     MemEntityVector res;
-    MemEntityDict::const_iterator I;
-    for(I = m_entities.begin(); I != m_entities.end(); I++) {
+    
+    MemEntityDict::const_iterator Iend = m_entities.end();
+    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
         MemEntity * item = I->second;
         debug( std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
         if (item->getType() == what) {
@@ -279,10 +284,11 @@ MemEntityVector MemMap::findByType(const std::string & what)
 
 MemEntityVector MemMap::findByLocation(const Location & loc, double radius)
 // Find an entity in our memory in a certain place
+// FIXME Don't return by value
 {
     MemEntityVector res;
-    MemEntityDict::const_iterator I;
-    for(I = m_entities.begin(); I != m_entities.end(); I++) {
+    MemEntityDict::const_iterator Iend = m_entities.end();
+    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
         const Location & oloc = I->second->m_location;
         if (!loc.isValid() || !oloc.isValid()) {
             continue;
@@ -298,8 +304,9 @@ MemEntityVector MemMap::findByLocation(const Location & loc, double radius)
 const Element MemMap::asObject()
 {
     MapType omap;
-    MemEntityDict::const_iterator I = m_entities.begin();
-    for(;I != m_entities.end(); I++) {
+    
+    MemEntityDict::const_iterator Iend = m_entities.end();
+    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
         I->second->addToMessage((omap[I->first] = MapType()).asMap());
     }
     return Element(omap);
@@ -342,8 +349,9 @@ void MemMap::flush()
 {
     debug(std::cout << "Flushing memory with " << m_entities.size()
                     << " memories" << std::endl << std::flush;);
-    MemEntityDict::const_iterator I = m_entities.begin();
-    for (; I != m_entities.end(); I++) {
+    
+    MemEntityDict::const_iterator Iend = m_entities.end();
+    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
         delete I->second;
     }
 }

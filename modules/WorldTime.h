@@ -25,7 +25,7 @@ class WorldTime {
 
     Range crange(int begin, int end) {
         Range ret;
-        for(int i = begin; i <= end; i++) {
+        for(int i = begin; i <= end; ++i) {
             ret.push_back(i);
         }
         return ret;

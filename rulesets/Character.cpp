@@ -1104,8 +1104,8 @@ void Character::sendMind(const RootOperation & op, OpVector & res)
             OpVector mindRes;
             m_mind->operation(op, mindRes);
             // Discard all the local results
-            OpVector::const_iterator J = mindRes.begin(); 
-            for(; J != mindRes.end(); J++) {
+            OpVector::const_iterator Jend = mindRes.end(); 
+            for (OpVector::const_iterator J = mindRes.begin(); J != Jend; J++) {
                 delete *J;
             }
         }
@@ -1155,7 +1155,8 @@ void Character::operation(const RootOperation & op, OpVector & res)
     if (world2mind(op)) {
         OpVector mres;
         sendMind(op, mres);
-        for(OpVector::const_iterator I = mres.begin(); I != mres.end(); I++) {
+        OpVector::const_iterator Iend = mres.end();
+        for (OpVector::const_iterator I = mres.begin(); I != Iend; ++I) {
             //RootOperation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
             m_world->setSerialnoOp(**I);
@@ -1176,7 +1177,8 @@ void Character::externalOperation(const RootOperation & op)
     // FIXME in Atlas-C++ 0.6 we can do this by relying on being able
     // to query if an object has a certain attribute. A copied op will have
     // it, a new op won't.
-    for (OpVector::const_iterator I = mres.begin(); I != mres.end(); ++I) {
+    OpVector::const_iterator Iend = mres.end();
+    for (OpVector::const_iterator I = mres.begin(); I != Iend; ++I) {
         if (I == mres.begin()) {
             (*I)->setSerialno(op.getSerialno());
         } else {

@@ -28,7 +28,8 @@ void Player::addToMessage(MapType & omap) const
     Account::addToMessage(omap);
     ListType & typeList = (omap["character_types"] = ListType()).asList();
     std::set<std::string>::const_iterator I = Player::playableTypes.begin();
-    for(;I != Player::playableTypes.end(); ++I) {
+    std::set<std::string>::const_iterator Iend = Player::playableTypes.end();
+    for (; I != Iend; ++I) {
         typeList.push_back(Element(*I));
     }
 }

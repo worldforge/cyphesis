@@ -7,12 +7,15 @@
 
 #include "types.h"
 
+#include <Atlas/Message/Element.h>
+
 #include <wfmath/atlasconv.h>
 
 inline void idListasObject(const IdList & l, ListType & ol)
 {
     ol.clear();
-    for(IdList::const_iterator I = l.begin(); I != l.end(); I++) {
+    IdList::const_iterator Iend = l.end();
+    for (IdList::const_iterator I = l.begin(); I != Iend; ++I) {
         ol.push_back(*I);
     }
 }
@@ -20,8 +23,8 @@ inline void idListasObject(const IdList & l, ListType & ol)
 inline void idListFromAtlas(const ListType & l, IdList & ol)
 {
     ol.clear();
-    ListType::const_iterator I = l.begin();
-    for (; I != l.end(); ++I) {
+    ListType::const_iterator Iend = l.end();
+    for (ListType::const_iterator I = l.begin(); I != Iend; ++I) {
         ol.push_back(I->asString());
     }
 }
@@ -32,7 +35,8 @@ template<typename List_T>
 void objectListAsMessage(const List_T & l, ListType & ol)
 {
     ol.clear();
-    for(typename List_T::const_iterator I = l.begin(); I != l.end(); ++I) {
+    typename List_T::const_iterator Iend = l.end();
+    for (typename List_T::const_iterator I = l.begin(); I != Iend; ++I) {
         ol.push_back(I->toAtlas());
     }
 }
@@ -41,8 +45,9 @@ template<typename T, typename List_T>
 inline void objectListFromMessage(const ListType & l, List_T & ol)
 {
     ol.clear();
-    ListType::const_iterator I = l.begin();
-    for (; I != l.end(); ++I) {
+    
+    ListType::const_iterator Iend = l.end();
+    for (ListType::const_iterator I = l.begin(); I != Iend; ++I) {
         ol.push_back(T(I->asList()));
     }
 }

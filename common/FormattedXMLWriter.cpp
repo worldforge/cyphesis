@@ -92,8 +92,9 @@ void FormattedXMLWriter::outputValue(const Element & e)
 
 void FormattedXMLWriter::outputMap(const MapType & o)
 {
-    for(MapType::const_iterator I = o.begin(); I != o.end(); ++I) {
-        for(int i = 0; i < m_indent; ++i) {
+    MapType::const_iterator Iend = o.end();
+    for (MapType::const_iterator I = o.begin(); I != Iend; ++I) {
+        for (int i = 0; i < m_indent; ++i) {
             m_stream << " ";
         }
         const char * type = typeToStr(I->second.getType());
@@ -107,7 +108,8 @@ void FormattedXMLWriter::outputMap(const MapType & o)
 
 void FormattedXMLWriter::outputList(const ListType & o)
 {
-    for(ListType::const_iterator I = o.begin(); I != o.end(); ++I) {
+    ListType::const_iterator Iend = o.end();
+    for(ListType::const_iterator I = o.begin(); I != Iend; ++I) {
         for(int i = 0; i < m_indent; ++i) {
             m_stream << " ";
         }

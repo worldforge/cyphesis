@@ -1,5 +1,5 @@
 COMMON_TESTS = logtest inheritancetest Propertytest BaseEntitytest \
-               OOGThingtest systemtest utilitytest
+               OOGThingtest systemtest utilitytest type_utilstest
 
 PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
 
@@ -62,6 +62,8 @@ systemtest_LDADD = $(top_builddir)/modules/DateTime.o \
 
 utilitytest_SOURCES = utilitytest.cpp
 utilitytest_LDADD = $(top_builddir)/common/utility.o
+
+type_utilstest_SOURCES = type_utilstest.cpp
 
 # PHYSICS_TESTS
 

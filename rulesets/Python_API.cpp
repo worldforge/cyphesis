@@ -887,8 +887,8 @@ static inline void addToArgs(ListType & args, PyObject * ent)
         if (o.isMap() && (obj->Object_attr != NULL)) {
             MapType & ent = o.asMap();
             MapType ent2 = PyDictObject_asElementMap(obj->Object_attr);
-            MapType::const_iterator I = ent2.begin();
-            for(; I != ent2.end(); I++) {
+            MapType::const_iterator Iend = ent2.end();
+            for (MapType::const_iterator I = ent2.begin(); I != Iend; ++I) {
                 if (ent.find(I->first) != ent.end()) {
                     ent[I->first] = I->second;
                 }
@@ -1123,9 +1123,10 @@ static PyMethodDef misc_methods[] = {
 void init_python_api()
 {
     std::string importCmd("ruleset_import_hooks.install([");
-    std::vector<std::string>::const_iterator I;
-    for(I = rulesets.begin(); I != rulesets.end(); I++) {
-        if (I != rulesets.begin()) {
+    std::vector<std::string>::const_iterator Ibeg = rulesets.begin();
+    std::vector<std::string>::const_iterator Iend = rulesets.end();
+    for (std::vector<std::string>::const_iterator I = Ibeg; I != Iend; ++I) {
+        if (I != Ibeg) {
             importCmd = importCmd + ",";
         }
         importCmd = importCmd + "\"" + *I + "\"";
@@ -1154,7 +1155,8 @@ void init_python_api()
     PyObject * sys_path = PyObject_GetAttrString(sys_module, "path");
     if (sys_path != 0) {
         if (PyList_Check(sys_path)) {
-            for(I = rulesets.begin(); I != rulesets.end(); I++) {
+            std::vector<std::string>::const_iterator I = Ibeg;
+            for (; I != Iend; ++I) {
                 std::string p = share_directory + "/cyphesis/rulesets/" + *I;
                 PyObject * path = PyString_FromString(p.c_str());
                 PyList_Append(sys_path, path);

@@ -127,8 +127,8 @@ Entity * EntityFactory::newEntity(const std::string & id,
 
 void EntityFactory::flushFactories()
 {
-    FactoryDict::const_iterator I = m_factories.begin();
-    for (; I != m_factories.end(); I++) {
+    FactoryDict::const_iterator Iend = m_factories.end();
+    for (FactoryDict::const_iterator I = m_factories.begin(); I != Iend; ++I) {
         delete I->second;
     }
     delete m_eft;
@@ -212,8 +212,8 @@ void EntityFactory::installRule(const std::string & className,
     J = classDesc.find("attributes");
     if ((J != classDesc.end()) && (J->second.isMap())) {
         const MapType & attrs = J->second.asMap();
-        MapType::const_iterator K = attrs.begin();
-        for (; K != attrs.end(); ++K) {
+        MapType::const_iterator Kend = attrs.end();
+        for (MapType::const_iterator K = attrs.begin(); K != Kend; ++K) {
             if (!K->second.isMap()) {
                 log(ERROR, "Attribute description in rule is not a map.");
                 continue;
@@ -252,8 +252,8 @@ void EntityFactory::installRules()
     Persistance * p = Persistance::instance();
     p->getRules(ruleTable);
 
-    MapType::const_iterator I = ruleTable.begin();
-    for(; I != ruleTable.end(); ++I) {
+    MapType::const_iterator Iend = ruleTable.end();
+    for (MapType::const_iterator I = ruleTable.begin(); I != Iend; ++I) {
         const std::string & className = I->first;
         const MapType & classDesc = I->second.asMap();
         installRule(className, classDesc);
@@ -262,7 +262,8 @@ void EntityFactory::installRules()
     // Perhaps we can keep them too?
     // m_waitingRules.clear();
     RuleWaitList::const_iterator J = m_waitingRules.begin();
-    for(; J != m_waitingRules.end(); ++J) {
+    RuleWaitList::const_iterator Jend = m_waitingRules.end();
+    for (; J != Jend; ++J) {
         const std::string & wParentName = J->first;
         std::string msg = std::string("Rule \"") + J->first
                           + "\" with parent \"" + wParentName

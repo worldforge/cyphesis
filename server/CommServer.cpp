@@ -26,8 +26,8 @@ CommServer::CommServer(ServerRouting & svr) : m_server(svr)
 
 CommServer::~CommServer()
 {
-    CommSocketSet::const_iterator I = m_sockets.begin();
-    for(; I != m_sockets.end(); I++) {
+    CommSocketSet::const_iterator Iend = m_sockets.end();
+    for (CommSocketSet::const_iterator I = m_sockets.begin(); I != Iend; ++I) {
         delete *I;
     }
 }
@@ -46,8 +46,9 @@ bool CommServer::idle()
     // if the core server is busy. Cut it back a bit. Probably can avoid
     // calling them at all if we are busy.
     time_t ctime = time(NULL);
-    CommIdleSocketSet::const_iterator I;
-    for(I = m_idleSockets.begin(); I != m_idleSockets.end(); ++I) {
+    CommIdleSocketSet::const_iterator I = m_idleSockets.begin();
+    CommIdleSocketSet::const_iterator Iend = m_idleSockets.end();
+    for (; I != Iend; ++I) {
         (*I)->idle(ctime);
     }
     // server.idle() is inlined, and simply calls the world idle method,
@@ -80,8 +81,8 @@ void CommServer::loop()
     FD_ZERO(&sock_fds);
 
     bool pendingConnections = false;
-    CommSocketSet::const_iterator I = m_sockets.begin();
-    for(; I != m_sockets.end(); I++) {
+    CommSocketSet::const_iterator Iend = m_sockets.end();
+    for (CommSocketSet::const_iterator I = m_sockets.begin(); I != Iend; ++I) {
        if (!(*I)->isOpen()) {
            pendingConnections = true;
            continue;
@@ -107,8 +108,10 @@ void CommServer::loop()
         return;
     }
     
+    // We assume Iend is still valid. m_sockets must not have been modified
+    // between Iend's initialisation and here.
     std::set<CommSocket *> obsoleteConnections;
-    for(I = m_sockets.begin(); I != m_sockets.end(); I++) {
+    for (CommSocketSet::const_iterator I = m_sockets.begin(); I != Iend; ++I) {
        CommSocket * socket = *I;
        if (!socket->isOpen()) {
            obsoleteConnections.insert(socket);
@@ -130,8 +133,9 @@ void CommServer::loop()
            }
        }
     }
-    std::set<CommSocket *>::const_iterator J = obsoleteConnections.begin();
-    for(; J != obsoleteConnections.end(); ++J) {
+    CommSocketSet::const_iterator J = obsoleteConnections.begin();
+    CommSocketSet::const_iterator Jend = obsoleteConnections.end();
+    for (; J != Jend; ++J) {
         removeSocket(*J);
     }
 }

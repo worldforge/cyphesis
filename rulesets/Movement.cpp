@@ -47,7 +47,8 @@ void Movement::checkCollisions(const Location & loc)
     m_collEntity = NULL;
     // Check against everything within the current container
     EntitySet::const_iterator I = loc.m_loc->m_contains.begin();
-    for(; I != loc.m_loc->m_contains.end(); I++) {
+    EntitySet::const_iterator Iend = loc.m_loc->m_contains.end();
+    for (; I != Iend; ++I) {
         // Don't check for collisions with ourselves
         if ((*I) == &m_body) { continue; }
         const Location & oloc = (*I)->m_location;
@@ -100,7 +101,8 @@ void Movement::checkCollisions(const Location & loc)
         float coll2Time = consts::basic_tick;
         // rloc is coords of character with ref to m_collEntity
         I = m_collEntity->m_contains.begin();
-        for(; I != m_collEntity->m_contains.end(); I++) {
+        Iend = m_collEntity->m_contains.end();
+        for (; I != Iend; ++I) {
             const Location & oloc = (*I)->m_location;
             if (!oloc.m_bBox.isValid()) { continue; }
             Vector3D normal;

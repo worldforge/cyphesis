@@ -64,8 +64,8 @@ void ClientConnection::operation(const RootOperation & op)
         return;
     }
     OpVector res = I->second->message(op);
-    OpVector::const_iterator J = res.begin();
-    for(J = res.begin(); J != res.end(); ++J) {
+    OpVector::const_iterator Jend = res.end();
+    fora (OpVector::const_iterator J = res.begin(); J != Jend; ++J) {
         (*J)->setFrom(I->first);
         send(*(*J));
     }

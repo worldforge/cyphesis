@@ -71,9 +71,10 @@ void Lobby::operation(const RootOperation & op, OpVector & res)
                                            << std::endl << std::flush; );
     const std::string & to = op.getTo();
     if (to.empty() || to == "lobby") {
-        AccountDict::const_iterator I = m_accounts.begin();
         RootOperation newop(op);
-        for (; I != m_accounts.end(); ++I) {
+        AccountDict::const_iterator I = m_accounts.begin();
+        AccountDict::const_iterator Iend = m_accounts.end();
+        for (; I != Iend; ++I) {
             Connection * c = I->second->m_connection;
             if (c != NULL) {
                 newop.setTo(I->first);
@@ -101,8 +102,8 @@ void Lobby::addToMessage(MapType & omap) const
     ListType plist(1, "room");
     omap["parents"] = plist;
     ListType player_list;
-    AccountDict::const_iterator I = m_accounts.begin();
-    for(; I != m_accounts.end(); I++) {
+    AccountDict::const_iterator Iend = m_accounts.end();
+    for (AccountDict::const_iterator I = m_accounts.begin(); I != Iend; ++I) {
         player_list.push_back(I->first);
     }
     omap["people"] = player_list;

@@ -57,11 +57,12 @@ void WorldTime::initTimeInfo()
     seasons.push_back("autumn");
     seasons.push_back("winter");
     seasons.push_back("spring");
-    std::list<std::string>::const_iterator I;
-    for(I = seasons.begin(); I != seasons.end(); I++) {
-        Range::const_iterator J;
+    std::list<std::string>::const_iterator I = seasons.begin();
+    std::list<std::string>::const_iterator Iend = seasons.end();
+    for (; I != Iend; ++I) {
         Range & months = m_timeInfo[*I].first;
-        for(J = months.begin(); J != months.end(); J++) {
+        Range::const_iterator Jend = months.end();
+        for(Range::const_iterator J = months.begin(); J != Jend; ++J) {
             m_monthToSeason[*J] = *I;
         }
     }
@@ -106,8 +107,9 @@ bool WorldTime::operator==(const std::string & when) const
     } else {
         return false;
     }
-    std::list<int>::const_iterator J;
-    for(J = I->second.first.begin(); J != I->second.first.end(); J++) {
+    std::list<int>::const_iterator J = I->second.first.begin();
+    std::list<int>::const_iterator Jend = I->second.first.end();
+    for (; J != Jend; ++J) {
         if (check == *J) {
             return true;
         }

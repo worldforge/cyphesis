@@ -89,12 +89,15 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
     // Check l vertices against o surfaces
     Vector3D entry_normal;
     bool ret = false, already = false;
-    CoordList::const_iterator I = c.begin();
-    for (; I != c.end(); ++I) { // Iterate over vertices
+    
+    // Iterate over vertices
+    CoordList::const_iterator Iend = c.end();
+    for (CoordList::const_iterator I = c.begin(); I != Iend; ++I) {
         debug(std::cout << "outer loop" << std::endl << std::flush;);
         float last_vertex_entry = -100, first_vertex_exit = 100, time;
-        NormalSet::const_iterator J = n.begin();
-        for (; J != n.end(); ++J) { // Iterate over surfaces
+        // Iterate over surfaces
+        NormalSet::const_iterator Jend = n.end();
+        for (NormalSet::const_iterator J = n.begin(); J != Jend; ++J) {
             const Point3D & s_pos = o[J->first];
             const Vector3D & s_norm = J->second;
             debug(std::cout << "Testing vertex " << *I << " to surface "
@@ -245,29 +248,29 @@ bool predictCollision(const Location & l,  // This location
 
     // Orient the surface normals and box corners
     if (l.m_orientation.isValid()) {
-        NormalSet::iterator I = lnormals.begin();
-        for(; I != lnormals.end(); ++I) {
+        NormalSet::iterator Iend = lnormals.end();
+        for (NormalSet::iterator I = lnormals.begin(); I != Iend; ++I) {
             I->second.rotate(l.m_orientation);
         }
-        for(int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 8; ++i) {
             lbox[i] = lbox[i].toParentCoords(l.m_pos, l.m_orientation);
         }
     } else {
-        for(int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 8; ++i) {
             lbox[i] = lbox[i].toParentCoords(l.m_pos, identity);
         }
     }
 
     if (o.m_orientation.isValid()) {
-        NormalSet::iterator I = onormals.begin();
-        for(; I != onormals.end(); ++I) {
+        NormalSet::iterator Iend = onormals.end();
+        for (NormalSet::iterator I = onormals.begin(); I != Iend; ++I) {
             I->second.rotate(o.m_orientation);
         }
-        for(int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 8; ++i) {
             obox[i] = obox[i].toParentCoords(o.m_pos, o.m_orientation);
         }
     } else {
-        for(int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 8; ++i) {
             obox[i] = obox[i].toParentCoords(o.m_pos, identity);
         }
     }
@@ -334,7 +337,8 @@ bool predictEmergence(const CoordList & l,         // Vertices of this mesh
     float mintime = 4;
     bool flag = false;
 
-    for(CoordList::const_iterator I = l.begin(); I != l.end(); ++I) {
+    CoordList::const_iterator Iend = l.end();
+    for (CoordList::const_iterator I = l.begin(); I != Iend; ++I) {
         float xtime = (u.x() >= 0.f) ? ((of.x() - I->x()) / u.x())
                                    : ((on.x() - I->x()) / u.x());
         float ytime = (u.y() >= 0.f) ? ((of.y() - I->y()) / u.y())

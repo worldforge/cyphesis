@@ -275,7 +275,8 @@ bool Database::putObject(const std::string & table,
     debug(std::cout << "Encoded to: " << str.str().c_str() << " "
                << str.str().size() << std::endl << std::flush;);
     std::string query = std::string("INSERT INTO ") + table + " VALUES ('" + key;
-    for (StringVector::const_iterator I = c.begin(); I != c.end(); ++I) {
+    StringVector::const_iterator Iend = c.end();
+    for (StringVector::const_iterator I = c.begin(); I != Iend; ++I) {
         query += "', '";
         query += *I;
     }
@@ -391,7 +392,7 @@ bool Database::getTable(const std::string & table, MapType &o)
     }
 
     MapType t;
-    for(int i = 0; i < results; i++) {
+    for(int i = 0; i < results; ++i) {
         const char * key = PQgetvalue(res, i, id_column);
         const char * data = PQgetvalue(res, i, contents_column);
         debug(std::cout << "Got record " << key << " from database, value "
@@ -627,8 +628,8 @@ bool Database::registerSimpleTable(const std::string & name,
     createquery += name;
     query += " WHERE id = 0";
     createquery += " (id integer UNIQUE PRIMARY KEY";
-    MapType::const_iterator I = row.begin();
-    for(; I != row.end(); ++I) {
+    MapType::const_iterator Iend = row.end();
+    for (MapType::const_iterator I = row.begin(); I != Iend; ++I) {
         query += " AND ";
         createquery += ", ";
         const std::string & column = I->first;
@@ -849,8 +850,8 @@ bool Database::registerEntityTable(const std::string & classname,
     if (parent.empty()) {
         createquery += "id integer UNIQUE PRIMARY KEY, ";
     }
-    MapType::const_iterator I = row.begin();
-    for(; I != row.end(); ++I) {
+    MapType::const_iterator Iend = row.end();
+    for (MapType::const_iterator I = row.begin(); I != Iend; ++I) {
         if (I != row.begin()) {
             query += " AND ";
             createquery += ", ";
@@ -1097,7 +1098,8 @@ bool Database::registerArrayTable(const std::string & name,
         indexquery += array_axes[i];
     }
 
-    for (MapType::const_iterator I = row.begin(); I != row.end(); ++I) {
+    MapType::const_iterator Iend = row.end();
+    for (MapType::const_iterator I = row.begin(); I != Iend; ++I) {
         const std::string & column = I->first;
 
         query += " AND ";
@@ -1194,14 +1196,17 @@ bool Database::createArrayRow(const std::string & name,
     for (unsigned int i = 0; i < key.size(); ++i) {
         query << ", " << array_axes[i];
     }
-    for (MapType::const_iterator I = data.begin(); I != data.end(); ++I) {
+    MapType::const_iterator Iend = data.end();
+    for (MapType::const_iterator I = data.begin(); I != Iend; ++I) {
         query << ", " << I->first;
     }
     query << " ) VALUES ( " << id;
-    for(std::vector<int>::const_iterator I = key.begin(); I != key.end(); ++I) {
-        query << ", " << *I;
+    std::vector<int>::const_iterator Jend = key.end();
+    for (std::vector<int>::const_iterator J = key.begin(); J != Jend; ++J) {
+        query << ", " << *J;
     }
-    for (MapType::const_iterator I = data.begin(); I != data.end(); ++I) {
+    // We assume data has not been modified, so Iend is still valid
+    for (MapType::const_iterator I = data.begin(); I != Iend; ++I) {
         const Element & e = I->second;
         switch (e.getType()) {
           case Element::TYPE_INT:
@@ -1237,7 +1242,8 @@ bool Database::updateArrayRow(const std::string & name,
     std::stringstream query;
 
     query << "UPDATE " << name << " SET ";
-    for (MapType::const_iterator I = data.begin(); I != data.end(); ++I) {
+    MapType::const_iterator Iend = data.end();
+    for (MapType::const_iterator I = data.begin(); I != Iend; ++I) {
         if (I != data.begin()) {
             query << ", ";
         }
@@ -1384,8 +1390,8 @@ bool Database::runMaintainance(int command)
     // FIXME VACUUM and REINDEX tables from a common store
     if ((command & MAINTAIN_REINDEX) == MAINTAIN_REINDEX) {
         std::string query("REINDEX TABLE ");
-        TableSet::const_iterator I = allTables.begin();
-        for(; I != allTables.end(); ++I) {
+        TableSet::const_iterator Iend = allTables.end();
+        for (TableSet::const_iterator I = allTables.begin(); I != Iend; ++I) {
             debug(std::cout << (query + *I) << std::endl << std::flush;);
             scheduleCommand(query + *I);
         }
@@ -1398,8 +1404,8 @@ bool Database::runMaintainance(int command)
         if ((command & MAINTAIN_VACUUM_FULL) == MAINTAIN_VACUUM_FULL) {
             query += "FULL ";
         }
-        TableSet::const_iterator I = allTables.begin();
-        for(; I != allTables.end(); ++I) {
+        TableSet::const_iterator Iend = allTables.end();
+        for(TableSet::const_iterator I = allTables.begin(); I != Iend; ++I) {
             debug(std::cout << (query + *I) << std::endl << std::flush;);
             scheduleCommand(query + *I);
         }

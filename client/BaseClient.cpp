@@ -110,7 +110,8 @@ void BaseClient::handleNet()
     while ((input = m_connection.pop()) != NULL) {
         OpVector res;
         m_character->operation(*input, res);
-        for (OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
+        OpVector::const_iterator Iend = res.end();
+        for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
             send(*(*I));
         }
         delete input;

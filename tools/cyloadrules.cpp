@@ -139,7 +139,8 @@ int main(int argc, char ** argv)
     } else if (optind == argc) {
         db->clearRules();
         std::vector<std::string>::const_iterator I = rulesets.begin();
-        for (; I != rulesets.end(); ++I) {
+        std::vector<std::string>::const_iterator Iend = rulesets.end();
+        for (; I != Iend; ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
             std::string filename = etc_directory + "/cyphesis/" + *I + ".xml";
             FileDecoder f(filename, *db);

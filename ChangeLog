@@ -1,3 +1,32 @@
+2004-11-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* aiclient/ClientConnection.cpp, client/BaseClient.cpp,
+	  client/CharacterClient.cpp, client/ClientConnection.cpp,
+	  common/Database.cpp, common/FormattedXMLWriter.cpp,
+	  common/inheritance.cpp, common/refno.h, common/terrain_utils.cpp,
+	  common/type_utils.h, common/utility.cpp, modules/WorldTime.cpp,
+	  modules/WorldTime.h, physics/Collision.cpp, rulesets/Area.cpp,
+	  rulesets/BaseMind.cpp, rulesets/Character.cpp, rulesets/Entity.cpp,
+	  rulesets/Line.cpp, rulesets/MemMap.cpp, rulesets/MemMap_methods.h,
+	  rulesets/Movement.cpp, rulesets/Plant.cpp, rulesets/Py_Map.cpp,
+	  rulesets/Py_Object.cpp, rulesets/Py_Operation.cpp,
+	  rulesets/Py_Oplist.cpp, rulesets/PythonMindScript.cpp,
+	  rulesets/PythonThingScript.cpp, rulesets/Python_API.cpp,
+	  rulesets/Stackable.cpp, rulesets/TerrainProperty.cpp,
+	  rulesets/Thing.cpp, rulesets/World.cpp, server/Account.cpp,
+	  server/CommClient.cpp, server/CommServer.cpp, server/Connection.cpp,
+	  server/EntityFactory.cpp, server/Lobby.cpp, server/Persistance.cpp,
+	  server/Player.cpp, server/Restoration.cpp, server/ServerRouting.cpp,
+	  server/WorldRouter.cpp, tests/EntityExerciser.h,
+	  tests/IGEntityExerciser.h, tests/inheritancetest.cpp,
+	  tools/cycmd.cpp, tools/cyconvertrules.cpp, tools/cydbload.cpp,
+	  tools/cyloadrules.cpp:
+	  Tweak for loops to avoid creating a temporary iterator each
+	  iteration.
+
+	* tests/type_utilstest.cpp: New test for function which does
+	  list conversions.
+
 2004-11-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Property.cpp, common/Property.h, common/Property_impl.h:

@@ -36,9 +36,9 @@ static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
     if (list == NULL) {
         return NULL;
     } 
-    MemEntityVector::const_iterator I;
+    MemEntityVector::const_iterator Iend = res.end();
     int i = 0;
-    for(I = res.begin(); I != res.end(); I++, i++) {
+    for (MemEntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
         thing = newPyEntity();
         if (thing == NULL) {
             Py_DECREF(list);
@@ -68,9 +68,9 @@ static PyObject * Map_find_by_type(PyMap * self, PyObject * args)
     if (list == NULL) {
         return NULL;
     } 
-    MemEntityVector::const_iterator I;
+    MemEntityVector::const_iterator Iend = res.end();
     int i = 0;
-    for(I = res.begin(); I != res.end(); I++, i++) {
+    for (MemEntityVector::const_iterator I = res.begin(); I != Iend; I++, i++) {
         thing = newPyEntity();
         if (thing == NULL) {
             Py_DECREF(list);

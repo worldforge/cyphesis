@@ -52,7 +52,8 @@ Account::Account(Connection * conn, const std::string & uname,
 Account::~Account()
 {
     ConMap::const_iterator J = m_destroyedConnections.begin();
-    for(; J != m_destroyedConnections.end(); J++) {
+    ConMap::const_iterator Jend = m_destroyedConnections.end();
+    for (; J != Jend; ++J) {
         J->second->disconnect();
         delete J->second;
     }
@@ -156,8 +157,9 @@ void Account::addToMessage(MapType & omap) const
     }
     omap["parents"] = ListType(1,getType());
     ListType charlist;
-    EntityDict::const_iterator I;
-    for(I = m_charactersDict.begin(); I != m_charactersDict.end(); I++) {
+    EntityDict::const_iterator I = m_charactersDict.begin();
+    EntityDict::const_iterator Iend = m_charactersDict.end();
+    for (; I != Iend; ++I) {
         charlist.push_back(I->first);
     }
     omap["characters"] = charlist;

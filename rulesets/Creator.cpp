@@ -103,7 +103,8 @@ void Creator::externalOperation(const RootOperation & op)
         OpVector lres;
         callOperation(op, lres);
         setRefno(lres, op);
-        for (OpVector::const_iterator I = lres.begin(); I != lres.end(); I++) {
+        OpVector::const_iterator Iend = lres.end();
+        for (OpVector::const_iterator I = lres.begin(); I != Iend; ++I) {
             m_world->setSerialnoOp(**I);
             sendWorld(*I);
             // Don't delete lres as it has gone into World's queue

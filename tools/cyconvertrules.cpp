@@ -81,8 +81,8 @@ void FileConverter::objectArrived(const Element & obj)
     // one map, which contained all the rules as maps within the top
     // level map. Iterate over them, and convert into new format;
     const MapType & omap = obj.asMap();
-    MapType::const_iterator I;
-    for (I = omap.begin(); I != omap.end(); ++I) {
+    MapType::const_iterator Iend = omap.end();
+    for (MapType::const_iterator I = omap.begin(); I != Iend; ++I) {
         MapType newObject;
         // The id of the new rule is the key of this rule in the old map
         newObject["id"] = I->first;
@@ -91,7 +91,8 @@ void FileConverter::objectArrived(const Element & obj)
         // Old format parent attribute was a single string. This is replaced
         // in the new format by the more conventional atlas list of strings.
         MapType::const_iterator J = ent.find("parent");
-        if ((J == ent.end()) || (!J->second.isString())) {
+        MapType::const_iterator Jend = ent.end();
+        if ((J == Jend) || (!J->second.isString())) {
             std::cerr << "Rule \"" << I->first << "\" has no parent."
                       << std::endl << std::flush;
             continue;
@@ -103,7 +104,7 @@ void FileConverter::objectArrived(const Element & obj)
         // atlas attribute inheritance, server side visibility and default
         // value
         J = ent.find("attributes");
-        if (J != ent.end()) {
+        if (J != Jend) {
             if (!J->second.isMap()) {
                 std::cerr << "Rule \"" << I->first
                           << "\" has attributes which are not a map."
@@ -113,8 +114,8 @@ void FileConverter::objectArrived(const Element & obj)
             newObject["attributes"] = MapType();
             MapType & newAttrs = newObject["attributes"].asMap();
             const MapType & attributes = J->second.asMap();
-            J = attributes.begin();
-            for(; J != attributes.end(); ++J) {
+            MapType::const_iterator aend = attributes.end();
+            for(J = attributes.begin(); J != aend; ++J) {
                 MapType & attr = (newAttrs[J->first] = MapType()).asMap();
                 attr["default"] = J->second;
                 attr["visibility"] = "public";
@@ -124,7 +125,7 @@ void FileConverter::objectArrived(const Element & obj)
         // The script attribute of the rule is converted unchanged, largely
         // because additional requirements have not yet been identified.
         J = ent.find("script");
-        if (J != ent.end()) {
+        if (J != Jend) {
             if (!J->second.isMap()) {
                 std::cerr << "Rule \"" << I->first
                           << "\" has script which are not a map."
@@ -137,7 +138,7 @@ void FileConverter::objectArrived(const Element & obj)
         // The mind attribute of the rule is converted unchanged, largely
         // because additional requirements have not yet been identified.
         J = ent.find("mind");
-        if (J != ent.end()) {
+        if (J != Jend) {
             if (!J->second.isMap()) {
                 std::cerr << "Rule \"" << I->first
                           << "\" has mind which are not a map."
@@ -150,7 +151,7 @@ void FileConverter::objectArrived(const Element & obj)
         // The playable attribute of the rule is converted unchanged
         // Perhaps this should in time become an internal attribute?
         J = ent.find("playable");
-        if (J != ent.end()) {
+        if (J != Jend) {
             if (!J->second.isInt()) {
                 std::cerr << "Rule \"" << I->first
                           << "\" has playable which are not an int."
@@ -226,7 +227,8 @@ void FileConverter::outputValue(const Element & e)
 
 void FileConverter::output(const MapType & o)
 {
-    for(MapType::const_iterator I = o.begin(); I != o.end(); ++I) {
+    MapType::const_iterator Iend = o.end();
+    for(MapType::const_iterator I = o.begin(); I != Iend; ++I) {
         for(int i = 0; i < m_indent; ++i) {
             std::cout << " ";
         }
@@ -241,7 +243,8 @@ void FileConverter::output(const MapType & o)
 
 void FileConverter::output(const ListType & o)
 {
-    for(ListType::const_iterator I = o.begin(); I != o.end(); ++I) {
+    ListType::const_iterator Iend = o.end();
+    for(ListType::const_iterator I = o.begin(); I != Iend; ++I) {
         for(int i = 0; i < m_indent; ++i) {
             std::cout << " ";
         }

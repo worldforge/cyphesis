@@ -162,8 +162,8 @@ void Persistance::registerCharacters(Account & ac,
     if (dr.error()) {
         log(ERROR, "Failure while find account.");
     }
-    DatabaseResult::const_iterator I = dr.begin();
-    for(; I != dr.end(); ++I) {
+    DatabaseResult::const_iterator Iend = dr.end();
+    for (DatabaseResult::const_iterator I = dr.begin(); I != Iend; ++I) {
         const char * c = I.column(0);
         if (c == 0) {
             log(ERROR, "No data in relation when examing characters");

@@ -58,8 +58,9 @@ int CharacterClient::sendAndWaitReply(RootOperation & op, OpVector & res)
                 // What the hell is this!
                 OpVector result;
                 operation(*input, result);
-                OpVector::const_iterator I;
-                for (I = result.begin(); I != result.end(); I++) {
+                OpVector::const_iterator I = result.begin();
+                OpVector::const_iterator Iend = result.end();
+                for (; I != Iend; ++I) {
                     send(*(*I));
                 }
     

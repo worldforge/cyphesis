@@ -271,13 +271,14 @@ void Thing::MoveOperation(const Move & op, OpVector & res)
     if (consts::enable_ranges && isPerceptive()) {
         debug(std::cout << "testing range" << std::endl;);
         float fromSquSize = boxSquareSize(m_location.m_bBox);
-        EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
         ListType appear, disappear;
         MapType this_ent;
         this_ent["id"] = getId();
         this_ent["stamp"] = (double)m_seq;
         ListType this_as_args(1,this_ent);
-        for(;I != m_location.m_loc->m_contains.end(); I++) {
+        EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
+        EntitySet::const_iterator Iend = m_location.m_loc->m_contains.end();
+        for(; I != Iend; I++) {
             float oldDist = squareDistance((*I)->m_location.m_pos, oldpos),
                   newDist = squareDistance((*I)->m_location.m_pos, m_location.m_pos),
                   oSquSize = boxSquareSize((*I)->m_location.m_bBox);
