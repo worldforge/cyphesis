@@ -178,16 +178,18 @@ OpVector Account::ImaginaryOperation(const Imaginary & op)
 {
     const Fragment::ListType & args = op.GetArgs();
     if ((!args.empty()) && (args.front().IsMap())) {
+        Sight s(Sight::Instantiate());
+        s.SetArgs(Fragment::ListType(1,op.AsObject()));
+        s.SetFrom(getId());
+        s.SetSerialno(connection->server.getSerialNo());
         const Fragment::MapType & arg = args.front().AsMap();
         Fragment::MapType::const_iterator I = arg.find("loc");
         if (I != arg.end()) {
-            Sight s(Sight::Instantiate());
-            s.SetArgs(Fragment::ListType(1,op.AsObject()));
             s.SetTo(I->second.AsString());
-            s.SetFrom(getId());
-            s.SetSerialno(connection->server.getSerialNo());
-            return connection->server.lobby.operation(s);
+        } else {
+            s.SetTo(op.GetTo());
         }
+        return connection->server.lobby.operation(s);
     }
     return OpVector();
 }

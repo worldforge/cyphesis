@@ -1,3 +1,11 @@
+2002-10-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp: Fix up handling of imaginary ops.
+
+	* server/Connection.cpp: Clarify error reporting.
+
+	* rpm spec fixes.
+
 2002-10-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cyphesis-setup: Clean up syntax.

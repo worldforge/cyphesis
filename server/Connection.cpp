@@ -133,7 +133,10 @@ OpVector Connection::operation(const RootOperation & op)
         debug(std::cout << "[" << from << "]" << std::endl << std::flush;);
         BaseDict::const_iterator I = objects.find(from);
         if (I == objects.end()) {
-            return error(op, "From is illegal");
+            std::string err = "From [";
+            err += from;
+            err += "] is illegal";
+            return error(op, err.c_str());
         }
         BaseEntity * ent = I->second;
         Character * character = dynamic_cast<Character *>(ent);
