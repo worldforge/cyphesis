@@ -1,4 +1,5 @@
-Fix tools that use Database so that they deal with the database async connection.
+Run "SET autocommit TO 'off';" on connection to database, and run "COMMIT;"
+every 30 seconds (or so).
 
 Make database maintainance intervals configurable.
 

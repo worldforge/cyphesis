@@ -220,13 +220,13 @@ if test $RUNNING_AS != "root"; then
 
     # The filename given here is mason specific, but as that is the only
     # game explicitly supported at this time, this should not be a problem.
-    echo Loading world data into database...
-    if $CYPHESIS_BINDIR/cydbload $CYPHESIS_CONF_DIR/cyphesis/moraf.xml; then
-        echo Loaded.
-    else
-        echo ERROR: $0: Unable to load world into database.
-        exit 1
-    fi
+    # echo Loading world data into database...
+    # if $CYPHESIS_BINDIR/cydbload $CYPHESIS_CONF_DIR/cyphesis/moraf.xml; then
+    #     echo Loaded.
+    # else
+    #     echo ERROR: $0: Unable to load world into database.
+    #     exit 1
+    # fi
 
     echo
     echo This system is now ready to run cyphesis.
@@ -314,13 +314,13 @@ echo
 
 # The filename given here is mason specific, but as that is the only
 # game explicitly supported at this time, this should not be a problem.
-echo Loading world data into database...
-if su - $CYPHESIS_USER -c "$CYPHESIS_BINDIR/cydbload $CYPHESIS_CONF_DIR/cyphesis/moraf.xml"; then
-    echo Loaded.
-else
-    echo ERROR: $0: Unable to load world into database.
-    exit 1
-fi
+# echo Loading world data into database...
+# if su - $CYPHESIS_USER -c "$CYPHESIS_BINDIR/cydbload $CYPHESIS_CONF_DIR/cyphesis/moraf.xml"; then
+#     echo Loaded.
+# else
+#     echo ERROR: $0: Unable to load world into database.
+#     exit 1
+# fi
 
 echo
 echo This system is now ready to run cyphesis.

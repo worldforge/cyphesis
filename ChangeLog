@@ -1,3 +1,8 @@
+2003-11-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cyphesis-setup: Comment out use of cydbload, no longer valid
+	  in this version.
+
 2003-11-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* Remove unecessary AC_ARG_PROGRAM call from configure.ac
