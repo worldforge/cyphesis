@@ -362,9 +362,9 @@ OpVector Thing::SetOperation(const Set & op)
             d->SetTo(getId());
             res2.push_back(d);
         }
-    if (update_flags != 0) {
-        updated.emit();
-    }
+        if (update_flags != 0) {
+            updated.emit();
+        }
         return res2;
     }
     catch (Atlas::Message::WrongTypeException) {

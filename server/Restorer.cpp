@@ -12,6 +12,7 @@
 #include <rulesets/Line.h>
 #include <rulesets/Structure.h>
 #include <rulesets/Stackable.h>
+#include <rulesets/World.h>
 
 template class Restorer<Entity>;
 template class Restorer<Thing>;
@@ -23,6 +24,7 @@ template class Restorer<Area>;
 template class Restorer<Line>;
 template class Restorer<Stackable>;
 template class Restorer<Structure>;
+template class Restorer<World>;
 
 Persistor<Entity> Restorer<Entity>::m_persist(true);
 Persistor<Thing> Restorer<Thing>::m_persist(true);
@@ -34,6 +36,7 @@ Persistor<Area> Restorer<Area>::m_persist(true);
 Persistor<Line> Restorer<Line>::m_persist(true);
 Persistor<Stackable> Restorer<Stackable>::m_persist(true);
 Persistor<Structure> Restorer<Structure>::m_persist(true);
+Persistor<World> Restorer<World>::m_persist(true);
 
 void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
 {
@@ -42,10 +45,8 @@ void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
     restoreFloat(dr.column("food"), food);
 }
 
-void Restorer<Character>::populate(const std::string & id,
-                                   DatabaseResult::const_iterator & dr)
+void Restorer<Character>::populate(DatabaseResult::const_iterator & dr)
 {
-    // setId(id);
     rEntity(dr);
     rCharacter(dr);
 }

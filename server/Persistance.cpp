@@ -153,6 +153,11 @@ void Persistance::addCharacter(const Account & ac, const Entity & e)
     m_connection.createRelationRow("character", ac.getId(), e.getId());
 }
 
+void Persistance::delCharacter(const std::string & id)
+{
+    m_connection.removeRelationRowByOther("character", id);
+}
+
 bool Persistance::getRules(Fragment::MapType & m)
 {
     return m_connection.getTable(m_connection.rule(), m);

@@ -1,5 +1,25 @@
 2003-01-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/Database.h: Add functions for removing
+	  relation rows. Modify entity select method to handle an empty loc
+	  correctly.
+
+	* rulesets/Thing.cpp: Correct indenting.
+
+	* rulesets/World.cpp: Trigger update in SetOperation() correctly.
+
+	* server/Account.cpp, server/Persistance.cpp, server/Persistance.h:
+	  Inform Persistance modules when the account loses a character, so
+	  this change is reflected in the database.
+
+	* server/Persistor.cpp: Move comments into the correct place.
+
+	* server/Restoration.cpp, server/Restorer.cpp, server/Restorer.h,
+	  server/Restorer_impl.h: Persist and restore the world entity
+	  attributes. Remove redundant argument from Restorer::populate().
+
+2003-01-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Restorer.h, server/Restorer_impl.h: Add method to allow
 	  decoding of a complete atlas map from a database record.
 

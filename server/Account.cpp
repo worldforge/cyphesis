@@ -56,7 +56,7 @@ void Account::characterDestroyed(std::string id)
         delete I->second;
         destroyedConnections.erase(I);
     }
-    // FIXME Let Persistance know about this old character
+    Persistance::instance()->delCharacter(id);
 }
 
 void Account::addCharacter(Entity * chr)

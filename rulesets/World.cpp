@@ -58,8 +58,10 @@ OpVector World::SetOperation(const Set & op)
         }
         RootOperation * s = new Sight(Sight::Instantiate());
         s->SetArgs(Fragment::ListType(1,op.AsObject()));
-        OpVector res2(1,s);
-        return res2;
+        if (update_flags != 0) {
+            updated.emit();
+        }
+        return OpVector(1,s);
     }
     catch (Atlas::Message::WrongTypeException) {
         log(ERROR, "EXCEPTION: Malformed set operation");

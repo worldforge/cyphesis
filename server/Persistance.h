@@ -30,6 +30,7 @@ class Persistance {
     void putAccount(const Account &);
     void registerCharacters(Account &, const EntityDict & worldObjects);
     void addCharacter(const Account &, const Entity &);
+    void delCharacter(const std::string &);
     
     bool getRules(Atlas::Message::Object::MapType & m);
     bool clearRules();

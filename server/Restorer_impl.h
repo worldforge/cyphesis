@@ -48,9 +48,8 @@ void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
 }
 
 template <class T>
-void Restorer<T>::populate(const std::string & id, DatabaseResult::const_iterator & dr)
+void Restorer<T>::populate(DatabaseResult::const_iterator & dr)
 {
-    // setId(id);
     rEntity(dr);
 }
 
@@ -61,7 +60,7 @@ Entity * Restorer<T>::restore(const std::string & id, DatabaseResult::const_iter
     
     Restorer<T> * rt = (Restorer<T> *)t;
 
-    rt->populate(id, dr);
+    rt->populate(dr);
 
     m_persist.hookup(*t);
 

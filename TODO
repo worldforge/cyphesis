@@ -1,3 +1,6 @@
+Still not clearning rows from the character relation when the entities are
+deleted from world.
+
 Two important persistence issues; make sure the attributes of world are being
 handled correctly, and persist the "attributes" member of entity.
 

@@ -4,6 +4,7 @@
 
 #include "Restoration.h"
 #include "Restorer.h"
+#include "Persistor.h"
 #include "ServerRouting.h"
 #include "WorldRouter.h"
 
@@ -19,6 +20,7 @@
 #include <rulesets/Line.h>
 #include <rulesets/Structure.h>
 #include <rulesets/Stackable.h>
+#include <rulesets/World.h>
 
 #include <iostream>
 
@@ -197,7 +199,10 @@ void Restoration::restoreChildren(Entity * loc)
 
 void Restoration::read()
 {
-    DatabaseResult res = database.selectClassByLoc("");
+    Restorer<World> & world = (Restorer<World> &)server.world.gameWorld;
+    Restorer<World>::m_persist.hookup(world);
+
+    DatabaseResult res = database.selectOnlyByLoc("", "world");
     if (res.error()) {
         log(ERROR, "Database error retrieving root world.");
         debug(std::cout << "DEBUG: Problem getting root id from world db"
@@ -230,6 +235,8 @@ void Restoration::read()
     restore(rootId, rootClass, false);
 #else
     // Fix me - restore attributes of the gameWorld object itself.
+    DatabaseResult::const_iterator I = res.begin();
+    world.populate(I);
     restoreChildren(&server.world.gameWorld);
 #endif
 }

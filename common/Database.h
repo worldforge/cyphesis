@@ -90,6 +90,10 @@ class Database {
     bool createRelationRow(const std::string & name,
                            const std::string & id,
                            const std::string & other);
+    bool removeRelationRow(const std::string & name,
+                           const std::string & id);
+    bool removeRelationRowByOther(const std::string & name,
+                                  const std::string & other);
 
     bool registerSimpleTable(const std::string & name,
                              const Atlas::Message::Object::MapType & row);

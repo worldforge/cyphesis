@@ -27,8 +27,6 @@ class Restorer : public T {
   private:
     Restorer(); // DO NOT IMPLEMENT THIS
 
-    static Persistor<T> m_persist;
-
     void restoreInt(const char * c, int & i) {
         if (c == 0) { return; }
         i = strtol(c, 0, 10);
@@ -46,9 +44,12 @@ class Restorer : public T {
     void rEntity(DatabaseResult::const_iterator & dr);
     void rCharacter(DatabaseResult::const_iterator & dr);
   public:
-    void populate(const std::string & id, DatabaseResult::const_iterator & dr);
+    static Persistor<T> m_persist;
 
-    static Entity * restore(const std::string & id, DatabaseResult::const_iterator & dr);
+    void populate(DatabaseResult::const_iterator & dr);
+
+    static Entity * restore(const std::string & id,
+                            DatabaseResult::const_iterator & dr);
 
 };
 

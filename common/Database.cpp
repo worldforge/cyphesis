@@ -505,6 +505,32 @@ bool Database::createRelationRow(const std::string & name,
     return runCommandQuery(query);
 }
 
+bool Database::removeRelationRow(const std::string & name,
+                                 const std::string & id)
+{
+    std::string query = "DELETE FROM ";
+    query += name;
+    query += " WHERE id=";
+    query += id;
+    query += ";";
+
+    return runCommandQuery(query);
+}
+
+bool Database::removeRelationRowByOther(const std::string & name,
+                                        const std::string & other)
+{
+    std::string query = "DELETE FROM ";
+    query += name;
+    query += " WHERE ";
+    query += name;
+    query += "=";
+    query += other;
+    query += ";";
+
+    return runCommandQuery(query);
+}
+
 bool Database::registerSimpleTable(const std::string & name,
                                    const Atlas::Message::Object::MapType & row)
 {
@@ -877,9 +903,15 @@ const DatabaseResult Database::selectOnlyByLoc(const std::string & loc,
 
     std::string query = "SELECT * FROM ONLY ";
     query += classname;
-    query += "_ent WHERE loc=";
-    query += loc;
-    query += ";";
+    query += "_ent WHERE loc";
+    if (loc.empty()) {
+        query += " is null;";
+    } else {
+        query += "=";
+        query += loc;
+        query += ";";
+    }
+
 
     return runSimpleSelectQuery(query);
 }

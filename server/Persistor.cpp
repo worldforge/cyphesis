@@ -220,13 +220,13 @@ void Persistor<World>::hookup(World & t)
 {
     t.updated.connect(SigC::bind<World *>(SigC::slot(*this,
                                           &Persistor<World>::update), &t));
+    // The game world should never be destroyed, so we don't connect
+    // it to a remove function.
 }
 
 void Persistor<World>::persist(World & t)
 {
     hookup(t);
-    // The game world should never be destroyed, so we don't connect
-    // it to a remove function.
     // We do not create the row in the database. This is handled in a slightly
     // special way.
 }
