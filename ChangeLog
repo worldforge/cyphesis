@@ -1,5 +1,14 @@
 2001-06-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.cpp: Fixed bug in looking at characters code.
+
+	* rulesets/acorn/world/objects/buildings/Inn2.py: Fix walk bounding
+	  box.
+
+	* acorn.vconf: Added normal square brown tent.
+
+2001-06-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.cpp, server/Account.h: Added ability to look
 	  at characters to get details fter login before joining game.
 
