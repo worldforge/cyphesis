@@ -1,3 +1,8 @@
+2002-03-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Location.cpp: Re-wrote commented out orientation
+	  code so it uses the correct variable names.
+
 2002-03-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.cpp, common/BaseEntity.h, rulesets/Entity.h,

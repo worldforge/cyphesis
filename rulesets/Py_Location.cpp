@@ -64,9 +64,10 @@ static PyObject * Location_getattr(LocationObject *self, char *name)
         return (PyObject *)v;
     }
     // FIXME No current handling of this in python
-    //if (strcmp(name, "rotation") == 0) {
-        //Vector3DObject * v = newVector3DObject(NULL);
-        //v->coords = self->location->face;
+    // Needs to be handled in some other way that a Vector3D
+    //if (strcmp(name, "orientation") == 0) {
+        //QuaternionObject * v = newQuaternionObject(NULL);
+        //v->rotation = self->location->orientation;
         //return (PyObject *)v;
     //}
     if (strcmp(name, "bbox") == 0) {
