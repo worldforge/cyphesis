@@ -290,12 +290,23 @@ def default(mapeditor):
     m.learn(merchant,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
     m.learn(merchant,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
     m.learn(merchant,(il.welcome,"welcome('Welcome to this our settlement','settler')"))
-    m.learn(merchant,(il.help,"add_help(['Thankyou for joining our remote settlement.','Our first task is to build some shelter, but while we are doing that we still need food.','You can help us out by raising pigs for slaughter.','If you want to buy a piglet to raise, let me know by saying you would like to buy one.','Pigs love to eat acorns from under the oak trees that are abundant in this area.'],['I would like to buy a pig'])"))
+    m.learn(merchant,(il.help,"add_help(['Thankyou for joining our remote settlement.','Our first task is to build some shelter, but while we are doing that we still need food.','You can help us out by raising pigs for slaughter.','If you want to buy a piglet to raise, let me know by saying you would like to buy one.','Pigs love to eat acorns from under the oak trees that are abundant in this area.'],['I would like to buy a pig', 'Pehaps I will buy one later'])"))
     piglets=[]
     for i in range(0, 6):
         piglets.append(m.make('pig',type='pig',xyz=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
     m.learn(piglets,pig_goals)
     m.own(merchant,piglets)
+
+    marshall=m.make('Gorun Iksa',type='marshall',desc='the duke\'s marshall',
+                    xyz=(14,12,settlement_height), sex='male')
+    m.know(marshall, [('deed','price','50')])
+    m.know(marshall, village)
+    m.learn(marshall,(il.help,"add_help(['On behalf of the Duke I would like to welcome you to moraf.','If you are new here I suggest talking to the pig seller.','He will tell you what you can do to help out.','If you have decide you would like to settle here I can assign you some land'],['but you will need to show that you are a useful citizen.','If you can raise 50 coins herding pigs, then a plot of land is yours.'],['I would like to buy a deed','I will come back when I have raised some pigs'])"))
+    plots=[]
+    for i in range(20, 200, 20):
+        for j in range(-100, 100, 20):
+            plots.append(m.make('deed',xyz=(0,0,0),parent=marshall.id,plot=(i,j)))
+    m.own(marshall,plots)
 
     # Warriors - the more adventurous types
 
@@ -321,7 +332,7 @@ def default(mapeditor):
 
     # Warriors enjoy their food and drink
     m.price(warriors, [('services','5')])
-    m.learn(warriors,(il.help,"add_help(['The forest is a dangerous place.','If you need some help protecting your pigs,','I can help you out for a day or so.','I will need some gold for food and equipment.','For 5 coins I can work for you until sundown.','After sundown you should make sure your pigs are safe,','and get indoors yourself.','If you want to hire my services,','let me know by saying you would like to hire me.'])"))
+    m.learn(warriors,(il.help,"add_help(['The forest is a dangerous place.','If you need some help protecting your pigs,','I can help you out for a day or so.','I will need some gold for food and equipment.','For 5 coins I can work for you until sundown.','After sundown you should make sure your pigs are safe,','and get indoors yourself.','If you want to hire my services,','let me know by saying you would like to hire me.'],['I would like to hire your services','I can take care of my pigs alone'])"))
     m.learn(warriors,(il.hire,"hire_trade()"))
     m.learn(warriors,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
     m.learn(warriors,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))

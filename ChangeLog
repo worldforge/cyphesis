@@ -1,5 +1,13 @@
 2004-12-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/panlingua/interlinguish.py: Added new noun for
+	  deed.
+
+	* data/mason.xml, rulesets/mason/define_world.py: Added new marshall
+	  character who handles asigning land to settlers for housing.
+
+2004-12-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* cyphesis.spec.in: Fix error caused by non-escaped brackets
 	  in shell line.
 
