@@ -375,3 +375,7 @@ class NPCMind(BaseMind):
             self.message_queue=Message(op)
         else:
             self.message_queue.append(op)
+    ########## turn to face other entity
+    def face(self, other):
+        vector = distance_to(self, other)
+        print "I cannot face this"
