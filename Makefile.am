@@ -9,6 +9,7 @@ install-data-local:
 	mkdir -p $(DESTDIR)$(sysconfdir)/cyphesis
 	cp -f cyphesis.vconf $(DESTDIR)$(sysconfdir)/cyphesis
 	cp -f basic.xml acorn.xml mason.xml werewolf.xml $(DESTDIR)$(sysconfdir)/cyphesis
+	cp -f agrilan*.xml $(DESTDIR)$(sysconfdir)/cyphesis
 	mkdir -p $(DESTDIR)$(datadir)/doc/cyphesis-$(VERSION)
 	$(INSTALL_DATA) README $(DESTDIR)$(datadir)/doc/cyphesis-$(VERSION)
 	$(INSTALL_DATA) COPYING $(DESTDIR)$(datadir)/doc/cyphesis-$(VERSION)

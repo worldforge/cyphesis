@@ -22,7 +22,7 @@ class RulesetModuleLoader(ihooks.ModuleLoader):
         self.rulesets = rulesets
         self.ruleset_paths = []
         for ruleset in rulesets:
-            self.ruleset_paths.append("/opt/worldforge/share/cyphesis/rulesets/"+ruleset)
+            self.ruleset_paths.append("@RULESET_DIR@/rulesets/"+ruleset)
         #print self.ruleset_paths
     def ihooks_find_module_in_dir(self, name, dir, allow_packages=1):
         return ihooks.ModuleLoader.find_module_in_dir(self, name, dir,

@@ -1,5 +1,11 @@
 2002-06-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* Write rpm spec dividing stuff up into server package, lib
+	  packages, and game packages. Clean up configure, and use autoconf
+	  to process ruleset_import_hooks.py.
+
+2002-06-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* Makefile.am, cyphesis.spec.in: Clean up install process, and update
 	  rpm spec.
 
