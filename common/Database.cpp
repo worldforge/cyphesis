@@ -471,3 +471,42 @@ void Database::reportError()
     std::string msg = std::string("DATABASE ERROR: ") + PQerrorMessage(m_connection);
     log(ERROR, msg.c_str());
 }
+
+bool Database::registerEntityTable(const std::string & classname,
+	                           const Atlas::Message::Object::MapType & row,
+				   const std::string & parent)
+{
+    const std::string tablename = classname + "ent";
+    // Check whether the table exists
+    std::string query = "SELECT * FROM ";
+    query += tablename;
+    query += " WHERE ";
+    Atlas::Message::Object::MapType::const_iterator I = row.begin();
+    for(; I != row.end(); ++I) {
+	if (I != row.begin()) {
+	    query += " and ";
+	}
+	const std::string & column = I->first;
+	query += column;
+	const Atlas::Message::Object & type = I->second;
+        if (type.IsString()) {
+	    query += " LIKE 'foo'";
+        } else if (type.IsNum()) {
+	    query += " = 1";
+        }
+    }
+    query += ";";
+
+    std::cout << "QUERY: " << query << std::endl << std::flush;
+    int status = PQsendQuery(m_connection, "CREATE TABLE account ( id varchar(80)  PRIMARY KEY, contents text );");
+    if (!status) {
+	reportError();
+        return false;
+    }
+    if (!tuplesOk()) {
+	std::cout << "returned error" << std::endl << std::flush;
+    } else {
+	std::cout << "returned error" << std::endl << std::flush;
+    }
+    return true;
+}

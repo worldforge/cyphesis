@@ -79,6 +79,10 @@ class Database {
     bool initServer(bool createTables = false);
     bool initRule(bool createTables = false);
 
+    bool registerEntityTable(const std::string & classname,
+	                     const Atlas::Message::Object::MapType & row,
+			     const std::string & parent = "");
+
     void shutdownConnection();
 };
 
