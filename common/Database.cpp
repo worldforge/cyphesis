@@ -1115,7 +1115,7 @@ bool Database::registerArrayTable(const std::string & name,
         }
     }
     query += ";";
-    std::cout << "QUERY: " << query << std::endl << std::flush;
+    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
@@ -1152,7 +1152,7 @@ const DatabaseResult Database::selectArrayRows(const std::string & name,
     query += id;
     query += ";";
 
-    std::cout << "TERRAIN QUERY: " << query << std::endl << std::flush;
+    debug(std::cout << "ARRAY QUERY: " << query << std::endl << std::flush;);
 
     return runSimpleSelectQuery(query);
 }

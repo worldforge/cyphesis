@@ -5,12 +5,15 @@
 #include "terrain_utils.h"
 
 #include "Database.h"
+#include "debug.h"
 
 #include <Mercator/Terrain.h>
 
 #include <Atlas/Message/Element.h>
 
 #include <vector>
+
+static const bool debug_flag = true;
 
 typedef Mercator::Terrain::Pointstore Pointstore;
 typedef Mercator::Terrain::Pointcolumn Pointcolumn;
@@ -32,8 +35,8 @@ void storeTerrain(const std::string & id, const Mercator::Terrain & terrain)
             Database::instance()->createArrayRow("terrain", id, coords,
                                                  heightPoint);
 
-            std::cout << I->first << ", " << J->first << " = "
-                      << J->second.height() << std::endl << std::flush;
+            debug(std::cout << I->first << ", " << J->first << " = "
+                            << J->second.height() << std::endl << std::flush;);
         }
     }
 }
@@ -41,10 +44,6 @@ void storeTerrain(const std::string & id, const Mercator::Terrain & terrain)
 void loadTerrain(const std::string & id, Mercator::Terrain & terrain)
 {
     DatabaseResult res = Database::instance()->selectArrayRows("terrain", id);
-
-    if (res.empty()) {
-        std::cout << "No terrain in DB" << std::endl << std::flush;
-    }
 
     for (DatabaseResult::const_iterator I = res.begin(); I != res.end(); ++I) {
         int x = 4, y = 5;
@@ -54,11 +53,12 @@ void loadTerrain(const std::string & id, Mercator::Terrain & terrain)
         I.readColumn("j", y);
         I.readColumn("height", h);
 
-        std::cout << "Heightpoint " << x << "," << y << " = " << h
-                  << std::endl << std::flush;
+        debug(std::cout << "Heightpoint " << x << "," << y << " = " << h
+                        << std::endl << std::flush;);
 
         terrain.setBasePoint(x, y, h);
     }
+    res.clear();
 }
 
 void updateStoredTerrain(const std::string & id,
@@ -67,13 +67,14 @@ void updateStoredTerrain(const std::string & id,
                          const PointSet & created)
 {
     Mercator::BasePoint bp;
-    std::cout << "Update Stored Terrain" << std::endl << std::flush;
+    debug(std::cout << "Update Stored Terrain" << std::endl << std::flush;);
 
     PointSet::const_iterator I = modified.begin();
     for (; I != modified.end(); ++I) {
         std::set<int>::const_iterator J = I->second.begin();
         for (; J != I->second.end(); ++J) {
-            std::cout << "Modified " << I->first << *J << std::endl << std::flush;
+            debug(std::cout << "Modified " << I->first << *J
+                            << std::endl << std::flush;);
             std::vector<int> coords(2);
 
             coords[0] = I->first;

@@ -1,3 +1,10 @@
+2004-09-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Supress debug output.
+
+	* common/terrain_utils.cpp: Free up database results after processing
+	  and supress debug output.
+
 2004-09-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* modules/Location.h, modules/Location.cpp: Remove obsolete
