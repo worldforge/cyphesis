@@ -377,6 +377,7 @@ oplist Thing::Operation(const Look & op)
 #include "Character.h"
 #include "Creator.h"
 
+void init_python_api();
 
 ThingFactory thing_factory;
 
@@ -388,6 +389,8 @@ ThingFactory::ThingFactory()
     thing_map["guard"] = thing_t(BASE_CHARACTER, "");
     thing_map["butcher"] = thing_t(BASE_CHARACTER, "");
     thing_map["creator"] = thing_t(BASE_CREATOR, "");
+
+    init_python_api();
 }
 
 Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent, Routing * svr)

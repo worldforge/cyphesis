@@ -20,7 +20,7 @@ class sockbuf : public filebuf {
   public:
     sockbuf() { }
     sockbuf(int fd) : filebuf(fd) { }
-    virtual streampos sys_seek(streamoff, _seek_dir) { cout << "WOOHOO"; return streampos(); }
+    virtual streampos sys_seek(streamoff, _seek_dir) { return streampos(); }
 };
 
 using namespace Atlas;

@@ -314,7 +314,6 @@ int main(int argc, char ** argv) {
     if ((cwd = getcwd(NULL, 0)) != NULL) {
         setenv("PYTHONPATH", cwd, 1);
     }
-    Py_Initialize();
     cout << Py_GetPath() << endl << flush;
     if (consts::debug_thinking>=1) {
         char * log_name="thinking.log";

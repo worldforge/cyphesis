@@ -1,6 +1,12 @@
 dnl
 dnl $Log: configure.in,v $
-dnl Revision 1.6  2000-10-24 12:50:22  alriddoch
+dnl Revision 1.7  2000-11-14 15:52:10  alriddoch
+dnl 	* Added more Python/C API code. Basic framework now exists for
+dnl 	  creating and manipulating Operations in the python code.
+dnl
+dnl Al
+dnl
+dnl Revision 1.6  2000/10/24 12:50:22  alriddoch
 dnl 	* Fixed movement code which now works.
 dnl
 dnl 	* Fixed set operation, and added attributes map to Thing.
@@ -60,7 +66,7 @@ AC_INIT()
 
 dnl Initialise automake
 
-AM_INIT_AUTOMAKE("cyphesis", "0.0.0")
+AM_INIT_AUTOMAKE("cyphesis", "0.0.1")
 
 dnl Need libtool
 
