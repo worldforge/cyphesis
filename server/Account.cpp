@@ -14,6 +14,7 @@
 
 #include <common/log.h>
 #include <common/debug.h>
+#include <common/Database.h>
 
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Sight.h>
@@ -25,10 +26,10 @@
 
 static const bool debug_flag = false;
 
-Account::Account(Connection * conn, const std::string & username,
+Account::Account(Connection * conn, const std::string & uname,
                  const std::string& passwd)
-                 : OOGThing(username), world(NULL), connection(conn),
-                   password(passwd), type("account")
+                 : OOGThing(Database::instance()->getEntityId()),
+                   connection(conn), username(uname), password(passwd)
 {
     // setId(username);
 
@@ -61,12 +62,13 @@ void Account::characterDestroyed(std::string id)
 BaseEntity * Account::addCharacter(const std::string & typestr,
                                    const Fragment::MapType & ent)
 {
+    WorldRouter & world = connection->server.world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
-    Entity * chr = world->addObject(typestr, ent);
+    Entity * chr = world.addObject(typestr, ent);
     debug(std::cout << "Added" << std::endl << std::flush;);
     if (!chr->location.isValid()) {
         debug(std::cout << "Setting location" << std::endl << std::flush;);
-        chr->location.ref = &world->gameWorld;
+        chr->location.ref = &world.gameWorld;
         chr->location.coords = Vector3D(0, 0, 0);
     }
     debug(std::cout << "Location set to: " << chr->location << std::endl << std::flush;);
@@ -93,7 +95,7 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
         Create * c = new Create(Create::Instantiate());
         c->SetArgs(Fragment::ListType(1,entmap));
         c->SetTo(chr->getId());
-        world->message(*c, chr);
+        world.message(*c, chr);
     }
 
     Create c = Create::Instantiate();
@@ -102,7 +104,7 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
     Sight * s = new Sight(Sight::Instantiate());
     s->SetArgs(Fragment::ListType(1,c.AsObject()));
 
-    world->message(*s, chr);
+    world.message(*s, chr);
 
     return chr;
 }
@@ -122,15 +124,20 @@ OpVector Account::LogoutOperation(const Logout & op)
     return OpVector();
 }
 
+const char * Account::getType() const
+{
+    return "account";
+}
+
 void Account::addToObject(Fragment::MapType & omap) const
 {
     omap["id"] = getId();
-    omap["username"] = getId();
-    omap["name"] = getId();
+    omap["username"] = username;
+    omap["name"] = username;
     if (!password.empty()) {
         omap["password"] = password;
     }
-    omap["parents"] = Fragment::ListType(1,type);
+    omap["parents"] = Fragment::ListType(1,getType());
     Fragment::ListType charlist;
     EntityDict::const_iterator I;
     for(I = charactersDict.begin(); I != charactersDict.end(); I++) {

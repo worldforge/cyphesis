@@ -15,6 +15,8 @@ class Player : public Account {
     Player(Connection * conn, const std::string & username, const std::string & passwd);
     virtual ~Player();
 
+    virtual const char * getType() const;
+
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
 
     static std::set<std::string> playableTypes;

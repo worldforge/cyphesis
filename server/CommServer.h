@@ -6,11 +6,9 @@
 #define SERVER_COMM_SERVER_H
 
 #include <set>
-#include <string>
 
 class CommSocket;
 class CommIdleSocket;
-class CommMetaClient;
 class ServerRouting;
 
 typedef std::set<CommSocket *> comm_set_t;
@@ -24,10 +22,9 @@ class CommServer {
     void idle();
 
   public:
-    const std::string identity;
     ServerRouting & server;
 
-    CommServer(ServerRouting & srv, const std::string & ident);
+    CommServer(ServerRouting & srv);
     ~CommServer();
 
     void loop();

@@ -16,8 +16,7 @@
 
 static const bool debug_flag = false;
 
-CommServer::CommServer(ServerRouting & svr, const std::string & ident) :
-              identity(ident), server(svr)
+CommServer::CommServer(ServerRouting & svr) : server(svr)
 {
 }
 

@@ -76,7 +76,7 @@ void CommClient::setup()
 {
     debug( std::cout << "Negotiating started" << std::endl << std::flush; );
     // Create the server side negotiator
-    accept =  new Atlas::Net::StreamAccept("cyphesis " + commServer.identity, clientIos, this);
+    accept =  new Atlas::Net::StreamAccept("cyphesis " + commServer.server.getName(), clientIos, this);
 
     accept->Poll(false);
 

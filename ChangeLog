@@ -1,3 +1,18 @@
+2002-01-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.h: Declaration for register relations.
+
+	* server/Account.cpp, server/Account.h, server/Admin.cpp,
+	  server/Admin.h, server/Connection.cpp, server/Player.cpp,
+	  server/Player.h, server/ServerRouting.cpp,
+	  server/ServerRouting.h: Properlly separate username and id from
+	  account, and use the database code to assign numerical ids to
+	  account objects.  Eliminate extraneous member variables in account.
+
+	* server/CommClient.cpp, server/CommServer.cpp,
+	  server/CommServer.h, server/server.cpp:
+	  Eliminate storing server name string twice.
+
 2002-01-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CreatorClient.cpp: Make reporting a little more verbose

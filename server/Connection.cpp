@@ -54,8 +54,7 @@ Account * Connection::addPlayer(const std::string& username,
     Player * player = new Player(this, username, password);
     addObject(player);
     player->connection = this;
-    player->world = &server.getWorld();
-    server.addObject(player);
+    server.addAccount(player);
     server.lobby.addObject(player);
     return player;
 }
@@ -131,7 +130,7 @@ OpVector Connection::operation(const RootOperation & op)
         debug(std::cout << "[" << from << "]" << std::endl << std::flush;);
         BaseDict::const_iterator I = objects.find(from);
         if (I == objects.end()) {
-	    std::cout << "Illegal from \"" << from << "\" in " << op.GetParents().front().AsString() << " op from client" << std::endl << std::flush;
+            std::cout << "Illegal from \"" << from << "\" in " << op.GetParents().front().AsString() << " op from client" << std::endl << std::flush;
             std::string err = "From [";
             err += from;
             err += "] is illegal";
@@ -161,7 +160,7 @@ OpVector Connection::LoginOperation(const Login & op)
 
     debug(std::cout << "Got login op" << std::endl << std::flush;);
     if (op.GetArgs().empty()) {
-	return error(op, "Login has no argument");
+        return error(op, "Login has no argument");
     }
     if (!op.GetArgs().front().IsMap()) {
         return error(op, "Login arg is malformed");
@@ -180,7 +179,7 @@ OpVector Connection::LoginOperation(const Login & op)
     }
     const std::string & username = I->second.AsString();
     if (username.empty()) {
-	return error(op, "Empty username provided for Login");
+        return error(op, "Empty username provided for Login");
     }
     I = account.find("password");
     if ((I == account.end()) || !I->second.IsString()) {
@@ -189,19 +188,16 @@ OpVector Connection::LoginOperation(const Login & op)
     const std::string & passwd = account.find("password")->second.AsString();
     // We now have username and password, so can check whether we know this
     // account, either from existing account ....
-    BaseEntity * ent = server.getObject(username);
-    Account * player;
+    Account * player = server.getAccount(username);
     // or if not, from the database
-    if (ent == NULL) {
+    if (player == 0) {
+        debug(std::cout << "No " << username << " account in server. Checking in database." << std::endl << std::flush;);
         player = Persistance::instance()->getAccount(username);
-        if (player != NULL) {
-            player->world = &server.getWorld();
-            server.addObject(player);
+        if (player != 0) {
+            server.addAccount(player);
         }
-    } else {
-        player = dynamic_cast<Account *>(ent);
     }
-    if ((player == NULL) || (passwd != player->password)) {
+    if ((player == 0) || (passwd != player->password)) {
         return error(op, "Login is invalid");
     }
     // Account appears to be who they say they are
@@ -230,7 +226,7 @@ OpVector Connection::CreateOperation(const Create & op)
 {
     debug(std::cout << "Got create op" << std::endl << std::flush;);
     if (op.GetArgs().empty()) {
-	return error(op, "Create has no argument");
+        return error(op, "Create has no argument");
     }
     if (!op.GetArgs().front().IsMap()) {
         return error(op, "Create is malformed");
@@ -256,7 +252,7 @@ OpVector Connection::CreateOperation(const Create & op)
     }
     const std::string & password = I->second.AsString();
 
-    if ((NULL != server.getObject(username)) ||
+    if ((0 != server.getAccount(username)) ||
         (Persistance::instance()->findAccount(username)) ||
         (username.empty()) || (password.empty())) {
         // Account exists, or creation data is duff
@@ -303,11 +299,7 @@ OpVector Connection::LogoutOperation(const Logout & op)
         return error(op, "No account password given");
     }
     const std::string & password = I->second.AsString();
-    BaseEntity * ent = server.getObject(username);
-    if (ent == NULL) {
-        return error(op, "Logout failed");
-    }
-    Account * player = dynamic_cast<Account*>(ent);
+    Account * player = server.getAccount(username);
     if ((!player) || (password != player->password)) {
         return error(op, "Logout failed");
     }
@@ -330,9 +322,9 @@ OpVector Connection::GetOperation(const Get & op)
         info->SetSerialno(server.getSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
-	if (!args.front().IsMap()) {
-	    return error(op, "Get op arg is not a map");
-	}
+        if (!args.front().IsMap()) {
+            return error(op, "Get op arg is not a map");
+        }
         Fragment::MapType::const_iterator I = args.front().AsMap().find("id");
         if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
             return error(op, "Type definition requested with no id");

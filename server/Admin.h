@@ -18,6 +18,8 @@ class Admin : public Account {
                              const std::string & passwd);
     virtual ~Admin();
 
+    virtual const char * getType() const;
+
     virtual OpVector LogoutOperation(const Logout & op);
     virtual OpVector GetOperation(const Get & op);
     virtual OpVector SetOperation(const Set & op);

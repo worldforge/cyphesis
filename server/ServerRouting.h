@@ -5,6 +5,8 @@
 #ifndef SERVER_SERVER_ROUTING_H
 #define SERVER_SERVER_ROUTING_H
 
+#include "Account.h"
+
 #include <common/OOGThing.h>
 #include <common/serialno.h>
 
@@ -15,6 +17,7 @@ class CommServer;
 class ServerRouting : public OOGThing {
   private:
     BaseDict objects;
+    AccountDict accounts;
     const std::string svrRuleset;
     const std::string svrName;
     int numClients;
@@ -27,9 +30,13 @@ class ServerRouting : public OOGThing {
 
     int idle();
 
-    BaseEntity * addObject(BaseEntity * obj) {
+    void addObject(BaseEntity * obj) {
         objects[obj->getId()] = obj;
-        return obj;
+    }
+
+    void addAccount(Account * a) {
+        accounts[a->username] = a;
+        addObject(a);
     }
 
     int getSerialNo() {
@@ -40,10 +47,19 @@ class ServerRouting : public OOGThing {
         return objects;
     }
 
-    BaseEntity * getObject(const std::string & fid) const {
-        BaseDict::const_iterator I = objects.find(fid);
+    BaseEntity * getObject(const std::string & id) const {
+        BaseDict::const_iterator I = objects.find(id);
         if (I == objects.end()) {
-            return NULL;
+            return 0;
+        } else {
+            return I->second;
+        }
+    }
+
+    Account * getAccount(const std::string & username) const {
+        AccountDict::const_iterator I = accounts.find(username);
+        if (I == accounts.end()) {
+            return 0;
         } else {
             return I->second;
         }
@@ -53,6 +69,8 @@ class ServerRouting : public OOGThing {
     void decClients() { --numClients; }
 
     WorldRouter & getWorld() { return world; }
+
+    const std::string & getName() const { return svrName; }
 
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
 };

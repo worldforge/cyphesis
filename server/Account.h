@@ -14,7 +14,6 @@ class Account : public OOGThing {
   private:
     typedef std::map<std::string, SigC::Connection *> ConMap;
 
-    // friend class Connection;
     EntityDict charactersDict;
     ConMap destroyedConnections;
 
@@ -26,13 +25,14 @@ class Account : public OOGThing {
     virtual OpVector characterError(const Create &, const Atlas::Message::Object::MapType &) const = 0;
 
   public:
-    WorldRouter * world;
     Connection * connection;
+    std::string username;
     std::string password;
-    std::string type;
 
     Account(Connection * conn, const std::string & username, const std::string & passwd);
     virtual ~Account();
+
+    virtual const char * getType() const;
 
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
     virtual OpVector LogoutOperation(const Logout & op);

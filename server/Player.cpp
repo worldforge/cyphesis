@@ -13,10 +13,14 @@ std::set<std::string> Player::playableTypes;
 Player::Player(Connection * conn, const std::string& username,
                const std::string& passwd) : Account(conn, username, passwd)
 {
-    type = "player";
 }
 
 Player::~Player() { }
+
+const char * Player::getType() const
+{
+    return "player";
+}
 
 void Player::addToObject(Fragment::MapType & omap) const
 {
@@ -48,11 +52,11 @@ OpVector Player::characterError(const Create& op,const Fragment::MapType& ent) c
 
     I = ent.find("parents");
     if ((I == ent.end()) || !I->second.IsList()) {
-	return error(op, "You cannot create a character with no type.");
+        return error(op, "You cannot create a character with no type.");
     }
     const Fragment::ListType & parents = I->second.AsList();
     if (parents.empty() || !parents.front().IsString()) {
-	return error(op, "You cannot create a character with non-string type.");
+        return error(op, "You cannot create a character with non-string type.");
     }
     const std::string& type = parents.front().AsString(); 
     if (Player::playableTypes.find(type) == Player::playableTypes.end()) {

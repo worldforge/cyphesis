@@ -25,14 +25,17 @@ static const bool debug_flag = true;
 Admin::Admin(Connection * conn, const std::string& username,
              const std::string& passwd) : Account(conn, username, passwd)
 {
-    type = "admin";
-
     subscribe("get", OP_GET);
     subscribe("set", OP_SET);
 }
 
 Admin::~Admin()
 {
+}
+
+const char * Admin::getType() const
+{
+    return "admin";
 }
 
 OpVector Admin::characterError(const Create &, const Fragment::MapType &) const {
@@ -91,9 +94,9 @@ OpVector Admin::GetOperation(const Get & op)
     }
     Info * info = new Info(Info::Instantiate());
     if (objtype == "object") {
-        const BaseDict & OOGDict = world->server.getObjects();
+        const BaseDict & OOGDict = connection->server.world.server.getObjects();
         BaseDict::const_iterator J = OOGDict.find(id);
-        const EntityDict & worldDict = world->getObjects();
+        const EntityDict & worldDict = connection->server.world.getObjects();
         EntityDict::const_iterator K = worldDict.find(id);
 
         if (J != OOGDict.end()) {

@@ -79,6 +79,8 @@ class Database {
 
     void shutdownConnection();
 
+    bool registerRelation(const std::string & name);
+
     bool registerEntityIdGenerator();
     std::string getEntityId();
 

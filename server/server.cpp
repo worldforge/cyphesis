@@ -41,6 +41,7 @@ int main(int argc, char ** argv)
         }
     }
 
+    // If we are a daemon logging to syslog, we need to set it up.
     initLogger();
 
     // Initialise the persistance subsystem. If we have been built with
@@ -97,7 +98,7 @@ int main(int argc, char ** argv)
     // can be stored and queried by clients.
     ServerRouting server(rulesets.front(), serverName);
 
-    CommServer commServer(server, serverName);
+    CommServer commServer(server);
 
     // This is where we should restore the database, before
     // the listen sockets are open. Unlike earlier code, we are
