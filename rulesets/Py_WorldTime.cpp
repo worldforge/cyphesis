@@ -6,7 +6,7 @@
 
 #include "modules/WorldTime.h"
 
-static PyObject *WorldTime_seconds(PyWorldTime *self, PyObject *args, PyObject *kwds)
+static PyObject *WorldTime_seconds(PyWorldTime *self)
 {
 #ifndef NDEBUG
     if (self->time == NULL) {
@@ -14,9 +14,6 @@ static PyObject *WorldTime_seconds(PyWorldTime *self, PyObject *args, PyObject *
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     return PyFloat_FromDouble(self->time->seconds());
 }
 
@@ -40,7 +37,7 @@ static PyObject * WorldTime_is_now(PyWorldTime *self, PyObject *args)
 }
 
 static PyMethodDef WorldTime_methods[] = {
-    {"seconds",         (PyCFunction)WorldTime_seconds, METH_VARARGS},
+    {"seconds",         (PyCFunction)WorldTime_seconds, METH_NOARGS},
     {"is_now",          (PyCFunction)WorldTime_is_now,  METH_VARARGS},
     {NULL,              NULL}           /* sentinel */
 };

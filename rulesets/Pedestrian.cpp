@@ -156,12 +156,14 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     debug(std::cout << "OUT" << target
                                     << new_loc.m_loc->m_location.m_pos
                                     << std::endl << std::flush;);
+                    // FIXME take account of orientation
                     new_coords += new_loc.m_loc->m_location.m_pos;
                     if (m_targetPos.isValid()) {
                         m_targetPos += new_loc.m_loc->m_location.m_pos;
                     }
                 } else if (m_collEntity->m_location.m_loc == new_loc.m_loc) {
                     debug(std::cout << "IN" << std::endl << std::flush;);
+                    // FIXME take account of orientation
                     new_coords -= m_collEntity->m_location.m_pos;
                     if (m_targetPos.isValid()) {
                         m_targetPos -= m_collEntity->m_location.m_pos;

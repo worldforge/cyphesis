@@ -1,3 +1,11 @@
+2004-06-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_WorldTime.cpp, rulesets/Py_World.cpp:
+	  Change the rest of the methods to use METH_NOARGS for simplicity.
+
+	* rulesets/Pedestrian.cpp: Experimental fix to stop desination
+	  based movement from bipassing the collision detection.
+
 2004-06-24  James Turner  <james@worldforge.org>
 
 	* Add inn entity type to mason.xml

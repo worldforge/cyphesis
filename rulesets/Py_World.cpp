@@ -12,7 +12,7 @@
 
 #include "common/BaseWorld.h"
 
-static PyObject * World_get_time(PyWorld *self, PyObject *args, PyObject *kw)
+static PyObject * World_get_time(PyWorld *self)
 {
 #ifndef NDEBUG
     if (self->world == NULL) {
@@ -20,9 +20,6 @@ static PyObject * World_get_time(PyWorld *self, PyObject *args, PyObject *kw)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     PyWorldTime * wtime = newPyWorldTime();
     if (wtime == NULL) {
         return NULL;
@@ -32,7 +29,7 @@ static PyObject * World_get_time(PyWorld *self, PyObject *args, PyObject *kw)
     return (PyObject *)wtime;
 }
 
-static PyObject * World_get_object(PyWorld *self, PyObject *args, PyObject *kw)
+static PyObject * World_get_object(PyWorld *self, PyObject *args)
 {
 #ifndef NDEBUG
     if (self->world == NULL) {
@@ -55,7 +52,7 @@ static PyObject * World_get_object(PyWorld *self, PyObject *args, PyObject *kw)
 }
 
 static PyMethodDef World_methods[] = {
-    {"get_time",        (PyCFunction)World_get_time,    METH_VARARGS},
+    {"get_time",        (PyCFunction)World_get_time,    METH_NOARGS},
     {"get_object",      (PyCFunction)World_get_object,  METH_VARARGS},
     {NULL,              NULL}           /* sentinel */
 };
