@@ -1,5 +1,10 @@
 2004-09-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp: Transform velocity and orientation when
+	  parent changes due to parent destruction.
+
+2004-09-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/const.cpp: Turn off persistence again by default.
 
 	* rulesets/Pedestrian.cpp: Update collision resolution to

@@ -144,6 +144,8 @@ void Entity::destroy()
         // FIXME velocity and orientation  need to be adjusted
         obj->m_location.m_loc = m_location.m_loc;
         obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.m_pos, m_location.m_orientation);
+        obj->m_location.m_velocity.rotate(m_location.m_orientation);
+        obj->m_location.m_orientation *= m_location.m_orientation;
         refContains.insert(obj);
     }
     refContains.erase(this);
