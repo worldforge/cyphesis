@@ -296,5 +296,6 @@ int main(int argc, char ** argv)
     if (!daemon_flag) {
         std::cout << "Clean shutdown complete." << std::endl << std::flush;
     }
+    muntrace();
     return 0;
 }

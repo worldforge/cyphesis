@@ -40,7 +40,7 @@ dnl Test for C++ compiler
 
 AC_PROG_CXX
 
-CXXFLAGS='-Wall -g'
+dnl CXXFLAGS='-Wall -g'
 
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
