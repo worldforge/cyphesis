@@ -5,9 +5,9 @@
 #ifndef RULESETS_PY_BBOX_H
 #define RULESETS_PY_BBOX_H
 
-#include <physics/BBox.h>
-
 #include <Python.h>
+
+#include <physics/BBox.h>
 
 typedef struct {
     PyObject_HEAD

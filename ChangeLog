@@ -1,5 +1,15 @@
 2004-11-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/CreatorClient.cpp, rulesets/Py_BBox.h, rulesets/Py_Optime.h,
+	  rulesets/Py_Point3D.h, rulesets/Py_Quaternion.h,
+	  rulesets/Py_Vector3D.h: Re-order Python.h includes to get rid of
+	  some stupid warnings.
+
+	* rulesets/Py_World.cpp: Add a cast when passing float time to
+	  WorldTime which takes in int.
+
+2004-11-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Idle.cpp, server/Idle.h: New Idle class missing from
 	  previous commit.
 

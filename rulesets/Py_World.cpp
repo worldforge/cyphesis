@@ -24,7 +24,7 @@ static PyObject * World_get_time(PyWorld *self)
     if (wtime == NULL) {
         return NULL;
     }
-    wtime->time = new WorldTime(self->world->getTime());
+    wtime->time = new WorldTime((int)self->world->getTime());
     wtime->own = true;
     return (PyObject *)wtime;
 }

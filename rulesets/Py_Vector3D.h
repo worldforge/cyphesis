@@ -5,9 +5,9 @@
 #ifndef RULESETS_PY_VECTOR3D_H
 #define RULESETS_PY_VECTOR3D_H
 
-#include <physics/Vector3D.h>
-
 #include <Python.h>
+
+#include <physics/Vector3D.h>
 
 typedef struct {
     PyObject_HEAD

@@ -5,9 +5,9 @@
 #ifndef RULESETS_PY_QUATERNION_H
 #define RULESETS_PY_QUATERNION_H
 
-#include <physics/Quaternion.h>
-
 #include <Python.h>
+
+#include <physics/Quaternion.h>
 
 typedef struct {
     PyObject_HEAD

@@ -5,9 +5,11 @@
 #ifndef RULESETS_PY_OPTIME_H
 #define RULESETS_PY_OPTIME_H
 
-#include "common/operations.h"
-
 #include <Python.h>
+
+namespace Atlas { namespace Objects { namespace Operation {
+    class RootOperation;
+} } }
 
 typedef struct {
     PyObject_HEAD
