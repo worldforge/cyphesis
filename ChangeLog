@@ -1,5 +1,22 @@
 2004-07-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/CreatorClient.cpp, rulesets/BaseMind.cpp,
+	  rulesets/MemEntity.cpp, rulesets/MemEntity.h,
+	  rulesets/MemMap.cpp, rulesets/MemMap.h, rulesets/Py_Map.cpp:
+	  Set time on memory entities when we update them.
+
+	* common/BaseWorld.h: Make object accessor const.
+
+	* common/Database.cpp, common/Database.h, common/accountbase.cpp,
+	  server/Connection.cpp, server/Persistance.cpp,
+	  server/WorldRouter.cpp: Rename function to get new ID from
+	  database to more correctly reflect its role.
+
+	* rulesets/PythonMindScript.cpp: Use get rather than getAdd
+	  to sort out to and from of ops send to mind scripts.
+
+2004-07-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/define_world.py: Add a couple more test functions.
 
 	* rulesets/MemMap.h: Add accessor for internal data for debugging.

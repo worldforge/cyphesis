@@ -169,7 +169,7 @@ OpVector BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
     const Element::MapType & obj = args.front().asMap();
     // This does not send a look, so anything added this way will not
     // get flagged as visible until we get an appearance. This is important.
-    m_map.updateAdd(obj);
+    m_map.updateAdd(obj, op.getSeconds());
     return res;
 }
 
@@ -241,7 +241,7 @@ OpVector BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
         return res;
     }
     const Element::MapType & obj = args.front().asMap();
-    m_map.updateAdd(obj);
+    m_map.updateAdd(obj, op.getSeconds());
     return res;
 }
 
@@ -257,7 +257,7 @@ OpVector BaseMind::sightSetOperation(const Sight & op, Set & sub_op)
         return res;
     }
     const Element::MapType & obj = args.front().asMap();
-    m_map.updateAdd(obj);
+    m_map.updateAdd(obj, op.getSeconds());
     return res;
 }
 
@@ -437,7 +437,7 @@ OpVector BaseMind::SightOperation(const Sight & op)
         res = callSightOperation(op, op2);
     } else /* if (op2->getObjtype() == "object") */ {
         debug( std::cout << " arg is an entity!" << std::endl << std::flush;);
-        MemEntity * me = m_map.updateAdd(obj);
+        MemEntity * me = m_map.updateAdd(obj, op.getSeconds());
         if (me != 0) {
             me->setVisible();
         }
@@ -455,6 +455,7 @@ OpVector BaseMind::AppearanceOperation(const Appearance & op)
     for(I = args.begin(); I != args.end(); I++) {
         MemEntity * me = m_map.getAdd(I->asMap().find("id")->second.asString());
         if (me != 0) {
+            me->update(op.getSeconds());
             me->setVisible();
         }
     }
@@ -469,8 +470,9 @@ OpVector BaseMind::DisappearanceOperation(const Disappearance & op)
     const Element::ListType & args = op.getArgs();
     Element::ListType::const_iterator I;
     for(I = args.begin(); I != args.end(); I++) {
-        MemEntity * me = m_map.getAdd(I->asMap().find("id")->second.asString());
+        MemEntity * me = m_map.get(I->asMap().find("id")->second.asString());
         if (me != 0) {
+            me->update(op.getSeconds());
             me->setVisible(false);
         }
     }
@@ -518,7 +520,8 @@ OpVector BaseMind::callSightOperation(const Sight& op, RootOperation& sub_op)
     return OpVector();
 }
 
-OpVector BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op) {
+OpVector BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op)
+{
     m_map.getAdd(sub_op.getFrom());
     OpNo op_no = opEnumerate(sub_op, opSoundLookup);
     if (debug_flag && (op_no == OP_INVALID)) {

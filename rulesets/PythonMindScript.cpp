@@ -43,8 +43,8 @@ bool PythonMindScript::Operation(const std::string & op_type,
     PyConstOperation * py_op = newPyConstOperation();
     py_op->operation = &op;
     py_op->own = 0;
-    py_op->from = mind.m_map.getAdd(op.getFrom());
-    py_op->to = mind.m_map.getAdd(op.getTo());
+    py_op->from = mind.m_map.get(op.getFrom());
+    py_op->to = mind.m_map.get(op.getTo());
     PyObject * ret;
     if (sub_op == NULL) {
         ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
@@ -53,8 +53,8 @@ bool PythonMindScript::Operation(const std::string & op_type,
         PyOperation * py_sub_op = newPyOperation();
         py_sub_op->operation = sub_op;
         py_sub_op->own = 0;
-        py_sub_op->from = mind.m_map.getAdd(sub_op->getFrom());
-        py_sub_op->to = mind.m_map.getAdd(sub_op->getTo());
+        py_sub_op->from = mind.m_map.get(sub_op->getFrom());
+        py_sub_op->to = mind.m_map.get(sub_op->getTo());
         ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(OO)", py_op, py_sub_op);
         Py_DECREF(py_sub_op);

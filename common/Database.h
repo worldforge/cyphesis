@@ -131,7 +131,7 @@ class Database {
                          const std::string & columns);
 
     bool registerEntityIdGenerator();
-    bool getEntityId(std::string & id);
+    bool newId(std::string & id);
 
     bool registerEntityTable(const std::string & classname,
                              const Atlas::Message::Element::MapType & row,

@@ -33,7 +33,7 @@ class BaseWorld {
     explicit BaseWorld(Entity &);
     virtual ~BaseWorld();
 
-    Entity * getObject(const std::string & fid) {
+    Entity * getObject(const std::string & fid) const {
         EntityDict::const_iterator I = m_eobjects.find(fid);
         if (I != m_eobjects.end()) {
             return I->second;

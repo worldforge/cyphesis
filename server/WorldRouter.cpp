@@ -188,7 +188,7 @@ Entity * WorldRouter::addNewObject(const std::string & typestr,
     debug(std::cout << "WorldRouter::addNewObject(std::string, ent)"
                     << std::endl << std::flush;);
     std::string id;
-    Database::instance()->getEntityId(id);
+    Database::instance()->newId(id);
     Entity * obj = EntityFactory::instance()->newEntity(id, typestr, ent);
     if (obj == 0) {
         std::string msg = std::string("Attempt to create an entity of type \"")

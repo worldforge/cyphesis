@@ -733,7 +733,7 @@ bool Database::registerEntityIdGenerator()
     return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq;");
 }
 
-bool Database::getEntityId(std::string & id)
+bool Database::newId(std::string & id)
 {
     clearPendingQuery();
     int status = PQsendQuery(m_connection,

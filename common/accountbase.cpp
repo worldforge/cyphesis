@@ -46,7 +46,7 @@ bool AccountBase::putAccount(const Atlas::Message::Element::MapType & o)
     values += "'";
 
     std::string id;
-    m_connection.getEntityId(id);
+    m_connection.newId(id);
     return m_connection.createSimpleRow("accounts", id, columns, values);
 }
 

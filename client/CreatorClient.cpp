@@ -90,7 +90,7 @@ Entity * CreatorClient::make(const Element & entity)
     const std::string & created_type = I->second.asList().front().asString();
     std::cout << "Created: " << created_type << "(" << created_id << ")"
               << std::endl << std::flush;
-    Entity * obj = m_map.updateAdd(created);
+    Entity * obj = m_map.updateAdd(created, res->getSeconds());
     return obj;
 }
 
@@ -162,7 +162,7 @@ Entity * CreatorClient::sendLook(RootOperation & op)
     }
     const std::string & created_id = I->second.asString();
     std::cout << "Seen: " << created_id << std::endl << std::flush;
-    Entity * obj = m_map.updateAdd(seen);
+    Entity * obj = m_map.updateAdd(seen, res->getSeconds());
     return obj;
 }
 

@@ -22,6 +22,19 @@ class MemEntity : public Entity {
     void setVisible(bool v = true) {
         m_visible = true;
     }
+
+    const double & lastSeen() const {
+        return m_lastSeen;
+    }
+
+    void update(const double & d) {
+        if (d > m_lastSeen) {
+            m_lastSeen = d;
+        } else {
+            std::cout << "Going back in time from " << m_lastSeen << " to "
+                      << d << std::endl << std::flush;
+        }
+    }
 };
 
 #endif // MEM_ENTITY_H

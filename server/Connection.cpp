@@ -60,7 +60,7 @@ Account * Connection::addPlayer(const std::string& username,
     std::string hash;
     encrypt_password(password, hash);
     std::string newAccountId;
-    Database::instance()->getEntityId(newAccountId);
+    Database::instance()->newId(newAccountId);
     Player * player = new Player(this, username, hash, newAccountId);
     addObject(player);
     player->m_connection = this;

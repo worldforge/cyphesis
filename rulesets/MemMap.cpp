@@ -129,7 +129,7 @@ void MemMap::del(const std::string & id)
     }
 }
 
-MemEntity * MemMap::get(const std::string & id)
+MemEntity * MemMap::get(const std::string & id) const
 // Get an entity from memory
 {
     debug( std::cout << "MemMap::get" << std::endl << std::flush;);
@@ -148,6 +148,7 @@ MemEntity * MemMap::get(const std::string & id)
 
 MemEntity * MemMap::getAdd(const std::string & id)
 // Get an entity from memory, or add it if we haven't seen it yet
+// This could be implemented by calling get() for all but the the last line
 {
     debug( std::cout << "MemMap::getAdd(" << id << ")" << std::endl << std::flush;);
     if (id.empty()) {
@@ -183,7 +184,7 @@ void MemMap::addContents(const Element::MapType & entmap)
     }
 }
 
-MemEntity * MemMap::updateAdd(const Element::MapType & entmap)
+MemEntity * MemMap::updateAdd(const Element::MapType & entmap, const double & d)
 // Update an entity in our memory, from an Atlas message
 // The mind code relies on this function never sending a Sight to
 // be sure that seeing something created does not imply that the created

@@ -55,7 +55,7 @@ bool Persistance::init()
         debug(std::cout << "Bootstraping admin account."
                         << std::endl << std::flush;);
         std::string adminAccountId;
-        p->m_connection.getEntityId(adminAccountId);
+        p->m_connection.newId(adminAccountId);
         
         Admin dummyAdminAccount(0, "admin", consts::defaultAdminPasswordHash,
                                 adminAccountId);
