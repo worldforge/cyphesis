@@ -191,6 +191,8 @@ void Create_PyThing(Thing * thing, const string & package, const string & _type)
             PyErr_Print();
         }
     }
+    Py_DECREF(my_class);
+    Py_DECREF(mod_dict);
 }
 
 static PyObject * is_location(PyObject * self, PyObject * args)
@@ -237,12 +239,14 @@ static PyObject * location_new(PyObject * self, PyObject * args)
             return NULL;
         }
         o->location = new Location(parent->m_thing, coords->coords);
+        o->own = 1;
     } else if (PyArg_ParseTuple(args, "")) {
         o = newLocationObject(NULL);
         if ( o == NULL ) {
             return NULL;
         }
         o->location = new Location;
+        o->own = 1;
     } else {
         return NULL;
     }
@@ -723,5 +727,7 @@ void init_python_api()
 	PyObject * dictlist = PyModule_New("dictlist");
         PyObject * add_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_add_value_type);
 	PyObject_SetAttrString(dictlist, "add_value", add_value);
+        PyObject * remove_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_remove_value_type);
+	PyObject_SetAttrString(dictlist, "remove_value", remove_value);
 	PyDict_SetItemString(dict, "dictlist", dictlist);
 }

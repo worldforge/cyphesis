@@ -17,6 +17,7 @@ static PyObject* Oplist_append(OplistObject * self, PyObject * args)
     }
     if ((PyTypeObject*)PyObject_Type(op) == &RootOperation_Type) {
         self->ops->push_back(((RootOperationObject*)op)->operation);
+        ((RootOperationObject*)op)->own = 0;
     } else if (op != Py_None) {
         PyErr_SetString(PyExc_TypeError, "Append must be an op");
         return NULL;

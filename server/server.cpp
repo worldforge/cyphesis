@@ -83,6 +83,7 @@ void CommClient::message(const Objects::Operation::RootOperation & obj)
         Objects::Operation::RootOperation * rep_op = reply.front();
         cout << "sending reply" << endl << flush;
         send(rep_op);
+        delete rep_op;
         reply.pop_front();
     }
 }
@@ -277,6 +278,7 @@ void CommServer::remove_client(CommClient * client, char * error_msg)
         client->send(e);
         clients.erase(client->get_fd());
     }
+    delete e;
     delete client;
 }
 

@@ -85,6 +85,7 @@ PyObject * Thing_getattr(ThingObject *self, char *name)
         cout << "Thing_getattr(location)" << endl << flush;
         LocationObject * loc = newLocationObject(NULL);
         loc->location = &self->m_thing->location;
+        loc->own = 0;
         return (PyObject *)loc;
     }
     if (strcmp(name, "world") == 0) {

@@ -49,6 +49,7 @@ typedef struct {
     PyObject_HEAD
     PyObject	* Location_attr;	/* Attributes dictionary */
     Location	* location;
+    int		own;
 } LocationObject;
 
 typedef struct {

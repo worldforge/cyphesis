@@ -35,15 +35,14 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
         cout << "Got script object for " << fullid << endl << flush;
         string op_name = op_type+"_operation";
         // Construct apropriate python object thingies from op
-        if (!PyObject_HasAttr(script_object,
-            PyString_FromString((char *)(op_name.c_str())))) {
+        if (!PyObject_HasAttrString(script_object, (char *)(op_name.c_str()))) {
             cout << "No method to be found for " << fullid
                  << "." << op_name << endl << flush;
             return(0);
         }
         RootOperationObject * py_op = newAtlasRootOperation(NULL);
         py_op->operation = new RootOperation(op);
-        py_op->own = 1;
+        py_op->own = 0;
         py_op->from = map.get_add(op.GetFrom());
         py_op->to = map.get_add(op.GetTo());
         PyObject * ret;
@@ -60,6 +59,7 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
                                              "(OO)", py_op, py_sub_op);
             Py_DECREF(py_sub_op);
         }
+        delete py_op->operation;
         Py_DECREF(py_op);
         if (ret != NULL) {
             cout << "Called python method " << op_name << " for object "

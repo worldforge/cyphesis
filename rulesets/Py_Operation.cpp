@@ -352,7 +352,10 @@ static PyObject * Operation_seq_item(RootOperationObject * self, int item)
             RootOperationObject * ret_op = newAtlasRootOperation(NULL);
             ret_op->operation = (RootOperation *)op;
             ret_op->own = 1;
+            delete obj;
             return (PyObject *)ret_op;
+        } else if (op != NULL) {
+            delete op;
         }
         AtlasObject * ret = newAtlasObject(NULL);
         ret->m_obj = obj;
@@ -505,7 +508,7 @@ static void Operation_dealloc(RootOperationObject *self)
 	Py_XDECREF(self->Operation_attr);
         if ((self->own != 0) && (self->operation != NULL)) {
             // Can't delete until I have sorted out bugs with own flag
-            // delete self->operation;
+            delete self->operation;
         }
 	PyMem_DEL(self);
 }

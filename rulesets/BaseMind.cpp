@@ -78,6 +78,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Delete & sub_op)
         if (arg->GetObjtype() == "object") {
             map._delete(arg->GetId());
         }
+        delete arg;
     }
     return(res);
 }
@@ -99,6 +100,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Move & sub_op)
     if (arg->GetObjtype() == "object") {
         map.update(arg->AsObject());
     }
+    delete arg;
     return(res);
 }
 
@@ -118,6 +120,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Set & sub_op)
     if (arg->GetObjtype() == "object") {
         map.update(arg->AsObject());
     }
+    delete arg;
     return(res);
 }
 
@@ -186,6 +189,7 @@ oplist BaseMind::Operation(const Sound & op)
         cout << " args is an op!" << endl << flush;
         res = call_sound_operation(op, *(RootOperation *)op2);
     }
+    delete op2;
     return(res);
 }
 
@@ -223,6 +227,7 @@ oplist BaseMind::Operation(const Sight & op)
         cout << " arg is an entity!" << endl << flush;
         map.add(obj);
     }
+    delete op2;
     return(res);
 }
 

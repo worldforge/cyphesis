@@ -20,12 +20,12 @@ class Fire(Thing):
         #print `self`,"Got tick operation:\n",op
         #Is fire extinguished?
         if self.status<0.0:
-            return Operation("delete",Entity(self),to=self)
+            return Operation("delete",Entity(self.id),to=self)
 
         #Have we burned up our parent container?
         if self.world.is_object_deleted(self.location.parent) or \
            self.world==self.location.parent:
-            return Operation("delete",Entity(self),to=self)
+            return Operation("delete",Entity(self.id),to=self)
 
         #Send fire operation to parent container
         self_ent=Entity(self.id,status=self.status)

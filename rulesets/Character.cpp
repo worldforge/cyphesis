@@ -254,7 +254,6 @@ oplist Character::Operation(const Tick & op)
             tickOp->SetTo(fullid);
             tickOp->SetFutureSeconds(movement.get_tick_addition(ret_loc.coords));
             tickOp->SetArgs(Message::Object::ListType(1,ent));
-            // Arrrg we need to return both the tickOP and the moveOp!
             res.push_back(tickOp);
             res.push_back(moveOp);
         }
@@ -304,6 +303,7 @@ oplist Character::Mind_Operation(const Move & op)
     string & oname = arg1["id"].AsString();
     if (world->fobjects.find(oname) == world->fobjects.end()) {
         cout << "This move op is for a phoney object" << endl << flush;
+        delete newop;
         return res;
     }
     Thing * obj = (Thing *)world->fobjects[oname];
@@ -313,6 +313,7 @@ oplist Character::Mind_Operation(const Move & op)
         double oweight = (*obj)["weight"].AsFloat();
         if ((oweight < 0) || (oweight > weight)) {
             cout << "We can't move this. Just too heavy" << endl << flush;
+            delete newop;
             return(res);
         }
         newop->SetTo(oname);
@@ -341,6 +342,7 @@ oplist Character::Mind_Operation(const Move & op)
                 }
                 catch (Message::WrongTypeException) {
                     cout << "EXCEPTION: Malformed coords move operation" << endl << flush;
+                    delete newop;
                     return(error("Malformed coords move operation"));
                 }
             }
@@ -359,6 +361,7 @@ oplist Character::Mind_Operation(const Move & op)
                 }
                 catch (Message::WrongTypeException) {
                     cout << "EXCEPTION: Malformed velocity move operation" << endl << flush;
+                    delete newop;
                     return(error("Malformed velocity move operation"));
                 }
             }
@@ -514,6 +517,7 @@ oplist Character::Mind_Operation(const Move & op)
                     res.push_back(moveOp);
                 }
             }
+            delete newop;
             return(res);
         }
         RootOperation * tickOp = new Tick;
@@ -539,11 +543,15 @@ oplist Character::Mind_Operation(const Move & op)
         tickOp->SetFutureSeconds(movement.get_tick_addition(location.coords));
         debug_movement && cout << "Next tick " << tickOp->GetFutureSeconds() << endl << flush;
         if (NULL!=moveOp2) {
+            if (NULL!=moveOp) {
+                delete moveOp;
+            }
             moveOp=moveOp2;
         }
         // return moveOp and tickOp;
         res.push_back(moveOp);
         res.push_back(tickOp);
+        delete newop;
         return(res);
     }
     res.push_back(newop);
@@ -725,6 +733,10 @@ oplist Character::send_mind(const RootOperation & msg)
         if (autom == 0) {
             cout << "Turning automatic on for " << fullid << endl << flush;
             autom = 1;
+            if (external_mind != NULL) {
+                delete external_mind;
+                external_mind = NULL;
+            }
         }
     }
     if (autom) {

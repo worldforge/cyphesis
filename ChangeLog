@@ -1,3 +1,12 @@
+2000-12-08  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Major attack on the more fiddly memory leaks. The only noticable
+	  leak now is copied Location objects in the python interface code.
+
+	* Added hook into the time code so the server can be set to exit
+	  after a given number of seconds. This is required for LeakTracer
+	  to generate its report.
+
 2000-12-07  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Fixed so that we are no longer sending broadcast look ops, which

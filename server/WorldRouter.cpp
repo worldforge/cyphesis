@@ -16,6 +16,7 @@ extern "C" {
 using Atlas::Message::Object;
 
 static int debug_server = 1;
+static int halt_time;
 
 
 WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
@@ -30,6 +31,7 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
     illegal_thing->fullid = "illegal";
     illegal_thing->name = "illegal";
     illegal_thing->deleted = 1;
+    halt_time = time(NULL) + 300;
     //WorldTime tmp_date("612-1-1 08:57:00");
     //This structure is used to tell libatlas about stuff
     //world_info.time.s=tmp_date.seconds();
@@ -256,6 +258,9 @@ void WorldRouter::add_operation_to_queue(RootOperation & op, BaseEntity * obj)
         op.SetFrom(obj->fullid);
     }
     double t = double(time(NULL));
+    //if (t > halt_time) {
+        //exit(0);
+    //}
     t = t + op.GetFutureSeconds();
     op.SetSeconds(t);
     op.SetFutureSeconds(0.0);

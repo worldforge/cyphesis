@@ -24,6 +24,7 @@ PyObject * Location_copy(LocationObject *self, PyObject *args)
     }
     LocationObject * ret = newLocationObject(NULL);
     ret->location = new Location(*self->location);
+    ret->own = 1;
     return (PyObject *)ret;
 }
 
@@ -34,6 +35,9 @@ PyMethodDef Location_methods[] = {
 
 static void Location_dealloc(LocationObject *self)
 {
+    if ((self->own != 0) && (self->location != NULL)) {
+        delete self->location;
+    }
     Py_XDECREF(self->Location_attr);
     PyMem_DEL(self);
 }
@@ -143,5 +147,7 @@ LocationObject * newLocationObject(PyObject *arg)
 		return NULL;
 	}
 	self->Location_attr = NULL;
+        self->location = NULL;
+        self->own = 0;
 	return self;
 }
