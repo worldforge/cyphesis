@@ -137,20 +137,36 @@ oplist Account::CreateOperation(const Create & op)
 
 oplist Account::ImaginaryOperation(const Imaginary & op)
 {
-    Sight s(Sight::Instantiate());
-    s.SetArgs(Object::ListType(1,op.AsObject()));
-    s.SetTo(op.GetTo());
-    s.SetFrom(getId());
-    return connection->server.lobby.operation(s);
+    const Object::ListType & args = op.GetArgs();
+    if ((args.size() > 0) && (args.front().IsMap())) {
+        const Object::MapType & arg = args.front().AsMap();
+        Object::MapType::const_iterator I = arg.find("loc");
+        if (I != arg.end()) {
+            Sight s(Sight::Instantiate());
+            s.SetArgs(Object::ListType(1,op.AsObject()));
+            s.SetTo(I->second.AsString());
+            s.SetFrom(getId());
+            return connection->server.lobby.operation(s);
+        }
+    }
+    return oplist();
 }
 
 oplist Account::TalkOperation(const Talk & op)
 {
-    Sound s(Sound::Instantiate());
-    s.SetArgs(Object::ListType(1,op.AsObject()));
-    s.SetTo(op.GetTo());
-    s.SetFrom(getId());
-    return connection->server.lobby.operation(s);
+    const Object::ListType & args = op.GetArgs();
+    if ((args.size() > 0) && (args.front().IsMap())) {
+        const Object::MapType & arg = args.front().AsMap();
+        Object::MapType::const_iterator I = arg.find("loc");
+        if (I != arg.end()) {
+            Sound s(Sound::Instantiate());
+            s.SetArgs(Object::ListType(1,op.AsObject()));
+            s.SetTo(I->second.AsString());
+            s.SetFrom(getId());
+            return connection->server.lobby.operation(s);
+        }
+    }
+    return oplist();
 }
 
 oplist Account::LookOperation(const Look & op)

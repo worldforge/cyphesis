@@ -6,6 +6,8 @@
 
   DECREF pyThing and pyMind as we drop references to these
 
+  Add support for appearance and disappearance ops in lobby.
+
 Provisional for Acorn 0.5:
 
   Implement accelerated Atlas Objects API. MAYBE:

@@ -1,5 +1,13 @@
 2001-10-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.cpp: Modified semantics of OOG ops, so the args
+	  have a loc attribute indicating what room they take place in.
+
+	* server/Connection.cpp: Added support for OOG appearance and
+	  disappearance ops.
+
+2001-10-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Made variable names clearer.
 
 	* server/Connection.cpp: Fixed adding accounts to lobby on login.
