@@ -1,5 +1,12 @@
 2004-11-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/inheritance_impl.h, common/inheritance.h,
+	  common/inheritance.cpp: Add a new method for copying new
+	  operation into an existing operation object, for scenarios
+	  where operator new is undesirable.
+
+2004-11-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.cpp, rulesets/Entity.h: Make get(), set(), and
 	  addToMessage() non-virtual, and convert them to using new property
 	  mechanism. Add the necessary properties in the constructor.

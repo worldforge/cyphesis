@@ -38,7 +38,7 @@ Inheritance::Inheritance()
 
 void Inheritance::flush()
 {
-    std::map<std::string, Atlas::Objects::Root *>::const_iterator I;
+    RootDict::const_iterator I;
     for(I = atlasObjects.begin(); I != atlasObjects.end(); ++I) {
         delete I->second;
     }
@@ -89,7 +89,7 @@ OpNo Inheritance::opEnumerate(const RootOperation & op) const
 
 Atlas::Objects::Root * Inheritance::get(const std::string & parent)
 {
-    std::map<std::string, Atlas::Objects::Root *>::const_iterator I = atlasObjects.find(parent);
+    RootDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return NULL;
     }
@@ -107,7 +107,7 @@ int Inheritance::addChild(Atlas::Objects::Root * obj)
         delete obj;
         return -1;
     }
-    std::map<std::string, Atlas::Objects::Root *>::const_iterator I = atlasObjects.find(parent);
+    RootDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         throw InheritanceException(parent);
     }
@@ -121,13 +121,23 @@ int Inheritance::addChild(Atlas::Objects::Root * obj)
     return 0;
 }
 
-Atlas::Objects::Operation::RootOperation * Inheritance::newOperation(const std::string & op_type)
+RootOperation * Inheritance::newOperation(const std::string & op_type)
 {
-    std::map<std::string, OpFactoryBase *>::const_iterator I = opFactories.find(op_type);
+    OpFactoryDict::const_iterator I = opFactories.find(op_type);
     if (I == opFactories.end()) {
         return NULL;
     }
     return I->second->newOperation();
+}
+
+int Inheritance::newOperation(const std::string & op_type, RootOperation & ret)
+{
+    OpFactoryDict::const_iterator I = opFactories.find(op_type);
+    if (I == opFactories.end()) {
+        return -1;
+    }
+    I->second->newOperation(ret);
+    return 0;
 }
 
 using Atlas::Objects::Operation::Perception;
@@ -151,9 +161,14 @@ GenericOpFactory::GenericOpFactory(const std::string &opType) : m_opType(opType)
 {
 }
 
-Atlas::Objects::Operation::RootOperation * GenericOpFactory::newOperation()
+RootOperation * GenericOpFactory::newOperation()
 {
     return new Generic(m_opType);
+}
+
+void GenericOpFactory::newOperation(RootOperation & ret)
+{
+    ret = Generic(m_opType);
 }
 
 void installStandardObjects()

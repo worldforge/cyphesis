@@ -13,4 +13,10 @@ RootOperation * OpFactory<OpClass>::newOperation()
     return new OpClass();
 }
 
+template <class OpClass>
+void OpFactory<OpClass>::newOperation(RootOperation & op)
+{
+    op = OpClass();
+}
+
 #endif // COMMON_INHERITANCE_IMPL_H

@@ -27,12 +27,14 @@ class OpFactoryBase {
     virtual ~OpFactoryBase();
 
     virtual RootOperation * newOperation() = 0;
+    virtual void newOperation(RootOperation &) = 0;
 };
 
 template <class OpClass>
 class OpFactory : public OpFactoryBase {
   public:
     virtual RootOperation * newOperation();
+    virtual void newOperation(RootOperation &);
 };
 
 class GenericOpFactory : public OpFactoryBase {
@@ -42,13 +44,17 @@ class GenericOpFactory : public OpFactoryBase {
     explicit GenericOpFactory(const std::string & opType);
 
     virtual RootOperation * newOperation();
+    virtual void newOperation(RootOperation &);
 };
+
+typedef std::map<std::string, OpFactoryBase *> OpFactoryDict;
+typedef std::map<std::string, Atlas::Objects::Root *> RootDict;
 
 class Inheritance {
   protected:
-    std::map<std::string, Atlas::Objects::Root *> atlasObjects;
+    RootDict atlasObjects;
     OpNoDict opLookup;
-    std::map<std::string, OpFactoryBase *> opFactories;
+    OpFactoryDict opFactories;
 
     static Inheritance * m_instance;
 
@@ -69,6 +75,7 @@ class Inheritance {
     Atlas::Objects::Root * get(const std::string & parent);
     int addChild(Atlas::Objects::Root * obj);
     RootOperation * newOperation(const std::string & op_type);
+    int newOperation(const std::string & op_type, RootOperation & ret);
 };
 
 #endif // COMMON_INHERITANCE_H
