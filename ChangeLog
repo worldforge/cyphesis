@@ -1,3 +1,10 @@
+2003-01-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* mason.xml, rulesets/mason/world/objects/outdoor/Campfire.py:
+	  Add three missing rules.
+
+	* rulesets/mason/world/objects/plants/Fir.py: Add new fir tree rule.
+
 2002-12-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommMetaClient.cpp: Correctly initialise the size of
@@ -5,8 +12,8 @@
 
 2002-12-12  Al Riddoch  <alriddoch@zepler.org>
 
-	* common/Database.cpp, common/Database.h: Backport switch to C PostgreSQL
-	  API from devel code for PostgreSQL 7.3 compatability.
+	* common/Database.cpp, common/Database.h: Backport switch to C
+	  PostgreSQL API from devel code for PostgreSQL 7.3 compatability.
 
 2002-12-01  Al Riddoch  <alriddoch@zepler.org>
 

@@ -98,6 +98,20 @@
     </map>
   </map>
 
+  <map name="fir">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="height">8</float>
+      <list name="bbox">
+        <float>0.5</float><float>0.5</float><float>8</float>
+      </list>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.plants.Fir</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
   <map name="hickory">
     <string name="parent">thing</string>
     <map name="attributes">
@@ -319,6 +333,29 @@
   <map name="house">
     <string name="parent">thing</string>
     <map name="attributes">
+    </map>
+  </map>
+
+  <map name="boundary">
+    <string name="parent">thing</string>
+    <map name="attributes">
+    </map>
+  </map>
+
+  <map name="hall">
+    <string name="parent">structure</string>
+    <map name="attributes">
+    </map>
+  </map>
+
+  <map name="campfire">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="mass">5</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.outdoor.Campfire</string>
+      <string name="language">python</string>
     </map>
   </map>
 
