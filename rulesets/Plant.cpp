@@ -82,6 +82,33 @@ void Plant::ChopOperation(const Chop & op, OpVector & res)
     if (m_script->Operation("tick", op, res)) {
         return;
     }
+    Element mode;
+    if (get("mode", mode) && mode.isString() && mode.asString() == "felled") {
+        std::cout << "Plant is already down" << std::endl << std::flush;
+        RootOperation * op = new Set;
+        ListType & setArgs = op->getArgs();
+        setArgs.push_back(MapType());
+        MapType & setArg = setArgs.back().asMap();
+        setArg["id"] = getId();
+        setArg["status"] = -1;
+        op->setTo(getId());
+        res.push_back(op);
+
+        if (m_location.m_bBox.isValid()) {
+            std::cout << "Plant replaced by log" << std::endl << std::flush;
+            op = new Create;
+            ListType & createArgs = op->getArgs();
+            createArgs.push_back(MapType());
+            MapType & createArg = createArgs.back().asMap();
+            createArg["parents"] = ListType(1,"lumber");
+            m_location.addToMessage(createArg);
+            // createArg["mass"] = FIXE What? Calculate?
+            op->setTo(getId());
+            res.push_back(op);
+        }
+        return;
+    }
+    // FIXME In the future it will take more than one chop to chop down a tree.
     RootOperation * move = new Move;
     ListType & moveArgs = move->getArgs();
     moveArgs.push_back(MapType());
@@ -98,6 +125,7 @@ void Plant::ChopOperation(const Chop & op, OpVector & res)
     Quaternion orient(m_location.m_orientation);
     orient.rotation(axis, M_PI/2);
     moveArg["orientation"] = orient.toAtlas();
+    moveArg["mode"] = "felled";
     moveArg["pos"] = m_location.m_pos.toAtlas();
     moveArg["id"] = getId();
     move->setTo(getId());

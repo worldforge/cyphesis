@@ -1,5 +1,10 @@
 2004-11-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Plant.cpp: Quick hack to allow axe to be used to
+	  convert felled tree into a lumber object.
+
+2004-11-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Clarify error message on tool use.
 
 	* rulesets/Thing.cpp: Allow setting of mode attribute from args
