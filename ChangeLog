@@ -1,3 +1,10 @@
+2004-01-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.h, server/WorldRouter.cpp: Change operation()
+	  to take a reference to the entity the op is from. Re-work
+	  main idle loop to pas the entity to operation, and handle
+	  the op queue more efficiently.
+
 2004-01-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/Creatortest.cpp, tests/Worldtest.cpp: Update tests to deal

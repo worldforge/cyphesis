@@ -69,7 +69,7 @@ class WorldRouter : public BaseWorld {
     Entity * addNewObject(const std::string &, const Atlas::Message::MapType &);
     void delObject(Entity * obj);
 
-    void operation(Operation &);
+    void operation(Operation &, Entity &);
 
     virtual void addPerceptive(const std::string &);
     virtual void message(Operation &, Entity &);

@@ -281,10 +281,6 @@ void WorldRouter::delObject(Entity * ent)
 /// so it gets added to the queue for dispatch.
 void WorldRouter::message(Operation & op, Entity & ent)
 {
-    debug(std::cout << "WorldRouter::message {"
-                    << op.getParents().front().asString() << ":"
-                    << op.getFrom() << ":" << op.getTo() << "}" << std::endl
-                    << std::flush;);
     addOperationToQueue(op, ent);
     debug(std::cout << "WorldRouter::message {"
                     << op.getParents().front().asString() << ":"
@@ -363,7 +359,7 @@ void WorldRouter::deliverDeleteTo(const Operation & op, Entity & ent)
             debug(std::cerr << "Handling normal response to Delete"
                             << std::endl << std::flush;);
             newOp.setFrom(ent.getId());
-            operation(newOp);
+            operation(newOp, ent);
             delete &newOp;
         }
     }
@@ -383,7 +379,7 @@ void WorldRouter::deliverDeleteTo(const Operation & op, Entity & ent)
 /// sight ranges for perception operations.
 /// @param op operation to be dispatched to the world. This is non-const
 /// so that broadcast ops can have their TO set correctly for each target.
-void WorldRouter::operation(Operation & op)
+void WorldRouter::operation(Operation & op, Entity & fromPtr)
 {
     const std::string & to = op.getTo();
     debug(std::cout << "WorldRouter::operation {"
@@ -408,7 +404,6 @@ void WorldRouter::operation(Operation & op)
             deliverTo(op, *to_entity);
         }
     } else {
-        // Operation newop = op;
         const EntitySet & broadcast = broadcastList(op);
         const std::string & from = op.getFrom();
         EntityDict::const_iterator J = m_eobjects.find(from);
@@ -430,6 +425,7 @@ void WorldRouter::operation(Operation & op)
             }
         } else {
             Entity * fromEnt = J->second;
+            assert(fromEnt == &fromPtr);
             assert(fromEnt != NULL);
             float fromSquSize = boxSquareSize(fromEnt->m_location.m_bBox);
             EntitySet::const_iterator I = broadcast.begin();
@@ -483,25 +479,31 @@ void WorldRouter::addPerceptive(const std::string & id)
 /// will call this function again as soon as possible rather than sleeping.
 /// This ensures that the maximum possible number of operations are dispatched
 /// without becoming unresponsive to client communications traffic.
+/// @param sec world time seconds component
+/// @param usec world time microseconds component
 bool WorldRouter::idle(int sec, int usec)
 {
     updateTime(sec, usec);
     unsigned int op_count = 0;
-    Operation * op;
-    while ((++op_count < 10) && ((op = getOperationFromQueue()) != NULL)) {
-        Dispatching.emit(op);
+    OpQueue::iterator I = m_operationQueue.begin();
+    while ((++op_count < 10) && (I != m_operationQueue.end()) &&
+           ((*I)->getSeconds() <= m_realTime)) {
+        assert(I != m_operationQueue.end());
+        OpQueEntry & oqe = *I;
+        Dispatching.emit(&oqe.op);
         try {
-            operation(*op);
+            operation(oqe.op, oqe.from);
         }
         catch (...) {
             std::string msg = std::string("Exception caught in world.idle()")
                             + " thrown while processing "
-                            + op->getParents().front().asString()
-                            + " operation sent to " + op->getTo()
-                            + " from " + op->getFrom() + ".";
+                            // + oqe->getParents().front().asString()
+                            + " operation sent to " + oqe->getTo()
+                            + " from " + oqe->getFrom() + ".";
             log(ERROR, msg.c_str());
         }
-        delete op;
+        delete &oqe.op;
+        I = m_operationQueue.erase(I);
     }
     // If we have processed the maximum number for this call, return true
     // to tell the server not to sleep when polling clients. This ensures
