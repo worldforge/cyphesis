@@ -22,7 +22,7 @@
 
 #include <sigc++/object_slot.h>
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 Admin::Admin(Connection * conn, const std::string& username,
              const std::string& passwd, const std::string & id) :
@@ -230,6 +230,8 @@ OpVector Admin::SetOperation(const Set & op)
             return error(op, msg.c_str());
 
         }
+        debug(std::cout << "Install type \"" << id << "\" with parent \""
+                        << parent << "\"" << std::endl << std::flush;);
         EntityFactory::instance()->installFactory(parent, id, f);
     } else if (objtype == "op_definition") {
         // Install a new op type? Perhaps again this should be a create.

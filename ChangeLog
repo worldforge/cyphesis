@@ -1,5 +1,14 @@
 2004-06-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/objects/animals/Squirrel.py: Fix import error.
+
+	* server/Admin.cpp: Add debug output to installing a class.
+
+	* tools/cycmd.cpp: Implement a quick install command to add a new
+	  temporary type to the server.
+
+2004-06-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cypasswd.cpp, tools/cyloadrules.cpp, tools/cycmd.cpp: Fix
 	  usage functions to output to standard error.
 

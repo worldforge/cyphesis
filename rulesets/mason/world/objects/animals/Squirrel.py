@@ -3,6 +3,7 @@
 from atlas import *
 
 from world.objects.Thing import Thing
+from misc import set_kw
 
 import atlas
 

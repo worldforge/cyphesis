@@ -72,6 +72,7 @@ static void help()
     std::cout << "Cyphesis commands:" << std::endl << std::endl;
     std::cout << "    get       Examine a class on the server" << std::endl;
     std::cout << "    help      Display this help" << std::endl;
+    std::cout << "    install   Install a new type" << std::endl;
     std::cout << "    look      Return current server lobby" << std::endl;
     std::cout << "    logout    Log user out of server" << std::endl;
     std::cout << "    monitor   Enable in-game op monitoring" << std::endl;
@@ -599,6 +600,22 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
     if (cmd == "stat") {
         Get g;
         encoder->streamMessage(&g);
+    } else if (cmd == "install") {
+        size_t space = arg.find(' ');
+        if ((space == std::string::npos) || (space >= (arg.size() - 1))) {
+            std::cout << "usage: install <type id> <parent id>"
+                      << std::endl << std::flush;
+        } else {
+            Set s;
+            s.setFrom(accountId);
+            Atlas::Message::Element::MapType ent;
+            ent["id"] = std::string(arg, 0, space);
+            ent["objtype"] = "class";
+            ent["parents"] = Atlas::Message::Element::ListType(1, std::string(arg, space + 1));
+            s.setArgs(Atlas::Message::Element::ListType(1, ent));
+            encoder->streamMessage(&s);
+        }
+        reply_expected = false;
     } else if (cmd == "look") {
         Look l;
         l.setFrom(accountId);
@@ -609,7 +626,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         if (!arg.empty()) {
             Atlas::Message::Element::MapType lmap;
             lmap["id"] = arg;
-            l.setArgs(Atlas::Message::Element::ListType(1,lmap));
+            l.setArgs(Atlas::Message::Element::ListType(1, lmap));
             reply_expected = false;
         }
         encoder->streamMessage(&l);
