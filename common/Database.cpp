@@ -25,6 +25,7 @@ static const bool debug_flag = false;
 Database * Database::m_instance = NULL;
 
 Database::Database() : m_rule_db("rules"),
+                       m_queryInProgress(false),
                        m_connection(NULL)
 {
     
@@ -967,6 +968,66 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
     debug(std::cout << "Selecting on loc = " << loc << " ... " << std::flush;);
 
     return runSimpleSelectQuery(query);
+}
+
+void Database::queryResult(ExecStatusType status)
+{
+    if (!m_queryInProgress || pendingQueries.empty()) {
+        log(ERROR, "Got database result when no query was pending.");
+        return;
+    }
+    DatabaseQuery & q = pendingQueries.front();
+    if (q.second == PGRES_EMPTY_QUERY) {
+        log(ERROR, "Got database result which is already done.");
+        return;
+    }
+    if (q.second == status) {
+        std::cout << "Query status ok" << std::endl << std::flush;
+        // Mark this query as done
+        q.second = PGRES_EMPTY_QUERY;
+    }
+}
+
+void Database::queryComplete()
+{
+    if (!m_queryInProgress || pendingQueries.empty()) {
+        log(ERROR, "Got database query complete when no query was pending");
+        return;
+    }
+    DatabaseQuery & q = pendingQueries.front();
+    if (q.second != PGRES_EMPTY_QUERY) {
+        log(ERROR, "Got database query complete when query was not done");
+        return;
+    }
+    pendingQueries.pop_front();
+    m_queryInProgress = false;
+}
+
+void Database::launchNewQuery()
+{
+    if (m_queryInProgress) {
+        log(ERROR, "Launching new query when query is in progress");
+        return;
+    }
+    if (pendingQueries.empty()) {
+        std::cout << "No queries to launch" << std::endl << std::flush;
+        return;
+    }
+    DatabaseQuery & q = pendingQueries.front();
+    std::cout << "Launching async query: " << q.first
+              << std::endl << std::flush;
+    int status = PQsendQuery(m_connection, q.first.c_str());
+    if (!status) {
+        log(ERROR, "Database query error when launching.");
+        reportError();
+    } else {
+        PQflush(m_connection);
+    }
+}
+
+void Database::scheduleCommand(const std::string & query)
+{
+    pendingQueries.push_back(std::make_pair(query, PGRES_COMMAND_OK));
 }
 
 const char * DatabaseResult::field(const char * column, int row) const

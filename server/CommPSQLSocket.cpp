@@ -54,12 +54,13 @@ bool CommPSQLSocket::read()
     }
 
     PGresult * res;
-    while ((PQisBusy(con) == 0) && ((res = PQgetResult(m_connection)) != 0)) {
-        // FIXME
-        // Get and check result against current query using 
-        // PQresultStatus(res), PQclear(res). If NULL is read, then
-        // we need to signal that the next query can be sent, so the while
-        // logic needs to be fixed.
+    while (PQisBusy(con) == 0) {
+        if ((res = PQgetResult(con)) != 0) {
+            m_db.queryResult(PQresultStatus(res));
+            PQclear(res);
+        } else {
+            m_db.queryComplete();
+        }
     };
 
     return false;

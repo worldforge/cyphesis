@@ -25,9 +25,11 @@ class Decoder : public Atlas::Message::DecoderBase {
     }
 };
 
-typedef std::map<std::string, std::string> TableDict;
-
 class DatabaseResult;
+
+typedef std::map<std::string, std::string> TableDict;
+typedef std::pair<std::string, ExecStatusType> DatabaseQuery;
+typedef std::deque<DatabaseQuery> QueryQue;
 
 class Database {
   private:
@@ -36,6 +38,8 @@ class Database {
     std::string m_rule_db;
 
     TableDict entityTables;
+    QueryQue pendingQueries;
+    bool m_queryInProgress;
 
     Decoder m_d;
 
@@ -134,6 +138,12 @@ class Database {
     const DatabaseResult selectOnlyByLoc(const std::string & loc,
                                          const std::string & classname);
                                    
+    // Interface for CommPSQLSocket, so it can give us feedback
+    
+    void queryResult(ExecStatusType);
+    void queryComplete();
+    void launchNewQuery();
+    void scheduleCommand(const std::string & query);
 
 };
 

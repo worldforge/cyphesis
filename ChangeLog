@@ -1,3 +1,19 @@
+2003-10-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommPSQLSocket.cpp: Implement processing the response to
+	  async queries.
+
+	* common/Database.h, common/Database.cpp: Add new data and interface
+	  for managing a queue of queries so they can be processed
+	  asyncronously.
+
+2003-10-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/EntityExerciser.h, server/CommPSQLSocket.cpp:
+	  Add <cassert> to keep gcc 3.3 happy.
+
+	* tools/cyconfig.cpp: Clean up formatting.
+
 2003-10-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommPSQLSocket.cpp: Add some query processing code, and
