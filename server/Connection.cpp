@@ -162,8 +162,11 @@ OpVector Connection::LoginOperation(const Login & op)
 {
 
     debug(std::cout << "Got login op" << std::endl << std::flush;);
+    if (op.GetArgs().empty()) {
+	return error(op, "Login has no argument");
+    }
     if (!op.GetArgs().front().IsMap()) {
-        return error(op, "Login is malformed");
+        return error(op, "Login arg is malformed");
     }
     // Account should be the first argument of the op
     const Fragment::MapType & account = op.GetArgs().front().AsMap();
@@ -225,6 +228,9 @@ OpVector Connection::LoginOperation(const Login & op)
 OpVector Connection::CreateOperation(const Create & op)
 {
     debug(std::cout << "Got create op" << std::endl << std::flush;);
+    if (op.GetArgs().empty()) {
+	return error(op, "Create has no argument");
+    }
     if (!op.GetArgs().front().IsMap()) {
         return error(op, "Create is malformed");
     }
@@ -278,7 +284,7 @@ OpVector Connection::LogoutOperation(const Logout & op)
         return OpVector();
     }
     if (!op.GetArgs().front().IsMap()) {
-        return error(op, "Create is malformed");
+        return error(op, "Create arg is not a map");
     }
     const Fragment::MapType & account = op.GetArgs().front().AsMap();
     

@@ -1,3 +1,11 @@
+2002-10-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/CreatorClient.cpp, rulesets/BaseMind.cpp,
+	  rulesets/Character.cpp, rulesets/Food.cpp,
+	  rulesets/Thing.cpp, server/Connection.cpp:
+	  Tighten up some atlas type checks, to reduce the chances of
+	  bugs caused by malicious or buggy clients.
+
 2002-10-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/system.cpp: Ignore sigpipe so we don't abort on some

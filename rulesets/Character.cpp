@@ -316,6 +316,12 @@ OpVector Character::EatOperation(const Eat & op)
 
 OpVector Character::NourishOperation(const Nourish & op)
 {
+    if (op.GetArgs().empty()) {
+        return error(op, "Nourish has no argument");
+    }
+    if (!op.GetArgs().front().IsMap()) {
+        return error(op, "Nourish arg is malformed");
+    }
     const Fragment::MapType & nent = op.GetArgs().front().AsMap();
     Fragment::MapType::const_iterator I = nent.find("mass");
     if ((I == nent.end()) || !I->second.IsNum()) { return OpVector(); }

@@ -49,6 +49,10 @@ Entity * CreatorClient::make(const Fragment & entity)
         std::cerr << "Reply to make has no args" << std::endl << std::flush;
         return NULL;
     }
+    if (!res->GetArgs().front().IsMap()) {
+        std::cerr << "Reply to make has malformed args" << std::endl << std::flush;
+        return NULL;
+    }
     const Fragment::MapType & arg = res->GetArgs().front().AsMap();
     Fragment::MapType::const_iterator I = arg.find("parents");
     if ((I == arg.end()) || !I->second.IsList() || I->second.AsList().empty()) {
@@ -134,6 +138,10 @@ Entity * CreatorClient::sendLook(RootOperation & op)
     }
     if (res->GetArgs().empty()) {
         std::cerr << "Reply to look has no args" << std::endl << std::flush;
+        return NULL;
+    }
+    if (!res->GetArgs().front().IsMap()) {
+        std::cerr << "Reply to look has malformed args" << std::endl << std::flush;
         return NULL;
     }
     const Fragment::MapType & seen = res->GetArgs().front().AsMap();

@@ -484,7 +484,7 @@ OpVector BaseMind::LoadOperation(const Load & op)
 {
     OpVector res;
     script->Operation("load", op, res);
-    if (!op.GetArgs().empty()) {
+    if (!op.GetArgs().empty() && op.GetArgs().front().IsMap()) {
         const Fragment::MapType & emap = op.GetArgs().front().AsMap();
         Fragment::MapType::const_iterator I = emap.find("map");
         if ((I != emap.end()) && I->second.IsMap()) {

@@ -60,6 +60,9 @@ OpVector Food::BurnOperation(const Burn & op)
         return res;
     }
     double cooked = 0;
+    if (op.GetArgs().empty() || !op.GetArgs().front().IsMap()) {
+       return error(op, "Fire op has no argument");
+    }
     Fragment::MapType::const_iterator I = attributes.find("cooked");
     if ((I != attributes.end()) && I->second.IsNum()) {
         cooked = I->second.AsNum();

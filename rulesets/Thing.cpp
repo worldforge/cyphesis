@@ -165,8 +165,11 @@ OpVector Thing::BurnOperation(const Burn & op)
     if (script->Operation("burn", op, res) != 0) {
         return res;
     }
+    if (op.GetArgs().empty() || !op.GetArgs().front().IsMap()) {
+	return error(op, "Fire op has no argument");
+    }
     Fragment::MapType::const_iterator I = attributes.find("burn_speed");
-    if ((I == attributes.end()) || !I->second.IsNum() || op.GetArgs().empty()) {
+    if ((I == attributes.end()) || !I->second.IsNum()) {
         return res;
     }
     double bspeed = I->second.AsNum();
