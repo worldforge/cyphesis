@@ -54,9 +54,9 @@ class Vector3D {
     static const int cZ = 2;
 
     Vector3D() : x(0), y(0), z(0), _set(false) { }
-    Vector3D(double size) : x(size), y(size), z(size), _set(true) { }
+    explicit Vector3D(double size) : x(size), y(size), z(size), _set(true) { }
     Vector3D(double x, double y, double z) : x(x), y(y), z(z), _set(true) { }
-    Vector3D(const Object::ListType & vector) : _set(true) {
+    explicit Vector3D(const Object::ListType & vector) : _set(true) {
         Object::ListType::const_iterator I = vector.begin();
         x = I->AsNum();
         y = (++I)->AsNum();

@@ -15,6 +15,11 @@ class Connection;
 
 #include <skstream.h>
 
+#if 0
+#include <Atlas/Codecs/XML.h>
+#include <fstream>
+#endif
+
 class CommClient : Atlas::Objects::Decoder {
   public:
     CommServer & commServer;
@@ -55,6 +60,12 @@ class CommClient : Atlas::Objects::Decoder {
 
     void send(const Atlas::Objects::Operation::RootOperation * op) {
         if (op) {
+            //    std::fstream file(1);
+            //    Atlas::Codecs::XML c(file, (Atlas::Bridge*)this);
+            //    Atlas::Objects::Encoder enc(&c);
+            //    enc.StreamMessage(op);
+            //    std::cout << std::endl << flush;
+
             encoder->StreamMessage(op);
             clientIos << flush;
         }

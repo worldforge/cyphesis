@@ -33,7 +33,7 @@ class WorldTime {
 
     void initTimeInfo();
   public:
-    WorldTime(double scnds) : time((int)scnds) {
+    explicit WorldTime(double scnds) : time((int)scnds) {
         initTimeInfo();
     }
     WorldTime() : time(0) {

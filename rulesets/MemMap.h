@@ -37,7 +37,7 @@ class MemMap {
     inline Entity * addObject(Entity * object);
     inline void addContents(const Atlas::Message::Object::MapType & entmap);
   public:
-    MemMap(Script *& s) : script(s)  { }
+    explicit MemMap(Script *& s) : script(s)  { }
 
     inline Atlas::Objects::Operation::RootOperation * lookId();
     inline Entity * addId(const std::string & id);

@@ -28,7 +28,7 @@ class Movement {
 
     friend class Character;
   public:
-    Movement(Thing & body);
+    explicit Movement(Thing & body);
     virtual ~Movement();
 
     void reset();

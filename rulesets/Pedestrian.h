@@ -14,7 +14,7 @@ class Character;
 class Pedestrian : public Movement {
     friend class Character;
   public:
-    Pedestrian(Character & body);
+    explicit Pedestrian(Character & body);
     virtual ~Pedestrian();
 
     double getTickAddition(const Vector3D & coordinates) const;

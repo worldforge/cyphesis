@@ -23,7 +23,7 @@ class BaseWorld : public OOGThing {
   public:
     Entity & gameWorld;
 
-    BaseWorld(Entity &);
+    explicit BaseWorld(Entity &);
     virtual ~BaseWorld();
 
     virtual Entity * addObject(Entity * obj) = 0;

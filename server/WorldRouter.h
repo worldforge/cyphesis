@@ -40,7 +40,7 @@ class WorldRouter : public BaseWorld {
   public:
     ServerRouting & server;
 
-    WorldRouter(ServerRouting & server);
+    explicit WorldRouter(ServerRouting & server);
     virtual ~WorldRouter();
 
     int idle();

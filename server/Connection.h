@@ -18,7 +18,7 @@ class Connection : public Routing {
   public:
     ServerRouting & server;
 
-    Connection(CommClient & client);
+    explicit Connection(CommClient & client);
     virtual ~Connection();
 
     void destroy();

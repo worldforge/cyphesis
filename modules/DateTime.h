@@ -24,8 +24,8 @@ class DateTime {
 
     void set(int);
   public:
-    DateTime(char *);
-    DateTime(int);
+    explicit DateTime(char *);
+    explicit DateTime(int);
     DateTime(int, int, int, int, int, int);
 
     //bool operator==(const DateTime & other) const { }

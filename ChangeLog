@@ -1,3 +1,14 @@
+2001-10-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.h, server/Connection.h, rulesets/Pedestrian.h,
+	  rulesets/Movement.h, rulesets/MemMap.h, physics/Vector3D.h,
+	  modules/WorldTime.h, modules/Location.h, modules/DateTime.h,
+	  common/Generic.h, common/BaseWorld.h: Ensure that single argument
+	  constructors are explicit, so we don't get any naughty implicit
+	  type conversion going on.
+
+	* server/CommClient.h: Added an operation dump feature for debugging.
+
 2001-10-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/ClientConnection.cpp, client/ClientConnection.h,

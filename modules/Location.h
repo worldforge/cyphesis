@@ -39,7 +39,7 @@ class Location {
 
     bool inRange(const Location & loc, const double distance) const {
         if (!bbox) {
-            return loc.getXyz().inBox(getXyz(), distance);
+            return loc.getXyz().inBox(getXyz(), Vector3D(distance));
         } else {
             const Vector3D & median = bmedian ? bmedian : bbox;
             return loc.getXyz().inBox(getXyz() + median, bbox + distance);
@@ -49,7 +49,7 @@ class Location {
     bool inRange(const Vector3D & pos, const double distance) const {
         if (!coords) { return false; }
         if (!bbox) {
-            return pos.inBox(coords, distance);
+            return pos.inBox(coords, Vector3D(distance));
         } else {
             const Vector3D & median = bmedian ? bmedian : bbox;
             return pos.inBox(coords + median, bbox + distance);
