@@ -12,9 +12,9 @@ Source0: %{name}-%{version}.tar.gz
 Source1: cyphesis.init
 Source2: cyclient.init
 Source3: cyphesis.sysconfig
-Requires: Atlas-C++ >= 0.4.93 varconf skstream >= 0.3.2 readline postgresql-libs >= 7.1 python >= 1.5.2 libstdc++
+Requires: Atlas-C++ >= 0.4.93 varconf skstream >= 0.3.1 readline postgresql-libs >= 7.1 python >= 1.5.2 libstdc++
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
-BuildRequires: Atlas-C++-devel >= 0.4.93 varconf-devel skstream-devel >= 0.3.2 readline-devel postgresql-devel >= 7.1 python-devel >= 1.5.2 libstdc++-devel
+BuildRequires: Atlas-C++-devel >= 0.4.93 varconf-devel skstream-devel >= 0.3.1 readline-devel postgresql-devel >= 7.1 python-devel >= 1.5.2 libstdc++-devel
 
 %description
 Cyphesis is a very simple world simulator. NPCs that do things according to
@@ -47,7 +47,7 @@ Acorn is deprecated. See README for details.
 %package mason
 Summary: Game data for running the Mason game in cyphesis
 Group: Amusements/Games
-Requires: %{name} = %{version}
+Requires: %{name} = %{version} %{name}-acorn
 
 %description mason
 This is the rules data, scripts and map data required for the Mason
@@ -56,7 +56,7 @@ game. Install this package if you intend to run an Mason server.
 %package werewolf
 Summary: Game data for running the Werewolf game in cyphesis
 Group: Amusements/Games
-Requires: %{name} = %{version}
+Requires: %{name} = %{version} %{name}-acorn
 
 %description werewolf
 This is the rules data, scripts and map data required for the Werewolf
@@ -127,13 +127,11 @@ rm -rf $RPM_BUILD_ROOT
 %files acorn
 %defattr(-,root,root)
 %config %{_sysconfdir}/cyphesis/acorn.xml
-%config %{_sysconfdir}/cyphesis/agrilan*.xml
 %{_datadir}/cyphesis/rulesets/acorn
 
 %files mason
 %defattr(-,root,root)
 %config %{_sysconfdir}/cyphesis/mason.xml
-%config %{_sysconfdir}/cyphesis/moraf.xml
 %{_datadir}/cyphesis/rulesets/mason
 
 %files werewolf

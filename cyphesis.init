@@ -28,19 +28,19 @@ start() {
         if ! su $POSTGRESUSER -c true >/dev/null 2>&1; then
             echo
             echo $"Could not check for running PostgreSQL database."
-            exit 1
+            return 1
         fi
 
         # Make sure postgres is running
         if ! su $POSTGRESUSER -c "psql -c \"\" template1" >/dev/null 2>&1; then
             echo $"PostgreSQL server is not running."
-            exit 1
+            return 1
         fi
 
         # Make sure the user we are going to run as exists
         if ! su $CYPHESISUSER -c true >/dev/null 2>&1; then
             echo $"Cannot find user $CYPHESISUSER to run cyphesis service."
-            exit 1
+            return 1
         fi
 
         # Make sure the user has a postgres account
@@ -66,6 +66,7 @@ start() {
                 echo_success
             else
                 echo_failure
+                return 1
             fi
             echo
             # Populate it with rules
@@ -76,16 +77,7 @@ start() {
                 echo_success
             else
                 echo_failure
-            fi
-            echo
-            # Populate it with a map
-            echo -n $"Loading database with map: "
-            su $CYPHESISUSER -c "cydbload /etc/cyphesis/moraf.xml" >/dev/null 2>&1
-            RETVAL=$?
-            if [ $RETVAL -eq 0 ]; then
-                echo_success
-            else
-                echo_failure
+                return 1
             fi
             echo
         fi
@@ -93,7 +85,7 @@ start() {
         echo -n $"Starting cyphesis: "
 
         # Run the server, in self daemonising mode
-        su $CYPHESISUSER -c "/usr/bin/cyphesis --cyphesis:daemon=true --cyphesis:dbname=$CYPHESISDBASE" >/dev/null 2>&1
+        su $CYPHESISUSER -c "/usr/bin/cyphesis --cyphesis:daemon=true" >/dev/null 2>&1
         RETVAL=$?
         if [ $RETVAL -eq 0 ]; then
             echo_success
@@ -118,9 +110,11 @@ stop() {
 case "$1" in
   start)
         start
+        RETVAL=$?
         ;;
   stop)
         stop
+        RETVAL=$?
         ;;
   restart|reload)
         stop

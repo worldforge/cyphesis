@@ -1,3 +1,12 @@
+2004-05-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* cyphesis.sysconfig, cyphesis.init: Fix init script so it
+	  doesn't parameterise database name (which doesn't work)
+	  exits correctly on fatal errors, and remove the code to
+	  load obsolete server-side map files.
+
+	* cyphesis.spec.in: Fix deps.
+
 2004-05-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/stringstream.h: Get rid of local sstream implementation
