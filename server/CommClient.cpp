@@ -30,6 +30,9 @@ CommClient::~CommClient()
 {
     connection.destroy();
     delete &connection;
+    if (accept != NULL) {
+        delete accept;
+    }
     if (encoder != NULL) {
         delete encoder;
     }

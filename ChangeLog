@@ -1,3 +1,8 @@
+2002-06-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommClient.cpp: Fix leak if connection is deleted before
+	  negotiation is complete.
+
 2002-06-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommServer.h, server/CommClient.h, server/CommServer.cpp,
