@@ -16,11 +16,12 @@ Root * Object_asRoot(const Atlas::Message::Object & o)
     Root * obj;
 
     if (!o.IsMap()) return NULL;
-    if ((o.AsMap().find("objtype") != o.AsMap().end()) &&
-        ((*o.AsMap().find("objtype")).second.IsString())) {
-        if ((*o.AsMap().find("objtype")).second.AsString() == "object") {
+    Object::MapType::const_iterator I = o.AsMap().find("objtype");
+    if ((I != o.AsMap().end()) &&
+        (I->second.IsString())) {
+        if (I->second.AsString() == "object") {
     	    obj = new RootEntity;
-        } else if ((*o.AsMap().find("objtype")).second.AsString() == "op") {
+        } else if (I->second.AsString() == "op") {
     	    obj = new RootOperation;
         } else {
             obj = new Root;

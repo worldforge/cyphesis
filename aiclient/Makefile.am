@@ -15,7 +15,7 @@ cyphesisc_LDFLAGS = -Wl,-export-dynamic
 
 else
 
-cyphesisc_LDADD = ../physics/libphysics.a ../rulesets/libscriptpython.a ../rulesets/librulesetmind.a ../rulesets/librulesetbase.a ../rulesets/libscriptpython.a ../rulesets/MemMap.o ../modules/libmodules.a ../common/libcommon.a ../server/OOG_Thing.o
+cyphesisc_LDADD = ../physics/libphysics.a ../rulesets/libscriptpython.a ../server/WorldRouter.o ../server/OOG_Thing.o ../rulesets/librulesetmind.a ../rulesets/librulesetentity.a ../rulesets/librulesetbase.a ../rulesets/libscriptpython.a ../modules/libmodules.a ../common/libcommon.a
 
 LIBS = -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -lpython1.5 -ldl -lm -lpthread -lvarconf -lsigc -ldb_cxx # -lefence
 

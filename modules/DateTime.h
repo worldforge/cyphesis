@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef DATE_TIME_H
 #define DATE_TIME_H
@@ -47,4 +47,4 @@ class DateTime {
     unsigned int mpy() { return m_mpy; }
 };
 
-#endif /* DATE_TIME_H */
+#endif // DATE_TIME_H

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef MOVEMENT_H
 #define MOVEMENT_H
@@ -13,12 +13,14 @@ class Movement {
   protected:
     Character & body;
     double lastMovementTime;
-    BaseEntity * targetRef;
-    Vector3D targetLocation;
-    Vector3D updatedLocation;
+    Vector3D targetPos;
+    Vector3D updatedPos;
     Vector3D velocity;
     Vector3D face;
     int serialno;
+    Vector3D collPos;
+    Entity * collRef;
+    int collAxis;
 
     bool updateNeeded(const Location & location) const;
     void checkCollisions(const Location & loc);
@@ -36,4 +38,4 @@ class Movement {
     virtual Move * genMoveOperation(Location *) = 0;
 };
 
-#endif /* MOVEMENT_H */
+#endif // MOVEMENT_H

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2001 Alistair Riddoch
 
 #ifndef STACKABLE_H
 #define STACKABLE_H
@@ -20,7 +20,7 @@ class Stackable : public Thing {
   public:
 
     Stackable();
-    virtual ~Stackable() { }
+    virtual ~Stackable();
 
     virtual const Atlas::Message::Object & operator[](const string & aname);
     virtual void set(const string & aname, const Atlas::Message::Object & attr);

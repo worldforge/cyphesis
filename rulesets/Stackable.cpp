@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -20,6 +20,10 @@
 using Atlas::Message::Object;
 
 Stackable::Stackable() : num(1)
+{
+}
+
+Stackable::~Stackable()
 {
 }
 
@@ -55,12 +59,11 @@ oplist Stackable::Operation(const Combine & op)
     if (script->Operation("combine", op, res) != 0) {
         return(res);
     }
-    Object::ListType args = op.GetArgs();
-    for(Object::ListType::iterator I = args.begin(); I != args.end(); I++) {
-        const string & id = I->AsMap()["id"].AsString();
+    const Object::ListType & args = op.GetArgs();
+    for(Object::ListType::const_iterator I= args.begin(); I!= args.end(); I++) {
+        const string & id = I->AsMap().find("id")->second.AsString();
         if (id == fullid) { continue; }
         Stackable * obj = (Stackable*)world->getObject(id);
-        if (!obj->inGame) { continue; }
         if (obj->type != type) { continue; }
         num = num + obj->num;
 
@@ -81,12 +84,13 @@ oplist Stackable::Operation(const Divide & op)
     if (script->Operation("divide", op, res) != 0) {
         return(res);
     }
-    Object::ListType args = op.GetArgs();
-    for(Object::ListType::iterator I = args.begin(); I != args.end(); I++) {
-        Object::MapType & ent = I->AsMap();
+    const Object::ListType & args = op.GetArgs();
+    for(Object::ListType::const_iterator I= args.begin(); I!= args.end(); I++) {
+        const Object::MapType & ent = I->AsMap();
         int new_num = 1;
-        if (ent.find("num") != ent.end()) {
-            if (ent["num"].IsInt()) { new_num = ent["num"].AsInt(); }
+        Object::MapType::const_iterator J = ent.find("num");
+        if (J != ent.end()) {
+            if (J->second.IsInt()) { new_num = J->second.AsInt(); }
         }
         if (num <= new_num) { continue; }
         

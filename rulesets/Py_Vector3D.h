@@ -11,4 +11,4 @@ extern PyTypeObject Vector3D_Type;
 
 Vector3DObject * newVector3DObject(PyObject *);
 
-#endif /* PY_VECTOR3D_H */
+#endif // PY_VECTOR3D_H

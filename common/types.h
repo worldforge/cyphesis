@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef COMMON_TYPES_H
 #define COMMON_TYPES_H
@@ -11,6 +11,7 @@
 #include <Atlas/Objects/Operation/RootOperation.h>
 
 class BaseEntity;
+class Entity;
 
 typedef enum op_no {
 	OP_LOGIN,
@@ -47,6 +48,10 @@ typedef std::map<string, BaseEntity *> dict_t;
 typedef std::list<BaseEntity *> list_t;
 typedef std::pair<string, BaseEntity *> idpair_t;
 
-typedef std::vector<Atlas::Objects::Operation::RootOperation *> oplist;
+typedef std::map<string, Entity *> edict_t;
+typedef std::list<Entity *> elist_t;
 
-#endif /* TYPES_H */
+typedef std::vector<Atlas::Objects::Operation::RootOperation *> oplist;
+typedef std::list<Atlas::Objects::Operation::RootOperation *> opqueue;
+
+#endif // TYPES_H

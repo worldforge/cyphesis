@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef COMMON_SAVE_H
 #define COMMON_SAVE_H
@@ -28,4 +28,4 @@ class Save : public RootOperation {
 
 } } }
 
-#endif /* COMMON_SAVE_H */
+#endif // COMMON_SAVE_H

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -19,6 +19,7 @@
 #include "ServerRouting.h"
 #include "WorldRouter.h"
 #include <common/globals.h>
+#include <rulesets/Entity.h>
 
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::Info;
@@ -33,13 +34,13 @@ Admin::~Admin()
 {
 }
 
-oplist Admin::characterError(const Create &, const Object &) const {
+oplist Admin::characterError(const Create &, const Object::MapType &) const {
     return oplist();
 }
 
 oplist Admin::Operation(const Save & op)
 {
-    dict_t::const_iterator I;
+    edict_t::const_iterator I;
     Persistance * p = Persistance::instance();
     DatabaseIterator dbi(p->getWorld());
     Object ent;
@@ -47,7 +48,7 @@ oplist Admin::Operation(const Save & op)
         dbi.del();
     }
     int count = 0;
-    for(I = world->objects.begin(); I != world->objects.end(); I++) {
+    for(I = world->eobjects.begin(); I != world->eobjects.end(); I++) {
         p->putEntity(I->second);
         ++count;
     }
@@ -68,12 +69,12 @@ oplist Admin::Operation(const Load & op)
     DatabaseIterator dbi(p->getWorld());
     Object ent;
     while (dbi.get(ent)) {
-        Object::MapType m = ent.AsMap();
-        bool p = (m.find("parents") != m.end());
-        const string & type = p ? m["parents"].AsList().front().AsString()
-                                : "thing";
-        if (m.find("id") != m.end()) {
-            const string & id = m["id"].AsString();
+        const Object::MapType & m = ent.AsMap();
+        Object::MapType::const_iterator I = m.find("parents");
+        const string & type = (I != m.end()) ? I->second.AsList().front().AsString() : "thing";
+        I = m.find("id");
+        if (I != m.end()) {
+            const string & id = I->second.AsString();
             if (id == "world_0") {
                 // Ignore the world entry. No info required at the moment.
             } else {
@@ -96,13 +97,14 @@ oplist Admin::Operation(const Get & op)
 {
     const Object & ent = op.GetArgs().front();
     try {
-        Object::MapType emap = ent.AsMap();
-        const string & id = emap["id"].AsString();
+        const Object::MapType & emap = ent.AsMap();
+        const string & id = emap.find("id")->second.AsString();
         if (id == "server") {
-            const string & cmd = emap["cmd"].AsString();
+            const string & cmd = emap.find("cmd")->second.AsString();
             Object arg;
-            if (emap.find("arg") != emap.end()) {
-                arg = emap["arg"];
+            Object::MapType::const_iterator I = emap.find("arg");
+            if (I != emap.end()) {
+                arg = I->second;
             }
             if (cmd == "query") {
                 if (!arg.IsString()) {
@@ -136,13 +138,14 @@ oplist Admin::Operation(const Set & op)
 {
     const Object & ent = op.GetArgs().front();
     try {
-        Object::MapType emap = ent.AsMap();
-        const string & id = emap["id"].AsString();
+        const Object::MapType & emap = ent.AsMap();
+        const string & id = emap.find("id")->second.AsString();
         if (id == "server") {
-            const string & cmd = emap["cmd"].AsString();
+            const string & cmd = emap.find("cmd")->second.AsString();
             Object arg;
-            if (emap.find("arg") != emap.end()) {
-                arg = emap["arg"];
+            Object::MapType::const_iterator I = emap.find("arg");
+            if (I != emap.end()) {
+                arg = I->second;
             }
             if (cmd == "shutdown") {
                 exit_flag = true;

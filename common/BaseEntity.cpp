@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -21,40 +21,18 @@
 
 static const bool debug_flag = false;
 
-BaseEntity::BaseEntity() : seq(0), deleted(false), inGame(false),
-                           omnipresent(false), world(NULL) {
+using Atlas::Message::Object;
+
+BaseEntity::BaseEntity() : seq(0), inGame(false)
+{
+}
+
+BaseEntity::~BaseEntity()
+{
 }
 
 void BaseEntity::destroy()
 {
-    if (deleted == true) {
-        return;
-    }
-    list_t::const_iterator I;
-    for(I = contains.begin(); I != contains.end(); I++) {
-        BaseEntity * obj = *I;
-        if (obj->deleted == false) {
-            obj->location.ref = location.ref;
-            obj->location.coords = location.coords + obj->location.coords;
-        }
-    }
-    if (location) {
-        location.ref->contains.remove(this);
-    }
-}
-
-Vector3D BaseEntity::getXyz() const
-{
-    //Location l=location;
-    if (!location) {
-        static Vector3D ret(0.0,0.0,0.0);
-        return ret;
-    }
-    if (location.ref) {
-        return location.coords+location.ref->getXyz();
-    } else {
-        return location.coords;
-    }
 }
 
 Object BaseEntity::asObject() const
@@ -76,6 +54,7 @@ void BaseEntity::addToObject(Object & obj) const
         omap["id"] = fullid;
     }
     omap["seq"] = seq;
+#if 0
     Object::ListType contlist;
     list_t::const_iterator I;
     for(I = contains.begin(); I != contains.end(); I++) {
@@ -84,6 +63,7 @@ void BaseEntity::addToObject(Object & obj) const
     if (contlist.size() != 0) {
         omap["contains"] = Object(contlist);
     }
+#endif
 }
 
 oplist BaseEntity::externalMessage(const RootOperation & op)
@@ -147,7 +127,7 @@ oplist BaseEntity::Operation(const Appearance & op) { oplist res; return(res); }
 oplist BaseEntity::Operation(const Disappearance & op) { oplist res; return(res); }
 oplist BaseEntity::Operation(const RootOperation & op) { oplist res; return(res); }
 
-void BaseEntity::setRefno(oplist & ret, const RootOperation & ref_op) const
+void BaseEntity::setRefno(const oplist& ret, const RootOperation & ref_op) const
 {
     for(oplist::const_iterator I = ret.begin(); I != ret.end(); I++) {
         setRefnoOp(*I, ref_op);

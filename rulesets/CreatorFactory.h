@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef CREATOR_FACTORY_H
 #define CREATOR_FACTORY_H
@@ -9,17 +9,9 @@
 #include "Creator.h"
 
 class CreatorFactory : public ThingFactory {
-  protected:
-    CreatorFactory() { }
-    static CreatorFactory * m_instance;
   public:
-    static CreatorFactory * instance() {
-        if (m_instance == NULL) {
-            m_instance = new CreatorFactory();
-        }
-        return m_instance;
-    }
+    CreatorFactory() { }
     virtual Creator * newThing();
 };
 
-#endif /* CREATOR_FACTORY_H */
+#endif // CREATOR_FACTORY_H

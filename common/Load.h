@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef COMMON_LOAD_H
 #define COMMON_LOAD_H
@@ -28,4 +28,4 @@ class Load : public RootOperation {
 
 } } }
 
-#endif /* COMMON_LOAD_H */
+#endif // COMMON_LOAD_H

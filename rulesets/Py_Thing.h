@@ -11,4 +11,4 @@ extern PyTypeObject Thing_Type;
 
 ThingObject * newThingObject(PyObject *);
 
-#endif /* PY_THING_H */
+#endif // PY_THING_H

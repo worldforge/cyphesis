@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2001 Alistair Riddoch
 
 #include <fstream.h>
 // #include <strstream>
@@ -14,7 +14,7 @@
 
 #include "database.h"
 
-// It seems that gcc does not yet include sstream.h
+// It seems that GNU libstdc++ does not yet include sstream.h
 // Included is a version written explicitly for gcc, which will be used
 // if the header is not present.
 #ifdef HAVE_SSTREAM_H

@@ -1,16 +1,14 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <string>
-
+#include <modules/Location.h>
 #include <common/BaseEntity.h>
 
-class Player;
-class Routing;
+class WorldRouter;
 class MemMap;
 class Script;
 
@@ -19,10 +17,16 @@ class Entity : public BaseEntity {
     Script * script;
     Atlas::Message::Object::MapType attributes;
   public:
-    double status;
-    string type;
-    bool isCharacter;
-    double weight;
+    WorldRouter * world;	// Exists in this world.
+    Location location;		// Full details of location inc. ref pos and vel
+    elist_t contains;		// List of entities which use this as ref
+    double status;		// Health/damage coeficient
+    string type;		// Easy access to primary parent
+    string name;		// Entities name
+    double weight;		// Weight in kg
+    bool isCharacter;		// Is this a character
+    bool deleted;		// Has this been deleted
+    bool omnipresent;		// Is this omnipresent
 
     Entity();
     virtual ~Entity();
@@ -30,10 +34,12 @@ class Entity : public BaseEntity {
     virtual const Atlas::Message::Object & operator[](const string & aname);
     virtual void set(const string & aname, const Atlas::Message::Object & attr);
     virtual MemMap * getMap();
+    virtual void destroy();
 
     int setScript(Script * scrpt);
     void merge(const Atlas::Message::Object::MapType &);
-    void getLocation(Atlas::Message::Object::MapType &, dict_t &);
+    void getLocation(const Atlas::Message::Object::MapType &, edict_t &);
+    Vector3D getXyz() const;
 
     virtual void addToObject(Atlas::Message::Object & obj) const;
     virtual oplist Operation(const Setup & op);
@@ -55,4 +61,9 @@ class Entity : public BaseEntity {
     virtual oplist Operation(const Disappearance & op);
 };
 
-#endif /* ENTITY_H */
+inline ostream & operator<<(ostream& s, Location& v)
+{
+    return s << "{" << v.ref->fullid << "," << v.coords << "," << v.velocity << "}";
+}
+
+#endif // ENTITY_H

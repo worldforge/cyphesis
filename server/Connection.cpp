@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Net/Stream.h>
@@ -35,18 +35,25 @@ using Atlas::Message::Object;
 using Atlas::Objects::Operation::Info;
 
 Connection::Connection(CommClient & client) : commClient(client),
-    server(commClient.commServer.server) { }
+                       server(commClient.commServer.server)
+{
+}
 
-void Connection::send(const RootOperation * msg) const {
+Connection::~Connection()
+{
+}
+
+void Connection::send(const RootOperation * msg) const
+{
     commClient.send(msg);
 }
 
-Account * Connection::addPlayer(string & username, string & password)
+Account * Connection::addPlayer(const string& username, const string& password)
 {
     Player * player=new Player(this, username, password);
     addObject(player);
     player->connection=this;
-    player->world=server.world;
+    player->world=&server.getWorld();
     server.addObject(player);
     return(player);
 }
@@ -63,6 +70,7 @@ void Connection::destroy()
         Thing * obj = (Thing*)ent;
         if (obj->isCharacter == true) {
             Character * character = (Character *)obj;
+            // FIXME Should do something to delete the external mind
             if (character->externalMind != NULL) {
                 character->externalMind = NULL;
             }
@@ -81,8 +89,9 @@ oplist Connection::operation(const RootOperation & op)
     } else {
         debug(cout << "Must send on to account" << endl << flush;);
         debug(cout << "[" << from << "]" << endl << flush;);
-        if (objects.find(from)!=objects.end()) {
-            BaseEntity * ent = objects[from];
+        dict_t::const_iterator I = objects.find(from);
+        if (I != objects.end()) {
+            BaseEntity * ent = I->second;
             if ((ent->inGame != false)&&(((Thing *)ent)->isCharacter != 0) &&
                 (((Character *)ent)->externalMind == NULL)) {
                 Character * pchar = (Character *)ent;
@@ -111,20 +120,20 @@ oplist Connection::Operation(const Login & op)
     const Object & account = op.GetArgs().front();
 
     if (account.IsMap()) {
-        string account_id = account.AsMap().find("id")->second.AsString();
-        string password = account.AsMap().find("password")->second.AsString();
+        const string account_id = account.AsMap().find("id")->second.AsString();
+        const string password = account.AsMap().find("password")->second.AsString();
 
         Account * player = (Player *)server.getObject(account_id);
         if (player == NULL) {
             player = Persistance::instance()->getAccount(account_id);
             if (player != NULL) {
-                player->world=server.world;
+                player->world=&server.getWorld();
                 server.addObject(player);
             }
         }
         if (player && (account_id.size()!=0) && (password==player->password)) {
             addObject(player);
-            dict_t::const_iterator I;
+            edict_t::const_iterator I;
             for (I=player->charactersDict.begin();
                  I!=player->charactersDict.end(); I++) {
                 addObject(I->second);
@@ -151,8 +160,8 @@ oplist Connection::Operation(const Create & op)
     }
 
     if (account.IsMap()) {
-        string account_id = account.AsMap().find("id")->second.AsString();
-        string password = account.AsMap().find("password")->second.AsString();
+        const string & account_id = account.AsMap().find("id")->second.AsString();
+        const string & password = account.AsMap().find("password")->second.AsString();
 
         if ((NULL==server.getObject(account_id)) && 
             (!Persistance::instance()->findAccount(account_id)) &&
@@ -176,8 +185,8 @@ oplist Connection::Operation(const Logout & op)
     const Object & account = op.GetArgs().front();
     
     if (account.IsMap()) {
-        string account_id = account.AsMap().find("id")->second.AsString();
-        string password = account.AsMap().find("password")->second.AsString();
+        const string & account_id = account.AsMap().find("id")->second.AsString();
+        // const string & password = account.AsMap().find("password")->second.AsString();
         Player * player = (Player *)server.getObject(account_id);
         if (player) {
             Logout l = op;

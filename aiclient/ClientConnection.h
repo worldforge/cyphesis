@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU Lesser General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2001 Alistair Riddoch
 
 #ifndef CLIENT_CONNECTION_H
 #define CLIENT_CONNECTION_H
@@ -77,4 +77,4 @@ class ClientConnection : public Atlas::Objects::Decoder {
     void loop();
 };
 
-#endif /* CLIENT_CONNECTION_H */
+#endif // CLIENT_CONNECTION_H

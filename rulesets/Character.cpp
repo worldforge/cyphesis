@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -45,6 +45,7 @@ extern "C" {
 #include "ExternalMind.h"
 #include "Script.h"
 #include "Python_API.h" // FIXME This must go
+#include "World.h"
 
 #include <server/WorldRouter.h>
 
@@ -84,9 +85,9 @@ oplist Character::metabolise(double ammount = 1)
     return oplist(1,s);
 }
 
-Character::Character() : movement(*new Pedestrian(*this)), autom(0), mind(NULL),
-                         externalMind(NULL), drunkness(0.0),
-                         sex("female"), food(0), maxWeight(100)
+Character::Character() : movement(*new Pedestrian(*this)), autom(false),
+                         drunkness(0.0), sex("female"), food(0), maxWeight(100),
+                         mind(NULL), externalMind(NULL)
 {
     isCharacter = true;
     weight = 60;
@@ -162,7 +163,7 @@ oplist Character::Operation(const Setup & op)
     Look * l = new Look(Look::Instantiate());
     l->SetTo(world->fullid);
     res2[1] = l;
-    if (location.ref != world) {
+    if (location.ref != &world->gameWorld) {
         l = new Look(Look::Instantiate());
         l->SetTo(location.ref->fullid);
         res2.push_back(l);
@@ -186,10 +187,10 @@ oplist Character::Operation(const Tick & op)
     const Object::ListType & args = op.GetArgs();
     if ((0 != args.size()) && (args.front().IsMap())) {
         // Deal with movement.
-        Object::MapType arg1 = args.front().AsMap();
-        if ((arg1.find("serialno") != arg1.end()) &&
-           (arg1["serialno"].IsInt())) {
-            if (arg1["serialno"].AsInt() < movement.serialno) {
+        const Object::MapType & arg1 = args.front().AsMap();
+        Object::MapType::const_iterator I = arg1.find("serialno");
+        if ((I != arg1.end()) && (I->second.IsInt())) {
+            if (I->second.AsInt() < movement.serialno) {
                 debug(cout << "Old tick" << endl << flush;);
                 return oplist();
             }
@@ -283,7 +284,7 @@ oplist Character::Operation(const Eat & op)
     n->SetTo(to);
     n->SetArgs(Object::ListType(1,nour_ent));
 
-    oplist res2;
+    oplist res2(2);
     res2[0] = s;
     res2[1] = n;
     return res2;
@@ -291,8 +292,8 @@ oplist Character::Operation(const Eat & op)
 
 oplist Character::Operation(const Nourish & op)
 {
-    Object::MapType nent = op.GetArgs().front().AsMap();
-    food = food + nent["weight"].AsNum();
+    const Object::MapType & nent = op.GetArgs().front().AsMap();
+    food = food + nent.find("weight")->second.AsNum();
 
     Object::MapType food_ent;
     food_ent["id"] = fullid;
@@ -330,23 +331,24 @@ oplist Character::mindOperation(const Tick & op)
 oplist Character::mindOperation(const Move & op)
 {
     debug( cout << "Character::mind_move_op" << endl << flush;);
-    Move * newop = new Move(op);
     const Object::ListType & args = op.GetArgs();
     if ((0 == args.size()) || (!args.front().IsMap())) {
         cerr << "move op has no argument" << endl << flush;
         return oplist();
     }
-    Object::MapType arg1 = args.front().AsMap();
-    if ((arg1.find("id") == arg1.end()) || !arg1["id"].IsString()) {
+    const Object::MapType & arg1 = args.front().AsMap();
+    Object::MapType::const_iterator I = arg1.find("id");
+    if ((I == arg1.end()) || !I->second.IsString()) {
         cerr << "Its got no id" << endl << flush;
     }
-    string & oname = arg1["id"].AsString();
-    if (world->objects.find(oname) == world->objects.end()) {
+    const string & oname = I->second.AsString();
+    edict_t::const_iterator J = world->eobjects.find(oname);
+    if (J == world->eobjects.end()) {
         debug( cout << "This move op is for a phoney object" << endl << flush;);
-        delete newop;
         return oplist();
     }
-    Thing * obj = (Thing *)world->objects[oname];
+    Move * newop = new Move(op);
+    Entity * obj = J->second;
     if (obj != this) {
         debug( cout << "Moving something else. " << oname << endl << flush;);
         if ((obj->weight < 0) || (obj->weight > weight)) {
@@ -358,78 +360,45 @@ oplist Character::mindOperation(const Move & op)
         return oplist(1,newop);
     }
     string location_ref;
-    if ((arg1.find("loc") != arg1.end()) && (arg1["loc"].IsString())) {
-        location_ref = arg1["loc"].AsString();
+    I = arg1.find("loc");
+    if ((I != arg1.end()) && (I->second.IsString())) {
+        location_ref = I->second.AsString();
     } else {
         debug( cout << "Parent not set" << endl << flush;);
     }
     Vector3D location_coords;
-    if ((arg1.find("pos") != arg1.end()) && (arg1["pos"].IsList())) {
-        Object::ListType vector = arg1["pos"].AsList();
-        if (vector.size()==3) {
-            try {
-                // FIXME
-                //double x = vector.front().AsFloat();
-                //vector.pop_front();
-                //double y = vector.front().AsFloat();
-                //vector.pop_front();
-                //double z = vector.front().AsFloat();
-                double x = vector[0].AsFloat();
-                double y = vector[1].AsFloat();
-                double z = vector[2].AsFloat();
-                location_coords = Vector3D(x, y, z);
-                debug( cout << "Got new format coords: " << location_coords << endl << flush;);
-            }
-            catch (Atlas::Message::WrongTypeException) {
-                cerr << "EXCEPTION: Malformed pos move operation" << endl << flush;
-            }
+    I = arg1.find("pos");
+    if ((I != arg1.end()) /* && (I->second.IsList()) */) {
+        try {
+            location_coords = Vector3D(I->second.AsList());
+        }
+        catch (Atlas::Message::WrongTypeException) {
+            cerr << "EXCEPTION: Malformed pos move operation" << endl << flush;
         }
     }
 
     Vector3D location_vel;
-    if ((arg1.find("velocity") != arg1.end()) && (arg1["velocity"].IsList())) {
-        Object::ListType vector = arg1["velocity"].AsList();
-        if (vector.size()==3) {
-            try {
-                // FIXME
-                //double x = vector.front().AsFloat();
-                //vector.pop_front();
-                //double y = vector.front().AsFloat();
-                //vector.pop_front();
-                //double z = vector.front().AsFloat();
-                double x = vector[0].AsFloat();
-                double y = vector[1].AsFloat();
-                double z = vector[2].AsFloat();
-                location_vel = Vector3D(x, y, z);
-                debug( cout << "Got new format velocity: " << location_vel << endl << flush;);
-            }
-            catch (Atlas::Message::WrongTypeException) {
-                cerr << "EXCEPTION: Malformed vel move operation" << endl << flush;
-            }
+    I = arg1.find("velocity");
+    if ((I != arg1.end()) /* && (I->second.IsList()) */) {
+        try {
+            location_vel = Vector3D(I->second.AsList());
+        }
+        catch (Atlas::Message::WrongTypeException) {
+            cerr << "EXCEPTION: Malformed vel move operation" << endl << flush;
         }
     }
+
     Vector3D location_face;
-    if ((arg1.find("face") != arg1.end()) && (arg1["face"].IsList())) {
-        Object::ListType vector = arg1["face"].AsList();
-        if (vector.size()==3) {
-            try {
-                // FIXME
-                //double x = vector.front().AsFloat();
-                //vector.pop_front();
-                //double y = vector.front().AsFloat();
-                //vector.pop_front();
-                //double z = vector.front().AsFloat();
-                double x = vector[0].AsFloat();
-                double y = vector[1].AsFloat();
-                double z = vector[2].AsFloat();
-                location_face = Vector3D(x, y, z);
-                debug( cout << "Got new format face: " << location_face << endl << flush;);
-            }
-            catch (Atlas::Message::WrongTypeException) {
-                cerr << "EXCEPTION: Malformed face move operation" << endl << flush;
-            }
+    I = arg1.find("face");
+    if ((I != arg1.end()) /* && (I->second.IsList()) */) {
+        try {
+            location_face = Vector3D(I->second.AsList());
+        }
+        catch (Atlas::Message::WrongTypeException) {
+            cerr << "EXCEPTION: Malformed face move operation" << endl << flush;
         }
     }
+
     if (!location_coords) {
         if (op.GetFutureSeconds() < 0) {
             newop->SetFutureSeconds(0);
@@ -441,7 +410,7 @@ oplist Character::mindOperation(const Move & op)
     }
     double vel_mag;
     // Print out a bunch of debug info
-    debug( cout << ":" << location_ref << ":" << world->fullid << ":" << location.ref->fullid << ":" << endl << flush;);
+    debug( cout << ":" << location_ref << ":" << location.ref->fullid << ":" << endl << flush;);
     if ( //(location_ref==world->fullid) &&
          (location_ref==location.ref->fullid) &&
          (newop->GetFutureSeconds() >= 0) ) {
@@ -490,22 +459,13 @@ oplist Character::mindOperation(const Move & op)
         Location ret_location;
         RootOperation * moveOp = movement.genMoveOperation(&ret_location);
         const Location & current_location = (NULL!=moveOp) ? ret_location : location;
-        //if (NULL!=moveOp) {
-            //current_location = ret_location;
-        //} else {
-            //current_location = location;
-        //}
         movement.reset();
         if ((vel_mag==0) || !direction) {
             debug( cout << "\tMovement stopped" << endl << flush;);
             if (NULL != moveOp) {
                 Object::ListType & args = moveOp->GetArgs();
                 Object::MapType & ent = args.front().AsMap();
-                Object::ListType velocity;
-                velocity.push_back(Object(0.0));
-                velocity.push_back(Object(0.0));
-                velocity.push_back(Object(0.0));
-                ent["velocity"]=Object(velocity);
+                ent["velocity"]=Vector3D(0,0,0).asObject();
                 ent["mode"]=Object("standing");
                 moveOp->SetArgs(args);
             } else {
@@ -526,20 +486,15 @@ oplist Character::mindOperation(const Move & op)
         tickOp->SetTo(fullid);
         // Need to add the arguments to this op before we return it
         // direction is already a unit vector
-        if (!location_coords) {
-            debug( cout << "\tNo target location" << endl << flush;);
-            movement.targetLocation = Vector3D();
-        } else {
-            debug( cout << "\tUsing target location" << endl << flush;);
-            movement.targetLocation = location_coords;
-        }
-        movement.velocity=direction*vel_mag;
+        debug( if (location_coords) { cout<<"\tUsing target"<<endl<<flush; } );
+        movement.targetPos = location_coords;
+        movement.velocity = direction * vel_mag;
         debug( cout << "Velocity " << vel_mag << endl << flush;);
         RootOperation * moveOp2 = movement.genMoveOperation(NULL,current_location);
         tickOp->SetFutureSeconds(movement.getTickAddition(location.coords));
         debug( cout << "Next tick " << tickOp->GetFutureSeconds() << endl << flush;);
-        if (NULL!=moveOp2) {
-            if (NULL!=moveOp) {
+        if (NULL != moveOp2) {
+            if (NULL != moveOp) {
                 delete moveOp;
             }
             moveOp=moveOp2;
@@ -559,9 +514,10 @@ oplist Character::mindOperation(const Set & op)
     Set * s = new Set(op);
     const Object::ListType & args = op.GetArgs();
     if (args.front().IsMap()) {
-        Object::MapType amap = args.front().AsMap();
-        if (amap.find("id") != amap.end() && amap["id"].IsString()) {
-            string opid = amap["id"].AsString();
+        const Object::MapType & amap = args.front().AsMap();
+        Object::MapType::const_iterator I = amap.find("id");
+        if (I != amap.end() && I->second.IsString()) {
+            const string & opid = I->second.AsString();
             if (opid != fullid) {
                 s->SetTo(opid);
             }
@@ -584,7 +540,7 @@ oplist Character::mindOperation(const Create & op)
 {
     // We need to call, THE THING FACTORY! Or maybe not
     // This currently does nothing, so characters are not able to directly
-    // create objects. By and large a tool must be used. This should at some
+    // create eobjects. By and large a tool must be used. This should at some
     // point be able to send create operations on to other entities
     debug( cout << "Character::mindOperation(Create)" << endl << flush;);
     return oplist();
@@ -605,8 +561,8 @@ oplist Character::mindOperation(const Talk & op)
 
 oplist Character::mindOperation(const Look & op)
 {
-    debug( cout << "Got look up from mind from [" << op.GetFrom()
-                            << "] to [" << op.GetTo() << "]" << endl << flush;);
+    debug(cout << "Got look up from mind from [" << op.GetFrom()
+               << "] to [" << op.GetTo() << "]" << endl << flush;);
     perceptive = true;
     Look * l = new Look(op);
     if (op.GetTo().size() == 0) {
@@ -615,9 +571,10 @@ oplist Character::mindOperation(const Look & op)
             l->SetTo(world->fullid);
         } else {
             if (args.front().IsMap()) {
-                Object::MapType amap = args.front().AsMap();
-                if (amap.find("id") != amap.end() && amap["id"].IsString()) {
-                    l->SetTo(amap["id"].AsString());
+                const Object::MapType & amap = args.front().AsMap();
+                Object::MapType::const_iterator I = amap.find("id");
+                if (I != amap.end() && I->second.IsString()) {
+                    l->SetTo(I->second.AsString());
                 }
             }
         }
@@ -658,9 +615,10 @@ oplist Character::mindOperation(const Touch & op)
             t->SetTo(world->fullid);
         } else {
             if (args.front().IsMap()) {
-                Object::MapType amap = args.front().AsMap();
-                if (amap.find("id") != amap.end() && amap["id"].IsString()) {
-                    t->SetTo(amap["id"].AsString());
+                const Object::MapType & amap = args.front().AsMap();
+                Object::MapType::const_iterator I = amap.find("id");
+                if (I != amap.end() && I->second.IsString()) {
+                    t->SetTo(I->second.AsString());
                 }
             } else if (args.front().IsString()) {
                 t->SetTo(args.front().AsString());
@@ -844,24 +802,18 @@ oplist Character::sendMind(const RootOperation & op)
         // If there is some kinf of error in the connection, we turn autom on
     } else {
         //return(*(RootOperation **)NULL);
-        if (autom == 0) {
+        if (!autom) {
             debug( cout << "Turning automatic on for " << fullid << endl << flush;);
-            autom = 1;
+            autom = true;
             if (externalMind != NULL) {
                 delete externalMind;
                 externalMind = NULL;
             }
         }
     }
-    if (autom) {
-        debug( cout << "Using " << local_res.size() << " ops from local mind"
-             << endl << flush;);
-        //res = local_res;
-    } else {
-        debug( cout << "Using " << local_res.size() << " ops from external mind"
-             << endl << flush;);
-        //res = external_res;
-    }
+    debug(cout << "Using " << local_res.size() << " ops from "
+               << (autom ? "local mind" : "external mind")
+               << endl << flush;);
     const oplist & res = autom ? local_res : external_res;
     // At this point there is a bunch of conversion stuff that I don't
     // understand

@@ -11,4 +11,4 @@ extern PyTypeObject Oplist_Type;
 
 OplistObject * newOplistObject(PyObject *);
 
-#endif /* PY_VECTOR3D_H */
+#endif // PY_VECTOR3D_H

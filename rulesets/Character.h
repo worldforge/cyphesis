@@ -1,27 +1,24 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-class BaseMind;
-class ExternalMind;
-class Account;
-class Character;
-class Location;
-class Movement;
-
 #include "Thing.h"
 
-#include <physics/Vector3D.h>
-
 class Movement;
+class BaseMind;
+class ExternalMind;
 
 class Character : public Thing {
   protected:
     Movement & movement;
-    int autom;
+    bool autom;
+    double drunkness;
+    string sex;
+    double food;
+    double maxWeight;
 
     static const double energyConsumption = 0.001;
     static const double foodConsumption = 0.1;
@@ -36,10 +33,6 @@ class Character : public Thing {
   public:
     BaseMind * mind;
     ExternalMind * externalMind;
-    double drunkness;
-    string sex;
-    double food;
-    double maxWeight;
 
     Character();
     virtual ~Character();
@@ -103,4 +96,4 @@ class Character : public Thing {
     virtual oplist externalOperation(const RootOperation & op);
 };
 
-#endif /* CHARACTER_H */
+#endif // CHARACTER_H

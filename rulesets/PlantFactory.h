@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef PLANT_FACTORY_H
 #define PLANT_FACTORY_H
@@ -9,17 +9,9 @@
 #include "Plant.h"
 
 class PlantFactory : public ThingFactory {
-  protected:
-    PlantFactory() { }
-    static PlantFactory * m_instance;
   public:
-    static PlantFactory * instance() {
-        if (m_instance == NULL) {
-            m_instance = new PlantFactory();
-        }
-        return m_instance;
-    }
+    PlantFactory() { }
     virtual Plant * newThing();
 };
 
-#endif /* PLANT_FACTORY_H */
+#endif // PLANT_FACTORY_H

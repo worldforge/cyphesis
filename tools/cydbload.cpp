@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Message/Encoder.h>
@@ -44,14 +44,14 @@ class FileDecoder : public Atlas::Message::DecoderBase {
             cerr << "ERROR: Non map object in file" << endl << flush;
             return;
         }
-        Atlas::Message::Object::MapType omap = obj.AsMap();
+        const Atlas::Message::Object::MapType & omap = obj.AsMap();
         if (omap.find("id") == omap.end()) {
             cerr << "WARNING: Object in file has no id. Not stored."
                  << endl << flush;
             return;
         }
         m_count++;
-        const string & id = omap["id"].AsString();
+        const string & id = omap.find("id")->second.AsString();
         m_db->storeInWorld(obj, id.c_str());
     }
   public:

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -19,19 +19,18 @@ Player::Player(Connection* conn, const string& username, const string& passwd) :
 
 Player::~Player() { }
 
-oplist Player::characterError(const Create & op, const Object & ent) const
+oplist Player::characterError(const Create& op,const Object::MapType& ent) const
 {
-    Object::MapType entmap = ent.AsMap();
-
-    if ((entmap.find("name")==entmap.end()) || !entmap["name"].IsString()) {
+    Object::MapType::const_iterator I = ent.find("name");
+    if ((I == ent.end()) || !I->second.IsString()) {
         return error(op, "Object to be created has no name");
     }
 
-    if (!entmap["name"].AsString().compare("admin", 0, 5)) {
+    if (!I->second.AsString().compare("admin", 0, 5)) {
         return error(op, "Object to be created cannot start with admin");
     }
 
-    const string & type = entmap["parents"].AsList().front().AsString();
+    const string& type= ent.find("parents")->second.AsList().front().AsString();
     
     if ((type!="character") && (type!="farmer") && (type!="smith")) {
         return error(op, "Object of that type cannot be created by this account");

@@ -57,8 +57,9 @@ static PyObject * Object_getattr(AtlasObject *self, char *name)
     }
     if (self->m_obj->IsMap()) {
         Object::MapType & omap = self->m_obj->AsMap();
-        if (omap.find(name) != omap.end()) {
-            return Object_asPyObject(omap[name]);
+        Object::MapType::iterator I = omap.find(name);
+        if (I != omap.end()) {
+            return Object_asPyObject(I->second);
         }
     }
     if (self->Object_attr != NULL) {

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -23,6 +23,10 @@ Plant::Plant() : fruits(0), radius(1), fruitName("seed")
     cout << "CREATING PLANT" << endl << flush;
     location.bbox = Vector3D(0.5, 0.5, 0.5);
     location.bmedian = Vector3D(0, 0, 0.5);
+}
+
+Plant::~Plant()
+{
 }
 
 const Object & Plant::operator[](const string & aname)

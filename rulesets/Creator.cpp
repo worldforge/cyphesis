@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -23,7 +23,6 @@
 #include <common/debug.h>
 
 #include "Creator.h"
-
 #include "ExternalMind.h"
 
 static const bool debug_flag = false;
@@ -59,7 +58,7 @@ oplist Creator::operation(const RootOperation & op)
     if (op_no == OP_SETUP) {
         Look look = Look::Instantiate();
         look.SetFrom(fullid);
-        return world->Operation(look);
+        return world->lookOperation(look);
     }
     return sendMind(op);
 }

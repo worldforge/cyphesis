@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Operation/Login.h>
@@ -30,10 +30,6 @@ void MindFactory::readRuleset(const string & setname)
 
 BaseMind * MindFactory::newMind(const string & id, const string & name, const string & type,const Object & ent, Routing * svr)
 {
-    if (!ent.IsMap()) {
-         debug( cout << "Entity is not a map" << endl << flush;);
-    }
-    Object::MapType entmap = ent.AsMap();
     BaseMind * mind = new BaseMind(id, name);
     string mind_class("NPCMind"), mind_package("mind.NPCMind");
     if (global_conf->findItem("mind", type)) {

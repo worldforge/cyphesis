@@ -1,23 +1,18 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef THING_H
 #define THING_H
-
-#include <string>
 
 #include "Entity.h"
 
 #include <server/WorldRouter.h>
 
-class Player;
-class Routing;
-class MemMap;
-
 class Thing : public Entity {
-  public:
+  protected:
     bool perceptive;
+  public:
 
     Thing();
     virtual ~Thing();
@@ -26,7 +21,6 @@ class Thing : public Entity {
         return world->message(*op, this);
     }
 
-    virtual void addToObject(Atlas::Message::Object &) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Create & op);
     virtual oplist Operation(const Delete & op);
@@ -36,4 +30,4 @@ class Thing : public Entity {
     virtual oplist Operation(const Look & op);
 };
 
-#endif /* THING_H */
+#endif // THING_H

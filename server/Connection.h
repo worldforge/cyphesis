@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef CONNECTION_H
 #define CONNECTION_H
@@ -8,19 +8,18 @@
 #include "Routing.h"
 
 class ServerRouting;
-class Account;
-class Player;
 class CommClient;
+class Account;
 
 class Connection : public Routing {
     CommClient & commClient;
     ServerRouting & server;
 
-    Account * addPlayer(string &, string &);
+    Account * addPlayer(const string &, const string &);
   public:
 
     Connection(CommClient & client);
-    virtual ~Connection() { }
+    virtual ~Connection();
 
     void destroy();
     void send(const RootOperation * msg) const;
@@ -32,4 +31,4 @@ class Connection : public Routing {
     virtual oplist Operation(const Get & op);
 };
 
-#endif /* CONNECTION_H */
+#endif // CONNECTION_H

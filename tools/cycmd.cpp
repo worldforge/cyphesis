@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU Lesser General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -123,12 +123,12 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Error& o)
     reply_flag = true;
     error_flag = true;
     cout << "Error from server:" << endl << flush;
-    Object::ListType args = o.GetArgs();
-    Object & arg = args.front();
+    const Object::ListType & args = o.GetArgs();
+    const Object & arg = args.front();
     if (arg.IsString()) {
         cout << arg.AsString() << endl << flush;
     } else if (arg.IsMap()) {
-        cout << arg.AsMap()["message"].AsString() << endl << flush;
+        cout << arg.AsMap().find("message")->second.AsString() << endl << flush;
     }
 }
 

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef EXTERNAL_MIND_H
 #define EXTERNAL_MIND_H
@@ -18,4 +18,4 @@ class ExternalMind : public BaseMind {
     virtual oplist message(const RootOperation & op);
 };
 
-#endif /* EXTERNAL_MIND_H */
+#endif // EXTERNAL_MIND_H

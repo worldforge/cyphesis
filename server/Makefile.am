@@ -9,7 +9,6 @@ cyphesis_SOURCES = \
 		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
 		Connection.cpp Connection.h \
-		WorldTime.cpp WorldTime.h \
 		CommClient.h  CommServer.h \
 		server.cpp server.h
 

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Operation/Move.h>
@@ -36,8 +36,9 @@ Pedestrian::~Pedestrian()
 double Pedestrian::getTickAddition(const Vector3D & coordinates) const
 {
     double basic_distance=velocity.mag()*consts::basic_tick;
-    if (targetLocation) {
-        double distance=coordinates.distance(targetLocation);
+    const Vector3D & target = collPos ? collPos : targetPos;
+    if (target) {
+        double distance=coordinates.distance(target);
         debug( cout << "basic_distance: " << basic_distance << endl << flush;);
         debug( cout << "distance: " << distance << endl << flush;);
         if (basic_distance>distance) {
@@ -75,7 +76,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc)
 Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
 {
         debug( cout << "genMoveOperation: status: Pedestrian(" << serialno
-             << "," << targetLocation << "," << velocity << ","
+             << "," << collPos << "," << targetPos << "," << velocity << ","
              << lastMovementTime << ")" << endl << flush;);
     if (updateNeeded(loc)) {
         debug(cout << "genMoveOperation: Update needed..." << endl << flush;);
@@ -134,41 +135,47 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
 
         // Update location
         Vector3D new_coords;
-        if (updatedLocation) {
-            new_coords=updatedLocation+(velocity*time_diff);
+        if (updatedPos) {
+            new_coords=updatedPos+(velocity*time_diff);
         } else {
             new_coords=loc.coords+(velocity*time_diff);
         }
-        if (targetLocation) {
+        const Vector3D & target = collPos ? collPos : targetPos;
+        if (target) {
             Vector3D new_coords2 = new_coords+velocity/consts::basic_tick/10.0;
-            double dist=targetLocation.distance(new_coords);
-            double dist2=targetLocation.distance(new_coords2);
+            double dist=target.distance(new_coords);
+            double dist2=target.distance(new_coords2);
             debug( cout << "dist: " << dist << "," << dist2 << endl << flush;);
             if (dist2>dist) {
                 debug( cout << "target achieved";);
-                new_coords=targetLocation;
-                if (targetRef != NULL) {
-                    cout << "CONTACT " << targetRef->fullid << endl << flush;
-                    if (targetRef == new_loc.ref->location.ref) {
-                        cout << "OUT" << targetLocation << new_loc.ref->location.coords << endl << flush;
-                        new_coords=targetLocation+new_loc.ref->location.coords;
+                new_coords=target;
+                if (collRef != NULL) {
+                    cout << "CONTACT " << collRef->fullid << endl << flush;
+                    if (collRef == new_loc.ref->location.ref) {
+                        cout << "OUT" << target << new_loc.ref->location.coords << endl << flush;
+                        new_coords=target + new_loc.ref->location.coords;
                     } else {
                         cout << "IN" << endl << flush;
-                        new_coords=targetLocation-targetRef->location.coords;
+                        new_coords=target - collRef->location.coords;
                     }
-                    new_loc.ref = targetRef;
-                    targetRef = NULL;
-                    // This needs to be the previously stored target location
-                    targetLocation = Vector3D();
+                    new_loc.ref = collRef;
+                    collRef = NULL;
+                    // Transform targetPos to new ref?
+                    collPos = Vector3D();
                 } else {
-                    reset();
-                    entmap["mode"] = Object("standing");
+                    if (collPos) {
+                        velocity[collAxis] = 0;
+                        collPos = Vector3D();
+                    } else {
+                        reset();
+                        entmap["mode"] = Object("standing");
+                    }
                     new_loc.velocity=velocity;
                 }
             }
         }
         new_loc.coords = new_coords;
-        updatedLocation = new_coords;
+        updatedPos = new_coords;
 
         // Check for collisions
         checkCollisions(new_loc);

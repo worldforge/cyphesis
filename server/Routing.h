@@ -1,20 +1,19 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef ROUTING_H
 #define ROUTING_H
 
-#include <map>
-
 #include "OOG_Thing.h"
 
 class Routing : public OOGThing {
-public:
+  protected:
     dict_t objects;
+  public:
 
     Routing() { }
-    ~Routing() { }
+    virtual ~Routing();
 
     BaseEntity * addObject(BaseEntity * obj) {
         objects[obj->fullid]=obj;
@@ -35,4 +34,4 @@ public:
     }
 };
 
-#endif /* ROUTING_H */
+#endif // ROUTING_H

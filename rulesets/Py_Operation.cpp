@@ -486,13 +486,27 @@ static PySequenceMethods Operation_seq = {
  *
  */
 
-// At the moment it looks as though only one set of methods will be required
-// as they can all use it together
-ATLAS_OPERATION_METHODS(RootOperation)
-//ATLAS_OPERATION_METHODS(Login)
-//ATLAS_OPERATION_METHODS(Create)
-//ATLAS_OPERATION_METHODS(Move)
-//ATLAS_OPERATION_METHODS(Set)
+PyMethodDef RootOperation_methods[] = {
+    {"SetSerialno",     (PyCFunction)Operation_SetSerialno,     METH_VARARGS},
+    {"SetRefno",        (PyCFunction)Operation_SetRefno,        METH_VARARGS},
+    {"SetFrom",         (PyCFunction)Operation_SetFrom,         METH_VARARGS},
+    {"SetTo",           (PyCFunction)Operation_SetTo,           METH_VARARGS},
+    {"SetSeconds",      (PyCFunction)Operation_SetSeconds,      METH_VARARGS},
+    {"SetFutureSeconds",(PyCFunction)Operation_SetFutureSeconds,METH_VARARGS},
+    {"SetTimeString",   (PyCFunction)Operation_SetTimeString,   METH_VARARGS},
+    {"SetArgs",         (PyCFunction)Operation_SetArgs,         METH_VARARGS},
+    {"GetSerialno",     (PyCFunction)Operation_GetSerialno,     METH_VARARGS},
+    {"GetRefno",        (PyCFunction)Operation_GetRefno,        METH_VARARGS},
+    {"GetFrom",         (PyCFunction)Operation_GetFrom,         METH_VARARGS},
+    {"GetTo",           (PyCFunction)Operation_GetTo,           METH_VARARGS},
+    {"GetSeconds",      (PyCFunction)Operation_GetSeconds,      METH_VARARGS},
+    {"GetFutureSeconds",(PyCFunction)Operation_GetFutureSeconds,METH_VARARGS},
+    {"GetTimeString",   (PyCFunction)Operation_GetTimeString,   METH_VARARGS},
+    {"GetArgs",         (PyCFunction)Operation_GetArgs,         METH_VARARGS},
+    {"get_name",        (PyCFunction)Operation_get_name,        METH_VARARGS},
+    {NULL,          NULL}
+};
+
 
 /*
  * Beginning of Operation standard methods section.
@@ -597,7 +611,24 @@ static int Operation_setattr(RootOperationObject *self, char *name, PyObject *v)
     return 0;
 }
 
-ATLAS_OPERATION_TYPE(RootOperation)
+PyTypeObject RootOperation_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                                      // ob_size
+        "Operation",                            // tp_name
+        sizeof(RootOperationObject),            // tp_basicsize
+        0,                                      // tp_itemsize
+        //  methods 
+        (destructor)Operation_dealloc,          // tp_dealloc
+        0,                                      // tp_print
+        (getattrfunc)Operation_getattr,         // tp_getattr
+        (setattrfunc)Operation_setattr,         // tp_setattr
+        0,                                      // tp_compare
+        0,                                      // tp_repr
+        &Operation_num,                         // tp_as_number
+        &Operation_seq,                         // tp_as_sequence
+        0,                                      // tp_as_mapping
+        0,                                      // tp_hash
+};
 
 /*
  * Beginning of Operation creation functions section.

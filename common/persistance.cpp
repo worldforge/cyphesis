@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <fstream.h>
 // #include <strstream>
@@ -25,6 +25,8 @@
 #else
 #include "sstream.h"
 #endif
+
+using Atlas::Message::Object;
 
 bool Persistance::restricted = false;
 
@@ -86,23 +88,25 @@ Account * Persistance::load_admin_account()
 
 bool Persistance::findAccount(const std::string & name)
 {
-    Atlas::Message::Object account;
+    Object account;
     return getObject(account_db, name.c_str(), account);
 }
 
 Account * Persistance::getAccount(const std::string & name)
 {
-    Atlas::Message::Object account;
+    Object account;
     if (!getObject(account_db, name.c_str(), account)) {
         return NULL;
     }
-    Atlas::Message::Object::MapType acmap = account.AsMap();
-    if ((acmap.find("id")==acmap.end())||(acmap.find("password")==acmap.end())){
+    const Object::MapType & acmap = account.AsMap();
+    Object::MapType::const_iterator I = acmap.find("id"),
+                                    J = acmap.find("password");
+    if ((I == acmap.end()) || (J == acmap.end())){
         cerr << "Database account entry " << name
              << " is missing essential fields." << endl << flush;
         return NULL;
     }
-    Atlas::Message::Object & acn = acmap["id"], acp = acmap["password"];
+    const Object & acn = I->second, & acp = J->second;
     if (!acn.IsString() || !acp.IsString()) {
         cerr << "Database account entry " << name << " is corrupt."
              << endl << flush;

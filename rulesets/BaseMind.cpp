@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -266,10 +266,10 @@ oplist BaseMind::Operation(const Appearance & op)
 {
     oplist(res);
     script->Operation("appearance", op, res);
-    Object::ListType args = op.GetArgs();
-    Object::ListType::iterator I;
+    const Object::ListType & args = op.GetArgs();
+    Object::ListType::const_iterator I;
     for(I = args.begin(); I != args.end(); I++) {
-        map.getAdd(I->AsMap()["id"].AsString());
+        map.getAdd(I->AsMap().find("id")->second.AsString());
     }
     return res;
 }

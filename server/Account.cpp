@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Net/Stream.h>
@@ -21,6 +21,7 @@
 #include <common/debug.h>
 
 #include <rulesets/Character.h>
+#include <rulesets/World.h>
 #include <rulesets/ExternalMind.h>
 
 #include "Account.h"
@@ -33,7 +34,8 @@ using Atlas::Message::Object;
 using Atlas::Objects::Operation::Info;
 
 Account::Account(Connection* conn, const string& username, const string& passwd)
-               : connection(conn), password(passwd), type("account")
+               : world(NULL), connection(conn), password(passwd),
+                 type("account")
 {
     fullid = username;
 }
@@ -49,7 +51,7 @@ BaseEntity * Account::addCharacter(const string & typestr, const Object & ent)
     debug(cout << "Added" << endl << flush;);
     if (!chr->location) {
         debug(cout << "Setting location" << endl << flush;);
-        chr->location.ref = world;
+        chr->location.ref = &world->gameWorld;
         chr->location.coords = Vector3D(0, 0, 0);
     }
     debug(cout << "Location set to: " << chr->location << endl << flush;);
@@ -77,7 +79,7 @@ BaseEntity * Account::addCharacter(const string & typestr, const Object & ent)
 
 oplist Account::Operation(const Logout & op)
 {
-    debug(cout << "Account logout: " << name << endl;);
+    debug(cout << "Account logout: " << fullid << endl;);
     connection->destroy();
     return oplist();
 }
@@ -91,7 +93,7 @@ void Account::addToObject(Object & obj) const
     }
     omap["parents"] = Object(Object::ListType(1,Object(type)));
     Object::ListType charlist;
-    dict_t::const_iterator I;
+    edict_t::const_iterator I;
     for(I = charactersDict.begin(); I != charactersDict.end(); I++) {
         charlist.push_back(Object(I->first));
     }
@@ -107,19 +109,19 @@ oplist Account::Operation(const Create & op)
     if (!ent.IsMap()) {
         return(error(op, "Invalid character"));
     }
-    Object::MapType entmap = ent.AsMap();
-    if ((entmap.find("parents")==entmap.end()) ||
-        !(entmap["parents"].IsList()) ||
-        (entmap["parents"].AsList().size()==0) ||
-        !(entmap["parents"].AsList().front().IsString()) ) {
+    const Object::MapType & entmap = ent.AsMap();
+    Object::MapType::const_iterator I = entmap.find("parents");
+    if ((I == entmap.end()) || !(I->second.IsList()) ||
+        (I->second.AsList().size()==0) ||
+        !(I->second.AsList().front().IsString()) ) {
         return(error(op, "Character has no type"));
     }
     
-    oplist error = characterError(op, ent);
+    oplist error = characterError(op, entmap);
     if (error.size() != 0) {
         return(error);
     }
-    const string & typestr = entmap["parents"].AsList().front().AsString();
+    const string & typestr = I->second.AsList().front().AsString();
     debug(cout << "Account creating a " << typestr << " object" << endl << flush;);
 
     BaseEntity * obj = addCharacter(typestr, ent);

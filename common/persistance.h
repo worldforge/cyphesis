@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef PERSISTANCE_H
 #define PERSISTANCE_H
@@ -33,4 +33,4 @@ class Persistance : public Database {
     void putEntity(const BaseEntity *);
 };
 
-#endif /* PERSISTANCE_H */
+#endif // PERSISTANCE_H

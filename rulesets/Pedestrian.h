@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef PEDESTRIAN_H
 #define PEDESTRIAN_H
@@ -23,4 +23,4 @@ class Pedestrian : public Movement {
     Move * genMoveOperation(Location *);
 };
 
-#endif /* PEDESTRIAN_H */
+#endif // PEDESTRIAN_H

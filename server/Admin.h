@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef ADMIN_H
 #define ADMIN_H
@@ -9,7 +9,7 @@
 
 class Admin : public Account {
   protected:
-    virtual oplist characterError(const Create &, const Atlas::Message::Object &) const;
+    virtual oplist characterError(const Create &, const Atlas::Message::Object::MapType &) const;
   public:
     Admin(Connection * conn, const string & username, const string & passwd);
     virtual ~Admin();
@@ -20,4 +20,4 @@ class Admin : public Account {
     virtual oplist Operation(const Set & op);
 };
 
-#endif /* ADMIN_H */
+#endif // ADMIN_H

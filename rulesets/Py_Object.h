@@ -9,15 +9,15 @@ extern PyTypeObject Object_Type;
 
 #define PyAtlasObject_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Object_Type)
 
-/*
- * Object creation function.
- */
+//
+// Object creation function.
+//
 
 AtlasObject * newAtlasObject(PyObject *arg);
 
-/*
- * Utility functions to munge between Object related types and python types
- */
+//
+// Utility functions to munge between Object related types and python types
+//
 
 // PyObject * MapType_asPyObject(const Object::MapType & map);
 // PyObject * ListType_asPyObject(const Object::ListType & list);

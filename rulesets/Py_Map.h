@@ -11,4 +11,4 @@ extern PyTypeObject Map_Type;
 
 MapObject * newMapObject(PyObject *);
 
-#endif /* PY_MAP_H */
+#endif // PY_MAP_H

@@ -1,48 +1,58 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef WORLD_ROUTER_H
 #define WORLD_ROUTER_H
 
-#include <fstream.h>
 #include <sys/time.h>
 #include <unistd.h>
 
 class WorldRouter;
 class ServerRouting;
 class Thing;
+class Entity;
+class World;
 
-#include "Routing.h"
+#include "OOG_Thing.h"
 
-typedef std::list<RootOperation *> opqueue;
-
-class WorldRouter : public Routing {
+class WorldRouter : public OOGThing {
     double realTime;
     opqueue operationQueue;
-    list_t objectList;
+    elist_t objectList;
     time_t initTime;
 
     void addOperationToQueue(RootOperation & op, const BaseEntity *);
     RootOperation * getOperationFromQueue();
     string getId(string & name);
-    const list_t & broadcastList(const RootOperation & op) const;
+    const elist_t & broadcastList(const RootOperation & op) const;
     oplist operation(const RootOperation * op);
   public:
     ServerRouting & server;
+    World & gameWorld;
     int nextId;
-    list_t perceptives;
-    list_t omnipresentList;
+    elist_t perceptives;
+    elist_t omnipresentList;
+    edict_t eobjects;
 
     WorldRouter(ServerRouting & server);
-    virtual ~WorldRouter() { }
+    virtual ~WorldRouter();
 
     int idle();
 
     Thing * addObject(Thing * obj);
     Thing * addObject(const string &, const Atlas::Message::Object &,
                        const string & id = string());
-    void delObject(BaseEntity * obj);
+    void delObject(Entity * obj);
+
+    Entity * getObject(const string & fid) {
+        return eobjects[fid];
+    }
+
+    Entity * findObject(const string & fid) {
+        return eobjects[fid];
+    }
+
         
     void updateTime() {
         struct timeval tv;
@@ -59,10 +69,11 @@ class WorldRouter : public Routing {
         return realTime;
     }
 
-    virtual oplist message(RootOperation & op, const BaseEntity * obj);
+    virtual oplist message(RootOperation & op, const Entity * obj);
     virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
-    virtual oplist Operation(const Look & op);
+
+    oplist lookOperation(const Look & op);
 };
 
-#endif /* WORLD_ROUTER_H */
+#endif // WORLD_ROUTER_H

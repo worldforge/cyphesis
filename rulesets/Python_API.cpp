@@ -13,7 +13,12 @@
 #include "Thing.h"
 #include "BaseMind.h"
 
+#include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Move.h>
+#include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Sight.h>
+#include <Atlas/Objects/Operation/Talk.h>
 #include <Atlas/Objects/Operation/Touch.h>
 
 #include <modules/Location.h>
@@ -267,14 +272,14 @@ static PyObject * location_new(PyObject * self, PyObject * args)
             return NULL;
         }
 
-        BaseEntity * ref_ent;
+        Entity * ref_ent;
         if (PyWorld_Check(refO)) {
             WorldObject * ref = (WorldObject*)refO;
             if (ref->world == NULL) {
                 PyErr_SetString(PyExc_TypeError, "Parent world is invalid");
                 return NULL;
             }
-            ref_ent = (BaseEntity *)ref->world;
+            ref_ent = (Entity *)ref->world;
         } else {
             ThingObject * ref = (ThingObject*)refO;
             if (ref->m_thing == NULL) {

@@ -1,10 +1,12 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU Lesser General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2001 Alistair Riddoch
 
 #include <Atlas/Objects/Operation/Info.h>
 
 #include "ClientAccount.h"
+
+using Atlas::Message::Object;
 
 ClientAccount::ClientAccount(const string & name, ClientConnection & con) :
     connection(con)

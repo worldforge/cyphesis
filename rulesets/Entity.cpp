@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -34,8 +34,9 @@ static const bool debug_flag = false;
 
 using Atlas::Message::Object;
 
-Entity::Entity() : script(new Script), status(1),
-                 type("thing"), isCharacter(false), weight(-1)
+Entity::Entity() : script(new Script), world(NULL), status(1),
+                   type("thing"), weight(-1),
+                   isCharacter(false), deleted(false), omnipresent(false)
 {
     inGame = true;
     name = string("Foo");
@@ -56,24 +57,29 @@ const Object & Entity::operator[](const string & aname)
         attributes[aname] = Object(weight);
     } else if (aname == "contains") {
         Object::ListType contlist;
-        for(list_t::const_iterator I=contains.begin();I!=contains.end();I++) {
+        for(elist_t::const_iterator I=contains.begin();I!=contains.end();I++) {
             contlist.push_back(*I);
         }
         attributes[aname] = Object(contlist);
-    } else if (attributes.find(aname) == attributes.end()) {
-        attributes[aname] = Object();
+    } else {
+        Object::MapType::iterator I = attributes.find(aname);
+        if (I == attributes.end()) {
+            attributes[aname] = Object();
+        }
     }
     return(attributes[aname]);
 }
 
 void Entity::set(const string & aname, const Object & attr)
 {
-    if ((aname == "status") && attr.IsFloat()) {
-        status = attr.AsFloat();
+    if ((aname == "status") && attr.IsNum()) {
+        status = attr.AsNum();
+    } else if (aname == "id") {
+        return;
     } else if ((aname == "name") && attr.IsString()) {
         name = attr.AsString();
-    } else if ((aname == "weight") && attr.IsFloat()) {
-        weight = attr.AsFloat();
+    } else if ((aname == "weight") && attr.IsNum()) {
+        weight = attr.AsNum();
     } else {
         attributes[aname] = attr;
     }
@@ -88,6 +94,24 @@ MemMap * Entity::getMap() {
     return NULL;
 }
 
+void Entity::destroy()
+{
+    if (deleted == true) {
+        return;
+    }
+    elist_t::const_iterator I;
+    for(I = contains.begin(); I != contains.end(); I++) {
+        Entity * obj = *I;
+        if (obj->deleted == false) {
+            obj->location.ref = location.ref;
+            obj->location.coords = location.coords + obj->location.coords;
+        }
+    }
+    if (location) {
+        location.ref->contains.remove(this);
+    }
+}
+
 void Entity::addToObject(Object & obj) const
 {
     Object::MapType & omap = obj.AsMap();
@@ -96,6 +120,14 @@ void Entity::addToObject(Object & obj) const
     omap["parents"] = Object(Object::ListType(1,Object(type)));
     // We need to have a list of keys to pull from attributes.
     location.addToObject(obj);
+    Object::ListType contlist;
+    elist_t::const_iterator I;
+    for(I = contains.begin(); I != contains.end(); I++) {
+        contlist.push_back(Object((*I)->fullid));
+    }
+    if (contlist.size() != 0) {
+        omap["contains"] = Object(contlist);
+    }
     BaseEntity::addToObject(obj);
 }
 
@@ -104,47 +136,67 @@ void Entity::merge(const Object::MapType & entmap)
     Object::MapType::const_iterator I;
     for (I=entmap.begin(); I!=entmap.end(); I++) {
         const string & key = I->first;
-        if ((key == "name") || (key == "id") || (key == "parents")) continue;
+        if ((key == "parents")||(key == "bbox") || (key == "bmedian")) continue;
         if ((key == "pos") || (key == "loc") || (key == "velocity")) continue;
         if ((key == "face") || (key == "contains")) continue;
-        attributes[key] = I->second;
+        set(key, I->second);
     }
 }
 
-void Entity::getLocation(Object::MapType & entmap, dict_t & objects)
+void Entity::getLocation(const Object::MapType & entmap, edict_t & eobjects)
 {
     debug( cout << "Thing::getLocation" << endl << flush;);
-    if (entmap.find("loc") != entmap.end()) {
-        debug( cout << "Thing::getLocation, getting it" << endl << flush;);
-        try {
-            const string & ref_id = entmap["loc"].AsString();
-            if (objects.find(ref_id) == objects.end()) {
-                debug( cout << "ERROR: Can't get ref from objects dictionary" << endl << flush;);
-                return;
-            }
-                
-            location.ref = objects[ref_id];
-            if (entmap.find("pos") != entmap.end()) {
-                location.coords = Vector3D(entmap["pos"].AsList());
-            }
-            if (entmap.find("velocity") != entmap.end()) {
-                location.velocity = Vector3D(entmap["velocity"].AsList());
-            }
-            if (entmap.find("face") != entmap.end()) {
-                location.face = Vector3D(entmap["face"].AsList());
-            } else if (!location.face) {
-                location.face = Vector3D(1, 0, 0);
-            }
-            if (entmap.find("bbox") != entmap.end()) {
-                location.bbox = Vector3D(entmap["bbox"].AsList());
-            }
-            if (entmap.find("bmedian") != entmap.end()) {
-                location.bmedian = Vector3D(entmap["bmedian"].AsList());
-            }
+    Object::MapType::const_iterator I = entmap.find("loc");
+    if (I == entmap.end()) { return; }
+    debug( cout << "Thing::getLocation, getting it" << endl << flush;);
+    try {
+        const string & ref_id = I->second.AsString();
+        edict_t::const_iterator J = eobjects.find(ref_id);
+        if (J == eobjects.end()) {
+            debug( cout << "ERROR: Can't get ref from objects dictionary" << endl << flush;);
+            return;
         }
-        catch (Atlas::Message::WrongTypeException) {
-            cerr << "ERROR: Create operation has bad location" << endl << flush;
+            
+        location.ref = J->second;
+        I = entmap.find("pos");
+        if (I != entmap.end()) {
+            location.coords = Vector3D(I->second.AsList());
         }
+        I = entmap.find("velocity");
+        if (I != entmap.end()) {
+            location.velocity = Vector3D(I->second.AsList());
+        }
+        I = entmap.find("face");
+        if (I != entmap.end()) {
+            location.face = Vector3D(I->second.AsList());
+        } else if (!location.face) {
+            location.face = Vector3D(1, 0, 0);
+        }
+        I = entmap.find("bbox");
+        if (I != entmap.end()) {
+            location.bbox = Vector3D(I->second.AsList());
+        }
+        I = entmap.find("bmedian");
+        if (I != entmap.end()) {
+            location.bmedian = Vector3D(I->second.AsList());
+        }
+    }
+    catch (Atlas::Message::WrongTypeException) {
+        cerr << "ERROR: Create operation has bad location" << endl << flush;
+    }
+}
+
+Vector3D Entity::getXyz() const
+{
+    //Location l=location;
+    if (!location) {
+        static Vector3D ret(0.0,0.0,0.0);
+        return ret;
+    }
+    if (location.ref) {
+        return location.coords+location.ref->getXyz();
+    } else {
+        return location.coords;
     }
 }
 

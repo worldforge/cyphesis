@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef CREATOR_H
 #define CREATOR_H
@@ -15,4 +15,4 @@ class Creator : public Character {
     virtual oplist externalOperation(const RootOperation & op);
 };
 
-#endif /* CREATOR_H */
+#endif // CREATOR_H

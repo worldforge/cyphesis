@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef WORLD_TIME_H
 #define WORLD_TIME_H
@@ -44,4 +44,4 @@ class WorldTime {
 
 const string & seconds2string(double seconds);
 
-#endif /* WORLD_TIME_H */
+#endif // WORLD_TIME_H

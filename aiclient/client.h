@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU Lesser General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2001 Alistair Riddoch
 
 #ifndef CLIENT_H
 #define CLIENT_H
@@ -10,4 +10,4 @@ extern int exit_flag;
 extern list<string> rulesets;
 
 
-#endif /* CLIENT_H */
+#endif // CLIENT_H

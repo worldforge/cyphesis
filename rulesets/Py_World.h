@@ -11,4 +11,4 @@ extern PyTypeObject World_Type;
 
 WorldObject * newWorldObject(PyObject *);
 
-#endif /* PY_WORLD_H */
+#endif // PY_WORLD_H

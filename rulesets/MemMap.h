@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef MEM_MAP_H
 #define MEM_MAP_H
@@ -14,8 +14,8 @@ class Script;
 class MemMap {
     friend class BaseMind;
 
-    dict_t things;
-    std::list<string> additionsById;
+    edict_t things;
+    std::list<std::string> additionsById;
     Script *& script;
 
     Entity * addObject(Entity * object);
@@ -23,19 +23,18 @@ class MemMap {
     MemMap(Script *& s) : script(s)  { }
 
     RootOperation * lookId();
-    Entity * addId(const string & id);
+    Entity * addId(const std::string & id);
     Entity * add(const Object & entity);
-    void del(const string & id);
-    Entity * get(const string & id);
-    //Entity * __getitem__(const string & id) // operator[] perhaps?
-    Entity * getAdd(const string & id);
+    void del(const std::string & id);
+    Entity * get(const std::string & id);
+    Entity * getAdd(const std::string & id);
     Entity * update(const Object & entity);
-    list<Entity *> findByType(const string & what);
-    list<Entity *> findByLocation(const Location & where, double radius);
+    elist_t findByType(const std::string & what);
+    elist_t findByLocation(const Location & where, double radius);
 
-    list<string> addHooks;
-    list<string> updateHooks;
-    list<string> deleteHooks;
+    std::list<std::string> addHooks;
+    std::list<std::string> updateHooks;
+    std::list<std::string> deleteHooks;
 };
 
-#endif /* MEM_MAP_H */
+#endif // MEM_MAP_H

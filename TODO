@@ -4,7 +4,11 @@ Definitly for Acorn 0.4:
 
   Sort out collision detection wrt moving alongside an object in close
   proximity, and add CD for two moving objects. Basically we need sliding.
-  along an object.
+  along an object. This can be done by zeroing the velocity along
+  the axis perpendicular to the collision. Obviously we need to add
+  a mechanism for establishing which axis is perpendicular to the collision.
+  This now works, but the direction the moving entity is facing needs to be
+  modified.
 
   Sort out collision prediction between two moving entities. Current problem
   is that it is not possible to tell when movement started, and thus get
@@ -15,19 +19,11 @@ Definitly for Acorn 0.4:
   Fully implement stackable objects.
   Use combine operation to deal with making more than one object into one.
 
-  Replace
-    o = new Operation(); *o = Operation::Instantiate();
-  with
-    o = new Opertion(Operation::Instantiate());
-  cos it is about twice as quick.
-
-  Move virtual destructors and other functions into .cpp files.
-
-  Get rid of deleted attribute.
-
 Provisional for Acorn 0.4:
 
-  Implement accelerated Atlas Objects API. MAYBE: POSTPONED FROM 0.3
+  Implement accelerated Atlas Objects API. MAYBE:
+    POSTPONED FROM 0.3
+    POSTPONED FROM 0.4
 
 Required for werewolf:
 
@@ -37,9 +33,6 @@ Required for werewolf:
   Implement sleeping.
 
 Possible ideas:
-
-  Try out optimisations such as -funroll_loops -fstrict_aliasing -ffast_math
-  -mx86. Consider a custom python interpreter build.
 
   Add fully featured database persistance.
 

@@ -16,4 +16,4 @@ Root * Object_asRoot(const Atlas::Message::Object &);
 
 }
 
-#endif /* COMMON_UTILITY_H */
+#endif // COMMON_UTILITY_H

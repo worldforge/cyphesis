@@ -1,3 +1,35 @@
+2001-04-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* Substantial re-work of object model. Moved many attributes out
+	  of BaseEntity class. Changed WoldRouter so it now handles
+	  objects in terms of Entity, rather than BaseEntity.
+
+	* Code cleanups, including removing reduntant includes, and
+	  getting rid of C style comments.
+
+	* Fixed the way attributes are handled in Set operations and
+	  when merging from an Atlas::Message::Object. This fixed
+	  problem with setting gender of characters.
+
+	* rulesets/Pedestrian.*, rulesets/Movement.*: Re-named
+	  Movement variables to make them clearer. Added in
+	  separate handling for collisions from moving to
+	  target position. Modified collision handling so
+	  objects can slide next to each other.
+
+	* rulesets/Thing.cpp, rulesets/Character.cpp: Cleaned up and
+	  rationalised movement code. Much shorter, faster and
+	  more compact than before.
+
+	* Made better use of iterators throughout, eliminating unnecessary
+	  lookups, and copying of data.
+
+	* Moved all virtual functions out of header files, making
+	  less work for the linker.
+
+	* Made more use of const references to avoid the need to copy
+	  data before being able to inspect it.
+
 2001-04-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.*: Changed addToObject to take reference

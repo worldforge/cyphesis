@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef VECTOR_3D_H
 #define VECTOR_3D_H
@@ -48,15 +48,18 @@ class Vector3D {
     double x,y,z;
     bool _set;
   public:
+    static const int cX = 0;	// Used to indicate which axis
+    static const int cY = 1;
+    static const int cZ = 2;
 
     Vector3D() : x(0), y(0), z(0), _set(false) { }
     Vector3D(double size) : x(size), y(size), z(size), _set(true) { }
     Vector3D(double x, double y, double z) : x(x), y(y), z(z), _set(true) { }
-    Vector3D(const Object::ListType & vector) {
+    Vector3D(const Object::ListType & vector) : _set(true) {
         Object::ListType::const_iterator I = vector.begin();
-        x = I->AsNum(); I++;
-        y = I->AsNum(); I++;
-        z = I->AsNum();
+        x = I->AsNum();
+        y = (++I)->AsNum();
+        z = (++I)->AsNum();
     }
 
     double X() const { return x; }
@@ -68,27 +71,27 @@ class Vector3D {
         return ((x==other.x) && (y==other.y) && (z==other.z));
     }
 
-    Vector3D operator+(const Vector3D & other) const {
+    const Vector3D operator+(const Vector3D & other) const {
         // Add two vectors
         return Vector3D(x+other.x, y+other.y, z+other.z);
     }
 
-    Vector3D operator+(double other) const {
+    const Vector3D operator+(double other) const {
         // Increaese size (in all direction for boxes)
         return Vector3D(x+other, y+other, z+other);
     }
 
-    Vector3D operator-(const Vector3D & other) const {
+    const Vector3D operator-(const Vector3D & other) const {
         // Subtract two vectors
         return Vector3D(x-other.x, y-other.y, z-other.z);
     }
 
-    Vector3D operator*(double other) const {
+    const Vector3D operator*(double other) const {
         // Multiply vector by number
         return Vector3D(x*other,y*other,z*other);
     }
 
-    Vector3D operator/(double other) const {
+    const Vector3D operator/(double other) const {
         // Divide vector by number
         return Vector3D(x/other,y/other,z/other);
     }
@@ -99,11 +102,11 @@ class Vector3D {
 
     double & operator[](int index) {
 	switch(index) {
-            case 0:
+            case cX:
                 return(x);
-            case 1:
+            case cY:
                 return(y);
-            case 2:
+            case cZ:
                 return(z);
             default:
                 //Throw an exception here maybe
@@ -120,7 +123,7 @@ class Vector3D {
         return x * v.x + y * v.y + z * v.z;
     }
 
-    Vector3D cross(const Vector3D & v) const {
+    const Vector3D cross(const Vector3D & v) const {
         //"Cross product of a vector";
         return Vector3D(y*v.z - z*v.x, z*v.x - x*v.z, x*v.y - y*v.z);
     }
@@ -154,13 +157,13 @@ class Vector3D {
         return d / (v.mag() * mag());
     }
 
-    Vector3D unitVector() const {
+    const Vector3D unitVector() const {
         //"return the unit vector of a vector";
 	// This is could throw a wobbly
 	return operator/(mag());
     }
 
-    Vector3D unitVectorTo(const Vector3D & v) const {
+    const Vector3D unitVectorTo(const Vector3D & v) const {
         // return the unit vector in the direction of another vector;
         Vector3D difference_vector = v - (*this);
         return difference_vector.unitVector();
@@ -194,7 +197,7 @@ class Vector3D {
     }
 
     double hitTime(const Vector3D & m, const Vector3D & s, const Vector3D & v,
-                   const Vector3D & om, const Vector3D & os) const {
+                   const Vector3D & om, const Vector3D & os, int & axis) const {
         // When is box defined by this vector, with median offset m of size s
         // velocity v, colliding with other box of median om of size s.
         // If this function returns a -ve value, it is possible they are
@@ -212,12 +215,13 @@ class Vector3D {
         double end   = min(max(xt), min(max(yt),max(zt)));
         // If the start is before the end, then there is a collision
         if (end < start) { return -1; }
+        axis = ((start == min(xt)) ? cX : ((start == min(yt)) ? cY : cZ));
         return start;
     }
 
     double hitTime(const Vector3D & m, const Vector3D & s,
                    const Vector3D & v, const Vector3D & ov,
-                   const Vector3D & om, const Vector3D & os) const {
+                   const Vector3D & om, const Vector3D & os, int & axis) const {
         // This is the same as the above function but it accepts an
         // additional arguemnt, the velocity of the other entity
         // Calculate range of times each intersect
@@ -230,6 +234,7 @@ class Vector3D {
         double end   = min(max(xt), min(max(yt),max(zt)));
         // If the start is before the end, then there is a collision
         if (end < start) { return -1; }
+        axis = ((start == min(xt)) ? cX : ((start == min(yt)) ? cY : cZ));
         return start;
     }
 
@@ -245,7 +250,7 @@ class Vector3D {
         return leave;
     }
 
-    Object asObject() const {
+    const Object asObject() const {
         Object::ListType coords;
         coords.push_back(Object(x));
         coords.push_back(Object(y));
@@ -262,4 +267,4 @@ inline ostream & operator<<(ostream& s, const Vector3D& v) {
 }
 
 
-#endif VECTOR_3D_H
+#endif // VECTOR_3D_H

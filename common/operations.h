@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef OPERATIONS_H
 #define OPERATIONS_H
@@ -72,4 +72,4 @@ using Atlas::Objects::Operation::Cut;
 using Atlas::Objects::Operation::Chop;
 using Atlas::Objects::Operation::Fire;
 
-#endif /* OPERATIONS_H */
+#endif // OPERATIONS_H

@@ -11,4 +11,4 @@ extern PyTypeObject Location_Type;
 
 LocationObject * newLocationObject(PyObject *);
 
-#endif /* PY_LOCATION_H */
+#endif // PY_LOCATION_H

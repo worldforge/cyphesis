@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef COMM_CLIENT_H
 #define COMM_CLIENT_H
@@ -74,4 +74,4 @@ class CommClient : Atlas::Objects::Decoder {
     int setup();
 };
 
-#endif /* COMM_CLIENT_H */
+#endif // COMM_CLIENT_H

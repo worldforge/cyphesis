@@ -11,4 +11,4 @@ extern PyTypeObject WorldTime_Type;
 
 WorldTimeObject * newWorldTimeObject(PyObject *);
 
-#endif /* PY_WORLDTIME_H */
+#endif // PY_WORLDTIME_H

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef BASE_MIND_H
 #define BASE_MIND_H
@@ -47,4 +47,4 @@ class BaseMind : public Entity {
     friend class PythonMindScript;
 };
 
-#endif /* BASE_MIND_H */
+#endif // BASE_MIND_H

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef FOOD_H
 #define FOOD_H
@@ -16,7 +16,7 @@ class Food : public Thing {
   public:
 
     Food();
-    virtual ~Food() { }
+    virtual ~Food();
 
     virtual oplist Operation(const Eat & op);
     virtual oplist Operation(const Fire & op);

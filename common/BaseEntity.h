@@ -1,13 +1,12 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef BASE_ENTITY_H
 #define BASE_ENTITY_H
 
 #include <Atlas/Objects/Operation/Error.h>
 
-#include <modules/Location.h>
 #include <common/types.h>
 #include <common/operations.h>
 
@@ -17,27 +16,20 @@ class BaseEntity {
   public:
     int seq;			// Sequence number
     string fullid;		// String id
-    string name;		// Name
-    Location location;		// Full details of location inc. ref pos and vel
-    list_t contains;		// List of entities which use this as ref
-    bool deleted;		// true if deleted
     bool inGame;		// true if in game object
-    bool omnipresent;		// true if omnipresent in game.
-    WorldRouter * world;	// Exists in this world.
 
     BaseEntity();
-    virtual ~BaseEntity() { }
+    virtual ~BaseEntity();
 
-    Vector3D getXyz() const;
     virtual void destroy();
 
     Atlas::Message::Object asObject() const;
     virtual void addToObject(Atlas::Message::Object &) const;
 
-    virtual oplist externalMessage(const RootOperation & op);
     virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
     virtual oplist externalOperation(const RootOperation & op);
+    virtual oplist externalMessage(const RootOperation & op);
 
     virtual oplist Operation(const Login & op);
     virtual oplist Operation(const Logout & op);
@@ -67,7 +59,7 @@ class BaseEntity {
     virtual oplist Operation(const Disappearance & op);
     virtual oplist Operation(const RootOperation & op);
 
-    void setRefno(oplist & ret, const RootOperation & ref_op) const;
+    void setRefno(const oplist & ret, const RootOperation & ref_op) const;
     op_no_t opEnumerate(const RootOperation & op) const;
     oplist callOperation(const RootOperation & op);
     oplist error(const RootOperation & op, const char * errstring) const;
@@ -78,9 +70,4 @@ class BaseEntity {
 
 };
 
-inline ostream & operator<<(ostream& s, Location& v)
-{
-    return s << "{" << v.ref->fullid << "," << v.coords << "," << v.velocity << "}";
-}
-
-#endif /* BASE_ENTITY_H */
+#endif // BASE_ENTITY_H

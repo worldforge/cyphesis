@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef ENTITY_FACTORY_H
 #define ENTITY_FACTORY_H
@@ -30,4 +30,4 @@ class MindFactory {
                        const Atlas::Message::Object &, Routing *);
 };
 
-#endif /* ENTITY_FACTORY_H */
+#endif // ENTITY_FACTORY_H

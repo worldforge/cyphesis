@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -19,6 +19,10 @@ Food::Food()
     attributes["cooked"] = 0;
     attributes["burn_speed"] = 0.1;
     weight = 1;
+}
+
+Food::~Food()
+{
 }
 
 oplist Food::Operation(const Eat & op)
@@ -56,15 +60,16 @@ oplist Food::Operation(const Fire & op)
         return(res);
     }
     double cooked = 0;
-    if (attributes.find("cooked") == attributes.end()) {
-        cooked = attributes["cooked"].AsNum();
+    Object::MapType::iterator I = attributes.find("cooked");
+    if (I != attributes.end()) {
+        cooked = I->second.AsNum();
     }
-    Object::MapType fire_ent = op.GetArgs().front().AsMap();
+    const Object::MapType & fire_ent = op.GetArgs().front().AsMap();
     Object::MapType self_ent;
     self_ent["id"] = fullid;
     // Currently this cooks pretty quick, and at the same speed for
     // everything. No mechanism for this yet.
-    double fire_size = fire_ent["status"].AsNum();
+    double fire_size = fire_ent.find("status")->second.AsNum();
     self_ent["cooked"] = cooked + (fire_size/weight);
     if (cooked > 1.0) {
         self_ent["status"] = status - (attributes["burn_speed"].AsNum()) * fire_size;

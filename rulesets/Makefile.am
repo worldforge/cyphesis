@@ -12,6 +12,7 @@ librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 			   MemMap.cpp MemMap.h MemMap_methods.h
 
 librulesetentity_a_SOURCES = Thing.cpp Thing.h \
+			     World.cpp World.h \
 			     Character.cpp Character.h \
 			     Creator.cpp Creator.h \
 			     Plant.cpp Plant.h \

@@ -11,4 +11,4 @@ extern PyTypeObject RootOperation_Type;
 
 RootOperationObject * newAtlasRootOperation(PyObject *arg);
 
-#endif /* PY_OPERATION_H */
+#endif // PY_OPERATION_H

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Operation/Login.h>
@@ -22,25 +22,29 @@ Entity * MemMap::add(const Object & entity)
     if (!entity.IsMap()) {
         return NULL;
     }
-    Object::MapType entmap = entity.AsMap();
-    if ((entmap.find("id") == entmap.end()) ||
-        (entmap["id"].AsString().size() == 0)) {
+    const Object::MapType & entmap = entity.AsMap();
+    Object::MapType::const_iterator I = entmap.find("id");
+    if ((I == entmap.end()) || (I->second.AsString().size() == 0)) {
         return NULL;
     }
-    if (get(entmap["id"].AsString())) {
+    const string & id = I->second.AsString();
+    if (get(id)) {
         return update(entity);
     }
     Entity * thing = new Entity;
-    thing->fullid = entmap["id"].AsString();
-    if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
-        thing->name = entmap["name"].AsString();
+    thing->fullid = id;
+    I = entmap.find("name");
+    if ((I != entmap.end()) && I->second.IsString()) {
+        thing->name = I->second.AsString();
     }
-    if (entmap.find("type") != entmap.end() && entmap["type"].IsString()) {
-        thing->type = entmap["type"].AsString();
+    I = entmap.find("type");
+    if ((I != entmap.end()) && I->second.IsString()) {
+        thing->type = I->second.AsString();
     }
     thing->merge(entmap);
-    if (entmap.find("loc") != entmap.end()) {
-        getAdd(entmap["loc"].AsString());
+    I = entmap.find("loc");
+    if (I != entmap.end()) {
+        getAdd(I->second.AsString());
     }
     thing->getLocation(entmap, things);
     return addObject(thing);
@@ -52,28 +56,32 @@ Entity * MemMap::update(const Object & entity)
     if (!entity.IsMap()) {
         return NULL;
     }
-    Object::MapType entmap = entity.AsMap();
-    if (entmap.find("id") == entmap.end()) {
+    const Object::MapType & entmap = entity.AsMap();
+    Object::MapType::const_iterator I = entmap.find("id");
+    if (I == entmap.end()) {
         return NULL;
     }
-    string & id = entmap["id"].AsString();
+    const string & id = I->second.AsString();
     if (id.size() == 0) {
         return NULL;
     }
     debug( cout << " updating " << id << endl << flush;);
-    if (things.find(id) == things.end()) {
+    edict_t::iterator J = things.find(id);
+    if (J == things.end()) {
         return add(entity);
     }
     debug( cout << " " << id << " has already been spotted" << endl << flush;);
-    Entity * thing = (Entity*)things[id];
+    Entity * thing = J->second;
     debug( cout << " got " << thing << endl << flush;);
     // I am not sure what the deal is with all the "needTrueValue stuff
     // below yet. FIXME find out exactly what is required.
-    if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
-        thing->name = entmap["name"].AsString();
+    I = entmap.find("name");
+    if (I != entmap.end() && I->second.IsString()) {
+        thing->name = I->second.AsString();
     }
-    if (entmap.find("type") != entmap.end() && entmap["type"].IsString()) {
-        thing->type = entmap["type"].AsString();
+    I = entmap.find("type");
+    if (I != entmap.end() && I->second.IsString()) {
+        thing->type = I->second.AsString();
     }
     debug( cout << " got " << thing << endl << flush;);
     thing->merge(entmap);
@@ -84,9 +92,9 @@ Entity * MemMap::update(const Object & entity)
             //setattr(obj,key,value);
         //}
     //}
-    list<string>::const_iterator I;
-    for(I = updateHooks.begin(); I != updateHooks.end(); I++) {
-        script->hook(*I, thing);
+    list<string>::const_iterator K;
+    for(K = updateHooks.begin(); K != updateHooks.end(); K++) {
+        script->hook(*K, thing);
     }
     //for (/*hook in MemMap::update_hooks*/) {
         //hook(obj);
@@ -97,7 +105,7 @@ Entity * MemMap::update(const Object & entity)
 list<Entity *> MemMap::findByType(const string & what)
 {
     list<Entity *> res;
-    dict_t::const_iterator I;
+    edict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         Entity * item = (Entity *)I->second;
         debug( cout << "F" << what << ":" << item->type << ":" << item->fullid << endl << flush;);
@@ -111,7 +119,7 @@ list<Entity *> MemMap::findByType(const string & what)
 list<Entity *> MemMap::findByLocation(const Location & loc, double radius)
 {
     list<Entity *> res;
-    dict_t::const_iterator I;
+    edict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         const Location & oloc = I->second->location;
         if (!loc || !oloc) {
