@@ -9,9 +9,11 @@ Installation:
 
 cyphesis is built using autoconf. Please see the file INSTALL for details.
 It requires Python and PostgreSQL which are include with most Linux
-distributions, and Atlas-C++, varconf and skstream which are provided
-by the WorldForge project. GNU readline is required by some of the
-included tools.
+distributions, and Atlas-C++, varconf and skstream2 which are provided
+by the WorldForge project. PostgreSQL must have been built with the C++
+libraries enabled. If you are building PostgreSQL from source, please check
+the PostgreSQL documentation for information on how to enable building the
+C++ libraries. GNU readline is required by some of the included tools.
 
 Copyright:
 
