@@ -53,7 +53,7 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
 
     bool timeout() { return m_clientIos.timeout(); }
 
-    void message(const Atlas::Objects::Operation::RootOperation &);
+    void operation(const Atlas::Objects::Operation::RootOperation &);
 
     virtual void unknownObjectArrived(const Atlas::Message::Element&);
     virtual void objectArrived(const Atlas::Objects::Operation::Login & op);

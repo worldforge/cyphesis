@@ -353,6 +353,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         args.push_back(op.asObject());
         info.setRefno(op.getSerialno());
         info.setSerialno(newSerialNo());
+        // FIXME Direct call of send. Need local refno handling.
         send(info);
         disconnect();
         return;

@@ -123,8 +123,6 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
         obj->addToMessage(args.front().asMap());
         Operation * s = new Sight();
         s->setArgs(ListType(1,c.asObject()));
-        // This should no longer be required as it is now handled centrally
-        // s->setRefno(op.getSerialno());
         res.push_back(s);
     }
     catch (Atlas::Message::WrongTypeException&) {

@@ -82,7 +82,7 @@ void Lobby::operation(const Operation & op, OpVector & res)
         AccountDict::const_iterator Iend = m_accounts.end();
         for (; I != Iend; ++I) {
             Connection * c = I->second->m_connection;
-            if (c != NULL) {
+            if (c != 0) {
                 newop.setTo(I->first);
                 debug(std::cout << "Lobby sending " << newop.getParents().front().asString() << " operation to " << I->first << std::endl << std::flush; );
                 c->send(newop);
@@ -92,10 +92,11 @@ void Lobby::operation(const Operation & op, OpVector & res)
         AccountDict::const_iterator I = m_accounts.find(to);
         if (I == m_accounts.end()) {
             error(op, "Target account not logged in", res);
-            return;
         } else {
             Connection * c = I->second->m_connection;
-            if (c != NULL) {
+            if (c == 0) {
+                error(op, "Target account not logged in", res);
+            } else {
                 c->send(op);
             }
         }

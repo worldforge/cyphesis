@@ -1,3 +1,17 @@
+2005-04-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: Remove obsolete commented out code.
+
+	* server/Account.cpp, server/Connection.cpp:
+	  Add a note about serialno/refno handling when code sends ops
+	  directly to the client.
+
+	* server/CommClient.cpp, server/CommClient.h: Clean up some debug
+	  code, and method names.
+
+	* server/Lobby.cpp: Fix a case where a private message would fail
+	  silently if account had logged on recenlty but was no longer.
+
 2005-04-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Account.cpp: Improve checks to make sure account is connected

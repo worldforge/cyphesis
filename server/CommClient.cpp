@@ -112,7 +112,7 @@ int CommClient::negotiate()
     return 0;
 }
 
-void CommClient::message(const Atlas::Objects::Operation::RootOperation & op)
+void CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
 {
     OpVector reply;
     m_connection.operation(op, reply);
@@ -136,7 +136,7 @@ void CommClient::dispatch()
     DispatchQueue::const_iterator Iend = m_opQueue.end();
     for(DispatchQueue::const_iterator I = m_opQueue.begin(); I != Iend; ++I) {
         debug(std::cout << "dispatching op" << std::endl << std::flush;);
-        message(**I);
+        operation(**I);
         delete *I;
     }
     m_opQueue.clear();
@@ -164,61 +164,61 @@ void CommClient::unknownObjectArrived(const Atlas::Message::Element& o)
 
 void CommClient::objectArrived(const Atlas::Objects::Operation::Login & op)
 {
-    debug(std::cout << "A login operation thingy here!" << std::endl << std::flush;);
+    debug(std::cout << "A login op from client!" << std::endl << std::flush;);
     queue(op);
 }
 
 void CommClient::objectArrived(const Atlas::Objects::Operation::Logout & op)
 {
-    debug(std::cout << "A logout operation thingy here!" << std::endl << std::flush;);
+    debug(std::cout << "A logout op from client!" << std::endl << std::flush;);
     queue(op);
 }
 
 void CommClient::objectArrived(const Atlas::Objects::Operation::Create & op)
 {
-    debug(std::cout << "A create operation thingy here!" << std::endl << std::flush;);
+    debug(std::cout << "A create op from client!" << std::endl << std::flush;);
     queue(op);
 }
 
 void CommClient::objectArrived(const Atlas::Objects::Operation::Imaginary & op)
 {
-    debug(std::cout << "A imaginary operation thingy here!" << std::endl << std::flush;);
+    debug(std::cout << "A imaginary op from client!" << std::endl << std::flush;);
     queue(op);
 }
 
 void CommClient::objectArrived(const Atlas::Objects::Operation::Move & op)
 {
-    debug(std::cout << "A move operation thingy here!" << std::endl << std::flush;);
+    debug(std::cout << "A move op from client!" << std::endl << std::flush;);
     queue(op);
 }
 
 void CommClient::objectArrived(const Atlas::Objects::Operation::Set & op)
 {
-    debug(std::cout << "A set operation thingy here!" << std::endl << std::flush;);
+    debug(std::cout << "A set op from client!" << std::endl << std::flush;);
     queue(op);
 }
 
 void CommClient::objectArrived(const Atlas::Objects::Operation::Touch & op)
 {
-    debug(std::cout << "A touch operation thingy here!" << std::endl << std::flush;);
+    debug(std::cout << "A touch op from client!" << std::endl << std::flush;);
     queue(op);
 }
 
 void CommClient::objectArrived(const Atlas::Objects::Operation::Look & op)
 {
-    debug(std::cout << "A look operation thingy here!" << std::endl << std::flush;);
+    debug(std::cout << "A look op from client!" << std::endl << std::flush;);
     queue(op);
 }
 
 void CommClient::objectArrived(const Atlas::Objects::Operation::Talk & op)
 {
-    debug(std::cout << "A talk operation thingy here!" << std::endl << std::flush;);
+    debug(std::cout << "A talk op from client!" << std::endl << std::flush;);
     queue(op);
 }
 
 void CommClient::objectArrived(const Atlas::Objects::Operation::Get & op)
 {
-    debug(std::cout << "A get operation thingy here!" << std::endl << std::flush;);
+    debug(std::cout << "A get op from client!" << std::endl << std::flush;);
     queue(op);
 }
 

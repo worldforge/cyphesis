@@ -150,6 +150,7 @@ void Account::LogoutOperation(const Operation & op, OpVector &)
     info.setSerialno(newSerialNo());
     info.setFrom(getId());
     info.setTo(getId());
+    // FIXME Direct send rather than reply - requires local refno handling
     m_connection->send(info);
     m_connection->disconnect();
 }
