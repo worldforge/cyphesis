@@ -31,13 +31,13 @@ class CommPSQLSocket : public CommIdleSocket {
     CommPSQLSocket(CommServer & svr, Database & db);
     virtual ~CommPSQLSocket();
 
-    virtual int getFd() const;
-    virtual bool isOpen() const;
-    virtual bool eof();
-    virtual bool read();
-    virtual void dispatch();
+    int getFd() const;
+    bool isOpen() const;
+    bool eof();
+    int read();
+    void dispatch();
 
-    virtual void idle(time_t t);
+    void idle(time_t t);
 };
 
 #endif // SERVER_COMM_PSQL_SOCKET_H

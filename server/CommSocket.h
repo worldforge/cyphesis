@@ -41,7 +41,7 @@ class CommSocket {
     /// be performed in the dispatch() memeber function.
     /// @return true if some exceptional circumstance occured meaning this
     /// socket is no longer usable, false otherwise.
-    virtual bool read() = 0;
+    virtual int read() = 0;
 
     /// \brief Post process data read from the socket.
     ///

@@ -69,21 +69,21 @@ void CommClient::setup()
     m_clientIos << std::flush;
 }
 
-bool CommClient::negotiate()
+int CommClient::negotiate()
 {
     debug(std::cout << "Negotiating... " << std::flush;);
     // poll and check if negotiation is complete
     m_accept->poll();
 
     if (m_accept->getState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
-        return false;
+        return 0;
     }
     debug(std::cout << "done" << std::endl;);
 
     // Check if negotiation failed
     if (m_accept->getState() == Atlas::Net::StreamAccept::FAILED) {
         log(NOTICE, "Failed to negotiate");
-        return true;
+        return -1;
     }
     // Negotiation was successful
 
@@ -100,7 +100,7 @@ bool CommClient::negotiate()
     delete m_accept;
     m_accept = NULL;
 
-    return false;
+    return 0;
 }
 
 void CommClient::message(const RootOperation & op)
@@ -212,10 +212,11 @@ void CommClient::objectArrived(const Get & op)
     queue(op);
 }
 
-bool CommClient::read() {
+int CommClient::read()
+{
     if (m_codec != NULL) {
         m_codec->poll();
-        return false;
+        return 0;
     } else {
         return negotiate();
     }

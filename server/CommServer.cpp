@@ -116,8 +116,9 @@ void CommServer::loop()
        }
        if (FD_ISSET(socket->getFd(), &sock_fds)) {
            if (!socket->eof()) {
-               if (socket->read()) {
-                   debug(std::cout << "Removing socket due to failed negotiation or timeout" << std::endl << std::flush;);
+               if (socket->read() != 0) {
+                   debug(std::cout << "Removing socket due to failure"
+                                   << std::endl << std::flush;);
                    obsoleteConnections.insert(socket);
                }
                socket->dispatch();

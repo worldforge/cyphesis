@@ -1,3 +1,12 @@
+2004-10-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommClient.cpp, server/CommClient.h, server/CommListener.cpp,
+	  server/CommListener.h, server/CommMetaClient.cpp,
+	  server/CommMetaClient.h, server/CommPSQLSocket.cpp,
+	  server/CommPSQLSocket.h, server/CommServer.cpp, server/CommSocket.h,
+	  server/CommUnixListener.cpp, server/CommUnixListener.h:
+	  Use int for returning error status.
+
 2004-10-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/BaseClient.cpp, client/BaseClient.h,,

@@ -47,7 +47,7 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
     Connection & m_connection;
 
     /// \brief Handle socket data related to codec negotiation.
-    bool negotiate();
+    int negotiate();
 
     /// \brief Add an operation to the queue.
     template <class OpType>
@@ -81,7 +81,7 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
     int getFd() const;
     bool isOpen() const;
     bool eof();
-    bool read();
+    int read();
     void dispatch();
 };
 

@@ -57,7 +57,7 @@ bool CommPSQLSocket::isOpen() const
     return true;
 }
 
-bool CommPSQLSocket::read()
+int CommPSQLSocket::read()
 {
     debug(std::cout << "CommPSQLSocket::read()" << std::endl << std::flush;);
     PGconn * con = m_db.getConnection();
@@ -66,6 +66,7 @@ bool CommPSQLSocket::read()
     if (PQconsumeInput(con) == 0) {
         log(ERROR, "Error reading from database connection.");
         m_db.reportError();
+        // FIXME Should we return an error?
     }
 
     PGresult * res;
@@ -75,11 +76,11 @@ bool CommPSQLSocket::read()
             PQclear(res);
         } else {
             m_db.queryComplete();
-            return false;
+            return 0;
         }
     };
 
-    return false;
+    return 0;
 }
 
 void CommPSQLSocket::dispatch()

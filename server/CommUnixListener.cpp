@@ -45,10 +45,10 @@ bool CommUnixListener::isOpen() const
     return true;
 }
 
-bool CommUnixListener::read()
+int CommUnixListener::read()
 {
     accept();
-    return false;
+    return 0;
 }
 
 void CommUnixListener::dispatch()

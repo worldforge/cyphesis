@@ -35,7 +35,7 @@ class CommUnixListener : public CommSocket {
     int getFd() const;
     bool isOpen() const;
     bool eof();
-    bool read();
+    int read();
     void dispatch();
 };
 

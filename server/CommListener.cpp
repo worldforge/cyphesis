@@ -44,10 +44,11 @@ bool CommListener::isOpen() const
     return true;
 }
 
-bool CommListener::read()
+int CommListener::read()
 {
     accept();
-    return false;
+    // FIXME Perhaps we should return the error if accept() doesn't work?
+    return 0;
 }
 
 void CommListener::dispatch()

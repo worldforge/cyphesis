@@ -36,7 +36,7 @@ class CommMetaClient : public CommIdleSocket {
     int getFd() const;
     bool isOpen() const;
     bool eof();
-    bool read();
+    int read();
     void dispatch();
 
     void idle(time_t t);

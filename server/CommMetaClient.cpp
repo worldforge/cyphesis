@@ -63,10 +63,10 @@ bool CommMetaClient::isOpen() const
     return true;
 }
 
-bool CommMetaClient::read()
+int CommMetaClient::read()
 {
     metaserverReply();
-    return false;
+    return 0;
 }
 
 void CommMetaClient::dispatch()
