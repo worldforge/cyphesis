@@ -44,7 +44,6 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 
 dist-hook:
 	tar cf - `find basic -name \*.py` | (cd $(distdir); tar xf -)
-	cp basic/hooks/ruleset_import_hooks.py.in $(distdir)/basic/hooks
 	tar cf - `find acorn -name \*.py` | (cd $(distdir); tar xf -)
 	tar cf - `find werewolf -name \*.py` | (cd $(distdir); tar xf -)
 	tar cf - `find mason -name \*.py` | (cd $(distdir); tar xf -)
