@@ -1,5 +1,13 @@
 2004-09-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/Collision.cpp: Need to check whether orientation
+	  is valid, and if not apply just translation.
+
+	* rulesets/Py_Location.cpp: Fix an error message to give the right
+	  type.
+
+2004-09-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Vector3D.h, physics/Vector3D.cpp, modules/Location.h,
 	  modules/Location.cpp: Convert to using WFMath::Point instead of
 	  WFMath::Vector for position.

@@ -241,6 +241,8 @@ bool predictCollision(const Location & l,  // This location
 
     NormalSet onormals(lnormals);
 
+    static const Quaternion nullOrientation(1, 0, 0, 0);
+
     // Orient the surface normals and box corners
     if (l.m_orientation.isValid()) {
         NormalSet::iterator I = lnormals.begin();
@@ -251,7 +253,9 @@ bool predictCollision(const Location & l,  // This location
             lbox[i] = lbox[i].toParentCoords(l.m_pos, l.m_orientation);
         }
     } else {
-        log(WARNING, "predictCollision(): This has non-valid orientation.");
+        for(int i = 0; i < 8; ++i) {
+            lbox[i] = lbox[i].toParentCoords(l.m_pos, nullOrientation);
+        }
     }
 
     if (o.m_orientation.isValid()) {
@@ -263,7 +267,9 @@ bool predictCollision(const Location & l,  // This location
             obox[i] = obox[i].toParentCoords(o.m_pos, o.m_orientation);
         }
     } else {
-        log(WARNING, "predictCollision(): Other has non-valid orientation.");
+        for(int i = 0; i < 8; ++i) {
+            obox[i] = obox[i].toParentCoords(o.m_pos, nullOrientation);
+        }
     }
 
 #if 0

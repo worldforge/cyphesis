@@ -121,7 +121,7 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
     } else if (PyPoint3D_Check(v)) {
         PyPoint3D * p = (PyPoint3D *)v;
         if (!p->coords.isValid()) {
-            fprintf(stderr, "This vector is not set\n");
+            fprintf(stderr, "This point is not set\n");
         }
         vector = Vector3D(p->coords.x(), p->coords.y(), p->coords.z());
     } else if (PyTuple_Check(v) && (PyTuple_Size(v) == 3)) {
