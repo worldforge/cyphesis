@@ -209,7 +209,7 @@ void encrypt_password(const std::string & pwd, std::string & hash)
     unsigned char buf[MD5_DIGEST_LENGTH + 1];
     MD5((const unsigned char *)pwd.c_str(), pwd.size(), buf);
     buf[16] = '\0';
-    hash.clear();
+    hash = "";
     for(int i = 0; i < 16; ++i) {
         hash.push_back(hex_table[buf[i] & 0xf]);
         hash.push_back(hex_table[(buf[i] & 0xf0) >> 4]);

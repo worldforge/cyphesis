@@ -5,9 +5,10 @@ cyphesis_SOURCES = \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
-		Persistor.cpp Persistor.h \
+		Persistor.cpp Persistor_impl.h Persistor.h \
 		Persistance.cpp Persistance.h \
 		PersistantThingFactory.cpp PersistantThingFactory.h \
+		PersistantThingFactory_impl.h \
 		Restoration.cpp Restoration.h \
 		Restorer.cpp Restorer_impl.h Restorer.h \
 		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
@@ -16,7 +17,7 @@ cyphesis_SOURCES = \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
-		CommSocket.cpp CommSocket.h \
+		CommSocket.cpp CommSocket.h CommIdleSocket.h \
 		CommListener.cpp CommListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
 		CommClient.cpp CommClient.h \
@@ -36,9 +37,10 @@ cyslave_SOURCES = \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
-		Persistor.cpp Persistor.h \
+		Persistor.cpp Persistor_impl.h Persistor.h \
 		Persistance.cpp Persistance.h \
 		PersistantThingFactory.cpp PersistantThingFactory.h \
+		PersistantThingFactory_impl.h \
 		Restoration.cpp Restoration.h \
 		Restorer.cpp Restorer_impl.h Restorer.h \
 		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
@@ -47,7 +49,7 @@ cyslave_SOURCES = \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
-		CommSocket.cpp CommSocket.h \
+		CommSocket.cpp CommSocket.h CommIdleSocket.h \
 		CommListener.cpp CommListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
 		CommClient.cpp CommClient.h \
@@ -56,7 +58,7 @@ cyslave_SOURCES = \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommServer.cpp CommServer.h \
 		protocol_instructions.h \
-		slave.cpp slave.h
+		slave.cpp
 
 cyslave_LDADD = ../rulesets/libscriptpython.a ../rulesets/librulesetbase.a ../rulesets/librulesetmind.a ../rulesets/librulesetentity.a ../rulesets/librulesetbase.a ../modules/libmodules.a ../common/libcommon.a ../physics/libphysics.a
 

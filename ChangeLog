@@ -1,3 +1,9 @@
+2003-04-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/system.cpp: Clear the string portably.
+
+	* Add some missing headers to the source lists.
+
 2003-04-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommListener.cpp: Sort out error messages if we
