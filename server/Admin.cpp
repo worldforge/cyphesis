@@ -2,20 +2,21 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Info.h>
-#include <Atlas/Objects/Operation/Logout.h>
+#include "Admin.h"
+
+#include "Persistance.h"
+#include "ServerRouting.h"
+#include "WorldRouter.h"
+#include "Connection.h"
+
+#include <rulesets/Character.h>
+#include <rulesets/BaseMind.h>
 
 #include <common/Load.h>
 #include <common/Save.h>
 
-#include <server/Persistance.h>
-
-#include "Admin.h"
-#include "ServerRouting.h"
-#include "WorldRouter.h"
-#include "Connection.h"
-#include <rulesets/Character.h>
-#include <rulesets/BaseMind.h>
+#include <Atlas/Objects/Operation/Info.h>
+#include <Atlas/Objects/Operation/Logout.h>
 
 using Atlas::Message::Object;
 

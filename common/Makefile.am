@@ -26,9 +26,10 @@ libcommon_a_SOURCES = const.cpp const.h \
 
 libcyphesis_la_SOURCES = Database.cpp Database.h \
 			 stringstream.h debug.h \
+			 globals.cpp globals.h \
 			 accountbase.h
 
 libcyphesisincludedir = $(includedir)/cyphesis
-libcyphesisinclude_HEADERS = accountbase.h Database.h
+libcyphesisinclude_HEADERS = accountbase.h Database.h globals.h
 
 EXTRA_DIST = sstream.cc

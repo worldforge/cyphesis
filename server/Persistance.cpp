@@ -2,16 +2,17 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <fstream.h>
+#include "Persistance.h"
 
-#include <server/Admin.h>
-#include <server/Player.h>
+#include "Admin.h"
+#include "Player.h"
+
 #include <rulesets/Entity.h>
 
 #include <common/const.h>
 #include <common/Database.h>
 
-#include "Persistance.h"
+#include <fstream>
 
 using Atlas::Message::Object;
 
@@ -98,13 +99,13 @@ Account * Persistance::getAccount(const std::string & name)
                                     J = account.find("password");
     if ((I == account.end()) || (J == account.end())){
         std::cerr << "WARNING: Database account entry " << name
-             << " is missing essential fields." << std::endl << std::flush;
+                  << " is missing fields." << std::endl << std::flush;
         return NULL;
     }
     const Object & acn = I->second, & acp = J->second;
     if (!acn.IsString() || !acp.IsString()) {
-        std::cerr << "WARNING: Database account entry " << name << " is corrupt."
-             << std::endl << std::flush;
+        std::cerr << "WARNING: Database account entry " << name
+                  << " is corrupt." << std::endl << std::flush;
         return NULL;
     }
     if (acn.AsString() == "admin") {

@@ -31,6 +31,21 @@ static const bool debug_flag = false;
 
 using Atlas::Message::Object;
 
+std::set<std::string> Entity::m_immutable;
+
+const std::set<std::string> & Entity::immutables()
+{
+    if (m_immutable.empty()) {
+        m_immutable.insert("parents");
+        m_immutable.insert("pos");
+        m_immutable.insert("loc");
+        m_immutable.insert("velocity");
+        m_immutable.insert("orientation");
+        m_immutable.insert("contains");
+    }
+    return m_immutable;
+}
+
 Entity::Entity() : script(new Script), seq(0), status(1),
                    type("thing"), weight(-1),
                    deleted(false), omnipresent(false), perceptive(false),
@@ -146,11 +161,10 @@ void Entity::addToObject(Object::MapType & omap) const
 
 void Entity::merge(const Object::MapType & entmap)
 {
+    const std::set<std::string> & imm = immutables();
     for (Object::MapType::const_iterator I=entmap.begin();I!=entmap.end();I++) {
         const std::string & key = I->first;
-        if ((key == "parents")||(key == "bbox") || (key == "bmedian")) continue;
-        if ((key == "pos") || (key == "loc") || (key == "velocity")) continue;
-        if ((key == "orientation") || (key == "contains")) continue;
+        if (imm.find(key) != imm.end()) continue;
         set(key, I->second);
     }
 }

@@ -24,6 +24,9 @@ class Script;
 // in scripts rather than in the C++ code.
 
 class Entity : public BaseEntity {
+  private:
+    static std::set<std::string> m_immutable;
+    static const std::set<std::string> & immutables();
   protected:
     Script * script;
     Atlas::Message::Object::MapType attributes;

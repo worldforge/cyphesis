@@ -5,6 +5,10 @@
 #ifndef SERVER_PERSISTANCE_H
 #define SERVER_PERSISTANCE_H
 
+#include <Atlas/Message/Object.h>
+
+#include <string>
+
 class Admin;
 class Account;
 class Entity;

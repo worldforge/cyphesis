@@ -1,3 +1,19 @@
+2002-04-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.cpp, common/BaseEntity.h, common/BaseWorld.cpp,
+	  common/Database.cpp, common/accountbase.h, modules/WorldTime.h,
+	  rulesets/Py_World.cpp, server/Admin.cpp, server/Persistance.cpp,
+	  server/Persistance.h:
+	  Clean up includes.
+
+	* rulesets/Entity.cpp, rulesets/Entity.h: Write improved way of
+	  handling immutable object attributes.
+
+	* server/EntityFactory.cpp, server/Player.cpp, server/Player.h:
+	  Implement a character_types attribute on the player account,
+	  by adding "playable" tag to rules database, and setting
+	  up a set of character types when rules are read from database.
+
 2002-03-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp, server/ServerRouting_methods.h,

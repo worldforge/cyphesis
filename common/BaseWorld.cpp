@@ -4,7 +4,7 @@
 
 #include "BaseWorld.h"
 
-#include <common/debug.h>
+#include "debug.h"
 
 using Atlas::Message::Object;
 

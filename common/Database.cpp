@@ -4,18 +4,18 @@
 
 #include "Database.h"
 
-#include <iostream>
-
-#include <libpq++/pgdatabase.h>
+#include "stringstream.h"
+#include "debug.h"
+#include "globals.h"
 
 #include <Atlas/Message/Encoder.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <common/stringstream.h>
-#include <common/debug.h>
-#include <common/globals.h>
-
 #include <varconf/Config.h>
+
+#include <libpq++/pgdatabase.h>
+
+#include <iostream>
 
 using Atlas::Message::Object;
 

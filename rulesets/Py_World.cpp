@@ -8,7 +8,8 @@
 
 #include <common/BaseWorld.h>
 #include <modules/WorldTime.h>
-#include <rulesets/Thing.h>
+
+#include "Thing.h"
 
 static PyObject * World_get_time(WorldObject *self, PyObject *args, PyObject *kw)
 {

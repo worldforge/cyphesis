@@ -14,6 +14,10 @@ class Player : public Account {
   public:
     Player(Connection * conn, const std::string & username, const std::string & passwd);
     virtual ~Player();
+
+    virtual void addToObject(Atlas::Message::Object::MapType &) const;
+
+    static std::set<std::string> playableTypes;
 };
 
 #endif // SERVER_PLAYER_H

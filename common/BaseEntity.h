@@ -5,8 +5,8 @@
 #ifndef COMMON_BASE_ENTITY_H
 #define COMMON_BASE_ENTITY_H
 
-#include <common/types.h>
-#include <common/operations.h>
+#include "types.h"
+#include "operations.h"
 
 // This is the base class from which all other entity like classes inherit,
 // both in game and out of game.

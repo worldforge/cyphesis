@@ -7,7 +7,7 @@
 
 #include <Atlas/Message/Object.h>
 
-#include <common/Database.h>
+#include "Database.h"
 
 using Atlas::Message::Object;
 

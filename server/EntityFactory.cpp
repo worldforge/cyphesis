@@ -8,6 +8,7 @@
 
 #include "EntityFactory.h"
 #include "Persistance.h"
+#include "Player.h"
 
 #include <rulesets/Thing.h>
 #include <rulesets/Python_API.h>
@@ -150,6 +151,10 @@ void EntityFactory::installBaseClasses()
         J = classDesc.find("attributes");
         if ((J != classDesc.end()) && (J->second.IsMap())) {
             f->attributes = J->second.AsMap();
+        }
+        J = classDesc.find("playable");
+        if ((J != classDesc.end()) && (J->second.IsInt())) {
+            Player::playableTypes.insert(type);
         }
         installFactory(parent, type, f);
         debug(std::cout << "INSTALLING " << type << ":" << parent

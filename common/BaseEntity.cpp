@@ -2,15 +2,15 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include "BaseEntity.h"
+
+#include "debug.h"
+#include "op_switch.h"
+#include "serialno.h"
+
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Error.h>
-
-#include "BaseEntity.h"
-
-#include <common/debug.h>
-#include <common/op_switch.h>
-#include <common/serialno.h>
 
 #include <iostream>
 

@@ -8,6 +8,8 @@
 
 using Atlas::Message::Object;
 
+std::set<std::string> Player::playableTypes;
+
 Player::Player(Connection* conn, const std::string& username,
                const std::string& passwd) : Account(conn, username, passwd)
 {
@@ -15,6 +17,17 @@ Player::Player(Connection* conn, const std::string& username,
 }
 
 Player::~Player() { }
+
+void Player::addToObject(Object::MapType & omap) const
+{
+    Account::addToObject(omap);
+    Object::ListType typeList;
+    std::set<std::string>::const_iterator I = Player::playableTypes.begin();
+    for(;I != Player::playableTypes.end(); ++I) {
+        typeList.push_back(Object(*I));
+    }
+    omap["character_types"] = typeList;
+}
 
 OpVector Player::characterError(const Create& op,const Object::MapType& ent) const
 {
@@ -34,11 +47,8 @@ OpVector Player::characterError(const Create& op,const Object::MapType& ent) con
 #endif
 
     const std::string& type= ent.find("parents")->second.AsList().front().AsString(); 
-    if ((type!="settler") && (type!="archer") && (type!="druid") &&
-        (type!="farmer") && (type!="khatinid") && (type!="guard") &&
-        (type!="butcher") && (type!="merchant") && (type!="seller") &&
-        (type!="swineherd") && (type!="warrior") && (type!="watermage")) {
-        return error(op, "Object of that type cannot be created by this account");
+    if (Player::playableTypes.find(type) == Player::playableTypes.end()) {
+        return error(op, "You cannot create a character of this type.");
     }
     return OpVector();
 }
