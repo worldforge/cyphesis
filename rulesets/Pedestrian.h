@@ -9,12 +9,12 @@
 
 #include <physics/Vector3D.h>
 
-class Character;
+class Entity;
 
 class Pedestrian : public Movement {
-    friend class Character;
+    // friend class Character;
   public:
-    explicit Pedestrian(Character & body);
+    explicit Pedestrian(Entity & body);
     virtual ~Pedestrian();
 
     double getTickAddition(const Vector3D & coordinates) const;

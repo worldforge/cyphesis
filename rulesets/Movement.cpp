@@ -15,7 +15,7 @@
 
 static const bool debug_flag = false;
 
-Movement::Movement(Thing & body) : m_body(body), m_lastMovementTime(-1),
+Movement::Movement(Entity & body) : m_body(body), m_lastMovementTime(-1),
                                    m_velocity(0,0,0), m_serialno(0),
                                    m_collEntity(NULL), m_collRefChange(false),
                                    m_collAxis(-1)

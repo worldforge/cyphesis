@@ -4,8 +4,9 @@
 
 #include "Pedestrian.h"
 
-#include "Character.h"
+#include "Entity.h"
 
+#include "common/BaseWorld.h"
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/log.h"
@@ -16,7 +17,7 @@
 
 static const bool debug_flag = false;
 
-Pedestrian::Pedestrian(Character & body) : Movement(body)
+Pedestrian::Pedestrian(Entity & body) : Movement(body)
 {
 }
 

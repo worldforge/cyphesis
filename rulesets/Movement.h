@@ -9,7 +9,6 @@
 #include <physics/Quaternion.h>
 
 class Entity;
-class Thing;
 class Character;
 class Location;
 
@@ -36,7 +35,7 @@ class Movement {
 
     friend class Character;
   public:
-    explicit Movement(Thing & body);
+    explicit Movement(Entity & body);
     virtual ~Movement();
 
     void reset();

@@ -1,4 +1,11 @@
-2003-05-06  Al Riddoch  <alriddoch@zepler.org>
+2003-05-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Movement.cpp, rulesets/Movement.h,
+	  rulesets/Pedestrian.cpp, rulesets/Pedestrian.h: Make movement
+	  classes a little more generic by removing references
+	  to character.
+
+2003-05-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommServer.cpp: Ensure that idle() gets called if
 	  there are no waiting sockets.
