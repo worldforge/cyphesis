@@ -6,4 +6,4 @@ from misc import set_kw
 class Arm(Thing):
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
-        set_kw(self,kw,"weight",1.0)
+        set_kw(self,kw,"mass",1.0)

@@ -29,19 +29,19 @@ def find_semnod(o, id):
 
 class semlink:
     #fr: short of from (from is reserved word in Python)
-    def __init__(self, fr, type,to,weight,o):
+    def __init__(self, fr, type,to,mass,o):
         self.o=o
         self.fr=self.link_semnod(fr)
         self.to=self.link_semnod(to)
         self.type=type
-        self.weight=weight
+        self.mass=mass
     def link_semnod(self, id):
         n=find_semnod(self.o,id)
         n.add_link(self)
         return n
     def __str__(self):
         return '<semlink from="'+self.fr.id+'" to="'+self.to.id+\
-               '" weight='+`self.weight`+'>'+self.type+'</semlink>'
+               '" mass='+`self.mass`+'>'+self.type+'</semlink>'
 
 
 class atom:

@@ -34,7 +34,7 @@ class Entity : public BaseEntity {
     double status;		// Health/damage coeficient
     std::string type;		// Easy access to primary parent
     std::string name;		// Entities name
-    double weight;		// Weight in kg
+    double mass;		// Mass in kg
     bool deleted;		// Has this been deleted
     bool omnipresent;		// Is this omnipresent
     bool perceptive;		// Is this perceptive
@@ -50,7 +50,7 @@ class Entity : public BaseEntity {
     const double getStatus() const { return status; }
     const std::string & getName() const { return name; }
     const std::string & getType() const { return type; }
-    const double getWeight() const { return weight; }
+    const double getMass() const { return mass; }
 
     const bool isDeleted() const { return deleted; }
     const bool isOmnipresent() const { return omnipresent; }
@@ -68,8 +68,8 @@ class Entity : public BaseEntity {
         type = t;
     }
 
-    void setWeight(const double w) {
-        weight = w;
+    void setMass(const double w) {
+        mass = w;
     }
 
     virtual const Atlas::Message::Object & operator[](const std::string & aname);

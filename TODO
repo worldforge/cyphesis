@@ -1,3 +1,6 @@
+  Ensure that maxmass set in python has some effect in C++, and investigate
+  other related attributes.
+
   Connecting to other server: Make class peer of CommClient called
   CommConnection or something which is basically the same, but implements
   connecting instead of accepting. Might even be able to merge the code

@@ -9,7 +9,7 @@ from misc import set_kw
 class Campfire(Thing):
     def __init__(self, **kw):
         self.base_init(kw)
-        set_kw(self,kw,"weight",5)
+        set_kw(self,kw,"mass",5)
     def fire_operation(self, op):
         ret=Message()
         for fuel in self.contains:

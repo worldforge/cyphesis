@@ -8,6 +8,7 @@
 
 varconf::Config * global_conf = NULL;
 std::string share_directory = SHAREDIR;
+std::string etc_directory = ETCDIR;
 std::vector<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;
@@ -32,6 +33,9 @@ bool loadConfig(int argc, char ** argv)
     if (global_conf->findItem("cyphesis", "directory")) {
         share_directory = global_conf->getItem("cyphesis", "directory");
     }
+    if (global_conf->findItem("cyphesis", "confdir")) {
+        etc_directory = global_conf->getItem("cyphesis", "confdir");
+    }
     if (argc > 1) {
         if (home != NULL) {
             global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf");
@@ -39,7 +43,7 @@ bool loadConfig(int argc, char ** argv)
     }
     // Load up the rest of the system config file, and then ensure that
     // settings are overridden in the users config file, and the command line
-    bool main_config = global_conf->readFromFile(share_directory +
+    bool main_config = global_conf->readFromFile(etc_directory +
                                                  "/cyphesis/cyphesis.vconf");
     if (!main_config) {
         std::cerr << "FATAL: Unable to read main config file "

@@ -113,7 +113,7 @@ int main(int argc, char ** argv)
         std::vector<std::string>::reverse_iterator I = rulesets.rbegin();
         for (; I != rulesets.rend(); ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
-            FileDecoder f(share_directory + "/cyphesis/" + *I + ".xml", db);
+            FileDecoder f(etc_directory + "/cyphesis/" + *I + ".xml", db);
             f.read();
             f.report();
         }

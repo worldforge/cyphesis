@@ -14,12 +14,12 @@ class Apple(Seed):
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
         set_kw(self,kw,"alcahol",0)
-        set_kw(self,kw,"weight",0.2)
+        set_kw(self,kw,"mass",0.2)
     def eat_operation(self, op):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)
         to_ = op.from_
-        nour=Entity(to_.id,weight=self.weight,alcahol=self.alcahol)
+        nour=Entity(to_.id,mass=self.mass,alcahol=self.alcahol)
         res = res + Operation("nourish",nour,to=to_)
         return res
     def setup_operation(self, op):

@@ -47,14 +47,14 @@ OpVector Character::metabolise(double ammount)
     // We should probably call this whenever the entity performs a movement.
     Object::MapType ent;
     ent["id"] = getId();
-    if ((status > (1.5 + energyLoss)) && (weight < maxWeight)) {
+    if ((status > (1.5 + energyLoss)) && (mass < maxMass)) {
         status = status - energyLoss;
-        ent["weight"] = weight + weightGain;
+        ent["mass"] = mass + weightGain;
     }
     double energyUsed = energyConsumption * ammount;
-    if ((status <= energyUsed) && (weight > weightConsumption)) {
+    if ((status <= energyUsed) && (mass > weightConsumption)) {
         ent["status"] = status - energyUsed + energyGain;
-        ent["weight"] = weight - weightConsumption;
+        ent["mass"] = mass - weightConsumption;
     } else {
         ent["status"] = status - energyUsed;
     }
@@ -71,10 +71,10 @@ OpVector Character::metabolise(double ammount)
 
 Character::Character() : movement(*new Pedestrian(*this)), autom(false),
                          drunkness(0.0), sex("female"), food(0),
-                         maxWeight(100), isAlive(true),
+                         maxMass(100), isAlive(true),
                          mind(NULL), externalMind(NULL)
 {
-    weight = 60;
+    mass = 60;
     location.bBox = BBox(Vector3D(-0.25, -0.25, 0), Vector3D(0.25, 0.25, 2));
     attributes["mode"] = Object("birth");
 
@@ -303,7 +303,7 @@ OpVector Character::EatOperation(const Eat & op)
     const std::string & to = op.GetFrom();
     Object::MapType nour_ent;
     nour_ent["id"] = to;
-    nour_ent["weight"] = weight;
+    nour_ent["mass"] = mass;
     Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
     n->SetArgs(Object::ListType(1,nour_ent));
@@ -317,7 +317,7 @@ OpVector Character::EatOperation(const Eat & op)
 OpVector Character::NourishOperation(const Nourish & op)
 {
     const Object::MapType & nent = op.GetArgs().front().AsMap();
-    Object::MapType::const_iterator I = nent.find("weight");
+    Object::MapType::const_iterator I = nent.find("mass");
     if ((I == nent.end()) || !I->second.IsNum()) { return OpVector(); }
     food = food + I->second.AsNum();
 
@@ -325,7 +325,7 @@ OpVector Character::NourishOperation(const Nourish & op)
     food_ent["id"] = getId();
     food_ent["food"] = food;
     if (((I = nent.find("alcahol")) != nent.end()) && I->second.IsNum()) {
-        drunkness += I->second.AsNum() / weight;
+        drunkness += I->second.AsNum() / mass;
         food_ent["drunkness"] = drunkness;
     }
     Set s = Set::Instantiate();
@@ -388,7 +388,7 @@ OpVector Character::mindMoveOperation(const Move & op)
     Entity * obj = J->second;
     if (obj != this) {
         debug( std::cout << "Moving something else. " << oname << std::endl << std::flush;);
-        if ((obj->getWeight() < 0) || (obj->getWeight() > weight)) {
+        if ((obj->getMass() < 0) || (obj->getMass() > mass)) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             delete newop;
             return OpVector();

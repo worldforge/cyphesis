@@ -47,7 +47,7 @@ const std::set<std::string> & Entity::immutables()
 }
 
 Entity::Entity() : script(new Script), seq(0), status(1),
-                   type("thing"), weight(-1),
+                   type("thing"), mass(-1),
                    deleted(false), omnipresent(false), perceptive(false),
                    world(NULL)
 {
@@ -68,8 +68,8 @@ const Object & Entity::operator[](const std::string & aname)
         attributes[aname] = Object(getId());
     } else if (aname == "name") {
         attributes[aname] = Object(name);
-    } else if (aname == "weight") {
-        attributes[aname] = Object(weight);
+    } else if (aname == "mass") {
+        attributes[aname] = Object(mass);
     } else if (aname == "bbox") {
         attributes[aname] = location.bBox.asList();
     } else if (aname == "contains") {
@@ -95,8 +95,8 @@ void Entity::set(const std::string & aname, const Object & attr)
         return;
     } else if ((aname == "name") && attr.IsString()) {
         name = attr.AsString();
-    } else if ((aname == "weight") && attr.IsNum()) {
-        weight = attr.AsNum();
+    } else if ((aname == "mass") && attr.IsNum()) {
+        mass = attr.AsNum();
     } else if ((aname=="bbox") && attr.IsList() && (attr.AsList().size()>2)) {
         location.bBox = BBox(attr.AsList());
     } else {
@@ -144,7 +144,7 @@ void Entity::addToObject(Object::MapType & omap) const
         omap["name"] = name;
     }
     omap["type"] = type;
-    omap["weight"] = weight;
+    omap["mass"] = mass;
     omap["status"] = status;
     omap["stamp"] = (double)seq;
     omap["parents"] = Object(Object::ListType(1,Object(type)));

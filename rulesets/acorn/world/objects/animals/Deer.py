@@ -12,13 +12,13 @@ import atlas
 class Deer(Thing):
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
-        set_kw(self,kw,"weight",100.0)
-        self.maxweight=150.0
+        set_kw(self,kw,"mass",100.0)
+        self.maxmass=150.0
     def chop_operation(self, op):
-        if self.weight<1:
+        if self.mass<1:
             return(Operation("set",Entity(self.id,status=-1),to=self))
         res = Message()
-        ent=Entity(self.id,mode="dead",weight=self.weight-1)
+        ent=Entity(self.id,mode="dead",mass=self.mass-1)
         res.append(Operation("set",ent,to=self))
         venison_ent=Entity(name='venison',parents=['venison'])
         if (len(op)>1):

@@ -15,7 +15,7 @@ class House(Thing):
     	self.base_init(cppthing, kw)
     	set_kw(self,kw,"burn_speed",0.2)
         set_kw(self,kw,"material","wood")
-        set_kw(self,kw,"weight", 5000.0)
+        set_kw(self,kw,"mass", 5000.0)
     def tick_operation(self, op):
         """check if we should self-combust
            in any case send ourself next tick"""

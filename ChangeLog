@@ -1,3 +1,20 @@
+2002-04-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.cpp, rulesets/Entity.h, rulesets/Character.cpp,
+	  rulesets/Character.h, rulesets/Thing.cpp, rulesets/Food.cpp:
+	  Renamed weight member as mass, and use this name in Atlas,
+	  as this is a better convention, and has already been adopted in
+	  stage.
+
+	* Switched python code to using mass instead of weight, as it is
+	  a more accurate term.
+
+	* common/globals.cpp, common/globals.h, tools/cyloadrules.cpp:
+	  Put admin modifiable config in etc instead of share directory.
+
+	* Don't build cycmd if readline is not available. Untested, and
+	  probably nasty.
+
 2002-04-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.cpp, common/BaseEntity.h, common/BaseWorld.cpp,

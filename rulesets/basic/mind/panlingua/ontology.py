@@ -5,8 +5,8 @@ from mind.panlingua.panlingua import *
 
 o=semnet
 
-def add_link(fr,type,to,weight=1.0):
-    semlink(fr,type,to,weight,o)
+def add_link(fr,type,to,mass=1.0):
+    semlink(fr,type,to,mass,o)
 
 add_link("#breakfast_verb1","isa","#eat_verb2")
 add_link("#lunch_verb1","isa","#eat_verb2")

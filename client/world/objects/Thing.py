@@ -116,7 +116,7 @@ class Thing(BaseEntity):
             return
         fire_status=op[0].status
         consumed=self.burn_speed*fire_status
-        self_ent=Entity(self.id,status=self.status - (consumed/self.weight))
-        nour_ent=Entity(self.id,weight=consumed)
+        self_ent=Entity(self.id,status=self.status - (consumed/self.mass))
+        nour_ent=Entity(self.id,mass=consumed)
         to_=self.world.get_object(op[0].id)
         return Message(Operation("set",self_ent,to=self),Operation("nourish",op[0],nour_ent,to=to_,from_=self))

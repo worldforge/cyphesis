@@ -173,12 +173,12 @@ OpVector Thing::FireOperation(const Fire & op)
     double consumed = bspeed * fire_ent.find("status")->second.AsNum();
     Object::MapType self_ent;
     self_ent["id"] = getId();
-    self_ent["status"] = status - (consumed / weight);
+    self_ent["status"] = status - (consumed / mass);
 
     const std::string & to = fire_ent.find("id")->second.AsString();
     Object::MapType nour_ent;
     nour_ent["id"] = to;
-    nour_ent["weight"] = consumed;
+    nour_ent["mass"] = consumed;
 
     Set * s = new Set(Set::Instantiate());
     s->SetTo(getId());

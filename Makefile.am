@@ -7,9 +7,9 @@ EXTRA_DIST = cyphesis.vconf basic.xml acorn.xml mason.xml werewolf.xml \
 
 install-data-local:
 	mkdir -p $(DESTDIR)$(datadir)/cyphesis/rulesets
-	cp -f cyphesis.vconf $(DESTDIR)$(datadir)/cyphesis
-	cp -f *.xml $(DESTDIR)$(datadir)/cyphesis
-	mkdir -p $(DESTDIR)$(localstatedir)/cyphesis
+	mkdir -p $(DESTDIR)$(sysconfdir)/cyphesis
+	cp -f cyphesis.vconf $(DESTDIR)$(sysconfdir)/cyphesis
+	cp -f *.xml $(DESTDIR)$(sysconfdir)/cyphesis
 	mkdir -p $(DESTDIR)$(datadir)/doc/cyphesis-$(VERSION)
 	$(INSTALL_DATA) README $(DESTDIR)$(datadir)/doc/cyphesis-$(VERSION)
 	$(INSTALL_DATA) COPYING $(DESTDIR)$(datadir)/doc/cyphesis-$(VERSION)

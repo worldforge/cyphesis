@@ -11,7 +11,7 @@ class Gallows(Thing):
     """This is the gallows, which hangs villagers"""
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
-        set_kw(self,kw,"weight",2000.0)
+        set_kw(self,kw,"mass",2000.0)
     def hang_operation(self, op):
         #to_ = self.world.get_object(op[1].id)
         #if not to_:

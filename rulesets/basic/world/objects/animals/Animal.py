@@ -11,29 +11,29 @@ energyConsumption = 0.01
 # Rate at which food boosts energy
 foodConsumption = 0.1
 # Weight lost when energy is exhausted
-weightConsumption = 1.0
-# Energy gained when weight is lost
+massConsumption = 1.0
+# Energy gained when mass is lost
 energyGain = 0.5
-# Excess energy that is to be turned into weight
+# Excess energy that is to be turned into mass
 energyLoss = 0.1
 # Weight gained from the excess energy
-weightGain = 0.5
+massGain = 0.5
 
 class Animal(Thing):
     """This is base class for all kind of animals"""
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
         set_kw(self,kw,"status",1.0)
-        set_kw(self,kw,"weight",1.0)
+        set_kw(self,kw,"mass",1.0)
         self.food=0
-        self.maxweight=50
+        self.maxmass=50
         self.tickcount=0
     def tick_operation(self, op):
         """check energy state and see if we are starving"""
         #CHEAT!: fix this with changing tick model to:
         #use tick_list in worldrouter where it's stored next tick for each
         #object
-        #print self, self.status, self.weight
+        #print self, self.status, self.mass
         res = Message()
         self.tickcount=self.tickcount+1
         if self.tickcount<30:
@@ -48,19 +48,19 @@ class Animal(Thing):
             self.food = self.food - foodConsumption
             #Send a private sight op to ourselves so our mind know how much food we have
             res.append(Operation("sight", Operation("set", Entity(self.id, food=self.food)), to=self))
-        if self.status>(1.5+energyLoss) and self.weight < self.maxweight:
+        if self.status>(1.5+energyLoss) and self.mass < self.maxmass:
             self.status = self.status - energyLoss
-            ent.weight = self.weight + weightGain
-        if self.status<=energyConsumption and self.weight>weightConsumption:
+            ent.mass = self.mass + massGain
+        if self.status<=energyConsumption and self.mass>massConsumption:
             ent.status = self.status - energyConsumption + energyGain
-            ent.weight = self.weight - weightConsumption
+            ent.mass = self.mass - massConsumption
         else:
             ent.status = self.status - energyConsumption
         res.append(Operation("set", ent, to = self))
         return res
     def nourish_operation(self, op):
-        weight=op[0].weight
-        self.food = self.food + weight
+        mass=op[0].mass
+        self.food = self.food + mass
         #ent = Entity(self.id)
         #ent.status = self.status + energyGain
         #return Operation("set", ent, to = self)
@@ -70,6 +70,6 @@ class Animal(Thing):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)
         to_ = op.from_
-        nour=Entity(to_,weight=self.weight)
+        nour=Entity(to_,mass=self.mass)
         res = res + Operation("nourish",nour,to=to_)
         return res

@@ -232,10 +232,10 @@ class feed(Goal):
         ent=Entity(food.id)
         return Operation("eat",ent,to=food)
     def am_i_full(self,me):
-        if hasattr(me,"food") and hasattr(me,"weight"):
-            if me.food > (self.full * me.weight):
+        if hasattr(me,"food") and hasattr(me,"mass"):
+            if me.food > (self.full * me.mass):
                 return 1
-            if me.food < (self.full * me.weight / 4):
+            if me.food < (self.full * me.mass / 4):
                 self.subgoals[0].range = self.range * 2
             else:
                 self.subgoals[0].range = self.range
@@ -294,15 +294,15 @@ class predate(feed):
         self.vars=["what","range"]
 
 class predate_small(feed):
-    def __init__(self, me, what, range, max_weight):
+    def __init__(self, me, what, range, max_mass):
         Goal.__init__(self, "predate something",
                       self.am_i_full,
-                      [spot_something(what, range, condition=(lambda o,m=max_weight:hasattr(o,"weight") and o.weight < m)),
+                      [spot_something(what, range, condition=(lambda o,m=max_mass:hasattr(o,"mass") and o.mass < m)),
                        hunt_for(what, range),
                        self.eat])
         self.what=what
         self.range=range
-        self.max_weight=max_weight
+        self.max_mass=max_mass
         self.full=0.1
         self.vars=["what","range"]
 

@@ -1,4 +1,10 @@
-bin_PROGRAMS = cypasswd cycmd cydbload cyloadrules cywatchdog cyctrl
+bin_PROGRAMS = cypasswd cydbload cyloadrules cywatchdog cyctrl
+
+if BUILD_CYCMD
+
+bin_PROGRAMS = cycmd cypasswd cydbload cyloadrules cywatchdog cyctrl
+
+endif
 
 INCLUDES = -DBINDIR=\"@bindir@\" -DVARDIR=\"@localstatedir@\"
 
@@ -19,11 +25,15 @@ cypasswd_SOURCES = cypasswd.cpp sstream.h iotraits.h
 
 cypasswd_LDADD = ../common/Database.o ../common/accountbase.o ../common/globals.o
 
+if BUILD_CYCMD
+
 cycmd_SOURCES = cycmd.cpp
 
 cycmd_LIBS = -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlasNet -lAtlasObjects -lAtlasObjectsEntity -lAtlasObjectsOperation
 
 cycmd_LDADD = ../common/Database.o ../common/accountbase.o ../common/operations.o ../common/globals.o
+
+endif
 
 cydbload_SOURCES = cydbload.cpp
 

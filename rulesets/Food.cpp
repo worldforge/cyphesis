@@ -16,7 +16,7 @@ Food::Food()
 {
     attributes["cooked"] = 0;
     attributes["burn_speed"] = 0.1;
-    weight = 1;
+    mass = 1;
 
     subscribe("eat", OP_EAT);
 }
@@ -42,7 +42,7 @@ OpVector Food::EatOperation(const Eat & op)
     const std::string & to = op.GetFrom();
     Object::MapType nour_ent;
     nour_ent["id"] = to;
-    nour_ent["weight"] = weight;
+    nour_ent["mass"] = mass;
     Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
     n->SetArgs(Object::ListType(1,nour_ent));
@@ -70,7 +70,7 @@ OpVector Food::FireOperation(const Fire & op)
     // Currently this cooks pretty quick, and at the same speed for
     // everything. No mechanism for this yet.
     double fire_size = fire_ent.find("status")->second.AsNum();
-    self_ent["cooked"] = cooked + (fire_size/weight);
+    self_ent["cooked"] = cooked + (fire_size/mass);
     if (cooked > 1.0) {
         self_ent["status"] = status - (attributes["burn_speed"].AsNum()) * fire_size;
     }

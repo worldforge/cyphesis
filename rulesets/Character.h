@@ -17,7 +17,7 @@ class Character : public Thing {
     double drunkness;
     std::string sex;
     double food;
-    double maxWeight;
+    double maxMass;
     bool isAlive;
 
     static const double energyConsumption = 0.001;

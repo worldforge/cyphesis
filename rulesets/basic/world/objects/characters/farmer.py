@@ -11,4 +11,4 @@ class farmer(Thing):
         self.base_init(cppthing, kw)
     def sight_operation(self, op):
         print "This is in the python method"
-        print self.weight
+        print self.mass

@@ -28,7 +28,7 @@ class buy_livestock(DynamicGoal):
         if thing in me.find_thing(self.what): return
         if thing:
             #price=me.get_knowledge("price", thing.type[0])
-            price=self.cost*int(thing.weight)
+            price=self.cost*int(thing.mass)
             res=Message()
             coins = me.find_thing("coin")
             if len(coins) < int(price):
