@@ -1,3 +1,7 @@
+Re-work the way PyEntity and PyMind are defined so the inheritence is
+available, and open up the scope for exposing more directly the functionality
+of other entity classes.
+
 Stop creating new objects from causing so much activity. Perception of the
 new object must be based on its visibility. Perception of its deletion
 should also be limited. Implement LRU in mind.
