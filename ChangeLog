@@ -1,5 +1,10 @@
 2004-11-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/objects/tools/Cleaver.py: Scrub some debug
+	  output.
+
+2004-11-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/Knowledge.py: Fix nasty problem caused because
 	  the default arguments to constructor meant that all knowledge
 	  was shared between all entities, causing invalid pointers in
