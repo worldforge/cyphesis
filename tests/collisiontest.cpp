@@ -30,7 +30,7 @@ int main()
     {
         CoordList mesha;
         NormalSet meshan;
-        Vector3D meshav = Vector3D(1, 0, 0);
+        Vector3D meshav = Vector3D(0.1, 1, 0);
 
         mesha.push_back(Vector3D(0,0,0));
         mesha.push_back(Vector3D(1,0,0));
@@ -44,18 +44,18 @@ int main()
         CoordList meshb;
         NormalSet meshbn;
 
-        mesha.push_back(Vector3D(5,-1,-1));
-        mesha.push_back(Vector3D(7,-1,-1));
-        mesha.push_back(Vector3D(5,2,-1));
-        mesha.push_back(Vector3D(5,-1,2));
-        meshan.insert(std::make_pair(0, Vector3D(0, 0, -1)));
-        meshan.insert(std::make_pair(1, Vector3D(0, -1, 0)));
-        meshan.insert(std::make_pair(2, Vector3D(-1, 0, 0)));
-        meshan.insert(std::make_pair(3, Vector3D(1, 1, 1)));
+        meshb.push_back(Vector3D(5,-1,-1));
+        meshb.push_back(Vector3D(7,-1,-1));
+        meshb.push_back(Vector3D(5,2,-1));
+        meshb.push_back(Vector3D(5,-1,2));
+        meshbn.insert(std::make_pair(0, Vector3D(0, 0, -1)));
+        meshbn.insert(std::make_pair(1, Vector3D(0, -1, 0)));
+        meshbn.insert(std::make_pair(2, Vector3D(-1, 0, 0)));
+        meshbn.insert(std::make_pair(3, Vector3D(1, 1, 1)));
 
-        Vector3D meshbv = Vector3D(-1, 0, 0);
+        Vector3D meshbv = Vector3D(-0.1, 1, 0);
 
-        double time = 5;
+        double time = 100;
         Vector3D normal;
 
         bool collided = predictCollision(mesha, meshan, meshav,

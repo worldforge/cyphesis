@@ -2,10 +2,13 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2003 Alistair Riddoch
 
-#include "modules/Location.h"
-
 #include "Collision.h"
 
+#include "modules/Location.h"
+
+#include "common/debug.h"
+
+static const bool debug_flag = false;
 
 bool getCollisionTime(const Vector3D & p,     // Position of point
                       const Vector3D & u,     // Velocity of point
@@ -79,23 +82,30 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
     Vector3D entry_normal;
     bool ret = false;
     CoordList::const_iterator I = c.begin();
-    NormalSet::const_iterator J = n.begin();
     for (; I != c.end(); ++I) { // Iterate over vertices
+        debug(std::cout << "outer loop" << std::endl << std::flush;);
         double last_vertex_entry = -100, first_vertex_exit = 100, time;
+        NormalSet::const_iterator J = n.begin();
         for (; J != n.end(); ++J) { // Iterate over surfaces
             const Vector3D & s_pos = o[J->first];
             const Vector3D & s_norm = J->second;
+            debug(std::cout << "Testing vertex " << *I << " to surface "
+                            << s_pos << ": " << s_norm;);
             if (getCollisionTime(*I, u, s_pos, s_norm, v, time, entry_normal)) {
+                debug(std::cout << " Collision at " << time;);
                 // We are colliding from infront
                 if (time > last_vertex_entry) {
+                    debug(std::cout << " new";);
                     last_vertex_entry = time;
                 }
             } else {
+                debug(std::cout << " Emergence at " << time;);
                 // We are colliding fron behind
                 if (time < first_vertex_exit) {
                     first_vertex_exit = time;
                 }
             }
+            debug(std::cout << std::endl << std::flush;);
         }
         if ((last_vertex_entry < first_vertex_exit) &&
             (last_vertex_entry < first_collision)) {
@@ -117,7 +127,9 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
                       double & time,          // Returned time to collision
                       Vector3D & n)           // Returned collision normal
 {
+    debug(std::cout << "l with o normals" << std::endl << std::flush; );
     bool lo = predictEntryExit(l, u, o, on, v, time, n);
+    debug(std::cout << "o with l normals" << std::endl << std::flush; );
     bool ol = predictEntryExit(o, v, l, ln, u, time, n);
     if (ol) {
         n = -n;
