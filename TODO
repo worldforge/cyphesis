@@ -1,15 +1,6 @@
-Fix python code so that output goes to the logging mechanism:
-"In Python code, define an object that supports the ``write()`` method.
- Assign this object to ``sys.stdout`` and ``sys.stderr``.
- Call print_error, or just allow the standard traceback mechanism to
- work. Then, the output will go wherever your ``write()`` method sends it."
-
-Confirm if custom python ops in the API code are working at all.
-Also goes for stable branch. They might not be getting returned.
-
 Is socket getting opened before it will accept or negotiate?
 
-Fix up cypasswd to work, and allow creation of additional admin accounts.
+Fix up cypasswd to allow creation of additional admin accounts.
 
 Think about adding UPnP here or to skstream (or both)
 
