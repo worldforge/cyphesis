@@ -65,7 +65,7 @@
       </list>
     </map>
     <map name="script">
-      <string name="name">world.objects.plants.Tree</string>
+      <string name="name">world.objects.plants.Birch</string>
       <string name="language">python</string>
     </map>
   </map>
@@ -79,7 +79,7 @@
       </list>
     </map>
     <map name="script">
-      <string name="name">world.objects.plants.Tree</string>
+      <string name="name">world.objects.plants.Poplar</string>
       <string name="language">python</string>
     </map>
   </map>
@@ -93,7 +93,7 @@
       </list>
     </map>
     <map name="script">
-      <string name="name">world.objects.plants.Tree</string>
+      <string name="name">world.objects.plants.Willow</string>
       <string name="language">python</string>
     </map>
   </map>
@@ -107,7 +107,7 @@
       </list>
     </map>
     <map name="script">
-      <string name="name">world.objects.plants.Tree</string>
+      <string name="name">world.objects.plants.Hickory</string>
       <string name="language">python</string>
     </map>
   </map>

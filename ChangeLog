@@ -1,3 +1,10 @@
+2002-08-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* mason.xml, rulesets/mason/world/objects/plants/Birch.py,
+	  rulesets/mason/world/objects/plants/Hickory.py,
+	  rulesets/mason/world/objects/plants/Willow.py:
+	  Fix missing scripts for trees.
+
 2002-08-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Operation.cpp: Filled in missing SetArgs() functionality
