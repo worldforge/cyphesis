@@ -20,7 +20,8 @@ Root * Object_asRoot(const Atlas::Message::Element & o)
     Element::MapType::const_iterator I = o.asMap().find("objtype");
     if ((I != o.asMap().end()) &&
         (I->second.isString())) {
-        if (I->second.asString() == "object") {
+        if ((I->second.asString() == "object") ||
+            (I->second.asString() == "obj")) {
             obj = new RootEntity;
         } else if (I->second.asString() == "op") {
             obj = new RootOperation;

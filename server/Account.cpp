@@ -162,7 +162,7 @@ const char * Account::getType() const
 
 void Account::addToObject(Element::MapType & omap) const
 {
-    omap["objtype"] = "object";
+    omap["objtype"] = "obj";
     omap["id"] = getId();
     omap["username"] = m_username;
     omap["name"] = m_username;

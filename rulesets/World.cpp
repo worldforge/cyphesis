@@ -164,7 +164,7 @@ OpVector World::LookOperation(const Look & op)
 
     omap["id"] = getId();
     omap["parents"] = Element::ListType(1, "world");
-    omap["objtype"] = "object";
+    omap["objtype"] = "obj";
     // FIXME integrate setting terrain with setting contains.
     getTerrain((omap["terrain"] = Element::MapType()).asMap());
     Entity * opFrom = J->second;

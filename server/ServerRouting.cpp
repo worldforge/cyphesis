@@ -33,7 +33,7 @@ ServerRouting::~ServerRouting()
 
 void ServerRouting::addToObject(Element::MapType & omap) const
 {
-    omap["objtype"] = "object";
+    omap["objtype"] = "obj";
     omap["server"] = "cyphesis";
     omap["ruleset"] = m_svrRuleset;
     omap["name"] = m_svrName;

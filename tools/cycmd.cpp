@@ -590,7 +590,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         Get g;
 
         Atlas::Message::Element::MapType cmap;
-        cmap["objtype"] = "object";
+        cmap["objtype"] = "obj";
         if (!arg.empty()) {
             cmap["id"] = arg;
         }

@@ -123,7 +123,7 @@ OpVector Admin::GetOperation(const Get & op)
         return error(op, "query id invalid");
     }
     Info * info = new Info;
-    if (objtype == "object") {
+    if ((objtype == "object") || (objtype == "obj")) {
         const BaseDict & OOGDict = m_connection->m_server.getObjects();
         BaseDict::const_iterator J = OOGDict.find(id);
         const EntityDict & worldDict = m_connection->m_server.m_world.getObjects();
@@ -192,7 +192,7 @@ OpVector Admin::SetOperation(const Set & op)
     // FIXME Use this id to install a type from the client
     // const std::string & id = I->second.asString();
 
-    if (objtype == "object") {
+    if ((objtype == "object") || (objtype == "obj")) {
         // Manipulate attributes of existing objects.
     } else if (objtype == "class") {
         // Install a new type from the client
