@@ -1,3 +1,7 @@
+2004-05-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Remove some verbose debugging output.
+
 2004-05-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/Worldtest.cpp: Fix up tests.

@@ -1,3 +1,5 @@
+distanceTo does not take into account orientation.
+
 Sort out putting everything at terrain height. This may require some strange
 stuff.
 

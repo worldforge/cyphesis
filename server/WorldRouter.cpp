@@ -274,12 +274,14 @@ OpVector WorldRouter::operation(const RootOperation & op)
                 // Calculate square distance to target
                 Vector3D d(fromEnt->m_location.distanceTo((*I)->m_location));
                 float view_factor = fromSquSize / d.sqrMag();
+#if 0
                 if (view_factor > consts::square_sight_factor) {
                     std::cout << "Distance from " << fromEnt->getType() << " to "
                               << (*I)->getType() << " is " << d << " which gives "
                               << fromSquSize << " / " << d.sqrMag() << " = "
                               << view_factor << std::endl << std::flush;
                 }
+#endif
 #if 0
                 if ((!fromEnt->m_location.inRange((*I)->m_location,
                                                        consts::sight_range))) {
