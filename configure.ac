@@ -17,8 +17,6 @@ AM_INIT_AUTOMAKE(cyphesis, $VERSION)
 dnl check if user wishes maintainer-mode ("--enable-maintainer-mode = yes")
 AM_MAINTAINER_MODE
 
-AC_ARG_PROGRAM
-
 dnl Need libtool
 
 AC_DISABLE_STATIC

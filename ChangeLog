@@ -1,3 +1,7 @@
+2003-11-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* Remove unecessary AC_ARG_PROGRAM call from configure.ac
+
 2003-11-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cyloadrules.cpp: Ensure that tools still work with modified
