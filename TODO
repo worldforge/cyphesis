@@ -1,3 +1,5 @@
+Add square_distance to the distance_to python binding, for efficiency.
+
 Location objects which are not valid parts of the tree are getting into
 the mind maps.
 
