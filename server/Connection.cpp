@@ -20,6 +20,7 @@
 #include "common/inheritance.h"
 #include "common/system.h"
 #include "common/BaseWorld.h"
+#include "common/Database.h"
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Login.h>
@@ -57,7 +58,9 @@ Account * Connection::addPlayer(const std::string& username,
 {
     std::string hash;
     encrypt_password(password, hash);
-    Player * player = new Player(this, username, hash);
+    std::string newAccountId;
+    Database::instance()->getEntityId(newAccountId);
+    Player * player = new Player(this, username, hash, newAccountId);
     addObject(player);
     player->m_connection = this;
     m_server.addAccount(player);

@@ -14,7 +14,6 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/Database.h"
 #include "common/BaseWorld.h"
 
 #include <Atlas/Objects/Operation/Login.h>
@@ -29,8 +28,8 @@ static const bool debug_flag = false;
 
 Account::Account(Connection * conn, const std::string & uname,
                  const std::string& passwd, const std::string & id)
-                 : OOGThing(id.empty() ? Database::instance()->getEntityId() : id),
-                   m_connection(conn), m_username(uname), m_password(passwd)
+                 : OOGThing(id), m_connection(conn),
+                   m_username(uname), m_password(passwd)
 {
     subscribe("logout", OP_LOGOUT);
     subscribe("create", OP_CREATE);

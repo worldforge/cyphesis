@@ -108,7 +108,7 @@ class Database {
                          const std::string & values);
 
     bool registerEntityIdGenerator();
-    std::string getEntityId();
+    bool getEntityId(std::string & id);
 
     bool registerEntityTable(const std::string & classname,
                              const Atlas::Message::Object::MapType & row,
@@ -195,6 +195,7 @@ class DatabaseResult {
     int empty() const { return (size() == 0); }
     int columns() const { return PQnfields(m_res); }
     bool error() const { return (m_res == NULL); }
+    void clear() { PQclear(m_res); }
 
     const_iterator begin() const {
         return const_iterator(*this);

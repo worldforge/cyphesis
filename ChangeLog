@@ -1,5 +1,16 @@
 2003-07-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.h, server/Account.cpp, server/Account.h,
+	  server/Admin.h, server/Connection.cpp, server/Player.h,
+	  server/WorldRouter.cpp: Change the form of the getEntityId()
+	  method in the database code and re-work the code that uses it.
+
+	* common/Database.cpp, common/Database.h: Use PQClear() to free
+	  up database result objects, and provide a method to
+	  free the contents of a DatabaseResult instance.
+
+2003-07-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Fix leaked python reference.
 
 	* rulesets/World.cpp: Fix leaked terrain object.

@@ -1,3 +1,6 @@
+Test and commit memory leak database fixes, and backport them to the stable
+version.
+
 Bootstrap the admin account.
 
 Sort persisting world so things like its orientation are initialised correctly.

@@ -39,6 +39,7 @@ bool Database::tuplesOk()
         if (PQresultStatus(res) == PGRES_TUPLES_OK) {
             status = true;
         }
+        PQclear(res);
     };
     return status;
 }
@@ -52,6 +53,7 @@ bool Database::commandOk()
         if (PQresultStatus(res) == PGRES_COMMAND_OK) {
             status = true;
         }
+        PQclear(res);
     };
     return status;
 }
@@ -201,7 +203,10 @@ bool Database::getObject(const std::string & table, const std::string & key,
     if ((PQntuples(res) < 1) || (PQnfields(res) < 2)) {
         debug(std::cout << "No entry for " << key << " in " << table
                         << " table" << std::endl << std::flush;);
-        while ((res = PQgetResult(m_connection)) != NULL);
+        PQclear(res);
+        while ((res = PQgetResult(m_connection)) != NULL) {
+            PQclear(res);
+        }
         return false;
     }
     const char * data = PQgetvalue(res, 0, 1);
@@ -209,8 +214,10 @@ bool Database::getObject(const std::string & table, const std::string & key,
                     << std::endl << std::flush;);
 
     bool ret = decodeObject(data, o);
+    PQclear(res);
 
-    while (PQgetResult(m_connection) != NULL) {
+    while ((res = PQgetResult(m_connection)) != NULL) {
+        PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
 
@@ -317,7 +324,10 @@ bool Database::getTable(const std::string & table, Object::MapType &o)
     if ((results < 1) || (PQnfields(res) < 2)) {
         debug(std::cout << "No entries in " << table
                         << " table" << std::endl << std::flush;);
-        while ((res = PQgetResult(m_connection)) != NULL);
+        PQclear(res);
+        while ((res = PQgetResult(m_connection)) != NULL) {
+            PQclear(res);
+        }
         return false;
     }
     // const char * data = PQgetvalue(res, 0, 1);
@@ -333,8 +343,10 @@ bool Database::getTable(const std::string & table, Object::MapType &o)
         }
         
     }
+    PQclear(res);
 
     while ((res = PQgetResult(m_connection)) != NULL) {
+        PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
 
@@ -387,9 +399,12 @@ const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
         log(ERROR, "Error selecting row.");
         std::cout << "QUERY: " << query << std::endl << std::flush;
         reportError();
+        PQclear(res);
         res = 0;
     }
-    while (PQgetResult(m_connection) != NULL) {
+    PGresult * nres;
+    while ((nres = PQgetResult(m_connection)) != NULL) {
+        PQclear(nres);
         log(ERROR, "Extra database result to simple query.");
     };
     return DatabaseResult(res);
@@ -667,7 +682,7 @@ bool Database::registerEntityIdGenerator()
     return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq;");
 }
 
-std::string Database::getEntityId()
+bool Database::getEntityId(std::string & id)
 {
     int status = PQsendQuery(m_connection,
                              "SELECT nextval('entity_ent_id_seq');");
@@ -680,13 +695,16 @@ std::string Database::getEntityId()
     if ((res = PQgetResult(m_connection)) == NULL) {
         log(ERROR, "Error getting new ID.");
         reportError();
-        return "";
+        return false;
     }
-    while (PQgetResult(m_connection) != NULL) {
+    const char * cid = PQgetvalue(res, 0, 0);
+    id = cid;
+    PQclear(res);
+    while ((res = PQgetResult(m_connection)) != NULL) {
+        PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
-    const char * id = PQgetvalue(res, 0, 0);
-    return id;
+    return true;
 }
 
 bool Database::registerEntityTable(const std::string & classname,

@@ -14,7 +14,7 @@ class Player : public Account {
   public:
     Player(Connection * conn, const std::string & username,
                               const std::string & passwd,
-                              const std::string & id = "");
+                              const std::string & id);
     virtual ~Player();
 
     virtual const char * getType() const;
