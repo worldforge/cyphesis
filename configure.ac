@@ -14,9 +14,6 @@ VERSION=0.3.6
 AM_INIT_AUTOMAKE(cyphesis, $VERSION)
 AM_CONFIG_HEADER(config.h)
 
-dnl check if user wishes maintainer-mode ("--enable-maintainer-mode = yes")
-AM_MAINTAINER_MODE
-
 dnl Need libtool
 
 AC_DISABLE_STATIC
