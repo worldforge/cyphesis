@@ -183,7 +183,9 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     m_velocity[m_collAxis] = 0;
                     m_collPos = Vector3D();
                     if ((m_velocity.mag() / consts::base_velocity) > 0.05) {
-                        new_loc.orientation = Quaternion(Vector3D(1,0,0), m_velocity.unitVector());
+                        // Wrong: orientation should not be affected by a
+                        // collision
+                        // new_loc.orientation = Quaternion(Vector3D(1,0,0), m_velocity.unitVector());
                     } else {
                         reset();
                         entmap["mode"] = Object("standing");

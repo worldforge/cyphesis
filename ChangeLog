@@ -1,3 +1,8 @@
+2002-05-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Pedestrian.cpp: Fixed collision resolution so it
+	  no longer affects orientation of colliding entities.
+
 2002-05-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Movement.cpp, rulesets/Pedestrian.cpp: Hardened collision
