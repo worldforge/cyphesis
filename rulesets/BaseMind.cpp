@@ -38,7 +38,7 @@ BaseMind::BaseMind(const std::string & id, const std::string & body_name)
 {
     // setId(id);
     m_name = body_name;
-    m_map.addObject(this);
+    m_map.addEntity(this);
     //BaseMind::time=WorldTime();
 
     subscribe("sight", OP_SIGHT);

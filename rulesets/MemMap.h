@@ -34,14 +34,12 @@ class MemMap {
     std::vector<std::string> m_deleteHooks;
     Script *& m_script;
 
-    Entity * addObject(Entity * object);
-    void readObject(Entity * object,
-                    const Atlas::Message::Element::MapType & entmap);
-    void updateObject(Entity * object,
-                      const Atlas::Message::Element::MapType & entmap);
-    Entity * newObject(const std::string & id,
-                       const Atlas::Message::Element::MapType & entmap);
-    void addContents(const Atlas::Message::Element::MapType & entmap);
+    Entity * addEntity(Entity *);
+    void readEntity(Entity *, const Atlas::Message::Element::MapType &);
+    void updateEntity(Entity *, const Atlas::Message::Element::MapType &);
+    Entity * newEntity(const std::string &,
+                       const Atlas::Message::Element::MapType &);
+    void addContents(const Atlas::Message::Element::MapType &);
     Entity * addId(const std::string & id);
   public:
     explicit MemMap(Script *& s) : m_script(s)  { }
@@ -54,7 +52,7 @@ class MemMap {
     void del(const std::string & id);
     Entity * get(const std::string & id);
     Entity * getAdd(const std::string & id);
-    Entity * updateAdd(const Atlas::Message::Element::MapType & entity);
+    Entity * updateAdd(const Atlas::Message::Element::MapType &);
 
     EntityVector findByType(const std::string & what);
     EntityVector findByLocation(const Location & where, double radius);

@@ -15,70 +15,70 @@
 
 static const bool debug_flag = false;
 
-Entity * MemMap::addObject(Entity * object)
+Entity * MemMap::addEntity(Entity * entity)
 {
-    assert(object != 0);
-    assert(!object->getId().empty());
+    assert(entity != 0);
+    assert(!entity->getId().empty());
 
-    debug(std::cout << "MemMap::addObject " << object << " " << object->getId()
+    debug(std::cout << "MemMap::addEntity " << entity << " " << entity->getId()
                     << std::endl << std::flush;);
-    m_entities[object->getId()] = object;
+    m_entities[entity->getId()] = entity;
 
     debug( std::cout << this << std::endl << std::flush;);
     std::vector<std::string>::const_iterator I;
     for(I = m_addHooks.begin(); I != m_addHooks.end(); I++) {
-        m_script->hook(*I, object);
+        m_script->hook(*I, entity);
     }
-    return object;
+    return entity;
 }
 
-void MemMap::readObject(Entity * object, const Element::MapType & entmap)
-// Read the contents of an Atlas message into an object
+void MemMap::readEntity(Entity * entity, const Element::MapType & entmap)
+// Read the contents of an Atlas message into an entity
 {
     Element::MapType::const_iterator I = entmap.find("name");
     if (I != entmap.end() && I->second.isString()) {
-        object->setName(I->second.asString());
+        entity->setName(I->second.asString());
     }
     I = entmap.find("type");
     if (I != entmap.end() && I->second.isString()) {
-        object->setType(I->second.asString());
+        entity->setType(I->second.asString());
     }
-    object->merge(entmap);
+    entity->merge(entmap);
     I = entmap.find("loc");
     if ((I != entmap.end()) && I->second.isString()) {
         getAdd(I->second.asString());
     }
-    object->getLocation(entmap, m_entities);
+    entity->getLocation(entmap, m_entities);
     addContents(entmap);
 }
 
-void MemMap::updateObject(Entity * object, const Element::MapType & entmap)
-// Update contents of object an Atlas message.
+void MemMap::updateEntity(Entity * entity, const Element::MapType & entmap)
+// Update contents of entity an Atlas message.
 {
-    assert(object != 0);
+    assert(entity != 0);
 
-    debug( std::cout << " got " << object << std::endl << std::flush;);
+    debug( std::cout << " got " << entity << std::endl << std::flush;);
 
-    readObject(object, entmap);
+    readEntity(entity, entmap);
 
     std::vector<std::string>::const_iterator K;
     for(K = m_updateHooks.begin(); K != m_updateHooks.end(); K++) {
-        m_script->hook(*K, object);
+        m_script->hook(*K, entity);
     }
 }
 
-Entity * MemMap::newObject(const std::string & id,
+Entity * MemMap::newEntity(const std::string & id,
                            const Element::MapType & entmap)
-// Create a new object from an Atlas message.
+// Create a new entity from an Atlas message.
 {
     assert(!id.empty());
     assert(m_entities.find(id) == m_entities.end());
 
-    Entity * object = new Entity(id);
+    Entity * entity = new Entity(id);
 
-    readObject(object, entmap);
+    readEntity(entity, entmap);
 
-    return addObject(object);
+    return addEntity(entity);
 }
 
 RootOperation * MemMap::lookId()
@@ -99,7 +99,7 @@ RootOperation * MemMap::lookId()
 }
 
 Entity * MemMap::addId(const std::string & id)
-// Queue the ID of an object we are interested in
+// Queue the ID of an entity we are interested in
 {
     assert(!id.empty());
     assert(m_entities.find(id) == m_entities.end());
@@ -107,11 +107,11 @@ Entity * MemMap::addId(const std::string & id)
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     m_additionsById.push_back(id);
     Entity * entity = new Entity(id);
-    return addObject(entity);
+    return addEntity(entity);
 }
 
 void MemMap::del(const std::string & id)
-// Delete an object from memory
+// Delete an entity from memory
 {
     EntityDict::iterator I = m_entities.find(id);
     if (I != m_entities.end()) {
@@ -127,7 +127,7 @@ void MemMap::del(const std::string & id)
 }
 
 Entity * MemMap::get(const std::string & id)
-// Get an object from memory
+// Get an entity from memory
 {
     debug( std::cout << "MemMap::get" << std::endl << std::flush;);
     if (id.empty()) {
@@ -144,7 +144,7 @@ Entity * MemMap::get(const std::string & id)
 }
 
 Entity * MemMap::getAdd(const std::string & id)
-// Get an object from memory, or add it if we haven't seen it yet
+// Get an entity from memory, or add it if we haven't seen it yet
 {
     debug( std::cout << "MemMap::getAdd(" << id << ")" << std::endl << std::flush;);
     if (id.empty()) {
@@ -182,7 +182,7 @@ void MemMap::addContents(const Element::MapType & entmap)
 }
 
 Entity * MemMap::updateAdd(const Element::MapType & entmap)
-// Update an object in our memory, from an Atlas message
+// Update an entity in our memory, from an Atlas message
 {
     debug( std::cout << "MemMap::update" << std::endl << std::flush;);
     Element::MapType::const_iterator I = entmap.find("id");
@@ -201,15 +201,15 @@ Entity * MemMap::updateAdd(const Element::MapType & entmap)
     }
     EntityDict::const_iterator J = m_entities.find(id);
     if (J == m_entities.end()) {
-        return newObject(id, entmap);
+        return newEntity(id, entmap);
     }
-    Entity * object = J->second;
-    updateObject(object, entmap);
-    return object;
+    Entity * entity = J->second;
+    updateEntity(entity, entmap);
+    return entity;
 }
 
 EntityVector MemMap::findByType(const std::string & what)
-// Find an object in our memory of a certain type
+// Find an entity in our memory of a certain type
 {
     EntityVector res;
     EntityDict::const_iterator I;
@@ -224,7 +224,7 @@ EntityVector MemMap::findByType(const std::string & what)
 }
 
 EntityVector MemMap::findByLocation(const Location & loc, double radius)
-// Find an object in our memory in a certain place
+// Find an entity in our memory in a certain place
 {
     EntityVector res;
     EntityDict::const_iterator I;
