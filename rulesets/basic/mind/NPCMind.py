@@ -181,17 +181,16 @@ class NPCMind(BaseMind):
             k_type = type(k)
             if k_type==type(Location()):
                 dist = distance_to(self.location, k)
-                # Currently this assumes dist is relative to TLVE
-                k='%f metres %s' % (dist.mag(), vector_to_compass(dist))
+                dist.z = 0
+                distmag = dist.mag()
+                if distmag < 8:
+                    k = 'right here'
+                else:
+                    # Currently this assumes dist is relative to TLVE
+                    k='%f metres %s' % (distmag, vector_to_compass(dist))
             elif k_type!=StringType:
                 k='difficult to explain'
-            return Operation('talk', Entity(say="The "+predicate+" of "+object+" is "+k))
-    def interlinguish_price_verb1_operation(self, op, say):
-        if not self.admin_sound(op):
-            return self.interlinguish_warning(op,say,"You are not admin")
-        subject=say[1].word
-        cost=say[2].word
-        self.add_knowledge("price",subject,cost)
+            return Operation('talk', Entity(say="The "+predicate+" of "+object+" is "+k)) + self.face(op.from_)
     def interlinguish_learn_verb1_operation(self, op, say):
         if not self.admin_sound(op):
             return self.interlinguish_warning(op,say,"You are not admin")

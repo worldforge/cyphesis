@@ -33,7 +33,7 @@ class welcome(DynamicGoal):
             return Operation("talk", Entity(say=self.message))
 
 class help(Goal):
-    def __init__(self, messages, responses):
+    def __init__(self, messages, responses, target):
         Goal.__init__(self,
                       "help",
                       self.message_complete,
@@ -42,7 +42,8 @@ class help(Goal):
         self.count=len(messages)
         self.messages=messages
         self.responses=responses
-        self.vars=["iter", "count", "messages", "responses"]
+        self.target=target
+        self.vars=["iter", "count", "messages", "responses", "target"]
     def message_complete(self, me):
         if self.iter>=self.count:
             self.irrelevant=1
@@ -55,7 +56,7 @@ class help(Goal):
             ent=Entity(say=message, responses=self.responses)
         else:
             ent=Entity(say=message)
-        return Operation("talk", ent)
+        return Operation("talk", ent) + me.face(self.target)
 
 class add_help(add_unique_goal):
     def __init__(self, messages, responses=[], desc="help people out"):
@@ -66,4 +67,4 @@ class add_help(add_unique_goal):
         self.messages=messages
         self.responses=responses
     def make_goal_instance(self, me, goal_class, original_op, op):
-        return goal_class(self.messages, self.responses)
+        return goal_class(self.messages, self.responses, original_op.from_)

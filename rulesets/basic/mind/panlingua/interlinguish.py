@@ -159,7 +159,7 @@ def match_verb_subject_object_string(say):
     return None
 
 
-sell_pattern=re.compile(r"sell (an? )?(.*)")
+sell_pattern=re.compile(r"sell\s+(an?\s+|the\s+|this\s+|that\s+)?(.*)")
 def match_sell(say):
     if say and say[-1]=='.': say=say[:-1]
     m=sell_pattern.match(say)
@@ -176,7 +176,7 @@ def match_sell(say):
         a2=p.atom(object,2)
     return (say,(a1,a2))
 
-buy_pattern=re.compile(r"buy (an? )?(.*)")
+buy_pattern=re.compile(r"buy\s+(an?\s+|the\s+|this\s+|that\s+)?(.*)")
 def match_buy(say):
     if say and say[-1]=='.': say=say[:-1]
     m=buy_pattern.match(say)
@@ -191,7 +191,7 @@ def match_buy(say):
     a2=p.atom(object,2,(object_id[1],"default"),(a1,"object"),"up")
     return (say,(a1,a2))
 
-hire_pattern=re.compile(r"hire (\w+ )?(.*)")
+hire_pattern=re.compile(r"hire\s+(\w+\s+)?(.*)")
 def match_hire(say):
     if say and say[-1]=='.': say=say[:-1]
     m=hire_pattern.match(say)
@@ -206,7 +206,7 @@ def match_hire(say):
     a2=p.atom(object,2,(object_id[1],"default"),(a1,"object"),"up")
     return (say,(a1,a2))
 
-vote_pattern=re.compile(r"vote for (.*)")
+vote_pattern=re.compile(r"vote\s+for\s+(.*)")
 def match_vote(say):
     if say and say[-1]=='.': say=say[:-1]
     m=vote_pattern.match(say)
@@ -221,7 +221,7 @@ def match_vote(say):
     a2=p.atom(object,2,(object_id[1],"default"),(a1,"object"),"up")
     return (say,(a1,a2))
 
-desire_pattern=re.compile("(.*) would like to (.*)")
+desire_pattern=re.compile("(.*)\s+(would like|want)\s+to\s+(.*)")
 def match_desire(say):
     m=desire_pattern.match(say)
     if not m: return
@@ -231,7 +231,7 @@ def match_desire(say):
     subject=m.group(1)
     subject_id=word2node.get(subject)
     if not subject_id: return
-    object=m.group(2)
+    object=m.group(3)
     object_sentence=match_buy(object)
     if not object_sentence: object_sentence=match_sell(object)
     if not object_sentence: object_sentence=match_vote(object)

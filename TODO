@@ -1,9 +1,6 @@
 Implement trivial combat, and code up a bunny bashing quests for the hard
 of thinking.
 
-Task needs a name, and an accessor for it, so it can be used as a private
-Property.
-
 Add ticker callback mechanism to WorldRouter, which calls callback whenever
 a tick is required. Will reduce the cost of the op queue by making it smaller,
 and should be cheaper than tick ops. Needs to be carefully designed. Can handle
@@ -15,6 +12,8 @@ and the arg of the new op specifies what op to do, but the Character just
 needs the one gateway.
 
 Implement Task interface, which represent enduring tasks, including combat.
+Could also include destination based movement. Task needs a name, and an
+accessor for it, so it can be used as a private Property.
 
 When calling NPCMind.face when buying an item, for some reason the velocity
 of Pedestrian is valid and set to a weird value. This is because the

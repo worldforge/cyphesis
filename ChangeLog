@@ -1,5 +1,23 @@
 2004-01-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Use know() for prices rather
+	  than the special case code.
+
+	* rulesets/basic/editor.py, rulesets/basic/mind/NPCMind.py:
+	  Remove obsolete special case code for handling knowledge of
+	  prices. Improve code to express distance to a location so
+	  it neglects the vertical distance, and better handles the
+	  very close case.
+
+	* rulesets/basic/mind/goals/humanoid/mason.py: Track the character
+	  being helped in the help goal, and turn to face them when speaking.
+
+	* rulesets/basic/mind/panlingua/interlinguish.py: Add more support
+	  for pronouns, conjugations and whitespace in regex used to match
+	  certain sentence structures.
+
+2004-01-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/panlingua/interlinguish.py:
 	  Slight tweak to regular expressions for simple sentences.
 

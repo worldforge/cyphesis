@@ -11,7 +11,6 @@ class editor:
         self.list_call={"say":(self._say,1),
                         "own":(self._own,2),
                         "know":(self._know,2),
-                        "price":(self._price,2),
                         "learn":(self._learn,2),
                         "tell":(self._tell,1)}
     def call_list_args(self, *args):
@@ -75,8 +74,6 @@ class editor:
             self._say(target,'know',know[0],know[1],predicate='location')
         else:
             self._say(target,'know',know[0],know[2],predicate=know[1])
-    def _price(self,target,price):
-        self._say(target,'price',price[0],price[1])
     def _learn(self,target,goal):
         self._say(target,'learn',goal[0],goal[1])
     #Interlinguish
