@@ -690,7 +690,7 @@ bool Database::registerEntityTable(const std::string & classname,
     if (!row.empty()) {
         query += " WHERE ";
     }
-    createquery += "(";
+    createquery += " (";
     if (parent.empty()) {
         createquery += "id integer UNIQUE PRIMARY KEY, ";
     }
@@ -754,7 +754,7 @@ bool Database::registerEntityTable(const std::string & classname,
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
 
-    return runCommandQuery(query);
+    return runCommandQuery(createquery);
 }
 
 bool Database::createEntityRow(const std::string & classname,

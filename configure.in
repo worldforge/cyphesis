@@ -107,7 +107,7 @@ AC_CHECK_HEADER(python2.2/Python.h,
                     [
                         python_include_path=-I${python_prefix}/include/python1.5
                         python_version=python1.5
-                    ])
+                    ],AC_MSG_ERROR([Couldn't find python headers. Do you have python development installed?]))
                 ])
             ])
         ])

@@ -161,12 +161,12 @@ void Persistor<T>::cCharacter(Character & t, std::string & c, std::string & v)
 template <class T>
 void Persistor<T>::persist(T & t)
 {
-    t.updated.connect(SigC::bind<T &>(SigC::slot(*this,
+    t.updated.connect(SigC::bind<T *>(SigC::slot(*this,
                                                  &Persistor<T>::update),
-                                      t));
-    t.destroyed.connect(SigC::bind<T &>(SigC::slot(*this,
+                                      &t));
+    t.destroyed.connect(SigC::bind<T *>(SigC::slot(*this,
                                                    &Persistor<T>::remove),
-                                        t));
+                                        &t));
     std::string columns;
     std::string values;
     cEntity(t, columns, values);
@@ -174,18 +174,18 @@ void Persistor<T>::persist(T & t)
 }
 
 template <class T>
-void Persistor<T>::update(T & t)
+void Persistor<T>::update(T * const t)
 {
     std::string columns;
-    uEntity(t, columns);
-    Database::instance()->updateEntityRow(m_class, t.getId(), columns);
-    t.clearUpdateFlags();
+    uEntity(*t, columns);
+    Database::instance()->updateEntityRow(m_class, t->getId(), columns);
+    t->clearUpdateFlags();
 }
 
 template <class T>
-void Persistor<T>::remove(T & t)
+void Persistor<T>::remove(T * const t)
 {
-    Database::instance()->removeEntityRow(m_class, t.getId());
+    Database::instance()->removeEntityRow(m_class, t->getId());
 }
 
 #endif // SERVER_PERSISTOR_IMPL_H

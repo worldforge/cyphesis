@@ -25,10 +25,9 @@
 
 #include <skstream/skstream.h>
 
-#include <sigc++/object.h>
+#include <sigc++/object_slot.h>
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
-#include <sigc++/object_slot.h>
 #else
 #include <sigc++/signal.h>
 #endif

@@ -33,8 +33,8 @@ class Persistor : virtual public SigC::Object {
     Persistor();
 
     void persist(T &);
-    void update(T &);
-    void remove(T &);
+    void update(T *);
+    void remove(T *);
 };
 
 #endif // SERVER_PERSISTOR_H

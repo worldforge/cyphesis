@@ -133,60 +133,60 @@ Persistor<World>::Persistor<World>() : m_class("world")
     Database::instance()->registerEntityTable(m_class, desc, "entity");
 }
 
-void Persistor<Character>::update(Character & t)
+void Persistor<Character>::update(Character * t)
 {
     std::string columns;
-    uCharacter(t, columns);
-    uEntity(t, columns);
-    Database::instance()->updateEntityRow(m_class, t.getId(), columns);
-    t.clearUpdateFlags();
+    uCharacter(*t, columns);
+    uEntity(*t, columns);
+    Database::instance()->updateEntityRow(m_class, t->getId(), columns);
+    t->clearUpdateFlags();
 }
 
-void Persistor<Creator>::update(Creator & t)
+void Persistor<Creator>::update(Creator * t)
 {
     // Creator entities are not persisted
     // std::string columns;
-    // uCharacter(t, columns);
-    // uEntity(t, columns);
-    // Database::instance()->updateEntityRow(m_class, t.getId(), columns);
-    // t.clearUpdateFlags();
+    // uCharacter(*t, columns);
+    // uEntity(*t, columns);
+    // Database::instance()->updateEntityRow(m_class, t->getId(), columns);
+    // t->clearUpdateFlags();
 }
 
-void Persistor<Line>::update(Line & t)
+void Persistor<Line>::update(Line * t)
 {
     std::string columns;
-    uLine(t, columns);
-    uEntity(t, columns);
-    Database::instance()->updateEntityRow(m_class, t.getId(), columns);
-    t.clearUpdateFlags();
+    uLine(*t, columns);
+    uEntity(*t, columns);
+    Database::instance()->updateEntityRow(m_class, t->getId(), columns);
+    t->clearUpdateFlags();
 }
 
-void Persistor<Area>::update(Area & t)
+void Persistor<Area>::update(Area * t)
 {
     std::string columns;
-    uArea(t, columns);
-    uEntity(t, columns);
-    Database::instance()->updateEntityRow(m_class, t.getId(), columns);
-    t.clearUpdateFlags();
+    uArea(*t, columns);
+    uEntity(*t, columns);
+    Database::instance()->updateEntityRow(m_class, t->getId(), columns);
+    t->clearUpdateFlags();
 }
 
-void Persistor<Plant>::update(Plant & t)
+void Persistor<Plant>::update(Plant * t)
 {
     std::string columns;
-    uPlant(t, columns);
-    uEntity(t, columns);
-    Database::instance()->updateEntityRow(m_class, t.getId(), columns);
-    t.clearUpdateFlags();
+    uPlant(*t, columns);
+    uEntity(*t, columns);
+    Database::instance()->updateEntityRow(m_class, t->getId(), columns);
+    t->clearUpdateFlags();
 }
 
 void Persistor<Character>::persist(Character & t)
 {
-    t.updated.connect(SigC::bind<Character &>(SigC::slot(*this,
+    t.updated.connect(SigC::bind<Character *>(SigC::slot(*this,
                                               &Persistor<Character>::update),
-                                              t));
-    t.destroyed.connect(SigC::bind<Character &>(SigC::slot(*this,
+                                              &t));
+    t.destroyed.connect(SigC::bind<Character *>(SigC::slot(*this,
                                                 &Persistor<Character>::remove),
-                                                t));
+                                                &t));
     std::string columns;
     std::string values;
     cEntity(t, columns, values);
@@ -201,8 +201,8 @@ void Persistor<Creator>::persist(Creator & t)
 
 void Persistor<World>::persist(World & t)
 {
-    t.updated.connect(SigC::bind<World &>(SigC::slot(*this,
-                                          &Persistor<World>::update), t));
+    t.updated.connect(SigC::bind<World *>(SigC::slot(*this,
+                                          &Persistor<World>::update), &t));
     // The game world should never be destroyed, so we don't connect
     // it to a remove function.
     // We do not create the row in the database. This is handled in a slightly

@@ -1,5 +1,18 @@
 2003-01-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Fix some errors in the entity table
+	  creation code.
+
+	* server/Persistor.cpp, server/Persistor.h, server/Persistor_impl.h:
+	  Switch to using pointers instead of references with signals
+ 	  to comply with sigc++ 1.2.
+
+	* tools/cycmd.cpp: Add a missing header, require for sigc++ 1.2.
+
+	* server/Persistance.cpp: Fixed error message.
+
+2003-01-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp, common/Database.h: Modify relation
 	  table create query to allow different types of relation,
 	  with constraints to be added. Implement function to

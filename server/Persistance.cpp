@@ -141,7 +141,7 @@ void Persistance::registerCharacters(Account & ac,
         std::string id(c);
         EntityDict::const_iterator J = worldObjects.find(id);
         if (J == worldObjects.end()) {
-            log(WARNING, "Persistance: Got account id from database which does not exist in world");
+            log(WARNING, "Persistance: Got character id from database which does not exist in world");
             continue;
         }
         ac.addCharacter(J->second);
