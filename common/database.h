@@ -79,14 +79,15 @@ class DatabaseIterator {
 
 #else
 
+#error Cannot build without db3 currently
+
 class Database {
   protected:
     Database() { }
 
-    mimble foo
-    static Persistance * m_instance;
+    static Database * m_instance;
   public:
-    static Persistance * instance();
+    static Database * instance();
 };
 
 #endif // HAVE_LIBDB_CXX

@@ -16,9 +16,9 @@ class Skeleton(Undead):
         newloc=self.location.copy()
         newloc.velocity=Vector3D(0,0,0)
         retops = retops + Operation("move", Entity(self.id, location=newloc.copy()), to=self)
-        self.mode="collapsing"
-        retops = retops + Operation("set", Entity(self.id, mode=self.mode), to=self)
-        retops = retops + Operation("set", Entity(self.id, status=self.status), to=self)
+        self.mode="collapsed"
+        retops = retops + Operation("action", Entity(self.id, action="collapse"), to=self)
+        retops = retops + Operation("set", Entity(self.id, mode=self.mode, status=self.status), to=self)
         for item in ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin']:
             newloc.coordinates = newloc.coordinates + Vector3D(uniform(-1,1), uniform(-1,1), uniform(-1,1))
             retops = retops + Operation("create", Entity(name=item,parents=[item],location=newloc.copy()), to=self)

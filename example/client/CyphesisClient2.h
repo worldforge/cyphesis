@@ -53,7 +53,7 @@ class sockbuf : public filebuf {
 using namespace Atlas;
 using namespace Objects;
 
-class SightDecoder : public Objects::Decoder
+class SightDecoder : public Atlas::Objects::ObjectsDecoder
 {
 protected:
    void unknownObjectArrived(const Root&);
@@ -64,13 +64,13 @@ public:
    void processSight(const Root& o);
 };
 
-class CyphesisClient : public Objects::Decoder
+class CyphesisClient : public Objects::ObjectsDecoder
 {
 private:
    int erflag;
    int cli_fd;
    int reply_flag;
-   Encoder * encoder;
+   ObjectsEncoder * encoder;
    Codec<iostream> * codec;
 #if USE_SOCKET_PP
    iosockinet *ios;

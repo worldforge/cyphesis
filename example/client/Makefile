@@ -7,7 +7,7 @@ PROF = -pg
 CC_COMPILE = g++ -g $(OPTIMIZE) -c $(PROF) -Wall -o 
 
 #all: CyphesisClient CyphesisClient2
-all: CyphesisClient
+all: CyphesisClient2
 
 CyphesisClient: CyphesisClient.o
 	g++ -o CyphesisClient CyphesisClient.o -L/home/ajr/atlas-install/lib -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage  -lAtlasObjects -lAtlasObjectsEntity -lAtlasObjectsOperation

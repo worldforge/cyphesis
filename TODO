@@ -19,6 +19,21 @@ Definitly for Acorn 0.4:
   Fully implement stackable objects.
   Use combine operation to deal with making more than one object into one.
 
+  Make much more use of Action operation rather than sending things like
+  set operation from minds. This could be the basis of a skills system
+  which the action is passed to, and the skill returns the resulting
+  operation to the world. This skills system would be handling by the
+  character class, in the mindOperation() methods. The skill would be
+  an object with a reference back to the character it belongs to, and
+  a method that is passed the action taking place. It would return
+  operations to be passed to the world which carry out that action to
+  the extent of the ability of the character. Some skills will just do
+  nothing, like the ability to wave, or shout. or maybe the shout action
+  could decide using a skill how loud the shout is.
+  
+  Implement the movement modes from clients/minds required for xclient,
+  and better client support in general.
+
 Provisional for Acorn 0.4:
 
 Provisional for Acorn 0.5:

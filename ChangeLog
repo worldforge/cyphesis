@@ -1,3 +1,27 @@
+2001-05-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Admin.cpp: Modified database loading code so it picks up
+	  the object parent correctly instead of looking for a type attribute.
+
+	* server/server.cpp: Made metaserver address a config file option.
+
+	* common/database.h: Put in compiler error if code is built without
+	  database support.
+
+	* common/BaseEntity.cpp: Switched over to using stamp instead of seq
+	  as the attribute used to check whether entity needs to be
+	  updated.
+
+	* Used action operation throughout python code to denote performing
+	  an action, as differentiated from setting mode.
+
+	* rulesets/skills: Added the beginnings of a skill system.
+
+	* example/client: Fixed Atlas-C++ 0.5 example client so it
+	  compiles again.
+
+	* README: Wrote a README file
+
 2001-05-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* Added handling of action operations to operation handling core.

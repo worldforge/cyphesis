@@ -338,15 +338,10 @@ class sell_trade(Goal):
             self.ticks=0
             es=Entity(say="Get your " + self.what + " here!")
             ret = ret + Operation("talk",es,from_=me,to=me)
-            me.mode="shouting"
+            ret = ret + Operation("action", Entity(me.id, action="shout"), to=me)
         else:
-            if me.mode!="standing":
-                me.mode="standing"
-            else:
-                if randint(0,4)==1:
-                    me.mode="waving"
-        if me.mode!=mode_:
-            ret = ret + Operation("set", Entity(me.id, mode=me.mode), to=me)
+            if randint(0,4)==1:
+                ret = ret + Operation("action", Entity(me.id, action="wave"), to=me)
         return ret
 
 ############################ TRADE (BUY SOMETHING, USE TOOL, SELL PRODUCT) ####

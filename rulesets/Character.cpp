@@ -315,6 +315,7 @@ oplist Character::mindOperation(const Login & op)
 oplist Character::mindOperation(const Action & op)
 {
     Action *a = new Action(op);
+    a->SetTo(fullid);
     return oplist(1,a);
 }
 
@@ -634,15 +635,15 @@ oplist Character::mindOperation(const Touch & op)
     // Pass the modified touch operation on to target.
     oplist res(2);
     res[0] = t;
-    // Set our mode to "touching"
-    Set * s = new Set(Set::Instantiate());
-    s->SetTo(fullid);
+    // Send action "touch"
+    Action * a = new Action(Action::Instantiate());
+    a->SetTo(fullid);
     Object::MapType amap;
     amap["id"] = fullid;
-    amap["mode"] = "touching";
+    amap["action"] = "touch";
     Object::ListType setArgs(1,Object(amap));
-    s->SetArgs(setArgs);
-    res[1] = s;
+    a->SetArgs(setArgs);
+    res[1] = a;
     return res;
 }
 

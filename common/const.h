@@ -5,8 +5,6 @@
 #ifndef COMMON_CONST_H
 #define COMMON_CONST_H
 
-// #define set(_name, _val) _name = _val
-
 namespace consts {
 
   const int debug_level = 0;

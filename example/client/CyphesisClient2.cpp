@@ -180,7 +180,7 @@ int CyphesisClient::connect()
 
   // This should always be sent at the beginning of a session
 
-  encoder = new Objects::Encoder(codec);
+  encoder = new Objects::ObjectsEncoder(codec);
 
   codec->streamBegin();
   return 0;

@@ -103,7 +103,7 @@ class NPCMind(BaseMind):
             self.add_thing(obj)
             if obj.type[0]=="coin":
                 self.money_transfers.append([op.from_.id, 1])
-                return Operation("set", Entity(self.id, mode="selling"),to=self)
+                return Operation("action", Entity(self.id, action="sell"),to=self)
     #replaced with dynamically added add_extinguish_fire -goal
     #ie: NPC is first teached that when it sees "sight_fire" it needs to
     #execute above goal, which then adds extinguish_fire goal and executes it

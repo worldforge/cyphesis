@@ -230,8 +230,13 @@ int CommServer::setup(int port)
     meta_sa.sin_family = AF_INET;
     meta_sa.sin_port = htons(metaserverPort);
 
+    std::string mserver("metaserver.worldforge.org");
+
+    if (global_conf->findItem("cyphesis", "metaserver")) {
+        mserver = global_conf->getItem("cyphesis", "metaserver");
+    }
     cout << "Connecting to metaserver..." << endl << flush;
-    struct hostent * ms_addr = gethostbyname("metaserver.worldforge.org");
+    struct hostent * ms_addr = gethostbyname(mserver.c_str());
     if (ms_addr == NULL) {
         cerr << "metaserver lookup failed. Disabling metaserver." <<endl<<flush;
         useMetaserver = false;

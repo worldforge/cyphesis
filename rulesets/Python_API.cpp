@@ -570,6 +570,8 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         op->operation = new Set(Set::Instantiate());
     } else if (strcmp(type, "fire") == 0) {
         op->operation = new Fire(Fire::Instantiate());
+    } else if (strcmp(type, "action") == 0) {
+        op->operation = new Action(Action::Instantiate());
     } else if (strcmp(type, "chop") == 0) {
         op->operation = new Chop(Chop::Instantiate());
     } else if (strcmp(type, "cut") == 0) {

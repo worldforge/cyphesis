@@ -92,10 +92,10 @@ void Admin::load(Persistance * p, const string & id, int & count)
     }
     Object::MapType & emap = entity.AsMap();
     Object::MapType::iterator I;
-    I = emap.find("type");
+    I = emap.find("parents");
     string type("thing");
-    if ((I != emap.end()) && I->second.IsString()) {
-        type = I->second.AsString();
+    if ((I != emap.end()) && I->second.IsList()) {
+        type = I->second.AsList().front().AsString();
     }
     if (id != "world_0") {
         world->addObject(type, entity, id);

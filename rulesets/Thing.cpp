@@ -58,7 +58,6 @@ oplist Thing::Operation(const Setup & op)
 
 oplist Thing::Operation(const Action & op)
 {
-    seq++;
     oplist res;
     if (script->Operation("action", op, res) != 0) {
         return res;
@@ -231,7 +230,7 @@ oplist Thing::Operation(const Move & op)
             Object::ListType appear, disappear;
             Object::MapType this_ent;
             this_ent["id"] = fullid;
-            this_ent["seq"] = seq;
+            this_ent["stamp"] = (double)seq;
             for(;I != location.ref->contains.end(); I++) {
                 const bool wasInRange = (*I)->location.inRange(oldpos, consts::sight_range);
                 const bool isInRange = (*I)->location.inRange(location.coords, consts::sight_range);
@@ -241,7 +240,7 @@ oplist Thing::Operation(const Move & op)
                 if (wasInRange ^ isInRange) {
                     Object::MapType that_ent;
                     that_ent["id"] = (*I)->fullid;
-                    that_ent["seq"] = (*I)->seq;
+                    that_ent["stamp"] = (double)(*I)->seq;
                     if (wasInRange) {
                         // We are losing sight of that object
                         disappear.push_back(that_ent);

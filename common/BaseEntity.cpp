@@ -53,7 +53,7 @@ void BaseEntity::addToObject(Object & obj) const
     if (fullid.size() != 0) {
         omap["id"] = fullid;
     }
-    omap["seq"] = seq;
+    omap["stamp"] = (double)seq;
 #if 0
     Object::ListType contlist;
     list_t::const_iterator I;
