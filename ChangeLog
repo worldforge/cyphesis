@@ -1,3 +1,7 @@
+2004-06-24  James Turner  <james@worldforge.org>
+
+	* Add inn entity type to mason.xml
+
 2004-06-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Location.cpp, rulesets/Py_Map.cpp, rulesets/Py_Mind.cpp,

@@ -451,5 +451,15 @@
     </map>
   </map>
 
+  <map name="inn">
+    <string name="parent">structure</string>
+    <map name="attributes">
+      <list name="bbox">
+        <float>-4.25</float><float>-6</float><float>-2.8</float>
+        <float>10</float><float>5</float><float>8.2</float>
+      </list>
+    </map>
+  </map>
+  
 </map>
 </atlas>
