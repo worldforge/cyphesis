@@ -166,6 +166,6 @@ void CommClient::ObjectArrived(const Talk & op)
 
 void CommClient::ObjectArrived(const Get & op)
 {
-    cout << "A get operation thingy here!" << endl << flush;
+    debug(cout << "A get operation thingy here!" << endl << flush;);
     message(op);
 }

@@ -21,6 +21,7 @@ extern "C" {
 
 #include <common/debug.h>
 #include <common/globals.h>
+#include <common/inheritance.h>
 
 #include <common/Load.h>
 
@@ -140,6 +141,9 @@ int main(int argc, char ** argv)
         global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
     global_conf->getCmdline(argc, argv);
+
+    EntityFactory::instance()->installBaseClasses();
+
     // Load up the rulesets. Rulesets are hierarchical, and are read in until
     // a file is read in that does not specify its parent ruleset.
     std::string ruleset;
@@ -283,6 +287,8 @@ int main(int argc, char ** argv)
 
     EntityFactory::instance()->flushFactories();
     EntityFactory::del();
+
+    Inheritance::clear();
 
     // Shutdown the python interpretter. This frees lots of memory, and if
     // the malloc heap is in any way corrupt, a segfault is likely to

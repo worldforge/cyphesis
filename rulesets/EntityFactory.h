@@ -11,12 +11,14 @@ namespace Atlas { namespace Message {
 
 #include <common/types.h>
 
+#include <sigc++/object.h>
+
 class Thing;
 class FactoryBase;
 
 typedef std::map<std::string, FactoryBase *> fdict_t;
 
-class EntityFactory {
+class EntityFactory : public SigC::Object {
     EntityFactory();
     static EntityFactory * m_instance;
 
@@ -35,6 +37,10 @@ class EntityFactory {
     }
     Thing * newThing(const std::string &, const Atlas::Message::Object &, const edict_t &);
     void flushFactories();
+
+    void installBaseClasses();
+    void installFactory(const std::string &, const std::string &, FactoryBase*);
+    void installClass(const std::string &, const std::string&);
 };
 
 #endif // ENTITY_FACTORY_H

@@ -1,5 +1,4 @@
 [thing]
-thing		= ""
 axe		= "world.objects.tools.Axe"
 sword		= "world.objects.tools.Sword"
 bow		= "world.objects.tools.Bow"
@@ -28,9 +27,6 @@ maid_red	= ""
 
 [plant]
 tree		= "world.objects.plants.Tree"
-
-[animal]
-animal		= "world.objects.animals.Animal"
 
 [food]
 ham		= ""

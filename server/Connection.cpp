@@ -227,8 +227,6 @@ oplist Connection::GetOperation(const Get & op)
 {
     const Object::ListType & args = op.GetArgs();
 
-    cout << "Got get" << endl << flush;
-
     Info * info;
     if (args.empty()) {
         info = new Info(Info::Instantiate());

@@ -196,6 +196,7 @@ oplist Admin::SetOperation(const Set & op)
     try {
         const Object::MapType & emap = ent.AsMap();
         const std::string & id = emap.find("id")->second.AsString();
+        const std::string & objtype = emap.find("objtype")->second.AsString();
         if (id == "server") {
             const std::string & cmd = emap.find("cmd")->second.AsString();
             Object arg;
@@ -216,6 +217,14 @@ oplist Admin::SetOperation(const Set & op)
             } else {
                 return error(op, "Unknown command");
             }
+        } else if (objtype == "class") {
+            const std::string & parent = emap.find("parents")->second.AsList().front().AsString();
+            std::string script;
+            Object::MapType::const_iterator I = emap.find("script");
+            if (I != emap.end()) {
+                script = I->second.AsString();
+            }
+            global_conf->setItem(parent, id, varconf::Variable(script));
         }
     }
     catch (...) {

@@ -12,7 +12,7 @@ restricted="false"
 usemetaserver="true"
 metaserver="metaserver.worldforge.org"
 # Run in daemon mode
-daemon="true"
+daemon="false"
 # Leave control of NPCs to AI client
 useaiclient="false"
 # Account to be used by the AI client

@@ -4,6 +4,7 @@
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Entity/GameEntity.h>
 
 #include "Thing.h"
 #include "EntityFactory.h"
@@ -20,28 +21,36 @@
 
 #include <common/debug.h>
 #include <common/globals.h>
+#include <common/inheritance.h>
 
 #include "Character.h"
 #include "Creator.h"
 
 static const bool debug_flag = false;
 
+using Atlas::Objects::Root;
+using Atlas::Objects::Entity::GameEntity;
 using Atlas::Message::Object;
 
 EntityFactory * EntityFactory::m_instance = NULL;
 
 EntityFactory::EntityFactory()
 {
-    factories["thing"] = new ThingFactory<Thing>();
-    factories["character"] = new ThingFactory<Character>();
-    factories["creator"] = new ThingFactory<Creator>();
-    factories["plant"] = new ThingFactory<Plant>();
-    factories["food"] = new ThingFactory<Food>();
-    factories["stackable"] = new ThingFactory<Stackable>();
-    factories["structure"] = new ThingFactory<Structure>();
+    // This class can only have one instance, so a Factory is not installed
+    installFactory("game_entity", "world", NULL);
+
+    installFactory("game_entity", "thing", new ThingFactory<Thing>());
+    installFactory("thing", "character", new ThingFactory<Character>());
+    installFactory("character", "creator", new ThingFactory<Creator>());
+    installFactory("thing", "plant", new ThingFactory<Plant>());
+    installFactory("thing", "food", new ThingFactory<Food>());
+    installFactory("thing", "stackable", new ThingFactory<Stackable>());
+    installFactory("thing", "structure", new ThingFactory<Structure>());
 }
 
-Thing * EntityFactory::newThing(const std::string & type,const Object & ent, const edict_t & world)
+Thing * EntityFactory::newThing(const std::string & type,
+                                const Atlas::Message::Object & ent,
+                                const edict_t & world)
 {
     if (!ent.IsMap()) {
          debug( std::cout << "Entity is not a map" << std::endl << std::flush;);
@@ -73,8 +82,8 @@ Thing * EntityFactory::newThing(const std::string & type,const Object & ent, con
     if (py_package.size() != 0) {
         Create_PyThing(thing, py_package, type);
     }
-    const Object::MapType & entmap = ent.AsMap();
-    Object::MapType::const_iterator K = entmap.find("name");
+    const Atlas::Message::Object::MapType & entmap = ent.AsMap();
+    Atlas::Message::Object::MapType::const_iterator K = entmap.find("name");
     if ((K != entmap.end()) && K->second.IsString()) {
         thing->setName(K->second.AsString());
     } else {
@@ -92,4 +101,40 @@ void EntityFactory::flushFactories()
     for (; I != factories.end(); I++) {
         delete I->second;
     }
+}
+
+void EntityFactory::installBaseClasses()
+{
+    global_conf->sigv.connect(SigC::slot(this, &EntityFactory::installClass));
+}
+
+void EntityFactory::installFactory(const std::string & parent,
+                                   const std::string & className,
+                                   FactoryBase * factory)
+{
+    if (factory != NULL) {
+        factories[className] = factory;
+    }
+
+    Inheritance & i = Inheritance::instance();
+
+    Root * r = new GameEntity();
+    r->SetId(className);
+    r->SetParents(Atlas::Message::Object::ListType(1, parent));
+    i.addChild(r);
+
+}
+
+void EntityFactory::installClass(const std::string &parent,
+                                 const std::string &className)
+{
+    if ((parent == "cyphesis") || (parent == "mind")) { return; }
+    std::cout << parent << ":" << className << std::endl << std::flush;
+
+    Inheritance & i = Inheritance::instance();
+    
+    Root * r = new GameEntity();
+    r->SetId(className);
+    r->SetParents(Atlas::Message::Object::ListType(1,parent));
+    i.addChild(r);
 }

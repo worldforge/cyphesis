@@ -26,6 +26,14 @@ class Inheritance {
     static Inheritance * m_instance;
 
     Inheritance();
+
+    void flush() {
+       std::map<std::string, Atlas::Objects::Root *>::const_iterator I;
+       for(I = atlasObjects.begin(); I != atlasObjects.end(); ++I) {
+           delete I->second;
+       }
+       atlasObjects.clear();
+    }
   public:
     static Inheritance & instance() {
         if (m_instance == NULL) {
@@ -35,6 +43,13 @@ class Inheritance {
             installCustomEntities();
         }
         return *m_instance;
+    }
+
+    static void clear() {
+        if (m_instance != NULL) {
+            m_instance->flush();
+            delete m_instance;
+        }
     }
 
     Atlas::Objects::Root * get(const std::string & parent) {
@@ -60,8 +75,7 @@ class Inheritance {
         I->second->SetAttr("children", Atlas::Message::Object(children));
         atlasObjects[child] = obj;
     }
-};
 
-extern Inheritance inheritance;
+};
 
 #endif // COMMON_INHERITANCE_H

@@ -1,3 +1,13 @@
+2001-11-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/server.cpp, server/Admin.cpp, rulesets/EntityFactory.h,
+	  rulesets/EntityFactory.cpp, common/inheritance.h, common/custom.cpp:
+	  Modified EntityFactory so entity classes are automatically installed
+	  in the inheritance tree as they are loaded.
+
+	* server/CommClient.cpp, server/Connection.cpp: Removed some debugging
+	  output.
+
 2001-11-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/custom.cpp, common/inheritance.cpp, common/inheritance.h:
