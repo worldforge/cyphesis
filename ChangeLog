@@ -1,5 +1,10 @@
 2004-06-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Worldtest.cpp: Handle new pure virtual methods in world
+	  base class.
+
+2004-06-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Slightly randomize starting position
 	  of characters to avoid getting stuck.
 

@@ -23,6 +23,7 @@ class TestWorld : public BaseWorld {
     virtual OpVector message(RootOperation & op, const Entity * obj) { return OpVector(); }
     virtual Entity * findByName(const std::string & name) { return 0; }
     virtual Entity * findByType(const std::string & type) { return 0; }
+    virtual float constrainHeight(Entity*, const Vector3D&) { return 0.f; }
 };
 
 int main()
