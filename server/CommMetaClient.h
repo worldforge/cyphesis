@@ -19,7 +19,7 @@ class CommMetaClient : public CommIdleSocket {
     static const int metaserverPort = 8453;
 
   public:
-    CommMetaClient(CommServer & svr) : CommIdleSocket(svr), lastTime(-1) { }
+    explicit CommMetaClient(CommServer & svr);
 
     virtual ~CommMetaClient();
 

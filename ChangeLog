@@ -1,5 +1,16 @@
 2004-06-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Restoration.h, server/CommUnixListener.h,
+	  server/CommSocket.h, server/CommSocket.cpp,
+	  server/CommServer.h, server/CommMetaClient.h,
+	  server/CommMetaClient.cpp, server/CommListener.h,
+	  server/CommListener.cpp, server/CommIdleSocket.h,
+	  server/CommIdleSocket.cpp, rulesets/Area.h,
+	  modules/WorldTime.h, common/OOGThing.h, common/OOGThing.cpp:
+	  Get rid of some naughty stray implicit constructors.
+
+2004-06-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/Location.h, modules/Location.cpp: Clean up constructors
 	  and interface to check whether bbox is solid.
 

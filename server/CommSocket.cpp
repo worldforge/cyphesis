@@ -4,6 +4,8 @@
 
 #include "CommSocket.h"
 
+CommSocket::CommSocket(CommServer & svr) : commServer(svr) { }
+
 CommSocket::~CommSocket()
 {
 }

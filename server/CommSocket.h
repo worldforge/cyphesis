@@ -11,7 +11,7 @@ class CommSocket {
   public:
     CommServer & commServer;
 
-    CommSocket(CommServer & svr) : commServer(svr) { }
+    explicit CommSocket(CommServer & svr);
 
     virtual ~CommSocket();
 

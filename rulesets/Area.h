@@ -20,7 +20,7 @@ class Area : public Area_parent {
 
   public:
 
-    Area(const std::string & id);
+    explicit Area(const std::string & id);
     virtual ~Area();
 
     virtual bool get(const std::string &, Atlas::Message::Element &) const;

@@ -26,7 +26,7 @@ class Restoration {
     ServerRouting & server;
     Database & database;
 
-    Restoration(ServerRouting & svr);
+    explicit Restoration(ServerRouting & svr);
 
     void read();
 };

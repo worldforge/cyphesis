@@ -4,6 +4,10 @@
 
 #include "OOGThing.h"
 
+OOGThing::OOGThing(const std::string & id) : BaseEntity(id)
+{
+}
+
 OOGThing::~OOGThing()
 {
 }

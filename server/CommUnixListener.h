@@ -19,7 +19,7 @@ class CommUnixListener : public CommSocket {
     bool accept();
 
   public:
-    CommUnixListener(CommServer & svr);
+    explicit CommUnixListener(CommServer & svr);
     virtual ~CommUnixListener();
 
     const std::string & getPath() const { return m_path; }

@@ -17,7 +17,7 @@ class CommListener : public CommSocket {
     bool accept();
 
   public:
-    CommListener(CommServer & svr) : CommSocket(svr) { }
+    explicit CommListener(CommServer & svr);
     virtual ~CommListener();
 
     bool setup(int port);

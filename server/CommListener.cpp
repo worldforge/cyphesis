@@ -19,6 +19,10 @@
 
 static const bool debug_flag = false;
 
+CommListener::CommListener(CommServer & svr) : CommSocket(svr)
+{
+}
+
 CommListener::~CommListener()
 {
 }

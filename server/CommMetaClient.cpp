@@ -35,6 +35,11 @@ static inline char *unpack_uint32(uint32_t *dest, char *buffer)
     return buffer+sizeof(uint32_t);
 }
 
+CommMetaClient::CommMetaClient(CommServer & svr) : CommIdleSocket(svr),
+                                                   lastTime(-1)
+{
+}
+
 CommMetaClient::~CommMetaClient()
 {
     metaserverTerminate();

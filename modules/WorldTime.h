@@ -41,7 +41,7 @@ class WorldTime {
     }
     double seconds() { return time.seconds(); }
     void update(double secs) { time.update((int)secs); }
-    //WorldTime(char * date_time);
+    //explicit WorldTime(char * date_time);
     std::string operator[](const std::string & name);
     //std::string & __repr__();
     //std::string & __str__();

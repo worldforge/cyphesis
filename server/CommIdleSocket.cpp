@@ -4,6 +4,11 @@
 
 #include "CommIdleSocket.h"
 
+
+CommIdleSocket::CommIdleSocket(CommServer & svr) : CommSocket(svr)
+{
+}
+
 CommIdleSocket::~CommIdleSocket()
 {
 }

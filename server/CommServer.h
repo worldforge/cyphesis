@@ -27,7 +27,7 @@ class CommServer {
   public:
     ServerRouting & server;
 
-    CommServer(ServerRouting & srv);
+    explicit CommServer(ServerRouting & srv);
     ~CommServer();
 
     void loop();
