@@ -1,3 +1,8 @@
+2003-09-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/Py_CreatorClient.cpp: Clean up and re-classify error
+	  reports in python code.
+
 2003-08-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Makefile.am: Move cyslave into EXTRAs so that its not

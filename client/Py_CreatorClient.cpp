@@ -20,10 +20,12 @@ static const bool debug_flag = true;
 
 static PyObject * CreatorClient_as_entity(CreatorClientObject * self, PyObject * args)
 {
+#ifdef DEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid creator as_entity");
+        PyErr_SetString(PyExc_AssertionError, "invalid creator as_entity");
         return NULL;
     }
+#endif // DEBUG
     if (!PyArg_ParseTuple(args, "")) {
         return NULL;
     }
@@ -38,10 +40,12 @@ static PyObject * CreatorClient_as_entity(CreatorClientObject * self, PyObject *
 
 static PyObject * CreatorClient_get_xyz(CreatorClientObject * self, PyObject * args)
 {
+#ifdef DEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid creator get_xyz");
+        PyErr_SetString(PyExc_AssertionError, "invalid creator get_xyz");
         return NULL;
     }
+#endif // DEBUG
     if (!PyArg_ParseTuple(args, "")) {
         return NULL;
     }
@@ -55,10 +59,12 @@ static PyObject * CreatorClient_get_xyz(CreatorClientObject * self, PyObject * a
 
 static PyObject * CreatorClient_make(CreatorClientObject * self, PyObject * args)
 {
+#ifdef DEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid creator make");
+        PyErr_SetString(PyExc_AssertionError, "invalid creator make");
         return NULL;
     }
+#endif // DEBUG
     AtlasObject * entity = NULL;
     if (!PyArg_ParseTuple(args, "O", &entity)) {
         return NULL;
@@ -79,10 +85,12 @@ static PyObject * CreatorClient_make(CreatorClientObject * self, PyObject * args
 
 static PyObject * CreatorClient_set(CreatorClientObject * self, PyObject * args)
 {
+#ifdef DEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid creator make");
+        PyErr_SetString(PyExc_AssertionError, "invalid creator make");
         return NULL;
     }
+#endif // DEBUG
     AtlasObject * entity = NULL;
     char * id = NULL;
     if (!PyArg_ParseTuple(args, "sO", &id, &entity)) {
@@ -99,10 +107,12 @@ static PyObject * CreatorClient_set(CreatorClientObject * self, PyObject * args)
 
 static PyObject * CreatorClient_look(CreatorClientObject * self, PyObject * args)
 {
+#ifdef DEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid creator make");
+        PyErr_SetString(PyExc_AssertionError, "invalid creator make");
         return NULL;
     }
+#endif // DEBUG
     char * id = NULL;
     if (!PyArg_ParseTuple(args, "s", &id)) {
         return NULL;
@@ -119,10 +129,12 @@ static PyObject * CreatorClient_look(CreatorClientObject * self, PyObject * args
 static PyObject * CreatorClient_look_for(CreatorClientObject * self,
                                          PyObject * args)
 {
+#ifdef DEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid creator make");
+        PyErr_SetString(PyExc_AssertionError, "invalid creator look_fot");
         return NULL;
     }
+#endif // DEBUG
     AtlasObject * ent;
     if (!PyArg_ParseTuple(args, "O", &ent)) {
         return NULL;
@@ -143,10 +155,12 @@ static PyObject * CreatorClient_look_for(CreatorClientObject * self,
 
 static PyObject * CreatorClient_send(CreatorClientObject * self, PyObject * args)
 {
+#ifdef DEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid creator send");
+        PyErr_SetString(PyExc_AssertionError, "invalid creator send");
         return NULL;
     }
+#endif // DEBUG
     OperationObject * op;
     if (!PyArg_ParseTuple(args, "O", &op)) {
         return NULL;
@@ -183,10 +197,12 @@ static void CreatorClient_dealloc(CreatorClientObject *self)
 static PyObject * CreatorClient_getattr(CreatorClientObject *self, char *name)
 {
     // Fairly major re-write of this to use operator[] of CreatorClient base class
+#ifdef DEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid creator getattr");
+        PyErr_SetString(PyExc_AssertionError, "invalid creator getattr");
         return NULL;
     }
+#endif // DEBUG
     // If operation search gets to here, it goes no further
     if (strstr(name, "_operation") != NULL) {
         PyErr_SetString(PyExc_AttributeError, name);
