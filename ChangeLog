@@ -1,3 +1,13 @@
+2004-07-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/define_world.py: Remove duplicate fir tree.
+
+	* rulesets/Entity.cpp: Remove duplicate copy of Entity::getLocation
+	  template.
+
+	* rulesets/Entity_getLocation.h: Update real version of
+	  Entity::getLocation template to get latest changes.
+
 2004-07-05  Kai Blin  <blin@gmx.net>
 
 	* mason.xml: Made the fir weight 150 kg
@@ -10,7 +20,7 @@
 	  into the deer's goal list.
 	* rulesets/mason/world/objects/plants/Fir.py: made the fir react
 	  on the eat_operation
-	
+
 2004-07-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Plant.cpp: Slow down the rate of recovery for damaged

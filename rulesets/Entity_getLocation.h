@@ -40,10 +40,12 @@ bool Entity::getLocation(const Element::MapType & entmap,
         if (I != entmap.end()) {
             m_location.m_orientation.fromAtlas(I->second.asList());
         }
-        I = entmap.find("bbox");
-        if (I != entmap.end()) {
-            m_location.m_bBox.fromAtlas(I->second.asList());
-        }
+        // bbox is no longer read here, because it needs to be handled
+        // in set(), which means it gets read by merge
+        // I = entmap.find("bbox");
+        // if (I != entmap.end()) {
+            // m_location.m_bBox.fromAtlas(I->second.asList());
+        // }
     }
     catch (Atlas::Message::WrongTypeException) {
         log(ERROR, "getLocation: Bad location data");

@@ -355,7 +355,6 @@ def test_browse(mapeditor):
     
     m=editor(mapeditor)
     deer = m.make('deer', type='deer', xyz=(5, 0, settlement_height))
-    fir = m.make('fir', type='fir', xyz=(10, 0, settlement_height))
     m.learn(deer, (il.browse,"browse(self, 'fir', 0.8)"))
     m.make('fir',type='fir',xyz=(-10,-0,settlement_height))
     m.make('fir',type='fir',xyz=(-0,-10,settlement_height))
