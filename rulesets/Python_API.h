@@ -5,6 +5,8 @@
 #include <Atlas/Objects/Operation/RootOperation.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Talk.h>
 #include <Atlas/Objects/Operation/Move.h>
 #include <Atlas/Objects/Operation/Set.h>
 

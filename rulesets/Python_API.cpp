@@ -125,11 +125,20 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         return NULL;
     }
     op->operation = new RootOperation;
-    if (strcpy(type, "tick") == 0) {
+    if (strcmp(type, "tick") == 0) {
         *op->operation = Tick::Instantiate();
-    } else if (strcpy(type, "create") == 0) {
+    } else if (strcmp(type, "create") == 0) {
         *op->operation = Create::Instantiate();
+    } else if (strcmp(type, "setup") == 0) {
+        *op->operation = Setup::Instantiate();
+    } else if (strcmp(type, "look") == 0) {
+        *op->operation = Look::Instantiate();
+    } else if (strcmp(type, "move") == 0) {
+        *op->operation = Move::Instantiate();
+    } else if (strcmp(type, "talk") == 0) {
+        *op->operation = Talk::Instantiate();
     } else {
+        printf("ERROR: PYTHON CREATING AN UNHANDLED OPERATION\n");
         *op->operation = RootOperation::Instantiate();
     }
     if (PyMapping_HasKeyString(kwds, "to")) {

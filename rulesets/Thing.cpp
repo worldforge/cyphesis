@@ -433,6 +433,7 @@ ThingFactory::ThingFactory()
     thing_map["farmer"] = thing_t(BASE_CHARACTER, "world.objects.characters.farmer");
     thing_map["guard"] = thing_t(BASE_CHARACTER, "");
     thing_map["butcher"] = thing_t(BASE_CHARACTER, "");
+    thing_map["merchant"] = thing_t(BASE_CHARACTER, "");
     thing_map["creator"] = thing_t(BASE_CREATOR, "");
 
     init_python_api();

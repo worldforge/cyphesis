@@ -1,3 +1,8 @@
+2000-11-26  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Fixed and changes to code so that operations created in python
+	  mind code are delivered as required.
+
 2000-11-24  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Disabled some of the excessive debugging.

@@ -168,7 +168,9 @@ double MovementInfo::get_tick_addition(const Vector3D & coordinates)
     return consts::basic_tick;
 }
 
-Character::Character() : movement(this), sex("female"), autom(0), drunkness(0.0)
+Character::Character() : movement(this), sex("female"), autom(0),
+                         mind(NULL), external_mind(NULL), player(NULL),
+                         drunkness(0.0)
 {
     attributes["weight"] = 60.0;
     is_character = 1;
@@ -697,13 +699,18 @@ oplist Character::send_mind(const RootOperation & msg)
     } else {
         //return(*(RootOperation **)NULL);
         if (autom == 0) {
+            cout << "Turning automatic on for " << fullid << endl << flush;
             autom = 1;
         }
     }
     if (autom) {
+        cout << "Using " << local_res.size() << " ops from local mind"
+             << endl << flush;
         res = local_res;
     } else {
         res = external_res;
+        cout << "Using " << local_res.size() << " ops from external mind"
+             << endl << flush;
     }
     // At this point there is a bunch of conversion stuff that I don't
     // understand
