@@ -30,26 +30,6 @@ Requires: %{name} = %{version} postgresql-server >= 7.1
 Cyphesis is a very simple world simulator. This package allows it to be run
 as a service controlled by init.
 
-%package libs
-Summary: Libraries for using cyphesis databases
-Group: System Environment/Libraries
-Requires: varconf postgresql > 7.1
-
-%description libs
-Cyphesis is a very simple world simulator. These libraries allow other
-applications to access the databases cyphesis uses to store its data.
-This access can be used to facilitate rapid world editing and building,
-account management, or other tasks.
-
-%package devel
-Summary: Libraries for using cyphesis databases static libs and headers
-Group: Development/Libraries
-Requires: %{name}-libs = %{version}
-
-%description devel
-Cyphesis is a very simple world simulator. These are the headers and libraries
-required to compile application which requires access to cyphesis databases.
-
 %package acorn
 Summary: Game data for running the Acorn game in cyphesis
 Group: Amusements/Games
@@ -142,18 +122,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files service -f service.lst
 %defattr(-,root,root)
-
-%files libs
-%defattr(-,root,root)
-%{_libdir}/libcyphesis.so.0.0.0
-%{_libdir}/libcyphesis.so.0
-
-%files devel
-%defattr(-,root,root)
-%{_libdir}/libcyphesis.so
-%{_libdir}/libcyphesis.la
-%{_libdir}/libcyphesis.a
-%{_includedir}/cyphesis
 
 %files acorn
 %defattr(-,root,root)
