@@ -9,7 +9,8 @@ Copyright: GPL
 Group: Amusements/Games
 Source0: cyphesis-@VERSION@.tar.gz
 Source1: cyphesis.init
-Source2: cyphesis.sysconfig
+Source2: cyclient.init
+Source3: cyphesis.sysconfig
 Requires: Atlas-C++ >= 0.4.4 varconf skstream > 0.2 readline postgresql-libs >= 7.1 python >= 1.5.2 libstdc++ >= 2.95.2
 BuildRoot: /var/tmp/%{name}-buildroot
 BuildRequires: Atlas-C++-devel >= 0.4.4 varconf-devel skstream-devel > 0.2 readline-devel postgresql-devel >= 7.1 python-devel >= 1.5.2 libstdc++-devel
@@ -96,12 +97,14 @@ if [ -d /etc/rc.d/init.d ]
 then
 	install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
 	install -m 755 %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/cyphesis
+	install -m 755 %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/cyclient
         echo /etc/rc.d/init.d/cyphesis >> service.lst
+        echo /etc/rc.d/init.d/cyclient >> service.lst
 fi
 if [ -d /etc/sysconfig ]
 then
 	install -d $RPM_BUILD_ROOT/etc/sysconfig
-	install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/cyphesis
+	install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/cyphesis
         echo /etc/sysconfig/cyphesis >> service.lst
 fi
 
@@ -110,10 +113,12 @@ useradd -M -n -r -s /bin/bash -c "Cyphesis user" cyphesis >/dev/null 2>&1 || :
 
 %post service
 chkconfig --add cyphesis
+chkconfig --add cyclient
 
 %preun service
 if [ $1 = 0 ] ; then
         chkconfig --del cyphesis
+        chkconfig --del cyclient
 fi
 
 %postun service

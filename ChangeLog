@@ -1,3 +1,13 @@
+2002-10-31  Al Riddoch  <alriddoch@zepler.org>
+
+	* cyphesis.init: Add code to load rules and map into the database
+	  before the service first starts up.
+
+	* cyphesis.spec.in, cyclient.init: Add cyclient service, to populate
+	  running server with game stuff.
+
+	* configure.in: Bump up to version 0.1.95
+
 2002-10-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CreatorClient.cpp, rulesets/BaseMind.cpp,

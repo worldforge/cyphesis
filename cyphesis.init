@@ -68,6 +68,26 @@ start() {
                 echo_failure
             fi
             echo
+            # Populate it with rules
+            echo -n $"Loading database with rules: "
+            su $CYPHESISUSER -c "cyloadrules" >/dev/null 2>&1
+            RETVAL=$?
+            if [ $RETVAL -eq 0 ]; then
+                echo_success
+            else
+                echo_failure
+            fi
+            echo
+            # Populate it with a map
+            echo -n $"Loading database with map: "
+            su $CYPHESISUSER -c "cydbload /etc/cyphesis/moraf.xml" >/dev/null 2>&1
+            RETVAL=$?
+            if [ $RETVAL -eq 0 ]; then
+                echo_success
+            else
+                echo_failure
+            fi
+            echo
         fi
 
         echo -n $"Starting cyphesis: "
