@@ -53,6 +53,11 @@ class Database {
     bool commandOk();
 
   public:
+    static const int MAINTAIN_VACUUM = 0x0100;
+    static const int MAINTAIN_VACUUM_FULL = 0x0001;
+    static const int MAINTAIN_VACUUM_ANALYZE = 0x0002;
+    static const int MAINTAIN_REINDEX = 0x0200;
+
     typedef enum { OneToMany, ManyToMany, ManyToOne, OneToOne } RelationType;
 
     PGconn * getConnection() const { return m_connection; }
@@ -145,6 +150,7 @@ class Database {
     bool launchNewQuery();
     bool scheduleCommand(const std::string & query);
     bool clearPendingQuery();
+    bool runDatabaseMaintainance(int command = MAINTAIN_VACUUM);
 
 };
 

@@ -1051,6 +1051,25 @@ bool Database::clearPendingQuery()
     }
 }
 
+bool Database::runDatabaseMaintainance(int command)
+{
+    if ((command | MAINTAIN_REINDEX) == MAINTAIN_REINDEX) {
+        std::cout << "Re-indexing" << std::endl << std::flush;
+        return scheduleCommand("REINDEX;");
+    } else if ((command | MAINTAIN_REINDEX) == MAINTAIN_REINDEX) {
+        std::string query("VACUUM");
+        if ((command | MAINTAIN_VACUUM_ANALYZE) == MAINTAIN_VACUUM_ANALYZE) {
+            query += " ANALYZE";
+        }
+        if ((command | MAINTAIN_VACUUM_FULL) == MAINTAIN_VACUUM_FULL) {
+            query += " FULL";
+        }
+        query += ";";
+        std::cout << "Running: " << query << std::endl << std::flush;
+        return scheduleCommand(query);
+    }
+}
+
 const char * DatabaseResult::field(const char * column, int row) const
 {
     int col_num = PQfnumber(m_res, column);
