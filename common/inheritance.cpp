@@ -94,7 +94,7 @@ Atlas::Objects::Root * Inheritance::get(const std::string & parent)
     return I->second;
 }
 
-bool Inheritance::addChild(Atlas::Objects::Root * obj)
+int Inheritance::addChild(Atlas::Objects::Root * obj)
 {
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParents().front().asString();
@@ -103,7 +103,7 @@ bool Inheritance::addChild(Atlas::Objects::Root * obj)
                         + "(" + parent + ") which was already installed";
         log(WARNING, msg.c_str());
         delete obj;
-        return true;
+        return -1;
     }
     std::map<std::string, Atlas::Objects::Root *>::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
@@ -116,7 +116,7 @@ bool Inheritance::addChild(Atlas::Objects::Root * obj)
     }
     I->second->setAttr("children", Element(children));
     atlasObjects[child] = obj;
-    return false;
+    return 0;
 }
 
 using Atlas::Objects::Operation::Perception;

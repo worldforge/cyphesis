@@ -23,6 +23,6 @@ extern bool restricted_flag;
 extern int timeoffset;
 extern int port_num;
 
-bool loadConfig(int argc, char ** argv, bool server = false);
+int loadConfig(int argc, char ** argv, bool server = false);
 
 #endif // COMMON_GLOBALS_H

@@ -43,7 +43,7 @@ class Inheritance {
     OpNo opEnumerate(const std::string & parent) const;
     OpNo opEnumerate(const RootOperation & op) const;
     Atlas::Objects::Root * get(const std::string & parent);
-    bool addChild(Atlas::Objects::Root * obj);
+    int addChild(Atlas::Objects::Root * obj);
 };
 
 #endif // COMMON_INHERITANCE_H

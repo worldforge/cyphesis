@@ -20,7 +20,7 @@ bool restricted_flag = false;
 int timeoffset = DateTime::spm() * DateTime::mph() * 6; // Dawn
 int port_num = 6767;
 
-bool loadConfig(int argc, char ** argv, bool server)
+int loadConfig(int argc, char ** argv, bool server)
 {
     global_conf = varconf::Config::inst();
 
@@ -60,7 +60,7 @@ bool loadConfig(int argc, char ** argv, bool server)
         } else {
             log(INFO, "Please ensure that cyphesis has been installed correctly.");
         }
-        return true;
+        return -1;
     }
     if (home_dir_config) {
         global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
@@ -85,5 +85,5 @@ bool loadConfig(int argc, char ** argv, bool server)
         rulesets.push_back(ruleset);
     };
 
-    return false;
+    return 0;
 }

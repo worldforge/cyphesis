@@ -40,7 +40,7 @@ void usage(char * n)
 
 int main(int argc, char ** argv)
 {
-    if (loadConfig(argc, argv)) {
+    if (loadConfig(argc, argv) != 0) {
         // Fatal error loading config file
         return 1;
     }

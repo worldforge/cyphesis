@@ -28,7 +28,7 @@ int main(int argc, char ** argv)
 {
     interactive_signals();
 
-    if (loadConfig(argc, argv, true)) {
+    if (loadConfig(argc, argv, true) != 0) {
         // Fatal error loading config file
         return EXIT_CONFIG_ERROR;
     }
