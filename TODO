@@ -1,3 +1,6 @@
+Write an implementation of the select() code in CommServer that uses epoll
+instead. Much more efficient if its available.
+
 Add square_distance to the distance_to python binding, for efficiency.
 
 Location objects which are not valid parts of the tree are getting into
