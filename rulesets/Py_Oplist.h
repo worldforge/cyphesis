@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#ifndef PY_OPLIST_H
-#define PY_OPLIST_H
+#ifndef RULESETS_PY_OPLIST_H
+#define RULESETS_PY_OPLIST_H
 
 extern PyTypeObject Oplist_Type;
 
@@ -11,4 +11,4 @@ extern PyTypeObject Oplist_Type;
 
 OplistObject * newOplistObject(PyObject *);
 
-#endif // PY_VECTOR3D_H
+#endif // RULESETS_PY_VECTOR3D_H

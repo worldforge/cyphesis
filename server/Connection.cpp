@@ -12,6 +12,7 @@
 #include <common/debug.h>
 #include <common/persistance.h>
 #include <common/globals.h>
+#include <common/inheritance.h>
 
 #include "Connection.h"
 #include "ServerRouting.h"
@@ -39,7 +40,8 @@ void Connection::send(const RootOperation * msg) const
     commClient.send(msg);
 }
 
-Account * Connection::addPlayer(const string& username, const string& password)
+Account * Connection::addPlayer(const std::string& username,
+                                const std::string& password)
 {
     Player * player=new Player(this, username, password);
     addObject(player);
@@ -75,7 +77,7 @@ void Connection::destroy()
 oplist Connection::operation(const RootOperation & op)
 {
     debug(cout << "Connection::operation" << endl << flush;);
-    const string & from = op.GetFrom();
+    const std::string & from = op.GetFrom();
     if (0==from.size()) {
         debug(cout << "deliver locally as normal" << endl << flush;);
         return BaseEntity::operation(op);
@@ -113,8 +115,8 @@ oplist Connection::LoginOperation(const Login & op)
     const Object & account = op.GetArgs().front();
 
     if (account.IsMap()) {
-        const string account_id = account.AsMap().find("id")->second.AsString();
-        const string password = account.AsMap().find("password")->second.AsString();
+        const std::string account_id = account.AsMap().find("id")->second.AsString();
+        const std::string password = account.AsMap().find("password")->second.AsString();
 
         Account * player = (Player *)server.getObject(account_id);
         if (player == NULL) {
@@ -153,8 +155,8 @@ oplist Connection::CreateOperation(const Create & op)
     }
 
     if (account.IsMap()) {
-        const string & account_id = account.AsMap().find("id")->second.AsString();
-        const string & password = account.AsMap().find("password")->second.AsString();
+        const std::string & account_id = account.AsMap().find("id")->second.AsString();
+        const std::string & password = account.AsMap().find("password")->second.AsString();
 
         if ((NULL==server.getObject(account_id)) && 
             (!Persistance::instance()->findAccount(account_id)) &&
@@ -177,8 +179,8 @@ oplist Connection::LogoutOperation(const Logout & op)
     const Object & account = op.GetArgs().front();
     
     if (account.IsMap()) {
-        const string & account_id = account.AsMap().find("id")->second.AsString();
-        // const string & password = account.AsMap().find("password")->second.AsString();
+        const std::string & account_id = account.AsMap().find("id")->second.AsString();
+        // const std::string & password = account.AsMap().find("password")->second.AsString();
         Player * player = (Player *)server.getObject(account_id);
         if (player) {
             Logout l = op;
@@ -192,11 +194,28 @@ oplist Connection::LogoutOperation(const Logout & op)
 
 oplist Connection::GetOperation(const Get & op)
 {
-    debug(cout << "Got get" << endl << flush;);
-    Info * info = new Info(Info::Instantiate());
-    info->SetArgs(Object::ListType(1,server.asObject()));
-    info->SetRefno(op.GetSerialno());
-    debug(cout << "Replying to get" << endl << flush;);
+    const Object::ListType & args = op.GetArgs();
+
+    cout << "Got get" << endl << flush;
+
+    Info * info;
+    if (args.empty()) {
+        info = new Info(Info::Instantiate());
+        info->SetArgs(Object::ListType(1,server.asObject()));
+        info->SetRefno(op.GetSerialno());
+        debug(cout << "Replying to empty get" << endl << flush;);
+    } else {
+        Object::MapType::const_iterator I = args.front().AsMap().find("id");
+        if (I == args.front().AsMap().end()) {
+            return oplist();
+        }
+        const std::string & id = I->second.AsString();
+        std::cout << "Get got for " << id << std::endl << std::flush;
+        Atlas::Objects::Root * o = Inheritance::instance().get(id);
+        info = new Info(Info::Instantiate());
+        info->SetArgs(Object::ListType(1,o->AsObject()));
+        info->SetRefno(op.GetSerialno());
+    }
     
     return oplist(1,info);
 }

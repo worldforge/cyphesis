@@ -52,7 +52,7 @@ ClientConnection::~ClientConnection()
 
 void ClientConnection::operation(const RootOperation & op)
 {
-    const string & from = op.GetFrom();
+    const std::string & from = op.GetFrom();
     if (from.empty()) {
         cerr << "ERROR: Operation with no destination" << endl << flush;
         return;
@@ -80,13 +80,13 @@ void ClientConnection::ObjectArrived(const Error&)
 void ClientConnection::ObjectArrived(const Info & op)
 {
     cout << "INFO" << endl << flush;
-    const string & from = op.GetFrom();
+    const std::string & from = op.GetFrom();
     if (from.empty()) {
         reply_flag = true;
         error_flag = false;
         try {
             Object ac = op.GetArgs().front();
-            const string & acid = ac.AsMap()["id"].AsString();
+            const std::string & acid = ac.AsMap()["id"].AsString();
             objects[acid] = new ClientAccount(acid, *this);
         }
         catch (...) {
@@ -127,7 +127,7 @@ int ClientConnection::read() {
     }
 }
 
-bool ClientConnection::connect(const string & server)
+bool ClientConnection::connect(const std::string & server)
 {
     struct sockaddr_in serv_sa;
 
@@ -183,7 +183,8 @@ bool ClientConnection::connect(const string & server)
     return true;
 }
 
-bool ClientConnection::login(const string & account, const string & password)
+bool ClientConnection::login(const std::string & account,
+                             const std::string & password)
 {
     Atlas::Objects::Operation::Login l = Atlas::Objects::Operation::Login::Instantiate();
     Object::MapType acmap;
@@ -215,7 +216,7 @@ void ClientConnection::send(const Atlas::Objects::Root & obj) {
     *ios << flush;
 }
 
-void ClientConnection::error(const string & message) {
+void ClientConnection::error(const std::string & message) {
     // FIXME Need operation based error function
 }
 

@@ -15,7 +15,7 @@ class Setup : public RootOperation {
     static Setup Instantiate() {
         Setup value;
         value.SetParents(Message::Object::ListType(1, "setup"));
-        value.SetObjtype(string("op"));
+        value.SetObjtype(std::string("op"));
         return value;
     }
 };

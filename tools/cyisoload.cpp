@@ -55,11 +55,11 @@ class TemplatesLoader : public Atlas::Message::DecoderBase {
             return;
         }
         m_count++;
-        const string & id = omap["graphic"].AsString();
+        const std::string & id = omap["graphic"].AsString();
         m_db[id] = obj;
     }
   public:
-    TemplatesLoader(const string & filename) :
+    TemplatesLoader(const std::string & filename) :
                 m_file(filename.c_str()),
                 m_codec((iostream&)m_file, this), m_count(0) {
     }
@@ -79,7 +79,7 @@ class TemplatesLoader : public Atlas::Message::DecoderBase {
         return m_db;
     }
 
-    const Atlas::Message::Object & get(const string & graphic) {
+    const Atlas::Message::Object & get(const std::string & graphic) {
         return m_db[graphic];
     }
 };
@@ -115,10 +115,10 @@ int main(int argc, char ** argv)
         for(int i = 0; i < count; i++) {
             CoalObject * object = (CoalObject*)map_database.GetObject (i);
             if (object != NULL) {
-                const string & graphic = object->graphic->filename;
+                const std::string & graphic = object->graphic->filename;
                 size_t b = graphic.rfind('/') + 1;
                 size_t e = graphic.rfind('.');
-                string key(graphic, b, e - b);
+                std::string key(graphic, b, e - b);
                 Atlas::Message::Object::MapType & tdb = f.db();
                 Atlas::Message::Object::MapType::iterator t = tdb.find(key);
                 if (t != tdb.end()) {

@@ -2,24 +2,24 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef WORLD_TIME_H
-#define WORLD_TIME_H
+#ifndef MODULES_WORLD_TIME_H
+#define MODULES_WORLD_TIME_H
 
 #include <modules/DateTime.h>
 
-// timedata time2type(const string & t);
+// timedata time2type(const std::string & t);
 
 class WorldTime {
     typedef std::list<int> range;
     typedef std::pair<range, std::string> period;
-    typedef std::map<string, period> time_info_t;
+    typedef std::map<std::string, period> time_info_t;
 
     //DateTime time;
     //string/int month;
     double secs;
 
     time_info_t	timeInfo;
-    std::map<int, string> monthToSeason;
+    std::map<int, std::string> monthToSeason;
 
     range crange(int begin, int end) {
         range ret;
@@ -36,12 +36,12 @@ class WorldTime {
     }
     double seconds() { return secs; }
     //WorldTime(char * date_time);
-    const string & operator[](const string & name);
-    //string & __repr__();
-    //string & __str__();
+    const std::string & operator[](const std::string & name);
+    //std::string & __repr__();
+    //std::string & __str__();
     //bool operator==(const WorldTime & other);
 };
 
-const string & seconds2string(double seconds);
+const std::string & seconds2string(double seconds);
 
-#endif // WORLD_TIME_H
+#endif // MODULES_WORLD_TIME_H

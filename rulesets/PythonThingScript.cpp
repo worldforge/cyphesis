@@ -24,15 +24,16 @@ PythonThingScript::~PythonThingScript()
 {
 }
 
-bool PythonThingScript::Operation(const string& op_type,const RootOperation& op,
-                         oplist & ret_list, RootOperation * sub_op)
+bool PythonThingScript::Operation(const std::string & op_type,
+                                  const RootOperation & op,
+                                  oplist & ret_list, RootOperation * sub_op)
 {
     if (scriptObject == NULL) {
         debug( cout << "No script object asociated" << endl << flush;);
         return false;
     }
     debug( cout << "Got script object for " << endl << flush;);
-    string op_name = op_type+"_operation";
+    std::string op_name = op_type+"_operation";
     // Construct apropriate python object thingies from op
     if (!PyObject_HasAttrString(scriptObject, (char *)(op_name.c_str()))) {
         debug( cout << "No method to be found for " 
@@ -86,6 +87,6 @@ bool PythonThingScript::Operation(const string& op_type,const RootOperation& op,
     return false;
 }
 
-void PythonThingScript::hook(const string &, Entity *)
+void PythonThingScript::hook(const std::string &, Entity *)
 {
 }

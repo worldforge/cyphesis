@@ -123,7 +123,7 @@ op_no_t BaseEntity::opEnumerate(const RootOperation & op) const
     if (!parents.begin()->IsString()) {
         cerr << "This op has invalid parent.\n" << endl << flush;
     }
-    const string & parent = parents.begin()->AsString();
+    const std::string & parent = parents.begin()->AsString();
     if ("tick" == parent)  { return OP_TICK; }
     if ("move" == parent)  { return OP_MOVE; }
     if ("sight" == parent)  { return OP_SIGHT; }

@@ -41,7 +41,7 @@ Entity * MemMap::add(const Object & entity)
     if ((I == entmap.end()) || (I->second.AsString().size() == 0)) {
         return NULL;
     }
-    const string & id = I->second.AsString();
+    const std::string & id = I->second.AsString();
     if (get(id)) {
         return update(entity);
     }
@@ -76,7 +76,7 @@ Entity * MemMap::update(const Object & entity)
     if (I == entmap.end()) {
         return NULL;
     }
-    const string & id = I->second.AsString();
+    const std::string & id = I->second.AsString();
     if (id.size() == 0) {
         return NULL;
     }
@@ -108,7 +108,7 @@ Entity * MemMap::update(const Object & entity)
             //setattr(obj,key,value);
         //}
     //}
-    list<string>::const_iterator K;
+    std::list<std::string>::const_iterator K;
     for(K = updateHooks.begin(); K != updateHooks.end(); K++) {
         script->hook(*K, thing);
     }
@@ -118,7 +118,7 @@ Entity * MemMap::update(const Object & entity)
     return thing;
 }
 
-list<Entity *> MemMap::findByType(const string & what)
+list<Entity *> MemMap::findByType(const std::string & what)
 {
     list<Entity *> res;
     edict_t::const_iterator I;

@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#ifndef PY_OPTIME_H
-#define PY_OPTIME_H
+#ifndef RULESETS_PY_OPTIME_H
+#define RULESETS_PY_OPTIME_H
 
 extern PyTypeObject Optime_Type;
 
@@ -11,4 +11,4 @@ extern PyTypeObject Optime_Type;
 
 OptimeObject * newOptimeObject(PyObject *);
 
-#endif // PY_OPTIME_H
+#endif // RULESETS_PY_OPTIME_H

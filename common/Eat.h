@@ -14,8 +14,8 @@ class Eat : public RootOperation {
     virtual ~Eat() { }
     static Eat Instantiate() {
         Eat value;
-        value.SetParents(Message::Object::ListType(1,string("eat")));
-        value.SetObjtype(string("op"));
+        value.SetParents(Message::Object::ListType(1,std::string("eat")));
+        value.SetObjtype(std::string("op"));
         return value;
     }
 };

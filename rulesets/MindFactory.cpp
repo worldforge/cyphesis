@@ -23,15 +23,18 @@ MindFactory::MindFactory()
 {
 }
 
-void MindFactory::readRuleset(const string & setname)
+void MindFactory::readRuleset(const std::string & setname)
 {
     global_conf->readFromFile(setname+".vconf");
 }
 
-BaseMind * MindFactory::newMind(const string & id, const string & name, const string & type,const Object & ent, Routing * svr)
+BaseMind * MindFactory::newMind(const std::string & id,
+                                const std::string & name,
+                                const std::string & type,
+                                const Object & ent, Routing * svr)
 {
     BaseMind * mind = new BaseMind(id, name);
-    string mind_class("NPCMind"), mind_package("mind.NPCMind");
+    std::string mind_class("NPCMind"), mind_package("mind.NPCMind");
     if (global_conf->findItem("mind", type)) {
         mind_package = global_conf->getItem("mind", type);
         mind_class = type + "Mind";

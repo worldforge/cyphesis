@@ -139,7 +139,7 @@ static int Mind_setattr(MindObject *self, char *name, PyObject *v)
         return -1;
     }
     Entity * thing = self->m_mind;
-    //string attr(name);
+    //std::string attr(name);
     //if (v == NULL) {
         //thing->attributes.erase(attr);
         //return 0;

@@ -98,7 +98,7 @@ Character::~Character()
     }
 }
 
-const Object & Character::operator[](const string & aname)
+const Object & Character::operator[](const std::string & aname)
 {
     if (aname == "drunkness") {
         attributes[aname] = Object(drunkness);
@@ -108,7 +108,7 @@ const Object & Character::operator[](const string & aname)
     return Thing::operator[](aname);
 }
 
-void Character::set(const string & aname, const Object & attr)
+void Character::set(const std::string & aname, const Object & attr)
 {
     if ((aname == "drunkness") && attr.IsFloat()) {
         drunkness = attr.AsFloat();
@@ -146,7 +146,7 @@ oplist Character::SetupOperation(const Setup & op)
     }
 
     mind = new BaseMind(fullid, name);
-    string mind_class("NPCMind"), mind_package("mind.NPCMind");
+    std::string mind_class("NPCMind"), mind_package("mind.NPCMind");
     if (global_conf->findItem("mind", type)) {
         mind_package = global_conf->getItem("mind", type);
         mind_class = type + "Mind";
@@ -273,7 +273,7 @@ oplist Character::EatOperation(const Eat & op)
     s->SetTo(fullid);
     s->SetArgs(Object::ListType(1,self_ent));
 
-    const string & to = op.GetFrom();
+    const std::string & to = op.GetFrom();
     Object::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["weight"] = weight;
@@ -351,7 +351,7 @@ oplist Character::mindMoveOperation(const Move & op)
     if ((I == arg1.end()) || !I->second.IsString()) {
         cerr << "Its got no id" << endl << flush;
     }
-    const string & oname = I->second.AsString();
+    const std::string & oname = I->second.AsString();
     edict_t::const_iterator J = world->eobjects.find(oname);
     if (J == world->eobjects.end()) {
         debug( cout << "This move op is for a phoney object" << endl << flush;);
@@ -369,7 +369,7 @@ oplist Character::mindMoveOperation(const Move & op)
         newop->SetTo(oname);
         return oplist(1,newop);
     }
-    string location_ref;
+    std::string location_ref;
     I = arg1.find("loc");
     if ((I != arg1.end()) && (I->second.IsString())) {
         location_ref = I->second.AsString();
@@ -512,7 +512,7 @@ oplist Character::mindSetOperation(const Set & op)
         const Object::MapType & amap = args.front().AsMap();
         Object::MapType::const_iterator I = amap.find("id");
         if (I != amap.end() && I->second.IsString()) {
-            const string & opid = I->second.AsString();
+            const std::string & opid = I->second.AsString();
             if (opid != fullid) {
                 s->SetTo(opid);
             }

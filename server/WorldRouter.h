@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef WORLD_ROUTER_H
-#define WORLD_ROUTER_H
+#ifndef SERVER_WORLD_ROUTER_H
+#define SERVER_WORLD_ROUTER_H
 
 #include <sys/time.h>
 #include <unistd.h>
@@ -16,6 +16,7 @@ class World;
 #include "OOG_Thing.h"
 
 class WorldRouter : public OOGThing {
+  private:
     double realTime;
     opqueue operationQueue;
     elist_t objectList;
@@ -23,7 +24,7 @@ class WorldRouter : public OOGThing {
 
     void addOperationToQueue(RootOperation & op, const BaseEntity *);
     RootOperation * getOperationFromQueue();
-    string getId(string & name);
+    std::string getId(std::string & name);
     const elist_t & broadcastList(const RootOperation & op) const;
     oplist operation(const RootOperation * op);
   public:
@@ -41,19 +42,18 @@ class WorldRouter : public OOGThing {
     const double upTime() const;
 
     Entity * addObject(Entity * obj);
-    Entity * addObject(const string &, const Atlas::Message::Object &,
-                       const string & id = string());
+    Entity * addObject(const std::string &, const Atlas::Message::Object &,
+                       const std::string & id = std::string());
     void delObject(Entity * obj);
 
-    Entity * getObject(const string & fid) {
+    Entity * getObject(const std::string & fid) {
         return eobjects[fid];
     }
 
-    Entity * findObject(const string & fid) {
+    Entity * findObject(const std::string & fid) {
         return eobjects[fid];
     }
 
-        
     void updateTime() {
         struct timeval tv;
         gettimeofday(&tv, NULL);
@@ -72,4 +72,4 @@ class WorldRouter : public OOGThing {
     oplist lookOperation(const Look & op);
 };
 
-#endif // WORLD_ROUTER_H
+#endif // SERVER_WORLD_ROUTER_H

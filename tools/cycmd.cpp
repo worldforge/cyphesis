@@ -158,7 +158,7 @@ void Interactive::prompt()
             arg = "";
         }
 
-        //string command(cmd), argument(arg);
+        //std::string command(cmd), argument(arg);
         
         exec(cmd, arg);
     }

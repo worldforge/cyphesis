@@ -2,6 +2,9 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
+#ifndef RULESETS_PY_OBJECT_H
+#define RULESETS_PY_OBJECT_H
+
 #include <stdio.h>
 #include <unistd.h>
 
@@ -26,3 +29,4 @@ Object::ListType PyListObject_asListType(PyObject * list);
 Object::MapType PyDictObject_asMapType(PyObject * dict);
 Object PyObject_asObject(PyObject * o);
 
+#endif // RULESETS_PY_OBJECT_H

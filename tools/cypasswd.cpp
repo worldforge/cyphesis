@@ -36,13 +36,13 @@ class AccountBase : public Database {
         return (AccountBase *)m_instance;
     }
 
-    bool putAccount(const Object & o, const string & account) {
+    bool putAccount(const Object & o, const std::string & account) {
         return putObject(account_db, o, account.c_str());
     }
-    bool delAccount(const string & account) {
+    bool delAccount(const std::string & account) {
         return delObject(account_db, account.c_str());
     }
-    bool getAccount(const string & account, Object & o) {
+    bool getAccount(const std::string & account, Object & o) {
         return getObject(account_db, account.c_str(), o);
     }
 
@@ -66,7 +66,7 @@ int main(int argc, char ** argv)
     std::cerr << "This version of cyphesis was built without persistant account support" << endl << flush;
     exit(0);
 #endif
-    string acname;
+    std::string acname;
     int action;
 
     if (argc == 1) {

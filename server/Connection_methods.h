@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef CONNECTION_METHODS_H
-#define CONNECTION_METHODS_H
+#ifndef SERVER_CONNECTION_METHODS_H
+#define SERVER_CONNECTION_METHODS_H
 
 #include "Connection.h"
 #include "CommClient.h"
@@ -14,4 +14,4 @@ inline void Connection::send(const RootOperation * msg) const
     commClient.send(msg);
 }
 
-#endif // CONNECTION_METHODS_H
+#endif // SERVER_CONNECTION_METHODS_H

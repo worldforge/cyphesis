@@ -47,14 +47,14 @@ typedef enum op_no {
 	OP_INVALID
 } op_no_t;
 
-typedef std::map<string, BaseEntity *> dict_t;
+typedef std::map<std::string, BaseEntity *> dict_t;
 typedef std::list<BaseEntity *> list_t;
-typedef std::pair<string, BaseEntity *> idpair_t;
+typedef std::pair<std::string, BaseEntity *> idpair_t;
 
-typedef std::map<string, Entity *> edict_t;
+typedef std::map<std::string, Entity *> edict_t;
 typedef std::list<Entity *> elist_t;
 
-typedef std::map<string, Account *> adict_t;
+typedef std::map<std::string, Account *> adict_t;
 typedef std::list<Account *> alist_t;
 
 typedef std::vector<Atlas::Objects::Operation::RootOperation *> oplist;

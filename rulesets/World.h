@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#ifndef WORLD_H
-#define WORLD_H
+#ifndef RULESETS_WORLD_H
+#define RULESETS_WORLD_H
 
 #include <string>
 
@@ -22,4 +22,4 @@ class World : public Thing {
     virtual oplist SetOperation(const Set & op);
 };
 
-#endif // WORLD_H
+#endif // RULESETS_WORLD_H

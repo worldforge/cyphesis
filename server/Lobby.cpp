@@ -9,7 +9,7 @@ using Atlas::Message::Object;
 
 oplist Lobby::operation(const RootOperation & op)
 {
-    const string & to = op.GetTo();
+    const std::string & to = op.GetTo();
     if (to.empty() || to == "all") {
         adict_t::const_iterator I = accounts.begin();
         for (; I != accounts.end(); ++I) {
@@ -35,6 +35,7 @@ oplist Lobby::operation(const RootOperation & op)
 
 void Lobby::addToObject(Object::MapType & omap) const
 {
+    omap["id"] = "lobby";
     omap["name"] = "lobby";
     Object::ListType plist(1, "room");
     omap["parents"] = plist;

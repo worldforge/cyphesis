@@ -141,7 +141,7 @@ static PyObject * MapType_asPyObject(const Object::MapType & map)
     Object::MapType::const_iterator I;
     AtlasObject * item;
     for(I=map.begin();I!=map.end();I++) {
-        const string & key = I->first;
+        const std::string & key = I->first;
         item = newAtlasObject(NULL);
         if (item == NULL) {
             PyErr_SetString(PyExc_TypeError,"error creating map");

@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#ifndef PY_OPERATION_H
-#define PY_OPERATION_H
+#ifndef RULESETS_PY_OPERATION_H
+#define RULESETS_PY_OPERATION_H
 
 extern PyTypeObject RootOperation_Type;
 
@@ -11,4 +11,4 @@ extern PyTypeObject RootOperation_Type;
 
 RootOperationObject * newAtlasRootOperation(PyObject *arg);
 
-#endif // PY_OPERATION_H
+#endif // RULESETS_PY_OPERATION_H

@@ -13,7 +13,7 @@ class ClientAccount : public BaseEntity {
   private:
     ClientConnection & connection;
   public:
-    ClientAccount(const string & name, ClientConnection & con);
+    ClientAccount(const std::string & name, ClientConnection & con);
     virtual ~ClientAccount() { }
 
     virtual oplist OtherOperation(const RootOperation & op);

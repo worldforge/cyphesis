@@ -52,8 +52,8 @@ extern "C" {
 #endif
 #include <math.h>
 
-string defMessage="No message was given by server!";
-string emptyString="";
+std::string defMessage="No message was given by server!";
+std::string emptyString="";
 
 using namespace Atlas;
 using namespace std;
@@ -85,8 +85,8 @@ void CyphesisClient::login()
    erflag = 0;
    reply_flag = 0;
 
-   account.SetAttr("id", string("al"));
-   account.SetAttr("password", string("ping"));
+   account.SetAttr("id", std::string("al"));
+   account.SetAttr("password", std::string("ping"));
 
    Message::Object::ListType args(1,account.AsObject());
 
@@ -179,9 +179,9 @@ void CyphesisClient::create_char()
    erflag = 0;
    reply_flag = 0;
 
-   Message::Object::ListType parlist(1,string("farmer"));
+   Message::Object::ListType parlist(1,std::string("farmer"));
    character.SetAttr("parents", Message::Object(parlist));
-   character.SetAttr("name", string("Al Riddoch"));
+   character.SetAttr("name", std::string("Al Riddoch"));
 
    Message::Object::ListType args(1,character.AsObject());
 
@@ -215,7 +215,7 @@ void CyphesisClient::move()
     coords.push_back(100.0);
     coords.push_back(0.0);
     ent["pos"] = coords;
-    ent["loc"] = string("world_0");
+    ent["loc"] = std::string("world_0");
     Objects::Operation::Move m = Objects::Operation::Move::Instantiate();
     m.SetAttr("from", character_id);
 
@@ -278,11 +278,11 @@ void CyphesisClient::ObjectArrived(const Message::Object& o)
 
     for (Message::Object::MapType::const_iterator I = omap.begin();
             I != o.AsMap().end(); I++) {
-        cout << I->first << " : " << (I->second.IsString() ? I->second.AsString() : string("NOT A STRING")) << endl << flush;
+        cout << I->first << " : " << (I->second.IsString() ? I->second.AsString() : std::string("NOT A STRING")) << endl << flush;
         if (I->second.IsList()) {
             const Message::Object::ListType & alist = I->second.AsList();
             for(Message::Object::ListType::const_iterator J = alist.begin(); J != alist.end(); J++) {
-                cout << "-> " << (J->IsString() ? J->AsString() : string("NOT A STRING")) << endl << flush;
+                cout << "-> " << (J->IsString() ? J->AsString() : std::string("NOT A STRING")) << endl << flush;
             }
         }
     }

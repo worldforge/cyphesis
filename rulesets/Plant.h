@@ -2,15 +2,14 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef PLANT_H
-#define PLANT_H
+#ifndef RULESETS_PLANT_H
+#define RULESETS_PLANT_H
 
 #include "Thing.h"
 
 // This is the base class for flowering plants. Most of the functionality
 // will be common to all plants, and most derived classes will probably
 // be in python.
-
 
 class Plant : public Thing {
   protected:
@@ -30,10 +29,10 @@ class Plant : public Thing {
     Plant();
     virtual ~Plant();
 
-    virtual const Object & operator[](const string & aname);
-    virtual void set(const string & aname, const Object & attr);
+    virtual const Object & operator[](const std::string & aname);
+    virtual void set(const std::string & aname, const Object & attr);
 
     virtual oplist TickOperation(const Tick & op);
 };
 
-#endif // PLANT_H
+#endif // RULESETS_PLANT_H

@@ -7,7 +7,7 @@
 
 namespace utility {
 
-Atlas::Objects::Root * Object_asRoot(const Atlas::Message::Object &);
+  Atlas::Objects::Root * Object_asRoot(const Atlas::Message::Object &);
 
 }
 

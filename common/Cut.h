@@ -14,8 +14,8 @@ class Cut : public RootOperation {
     virtual ~Cut() { }
     static Cut Instantiate() {
         Cut value;
-        value.SetParents(Message::Object::ListType(1,string("cut")));
-        value.SetObjtype(string("op"));
+        value.SetParents(Message::Object::ListType(1,std::string("cut")));
+        value.SetObjtype(std::string("op"));
         return value;
     }
 };

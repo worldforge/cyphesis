@@ -15,23 +15,23 @@ class ThingShape {
   private:
     Vector3D box;
     Vector3D median;
-    static std::map<string, ThingShape *> * dict;
+    static std::map<std::string, ThingShape *> * dict;
     
-    std::map<string, ThingShape *> & getDict() {
+    std::map<std::string, ThingShape *> & getDict() {
         if (dict == NULL) {
-            dict = new std::map<string, ThingShape *>();
+            dict = new std::map<std::string, ThingShape *>();
         }
         return *dict;
     }
   public:
     DtShapeRef solidShape;
     
-    ThingShape(const string & type, double x, double y, double z) :
+    ThingShape(const std::string & type, double x, double y, double z) :
          box(x, y, z) {
         getDict()[type] = this;
     }
 
-    ThingShape(const string & type, double x, double y, double z, Vector3D med):
+    ThingShape(const std::string & type, double x, double y, double z, Vector3D med):
          median(med), box(x, y, z) {
         getDict()[type] = this;
     }

@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef CONNECTION_H
-#define CONNECTION_H
+#ifndef SERVER_CONNECTION_H
+#define SERVER_CONNECTION_H
 
 #include "Routing.h"
 
@@ -14,7 +14,7 @@ class Account;
 class Connection : public Routing {
     CommClient & commClient;
 
-    Account * addPlayer(const string &, const string &);
+    Account * addPlayer(const std::string &, const std::string &);
   public:
     ServerRouting & server;
 
@@ -32,4 +32,4 @@ class Connection : public Routing {
     virtual oplist GetOperation(const Get & op);
 };
 
-#endif // CONNECTION_H
+#endif // SERVER_CONNECTION_H

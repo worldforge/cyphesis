@@ -27,7 +27,7 @@ Plant::~Plant()
 {
 }
 
-const Object & Plant::operator[](const string & aname)
+const Object & Plant::operator[](const std::string & aname)
 {
     if (aname == "fruits") {
         attributes[aname] = Object(fruits);
@@ -43,7 +43,7 @@ const Object & Plant::operator[](const string & aname)
     return Thing::operator[](aname);
 }
 
-void Plant::set(const string & aname, const Object & attr)
+void Plant::set(const std::string & aname, const Object & attr)
 {
     if ((aname == "fruits") && attr.IsInt()) {
         fruits = attr.AsInt();

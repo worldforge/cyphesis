@@ -36,8 +36,8 @@
 using Atlas::Message::Object;
 using Atlas::Objects::Root;
 
-BaseMind::BaseMind(const string & id, const string & body_name) : map(script),
-                                                                  isAwake(true)
+BaseMind::BaseMind(const std::string & id, const std::string & body_name)
+                               : map(script), isAwake(true)
 {
     fullid = id;
     name = body_name;
@@ -380,8 +380,8 @@ oplist BaseMind::SightOperation(const Sight & op)
     if (op2->GetObjtype() == "op") {
         debug( cout << " args is an op!" << endl << flush;);
         res = callSightOperation(op, *(RootOperation *)op2);
-        //string & op2type = op2->GetParents().front().AsString();
-        //string subop = "sight_" + op2type;
+        //std::string & op2type = op2->GetParents().front().AsString();
+        //std::string subop = "sight_" + op2type;
         //script->Operation(subop, op, res, (RootOperation *)op2);
     } else /* if (op2->GetObjtype() == "object") */ {
         debug( cout << " arg is an entity!" << endl << flush;);
@@ -447,7 +447,7 @@ oplist BaseMind::LoadOperation(const Load & op)
 }
 
 #if 0
-RootOperation * BaseMind::get_op_name_and_sub(RootOperation & op, string & name)
+RootOperation * BaseMind::get_op_name_and_sub(RootOperation & op, std::string & name)
 {
     event_name = op.id;
     sub_op = op;

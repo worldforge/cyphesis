@@ -15,7 +15,7 @@ class Load : public RootOperation {
     static Load Instantiate() {
         Load value;
         value.SetParents(Message::Object::ListType(1, "load"));
-        value.SetObjtype(string("op"));
+        value.SetObjtype(std::string("op"));
         return value;
     }
 };

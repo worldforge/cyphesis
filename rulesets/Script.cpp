@@ -16,12 +16,12 @@ Script::~Script()
 {
 }
 
-bool Script::Operation(const string & opname, const RootOperation & op,
+bool Script::Operation(const std::string & opname, const RootOperation & op,
                         oplist & res, RootOperation * sub_op)
 {
    return false;
 }
 
-void Script::hook(const string &, Entity *)
+void Script::hook(const std::string &, Entity *)
 {
 }

@@ -34,7 +34,7 @@ Database::Database() : account_db(NULL, DB_CXX_NO_EXCEPTIONS),
                           mind_db(NULL, DB_CXX_NO_EXCEPTIONS),
                         server_db(NULL, DB_CXX_NO_EXCEPTIONS)
 {
-    db_file = string(VARDIR) + "/cyphesis/db";
+    db_file = std::string(VARDIR) + "/cyphesis/db";
 }
 
 
@@ -162,7 +162,7 @@ bool Database::putObject(Db & db, const Atlas::Message::Object & o,
 
     debug(cout << "Encoded to: " << str.str().c_str() << " "
                << str.str().size() << endl << flush;);
-    const string & s = str.str();
+    const std::string & s = str.str();
 
     Dbt key, data;
 

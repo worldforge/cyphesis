@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef PYTHON_API_H
-#define PYTHON_API_H
+#ifndef RULESETS_PYTHON_API_H
+#define RULESETS_PYTHON_API_H
 
 class Entity;
 class Thing;
@@ -101,7 +101,9 @@ typedef struct {
 #include "Py_Oplist.h"
 #include "Py_Optime.h"
 
-void Create_PyThing(Thing * thing, const string& package, const string& type);
-void Create_PyMind(BaseMind * mind, const string& package, const string& type);
+void Create_PyThing(Thing * thing, const std::string & package,
+                                   const std::string & type);
+void Create_PyMind(BaseMind * mind, const std::string & package,
+                                    const std::string & type);
 
-#endif // PYTHON_API_H
+#endif // RULESETS_PYTHON_API_H

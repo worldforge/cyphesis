@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef THING_H
-#define THING_H
+#ifndef RULESETS_THING_H
+#define RULESETS_THING_H
 
 #include "Entity.h"
 
@@ -35,4 +35,4 @@ class Thing : public Entity {
     virtual oplist LookOperation(const Look & op);
 };
 
-#endif // THING_H
+#endif // RULESETS_THING_H

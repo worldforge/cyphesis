@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef BASE_MIND_H
-#define BASE_MIND_H
+#ifndef RULESETS_BASE_MIND_H
+#define RULESETS_BASE_MIND_H
 
 #include <server/WorldTime.h>
 
@@ -17,7 +17,7 @@ class BaseMind : public Entity {
     WorldTime time;
     int world;
   public:
-    BaseMind(const string &, const string &);
+    BaseMind(const std::string &, const std::string &);
     virtual ~BaseMind();
 
     MemMap * getMap() { return &map; }
@@ -68,7 +68,7 @@ class BaseMind : public Entity {
     virtual oplist LoadOperation(const Load & op);
     virtual oplist AppearanceOperation(const Appearance & op);
     virtual oplist DisappearanceOperation(const Disappearance & op);
-    //RootOperation * get_op_name_and_sub(RootOperation & op, string & name);
+    //RootOperation * get_op_name_and_sub(RootOperation & op, std::string & name);
     //virtual int call_triggers(RootOperation & op);
     //virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
@@ -79,4 +79,4 @@ class BaseMind : public Entity {
     friend class PythonMindScript;
 };
 
-#endif // BASE_MIND_H
+#endif // RULESETS_BASE_MIND_H

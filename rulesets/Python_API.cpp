@@ -187,9 +187,10 @@ PyTypeObject dictlist_add_value_type = {
 	dictlist_add_value,	/* tp_call */
 };
 
-static PyObject * Get_PyClass(const string & package, const string & _type)
+static PyObject * Get_PyClass(const std::string & package,
+                              const std::string & _type)
 {
-    string type = _type;
+    std::string type = _type;
     type[0] = toupper(type[0]);
     PyObject * package_name = PyString_FromString((char *)package.c_str());
     PyObject * mod_dict = PyImport_Import(package_name);
@@ -231,7 +232,8 @@ static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyclass)
     return pyob;
 }
 
-void Create_PyThing(Thing * thing, const string& package, const string& _type)
+void Create_PyThing(Thing * thing, const std::string & package,
+                                   const std::string & _type)
 {
     PyObject * c = Get_PyClass(package, _type);
     if (c == NULL) { return; }
@@ -243,7 +245,8 @@ void Create_PyThing(Thing * thing, const string& package, const string& _type)
     }
 }
 
-void Create_PyMind(BaseMind * mind, const string& package, const string& _type)
+void Create_PyMind(BaseMind * mind, const std::string & package,
+                                    const std::string & _type)
 {
     PyObject * c = Get_PyClass(package, _type);
     if (c == NULL) { return; }
@@ -487,7 +490,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     }
     Object::MapType omap;
     if (id != NULL) {
-        omap["id"] = string(id);
+        omap["id"] = std::string(id);
     }
     if ((kwds != NULL) && (PyDict_Check(kwds))) {
         PyObject * keys = PyDict_Keys(kwds);
@@ -771,8 +774,8 @@ static PyMethodDef misc_methods[] = {
 
 void init_python_api()
 {
-    string pypath("");
-    list<string>::const_iterator I;
+    std::string pypath("");
+    std::list<std::string>::const_iterator I;
     for(I = rulesets.begin(); I != rulesets.end(); I++) {
         pypath = pypath + share_directory + "/cyphesis/rulesets/" +
                  *I + ":";

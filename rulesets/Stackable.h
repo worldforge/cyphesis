@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#ifndef STACKABLE_H
-#define STACKABLE_H
+#ifndef RULESETS_STACKABLE_H
+#define RULESETS_STACKABLE_H
 
 #include "Thing.h"
 
@@ -22,8 +22,8 @@ class Stackable : public Thing {
     Stackable();
     virtual ~Stackable();
 
-    virtual const Atlas::Message::Object & operator[](const string & aname);
-    virtual void set(const string & aname, const Atlas::Message::Object & attr);
+    virtual const Atlas::Message::Object & operator[](const std::string & aname);
+    virtual void set(const std::string & aname, const Atlas::Message::Object & attr);
 
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
 
@@ -31,4 +31,4 @@ class Stackable : public Thing {
     virtual oplist DivideOperation(const Divide & op);
 };
 
-#endif // STACKABLE_H
+#endif // RULESETS_STACKABLE_H

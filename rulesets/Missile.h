@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef MISSILE_H
-#define MISSILE_H
+#ifndef RULESETS_MISSILE_H
+#define RULESETS_MISSILE_H
 
 // This file is an idea which I am not going to implement before Acorn 0.4.
 // The idea is based on writing a class based on Movement which handles
@@ -30,4 +30,4 @@ class Missile : public Thing {
     virtual oplist TickOperation(const Tick & op);
 };
 
-#endif // MISSILE_H
+#endif // RULESETS_MISSILE_H

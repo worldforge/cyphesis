@@ -48,7 +48,7 @@ char * getHome()
 int main(int argc, char ** argv)
 {
     global_conf = varconf::Config::inst();
-    string server = "localhost";
+    std::string server = "localhost";
 
     if (install_directory=="NONE") {
         install_directory = "/usr/local";
@@ -57,7 +57,7 @@ int main(int argc, char ** argv)
     // See if the user has set the install directory on the command line
     char * home;
     if ((home = getenv("HOME")) != NULL) {
-        global_conf->readFromFile(string(home) + "/.cyphesis.vconf");
+        global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
     global_conf->getCmdline(argc, argv);
     if (global_conf->findItem("cyphesis", "directory")) {
@@ -65,11 +65,11 @@ int main(int argc, char ** argv)
     }
     global_conf->readFromFile(install_directory + "/share/cyphesis/cyphesis.vconf");
     if (home != NULL) {
-        global_conf->readFromFile(string(home) + "/.cyphesis.vconf");
+        global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
     global_conf->getCmdline(argc, argv);
 
-    string ruleset;
+    std::string ruleset;
     while (global_conf->findItem("cyphesis", "ruleset")) {
         ruleset = global_conf->getItem("cyphesis", "ruleset");
         global_conf->erase("cyphesis", "ruleset");

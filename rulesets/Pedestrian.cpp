@@ -100,13 +100,13 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     } else {
         speed_ratio = vel_mag / consts::base_velocity;
     }
-    string mode;
+    std::string mode;
     if (speed_ratio > 0.5) {
-        mode = string("running");
+        mode = std::string("running");
     } else if (speed_ratio > 0.05) {
-        mode = string("walking");
+        mode = std::string("walking");
     } else {
-        mode = string("standing");
+        mode = std::string("standing");
     }
     debug( cout << "Mode set to " << mode << endl << flush;);
     entmap["mode"] = Object(mode);

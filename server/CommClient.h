@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef COMM_CLIENT_H
-#define COMM_CLIENT_H
+#ifndef SERVER_COMM_CLIENT_H
+#define SERVER_COMM_CLIENT_H
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/Encoder.h>
@@ -70,4 +70,4 @@ class CommClient : Atlas::Objects::Decoder {
     bool setup();
 };
 
-#endif // COMM_CLIENT_H
+#endif // SERVER_COMM_CLIENT_H

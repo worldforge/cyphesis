@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef ENTITY_FACTORY_H
-#define ENTITY_FACTORY_H
+#ifndef RULESETS_ENTITY_FACTORY_H
+#define RULESETS_ENTITY_FACTORY_H
 
 #include <string>
 #include <map>
@@ -31,7 +31,7 @@ class EntityFactory {
             delete m_instance;
         }
     }
-    Thing * newThing(const string &, const Atlas::Message::Object &, WorldRouter *);
+    Thing * newThing(const std::string &, const Atlas::Message::Object &, WorldRouter *);
     void flushFactories();
 };
 

@@ -15,7 +15,7 @@ class Fire : public RootOperation {
     static Fire Instantiate() {
         Fire value;
         value.SetParents(Message::Object::ListType(1, "fire"));
-        value.SetObjtype(string("op"));
+        value.SetObjtype(std::string("op"));
         return value;
     }
 };

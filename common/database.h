@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#ifndef DATABSE_H
-#define DATABSE_H
+#ifndef COMMON_DATABSE_H
+#define COMMON_DATABSE_H
 
 #include "config.h"
 
@@ -18,6 +18,7 @@
 #include <Atlas/Message/DecoderBase.h>
 
 class Decoder : public Atlas::Message::DecoderBase {
+  private:
     virtual void ObjectArrived(const Atlas::Message::Object& obj) {
         m_check = true;
         m_obj = obj;
@@ -40,7 +41,7 @@ class Database {
     Db world_db;
     Db mind_db;
     Db server_db;
-    string db_file;
+    std::string db_file;
     Decoder m_d;
 
     Database();
@@ -95,4 +96,4 @@ class Database {
 
 #endif // CYPHESIS_USE_DB3
 
-#endif // DATABSE_H
+#endif // COMMON_DATABSE_H

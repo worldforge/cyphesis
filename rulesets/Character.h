@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef CHARACTER_H
-#define CHARACTER_H
+#ifndef RULESETS_CHARACTER_H
+#define RULESETS_CHARACTER_H
 
 #include "Thing.h"
 
@@ -49,6 +49,7 @@ class Character : public Thing {
     virtual oplist TalkOperation(const Talk & op);
     virtual oplist EatOperation(const Eat & op);
     virtual oplist NourishOperation(const Nourish & op);
+
     virtual oplist mindLoginOperation(const Login & op);
     virtual oplist mindCreateOperation(const Create & op);
     virtual oplist mindActionOperation(const Action & op);
@@ -78,6 +79,7 @@ class Character : public Thing {
     virtual oplist mindDisappearanceOperation(const Disappearance & op);
     virtual oplist mindErrorOperation(const Error & op);
     virtual oplist mindOtherOperation(const RootOperation & op);
+
     virtual oplist w2mLoginOperation(const Login & op);
     virtual oplist w2mActionOperation(const Action & op);
     virtual oplist w2mChopOperation(const Chop & op);
@@ -117,4 +119,4 @@ class Character : public Thing {
     virtual oplist externalOperation(const RootOperation & op);
 };
 
-#endif // CHARACTER_H
+#endif // RULESETS_CHARACTER_H

@@ -110,7 +110,7 @@ static PyObject * Thing_getattr(ThingObject *self, char *name)
         }
     }
     Entity * thing = self->m_thing;
-    string attr(name);
+    std::string attr(name);
     PyObject * ret = Object_asPyObject((*thing)[attr]);
     if (ret == NULL) {
         return Py_FindMethod(Thing_methods, (PyObject *)self, name);
@@ -146,7 +146,7 @@ static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
         return -1;
     }
     Entity * thing = self->m_thing;
-    //string attr(name);
+    //std::string attr(name);
     //if (v == NULL) {
         //thing->attributes.erase(attr);
         //return 0;

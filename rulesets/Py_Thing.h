@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#ifndef PY_THING_H
-#define PY_THING_H
+#ifndef RULESETS_PY_THING_H
+#define RULESETS_PY_THING_H
 
 extern PyTypeObject Thing_Type;
 
@@ -11,4 +11,4 @@ extern PyTypeObject Thing_Type;
 
 ThingObject * newThingObject(PyObject *);
 
-#endif // PY_THING_H
+#endif // RULESETS_PY_THING_H

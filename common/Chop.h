@@ -14,8 +14,8 @@ class Chop : public RootOperation {
     virtual ~Chop() { }
     static Chop Instantiate() {
         Chop value;
-        value.SetParents(Message::Object::ListType(1,string("chop")));
-        value.SetObjtype(string("op"));
+        value.SetParents(Message::Object::ListType(1,std::string("chop")));
+        value.SetObjtype(std::string("op"));
         return value;
     }
 };

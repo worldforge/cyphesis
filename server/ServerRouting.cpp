@@ -16,9 +16,9 @@ static bool debug_flag = false;
 
 using Atlas::Message::Object;
 
-ServerRouting::ServerRouting(CommServer & server, const string & ruleset,
-                             const string & name) :
-        commServer(server), svrRuleset(ruleset), svrName(name),
+ServerRouting::ServerRouting(CommServer & server, const std::string & ruleset,
+                             const std::string & name) :
+        commServer(server), svrRuleset(ruleset), svrName(name), opSerialNo(0),
         world(*new WorldRouter(*this)), lobby(*new Lobby())
 {
     fullid = name;

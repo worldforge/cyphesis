@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef ENTITY_FACTORY_H
-#define ENTITY_FACTORY_H
+#ifndef RULESETS_ENTITY_FACTORY_H
+#define RULESETS_ENTITY_FACTORY_H
 
 #include <varconf/Config.h>
 
@@ -15,6 +15,7 @@ class BaseMind;
 class Routing;
 
 class MindFactory {
+  private:
     MindFactory();
     static MindFactory * m_instance;
 
@@ -25,9 +26,10 @@ class MindFactory {
         }
         return m_instance;
     }
-    void readRuleset(const string & file);
-    BaseMind * newMind(const string &, const string &, const string &,
-                       const Atlas::Message::Object &, Routing *);
+    void readRuleset(const std::string & file);
+    BaseMind * newMind(const std::string &, const std::string &,
+                       const std::string &, const Atlas::Message::Object &,
+                       Routing *);
 };
 
-#endif // ENTITY_FACTORY_H
+#endif // RULESETS_ENTITY_FACTORY_H

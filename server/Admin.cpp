@@ -22,8 +22,8 @@
 
 using Atlas::Message::Object;
 
-Admin::Admin(Connection * conn, const string& username, const string& passwd) :
-             Account(conn, username, passwd)
+Admin::Admin(Connection * conn, const std::string& username,
+             const std::string& passwd) : Account(conn, username, passwd)
 {
     type = "admin";
 }
@@ -78,7 +78,7 @@ oplist Admin::SaveOperation(const Save & op)
     return oplist(1,info);
 }
 
-void Admin::load(Persistance * p, const string & id, int & count)
+void Admin::load(Persistance * p, const std::string & id, int & count)
 {
     Object entity;
     if (!p->getEntity(id, entity)) {
@@ -90,7 +90,7 @@ void Admin::load(Persistance * p, const string & id, int & count)
     Object::MapType & emap = entity.AsMap();
     Object::MapType::iterator I;
     I = emap.find("parents");
-    string type("thing");
+    std::string type("thing");
     if ((I != emap.end()) && I->second.IsList()) {
         type = I->second.AsList().front().AsString();
     }
@@ -126,7 +126,7 @@ oplist Admin::LoadOperation(const Load & op)
         const Object::MapType & m = ent.AsMap();
         Object::MapType::const_iterator I = m.find("id");
         if ((I != m.end()) && (I->second.IsString())) {
-            const string & id = I->second.AsString();
+            const std::string & id = I->second.AsString();
             Entity * ent = world->getObject(id);
             if ((ent == NULL) || (!ent->isCharacter)) {
                 continue;
@@ -155,9 +155,9 @@ oplist Admin::GetOperation(const Get & op)
     const Object & ent = op.GetArgs().front();
     try {
         const Object::MapType & emap = ent.AsMap();
-        const string & id = emap.find("id")->second.AsString();
+        const std::string & id = emap.find("id")->second.AsString();
         if (id == "server") {
-            const string & cmd = emap.find("cmd")->second.AsString();
+            const std::string & cmd = emap.find("cmd")->second.AsString();
             Object arg;
             Object::MapType::const_iterator I = emap.find("arg");
             if (I != emap.end()) {
@@ -167,7 +167,7 @@ oplist Admin::GetOperation(const Get & op)
                 if (!arg.IsString()) {
                     return error(op, "query with no id given");
                 }
-                const string & ent_id = arg.AsString();
+                const std::string & ent_id = arg.AsString();
                 if (ent_id.empty()) {
                     return error(op, "query id invalid");
                 }
@@ -195,9 +195,9 @@ oplist Admin::SetOperation(const Set & op)
     const Object & ent = op.GetArgs().front();
     try {
         const Object::MapType & emap = ent.AsMap();
-        const string & id = emap.find("id")->second.AsString();
+        const std::string & id = emap.find("id")->second.AsString();
         if (id == "server") {
-            const string & cmd = emap.find("cmd")->second.AsString();
+            const std::string & cmd = emap.find("cmd")->second.AsString();
             Object arg;
             Object::MapType::const_iterator I = emap.find("arg");
             if (I != emap.end()) {

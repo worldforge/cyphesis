@@ -2,14 +2,14 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef WORLD_TIME_H
-#define WORLD_TIME_H
+#ifndef SERVER_WORLD_TIME_H
+#define SERVER_WORLD_TIME_H
 
 #include <modules/DateTime.h>
 
 #include <list>
 
-// timedata time2type(const string & t);
+// timedata time2type(const std::string & t);
 
 class WorldTime {
   private:
@@ -42,12 +42,12 @@ class WorldTime {
     void update(double secs) { time.update((int)secs); }
     //WorldTime(char * date_time);
     std::string operator[](const std::string & name);
-    //string & __repr__();
-    //string & __str__();
+    //std::string & __repr__();
+    //std::string & __str__();
     bool operator==(const WorldTime & other) const;
-    bool operator==(const string & when) const;
+    bool operator==(const std::string & when) const;
 };
 
 const std::string & seconds2string(double seconds);
 
-#endif // WORLD_TIME_H
+#endif // SERVER_WORLD_TIME_H

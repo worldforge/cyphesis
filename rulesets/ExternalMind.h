@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef EXTERNAL_MIND_H
-#define EXTERNAL_MIND_H
+#ifndef RULESETS_EXTERNAL_MIND_H
+#define RULESETS_EXTERNAL_MIND_H
 
 #include "BaseMind.h"
 
@@ -13,9 +13,9 @@ class ExternalMind : public BaseMind {
   public:
     Connection & connection;
 
-    ExternalMind(Connection & connection, string & id, string & name);
+    ExternalMind(Connection & connection, std::string & id, std::string & name);
 
     virtual oplist message(const RootOperation & op);
 };
 
-#endif // EXTERNAL_MIND_H
+#endif // RULESETS_EXTERNAL_MIND_H

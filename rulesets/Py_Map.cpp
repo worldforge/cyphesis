@@ -61,7 +61,7 @@ static PyObject * Map_find_by_type(MapObject * self, PyObject * args)
         return NULL;
     }
     ThingObject * thing;
-    list<Entity *> res = self->m_map->findByType(string(what));
+    list<Entity *> res = self->m_map->findByType(std::string(what));
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
         return NULL;
@@ -227,7 +227,7 @@ static PyObject * Map_add_hooks_append(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an string");
         return NULL;
     }
-    self->m_map->addHooks.push_back(string(method));
+    self->m_map->getAddHooks().push_back(std::string(method));
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -244,7 +244,7 @@ static PyObject * Map_update_hooks_append(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an string");
         return NULL;
     }
-    self->m_map->updateHooks.push_back(string(method));
+    self->m_map->getUpdateHooks().push_back(std::string(method));
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -261,7 +261,7 @@ static PyObject * Map_delete_hooks_append(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an string");
         return NULL;
     }
-    self->m_map->deleteHooks.push_back(string(method));
+    self->m_map->getDeleteHooks().push_back(std::string(method));
 
     Py_INCREF(Py_None);
     return Py_None;

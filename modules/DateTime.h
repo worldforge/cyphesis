@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef DATE_TIME_H
-#define DATE_TIME_H
+#ifndef COMMON_DATE_TIME_H
+#define COMMON_DATE_TIME_H
 
 #include <string>
 
@@ -59,4 +59,4 @@ inline ostream & operator<<(ostream& s, const DateTime& d) {
 }
 
 
-#endif // DATE_TIME_H
+#endif // COMMON_DATE_TIME_H

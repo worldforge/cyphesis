@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#ifndef PY_WORLDTIME_H
-#define PY_WORLDTIME_H
+#ifndef RULESETS_PY_WORLDTIME_H
+#define RULESETS_PY_WORLDTIME_H
 
 extern PyTypeObject WorldTime_Type;
 
@@ -11,4 +11,4 @@ extern PyTypeObject WorldTime_Type;
 
 WorldTimeObject * newWorldTimeObject(PyObject *);
 
-#endif // PY_WORLDTIME_H
+#endif // RULESETS_PY_WORLDTIME_H

@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef FOOD_H
-#define FOOD_H
+#ifndef RULESETS_FOOD_H
+#define RULESETS_FOOD_H
 
 #include "Thing.h"
 
@@ -22,4 +22,4 @@ class Food : public Thing {
     virtual oplist FireOperation(const Fire & op);
 };
 
-#endif // FOOD_H
+#endif // RULESETS_FOOD_H

@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#ifndef PY_VECTOR3D_H
-#define PY_VECTOR3D_H
+#ifndef RULESETS_PY_VECTOR3D_H
+#define RULESETS_PY_VECTOR3D_H
 
 extern PyTypeObject Vector3D_Type;
 
@@ -11,4 +11,4 @@ extern PyTypeObject Vector3D_Type;
 
 Vector3DObject * newVector3DObject(PyObject *);
 
-#endif // PY_VECTOR3D_H
+#endif // RULESETS_PY_VECTOR3D_H

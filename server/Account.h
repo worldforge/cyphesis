@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef ACCOUNT_H
-#define ACCOUNT_H
+#ifndef SERVER_ACCOUNT_H
+#define SERVER_ACCOUNT_H
 
 #include "OOG_Thing.h"
 
@@ -13,17 +13,17 @@ class WorldRouter;
 class Account : public OOGThing {
     friend class Connection;
     edict_t charactersDict;
-    BaseEntity * addCharacter(const string &, const Atlas::Message::Object &);
+    BaseEntity * addCharacter(const std::string &, const Atlas::Message::Object &);
   protected:
     virtual oplist characterError(const Create &, const Atlas::Message::Object::MapType &) const = 0;
 
   public:
     WorldRouter * world;
     Connection * connection;
-    string password;
-    string type;
+    std::string password;
+    std::string type;
 
-    Account(Connection * conn, const string & username, const string & passwd);
+    Account(Connection * conn, const std::string & username, const std::string & passwd);
     virtual ~Account();
 
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
@@ -34,4 +34,4 @@ class Account : public OOGThing {
     virtual oplist LookOperation(const Look & op);
 };
 
-#endif // ACCOUNT_H
+#endif // SERVER_ACCOUNT_H

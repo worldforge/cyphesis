@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#ifndef STRUCTURE_H
-#define STRUCTURE_H
+#ifndef RULESETS_STRUCTURE_H
+#define RULESETS_STRUCTURE_H
 
 #include "Thing.h"
 
@@ -18,4 +18,4 @@ class Structure : public Thing {
     }
 };
 
-#endif // STRUCTURE_H
+#endif // RULESETS_STRUCTURE_H

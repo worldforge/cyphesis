@@ -25,9 +25,10 @@ static const bool debug_flag = false;
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::Info;
 
-Account::Account(Connection* conn, const string& username, const string& passwd)
-               : world(NULL), connection(conn), password(passwd),
-                 type("account")
+Account::Account(Connection * conn, const std::string & username,
+                 const std::string& passwd)
+                 : world(NULL), connection(conn), password(passwd),
+                   type("account")
 {
     fullid = username;
 }
@@ -36,7 +37,7 @@ Account::~Account()
 {
 }
 
-BaseEntity * Account::addCharacter(const string & typestr, const Object & ent)
+BaseEntity * Account::addCharacter(const std::string & typestr, const Object & ent)
 {
     debug(cout << "Account::Add_character" << endl << flush;);
     Entity * chr = world->addObject(typestr, ent);
@@ -122,7 +123,7 @@ oplist Account::CreateOperation(const Create & op)
     if (error.size() != 0) {
         return error;
     }
-    const string & typestr = I->second.AsList().front().AsString();
+    const std::string & typestr = I->second.AsList().front().AsString();
     debug(cout << "Account creating a " << typestr << " object" << endl << flush;);
 
     BaseEntity * obj = addCharacter(typestr, ent);
@@ -152,13 +153,13 @@ oplist Account::TalkOperation(const Talk & op)
 
 oplist Account::LookOperation(const Look & op)
 {
-    const string & to = op.GetTo();
-    //if (to.empty()) {
-        //Sight * s = new Sight(Sight::Instantiate());
-        //s->SetTo(fullid);
-        //s->SetArgs(Object::ListType(1,connection->server.lobby.asObject()));
-        //return oplist(1,s);
-    //}
+    const std::string & to = op.GetTo();
+    if (to.empty()) {
+        Sight * s = new Sight(Sight::Instantiate());
+        s->SetTo(fullid);
+        s->SetArgs(Object::ListType(1,connection->server.lobby.asObject()));
+        return oplist(1,s);
+    }
     edict_t::const_iterator I = charactersDict.find(to);
     if (I != charactersDict.end()) {
         Sight * s = new Sight(Sight::Instantiate());
@@ -166,5 +167,13 @@ oplist Account::LookOperation(const Look & op)
         s->SetArgs(Object::ListType(1,I->second->asObject()));
         return oplist(1,s);
     }
-    return error(op, "Unknown character");
+    const adict_t & accounts = connection->server.lobby.getAccounts();
+    adict_t::const_iterator J = accounts.find(to);
+    if (J != accounts.end()) {
+        Sight * s = new Sight(Sight::Instantiate());
+        s->SetTo(fullid);
+        s->SetArgs(Object::ListType(1,J->second->asObject()));
+        return oplist(1,s);
+    }
+    return error(op, "Unknown look target");
 }

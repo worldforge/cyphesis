@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef CREATOR_H
-#define CREATOR_H
+#ifndef RULESETS_CREATOR_H
+#define RULESETS_CREATOR_H
 
 #include "Character.h"
 
@@ -15,4 +15,4 @@ class Creator : public Character {
     virtual oplist externalOperation(const RootOperation & op);
 };
 
-#endif // CREATOR_H
+#endif // RULESETS_CREATOR_H

@@ -33,8 +33,8 @@ class Entity : public BaseEntity {
     Location location;		// Full details of location inc. ref pos and vel
     elist_t contains;		// List of entities which use this as ref
     double status;		// Health/damage coeficient
-    string type;		// Easy access to primary parent
-    string name;		// Entities name
+    std::string type;		// Easy access to primary parent
+    std::string name;		// Entities name
     double weight;		// Weight in kg
     bool isCharacter;		// Is this a character
     bool deleted;		// Has this been deleted
@@ -43,8 +43,8 @@ class Entity : public BaseEntity {
     Entity();
     virtual ~Entity();
 
-    virtual const Atlas::Message::Object & operator[](const string & aname);
-    virtual void set(const string & aname, const Atlas::Message::Object & attr);
+    virtual const Atlas::Message::Object & operator[](const std::string & aname);
+    virtual void set(const std::string & aname, const Atlas::Message::Object & attr);
     virtual void destroy();
 
     void setScript(Script * scrpt);
@@ -75,7 +75,7 @@ class Entity : public BaseEntity {
     virtual oplist OtherOperation(const RootOperation & op);
 };
 
-inline ostream & operator<<(ostream& s, Location& v)
+inline std::ostream & operator<<(std::ostream& s, Location& v)
 {
     return s << "{" << v.ref->fullid << "," << v.coords << "," << v.velocity << "}";
 }

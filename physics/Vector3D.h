@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef VECTOR_3D_H
-#define VECTOR_3D_H
+#ifndef PHYSICS_VECTOR_3D_H
+#define PHYSICS_VECTOR_3D_H
 
 #include <Atlas/Message/Object.h>
 
@@ -268,4 +268,4 @@ inline ostream & operator<<(ostream& s, const Vector3D& v) {
 }
 
 
-#endif // VECTOR_3D_H
+#endif // PHYSICS_VECTOR_3D_H

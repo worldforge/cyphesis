@@ -128,7 +128,7 @@ void Persistance::putAccount(const Account & ac)
     putObject(account_db, ac.asObject(), ac.fullid.c_str());
 }
 
-bool Persistance::getEntity(const string & id, Object & entity)
+bool Persistance::getEntity(const std::string & id, Object & entity)
 {
     return getObject(world_db, id.c_str(), entity);
 }
@@ -138,12 +138,12 @@ void Persistance::putEntity(const Entity & be)
     putObject(world_db, be.asObject(), be.fullid.c_str());
 }
 
-bool Persistance::getMind(const string & id, Object & entity)
+bool Persistance::getMind(const std::string & id, Object & entity)
 {
     return getObject(mind_db, id.c_str(), entity);
 }
 
-void Persistance::putMind(const string & id, const Object & be)
+void Persistance::putMind(const std::string & id, const Object & be)
 {
     putObject(mind_db, be, id.c_str());
 }

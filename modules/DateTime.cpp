@@ -67,7 +67,7 @@ void DateTime::update(int t)
     set(t);
 }
 
-string DateTime::asString()
+std::string DateTime::asString()
 {
     //Convert date into string
     //return "%04i-%02i-%02i %02i:%02i:%04.1f" %

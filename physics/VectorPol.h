@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#ifndef VECTOR_POL_H
-#define VECTOR_POL_H
+#ifndef PHYSICS_VECTOR_POL_H
+#define PHYSICS_VECTOR_POL_H
 
 // This describes the position of an object in the sky in such a way as the
 // longitude of the viewpoint, and the rotation of the world can easily
@@ -32,4 +32,4 @@ class VectorPol {
     }
 };
 
-#endif // VECTOR_POL_H
+#endif // PHYSICS_VECTOR_POL_H

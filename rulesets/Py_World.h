@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#ifndef PY_WORLD_H
-#define PY_WORLD_H
+#ifndef RULESETS_PY_WORLD_H
+#define RULESETS_PY_WORLD_H
 
 extern PyTypeObject World_Type;
 
@@ -11,4 +11,4 @@ extern PyTypeObject World_Type;
 
 WorldObject * newWorldObject(PyObject *);
 
-#endif // PY_WORLD_H
+#endif // RULESETS_PY_WORLD_H

@@ -203,11 +203,11 @@ void CommClient::ObjectArrived(const Talk & op)
 
 void CommClient::ObjectArrived(const Get & op)
 {
-    debug(cout << "A get operation thingy here!" << endl << flush;);
+    cout << "A get operation thingy here!" << endl << flush;
     message(op);
 }
 
-CommServer::CommServer(const string & ruleset, const string & ident) :
+CommServer::CommServer(const std::string & ruleset, const std::string & ident) :
               metaserverTime(-1), useMetaserver(true),
               identity(ident), server(*new ServerRouting(*this, ruleset, ident))
 {
@@ -474,7 +474,7 @@ const std::string get_hostname()
     if (uname(&host_ident) != 0) {
         return "UNKNOWN";
     }
-    return string(host_ident.nodename);
+    return std::string(host_ident.nodename);
 }
 
 #include <rulesets/EntityFactory.h>
@@ -493,7 +493,7 @@ int main(int argc, char ** argv)
     char * home;
     bool home_dir_config = false;
     if ((home = getenv("HOME")) != NULL) {
-        home_dir_config = global_conf->readFromFile(string(home) + "/.cyphesis.vconf");
+        home_dir_config = global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
     // Check the command line options, and if the installation directory
     // has been overriden, either on the command line or in the users
@@ -504,7 +504,7 @@ int main(int argc, char ** argv)
     if (global_conf->findItem("cyphesis", "directory")) {
         share_directory = global_conf->getItem("cyphesis", "directory");
         if (home != NULL) {
-            global_conf->writeToFile(string(home) + "/.cyphesis.vconf");
+            global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf");
         }
     }
     // Load up the rest of the system config file, and then ensure that
@@ -525,7 +525,7 @@ int main(int argc, char ** argv)
         return 1;
     }
     if (home_dir_config) {
-        global_conf->readFromFile(string(home) + "/.cyphesis.vconf");
+        global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
     global_conf->getCmdline(argc, argv);
     // Load up the rulesets. Rulesets are hierarchical, and are read in until

@@ -23,11 +23,12 @@ PythonMindScript::~PythonMindScript()
 {
 }
 
-bool PythonMindScript::Operation(const string& op_type, const RootOperation& op,
-                        oplist & ret_list, RootOperation * sub_op)
+bool PythonMindScript::Operation(const std::string & op_type,
+                                 const RootOperation & op,
+                                 oplist & ret_list, RootOperation * sub_op)
 {
     debug( cout << "Got script object for " << endl << flush;);
-    string op_name = op_type+"_operation";
+    std::string op_name = op_type+"_operation";
     // Construct apropriate python object thingies from op
     if (!PyObject_HasAttrString(scriptObject, (char *)(op_name.c_str()))) {
         debug( cout << "No method found for " << op_name << endl << flush;);
@@ -88,7 +89,7 @@ bool PythonMindScript::Operation(const string& op_type, const RootOperation& op,
     return false;
 }
 
-void PythonMindScript::hook(const string & method, Entity * object)
+void PythonMindScript::hook(const std::string & method, Entity * object)
 {
     ThingObject * obj = newThingObject(NULL);
     obj->m_thing = object;

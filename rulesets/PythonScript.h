@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#ifndef PYTHON_SCRIPT_H
-#define PYTHON_SCRIPT_H
+#ifndef RULESETS_PYTHON_SCRIPT_H
+#define RULESETS_PYTHON_SCRIPT_H
 
 #include "Script.h"
 
@@ -18,10 +18,10 @@ class PythonScript : public Script {
   public:
     PythonScript(PyObject *, Entity &);
     virtual ~PythonScript();
-    virtual bool Operation(const string&,
+    virtual bool Operation(const std::string&,
                       const Atlas::Objects::Operation::RootOperation&, oplist&,
                       Atlas::Objects::Operation::RootOperation * sub_op=NULL) = 0;
-    virtual void hook(const string &, Entity *) = 0;
+    virtual void hook(const std::string &, Entity *) = 0;
 };
 
-#endif // PYTHON_SCRIPT_H
+#endif // RULESETS_PYTHON_SCRIPT_H

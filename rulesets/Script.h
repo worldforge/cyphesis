@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#ifndef SCRIPT_H
-#define SCRIPT_H
+#ifndef RULESETS_SCRIPT_H
+#define RULESETS_SCRIPT_H
 
 #include <string>
 
@@ -17,10 +17,10 @@ class Script {
   public:
     Script();
     virtual ~Script();
-    virtual bool Operation(const string &,
+    virtual bool Operation(const std::string &,
                       const Atlas::Objects::Operation::RootOperation&, oplist&,
                       Atlas::Objects::Operation::RootOperation * sub_op=NULL);
-    virtual void hook(const string &, Entity *);
+    virtual void hook(const std::string &, Entity *);
 };
 
-#endif // SCRIPT_H
+#endif // RULESETS_SCRIPT_H

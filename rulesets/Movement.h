@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef MOVEMENT_H
-#define MOVEMENT_H
+#ifndef RULESETS_MOVEMENT_H
+#define RULESETS_MOVEMENT_H
 
 class Character;
 
@@ -39,4 +39,4 @@ class Movement {
     virtual Move * genMoveOperation(Location *) = 0;
 };
 
-#endif // MOVEMENT_H
+#endif // RULESETS_MOVEMENT_H

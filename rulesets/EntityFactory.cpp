@@ -44,13 +44,13 @@ EntityFactory::EntityFactory()
     factories["structure"] = new ThingFactory<Structure>();
 }
 
-Thing * EntityFactory::newThing(const string & type,const Object & ent, WorldRouter * svr)
+Thing * EntityFactory::newThing(const std::string & type,const Object & ent, WorldRouter * svr)
 {
     if (!ent.IsMap()) {
          debug( cout << "Entity is not a map" << endl << flush;);
     }
     Thing * thing = NULL;
-    string py_package;
+    std::string py_package;
     fdict_t::iterator I = factories.find(type);
     if (type.size() == 0) {
         thing = new Thing();
@@ -59,7 +59,7 @@ Thing * EntityFactory::newThing(const string & type,const Object & ent, WorldRou
     } else {
         fdict_t::const_iterator J;
         for(J = factories.begin(); J != factories.end(); J++) {
-            const string & f_type = J->first;
+            const std::string & f_type = J->first;
             if (global_conf->findItem(f_type, type)) {
                 thing = J->second->newThing();
                 py_package = global_conf->getItem(f_type, type);

@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef ROUTING_H
-#define ROUTING_H
+#ifndef SERVER_ROUTING_H
+#define SERVER_ROUTING_H
 
 #include "OOG_Thing.h"
 
@@ -25,13 +25,13 @@ class Routing : public OOGThing {
         delete obj;
     }
 
-    BaseEntity * getObject(const string & fid) const {
+    BaseEntity * getObject(const std::string & fid) const {
         return Routing::objects[fid];
     }
 
-    BaseEntity * findObject(const string & fid) const {
+    BaseEntity * findObject(const std::string & fid) const {
         return Routing::objects[fid];
     }
 };
 
-#endif // ROUTING_H
+#endif // SERVER_ROUTING_H

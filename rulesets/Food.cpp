@@ -37,7 +37,7 @@ oplist Food::EatOperation(const Eat & op)
     s->SetTo(fullid);
     s->SetArgs(Object::ListType(1,self_ent));
 
-    const string & to = op.GetFrom();
+    const std::string & to = op.GetFrom();
     Object::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["weight"] = weight;

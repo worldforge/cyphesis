@@ -1,6 +1,34 @@
+2001-08-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/inheritance.cpp, common/inheritance.h: Added code to store
+	  atlas object inheritance tree.
+
+	* server/Connection.cpp: Added code to allow client to query
+	  atlas object inheritance using get ops.
+
+	* example/client/InheritanceClient.*: Added example client which
+	  queries the inheritance tree of the server.
+
+	* rulesets/MemMap.h, rulesets/Py_Map.cpp: Made hooks lists private,
+	  and added methods to access them.
+
+	* server/Account.cpp, server/Lobby.h: Added correct handling of OOG
+	  look ops when looking at own characters, other accounts, or the
+	  lobby.
+
+	* server/ServerRouting.h: Added function to generate serial numbers
+	  for operations.
+
+	* server/WorldRouter.cpp: Assign genuine serial number to all
+	  in game operations as they are pulled off the queue.
+
+	* Cleaned up header file multiple inclusion checks for uniqueness,
+	  and made sure of ISO compliant use of std::string.
+
 2001-07-28  Al Riddoch  <alriddoch@zepler.org>
 
-	* server/WorldRouter.cpp: Fixed setting parents on world entity.
+	* server/WorldRouter.cpp: Fixed setting parents and objtype on world
+	  entity.
 
 2001-07-23  Al Riddoch  <alriddoch@zepler.org>
 

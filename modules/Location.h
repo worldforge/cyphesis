@@ -2,15 +2,15 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef LOCATION_H
-#define LOCATION_H
+#ifndef MODULES_LOCATION_H
+#define MODULES_LOCATION_H
 
 #include <physics/Vector3D.h>
 
 class Entity;
 
 class Location {
-public:
+  public:
     Entity * ref;
     Vector3D coords;   // Coords relative to ref entity
     Vector3D velocity; // Veclociy vector, relative to ref entity.
@@ -88,4 +88,4 @@ public:
     friend ostream & operator<<(ostream& s, Location& v);
 };
 
-#endif // LOCATION_H
+#endif // MODULES_LOCATION_H

@@ -8,7 +8,7 @@
 
 using Atlas::Message::Object;
 
-ClientAccount::ClientAccount(const string & name, ClientConnection & con) :
+ClientAccount::ClientAccount(const std::string & name, ClientConnection & con) :
     connection(con)
 {
     fullid = name;
@@ -25,7 +25,7 @@ oplist ClientAccount::InfoOperation(const Info & op)
     cout << "Account got info op" << endl << flush;
     try {
         Object ent = op.GetArgs().front();
-        const string & entid = ent.AsMap()["id"].AsString();
+        const std::string & entid = ent.AsMap()["id"].AsString();
         // This idea is that this info operation contains details of a new
         // entity created in the server which belongs to this account.
         // See existing server code for how the mind objects is created.

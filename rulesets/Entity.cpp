@@ -46,7 +46,7 @@ Entity::~Entity()
     }
 }
 
-const Object & Entity::operator[](const string & aname)
+const Object & Entity::operator[](const std::string & aname)
 {
     if (aname == "status") {
         attributes[aname] = Object(status);
@@ -73,7 +73,7 @@ const Object & Entity::operator[](const string & aname)
     return attributes[aname];
 }
 
-void Entity::set(const string & aname, const Object & attr)
+void Entity::set(const std::string & aname, const Object & attr)
 {
     if ((aname == "status") && attr.IsNum()) {
         status = attr.AsNum();
@@ -145,7 +145,7 @@ void Entity::addToObject(Object::MapType & omap) const
 void Entity::merge(const Object::MapType & entmap)
 {
     for (Object::MapType::const_iterator I=entmap.begin();I!=entmap.end();I++) {
-        const string & key = I->first;
+        const std::string & key = I->first;
         if ((key == "parents")||(key == "bbox") || (key == "bmedian")) continue;
         if ((key == "pos") || (key == "loc") || (key == "velocity")) continue;
         if ((key == "face") || (key == "contains")) continue;
@@ -160,7 +160,7 @@ void Entity::getLocation(const Object::MapType & entmap, edict_t & eobjects)
     if (I == entmap.end()) { return; }
     debug( cout << "Thing::getLocation, getting it" << endl << flush;);
     try {
-        const string & ref_id = I->second.AsString();
+        const std::string & ref_id = I->second.AsString();
         edict_t::const_iterator J = eobjects.find(ref_id);
         if (J == eobjects.end()) {
             debug( cout << "ERROR: Can't get ref from objects dictionary" << endl << flush;);
@@ -345,7 +345,7 @@ oplist Entity::DisappearanceOperation(const Disappearance & op)
 
 oplist Entity::OtherOperation(const RootOperation & op)
 {
-    const string & op_type = op.GetParents().front().AsString();
+    const std::string & op_type = op.GetParents().front().AsString();
     oplist res;
     debug(cout << "Entity " << fullid << " got custom " << op_type << " op"
                << endl << flush;);

@@ -8,8 +8,8 @@
 
 using Atlas::Message::Object;
 
-Player::Player(Connection* conn, const string& username, const string& passwd) :
-               Account(conn, username, passwd)
+Player::Player(Connection* conn, const std::string& username,
+               const std::string& passwd) : Account(conn, username, passwd)
 {
     type = "player";
 }
@@ -27,8 +27,7 @@ oplist Player::characterError(const Create& op,const Object::MapType& ent) const
         return error(op, "Object to be created cannot start with admin");
     }
 
-    const string& type= ent.find("parents")->second.AsList().front().AsString();
-    
+    const std::string& type= ent.find("parents")->second.AsList().front().AsString(); 
     if ((type!="character") && (type!="archer") && (type!="druid") &&
         (type!="farmer") && (type!="khatinid") && (type!="guard") &&
         (type!="butcher") && (type!="merchant") && (type!="seller") &&

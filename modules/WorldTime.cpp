@@ -9,7 +9,7 @@
 #include "WorldTime.h"
 
 
-//timedata time2type(const string & t) {
+//timedata time2type(const std::string & t) {
     //return timeInfo[t][1];
 //}
 
@@ -23,7 +23,7 @@ static inline double days(const double & n) { return hours(24)*n; }
 static inline double months(const double & n) { return days(30)*n; }
 static inline double years(const double & n) { return months(12)*n; }
 
-inline const string & seconds2string(double seconds) {
+inline const std::string & seconds2string(double seconds) {
     // date_time=DateTime(seconds);
     // return str(date_time);
 }
@@ -43,11 +43,11 @@ void WorldTime::initTimeInfo() {
     night.push_front(23); night.push_front(22); night.push_front(21);
     timeInfo["night"] = period(night,"daily");
     timeInfo["now"] = period(crange(0,23), "daily");
-    std::list<string> seasons(1, "summer");
+    std::list<std::string> seasons(1, "summer");
     seasons.push_back("autumn");
     seasons.push_back("winter");
     seasons.push_back("spring");
-    std::list<string>::const_iterator I;
+    std::list<std::string>::const_iterator I;
     for(I = seasons.begin(); I != seasons.end(); I++) {
         range::const_iterator J;
         range & months = timeInfo[*I].first;
@@ -63,7 +63,7 @@ void WorldTime::initTimeInfo() {
     //// time=DateTime(date_time);
 //}
 
-const string & WorldTime::operator[](const string & name)
+const std::string & WorldTime::operator[](const std::string & name)
 {
     //if (name=="season") {
         //return month2season[month];

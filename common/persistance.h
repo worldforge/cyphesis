@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef PERSISTANCE_H
-#define PERSISTANCE_H
+#ifndef COMMON_PERSISTANCE_H
+#define COMMON_PERSISTANCE_H
 
 class Admin;
 class Account;
@@ -38,4 +38,4 @@ class Persistance : public Database {
     void putMind(const std::string &, const Atlas::Message::Object &);
 };
 
-#endif // PERSISTANCE_H
+#endif // COMMON_PERSISTANCE_H

@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef SERVER_ROUTING_METHODS_H
-#define SERVER_ROUTING_METHODS_H
+#ifndef SERVER_SERVER_ROUTING_METHODS_H
+#define SERVER_SERVER_ROUTING_METHODS_H
 
 #include "ServerRouting.h"
 #include "WorldRouter.h"
@@ -19,4 +19,4 @@ inline BaseEntity * ServerRouting::addObject(BaseEntity * obj) {
 }
 
 
-#endif // SERVER_ROUTING_METHODS_H
+#endif // SERVER_SERVER_ROUTING_METHODS_H

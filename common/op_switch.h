@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef OP_SWITCH_H
-#define OP_SWITCH_H
+#ifndef COMMON_OP_SWITCH_H
+#define COMMON_OP_SWITCH_H
 
 #define OP_SWITCH(_op, _op_no, _prefix) \
     switch (_op_no) { \
@@ -149,4 +149,4 @@
             break; \
     }
 
-#endif // OP_SWITCH_H
+#endif // COMMON_OP_SWITCH_H

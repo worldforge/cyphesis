@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef OPERATIONS_H
-#define OPERATIONS_H
+#ifndef COMMON_OPERATIONS_H
+#define COMMON_OPERATIONS_H
 
 // Forward declarations of all the operation classes used in cyphesis. Use
 // of this file reduces complexities in the dependency tree, and speeds up
@@ -82,4 +82,4 @@ using Atlas::Objects::Operation::Cut;
 using Atlas::Objects::Operation::Chop;
 using Atlas::Objects::Operation::Fire;
 
-#endif // OPERATIONS_H
+#endif // COMMON_OPERATIONS_H

@@ -80,6 +80,7 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
     }
     debug(cout << "pulled op off queue" << endl << flush;);
     operationQueue.pop_front();
+    (*I)->SetSerialno(server.getSerialNo());
     return *I;
 }
 
@@ -126,10 +127,10 @@ Entity * WorldRouter::addObject(Entity * obj)
     return (obj);
 }
 
-Entity * WorldRouter::addObject(const string & typestr, const Object & ent,
-                                const string & id)
+Entity * WorldRouter::addObject(const std::string & typestr, const Object & ent,
+                                const std::string & id)
 {
-    debug(cout << "WorldRouter::addObject(string, ent)" << endl << flush;);
+    debug(cout << "WorldRouter::addObject(std::string, ent)" << endl << flush;);
     Entity * obj;
     obj = EntityFactory::instance()->newThing(typestr, ent, this);
     obj->fullid = id;
@@ -167,7 +168,7 @@ inline const elist_t& WorldRouter::broadcastList(const RootOperation & op) const
 {
     const Object::ListType & parents = op.GetParents();
     if ((parents.size() > 0) && (parents.front().IsString())) {
-        const string & parent = parents.front().AsString();
+        const std::string & parent = parents.front().AsString();
         if ((parent == "sight") || (parent == "sound")) {
             return perceptives;
         }
@@ -178,7 +179,7 @@ inline const elist_t& WorldRouter::broadcastList(const RootOperation & op) const
 oplist WorldRouter::operation(const RootOperation * op)
 {
     const RootOperation & op_ref = *op;
-    string to = op_ref.GetTo();
+    std::string to = op_ref.GetTo();
     debug(cout << "WorldRouter::operation {" << to << "}" << endl << flush;);
     op_no_t op_type = opEnumerate(*op);
 
@@ -212,7 +213,7 @@ oplist WorldRouter::operation(const RootOperation * op)
         elist_t::const_iterator I;
         for(I = broadcast.begin(); I != broadcast.end(); I++) {
             if (consts::enable_ranges) {
-                const string & from = newop.GetFrom();
+                const std::string & from = newop.GetFrom();
                 edict_t::const_iterator J = eobjects.find(from);
                 if ((from.size() != 0) &&
                     (J != eobjects.end()) &&
@@ -242,7 +243,7 @@ oplist WorldRouter::operation(const RootOperation & op)
 oplist WorldRouter::lookOperation(const Look & op)
 {
     debug(cout << "WorldRouter::Operation(Look)" << endl << flush;);
-    const string & from = op.GetFrom();
+    const std::string & from = op.GetFrom();
     edict_t::const_iterator J = eobjects.find(from);
     if (J == eobjects.end()) {
         debug(cout << "FATAL: Op has invalid from" << endl << flush;);

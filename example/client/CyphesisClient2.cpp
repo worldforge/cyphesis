@@ -51,8 +51,8 @@ extern "C" {
 #endif
 #include <math.h>
 
-string defMessage="No message was given by server!";
-string emptyString="";
+std::string defMessage="No message was given by server!";
+std::string emptyString="";
 
 using namespace Atlas;
 using namespace std;
@@ -93,7 +93,7 @@ void CyphesisClient::login()
    reply_flag = 0;
 
    account->setId("al");
-   account->setAttr("password", string("ping"));
+   account->setAttr("password", std::string("ping"));
 
    l->setArgs1((Root&)account);
 
@@ -194,7 +194,7 @@ void CyphesisClient::createChar()
    erflag = 0;
    reply_flag = 0;
 
-   list<string> parlist(1, string("farmer"));
+   list<std::string> parlist(1, std::string("farmer"));
    character->setParents(parlist);
    character->setName("Al Riddoch");
 
@@ -291,11 +291,11 @@ void CyphesisClient::objectArrived(const Message::Object& o)
 
     for (Message::Object::MapType::const_iterator I = omap.begin();
             I != o.asMap().end(); I++) {
-        cout << I->first << " : " << (I->second.IsString() ? I->second.AsString() : string("NOT A STRING")) << endl << flush;
+        cout << I->first << " : " << (I->second.IsString() ? I->second.AsString() : std::string("NOT A STRING")) << endl << flush;
         if (I->second.isList()) {
             const Message::Object::ListType & alist = I->second.asList();
             for(Message::Object::ListType::const_iterator J = alist.begin(); J != alist.end(); J++) {
-                cout << "-> " << (J->isString() ? J->asString() : string("NOT A STRING")) << endl << flush;
+                cout << "-> " << (J->isString() ? J->asString() : std::string("NOT A STRING")) << endl << flush;
             }
         }
     }

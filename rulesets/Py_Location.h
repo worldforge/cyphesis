@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#ifndef PY_LOCATION_H
-#define PY_LOCATION_H
+#ifndef RULESETS_PY_LOCATION_H
+#define RULESETS_PY_LOCATION_H
 
 extern PyTypeObject Location_Type;
 
@@ -11,4 +11,4 @@ extern PyTypeObject Location_Type;
 
 LocationObject * newLocationObject(PyObject *);
 
-#endif // PY_LOCATION_H
+#endif // RULESETS_PY_LOCATION_H

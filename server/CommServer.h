@@ -2,15 +2,16 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef COMM_SERVER_H
-#define COMM_SERVER_H
+#ifndef SERVER_COMM_SERVER_H
+#define SERVER_COMM_SERVER_H
 
 #include <common/const.h>
 
 extern "C" {
     #include <netinet/in.h>
-    #include "protocol_instructions.h"
 }
+
+#include "protocol_instructions.h"
 
 class CommClient;
 class ServerRouting;
@@ -18,23 +19,25 @@ class ServerRouting;
 typedef std::map<int, CommClient *> client_map_t;
 
 class CommServer {
+  private:
     int serverFd;
     int serverPort;
     client_map_t clients;
+    time_t metaserverTime;
+    struct sockaddr_in meta_sa;
+    int metaFd;
 
     bool accept();
     void idle();
 
     static const int metaserverPort = 8453;
-    time_t metaserverTime;
-    struct sockaddr_in meta_sa;
-    int metaFd;
+
   public:
     bool useMetaserver;
-    const string identity;
+    const std::string identity;
     ServerRouting & server;
 
-    CommServer(const string & ruleset, const string & ident);
+    CommServer(const std::string & ruleset, const std::string & ident);
     ~CommServer();
 
     bool setup(int port);
@@ -44,9 +47,10 @@ class CommServer {
     void metaserverKeepalive();
     void metaserverReply();
     void metaserverTerminate();
+
     int numClients() {
         return clients.size();
     }
 };
 
-#endif // COMM_SERVER_H
+#endif // SERVER_COMM_SERVER_H

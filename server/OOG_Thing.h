@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef OOG_THING_H
-#define OOG_THING_H
+#ifndef SERVER_OOG_THING_H
+#define SERVER_OOG_THING_H
 
 #include <common/BaseEntity.h>
 
@@ -14,4 +14,4 @@ class OOGThing : public BaseEntity {
     virtual oplist OtherOperation(const RootOperation & op);
 };
 
-#endif // OOG_THING_H
+#endif // SERVER_OOG_THING_H

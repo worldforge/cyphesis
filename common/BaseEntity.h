@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef BASE_ENTITY_H
-#define BASE_ENTITY_H
+#ifndef COMMON_BASE_ENTITY_H
+#define COMMON_BASE_ENTITY_H
 
 #include <common/types.h>
 #include <common/operations.h>
@@ -17,7 +17,7 @@
 
 class BaseEntity {
   public:
-    string fullid;		// String id
+    std::string fullid;		// String id
     bool inGame;		// true if in game object
 
     BaseEntity();
@@ -75,4 +75,4 @@ class BaseEntity {
 
 };
 
-#endif // BASE_ENTITY_H
+#endif // COMMON_BASE_ENTITY_H

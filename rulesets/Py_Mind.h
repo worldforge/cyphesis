@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#ifndef PY_MIND_H
-#define PY_MIND_H
+#ifndef RULESETS_PY_MIND_H
+#define RULESETS_PY_MIND_H
 
 extern PyTypeObject Mind_Type;
 
@@ -11,4 +11,4 @@ extern PyTypeObject Mind_Type;
 
 MindObject * newMindObject(PyObject *);
 
-#endif // PY_MIND_H
+#endif // RULESETS_PY_MIND_H

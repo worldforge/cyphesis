@@ -24,7 +24,7 @@ Stackable::~Stackable()
 {
 }
 
-const Object & Stackable::operator[](const string & aname)
+const Object & Stackable::operator[](const std::string & aname)
 {
     if (aname == "num") {
         attributes[aname] = Object(num);
@@ -32,7 +32,7 @@ const Object & Stackable::operator[](const string & aname)
     return Thing::operator[](aname);
 }
 
-void Stackable::set(const string & aname, const Object & attr)
+void Stackable::set(const std::string & aname, const Object & attr)
 {
     if ((aname == "num") && attr.IsInt()) {
         num = attr.AsInt();
@@ -57,7 +57,7 @@ oplist Stackable::CombineOperation(const Combine & op)
     }
     const Object::ListType & args = op.GetArgs();
     for(Object::ListType::const_iterator I= args.begin(); I!= args.end(); I++) {
-        const string & id = I->AsMap().find("id")->second.AsString();
+        const std::string & id = I->AsMap().find("id")->second.AsString();
         if (id == fullid) { continue; }
         Stackable * obj = (Stackable*)world->getObject(id);
         if (obj->type != type) { continue; }

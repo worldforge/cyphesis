@@ -15,7 +15,7 @@ class Tick : public RootOperation {
     static Tick Instantiate() {
         Tick value;
         value.SetParents(Message::Object::ListType(1,"tick"));
-        value.SetObjtype(string("op"));
+        value.SetObjtype(std::string("op"));
         return value;
     }
 };

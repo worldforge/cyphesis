@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef ADMIN_H
-#define ADMIN_H
+#ifndef SERVER_ADMIN_H
+#define SERVER_ADMIN_H
 
 #include "Account.h"
 
@@ -12,9 +12,10 @@ class Persistance;
 class Admin : public Account {
   protected:
     virtual oplist characterError(const Create &, const Atlas::Message::Object::MapType &) const;
-    void load(Persistance *, const string &, int &);
+    void load(Persistance *, const std::string &, int &);
   public:
-    Admin(Connection * conn, const string & username, const string & passwd);
+    Admin(Connection * conn, const std::string & username,
+                             const std::string & passwd);
     virtual ~Admin();
 
     virtual oplist LoadOperation(const Load & op);
@@ -23,4 +24,4 @@ class Admin : public Account {
     virtual oplist SetOperation(const Set & op);
 };
 
-#endif // ADMIN_H
+#endif // SERVER_ADMIN_H

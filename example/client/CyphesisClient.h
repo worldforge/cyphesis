@@ -56,8 +56,8 @@ private:
    Encoder * encoder;
    Codec<iostream> * codec;
    fstream * ios;
-   string account_id;
-   string character_id;
+   std::string account_id;
+   std::string character_id;
    enum {
       INIT,
       LOGGED_IN,

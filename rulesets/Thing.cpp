@@ -93,7 +93,7 @@ oplist Thing::CreateOperation(const Create & op)
             return error(op, "Object to be created has no type");
         }
         const Object::ListType & parents = I->second.AsList();
-        string type;
+        std::string type;
         if (parents.size() < 1) {
             type = "thing";
         } else {
@@ -153,7 +153,7 @@ oplist Thing::FireOperation(const Fire & op)
     self_ent["id"] = fullid;
     self_ent["status"] = status - (consumed / weight);
 
-    const string & to = fire_ent.find("id")->second.AsString();
+    const std::string & to = fire_ent.find("id")->second.AsString();
     Object::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["weight"] = consumed;
@@ -192,7 +192,7 @@ oplist Thing::MoveOperation(const Move & op)
         if (I == ent.end()) {
             return error(op, "Move location has no ref");
         }
-        const string & ref = I->second.AsString();
+        const std::string & ref = I->second.AsString();
         edict_t::iterator J = world->eobjects.find(ref);
         if (J == world->eobjects.end()) {
             return error(op, "Move location ref invalid");

@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#ifndef PY_MAP_H
-#define PY_MAP_H
+#ifndef RULESETS_PY_MAP_H
+#define RULESETS_PY_MAP_H
 
 extern PyTypeObject Map_Type;
 
@@ -11,4 +11,4 @@ extern PyTypeObject Map_Type;
 
 MapObject * newMapObject(PyObject *);
 
-#endif // PY_MAP_H
+#endif // RULESETS_PY_MAP_H

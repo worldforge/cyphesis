@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef PEDESTRIAN_H
-#define PEDESTRIAN_H
+#ifndef RULESETS_PEDESTRIAN_H
+#define RULESETS_PEDESTRIAN_H
 
 #include <physics/Vector3D.h>
 
@@ -23,4 +23,4 @@ class Pedestrian : public Movement {
     Move * genMoveOperation(Location *);
 };
 
-#endif // PEDESTRIAN_H
+#endif // RULESETS_PEDESTRIAN_H

@@ -7,7 +7,7 @@
 
 extern std::string install_directory;
 extern int exit_flag;
-extern list<string> rulesets;
+extern std::list<std::string> rulesets;
 
 
 #endif // CLIENT_H

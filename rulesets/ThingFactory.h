@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef THING_FACTORY_H
-#define THING_FACTORY_H
+#ifndef RULESETS_THING_FACTORY_H
+#define RULESETS_THING_FACTORY_H
 
 class Thing;
 
@@ -19,4 +19,4 @@ class ThingFactory : public FactoryBase {
     Thing * newThing() { return new T(); }
 };
 
-#endif // THING_FACTORY_H
+#endif // RULESETS_THING_FACTORY_H

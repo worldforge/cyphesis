@@ -59,7 +59,7 @@ class FileDecoder : public Atlas::Message::DecoderBase {
             return;
         }
         m_count++;
-        const string & id = I->second.AsString();
+        const std::string & id = I->second.AsString();
         if (m_worldMerge && (id == "world_0")) {
             std::cout << "Merging into existing world object" << endl << flush;
             if (((I = omap.find("contains")) != omap.end()) &&
@@ -79,7 +79,7 @@ class FileDecoder : public Atlas::Message::DecoderBase {
         }
     }
   public:
-    FileDecoder(const string & filename, WorldBase * db) :
+    FileDecoder(const std::string & filename, WorldBase * db) :
                 m_file(filename.c_str()), m_db(db),
                 m_codec((iostream&)m_file, this), m_count(0)
     {
