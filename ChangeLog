@@ -1,3 +1,8 @@
+2004-06-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cyconvertrules.cpp: Fully implement rule conversion
+	  to new format, including formatted output.
+
 2004-06-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* Remove obsolete or useless tools, and clean up Makefile.
