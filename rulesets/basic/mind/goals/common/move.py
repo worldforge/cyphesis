@@ -235,7 +235,7 @@ class pursuit(Goal):
         dist_vect=distance_to(me.location,lst_of_what[0].location).unit_vector()
         multiply = const.base_velocity * self.direction
         loc = Location(me.location.parent)
-        loc.coordinates =  me_xyz + (dist_vect * multiply)
+        loc.coordinates =  me.location.coordinates + (dist_vect * multiply)
         #print me,multiply,dist,loc.coordinates.distance(other_xyz)
         ent=Entity(me.id,location=loc)
         return Operation("move",ent)

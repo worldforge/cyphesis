@@ -1,5 +1,10 @@
 2004-11-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/move.py: Fix mistake converting
+	  pursuit goal from get_xyz() to distance_to().
+
+2004-11-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/humanoid/construction.py: New currently
 	  non-functional goals for construction related tasks.
 
