@@ -10,7 +10,6 @@
 
 class WorldRouter;
 class ServerRouting;
-class Thing;
 class Entity;
 class World;
 
@@ -41,8 +40,8 @@ class WorldRouter : public OOGThing {
     int idle();
     const double upTime() const;
 
-    Thing * addObject(Thing * obj);
-    Thing * addObject(const string &, const Atlas::Message::Object &,
+    Entity * addObject(Entity * obj);
+    Entity * addObject(const string &, const Atlas::Message::Object &,
                        const string & id = string());
     void delObject(Entity * obj);
 

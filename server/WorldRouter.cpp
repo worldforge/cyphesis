@@ -2,9 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
 
@@ -13,7 +10,7 @@
 #include "WorldRouter.h"
 #include "ServerRouting.h"
 
-#include <rulesets/Thing.h>
+#include <rulesets/Entity.h>
 #include <rulesets/World.h>
 #include <rulesets/EntityFactory.h>
 #include <common/debug.h>
@@ -99,9 +96,9 @@ inline std::string WorldRouter::getId(std::string & name)
     return full_id;
 }
 
-Thing * WorldRouter::addObject(Thing * obj)
+Entity * WorldRouter::addObject(Entity * obj)
 {
-    debug(cout << "WorldRouter::addObject(Thing *)" << endl << flush;);
+    debug(cout << "WorldRouter::addObject(Entity *)" << endl << flush;);
     if (obj->fullid.empty()) {
         obj->fullid=getId(obj->name);
     }
@@ -130,11 +127,11 @@ Thing * WorldRouter::addObject(Thing * obj)
     return (obj);
 }
 
-Thing * WorldRouter::addObject(const string & typestr, const Object & ent,
+Entity * WorldRouter::addObject(const string & typestr, const Object & ent,
                                 const string & id)
 {
     debug(cout << "WorldRouter::addObject(string, ent)" << endl << flush;);
-    Thing * obj;
+    Entity * obj;
     obj = EntityFactory::instance()->newThing(typestr, ent, this);
     obj->fullid = id;
     return addObject(obj);

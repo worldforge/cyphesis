@@ -1,5 +1,16 @@
 2001-06-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.h, server/WorldRouter.cpp, rulesets/Thing.cpp,
+	  server/Account.cpp: Modified server to use Entity * instead
+	  of Thing *.
+
+	* Removed unnecessary includes from many files.
+
+	* common/config.h, configure.in, common/persistance.cpp:
+	  More config changes to try and get it working on Debian.
+
+2001-06-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cydbload.cpp: Added parameter handling so any file can
 	  be loaded into the database.
 

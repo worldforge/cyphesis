@@ -52,7 +52,7 @@ void Persistance::saveAdminAccount(Account & adm)
     adm_file.close();
 }
 
-#ifdef HAVE_LIBDB_CXX
+#ifdef CYPHESIS_USE_DB3
 
 // This is the version of the persistance code which is enabled if 
 // there is db support.

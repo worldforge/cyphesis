@@ -2,19 +2,10 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Decoder.h>
-#include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Info.h>
-
-#include <common/Chop.h>
-#include <common/Cut.h>
-#include <common/Eat.h>
-#include <common/Fire.h>
 
 #include <common/log.h>
 #include <common/debug.h>
@@ -48,7 +39,7 @@ Account::~Account()
 BaseEntity * Account::addCharacter(const string & typestr, const Object & ent)
 {
     debug(cout << "Account::Add_character" << endl << flush;);
-    Thing * chr = world->addObject(typestr, ent);
+    Entity * chr = world->addObject(typestr, ent);
     debug(cout << "Added" << endl << flush;);
     if (!chr->location) {
         debug(cout << "Setting location" << endl << flush;);

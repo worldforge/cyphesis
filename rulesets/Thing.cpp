@@ -92,7 +92,7 @@ oplist Thing::CreateOperation(const Create & op)
             type = parents.front().AsString();
         }
         debug( cout << fullid << " creating " << type;);
-        Thing * obj = world->addObject(type,ent);
+        Entity * obj = world->addObject(type,ent);
         if (!obj->location) {
             obj->location.ref = location.ref;
             obj->location.coords = location.coords;

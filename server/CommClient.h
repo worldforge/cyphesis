@@ -55,7 +55,7 @@ class CommClient : Atlas::Objects::Decoder {
         codec->Poll();
     }
 
-    void send(const RootOperation * op) {
+    void send(const Atlas::Objects::Operation::RootOperation * op) {
         if (op) {
             encoder->StreamMessage(op);
             clientIos << flush;
@@ -66,7 +66,7 @@ class CommClient : Atlas::Objects::Decoder {
     int eof() { return clientIos.eof(); }
     int getFd() { return clientFd; }
 
-    void message(const RootOperation &);
+    void message(const Atlas::Objects::Operation::RootOperation &);
     bool setup();
 };
 

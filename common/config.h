@@ -7,7 +7,7 @@
 
 #include "../config.h"
 
-#ifdef HAVE_LIBDB_CXX
+#if defined(HAVE_LIBDB_CXX) || defined(HAVE_LIBDB3_CXX)
 
 #define CYPHESIS_USE_DB3
 
