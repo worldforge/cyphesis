@@ -67,7 +67,7 @@ Entitytest_LDADD = ../modules/Location.o ../rulesets/Entity.o \
                    ../common/custom.o ../common/operations.o
 
 Areatest_SOURCES = Areatest.cpp
-Areatest_LDADD = ../modules/Location.o ../rulesets/Area.o \
+Areatest_LDADD = ../modules/Location.o ../physics/BBox.o ../rulesets/Area.o \
                  ../rulesets/Entity.o ../rulesets/Thing.o \
                  ../rulesets/Script.o ../common/inheritance.o \
                  ../common/BaseEntity.o ../common/log.o \
@@ -75,7 +75,7 @@ Areatest_LDADD = ../modules/Location.o ../rulesets/Area.o \
                  ../common/custom.o ../common/operations.o ../common/const.o
 
 Foodtest_SOURCES = Foodtest.cpp
-Foodtest_LDADD = ../modules/Location.o ../rulesets/Food.o \
+Foodtest_LDADD = ../modules/Location.o ../physics/BBox.o ../rulesets/Food.o \
                  ../rulesets/Entity.o ../rulesets/Thing.o \
                  ../rulesets/Script.o ../common/inheritance.o \
                  ../common/BaseEntity.o ../common/log.o \
@@ -83,7 +83,7 @@ Foodtest_LDADD = ../modules/Location.o ../rulesets/Food.o \
                  ../common/custom.o ../common/operations.o ../common/const.o
 
 Linetest_SOURCES = Linetest.cpp
-Linetest_LDADD = ../modules/Location.o ../rulesets/Line.o \
+Linetest_LDADD = ../modules/Location.o ../physics/BBox.o ../rulesets/Line.o \
                  ../rulesets/Entity.o ../rulesets/Thing.o \
                  ../rulesets/Script.o ../common/inheritance.o \
                  ../common/BaseEntity.o ../common/log.o \
@@ -91,7 +91,7 @@ Linetest_LDADD = ../modules/Location.o ../rulesets/Line.o \
                  ../common/custom.o ../common/operations.o ../common/const.o
 
 Planttest_SOURCES = Planttest.cpp
-Planttest_LDADD = ../modules/Location.o ../rulesets/Plant.o \
+Planttest_LDADD = ../modules/Location.o ../physics/BBox.o ../rulesets/Plant.o \
                   ../rulesets/Entity.o ../rulesets/Thing.o \
                   ../rulesets/Script.o ../common/inheritance.o \
                   ../common/BaseEntity.o ../common/log.o \
@@ -99,7 +99,7 @@ Planttest_LDADD = ../modules/Location.o ../rulesets/Plant.o \
                   ../common/custom.o ../common/operations.o ../common/const.o
 
 Stackabletest_SOURCES = Stackabletest.cpp
-Stackabletest_LDADD = ../modules/Location.o ../rulesets/Stackable.o \
+Stackabletest_LDADD = ../modules/Location.o ../physics/BBox.o ../rulesets/Stackable.o \
                       ../rulesets/Entity.o ../rulesets/Thing.o \
                       ../rulesets/Script.o ../common/inheritance.o \
                       ../common/BaseEntity.o ../common/log.o \
@@ -108,7 +108,7 @@ Stackabletest_LDADD = ../modules/Location.o ../rulesets/Stackable.o \
                       ../common/const.o
 
 Structuretest_SOURCES = Structuretest.cpp
-Structuretest_LDADD = ../modules/Location.o \
+Structuretest_LDADD = ../modules/Location.o ../physics/BBox.o \
                       ../rulesets/Entity.o ../rulesets/Thing.o \
                       ../rulesets/Script.o ../common/inheritance.o \
                       ../common/BaseEntity.o ../common/log.o \
@@ -117,7 +117,7 @@ Structuretest_LDADD = ../modules/Location.o \
                       ../common/const.o
 
 Thingtest_SOURCES = Thingtest.cpp
-Thingtest_LDADD = ../modules/Location.o \
+Thingtest_LDADD = ../modules/Location.o ../physics/BBox.o \
                   ../rulesets/Entity.o ../rulesets/Thing.o \
                   ../rulesets/Script.o ../common/inheritance.o \
                   ../common/BaseEntity.o ../common/log.o \
@@ -125,7 +125,7 @@ Thingtest_LDADD = ../modules/Location.o \
                   ../common/custom.o ../common/operations.o ../common/const.o
 
 Worldtest_SOURCES = Worldtest.cpp
-Worldtest_LDADD = ../modules/Location.o ../rulesets/World.o \
+Worldtest_LDADD = ../modules/Location.o ../physics/BBox.o ../rulesets/World.o \
                   ../rulesets/Entity.o ../rulesets/Thing.o \
                   ../rulesets/Script.o ../common/inheritance.o \
                   ../common/BaseEntity.o ../common/log.o \

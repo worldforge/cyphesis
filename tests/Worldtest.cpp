@@ -13,7 +13,7 @@ class TestWorld : public BaseWorld {
   public:
     TestWorld(const std::string & id, Entity & gw) : BaseWorld(id, gw) { }
 
-    virtual int idle() { return 0; }
+    virtual bool idle() { return false; }
     virtual Entity * addObject(Entity * obj, bool setup = true) { return 0; }
     virtual Entity * addNewObject(const std::string &,
                                   const Atlas::Message::Element::MapType &) {
