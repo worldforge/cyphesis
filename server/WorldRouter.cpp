@@ -25,6 +25,11 @@
 
 static const bool debug_flag = false;
 
+/// \brief Update the in-game time.
+///
+/// Reads the system time, and applies the necessary offsets to calculate
+/// the in-game time. This is the stored, and can be accessed using.
+/// getTime() FIXME Use a doxygen reference.
 void WorldRouter::updateTime()
 {
     struct timeval tv;
@@ -34,6 +39,11 @@ void WorldRouter::updateTime()
 }
 
 
+/// \brief Constructor for the world object.
+///
+/// The Entity representing the world is implicity constructed.
+/// Currently the world entity is included in the perceptives list,
+/// but I am not clear why. Need to look into why.
 WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId))
 {
     // setId(consts::rootWorldId);
@@ -49,6 +59,10 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId))
     EntityFactory::init(*this);
 }
 
+/// \brief Destructor for the world object.
+///
+/// Destruction of the world object implicity deletes all IG objects in
+/// the server, clears the operation queue
 WorldRouter::~WorldRouter()
 {
     OpQueue::const_iterator I = m_operationQueue.begin();
@@ -73,6 +87,14 @@ WorldRouter::~WorldRouter()
     delete &m_gameWorld;
 }
 
+/// \brief Add an operation to the ordered op queue.
+///
+/// Any time adjustment required is made to the operation, and it
+/// is added to the apropriate place in the chronologically ordered
+/// queue. The From attribute of the operation is set to the id of
+/// the entity that is responsible for adding the operation to the
+/// queue, unless it is set to "cheat". This is used to spook
+/// operations when they come from an admin.
 void WorldRouter::addOperationToQueue(RootOperation & op,
                          const Entity * obj)
 {
@@ -92,6 +114,11 @@ void WorldRouter::addOperationToQueue(RootOperation & op,
     m_operationQueue.insert(I, &op);
 }
 
+/// \brief Get the next due operation from the queue.
+///
+/// If the operation at the end of the queue is now due, return it.
+/// @return a pointer to the operation due for dispatch, or 0 if none
+/// is due.
 RootOperation * WorldRouter::getOperationFromQueue()
 {
     std::list<RootOperation *>::const_iterator I = m_operationQueue.begin();
@@ -104,11 +131,23 @@ RootOperation * WorldRouter::getOperationFromQueue()
     return op;
 }
 
+//// \brief Give an operation a new serial number.
+///
+/// Call newSerialNo() FIXME doxygen ref to get a new serial number,
+/// and assign it to the operation provided.
 inline void WorldRouter::setSerialnoOp(RootOperation & op)
 {
     op.setSerialno(newSerialNo());
 }
 
+//// \brief Provide an adjusted heigh for the given entity.
+///
+/// If the position has a parent which has an associated geometry
+/// which define its childrens position, e.g terrain or a floor,
+/// calculate what the Z coord, being the height of the entity.
+/// This function recurses through the parents until it finds
+/// A parent which defines the height.
+/// @return the modified Z coord of the position.
 float WorldRouter::constrainHeight(Entity * parent, const Vector3D & pos)
 {
     assert(parent != 0);
@@ -139,6 +178,14 @@ float WorldRouter::constrainHeight(Entity * parent, const Vector3D & pos)
     }
 }
 
+/// \brief Add a new entity to the world.
+///
+/// Adds a new entity to the lists maintained by the WorldRouter.
+/// Verify that the entity has a valid location, setting to
+/// the default spawn area if necessary. Handle inserting the
+/// entity into the loc/contains tree maintained by the Entity
+/// class. Handle omnipresent entities, and sending a Setup op
+/// to the entity.
 Entity * WorldRouter::addObject(Entity * obj, bool setup)
 {
     debug(std::cout << "WorldRouter::addObject(Entity *)" << std::endl
@@ -182,8 +229,13 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
     return (obj);
 }
 
+/// \brief Create a new entity and add to the world.
+///
+/// Construct a new entity using the entity description provided,
+/// and pass it to addObject() FIXME doxygen reference.
+/// @return a pointer to the new entity.
 Entity * WorldRouter::addNewObject(const std::string & typestr,
-                                   const Element::MapType & ent)
+                                   const Atlas::Message::Element::MapType & ent)
 {
     debug(std::cout << "WorldRouter::addNewObject(\"" << typestr << "\", ent)"
                     << std::endl << std::flush;);
@@ -199,6 +251,12 @@ Entity * WorldRouter::addNewObject(const std::string & typestr,
     return addObject(obj);
 }
 
+/// \brief Remove an entity from the world.
+///
+/// Remove an entity from the various lists in which it is stored.
+/// The entity is not deleted, nor any attend made to handle
+/// the loc/contains. It would probably be a good idea to move
+/// some of this handling to this function.
 void WorldRouter::delObject(Entity * obj)
 {
     if (consts::enable_omnipresence) {
@@ -209,6 +267,10 @@ void WorldRouter::delObject(Entity * obj)
     m_eobjects.erase(obj->getId());
 }
 
+/// \brief Pass an operation to the World.
+///
+/// Pass an operation to addOperationToQueue() FIXME doxygen reference
+/// so it gets added to the queue for dispatch.
 void WorldRouter::message(RootOperation & op, const Entity * obj)
 {
     debug(std::cout << "WorldRouter::message {"
@@ -222,6 +284,14 @@ void WorldRouter::message(RootOperation & op, const Entity * obj)
                     << std::flush;);
 }
 
+/// \brief Determine the broadcast list to be used to broadcast an operation.
+///
+/// Check the type of operation, and work out which list of entities
+/// it should be broadcast to. This will be perceptives in case 
+/// a perception operation, or all entities in any other case.
+/// This should probably go, as there is essentially no sane reason
+/// for broadcasting a random op to all entities.
+/// @return a reference to the list of entities to be used for braodcast.
 const EntitySet & WorldRouter::broadcastList(const RootOperation & op) const
 {
     const Element::ListType & parents = op.getParents();

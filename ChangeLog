@@ -1,3 +1,8 @@
+2004-08-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp, server/WorldRouter.h: Code formatting
+	  cleanups, and some improved comments.
+
 2004-07-31  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp: Improve debug output.

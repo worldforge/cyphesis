@@ -18,14 +18,26 @@ class WorldRouter;
 class Entity;
 class World;
 
+/// \brief WorldRouter encapsulates the game world running in the server.
+///
+/// This class has one instance which manages the game world.
+/// It maintains a list of all ih-game (IG) objects in the server.
+/// It explicitly also maintains lists of perceptive and omnipresent
+/// entities.
 class WorldRouter : public BaseWorld {
   private:
+    /// An ordered queue of operations yet to be dispatched.
     OpQueue m_operationQueue;
+    /// The IG time when the server was started. FIXME correct?
     time_t m_initTime;
+    /// List of all IG entities.
     EntitySet m_objectList;
+    /// List of perceptive entities.
     EntitySet m_perceptives;
+    /// List of omnipresent entities. Obsolete.
     EntitySet m_omnipresentList;
 
+    /// Generate a new operation serial number.
     int newSerialNo() {
         return opSerialNo();
     }

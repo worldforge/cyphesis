@@ -9,8 +9,7 @@ rulesetdir = $(datadir)/cyphesis/rulesets
 socketdir = $(localstatedir)/tmp
 socket_DATA =
 
-EXTRA_DIST = cyphesis.spec.in cyphesis.spec Doxyfile \
-             TODO.mason acinclude.m4 autogen.sh \
+EXTRA_DIST = cyphesis.spec Doxyfile TODO.mason autogen.sh \
              cyphesis.init cyclient.init cyphesis.sysconfig
 
 docs:
