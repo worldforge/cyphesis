@@ -1,11 +1,11 @@
+Change addToObject into addToMessage
+
 Sort out removing things from contains in MemMap.
 
 Report error properlly in MemEntity when clock skew is detected.
 
 Try and avoid removing stuff from the mind as soon as its been added. Perhaps
 by checking the iterator ID on insert?
-
-Use WITHOUT OIDS on the database tables.
 
 Try out dynamic cast rather than string test to identify ops in WorldRouter.
 

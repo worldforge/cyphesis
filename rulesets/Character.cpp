@@ -181,34 +181,30 @@ OpVector Character::SetupOperation(const Setup & op)
         return res;
     }
 
-    m_mind = MindFactory::instance()->newMind(getId(), m_name, m_type);
+    if (0 == m_externalMind) {
+        // This ensures that newly created player characters don't get
+        // bogged down with an NPC mind. In the short term this
+        // takes away PC programmability.
+        // FIXME Characters restored from the database will still get
+        // AI minds, so  we need to handle them somehow differently.
+        // Perhaps the Restore op (different from Setup op) is needed?
 
-    OpVector res2(2);
-    Setup * s = new Setup(op);
-    // THis is so not the right thing to do
-    s->setAttr("sub_to", "mind");
-    res2[0] = s;
-#if 0
-    Look * l = new Look();
-    l->setTo(m_world->getId());
-    res2[1] = l;
-    if (m_location.m_loc != &m_world->m_gameWorld) {
-        l = new Look();
-        l->setTo(m_location.m_loc->getId());
-        res2.push_back(l);
+        m_mind = MindFactory::instance()->newMind(getId(), m_name, m_type);
+
+        Setup * s = new Setup(op);
+        // THis is so not the right thing to do
+        s->setAttr("sub_to", "mind");
+        res.push_back(s);
+
+        Look * l = new Look();
+        l->setTo(getId());
+        res.push_back(l);
     }
-    l = new Look();
-    l->setTo(getId());
-    res2.push_back(l);
-#else
-    Look * l = new Look();
-    l->setTo(getId());
-    res2[1] = l;
-#endif
+
     Tick * tick = new Tick();
     tick->setTo(getId());
-    res2.push_back(tick);
-    return res2;
+    res.push_back(tick);
+    return res;
 }
 
 OpVector Character::TickOperation(const Tick & op)
@@ -1083,6 +1079,9 @@ OpVector Character::externalOperation(const RootOperation & op)
     
     // We require that the first op is the direct consequence of the minds
     // op, so it gets the same serialno
+    // FIXME in Atlas-C++ 0.6 we can do this by relying on being able
+    // to query if an object has a certain attribute. A copied op will have
+    // it, a new op won't.
     OpVector::const_iterator I = res.begin();
     for(; I != res.end(); I++) {
         if (I == res.begin()) {
