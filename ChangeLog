@@ -1,5 +1,10 @@
 2004-07-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py: Remove debugging
+	  output from the spot_something() goal.
+
+2004-07-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp, common/Database.h: Add function to check
 	  whether an Atlas table has a given key.
 

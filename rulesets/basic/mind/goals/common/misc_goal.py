@@ -180,8 +180,6 @@ class spot_something(Goal):
                 if self.condition(thing):
                     nearest = thing
                     neardist = distance
-                else:
-                    print "Too much for me"
         if nearest:
             me.add_thing(nearest)
                       
