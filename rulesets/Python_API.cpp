@@ -46,6 +46,8 @@
 #include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Info.h>
 
+#include <cstdio>
+
 static const bool debug_flag = false;
 
 typedef struct {
@@ -928,7 +930,10 @@ void init_python_api()
     }
     importCmd = importCmd + "])\n";
 
-    setenv("PYTHONPATH", pypath.c_str(), 1);
+    std::string pathEnvStr = std::string("PYTHONPATH=") + pypath;
+    char * path_environment = new char[pathEnvStr.size() + 1];
+    strcpy(path_environment, pathEnvStr.c_str());
+    putenv(path_environment);
 
     Py_Initialize();
 

@@ -1,5 +1,10 @@
 2002-10-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Add environment variables using a more
+	  portable call to putenv() instead of setenv().
+
+2002-10-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* Build file fixes.
 
 2002-10-03  Al Riddoch  <alriddoch@zepler.org>
