@@ -1,6 +1,7 @@
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Look.h>
 
 #include "WorldRouter.h"
 
@@ -109,8 +110,20 @@ bad_type WorldRouter::is_object_deleted(BaseEntity * obj)
 
 bad_type WorldRouter::message(bad_type msg, BaseEntity * obj)
 {
-    apply_to_operation(&WorldRouter::add_operation_to_queue,msg,obj);
+    //apply_to_operation(&WorldRouter::add_operation_to_queue,msg,obj);
     return None;
+}
+
+RootOperation * WorldRouter::message(const RootOperation & msg)
+{
+    cout << "FATAL: Wrong type of WorldRouter message function called" << endl << flush;
+    // You may eventually want to remove this as it causes a deliberate segfault
+    return(*(RootOperation **)NULL);
+}
+RootOperation * WorldRouter::message(RootOperation & msg, BaseEntity * obj)
+{
+    add_operation_to_queue(msg, obj);
+    return(NULL);
 }
 
 BaseEntity * WorldRouter::get_operation_place(bad_type op)
@@ -137,87 +150,63 @@ BaseEntity * WorldRouter::get_operation_place(bad_type op)
     return NULL;
 }
 
-bad_type WorldRouter::operation(bad_type op)
+RootOperation * WorldRouter::operation(const RootOperation * op)
 {
-// THis is currently a whole world of shit I can't get into right now.
-// procrastination is the name of the game here.
-#ifdef BLUE_MOON
-    if (op.to and op.to!='all') {
-        if ((op.to!=WorldRouter::or op.id=="look") and not op.to.deleted) {
-            WorldRouter::debug(op,"world.operation: "+`op.to`+" "+op.to.__class__.__name__);
-            if (WorldRouter::queue_fp) {
-                WorldRouter::queue_fp.write("operation: %i, to: %s\n" % (op.no,op.to.id));
-                WorldRouter::queue_fp.flush();
+    RootOperation * res = NULL;
+    const RootOperation & op_ref = *op;
+    string to = op_ref.GetTo();
+    op_no_t op_type = op_enumerate(op);
+
+    cout << "{" << op_type << "}" << endl << flush;
+
+    if ((to.size() != 0) && (to!="all")) {
+        if (fobjects.find(to) == fobjects.end()) {
+            cout << "FATAL: Op has invalid to" << endl << flush;
+            return(*(RootOperation **)NULL);
+        }
+        BaseEntity * d_to = fobjects[to];
+        if ((to != fullid) || (op_type == OP_LOOK)) {
+            if (to == fullid) {
+                res = ((BaseEntity *)this)->Operation((Look &)op_ref);
+            } else {
+                res = d_to->operation(op_ref);
             }
-            if (op.to==self) {
-                res=WorldRouter::look_operation(op);
+            if (op_type == OP_DELETE) {
+                d_to->destroy();
+                d_to->deleted=1;
             }
-            else {
-                res=op.to.operation(op);
+            if (res) {
+                message(*res, d_to);
             }
-            if (op.id=="delete") {
-                id=op.to.id;
-                WorldRouter::server.id_dict[id]=WorldRouter::illegal_thing;
-                op.to.destroy();
-                op.to.id=id;
-                op.to.deleted=1;
-            }
-            WorldRouter::message(res,op.to);
+        }
+    } else {
+        RootOperation newop = op_ref;
+        std::list<BaseEntity *>::iterator I;
+        for(I = perceptives.begin(); I != perceptives.end(); I++) {
+            newop.SetTo((*I)->fullid);
+            operation(&newop);
         }
     }
-    else {
-        save_to=op.to;
-        op_place_obj = WorldRouter::get_operation_place(op);
-        if not const.enable_ranges or \;
-           op.to=='all' or \;
-           op.id not in ["sight","disappear","appear","sound"] or \;
-           not op_place_obj:;
-            if (op.id=="sight" and op[0].id=="create") {
-              op.to = WorldRouter::objects[op[0][0].id];
-              WorldRouter::operation(op);
-            }
-            target_list = WorldRouter::perceptives.values();
-        else {
-            target_list = WorldRouter::omnipresent_list[:];
-            if (op.id in ["sight","disappear","appear"]) {
-                for (/*obj in op_place_obj->visible.values()*/) {
-                    if (obj not in target_list) {
-                        target_list.append(obj);
-                    }
-                }
-            }
-            else if (op.id=="sound") {
-                for (/*obj in op_place_obj->audible.values()*/) {
-                    if (obj not in target_list) {
-                        target_list.append(obj);
-                    }
-                }
-            }
-            else {
-                raise WorldException, "Why that op.id here? (%s)" % op.id;
-            }
-        }
-        try {
-            for (/*obj in target_list*/) {
-                op.to=obj;
-                WorldRouter::operation(op);
-            }
-        }
-        finally:;
-            op.to=save_to;
-    }
-#endif
-    return None;
+                
+    return(NULL);
 }
 
-bad_type WorldRouter::look_operation(bad_type op)
+RootOperation * WorldRouter::operation(const RootOperation & op)
 {
-#if 0
-    print("Adding " + op.from_.id + " to perceptives");
-    WorldRouter::perceptives[op.from_.id]=op.from_;
-    return BaseEntity.look_operation(self, op);
-#endif
-    return None;
+    return(operation(&op));
+}
+
+RootOperation * WorldRouter::Operation(const Look & op)
+{
+    string from = op.GetFrom();
+    if (fobjects.find(from) == fobjects.end()) {
+        cout << "FATAL: Op has invalid from" << endl << flush;
+        return(*(RootOperation **)NULL);
+    } else {
+        cout << "Adding [" << from << "] to perceptives" << endl << flush;
+        perceptives.push_back(fobjects[from]);
+    }
+    return(NULL);
 }
 
 bad_type WorldRouter::print_queue(bad_type msg)
@@ -232,11 +221,28 @@ bad_type WorldRouter::print_queue(bad_type msg)
     }
     return str(msg)+"\n"+string.join(s);
 #endif
-    return None;
+    return(None);
 }
 
-bad_type WorldRouter::add_operation_to_queue(bad_type op, BaseEntity * obj)
+void WorldRouter::add_operation_to_queue(RootOperation & op, BaseEntity * obj)
 {
+    if (op.GetFrom() == "cheat") {
+        op.SetFrom(op.GetTo());
+    } else {
+        op.SetFrom(obj->fullid);
+    }
+    double t = double(time(NULL));
+    t = t + op.GetFutureSeconds();
+    op.SetSeconds(t);
+    op.SetFutureSeconds(0.0);
+    std::list<RootOperation *>::iterator I;
+    int i = 0;
+    for(I = operation_queue.begin();
+        (I != operation_queue.end()) && ((*I)->GetSeconds() < t) ; I++,i++);
+    operation_queue.insert(I, &op);
+    cout << i << " operation added to queue" << endl << flush;
+        
+        
 #if 0
     if (op.from_ == "cheat" and not init.security_flag) {
         op.from_ = op.to;
@@ -256,11 +262,22 @@ bad_type WorldRouter::add_operation_to_queue(bad_type op, BaseEntity * obj)
     log.debug(3,WorldRouter::print_queue("added!!"));
     log.debug(4,"",op);
 #endif
-    return None;
 }
 
-bad_type WorldRouter::get_operation_from_queue()
+RootOperation * WorldRouter::get_operation_from_queue()
 {
+    std::list<RootOperation *>::iterator I = operation_queue.begin();
+    if (I == operation_queue.end()) {
+        return(NULL);
+    }
+    double t = double(time(NULL));
+    if ((*I)->GetSeconds() > t) {
+        return(NULL);
+    }
+    cout << "pulled op off queue" << endl << flush;
+    RootOperation * op = (*I);
+    operation_queue.pop_front();
+    return(op);
 #if 0
     if (not WorldRouter::operation_queue) {
         return None;
@@ -452,6 +469,12 @@ bad_type WorldRouter::get_time()
 
 bad_type WorldRouter::idle()
 {
+    RootOperation * op = get_operation_from_queue();
+    if (!op) {
+        return(0);
+    }
+    operation(op);
+    return(1);
 #if 0
     WorldRouter::update_time();
     op=WorldRouter::get_operation_from_queue();
@@ -461,5 +484,4 @@ bad_type WorldRouter::idle()
     WorldRouter::operation(op);
     return 1;
 #endif
-    return None;
 }

@@ -28,18 +28,19 @@ class CommClient : Objects::Decoder {
     Connection * client;
 
   protected:
-    void UnknownObjectArrived(const Atlas::Message::Object&);
-    void ObjectArrived(const Objects::Operation::Login & obj);
-    void ObjectArrived(const Objects::Operation::Create & obj);
-    void ObjectArrived(const Objects::Operation::Move & obj);
-    void ObjectArrived(const Objects::Operation::Set & obj);
-    void ObjectArrived(const Objects::Operation::Touch & obj);
+    virtual void UnknownObjectArrived(const Atlas::Message::Object&);
+    virtual void ObjectArrived(const Objects::Operation::Login & obj);
+    virtual void ObjectArrived(const Objects::Operation::Create & obj);
+    virtual void ObjectArrived(const Objects::Operation::Move & obj);
+    virtual void ObjectArrived(const Objects::Operation::Set & obj);
+    virtual void ObjectArrived(const Objects::Operation::Touch & obj);
+    virtual void ObjectArrived(const Objects::Operation::Look & obj);
 
   public:
     CommServer * server;
 
     CommClient(CommServer * svr, int fd, int port) :
-		server(svr), client_fd(fd), client_ios(fd) {
+		client_fd(fd), client_ios(fd), server(svr) {
         if (consts::debug_level>=1) {
             char * log_name = "log.log";
             //const char * log_name = port+".log";
@@ -47,6 +48,7 @@ class CommClient : Objects::Decoder {
             log_file.open(log_name);
         }
     }
+    virtual ~CommClient() { }
     int read();
     bad_type send(Objects::Operation::RootOperation *);
     void message(const Objects::Operation::RootOperation &);

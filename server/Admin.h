@@ -16,6 +16,8 @@ typedef int bad_type; // Remove this to get unset type reporting
 //};
 
 class Admin : public Account {
+  public:
+    virtual ~Admin() { }
 
     virtual RootOperation * Operation(const Load & op);
     virtual RootOperation * Operation(const Save & op);

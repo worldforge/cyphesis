@@ -33,6 +33,5 @@ void load(char * filename)
 }
 
 int ServerRouting::idle() {
-    //return world.idle();
-    return(0);
+    return world->idle();
 }

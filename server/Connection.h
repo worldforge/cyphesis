@@ -18,20 +18,16 @@ class Connection : public Routing {
     CommClient * comm_client;
 
     Connection(CommClient * comm_client);
+    virtual ~Connection() { }
     void destroy();
     void disconnect();
-    void send(bad_type msg);
+    void send(RootOperation * msg);
 
     virtual RootOperation * operation(const RootOperation & op);
     virtual RootOperation * Operation(const Login & obj);
     virtual RootOperation * Operation(const Logout & obj);
     virtual RootOperation * Operation(const Create & obj);
 
-    bad_type create_operation(bad_type op);
-    bad_type login_operation(bad_type op);
-    bad_type logout_operation(bad_type op);
-    bad_type route_operation(bad_type op);
-    bad_type operation(bad_type op);
     Account * add_player(string &, string &);
 };
 

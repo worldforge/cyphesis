@@ -23,6 +23,7 @@ typedef int bad_type; // Remove this to get unset type reporting
 class WorldRouter : public Routing {
     ServerRouting * server;
     double real_time;
+    std::list<RootOperation *> operation_queue;
 
   public:
     //dict_t objects;
@@ -32,18 +33,23 @@ class WorldRouter : public Routing {
     ofstream queue_fp;
 
     WorldRouter(ServerRouting * server);
+    virtual ~WorldRouter() { }
     bad_type get_id(string & name, string & full_id);
     virtual BaseEntity * add_object(BaseEntity * obj);
     virtual BaseEntity * add_object(const string & type, const Message::Object & ent);
     void del_object(BaseEntity * obj);
     bad_type is_object_deleted(BaseEntity *);
+    virtual RootOperation * message(RootOperation & msg, BaseEntity * obj);
+    virtual RootOperation * message(const RootOperation & msg);
     bad_type message(bad_type msg, BaseEntity *);
     BaseEntity * get_operation_place(bad_type op);
     bad_type operation(bad_type op);
-    bad_type look_operation(bad_type op);
+    virtual RootOperation * operation(const RootOperation * op);
+    virtual RootOperation * operation(const RootOperation & op);
+    virtual RootOperation * Operation(const Look & op);
     bad_type print_queue(bad_type msg);
-    bad_type add_operation_to_queue(bad_type op, BaseEntity *);
-    bad_type get_operation_from_queue();
+    void add_operation_to_queue(RootOperation & op, BaseEntity *);
+    RootOperation * get_operation_from_queue();
     bad_type find_range(BaseEntity *, bad_type attribute, bad_type range, bad_type generate_messages=0);
     bad_type update_all_ranges(BaseEntity *);
     bad_type update_range(BaseEntity *, bad_type attribute, bad_type range, bad_type generate_messages=0);

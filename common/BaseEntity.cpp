@@ -96,6 +96,10 @@ bad_type BaseEntity::get_type()
 }
 #endif
 
+bad_type BaseEntity::destroy()
+{
+}
+
 Vector3D BaseEntity::get_xyz()
 {
     Location l=location;
@@ -114,7 +118,7 @@ bad_type BaseEntity::as_entity()
     Entity e=Entity(BaseEntity::id);
     for (char * a;;/*a in BaseEntity::attributes*/) {
         if (a=="location") {
-            Location loc=location;
+            //Location loc=location;
             //if (loc) {
                 //e.location=loc.copy();
             //}
@@ -144,6 +148,11 @@ void BaseEntity::addObject(Message::Object * obj)
         omap["id"] = fullid;
     }
         
+}
+
+RootOperation * BaseEntity::external_message(const RootOperation & op)
+{
+    return message(op);
 }
 
 RootOperation * BaseEntity::message(const RootOperation & op)
@@ -233,19 +242,20 @@ bad_type BaseEntity::call_operation(bad_type op)
 
 RootOperation * BaseEntity::Operation(const Look & obj)
 {
-    cout << "louk op got all the way to here" << endl << flush;
+    cout << "look op got all the way to here" << endl << flush;
     Sight * s = new Sight();
     *s = Sight::Instantiate();
 
     // Here we actually need to make this into a useful operation
-
+    return(*(RootOperation **)NULL);
     return(s);
+    
 }
 
-op_no_t BaseEntity::op_enumerate(const RootOperation & op)
+op_no_t BaseEntity::op_enumerate(const RootOperation * op)
 {
     cout << "BaseEntity::op_enumarate" << endl << flush;
-    const Message::Object & parents = op.GetAttr("parents");
+    const Message::Object & parents = op->GetAttr("parents");
     if (!parents.IsList()) {
         cout << "This isn't an operation." << endl << flush;
     }
@@ -262,6 +272,9 @@ op_no_t BaseEntity::op_enumerate(const RootOperation & op)
     if ("create" == parent) {
         return(OP_CREATE);
     }
+    if ("delete" == parent) {
+        return(OP_DELETE);
+    }
     if ("move" == parent) {
         return(OP_MOVE);
     }
@@ -276,6 +289,9 @@ op_no_t BaseEntity::op_enumerate(const RootOperation & op)
     }
     if ("touch" == parent) {
         return(OP_TOUCH);
+    }
+    if ("tick" == parent) {
+        return(OP_TICK);
     }
     if ("look" == parent) {
         return(OP_LOOK);
@@ -295,35 +311,10 @@ op_no_t BaseEntity::op_enumerate(const RootOperation & op)
 RootOperation * BaseEntity::operation(const RootOperation & op)
 {
     cout << "BaseEntity::operation" << endl << flush;
-    op_no_t op_no = op_enumerate(op);
-    switch (op_no) {
-        case OP_LOGIN:
-            return Operation((const Login &)op);
-        case OP_CREATE:
-            return Operation((const Create &)op);
-        case OP_MOVE:
-            return Operation((const Move &)op);
-        case OP_SET:
-            return Operation((const Set &)op);
-        case OP_SIGHT:
-            return Operation((const Sight &)op);
-        case OP_SOUND:
-            return Operation((const Sound &)op);
-        case OP_TOUCH:
-            return Operation((const Touch &)op);
-        case OP_LOOK:
-            return Operation((const Look &)op);
-        case OP_LOAD:
-            return Operation((const Load &)op);
-        case OP_SAVE:
-            return Operation((const Save &)op);
-        case OP_SETUP:
-            return Operation((const Setup &)op);
-        default:
-            cout << "nothing doing here" << endl;
-    }
-    //return call_operation(op);
-    return Operation(op);
+    RootOperation * res = NULL;
+    op_no_t op_no = op_enumerate(&op);
+    OP_SWITCH(op, op_no, res,)
+    return(res);
 }
 
 RootOperation * BaseEntity::external_operation(const RootOperation & op)

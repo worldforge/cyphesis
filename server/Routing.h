@@ -14,6 +14,7 @@ public:
     cid_t next_id;
 
     Routing();
+    virtual ~Routing() { }
     bad_type check_operation(bad_type op);
     virtual BaseEntity * add_object(BaseEntity * obj);
     BaseEntity * del_object(BaseEntity * obj);

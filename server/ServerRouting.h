@@ -20,6 +20,7 @@ class ServerRouting : public Routing {
     dict_t id_dict;
 
     ServerRouting(CommServer * server, char * name);
+    virtual ~ServerRouting() { }
 
     virtual BaseEntity * add_object(BaseEntity * obj);
     void save(char * filename);

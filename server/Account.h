@@ -23,6 +23,7 @@ class Account : public OOG_Thing {
         connection(conn), password(passwd) {
         fullid = username;
     }
+    virtual ~Account() { }
 
     virtual void addObject(Message::Object *);
     virtual RootOperation * Operation(const Logout & op);

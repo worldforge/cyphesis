@@ -56,6 +56,7 @@ bad_type CommClient::send(Objects::Operation::RootOperation * op)
         encoder->StreamMessage(op);
         client_ios << flush;
     }
+    return None;
 }
 
 int CommClient::read()
@@ -139,16 +140,25 @@ void CommClient::ObjectArrived(const Objects::Operation::Create & obj)
 void CommClient::ObjectArrived(const Objects::Operation::Move & obj)
 {
     cout << "A move object thingy here!" << endl << flush;
+    message(obj);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Set & obj)
 {
     cout << "A set object thingy here!" << endl << flush;
+    message(obj);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Touch & obj)
 {
     cout << "A touch object thingy here!" << endl << flush;
+    message(obj);
+}
+
+void CommClient::ObjectArrived(const Objects::Operation::Look & obj)
+{
+    cout << "A look object thingy here!" << endl << flush;
+    message(obj);
 }
 
 int CommServer::setup(int port)
@@ -207,8 +217,8 @@ void CommServer::loop() {
     CommClient * client;
     struct timeval tv;
 
-    tv.tv_sec=5;
-    tv.tv_usec=0;
+    tv.tv_sec=0;
+    tv.tv_usec=100000;
 
     FD_ZERO(&sock_fds);
 
@@ -222,10 +232,7 @@ void CommServer::loop() {
        }
     }
     highest++;
-    cout << "selecting" << endl << flush;
     int rval = select(highest, &sock_fds, NULL, NULL, &tv);
-
-    cout << "selected" << endl << flush;
 
     if (rval < 0) {
         return;
@@ -248,6 +255,7 @@ void CommServer::loop() {
         cout << "selected on server" << endl << flush;
         accept();
     }
+    idle();
 }
 
 void CommServer::remove_client(CommClient * client) {
@@ -276,12 +284,7 @@ void CommServer::remove_client(CommClient * client, char * error_msg) {
 }
 
 void CommServer::idle() {
-    /*
-    int res=CommServer::server.idle();
-    if (!res) {
-        time.sleep(0.01);
-    }
-    */
+    server->idle();
 }
 
 

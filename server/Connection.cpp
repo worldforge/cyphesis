@@ -44,14 +44,9 @@ void Connection::disconnect()
     //raise ConnectionError,"connection died";
 }
 
-void Connection::send(bad_type msg)
+void Connection::send(RootOperation * msg)
 {
-    //try {
-        //Connection::comm_client->send(msg);
-    //}
-    //catch (socket.error) {
-        //Connection::disconnect();
-    //}
+    comm_client->send(msg);
 }
 
 RootOperation * Connection::operation(const RootOperation & op)
@@ -124,98 +119,20 @@ RootOperation * Connection::Operation(const Create & obj)
 
 RootOperation * Connection::Operation(const Logout & obj)
 {
+    const Message::Object & account = obj.GetArgs().front();
+    
+    if (account.IsMap()) {
+        string account_id = account.AsMap().find("id")->second.AsString();
+        string password = account.AsMap().find("password")->second.AsString();
+        Player * player = (Player *)server->get_object(account_id);
+        if (player) {
+            Logout l = obj;
+            l.SetFrom(player->fullid);
+            cout << "Logout without from. Using " << player->fullid << " instead." << endl << flush;
+            operation(l);
+        }
+    }
     return(NULL);
-}
-
-
-bad_type Connection::create_operation(bad_type op)
-{
-    //ent=op[0];
-    //try {
-        //password=ent.password;
-    //}
-    //catch (AttributeError) {
-        //return Connection::error(op,"No password specified");
-    //}
-    //player=Connection::server.get_object(ent.id);
-    //if (player) {
-        //log.inform("player account creation failed: "+ent.id,op);
-        //return Connection::error(op,"Account id already exist");
-    //}
-    //player=Connection::add_player(Player,ent);
-    //log.inform("player account creation OK: "+ent.id,op);
-    //return Operation("info",player.as_entity());
-    return None;
-}
-
-bad_type Connection::login_operation(bad_type op)
-{
-    //ent=op[0];
-    //player=Connection::server.get_object(ent.id);
-    //if (player and player.password==ent.password) {
-        //player.connection=this;
-        //Connection::add_object(player);
-        //for (/*id in player.characters*/) {
-            //character=Connection::server.world.find_object(id);
-            //character.external_mind.connection=this;
-            //log.debug(3,"login???: "+str(character));
-            //Connection::add_object(character);
-        //}
-        //log.inform("login OK: "+ent.id,op);
-        //return Operation("info",player.as_entity());
-    //}
-    //log.inform("login FAIL: "+ent.id,op);
-    //return Connection::error(op,"Invalid login");
-    return None;
-}
-
-bad_type Connection::logout_operation(bad_type op)
-{
-    //ent=op[0];
-    //player = Connection::objects.get(ent.id);
-    //if (player) {
-        //op.from_=player;
-        //print "logout without from, using ent.id instead:", player;
-        //return Connection::route_operation(op);
-    //}
-    return None;
-}
-
-bad_type Connection::route_operation(bad_type op)
-{
-    //if (op.from_) {
-        //if (Connection::objects.has_key(op.from_.id)) {
-            //return op.from_.external_operation(op);
-        //}
-        //return Connection::error(op,"from is illegal:"+op.from_.id);
-    //}
-    //else {
-        //return Connection::call_operation(op);
-    //}
-    return None;
-}
-
-bad_type Connection::operation(bad_type op)
-{
-    //res=Connection::check_operation(op);
-    //if (res) {
-        //return res;
-    //}
-    //res=op.atlas2internal(Connection::server.id_dict);
-    //if (res) {
-        //s=[];
-        //for (/*item in res*/) {
-            //s.append(item[1]+":"+item[2]);
-        //}
-        //res=string.join(s,",");
-        //return Connection::error(op,"Can't convert all ids: "+res);
-    //}
-    //res=Connection::route_operation(op);
-    //if (res) {
-        //res.internal2atlas();
-    //}
-    //return res;
-    return None;
 }
 
 Account * Connection::add_player(string & username, string & password)

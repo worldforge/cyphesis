@@ -8,6 +8,7 @@ typedef int bad_type; // Remove this to get unset type reporting
 class OOG_Thing : public BaseEntity {
   public:
     OOG_Thing() { }
+    virtual ~OOG_Thing() { }
     virtual RootOperation * Operation(const RootOperation & obj) {
         return error(obj, "Unknown operation");
     }

@@ -1,6 +1,7 @@
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Info.h>
 
@@ -51,7 +52,6 @@ RootOperation * Account::Operation(const Create & op)
 
     BaseEntity * obj = add_character(type, ent);
     //log.inform("Player "+Account::id+" adds character "+`obj`,op);
-    //return Operation("info", obj.as_entity());
     Info * info = new Info();
     *info = Info::Instantiate();
     Message::Object::ListType args(1,obj->asObject());
@@ -66,15 +66,27 @@ BaseEntity * Account::add_character(const string & type, const Message::Object &
     if (!chr->location) {
         chr->location = Location(world, Vector3D(0,0,0));
     }
-    //chr->player=this;
+    //if (chr->is_character) {
+        //chr->player=this;
+    //}
     //char.external_mind=ExternalMind(id=char.id, body=char,;
                                     //connection=Account::connection);
     //Account::characters_dict[char.id]=char;
     //Account::characters.append(char.id);
     connection->add_object(chr);
-    //Account::world.message(Operation("sight",;
-                                 //Operation("create",char.as_entity())),;
-                       //char);
-    //return char;
+
+    Create c = Create::Instantiate();
+
+    list<Message::Object> cargs(1,chr->asObject());
+    c.SetArgs(cargs);
+
+    Sight * s = new Sight;
+    *s = Sight::Instantiate();
+    
+    list<Message::Object> sargs(1,c.AsObject());
+    s->SetArgs(sargs);
+
+    world->message(*s, chr);
+
     return(chr);
 }

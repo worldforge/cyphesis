@@ -11,6 +11,7 @@ class Player : public Account {
   public:
     Player(Connection * conn, string & username, string & passwd) :
         Account(conn, username, passwd) { }
+    virtual ~Player() { }
 
   protected:
     virtual RootOperation * character_error(const Create & op, const Message::Object & ent);
