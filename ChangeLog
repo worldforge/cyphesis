@@ -1,3 +1,8 @@
+2003-07-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Persistor_impl.h: Avoid storing un-unitialised quaternion
+	  values into database.
+
 2003-07-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.cpp: Add debugging output required to monitor

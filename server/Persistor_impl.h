@@ -126,11 +126,15 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
       << t.m_contains.size() << cs
       << t.m_location.m_pos.x() << cs
       << t.m_location.m_pos.y() << cs
-      << t.m_location.m_pos.z() << cs
-      << t.m_location.m_orientation.vector().x() << cs
-      << t.m_location.m_orientation.vector().y() << cs
-      << t.m_location.m_orientation.vector().z() << cs
-      << t.m_location.m_orientation.scalar() << cs;
+      << t.m_location.m_pos.z() << cs;
+    if (t.m_location.m_orientation.isValid()) {
+        q << t.m_location.m_orientation.vector().x() << cs
+          << t.m_location.m_orientation.vector().y() << cs
+          << t.m_location.m_orientation.vector().z() << cs
+          << t.m_location.m_orientation.scalar() << cs;
+    } else {
+        q << "0, 0, 0, 1, ";
+    }
     if (t.m_location.m_bBox.isValid()) {
         q << "'t', "
           << t.m_location.m_bBox.lowCorner().x() << cs
