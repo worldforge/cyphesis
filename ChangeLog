@@ -1,5 +1,10 @@
 2004-10-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.h, rulesets/Character.cpp: Add new variable for
+	  storing currently tool.
+
+2004-10-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Property.cpp, common/Property.h, common/Property_impl.h:
 	  New class to automate and simplify handled of hard coded
 	  proerties.

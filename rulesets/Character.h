@@ -26,11 +26,14 @@ typedef Thing Character_parent;
 class Character : public Character_parent {
   protected:
     Movement & m_movement;
+    bool m_isAlive;
+    std::string m_rightHandWield;
+
+    // Properties
     double m_drunkness;
     std::string m_sex;
     double m_food;
     double m_maxMass;
-    bool m_isAlive;
 
     static const double energyConsumption = 0.001;
     static const double foodConsumption = 0.1;

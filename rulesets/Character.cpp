@@ -72,11 +72,11 @@ void Character::metabolise(OpVector & res, double ammount)
 }
 
 Character::Character(const std::string & id) : Character_parent(id),
-                                              m_movement(*new Pedestrian(*this)),
-                                              m_drunkness(0.0), m_sex("female"),
-                                              m_food(0), m_maxMass(100),
-                                              m_isAlive(true), m_mind(NULL),
-                                              m_externalMind(NULL)
+                                            m_movement(*new Pedestrian(*this)),
+                                            m_isAlive(true),
+                                            m_drunkness(0.0), m_sex("female"),
+                                            m_food(0), m_maxMass(100),
+                                            m_mind(NULL), m_externalMind(NULL)
 {
     m_mass = 60;
     m_location.m_bBox = BBox(WFMath::Point<3>(-0.25, -0.25, 0),
@@ -379,9 +379,10 @@ void Character::mindSetupOperation(const Setup & op, OpVector & res)
 void Character::mindUseOperation(const Use & op, OpVector & res)
 {
     std::cout << "Got Use op from mind" << std::endl << std::flush;
-    Use *s = new Use(op);
-    s->setTo(getId());
-    res.push_back(s);
+    // Use *s = new Use(op);
+    // s->setTo(getId());
+    // res.push_back(s);
+    
 }
 
 void Character::mindWieldOperation(const Wield & op, OpVector & res)
