@@ -12,8 +12,6 @@
 
 #include <iostream>
 
-#include <cstdio>
-
 #include <sys/socket.h>
 #include <arpa/inet.h>
 

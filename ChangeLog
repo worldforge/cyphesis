@@ -1,5 +1,10 @@
 2004-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp, server/CommListener.cpp:
+	  Remove redundant <cstdio> includes.
+
+2004-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/log.cpp, common/log.h: Add a new logging function to log
 	  errors from libc.
 
