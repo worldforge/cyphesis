@@ -1,5 +1,10 @@
 2004-09-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/EntityExerciser.h: Update test harness for new dispatch
+	  mechanism.
+
+2004-09-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/CharacterClient.cpp, client/CharacterClient.h,
 	  client/CommClient.cpp, common/BaseEntity.cpp,
 	  common/BaseEntity.h, common/OOGThing.cpp,
