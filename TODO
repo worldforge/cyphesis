@@ -1,3 +1,10 @@
+Fix Entity::addToObject to be more efficient with contlist
+
+Make the server easier to kill.
+
+Replace Sight(Create) broadcast from Thing::SetupOperation with an appearance
+broadcast.
+
 Enforce well-formed args and parents on IG ops centrally.
 
 MemMap::add and MemMap::update are the same, identical. Eliminate this

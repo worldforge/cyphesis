@@ -12,7 +12,6 @@
 #include "common/BaseEntity.h"
 
 class BaseWorld;
-class MemMap;
 class Script;
 
 // Work in progress, this will be a way of inferring type relationships,
