@@ -1,3 +1,5 @@
+Bootstrap the admin account.
+
 Sort persisting world so things like its orientation are initialised correctly.
 Either valid or invalid.
 
