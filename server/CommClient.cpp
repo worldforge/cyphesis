@@ -105,7 +105,7 @@ bool CommClient::negotiate()
 
 void CommClient::message(const RootOperation & op)
 {
-    OpVector reply = m_connection.message(op);
+    OpVector reply = m_connection.operation(op);
     for(OpVector::const_iterator I = reply.begin(); I != reply.end(); ++I) {
         debug(std::cout << "sending reply" << std::endl << std::flush;);
         send(**I);

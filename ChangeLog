@@ -1,3 +1,17 @@
+2004-08-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.cpp, common/BaseEntity.h,
+	  rulesets/Character.cpp, rulesets/Creator.cpp,
+	  server/CommClient.cpp, server/ExternalMind.cpp,
+	  server/ExternalMind.h, client/CharacterClient.cpp,
+	  client/CommClient.cpp: Remove the message method from BaseEntity
+	  and everything that inherits from it - its redundant.
+
+	* tests/Charactertest.cpp, tests/Creatortest.cpp,
+	  tests/EntityExerciser.h: Sort out the tests so they no longer use
+	  message, and try and get the character class tests working a bit
+	  better.
+
 2004-08-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.h, common/BaseEntity.cpp, rulesets/BaseMind.h,

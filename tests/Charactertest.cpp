@@ -6,11 +6,16 @@
 #include "allOperations.h"
 
 #include "rulesets/Character.h"
+#include "rulesets/Python_API.h"
 
 #include <cassert>
 
-int main()
+int main(int argc, char ** argv)
 {
+    loadConfig(argc, argv);
+
+    init_python_api();
+
     Character e("testId");
 
     IGEntityExerciser<Character> ee(e);

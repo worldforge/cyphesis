@@ -44,7 +44,6 @@ class BaseEntity : virtual public SigC::Object {
 
     virtual void addToMessage(MapType &) const;
 
-    virtual OpVector message(const RootOperation & op);
     virtual OpVector operation(const RootOperation & op);
 
     virtual OpVector LoginOperation(const Login & op);

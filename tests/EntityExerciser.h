@@ -19,10 +19,8 @@ class EntityExerciser {
     explicit EntityExerciser(EntityType & e) : m_ent(e) { }
 
     virtual void dispatchOp(const RootOperation & op) {
-        OpVector ov1 = m_ent.message(op);
-        OpVector ov2 = m_ent.operation(op);
+        OpVector ov1 = m_ent.operation(op);
         flushOperations(ov1);
-        flushOperations(ov2);
     }
 
     virtual void subscribeOp(const std::string & op) {

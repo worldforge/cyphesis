@@ -16,7 +16,7 @@ class ExternalMind : public BaseMind {
     ExternalMind(Connection & connection, const std::string & id, const std::string & name);
     virtual ~ExternalMind();
 
-    virtual OpVector message(const RootOperation & op);
+    virtual OpVector operation(const RootOperation & op);
 };
 
 #endif // SERVER_EXTERNAL_MIND_H

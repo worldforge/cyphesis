@@ -994,7 +994,7 @@ OpVector Character::sendMind(const RootOperation & op)
 
     if (0 != m_externalMind) {
         if (0 != m_mind) {
-            OpVector res = m_mind->message(op);
+            OpVector res = m_mind->operation(op);
             // Discard all the local results
             OpVector::const_iterator J = res.begin(); 
             for(; J != res.end(); J++) {
@@ -1003,12 +1003,12 @@ OpVector Character::sendMind(const RootOperation & op)
         }
         debug(std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
-        return m_externalMind->message(op);
+        return m_externalMind->operation(op);
     } else {
         debug(std::cout << "Using ops from local mind"
                         << std::endl << std::flush;);
         if (0 != m_mind) {
-            return m_mind->message(op);
+            return m_mind->operation(op);
         }
     }
 

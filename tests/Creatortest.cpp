@@ -6,12 +6,38 @@
 #include "allOperations.h"
 
 #include "rulesets/Creator.h"
+#include "rulesets/Python_API.h"
 
 #include <cassert>
 
-int main()
+class TestWorld : public BaseWorld {
+  public:
+    explicit TestWorld(Entity & gw) : BaseWorld(gw) { }
+
+    virtual bool idle() { return false; }
+    virtual Entity * addObject(Entity * obj, bool setup = true) { return 0; }
+    virtual Entity * addNewObject(const std::string &, const MapType &) {
+        return 0;
+    }
+    virtual void setSerialnoOp(RootOperation &) { }
+    virtual void message(RootOperation & op, const Entity * obj) { }
+    virtual Entity * findByName(const std::string & name) { return 0; }
+    virtual Entity * findByType(const std::string & type) { return 0; }
+    virtual float constrainHeight(Entity*, const Vector3D&) { return 0.f; }
+    virtual void addPerceptive(const std::string &) { }
+};
+
+int main(int argc, char ** argv)
 {
+    loadConfig(argc, argv);
+
+    init_python_api();
+
     Creator e("testId");
+    Entity world("testWorldId");
+    TestWorld tw(world);
+
+    e.m_world = &tw;
 
     IGEntityExerciser<Creator> ee(e);
 

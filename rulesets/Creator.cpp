@@ -23,7 +23,7 @@ Creator::Creator(const std::string & id) : Creator_parent(id)
     }
 }
 
-OpVector Creator::sendMind(const RootOperation & msg)
+OpVector Creator::sendMind(const RootOperation & op)
 {
     debug( std::cout << "Creator::sendMind" << std::endl << std::flush;);
     // Simpified version of character method sendMind() because local mind
@@ -31,7 +31,7 @@ OpVector Creator::sendMind(const RootOperation & msg)
     if (0 != m_externalMind) {
         debug( std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
-        return m_externalMind->message(msg);
+        return m_externalMind->operation(op);
         // If there is some kinf of error in the connection, we turn autom on
     } else {
         // If we do not have an external mind, and therefor a connection,

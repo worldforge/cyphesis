@@ -78,7 +78,7 @@ OpVector CharacterClient::sendAndWaitReply(RootOperation & op)
             RootOperation * input=CharacterClient::connection.pop();
             if (input != NULL) {
                 // What the hell is this!
-                OpVector result = message(*input);
+                OpVector result = operation(*input);
                 OpVector::const_iterator I;
                 for (I=result.begin();I!=result.end();I++) {
                     send(*(*I));

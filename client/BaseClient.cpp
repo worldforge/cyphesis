@@ -104,7 +104,7 @@ void CommClient::handleNet()
 {
     RootOperation * input;
     while ((input = connection.pop()) != NULL) {
-        OpVector result = character->message(*input);
+        OpVector result = character->operation(*input);
         for (OpVector::const_iterator I=result.begin(); I != result.end(); I++) {
             send(*(*I));
         }
