@@ -1,16 +1,20 @@
+%define name @PACKAGE@
+%define version @VERSION@
+%define release 1
+
 Summary: A simple personal server for the WorldForge project
-Name: cyphesis
-Version: @VERSION@
-Release: 1
+Name: %{name}
+Version: %{version}
+Release: %{release}
 Copyright: GPL
 Group: Amusements/Games
-Source0: cyphesis-@VERSION@.tar.gz
+Source0: %{name}-%{version}.tar.gz
 Source1: cyphesis.init
 Source2: cyclient.init
 Source3: cyphesis.sysconfig
-Requires: Atlas-C++ >= 0.4.4 varconf skstream > 0.2 readline postgresql-libs >= 7.1 python >= 1.5.2 libstdc++ >= 2.95.2
-BuildRoot: /var/tmp/%{name}-buildroot
-BuildRequires: Atlas-C++-devel >= 0.4.4 varconf-devel skstream-devel > 0.2 readline-devel postgresql-devel >= 7.1 python-devel >= 1.5.2 libstdc++-devel
+Requires: Atlas-C++ >= 0.4.93 varconf skstream >= 0.3.2 readline postgresql-libs >= 7.1 python >= 1.5.2 libstdc++
+BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
+BuildRequires: Atlas-C++-devel >= 0.4.93 varconf-devel skstream-devel >= 0.3.2 readline-devel postgresql-devel >= 7.1 python-devel >= 1.5.2 libstdc++-devel
 
 %description
 Cyphesis is a very simple world simulator. NPCs that do things according to
@@ -29,26 +33,6 @@ Requires: %{name} = %{version} postgresql-server >= 7.1
 %description service
 Cyphesis is a very simple world simulator. This package allows it to be run
 as a service controlled by init.
-
-%package libs
-Summary: Libraries for using cyphesis databases
-Group: System Environment/Libraries
-Requires: varconf postgresql > 7.1
-
-%description libs
-Cyphesis is a very simple world simulator. These libraries allow other
-applications to access the databases cyphesis uses to store its data.
-This access can be used to facilitate rapid world editing and building,
-account management, or other tasks.
-
-%package devel
-Summary: Libraries for using cyphesis databases static libs and headers
-Group: Development/Libraries
-Requires: %{name}-libs = %{version}
-
-%description devel
-Cyphesis is a very simple world simulator. These are the headers and libraries
-required to compile application which requires access to cyphesis databases.
 
 %package acorn
 Summary: Game data for running the Acorn game in cyphesis
@@ -84,7 +68,7 @@ Werewolf is not yet functional.
 %setup -q
 
 %build
-%configure --enable-static
+CXXFLAGS=$RPM_OPT_FLAGS %configure --enable-static
 make
 
 %install
@@ -126,9 +110,6 @@ if [ $1 = 0 ] ; then
         userdel cyphesis >/dev/null 2>&1 || :
 fi
 
-%post libs -p /sbin/ldconfig
-%postun libs -p /sbin/ldconfig
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -142,18 +123,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files service -f service.lst
 %defattr(-,root,root)
-
-%files libs
-%defattr(-,root,root)
-%{_libdir}/libcyphesis.so.0.0.0
-%{_libdir}/libcyphesis.so.0
-
-%files devel
-%defattr(-,root,root)
-%{_libdir}/libcyphesis.so
-%{_libdir}/libcyphesis.la
-%{_libdir}/libcyphesis.a
-%{_includedir}/cyphesis
 
 %files acorn
 %defattr(-,root,root)

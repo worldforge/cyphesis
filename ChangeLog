@@ -1,3 +1,13 @@
+2004-05-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* Disable unused gettext.
+
+	* Remove obsolete libs from spec.
+
+	* Make sure all source files are included with distribution.
+
+	* Fix tests to work with distcheck.
+
 2004-05-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/BaseMind.cpp: Re-order the way ops are handled to avoid

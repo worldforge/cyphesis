@@ -5,7 +5,8 @@ INCLUDES = -I$(top_srcdir)
 noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
                    libscriptpython.a
 
-librulesetbase_a_SOURCES = Entity.cpp Entity.h attributes.h \
+librulesetbase_a_SOURCES = Entity.cpp Entity.h \
+			   Entity_getLocation.h attributes.h \
 			   Script.cpp Script.h 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
