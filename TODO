@@ -1,5 +1,11 @@
+Fix python code so that output goes to the logging mechanism:
+"In Python code, define an object that supports the ``write()`` method.
+ Assign this object to ``sys.stdout`` and ``sys.stderr``.
+ Call print_error, or just allow the standard traceback mechanism to
+ work. Then, the output will go wherever your ``write()`` method sends it."
+
 Confirm if custom python ops in the API code are working at all.
-Also goes for stable branch.
+Also goes for stable branch. They might not be getting returned.
 
 Check if -pthread arg is required to get pthread.
 
