@@ -1,125 +1,152 @@
 Welcome to cyphesis, at the time of writing the only fully armed and
-operational WorldForge server. Cyphesis is being developed as a small
-scale or personal server for WorldForge games, and is currently being used
-to develop bleeding edge techniques and technologies for the WorldForge
-project. Code from cyphesis will also be used to control NPCs in future
-servers such as STAGE using AI techniques.
+operational WorldForge server. Cyphesis is being developed as a small scale or
+personal server for WorldForge games, and is currently being used to develop
+new techniques and technologies for the WorldForge project. Code from cyphesis
+will also be used to control NPCs in future servers such as STAGE using AI
+techniques.
 
 Installation:
 
-cyphesis is built using autoconf. Please see the file INSTALL for details.
-It requires Python and PostgreSQL which are include with most Linux
-distributions, and Atlas-C++, varconf and skstream2 which are provided
-by the WorldForge project. PostgreSQL must have been built with the C++
-libraries enabled. If you are building PostgreSQL from source, please check
-the PostgreSQL documentation for information on how to enable building the
-C++ libraries. GNU readline is required by some of the included tools.
+cyphesis is built using autoconf. Please see the file INSTALL for details.  It
+requires Python and PostgreSQL which are include with most Linux distributions,
+and Atlas-C++, varconf and skstream2 which are provided by the WorldForge
+project. PostgreSQL must have been built with the C++ libraries enabled. If you
+are building PostgreSQL from source, please check the PostgreSQL documentation
+for information on how to enable building the C++ libraries. GNU readline is
+required by some of the included tools.
 
 Copyright:
 
 The server code in C++ is distributed under the GNU General Public License.
 See the file COPYING for details. The script files included with this
-distribution are also distributed under the GNU General Public License.
-Note that this copyright does not cover user scripts that use server
-services but do not use code from the scripts provided. Using such
-scripts is considered ordinary use of the server, and does not fall under
-the heading of derived work.
+distribution are also distributed under the GNU General Public License.  Note
+that this copyright does not cover user scripts that use server services but do
+not use code from the scripts provided. Using such scripts is considered
+ordinary use of the server, and does not fall under the heading of derived
+work.
 
-Under the terms of the GNU General Public License version 2, you are
-entitled to modify the software, and are required to make the source code
-to those changes available if you redistribute the modified version.
-Specifically, you are not required to make the source code available if the
-modified version is not redistributed. As the author of the cyphesis-C++
-core, I believe in your freedom to do what you want with the software, and I
-do not believe I have any right to force you to publish any changes if
-you do not wish to redistribute the modified program. There has been some
-discusion within the Free Software movement about this issue, which some
-see as a hole in the GPL, and it is possible that a future version of the
-GNU General Public License will forbid using a modified version of a GPL
-licensed program to run a service unless the changes to the source code
-are made available. The licensing of many programs permit redistribution
-under the terms of the GNU General Public License version 2 or at the
-licensee's option, a later version, so it is possible that a version of
-those programs may be released that is under the terms of a license which
-requires the source code changes to be published for a modified version
-being used to run an online service. As the current author and owner of
-the source code to this program, I have never intended that this restriction
-be placed on the software, and do not support its enforcement. I have
-therefor chosen to restrict redistribution of this program to the license
-provided with the source, which at the time of writing is the GPL version
-2. If a new version of the GPL is released, I will consider on its merits
-whether or not to make this code available under that license. The scripts
-provided with this software should be considered a separate work, as they
-were not written by me. Nothing in this paragraph should be considered to
-be a legal statement of any kind. It is simply a clarification of my
-opinion on some of the terms of the GNU General Public License. If anything
-in the above paragraph is unclear, please feel free to contact me to discuss
-it.
+Under the terms of the GNU General Public License version 2, you are entitled
+to modify the software, and are required to make the source code to those
+changes available if you redistribute the modified version.  Specifically, you
+are not required to make the source code available if the modified version is
+not redistributed. As the author of the cyphesis-C++ core, I believe in your
+freedom to do what you want with the software, and I do not believe I have any
+right to force you to publish any changes if you do not wish to redistribute
+the modified program. There has been some discussion within the Free Software
+movement about this issue, which some see as a hole in the GPL, and it is
+possible that a future version of the GNU General Public License will forbid
+using a modified version of a GPL licensed program to run a service unless the
+changes to the source code are made available. The licensing of many programs
+permit redistribution under the terms of the GNU General Public License version
+2 or at the licensee's option, a later version, so it is possible that a
+version of those programs may be released that is under the terms of a license
+which requires the source code changes to be published for a modified version
+being used to run an online service. As the current author and owner of the
+source code to this program, I have never intended that this restriction be
+placed on the software, and do not support its enforcement. I have therefor
+chosen to restrict redistribution of this program to the license provided with
+the source, which at the time of writing is the GPL version 2. If a new version
+of the GPL is released, I will consider on its merits whether or not to make
+this code available under that license. The scripts provided with this software
+should be considered a separate work, as they were not written by me. Nothing
+in this paragraph should be considered to be a legal statement of any kind. It
+is simply a clarification of my opinion on some of the terms of the GNU General
+Public License. If anything in the above paragraph is unclear, please feel free
+to contact me to discuss it.
 
   Al Riddoch <alriddoch@zepler.org> 2nd April 2002
 
 Usage and configuration:
 
-The main server binary is called cyphesis. Its command line arguments
-and configuration are managed by varconf, which means options are
-set in config files and on the command line. The main configuration
-file is called cyphesis.vconf, and server settings are stored in the
-[cyphesis] section. Settings in this config file can be overriden in on
-the command line, and once overriden they will be stored permanently in
-.cyphesis.vconf in the users home directory. In order to drop back to
-the default settings, remove this file.
+The main server binary is called cyphesis. Its command line arguments and
+configuration are managed by varconf, which means options are set in
+configuration files and on the command line. The main configuration file is
+called cyphesis.vconf, and server settings are stored in the [cyphesis]
+section. The file can be found in the cyphesis source directory, and is
+installed into the sysconf directory, which is by default called etc.  Settings
+in this configuration file can be overridden in on the command line, and once
+overridden they will be stored permanently in .cyphesis.vconf in the users home
+directory. In order to drop back to the default settings, remove this file.
+Settings can be incrementally overridden in ~/.cyphesis.vconf non-interactively
+by passing them as command line options to cyconf. cyconf will store any
+settings it is given in ~/.cyphesis.vconf and then exited. If you are planning
+to have multiple servers run on the same system at the same or different times,
+the easiest way to handle the differences in configuration would be to use the
+~/.cyphesis.vconf file, and avoid modifying the master configuration file.
 
 As an example, the ruleset to be used is set in cyphesis.vconf as follows:
 
-ruleset="acorn"
+ruleset="mason"
 
-This setting can be overriden by invoking cyphesis with the following
+This setting can be overridden by invoking cyphesis with the following
 option:
 
---cyphesis:ruleset=acorn
+--cyphesis:ruleset=werewolf
 
-For more details of vconf usage see the Varconf documentation. For full
-details on configuring cyphesis, see the configuration docementation.
+For more details of vconf usage see the Varconf documentation. For full details
+on configuring cyphesis, see the configuration documentation.
 
-The ruleset specified indicates the entity types available, and the set
-of scripts that will be used for these entities, and the initialisation
-script used to populate the server.
+The ruleset specified indicates the entity types available, and the set of
+scripts that will be used for these entities, and the initialisation script
+used to populate the server.
 
-The server is populated using the client program, cyclient.
+The server is populated using the client program, cyclient. cyclient should be
+run once the server has been started, and it will display a report of the world
+it is setting up, and then exit.
 
 The default ruleset for this version is mason, but the acorn ruleset is
 provided, including the files required to be loaded into the world database.
-To switch to the acorn ruleset, follow the instructions above, after
-loading the agrilan*.xml files into the world database using the cydload
-command.
+Some other rulesets under development are also present in the source package,
+but will probably only be useful as a reference.  To switch to the acorn
+ruleset, follow the instructions above.  Instead of loading the moraf world map
+into the database, acorn uses the agrilan map data.
 
-Before you start the server for the first time, you will need to load some
-data into the server. You will first have to load ruleset data, and
-then map data into the database. If this is the first time you have run
-cyphesis since it was switched to use PostgreSQL, you will need to set
-it up so cyphesis has access. In order to use databases, cyphesis needs
-to know the name of an account it can use, and the name of a database
-where it can create its tables. By default it uses the name cyphesis
-for both, and if possible you should create a user called cyphesis
-and a database with the same name belonging to this user. For information
-on how to do this, please see the PostgreSQL documentation provided
-with the version you have installed.
+In order to run the server requires access to a PostgreSQL database, and this
+database needs to contain some essential data. To perform this task, a script
+called cyphesis-setup has been provided. This script can be invoked in two
+ways. If you have the root password of the system you are running cyphesis,
+then you can run cyphesis-setup as root, and give it the user name of the user
+you will run cyphesis as, and it will set everything up automatically.  If you
+are running cyphesis on machine you do not have the root password for, then you
+will need to ask your systems administrator to create a database account for
+you. Once this has been done, you can run cyphesis-setup, and it will handle
+the rest of the setup process for you.
 
-Once cyphesis has access, run cypasswd with no arguments to set the
-admin password to something unique.
+If cyphesis-setup works, you are now ready to run the server. The rest of the
+information in this file details setting up cyphesis by hand, and is intended
+for users who are interested in how the process works, or user for whom
+cyphesis-setup did not for some reason work.
+
+Before you start the server for the first time, you will need to load some data
+into the server. You will first have to load ruleset data, and then map data
+into the database. If this is the first time you have run cyphesis since it was
+switched to use PostgreSQL, you will need to set it up so cyphesis has access.
+In order to use databases, cyphesis needs to know the name of an account it can
+use, and the name of a database where it can create its tables. By default it
+uses the current user name to connect to the database, and the name cyphesis for
+the database.  It has been assumed that PostgreSQL has been set up as it is on
+most systems to accept a local connection from a user with the same name as the
+database account name without a password. If you want to go through the setup
+of the database manually, or for some reason cyphesis-setup does not work, you
+will need to create a database account with the right name, and a database
+belonging to that account called cyphesis, or whatever name you choose to call
+it. For information on how to do this, please see the PostgreSQL documentation
+provided with the version you have installed.
+
+Once cyphesis has access, run cypasswd with no arguments to set the admin
+password to something unique.
 
 A ruleset will need to be loaded into the database before you can do anything
-useful with the server.  Each ruleset optionally depends on another ruleset,
-so in addition to the ruleset you are using you will need to load the
-rulesets on which it depends. A ruleset is distributed with cyphesis
-as an xml. The default is mason.xml, which depends on acorn.xml, which in
-turn depends on basic.xml. These three rulesets can be loaded into the
-database using the cyloadrules command, with no arguments. This
-automatically loads the rulesets in order into the database, first
-ensuring that the rules table is empty.
+useful with the server.  Each ruleset optionally depends on another ruleset, so
+in addition to the ruleset you are using you will need to load the rulesets on
+which it depends. A ruleset is distributed with cyphesis as an xml. The default
+is mason.xml, which depends on acorn.xml, which in turn depends on basic.xml.
+These three rulesets can be loaded into the database using the cyloadrules
+command, with no arguments. This automatically loads the rulesets in order into
+the database, first ensuring that the rules table is empty.
 
-cyloadrules can also be used to load individual rulesets into the database
-as follows:
+cyloadrules can also be used to load individual rulesets into the database as
+follows:
 
 cyloadrules basic.xml
 cyloadrules acorn.xml
@@ -128,8 +155,14 @@ cyloadrules mason.xml
 You will only need to do this if you are developing new rulesets, or
 customising existing ones.
 
-You should now load map data into the server using cydbload. The map for early
-mason release is the same as the acorn map, and is stored in agrilan*.xml:
+You should now load map data into the server using cydbload. The map for mason
+is called moraf.
+
+cydbload moraf.xml
+
+The map for the acorn ruleset is stored in agrilan*.xml. The Acorn map is much
+more detailed than the mason map, but we no longer have access to the artwork
+for this map.
 
 cydbload agrilan.xml
 cydbload agrilan_a1.xml
@@ -137,19 +170,17 @@ cydbload agrilan_a2.xml
 cydbload agrilan_a3.xml
 cydbload agrilan_a4.xml
 
-Once these tasks are done, it is safe to run cyphesis. You will not need to
-do them again. The database store is persistant. If new a ruleset
-or map is provided, it will be necessary to clear the database tables
-before loading them with new data.
+Once these tasks are done, it is safe to run cyphesis. You will not need to do
+them again. The database store is persistent. If new a ruleset or map is
+provided, it will be necessary to clear the database tables before loading them
+with new data.
 
-Once cyphesis is running, it will contain all the entities in the map,
-but there will be few or no active entities in the world. In order to set
-up a game, you need to run a client to set up the rest. The client
-will use a script included in the current ruleset to define what the
-world should contain. This script is kept together with the entity and
-AI scripts required for the ruleset in a directory under the rulesets
-directory. For example, the mason script is found in
-rulesets/mason/define_world.py. In order to populate the world,
-simply run cyclient once the server is running. You will need to do
-this each time cyphesis is started.
-
+Once cyphesis is running, it will contain all the entities in the map, but
+there will be few or no active entities in the world. In order to set up a
+game, you need to run a client to set up the rest. The client will use a script
+included in the current ruleset to define what the world should contain. This
+script is kept together with the entity and AI scripts required for the ruleset
+in a directory under the rulesets directory. For example, the mason script is
+found in rulesets/mason/define_world.py. In order to populate the world, simply
+run cyclient once the server is running. You will need to do this each time
+cyphesis is started.
