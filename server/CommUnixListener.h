@@ -13,13 +13,16 @@
 class CommUnixListener : public CommSocket {
   private:
     unix_socket_server m_unixListener;
-    bool bound;
+    bool m_bound;
+    std::string m_path;
 
     bool accept();
 
   public:
-    CommUnixListener(CommServer & svr) : CommSocket(svr), bound(false) { }
+    CommUnixListener(CommServer & svr);
     virtual ~CommUnixListener();
+
+    const std::string & getPath() const { return m_path; }
 
     bool setup();
 

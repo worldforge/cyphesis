@@ -15,11 +15,15 @@
 
 static const bool debug_flag = false;
 
+CommUnixListener::CommUnixListener(CommServer & svr) : CommSocket(svr),
+                                                       m_bound(false)
+{
+}
+
 CommUnixListener::~CommUnixListener()
 {
-    if (bound) {
-        std::string sock_path = var_directory + "/tmp/cyphesis.sock";
-        unlink(sock_path.c_str());
+    if (m_bound) {
+        unlink(m_path.c_str());
     }
 }
 
@@ -52,12 +56,12 @@ void CommUnixListener::dispatch()
 
 bool CommUnixListener::setup()
 {
-    std::string sock_path = var_directory + "/tmp/cyphesis.sock";
+    m_path = var_directory + "/tmp/cyphesis.sock";
 
-    m_unixListener.open(sock_path);
+    m_unixListener.open(m_path);
 
-    bound = m_unixListener.is_open();
-    return bound;
+    m_bound = m_unixListener.is_open();
+    return m_bound;
 }
 
 bool CommUnixListener::accept()

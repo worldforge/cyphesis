@@ -1,5 +1,15 @@
 2004-06-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommUnixListener.cpp, server/CommUnixListener.h:
+	  Clean up member variable names in CommUnixListener, store
+	  the socket path to avoid regenerating it, and provide
+	  an accessor for the path.
+
+	* server/server.cpp: Report the pathname of failed listen socket
+	  if we can't open it.
+
+2004-06-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Fix sight range calculations for Appearance
 	  and Disappearance ops.
 

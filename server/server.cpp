@@ -22,6 +22,7 @@
 #include "common/inheritance.h"
 #include "common/system.h"
 #include "common/nls.h"
+#include "common/stringstream.h"
 
 #include <varconf/Config.h>
 
@@ -128,7 +129,10 @@ int main(int argc, char ** argv)
 
     CommUnixListener * llistener = new CommUnixListener(commServer);
     if (!llistener->setup()) {
-        log(ERROR, "Could not create local listen socket.");
+        std::stringstream str;
+        str << "Could not create local listen socket with address \"";
+        str << llistener->getPath() << "\".";
+        log(ERROR, str.str().c_str());
         delete llistener;
     } else {
         commServer.add(llistener);
