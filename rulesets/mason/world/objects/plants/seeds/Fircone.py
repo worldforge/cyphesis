@@ -7,7 +7,7 @@ from misc import set_kw
 import atlas
 
 
-class Pinekernel(Seed):
+class Fircone(Seed):
     def eat_operation(self, op):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)

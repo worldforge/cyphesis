@@ -339,13 +339,13 @@
     </map>
   </map>
 
-  <map name="pinekernel">
+  <map name="fircone">
     <string name="parent">seed</string>
     <map name="attributes">
       <float name="mass">0.10</float>
     </map>
     <map name="script">
-      <string name="name">world.objects.plants.seeds.Pinekernel</string>
+      <string name="name">world.objects.plants.seeds.Fircone</string>
       <string name="language">python</string>
     </map>
   </map>

@@ -1,5 +1,9 @@
 2004-06-26  Kai Blin  <blin@gmx.net>
 
+	* Renamed pinekernel to fircone.
+
+2004-06-26  Kai Blin  <blin@gmx.net>
+
 	* Add a pinekernel rule, and make squirrel forage for acorns and
 	  pine kernels. Make wolf hunt the squirrel, too.
 
