@@ -192,7 +192,7 @@ AM_PATH_PSQL(7.1.0,
     AC_MSG_ERROR(Couldn't find PostgreSQL config [or config failed])
 )
 
-AC_CHECK_LIB(pq,main, ,AC_MSG_ERROR(Couldn't find PostgreSQL C bindings! [Did you compile PostgreSQL with --enable-CXX ?]))
+AC_CHECK_LIB(pq,PQconnectdb, ,AC_MSG_ERROR(Couldn't find PostgreSQL bindings! [Have you installed the PostgreSQL development software]))
 
 SYSTEM_LIBS="$SYSTEM_LIBS -lpq"
 
