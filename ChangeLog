@@ -1,3 +1,8 @@
+2004-02-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Collision.cpp: Improve comments, and describe exit prediction
+	  algorithm.
+
 2004-01-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CharacterClient.cpp, client/ClientConnection.cpp,

@@ -64,8 +64,12 @@ bool getCollisionTime(const Vector3D & p,     // Position of point
            (  v.x() * n.x() + v.y() * n.y()
             + v.z() * n.z() - u.x() * n.x()
             - u.y() * n.y() - u.z() * n.z() );
+    // Set now_infront to true if point is currently in front of the plane
     bool now_infront = (Dot(p - l, n) > 0.);
+    // Set collided to true if the collision has alread occured
     bool collided = (time < 0.);
+    // Return true if the collision direction is from infront,
+    // whether it has already happened on not
     return ((now_infront && !collided) || (!now_infront && collided));
 }
 
@@ -94,7 +98,7 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
                             << s_pos << ": " << s_norm;);
             if (getCollisionTime(*I, u, s_pos, s_norm, v, time)) {
                 debug(std::cout << " Collision at " << time;);
-                // We are colliding from infront
+                // We are colliding from infront ie entering
                 if (time > last_vertex_entry) {
                     debug(std::cout << " new";);
                     last_vertex_entry = time;
@@ -102,7 +106,7 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
                 }
             } else {
                 debug(std::cout << " Emergence at " << time;);
-                // We are colliding fron behind
+                // We are colliding fron behind ie exitint
                 if (time < first_vertex_exit) {
                     first_vertex_exit = time;
                 }
@@ -141,7 +145,7 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
                       const CoordList & o,    // Vertices of other mesh
                       const NormalSet & on,   // Normals of other mesh
                       const Vector3D & v,     // Velocity of other mesh
-                      float & time,          // Returned time to collision
+                      float & time,           // Returned time to collision
                       Vector3D & n)           // Returned collision normal
 {
     debug(std::cout << u << ", " << v << std::endl << std::flush; );
@@ -150,6 +154,8 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
     debug(std::cout << "o with l normals" << std::endl << std::flush; );
     bool ol = predictEntryExit(o, v, l, ln, u, time, n);
     if (ol) {
+        // If ol is true then the collision is in the opposite direction,
+        // and the normal reaction needs to be reversed.
         n = -n;
     }
     return (lo || ol);
@@ -304,5 +310,12 @@ bool predictEmergence(const Location & l,  // This location
                       float & time,        // Returned time to collision
                       Vector3D & normal)   // Returned normal acting on l
 {
+    // We are predicting emergence of l from its parent o
+    // Orientation of o is irrelevant, as children and their relative
+    // position are also oriented, so o's bbox is axis aligned.
+    // In fact the only feature of o we are interested is its bbox, so
+    // we could drop the Location, and take the bbox instead.
+    // So all we need to do is get oriented points for l, and check
+    // when they will first leave the axis aligned bounding values
     return false;
 }
