@@ -115,7 +115,7 @@ bool Database::initRule(bool createTables)
 {
     int status = 0;
     clearPendingQuery();
-    status = PQsendQuery(m_connection, "SELECT * FROM rules WHERE id = 'test' AND contents = 'test';");
+    status = PQsendQuery(m_connection, "SELECT * FROM rules WHERE id = 'test' AND contents = 'test'");
     if (!status) {
         reportError();
         return false;
@@ -125,7 +125,7 @@ bool Database::initRule(bool createTables)
         debug(std::cout << "Rule table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(80) PRIMARY KEY, ruleset varchar(32), contents text ) WITHOUT OIDS;");
+            status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(80) PRIMARY KEY, ruleset varchar(32), contents text ) WITHOUT OIDS");
             if (!status) {
                 reportError();
                 return false;
@@ -205,7 +205,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
 {
     debug(std::cout << "Database::getObject() " << table << "." << key
                     << std::endl << std::flush;);
-    std::string query = std::string("SELECT * FROM ") + table + " WHERE id = '" + key + "';";
+    std::string query = std::string("SELECT * FROM ") + table + " WHERE id = '" + key + "'";
 
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
@@ -269,7 +269,7 @@ bool Database::putObject(const std::string & table,
     }
     query += "', '";
     query += str.str();
-    query +=  "');";
+    query +=  "')";
     return scheduleCommand(query);
 }
 
@@ -289,7 +289,7 @@ bool Database::updateObject(const std::string & table,
     codec.streamEnd();
 
     std::string query = std::string("UPDATE ") + table + " SET contents = '" +
-                        str.str() + "' WHERE id='" + key + "';";
+                        str.str() + "' WHERE id='" + key + "'";
     return scheduleCommand(query);
 }
 
@@ -314,7 +314,7 @@ bool Database::delObject(const std::string & table, const std::string & key)
 bool Database::hasKey(const std::string & table, const std::string & key)
 {
     std::string query = std::string("SELECT id FROM ") + table +
-                        " WHERE id='" + key + "';";
+                        " WHERE id='" + key + "'";
 
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
@@ -344,7 +344,7 @@ bool Database::hasKey(const std::string & table, const std::string & key)
 
 bool Database::getTable(const std::string & table, MapType &o)
 {
-    std::string query = std::string("SELECT * FROM ") + table + ";";
+    std::string query = std::string("SELECT * FROM ") + table;
 
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
@@ -402,7 +402,7 @@ bool Database::getTable(const std::string & table, MapType &o)
 
 bool Database::clearTable(const std::string & table)
 {
-    std::string query = std::string("DELETE FROM ") + table + ";";
+    std::string query = std::string("DELETE FROM ") + table;
     return scheduleCommand(query);
 }
 
@@ -478,7 +478,7 @@ bool Database::registerRelation(std::string & tablename,
 
     std::string query = "SELECT * FROM ";
     query += tablename;
-    query += " WHERE source = 0 AND target = 0;";
+    query += " WHERE source = 0 AND target = 0";
 
     std::string createquery = "CREATE TABLE ";
     createquery += tablename;
@@ -496,12 +496,12 @@ bool Database::registerRelation(std::string & tablename,
         createquery += " (id), target integer REFERENCES ";
     }
     createquery += targettable;
-    createquery += " (id));";
+    createquery += " (id))";
 #else
     if ((kind == OneToOne) || (kind == OneToMany)) {
-        createquery += " (id), target integer UNIQUE) WITHOUT OIDS;";
+        createquery += " (id), target integer UNIQUE) WITHOUT OIDS";
     } else {
-        createquery += " (id), target integer) WITHOUT OIDS;";
+        createquery += " (id), target integer) WITHOUT OIDS";
     }
 #endif
 
@@ -537,7 +537,7 @@ bool Database::registerRelation(std::string & tablename,
         indexQuery += tablename;
         indexQuery += "_source_idx ON ";
         indexQuery += tablename;
-        indexQuery += " (source);";
+        indexQuery += " (source)";
         return runCommandQuery(indexQuery);
     }
 #else
@@ -552,7 +552,6 @@ const DatabaseResult Database::selectRelation(const std::string & name,
     query += name;
     query += " WHERE source = ";
     query += id;
-    query += ";";
 
     debug(std::cout << "Selecting on id = " << id << " ... " << std::flush;);
 
@@ -569,9 +568,8 @@ bool Database::createRelationRow(const std::string & name,
     query += id;
     query += ", ";
     query += other;
-    query += ");";
+    query += ")";
 
-    // return runCommandQuery(query);
     return scheduleCommand(query);
 }
 
@@ -582,9 +580,7 @@ bool Database::removeRelationRow(const std::string & name,
     query += name;
     query += " WHERE source = ";
     query += id;
-    query += ";";
 
-    // return runCommandQuery(query);
     return scheduleCommand(query);
 }
 
@@ -595,7 +591,6 @@ bool Database::removeRelationRowByOther(const std::string & name,
     query += name;
     query += " WHERE target = ";
     query += other;
-    query += ";";
 
     // return runCommandQuery(query);
     return scheduleCommand(query);
@@ -644,7 +639,6 @@ bool Database::registerSimpleTable(const std::string & name,
             log(ERROR, "Illegal column type in database simple row");
         }
     }
-    query += ";";
 
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     clearPendingQuery();
@@ -664,7 +658,7 @@ bool Database::registerSimpleTable(const std::string & name,
         return true;
     }
 
-    createquery += ") WITHOUT OIDS;";
+    createquery += ") WITHOUT OIDS";
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
     bool ret = runCommandQuery(createquery);
@@ -681,7 +675,6 @@ const DatabaseResult Database::selectSimpleRow(const std::string & id,
     query += name;
     query += " WHERE id = ";
     query += id;
-    query += ";";
 
     debug(std::cout << "Selecting on id = " << id << " ... " << std::flush;);
 
@@ -698,7 +691,6 @@ const DatabaseResult Database::selectSimpleRowBy(const std::string & name,
     query += column;
     query += " = ";
     query += value;
-    query += ";";
 
     debug(std::cout << "Selecting on " << column << " = " << value
                     << " ... " << std::flush;);
@@ -719,7 +711,7 @@ bool Database::createSimpleRow(const std::string & name,
     query += id;
     query += ", ";
     query += values;
-    query += ");";
+    query += ")";
 
     // return runCommandQuery(query);
     return scheduleCommand(query);
@@ -738,7 +730,7 @@ bool Database::updateSimpleRow(const std::string & name,
     query += key;
     query += "='";
     query += value;
-    query += "';";
+    query += "'";
 
     // return runCommandQuery(query);
     return scheduleCommand(query);
@@ -747,7 +739,7 @@ bool Database::updateSimpleRow(const std::string & name,
 bool Database::registerEntityIdGenerator()
 {
     clearPendingQuery();
-    int status = PQsendQuery(m_connection, "SELECT * FROM entity_ent_id_seq;");
+    int status = PQsendQuery(m_connection, "SELECT * FROM entity_ent_id_seq");
     if (!status) {
         log(ERROR, "Database query error.");
         reportError();
@@ -761,14 +753,14 @@ bool Database::registerEntityIdGenerator()
         debug(std::cout << "Sequence exists" << std::endl << std::flush;);
         return true;
     }
-    return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq;");
+    return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq");
 }
 
 bool Database::newId(std::string & id)
 {
     clearPendingQuery();
     int status = PQsendQuery(m_connection,
-                             "SELECT nextval('entity_ent_id_seq');");
+                             "SELECT nextval('entity_ent_id_seq')");
     if (!status) {
         log(ERROR, "Database query error.");
         reportError();
@@ -876,7 +868,6 @@ bool Database::registerEntityTable(const std::string & classname,
             log(ERROR, "Illegal column type in database entity row");
         }
     }
-    query += ";";
 
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     clearPendingQuery();
@@ -900,11 +891,11 @@ bool Database::registerEntityTable(const std::string & classname,
     // create table
     createquery += ")";
     if (parent.empty()) {
-        createquery += " WITHOUT OIDS;";
+        createquery += " WITHOUT OIDS";
     } else {
         createquery += " INHERITS (";
         createquery += parent;
-        createquery += "_ent);";
+        createquery += "_ent)";
     }
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
@@ -934,7 +925,7 @@ bool Database::createEntityRow(const std::string & classname,
     query += id;
     query += ", ";
     query += values;
-    query += ");";
+    query += ")";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
 
     // return runCommandQuery(query);
@@ -960,7 +951,7 @@ bool Database::updateEntityRow(const std::string & classname,
     query += columns;
     query += " WHERE id='";
     query += id;
-    query += "';";
+    query += "'";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
 
     return scheduleCommand(query);
@@ -978,7 +969,7 @@ bool Database::removeEntityRow(const std::string & classname,
     query += classname;
     query += "_ent WHERE id='";
     query += id;
-    query += "';";
+    query += "'";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
 
     // return runCommandQuery(query);
@@ -998,7 +989,7 @@ const DatabaseResult Database::selectEntityRow(const std::string & id,
     query += table;
     query += "_ent WHERE id='";
     query += id;
-    query += "';";
+    query += "'";
 
     debug(std::cout << "Selecting on id = " << id << " ... " << std::flush;);
 
@@ -1018,11 +1009,10 @@ const DatabaseResult Database::selectOnlyByLoc(const std::string & loc,
     query += classname;
     query += "_ent WHERE loc";
     if (loc.empty()) {
-        query += " is null;";
+        query += " is null";
     } else {
         query += "=";
         query += loc;
-        query += ";";
     }
 
 
@@ -1033,11 +1023,10 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
 {
     std::string query = "SELECT id, class FROM entity_ent WHERE loc";
     if (loc.empty()) {
-        query += " is null;";
+        query += " is null";
     } else {
         query += "=";
         query += loc;
-        query += ";";
     }
 
     debug(std::cout << "Selecting on loc = " << loc << " ... " << std::flush;);
@@ -1123,7 +1112,7 @@ bool Database::registerArrayTable(const std::string & name,
             log(ERROR, "Illegal column type in database array row");
         }
     }
-    query += ";";
+
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
@@ -1142,14 +1131,14 @@ bool Database::registerArrayTable(const std::string & name,
         return true;
     }
 
-    createquery += ") WITHOUT OIDS;";
+    createquery += ") WITHOUT OIDS";
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
     bool ret = runCommandQuery(createquery);
     if (!ret) {
         return false;
     }
-    indexquery += ");";
+    indexquery += ")";
     debug(std::cout << "INDEX QUERY: " << indexquery
                     << std::endl << std::flush;);
     ret = runCommandQuery(indexquery);
@@ -1167,7 +1156,6 @@ const DatabaseResult Database::selectArrayRows(const std::string & name,
     query += name;
     query += " WHERE id = ";
     query += id;
-    query += ";";
 
     debug(std::cout << "ARRAY QUERY: " << query << std::endl << std::flush;);
 
@@ -1212,7 +1200,7 @@ bool Database::createArrayRow(const std::string & name,
             break;
         }
     }
-    query << ");";
+    query << ")";
 
     std::string qstr = query.str();
     debug(std::cout << "QUery: " << qstr << std::endl << std::flush;);
@@ -1256,7 +1244,6 @@ bool Database::updateArrayRow(const std::string & name,
     for (unsigned int i = 0; i < key.size(); ++i) {
         query << " AND " << array_axes[i] << " = " << key[i];
     }
-    query << ";";
     
     std::string qstr = query.str();
     debug(std::cout << "QUery: " << qstr << std::endl << std::flush;);

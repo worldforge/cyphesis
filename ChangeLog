@@ -1,3 +1,10 @@
+2004-10-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Python_API.cpp: Add new python wrapper for
+	  relativePosition().
+
+	* common/Database.cpp: Don't need trailing ; on database queries.
+
 2004-09-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* Fix a couple of autoconf macros to stop them from spitting errors.

@@ -446,6 +446,26 @@ static PyObject * is_location(PyObject * self, PyObject * args)
     return Py_False;
 }
 
+static PyObject * relPos(PyObject * self, PyObject * args)
+{
+    PyObject * near, * other;
+    if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
+        return NULL;
+    }
+    if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
+        PyErr_SetString(PyExc_TypeError, "Arg coords required");
+        return NULL;
+    }
+    PyLocation * sloc = (PyLocation *)near,
+               * oloc = (PyLocation *)other;
+    PyPoint3D * ret = newPyPoint3D();
+    if (ret == NULL) {
+        return NULL;
+    }
+    ret->coords = relativePos(*sloc->location, *oloc->location);
+    return (PyObject *)ret;
+}
+
 static PyObject * location_new(PyObject * self, PyObject * args)
 {
     PyLocation *o;
@@ -1045,6 +1065,7 @@ static PyMethodDef atlas_methods[] = {
     /* {"system",       spam_system, METH_VARARGS}, */
     {"Operation",  (PyCFunction)operation_new,  METH_VARARGS|METH_KEYWORDS},
     {"isLocation", is_location,                 METH_VARARGS},
+    {"rel_pos",    relPos,                      METH_VARARGS},
     {"Location",   location_new,                METH_VARARGS},
     {"Object",     (PyCFunction)object_new,     METH_NOARGS},
     {"Entity",     (PyCFunction)entity_new,     METH_VARARGS|METH_KEYWORDS},
