@@ -10,6 +10,12 @@
 
 #include "modules/WorldTime.h"
 
+/// \brief This is core class for representing the mind of an AI entity.
+///
+/// Instances of this class almost always have an associated script
+/// handles most of the AI. The main purpose of this class is to handle
+/// operations and interface to the MemMap used as the core of
+/// the entity's memory.
 class BaseMind : public MemEntity {
   protected:
     MemMap m_map;

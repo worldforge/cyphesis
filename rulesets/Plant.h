@@ -7,12 +7,16 @@
 
 #include "Thing.h"
 
-// This is the base class for flowering plants. Most of the functionality
-// will be common to all plants, and most derived classes will probably
-// be in python.
-
 typedef Thing Plant_parent;
 
+/// \brief This is the base class for flowering plants.
+///
+/// Most of the functionality will be common to all plants, and most
+/// derived classes will probably be in python. Provides functionality
+/// for producing and dropping fruit very simply, currently accelerated
+/// for Acorn compatability. In the longer term this should provide for
+/// plants to grow, assuming we need plants to grow now that we are
+/// using Mercator for forests.
 class Plant : public Plant_parent {
   protected:
     int m_fruits; // Number of fruits on the plant

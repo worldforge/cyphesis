@@ -11,6 +11,12 @@
 
 class Connection;
 
+/// \brief This is the base class for storing information about uses who
+/// can use this server.
+///
+/// The majority of functionality relating to user accounts is encapsulated
+/// here. Sub-classes control privilege levels by implementing
+/// characterError().
 class Account : public OOGThing {
   protected:
     typedef std::map<std::string, SigC::Connection *> ConMap;

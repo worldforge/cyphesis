@@ -7,12 +7,14 @@
 
 #include "Thing.h"
 
-// Base class for buildings and other structures
-// Essentially represents an object with a complex shape which the character
-// can enter.
-
 typedef Thing Structure_parent;
 
+/// \brief Base class for buildings and other structures.
+///
+/// Essentially represents an object with a complex shape which the character
+/// can enter. All this class really does is ensure that the entity geometry
+/// is set up in such a way that the collision code allows the character
+/// to pass into it.
 class Structure : public Structure_parent {
   public:
     explicit Structure(const std::string & id);

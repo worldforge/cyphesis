@@ -9,6 +9,11 @@
 
 class ServerRouting;
 
+/// \brief This class handles the default out-of-game chat area that all
+/// Account objects that are currently logged in are subscribed to by default.
+///
+/// This allows chat between all connected players, and provides a forum for
+/// discusion out of the context of the game.
 class Lobby : public OOGThing {
   private:
     AccountDict m_accounts;

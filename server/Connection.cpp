@@ -171,7 +171,7 @@ OpVector Connection::operation(const RootOperation & op)
         Character * character = dynamic_cast<Character *>(b_ent);
         if ((character != NULL) && (character->m_externalMind == NULL)) {
             character->m_externalMind = new ExternalMind(*this,
-                       character->getId(), character->getName());
+                                                         character->getId());
             debug(std::cout << "Subscribing existing character" << std::endl
                             << std::flush;);
             Info * info = new Info;

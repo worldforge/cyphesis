@@ -12,6 +12,17 @@ class BaseMind;
 
 typedef Thing Character_parent;
 
+/// \brief This is the class for anything controlled by an AI mind, or
+/// external controller like a player client.
+///
+/// It currently contains large ammounts of code for handling movement
+/// which should probably be moved into Thing (PhysicalEntity).
+/// This class currently assumes it is used to handle all animals,
+/// so handles food, nourishment and intoxication.
+/// The mind interface includes operation processing for operations from
+/// the mind or client to determine what the result on the world is, and
+/// operation verification for checking if an in-game operation should be
+/// passed to the mind.
 class Character : public Character_parent {
   protected:
     Movement & m_movement;
@@ -44,7 +55,7 @@ class Character : public Character_parent {
     }
   public:
     BaseMind * m_mind;
-    BaseMind * m_externalMind;
+    BaseEntity * m_externalMind;
 
     explicit Character(const std::string & id);
     virtual ~Character();

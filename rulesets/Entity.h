@@ -36,22 +36,18 @@ class EntityType {
     }
 };
 
-// This is the base class from which all in-game objects inherit.
-// This class should not be instantiated directly.
-// This class provides all the static atributes which are common to most
-// in game objects, the dynamic attributes map, and a means to access both
-// transparantly without needing to know which are which.
-// It provides a physical location for the entity, and a contains list
-// which lists other entities which specify their location with reference to
-// this one.
-// It also provides the script interface for handling operations
-// in scripts rather than in the C++ code.
-//
-// 2002-11-28 Al Riddoch
-//
-// This is now also intended to be the base for in-game persistance.
-// It implements the basic types required for persistance.
-
+/// \brief This is the base class from which all in-game objects inherit.
+///
+/// This class should not normally be instantiated directly.
+/// This class provides hard-coded attributes which are common to most
+/// in game objects, the dynamic attributes map, and a means to access both
+/// transparantly without needing to know which are which.
+/// It provides a physical location for the entity, and a contains list
+/// which lists other entities which specify their location with reference to
+/// this one. It also provides the script interface for handling operations
+/// in scripts rather than in the C++ code.
+/// This is now also intended to be the base for in-game persistance.
+/// It implements the basic types required for persistance.
 class Entity : public BaseEntity {
   private:
     static std::set<std::string> m_immutable;

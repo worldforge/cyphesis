@@ -96,7 +96,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
     Character * pchar = dynamic_cast<Character *>(chr);
     if (pchar != 0) {
-        pchar->m_externalMind = new ExternalMind(*m_connection, pchar->getId(), pchar->getName());
+        pchar->m_externalMind = new ExternalMind(*m_connection, pchar->getId());
         // Only genuinely playable characters should go in here. Otherwise
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.

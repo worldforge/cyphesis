@@ -7,6 +7,12 @@
 
 #include "rulesets/Entity.h"
 
+/// \brief This class is used to represent entities inside MemMap used
+/// by the mind of an AI.
+///
+/// It adds a flag to indicate if this entity is currently visible, and
+/// a means of tracking when it was last seen, so garbage entities can
+/// be cleaned up.
 class MemEntity : public Entity {
   protected:
     bool m_visible;

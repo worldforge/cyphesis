@@ -7,13 +7,16 @@
 
 #include "Thing.h"
 
-// This is the base class for items which are stackable objects, which are
-// mostly used in multiple quantities, and there is usually no difference
-// between individual items. A good example is coins which are unmanageable
-// if each one must be represented by an object.
-
 typedef Thing Stackable_parent;
 
+/// \brief This is the base class for items which are stackable objects, which
+/// are mostly used in multiple quantities, if there is usually no difference.
+/// between individual items.
+///
+/// A good example is coins which are unmanageable if each one must be
+/// represented by an object. This class is not yet implemented as Combine
+/// and Divide semantics are not yet sorted. It may well be obsoleted if
+/// piles are implemented as was suggested in some early Mason docs.
 class Stackable : public Stackable_parent {
   protected:
     int m_num; // Number of items

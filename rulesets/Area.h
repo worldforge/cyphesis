@@ -7,13 +7,13 @@
 
 #include "Thing.h"
 
-// This is the base class for area based geomap features.
-// On the atlas side, it inherits from feature, but feature
-// does not have any added attributes or functionality over
-// thing
-
 typedef Thing Area_parent;
 
+/// \brief This is the base class for area based geomap features.
+///
+/// On the atlas side, it inherits from feature, but feature does not have
+/// any added attributes or functionality over thing. This is not yet fully
+/// implemented.
 class Area : public Area_parent {
   protected:
     IdList m_segments;

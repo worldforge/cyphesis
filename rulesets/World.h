@@ -11,12 +11,12 @@ namespace Mercator {
     class Terrain;
 }
 
-// This is the in game object used to represent the world. I added this
-// because I was not happy with the way the old object model used an
-// out of game object (WorldRouter) to represent the world.
-
 typedef Thing World_parent;
 
+/// This is the in-game entity class used to represent the world.
+///
+/// I added this because I was not happy with the way the old object model
+/// used an out of game object of type WorldRouter to represent the world.
 class World : public World_parent {
   protected:
     Mercator::Terrain & m_terrain;

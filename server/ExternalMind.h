@@ -5,15 +5,20 @@
 #ifndef SERVER_EXTERNAL_MIND_H
 #define SERVER_EXTERNAL_MIND_H
 
-#include "rulesets/BaseMind.h"
+#include "common/BaseEntity.h"
 
 class Connection;
 
-class ExternalMind : public BaseMind {
+/// \brief This class connects in-game entities to the Connection of the client
+/// controlling it.
+///
+/// Essentially used to relay in-game operations that pass to the mind on
+/// to the client.
+class ExternalMind : public BaseEntity {
   public:
     Connection & m_connection;
 
-    ExternalMind(Connection & connection, const std::string & id, const std::string & name);
+    ExternalMind(Connection & connection, const std::string & id);
     virtual ~ExternalMind();
 
     virtual OpVector operation(const RootOperation & op);

@@ -7,13 +7,13 @@
 
 #include "Thing.h"
 
-// This is the base class for line based geomap features.
-// On the atlas side, it inherits from feature, but feature
-// does not have any added attributes or functionality over
-// thing
-
 typedef Thing Line_parent;
 
+/// \brief This is the base class for line based geomap features.
+///
+/// On the atlas side, it inherits from feature, but feature does not have
+/// any added attributes or functionality over thing. This is not yet fully
+/// implemented.
 class Line : public Line_parent {
   protected:
     IdList startIntersections;

@@ -13,13 +13,17 @@
 
 #include <string>
 
-// This is the base class from which all other entity like classes inherit,
-// both in game and out of game.
-// This class basically provides a means of delivering operations to
-// an object, and the structure required to process those operations.
-// It has an id which is typically used to store it in a map or
-// dictionary as they are called elsewhere in this code.
-
+/// \brief This is the base class from which all other entity like classes
+/// inherit, both in game and out of game.
+///
+/// This class basically provides a means of delivering operations to
+/// an object, and the structure required to process those operations.
+/// It also provides a mechanism to create an Atlas representation of
+/// the entity, and an operation enumeration and subscription mechanism
+/// which ensures that operations are handled as efficiently as
+/// possible.
+/// It has an id member which is typically used to store it in a STL map or
+/// dictionary as they are called elsewhere in this code.
 class BaseEntity : virtual public SigC::Object {
   private:
     const std::string m_id;		// String id

@@ -7,6 +7,10 @@
 
 #include "BaseEntity.h"
 
+/// \brief This is the base class from which all OOG entity classes inherit.
+///
+/// This class only overrides OtherOperation() ensuring that operations on
+/// unknown types flag an error.
 class OOGThing : public BaseEntity {
   protected:
     explicit OOGThing(const std::string & id);

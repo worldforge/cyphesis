@@ -7,15 +7,14 @@
 
 #include "Thing.h"
 
-// This is the base class for edible things. Most of the functionality
-// will be common to all food, and most derived classes will probably
-// be in python.
-
 typedef Thing Food_parent;
 
+/// \brief This is the base class for edible things.
+///
+/// Most of the functionality will be common to all food, and most derived
+/// classes will probably be in python.
 class Food : public Food_parent {
   public:
-
     explicit Food(const std::string & id);
     virtual ~Food();
 

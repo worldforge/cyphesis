@@ -1,3 +1,19 @@
+2004-09-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.h, common/OOGThing.h, rulesets/Area.h,
+	  rulesets/BaseMind.h, rulesets/Entity.h, rulesets/Food.h,
+	  rulesets/Line.h, rulesets/MemEntity.h, rulesets/Missile.h,
+	  rulesets/Plant.h, rulesets/Stackable.h, rulesets/Structure.h,
+	  rulesets/Thing.h, rulesets/World.h, server/Account.h,
+	  server/Connection.h, server/Lobby.h: Update the comments describing
+	  the function of these classes.
+
+	* rulesets/Character.h, server/Account.cpp, server/Connection.cpp,
+	  server/ExternalMind.cpp, server/ExternalMind.h: Make ExternalMind
+	  inherit from BaseEntity, eliminating the need for the name argument
+	  to the constructor and simplifying the class greatly by dropping
+	  loads of unused inherited functionality.
+
 2004-08-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.cpp, common/BaseEntity.h,

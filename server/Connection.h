@@ -13,6 +13,14 @@ class ServerRouting;
 class CommClient;
 class Account;
 
+/// \brief Class representing connections from a client at the Atlas level.
+///
+/// This is the first point of dispatch for any operation from the client.
+/// It maintains a dictionary of entities which are associated with this
+/// connection, such as Account objects that the client has logged into,
+/// and any other entities that that are associated with those accounts,
+/// like in-game characters. Clients specify which entity should handle
+/// an operation using the from attribute.
 class Connection : public OOGThing {
     typedef std::map<std::string, SigC::Connection *> ConMap;
 
