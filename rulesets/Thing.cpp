@@ -28,7 +28,7 @@ Thing::Thing() : script_object(NULL), status(1), is_character(0)
 }
 
 int Thing::script_Operation(const string & op_type, const RootOperation & op,
-                     oplist & ret_list)
+                     oplist & ret_list, RootOperation * sub_op)
 {
     if (script_object != NULL) {
         cout << "Got script object for " << fullid << endl << flush;
@@ -42,9 +42,16 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
         }
         RootOperationObject * py_op = newAtlasRootOperation(NULL);
         py_op->operation = new RootOperation(op);
-        PyObject * ret = PyObject_CallMethod(script_object,
-                                             (char *)(op_name.c_str()),
+        PyObject * ret;
+        if (sub_op == NULL) {
+            ret = PyObject_CallMethod(script_object, (char *)(op_name.c_str()),
                                              "(O)", py_op);
+        } else {
+            RootOperationObject * py_sub_op = newAtlasRootOperation(NULL);
+            py_sub_op->operation = sub_op;
+            ret = PyObject_CallMethod(script_object, (char *)(op_name.c_str()),
+                                             "(OO)", py_op, py_sub_op);
+        }
         if (ret != NULL) {
             cout << "Called python method " << op_name << " for object "
                  << fullid << endl << flush;

@@ -2,8 +2,6 @@
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Look.h>
 
-using Atlas::Message::Object;
-using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Operation::Look;
 
 #include "Thing.h"
@@ -43,12 +41,12 @@ Thing * MemMap::add_id(const string & id)
     return add(obj);
 }
 
-Thing * MemMap::add(Object & entity)
+Thing * MemMap::add(const Object & entity)
 {
     if (!entity.IsMap()) {
         return NULL;
     }
-    Object::MapType & entmap = entity.AsMap();
+    Object::MapType entmap = entity.AsMap();
     if (entmap.find("id") == entmap.end()) {
         return NULL;
     }
@@ -98,12 +96,12 @@ Thing * MemMap::get_add(const string & id)
     return add_id(id);
 }
 
-Thing * MemMap::update(Object & entity)
+Thing * MemMap::update(const Object & entity)
 {
     if (!entity.IsMap()) {
         return NULL;
     }
-    Object::MapType & entmap = entity.AsMap();
+    Object::MapType entmap = entity.AsMap();
     if (entmap.find("id") == entmap.end()) {
         return NULL;
     }

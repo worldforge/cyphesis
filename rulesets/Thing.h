@@ -18,7 +18,7 @@ class Thing : public BaseEntity {
   protected:
     PyObject * script_object;
 
-    int script_Operation(const string &, const RootOperation &, oplist &);
+    int script_Operation(const string &, const RootOperation &, oplist &, RootOperation * sub_op=NULL);
 
     Message::Object::MapType attributes;
     MemMap map;

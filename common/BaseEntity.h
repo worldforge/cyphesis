@@ -74,6 +74,32 @@ typedef enum op_no {
             break; \
     }
 
+#define SUB_OP_SWITCH(_op, _sub_op_no, _result, _prefix, _sub_op) \
+    switch (_sub_op_no) { \
+        case OP_LOGIN: \
+            _result = _prefix ## Operation(_op, (Login &)_sub_op); \
+            break; \
+        case OP_CREATE: \
+            _result = _prefix ## Operation(_op, (Create &)_sub_op); \
+            break; \
+        case OP_DELETE: \
+            _result = _prefix ## Operation(_op, (Delete &)_sub_op); \
+            break; \
+        case OP_MOVE: \
+            _result = _prefix ## Operation(_op, (Move &)_sub_op); \
+            break; \
+        case OP_SET: \
+            _result = _prefix ## Operation(_op, (Set &)_sub_op); \
+            break; \
+        case OP_TOUCH: \
+            _result = _prefix ## Operation(_op, (Touch &)_sub_op); \
+            break; \
+        default: \
+            cout << "nothing doing here" << endl; \
+            _result = _prefix ## Operation(_op, _sub_op); \
+            break; \
+    }
+
 typedef int bad_type; // Remove this to get unset type reporting
 
 #define None 0 // Remove this to deal with un-initialied vars

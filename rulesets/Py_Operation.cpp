@@ -303,6 +303,52 @@ static PyObject * Operation_GetArgs(RootOperationObject * self, PyObject * args)
 }
 
 /*
+ * Operation sequence methods.
+ */
+
+static int Operation_seq_length(RootOperationObject * self)
+{
+    if (self->operation == NULL) {
+        PyErr_SetString(PyExc_TypeError,"invalid operation");
+        return 0;
+    }
+    return self->operation->GetArgs().size();
+} 
+
+static PyObject * Operation_seq_item(RootOperationObject * self, int item)
+{
+    if (self->operation == NULL) {
+        PyErr_SetString(PyExc_TypeError,"invalid operation");
+        return 0;
+    }
+    Object::ListType & args_list = self->operation->GetArgs();
+    Object::ListType::iterator I = args_list.begin();
+    int i;
+    for(i = 0; i != item && I != args_list.end(); i++, I++);
+    if (I != args_list.end()) {
+        Object * obj = new Object(*I);
+        AtlasObject * ret = newAtlasObject(NULL);
+        ret->m_obj = obj;
+        return (PyObject *)ret;
+    }
+    return NULL;
+}
+
+/*
+ * Operation sequence methods structure.
+ */
+
+PySequenceMethods Operation_seq = {
+    (inquiry)Operation_seq_length,	/* sq_length */
+    NULL,				/*  sq_concat */
+    NULL,				/* sq_repeat */
+    (intargfunc)Operation_seq_item,	/* sq_item */
+    NULL,				/* sq_slice */
+    NULL,				/* sq_ass_item */
+    NULL				/* sq_ass_slice */
+};
+
+/*
  * Operation methods structure.
  *
  * Generated from a macro in case we need one for each type of operation.

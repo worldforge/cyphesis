@@ -15,4 +15,4 @@ cyphesis_SOURCES = \
 		WorldTime.h \
 		server.cpp server.h
 
-cyphesis_LDADD = ../common/libcommon.a ../modules/libmodules.a ../physics/libphysics.a ../rulesets/librulesets.a
+cyphesis_LDADD = ../modules/libmodules.a ../physics/libphysics.a ../rulesets/librulesets.a ../common/libcommon.a

@@ -78,7 +78,7 @@ PyTypeObject _name ## _Type = { \
 	0,					/*tp_compare*/ \
 	0,					/*tp_repr*/ \
 	0,					/*tp_as_number*/ \
-	0,					/*tp_as_sequence*/ \
+	&Operation_seq,				/*tp_as_sequence*/ \
 	0,					/*tp_as_mapping*/ \
 	0,					/*tp_hash*/ \
 };

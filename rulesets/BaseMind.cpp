@@ -1,6 +1,16 @@
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/Entity/RootEntity.h>
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Sight.h>
+#include <Atlas/Objects/Operation/Sound.h>
+#include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Delete.h>
+#include <Atlas/Objects/Operation/Move.h>
+#include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation/Touch.h>
+
+#include <common/utility.h>
 
 #include "BaseMind.h"
 
@@ -17,6 +27,117 @@ BaseMind::BaseMind()
         //BaseMind::log_fp=None;
     //}
 }
+
+oplist BaseMind::Sight_Operation(const Sight & op, Login & sub_op)
+{
+    oplist res;
+    if (script_Operation("sight_login", op, res, &sub_op) != 0) {
+        return(res);
+    }
+    return(res);
+}
+
+oplist BaseMind::Sight_Operation(const Sight & op, Create & sub_op)
+{
+    oplist res;
+    if (script_Operation("sight_create", op, res, &sub_op) != 0) {
+        return(res);
+    }
+    const Object::ListType & args = sub_op.GetArgs();
+    if (args.size() == 0) {
+        cout << " no args!" << endl << flush;
+        return(res);
+    }
+    Object obj = args.front();
+    Root * arg = utility::Object_asRoot(obj);
+    if (arg->GetObjtype() == "object") {
+        map.add(arg->AsObject());
+    }
+    return(res);
+}
+
+oplist BaseMind::Sight_Operation(const Sight & op, Delete & sub_op)
+{
+    oplist res;
+    if (script_Operation("sight_delete", op, res, &sub_op) != 0) {
+        return(res);
+    }
+    const Object::ListType & args = sub_op.GetArgs();
+    if (args.size() == 0) {
+        cout << " no args!" << endl << flush;
+        return(res);
+    }
+    Object obj = args.front();
+    if (obj.IsString()) {
+        map._delete(obj.AsString());
+    } else {
+        Root * arg = utility::Object_asRoot(obj);
+        if (arg->GetObjtype() == "object") {
+            map._delete(arg->GetId());
+        }
+    }
+    return(res);
+}
+
+oplist BaseMind::Sight_Operation(const Sight & op, Move & sub_op)
+{
+    cout << "BaseMind::Sight_Operation(Sight, Move)" << endl << flush;
+    oplist res;
+    if (script_Operation("sight_move", op, res, &sub_op) != 0) {
+        return(res);
+    }
+    const Object::ListType & args = sub_op.GetArgs();
+    if (args.size() == 0) {
+        cout << " no args!" << endl << flush;
+        return(res);
+    }
+    Object obj = args.front();
+    Root * arg = utility::Object_asRoot(obj);
+    if (arg->GetObjtype() == "object") {
+        map.update(arg->AsObject());
+    }
+    return(res);
+}
+
+oplist BaseMind::Sight_Operation(const Sight & op, Set & sub_op)
+{
+    oplist res;
+    if (script_Operation("sight_set", op, res, &sub_op) != 0) {
+        return(res);
+    }
+    const Object::ListType & args = sub_op.GetArgs();
+    if (args.size() == 0) {
+        cout << " no args!" << endl << flush;
+        return(res);
+    }
+    Object obj = args.front();
+    Root * arg = utility::Object_asRoot(obj);
+    if (arg->GetObjtype() == "object") {
+        map.update(arg->AsObject());
+    }
+    return(res);
+}
+
+oplist BaseMind::Sight_Operation(const Sight & op, Touch & sub_op)
+{
+    oplist res;
+    if (script_Operation("sight_touch", op, res, &sub_op) != 0) {
+        return(res);
+    }
+    return(res);
+}
+
+oplist BaseMind::Sight_Operation(const Sight & op, RootOperation & sub_op)
+{
+    cout << "BaseMind::Sight_Operation(Sight, RootOperation)" << endl << flush;
+    oplist res;
+    if (script_Operation("sight_undefined", op, res, &sub_op) != 0) {
+        return(res);
+    }
+    return(res);
+}
+
+
 
 #if 0
 bad_type BaseMind::sight_create_operation(bad_type original_op, bad_type op)
@@ -79,21 +200,56 @@ bad_type BaseMind::sound_operation(bad_type op)
     log.debug(3,"sound: "+str(operation_method));
     return operation_method(op,op2);
 }
+#endif
 
 oplist BaseMind::Operation(const Sound & op)
 {
     // Deliver argument to Sound_ things
     oplist res;
+    if (script_Operation("sound", op, res) != 0) {
+        return(res);
+    }
+    return(res);
+}
+
+oplist BaseMind::call_sight_operation(const Sight & op, RootOperation & sub_op)
+{
+    oplist res;
+    op_no_t op_no = op_enumerate(&sub_op);
+    SUB_OP_SWITCH(op, op_no, res, Sight_, sub_op)
     return(res);
 }
 
 oplist BaseMind::Operation(const Sight & op)
 {
+    cout << "BaseMind::Operation(Sight)" << endl << flush;
     // Deliver argument to Sight_ things
     oplist(res);
+    if (script_Operation("sight", op, res) != 0) {
+        cout << " its in the script" << endl << flush;
+        return(res);
+    }
+    const Object::ListType & args = op.GetArgs();
+    if (args.size() == 0) {
+        cout << " no args!" << endl << flush;
+        return(res);
+    }
+    Object obj = args.front();
+    Root * op2 = utility::Object_asRoot(obj);
+    if (op2->GetObjtype() == "op") {
+        cout << " args is an op!" << endl << flush;
+        call_sight_operation(op, *(RootOperation *)op2);
+        //string & op2type = op2->GetParents().front().AsString();
+        //string subop = "sight_" + op2type;
+        //script_Operation(subop, op, res, (RootOperation *)op2);
+    } else if (op2->GetObjtype() == "object") {
+        cout << " arg is an entity!" << endl << flush;
+        map.add(obj);
+    }
     return(res);
 }
 
+#if 0
 RootOperation * BaseMind::get_op_name_and_sub(RootOperation & op, string & name)
 {
     event_name = op.id;
