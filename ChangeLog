@@ -1,3 +1,13 @@
+2002-07-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp, server/Connection.cpp: Get rid of
+	  character existance check on login, as dead ones are now handled
+	  using SigC signals.
+
+	* rulesets/Entity.h, rulesets/Entity.cpp, rulesets/Py_World.cpp:
+	  Remove pointless deleted flag, as the only time its true is when
+	  the object has been deleted, and accessing would cause a segfault.
+
 2002-07-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cyloadrules.cpp, server/server.cpp,

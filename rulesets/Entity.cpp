@@ -47,7 +47,7 @@ const std::set<std::string> & Entity::immutables()
 
 Entity::Entity() : script(new Script), seq(0), status(1),
                    type("thing"), mass(-1),
-                   deleted(false), omnipresent(false), perceptive(false),
+                   omnipresent(false), perceptive(false),
                    world(NULL)
 {
 }
@@ -115,22 +115,15 @@ void Entity::setScript(Script * scrpt)
 
 void Entity::destroy()
 {
-    assert(!deleted);
-    if (deleted) {
-        return;
-    }
     assert(location.ref != NULL);
     EntitySet & refContains = location.ref->contains;
     for(EntitySet::const_iterator I=contains.begin(); I != contains.end(); I++){
         Entity * obj = *I;
-        if (!obj->deleted) {
-            obj->location.ref = location.ref;
-            obj->location.coords += location.coords;
-            refContains.insert(obj);
-        }
+        obj->location.ref = location.ref;
+        obj->location.coords += location.coords;
+        refContains.insert(obj);
     }
     refContains.erase(this);
-    deleted = true;
     destroyed.emit();
 }
 

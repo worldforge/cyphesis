@@ -36,7 +36,6 @@ class Entity : public BaseEntity {
     std::string type;		// Easy access to primary parent
     std::string name;		// Entities name
     double mass;		// Mass in kg
-    bool deleted;		// Has this been deleted
     bool omnipresent;		// Is this omnipresent
     bool perceptive;		// Is this perceptive
   public:
@@ -53,7 +52,6 @@ class Entity : public BaseEntity {
     const std::string & getType() const { return type; }
     const double getMass() const { return mass; }
 
-    const bool isDeleted() const { return deleted; }
     const bool isOmnipresent() const { return omnipresent; }
     const bool isPerceptive() const { return perceptive; }
 

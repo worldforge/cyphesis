@@ -50,32 +50,9 @@ static PyObject * World_get_object(WorldObject *self, PyObject *args, PyObject *
     return (PyObject *)o;
 }
 
-static PyObject * World_is_object_deleted(WorldObject *self, PyObject *args, PyObject *kw)
-{
-    if (self->world == NULL) {
-        PyErr_SetString(PyExc_TypeError,"invalid world object");
-        return NULL;
-    }
-    PyObject * obj;
-    if (!PyArg_ParseTuple(args, "O", &obj)) {
-        return NULL;
-    }
-    if (!PyThing_Check(obj)) {
-        PyErr_SetString(PyExc_TypeError,"Arg is not a thing");
-        return NULL;
-    }
-    ThingObject * o = (ThingObject*)obj;
-    if (o->m_thing == NULL) {
-        PyErr_SetString(PyExc_TypeError,"Invalid thing");
-        return NULL;
-    }
-    return PyInt_FromLong(o->m_thing->isDeleted());
-}
-
 static PyMethodDef World_methods[] = {
     {"get_time",	(PyCFunction)World_get_time,	METH_VARARGS},
     {"get_object",	(PyCFunction)World_get_object,	METH_VARARGS},
-    {"is_object_deleted",	(PyCFunction)World_is_object_deleted,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };
 

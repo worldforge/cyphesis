@@ -246,6 +246,7 @@ OpVector Account::LookOperation(const Look & op)
 
 void Account::checkCharacters()
 {
+    // FIXME This function is obsolete. Don't use it.
     if (world == NULL) {
         std::string msg = std::string("WARNING: Account ") + getId()
                         + " beging asked to check characters"
@@ -260,6 +261,7 @@ void Account::checkCharacters()
         const std::string & charId = I->first;
         if (worldEntities.find(charId) == worldEntities.end()) {
             obsoleteChars.insert(charId);
+            log(ERROR, "Found dead character in account");
         }
     }
     std::set<std::string>::const_iterator J = obsoleteChars.begin();

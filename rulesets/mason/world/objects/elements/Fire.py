@@ -23,8 +23,7 @@ class Fire(Thing):
             return Operation("delete",Entity(self.id),to=self)
 
         #Have we burned up our parent container?
-        if self.world.is_object_deleted(self.location.parent) or \
-           self.world==self.location.parent:
+        if self.world==self.location.parent:
             return Operation("delete",Entity(self.id),to=self)
 
         #Send burn operation to parent container

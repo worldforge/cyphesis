@@ -177,7 +177,6 @@ OpVector Connection::LoginOperation(const Login & op)
     }
     // Connect everything up
     addObject(player);
-    player->checkCharacters();
     EntityDict::const_iterator J = player->getCharacters().begin();
     for (; J != player->getCharacters().end(); J++) {
         addObject(J->second);
