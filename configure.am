@@ -1,0 +1,9 @@
+<package>
+    <name>cyphesis</name>
+    <version>0.0.1</version>
+    <desc></desc>
+    <require tag="c++">
+	<require tag="compiler"/>
+    </require>
+    <require tag="atlas"/>
+</package>
