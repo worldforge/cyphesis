@@ -1,5 +1,10 @@
 2004-06-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Ensure that Use and Wield ops are
+	  subscribed from mind.
+
+2004-06-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* Fixes to nowhere's commit to define_world.py:
 	  Fix python syntax of wolf goal to predate squirrels.
 	  Fix m.learn for squirrel to use goals, not knowledge.

@@ -103,6 +103,8 @@ Character::Character(const std::string & id) : Character_parent(id),
     mindSubscribe("cut", OP_CUT);
     mindSubscribe("eat", OP_EAT);
     mindSubscribe("touch", OP_TOUCH);
+    mindSubscribe("use", OP_USE);
+    mindSubscribe("wield", OP_WIELD);
     mindSubscribe("shoot", OP_OTHER);
 
     // subscribe to ops for the mind
@@ -387,6 +389,7 @@ OpVector Character::mindSetupOperation(const Setup & op)
 
 OpVector Character::mindUseOperation(const Use & op)
 {
+    std::cout << "Got Use op from mind" << std::endl << std::flush;
     Use *s = new Use(op);
     s->setTo(getId());
     s->setAttr("sub_to", "mind");
@@ -395,6 +398,7 @@ OpVector Character::mindUseOperation(const Use & op)
 
 OpVector Character::mindWieldOperation(const Wield & op)
 {
+    std::cout << "Got Wield op from mind" << std::endl << std::flush;
     Wield *s = new Wield(op);
     s->setTo(getId());
     s->setAttr("sub_to", "mind");
