@@ -3,9 +3,12 @@
 
 #include <Python.h>
 
+
 #include <string.h>
 
 #include <common/BaseEntity.h>
+
+#include "Python_API.h"
 
 class Player;
 class Routing;
@@ -46,6 +49,9 @@ class Thing : public BaseEntity {
     virtual oplist Operation(const Sound & op);
     virtual oplist Operation(const Touch & op);
     virtual oplist Operation(const Look & op);
+
+    friend PyObject * Thing_getattr(ThingObject *self, char *name);
+    friend int Thing_setattr(ThingObject *self, char *name, PyObject *v);
 };
 
 typedef std::pair<int, string> thing_t;

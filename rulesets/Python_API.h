@@ -10,10 +10,10 @@
 
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::RootOperation;
-using Atlas::Objects::Operation::Login;
-using Atlas::Objects::Operation::Create;
-using Atlas::Objects::Operation::Move;
-using Atlas::Objects::Operation::Set;
+//using Atlas::Objects::Operation::Login;
+//using Atlas::Objects::Operation::Create;
+//using Atlas::Objects::Operation::Move;
+//using Atlas::Objects::Operation::Set;
 
 class Thing;
 
@@ -36,7 +36,7 @@ typedef struct {
 } _name ## Object;
 
 #define ATLAS_OPERATION_METHODS(_name) \
-static PyMethodDef _name ## _methods[] = { \
+PyMethodDef _name ## _methods[] = { \
     {"SetSerialno",	(PyCFunction)Operation_SetSerialno,	METH_VARARGS}, \
     {"SetRefno",	(PyCFunction)Operation_SetRefno,	METH_VARARGS}, \
     {"SetFrom",		(PyCFunction)Operation_SetFrom,		METH_VARARGS}, \
@@ -57,7 +57,7 @@ static PyMethodDef _name ## _methods[] = { \
 };
 
 #define ATLAS_OPERATION_TYPE(_name) \
-staticforward PyTypeObject _name ## _Type = { \
+PyTypeObject _name ## _Type = { \
 	PyObject_HEAD_INIT(&PyType_Type) \
 	0,					/*ob_size*/ \
 	"Operation",				/*tp_name*/ \
@@ -75,13 +75,11 @@ staticforward PyTypeObject _name ## _Type = { \
 	0,					/*tp_as_mapping*/ \
 	0,					/*tp_hash*/ \
 };
-
 	
-
 ATLAS_OPERATION(RootOperation)
-ATLAS_OPERATION(Login)
-ATLAS_OPERATION(Create)
-ATLAS_OPERATION(Move)
-ATLAS_OPERATION(Set)
+
+#include "Py_Object.h"
+#include "Py_Thing.h"
+#include "Py_Operation.h"
 
 #endif /* PYTHON_API_H */

@@ -1,4 +1,15 @@
-2000-11-15  Al Riddoch  <ajr@ecs.soton.ac.uk>
+2000-11-16  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Sorted out error handling from python code, and no-longer treat
+	  no method as an error.
+
+	* Got python interface code to the point that python classes can now
+	  access the C++ attributes of a Thing.
+
+	* Split the python interface code into separate files depending
+	  on the type of C++ class the code relates to.
+
+2000-11-16  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Added code for standard Get/Set methods for operations.
 	  Eventually this functionality will be moved into getattr

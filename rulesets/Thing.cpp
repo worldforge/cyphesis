@@ -11,6 +11,7 @@
 #include <Atlas/Objects/Operation/Look.h>
 
 #include "Thing.h"
+#include "Python_API.h"
 
 #include <server/WorldRouter.h>
 
@@ -33,6 +34,12 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
         cout << "Got script object for " << fullid << endl << flush;
         string op_name = op_type+"_operation";
         // Construct apropriate python object thingies from op
+        if (!PyObject_HasAttr(script_object,
+            PyString_FromString((char *)(op_name.c_str())))) {
+            cout << "No method to be found for " << fullid
+                 << "." << op_name << endl << flush;
+            return(0);
+        }
         PyObject * ret = PyObject_CallMethod(script_object,
                                              (char *)(op_name.c_str()),
                                              "()");
@@ -42,7 +49,12 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
             // Get oplist from ret and
             return(1);
         } else {
-            cout << "No method to be found for " << fullid << endl << flush;
+            if (PyErr_Occurred() == NULL) {
+                cout << "No method to be found for " << fullid << endl << flush;
+            } else {
+                cout << "Reporting python error for " << fullid << endl << flush;
+                PyErr_Print();
+            }
         }
     } else {
         cout << "No script object asociated" << endl << flush;
@@ -385,7 +397,7 @@ ThingFactory::ThingFactory()
 {
     thing_map["thing"] = thing_t(BASE_THING, "");
     thing_map["house"] = thing_t(BASE_THING, "");
-    thing_map["farmer"] = thing_t(BASE_CHARACTER, "characters.farmer");
+    thing_map["farmer"] = thing_t(BASE_CHARACTER, "world.objects.characters.farmer");
     thing_map["guard"] = thing_t(BASE_CHARACTER, "");
     thing_map["butcher"] = thing_t(BASE_CHARACTER, "");
     thing_map["creator"] = thing_t(BASE_CREATOR, "");
@@ -462,8 +474,16 @@ Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent,
             cout << "It does not seem to be a class at all" << endl << flush;
             goto py_fail;
         }
-        if (thing->set_object(PyEval_CallFunction(my_class,"()")) == -1) {
-            cout << "Could not get python obj" << endl << flush;
+        ThingObject * pyThing = newThingObject(NULL);
+        pyThing->m_thing = thing;
+        if (thing->set_object(PyEval_CallFunction(my_class,"(O)", (PyObject *)pyThing)) == -1) {
+
+            if (PyErr_Occurred() == NULL) {
+                cout << "Could not get python obj" << endl << flush;
+            } else {
+                cout << "Reporting python error for " << type << endl << flush;
+                PyErr_Print();
+            }
         }
     }
 py_fail:
