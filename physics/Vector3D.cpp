@@ -2,7 +2,7 @@
 
 #include "Vector3D.h"
 
-
+#if 0
 //Vector3D::Vector3D(double x, double y, double z) : x(x), y(y), z(z) { }
 
 
@@ -148,3 +148,5 @@ Object Vector3D::asObject() const
     coords.push_back(Object(z));
     return(Object(coords));
 }
+
+#endif

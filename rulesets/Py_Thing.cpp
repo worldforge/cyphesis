@@ -23,11 +23,25 @@ static void Thing_dealloc(ThingObject *self)
 PyObject * Thing_getattr(ThingObject *self, char *name)
 {
     cout << "Thing_getattr" << endl << flush;
-    if ((strcmp(name, "map") == 0) && (self->m_thing != NULL)) {
+    if (self->m_thing == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid thing");
+        return NULL;
+    }
+    if (strcmp(name, "id") == 0) {
+        cout << "Thing_getattr(id)" << endl << flush;
+        return PyString_FromString(self->m_thing->fullid.c_str());
+    }
+    if (strcmp(name, "map") == 0) {
         cout << "Thing_getattr(map)" << endl << flush;
         MapObject * map = newMapObject(NULL);
         map->m_map = &self->m_thing->map;
         return (PyObject *)map;
+    }
+    if (strcmp(name, "location") == 0) {
+        cout << "Thing_getattr(location)" << endl << flush;
+        LocationObject * loc = newLocationObject(NULL);
+        loc->location = &self->m_thing->location;
+        return (PyObject *)loc;
     }
     if (self->Thing_attr != NULL) {
         PyObject *v = PyDict_GetItemString(self->Thing_attr, name);
@@ -36,15 +50,11 @@ PyObject * Thing_getattr(ThingObject *self, char *name)
             return v;
         }
     }
-    if (self->m_thing != NULL) {
-        cout << "got thing" << endl << flush;
-        Thing * thing = self->m_thing;
-        string attr(name);
-        if (thing->attributes.find(attr) != thing->attributes.end()) {
-            cout << name << " is in the attributes list" << endl << flush;
-            return Object_asPyObject(thing->attributes[attr]);
-        }
-        cout << "falling through" << endl << flush;
+    Thing * thing = self->m_thing;
+    string attr(name);
+    if (thing->attributes.find(attr) != thing->attributes.end()) {
+        cout << name << " is in the attributes list" << endl << flush;
+        return Object_asPyObject(thing->attributes[attr]);
     }
     cout << "Just doing the method lookup" << endl << flush;
     return Py_FindMethod(Thing_methods, (PyObject *)self, name);
