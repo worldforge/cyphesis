@@ -15,11 +15,13 @@ extern "C" {
 WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
 {
     id = 0;
+    fullid = "world_0";
     //WorldRouter::base_init(kw);
     //WorldRouter::operation_queue=avl_tree();
-    WorldRouter::real_time=time(NULL);
-    WorldRouter::server->id_dict[id]=this;
-    WorldRouter::objects[id]=this;
+    real_time=time(NULL);
+    server->id_dict[id]=this;
+    objects[id]=this;
+    fobjects[fullid]=this;
     //WorldRouter::illegal_thing =
                          //server.id_dict["illegal"]=
                          //objects["illegal"]=Thing(id="illegal",name="illegal");
@@ -67,10 +69,11 @@ BaseEntity * WorldRouter::add_object(BaseEntity * obj)
     if (obj->omnipresent) {
         omnipresent_list.push_back(obj);
     }
-    //op=Operation("setup",to=obj);
-    //op.time.sadd=-0.01;
-    //WorldRouter::add_operation_to_queue(op,self);
-    //return obj;
+    Setup * s = new Setup();
+    *s = Setup::Instantiate();
+    s->SetTo(obj->fullid);
+    s->SetFutureSeconds(-0.1);
+    add_operation_to_queue(*s, this);
     return (obj);
 }
 
@@ -155,17 +158,20 @@ RootOperation * WorldRouter::operation(const RootOperation * op)
     RootOperation * res = NULL;
     const RootOperation & op_ref = *op;
     string to = op_ref.GetTo();
+    cout << "WorldRouter::operation {" << to << "}" << endl << flush;
     op_no_t op_type = op_enumerate(op);
 
-    cout << "{" << op_type << "}" << endl << flush;
-
+    cout << 0 << flush;
     if ((to.size() != 0) && (to!="all")) {
+        cout << 1 << flush;
         if (fobjects.find(to) == fobjects.end()) {
             cout << "FATAL: Op has invalid to" << endl << flush;
             return(*(RootOperation **)NULL);
         }
+        cout << 2 << flush;
         BaseEntity * d_to = fobjects[to];
         if ((to != fullid) || (op_type == OP_LOOK)) {
+            cout << 3 << flush;
             if (to == fullid) {
                 res = ((BaseEntity *)this)->Operation((Look &)op_ref);
             } else {
@@ -180,6 +186,7 @@ RootOperation * WorldRouter::operation(const RootOperation * op)
             }
         }
     } else {
+        cout << 4 << flush;
         RootOperation newop = op_ref;
         std::list<BaseEntity *>::iterator I;
         for(I = perceptives.begin(); I != perceptives.end(); I++) {
@@ -198,6 +205,7 @@ RootOperation * WorldRouter::operation(const RootOperation & op)
 
 RootOperation * WorldRouter::Operation(const Look & op)
 {
+    cout << "WorldRouter::Operation(Look)" << endl << flush;
     string from = op.GetFrom();
     if (fobjects.find(from) == fobjects.end()) {
         cout << "FATAL: Op has invalid from" << endl << flush;
@@ -206,7 +214,7 @@ RootOperation * WorldRouter::Operation(const Look & op)
         cout << "Adding [" << from << "] to perceptives" << endl << flush;
         perceptives.push_back(fobjects[from]);
     }
-    return(NULL);
+    return(BaseEntity::Operation(op));
 }
 
 bad_type WorldRouter::print_queue(bad_type msg)

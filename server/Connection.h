@@ -21,7 +21,7 @@ class Connection : public Routing {
     virtual ~Connection() { }
     void destroy();
     void disconnect();
-    void send(RootOperation * msg);
+    void send(const RootOperation * msg);
 
     virtual RootOperation * operation(const RootOperation & op);
     virtual RootOperation * Operation(const Login & obj);

@@ -1,12 +1,16 @@
 #ifndef EXTERNAL_MIND_H
 #define EXTERNAL_MIND_H
 
-#include "NPCMind.h"
+#include "BaseMind.h"
 
-class ExternalMind : public NPCMind {
-    Connection * connection;
+class Connection;
+
+class ExternalMind : public BaseMind {
   public:
+    Connection * connection;
+
     ExternalMind(Connection * connection);
+
     virtual RootOperation * message(const RootOperation & msg);
 };
 

@@ -50,7 +50,7 @@ class CommClient : Objects::Decoder {
     }
     virtual ~CommClient() { }
     int read();
-    bad_type send(Objects::Operation::RootOperation *);
+    bad_type send(const Objects::Operation::RootOperation *);
     void message(const Objects::Operation::RootOperation &);
     //void destroy();
     void setup();

@@ -8,6 +8,9 @@
 
 #include <common/log.h>
 
+#include <rulesets/Character.h>
+#include <rulesets/ExternalMind.h>
+
 #include "Account.h"
 #include "Connection.h"
 #include "WorldRouter.h"
@@ -62,15 +65,15 @@ RootOperation * Account::Operation(const Create & op)
 
 BaseEntity * Account::add_character(const string & type, const Message::Object & ent)
 {
-    BaseEntity * chr = world->add_object(type, ent);
+    Thing * chr = (Thing *)world->add_object(type, ent);
     if (!chr->location) {
         chr->location = Location(world, Vector3D(0,0,0));
     }
-    //if (chr->is_character) {
-        //chr->player=this;
-    //}
-    //char.external_mind=ExternalMind(id=char.id, body=char,;
-                                    //connection=Account::connection);
+    if (chr->is_character != 0) {
+        Character * pchar = (Character *)chr;
+        pchar->player = this;
+        pchar->external_mind = new ExternalMind(connection);
+    }
     //Account::characters_dict[char.id]=char;
     //Account::characters.append(char.id);
     connection->add_object(chr);

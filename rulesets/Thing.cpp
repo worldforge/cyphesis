@@ -3,6 +3,7 @@
 #include <Atlas/Objects/Operation/Login.h>
 
 #include "Thing.h"
+#include "Character.h"
 
 #include <server/WorldRouter.h>
 
@@ -132,6 +133,11 @@ Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)
     }
     Message::Object::MapType entmap = ent.AsMap();
     Thing * thing = new Thing();
+    if (type.size() != 0) {
+        thing = new Character();
+    } else {
+        thing = new Thing();
+    }
     if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
         thing->name = entmap["name"].AsString();
     } else {

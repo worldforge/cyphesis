@@ -14,11 +14,14 @@
 
 
 #include "Character.h"
-
 #include "Thing.h"
+
+#include "BaseMind.h"
+#include "ExternalMind.h"
 
 #include <server/WorldRouter.h>
 
+MovementInfo::MovementInfo() { }
 
 #if 0
 // debug_movement=0;
@@ -127,19 +130,25 @@
 
 
 //"This is generic body class that all characters inherit from";
-Character::Character() : movement(), sex("female"), drunkness(0.0)
+Character::Character() : movement(), sex("female"), drunkness(0.0), autom(0)
 {
-    //set_kw(this,kw,"auto",None) ; //local scripting mode: auto run;
     weight = 60.0;
+    is_character = 1;
     //movement=MovementInfo();
 }
 
 RootOperation * Character::Operation(const Setup & op)
 {
-    if (op.HasAttr("sub_to")) {
+    cout << "CHaracter::Operation(setup)" << endl << flush;
+    if (!op.HasAttr("sub_to")) {
+        cout << "Has sub_to" << endl << flush;
         return(NULL);
     }
+
+    mind = new BaseMind();
+
     Setup * s = new Setup(op);
+    // Man this is fxored up
     // THis is so not the right thing to do
     s->SetAttr("sub_to", Message::Object("mind"));
     return(s);
@@ -658,11 +667,34 @@ bad_type Character::w2m_touch_operation(bad_type op)
 
 RootOperation * Character::send_mind(RootOperation & msg)
 {
+    cout << "Character::send_mind" << endl << flush;
     if (mind == NULL) {
         return(NULL);
     }
-    // Need to transcribe function below
-    return(NULL);
+    RootOperation * local_res;
+    RootOperation * external_res = NULL;
+    RootOperation * res = NULL;
+    local_res = mind->message(msg);
+
+    if ((NULL != external_mind) && (NULL != external_mind->connection)) {
+        cout << "Sending to external mind" << endl << flush;
+        external_res = external_mind->message(msg);
+        // If there is some kinf of error in the connection, we turn autom on
+    } else {
+        return(*(RootOperation **)NULL);
+        if (autom == 0) {
+            autom = 1;
+        }
+    }
+    if (autom) {
+        res = local_res;
+    } else {
+        res = external_res;
+    }
+    // At this point there is a bunch of conversion stuff that I don't
+    // understand
+    
+    return(res);
 }
 
 #if 0
@@ -737,6 +769,7 @@ bad_type Character::send_mind(bad_type msg)
 
 RootOperation * Character::mind2body(const RootOperation & op)
 {
+    cout << "Character::mind2body" << endl << flush;
     RootOperation newop = op;
 
     if (newop.GetTo().size() == 0) {
@@ -820,6 +853,7 @@ bad_type Character::mind2body(bad_type op)
 
 RootOperation * Character::world2body(const RootOperation & op)
 {
+    cout << "Character::world2body" << endl << flush;
     RootOperation * res = BaseEntity::operation(op);
     // Set refno?
     // do debugging?
@@ -839,6 +873,7 @@ bad_type Character::world2body(bad_type op)
 
 RootOperation * Character::world2mind(const RootOperation & op)
 {
+    cout << "Character::world2mind" << endl << flush;
     op_no_t otype = op_enumerate(&op);
     RootOperation * res = NULL;
     OP_SWITCH(op, otype, res, W2m_)
@@ -907,11 +942,13 @@ bad_type Character::world2mind(bad_type op)
 
 RootOperation * Character::external_message(const RootOperation & op)
 {
+    cout << "Character::external_message" << endl << flush;
     return external_operation(op);
 }
 
 RootOperation * Character::operation(const RootOperation & op)
 {
+    cout << "Character::operation" << endl << flush;
     RootOperation * result = world2body(op);
     RootOperation * mind_res = world2mind(op);
     if (mind_res != NULL) {
@@ -926,6 +963,7 @@ RootOperation * Character::operation(const RootOperation & op)
 
 RootOperation * Character::external_operation(const RootOperation & op)
 {
+    cout << "Character::external_operation" << endl << flush;
     send_world(mind2body(op));
     return(NULL);
 }

@@ -4,6 +4,8 @@
 
 #include "ExternalMind.h"
 
+#include <server/Connection.h>
+
 ExternalMind::ExternalMind(Connection * connection) : connection(connection)
 {
 }

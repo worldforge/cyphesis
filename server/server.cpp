@@ -50,7 +50,7 @@ void CommClient::message(bad_type msg) {
 #endif
 
 
-bad_type CommClient::send(Objects::Operation::RootOperation * op)
+bad_type CommClient::send(const Objects::Operation::RootOperation * op)
 {
     if (op) {
         encoder->StreamMessage(op);

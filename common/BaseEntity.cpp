@@ -240,21 +240,22 @@ bad_type BaseEntity::call_operation(bad_type op)
     return None;
 }
 
-RootOperation * BaseEntity::Operation(const Look & obj)
+RootOperation * BaseEntity::Operation(const Look & op)
 {
     cout << "look op got all the way to here" << endl << flush;
     Sight * s = new Sight();
     *s = Sight::Instantiate();
+    Message::Object::ListType args(1,asObject());
+    s->SetArgs(args);
+    s->SetTo(op.GetFrom());
 
-    // Here we actually need to make this into a useful operation
-    return(*(RootOperation **)NULL);
+    // Set refno?
     return(s);
     
 }
 
 op_no_t BaseEntity::op_enumerate(const RootOperation * op)
 {
-    cout << "BaseEntity::op_enumarate" << endl << flush;
     const Message::Object & parents = op->GetAttr("parents");
     if (!parents.IsList()) {
         cout << "This isn't an operation." << endl << flush;
@@ -266,6 +267,7 @@ op_no_t BaseEntity::op_enumerate(const RootOperation * op)
         cout << "This op is screwed.\n" << endl << flush;
     }
     string parent(parents.AsList().begin()->AsString());
+    cout << "BaseEntity::op_enumarate [" << parent << "]" << endl << flush;
     if ("login" == parent) {
         return(OP_LOGIN);
     }

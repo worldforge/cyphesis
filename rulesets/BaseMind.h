@@ -8,6 +8,7 @@ typedef int bad_type; // Remove this to get unset type reporting
 #include "Thing.h"
 
 class BaseMind : public Thing {
+  public:
     BaseMind();
 
     //bad_type sight_create_operation(bad_type original_op, bad_type op)

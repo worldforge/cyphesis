@@ -44,7 +44,7 @@ void Connection::disconnect()
     //raise ConnectionError,"connection died";
 }
 
-void Connection::send(RootOperation * msg)
+void Connection::send(const RootOperation * msg)
 {
     comm_client->send(msg);
 }

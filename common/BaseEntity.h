@@ -105,6 +105,7 @@ class Set;
 class Sight;
 class Sound;
 class Touch;
+class Talk;
 class Look;
 
 class Load : public RootOperation {
