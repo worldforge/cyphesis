@@ -137,6 +137,9 @@ AC_CACHE_VAL(cyphesis_cv_python_headers,
 	])
 ])
 
+AC_CHECK_LIB(dl,dlopen)
+AC_CHECK_LIB(pthread,pthread_create)
+
 AC_CACHE_VAL(cyphesis_cv_python_libraries,
 [
 	AC_CHECK_LIB(python1.5, Py_Initialize, LIBS="$LIBS -lpython1.5",
@@ -145,8 +148,6 @@ AC_CACHE_VAL(cyphesis_cv_python_libraries,
 	])
 ])
 
-AC_CHECK_LIB(dl,dlopen)
-AC_CHECK_LIB(pthread,pthread_create)
 AC_CHECK_LIB(sigc,main)
 AC_CHECK_LIB(varconf,main)
 

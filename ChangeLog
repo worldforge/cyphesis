@@ -1,5 +1,10 @@
 2001-01-23  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* configure.in: Re-ordered lib checks so that python gets libdl
+	  and pthread.
+
+2001-01-23  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* rulesets/Character.cpp: Set character mode to "touching" when a
 	  touch operation is created by the mind.
 
