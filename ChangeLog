@@ -1,3 +1,14 @@
+2001-02-05  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* watchdog/*: Fleshed out watchdog functionality, which is now working
+	  and in long term testing. Added control script which handles sending
+	  signals to the daemon in a more friendly way.
+
+2001-02-05  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Added watchdog daemon which handles maintaining a running server
+	  automatically. Work in progress.
+
 2001-02-03  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* all files: Re-worked the way debugging is handled to that it no
