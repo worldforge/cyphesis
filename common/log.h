@@ -5,7 +5,8 @@
 #ifndef COMMON_LOG_H
 #define COMMON_LOG_H
 
-typedef enum log_level { INFO, NOTICE, WARNING, ERROR, CRITICAL } LogLevel;
+typedef enum log_level { INFO, SCRIPT, NOTICE,
+                         WARNING, ERROR, SCRIPT_ERROR, CRITICAL } LogLevel;
 
 void initLogger();
 void log(LogLevel, const char * msg);

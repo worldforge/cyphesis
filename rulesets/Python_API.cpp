@@ -85,6 +85,109 @@ PyTypeObject log_debug_type = {
         log_debug,      /* tp_call */
 };
 
+//////////////////////////////////////////////////////////////////////////
+// Logger replaces sys.stdout and sys.stderr so the nothing goes to output
+//////////////////////////////////////////////////////////////////////////
+
+typedef struct {
+    PyObject_HEAD
+} PyLogger;
+
+static PyObject * PyLogger_write(PyObject * self, PyObject * args)
+{
+    char * mesg;
+    if (!PyArg_ParseTuple(args, "s", &mesg)) {
+        PyErr_SetString(PyExc_TypeError, "write takes 1 string argument only");
+        return 0;
+    }
+
+    log(SCRIPT, mesg);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject * PyErrorLogger_write(PyObject * self, PyObject * args)
+{
+    char * mesg;
+    if (!PyArg_ParseTuple(args, "s", &mesg)) {
+        PyErr_SetString(PyExc_TypeError, "write takes 1 string argument only");
+        return 0;
+    }
+
+    log(SCRIPT, mesg);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef PyLogger_methods[] = {
+    {"write",     PyLogger_write,       METH_VARARGS},
+    {NULL,        NULL}
+};
+
+static PyMethodDef PyErrorLogger_methods[] = {
+    {"write",     PyErrorLogger_write,       METH_VARARGS},
+    {NULL,        NULL}
+};
+
+static void PyLogger_dealloc(PyObject * self)
+{
+    PyMem_DEL(self);
+}
+
+static PyObject * PyLogger_getattr(PyObject * self, char *name)
+{
+    return Py_FindMethod(PyLogger_methods, self, name);
+}
+
+static PyObject * PyErrorLogger_getattr(PyObject * self, char *name)
+{
+    return Py_FindMethod(PyErrorLogger_methods, self, name);
+}
+
+PyTypeObject PyLogger_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                   // ob_size
+        "Logger",            // tp_name
+        sizeof(PyLogger),    // tp_basicsize
+        0,                   // tp_itemsize
+        //  methods 
+        PyLogger_dealloc,    // tp_dealloc
+        0,                   // tp_print
+        PyLogger_getattr,    // tp_getattr
+        0,                   // tp_setattr
+        0,                   // tp_compare
+        0,                   // tp_repr
+        0,                   // tp_as_number
+        0,                   // tp_as_sequence
+        0,                   // tp_as_mapping
+        0,                   // tp_hash
+};
+
+PyTypeObject PyErrorLogger_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                   // ob_size
+        "ErrorLogger",            // tp_name
+        sizeof(PyLogger),    // tp_basicsize
+        0,                   // tp_itemsize
+        //  methods 
+        PyLogger_dealloc,    // tp_dealloc
+        0,                   // tp_print
+        PyErrorLogger_getattr,    // tp_getattr
+        0,                   // tp_setattr
+        0,                   // tp_compare
+        0,                   // tp_repr
+        0,                   // tp_as_number
+        0,                   // tp_as_sequence
+        0,                   // tp_as_mapping
+        0,                   // tp_hash
+};
+
+//////////////////////////////////////////////////////////////////////////
+// dictlist
+//////////////////////////////////////////////////////////////////////////
+
 static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObject * kwds)
 {
     PyObject * dict;
@@ -231,6 +334,11 @@ static PyObject * Get_PyClass(const std::string & package,
         log(ERROR, msg.c_str());
         Py_DECREF(my_class);
         return NULL;
+    }
+    if (PyType_Check(my_class) == 0) {
+        std::cerr << "PyCallable_Check returned true, but PyType_Check returned false " << package << "." << type << std::endl << std::flush;
+    } else {
+        std::cerr << "PyType_Check returned true" << std::endl << std::flush;
     }
     return my_class;
 }
@@ -946,6 +1054,22 @@ void init_python_api()
     putenv(path_environment);
 
     Py_Initialize();
+
+    PyObject * sys_name = PyString_FromString("sys");
+    PyObject * sys_module = PyImport_Import(sys_name);
+    Py_DECREF(sys_name);
+    if (sys_module != 0) {
+        PyObject * logger = (PyObject*)PyObject_NEW(PyLogger, &PyLogger_Type);
+        PyObject_SetAttrString(sys_module, "stdout", logger);
+        Py_DECREF(logger);
+        PyObject * errorLogger = (PyObject*)PyObject_NEW(PyLogger,
+                                                         &PyErrorLogger_Type);
+        PyObject_SetAttrString(sys_module, "stderr", errorLogger);
+        Py_DECREF(errorLogger);
+        Py_DECREF(sys_module);
+    } else {
+        log(ERROR, "Could not import sys module");
+    }
 
     if (Py_InitModule("atlas", atlas_methods) == NULL) {
         fprintf(stderr, "Failed to Create atlas module\n");

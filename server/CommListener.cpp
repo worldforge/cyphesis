@@ -46,6 +46,11 @@ bool CommListener::read()
 bool CommListener::setup(int port)
 {
     m_listener.open(port);
+    if (m_listener.is_open()) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool CommListener::accept()

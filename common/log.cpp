@@ -23,6 +23,7 @@ void log(LogLevel lvl, const char * msg)
     if (daemon_flag) {
         int type;
         switch (lvl) {
+            case SCRIPT:
             case INFO:
                 type = LOG_INFO;
                 break;
@@ -32,6 +33,7 @@ void log(LogLevel lvl, const char * msg)
             case WARNING:
                 type = LOG_WARNING;
                 break;
+            case SCRIPT_ERROR:
             case ERROR:
                 type = LOG_ERR;
                 break;
@@ -49,6 +51,9 @@ void log(LogLevel lvl, const char * msg)
             case INFO:
                 type = "INFO";
                 break;
+            case SCRIPT:
+                type = "SCRIPT";
+                break;
             case NOTICE:
                 type = "NOTICE";
                 break;
@@ -57,6 +62,9 @@ void log(LogLevel lvl, const char * msg)
                 break;
             case ERROR:
                 type = "ERROR";
+                break;
+            case SCRIPT_ERROR:
+                type = "SCRIPT_ERROR";
                 break;
             case CRITICAL:
                 type = "CRITICAL";
