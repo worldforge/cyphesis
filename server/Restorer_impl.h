@@ -38,16 +38,18 @@ void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
     restoreFloat(dr.column("oz"), z);
     restoreFloat(dr.column("ow"), w);
     m_location.m_orientation = WFMath::Quaternion(w, x, y, z);
-    WFMath::Point<3> & lc = (WFMath::Point<3>&)m_location.m_bBox.lowCorner();
-    restoreFloat(dr.column("bnx"), lc.x());
-    restoreFloat(dr.column("bny"), lc.y());
-    restoreFloat(dr.column("bnz"), lc.z());
-    lc.setValid();
-    WFMath::Point<3> & hc = (WFMath::Point<3>&)m_location.m_bBox.highCorner();
-    restoreFloat(dr.column("bfx"), hc.x());
-    restoreFloat(dr.column("bfy"), hc.y());
-    restoreFloat(dr.column("bfz"), hc.z());
-    hc.setValid();
+    if (checkBool(dr.column("hasBox"))) {
+        WFMath::Point<3> & lc = (WFMath::Point<3>&)m_location.m_bBox.lowCorner();
+        restoreFloat(dr.column("bnx"), lc.x());
+        restoreFloat(dr.column("bny"), lc.y());
+        restoreFloat(dr.column("bnz"), lc.z());
+        lc.setValid();
+        WFMath::Point<3> & hc = (WFMath::Point<3>&)m_location.m_bBox.highCorner();
+        restoreFloat(dr.column("bfx"), hc.x());
+        restoreFloat(dr.column("bfy"), hc.y());
+        restoreFloat(dr.column("bfz"), hc.z());
+        hc.setValid();
+    }
     restoreFloat(dr.column("status"), m_status);
     restoreFloat(dr.column("mass"), m_mass);
     restoreInt(dr.column("seq"), m_seq);

@@ -27,6 +27,15 @@ class Restorer : public T {
   private:
     Restorer(); // DO NOT IMPLEMENT THIS
 
+    bool checkBool(const char * c) {
+        if (c == 0) { return false; }
+        if (*c == 't') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     void restoreInt(const char * c, int & i) {
         if (c == 0) { return; }
         i = strtol(c, 0, 10);

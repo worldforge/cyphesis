@@ -1,5 +1,13 @@
 2003-07-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Add support for boolean columns.
+
+	* server/Persistor.cpp, server/Persistor_impl.h, server/Restorer.h,
+	  server/Restorer_impl.h: Use a bool column to store whether or
+	  not an entity has a bounding box, and use it apropriatly.
+
+2003-07-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* Switch to using configure.ac
 
 2003-07-19  Al Riddoch  <alriddoch@zepler.org>

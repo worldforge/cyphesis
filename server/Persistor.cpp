@@ -48,6 +48,7 @@ Persistor<Entity>::Persistor(bool temp) : m_class("entity")
     desc["oz"] = 1.0;
     desc["ow"] = 1.0;
 
+    desc["hasBox"] = 0xb001;
     desc["bnx"] = 1.0;
     desc["bny"] = 1.0;
     desc["bnz"] = 1.0;

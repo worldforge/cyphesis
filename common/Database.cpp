@@ -765,8 +765,13 @@ bool Database::registerEntityTable(const std::string & classname,
                 createquery += ")";
             }
         } else if (type.IsInt()) {
-            query += " = 1";
-            createquery += " integer";
+            if (type.AsInt() == 0xb001) {
+                query += " = 't'";
+                createquery += " boolean";
+            } else {
+                query += " = 1";
+                createquery += " integer";
+            }
         } else if (type.IsFloat()) {
             query += " = 1.0";
             createquery += " float";

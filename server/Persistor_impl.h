@@ -35,12 +35,17 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
     }
     if (t.getUpdateFlags() & a_bbox) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "bnx = " << t.m_location.m_bBox.lowCorner().x()
-          << ", bny = " << t.m_location.m_bBox.lowCorner().y()
-          << ", bnz = " << t.m_location.m_bBox.lowCorner().z()
-          << ", bfx = " << t.m_location.m_bBox.highCorner().x()
-          << ", bfy = " << t.m_location.m_bBox.highCorner().y()
-          << ", bfz = " << t.m_location.m_bBox.highCorner().z();
+        if (t.m_location.m_bBox.isValid()) {
+            q << "hasBox = 't'"
+              << ", bnx = " << t.m_location.m_bBox.lowCorner().x()
+              << ", bny = " << t.m_location.m_bBox.lowCorner().y()
+              << ", bnz = " << t.m_location.m_bBox.lowCorner().z()
+              << ", bfx = " << t.m_location.m_bBox.highCorner().x()
+              << ", bfy = " << t.m_location.m_bBox.highCorner().y()
+              << ", bfz = " << t.m_location.m_bBox.highCorner().z();
+        } else {
+            q << "hasBox = 'f'";
+        }
     }
     if (t.getUpdateFlags() & a_cont) {
         if (!empty) { q << ", "; } else { empty = false; }
@@ -112,7 +117,7 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
     if (!c.empty()) {
         c += cs;
     }
-    c += "class, type, loc, cont, px, py, pz, ox, oy, oz, ow, bnx, bny, bnz, bfx, bfy, bfz, status, name, mass, seq, attributes";
+    c += "class, type, loc, cont, px, py, pz, ox, oy, oz, ow, hasBox, bnx, bny, bnz, bfx, bfy, bfz, status, name, mass, seq, attributes";
 
     std::stringstream q;
     q << sq << m_class << sq << cs
@@ -126,6 +131,7 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
       << t.m_location.m_orientation.vector().y() << cs
       << t.m_location.m_orientation.vector().z() << cs
       << t.m_location.m_orientation.scalar() << cs
+      << (t.m_location.m_bBox.isValid() ? "'t'" : "'f'") << cs
       << t.m_location.m_bBox.lowCorner().x() << cs
       << t.m_location.m_bBox.lowCorner().y() << cs
       << t.m_location.m_bBox.lowCorner().z() << cs
