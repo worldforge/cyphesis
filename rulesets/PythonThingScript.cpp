@@ -9,7 +9,6 @@
 
 #include "Entity.h"
 
-#include "common/BaseWorld.h"
 #include "common/log.h"
 #include "common/debug.h"
 

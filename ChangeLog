@@ -1,5 +1,13 @@
 2004-12-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp, rulesets/Pedestrian.cpp,
+	  rulesets/Py_World.cpp, rulesets/PythonThingScript.cpp,
+	  rulesets/Thing.cpp, server/Account.cpp, server/Admin.cpp,
+	  server/Connection.cpp, server/Restoration.cpp:
+	  Remove unnecessary includes of common/BaseWorld.h.
+
+2004-12-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.cpp, common/BaseWorld.h, common/refno.h,
 	  common/serialno.h, rulesets/Character.cpp, rulesets/Creator.cpp,
 	  rulesets/World.h, server/Account.cpp, server/Admin.cpp,

@@ -15,7 +15,6 @@
 #include "common/debug.h"
 #include "common/serialno.h"
 #include "common/inheritance.h"
-#include "common/BaseWorld.h"
 
 #include <Atlas/Objects/Operation/Info.h>
 

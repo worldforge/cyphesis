@@ -6,7 +6,6 @@
 
 #include "Entity.h"
 
-#include "common/BaseWorld.h"
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/log.h"

@@ -10,7 +10,6 @@
 #include "Script.h"
 #include "World.h"
 
-#include "common/BaseWorld.h"
 #include "common/op_switch.h"
 #include "common/const.h"
 #include "common/debug.h"

@@ -8,7 +8,6 @@
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
-#include "common/BaseWorld.h"
 
 #include "common/Tick.h"
 #include "common/Nourish.h"

@@ -10,8 +10,6 @@
 
 #include "modules/WorldTime.h"
 
-#include "common/BaseWorld.h"
-
 static PyObject * World_get_time(PyWorld *self)
 {
 #ifndef NDEBUG

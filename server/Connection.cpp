@@ -20,7 +20,6 @@
 #include "common/serialno.h"
 #include "common/inheritance.h"
 #include "common/system.h"
-#include "common/BaseWorld.h"
 #include "common/Database.h"
 
 #include <Atlas/Objects/Operation/Create.h>
