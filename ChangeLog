@@ -1,5 +1,10 @@
 2003-07-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseWorld.h, server/WorldRouter.cpp, server/WorldRouter.h:
+	  Remove old obsolete code for handling id generation.
+
+2003-07-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Persistor_impl.h: Avoid storing un-unitialised quaternion
 	  values into database.
 

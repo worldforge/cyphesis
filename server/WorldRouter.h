@@ -25,7 +25,6 @@ class WorldRouter : public BaseWorld {
     EntitySet m_objectList;
     EntitySet m_perceptives;
     EntitySet m_omnipresentList;
-    int m_nextId;
 
     int getSerialNo() {
         return opSerialNo();
@@ -35,7 +34,6 @@ class WorldRouter : public BaseWorld {
     RootOperation * getOperationFromQueue();
     const EntitySet & broadcastList(const RootOperation & op) const;
     inline void updateTime();
-    const std::string getNewId(const std::string & name);
     void deliverTo(const RootOperation & op, Entity * e);
   public:
     explicit WorldRouter();
@@ -44,8 +42,7 @@ class WorldRouter : public BaseWorld {
     int idle();
     Entity * addObject(Entity * obj, bool setup = true);
     Entity * addObject(const std::string &,
-                       const Atlas::Message::Object::MapType &,
-                       const std::string & id = std::string());
+                       const Atlas::Message::Object::MapType &);
     void delObject(Entity * obj);
     void setSerialno(OpVector &);
     void setSerialnoOp(RootOperation &);

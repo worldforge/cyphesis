@@ -34,7 +34,7 @@ inline void WorldRouter::updateTime()
 
 
 WorldRouter::WorldRouter() : BaseWorld(consts::rootWorldId,
-                                       *new World(consts::rootWorldId)), m_nextId(0)
+                                       *new World(consts::rootWorldId))
 {
     // setId(consts::rootWorldId);
     m_initTime = time(NULL) - timeoffset;
@@ -107,25 +107,6 @@ inline void WorldRouter::setSerialnoOp(RootOperation & op)
     op.SetSerialno(getSerialNo());
 }
 
-inline const std::string WorldRouter::getNewId(const std::string & name)
-{
-    std::stringstream buf;
-#ifdef DEBUG
-    buf << ++m_nextId;
-    return buf.str();
-    // buf << name << "_" << ++nextId;
-    // std::string full_id = buf.str();
-    // size_t index;
-    // while ((index = full_id.find(' ', 0)) != std::string::npos) {
-        // full_id[index] = '_';
-    // }
-    // return full_id;
-#else
-    buf << ++m_nextId;
-    return buf.str();
-#endif
-}
-
 Entity * WorldRouter::addObject(Entity * obj, bool setup)
 {
     debug(std::cout << "WorldRouter::addObject(Entity *)" << std::endl
@@ -165,17 +146,11 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
 }
 
 Entity * WorldRouter::addObject(const std::string & typestr,
-                                const Element::MapType & ent,
-                                const std::string & cid)
+                                const Element::MapType & ent)
 {
     debug(std::cout << "WorldRouter::addObject(std::string, ent)" << std::endl
                     << std::flush;);
     std::string id = Database::instance()->getEntityId();
-    // if (cid.empty()) {
-        // id = getNewId(typestr);
-    // } else {
-        // id = cid;
-    // }
     Entity * obj = EntityFactory::instance()->newEntity(id, typestr, ent);
     return addObject(obj);
 }
