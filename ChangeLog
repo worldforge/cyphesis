@@ -1,5 +1,14 @@
 2003-09-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/allOperations.h: Add a header which pulls in headers for
+	  every type of operation.
+
+	* tests/BaseEntitytest.cpp, tests/Entitytest.cpp,
+	  tests/OOGThingtest.cpp: Make use of the allOperations header,
+	  and common IG test thoroughly.
+
+2003-09-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/EntityExerciser.h: Make entity reference protected for use
 	  by other exercisers.
 

@@ -3,35 +3,9 @@
 // Copyright (C) 2003 Alistair Riddoch
 
 #include "IGEntityExerciser.h"
+#include "allOperations.h"
 
 #include "rulesets/Entity.h"
-
-#include "common/Chop.h"
-#include "common/Cut.h"
-#include "common/Eat.h"
-#include "common/Burn.h"
-#include "common/Generic.h"
-#include "common/Nourish.h"
-#include "common/Setup.h"
-#include "common/Tick.h"
-
-#include <Atlas/Objects/Operation/Appearance.h>
-#include <Atlas/Objects/Operation/Combine.h>
-#include <Atlas/Objects/Operation/Delete.h>
-#include <Atlas/Objects/Operation/Disappearance.h>
-#include <Atlas/Objects/Operation/Divide.h>
-#include <Atlas/Objects/Operation/Error.h>
-#include <Atlas/Objects/Operation/Feel.h>
-#include <Atlas/Objects/Operation/Imaginary.h>
-#include <Atlas/Objects/Operation/Listen.h>
-#include <Atlas/Objects/Operation/Logout.h>
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Move.h>
-#include <Atlas/Objects/Operation/Sound.h>
-#include <Atlas/Objects/Operation/Smell.h>
-#include <Atlas/Objects/Operation/Sniff.h>
-#include <Atlas/Objects/Operation/Talk.h>
-#include <Atlas/Objects/Operation/Touch.h>
 
 #include <cassert>
 
@@ -41,12 +15,15 @@ int main()
 
     IGEntityExerciser<Entity> ee(e);
 
+    // Throw an op of every type at the entity
     ee.runOperations();
 
+    // Subscribe the entity to every class of op
     std::set<std::string> opNames;
     ee.addAllOperations(opNames);
     ee.subscribeOperations(opNames);
 
+    // Throw an op of every type at the entity again now it is subscribed
     ee.runOperations();
 
     std::set<std::string> attrNames;
@@ -57,6 +34,7 @@ int main()
     attrNames.insert("bbox");
     attrNames.insert("contains");
 
+    // Make sure we have all the default attributes
     assert(ee.checkAttributes(attrNames));
 
     attrNames.insert("test_int");
@@ -68,8 +46,10 @@ int main()
     attrNames.insert("test_map_int");
     attrNames.insert("test_map_float");
 
+    // Make sure we don't have the test attributes yet
     assert(!ee.checkAttributes(attrNames));
 
+    // Add the test attributes
     e.set("test_int", 1);
     e.set("test_float", 1.f);
     e.set("test_list_string", "test_value");
@@ -84,7 +64,19 @@ int main()
     test_map["test_key"] = "test_value";
     e.set("test_map_string", test_map);
     
+    // Make sure we have the test attributes now
     assert(ee.checkAttributes(attrNames));
+
+    Element::MapType entityAsAtlas;
+
+    // Dump a representation of the entity into an Atlas Message
+    e.addToObject(entityAsAtlas);
+
+    // Make sure we got at least some of it
+    assert(entityAsAtlas.size() > 14);
+
+    // Read the contents of the Atlas Message back in
+    e.merge(entityAsAtlas);
 
     return 0;
 }
