@@ -1,5 +1,15 @@
 2004-05-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/server.cpp, common/globals.cpp, client/client.cpp:
+	  Workaround C++s nasty implicit conversion behavoir.
+
+	* common/system.cpp: Be smarted about POSIX signal handling for
+	  segfaults and aborts.
+
+	* Update TODO.
+
+2004-05-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.cpp: Don't update character table when persistence
 	  is disabled.
 

@@ -56,13 +56,7 @@ extern "C" void report_segfault(int signo)
 {
     log(CRITICAL, "Segmentation fault");
 
-#if defined(HAVE_SIGACTION)
-    struct sigaction action;
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-    action.sa_handler = SIG_DFL;
-    sigaction(signo, &action, NULL);
-#else
+#if !defined(HAVE_SIGACTION)
     signal(signo, SIG_DFL);
 #endif
 }
@@ -71,13 +65,7 @@ extern "C" void report_abort(int signo)
 {
     log(CRITICAL, "Aborted");
 
-#if defined(HAVE_SIGACTION)
-    struct sigaction action;
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-    action.sa_handler = SIG_DFL;
-    sigaction(signo, &action, NULL);
-#else
+#if !defined(HAVE_SIGACTION)
     signal(signo, SIG_DFL);
 #endif
 }
@@ -113,12 +101,12 @@ void interactive_signals()
     sigaction(SIGPIPE, &action, NULL);
 
     sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
+    action.sa_flags = SA_ONESHOT;
     action.sa_handler = report_segfault;
     sigaction(SIGSEGV, &action, NULL);
 
     sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
+    action.sa_flags = SA_ONESHOT;
     action.sa_handler = report_abort;
     sigaction(SIGABRT, &action, NULL);
 #else
@@ -163,12 +151,12 @@ void daemon_signals()
     sigaction(SIGPIPE, &action, NULL);
 
     sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
+    action.sa_flags = SA_ONESHOT;
     action.sa_handler = report_segfault;
     sigaction(SIGSEGV, &action, NULL);
 
     sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
+    action.sa_flags = SA_ONESHOT;
     action.sa_handler = report_abort;
     sigaction(SIGABRT, &action, NULL);
 #else

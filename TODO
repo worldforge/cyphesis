@@ -1,3 +1,12 @@
+Broadcast appearance on entity creation. Not that other Sight(Create())
+bullshit.
+
+Real sight ranges
+
+Do minds delete stuff from memory?
+
+Implement LRU culling to minds, only for things with empty contains.
+
 Add Restore op if required which does the same as Setup, but for restore.
 
 Make sure we don't schedule database maintenence if its already doing it.
