@@ -1,5 +1,10 @@
 2004-01-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp: Add a config setting for the var directory
+	  as well as share and etc. Document all three in the man page.
+
+2004-01-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Improve error reporting for query errors.
 
 	* common/const.cpp, common/const.h: Add full details and comments

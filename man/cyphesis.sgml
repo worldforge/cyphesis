@@ -40,6 +40,62 @@ command line.
    <variablelist>
     <varlistentry>
      <term><fieldsynopsis>
+       <varname>directory</varname>
+       <initializer>="/path/to/server/data"</initializer>
+      </fieldsynopsis>
+     </term>
+     <listitem>
+      <para>
+Directory where server data and scripts can be found.
+      </para>
+      <para>
+Name of the top level ruleset this server should use.
+      </para>
+      <para>
+Normally this directory is set at compile time, but in some rare cases it
+may be necessary to tell cyphesis to use a different directory.
+      
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><fieldsynopsis>
+       <varname>confdir</varname>
+       <initializer>="/path/to/server/config"</initializer>
+      </fieldsynopsis>
+     </term>
+     <listitem>
+      <para>
+Directory where server config can be found.
+      </para>
+      <para>
+Normally this directory is set at compile time, but in some rare cases it
+may be necessary to tell cyphesis to use a different directory.
+      </para>
+      
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><fieldsynopsis>
+       <varname>vardir</varname>
+       <initializer>="/path/to/server/var"</initializer>
+      </fieldsynopsis>
+     </term>
+     <listitem>
+      <para>
+Directory where temporary files can be stored.
+      </para>
+      <para>
+Normally this directory is set at compile time, but in some rare cases it
+may be necessary to tell cyphesis to use a different directory.
+      </para>
+      
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><fieldsynopsis>
        <varname>ruleset</varname>
        <initializer>="mason"</initializer>
       </fieldsynopsis>

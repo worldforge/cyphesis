@@ -49,6 +49,10 @@ int loadConfig(int argc, char ** argv, bool server)
         store_config = true;
         etc_directory = global_conf->getItem("cyphesis", "confdir").as_string();
     }
+    if (global_conf->findItem("cyphesis", "vardir")) {
+        store_config = true;
+        var_directory = global_conf->getItem("cyphesis", "vardir").as_string();
+    }
     if (store_config && (home != NULL)) {
         global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf");
     }
