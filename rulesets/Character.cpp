@@ -82,8 +82,7 @@ Character::Character() : movement(*new Pedestrian(*this)), autom(false),
 {
     character = true;
     weight = 60;
-    location.bbox = Vector3D(0.25, 0.25, 1);
-    location.bmedian = Vector3D(0, 0, 1);
+    location.bBox = BBox(Vector3D(-0.25, -0.25, 0), Vector3D(0.25, 0.25, 2));
     attributes["mode"] = Object("birth");
 }
 

@@ -1,5 +1,5 @@
 
-SUBDIRS = physics common modules rulesets server client tools
+SUBDIRS = physics modules common rulesets server client tools
 
 EXTRA_DIST = cyphesis.vconf basic.vconf acorn.vconf mason.vconf werewolf.vconf \
     cyphesis.spec.in agrilan_a1.xml agrilan_a2.xml agrilan_a3.xml agrilan.xml \

@@ -5,6 +5,7 @@
 #include "Py_Location.h"
 #include "Py_Thing.h"
 #include "Py_Vector3D.h"
+#include "Py_BBox.h"
 
 #include "Thing.h"
 
@@ -68,14 +69,9 @@ static PyObject * Location_getattr(LocationObject *self, char *name)
         return (PyObject *)v;
     }
     if (strcmp(name, "bbox") == 0) {
-        Vector3DObject * v = newVector3DObject(NULL);
-        v->coords = self->location->bbox;
-        return (PyObject *)v;
-    }
-    if (strcmp(name, "bmedian") == 0) {
-        Vector3DObject * v = newVector3DObject(NULL);
-        v->coords = self->location->bmedian;
-        return (PyObject *)v;
+        BBoxObject * b = newBBoxObject(NULL);
+        b->box = self->location->bBox;
+        return (PyObject *)b;
     }
     return Py_FindMethod(Location_methods, (PyObject *)self, name);
 }
@@ -97,6 +93,11 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
             return -1;
         }
         self->location->ref = thing->m_thing;
+        return 0;
+    }
+    if ((strcmp(name, "bbox") == 0) && PyBBox_Check(v)) {
+        BBoxObject * box = (BBoxObject *)v;
+        self->location->bBox = box->box;
         return 0;
     }
     Vector3D vector;
@@ -147,10 +148,7 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
         self->location->face = vector;
     }
     if (strcmp(name, "bbox") == 0) {
-        self->location->bbox = vector;
-    }
-    if (strcmp(name, "bmedian") == 0) {
-        self->location->bmedian = vector;
+        self->location->bBox = BBox(vector);
     }
     return 0;
 }

@@ -16,7 +16,7 @@ Creator::Creator()
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
     character = true;
     omnipresent = true;
-    location.bbox = Vector3D();
+    location.bBox = BBox();
 }
 
 oplist Creator::sendMind(const RootOperation & msg)

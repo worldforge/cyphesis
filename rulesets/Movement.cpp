@@ -38,34 +38,34 @@ void Movement::checkCollisions(const Location & loc)
     // the next tick in consts::basic_tick seconds
     double collTime = consts::basic_tick + 1;
     elist_t::const_iterator I;
-    // cout << "checking " << body->getId() << loc.coords << loc.velocity << " against ";
+    debug( cout << "checking " << m_body.getId() << loc.coords << loc.velocity << " against "; );
     m_collEntity = NULL;
     for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
         // if ((*I) == loc.ref) { continue; }
         if ((*I) == &m_body) { continue; }
         const Location & oloc = (*I)->location;
-        if (!oloc.bbox) { continue; }
+        if (!oloc.bBox) { continue; }
         int axis;
-        double t = loc.hitTime(oloc, axis);
+        double t = loc.timeToHit(oloc, axis);
         if (t < 0) { continue; }
-        // cout << (*I)->getId() << oloc.coords << oloc.velocity;
-        // cout << "[" << t << "]";
+        debug( cout << (*I)->getId() << oloc.coords << oloc.velocity; );
+        debug( cout << "[" << t << "]"; );
         if (t < collTime) {
             m_collEntity = *I;
             m_collAxis = axis;
         }
         collTime = std::min(collTime, t);
     }
-    // cout << endl << flush;
+    debug( cout << endl << flush; );
     if (collTime > consts::basic_tick) {
         // Check whethe we are moving out of parents bounding box
         // If ref has no bounding box, or itself has no ref, then we can't
         // Move out of it.
         const Location & oloc = loc.ref->location;
-        if (!oloc.bbox || (oloc.ref == NULL)) {
+        if (!oloc.bBox || (oloc.ref == NULL)) {
             return;
         }
-        double t = loc.inTime(oloc);
+        double t = loc.timeToExit(oloc);
         if (t < 0) { t=0; }
         collTime = std::min(collTime, t);
         if (collTime > consts::basic_tick) { return; }
@@ -84,9 +84,9 @@ void Movement::checkCollisions(const Location & loc)
         // rloc is coords of character with ref to m_collEntity
         for(I = m_collEntity->contains.begin(); I != m_collEntity->contains.end(); I++) {
             const Location & oloc = (*I)->location;
-            if (!oloc.bbox) { continue; }
+            if (!oloc.bBox) { continue; }
             int axis;
-            double t = rloc.hitTime(oloc, axis);
+            double t = rloc.timeToHit(oloc, axis);
             if (t < 0) { continue; }
             coll2Time = std::min(coll2Time, t);
         }
@@ -99,7 +99,7 @@ void Movement::checkCollisions(const Location & loc)
             // if (coll2Time > consts::basic_tick) { return; }
         }
     }
-    // cout << "COLLISION" << std::endl << std::flush;
+    debug( cout << "COLLISION" << std::endl << std::flush; );
     if (collTime < getTickAddition(loc.coords)) {
         debug(std::cout << "Setting target loc to " << loc.coords << "+"
                    << loc.velocity << "*" << collTime;);

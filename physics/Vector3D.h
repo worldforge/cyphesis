@@ -18,23 +18,17 @@ typedef std::pair<double, double> range;
 
 using Atlas::Message::Object;
 
-static inline range hitTime(double s, double r, double u, double p, double q) {
-    return range((r - s + p + q)/u, (r - s - p - q)/u);
+static inline const range timeToHit(double n, double f, double u,
+                                    double on, double of) {
+    return range((on - f)/u, (of - n)/u);
 }
-
-static inline range hitTime(double s, double r, double u, double v, double p, double q) {
-    return range((r - s + p + q)/(u - v), (r - s - p - q)/(u - v));
-}
-
-// This version is for checking the item is totally inside the box
-//static inline range inTime(double s, double r, double u, double p, double q) {
-//    return range((r - q + p - s)/u, (r + q - p - s)/u);
-//}
 
 // This version is for checking the item is totally or partly inside the box
-// It is actually the same as hitTime, but the other way around.
-static inline range inTime(double s, double r, double u, double p, double q) {
-    return range((r - q - p - s)/u, (r + q + p - s)/u);
+// It is actually the same as timeToHit, but the other way around.
+static inline const range timeToExit(double n, double f, double u,
+                                     double on, double of) {
+    return range((on - n)/u, (of - f)/u);
+
 }
 
 static inline double max(range r) {
@@ -222,41 +216,32 @@ class Vector3D {
         return sqrt((x - v.x)*(x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z));
     }
 
-    bool inBox(const Vector3D & median, const Vector3D & size) const {
-        // Is this vector inside a box of size centered around median
-        return ((x < (median.x + size.x)) &&
-                (x > (median.x - size.x)) &&
-                (y < (median.y + size.y)) &&
-                (y > (median.y - size.y)) &&
-                (z < (median.z + size.z)) &&
-                (z > (median.z - size.z)));
+    bool in(const Vector3D & n, const Vector3D & f) const {
+        // Is this vector inside a box defined by near point n and point f
+        return ((x < f.x) && (x > n.x) &&
+                (x < f.x) && (x > n.x) &&
+                (x < f.x) && (x > n.x));
     }
 
-    bool hitBox(const Vector3D & m, const Vector3D & s,
-                const Vector3D & om, const Vector3D & os) const {
-        // Is box defined by this vector, with median offset m of size s
-        // colliding with other box of median om of size s.
-        return (((x+m.x+s.x) < (om.x+s.x) && (x+m.x+s.x) > (om.x-s.x)) ||
-                ((x+m.x-s.x) < (om.x+s.x) && (x+m.x-s.x) > (om.x-s.x)) &&
-                ((y+m.y+s.y) < (om.y+s.y) && (y+m.y+s.y) > (om.y-s.y)) ||
-                ((y+m.y-s.y) < (om.y+s.y) && (y+m.y-s.y) > (om.y-s.y)) &&
-                ((z+m.z+s.z) < (om.z+s.z) && (z+m.z+s.z) > (om.z-s.z)) ||
-                ((z+m.z-s.z) < (om.z+s.z) && (z+m.z-s.z) > (om.z-s.z)));
+    bool hit(const Vector3D& f, const Vector3D& on, const Vector3D& of) const {
+        // Is a box defined by this vector, and f in collision with a box
+        // defined by on and of.
+        return ((x > on.x) && (x < of.x) || (f.x > on.x) && (f.x < of.x) &&
+                (y > on.y) && (y < of.y) || (f.y > on.y) && (f.y < of.y) &&
+                (z > on.z) && (z < of.z) || (f.z > on.z) && (f.z < of.z));
     }
 
-    double hitTime(const Vector3D & m, const Vector3D & s, const Vector3D & v,
-                   const Vector3D & om, const Vector3D & os, int & axis) const {
-        // When is box defined by this vector, with median offset m of size s
-        // velocity v, colliding with other box of median om of size s.
+    double timeToHit(const Vector3D& f, const Vector3D &v,
+                     const Vector3D& on, const Vector3D& of,
+                     int & axis) const {
+        // When is a box defined by this vector and f, travelling with velocity
+        // v going to hit box defined by on and of.
         // If this function returns a -ve value, it is possible they are
         // currently in a collided state, or they may never collide.
-        // On a PIII 700 this function can perform approx 1M collision
-        // predictions per second, and approx 3M collision predictions per
-        // second optimised.
         // Calculate range of times each intersect
-        range xt = ::hitTime(x+m.x, om.x, v.x, s.x, os.x);
-        range yt = ::hitTime(y+m.y, om.y, v.y, s.y, os.y);
-        range zt = ::hitTime(z+m.z, om.z, v.z, s.z, os.z);
+        range xt = ::timeToHit(x, f.x, v.x, on.x, of.x);
+        range yt = ::timeToHit(y, f.y, v.y, on.y, of.y);
+        range zt = ::timeToHit(z, f.z, v.z, on.z, of.z);
         // Find the time that the last coordinate starts intersect
         double start = std::max(min(xt), std::max(min(yt),min(zt)));
         // Find the time that the first coordinate stops intersect
@@ -267,34 +252,15 @@ class Vector3D {
         return start;
     }
 
-    double hitTime(const Vector3D & m, const Vector3D & s,
-                   const Vector3D & v, const Vector3D & ov,
-                   const Vector3D & om, const Vector3D & os, int & axis) const {
-        // This is the same as the above function but it accepts an
-        // additional arguemnt, the velocity of the other entity
-        // Calculate range of times each intersect
-        range xt = ::hitTime(x+m.x, om.x, v.x, ov.x, s.x, os.x);
-        range yt = ::hitTime(y+m.y, om.y, v.y, ov.y, s.y, os.y);
-        range zt = ::hitTime(z+m.z, om.z, v.z, ov.z, s.z, os.z);
-        // Find the time that the last coordinate starts intersect
-        double start = std::max(min(xt), std::max(min(yt),min(zt)));
-        // Find the time that the first coordinate stops intersect
-        double end   = std::min(max(xt), std::min(max(yt),max(zt)));
-        // If the start is before the end, then there is a collision
-        if (end < start) { return -1; }
-        axis = ((start == min(xt)) ? cX : ((start == min(yt)) ? cY : cZ));
-        return start;
-    }
-
-    double inTime(const Vector3D & m, const Vector3D & s, const Vector3D & v,
-                   const Vector3D & om, const Vector3D & os) const {
-        range xt = ::inTime(x+m.x, om.x, v.x, s.x, os.x);
-        range yt = ::inTime(y+m.y, om.y, v.y, s.y, os.y);
-        range zt = ::inTime(z+m.z, om.z, v.z, s.z, os.z);
+    double timeToExit(const Vector3D& f, const Vector3D &v,
+                      const Vector3D& on, const Vector3D& of) const {
+        range xt = ::timeToExit(x, f.x, v.x, on.x, of.x);
+        range yt = ::timeToExit(y, f.y, v.y, on.y, of.y);
+        range zt = ::timeToExit(z, f.z, v.z, on.z, of.z);
         double leave = std::min(max(xt), std::min(max(yt),max(zt)));
+        double enter = std::max(min(xt), std::max(min(yt),min(zt)));
         // This check is required to make sure we don't accidentally
         // get stuck in an entity outside its bbox.
-        double enter = std::max(min(xt), std::max(min(yt),min(zt)));
         if (enter > 0) { return -1; }
         return leave;
     }
@@ -307,6 +273,13 @@ class Vector3D {
         return Object(coords);
     }
 
+    const Object::ListType asList() const {
+        Object::ListType coords;
+        coords.push_back(Object(x));
+        coords.push_back(Object(y));
+        coords.push_back(Object(z));
+        return coords;
+    }
 
     friend std::ostream & operator<<(std::ostream& s, const Vector3D& v);
 };

@@ -1,3 +1,15 @@
+2001-11-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/BBox.h, rulesets/Py_BBox.h, rulesets/Py_BBox.cpp:
+	  Added direct support for new format bounding boxes.
+
+	* modules/Location.cpp, modules/Location.h, physics/Vector3D.h,
+	  rulesets/Character.cpp, rulesets/Creator.cpp, rulesets/Entity.cpp,
+	  rulesets/Movement.cpp, rulesets/Plant.cpp, rulesets/Py_Location.cpp:
+	  Switched over to using new format bounding boxes, and re-wrote
+	  collision code for this format, making it clearer and more
+	  efficient at the same time.
+
 2001-11-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/persistance.cpp, rulesets/BaseMind.cpp, rulesets/Character.cpp,

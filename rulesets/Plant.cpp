@@ -19,8 +19,7 @@ Plant::Plant() : fruits(0), radius(1), fruitName("seed")
 {
     // Default to a 1m cube
     std::cout << "CREATING PLANT" << std::endl << std::flush;
-    location.bbox = Vector3D(0.5, 0.5, 0.5);
-    location.bmedian = Vector3D(0, 0, 0.5);
+    location.bBox = BBox(Vector3D(-0.5, -0.5, 0), Vector3D(0.5, 0.5, 1));
 }
 
 Plant::~Plant()
@@ -65,7 +64,7 @@ int Plant::dropFruit(oplist & res)
     if (fruits < 1) { return 0; }
     int drop = std::min(fruits, randint(minuDrop, maxuDrop));
     fruits = fruits - drop;
-    double height = location.bbox.Z(); 
+    double height = location.bBox.farPoint().Z(); 
     for(int i = 0; i < drop; i++) {
         double rx = location.coords.X()+uniform(height*radius, -height*radius);
         double ry = location.coords.X()+uniform(height*radius, -height*radius);
@@ -90,7 +89,7 @@ oplist Plant::TickOperation(const Tick & op)
     tickOp->SetFutureSeconds(consts::basic_tick * speed);
     res.push_back(tickOp);
     int dropped = dropFruit(res);
-    if (location.bbox.Z() > sizeAdult) {
+    if (location.bBox.farPoint().Z() > sizeAdult) {
         if (randint(1, fruitChance) == 1) {
             fruits++;
             dropped--;

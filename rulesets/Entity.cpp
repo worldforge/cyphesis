@@ -57,7 +57,7 @@ const Object & Entity::operator[](const std::string & aname)
     } else if (aname == "weight") {
         attributes[aname] = Object(weight);
     } else if (aname == "bbox") {
-        attributes[aname] = location.bbox.asObject();
+        attributes[aname] = location.bBox.asList();
     } else if (aname == "contains") {
         Object::ListType contlist;
         for(elist_t::const_iterator I=contains.begin();I!=contains.end();I++) {
@@ -83,8 +83,8 @@ void Entity::set(const std::string & aname, const Object & attr)
         name = attr.AsString();
     } else if ((aname == "weight") && attr.IsNum()) {
         weight = attr.AsNum();
-    } else if ((aname=="bbox") && attr.IsList() && (attr.AsList().size()==3)) {
-        location.bbox = Vector3D(attr.AsList());
+    } else if ((aname=="bbox") && attr.IsList() && (attr.AsList().size()>2)) {
+        location.bBox = BBox(attr.AsList());
     } else {
         attributes[aname] = attr;
     }
@@ -188,11 +188,7 @@ void Entity::getLocation(const Object::MapType & entmap, const edict_t & eobject
         }
         I = entmap.find("bbox");
         if (I != entmap.end()) {
-            location.bbox = Vector3D(I->second.AsList());
-        }
-        I = entmap.find("bmedian");
-        if (I != entmap.end()) {
-            location.bmedian = Vector3D(I->second.AsList());
+            location.bBox = BBox(I->second.AsList());
         }
     }
     catch (Atlas::Message::WrongTypeException) {

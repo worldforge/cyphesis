@@ -30,10 +30,16 @@ void Location::addToObject(Object::MapType & omap) const
     if (face) {
         omap["face"] = face.asObject();
     }
+#if 0
     if (bbox) {
         omap["bbox"] = bbox.asObject();
     }
     if (bmedian) {
         omap["bmedian"] = bmedian.asObject();
     }
+#else
+    if (bBox) {
+        omap["bbox"] = bBox.asList();
+    }
+#endif
 }
