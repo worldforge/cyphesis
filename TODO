@@ -1,3 +1,12 @@
+Can we get a code size or performance improvement by passing in the result
+list as part of the operation method call. The answer is yes, but the
+further question is whether this will break anything.
+
+Think about how to deal with things that probably don't need persistance.
+Seeds in particular. Flag in the rules?
+
+Need to profile why startup takes so long - we are chewing a lot of ops.
+
 Can we run our own RDBMS in the event that root access is not available.
 
 Modify var dir for socket so it is actually the right place.
