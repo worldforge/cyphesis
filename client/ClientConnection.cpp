@@ -258,7 +258,7 @@ bool ClientConnection::login(const std::string & account,
 {
     Atlas::Objects::Operation::Login l = Atlas::Objects::Operation::Login::Instantiate();
     Object::MapType acmap;
-    acmap["id"] = account;
+    acmap["username"] = account;
     acmap["password"] = password;
 
     l.SetArgs(Object::ListType(1,Object(acmap)));

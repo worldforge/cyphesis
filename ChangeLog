@@ -1,3 +1,34 @@
+2002-05-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/CommClient.cpp, client/ClientConnection.cpp, tools/cycmd.cpp:
+	  Ensure clients use username in login ops.
+
+	* common/BaseEntity.cpp, common/op_switch.h, rulesets/BaseMind.cpp:
+	  Modify the way op switchers work so they can be used for functions
+	  that return any type.
+
+	* rulesets/Character.cpp, rulesets/Character.h: Re-write world2mind
+	  layer so that rather than copying ops that are to be sent to
+	  the mind, the w2m functions returning a flag indicating whether
+	  the op should be passed to the mind. Made w2m and mind op handlers
+	  final, as they are never overridden.
+
+	* rulesets/Creator.cpp: Correct comments.
+
+	* rulesets/MemMap.cpp: Add comments clarifying behavoir, and remove
+	  old pseudo-code.
+
+	* server/Account.cpp, server/Account.h: Ensure that an accounts
+	  character dictionary only ever contains characters. Other entities
+	  that the account chooses to create will no be stored here. Add
+	  function to be called at login time to make sure that characters
+	  stored here are still around.
+
+	* server/Connection.cpp, server/Connection.h, server/ExternalMind.cpp,
+	  server/ExternalMind.h: When external mind of a character is
+	  destroyed, ensure that the character is removed from the
+	  connection's object reference store.
+
 2002-05-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.h, server/WorldRouter.cpp, common/BaseWorld.h,

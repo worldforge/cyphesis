@@ -23,7 +23,7 @@ CommClient::createPlayer(const std::string & name,
 {
     playerName = name;
     Object::MapType player_ent;
-    player_ent["id"] = name;
+    player_ent["username"] = name;
     player_ent["password"] = password;
     player_ent["parents"] = Object::ListType(1, "player");
     

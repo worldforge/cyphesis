@@ -33,6 +33,8 @@ class Account : public OOGThing {
     virtual OpVector ImaginaryOperation(const Imaginary & op);
     virtual OpVector TalkOperation(const Talk & op);
     virtual OpVector LookOperation(const Look & op);
+
+    void checkCharacters();
 };
 
 #endif // SERVER_ACCOUNT_H

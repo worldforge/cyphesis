@@ -534,6 +534,7 @@ OpVector BaseMind::callSightOperation(const Sight& op, RootOperation& sub_op) {
                   << std::endl << std::flush;
     }
     SUB_OP_SWITCH(op, op_no, sight, sub_op)
+    return OpVector();
 }
 
 OpVector BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op) {
@@ -545,4 +546,5 @@ OpVector BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op) {
                   << std::endl << std::flush;
     }
     SUB_OP_SWITCH(op, op_no, sound, sub_op)
+    return OpVector();
 }

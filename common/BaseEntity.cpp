@@ -159,6 +159,7 @@ OpVector BaseEntity::callOperation(const RootOperation & op)
 {
     const OpNo op_no = opEnumerate(op);
     OP_SWITCH(op, op_no,)
+    return OpVector();
 }
 
 OpVector BaseEntity::error(const RootOperation& op, const char* errstring) const

@@ -57,16 +57,9 @@ OpVector Creator::operation(const RootOperation & op)
 
 OpVector Creator::externalOperation(const RootOperation & op)
 {
-    // FIXME Here we have a problem. For ops like move with velocity, and
-    // Look, it is necessary for the operation to be handled by
-    // Character::mind2body(). So, how do we handle the difference between
-    // ops that must be processed this way, and ones that admin wants to
-    // send directly to its avatar. I think we should say that if TO is
-    // specified, the op should go directly to the entity concerned
-    // including this entity, but if not then it should go via the
-    // mind2body interface. This means that some clients will need
-    // modification. There are few places in Eris where this is a
-    // problem.
+    // If an admin connection specifies a TO on the op, we treat
+    // it specially, and make sure it goes direct, otherwise
+    // we handle it like a normal character.
     debug( std::cout << "Creator::externalOperation" << std::endl
                      << std::flush;);
     if (op.GetTo().empty()) {

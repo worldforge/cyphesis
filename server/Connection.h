@@ -14,6 +14,7 @@ class Account;
 class Connection : public OOGThing {
     BaseDict objects;
     CommClient & commClient;
+    bool obsolete;
 
     Account * addPlayer(const std::string &, const std::string &);
   public:
@@ -25,6 +26,12 @@ class Connection : public OOGThing {
     BaseEntity * addObject(BaseEntity * obj) {
         objects[obj->getId()]=obj;
         return obj;
+    }
+
+    void removeObject(const std::string & id) {
+        if (!obsolete) {
+            objects.erase(id);
+        }
     }
 
     void destroy();

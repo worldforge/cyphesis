@@ -272,7 +272,7 @@ bool Interactive::login()
     error_flag = false;
     reply_flag = false;
  
-    account.SetAttr("id", std::string("admin"));
+    account.SetAttr("username", std::string("admin"));
     account.SetAttr("password", password);
  
     Object::ListType args(1,account.AsObject());

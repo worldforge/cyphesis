@@ -89,17 +89,12 @@ Entity * MemMap::update(const Object::MapType & entmap)
         thing->setType(I->second.AsString());
     }
     debug( std::cout << " got " << thing << std::endl << std::flush;);
+    // It is important that the entity is not mutated here. Ie, an update
+    // should not affect its type, contain or id, and location and
+    // stamp should be updated with accurate information
     thing->merge(entmap);
     thing->getLocation(entmap,things);
     addContents(entmap);
-    // I am not sure what the deal is with all the "needTrueValue stuff
-    // below yet. FIXME find out exactly what is required.
-    //needTrueValue=["type","contains","instance","id","location","stamp"];
-    //for (/*(key,value) in entity.__dict__.items()*/) {
-        //if (value or not key in needTrueValue) {
-            //setattr(obj,key,value);
-        //}
-    //}
     std::vector<std::string>::const_iterator K;
     for(K = updateHooks.begin(); K != updateHooks.end(); K++) {
         script->hook(*K, thing);

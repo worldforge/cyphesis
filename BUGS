@@ -4,3 +4,6 @@ is specified inside a box. Jump to it after a period of time, whereas
 we should stay outside.
 
 Plant C++ base class is totally screwed.
+
+If a character dies, it does not get removed from its accounts dictionary,
+so its bad mkay.

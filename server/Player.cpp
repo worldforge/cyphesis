@@ -10,7 +10,7 @@ using Atlas::Message::Object;
 
 std::set<std::string> Player::playableTypes;
 
-Player::Player(Connection* conn, const std::string& username,
+Player::Player(Connection * conn, const std::string& username,
                const std::string& passwd) : Account(conn, username, passwd)
 {
     type = "player";

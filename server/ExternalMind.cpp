@@ -11,6 +11,11 @@ ExternalMind::ExternalMind(Connection & connection, const std::string & id,
 {
 }
 
+ExternalMind::~ExternalMind()
+{
+    connection.removeObject(getId());
+}
+
 OpVector ExternalMind::message(const RootOperation & op)
 {
     connection.send(&op);

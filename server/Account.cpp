@@ -24,8 +24,8 @@ using Atlas::Message::Object;
 
 Account::Account(Connection * conn, const std::string & username,
                  const std::string& passwd)
-                 : world(NULL), connection(conn), password(passwd),
-                   type("account")
+                 : world(NULL), connection(conn),
+                   password(passwd), type("account")
 {
     setId(username);
 
@@ -55,9 +55,12 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
     Character * pchar = dynamic_cast<Character *>(chr);
     if (pchar != NULL) {
         pchar->externalMind = new ExternalMind(*connection, pchar->getId(), pchar->getName());
+        // Only genuinely playable characters should go in here. Otherwise
+        // if a normal entity gets into the account, and connection, it
+        // starts getting hard to tell whether or not they exist.
+        charactersDict[chr->getId()]=chr;
+        connection->addObject(chr);
     }
-    charactersDict[chr->getId()]=chr;
-    connection->addObject(chr);
 
     // Hack in default objects
     // This needs to be done in a generic way
@@ -220,4 +223,30 @@ OpVector Account::LookOperation(const Look & op)
         return OpVector(1,s);
     }
     return error(op, "Unknown look target");
+}
+
+void Account::checkCharacters()
+{
+    if (world == NULL) {
+        std::cerr << "WARNING: Account " << getId()
+                  << " beging asked to check characters" << std::endl
+                  << "but it is not currently connected to a world"
+                  << std::endl << std::flush;
+        return;
+    }
+    std::set<std::string> obsoleteChars;
+    const EntityDict & worldEntities = world->getObjects();
+    EntityDict::iterator I = charactersDict.begin();
+    for(; I != charactersDict.end(); I++) {
+        const std::string & charId = I->first;
+        if (worldEntities.find(charId) == worldEntities.end()) {
+            obsoleteChars.insert(charId);
+        }
+    }
+    std::set<std::string>::iterator J = obsoleteChars.begin();
+    for(; J != obsoleteChars.end(); J++) {
+        std::cout << "Removing character " << *J << " from account "
+                  << getId() << std::endl << std::flush;
+        charactersDict.erase(*J);
+    }
 }

@@ -28,6 +28,7 @@ static const bool debug_flag = false;
 using Atlas::Message::Object;
 
 Connection::Connection(CommClient & client) : commClient(client),
+                       obsolete(false),
                        server(commClient.commServer.server)
 {
     subscribe("login", OP_LOGIN);
@@ -59,6 +60,9 @@ Account * Connection::addPlayer(const std::string& username,
 
 void Connection::destroy()
 {
+    // Once we are obsolete, ExternalMind can no longer affect contents
+    // of objects when we delete it.
+    obsolete = true;
     debug(std::cout << "destroy called";);
     BaseDict::const_iterator I;
     for(I = objects.begin(); I != objects.end(); I++) {
@@ -69,12 +73,11 @@ void Connection::destroy()
             continue;
         }
         Character * character = dynamic_cast<Character *>(I->second);
-        if (character == NULL) {
-            continue;
-        }
-        if (character->externalMind != NULL) {
-            delete character->externalMind;
-            character->externalMind = NULL;
+        if (character != NULL) {
+            if (character->externalMind != NULL) {
+                delete character->externalMind;
+                character->externalMind = NULL;
+            }
         }
     }
 }
@@ -164,6 +167,7 @@ OpVector Connection::LoginOperation(const Login & op)
     }
     // Connect everything up
     addObject(player);
+    player->checkCharacters();
     EntityDict::const_iterator J = player->charactersDict.begin();
     for (; J != player->charactersDict.end(); J++) {
         addObject(J->second);

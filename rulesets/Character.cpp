@@ -762,179 +762,170 @@ OpVector Character::mindOtherOperation(const RootOperation & op)
     return OpVector(1,e);
 }
 
-OpVector Character::w2mActionOperation(const Action & op)
+bool Character::w2mActionOperation(const Action & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mLoginOperation(const Login & op)
+bool Character::w2mLoginOperation(const Login & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mChopOperation(const Chop & op)
+bool Character::w2mChopOperation(const Chop & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mCreateOperation(const Create & op)
+bool Character::w2mCreateOperation(const Create & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mCutOperation(const Cut & op)
+bool Character::w2mCutOperation(const Cut & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mDeleteOperation(const Delete & op)
+bool Character::w2mDeleteOperation(const Delete & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mEatOperation(const Eat & op)
+bool Character::w2mEatOperation(const Eat & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mFireOperation(const Fire & op)
+bool Character::w2mFireOperation(const Fire & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mMoveOperation(const Move & op)
+bool Character::w2mMoveOperation(const Move & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mSetOperation(const Set & op)
+bool Character::w2mSetOperation(const Set & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mLookOperation(const Look & op)
+bool Character::w2mLookOperation(const Look & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mLoadOperation(const Load & op)
+bool Character::w2mLoadOperation(const Load & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mSaveOperation(const Save & op)
+bool Character::w2mSaveOperation(const Save & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mDivideOperation(const Divide & op)
+bool Character::w2mDivideOperation(const Divide & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mCombineOperation(const Combine & op)
+bool Character::w2mCombineOperation(const Combine & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mGetOperation(const Get & op)
+bool Character::w2mGetOperation(const Get & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mImaginaryOperation(const Imaginary & op)
+bool Character::w2mImaginaryOperation(const Imaginary & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mInfoOperation(const Info & op)
+bool Character::w2mInfoOperation(const Info & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mTalkOperation(const Talk & op)
+bool Character::w2mTalkOperation(const Talk & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mNourishOperation(const Nourish & op)
+bool Character::w2mNourishOperation(const Nourish & op)
 {
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mAppearanceOperation(const Appearance & op)
-{
-    if (drunkness > 1.0) {
-        return OpVector();
-    }
-    Appearance * a = new Appearance(op);
-    return OpVector(1,a);
-}
-
-OpVector Character::w2mDisappearanceOperation(const Disappearance & op)
+bool Character::w2mAppearanceOperation(const Appearance & op)
 {
     if (drunkness > 1.0) {
-        return OpVector();
+        return false;
     }
-    Disappearance * d = new Disappearance(op);
-    return OpVector(1,d);
+    return true;
 }
 
-OpVector Character::w2mErrorOperation(const Error & op)
+bool Character::w2mDisappearanceOperation(const Disappearance & op)
 {
-    Error * e = new Error(op);
-    return OpVector(1,e);
+    if (drunkness > 1.0) {
+        return false;
+    }
+    return true;
 }
 
-OpVector Character::w2mOtherOperation(const RootOperation & op)
+bool Character::w2mErrorOperation(const Error & op)
 {
-    RootOperation * r = new RootOperation(op);
-    return OpVector(1,r);
+    return true;
 }
 
-OpVector Character::w2mSetupOperation(const Setup & op)
+bool Character::w2mOtherOperation(const RootOperation & op)
+{
+    return true;
+}
+
+bool Character::w2mSetupOperation(const Setup & op)
 {
     if (op.HasAttr("sub_to")) {
-        Setup * s = new Setup(op);
-        return OpVector(1,s);
+        return true;
     }
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mTickOperation(const Tick & op)
+bool Character::w2mTickOperation(const Tick & op)
 {
     if (op.HasAttr("sub_to")) {
-        Tick * t = new Tick(op);
-        return OpVector(1,t);
+        return true;
     }
-    return OpVector();
+    return false;
 }
 
-OpVector Character::w2mSightOperation(const Sight & op)
+bool Character::w2mSightOperation(const Sight & op)
 {
     if (drunkness > 1.0) {
-        return OpVector();
+        return false;
     }
-    Sight * s = new Sight(op);
-    return OpVector(1,s);
+    return true;
 }
 
-OpVector Character::w2mSoundOperation(const Sound & op)
+bool Character::w2mSoundOperation(const Sound & op)
 {
     if (drunkness > 1.0) {
-        return OpVector();
+        return false;
     }
-    Sound * s = new Sound(op);
-    return OpVector(1,s);
+    return true;
 }
 
-OpVector Character::w2mTouchOperation(const Touch & op)
+bool Character::w2mTouchOperation(const Touch & op)
 {
     if (drunkness > 1.0) {
-        return OpVector();
+        return false;
     }
-    Touch * t = new Touch(op);
-    return OpVector(1,t);
+    return true;
 }
 
 OpVector Character::sendMind(const RootOperation & op)
@@ -969,6 +960,8 @@ OpVector Character::sendMind(const RootOperation & op)
 OpVector Character::mind2body(const RootOperation & op)
 {
     debug( std::cout << "Character::mind2body" << std::endl << std::flush;);
+    // FIXME I am utterly and totally and unhappy with this gratuitious
+    // copy and modification of this operation
     RootOperation newop(op);
 
     if ((newop.GetTo().empty()) &&
@@ -980,6 +973,7 @@ OpVector Character::mind2body(const RootOperation & op)
     }
     OpNo otype = opEnumerate(newop, opMindLookup);
     OP_SWITCH(newop, otype, mind)
+    return OpVector();
 }
 
 OpVector Character::world2body(const RootOperation & op)
@@ -988,11 +982,12 @@ OpVector Character::world2body(const RootOperation & op)
     return callOperation(op);
 }
 
-OpVector Character::world2mind(const RootOperation & op)
+bool Character::world2mind(const RootOperation & op)
 {
     debug( std::cout << "Character::world2mind" << std::endl << std::flush;);
     OpNo otype = opEnumerate(op, opW2mLookup);
     OP_SWITCH(op, otype, w2m)
+    return false;
 }
 
 OpVector Character::externalMessage(const RootOperation & op)
@@ -1009,19 +1004,14 @@ OpVector Character::operation(const RootOperation & op)
     if (!isAlive) {
         return result;
     }
-    // FIXME Currently the world2mind phase does a copy of the whole op
-    // but this is not necessary, as the op is not modified.
-    OpVector mres = world2mind(op);
-    for(OpVector::const_iterator I = mres.begin(); I != mres.end(); I++) {
-        //RootOperation * mr = mind_res.front();
-        OpVector mres2 = sendMind(**I);
-        for(OpVector::const_iterator J = mres2.begin(); J != mres2.end(); J++) {
+    if (world2mind(op)) {
+        OpVector mres2 = sendMind(op);
+        for(OpVector::const_iterator I = mres2.begin(); I != mres2.end(); I++) {
             //RootOperation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
-            externalMessage(**J);
-            delete *J;
+            externalMessage(**I);
+            delete *I;
         }
-        delete *I;
     }
     return result;
 }
