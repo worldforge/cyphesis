@@ -3,19 +3,92 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "Restoration.h"
+#include "Restorer.h"
 
+#include <common/const.h>
 #include <common/Database.h>
+
+#include <rulesets/Creator.h>
+#include <rulesets/Plant.h>
+#include <rulesets/Food.h>
+#include <rulesets/Area.h>
+#include <rulesets/Line.h>
+#include <rulesets/Structure.h>
+#include <rulesets/Stackable.h>
 
 #include <iostream>
 
 Restoration::Restoration(ServerRouting & svr) : server(svr),
                                                 database(*Database::instance())
 {
+    m_restorers["entity"] = &Restorer<Entity>::restore;
+    m_restorers["thing"] = &Restorer<Thing>::restore;
+    m_restorers["character"] = &Restorer<Character>::restore;
+    m_restorers["creator"] = &Restorer<Creator>::restore;
+    m_restorers["plant"] = &Restorer<Plant>::restore;
+    m_restorers["food"] = &Restorer<Food>::restore;
+    m_restorers["line"] = &Restorer<Line>::restore;
+    m_restorers["area"] = &Restorer<Area>::restore;
+    m_restorers["structure"] = &Restorer<Structure>::restore;
+    m_restorers["stackable"] = &Restorer<Stackable>::restore;
 }
 
-void Restoration::restore(const std::string & id, const std::string & classn)
+void Restoration::restore(const std::string & id,
+                          const std::string & classn,
+                          bool create)
 {
-    database.selectClassByLoc(id);
+    DatabaseResult res = database.selectEntityRow(id, classn);
+    if (res.error()) {
+        std::cout << "DEBUG: ERROR: Problem getting entity " << id
+                  << " from world db" << std::endl << std::flush;
+        return;
+    }
+    if (res.empty()) {
+        std::cout << "DEBUG: ERROR: No " << id << " in database"
+                  << std::endl << std::flush;
+        return;
+    }
+    if (res.size() > 1) {
+        std::cout << "DEBUG: ERROR: More than one " << id << " in database"
+                  << std::endl << std::flush;
+        return;
+    }
+
+    if (create) {
+        RestoreDict::const_iterator I = m_restorers.find(classn);
+        if (I == m_restorers.end()) {
+            Entity * ent = I->second(1);
+            // SHove this ent into the WorldRouter.
+        }
+    }
+    DatabaseResult res2 = database.selectClassByLoc(id);
+    if (res2.error()) {
+        std::cout << "DEBUG: Problem getting " << id
+                  << "'s children from world db"
+                  << std::endl << std::flush;
+        return;
+    }
+    if (res2.empty()) {
+        std::cout << "DEBUG: No " << id << " children in database"
+                  << std::endl << std::flush;
+        return;
+    }
+    DatabaseResult::const_iterator I = res2.begin();
+    for(; I != res2.end(); ++I) {
+        std::string child_id = I.column("id");
+        std::string child_class = I.column("class");
+        if (child_id.empty() || child_class.empty()) {
+            // This is a pretty serious error
+            std::cout << "DEBUG: Stuff empty"
+                      << std::endl << std::flush;
+            continue;
+        }
+        std::cout << "DEBUG: Child is " << child_id
+                  << " with class " << child_class
+                  << std::endl << std::flush;
+        restore(child_id, child_class);
+
+    }
 }
 
 void Restoration::read()
@@ -30,6 +103,8 @@ void Restoration::read()
         std::cout << "DEBUG: No world in database"
                   << std::endl << std::flush;
         database.clearTable("entity_ent");
+        database.createEntityRow("world", consts::rootWorldId, "class, loc",
+                                                               "'world', ''");
         return;
     }
     if (res.size() > 1) {
@@ -45,6 +120,9 @@ void Restoration::read()
                   << std::endl << std::flush;
         return;
     }
+    std::cout << "DEBUG: World is " << rootId << " with class " << rootClass
+              << std::endl << std::flush;
+    restore(rootId, rootClass, false);
 
     
     // getRootFromTable();

@@ -1,5 +1,25 @@
 2002-12-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp, server/Admin.cpp:
+	  Use consts::rootWorldId correctly.
+
+	* server/Persistor.cpp, server/PersistantThingFactory.cpp,
+	  server/PersistantThingFactory.h, server/EntityFactory.h,
+	  server/EntityFactory.cpp: Add World specialisation of Persistor
+	  so that row in entity database is maintained, but not created.
+
+	* common/Database.h: Ensure iterator has != as well as ==.
+
+	* common/Database.cpp: Check that tuples have been returned
+	  in response to a select.
+
+	* server/Restoration.cpp, server/Restoration.h,
+	  server/Restorer.cpp: Restoration code now iterates over the
+	  contents of the database, but does not attempt to actually
+	  restore it yet.
+
+2002-12-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp, common/Database.h: Implement methods
 	  to query database results.
 

@@ -12,6 +12,7 @@
 #include <rulesets/Character.h>
 #include <rulesets/BaseMind.h>
 
+#include <common/const.h>
 #include <common/debug.h>
 #include <common/inheritance.h>
 
@@ -128,7 +129,7 @@ void Admin::load(Persistance * p, const std::string & id, int & count)
     if ((I != entity.end()) && I->second.IsList() && !I->second.AsList().empty()) {
         type = I->second.AsList().front().AsString();
     }
-    if (id != "world_0") {
+    if (id != consts::rootWorldId) {
         world->addObject(type, entity, id);
         count++;
     }
@@ -151,7 +152,7 @@ OpVector Admin::LoadOperation(const Load & op)
     Persistance * p = Persistance::instance();
 
     // Load the world recursively
-    load(p, "world_0", count);
+    load(p, consts::rootWorldId, count);
 
     // Load the mind states
     //DatabaseIterator dbi(p->getMindDb());

@@ -6,13 +6,19 @@
 #define SERVER_RESTORATION_H
 
 #include <string>
+#include <map>
 
 class ServerRouting;
 class Database;
+class Entity;
 
 class Restoration {
   private:
-    void restore(const std::string &, const std::string &);
+    typedef Entity * (*restoreFunc)(int what_exactly);
+    typedef std::map<std::string, restoreFunc> RestoreDict;
+    RestoreDict m_restorers;
+    
+    void restore(const std::string &, const std::string &, bool create = true);
   public:
     ServerRouting & server;
     Database & database;

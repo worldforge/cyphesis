@@ -17,6 +17,7 @@
 #include <rulesets/Plant.h>
 #include <rulesets/Stackable.h>
 #include <rulesets/Structure.h>
+#include <rulesets/World.h>
 
 template class Persistor<Entity>;
 template class Persistor<Thing>;
@@ -28,6 +29,7 @@ template class Persistor<Food>;
 template class Persistor<Plant>;
 template class Persistor<Stackable>;
 template class Persistor<Structure>;
+template class Persistor<World>;
 
 Persistor<Entity>::Persistor() : m_class("entity")
 {
@@ -124,6 +126,13 @@ Persistor<Structure>::Persistor<Structure>() : m_class("structure")
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
+Persistor<World>::Persistor<World>() : m_class("world")
+{
+    Atlas::Message::Object::MapType desc;
+    // FIXME Sort out attributes
+    Database::instance()->registerEntityTable(m_class, desc, "entity");
+}
+
 void Persistor<Character>::update(Character & t)
 {
     std::string columns;
@@ -197,4 +206,14 @@ void Persistor<Creator>::persist(Creator & t)
     cEntity(t, columns, values);
     cCharacter(t, columns, values);
     Database::instance()->createEntityRow(m_class, t.getId(), columns, values);
+}
+
+void Persistor<World>::persist(World & t)
+{
+    t.updated.connect(SigC::bind<World &>(SigC::slot(*this,
+                                            &Persistor<World>::update), t));
+    t.destroyed.connect(SigC::bind<World &>(SigC::slot(*this,
+                                              &Persistor<World>::remove), t));
+    // We do not create the row in the database. This is handled in a slightly
+    // special way.
 }

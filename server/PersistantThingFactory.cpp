@@ -15,6 +15,7 @@
 #include <rulesets/Plant.h>
 #include <rulesets/Structure.h>
 #include <rulesets/Stackable.h>
+#include <rulesets/World.h>
 
 template class PersistorConnection<Entity>;
 template class PersistorConnection<Thing>;
@@ -26,6 +27,7 @@ template class PersistorConnection<Area>;
 template class PersistorConnection<Plant>;
 template class PersistorConnection<Structure>;
 template class PersistorConnection<Stackable>;
+template class PersistorConnection<World>;
 
 template class PersistantThingFactory<Entity>;
 template class PersistantThingFactory<Thing>;
@@ -37,3 +39,4 @@ template class PersistantThingFactory<Area>;
 template class PersistantThingFactory<Plant>;
 template class PersistantThingFactory<Structure>;
 template class PersistantThingFactory<Stackable>;
+template class PersistantThingFactory<World>;

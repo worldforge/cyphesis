@@ -19,6 +19,7 @@
 #include <rulesets/Structure.h>
 #include <rulesets/Line.h>
 #include <rulesets/Area.h>
+#include <rulesets/World.h>
 
 #include <rulesets/Python_API.h>
 
@@ -34,13 +35,16 @@ static const bool debug_flag = false;
 
 EntityFactory * EntityFactory::m_instance = NULL;
 
-EntityFactory::EntityFactory(BaseWorld & w) : m_world(w)
+EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
+             m_eft(new PersistantThingFactory<Entity>())
 {
     // This class can only have one instance, so a Factory is not installed
     // FIXME Add a factory in here so we have persist the world properlly
-    installFactory("game_entity", "world", NULL);
 
-    PersistantThingFactory<Entity> * eft = new PersistantThingFactory<Entity>();
+    PersistantThingFactory<World> * wft = new PersistantThingFactory<World>();
+    installFactory("game_entity", "world", wft);
+    wft->m_p.persist((World &)m_world.gameWorld);
+
     PersistantThingFactory<Thing> * tft = new PersistantThingFactory<Thing>();
     installFactory("game_entity", "thing", tft);
     installFactory("thing", "feature", tft->duplicateFactory());
@@ -120,6 +124,8 @@ void EntityFactory::flushFactories()
     for (; I != factories.end(); I++) {
         delete I->second;
     }
+    delete m_eft;
+    m_eft = NULL;
 }
 
 void EntityFactory::installBaseClasses()

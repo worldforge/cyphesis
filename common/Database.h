@@ -137,6 +137,10 @@ class DatabaseResult {
             return (m_row == other.m_row);
         }
 
+        bool operator!=(const const_iterator & other) {
+            return (m_row != other.m_row);
+        }
+
         const_iterator operator++() {
             if (m_row != -1) {
                 if (++m_row >= m_dr.size()) {

@@ -36,7 +36,7 @@ WorldRouter::WorldRouter(ServerRouting & srvr) : BaseWorld(*new World()),
                                                  nextId(0),
                                                  server(srvr)
 {
-    setId("world_0");
+    setId(consts::rootWorldId);
     initTime = time(NULL) - timeoffset;
     updateTime();
     gameWorld.setId(getId());

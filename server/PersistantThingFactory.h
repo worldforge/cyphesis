@@ -49,9 +49,9 @@ class FactoryBase {
 
 template <class T>
 class PersistantThingFactory : public FactoryBase {
-  private:
-    Persistor<T> & m_p;
   public:
+    Persistor<T> & m_p;
+
     PersistantThingFactory() : m_p(* new Persistor<T>()) { }
     PersistantThingFactory(PersistantThingFactory<T> & p) : m_p(p.m_p) { }
 

@@ -13,9 +13,12 @@ namespace Atlas { namespace Message {
   class Object;
 } }
 
-class Thing;
+class Entity;
 class FactoryBase;
 class BaseWorld;
+
+template <class T>
+class PersistantThingFactory;
 
 typedef std::map<std::string, FactoryBase *> FactoryDict;
 
@@ -26,6 +29,7 @@ class EntityFactory {
 
     FactoryDict factories;
     BaseWorld & m_world;
+    PersistantThingFactory<Entity> * m_eft;
 
     void installBaseClasses();
   public:

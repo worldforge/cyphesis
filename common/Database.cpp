@@ -758,14 +758,20 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
     }
 
     PGresult * res;
-    if ((res = PQgetResult(m_connection)) == NULL) {
-        log(ERROR, "Error updating entity row.");
+    if ((res = PQgetResult(m_connection)) == 0) {
+        log(ERROR, "Error selecting entity row.");
         reportError();
         debug(std::cout << "Row query didn't work"
                         << std::endl << std::flush;);
         return DatabaseResult(0);
     }
-    while (PQgetResult(m_connection) != NULL) {
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        log(ERROR, "Error selecting entity row.");
+        reportError();
+        res = 0;
+    }
+
+    while (PQgetResult(m_connection) != 0) {
         log(ERROR, "Extra database result to simple query.");
     };
     return DatabaseResult(res);
