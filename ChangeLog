@@ -1,5 +1,11 @@
 2003-08-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: Make cycmd a little more flexible about remote
+	  connections and account details, and allow it to attempt commands
+	  without logging in.
+
+2003-08-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/ObserverClient.cpp: Remove obsolete database include.
 
 	* tools/cycmd.cpp: Modify cycmd so it now uses a unix socket connection

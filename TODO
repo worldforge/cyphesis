@@ -1,5 +1,3 @@
-Fix up cycmd to use UNIX sockets first
-
 Fix up cypasswd to work, and allow creation of additional admin accounts.
 
 Give skstream server listener classes a go

@@ -68,7 +68,7 @@ template <class Stream>
 class Interactive : public Atlas::Objects::Decoder, public SigC::Object
 {
   private:
-    bool error_flag, reply_flag;
+    bool error_flag, reply_flag, login_flag;
     int cli_fd;
     Atlas::Objects::Encoder * encoder;
     Atlas::Codec<std::iostream> * codec;
@@ -76,10 +76,6 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     std::string password;
     std::string username;
     std::string accountId;
-    enum {
-       INIT,
-       LOGGED_IN
-    } state;
     bool exit;
 
     void output(const Atlas::Message::Element & item, bool recurse = true);
@@ -94,8 +90,8 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
 
     bool negotiate();
   public:
-    Interactive() : error_flag(false), reply_flag(false), encoder(NULL),
-                       codec(NULL), state(INIT), exit(false) { }
+    Interactive() : error_flag(false), reply_flag(false), login_flag(false),
+                    encoder(NULL), codec(NULL), exit(false) { }
 
     void send(const Atlas::Objects::Operation::RootOperation &);
     bool connect(const std::string & host);
@@ -233,17 +229,16 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& o
     }
     const Atlas::Message::Element::MapType & ent = o.getArgs().front().asMap();
     Atlas::Message::Element::MapType::const_iterator I;
-    if (state == INIT) {
+    if (login_flag) {
         I = ent.find("id");
         if (I == ent.end() || !I->second.isString()) {
             std::cerr << "ERROR: Response to login does not contain account id"
                       << std::endl << std::flush;
             
         } else {
-            state = LOGGED_IN;
             accountId = I->second.asString();
         }
-    } else if (state == LOGGED_IN) {
+    } else {
         std::cout << "Info(" << std::endl;
         for (I = ent.begin(); I != ent.end(); I++) {
             const Atlas::Message::Element & item = I->second;
@@ -476,6 +471,7 @@ bool Interactive<Stream>::login()
     Atlas::Objects::Operation::Login l = Atlas::Objects::Operation::Login::Instantiate();
     error_flag = false;
     reply_flag = false;
+    login_flag = true;
  
     account.setAttr("username", username);
     account.setAttr("password", password);
@@ -491,6 +487,8 @@ bool Interactive<Stream>::login()
     while (!reply_flag) {
        codec->poll();
     }
+
+    login_flag = false;
 
     if (!error_flag) {
        return true;
@@ -573,7 +571,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
 
 static void usage(char * prg)
 {
-    std::cout << "usage: " << prg << " [ server [ cmd ] ]" << std::endl << std::flush;
+    std::cout << "usage: " << prg << " [ cmd [ server ] ]" << std::endl << std::flush;
 }
 
 int main(int argc, char ** argv)
@@ -591,13 +589,13 @@ int main(int argc, char ** argv)
     char * server = 0;
     if (argc > 1) {
         if (argc == 3) {
-            cmd = argv[2];
-            interactive = false;
+            server = argv[2];
         } else if (argc > 3) {
             usage(argv[0]);
             return 1;
         }
-        server = argv[1];
+        cmd = argv[1];
+        interactive = false;
     }
 
     if (server == 0) {
@@ -633,16 +631,37 @@ int main(int argc, char ** argv)
     std::cerr << "Attempting tcp connection" << std::endl << std::flush;
 
     Interactive<tcp_socket_stream> bridge;
-    if (!bridge.connect(server)) {
+
+    std::string hostname;
+    if (server == 0) {
+        if (!interactive) {
+            std::cerr << "No server hostname given in non-interactive mode."
+                      << std::endl << std::flush;
+            return 1;
+        }
+        std::cout << "Hostname: " << std::flush;
+        std::cin >> hostname;
+    } else {
+        hostname = server;
+    }
+
+    if (!bridge.connect(hostname)) {
         return 1;
     }
-    bridge.getLogin();
-    std::cout << "Logging in... " << std::flush;
-    if (!bridge.login()) {
-        std::cout << "failed." << std::endl << std::flush;
-        return 1;
+    if (!interactive) {
+        std::cerr << "WARNING: No login details available for remote host"
+                  << std::endl
+                  << "WARNING: Attempting command without logging in"
+                  << std::endl << std::flush;
+    } else {
+        bridge.getLogin();
+        std::cout << "Logging in... " << std::flush;
+        if (!bridge.login()) {
+            std::cout << "failed." << std::endl << std::flush;
+            return 1;
+        }
+        std::cout << "done." << std::endl << std::flush;
     }
-    std::cout << "done." << std::endl << std::flush;
     if (!interactive) {
         bridge.exec(cmd, "");
         return 0;
