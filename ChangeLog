@@ -1,3 +1,9 @@
+2003-09-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cyloadrules.cpp: Fix tool so that it detects if it
+	  cannot connect to the database, and does not incorrectly report
+	  that it has succeeded.
+
 2003-09-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp: Assert that world is not NULL.
