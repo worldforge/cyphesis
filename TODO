@@ -1,4 +1,6 @@
-Make database maintainance intercals configurable.
+Fix tools that use Database so that they deal with the database async connection.
+
+Make database maintainance intervals configurable.
 
 Sort out character relation so it has the right foreign key stuff.
 
