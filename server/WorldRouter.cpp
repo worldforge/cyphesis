@@ -118,6 +118,7 @@ Thing * WorldRouter::addObject(Thing * obj)
         gameWorld.contains.push_back(obj);
         gameWorld.contains.unique();
     }
+    debug(cout << "Entity loc " << obj->location << endl << flush;);
     obj->world=this;
     if (obj->omnipresent) {
         omnipresentList.push_back(obj);

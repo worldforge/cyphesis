@@ -18,8 +18,8 @@ class Persistance : public Database {
     Persistance() { }
 
   public:
-    static Account * load_admin_account();
-    static void save_admin_account(Account &);
+    static Account * loadAdminAccount();
+    static void saveAdminAccount(Account &);
     static Persistance * instance();
     static bool init();
     static void shutdown();

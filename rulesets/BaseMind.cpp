@@ -2,9 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Entity/RootEntity.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Sound.h>
@@ -35,6 +32,9 @@
 #include "MemMap_methods.h"
 
 //static const bool debug_flag = false;
+
+using Atlas::Message::Object;
+using Atlas::Objects::Root;
 
 BaseMind::BaseMind(const string & id, const string & body_name) : map(script),
                                                                   isAwake(true)

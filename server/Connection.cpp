@@ -98,7 +98,7 @@ oplist Connection::operation(const RootOperation & op)
                 (((Character *)ent)->externalMind == NULL)) {
                 Character * pchar = (Character *)ent;
                 pchar->externalMind = new ExternalMind(*this, pchar->fullid, pchar ->name);
-                cout << "Re-connecting existing character to new connection" << endl << flush;
+                debug(cout << "Re-connecting existing character to new connection" << endl << flush;);
                 Info * info = new Info(Info::Instantiate());
                 info->SetArgs(Object::ListType(1,pchar->asObject()));
                 info->SetRefno(op.GetSerialno());
@@ -201,11 +201,11 @@ oplist Connection::LogoutOperation(const Logout & op)
 
 oplist Connection::GetOperation(const Get & op)
 {
-    cout << "Got get" << endl << flush;
+    debug(cout << "Got get" << endl << flush;);
     Info * info = new Info(Info::Instantiate());
     info->SetArgs(Object::ListType(1,server.asObject()));
     info->SetRefno(op.GetSerialno());
-    cout << "Replying to get" << endl << flush;
+    debug(cout << "Replying to get" << endl << flush;);
     
     return oplist(1,info);
 }

@@ -39,7 +39,7 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Load;
 using Atlas::Objects::Operation::Save;
 
-void help()
+static void help()
 {
     std::cout << "Cyphesis commands:" << endl << endl;
     std::cout << "    stat	Return current server status" << endl;
@@ -341,7 +341,7 @@ void Interactive::exec(const string & cmd, const string & arg)
     }
 }
 
-void usage(char * prg)
+static void usage(char * prg)
 {
     std::cout << "usage: " << prg << " cmd [ server ]" << endl << flush;
     exit(0);

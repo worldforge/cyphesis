@@ -1,3 +1,43 @@
+2001-06-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cydbload.cpp: Added parameter handling so any file can
+	  be loaded into the database.
+
+	* tools/cycmd.cpp: Cleaned up usage and help functions.
+
+	* tools/cyisoload.cpp: Cleaned up usage(), and made sure build
+	  completes okay if libraries are missing, and missing
+	  functionality is reported to the user.
+
+	* server/server.cpp: Added config options that specifies that
+	  the contents of the db should loaded on server startup. Cleaned
+	  up some debug code.
+
+	* server/WorldTime.cpp, server/WorldRouter.cpp,
+	  server/Connection.cpp, rulesets/Structure.h,
+	  rulesets/Python_API.cpp, rulesets/Py_WorldTime.cpp,
+	  rulesets/Movement.cpp, rulesets/Entity.cpp,
+	  physics/Vector3D.h, common/persistance.cpp,
+	  common/database.h, common/database.cpp: Removed output either
+	  to debug mode, or removed altogether.
+
+	* common/BaseEntity.h, common/BaseEntity.cpp: Removed redundant header
+	  includes.
+
+	* server/ServerRouting.cpp, common/persistance.h,
+	  common/persistance.cpp: Modified admin account function names it
+	  fit convention.
+
+	* module/Location.h: Fixed collision detection so that entities
+	  with velocity set to 0 still get checked.
+
+	* rulesets/Entity.cpp, rulesets/Thing.cpp, rulesets/Character.cpp,
+	  rulesets/BaseMind.cpp, rulesets/Creator.cpp,
+	  rulesets/ExternalMind.cpp, rulesets/Food.cpp, rulesets/MemMap.cpp,
+	  rulesets/Movement.cpp, rulesets/Pedestrian.cpp, rulesets/Plant.cpp,
+	  rulesets/Py_Location.cpp, rulesets/Py_*.cpp, rulesets/World.cpp:
+	  Removed unnecessary #includes.
+
 2001-06-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.in: Tiny fix to jmt's improved sigc detection.

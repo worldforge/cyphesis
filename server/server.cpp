@@ -35,12 +35,16 @@ extern "C" {
 #include <common/utility.h>
 #include <common/globals.h>
 
+#include <common/Load.h>
+
 #include <fstream>
 
 #include "ServerRouting_methods.h"
 #include "Connection.h"
 #include "CommClient.h"
 #include "CommServer.h"
+
+using Atlas::Message::Object;
 
 static const bool debug_flag = false;
 
@@ -132,21 +136,21 @@ void CommClient::UnknownObjectArrived(const Object& o)
     if (r != NULL) {
         message(*r);
     }
-#if 0
-    debug(cout << "An unknown has arrived." << endl << flush;);
-    if (o.IsMap()) {
-        for(Object::MapType::const_iterator I = o.AsMap().begin();
-		I != o.AsMap().end();
-		I++) {
-		debug(cout << I->first << endl << flush;);
-                if (I->second.IsString()) {
-		    debug(cout << I->second.AsString() << endl << flush;);
-                }
-	}
-    } else {
-        debug(cout << "Its not a map." << endl << flush;);
+    if (debug_flag) {
+        debug(cout << "An unknown has arrived." << endl << flush;);
+        if (o.IsMap()) {
+            for(Object::MapType::const_iterator I = o.AsMap().begin();
+		    I != o.AsMap().end();
+		    I++) {
+		    debug(cout << I->first << endl << flush;);
+                    if (I->second.IsString()) {
+		        debug(cout << I->second.AsString() << endl << flush;);
+                    }
+	    }
+        } else {
+            debug(cout << "Its not a map." << endl << flush;);
+        }
     }
-#endif
 }
 
 void CommClient::ObjectArrived(const Login & op)
@@ -531,10 +535,16 @@ int main(int argc, char ** argv)
     if (global_conf->findItem("cyphesis", "inittime")) {
         timeoffset = global_conf->getItem("cyphesis","inittime");
     }
+
+    bool load_database = false;
+    if (global_conf->findItem("cyphesis", "loadonstartup")) {
+        load_database = global_conf->getItem("cyphesis","loadonstartup");
+    }
+
     // Start up the python subsystem. FIXME This needs to sorted into a
     // a way of handling script subsystems more generically.
     init_python_api();
-    cout << Py_GetPath() << endl << flush;
+    debug(cout << Py_GetPath() << endl << flush;);
 
     if (consts::debug_level>=1) {
         cout << "consts::debug_level>=1, logging to cyphesis_server*.log files" << endl << flush;
@@ -568,6 +578,21 @@ int main(int argc, char ** argv)
         cout << "consts::debug_level>=1:, logging to" << log_name << endl;
         // FIXME Added in a logging subsystem
     }
+
+    if (load_database) {
+        Load l(Load::Instantiate());
+        l.SetFrom("admin");
+        BaseEntity * admin = s.server.getObject("admin");
+        if (admin == NULL) {
+            cout << "CRITICAL: Admin account not found." << endl << flush;
+        } else {
+            cout << "Loading world stat from database..." << flush;
+            admin->LoadOperation(l);
+            cout << " done" << endl << flush;
+        }
+        // FIXME ? How to send this to admin account ?
+    }
+    cout << "Running" << endl << flush;
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {

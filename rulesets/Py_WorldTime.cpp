@@ -35,7 +35,7 @@ static PyObject * WorldTime_is_now(WorldTimeObject *self, PyObject *args)
         PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
-    printf("Python worldtime is string\n");
+    //printf("Python worldtime is string\n");
     bool eq = (*self->time == std::string(other));
     PyObject * ret = eq ? Py_True : Py_False;
     Py_INCREF(ret);

@@ -24,7 +24,7 @@ ServerRouting::ServerRouting(CommServer & server, const string & name) :
 {
     fullid = name;
     idDict[fullid] = this;
-    Account * adm = Persistance::load_admin_account();
+    Account * adm = Persistance::loadAdminAccount();
     addObject(adm);
     adm->world=&world;
 }

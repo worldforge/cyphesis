@@ -2,20 +2,12 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Action.h>
-#include <Atlas/Objects/Operation/Combine.h>
-#include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sound.h>
-#include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Delete.h>
-#include <Atlas/Objects/Operation/Divide.h>
 #include <Atlas/Objects/Operation/Imaginary.h>
 #include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Talk.h>
 #include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Sight.h>
@@ -27,11 +19,8 @@
 #include <common/Setup.h>
 #include <common/Tick.h>
 #include <common/Cut.h>
-#include <common/Chop.h>
 #include <common/Eat.h>
 #include <common/Nourish.h>
-#include <common/Fire.h>
-
 
 #include <varconf/Config.h>
 
@@ -39,21 +28,15 @@ extern "C" {
     #include <stdlib.h>
 }
 
-// #define DEBUG_MOVEMENT
-
-
 #include "Character.h"
 #include "Pedestrian.h"
 
-#include "BaseMind.h"
 #include "ExternalMind.h"
 #include "Script.h"
 #include "Python_API.h" // FIXME This must go
 #include "World.h"
 
 #include <server/WorldRouter.h>
-
-#include <modules/Location.h>
 
 #include <common/op_switch.h>
 #include <common/const.h>

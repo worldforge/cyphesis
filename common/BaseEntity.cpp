@@ -2,15 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Operation/Login.h>
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Move.h>
-#include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Sight.h>
-#include <Atlas/Objects/Operation/Sound.h>
-#include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Error.h>
 

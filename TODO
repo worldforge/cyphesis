@@ -1,42 +1,10 @@
 Definitly for Acorn 0.4:
 
-  Implement loading the same map as the client.
-
-  Sort out collision detection wrt moving alongside an object in close
-  proximity, and add CD for two moving objects. Basically we need sliding.
-  along an object. This can be done by zeroing the velocity along
-  the axis perpendicular to the collision. Obviously we need to add
-  a mechanism for establishing which axis is perpendicular to the collision.
-  This now works, but the direction the moving entity is facing needs to be
-  modified.
-
-  Sort out collision prediction between two moving entities. Current problem
-  is that it is not possible to tell when movement started, and thus get
-  correct starting position for the movement.
-
   Use drunkness.
 
-  Fully implement stackable objects.
-  Use combine operation to deal with making more than one object into one.
-
-  Make much more use of Action operation rather than sending things like
-  set operation from minds. This could be the basis of a skills system
-  which the action is passed to, and the skill returns the resulting
-  operation to the world. This skills system would be handling by the
-  character class, in the mindOperation() methods. The skill would be
-  an object with a reference back to the character it belongs to, and
-  a method that is passed the action taking place. It would return
-  operations to be passed to the world which carry out that action to
-  the extent of the ability of the character. Some skills will just do
-  nothing, like the ability to wave, or shout. or maybe the shout action
-  could decide using a skill how loud the shout is.
-  
-  Implement the movement modes from clients/minds required for xclient,
-  and better client support in general.
-
-  Sort out a reasonable way of representing day and night to client. Look
-  up info on Durals astronomy. Weather (clouds, snow, rain, thunder and
-  lightening).
+  Ensure that database creation is handled cleanly, including making the
+  directories at install time, and putting it into the same hierarchy
+  as the rest of the files.
 
 Provisional for Acorn 0.4:
 
@@ -46,6 +14,9 @@ Provisional for Acorn 0.5:
     POSTPONED FROM 0.3
     POSTPONED FROM 0.4
 
+  Fully implement stackable objects.
+  Use combine operation to deal with making more than one object into one.
+
 Required for werewolf:
 
   Implement calendric time using WorldTime and DateTime classes, so nighttime
@@ -53,6 +24,24 @@ Required for werewolf:
 
   Implement sleeping.
 
+  Sort out a reasonable way of representing day and night to client. Look
+  up info on Durals astronomy. Weather (clouds, snow, rain, thunder and
+  lightening).
+
+Required for mason:
+
+  Create a skills system which the action is passed to, and the skill
+  returns the resulting operation to the world. This skills system
+  would be handling by the character class, in the mindXxxxOperation()
+  methods. The skill would be an object with a reference back to the
+  character it belongs to, and a method that is passed the action taking
+  place. It would return operations to be passed to the world which carry
+  out that action to the extent of the ability of the character. Some
+  skills will just do nothing, like the ability to wave, or shout. or
+  maybe the shout action could decide using a skill how loud the shout is.
+
+  Implement the Mason raw materials.
+  
 Possible ideas:
 
   Add fully featured database persistance.
@@ -80,3 +69,12 @@ Possible ideas:
   allows them to find a route. We also need to provide a mechanism so that
   NPCs know about a particular entity. This can be done by sending a generated
   sight operation.
+
+  Sort out collision detection wrt moving alongside an object in close
+  proximity, and add CD for two moving objects. Basically we need sliding.
+  along an object. This can be done by zeroing the velocity along
+  the axis perpendicular to the collision. Obviously we need to add
+  a mechanism for establishing which axis is perpendicular to the collision.
+  This now works, but the direction the moving entity is facing is sometimes not
+  modified.
+

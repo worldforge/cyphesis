@@ -2,22 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Operation/Delete.h>
-#include <Atlas/Objects/Operation/Divide.h>
-#include <Atlas/Objects/Operation/Combine.h>
-#include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Sight.h>
-#include <Atlas/Objects/Operation/Sound.h>
-#include <Atlas/Objects/Operation/Touch.h>
-
-#include <common/Chop.h>
-#include <common/Cut.h>
-#include <common/Eat.h>
-#include <common/Fire.h>
-#include <common/Chop.h>
 
 #include <server/WorldRouter.h>
 #include <common/debug.h>

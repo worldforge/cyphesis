@@ -11,6 +11,7 @@
 #include <Atlas/Codecs/XML.h>
 
 #include <common/config.h>
+#include <common/debug.h>
 
 #include "database.h"
 
@@ -22,6 +23,8 @@
 #else
 #include "sstream.h"
 #endif
+
+static const bool debug_flag = false;
 
 Database * Database::m_instance = NULL;
 
@@ -85,11 +88,11 @@ bool Database::decodeObject(Dbt & data, Atlas::Message::Object &o)
 {
     char * entry = (char *)data.get_data();
 
-    cout << " length " << strlen(entry) << "," << data.get_size() << "\"" 
-         << entry << "\"" << endl << flush;
+    debug(cout << " length " << strlen(entry) << "," << data.get_size() << "\"" 
+               << entry << "\"" << endl << flush;);
 
     if (strlen(entry) != (data.get_size() - 1)) {
-        cerr << "Database may be corrupt, aborting fetch" << endl << flush;
+        cerr << "WARNING: Database may be corrupt, aborting fetch" << endl << flush;
         return false;
     }
     
@@ -104,7 +107,7 @@ bool Database::decodeObject(Dbt & data, Atlas::Message::Object &o)
     codec.Poll();
 
     if (!m_d.check()) {
-        cerr << "Database entry does not appear to be decodable"
+        cerr << "WARNING: Database entry does not appear to be decodable"
              << endl << flush;
         return false;
     }
@@ -124,13 +127,14 @@ bool Database::getObject(Db & db, const char * keystr,
     int res = db.get(NULL, &key, &data, 0);
 
     if (res == DB_NOTFOUND) {
-        cout << "No entry for " << keystr << " in database" << endl << flush;
+        debug(cout << "No entry for " << keystr << " in database"
+                   << endl << flush;);
         return false;
     } else if (res != 0) {
-        cerr << "Error accessing database" << endl << flush;
+        cerr << "WARNING: Error accessing database" << endl << flush;
         return false;
     }
-    cout << "Got record " << keystr << " from database,";
+    debug(cout << "Got record " << keystr << " from database,";);
     return decodeObject(data, o);
 }
 
@@ -146,7 +150,8 @@ bool Database::putObject(Db & db, const Atlas::Message::Object & o,
     enc.StreamMessage(o);
     codec.StreamEnd();
 
-    cout << "Encoded to: " << str.str().c_str() << " " << str.str().size() << endl << flush;
+    debug(cout << "Encoded to: " << str.str().c_str() << " "
+               << str.str().size() << endl << flush;);
     const string & s = str.str();
 
     Dbt key, data;
@@ -159,7 +164,7 @@ bool Database::putObject(Db & db, const Atlas::Message::Object & o,
 
     int err;
     if ((err = db.put(NULL, &key, &data, 0)) != 0) {
-        cout << "db.put.ERROR! " << err << endl << flush;
+        debug(cout << "db.put.ERROR! " << err << endl << flush;);
         return false;
     }
     return true;
@@ -171,10 +176,10 @@ bool DatabaseIterator::get(Atlas::Message::Object & o)
 
     int res = m_cursor->get(&key, &data, DB_NEXT);
     if (res == DB_NOTFOUND) {
-        cout << "No entries remain in database" << endl << flush;
+        debug(cout << "No entries remain in database" << endl << flush;);
         return false;
     } else if (res != 0) {
-        cerr << "Error accessing database" << endl << flush;
+        cerr << "WARNING: Error accessing database" << endl << flush;
         return false;
     }
     return Database::instance()->decodeObject(data, o);
@@ -186,6 +191,6 @@ bool DatabaseIterator::del()
     if (res == 0) {
         return true;
     }
-    cout << "Error deleting from database" << endl << flush;
+    cerr << "WARNING: Error deleting from database" << endl << flush;
     return false;
 }

@@ -2,12 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
-
-#include <common/Fire.h>
 
 #include "World.h"
 

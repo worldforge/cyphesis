@@ -2,9 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
@@ -347,7 +344,8 @@ oplist Entity::OtherOperation(const RootOperation & op)
 {
     const string & op_type = op.GetParents().front().AsString();
     oplist res;
-    cout << "Entity " << fullid << " got custom " << op_type << " op" << endl << flush;
+    debug(cout << "Entity " << fullid << " got custom " << op_type << " op"
+               << endl << flush;);
     script->Operation(op_type, op, res);
     return res;
 }

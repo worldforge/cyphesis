@@ -14,7 +14,6 @@
 class Structure : public Thing {
   public:
     Structure() {
-        cout << "Creating structure" << endl << flush;
         location.solid = false;
     }
 };

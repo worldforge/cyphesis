@@ -635,7 +635,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         return Py_None;
     } else {
         op->operation = new RootOperation(Generic::Instantiate(type));
-        fprintf(stderr, "NOTICE: Python creating a custom %s op\n", type);
+        // fprintf(stderr, "NOTICE: Python creating a custom %s op\n", type);
         //*op->operation = RootOperation::Instantiate();
         // Py_DECREF(op);
         // Py_INCREF(Py_None);

@@ -19,7 +19,6 @@
 
 class Decoder : public Atlas::Message::DecoderBase {
     virtual void ObjectArrived(const Atlas::Message::Object& obj) {
-        cout << "GOT OBJECT" << endl << flush;
         m_check = true;
         m_obj = obj;
     }

@@ -9,11 +9,12 @@
 
 #include "Python_API.h"
 
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Entity/RootEntity.h>
 #include <Atlas/Objects/Operation/RootOperation.h>
 
 #include <common/utility.h>
+
+using Atlas::Message::Object;
+using Atlas::Objects::Root;
 
 /*
  * Beginning of Operation section.

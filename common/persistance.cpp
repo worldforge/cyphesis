@@ -39,7 +39,7 @@ Persistance * Persistance::instance()
     return (Persistance *)m_instance;
 }
 
-void Persistance::save_admin_account(Account & adm)
+void Persistance::saveAdminAccount(Account & adm)
 {
     std::ofstream adm_file("/tmp/admin.xml", ios::out, 0600);
     adm_file << "<atlas>" << endl << "<map>" << endl;
@@ -79,7 +79,7 @@ void Persistance::shutdown()
     p->shutdownServer();
 }
 
-Account * Persistance::load_admin_account()
+Account * Persistance::loadAdminAccount()
 {
     Persistance * p = instance();
     Account * adm = p->getAccount("admin");
@@ -87,7 +87,7 @@ Account * Persistance::load_admin_account()
         adm = new Admin(NULL, "admin", "test");
         p->putAccount(*adm);
     }
-    save_admin_account(*adm);
+    saveAdminAccount(*adm);
     return adm;
 }
 
@@ -107,13 +107,13 @@ Account * Persistance::getAccount(const std::string & name)
     Object::MapType::const_iterator I = acmap.find("id"),
                                     J = acmap.find("password");
     if ((I == acmap.end()) || (J == acmap.end())){
-        cerr << "Database account entry " << name
+        cerr << "WARNING: Database account entry " << name
              << " is missing essential fields." << endl << flush;
         return NULL;
     }
     const Object & acn = I->second, & acp = J->second;
     if (!acn.IsString() || !acp.IsString()) {
-        cerr << "Database account entry " << name << " is corrupt."
+        cerr << "WARNING: Database account entry " << name << " is corrupt."
              << endl << flush;
         return NULL;
     }
@@ -152,12 +152,12 @@ void Persistance::putMind(const string & id, const Object & be)
 
 Persistance::Persistance() { }
 
-Account * Persistance::load_admin_account()
+Account * Persistance::loadAdminAccount()
 {
     // Eventually this should actually load the account. For now it just
     // creates it.
     Account * adm = new Admin(NULL, "admin", "test");
-    save_admin_account(adm);
+    saveAdminAccount(adm);
     return adm;
 }
 

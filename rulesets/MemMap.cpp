@@ -2,11 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Look.h>
-
-using Atlas::Objects::Operation::Look;
 
 #include <modules/Location.h>
 #include <common/debug.h>
@@ -15,6 +11,8 @@ using Atlas::Objects::Operation::Look;
 #include "MemMap.h"
 #include "MemMap_methods.h"
 #include "Script.h"
+
+using Atlas::Objects::Operation::Look;
 
 Entity * MemMap::add(const Object & entity)
 {

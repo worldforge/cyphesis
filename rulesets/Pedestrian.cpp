@@ -2,21 +2,12 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Operation/Move.h>
 
 #include <common/Tick.h>
 
-#include <varconf/Config.h>
-
-extern "C" {
-    #include <stdlib.h>
-}
-
 #include "Character.h"
 #include "Pedestrian.h"
-
-#include <modules/Location.h>
 
 #include <common/const.h>
 #include <common/debug.h>

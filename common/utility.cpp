@@ -2,12 +2,15 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Entity/RootEntity.h>
-#include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/RootOperation.h>
 
 #include "utility.h"
+
+using Atlas::Message::Object;
+using Atlas::Objects::Root;
+using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Operation::RootOperation;
 
 namespace utility {
 

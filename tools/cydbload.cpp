@@ -72,12 +72,23 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     }
 };
 
+static void usage(char * prgname)
+{
+    std::cout << "usage: " << prgname << " <atlas map file>" << endl << flush;
+    return;
+}
+
 int main(int argc, char ** argv)
 {
+    if (argc != 2) {
+        usage(argv[0]);
+        return 1;
+    }
+
     WorldBase * db = WorldBase::instance();
     db->initWorld(true);
 
-    FileDecoder f("foo", db);
+    FileDecoder f(argv[1], db);
     f.read();
     f.report();
     db->shutdownWorld();

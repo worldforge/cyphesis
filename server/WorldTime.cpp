@@ -8,6 +8,8 @@
 
 #include "WorldTime.h"
 
+#include <common/debug.h>
+
 
 //timedata time2type(const string & t) {
     //return timeInfo[t][1];
@@ -16,6 +18,7 @@
 
 // time2importance=time2type;
 
+static const bool debug_flag = false;
 
 static inline double minutes(const double & n) { return 60.0*n; }
 static inline double hours(const double & n) { return minutes(60)*n; }
@@ -83,8 +86,8 @@ bool WorldTime::operator==(const WorldTime & other) const
 
 bool WorldTime::operator==(const string & when) const
 {
-    cout << "Checking whether it is " << when << " when the date is "
-         << time << endl << flush;
+    debug(cout << "Checking whether it is " << when << " when the date is "
+               << time << endl << flush;);
             
     time_info_t::const_iterator I = timeInfo.find(when);
     if (I == timeInfo.end()) {

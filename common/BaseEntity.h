@@ -5,12 +5,8 @@
 #ifndef BASE_ENTITY_H
 #define BASE_ENTITY_H
 
-#include <Atlas/Objects/Operation/Error.h>
-
 #include <common/types.h>
 #include <common/operations.h>
-
-class WorldRouter;
 
 // This is the base class from which all other entity like classes inherit,
 // both in game and out of game.

@@ -2,21 +2,12 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Operation/Move.h>
 
 #include <common/Tick.h>
 
-#include <varconf/Config.h>
-
-extern "C" {
-    #include <stdlib.h>
-}
-
 #include "Character.h"
 #include "Movement.h"
-
-#include <modules/Location.h>
 
 #include <common/const.h>
 #include <common/debug.h>
@@ -77,10 +68,10 @@ void Movement::checkCollisions(const Location & loc)
         if (t < 0) { return; }
         collTime = min(collTime, t);
         if (collTime > consts::basic_tick) { return; }
-        cout << "Collision with parent bounding box" << endl << flush;
+        debug(cout << "Collision with parent bounding box" << endl << flush;);
         m_collRef = oloc.ref;
     } else if (!collEntity->location.solid) {
-        cout << "Collision with non-solid object" << endl << flush;
+        debug(cout << "Collision with non-solid object" << endl << flush;);
         // Non solid container - check for collision with its contents.
         const Location & lc2 = collEntity->location;
         Location rloc(loc);
@@ -95,7 +86,7 @@ void Movement::checkCollisions(const Location & loc)
             coll2Time = min(coll2Time, t);
         }
         if (coll2Time > collTime) {
-            cout << "passing into it" << endl << flush;
+            debug(cout << "passing into it" << endl << flush;);
             // We are entering collEntity.
             // Set collRef ????????????????
             m_collRef = collEntity;
@@ -104,8 +95,8 @@ void Movement::checkCollisions(const Location & loc)
     }
     // cout << "COLLISION" << endl << flush;
     if (collTime < getTickAddition(loc.coords)) {
-        cout << "Setting target loc to " << loc.coords << "+" << loc.velocity
-             << "*" << collTime;
+        debug(cout << "Setting target loc to " << loc.coords << "+"
+                   << loc.velocity << "*" << collTime;);
         m_collPos = loc.coords + loc.velocity * collTime;
     } else {
         m_collRef = NULL;

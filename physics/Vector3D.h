@@ -243,9 +243,9 @@ class Vector3D {
         range xt = ::inTime(x+m.x, om.x, v.x, s.x, os.x);
         range yt = ::inTime(y+m.y, om.y, v.y, s.y, os.y);
         range zt = ::inTime(z+m.z, om.z, v.z, s.z, os.z);
-        double enter = max(min(xt), max(min(yt),min(zt)));
         double leave = min(max(xt), min(max(yt),max(zt)));
-        cout << "E" << enter << " L" << leave << endl << flush;
+        // Is this a useful check ?
+        // double enter = max(min(xt), max(min(yt),min(zt)));
         // if (enter > 0) { return -1; }
         return leave;
     }
