@@ -111,13 +111,16 @@ static void usage(char * prgname)
 
 int main(int argc, char ** argv)
 {
-    int cargc = 0;
-    char * cargv[0];
+    int optind;
+    // int cargc = 0;
+    // char * cargv[0];
 
-    if (loadConfig(cargc, cargv) < 0) {
+    if ((optind = loadConfig(argc, argv)) < 0) {
         // Fatal error loading config file
         return 1;
     }
+
+    std::cout << "O: " << optind << "," << argc << std::endl << std::flush;
 
     RuleBase * db = RuleBase::instance();
 
@@ -127,24 +130,25 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    if (argc == 3) {
-        FileDecoder f(argv[2], *db);
+    if (optind == (argc - 2)) {
+        FileDecoder f(argv[optind + 1], *db);
         if (!f.isOpen()) {
-            std::cerr << "ERROR: Unable to open file " << argv[2]
+            std::cerr << "ERROR: Unable to open file " << argv[optind + 1]
                       << std::endl << std::flush;
             return 1;
         }
-        db->setRuleset(argv[1]);
+        db->setRuleset(argv[optind]);
         f.read();
         f.report();
-    } else if (argc == 1) {
+    } else if (optind == argc) {
         db->clearRules();
         std::vector<std::string>::const_iterator I = rulesets.begin();
         for (; I != rulesets.end(); ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
-            FileDecoder f(etc_directory + "/cyphesis/" + *I + ".xml", *db);
+            std::string filename = etc_directory + "/cyphesis/" + *I + ".xml";
+            FileDecoder f(filename, *db);
             if (!f.isOpen()) {
-                std::cerr << "ERROR: Unable to open file " << argv[1]
+                std::cerr << "ERROR: Unable to open file " << filename
                           << std::endl << std::flush;
                 return 1;
             }

@@ -13,6 +13,7 @@
  <refsynopsisdiv>
   <cmdsynopsis>
    <command>cycmd</command>
+   <arg choice="opt" rep="repeat">--section:option=value</arg>
    <arg choice="opt">command<arg choice="opt">server</arg></arg>
   </cmdsynopsis>
  </refsynopsisdiv>
@@ -22,6 +23,66 @@
 The <command>cycmd</command> program provides a commandline interface to a
 cyphesis server.
   </para>
+ </refsect1>
+
+ <refsect1><title>Options</title>
+  <para>
+Configuration options are divided up into named sections, which need to
+be specified when modifying or overriding the options. In a config file
+the name of a section is specified in square brackets at the beginning
+of the section. On the command line the section is given at the
+beginning of the option specification, as shown in the synopsis above.
+  </para>
+  <refsect2><title>Client Options</title>
+   <para>
+The following options used by <command>cycmd</command> are present in the
+client section of the config file, and overriden by specifying the client
+section name on the command line.
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><fieldsynopsis>
+       <varname>package</varname>
+       <initializer>="define_world"</initializer>
+      </fieldsynopsis>
+     </term>
+     <listitem>
+      <para>
+Python package which contains the client function.
+      </para>
+      <para>
+This setting provides the name of the Python package which contains the
+function that should run by the client.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </refsect2>
+
+  <refsect2><title>Server Options</title>
+   <para>
+The following options are present in the cyphesis section of the config
+file, and overriden by specifying the cyphesis section name on the
+command line. These options apply to the server, but are also required
+by the client to ensure that the client can connect.
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><fieldsynopsis>
+       <varname>tcpport</varname>
+       <initializer>=6767</initializer>
+      </fieldsynopsis>
+     </term>
+     <listitem>
+      <para>
+Network port for server TCP connections.
+      </para>
+      <para>
+Specifies the port number to use when connecting to the server.
+      </para>
+     </listitem>
+    </varlistentry>
+  </refsect2>
  </refsect1>
 
  <refsect1><title>Commands</title>

@@ -1,5 +1,11 @@
 2004-10-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp, tools/cyloadrules.cpp: Update tools to support
+	  centralised varconf options on the command line. Update man
+	  pages accordingly.
+
+2004-10-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Process python output into clean log
 	  output.
 

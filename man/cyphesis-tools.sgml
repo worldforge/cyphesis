@@ -21,6 +21,7 @@
   </cmdsynopsis>
   <cmdsynopsis>
    <command>/usr/bin/cyloadrules</command>
+   <arg choice="opt" rep="repeat">--section:option=value</arg>
    <arg choice="opt">rulesetname atlas-xml-file</arg>
   </cmdsynopsis>
   <cmdsynopsis>

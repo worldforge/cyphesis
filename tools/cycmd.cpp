@@ -33,6 +33,8 @@
 #include <Atlas/Objects/Operation/Error.h>
 #include <Atlas/Objects/Operation/Sound.h>
 
+#include <varconf/Config.h>
+
 #include "common/utility.h"
 #include "common/Generic.h"
 
@@ -711,29 +713,33 @@ static void usage(char * prg)
 
 int main(int argc, char ** argv)
 {
-    int cargc = 0;
-    char * cargv[0];
+    int optind;
 
-    if (loadConfig(cargc, cargv) < 0) {
+    if ((optind = loadConfig(argc, argv)) < 0) {
         // Fatal error loading config file
         return 1;
     }
 
+    std::string server;
+    if (global_conf->findItem("client", "serverhost")) {
+        server = (std::string)global_conf->getItem("client", "serverhost");
+    }
+
     bool interactive = true;
     std::string cmd;
-    char * server = 0;
-    if (argc > 1) {
-        if (argc == 3) {
-            server = argv[2];
-        } else if (argc > 3) {
+    if (optind < argc) {
+        if ((argc - optind) == 2) {
+            server = argv[optind + 1];
+        } else if ((argc - optind) > 2) {
             usage(argv[0]);
             return 1;
         }
-        cmd = argv[1];
+        cmd = argv[optind];
         interactive = false;
     }
 
-    if (server == 0) {
+    if (server.empty()) {
+        // FIXME This socket name should be an option
         std::string localSocket = var_directory + "/tmp/cyphesis.sock";
 
         std::cerr << "Attempting local connection" << std::endl << std::flush;
@@ -761,26 +767,14 @@ int main(int argc, char ** argv)
             }
             return 0;
         }
+        server = "localhost";
     }
     
     std::cerr << "Attempting tcp connection" << std::endl << std::flush;
 
     Interactive<tcp_socket_stream> bridge;
 
-    std::string hostname;
-    if (server == 0) {
-        if (!interactive) {
-            std::cerr << "No server hostname given in non-interactive mode."
-                      << std::endl << std::flush;
-            return 1;
-        }
-        std::cout << "Hostname: " << std::flush;
-        std::cin >> hostname;
-    } else {
-        hostname = server;
-    }
-
-    if (bridge.connect(hostname) != 0) {
+    if (bridge.connect(server) != 0) {
         return 1;
     }
     if (!interactive) {

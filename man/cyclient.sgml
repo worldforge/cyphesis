@@ -91,10 +91,10 @@ by the client to ensure that the client can connect.
      </term>
      <listitem>
       <para>
-Network listen port for TCP connections.
+Network port for server TCP connections.
       </para>
       <para>
-Specifies the port number to use to listen for incoming client connections.
+Specifies the port number to use when connecting to the server.
       </para>
      </listitem>
     </varlistentry>
