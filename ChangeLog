@@ -1,5 +1,16 @@
 2002-03-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/Database.h, common/accountbase.h,
+	  server/Persistance.cpp, server/Persistance.h,
+	  tools/cydbload.cpp, tools/cyloadrules.cpp, tools/cypasswd.cpp:
+	  Modified class structure of database related classes to get
+	  rid on nasty inheritance based idea. Add functionality
+	  to handle updating a row as distinct from inserting. Made
+	  id column the primary key. Updated tools to make propper use
+	  of update functionality.
+
+2002-03-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/CreatorClient.cpp: Fix operation semantics for admin
 	  puppetting to new convention.
 

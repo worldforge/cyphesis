@@ -16,29 +16,44 @@
 
 using Atlas::Message::Object;
 
-class WorldBase : public Database {
+class WorldBase {
   protected:
-    WorldBase() { }
+    WorldBase() : m_connection(*Database::instance()) { }
 
+    Database & m_connection;
+    static WorldBase * m_instance;
   public:
+    ~WorldBase() {
+        m_connection.shutdownConnection();
+    }
+
     static WorldBase * instance() {
         if (m_instance == NULL) {
             m_instance = new WorldBase();
+            m_instance->m_connection.initConnection(true);
+            m_instance->m_connection.initWorld(true);
         }
-        return (WorldBase *)m_instance;
+        return m_instance;
     }
 
-    void storeInWorld(const Object::MapType & o, const char * key) {
-        putObject(world_db, key, o);
+    void storeInWorld(const Object::MapType & o, const std::string & key) {
+        m_connection.putObject(m_connection.world(), key, o);
     }
+
+    void updateInWorld(const Object::MapType & o, const std::string & key) {
+        m_connection.updateObject(m_connection.world(), key, o);
+    }
+
     bool getWorld(Object::MapType & o) {
-        return getObject(world_db, "world_0", o);
+        return m_connection.getObject(m_connection.world(), "world_0", o);
     }
 };
 
+WorldBase * WorldBase::m_instance = NULL;
+
 class FileDecoder : public Atlas::Message::DecoderBase {
     std::ifstream m_file;
-    WorldBase * m_db;
+    WorldBase & m_db;
     Atlas::Codecs::XML m_codec;
     Object::MapType m_world;
     int m_count;
@@ -64,20 +79,20 @@ class FileDecoder : public Atlas::Message::DecoderBase {
                 for (;J != contlist.end(); ++J) {
                     worldlist.push_back(*J);
                 }
-                m_db->storeInWorld(m_world, id.c_str());
+                m_db.updateInWorld(m_world, id);
             } else {
                 std::cout << "WARNING: New world object has no contains list, so no ids are being merged" << std::endl << std::flush;
             }
         } else {
-            m_db->storeInWorld(omap, id.c_str());
+            m_db.storeInWorld(omap, id);
         }
     }
   public:
-    FileDecoder(const std::string & filename, WorldBase * db) :
+    FileDecoder(const std::string & filename, WorldBase & db) :
                 m_file(filename.c_str()), m_db(db),
                 m_codec((std::iostream&)m_file, this), m_count(0)
     {
-        m_worldMerge = db->getWorld(m_world);
+        m_worldMerge = db.getWorld(m_world);
         if (m_worldMerge && !m_world.find("contains")->second.IsList()) {
             std::cout << "WARNING: Current database world object has no contains list, so so it is being replaced" << std::endl << std::flush;
             m_worldMerge = false;
@@ -118,13 +133,10 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    WorldBase * db = WorldBase::instance();
-    db->initConnection(true);
-    db->initWorld(true);
+    WorldBase & db = *WorldBase::instance();
 
     FileDecoder f(argv[1], db);
     f.read();
     f.report();
-    db->shutdownConnection();
-    delete db;
+    delete &db;
 }

@@ -8,13 +8,14 @@
 class Admin;
 class Account;
 class Entity;
+class Database;
 
-#include <common/Database.h>
+class Persistance {
+  private:
+    Persistance();
 
-class Persistance : public Database {
-  protected:
-    Persistance() { }
-
+    Database & m_connection;
+    static Persistance * m_instance;
   public:
     static Account * loadAdminAccount();
     static void saveAdminAccount(Account &);
@@ -35,12 +36,8 @@ class Persistance : public Database {
     bool getMind(const std::string &, Atlas::Message::Object::MapType &);
     void putMind(const std::string &, const Atlas::Message::Object::MapType &);
 
-    bool getRules(Atlas::Message::Object::MapType & m) {
-        return getTable(rule_db, m);
-    }
-    bool clearRules() {
-        return clearTable(rule_db);
-    }
+    bool getRules(Atlas::Message::Object::MapType & m);
+    bool clearRules();
 };
 
 #endif // SERVER_PERSISTANCE_H

@@ -143,7 +143,11 @@ int main(int argc, char ** argv)
         amap["id"] = acname;
         amap["password"] = password;
 
-        res = db->putAccount(amap, acname);
+        if (action == ADD) {
+            res = db->putAccount(amap, acname);
+        } else {
+            res = db->modAccount(amap, acname);
+        }
         if (res) {
             std::cout << "Password changed." << std::endl << std::flush;
         }

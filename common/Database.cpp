@@ -92,7 +92,7 @@ bool Database::initAccount(bool createTables)
             debug(std::cout << "Account table does not exist"
                             << std::endl << std::flush;);
             // status = m_connection->ExecCommandOk("CREATE TABLE account ( id varchar(80), type varchar(80), password varchar(80) };");
-            status = m_connection->ExecCommandOk("CREATE TABLE account ( id varchar(80), contents text );");
+            status = m_connection->ExecCommandOk("CREATE TABLE account ( id varchar(80)  PRIMARY KEY, contents text );");
             if (!status) {
                 std::cerr << "Error creating account table in database"
                           << std::endl << std::flush;
@@ -117,7 +117,7 @@ bool Database::initWorld(bool createTables)
         debug(std::cout << "World table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = m_connection->ExecCommandOk("CREATE TABLE world ( id varchar(80), contents text );");
+            status = m_connection->ExecCommandOk("CREATE TABLE world ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
                 std::cerr << "Error creating world table in database"
                           << std::endl << std::flush;
@@ -142,7 +142,7 @@ bool Database::initMind(bool createTables)
         debug(std::cout << "Mind table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = m_connection->ExecCommandOk("CREATE TABLE mind ( id varchar(80), contents text );");
+            status = m_connection->ExecCommandOk("CREATE TABLE mind ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
                 std::cerr << "Error creating mind table in database"
                           << std::endl << std::flush;
@@ -167,7 +167,7 @@ bool Database::initServer(bool createTables)
         debug(std::cout << "Server table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = m_connection->ExecCommandOk("CREATE TABLE server ( id varchar(80), contents text );");
+            status = m_connection->ExecCommandOk("CREATE TABLE server ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
                 std::cerr << "Error creating server table in database"
                           << std::endl << std::flush;
@@ -192,7 +192,7 @@ bool Database::initRule(bool createTables)
         debug(std::cout << "Rule table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = m_connection->ExecCommandOk("CREATE TABLE rules ( id varchar(80), contents text );");
+            status = m_connection->ExecCommandOk("CREATE TABLE rules ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
                 std::cerr << "Error creating rules table in database"
                           << std::endl << std::flush;
@@ -284,7 +284,6 @@ bool Database::putObject(const std::string & table,
 
     debug(cout << "Encoded to: " << str.str().c_str() << " "
                << str.str().size() << endl << flush;);
-#if 1
     std::string query = std::string("INSERT INTO ") + table + " VALUES ('" + key + "', '" + str.str() + "');";
     int status = m_connection->ExecCommandOk(query.c_str());
     if (!status) {
@@ -293,24 +292,29 @@ bool Database::putObject(const std::string & table,
         return false;
     }
     return true;
-#else
-    const std::string & s = str.str();
+}
 
-    Dbt key, data;
+bool Database::updateObject(const std::string & table,
+                            const std::string & key,
+                            const Atlas::Message::Object::MapType & o)
+{
+    std::stringstream str;
 
-    key.set_data((void*)keystr);
-    key.set_size(strlen(keystr) + 1);
+    Atlas::Codecs::XML codec(str, &m_d);
+    Atlas::Message::Encoder enc(&codec);
 
-    data.set_data((void*)s.c_str());
-    data.set_size(s.size() + 1);
+    codec.StreamBegin();
+    enc.StreamMessage(o);
+    codec.StreamEnd();
 
-    int err;
-    if ((err = db.put(NULL, &key, &data, 0)) != 0) {
-        debug(cout << "db.put.ERROR! " << err << endl << flush;);
+    std::string query = std::string("UPDATE ") + table + " SET contents = '" + str.str() + "' WHERE id='" + key + "';";
+    int status = m_connection->ExecCommandOk(query.c_str());
+    if (!status) {
+        std::cerr << "Failed to update item " << key << " into " << table
+                  << " table" << std::endl << std::flush;
         return false;
     }
     return true;
-#endif
 }
 
 bool Database::delObject(const std::string & table, const std::string & key)

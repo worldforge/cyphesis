@@ -11,36 +11,41 @@
 
 using Atlas::Message::Object;
 
-class AccountBase : public Database {
+class AccountBase {
   protected:
-    AccountBase() { }
+    AccountBase() : m_connection(*Database::instance()) { }
 
+    Database & m_connection;
+    static AccountBase * m_instance;
   public:
     static AccountBase * instance(bool create = false) {
         if (m_instance == NULL) {
             m_instance = new AccountBase();
-            m_instance->initConnection(create);
-            m_instance->initAccount(create);
+            m_instance->m_connection.initConnection(create);
+            m_instance->m_connection.initAccount(create);
         }
-        return (AccountBase *)m_instance;
+        return m_instance;
     }
 
     static void del() {
         if (m_instance != NULL) {
-            m_instance->shutdownConnection();
+            m_instance->m_connection.shutdownConnection();
             delete m_instance;
             m_instance = NULL;
         }
     }
 
     bool putAccount(const Object::MapType & o, const std::string & account) {
-        return putObject(account_db, account.c_str(), o);
+        return m_connection.putObject(m_connection.account(), account, o);
+    }
+    bool modAccount(const Object::MapType & o, const std::string & account) {
+        return m_connection.updateObject(m_connection.account(), account, o);
     }
     bool delAccount(const std::string & account) {
-        return delObject(account_db, account.c_str());
+        return m_connection.delObject(m_connection.account(), account);
     }
     bool getAccount(const std::string & account, Object::MapType & o) {
-        return getObject(account_db, account.c_str(), o);
+        return m_connection.getObject(m_connection.account(), account, o);
     }
 
 };

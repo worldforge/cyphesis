@@ -9,19 +9,25 @@
 #include <rulesets/Entity.h>
 
 #include <common/const.h>
+#include <common/Database.h>
 
 #include "Persistance.h"
 
 using Atlas::Message::Object;
 
 bool Persistance::restricted = false;
+Persistance * Persistance::m_instance = NULL;
+
+Persistance::Persistance() : m_connection(*Database::instance())
+{
+}
 
 Persistance * Persistance::instance()
 {
     if (m_instance == NULL) {
         m_instance = new Persistance();
     }
-    return (Persistance *)m_instance;
+    return m_instance;
 }
 
 void Persistance::saveAdminAccount(Account & adm)
@@ -46,14 +52,14 @@ void Persistance::saveAdminAccount(Account & adm)
 bool Persistance::init()
 {
     Persistance * p = instance();
-    if (!p->initConnection(false)) {
+    if (!p->m_connection.initConnection(false)) {
         return false;
     }
-    bool i = p->initAccount(true);
-    bool j = p->initWorld(true);
-    bool k = p->initMind(true);
-    bool l = p->initServer(true);
-    bool m = p->initRule(true);
+    bool i = p->m_connection.initAccount(true);
+    bool j = p->m_connection.initWorld(true);
+    bool k = p->m_connection.initMind(true);
+    bool l = p->m_connection.initServer(true);
+    bool m = p->m_connection.initRule(true);
     return (i && j && k && l && m);
 }
 
@@ -61,7 +67,7 @@ void Persistance::shutdown()
 {
     Persistance * p = (Persistance *)m_instance;
     if (p == NULL) { return; }
-    p->shutdownConnection();
+    p->m_connection.shutdownConnection();
     delete p;
     m_instance = NULL;
 }
@@ -81,13 +87,13 @@ Account * Persistance::loadAdminAccount()
 bool Persistance::findAccount(const std::string & name)
 {
     Object::MapType account;
-    return getObject(account_db, name.c_str(), account);
+    return m_connection.getObject(m_connection.account(), name, account);
 }
 
 Account * Persistance::getAccount(const std::string & name)
 {
     Object::MapType account;
-    if (!getObject(account_db, name.c_str(), account)) {
+    if (!m_connection.getObject(m_connection.account(), name, account)) {
         return NULL;
     }
     Object::MapType::const_iterator I = account.find("id"),
@@ -111,25 +117,36 @@ Account * Persistance::getAccount(const std::string & name)
 
 void Persistance::putAccount(const Account & ac)
 {
-    putObject(account_db, ac.getId().c_str(), ac.asObject().AsMap());
+    m_connection.putObject(m_connection.account(), ac.getId(), ac.asObject().AsMap());
 }
 
 bool Persistance::getEntity(const std::string & id, Object::MapType & entity)
 {
-    return getObject(world_db, id.c_str(), entity);
+    return m_connection.getObject(m_connection.world(), id, entity);
 }
 
 void Persistance::putEntity(const Entity & be)
 {
-    putObject(world_db, be.getId().c_str(), be.asObject().AsMap());
+    m_connection.putObject(m_connection.world(), be.getId(), be.asObject().AsMap());
 }
 
 bool Persistance::getMind(const std::string & id, Object::MapType & entity)
 {
-    return getObject(mind_db, id.c_str(), entity);
+    return m_connection.getObject(m_connection.mind(), id, entity);
 }
 
 void Persistance::putMind(const std::string & id, const Object::MapType & be)
 {
-    putObject(mind_db, id.c_str(), be);
+    m_connection.putObject(m_connection.mind(), id, be);
 }
+
+bool Persistance::getRules(Atlas::Message::Object::MapType & m)
+{
+    return m_connection.getTable(m_connection.rule(), m);
+}
+
+bool Persistance::clearRules()
+{
+    return m_connection.clearTable(m_connection.rule());
+}
+

@@ -11,7 +11,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		operations.cpp operations.h \
 		globals.cpp globals.h \
 		Database.cpp Database.h \
-		accountbase.h \
+		accountbase.cpp accountbase.h \
 		utility.cpp utility.h \
 		serialno.cpp serialno.h \
 		inheritance.cpp inheritance.h \

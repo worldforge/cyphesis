@@ -27,7 +27,7 @@ class DatabaseIterator;
 class PgDatabase;
 
 class Database {
-  protected:
+  private:
     static Database * m_instance;
 
     std::string account_db;
@@ -43,6 +43,13 @@ class Database {
 
     bool command(const std::string & cmd);
 
+  public:
+    const std::string & account() const { return account_db; }
+    const std::string & world() const { return world_db; }
+    const std::string & mind() const { return mind_db; }
+    const std::string & server() const { return server_db; }
+    const std::string & rule() const { return rule_db; }
+
     bool decodeObject(const std::string & data,
                       Atlas::Message::Object::MapType &);
     bool putObject(const std::string & table,
@@ -51,13 +58,16 @@ class Database {
     bool getObject(const std::string & table,
                    const std::string & key,
                    Atlas::Message::Object::MapType &);
+    bool updateObject(const std::string & table,
+                      const std::string & key,
+                      const Atlas::Message::Object::MapType&);
     bool delObject(const std::string &, const std::string & key);
     bool getTable(const std::string & table,
                   Atlas::Message::Object::MapType &);
     bool clearTable(const std::string & table);
 
     void reportError();
-  public:
+
     static Database * instance();
 
     bool initConnection(bool createDatabase = false);

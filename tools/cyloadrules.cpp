@@ -16,29 +16,39 @@
 
 using Atlas::Message::Object;
 
-class RuleBase : public Database {
+class RuleBase {
   protected:
-    RuleBase() { }
+    RuleBase() : m_connection(*Database::instance()) { }
 
+    Database & m_connection;
+    static RuleBase * m_instance;
   public:
+    ~RuleBase() {
+        m_connection.shutdownConnection();
+    }
+
     static RuleBase * instance() {
         if (m_instance == NULL) {
             m_instance = new RuleBase();
+            m_instance->m_connection.initConnection(true);
+            m_instance->m_connection.initRule(true);
         }
         return (RuleBase *)m_instance;
     }
 
     void storeInRules(const Object::MapType & o, const std::string & key) {
-        putObject(rule_db, key, o);
+        m_connection.putObject(m_connection.rule(), key, o);
     }
     bool clearRules() {
-        return clearTable(rule_db);
+        return m_connection.clearTable(m_connection.rule());
     }
 };
 
+RuleBase * RuleBase::m_instance = NULL;
+
 class FileDecoder : public Atlas::Message::DecoderBase {
     std::ifstream m_file;
-    RuleBase * m_db;
+    RuleBase & m_db;
     Atlas::Codecs::XML m_codec;
     Object::MapType m_world;
     int m_count;
@@ -49,11 +59,11 @@ class FileDecoder : public Atlas::Message::DecoderBase {
         Object::MapType::const_iterator I;
         for (I = omap.begin(); I != omap.end(); ++I) {
             m_count++;
-            m_db->storeInRules(I->second.AsMap(), I->first);
+            m_db.storeInRules(I->second.AsMap(), I->first);
         }
     }
   public:
-    FileDecoder(const std::string & filename, RuleBase * db) :
+    FileDecoder(const std::string & filename, RuleBase & db) :
                 m_file(filename.c_str()), m_db(db),
                 m_codec((std::iostream&)m_file, this), m_count(0)
     {
@@ -92,16 +102,14 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    RuleBase * db = RuleBase::instance();
-    db->initConnection(true);
-    db->initRule(true);
+    RuleBase & db = *RuleBase::instance();
 
     if (argc == 2) {
         FileDecoder f(argv[1], db);
         f.read();
         f.report();
     } else {
-        db->clearRules();
+        db.clearRules();
         std::list<std::string>::reverse_iterator I = rulesets.rbegin();
         for (; I != rulesets.rend(); ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
@@ -111,6 +119,5 @@ int main(int argc, char ** argv)
         }
     }
 
-    db->shutdownConnection();
-    delete db;
+    delete &db;
 }
