@@ -1,3 +1,7 @@
+Don't add services when we are upgrading.
+
+Fix user cyphesis disappear wiht rpm upgrade
+
 Currently no mechanism to inform client/mind that the ID they just
 specified is gone. Need to think of something, and make sure mind
 deals correctly.

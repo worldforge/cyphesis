@@ -1,5 +1,21 @@
 2004-11-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* cyphesis.spec.in: Ensure rpm spec correctly obsoletes the old
+	  mason and service rpms.
+
+	* modules/Location.cpp: Get rid of accidentally commited change
+	  that screws up orientation.
+
+	* rulesets/Character.cpp: Provide more info about ops which
+	  have TO set incorrectly.
+
+	* rulesets/MemMap.cpp: Don't set TO on look ops from memory.
+
+	* rulesets/basic/mind/NPCMind.py: Don't set TO on tick ops
+	  from the mind.
+
+2004-11-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Add notes, and a check to ensure that
 	  ops from the mind don't have TO set.
 

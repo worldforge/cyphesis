@@ -112,7 +112,6 @@ RootOperation * MemMap::lookId()
         MapType m;
         m["id"] = id;
         l->setArgs(ListType(1, m));
-        l->setTo(id);
         m_additionsById.pop_front();
         return l;
     }

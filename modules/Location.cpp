@@ -13,19 +13,17 @@ Location::Location() : m_solid(true), m_loc(NULL)
 }
 
 Location::Location(Entity * rf) :
-            m_solid(true), m_loc(rf), m_orientation(Quaternion().identity())
+            m_solid(true), m_loc(rf)
 {
 }
 
 Location::Location(Entity * rf, const Point3D & crds) :
-            m_solid(true), m_loc(rf), m_pos(crds),
-            m_orientation(Quaternion().identity())
+            m_solid(true), m_loc(rf), m_pos(crds)
 {
 }
 
 Location::Location(Entity * rf, const Point3D& crds, const Vector3D& vel) :
-            m_solid(true), m_loc(rf), m_pos(crds), m_velocity(vel),
-            m_orientation(Quaternion().identity())
+            m_solid(true), m_loc(rf), m_pos(crds), m_velocity(vel)
 {
 }
 
@@ -45,7 +43,6 @@ const Point3D Location::getXyz() const
 
 void Location::addToMessage(MapType & omap) const
 {
-    static const Quaternion identity(Quaternion().identity());
     if (m_loc!=NULL) {
         omap["loc"] = m_loc->getId();
     }
@@ -55,7 +52,7 @@ void Location::addToMessage(MapType & omap) const
     if (m_velocity.isValid()) {
         omap["velocity"] = m_velocity.toAtlas();
     }
-    if (m_orientation != identity) {
+    if (m_orientation.isValid()) {
         omap["orientation"] = m_orientation.toAtlas();
     }
     if (m_bBox.isValid()) {

@@ -67,11 +67,11 @@ class NPCMind(BaseMind):
         """called once by world after object has been made
            send first tick operation to object"""
         #CHEAT!: add memory, etc... initialization (or some of it to __init__)
-        return Operation("look")+Operation("tick",to=self)
+        return Operation("look")+Operation("tick")
     def tick_operation(self, op):
         """periodically reasses situation"""
         self.tick_count=self.tick_count+1
-        opTick=Operation("tick",to=self)
+        opTick=Operation("tick")
         opTick.time.sadd=const.basic_tick
         result=self.think()
         if self.message_queue:

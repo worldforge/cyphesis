@@ -1129,6 +1129,7 @@ void Character::mind2body(const RootOperation & op, OpVector & res)
         return;
     }
     if (!op.getTo().empty()) {
+        std::cerr << "Operation \"" << op.getParents().front().asString() << "\"from mind with TO set" << std::endl << std::flush;
         log(WARNING, "Operation from mind with TO set");
     }
     OpNo otype = opEnumerate(op, opMindLookup);

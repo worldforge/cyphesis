@@ -16,6 +16,7 @@ PreReq: initscripts /usr/sbin/useradd /sbin/chkconfig
 Requires: Atlas-C++ >= 0.4.94 mercator varconf skstream >= 0.3.1 readline postgresql-libs >= 7.1 openssl python >= 1.5.2 libstdc++ postgresql-server >= 7.1
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 BuildRequires: Atlas-C++-devel >= 0.4.94 mercator-devel varconf-devel >= 0.6.2 skstream-devel >= 0.3.1 readline-devel postgresql-devel >= 7.1 openssl-devel python-devel >= 1.5.2 libstdc++-devel
+Obsoletes: cyphesis-service cyphesis-mason
 
 %description
 Cyphesis is a very simple world simulator. NPCs that do things according to
@@ -24,6 +25,8 @@ use/move/make things and have simple discussion. They can deduce
 simple things (like where I can get these things and where I should
 be). They have simple memory and use it too. They can have goals (like
 build home for me or go to dinner).
+This package includes the rules data, scripts and map data required for the
+Mason game. Use this package if you intend to run an Mason server.
 
 %package acorn
 Summary: Game data for running the Acorn game in cyphesis
@@ -34,15 +37,6 @@ Requires: %{name} = %{version}
 This is the rules data, scripts and map data required for the Acorn
 game. Install this package if you intend to run an Acorn server.
 Acorn is deprecated. See README for details.
-
-%package mason
-Summary: Game data for running the Mason game in cyphesis
-Group: Amusements/Games
-Requires: %{name} = %{version}
-
-%description mason
-This is the rules data, scripts and map data required for the Mason
-game. Install this package if you intend to run an Mason server.
 
 %package werewolf
 Summary: Game data for running the Werewolf game in cyphesis
@@ -79,10 +73,9 @@ then
         echo /etc/sysconfig/cyphesis >> service.lst
 fi
 
-%pre
-useradd -M -n -r -s /bin/bash -c "Cyphesis user" cyphesis >/dev/null 2>&1 || :
-
 %post
+# FIXME These should only be done if we are not upgrading. How can we tell?
+useradd -M -n -r -s /bin/bash -c "Cyphesis user" cyphesis >/dev/null 2>&1 || :
 chkconfig --add cyphesis
 chkconfig --add cyclient
 
