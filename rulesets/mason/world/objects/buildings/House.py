@@ -11,11 +11,6 @@ from world.physics.Vector3D import Vector3D
 
 class House(Thing):
     """This base class for houses, building material is wood"""
-    def __init__(self, cppthing, **kw):
-    	self.base_init(cppthing, kw)
-    	set_kw(self,kw,"burn_speed",0.2)
-        set_kw(self,kw,"material","wood")
-        set_kw(self,kw,"mass", 5000.0)
     def tick_operation(self, op):
         """check if we should self-combust
            in any case send ourself next tick"""

@@ -2,13 +2,13 @@
 #Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
-from world.objects.undead.Undead import Undead
+from world.objects.Thing import Thing
 from common import log,const
 from misc import set_kw
 from Vector3D import Vector3D
 from whrandom import *
 
-class Skeleton(Undead):
+class Skeleton(Thing):
     def touch_operation(self, op):
         retops = Message()
         if self.status<0: return

@@ -1,5 +1,18 @@
 2005-01-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/basic.xml: Clean out a load of obsolete classes and scripts.
+
+	* rulesets/basic/world/objects/buildings/House.py,
+	  rulesets/basic/world/objects/buildings/StoneHouse.py,
+	  rulesets/basic/world/objects/tools/Bow.py,
+	  rulesets/basic/world/objects/tools/Sword.py,
+	  rulesets/mason/world/objects/plants/seeds/Seed.py,
+	  rulesets/mason/world/objects/undead/Skeleton.py:
+	  Remove obsolete constructors, and don't inherit from
+	  obsolete scripts.
+
+2005-01-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Remove redundant script from oak.
 
 2005-01-24  Al Riddoch  <alriddoch@zepler.org>

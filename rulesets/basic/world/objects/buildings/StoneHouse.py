@@ -11,7 +11,3 @@ from world.object.buildings.House import House
 
 class StoneHouse(House):
     """This class is a stone house it does not burn"""
-    def __init__(self, cppthing, **kw):
-    	self.base_init(cppthing, kw)
-    	set_kw(self,kw,"burn_speed",0.0)
-        set_kw(self,kw,"material","stone")

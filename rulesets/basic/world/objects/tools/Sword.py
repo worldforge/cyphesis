@@ -9,9 +9,6 @@ from misc import set_kw
 
 class Sword(Thing):
     """This is base class for swords, this one just ordinary sword"""
-    def __init__(self, cppthing, **kw):
-        self.base_init(cppthing, kw)
-        set_kw(self,kw,"mass",4.0)
     def cut_operation(self, op):
         #to_ = self.world.get_object(op[1].id)
         #if not to_:

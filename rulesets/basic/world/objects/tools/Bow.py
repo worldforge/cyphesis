@@ -10,10 +10,6 @@ from Vector3D import Vector3D
 
 class Bow(Thing):
     """This is base class for bows, this one just ordinary bow"""
-    def __init__(self, cppthing, **kw):
-        self.base_init(cppthing, kw)
-        set_kw(self,kw,"mass",1.5)
-        set_kw(self,kw,"ammo","arrow")
     def shoot_operation(self, op):
         ammo = op[0].id
         to_ = op[1].id
