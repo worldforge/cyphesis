@@ -33,7 +33,7 @@ const std::string get_hostname()
     return std::string(host_ident.nodename);
 }
 
-extern "C" void signal_received(int signo)
+extern "C" void shutdown_on_signal(int signo)
 {
     exit_flag = true;
 
@@ -55,27 +55,33 @@ void interactive_signals()
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
-    action.sa_handler = signal_received;
+    action.sa_handler = shutdown_on_signal;
     sigaction(SIGINT, &action, NULL);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
-    action.sa_handler = signal_received;
+    action.sa_handler = shutdown_on_signal;
     sigaction(SIGTERM, &action, NULL);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
-    action.sa_handler = signal_received;
+    action.sa_handler = shutdown_on_signal;
     sigaction(SIGQUIT, &action, NULL);
+
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = shutdown_on_signal;
+    sigaction(SIGHUP, &action, NULL);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
     sigaction(SIGPIPE, &action, NULL);
 #else
-    signal(SIGINT, signal_received);
-    signal(SIGTERM, signal_received);
-    signal(SIGQUIT, signal_received);
+    signal(SIGINT, shutdown_on_signal);
+    signal(SIGTERM, shutdown_on_signal);
+    signal(SIGQUIT, shutdown_on_signal);
+    signal(SIGHUP, shutdown_on_signal);
     signal(SIGPIPE, SIG_IGN);
 #endif
 }
@@ -92,7 +98,7 @@ void daemon_signals()
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
-    action.sa_handler = signal_received;
+    action.sa_handler = shutdown_on_signal;
     sigaction(SIGTERM, &action, NULL);
 
     sigemptyset(&action.sa_mask);
@@ -103,12 +109,18 @@ void daemon_signals()
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
+    sigaction(SIGHUP, &action, NULL);
+
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = SIG_IGN;
     sigaction(SIGPIPE, &action, NULL);
 #else
     signal(SIGINT, SIG_IGN);
-    signal(SIGTERM, signal_received);
-    signal(SIGPIPE, SIG_IGN);
+    signal(SIGTERM, shutdown_on_signal);
     signal(SIGQUIT, SIG_IGN);
+    signal(SIGHUP, SIG_IGN);
+    signal(SIGPIPE, SIG_IGN);
 #endif
 }
 
@@ -140,26 +152,26 @@ int daemonise()
             // Error
 
             // We are not the daemon process
-	    daemon_flag = false;
+            daemon_flag = false;
 
             log(ERROR, "Failed to fork() to go to the background.");
 
             break;
         default:
-	    // Parent
+            // Parent
 
             // We are not the daemon process
             daemon_flag = false;
 
-	    // Install handler for SIGUSR1
+            // Install handler for SIGUSR1
 #if defined(HAVE_SIGACTION)
             struct sigaction action;
             sigemptyset(&action.sa_mask);
             action.sa_flags = 0;
-            action.sa_handler = signal_received;
+            action.sa_handler = shutdown_on_signal;
             sigaction(SIGUSR1, &action, NULL);
 #else
-            signal(SIGUSR1, signal_usr1);
+            signal(SIGUSR1, shutdown_on_signal);
 #endif
 
             if (wait4(pid, &status, 0, NULL) < 0) {
@@ -171,16 +183,16 @@ int daemonise()
             if (running == true) {
                 log(INFO, "Running");
             } else {
-		int estatus = WEXITSTATUS(status);
-		if (estatus == EXIT_SUCCESS) {
+                int estatus = WEXITSTATUS(status);
+                if (estatus == EXIT_SUCCESS) {
                     log(ERROR, "Cyphesis exited normally at initialisation.");
-		} else if (estatus == EXIT_DATABASE_ERROR) {
-                    log(ERROR, "Cyphesis was unable to connect it the database.");
-		} else if (estatus == EXIT_SOCKET_ERROR) {
+                } else if (estatus == EXIT_DATABASE_ERROR) {
+                    log(ERROR, "Cyphesis was unable to connect to the database.");
+                } else if (estatus == EXIT_SOCKET_ERROR) {
                     log(ERROR, "Cyphesis was unable to open a listen socket.");
-		} else {
+                } else {
                     log(ERROR, "Cyphesis exited unexpectedly at initialisation.");
-		}
+                }
                 log(ERROR, "See syslog for details.");
             }
 

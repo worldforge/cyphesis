@@ -1,3 +1,8 @@
+2003-07-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/system.cpp: Add handler for SIGHUP, and clarify name of
+	  signal handler. Fix error message typo.
+
 2003-07-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* Clean up and improve rpm spec using new found techniques.
