@@ -1,5 +1,9 @@
 2004-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/log.cpp: Add errno include required by more recent compilers.
+
+2004-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp, server/CommListener.cpp:
 	  Remove redundant <cstdio> includes.
 

@@ -9,6 +9,7 @@
 
 extern "C" {
   #include <syslog.h>
+  #include <errno.h>
 }
 
 void initLogger()
