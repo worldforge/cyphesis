@@ -1,5 +1,11 @@
 2004-10-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/client.cpp, common/globals.cpp, server/server.cpp,
+	  tools/cycmd.cpp: Get rid of nasy cast, and use string accessor
+	  for varconf variables.
+
+2004-10-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp, tools/cyloadrules.cpp: Update tools to support
 	  centralised varconf options on the command line. Update man
 	  pages accordingly.

@@ -86,13 +86,13 @@ int main(int argc, char ** argv)
 
     std::string mserver("metaserver.worldforge.org");
     if (global_conf->findItem("cyphesis", "metaserver")) {
-        mserver = (std::string)global_conf->getItem("cyphesis", "metaserver");
+        mserver = global_conf->getItem("cyphesis", "metaserver").as_string();
     }
 
 
     std::string serverName;
     if (global_conf->findItem("cyphesis", "servername")) {
-        serverName = (std::string)global_conf->getItem("cyphesis","servername");
+        serverName = global_conf->getItem("cyphesis","servername").as_string();
     } else {
         serverName = get_hostname();
     }

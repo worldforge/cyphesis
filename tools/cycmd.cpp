@@ -722,7 +722,7 @@ int main(int argc, char ** argv)
 
     std::string server;
     if (global_conf->findItem("client", "serverhost")) {
-        server = (std::string)global_conf->getItem("client", "serverhost");
+        server = global_conf->getItem("client", "serverhost").as_string();
     }
 
     bool interactive = true;
