@@ -42,6 +42,7 @@ bool Persistance::init()
     bool l = p->m_connection.initServer(true);
     bool m = p->m_connection.initRule(true);
 
+#if 0
     Atlas::Message::Object::MapType desc;
     desc["name"] = "                                                                                ";
     desc["height"] = 1.0;
@@ -57,6 +58,7 @@ bool Persistance::init()
     piledesc["count"] = 0;
     piledesc["volume"] = 10;
     p->m_connection.registerEntityTable("pile", piledesc, "entity");
+#endif
 
     return (i && j && k && l && m);
 }

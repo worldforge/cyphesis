@@ -5,9 +5,10 @@ cyphesis_SOURCES = \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
+		Persistor.cpp Persistor.h \
 		Persistance.cpp Persistance.h \
-		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
 		PersistantThingFactory.cpp PersistantThingFactory.h \
+		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
 		WorldRouter.cpp WorldRouter.h \
 		EntityFactory.cpp EntityFactory.h \
 		Lobby.cpp Lobby.h \

@@ -1,4 +1,22 @@
-2002-12-06  Al Riddoch  <alriddoch@zepler.org>
+2002-12-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Clean up errors in new entity table
+	  code.
+
+	* server/EntityFactory.cpp: Switch to using new persistant
+	  factories.
+
+	* server/Persistance.cpp: Don't create test tables.
+
+	* server/PersistantThingFactory.h:
+	  Clean up the way templates are used here, and simplify.
+
+	* Persistor.h, Persistor.cpp, Persistor_impl.h:
+	  Implement object handles the persistance of the rulesets
+	  classes. Currently does not implement any of the actual
+	  persistance.
+
+2002-12-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/PersistantThingFactory.h, server/PersistantThingFactory.cpp:
 	  Work in progress on code to handle creating entities to be persisted.

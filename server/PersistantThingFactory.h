@@ -7,22 +7,25 @@
 
 #include <Atlas/Message/Object.h>
 
-class Thing;
+class Entity;
+
+template <class T>
+class Persistor;
 
 class PersistorBase {
   public:
     virtual ~PersistorBase() { }
 
-    virtual void persist();
+    virtual void persist() = 0;
 };
 
-template <class T, class P>
+template <class T>
 class PersistorConnection : public PersistorBase {
   private:
     T & m_t;
-    P & m_p;
+    Persistor<T> & m_p;
   public:
-    PersistorConnection(T & t, P & p) : m_t(t), m_p(p) { }
+    PersistorConnection(T & t, Persistor<T> & p) : m_t(t), m_p(p) { }
     ~PersistorConnection() { }
 
     /// Use p to hook up t into the persistance code
@@ -37,30 +40,31 @@ class FactoryBase {
 
     virtual ~FactoryBase() { }
 
-    virtual Thing * newThing() = 0;
-    virtual PersistorBase * newPersistantThing(Thing **) = 0;
+    virtual Entity * newThing() = 0;
+    virtual Entity * newPersistantThing(PersistorBase **) = 0;
     virtual FactoryBase * dupFactory() = 0;
 };
 
 // How do we make sure the peristance hooks are put in place in a typesafe way
 // but after all the initial attribute have been set.
 
-template <class T, class P>
+template <class T>
 class PersistantThingFactory : public FactoryBase {
   private:
-    P & m_p;
+    Persistor<T> & m_p;
   public:
-    PersistantThingFactory(P & p) : m_p(p) { }
+    PersistantThingFactory() : m_p(* new Persistor<T>()) { }
 
-    Thing * newThing() {
+    T * newThing() {
         return new T();
     }
-    PersistorBase * newPersistantThing(Thing ** t) {
-        *t = new T();
-        return new PersistorConnection<T, P>(**t, m_p);
+    T * newPersistantThing(PersistorBase ** p) {
+        T * t = new T();
+        *p = new PersistorConnection<T>(*t, m_p);
+        return t;
     }
     FactoryBase * dupFactory() {
-        return new PersistantThingFactory<T, P>();
+        return new PersistantThingFactory<T>();
     }
 };
 

@@ -18,7 +18,7 @@
 
 using Atlas::Message::Object;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 Database * Database::m_instance = NULL;
 
@@ -38,9 +38,9 @@ bool Database::tuplesOk()
 
     PGresult * res;
     while ((res = PQgetResult(m_connection)) != NULL) {
-	if (PQresultStatus(res) == PGRES_TUPLES_OK) {
-	    status = true;
-	}
+        if (PQresultStatus(res) == PGRES_TUPLES_OK) {
+            status = true;
+        }
     };
     return status;
 }
@@ -51,9 +51,9 @@ bool Database::commandOk()
 
     PGresult * res;
     while ((res = PQgetResult(m_connection)) != NULL) {
-	if (PQresultStatus(res) == PGRES_COMMAND_OK) {
-	    status = true;
-	}
+        if (PQresultStatus(res) == PGRES_COMMAND_OK) {
+            status = true;
+        }
     };
     return status;
 }
@@ -100,7 +100,7 @@ bool Database::initAccount(bool createTables)
     int status = 0;
     status = PQsendQuery(m_connection, "SELECT * FROM account WHERE id = 'admin';");
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
 
@@ -133,7 +133,7 @@ bool Database::initWorld(bool createTables)
     int status = 0;
     status = PQsendQuery(m_connection, "SELECT * FROM world WHERE id = 'test' AND contents = 'test';");
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     
@@ -143,10 +143,10 @@ bool Database::initWorld(bool createTables)
         if (createTables) {
             status = PQsendQuery(m_connection, "CREATE TABLE world ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-		reportError();
-		return false;
-	    }
-	    if (!tuplesOk()) {
+                reportError();
+                return false;
+            }
+            if (!tuplesOk()) {
                 log(ERROR, "Error creating world table in database");
                 reportError();
                 return false;
@@ -164,7 +164,7 @@ bool Database::initMind(bool createTables)
     int status = 0;
     status = PQsendQuery(m_connection, "SELECT * FROM mind WHERE id = 'test' AND contents = 'test';");
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     
@@ -174,10 +174,10 @@ bool Database::initMind(bool createTables)
         if (createTables) {
             status = PQsendQuery(m_connection, "CREATE TABLE mind ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-		reportError();
-		return false;
-	    }
-	    if (!tuplesOk()) {
+                reportError();
+                return false;
+            }
+            if (!tuplesOk()) {
                 log(ERROR, "Error creating mind table in database");
                 reportError();
                 return false;
@@ -195,7 +195,7 @@ bool Database::initServer(bool createTables)
     int status = 0;
     status = PQsendQuery(m_connection, "SELECT * FROM server WHERE id = 'test' AND contents = 'test';");
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     
@@ -205,10 +205,10 @@ bool Database::initServer(bool createTables)
         if (createTables) {
             status = PQsendQuery(m_connection, "CREATE TABLE server ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-		reportError();
-		return false;
-	    }
-	    if (!tuplesOk()) {
+                reportError();
+                return false;
+            }
+            if (!tuplesOk()) {
                 log(ERROR, "Error creating server table in database");
                 reportError();
                 return false;
@@ -226,7 +226,7 @@ bool Database::initRule(bool createTables)
     int status = 0;
     status = PQsendQuery(m_connection, "SELECT * FROM rules WHERE id = 'test' AND contents = 'test';");
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     
@@ -236,10 +236,10 @@ bool Database::initRule(bool createTables)
         if (createTables) {
             status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-		reportError();
-		return false;
-	    }
-	    if (!tuplesOk()) {
+                reportError();
+                return false;
+            }
+            if (!tuplesOk()) {
                 log(ERROR, "Error creating rules table in database");
                 reportError();
                 return false;
@@ -296,7 +296,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
 
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
 
@@ -345,7 +345,7 @@ bool Database::putObject(const std::string & table,
     std::string query = std::string("INSERT INTO ") + table + " VALUES ('" + key + "', '" + str.str() + "');";
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     if (!commandOk()) {
@@ -375,7 +375,7 @@ bool Database::updateObject(const std::string & table,
                         str.str() + "' WHERE id='" + key + "';";
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     if (!commandOk()) {
@@ -473,8 +473,8 @@ void Database::reportError()
 }
 
 bool Database::registerEntityTable(const std::string & classname,
-	                           const Atlas::Message::Object::MapType & row,
-				   const std::string & parent)
+                                   const Atlas::Message::Object::MapType & row,
+                                   const std::string & parent)
 // TODO
 // row probably needs to be richer to provide a more detailed, and possibly
 // ordered description of each the columns required.
@@ -482,28 +482,28 @@ bool Database::registerEntityTable(const std::string & classname,
     if (entityTables.find(classname) != entityTables.end()) {
         log(ERROR, "Attempt to register entity table already registered.");
         debug(std::cerr << "Table for class " << classname
-		        << " already registered." << std::endl << std::flush;);
+                        << " already registered." << std::endl << std::flush;);
         return false;
     }
     if (!parent.empty()) {
         if (entityTables.empty()) {
             log(ERROR, "Attempt to create non-root entity class table when no root registered.");
             debug(std::cerr << "Table for class " << classname
-		            << " cannot be non-root."
-			    << std::endl << std::flush;);
+                            << " cannot be non-root."
+                            << std::endl << std::flush;);
             return false;
         }
         if (entityTables.find(parent) == entityTables.end()) {
-	    log(ERROR, "Attempt to create entity class table with non existant parent.");
+            log(ERROR, "Attempt to create entity class table with non existant parent.");
             debug(std::cerr << "Table for class " << classname
-		            << " cannot have non-existant parent " << parent
+                            << " cannot have non-existant parent " << parent
                             << std::endl << std::flush;);
             return false;
-	}
+        }
     } else if (!entityTables.empty()) {
         log(ERROR, "Attempt to create root entity class table when one already registered.");
         debug(std::cerr << "Table for class " << classname
-		        << " cannot be root." << std::endl << std::flush;);
+                        << " cannot be root." << std::endl << std::flush;);
         return false;
     }
     // At this point we know the table request make sense.
@@ -514,56 +514,58 @@ bool Database::registerEntityTable(const std::string & classname,
     std::string createquery = "CREATE TABLE ";
     query += tablename;
     createquery += tablename;
-    query += " WHERE ";
+    if (!row.empty()) {
+        query += " WHERE ";
+    }
     createquery += "(";
     if (parent.empty()) {
-	createquery += "id varchar(80), tablename varchar(20)";
+        createquery += "id varchar(80), tablename varchar(20), ";
     }
     Atlas::Message::Object::MapType::const_iterator I = row.begin();
     for(; I != row.end(); ++I) {
         if (I != row.begin()) {
             query += " AND ";
-	}
-        createquery += ", ";
+            createquery += ", ";
+        }
         const std::string & column = I->first;
         query += column;
         createquery += column;
         const Atlas::Message::Object & type = I->second;
         if (type.IsString()) {
             query += " LIKE 'foo'";
-	    int size = type.AsString().size();
-	    if (size == 0) {
-		createquery += " text";
-	    } else {
-		char buf[32];
-		snprintf(buf, 32, "%d", size);
-	        createquery += " varchar(";
-	        createquery += buf;
-	        createquery += ")";
-	    }
+            int size = type.AsString().size();
+            if (size == 0) {
+                createquery += " text";
+            } else {
+                char buf[32];
+                snprintf(buf, 32, "%d", size);
+                createquery += " varchar(";
+                createquery += buf;
+                createquery += ")";
+            }
         } else if (type.IsInt()) {
             query += " = 1";
-	    createquery += " integer";
+            createquery += " integer";
         } else if (type.IsFloat()) {
             query += " = 1.0";
-	    createquery += " float";
+            createquery += " float";
         } else {
-	    log(ERROR, "Illegal column type in database entity row");
-	}
+            log(ERROR, "Illegal column type in database entity row");
+        }
     }
     query += ";";
 
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-	log(ERROR, "Database query error.");
+        log(ERROR, "Database query error.");
         reportError();
         return false;
     }
     if (!tuplesOk()) {
         debug(reportError(););
         debug(std::cout << "Table does not yet exist"
-		        << std::endl << std::flush;);
+                        << std::endl << std::flush;);
     } else {
         debug(std::cout << "Table exists" << std::endl << std::flush;);
         return true;
@@ -571,24 +573,24 @@ bool Database::registerEntityTable(const std::string & classname,
     // create table
     createquery += ")";
     if (!parent.empty()) {
-	createquery += " INHERITS (";
-	createquery += parent;
-	createquery += "_ent)";
+        createquery += " INHERITS (";
+        createquery += parent;
+        createquery += "_ent)";
     }
     createquery += ";";
     debug(std::cout << "CREATE QUERY: " << createquery
-	            << std::endl << std::flush;);
+                    << std::endl << std::flush;);
     status = PQsendQuery(m_connection, createquery.c_str());
     if (!status) {
-	log(ERROR, "Database query error.");
+        log(ERROR, "Database query error.");
         reportError();
         return false;
     }
     if (!commandOk()) {
-	log(ERROR, "Error creating database table.");
+        log(ERROR, "Error creating database table.");
         reportError();
         debug(std::cout << "Table create didn't work"
-		        << std::endl << std::flush;);
+                        << std::endl << std::flush;);
     } else {
         debug(std::cout << "Table created" << std::endl << std::flush;);
         return true;

@@ -4,13 +4,15 @@
 
 #include "EntityFactory.h"
 
+#include "PersistantThingFactory.h"
 #include "Persistance.h"
+#include "Persistor.h"
+#include "Persistor_impl.h"
 #include "Player.h"
 
 #include <rulesets/Thing.h>
 #include <rulesets/Python_API.h>
 #include <rulesets/MindFactory.h>
-#include <rulesets/ThingFactory.h>
 #include <rulesets/Character.h>
 #include <rulesets/Creator.h>
 #include <rulesets/Plant.h>
@@ -37,16 +39,18 @@ EntityFactory::EntityFactory()
     // This class can only have one instance, so a Factory is not installed
     installFactory("game_entity", "world", NULL);
 
-    installFactory("game_entity", "thing", new ThingFactory<Thing>());
-    installFactory("thing", "feature", new ThingFactory<Thing>());
-    installFactory("feature", "line", new ThingFactory<Line>());
-    installFactory("feature", "area", new ThingFactory<Area>());
-    installFactory("thing", "character", new ThingFactory<Character>());
-    installFactory("character", "creator", new ThingFactory<Creator>());
-    installFactory("thing", "plant", new ThingFactory<Plant>());
-    installFactory("thing", "food", new ThingFactory<Food>());
-    installFactory("thing", "stackable", new ThingFactory<Stackable>());
-    installFactory("thing", "structure", new ThingFactory<Structure>());
+    PersistantThingFactory<Entity> * eft = new PersistantThingFactory<Entity>();
+    PersistantThingFactory<Thing> * tft = new PersistantThingFactory<Thing>();
+    installFactory("game_entity", "thing", tft);
+    installFactory("thing", "feature", tft);
+    installFactory("feature", "line", new PersistantThingFactory<Line>());
+    installFactory("feature", "area", new PersistantThingFactory<Area>());
+    installFactory("thing", "character", new PersistantThingFactory<Character>());
+    installFactory("character", "creator", new PersistantThingFactory<Creator>());
+    installFactory("thing", "plant", new PersistantThingFactory<Plant>());
+    installFactory("thing", "food", new PersistantThingFactory<Food>());
+    installFactory("thing", "stackable", new PersistantThingFactory<Stackable>());
+    installFactory("thing", "structure", new PersistantThingFactory<Structure>());
 }
 
 Entity * EntityFactory::newEntity(const std::string & type,
@@ -181,7 +185,8 @@ FactoryBase * EntityFactory::getFactory(const std::string & parent)
         std::string msg = std::string("Failed to find factory for ") + parent
                      + " while installing a new type which inherits from it.";
         log(WARNING, msg.c_str());
-        return new ThingFactory<Thing>();
+        // FIXME Don't creat another FSCKing factory here
+        return new PersistantThingFactory<Thing>();
     }
     return I->second->dupFactory();
 }
