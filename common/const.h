@@ -9,29 +9,31 @@ namespace consts {
 
 #ifdef NDEBUG
   // Should python code emit thinking ops
-  const int debug_thinking = 0;
+  static const int debug_thinking = 0;
   // Debug level for python code
-  const int debug_level = 0;
+  static const int debug_level = 0;
 
   // Scale factor for time. The may become non-constant
-  const float time_multiplier = 1.0;
+  static const float time_multiplier = 1.0;
   // In Real time how many seconds between ticks;
-  const float basic_tick = time_multiplier * 3.0;
+  static const float basic_tick = time_multiplier * 3.0;
   // Highest possible person velocity
-  const float base_velocity_coefficient = 5.0;
-  const float base_velocity = base_velocity_coefficient/time_multiplier;
+  static const float base_velocity_coefficient = 5.0;
+  static const float base_velocity = base_velocity_coefficient/time_multiplier;
   // Square versions of above, to avoid square roots in calculations
-  const float square_basic_tick = basic_tick * basic_tick;
-  const float square_base_velocity = base_velocity * base_velocity;
+  static const float square_basic_tick = basic_tick * basic_tick;
+  static const float square_base_velocity = base_velocity * base_velocity;
 
   // Are ranges for broadcast enabled.
-  const bool enable_ranges = true;
+  static const bool enable_ranges = true;
   // Range of broadcast sight ops
-  const float sight_range = 26.0;
+  static const float sight_range = 26.0;
   // Range of broadcast sound ops
-  const float hearing_range = 13.0;
+  static const float hearing_range = 13.0;
   // Can things be omnipresent
-  const bool enable_omnipresence = false;
+  static const bool enable_omnipresence = false;
+  // What is the minimum size of an object when calculating visibility
+  static const float minSqrBoxSize = 0.1f;
 
 #else // NDEBUG
 
@@ -49,6 +51,7 @@ namespace consts {
   extern float hearing_range;
   extern bool enable_ranges;
   extern bool enable_omnipresence;
+  extern float minSqrBoxSize;
 
 #endif // NDEBUG
 

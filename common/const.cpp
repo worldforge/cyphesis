@@ -49,6 +49,8 @@ namespace consts {
   float hearing_range = 13.0;
   // Can things be omnipresent
   bool enable_omnipresence = false;
+  // What is the minimum size of an object when calculating visibility
+  float minSqrBoxSize = 0.1f;
 
 #endif
 

@@ -1,5 +1,15 @@
 2003-10-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.h: Make constants static for efficiency.
+
+	* common/const.cpp, common/const.h: Add constant minimum size for
+	  entities without boxes.
+
+	* physics/BBox.cpp, physics/BBox.h: Move box size function into
+	  .cpp file, and make sure of minimum size if box is not valid.
+
+2003-10-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/const.cpp, common/const.h, common/random.h,
 	  physics/BBox.h, physics/Collision.cpp, physics/Collision.h,
 	  physics/Quaternion.cpp, physics/Quaternion.h, physics/Vector3D.h,

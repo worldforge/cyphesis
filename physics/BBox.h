@@ -27,16 +27,7 @@ template<typename F>
 inline F square(F f) { return f * f; }
 
 /// What is the size of the box?
-inline WFMath::CoordType boxSquareSize(const BBox & box)
-{
-    WFMath::CoordType ans = 0;
-
-    for(int i = 0; i < 3; ++i) {
-        ans += square(box.highCorner()[i] - box.lowCorner()[i]);
-    }
-
-    return ans;
-}
+WFMath::CoordType boxSquareSize(const BBox & box);
 
 inline WFMath::CoordType boxSize(const BBox & box)
 {
