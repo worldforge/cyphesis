@@ -1,3 +1,11 @@
+Can Property mechanism be used to handle raw Python data as properties?
+
+Property::add() is quite often just:
+    get(ent[s]);
+Should this be the default in the base class?
+
+Sort out the issue of un-initialised POS, ORIENTATION and BBOX.
+
 MemEntity needs some kind of reference flag/count if a python object
 is holding a reference.
 
