@@ -1,3 +1,7 @@
+2004-11-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Check for epoll.
+
 2004-11-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CreatorClient.cpp, rulesets/Py_BBox.h, rulesets/Py_Optime.h,
