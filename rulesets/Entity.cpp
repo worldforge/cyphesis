@@ -11,27 +11,9 @@
 #include "common/inheritance.h"
 #include "common/Property.h"
 
-#include "common/Setup.h"
-#include "common/Tick.h"
-#include "common/Chop.h"
-#include "common/Cut.h"
-#include "common/Eat.h"
-#include "common/Nourish.h"
-#include "common/Burn.h"
-
 #include <wfmath/atlasconv.h>
 
-#include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sight.h>
-#include <Atlas/Objects/Operation/Set.h>
-#include <Atlas/Objects/Operation/Delete.h>
-#include <Atlas/Objects/Operation/Imaginary.h>
-#include <Atlas/Objects/Operation/Move.h>
-#include <Atlas/Objects/Operation/Sound.h>
-#include <Atlas/Objects/Operation/Touch.h>
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Appearance.h>
-#include <Atlas/Objects/Operation/Disappearance.h>
 
 #include <cassert>
 

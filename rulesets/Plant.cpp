@@ -14,13 +14,11 @@
 #include "common/log.h"
 
 #include "common/Tick.h"
-#include "common/Chop.h"
 
 #include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
-#include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Move.h>
 
 using Atlas::Message::Element;
@@ -28,7 +26,6 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Touch;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Tick;
 

@@ -10,13 +10,11 @@
 #include "common/refno.h"
 #include "common/const.h"
 
-#include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Delete.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
-using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Delete;
 
 static const bool debug_flag = false;

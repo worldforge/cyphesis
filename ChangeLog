@@ -1,5 +1,11 @@
 2004-12-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp, rulesets/Creator.cpp, rulesets/Entity.cpp,
+	  rulesets/Food.cpp, rulesets/Plant.cpp, rulesets/Thing.cpp,
+	  rulesets/World.cpp: Remove some redundant includes.
+
+2004-12-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/BaseClient.cpp, client/BaseClient.h,
 	  client/CharacterClient.cpp, client/CharacterClient.h,
 	  client/ClientConnection.cpp, client/ClientConnection.h,

@@ -13,12 +13,7 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 
-#include <wfmath/MersenneTwister.h>
-
-#include <Atlas/Objects/Operation/Error.h>
-#include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
-#include <Atlas/Objects/Operation/Set.h>
 
 #include <sstream>
 
@@ -29,10 +24,7 @@ static const bool debug_flag = false;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
-using Atlas::Objects::Operation::Error;
-using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Sight;
-using Atlas::Objects::Operation::Set;
 
 World::World(const std::string & id) : World_parent(id),
                                        m_terrain(*new Mercator::Terrain())

@@ -7,13 +7,11 @@
 
 #include "common/Nourish.h"
 
-#include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Set.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
-using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Nourish;
 

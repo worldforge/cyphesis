@@ -28,7 +28,6 @@
 #include <Atlas/Objects/Operation/Sound.h>
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Move.h>
 #include <Atlas/Objects/Operation/Appearance.h>
