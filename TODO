@@ -1,3 +1,8 @@
+Spec an op similar to use, but for things which are just used by themselves,
+like buttons, valves, levers etc. Target has operions=[...] just the same,
+and the arg of the new op specifies what op to do, but the Character just
+needs the one gateway.
+
 Implement Task interface, which represent enduring tasks, including combat.
 
 When calling NPCMind.face when buying an item, for some reason the velocity
