@@ -1,5 +1,13 @@
 2004-11-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* RELEASE-check: Update list of things to do when releasing.
+
+	* TODO: Updated.
+
+	* TODO.norway: Remove completed items.
+
+2004-11-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.cpp, common/BaseEntity.h, common/BaseWorld.cpp,
 	  common/BaseWorld.h, common/Burn.h, common/Chop.h, common/Cut.h,
 	  common/Database.cpp, common/Database.h, common/Eat.h,

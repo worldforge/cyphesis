@@ -1,26 +1,33 @@
-Fix leak of all op factories in inheritance code.
+CONTAINS could be some kind of spatial set of buckets for efficiency
+when doing collision detection, but if this is not to be true for all entities
+then the mechanism for modifying CONTAINS needs to be virtualised, and
+made a method on the container/LOC. If the spatial stuff is to work then
+the entity needs to be removed while it still has its old coords, and added
+to its new container with its new coords.
 
-In timeout handling, the socket is currently closed. This is wrong,
-as it removes the socket from epoll, causing the CommClient object to
-be leaked.
+We should be able to look at the attributes of an python instance to
+determine what operations it needs to be subbed to. It doesn't have a
+dictionary, but it does have the methods as attributes.
+
+Make sure that goals involving movement don't issue a move op unless its
+necessary. ie check to see if we are already moving in the right direction.
+
+Add coarse collision checking to collision detection, to avoid the expensive
+collision checking. Is the max radius and speed such that the two can
+possibly collide.
+
+Fix Movement/Pedestrian to handle destination based movement where LOC
+changes. Just use distanceTo as the velocity vector.
 
 In an idle loop, time() and gettimeofday() get called straight after each
-other. Stupid.
-
-Write an implementation of the select() code in CommServer that uses epoll
-instead. Much more efficient if its available.
-
-Add square_distance to the distance_to python binding, for efficiency.
-
-Location objects which are not valid parts of the tree are getting into
-the mind maps.
+other. Stupid. Update time in CommServer::idle, and pass to
+server idle() ?
 
 The spot_something goal is a hack - need something better. Probably need
-some kind of Knowledge about target entity.
-
-Segfault when more than one test settler around?
-
-Use distance_to in move_me() goal
+some kind of Knowledge about target entity. Give the Knowledge predicate
+as an argument to spot_something(), and add Knowledge with that predicate
+once something has been spotted. For example
+spot_something('lumber', 'spotted_lumber')
 
 mind.things in NPCMind seems to be completely based on the name attribute,
 though it seems like it would make more sense for it to use type some of
@@ -30,14 +37,12 @@ Each entity could have a Mode object which controls how its movement/position
 is simulated, including the effect of gravity etc. This would be associated
 with a mode string.
 
-Convert python code that uses get_xyz() to use distance_to instead.
-
 If the character moves an entity into another similar entity, then
 we should create a Pile. This can be detected in mindMoveOp().
 
 Currently no mechanism to inform client/mind that the ID they just
 specified is gone. Need to think of something, and make sure mind
-deals correctly.
+deals correctly. Something like Unseen operation.
 
 Can Property mechanism be used to handle raw Python data as properties?
 

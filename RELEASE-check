@@ -1,4 +1,7 @@
-Load database when building cyphesis binary.
-Include cache index with uclient binary.
-release janus, Atlas-C++, and cyphesis
-
+Use distcheck to verify source.
+Log release version and date in ChangeLog.
+Build tarball using distcheck.
+Build srpm from tarball.
+Edit spec to set Release: info to specify platform, and build rpm.
+Upload to sourceforge and ftp.
+Announce on sourceforge, WF news, WF general+announce, happypenguin, freshmeat.
