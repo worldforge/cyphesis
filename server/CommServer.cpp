@@ -179,15 +179,18 @@ void CommServer::loop()
         highest = serverFd;
     }
 
+    std::cout << "SET: ";
     client_set_t::const_iterator I;
     for(I = clients.begin(); I != clients.end(); I++) {
        if (!(*I)->isOpen()) { continue; }
        int client_fd = (*I)->getFd();
+       std::cout << client_fd;
        FD_SET(client_fd, &sock_fds);
        if (client_fd > highest) {
            highest = client_fd;
        }
     }
+    std::cout << std::endl << std::flush;
     highest++;
     int rval = select(highest, &sock_fds, NULL, NULL, &tv);
 
