@@ -13,6 +13,7 @@
 
 #include <string>
 #include <fstream>
+#include "sstream.h"
 
 #include <coal/isoloader.h>
 
@@ -74,6 +75,10 @@ class TemplatesLoader : public Atlas::Message::DecoderBase {
                   << endl << flush;
     }
 
+    Atlas::Message::Object::MapType & db() {
+        return m_db;
+    }
+
     const Atlas::Message::Object & get(const string & graphic) {
         return m_db[graphic];
     }
@@ -81,7 +86,7 @@ class TemplatesLoader : public Atlas::Message::DecoderBase {
 
 void usage(char * progname)
 {
-    cout << "usage: " << progname << "filename" << endl << flush;
+    cout << "usage: " << progname << " filename" << endl << flush;
     return;
 }
 
@@ -99,6 +104,8 @@ int main(int argc, char ** argv)
     f.read();
     f.report();
 
+    int id_no = 0;
+
     CoalDatabase map_database;
     CoalIsoLoader loader (map_database);
     if (!loader.LoadMap(argv[1])) {
@@ -109,8 +116,28 @@ int main(int argc, char ** argv)
             CoalObject * object = (CoalObject*)map_database.GetObject (i);
             if (object != NULL) {
                 const string & graphic = object->graphic->filename;
+                size_t b = graphic.rfind('/') + 1;
+                size_t e = graphic.rfind('.');
+                string key(graphic, b, e - b);
+                Atlas::Message::Object::MapType & tdb = f.db();
+                Atlas::Message::Object::MapType::iterator t = tdb.find(key);
+                if (t != tdb.end()) {
+                    Atlas::Message::Object o = t->second;
+                    Atlas::Message::Object::MapType & omap = o.AsMap();
+                    omap.erase("graphic");
+                    stringstream id;
+                    id << omap["name"].AsString() << "_" << ++id_no << "_m";
+                    omap["id"] = id.str();
+                    omap["loc"] = "world_0";
+                    Atlas::Message::Object::ListType c(3);
+                    c[0] = object->anchor.GetX();
+                    c[1] = object->anchor.GetY();
+                    c[2] = object->anchor.GetZ();
+                    omap["pos"] = c;
+                    db->storeInWorld(o, id.str().c_str());
+                }
                 // Get basename, lookup custumise and load into database
-                cout << graphic;
+                cout << graphic << " " << key << endl;
             }
         }
     }

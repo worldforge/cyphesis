@@ -87,7 +87,7 @@ void CyphesisClient::login()
    account.SetAttr("id", string("al"));
    account.SetAttr("password", string("ping"));
 
-   list<Message::Object> args(1,account.AsObject());
+   Message::Object::ListType args(1,account.AsObject());
 
    l.SetArgs(args);
 
@@ -178,11 +178,11 @@ void CyphesisClient::create_char()
    erflag = 0;
    reply_flag = 0;
 
-   list<Message::Object> parlist(1,string("farmer"));
+   Message::Object::ListType parlist(1,string("farmer"));
    character.SetAttr("parents", Message::Object(parlist));
    character.SetAttr("name", string("Al Riddoch"));
 
-   list<Message::Object> args(1,character.AsObject());
+   Message::Object::ListType args(1,character.AsObject());
 
    c.SetAttr("args", Message::Object(args));
    c.SetAttr("from", account_id);

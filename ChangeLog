@@ -1,3 +1,11 @@
+2001-03-29  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* tools/cyisoload.cpp: Complete functionality for loadin iso map
+	  into world database.
+
+	* example/client/CyphesisClient.cpp: Fixed ListType usage in example
+	  client.
+
 2001-03-28  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* tools/cyisoload.cpp: Added tool which loads an iso format map into
