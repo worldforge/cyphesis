@@ -25,10 +25,10 @@ class BaseWorld {
     double m_realTime;
     EntityDict m_eobjects;
 
+    explicit BaseWorld(Entity &);
   public:
     Entity & m_gameWorld;
 
-    explicit BaseWorld(Entity &);
     virtual ~BaseWorld();
 
     Entity * getObject(const std::string & fid) const {

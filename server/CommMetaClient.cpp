@@ -35,8 +35,11 @@ static inline char *unpack_uint32(uint32_t *dest, char *buffer)
     return buffer+sizeof(uint32_t);
 }
 
+/// \brief Constructor for metaserver communication socket object.
+///
+/// @param svr Reference to the object that manages all socket communication.
 CommMetaClient::CommMetaClient(CommServer & svr) : CommIdleSocket(svr),
-                                                   lastTime(-1)
+                                                   m_lastTime(-1)
 {
 }
 
@@ -47,7 +50,7 @@ CommMetaClient::~CommMetaClient()
 
 int CommMetaClient::getFd() const
 {
-    return clientIos.getSocket();
+    return m_clientIos.getSocket();
 }
 
 bool CommMetaClient::eof()
@@ -70,24 +73,36 @@ void CommMetaClient::dispatch()
 {
 }
 
+/// \brief Set the target address if the communication socket.
+///
+/// @param mserver String address of the metaserver,
 bool CommMetaClient::setup(const std::string & mserver)
 {
     // Establish socket for communication with the metaserver
-    return clientIos.setTarget(mserver, metaserverPort);
+    return m_clientIos.setTarget(mserver, m_metaserverPort);
 }
 
 static const int MAXLINE = 4096;
 
+/// \brief Send a keepalive packet to the metaserver.
+///
+/// This should be called periodically to send a packet notifying the
+/// metaserver that this server is still alive.
 void CommMetaClient::metaserverKeepalive()
 {
     char         mesg[MAXLINE];
     unsigned int packet_size = 0;
 
     pack_uint32(SKEEP_ALIVE, mesg, &packet_size);
-    clientIos.write(mesg, packet_size);
-    clientIos << std::flush;
+    m_clientIos.write(mesg, packet_size);
+    m_clientIos << std::flush;
 }
 
+/// \brief Read a reply from the metaserver.
+///
+/// Read the data sent by the metaserver. If the packet received is
+/// a handshake, respond with the required response to verify that
+/// we are alive.
 void CommMetaClient::metaserverReply()
 {
     char mesg[MAXLINE];
@@ -95,8 +110,8 @@ void CommMetaClient::metaserverReply()
     uint32_t handshake = 0, command = 0;
     unsigned int packet_size;
 
-    clientIos.peek();
-    if (clientIos.readsome(mesg, MAXLINE) < (std::streamsize)sizeof(command)) {
+    m_clientIos.peek();
+    if (m_clientIos.readsome(mesg, MAXLINE) < (std::streamsize)sizeof(command)) {
         log(WARNING, "WARNING: Reply from metaserver too short");
     }
     mesg_ptr = unpack_uint32(&command, mesg);
@@ -111,26 +126,30 @@ void CommMetaClient::metaserverReply()
         mesg_ptr = pack_uint32(SERVERSHAKE, mesg, &packet_size);
         mesg_ptr = pack_uint32(handshake, mesg_ptr, &packet_size);
 
-        clientIos.write(mesg, packet_size);
-        clientIos << std::flush;
+        m_clientIos.write(mesg, packet_size);
+        m_clientIos << std::flush;
     }
 
 }
 
+/// \brief Send a terminate packet to the metaserver.
+///
+/// This should be called to indicate that this server is going down,
+/// and should no longer be listed.
 void CommMetaClient::metaserverTerminate()
 {
     char         mesg[MAXLINE];
     unsigned int packet_size = 0;
 
     pack_uint32(TERMINATE, mesg, &packet_size);
-    clientIos.write(mesg, packet_size);
-    clientIos << std::flush;
+    m_clientIos.write(mesg, packet_size);
+    m_clientIos << std::flush;
 }
 
 void CommMetaClient::idle(time_t t)
 {
-    if (t > (lastTime + 5 * 60)) {
-        lastTime = t;
+    if (t > (m_lastTime + 5 * 60)) {
+        m_lastTime = t;
         metaserverKeepalive();
     }
 }

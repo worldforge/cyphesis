@@ -14,6 +14,7 @@
 /// remote clients.
 class CommListener : public CommSocket {
   private:
+    /// skstream object to manage the listen socket.
     tcp_socket_server m_listener;
 
     bool accept();
@@ -25,8 +26,8 @@ class CommListener : public CommSocket {
     bool setup(int port);
 
     int getFd() const;
-    bool eof();
     bool isOpen() const;
+    bool eof();
     bool read();
     void dispatch();
 };

@@ -14,6 +14,10 @@
 
 static const bool debug_flag = false;
 
+/// \brief Constructor for PostgreSQL socket polling object.
+///
+/// @param svr Reference to the object that manages all socket communication.
+/// @param db Reference to the low level database management object.
 CommPSQLSocket::CommPSQLSocket(CommServer & svr, Database & db) :
                                CommIdleSocket(svr), m_db(db),
                                m_vacuumTime(0), m_reindexTime(0),

@@ -1,5 +1,22 @@
 2004-08-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseWorld.h, server/CommSocket.h, server/CommIdleSocket.h:
+	  Make constructors of some base classes protected.
+
+	* server/Account.cpp: Note a possible bug in the character
+	  creation code.
+
+	* server/CommIdleSocket.cpp, server/CommIdleSocket.h,
+	  server/CommListener.cpp, server/CommListener.h,
+	  server/CommLocalClient.cpp, server/CommMetaClient.cpp,
+	  server/CommMetaClient.h, server/CommPSQLSocket.cpp,
+	  server/CommPSQLSocket.h, server/CommRemoteClient.cpp,
+	  server/CommSocket.cpp, server/CommSocket.h,
+	  server/CommUnixListener.cpp, server/CommUnixListener.h:
+	  Clean up the Comm classes for consistancy and readability.
+
+2004-08-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/PythonMindScript.h, rulesets/PythonScript.h,
 	  rulesets/PythonThingScript.h, rulesets/Script.h, rulesets/Script.cpp:
 	  Make types in function declarations more concise.

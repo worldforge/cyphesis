@@ -19,6 +19,9 @@
 
 static const bool debug_flag = false;
 
+/// \brief Constructor for listener socket object.
+///
+/// @param svr Reference to the object that manages all socket communication.
 CommListener::CommListener(CommServer & svr) : CommSocket(svr)
 {
 }
@@ -51,6 +54,7 @@ void CommListener::dispatch()
 {
 }
 
+/// \brief Create and bind the listen socket.
 bool CommListener::setup(int port)
 {
     m_listener.open(port);
@@ -71,6 +75,7 @@ bool CommListener::setup(int port)
     }
 }
 
+/// \brief Accept a new connect to the listen socket.
 bool CommListener::accept()
 {
     // Low level socket code to accept a new client connection, and create

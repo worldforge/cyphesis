@@ -7,6 +7,10 @@
 #include "TrustedConnection.h"
 #include "CommServer.h"
 
+/// \brief Constructor for local client socket object.
+///
+/// @param svr Reference to the object that manages all socket communication.
+/// @param fd Socket file descriptor
 CommLocalClient::CommLocalClient(CommServer & svr, int fd) :
                  CommClient(svr, fd, *new TrustedConnection("local", *this,
                                                             svr.m_server))

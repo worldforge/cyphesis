@@ -9,10 +9,11 @@ class CommServer;
 
 /// \brief Base class for all classes for handling socket connections.
 class CommSocket {
-  public:
-    CommServer & m_commServer;
-
+  protected:
     explicit CommSocket(CommServer & svr);
+  public:
+    /// Reference to the object that manages all socket communication.
+    CommServer & m_commServer;
 
     virtual ~CommSocket();
 

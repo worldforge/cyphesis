@@ -15,6 +15,9 @@
 
 static const bool debug_flag = false;
 
+/// \brief Constructor unix listen socket object.
+///
+/// @param svr Reference to the object that manages all socket communication.
 CommUnixListener::CommUnixListener(CommServer & svr) : CommSocket(svr),
                                                        m_bound(false)
 {
@@ -54,6 +57,7 @@ void CommUnixListener::dispatch()
 
 #define UNIX_PATH_MAX 108
 
+/// \brief Create and bind the listen socket.
 bool CommUnixListener::setup()
 {
     m_path = var_directory + "/tmp/cyphesis.sock";
@@ -64,6 +68,7 @@ bool CommUnixListener::setup()
     return m_bound;
 }
 
+/// \brief Accept a new connect to the listen socket.
 bool CommUnixListener::accept()
 {
     debug(std::cout << "Local accepting.." << std::endl << std::flush;);

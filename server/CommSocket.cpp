@@ -4,6 +4,9 @@
 
 #include "CommSocket.h"
 
+/// \brief Constructor for socket object.
+///
+/// @param svr Reference to the object that manages all socket communication.
 CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
 
 CommSocket::~CommSocket()

@@ -14,10 +14,13 @@
 /// \brief Handle a socket used to communicate with the metaserver.
 class CommMetaClient : public CommIdleSocket {
   private:
-    udp_socket_stream clientIos;
-    time_t lastTime;
+    /// C++ iostream compatible socket object handling the socket IO.
+    udp_socket_stream m_clientIos;
+    /// The last time a packet was sent to the metaserver.
+    time_t m_lastTime;
 
-    static const int metaserverPort = 8453;
+    /// Port number used to talk to the metaserver.
+    static const int m_metaserverPort = 8453;
 
   public:
     explicit CommMetaClient(CommServer & svr);
@@ -28,13 +31,14 @@ class CommMetaClient : public CommIdleSocket {
     void metaserverReply();
     void metaserverTerminate();
 
+    bool setup(const std::string &);
+
     int getFd() const;
-    bool eof();
     bool isOpen() const;
+    bool eof();
     bool read();
     void dispatch();
 
-    bool setup(const std::string &);
     void idle(time_t t);
 };
 

@@ -1,3 +1,6 @@
+Look at the FIXME in Account related to broadcasting a sight of a new
+character on creation.
+
 Character creation should not fail if creating its bootstrap inventory fails.
 
 Make all operation handlers return operations in a argument rather than

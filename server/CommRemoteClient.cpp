@@ -7,7 +7,13 @@
 #include "Connection.h"
 #include "CommServer.h"
 
-CommRemoteClient::CommRemoteClient(CommServer & svr, int fd, const std::string & addr) :
+/// \brief Constructor remote client socket object.
+///
+/// @param svr Reference to the object that manages all socket communication.
+/// @param fd Socket file descriptor
+/// @param addr Address of the remote client.
+CommRemoteClient::CommRemoteClient(CommServer & svr, int fd,
+                                   const std::string & addr) :
    CommClient(svr, fd, *new Connection(addr, *this, svr.m_server))
 {
 }

@@ -124,6 +124,8 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         world.message(*c, chr);
     }
 
+    // FIXME WHy the hell are we broadcasting a sight of the newly created
+    // character?
     Create c;
     ListType & cargs = c.getArgs();
     cargs.push_back(MapType());

@@ -14,10 +14,14 @@
 /// This could probably be re-implemented as a pure virtual interface which
 /// does not inherit from CommSocket.
 class CommIdleSocket : public CommSocket {
-  public:
+  protected:
     explicit CommIdleSocket(CommServer & svr);
+  public:
     virtual ~CommIdleSocket();
 
+    /// \brief Perform idle tasks.
+    ///
+    /// Called from the server's core idle function whenever it is called.
     virtual void idle(time_t t) = 0;
 };
 

@@ -13,22 +13,27 @@ class Database;
 /// RDBMS.
 class CommPSQLSocket : public CommIdleSocket {
   protected:
+    /// Reference to the low level database management object.
     Database & m_db;
 
+    /// Time when the database vacuum job should be run.
     time_t m_vacuumTime;
+    /// Time when the database reindex job should be run.
     time_t m_reindexTime;;
+    /// Flag indicating whether the next vacuum job should be vacuum full.
     bool m_vacuumFull;
   public:
+    /// Interval between database vacuum jobs.
     static const int vacFreq = 25 * 60;
+    /// Interval between database reindex jobs.
     static const int reindexFreq = 30 * 60;
 
     CommPSQLSocket(CommServer & svr, Database & db);
     virtual ~CommPSQLSocket();
 
     virtual int getFd() const;
-    virtual bool eof();
     virtual bool isOpen() const;
-
+    virtual bool eof();
     virtual bool read();
     virtual void dispatch();
 
