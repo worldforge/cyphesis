@@ -16,9 +16,6 @@ class Entity;
 class Location {
   private:
     bool m_solid;
-  protected:
-    bool distanceLeft(const Location & other, Point3D & c) const;
-    bool distanceRight(const Location & other, Point3D & c) const;
   public:
     Entity * m_loc;
     Point3D m_pos;   // Coords relative to m_loc entity
@@ -48,16 +45,6 @@ class Location {
     const Point3D getXyz(Entity *) const;
 
     void addToMessage(Atlas::Message::MapType & ent) const;
-
-    const Point3D relativePosition(const Location & other) const {
-        Point3D dist(0,0,0);
-        if (distanceRight(other, dist)) {
-           dist.setValid();
-        } else {
-           return Point3D();
-        }
-        return dist;
-    }
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };

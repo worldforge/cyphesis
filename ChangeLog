@@ -1,5 +1,10 @@
 2004-09-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.h, modules/Location.cpp: Remove obsolete
+	  broken distance functions.
+
+2004-09-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/World.cpp: Use new distance function for determining
 	  visible world contents.
 
