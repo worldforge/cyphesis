@@ -5,6 +5,10 @@
 #ifndef SERVER_PERSISTOR_IMPL_H
 #define SERVER_PERSISTOR_IMPL_H
 
+#include "rulesets/Entity.h"
+#include "rulesets/Character.h"
+#include "rulesets/Plant.h"
+
 #include "common/Database.h"
 #include "common/stringstream.h"
 

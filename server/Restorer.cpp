@@ -26,17 +26,17 @@ template class Restorer<Stackable>;
 template class Restorer<Structure>;
 template class Restorer<World>;
 
-Persistor<Entity> Restorer<Entity>::m_persist(true);
-Persistor<Thing> Restorer<Thing>::m_persist(true);
-Persistor<Character> Restorer<Character>::m_persist(true);
-Persistor<Creator> Restorer<Creator>::m_persist(true);
-Persistor<Plant> Restorer<Plant>::m_persist(true);
-Persistor<Food> Restorer<Food>::m_persist(true);
-Persistor<Area> Restorer<Area>::m_persist(true);
-Persistor<Line> Restorer<Line>::m_persist(true);
-Persistor<Stackable> Restorer<Stackable>::m_persist(true);
-Persistor<Structure> Restorer<Structure>::m_persist(true);
-Persistor<World> Restorer<World>::m_persist(true);
+template <> Persistor<Entity> Restorer<Entity>::m_persist(true);
+template <> Persistor<Thing> Restorer<Thing>::m_persist(true);
+template <> Persistor<Character> Restorer<Character>::m_persist(true);
+template <> Persistor<Creator> Restorer<Creator>::m_persist(true);
+template <> Persistor<Plant> Restorer<Plant>::m_persist(true);
+template <> Persistor<Food> Restorer<Food>::m_persist(true);
+template <> Persistor<Area> Restorer<Area>::m_persist(true);
+template <> Persistor<Line> Restorer<Line>::m_persist(true);
+template <> Persistor<Stackable> Restorer<Stackable>::m_persist(true);
+template <> Persistor<Structure> Restorer<Structure>::m_persist(true);
+template <> Persistor<World> Restorer<World>::m_persist(true);
 
 void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
 {

@@ -1,5 +1,12 @@
 2004-07-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/CommClient.cpp, rulesets/MemMap.cpp, server/CommServer.cpp,
+	  server/EntityFactory.cpp, server/Persistor_impl.h,
+	  server/Restorer.cpp, server/Restorer_impl.h:
+	  Fix code to comply with stricter gcc 3.4.1 template rules.
+
+2004-07-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/define_world.py: Remove duplicate fir tree.
 
 	* rulesets/Entity.cpp: Remove duplicate copy of Entity::getLocation

@@ -5,9 +5,6 @@
 #include "MemEntity.h"
 #include "MemMap.h"
 #include "Script.h"
-#include "Entity_getLocation.h"
-
-#include "modules/Location.h"
 
 #include "common/log.h"
 #include "common/debug.h"
@@ -16,6 +13,9 @@
 #include <Atlas/Objects/Operation/Look.h>
 
 static const bool debug_flag = false;
+
+// This is a template which requires debug flag to be declared.
+#include "Entity_getLocation.h"
 
 MemEntity * MemMap::addEntity(MemEntity * entity)
 {

@@ -14,6 +14,8 @@
 
 #include <iostream>
 
+#include <errno.h>
+
 static const bool debug_flag = false;
 
 CommServer::CommServer(ServerRouting & svr) : server(svr)

@@ -6,8 +6,6 @@
 
 #include "CreatorClient.h"
 
-#include "rulesets/Entity_getLocation.h"
-
 #include "common/debug.h"
 #include "common/BaseEntity.h"
 
@@ -15,6 +13,9 @@
 #include <Atlas/Objects/Operation/Login.h>
 
 static const bool debug_flag = false;
+
+// This is a template which requires debug flag to be declared.
+#include "rulesets/Entity_getLocation.h"
 
 CommClient::CommClient() : BaseEntity("")
 {

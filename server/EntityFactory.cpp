@@ -21,8 +21,6 @@
 #include "rulesets/Area.h"
 #include "rulesets/World.h"
 
-#include "rulesets/Entity_getLocation.h"
-
 #include "rulesets/Python_API.h"
 
 #include "common/debug.h"
@@ -36,6 +34,9 @@
 #include <Atlas/Objects/Entity/GameEntity.h>
 
 static const bool debug_flag = false;
+
+// This is a template which requires debug flag to be declared.
+#include "rulesets/Entity_getLocation.h"
 
 EntityFactory * EntityFactory::m_instance = NULL;
 
