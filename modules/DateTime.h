@@ -53,7 +53,7 @@ class DateTime {
     unsigned int mpy() { return m_mpy; }
 };
 
-inline ostream & operator<<(ostream& s, const DateTime& d) {
+inline std::ostream & operator<<(std::ostream& s, const DateTime& d) {
     return s << d.year() << "-" << d.month() << "-" << d.day() << " "
              << d.hour() << ":" << d.minute() << ":" << d.second();
 }

@@ -5,6 +5,8 @@
 #include "Lobby.h"
 #include "Connection.h"
 
+#include <iostream>
+
 using Atlas::Message::Object;
 
 oplist Lobby::operation(const RootOperation & op)
@@ -15,7 +17,8 @@ oplist Lobby::operation(const RootOperation & op)
         for (; I != accounts.end(); ++I) {
             Connection * c = I->second->connection;
             if (c != NULL) {
-                cout << "Sending to " << I->first << " in lobby" << endl << flush;
+                std::cout << "Sending to " << I->first << " in lobby"
+                          << std::endl << std::flush;
                 c->send(&op);
             }
         }

@@ -85,7 +85,7 @@ class Location {
         return coords.inTime(m, bbox, velocity, om, other.bbox);
     }
 
-    friend ostream & operator<<(ostream& s, Location& v);
+    friend std::ostream & operator<<(std::ostream& s, Location& v);
 };
 
 #endif // MODULES_LOCATION_H

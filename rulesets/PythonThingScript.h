@@ -21,7 +21,7 @@ class PythonThingScript : public PythonScript {
                            const Atlas::Objects::Operation::RootOperation &,
                            oplist &,
                       Atlas::Objects::Operation::RootOperation * sub_op=NULL);
-    virtual void hook(const string &, Entity *);
+    virtual void hook(const std::string &, Entity *);
 };
 
 #endif // RULESETS_PYTHON_THING_SCRIPT_H

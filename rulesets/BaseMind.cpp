@@ -101,7 +101,7 @@ oplist BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        debug( cout << " no args!" << endl << flush;);
+        debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
     Object obj = args.front();
@@ -122,14 +122,14 @@ oplist BaseMind::sightCutOperation(const Sight & op, Cut & sub_op)
 
 oplist BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op)
 {
-    debug( cout << "Sight Delete operation" << endl << flush;);
+    debug( std::cout << "Sight Delete operation" << std::endl << std::flush;);
     oplist res;
     if (script->Operation("sight_delete", op, res, &sub_op) != 0) {
         return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        debug( cout << " no args!" << endl << flush;);
+        debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
     Object obj = args.front();
@@ -168,14 +168,14 @@ oplist BaseMind::sightImaginaryOperation(const Sight & op, Imaginary & sub_op)
 
 oplist BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
 {
-    debug( cout << "BaseMind::sightOperation(Sight, Move)" << endl << flush;);
+    debug( std::cout << "BaseMind::sightOperation(Sight, Move)" << std::endl << std::flush;);
     oplist res;
     if (script->Operation("sight_move", op, res, &sub_op) != 0) {
         return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        debug( cout << " no args!" << endl << flush;);
+        debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
     const Object & obj = args.front();
@@ -195,7 +195,7 @@ oplist BaseMind::sightSetOperation(const Sight & op, Set & sub_op)
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        debug( cout << " no args!" << endl << flush;);
+        debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
     const Object & obj = args.front();
@@ -216,7 +216,7 @@ oplist BaseMind::sightTouchOperation(const Sight & op, Touch & sub_op)
 
 oplist BaseMind::sightOtherOperation(const Sight & op, RootOperation & sub_op)
 {
-    debug( cout << "BaseMind::sightOperation(Sight, RootOperation)" << endl << flush;);
+    debug( std::cout << "BaseMind::sightOperation(Sight, RootOperation)" << std::endl << std::flush;);
     oplist res;
     script->Operation("sight_undefined", op, res, &sub_op);
     return res;
@@ -322,7 +322,7 @@ oplist BaseMind::soundTouchOperation(const Sound & op, Touch & sub_op)
 
 oplist BaseMind::soundTalkOperation(const Sound & op, Talk & sub_op)
 {
-    debug( cout << "BaseMind::soundOperation(Sound, Talk)" << endl << flush;);
+    debug( std::cout << "BaseMind::soundOperation(Sound, Talk)" << std::endl << std::flush;);
     oplist res;
     script->Operation("sound_talk", op, res, &sub_op);
     return res;
@@ -330,7 +330,7 @@ oplist BaseMind::soundTalkOperation(const Sound & op, Talk & sub_op)
 
 oplist BaseMind::soundOtherOperation(const Sound & op, RootOperation & sub_op)
 {
-    debug( cout << "BaseMind::soundOperation(Sound, RootOperation)" << endl << flush;);
+    debug( std::cout << "BaseMind::soundOperation(Sound, RootOperation)" << std::endl << std::flush;);
     oplist res;
     script->Operation("sound_undefined", op, res, &sub_op);
     return res;
@@ -347,13 +347,13 @@ oplist BaseMind::SoundOperation(const Sound & op)
     }
     const Object::ListType & args = op.GetArgs();
     if (args.size() == 0) {
-        debug( cout << " no args!" << endl << flush;);
+        debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
     Object obj = args.front();
     Root * op2 = utility::Object_asRoot(obj);
     if (op2->GetObjtype() == "op") {
-        debug( cout << " args is an op!" << endl << flush;);
+        debug( std::cout << " args is an op!" << std::endl << std::flush;);
         res = callSoundOperation(op, *(RootOperation *)op2);
     }
     delete op2;
@@ -363,28 +363,28 @@ oplist BaseMind::SoundOperation(const Sound & op)
 oplist BaseMind::SightOperation(const Sight & op)
 {
     if (!isAwake) { return oplist(); }
-    debug( cout << "BaseMind::Operation(Sight)" << endl << flush;);
+    debug( std::cout << "BaseMind::Operation(Sight)" << std::endl << std::flush;);
     // Deliver argument to sight things
     oplist res;
     if (script->Operation("sight", op, res) != 0) {
-        debug( cout << " its in the script" << endl << flush;);
+        debug( std::cout << " its in the script" << std::endl << std::flush;);
         return res;
     }
     const Object::ListType & args = op.GetArgs();
     if (args.size() == 0) {
-        debug( cout << " no args!" << endl << flush;);
+        debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
     Object obj = args.front();
     Root * op2 = utility::Object_asRoot(obj);
     if (op2->GetObjtype() == "op") {
-        debug( cout << " args is an op!" << endl << flush;);
+        debug( std::cout << " args is an op!" << std::endl << std::flush;);
         res = callSightOperation(op, *(RootOperation *)op2);
         //std::string & op2type = op2->GetParents().front().AsString();
         //std::string subop = "sight_" + op2type;
         //script->Operation(subop, op, res, (RootOperation *)op2);
     } else /* if (op2->GetObjtype() == "object") */ {
-        debug( cout << " arg is an entity!" << endl << flush;);
+        debug( std::cout << " arg is an entity!" << std::endl << std::flush;);
         map.add(obj);
     }
     delete op2;
@@ -418,7 +418,7 @@ oplist BaseMind::SaveOperation(const Save & op)
     oplist res;
     script->Operation("save", op, res);
     Object::MapType emap;
-    cout << res.size() << " Got stuff from mind" << endl << flush;
+    std::cout << res.size() << " Got stuff from mind" << std::endl << std::flush;
     if ((res.size() != 0) && (res.front()->GetArgs().size() != 0)) {
         emap = res.front()->GetArgs().front().AsMap();
         // FIXME Operations created in python are leaked

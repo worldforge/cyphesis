@@ -9,19 +9,12 @@
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Codec.h>
 
-#include <fstream>
-
 #include <common/const.h>
 
 class CommServer;
 class Connection;
 
-class sockbuf : public filebuf {
-  public:
-    sockbuf() { }
-    sockbuf(int fd) : filebuf(fd) { }
-    virtual streampos sys_seek(streamoff, _seek_dir) { return streampos(); }
-};
+#include <skstream.h>
 
 class CommClient : Atlas::Objects::Decoder {
   public:
@@ -29,9 +22,8 @@ class CommClient : Atlas::Objects::Decoder {
 
   private:
     int clientFd;
-    sockbuf clientBuf;
-    iostream clientIos;
-    Atlas::Codec<iostream> * codec;
+    socket_stream clientIos;
+    Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
     Connection & connection;
 

@@ -1,5 +1,13 @@
 2001-08-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/server.cpp, server/CommClient.h, client/ClientConnection.h,
+	  tools/cycmd.cpp: Switched to using skstream library for socket
+	  comms instead of hand rolled fstream based version.
+
+	* ALL FILES: Fixed use of std namespace throughout all code.
+
+2001-08-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* module/DataTime.h: Added includes so header is independant.
 
 	* client/CommClient.cpp: Fixed leak of operations.

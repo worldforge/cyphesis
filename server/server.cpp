@@ -68,7 +68,7 @@ static inline char *unpack_uint32(uint32_t *dest, char *buffer)
 
 CommClient::CommClient(CommServer & svr, int fd, int port) :
             commServer(svr),
-            clientFd(fd), clientBuf(fd), clientIos(&clientBuf),
+            clientFd(fd), clientIos(fd),
             codec(NULL), encoder(NULL),
             connection(*new Connection(*this))
 {

@@ -45,7 +45,7 @@ EntityFactory::EntityFactory()
 Thing * EntityFactory::newThing(const std::string & type,const Object & ent, const edict_t & world)
 {
     if (!ent.IsMap()) {
-         debug( cout << "Entity is not a map" << endl << flush;);
+         debug( std::cout << "Entity is not a map" << std::endl << std::flush;);
     }
     Thing * thing = NULL;
     std::string py_package;
@@ -67,7 +67,8 @@ Thing * EntityFactory::newThing(const std::string & type,const Object & ent, con
     if (thing == NULL) {
         thing = new Thing();
     }
-    debug( cout << "[" << type << " " << thing->name << "]" << endl << flush;);
+    debug( std::cout << "[" << type << " " << thing->name << "]" << std::endl
+                     << std::flush;);
     thing->type = type;
     // Sort out python object
     if (py_package.size() != 0) {
@@ -78,7 +79,7 @@ Thing * EntityFactory::newThing(const std::string & type,const Object & ent, con
     if ((K != entmap.end()) && K->second.IsString()) {
         thing->name = K->second.AsString();
     } else {
-        debug( cout << "Got no name" << endl << flush;);
+        debug( std::cout << "Got no name" << std::endl << std::flush;);
     }
     thing->merge(entmap);
     // Get location from entity, if it is present

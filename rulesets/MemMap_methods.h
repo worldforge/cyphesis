@@ -21,14 +21,14 @@ static const bool debug_flag = false;
 
 inline Entity * MemMap::addObject(Entity * object)
 {
-    debug(cout << "MemMap::addObject " << object << " " << object->fullid
-               << endl << flush;);
+    debug(std::cout << "MemMap::addObject " << object << " " << object->fullid
+                    << std::endl << std::flush;);
     if (object != NULL) {
         things[object->fullid] = object;
     }
 
-    debug( cout << things[object->fullid] << endl << flush;);
-    debug( cout << this << endl << flush;);
+    debug( std::cout << things[object->fullid] << std::endl << std::flush;);
+    debug( std::cout << this << std::endl << std::flush;);
     std::list<std::string>::const_iterator I;
     for(I = addHooks.begin(); I != addHooks.end(); I++) {
         script->hook(*I, object);
@@ -38,7 +38,7 @@ inline Entity * MemMap::addObject(Entity * object)
 
 inline RootOperation * MemMap::lookId()
 {
-    debug( cout << "MemMap::lookId" << endl << flush;);
+    debug( std::cout << "MemMap::lookId" << std::endl << std::flush;);
     if (additionsById.size() != 0) {
         std::string id = additionsById.front();
         additionsById.pop_front();
@@ -55,7 +55,7 @@ inline RootOperation * MemMap::lookId()
 inline Entity * MemMap::addId(const std::string & id)
 {
     if (id.size() == 0) { return NULL; }
-    debug( cout << "MemMap::add_id" << endl << flush;);
+    debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     additionsById.push_back(id);
     Object::MapType m;
     m["id"] = Object(std::string(id));
@@ -79,7 +79,7 @@ inline void MemMap::del(const std::string & id)
 
 inline Entity * MemMap::get(const std::string & id)
 {
-    debug( cout << "MemMap::get" << endl << flush;);
+    debug( std::cout << "MemMap::get" << std::endl << std::flush;);
     if (id.size() == 0) { return NULL; }
     if (things.find(id) != things.end()) {
         return (Entity*)things[id];
@@ -89,7 +89,7 @@ inline Entity * MemMap::get(const std::string & id)
 
 inline Entity * MemMap::getAdd(const std::string & id)
 {
-    debug( cout << "MemMap::getAdd" << endl << flush;);
+    debug( std::cout << "MemMap::getAdd" << std::endl << std::flush;);
     if (id.size() == 0) { return NULL; }
     Entity * obj = MemMap::get(id);
     if (obj != NULL) {

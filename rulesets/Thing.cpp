@@ -99,7 +99,7 @@ oplist Thing::CreateOperation(const Create & op)
         } else {
             type = parents.front().AsString();
         }
-        debug( cout << fullid << " creating " << type;);
+        debug( std::cout << fullid << " creating " << type;);
         Entity * obj = world->addObject(type,ent);
         if (!obj->location) {
             obj->location.ref = location.ref;
@@ -116,7 +116,7 @@ oplist Thing::CreateOperation(const Create & op)
         return oplist(1,s);
     }
     catch (Atlas::Message::WrongTypeException) {
-        cerr << "EXCEPTION: Malformed object to be created\n";
+        std::cerr << "EXCEPTION: Malformed object to be created\n";
         return error(op, "Malformed object to be created\n");
     }
     return oplist();
@@ -174,7 +174,7 @@ oplist Thing::FireOperation(const Fire & op)
 
 oplist Thing::MoveOperation(const Move & op)
 {
-    debug( cout << "Thing::move_operation" << endl << flush;);
+    debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
     seq++;
     oplist res;
     if (script->Operation("move", op, res) != 0) {
@@ -182,7 +182,7 @@ oplist Thing::MoveOperation(const Move & op)
     }
     const Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
-        debug( cout << "ERROR: move op has no argument" << endl << flush;);
+        debug( std::cout << "ERROR: move op has no argument" << std::endl << std::flush;);
         return oplist();
     }
     try {
@@ -197,7 +197,7 @@ oplist Thing::MoveOperation(const Move & op)
         if (J == world->getObjects().end()) {
             return error(op, "Move location ref invalid");
         }
-        debug(cout << "{" << ref << "}" << endl << flush;);
+        debug(std::cout << "{" << ref << "}" << std::endl << std::flush;);
         Entity * newref = J->second;
         if (newref == this) {
             return error(op, "Attempt by entity to move into itself");
@@ -232,7 +232,7 @@ oplist Thing::MoveOperation(const Move & op)
         // to this entity and others to indicate if one has gained or lost
         // sight of the other because of this movement
         if (consts::enable_ranges && perceptive) {
-            debug(cout << "testing range" << endl;);
+            debug(std::cout << "testing range" << std::endl;);
             elist_t::const_iterator I = location.ref->contains.begin();
             Object::ListType appear, disappear;
             Object::MapType this_ent;
@@ -252,7 +252,7 @@ oplist Thing::MoveOperation(const Move & op)
                     if (wasInRange) {
                         // We are losing sight of that object
                         disappear.push_back(that_ent);
-                        debug(cout << fullid << ": losing site of " <<(*I)->fullid << endl;);
+                        debug(std::cout << fullid << ": losing site of " <<(*I)->fullid << std::endl;);
                         if (((Thing*)*I)->perceptive) {
                             // Send operation to the entity in question so it
                             // knows it is losing sight of us.
@@ -264,7 +264,7 @@ oplist Thing::MoveOperation(const Move & op)
                     } else /*if (isInRange)*/ {
                         // We are gaining sight of that object
                         appear.push_back(that_ent);
-                        debug(cout << fullid << ": gaining site of " <<(*I)->fullid << endl;);
+                        debug(std::cout << fullid << ": gaining site of " <<(*I)->fullid << std::endl;);
                         if (((Thing*)*I)->perceptive) {
                             // Send operation to the entity in question so it
                             // knows it is gaining sight of us.
@@ -296,7 +296,7 @@ oplist Thing::MoveOperation(const Move & op)
         return res2;
     }
     catch (Atlas::Message::WrongTypeException) {
-        cerr << "EXCEPTION: Malformed object to be moved\n";
+        std::cerr << "EXCEPTION: Malformed object to be moved\n";
         return error(op, "Malformed object to be moved\n");
     }
     return oplist();
@@ -331,7 +331,7 @@ oplist Thing::SetOperation(const Set & op)
         return res2;
     }
     catch (Atlas::Message::WrongTypeException) {
-        cerr << "EXCEPTION: Malformed set operation\n";
+        std::cerr << "EXCEPTION: Malformed set operation\n";
         return error(op, "Malformed set operation\n");
     }
     return oplist();

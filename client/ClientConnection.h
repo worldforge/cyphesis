@@ -12,15 +12,8 @@
 #include <common/operations.h>
 #include <common/types.h>
 
-#include <fstream>
+#include <skstream.h>
 #include <deque>
-
-class sockbuf : public filebuf {
-  public:
-    sockbuf() { }
-    sockbuf(int fd) : filebuf(fd) { }
-    virtual streampos sys_seek(streamoff, _seek_dir) { return streampos(); }
-};
 
 typedef enum client_state {
     INIT,
@@ -35,8 +28,7 @@ class ClientConnection : public Atlas::Objects::Decoder {
     bool error_flag;
     cstate_t state;
     int client_fd;
-    sockbuf * client_buf;
-    std::iostream * ios;
+    socket_stream ios;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
     std::string acName;
@@ -45,7 +37,7 @@ class ClientConnection : public Atlas::Objects::Decoder {
     dict_t objects;
     std::deque<Atlas::Objects::Operation::RootOperation *> operationQueue;
 
-    template<class O> void push(O &);
+    template<class O> void push(const O &);
 
     void operation(const Atlas::Objects::Operation::RootOperation&);
 
@@ -92,10 +84,10 @@ class ClientConnection : public Atlas::Objects::Decoder {
     void error(const std::string & message);
 
     int peek() {
-        return ios->peek();
+        return ios.peek();
     }
     int eof() {
-        return ios->eof();
+        return ios.eof();
     }
     int get_fd() {
         return client_fd;

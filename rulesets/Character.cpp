@@ -134,14 +134,15 @@ oplist Character::ImaginaryOperation(const Imaginary & op)
 
 oplist Character::SetupOperation(const Setup & op)
 {
-    debug( cout << "Character::tick" << endl << flush;);
+    debug( std::cout << "Character::tick" << std::endl << std::flush;);
     oplist res;
-    debug( cout << "CHaracter::Operation(setup)" << endl << flush;);
+    debug( std::cout << "CHaracter::Operation(setup)" << std::endl
+                     << std::flush;);
     if (script->Operation("setup", op, res) != 0) {
         return res;
     }
     if (op.HasAttr("sub_to")) {
-        debug( cout << "Has sub_to" << endl << flush;);
+        debug( std::cout << "Has sub_to" << std::endl << std::flush;);
         return res;
     }
 
@@ -178,10 +179,11 @@ oplist Character::SetupOperation(const Setup & op)
 oplist Character::TickOperation(const Tick & op)
 {
     if (op.HasAttr("sub_to")) {
-        debug( cout << "Has sub_to" << endl << flush;);
+        debug( std::cout << "Has sub_to" << std::endl << std::flush;);
         return oplist();
     }
-    debug(cout << "================================" << endl << flush;);
+    debug(std::cout << "================================" << std::endl
+                    << std::flush;);
     const Object::ListType & args = op.GetArgs();
     if ((0 != args.size()) && (args.front().IsMap())) {
         // Deal with movement.
@@ -189,7 +191,7 @@ oplist Character::TickOperation(const Tick & op)
         Object::MapType::const_iterator I = arg1.find("serialno");
         if ((I != arg1.end()) && (I->second.IsInt())) {
             if (I->second.AsInt() < movement.m_serialno) {
-                debug(cout << "Old tick" << endl << flush;);
+                debug(std::cout << "Old tick" << std::endl << std::flush;);
                 return oplist();
             }
         }
@@ -251,7 +253,7 @@ oplist Character::TickOperation(const Tick & op)
 
 oplist Character::TalkOperation(const Talk & op)
 {
-    debug( cout << "Character::OPeration(Talk)" << endl << flush;);
+    debug( std::cout << "Character::OPeration(Talk)" << std::endl<<std::flush;);
     Sound * s = new Sound(Sound::Instantiate());
     s->SetArgs(Object::ListType(1,op.AsObject()));
     return oplist(1,s);
@@ -340,29 +342,29 @@ oplist Character::mindTickOperation(const Tick & op)
 
 oplist Character::mindMoveOperation(const Move & op)
 {
-    debug( cout << "Character::mind_move_op" << endl << flush;);
+    debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
     const Object::ListType & args = op.GetArgs();
     if ((0 == args.size()) || (!args.front().IsMap())) {
-        cerr << "move op has no argument" << endl << flush;
+        std::cerr << "move op has no argument" << std::endl << std::flush;
         return oplist();
     }
     const Object::MapType & arg1 = args.front().AsMap();
     Object::MapType::const_iterator I = arg1.find("id");
     if ((I == arg1.end()) || !I->second.IsString()) {
-        cerr << "Its got no id" << endl << flush;
+        std::cerr << "Its got no id" << std::endl << std::flush;
     }
     const std::string & oname = I->second.AsString();
     edict_t::const_iterator J = world->getObjects().find(oname);
     if (J == world->getObjects().end()) {
-        debug( cout << "This move op is for a phoney object" << endl << flush;);
+        debug( std::cout << "This move op is for a phoney object" << std::endl << std::flush;);
         return oplist();
     }
     Move * newop = new Move(op);
     Entity * obj = J->second;
     if (obj != this) {
-        debug( cout << "Moving something else. " << oname << endl << flush;);
+        debug( std::cout << "Moving something else. " << oname << std::endl << std::flush;);
         if ((obj->weight < 0) || (obj->weight > weight)) {
-            debug( cout << "We can't move this. Just too heavy" << endl << flush;);
+            debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             delete newop;
             return oplist();
         }
@@ -374,7 +376,7 @@ oplist Character::mindMoveOperation(const Move & op)
     if ((I != arg1.end()) && (I->second.IsString())) {
         location_ref = I->second.AsString();
     } else {
-        debug( cout << "Parent not set" << endl << flush;);
+        debug( std::cout << "Parent not set" << std::endl << std::flush;);
     }
     Vector3D location_coords, location_vel, location_face;
     try {
@@ -394,7 +396,8 @@ oplist Character::mindMoveOperation(const Move & op)
         }
     }
     catch (Atlas::Message::WrongTypeException) {
-        cerr << "EXCEPTION: Malformed move operation from mind" <<endl<<flush;
+        std::cerr << "EXCEPTION: Malformed move operation from mind"
+             << std::endl << std::flush;
     }
 
     if (!location_coords) {
@@ -404,10 +407,11 @@ oplist Character::mindMoveOperation(const Move & op)
     } else {
         location_coords = location_coords +
             (Vector3D(((double)rand())/RAND_MAX, ((double)rand())/RAND_MAX, 0)
-				* drunkness * 10);
+				* (drunkness * 10));
     }
     // Print out a bunch of debug info
-    debug( cout << ":" << location_ref << ":" << location.ref->fullid << ":" << endl << flush;);
+    debug( std::cout << ":" << location_ref << ":" << location.ref->fullid
+                     << ":" << std::endl << std::flush;);
     if (((location_ref == location.ref->fullid) || (location_ref.empty())) &&
         (newop->GetFutureSeconds() >= 0)) {
         // Movement within current ref. Work out the speed and stuff and
@@ -415,10 +419,11 @@ oplist Character::mindMoveOperation(const Move & op)
         //
         double vel_mag;
         if (!location_vel) {
-            debug( cout << "\tVelocity default" << endl << flush;);
+            debug( std::cout << "\tVelocity default" << std::endl<<std::flush;);
             vel_mag = consts::base_velocity;
         } else {
-            debug( cout << "\tVelocity: " << location_vel << endl << flush;);
+            debug( std::cout << "\tVelocity: " << location_vel
+                             << std::endl << std::flush;);
             vel_mag = location_vel.mag();
             if (vel_mag > consts::base_velocity) {
                 vel_mag = consts::base_velocity;
@@ -434,19 +439,23 @@ oplist Character::mindMoveOperation(const Move & op)
         }
         if (!location_coords) {
             if (!location_vel || (location_vel==Vector3D(0,0,0))) {
-                debug( cout << "\tUsing face for direction" << endl << flush;);
+                debug( std::cout << "\tUsing face for direction" << std::endl
+                                 << std::flush;);
                 direction=location.face;
             } else {
-                debug( cout << "\tUsing velocity for direction"<<endl<<flush;);
+                debug( std::cout << "\tUsing velocity for direction"
+                                 << std::endl << std::flush;);
                 direction=location_vel;
             }
         } else {
-            debug( cout << "\tUsing destination for direction"<< endl<< flush;);
+            debug( std::cout << "\tUsing destination for direction"
+                             << std::endl << std::flush;);
             direction=location_coords-location.coords;
         }
         if (direction) {
             direction=direction.unitVector();
-            debug( cout << "Direction: " << direction << endl << flush;);
+            debug( std::cout << "Direction: " << direction << std::endl
+                             << std::flush;);
         }
         if (!location_face) {
             location.face = direction;
@@ -456,7 +465,8 @@ oplist Character::mindMoveOperation(const Move & op)
         const Location & current_location = (NULL!=moveOp) ? ret_location : location;
         movement.reset();
         if ((vel_mag==0) || !direction) {
-            debug( cout << "\tMovement stopped" << endl << flush;);
+            debug( std::cout << "\tMovement stopped" << std::endl
+                             << std::flush;);
             if (NULL != moveOp) {
                 Object::ListType & args = moveOp->GetArgs();
                 Object::MapType & ent = args.front().AsMap();
@@ -481,13 +491,16 @@ oplist Character::mindMoveOperation(const Move & op)
         tickOp->SetTo(fullid);
         // Need to add the arguments to this op before we return it
         // direction is already a unit vector
-        debug( if (location_coords) { cout<<"\tUsing target"<<endl<<flush; } );
+        debug( if (location_coords) { std::cout<<"\tUsing target"
+                                               << std::endl
+                                               << std::flush; } );
         movement.m_targetPos = location_coords;
         movement.m_velocity = direction * vel_mag;
-        debug( cout << "Velocity " << vel_mag << endl << flush;);
+        debug( std::cout << "Velocity " << vel_mag << std::endl << std::flush;);
         Move * moveOp2 = movement.genMoveOperation(NULL,current_location);
         tickOp->SetFutureSeconds(movement.getTickAddition(location.coords));
-        debug( cout << "Next tick " << tickOp->GetFutureSeconds() << endl << flush;);
+        debug( std::cout << "Next tick " << tickOp->GetFutureSeconds()
+                         << std::endl << std::flush;);
         if (NULL != moveOp2) {
             if (NULL != moveOp) {
                 delete moveOp;
@@ -586,15 +599,16 @@ oplist Character::mindNourishOperation(const Nourish & op)
 
 oplist Character::mindTalkOperation(const Talk & op)
 {
-    debug( cout << "Character::mindOPeration(Talk)" << endl << flush;);
+    debug( std::cout << "Character::mindOPeration(Talk)"
+                     << std::endl << std::flush;);
     Talk * t = new Talk(op);
     return oplist(1,t);
 }
 
 oplist Character::mindLookOperation(const Look & op)
 {
-    debug(cout << "Got look up from mind from [" << op.GetFrom()
-               << "] to [" << op.GetTo() << "]" << endl << flush;);
+    debug(std::cout << "Got look up from mind from [" << op.GetFrom()
+               << "] to [" << op.GetTo() << "]" << std::endl << std::flush;);
     perceptive = true;
     Look * l = new Look(op);
     if (op.GetTo().size() == 0) {
@@ -611,7 +625,7 @@ oplist Character::mindLookOperation(const Look & op)
             }
         }
     }
-    debug( cout <<"    now to ["<<l->GetTo()<<"]"<<endl<<flush;);
+    debug( std::cout <<"    now to ["<<l->GetTo()<<"]"<<std::endl<<std::flush;);
     return oplist(1,l);
 }
 
@@ -871,7 +885,7 @@ oplist Character::w2mTouchOperation(const Touch & op)
 
 oplist Character::sendMind(const RootOperation & op)
 {
-    debug( cout << "Character::sendMind" << endl << flush;);
+    debug( std::cout << "Character::sendMind" << std::endl << std::flush;);
     if (mind == NULL) {
         return oplist();
     }
@@ -879,17 +893,19 @@ oplist Character::sendMind(const RootOperation & op)
     oplist external_res;
 
     if (NULL != externalMind) {
-        debug( cout << "Sending to external mind" << endl << flush;);
+        debug( std::cout << "Sending to external mind" << std::endl
+                         << std::flush;);
         external_res = externalMind->message(op);
     } else {
         if (!autom) {
-            debug( cout << "Turning automatic on for " << fullid << endl << flush;);
+            debug( std::cout << "Turning automatic on for " << fullid
+                             << std::endl << std::flush;);
             autom = true;
         }
     }
-    debug(cout << "Using " << local_res.size() << " ops from "
+    debug(std::cout << "Using " << local_res.size() << " ops from "
                << (autom ? "local mind" : "external mind")
-               << endl << flush;);
+               << std::endl << std::flush;);
 
     // This is the list that is to be passed back to the world
     const oplist & res = autom ? local_res : external_res;
@@ -906,7 +922,7 @@ oplist Character::sendMind(const RootOperation & op)
 
 oplist Character::mind2body(const RootOperation & op)
 {
-    debug( cout << "Character::mind2body" << endl << flush;);
+    debug( std::cout << "Character::mind2body" << std::endl << std::flush;);
     RootOperation newop(op);
 
     if ((newop.GetTo().size() == 0) &&
@@ -922,26 +938,26 @@ oplist Character::mind2body(const RootOperation & op)
 
 oplist Character::world2body(const RootOperation & op)
 {
-    debug( cout << "Character::world2body" << endl << flush;);
+    debug( std::cout << "Character::world2body" << std::endl << std::flush;);
     return callOperation(op);
 }
 
 oplist Character::world2mind(const RootOperation & op)
 {
-    debug( cout << "Character::world2mind" << endl << flush;);
+    debug( std::cout << "Character::world2mind" << std::endl << std::flush;);
     op_no_t otype = opEnumerate(op);
     OP_SWITCH(op, otype, w2m)
 }
 
 oplist Character::externalMessage(const RootOperation & op)
 {
-    debug( cout << "Character::externalMessage" << endl << flush;);
+    debug( std::cout << "Character::externalMessage" << std::endl << std::flush;);
     return externalOperation(op);
 }
 
 oplist Character::operation(const RootOperation & op)
 {
-    debug( cout << "Character::operation" << endl << flush;);
+    debug( std::cout << "Character::operation" << std::endl << std::flush;);
     oplist result = world2body(op);
     // set refno on result?
     if (!isAlive) {
@@ -965,7 +981,7 @@ oplist Character::operation(const RootOperation & op)
 
 oplist Character::externalOperation(const RootOperation & op)
 {
-    debug( cout << "Character::externalOperation" << endl << flush;);
+    debug( std::cout << "Character::externalOperation" << std::endl << std::flush;);
     oplist body_res = mind2body(op);
     // set refno on body_res?
     

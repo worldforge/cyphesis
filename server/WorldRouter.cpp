@@ -78,7 +78,7 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
     if ((I == operationQueue.end()) || ((*I)->GetSeconds() > realTime)) {
         return NULL;
     }
-    debug(cout << "pulled op off queue" << endl << flush;);
+    debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
     operationQueue.pop_front();
     (*I)->SetSerialno(server.getSerialNo());
     return *I;
@@ -98,24 +98,28 @@ inline std::string WorldRouter::getId(std::string & name)
 
 Entity * WorldRouter::addObject(Entity * obj)
 {
-    debug(cout << "WorldRouter::addObject(Entity *)" << endl << flush;);
+    debug(std::cout << "WorldRouter::addObject(Entity *)" << std::endl
+                    << std::flush;);
     if (obj->fullid.empty()) {
         obj->fullid=getId(obj->name);
     }
     server.idDict[obj->fullid]=eobjects[obj->fullid]=obj;
     objectList.push_back(obj);
     if (!obj->location) {
-        debug(cout << "set loc " << &gameWorld  << endl << flush;);
+        debug(std::cout << "set loc " << &gameWorld  << std::endl
+                        << std::flush;);
         obj->location.ref=&gameWorld;
         obj->location.coords=Vector3D(0,0,0);
-        debug(cout << "loc set with ref " << obj->location.ref->fullid << endl << flush;);
+        debug(std::cout << "loc set with ref " << obj->location.ref->fullid
+                        << std::endl << std::flush;);
     }
     if (obj->location.ref==&gameWorld) {
-        debug(cout << "loc is world" << endl << flush;);
+        debug(std::cout << "loc is world" << std::endl << std::flush;);
         gameWorld.contains.push_back(obj);
         gameWorld.contains.unique();
     }
-    debug(cout << "Entity loc " << obj->location << endl << flush;);
+    debug(std::cout << "Entity loc " << obj->location << std::endl
+                    << std::flush;);
     obj->world=this;
     if (obj->omnipresent) {
         omnipresentList.push_back(obj);
@@ -130,7 +134,8 @@ Entity * WorldRouter::addObject(Entity * obj)
 Entity * WorldRouter::addObject(const std::string & typestr, const Object & ent,
                                 const std::string & id)
 {
-    debug(cout << "WorldRouter::addObject(std::string, ent)" << endl << flush;);
+    debug(std::cout << "WorldRouter::addObject(std::string, ent)" << std::endl
+                    << std::flush;);
     Entity * obj;
     obj = EntityFactory::instance()->newThing(typestr, ent, eobjects);
     obj->fullid = id;
@@ -154,7 +159,7 @@ void WorldRouter::delObject(Entity * obj)
 
 oplist WorldRouter::message(const RootOperation & op)
 {
-    debug(cout << "FATAL: Wrong type of WorldRouter message function called" << endl << flush;);
+    debug(std::cout << "FATAL: Wrong type of WorldRouter message function called" << std::endl << std::flush;);
     return oplist();
 }
 
@@ -180,20 +185,21 @@ oplist WorldRouter::operation(const RootOperation * op)
 {
     const RootOperation & op_ref = *op;
     std::string to = op_ref.GetTo();
-    debug(cout << "WorldRouter::operation {" << to << "}" << endl << flush;);
+    debug(std::cout << "WorldRouter::operation {" << to << "}" << std::endl
+                    << std::flush;);
     op_no_t op_type = opEnumerate(*op);
 
     if ((to.size() != 0) && (to!="all")) {
         edict_t::const_iterator I = eobjects.find(to);
         if (I == eobjects.end()) {
-            debug(cerr << "WARNING: Op to=\"" << to << "\"" << " does not exist"
-                       << endl << flush;);
+            debug(std::cerr << "WARNING: Op to=\"" << to << "\""
+                            << " does not exist" << std::endl << std::flush;);
             return oplist();
         }
         Entity * to_entity = I->second;
         if (to_entity == NULL) {
-            cerr << "CRITICAL: Op to=\"" << to << "\"" << " is NULL"
-                 << endl << flush;
+            std::cerr << "CRITICAL: Op to=\"" << to << "\"" << " is NULL"
+                      << std::endl << std::flush;
             return oplist();
         }
         oplist res = to_entity->operation(op_ref);
@@ -219,8 +225,8 @@ oplist WorldRouter::operation(const RootOperation * op)
                     (J != eobjects.end()) &&
                     (!J->second->location.inRange((*I)->location,
                                                        consts::sight_range))) {
-                        debug(cout << "Op from " <<from<< " cannot be seen by "
-                                   << (*I)->fullid << endl << flush;);
+                        debug(std::cout << "Op from " <<from<< " cannot be seen by "
+                                   << (*I)->fullid << std::endl << std::flush;);
                              
                         continue;
                 }
@@ -242,13 +248,15 @@ oplist WorldRouter::operation(const RootOperation & op)
 
 oplist WorldRouter::lookOperation(const Look & op)
 {
-    debug(cout << "WorldRouter::Operation(Look)" << endl << flush;);
+    debug(std::cout << "WorldRouter::Operation(Look)" << std::endl << std::flush;);
     const std::string & from = op.GetFrom();
     edict_t::const_iterator J = eobjects.find(from);
     if (J == eobjects.end()) {
-        debug(cout << "FATAL: Op has invalid from" << endl << flush;);
+        debug(std::cout << "FATAL: Op has invalid from" << std::endl
+                        << std::flush;);
     } else {
-        debug(cout << "Adding [" << from << "] to perceptives" << endl << flush;);
+        debug(std::cout << "Adding [" << from << "] to perceptives"
+                        << std::endl << std::flush;);
         perceptives.push_back(J->second);
         perceptives.unique();
         if (consts::enable_ranges) {
@@ -289,11 +297,12 @@ int WorldRouter::idle()
             operation(op);
         }
         catch (...) {
-            cerr << "EXCEPTION: Caught in world.idle()" << endl;
-            cerr << "         : Thrown while processing ";
-            cerr << op->GetParents().front().AsString();
-            cerr << " operation sent to " << op->GetTo();
-            cerr << " from " << op->GetFrom() << "." << endl << flush;
+            std::cerr << "EXCEPTION: Caught in world.idle()" << std::endl;
+            std::cerr << "         : Thrown while processing ";
+            std::cerr << op->GetParents().front().AsString();
+            std::cerr << " operation sent to " << op->GetTo();
+            std::cerr << " from " << op->GetFrom() << "." << std::endl
+                      << std::flush;
         }
         delete op;
     }

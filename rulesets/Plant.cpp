@@ -18,7 +18,7 @@ using Atlas::Message::Object;
 Plant::Plant() : fruits(0), radius(1), fruitName("seed")
 {
     // Default to a 1m cube
-    cout << "CREATING PLANT" << endl << flush;
+    std::cout << "CREATING PLANT" << std::endl << std::flush;
     location.bbox = Vector3D(0.5, 0.5, 0.5);
     location.bmedian = Vector3D(0, 0, 0.5);
 }
@@ -63,7 +63,7 @@ void Plant::set(const std::string & aname, const Object & attr)
 int Plant::dropFruit(oplist & res)
 {
     if (fruits < 1) { return 0; }
-    int drop = min(fruits, randint(minuDrop, maxuDrop));
+    int drop = std::min(fruits, randint(minuDrop, maxuDrop));
     fruits = fruits - drop;
     double height = location.bbox.Z(); 
     for(int i = 0; i < drop; i++) {

@@ -196,20 +196,22 @@ static PyObject * Get_PyClass(const std::string & package,
     PyObject * mod_dict = PyImport_Import(package_name);
     Py_DECREF(package_name);
     if (mod_dict == NULL) {
-        cerr << "Cld no find python module " << package << endl << flush;
-            PyErr_Print();
+        std::cerr << "Cld no find python module " << package << std::endl
+                  << std::flush;
+        PyErr_Print();
         return NULL;
     }
     PyObject * my_class = PyObject_GetAttrString(mod_dict, (char *)type.c_str());
     Py_DECREF(mod_dict);
     if (my_class == NULL) {
-        cerr << "Cld not find class " << type << " in module " << package
-             << endl << flush;
+        std::cerr << "Cld not find class " << type << " in module " << package
+                  << std::endl << std::flush;
         PyErr_Print();
         return NULL;
     }
     if (PyCallable_Check(my_class) == 0) {
-        cerr << "It does not seem to be a class at all" << endl << flush;
+        std::cerr << "It does not seem to be a class at all" << std::endl
+                  << std::flush;
         Py_DECREF(my_class);
         return NULL;
     }
@@ -222,9 +224,9 @@ static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyclass)
     
     if (pyob == NULL) {
         if (PyErr_Occurred() == NULL) {
-            cerr << "Could not get python obj" << endl << flush;
+            std::cerr << "Could not get python obj" << std::endl << std::flush;
         } else {
-            cerr << "Reporting python error" << endl << flush;
+            std::cerr << "Reporting python error" << std::endl << std::flush;
             PyErr_Print();
         }
     }

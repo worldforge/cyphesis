@@ -39,7 +39,7 @@ class WorldBase : public Database {
 };
 
 class FileDecoder : public Atlas::Message::DecoderBase {
-    ifstream m_file;
+    std::ifstream m_file;
     WorldBase * m_db;
     Atlas::Codecs::XML m_codec;
     Object::MapType m_world;

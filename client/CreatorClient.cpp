@@ -21,13 +21,13 @@ Entity * CreatorClient::make(const Object & entity)
     if (res == NULL) {
         return NULL;
     }
-    const string & resparents = res->GetParents().front().AsString();
-    const string & resargp = res->GetArgs().front().AsMap().find("parents")->second.AsList().front().AsString();
+    const std::string & resparents = res->GetParents().front().AsString();
+    const std::string & resargp = res->GetArgs().front().AsMap().find("parents")->second.AsList().front().AsString();
     if ((resparents != "sight") || (resargp != "create")) {
         // log.inform("creation failed",result);
         return NULL;
     }
-    const string & created_id = res->GetArgs().front().AsMap().find("args")->second.AsList().front().AsMap().find("id")->second.AsString();
+    const std::string & created_id = res->GetArgs().front().AsMap().find("args")->second.AsList().front().AsMap().find("id")->second.AsString();
     const Object & created = res->GetArgs().front().AsMap().find("args")->second.AsList().front();
     Entity * obj = map.add(created);
     return obj;

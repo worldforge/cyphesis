@@ -10,8 +10,7 @@
 
 #include <varconf/Config.h>
 
-#include <iostream.h>
-#include <fstream.h>
+#include <skstream.h>
 
 extern "C" {
     #include <stdio.h>
@@ -38,7 +37,7 @@ static bool debug_flag = true;
 using Atlas::Message::Object;
 
 ClientConnection::ClientConnection() :
-    client_fd(-1), client_buf(NULL), ios(NULL), encoder(NULL)
+    client_fd(-1), encoder(NULL)
 {
 }
 
@@ -230,7 +229,7 @@ void ClientConnection::ObjectArrived(const Atlas::Objects::Operation::Touch& op)
 }
 
 int ClientConnection::read() {
-    if (*ios) {
+    if (ios.is_open()) {
         codec->Poll();
         return 0;
     } else {
@@ -269,10 +268,9 @@ bool ClientConnection::connect(const std::string & server)
         return false;
     }
 
-    client_buf = new sockbuf(client_fd);
-    ios = new iostream(client_buf);
+    ios.attach(client_fd);
 
-    Atlas::Net::StreamConnect conn("cyphesis_aiclient", *ios, this);
+    Atlas::Net::StreamConnect conn("cyphesis_aiclient", ios, this);
 
     cout << "Negotiating... " << flush;
     while (conn.GetState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
@@ -344,7 +342,7 @@ bool ClientConnection::wait()
 
 void ClientConnection::send(const Atlas::Objects::Root & obj) {
     encoder->StreamMessage(&obj);
-    *ios << flush;
+    ios << flush;
 }
 
 void ClientConnection::error(const std::string & message) {
@@ -366,7 +364,7 @@ void ClientConnection::poll()
     int retval = select(client_fd+1, &infds, NULL, NULL, &tv);
 
     if (retval && (FD_ISSET(client_fd, &infds))) {
-        if (ios->peek() == -1) {
+        if (ios.peek() == -1) {
             std::cerr << "Server disconnected" << std::endl << std::flush;
             return;
         }
@@ -388,7 +386,7 @@ RootOperation * ClientConnection::pop()
     return op;
 }
 
-template<class O> void ClientConnection::push(O & op)
+template<class O> void ClientConnection::push(const O & op)
 {
     RootOperation * new_op = new O(op); 
     operationQueue.push_back(new_op);

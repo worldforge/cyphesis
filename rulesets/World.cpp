@@ -51,7 +51,7 @@ oplist World::SetOperation(const Set & op)
         return res2;
     }
     catch (Atlas::Message::WrongTypeException) {
-        cerr << "EXCEPTION: Malformed set operation\n";
+        std::cerr << "EXCEPTION: Malformed set operation\n";
         return error(op, "Malformed set operation\n");
     }
     return oplist();

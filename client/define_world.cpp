@@ -20,20 +20,22 @@ bool define(BaseEntity * character)
     PyObject * mod_dict = PyImport_Import(package_name);
     Py_DECREF(package_name);
     if (mod_dict == NULL) {
-        cerr << "Cld not find python module define_world"
-             << endl << flush;
+        std::cerr << "Cld not find python module define_world"
+                  << std::endl << std::flush;
         PyErr_Print();
         return false;
     }
     PyObject * function = PyObject_GetAttrString(mod_dict, "default");
     Py_DECREF(mod_dict);
     if (function == NULL) {
-        cerr << "Could not find default function" << endl << flush;
+        std::cerr << "Could not find default function" << std::endl
+                  << std::flush;
         PyErr_Print();
         return false;
     }
     if (PyCallable_Check(function) == 0) {
-        cerr << "It does not seem to be a function at all" << endl << flush;
+        std::cerr << "It does not seem to be a function at all" << std::endl
+                  << std::flush;
         Py_DECREF(function);
         return false;
     }
@@ -41,9 +43,9 @@ bool define(BaseEntity * character)
 
     if (pyob == NULL) {
         if (PyErr_Occurred() == NULL) {
-            cerr << "Could not call function" << endl << flush;
+            std::cerr << "Could not call function" << std::endl << std::flush;
         } else {
-            cerr << "Reporting python error" << endl << flush;
+            std::cerr << "Reporting python error" << std::endl << std::flush;
             PyErr_Print();
         }
     }

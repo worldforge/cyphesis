@@ -29,15 +29,16 @@ bool PythonThingScript::Operation(const std::string & op_type,
                                   oplist & ret_list, RootOperation * sub_op)
 {
     if (scriptObject == NULL) {
-        debug( cout << "No script object asociated" << endl << flush;);
+        debug( std::cout << "No script object asociated" << std::endl
+                         << std::flush;);
         return false;
     }
-    debug( cout << "Got script object for " << endl << flush;);
+    debug( std::cout << "Got script object for " << std::endl << std::flush;);
     std::string op_name = op_type+"_operation";
     // Construct apropriate python object thingies from op
     if (!PyObject_HasAttrString(scriptObject, (char *)(op_name.c_str()))) {
-        debug( cout << "No method to be found for " 
-             << "." << op_name << endl << flush;);
+        debug( std::cout << "No method to be found for " 
+                         << "." << op_name << std::endl << std::flush;);
         return false;
     }
     RootOperationObject * py_op = newAtlasRootOperation(NULL);
@@ -51,36 +52,39 @@ bool PythonThingScript::Operation(const std::string & op_type,
     delete py_op->operation;
     Py_DECREF(py_op);
     if (ret != NULL) {
-        debug( cout << "Called python method " << op_name
-                            << " for object " << endl << flush;);
+        debug( std::cout << "Called python method " << op_name
+                         << " for object " << std::endl << std::flush;);
         if (PyOperation_Check(ret)) {
             RootOperationObject * op = (RootOperationObject*)ret;
             if (op->operation != NULL) {
                 ret_list.push_back(op->operation);
                 op->own = 0;
             } else {
-                debug( cout << "Method returned invalid operation"
-                     << endl << flush;);
+                debug( std::cout << "Method returned invalid operation"
+                                 << std::endl << std::flush;);
             }
         } else if (PyOplist_Check(ret)) {
             OplistObject * op = (OplistObject*)ret;
             if (op->ops != NULL) {
                 ret_list = *op->ops;
             } else {
-                debug( cout << "Method returned invalid oplist"
-                     << endl << flush;);
+                debug( std::cout << "Method returned invalid oplist"
+                                 << std::endl << std::flush;);
             }
         } else {
-            debug( cout << "Method returned invalid object" << endl << flush;);
+            debug( std::cout << "Method returned invalid object" << std::endl
+                             << std::flush;);
         }
         
         Py_DECREF(ret);
         return true;
     } else {
         if (PyErr_Occurred() == NULL) {
-            debug( cout << "No method to be found for " << endl << flush;);
+            debug( std::cout << "No method to be found for " << std::endl
+                             << std::flush;);
         } else {
-            cerr << "Reporting python error for " << endl << flush;
+            std::cerr << "Reporting python error for " << std::endl
+                      << std::flush;
             PyErr_Print();
         }
     }

@@ -32,7 +32,7 @@ void MemMap::addContents(const Object::MapType & entmap)
 
 Entity * MemMap::add(const Object & entity)
 {
-    debug( cout << "MemMap::add" << endl << flush;);
+    debug( std::cout << "MemMap::add" << std::endl << std::flush;);
     if (!entity.IsMap()) {
         return NULL;
     }
@@ -67,7 +67,7 @@ Entity * MemMap::add(const Object & entity)
 
 Entity * MemMap::update(const Object & entity)
 {
-    debug( cout << "MemMap::update" << endl << flush;);
+    debug( std::cout << "MemMap::update" << std::endl << std::flush;);
     if (!entity.IsMap()) {
         return NULL;
     }
@@ -80,14 +80,14 @@ Entity * MemMap::update(const Object & entity)
     if (id.size() == 0) {
         return NULL;
     }
-    debug( cout << " updating " << id << endl << flush;);
+    debug( std::cout << " updating " << id << std::endl << std::flush;);
     edict_t::iterator J = things.find(id);
     if (J == things.end()) {
         return add(entity);
     }
-    debug( cout << " " << id << " has already been spotted" << endl << flush;);
+    debug( std::cout << " " << id << " has already been spotted" << std::endl << std::flush;);
     Entity * thing = J->second;
-    debug( cout << " got " << thing << endl << flush;);
+    debug( std::cout << " got " << thing << std::endl << std::flush;);
     // I am not sure what the deal is with all the "needTrueValue stuff
     // below yet. FIXME find out exactly what is required.
     I = entmap.find("name");
@@ -98,7 +98,7 @@ Entity * MemMap::update(const Object & entity)
     if (I != entmap.end() && I->second.IsString()) {
         thing->type = I->second.AsString();
     }
-    debug( cout << " got " << thing << endl << flush;);
+    debug( std::cout << " got " << thing << std::endl << std::flush;);
     thing->merge(entmap);
     thing->getLocation(entmap,things);
     addContents(entmap);
@@ -118,13 +118,13 @@ Entity * MemMap::update(const Object & entity)
     return thing;
 }
 
-list<Entity *> MemMap::findByType(const std::string & what)
+std::list<Entity *> MemMap::findByType(const std::string & what)
 {
-    list<Entity *> res;
+    std::list<Entity *> res;
     edict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         Entity * item = (Entity *)I->second;
-        debug( cout << "F" << what << ":" << item->type << ":" << item->fullid << endl << flush;);
+        debug( std::cout << "F" << what << ":" << item->type << ":" << item->fullid << std::endl << std::flush;);
         if (item->type == what) {
             res.push_back((Entity*)I->second);
         }
@@ -132,9 +132,9 @@ list<Entity *> MemMap::findByType(const std::string & what)
     return res;
 }
 
-list<Entity *> MemMap::findByLocation(const Location & loc, double radius)
+std::list<Entity *> MemMap::findByLocation(const Location & loc, double radius)
 {
-    list<Entity *> res;
+    std::list<Entity *> res;
     edict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         const Location & oloc = I->second->location;

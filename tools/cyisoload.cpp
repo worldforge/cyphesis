@@ -13,7 +13,7 @@
 
 #include <string>
 #include <fstream>
-#include "sstream.h"
+#include <common/stringstream.h>
 
 #include <coal/isoloader.h>
 

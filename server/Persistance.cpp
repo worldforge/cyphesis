@@ -33,7 +33,7 @@ Persistance * Persistance::instance()
 
 void Persistance::saveAdminAccount(Account & adm)
 {
-    std::ofstream adm_file("/tmp/admin.xml", ios::out, 0600);
+    std::ofstream adm_file("/tmp/admin.xml", std::ios::out);
     adm_file << "<atlas>" << endl << "<map>" << endl;
     adm_file << "    <string name=\"password\">" << adm.password << "</string>" << endl;
     adm_file << "    <string name=\"id\">" << adm.fullid << "</string>" << endl;

@@ -30,10 +30,12 @@ double Pedestrian::getTickAddition(const Vector3D & coordinates) const
     const Vector3D & target = m_collPos ? m_collPos : m_targetPos;
     if (target) {
         double distance=coordinates.distance(target);
-        debug( cout << "basic_distance: " << basic_distance << endl << flush;);
-        debug( cout << "distance: " << distance << endl << flush;);
+        debug( std::cout << "basic_distance: " << basic_distance
+                         << std::endl << std::flush;);
+        debug( std::cout << "distance: " << distance << std::endl
+                         << std::flush;);
         if (basic_distance>distance) {
-            debug( cout << "\tshortened tick" << endl << flush;);
+            debug( std::cout << "\tshortened tick" << std::endl << std::flush;);
             return distance / basic_distance * consts::basic_tick;
         }
     }
@@ -44,7 +46,7 @@ Move * Pedestrian::genFaceOperation(const Location & loc)
 {
     if (m_face != loc.face) {
         m_face = loc.face;
-        debug( cout << "Turning" << endl << flush;);
+        debug( std::cout << "Turning" << std::endl << std::flush;);
         Move * moveOp = new Move(Move::Instantiate());
         moveOp->SetTo(m_body.fullid);
         Object::MapType entmap;
@@ -71,12 +73,13 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
         return NULL;
     }
 
-    debug(cout << "genMoveOperation: Update needed..." << endl << flush;);
+    debug(std::cout << "genMoveOperation: Update needed..." << std::endl
+                    << std::flush;);
 
     // Sort out time difference, and set updated time
     const double & current_time = m_body.world->getTime();
     double time_diff = current_time - m_lastMovementTime;
-    debug( cout << "time_diff:" << time_diff << endl << flush;);
+    debug( std::cout << "time_diff:" << time_diff << std::endl << std::flush;);
     m_lastMovementTime = current_time;
 
     m_face = loc.face;
@@ -108,12 +111,13 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     } else {
         mode = std::string("standing");
     }
-    debug( cout << "Mode set to " << mode << endl << flush;);
+    debug( std::cout << "Mode set to " << mode << std::endl << std::flush;);
     entmap["mode"] = Object(mode);
 
     // If velocity is not set, return this simple operation.
     if (!m_velocity) {
-        debug( cout << "only velocity changed." << endl << flush;);
+        debug( std::cout << "only velocity changed." << std::endl
+                         << std::flush;);
         new_loc.addToObject(entmap);
         Object::ListType args(1,entmap);
         moveOp->SetArgs(args);
@@ -135,17 +139,21 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
         Vector3D new_coords2 = new_coords + m_velocity / consts::basic_tick / 10.0;
         double dist = target.distance(new_coords);
         double dist2 = target.distance(new_coords2);
-        debug( cout << "dist: " << dist << "," << dist2 << endl << flush;);
+        debug( std::cout << "dist: " << dist << "," << dist2 << std::endl
+                         << std::flush;);
         if (dist2>dist) {
-            debug( cout << "target achieved";);
+            debug( std::cout << "target achieved";);
             new_coords = target;
             if (m_collRefChange) {
-                debug(cout << "CONTACT " << m_collEntity->fullid << endl << flush;);
+                debug(std::cout << "CONTACT " << m_collEntity->fullid
+                                << std::endl << std::flush;);
                 if (m_collEntity == new_loc.ref->location.ref) {
-                    debug(cout << "OUT" << target << new_loc.ref->location.coords << endl << flush;);
+                    debug(std::cout << "OUT" << target
+                                    << new_loc.ref->location.coords
+                                    << std::endl << std::flush;);
                     new_coords = target + new_loc.ref->location.coords;
                 } else {
-                    debug(cout << "IN" << endl << flush;);
+                    debug(std::cout << "IN" << std::endl << std::flush;);
                     new_coords = target - m_collEntity->location.coords;
                 }
                 new_loc.ref = m_collEntity;
@@ -178,7 +186,8 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     // Check for collisions
     checkCollisions(new_loc);
 
-    debug( cout << "new coordinates: " << new_coords << endl << flush;);
+    debug( std::cout << "new coordinates: " << new_coords << std::endl
+                     << std::flush;);
     new_loc.addToObject(entmap);
     Object::ListType args2(1,entmap);
     moveOp->SetArgs(args2);

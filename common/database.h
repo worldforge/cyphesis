@@ -67,7 +67,7 @@ class Database {
     Db & getWorldDb() { return world_db; }
     Db & getMindDb() { return mind_db; }
 
-    friend DatabaseIterator;
+    friend class DatabaseIterator;
 };
 
 class DatabaseIterator {

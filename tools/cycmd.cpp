@@ -26,12 +26,10 @@ extern "C" {
     #include <netdb.h>
 }
 
-#include <fstream>
+#include <skstream.h>
 
-extern "C" {
-    #include <readline/readline.h>
-    #include <readline/history.h>
-};
+#include <readline/readline.h>
+#include <readline/history.h>
 
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::Get;
@@ -41,12 +39,12 @@ using Atlas::Objects::Operation::Save;
 
 static void help()
 {
-    std::cout << "Cyphesis commands:" << endl << endl;
-    std::cout << "    stat	Return current server status" << endl;
-    std::cout << "    load	Load world state from database status" << endl;
-    std::cout << "    save	Save world state to database status" << endl;
-    std::cout << "    shutdown	Initiate server shutdown" << endl<< endl;
-    std::cout << "Other commands will be passed on to the server using a set operation" << endl << flush;
+    std::cout << "Cyphesis commands:" << std::endl << std::endl;
+    std::cout << "    stat	Return current server status" << std::endl;
+    std::cout << "    load	Load world state from database status" << std::endl;
+    std::cout << "    save	Save world state to database status" << std::endl;
+    std::cout << "    shutdown	Initiate server shutdown" << std::endl<< std::endl;
+    std::cout << "Other commands will be passed on to the server using a set operation" << std::endl << std::flush;
 }
 
 class Interactive : public Atlas::Objects::Decoder
@@ -55,8 +53,8 @@ class Interactive : public Atlas::Objects::Decoder
     bool error_flag, reply_flag;
     int cli_fd;
     Atlas::Objects::Encoder * encoder;
-    Atlas::Codec<iostream> * codec;
-    std::fstream * ios;
+    Atlas::Codec<std::iostream> * codec;
+    socket_stream ios;
     std::string password;
     enum {
        INIT,
@@ -84,7 +82,7 @@ class Interactive : public Atlas::Objects::Decoder
 void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
 {
     reply_flag = true;
-    std::cout << "An info operation arrived." << endl << flush;
+    std::cout << "An info operation arrived." << std::endl << std::flush;
     if (state == INIT) {
         state = LOGGED_IN;
     } else if (state == LOGGED_IN) {
@@ -94,22 +92,22 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
             const Object & item = I->second;
             switch (item.GetType()) {
                 case Object::TYPE_INT:
-                    std::cout << "    " << I->first << ": " << item.AsInt() << endl;
+                    std::cout << "    " << I->first << ": " << item.AsInt() << std::endl;
                     break;
                 case Object::TYPE_FLOAT:
-                    std::cout << "    " << I->first <<": " << item.AsFloat() << endl;
+                    std::cout << "    " << I->first <<": " << item.AsFloat() << std::endl;
                     break;
                 case Object::TYPE_STRING:
-                    std::cout << "    " << I->first <<": "<< item.AsString() << endl;
+                    std::cout << "    " << I->first <<": "<< item.AsString() << std::endl;
                     break;
                 case Object::TYPE_LIST:
-                    std::cout << "    " << I->first << ": (list)" << endl;
+                    std::cout << "    " << I->first << ": (list)" << std::endl;
                     break;
                 case Object::TYPE_MAP:
-                    std::cout << "    " << I->first << ": (map)" << endl;
+                    std::cout << "    " << I->first << ": (map)" << std::endl;
                     break;
                 default:
-                    std::cout << "    " << I->first << ": (???)" << endl;
+                    std::cout << "    " << I->first << ": (???)" << std::endl;
                     break;
             }
                 
@@ -122,13 +120,13 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Error& o)
 {
     reply_flag = true;
     error_flag = true;
-    std::cout << "Error from server:" << endl << flush;
+    std::cout << "Error from server:" << std::endl << std::flush;
     const Object::ListType & args = o.GetArgs();
     const Object & arg = args.front();
     if (arg.IsString()) {
-        std::cout << arg.AsString() << endl << flush;
+        std::cout << arg.AsString() << std::endl << std::flush;
     } else if (arg.IsMap()) {
-        std::cout << arg.AsMap().find("message")->second.AsString() << endl << flush;
+        std::cout << arg.AsMap().find("message")->second.AsString() << std::endl << std::flush;
     }
 }
 
@@ -181,8 +179,8 @@ void Interactive::loop()
 
     if (retval) {
         if (FD_ISSET(cli_fd, &infds)) {
-            if (ios->peek() == -1) {
-                std::cout << "Server disconnected" << endl << flush;
+            if (ios.peek() == -1) {
+                std::cout << "Server disconnected" << std::endl << std::flush;
                 exit(1);
             }
             codec->Poll();
@@ -207,7 +205,7 @@ bool Interactive::connect(const std::string & host)
 
     struct hostent * ms_addr = gethostbyname(host.c_str());
     if (ms_addr == NULL) {
-        cerr << "server lookup failed." <<endl<<flush;
+        std::cerr << "server lookup failed." <<std::endl<<flush;
         return false;
     }
     memcpy(&sin.sin_addr, ms_addr->h_addr_list[0], ms_addr->h_length);
@@ -219,30 +217,30 @@ bool Interactive::connect(const std::string & host)
     sin.sin_family = AF_INET;
     sin.sin_port = htons(6767);
 
-    std::cout << "Connecting to cyphesis.." << endl << flush;
+    std::cout << "Connecting to cyphesis.." << std::endl << std::flush;
 
     if (::connect(cli_fd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
-        std::cout << "Connection failed." << endl << flush;
+        std::cout << "Connection failed." << std::endl << std::flush;
         close(cli_fd);
         return false;
     }
-    std::cout << "Connected to cyphesis." << endl << flush;
+    std::cout << "Connected to cyphesis." << std::endl << std::flush;
     // Connect to the server
-    ios = new fstream(cli_fd);
+    ios.attach(cli_fd);
 
     // Do client negotiation with the server
-    Atlas::Net::StreamConnect conn("cycmd", *ios, this);
+    Atlas::Net::StreamConnect conn("cycmd", ios, this);
 
-    std::cout << "Negotiating... " << flush;
-    while (conn.GetState() == Atlas::Negotiate<iostream>::IN_PROGRESS) {
+    std::cout << "Negotiating... " << std::flush;
+    while (conn.GetState() == Atlas::Negotiate<std::iostream>::IN_PROGRESS) {
         // conn.Poll() does all the negotiation
         conn.Poll();
     }
-    std::cout << "done." << endl;
+    std::cout << "done." << std::endl;
 
     // Check whether negotiation was successful
-    if (conn.GetState() == Atlas::Negotiate<iostream>::FAILED) {
-        cerr << "Failed to negotiate." << endl;
+    if (conn.GetState() == Atlas::Negotiate<std::iostream>::FAILED) {
+        std::cerr << "Failed to negotiate." << std::endl;
         return false;
     }
     // Negotiation was successful
@@ -280,10 +278,10 @@ bool Interactive::login()
     }
 
     if (!error_flag) {
-       std::cout << "login was a success" << endl << flush;
+       std::cout << "login was a success" << std::endl << std::flush;
        return true;
     }
-    std::cout << "login failed" << endl << flush;
+    std::cout << "login failed" << std::endl << std::flush;
     return false;
 }
 
@@ -335,7 +333,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         encoder->StreamMessage(&s);
     }
 
-    *ios << flush;
+    ios << std::flush;
 
     if (!reply_expected) { return; }
     while (!reply_flag) {
@@ -345,7 +343,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
 static void usage(char * prg)
 {
-    std::cout << "usage: " << prg << " [ server [ cmd ] ]" << endl << flush;
+    std::cout << "usage: " << prg << " [ server [ cmd ] ]" << std::endl << std::flush;
 }
 
 int main(int argc, char ** argv)

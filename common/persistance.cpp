@@ -21,8 +21,8 @@
 // It seems that gcc does not yet include sstream.h
 // Included is a version written explicitly for gcc, which will be used
 // if the header is not present.
-#ifdef HAVE_SSTREAM_H
-#include <sstream.h>
+#ifdef HAVE_SSTREAM
+#include <sstream>
 #else
 #include "sstream.h"
 #endif

@@ -13,7 +13,7 @@ static const bool debug_flag = false;
 
 Creator::Creator()
 {
-    debug( cout << "Creator::Creator" << endl << flush;);
+    debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
     isCharacter = true;
     omnipresent = true;
     location.bbox = Vector3D();
@@ -21,11 +21,12 @@ Creator::Creator()
 
 oplist Creator::sendMind(const RootOperation & msg)
 {
-    debug( cout << "Creator::sendMind" << endl << flush;);
+    debug( std::cout << "Creator::sendMind" << std::endl << std::flush;);
     // Simpified version of character method sendMind() because local mind
     // of creator is irrelevant
     if (NULL != externalMind) {
-        debug( cout << "Sending to external mind" << endl << flush;);
+        debug( std::cout << "Sending to external mind" << std::endl
+                         << std::flush;);
         return externalMind->message(msg);
         // If there is some kinf of error in the connection, we turn autom on
     }
@@ -34,7 +35,7 @@ oplist Creator::sendMind(const RootOperation & msg)
 
 oplist Creator::operation(const RootOperation & op)
 {
-    debug( cout << "Creator::operation" << endl << flush;);
+    debug( std::cout << "Creator::operation" << std::endl << std::flush;);
     op_no_t op_no = opEnumerate(op);
     if (op_no == OP_LOOK) {
         return ((BaseEntity *)this)->LookOperation((Look &)op);
@@ -49,7 +50,8 @@ oplist Creator::operation(const RootOperation & op)
 
 oplist Creator::externalOperation(const RootOperation & op)
 {
-    debug( cout << "Creator::externalOperation" << endl << flush;);
+    debug( std::cout << "Creator::externalOperation" << std::endl
+                     << std::flush;);
     if ((op.GetTo()==fullid) || (op.GetTo()=="")) {
         oplist lres = callOperation(op);
         setRefno(lres, op);

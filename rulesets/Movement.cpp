@@ -54,7 +54,7 @@ void Movement::checkCollisions(const Location & loc)
             m_collEntity = *I;
             m_collAxis = axis;
         }
-        collTime = min(collTime, t);
+        collTime = std::min(collTime, t);
     }
     // cout << endl << flush;
     if (collTime > consts::basic_tick) {
@@ -67,13 +67,15 @@ void Movement::checkCollisions(const Location & loc)
         }
         double t = loc.inTime(oloc);
         if (t < 0) { t=0; }
-        collTime = min(collTime, t);
+        collTime = std::min(collTime, t);
         if (collTime > consts::basic_tick) { return; }
-        debug(cout << "Collision with parent bounding box" << endl << flush;);
+        debug(std::cout << "Collision with parent bounding box" << std::endl
+                        << std::flush;);
         m_collEntity = oloc.ref;
         m_collRefChange = true;
     } else if (!m_collEntity->location.solid) {
-        debug(cout << "Collision with non-solid object" << endl << flush;);
+        debug(std::cout << "Collision with non-solid object" << std::endl
+                        << std::flush;);
         // Non solid container - check for collision with its contents.
         const Location & lc2 = m_collEntity->location;
         Location rloc(loc);
@@ -86,20 +88,20 @@ void Movement::checkCollisions(const Location & loc)
             int axis;
             double t = rloc.hitTime(oloc, axis);
             if (t < 0) { continue; }
-            coll2Time = min(coll2Time, t);
+            coll2Time = std::min(coll2Time, t);
         }
         if (coll2Time > collTime) {
-            debug(cout << "passing into it " << collTime << ":"
-                       << coll2Time << endl << flush;);
+            debug(std::cout << "passing into it " << collTime << ":"
+                       << coll2Time << std::endl << std::flush;);
             // We are entering collEntity.
             // Set collRef ????????????????
             m_collRefChange = true;
             // if (coll2Time > consts::basic_tick) { return; }
         }
     }
-    // cout << "COLLISION" << endl << flush;
+    // cout << "COLLISION" << std::endl << std::flush;
     if (collTime < getTickAddition(loc.coords)) {
-        debug(cout << "Setting target loc to " << loc.coords << "+"
+        debug(std::cout << "Setting target loc to " << loc.coords << "+"
                    << loc.velocity << "*" << collTime;);
         m_collPos = loc.coords + loc.velocity * collTime;
     } else {

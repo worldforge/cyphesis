@@ -25,7 +25,7 @@ class EntityFactory {
         }
         return m_instance;
     }
-    static EntityFactory * del() {
+    static void del() {
         if (m_instance != NULL) {
             delete m_instance;
         }

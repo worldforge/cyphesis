@@ -10,6 +10,7 @@
 
 #include <common/debug.h>
 
+#include <iostream>
 
 //timedata time2type(const std::string & t) {
     //return timeInfo[t][1];
@@ -86,8 +87,8 @@ bool WorldTime::operator==(const WorldTime & other) const
 
 bool WorldTime::operator==(const std::string & when) const
 {
-    debug(cout << "Checking whether it is " << when << " when the date is "
-               << time << endl << flush;);
+    debug(std::cout << "Checking whether it is " << when << " when the date is "
+                    << time << std::endl << std::flush;);
             
     time_info_t::const_iterator I = timeInfo.find(when);
     if (I == timeInfo.end()) {
@@ -101,7 +102,7 @@ bool WorldTime::operator==(const std::string & when) const
     } else {
         return false;
     }
-    list<int>::const_iterator J;
+    std::list<int>::const_iterator J;
     for(J = I->second.first.begin(); J != I->second.first.end(); J++) {
         if (check == *J) {
             return true;

@@ -5,8 +5,6 @@
 #ifndef RULESETS_WORLD_H
 #define RULESETS_WORLD_H
 
-#include <string>
-
 #include "Thing.h"
 
 // This is the in game object used to represent the world. I added this

@@ -7,8 +7,9 @@
 
 #include <Atlas/Message/Object.h>
 
-#include <math.h>
-#include <algo.h>
+#include <cmath>
+#include <algorithm>
+#include <iostream>
 
 using std::cos;
 using std::sin;
@@ -37,11 +38,11 @@ static inline range inTime(double s, double r, double u, double p, double q) {
 }
 
 static inline double max(range r) {
-    return max(r.first, r.second);
+    return std::max(r.first, r.second);
 }
 
 static inline double min(range r) {
-    return min(r.first, r.second);
+    return std::min(r.first, r.second);
 }
 
 class Vector3D {
@@ -210,9 +211,9 @@ class Vector3D {
         range yt = ::hitTime(y+m.y, om.y, v.y, s.y, os.y);
         range zt = ::hitTime(z+m.z, om.z, v.z, s.z, os.z);
         // Find the time that the last coordinate starts intersect
-        double start = max(min(xt), max(min(yt),min(zt)));
+        double start = std::max(min(xt), std::max(min(yt),min(zt)));
         // Find the time that the first coordinate stops intersect
-        double end   = min(max(xt), min(max(yt),max(zt)));
+        double end   = std::min(max(xt), std::min(max(yt),max(zt)));
         // If the start is before the end, then there is a collision
         if (end < start) { return -1; }
         axis = ((start == min(xt)) ? cX : ((start == min(yt)) ? cY : cZ));
@@ -229,9 +230,9 @@ class Vector3D {
         range yt = ::hitTime(y+m.y, om.y, v.y, ov.y, s.y, os.y);
         range zt = ::hitTime(z+m.z, om.z, v.z, ov.z, s.z, os.z);
         // Find the time that the last coordinate starts intersect
-        double start = max(min(xt), max(min(yt),min(zt)));
+        double start = std::max(min(xt), std::max(min(yt),min(zt)));
         // Find the time that the first coordinate stops intersect
-        double end   = min(max(xt), min(max(yt),max(zt)));
+        double end   = std::min(max(xt), std::min(max(yt),max(zt)));
         // If the start is before the end, then there is a collision
         if (end < start) { return -1; }
         axis = ((start == min(xt)) ? cX : ((start == min(yt)) ? cY : cZ));
@@ -243,10 +244,10 @@ class Vector3D {
         range xt = ::inTime(x+m.x, om.x, v.x, s.x, os.x);
         range yt = ::inTime(y+m.y, om.y, v.y, s.y, os.y);
         range zt = ::inTime(z+m.z, om.z, v.z, s.z, os.z);
-        double leave = min(max(xt), min(max(yt),max(zt)));
+        double leave = std::min(max(xt), std::min(max(yt),max(zt)));
         // This check is required to make sure we don't accidentally
         // get stuck in an entity outside its bbox.
-        double enter = max(min(xt), max(min(yt),min(zt)));
+        double enter = std::max(min(xt), std::max(min(yt),min(zt)));
         if (enter > 0) { return -1; }
         return leave;
     }
@@ -260,10 +261,10 @@ class Vector3D {
     }
 
 
-    friend ostream & operator<<(ostream& s, const Vector3D& v);
+    friend std::ostream & operator<<(std::ostream& s, const Vector3D& v);
 };
 
-inline ostream & operator<<(ostream& s, const Vector3D& v) {
+inline std::ostream & operator<<(std::ostream& s, const Vector3D& v) {
     return s << "[" << v.x << "," << v.y << "," << v.z << "]";
 }
 

@@ -155,15 +155,15 @@ void Entity::merge(const Object::MapType & entmap)
 
 void Entity::getLocation(const Object::MapType & entmap, const edict_t & eobjects)
 {
-    debug( cout << "Thing::getLocation" << endl << flush;);
+    debug( std::cout << "Thing::getLocation" << std::endl << std::flush;);
     Object::MapType::const_iterator I = entmap.find("loc");
     if (I == entmap.end()) { return; }
-    debug( cout << "Thing::getLocation, getting it" << endl << flush;);
+    debug( std::cout << "Thing::getLocation, getting it" << std::endl << std::flush;);
     try {
         const std::string & ref_id = I->second.AsString();
         edict_t::const_iterator J = eobjects.find(ref_id);
         if (J == eobjects.end()) {
-            debug( cout << "ERROR: Can't get ref from objects dictionary" << endl << flush;);
+            debug( std::cout << "ERROR: Can't get ref from objects dictionary" << std::endl << std::flush;);
             return;
         }
             
@@ -192,7 +192,7 @@ void Entity::getLocation(const Object::MapType & entmap, const edict_t & eobject
         }
     }
     catch (Atlas::Message::WrongTypeException) {
-        cerr << "ERROR: Create operation has bad location" << endl << flush;
+        std::cerr << "ERROR: Create operation has bad location" << std::endl << std::flush;
     }
 }
 
@@ -347,8 +347,8 @@ oplist Entity::OtherOperation(const RootOperation & op)
 {
     const std::string & op_type = op.GetParents().front().AsString();
     oplist res;
-    debug(cout << "Entity " << fullid << " got custom " << op_type << " op"
-               << endl << flush;);
+    debug(std::cout << "Entity " << fullid << " got custom " << op_type << " op"
+               << std::endl << std::flush;);
     script->Operation(op_type, op, res);
     return res;
 }

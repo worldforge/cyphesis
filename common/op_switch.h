@@ -144,7 +144,7 @@
             return _prefix ## TouchOperation(_op, (Touch &)_sub_op); \
             break; \
         default: \
-            cout << "nothing doing here {" << _op.GetParents().front().AsString() << "_" << _sub_op.GetParents().front().AsString() << "}" << endl; \
+            std::cout << "nothing doing here {" << _op.GetParents().front().AsString() << "_" << _sub_op.GetParents().front().AsString() << "}" << std::endl; \
             return _prefix ## OtherOperation(_op, _sub_op); \
             break; \
     }
