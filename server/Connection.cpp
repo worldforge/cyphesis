@@ -47,6 +47,33 @@ Connection::Connection(const std::string & id, CommClient & client,
 
 Connection::~Connection()
 {
+    // Once we are obsolete, ExternalMind can no longer affect contents
+    // of objects when we delete it.
+    assert(!m_obsolete);
+    m_obsolete = true;
+    ConMap::const_iterator J = m_destroyedConnections.begin();
+    for(; J != m_destroyedConnections.end(); J++) {
+        J->second->disconnect();
+        delete J->second;
+    }
+
+    debug(std::cout << "destroy called" << std::endl << std::flush;);
+    BaseDict::const_iterator I;
+    for(I = m_objects.begin(); I != m_objects.end(); I++) {
+        Account * ac = dynamic_cast<Account *>(I->second);
+        if (ac != NULL) {
+            m_server.m_lobby.delObject(ac);
+            ac->m_connection = NULL;
+            continue;
+        }
+        Character * character = dynamic_cast<Character *>(I->second);
+        if (character != NULL) {
+            if (character->m_externalMind != NULL) {
+                delete character->m_externalMind;
+                character->m_externalMind = NULL;
+            }
+        }
+    }
 }
 
 void Connection::send(const RootOperation & msg) const
@@ -94,33 +121,6 @@ void Connection::objectDeleted(std::string id) {
 
 void Connection::destroy()
 {
-    // Once we are obsolete, ExternalMind can no longer affect contents
-    // of objects when we delete it.
-    assert(!m_obsolete);
-    m_obsolete = true;
-    ConMap::const_iterator J = m_destroyedConnections.begin();
-    for(; J != m_destroyedConnections.end(); J++) {
-        J->second->disconnect();
-        delete J->second;
-    }
-
-    debug(std::cout << "destroy called" << std::endl << std::flush;);
-    BaseDict::const_iterator I;
-    for(I = m_objects.begin(); I != m_objects.end(); I++) {
-        Account * ac = dynamic_cast<Account *>(I->second);
-        if (ac != NULL) {
-            m_server.m_lobby.delObject(ac);
-            ac->m_connection = NULL;
-            continue;
-        }
-        Character * character = dynamic_cast<Character *>(I->second);
-        if (character != NULL) {
-            if (character->m_externalMind != NULL) {
-                delete character->m_externalMind;
-                character->m_externalMind = NULL;
-            }
-        }
-    }
 }
 
 void Connection::close()

@@ -52,9 +52,16 @@ int main(int argc, char ** argv)
     // Initialise the persistance subsystem. If we have been built with
     // database support, this will open the various databases used to
     // store server data.
-    if (Persistance::init() != 0) {
+    int dbstatus = Persistance::init();
+    if (dbstatus < 0) {
         log(CRITICAL, _("Critical error opening databases. Init failed."));
-        log(INFO, "Please ensure that the database tables can be created or accessed by cyphesis.");
+        if (dbstatus == -2) {
+            log(INFO, "Database connection established, but unable to create required tables.");
+            log(INFO, "Please ensure that any obsolete database tables have been removed.");
+        } else {
+            log(INFO, "Unable to connect to the RDBMS.");
+            log(INFO, "Please ensure that the RDBMS is running, the cyphesis database exists and is accessible to the user running cyphesis.");
+        }
         return EXIT_DATABASE_ERROR;
     }
 

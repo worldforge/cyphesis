@@ -36,11 +36,13 @@ int Persistance::init()
     if (p->m_connection.initConnection(false) != 0) {
         return -1;
     }
-    bool i = p->m_connection.initRule(true);
 
     if (!p->m_connection.registerEntityIdGenerator()) {
         log(ERROR, "Faled to register Id generator in database.");
+        return -2;
     }
+
+    bool i = p->m_connection.initRule(true);
 
     MapType tableDesc;
     tableDesc["username"] = "                                                                                ";
@@ -63,7 +65,7 @@ int Persistance::init()
         p->putAccount(dummyAdminAccount);
     }
 
-    return (i && j && k) ? 0 : -1;
+    return (i && j && k) ? 0 : -2;
 }
 
 void Persistance::shutdown()

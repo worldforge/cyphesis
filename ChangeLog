@@ -1,3 +1,17 @@
+2004-10-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.cpp: Move the code to handle destruction of
+	  a connection into the destructor. The destroy method can go
+	  once this is well tested.
+
+	* server/CommListener.cpp: Return -1 on error.
+
+	* server/Persistance.cpp: Return a different error code depending
+	  on why database init failed.
+
+	* server/server.cpp: Try and provide more helpfull error messages
+	  depending on why database init failed.
+
 2004-10-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* Require varconf 0.6.2 for its superior command line handling.

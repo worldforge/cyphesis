@@ -59,21 +59,20 @@ void CommListener::dispatch()
 int CommListener::setup(int port)
 {
     m_listener.open(port);
-    if (m_listener.is_open()) {
-        int socket = m_listener.getSocket();
-        struct linger {
-            int   l_onoff;
-            int   l_linger;
-        } listenLinger = { 1, 0 };
-        ::setsockopt(socket, SOL_SOCKET, SO_LINGER, &listenLinger,
-                                                    sizeof(listenLinger));
-
-        int flag = 1;
-        ::setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
-        return 0;
-    } else {
-        return 1;
+    if (!m_listener.is_open()) {
+        return -1;
     }
+    int socket = m_listener.getSocket();
+    struct linger {
+        int   l_onoff;
+        int   l_linger;
+    } listenLinger = { 1, 0 };
+    ::setsockopt(socket, SOL_SOCKET, SO_LINGER, &listenLinger,
+                                                sizeof(listenLinger));
+
+    int flag = 1;
+    ::setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+    return 0;
 }
 
 /// \brief Accept a new connect to the listen socket.
