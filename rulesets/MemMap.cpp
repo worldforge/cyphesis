@@ -134,19 +134,38 @@ void MemMap::del(const std::string & id)
     debug( std::cout << "MemMap::del(" << id << ")" << std::endl << std::flush;);
     MemEntityDict::iterator I = m_entities.find(id);
     if (I != m_entities.end()) {
-        MemEntity * obj = I->second;
-        assert(obj != 0);
+        MemEntity * ent = I->second;
+        assert(ent != 0);
         std::string next;
         if (m_checkIterator != m_entities.end()) {
             next = m_checkIterator->first;
         }
         m_entities.erase(I);
+
+        // FIXME Can we use Entity::destroy to handle all this reparenting?
+        Entity * mloc = ent->m_location.m_loc;
+        if (mloc != 0) {
+            // Remove deleted entity from its parents contains
+            mloc->m_contains.erase(ent);
+        }
+
+        // Add deleted entities children into its parents contains
+        EntitySet::const_iterator K = ent->m_contains.begin();
+        for (; K != ent->m_contains.end(); ++K) {
+            Entity * cent = *K;
+            cent->m_location.m_loc = mloc;
+            // FIXME Handle cent's postion
+            if (mloc != 0) {
+                mloc->m_contains.insert(cent);
+            }
+        }
+
         m_checkIterator = m_entities.find(next);
         std::vector<std::string>::const_iterator J;
         for(J = m_deleteHooks.begin(); J != m_deleteHooks.end(); J++) {
-            m_script->hook(*J, obj);
+            m_script->hook(*J, ent);
         }
-        delete obj;
+        delete ent;
     }
 }
 
@@ -298,8 +317,13 @@ void MemMap::check(const double & time)
                 next = J->first;
             }
             m_entities.erase(m_checkIterator);
+            // Remove deleted entity from its parents contains attribute
+            if (me->m_location.m_loc != 0) {
+                me->m_location.m_loc->m_contains.erase(me);
+            }
             // m_checkIterator = m_entities.begin();
             m_checkIterator = m_entities.find(next);
+            // attribute of its its parent.
             delete me;
         } else {
             debug(std::cout << me->getId() << "|" << me->getType() << "|"

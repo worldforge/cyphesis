@@ -1,3 +1,8 @@
+2004-07-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/MemMap.cpp: Make sure LOC and CONTAINS are kept consistant
+	  and valid in memory maps. This might get rid of some segfaults.
+
 2004-07-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Don't give minds to player characters.
