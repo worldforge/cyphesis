@@ -10,6 +10,8 @@
 
 #include <Mercator/Terrain.h>
 
+#include <wfmath/MersenneTwister.h>
+
 #include <Atlas/Objects/Operation/Error.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
@@ -64,25 +66,27 @@ World::World(const std::string & id) : World_parent(id),
 {
     subscribe("set", OP_SET);
 
+    WFMath::MTRand rng;
+
     for (int i = -5; i < 6; ++i) {
         for (int j = -5; j < 6; ++j) {
             if (i == -5 || i == 5 || j == -5 || j == 5) {
                 m_terrain.setBasePoint(i, j, -10);
             } else {
-                m_terrain.setBasePoint(i, j, 3);
+                m_terrain.setBasePoint(i, j, 1 + rng() * 10);
             }
         }
     }
     
     // FIXME Just for testin
-    m_terrain.setBasePoint(-1, -1, -6.8);
-    m_terrain.setBasePoint(0, -1, -7.8);
-    m_terrain.setBasePoint(-1, 0, -6.8);
-    m_terrain.setBasePoint(-1, 1, -4.8);
-    m_terrain.setBasePoint(1, -1, -5.8);
+    m_terrain.setBasePoint(-1, -1, 16.8);
+    m_terrain.setBasePoint(0, -1, 17.8);
+    m_terrain.setBasePoint(-1, 0, 16.8);
+    m_terrain.setBasePoint(-1, 1, 14.8);
+    m_terrain.setBasePoint(1, -1, 15.8);
     m_terrain.setBasePoint(0, 0, 12.8);
     m_terrain.setBasePoint(1, 0, 23.1);
-    m_terrain.setBasePoint(0, 1, 4.2);
+    m_terrain.setBasePoint(0, 1, 14.2);
     m_terrain.setBasePoint(1, 1, 44.7);
 }
 
