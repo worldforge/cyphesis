@@ -134,13 +134,13 @@ OpVector Connection::LoginOperation(const Login & op)
         log(WARNING, "Got Login with no username. Checking for old style Login");
         I = account.find("id");
         if ((I == account.end()) || !I->second.IsString()) {
-            return error(op, "Login is invalid");
+            return error(op, "No username provided for Login");
         }
     }
     const std::string & username = I->second.AsString();
     I = account.find("password");
     if ((I == account.end()) || !I->second.IsString()) {
-        return error(op, "Login is invalid");
+        return error(op, "No password provided for Login");
     }
     const std::string & passwd = account.find("password")->second.AsString();
     // We now have username and password, so can check whether we know this
