@@ -171,10 +171,17 @@ static int Vector3D_setattr(PyVector3D *self, char *name, PyObject *v)
         val = PyFloat_AsDouble(v);
     } else {
         PyErr_SetString(PyExc_TypeError, "Vector3D attributes must be numeric");
+        return -1;
     }
-    if (strcmp(name, "x") == 0) { self->coords.x() = val; }
-    if (strcmp(name, "y") == 0) { self->coords.y() = val; }
-    if (strcmp(name, "z") == 0) { self->coords.z() = val; }
+    if (strcmp(name, "x") == 0) {
+        self->coords.x() = val;
+    } else if (strcmp(name, "y") == 0) {
+        self->coords.y() = val;
+    } else if (strcmp(name, "z") == 0) {
+        self->coords.z() = val;
+    } else {
+        return -1;
+    }
     return 0;
 }
 

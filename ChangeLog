@@ -1,3 +1,8 @@
+2004-12-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Vector3D.cpp: Fix Vector3D.setattr so it correctly
+	  returns an error when wrong type or invalid attribute name is used.
+
 2004-12-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* Release version 0.3.7.
