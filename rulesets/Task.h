@@ -7,14 +7,18 @@
 
 #include "common/types.h"
 
+class Character;
+
 /// \brief Interface class for handling tasks which take a short while to
 /// complete
 class Task {
   protected:
     /// \brief Flag to indicate if this task is obsolete and should be removed
     bool m_obsolete;
+    /// \brief Character performing the task
+    Character & m_character;
 
-    Task();
+    explicit Task(Character & chr);
   private:
     /// \brief Private and un-implemented, to make sure slicing is impossible
     Task(const Task & t);
@@ -23,10 +27,17 @@ class Task {
   public:
     virtual ~Task();
 
+    /// \brief Initialise the task, and return the operations required
+    ///
+    /// @param res The result of the operation is returned here.
+    virtual void setup(OpVector & res) = 0;
+
     /// \brief Handle a tick operation to perform the task
     ///
     /// A Task gets regular ticks which cause whatever actions this
     /// Task involves to be returned.
+    /// @param op The operation to be processed
+    /// @param res The result of the operation is returned here.
     virtual void TickOperation(const Operation & op, OpVector & res) = 0;
 
     void irrelevant();

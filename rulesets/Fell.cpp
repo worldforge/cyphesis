@@ -4,12 +4,31 @@
 
 #include "rulesets/Fell.h"
 
-Fell::Fell(Entity & tool, Entity & target)
+#include "rulesets/Character.h"
+
+#include "common/Tick.h"
+
+using Atlas::Objects::Operation::Tick;
+
+/// \brief Constructor for Fell task
+///
+/// @param chr Character peforming the task
+/// @param tool Entity to be used as a tool for this task
+/// @param target Entity that is the target for this task
+Fell::Fell(Character & chr, Entity & tool, Entity & target) : Task(chr)
 {
 }
 
 Fell::~Fell()
 {
+}
+
+// FIXME Should this be what the default implemntation of this method does?
+void Fell::setup(OpVector & res)
+{
+    Tick * t = new Tick();
+    t->setAttr("sub_to", "task");
+    t->setTo(m_character.getId());
 }
 
 void Fell::TickOperation(const Operation & op, OpVector & res)

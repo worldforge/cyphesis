@@ -10,9 +10,10 @@
 /// \brief Task class for felling trees
 class Fell : public Task {
   public:
-    explicit Fell(Entity & tool, Entity & target);
+    explicit Fell(Character & chr, Entity & tool, Entity & target);
     virtual ~Fell();
 
+    virtual void setup(OpVector & res);
     virtual void TickOperation(const Operation & op, OpVector & res);
 };
 

@@ -422,6 +422,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     std::set<std::string> toolOps;
     std::string op_type;
 
+    // Determine the operations this tool supports
     if (tool->get("operations", toolOpAttr)) {
         if (!toolOpAttr.isList()) {
             log(ERROR, "Use tool has non list operations list");
@@ -441,8 +442,12 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
             }
             toolOps.insert((*J).asString());
         }
-    }
+    } // FIXME else return? Not much can happen if toolOps is empty
 
+    // Look at Use args. If arg is an entity, this is the target.
+    // If arg is an operation, this is the operation to be used, and the
+    // sub op arg may be an entity specifying target. If op to be used is
+    // specified, this is checked against the ops permitted by this tool.
     std::string target;
     const ListType & args = op.getArgs();
     if (!args.empty()) {

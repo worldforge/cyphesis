@@ -8,37 +8,37 @@
 namespace consts {
 
 #ifdef NDEBUG
-  // Should python code emit thinking ops
+  /// \brief Should python code emit thinking ops
   static const int debug_thinking = 0;
-  // Debug level for python code
+  /// \brief Debug level for python code
   static const int debug_level = 0;
 
-  // Scale factor for time. The may become non-constant
+  /// \brief Scale factor for time. The may become non-constant
   static const float time_multiplier = 1.0;
-  // In Real time how many seconds between ticks;
+  /// \brief In Real time how many seconds between ticks;
   static const float basic_tick = time_multiplier * 3.0;
-  // Highest possible person velocity
+  /// \brief Highest possible person velocity
   static const float base_velocity_coefficient = 5.0;
   static const float base_velocity = base_velocity_coefficient/time_multiplier;
-  // Square versions of above, to avoid square roots in calculations
+  /// \brief Square versions of above, to avoid square roots in calculations
   static const float square_basic_tick = basic_tick * basic_tick;
   static const float square_base_velocity = base_velocity * base_velocity;
 
-  // Are ranges for broadcast enabled.
+  /// \brief Are ranges for broadcast enabled.
   static const bool enable_ranges = true;
-  // Range of broadcast sight ops
+  /// \brief Range of broadcast sight ops
   static const float sight_range = 26.0;
   static const float square_sight_range = (sight_range * sight_range);
-  // sin() of minimum angle subtended by visible object
+  /// \brief sin() of minimum angle subtended by visible object
   static const float sight_factor = 0.06;
   static const float square_sight_factor = (sight_factor * sight_factor);
-  // Range of broadcast sound ops
+  /// \brief Range of broadcast sound ops
   static const float hearing_range = 13.0;
-  // Can things be omnipresent
+  /// \brief Can things be omnipresent
   static const bool enable_omnipresence = false;
-  // What is the minimum size of an object when calculating visibility
+  /// \brief What is the minimum size of an object when calculating visibility
   static const float minSqrBoxSize = 0.1f;
-  // Should everything be persistent
+  /// \brief Should everything be persistent
   static const bool enable_persistence = false;
 
 #else // NDEBUG
@@ -65,14 +65,15 @@ namespace consts {
 
 #endif // NDEBUG
 
-  // Admin password used by admin account
+  /// \brief Admin password used by admin account
   extern const char * defaultAdminPasswordHash;
-  // Id of root world entity
+  /// \brief Id of root world entity
   extern const char * rootWorldId;
-  // Version of the software we are running
+  /// \brief Version of the software we are running
   extern const char * version;
-  // Time this server was built
+  /// \brief Time this server was built
   extern const char * buildTime;
+  /// \brief Date this server was built
   extern const char * buildDate;
 
 }

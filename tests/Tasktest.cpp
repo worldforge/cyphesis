@@ -5,6 +5,7 @@
 #include "rulesets/Fell.h"
 
 #include "rulesets/Entity.h"
+#include "rulesets/Character.h"
 
 #include <Atlas/Objects/Operation/RootOperation.h>
 
@@ -28,9 +29,10 @@ int main()
     }
 
     Entity ent1("1"), ent2("2");
+    Character chr("3");
 
     {
-        Fell fell(ent1, ent2);
+        Fell fell(chr, ent1, ent2);
 
         assert(!fell.obsolete());
 

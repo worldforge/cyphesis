@@ -1,5 +1,6 @@
 COMMON_TESTS = logtest inheritancetest Propertytest BaseEntitytest \
-               OOGThingtest systemtest utilitytest type_utilstest
+               OOGThingtest systemtest utilitytest type_utilstest \
+               consttest randomtest
 
 PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
 
@@ -64,6 +65,11 @@ utilitytest_SOURCES = utilitytest.cpp
 utilitytest_LDADD = $(top_builddir)/common/utility.o
 
 type_utilstest_SOURCES = type_utilstest.cpp
+
+consttest_SOURCES = consttest.cpp
+consttest_LDADD = $(top_builddir)/common/const.o
+
+randomtest_SOURCES = randomtest.cpp
 
 # PHYSICS_TESTS
 
@@ -349,13 +355,12 @@ Containertest_SOURCES = Containertest.cpp
 Containertest_LDADD = $(top_builddir)/rulesets/Container.o
 
 Tasktest_SOURCES = Tasktest.cpp
-Tasktest_LDADD = $(top_builddir)/rulesets/Fell.o \
-                 $(top_builddir)/rulesets/Task.o \
-                 $(top_builddir)/rulesets/Entity.o \
-                 $(top_builddir)/rulesets/EntityProperties.o \
-                 $(top_builddir)/rulesets/Script.o \
-                 $(top_builddir)/modules/Location.o \
-                 $(top_builddir)/modules/DateTime.o \
+Tasktest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
+                 $(top_builddir)/rulesets/librulesetmind.a \
+                 $(top_builddir)/rulesets/librulesetbase.a \
+                 $(top_builddir)/rulesets/libscriptpython.a \
+                 $(top_builddir)/modules/libmodules.a \
+                 $(top_builddir)/physics/libphysics.a \
                  $(top_builddir)/common/inheritance.o \
                  $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
@@ -363,4 +368,9 @@ Tasktest_LDADD = $(top_builddir)/rulesets/Fell.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/serialno.o \
                  $(top_builddir)/common/custom.o \
-                 $(top_builddir)/common/operations.o
+                 $(top_builddir)/common/operations.o \
+                 $(top_builddir)/common/OOGThing.o \
+                 $(top_builddir)/common/BaseWorld.o \
+                 $(top_builddir)/common/utility.o \
+                 $(top_builddir)/common/const.o
+Tasktest_LDFLAGS = -export-dynamic

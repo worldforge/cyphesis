@@ -1,3 +1,18 @@
+2004-12-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.h: Make the coments doxygen compatable.
+
+	* rulesets/Character.cpp: Add comments to document tool use.
+
+	* rulesets/Fell.cpp, rulesets/Fell.h, rulesets/Task.cpp,
+	  rulesets/Task.h: Add reference to Character to base Task class,
+	  and setup() method for task initiation.
+
+	* tests/Tasktest.cpp: Update task test for new changes.
+
+	* tests/randomtest.cpp, tests/consttest.cpp: New tests for random
+	  and const headers.
+
 2004-12-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/OOGThing.cpp, common/Property.cpp, common/Property.h,
