@@ -14,13 +14,13 @@ ClientAccount::ClientAccount(const string & name, ClientConnection & con) :
     fullid = name;
 }
 
-oplist ClientAccount::Operation(const RootOperation & op)
+oplist ClientAccount::OtherOperation(const RootOperation & op)
 {
     cout << "Account got miscellaneous op" << endl << flush;
     return oplist();
 }
 
-oplist ClientAccount::Operation(const Info & op)
+oplist ClientAccount::InfoOperation(const Info & op)
 {
     cout << "Account got info op" << endl << flush;
     try {

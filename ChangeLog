@@ -1,3 +1,48 @@
+2001-05-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* Renamed Operataion method names throughout so they no longer
+	  all have the name Operation but are now called MoveOperation,
+	  according to the type of operation they handle.
+
+	* modules/DateTime.cpp, modules/DataTime.h: Filled in functionality,
+	  allowing initialisation and updating from a time values in seconds.
+
+	* modules/Location.h: Modified collision detection code so no
+	  checking is done between two moving objects.
+
+	* rulesets/BaseMind.h, rulesets/BaseMind.cpp, rulesets/Entity.h,
+	  rulesets/Entity.cpp: Removed virtual getMap() method and replaced
+	  with a fixed method in BaseMind only. Added time member veriable
+	  to BaseMind so each mind keeps track of time by itself.
+
+	* rulesets/Python_API.h, rulesets/Py_Mind.cpp, rulesets/Py_Mind.h:
+	  Added specific python interface for mind objects, because if
+	  increasing differences in the way this must be handled.
+
+	* rulesets/Character.h, rulesets/Character.cpp: Added isAlive flag 
+	  which is cleared if the character is dead. If this flag is cleared,
+	  operations are no longer sent to the mind.
+
+	* rulesets/Movement.h, rulesets/Movement.cpp, rulesets/Pedestrian.h,
+	  rulesets/Pedestrian.cpp: Cleaned up the code, made members more
+	  distinctive, and make interface more general.
+
+	* rulesets/Py_Thing.cpp: Removed features used to support mind.
+
+	* rulesets/Py_WorldTime.cpp: Added support for comparison of
+	  time with strings, to establish whether it matches descriptions
+	  of time.
+
+	* rulesets/Python_API.cpp: Modified creating of scripts so mind
+	  scripts use a slightly different interface from entity scripts,
+	  to support the fact that a mind handles its own timekeeping,
+	  has a memory map, and has no access to the world.
+
+	* server/WorldTime.cpp, server/WorldTime.h: Brought WorldTime into
+	  the build. Used to track details of the time. Added support for
+	  checking time descriptions such as "midday", "summer" against
+	  DateTime.
+
 2001-05-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.cpp: Added dynamic attributes to atlas entity

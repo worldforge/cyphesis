@@ -25,7 +25,7 @@ Food::~Food()
 {
 }
 
-oplist Food::Operation(const Eat & op)
+oplist Food::EatOperation(const Eat & op)
 {
     oplist res;
     if (script->Operation("eat", op, res) != 0) {
@@ -53,7 +53,7 @@ oplist Food::Operation(const Eat & op)
     return res2;
 }
 
-oplist Food::Operation(const Fire & op)
+oplist Food::FireOperation(const Fire & op)
 {
     oplist res;
     if (script->Operation("fire", op, res) != 0) {

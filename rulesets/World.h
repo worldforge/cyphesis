@@ -15,11 +15,11 @@
 
 class World : public Thing {
   public:
-    virtual oplist Operation(const Look & op);
-    virtual oplist Operation(const Fire & op);
-    virtual oplist Operation(const Delete & op);
-    virtual oplist Operation(const Move & op);
-    virtual oplist Operation(const Set & op);
+    virtual oplist LookOperation(const Look & op);
+    virtual oplist FireOperation(const Fire & op);
+    virtual oplist DeleteOperation(const Delete & op);
+    virtual oplist MoveOperation(const Move & op);
+    virtual oplist SetOperation(const Set & op);
 };
 
 #endif // WORLD_H

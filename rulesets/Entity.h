@@ -45,7 +45,6 @@ class Entity : public BaseEntity {
 
     virtual const Atlas::Message::Object & operator[](const string & aname);
     virtual void set(const string & aname, const Atlas::Message::Object & attr);
-    virtual MemMap * getMap();
     virtual void destroy();
 
     void setScript(Script * scrpt);
@@ -54,25 +53,25 @@ class Entity : public BaseEntity {
     Vector3D getXyz() const;
 
     virtual void addToObject(Atlas::Message::Object & obj) const;
-    virtual oplist Operation(const Setup & op);
-    virtual oplist Operation(const Tick & op);
-    virtual oplist Operation(const Action & op);
-    virtual oplist Operation(const Chop & op);
-    virtual oplist Operation(const Create & op);
-    virtual oplist Operation(const Cut & op);
-    virtual oplist Operation(const Delete & op);
-    virtual oplist Operation(const Eat & op);
-    virtual oplist Operation(const Fire & op);
-    virtual oplist Operation(const Move & op);
-    virtual oplist Operation(const Nourish & op);
-    virtual oplist Operation(const Set & op);
-    virtual oplist Operation(const Sight & op);
-    virtual oplist Operation(const Sound & op);
-    virtual oplist Operation(const Touch & op);
-    virtual oplist Operation(const Look & op);
-    virtual oplist Operation(const Appearance & op);
-    virtual oplist Operation(const Disappearance & op);
-    virtual oplist Operation(const RootOperation & op);
+    virtual oplist SetupOperation(const Setup & op);
+    virtual oplist TickOperation(const Tick & op);
+    virtual oplist ActionOperation(const Action & op);
+    virtual oplist ChopOperation(const Chop & op);
+    virtual oplist CreateOperation(const Create & op);
+    virtual oplist CutOperation(const Cut & op);
+    virtual oplist DeleteOperation(const Delete & op);
+    virtual oplist EatOperation(const Eat & op);
+    virtual oplist FireOperation(const Fire & op);
+    virtual oplist MoveOperation(const Move & op);
+    virtual oplist NourishOperation(const Nourish & op);
+    virtual oplist SetOperation(const Set & op);
+    virtual oplist SightOperation(const Sight & op);
+    virtual oplist SoundOperation(const Sound & op);
+    virtual oplist TouchOperation(const Touch & op);
+    virtual oplist LookOperation(const Look & op);
+    virtual oplist AppearanceOperation(const Appearance & op);
+    virtual oplist DisappearanceOperation(const Disappearance & op);
+    virtual oplist OtherOperation(const RootOperation & op);
 };
 
 inline ostream & operator<<(ostream& s, Location& v)

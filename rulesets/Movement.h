@@ -11,23 +11,23 @@ class Character;
 
 class Movement {
   protected:
-    Character & body;
-    double lastMovementTime;
-    Vector3D targetPos;
-    Vector3D updatedPos;
-    Vector3D velocity;
-    Vector3D face;
-    int serialno;
-    Vector3D collPos;
-    Entity * collRef;
-    int collAxis;
+    Thing & m_body;
+    double m_lastMovementTime;
+    Vector3D m_targetPos;
+    Vector3D m_updatedPos;
+    Vector3D m_velocity;
+    Vector3D m_face;
+    int m_serialno;
+    Vector3D m_collPos;
+    Entity * m_collRef;
+    int m_collAxis;
 
     bool updateNeeded(const Location & location) const;
     void checkCollisions(const Location & loc);
 
     friend class Character;
   public:
-    Movement(Character & body);
+    Movement(Thing & body);
     virtual ~Movement();
 
     void reset();

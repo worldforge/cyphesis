@@ -276,7 +276,7 @@ oplist WorldRouter::lookOperation(const Look & op)
             return oplist(1,s);
         }
     }
-    return BaseEntity::Operation(op);
+    return BaseEntity::LookOperation(op);
 }
 
 int WorldRouter::idle()

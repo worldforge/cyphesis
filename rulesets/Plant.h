@@ -33,7 +33,7 @@ class Plant : public Thing {
     virtual const Object & operator[](const string & aname);
     virtual void set(const string & aname, const Object & attr);
 
-    virtual oplist Operation(const Tick & op);
+    virtual oplist TickOperation(const Tick & op);
 };
 
 #endif // PLANT_H

@@ -21,24 +21,30 @@ class DateTime {
     static unsigned int m_hpd; // hours per day
     static unsigned int m_dpm; // days per month
     static unsigned int m_mpy; // months per year
+
+    void set(int);
   public:
     DateTime(char *);
+    DateTime(int);
     DateTime(int, int, int, int, int, int);
+
+    //bool operator==(const DateTime & other) const { }
 
     static void define(unsigned int spm, unsigned int mph, unsigned int hpd,
                        unsigned int dpm, unsigned int mpy) {
         m_spm = spm; m_mph = mph; m_hpd = hpd; m_dpm = dpm; m_mpy = mpy;
     }
 
-    double seconds();
+    int seconds();
+    void update(int);
     std::string asString();
 
-    int second() { return m_second; }
-    int minute() { return m_minute; }
-    int hour() { return m_hour; }
-    int day() { return m_day; }
-    int month() { return m_month; }
-    int year() { return m_year; }
+    int second() const { return m_second; }
+    int minute() const { return m_minute; }
+    int hour() const { return m_hour; }
+    int day() const { return m_day; }
+    int month() const { return m_month; }
+    int year() const { return m_year; }
 
     unsigned int spm() { return m_spm; }
     unsigned int mph() { return m_mph; }

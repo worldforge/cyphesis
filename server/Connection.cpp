@@ -111,7 +111,7 @@ oplist Connection::operation(const RootOperation & op)
     return oplist();
 }
 
-oplist Connection::Operation(const Login & op)
+oplist Connection::LoginOperation(const Login & op)
 {
 
     debug(cout << "Got login op" << endl << flush;);
@@ -147,7 +147,7 @@ oplist Connection::Operation(const Login & op)
     return error(op, "Login is invalid");
 }
 
-oplist Connection::Operation(const Create & op)
+oplist Connection::CreateOperation(const Create & op)
 {
     debug(cout << "Got create op" << endl << flush;);
     const Object & account = op.GetArgs().front();
@@ -176,7 +176,7 @@ oplist Connection::Operation(const Create & op)
 
 }
 
-oplist Connection::Operation(const Logout & op)
+oplist Connection::LogoutOperation(const Logout & op)
 {
     const Object & account = op.GetArgs().front();
     
@@ -194,7 +194,7 @@ oplist Connection::Operation(const Logout & op)
     return oplist();
 }
 
-oplist Connection::Operation(const Get & op)
+oplist Connection::GetOperation(const Get & op)
 {
     cout << "Got get" << endl << flush;
     Info * info = new Info(Info::Instantiate());

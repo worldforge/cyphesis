@@ -42,7 +42,7 @@ Thing::Thing() : perceptive(false)
 
 Thing::~Thing() { }
 
-oplist Thing::Operation(const Setup & op)
+oplist Thing::SetupOperation(const Setup & op)
 {
     oplist res;
     if (script->Operation("setup", op, res) != 0) {
@@ -65,7 +65,7 @@ oplist Thing::Operation(const Setup & op)
     return r;
 }
 
-oplist Thing::Operation(const Action & op)
+oplist Thing::ActionOperation(const Action & op)
 {
     oplist res;
     if (script->Operation("action", op, res) != 0) {
@@ -76,7 +76,7 @@ oplist Thing::Operation(const Action & op)
     return oplist(1,s);
 }
 
-oplist Thing::Operation(const Create & op)
+oplist Thing::CreateOperation(const Create & op)
 {
     oplist res;
     if (script->Operation("create", op, res) != 0) {
@@ -122,7 +122,7 @@ oplist Thing::Operation(const Create & op)
     return oplist();
 }
 
-oplist Thing::Operation(const Delete & op)
+oplist Thing::DeleteOperation(const Delete & op)
 {
     oplist res;
     if (script->Operation("delete", op, res) != 0) {
@@ -135,7 +135,7 @@ oplist Thing::Operation(const Delete & op)
     return oplist(1,s);
 }
 
-oplist Thing::Operation(const Fire & op)
+oplist Thing::FireOperation(const Fire & op)
 {
     oplist res;
     if (script->Operation("fire", op, res) != 0) {
@@ -172,7 +172,7 @@ oplist Thing::Operation(const Fire & op)
     return res2;
 }
 
-oplist Thing::Operation(const Move & op)
+oplist Thing::MoveOperation(const Move & op)
 {
     debug( cout << "Thing::move_operation" << endl << flush;);
     seq++;
@@ -301,7 +301,7 @@ oplist Thing::Operation(const Move & op)
     return oplist();
 }
 
-oplist Thing::Operation(const Set & op)
+oplist Thing::SetOperation(const Set & op)
 {
     seq++;
     oplist res;
@@ -336,11 +336,11 @@ oplist Thing::Operation(const Set & op)
     return oplist();
 }
 
-oplist Thing::Operation(const Look & op)
+oplist Thing::LookOperation(const Look & op)
 {
     oplist res;
     if (script->Operation("look", op, res) != 0) {
         return res;
     }
-    return BaseEntity::Operation(op);
+    return BaseEntity::LookOperation(op);
 }

@@ -89,7 +89,8 @@ oplist Character::metabolise(double ammount = 1)
 }
 
 Character::Character() : movement(*new Pedestrian(*this)), autom(false),
-                         drunkness(0.0), sex("female"), food(0), maxWeight(100),
+                         drunkness(0.0), sex("female"), food(0),
+                         maxWeight(100), isAlive(true),
                          mind(NULL), externalMind(NULL)
 {
     isCharacter = true;
@@ -138,7 +139,7 @@ void Character::addToObject(Object & obj) const
     Thing::addToObject(obj);
 }
 
-oplist Character::Operation(const Setup & op)
+oplist Character::SetupOperation(const Setup & op)
 {
     debug( cout << "Character::tick" << endl << flush;);
     oplist res;
@@ -181,7 +182,7 @@ oplist Character::Operation(const Setup & op)
     return res2;
 }
 
-oplist Character::Operation(const Tick & op)
+oplist Character::TickOperation(const Tick & op)
 {
     if (op.HasAttr("sub_to")) {
         debug( cout << "Has sub_to" << endl << flush;);
@@ -194,7 +195,7 @@ oplist Character::Operation(const Tick & op)
         const Object::MapType & arg1 = args.front().AsMap();
         Object::MapType::const_iterator I = arg1.find("serialno");
         if ((I != arg1.end()) && (I->second.IsInt())) {
-            if (I->second.AsInt() < movement.serialno) {
+            if (I->second.AsInt() < movement.m_serialno) {
                 debug(cout << "Old tick" << endl << flush;);
                 return oplist();
             }
@@ -205,7 +206,7 @@ oplist Character::Operation(const Tick & op)
             oplist res(2);
             Object::MapType entmap;
             entmap["name"]=Object("move");
-            entmap["serialno"]=Object(movement.serialno);
+            entmap["serialno"]=Object(movement.m_serialno);
             Object ent(entmap);
             Tick * tickOp = new Tick(Tick::Instantiate());
             tickOp->SetTo(fullid);
@@ -255,7 +256,7 @@ oplist Character::Operation(const Tick & op)
     return oplist();
 }
 
-oplist Character::Operation(const Talk & op)
+oplist Character::TalkOperation(const Talk & op)
 {
     debug( cout << "Character::OPeration(Talk)" << endl << flush;);
     Sound * s = new Sound(Sound::Instantiate());
@@ -263,7 +264,7 @@ oplist Character::Operation(const Talk & op)
     return oplist(1,s);
 }
 
-oplist Character::Operation(const Eat & op)
+oplist Character::EatOperation(const Eat & op)
 {
     // This is identical to Foof::Operation(Eat &)
     // Perhaps animal should inherit from Food?
@@ -293,7 +294,7 @@ oplist Character::Operation(const Eat & op)
     return res2;
 }
 
-oplist Character::Operation(const Nourish & op)
+oplist Character::NourishOperation(const Nourish & op)
 {
     const Object::MapType & nent = op.GetArgs().front().AsMap();
     food = food + nent.find("weight")->second.AsNum();
@@ -310,19 +311,19 @@ oplist Character::Operation(const Nourish & op)
     return oplist(1,si);
 }
 
-oplist Character::mindOperation(const Login & op)
+oplist Character::mindLoginOperation(const Login & op)
 {
     return oplist();
 }
 
-oplist Character::mindOperation(const Action & op)
+oplist Character::mindActionOperation(const Action & op)
 {
     Action *a = new Action(op);
     a->SetTo(fullid);
     return oplist(1,a);
 }
 
-oplist Character::mindOperation(const Setup & op)
+oplist Character::mindSetupOperation(const Setup & op)
 {
     Setup *s = new Setup(op);
     s->SetTo(fullid);
@@ -330,7 +331,7 @@ oplist Character::mindOperation(const Setup & op)
     return oplist(1,s);
 }
 
-oplist Character::mindOperation(const Tick & op)
+oplist Character::mindTickOperation(const Tick & op)
 {
     Tick *t = new Tick(op);
     t->SetTo(fullid);
@@ -338,7 +339,7 @@ oplist Character::mindOperation(const Tick & op)
     return oplist(1,t);
 }
 
-oplist Character::mindOperation(const Move & op)
+oplist Character::mindMoveOperation(const Move & op)
 {
     debug( cout << "Character::mind_move_op" << endl << flush;);
     const Object::ListType & args = op.GetArgs();
@@ -473,7 +474,7 @@ oplist Character::mindOperation(const Move & op)
         }
         Tick * tickOp = new Tick(Tick::Instantiate());
         Object::MapType ent;
-        ent["serialno"] = Object(movement.serialno);
+        ent["serialno"] = Object(movement.m_serialno);
         ent["name"] = Object("move");
         Object::ListType args(1,ent);
         tickOp->SetArgs(args);
@@ -481,8 +482,8 @@ oplist Character::mindOperation(const Move & op)
         // Need to add the arguments to this op before we return it
         // direction is already a unit vector
         debug( if (location_coords) { cout<<"\tUsing target"<<endl<<flush; } );
-        movement.targetPos = location_coords;
-        movement.velocity = direction * vel_mag;
+        movement.m_targetPos = location_coords;
+        movement.m_velocity = direction * vel_mag;
         debug( cout << "Velocity " << vel_mag << endl << flush;);
         Move * moveOp2 = movement.genMoveOperation(NULL,current_location);
         tickOp->SetFutureSeconds(movement.getTickAddition(location.coords));
@@ -503,7 +504,7 @@ oplist Character::mindOperation(const Move & op)
     return oplist(1,newop);
 }
 
-oplist Character::mindOperation(const Set & op)
+oplist Character::mindSetOperation(const Set & op)
 {
     Set * s = new Set(op);
     const Object::ListType & args = op.GetArgs();
@@ -520,36 +521,71 @@ oplist Character::mindOperation(const Set & op)
     return oplist(1,s);
 }
 
-oplist Character::mindOperation(const Sight & op)
+oplist Character::mindSightOperation(const Sight & op)
 {
     return oplist();
 }
 
-oplist Character::mindOperation(const Sound & op)
+oplist Character::mindSoundOperation(const Sound & op)
 {
     return oplist();
 }
 
-oplist Character::mindOperation(const Create & op)
+oplist Character::mindChopOperation(const Chop & op)
+{
+    return oplist();
+}
+
+oplist Character::mindCombineOperation(const Combine & op)
+{
+    return oplist();
+}
+
+oplist Character::mindCreateOperation(const Create & op)
 {
     debug( cout << "Character::mindOperation(Create)" << endl << flush;);
     return oplist();
 }
 
-oplist Character::mindOperation(const Delete & op)
+oplist Character::mindDeleteOperation(const Delete & op)
 {
     Delete * d = new Delete(op);
     return oplist(1,d);
 }
 
-oplist Character::mindOperation(const Talk & op)
+oplist Character::mindDivideOperation(const Divide & op)
+{
+    return oplist();
+}
+
+oplist Character::mindFireOperation(const Fire & op)
+{
+    return oplist();
+}
+
+oplist Character::mindGetOperation(const Get & op)
+{
+    return oplist();
+}
+
+oplist Character::mindInfoOperation(const Info & op)
+{
+    return oplist();
+}
+
+oplist Character::mindNourishOperation(const Nourish & op)
+{
+    return oplist();
+}
+
+oplist Character::mindTalkOperation(const Talk & op)
 {
     debug( cout << "Character::mindOPeration(Talk)" << endl << flush;);
     Talk * t = new Talk(op);
     return oplist(1,t);
 }
 
-oplist Character::mindOperation(const Look & op)
+oplist Character::mindLookOperation(const Look & op)
 {
     debug(cout << "Got look up from mind from [" << op.GetFrom()
                << "] to [" << op.GetTo() << "]" << endl << flush;);
@@ -573,29 +609,29 @@ oplist Character::mindOperation(const Look & op)
     return oplist(1,l);
 }
 
-oplist Character::mindOperation(const Load & op)
+oplist Character::mindLoadOperation(const Load & op)
 {
     return oplist();
 }
 
-oplist Character::mindOperation(const Save & op)
+oplist Character::mindSaveOperation(const Save & op)
 {
     return oplist();
 }
 
-oplist Character::mindOperation(const Cut & op)
+oplist Character::mindCutOperation(const Cut & op)
 {
     Cut * c = new Cut(op);
     return oplist(1,c);
 }
 
-oplist Character::mindOperation(const Eat & op)
+oplist Character::mindEatOperation(const Eat & op)
 {
     Eat * e = new Eat(op);
     return oplist(1,e);
 }
 
-oplist Character::mindOperation(const Touch & op)
+oplist Character::mindTouchOperation(const Touch & op)
 {
     Touch * t = new Touch(op);
     // Work out what is being touched.
@@ -630,94 +666,124 @@ oplist Character::mindOperation(const Touch & op)
     return res;
 }
 
-oplist Character::mindOperation(const Appearance & op)
+oplist Character::mindAppearanceOperation(const Appearance & op)
 {
     return oplist();
 }
 
-oplist Character::mindOperation(const Disappearance & op)
+oplist Character::mindDisappearanceOperation(const Disappearance & op)
 {
     return oplist();
 }
 
 
-oplist Character::mindOperation(const Error & op)
+oplist Character::mindErrorOperation(const Error & op)
 {
     return oplist();
 }
 
-oplist Character::mindOperation(const RootOperation & op)
+oplist Character::mindOtherOperation(const RootOperation & op)
 {
     RootOperation * e = new RootOperation(op);
     return oplist(1,e);
 }
 
-oplist Character::w2mOperation(const Action & op)
+oplist Character::w2mActionOperation(const Action & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Login & op)
+oplist Character::w2mLoginOperation(const Login & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Chop & op)
+oplist Character::w2mChopOperation(const Chop & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Create & op)
+oplist Character::w2mCreateOperation(const Create & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Cut & op)
+oplist Character::w2mCutOperation(const Cut & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Delete & op)
+oplist Character::w2mDeleteOperation(const Delete & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Eat & op)
+oplist Character::w2mEatOperation(const Eat & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Fire & op)
+oplist Character::w2mFireOperation(const Fire & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Move & op)
+oplist Character::w2mMoveOperation(const Move & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Set & op)
+oplist Character::w2mSetOperation(const Set & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Look & op)
+oplist Character::w2mLookOperation(const Look & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Load & op)
+oplist Character::w2mLoadOperation(const Load & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Save & op)
+oplist Character::w2mSaveOperation(const Save & op)
 {
     return oplist();
 }
 
-oplist Character::w2mOperation(const Appearance & op)
+oplist Character::w2mDivideOperation(const Divide & op)
+{
+    return oplist();
+}
+
+oplist Character::w2mCombineOperation(const Combine & op)
+{
+    return oplist();
+}
+
+oplist Character::w2mGetOperation(const Get & op)
+{
+    return oplist();
+}
+
+oplist Character::w2mInfoOperation(const Info & op)
+{
+    return oplist();
+}
+
+oplist Character::w2mTalkOperation(const Talk & op)
+{
+    return oplist();
+}
+
+oplist Character::w2mNourishOperation(const Nourish & op)
+{
+    return oplist();
+}
+
+oplist Character::w2mAppearanceOperation(const Appearance & op)
 {
     if (drunkness > 1.0) {
         return oplist();
@@ -726,7 +792,7 @@ oplist Character::w2mOperation(const Appearance & op)
     return oplist(1,a);
 }
 
-oplist Character::w2mOperation(const Disappearance & op)
+oplist Character::w2mDisappearanceOperation(const Disappearance & op)
 {
     if (drunkness > 1.0) {
         return oplist();
@@ -735,19 +801,19 @@ oplist Character::w2mOperation(const Disappearance & op)
     return oplist(1,d);
 }
 
-oplist Character::w2mOperation(const RootOperation & op)
-{
-    RootOperation * r = new RootOperation(op);
-    return oplist(1,r);
-}
-
-oplist Character::w2mOperation(const Error & op)
+oplist Character::w2mErrorOperation(const Error & op)
 {
     Error * e = new Error(op);
     return oplist(1,e);
 }
 
-oplist Character::w2mOperation(const Setup & op)
+oplist Character::w2mOtherOperation(const RootOperation & op)
+{
+    RootOperation * r = new RootOperation(op);
+    return oplist(1,r);
+}
+
+oplist Character::w2mSetupOperation(const Setup & op)
 {
     if (op.HasAttr("sub_to")) {
         Setup * s = new Setup(op);
@@ -756,7 +822,7 @@ oplist Character::w2mOperation(const Setup & op)
     return oplist();
 }
 
-oplist Character::w2mOperation(const Tick & op)
+oplist Character::w2mTickOperation(const Tick & op)
 {
     if (op.HasAttr("sub_to")) {
         Tick * t = new Tick(op);
@@ -765,7 +831,7 @@ oplist Character::w2mOperation(const Tick & op)
     return oplist();
 }
 
-oplist Character::w2mOperation(const Sight & op)
+oplist Character::w2mSightOperation(const Sight & op)
 {
     if (drunkness > 1.0) {
         return oplist();
@@ -774,7 +840,7 @@ oplist Character::w2mOperation(const Sight & op)
     return oplist(1,s);
 }
 
-oplist Character::w2mOperation(const Sound & op)
+oplist Character::w2mSoundOperation(const Sound & op)
 {
     if (drunkness > 1.0) {
         return oplist();
@@ -783,7 +849,7 @@ oplist Character::w2mOperation(const Sound & op)
     return oplist(1,s);
 }
 
-oplist Character::w2mOperation(const Touch & op)
+oplist Character::w2mTouchOperation(const Touch & op)
 {
     if (drunkness > 1.0) {
         return oplist();
@@ -867,6 +933,9 @@ oplist Character::operation(const RootOperation & op)
     debug( cout << "Character::operation" << endl << flush;);
     oplist result = world2body(op);
     // set refno on result?
+    if (!isAlive) {
+        return result;
+    }
     oplist mres = world2mind(op);
     // set refno on mres?
     for(oplist::const_iterator I = mres.begin(); I != mres.end(); I++) {

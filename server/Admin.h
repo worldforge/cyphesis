@@ -17,10 +17,10 @@ class Admin : public Account {
     Admin(Connection * conn, const string & username, const string & passwd);
     virtual ~Admin();
 
-    virtual oplist Operation(const Load & op);
-    virtual oplist Operation(const Save & op);
-    virtual oplist Operation(const Get & op);
-    virtual oplist Operation(const Set & op);
+    virtual oplist LoadOperation(const Load & op);
+    virtual oplist SaveOperation(const Save & op);
+    virtual oplist GetOperation(const Get & op);
+    virtual oplist SetOperation(const Set & op);
 };
 
 #endif // ADMIN_H

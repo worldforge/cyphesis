@@ -53,7 +53,7 @@ oplist Creator::operation(const RootOperation & op)
     debug( cout << "Creator::operation" << endl << flush;);
     op_no_t op_no = opEnumerate(op);
     if (op_no == OP_LOOK) {
-        return ((BaseEntity *)this)->Operation((Look &)op);
+        return ((BaseEntity *)this)->LookOperation((Look &)op);
     }
     if (op_no == OP_SETUP) {
         Look look = Look::Instantiate();

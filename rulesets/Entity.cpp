@@ -97,10 +97,6 @@ void Entity::setScript(Script * scrpt)
     return;
 }
 
-MemMap * Entity::getMap() {
-    return NULL;
-}
-
 void Entity::destroy()
 {
     if (deleted == true) {
@@ -213,133 +209,133 @@ Vector3D Entity::getXyz() const
     }
 }
 
-oplist Entity::Operation(const Setup & op)
+oplist Entity::SetupOperation(const Setup & op)
 {
     oplist res;
     script->Operation("setup", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Tick & op)
+oplist Entity::TickOperation(const Tick & op)
 {
     oplist res;
     script->Operation("tick", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Action & op)
+oplist Entity::ActionOperation(const Action & op)
 {
     oplist res;
     script->Operation("action", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Chop & op)
+oplist Entity::ChopOperation(const Chop & op)
 {
     oplist res;
     script->Operation("chop", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Create & op)
+oplist Entity::CreateOperation(const Create & op)
 {
     oplist res;
     script->Operation("create", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Cut & op)
+oplist Entity::CutOperation(const Cut & op)
 {
     oplist res;
     script->Operation("cut", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Delete & op)
+oplist Entity::DeleteOperation(const Delete & op)
 {
     oplist res;
     script->Operation("delete", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Eat & op)
+oplist Entity::EatOperation(const Eat & op)
 {
     oplist res;
     script->Operation("eat", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Fire & op)
+oplist Entity::FireOperation(const Fire & op)
 {
     oplist res;
     script->Operation("fire", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Move & op)
+oplist Entity::MoveOperation(const Move & op)
 {
     oplist res;
     script->Operation("move", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Nourish & op)
+oplist Entity::NourishOperation(const Nourish & op)
 {
     oplist res;
     script->Operation("nourish", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Set & op)
+oplist Entity::SetOperation(const Set & op)
 {
     oplist res;
     script->Operation("set", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Sight & op)
+oplist Entity::SightOperation(const Sight & op)
 {
     oplist res;
     script->Operation("sight", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Sound & op)
+oplist Entity::SoundOperation(const Sound & op)
 {
     oplist res;
     script->Operation("sound", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Touch & op)
+oplist Entity::TouchOperation(const Touch & op)
 {
     oplist res;
     script->Operation("touch", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Look & op)
+oplist Entity::LookOperation(const Look & op)
 {
     oplist res;
     script->Operation("look", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Appearance & op)
+oplist Entity::AppearanceOperation(const Appearance & op)
 {
     oplist res;
     script->Operation("appearance", op, res);
     return res;
 }
 
-oplist Entity::Operation(const Disappearance & op)
+oplist Entity::DisappearanceOperation(const Disappearance & op)
 {
     oplist res;
     script->Operation("disappearance", op, res);
     return res;
 }
 
-oplist Entity::Operation(const RootOperation & op)
+oplist Entity::OtherOperation(const RootOperation & op)
 {
     const string & op_type = op.GetParents().front().AsString();
     oplist res;

@@ -27,8 +27,8 @@ class Account : public OOGThing {
     virtual ~Account();
 
     virtual void addToObject(Atlas::Message::Object &) const;
-    virtual oplist Operation(const Logout & op);
-    virtual oplist Operation(const Create & op);
+    virtual oplist LogoutOperation(const Logout & op);
+    virtual oplist CreateOperation(const Create & op);
 };
 
 #endif // ACCOUNT_H

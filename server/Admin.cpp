@@ -39,7 +39,7 @@ oplist Admin::characterError(const Create &, const Object::MapType &) const {
     return oplist();
 }
 
-oplist Admin::Operation(const Save & op)
+oplist Admin::SaveOperation(const Save & op)
 {
     edict_t::const_iterator I;
     Persistance * p = Persistance::instance();
@@ -61,7 +61,7 @@ oplist Admin::Operation(const Save & op)
             cout << "Dumping character to database" << endl << flush;
             Character * c = (Character *)I->second;
             if (c->mind == NULL) { continue; }
-            oplist res = c->mind->Operation(op);
+            oplist res = c->mind->SaveOperation(op);
             if ((res.size() != 0) && (res.front()->GetArgs().size() != 0)) {
                 cout << "Dumping mind to database" << endl << flush;
                 Object & mindmap = res.front()->GetArgs().front();
@@ -113,7 +113,7 @@ void Admin::load(Persistance * p, const string & id, int & count)
     }
 }
 
-oplist Admin::Operation(const Load & op)
+oplist Admin::LoadOperation(const Load & op)
 {
     int count = 0;
     int mind_count = 0;
@@ -138,7 +138,7 @@ oplist Admin::Operation(const Load & op)
             if (c->mind == NULL) { continue; }
             Load l(op);
             l.SetArgs(Object::ListType(1,ent));
-            c->mind->Operation(l);
+            c->mind->LoadOperation(l);
             ++mind_count;
         }
     }
@@ -153,7 +153,7 @@ oplist Admin::Operation(const Load & op)
     return oplist(1,info);
 }
 
-oplist Admin::Operation(const Get & op)
+oplist Admin::GetOperation(const Get & op)
 {
     const Object & ent = op.GetArgs().front();
     try {
@@ -193,7 +193,7 @@ oplist Admin::Operation(const Get & op)
     return oplist();
 }
 
-oplist Admin::Operation(const Set & op)
+oplist Admin::SetOperation(const Set & op)
 {
     const Object & ent = op.GetArgs().front();
     try {

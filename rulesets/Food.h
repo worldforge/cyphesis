@@ -18,8 +18,8 @@ class Food : public Thing {
     Food();
     virtual ~Food();
 
-    virtual oplist Operation(const Eat & op);
-    virtual oplist Operation(const Fire & op);
+    virtual oplist EatOperation(const Eat & op);
+    virtual oplist FireOperation(const Fire & op);
 };
 
 #endif // FOOD_H

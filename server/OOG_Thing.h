@@ -11,7 +11,7 @@ class OOGThing : public BaseEntity {
   public:
     OOGThing() { }
     virtual ~OOGThing();
-    virtual oplist Operation(const RootOperation & op);
+    virtual oplist OtherOperation(const RootOperation & op);
 };
 
 #endif // OOG_THING_H

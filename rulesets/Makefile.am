@@ -34,6 +34,7 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    Py_Oplist.cpp Py_Oplist.h \
 			    Py_Optime.cpp Py_Optime.h \
 			    Py_Thing.cpp Py_Thing.h \
+			    Py_Mind.cpp Py_Mind.h \
 			    Py_Map.cpp Py_Map.h \
 			    Py_Vector3D.cpp Py_Vector3D.h \
 			    Py_WorldTime.cpp Py_WorldTime.h \

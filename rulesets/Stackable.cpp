@@ -53,7 +53,7 @@ void Stackable::addToObject(Object & obj) const
     Thing::addToObject(obj);
 }
 
-oplist Stackable::Operation(const Combine & op)
+oplist Stackable::CombineOperation(const Combine & op)
 {
     oplist res;
     if (script->Operation("combine", op, res) != 0) {
@@ -78,7 +78,7 @@ oplist Stackable::Operation(const Combine & op)
     // FIXME DO we need to send a sight?
 }
 
-oplist Stackable::Operation(const Divide & op)
+oplist Stackable::DivideOperation(const Divide & op)
 {
     oplist res;
     if (script->Operation("divide", op, res) != 0) {

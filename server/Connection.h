@@ -25,10 +25,11 @@ class Connection : public Routing {
     inline void send(const RootOperation * msg) const;
 
     virtual oplist operation(const RootOperation & op);
-    virtual oplist Operation(const Login & op);
-    virtual oplist Operation(const Logout & op);
-    virtual oplist Operation(const Create & op);
-    virtual oplist Operation(const Get & op);
+
+    virtual oplist LoginOperation(const Login & op);
+    virtual oplist LogoutOperation(const Logout & op);
+    virtual oplist CreateOperation(const Create & op);
+    virtual oplist GetOperation(const Get & op);
 };
 
 #endif // CONNECTION_H

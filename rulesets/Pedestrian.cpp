@@ -35,15 +35,15 @@ Pedestrian::~Pedestrian()
 
 double Pedestrian::getTickAddition(const Vector3D & coordinates) const
 {
-    double basic_distance=velocity.mag()*consts::basic_tick;
-    const Vector3D & target = collPos ? collPos : targetPos;
+    double basic_distance = m_velocity.mag() * consts::basic_tick;
+    const Vector3D & target = m_collPos ? m_collPos : m_targetPos;
     if (target) {
         double distance=coordinates.distance(target);
         debug( cout << "basic_distance: " << basic_distance << endl << flush;);
         debug( cout << "distance: " << distance << endl << flush;);
         if (basic_distance>distance) {
             debug( cout << "\tshortened tick" << endl << flush;);
-            return distance/basic_distance*consts::basic_tick;
+            return distance / basic_distance * consts::basic_tick;
         }
     }
     return consts::basic_tick;
@@ -51,15 +51,15 @@ double Pedestrian::getTickAddition(const Vector3D & coordinates) const
 
 Move * Pedestrian::genFaceOperation(const Location & loc)
 {
-    if (face != loc.face) {
-        face = loc.face;
+    if (m_face != loc.face) {
+        m_face = loc.face;
         debug( cout << "Turning" << endl << flush;);
         Move * moveOp = new Move(Move::Instantiate());
-        moveOp->SetTo(body.fullid);
+        moveOp->SetTo(m_body.fullid);
         Object::MapType _map;
         Object ent(_map);
         Object::MapType & entmap = ent.AsMap();
-        entmap["id"] = body.fullid;
+        entmap["id"] = m_body.fullid;
         loc.addToObject(ent);
         Object::ListType args(1,ent);
         moveOp->SetArgs(args);
@@ -70,45 +70,45 @@ Move * Pedestrian::genFaceOperation(const Location & loc)
 
 Move * Pedestrian::genMoveOperation(Location * rloc)
 {
-    return genMoveOperation(rloc, body.location);
+    return genMoveOperation(rloc, m_body.location);
 }
 
 Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
 {
-        debug( cout << "genMoveOperation: status: Pedestrian(" << serialno
-             << "," << collPos << "," << targetPos << "," << velocity << ","
-             << lastMovementTime << ")" << endl << flush;);
+        debug( cout << "genMoveOperation: status: Pedestrian(" << m_serialno
+             << "," << m_collPos << "," << m_targetPos << "," << m_velocity
+             << "," << m_lastMovementTime << ")" << endl << flush;);
     if (updateNeeded(loc)) {
         debug(cout << "genMoveOperation: Update needed..." << endl << flush;);
 
         // Sort out time difference, and set updated time
-        const double & current_time=body.world->getTime();
-        double time_diff=current_time-lastMovementTime;
+        const double & current_time = m_body.world->getTime();
+        double time_diff = current_time - m_lastMovementTime;
         debug( cout << "time_diff:" << time_diff << endl << flush;);
-        lastMovementTime=current_time;
+        m_lastMovementTime = current_time;
 
-        face = loc.face;
+        m_face = loc.face;
         
         Location new_loc(loc);
-        new_loc.velocity=velocity;
+        new_loc.velocity = m_velocity;
 
         // Create move operation
         Move * moveOp = new Move(Move::Instantiate());
-        moveOp->SetTo(body.fullid);
+        moveOp->SetTo(m_body.fullid);
 
         // Set up argument for operation
         Object::MapType _map;
         Object ent(_map);
         Object::MapType & entmap = ent.AsMap();
-        entmap["id"] = body.fullid;
+        entmap["id"] = m_body.fullid;
 
         // Walk out what the mode of the character should be.
-        double vel_mag = velocity.mag();
+        double vel_mag = m_velocity.mag();
         double speed_ratio;
         if (vel_mag == 0.0) {
             speed_ratio = 0.0;
         } else {
-            speed_ratio = vel_mag/consts::base_velocity;
+            speed_ratio = vel_mag / consts::base_velocity;
         }
         string mode;
         if (speed_ratio > 0.5) {
@@ -122,7 +122,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
         entmap["mode"] = Object(mode);
 
         // If velocity is not set, return this simple operation.
-        if (!velocity) {
+        if (!m_velocity) {
             debug( cout << "only velocity changed." << endl << flush;);
             new_loc.addToObject(ent);
             Object::ListType args(1,ent);
@@ -135,47 +135,47 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
 
         // Update location
         Vector3D new_coords;
-        if (updatedPos) {
-            new_coords=updatedPos+(velocity*time_diff);
+        if (m_updatedPos) {
+            new_coords = m_updatedPos + (m_velocity * time_diff);
         } else {
-            new_coords=loc.coords+(velocity*time_diff);
+            new_coords = loc.coords + (m_velocity * time_diff);
         }
-        const Vector3D & target = collPos ? collPos : targetPos;
+        const Vector3D & target = m_collPos ? m_collPos : m_targetPos;
         if (target) {
-            Vector3D new_coords2 = new_coords+velocity/consts::basic_tick/10.0;
-            double dist=target.distance(new_coords);
-            double dist2=target.distance(new_coords2);
+            Vector3D new_coords2 = new_coords + m_velocity / consts::basic_tick / 10.0;
+            double dist = target.distance(new_coords);
+            double dist2 = target.distance(new_coords2);
             debug( cout << "dist: " << dist << "," << dist2 << endl << flush;);
             if (dist2>dist) {
                 debug( cout << "target achieved";);
-                new_coords=target;
-                if (collRef != NULL) {
-                    cout << "CONTACT " << collRef->fullid << endl << flush;
-                    if (collRef == new_loc.ref->location.ref) {
+                new_coords = target;
+                if (m_collRef != NULL) {
+                    cout << "CONTACT " << m_collRef->fullid << endl << flush;
+                    if (m_collRef == new_loc.ref->location.ref) {
                         cout << "OUT" << target << new_loc.ref->location.coords << endl << flush;
                         new_coords=target + new_loc.ref->location.coords;
                     } else {
                         cout << "IN" << endl << flush;
-                        new_coords=target - collRef->location.coords;
+                        new_coords = target - m_collRef->location.coords;
                     }
-                    new_loc.ref = collRef;
-                    collRef = NULL;
-                    // Transform targetPos to new ref?
-                    collPos = Vector3D();
+                    new_loc.ref = m_collRef;
+                    m_collRef = NULL;
+                    // Transform m_targetPos to new ref?
+                    m_collPos = Vector3D();
                 } else {
-                    if (collPos) {
-                        velocity[collAxis] = 0;
-                        collPos = Vector3D();
+                    if (m_collPos) {
+                        m_velocity[m_collAxis] = 0;
+                        m_collPos = Vector3D();
                     } else {
                         reset();
                         entmap["mode"] = Object("standing");
                     }
-                    new_loc.velocity=velocity;
+                    new_loc.velocity=m_velocity;
                 }
             }
         }
         new_loc.coords = new_coords;
-        updatedPos = new_coords;
+        m_updatedPos = new_coords;
 
         // Check for collisions
         checkCollisions(new_loc);

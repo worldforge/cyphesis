@@ -55,6 +55,17 @@ static int WorldTime_setattr(WorldTimeObject *self, char *name, PyObject *v)
     return -1;
 }
 
+static int WorldTime_cmp(WorldTimeObject *self, PyObject *other)
+{
+    if (PyString_Check(other)) {
+        
+        bool eq = (*self->time == std::string(PyString_AsString(other)));
+        return eq ? 0 : -1;
+    } else {
+        return -1;
+    }
+}
+
 PyTypeObject WorldTime_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,				/*ob_size*/
@@ -66,7 +77,7 @@ PyTypeObject WorldTime_Type = {
 	0,				/*tp_print*/
 	(getattrfunc)WorldTime_getattr,	/*tp_getattr*/
 	(setattrfunc)WorldTime_setattr,	/*tp_setattr*/
-	0,				/*tp_compare*/
+	(cmpfunc)WorldTime_cmp,		/*tp_compare*/
 	0,				/*tp_repr*/
 	0,				/*tp_as_number*/
 	0,				/*tp_as_sequence*/

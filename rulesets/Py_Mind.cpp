@@ -8,11 +8,11 @@
 #include <Python.h>
 
 #include "Python_API.h"
-#include "Entity.h"
+#include "BaseMind.h"
 
-static PyObject * Thing_as_entity(ThingObject * self, PyObject * args)
+static PyObject * Mind_as_entity(MindObject * self, PyObject * args)
 {
-    if (self->m_thing == NULL) {
+    if (self->m_mind == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid thing");
         return NULL;
     }
@@ -23,13 +23,13 @@ static PyObject * Thing_as_entity(ThingObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->m_obj = new Object(self->m_thing->asObject());
+    ret->m_obj = new Object(self->m_mind->asObject());
     return (PyObject *)ret;
 }
 
-static PyObject * Thing_get_xyz(ThingObject * self, PyObject * args)
+static PyObject * Mind_get_xyz(MindObject * self, PyObject * args)
 {
-    if (self->m_thing == NULL) {
+    if (self->m_mind == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid thing");
         return NULL;
     }
@@ -40,29 +40,29 @@ static PyObject * Thing_get_xyz(ThingObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->m_thing->getXyz();
+    ret->coords = self->m_mind->getXyz();
     return (PyObject *)ret;
 }
 
-static PyMethodDef Thing_methods[] = {
-	{"get_xyz",        (PyCFunction)Thing_get_xyz,  1},
-	{"as_entity",        (PyCFunction)Thing_as_entity,  1},
+static PyMethodDef Mind_methods[] = {
+	{"get_xyz",        (PyCFunction)Mind_get_xyz,  1},
+	{"as_entity",        (PyCFunction)Mind_as_entity,  1},
 	{NULL,          NULL}           /* sentinel */
 };
 
-static void Thing_dealloc(ThingObject *self)
+static void Mind_dealloc(MindObject *self)
 {
-    //if (self->m_thing != NULL) {
-        //delete self->m_thing;
+    //if (self->m_mind != NULL) {
+        //delete self->m_mind;
     //}
-    Py_XDECREF(self->Thing_attr);
+    Py_XDECREF(self->Mind_attr);
     PyMem_DEL(self);
 }
 
-static PyObject * Thing_getattr(ThingObject *self, char *name)
+static PyObject * Mind_getattr(MindObject *self, char *name)
 {
-    // Fairly major re-write of this to use operator[] of Thing base class
-    if (self->m_thing == NULL) {
+    // Fairly major re-write of this to use operator[] of Mind base class
+    if (self->m_mind == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid thing");
         return NULL;
     }
@@ -76,54 +76,49 @@ static PyObject * Thing_getattr(ThingObject *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        PyList_Append(list, PyString_FromString(self->m_thing->type.c_str()));
+        PyList_Append(list, PyString_FromString(self->m_mind->type.c_str()));
         return list;
     }
-    // if (strcmp(name, "map") == 0) {
-        // MemMap * tMap = self->m_thing->getMap();
-        // if (tMap == NULL) {
-            // PyErr_SetString(PyExc_TypeError, "Body entity has no map");
-            // return NULL;
-        // }
-        // MapObject * map = newMapObject(NULL);
-        // map->m_map = tMap;
-        // return (PyObject *)map;
-    // }
+    if (strcmp(name, "map") == 0) {
+        MapObject * map = newMapObject(NULL);
+        map->m_map = self->m_mind->getMap();
+        return (PyObject *)map;
+    }
     if (strcmp(name, "location") == 0) {
         LocationObject * loc = newLocationObject(NULL);
-        loc->location = &self->m_thing->location;
+        loc->location = &self->m_mind->location;
         loc->own = 0;
         return (PyObject *)loc;
     }
-    if (strcmp(name, "world") == 0) {
-        WorldObject * world = newWorldObject(NULL);
-        world->world = self->m_thing->world;
-        return (PyObject *)world;
+    if (strcmp(name, "time") == 0) {
+        WorldTimeObject * worldtime = newWorldTimeObject(NULL);
+        worldtime->time = self->m_mind->getTime();
+        return (PyObject *)worldtime;
     }
-    if (self->Thing_attr != NULL) {
-        PyObject *v = PyDict_GetItemString(self->Thing_attr, name);
+    if (self->Mind_attr != NULL) {
+        PyObject *v = PyDict_GetItemString(self->Mind_attr, name);
         if (v != NULL) {
             Py_INCREF(v);
             return v;
         }
     }
-    Entity * thing = self->m_thing;
-    string attr(name);
+    Entity * thing = self->m_mind;
+    std::string attr(name);
     PyObject * ret = Object_asPyObject((*thing)[attr]);
     if (ret == NULL) {
-        return Py_FindMethod(Thing_methods, (PyObject *)self, name);
+        return Py_FindMethod(Mind_methods, (PyObject *)self, name);
     }
     return ret;
 }
 
-static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
+static int Mind_setattr(MindObject *self, char *name, PyObject *v)
 {
-    if (self->m_thing == NULL) {
+    if (self->m_mind == NULL) {
         return -1;
     }
-    if (self->Thing_attr == NULL) {
-        self->Thing_attr = PyDict_New();
-        if (self->Thing_attr == NULL) {
+    if (self->Mind_attr == NULL) {
+        self->Mind_attr = PyDict_New();
+        if (self->Mind_attr == NULL) {
             return -1;
         }
     }
@@ -131,9 +126,9 @@ static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
         // This needs to be here until we can sort the difference
         // between floats and ints in python.
         if (PyInt_Check(v)) {
-            self->m_thing->status = (double)PyInt_AsLong(v);
+            self->m_mind->status = (double)PyInt_AsLong(v);
         } else if (PyFloat_Check(v)) {
-            self->m_thing->status = PyFloat_AsDouble(v);
+            self->m_mind->status = PyFloat_AsDouble(v);
         } else {
             PyErr_SetString(PyExc_TypeError, "status must be numeric type");
             return -1;
@@ -143,7 +138,7 @@ static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
     if (strcmp(name, "map") == 0) {
         return -1;
     }
-    Entity * thing = self->m_thing;
+    Entity * thing = self->m_mind;
     //string attr(name);
     //if (v == NULL) {
         //thing->attributes.erase(attr);
@@ -156,29 +151,29 @@ static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
     }
     // If we get here, then the attribute is not Atlas compatable, so we
     // need to store it in a python dictionary
-    return PyDict_SetItemString(self->Thing_attr, name, v);
+    return PyDict_SetItemString(self->Mind_attr, name, v);
 }
 
-static int Thing_compare(ThingObject *self, ThingObject *other)
+static int Mind_compare(MindObject *self, MindObject *other)
 {
-    if ((self->m_thing == NULL) || (other->m_thing == NULL)) {
+    if ((self->m_mind == NULL) || (other->m_mind == NULL)) {
         return -1;
     }
-    return (self->m_thing == other->m_thing) ? 0 : 1;
+    return (self->m_mind == other->m_mind) ? 0 : 1;
 }
 
-PyTypeObject Thing_Type = {
+PyTypeObject Mind_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,				/*ob_size*/
-	"cppThing",			/*tp_name*/
-	sizeof(ThingObject),		/*tp_basicsize*/
+	"cppMind",			/*tp_name*/
+	sizeof(MindObject),		/*tp_basicsize*/
 	0,				/*tp_itemsize*/
 	/* methods */
-	(destructor)Thing_dealloc,	/*tp_dealloc*/
+	(destructor)Mind_dealloc,	/*tp_dealloc*/
 	0,				/*tp_print*/
-	(getattrfunc)Thing_getattr,	/*tp_getattr*/
-	(setattrfunc)Thing_setattr,	/*tp_setattr*/
-	(cmpfunc)Thing_compare,		/*tp_compare*/
+	(getattrfunc)Mind_getattr,	/*tp_getattr*/
+	(setattrfunc)Mind_setattr,	/*tp_setattr*/
+	(cmpfunc)Mind_compare,		/*tp_compare*/
 	0,				/*tp_repr*/
 	0,				/*tp_as_number*/
 	0,				/*tp_as_sequence*/
@@ -186,13 +181,13 @@ PyTypeObject Thing_Type = {
 	0,				/*tp_hash*/
 };
 
-ThingObject * newThingObject(PyObject *arg)
+MindObject * newMindObject(PyObject *arg)
 {
-	ThingObject * self;
-	self = PyObject_NEW(ThingObject, &Thing_Type);
+	MindObject * self;
+	self = PyObject_NEW(MindObject, &Mind_Type);
 	if (self == NULL) {
 		return NULL;
 	}
-	self->Thing_attr = NULL;
+	self->Mind_attr = NULL;
 	return self;
 }

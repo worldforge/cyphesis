@@ -10,6 +10,7 @@
 #include "Python_API.h"
 #include "PythonThingScript.h"
 #include "PythonMindScript.h"
+#include "World.h"
 #include "Thing.h"
 #include "BaseMind.h"
 
@@ -186,7 +187,7 @@ PyTypeObject dictlist_add_value_type = {
 	dictlist_add_value,	/* tp_call */
 };
 
-static PyObject * Create_PyScript(Entity * thing, const string & package, const string & _type)
+static PyObject * Get_PyClass(const string & package, const string & _type)
 {
     string type = _type;
     type[0] = toupper(type[0]);
@@ -209,24 +210,35 @@ static PyObject * Create_PyScript(Entity * thing, const string & package, const 
         cerr << "It does not seem to be a class at all" << endl << flush;
         return NULL;
     }
-    ThingObject * pyThing = newThingObject(NULL);
-    pyThing->m_thing = thing;
-    PyObject * pyob;
-    if ((pyob = PyEval_CallFunction(my_class,"(O)", (PyObject *)pyThing)) == NULL) {
+    return my_class;
+    // ThingObject * pyThing = newThingObject(NULL);
+    // pyThing->m_thing = thing;
+    // PyObject * pyob;
+}
+
+static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyclass)
+{
+    PyObject * pyob = PyEval_CallFunction(pyclass,"(O)", pyThing);
+    
+    if (pyob == NULL) {
         if (PyErr_Occurred() == NULL) {
             cerr << "Could not get python obj" << endl << flush;
         } else {
-            cerr << "Reporting python error for " << type << endl << flush;
+            cerr << "Reporting python error" << endl << flush;
             PyErr_Print();
         }
     }
-    Py_DECREF(my_class);
+    Py_DECREF(pyclass);
     return pyob;
 }
 
 void Create_PyThing(Thing * thing, const string& package, const string& _type)
 {
-    PyObject * o = Create_PyScript(thing, package, _type);
+    PyObject * c = Get_PyClass(package, _type);
+    if (c == NULL) { return; }
+    ThingObject * pyThing = newThingObject(NULL);
+    pyThing->m_thing = thing;
+    PyObject * o = Create_PyScript((PyObject *)pyThing, c);
     if (o != NULL) {
         thing->setScript(new PythonThingScript(o, *thing));
     }
@@ -234,7 +246,12 @@ void Create_PyThing(Thing * thing, const string& package, const string& _type)
 
 void Create_PyMind(BaseMind * mind, const string& package, const string& _type)
 {
-    PyObject * o = Create_PyScript(mind, package, _type);
+    PyObject * c = Get_PyClass(package, _type);
+    if (c == NULL) { return; }
+    MindObject * pyMind = newMindObject(NULL);
+    pyMind->m_mind = mind;
+    PyObject * o = Create_PyScript((PyObject *)pyMind, c);
+
     if (o != NULL) {
         mind->setScript(new PythonMindScript(o, *mind));
     }
@@ -260,11 +277,11 @@ static PyObject * location_new(PyObject * self, PyObject * args)
     // We need to deal with actual args here
     PyObject * refO, * coordsO = NULL;
     if (PyArg_ParseTuple(args, "O|O", &refO, &coordsO)) {
-        if ((!PyThing_Check(refO)) && (!PyWorld_Check(refO))) {
+        if ((!PyThing_Check(refO)) && (!PyWorld_Check(refO)) && (!PyMind_Check(refO))) {
             if (PyObject_HasAttrString(refO, "cppthing")) {
                 refO = PyObject_GetAttrString(refO, "cppthing");
             }
-            if (!PyThing_Check(refO)) {
+            if (!PyThing_Check(refO) && !PyMind_Check(refO)) {
                 PyErr_SetString(PyExc_TypeError, "Arg ref required");
                 return NULL;
             }
@@ -281,7 +298,14 @@ static PyObject * location_new(PyObject * self, PyObject * args)
                 PyErr_SetString(PyExc_TypeError, "Parent world is invalid");
                 return NULL;
             }
-            ref_ent = (Entity *)ref->world;
+            ref_ent = &ref->world->gameWorld;
+        } else if (PyMind_Check(refO)) {
+            MindObject * ref = (MindObject*)refO;
+            if (ref->m_mind == NULL) {
+                PyErr_SetString(PyExc_TypeError, "Parent mind is invalid");
+                return NULL;
+            }
+            ref_ent = ref->m_mind;
         } else {
             ThingObject * ref = (ThingObject*)refO;
             if (ref->m_thing == NULL) {

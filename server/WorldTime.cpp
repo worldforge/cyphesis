@@ -31,8 +31,8 @@ inline const string & seconds2string(double seconds) {
 void WorldTime::initTimeInfo() {
     timeInfo["always"] = period(crange(1,13), "seasonal");
     timeInfo["spring"] = period(crange(3,5), "seasonal");
-    timeInfo["summer"] = period(range(6,8), "seasonal");
-    timeInfo["autumn"] = period(range(9,11), "seasonal");
+    timeInfo["summer"] = period(crange(6,8), "seasonal");
+    timeInfo["autumn"] = period(crange(9,11), "seasonal");
     range winter = crange(1,2);
     winter.push_back(12);
     timeInfo["winter"] = period(winter, "seasonal");
@@ -63,10 +63,40 @@ void WorldTime::initTimeInfo() {
     //// time=DateTime(date_time);
 //}
 
-const string & WorldTime::operator[](const string & name)
+string WorldTime::operator[](const string & name)
 {
     //if (name=="season") {
         //return month2season[month];
     //}
     return "what";
+}
+
+bool WorldTime::operator==(const WorldTime & other) const
+{
+    // Why the hell won't this work?
+    // return (time==other.time);
+    return false;
+}
+
+bool WorldTime::operator==(const string & when) const
+{
+    time_info_t::const_iterator I = timeInfo.find(when);
+    if (I == timeInfo.end()) {
+        return false;
+    }
+    int check;
+    if (I->second.second == "seasonal") {
+        check = time.month();
+    } else if (I->second.second == "daily") {
+        check = time.hour();
+    } else {
+        return false;
+    }
+    list<int>::const_iterator J;
+    for(J = I->second.first.begin(); J != I->second.first.end(); J++) {
+        if (check == *J) {
+            return true;
+        }
+    }
+    return false;
 }

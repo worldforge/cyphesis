@@ -84,7 +84,7 @@ int Plant::dropFruit(oplist & res)
     return drop;
 }
 
-oplist Plant::Operation(const Tick & op)
+oplist Plant::TickOperation(const Tick & op)
 {
     oplist res;
     script->Operation("tick", op, res);

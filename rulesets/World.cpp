@@ -11,30 +11,30 @@
 
 #include "World.h"
 
-oplist World::Operation(const Look & op)
+oplist World::LookOperation(const Look & op)
 {
     return world->lookOperation(op);
 }
 
-oplist World::Operation(const Fire & op)
+oplist World::FireOperation(const Fire & op)
 {
     // Can't burn the world.
     return oplist();
 }
 
-oplist World::Operation(const Move & op)
+oplist World::MoveOperation(const Move & op)
 {
     // Can't move the world.
     return oplist();
 }
 
-oplist World::Operation(const Delete & op)
+oplist World::DeleteOperation(const Delete & op)
 {
     // Deleting has no effect.
     return oplist();
 }
 
-oplist World::Operation(const Set & op)
+oplist World::SetOperation(const Set & op)
 {
     // This is the same as Thing::Operation(Set), except world does not
     // get deleted if its status goes below 0.

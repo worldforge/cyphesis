@@ -42,8 +42,8 @@ bool PythonThingScript::Operation(const string& op_type,const RootOperation& op,
     RootOperationObject * py_op = newAtlasRootOperation(NULL);
     py_op->operation = new RootOperation(op);
     py_op->own = 0;
-    py_op->from = (Entity *)thing.world->getObject(op.GetFrom());
-    py_op->to = (Entity *)thing.world->getObject(op.GetTo());
+    py_op->from = thing.world->getObject(op.GetFrom());
+    py_op->to = thing.world->getObject(op.GetTo());
     PyObject * ret;
     ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(O)", py_op);

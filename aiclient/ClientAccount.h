@@ -16,8 +16,8 @@ class ClientAccount : public BaseEntity {
     ClientAccount(const string & name, ClientConnection & con);
     virtual ~ClientAccount() { }
 
-    virtual oplist Operation(const RootOperation & op);
-    virtual oplist Operation(const Info & op);
+    virtual oplist OtherOperation(const RootOperation & op);
+    virtual oplist InfoOperation(const Info & op);
 };
 
 #endif // CLIENT_ACCOUNT_H

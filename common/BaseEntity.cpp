@@ -67,7 +67,7 @@ oplist BaseEntity::message(const RootOperation & op)
     return operation(op);
 }
 
-oplist BaseEntity::Operation(const Look & op)
+oplist BaseEntity::LookOperation(const Look & op)
 {
     debug( cout << "look op got all the way to here" << endl << flush;);
     Sight * s = new Sight( Sight::Instantiate());
@@ -90,33 +90,34 @@ oplist BaseEntity::externalOperation(const RootOperation & op)
     return operation(op);
 }
 
-oplist BaseEntity::Operation(const Login & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Logout & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Action & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Chop & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Combine & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Create & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Cut & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Delete & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Divide & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Eat & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Fire & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Get & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Info & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Move & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Nourish & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Set & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Sight & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Sound & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Talk & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Touch & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Tick & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Load & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Save & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Setup & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Appearance & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const Disappearance & op) { oplist res; return res; }
-oplist BaseEntity::Operation(const RootOperation & op) { oplist res; return res; }
+oplist BaseEntity::LoginOperation(const Login & op) { oplist res; return res; }
+oplist BaseEntity::LogoutOperation(const Logout & op) { oplist res; return res; }
+oplist BaseEntity::ActionOperation(const Action & op) { oplist res; return res; }
+oplist BaseEntity::ChopOperation(const Chop & op) { oplist res; return res; }
+oplist BaseEntity::CombineOperation(const Combine & op) { oplist res; return res; }
+oplist BaseEntity::CreateOperation(const Create & op) { oplist res; return res; }
+oplist BaseEntity::CutOperation(const Cut & op) { oplist res; return res; }
+oplist BaseEntity::DeleteOperation(const Delete & op) { oplist res; return res; }
+oplist BaseEntity::DivideOperation(const Divide & op) { oplist res; return res; }
+oplist BaseEntity::EatOperation(const Eat & op) { oplist res; return res; }
+oplist BaseEntity::FireOperation(const Fire & op) { oplist res; return res; }
+oplist BaseEntity::GetOperation(const Get & op) { oplist res; return res; }
+oplist BaseEntity::InfoOperation(const Info & op) { oplist res; return res; }
+oplist BaseEntity::MoveOperation(const Move & op) { oplist res; return res; }
+oplist BaseEntity::NourishOperation(const Nourish & op) { oplist res; return res; }
+oplist BaseEntity::SetOperation(const Set & op) { oplist res; return res; }
+oplist BaseEntity::SightOperation(const Sight & op) { oplist res; return res; }
+oplist BaseEntity::SoundOperation(const Sound & op) { oplist res; return res; }
+oplist BaseEntity::TalkOperation(const Talk & op) { oplist res; return res; }
+oplist BaseEntity::TouchOperation(const Touch & op) { oplist res; return res; }
+oplist BaseEntity::TickOperation(const Tick & op) { oplist res; return res; }
+oplist BaseEntity::LoadOperation(const Load & op) { oplist res; return res; }
+oplist BaseEntity::SaveOperation(const Save & op) { oplist res; return res; }
+oplist BaseEntity::SetupOperation(const Setup & op) { oplist res; return res; }
+oplist BaseEntity::AppearanceOperation(const Appearance & op) { oplist res; return res; }
+oplist BaseEntity::DisappearanceOperation(const Disappearance & op) { oplist res; return res; }
+oplist BaseEntity::OtherOperation(const RootOperation & op) { oplist res; return res; }
+oplist BaseEntity::ErrorOperation(const RootOperation & op) { oplist res; return res; }
 
 void BaseEntity::setRefno(const oplist& ret, const RootOperation & ref_op) const
 {

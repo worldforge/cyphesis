@@ -72,7 +72,7 @@ BaseEntity * Account::addCharacter(const string & typestr, const Object & ent)
     return chr;
 }
 
-oplist Account::Operation(const Logout & op)
+oplist Account::LogoutOperation(const Logout & op)
 {
     debug(cout << "Account logout: " << fullid << endl;);
     connection->destroy();
@@ -97,7 +97,7 @@ void Account::addToObject(Object & obj) const
     // attributes (location, contains etc.) are relevant to accounts
 }
 
-oplist Account::Operation(const Create & op)
+oplist Account::CreateOperation(const Create & op)
 {
     debug(cout << "Account::Operation(create)" << endl << flush;);
     const Object & ent = op.GetArgs().front();

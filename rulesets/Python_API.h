@@ -36,6 +36,12 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
+    PyObject	* Mind_attr;	// Attributes dictionary
+    BaseMind	* m_mind;
+} MindObject;
+
+typedef struct {
+    PyObject_HEAD
     MemMap	* m_map;
 } MapObject;
 
@@ -85,6 +91,7 @@ typedef struct {
 
 #include "Py_Object.h"
 #include "Py_Thing.h"
+#include "Py_Mind.h"
 #include "Py_Map.h"
 #include "Py_Location.h"
 #include "Py_Vector3D.h"

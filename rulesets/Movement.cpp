@@ -25,9 +25,9 @@ using Atlas::Message::Object;
 
 static const bool debug_flag = false;
 
-Movement::Movement(Character & body) : body(body), lastMovementTime(-1),
-                                       velocity(0,0,0), serialno(0),
-                                       collRef(NULL), collAxis(-1)
+Movement::Movement(Thing & body) : m_body(body), m_lastMovementTime(-1),
+                                   m_velocity(0,0,0), m_serialno(0),
+                                   m_collRef(NULL), m_collAxis(-1)
 {
 }
 
@@ -37,7 +37,7 @@ Movement::~Movement()
 
 bool Movement::updateNeeded(const Location & location) const
 {
-    return ((velocity!=Vector3D(0,0,0))||(location.velocity!=Vector3D(0,0,0)));
+    return((m_velocity!=Vector3D(0,0,0))||(location.velocity!=Vector3D(0,0,0)));
 }
 
 void Movement::checkCollisions(const Location & loc)
@@ -50,7 +50,7 @@ void Movement::checkCollisions(const Location & loc)
     Entity * collEntity = NULL;
     for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
         // if ((*I) == loc.ref) { continue; }
-        if ((*I) == &body) { continue; }
+        if ((*I) == &m_body) { continue; }
         const Location & oloc = (*I)->location;
         if (!oloc.bbox) { continue; }
         int axis;
@@ -60,7 +60,7 @@ void Movement::checkCollisions(const Location & loc)
         // cout << "[" << t << "]";
         if (t < collTime) {
             collEntity = *I;
-            collAxis = axis;
+            m_collAxis = axis;
         }
         collTime = min(collTime, t);
     }
@@ -78,7 +78,7 @@ void Movement::checkCollisions(const Location & loc)
         collTime = min(collTime, t);
         if (collTime > consts::basic_tick) { return; }
         cout << "Collision with parent bounding box" << endl << flush;
-        collRef = oloc.ref;
+        m_collRef = oloc.ref;
     } else if (!collEntity->location.solid) {
         cout << "Collision with non-solid object" << endl << flush;
         // Non solid container - check for collision with its contents.
@@ -90,7 +90,7 @@ void Movement::checkCollisions(const Location & loc)
         for(I = lc2.ref->contains.begin(); I != lc2.ref->contains.end(); I++) {
             const Location & oloc = (*I)->location;
             if (!oloc.bbox) { continue; }
-            double t = rloc.hitTime(oloc, collAxis);
+            double t = rloc.hitTime(oloc, m_collAxis);
             if (t < 0) { continue; }
             coll2Time = min(coll2Time, t);
         }
@@ -98,7 +98,7 @@ void Movement::checkCollisions(const Location & loc)
             cout << "passing into it" << endl << flush;
             // We are entering collEntity.
             // Set collRef ????????????????
-            collRef = collEntity;
+            m_collRef = collEntity;
             // if (coll2Time > consts::basic_tick) { return; }
         }
     }
@@ -106,20 +106,20 @@ void Movement::checkCollisions(const Location & loc)
     if (collTime < getTickAddition(loc.coords)) {
         cout << "Setting target loc to " << loc.coords << "+" << loc.velocity
              << "*" << collTime;
-        collPos = loc.coords + loc.velocity * collTime;
+        m_collPos = loc.coords + loc.velocity * collTime;
     } else {
-        collRef = NULL;
+        m_collRef = NULL;
     }
 }
 
 void Movement::reset()
 {
-    serialno = serialno+1;
-    collRef = NULL;
-    collPos = Vector3D();
-    collAxis = -1;
-    targetPos=Vector3D();
-    updatedPos=Vector3D();
-    velocity=Vector3D(0,0,0);
-    lastMovementTime=body.world->getTime();
+    ++m_serialno;
+    m_collRef = NULL;
+    m_collPos = Vector3D();
+    m_collAxis = -1;
+    m_targetPos=Vector3D();
+    m_updatedPos=Vector3D();
+    m_velocity=Vector3D(0,0,0);
+    m_lastMovementTime=m_body.world->getTime();
 }

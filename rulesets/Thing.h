@@ -25,14 +25,14 @@ class Thing : public Entity {
         return world->message(*op, this);
     }
 
-    virtual oplist Operation(const Setup & op);
-    virtual oplist Operation(const Action & op);
-    virtual oplist Operation(const Create & op);
-    virtual oplist Operation(const Delete & op);
-    virtual oplist Operation(const Fire & op);
-    virtual oplist Operation(const Move & op);
-    virtual oplist Operation(const Set & op);
-    virtual oplist Operation(const Look & op);
+    virtual oplist SetupOperation(const Setup & op);
+    virtual oplist ActionOperation(const Action & op);
+    virtual oplist CreateOperation(const Create & op);
+    virtual oplist DeleteOperation(const Delete & op);
+    virtual oplist FireOperation(const Fire & op);
+    virtual oplist MoveOperation(const Move & op);
+    virtual oplist SetOperation(const Set & op);
+    virtual oplist LookOperation(const Look & op);
 };
 
 #endif // THING_H
