@@ -1,5 +1,11 @@
 2004-06-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.h, server/Admin.cpp: Add fallthrough case so
+	  that admin accounts can handle set ops the same way as player
+	  accounts do.
+
+2004-06-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Clean up use of standard error to go
 	  via the log subsystem.
 

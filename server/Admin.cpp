@@ -192,6 +192,10 @@ OpVector Admin::SetOperation(const Set & op)
     // const std::string & id = I->second.asString();
 
     if ((objtype == "object") || (objtype == "obj")) {
+        if (m_charactersDict.find(id) != m_charactersDict.end()) {
+            return Account::SetOperation(op);
+        }
+        log(WARNING, "Unable to set attributes of non-character yet");
         // Manipulate attributes of existing objects.
     } else if (objtype == "class") {
         // Quick hack. This should eventually use EntityFactory, but that

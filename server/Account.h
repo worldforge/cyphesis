@@ -10,7 +10,7 @@
 class Connection;
 
 class Account : public OOGThing {
-  private:
+  protected:
     typedef std::map<std::string, SigC::Connection *> ConMap;
 
     EntityDict m_charactersDict;
@@ -18,7 +18,6 @@ class Account : public OOGThing {
 
     Entity * addNewCharacter(const std::string &,
                              const Atlas::Message::Element::MapType &);
-  protected:
     void characterDestroyed(std::string);
 
     virtual OpVector characterError(const Create &, const Atlas::Message::Element::MapType &) const = 0;

@@ -1,3 +1,5 @@
+Fix Set ops from Admin so they behave the same for the non-admin case
+
 Sort out SO_REUSEADDR You FUCKTARD!
 
 Fix movement bug with destination based movement after collision. Ammend
