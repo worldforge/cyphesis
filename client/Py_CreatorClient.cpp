@@ -71,6 +71,46 @@ static PyObject * CreatorClient_make(CreatorClientObject * self, PyObject * args
     return (PyObject *)ret;
 }
 
+static PyObject * CreatorClient_set(CreatorClientObject * self, PyObject * args)
+{
+    if (self->m_mind == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid creator make");
+        return NULL;
+    }
+    AtlasObject * entity = NULL;
+    char * id = NULL;
+    if (!PyArg_ParseTuple(args, "sO", &id, &entity)) {
+        return NULL;
+    }
+    if (!PyAtlasObject_Check(entity)) {
+        PyErr_SetString(PyExc_TypeError, "Can only set Atlas entity");
+        return NULL;
+    }
+    self->m_mind->set(id, *entity->m_obj);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject * CreatorClient_look(CreatorClientObject * self, PyObject * args)
+{
+    if (self->m_mind == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid creator make");
+        return NULL;
+    }
+    char * id = NULL;
+    if (!PyArg_ParseTuple(args, "s", &id)) {
+        return NULL;
+    }
+    Entity * retval = self->m_mind->look(id);
+    if (retval == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Entity look failed");
+        return NULL;
+    }
+    ThingObject * ret = newThingObject(NULL);
+    ret->m_thing = retval;
+    return (PyObject *)ret;
+}
+
 static PyObject * CreatorClient_send(CreatorClientObject * self, PyObject * args)
 {
     if (self->m_mind == NULL) {
@@ -94,6 +134,8 @@ static PyMethodDef CreatorClient_methods[] = {
 	{"get_xyz",        (PyCFunction)CreatorClient_get_xyz, 1},
 	{"as_entity",      (PyCFunction)CreatorClient_as_entity, 1},
 	{"make",           (PyCFunction)CreatorClient_make, 1},
+	{"set",            (PyCFunction)CreatorClient_set, 1},
+	{"look",           (PyCFunction)CreatorClient_look, 1},
 	{"send",           (PyCFunction)CreatorClient_send, 1},
 	{NULL,          NULL}           /* sentinel */
 };

@@ -1,3 +1,12 @@
+2002-06-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/CreatorClient.cpp, client/CreatorClient.h,
+	  client/Py_CreatorClient.cpp, rulesets/basic/editor.py: Add
+	  features to allow query and manipulation of the world from
+	  the client.
+
+	* rulesets/mason/define_world.py: Give the world a name.
+
 2002-06-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/acorn/world/objects/plants/seeds/Apple.py,

@@ -90,6 +90,10 @@ def default(mapeditor):
 
     m=editor(mapeditor)
 
+    world=m.look()
+
+    m.set(world.id, name="moraf")
+
 # a wall around the world
 
     m.make('boundary',type='boundary',xyz=(-201,-201,settlement_height),bbox=[2,404,50])

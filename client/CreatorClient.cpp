@@ -5,6 +5,8 @@
 #include "CreatorClient.h"
 
 #include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Set.h>
 
 using Atlas::Message::Object;
 
@@ -71,5 +73,60 @@ Entity * CreatorClient::make(const Object & entity)
     const std::string & created_id = I->second.AsString();
     std::cout << "Created: " << created_id << std::endl << std::flush;
     Entity * obj = map.add(created);
+    return obj;
+}
+
+
+void CreatorClient::set(const std::string & id, const Object & entity)
+{
+    if (!entity.IsMap()) {
+        std::cerr << "entity is not map" << std::endl << std::flush;
+        return;
+    }
+    Set op(Set::Instantiate());
+    op.SetArgs(Object::ListType(1,entity));
+    op.SetFrom(getId());
+    op.SetTo(id);
+    send(op);
+}
+
+Entity * CreatorClient::look(const std::string & id)
+{
+    Look op(Look::Instantiate());
+    if (!id.empty()) {
+        Object::MapType ent;
+        ent["id"] = id;
+        op.SetArgs(Object::ListType(1,ent));
+    }
+    op.SetFrom(getId());
+    OpVector result = sendAndWaitReply(op);
+    if (result.empty()) {
+        std::cerr << "No reply to look" << std::endl << std::flush;
+        return NULL;
+    }
+    RootOperation * res = result.front();
+    if (res == NULL) {
+        std::cerr << "NULL reply to look" << std::endl << std::flush;
+        return NULL;
+    }
+    const std::string & resparents = res->GetParents().front().AsString();
+    if (resparents != "sight") {
+        std::cerr << "Reply to look isn't sight" << std::endl << std::flush;
+        return NULL;
+    }
+    if (res->GetArgs().empty()) {
+        std::cerr << "Reply to look has no args" << std::endl << std::flush;
+        return NULL;
+    }
+    const Object::MapType & seen = res->GetArgs().front().AsMap();
+    Object::MapType::const_iterator I = seen.find("id");
+    if ((I == seen.end()) || !I->second.IsString()) {
+        std::cerr << "Looked at entity has no id"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    const std::string & created_id = I->second.AsString();
+    std::cout << "Seen: " << created_id << std::endl << std::flush;
+    Entity * obj = map.add(seen);
     return obj;
 }

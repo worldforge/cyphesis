@@ -41,6 +41,12 @@ class editor:
 ##         if hasattr(ent,"copy"):
 ##             foo
         return self.m.make(ent)
+    def set(self, _id, **kw):
+        kw['id']=_id
+        ent=apply(Entity,(),kw)
+        return self.m.set(_id,ent)
+    def look(self, _id=""):
+        return self.m.look(_id)
     def _say(self,target,verb,subject,object):
 ##         es=Entity(verb=verb,subject=subject,object=object)
 ##         self.m.send(Operation("talk",es,from_=self.m,to=target))

@@ -13,7 +13,9 @@ class CreatorClient : public CharacterClient {
   public:
     CreatorClient(const std::string&, const std::string&, ClientConnection&);
 
-    Entity * make(const Atlas::Message::Object&);
+    Entity * make(const Atlas::Message::Object &);
+    void set(const std::string &, const Atlas::Message::Object &);
+    Entity * look(const std::string &);
 };
 
 #endif // CREATOR_CLIENT_H
