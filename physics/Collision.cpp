@@ -8,7 +8,7 @@
 
 #include "common/debug.h"
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 bool getCollisionTime(const Vector3D & p,     // Position of point
                       const Vector3D & u,     // Velocity of point
@@ -187,6 +187,10 @@ bool predictCollision(const Location & l,  // This location
     // FIXME THe mesh conversion process below should probably be eliminated
     // by generating the data when bBox or orienation are changed.
     // This would also allow us to have other mesh shapes
+
+    assert(l.m_bBox.isValid());
+    assert(o.m_bBox.isValid());
+
     const WFMath::Point<3> & ln = l.m_bBox.lowCorner();
     const WFMath::Point<3> & lf = l.m_bBox.highCorner();
     const WFMath::Point<3> & on = o.m_bBox.lowCorner();
@@ -252,8 +256,16 @@ bool predictCollision(const Location & l,  // This location
         obox[i] += o.m_pos;
     }
 
+    assert(l.m_velocity.isValid());
+    Vector3D notMoving(0., 0., 0.);
+
+    bool oMoving = o.m_velocity.isValid();
+    const Vector3D & o_velocity = oMoving ? o.m_velocity : notMoving;
+
+    assert(o_velocity.isValid());
+
     // Predict the collision using the generic mesh function
     return predictCollision(lbox, lnormals, l.m_velocity,
-                            obox, onormals, o.m_velocity,
+                            obox, onormals, o_velocity,
                             time, normal);
 }
