@@ -1,5 +1,10 @@
 2003-10-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Pedestrian.cpp: Skip collision detection pass if we have
+	  stopped moving.
+
+2003-10-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Movement.cpp: Add valid checks when comparing velocity.
 
 	* rulesets/Character.cpp: Remove code which ignore pos if it is

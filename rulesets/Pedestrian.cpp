@@ -143,6 +143,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     Vector3D new_coords = m_updatedPos.isValid() ? m_updatedPos : loc.m_pos;
     new_coords += (m_velocity * time_diff);
     const Vector3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
+    bool stopped = false;
     if (target.isValid()) {
         Vector3D new_coords2 = new_coords;
         new_coords2 += (m_velocity * (consts::basic_tick / 10.0));
@@ -201,10 +202,12 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     } else {
                         reset();
                         entmap["mode"] = "standing";
+                        stopped = true;
                     }
                 } else {
                     reset();
                     entmap["mode"] = "standing";
+                    stopped = true;
                 }
                 new_loc.m_velocity = m_velocity;
             }
@@ -214,7 +217,9 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     m_updatedPos = new_coords;
 
     // Check for collisions
-    checkCollisions(new_loc);
+    if (!stopped) {
+        checkCollisions(new_loc);
+    }
 
     debug( std::cout << "new coordinates: " << new_coords << std::endl
                      << std::flush;);
