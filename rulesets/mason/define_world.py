@@ -376,5 +376,13 @@ def modify_terrain(mapeditor):
     m=editor(mapeditor)
 
     world=m.look()
-    m.set(world.id, terrain={'points' : {'0x0' : [0, 0, 12.8]  } })
+    m.set(world.id, terrain={'points' : { '-1x-1' : [-1, -1, -16.8],
+                                          '0x-1' : [0, -1, -3.8],
+                                          '-1x0' : [-1, 0, -2.8],
+                                          '-1x1' : [-1, 1, 12.8],
+                                          '1x-1' : [1, -1, 15.8],
+                                          '0x0' : [0, 0, 12.8],
+                                          '1x0' : [1, 0, 23.1],
+                                          '0x1' : [0, 1, 14.2],
+                                          '1x1' : [1, 1, 19.7]  } })
 

@@ -1,5 +1,9 @@
 2004-09-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Install new terrain from the client.
+
+2004-09-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Implement function for modifying array rows.
 
 	* common/const.cpp: Enable persistence for testing.
