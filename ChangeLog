@@ -1,3 +1,8 @@
+2003-05-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommServer.cpp: Don't report Interrupted System Call on
+	  select(), as this is normal when program is interrupted.
+
 2003-05-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cycmd.cpp: Provide full details of entity attributes.

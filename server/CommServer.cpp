@@ -70,8 +70,10 @@ void CommServer::loop()
     int rval = ::select(highest, &sock_fds, NULL, NULL, &tv);
 
     if (rval < 0) {
-        perror("select");
-        log(ERROR, "Error caused by select() in main loop");
+        if (errno != EINTR) {
+            perror("select");
+            log(ERROR, "Error caused by select() in main loop");
+        }
         return;
     }
 
