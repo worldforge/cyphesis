@@ -1,4 +1,14 @@
-2004-06-23  Al Riddoch  <alriddoch@zepler.org>
+2004-06-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* Sort out sqirrel bounding box.
+
+2004-06-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Creator.cpp: Allow a creator to move around the world.
+
+	* rulesets/Character.cpp: Get rid of some extraneous debugging output.
+
+2004-06-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_WorldTime.cpp, rulesets/Py_World.cpp:
 	  Change the rest of the methods to use METH_NOARGS for simplicity.
