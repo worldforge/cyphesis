@@ -50,7 +50,6 @@ extern "C" {
 
 #include <modules/Location.h>
 
-#include <common/WorldInfo.h>
 #include <common/op_switch.h>
 #include <common/const.h>
 #include <common/debug.h>

@@ -16,8 +16,6 @@ class Thing;
 #include "Routing.h"
 #include "WorldTime.h"
 
-#include <common/WorldInfo.h>
-
 typedef std::list<RootOperation *> opqueue;
 
 class WorldRouter : public Routing {
@@ -51,12 +49,15 @@ class WorldRouter : public Routing {
         struct timeval tv;
         gettimeofday(&tv, NULL);
         double tmp_time = (double)(tv.tv_sec - initTime) + (double)tv.tv_usec/1000000;
-        world_info::time = double(tmp_time);
-        realTime = world_info::time;
+        realTime = tmp_time;
     }
 
-    double upTime() {
+    const double upTime() {
         return realTime - initTime;
+    }
+
+    const double & getTime() {
+        return realTime;
     }
 
     virtual oplist message(RootOperation & op, const BaseEntity * obj);

@@ -38,11 +38,6 @@ WorldRouter::WorldRouter(ServerRouting & srvr) : server(srvr), nextId(0)
     perceptives.push_back(this);
     objectList.push_back(this);
     //WorldTime tmp_date("612-1-1 08:57:00");
-    //This structure is used to tell libatlas about stuff
-    //world_info.time.s=tmp_date.seconds();
-    //world_info.coordinates_conversion_class=Vector3D;
-    //world_info.seconds2string=seconds2string;
-    //world_info.string2DateTime=WorldTime;
 }
 
 inline void WorldRouter::addOperationToQueue(RootOperation & op,
@@ -54,7 +49,7 @@ inline void WorldRouter::addOperationToQueue(RootOperation & op,
         op.SetFrom(obj->fullid);
     }
     updateTime();
-    double t = world_info::time;
+    double t = realTime;
     t = t + op.GetFutureSeconds();
     op.SetSeconds(t);
     op.SetFutureSeconds(0.0);

@@ -1,5 +1,10 @@
 2001-04-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/WorldInfo.*: Removed WorldInfo class, a hangup from
+	  the python Atlas implementation.
+
+2001-04-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* Re-wrote class headers files so that all class members now
 	  begin with a lower case letter and do not contain _.
 
