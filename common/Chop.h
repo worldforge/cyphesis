@@ -9,6 +9,7 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
+/// \brief Operation class to chop the target entity
 class Chop : public Action {
   protected:
     Chop(const char *, const char *);

@@ -9,6 +9,7 @@
 
 class Entity;
 
+/// \brief Wrapper for Entity in Python
 typedef struct {
     PyObject_HEAD
     PyObject * Entity_attr;  // Attributes dictionary

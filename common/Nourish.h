@@ -9,6 +9,15 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
+/// \brief Operation class to nourish the entity which ate or burned another
+/// entity
+///
+/// Typically sent in response to Burn or Eat operations, and used to
+/// indicate how much the target entity benefits. In the Burn case, the
+/// argument provides information about how much of the burnt entity has
+/// been destroyted and how much the fire is increased. In the Eat case
+/// it indicates how much nourishment the eaten entity provides to the
+/// entity doing the eating.
 class Nourish : public Action {
   protected:
     Nourish(const char *, const char *);

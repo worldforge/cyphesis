@@ -8,6 +8,11 @@
 #include "BaseClient.h"
 #include "ClientConnection.h"
 
+/// \brief Class for the core of a client that connects to a server,
+/// initialises the world and observes what occurs.
+///
+/// In fact the observation code has not yet been implemented, and this
+/// client is mainly used to handle world initialisation.
 class ObserverClient : public BaseClient {
   public:
     ObserverClient();

@@ -9,6 +9,7 @@
 
 #include <Atlas/Message/Element.h>
 
+/// \brief Wrapper for Atlas::Message::Element in Python
 typedef struct {
     PyObject_HEAD
     PyObject * Object_attr;  // Attributes dictionary

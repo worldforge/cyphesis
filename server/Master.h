@@ -10,6 +10,10 @@
 class CommClient;
 class ServerRouting;
 
+/// \brief Class representing connections from a master server to which this
+/// program is a slave.
+///
+/// This is designed to be used from a cyphesis process running as an AI slave.
 class Master : public OOGThing {
   protected:
     

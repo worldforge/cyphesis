@@ -9,6 +9,10 @@
 
 #include <physics/Vector3D.h>
 
+/// \brief Wrapper for Point3D in Python
+///
+/// Uses in-place construction to embed full C++ object into what is
+/// basically a C structure.
 typedef struct {
     PyObject_HEAD
     Point3D coords;

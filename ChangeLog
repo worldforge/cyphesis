@@ -1,3 +1,28 @@
+2004-12-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/BaseClient.h, client/CharacterClient.h,
+	  client/ClientConnection.h, client/CreatorClient.h,
+	  client/ObserverClient.h, client/Py_CreatorClient.h,
+	  common/Burn.h, common/Chop.h, common/Cut.h, common/Database.h,
+	  common/Eat.h, common/Generic.h, common/Nourish.h, common/Setup.h,
+	  common/Tick.h, common/Unseen.h, common/Use.h, common/Wield.h,
+	  common/accountbase.h, common/inheritance.h, rulesets/Container.h,
+	  rulesets/Creator.h, rulesets/LineProperty.h, rulesets/MemMap.h,
+	  rulesets/MindFactory.h, rulesets/Movement.h, rulesets/Pedestrian.h,
+	  rulesets/Py_BBox.h, rulesets/Py_Location.h, rulesets/Py_Map.h,
+	  rulesets/Py_Mind.h, rulesets/Py_Object.h, rulesets/Py_Operation.h,
+	  rulesets/Py_Oplist.h, rulesets/Py_Optime.h, rulesets/Py_Point3D.h,
+	  rulesets/Py_Quaternion.h, rulesets/Py_Thing.h,
+	  rulesets/Py_Vector3D.h, rulesets/Py_World.h, rulesets/Py_WorldTime.h,
+	  rulesets/PythonMindScript.h, rulesets/PythonScript.h,
+	  rulesets/PythonThingScript.h, rulesets/Python_API.cpp,
+	  rulesets/TerrainProperty.h, rulesets/ThingFactory.h, server/Admin.h,
+	  server/EntityFactory.h, server/Master.h, server/Peer.h,
+	  server/Persistance.h, server/PersistantThingFactory.h,
+	  server/Persistor.h, server/Player.h, server/Restoration.h,
+	  server/Restorer.h, server/TrustedConnection.h: Make sure all
+	  classes have up updated description in the comments.
+
 2004-12-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Property.h, rulesets/Thing.cpp: Clean up some comments.

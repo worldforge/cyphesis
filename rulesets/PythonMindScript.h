@@ -9,6 +9,7 @@
 
 class BaseMind;
 
+/// \brief Script class for Python scripts attached to a character Mind
 class PythonMindScript : public PythonScript {
   private:
     BaseMind & mind;

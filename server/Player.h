@@ -7,6 +7,7 @@
 
 #include "Account.h"
 
+/// \brief This is a class for handling users who are regular players
 class Player : public Account {
   protected:
     virtual int characterError(const Operation &,

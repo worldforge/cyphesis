@@ -9,6 +9,7 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
+/// \brief Operation class to burn the target entity
 class Burn : public Action {
   protected:
     Burn(const char *, const char *);

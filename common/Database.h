@@ -11,6 +11,7 @@
 
 #include <set>
 
+/// \brief Class to handle decoding Atlas encoded database records
 class Decoder : public Atlas::Message::DecoderBase {
   private:
     virtual void objectArrived(const Atlas::Message::Element& obj) {
@@ -35,6 +36,10 @@ typedef std::set<std::string> TableSet;
 typedef std::pair<std::string, ExecStatusType> DatabaseQuery;
 typedef std::deque<DatabaseQuery> QueryQue;
 
+/// \brief Class to provide interface to Database connection
+///
+/// Most SQL is generated from here, including queries for handling all
+/// table creation, queries to simple non-inherited tables and more
 class Database {
   private:
     static Database * m_instance;
@@ -191,9 +196,10 @@ class Database {
 
 };
 
-// This class encapsulate a result from the database so we can use it in the
-// upper layers in a database independant way.
-// Perhaps an iterator model might be nice later?
+/// \brief Class to encapsulate a result from the database.
+///
+/// This allows the result to be used in the upper layers in a database
+/// independant way.
 class DatabaseResult {
 #if defined (__GNUC__) && __GNUC__ < 3 && __GNUC_MINOR__ <= 95
   private:
@@ -210,6 +216,9 @@ class DatabaseResult {
         return *this;
     }
 
+    /// \brief Iterator for DatabaseResult
+    ///
+    /// Minics STL iterator API
     class const_iterator {
       private:
         const DatabaseResult & m_dr;

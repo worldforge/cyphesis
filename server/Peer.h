@@ -10,6 +10,10 @@
 class CommClient;
 class ServerRouting;
 
+/// \brief Class represening connections from another server that is peered to
+/// to this one
+///
+/// This is the main point of dispatch for any operation from the peer.
 class Peer : public OOGThing {
   protected:
     

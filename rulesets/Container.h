@@ -21,8 +21,13 @@ namespace Atlas {
     }
 }
 
+/// \brief Base class for handling the entity containership tree
+///
+/// This class replaces STL set in in-game entities so that contents can
+/// be handled more flexibly.
 class Container {
   protected:
+    /// \brief Base class for underlying implementation of Container iterators.
     class Container_const_iterator {
       private:
         int m_refCount;
@@ -47,6 +52,11 @@ class Container {
         virtual Entity * operator*() const = 0;
     };
   public:
+    /// \brief Iterator for Container
+    ///
+    /// Mimics the STL iterator API, but uses the Container_const_iterator
+    /// base class to deal with the fact that Container is an abstract class,
+    /// and its children all work diferently.
     class const_iterator {
       private:
         Container_const_iterator * m_i;
@@ -121,8 +131,13 @@ class NonContainer : public Container {
 };
 #endif
 
+/// \brief Class to handle the simplest kind of containership
+///
+/// Directly replaces the old STL set m_contents member of Entity as it
+/// uses STL set as its store.
 class StdContainer : public Container {
-  public:
+  protected:
+    /// \brief Class for underlying implementation of StdContainer iterators.
     class StdContainer_const_iterator : public Container_const_iterator {
       private:
         EntitySet::const_iterator m_iter;

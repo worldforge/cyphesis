@@ -9,6 +9,8 @@
 
 typedef Character Creator_parent;
 
+/// \brief This is a class for an in-game entity used by administrators
+/// and world builders to manipulate the world
 class Creator : public Creator_parent {
   public:
     explicit Creator(const std::string & id);

@@ -11,6 +11,10 @@
 
 class Thing;
 
+/// \brief Base class for factories to create entities
+///
+/// Stores information about default attributes, script language and class
+/// name.
 class FactoryBase {
   public:
     std::string m_script;
@@ -23,6 +27,7 @@ class FactoryBase {
     virtual FactoryBase * dupFactory() = 0;
 };
 
+/// \brief Class Template for factories to create entities of the given class
 template <typename T>
 class ThingFactory : public FactoryBase {
   public:

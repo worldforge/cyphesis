@@ -19,6 +19,7 @@ namespace Atlas {
 
 typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
 
+/// \brief Wrapper for OpVector in Python
 typedef struct {
     PyObject_HEAD
     OpVector * ops;

@@ -9,6 +9,7 @@
 
 class BaseWorld;
 
+/// \brief Wrapper for World in Python
 typedef struct {
     PyObject_HEAD
     BaseWorld * world;

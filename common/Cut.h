@@ -9,6 +9,8 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
+/// \brief Operation class to direct the target tool to chop the entity given
+/// in the argument
 class Cut : public Action {
   protected:
     Cut(const char *, const char *);

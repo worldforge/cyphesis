@@ -9,6 +9,7 @@
 
 class Entity;
 
+/// \brief Script class for Python scripts attached to an Entity
 class PythonEntityScript : public PythonScript {
   private:
     Entity & m_entity;

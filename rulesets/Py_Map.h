@@ -9,6 +9,7 @@
 
 class MemMap;
 
+/// \brief Wrapper for MemMap in Python
 typedef struct {
     PyObject_HEAD
     MemMap * m_map;

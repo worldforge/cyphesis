@@ -16,6 +16,10 @@ namespace Atlas { namespace Objects { namespace Operation {
   class Move;
 } } }
 
+/// \brief Base class for handling Character movement
+///
+/// This class should be replaced by a base class for handling all entity
+/// movement.
 class Movement {
   protected:
     Entity & m_body;

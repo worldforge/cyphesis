@@ -9,6 +9,7 @@
 
 class Location;
 
+/// \brief Wrapper for Location in Python
 typedef struct {
     PyObject_HEAD
     Location * location;

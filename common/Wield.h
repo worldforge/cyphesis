@@ -9,6 +9,9 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
+/// \brief Operation class to tell a character to wield a tool or weapon
+///
+/// Sent by a client or mind, this is not dispatched in the world.
 class Wield : public Set {
   protected:
     Wield(const char *, const char *);

@@ -9,6 +9,8 @@
 
 class CreatorClient;
 
+/// \brief Base class for classes that implement clients used to connect to a
+/// cyphesis server
 class BaseClient {
   protected:
     ClientConnection m_connection;

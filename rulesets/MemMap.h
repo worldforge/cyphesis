@@ -21,6 +21,7 @@ class Location;
 typedef std::vector<MemEntity *> MemEntityVector;
 typedef std::map<std::string, MemEntity *> MemEntityDict;
 
+/// \brief Class to handle the basic entity memory of a mind
 class MemMap {
   private:
     friend class BaseMind;

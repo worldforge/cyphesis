@@ -9,6 +9,7 @@
 
 class WorldTime;
 
+/// \brief Wrapper for WorldTime in Python
 typedef struct {
     PyObject_HEAD
     WorldTime * time;

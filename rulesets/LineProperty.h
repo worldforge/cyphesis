@@ -11,6 +11,7 @@
 
 #include <set>
 
+/// \brief Class to handle Entity terrain property
 class LineProperty : public PropertyBase {
   protected:
     CoordList & m_data;

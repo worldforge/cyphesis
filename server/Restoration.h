@@ -14,6 +14,8 @@ class ServerRouting;
 class Database;
 class Entity;
 
+/// \brief Class to orchestrate restoring the complete world state from
+/// the database at startup
 class Restoration {
   private:
     typedef Entity * (*restoreFunc)(const std::string &, DatabaseResult::const_iterator &);

@@ -73,6 +73,7 @@ using Atlas::Objects::Operation::Generic;
 
 static const bool debug_flag = false;
 
+/// \brief Python wrapper for C++ functions to be exposed to Python
 typedef struct {
     PyObject_HEAD
 } FunctionObject;
@@ -112,6 +113,11 @@ PyTypeObject log_debug_type = {
 // Logger replaces sys.stdout and sys.stderr so the nothing goes to output
 //////////////////////////////////////////////////////////////////////////
 
+/// \brief Python struct to handle output from python scripts
+///
+/// In instance of this struct is used to replace sys.stdout and sys.stderr
+/// in the Python interpreter so that all script output goes to the cyphesis
+/// log subsystem
 typedef struct {
     PyObject_HEAD
 } PyLogger;

@@ -13,6 +13,7 @@ class CreatorClient;
 
 extern PyTypeObject PyCreatorClient_Type;
 
+/// \brief Wrapper for CreatorClient in Python
 typedef struct {
     PyObject_HEAD
     PyObject         * CreatorClient_attr;    // Attributes dictionary

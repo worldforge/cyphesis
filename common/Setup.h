@@ -9,6 +9,10 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
+/// \brief Operation class to setup an in-game entity
+///
+/// Sent immediatly after entity creation, used to do any initialisation
+/// which must be done after the entity has been inserted into the world.
 class Setup : public RootOperation {
   protected:
     Setup(const char *, const char *);

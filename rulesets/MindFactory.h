@@ -10,6 +10,9 @@
 
 class BaseMind;
 
+/// \brief Factory class for creating minds
+///
+/// A mind consists of a C++ base class and an associated script object
 class MindFactory {
   public:
     typedef std::map<std::string, std::string> mindmap_t;

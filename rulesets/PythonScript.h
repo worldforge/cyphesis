@@ -11,6 +11,7 @@
 
 class Entity;
 
+/// \brief Base Script class for Python scripts
 class PythonScript : public Script {
   protected:
     PyObject * scriptObject;

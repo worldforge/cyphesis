@@ -9,6 +9,11 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
+/// \brief Operation class to use a tool by a character
+///
+/// Sent by clients or minds to tell a character to use a tool. Not dispatched
+/// within the world. One or more other operations are typically the result
+/// of this being sent by the client.
 class Use : public Action {
   protected:
     Use(const char *, const char *);

@@ -9,6 +9,7 @@
 
 class Entity;
 
+/// \brief Class for handling movement of a Pedestrian Character
 class Pedestrian : public Movement {
     // friend class Character;
   public:

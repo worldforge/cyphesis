@@ -18,6 +18,10 @@ class PersistantThingFactory;
 
 typedef std::map<std::string, FactoryBase *> FactoryDict;
 
+/// \brief Class to handle the creation of all entities for the world.
+///
+/// Uses PersistantThingFactory to store information about entity types, and
+/// create them. Handles connecting entities to their persistor as required.
 class EntityFactory {
   private:
     typedef std::multimap<std::string, std::pair<std::string, Atlas::Message::MapType> > RuleWaitList;

@@ -7,6 +7,8 @@
 
 #include "Database.h"
 
+/// \brief Class to handle connecting to the cyphesis database in order to
+/// access the account table
 class AccountBase {
   protected:
     Database & m_connection;

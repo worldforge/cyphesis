@@ -9,6 +9,7 @@
 
 class BaseMind;
 
+/// \brief Wrapper for BaseMind in Python
 typedef struct {
     PyObject_HEAD
     PyObject * Mind_attr;    // Attributes dictionary

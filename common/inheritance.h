@@ -19,6 +19,8 @@ void installStandardObjects();
 void installCustomOperations();
 void installCustomEntities();
 
+/// \brief Exception class for exceptions thrown when a child is added to
+/// to Inheritance with a parent that is currently unknown
 class InheritanceException {
   private:
     const std::string parent;
@@ -27,6 +29,7 @@ class InheritanceException {
     const std::string & getParent() { return parent; }
 };
 
+/// \brief Base class for factories to create Operation instances
 class OpFactoryBase {
   public:
     virtual ~OpFactoryBase();
@@ -35,6 +38,8 @@ class OpFactoryBase {
     virtual void newOperation(Atlas::Objects::Operation::RootOperation &) = 0;
 };
 
+/// \brief Class template for factories to create Operation instances of
+/// the given Operation class.
 template <class OpClass>
 class OpFactory : public OpFactoryBase {
   public:
@@ -42,6 +47,8 @@ class OpFactory : public OpFactoryBase {
     virtual void newOperation(Atlas::Objects::Operation::RootOperation &);
 };
 
+/// \brief Class for factories to create Operation instance with no hard coded
+/// class using the Generic Operation class.
 class GenericOpFactory : public OpFactoryBase {
   private:
     std::string m_opType;
@@ -55,6 +62,7 @@ class GenericOpFactory : public OpFactoryBase {
 typedef std::map<std::string, OpFactoryBase *> OpFactoryDict;
 typedef std::map<std::string, Atlas::Objects::Root *> RootDict;
 
+/// \brief Class to manage the inheritance tree for in-game entity types
 class Inheritance {
   protected:
     RootDict atlasObjects;

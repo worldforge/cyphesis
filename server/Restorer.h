@@ -14,14 +14,16 @@ class Entity;
 template <class T>
 class Persistor;
 
-// This class should never ever be instantiated, so the constructor is private
-// and unimplemented. Instead the template should be instantiated with
-// T as the class to be restored, and a reference to the object being
-// restored is cast to a reference to this type, allowing code in
-// this class to write to the protected methods.
-// This class is probably going to want to directly decode data from the
-// database layer.
-
+/// \brief Class template to handle restoring an entity of the parameter
+/// class from the database.
+///
+/// This class should never ever be instantiated, so the constructor is private
+/// and unimplemented. Instead the template should be instantiated with
+/// T as the class to be restored, and a reference to the object being
+/// restored is cast to a reference to this type, allowing code in
+/// this class to write to the protected methods.
+/// This class is probably going to want to directly decode data from the
+/// database layer.
 template <class T>
 class Restorer : public T {
   private:

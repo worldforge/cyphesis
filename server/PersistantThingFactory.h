@@ -12,6 +12,8 @@ class Entity;
 template <class T>
 class Persistor;
 
+/// \brief Interface class for connecting a newly created entity to its
+/// persistor
 class PersistorBase {
   public:
     virtual ~PersistorBase() { }
@@ -19,6 +21,8 @@ class PersistorBase {
     virtual void persist() = 0;
 };
 
+/// \brief Class template for connecting a newly created entity to its
+/// persistor
 template <class T>
 class PersistorConnection : public PersistorBase {
   private:
@@ -31,6 +35,11 @@ class PersistorConnection : public PersistorBase {
     void persist();
 };
 
+/// \brief Base class for for factories for creating entities
+///
+/// An Entity consists of an instance of one of a number of C++ classes
+/// optionally with a script. Stores information about default attributes,
+/// script language and class name.
 class FactoryBase {
   public:
     std::string m_script;
@@ -47,6 +56,8 @@ class FactoryBase {
 // How do we make sure the peristance hooks are put in place in a typesafe way
 // but after all the initial attribute have been set.
 
+/// \brief Class template for factories for creating instances of the give
+/// entity class
 template <class T>
 class PersistantThingFactory : public FactoryBase {
   public:

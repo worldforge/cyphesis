@@ -9,6 +9,7 @@
 
 class Entity;
 
+/// \brief Class to implement a creator entity in an admin client
 class CreatorClient : public CharacterClient {
   private:
     Entity * sendLook(Operation & op);

@@ -13,6 +13,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Entity;
 
+/// \brief Wrapper for all Atlas operations in Python
 typedef struct {
     PyObject_HEAD
     Atlas::Objects::Operation::RootOperation * operation;
@@ -21,6 +22,7 @@ typedef struct {
     Entity * to;
 } PyOperation;
 
+/// \brief Wrapper for read only Atlas operations in Python
 typedef struct {
     PyObject_HEAD
     const Atlas::Objects::Operation::RootOperation * operation;

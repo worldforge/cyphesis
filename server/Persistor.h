@@ -15,6 +15,8 @@ class Line;
 class Area;
 class Plant;
 
+/// \brief Class template for handling persisting entity attributes in
+/// the database
 template <class T>
 class Persistor : virtual public SigC::Object {
   private:

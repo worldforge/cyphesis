@@ -9,6 +9,7 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
+/// \brief Operation class to eat the target entity
 class Eat : public Action {
   protected:
     Eat(const char *, const char *);

@@ -11,6 +11,11 @@ namespace Atlas { namespace Objects { namespace Operation {
     class RootOperation;
 } } }
 
+/// \brief Wrapper for handling operation time in python
+///
+/// Python scripts use this type in order to modify the time attribute
+/// of an operation, so its necessary to keep a pointer to the operation
+/// itself.
 typedef struct {
     PyObject_HEAD
     Atlas::Objects::Operation::RootOperation * operation;

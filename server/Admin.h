@@ -11,6 +11,7 @@
 
 class Persistance;
 
+/// \brief This is a class for handling users with administrative priveleges
 class Admin : public Account {
   protected:
     virtual int characterError(const Operation &,

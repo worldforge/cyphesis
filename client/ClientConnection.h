@@ -16,6 +16,8 @@ namespace Atlas { namespace Objects {
     class Encoder;
 } }
 
+/// \brief Class to handle socket connection to a cyphesis server from an
+/// an admin client
 class ClientConnection : public Atlas::Objects::Decoder {
   private:
     bool reply_flag;

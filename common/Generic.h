@@ -15,6 +15,8 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
+/// \brief Operation class for operations generated from scripts for which
+/// there is no hard-coded class
 class Generic : public RootOperation {
   public:
     explicit Generic(const std::string & p);
