@@ -26,11 +26,6 @@ BaseEntity::BaseEntity(const std::string & id) : m_id(id)
     subscribe("look", OP_LOOK);
 }
 
-BaseEntity::BaseEntity()
-{
-    subscribe("look", OP_LOOK);
-}
-
 BaseEntity::~BaseEntity()
 {
 }

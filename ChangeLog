@@ -1,3 +1,8 @@
+2004-06-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.h, common/BaseEntity.cpp, client/CommClient.cpp:
+	  Get rid of obsolete BaseEntity constructor.
+
 2004-06-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* modules/Location.cpp: Get rid of dependency on Entity.

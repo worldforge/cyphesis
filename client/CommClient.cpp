@@ -16,7 +16,7 @@
 
 static const bool debug_flag = false;
 
-CommClient::CommClient()
+CommClient::CommClient() : BaseEntity("")
 {
 }
 
