@@ -1,5 +1,10 @@
 2004-09-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/IGEntityExerciser.h: Fix to work with gcc 3.4 stricter
+	  template rules.
+
+2004-09-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/EntityExerciser.h: Update test harness for new dispatch
 	  mechanism.
 

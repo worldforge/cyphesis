@@ -21,7 +21,7 @@ inline bool IGEntityExerciser<EntityType>::checkAttributes(const std::set<std::s
     Element null;
     std::set<std::string>::const_iterator I = attr_names.begin();
     for(; I != attr_names.end(); ++I) {
-        if (!m_ent.get(*I, null)) {
+        if (!this->m_ent.get(*I, null)) {
             return false;
         }
     }
