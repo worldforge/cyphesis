@@ -3,8 +3,8 @@ Sort out FIXME in Creator::operation().
 The results of externalOperation() are discarded, even though they could
 have stuff in.
 
-Look at the FIXME in Account related to broadcasting a sight of a new
-character on creation.
+Account sends a Sight(Create) IG of the newly created character. Is this
+required? Surely the broadcast Appearance() will be enough.
 
 Character creation should not fail if creating its bootstrap inventory fails.
 
@@ -20,9 +20,6 @@ Character::NourishOperation() does not call a script at all.
 Thing::SetupOperation() _ALWAYS_ emits an Appearance op, but then processes
 op as normal.
 World provides no script overloading for any of its methods.
-
-Could make all operation calls in BaseEntity pure virtual. I guess no real
-reason.
 
 Rename client/CommClient.h. Without namespacing its dangerous.
 

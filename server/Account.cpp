@@ -124,19 +124,6 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         world.message(*c, chr);
     }
 
-    // FIXME WHy the hell are we broadcasting a sight of the newly created
-    // character?
-    Create c;
-    ListType & cargs = c.getArgs();
-    cargs.push_back(MapType());
-    chr->addToMessage(cargs.front().asMap());
-
-    Sight * s = new Sight;
-    ListType & args = s->getArgs();
-    args.push_back(c.asObject());
-
-    world.message(*s, chr);
-
     return chr;
 }
 

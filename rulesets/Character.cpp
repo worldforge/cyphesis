@@ -171,11 +171,21 @@ void Character::SetupOperation(const Setup & op, OpVector & res)
 {
     debug( std::cout << "CHaracter::Operation(setup)" << std::endl
                      << std::flush;);
-    if (m_script->Operation("setup", op, res) != 0) {
-        return;
-    }
+
     if (op.hasAttr("sub_to")) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
+        return;
+    }
+
+    Appearance * app = new Appearance();
+    ListType & args = app->getArgs();
+    args.push_back(MapType());
+    MapType & arg = args.back().asMap();
+    arg["id"] = getId();
+
+    res.push_back(app);
+
+    if (m_script->Operation("setup", op, res) != 0) {
         return;
     }
 

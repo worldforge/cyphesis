@@ -1,5 +1,14 @@
 2004-09-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Check if a Setup op is for the mind
+	  before dispatching to script, and ensure that Appearance
+	  is always broadcast.
+
+	* server/Account.cpp: No need to broadcase sight(create) when a
+	  character is created by an account.
+
+2004-09-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Creator.h, rulesets/Creator.cpp: Rename sendMind() to
 	  sendExternalMind() to make it clear that its not the same as the
 	  method in Character.
