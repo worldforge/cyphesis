@@ -2,22 +2,13 @@
 #Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
-from world.objects.Character import Character
 from world.objects.undead.Undead import Undead
-from mind.SkelMind import SkelMind
 from common import log,const
 from misc import set_kw
-from world.physics.Vector3D import Vector3D
+from Vector3D import Vector3D
 from whrandom import *
 
 class Skeleton(Undead):
-    def setup_operation(self, op):
-        """do once first after character creation"""
-        log.debug(4,"Skeleton.setup_operation:",op)
-        if hasattr(op,"sub_to"): return None #meant for mind
-        self.mind=SkelMind(id=self.id, body=self)
-        opMindSetup=Operation("setup",to=self,sub_to=self.mind)
-        return opMindSetup
     def touch_operation(self, op):
         retops = Message()
         if self.status<0: return

@@ -1,3 +1,26 @@
+2000-12-07  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Added handling for removing connections.
+
+	* Removed some unused code.
+
+	* Tweaked some python scripts so they import correctly.
+
+	* Added in_game flag to BaseEntity so it is possible to tell
+	  if an object is in game.
+
+	* Increased the number of operations handled by Message()
+
+	* Added handling for initialisation of location.parent using me
+	  in mind code.
+
+	* Added is_object_delete() functionality to python interface to world
+	  object.
+
+	* Added handling for converting Tuple into Message::Object, and then
+	  ensured that non-basic python types don't get stored as attributes
+	  of a Message::Object.
+
 2000-12-06  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Fixes to worlds object list so it now contains world.

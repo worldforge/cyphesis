@@ -122,11 +122,6 @@ typedef std::pair<string, BaseEntity *> fidpair_t;
 
 #define NO_ID 0
 
-//class NoCode : public Exception {
-//
-    //public:
-//};
-
 typedef int Entity;
 
 class BaseEntity;
@@ -280,27 +275,21 @@ bad_type get_dict_func(bad_type dict, bad_type func_str, bad_type func_undefined
 
 class BaseEntity {
   public:
-    //cid_t id;
     string fullid;
     string name;
     Location location;
     list_t contains;
     double stamp;
     int deleted;
+    int in_game;
     bool omnipresent;
     WorldRouter * world;
 
     BaseEntity();
     virtual ~BaseEntity() { }
-    bad_type super();
-    bad_type base_init(bad_type kw);
-    bad_type destroy();
-    bad_type __repr__();
-    bad_type get_type();
-    Vector3D get_xyz();
-    bad_type message(bad_type msg, bad_type op_method);
-    bad_type external_message(bad_type msg);
 
+    Vector3D get_xyz();
+    virtual void destroy();
     virtual Message::Object asObject();
     virtual void addObject(Message::Object *);
     virtual oplist external_message(const RootOperation & msg);
@@ -324,23 +313,10 @@ class BaseEntity {
     void set_refno_op(RootOperation * op, const RootOperation & ref_op);
     void set_refno(oplist ret, const RootOperation & ref_op);
 
-    bad_type find_operation(bad_type op_id, char * prefix,bad_type undefined_operation);
-    bad_type setup_operation(bad_type op);
-    bad_type look_operation(bad_type op);
-    bad_type undefined_operation(bad_type op);
-    bad_type call_operation(bad_type op);
     op_no_t op_enumerate(const RootOperation * op);
     oplist call_operation(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
     virtual oplist external_operation(const RootOperation & op);
-    //bad_type external_operation(bad_type op);
-    bad_type apply_to_operation(method_t method , bad_type msg, BaseEntity * obj);
-    bad_type set_refno_op(bad_type op, bad_type ref_op);
-    bad_type set_refno(bad_type msg, bad_type ref_msg);
-    bad_type set_debug_op(bad_type op);
-    bad_type set_debug(const char * msg);
-    bad_type debug_op(bad_type op, const char * string_message);
-    bad_type debug(bad_type msg, const char * string_message);
     oplist error(const RootOperation & op, const char * string);
 };
 

@@ -1,9 +1,15 @@
+#include <Atlas/Message/Object.h>
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/Operation/Login.h>
+
 #include <stdio.h>
 #include <unistd.h>
 
 #include <Python.h>
 
+#include <server/WorldRouter.h>
 #include <server/WorldTime.h>
+#include <rulesets/Thing.h>
 
 #include "Python_API.h"
 
@@ -14,7 +20,6 @@ static PyObject * World_get_time(WorldObject *self, PyObject *args, PyObject *kw
         return NULL;
     }
     if (!PyArg_ParseTuple(args, "")) {
-        PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
     WorldTimeObject * wtime = newWorldTimeObject(NULL);
@@ -26,8 +31,31 @@ static PyObject * World_get_time(WorldObject *self, PyObject *args, PyObject *kw
     return (PyObject *)wtime;
 }
 
+static PyObject * World_is_object_deleted(WorldObject *self, PyObject *args, PyObject *kw)
+{
+    if (self->world == NULL) {
+        PyErr_SetString(PyExc_TypeError,"invalid world object");
+        return NULL;
+    }
+    PyObject * obj;
+    if (!PyArg_ParseTuple(args, "O", &obj)) {
+        return NULL;
+    }
+    if ((PyTypeObject*)PyObject_Type(obj) != &Thing_Type) {
+        PyErr_SetString(PyExc_TypeError,"Arg is not a thing");
+        return NULL;
+    }
+    ThingObject * o = (ThingObject*)obj;
+    if (o->m_thing == NULL) {
+        PyErr_SetString(PyExc_TypeError,"Invalid thing");
+        return NULL;
+    }
+    return PyInt_FromLong(self->world->is_object_deleted(o->m_thing));
+}
+
 PyMethodDef World_methods[] = {
     {"get_time",	(PyCFunction)World_get_time,	METH_VARARGS},
+    {"is_object_deleted",	(PyCFunction)World_is_object_deleted,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };
 

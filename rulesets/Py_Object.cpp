@@ -5,6 +5,7 @@
 
 #include "Python_API.h"
 
+#include <modules/Location.h>
 /*
  * Beginning of Object methods section.
  */
@@ -76,7 +77,9 @@ static int Object_setattr( AtlasObject *self, char *name, PyObject *v)
     if (self->m_obj->IsMap()) {
         Object::MapType & omap = self->m_obj->AsMap();
         Object v_obj = PyObject_asObject(v);
-        if (v_obj.GetType() != Object::TYPE_NONE) {
+        if ((v_obj.GetType() != Object::TYPE_NONE) &&
+            (v_obj.GetType() != Object::TYPE_MAP) &&
+            (v_obj.GetType() != Object::TYPE_LIST)) {
             printf("Setting attribute %s in Atlas Map Object\n", name);
             omap[name] = v_obj;
             return 0;
@@ -240,15 +243,26 @@ Object PyObject_asObject(PyObject * o)
     if (PyDict_Check(o)) {
         return(Object(PyDictObject_asMapType(o)));
     }
-    if ((PyTypeObject*)PyObject_Type((PyObject *)o) == &Object_Type) {
+    if (PyTuple_Check(o)) {
+        Object::ListType list;
+        int i, size = PyTuple_Size(o);
+        for(i = 0; i < size; i++) {
+            Object item = PyObject_asObject(PyTuple_GetItem(o, i));
+            if (item.GetType() != Object::TYPE_NONE) {
+                list.push_back(item);
+            }
+        }
+        return Object(list);
+    }
+    if ((PyTypeObject*)PyObject_Type(o) == &Object_Type) {
         AtlasObject * obj = (AtlasObject *)o;
         return *(obj->m_obj);
     }
-    if ((PyTypeObject*)PyObject_Type((PyObject *)o) == &RootOperation_Type) {
+    if ((PyTypeObject*)PyObject_Type(o) == &RootOperation_Type) {
         RootOperationObject * op = (RootOperationObject *)o;
         return op->operation->AsObject();
     }
-    if ((PyTypeObject*)PyObject_Type((PyObject *)o) == &Oplist_Type) {
+    if ((PyTypeObject*)PyObject_Type(o) == &Oplist_Type) {
         OplistObject * opl = (OplistObject *)o;
         Object::ListType _list;
         Object msg(_list);
@@ -259,6 +273,13 @@ Object PyObject_asObject(PyObject * o)
             entlist.push_back((*I)->AsObject());
         }
         return msg;
+    }
+    if ((PyTypeObject*)PyObject_Type(o) == &Location_Type) {
+        LocationObject * loc = (LocationObject *)o;
+        Object::MapType _map;
+        Object ent(_map);
+        loc->location->addObject(&ent);
+        return ent;
     }
     printf("PyObject cannot be cast into Object\n");
     return Object();

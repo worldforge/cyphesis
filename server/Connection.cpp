@@ -7,6 +7,8 @@
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Info.h>
 
+#include <rulesets/Character.h>
+
 #include "Connection.h"
 #include "Player.h"
 
@@ -26,16 +28,24 @@ Connection::Connection(CommClient * client) :
 void Connection::destroy()
 {
     debug_server && cout << "destroy called";
-    //for (/*obj in Connection::objects.values()*/) {
-        //if (hasattr(obj,"external_mind")) {
-            //em=obj.external_mind;
-            //if (em.connection) {
-                //em.connection=None;
-            //}
-        //}
-    //}
-    //comm_client->destroy();
-    //super().destroy(this);
+    fdict_t::const_iterator I;
+    for(I = fobjects.begin(); I != fobjects.end(); I++) {
+        BaseEntity * ent = I->second;
+        if (ent->in_game = 0) {
+            continue;
+        }
+        Thing * obj = (Thing*)ent;
+        if (obj->is_character != 0) {
+            Character * character = (Character *)obj;
+            if (character->external_mind != NULL) {
+                if (character->external_mind != NULL) {
+                    character->external_mind=NULL;
+                }
+            }
+        }
+    }
+    comm_client = NULL;
+    BaseEntity::destroy();
 }
 
 void Connection::disconnect()
@@ -48,7 +58,9 @@ void Connection::disconnect()
 
 void Connection::send(const RootOperation * msg)
 {
-    comm_client->send(msg);
+    if (comm_client != NULL) {
+        comm_client->send(msg);
+    }
 }
 
 oplist Connection::operation(const RootOperation & op)

@@ -20,6 +20,7 @@
 
 Thing::Thing() : script_object(NULL), status(1), is_character(0), type("thing")
 {
+    in_game = 1;
     name=string("Foo");
     attributes["age"] = 0;
     attributes["mode"] = Message::Object("birth");

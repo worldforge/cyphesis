@@ -33,7 +33,7 @@ class CommClient : Objects::Decoder {
     iostream client_ios;
     Codec<iostream> * codec;
     Objects::Encoder * encoder;
-    Connection * client;
+    Connection * connection;
 
   protected:
     virtual void UnknownObjectArrived(const Atlas::Message::Object&);
@@ -49,17 +49,21 @@ class CommClient : Objects::Decoder {
     CommServer * server;
 
     CommClient(CommServer * svr, int fd, int port) :
-		client_fd(fd), client_buf(fd), client_ios(&client_buf), server(svr) {
+		client_fd(fd), client_buf(fd), client_ios(&client_buf),
+                server(svr) {
         if (consts::debug_level>=1) {
             char * log_name = "log.log";
-            //const char * log_name = port+".log";
-            //cout << log_name;
             log_file.open(log_name);
         }
     }
-    virtual ~CommClient() { }
+    virtual ~CommClient() {
+        if (connection != NULL) {
+            connection->destroy();
+            delete connection;
+        }
+    }
     int read();
-    bad_type send(const Objects::Operation::RootOperation *);
+    void send(const Objects::Operation::RootOperation *);
     void message(const Objects::Operation::RootOperation &);
     //void destroy();
     int setup();

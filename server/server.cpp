@@ -29,36 +29,12 @@ int profile_flag=0;
 
 using namespace Atlas;
 
-
-#if 0
-void CommClient::destroy() {
-    CommClient::server->remove_client(this);
-    CommClient::server=NULL;
-}
-
-void CommClient::setup() {
-    CommClient::client=Connection(self);
-    if (consts::debug_level>=1) {
-        log_name=CommClient::layer.addr[1]+".log";
-        cout << "consts::debug_level>=1, logging to" << log_name << endl << flush;
-        CommClient::log_file=open(log_name,"w");
-    }
-}
-
-void CommClient::message(bad_type msg) {
-    reply=CommClient::client.message(msg);
-    CommClient::send(reply);
-}
-#endif
-
-
-bad_type CommClient::send(const Objects::Operation::RootOperation * op)
+void CommClient::send(const Objects::Operation::RootOperation * op)
 {
     if (op) {
         encoder->StreamMessage(op);
         client_ios << flush;
     }
-    return None;
 }
 
 int CommClient::read()
@@ -96,13 +72,13 @@ int CommClient::setup()
 
     codec->StreamBegin();
 
-    client=new Connection(this);
+    connection=new Connection(this);
     return(1);
 }
 
 void CommClient::message(const Objects::Operation::RootOperation & obj)
 {
-    oplist reply = client->message(obj);
+    oplist reply = connection->message(obj);
     while (reply.size() != 0) {
         Objects::Operation::RootOperation * rep_op = reply.front();
         cout << "sending reply" << endl << flush;

@@ -213,9 +213,17 @@ static PyObject * location_new(PyObject * self, PyObject * args)
     // We need to deal with actual args here
     PyObject * parentO, * coordsO;
     if (PyArg_ParseTuple(args, "OO", &parentO, &coordsO)) {
-        if (((PyTypeObject *)PyObject_Type(parentO) != &Thing_Type) ||
-            ((PyTypeObject *)PyObject_Type(coordsO) != &Vector3D_Type)) {
-            PyErr_SetString(PyExc_TypeError, "Args parent, coord required");
+        if ((PyTypeObject *)PyObject_Type(parentO) != &Thing_Type) {
+            if (PyObject_HasAttrString(parentO, "cppthing")) {
+                parentO = PyObject_GetAttrString(parentO, "cppthing");
+            }
+            if ((PyTypeObject *)PyObject_Type(parentO) != &Thing_Type) {
+                PyErr_SetString(PyExc_TypeError, "Arg parent required");
+                return NULL;
+            }
+        }
+        if ((PyTypeObject *)PyObject_Type(coordsO) != &Vector3D_Type) {
+            PyErr_SetString(PyExc_TypeError, "Arg coords required");
             return NULL;
         }
         ThingObject * parent = (ThingObject*)parentO;
@@ -299,12 +307,25 @@ static PyObject * worldtime_new(PyObject * self, PyObject * args)
 	return (PyObject *)o;
 }
 
+inline void addToOplist(PyObject * op, OplistObject * o)
+{
+    if (op != NULL) {
+       if ((PyTypeObject *)PyObject_Type(op) == &RootOperation_Type) {
+           o->ops->push_back( ((RootOperationObject*)op)->operation );
+       } else if (op != Py_None) {
+           PyErr_SetString(PyExc_TypeError, "Argument must be an op");
+           return;
+       }
+    }
+}
+
+
 static PyObject * oplist_new(PyObject * self, PyObject * args)
 {
 	OplistObject *o;
 	
-        PyObject * op1 = NULL, * op2 = NULL;
-	if (!PyArg_ParseTuple(args, "|OO", &op1, &op2)) {
+        PyObject * op1 = NULL, * op2 = NULL, * op3 = NULL, * op4 = NULL;
+	if (!PyArg_ParseTuple(args, "|OOOO", &op1, &op2, &op3, &op4)) {
 		return NULL;
 	}
 	o = newOplistObject(args);
@@ -312,6 +333,11 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
 		return NULL;
 	}
 	o->ops = new oplist();
+        addToOplist(op1, o);
+        addToOplist(op2, o);
+        addToOplist(op3, o);
+        addToOplist(op4, o);
+#if 0
         if (op1 != NULL) {
            if ((PyTypeObject *)PyObject_Type(op1) == &RootOperation_Type) {
                o->ops->push_back( ((RootOperationObject*)op1)->operation );
@@ -328,6 +354,7 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
                return NULL;
            }
         }
+#endif
 	return (PyObject *)o;
 }
 
