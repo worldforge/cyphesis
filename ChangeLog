@@ -1,5 +1,10 @@
 2004-10-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Ensure that database notices and errors
+	  get reported cleanly by the log system.
+
+2004-10-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp: Move the code to handle destruction of
 	  a connection into the destructor. The destroy method can go
 	  once this is well tested.

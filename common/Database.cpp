@@ -28,6 +28,14 @@ static const bool debug_flag = false;
 
 Database * Database::m_instance = NULL;
 
+static void databaseNotice(void * arg, const char * message)
+{
+    std::string msg = std::string("DATABASE: ") + message;
+    // Remove the trailing \n from the message.
+    msg = msg.substr(0, msg.size() - 1);
+    log(NOTICE, msg.c_str());
+}
+
 Database::Database() : m_rule_db("rules"),
                        m_queryInProgress(false),
                        m_connection(NULL)
@@ -101,12 +109,16 @@ int Database::initConnection(bool createDatabase)
         // Currently not able to create the database
     }
 
+    
+
     m_connection = PQconnectdb(cinfo.c_str());
 
     if ((m_connection == NULL) || (PQstatus(m_connection) != CONNECTION_OK)) {
         log(ERROR, "Database connection failed");
         return -1;
     }
+
+    PQsetNoticeProcessor(m_connection, databaseNotice, 0);
 
     return 0;
 }
@@ -408,8 +420,14 @@ bool Database::clearTable(const std::string & table)
 
 void Database::reportError()
 {
-    std::string msg = std::string("DATABASE ERROR: ") +
-                      PQerrorMessage(m_connection);
+    char * message = PQerrorMessage(m_connection);
+    assert(message != NULL);
+
+    if (strlen(message) < 2) {
+        log(WARNING, "Zero length database error message");
+    }
+    std::string msg = std::string("DATABASE: ") + message;
+    msg = msg.substr(0, msg.size() - 1);
     log(ERROR, msg.c_str());
 }
 
