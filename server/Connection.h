@@ -32,7 +32,7 @@ class Connection : public OOGThing {
 
     void destroy();
     void close();
-    inline void send(const RootOperation & msg) const;
+    void send(const RootOperation & msg) const;
 
     virtual bool verifyCredentials(const Account &,
                                const Atlas::Message::Element::MapType &) const;

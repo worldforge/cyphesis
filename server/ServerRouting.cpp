@@ -51,8 +51,8 @@ void ServerRouting::addToObject(Element::MapType & omap) const
 
 #if defined(__GNUC__) && __GNUC__ < 3 && __GNUC_MINOR__ < 96
 
-int ServerRouting::idle() {
-    return world.idle();
+void ServerRouting::idle() {
+    world.idle();
 }
 
 #endif // defined(__GNUC__) && __GNUC_MINOR__ <= 96

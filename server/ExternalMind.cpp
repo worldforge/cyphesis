@@ -8,17 +8,17 @@
 
 ExternalMind::ExternalMind(Connection & connection, const std::string & id,
                            const std::string & name) :
-                BaseMind(id, name), connection(connection)
+                BaseMind(id, name), m_connection(connection)
 {
 }
 
 ExternalMind::~ExternalMind()
 {
-    connection.removeObject(getId());
+    m_connection.removeObject(getId());
 }
 
 OpVector ExternalMind::message(const RootOperation & op)
 {
-    connection.send(op);
+    m_connection.send(op);
     return OpVector();
 }

@@ -1,3 +1,19 @@
+2004-05-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseWorld.h, server/Connection.h, server/ServerRouting.cpp,
+	  server/ServerRouting.h, server/ServerRouting_methods.h,
+	  server/WorldRouter.cpp, server/WorldRouter.h:
+	  Get rid of obsolete return value, from idle functions, and
+	  adjust WorldRouter::idle() so it only dispatches a certain
+	  number of ops at a time.
+
+	* server/Admin.cpp: Remove debugging output for monitoring code.
+
+	* server/ExternalMind.cpp, server/ExternalMind.h: Rename member
+	  variables to fit with convention.
+
+	* tools/cycmd.cpp: Document monitor features.
+
 2004-05-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/inheritance.cpp: Fix Root type entry, which incorrectly had

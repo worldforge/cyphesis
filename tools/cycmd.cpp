@@ -74,8 +74,10 @@ static void help()
     std::cout << "    help      Display this help" << std::endl;
     std::cout << "    look      Return current server lobby" << std::endl;
     std::cout << "    logout    Log user out of server" << std::endl;
+    std::cout << "    monitor   Enable in-game op monitoring" << std::endl;
     std::cout << "    query     Examine an object on the server" << std::endl;
     std::cout << "    stat      Return current server status" << std::endl;
+    std::cout << "    unmonitor Disable in-game op monitoring" << std::endl;
     std::cout << std::endl << std::flush;
 }
 
@@ -237,7 +239,6 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Appeara
 template <class Stream>
 void Interactive<Stream>::unknownObjectArrived(const Element & e)
 {
-    std::cout << "Unknown object arrived" << std::endl << std::flush;
     RootOperation r;
     bool isOp = utility::Object_asOperation(e.asMap(), r);
     if (isOp) {

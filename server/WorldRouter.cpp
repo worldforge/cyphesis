@@ -299,11 +299,12 @@ OpVector WorldRouter::LookOperation(const Look & op)
     return OpVector();
 }
 
-int WorldRouter::idle()
+void WorldRouter::idle()
 {
     updateTime();
+    unsigned int op_count = 0;
     RootOperation * op;
-    while ((op = getOperationFromQueue()) != NULL) {
+    while ((++op_count < 10) && ((op = getOperationFromQueue()) != NULL)) {
         Dispatching.emit(op);
         try {
             operation(*op);
@@ -318,10 +319,6 @@ int WorldRouter::idle()
         }
         delete op;
     }
-    if (op == NULL) {
-        return 0;
-    }
-    return 1;
 }
 
 Entity * WorldRouter::findByName(const std::string & name)

@@ -46,12 +46,9 @@ const char * Admin::getType() const
 
 void Admin::opDispatched(RootOperation * op)
 {
-    std::cout << "Monitor" << std::endl << std::flush;
     if (m_connection != 0) {
-        std::cout << "Sending monitor op to client" << std::endl << std::flush;
         m_connection->send(*op);
     } else {
-        std::cout << "OtherOp.monitor auto unsubbing" << std::endl << std::flush;
         if (m_monitorConnection.connected()) {
             m_monitorConnection.disconnect();
         }
@@ -233,26 +230,17 @@ OpVector Admin::CreateOperation(const Create & op)
 
 OpVector Admin::OtherOperation(const RootOperation & op)
 {
-    std::cout << "OtherOp" << std::endl << std::flush;
     const std::string & op_type = op.getParents().front().asString();
     if (op_type == "monitor") {
-        std::cout << "OtherOp.monitor" << std::endl << std::flush;
         if (!op.getArgs().empty()) {
-            std::cout << "OtherOp.monitor subbing" << std::endl << std::flush;
             if (m_connection != 0) {
-                std::cout << "OtherOp.monitor cnnectd" << std::endl << std::flush;
                 if (!m_monitorConnection.connected()) {
                     m_monitorConnection = m_connection->m_server.m_world.Dispatching.connect(SigC::slot(*this, &Admin::opDispatched));
-                } else {
-                    std::cout << "Already connected" << std::endl << std::flush;
                 }
             }
         } else {
-            std::cout << "OtherOp.monitor unsubbing" << std::endl << std::flush;
             if (m_monitorConnection.connected()) {
                 m_monitorConnection.disconnect();
-            } else {
-                std::cout << "Already disconnected" << std::endl << std::flush;
             }
         }
     }

@@ -11,7 +11,7 @@ class Connection;
 
 class ExternalMind : public BaseMind {
   public:
-    Connection & connection;
+    Connection & m_connection;
 
     ExternalMind(Connection & connection, const std::string & id, const std::string & name);
     virtual ~ExternalMind();
