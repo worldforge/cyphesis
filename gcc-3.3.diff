@@ -54,10 +54,6 @@ diff -u -d -r1.16 globals.cpp
          rulesets.push_back(ruleset);
      };
  
-Index: server/server.cpp
-===================================================================
-RCS file: /home/cvspsrv/worldforge/forge/servers/cyphesis-C++/server/server.cpp,v
-retrieving revision 1.99
 diff -u -d -r1.99 server.cpp
 --- server/server.cpp	27 Oct 2003 12:04:54 -0000	1.99
 +++ server/server.cpp	28 Oct 2003 22:36:08 -0000
