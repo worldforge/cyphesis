@@ -25,6 +25,12 @@ has no children, and make only select once per table when getting children of a
 given entity. This is a fairly major reworking, but selects are too expensive
 to make one per entity.
 
+Write a base class for plant which has a standard forumala for managing the
+growth of plants - the fundamental messure of which is mass, then another
+formula for calculating the size (height, width) etc from the mass, so the
+shape of the plant as it grows can be customised. This could largely eliminate
+the need to scripts to define plants.
+
 Must fix for Mason 0.0.2
 
   Stop broadcasting passwords around the place. Probably best done by sorting
