@@ -598,7 +598,8 @@ oplist Character::Mind_Operation(const Look & op)
     Look * l = new Look(op);
     const Message::Object::ListType & args = op.GetArgs();
     if (args.size() == 0) {
-        l->SetTo(world->fullid);
+        l->SetTo("all");
+        //l->SetTo(world->fullid);
     } else {
         if (args.front().IsMap()) {
             Message::Object::MapType amap = args.front().AsMap();
@@ -739,7 +740,7 @@ oplist Character::send_mind(const RootOperation & msg)
 oplist Character::mind2body(const RootOperation & op)
 {
     cout << "Character::mind2body" << endl << flush;
-    RootOperation newop = op;
+    RootOperation newop(op);
     oplist res;
 
     if (newop.GetTo().size() == 0) {

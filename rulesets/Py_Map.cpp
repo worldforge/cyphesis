@@ -1,7 +1,13 @@
+#include <Atlas/Message/Object.h>
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/Operation/Login.h>
+
 #include <stdio.h>
 #include <unistd.h>
 
 #include <Python.h>
+
+#include <common/BaseEntity.h>
 
 #include "Python_API.h"
 #include "MemMap.h"

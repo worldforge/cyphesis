@@ -284,8 +284,10 @@ class NPCMind(BaseMind):
         log.debug(3,str(self)+" "+str(thing)+" before add_thing: "+str(self.things))
         #thought about owing thing
         desc="I own %s." % thing.name
-        ent = Entity(description=desc, what=thing.as_entity())
+        what=thing.as_entity()
+        ent = Entity(description=desc, what=what)
         self.send(Operation("thought",ent))
+        print "add_thing", thing
         dictlist.add_value(self.things,thing.name,thing)
         log.debug(3,"\tafter: "+str(self.things))
     def find_thing(self, thing):
@@ -325,7 +327,8 @@ class NPCMind(BaseMind):
                 self.goals.remove(g)
                 continue
             res=g.check_goal(self,time)
-            if res!=None: return res
+            if res: return res
+            # if res!=None: return res
     def teach_children(self, child):
         res=Message()
         for k in self.knowledge.location.keys():

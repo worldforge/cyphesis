@@ -1,3 +1,41 @@
+2000-12-06  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Fixes to worlds object list so it now contains world.
+
+	* More python code tweaks to work with modifications to interface.
+
+	* Modified code which gets Thing attributes from Message::Object
+	  so it can use any object dictionary to look up parent object.
+
+	* Fixed handling of Thing's static type attribute.
+
+	* Modified creation of operations from python to eliminate
+	  some strange segfaults.
+
+	* Re-wrote and fixed Entity creation from python.
+
+	* Implemented dictlist.remove_value for removing things from inventory.
+
+	* Implemented Vector3D arithmetic and methods from python.
+
+	* Implemented as_entity() and get_xyz() methods for Thing from
+	  python.
+
+	* Commented out deletion of operations from python OperationObject
+	  dealloc() function as it was causing segfaults. There is a problem
+	  somewhere with ownership not being cleared, but I can't find it.
+
+	* Implemented conversion of Python Operation and Oplist objects
+	  to Message::Object.
+
+	* Fixed MemMap so that attributes of Things are accuratly updated.
+
+	* Fixed it so that look ops from mind are broadcast rather than sent
+	  to world. This may have to be reverted.
+
+	* Tweaked autoconf to make it cleaner and work better. Still needs
+	  alot of work.
+
 2000-12-05  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Added new common namespace to prevent collision with math function

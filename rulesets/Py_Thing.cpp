@@ -6,8 +6,44 @@
 #include "Python_API.h"
 #include "Thing.h"
 
+static PyObject * Thing_as_entity(ThingObject * self, PyObject * args)
+{
+    printf("Thing_as_entity\n");
+    if (self->m_thing == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid thing");
+        return NULL;
+    }
+    if (!PyArg_ParseTuple(args, "")) {
+        return NULL;
+    }
+    AtlasObject * ret = newAtlasObject(NULL);
+    if (ret == NULL) {
+        return NULL;
+    }
+    ret->m_obj = new Object(self->m_thing->asObject());
+    return (PyObject *)ret;
+}
+
+static PyObject * Thing_get_xyz(ThingObject * self, PyObject * args)
+{
+    if (self->m_thing == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid thing");
+        return NULL;
+    }
+    if (!PyArg_ParseTuple(args, "")) {
+        return NULL;
+    }
+    Vector3DObject * ret = newVector3DObject(NULL);
+    if (ret == NULL) {
+        return NULL;
+    }
+    ret->coords = self->m_thing->get_xyz();
+    return (PyObject *)ret;
+}
+
 PyMethodDef Thing_methods[] = {
-	/* {"demo",        (PyCFunction)Xxo_demo,  1}, */
+	{"get_xyz",        (PyCFunction)Thing_get_xyz,  1},
+	{"as_entity",        (PyCFunction)Thing_as_entity,  1},
 	{NULL,          NULL}           /* sentinel */
 };
 

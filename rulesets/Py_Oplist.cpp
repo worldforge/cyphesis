@@ -33,6 +33,9 @@ PyMethodDef Oplist_methods[] = {
 
 static void Oplist_dealloc(OplistObject *self)
 {
+    if (self->ops != NULL) {
+        delete self->ops;
+    }
     Py_XDECREF(self->Oplist_attr);
     PyMem_DEL(self);
 }
@@ -101,6 +104,34 @@ static int Oplist_num_coerce(PyObject ** self, PyObject ** other)
     //return -1;
 }
 
+static int Oplist_seq_length(OplistObject * self)
+{
+    if (self->ops == NULL) {
+        PyErr_SetString(PyExc_TypeError,"invalid operation");
+        return 0;
+    }
+    return self->ops->size();
+} 
+
+static PyMappingMethods Oplist_as_mapping = {
+    (inquiry)Oplist_seq_length,      /* mp_length */
+    NULL,
+    NULL
+};
+
+static PySequenceMethods Oplist_as_sequence = {
+    (inquiry)Oplist_seq_length,      /* sq_length */
+    NULL,                            /* sq_concat */
+    NULL,                            /* sq_repeat */
+    NULL,			     /* sq_item */
+    NULL,                            /* sq_slice */
+    NULL,                            /* sq_ass_item */
+    NULL                             /* sq_ass_slice */
+};
+
+
+
+
 static PyNumberMethods Oplist_as_number = {
 	(binaryfunc)Oplist_num_add,
 	0,
@@ -141,8 +172,8 @@ PyTypeObject Oplist_Type = {
 	0,				/*tp_compare*/
 	0,				/*tp_repr*/
 	&Oplist_as_number,		/*tp_as_number*/
-	0,				/*tp_as_sequence*/
-	0,				/*tp_as_mapping*/
+	&Oplist_as_sequence,		/*tp_as_sequence*/
+	&Oplist_as_mapping,		/*tp_as_mapping*/
 	0,				/*tp_hash*/
 };
 

@@ -219,7 +219,7 @@ oplist BaseMind::Operation(const Sight & op)
         //string & op2type = op2->GetParents().front().AsString();
         //string subop = "sight_" + op2type;
         //script_Operation(subop, op, res, (RootOperation *)op2);
-    } else if (op2->GetObjtype() == "object") {
+    } else /* if (op2->GetObjtype() == "object") */ {
         cout << " arg is an entity!" << endl << flush;
         map.add(obj);
     }

@@ -7,7 +7,7 @@ using Atlas::Objects::Operation::RootOperation;
 class Thing;
 
 class MemMap {
-    std::map<string, Thing *> things;
+    fdict_t things;
     std::list<string> additions_by_id;
   public:
     MemMap() { }

@@ -51,16 +51,6 @@ Thing * ThingFactory::newThing(const string & type,const Object & ent, Routing *
     }
     cout << "[" << type << " " << thing->name << "]" << endl << flush;
     thing->type = type;
-    // Get location from entity, if it is present
-    if (entmap.find("loc") != entmap.end()) {
-        try {
-            string & parent_id = entmap["loc"].AsString();
-            thing->location.parent = svr->fobjects[parent_id];
-        }
-        catch (Message::WrongTypeException) {
-            cout << "ERROR: Create operation has bad location" << endl << flush;
-        }
-    }
     // Sort out python object
     if (py_package.size() != 0) {
         Create_PyThing(thing, py_package, type);
@@ -71,6 +61,7 @@ Thing * ThingFactory::newThing(const string & type,const Object & ent, Routing *
         cout << "Got no name" << endl << flush;
     }
     thing->merge(entmap);
-    thing->getLocation(entmap);
+    // Get location from entity, if it is present
+    thing->getLocation(entmap, svr->fobjects);
     return(thing);
 }

@@ -1,6 +1,50 @@
 dnl
 dnl $Log: configure.in,v $
-dnl Revision 1.9  2000-12-03 14:23:26  alriddoch
+dnl Revision 1.10  2000-12-06 18:21:35  alriddoch
+dnl 	* Fixes to worlds object list so it now contains world.
+dnl
+dnl 	* More python code tweaks to work with modifications to interface.
+dnl
+dnl 	* Modified code which gets Thing attributes from Message::Object
+dnl 	  so it can use any object dictionary to look up parent object.
+dnl
+dnl 	* Fixed handling of Thing's static type attribute.
+dnl
+dnl 	* Modified creation of operations from python to eliminate
+dnl 	  some strange segfaults.
+dnl
+dnl 	* Re-wrote and fixed Entity creation from python.
+dnl
+dnl 	* Implemented dictlist.remove_value for removing things from inventory.
+dnl
+dnl 	* Implemented Vector3D arithmetic and methods from python.
+dnl
+dnl 	* Implemented as_entity() and get_xyz() methods for Thing from
+dnl 	  python.
+dnl
+dnl 	* Commented out deletion of operations from python OperationObject
+dnl 	  dealloc() function as it was causing segfaults. There is a problem
+dnl 	  somewhere with ownership not being cleared, but I can't find it.
+dnl
+dnl 	* Implemented conversion of Python Operation and Oplist objects
+dnl 	  to Message::Object.
+dnl
+dnl 	* Fixed MemMap so that attributes of Things are accuratly updated.
+dnl
+dnl 	* Fixed it so that look ops from mind are broadcast rather than sent
+dnl 	  to world. This may have to be reverted.
+dnl
+dnl 	* Tweaked autoconf to make it cleaner and work better. Still needs
+dnl 	  alot of work.
+dnl
+dnl A simple test of some goals now works! The lych goals worked to some
+dnl extent and no-longer gives python errors. Only a few more things are
+dnl required before Acorn can run, at which point I will release 0.1
+dnl for testing.
+dnl
+dnl Al
+dnl
+dnl Revision 1.9  2000/12/03 14:23:26  alriddoch
 dnl 	* Added support for varconf config files.
 dnl
 dnl 	* Used config file to list enitity types and their python class files.
@@ -64,22 +108,6 @@ dnl of the code into place.
 dnl
 dnl Al
 dnl
-dnl Revision 1.6  2000/05/05 17:34:14  laurel
-dnl Gatherer is now a Command::Module, so we can chain gatherers.
-dnl
-dnl Revision 1.5  2000/03/16 19:52:38  laurel
-dnl let's see if it "compiles" now.
-dnl
-dnl Revision 1.4  2000/03/14 04:09:57  laurel
-dnl Fixed Atlas-C++ configure check so it works now.
-dnl Does Atlas-C++ come with a configure check?  If not, should it?
-dnl Thanks to ajr@ecs.soton.ac.uk
-dnl
-dnl Revision 1.3  2000/02/21 23:02:56  dert
-dnl Added --with-atlas=/some/directory to autoconf.
-dnl We are currently only checking for AtlasDebug.
-dnl Hopefully we can use CVS-Log syntax in m4 files.
-dnl
 dnl
 
 dnl Initialise autoconf
@@ -88,7 +116,9 @@ AC_INIT()
 
 dnl Initialise automake
 
-AM_INIT_AUTOMAKE("cyphesis", "0.0.1")
+AM_INIT_AUTOMAKE(cyphesis, 0.0.2)
+AM_CONFIG_HEADER
+AC_ARG_PROGRAM
 
 dnl Need libtool
 
@@ -100,6 +130,9 @@ dnl Test for C++ compiler
 AC_PROG_CXX
 
 CXXFLAGS='-Wall -g'
+
+AC_DEFINE_UNQUOTED(INSTALLDIR,"$prefix")
+AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
 dnl Test for WorldForge Atlas Libraries
 

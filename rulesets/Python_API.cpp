@@ -42,6 +42,62 @@ PyTypeObject log_debug_type = {
 	log_debug,	/* tp_call */
 };
 
+static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObject * kwds)
+{
+    PyObject * dict, * item;
+    long remove_empty_key = 1;
+    if (!PyArg_ParseTuple(args, "OO|i", &dict, &item, &remove_empty_key)) {
+        return NULL;
+    }
+    int flag=0;
+    if (!PyDict_Check(dict)) {
+        PyErr_SetString(PyExc_TypeError, "Trying to set item in not dictlist");
+        return NULL;
+    }
+    PyObject * keys = PyDict_Keys(dict);
+    PyObject * values = PyDict_Values(dict);
+
+    if ((keys == NULL) || (values == NULL)) {
+        PyErr_SetString(PyExc_TypeError, "Error getting keys from dictlist");
+        return NULL;
+    }
+    int i, size = PyList_Size(keys);
+    for(i = 0; i < size; i++) {
+        PyObject * value = PyList_GetItem(values, i);
+        PyObject * key = PyList_GetItem(keys, i);
+        int j, lsize = PyList_Size(value);
+        for(j = 0; j < lsize; j++) {
+            if (PyList_GetItem(value, j) == item) {
+                flag = 1;
+                PyList_SetSlice(value, j, j+1, NULL);
+                if ((remove_empty_key !=0) && (PyList_Size(value) == 0)) {
+                    PyDict_DelItem(dict, key);
+                }
+            }
+        }
+    }
+    return PyInt_FromLong(flag);
+}
+
+PyTypeObject dictlist_remove_value_type = {
+	PyObject_HEAD_INIT(&PyType_Type)
+	0,
+	"Function",
+	sizeof(FunctionObject),
+	0,
+	/* methods */
+	(destructor)Function_dealloc,
+	0,		/* tp_print */
+	0,		/* tp_getattr */
+	0,		/* tp_setattr */
+	0,		/* tp_compare */
+	0,		/* tp_repr */
+	0,		/* tp_as_number */
+	0,		/* tp_as_sequence */
+	0,		/* tp_as_mapping */
+	0,		/* tp_hash */
+	dictlist_remove_value,	/* tp_call */
+};
 static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject * kwds)
 {
     PyObject * dict, * item;
@@ -55,6 +111,7 @@ static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject 
     }
     PyObject * list = PyDict_GetItemString(dict, key);
     if (list != NULL) {
+        printf("DICTLIST: Existing list\n");
         if (!PyList_Check(list)) {
             PyErr_SetString(PyExc_TypeError, "Dict does not contain a list");
             return NULL;
@@ -67,9 +124,10 @@ static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject 
         }
         PyList_Append(list, item);
     } else {
-        list = PyList_New(1);
-        Py_INCREF(item);
-        PyList_SetItem(list, 1, item);
+        printf("DICTLIST: New list\n");
+        list = PyList_New(0);
+        //Py_INCREF(item);
+        PyList_Append(list, item);
         PyDict_SetItemString(dict, key, list);
         Py_DECREF(list);
     }
@@ -112,7 +170,8 @@ void Create_PyThing(Thing * thing, const string & package, const string & _type)
     }
     PyObject * my_class = PyObject_GetAttrString(mod_dict, (char *)type.c_str());
     if (my_class == NULL) {
-        cerr << "Cld no find class in module " << package << endl << flush;
+        cerr << "Cld not find class " << type << " in module " << package
+             << endl << flush;
             PyErr_Print();
         return;
     } else {
@@ -189,6 +248,7 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
 	// We need to deal with actual args here
         PyObject * clist;
         double x,y,z;
+        long ix,iy,iz;
         if ( (PyArg_ParseTuple(args, "O", &clist)) &&
                     (PyList_Check(clist)) &&
                     (PyList_Size(clist) == 3) ) {
@@ -209,6 +269,8 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
             }
         } else if (PyArg_ParseTuple(args, "ddd", &x, &y, &z)) {
             val = Vector3D(x,y,z);
+        } else if (PyArg_ParseTuple(args, "iii", &ix, &iy, &iz)) {
+            val = Vector3D(ix,iy,iz);
         } else if (!PyArg_ParseTuple(args, "")) {
             return NULL;
         }
@@ -286,11 +348,12 @@ static PyObject * object_new(PyObject * self, PyObject * args)
 
 static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
+        printf("Entity()\n");
 	AtlasObject *o;
         char * id = NULL;
 	
-	if (!PyArg_ParseTuple(args, "|s", id)) {
-		return NULL;
+	if (!PyArg_ParseTuple(args, "|s", &id)) {
+            return NULL;
 	}
         Object::MapType _omap;
         Object obj(_omap);
@@ -298,19 +361,22 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
         if (id != NULL) {
             omap["id"] = string(id);
         }
-        PyObject * keys = PyMapping_Keys(kwds);
-        PyObject * vals = PyMapping_Values(kwds);
+        PyObject * keys = PyDict_Keys(kwds);
+        PyObject * vals = PyDict_Values(kwds);
         if ((keys == NULL) || (vals == NULL)) {
             PyErr_SetString(PyExc_TypeError, "Error in keywords");
             return NULL;
         }
-        int i, size=PyMapping_Length(keys); 
+        int i, size=PyList_Size(keys); 
+        printf("Ent(): kw size = %d\n", size);
         for(i = 0; i < size; i++) {
             char * key = PyString_AsString(PyList_GetItem(keys, i));
             PyObject * val = PyList_GetItem(vals, i);
             if ((strcmp(key, "location") == 0) &&
                 ((PyTypeObject *)PyObject_Type(val) == &Location_Type)) {
+                printf("ENTITY: Setting location\n");
                 LocationObject * loc = (LocationObject*)val;
+                cout << *loc->location << endl << flush;
                 loc->location->addObject(&obj);
             } else {
                 Object val_obj = PyObject_asObject(val);
@@ -384,26 +450,32 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     if (op == NULL) {
         return NULL;
     }
-    op->operation = new RootOperation;
-    op->own = 1;
     if (strcmp(type, "tick") == 0) {
+        op->operation = new Tick;
         *op->operation = Tick::Instantiate();
     } else if (strcmp(type, "create") == 0) {
+        op->operation = new Create;
         *op->operation = Create::Instantiate();
     } else if (strcmp(type, "setup") == 0) {
+        op->operation = new Setup;
         *op->operation = Setup::Instantiate();
     } else if (strcmp(type, "look") == 0) {
+        op->operation = new Look;
         *op->operation = Look::Instantiate();
     } else if (strcmp(type, "move") == 0) {
+        op->operation = new Move;
         *op->operation = Move::Instantiate();
     } else if (strcmp(type, "talk") == 0) {
+        op->operation = new Talk;
         *op->operation = Talk::Instantiate();
     } else {
         fprintf(stderr, "ERROR: PYTHON CREATING AN UNHANDLED %s OPERATION\n", type);
-        *op->operation = RootOperation::Instantiate();
+        //*op->operation = RootOperation::Instantiate();
+        Py_DECREF(op);
         Py_INCREF(Py_None);
         return Py_None;
     }
+    op->own = 1;
     if (PyMapping_HasKeyString(kwds, "to")) {
         to = PyMapping_GetItemString(kwds, "to");
         printf("Operation creation sets to\n");

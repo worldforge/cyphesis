@@ -70,8 +70,11 @@ Thing * MemMap::add(const Object & entity)
     if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
         thing->name = entmap["name"].AsString();
     }
+    if (entmap.find("type") != entmap.end() && entmap["type"].IsString()) {
+        thing->type = entmap["type"].AsString();
+    }
     thing->merge(entmap);
-    thing->getLocation(entmap);
+    thing->getLocation(entmap, things);
     return add_object(thing);
 }
 
@@ -79,7 +82,7 @@ void MemMap::_delete(const string & id)
 {
     cout << "MemMap::delete" << endl << flush;
     if (things.find(id) != things.end()) {
-        Thing * obj = things[id];
+        Thing * obj = (Thing*)things[id];
         things.erase(id);
         //for (/*hook in MemMap::delete_hooks*/) {
             //hook(obj);
@@ -91,7 +94,7 @@ Thing * MemMap::get(const string & id)
 {
     cout << "MemMap::get" << endl << flush;
     if (things.find(id) != things.end()) {
-        return things[id];
+        return (Thing*)things[id];
     }
     return(NULL);
 }
@@ -132,16 +135,19 @@ Thing * MemMap::update(const Object & entity)
         return add(entity);
     }
     cout << " " << id << " has already been spotted" << endl << flush;
-    Thing * thing = things[id];
+    Thing * thing = (Thing*)things[id];
     cout << " got " << thing << endl << flush;
     // I am not sure what the deal is with all the "needTrueValue stuff
     // below yet. FIXME find out exactly what is required.
     if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
         thing->name = entmap["name"].AsString();
     }
+    if (entmap.find("type") != entmap.end() && entmap["type"].IsString()) {
+        thing->type = entmap["type"].AsString();
+    }
     cout << " got " << thing << endl << flush;
     thing->merge(entmap);
-    thing->getLocation(entmap);
+    thing->getLocation(entmap,things);
     //needTrueValue=["type","contains","instance","id","location","stamp"];
     //for (/*(key,value) in entity.__dict__.items()*/) {
         //if (value or not key in needTrueValue) {
@@ -157,10 +163,12 @@ Thing * MemMap::update(const Object & entity)
 list<Thing *> MemMap::find_by_type(const string & what)
 {
     list<Thing *> res;
-    map<string, Thing *>::const_iterator I;
+    fdict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
-        if (I->second->type == what) {
-            res.push_back(I->second);
+        Thing * item = (Thing *)I->second;
+        cout << "F" << what << ":" << item->type << ":" << item->fullid << endl << flush;
+        if (item->type == what) {
+            res.push_back((Thing*)I->second);
         }
     }
     return res;
@@ -169,7 +177,7 @@ list<Thing *> MemMap::find_by_type(const string & what)
 list<Thing *> MemMap::find_by_location(const Location & loc, double radius)
 {
     list<Thing *> res;
-    map<string, Thing *>::const_iterator I;
+    fdict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         const Location & oloc = I->second->location;
         if (!loc || !oloc) {
@@ -177,7 +185,7 @@ list<Thing *> MemMap::find_by_location(const Location & loc, double radius)
         }
         if ((oloc.parent->fullid == loc.parent->fullid) &&
             (loc.coords.distance(oloc.coords) < radius)) {
-            res.push_back(I->second);
+            res.push_back((Thing*)I->second);
         }
     }
     return res;

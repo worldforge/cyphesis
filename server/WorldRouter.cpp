@@ -25,6 +25,7 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
     server->id_dict[fullid]=this;
     fobjects[fullid]=this;
     perceptives.push_back(this);
+    objects_list.push_back(this);
     illegal_thing = new Thing();
     illegal_thing->fullid = "illegal";
     illegal_thing->name = "illegal";
@@ -51,16 +52,6 @@ string WorldRouter::get_id(string & name)
     //if (next_id > 100) {
         //exit(0);
     //}
-#if 0
-    char * buf = (char *)malloc(strlen(name.c_str()) + 32);
-    next_id++;
-    if (buf) {
-        sprintf(buf, "%s_%d", name.c_str(), next_id);
-        full_id = string(buf);
-    } else {
-        debug_server && cout << "BARRRRF" << endl << flush;
-    }
-#endif
     return(full_id);
 }
 

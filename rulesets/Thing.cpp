@@ -113,6 +113,7 @@ void Thing::addObject(Message::Object * obj)
 {
     Message::Object::MapType & omap = obj->AsMap();
     omap["name"] = Message::Object(name);
+    omap["type"] = Message::Object(type);
     omap["parents"] = Message::Object(Message::Object::ListType(1,Message::Object(type)));
     omap.insert(attributes.begin(), attributes.end());
     location.addObject(obj);
@@ -136,17 +137,13 @@ void Thing::merge(const Message::Object::MapType & entmap)
     }
 }
 
-void Thing::getLocation(Message::Object::MapType & entmap)
+void Thing::getLocation(Message::Object::MapType & entmap, fdict_t & fobjects)
 {
     if (entmap.find("loc") != entmap.end()) {
         try {
             const string & parent_id = entmap["loc"].AsString();
             BaseEntity * parent_obj;
-            if (world != NULL) {
-                parent_obj = world->fobjects[parent_id];
-            } else {
-                parent_obj = location.parent;
-            }
+            parent_obj = fobjects[parent_id];
             Vector3D pos(0, 0, 0);
             Vector3D velocity(0, 0, 0);
             Vector3D face(1, 0, 0);

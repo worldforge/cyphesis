@@ -6,7 +6,7 @@ from world.objects.Character import Character
 from world.objects.undead.Undead import Undead
 from mind.SkelMind import SkelMind
 from common import log,const
-from common.misc import set_kw
+from misc import set_kw
 from world.physics.Vector3D import Vector3D
 from whrandom import *
 

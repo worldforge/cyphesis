@@ -244,5 +244,22 @@ Object PyObject_asObject(PyObject * o)
         AtlasObject * obj = (AtlasObject *)o;
         return *(obj->m_obj);
     }
+    if ((PyTypeObject*)PyObject_Type((PyObject *)o) == &RootOperation_Type) {
+        RootOperationObject * op = (RootOperationObject *)o;
+        return op->operation->AsObject();
+    }
+    if ((PyTypeObject*)PyObject_Type((PyObject *)o) == &Oplist_Type) {
+        OplistObject * opl = (OplistObject *)o;
+        Object::ListType _list;
+        Object msg(_list);
+        Object::ListType & entlist = msg.AsList();
+        oplist & ops = *opl->ops;
+        oplist::const_iterator I;
+        for(I = ops.begin(); I != ops.end(); I++) {
+            entlist.push_back((*I)->AsObject());
+        }
+        return msg;
+    }
+    printf("PyObject cannot be cast into Object\n");
     return Object();
 }

@@ -504,7 +504,8 @@ static void Operation_dealloc(RootOperationObject *self)
 {
 	Py_XDECREF(self->Operation_attr);
         if ((self->own != 0) && (self->operation != NULL)) {
-            delete self->operation;
+            // Can't delete until I have sorted out bugs with own flag
+            // delete self->operation;
         }
 	PyMem_DEL(self);
 }
@@ -617,7 +618,9 @@ RootOperationObject * newAtlasRootOperation(PyObject *arg)
 		return(NULL);
 	}
 	self->Operation_attr = NULL;
+	self->operation = NULL;
 	self->from = NULL;
 	self->to = NULL;
+	self->own = 0;
 	return self;
 }
