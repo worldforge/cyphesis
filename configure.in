@@ -1,6 +1,9 @@
 dnl
 dnl $Log: configure.in,v $
-dnl Revision 1.7  2000-11-14 15:52:10  alriddoch
+dnl Revision 1.8  2000-11-27 19:00:16  alriddoch
+dnl Fixed legacy Atlas error in configure.in
+dnl
+dnl Revision 1.7  2000/11/14 15:52:10  alriddoch
 dnl 	* Added more Python/C API code. Basic framework now exists for
 dnl 	  creating and manipulating Operations in the python code.
 dnl
@@ -154,7 +157,7 @@ dnl	atlash="$atlash Atlas/Objects/Decoder.h"
 
 AC_CACHE_VAL(cyphesis_cv_atlas_libraries,
 [
-	AC_CHECK_LIB(AtlasDebug, main,
+	AC_CHECK_LIB(Atlas, main,
     [
         LIBS="$LIBS -lAtlas"
         LIBS="$LIBS -lAtlasCodecs"
@@ -162,7 +165,7 @@ AC_CACHE_VAL(cyphesis_cv_atlas_libraries,
         LIBS="$LIBS -lAtlasNet"
     ],
 	[
-		AC_MSG_ERROR(Couldn't find working AtlasDebug libraries.);
+		AC_MSG_ERROR(Couldn't find working Atlas libraries.);
 	])
 ])
 
