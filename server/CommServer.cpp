@@ -76,6 +76,7 @@ void CommServer::loop()
     }
 
     if (rval == 0) {
+        idle();
         return;
     }
     
