@@ -15,6 +15,14 @@ Definitly for Acorn 0.4:
 
   Add sending of touch op on collision.
 
+  Remove little camp near origin, cos Uta sez so.
+
+  Fix market stalls and sound effects in sprites.xml.
+
+  Implement archer sitting and yawning.
+
+  Implement market stall setup and take down.
+
 Provisional for Acorn 0.4:
 
 Provisional for Acorn 0.5:
