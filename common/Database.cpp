@@ -610,9 +610,11 @@ bool Database::createEntityRow(const std::string & classname,
     std::string table = classname + "_ent";
     std::string query = "INSERT INTO ";
     query += table;
-    query += " VALUES ('";
+    query += " VALUES (id = '";
+    query += id;
+    query += "'";
     query += columns;
-    query += "');";
+    query += ");";
     std::cout << "QUERY: " << query << std::endl << std::flush;
     // FIXME Actually run the query against the db
     return true;

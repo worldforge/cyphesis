@@ -62,6 +62,8 @@ class Entity : public BaseEntity {
 
     const bool isPerceptive() const { return perceptive; }
 
+    void clearUpdateFlags() { update_flags = 0; }
+
     void setStatus(const double s) {
         status = s;
     }

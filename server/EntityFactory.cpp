@@ -108,6 +108,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
     }
     if (pc != 0) {
         pc->persist();
+        thing->clearUpdateFlags();
     }
     delete pc;
     return thing;

@@ -1,5 +1,19 @@
 2002-12-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Fix badly generated insert query.
+
+	* rulesets/Character.h: Add accessors for some hard attributes.
+
+	* rulesets/Entity.h, server/EntityFactory.cpp: Add a way of clearing
+	  all the update flags, and clear them after creating the database
+	  row.
+
+	* server/Persistor.h, server/Persistor_impl.h, server/Persistor.cpp:
+	  Progress on the SQL update query generating code. Now generates
+	  what looks like good update queries.
+
+2002-12-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.h: Provide accessor for update flags.
 
 	* server/Persistor.h, server/Persistor_impl.h: Start adding

@@ -47,6 +47,10 @@ class Character : public Thing {
     Character();
     virtual ~Character();
 
+    const double getDrunkness() const { return drunkness; }
+    const std::string & getSex() const { return sex; }
+    const double getFood() const { return food; }
+
     virtual const Atlas::Message::Object get(const std::string &) const;
     virtual void set(const std::string & aname, const Atlas::Message::Object & attr);
 
