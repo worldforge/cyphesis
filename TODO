@@ -29,6 +29,10 @@ Definitly for Acorn 0.4:
     o = new Opertion(Operation::Instantiate());
   cos it is about twice as quick.
 
+  In movement code, if target_ref is set, once target is achieved, change
+  the ref of the character, and recalculate its coords, then carry on the
+  movement.
+
 Provisional for Acorn 0.4:
 
   Implement accelerated Atlas Objects API. MAYBE: POSTPONE!

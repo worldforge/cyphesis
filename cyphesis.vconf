@@ -2,3 +2,4 @@
 
 ruleset="acorn"
 restricted="false"
+usemetaserver="false"

@@ -56,7 +56,10 @@ void acput(Db & db, const string & name, const string & password)
     Atlas::Message::Object::MapType ac_map;
     ac_map["id"] = name;
     ac_map["password"] = password;
+
+    codec.StreamBegin();
     enc.StreamMessage(ac_map);
+    codec.StreamEnd();
 
     Dbt key, data;
     key = Dbt((void*)name.c_str(), name.size() + 1);

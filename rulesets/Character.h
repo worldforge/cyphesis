@@ -19,6 +19,7 @@ class MovementInfo {
     Character * body;
     friend class Character;
     double last_movement_time;
+    BaseEntity * target_ref;
     Vector3D target_location;
     Vector3D updated_location;
     Vector3D velocity;

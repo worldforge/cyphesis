@@ -24,11 +24,11 @@ class CommServer {
     int accept();
     void idle();
 
-    static bool use_metaserver;
     static const int metaserver_port = 8453;
     struct sockaddr_in meta_sa;
     int meta_fd;
   public:
+    static bool use_metaserver;
     ServerRouting * server;
     const string identity;
 

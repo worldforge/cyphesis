@@ -214,7 +214,7 @@ bool Interactive::login()
     reply_flag = false;
  
     account.SetAttr("id", string("admin"));
-    account.SetAttr("password", string("pilchard"));
+    account.SetAttr("password", string("drooogs"));
  
     Object::ListType args(1,account.AsObject());
  

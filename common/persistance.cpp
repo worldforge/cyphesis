@@ -155,7 +155,7 @@ bool Persistance::getObject(Db & db, const char * keystr,
         return false;
     }
     
-    std::stringstream str(string("<atlas>") + string(entry));
+    std::stringstream str(std::string () + std::string(entry));
 
     Atlas::Codecs::XML codec(str, &m_d);
     Atlas::Message::Encoder enc(&codec);
@@ -182,7 +182,9 @@ bool Persistance::putObject(Db & db, const Atlas::Message::Object & o,
     Atlas::Codecs::XML codec(str, &m_d);
     Atlas::Message::Encoder enc(&codec);
 
+    codec.StreamBegin();
     enc.StreamMessage(o);
+    codec.StreamEnd();
 
     Dbt key, data;
 

@@ -16,6 +16,7 @@
 #include "PlantFactory.h"
 #include "FoodFactory.h"
 #include "StackFactory.h"
+#include "StructFactory.h"
 
 #include <server/WorldRouter.h>
 
@@ -41,6 +42,7 @@ EntityFactory::EntityFactory()
     factories["plant"] = PlantFactory::instance();
     factories["food"] = FoodFactory::instance();
     factories["stackable"] = StackFactory::instance();
+    factories["structure"] = StructureFactory::instance();
 }
 
 void EntityFactory::readRuleset(const string & setname)

@@ -16,6 +16,7 @@ librulesets_a_SOURCES = Thing.cpp Thing.h \
 			PlantFactory.cpp PlantFactory.h \
 			FoodFactory.cpp FoodFactory.h \
 			StackFactory.cpp StackFactory.h \
+			StructFactory.cpp StructFactory.h \
 			BaseMind.cpp BaseMind.h \
 			MemMap.cpp MemMap.h MemMap_methods.h \
 			Py_Object.cpp Py_Object.h \

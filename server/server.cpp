@@ -219,7 +219,7 @@ int CommServer::setup(int port)
     meta_sa.sin_family = AF_INET;
     meta_sa.sin_port = htons(metaserver_port);
 
-    cout << "Connecting to metaserver." << endl << flush;
+    cout << "Connecting to metaserver..." << endl << flush;
     struct hostent * ms_addr = gethostbyname("metaserver.worldforge.org");
     if (ms_addr == NULL) {
         cerr << "metaserver lookup failed. Disabling metaserver." <<endl<<flush;
@@ -460,7 +460,10 @@ int main(int argc, char ** argv)
             cout << "Running in restricted mode" << endl << flush;
         }
     }
-    
+    bool usemetaserver = true;
+    if (global_conf->findItem("cyphesis", "usemetaserver")) {
+        usemetaserver=global_conf->getItem("cyphesis","usemetaserver");
+    }
 
     init_python_api();
     cout << Py_GetPath() << endl << flush;
@@ -477,6 +480,7 @@ int main(int argc, char ** argv)
         common::log::thinking_fp.open(log_name,ios::out);
     }
     CommServer s(rulesets.front());
+    s.use_metaserver = usemetaserver;
     if (s.setup(6767)) {
         cerr << "Could not create listen socket." << endl << flush;
         exit(1);

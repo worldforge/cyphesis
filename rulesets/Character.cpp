@@ -58,7 +58,7 @@ static const bool debug_flag = false;
 
 //-------------------------------MovementInfo-------------------------------
 
-MovementInfo::MovementInfo(Character * body) : body(body)
+MovementInfo::MovementInfo(Character * body) : body(body), target_ref(NULL)
 {
     serialno=-1;
     reset();
@@ -68,6 +68,7 @@ MovementInfo::MovementInfo(Character * body) : body(body)
 void MovementInfo::reset()
 {
     serialno = serialno+1;
+    target_ref=NULL;
     target_location=Vector3D();
     updated_location=Vector3D();
     velocity=Vector3D(0,0,0);
@@ -86,6 +87,7 @@ void MovementInfo::check_collisions(const Location & loc)
     double collTime = consts::basic_tick + 1;
     list_t::const_iterator I;
     // cout << "checking " << body->fullid << loc.coords << loc.velocity << " against ";
+    BaseEntity * collEntity = NULL;
     for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
         if ((*I) == loc.ref) { continue; }
         const Location & oloc = (*I)->location;
@@ -94,11 +96,35 @@ void MovementInfo::check_collisions(const Location & loc)
         if (t < 0) { continue; }
         // cout << (*I)->fullid << oloc.coords << oloc.velocity;
         // cout << "[" << t << "]";
+        if (t < collTime) {
+            collEntity = *I;
+        }
         collTime = min(collTime, t);
     }
     // cout << endl << flush;
     if (collTime > consts::basic_tick) { return; }
     // Collision!
+    if (!collEntity->location.solid) {
+        // Non solid container - check for collision with its contents.
+        const Location & lc2 = collEntity->location;
+        Location rloc(loc);
+        rloc.ref = collEntity; rloc.coords = loc.coords - lc2.coords;
+        double coll2Time = consts::basic_tick + 1;
+        // rloc is coords of character ref collEntity
+        for(I = lc2.ref->contains.begin(); I != lc2.ref->contains.end(); I++) {
+            const Location & oloc = (*I)->location;
+            if (!oloc.bbox) { continue; }
+            double t = rloc.hitTime(oloc);
+            if (t < 0) { continue; }
+            coll2Time = min(coll2Time, t);
+        }
+        if (coll2Time > collTime) {
+            // We are entering collEntity.
+            // Set target_ref ????????????????
+            target_ref = collEntity;
+            if (coll2Time > consts::basic_tick) { return; }
+        }
+    }
     // cout << "COLLISION" << endl << flush;
     if (collTime < get_tick_addition(loc.coords)) {
         target_location = loc.coords + loc.velocity * collTime;
@@ -206,9 +232,17 @@ Move * MovementInfo::gen_move_operation(Location * rloc, const Location & loc)
             if (dist2>dist) {
                 debug( cout << "target achieved";);
                 new_coords=target_location;
-                reset();
-                entmap["mode"] = Object("standing");
-                new_loc.velocity=velocity;
+                if (target_ref != NULL) {
+                    new_loc.ref = target_ref;
+                    new_coords = target_location - target_ref->location.coords;
+                    target_ref = NULL;
+                    // This needs to be the previously stored target location
+                    target_location = Vector3D();
+                } else {
+                    reset();
+                    entmap["mode"] = Object("standing");
+                    new_loc.velocity=velocity;
+                }
             }
         }
         new_loc.coords = new_coords;
@@ -378,6 +412,7 @@ oplist Character::Operation(const Tick & op)
     debug(cout << "================================" << endl << flush;);
     const Object::ListType & args = op.GetArgs();
     if ((0 != args.size()) && (args.front().IsMap())) {
+        // Deal with movement.
         Object::MapType arg1 = args.front().AsMap();
         if ((arg1.find("serialno") != arg1.end()) &&
            (arg1["serialno"].IsInt())) {
