@@ -1,3 +1,8 @@
+2004-11-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.h, server/TrustedConnection.h: Make
+	  verifyCredentials protected.
+
 2004-11-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/PersistantThingFactory_impl.h, server/PersistantThingFactory.h:

@@ -30,6 +30,8 @@ class Connection : public OOGThing {
     ConMap m_destroyedConnections;
 
     Account * addPlayer(const std::string &, const std::string &);
+  protected:
+    virtual bool verifyCredentials(const Account &, const MapType &) const;
   public:
     ServerRouting & m_server;
 
@@ -44,8 +46,6 @@ class Connection : public OOGThing {
     void destroy();
     void disconnect();
     void send(const RootOperation & msg) const;
-
-    virtual bool verifyCredentials(const Account &, const MapType &) const;
 
     virtual void operation(const RootOperation &, OpVector &);
 

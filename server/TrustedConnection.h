@@ -15,13 +15,13 @@
 // connected over a unix domain socket.
 
 class TrustedConnection : public Connection {
+  protected:
+    virtual bool verifyCredentials(const Account &,
+                                   const MapType &) const;
   public:
     TrustedConnection(const std::string & id,
                       CommClient & client,
                       ServerRouting & svr);
-
-    virtual bool verifyCredentials(const Account &,
-                              const MapType &) const;
 };
 
 #endif // SERVER_TRUSTED_CONNECTION_H
