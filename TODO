@@ -1,3 +1,5 @@
+What happens when no type arg is passed to make in define_world.py?
+
 mind.things in NPCMind seems to be completely based on the name attribute,
 though it seems like it would make more sense for it to use type some of
 the time.
