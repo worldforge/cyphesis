@@ -1,3 +1,5 @@
+Sort out removing things from contains in MemMap.
+
 Report error properlly in MemEntity when clock skew is detected.
 
 Try and avoid removing stuff from the mind as soon as its been added. Perhaps
