@@ -1,3 +1,9 @@
+2004-07-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/BaseMind.cpp: Remove some debug output.
+
+	* Increment version to 0.3.2.
+
 2004-07-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/MemMap.cpp: Make sure LOC and CONTAINS are kept consistant

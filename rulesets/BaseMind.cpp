@@ -200,9 +200,7 @@ OpVector BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op)
     Element::MapType::const_iterator I = obj.find("id");
     if ((I != obj.end()) && (I->second.isString())) {
         const std::string & id = I->second.asString();
-        if (id == getId()) {
-            std::cout << "Got sight delete of self" << std::endl << std::flush;
-        } else {
+        if (id != getId()) {
             m_map.del(I->second.asString());
         }
     } else {
