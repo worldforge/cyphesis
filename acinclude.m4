@@ -31,7 +31,6 @@ AC_ARG_ENABLE(psqltest, [  --disable-psqltest     Do not try to compile and run 
      fi
   fi
   if test x$psql_prefix != x ; then
-     psql_args="$psql_args --prefix=$psql_prefix"
      if test x${PG_CONFIG+set} != xset ; then
         PG_CONFIG=$psql_prefix/bin/pg_config
      fi
