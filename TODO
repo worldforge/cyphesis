@@ -1,3 +1,7 @@
+Re-work Decoder on client connections so operation dispatch is not done from
+with the poll() call. Instead, the decoder should just que ops, and they
+should be read off and dispatched from elsewhere.
+
 Make sure plant base class is working.
 
 Fix up inheritance so classes in the mason ruleset don't inherit directly
