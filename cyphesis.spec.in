@@ -87,7 +87,7 @@ Werewolf is not yet functional.
 %setup -q
 
 %build
-CXXFLAGS=$RPM_OPT_FLAGS ./configure --prefix=%{prefix} --sysconfdir=%{sysconfdir}
+CXXFLAGS=$RPM_OPT_FLAGS ./configure --prefix=%{prefix} --enable-static --sysconfdir=%{sysconfdir}
 make
 
 %install

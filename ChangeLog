@@ -1,3 +1,9 @@
+2002-11-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* Enable static libs in the rpm spec.
+
+	* Version 0.2 release.
+
 2002-11-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Connection.cpp: Reject account creation or login with zero
