@@ -1,5 +1,14 @@
 2000-11-26  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Added in Python interface code to deal with manipulation of operation
+	  time.
+
+	* Made basic_tick a float, because it should be.
+
+	* Imported all the rulesets python code from python cyphesis.
+
+2000-11-26  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Fixed and changes to code so that operations created in python
 	  mind code are delivered as required.
 

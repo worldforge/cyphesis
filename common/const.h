@@ -11,7 +11,7 @@ namespace consts {
   extern double fzero;
 
   extern double time_multiplier;
-  extern int basic_tick;
+  extern double basic_tick;
   extern double base_velocity_coefficient;
   extern double base_velocity;
   extern int day_in_seconds;

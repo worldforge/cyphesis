@@ -254,7 +254,7 @@ void init_python_api()
 			PyFloat_FromDouble(consts::base_velocity));
 
 	PyObject_SetAttrString(_const, "basic_tick",
-			PyInt_FromLong(consts::basic_tick));
+			PyFloat_FromDouble(consts::basic_tick));
 	PyObject_SetAttrString(_const, "day_in_seconds",
 			PyInt_FromLong(consts::day_in_seconds));
 

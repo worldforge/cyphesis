@@ -69,6 +69,12 @@ typedef struct {
     oplist	* ops;
 } OplistObject;
 
+typedef struct {
+    PyObject_HEAD
+    PyObject	* Optime_attr;	/* Attributes dictionary */
+    RootOperation	* operation;
+} OptimeObject;
+
 #define ATLAS_OPERATION_METHODS(_name) \
 PyMethodDef _name ## _methods[] = { \
     {"SetSerialno",	(PyCFunction)Operation_SetSerialno,	METH_VARARGS}, \
@@ -119,6 +125,7 @@ ATLAS_OPERATION(RootOperation)
 #include "Py_Vector3D.h"
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
+#include "Py_Optime.h"
 
 void Create_PyThing(Thing * thing, const string & package, const string & type);
 

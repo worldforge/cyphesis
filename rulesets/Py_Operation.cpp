@@ -467,6 +467,13 @@ static PyObject * Operation_getattr(RootOperationObject * self, char * name)
             thing_obj->m_thing = self->to;
             return (PyObject *)thing_obj;
         }
+    } else if (strcmp(name, "time") == 0) {
+        OptimeObject * time_obj = newOptimeObject(NULL);
+        if (time_obj == NULL) {
+            return NULL;
+        }
+        time_obj->operation = self->operation;
+        return (PyObject *)time_obj;
     }
     return Py_FindMethod(RootOperation_methods, (PyObject *)self, name);
 }

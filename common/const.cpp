@@ -9,7 +9,7 @@ namespace consts {
 
   double time_multiplier = 1.0;
   // In Real time how many seconds between ticks;
-  int basic_tick = time_multiplier*3.0;
+  double basic_tick = time_multiplier*3.0;
   double base_velocity_coefficient = 5.0;
   double base_velocity = base_velocity_coefficient/time_multiplier;
   int day_in_seconds = 3600*24.0;
