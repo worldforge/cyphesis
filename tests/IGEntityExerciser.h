@@ -22,6 +22,8 @@ inline bool IGEntityExerciser<EntityType>::checkAttributes(const std::set<std::s
     std::set<std::string>::const_iterator I = attr_names.begin();
     for(; I != attr_names.end(); ++I) {
         if (!this->m_ent.get(*I, null)) {
+            std::cerr << "Entity does not have \"" << *I << "\" attribute."
+                      << std::endl << std::flush;
             return false;
         }
     }

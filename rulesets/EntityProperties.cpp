@@ -2,14 +2,17 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2004 Alistair Riddoch
 
+#include "Entity.h"
+
 #include "common/Property_impl.h"
-#include "common/types.h"
+#include "common/type_utils.h"
 
 #include "physics/BBox.h"
 
 #include <wfmath/atlasconv.h>
 
 template class Property<BBox>;
+template class Property<IdList>;
 
 template class ImmutableProperty<EntitySet>;
 
@@ -32,14 +35,33 @@ void Property<BBox>::add(const std::string & s, Atlas::Message::MapType & ent)
     }
 }
 
+void Property<IdList>::get(Atlas::Message::Element & e)
+{
+    e = ListType();
+    idListasObject(m_data, e.asList());
+}
+
+void Property<IdList>::set(const Atlas::Message::Element & e)
+{
+    if (e.isList()) {
+        idListFromAtlas(e.asList(), m_data);
+    }
+}
+
+void Property<IdList>::add(const std::string & s, Atlas::Message::MapType & ent)
+{
+    if (!m_data.empty()) {
+        get(ent["s"]);
+    }
+}
+
 void ImmutableProperty<EntitySet>::get(Atlas::Message::Element & e)
 {
     e = ListType();
     ListType & contlist = e.asList();
-    for (EntitySet::const_iterator I = m_data.begin();
-         I != m_data.end();
-         I++) {
-        contlist.push_back(*I);
+    EntitySet::const_iterator Iend = m_data.end();
+    for (EntitySet::const_iterator I = m_data.begin(); I != Iend; I++) {
+        contlist.push_back((*I)->getId());
     }
 }
 

@@ -46,9 +46,12 @@ void MemMap::readEntity(MemEntity * entity, const MapType & entmap)
     if (I != entmap.end() && I->second.isString()) {
         entity->setName(I->second.asString());
     }
-    I = entmap.find("type");
-    if (I != entmap.end() && I->second.isString()) {
-        entity->setType(I->second.asString());
+    I = entmap.find("parents");
+    if (I != entmap.end() && I->second.isList()) {
+        const ListType & parents = I->second.asList();
+        if (!parents.empty() && parents.front().isString()) {
+            entity->setType(parents.front().asString());
+        }
     }
     entity->merge(entmap);
     I = entmap.find("loc");

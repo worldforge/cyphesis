@@ -45,8 +45,6 @@ void Location::addToMessage(MapType & omap) const
 {
     if (m_loc!=NULL) {
         omap["loc"] = m_loc->getId();
-    } else {
-        omap["loc"] = "";
     }
     if (m_pos.isValid()) {
         omap["pos"] = m_pos.toAtlas();

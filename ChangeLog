@@ -1,3 +1,21 @@
+2004-11-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Property.cpp: Add required type checks to property set
+	  methods.
+
+	* modules/Location.cpp: Don't send LOC attribute when the
+	  pointer is NULL.
+
+	* rulesets/EntityProperties.cpp: Add a Property specialisation
+	  for list of IDs.
+
+	* rulesets/MemMap.cpp: Fix the memory code to use the correct
+	  PARENTS attribute rather than type, which is not an Atlas
+	  attribute.
+
+	* tests/IGEntityExerciser.h: Add debugging output to attribute
+	  checks.
+
 2004-10-31  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Lobby.cpp: Tweak incorrect header order.

@@ -22,27 +22,37 @@ PropertyBase::~PropertyBase()
 
 void Property<int>::set(const Atlas::Message::Element & e)
 {
-    m_data = e.asInt();
+    if (e.isInt()) {
+        m_data = e.asInt();
+    }
 }
 
 void Property<long>::set(const Atlas::Message::Element & e)
 {
-    m_data = e.asInt();
+    if (e.isInt()) {
+        m_data = e.asInt();
+    }
 }
 
 void Property<float>::set(const Atlas::Message::Element & e)
 {
-    m_data = e.asFloat();
+    if (e.isNum()) {
+        m_data = e.asNum();
+    }
 }
 
 void Property<double>::set(const Atlas::Message::Element & e)
 {
-    m_data = e.asFloat();
+    if (e.isNum()) {
+        m_data = e.asNum();
+    }
 }
 
 void Property<std::string>::set(const Atlas::Message::Element & e)
 {
-    m_data = e.asString();
+    if (e.isString()) {
+        m_data = e.asString();
+    }
 }
 
 void Property<std::string>::add(const std::string & s,
