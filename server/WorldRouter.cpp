@@ -311,7 +311,8 @@ const EntitySet & WorldRouter::broadcastList(const RootOperation & op) const
     return m_objectList;
 }
 
-/// Deliver an operation to its target.
+/// \brief Deliver an operation to its target.
+///
 /// Pass the operation to the target entity. The resulting operations
 /// have their ref numbers set, and are added to the queue for
 /// dispatch.
@@ -326,7 +327,8 @@ void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
     }
 }
 
-/// Special version of WorldRouter::deliverTo() for delete ops.
+/// \brief Special version of WorldRouter::deliverTo() for delete ops.
+///
 /// Delete is special. It causes the target to be removed, but
 /// we need to handle the responses first. To prevent a tight loop,
 /// we do not attempt to immediatly handle the response to a delete op
@@ -343,6 +345,7 @@ void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
             // If this is a delete, queue as normal to avoid a recursive loop
             debug(std::cerr << "Handling delete response to delete"
                             << std::endl << std::flush;);
+            log(WARNING, "Response to Delete op is another Delete.");
             message(newOp, e);
         } else {
             // Other ops we dispatch immediatly before deleting the source

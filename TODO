@@ -34,10 +34,6 @@ It might make sense to keep a pointer to the entity an operation is from
 in the queue, if its available at the point when we store it. How do we
 then make sure we don't hold bad references?
 
-Change addToObject into addToMessage
-
-Sort out removing things from contains in MemMap.
-
 Report error properlly in MemEntity when clock skew is detected.
 
 Try and avoid removing stuff from the mind as soon as its been added. Perhaps

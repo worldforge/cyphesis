@@ -1,5 +1,9 @@
 2004-09-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Correct some comments.
+
+2004-09-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp, rulesets/Thing.h, rulesets/Entity.h,
 	  rulesets/Entity.cpp, rulesets/Creator.h, rulesets/Creator.cpp,
 	  rulesets/Character.h, rulesets/Character.cpp: Modify
