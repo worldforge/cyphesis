@@ -1,3 +1,7 @@
+2004-09-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* Fix a couple of autoconf macros to stop them from spitting errors.
+
 2004-09-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Add terrain init to default 
