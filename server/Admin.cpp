@@ -93,7 +93,7 @@ OpVector Admin::GetOperation(const Get & op)
     }
     Info * info = new Info(Info::Instantiate());
     if (objtype == "object") {
-        const BaseDict & OOGDict = connection->server.world.server.getObjects();
+        const BaseDict & OOGDict = connection->server.getObjects();
         BaseDict::const_iterator J = OOGDict.find(id);
         const EntityDict & worldDict = connection->server.world.getObjects();
         EntityDict::const_iterator K = worldDict.find(id);

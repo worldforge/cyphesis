@@ -12,7 +12,6 @@
 
 class WorldRouter;
 class Lobby;
-class CommServer;
 
 class ServerRouting : public OOGThing {
   private:

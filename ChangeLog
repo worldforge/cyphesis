@@ -1,3 +1,8 @@
+2003-03-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Admin.cpp, server/CommClient.h, server/ServerRouting.h:
+	  Small cleanups.
+
 2003-02-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* Clean up pkgconfig checks.

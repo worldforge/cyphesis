@@ -21,7 +21,6 @@ namespace Atlas {
   }
 }
 
-class CommServer;
 class Connection;
 
 class CommClient : public Atlas::Objects::Decoder, public CommSocket {
