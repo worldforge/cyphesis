@@ -1,3 +1,7 @@
+Currently no mechanism to inform client/mind that the ID they just
+specified is gone. Need to think of something, and make sure mind
+deals correctly.
+
 Can Property mechanism be used to handle raw Python data as properties?
 
 Property::add() is quite often just:
