@@ -2,11 +2,11 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 class Knowledge:
-    def __init__(self, place={}, location={}, goal={}, importance={}):
-        self.place=place
-        self.location=location
-        self.goal=goal
-        self.importance=importance
+    def __init__(self):
+        self.place={}
+        self.location={}
+        self.goal={}
+        self.importance={}
     def add(self, what, key, value):
         if not hasattr(self, what):
             setattr(self, what, {})

@@ -44,7 +44,7 @@ class MemMap {
   public:
     explicit MemMap(Script *& s);
 
-    bool find(const std::string & id) {
+    bool find(const std::string & id) const {
         return (m_entities.find(id) != m_entities.end());
     }
 
