@@ -1,3 +1,7 @@
+mind.things in NPCMind seems to be completely based on the name attribute,
+though it seems like it would make more sense for it to use type some of
+the time.
+
 Each entity could have a Mode object which controls how its movement/position
 is simulated, including the effect of gravity etc. This would be associated
 with a mode string.

@@ -300,7 +300,10 @@ class NPCMind(BaseMind):
         what=thing.as_entity()
         ent = Entity(description=desc, what=what)
         self.send(Operation("thought",ent))
-        dictlist.add_value(self.things,thing.name,thing)
+        name=thing.name
+        if not name or name=='':
+            name=thing.type[0]
+        dictlist.add_value(self.things,name,thing)
         log.debug(3,"\tafter: "+str(self.things))
     def find_thing(self, thing):
         if StringType==type(thing):

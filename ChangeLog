@@ -1,5 +1,10 @@
 2004-11-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/NPCMind.py: Use primary type as key in
+	  mind.things when name is not useful.
+
+2004-11-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/move.py:
 	  Try and make some of the move goals a bit more legible.
 
