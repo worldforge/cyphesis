@@ -1,5 +1,23 @@
 2002-07-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp, client/CommClient.h, client/CommClient.cpp: Fixed
+	  up client code so it does not rely on username being the same as
+	  account id.
+
+	* tools/cycmd.cpp: Added look and logout commands to administrate
+	  users logged in.
+
+	* server/server.cpp: Fixed metaserver code so it only sends
+	  termination packet if metaserver functionality is enabled.
+
+	* server/Connection.h, server/Connection.cpp, server/CommServer.cpp,
+	  server/CommClient.h, server/Account.cpp: Fix logouts so they
+	  do cause the client connection to be closed.
+
+	* Finished switch from Fire operation to Burn.
+
+2002-07-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* Change fire operation to burn operation, to avoid clash with
 	  fire entity. Change currently incomplete.
 

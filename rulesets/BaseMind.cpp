@@ -217,7 +217,7 @@ OpVector BaseMind::sightEatOperation(const Sight & op, Eat & sub_op)
 OpVector BaseMind::sightBurnOperation(const Sight & op, Burn & sub_op)
 {
     OpVector res;
-    script->Operation("sight_fire", op, res, &sub_op);
+    script->Operation("sight_burn", op, res, &sub_op);
     return res;
 }
 
@@ -342,7 +342,7 @@ OpVector BaseMind::soundEatOperation(const Sound & op, Eat & sub_op)
 OpVector BaseMind::soundBurnOperation(const Sound & op, Burn & sub_op)
 {
     OpVector res;
-    script->Operation("sound_fire", op, res, &sub_op);
+    script->Operation("sound_burn", op, res, &sub_op);
     return res;
 }
 

@@ -27,9 +27,9 @@ class Fire(Thing):
            self.world==self.location.parent:
             return Operation("delete",Entity(self.id),to=self)
 
-        #Send fire operation to parent container
+        #Send burn operation to parent container
         self_ent=Entity(self.id,status=self.status)
-        opFire=Operation("fire",self_ent,to=self.location.parent)
+        opBurn=Operation("burn",self_ent,to=self.location.parent)
         if self.status<0.2:
             self.status=self.status-0.001
         else:
@@ -43,7 +43,7 @@ class Fire(Thing):
         #and call this method later
         opTick=Operation("tick",to=self)
         opTick.time.sadd=const.basic_tick*4
-        return Message(opFire,Operation("sight",opFire,to='all'),opTick,opSet)
+        return Message(opBurn,Operation("sight",opBurn,to='all'),opTick,opSet)
     def nourish_operation(self, op):
         #Increase fire
         inc=op[0].mass

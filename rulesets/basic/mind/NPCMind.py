@@ -105,18 +105,18 @@ class NPCMind(BaseMind):
                 self.money_transfers.append([op.from_.id, 1])
                 return Operation("action", Entity(self.id, action="sell"),to=self)
     #replaced with dynamically added add_extinguish_fire -goal
-    #ie: NPC is first teached that when it sees "sight_fire" it needs to
+    #ie: NPC is first teached that when it sees "sight_burn" it needs to
     #execute above goal, which then adds extinguish_fire goal and executes it
-##     def sight_fire_operation(self, original_op, op):
+##     def sight_burn_operation(self, original_op, op):
 ##         #CHEAT!:
 ##         fire=self.map.get(op[0].id)
 ##         if fire:
-##             log.debug(2,"sight_fire_operation: found fire obj")
+##             log.debug(2,"sight_burn_operation: found fire obj")
 ##             if not self.goals or self.goals[0].__class__.__name__!="extinguish_fire":
-##                 log.debug(2,"sight_fire_operation: added extinguish_fire goal")
+##                 log.debug(2,"sight_burn_operation: added extinguish_fire goal")
 ##                 goal=mind.goals.humanoid.fire.extinguish_fire(fire)
 ##                 self.goals.insert(0,goal)
-##         log.debug(2,"sight_fire_operation: add goal updating")
+##         log.debug(2,"sight_burn_operation: add goal updating")
     ########## Talk operations
     def admin_sound(self, op):
         return op[0].from_.id==self.id

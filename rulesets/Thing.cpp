@@ -35,7 +35,7 @@ Thing::Thing()
     subscribe("action", OP_ACTION);
     subscribe("create", OP_CREATE);
     subscribe("delete", OP_DELETE);
-    subscribe("fire", OP_FIRE);
+    subscribe("burn", OP_BURN);
     subscribe("move", OP_MOVE);
     subscribe("set", OP_SET);
     subscribe("look", OP_LOOK);
@@ -164,7 +164,7 @@ OpVector Thing::DeleteOperation(const Delete & op)
 OpVector Thing::BurnOperation(const Burn & op)
 {
     OpVector res;
-    if (script->Operation("fire", op, res) != 0) {
+    if (script->Operation("burn", op, res) != 0) {
         return res;
     }
     Object::MapType::iterator I = attributes.find("burn_speed");

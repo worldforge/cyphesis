@@ -215,7 +215,9 @@ int main(int argc, char ** argv)
     // by the game has been done before exit flag was set.
     log(NOTICE, "Performing clean shutdown...");
 
-    s.metaserverTerminate();
+    if (use_metaserver) {
+        s.metaserverTerminate();
+    }
 
     } // close scope of CommServer, which cause the destruction of the
       // server and world objects, and the entire world contents

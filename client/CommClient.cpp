@@ -47,6 +47,13 @@ CommClient::createPlayer(const std::string & name,
 
     Object::MapType ent = connection.getReply();
 
+    Object::MapType::const_iterator I = ent.find("id");
+    if (I == ent.end() || !I->second.IsString()) {
+        std::cerr << "ERROR: Logged in, but account has no id" << std::endl
+                  << std::flush;
+    } else {
+        playerId = I->second.AsString();
+    }
     //if (ent.find("characters") != ent.end()) {
     //}
 
@@ -60,7 +67,7 @@ CreatorClient * CommClient::createCharacter(const std::string & type)
     character["parents"] = Object::ListType(1,type);
 
     Create createOp=Create::Instantiate();
-    createOp.SetFrom(playerName);
+    createOp.SetFrom(playerId);
     createOp.SetArgs(Object::ListType(1,character));
     send(createOp);
 

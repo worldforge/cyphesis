@@ -284,7 +284,7 @@ OpVector Entity::EatOperation(const Eat & op)
 OpVector Entity::BurnOperation(const Burn & op)
 {
     OpVector res;
-    script->Operation("fire", op, res);
+    script->Operation("burn", op, res);
     return res;
 }
 

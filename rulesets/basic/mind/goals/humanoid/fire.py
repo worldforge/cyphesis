@@ -25,5 +25,5 @@ class add_extinguish_fire(add_unique_goal_by_perception):
     def __init__(self, desc="add extinguish fire goal"):
         add_unique_goal_by_perception.__init__(self,
                                                extinguish_fire,
-                                               trigger="sight_fire",
+                                               trigger="sight_burn",
                                                desc=desc)

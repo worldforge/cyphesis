@@ -99,7 +99,8 @@ OpVector Account::LogoutOperation(const Logout & op)
     info.SetFrom(getId());
     info.SetTo(getId());
     connection->send(info);
-    connection->destroy();
+    connection->close();
+    
     return OpVector();
 }
 

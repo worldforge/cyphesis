@@ -56,7 +56,7 @@ OpVector Food::EatOperation(const Eat & op)
 OpVector Food::BurnOperation(const Burn & op)
 {
     OpVector res;
-    if (script->Operation("fire", op, res) != 0) {
+    if (script->Operation("burn", op, res) != 0) {
         return res;
     }
     double cooked = 0;

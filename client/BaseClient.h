@@ -17,6 +17,7 @@ class CommClient : public BaseEntity {
     CreatorClient * character;
     Atlas::Message::Object::MapType player;
     std::string playerName;
+    std::string playerId;
 
   public:
     CommClient();

@@ -10,11 +10,11 @@ class Campfire(Thing):
     def __init__(self, **kw):
         self.base_init(kw)
         set_kw(self,kw,"mass",5)
-    def fire_operation(self, op):
+    def burn_operation(self, op):
         ret=Message()
         for fuel in self.contains:
             if hasattr(fuel,"burn_speed"):
-                ret.append(Operation("fire",op[0],to=fuel))
+                ret.append(Operation("burn",op[0],to=fuel))
         if op[0].status>1.0:
             #to_=self.world.get_object(op[0].id)
             to_=op[0].id

@@ -724,7 +724,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         op->operation = new Sight(Sight::Instantiate());
     } else if (strcmp(type, "set") == 0) {
         op->operation = new Set(Set::Instantiate());
-    } else if (strcmp(type, "fire") == 0) {
+    } else if (strcmp(type, "burn") == 0) {
         op->operation = new Burn(Burn::Instantiate());
     } else if (strcmp(type, "action") == 0) {
         op->operation = new Action(Action::Instantiate());

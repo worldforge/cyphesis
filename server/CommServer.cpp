@@ -205,7 +205,7 @@ void CommServer::loop()
            continue;
        }
        if (FD_ISSET(client->getFd(), &sock_fds)) {
-           if (client->peek() > -1) {
+           if (client->peek() != EOF) {
                if (client->read()) {
                    debug(std::cout << "Removing client due to failed negotiation" << std::endl << std::flush;);
                    obsoleteConnections.insert(client);

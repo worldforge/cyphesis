@@ -66,7 +66,7 @@ void Connection::destroy()
     // Once we are obsolete, ExternalMind can no longer affect contents
     // of objects when we delete it.
     obsolete = true;
-    debug(std::cout << "destroy called";);
+    debug(std::cout << "destroy called" << std::endl << std::flush;);
     BaseDict::const_iterator I;
     for(I = objects.begin(); I != objects.end(); I++) {
         Account * ac = dynamic_cast<Account *>(I->second);
@@ -83,6 +83,11 @@ void Connection::destroy()
             }
         }
     }
+}
+
+void Connection::close()
+{
+    commClient.close();
 }
 
 OpVector Connection::operation(const RootOperation & op)
@@ -199,14 +204,14 @@ OpVector Connection::CreateOperation(const Create & op)
         log(WARNING, "Got Create for account with no username. Checking for old style Create.");
         I = account.find("id");
         if ((I == account.end()) || !I->second.IsString()) {
-            return error(op, "Account creation is invalid");
+            return error(op, "Account creation with no username");
         }
     }
 
     const std::string & username = I->second.AsString();
     I = account.find("password");
     if ((I == account.end()) || !I->second.IsString()) {
-        return error(op, "Account creation is invalid");
+        return error(op, "Account creation with no password");
     }
     const std::string & password = I->second.AsString();
 

@@ -74,6 +74,7 @@ class CommClient : Atlas::Objects::Decoder {
     int getFd() { return clientIos.getSocket(); }
     bool isOpen() { return clientIos.is_open(); }
     bool online() { return (encoder != NULL); }
+    void close() { clientIos.close(); }
 
     void message(const Atlas::Objects::Operation::RootOperation &);
     void setup();

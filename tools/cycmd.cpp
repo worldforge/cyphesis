@@ -18,7 +18,9 @@
 #include <Atlas/Codec.h>
 #include <Atlas/Objects/Entity/Account.h>
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Logout.h>
 #include <Atlas/Objects/Operation/Get.h>
+#include <Atlas/Objects/Operation/Look.h>
 
 #include <skstream/skstream.h>
 
@@ -39,11 +41,15 @@ using Atlas::Objects::Operation::Get;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Load;
 using Atlas::Objects::Operation::Save;
+using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Operation::Logout;
 
 static void help()
 {
     std::cout << "Cyphesis commands:" << std::endl << std::endl;
     std::cout << "    stat	Return current server status" << std::endl;
+    std::cout << "    look	Return current server lobby" << std::endl;
+    std::cout << "    logout	Log user out of server" << std::endl;
     std::cout << "    load	Load world state from database status" << std::endl;
     std::cout << "    save	Save world state to database status" << std::endl;
     std::cout << "    shutdown	Initiate server shutdown" << std::endl<< std::endl;
@@ -59,6 +65,7 @@ class Interactive : public Atlas::Objects::Decoder
     Atlas::Codec<std::iostream> * codec;
     tcp_socket_stream ios;
     std::string password;
+    std::string accountId;
     enum {
        INIT,
        LOGGED_IN
@@ -70,6 +77,7 @@ class Interactive : public Atlas::Objects::Decoder
     //void UnknownObjectArrived(const Object&);
     void ObjectArrived(const Atlas::Objects::Operation::Info&);
     void ObjectArrived(const Atlas::Objects::Operation::Error&);
+    void ObjectArrived(const Atlas::Objects::Operation::Sight&);
 
   public:
     Interactive() : error_flag(false), reply_flag(false), encoder(NULL),
@@ -132,11 +140,22 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
 {
     reply_flag = true;
     std::cout << "An info operation arrived." << std::endl << std::flush;
+    if (o.GetArgs().empty()) {
+        return;
+    }
+    const Object::MapType & ent = o.GetArgs().front().AsMap();
+    Object::MapType::const_iterator I;
     if (state == INIT) {
-        state = LOGGED_IN;
+        I = ent.find("id");
+        if (I == ent.end() || !I->second.IsString()) {
+            std::cerr << "ERROR: Response to login does not contain account id"
+                      << std::endl << std::flush;
+            
+        } else {
+            state = LOGGED_IN;
+            accountId = I->second.AsString();
+        }
     } else if (state == LOGGED_IN) {
-        const Object::MapType & ent = o.GetArgs().front().AsMap();
-        Object::MapType::const_iterator I;
         for (I = ent.begin(); I != ent.end(); I++) {
             const Object & item = I->second;
             std::cout << "    " << I->first << ":";
@@ -158,6 +177,20 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Error& o)
         std::cout << arg.AsString() << std::endl << std::flush;
     } else if (arg.IsMap()) {
         std::cout << arg.AsMap().find("message")->second.AsString() << std::endl << std::flush;
+    }
+}
+
+void Interactive::ObjectArrived(const Atlas::Objects::Operation::Sight& o)
+{
+    reply_flag = true;
+    std::cout << "An sight operation arrived." << std::endl << std::flush;
+    const Object::MapType & ent = o.GetArgs().front().AsMap();
+    Object::MapType::const_iterator I;
+    for (I = ent.begin(); I != ent.end(); I++) {
+        const Object & item = I->second;
+        std::cout << "    " << I->first << ":";
+        output(item);
+        std::cout << std::endl << std::flush;
     }
 }
 
@@ -272,7 +305,7 @@ bool Interactive::login()
     error_flag = false;
     reply_flag = false;
  
-    account.SetAttr("username", std::string("admin"));
+    account.SetAttr("username", "admin");
     account.SetAttr("password", password);
  
     Object::ListType args(1,account.AsObject());
@@ -304,13 +337,27 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
     if (cmd == "stat") {
         Get g = Get::Instantiate();
         encoder->StreamMessage(&g);
+    } else if (cmd == "look") {
+        Look l = Look::Instantiate();
+        l.SetFrom(accountId);
+        encoder->StreamMessage(&l);
+    } else if (cmd == "logout") {
+        Logout l = Logout::Instantiate();
+        l.SetFrom(accountId);
+        if (!arg.empty()) {
+            Object::MapType lmap;
+            lmap["id"] = arg;
+            l.SetArgs(Object::ListType(1,lmap));
+            reply_expected = false;
+        }
+        encoder->StreamMessage(&l);
     } else if (cmd == "load") {
         Load l = Load::Instantiate();
-        l.SetFrom("admin");
+        l.SetFrom(accountId);
         encoder->StreamMessage(&l);
     } else if (cmd == "save") {
         Save s = Save::Instantiate();
-        s.SetFrom("admin");
+        s.SetFrom(accountId);
         encoder->StreamMessage(&s);
     } else if (cmd == "help") {
         reply_expected = false;
@@ -326,7 +373,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             cmap["arg"] = arg;
         }
         g.SetArgs(Object::ListType(1,cmap));
-        g.SetFrom("admin");
+        g.SetFrom(accountId);
 
         encoder->StreamMessage(&g);
     } else {
@@ -340,7 +387,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             cmap["arg"] = arg;
         }
         s.SetArgs(Object::ListType(1,cmap));
-        s.SetFrom("admin");
+        s.SetFrom(accountId);
 
         encoder->StreamMessage(&s);
     }

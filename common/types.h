@@ -27,7 +27,7 @@ typedef enum op_no {
 	OP_DIVIDE,
 	OP_EAT,
 	OP_ERROR,
-	OP_FIRE,
+	OP_BURN,
 	OP_IMAGINARY,
 	OP_INFO,
 	OP_MOVE,
