@@ -62,13 +62,15 @@ class Inheritance {
         return I->second;
     }
 
-    void addChild(Atlas::Objects::Root * obj) {
+    bool addChild(Atlas::Objects::Root * obj) {
         const std::string & child = obj->GetId();
         const std::string & parent = obj->GetParents().front().AsString();
         if (atlasObjects.find(child) != atlasObjects.end()) {
             std::cerr << "ERROR: Installing type " << child << "(" << parent
                       << ") which was already installed" << std::endl
                       << std::flush;
+            delete obj;
+            return true;
         }
         std::map<std::string, Atlas::Objects::Root *>::iterator I = atlasObjects.find(parent);
         if (I == atlasObjects.end()) {
@@ -81,6 +83,7 @@ class Inheritance {
         }
         I->second->SetAttr("children", Atlas::Message::Object(children));
         atlasObjects[child] = obj;
+        return false;
     }
 
 };
