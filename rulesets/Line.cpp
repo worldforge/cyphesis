@@ -4,6 +4,8 @@
 
 #include "Line.h"
 
+#include <common/type_utils.h>
+
 using Atlas::Message::Object;
 
 Line::Line()
@@ -18,22 +20,24 @@ Line::~Line()
 
 const Object & Line::operator[](const std::string & aname)
 {
-    // FIXME: write code to convert vector to Object
     if (aname == "start_intersections") {
-        attributes[aname] = Object::ListType(1,0.0);
+        attributes[aname] = idListAsObject(startIntersections);
     } else if (aname == "end_intersections") {
-        attributes[aname] = Object::ListType(1,0.0);
+        attributes[aname] = idListAsObject(endIntersections);
+    } else if (aname == "coords") {
+        attributes[aname] = coordListAsObject(coords);
     }
     return Thing::operator[](aname);
 }
 
 void Line::set(const std::string & aname, const Object & attr)
 {
-    // FIXME: write code to convert Object to vector
     if ((aname == "start_intersections") && attr.IsList()) {
-        startIntersections = std::vector<Vector3D>();
+        startIntersections = idListFromAtlas(attr);
     } else if ((aname == "end_intersections") && attr.IsList()) {
-        startIntersections = std::vector<Vector3D>();
+        startIntersections = idListFromAtlas(attr);
+    } else if ((aname == "coords") && attr.IsList()) {
+        coords = coordListFromAtlas(attr);
     } else {
         Thing::set(aname, attr);
     }
@@ -42,6 +46,7 @@ void Line::set(const std::string & aname, const Object & attr)
 void Line::addToObject(Atlas::Message::Object::MapType & omap) const
 {
     // FIXME: write code to convert vector to Object
-    omap["start_intersections"] = Object::ListType(1,0.0);
-    omap["end_intersections"] = Object::ListType(1,0.0);
+    omap["start_intersections"] = idListAsObject(endIntersections);
+    omap["end_intersections"] = idListAsObject(endIntersections);
+    omap["coords"] = coordListAsObject(coords);
 }

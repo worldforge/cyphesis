@@ -14,8 +14,9 @@
 
 class Line : public Thing {
   protected:
-    std::vector<Vector3D> startIntersections;
-    std::vector<Vector3D> endIntersections;
+    IdList startIntersections;
+    IdList endIntersections;
+    CoordList coords;
 
   public:
 

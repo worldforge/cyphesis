@@ -14,7 +14,7 @@
 
 class Area : public Thing {
   protected:
-    std::vector<Vector3D> segments;
+    IdList segments;
 
   public:
 

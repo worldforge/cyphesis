@@ -1,5 +1,18 @@
 2002-03-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/types.h: Added typedefs for some sequences used in
+	  geomaps.
+
+	* common/type_utils.h:
+	  Utility functions for types in types.h, used with Atlas.
+
+	* rulesets/Line.h, rulesets/Line.cpp, rulesets/Area.h,
+	  rulesets/Area.cpp: Converted hard attributes over to the
+	  correct type, and implemented setting and observing those
+	  attributes.
+
+2002-03-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Routing.h: Map dictionary function more robust.
 
 	* rulesets/Pedestrian.cpp: Increased debugging output.

@@ -13,6 +13,7 @@
 class BaseEntity;
 class Entity;
 class Account;
+class Vector3D;
 
 typedef enum op_no {
 	OP_LOGIN,
@@ -50,6 +51,7 @@ typedef enum op_no {
 typedef std::map<std::string, BaseEntity *> dict_t;
 typedef std::list<BaseEntity *> list_t;
 typedef std::pair<std::string, BaseEntity *> idpair_t;
+typedef std::vector<std::string> IdList;
 
 typedef std::map<std::string, Entity *> edict_t;
 typedef std::list<Entity *> elist_t;
@@ -59,5 +61,8 @@ typedef std::list<Account *> alist_t;
 
 typedef std::vector<Atlas::Objects::Operation::RootOperation *> oplist;
 typedef std::list<Atlas::Objects::Operation::RootOperation *> opqueue;
+
+typedef std::vector<Vector3D> CoordList;
+
 
 #endif // TYPES_H
