@@ -1,7 +1,8 @@
 2004-11-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp, rulesets/EntityProperties.cpp,
-	  rulesets/Thing.cpp: Use pre-increment in for loops.
+	  rulesets/Py_Map.cpp, rulesets/Thing.cpp: Use pre-increment in for
+	  loops.
 
 	* server/WorldRouter.cpp: Optimise inserting ops into the queue.
 
