@@ -19,3 +19,10 @@ useaiclient="false"
 aiaccount="ai"
 # Load world objects from the database on startup
 loadonstartup="true"
+# Database configuration
+# Do not specify a host, unless it is something other than localhost
+# dbserver = "darkstar"
+# Name of the database in the rdbms
+dbname = "cyphesis"
+# Name of the database user in the rdbms
+dbuser = "cyphesis"
