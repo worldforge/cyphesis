@@ -1,3 +1,8 @@
+2005-04-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac, autopackage/default.apspec.in: First attempt at a
+	  package spec for autopackage.
+
 2005-03-31  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac, common/Makefile.am: Fix paths so code still builds

@@ -1,0 +1,56 @@
+# -*-shell-script-*-
+
+[Meta]
+RootName: @worldforge.org/cyphesis:$SOFTWAREVERSION
+DisplayName: Cyphesis
+ShortName: cyphesis
+Maintainer: Al Riddoch <alriddoch@zepler.org>
+Packager: Al Riddoch <alriddoch@zepler.org>
+Summary: Cyphesis is a simple MMORPG server
+URL: http://www.worldforge.org/dev/eng/servers/cyphesis
+License: GNU General Public License, Version 2
+SoftwareVersion: @VERSION@
+AutopackageTarget: 1.0
+
+# Only uncomment InterfaceVersion if your package exposes interfaces to other software,
+# for instance if it includes DSOs or python/perl modules. See the developer guide for more info,
+# or ask on autopackage-dev if you don't understand interface versioning in autopackage.
+#
+# InterfaceVersion: 0.0
+
+[Description]
+Cyphesis is a very simple world simulator. NPCs that do things according to
+rules. They have minds with simple input and output. They can
+use/move/make things and have simple discussion. They can deduce
+simple things (like where I can get these things and where I should
+be). They have simple memory and use it too. They can have goals (like
+build home for me or go to dinner).
+This package includes the rules data, scripts and map data required for the
+Mason game. Use this package if you intend to run an Mason server.
+
+[BuildPrepare]
+export CC=gcc
+export CXX=g++
+prepareBuild --enable-static
+
+[BuildUnprepare]
+unprepareBuild
+
+[Imports]
+echo '*' | import
+
+[Prepare]
+# Dependency checking
+# require @whatever.you/need 1.0
+
+[Install]
+# Put your installation script here
+installExe bin/*
+installMan 1 man/man*/*
+copyFiles etc/cyphesis "$PREFIX/etc"
+installData share/cyphesis
+mkdirs "$PREFIX/var/tmp"
+
+[Uninstall]
+# Usually just the following line is enough to uninstall everything
+uninstallFromLog

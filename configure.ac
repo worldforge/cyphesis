@@ -264,4 +264,5 @@ AC_OUTPUT([
     data/Makefile
     tests/Makefile
     man/Makefile
+    autopackage/default.apspec
 ], [chmod +x cyphesis-config])
