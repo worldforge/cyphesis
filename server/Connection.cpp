@@ -210,15 +210,23 @@ oplist Connection::LogoutOperation(const Logout & op)
     const Object & account = op.GetArgs().front();
     
     if (account.IsMap()) {
-        const std::string & account_id = account.AsMap().find("id")->second.AsString();
-        // const std::string & password = account.AsMap().find("password")->second.AsString();
-        Player * player = (Player *)server.getObject(account_id);
-        if (player) {
-            Logout l = op;
-            l.SetFrom(player->getId());
-            debug(cout << "Logout without from. Using " << player->getId() << " instead." << endl << flush;);
-            operation(l);
+        Object::MapType::const_iterator I = account.AsMap().find("id");
+        if ((I == account.AsMap().end()) || (!I->second.IsString())) {
+            return error(op, "No account id given");
         }
+        const std::string & account_id = I->second.AsString();
+        I = account.AsMap().find("password");
+        if ((I == account.AsMap().end()) || (!I->second.IsString())) {
+            return error(op, "No account password given");
+        }
+        const std::string & password = I->second.AsString();
+        Account * player = (Account *)server.getObject(account_id);
+        if ((!player) || (password != player->password)) {
+            return error(op, "Logout failed");
+        }
+        Logout l = op;
+        l.SetFrom(player->getId());
+        operation(l);
     }
     return oplist();
 }
@@ -236,7 +244,7 @@ oplist Connection::GetOperation(const Get & op)
         debug(cout << "Replying to empty get" << endl << flush;);
     } else {
         Object::MapType::const_iterator I = args.front().AsMap().find("id");
-        if (I == args.front().AsMap().end()) {
+        if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
             return error(op, "Type definition requested with no id");
         }
         const std::string & id = I->second.AsString();

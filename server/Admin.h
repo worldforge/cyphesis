@@ -18,6 +18,7 @@ class Admin : public Account {
                              const std::string & passwd);
     virtual ~Admin();
 
+    virtual oplist LogoutOperation(const Logout & op);
     virtual oplist LoadOperation(const Load & op);
     virtual oplist SaveOperation(const Save & op);
     virtual oplist GetOperation(const Get & op);

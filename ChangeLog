@@ -1,3 +1,14 @@
+2001-11-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.cpp: Toughened up Logout handling, and made
+	  type info Get handling more robust.
+
+	* server/Admin.cpp, server/Admin.h: Added capability for admin to
+	  forcefully logout users.
+
+	* server/Account.cpp: Made handling of OOG Look ops more inline with
+	  Atlas conventions, made args handling more robust.
+
 2001-11-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/server.cpp, server/Admin.cpp, rulesets/EntityFactory.h,

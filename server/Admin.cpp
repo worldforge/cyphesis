@@ -2,9 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Set.h>
-#include <Atlas/Objects/Operation/Get.h>
 #include <Atlas/Objects/Operation/Info.h>
+#include <Atlas/Objects/Operation/Logout.h>
 
 #include <common/Load.h>
 #include <common/Save.h>
@@ -32,6 +31,32 @@ Admin::~Admin()
 
 oplist Admin::characterError(const Create &, const Object::MapType &) const {
     return oplist();
+}
+
+oplist Admin::LogoutOperation(const Logout & op)
+{
+    const Object::ListType & args = op.GetArgs();
+    
+    if (args.empty()) {
+        return Account::LogoutOperation(op);
+    } else {
+        Object::MapType::const_iterator I = args.front().AsMap().find("id");
+        if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
+            return error(op, "No account id given");
+        }
+        if (connection == NULL) {
+            return error(op, "Disconnected admin account handling explicit logout");
+        }
+        const std::string & account_id = I->second.AsString();
+        if (account_id == getId()) {
+           return Account::LogoutOperation(op);
+        }
+        BaseEntity * player = connection->server.getObject(account_id);
+        if (!player) {
+            return error(op, "Logout failed");
+        }
+        player->operation(op);
+    }
 }
 
 oplist Admin::SaveOperation(const Save & op)

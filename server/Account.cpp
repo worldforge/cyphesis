@@ -174,28 +174,33 @@ oplist Account::TalkOperation(const Talk & op)
 
 oplist Account::LookOperation(const Look & op)
 {
-    const std::string & to = op.GetTo();
-    if (to.empty()) {
+    const Object::ListType & args = op.GetArgs();
+    if (args.empty()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
         s->SetArgs(Object::ListType(1,connection->server.lobby.asObject()));
         s->SetSerialno(connection->server.getSerialNo());
         return oplist(1,s);
     }
-    edict_t::const_iterator I = charactersDict.find(to);
-    if (I != charactersDict.end()) {
+    Object::MapType::const_iterator I = args.front().AsMap().find("id");
+    if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
+        return error(op, "No target for look");
+    }
+    const std::string & to = I->second.AsString();
+    edict_t::const_iterator J = charactersDict.find(to);
+    if (J != charactersDict.end()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
-        s->SetArgs(Object::ListType(1,I->second->asObject()));
+        s->SetArgs(Object::ListType(1,J->second->asObject()));
         s->SetSerialno(connection->server.getSerialNo());
         return oplist(1,s);
     }
     const adict_t & accounts = connection->server.lobby.getAccounts();
-    adict_t::const_iterator J = accounts.find(to);
-    if (J != accounts.end()) {
+    adict_t::const_iterator K = accounts.find(to);
+    if (K != accounts.end()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
-        s->SetArgs(Object::ListType(1,J->second->asObject()));
+        s->SetArgs(Object::ListType(1,K->second->asObject()));
         s->SetSerialno(connection->server.getSerialNo());
         return oplist(1,s);
     }
