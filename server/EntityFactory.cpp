@@ -39,8 +39,6 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
              m_eft(new PersistantThingFactory<Entity>())
 {
     // This class can only have one instance, so a Factory is not installed
-    // FIXME Add a factory in here so we have persist the world properlly
-
     PersistantThingFactory<World> * wft = new PersistantThingFactory<World>();
     installFactory("game_entity", "world", wft);
     wft->m_p.persist((World &)m_world.gameWorld);
@@ -66,7 +64,6 @@ Entity * EntityFactory::newEntity(const std::string & id,
                                   const std::string & type,
                                   const Fragment::MapType & entmap)
 {
-    // FIXME Re-write to use persistant stuff
     Entity * thing = 0;
     Fragment::MapType attributes;
     FactoryDict::const_iterator I = factories.find(type);

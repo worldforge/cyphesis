@@ -1,5 +1,15 @@
 2003-01-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* mason.xml, rulesets/mason/world/objects/outdoor/Campfire.py:
+	  Add three missing rules.
+
+	* server/EntityFactory.cpp: Remove some old obsolete FIXMEs.
+
+	* server/Restoration.cpp: Remove redundant extra connection of
+	  world persistor.
+
+2003-01-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp, common/Database.h: Add functions for removing
 	  relation rows. Modify entity select method to handle an empty loc
 	  correctly.

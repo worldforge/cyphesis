@@ -199,9 +199,6 @@ void Restoration::restoreChildren(Entity * loc)
 
 void Restoration::read()
 {
-    Restorer<World> & world = (Restorer<World> &)server.world.gameWorld;
-    Restorer<World>::m_persist.hookup(world);
-
     DatabaseResult res = database.selectOnlyByLoc("", "world");
     if (res.error()) {
         log(ERROR, "Database error retrieving root world.");
@@ -236,6 +233,7 @@ void Restoration::read()
 #else
     // Fix me - restore attributes of the gameWorld object itself.
     DatabaseResult::const_iterator I = res.begin();
+    Restorer<World> & world = (Restorer<World> &)server.world.gameWorld;
     world.populate(I);
     restoreChildren(&server.world.gameWorld);
 #endif

@@ -322,6 +322,29 @@
     </map>
   </map>
 
+  <map name="boundary">
+    <string name="parent">thing</string>
+    <map name="attributes">
+    </map>
+  </map>
+
+  <map name="hall">
+    <string name="parent">structure</string>
+    <map name="attributes">
+    </map>
+  </map>
+
+  <map name="campfire">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="mass">5</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.outdoor.Campfire</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
   <map name="settler">
     <string name="parent">character</string>
     <int name="playable">1</int>
