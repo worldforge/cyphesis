@@ -265,7 +265,7 @@ inline void CommServer::idle()
 {
     static time_t ltime = -1;
     time_t ctime = time(NULL);
-    if ((ctime > (ltime + 5)) && use_metaserver) {
+    if ((ctime > (ltime + 5 * 60)) && use_metaserver) {
         cout << "Sending keepalive" << endl << flush;
         ltime = ctime;
         metaserver_keepalive();

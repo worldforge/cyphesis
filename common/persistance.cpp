@@ -3,7 +3,7 @@
 // Copyright (C) 2000 Alistair Riddoch
 
 #include <fstream.h>
-#include <strstream>
+// #include <strstream>
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -11,10 +11,20 @@
 #include <Atlas/Codecs/XML.h>
 
 #include <server/Admin.h>
+#include <server/Player.h>
 
 #include <config.h>
 
 #include "persistance.h"
+
+// It seems that gcc does not yet include sstream.h
+// Included is a version written explicitly for gcc, which will be used
+// if the header is not present.
+#ifdef HAVE_SSTREAM_H
+#include <sstream.h>
+#else
+#include "sstream.h"
+#endif
 
 Persistance * Persistance::m_instance = NULL;
 bool Persistance::restricted = false;
@@ -74,15 +84,40 @@ Account * Persistance::load_admin_account()
     Account * adm;
     if ((adm = p->getAccount("admin")) == NULL) {
         adm = new Admin(NULL, "admin", "test");
-        save_admin_account(adm);
         p->putAccount(adm);
     }
+    save_admin_account(adm);
     return adm;
+}
+
+bool Persistance::findAccount(const std::string & name)
+{
+    Atlas::Message::Object account;
+    return getObject(account_db, name.c_str(), account);
 }
 
 Account * Persistance::getAccount(const std::string & name)
 {
-    return NULL;
+    Atlas::Message::Object account;
+    if (!getObject(account_db, name.c_str(), account)) {
+        return NULL;
+    }
+    Atlas::Message::Object::MapType acmap = account.AsMap();
+    if ((acmap.find("id")==acmap.end())||(acmap.find("password")==acmap.end())){
+        cerr << "Database account entry " << name
+             << " is missing essential fields." << endl << flush;
+        return NULL;
+    }
+    Atlas::Message::Object & acn = acmap["id"], acp = acmap["password"];
+    if (!acn.IsString() || !acp.IsString()) {
+        cerr << "Database account entry " << name << " is corrupt."
+             << endl << flush;
+        return NULL;
+    }
+    if (acn.AsString() == "admin") {
+        return new Admin(NULL, acn.AsString(), acp.AsString());
+    }
+    return new Player(NULL, acn.AsString(), acp.AsString());
 }
 
 void Persistance::putAccount(const Account * ac)
@@ -90,16 +125,59 @@ void Persistance::putAccount(const Account * ac)
     putObject(account_db, ac->asObject(), ac->fullid.c_str());
 }
 
-Atlas::Message::Object Persistance::getObject(Db & db, const char * key)
+bool Persistance::getObject(Db & db, const char * keystr,
+                            Atlas::Message::Object & o)
 {
-    // FIXME
-    return Atlas::Message::Object();
+    Dbt key, data;
+
+    key.set_data((void*)keystr);
+    key.set_size(strlen(keystr) + 1);
+
+    int res = db.get(NULL, &key, &data, 0);
+
+    if (res == DB_NOTFOUND) {
+        cout << "No entry for " << keystr << " in database" << endl << flush;
+        return false;
+    } else if (res != 0) {
+        cerr << "Error accessing database" << endl << flush;
+        return false;
+    }
+
+
+    char * entry = (char *)data.get_data();
+
+    cout << "Got record " << keystr << " from database, length "
+         << strlen(entry) << "," << data.get_size() << "\"" 
+         << entry << "\"" << endl << flush;
+
+    if (strlen(entry) != (data.get_size() - 1)) {
+        cerr << "Database may be corrupt, aborting fetch" << endl << flush;
+        return false;
+    }
+    
+    std::stringstream str(string("<atlas>") + string(entry));
+
+    Atlas::Codecs::XML codec(str, &m_d);
+    Atlas::Message::Encoder enc(&codec);
+
+    m_d.get();
+
+    codec.Poll();
+
+    if (!m_d.check()) {
+        cerr << "Database entry for " << keystr
+             << " does not appear to be decodable" << endl << flush;
+        return false;
+    }
+    
+    o = m_d.get();
+    return true;
 }
 
 bool Persistance::putObject(Db & db, const Atlas::Message::Object & o,
                             const char * keystr)
 {
-    std::strstream str;
+    std::stringstream str;
 
     Atlas::Codecs::XML codec(str, &m_d);
     Atlas::Message::Encoder enc(&codec);
@@ -111,8 +189,8 @@ bool Persistance::putObject(Db & db, const Atlas::Message::Object & o,
     key.set_data((void*)keystr);
     key.set_size(strlen(keystr) + 1);
 
-    data.set_data((void*)str.str());
-    data.set_size(str.pcount() + 1);
+    data.set_data((void*)str.str().c_str());
+    data.set_size(str.str().size() + 1);
 
     int err;
     if ((err = db.put(NULL, &key, &data, 0)) != 0) {

@@ -8,4 +8,7 @@ libcommon_a_SOURCES = const.cpp const.h \
                 WorldInfo.cpp WorldInfo.h \
 		BaseEntity.cpp BaseEntity.h \
 		Chop.h Cut.h Eat.h Fire.h Load.h \
-		Nourish.h Save.h Setup.h Tick.h
+		Nourish.h Save.h Setup.h Tick.h \
+		sstream.h
+
+EXTRA_DIST = sstream.cc

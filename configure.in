@@ -152,6 +152,7 @@ AC_CHECK_LIB(sigc,main)
 AC_CHECK_LIB(varconf,main)
 AC_CHECK_LIB(db,db_create)
 AC_CHECK_LIB(db_cxx,main)
+AC_CHECK_HEADERS(sstream.h)
 
 dnl Generate files
 AC_OUTPUT([

@@ -1,5 +1,26 @@
 2001-03-15  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* server/server.cpp: Increased time between pings to metaserver
+	  to 5 minutes instead of 5 seconds.
+
+	* common/persistance.*: Implemented de-serialisation of database
+	  objects, and added the necessary code for pulling accounts out
+	  of the database.
+
+	* common/sstream.*: Added an implementation of stringstream which
+	  is the preferred ANSI form of strstream, but is missing from
+	  the GNU std C++ library.
+
+	* configure.in: Added check for system sstream.h, which falls
+	  back to using version included.
+
+	* server/Connection.cpp: Check for account in database when
+	  user tries to create new account.
+
+	* tools/cypasswd.cpp: Use stringstream instead of strstream.
+
+2001-03-15  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* common/persistance.*: Added restricted mode set by config file,
 	  which prevents users from being able to create accounts.
 

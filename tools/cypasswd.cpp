@@ -12,7 +12,13 @@
 #include <db3/db_cxx.h>
 
 #include <string>
-#include <strstream>
+
+#ifdef HAVE_SSTREAM_H
+#include <sstream.h>
+#else
+#include "sstream.h"
+#endif
+
 
 #include <signal.h>
 
@@ -43,7 +49,7 @@ void usage(char * n)
 void acput(Db & db, const string & name, const string & password)
 {
     Decoder dec;
-    std::strstream str;
+    std::stringstream str;
     Atlas::Codecs::XML codec(str, &dec);
     Atlas::Message::Encoder enc(&codec);
 
@@ -54,7 +60,7 @@ void acput(Db & db, const string & name, const string & password)
 
     Dbt key, data;
     key = Dbt((void*)name.c_str(), name.size() + 1);
-    data = Dbt((void*)str.str(), str.pcount() + 1);
+    data = Dbt((void*)str.str().c_str(), str.str().size() + 1);
     db.put(NULL, &key, &data, 0);
 }
 

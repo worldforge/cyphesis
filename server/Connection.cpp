@@ -147,7 +147,7 @@ oplist Connection::Operation(const Create & op)
         string password = account.AsMap().find("password")->second.AsString();
 
         if ((NULL==server->get_object(account_id)) && 
-            (NULL==Persistance::instance()->getAccount(account_id)) &&
+            (!Persistance::instance()->findAccount(account_id)) &&
             (account_id.size() != 0) && (password.size() != 0)) {
             Account * player = add_player(account_id, password);
             Persistance::instance()->putAccount(player);

@@ -14,7 +14,17 @@ class Account;
 #include <Atlas/Message/DecoderBase.h>
 
 class Decoder : public Atlas::Message::DecoderBase {
-    virtual void ObjectArrived(const Atlas::Message::Object& obj) { }
+    virtual void ObjectArrived(const Atlas::Message::Object& obj) {
+        cout << "GOT OBJECT" << endl << flush;
+        m_check = true;
+        m_obj = obj;
+    }
+    bool m_check;
+    Atlas::Message::Object m_obj;
+  public:
+    Decoder() : m_check (false) { }
+    bool check() const { return m_check; }
+    const Atlas::Message::Object & get() { m_check = false; return m_obj; }
 };
 #endif
 
@@ -29,7 +39,7 @@ class Persistance {
     Decoder m_d;
 
     bool putObject(Db &, const Atlas::Message::Object &, const char * key);
-    Atlas::Message::Object getObject(Db &, const char * key);
+    bool getObject(Db &, const char * key, Atlas::Message::Object &);
 #endif
   public:
     static Account * load_admin_account();
@@ -40,6 +50,7 @@ class Persistance {
 
     static bool restricted;
 
+    bool findAccount(const std::string &);
     Account * getAccount(const std::string &);
     void putAccount(const Account *);
 };
