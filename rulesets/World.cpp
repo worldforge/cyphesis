@@ -17,6 +17,8 @@
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
 
+#include <cassert>
+
 static const bool debug_flag = false;
 
 void World::getTerrain(Element::MapType & t) const
@@ -123,6 +125,7 @@ void World::addToObject(Element::MapType & omap) const
 OpVector World::LookOperation(const Look & op)
 {
     // Let the worldrouter know we have been looked at.
+    assert(m_world != 0);
     m_world->LookOperation(op);
 
     debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);

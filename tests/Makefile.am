@@ -3,7 +3,8 @@ COMMON_TESTS = logtest inheritancetest BaseEntitytest OOGThingtest \
 
 MODULE_TESTS = Locationtest
 
-RULESETS_TESTS = Entitytest
+RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
+                 Stackabletest Structuretest Thingtest Worldtest
 
 TESTS = $(COMMON_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS)
 
@@ -53,4 +54,71 @@ Entitytest_LDADD = ../modules/Location.o ../rulesets/Entity.o \
                    ../common/BaseEntity.o ../common/log.o \
                    ../common/globals.o ../common/serialno.o \
                    ../common/custom.o ../common/operations.o
+
+Areatest_SOURCES = Areatest.cpp
+Areatest_LDADD = ../modules/Location.o ../rulesets/Area.o \
+                 ../rulesets/Entity.o ../rulesets/Thing.o \
+                 ../rulesets/Script.o ../common/inheritance.o \
+                 ../common/BaseEntity.o ../common/log.o \
+                 ../common/globals.o ../common/serialno.o \
+                 ../common/custom.o ../common/operations.o ../common/const.o
+
+Foodtest_SOURCES = Foodtest.cpp
+Foodtest_LDADD = ../modules/Location.o ../rulesets/Food.o \
+                 ../rulesets/Entity.o ../rulesets/Thing.o \
+                 ../rulesets/Script.o ../common/inheritance.o \
+                 ../common/BaseEntity.o ../common/log.o \
+                 ../common/globals.o ../common/serialno.o \
+                 ../common/custom.o ../common/operations.o ../common/const.o
+
+Linetest_SOURCES = Linetest.cpp
+Linetest_LDADD = ../modules/Location.o ../rulesets/Line.o \
+                 ../rulesets/Entity.o ../rulesets/Thing.o \
+                 ../rulesets/Script.o ../common/inheritance.o \
+                 ../common/BaseEntity.o ../common/log.o \
+                 ../common/globals.o ../common/serialno.o \
+                 ../common/custom.o ../common/operations.o ../common/const.o
+
+Planttest_SOURCES = Planttest.cpp
+Planttest_LDADD = ../modules/Location.o ../rulesets/Plant.o \
+                  ../rulesets/Entity.o ../rulesets/Thing.o \
+                  ../rulesets/Script.o ../common/inheritance.o \
+                  ../common/BaseEntity.o ../common/log.o \
+                  ../common/globals.o ../common/serialno.o \
+                  ../common/custom.o ../common/operations.o ../common/const.o
+
+Stackabletest_SOURCES = Stackabletest.cpp
+Stackabletest_LDADD = ../modules/Location.o ../rulesets/Stackable.o \
+                      ../rulesets/Entity.o ../rulesets/Thing.o \
+                      ../rulesets/Script.o ../common/inheritance.o \
+                      ../common/BaseEntity.o ../common/log.o \
+                      ../common/globals.o ../common/serialno.o \
+                      ../common/custom.o ../common/operations.o \
+                      ../common/const.o
+
+Structuretest_SOURCES = Structuretest.cpp
+Structuretest_LDADD = ../modules/Location.o \
+                      ../rulesets/Entity.o ../rulesets/Thing.o \
+                      ../rulesets/Script.o ../common/inheritance.o \
+                      ../common/BaseEntity.o ../common/log.o \
+                      ../common/globals.o ../common/serialno.o \
+                      ../common/custom.o ../common/operations.o \
+                      ../common/const.o
+
+Thingtest_SOURCES = Thingtest.cpp
+Thingtest_LDADD = ../modules/Location.o \
+                  ../rulesets/Entity.o ../rulesets/Thing.o \
+                  ../rulesets/Script.o ../common/inheritance.o \
+                  ../common/BaseEntity.o ../common/log.o \
+                  ../common/globals.o ../common/serialno.o \
+                  ../common/custom.o ../common/operations.o ../common/const.o
+
+Worldtest_SOURCES = Worldtest.cpp
+Worldtest_LDADD = ../modules/Location.o ../rulesets/World.o \
+                  ../rulesets/Entity.o ../rulesets/Thing.o \
+                  ../rulesets/Script.o ../common/inheritance.o \
+                  ../common/BaseEntity.o ../common/log.o \
+                  ../common/globals.o ../common/serialno.o \
+                  ../common/custom.o ../common/operations.o \
+                  ../common/OOGThing.o ../common/BaseWorld.o ../common/const.o
 

@@ -10,3 +10,11 @@ inheritancetest
 systemtest
 utilitytest
 Entitytest
+Areatest
+Foodtest
+Linetest
+Planttest
+Stackabletest
+Structuretest
+Thingtest
+Worldtest

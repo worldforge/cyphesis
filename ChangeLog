@@ -1,5 +1,17 @@
 2003-09-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp: Assert that world is not NULL.
+
+	* rulesets/Line.cpp: Turn off stray debugging flag.
+
+	* tests/Areatest.cpp, tests/Foodtest.cpp, tests/Linetest.cpp,
+	  tests/Planttest.cpp, tests/Stackabletest.cpp,
+	  tests/Structuretest.cpp, tests/Thingtest.cpp, tests/Worldtest.cpp:
+	  New tests for most C++ base IG classes, derived from the Entity
+	  test.
+
+2003-09-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/allOperations.h: Add a header which pulls in headers for
 	  every type of operation.
 
