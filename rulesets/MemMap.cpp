@@ -276,7 +276,7 @@ MemEntityVector MemMap::findByType(const std::string & what)
     for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
         MemEntity * item = I->second;
         debug( std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
-        if (item->getType() == what) {
+        if (item->isVisible() && item->getType() == what) {
             res.push_back(I->second);
         }
     }
@@ -290,6 +290,10 @@ MemEntityVector MemMap::findByLocation(const Location & loc, double radius)
     MemEntityVector res;
     MemEntityDict::const_iterator Iend = m_entities.end();
     for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
+        MemEntity * item = I->second;
+        if (!item->isVisible()) {
+            continue;
+        }
         const Location & oloc = I->second->m_location;
         if (!loc.isValid() || !oloc.isValid()) {
             continue;

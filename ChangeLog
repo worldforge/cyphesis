@@ -1,3 +1,8 @@
+2004-11-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/MemMap.cpp: Add checks so that only visible entities
+	  in the memory map are returned by the find function.
+
 2004-11-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommServer.h: Add a method to remove CommIdleSocket
