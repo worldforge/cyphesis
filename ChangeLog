@@ -1,4 +1,11 @@
-2005-03-19  Al Riddoch  <alriddoch@zepler.org>
+2005-03-31  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: Remove some debug output.
+
+	* rulesets/Py_Vector3D.cpp: Add error checking so that normalising
+	  a zero mangitude vector does not abort.
+
+2005-03-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* acinclude.m4, configure.ac, common/prefix.c, common/prefix.h,
 	  common/Makefile.am, common/globals.cpp, tools/Makefile.am:

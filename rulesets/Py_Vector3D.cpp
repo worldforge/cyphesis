@@ -105,7 +105,12 @@ static PyObject * Vector3D_unit_vector(PyVector3D * self)
         return NULL;
     }
     ret->coords = self->coords;
-    ret->coords.normalize();
+    WFMath::CoordType the_mag = ret->coords.mag();
+    if (!the_mag > 0) {
+        PyErr_SetString(PyExc_ZeroDivisionError, "Attempt to normalize a vector with zero magnitude");
+        return NULL;
+    }
+    ret->coords /= the_mag;
     return (PyObject *)ret;
 }
 
@@ -116,7 +121,7 @@ static PyObject *Vector3D_unit_vector_to(PyVector3D * self, PyObject * args)
         return NULL;
     }
     if (!PyVector3D_Check(other)) {
-        PyErr_SetString(PyExc_TypeError, "Can get unit vector to Vector3D");
+        PyErr_SetString(PyExc_TypeError, "Argument must be a Vector3D");
         return NULL;
     }
     PyVector3D * ret = newPyVector3D();
@@ -124,7 +129,12 @@ static PyObject *Vector3D_unit_vector_to(PyVector3D * self, PyObject * args)
         return NULL;
     }
     ret->coords = (other->coords - self->coords);
-    ret->coords.normalize();
+    WFMath::CoordType the_mag = ret->coords.mag();
+    if (!the_mag > 0) {
+        PyErr_SetString(PyExc_ZeroDivisionError, "Attempt to normalize a vector with zero magnitude");
+        return NULL;
+    }
+    ret->coords /= the_mag;
     return (PyObject *)ret;
 }
 

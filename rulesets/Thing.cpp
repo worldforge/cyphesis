@@ -288,7 +288,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     if (m_location.m_velocity.isValid() &&
         m_location.m_velocity.sqrMag() > WFMATH_EPSILON) {
-        std::cout << "Moving" << std::endl << std::flush;
         Operation * u = new Update();
         u->setFutureSeconds(consts::basic_tick);
         u->setTo(getId());
