@@ -140,7 +140,7 @@ Entity * WorldRouter::addObject(Entity * obj)
                     << std::flush;);
     obj->world = this;
     if (consts::enable_omnipresence &&
-	(obj->getAttributes().find("omnipresent") != obj->getAttributes().end())) {
+        (obj->getAttributes().find("omnipresent") != obj->getAttributes().end())) {
         omnipresentList.insert(obj);
     }
     Setup * s = new Setup(Setup::Instantiate());

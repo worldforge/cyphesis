@@ -102,21 +102,20 @@ OpVector Thing::CreateOperation(const Create & op)
             return error(op, "Entity to be created has no type");
         }
         const Fragment::ListType & parents = I->second.AsList();
-        I = ent.find("loc");
-        if ((I == ent.end()) && (location.ref != NULL)) {
+        if (parents.empty()) {
+            return error(op, "Entity to be create has empty type list");
+        }
+        if ((ent.find("loc") == ent.end()) && (location.ref != 0)) {
             ent["loc"] = location.ref->getId();
             if (ent.find("pos") == ent.end()) {
                 ent["pos"] = location.coords.asObject();
             }
         }
-        std::string type;
-        if (parents.empty()) {
-            type = "thing";
-        } else {
-            type = parents.front().AsString();
-        }
+        const std::string & type = parents.front().AsString();
         debug( std::cout << getId() << " creating " << type;);
+
         Entity * obj = world->addObject(type,ent);
+
         Create c(op);
         c.SetArgs(Fragment::ListType(1,obj->asObject()));
         RootOperation * s = new Sight(Sight::Instantiate());

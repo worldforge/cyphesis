@@ -53,7 +53,8 @@ Entity * EntityFactory::newEntity(const std::string & type,
                                   const Fragment::MapType & entmap,
                                   const EntityDict & world)
 {
-    Entity * thing = NULL;
+    // FIXME Re-write to use persistant stuff
+    Entity * thing = 0;
     Fragment::MapType attributes;
     FactoryDict::const_iterator I = factories.find(type);
     if (I != factories.end()) {
@@ -67,33 +68,29 @@ Entity * EntityFactory::newEntity(const std::string & type,
             Create_PyThing(thing, factory->script, type);
         }
     } else {
-	// This should be tolerated less
+        // This should be tolerated less
         if (type.empty()) {
-            log(NOTICE, "Empty string type passed to EntityFactory::newEntity");
+            log(ERROR, "Empty type passed to EntityFactory::newEntity");
         } else {
-            installFactory("thing", type, new ThingFactory<Thing>());
-            std::string msg = std::string("Installing patch-in factory for ") + type;
-            log(NOTICE, msg.c_str());
+            std::string msg = std::string("Unknown type ") + type + " passed to EntityFactory::newEntity";
+            log(ERROR, msg.c_str());
         }
         thing = new Thing();
     }
     debug( std::cout << "[" << type << " " << thing->getName() << "]"
                      << std::endl << std::flush;);
     thing->setType(type);
-    // I am pretty sure this name handling is redundant
-    Fragment::MapType::const_iterator K = entmap.find("name");
-    if ((K != entmap.end()) && K->second.IsString()) {
-        thing->setName(K->second.AsString());
-    } else {
-        debug( std::cout << "Got no name" << std::endl << std::flush;);
-    }
     // merge attributes from the creation op over default attributes.
-    for (K = entmap.begin(); K != entmap.end(); K++) {
+    // FIXME Is it practical to avoid this merge copy by calling merge twice?
+    // Might cause a problem with getLocation
+    Fragment::MapType::const_iterator K = entmap.begin();
+    for (; K != entmap.end(); K++) {
         attributes[K->first] = K->second;
     }
     thing->merge(attributes);
     // Get location from entity, if it is present
     thing->getLocation(attributes, world);
+    // FIXME At this point in needs to be hooked into the persistance system
     return thing;
 }
 

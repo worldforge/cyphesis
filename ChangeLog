@@ -1,5 +1,18 @@
 2002-12-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/PersistantThingFactory.h, server/PersistantThingFactory.cpp:
+	  Work in progress on code to handle creating entities to be persisted.
+
+	* server/WorldRouter.cpp: Get rid of hard tab.
+
+	* rulesets/Thing.cpp: Clean up checks on new entities.
+
+	* server/EntityFactory.cpp: Be stricter about entity classes which
+	  aren't installed properlly. Add comments about implementing
+	  persistance. Removed redundant handling of name attribute.
+
+2002-12-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp: Remove redundant includes
 
 	* tools/cycmd.cpp: Re-factor code to work non-blocking, allow
