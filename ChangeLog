@@ -1,3 +1,11 @@
+2003-12-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommPSQLSocket.h: Change database vacuum intervals to
+	  more reasonable ammounts.
+
+	* server/CommPSQLSocket.cpp: Init m_vacuumFull to false, rather
+	  than 0.
+
 2003-12-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/EntityExerciser.h: Delete all returned operations when

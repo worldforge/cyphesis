@@ -17,8 +17,8 @@ class CommPSQLSocket : public CommIdleSocket {
     time_t m_reindexTime;;
     bool m_vacuumFull;
   public:
-    static const int vacFreq = 25;
-    static const int reindexFreq = 30;
+    static const int vacFreq = 25 * 60;
+    static const int reindexFreq = 30 * 60;
 
     CommPSQLSocket(CommServer & svr, Database & db);
     virtual ~CommPSQLSocket();

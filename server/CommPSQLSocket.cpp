@@ -17,7 +17,7 @@ static const bool debug_flag = false;
 CommPSQLSocket::CommPSQLSocket(CommServer & svr, Database & db) :
                                CommIdleSocket(svr), m_db(db),
                                m_vacuumTime(0), m_reindexTime(0),
-                               m_vacuumFull(0)
+                               m_vacuumFull(false)
 {
     // This assumes the database connection is already sorted, which I think
     // is okay
