@@ -1,3 +1,6 @@
+Confirm if custom python ops in the API code are working at all.
+Also goes for stable branch.
+
 Check if -pthread arg is required to get pthread.
 
 Is socket getting opened before it will accept or negotiate?
