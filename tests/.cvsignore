@@ -9,6 +9,7 @@ OOGThingtest
 inheritancetest
 systemtest
 utilitytest
+collisiontest
 Entitytest
 Areatest
 Foodtest

@@ -1,12 +1,14 @@
 COMMON_TESTS = logtest inheritancetest BaseEntitytest OOGThingtest \
                systemtest utilitytest
 
+PHYSICS_TESTS = collisiontest
+
 MODULE_TESTS = Locationtest
 
 RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
                  Stackabletest Structuretest Thingtest Worldtest
 
-TESTS = $(COMMON_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS)
+TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS)
 
 check_PROGRAMS = $(TESTS)
 
@@ -36,6 +38,12 @@ systemtest_LDADD = ../common/system.o ../common/log.o ../common/globals.o
 
 utilitytest_SOURCES = utilitytest.cpp
 utilitytest_LDADD = ../common/utility.o
+
+# PHYSICS_TESTS
+
+collisiontest_SOURCES = collisiontest.cpp
+collisiontest_LDADD = ../common/utility.o
+
 
 # MODULE_TESTS
 
