@@ -321,7 +321,7 @@ def add_village(mapeditor):
     m=editor(mapeditor)
 
     m.make('tower',type='tower',xyz=(210,210,5))
-    m.make('gallows',type='gallows',xyz=(185,195,5))
+    m.make('gallows',type='gallows',xyz=(185,175,5))
 
     m.make('house3',type='house3',xyz=(158,150,22),orientation=directions[1])
     m.make('house3',type='house3',xyz=(158,158,22),orientation=directions[4])

@@ -97,8 +97,8 @@ OpVector Thing::CreateOperation(const Create & op)
             return error(op, "Entity to be created has no type", getId());
         }
         const Element::ListType & parents = I->second.asList();
-        if (parents.empty()) {
-            return error(op, "Entity to be create has empty type list", getId());
+        if (parents.empty() || !parents.front().isString()) {
+            return error(op, "Entity to be created has invalid type list", getId());
         }
         if ((ent.find("loc") == ent.end()) && (m_location.m_loc != 0)) {
             ent["loc"] = m_location.m_loc->getId();
@@ -240,6 +240,9 @@ OpVector Thing::MoveOperation(const Move & op)
 
     // Update pos
     m_location.m_pos.fromAtlas(I->second.asList());
+    // FIXME Quick height hack
+    m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
+                                                    m_location.m_pos);
     m_update_flags |= a_pos;
     I = ent.find("velocity");
     if (I != ent.end()) {

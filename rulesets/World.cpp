@@ -10,6 +10,7 @@
 #include "common/stringstream.h"
 
 #include <Mercator/Terrain.h>
+#include <Mercator/Segment.h>
 
 #include <wfmath/MersenneTwister.h>
 
@@ -110,6 +111,15 @@ World::World(const std::string & id) : World_parent(id),
 World::~World()
 {
     delete &m_terrain;
+}
+
+float World::getHeight(float x, float y)
+{
+    Mercator::Segment * s = m_terrain.getSegment(x, y);
+    if (!s->isValid()) {
+        s->populate();
+    }
+    return m_terrain.get(x, y);
 }
 
 bool World::get(const std::string & aname, Element & attr) const

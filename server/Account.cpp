@@ -96,11 +96,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         return 0;
     }
     debug(std::cout << "Added" << std::endl << std::flush;);
-    if (!chr->m_location.isValid()) {
-        debug(std::cout << "Setting location" << std::endl << std::flush;);
-        chr->m_location.m_loc = &world.m_gameWorld;
-        chr->m_location.m_pos = Vector3D(0, 0, 0);
-    }
+    assert(chr->m_location.isValid());
     debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
     Character * pchar = dynamic_cast<Character *>(chr);
     if (pchar != 0) {

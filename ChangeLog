@@ -1,5 +1,18 @@
 2004-06-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp, rulesets/World.h: Add accessor to get height
+	  at a particular point.
+
+	* server/Account.cpp: Remove redundant check on new character
+	  location.
+
+	* common/BaseWorld.h, server/WorldRouter.cpp, server/WorldRouter.h,
+	  rulesets/Thing.cpp: Add new function for correcting height
+	  of entities to ground level, and use it whenever new entities
+	  are created, or whenever an entity moves.
+
+2004-06-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.h, server/Admin.cpp: Add fallthrough case so
 	  that admin accounts can handle set ops the same way as player
 	  accounts do.

@@ -9,6 +9,8 @@
 
 #include "globals.h"
 
+#include "physics/Vector3D.h"
+
 #include <sigc++/signal.h>
 
 class Entity;
@@ -57,6 +59,8 @@ class BaseWorld : public OOGThing {
     virtual OpVector message(RootOperation & op, const Entity * obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;
+    virtual float constrainHeight(Entity *, const Vector3D &) = 0;
+
 
     SigC::Signal1<void, RootOperation *> Dispatching;
 };

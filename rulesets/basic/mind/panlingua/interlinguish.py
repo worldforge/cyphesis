@@ -143,14 +143,12 @@ def match_verb_subject_object_string(say):
     if m:
         verb=m.group(1)
         if vso_dict.has_key(verb):
-            print "vso"
             subject,object=m.group(2),m.group(5)
             return verb_subject_object(verb,subject,object)
     m=vspo_pattern.match(say)
     if m:
         verb=m.group(1)
         if vspo_dict.has_key(verb):
-            print "vspo"
             subject,predicate,object=m.group(2),m.group(5),m.group(6)
             return verb_subject_predicate_object(verb,subject,predicate,object)
     return None

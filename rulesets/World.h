@@ -27,6 +27,8 @@ class World : public World_parent {
     explicit World(const std::string & id);
     virtual ~World();
 
+    float getHeight(float x, float y);
+
     virtual bool get(const std::string &, Atlas::Message::Element &) const;
     virtual void set(const std::string &, const Atlas::Message::Element &);
 

@@ -116,6 +116,36 @@ inline void WorldRouter::setSerialnoOp(RootOperation & op)
     op.setSerialno(getSerialNo());
 }
 
+float WorldRouter::constrainHeight(Entity * parent, const Vector3D & pos)
+{
+    assert(parent != 0);
+    World * wrld = dynamic_cast<World*>(parent);
+    if (wrld != 0) {
+        float h = wrld->getHeight(pos.x(), pos.y());
+        debug(std::cout << "Fix height " << pos.z() << " to " << h
+                        << std::endl << std::flush;);
+        return h;
+    } else {
+        // FIXME No correction for orientation
+        const Vector3D & ppos = parent->m_location.m_pos;
+        debug(std::cout << "parent " << parent->getId() << " of type "
+                        << parent->getType() << " pos " << ppos.z()
+                        << " my pos " << pos.z()
+                        << std::endl << std::flush;);
+        float h;
+        if (parent->m_location.m_loc != 0) {
+            h = constrainHeight(parent->m_location.m_loc, pos + ppos) - ppos.z();
+            debug(std::cout << "Valid parent";);
+        } else {
+            h = constrainHeight(parent->m_location.m_loc, pos);
+            debug(std::cout << "Invalid parent";);
+        }
+        debug(std::cout << "Correcting height from " << pos.z() << " to " << h
+                        << std::endl << std::flush;);
+        return h;
+    }
+}
+
 Entity * WorldRouter::addObject(Entity * obj, bool setup)
 {
     debug(std::cout << "WorldRouter::addObject(Entity *)" << std::endl
@@ -130,6 +160,8 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
         debug(std::cout << "loc set with loc " << obj->m_location.m_loc->getId()
                         << std::endl << std::flush;);
     }
+    obj->m_location.m_pos.z() = constrainHeight(obj->m_location.m_loc,
+                                                obj->m_location.m_pos);
     bool cont_change = obj->m_location.m_loc->m_contains.empty();
     obj->m_location.m_loc->m_contains.insert(obj);
     if (cont_change) {
