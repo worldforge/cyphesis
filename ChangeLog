@@ -1,5 +1,11 @@
 2004-12-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommServer.cpp, server/CommServer.h, server/WorldRouter.cpp,
+	  server/server.cpp: Rename loop() method as poll(). Clean up some
+	  includes.
+
+2004-12-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseWorld.h, server/CommServer.cpp, server/ServerRouting.cpp,
 	  server/ServerRouting.h, server/ServerRouting_methods.h,
 	  server/WorldRouter.cpp, server/WorldRouter.h: Clean up the way the

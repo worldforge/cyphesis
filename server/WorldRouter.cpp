@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2004 Alistair Riddoch
 
 #include "WorldRouter.h"
 
@@ -11,7 +11,6 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/const.h"
-#include "common/globals.h"
 #include "common/globals.h"
 #include "common/Database.h"
 #include "common/random.h"

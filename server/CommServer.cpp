@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2004 Alistair Riddoch
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -8,20 +8,22 @@
 
 #include "CommServer.h"
 
-#include "CommClient.h"
-#include "CommMetaClient.h"
+#include "CommSocket.h"
+#include "Idle.h"
 #include "ServerRouting.h"
-#include "WorldRouter.h"
-#include "protocol_instructions.h"
 
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/BaseWorld.h"
 
 #include <iostream>
 
+extern "C" {
 #ifdef HAVE_EPOLL_CREATE
-#include <sys/epoll.h>
+    #include <sys/epoll.h>
 #endif // HAVE_EPOLL_CREATE
+    #include <sys/time.h>
+}
 
 #include <errno.h>
 
@@ -89,7 +91,7 @@ bool CommServer::idle()
 /// If the server is idle, use select() to sleep on the sockets for
 /// a short period of time. If any sockets get broken or disconnected,
 /// they are noted and closed down at the end of the process.
-void CommServer::loop()
+void CommServer::poll()
 {
     // This is the main code loop.
     // Classic select code for checking incoming data on sockets.

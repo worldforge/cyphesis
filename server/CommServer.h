@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2004 Alistair Riddoch
 
 #ifndef SERVER_COMM_SERVER_H
 #define SERVER_COMM_SERVER_H
@@ -30,9 +30,9 @@ class CommServer {
 
     bool idle();
 
-    /// Private and unimplemented to prevent slicing.
+    /// Private and unimplemented to prevent copying.
     CommServer(const CommServer &);
-    /// Private and unimplemented to prevent slicing.
+    /// Private and unimplemented to prevent copying.
     CommServer & operator=(const CommServer &);
   public:
     /// Reference to the core ServerRouting object.
@@ -41,7 +41,7 @@ class CommServer {
     explicit CommServer(ServerRouting & srv);
     ~CommServer();
 
-    void loop();
+    void poll();
     void addSocket(CommSocket * cs);
     void removeSocket(CommSocket * client);
 

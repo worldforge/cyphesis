@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2004 Alistair Riddoch
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -190,7 +190,7 @@ int main(int argc, char ** argv)
     // the code easily.
     while (!exit_flag) {
         try {
-            commServer.loop();
+            commServer.poll();
         }
         catch (...) {
             // It is hoped that commonly thrown exception, particularly
