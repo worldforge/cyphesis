@@ -1,5 +1,19 @@
 2003-09-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/systemtest.cpp: Test for signal handling, daemon
+	  related, and password encryption code.
+
+	* tests/EntityExerciser.h: Add testing dispatchers
+	  as well as simple calling the operation methods directly.
+
+	* tests/OOGThingtest.cpp: Test for OOGThing class.
+
+	* tests/BaseEntitytest.cpp, tests/inheritancetest.cpp,
+	  tests/logtest.cpp: Fix up copyright dates on recently added
+	  files.
+
+2003-09-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/inheritancetest.cpp: New unit test for inheritance code.
 
 2003-09-09  Al Riddoch  <alriddoch@zepler.org>
