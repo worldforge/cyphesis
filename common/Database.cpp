@@ -282,8 +282,8 @@ bool Database::putObject(const std::string & table,
     std::string query = std::string("INSERT INTO ") + table + " VALUES ('" + key + "', '" + str.str() + "');";
     int status = m_connection->ExecCommandOk(query.c_str());
     if (!status) {
-        std::cerr << "Failed to insert item " << key << " into " << table
-                  << " table" << std::endl << std::flush;
+        debug(std::cerr << "Failed to insert item " << key << " into " << table
+                        << " table" << std::endl << std::flush;);
         return false;
     }
     return true;
@@ -302,11 +302,12 @@ bool Database::updateObject(const std::string & table,
     enc.StreamMessage(o);
     codec.StreamEnd();
 
-    std::string query = std::string("UPDATE ") + table + " SET contents = '" + str.str() + "' WHERE id='" + key + "';";
+    std::string query = std::string("UPDATE ") + table + " SET contents = '" +
+                        str.str() + "' WHERE id='" + key + "';";
     int status = m_connection->ExecCommandOk(query.c_str());
     if (!status) {
-        std::cerr << "Failed to update item " << key << " into " << table
-                  << " table" << std::endl << std::flush;
+        debug(std::cerr << "Failed to update item " << key << " into " << table
+                        << " table" << std::endl << std::flush;);
         return false;
     }
     return true;

@@ -1,3 +1,10 @@
+2002-07-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cyloadrules.cpp: Give rules in heigher level rulesets
+	  priority over base rulesets.
+
+	* common/Database.cpp: Supress debugging output.
+
 2002-07-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Connection.cpp: Spelling errors.

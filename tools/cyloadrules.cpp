@@ -114,8 +114,8 @@ int main(int argc, char ** argv)
         f.report();
     } else {
         db.clearRules();
-        std::vector<std::string>::reverse_iterator I = rulesets.rbegin();
-        for (; I != rulesets.rend(); ++I) {
+        std::vector<std::string>::iterator I = rulesets.begin();
+        for (; I != rulesets.end(); ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
             FileDecoder f(etc_directory + "/cyphesis/" + *I + ".xml", db);
             if (!f.isOpen()) {
