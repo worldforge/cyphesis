@@ -95,6 +95,22 @@ typedef struct {
     PyObject_HEAD
 } PyLogger;
 
+static void python_log(LogLevel lvl, const char * msg)
+{
+    std::string message(msg);
+    std::string::size_type n = 0;
+    std::string::size_type p;
+    for (p = message.find_first_of('\n');
+         p != std::string::npos;
+         p = message.find_first_of('\n', n)) {
+        log(lvl, message.substr(n, p - n).c_str());
+        n = p + 1;
+    }
+    if (message.size() > n) {
+        log(lvl, message.substr(n, message.size() - n).c_str());
+    }
+}
+
 static PyObject * PyLogger_write(PyObject * self, PyObject * args)
 {
     char * mesg;
@@ -102,7 +118,7 @@ static PyObject * PyLogger_write(PyObject * self, PyObject * args)
         return 0;
     }
 
-    log(SCRIPT, mesg);
+    python_log(SCRIPT, mesg);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -115,7 +131,7 @@ static PyObject * PyErrorLogger_write(PyObject * self, PyObject * args)
         return 0;
     }
 
-    log(SCRIPT, mesg);
+    python_log(SCRIPT_ERROR, mesg);
 
     Py_INCREF(Py_None);
     return Py_None;

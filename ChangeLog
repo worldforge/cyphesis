@@ -1,3 +1,8 @@
+2004-10-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Python_API.cpp: Process python output into clean log
+	  output.
+
 2004-10-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Ensure that database notices and errors
