@@ -6,9 +6,6 @@
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Encoder.h>
 
-#include <skstream.h>
-#include <fstream>
-
 #include "ClientConnection.h"
 
 #include "common/debug.h"

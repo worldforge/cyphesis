@@ -20,7 +20,7 @@
 #include <common/const.h>
 #include <common/globals.h>
 
-#include <skstream.h>
+#include <skstream/skstream.h>
 
 #include <stdio.h>
 #include <iostream>

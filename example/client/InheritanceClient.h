@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <list>
 
-#include <skstream.h>
+#include <skstream/skstream.h>
 
 class InheritanceClient : public Atlas::Objects::Decoder
 {

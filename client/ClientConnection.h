@@ -10,7 +10,7 @@
 
 #include <common/operations.h>
 
-#include <skstream.h>
+#include <skstream/skstream.h>
 #include <deque>
 
 namespace Atlas { namespace Objects {

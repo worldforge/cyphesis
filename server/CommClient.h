@@ -13,7 +13,7 @@
 class CommServer;
 class Connection;
 
-#include <skstream.h>
+#include <skstream/skstream.h>
 
 #if 0
 #include <Atlas/Codecs/XML.h>

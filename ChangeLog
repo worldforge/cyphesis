@@ -1,5 +1,12 @@
 2002-06-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp, server/CommClient.h,
+	  example/client/InheritanceClient.h, client/ClientConnection.h,
+	  client/ClientConnection.cpp: Switched to new skstream header
+	  location.
+
+2002-06-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.h: Remove stray code.
 
 	* common/globals.cpp: Fix incorrect usage of share dir.
