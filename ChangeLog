@@ -1,3 +1,18 @@
+2004-10-31  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Property.cpp, common/Property.h, common/Property_impl.h:
+	  Add new ImmutableProperty for properties that cannot be
+	  modified, and hold a const reference.
+
+	* rulesets/EntityProperties.cpp: Add some specialisations of
+	  Property to handle attributes of Entity.
+
+	* rulesets/LineProperty.h, rulesets/LineProperty.cpp:
+	  Property class for handling linear list of coordinates.
+
+	* rulesets/TerrainProperty.cpp, rulesets/TerrainProperty.h:
+	  Property class for handling Mercator terrain.
+
 2004-10-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* cyphesis.spec.in: Modify the rpm spec to build fewer packages,

@@ -10,14 +10,15 @@
 class PropertyBase {
   protected:
     const unsigned int m_flags;
-  public:
     explicit PropertyBase(unsigned int);
+  public:
     virtual ~PropertyBase();
 
     unsigned int flags() const { return m_flags; }
 
     virtual void get(Atlas::Message::Element &) = 0;
     virtual void set(const Atlas::Message::Element &) = 0;
+    virtual void add(const std::string &, Atlas::Message::MapType & map) = 0;
 };
 
 template <typename T>
@@ -29,6 +30,19 @@ class Property : public PropertyBase {
 
     virtual void get(Atlas::Message::Element &);
     virtual void set(const Atlas::Message::Element &);
+    virtual void add(const std::string &, Atlas::Message::MapType & map);
+};
+
+template <typename T>
+class ImmutableProperty : public PropertyBase {
+  protected:
+    const T & m_data;
+  public:
+    explicit ImmutableProperty(const T & data);
+
+    virtual void get(Atlas::Message::Element &);
+    virtual void set(const Atlas::Message::Element &);
+    virtual void add(const std::string &, Atlas::Message::MapType & map);
 };
 
 // FIXME also needs to handle the setting of flags etc.
