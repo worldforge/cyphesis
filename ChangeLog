@@ -1,3 +1,8 @@
+2004-05-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/inheritance.cpp: Fix Root type entry, which incorrectly had
+	  objtype "instance".
+
 2004-05-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.cpp, common/utility.cpp, rulesets/World.cpp,

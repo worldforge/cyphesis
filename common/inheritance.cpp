@@ -31,7 +31,7 @@ Inheritance * Inheritance::m_instance = NULL;
 
 Inheritance::Inheritance()
 {
-    atlasObjects["root"] = new Atlas::Objects::Root();
+    atlasObjects["root"] = new Atlas::Objects::Root(Atlas::Objects::Root::Class());
 }
 
 void Inheritance::flush()
