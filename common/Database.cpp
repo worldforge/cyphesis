@@ -38,9 +38,10 @@ bool Database::tuplesOk()
 
     PGresult * res;
     while ((res = PQgetResult(m_connection)) != NULL) {
-	if (PQresultStatus(res) == PGRES_TUPLES_OK) {
-	    status = true;
-	}
+        if (PQresultStatus(res) == PGRES_TUPLES_OK) {
+            status = true;
+        }
+        PQclear(res);
     };
     return status;
 }
@@ -51,9 +52,10 @@ bool Database::commandOk()
 
     PGresult * res;
     while ((res = PQgetResult(m_connection)) != NULL) {
-	if (PQresultStatus(res) == PGRES_COMMAND_OK) {
-	    status = true;
-	}
+        if (PQresultStatus(res) == PGRES_COMMAND_OK) {
+            status = true;
+        }
+        PQclear(res);
     };
     return status;
 }
@@ -100,7 +102,7 @@ bool Database::initAccount(bool createTables)
     int status = 0;
     status = PQsendQuery(m_connection, "SELECT * FROM account WHERE id = 'admin';");
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
 
@@ -133,7 +135,7 @@ bool Database::initWorld(bool createTables)
     int status = 0;
     status = PQsendQuery(m_connection, "SELECT * FROM world WHERE id = 'test' AND contents = 'test';");
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     
@@ -143,10 +145,10 @@ bool Database::initWorld(bool createTables)
         if (createTables) {
             status = PQsendQuery(m_connection, "CREATE TABLE world ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-		reportError();
-		return false;
-	    }
-	    if (!commandOk()) {
+                reportError();
+                return false;
+            }
+            if (!commandOk()) {
                 log(ERROR, "Error creating world table in database");
                 reportError();
                 return false;
@@ -164,7 +166,7 @@ bool Database::initMind(bool createTables)
     int status = 0;
     status = PQsendQuery(m_connection, "SELECT * FROM mind WHERE id = 'test' AND contents = 'test';");
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     
@@ -174,10 +176,10 @@ bool Database::initMind(bool createTables)
         if (createTables) {
             status = PQsendQuery(m_connection, "CREATE TABLE mind ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-		reportError();
-		return false;
-	    }
-	    if (!commandOk()) {
+                reportError();
+                return false;
+            }
+            if (!commandOk()) {
                 log(ERROR, "Error creating mind table in database");
                 reportError();
                 return false;
@@ -195,7 +197,7 @@ bool Database::initServer(bool createTables)
     int status = 0;
     status = PQsendQuery(m_connection, "SELECT * FROM server WHERE id = 'test' AND contents = 'test';");
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     
@@ -205,10 +207,10 @@ bool Database::initServer(bool createTables)
         if (createTables) {
             status = PQsendQuery(m_connection, "CREATE TABLE server ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-		reportError();
-		return false;
-	    }
-	    if (!commandOk()) {
+                reportError();
+                return false;
+            }
+            if (!commandOk()) {
                 log(ERROR, "Error creating server table in database");
                 reportError();
                 return false;
@@ -226,7 +228,7 @@ bool Database::initRule(bool createTables)
     int status = 0;
     status = PQsendQuery(m_connection, "SELECT * FROM rules WHERE id = 'test' AND contents = 'test';");
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     
@@ -236,10 +238,10 @@ bool Database::initRule(bool createTables)
         if (createTables) {
             status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
-		reportError();
-		return false;
-	    }
-	    if (!commandOk()) {
+                reportError();
+                return false;
+            }
+            if (!commandOk()) {
                 log(ERROR, "Error creating rules table in database");
                 reportError();
                 return false;
@@ -296,7 +298,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
 
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
 
@@ -309,7 +311,10 @@ bool Database::getObject(const std::string & table, const std::string & key,
     if ((PQntuples(res) < 1) || (PQnfields(res) < 2)) {
         debug(std::cout << "No entry for " << key << " in " << table
                         << " table" << std::endl << std::flush;);
-        while ((res = PQgetResult(m_connection)) != NULL);
+        PQclear(res);
+        while ((res = PQgetResult(m_connection)) != NULL) {
+            PQclear(res);
+        }
         return false;
     }
     const char * data = PQgetvalue(res, 0, 1);
@@ -317,8 +322,10 @@ bool Database::getObject(const std::string & table, const std::string & key,
                << std::endl << std::flush;);
 
     bool ret = decodeObject(data, o);
+    PQclear(res);
 
     while ((res = PQgetResult(m_connection)) != NULL) {
+        PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
 
@@ -345,7 +352,7 @@ bool Database::putObject(const std::string & table,
     std::string query = std::string("INSERT INTO ") + table + " VALUES ('" + key + "', '" + str.str() + "');";
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     if (!commandOk()) {
@@ -375,7 +382,7 @@ bool Database::updateObject(const std::string & table,
                         str.str() + "' WHERE id='" + key + "';";
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-	reportError();
+        reportError();
         return false;
     }
     if (!commandOk()) {
@@ -425,7 +432,10 @@ bool Database::getTable(const std::string & table, Object::MapType &o)
     if ((results < 1) || (PQnfields(res) < 2)) {
         debug(std::cout << "No entries in " << table
                         << " table" << std::endl << std::flush;);
-        while ((res = PQgetResult(m_connection)) != NULL);
+        PQclear(res);
+        while ((res = PQgetResult(m_connection)) != NULL) {
+            PQclear(res);
+        }
         return false;
     }
     const char * data = PQgetvalue(res, 0, 1);
@@ -441,8 +451,10 @@ bool Database::getTable(const std::string & table, Object::MapType &o)
         }
         
     }
+    PQclear(res);
 
     while ((res = PQgetResult(m_connection)) != NULL) {
+        PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
 
