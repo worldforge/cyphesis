@@ -1,3 +1,7 @@
+2004-06-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* Fix dependencies in the rpm spec.
+
 2004-06-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Handle empty strings in config file
