@@ -1,3 +1,5 @@
+Give skstream server listener classes a go
+
 Think about adding UPnP here or to skstream (or both)
 
 Replace PyExc_TypeError with the correct exception in most cases.
