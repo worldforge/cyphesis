@@ -1,11 +1,3 @@
-It looks as though WorldRouter does not handle removing a deleted entity
-from its parents contains. I don't know how this can have been missed.
-Its not missed, it was in Entity::destroy all along.
-
-Add a destroyed flag to Entity, and keep note of when we broadcast from
-a destroyed entity. Make sure that the parent of a destroyed entity is still
-available.
-
 Also make sure stamp is updated in MemMap and checked, and implement Unseen.
 
 Implement trivial combat, and code up a bunny bashing quests for the hard
@@ -17,7 +9,7 @@ and should be cheaper than tick ops. Needs to be carefully designed. Can handle
 stuff like one-shots, as well as regular ticks.
 
 Spec an op similar to use, but for things which are just used by themselves,
-like buttons, valves, levers etc. Target has operions=[...] just the same,
+like buttons, valves, levers etc. Target has operations=[...] just the same,
 and the arg of the new op specifies what op to do, but the Character just
 needs the one gateway.
 
