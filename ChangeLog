@@ -1,3 +1,14 @@
+2003-10-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Collision.cpp: Modify collision behavoir so we only
+	  detect collisions in the future, while still detecting
+	  collisions that are in progress. Add debugging and some
+	  FIXMEs.
+
+	* rulesets/Movement.h, rulesets/Movement.cpp,
+	  rulesets/Pedestrian.cpp: Switch to using new collision
+	  code.
+
 2003-10-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/collisiontest.cpp: Add Location collision function test.

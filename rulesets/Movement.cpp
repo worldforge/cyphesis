@@ -6,6 +6,8 @@
 
 #include "Character.h"
 
+#include "physics/Collision.h"
+
 #include "common/const.h"
 #include "common/debug.h"
 
@@ -13,7 +15,7 @@
 
 #include <Atlas/Objects/Operation/Move.h>
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 Movement::Movement(Entity & body) : m_body(body), m_lastMovementTime(-1),
                                    m_velocity(0,0,0), m_serialno(0),
@@ -37,25 +39,26 @@ void Movement::checkCollisions(const Location & loc)
     // Check to see whether a collision is going to occur from now until the
     // the next tick in consts::basic_tick seconds
     double collTime = consts::basic_tick;
-    EntitySet::const_iterator I;
     debug( std::cout << "checking " << m_body.getId() << loc.m_pos
                      << loc.m_velocity << " in " << loc.m_loc->getId()
-                     << " against "; );
+                     << " against"; );
     m_collEntity = NULL;
     // Check against everything within the current container
-    for(I = loc.m_loc->m_contains.begin(); I != loc.m_loc->m_contains.end(); I++) {
+    EntitySet::const_iterator I = loc.m_loc->m_contains.begin();
+    for(; I != loc.m_loc->m_contains.end(); I++) {
         // Don't check for collisions with ourselves
         if ((*I) == &m_body) { continue; }
         const Location & oloc = (*I)->m_location;
         if (!oloc.m_bBox.isValid()) { continue; }
-        int axis;
-        double t = loc.timeToHit(oloc, axis);
-        if (t < 0) { continue; }
+        debug( std::cout << " " << (*I)->getId(); );
+        Vector3D normal;
+        double t = 4; // FIXME relate to tick time
+        if (!predictCollision(loc, oloc, t, normal) || (t < 0)) { continue; }
         debug( std::cout << (*I)->getId() << oloc.m_pos << oloc.m_velocity; );
         debug( std::cout << "[" << t << "]"; );
         if (t <= collTime) {
             m_collEntity = *I;
-            m_collAxis = axis;
+            m_collNormal = normal;
             collTime = t;
         }
     }
@@ -87,29 +90,31 @@ void Movement::checkCollisions(const Location & loc)
         rloc.m_pos = loc.m_pos - lc2.m_pos;
         double coll2Time = consts::basic_tick;
         // rloc is coords of character with ref to m_collEntity
-        for(I = m_collEntity->m_contains.begin(); I != m_collEntity->m_contains.end(); I++) {
+        I = m_collEntity->m_contains.begin();
+        for(; I != m_collEntity->m_contains.end(); I++) {
             const Location & oloc = (*I)->m_location;
             if (!oloc.m_bBox.isValid()) { continue; }
-            int axis;
-            double t = rloc.timeToHit(oloc, axis);
-            if (t < 0) { continue; }
+            Vector3D normal;
+            double t = 4; // FIXME relate to tick time
+            if (!predictCollision(rloc,oloc,t,normal) || (t < 0)) { continue; }
             if (t <= coll2Time) {
                 coll2Time = t;
             }
+            // What to do with the normal?
         }
         // There is a small possibility that if
         // coll2Time == collTime == basic_tick, we will miss a collision
         if ((coll2Time - collTime) > (consts::basic_tick / 10)) {
-            debug(std::cout << "passing into it " << collTime << ":"
-                            << coll2Time << std::endl << std::flush;);
+            debug( std::cout << "passing into it " << collTime << ":"
+                             << coll2Time << std::endl << std::flush;);
             // We are entering collEntity.
             m_collRefChange = true;
         }
     }
     debug( std::cout << "COLLISION" << std::endl << std::flush; );
     if (collTime < getTickAddition(loc.m_pos)) {
-        debug(std::cout << "Setting target loc to " << loc.m_pos << "+"
-                        << loc.m_velocity << "*" << collTime;);
+        debug( std::cout << "Setting target loc to " << loc.m_pos << "+"
+                         << loc.m_velocity << "*" << collTime;);
         m_collPos = loc.m_pos;
         m_collPos += (loc.m_velocity * collTime);
     } else {

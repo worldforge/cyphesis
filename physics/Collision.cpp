@@ -8,7 +8,7 @@
 
 #include "common/debug.h"
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 bool getCollisionTime(const Vector3D & p,     // Position of point
                       const Vector3D & u,     // Velocity of point
@@ -107,9 +107,14 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
             }
             debug(std::cout << std::endl << std::flush;);
         }
+        debug(std::cout << last_vertex_entry << ":"
+                        << first_vertex_exit << ":"
+                        << first_collision << std::endl << std::flush;);
         if ((last_vertex_entry < first_vertex_exit) &&
+            (last_vertex_entry >= 0.) &&
             (last_vertex_entry < first_collision)) {
             first_collision = last_vertex_entry;
+            debug(std::cout << "hit" << std::endl << std::flush;);
             ret = true;
             // FIXME Normal! Need to get it from above
             // Also tricker because normal is 
@@ -127,6 +132,7 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
                       double & time,          // Returned time to collision
                       Vector3D & n)           // Returned collision normal
 {
+    debug(std::cout << u << ", " << v << std::endl << std::flush; );
     debug(std::cout << "l with o normals" << std::endl << std::flush; );
     bool lo = predictEntryExit(l, u, o, on, v, time, n);
     debug(std::cout << "o with l normals" << std::endl << std::flush; );
@@ -168,6 +174,14 @@ bool predictCollision(const Location & l,  // This location
 {
     // FIXME Handle non-valid velocity
     // FIXME Handle entities which have no box - just one vertex I think
+    // FIXME Problem with entites very slightly itersecting with other
+    // entity, because of rotation etc. Also would get rid of need
+    // for second test when dealing with non-solid entities
+    // SOLUTION: Discard vertices that have already entered, and return
+    // the time of the first vertex to enter after current time.
+    // FIXME THe mesh conversion process below should probably be eliminated
+    // by generating the data when bBox or orienation are changed.
+    // This would also allow us to have other mesh shapes
     const WFMath::Point<3> & ln = l.m_bBox.lowCorner();
     const WFMath::Point<3> & lf = l.m_bBox.highCorner();
     const WFMath::Point<3> & on = o.m_bBox.lowCorner();

@@ -185,7 +185,8 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
             } else {
                 if (m_collPos.isValid()) {
                     // Generate touch ops
-                    m_velocity[m_collAxis] = 0;
+                    // m_velocity[m_collAxis] = 0; // FIXME Sort out with collision normal
+                    m_velocity = Vector3D(0,0,0);
                     if ((m_velocity.mag() / consts::base_velocity) > 0.05) {
                         // Wrong: orientation should not be affected by a
                         // collision
