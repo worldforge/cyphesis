@@ -9,6 +9,8 @@
 
 #include <varconf/Config.h>
 
+#include <cassert>
+
 varconf::Config * global_conf = NULL;
 std::string share_directory = SHAREDIR;
 std::string etc_directory = ETCDIR;
@@ -65,7 +67,9 @@ int loadConfig(int argc, char ** argv, bool server)
     if (home_dir_config) {
         global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
-    global_conf->getCmdline(argc, argv);
+    int optind = global_conf->getCmdline(argc, argv);
+
+    assert(optind > 0);
 
     // Config is now loaded. Now set the values of some globals.
 
@@ -85,5 +89,5 @@ int loadConfig(int argc, char ** argv, bool server)
         rulesets.push_back(ruleset);
     };
 
-    return 0;
+    return optind;
 }

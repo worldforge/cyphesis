@@ -35,12 +35,12 @@ using Atlas::Message::ListType;
 
 void usage(char * n)
 {
-    std::cerr << "usage: " << n << " -[asd] account" << std::endl << std::flush;
+    std::cerr << "usage: " << n << " [ { -a | -s | -d } account ]" << std::endl << std::flush;
 }
 
 int main(int argc, char ** argv)
 {
-    if (loadConfig(argc, argv) != 0) {
+    if (loadConfig(argc, argv) < 0) {
         // Fatal error loading config file
         return 1;
     }

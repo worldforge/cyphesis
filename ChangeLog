@@ -1,5 +1,18 @@
 2004-10-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* Require varconf 0.6.2 for its superior command line handling.
+
+	* client/client.cpp, common/globals.cpp, server/server.cpp,
+	  server/slave.cpp, tools/cycmd.cpp, tools/cyloadrules.cpp,
+	  tools/cypasswd.cpp: loadConfig() now returns the index of
+	  the first non-option commandline arg.
+
+	* client/client.cpp: Use new config feature to allow user to
+	  specify the client function to use on the command line far
+	  more easily.
+
+2004-10-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/Location.cpp, physics/Collision.cpp, rulesets/Character.cpp,
 	  rulesets/Entity.cpp, rulesets/Movement.cpp, rulesets/Movement.h,
 	  rulesets/Pedestrian.cpp: Make sure orientation is not used if it

@@ -114,7 +114,7 @@ int main(int argc, char ** argv)
     int cargc = 0;
     char * cargv[0];
 
-    if (loadConfig(cargc, cargv) != 0) {
+    if (loadConfig(cargc, cargv) < 0) {
         // Fatal error loading config file
         return 1;
     }

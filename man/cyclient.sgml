@@ -15,6 +15,7 @@
   <cmdsynopsis>
    <command>/usr/bin/cyclient</command>
    <arg choice="opt" rep="repeat">--section:option=value</arg>
+   <arg choice="opt">package.function</arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
