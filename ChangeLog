@@ -1,5 +1,9 @@
 2001-06-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* Manual tweaks of build files to build static binaries.
+
+2001-06-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* Fixed up build files to install in a conformant way.
 
 	* acorn.vconf: Added in new building classes which set up

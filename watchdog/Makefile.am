@@ -1,5 +1,11 @@
 bin_PROGRAMS = cyphesisd cyphesis-control
 
+#if BUILD_STATIC
+
+LDFLAGS = -Wl,-static
+
+#endif
+
 INCLUDES = -DSHAREDIR=\"@datadir@\"
 
 LIBS=

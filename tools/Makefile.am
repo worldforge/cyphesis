@@ -1,5 +1,13 @@
 bin_PROGRAMS = cypasswd cycmd cydbload cyisoload
 
+if BUILD_STATIC
+
+LDFLAGS = -Wl,-static
+
+LIBS = -ldb_cxx-3.1 -ldb-3.1 /usr/local/lib/libAtlasObjects.a /usr/local/lib/libAtlasObjectsOperation.a /usr/local/lib/libAtlasObjectsEntity.a /usr/local/lib/libAtlasNet.a /usr/local/lib/libAtlas.a /usr/local/lib/libAtlasCodecs.a /usr/local/lib/libAtlasMessage.a /usr/local/lib/libAtlas.a  -lreadline -ltermcap -lcoal -lcoaliso
+
+endif
+
 cypasswd_SOURCES = cypasswd.cpp sstream.h iotraits.h
 
 cypasswd_LDADD = 
