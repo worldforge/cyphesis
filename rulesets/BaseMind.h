@@ -36,6 +36,7 @@ class BaseMind : public Entity {
     virtual oplist sightDivideOperation(const Sight & op, Divide & sub_op);
     virtual oplist sightEatOperation(const Sight & op, Eat & sub_op);
     virtual oplist sightFireOperation(const Sight & op, Fire & sub_op);
+    virtual oplist sightImaginaryOperation(const Sight & op, Imaginary& sub_op);
     virtual oplist sightMoveOperation(const Sight & op, Move & sub_op);
     virtual oplist sightSetOperation(const Sight & op, Set & sub_op);
     virtual oplist sightTalkOperation(const Sight & op, Talk & sub_op);
@@ -54,6 +55,7 @@ class BaseMind : public Entity {
     virtual oplist soundDivideOperation(const Sound & op, Divide & sub_op);
     virtual oplist soundEatOperation(const Sound & op, Eat & sub_op);
     virtual oplist soundFireOperation(const Sound & op, Fire & sub_op);
+    virtual oplist soundImaginaryOperation(const Sound & op, Imaginary& sub_op);
     virtual oplist soundMoveOperation(const Sound & op, Move & sub_op);
     virtual oplist soundSetOperation(const Sound & op, Set & sub_op);
     virtual oplist soundTalkOperation(const Sound & op, Talk & sub_op);

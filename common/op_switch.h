@@ -37,6 +37,9 @@
         case OP_FIRE: \
             return _prefix ## FireOperation((const Fire &)_op); \
             break; \
+        case OP_IMAGINARY: \
+            return _prefix ## ImaginaryOperation((const Imaginary &)_op); \
+            break; \
         case OP_INFO: \
             return _prefix ## InfoOperation((const Info &)_op); \
             break; \
@@ -124,6 +127,9 @@
             break; \
         case OP_FIRE: \
             return _prefix ## FireOperation(_op, (Fire &)_sub_op); \
+            break; \
+        case OP_IMAGINARY: \
+            return _prefix ## ImaginaryOperation(_op, (Imaginary &)_sub_op); \
             break; \
         case OP_MOVE: \
             return _prefix ## MoveOperation(_op, (Move &)_sub_op); \

@@ -39,6 +39,7 @@ class CommClient : Atlas::Objects::Decoder {
     virtual void UnknownObjectArrived(const Atlas::Message::Object&);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Login & op);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Create & op);
+    virtual void ObjectArrived(const Atlas::Objects::Operation::Imaginary & op);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Move & op);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Set & op);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Touch & op);

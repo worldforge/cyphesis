@@ -9,13 +9,15 @@
 #include "ServerRouting_methods.h"
 #include "CommServer.h"
 #include "Account.h"
+#include "Lobby.h"
 
 #include <common/persistance.h>
 
 using Atlas::Message::Object;
 
 ServerRouting::ServerRouting(CommServer & server, const string & name) :
-        commServer(server), svrName(name), world(*new WorldRouter(*this))
+        commServer(server), svrName(name), world(*new WorldRouter(*this)),
+        lobby(*new Lobby())
 {
     fullid = name;
     idDict[fullid] = this;
@@ -34,6 +36,7 @@ ServerRouting::~ServerRouting()
         delete I->second;
     }
     delete &world;
+    delete &lobby;
 }
 
 void ServerRouting::addToObject(Object & obj) const

@@ -26,6 +26,8 @@
 #include "Account.h"
 #include "Connection_methods.h"
 #include "WorldRouter.h"
+#include "ServerRouting.h"
+#include "Lobby.h"
 
 static const bool debug_flag = false;
 
@@ -126,4 +128,20 @@ oplist Account::CreateOperation(const Create & op)
     info->SetRefno(op.GetSerialno());
 
     return oplist(1,info);
+}
+
+oplist Account::ImaginaryOperation(const Imaginary & op)
+{
+    Sight s(Sight::Instantiate());
+    s.SetArgs(Object::ListType(1,op.AsObject()));
+    s.SetTo(op.GetTo());
+    return connection->server.lobby.operation(s);
+}
+
+oplist Account::TalkOperation(const Talk & op)
+{
+    Sound s(Sound::Instantiate());
+    s.SetArgs(Object::ListType(1,op.AsObject()));
+    s.SetTo(op.GetTo());
+    return connection->server.lobby.operation(s);
 }

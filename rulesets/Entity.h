@@ -62,6 +62,7 @@ class Entity : public BaseEntity {
     virtual oplist DeleteOperation(const Delete & op);
     virtual oplist EatOperation(const Eat & op);
     virtual oplist FireOperation(const Fire & op);
+    virtual oplist ImaginaryOperation(const Imaginary & op);
     virtual oplist MoveOperation(const Move & op);
     virtual oplist NourishOperation(const Nourish & op);
     virtual oplist SetOperation(const Set & op);

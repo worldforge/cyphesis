@@ -12,6 +12,7 @@
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Delete.h>
 #include <Atlas/Objects/Operation/Divide.h>
+#include <Atlas/Objects/Operation/Imaginary.h>
 #include <Atlas/Objects/Operation/Move.h>
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Talk.h>
@@ -158,6 +159,13 @@ oplist BaseMind::sightFireOperation(const Sight & op, Fire & sub_op)
     return res;
 }
 
+oplist BaseMind::sightImaginaryOperation(const Sight & op, Imaginary & sub_op)
+{
+    oplist res;
+    script->Operation("sight_imaginary", op, res, &sub_op);
+    return res;
+}
+
 oplist BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
 {
     debug( cout << "BaseMind::sightOperation(Sight, Move)" << endl << flush;);
@@ -281,6 +289,13 @@ oplist BaseMind::soundFireOperation(const Sound & op, Fire & sub_op)
 {
     oplist res;
     script->Operation("sound_fire", op, res, &sub_op);
+    return res;
+}
+
+oplist BaseMind::soundImaginaryOperation(const Sound & op, Imaginary & sub_op)
+{
+    oplist res;
+    script->Operation("sound_imaginary", op, res, &sub_op);
     return res;
 }
 
@@ -463,6 +478,7 @@ oplist BaseMind::operation(const RootOperation & op)
     //   If so create look operations to those ids
     //   Set the minds time and date 
     oplist res;
+    time.update(op.GetSeconds());
     map.getAdd(op.GetFrom());
     RootOperation * look;
     while ((look = map.lookId()) != NULL) {

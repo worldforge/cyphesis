@@ -43,6 +43,7 @@ class Character : public Thing {
 
     virtual void addToObject(Atlas::Message::Object &) const;
 
+    virtual oplist ImaginaryOperation(const Imaginary & op);
     virtual oplist SetupOperation(const Setup & op);
     virtual oplist TickOperation(const Tick & op);
     virtual oplist TalkOperation(const Talk & op);
@@ -59,6 +60,7 @@ class Character : public Thing {
     virtual oplist mindEatOperation(const Eat & op);
     virtual oplist mindFireOperation(const Fire & op);
     virtual oplist mindGetOperation(const Get & op);
+    virtual oplist mindImaginaryOperation(const Imaginary & op);
     virtual oplist mindInfoOperation(const Info & op);
     virtual oplist mindMoveOperation(const Move & op);
     virtual oplist mindNourishOperation(const Nourish & op);
@@ -87,6 +89,7 @@ class Character : public Thing {
     virtual oplist w2mEatOperation(const Eat & op);
     virtual oplist w2mFireOperation(const Fire & op);
     virtual oplist w2mGetOperation(const Get & op);
+    virtual oplist w2mImaginaryOperation(const Imaginary & op);
     virtual oplist w2mInfoOperation(const Info & op);
     virtual oplist w2mMoveOperation(const Move & op);
     virtual oplist w2mNourishOperation(const Nourish & op);

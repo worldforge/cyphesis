@@ -8,6 +8,7 @@
 #include "Routing.h"
 
 class WorldRouter;
+class Lobby;
 class CommServer;
 
 class ServerRouting : public Routing {
@@ -19,6 +20,8 @@ class ServerRouting : public Routing {
   private:
     WorldRouter & world;
   public:
+    Lobby & lobby;
+
     ServerRouting(CommServer & server, const string & name);
     ~ServerRouting();
 

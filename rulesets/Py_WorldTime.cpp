@@ -28,9 +28,23 @@ static PyObject *WorldTime_seconds(WorldTimeObject *self, PyObject *args, PyObje
     return PyFloat_FromDouble(self->time->seconds());
 }
 
+static PyObject * WorldTime_is_now(WorldTimeObject *self, PyObject *args)
+{
+    char * other;
+    if (!PyArg_ParseTuple(args, "s", &other)) {
+        PyErr_SetString(PyExc_TypeError,"too many args");
+        return NULL;
+    }
+    printf("Python worldtime is string\n");
+    bool eq = (*self->time == std::string(other));
+    PyObject * ret = eq ? Py_True : Py_False;
+    Py_INCREF(ret);
+    return ret;
+}
 
 static PyMethodDef WorldTime_methods[] = {
     {"seconds",		(PyCFunction)WorldTime_seconds,	METH_VARARGS},
+    {"is_now",		(PyCFunction)WorldTime_is_now,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };
 
@@ -58,10 +72,11 @@ static int WorldTime_setattr(WorldTimeObject *self, char *name, PyObject *v)
 static int WorldTime_cmp(WorldTimeObject *self, PyObject *other)
 {
     if (PyString_Check(other)) {
-        
+        printf("Python compare of worldtime to string\n");
         bool eq = (*self->time == std::string(PyString_AsString(other)));
         return eq ? 0 : -1;
     } else {
+        printf("Python compare of worldtime to ?\n");
         return -1;
     }
 }

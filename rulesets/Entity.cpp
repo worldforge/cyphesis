@@ -9,6 +9,7 @@
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Delete.h>
+#include <Atlas/Objects/Operation/Imaginary.h>
 #include <Atlas/Objects/Operation/Move.h>
 #include <Atlas/Objects/Operation/Sound.h>
 #include <Atlas/Objects/Operation/Touch.h>
@@ -269,6 +270,13 @@ oplist Entity::FireOperation(const Fire & op)
 {
     oplist res;
     script->Operation("fire", op, res);
+    return res;
+}
+
+oplist Entity::ImaginaryOperation(const Imaginary & op)
+{
+    oplist res;
+    script->Operation("imaginary", op, res);
     return res;
 }
 

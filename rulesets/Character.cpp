@@ -13,6 +13,7 @@
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Delete.h>
 #include <Atlas/Objects/Operation/Divide.h>
+#include <Atlas/Objects/Operation/Imaginary.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Talk.h>
@@ -137,6 +138,13 @@ void Character::addToObject(Object & obj) const
     Object::MapType & omap = obj.AsMap();
     omap["sex"] = Object(sex);
     Thing::addToObject(obj);
+}
+
+oplist Character::ImaginaryOperation(const Imaginary & op)
+{
+    Sight * s = new Sight(Sight::Instantiate());
+    s->SetArgs(Object::ListType(1,op.AsObject()));
+    return oplist(1,s);
 }
 
 oplist Character::SetupOperation(const Setup & op)
@@ -568,6 +576,12 @@ oplist Character::mindGetOperation(const Get & op)
     return oplist();
 }
 
+oplist Character::mindImaginaryOperation(const Imaginary & op)
+{
+    Imaginary * i = new Imaginary(op);
+    return oplist(1,i);
+}
+
 oplist Character::mindInfoOperation(const Info & op)
 {
     return oplist();
@@ -764,6 +778,11 @@ oplist Character::w2mCombineOperation(const Combine & op)
 }
 
 oplist Character::w2mGetOperation(const Get & op)
+{
+    return oplist();
+}
+
+oplist Character::w2mImaginaryOperation(const Imaginary & op)
 {
     return oplist();
 }

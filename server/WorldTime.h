@@ -39,6 +39,7 @@ class WorldTime {
         initTimeInfo();
     }
     double seconds() { return time.seconds(); }
+    void update(double secs) { time.update((int)secs); }
     //WorldTime(char * date_time);
     std::string operator[](const std::string & name);
     //string & __repr__();

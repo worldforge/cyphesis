@@ -12,6 +12,7 @@
 
 class BaseEntity;
 class Entity;
+class Account;
 
 typedef enum op_no {
 	OP_LOGIN,
@@ -26,6 +27,7 @@ typedef enum op_no {
 	OP_EAT,
 	OP_ERROR,
 	OP_FIRE,
+	OP_IMAGINARY,
 	OP_INFO,
 	OP_MOVE,
 	OP_NOURISH,
@@ -51,6 +53,9 @@ typedef std::pair<string, BaseEntity *> idpair_t;
 
 typedef std::map<string, Entity *> edict_t;
 typedef std::list<Entity *> elist_t;
+
+typedef std::map<string, Account *> adict_t;
+typedef std::list<Account *> alist_t;
 
 typedef std::vector<Atlas::Objects::Operation::RootOperation *> oplist;
 typedef std::list<Atlas::Objects::Operation::RootOperation *> opqueue;

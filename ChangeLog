@@ -1,3 +1,34 @@
+2001-05-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/server.cpp, server/CommClient.h, server/Account.h,
+	  server/Account.cpp, rulesets/Entity.h, rulesets/Entity.cpp,
+	  rulesets/Character.h, rulesets/Character.cpp, rulesets/BaseMind.h,
+	  rulesets/BaseMind.cpp, common/types.h, common/operations.h,
+	  common/op_switch.h, common/BaseEntity.h, common/BaseEntity.cpp:
+	  Added support for imaginary operations used in a similar way
+	  to emoting.
+
+	* server/WorldTime.h: Added update method so underlying DataTime
+	  can be updated.
+
+	* server/ServerRouting.h, server/Lobby.h, server/Lobby.cpp
+	  server/ServerRouting.cpp, server/Connection.h,
+	  server/Connection.cpp, server/Account.h, server/Account.cpp: Added
+	  a lobby object which handles lobby chat. Essentially it stores
+	  a list of accounts and allows operations to be sent or broadcast
+	  to other accounts.
+
+	* rulesets/Py_WorldTime.cpp: Added python is_now() method because
+	  using comparison does not appear to work.
+
+	* rulesets/BaseMind.cpp: Added updating of minds WorldTime each
+	  time an operation is received.
+
+	* modules/DateTime.h: Added operator << so DateTime can be sent
+	  to cout.
+
+	* common/types.h: Added types for storing accounts in Lobby.
+
 2001-05-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* Renamed Operataion method names throughout so they no longer

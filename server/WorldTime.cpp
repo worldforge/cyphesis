@@ -80,6 +80,9 @@ bool WorldTime::operator==(const WorldTime & other) const
 
 bool WorldTime::operator==(const string & when) const
 {
+    cout << "Checking whether it is " << when << " when the date is "
+         << time << endl << flush;
+            
     time_info_t::const_iterator I = timeInfo.find(when);
     if (I == timeInfo.end()) {
         return false;

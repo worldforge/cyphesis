@@ -44,7 +44,7 @@ class Goal:
         res,deb=None,""
         if self.irrelevant: return res,deb
         #is it right time range?
-        if self.time and self.time!=time: return res,deb
+        if self.time and not time.is_now(self.time): return res,deb
         if self.debug:
             log.thinking("\t"*depth+"GOAL: bef fulfilled: "+self.desc+" "+`self.fulfilled`)
         if self.fulfilled(me): return res,deb

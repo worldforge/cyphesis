@@ -24,6 +24,7 @@
 
 #include "Connection.h"
 #include "ServerRouting.h"
+#include "Lobby.h"
 #include "CommClient.h"
 #include "CommServer.h"
 #include "Player.h"
@@ -54,6 +55,7 @@ Account * Connection::addPlayer(const string& username, const string& password)
     player->connection=this;
     player->world=&server.getWorld();
     server.addObject(player);
+    server.lobby.addObject(player);
     return player;
 }
 
@@ -64,6 +66,7 @@ void Connection::destroy()
     for(I = objects.begin(); I != objects.end(); I++) {
         BaseEntity * ent = I->second;
         if (ent->inGame == false) {
+            server.lobby.delObject((Account *)ent);
             continue;
         }
         Thing * obj = (Thing*)ent;
@@ -105,6 +108,7 @@ oplist Connection::operation(const RootOperation & op)
             }
             return ent->externalOperation(op);
         } else {
+            cout << from;
             return error(op, "From is illegal");
         }
     }
@@ -127,6 +131,7 @@ oplist Connection::LoginOperation(const Login & op)
             if (player != NULL) {
                 player->world=&server.getWorld();
                 server.addObject(player);
+                server.lobby.addObject(player);
             }
         }
         if (player && (account_id.size()!=0) && (password==player->password)) {

@@ -13,10 +13,10 @@ class Account;
 
 class Connection : public Routing {
     CommClient & commClient;
-    ServerRouting & server;
 
     Account * addPlayer(const string &, const string &);
   public:
+    ServerRouting & server;
 
     Connection(CommClient & client);
     virtual ~Connection();

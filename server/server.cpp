@@ -161,6 +161,12 @@ void CommClient::ObjectArrived(const Create & op)
     message(op);
 }
 
+void CommClient::ObjectArrived(const Imaginary & op)
+{
+    debug(cout << "A imaginary operation thingy here!" << endl << flush;);
+    message(op);
+}
+
 void CommClient::ObjectArrived(const Move & op)
 {
     debug(cout << "A move operation thingy here!" << endl << flush;);
