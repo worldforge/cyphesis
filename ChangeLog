@@ -1,4 +1,9 @@
-2001-10-10  Al Riddoch  <alriddoch@zepler.org>
+2001-10-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cyisoload.cpp: Removed unused iso map loader tool, and
+	  get rid of coal dependancy.
+
+2001-10-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* aiclient/ClientConnection.cpp, aiclient/client.cpp,
 	  client/ClientConnection.cpp, common/database.h, common/globals.cpp,

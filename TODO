@@ -16,6 +16,9 @@
 
   Implement omnipresent
 
+  Establish a way to handle the location of db3 headers on debian without
+  library header file requiring config.h
+
 Required for werewolf:
 
   Implement calendric time using WorldTime and DateTime classes, so nighttime
