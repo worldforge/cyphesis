@@ -1,5 +1,13 @@
 2003-10-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/server.cpp: Add database socket to the idle set, so it
+	  gets called for regular database maintainance.
+
+	* server/CommPSQLSocket.cpp, common/Database.cpp: Clean up and
+	  disable the debugging output.
+
+2003-10-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/server.cpp: Add communications object to handle getting
 	  the response to database queries without blocking.
 

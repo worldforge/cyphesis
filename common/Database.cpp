@@ -20,7 +20,7 @@ using Atlas::Message::Element;
 
 typedef Atlas::Codecs::XML Serialiser;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 Database * Database::m_instance = NULL;
 
@@ -370,7 +370,7 @@ const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
     }
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         log(ERROR, "Error selecting row.");
-        std::cout << "QUERY: " << query << std::endl << std::flush;
+        debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
         reportError();
         PQclear(res);
         res = 0;
@@ -963,7 +963,7 @@ void Database::queryResult(ExecStatusType status)
         return;
     }
     if (q.second == status) {
-        std::cout << "Query status ok" << std::endl << std::flush;
+        debug(std::cout << "Query status ok" << std::endl << std::flush;);
         // Mark this query as done
         q.second = PGRES_EMPTY_QUERY;
     } else {
@@ -985,7 +985,7 @@ void Database::queryComplete()
         log(ERROR, "Got database query complete when query was not done");
         return;
     }
-    std::cout << "Query complete" << std::endl << std::flush;
+    debug(std::cout << "Query complete" << std::endl << std::flush;);
     pendingQueries.pop_front();
     m_queryInProgress = false;
 }
@@ -997,14 +997,14 @@ bool Database::launchNewQuery()
         return false;
     }
     if (pendingQueries.empty()) {
-        std::cout << "No queries to launch" << std::endl << std::flush;
+        debug(std::cout << "No queries to launch" << std::endl << std::flush;);
         return false;
     }
-    std::cout << pendingQueries.size() << " queries pending"
-              << std::endl << std::flush;
+    debug(std::cout << pendingQueries.size() << " queries pending"
+                    << std::endl << std::flush;);
     DatabaseQuery & q = pendingQueries.front();
-    std::cout << "Launching async query: " << q.first
-              << std::endl << std::flush;
+    debug(std::cout << "Launching async query: " << q.first
+                    << std::endl << std::flush;);
     int status = PQsendQuery(m_connection, q.first.c_str());
     if (!status) {
         log(ERROR, "Database query error when launching.");
@@ -1021,12 +1021,12 @@ bool Database::scheduleCommand(const std::string & query)
 {
     pendingQueries.push_back(std::make_pair(query, PGRES_COMMAND_OK));
     if (!m_queryInProgress) {
-        std::cout << "Query: " << query << " launched"
-                  << std::endl << std::flush;
+        debug(std::cout << "Query: " << query << " launched"
+                        << std::endl << std::flush;);
         return launchNewQuery();
     } else {
-        std::cout << "Query: " << query << " scheduled"
-                  << std::endl << std::flush;
+        debug(std::cout << "Query: " << query << " scheduled"
+                        << std::endl << std::flush;);
         return true;
     }
 }
@@ -1038,7 +1038,7 @@ bool Database::clearPendingQuery()
     }
 
     assert(!pendingQueries.empty());
-    std::cout << "Clearing a pending query" << std::endl << std::flush;
+    debug(std::cout << "Clearing a pending query" << std::endl << std::flush;);
 
     DatabaseQuery & q = pendingQueries.front();
     if (q.second == PGRES_COMMAND_OK) {

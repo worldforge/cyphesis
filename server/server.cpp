@@ -136,6 +136,7 @@ int main(int argc, char ** argv)
     CommPSQLSocket * dbsocket = new CommPSQLSocket(commServer,
                                         Persistance::instance()->m_connection);
     commServer.add(dbsocket);
+    commServer.addIdle(dbsocket);
 
     if (useMetaserver) {
         CommMetaClient * cmc = new CommMetaClient(commServer);

@@ -33,7 +33,7 @@ CommPSQLSocket::~CommPSQLSocket()
 
 int CommPSQLSocket::getFd() const
 {
-    std::cout << "CommPSQLSocket::getFd()" << std::endl << std::flush;
+    debug(std::cout << "CommPSQLSocket::getFd()" << std::endl << std::flush;);
     PGconn * con = m_db.getConnection();
     assert(con != 0);
     return PQsocket(con);
@@ -41,19 +41,19 @@ int CommPSQLSocket::getFd() const
 
 bool CommPSQLSocket::eof()
 {
-    std::cout << "CommPSQLSocket::eof()" << std::endl << std::flush;
+    debug(std::cout << "CommPSQLSocket::eof()" << std::endl << std::flush;);
     return false;
 }
 
 bool CommPSQLSocket::isOpen() const
 {
-    std::cout << "CommPSQLSocket::isOpen()" << std::endl << std::flush;
+    debug(std::cout << "CommPSQLSocket::isOpen()" << std::endl << std::flush;);
     return true;
 }
 
 bool CommPSQLSocket::read()
 {
-    std::cout << "CommPSQLSocket::read()" << std::endl << std::flush;
+    debug(std::cout << "CommPSQLSocket::read()" << std::endl << std::flush;);
     PGconn * con = m_db.getConnection();
     assert(con != 0);
 
@@ -78,23 +78,20 @@ bool CommPSQLSocket::read()
 
 void CommPSQLSocket::dispatch()
 {
-    std::cout << "CommPSQLSocket::dispatch()" << std::endl << std::flush;
+    debug(std::cout << "CommPSQLSocket::dispatch()"
+                    << std::endl << std::flush;);
 
     if (m_db.queryInProgress()) {
         return;
     }
 
     m_db.launchNewQuery();
-    // FIXME
-    // Here we are permited to write the next query, if there is one,
-    // and read() allows us to do this.
-    // Perhaps PQflush(con); ? Must be called after writing a non-blocking query
 }
 
 void CommPSQLSocket::idle(time_t t)
 {
-    std::cout << "CommPSQLSocket::idle()" << std::endl << std::flush;
+    debug(std::cout << "CommPSQLSocket::idle()" << std::endl << std::flush;);
 
     // FIXME
-    // 
+    // Run database maintenance
 }
