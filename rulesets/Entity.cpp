@@ -28,6 +28,8 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
+#include <cassert>
+
 static const bool debug_flag = false;
 
 std::set<std::string> Entity::m_immutable;

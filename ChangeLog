@@ -1,3 +1,8 @@
+2003-06-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.cpp, rulesets/Entity.cpp: Add the assert header
+	  where required.
+
 2003-04-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cyphesis-setup: Add #!/bin/sh to be sure it gets treated
