@@ -1,3 +1,17 @@
+2002-06-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/Makefile.am, server/Makefile.am, client/Makefile.am,
+	  autogen.sh, configure.in: Removed some overcomplicated and
+	  unrealistic build options. Sort out all the library checking
+	  to use the macros.
+
+	* Makefile.am: Reinclude acorn maps for packaging as Acorn.
+
+	* cyphesis.spec.in: Bring rpm spec up to date, with packages
+	  for server, libs and game data.
+
+	* rulesets/Makefile.am: Fixed distribution of ruleset hooks .in file.
+
 2002-06-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* Write rpm spec dividing stuff up into server package, lib
