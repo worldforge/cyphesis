@@ -15,10 +15,8 @@ class PythonEntityScript : public PythonScript {
   public:
     PythonEntityScript(PyObject *, Entity &);
     virtual ~PythonEntityScript();
-    virtual bool Operation(const std::string &,
-                           const Atlas::Objects::Operation::RootOperation &,
-                           OpVector &,
-                      Atlas::Objects::Operation::RootOperation * sub_op=NULL);
+    virtual bool Operation(const std::string &, const RootOperation &,
+                           OpVector &, RootOperation * sub_op = 0);
     virtual void hook(const std::string &, Entity *);
 };
 

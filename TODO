@@ -1,3 +1,16 @@
+Make all operation handlers return operations in a argument rather than
+return by value. Take note of the places where behavoir is not the standard.
+BaseMind::AppearanceOperation() uses both results from script and from
+from the C++ methods. As does BaseMind::DisappearanceOperation().
+Character::ImaginaryOperation() does not call a script at all.
+Character::TickOperation() does not initially call a script, and when it
+does, it continues and merges the result.
+Character::TalkOperation() does not call a script at all.
+Character::NourishOperation() does not call a script at all.
+
+Could make all operation calls in BaseEntity pure virtual. I guess no real
+reason.
+
 Rename client/CommClient.h. Without namespacing its dangerous.
 
 Sort out the way CONTAINS is done in Entity::addToObject and elsewhere,
@@ -11,7 +24,7 @@ Formatter can be a generic non-template Brige that sits between Encoder
 and Codec.
 
 It might make sense to keep a pointer to the entity an operation is from
-in the queue, is its available at the point when we store it. How do we
+in the queue, if its available at the point when we store it. How do we
 then make sure we don't hold bad references?
 
 Change addToObject into addToMessage
