@@ -1,5 +1,9 @@
 2002-06-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommClient.h: Cleaned some stray headers.
+
+2002-06-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp, server/CommClient.h,
 	  example/client/InheritanceClient.h, client/ClientConnection.h,
 	  client/ClientConnection.cpp: Switched to new skstream header

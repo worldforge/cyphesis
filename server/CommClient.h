@@ -10,15 +10,10 @@
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Codec.h>
 
-class CommServer;
-class Connection;
-
 #include <skstream/skstream.h>
 
-#if 0
-#include <Atlas/Codecs/XML.h>
-#include <fstream>
-#endif
+class CommServer;
+class Connection;
 
 class CommClient : Atlas::Objects::Decoder {
   public:
