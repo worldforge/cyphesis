@@ -44,13 +44,13 @@ static int BBox_setattr(BBoxObject *self, char *name, PyObject *v)
     Vector3D vector = vec->coords;
     if (strcmp(name, "near_point") == 0) {
 #warning FIXME Need to be able to modify bbox
-        // self->box.lowCorner() = WFMath::Point<3>(vector.x(),
-                                                 // vector.y(),
-                                                 // vector.z()); 
+        self->box.lowCorner() = WFMath::Point<3>(vector.x(),
+                                                 vector.y(),
+                                                 vector.z()); 
     } else if (strcmp(name, "far_point") == 0) {
-        // self->box.highCorner() = WFMath::Point<3>(vector.x(),
-                                                  // vector.y(),
-                                                  // vector.z()); 
+        self->box.highCorner() = WFMath::Point<3>(vector.x(),
+                                                  vector.y(),
+                                                  vector.z()); 
     }
 
     return 0;

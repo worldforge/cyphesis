@@ -66,23 +66,23 @@ static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * kwds)
 }
 
 PyTypeObject log_debug_type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,
-	"Function",
-	sizeof(FunctionObject),
-	0,
-	/* methods */
-	(destructor)Function_dealloc,
-	0,		/* tp_print */
-	0,		/* tp_getattr */
-	0,		/* tp_setattr */
-	0,		/* tp_compare */
-	0,		/* tp_repr */
-	0,		/* tp_as_number */
-	0,		/* tp_as_sequence */
-	0,		/* tp_as_mapping */
-	0,		/* tp_hash */
-	log_debug,	/* tp_call */
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,
+        "Function",
+        sizeof(FunctionObject),
+        0,
+        /* methods */
+        (destructor)Function_dealloc,
+        0,              /* tp_print */
+        0,              /* tp_getattr */
+        0,              /* tp_setattr */
+        0,              /* tp_compare */
+        0,              /* tp_repr */
+        0,              /* tp_as_number */
+        0,              /* tp_as_sequence */
+        0,              /* tp_as_mapping */
+        0,              /* tp_hash */
+        log_debug,      /* tp_call */
 };
 
 static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObject * kwds)
@@ -128,23 +128,23 @@ static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObje
 }
 
 PyTypeObject dictlist_remove_value_type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,
-	"Function",
-	sizeof(FunctionObject),
-	0,
-	/* methods */
-	(destructor)Function_dealloc,
-	0,		/* tp_print */
-	0,		/* tp_getattr */
-	0,		/* tp_setattr */
-	0,		/* tp_compare */
-	0,		/* tp_repr */
-	0,		/* tp_as_number */
-	0,		/* tp_as_sequence */
-	0,		/* tp_as_mapping */
-	0,		/* tp_hash */
-	dictlist_remove_value,	/* tp_call */
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,
+        "Function",
+        sizeof(FunctionObject),
+        0,
+        /* methods */
+        (destructor)Function_dealloc,
+        0,              /* tp_print */
+        0,              /* tp_getattr */
+        0,              /* tp_setattr */
+        0,              /* tp_compare */
+        0,              /* tp_repr */
+        0,              /* tp_as_number */
+        0,              /* tp_as_sequence */
+        0,              /* tp_as_mapping */
+        0,              /* tp_hash */
+        dictlist_remove_value,  /* tp_call */
 };
 static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject * kwds)
 {
@@ -184,23 +184,23 @@ present:
 }
 
 PyTypeObject dictlist_add_value_type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,
-	"Function",
-	sizeof(FunctionObject),
-	0,
-	/* methods */
-	(destructor)Function_dealloc,
-	0,		/* tp_print */
-	0,		/* tp_getattr */
-	0,		/* tp_setattr */
-	0,		/* tp_compare */
-	0,		/* tp_repr */
-	0,		/* tp_as_number */
-	0,		/* tp_as_sequence */
-	0,		/* tp_as_mapping */
-	0,		/* tp_hash */
-	dictlist_add_value,	/* tp_call */
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,
+        "Function",
+        sizeof(FunctionObject),
+        0,
+        /* methods */
+        (destructor)Function_dealloc,
+        0,              /* tp_print */
+        0,              /* tp_getattr */
+        0,              /* tp_setattr */
+        0,              /* tp_compare */
+        0,              /* tp_repr */
+        0,              /* tp_as_number */
+        0,              /* tp_as_sequence */
+        0,              /* tp_as_mapping */
+        0,              /* tp_hash */
+        dictlist_add_value,     /* tp_call */
 };
 
 static PyObject * Get_PyClass(const std::string & package,
@@ -411,9 +411,9 @@ static PyObject * location_new(PyObject * self, PyObject * args)
 
 static PyObject * vector3d_new(PyObject * self, PyObject * args)
 {
-	Vector3DObject *o;
+        Vector3DObject *o;
         Vector3D val;
-	// We need to deal with actual args here
+        // We need to deal with actual args here
         PyObject * clist;
         switch (PyTuple_Size(args)) {
             case 0:
@@ -457,17 +457,17 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
                 break;
         }
             
-	o = newVector3DObject(args);
-	if ( o == NULL ) {
-		return NULL;
-	}
+        o = newVector3DObject(args);
+        if ( o == NULL ) {
+                return NULL;
+        }
         o->coords = val;
-	return (PyObject *)o;
+        return (PyObject *)o;
 }
 
 static PyObject * quaternion_new(PyObject * self, PyObject * args)
 {
-	QuaternionObject *o;
+        QuaternionObject *o;
         Quaternion val;
 
         PyObject * clist;
@@ -484,16 +484,24 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
                     PyObject * item = PyList_GetItem(clist, i);
                     if (PyInt_Check(item)) {
 #warning FIXME Need to be able to modify quaternion
-                        // val[i] = (double)PyInt_AsLong(item);
+                        if (i < 3) {
+                            val.vector()[i] = (WFMath::CoordType)PyInt_AsLong(item);
+                        } else {
+                            val.scalar() = (WFMath::CoordType)PyInt_AsLong(item);
+                        }
                     } else if (PyFloat_Check(item)) {
-                        // val[i] = PyFloat_AsDouble(item);
+                        if (i < 3) {
+                            val.vector()[i] = PyFloat_AsDouble(item);
+                        } else {
+                            val.scalar() = PyFloat_AsDouble(item);
+                        }
                     } else {
                         PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
                         return NULL;
                     }
                 }
 #warning FIXME Need to be able to modify quaternion
-                // val.setValid();
+                val.setValid();
                 break;
             case 2:
                 {
@@ -513,16 +521,24 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
                     PyObject * item = PyTuple_GetItem(args, i);
                     if (PyInt_Check(item)) {
 #warning FIXME Need to be able to modify quaternion
-                        // val[i] = (double)PyInt_AsLong(item);
+                        if (i < 3) {
+                            val.vector()[i] = (WFMath::CoordType)PyInt_AsLong(item);
+                        } else {
+                            val.scalar() = (WFMath::CoordType)PyInt_AsLong(item);
+                        }
                     } else if (PyFloat_Check(item)) {
-                        // val[i] = PyFloat_AsDouble(item);
+                        if (i < 3) {
+                            val.vector()[i] = PyFloat_AsDouble(item);
+                        } else {
+                            val.scalar() = PyFloat_AsDouble(item);
+                        }
                     } else {
                         PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
                         return NULL;
                     }
                 }
 #warning FIXME Need to be able to modify quaternion
-                // val.setValid();
+                val.setValid();
                 break;
             default:
                 PyErr_SetString(PyExc_TypeError, "Quaternion must take list of floats, or ints, 4 ints or 4 floats");
@@ -530,29 +546,29 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
                 break;
         }
 
-	o = newQuaternionObject(args);
-	if ( o == NULL ) {
-		return NULL;
-	}
+        o = newQuaternionObject(args);
+        if ( o == NULL ) {
+                return NULL;
+        }
         o->rotation = val;
-	return (PyObject *)o;
+        return (PyObject *)o;
 }
 
 static PyObject * worldtime_new(PyObject * self, PyObject * args)
 {
-	WorldTimeObject *o;
-        	
+        WorldTimeObject *o;
+                
         int seconds;
-	if (!PyArg_ParseTuple(args, "i", &seconds)) {
-		return NULL;
-	}
-	o = newWorldTimeObject(args);
-	if ( o == NULL ) {
-		return NULL;
-	}
-	o->time = new WorldTime(seconds);
+        if (!PyArg_ParseTuple(args, "i", &seconds)) {
+                return NULL;
+        }
+        o = newWorldTimeObject(args);
+        if ( o == NULL ) {
+                return NULL;
+        }
+        o->time = new WorldTime(seconds);
         o->own = true;
-	return (PyObject *)o;
+        return (PyObject *)o;
 }
 
 static inline void addToOplist(OperationObject * op, OplistObject * o)
@@ -571,37 +587,37 @@ static inline void addToOplist(OperationObject * op, OplistObject * o)
 
 static PyObject * oplist_new(PyObject * self, PyObject * args)
 {
-	OplistObject *o;
-	
+        OplistObject *o;
+        
         OperationObject *op1 = NULL, *op2 = NULL, *op3 = NULL, *op4 = NULL;
-	if (!PyArg_ParseTuple(args, "|OOOO", &op1, &op2, &op3, &op4)) {
-		return NULL;
-	}
-	o = newOplistObject(args);
-	if ( o == NULL ) {
-		return NULL;
-	}
-	o->ops = new OpVector();
+        if (!PyArg_ParseTuple(args, "|OOOO", &op1, &op2, &op3, &op4)) {
+                return NULL;
+        }
+        o = newOplistObject(args);
+        if ( o == NULL ) {
+                return NULL;
+        }
+        o->ops = new OpVector();
         addToOplist(op1, o);
         addToOplist(op2, o);
         addToOplist(op3, o);
         addToOplist(op4, o);
-	return (PyObject *)o;
+        return (PyObject *)o;
 }
 
 static PyObject * object_new(PyObject * self, PyObject * args)
 {
-	AtlasObject *o;
-	
-	if (!PyArg_ParseTuple(args, "")) {
-		return NULL;
-	}
-	o = newAtlasObject(args);
-	if ( o == NULL ) {
-		return NULL;
-	}
-	o->m_obj = new Element(Element::MapType());
-	return (PyObject *)o;
+        AtlasObject *o;
+        
+        if (!PyArg_ParseTuple(args, "")) {
+                return NULL;
+        }
+        o = newAtlasObject(args);
+        if ( o == NULL ) {
+                return NULL;
+        }
+        o->m_obj = new Element(Element::MapType());
+        return (PyObject *)o;
 }
 
 static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
@@ -885,40 +901,40 @@ list_contains_it:
 }
 
 static PyMethodDef atlas_methods[] = {
-    /* {"system",	spam_system, METH_VARARGS}, */
-    {"Operation",  (PyCFunction)operation_new,	METH_VARARGS|METH_KEYWORDS},
-    {"isLocation", is_location,			METH_VARARGS},
-    {"Location",   location_new,		METH_VARARGS},
-    {"Object",     object_new,			METH_VARARGS},
-    {"Entity",     (PyCFunction)entity_new,	METH_VARARGS|METH_KEYWORDS},
-    {"Message",    oplist_new,			METH_VARARGS},
-    {"cppEntity",   cppthing_new,		METH_VARARGS},
-    {NULL,		NULL}				/* Sentinel */
+    /* {"system",       spam_system, METH_VARARGS}, */
+    {"Operation",  (PyCFunction)operation_new,  METH_VARARGS|METH_KEYWORDS},
+    {"isLocation", is_location,                 METH_VARARGS},
+    {"Location",   location_new,                METH_VARARGS},
+    {"Object",     object_new,                  METH_VARARGS},
+    {"Entity",     (PyCFunction)entity_new,     METH_VARARGS|METH_KEYWORDS},
+    {"Message",    oplist_new,                  METH_VARARGS},
+    {"cppEntity",   cppthing_new,               METH_VARARGS},
+    {NULL,              NULL}                           /* Sentinel */
 };
 
 static PyMethodDef vector3d_methods[] = {
-	{"Vector3D",	vector3d_new,	METH_VARARGS},
-	{NULL,		NULL}				/* Sentinel */
+        {"Vector3D",    vector3d_new,   METH_VARARGS},
+        {NULL,          NULL}                           /* Sentinel */
 };
 
 static PyMethodDef quaternion_methods[] = {
-	{"Quaternion",	quaternion_new,	METH_VARARGS},
-	{NULL,		NULL}				/* Sentinel */
+        {"Quaternion",  quaternion_new, METH_VARARGS},
+        {NULL,          NULL}                           /* Sentinel */
 };
 
 static PyMethodDef server_methods[] = {
-	{"WorldTime",	worldtime_new,	METH_VARARGS},
-	{NULL,		NULL}				/* Sentinel */
+        {"WorldTime",   worldtime_new,  METH_VARARGS},
+        {NULL,          NULL}                           /* Sentinel */
 };
 
 static PyMethodDef common_methods[] = {
-	//{"null",	null_new,	METH_VARARGS},
-	{NULL,		NULL}				/* Sentinel */
+        //{"null",      null_new,       METH_VARARGS},
+        {NULL,          NULL}                           /* Sentinel */
 };
 
 static PyMethodDef misc_methods[] = {
-	{"set_kw",	set_kw,		METH_VARARGS},
-	{NULL,		NULL}				/* Sentinel */
+        {"set_kw",      set_kw,         METH_VARARGS},
+        {NULL,          NULL}                           /* Sentinel */
 };
 
 void init_python_api()

@@ -29,21 +29,21 @@ void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
     restoreFloat(dr.column("pz"), m_location.m_pos.z());
     m_location.m_pos.setValid();
 #warning FIXME Must be able to modify axisbox
-    // restoreFloat(dr.column("ox"), m_location.m_orientation.vector().x());
-    // restoreFloat(dr.column("oy"), m_location.m_orientation.vector().y());
-    // restoreFloat(dr.column("oz"), m_location.m_orientation.vector().z());
-    // restoreFloat(dr.column("ow"), m_location.m_orientation.scalar());
-    // m_location.m_orientation.setValid();
+    restoreFloat(dr.column("ox"), m_location.m_orientation.vector().x());
+    restoreFloat(dr.column("oy"), m_location.m_orientation.vector().y());
+    restoreFloat(dr.column("oz"), m_location.m_orientation.vector().z());
+    restoreFloat(dr.column("ow"), m_location.m_orientation.scalar());
+    m_location.m_orientation.setValid();
 #warning FIXME Must be able to modify axisbox
-    // restoreFloat(dr.column("bnx"), m_location.m_bBox.lowCorner().x());
-    // restoreFloat(dr.column("bny"), m_location.m_bBox.lowCorner().y());
-    // restoreFloat(dr.column("bnz"), m_location.m_bBox.lowCorner().z());
-    // m_location.m_bBox.lowCorner().setValid();
+    restoreFloat(dr.column("bnx"), m_location.m_bBox.lowCorner().x());
+    restoreFloat(dr.column("bny"), m_location.m_bBox.lowCorner().y());
+    restoreFloat(dr.column("bnz"), m_location.m_bBox.lowCorner().z());
+    m_location.m_bBox.lowCorner().setValid();
 #warning FIXME Must be able to modify axisbox
-    // restoreFloat(dr.column("bfx"), m_location.m_bBox.highCorner().x());
-    // restoreFloat(dr.column("bfy"), m_location.m_bBox.highCorner().y());
-    // restoreFloat(dr.column("bfz"), m_location.m_bBox.highCorner().z());
-    // m_location.m_bBox.highCorner().setValid();
+    restoreFloat(dr.column("bfx"), m_location.m_bBox.highCorner().x());
+    restoreFloat(dr.column("bfy"), m_location.m_bBox.highCorner().y());
+    restoreFloat(dr.column("bfz"), m_location.m_bBox.highCorner().z());
+    m_location.m_bBox.highCorner().setValid();
     restoreFloat(dr.column("status"), m_status);
     restoreFloat(dr.column("mass"), m_mass);
     restoreInt(dr.column("seq"), m_seq);
