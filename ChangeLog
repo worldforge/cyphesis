@@ -1,4 +1,4 @@
-2002-12-22  Al Riddoch  <alriddoch@zepler.org>
+2002-12-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.cpp, common/BaseEntity.h, common/OOGThing.h:
 	  Add a protected constructor for initialising id at construction
