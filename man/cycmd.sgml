@@ -261,4 +261,19 @@ tick(from="899361",to="899361")
 cyphesis> 
   </programlisting>
  </refsect1>
+ <refsect1><title>Author</title>
+  <para>
+Written by Alistair Riddoch.
+  </para>
+ </refsect1>
+ <refsect1><title>Reporting bugs</title>
+  <para>
+Report bugs to <email>general@worldforge.org</email>.
+  </para>
+ </refsect1>
+ <refsect1><title>Copyright</title>
+  <para>
+Copyright 2004 Alistair Riddoch.
+  </para>
+ </refsect1>
 </refentry>

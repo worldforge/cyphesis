@@ -272,4 +272,19 @@ this is the case then the setting must obe omitted from the config file.
    </variablelist>
   </refsect2>
  </refsect1>
+ <refsect1><title>Author</title>
+  <para>
+Written by Alistair Riddoch.
+  </para>
+ </refsect1>
+ <refsect1><title>Reporting bugs</title>
+  <para>
+Report bugs to <email>general@worldforge.org</email>.
+  </para>
+ </refsect1>
+ <refsect1><title>Copyright</title>
+  <para>
+Copyright 2004 Alistair Riddoch.
+  </para>
+ </refsect1>
 </refentry>
