@@ -273,10 +273,8 @@ OpVector Thing::MoveOperation(const Move & op)
         this_ent["stamp"] = (double)m_seq;
         Element::ListType this_as_args(1,this_ent);
         for(;I != m_location.m_loc->m_contains.end(); I++) {
-            const Vector3D od((*I)->m_location.m_pos - oldpos),
-                           nd((*I)->m_location.m_pos - m_location.m_pos);
-            const bool wasInRange = ((fromSquSize / od.sqrMag()) > consts::square_sight_factor),
-                       isInRange = ((fromSquSize / nd.sqrMag()) > consts::square_sight_factor);
+            const bool wasInRange = ((fromSquSize / squareDistance((*I)->m_location.m_pos, oldpos)) > consts::square_sight_factor),
+                       isInRange = ((fromSquSize / squareDistance((*I)->m_location.m_pos, m_location.m_pos)) > consts::square_sight_factor);
             // Build appear and disappear lists, and send operations
             // Also so operations to (dis)appearing perceptive
             // entities saying that we are (dis)appearing

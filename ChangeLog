@@ -1,5 +1,9 @@
 2004-05-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Use more efficient distance calculation.
+
+2004-05-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/collisiontest.cpp, tests/emergencetest.cpp: Fix up tests
 	  after header changes.
 
