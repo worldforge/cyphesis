@@ -1,5 +1,10 @@
 2004-11-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Idle.cpp, server/Idle.h: New Idle class missing from
+	  previous commit.
+
+2004-11-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommListener.cpp,
 	  server/CommMetaClient.cpp, server/CommMetaClient.h, 
 	  server/CommPSQLSocket.cpp, server/CommPSQLSocket.h
