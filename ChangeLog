@@ -1,5 +1,9 @@
 2001-01-24  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* server/Makefile.am: Added libstdc++ to static libraries list.
+
+2001-01-24  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Added THANKS file.
 
 	* Added rules to top level Makefile to install some docs.
