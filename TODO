@@ -45,10 +45,6 @@ General TODO
   be moved into the bbox entity. Should work fine for irreguler shaped
   things, as long as bbox is kept up to date.
 
-  Omnipresence currently has no effect. If its really needed, do something
-  with it, otherwise remove it from the code. Talk to aloril about getting
-  rid of it.
-
   Investigate why attempt to make admin entities move around doesn't work
   right now. Fixed I think.
 

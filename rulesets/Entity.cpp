@@ -47,9 +47,7 @@ const std::set<std::string> & Entity::immutables()
 }
 
 Entity::Entity() : script(new Script), seq(0), status(1),
-                   type("thing"), mass(-1),
-                   omnipresent(false), perceptive(false),
-                   world(NULL)
+                   type("entity"), mass(-1), perceptive(false), world(NULL)
 {
 }
 

@@ -44,6 +44,8 @@ namespace consts {
   double sight_range = 26.0;
   // Range of broadcast sound ops
   double hearing_range = 13.0;
+  // Can things be omnipresent
+  bool enable_omnipresence = false;
 
 #endif
 

@@ -7,6 +7,7 @@
 #include "BaseMind.h"
 
 #include <common/debug.h>
+#include <common/const.h>
 
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Delete.h>
@@ -16,8 +17,9 @@ static const bool debug_flag = false;
 Creator::Creator()
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
-    omnipresent = true;
-    // location.bBox = BBox();
+    if (consts::enable_omnipresence) {
+        attributes["omnipresent"] = 1;
+    }
 }
 
 OpVector Creator::sendMind(const RootOperation & msg)

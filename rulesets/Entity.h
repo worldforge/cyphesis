@@ -36,7 +36,6 @@ class Entity : public BaseEntity {
     std::string type;		// Easy access to primary parent
     std::string name;		// Entities name
     double mass;		// Mass in kg
-    bool omnipresent;		// Is this omnipresent
     bool perceptive;		// Is this perceptive
   public:
     BaseWorld * world;		// Exists in this world.
@@ -52,7 +51,6 @@ class Entity : public BaseEntity {
     const std::string & getType() const { return type; }
     const double getMass() const { return mass; }
 
-    const bool isOmnipresent() const { return omnipresent; }
     const bool isPerceptive() const { return perceptive; }
 
     void setStatus(const double s) {
@@ -69,6 +67,10 @@ class Entity : public BaseEntity {
 
     void setMass(const double w) {
         mass = w;
+    }
+
+    const Atlas::Message::Object::MapType & getAttributes() const {
+	return attributes;
     }
 
     virtual const Atlas::Message::Object get(const std::string &) const;

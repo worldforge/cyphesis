@@ -139,7 +139,8 @@ Entity * WorldRouter::addObject(Entity * obj)
     debug(std::cout << "Entity loc " << obj->location << std::endl
                     << std::flush;);
     obj->world = this;
-    if (obj->isOmnipresent()) {
+    if (consts::enable_omnipresence &&
+	(obj->getAttributes().find("omnipresent") != obj->getAttributes().end())) {
         omnipresentList.insert(obj);
     }
     Setup * s = new Setup(Setup::Instantiate());
@@ -164,7 +165,9 @@ Entity * WorldRouter::addObject(const std::string & typestr,
 
 void WorldRouter::delObject(Entity * obj)
 {
-    omnipresentList.erase(obj);
+    if (consts::enable_omnipresence) {
+        omnipresentList.erase(obj);
+    }
     perceptives.erase(obj);
     objectList.erase(obj);
     eobjects.erase(obj->getId());

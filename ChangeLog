@@ -1,3 +1,10 @@
+2002-11-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.cpp, common/const.h, rulesets/Creator.cpp,
+	  rulesets/Entity.cpp, rulesets/Entity.h, server/WorldRouter.cpp:
+	  Re-work omnipresent flag so it can only work in a debug build,
+	  and has no performance impact on the production code.
+
 2002-11-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.h, common/Database.cpp, server/Persistance.cpp:
