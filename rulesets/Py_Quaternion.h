@@ -11,7 +11,7 @@
 
 typedef struct {
     PyObject_HEAD
-    Quaternion	rotation;
+    Quaternion rotation;
 } QuaternionObject;
 
 extern PyTypeObject Quaternion_Type;

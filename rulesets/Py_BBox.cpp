@@ -11,6 +11,7 @@ static PyMethodDef BBox_methods[] = {
 
 static void BBox_dealloc(BBoxObject * self)
 {
+    self->box.~BBox();
     PyMem_DEL(self);
 }
 
@@ -92,5 +93,6 @@ BBoxObject * newBBoxObject(PyObject *arg)
         if (self == NULL) {
                 return NULL;
         }
+        new (&(self->box)) BBox();
         return self;
 }

@@ -151,6 +151,7 @@ static PyMethodDef Vector3D_methods[] = {
 
 static void Vector3D_dealloc(Vector3DObject *self)
 {
+    self->coords.~Vector3D();
     PyMem_DEL(self);
 }
 

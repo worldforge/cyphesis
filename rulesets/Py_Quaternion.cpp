@@ -27,11 +27,12 @@ static PyObject * Quaternion_as_list(QuaternionObject * self, PyObject * args)
 
 static PyMethodDef Quaternion_methods[] = {
     {"as_list",         (PyCFunction)Quaternion_as_list, METH_VARARGS},
-    {NULL,		NULL}           /* sentinel */
+    {NULL,              NULL}           /* sentinel */
 };
 
 static void Quaternion_dealloc(QuaternionObject *self)
 {
+    self->rotation.~Quaternion();
     PyMem_DEL(self);
 }
 
@@ -62,30 +63,31 @@ static int Quaternion_compare(QuaternionObject * self, QuaternionObject * other)
 }
 
 PyTypeObject Quaternion_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,				/*ob_size*/
-	"Quaternion",			/*tp_name*/
-	sizeof(QuaternionObject),		/*tp_basicsize*/
-	0,				/*tp_itemsize*/
-	/* methods */
-	(destructor)Quaternion_dealloc,	/*tp_dealloc*/
-	0,				/*tp_print*/
-	(getattrfunc)Quaternion_getattr,	/*tp_getattr*/
-	(setattrfunc)Quaternion_setattr,	/*tp_setattr*/
-	(cmpfunc)Quaternion_compare,	/*tp_compare*/
-	0,				/*tp_repr*/
-	0,				/*tp_as_number*/
-	0,				/*tp_as_sequence*/
-	0,				/*tp_as_mapping*/
-	0,				/*tp_hash*/
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "Quaternion",                   /*tp_name*/
+        sizeof(QuaternionObject),               /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        (destructor)Quaternion_dealloc, /*tp_dealloc*/
+        0,                              /*tp_print*/
+        (getattrfunc)Quaternion_getattr,        /*tp_getattr*/
+        (setattrfunc)Quaternion_setattr,        /*tp_setattr*/
+        (cmpfunc)Quaternion_compare,    /*tp_compare*/
+        0,                              /*tp_repr*/
+        0,                              /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
 };
 
 QuaternionObject * newQuaternionObject(PyObject *arg)
 {
-	QuaternionObject * self;
-	self = PyObject_NEW(QuaternionObject, &Quaternion_Type);
-	if (self == NULL) {
-		return NULL;
-	}
-	return self;
+        QuaternionObject * self;
+        self = PyObject_NEW(QuaternionObject, &Quaternion_Type);
+        if (self == NULL) {
+                return NULL;
+        }
+        new(&(self->rotation)) Quaternion();
+        return self;
 }

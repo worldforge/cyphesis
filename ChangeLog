@@ -1,5 +1,11 @@
 2003-08-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Vector3D.cpp, rulesets/Py_Quaternion.cpp,
+	  rulesets/Py_BBox.cpp: Add in-place construction and
+	  destruction for all three python types which embed C++ objects.
+
+2003-08-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Vector3D.cpp: Use in-place operator new on vector
 	  object embedded in python object.
 
