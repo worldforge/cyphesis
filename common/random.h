@@ -18,9 +18,9 @@ static inline int randint(int min, int max)
     }
 }
 
-static double uniform(double min, double max)
+static float uniform(float min, float max)
 {
-    return ((double)rand() / RAND_MAX) * (max - min) + min;
+    return ((float)rand() / RAND_MAX) * (max - min) + min;
 }
 
 #endif // COMMON_RANDOM_H

@@ -97,10 +97,10 @@ void CommPSQLSocket::idle(time_t t)
     if (t > m_vacuumTime) {
         if (m_vacuumFull) {
             m_db.runMaintainance(Database::MAINTAIN_VACUUM |
-                                         Database::MAINTAIN_VACUUM_FULL);
+                                 Database::MAINTAIN_VACUUM_FULL);
         } else {
             m_db.runMaintainance(Database::MAINTAIN_VACUUM |
-                                         Database::MAINTAIN_VACUUM_ANALYZE);
+                                 Database::MAINTAIN_VACUUM_ANALYZE);
         }
         m_vacuumFull = !m_vacuumFull;
         m_vacuumTime = t + vacFreq;

@@ -13,7 +13,7 @@ typedef WFMath::AxisBox<3> BBox;
 
 // FIXME This boxContains function is deprecated
 // Is point other inside this box, when this box is increased in each direction
-inline bool boxContains(const BBox & box, const Vector3D & other, double increase)
+inline bool boxContains(const BBox& box, const Vector3D& other, float increase)
 {
     return ((other.x() > (box.lowCorner().x() - increase)) &&
             (other.x() < (box.highCorner().x() + increase)) &&
@@ -44,21 +44,22 @@ inline WFMath::CoordType boxSize(const BBox & box)
 }
 
 /// Do this two boxes intersect
-inline bool hit(const BBox & box, const BBox & other) {
+inline bool hit(const BBox & box, const BBox & other)
+{
     return hit(box.lowCorner(), box.highCorner(),
                other.lowCorner(), other.highCorner());
 }
 
 /// When will box, moving with velocity vel hit box o, and on what axis
-inline double timeToHit(const BBox & box, const Vector3D & vel,
-                 const BBox & o, int & axis) 
+inline float timeToHit(const BBox & box, const Vector3D & vel,
+                       const BBox & o, int & axis) 
 {
     return timeToHit(box.lowCorner(), box.highCorner(), vel,
                      o.lowCorner(), o.highCorner(), axis);
 }
 
 /// When will box, moving with velocity vel leave box o
-inline double timeToExit(const BBox & box, const Vector3D & vel, const BBox & o)
+inline float timeToExit(const BBox & box, const Vector3D & vel, const BBox & o)
 {
     return timeToExit(box.lowCorner(), box.highCorner(), vel,
                       o.lowCorner(), o.highCorner());

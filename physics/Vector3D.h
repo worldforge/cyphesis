@@ -15,26 +15,26 @@
 using std::cos;
 using std::sin;
 
-typedef std::pair<double, double> range;
+typedef std::pair<float, float> range;
 
-static inline const range timeToHit(double n, double f, double u,
-                                    double on, double of) {
+static inline const range timeToHit(float n, float f, float u,
+                                    float on, float of) {
     return range((on - f)/u, (of - n)/u);
 }
 
 // This version is for checking the item is totally or partly inside the box
 // It is actually the same as timeToHit, but the other way around.
-static inline const range timeToExit(double n, double f, double u,
-                                     double on, double of) {
+static inline const range timeToExit(float n, float f, float u,
+                                     float on, float of) {
     return range((on - n)/u, (of - f)/u);
 
 }
 
-static inline double max(range r) {
+static inline float max(range r) {
     return std::max(r.first, r.second);
 }
 
-static inline double min(range r) {
+static inline float min(range r) {
     return std::min(r.first, r.second);
 }
 
@@ -47,25 +47,25 @@ typedef WFMath::Vector<3> Vector3D;
 
 /// Find relative distance, to be used when the result is only
 /// going to be compared with other distances
-inline double squareDistance(const Vector3D & u, const Vector3D & v)
+inline float squareDistance(const Vector3D & u, const Vector3D & v)
 {
     return ((u.x() - v.x())*(u.x() - v.x()) + (u.y() - v.y())*(u.y() - v.y()) + (u.z() - v.z())*(u.z() - v.z()));
 }
 
 /// Find the distance between two vectors
-inline double distance(const Vector3D & u, const Vector3D & v)
+inline float distance(const Vector3D & u, const Vector3D & v)
 {
     return sqrt(squareDistance(u, v));
 }
 
 /// Is vector u less than size in every direction
-inline bool in(const Vector3D & u, double size)
+inline bool in(const Vector3D & u, float size)
 {
     return ((u.x() < size) && (u.y() < size) && (u.z() < size));
 }
 
 // Is vector u inside a box defined by center point p, size in all directions
-inline bool in(const Vector3D & u, const Vector3D & p, const double size)
+inline bool in(const Vector3D & u, const Vector3D & p, const float size)
 {
     return ((u.x() < (p.x() + size)) && (u.x() > (p.x() - size)) &&
             (u.y() < (p.y() + size)) && (u.y() > (p.y() - size)) &&
@@ -74,8 +74,7 @@ inline bool in(const Vector3D & u, const Vector3D & p, const double size)
 
 // Is a box defined by n, and f in collision with a box defined by on and of.
 template<class P>
-inline bool hit(const P& n, const P& f,
-         const P& on, const P& of)
+inline bool hit(const P& n, const P& f, const P& on, const P& of)
 {
     return ((n.x() > on.x()) && (n.x() < of.x()) ||
             (f.x() > on.x()) && (f.x() < of.x()) &&
@@ -92,16 +91,16 @@ inline bool hit(const P& n, const P& f,
     Calculate range of times each intersect
  */
 template<class P>
-inline double timeToHit(const P & near, const P & far, const Vector3D &vel,
-                        const P & onear, const P & ofar, int & axis)
+inline float timeToHit(const P & near, const P & far, const Vector3D &vel,
+                       const P & onear, const P & ofar, int & axis)
 {
     range xtime = timeToHit(near.x(), far.x(), vel.x(), onear.x(), ofar.x());
     range ytime = timeToHit(near.y(), far.y(), vel.y(), onear.y(), ofar.y());
     range ztime = timeToHit(near.z(), far.z(), vel.z(), onear.z(), ofar.z());
     // Find the time that the last coordinate starts intersect
-    double start = std::max(min(xtime), std::max(min(ytime),min(ztime)));
+    float start = std::max(min(xtime), std::max(min(ytime),min(ztime)));
     // Find the time that the first coordinate stops intersect
-    double end   = std::min(max(xtime), std::min(max(ytime),max(ztime)));
+    float end   = std::min(max(xtime), std::min(max(ytime),max(ztime)));
     // If the start is before the end, then there is a collision
     if (end < start) { return -1; }
     axis = ((start == min(xtime)) ? cX : ((start == min(ytime)) ? cY : cZ));
@@ -109,14 +108,14 @@ inline double timeToHit(const P & near, const P & far, const Vector3D &vel,
 }
 
 template<class P>
-inline double timeToExit(const P & near, const P & far, const Vector3D &vel,
-                         const P & onear, const P & ofar)
+inline float timeToExit(const P & near, const P & far, const Vector3D &vel,
+                        const P & onear, const P & ofar)
 {
     range xtime = timeToHit(near.x(), far.x(), vel.x(), onear.x(), ofar.x());
     range ytime = timeToHit(near.y(), far.y(), vel.y(), onear.y(), ofar.y());
     range ztime = timeToHit(near.z(), far.z(), vel.z(), onear.z(), ofar.z());
-    double leave = std::min(max(xtime), std::min(max(ytime), max(ztime)));
-    double enter = std::max(min(xtime), std::max(min(ytime), min(ztime)));
+    float leave = std::min(max(xtime), std::min(max(ytime), max(ztime)));
+    float enter = std::max(min(xtime), std::max(min(ytime), min(ztime)));
     // This check is required to make sure we don't accidentally
     // get stuck in an entity outside its bbox.
     if (enter > 0) {

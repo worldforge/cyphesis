@@ -12,12 +12,12 @@ static const bool debug_flag = false;
 
 bool getCollisionTime(const Vector3D & p,     // Position of point
                       const Vector3D & u,     // Velocity of point
-                      // double point_time,   // Time since position set
+                      // float point_time,   // Time since position set
                       const Vector3D & l,     // Position on plane
                       const Vector3D & n,     // Plane normal
                       const Vector3D & v,     // Velocity of plane
-                      // double plane_time,   // Time since position set
-                      double & time)          // Collision time return
+                      // float plane_time,   // Time since position set
+                      float & time)          // Collision time return
 //
 //
 //                            |     \ n
@@ -74,7 +74,7 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
                       const CoordList & o,          // Vertices of other mesh
                       const NormalSet & n,          // Normals of other mesh
                       const Vector3D & v,           // Velocity of other mesh
-                      double & first_collision,     // Time first vertex enters
+                      float & first_collision,     // Time first vertex enters
                       Vector3D & normal)            // Returned collision normal
 {
     // Check l vertices against o surfaces
@@ -83,7 +83,7 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
     CoordList::const_iterator I = c.begin();
     for (; I != c.end(); ++I) { // Iterate over vertices
         debug(std::cout << "outer loop" << std::endl << std::flush;);
-        double last_vertex_entry = -100, first_vertex_exit = 100, time;
+        float last_vertex_entry = -100, first_vertex_exit = 100, time;
         NormalSet::const_iterator J = n.begin();
         for (; J != n.end(); ++J) { // Iterate over surfaces
             const Vector3D & s_pos = o[J->first];
@@ -139,7 +139,7 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
                       const CoordList & o,    // Vertices of other mesh
                       const NormalSet & on,   // Normals of other mesh
                       const Vector3D & v,     // Velocity of other mesh
-                      double & time,          // Returned time to collision
+                      float & time,          // Returned time to collision
                       Vector3D & n)           // Returned collision normal
 {
     debug(std::cout << u << ", " << v << std::endl << std::flush; );
@@ -179,7 +179,7 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
 
 bool predictCollision(const Location & l,  // This location
                       const Location & o,  // Other location
-                      double & time,       // Returned time to collision
+                      float & time,       // Returned time to collision
                       Vector3D & normal)   // Returned normal acting on l
 {
     // FIXME Handle entities which have no box - just one vertex I think

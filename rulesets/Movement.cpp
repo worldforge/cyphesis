@@ -40,7 +40,7 @@ void Movement::checkCollisions(const Location & loc)
 {
     // Check to see whether a collision is going to occur from now until the
     // the next tick in consts::basic_tick seconds
-    double collTime = consts::basic_tick;
+    float collTime = consts::basic_tick;
     debug( std::cout << "checking " << m_body.getId() << loc.m_pos
                      << loc.m_velocity << " in " << loc.m_loc->getId()
                      << " against"; );
@@ -54,7 +54,7 @@ void Movement::checkCollisions(const Location & loc)
         if (!oloc.m_bBox.isValid()) { continue; }
         debug( std::cout << " " << (*I)->getId(); );
         Vector3D normal;
-        double t = 4; // FIXME relate to tick time
+        float t = 4; // FIXME relate to tick time
         if (!predictCollision(loc, oloc, t, normal) || (t < 0)) { continue; }
         debug( std::cout << (*I)->getId() << oloc.m_pos << oloc.m_velocity; );
         debug( std::cout << "[" << t << "]"; );
@@ -73,7 +73,7 @@ void Movement::checkCollisions(const Location & loc)
         if (!oloc.m_bBox.isValid() || (oloc.m_loc == NULL)) {
             return;
         }
-        double t = loc.timeToExit(oloc);
+        float t = loc.timeToExit(oloc);
         if (t == 0) { return; }
         if (t < 0) { t = 0; }
         if (t > consts::basic_tick) { return; }
@@ -90,14 +90,14 @@ void Movement::checkCollisions(const Location & loc)
         Location rloc(loc);
         rloc.m_loc = m_collEntity;
         rloc.m_pos = loc.m_pos - lc2.m_pos;
-        double coll2Time = consts::basic_tick;
+        float coll2Time = consts::basic_tick;
         // rloc is coords of character with ref to m_collEntity
         I = m_collEntity->m_contains.begin();
         for(; I != m_collEntity->m_contains.end(); I++) {
             const Location & oloc = (*I)->m_location;
             if (!oloc.m_bBox.isValid()) { continue; }
             Vector3D normal;
-            double t = 4; // FIXME relate to tick time
+            float t = 4; // FIXME relate to tick time
             if (!predictCollision(rloc,oloc,t,normal) || (t < 0)) { continue; }
             if (t <= coll2Time) {
                 coll2Time = t;

@@ -540,7 +540,7 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
                 for(int i = 0; i < 3; i++) {
                     PyObject * item = PyList_GetItem(clist, i);
                     if (PyInt_Check(item)) {
-                        val[i] = (double)PyInt_AsLong(item);
+                        val[i] = (float)PyInt_AsLong(item);
                     } else if (PyFloat_Check(item)) {
                         val[i] = PyFloat_AsDouble(item);
                     } else {
@@ -554,7 +554,7 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
                 for(int i = 0; i < 3; i++) {
                     PyObject * item = PyTuple_GetItem(args, i);
                     if (PyInt_Check(item)) {
-                        val[i] = (double)PyInt_AsLong(item);
+                        val[i] = (float)PyInt_AsLong(item);
                     } else if (PyFloat_Check(item)) {
                         val[i] = PyFloat_AsDouble(item);
                     } else {

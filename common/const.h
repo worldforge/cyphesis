@@ -14,22 +14,22 @@ namespace consts {
   const int debug_level = 0;
 
   // Scale factor for time. The may become non-constant
-  const double time_multiplier = 1.0;
+  const float time_multiplier = 1.0;
   // In Real time how many seconds between ticks;
-  const double basic_tick = time_multiplier * 3.0;
+  const float basic_tick = time_multiplier * 3.0;
   // Highest possible person velocity
-  const double base_velocity_coefficient = 5.0;
-  const double base_velocity = base_velocity_coefficient/time_multiplier;
+  const float base_velocity_coefficient = 5.0;
+  const float base_velocity = base_velocity_coefficient/time_multiplier;
   // Square versions of above, to avoid square roots in calculations
-  const double square_basic_tick = basic_tick * basic_tick;
-  const double square_base_velocity = base_velocity * base_velocity;
+  const float square_basic_tick = basic_tick * basic_tick;
+  const float square_base_velocity = base_velocity * base_velocity;
 
   // Are ranges for broadcast enabled.
   const bool enable_ranges = true;
   // Range of broadcast sight ops
-  const double sight_range = 26.0;
+  const float sight_range = 26.0;
   // Range of broadcast sound ops
-  const double hearing_range = 13.0;
+  const float hearing_range = 13.0;
   // Can things be omnipresent
   const bool enable_omnipresence = false;
 
@@ -39,14 +39,14 @@ namespace consts {
 
   extern int debug_thinking;
   extern int debug_level;
-  extern double time_multiplier;
-  extern double basic_tick;
-  extern double base_velocity_coefficient;
-  extern double base_velocity;
-  extern double square_basic_tick;
-  extern double square_base_velocity;
-  extern double sight_range;
-  extern double hearing_range;
+  extern float time_multiplier;
+  extern float basic_tick;
+  extern float base_velocity_coefficient;
+  extern float base_velocity;
+  extern float square_basic_tick;
+  extern float square_base_velocity;
+  extern float sight_range;
+  extern float hearing_range;
   extern bool enable_ranges;
   extern bool enable_omnipresence;
 

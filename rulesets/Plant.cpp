@@ -89,10 +89,12 @@ int Plant::dropFruit(OpVector & res)
     m_fruits = m_fruits - drop;
     debug(std::cout << "Dropping " << drop << " fruits from "
                     << m_type << " plant." << std::endl << std::flush;);
-    double height = m_location.m_bBox.highCorner().z(); 
+    float height = m_location.m_bBox.highCorner().z(); 
     for(int i = 0; i < drop; i++) {
-        double rx = m_location.m_pos.x()+uniform(height*m_radius, -height*m_radius);
-        double ry = m_location.m_pos.x()+uniform(height*m_radius, -height*m_radius);
+        float rx = m_location.m_pos.x() + uniform( height * m_radius,
+                                                  -height * m_radius);
+        float ry = m_location.m_pos.x() + uniform( height * m_radius,
+                                                  -height * m_radius);
         Element::MapType fmap;
         fmap["name"] = m_fruitName;
         fmap["parents"] = Element::ListType(1,m_fruitName);

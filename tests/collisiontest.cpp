@@ -17,7 +17,7 @@ int main()
         const Vector3D plane(1, 1, 0);
         const Vector3D normal(-1, 1, 0);
         const Vector3D plane_velocity(-1, 0, 0);
-        double time = -1;
+        float time = -1;
 
         bool infront = getCollisionTime(position, velocity,
                                         plane, normal, plane_velocity,
@@ -57,7 +57,7 @@ int main()
 
         Vector3D meshbv = Vector3D(-0.1, 1, 0);
 
-        double time = 100;
+        float time = 100;
         Vector3D normal;
 
         bool collided = predictCollision(mesha, meshan, meshav,
@@ -81,7 +81,7 @@ int main()
         b.m_bBox = BBox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1,1,1));
         b.m_orientation = Quaternion(Vector3D(1,1,1), 20);
 
-        double time = 100;
+        float time = 100;
         Vector3D normal;
 
         bool collided = predictCollision(a, b, time, normal);

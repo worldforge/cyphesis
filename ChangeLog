@@ -1,5 +1,20 @@
 2003-10-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.cpp, common/const.h, common/random.h,
+	  physics/BBox.h, physics/Collision.cpp, physics/Collision.h,
+	  physics/Quaternion.cpp, physics/Quaternion.h, physics/Vector3D.h,
+	  rulesets/Movement.cpp, rulesets/Plant.cpp, rulesets/Python_API.cpp,
+	  tests/collisiontest.cpp: Update variables relating to geometry
+	  from double to float as this is the type used internall by
+	  WFMath.
+
+	* physics/Vector3D.cpp, physics/Quaternion.cpp, physics/Quaternion.h:
+	  Remove legacy code.
+
+	* server/CommPSQLSocket.cpp: Reformatting.
+
+2003-10-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/BBox.h: Add functions for determing diagonal size of
 	  bounding box.
 
