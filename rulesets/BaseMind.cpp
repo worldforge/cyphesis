@@ -100,7 +100,7 @@ oplist BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
         return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
-    if (args.size() == 0) {
+    if (args.empty()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
@@ -128,7 +128,7 @@ oplist BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op)
         return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
-    if (args.size() == 0) {
+    if (args.empty()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
@@ -174,7 +174,7 @@ oplist BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
         return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
-    if (args.size() == 0) {
+    if (args.empty()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
@@ -194,7 +194,7 @@ oplist BaseMind::sightSetOperation(const Sight & op, Set & sub_op)
         return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
-    if (args.size() == 0) {
+    if (args.empty()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
@@ -346,7 +346,7 @@ oplist BaseMind::SoundOperation(const Sound & op)
         return res;
     }
     const Object::ListType & args = op.GetArgs();
-    if (args.size() == 0) {
+    if (args.empty()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
@@ -371,7 +371,7 @@ oplist BaseMind::SightOperation(const Sight & op)
         return res;
     }
     const Object::ListType & args = op.GetArgs();
-    if (args.size() == 0) {
+    if (args.empty()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
@@ -419,7 +419,7 @@ oplist BaseMind::SaveOperation(const Save & op)
     script->Operation("save", op, res);
     Object::MapType emap;
     std::cout << res.size() << " Got stuff from mind" << std::endl << std::flush;
-    if ((res.size() != 0) && (res.front()->GetArgs().size() != 0)) {
+    if ((!res.empty()) && !(res.front()->GetArgs().empty())) {
         emap = res.front()->GetArgs().front().AsMap();
         // FIXME Operations created in python are leaked
     }

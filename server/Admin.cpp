@@ -83,7 +83,7 @@ oplist Admin::SaveOperation(const Save & op)
             Character * c = (Character *)I->second;
             if (c->mind == NULL) { continue; }
             oplist res = c->mind->SaveOperation(op);
-            if ((res.size() != 0) && (res.front()->GetArgs().size() != 0)) {
+            if ((!res.empty()) && (!res.front()->GetArgs().empty())) {
                 std::cout << "Dumping mind to database" << std::endl << std::flush;
                 Object::MapType & mindmap = res.front()->GetArgs().front().AsMap();
                 p->putMind(c->getId(), mindmap);

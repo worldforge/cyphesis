@@ -179,7 +179,7 @@ oplist Character::TickOperation(const Tick & op)
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
     const Object::ListType & args = op.GetArgs();
-    if ((0 != args.size()) && (args.front().IsMap())) {
+    if ((!args.empty()) && (args.front().IsMap())) {
         // Deal with movement.
         const Object::MapType & arg1 = args.front().AsMap();
         Object::MapType::const_iterator I = arg1.find("serialno");
@@ -338,7 +338,7 @@ oplist Character::mindMoveOperation(const Move & op)
 {
     debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
     const Object::ListType & args = op.GetArgs();
-    if ((0 == args.size()) || (!args.front().IsMap())) {
+    if ((args.empty()) || (!args.front().IsMap())) {
         std::cerr << "mindMoveOperation: move op has no argument" << std::endl << std::flush;
         return oplist();
     }
@@ -611,9 +611,9 @@ oplist Character::mindLookOperation(const Look & op)
                << "] to [" << op.GetTo() << "]" << std::endl << std::flush;);
     perceptive = true;
     Look * l = new Look(op);
-    if (op.GetTo().size() == 0) {
+    if (op.GetTo().empty()) {
         const Object::ListType & args = op.GetArgs();
-        if (args.size() == 0) {
+        if (args.empty()) {
             l->SetTo(world->getId());
         } else {
             if (args.front().IsMap()) {
@@ -656,8 +656,8 @@ oplist Character::mindTouchOperation(const Touch & op)
     Touch * t = new Touch(op);
     // Work out what is being touched.
     const Object::ListType & args = op.GetArgs();
-    if ((op.GetTo().size() == 0) || (args.size() != 0)) {
-        if (args.size() == 0) {
+    if ((op.GetTo().empty()) || (!args.empty())) {
+        if (args.empty()) {
             t->SetTo(world->getId());
         } else {
             if (args.front().IsMap()) {
@@ -925,7 +925,7 @@ oplist Character::mind2body(const RootOperation & op)
     debug( std::cout << "Character::mind2body" << std::endl << std::flush;);
     RootOperation newop(op);
 
-    if ((newop.GetTo().size() == 0) &&
+    if ((newop.GetTo().empty()) &&
         (op.GetParents().front().AsString() != "look")) {
        newop.SetTo(getId());
     }

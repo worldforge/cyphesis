@@ -189,6 +189,9 @@ AC_CHECK_LIB(termcap,tgetent,
 
 AC_CHECK_HEADERS(termios.h unistd.h signal.h)
 AC_CHECK_LIB(readline,readline)
+dnl AC_CHECK_LIB(iberty,malloc)
+dnl AC_CHECK_LIB(bfd,malloc)
+dnl AC_CHECK_LIB(mpatrol,malloc)
 AC_TRY_COMPILE([#include <readline/readline.h>], readline("test > "), AC_DEFINE(READLINE_CXX_SANE),
   AC_MSG_WARN(Readline weakness detected) )
 

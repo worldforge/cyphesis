@@ -85,7 +85,7 @@ oplist Thing::CreateOperation(const Create & op)
         return res;
     }
     const Object::ListType & args=op.GetArgs();
-    if (args.size() == 0) {
+    if (args.empty()) {
        return oplist();
     }
     try {
@@ -100,7 +100,7 @@ oplist Thing::CreateOperation(const Create & op)
             ent["loc"] = location.ref->getId();
         }
         std::string type;
-        if (parents.size() < 1) {
+        if (parents.empty()) {
             type = "thing";
         } else {
             type = parents.front().AsString();
@@ -187,7 +187,7 @@ oplist Thing::MoveOperation(const Move & op)
         return res;
     }
     const Object::ListType & args=op.GetArgs();
-    if (args.size() == 0) {
+    if (args.empty()) {
         debug( std::cout << "ERROR: move op has no argument" << std::endl << std::flush;);
         return oplist();
     }
@@ -282,7 +282,7 @@ oplist Thing::MoveOperation(const Move & op)
                     }
                 }
             }
-            if (appear.size() != 0) {
+            if (!appear.empty()) {
                 // Send an operation to ourselves with a list of entities
                 // we are losing sight of
                 Appearance * a = new Appearance(Appearance::Instantiate());
@@ -290,7 +290,7 @@ oplist Thing::MoveOperation(const Move & op)
                 a->SetTo(getId());
                 res2.push_back(a);
             }
-            if (disappear.size() != 0) {
+            if (!disappear.empty()) {
                 // Send an operation to ourselves with a list of entities
                 // we are gaining sight of
                 Disappearance * d = new Disappearance(Disappearance::Instantiate());
@@ -316,7 +316,7 @@ oplist Thing::SetOperation(const Set & op)
         return res;
     }
     const Object::ListType & args=op.GetArgs();
-    if (args.size() == 0) {
+    if (args.empty()) {
        return oplist();
     }
     try {

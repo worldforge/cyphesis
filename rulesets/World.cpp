@@ -36,7 +36,7 @@ oplist World::SetOperation(const Set & op)
     // get deleted if its status goes below 0.
     seq++;
     const Object::ListType & args=op.GetArgs();
-    if (args.size() == 0) {
+    if (args.empty()) {
        return oplist();
     }
     try {

@@ -39,7 +39,7 @@ inline Entity * MemMap::addObject(Entity * object)
 inline RootOperation * MemMap::lookId()
 {
     debug( std::cout << "MemMap::lookId" << std::endl << std::flush;);
-    if (additionsById.size() != 0) {
+    if (!additionsById.empty()) {
         std::string id = additionsById.front();
         additionsById.pop_front();
         Look * l = new Look(Look::Instantiate());
@@ -54,7 +54,7 @@ inline RootOperation * MemMap::lookId()
 
 inline Entity * MemMap::addId(const std::string & id)
 {
-    if (id.size() == 0) { return NULL; }
+    if (id.empty()) { return NULL; }
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     additionsById.push_back(id);
     Object::MapType m;
@@ -65,7 +65,7 @@ inline Entity * MemMap::addId(const std::string & id)
 
 inline void MemMap::del(const std::string & id)
 {
-    if (id.size() == 0) { return; }
+    if (id.empty()) { return; }
     if (things.find(id) != things.end()) {
         Entity * obj = (Entity*)things[id];
         things.erase(id);
@@ -80,7 +80,7 @@ inline void MemMap::del(const std::string & id)
 inline Entity * MemMap::get(const std::string & id)
 {
     debug( std::cout << "MemMap::get" << std::endl << std::flush;);
-    if (id.size() == 0) { return NULL; }
+    if (id.empty()) { return NULL; }
     if (things.find(id) != things.end()) {
         return (Entity*)things[id];
     }
@@ -90,7 +90,7 @@ inline Entity * MemMap::get(const std::string & id)
 inline Entity * MemMap::getAdd(const std::string & id)
 {
     debug( std::cout << "MemMap::getAdd" << std::endl << std::flush;);
-    if (id.size() == 0) { return NULL; }
+    if (id.empty()) { return NULL; }
     Entity * obj = MemMap::get(id);
     if (obj != NULL) {
         return obj;

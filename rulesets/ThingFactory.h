@@ -18,6 +18,7 @@ class FactoryBase {
     virtual ~FactoryBase() { }
 
     virtual Thing * newThing() = 0;
+    virtual FactoryBase * dupFactory() = 0;
 };
 
 template <typename T>
@@ -25,6 +26,7 @@ class ThingFactory : public FactoryBase {
   public:
     ThingFactory() { }
     Thing * newThing() { return new T(); }
+    FactoryBase * dupFactory() { return new ThingFactory<T>(); }
 };
 
 #endif // RULESETS_THING_FACTORY_H

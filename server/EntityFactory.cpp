@@ -39,6 +39,7 @@ EntityFactory::EntityFactory()
     installFactory("game_entity", "world", NULL);
 
     installFactory("game_entity", "thing", new ThingFactory<Thing>());
+    installFactory("thing", "feature", new ThingFactory<Thing>());
     installFactory("thing", "character", new ThingFactory<Character>());
     installFactory("character", "creator", new ThingFactory<Creator>());
     installFactory("thing", "plant", new ThingFactory<Plant>());
@@ -59,13 +60,13 @@ Thing * EntityFactory::newThing(const std::string & type,
         thing = factory->newThing();
         attributes = factory->attributes;
         // Sort out python object
-        if ((factory->language == "python") && (factory->script.size() != 0)) {
+        if ((factory->language == "python") && (!factory->script.empty())) {
             debug(std::cout << "Class " << type << " has a python class"
                             << std::endl << std::flush;);
             Create_PyThing(thing, factory->script, type);
         }
     } else {
-        if (type.size() == 0) {
+        if (type.empty()) {
             std::cerr << "NOTICE: Empty string type passed to EntityFactory::newThing" << std::endl << std::flush;
         } else {
             installFactory("thing", type, new ThingFactory<Thing>());
@@ -172,6 +173,15 @@ void EntityFactory::installFactory(const std::string & parent,
 
 FactoryBase * EntityFactory::getFactory(const std::string & parent)
 {
+    fdict_t::const_iterator I = factories.find(parent);
+    if (I == factories.end()) {
+        std::cerr << "WARNING: Failed to find factory for type " << parent
+                  << " while installing a new type which inherits from it."
+                  << std::endl << std::flush;
+        return new ThingFactory<Thing>();
+    }
+    return I->second->dupFactory();
+#if 0
     if (parent == "thing") { return new ThingFactory<Thing>(); }
     if (parent == "character") { return new ThingFactory<Character>(); }
     if (parent == "creator") { return new ThingFactory<Creator>(); }
@@ -179,6 +189,6 @@ FactoryBase * EntityFactory::getFactory(const std::string & parent)
     if (parent == "food") { return new ThingFactory<Food>(); }
     if (parent == "stackable") { return new ThingFactory<Stackable>(); }
     if (parent == "structure") { return new ThingFactory<Structure>(); }
-    std::cerr << "NO FACTORY for " << parent << std::endl << std::flush;
     return new ThingFactory<Thing>();
+#endif
 }

@@ -297,7 +297,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         cmap["id"] = "server";
         cmap["cmd"] = cmd;
         cmap["objtype"] = "object";
-        if (arg.size() != 0) {
+        if (!arg.empty()) {
             cmap["arg"] = arg;
         }
         g.SetArgs(Object::ListType(1,cmap));
@@ -311,7 +311,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         cmap["id"] = "server";
         cmap["cmd"] = cmd;
         cmap["objtype"] = "object";
-        if (arg.size() != 0) {
+        if (!arg.empty()) {
             cmap["arg"] = arg;
         }
         s.SetArgs(Object::ListType(1,cmap));

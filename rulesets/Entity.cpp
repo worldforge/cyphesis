@@ -138,7 +138,7 @@ void Entity::addToObject(Object::MapType & omap) const
     for(elist_t::const_iterator I = contains.begin(); I!=contains.end(); I++) {
         contlist.push_back(Object((*I)->getId()));
     }
-    if (contlist.size() != 0) {
+    if (!contlist.empty()) {
         omap["contains"] = Object(contlist);
     }
     BaseEntity::addToObject(omap);

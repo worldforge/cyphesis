@@ -88,7 +88,7 @@ oplist Account::LogoutOperation(const Logout & op)
 void Account::addToObject(Object::MapType & omap) const
 {
     omap["id"] = Object(getId());
-    if (password.size() != 0) {
+    if (!password.empty()) {
         omap["password"] = Object(password);
     }
     omap["parents"] = Object(Object::ListType(1,Object(type)));
@@ -112,13 +112,13 @@ oplist Account::CreateOperation(const Create & op)
     const Object::MapType & entmap = ent.AsMap();
     Object::MapType::const_iterator I = entmap.find("parents");
     if ((I == entmap.end()) || !(I->second.IsList()) ||
-        (I->second.AsList().size()==0) ||
+        (I->second.AsList().empty()) ||
         !(I->second.AsList().front().IsString()) ) {
         return error(op, "Character has no type");
     }
     
     oplist error = characterError(op, entmap);
-    if (error.size() != 0) {
+    if (!error.empty()) {
         return error;
     }
     const std::string & typestr = I->second.AsList().front().AsString();
@@ -138,7 +138,7 @@ oplist Account::CreateOperation(const Create & op)
 oplist Account::ImaginaryOperation(const Imaginary & op)
 {
     const Object::ListType & args = op.GetArgs();
-    if ((args.size() > 0) && (args.front().IsMap())) {
+    if ((!args.empty()) && (args.front().IsMap())) {
         const Object::MapType & arg = args.front().AsMap();
         Object::MapType::const_iterator I = arg.find("loc");
         if (I != arg.end()) {
@@ -156,7 +156,7 @@ oplist Account::ImaginaryOperation(const Imaginary & op)
 oplist Account::TalkOperation(const Talk & op)
 {
     const Object::ListType & args = op.GetArgs();
-    if ((args.size() > 0) && (args.front().IsMap())) {
+    if ((!args.empty()) && (args.front().IsMap())) {
         Sound s(Sound::Instantiate());
         s.SetArgs(Object::ListType(1,op.AsObject()));
         s.SetFrom(getId());

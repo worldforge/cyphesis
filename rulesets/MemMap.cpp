@@ -38,7 +38,7 @@ Entity * MemMap::add(const Object & entity)
     }
     const Object::MapType & entmap = entity.AsMap();
     Object::MapType::const_iterator I = entmap.find("id");
-    if ((I == entmap.end()) || (I->second.AsString().size() == 0)) {
+    if ((I == entmap.end()) || (I->second.AsString().empty())) {
         return NULL;
     }
     const std::string & id = I->second.AsString();
@@ -77,7 +77,7 @@ Entity * MemMap::update(const Object & entity)
         return NULL;
     }
     const std::string & id = I->second.AsString();
-    if (id.size() == 0) {
+    if (id.empty()) {
         return NULL;
     }
     debug( std::cout << " updating " << id << std::endl << std::flush;);

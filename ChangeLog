@@ -1,3 +1,20 @@
+2002-03-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp, server/WorldRouter.cpp, server/EntityFactory.cpp,
+	  server/Connection.cpp, server/Admin.cpp, server/Account.cpp,
+	  rulesets/World.cpp, rulesets/Thing.cpp, rulesets/Py_Operation.cpp,
+	  rulesets/MemMap_methods.h, rulesets/MemMap.cpp, rulesets/Entity.cpp,
+	  rulesets/Character.cpp, rulesets/BaseMind.cpp:
+	  Use empty() instead of size() == 0 for STL sequence types.
+
+	* rulesets/ThingFactory.h, server/EntityFactory.cpp: Modified the
+	  way adding classes to the inheritance tree is handled, so types
+	  no longer have to inherit directly from a C++ class.
+
+	* server/WorldRouter.cpp: Modified the way broadcast operations are
+	  handled to make them more efficient, and catch NULL pointers in
+	  the world dictionary.
+
 2002-03-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cycmd.cpp, client/ClientConnection.cpp:

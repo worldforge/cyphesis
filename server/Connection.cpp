@@ -97,7 +97,7 @@ oplist Connection::operation(const RootOperation & op)
 {
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
     const std::string & from = op.GetFrom();
-    if (0==from.size()) {
+    if (from.empty()) {
         debug(std::cout << "deliver locally as normal" << std::endl << std::flush;);
         return BaseEntity::operation(op);
     } else {
@@ -146,7 +146,7 @@ oplist Connection::LoginOperation(const Login & op)
                 server.addObject(player);
             }
         }
-        if (player && (account_id.size()!=0) && (password==player->password)) {
+        if (player && !account_id.empty() && (password==player->password)) {
             addObject(player);
             edict_t::const_iterator I;
             for (I=player->charactersDict.begin();
@@ -190,7 +190,7 @@ oplist Connection::CreateOperation(const Create & op)
 
         if ((NULL==server.getObject(account_id)) && 
             (!Persistance::instance()->findAccount(account_id)) &&
-            (account_id.size() != 0) && (password.size() != 0)) {
+            (!account_id.empty()) && (!password.empty())) {
             Account * player = addPlayer(account_id, password);
             Persistance::instance()->putAccount(*player);
             Info * info = new Info(Info::Instantiate());

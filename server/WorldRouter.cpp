@@ -167,7 +167,7 @@ oplist WorldRouter::message(RootOperation & op, const Entity * obj)
 inline const elist_t& WorldRouter::broadcastList(const RootOperation & op) const
 {
     const Object::ListType & parents = op.GetParents();
-    if ((parents.size() > 0) && (parents.front().IsString())) {
+    if (!parents.empty() && (parents.front().IsString())) {
         const std::string & parent = parents.front().AsString();
         if ((parent == "sight") || (parent == "sound")) {
             return perceptives;
@@ -184,7 +184,7 @@ oplist WorldRouter::operation(const RootOperation * op)
                     << std::flush;);
     op_no_t op_type = opEnumerate(*op);
 
-    if ((to.size() != 0) && (to!="all")) {
+    if (!to.empty() && (to != "all")) {
         edict_t::const_iterator I = eobjects.find(to);
         if (I == eobjects.end()) {
             debug(std::cerr << "WARNING: Op to=\"" << to << "\""
@@ -210,25 +210,37 @@ oplist WorldRouter::operation(const RootOperation * op)
     } else {
         RootOperation newop = op_ref;
         const elist_t & broadcast = broadcastList(op_ref);
-        elist_t::const_iterator I;
-        for(I = broadcast.begin(); I != broadcast.end(); I++) {
-            if (consts::enable_ranges) {
-                const std::string & from = newop.GetFrom();
-                edict_t::const_iterator J = eobjects.find(from);
-                if ((from.size() != 0) &&
-                    (J != eobjects.end()) &&
-                    (!J->second->location.inRange((*I)->location,
-                                                       consts::sight_range))) {
-                        debug(std::cout << "Op from " <<from<< " cannot be seen by "
-                                   << (*I)->getId() << std::endl << std::flush;);
-                             
-                        continue;
-                }
+        const std::string & from = newop.GetFrom();
+        edict_t::const_iterator J = eobjects.find(from);
+        if (from.empty() || (J == eobjects.end()) || (!consts::enable_ranges)) {
+            elist_t::const_iterator I;
+            for(I = broadcast.begin(); I != broadcast.end(); I++) {
+                newop.SetTo((*I)->getId());
+                // FIXME: There must be a more efficient way to deliver,
+                // with less chance of a loop.
+                operation(&newop);
             }
-            newop.SetTo((*I)->getId());
-            // FIXME: There must be a more efficient way to deliver, with less
-            // chance of a loop.
-            operation(&newop);
+        } else {
+            // FIXME This is temporary until we find out how NULL pointers
+            // get in there
+            if (J->second == NULL) {
+                std::cerr << "ERROR: NULL pointer in world dictionary. "
+                          << "We will probably crash now." << std::endl
+                          << std::flush;
+            }
+            elist_t::const_iterator I;
+            for(I = broadcast.begin(); I != broadcast.end(); I++) {
+                if ((!J->second->location.inRange((*I)->location,
+                                                       consts::sight_range))) {
+                    debug(std::cout << "Op from " <<from<< " cannot be seen by "
+                                   << (*I)->getId() << std::endl << std::flush;);
+                    continue;
+                }
+                newop.SetTo((*I)->getId());
+                // FIXME: There must be a more efficient way to deliver,
+                // with less chance of a loop.
+                operation(&newop);
+            }
         }
     }
                 
@@ -269,7 +281,7 @@ oplist WorldRouter::lookOperation(const Look & op)
                     contlist.push_back(Object((*I)->getId()));
                 }
             }
-            if (contlist.size() != 0) {
+            if (!contlist.empty()) {
                 omap["contains"] = Object(contlist);
             }
 

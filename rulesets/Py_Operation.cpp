@@ -566,7 +566,7 @@ static PyObject * Operation_getattr(OperationObject * self, char * name)
         return (PyObject *)time_obj;
     } else if (strcmp(name, "id") == 0) {
         Object::ListType & parents = self->operation->GetParents();
-        if ((parents.size() < 1) || (!parents.front().IsString())) {
+        if ((parents.empty()) || (!parents.front().IsString())) {
             PyErr_SetString(PyExc_TypeError, "Operation has no parents");
             return NULL;
         }
