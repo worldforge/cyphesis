@@ -1,5 +1,16 @@
 2001-06-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cydbload.cpp: Modified database loader so it can
+	  load multiple maps and merge them into the database.
+
+	* rulesets/acorn/world/objects/buildings/FarmHouse2.py: Fix typo
+	  in the class name.
+
+	* acorn.vconf, rulesets/acorn/world/objects/buildings/Stall.py:
+	  Added proper support for market stalls.
+
+2001-06-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.cpp: Fixed bug in looking at characters code.
 
 	* rulesets/acorn/world/objects/buildings/Inn2.py: Fix walk bounding

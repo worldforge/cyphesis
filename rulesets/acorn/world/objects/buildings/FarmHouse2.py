@@ -9,7 +9,7 @@ from Vector3D import Vector3D
 # bmedian = 3,2,2.5
 # offset = SW corner = -4,-3,0
 
-class Farmhouse_deco_3(Thing):
+class Farmhouse_deco_2(Thing):
     def setup_operation(self, op):
         ret = Message()
         # South wall

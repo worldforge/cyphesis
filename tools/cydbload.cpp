@@ -16,6 +16,8 @@
 
 #ifdef HAVE_LIBDB_CXX
 
+using Atlas::Message::Object;
+
 class WorldBase : public Database {
   protected:
     WorldBase() { }
@@ -28,8 +30,11 @@ class WorldBase : public Database {
         return (WorldBase *)m_instance;
     }
 
-    void storeInWorld(const Atlas::Message::Object & o, const char * key) {
+    void storeInWorld(const Object & o, const char * key) {
         putObject(world_db, o, key);
+    }
+    bool getWorld(Object & o) {
+        return getObject(world_db, "world_0", o);
     }
 };
 
@@ -37,27 +42,53 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     ifstream m_file;
     WorldBase * m_db;
     Atlas::Codecs::XML m_codec;
+    Object m_world;
     int m_count;
+    bool m_worldMerge;
 
-    virtual void ObjectArrived(const Atlas::Message::Object& obj) {
+    virtual void ObjectArrived(const Object & obj) {
         if (!obj.IsMap()) {
             cerr << "ERROR: Non map object in file" << endl << flush;
             return;
         }
-        const Atlas::Message::Object::MapType & omap = obj.AsMap();
-        if (omap.find("id") == omap.end()) {
-            cerr << "WARNING: Object in file has no id. Not stored."
-                 << endl << flush;
+        const Object::MapType & omap = obj.AsMap();
+        Object::MapType::const_iterator I;
+        if ((I = omap.find("id")) == omap.end()) {
+            std::cerr << "WARNING: Object in file has no id. Not stored."
+                      << endl << flush;
             return;
         }
         m_count++;
-        const string & id = omap.find("id")->second.AsString();
-        m_db->storeInWorld(obj, id.c_str());
+        const string & id = I->second.AsString();
+        if (m_worldMerge && (id == "world_0")) {
+            std::cout << "Merging into existing world object" << endl << flush;
+            if (((I = omap.find("contains")) != omap.end()) &&
+                (I->second.IsList())) {
+                const Object::ListType & contlist = I->second.AsList();
+                Object::ListType & worldlist = m_world.AsMap().find("contains")->second.AsList();
+                Object::ListType::const_iterator J = contlist.begin();
+                for (;J != contlist.end(); ++J) {
+                    worldlist.push_back(*J);
+                }
+                m_db->storeInWorld(m_world, id.c_str());
+            } else {
+                std::cout << "WARNING: New world object has no contains list, so no ids are being merged" << endl << flush;
+            }
+        } else {
+            m_db->storeInWorld(obj, id.c_str());
+        }
     }
   public:
     FileDecoder(const string & filename, WorldBase * db) :
                 m_file(filename.c_str()), m_db(db),
-                m_codec((iostream&)m_file, this), m_count(0) {
+                m_codec((iostream&)m_file, this), m_count(0)
+    {
+        m_worldMerge = db->getWorld(m_world);
+        if (m_worldMerge && (!m_world.IsMap() || !m_world.AsMap().find("contains")->second.IsList())) {
+            std::cout << "WARNING: Current database world object has no contains list, so so it is being replaced" << endl << flush;
+            m_worldMerge = false;
+            
+        }
     }
 
     void read() {
