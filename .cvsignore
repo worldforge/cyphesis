@@ -10,6 +10,7 @@ config.log
 config.status
 config.sub
 configure
+cyphesis.spec
 gmon.out
 install-sh
 libtool
