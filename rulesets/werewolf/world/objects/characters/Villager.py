@@ -7,10 +7,6 @@ from world.objects.Character import Character
 from misc import set_kw
 
 class Villager(Character):
-    def __init__(self, cppthing, **kw):
-        self.base_init(cppthing, kw)
-        self_kw(self,kw,"nature","human")
-        # self.nature = "human"
     def reveal_operation(self,op):
         # Transform
         pass

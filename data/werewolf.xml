@@ -9,6 +9,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="mass">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">gallows</string>
     <list name="parents">
@@ -48,6 +52,10 @@
 
   <map>
     <map name="attributes">
+      <map name="nature">
+        <string name="default">nature</string>
+        <string name="visibility">private</string>
+      </map>
     </map>
     <string name="id">villager</string>
     <list name="parents">

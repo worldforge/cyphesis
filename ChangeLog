@@ -1,5 +1,13 @@
 2005-01-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/werewolf.xml,
+	  rulesets/mason/world/objects/plants/seeds/Apple.py,
+	  rulesets/werewolf/world/objects/characters/Villager.py,
+	  rulesets/werewolf/world/objects/tools/Gallows.py:
+	  Remove some more obsolete constructors.
+
+2005-01-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/basic.xml: Clean out a load of obsolete classes and scripts.
 
 	* rulesets/basic/world/objects/buildings/House.py,
