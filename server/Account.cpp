@@ -46,8 +46,8 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
         chr->location.coords = Vector3D(0, 0, 0);
     }
     debug(std::cout << "Location set to: " << chr->location << std::endl << std::flush;);
-    if (chr->isCharacter()) {
-        Character * pchar = (Character *)chr;
+    Character * pchar = dynamic_cast<Character *>(chr);
+    if (pchar != NULL) {
         pchar->externalMind = new ExternalMind(*connection, pchar->getId(), pchar->getName());
     }
     charactersDict[chr->getId()]=chr;

@@ -1,5 +1,20 @@
 2002-03-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Persistance.cpp, server/Connection.cpp, server/Admin.cpp,
+	  server/Account.cpp, rulesets/Thing.h, rulesets/Thing.cpp,
+	  rulesets/Stackable.cpp, rulesets/Py_Location.cpp,
+	  rulesets/Entity.h, rulesets/Entity.cpp, rulesets/Creator.cpp,
+	  rulesets/Character.cpp, common/BaseEntity.h, common/BaseEntity.cpp:
+	  Get rid of flags used to determine object type, and get rid
+	  of use of C style casts to cast between object pointers.
+	  Replace both with dynamic casts. Clean up some stray casts
+	  left behind from older versions of object structure.
+
+	* physics/Vector3D.cpp: Added note explaining when to use
+	  Vector3D::relMag() instead of mag().
+
+2002-03-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* Changed typedef names to ones which make more sense, and are
 	  clearer. There is no change in functionality in this commit.
 

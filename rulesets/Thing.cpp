@@ -28,7 +28,7 @@ static const bool debug_flag = false;
 
 using Atlas::Message::Object;
 
-Thing::Thing() : perceptive(false)
+Thing::Thing()
 {
 }
 
@@ -236,7 +236,7 @@ OpVector Thing::MoveOperation(const Move & op)
         // This code handles sending Appearance and Disappearance operations
         // to this entity and others to indicate if one has gained or lost
         // sight of the other because of this movement
-        if (consts::enable_ranges && perceptive) {
+        if (consts::enable_ranges && isPerceptive()) {
             debug(std::cout << "testing range" << std::endl;);
             EntitySet::const_iterator I = location.ref->contains.begin();
             Object::ListType appear, disappear;
@@ -258,7 +258,7 @@ OpVector Thing::MoveOperation(const Move & op)
                         // We are losing sight of that object
                         disappear.push_back(that_ent);
                         debug(std::cout << getId() << ": losing site of " <<(*I)->getId() << std::endl;);
-                        if (((Thing*)*I)->perceptive) {
+                        if ((*I)->isPerceptive()) {
                             // Send operation to the entity in question so it
                             // knows it is losing sight of us.
                             Disappearance * d = new Disappearance(Disappearance::Instantiate());
@@ -270,7 +270,7 @@ OpVector Thing::MoveOperation(const Move & op)
                         // We are gaining sight of that object
                         appear.push_back(that_ent);
                         debug(std::cout << getId() << ": gaining site of " <<(*I)->getId() << std::endl;);
-                        if (((Thing*)*I)->perceptive) {
+                        if ((*I)->isPerceptive()) {
                             // Send operation to the entity in question so it
                             // knows it is gaining sight of us.
                             Appearance * a = new Appearance(Appearance::Instantiate());

@@ -58,18 +58,18 @@ void Connection::destroy()
     debug(std::cout << "destroy called";);
     BaseDict::const_iterator I;
     for(I = objects.begin(); I != objects.end(); I++) {
-        BaseEntity * ent = I->second;
-        if (!ent->inGame()) {
-            server.lobby.delObject((Account *)ent);
+        Account * ac = dynamic_cast<Account *>(I->second);
+        if (ac != NULL) {
+            server.lobby.delObject(ac);
             continue;
         }
-        Thing * obj = (Thing*)ent;
-        if (obj->isCharacter()) {
-            Character * character = (Character *)obj;
-            if (character->externalMind != NULL) {
-                delete character->externalMind;
-                character->externalMind = NULL;
-            }
+        Character * character = dynamic_cast<Character *>(I->second);
+        if (character == NULL) {
+            continue;
+        }
+        if (character->externalMind != NULL) {
+            delete character->externalMind;
+            character->externalMind = NULL;
         }
     }
     BaseEntity::destroy();
@@ -86,26 +86,25 @@ OpVector Connection::operation(const RootOperation & op)
         debug(std::cout << "Must send on to account" << std::endl << std::flush;);
         debug(std::cout << "[" << from << "]" << std::endl << std::flush;);
         BaseDict::const_iterator I = objects.find(from);
-        if (I != objects.end()) {
-            BaseEntity * ent = I->second;
-            if (ent->inGame() && ((Thing *)ent)->isCharacter() &&
-                (((Character *)ent)->externalMind == NULL)) {
-                Character * pchar = (Character *)ent;
-                pchar->externalMind = new ExternalMind(*this, pchar->getId(), pchar->getName());
-                debug(std::cout << "Re-connecting existing character to new connection" << std::endl << std::flush;);
-                Info * info = new Info(Info::Instantiate());
-                info->SetArgs(Object::ListType(1,pchar->asObject()));
-                info->SetRefno(op.GetSerialno());
-                info->SetSerialno(server.getSerialNo());
-                OpVector res = ent->externalOperation(op);
-                res.insert(res.begin(), info);
-                return res;
-            }
-            return ent->externalOperation(op);
-        } else {
+        if (I == objects.end()) {
             std::cout << from;
             return error(op, "From is illegal");
         }
+        BaseEntity * ent = I->second;
+        Character * character = dynamic_cast<Character *>(ent);
+        if ((character != NULL) && (character->externalMind == NULL)) {
+            character->externalMind = new ExternalMind(*this,
+                       character->getId(), character->getName());
+            debug(std::cout << "Re-connecting existing character to new connection" << std::endl << std::flush;);
+            Info * info = new Info(Info::Instantiate());
+            info->SetArgs(Object::ListType(1,character->asObject()));
+            info->SetRefno(op.GetSerialno());
+            info->SetSerialno(server.getSerialNo());
+            OpVector res = ent->externalOperation(op);
+            res.insert(res.begin(), info);
+            return res;
+        }
+        return ent->externalOperation(op);
     }
     return OpVector();
 }
@@ -120,13 +119,18 @@ OpVector Connection::LoginOperation(const Login & op)
         const std::string account_id = account.AsMap().find("id")->second.AsString();
         const std::string password = account.AsMap().find("password")->second.AsString();
 
-        Account * player = (Player *)server.getObject(account_id);
-        if (player == NULL) {
+        BaseEntity * ent = server.getObject(account_id);
+        Account * player;
+        if (ent == NULL) {
             player = Persistance::instance()->getAccount(account_id);
             if (player != NULL) {
                 player->world=&server.getWorld();
                 server.addObject(player);
             }
+        } else {
+            // This should be done here because if it is NULL, login
+            // should be rejected regardless of anything else
+            player = dynamic_cast<Account *>(ent);
         }
         if (player && !account_id.empty() && (password==player->password)) {
             addObject(player);
@@ -193,7 +197,11 @@ OpVector Connection::LogoutOperation(const Logout & op)
             return error(op, "No account password given");
         }
         const std::string & password = I->second.AsString();
-        Account * player = (Account *)server.getObject(account_id);
+        BaseEntity * ent = server.getObject(account_id);
+        if (ent == NULL) {
+            return error(op, "Logout failed");
+        }
+        Account * player = dynamic_cast<Account*>(ent);
         if ((!player) || (password != player->password)) {
             return error(op, "Logout failed");
         }

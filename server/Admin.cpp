@@ -78,17 +78,19 @@ OpVector Admin::SaveOperation(const Save & op)
     for(I = world->getObjects().begin(); I != world->getObjects().end(); I++) {
         p->putEntity(*I->second);
         ++count;
-        if (I->second->isCharacter()) {
-            std::cout << "Dumping character to database" << std::endl << std::flush;
-            Character * c = (Character *)I->second;
-            if (c->mind == NULL) { continue; }
-            OpVector res = c->mind->SaveOperation(op);
-            if ((!res.empty()) && (!res.front()->GetArgs().empty())) {
-                std::cout << "Dumping mind to database" << std::endl << std::flush;
-                Object::MapType & mindmap = res.front()->GetArgs().front().AsMap();
-                p->putMind(c->getId(), mindmap);
-                ++mind_count;
-            }
+        Character * c = dynamic_cast<Character *>(I->second);
+        
+        if (c == NULL) {
+            continue;
+        }
+        std::cout << "Dumping character to database" << std::endl << std::flush;
+        if (c->mind == NULL) { continue; }
+        OpVector res = c->mind->SaveOperation(op);
+        if ((!res.empty()) && (!res.front()->GetArgs().empty())) {
+            std::cout << "Dumping mind to database" << std::endl << std::flush;
+            Object::MapType & mindmap = res.front()->GetArgs().front().AsMap();
+            p->putMind(c->getId(), mindmap);
+            ++mind_count;
         }
     }
     Object::MapType report;

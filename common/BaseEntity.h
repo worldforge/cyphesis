@@ -22,13 +22,9 @@ class BaseEntity {
     // Private and un-implemented, to make sure slicing is impossible
     BaseEntity(const BaseEntity &);
     const BaseEntity & operator=(const BaseEntity &);
-  protected:
-    bool game;		// true if in game object
   public:
     BaseEntity();
     virtual ~BaseEntity();
-
-    const bool inGame() const { return game; }
 
     const std::string & getId() const {
         return m_id;

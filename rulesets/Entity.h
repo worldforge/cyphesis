@@ -32,9 +32,9 @@ class Entity : public BaseEntity {
     std::string type;		// Easy access to primary parent
     std::string name;		// Entities name
     double weight;		// Weight in kg
-    bool character;		// Is this a character
     bool deleted;		// Has this been deleted
     bool omnipresent;		// Is this omnipresent
+    bool perceptive;		// Is this perceptive
   public:
     BaseWorld * world;		// Exists in this world.
     Location location;		// Full details of location inc. ref pos and vel
@@ -49,9 +49,9 @@ class Entity : public BaseEntity {
     const std::string & getType() const { return type; }
     const double getWeight() const { return weight; }
 
-    const bool isCharacter() const { return character; }
     const bool isDeleted() const { return deleted; }
     const bool isOmnipresent() const { return omnipresent; }
+    const bool isPerceptive() const { return perceptive; }
 
     void setStatus(const double s) {
         status = s;

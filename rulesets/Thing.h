@@ -14,8 +14,6 @@
 // any special behavior can be described by a script.
 
 class Thing : public Entity {
-  protected:
-    bool perceptive;
   public:
 
     Thing();

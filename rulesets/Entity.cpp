@@ -33,10 +33,9 @@ using Atlas::Message::Object;
 
 Entity::Entity() : script(new Script), seq(0), status(1),
                    type("thing"), weight(-1),
-                   character(false), deleted(false), omnipresent(false),
+                   deleted(false), omnipresent(false), perceptive(false),
                    world(NULL)
 {
-    game = true;
 }
 
 Entity::~Entity()

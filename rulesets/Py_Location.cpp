@@ -50,7 +50,7 @@ static PyObject * Location_getattr(LocationObject *self, char *name)
             return Py_None;
         }
         ThingObject * thing = newThingObject(NULL);
-        thing->m_thing = (Thing *)self->location->ref;
+        thing->m_thing = self->location->ref;
         return (PyObject *)thing;
     }
     if (strcmp(name, "coordinates") == 0) {

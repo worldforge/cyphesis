@@ -14,7 +14,6 @@ static const bool debug_flag = false;
 Creator::Creator()
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
-    character = true;
     omnipresent = true;
     location.bBox = BBox();
 }

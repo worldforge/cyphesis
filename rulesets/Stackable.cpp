@@ -57,7 +57,10 @@ OpVector Stackable::CombineOperation(const Combine & op)
     for(Object::ListType::const_iterator I= args.begin(); I!= args.end(); I++) {
         const std::string & id = I->AsMap().find("id")->second.AsString();
         if (id == getId()) { continue; }
-        Stackable * obj = (Stackable*)world->getObject(id);
+        Entity * ent = world->getObject(id);
+        if (ent == NULL) { continue; }
+        Stackable * obj = dynamic_cast<Stackable *>(ent);
+        if (obj == NULL) { continue; }
         if (obj->type != type) { continue; }
         num = num + obj->num;
 

@@ -46,9 +46,6 @@ void Persistance::saveAdminAccount(Account & adm)
 // This is the version of the persistance code which is enabled if 
 // there is db support.
 
-// DB_CXX_NO_EXCEPTIONS is set for now to enable easier debugging. Later
-// once the code is padded out, this should be removed to allow exceptions.
-
 bool Persistance::init()
 {
     Persistance * p = instance();
@@ -65,7 +62,7 @@ bool Persistance::init()
 
 void Persistance::shutdown()
 {
-    Persistance * p = (Persistance *)m_instance;
+    Persistance * p = m_instance;
     if (p == NULL) { return; }
     p->m_connection.shutdownConnection();
     delete &p->m_connection;
