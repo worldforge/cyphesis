@@ -29,12 +29,15 @@ namespace consts {
   // Range of broadcast sight ops
   static const float sight_range = 26.0;
   static const float square_sight_range = (sight_range * sight_range);
+  // sin() of minimum angle subtended by visible object
+  static const float sight_factor = 0.1;
+  static const float square_sight_factor = (sight_factor * sight_factor);
   // Range of broadcast sound ops
   static const float hearing_range = 13.0;
   // Can things be omnipresent
   static const bool enable_omnipresence = false;
   // What is the minimum size of an object when calculating visibility
-  static const float minSqrBoxSize = 0.1f;
+  static const float minSqrBoxSize = 0.01f;
   // Should everything be persistent
   static const bool enable_persistence = false;
 
@@ -52,6 +55,8 @@ namespace consts {
   extern float square_base_velocity;
   extern float sight_range;
   extern float square_sight_range;
+  extern float sight_factor;
+  extern float square_sight_factor;
   extern float hearing_range;
   extern bool enable_ranges;
   extern bool enable_omnipresence;

@@ -253,27 +253,39 @@ OpVector WorldRouter::operation(const RootOperation & op)
         const EntitySet & broadcast = broadcastList(op);
         const std::string & from = newop.getFrom();
         EntityDict::const_iterator J = m_eobjects.find(from);
-        if (from.empty() || (J == m_eobjects.end()) || (!consts::enable_ranges)) {
+        if (from.empty()) {
+            log(ERROR, "WorldRouter::operation dispatching op with no from");
+            if (J != m_eobjects.end()) {
+                log(ERROR, "WorldRouter::operation empty id found in IG map");
+            }
+        }
+        if ((J == m_eobjects.end()) || (!consts::enable_ranges)) {
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 newop.setTo((*I)->getId());
                 deliverTo(newop, *I);
             }
         } else {
-            // FIXME This check is here because some bugs used to exist that
-            // added NULL entries into the world dict. These should no
-            // longer be present, so this check can be removed
-            // after some testing. 2002-05-18
-            if (J->second == NULL) {
-                std::string msg = std::string("CRITICAL: Op from=") + from
-                                + " is NULL";
-                log(CRITICAL, msg.c_str());
-                return OpVector();
-            }
+            Entity * fromEnt = J->second;
+            assert(fromEnt != NULL);
+            float fromSquSize = boxSquareSize(fromEnt->m_location.m_bBox);
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
-                if ((!J->second->m_location.inRange((*I)->m_location,
+                // Calculate square distance to target
+                Vector3D d(fromEnt->m_location.distanceTo((*I)->m_location));
+                float view_factor = fromSquSize / d.sqrMag();
+                if (view_factor > consts::square_sight_factor) {
+                    std::cout << "Distance from " << fromEnt->getType() << " to "
+                              << (*I)->getType() << " is " << d << " which gives "
+                              << fromSquSize << " / " << d.sqrMag() << " = "
+                              << view_factor << std::endl << std::flush;
+                }
+#if 0
+                if ((!fromEnt->m_location.inRange((*I)->m_location,
                                                        consts::sight_range))) {
+#else
+                if (view_factor < consts::square_sight_factor) {
+#endif
                     debug(std::cout << "Op from " << from
                                     << " cannot be seen by " << (*I)->getId()
                                     << std::endl << std::flush;);
