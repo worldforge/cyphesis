@@ -1,3 +1,10 @@
+2002-12-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.h, common/Database.cpp: Add base to get rows
+	  from entity tables. Flesh out the result iterator - untested.
+	  Tweak various bits of query generating code to be a little
+	  more efficient.
+
 2002-12-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.h: Add class for handling results from database.

@@ -27,6 +27,8 @@ class Decoder : public Atlas::Message::DecoderBase {
 
 typedef std::map<std::string, std::string> TableDict;
 
+class DatabaseResult;
+
 class Database {
   private:
     static Database * m_instance;
@@ -98,6 +100,9 @@ class Database {
                          const std::string & columns);
     bool removeEntityRow(const std::string & classname,
                          const std::string & id);
+    const DatabaseResult selectEntityRow(const std::string & id,
+                                         const std::string & classname = "");
+                                   
 
 };
 
@@ -108,7 +113,7 @@ class DatabaseResult {
   private:
     PGresult * m_res;
   public:
-    DatabaseResult(PGresult * r) : m_res(r) { }
+    explicit DatabaseResult(PGresult * r) : m_res(r) { }
     DatabaseResult(const DatabaseResult & dr) : m_res(dr.m_res) { }
 
     DatabaseResult & operator=(const DatabaseResult & other) {
@@ -118,18 +123,55 @@ class DatabaseResult {
 
     class const_iterator {
       private:
-        DatabaseResult & m_dr;
+        const DatabaseResult & m_dr;
+        int m_row;
         
-        const_iterator(DatabaseResult & dr) : m_dr(dr) { }
+        const_iterator(const DatabaseResult & dr, int r = 0) : m_dr(dr),
+                                                               m_row(r) { }
       public:
-        const_iterator(const const_iterator & ci) : m_dr(ci.m_dr) { }
+        const_iterator(const const_iterator & ci) : m_dr(ci.m_dr),
+                                                    m_row(ci.m_row) { }
+
+        bool operator==(const const_iterator & other) {
+            return (m_row == other.m_row);
+        }
+
+        const_iterator operator++() {
+            if (m_row != -1) {
+                if (++m_row >= m_dr.size()) {
+                    m_row = -1;
+                }
+            }
+            return *this;
+        }
+
+        const char * column(int column) const {
+            if (m_row == -1) {
+                return 0;
+            }
+            return PQgetvalue(m_dr.m_res, m_row, column);
+        }
+
         friend class DatabaseResult;
     };
 
-    int rows() const { return PQntuples(m_res); }
+    int size() const { return PQntuples(m_res); }
     int columns() const { return PQnfields(m_res); }
+    bool error() const { return (m_res == NULL); }
 
-    const char * field(int row, int column) { return PQgetvalue(m_res, row, column); }
+    const const_iterator begin() const {
+        return const_iterator(*this);
+    }
+
+    const const_iterator end() const {
+        return const_iterator(*this, -1);
+    }
+
+    // const_iterator find() perhaps
+
+    const char * field(int row, int column) {
+        return PQgetvalue(m_res, row, column);
+    }
     const char * field(int row, const std::string & column);
 };
 

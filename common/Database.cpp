@@ -318,7 +318,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
 
     bool ret = decodeObject(data, o);
 
-    while ((res = PQgetResult(m_connection)) != NULL) {
+    while (PQgetResult(m_connection) != NULL) {
         log(ERROR, "Extra database result to simple query.");
     };
 
@@ -605,13 +605,12 @@ bool Database::createEntityRow(const std::string & classname,
 {
     TableDict::const_iterator I = entityTables.find(classname);
     if (I == entityTables.end()) {
-        log(ERROR, "Attempt to access entity table not registered.");
+        log(ERROR, "Attempt to insert into entity table not registered.");
         return false;
     }
-    std::string table = classname + "_ent";
     std::string query = "INSERT INTO ";
-    query += table;
-    query += " ( id, ";
+    query += classname;
+    query += "_ent ( id, ";
     query += columns;
     query += " ) VALUES ( '";
     query += id;
@@ -619,7 +618,7 @@ bool Database::createEntityRow(const std::string & classname,
     query += values;
     query += ");";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
-    // FIXME Actually run the query against the db
+
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         log(ERROR, "Database query error.");
@@ -644,19 +643,18 @@ bool Database::updateEntityRow(const std::string & classname,
 {
     TableDict::const_iterator I = entityTables.find(classname);
     if (I == entityTables.end()) {
-        log(ERROR, "Attempt to access entity table not registered.");
+        log(ERROR, "Attempt to update entity table not registered.");
         return false;
     }
-    std::string table = classname + "_ent";
     std::string query = "UPDATE ";
-    query += table;
-    query += " SET ";
+    query += classname;
+    query += "_ent SET ";
     query += columns;
     query += " WHERE id='";
     query += id;
     query += "';";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
-    // FIXME Actually run the query against the db
+
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         log(ERROR, "Database query error.");
@@ -681,17 +679,16 @@ bool Database::removeEntityRow(const std::string & classname,
 {
     TableDict::const_iterator I = entityTables.find(classname);
     if (I == entityTables.end()) {
-        log(ERROR, "Attempt to access entity table not registered.");
+        log(ERROR, "Attempt to remove from entity table not registered.");
         return false;
     }
-    std::string table = classname + "_ent";
     std::string query = "DELETE FROM ";
-    query += table;
-    query += " WHERE id='";
+    query += classname;
+    query += "_ent WHERE id='";
     query += id;
     query += "';";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
-    // FIXME Actually run the query against the db
+
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         log(ERROR, "Database query error.");
@@ -708,4 +705,40 @@ bool Database::removeEntityRow(const std::string & classname,
         return true;
     }
     return false;
+}
+
+const DatabaseResult Database::selectEntityRow(const std::string & id,
+                                               const std::string & classname)
+{
+    std::string table = (classname == "" ? "entity" : classname);
+    TableDict::const_iterator I = entityTables.find(classname);
+    if (I == entityTables.end()) {
+        log(ERROR, "Attempt to select from entity table not registered.");
+        return DatabaseResult(0);
+    }
+    std::string query = "SELECT * FROM ";
+    query += table;
+    query += "_ent WHERE id='";
+    query += id;
+    query += "';";
+    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    int status = PQsendQuery(m_connection, query.c_str());
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return DatabaseResult(0);
+    }
+
+    PGresult * res;
+    if ((res = PQgetResult(m_connection)) == NULL) {
+        log(ERROR, "Error updating entity row.");
+        reportError();
+        debug(std::cout << "Row query didn't work"
+                        << std::endl << std::flush;);
+        return DatabaseResult(0);
+    }
+    while (PQgetResult(m_connection) != NULL) {
+        log(ERROR, "Extra database result to simple query.");
+    };
+    return DatabaseResult(res);
 }
