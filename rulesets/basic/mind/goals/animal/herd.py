@@ -13,7 +13,7 @@ else:
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 class herd(DynamicGoal):
-    def __init__(self, members=[] desc="move in herds with other animals like me"):
+    def __init__(self, members=[], desc="move in herds with other animals like me"):
         DynamicGoal.__init__(self,
                              trigger="sight_move",
                              desc=desc)

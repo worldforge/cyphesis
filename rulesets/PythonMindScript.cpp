@@ -89,6 +89,10 @@ bool PythonMindScript::Operation(const std::string & op_type,
         } else {
             log(ERROR, "Reporting python error");
             PyErr_Print();
+            if (op_type == "tick") {
+                std::string msg = std::string("Mind script for ") + mind.getId() + ", named " + mind.getName() + " has reported an error processing a tick operation. This NPC is probably now inactive.";
+                log(ERROR, msg.c_str());
+            }
         }
     }
     return false;

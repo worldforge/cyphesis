@@ -1,3 +1,11 @@
+2002-09-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/PythonMindScript.cpp: Increase verbosity of reported
+	  python script errors.
+
+	* rulesets/basic/mind/goals/animal/herd.py: Fix typo which meant
+	  mind code was not working.
+
 2002-09-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* Added various nifty bits of mason behavoir.
