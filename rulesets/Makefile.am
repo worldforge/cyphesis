@@ -49,7 +49,7 @@ dist-hook:
 	tar cf - `find mason -name \*.py` | (cd $(distdir); tar xf -)
 
 install-data-local:
-	mkdir -p $(datadir)/cyphesis/rulesets
+	mkdir -p $(DESTDIR)$(datadir)/cyphesis/rulesets
 	tar cf - `find basic -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
 	tar cf - `find acorn -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
 	tar cf - `find werewolf -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
