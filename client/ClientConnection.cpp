@@ -248,9 +248,9 @@ bool ClientConnection::connectLocal(const std::string & sockname)
     debug(std::cout << "Attempting local connect." << std::endl << std::flush;);
     std::string socket;
     if (sockname == "") {
-        socket = var_directory + "/cyphesis.sock";
+        socket = var_directory + "/tmp/cyphesis.sock";
     } else if (sockname[0] != '/') {
-        socket = var_directory + "/" + sockname;
+        socket = var_directory + "/tmp/" + sockname;
     } else {
         socket = sockname;
     }

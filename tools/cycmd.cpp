@@ -717,7 +717,7 @@ int main(int argc, char ** argv)
     }
 
     if (server == 0) {
-        std::string localSocket = var_directory + "/cyphesis.sock";
+        std::string localSocket = var_directory + "/tmp/cyphesis.sock";
 
         std::cerr << "Attempting local connection" << std::endl << std::flush;
         Interactive<unix_socket_stream> bridge;

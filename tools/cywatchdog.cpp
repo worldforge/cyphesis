@@ -48,7 +48,7 @@ server_t server = { -1, 0, -1, 0, SVR_PRE, 0, false };
 void finish(int val)
 {
     closelog();
-    unlink((var_dir + "/watchdog.pid").c_str());
+    unlink((var_dir + "/tmp/cywatchdog.pid").c_str());
     exit(val);
 }
 
@@ -210,7 +210,7 @@ int main(int argc, char ** argv)
 #endif
     openlog("WorldForge Cyphesis Watchdog", LOG_PID, LOG_DAEMON);
     syslog(LOG_INFO, "Server monitor started");
-    std::ofstream pid_file((var_dir + "/cyphesis/watchdog.pid").c_str());
+    std::ofstream pid_file((var_dir + "/tmp/cywatchdog.pid").c_str());
     pid_file << getpid() << std::flush;
     pid_file.close();
     if (false) {

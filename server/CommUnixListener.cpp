@@ -18,7 +18,7 @@ static const bool debug_flag = false;
 CommUnixListener::~CommUnixListener()
 {
     if (bound) {
-        std::string sock_path = var_directory + "/cyphesis.sock";
+        std::string sock_path = var_directory + "/tmp/cyphesis.sock";
         unlink(sock_path.c_str());
     }
 }
@@ -52,7 +52,7 @@ void CommUnixListener::dispatch()
 
 bool CommUnixListener::setup()
 {
-    std::string sock_path = var_directory + "/cyphesis.sock";
+    std::string sock_path = var_directory + "/tmp/cyphesis.sock";
 
     m_unixListener.open(sock_path);
 

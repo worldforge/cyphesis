@@ -189,6 +189,9 @@
   <map name="sty">
     <string name="parent">structure</string>
     <map name="attributes">
+      <list name="bbox">
+        <float>5</float><float>5</float><float>3</float>
+      </list>
     </map>
   </map>
 

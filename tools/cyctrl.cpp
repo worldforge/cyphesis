@@ -26,7 +26,7 @@ std::string var_dir = VARDIR;
 void daemon_kill(int pid, int signo)
 {
     int ret = kill(pid, signo);
-    std::string pid_filename = var_dir + "/cyphesis/watchdog.pid";
+    std::string pid_filename = var_dir + "/tmp/cywatchdog.pid";
 
     if (ret == 0) {
         return;
@@ -79,7 +79,7 @@ int main(int argc, char ** argv)
         usage(argv);
         return 1;
     }
-    std::string pid_filename = var_dir + "/cyphesis/watchdog.pid";
+    std::string pid_filename = var_dir + "/tmp/cywatchdog.pid";
 
     pid_file = fopen(pid_filename.c_str(), "r");
     if (pid_file == NULL) {
