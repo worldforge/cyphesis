@@ -27,10 +27,10 @@ class CommServer {
     const std::string identity;
     ServerRouting & server;
 
-    CommServer(const std::string & ruleset, const std::string & ident);
+    CommServer(ServerRouting & srv, const std::string & ident);
     ~CommServer();
 
-    bool setup(int port);
+    void setupMetaserver(const std::string &);
     void shutdown();
 
     void loop();
@@ -42,7 +42,7 @@ class CommServer {
     }
 
     void add(CommSocket * cs) {
-	sockets.insert(cs);
+        sockets.insert(cs);
     }
 };
 

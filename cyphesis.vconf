@@ -26,7 +26,7 @@ useaiclient="false"
 # Account to be used by the AI client
 aiaccount="ai"
 # Load world objects from the database on startup
-loadonstartup="true"
+loadonstartup="false"
 # Database configuration
 # Do not specify a host, unless it is something other than localhost
 # dbserver = "darkstar"

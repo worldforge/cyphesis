@@ -1,5 +1,12 @@
 2002-12-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommClient.cpp, server/CommServer.cpp, server/CommServer.h,
+	  server/ServerRouting.cpp, server/ServerRouting.h,
+	  server/server.cpp: Change the way main server object are created
+	  to be more logical.
+
+2002-12-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Make id column of entity tables a unique
 	  primary key.
 

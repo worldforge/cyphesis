@@ -3,6 +3,8 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "CommServer.h"
+#include "CommListener.h"
+#include "CommMetaClient.h"
 #include "ServerRouting.h"
 #include "EntityFactory.h"
 #include "Persistance.h"
@@ -34,7 +36,7 @@ int main(int argc, char ** argv)
     if (daemon_flag) {
         int pid = daemonise();
         if (pid == -1) {
-	    return EXIT_FORK_ERROR;
+            return EXIT_FORK_ERROR;
         } else if (pid > 0) {
             return EXIT_SUCCESS;
         }
@@ -71,6 +73,17 @@ int main(int argc, char ** argv)
         load_database = global_conf->getItem("cyphesis","loadonstartup");
     }
 
+    bool useMetaserver = false;
+    if (global_conf->findItem("cyphesis", "usemetaserver")) {
+        useMetaserver = global_conf->getItem("cyphesis","usemetaserver");
+    }
+
+    std::string mserver("metaserver.worldforge.org");
+    if (global_conf->findItem("cyphesis", "metaserver")) {
+        mserver = global_conf->getItem("cyphesis", "metaserver");
+    }
+
+
     std::string serverName;
     if (global_conf->findItem("cyphesis", "servername")) {
         serverName = global_conf->getItem("cyphesis","servername");
@@ -88,17 +101,31 @@ int main(int argc, char ** argv)
     // world object pair (World + WorldRouter), and initialise the admin
     // account. The primary ruleset name is passed in so it
     // can be stored and queried by clients.
-    CommServer s(rulesets.front(), serverName);
+    ServerRouting server(rulesets.front(), serverName);
 
-    if (!s.setup(port_num)) {
+    CommServer commServer(server, serverName);
+
+    // This is where we should restore the database, before
+    // the listen sockets are open. Unlike earlier code, we are
+    // attempting to construct the internal state from the database,
+    // not creating a new world using the contents of the database as a
+    // template
+
+    CommListener * listener = new CommListener(commServer);
+    if (!listener->setup(port_num)) {
         log(ERROR, "Could not create listen socket. Init failed.");
         return EXIT_SOCKET_ERROR;
+    }
+    commServer.add(listener);
+
+    if (useMetaserver) {
+        commServer.setupMetaserver(mserver);
     }
 
     if (load_database) {
         Load l(Load::Instantiate());
         l.SetFrom("admin");
-        BaseEntity * admin = s.server.getObject("admin");
+        BaseEntity * admin = commServer.server.getObject("admin");
         if (admin == NULL) {
             log(ERROR, "Admin account not found, world not loaded.");
         } else {
@@ -112,12 +139,14 @@ int main(int argc, char ** argv)
     }
     log(INFO, "Running");
 
+    // Inform things that want to know that we are running.
     running();
+
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
         try {
-            s.loop();
+            commServer.loop();
         }
         catch (...) {
             // It is hoped that commonly thrown exception, particularly
@@ -133,7 +162,7 @@ int main(int argc, char ** argv)
     // by the game has been done before exit flag was set.
     log(NOTICE, "Performing clean shutdown...");
 
-    s.shutdown();
+    commServer.shutdown();
 
     } // close scope of CommServer, which cause the destruction of the
       // server and world objects, and the entire world contents

@@ -16,9 +16,8 @@
 
 static bool debug_flag = false;
 
-ServerRouting::ServerRouting(CommServer & server, const std::string & ruleset,
-                             const std::string & name) :
-        commServer(server), svrRuleset(ruleset), svrName(name),
+ServerRouting::ServerRouting(const std::string & ruleset, const std::string & name) :
+        svrRuleset(ruleset), svrName(name), numClients(0),
         world(*new WorldRouter(*this)), lobby(*new Lobby(*this))
 {
     setId(name);
@@ -46,7 +45,7 @@ void ServerRouting::addToObject(Fragment::MapType & omap) const
     omap["ruleset"] = svrRuleset;
     omap["name"] = svrName;
     omap["parents"] = Fragment::ListType(1, "server");
-    omap["clients"] = commServer.numClients();
+    omap["clients"] = numClients;
     omap["uptime"] = world.upTime();
     omap["builddate"] = std::string(consts::buildTime)+", "+std::string(consts::buildDate);
     omap["version"] = std::string(consts::version);

@@ -15,14 +15,14 @@ class CommServer;
 class ServerRouting : public OOGThing {
   private:
     BaseDict objects;
-    CommServer & commServer;
     const std::string svrRuleset;
     const std::string svrName;
+    int numClients;
     WorldRouter & world;
   public:
     Lobby & lobby;
 
-    ServerRouting(CommServer & server, const std::string & ruleset, const std::string & name);
+    ServerRouting(const std::string & ruleset, const std::string & name);
     ~ServerRouting();
 
     int idle();
@@ -48,6 +48,9 @@ class ServerRouting : public OOGThing {
             return I->second;
         }
     }
+
+    void incClients() { ++numClients; }
+    void decClients() { --numClients; }
 
     WorldRouter & getWorld() { return world; }
 

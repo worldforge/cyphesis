@@ -5,7 +5,6 @@
 #include "CommServer.h"
 
 #include "CommClient.h"
-#include "CommListener.h"
 #include "CommMetaClient.h"
 #include "ServerRouting_methods.h"
 #include "protocol_instructions.h"
@@ -13,16 +12,13 @@
 #include <common/log.h>
 #include <common/debug.h>
 
-#include <varconf/Config.h>
-
 #include <iostream>
 
 static const bool debug_flag = false;
 
-CommServer::CommServer(const std::string & ruleset, const std::string & ident) :
+CommServer::CommServer(ServerRouting & svr, const std::string & ident) :
               metaserverTime(-1), metaClient(* new CommMetaClient(*this)),
-              useMetaserver(true), identity(ident),
-              server(*new ServerRouting(*this, ruleset, ident))
+              useMetaserver(true), identity(ident), server(svr)
 {
 }
 
@@ -32,45 +28,23 @@ CommServer::~CommServer()
     for(; I != sockets.end(); I++) {
         delete *I;
     }
-    delete &server;
 }
 
-bool CommServer::setup(int port)
+void CommServer::setupMetaserver(const std::string & address)
 {
-    CommListener * cl = new CommListener(*this);
-
-    if (!cl->setup(port)) {
-	return false;
-    }
-
-    add(cl);
-
-    if (global_conf->findItem("cyphesis", "usemetaserver")) {
-        useMetaserver = global_conf->getItem("cyphesis","usemetaserver");
-    }
-
-    if (!useMetaserver) {
-        return true;
-    }
-
-    std::string mserver("metaserver.worldforge.org");
-
-    if (global_conf->findItem("cyphesis", "metaserver")) {
-        mserver = global_conf->getItem("cyphesis", "metaserver");
-    }
-
-    if (metaClient.setup(mserver)) {
-	add(&metaClient);
+    if (metaClient.setup(address)) {
+        add(&metaClient);
+        useMetaserver = true;
     } else {
-	useMetaserver = false;
+        useMetaserver = false;
     }
-    return true;
+    return;
 }
 
 void CommServer::shutdown()
 {
     if (useMetaserver) {
-	metaClient.metaserverTerminate();
+        metaClient.metaserverTerminate();
     }
 }
 

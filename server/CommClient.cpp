@@ -5,6 +5,7 @@
 #include "CommClient.h"
 #include "CommServer.h"
 #include "Connection.h"
+#include "ServerRouting.h"
 
 #include <common/log.h>
 #include <common/debug.h>
@@ -44,6 +45,7 @@ CommClient::CommClient(CommServer & svr, int fd, int port) :
     connectionId << ":" << client.sin_port;
     connection.setId(connectionId.str());
     clientIos.setTimeout(0,1000);
+    commServer.server.incClients();
 }
 
 
@@ -61,6 +63,7 @@ CommClient::~CommClient()
         delete codec;
     }
     clientIos.close();
+    commServer.server.decClients();
 }
 
 void CommClient::setup()
