@@ -1,3 +1,8 @@
+2004-01-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/nls.h, server/server.cpp: Try out gettext based
+	  internationalisation.
+
 2004-01-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Fix some bugs which can occur if from

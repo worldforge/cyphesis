@@ -21,6 +21,7 @@
 #include "common/globals.h"
 #include "common/inheritance.h"
 #include "common/system.h"
+#include "common/nls.h"
 
 #include <varconf/Config.h>
 
@@ -52,7 +53,7 @@ int main(int argc, char ** argv)
     // store server data.
     bool dbInit = Persistance::init();
     if (!dbInit) {
-        log(CRITICAL, "Critical error opening databases. Init failed.");
+        log(CRITICAL, _("Critical error opening databases. Init failed."));
         log(INFO, "Please ensure that the database tables can be created or accessed by cyphesis.");
         return EXIT_DATABASE_ERROR;
     }
@@ -111,12 +112,12 @@ int main(int argc, char ** argv)
     // not creating a new world using the contents of the database as a
     // template
 
-    log(INFO, "Restoring world from database...");
+    log(INFO, _("Restoring world from database..."));
 
     Restoration restore(server);
     restore.read();
 
-    log(INFO, " world restored");
+    log(INFO, _(" world restored"));
 
     CommListener * listener = new CommListener(commServer);
     if (!listener->setup(port_num)) {

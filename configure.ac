@@ -226,6 +226,9 @@ AC_SUBST(CYPHESIS_CFLAGS)
 AC_SUBST(CYPHESIS_LIBS)
 AC_SUBST(CYPHESIS_VERSION)
 
+dnl Internationalisation
+AM_GNU_GETTEXT
+
 dnl Generate files
 AC_OUTPUT([
     cyphesis.spec
