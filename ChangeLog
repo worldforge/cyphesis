@@ -1,5 +1,10 @@
 2004-12-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/mind/PigMind.py: Fix bug with pigs not responding
+	  to touch because of missing import.
+
+2004-12-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/move.py: Don't try and move to
 	  destination when displacement is pure vertical.
 

@@ -1,4 +1,5 @@
 from atlas import *
+from physics import *
 from Vector3D import Vector3D
 from mind.NPCMind import NPCMind
 
