@@ -1,3 +1,9 @@
+2004-11-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.h, server/WorldRouter.cpp: Modify operation()
+	  to it takes a non-const reference, thus removing the need to
+	  copy broadcast ops to change the TO attribute.
+
 2004-11-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp, rulesets/EntityProperties.cpp,

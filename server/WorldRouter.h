@@ -59,7 +59,7 @@ class WorldRouter : public BaseWorld {
     void delObject(Entity * obj);
     void setSerialnoOp(RootOperation &);
 
-    void operation(const RootOperation & op);
+    void operation(RootOperation & op);
 
     virtual void addPerceptive(const std::string &);
     virtual void message(RootOperation & op, const Entity * obj);

@@ -371,7 +371,9 @@ void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
 /// Determine the target of the operation and deliver it directly,
 /// or broadcast if broadcast is required. This function implements
 /// sight ranges for perception operations.
-void WorldRouter::operation(const RootOperation & op)
+/// @param op operation to be dispatched to the world. This is non-const
+/// so that broadcast ops can have their TO set correctly for each target.
+void WorldRouter::operation(RootOperation & op)
 {
     const std::string & to = op.getTo();
     debug(std::cout << "WorldRouter::operation {"
@@ -396,9 +398,9 @@ void WorldRouter::operation(const RootOperation & op)
             deliverTo(op, to_entity);
         }
     } else {
-        RootOperation newop = op;
+        // RootOperation newop = op;
         const EntitySet & broadcast = broadcastList(op);
-        const std::string & from = newop.getFrom();
+        const std::string & from = op.getFrom();
         EntityDict::const_iterator J = m_eobjects.find(from);
         if (from.empty()) {
             log(ERROR, "WorldRouter::operation dispatching op with no from");
@@ -413,8 +415,8 @@ void WorldRouter::operation(const RootOperation & op)
             EntitySet::const_iterator I = broadcast.begin();
             EntitySet::const_iterator Iend = broadcast.end();
             for (; I != Iend; ++I) {
-                newop.setTo((*I)->getId());
-                deliverTo(newop, *I);
+                op.setTo((*I)->getId());
+                deliverTo(op, *I);
             }
         } else {
             Entity * fromEnt = J->second;
@@ -440,8 +442,8 @@ void WorldRouter::operation(const RootOperation & op)
                                     << std::endl << std::flush;);
                     continue;
                 }
-                newop.setTo((*I)->getId());
-                deliverTo(newop, *I);
+                op.setTo((*I)->getId());
+                deliverTo(op, *I);
             }
         }
     }
