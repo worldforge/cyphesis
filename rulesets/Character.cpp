@@ -191,6 +191,7 @@ OpVector Character::SetupOperation(const Setup & op)
     // THis is so not the right thing to do
     s->setAttr("sub_to", "mind");
     res2[0] = s;
+#if 0
     Look * l = new Look();
     l->setTo(m_world->getId());
     res2[1] = l;
@@ -202,6 +203,11 @@ OpVector Character::SetupOperation(const Setup & op)
     l = new Look();
     l->setTo(getId());
     res2.push_back(l);
+#else
+    Look * l = new Look();
+    l->setTo(getId());
+    res2[1] = l;
+#endif
     Tick * tick = new Tick();
     tick->setTo(getId());
     res2.push_back(tick);

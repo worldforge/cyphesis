@@ -47,10 +47,13 @@ RootOperation * MemMap::lookId()
 Entity * MemMap::addId(const std::string & id)
 {
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
+    assert(m_entities.find(id) == m_entities.end());
     m_additionsById.push_back(id);
-    Atlas::Message::Element::MapType m;
-    m["id"] = Atlas::Message::Element(id);
-    return add(m);
+    Entity * entity = new Entity(id);
+    return addObject(entity);
+    // Atlas::Message::Element::MapType m;
+    // m["id"] = Atlas::Message::Element(id);
+    // return add(m);
 }
 
 void MemMap::del(const std::string & id)
@@ -80,7 +83,7 @@ Entity * MemMap::get(const std::string & id)
 
 Entity * MemMap::getAdd(const std::string & id)
 {
-    debug( std::cout << "MemMap::getAdd" << std::endl << std::flush;);
+    debug( std::cout << "MemMap::getAdd(" << id << ")" << std::endl << std::flush;);
     if (id.empty()) { return NULL; }
     EntityDict::const_iterator I = m_entities.find(id);
     if (I != m_entities.end()) {
@@ -163,11 +166,14 @@ Entity * MemMap::update(const Element::MapType & entmap)
     if (I != entmap.end() && I->second.isString()) {
         entity->setType(I->second.asString());
     }
-    debug( std::cout << " got " << entity << std::endl << std::flush;);
     // It is important that the entity is not mutated here. Ie, an update
     // should not affect its type, contain or id, and location and
     // stamp should be updated with accurate information
     entity->merge(entmap);
+    I = entmap.find("loc");
+    if ((I != entmap.end()) && I->second.isString()) {
+        getAdd(I->second.asString());
+    }
     entity->getLocation(entmap,m_entities);
     addContents(entmap);
     std::vector<std::string>::const_iterator K;

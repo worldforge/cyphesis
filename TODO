@@ -1,3 +1,11 @@
+There is probably a problem with getLocation bailing if LOC is not of the
+data from the mind code's point of view.
+
+Why the hell is there so much mind activity on database restore.
+
+Take precautions to ensure multiple looks don't get stacked up in the MindMap.
+Probably best done by making additionsById a map.
+
 Add some simple sound op examples
 
 Make Forest a non-solid bbox
