@@ -9,10 +9,12 @@
 // of this file reduces complexities in the dependency tree, and speeds up
 // compile time.
 
-#include <Atlas/Objects/Operation/RootOperation.h>
-
 namespace Atlas {
+    namespace Message {
+        class Element;
+    }
     namespace Objects {
+        class Root;
         namespace Operation {
             class Login;
             class Logout;

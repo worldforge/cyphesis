@@ -12,12 +12,12 @@
 typedef struct {
     PyObject_HEAD
     Vector3D coords;
-} Vector3DObject;
+} PyVector3D;
 
-extern PyTypeObject Vector3D_Type;
+extern PyTypeObject PyVector3D_Type;
 
-#define PyVector3D_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Vector3D_Type)
+#define PyVector3D_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyVector3D_Type)
 
-Vector3DObject * newVector3DObject(PyObject *);
+PyVector3D * newPyVector3D();
 
 #endif // RULESETS_PY_VECTOR3D_H

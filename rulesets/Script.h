@@ -7,8 +7,6 @@
 
 #include "common/types.h"
 
-#include <Atlas/Objects/Operation/RootOperation.h>
-
 #include <string>
 
 class Entity;

@@ -5,13 +5,15 @@
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
 
-static PyObject* Oplist_append(OplistObject * self, PyObject * args)
+static PyObject* Oplist_append(PyOplist * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->ops == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid OpVector");
+        PyErr_SetString(PyExc_AssertionError, "NULL Oplist in Oplist.append");
         return NULL;
     }
-    OperationObject * op;
+#endif // NDEBUG
+    PyOperation * op;
     if (!PyArg_ParseTuple(args, "O", &op)) {
         return NULL;
     }
@@ -32,7 +34,7 @@ static PyMethodDef Oplist_methods[] = {
     {NULL,		NULL}           /* sentinel */
 };
 
-static void Oplist_dealloc(OplistObject *self)
+static void Oplist_dealloc(PyOplist *self)
 {
     if (self->ops != NULL) {
         delete self->ops;
@@ -40,25 +42,27 @@ static void Oplist_dealloc(OplistObject *self)
     PyMem_DEL(self);
 }
 
-static PyObject * Oplist_getattr(OplistObject *self, char *name)
+static PyObject * Oplist_getattr(PyOplist *self, char *name)
 {
     return Py_FindMethod(Oplist_methods, (PyObject *)self, name);
 }
 
 
-static PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
+static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
 {
+#ifndef NDEBUG
     if (self->ops == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid OpVector");
+        PyErr_SetString(PyExc_AssertionError, "NULL Oplist in Oplist.num_add");
         return NULL;
     }
+#endif // NDEBUG
     if (other == Py_None) {
         Py_INCREF(self);
         return (PyObject*)self;
     }
     if (PyOplist_Check(other)) {
-        OplistObject * opl = (OplistObject*)other;
-        OplistObject * res = newOplistObject(NULL);
+        PyOplist * opl = (PyOplist*)other;
+        PyOplist * res = newPyOplist();
         if (res == NULL) {
             return NULL;
         }
@@ -69,11 +73,13 @@ static PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         return (PyObject*)res;
     }
     if (PyOperation_Check(other)) {
-        OperationObject * op = (OperationObject*)other;
+        PyOperation * op = (PyOperation*)other;
+#ifndef NDEBUG
         if (op->operation == NULL) {
-            PyErr_SetString(PyExc_TypeError, "invalid operation");
+            PyErr_SetString(PyExc_AssertionError, "NULL Operation in other of Oplist.num_add");
         }
-        OplistObject * res = newOplistObject(NULL);
+#endif // NDEBUG
+        PyOplist * res = newPyOplist();
         if (res == NULL) {
             return NULL;
         }
@@ -96,12 +102,14 @@ static int Oplist_num_coerce(PyObject ** self, PyObject ** other)
     //return -1;
 }
 
-static int Oplist_seq_length(OplistObject * self)
+static int Oplist_seq_length(PyOplist * self)
 {
+#ifndef NDEBUG
     if (self->ops == NULL) {
-        PyErr_SetString(PyExc_TypeError,"invalid operation");
+        PyErr_SetString(PyExc_AssertionError,"Invalid Oplist in Oplist.seq_length");
         return 0;
     }
+#endif // NDEBUG
     return self->ops->size();
 } 
 
@@ -150,11 +158,11 @@ static PyNumberMethods Oplist_as_number = {
 	0
 };
 
-PyTypeObject Oplist_Type = {
+PyTypeObject PyOplist_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,				/*ob_size*/
 	"Oplist",			/*tp_name*/
-	sizeof(OplistObject),		/*tp_basicsize*/
+	sizeof(PyOplist),		/*tp_basicsize*/
 	0,				/*tp_itemsize*/
 	/* methods */
 	(destructor)Oplist_dealloc,	/*tp_dealloc*/
@@ -169,10 +177,10 @@ PyTypeObject Oplist_Type = {
 	0,				/*tp_hash*/
 };
 
-OplistObject * newOplistObject(PyObject *arg)
+PyOplist * newPyOplist()
 {
-	OplistObject * self;
-	self = PyObject_NEW(OplistObject, &Oplist_Type);
+	PyOplist * self;
+	self = PyObject_NEW(PyOplist, &PyOplist_Type);
 	if (self == NULL) {
 		return NULL;
 	}

@@ -8,6 +8,8 @@
 #include "types.h"
 #include "operations.h"
 
+#include <Atlas/Message/Element.h>
+
 #include <sigc++/object.h>
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
@@ -15,6 +17,7 @@
 #include <sigc++/signal.h>
 #endif
 
+#include <string>
 
 // This is the base class from which all other entity like classes inherit,
 // both in game and out of game.
@@ -89,10 +92,6 @@ class BaseEntity : virtual public SigC::Object {
     OpVector callOperation(const RootOperation & op);
     OpVector error(const RootOperation & op, const char * errstring,
                    const std::string & to = "") const;
-
-    void setRefnoOp(RootOperation * op, const RootOperation & ref_op) const {
-        op->setRefno(ref_op.getSerialno());
-    }
 
     SigC::Signal0<void> destroyed;
 };

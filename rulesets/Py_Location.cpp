@@ -10,28 +10,29 @@
 
 #include "Entity.h"
 
-static PyObject * Location_copy(LocationObject *self, PyObject *args)
+static PyObject * Location_copy(PyLocation *self, PyObject *args)
 {
+#ifndef NDEBUG
     if (self->location == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid location");
+        PyErr_SetString(PyExc_AssertionError, "NULL Location in Location.copy");
         return NULL;
     }
+#endif // NDEBUG
     if (!PyArg_ParseTuple(args, "")) {
-        PyErr_SetString(PyExc_TypeError, "location.copy() has no args");
         return NULL;
     }
-    LocationObject * ret = newLocationObject(NULL);
+    PyLocation * ret = newPyLocation();
     ret->location = new Location(self->location->m_loc, self->location->m_pos, self->location->m_velocity);
     ret->own = 1;
     return (PyObject *)ret;
 }
 
 static PyMethodDef Location_methods[] = {
-    {"copy",		(PyCFunction)Location_copy,	METH_VARARGS},
-    {NULL,		NULL}           /* sentinel */
+    {"copy",            (PyCFunction)Location_copy,     METH_VARARGS},
+    {NULL,              NULL}           /* sentinel */
 };
 
-static void Location_dealloc(LocationObject *self)
+static void Location_dealloc(PyLocation *self)
 {
     if ((self->own != 0) && (self->location != NULL)) {
         delete self->location;
@@ -39,76 +40,82 @@ static void Location_dealloc(LocationObject *self)
     PyMem_DEL(self);
 }
 
-static PyObject * Location_getattr(LocationObject *self, char *name)
+static PyObject * Location_getattr(PyLocation *self, char *name)
 {
+#ifndef NDEBUG
     if (self->location == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid location");
+        PyErr_SetString(PyExc_AssertionError, "NULL Location in Location.getattr");
         return NULL;
     }
+#endif // NDEBUG
     if (strcmp(name, "parent") == 0) {
         if (self->location->m_loc == NULL) {
             Py_INCREF(Py_None);
             return Py_None;
         }
-        EntityObject * thing = newEntityObject(NULL);
+        PyEntity * thing = newPyEntity();
         thing->m_entity = self->location->m_loc;
         return (PyObject *)thing;
     }
     if (strcmp(name, "coordinates") == 0) {
-        Vector3DObject * v = newVector3DObject(NULL);
+        PyVector3D * v = newPyVector3D();
         v->coords = self->location->m_pos;
         return (PyObject *)v;
     }
     if (strcmp(name, "velocity") == 0) {
-        Vector3DObject * v = newVector3DObject(NULL);
+        PyVector3D * v = newPyVector3D();
         v->coords = self->location->m_velocity;
         return (PyObject *)v;
     }
     if (strcmp(name, "orientation") == 0) {
-        QuaternionObject * v = newQuaternionObject(NULL);
+        PyQuaternion * v = newPyQuaternion();
         v->rotation = self->location->m_orientation;
         return (PyObject *)v;
     }
     if (strcmp(name, "bbox") == 0) {
-        BBoxObject * b = newBBoxObject(NULL);
+        PyBBox * b = newPyBBox();
         b->box = self->location->m_bBox;
         return (PyObject *)b;
     }
     return Py_FindMethod(Location_methods, (PyObject *)self, name);
 }
 
-static int Location_setattr(LocationObject *self, char *name, PyObject *v)
+static int Location_setattr(PyLocation *self, char *name, PyObject *v)
 {
+#ifndef NDEBUG
     if (self->location == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid location");
+        PyErr_SetString(PyExc_AssertionError, "NULL Location in Location.setattr");
         return -1;
     }
+#endif // NDEBUG
     if (strcmp(name, "parent") == 0) {
         if (!PyEntity_Check(v)) {
             PyErr_SetString(PyExc_TypeError, "parent must be a thing");
             return -1;
         }
-        EntityObject * thing = (EntityObject *)v;
+        PyEntity * thing = (PyEntity *)v;
+#ifndef NDEBUG
         if (thing->m_entity == NULL) {
-            PyErr_SetString(PyExc_TypeError, "invalid thing");
+            PyErr_SetString(PyExc_AssertionError, "invalid thing");
             return -1;
         }
+#endif // NDEBUG
         self->location->m_loc = thing->m_entity;
         return 0;
     }
     if ((strcmp(name, "bbox") == 0) && PyBBox_Check(v)) {
-        BBoxObject * box = (BBoxObject *)v;
+        PyBBox * box = (PyBBox *)v;
         self->location->m_bBox = box->box;
         return 0;
     }
     if ((strcmp(name, "orientation") == 0) && PyQuaternion_Check(v)) {
-        QuaternionObject * quat = (QuaternionObject *)v;
+        PyQuaternion * quat = (PyQuaternion *)v;
         self->location->m_orientation = quat->rotation;
         return 0;
     }
     Vector3D vector;
     if (PyVector3D_Check(v)) {
-        Vector3DObject * vec = (Vector3DObject *)v;
+        PyVector3D * vec = (PyVector3D *)v;
         if (!vec->coords.isValid()) {
             fprintf(stderr, "This vector is not set\n");
         }
@@ -158,33 +165,33 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
     return 0;
 }
 
-PyTypeObject Location_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,				/*ob_size*/
-	"Location",			/*tp_name*/
-	sizeof(LocationObject),		/*tp_basicsize*/
-	0,				/*tp_itemsize*/
-	/* methods */
-	(destructor)Location_dealloc,	/*tp_dealloc*/
-	0,				/*tp_print*/
-	(getattrfunc)Location_getattr,	/*tp_getattr*/
-	(setattrfunc)Location_setattr,	/*tp_setattr*/
-	0,				/*tp_compare*/
-	0,				/*tp_repr*/
-	0,				/*tp_as_number*/
-	0,				/*tp_as_sequence*/
-	0,				/*tp_as_mapping*/
-	0,				/*tp_hash*/
+PyTypeObject PyLocation_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "Location",                     /*tp_name*/
+        sizeof(PyLocation),             /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        (destructor)Location_dealloc,   /*tp_dealloc*/
+        0,                              /*tp_print*/
+        (getattrfunc)Location_getattr,  /*tp_getattr*/
+        (setattrfunc)Location_setattr,  /*tp_setattr*/
+        0,                              /*tp_compare*/
+        0,                              /*tp_repr*/
+        0,                              /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
 };
 
-LocationObject * newLocationObject(PyObject *arg)
+PyLocation * newPyLocation()
 {
-	LocationObject * self;
-	self = PyObject_NEW(LocationObject, &Location_Type);
-	if (self == NULL) {
-		return NULL;
-	}
+        PyLocation * self;
+        self = PyObject_NEW(PyLocation, &PyLocation_Type);
+        if (self == NULL) {
+                return NULL;
+        }
         self->location = NULL;
         self->own = 0;
-	return self;
+        return self;
 }

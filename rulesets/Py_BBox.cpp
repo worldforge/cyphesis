@@ -9,22 +9,22 @@ static PyMethodDef BBox_methods[] = {
     {NULL, NULL}  // sentinel
 };
 
-static void BBox_dealloc(BBoxObject * self)
+static void BBox_dealloc(PyBBox * self)
 {
     self->box.~BBox();
     PyMem_DEL(self);
 }
 
-static PyObject * BBox_getattr(BBoxObject *self, char *name)
+static PyObject * BBox_getattr(PyBBox *self, char *name)
 {
     if (strcmp(name, "near_point") == 0) {
-        Vector3DObject * v = newVector3DObject(NULL);
+        PyVector3D * v = newPyVector3D();
         const WFMath::Point<3> & lc = self->box.lowCorner();
         v->coords = Vector3D(lc.x(), lc.y(), lc.z());
         return (PyObject *)v;
     }
     if (strcmp(name, "far_point") == 0) {
-        Vector3DObject * v = newVector3DObject(NULL);
+        PyVector3D * v = newPyVector3D();
         const WFMath::Point<3> & hc = self->box.highCorner();
         v->coords = Vector3D(hc.x(), hc.y(), hc.z());
         return (PyObject *)v;
@@ -33,12 +33,12 @@ static PyObject * BBox_getattr(BBoxObject *self, char *name)
     return Py_FindMethod(BBox_methods, (PyObject *)self, name);
 }
 
-static int BBox_setattr(BBoxObject *self, char *name, PyObject *v)
+static int BBox_setattr(PyBBox *self, char *name, PyObject *v)
 {
     if (!PyVector3D_Check(v)) {
         PyErr_SetString(PyExc_TypeError, "BBox setattr must take tuple of floats, or ints");
     }
-    Vector3DObject * vec = (Vector3DObject *)v;
+    PyVector3D * vec = (PyVector3D *)v;
     if (!vec->coords.isValid()) {
         fprintf(stderr, "This vector is not valid\n");
     }
@@ -56,7 +56,7 @@ static int BBox_setattr(BBoxObject *self, char *name, PyObject *v)
     return 0;
 }
 
-static int BBox_compare(BBoxObject * self, BBoxObject * other)
+static int BBox_compare(PyBBox * self, PyBBox * other)
 {
     if (!PyBBox_Check(other)) {
         return -1;
@@ -67,11 +67,11 @@ static int BBox_compare(BBoxObject * self, BBoxObject * other)
     return 1;
 }
 
-PyTypeObject BBox_Type = {
+PyTypeObject PyBBox_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
         "BBox",                         /*tp_name*/
-        sizeof(BBoxObject),             /*tp_basicsize*/
+        sizeof(PyBBox),             /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
         (destructor)BBox_dealloc,       /*tp_dealloc*/
@@ -86,10 +86,10 @@ PyTypeObject BBox_Type = {
         0,                              /*tp_hash*/
 };
 
-BBoxObject * newBBoxObject(PyObject *arg)
+PyBBox * newPyBBox()
 {
-        BBoxObject * self;
-        self = PyObject_NEW(BBoxObject, &BBox_Type);
+        PyBBox * self;
+        self = PyObject_NEW(PyBBox, &PyBBox_Type);
         if (self == NULL) {
                 return NULL;
         }

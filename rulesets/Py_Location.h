@@ -11,14 +11,14 @@ class Location;
 
 typedef struct {
     PyObject_HEAD
-    Location	* location;
-    int		own;
-} LocationObject;
+    Location * location;
+    int own;
+} PyLocation;
 
-extern PyTypeObject Location_Type;
+extern PyTypeObject PyLocation_Type;
 
-#define PyLocation_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Location_Type)
+#define PyLocation_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyLocation_Type)
 
-LocationObject * newLocationObject(PyObject *);
+PyLocation * newPyLocation();
 
 #endif // RULESETS_PY_LOCATION_H

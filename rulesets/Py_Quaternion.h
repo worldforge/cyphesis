@@ -12,12 +12,12 @@
 typedef struct {
     PyObject_HEAD
     Quaternion rotation;
-} QuaternionObject;
+} PyQuaternion;
 
-extern PyTypeObject Quaternion_Type;
+extern PyTypeObject PyQuaternion_Type;
 
-#define PyQuaternion_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Quaternion_Type)
+#define PyQuaternion_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyQuaternion_Type)
 
-QuaternionObject * newQuaternionObject(PyObject *);
+PyQuaternion * newPyQuaternion();
 
 #endif // RULESETS_PY_QUATERNION_H

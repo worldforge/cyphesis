@@ -13,6 +13,8 @@
 #include "common/log.h"
 #include "common/debug.h"
 
+#include <Atlas/Objects/Operation/RootOperation.h>
+
 static const bool debug_flag = false;
 
 PythonEntityScript::PythonEntityScript(PyObject * o, Entity & t) :
@@ -41,7 +43,7 @@ bool PythonEntityScript::Operation(const std::string & op_type,
                          << "." << op_name << std::endl << std::flush;);
         return false;
     }
-    ConstOperationObject * py_op = newAtlasConstRootOperation(NULL);
+    PyConstOperation * py_op = newPyConstOperation();
     py_op->operation = &op;
     py_op->own = 0;
     py_op->from = m_entity.m_world->getObject(op.getFrom());
@@ -54,7 +56,7 @@ bool PythonEntityScript::Operation(const std::string & op_type,
         debug( std::cout << "Called python method " << op_name
                          << " for object " << std::endl << std::flush;);
         if (PyOperation_Check(ret)) {
-            OperationObject * op = (OperationObject*)ret;
+            PyOperation * op = (PyOperation*)ret;
             if (op->operation != NULL) {
                 ret_list.push_back(op->operation);
                 op->own = 0;
@@ -63,7 +65,7 @@ bool PythonEntityScript::Operation(const std::string & op_type,
                                  << std::endl << std::flush;);
             }
         } else if (PyOplist_Check(ret)) {
-            OplistObject * op = (OplistObject*)ret;
+            PyOplist * op = (PyOplist*)ret;
             if (op->ops != NULL) {
                 ret_list = *op->ops;
             } else {

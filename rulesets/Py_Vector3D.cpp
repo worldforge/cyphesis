@@ -4,9 +4,9 @@
 
 #include "Py_Vector3D.h"
 
-static PyObject * Vector3D_dot(Vector3DObject * self, PyObject * args)
+static PyObject * Vector3D_dot(PyVector3D * self, PyObject * args)
 {
-    Vector3DObject * other;
+    PyVector3D * other;
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
     }
@@ -17,9 +17,9 @@ static PyObject * Vector3D_dot(Vector3DObject * self, PyObject * args)
     return PyFloat_FromDouble(Dot(self->coords, other->coords));
 }
 
-static PyObject * Vector3D_cross(Vector3DObject * self, PyObject * args)
+static PyObject * Vector3D_cross(PyVector3D * self, PyObject * args)
 {
-    Vector3DObject * other;
+    PyVector3D * other;
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
     }
@@ -27,7 +27,7 @@ static PyObject * Vector3D_cross(Vector3DObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "Can only cross with Vector3D");
         return NULL;
     }
-    Vector3DObject * ret = newVector3DObject(NULL);
+    PyVector3D * ret = newPyVector3D();
     if (ret == NULL) {
         return NULL;
     }
@@ -35,7 +35,7 @@ static PyObject * Vector3D_cross(Vector3DObject * self, PyObject * args)
     return (PyObject *)ret;
 }
 
-static PyObject * Vector3D_rotatex(Vector3DObject * self, PyObject * args)
+static PyObject * Vector3D_rotatex(PyVector3D * self, PyObject * args)
 {
     double angle;
     if (!PyArg_ParseTuple(args, "d", &angle)) {
@@ -46,7 +46,7 @@ static PyObject * Vector3D_rotatex(Vector3DObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * Vector3D_rotatey(Vector3DObject * self, PyObject * args)
+static PyObject * Vector3D_rotatey(PyVector3D * self, PyObject * args)
 {
     double angle;
     if (!PyArg_ParseTuple(args, "d", &angle)) {
@@ -57,7 +57,7 @@ static PyObject * Vector3D_rotatey(Vector3DObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * Vector3D_rotatez(Vector3DObject * self, PyObject * args)
+static PyObject * Vector3D_rotatez(PyVector3D * self, PyObject * args)
 {
     double angle;
     if (!PyArg_ParseTuple(args, "d", &angle)) {
@@ -68,9 +68,9 @@ static PyObject * Vector3D_rotatez(Vector3DObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * Vector3D_angle(Vector3DObject * self, PyObject * args)
+static PyObject * Vector3D_angle(PyVector3D * self, PyObject * args)
 {
-    Vector3DObject * other;
+    PyVector3D * other;
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
     }
@@ -81,7 +81,7 @@ static PyObject * Vector3D_angle(Vector3DObject * self, PyObject * args)
     return PyFloat_FromDouble(Angle(self->coords, other->coords));
 }
 
-static PyObject * Vector3D_mag(Vector3DObject * self, PyObject * args)
+static PyObject * Vector3D_mag(PyVector3D * self, PyObject * args)
 {
     if (!PyArg_ParseTuple(args, "")) {
         return NULL;
@@ -89,12 +89,12 @@ static PyObject * Vector3D_mag(Vector3DObject * self, PyObject * args)
     return PyFloat_FromDouble(self->coords.mag());
 }
 
-static PyObject * Vector3D_unit_vector(Vector3DObject * self, PyObject * args)
+static PyObject * Vector3D_unit_vector(PyVector3D * self, PyObject * args)
 {
     if (!PyArg_ParseTuple(args, "")) {
         return NULL;
     }
-    Vector3DObject * ret = newVector3DObject(NULL);
+    PyVector3D * ret = newPyVector3D();
     if (ret == NULL) {
         return NULL;
     }
@@ -103,9 +103,9 @@ static PyObject * Vector3D_unit_vector(Vector3DObject * self, PyObject * args)
     return (PyObject *)ret;
 }
 
-static PyObject *Vector3D_unit_vector_to(Vector3DObject * self, PyObject * args)
+static PyObject *Vector3D_unit_vector_to(PyVector3D * self, PyObject * args)
 {
-    Vector3DObject * other;
+    PyVector3D * other;
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
     }
@@ -113,7 +113,7 @@ static PyObject *Vector3D_unit_vector_to(Vector3DObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "Can get unit vector to Vector3D");
         return NULL;
     }
-    Vector3DObject * ret = newVector3DObject(NULL);
+    PyVector3D * ret = newPyVector3D();
     if (ret == NULL) {
         return NULL;
     }
@@ -122,9 +122,9 @@ static PyObject *Vector3D_unit_vector_to(Vector3DObject * self, PyObject * args)
     return (PyObject *)ret;
 }
 
-static PyObject * Vector3D_distance(Vector3DObject * self, PyObject * args)
+static PyObject * Vector3D_distance(PyVector3D * self, PyObject * args)
 {
-    Vector3DObject * other;
+    PyVector3D * other;
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
     }
@@ -149,13 +149,13 @@ static PyMethodDef Vector3D_methods[] = {
     {NULL,              NULL}           /* sentinel */
 };
 
-static void Vector3D_dealloc(Vector3DObject *self)
+static void Vector3D_dealloc(PyVector3D *self)
 {
     self->coords.~Vector3D();
     PyMem_DEL(self);
 }
 
-static PyObject * Vector3D_getattr(Vector3DObject *self, char *name)
+static PyObject * Vector3D_getattr(PyVector3D *self, char *name)
 {
     //if (!self->coords) {
         //PyErr_SetString(PyExc_TypeError, "unset Vector");
@@ -168,12 +168,12 @@ static PyObject * Vector3D_getattr(Vector3DObject *self, char *name)
     return Py_FindMethod(Vector3D_methods, (PyObject *)self, name);
 }
 
-static int Vector3D_setattr(Vector3DObject *self, char *name, PyObject *v)
+static int Vector3D_setattr(PyVector3D *self, char *name, PyObject *v)
 {
     return 0;
 }
 
-static int Vector3D_compare(Vector3DObject * self, Vector3DObject * other)
+static int Vector3D_compare(PyVector3D * self, PyVector3D * other)
 {
     if (!PyVector3D_Check(other)) {
         return -1;
@@ -184,13 +184,13 @@ static int Vector3D_compare(Vector3DObject * self, Vector3DObject * other)
     return 1;
 }
 
-static Vector3DObject*Vector3D_num_add(Vector3DObject*self,Vector3DObject*other)
+static PyVector3D*Vector3D_num_add(PyVector3D*self,PyVector3D*other)
 {
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only add Vector3D to Vector3D");
         return NULL;
     }
-    Vector3DObject * ret = newVector3DObject(NULL);
+    PyVector3D * ret = newPyVector3D();
     if (ret == NULL) {
         return NULL;
     }
@@ -198,13 +198,13 @@ static Vector3DObject*Vector3D_num_add(Vector3DObject*self,Vector3DObject*other)
     return ret;
 }
 
-static Vector3DObject*Vector3D_num_sub(Vector3DObject*self,Vector3DObject*other)
+static PyVector3D*Vector3D_num_sub(PyVector3D*self,PyVector3D*other)
 {
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only sub Vector3D from Vector3D");
         return NULL;
     }
-    Vector3DObject * ret = newVector3DObject(NULL);
+    PyVector3D * ret = newPyVector3D();
     if (ret == NULL) {
         return NULL;
     }
@@ -212,7 +212,7 @@ static Vector3DObject*Vector3D_num_sub(Vector3DObject*self,Vector3DObject*other)
     return ret;
 }
 
-static Vector3DObject * Vector3D_num_mul(Vector3DObject * self, PyObject * _other)
+static PyVector3D * Vector3D_num_mul(PyVector3D * self, PyObject * _other)
 {
     double other;
     if (PyInt_Check(_other)) {
@@ -223,7 +223,7 @@ static Vector3DObject * Vector3D_num_mul(Vector3DObject * self, PyObject * _othe
         PyErr_SetString(PyExc_TypeError, "Vector3D can only be multiplied by numeric value");
         return NULL;
     }
-    Vector3DObject * ret = newVector3DObject(NULL);
+    PyVector3D * ret = newPyVector3D();
     if (ret == NULL) {
         return NULL;
     }
@@ -231,7 +231,7 @@ static Vector3DObject * Vector3D_num_mul(Vector3DObject * self, PyObject * _othe
     return ret;
 }
 
-static Vector3DObject * Vector3D_num_div(Vector3DObject * self, PyObject * _other)
+static PyVector3D * Vector3D_num_div(PyVector3D * self, PyObject * _other)
 {
     double other;
     if (PyInt_Check(_other)) {
@@ -242,7 +242,7 @@ static Vector3DObject * Vector3D_num_div(Vector3DObject * self, PyObject * _othe
         PyErr_SetString(PyExc_TypeError, "Vector3D can only be divided by numeric value");
         return NULL;
     }
-    Vector3DObject * ret = newVector3DObject(NULL);
+    PyVector3D * ret = newPyVector3D();
     if (ret == NULL) {
         return NULL;
     }
@@ -283,11 +283,11 @@ static PyNumberMethods Vector3D_num = {
         0                               /* nb_hex */
 };
 
-PyTypeObject Vector3D_Type = {
+PyTypeObject PyVector3D_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
         "Vector3D",                     /*tp_name*/
-        sizeof(Vector3DObject),         /*tp_basicsize*/
+        sizeof(PyVector3D),         /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
         (destructor)Vector3D_dealloc,   /*tp_dealloc*/
@@ -302,10 +302,10 @@ PyTypeObject Vector3D_Type = {
         0,                              /*tp_hash*/
 };
 
-Vector3DObject * newVector3DObject(PyObject *arg)
+PyVector3D * newPyVector3D()
 {
-        Vector3DObject * self;
-        self = PyObject_NEW(Vector3DObject, &Vector3D_Type);
+        PyVector3D * self;
+        self = PyObject_NEW(PyVector3D, &PyVector3D_Type);
         if (self == NULL) {
                 return NULL;
         }

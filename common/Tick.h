@@ -5,6 +5,8 @@
 #ifndef COMMON_TICK_H
 #define COMMON_TICK_H
 
+#include <Atlas/Objects/Operation/RootOperation.h>
+
 namespace Atlas { namespace Objects { namespace Operation {
 
 class Tick : public RootOperation {

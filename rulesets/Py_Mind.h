@@ -11,14 +11,14 @@ class BaseMind;
 
 typedef struct {
     PyObject_HEAD
-    PyObject	* Mind_attr;	// Attributes dictionary
-    BaseMind	* m_mind;
-} MindObject;
+    PyObject * Mind_attr;    // Attributes dictionary
+    BaseMind * m_mind;
+} PyMind;
 
-extern PyTypeObject Mind_Type;
+extern PyTypeObject PyMind_Type;
 
-#define PyMind_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Mind_Type)
+#define PyMind_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyMind_Type)
 
-MindObject * newMindObject(PyObject *);
+PyMind * newPyMind();
 
 #endif // RULESETS_PY_MIND_H

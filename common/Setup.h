@@ -5,6 +5,8 @@
 #ifndef COMMON_SETUP_H
 #define COMMON_SETUP_H
 
+#include <Atlas/Objects/Operation/RootOperation.h>
+
 namespace Atlas { namespace Objects { namespace Operation {
 
 class Setup : public RootOperation {

@@ -28,6 +28,11 @@
 
 static const bool debug_flag = false;
 
+static inline void setRefnoOp(RootOperation * op, const RootOperation & ref_op)
+{
+    op->setRefno(ref_op.getSerialno());
+}
+
 Account::Account(Connection * conn, const std::string & uname,
                  const std::string& passwd, const std::string & id)
                  : OOGThing(id), m_connection(conn),

@@ -34,6 +34,91 @@ Inheritance::Inheritance()
     atlasObjects["root"] = new Atlas::Objects::Root();
 }
 
+void Inheritance::flush()
+{
+    std::map<std::string, Atlas::Objects::Root *>::const_iterator I;
+    for(I = atlasObjects.begin(); I != atlasObjects.end(); ++I) {
+        delete I->second;
+    }
+    atlasObjects.clear();
+}
+
+Inheritance & Inheritance::instance()
+{
+    if (m_instance == NULL) {
+        m_instance = new Inheritance();
+        installStandardObjects();
+        installCustomOperations();
+        installCustomEntities();
+    }
+    return *m_instance;
+}
+
+void Inheritance::clear()
+{
+    if (m_instance != NULL) {
+        m_instance->flush();
+        delete m_instance;
+    }
+}
+
+OpNo Inheritance::opEnumerate(const std::string & parent) const
+{
+    OpNoDict::const_iterator I = opLookup.find(parent);
+    if (I != opLookup.end()) {
+        return I->second;
+    } else {
+        return OP_INVALID;
+    }
+}
+
+OpNo Inheritance::opEnumerate(const RootOperation & op) const
+{
+    const Atlas::Message::Element::ListType & parents = op.getParents();
+    if (parents.size() != 1) {
+        log(ERROR, "op with no parents");
+    }
+    if (!parents.begin()->isString()) {
+        log(ERROR, "op with non-string parent");
+    }
+    const std::string & parent = parents.begin()->asString();
+    return opEnumerate(parent);
+}
+
+Atlas::Objects::Root * Inheritance::get(const std::string & parent)
+{
+    std::map<std::string, Atlas::Objects::Root *>::const_iterator I = atlasObjects.find(parent);
+    if (I == atlasObjects.end()) {
+        return NULL;
+    }
+    return I->second;
+}
+
+bool Inheritance::addChild(Atlas::Objects::Root * obj)
+{
+    const std::string & child = obj->getId();
+    const std::string & parent = obj->getParents().front().asString();
+    if (atlasObjects.find(child) != atlasObjects.end()) {
+        std::string msg = std::string("Installing type ") + child 
+                        + "(" + parent + ") which was already installed";
+        log(WARNING, msg.c_str());
+        delete obj;
+        return true;
+    }
+    std::map<std::string, Atlas::Objects::Root *>::const_iterator I = atlasObjects.find(parent);
+    if (I == atlasObjects.end()) {
+        throw InheritanceException(parent);
+    }
+    Atlas::Message::Element::ListType children(1, child);
+    if (I->second->hasAttr("children")) {
+        children = I->second->getAttr("children").asList();
+        children.push_back(child);
+    }
+    I->second->setAttr("children", Atlas::Message::Element(children));
+    atlasObjects[child] = obj;
+    return false;
+}
+
 void installStandardObjects()
 {
     Inheritance & i = Inheritance::instance();

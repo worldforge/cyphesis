@@ -11,14 +11,14 @@ class Entity;
 
 typedef struct {
     PyObject_HEAD
-    PyObject	* Entity_attr;	// Attributes dictionary
-    Entity	* m_entity;
-} EntityObject;
+    PyObject * Entity_attr;  // Attributes dictionary
+    Entity * m_entity;
+} PyEntity;
 
-extern PyTypeObject Entity_Type;
+extern PyTypeObject PyEntity_Type;
 
-#define PyEntity_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Entity_Type)
+#define PyEntity_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyEntity_Type)
 
-EntityObject * newEntityObject(PyObject *);
+PyEntity * newPyEntity();
 
 #endif // RULESETS_PY_THING_H

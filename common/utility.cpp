@@ -7,12 +7,8 @@
 #include <Atlas/Objects/Entity/RootEntity.h>
 #include <Atlas/Objects/Operation/RootOperation.h>
 
-using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
-using Atlas::Objects::Operation::RootOperation;
-
-using Atlas::Message::Element;
 
 namespace utility {
 
@@ -25,9 +21,9 @@ Root * Object_asRoot(const Atlas::Message::Element & o)
     if ((I != o.asMap().end()) &&
         (I->second.isString())) {
         if (I->second.asString() == "object") {
-    	    obj = new RootEntity;
+            obj = new RootEntity;
         } else if (I->second.asString() == "op") {
-    	    obj = new RootOperation;
+            obj = new RootOperation;
         } else {
             obj = new Root;
         }

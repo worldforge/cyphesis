@@ -4,7 +4,6 @@
 
 #include "Entity.h"
 #include "MemMap.h"
-#include "MemMap_methods.h"
 #include "Script.h"
 
 #include "modules/Location.h"
@@ -12,6 +11,83 @@
 #include "common/debug.h"
 
 #include <Atlas/Objects/Operation/Look.h>
+
+static const bool debug_flag = false;
+
+Entity * MemMap::addObject(Entity * object)
+{
+    debug(std::cout << "MemMap::addObject " << object << " " << object->getId()
+                    << std::endl << std::flush;);
+    m_entities[object->getId()] = object;
+
+    debug( std::cout << this << std::endl << std::flush;);
+    std::vector<std::string>::const_iterator I;
+    for(I = m_addHooks.begin(); I != m_addHooks.end(); I++) {
+        m_script->hook(*I, object);
+    }
+    return object;
+}
+
+RootOperation * MemMap::lookId()
+{
+    debug( std::cout << "MemMap::lookId" << std::endl << std::flush;);
+    if (!m_additionsById.empty()) {
+        const std::string & id = m_additionsById.front();
+        Look * l = new Look(Look::Instantiate());
+        Atlas::Message::Element::MapType m;
+        m["id"] = Atlas::Message::Element(id);
+        l->setArgs(Atlas::Message::Element::ListType(1, m));
+        l->setTo(id);
+        m_additionsById.pop_front();
+        return l;
+    }
+    return NULL;
+}
+
+Entity * MemMap::addId(const std::string & id)
+{
+    debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
+    m_additionsById.push_back(id);
+    Atlas::Message::Element::MapType m;
+    m["id"] = Atlas::Message::Element(id);
+    return add(m);
+}
+
+void MemMap::del(const std::string & id)
+{
+    EntityDict::iterator I = m_entities.find(id);
+    if (I != m_entities.end()) {
+        Entity * obj = I->second;
+        m_entities.erase(I);
+        std::vector<std::string>::const_iterator J;
+        for(J = m_deleteHooks.begin(); J != m_deleteHooks.end(); J++) {
+            m_script->hook(*J, obj);
+        }
+        delete obj;
+    }
+}
+
+Entity * MemMap::get(const std::string & id)
+{
+    debug( std::cout << "MemMap::get" << std::endl << std::flush;);
+    if (id.empty()) { return NULL; }
+    EntityDict::const_iterator I = m_entities.find(id);
+    if (I != m_entities.end()) {
+        return I->second;
+    }
+    return NULL;
+}
+
+Entity * MemMap::getAdd(const std::string & id)
+{
+    debug( std::cout << "MemMap::getAdd" << std::endl << std::flush;);
+    if (id.empty()) { return NULL; }
+    EntityDict::const_iterator I = m_entities.find(id);
+    if (I != m_entities.end()) {
+        return I->second;
+    }
+    return addId(id);
+}
 
 void MemMap::addContents(const Element::MapType & entmap)
 {

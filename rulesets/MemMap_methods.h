@@ -5,6 +5,8 @@
 #ifndef RULESETS_MEM_MAP_METHODS_H
 #define RULESETS_MEM_MAP_METHODS_H
 
+#error This file has been removed from the build
+
 #include "MemMap.h"
 
 #include "Entity.h"
@@ -15,7 +17,6 @@
 #include "common/debug.h"
 
 #include <Atlas/Message/Element.h>
-#include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Look.h>
 
 static const bool debug_flag = false;

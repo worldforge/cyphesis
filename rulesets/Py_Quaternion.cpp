@@ -4,7 +4,7 @@
 
 #include "Py_Quaternion.h"
 
-static PyObject * Quaternion_as_list(QuaternionObject * self, PyObject * args)
+static PyObject * Quaternion_as_list(PyQuaternion * self, PyObject * args)
 {
     if (!PyArg_ParseTuple(args, "")) {
         return NULL;
@@ -30,13 +30,13 @@ static PyMethodDef Quaternion_methods[] = {
     {NULL,              NULL}           /* sentinel */
 };
 
-static void Quaternion_dealloc(QuaternionObject *self)
+static void Quaternion_dealloc(PyQuaternion *self)
 {
     self->rotation.~Quaternion();
     PyMem_DEL(self);
 }
 
-static PyObject * Quaternion_getattr(QuaternionObject *self, char *name)
+static PyObject * Quaternion_getattr(PyQuaternion *self, char *name)
 {
     if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->rotation.vector().x()); }
     if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->rotation.vector().y()); }
@@ -46,12 +46,12 @@ static PyObject * Quaternion_getattr(QuaternionObject *self, char *name)
     return Py_FindMethod(Quaternion_methods, (PyObject *)self, name);
 }
 
-static int Quaternion_setattr(QuaternionObject *self, char *name, PyObject *v)
+static int Quaternion_setattr(PyQuaternion *self, char *name, PyObject *v)
 {
     return 0;
 }
 
-static int Quaternion_compare(QuaternionObject * self, QuaternionObject * other)
+static int Quaternion_compare(PyQuaternion * self, PyQuaternion * other)
 {
     if (!PyQuaternion_Check(other)) {
         return -1;
@@ -62,11 +62,11 @@ static int Quaternion_compare(QuaternionObject * self, QuaternionObject * other)
     return 1;
 }
 
-PyTypeObject Quaternion_Type = {
+PyTypeObject PyQuaternion_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
         "Quaternion",                   /*tp_name*/
-        sizeof(QuaternionObject),               /*tp_basicsize*/
+        sizeof(PyQuaternion),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
         (destructor)Quaternion_dealloc, /*tp_dealloc*/
@@ -81,10 +81,10 @@ PyTypeObject Quaternion_Type = {
         0,                              /*tp_hash*/
 };
 
-QuaternionObject * newQuaternionObject(PyObject *arg)
+PyQuaternion * newPyQuaternion()
 {
-        QuaternionObject * self;
-        self = PyObject_NEW(QuaternionObject, &Quaternion_Type);
+        PyQuaternion * self;
+        self = PyObject_NEW(PyQuaternion, &PyQuaternion_Type);
         if (self == NULL) {
                 return NULL;
         }

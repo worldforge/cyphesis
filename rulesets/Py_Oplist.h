@@ -11,13 +11,13 @@
 
 typedef struct {
     PyObject_HEAD
-    OpVector	* ops;
-} OplistObject;
+    OpVector * ops;
+} PyOplist;
 
-extern PyTypeObject Oplist_Type;
+extern PyTypeObject PyOplist_Type;
 
-#define PyOplist_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Oplist_Type)
+#define PyOplist_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyOplist_Type)
 
-OplistObject * newOplistObject(PyObject *);
+PyOplist * newPyOplist();
 
 #endif // RULESETS_PY_VECTOR3D_H

@@ -4,27 +4,31 @@
 
 #include "Py_Optime.h"
 
+#include <Atlas/Objects/Operation/RootOperation.h>
+
 static PyMethodDef Optime_methods[] = {
-    //{"update",		(PyCFunction)Optime_update,	METH_VARARGS},
-    {NULL,		NULL}           /* sentinel */
+    //{"update",                (PyCFunction)Optime_update,     METH_VARARGS},
+    {NULL,              NULL}           /* sentinel */
 };
 
-static void Optime_dealloc(OptimeObject *self)
+static void Optime_dealloc(PyOptime *self)
 {
     PyMem_DEL(self);
 }
 
-static PyObject * Optime_getattr(OptimeObject *self, char *name)
+static PyObject * Optime_getattr(PyOptime *self, char *name)
 {
     return Py_FindMethod(Optime_methods, (PyObject *)self, name);
 }
 
-static int Optime_setattr(OptimeObject *self, char *name, PyObject *v)
+static int Optime_setattr(PyOptime *self, char *name, PyObject *v)
 {
+#ifndef NDEBUG
     if (self->operation == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid operation time");
+        PyErr_SetString(PyExc_AssertionError, "NULL Optime in Optime.setattr");
         return -1;
     }
+#endif // NDEBUG
     if (strcmp(name, "sadd") == 0) {
         double fsecs;
         if (PyFloat_Check(v)) {
@@ -41,31 +45,31 @@ static int Optime_setattr(OptimeObject *self, char *name, PyObject *v)
     return -1;
 }
 
-PyTypeObject Optime_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,				/*ob_size*/
-	"Optime",			/*tp_name*/
-	sizeof(OptimeObject),		/*tp_basicsize*/
-	0,				/*tp_itemsize*/
-	/* methods */
-	(destructor)Optime_dealloc,	/*tp_dealloc*/
-	0,				/*tp_print*/
-	(getattrfunc)Optime_getattr,	/*tp_getattr*/
-	(setattrfunc)Optime_setattr,	/*tp_setattr*/
-	0,				/*tp_compare*/
-	0,				/*tp_repr*/
-	0,				/*tp_as_number*/
-	0,				/*tp_as_sequence*/
-	0,				/*tp_as_mapping*/
-	0,				/*tp_hash*/
+PyTypeObject PyOptime_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "Optime",                       /*tp_name*/
+        sizeof(PyOptime),               /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        (destructor)Optime_dealloc,     /*tp_dealloc*/
+        0,                              /*tp_print*/
+        (getattrfunc)Optime_getattr,    /*tp_getattr*/
+        (setattrfunc)Optime_setattr,    /*tp_setattr*/
+        0,                              /*tp_compare*/
+        0,                              /*tp_repr*/
+        0,                              /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
 };
 
-OptimeObject * newOptimeObject(PyObject *arg)
+PyOptime * newPyOptime()
 {
-	OptimeObject * self;
-	self = PyObject_NEW(OptimeObject, &Optime_Type);
-	if (self == NULL) {
-		return NULL;
-	}
-	return self;
+    PyOptime * self;
+    self = PyObject_NEW(PyOptime, &PyOptime_Type);
+    if (self == NULL) {
+        return NULL;
+    }
+    return self;
 }

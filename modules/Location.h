@@ -9,6 +9,8 @@
 #include <physics/BBox.h>
 #include <physics/Quaternion.h>
 
+#include <Atlas/Message/Element.h>
+
 class Entity;
 
 class Location {

@@ -8,20 +8,22 @@
 #include "Py_Location.h"
 
 #include "modules/Location.h"
+
+#include <Atlas/Objects/Operation/RootOperation.h>
+
 /*
  * Beginning of Object methods section.
  */
 
-using Atlas::Message::Element;
-
-static PyObject* Object_get_name(AtlasObject * self, PyObject * args)
+static PyObject* Object_get_name(PyMessageElement * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_obj == NULL) {
-        PyErr_SetString(PyExc_TypeError,"invalid atlas object");
+        PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in MessageElement.get_name");
         return NULL;
     }
+#endif // NDEBUG
     if (!PyArg_ParseTuple(args, "")) {
-        PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
     return PyString_FromString("obj");
@@ -32,15 +34,15 @@ static PyObject* Object_get_name(AtlasObject * self, PyObject * args)
  */
 
 static PyMethodDef Object_methods[] = {
-	{"get_name",    (PyCFunction)Object_get_name,  1},
-	{NULL,          NULL}           /* sentinel */
+        {"get_name",    (PyCFunction)Object_get_name,  1},
+        {NULL,          NULL}           /* sentinel */
 };
 
 /*
  * Beginning of Object standard methods section.
  */
 
-static void Object_dealloc(AtlasObject *self)
+static void Object_dealloc(PyMessageElement *self)
 {
     if (self->m_obj != NULL) {
         delete self->m_obj;
@@ -49,17 +51,19 @@ static void Object_dealloc(AtlasObject *self)
     PyMem_DEL(self);
 }
 
-static PyObject * Object_getattr(AtlasObject *self, char *name)
+static PyObject * Object_getattr(PyMessageElement *self, char *name)
 {
+#ifndef NDEBUG
     if (self->m_obj == NULL) {
-        PyErr_SetString(PyExc_TypeError,"invalid object");
+        PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in MessageElement.getattr");
         return NULL;
     }
+#endif // NDEBUG
     if (self->m_obj->isMap()) {
         const Element::MapType & omap = self->m_obj->asMap();
         Element::MapType::const_iterator I = omap.find(name);
         if (I != omap.end()) {
-            return Object_asPyObject(I->second);
+            return MessageElement_asPyObject(I->second);
         }
     }
     if (self->Object_attr != NULL) {
@@ -72,15 +76,17 @@ static PyObject * Object_getattr(AtlasObject *self, char *name)
     return Py_FindMethod(Object_methods, (PyObject *)self, name);
 }
 
-static int Object_setattr( AtlasObject *self, char *name, PyObject *v)
+static int Object_setattr( PyMessageElement *self, char *name, PyObject *v)
 {
+#ifndef NDEBUG
     if (self->m_obj == NULL) {
-        PyErr_SetString(PyExc_TypeError,"invalid object");
+        PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in MessageElement.setattr");
         return -1;
     }
+#endif // NDEBUG
     if (self->m_obj->isMap()) {
         Element::MapType & omap = self->m_obj->asMap();
-        Element v_obj = PyObject_asObject(v);
+        Element v_obj = PyObject_asMessageElement(v);
         if ((v_obj.getType() != Element::TYPE_NONE) &&
             (v_obj.getType() != Element::TYPE_MAP) &&
             (v_obj.getType() != Element::TYPE_LIST)) {
@@ -97,38 +103,38 @@ static int Object_setattr( AtlasObject *self, char *name, PyObject *v)
     return PyDict_SetItemString(self->Object_attr, name, v);
 }
 
-PyTypeObject Object_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,				/*ob_size*/
-	"AtlasObject",			/*tp_name*/
-	sizeof(AtlasObject),		/*tp_basicsize*/
-	0,				/*tp_itemsize*/
-	/* methods */
-	(destructor)Object_dealloc,	/*tp_dealloc*/
-	0,				/*tp_print*/
-	(getattrfunc)Object_getattr,	/*tp_getattr*/
-	(setattrfunc)Object_setattr,	/*tp_setattr*/
-	0,				/*tp_compare*/
-	0,				/*tp_repr*/
-	0,				/*tp_as_number*/
-	0,				/*tp_as_sequence*/
-	0,				/*tp_as_mapping*/
-	0,				/*tp_hash*/
+PyTypeObject PyMessageElement_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "MessageElement",                     /*tp_name*/
+        sizeof(PyMessageElement),               /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        (destructor)Object_dealloc,     /*tp_dealloc*/
+        0,                              /*tp_print*/
+        (getattrfunc)Object_getattr,    /*tp_getattr*/
+        (setattrfunc)Object_setattr,    /*tp_setattr*/
+        0,                              /*tp_compare*/
+        0,                              /*tp_repr*/
+        0,                              /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
 };
 
 /*
  * Beginning of Object creation functions section.
  */
 
-AtlasObject * newAtlasObject(PyObject *arg)
+PyMessageElement * newPyMessageElement()
 {
-	AtlasObject * self;
-	self = PyObject_NEW(AtlasObject, &Object_Type);
-	if (self == NULL) {
-		return NULL;
-	}
-	self->Object_attr = NULL;
-	return self;
+    PyMessageElement * self;
+    self = PyObject_NEW(PyMessageElement, &PyMessageElement_Type);
+    if (self == NULL) {
+        return NULL;
+    }
+    self->Object_attr = NULL;
+    return self;
 }
 
 /*
@@ -139,12 +145,12 @@ static PyObject * MapType_asPyObject(const Element::MapType & map)
 {
     PyObject * args_pydict = PyDict_New();
     Element::MapType::const_iterator I;
-    AtlasObject * item;
+    PyMessageElement * item;
     for(I = map.begin(); I != map.end(); I++) {
         const std::string & key = I->first;
-        item = newAtlasObject(NULL);
+        item = newPyMessageElement();
         if (item == NULL) {
-            PyErr_SetString(PyExc_TypeError,"error creating map");
+            PyErr_SetString(PyExc_MemoryError,"error creating map");
             return NULL;
         }
         item->m_obj = new Element(I->second);
@@ -160,11 +166,11 @@ static PyObject * ListType_asPyObject(const Element::ListType & list)
     PyObject * args_pylist = PyList_New(list.size());
     Element::ListType::const_iterator I;
     int j = 0;
-    AtlasObject * item;
+    PyMessageElement * item;
     for(I = list.begin(); I != list.end(); I++, j++) {
-        item = newAtlasObject(NULL);
+        item = newPyMessageElement();
         if (item == NULL) {
-            PyErr_SetString(PyExc_TypeError,"error creating list");
+            PyErr_SetString(PyExc_MemoryError,"error creating list");
             return NULL;
         }
         item->m_obj = new Element(*I);
@@ -174,7 +180,7 @@ static PyObject * ListType_asPyObject(const Element::ListType & list)
     return args_pylist;
 }
 
-PyObject * Object_asPyObject(const Element & obj)
+PyObject * MessageElement_asPyObject(const Element & obj)
 {
     PyObject * ret = NULL;
     switch (obj.getType()) {
@@ -199,16 +205,16 @@ PyObject * Object_asPyObject(const Element & obj)
     return ret;
 }
 
-Element::ListType PyListObject_asListType(PyObject * list)
+Element::ListType PyListObject_asElementList(PyObject * list)
 {
     Element::ListType argslist;
-    AtlasObject * item;
+    PyMessageElement * item;
     for(int i = 0; i < PyList_Size(list); i++) {
-        item = (AtlasObject *)PyList_GetItem(list, i);
-        if (PyAtlasObject_Check(item)) {
+        item = (PyMessageElement *)PyList_GetItem(list, i);
+        if (PyMessageElement_Check(item)) {
             argslist.push_back(*(item->m_obj));
         } else {
-            Element o = PyObject_asObject((PyObject*)item);
+            Element o = PyObject_asMessageElement((PyObject*)item);
             if (o.getType() != Element::TYPE_NONE) {
                 argslist.push_back(o);
             }
@@ -217,19 +223,19 @@ Element::ListType PyListObject_asListType(PyObject * list)
     return argslist;
 }
 
-Element::MapType PyDictObject_asMapType(PyObject * dict)
+Element::MapType PyDictObject_asElementMap(PyObject * dict)
 {
     Element::MapType argsmap;
-    AtlasObject * item;
+    PyMessageElement * item;
     PyObject * keys = PyDict_Keys(dict);
     PyObject * vals = PyDict_Values(dict);
     for(int i = 0; i < PyDict_Size(dict); i++) {
         PyObject * key = PyList_GetItem(keys, i);
-        item = (AtlasObject *)PyList_GetItem(vals, i);
-        if (PyAtlasObject_Check(item)) {
+        item = (PyMessageElement *)PyList_GetItem(vals, i);
+        if (PyMessageElement_Check(item)) {
             argsmap[PyString_AsString(key)] = *(item->m_obj);
         } else {
-            Element o = PyObject_asObject((PyObject*)item);
+            Element o = PyObject_asMessageElement((PyObject*)item);
             if (o.getType() != Element::TYPE_NONE) {
                 argsmap[PyString_AsString(key)] = o;
             }
@@ -240,7 +246,7 @@ Element::MapType PyDictObject_asMapType(PyObject * dict)
     return argsmap;
 }
 
-Element PyObject_asObject(PyObject * o)
+Element PyObject_asMessageElement(PyObject * o)
 {
     if (PyInt_Check(o)) {
         return Element((int)PyInt_AsLong(o));
@@ -252,32 +258,32 @@ Element PyObject_asObject(PyObject * o)
         return Element(PyString_AsString(o));
     }
     if (PyList_Check(o)) {
-        return Element(PyListObject_asListType(o));
+        return Element(PyListObject_asElementList(o));
     }
     if (PyDict_Check(o)) {
-        return Element(PyDictObject_asMapType(o));
+        return Element(PyDictObject_asElementMap(o));
     }
     if (PyTuple_Check(o)) {
         Element::ListType list;
         int i, size = PyTuple_Size(o);
         for(i = 0; i < size; i++) {
-            Element item = PyObject_asObject(PyTuple_GetItem(o, i));
+            Element item = PyObject_asMessageElement(PyTuple_GetItem(o, i));
             if (item.getType() != Element::TYPE_NONE) {
                 list.push_back(item);
             }
         }
         return Element(list);
     }
-    if (PyAtlasObject_Check(o)) {
-        AtlasObject * obj = (AtlasObject *)o;
+    if (PyMessageElement_Check(o)) {
+        PyMessageElement * obj = (PyMessageElement *)o;
         return *(obj->m_obj);
     }
     if (PyOperation_Check(o)) {
-        OperationObject * op = (OperationObject *)o;
+        PyOperation * op = (PyOperation *)o;
         return op->operation->asObject();
     }
     if (PyOplist_Check(o)) {
-        OplistObject * opl = (OplistObject *)o;
+        PyOplist * opl = (PyOplist *)o;
         Element::ListType _list;
         Element msg(_list);
         Element::ListType & entlist = msg.asList();
@@ -289,7 +295,7 @@ Element PyObject_asObject(PyObject * o)
         return msg;
     }
     if (PyLocation_Check(o)) {
-        LocationObject * loc = (LocationObject *)o;
+        PyLocation * loc = (PyLocation *)o;
         Element::MapType _map;
         loc->location->addToObject(_map);
         return Element(_map);

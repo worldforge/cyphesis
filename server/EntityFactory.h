@@ -7,6 +7,8 @@
 
 #include "common/types.h"
 
+#include <Atlas/Message/Element.h>
+
 #include <sigc++/object.h>
 
 namespace Atlas { namespace Message {

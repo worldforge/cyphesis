@@ -8,14 +8,16 @@
 #include "Py_Operation.h"
 #include "Py_Object.h"
 
-#include "MemMap_methods.h"
+#include "MemMap.h"
 
-static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
+static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_location");
         return NULL;
     }
+#endif // NDEBUG
     double radius;
     PyObject * where_obj;
     if (!PyArg_ParseTuple(args, "Od", &where_obj, &radius)) {
@@ -25,8 +27,8 @@ static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "Argument must be a location");
         return NULL;
     }
-    LocationObject * where = (LocationObject *)where_obj;
-    EntityObject * thing;
+    PyLocation * where = (PyLocation *)where_obj;
+    PyEntity * thing;
     EntityVector res = self->m_map->findByLocation(*where->location,
                                                           radius);
     PyObject * list = PyList_New(res.size());
@@ -36,7 +38,7 @@ static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
     EntityVector::const_iterator I;
     int i = 0;
     for(I = res.begin(); I != res.end(); I++, i++) {
-        thing = newEntityObject(NULL);
+        thing = newPyEntity();
         if (thing == NULL) {
             Py_DECREF(list);
             return NULL;
@@ -47,17 +49,19 @@ static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
     return list;
 }
 
-static PyObject * Map_find_by_type(MapObject * self, PyObject * args)
+static PyObject * Map_find_by_type(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_type");
         return NULL;
     }
+#endif // NDEBUG
     char * what;
     if (!PyArg_ParseTuple(args, "s", &what)) {
         return NULL;
     }
-    EntityObject * thing;
+    PyEntity * thing;
     EntityVector res = self->m_map->findByType(std::string(what));
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
@@ -66,7 +70,7 @@ static PyObject * Map_find_by_type(MapObject * self, PyObject * args)
     EntityVector::const_iterator I;
     int i = 0;
     for(I = res.begin(); I != res.end(); I++, i++) {
-        thing = newEntityObject(NULL);
+        thing = newPyEntity();
         if (thing == NULL) {
             Py_DECREF(list);
             return NULL;
@@ -78,15 +82,16 @@ static PyObject * Map_find_by_type(MapObject * self, PyObject * args)
 }
 
 #if 0
-static PyObject * Map_add_object(MapObject * self, PyObject * args)
+static PyObject * Map_add_object(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.add_object");
         return NULL;
     }
-    EntityObject * thing;
+#endif // NDEBUG
+    PyEntity * thing;
     if (!PyArg_ParseTuple(args, "O", &thing)) {
-        PyErr_SetString(PyExc_TypeError,"arg not an object");
         return NULL;
     }
     if (!PyEntity_Check(thing)) {
@@ -94,20 +99,21 @@ static PyObject * Map_add_object(MapObject * self, PyObject * args)
         return NULL;
     }
     Entity * ret = self->m_map->addObject(thing->m_entity);
-    thing = newEntityObject(NULL);
+    thing = newPyEntity();
     thing->m_entity = ret;
     return (PyObject *)thing;
 }
 #endif
 
-static PyObject * Map_look_id(MapObject * self, PyObject * args)
+static PyObject * Map_look_id(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.look_id");
         return NULL;
     }
+#endif // NDEBUG
     if (!PyArg_ParseTuple(args, "")) {
-        PyErr_SetString(PyExc_TypeError,"expected 1, got multiple");
         return NULL;
     }
     RootOperation * op = self->m_map->lookId();
@@ -115,42 +121,44 @@ static PyObject * Map_look_id(MapObject * self, PyObject * args)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    OperationObject * py_op = newAtlasRootOperation(NULL);
+    PyOperation * py_op = newPyOperation();
     py_op->operation = op;
     py_op->own = 1;
     return (PyObject *)py_op;
 }
 
-static PyObject * Map_add(MapObject * self, PyObject * args)
+static PyObject * Map_add(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.add");
         return NULL;
     }
-    AtlasObject * obj;
+#endif // NDEBUG
+    PyMessageElement * obj;
     if (!PyArg_ParseTuple(args, "O", &obj)) {
-        PyErr_SetString(PyExc_TypeError,"arg is not an object");
         return NULL;
     }
-    if (!PyAtlasObject_Check(obj)) {
+    if (!PyMessageElement_Check(obj)) {
         PyErr_SetString(PyExc_TypeError,"arg is not an Object");
         return NULL;
     }
     Entity * ret = self->m_map->add(obj->m_obj->asMap());
-    EntityObject * thing = newEntityObject(NULL);
+    PyEntity * thing = newPyEntity();
     thing->m_entity = ret;
     return (PyObject *)thing;
 }
 
-static PyObject * Map_delete(MapObject * self, PyObject * args)
+static PyObject * Map_delete(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.delete");
         return NULL;
     }
+#endif // NDEBUG
     char * id;
     if (!PyArg_ParseTuple(args, "s", &id)) {
-        PyErr_SetString(PyExc_TypeError,"id not a string");
         return NULL;
     }
     self->m_map->del(id);
@@ -159,70 +167,74 @@ static PyObject * Map_delete(MapObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * Map_get(MapObject * self, PyObject * args)
+static PyObject * Map_get(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.get");
         return NULL;
     }
+#endif // NDEBUG
     char * id;
     if (!PyArg_ParseTuple(args, "s", &id)) {
-        PyErr_SetString(PyExc_TypeError,"id not a string");
         return NULL;
     }
     Entity * ret = self->m_map->get(id);
-    EntityObject * thing = newEntityObject(NULL);
+    PyEntity * thing = newPyEntity();
     thing->m_entity = ret;
     return (PyObject *)thing;
 }
 
-static PyObject * Map_get_add(MapObject * self, PyObject * args)
+static PyObject * Map_get_add(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.get_add");
         return NULL;
     }
+#endif // NDEBUG
     char * id;
     if (!PyArg_ParseTuple(args, "s", &id)) {
-        PyErr_SetString(PyExc_TypeError,"id not a string");
         return NULL;
     }
     Entity * ret = self->m_map->getAdd(id);
-    EntityObject * thing = newEntityObject(NULL);
+    PyEntity * thing = newPyEntity();
     thing->m_entity = ret;
     return (PyObject *)thing;
 }
 
-static PyObject * Map_update(MapObject * self, PyObject * args)
+static PyObject * Map_update(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.update");
         return NULL;
     }
-    AtlasObject * obj;
+#endif // NDEBUG
+    PyMessageElement * obj;
     if (!PyArg_ParseTuple(args, "O", &obj)) {
-        PyErr_SetString(PyExc_TypeError,"arg is not an object");
         return NULL;
     }
-    if (!PyAtlasObject_Check(obj)) {
+    if (!PyMessageElement_Check(obj)) {
         PyErr_SetString(PyExc_TypeError,"arg is not an Object");
         return NULL;
     }
     Entity * ret = self->m_map->update(obj->m_obj->asMap());
-    EntityObject * thing = newEntityObject(NULL);
+    PyEntity * thing = newPyEntity();
     thing->m_entity = ret;
     return (PyObject *)thing;
 }
 
-static PyObject * Map_add_hooks_append(MapObject * self, PyObject * args)
+static PyObject * Map_add_hooks_append(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.add_hooks_append");
         return NULL;
     }
+#endif // NDEBUG
     char * method;
     if (!PyArg_ParseTuple(args, "s", &method)) {
-        PyErr_SetString(PyExc_TypeError,"arg is not an string");
         return NULL;
     }
     self->m_map->getAddHooks().push_back(std::string(method));
@@ -231,15 +243,16 @@ static PyObject * Map_add_hooks_append(MapObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * Map_update_hooks_append(MapObject * self, PyObject * args)
+static PyObject * Map_update_hooks_append(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.update_hooks_append");
         return NULL;
     }
+#endif // NDEBUG
     char * method;
     if (!PyArg_ParseTuple(args, "s", &method)) {
-        PyErr_SetString(PyExc_TypeError,"arg is not an string");
         return NULL;
     }
     self->m_map->getUpdateHooks().push_back(std::string(method));
@@ -248,15 +261,16 @@ static PyObject * Map_update_hooks_append(MapObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * Map_delete_hooks_append(MapObject * self, PyObject * args)
+static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.delete_hooks_append");
         return NULL;
     }
+#endif // NDEBUG
     char * method;
     if (!PyArg_ParseTuple(args, "s", &method)) {
-        PyErr_SetString(PyExc_TypeError,"arg is not an string");
         return NULL;
     }
     self->m_map->getDeleteHooks().push_back(std::string(method));
@@ -281,7 +295,7 @@ static PyMethodDef Map_methods[] = {
     {NULL,		NULL}           /* sentinel */
 };
 
-static void Map_dealloc(MapObject *self)
+static void Map_dealloc(PyMap *self)
 {
     //if (self->m_entity != NULL) {
         //delete self->m_entity;
@@ -289,12 +303,12 @@ static void Map_dealloc(MapObject *self)
     PyMem_DEL(self);
 }
 
-static PyObject * Map_getattr(MapObject *self, char *name)
+static PyObject * Map_getattr(PyMap *self, char *name)
 {
     return Py_FindMethod(Map_methods, (PyObject *)self, name);
 }
 
-static int Map_setattr(MapObject *self, char *name, PyObject *v)
+static int Map_setattr(PyMap *self, char *name, PyObject *v)
 {
     return 0;
 }
@@ -303,7 +317,7 @@ PyTypeObject Map_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,				/*ob_size*/
 	"Map",				/*tp_name*/
-	sizeof(MapObject),		/*tp_basicsize*/
+	sizeof(PyMap),		/*tp_basicsize*/
 	0,				/*tp_itemsize*/
 	/* methods */
 	(destructor)Map_dealloc,	/*tp_dealloc*/
@@ -318,10 +332,10 @@ PyTypeObject Map_Type = {
 	0,				/*tp_hash*/
 };
 
-MapObject * newMapObject(PyObject *arg)
+PyMap * newPyMap()
 {
-	MapObject * self;
-	self = PyObject_NEW(MapObject, &Map_Type);
+	PyMap * self;
+	self = PyObject_NEW(PyMap, &Map_Type);
 	if (self == NULL) {
 		return NULL;
 	}

@@ -11,14 +11,14 @@ class WorldTime;
 
 typedef struct {
     PyObject_HEAD
-    WorldTime	* time;
-    bool	own;
-} WorldTimeObject;
+    WorldTime * time;
+    bool own;
+} PyWorldTime;
 
-extern PyTypeObject WorldTime_Type;
+extern PyTypeObject PyWorldTime_Type;
 
-#define PyWorldTime_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&WorldTime_Type)
+#define PyWorldTime_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyWorldTime_Type)
 
-WorldTimeObject * newWorldTimeObject(PyObject *);
+PyWorldTime * newPyWorldTime();
 
 #endif // RULESETS_PY_WORLDTIME_H

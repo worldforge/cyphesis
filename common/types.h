@@ -5,10 +5,12 @@
 #ifndef COMMON_TYPES_H
 #define COMMON_TYPES_H
 
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include "operations.h"
 
 #include <list>
 #include <set>
+#include <map>
+#include <vector>
 
 class BaseEntity;
 class Entity;

@@ -11,17 +11,20 @@
 #include "Py_WorldTime.h"
 #include "BaseMind.h"
 
-static PyObject * Mind_as_entity(MindObject * self, PyObject * args)
+static PyObject * Mind_as_entity(PyMind * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid mind as_entity");
+        PyErr_SetString(PyExc_AssertionError, "invalid mind as_entity");
         return NULL;
     }
+#endif // NDEBUG
     if (!PyArg_ParseTuple(args, "")) {
         return NULL;
     }
-    AtlasObject * ret = newAtlasObject(NULL);
+    PyMessageElement * ret = newPyMessageElement();
     if (ret == NULL) {
+        PyErr_SetString(PyExc_MemoryError, "error creating MessageElement");
         return NULL;
     }
     ret->m_obj = new Element(Element::MapType());
@@ -29,16 +32,18 @@ static PyObject * Mind_as_entity(MindObject * self, PyObject * args)
     return (PyObject *)ret;
 }
 
-static PyObject * Mind_get_xyz(MindObject * self, PyObject * args)
+static PyObject * Mind_get_xyz(PyMind * self, PyObject * args)
 {
+#ifndef NDEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid mind get_xyz");
+        PyErr_SetString(PyExc_AssertionError, "invalid mind get_xyz");
         return NULL;
     }
+#endif // NDEBUG
     if (!PyArg_ParseTuple(args, "")) {
         return NULL;
     }
-    Vector3DObject * ret = newVector3DObject(NULL);
+    PyVector3D * ret = newPyVector3D();
     if (ret == NULL) {
         return NULL;
     }
@@ -47,12 +52,12 @@ static PyObject * Mind_get_xyz(MindObject * self, PyObject * args)
 }
 
 static PyMethodDef Mind_methods[] = {
-	{"get_xyz",        (PyCFunction)Mind_get_xyz,  1},
-	{"as_entity",        (PyCFunction)Mind_as_entity,  1},
-	{NULL,          NULL}           /* sentinel */
+        {"get_xyz",        (PyCFunction)Mind_get_xyz,  1},
+        {"as_entity",        (PyCFunction)Mind_as_entity,  1},
+        {NULL,          NULL}           /* sentinel */
 };
 
-static void Mind_dealloc(MindObject *self)
+static void Mind_dealloc(PyMind *self)
 {
     //if (self->m_mind != NULL) {
         //delete self->m_mind;
@@ -61,13 +66,15 @@ static void Mind_dealloc(MindObject *self)
     PyMem_DEL(self);
 }
 
-static PyObject * Mind_getattr(MindObject *self, char *name)
+static PyObject * Mind_getattr(PyMind *self, char *name)
 {
     // Fairly major re-write of this to use operator[] of Mind base class
+#ifndef NDEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid mind getattr");
+        PyErr_SetString(PyExc_AssertionError, "invalid mind getattr");
         return NULL;
     }
+#endif // NDEBUG
     // If operation search gets to here, it goes no further
     if (strstr(name, "_operation") != NULL) {
         PyErr_SetString(PyExc_AttributeError, name);
@@ -84,18 +91,18 @@ static PyObject * Mind_getattr(MindObject *self, char *name)
         return list;
     }
     if (strcmp(name, "map") == 0) {
-        MapObject * map = newMapObject(NULL);
+        PyMap * map = newPyMap();
         map->m_map = self->m_mind->getMap();
         return (PyObject *)map;
     }
     if (strcmp(name, "location") == 0) {
-        LocationObject * loc = newLocationObject(NULL);
+        PyLocation * loc = newPyLocation();
         loc->location = &self->m_mind->m_location;
         loc->own = 0;
         return (PyObject *)loc;
     }
     if (strcmp(name, "time") == 0) {
-        WorldTimeObject * worldtime = newWorldTimeObject(NULL);
+        PyWorldTime * worldtime = newPyWorldTime();
         worldtime->time = self->m_mind->getTime();
         return (PyObject *)worldtime;
     }
@@ -111,14 +118,14 @@ static PyObject * Mind_getattr(MindObject *self, char *name)
     if (!thing->get(name, attr)) {
         return Py_FindMethod(Mind_methods, (PyObject *)self, name);
     }
-    PyObject * ret = Object_asPyObject(attr);
+    PyObject * ret = MessageElement_asPyObject(attr);
     if (ret == NULL) {
         return Py_FindMethod(Mind_methods, (PyObject *)self, name);
     }
     return ret;
 }
 
-static int Mind_setattr(MindObject *self, char *name, PyObject *v)
+static int Mind_setattr(PyMind *self, char *name, PyObject *v)
 {
     if (self->m_mind == NULL) {
         return -1;
@@ -151,7 +158,7 @@ static int Mind_setattr(MindObject *self, char *name, PyObject *v)
         //thing->attributes.erase(attr);
         //return 0;
     //}
-    Element obj = PyObject_asObject(v);
+    Element obj = PyObject_asMessageElement(v);
     if (!obj.isNone() && !obj.isMap() && !obj.isList()) {
         thing->set(name, obj);
         return 0;
@@ -161,7 +168,7 @@ static int Mind_setattr(MindObject *self, char *name, PyObject *v)
     return PyDict_SetItemString(self->Mind_attr, name, v);
 }
 
-static int Mind_compare(MindObject *self, MindObject *other)
+static int Mind_compare(PyMind *self, PyMind *other)
 {
     if ((self->m_mind == NULL) || (other->m_mind == NULL)) {
         return -1;
@@ -169,32 +176,32 @@ static int Mind_compare(MindObject *self, MindObject *other)
     return (self->m_mind == other->m_mind) ? 0 : 1;
 }
 
-PyTypeObject Mind_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,				/*ob_size*/
-	"cppMind",			/*tp_name*/
-	sizeof(MindObject),		/*tp_basicsize*/
-	0,				/*tp_itemsize*/
-	/* methods */
-	(destructor)Mind_dealloc,	/*tp_dealloc*/
-	0,				/*tp_print*/
-	(getattrfunc)Mind_getattr,	/*tp_getattr*/
-	(setattrfunc)Mind_setattr,	/*tp_setattr*/
-	(cmpfunc)Mind_compare,		/*tp_compare*/
-	0,				/*tp_repr*/
-	0,				/*tp_as_number*/
-	0,				/*tp_as_sequence*/
-	0,				/*tp_as_mapping*/
-	0,				/*tp_hash*/
+PyTypeObject PyMind_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "Mind",                         /*tp_name*/
+        sizeof(PyMind),                 /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        (destructor)Mind_dealloc,       /*tp_dealloc*/
+        0,                              /*tp_print*/
+        (getattrfunc)Mind_getattr,      /*tp_getattr*/
+        (setattrfunc)Mind_setattr,      /*tp_setattr*/
+        (cmpfunc)Mind_compare,          /*tp_compare*/
+        0,                              /*tp_repr*/
+        0,                              /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
 };
 
-MindObject * newMindObject(PyObject *arg)
+PyMind * newPyMind()
 {
-	MindObject * self;
-	self = PyObject_NEW(MindObject, &Mind_Type);
-	if (self == NULL) {
-		return NULL;
-	}
-	self->Mind_attr = NULL;
-	return self;
+    PyMind * self;
+    self = PyObject_NEW(PyMind, &PyMind_Type);
+    if (self == NULL) {
+        return NULL;
+    }
+    self->Mind_attr = NULL;
+    return self;
 }

@@ -11,13 +11,13 @@ class MemMap;
 
 typedef struct {
     PyObject_HEAD
-    MemMap	* m_map;
-} MapObject;
+    MemMap * m_map;
+} PyMap;
 
-extern PyTypeObject Map_Type;
+extern PyTypeObject PyMap_Type;
 
-#define PyMap_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Map_Type)
+#define PyMap_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyMap_Type)
 
-MapObject * newMapObject(PyObject *);
+PyMap * newPyMap();
 
 #endif // RULESETS_PY_MAP_H

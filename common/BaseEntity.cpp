@@ -15,7 +15,10 @@
 
 static const bool debug_flag = false;
 
-using Atlas::Message::Element;
+static inline void setRefnoOp(RootOperation * op, const RootOperation & ref_op)
+{
+    op->setRefno(ref_op.getSerialno());
+}
 
 BaseEntity::BaseEntity(const std::string & id) : m_id(id)
 {

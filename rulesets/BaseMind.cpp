@@ -4,7 +4,7 @@
 
 #include "BaseMind.h"
 
-#include "MemMap_methods.h"
+#include "Script.h"
 
 #include "common/utility.h"
 #include "common/debug.h"
@@ -30,6 +30,8 @@
 #include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
+
+static const bool debug_flag = false;
 
 BaseMind::BaseMind(const std::string & id, const std::string & body_name)
                                : Entity(id), m_map(m_script), m_isAwake(true)

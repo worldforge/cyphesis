@@ -1,3 +1,41 @@
+2003-09-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/Py_CreatorClient.cpp, client/Py_CreatorClient.h,
+	  rulesets/Py_BBox.cpp, rulesets/Py_BBox.h, rulesets/Py_Location.cpp,
+	  rulesets/Py_Location.h, rulesets/Py_Map.cpp, rulesets/Py_Map.h,
+	  rulesets/Py_Mind.cpp, rulesets/Py_Mind.h, rulesets/Py_Object.cpp,
+	  rulesets/Py_Object.h, rulesets/Py_Operation.cpp,
+	  rulesets/Py_Operation.h, rulesets/Py_Oplist.cpp,
+	  rulesets/Py_Oplist.h, rulesets/Py_Optime.cpp, rulesets/Py_Optime.h,
+	  rulesets/Py_Quaternion.cpp, rulesets/Py_Quaternion.h,
+	  rulesets/Py_Thing.cpp, rulesets/Py_Thing.h, rulesets/Py_Vector3D.cpp,
+	  rulesets/Py_Vector3D.h, rulesets/Py_World.cpp, rulesets/Py_World.h,
+	  rulesets/Py_WorldTime.cpp, rulesets/Py_WorldTime.h,
+	  rulesets/PythonMindScript.cpp, rulesets/PythonThingScript.cpp,
+	  rulesets/Python_API.cpp:
+	  Clean up python API code, with decent names for types,
+	  decent error reporting, and making the more paranoid checks
+	  only present in debug build.
+
+	* common/BaseEntity.cpp, common/BaseEntity.h, server/Account.cpp:
+	  Remove pointless method setRefnoOp, and put it in the body as
+	  an inline method.
+
+	* common/BaseEntity.h, common/BaseWorld.cpp, common/Setup.h,
+	  common/Tick.h, common/operations.h, common/custom.cpp,
+	  common/types.h, common/utility.cpp, common/utility.h, 
+	  modules/Location.h, physics/Vector3D.h, rulesets/BaseMind.cpp,
+	  rulesets/Script.h, server/EntityFactory.h:
+	  Clean up the dependency trees using more forward declarations.
+
+	* common/inheritance.cpp, common/inheritance.h:
+	  Move most of the implementation into the .cpp file as its
+	  not suited to inlining.
+
+	* rulesets/MemMap.cpp, rulesets/MemMap.h, rulesets/MemMap_methods.h:
+	  Move contents of MemMap_methods.h into the .cpp file, as it is
+	  not suited to inlining, and remove the file from the build.
+
 2003-09-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/Py_CreatorClient.cpp: Clean up and re-classify error

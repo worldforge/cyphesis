@@ -5,7 +5,9 @@
 #ifndef COMMON_UTILITY_H
 #define COMMON_UTILITY_H
 
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include "operations.h"
+
+#include <Atlas/Message/Element.h>
 
 namespace utility {
 

@@ -6,10 +6,6 @@
 
 #include "debug.h"
 
-using Atlas::Message::Element;
-
-static const bool debug_flag = false;
-
 BaseWorld::BaseWorld(const std::string & id, Entity & gw) : OOGThing(id), m_gameWorld(gw)
 {
 }

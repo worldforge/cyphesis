@@ -10,10 +10,14 @@
 
 #include "Entity.h"
 #include "BaseMind.h"
-#include "MemMap_methods.h"
+#include "MemMap.h"
 
 #include "common/log.h"
 #include "common/debug.h"
+
+#include <Atlas/Objects/Operation/RootOperation.h>
+
+static const bool debug_flag = false;
 
 PythonMindScript::PythonMindScript(PyObject * o, BaseMind & m) :
     PythonScript(o, m), mind(m)
@@ -36,7 +40,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
                          << std::flush;);
         return false;
     }
-    ConstOperationObject * py_op = newAtlasConstRootOperation(NULL);
+    PyConstOperation * py_op = newPyConstOperation();
     py_op->operation = &op;
     py_op->own = 0;
     py_op->from = mind.m_map.getAdd(op.getFrom());
@@ -46,7 +50,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
         ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(O)", py_op);
     } else {
-        OperationObject * py_sub_op = newAtlasRootOperation(NULL);
+        PyOperation * py_sub_op = newPyOperation();
         py_sub_op->operation = sub_op;
         py_sub_op->own = 0;
         py_sub_op->from = mind.m_map.getAdd(sub_op->getFrom());
@@ -60,7 +64,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
         debug( std::cout << "Called python method " << op_name << std::endl
                          << std::flush;);
         if (PyOperation_Check(ret)) {
-            OperationObject * op = (OperationObject*)ret;
+            PyOperation * op = (PyOperation*)ret;
             if (op->operation != NULL) {
                 ret_list.push_back(op->operation);
                 op->own = 0;
@@ -69,7 +73,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
                                  << std::flush;);
             }
         } else if (PyOplist_Check(ret)) {
-            OplistObject * op = (OplistObject*)ret;
+            PyOplist * op = (PyOplist*)ret;
             if (op->ops != NULL) {
                 ret_list = *op->ops;
             } else {
@@ -100,7 +104,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
 
 void PythonMindScript::hook(const std::string & method, Entity * object)
 {
-    EntityObject * obj = newEntityObject(NULL);
+    PyEntity * obj = newPyEntity();
     obj->m_entity = object;
     PyObject * ret = PyObject_CallMethod(scriptObject, (char *)(method.c_str()), "(O)", obj);
     Py_DECREF(ret);

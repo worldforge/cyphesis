@@ -11,17 +11,17 @@
 
 class CreatorClient;
 
-extern PyTypeObject CreatorClient_Type;
+extern PyTypeObject PyCreatorClient_Type;
 
 typedef struct {
     PyObject_HEAD
     PyObject         * CreatorClient_attr;    // Attributes dictionary
     CreatorClient    * m_mind;
-} CreatorClientObject;
+} PyCreatorClient;
 
-#define PyCreatorClient_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&CreatorClient_Type)
+#define PyCreatorClient_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyCreatorClient_Type)
 
-CreatorClientObject * newCreatorClientObject(PyObject *);
+PyCreatorClient * newPyCreatorClient();
 bool runClientScript(CreatorClient *, const std::string &, const std::string &);
 
 #endif // CLIENT_PY_CREATORCLIENT_H

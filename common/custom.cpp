@@ -45,7 +45,6 @@ void installCustomOperations()
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::AdminEntity;
-using Atlas::Message::Element;
 
 void installCustomEntities()
 {

@@ -5,19 +5,19 @@
 #ifndef RULESETS_PY_OPTIME_H
 #define RULESETS_PY_OPTIME_H
 
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include "common/operations.h"
 
 #include <Python.h>
 
 typedef struct {
     PyObject_HEAD
-    Atlas::Objects::Operation::RootOperation	* operation;
-} OptimeObject;
+    Atlas::Objects::Operation::RootOperation * operation;
+} PyOptime;
 
-extern PyTypeObject Optime_Type;
+extern PyTypeObject PyOptime_Type;
 
-#define PyOptime_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Optime_Type)
+#define PyOptime_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyOptime_Type)
 
-OptimeObject * newOptimeObject(PyObject *);
+PyOptime * newPyOptime();
 
 #endif // RULESETS_PY_OPTIME_H

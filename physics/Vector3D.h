@@ -7,11 +7,10 @@
 
 #include <wfmath/vector.h>
 
-#include <Atlas/Message/Element.h>
-
 #include <cmath>
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 using std::cos;
 using std::sin;

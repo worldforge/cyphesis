@@ -12,12 +12,12 @@
 typedef struct {
     PyObject_HEAD
     BBox box;
-} BBoxObject;
+} PyBBox;
 
-extern PyTypeObject BBox_Type;
+extern PyTypeObject PyBBox_Type;
 
-#define PyBBox_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&BBox_Type)
+#define PyBBox_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyBBox_Type)
 
-BBoxObject * newBBoxObject(PyObject *);
+PyBBox * newPyBBox();
 
 #endif // RULESETS_PY_BBOX_H

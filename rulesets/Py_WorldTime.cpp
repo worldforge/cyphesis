@@ -6,24 +6,30 @@
 
 #include "modules/WorldTime.h"
 
-static PyObject *WorldTime_seconds(WorldTimeObject *self, PyObject *args, PyObject *kwds)
+static PyObject *WorldTime_seconds(PyWorldTime *self, PyObject *args, PyObject *kwds)
 {
+#ifndef NDEBUG
     if (self->time == NULL) {
-        PyErr_SetString(PyExc_TypeError,"invalid world object");
+        PyErr_SetString(PyExc_AssertionError,"NULL WorldTime in WorldTime.seconds");
         return NULL;
     }
+#endif // NDEBUG
     if (!PyArg_ParseTuple(args, "")) {
-        PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
     return PyFloat_FromDouble(self->time->seconds());
 }
 
-static PyObject * WorldTime_is_now(WorldTimeObject *self, PyObject *args)
+static PyObject * WorldTime_is_now(PyWorldTime *self, PyObject *args)
 {
+#ifndef NDEBUG
+    if (self->time == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL WorldTime in WorldTime.is_now");
+        return 0;
+    }
+#endif // NDEBUG
     char * other;
     if (!PyArg_ParseTuple(args, "s", &other)) {
-        PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
     //printf("Python worldtime is string\n");
@@ -34,12 +40,12 @@ static PyObject * WorldTime_is_now(WorldTimeObject *self, PyObject *args)
 }
 
 static PyMethodDef WorldTime_methods[] = {
-    {"seconds",		(PyCFunction)WorldTime_seconds,	METH_VARARGS},
-    {"is_now",		(PyCFunction)WorldTime_is_now,	METH_VARARGS},
-    {NULL,		NULL}           /* sentinel */
+    {"seconds",         (PyCFunction)WorldTime_seconds, METH_VARARGS},
+    {"is_now",          (PyCFunction)WorldTime_is_now,  METH_VARARGS},
+    {NULL,              NULL}           /* sentinel */
 };
 
-static void WorldTime_dealloc(WorldTimeObject *self)
+static void WorldTime_dealloc(PyWorldTime *self)
 {
     if ((self->own) && (self->time != NULL)) {
         delete self->time;
@@ -47,23 +53,25 @@ static void WorldTime_dealloc(WorldTimeObject *self)
     PyMem_DEL(self);
 }
 
-static PyObject * WorldTime_getattr(WorldTimeObject *self, char *name)
+static PyObject * WorldTime_getattr(PyWorldTime *self, char *name)
 {
     return Py_FindMethod(WorldTime_methods, (PyObject *)self, name);
 }
 
-static int WorldTime_setattr(WorldTimeObject *self, char *name, PyObject *v)
+static int WorldTime_setattr(PyWorldTime *self, char *name, PyObject *v)
 {
+#ifndef NDEBUG
     if (self->time == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid worldtime");
+        PyErr_SetString(PyExc_AssertionError, "NULL WorldTime in WorldTime.setattr");
         return -1;
     }
+#endif // NDEBUG
     if (strcmp(name, "foo") == 0) {
     }
     return -1;
 }
 
-static int WorldTime_cmp(WorldTimeObject *self, PyObject *other)
+static int WorldTime_cmp(PyWorldTime *self, PyObject *other)
 {
     if (PyString_Check(other)) {
         printf("Python compare of worldtime to string\n");
@@ -75,32 +83,32 @@ static int WorldTime_cmp(WorldTimeObject *self, PyObject *other)
     }
 }
 
-PyTypeObject WorldTime_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,				/*ob_size*/
-	"WorldTime",			/*tp_name*/
-	sizeof(WorldTimeObject),		/*tp_basicsize*/
-	0,				/*tp_itemsize*/
-	/* methods */
-	(destructor)WorldTime_dealloc,	/*tp_dealloc*/
-	0,				/*tp_print*/
-	(getattrfunc)WorldTime_getattr,	/*tp_getattr*/
-	(setattrfunc)WorldTime_setattr,	/*tp_setattr*/
-	(cmpfunc)WorldTime_cmp,		/*tp_compare*/
-	0,				/*tp_repr*/
-	0,				/*tp_as_number*/
-	0,				/*tp_as_sequence*/
-	0,				/*tp_as_mapping*/
-	0,				/*tp_hash*/
+PyTypeObject PyWorldTime_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "WorldTime",                    /*tp_name*/
+        sizeof(PyWorldTime),            /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        (destructor)WorldTime_dealloc,  /*tp_dealloc*/
+        0,                              /*tp_print*/
+        (getattrfunc)WorldTime_getattr, /*tp_getattr*/
+        (setattrfunc)WorldTime_setattr, /*tp_setattr*/
+        (cmpfunc)WorldTime_cmp,         /*tp_compare*/
+        0,                              /*tp_repr*/
+        0,                              /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
 };
 
-WorldTimeObject * newWorldTimeObject(PyObject *arg)
+PyWorldTime * newPyWorldTime()
 {
-	WorldTimeObject * self;
-	self = PyObject_NEW(WorldTimeObject, &WorldTime_Type);
-	if (self == NULL) {
-		return NULL;
-	}
-        self->own = false;
-	return self;
+    PyWorldTime * self;
+    self = PyObject_NEW(PyWorldTime, &PyWorldTime_Type);
+    if (self == NULL) {
+        return NULL;
+    }
+    self->own = false;
+    return self;
 }

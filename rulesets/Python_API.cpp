@@ -97,7 +97,6 @@ static PyObject * PyLogger_write(PyObject * self, PyObject * args)
 {
     char * mesg;
     if (!PyArg_ParseTuple(args, "s", &mesg)) {
-        PyErr_SetString(PyExc_TypeError, "write takes 1 string argument only");
         return 0;
     }
 
@@ -111,7 +110,6 @@ static PyObject * PyErrorLogger_write(PyObject * self, PyObject * args)
 {
     char * mesg;
     if (!PyArg_ParseTuple(args, "s", &mesg)) {
-        PyErr_SetString(PyExc_TypeError, "write takes 1 string argument only");
         return 0;
     }
 
@@ -191,7 +189,7 @@ PyTypeObject PyErrorLogger_Type = {
 static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObject * kwds)
 {
     PyObject * dict;
-    EntityObject * item;
+    PyEntity * item;
     long remove_empty_key = 1;
     if (!PyArg_ParseTuple(args, "OO|i", &dict, &item, &remove_empty_key)) {
         return NULL;
@@ -205,7 +203,7 @@ static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObje
     PyObject * values = PyDict_Values(dict);
 
     if ((keys == NULL) || (values == NULL)) {
-        PyErr_SetString(PyExc_TypeError, "Error getting keys from dictlist");
+        PyErr_SetString(PyExc_RuntimeError, "Error getting keys from dictlist");
         return NULL;
     }
     int i, size = PyList_Size(keys);
@@ -214,7 +212,7 @@ static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObje
         PyObject * key = PyList_GetItem(keys, i);
         int j, lsize = PyList_Size(value);
         for(j = 0; j < lsize; j++) {
-            EntityObject * entry = (EntityObject*)PyList_GetItem(value, j);
+            PyEntity * entry = (PyEntity*)PyList_GetItem(value, j);
             if (entry->m_entity == item->m_entity) {
                 flag = 1;
                 PyList_SetSlice(value, j, j+1, NULL);
@@ -252,7 +250,7 @@ PyTypeObject dictlist_remove_value_type = {
 static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject * kwds)
 {
     PyObject * dict;
-    EntityObject * item;
+    PyEntity * item;
     char * key;
     if (!PyArg_ParseTuple(args, "OsO", &dict, &key, &item)) {
         return NULL;
@@ -269,7 +267,7 @@ static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject 
         }
         int i, size = PyList_Size(list);
         for(i = 0; i < size; i++) {
-            EntityObject * entry = (EntityObject*)PyList_GetItem(list,i);
+            PyEntity * entry = (PyEntity*)PyList_GetItem(list,i);
             if (entry->m_entity == item->m_entity) {
                 goto present;
             }
@@ -405,7 +403,7 @@ void Create_PyEntity(Entity * entity, const std::string & package,
 {
     PyObject * c = Get_PyClass(package, _type);
     if (c == NULL) { return; }
-    EntityObject * pyEntity = newEntityObject(NULL);
+    PyEntity * pyEntity = newPyEntity();
     pyEntity->m_entity = entity;
     Subscribe_Script(entity, c, package);
     PyObject * o = Create_PyScript((PyObject *)pyEntity, c);
@@ -419,7 +417,7 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
 {
     PyObject * c = Get_PyClass(package, _type);
     if (c == NULL) { return; }
-    MindObject * pyMind = newMindObject(NULL);
+    PyMind * pyMind = newPyMind();
     pyMind->m_mind = mind;
     Subscribe_Script(mind, c, package);
     PyObject * o = Create_PyScript((PyObject *)pyMind, c);
@@ -445,7 +443,7 @@ static PyObject * is_location(PyObject * self, PyObject * args)
 
 static PyObject * location_new(PyObject * self, PyObject * args)
 {
-    LocationObject *o;
+    PyLocation *o;
     // We need to deal with actual args here
     PyObject * refO, * coordsO = NULL;
     bool decrefO = false;
@@ -469,33 +467,39 @@ static PyObject * location_new(PyObject * self, PyObject * args)
 
         Entity * ref_ent;
         if (PyWorld_Check(refO)) {
-            WorldObject * ref = (WorldObject*)refO;
+            PyWorld * ref = (PyWorld*)refO;
+#ifndef NDEBUG
             if (ref->world == NULL) {
-                PyErr_SetString(PyExc_TypeError, "Parent world is invalid");
+                PyErr_SetString(PyExc_AssertionError, "Parent world is invalid");
                 if (decrefO) { Py_DECREF(refO); }
                 return NULL;
             }
+#endif // NDEBUG
             ref_ent = &ref->world->m_gameWorld;
         } else if (PyMind_Check(refO)) {
-            MindObject * ref = (MindObject*)refO;
+            PyMind * ref = (PyMind*)refO;
+#ifndef NDEBUG
             if (ref->m_mind == NULL) {
-                PyErr_SetString(PyExc_TypeError, "Parent mind is invalid");
+                PyErr_SetString(PyExc_AssertionError, "Parent mind is invalid");
                 if (decrefO) { Py_DECREF(refO); }
                 return NULL;
             }
+#endif // NDEBUG
             ref_ent = ref->m_mind;
         } else {
-            EntityObject * ref = (EntityObject*)refO;
+            PyEntity * ref = (PyEntity*)refO;
+#ifndef NDEBUG
             if (ref->m_entity == NULL) {
-                PyErr_SetString(PyExc_TypeError, "Parent thing is invalid");
+                PyErr_SetString(PyExc_AssertionError, "Parent thing is invalid");
                 if (decrefO) { Py_DECREF(refO); }
                 return NULL;
             }
+#endif // NDEBUG
             ref_ent = ref->m_entity;
         }
         if (decrefO) { Py_DECREF(refO); }
-        Vector3DObject * coords = (Vector3DObject*)coordsO;
-        o = newLocationObject(NULL);
+        PyVector3D * coords = (PyVector3D*)coordsO;
+        o = newPyLocation();
         if ( o == NULL ) {
             return NULL;
         }
@@ -506,7 +510,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
         }
         o->own = 1;
     } else if (PyArg_ParseTuple(args, "")) {
-        o = newLocationObject(NULL);
+        o = newPyLocation();
         if ( o == NULL ) {
             return NULL;
         }
@@ -520,7 +524,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
 
 static PyObject * vector3d_new(PyObject * self, PyObject * args)
 {
-        Vector3DObject *o;
+        PyVector3D *o;
         Vector3D val;
         // We need to deal with actual args here
         PyObject * clist;
@@ -566,7 +570,7 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
                 break;
         }
             
-        o = newVector3DObject(args);
+        o = newPyVector3D();
         if ( o == NULL ) {
                 return NULL;
         }
@@ -576,7 +580,7 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
 
 static PyObject * quaternion_new(PyObject * self, PyObject * args)
 {
-        QuaternionObject *o;
+        PyQuaternion *o;
         Quaternion val;
 
         PyObject * clist;
@@ -614,8 +618,8 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
                     PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take two vectors");
                     return NULL;
                 }
-                Vector3DObject * from = (Vector3DObject *)v1;
-                Vector3DObject * to = (Vector3DObject *)v2;
+                PyVector3D * from = (PyVector3D *)v1;
+                PyVector3D * to = (PyVector3D *)v2;
                 val = quaternionFromTo(from->coords, to->coords);
                 }
                 break;
@@ -643,7 +647,7 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
                 break;
         }
 
-        o = newQuaternionObject(args);
+        o = newPyQuaternion();
         if ( o == NULL ) {
                 return NULL;
         }
@@ -653,13 +657,13 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
 
 static PyObject * worldtime_new(PyObject * self, PyObject * args)
 {
-        WorldTimeObject *o;
+        PyWorldTime *o;
                 
         int seconds;
         if (!PyArg_ParseTuple(args, "i", &seconds)) {
                 return NULL;
         }
-        o = newWorldTimeObject(args);
+        o = newPyWorldTime();
         if ( o == NULL ) {
                 return NULL;
         }
@@ -668,7 +672,7 @@ static PyObject * worldtime_new(PyObject * self, PyObject * args)
         return (PyObject *)o;
 }
 
-static inline void addToOplist(OperationObject * op, OplistObject * o)
+static inline void addToOplist(PyOperation * op, PyOplist * o)
 {
     if (op != NULL) {
        if (PyOperation_Check(op)) {
@@ -684,13 +688,13 @@ static inline void addToOplist(OperationObject * op, OplistObject * o)
 
 static PyObject * oplist_new(PyObject * self, PyObject * args)
 {
-        OplistObject *o;
+        PyOplist *o;
         
-        OperationObject *op1 = NULL, *op2 = NULL, *op3 = NULL, *op4 = NULL;
+        PyOperation *op1 = NULL, *op2 = NULL, *op3 = NULL, *op4 = NULL;
         if (!PyArg_ParseTuple(args, "|OOOO", &op1, &op2, &op3, &op4)) {
                 return NULL;
         }
-        o = newOplistObject(args);
+        o = newPyOplist();
         if ( o == NULL ) {
                 return NULL;
         }
@@ -704,12 +708,12 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
 
 static PyObject * object_new(PyObject * self, PyObject * args)
 {
-        AtlasObject *o;
+        PyMessageElement *o;
         
         if (!PyArg_ParseTuple(args, "")) {
                 return NULL;
         }
-        o = newAtlasObject(args);
+        o = newPyMessageElement();
         if ( o == NULL ) {
                 return NULL;
         }
@@ -719,7 +723,7 @@ static PyObject * object_new(PyObject * self, PyObject * args)
 
 static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
-    AtlasObject *o;
+    PyMessageElement *o;
     char * id = NULL;
     
     if (!PyArg_ParseTuple(args, "|s", &id)) {
@@ -733,7 +737,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
         PyObject * keys = PyDict_Keys(kwds);
         PyObject * vals = PyDict_Values(kwds);
         if ((keys == NULL) || (vals == NULL)) {
-            PyErr_SetString(PyExc_TypeError, "Error in keywords");
+            PyErr_SetString(PyExc_RuntimeError, "Error in keywords");
             return NULL;
         }
         int i, size = PyList_Size(keys); 
@@ -741,16 +745,16 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             char * key = PyString_AsString(PyList_GetItem(keys, i));
             PyObject * val = PyList_GetItem(vals, i);
             if ((strcmp(key, "location") == 0) && (PyLocation_Check(val))) {
-                LocationObject * loc = (LocationObject*)val;
+                PyLocation * loc = (PyLocation*)val;
                 loc->location->addToObject(omap);
             } else if (strcmp(key, "xyz") == 0) {
-                omap["pos"] = PyObject_asObject(val);
+                omap["pos"] = PyObject_asMessageElement(val);
             } else if ((strcmp(key, "parent") == 0) && (PyString_Check(val))) {
                 omap["loc"] = PyString_AsString(val);
             } else if ((strcmp(key, "type") == 0) && (PyString_Check(val))) {
                 omap["parents"] = Element::ListType(1,std::string(PyString_AsString(val)));
             } else {
-                Element val_obj = PyObject_asObject(val);
+                Element val_obj = PyObject_asMessageElement(val);
                 if (val_obj.getType() == Element::TYPE_NONE) {
                     fprintf(stderr, "Could not handle %s value in Entity()", key);
                     PyErr_SetString(PyExc_TypeError, "Argument type error to Entity()");
@@ -765,7 +769,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
         Py_DECREF(vals);
     }
 
-    o = newAtlasObject(args);
+    o = newPyMessageElement();
     if ( o == NULL ) {
         return NULL;
     }
@@ -775,12 +779,12 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
 
 static PyObject * cppthing_new(PyObject * self, PyObject * args)
 {
-        EntityObject *o;
+        PyEntity *o;
 
         if (!PyArg_ParseTuple(args, "")) {
                 return NULL;
         }
-        o = newEntityObject(args);
+        o = newPyEntity();
         if ( o == NULL ) {
                 return NULL;
         }
@@ -792,8 +796,8 @@ static inline void addToArgs(Element::ListType & args, PyObject * ent)
     if (ent == NULL) {
         return;
     }
-    if (PyAtlasObject_Check(ent)) {
-        AtlasObject * obj = (AtlasObject*)ent;
+    if (PyMessageElement_Check(ent)) {
+        PyMessageElement * obj = (PyMessageElement*)ent;
         if (obj->m_obj == NULL) {
             fprintf(stderr, "Invalid object in Operation arguments\n");
             return;
@@ -801,7 +805,7 @@ static inline void addToArgs(Element::ListType & args, PyObject * ent)
         Element o(*obj->m_obj);
         if (o.isMap() && (obj->Object_attr != NULL)) {
             Element::MapType & ent = o.asMap();
-            Element::MapType ent2 = PyDictObject_asMapType(obj->Object_attr);
+            Element::MapType ent2 = PyDictObject_asElementMap(obj->Object_attr);
             Element::MapType::const_iterator I = ent2.begin();
             for(; I != ent2.end(); I++) {
                 if (ent.find(I->first) != ent.end()) {
@@ -811,7 +815,7 @@ static inline void addToArgs(Element::ListType & args, PyObject * ent)
         }
         args.push_back(o);
     } else if (PyOperation_Check(ent)) {
-        OperationObject * op = (OperationObject*)ent;
+        PyOperation * op = (PyOperation*)ent;
         if (op->operation == NULL) {
             fprintf(stderr, "Invalid operation in Operation arguments\n");
             return;
@@ -824,7 +828,7 @@ static inline void addToArgs(Element::ListType & args, PyObject * ent)
 
 static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
-    OperationObject * op;
+    PyOperation * op;
 
     char * type;
     PyObject * arg1 = NULL;
@@ -834,7 +838,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     if (!PyArg_ParseTuple(args, "s|OOO", &type, &arg1, &arg2, &arg3)) {
         return NULL;
     }
-    op = newAtlasRootOperation(args);
+    op = newPyOperation();
     if (op == NULL) {
         return NULL;
     }
@@ -946,7 +950,7 @@ static PyObject * set_kw(PyObject * meth_self, PyObject * args)
     }
     PyObject * attr = PyObject_GetAttrString(self, "attributes");
     if (attr == NULL) {
-        PyErr_SetString(PyExc_TypeError, "SET_KW: No attributes list");
+        PyErr_SetString(PyExc_AttributeError, "SET_KW: No attributes list");
         return NULL;
     }
     int i = PyList_Size(attr);

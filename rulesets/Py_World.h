@@ -11,13 +11,13 @@ class BaseWorld;
 
 typedef struct {
     PyObject_HEAD
-    BaseWorld	* world;
-} WorldObject;
+    BaseWorld * world;
+} PyWorld;
 
-extern PyTypeObject World_Type;
+extern PyTypeObject PyWorld_Type;
 
-#define PyWorld_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&World_Type)
+#define PyWorld_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyWorld_Type)
 
-WorldObject * newWorldObject(PyObject *);
+PyWorld * newPyWorld();
 
 #endif // RULESETS_PY_WORLD_H
