@@ -1,3 +1,5 @@
+Character creation should not fail if creating its bootstrap inventory fails.
+
 Make all operation handlers return operations in a argument rather than
 return by value. Take note of the places where behavoir is not the standard.
 BaseMind::AppearanceOperation() uses both results from script and from
