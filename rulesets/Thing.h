@@ -9,17 +9,22 @@ typedef int bad_type; // Remove this to get unset type reporting
 
 #include <common/BaseEntity.h>
 
+class Player;
+
 class Thing : public BaseEntity {
   public:
     string description;
     string mode;
     double status;
+    double weight;
     double age;
+    int is_character;
 
     Thing();
+    virtual ~Thing() { }
 
     virtual void addObject(Message::Object *);
-    bad_type send_world(bad_type msg);
+    RootOperation * send_world(RootOperation * msg);
     bad_type setup_operation(bad_type op);
     bad_type tick_operation(bad_type op);
     bad_type create_operation(bad_type op);

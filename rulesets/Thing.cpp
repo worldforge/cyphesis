@@ -8,7 +8,7 @@
 
 
 Thing::Thing() : description("Some Thing"), mode("birth"),
-		status(1.0), age(0.0)
+		status(1.0), age(0.0), is_character(0)
 {
     name=string("Foo");
 }
@@ -20,9 +20,9 @@ void Thing::addObject(Message::Object * obj)
     BaseEntity::addObject(obj);
 }
 
-bad_type Thing::send_world(bad_type msg)
+RootOperation * Thing::send_world(RootOperation * msg)
 {
-    //return world->message(msg, this);
+    return world->message(*msg, this);
 }
 
 bad_type Thing::setup_operation(bad_type op)
