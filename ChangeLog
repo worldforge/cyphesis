@@ -1,3 +1,8 @@
+2003-08-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* Remove unused --with-worldforge option from configure,
+	  and use the latest pthread check.
+
 2003-08-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* Backport improved pthread check from devel code.

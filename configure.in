@@ -49,26 +49,13 @@ AC_CHECK_FUNCS([sigset sigaction])
 
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
-dnl Test for WorldForge Atlas Libraries
-
-dnl a general directory where worldforge related libs have been installed
-dnl
-AC_ARG_WITH(worldforge,
-    [ --with-worldforge=DIR directory where worldforge libs are installed ],
-    [
-        worldforgedir=$withval
-        CPPFLAGS="$CPPFLAGS -I${worldforgedir}/include"
-        LIBS="$LIBS -L${worldforgedir}/lib"
-    ]
-)
-
 dnl allow the user to provide the directory where python is installed in
 dnl
 AC_CACHE_CHECK(for location of python, python_prefix,
 [
     python_prefix=/usr
     AC_ARG_WITH(python,
-    [ --with-python=DIR directory python is installed in [default=/usr]],
+    [  --with-python=DIR       Prefix where python is installed in [default=/usr]],
     [
         if test $withval != yes; then
             python_prefix=$withval
