@@ -102,6 +102,7 @@ class Database {
                          const std::string & id);
     const DatabaseResult selectEntityRow(const std::string & id,
                                          const std::string & classname = "");
+    const DatabaseResult selectClassByLoc(const std::string & loc);
                                    
 
 };
@@ -151,11 +152,13 @@ class DatabaseResult {
             }
             return PQgetvalue(m_dr.m_res, m_row, column);
         }
+        const char * column(const char *) const;
 
         friend class DatabaseResult;
     };
 
     int size() const { return PQntuples(m_res); }
+    int empty() const { return (size() == 0); }
     int columns() const { return PQnfields(m_res); }
     bool error() const { return (m_res == NULL); }
 
@@ -169,10 +172,10 @@ class DatabaseResult {
 
     // const_iterator find() perhaps
 
-    const char * field(int row, int column) {
+    const char * field(int row, int column) const {
         return PQgetvalue(m_res, row, column);
     }
-    const char * field(int row, const std::string & column);
+    const char * field(int row, const char * column) const;
 };
 
 #endif // COMMON_DATABSE_H

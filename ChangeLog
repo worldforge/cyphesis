@@ -1,5 +1,16 @@
 2002-12-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/Database.h: Implement methods
+	  to query database results.
+
+	* common/const.cpp, common/const.h: Add a const for the root
+	  id.
+
+	* server/Restoration.cpp, server/Restoration.h: Start implementing
+	  code to restore world from database.
+
+2002-12-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.h, common/Database.cpp: Add base to get rows
 	  from entity tables. Flesh out the result iterator - untested.
 	  Tweak various bits of query generating code to be a little

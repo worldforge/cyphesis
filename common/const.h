@@ -54,6 +54,8 @@ namespace consts {
 
   // Admin password used by admin account
   extern const char * defaultAdminPassword;
+  // Id of root world entity
+  extern const char * rootWorldId;
   // Version of the software we are running
   extern const char * version;
   // Time this server was built

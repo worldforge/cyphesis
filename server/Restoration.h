@@ -5,13 +5,17 @@
 #ifndef SERVER_RESTORATION_H
 #define SERVER_RESTORATION_H
 
+#include <string>
+
 class ServerRouting;
+class Database;
 
 class Restoration {
   private:
-
+    void restore(const std::string &, const std::string &);
   public:
     ServerRouting & server;
+    Database & database;
 
     Restoration(ServerRouting & svr);
 

@@ -742,3 +742,49 @@ const DatabaseResult Database::selectEntityRow(const std::string & id,
     };
     return DatabaseResult(res);
 }
+
+const DatabaseResult Database::selectClassByLoc(const std::string & loc)
+{
+    std::string query = "SELECT id, class FROM entity_ent WHERE loc='";
+    query += loc;
+    query += "';";
+
+    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    int status = PQsendQuery(m_connection, query.c_str());
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return DatabaseResult(0);
+    }
+
+    PGresult * res;
+    if ((res = PQgetResult(m_connection)) == NULL) {
+        log(ERROR, "Error updating entity row.");
+        reportError();
+        debug(std::cout << "Row query didn't work"
+                        << std::endl << std::flush;);
+        return DatabaseResult(0);
+    }
+    while (PQgetResult(m_connection) != NULL) {
+        log(ERROR, "Extra database result to simple query.");
+    };
+    return DatabaseResult(res);
+}
+
+const char * DatabaseResult::field(int row, const char * column) const
+{
+    int col_num = PQfnumber(m_res, column);
+    if (col_num == -1) {
+        return "";
+    }
+    return PQgetvalue(m_res, row, col_num);
+}
+
+const char * DatabaseResult::const_iterator::column(const char * column) const
+{
+    int col_num = PQfnumber(m_dr.m_res, column);
+    if (col_num == -1) {
+        return "";
+    }
+    return PQgetvalue(m_dr.m_res, m_row, col_num);
+}
