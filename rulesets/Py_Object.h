@@ -5,9 +5,9 @@
 #ifndef RULESETS_PY_OBJECT_H
 #define RULESETS_PY_OBJECT_H
 
-#include <Atlas/Message/Element.h>
-
 #include <Python.h>
+
+#include <Atlas/Message/Element.h>
 
 typedef struct {
     PyObject_HEAD

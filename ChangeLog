@@ -1,3 +1,10 @@
+2004-11-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/MindFactory.cpp, rulesets/Py_Object.h,
+	  rulesets/Py_Operation.h, rulesets/PythonScript.h,
+	  rulesets/Python_API.cpp: Include Python.h first to avoid some
+	  header conflicts.
+
 2004-11-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* Release version 0.3.6.

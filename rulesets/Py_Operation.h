@@ -5,9 +5,9 @@
 #ifndef RULESETS_PY_OPERATION_H
 #define RULESETS_PY_OPERATION_H
 
-#include "common/operations.h"
-
 #include <Python.h>
+
+#include "common/operations.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
   class RootOperation;

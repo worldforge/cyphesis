@@ -3,6 +3,7 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "MindFactory.h"
+
 #include "BaseMind.h"
 #include "Python_API.h"
 

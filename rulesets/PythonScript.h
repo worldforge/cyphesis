@@ -5,9 +5,9 @@
 #ifndef RULESETS_PYTHON_SCRIPT_H
 #define RULESETS_PYTHON_SCRIPT_H
 
-#include "Script.h"
-
 #include <Python.h>
+
+#include "Script.h"
 
 class Entity;
 

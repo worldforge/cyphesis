@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
+#include "Python.h"
+
 #include "Python_API.h"
 
 #include "Py_Object.h"
