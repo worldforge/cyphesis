@@ -52,20 +52,32 @@ void Creator::operation(const RootOperation & op, OpVector & res)
     // to leave normal communication unimplemented. Tick is required for
     // movement to function, but is currenlty blocked. Eat and
     // Nourish should remain blocked.
+    // One reason this is here so so that all ops from world are sent
+    // to the mind, skipping the world2mind() filter.
     OpNo op_no = opEnumerate(op);
-    if (op_no == OP_CREATE) {
-        CreateOperation((Create &)op, res);
-    } else if (op_no == OP_LOOK) {
-        LookOperation((Look &)op, res);
-    } else if (op_no == OP_MOVE) {
-        MoveOperation((Move &)op, res);
-    } else if (op_no == OP_SETUP) {
-        m_world->addPerceptive(getId());
-    } else if (op_no == OP_DELETE) {
-        DeleteOperation((Delete &)op, res);
-    } else {
-        sendMind(op, res);
+    switch(op_no) {
+        case OP_CREATE:
+            CreateOperation((Create &)op, res);
+            break;
+        case OP_LOOK:
+            LookOperation((Look &)op, res);
+            break;
+        case OP_MOVE:
+            MoveOperation((Move &)op, res);
+            break;
+        case OP_SETUP:
+            m_world->addPerceptive(getId());
+            break;
+        case OP_DELETE:
+            DeleteOperation((Delete &)op, res);
+            break;
+        case OP_TICK:
+            TickOperation((Tick &)op, res);
+            break;
+        default:
+            break;
     }
+    sendMind(op, res);
 }
 
 void Creator::externalOperation(const RootOperation & op, OpVector & res)

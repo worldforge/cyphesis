@@ -371,7 +371,6 @@ void Character::mindUseOperation(const Use & op, OpVector & res)
     std::cout << "Got Use op from mind" << std::endl << std::flush;
     Use *s = new Use(op);
     s->setTo(getId());
-    s->setAttr("sub_to", "mind");
     res.push_back(s);
 }
 
@@ -380,7 +379,6 @@ void Character::mindWieldOperation(const Wield & op, OpVector & res)
     std::cout << "Got Wield op from mind" << std::endl << std::flush;
     Wield *s = new Wield(op);
     s->setTo(getId());
-    s->setAttr("sub_to", "mind");
     res.push_back(s);
 }
 
@@ -918,17 +916,11 @@ bool Character::w2mSetupOperation(const Setup & op)
 
 bool Character::w2mUseOperation(const Use & op)
 {
-    if (op.hasAttr("sub_to")) {
-        return true;
-    }
     return false;
 }
 
 bool Character::w2mWieldOperation(const Wield & op)
 {
-    if (op.hasAttr("sub_to")) {
-        return true;
-    }
     return false;
 }
 

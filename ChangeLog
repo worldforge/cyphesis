@@ -1,3 +1,11 @@
+2004-09-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Creator.cpp: Allow creator to handle a few more op
+	  types, and use switch to determine what to do.
+
+	* rulesets/Character.cpp: Remove setting and checking of sub_to
+	  on Use and Wield ops as it is not relevant.
+
 2004-09-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/IGEntityExerciser.h: Fix to work with gcc 3.4 stricter
