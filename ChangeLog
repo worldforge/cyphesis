@@ -1,3 +1,9 @@
+2001-11-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/custom.cpp, common/inheritance.cpp, common/inheritance.h:
+	  Simplified and cleaned up inheritance query code, and hacked in
+	  some of the OOG and IG classes.
+
 2001-11-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/operations.cpp, common/Save.h, common/Nourish.h, common/Load.h,

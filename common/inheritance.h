@@ -9,6 +9,7 @@
 
 void installStandardObjects();
 void installCustomOperations();
+void installCustomEntities();
 
 class InheritanceException {
   private:
@@ -31,6 +32,7 @@ class Inheritance {
             m_instance = new Inheritance();
             installStandardObjects();
             installCustomOperations();
+            installCustomEntities();
         }
         return *m_instance;
     }
@@ -43,8 +45,9 @@ class Inheritance {
         return I->second;
     }
 
-    void addChild(const std::string & parent, Atlas::Objects::Root * obj) {
+    void addChild(Atlas::Objects::Root * obj) {
         const std::string & child = obj->GetId();
+        const std::string & parent = obj->GetParents().front().AsString();
         std::map<std::string, Atlas::Objects::Root *>::iterator I = atlasObjects.find(parent);
         if (I == atlasObjects.end()) {
             throw InheritanceException(parent);

@@ -3,6 +3,8 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Objects/Operation/RootOperation.h>
+#include <Atlas/Objects/Entity/GameEntity.h>
+#include <Atlas/Objects/Entity/AdminEntity.h>
 #include "Chop.h"
 #include "Cut.h"
 #include "Eat.h"
@@ -21,13 +23,48 @@ void installCustomOperations()
 {
     Inheritance & i = Inheritance::instance();
 
-    i.addChild("action", new Chop());
-    i.addChild("action", new Cut());
-    i.addChild("action", new Eat());
-    i.addChild("action", new Fire());
-    i.addChild("set", new Load());
-    i.addChild("action", new Nourish());
-    i.addChild("get", new Save());
-    i.addChild("root_operation", new Setup());
-    i.addChild("root_operation", new Tick());
+    i.addChild(new Chop());
+    i.addChild(new Cut());
+    i.addChild(new Eat());
+    i.addChild(new Fire());
+    i.addChild(new Load());
+    i.addChild(new Nourish());
+    i.addChild(new Save());
+    i.addChild(new Setup());
+    i.addChild(new Tick());
+}
+
+using Atlas::Objects::Root;
+using Atlas::Objects::Entity::GameEntity;
+using Atlas::Objects::Entity::AdminEntity;
+using Atlas::Message::Object;
+
+void installCustomEntities()
+{
+    Inheritance & i = Inheritance::instance();
+
+    Root * r = new GameEntity();
+    r->SetId("world");
+    r->SetParents(Object::ListType(1,"game_entity"));
+    i.addChild(r);
+
+    r = new GameEntity();
+    r->SetId("thing");
+    r->SetParents(Object::ListType(1,"game_entity"));
+    i.addChild(r);
+
+    r = new GameEntity();
+    r->SetId("farmer");
+    r->SetParents(Object::ListType(1,"thing"));
+    i.addChild(r);
+
+    r = new AdminEntity();
+    r->SetId("room");
+    r->SetParents(Object::ListType(1,"admin_entity"));
+    i.addChild(r);
+
+    r = new AdminEntity();
+    r->SetId("lobby");
+    r->SetParents(Object::ListType(1,"room"));
+    i.addChild(r);
 }

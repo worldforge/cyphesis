@@ -59,42 +59,42 @@ void installStandardObjects()
 {
     Inheritance & i = Inheritance::instance();
 
-    i.addChild("root", new RootOperation());
-    i.addChild("root_operation", new Action());
-    i.addChild("action", new Create());
-    i.addChild("action", new Delete());
-    i.addChild("root_operation", new Info());
-    i.addChild("action", new Set());
-    i.addChild("action", new Get());
-    i.addChild("info", new Perception());
-    i.addChild("info", new Error());
-    i.addChild("create", new Combine());
-    i.addChild("create", new Divide());
-    i.addChild("create", new Communicate());
-    i.addChild("set", new Move());
-    i.addChild("get", new Perceive());
-    i.addChild("get", new Login());
-    i.addChild("login", new Logout());
-    i.addChild("perception", new Sight());
-    i.addChild("perception", new Sound());
-    i.addChild("perception", new Smell());
-    i.addChild("perception", new Feel());
-    i.addChild("action", new Imaginary());
-    i.addChild("communicate", new Talk());
-    i.addChild("perceive", new Look());
-    i.addChild("perceive", new Listen());
-    i.addChild("perceive", new Sniff());
-    i.addChild("perceive", new Touch());
-    i.addChild("sight", new Appearance());
-    i.addChild("sight", new Disappearance());
+    i.addChild(new RootOperation());
+    i.addChild(new Action());
+    i.addChild(new Create());
+    i.addChild(new Delete());
+    i.addChild(new Info());
+    i.addChild(new Set());
+    i.addChild(new Get());
+    i.addChild(new Perception());
+    i.addChild(new Error());
+    i.addChild(new Combine());
+    i.addChild(new Divide());
+    i.addChild(new Communicate());
+    i.addChild(new Move());
+    i.addChild(new Perceive());
+    i.addChild(new Login());
+    i.addChild(new Logout());
+    i.addChild(new Sight());
+    i.addChild(new Sound());
+    i.addChild(new Smell());
+    i.addChild(new Feel());
+    i.addChild(new Imaginary());
+    i.addChild(new Talk());
+    i.addChild(new Look());
+    i.addChild(new Listen());
+    i.addChild(new Sniff());
+    i.addChild(new Touch());
+    i.addChild(new Appearance());
+    i.addChild(new Disappearance());
 
-    i.addChild("root", new RootEntity());
-    i.addChild("root_entity", new AdminEntity());
-    i.addChild("admin_entity", new Account());
-    i.addChild("account", new Player());
-    i.addChild("account", new Admin());
-    i.addChild("admin_entity", new Game());
-    i.addChild("root_entity", new GameEntity());
+    i.addChild(new RootEntity());
+    i.addChild(new AdminEntity());
+    i.addChild(new Account());
+    i.addChild(new Player());
+    i.addChild(new Admin());
+    i.addChild(new Game());
+    i.addChild(new GameEntity());
 
     // And from here on we need to define the hierarchy as found in the C++
     // base classes. Script classes defined in rulsets need to be added
