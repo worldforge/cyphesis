@@ -7,6 +7,8 @@ using Atlas::Objects::Operation::RootOperation;
 class Thing;
 
 class MemMap {
+    std::map<string, Thing *> things;
+    std::list<string> additions_by_id;
   public:
     MemMap() { }
     Thing * add_object(Thing * object);
@@ -21,8 +23,6 @@ class MemMap {
     //bad_type find_by_location(bad_type location, bad_type radius=0.0)
     //bad_type find_by_type(bad_type what)
 
-    std::map<string, Thing *> things;
-    std::list<string> additions_by_id;
     // add_hooks?             // Function pointers to trigger stuff
     // update_hooks?          // This one is required to sort out ownership
     // delete_hooks?          // This one is required to make sure we know

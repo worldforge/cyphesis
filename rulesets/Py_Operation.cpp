@@ -317,6 +317,7 @@ static int Operation_seq_length(RootOperationObject * self)
 
 static PyObject * Operation_seq_item(RootOperationObject * self, int item)
 {
+    printf("Operation_seq_item\n");
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError,"invalid operation");
         return 0;
@@ -324,7 +325,7 @@ static PyObject * Operation_seq_item(RootOperationObject * self, int item)
     Object::ListType & args_list = self->operation->GetArgs();
     Object::ListType::iterator I = args_list.begin();
     int i;
-    for(i = 0; i != item && I != args_list.end(); i++, I++);
+    for(i = 0; i < item && I != args_list.end(); i++, I++);
     if (I != args_list.end()) {
         Object * obj = new Object(*I);
         AtlasObject * ret = newAtlasObject(NULL);

@@ -1,5 +1,9 @@
 2000-11-21  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Bug fix that meant that updates to MemMap object caused segfault.
+
+2000-11-21  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Filled out the python common.const module will all its values.
 
 	* Added code required to create an operation from with python.

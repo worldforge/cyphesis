@@ -83,7 +83,7 @@ BaseEntity * Account::add_character(const string & typestr, const Message::Objec
     if (chr->is_character != 0) {
         Character * pchar = (Character *)chr;
         pchar->player = this;
-        pchar->external_mind = new ExternalMind(connection);
+        pchar->external_mind = new ExternalMind(connection, pchar->fullid);
     }
     //Account::characters_dict[char.id]=char;
     //Account::characters.append(char.id);

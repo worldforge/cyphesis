@@ -15,10 +15,11 @@
 #include "BaseMind.h"
 
 
-BaseMind::BaseMind()
+BaseMind::BaseMind(string & id)
 {
     //map=MemMap();
-    //BaseMind::map.add_object(this);
+    fullid = id;
+    map.add_object(this);
     //BaseMind::time=WorldTime();
     //if (const.debug_level>=1) {
         //BaseMind::log_fp=open("mind_"+BaseMind::id+".log","w");

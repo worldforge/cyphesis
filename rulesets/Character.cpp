@@ -147,7 +147,7 @@ oplist Character::Operation(const Setup & op)
         return(res);
     }
 
-    mind = new BaseMind();
+    mind = new BaseMind(fullid);
     Create_PyThing(mind, "mind.NPCMind", "NPCMind");
 
     Setup * s = new Setup(op);

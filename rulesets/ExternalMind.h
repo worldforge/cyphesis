@@ -9,7 +9,7 @@ class ExternalMind : public BaseMind {
   public:
     Connection * connection;
 
-    ExternalMind(Connection * connection);
+    ExternalMind(Connection * connection, string & id);
 
     virtual oplist message(const RootOperation & msg);
 };

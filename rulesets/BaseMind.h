@@ -5,7 +5,7 @@
 
 class BaseMind : public Thing {
   public:
-    BaseMind();
+    BaseMind(string &);
     virtual ~BaseMind() { }
 
     //bad_type sight_create_operation(bad_type original_op, bad_type op)
