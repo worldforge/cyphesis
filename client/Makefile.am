@@ -2,6 +2,37 @@ INCLUDES = -I$(top_srcdir)
 
 bin_PROGRAMS = cyclient
 
+if LINK_STATIC
+
+CLIENT_LIBS = \
+    /usr/lib/libmercator-0.2.a \
+    /usr/lib/libskstream-0.3.a \
+    /usr/lib/libvarconf-1.0.a \
+    /usr/lib/libwfmath-0.3.a \
+    /usr/lib/libAtlasObjectsOperation-0.5.a \
+    /usr/lib/libAtlasObjectsEntity-0.5.a \
+    /usr/lib/libAtlasObjects-0.5.a \
+    /usr/lib/libAtlasNet-0.5.a \
+    /usr/lib/libAtlasCodecs-0.5.a \
+    /usr/lib/libAtlasMessage-0.5.a \
+    /usr/lib/libAtlas-0.5.a \
+    /usr/lib/libsigc-2.0.a \
+    $(PYTHON_LIBS) \
+    /usr/lib/libutil.a \
+    $(STATIC_LIBSTDCPP) \
+    $(STATIC_LIBGCC) \
+    -ldl -lc -lm -lpthread -lgcc_s
+
+cyclient_LDFLAGS = -nodefaultlibs -export-dynamic
+
+else
+
+CLIENT_LIBS = $(COMMON_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS)
+
+cyclient_LDFLAGS = -export-dynamic
+
+endif
+
 cyclient_SOURCES = \
 		CharacterClient.cpp CharacterClient.h \
 		CreatorClient.cpp CreatorClient.h \
@@ -11,8 +42,6 @@ cyclient_SOURCES = \
 		Py_CreatorClient.cpp Py_CreatorClient.h \
 		client.cpp
 
-cyclient_LDFLAGS = -export-dynamic
-
 cyclient_LDADD = $(top_builddir)/rulesets/librulesetbase.a \
                  $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/rulesets/librulesetmind.a \
@@ -21,4 +50,5 @@ cyclient_LDADD = $(top_builddir)/rulesets/librulesetbase.a \
                  $(top_builddir)/rulesets/librulesetbase.a \
                  $(top_builddir)/modules/libmodules.a \
                  $(top_builddir)/common/libcommon.a \
-                 $(top_builddir)/physics/libphysics.a
+                 $(top_builddir)/physics/libphysics.a \
+                 $(CLIENT_LIBS)

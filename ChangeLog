@@ -1,5 +1,13 @@
 2004-01-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac, client/Makefile.am, server/Makefile.am,
+	  tools/Makefile.am: Add a configure option, and modify the
+	  way libs are handled so that it is possible to link most
+	  libs statically. This makes it possible to build a stand-alone
+	  binary distribution.
+
+2004-01-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.h, server/WorldRouter.cpp: Completey remove
 	  deliverDeleteTo(), and handle all the delete special case stuff
 	  in delEntity().

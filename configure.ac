@@ -19,6 +19,9 @@ dnl Need libtool
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 
+COMMON_LIBS=
+PGSQL_LIBS=
+
 dnl Test for C++ compiler
 
 AC_PROG_CXX
@@ -55,6 +58,26 @@ AC_CACHE_CHECK(for location of python, python_prefix,
         fi
     ])
 ])
+
+STATIC_LIBSTDCPP=
+STATIC_LIBGCC=
+
+AC_ARG_ENABLE(static_link,
+  [  --enable-static-link    enable static link of some libs [default=no]],
+  [
+    if test "$enableval" = "yes"; then
+      link_static="true"
+      STATIC_LIBSTDCPP=`$CXX -print-file-name=libstdc++.a`
+      STATIC_LIBGCC=`$CXX -print-file-name=libgcc.a`
+    else
+      link_static="false"
+    fi
+  ],[
+    link_static="false"
+  ]
+)
+AM_CONDITIONAL(LINK_STATIC, test x"$link_static" = xtrue)
+
 
 dnl then check for the header file Python.h and set
 dnl python_include_path and python_version
@@ -100,8 +123,17 @@ CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
 dnl build the library path from the found version
 python_lib_path=${python_prefix}/lib/${python_version}/config
 
-AC_CHECK_LIB(dl,dlopen)
-AC_CHECK_LIB(util,openpty)
+PYTHON_UTIL_LIBS=
+
+AC_CHECK_LIB(dl,dlopen,
+[
+    PYTHON_UTIL_LIBS="$PYTHON_UTIL_LIBS -ldl"
+])
+
+AC_CHECK_LIB(util,openpty,
+[
+    PYTHON_UTIL_LIBS="$PYTHON_UTIL_LIBS -lutil"
+])
 
 AC_CHECK_FUNC(pthread_mutex_trylock, ,
 [
@@ -122,11 +154,10 @@ AC_CHECK_LIB(${python_version},
     [
         python_libs="-L${python_lib_path} -l${python_version}"
     ],AC_MSG_ERROR([Cannot find python libraries. Do you have python development installed?]),
-    [-L${python_lib_path}]
+    [-L${python_lib_path} ${PYTHON_UTIL_LIBS}]
 )
 
 PYTHON_LIBS=${python_libs}
-LIBS="$LIBS $PYTHON_LIBS"
 
 AC_CHECK_LIB(crypto, MD5,
     [
@@ -139,7 +170,7 @@ AC_CHECK_LIB(crypto, MD5,
 PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.94 skstream-0.3 >= 0.3.3 varconf-1.0 >= 0.6.2 mercator-0.2,
     [
         CPPFLAGS="$CPPFLAGS $DEPS_CFLAGS"
-        LIBS="$LIBS $DEPS_LIBS"
+        COMMON_LIBS="$COMMON_LIBS $DEPS_LIBS"
     ],
     [
         AC_MSG_ERROR([Cannot find valid versions of required WorldForge libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
@@ -148,7 +179,7 @@ PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.94 skstream-0.3 >= 0.3.3 varconf-1.0
 PKG_CHECK_MODULES(HOWL, howl,
     [
         CPPFLAGS="$CPPFLAGS $HOWL_CFLAGS"
-        LIBS="$LIBS $HOWL_LIBS"
+        COMMON_LIBS="$COMMON_LIBS $HOWL_LIBS"
         AC_DEFINE(HAVE_LIBHOWL, 1, [Define to 1 if you have howl libs.])
     ],
     [
@@ -161,13 +192,16 @@ AM_PATH_PSQL(7.1.0,
             CPPFLAGS="$CPPFLAGS $PG_CFLAGS"
         fi
         if test "$PG_LIBS" != "-L/usr/lib"; then
-            LIBS="$LIBS $PG_LIBS"
+            PGSQL_LIBS="$PGSQL_LIBS $PG_LIBS"
         fi
     ],
     AC_MSG_ERROR([Cannot find PostgreSQL config or config failed. Please install PostgreSQL and ensure than pg_config is on the PATH.])
 )
 
-AC_CHECK_LIB(pq,PQconnectdb, ,AC_MSG_ERROR([Cannot find PostgreSQL bindings! Have you installed the PostgreSQL development software?]))
+AC_CHECK_LIB(pq,PQconnectdb,
+[
+    PGSQL_LIBS="$PGSQL_LIBS -lpq"
+],AC_MSG_ERROR([Cannot find PostgreSQL bindings! Have you installed the PostgreSQL development software?]))
 
 READLINE_LIBS=
 
@@ -201,6 +235,13 @@ AC_TRY_COMPILE(
 
 AC_SUBST(VARCONF_LIBS)
 AC_SUBST(READLINE_LIBS)
+AC_SUBST(COMMON_LIBS)
+AC_SUBST(PYTHON_LIBS)
+AC_SUBST(PYTHON_UTIL_LIBS)
+AC_SUBST(PGSQL_LIBS)
+
+AC_SUBST(STATIC_LIBSTDCPP)
+AC_SUBST(STATIC_LIBGCC)
 
 dnl Generate files
 AC_OUTPUT([

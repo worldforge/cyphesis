@@ -3,6 +3,47 @@ INCLUDES = -I$(top_srcdir)
 bin_PROGRAMS = cyphesis
 EXTRA_PROGRAMS = cyslave
 
+if LINK_STATIC
+
+SERVER_LIBS = \
+    /usr/lib/libmercator-0.2.a \
+    /usr/lib/libskstream-0.3.a \
+    /usr/lib/libvarconf-1.0.a \
+    /usr/lib/libwfmath-0.3.a \
+    /usr/lib/libAtlasObjectsOperation-0.5.a \
+    /usr/lib/libAtlasObjectsEntity-0.5.a \
+    /usr/lib/libAtlasObjects-0.5.a \
+    /usr/lib/libAtlasNet-0.5.a \
+    /usr/lib/libAtlasCodecs-0.5.a \
+    /usr/lib/libAtlasMessage-0.5.a \
+    /usr/lib/libAtlas-0.5.a \
+    /usr/lib/libsigc-2.0.a \
+    /usr/lib/libpq.a \
+    /usr/lib/libssl.a \
+    /usr/lib/libkrb5.a \
+    /usr/lib/libgssapi_krb5.a \
+    /usr/lib/libk5crypto.a \
+    /usr/lib/libcrypto.a \
+    /usr/lib/libcrypt.a \
+    /usr/lib/libresolv.a \
+    /usr/lib/libcom_err.a \
+    $(PYTHON_LIBS) \
+    /usr/lib/libutil.a \
+    /usr/lib/libhowl.a \
+    $(STATIC_LIBSTDCPP) \
+    $(STATIC_LIBGCC) \
+    -ldl -lc -lm -lpthread -lgcc_s
+
+cyphesis_LDFLAGS = -nodefaultlibs -export-dynamic
+
+else
+
+SERVER_LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS)
+
+cyphesis_LDFLAGS = -export-dynamic
+
+endif
+
 cyphesis_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \
 		Account.cpp Account.h \
@@ -44,9 +85,8 @@ cyphesis_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                  $(top_builddir)/rulesets/librulesetbase.a \
                  $(top_builddir)/modules/libmodules.a \
                  $(top_builddir)/common/libcommon.a \
-                 $(top_builddir)/physics/libphysics.a
-
-cyphesis_LDFLAGS = -export-dynamic
+                 $(top_builddir)/physics/libphysics.a \
+                 $(SERVER_LIBS)
 
 cyslave_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \
