@@ -12,11 +12,11 @@ using Atlas::Message::Object;
 
 class Vector3D {
     double x,y,z;
-    int _set;
+    bool _set;
   public:
 
-    Vector3D() : x(0), y(0), z(0), _set(0) { }
-    Vector3D(double x, double y, double z) : x(x), y(y), z(z), _set(1) { }
+    Vector3D() : x(0), y(0), z(0), _set(false) { }
+    Vector3D(double x, double y, double z) : x(x), y(y), z(z), _set(true) { }
     Vector3D(Object::ListType vector) {
         x = vector.front().AsFloat();
         vector.pop_front();
@@ -58,7 +58,7 @@ class Vector3D {
         return(_set);
     }
 
-    double operator[](int index) const {
+    double & operator[](int index) {
 	switch(index) {
             case 0:
                 return(x);
@@ -68,8 +68,12 @@ class Vector3D {
                 return(z);
             default:
                 //Throw an exception here maybe
-                return(0);
+                return(z);
 	}
+    }
+
+    void set() {
+        _set = true;
     }
 
     double dot(const Vector3D & v) const {

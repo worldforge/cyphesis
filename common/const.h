@@ -1,7 +1,7 @@
 #ifndef COMMON_CONST_H
 #define COMMON_CONST_H
 
-#define set(_name, _val) _name = _val
+// #define set(_name, _val) _name = _val
 
 namespace consts {
 

@@ -276,32 +276,46 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
         Vector3D val;
 	// We need to deal with actual args here
         PyObject * clist;
-        double x,y,z;
-        long ix,iy,iz;
-        if ( (PyArg_ParseTuple(args, "O", &clist)) &&
-                    (PyList_Check(clist)) &&
-                    (PyList_Size(clist) == 3) ) {
-            PyObject * X = PyList_GetItem(clist, 0);
-            PyObject * Y = PyList_GetItem(clist, 1);
-            PyObject * Z = PyList_GetItem(clist, 2);
-            if (PyFloat_Check(X) && PyFloat_Check(Y) && PyFloat_Check(Z)) {
-                val = Vector3D(PyFloat_AsDouble(X),
-                               PyFloat_AsDouble(Y),
-                               PyFloat_AsDouble(Z));
-            } else if (PyInt_Check(X) && PyInt_Check(Y) && PyInt_Check(Z)) {
-                val = Vector3D(double(PyInt_AsLong(X)),
-                               double(PyInt_AsLong(Y)),
-                               double(PyInt_AsLong(Z)));
-            } else {
-                PyErr_SetString(PyExc_TypeError, "Vector3D must take list of floats, or ints");
+        switch (PyTuple_Size(args)) {
+            case 0:
+                break;
+            case 1:
+                clist = PyTuple_GetItem(args, 0);
+                if ((!PyList_Check(clist)) || (PyList_Size(clist) != 3)) {
+                    PyErr_SetString(PyExc_TypeError, "Vector3D() from single value must a list 3 long");
+                    return NULL;
+                }
+                for(int i = 0; i < 3; i++) {
+                    PyObject * item = PyList_GetItem(clist, i);
+                    if (PyInt_Check(item)) {
+                        val[i] = (double)PyInt_AsLong(item);
+                    } else if (PyFloat_Check(item)) {
+                        val[i] = PyFloat_AsDouble(item);
+                    } else {
+                        PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
+                        return NULL;
+                    }
+                }
+                val.set();
+                break;
+            case 3:
+                for(int i = 0; i < 3; i++) {
+                    PyObject * item = PyTuple_GetItem(args, i);
+                    if (PyInt_Check(item)) {
+                        val[i] = (double)PyInt_AsLong(item);
+                    } else if (PyFloat_Check(item)) {
+                        val[i] = PyFloat_AsDouble(item);
+                    } else {
+                        PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
+                        return NULL;
+                    }
+                }
+                val.set();
+                break;
+            default:
+                PyErr_SetString(PyExc_TypeError, "Vector3D must take list of floats, or ints, 3 ints or 3 floats");
                 return NULL;
-            }
-        } else if (PyArg_ParseTuple(args, "ddd", &x, &y, &z)) {
-            val = Vector3D(x,y,z);
-        } else if (PyArg_ParseTuple(args, "iii", &ix, &iy, &iz)) {
-            val = Vector3D(ix,iy,iz);
-        } else if (!PyArg_ParseTuple(args, "")) {
-            return NULL;
+                break;
         }
             
 	o = newVector3DObject(args);
