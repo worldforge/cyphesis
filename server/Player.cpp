@@ -34,7 +34,8 @@ void Player::addToObject(Fragment::MapType & omap) const
     omap["character_types"] = typeList;
 }
 
-OpVector Player::characterError(const Create& op,const Fragment::MapType& ent) const
+OpVector Player::characterError(const Create & op,
+                                const Fragment::MapType & ent) const
 {
     Fragment::MapType::const_iterator I = ent.find("name");
     if ((I == ent.end()) || !I->second.IsString()) {

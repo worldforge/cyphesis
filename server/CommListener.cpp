@@ -4,7 +4,7 @@
 
 #include "CommListener.h"
 
-#include "CommClient.h"
+#include "CommRemoteClient.h"
 #include "CommServer.h"
 
 #include "common/debug.h"
@@ -46,7 +46,7 @@ bool CommListener::setup(int port)
     listenPort = port;
     listenFd = ::socket(PF_INET, SOCK_STREAM, 0);
     if (listenFd < 0) {
-	perror("socket");
+        perror("socket");
         return false;
     }
     int flag = 1;
@@ -55,7 +55,7 @@ bool CommListener::setup(int port)
     sin.sin_port = htons(port);
     sin.sin_addr.s_addr = 0L;
     if (::bind(listenFd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
-	perror("bind");
+        perror("bind");
         ::close(listenFd);
         return false;
     }
@@ -81,7 +81,7 @@ bool CommListener::accept()
         return false;
     }
     debug(std::cout << "Accepted" << std::endl << std::flush;);
-    CommClient * newcli = new CommClient(commServer, asockfd, sin.sin_port);
+    CommRemoteClient * newcli = new CommRemoteClient(commServer, asockfd);
 
     newcli->setup();
 

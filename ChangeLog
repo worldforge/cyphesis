@@ -1,3 +1,27 @@
+2003-03-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/globals.cpp, common/globals.h: Add global variable for
+	  the local state directory.
+
+	* server/Account.cpp, server/Admin.cpp, server/Admin.h,
+	  server/Player.cpp: Tighten up some operation checking and add Create
+	  handler to Admin in preparation for handling creation of new OOG
+	  things.
+
+	* server/CommLocalClient.cpp, server/CommLocalClient.h,
+	  server/CommRemoteClient.cpp, server/CommRemoteClient.h,
+	  server/CommUnixListener.cpp, server/CommUnixListener.h,
+	  server/CommClient.cpp, server/CommClient.h,
+	  server/CommListener.cpp, server/Connection.cpp,
+	  server/Connection.h, server/server.cpp:
+	  Create new listener and connection classes using unix sockets
+	  to allow local trusted connections.
+
+	* client/ClientConnection.cpp, client/ClientConnection.h,
+	  client/CommClient.h, client/CreatorClient.cpp,
+	  client/ObserverClient.cpp: Add capability to connect over
+	  unix socket.
+
 2003-03-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* Use " instead of < when including application headers.

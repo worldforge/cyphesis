@@ -4,6 +4,7 @@
 
 #include "CommServer.h"
 #include "CommListener.h"
+#include "CommUnixListener.h"
 #include "CommMetaClient.h"
 #include "ServerRouting.h"
 #include "EntityFactory.h"
@@ -122,6 +123,14 @@ int main(int argc, char ** argv)
         return EXIT_SOCKET_ERROR;
     }
     commServer.add(listener);
+
+    CommUnixListener * llistener = new CommUnixListener(commServer);
+    if (!llistener->setup()) {
+        log(ERROR, "Could not create local listen socket.");
+        delete llistener;
+    } else {
+        commServer.add(llistener);
+    }
 
     if (useMetaserver) {
         CommMetaClient * cmc = new CommMetaClient(commServer);

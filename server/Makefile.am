@@ -17,7 +17,10 @@ cyphesis_SOURCES = \
 		Connection.cpp Connection.h Connection_methods.h \
 		CommSocket.cpp CommSocket.h \
 		CommListener.cpp CommListener.h \
+		CommUnixListener.cpp CommUnixListener.h \
 		CommClient.cpp CommClient.h \
+		CommLocalClient.cpp CommLocalClient.h \
+		CommRemoteClient.cpp CommRemoteClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommServer.cpp CommServer.h \
 		protocol_instructions.h \
@@ -44,7 +47,10 @@ cyslave_SOURCES = \
 		Connection.cpp Connection.h Connection_methods.h \
 		CommSocket.cpp CommSocket.h \
 		CommListener.cpp CommListener.h \
+		CommUnixListener.cpp CommUnixListener.h \
 		CommClient.cpp CommClient.h \
+		CommLocalClient.cpp CommLocalClient.h \
+		CommRemoteClient.cpp CommRemoteClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommServer.cpp CommServer.h \
 		protocol_instructions.h \

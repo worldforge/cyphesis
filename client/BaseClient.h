@@ -29,9 +29,14 @@ class CommClient : public BaseEntity {
     
     virtual void idle() = 0;
 
+    bool connectLocal(const std::string & socket = "") {
+        return connection.connectLocal(socket);
+    }
+
     bool connect(const std::string & server = "localhost") {
         return connection.connect(server);
     }
+
     void send(Atlas::Objects::Operation::RootOperation & op) {
         connection.send(op);
     }

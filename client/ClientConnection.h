@@ -36,6 +36,8 @@ class ClientConnection : public Atlas::Objects::Decoder {
 
     void operation(const Atlas::Objects::Operation::RootOperation&);
 
+    bool negotiate();
+
     virtual void ObjectArrived(const Atlas::Objects::Operation::Error&);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Info&);
 
@@ -71,6 +73,7 @@ class ClientConnection : public Atlas::Objects::Decoder {
     ~ClientConnection();
 
     int read();
+    bool connectLocal(const std::string &);
     bool connect(const std::string &);
     bool login(const std::string &, const std::string &);
     bool create(const std::string &, const std::string &);

@@ -21,22 +21,17 @@
 
 static const bool debug_flag = false;
 
-char CommClient::ipno[255];
-
 class ClientTimeOutException : public std::runtime_error {
   public:
     ClientTimeOutException() : std::runtime_error("Client write timeout") { }
     virtual ~ClientTimeOutException() throw() { }
 };
 
-CommClient::CommClient(CommServer & svr, int fd, int port) :
+CommClient::CommClient(CommServer & svr, int fd, Connection & c) :
             CommSocket(svr),
             clientIos(fd),
             codec(NULL), encoder(NULL),
-            connection(*new Connection((inet_ntop(AF_INET,
-                                                  &clientIos.getOutpeer().sin_addr,
-                                                  ipno, 255)
-                                        ? ipno : "UNKNOWN"), *this)),
+            connection(c),
             reading(false)
 {
 #if 0

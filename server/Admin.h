@@ -24,6 +24,7 @@ class Admin : public Account {
     virtual OpVector LogoutOperation(const Logout & op);
     virtual OpVector GetOperation(const Get & op);
     virtual OpVector SetOperation(const Set & op);
+    virtual OpVector CreateOperation(const Create & op);
 };
 
 #endif // SERVER_ADMIN_H

@@ -24,8 +24,7 @@ namespace Atlas {
 class Connection;
 
 class CommClient : public Atlas::Objects::Decoder, public CommSocket {
-  private:
-    static char ipno[255];
+  protected:
     basic_socket_stream clientIos;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
@@ -34,7 +33,7 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
     bool reading;
 
     bool negotiate();
-  protected:
+
     virtual void UnknownObjectArrived(const Atlas::Message::Object&);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Login & op);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Logout & op);
@@ -48,7 +47,7 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
     virtual void ObjectArrived(const Atlas::Objects::Operation::Get & op);
 
   public:
-    CommClient(CommServer & svr, int fd, int port);
+    CommClient(CommServer &, int fd, Connection &);
     virtual ~CommClient();
 
     int getFd() const { return clientIos.getSocket(); }

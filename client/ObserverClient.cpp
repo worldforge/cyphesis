@@ -19,8 +19,10 @@ ObserverClient::ObserverClient()
 
 bool ObserverClient::setup()
 {
-    if (!connect()) {
-        return false;
+    if (!connectLocal()) {
+        if (!connect()) {
+            return false;
+        }
     }
 
     Fragment::MapType adminAccount;

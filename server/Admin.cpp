@@ -17,6 +17,7 @@
 #include <Atlas/Objects/Operation/Info.h>
 #include <Atlas/Objects/Operation/Logout.h>
 #include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation/Create.h>
 
 static const bool debug_flag = true;
 
@@ -37,7 +38,17 @@ const char * Admin::getType() const
     return "admin";
 }
 
-OpVector Admin::characterError(const Create &, const Fragment::MapType &) const {
+OpVector Admin::characterError(const Create & op,
+                               const Fragment::MapType & ent) const
+{
+    Fragment::MapType::const_iterator I = ent.find("parents");
+    if ((I == ent.end()) || !I->second.IsList()) {
+        return error(op, "You cannot create a character with no type.");
+    }
+    const Fragment::ListType & parents = I->second.AsList();
+    if (parents.empty() || !parents.front().IsString()) {
+        return error(op, "You cannot create a character with non-string type.");
+    }
     return OpVector();
 }
 
@@ -165,6 +176,24 @@ OpVector Admin::SetOperation(const Set & op)
         return error(op, "Unknow object type set");
     }
     return OpVector();
+}
+
+OpVector Admin::CreateOperation(const Create & op)
+{
+    const Fragment::ListType & args = op.GetArgs();
+    if ((args.empty()) || (!args.front().IsMap())) {
+        return OpVector();
+    }
+
+    const Fragment::MapType & entmap = args.front().AsMap();
+    Fragment::MapType::const_iterator I = entmap.find("parents");
+    if ((I == entmap.end()) || !(I->second.IsList()) ||
+        (I->second.AsList().empty()) ||
+        !(I->second.AsList().front().IsString()) ) {
+        return error(op, "Character has no type");
+    }
+
+    return Account::CreateOperation(op);
 }
 
 // There used to be a code operation handler here. It may become desirable in

@@ -163,11 +163,18 @@ void Account::addToObject(Fragment::MapType & omap) const
 OpVector Account::CreateOperation(const Create & op)
 {
     debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
-    const Fragment & ent = op.GetArgs().front();
-    if (!ent.IsMap()) {
-        return error(op, "Invalid character");
+    const Fragment::ListType & args = op.GetArgs();
+    if ((args.empty()) || (!args.front().IsMap())) {
+        return OpVector();
     }
-    const Fragment::MapType & entmap = ent.AsMap();
+
+    const Fragment::MapType & entmap = args.front().AsMap();
+
+    OpVector er = characterError(op, entmap);
+    if (!er.empty()) {
+        return er;
+    }
+
     Fragment::MapType::const_iterator I = entmap.find("parents");
     if ((I == entmap.end()) || !(I->second.IsList()) ||
         (I->second.AsList().empty()) ||
@@ -175,16 +182,12 @@ OpVector Account::CreateOperation(const Create & op)
         return error(op, "Character has no type");
     }
     
-    OpVector error = characterError(op, entmap);
-    if (!error.empty()) {
-        return error;
-    }
     const std::string & typestr = I->second.AsList().front().AsString();
     debug( std::cout << "Account creating a " << typestr << " object"
                      << std::endl << std::flush; );
 
     BaseEntity * obj = addCharacter(typestr, entmap);
-    //log.inform("Player "+Account::id+" adds character "+`obj`,op);
+
     Info * info = new Info(Info::Instantiate());
     info->SetArgs(Fragment::ListType(1,obj->asObject()));
     info->SetRefno(op.GetSerialno());
@@ -196,43 +199,45 @@ OpVector Account::CreateOperation(const Create & op)
 OpVector Account::ImaginaryOperation(const Imaginary & op)
 {
     const Fragment::ListType & args = op.GetArgs();
-    if ((!args.empty()) && (args.front().IsMap())) {
-        Sight s(Sight::Instantiate());
-        s.SetArgs(Fragment::ListType(1,op.AsObject()));
-        s.SetFrom(getId());
-        s.SetSerialno(connection->server.getSerialNo());
-        setRefnoOp(&s, op);
-        const Fragment::MapType & arg = args.front().AsMap();
-        Fragment::MapType::const_iterator I = arg.find("loc");
-        if (I != arg.end()) {
-            s.SetTo(I->second.AsString());
-        } else {
-            s.SetTo(op.GetTo());
-        }
-        return connection->server.lobby.operation(s);
+    if ((args.empty()) || (!args.front().IsMap())) {
+        return OpVector();
     }
-    return OpVector();
+
+    Sight s(Sight::Instantiate());
+    s.SetArgs(Fragment::ListType(1,op.AsObject()));
+    s.SetFrom(getId());
+    s.SetSerialno(connection->server.getSerialNo());
+    setRefnoOp(&s, op);
+    const Fragment::MapType & arg = args.front().AsMap();
+    Fragment::MapType::const_iterator I = arg.find("loc");
+    if (I != arg.end()) {
+        s.SetTo(I->second.AsString());
+    } else {
+        s.SetTo(op.GetTo());
+    }
+    return connection->server.lobby.operation(s);
 }
 
 OpVector Account::TalkOperation(const Talk & op)
 {
     const Fragment::ListType & args = op.GetArgs();
-    if ((!args.empty()) && (args.front().IsMap())) {
-        Sound s(Sound::Instantiate());
-        s.SetArgs(Fragment::ListType(1,op.AsObject()));
-        s.SetFrom(getId());
-        s.SetSerialno(connection->server.getSerialNo());
-        setRefnoOp(&s, op);
-        const Fragment::MapType & arg = args.front().AsMap();
-        Fragment::MapType::const_iterator I = arg.find("loc");
-        if (I != arg.end()) {
-            s.SetTo(I->second.AsString());
-        } else {
-            s.SetTo(op.GetTo());
-        }
-        return connection->server.lobby.operation(s);
+    if ((args.empty()) || (!args.front().IsMap())) {
+        return OpVector();
     }
-    return OpVector();
+
+    Sound s(Sound::Instantiate());
+    s.SetArgs(Fragment::ListType(1,op.AsObject()));
+    s.SetFrom(getId());
+    s.SetSerialno(connection->server.getSerialNo());
+    setRefnoOp(&s, op);
+    const Fragment::MapType & arg = args.front().AsMap();
+    Fragment::MapType::const_iterator I = arg.find("loc");
+    if (I != arg.end()) {
+        s.SetTo(I->second.AsString());
+    } else {
+        s.SetTo(op.GetTo());
+    }
+    return connection->server.lobby.operation(s);
 }
 
 OpVector Account::LookOperation(const Look & op)

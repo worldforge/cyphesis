@@ -9,6 +9,7 @@
 varconf::Config * global_conf = NULL;
 std::string share_directory = SHAREDIR;
 std::string etc_directory = ETCDIR;
+std::string var_directory = VARDIR;
 std::vector<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;

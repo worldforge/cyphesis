@@ -30,9 +30,9 @@
 
 static const bool debug_flag = false;
 
-Connection::Connection(const std::string & id, CommClient & client) : OOGThing(id),
-                       commClient(client), obsolete(false),
-                       server(commClient.commServer.server)
+Connection::Connection(const std::string & id, CommClient & client,
+                       ServerRouting & svr) : OOGThing(id), commClient(client),
+                       obsolete(false), server(svr)
 {
     subscribe("login", OP_LOGIN);
     subscribe("logout", OP_LOGOUT);

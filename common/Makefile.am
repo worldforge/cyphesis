@@ -2,7 +2,7 @@ noinst_LIBRARIES = libcommon.a
 
 lib_LTLIBRARIES = libcyphesis.la
 
-INCLUDES = -DSHAREDIR=\"@datadir@\" -DETCDIR=\"@sysconfdir@\"
+INCLUDES = -DSHAREDIR=\"@datadir@\" -DETCDIR=\"@sysconfdir@\" -DVARDIR=\"@localstatedir@\"
 
 libcommon_a_SOURCES = const.cpp const.h \
 		log.cpp log.h \

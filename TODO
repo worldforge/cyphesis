@@ -1,3 +1,7 @@
+Put in different high level exception catchers, to differentiate between exceptions
+caused by a client, which should result in a kick, and bugs in game which need
+to be logged.
+
 Mind state is still utterly unpersisted, so creatures are waking up brain dead -
 mind does not even get kick started with a setup op.
 

@@ -11,6 +11,9 @@
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Encoder.h>
 
+#include <sys/socket.h>
+#include <sys/un.h>
+
 static bool debug_flag = false;
 
 using Atlas::Message::Object;
@@ -216,6 +219,49 @@ int ClientConnection::read() {
     }
 }
 
+#define UNIX_PATH_MAX 108
+
+bool ClientConnection::connectLocal(const std::string & sockname)
+{
+    debug(std::cout << "Attempting local connect." << std::endl << std::flush;);
+    std::string socket;
+    if (sockname == "") {
+        socket = var_directory + "/cyphesis.sock";
+    } else if (sockname[0] != '/') {
+        socket = var_directory + "/" + sockname;
+    } else {
+        socket = sockname;
+    }
+
+    struct sockaddr_un sun;
+    sun.sun_family = AF_UNIX;
+    strncpy(sun.sun_path, socket.c_str(), UNIX_PATH_MAX);
+
+    int fd = ::socket(PF_UNIX, SOCK_STREAM, 0);
+
+    if (0 != ::connect(fd, (struct sockaddr *)&sun, sizeof(sun))) {
+        debug(std::cout << "Local connect refused" << std::endl << std::flush;);
+        return false;
+    }
+
+    ios.setSocket(fd);
+    if (!ios.is_open()) {
+        std::cerr << "ERROR: For some reason " << sockname << " not open."
+                  << std::endl << std::flush;
+        return false;
+    }
+
+    client_fd = ios.getSocket();
+
+    bool ret = negotiate();
+
+    if (ret == false) {
+        ios.close();
+        // ::close(fd);
+    }
+    return ret;
+}
+
 bool ClientConnection::connect(const std::string & server)
 {
     debug(std::cout << "Connecting to " << server << std::endl << std::flush;);
@@ -226,8 +272,14 @@ bool ClientConnection::connect(const std::string & server)
                   << std::endl << std::flush;
         return false;
     }
+
     client_fd = ios.getSocket();
 
+    return negotiate();
+}
+
+bool ClientConnection::negotiate()
+{
     Atlas::Net::StreamConnect conn("cyphesis_aiclient", ios, this);
 
     debug(std::cout << "Negotiating... " << std::flush;);
@@ -296,10 +348,10 @@ bool ClientConnection::wait()
 
 void ClientConnection::send(Atlas::Objects::Operation::RootOperation & op)
 {
-    debug(Atlas::Codecs::XML c((std::iostream&)std::cout, (Atlas::Bridge*)this);
+    /* debug(Atlas::Codecs::XML c((std::iostream&)std::cout, (Atlas::Bridge*)this);
           Atlas::Objects::Encoder enc(&c);
           enc.StreamMessage(&op);
-          std::cout << std::endl << std::flush;);
+          std::cout << std::endl << std::flush;); */
 
     op.SetSerialno(++serialNo);
     encoder->StreamMessage(&op);
