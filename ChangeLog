@@ -1,5 +1,11 @@
 2004-05-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* cyphesis.spec.in: Final deps tweak.
+
+	* cyphesis.vconf: Enable metaserver by default.
+
+2004-05-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* cyphesis.sysconfig, cyphesis.init: Fix init script so it
 	  doesn't parameterise database name (which doesn't work)
 	  exits correctly on fatal errors, and remove the code to
@@ -15,7 +21,7 @@
 2004-05-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cywatchdog.cpp, tools/cyctrl.cpp, tools/cycmd.cpp,
-	  server/CommUnixListener.cpp, client/ClientConnection.cpp,
+	  server/CommUnixListener.cpp, client/ClientConnection.cpp:
 	  Use var/tmp for temporary files and sockets.
 
 	* Give sty type a default bbox, rather than using instance

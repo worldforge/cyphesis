@@ -28,7 +28,7 @@ build home for me or go to dinner).
 Summary: Files for running cyphesis as a unix service
 Group: System Environment/Daemons
 PreReq: initscripts /usr/sbin/useradd /sbin/chkconfig
-Requires: %{name} = %{version} postgresql-server >= 7.1
+Requires: %{name} = %{version} %{name}-mason postgresql-server >= 7.1
 
 %description service
 Cyphesis is a very simple world simulator. This package allows it to be run

@@ -17,7 +17,7 @@ tcpport=6767
 # Resticted mode prevents creation of user accounts
 restricted="false"
 # Register server with the meta server
-usemetaserver="false"
+usemetaserver="true"
 metaserver="metaserver.worldforge.org"
 # Run in daemon mode
 daemon="false"
