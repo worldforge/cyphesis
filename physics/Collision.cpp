@@ -17,8 +17,7 @@ bool getCollisionTime(const Vector3D & p,     // Position of point
                       const Vector3D & n,     // Plane normal
                       const Vector3D & v,     // Velocity of plane
                       // double plane_time,   // Time since position set
-                      double & time,          // Collision time return
-                      Vector3D & normal)      // Collision normal return
+                      double & time)          // Collision time return
 //
 //
 //                            |     \ n
@@ -91,12 +90,13 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
             const Vector3D & s_norm = J->second;
             debug(std::cout << "Testing vertex " << *I << " to surface "
                             << s_pos << ": " << s_norm;);
-            if (getCollisionTime(*I, u, s_pos, s_norm, v, time, entry_normal)) {
+            if (getCollisionTime(*I, u, s_pos, s_norm, v, time)) {
                 debug(std::cout << " Collision at " << time;);
                 // We are colliding from infront
                 if (time > last_vertex_entry) {
                     debug(std::cout << " new";);
                     last_vertex_entry = time;
+                    entry_normal = s_norm;
                 }
             } else {
                 debug(std::cout << " Emergence at " << time;);
@@ -116,19 +116,19 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
                 first_collision = last_vertex_entry;
                 debug(std::cout << "hit" << std::endl << std::flush;);
                 ret = true;
+                normal = entry_normal;
             } else {
                 // Indicate that one or more vertices is already in collision
                 already = true;
             }
-            // FIXME Normal! Need to get it from above
-            // Also tricker because normal is flipped depending on which
-            // is which.
         }
     }
     // If one or more vertices are already in collision, and some are yet to
     // collide, then we consider that the collision is immediate.
     if (ret && already) {
         first_collision = 0.f;
+        // It is possible that we need to modify the normal here, perhaps
+        // to cancel out velocity completely.
     }
     return ret;
 }

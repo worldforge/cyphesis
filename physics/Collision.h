@@ -22,9 +22,7 @@ bool getCollisionTime(const Vector3D & p,     // Position of point
                       const Vector3D & n,     // Plane normal
                       const Vector3D & v,     // Velocity of plane
                       // double plane_time,   // Time since position set
-                      double & time,          // Returned collision time
-                      Vector3D & normal);     // Returned collision normal
-
+                      double & time);         // Returned collision time
 
 // Predict collision between two sets of meshes, defined by vertices
 // and surface normals
@@ -37,7 +35,6 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
                       const Vector3D & v,     // Velocity of other mesh
                       double & time,          // Returned time to collision
                       Vector3D & normal);     // Returned collision normal
-
 
 // Predict collision between 2 entity locations
 // Returns whether the collision will occur

@@ -1,3 +1,10 @@
+2003-10-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Collision.h, physics/Collision.cpp: Fix vertex/plane
+	  collision function by removing returned normal, because it is
+	  always the plane normal. Implement returning collision
+	  normal from the mesh collision function.
+
 2003-10-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* physics/Collision.cpp: Fix corner case in mesh collision code
