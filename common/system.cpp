@@ -12,6 +12,10 @@
 #include "debug.h"
 #include "globals.h"
 
+#include <iostream>
+
+#include <openssl/md5.h>
+
 extern "C" {
     #include <sys/utsname.h>
     #include <sys/types.h>
@@ -194,4 +198,24 @@ void running()
     if (daemon_flag) {
         kill(getppid(), SIGUSR1);
     }
+}
+
+static const char hex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
+                                    '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
+void encrypt_password(const std::string & pwd, std::string & hash)
+{
+#ifdef CYPHESIS_MD5_PASSWORDS
+    unsigned char buf[MD5_DIGEST_LENGTH + 1];
+    MD5((const unsigned char *)pwd.c_str(), pwd.size(), buf);
+    buf[16] = '\0';
+    hash.clear();
+    for(int i = 0; i < 16; ++i) {
+        hash.push_back(hex_table[buf[i] & 0xf]);
+        hash.push_back(hex_table[(buf[i] & 0xf0) >> 4]);
+    }
+    return;
+#endif
+    hash = pwd;
+    return;
 }

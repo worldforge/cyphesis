@@ -18,6 +18,7 @@
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/inheritance.h"
+#include "common/system.h"
 #include "common/BaseWorld.h"
 
 #include <Atlas/Objects/Operation/Create.h>
@@ -52,7 +53,9 @@ void Connection::send(const RootOperation & msg) const
 Account * Connection::addPlayer(const std::string& username,
                                 const std::string& password)
 {
-    Player * player = new Player(this, username, password);
+    std::string hash;
+    encrypt_password(password, hash);
+    Player * player = new Player(this, username, hash);
     addObject(player);
     player->connection = this;
     server.addAccount(player);
@@ -127,7 +130,10 @@ bool Connection::verifyCredentials(const Account & account,
         return false;
     }
     const std::string & passwd = I->second.AsString();
-    if (passwd != account.password) {
+
+    std::string hash;
+    encrypt_password(passwd, hash);
+    if (hash != account.password) {
         return false;
     }
     return true;

@@ -1,3 +1,11 @@
+2003-03-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/system.h, common/system.cpp: Add code to md5 hash
+	  strings, like passwords.
+
+	* server/Connection.cpp: Use md5 hash code for storing and
+	  verifying passwords.
+
 2003-03-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* modules/Location.h, modules/Location.cpp: Change location
