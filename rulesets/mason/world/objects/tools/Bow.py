@@ -23,7 +23,7 @@ class Bow(Thing):
         vel = vel.unit_vector() * 5
         loc1 = Location(self.location.parent.location.parent,self.location.parent.location.coordinates)
         loc1.velocity = vel
-        loc2 = Location(target.location.parent,Vector3D(0,0,0))
+        loc2 = Location(target.location.parent,Point3D(0,0,0))
         loc2.velocity = Vector3D(0,0,0)
         m1 = Operation("move",Entity(ammo,location=loc1),to=ammo)
         m2 = Operation("move",Entity(ammo,location=loc2),to=ammo)

@@ -1,3 +1,22 @@
+2004-10-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/werewolf/world/objects/tools/Gallows.py,
+	  rulesets/basic/world/objects/tools/Bow.py,
+	  rulesets/basic/world/objects/plants/Tree.py,
+	  rulesets/basic/world/objects/buildings/House.py,
+	  rulesets/basic/mind/goals/humanoid/transaction.py,
+	  rulesets/basic/mind/goals/common/misc_goal.py:
+	  Fix bugs initialising Location ensuring the second
+	  arg is a Point3D, not a Vector3D for position.
+	  Fixes pig purchasing.
+
+	* rulesets/basic/mind/goals/humanoid/mason.py:
+	  Fix the velocity check for escaping pigs.
+
+	* rulesets/Py_Point3D.cpp: Fix Point3D subtraction operator to
+	  allow subtraction of both Point and Vector. Fixes pig merchant
+	  goal for keeping pigs.
+
 2004-10-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Vector3D.cpp: Change isValid() to work with older

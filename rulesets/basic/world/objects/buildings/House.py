@@ -24,7 +24,7 @@ class House(Thing):
         opTick.time.sadd=const.basic_tick
         if probability.does_it_happen(probability.fire_probability):
             fireEntity=Entity(name='fire',type=['fire'],status=0.0,
-                              location=Location(self,Vector3D(0.0,0.0,0.0)))
+                              location=Location(self,Point3D(0.0,0.0,0.0)))
             opCreate=Operation("create",fireEntity,to=self)
             if const.debug_level>=2:
                 print "Fire! "*30

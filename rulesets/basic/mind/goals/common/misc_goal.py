@@ -511,14 +511,14 @@ class keep(Goal):
         if me.things.has_key(self.what)==0: return
         thing_all=me.find_thing(self.what)
         where=me.find_thing(self.where)[0]
-        to_location=Location(where,Vector3D(0,0,0))
+        to_location=Location(where,Point3D(0,0,0))
         minx=where.location.bbox.near_point.x
         miny=where.location.bbox.near_point.y
         maxx=where.location.bbox.far_point.x
         maxy=where.location.bbox.far_point.y
         for thing in thing_all:
             if thing.location.parent.id!=where.id and thing.location.parent.id!=me.id:
-                thingloc=Location(where,Vector3D(uniform(minx,maxx),uniform(miny,maxy),0))
+                thingloc=Location(where,Point3D(uniform(minx,maxx),uniform(miny,maxy),0))
                 result.append(Operation("move",Entity(thing.id, location=thingloc)))
         return result
 
@@ -541,7 +541,7 @@ class keep_on_me(Goal):
         result=Message()
         if me.things.has_key(self.what)==0: return
         thing_all=me.find_thing(self.what)
-        to_loc=Location(me,Vector3D(0,0,0))
+        to_loc=Location(me,Point3D(0,0,0))
         for thing in thing_all:
             if thing.location.parent.id!=me.id:
                 result.append(Operation("move",Entity(thing.id, location=to_loc)))
@@ -610,7 +610,7 @@ class transaction(Goal):
         thing=me.find_thing(self.what)[0]
         res=Message()
         me.remove_thing(thing)
-        res.append(Operation("move",Entity(thing.id, location=Location(self.who,Vector3D(0,0,0))),to=thing))
+        res.append(Operation("move",Entity(thing.id, location=Location(self.who,Point3D(0,0,0)))))
         res.append(Operation("talk",Entity(say="Thankyou for your custom.")))
         self.irrelevant=1
         return res

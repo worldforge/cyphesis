@@ -14,7 +14,7 @@ class keep_livestock(keep):
     def keep_it(self,me):
         thing_all=me.find_thing(self.what)
         for thing in thing_all:
-            if thing.location.velocity.mag() > 0.1:
+            if thing.location.velocity.is_valid() and thing.location.velocity.square_mag() > 0.1:
                 return Operation("talk", Entity(say=self.call), to=me)
         return keep.keep_it(self,me)
 

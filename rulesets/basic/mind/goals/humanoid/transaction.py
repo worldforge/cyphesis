@@ -55,7 +55,7 @@ class buy_livestock(DynamicGoal):
             for i in range(0, int(price)):
                 coin=coins[0]
                 me.remove_thing(coin)
-                res.append(Operation("move",Entity(coin.id, location=Location(who, Vector3D(0,0,0))),to=coin))
+                res.append(Operation("move",Entity(coin.id, location=Location(who, Point3D(0,0,0)))))
             res.append(Operation("talk", Entity(say="Thankyou "+who.name+", come again.")))
             me.add_thing(thing)
             return res
