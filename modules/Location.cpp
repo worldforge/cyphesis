@@ -85,3 +85,38 @@ bool Location::distanceRight(const Location & other, Point3D & c) const
     }
     return false;
 }
+
+static bool distanceFromAncestor(const Location & self,
+                                 const Location & other, Point3D & c)
+{
+    if (other.m_loc == NULL) {
+        return false;
+    }
+
+    c = c.toParentCoords(other.m_pos, other.m_orientation);
+
+    if (self.m_loc == other.m_loc) {
+        return true;
+    } else {
+        return distanceFromAncestor(self, other.m_loc->m_location, c);
+    }
+}
+
+static bool distanceToAncestor(const Location & self,
+                               const Location & other, Point3D & c)
+{
+    c.setToOrigin();
+    if (distanceFromAncestor(self, other, c) ||
+        distanceToAncestor(self.m_loc->m_location, other, c)) {
+        c = c.toLocalCoords(self.m_pos, self.m_orientation);
+        return true;
+    }
+    return false;
+}
+
+const float squareDistance(const Location & self, const Location & other)
+{
+    Point3D dist;
+    distanceToAncestor(self, other, dist);
+    return sqrMag(dist);
+}

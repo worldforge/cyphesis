@@ -62,4 +62,11 @@ class Location {
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };
 
+const float squareDistance(const Location & self, const Location & other);
+
+inline const float distance(const Location & self, const Location & other)
+{
+    return sqrt(squareDistance(self, other));
+}
+
 #endif // MODULES_LOCATION_H

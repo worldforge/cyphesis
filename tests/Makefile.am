@@ -1,7 +1,7 @@
 COMMON_TESTS = logtest inheritancetest BaseEntitytest OOGThingtest \
                systemtest utilitytest
 
-PHYSICS_TESTS = transformtest collisiontest emergencetest
+PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
 
 MODULE_TESTS = Locationtest WorldTimetest
 
@@ -77,6 +77,19 @@ emergencetest_LDADD = $(top_builddir)/physics/Collision.o \
                       $(top_builddir)/common/globals.o
 
 transformtest_SOURCES = transformtest.cpp
+
+distancetest_SOURCES = distancetest.cpp
+distancetest_LDADD = $(top_builddir)/rulesets/Entity.o \
+                     $(top_builddir)/rulesets/Script.o \
+                     $(top_builddir)/modules/Location.o \
+                     $(top_builddir)/modules/DateTime.o \
+                     $(top_builddir)/common/inheritance.o \
+                     $(top_builddir)/common/custom.o \
+                     $(top_builddir)/common/operations.o \
+                     $(top_builddir)/common/serialno.o \
+                     $(top_builddir)/common/log.o \
+                     $(top_builddir)/common/globals.o \
+                     $(top_builddir)/common/BaseEntity.o
 
 # MODULE_TESTS
 
