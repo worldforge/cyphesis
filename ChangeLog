@@ -1,3 +1,7 @@
+2003-08-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Fix up help for python prefix option.
+
 2003-08-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.h: Workaround for older compilers which

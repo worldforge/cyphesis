@@ -60,7 +60,7 @@ AC_CACHE_CHECK(for location of python, python_prefix,
 [
     python_prefix=/usr
     AC_ARG_WITH(python,
-    [ --with-python=DIR directory python is installed in [default=/usr]],
+    [  --with-python=DIR       Prefix where python is installed in [default=/usr]],
     [
         if test $withval != yes; then
             python_prefix=$withval
