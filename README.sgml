@@ -8,11 +8,10 @@
     <title>Introduction</title>
     <para>
 Welcome to cyphesis, at the time of writing the only fully armed and
-operational WorldForge server. Cyphesis is being developed as a small scale or
-personal server for WorldForge games, and is currently being used to develop
-new techniques and technologies for the WorldForge project. Code from cyphesis
-will also be used to control NPCs in future servers such as STAGE using AI
-techniques.
+operational WorldForge server. Cyphesis is a small scale or personal server for
+WorldForge games, and is currently being used to develop new techniques and
+technologies for the WorldForge project. Code from cyphesis will also be used
+to control NPCs in future servers such as STAGE using AI techniques.
     </para>
   </sect1>
 
@@ -20,9 +19,10 @@ techniques.
     <title>Building from Source</title>
     <para>
 cyphesis is built using autoconf. Please see the file INSTALL for details.  It
-requires Python and PostgreSQL which are include with most Linux distributions,
-and Atlas-C++, varconf, Mercator, wfmath and skstream2 which are provided by
-the WorldForge project. GNU readline is required by some of the included tools.
+requires Python and PostgreSQL which are included with most Linux
+distributions, and Atlas-C++, varconf, Mercator, wfmath and skstream2 which are
+provided by the WorldForge project. GNU readline is required by some of the
+included tools.
     </para>
 
     <para>
@@ -33,14 +33,13 @@ for information on the setup steps required after installation.
   </sect1>
 
   <sect1 id="setup-section">
-    <title>Standard Setup</title>
+    <title>Setup</title>
     <para>
-If the software has been installed from source, binary package or rpm then it
-requires some post-installation configuration before it will run correctly. If
-you plan to run a server using the System V init services provided by the
-cyphesis-service rpm then the rpm installation and service startup will ensure
-that this configuration is handled for you automatically. If this is the
-case there is no need to read the rest of this document.
+The software requires some post-installation configuration before it will run
+correctly. If you plan to run a server using the System V init services as
+provided by the cyphesis-service rpm then most of this configuration is handled
+for you automatically. If this is the case please see
+<xref linkend="service-section"> for more information.
     </para>
 
     <para>
@@ -58,32 +57,104 @@ or specify a password in the config file.
     </para>
 
     <para>
-Run cyloadrules to load the default rulesets into the database. For more
-information on how cyloadrules works, including advanced usage see
-<xref linkend="usage-section">.
+Once database access has been granted you must run cyloadrules to load the
+default rulesets into the database. For more information on how cyloadrules
+works, including advanced usage see <xref linkend="usage-section">.
+    </para>
+
+    <para>
+The server is now ready to run. For for more information on how to start the
+server see <xref linkend="usage-section">.
+    </para>
+  </sect1>
+
+  <sect1 id="service-section">
+    <title>Setup as a System Service</title>
+    <para>
+Running cyphesis as a service is the simplest way to get the server up and
+running. If you are using rpm packages, the cyphesis service rpm handles
+creating a user account so that cyphesis does not run as the superuser.
+In order to run the server correctly, the cyphesis service must be
+started, followed by the cyclient service. This can be handled by configuring
+the system to start these services at boot time, or by running the init
+scripts manually as root as follows:
+    </para>
+    <programlisting>
+# /etc/init.d/cyphesis start
+# /etc/init.d/cyclient start
+    </programlisting>
+    <para>
+The postgresql service is required and must be started before cyphesis.
+The first time the cyphesis service is run, the init script will ensure that
+cyphesis has access to the database, and will preload the database with the
+neccessary data automatically. 
+    </para>
+    <para>
+If you are not using the packaged version of cyphesis, but wish to run
+it as a system service, the init scripts are included in the top directory
+of the source package and are called cyphesis.init and cyclient.init.
+Both of these files should be installed in the init script directory on
+your system, usually <filename>/etc/rc.d/init.d/</filename>. The procedure
+for enabling system services varies from system to system. One command
+used for controlling services is the <command>chkconfig</command> command,
+found on most Linux systems, and some Unix variants. Once installed the scripts
+can be activated as follows:
+    </para>
+    <programlisting>
+# chkconfig --add cyphesis
+# chkconfig --add cyclient
+    </programlisting>
+    <para>
+The services are then enabled as follows:
+    </para>
+    <programlisting>
+# chkconfig cyphesis on
+# chkconfig cyclient on
+    </programlisting>
+    <para>
+For further details please see the <command>chkconfig</command> documentation.
+By default the cyphesis init scripts attempt to run the server and client
+as a user called cyphesis. An account with this username will need to be
+created before the service will work.  The file called
+<filename>cyphesis.sysconfig</filename> can optionally be installed as
+<filename>/etc/sysconfig/cyphesis</filename> and edited to control the username
+used to run the cyphesis server and client processes.
+    </para>
+    <para>
+When cyphesis has been run as a system service, any error message or other
+information are sent to the syslog. On most Linux systems this means that
+you can see these message by looking at <filename>/var/log/messages</filename>.
+Please see the syslog documentation for information about how to control
+these log messages.
     </para>
   </sect1>
 
   <sect1 id="running-section">
-    <title>Running a standard server</title>
+    <title>Running a basic server</title>
+    <para>
+Before you run the server for the first time, run the
+<command>cyloadrules</command> to prepare the database tables. The command
+should print out some message indicating the number of rules loaded. You will
+not need to run this command again unless you upgrade to a newer version of the
+rules or of cyphesis.
+    </para>
+    <para>
+Start the server with the <command>cyphesis</command> command. It will output
+some startup messages and then run in the foreground.  If you want to run the
+server in the background, start the server with the option
+--cyphesis:daemon=true .
+    </para>
+
     <para>
 Each time the server is run it needs to be populated with game data before it
 does anything useful. If you are running the server using the System V init
-service then this is handled for you by the cyclient service.
-    </para>
-
-    <para>
-Start the server with the cyphesis command. It will output some startup
-messages and then run in the foreground. In another terminal you should then run
-the cyclient command, which will populate the server, outputting messages as it
-does this. Once it has completed cyclient will exit, and the server will be
-ready. The server will automatically register its presence with the metaserver
-so you will not need to advertise it.
-    </para>
-
-    <para>
-If you want to run the server in the background, start the server with the
-argument " --cyphesis:daemon=true ".
+service then this is handled for you by the cyclient service. If you are
+running the server manually you will need to run <command>cyclient</command>
+yourself.  In a separate terminal run the <command>cyclient</command> command,
+which will populate the server, outputting messages as it does this. Once it
+has completed cyclient will exit, and the server will be ready. The server will
+automatically register its presence with the metaserver so you will not need to
+advertise it.
     </para>
 
     <para>
@@ -106,11 +177,13 @@ this configuration file can be overridden in on the command line, and once
 overridden they will be stored permanently in .cyphesis.vconf in the users home
 directory. In order to drop back to the default settings, remove this file.
 Settings can be incrementally overridden in ~/.cyphesis.vconf non-interactively
-by passing them as command line options to cyconf. cyconf will store any
-settings it is given in ~/.cyphesis.vconf and then exited. If you are planning
-to have multiple servers run on the same system at the same or different times,
-the easiest way to handle the differences in configuration would be to use the
-~/.cyphesis.vconf file, and avoid modifying the master configuration file.
+by passing them as command line options to <command>cyconf</command>. cyconf
+will store any settings it is given in <filename>~/.cyphesis.vconf</filename>
+and then exited. If you are planning to have multiple servers run on the same
+system at the same or different times, the easiest way to handle the
+differences in configuration would be to use the
+<filename>~/.cyphesis.vconf</filename> file, and avoid modifying the master
+configuration file.
     </para>
 
     <para>
@@ -132,80 +205,53 @@ option:
 </programlisting>
 
     <para>
-For more details of vconf usage see the Varconf documentation. For full details
-on configuring cyphesis, see the configuration documentation.
+For more details of varconf usage see the Varconf documentation. For full
+details on configuraton options for cyphesis, see the
+<citerefentry>
+  <refentrytitle>cyphesis</refentrytitle>
+  <manvolnum>1</manvolnum>
+</citerefentry> man page.
     </para>
 
     <para>
-The ruleset specified indicates the entity types available, and the set of
-scripts that will be used for these entities, and the initialisation script
-used to populate the server.
+The ruleset specified indicates the entity types available, the set of scripts
+that will be used for these entities, and the initialisation script used to
+populate the server.
     </para>
 
     <para>
-The server is populated using the client program, cyclient. cyclient should be
-run once the server has been started, and it will display a report of the world
-it is setting up, and then exit.
+The server is populated using the client program, <command>cyclient</command>.
+<command>cyclient</command> should be run once the server has been started, and
+it will display a report of the world it is setting up, and then exit.
     </para>
 
     <para>
-The default ruleset for this version is Mason, but the Acorn ruleset is
-provided, including the files required to be loaded into the world database.
-Some other rulesets under development are also present in the source package,
-but will probably only be useful as a reference.  To switch to the Acorn
-ruleset, follow the instructions above.  Instead of loading the moraf world map
-into the database, Acorn uses the agrilan map data.
-    </para>
-
-    <para>
-In order to run the server requires access to a PostgreSQL database, and this
-database needs to contain some essential data. To perform this task, a script
-called cyphesis-setup has been provided. This script can be invoked in two
-ways. If you have the root password of the system you are running cyphesis,
-then you can run cyphesis-setup as root, and give it the user name of the user
-you will run cyphesis as, and it will set everything up automatically.  If you
-are running cyphesis on machine you do not have the root password for, then you
-will need to ask your systems administrator to create a database account for
-you. Once this has been done, you can run cyphesis-setup, and it will handle
-the rest of the setup process for you.
-    </para>
-
-    <para>
-If cyphesis-setup works, you are now ready to run the server. The server can be
-started by running the cyphesis command. Once the server has been started, the
-client cyclient needs to be run to populate the server. Run cyclient, and it
-will print a list of actions it performs to populate the server with a running
-game, and then exit. The server is now running, and should be ready to accept
-players.
-    </para>
-
-    <para>
-The rest of the information in this file details setting up cyphesis by hand,
-and is intended for users who are interested in how the process works, or user
-for whom cyphesis-setup did not for some reason work.
+The default ruleset for this version is Mason, but an additional development
+ruleset is provided for Werewolf, but will probably only be useful as a
+reference.  To switch to the Werewolf ruleset, follow the instructions above.
     </para>
 
     <para>
 Before you start the server for the first time, you will need to load some data
-into the server. You will first have to load ruleset data, and then map data
-into the database. If this is the first time you have run cyphesis since it was
-switched to use PostgreSQL, you will need to set it up so cyphesis has access.
-In order to use databases, cyphesis needs to know the name of an account it can
-use, and the name of a database where it can create its tables. By default it
-uses the current user name to connect to PostgreSQL, and the name cyphesis for
-the database.  It has been assumed that PostgreSQL has been set up as it is on
-most systems to accept a local connection from a user with the same name as the
-database account name without a password. If you want to go through the setup
-of the database manually, or for some reason cyphesis-setup does not work, you
-will need to create a database account with the right name, and a database
-belonging to that account called cyphesis, or whatever name you choose to call
-it. For information on how to do this, please see the PostgreSQL documentation
-provided with the version you have installed.
+into the server's database tables. You will first have to load ruleset data
+into the database. If this is the first time you have run cyphesis, you will
+need to set it up so cyphesis has access.  In order to use databases, cyphesis
+needs to know the name of an account it can use, and the name of a database
+where it can create its tables. By default it uses the current user name to
+connect to PostgreSQL, and the name cyphesis for the database.  It has been
+assumed that PostgreSQL has been set up as it is on most systems to accept a
+local connection from a user with the same name as the database account name
+without a password. If you want to go through the setup of the database
+manually, or for some reason cyphesis-setup does not work, you will need to
+create a database account with the right name, and a database belonging to that
+account called cyphesis, or whatever name you choose to call it. For
+information on how to do this, please see the PostgreSQL documentation provided
+with the version you have installed.
     </para>
 
     <para>
-Once cyphesis has access, run cypasswd with no arguments to set the admin
-password to something unique.
+Once cyphesis has access to the database, run <command>cypasswd</command> with
+no arguments to set the admin password to something unique.
     </para>
 
     <para>
@@ -215,7 +261,7 @@ in addition to the ruleset you are using you will need to load the rulesets on
 which it depends. A ruleset is distributed with cyphesis as an atlas xml file.
 The default is mason.xml, which depends on acorn.xml, which in turn depends on
 basic.xml.  These three rulesets can be loaded into the database using the
-cyloadrules command, with no arguments as follows:
+<command>cyloadrules</command> command with no arguments as follows:
     </para>
 
 <programlisting role="C">
@@ -262,7 +308,7 @@ a script included in the current ruleset to define what the world should
 contain. This script is kept together with the entity and AI scripts required
 for the ruleset in a directory under the rulesets directory. For example, the
 Mason script is found in rulesets/mason/define_world.py. In order to populate
-the world, simply run cyclient once the server is running. You will need to do
+the world, simply run <command>cyclient</command> once the server is running. You will need to do
 this each time cyphesis is started.
     </para>
   </sect1>
