@@ -13,6 +13,12 @@ template <class T>
 class Persistor : public SigC::Object {
   private:
     std::string m_class;
+
+    void uEntity(T &, std::string &);
+    void uCharacter(T &, std::string &);
+    void uLine(T &, std::string &);
+    void uArea(T &, std::string &);
+    void uPlant(T &, std::string &);
   public:
     // Register table with database
     Persistor();

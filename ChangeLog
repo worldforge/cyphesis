@@ -1,3 +1,10 @@
+2002-12-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.h: Provide accessor for update flags.
+
+	* server/Persistor.h, server/Persistor_impl.h: Start adding
+	  functions to build update query strings.
+
 2002-12-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommMetaClient.cpp: Correctly initialise the size of

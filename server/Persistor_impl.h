@@ -11,7 +11,33 @@
 #include <sigc++/object_slot.h>
 
 template <class T>
-class Persistor;
+void Persistor<T>::uEntity(T & t, std::string & c)
+{
+    if (t.getUpdateFlags() & a_loc) {
+        c += "loc = ";
+        c += t.location.ref->getId();
+    }
+}
+
+template <class T>
+void Persistor<T>::uCharacter(T & t, std::string & c)
+{
+}
+
+template <class T>
+void Persistor<T>::uLine(T & t, std::string & c)
+{
+}
+
+template <class T>
+void Persistor<T>::uArea(T & t, std::string & c)
+{
+}
+
+template <class T>
+void Persistor<T>::uPlant(T & t, std::string & c)
+{
+}
 
 template <class T>
 void Persistor<T>::persist(T & t)
@@ -32,7 +58,9 @@ void Persistor<T>::update(T & t)
 {
     std::cout << "Persistor::update<" << m_class << ">(" << t.getId() << ")"
               << std::endl << std::flush;
-    Database::instance()->updateEntityRow(m_class, t.getId(), "");
+    std::string columns;
+    uEntity(t, columns);
+    Database::instance()->updateEntityRow(m_class, t.getId(), columns);
 }
 
 template <class T>

@@ -53,6 +53,7 @@ class Entity : public BaseEntity {
     Entity();
     virtual ~Entity();
 
+    const int getUpdateFlags() const { return update_flags; }
     const int getSeq() const { return seq; }
     const double getStatus() const { return status; }
     const std::string & getName() const { return name; }
