@@ -22,6 +22,8 @@
 #include "common/Cut.h"
 #include "common/Eat.h"
 #include "common/Nourish.h"
+#include "common/Use.h"
+#include "common/Wield.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -378,6 +380,22 @@ OpVector Character::mindActionOperation(const Action & op)
 OpVector Character::mindSetupOperation(const Setup & op)
 {
     Setup *s = new Setup(op);
+    s->setTo(getId());
+    s->setAttr("sub_to", "mind");
+    return OpVector(1,s);
+}
+
+OpVector Character::mindUseOperation(const Use & op)
+{
+    Use *s = new Use(op);
+    s->setTo(getId());
+    s->setAttr("sub_to", "mind");
+    return OpVector(1,s);
+}
+
+OpVector Character::mindWieldOperation(const Wield & op)
+{
+    Wield *s = new Wield(op);
     s->setTo(getId());
     s->setAttr("sub_to", "mind");
     return OpVector(1,s);
@@ -922,6 +940,22 @@ bool Character::w2mOtherOperation(const RootOperation & op)
 }
 
 bool Character::w2mSetupOperation(const Setup & op)
+{
+    if (op.hasAttr("sub_to")) {
+        return true;
+    }
+    return false;
+}
+
+bool Character::w2mUseOperation(const Use & op)
+{
+    if (op.hasAttr("sub_to")) {
+        return true;
+    }
+    return false;
+}
+
+bool Character::w2mWieldOperation(const Wield & op)
 {
     if (op.hasAttr("sub_to")) {
         return true;

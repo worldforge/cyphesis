@@ -10,6 +10,8 @@
 #include "Nourish.h"
 #include "Setup.h"
 #include "Tick.h"
+#include "Use.h"
+#include "Wield.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
 
@@ -155,6 +157,44 @@ Tick::~Tick()
 Tick Tick::Class()
 {
     Tick value("tick", "root_operation");
+    value.setObjtype(std::string("op_definition"));
+    return value;
+}
+
+Use::Use() : Action("", "use")
+{
+}
+
+Use::Use(const char * id, const char * parent) : Action(id, parent)
+{
+}
+
+Use::~Use()
+{
+}
+
+Use Use::Class()
+{
+    Use value("use", "action");
+    value.setObjtype(std::string("op_definition"));
+    return value;
+}
+
+Wield::Wield() : Set("", "wield")
+{
+}
+
+Wield::Wield(const char * id, const char * parent) : Set(id, parent)
+{
+}
+
+Wield::~Wield()
+{
+}
+
+Wield Wield::Class()
+{
+    Wield value("wield", "set");
     value.setObjtype(std::string("op_definition"));
     return value;
 }

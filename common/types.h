@@ -45,6 +45,8 @@ typedef enum op_no {
 	OP_SETUP,
 	OP_APPEARANCE,
 	OP_DISAPPEARANCE,
+	OP_USE,
+	OP_WIELD,
 	OP_OTHER,
 	OP_INVALID
 } OpNo;

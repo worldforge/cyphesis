@@ -1,3 +1,11 @@
+2004-06-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.cpp, common/BaseEntity.h, common/custom.cpp,
+	  common/inheritance.cpp, common/op_switch.h, common/operations.cpp,
+	  common/operations.h, common/types.h, rulesets/Character.cpp,
+	  rulesets/Character.h, tests/EntityExerciser.h, tests/allOperations.h:
+	  Add, install, implement and test new op types for Use and Wield.
+
 2004-06-26  Kai Blin  <blin@gmx.net>
 
 	* Renamed pinekernel to fircone.

@@ -43,6 +43,8 @@ namespace Atlas {
             class Cut;
             class Chop;
             class Burn;
+            class Use;
+            class Wield;
             class Generic;
             class RootOperation;
         }
@@ -81,5 +83,7 @@ using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Cut;
 using Atlas::Objects::Operation::Chop;
 using Atlas::Objects::Operation::Burn;
+using Atlas::Objects::Operation::Use;
+using Atlas::Objects::Operation::Wield;
 
 #endif // COMMON_OPERATIONS_H

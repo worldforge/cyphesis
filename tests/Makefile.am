@@ -17,18 +17,21 @@ check_PROGRAMS = $(TESTS)
 # COMMON_TESTS
 
 logtest_SOURCES = logtest.cpp
-logtest_LDADD = $(top_builddir)/common/log.o \
+logtest_LDADD = $(top_builddir)/modules/DateTime.o \
+                $(top_builddir)/common/log.o \
                 $(top_builddir)/common/globals.o
 
 inheritancetest_SOURCES = inheritancetest.cpp
-inheritancetest_LDADD = $(top_builddir)/common/inheritance.o \
+inheritancetest_LDADD = $(top_builddir)/modules/DateTime.o \
+                        $(top_builddir)/common/inheritance.o \
                         $(top_builddir)/common/custom.o \
                         $(top_builddir)/common/operations.o \
                         $(top_builddir)/common/log.o \
                         $(top_builddir)/common/globals.o
 
 BaseEntitytest_SOURCES = BaseEntitytest.cpp EntityExerciser.h allOperations.h
-BaseEntitytest_LDADD = $(top_builddir)/common/BaseEntity.o \
+BaseEntitytest_LDADD = $(top_builddir)/modules/DateTime.o \
+                       $(top_builddir)/common/BaseEntity.o \
                        $(top_builddir)/common/operations.o \
                        $(top_builddir)/common/inheritance.o \
                        $(top_builddir)/common/custom.o \
@@ -37,7 +40,8 @@ BaseEntitytest_LDADD = $(top_builddir)/common/BaseEntity.o \
                        $(top_builddir)/common/serialno.o
 
 OOGThingtest_SOURCES = OOGThingtest.cpp EntityExerciser.h allOperations.h
-OOGThingtest_LDADD = $(top_builddir)/common/OOGThing.o \
+OOGThingtest_LDADD = $(top_builddir)/modules/DateTime.o \
+                     $(top_builddir)/common/OOGThing.o \
                      $(top_builddir)/common/BaseEntity.o \
                      $(top_builddir)/common/inheritance.o \
                      $(top_builddir)/common/custom.o \
@@ -47,7 +51,8 @@ OOGThingtest_LDADD = $(top_builddir)/common/OOGThing.o \
                      $(top_builddir)/common/serialno.o
 
 systemtest_SOURCES = systemtest.cpp
-systemtest_LDADD = $(top_builddir)/common/system.o \
+systemtest_LDADD = $(top_builddir)/modules/DateTime.o \
+                   $(top_builddir)/common/system.o \
                    $(top_builddir)/common/log.o \
                    $(top_builddir)/common/globals.o
 
@@ -69,6 +74,7 @@ emergencetest_LDADD = $(top_builddir)/physics/Collision.o \
 
 Locationtest_SOURCES = Locationtest.cpp
 Locationtest_LDADD = $(top_builddir)/modules/Location.o \
+                     $(top_builddir)/modules/DateTime.o \
                      $(top_builddir)/rulesets/Entity.o \
                      $(top_builddir)/rulesets/Script.o \
                      $(top_builddir)/common/inheritance.o \
@@ -83,6 +89,7 @@ Locationtest_LDADD = $(top_builddir)/modules/Location.o \
 
 Entitytest_SOURCES = Entitytest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Entitytest_LDADD = $(top_builddir)/modules/Location.o \
+                   $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/rulesets/Entity.o \
                    $(top_builddir)/rulesets/Script.o \
                    $(top_builddir)/common/inheritance.o \
@@ -95,6 +102,7 @@ Entitytest_LDADD = $(top_builddir)/modules/Location.o \
 
 Areatest_SOURCES = Areatest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Areatest_LDADD = $(top_builddir)/modules/Location.o \
+                 $(top_builddir)/modules/DateTime.o \
                  $(top_builddir)/physics/BBox.o \
                  $(top_builddir)/physics/Vector3D.o \
                  $(top_builddir)/rulesets/Area.o \
@@ -112,6 +120,7 @@ Areatest_LDADD = $(top_builddir)/modules/Location.o \
 
 Foodtest_SOURCES = Foodtest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Foodtest_LDADD = $(top_builddir)/modules/Location.o \
+                 $(top_builddir)/modules/DateTime.o \
                  $(top_builddir)/physics/BBox.o \
                  $(top_builddir)/physics/Vector3D.o \
                  $(top_builddir)/rulesets/Food.o \
@@ -129,6 +138,7 @@ Foodtest_LDADD = $(top_builddir)/modules/Location.o \
 
 Linetest_SOURCES = Linetest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Linetest_LDADD = $(top_builddir)/modules/Location.o \
+                 $(top_builddir)/modules/DateTime.o \
                  $(top_builddir)/physics/BBox.o \
                  $(top_builddir)/physics/Vector3D.o \
                  $(top_builddir)/rulesets/Line.o \
@@ -146,6 +156,7 @@ Linetest_LDADD = $(top_builddir)/modules/Location.o \
 
 Planttest_SOURCES = Planttest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Planttest_LDADD = $(top_builddir)/modules/Location.o \
+                  $(top_builddir)/modules/DateTime.o \
                   $(top_builddir)/physics/BBox.o \
                   $(top_builddir)/physics/Vector3D.o \
                   $(top_builddir)/rulesets/Plant.o \
@@ -163,6 +174,7 @@ Planttest_LDADD = $(top_builddir)/modules/Location.o \
 
 Stackabletest_SOURCES = Stackabletest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
+                      $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/physics/BBox.o \
                       $(top_builddir)/physics/Vector3D.o \
                       $(top_builddir)/rulesets/Stackable.o \
@@ -180,6 +192,7 @@ Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
 
 Structuretest_SOURCES = Structuretest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Structuretest_LDADD = $(top_builddir)/modules/Location.o \
+                      $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/physics/BBox.o \
                       $(top_builddir)/physics/Vector3D.o \
                       $(top_builddir)/rulesets/Structure.o \
@@ -197,6 +210,7 @@ Structuretest_LDADD = $(top_builddir)/modules/Location.o \
 
 Thingtest_SOURCES = Thingtest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Thingtest_LDADD = $(top_builddir)/modules/Location.o \
+                  $(top_builddir)/modules/DateTime.o \
                   $(top_builddir)/physics/BBox.o \
                   $(top_builddir)/physics/Vector3D.o \
                   $(top_builddir)/rulesets/Entity.o \
@@ -213,6 +227,7 @@ Thingtest_LDADD = $(top_builddir)/modules/Location.o \
 
 Worldtest_SOURCES = Worldtest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Worldtest_LDADD = $(top_builddir)/modules/Location.o \
+                  $(top_builddir)/modules/DateTime.o \
                   $(top_builddir)/physics/BBox.o \
                   $(top_builddir)/physics/Vector3D.o \
                   $(top_builddir)/rulesets/World.o \

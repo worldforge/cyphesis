@@ -59,34 +59,155 @@ OpVector BaseEntity::externalOperation(const RootOperation & op)
     return operation(op);
 }
 
-OpVector BaseEntity::LoginOperation(const Login & op) { return OpVector(); }
-OpVector BaseEntity::LogoutOperation(const Logout & op) { return OpVector(); }
-OpVector BaseEntity::ActionOperation(const Action & op) { return OpVector(); }
-OpVector BaseEntity::ChopOperation(const Chop & op) { return OpVector(); }
-OpVector BaseEntity::CombineOperation(const Combine & op) { return OpVector(); }
-OpVector BaseEntity::CreateOperation(const Create & op) { return OpVector(); }
-OpVector BaseEntity::CutOperation(const Cut & op) { return OpVector(); }
-OpVector BaseEntity::DeleteOperation(const Delete & op) { return OpVector(); }
-OpVector BaseEntity::DivideOperation(const Divide & op) { return OpVector(); }
-OpVector BaseEntity::EatOperation(const Eat & op) { return OpVector(); }
-OpVector BaseEntity::BurnOperation(const Burn & op) { return OpVector(); }
-OpVector BaseEntity::GetOperation(const Get & op) { return OpVector(); }
-OpVector BaseEntity::ImaginaryOperation(const Imaginary & op) { return OpVector(); }
-OpVector BaseEntity::InfoOperation(const Info & op) { return OpVector(); }
-OpVector BaseEntity::MoveOperation(const Move & op) { return OpVector(); }
-OpVector BaseEntity::NourishOperation(const Nourish & op) { return OpVector(); }
-OpVector BaseEntity::SetOperation(const Set & op) { return OpVector(); }
-OpVector BaseEntity::SightOperation(const Sight & op) { return OpVector(); }
-OpVector BaseEntity::SoundOperation(const Sound & op) { return OpVector(); }
-OpVector BaseEntity::TalkOperation(const Talk & op) { return OpVector(); }
-OpVector BaseEntity::TouchOperation(const Touch & op) { return OpVector(); }
-OpVector BaseEntity::TickOperation(const Tick & op) { return OpVector(); }
-OpVector BaseEntity::LookOperation(const Look & op) { return OpVector(); }
-OpVector BaseEntity::SetupOperation(const Setup & op) { return OpVector(); }
-OpVector BaseEntity::AppearanceOperation(const Appearance & op) { return OpVector(); }
-OpVector BaseEntity::DisappearanceOperation(const Disappearance & op) { return OpVector(); }
-OpVector BaseEntity::OtherOperation(const RootOperation & op) { return OpVector(); }
-OpVector BaseEntity::ErrorOperation(const RootOperation & op) { return OpVector(); }
+OpVector BaseEntity::LoginOperation(const Login & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::LogoutOperation(const Logout & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::ActionOperation(const Action & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::ChopOperation(const Chop & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::CombineOperation(const Combine & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::CreateOperation(const Create & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::CutOperation(const Cut & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::DeleteOperation(const Delete & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::DivideOperation(const Divide & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::EatOperation(const Eat & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::BurnOperation(const Burn & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::GetOperation(const Get & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::ImaginaryOperation(const Imaginary & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::InfoOperation(const Info & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::MoveOperation(const Move & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::NourishOperation(const Nourish & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::SetOperation(const Set & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::SightOperation(const Sight & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::SoundOperation(const Sound & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::TalkOperation(const Talk & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::TouchOperation(const Touch & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::TickOperation(const Tick & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::LookOperation(const Look & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::SetupOperation(const Setup & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::AppearanceOperation(const Appearance & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::DisappearanceOperation(const Disappearance & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::UseOperation(const Use & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::WieldOperation(const Wield & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::OtherOperation(const RootOperation & op)
+{
+    return OpVector();
+}
+
+OpVector BaseEntity::ErrorOperation(const RootOperation & op)
+{
+    return OpVector();
+}
 
 void BaseEntity::setRefno(const OpVector& ret, const RootOperation & ref_op) const
 {

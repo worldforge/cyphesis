@@ -85,6 +85,12 @@
         case OP_DISAPPEARANCE: \
             return _prefix ## DisappearanceOperation((const Disappearance &)_op); \
             break; \
+        case OP_USE: \
+            return _prefix ## UseOperation((const Use &)_op); \
+            break; \
+        case OP_WIELD: \
+            return _prefix ## WieldOperation((const Wield &)_op); \
+            break; \
         case OP_ERROR: \
             return _prefix ## ErrorOperation((const Error &)_op); \
             break; \

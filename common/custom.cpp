@@ -13,6 +13,8 @@
 #include "Nourish.h"
 #include "Setup.h"
 #include "Tick.h"
+#include "Use.h"
+#include "Wield.h"
 
 #include <Atlas/Objects/Entity/AdminEntity.h>
 
@@ -34,7 +36,10 @@ void installCustomOperations()
     i.opInstall("setup", OP_SETUP);
     i.addChild(new Tick(Tick::Class()));
     i.opInstall("tick", OP_TICK);
-
+    i.addChild(new Use(Use::Class()));
+    i.opInstall("use", OP_USE);
+    i.addChild(new Wield(Wield::Class()));
+    i.opInstall("wield", OP_WIELD);
 
     // Custom ops used in scripts which do not need direct support in the
     // core

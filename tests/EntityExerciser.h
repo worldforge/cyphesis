@@ -79,6 +79,8 @@ inline void EntityExerciser<EntityType>::addAllOperations(std::set<std::string> 
     ops.insert("setup");
     ops.insert("appearance");
     ops.insert("disappearance");
+    ops.insert("use");
+    ops.insert("wield");
     ops.insert("error");
 }
 
@@ -239,6 +241,18 @@ inline void EntityExerciser<EntityType>::runOperations()
         Disappearance op;
         dispatchOp(op);
         OpVector ov = m_ent.DisappearanceOperation(op);
+        flushOperations(ov);
+    }
+    {
+        Use op;
+        dispatchOp(op);
+        OpVector ov = m_ent.UseOperation(op);
+        flushOperations(ov);
+    }
+    {
+        Wield op;
+        dispatchOp(op);
+        OpVector ov = m_ent.WieldOperation(op);
         flushOperations(ov);
     }
     {

@@ -95,6 +95,8 @@ class Character : public Character_parent {
     virtual OpVector mindSetupOperation(const Setup & op);
     virtual OpVector mindAppearanceOperation(const Appearance & op);
     virtual OpVector mindDisappearanceOperation(const Disappearance & op);
+    virtual OpVector mindUseOperation(const Use & op);
+    virtual OpVector mindWieldOperation(const Wield & op);
     virtual OpVector mindErrorOperation(const Error & op);
     virtual OpVector mindOtherOperation(const RootOperation & op);
 
@@ -124,6 +126,8 @@ class Character : public Character_parent {
     bool w2mTalkOperation(const Talk & op);
     bool w2mAppearanceOperation(const Appearance & op);
     bool w2mDisappearanceOperation(const Disappearance & op);
+    bool w2mUseOperation(const Use & op);
+    bool w2mWieldOperation(const Wield & op);
     bool w2mErrorOperation(const Error & op);
     bool w2mOtherOperation(const RootOperation & op);
 
