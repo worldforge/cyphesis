@@ -200,7 +200,7 @@ static PyObject * is_location(PyObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O", &loc)) {
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type(loc) == &Location_Type) {
+    if (PyLocation_Check(loc)) {
         Py_INCREF(Py_True);
         return Py_True;
     }
@@ -214,24 +214,22 @@ static PyObject * location_new(PyObject * self, PyObject * args)
     // We need to deal with actual args here
     PyObject * parentO, * coordsO = NULL;
     if (PyArg_ParseTuple(args, "O|O", &parentO, &coordsO)) {
-        if (((PyTypeObject *)PyObject_Type(parentO) != &Thing_Type) &&
-            ((PyTypeObject *)PyObject_Type(parentO) != &World_Type)) {
+        if ((!PyThing_Check(parentO)) && (!PyWorld_Check(parentO))) {
             if (PyObject_HasAttrString(parentO, "cppthing")) {
                 parentO = PyObject_GetAttrString(parentO, "cppthing");
             }
-            if ((PyTypeObject *)PyObject_Type(parentO) != &Thing_Type) {
+            if (!PyThing_Check(parentO)) {
                 PyErr_SetString(PyExc_TypeError, "Arg parent required");
                 return NULL;
             }
         }
-        if ((coordsO != NULL) &&
-            ((PyTypeObject *)PyObject_Type(coordsO) != &Vector3D_Type)) {
+        if ((coordsO != NULL) && (!PyVector3D_Check(coordsO))) {
             PyErr_SetString(PyExc_TypeError, "Arg coords required");
             return NULL;
         }
 
         BaseEntity * parent_ent;
-        if ((PyTypeObject *)PyObject_Type(parentO) == &World_Type) {
+        if (PyWorld_Check(parentO)) {
             WorldObject * parent = (WorldObject*)parentO;
             if (parent->world == NULL) {
                 PyErr_SetString(PyExc_TypeError, "Parent world is invalid");
@@ -342,13 +340,13 @@ static PyObject * worldtime_new(PyObject * self, PyObject * args)
 	return (PyObject *)o;
 }
 
-inline void addToOplist(PyObject * op, OplistObject * o)
+inline void addToOplist(RootOperationObject * op, OplistObject * o)
 {
     if (op != NULL) {
-       if ((PyTypeObject *)PyObject_Type(op) == &RootOperation_Type) {
-           o->ops->push_back( ((RootOperationObject*)op)->operation );
-           ((RootOperationObject*)op)->own = 0;
-       } else if (op != Py_None) {
+       if (PyOperation_Check(op)) {
+           o->ops->push_back(op->operation);
+           op->own = 0;
+       } else if ((PyObject*)op != Py_None) {
            PyErr_SetString(PyExc_TypeError, "Argument must be an op");
            return;
        }
@@ -360,7 +358,7 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
 {
 	OplistObject *o;
 	
-        PyObject * op1 = NULL, * op2 = NULL, * op3 = NULL, * op4 = NULL;
+        RootOperationObject *op1 = NULL, *op2 = NULL, *op3 = NULL, *op4 = NULL;
 	if (!PyArg_ParseTuple(args, "|OOOO", &op1, &op2, &op3, &op4)) {
 		return NULL;
 	}
@@ -375,17 +373,17 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
         addToOplist(op4, o);
 #if 0
         if (op1 != NULL) {
-           if ((PyTypeObject *)PyObject_Type(op1) == &RootOperation_Type) {
-               o->ops->push_back( ((RootOperationObject*)op1)->operation );
-           } else if (op1 != Py_None) {
+           if (PyOperation_Check(op1)) {
+               o->ops->push_back(op1->operation);
+           } else if ((PyObject*)op1 != Py_None) {
                PyErr_SetString(PyExc_TypeError, "Argument must be an op");
                return NULL;
            }
         }
         if (op2 != NULL) {
-           if ((PyTypeObject *)PyObject_Type(op2) == &RootOperation_Type) {
-               o->ops->push_back( ((RootOperationObject*)op2)->operation );
-           } else if (op1 != Py_None) {
+           if (PyOperation_Check(op2)) {
+               o->ops->push_back(op2->operation);
+           } else if ((PyObject*)op1 != Py_None) {
                PyErr_SetString(PyExc_TypeError, "Argument must be an op");
                return NULL;
            }
@@ -433,8 +431,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
         for(i = 0; i < size; i++) {
             char * key = PyString_AsString(PyList_GetItem(keys, i));
             PyObject * val = PyList_GetItem(vals, i);
-            if ((strcmp(key, "location") == 0) &&
-                ((PyTypeObject *)PyObject_Type(val) == &Location_Type)) {
+            if ((strcmp(key, "location") == 0) && (PyLocation_Check(val))) {
                 LocationObject * loc = (LocationObject*)val;
                 loc->location->addObject(&obj);
             } else {
@@ -480,14 +477,14 @@ inline void addToArgs(Object::ListType & args, PyObject * ent)
     if (ent == NULL) {
         return;
     }
-    if ((PyTypeObject*)PyObject_Type(ent) == &Object_Type) {
+    if (PyAtlasObject_Check(ent)) {
         AtlasObject * obj = (AtlasObject*)ent;
         if (obj->m_obj == NULL) {
             fprintf(stderr, "Invalid object in Operation arguments\n");
             return;
         }
         args.push_back(*obj->m_obj);
-    } else if ((PyTypeObject*)PyObject_Type(ent) == &RootOperation_Type) {
+    } else if (PyOperation_Check(ent)) {
         RootOperationObject * op = (RootOperationObject*)ent;
         if (op->operation == NULL) {
             fprintf(stderr, "Invalid operation in Operation arguments\n");

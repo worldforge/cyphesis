@@ -11,14 +11,14 @@ static PyObject* Oplist_append(OplistObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "invalid oplist");
         return NULL;
     }
-    PyObject * op;
+    RootOperationObject * op;
     if (!PyArg_ParseTuple(args, "O", &op)) {
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type(op) == &RootOperation_Type) {
-        self->ops->push_back(((RootOperationObject*)op)->operation);
-        ((RootOperationObject*)op)->own = 0;
-    } else if (op != Py_None) {
+    if (PyOperation_Check(op)) {
+        self->ops->push_back(op->operation);
+        op->own = 0;
+    } else if ((PyObject*)op != Py_None) {
         PyErr_SetString(PyExc_TypeError, "Append must be an op");
         return NULL;
     }
@@ -37,7 +37,6 @@ static void Oplist_dealloc(OplistObject *self)
     if (self->ops != NULL) {
         delete self->ops;
     }
-    Py_XDECREF(self->Oplist_attr);
     PyMem_DEL(self);
 }
 
@@ -57,7 +56,7 @@ PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         Py_INCREF(self);
         return (PyObject*)self;
     }
-    if ((PyTypeObject*)PyObject_Type(other) == & Oplist_Type) {
+    if (PyOplist_Check(other)) {
         OplistObject * opl = (OplistObject*)other;
         OplistObject * res = newOplistObject(NULL);
         res->ops = new oplist();
@@ -68,7 +67,7 @@ PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         res->ops->merge(*opl->ops);
         return (PyObject*)res;
     }
-    if ((PyTypeObject*)PyObject_Type(other) == & RootOperation_Type) {
+    if (PyOperation_Check(other)) {
         RootOperationObject * op = (RootOperationObject*)other;
         if (op->operation == NULL) {
             PyErr_SetString(PyExc_TypeError, "invalid operation");
@@ -176,6 +175,5 @@ OplistObject * newOplistObject(PyObject *arg)
 	if (self == NULL) {
 		return NULL;
 	}
-	self->Oplist_attr = NULL;
 	return self;
 }

@@ -24,7 +24,7 @@ static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "Od", &where_obj, &radius)) {
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type(where_obj) != &Location_Type) {
+    if (!PyLocation_Check(where_obj)) {
         PyErr_SetString(PyExc_TypeError, "Argument must be a location");
         return NULL;
     }
@@ -88,7 +88,7 @@ static PyObject * Map_add_object(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg not an object");
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type((PyObject *)thing) != &Thing_Type) {
+    if (!PyThing_Check(thing)) {
         PyErr_SetString(PyExc_TypeError,"arg not a Thing");
         return NULL;
     }
@@ -130,7 +130,7 @@ static PyObject * Map_add(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an object");
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type((PyObject *)obj) != &Object_Type) {
+    if (!PyAtlasObject_Check(obj)) {
         PyErr_SetString(PyExc_TypeError,"arg is not an Object");
         return NULL;
     }
@@ -202,7 +202,7 @@ static PyObject * Map_update(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an object");
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type((PyObject *)obj) != &Object_Type) {
+    if (!PyAtlasObject_Check(obj)) {
         PyErr_SetString(PyExc_TypeError,"arg is not an Object");
         return NULL;
     }
@@ -231,7 +231,6 @@ static void Map_dealloc(MapObject *self)
     //if (self->m_thing != NULL) {
         //delete self->m_thing;
     //}
-    Py_XDECREF(self->Map_attr);
     PyMem_DEL(self);
 }
 
@@ -271,6 +270,5 @@ MapObject * newMapObject(PyObject *arg)
 	if (self == NULL) {
 		return NULL;
 	}
-	self->Map_attr = NULL;
 	return self;
 }

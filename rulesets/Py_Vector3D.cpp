@@ -11,7 +11,7 @@ static PyObject * Vector3D_dot(Vector3DObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type((PyObject*)other) != &Vector3D_Type) {
+    if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only dot with Vector3D");
         return NULL;
     }
@@ -24,7 +24,7 @@ static PyObject * Vector3D_cross(Vector3DObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type((PyObject*)other) != &Vector3D_Type) {
+    if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only cross with Vector3D");
         return NULL;
     }
@@ -75,7 +75,7 @@ static PyObject * Vector3D_angle(Vector3DObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type((PyObject*)other) != &Vector3D_Type) {
+    if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can get angle to Vector3D");
         return NULL;
     }
@@ -84,10 +84,6 @@ static PyObject * Vector3D_angle(Vector3DObject * self, PyObject * args)
 
 static PyObject * Vector3D_mag(Vector3DObject * self, PyObject * args)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     if (!PyArg_ParseTuple(args, "")) {
         return NULL;
     }
@@ -113,7 +109,7 @@ static PyObject *Vector3D_unit_vector_to(Vector3DObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type((PyObject*)other) != &Vector3D_Type) {
+    if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can get unit vector to Vector3D");
         return NULL;
     }
@@ -131,7 +127,7 @@ static PyObject * Vector3D_distance(Vector3DObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type((PyObject*)other) != &Vector3D_Type) {
+    if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can get distance to other Vector3D");
         return NULL;
     }
@@ -154,7 +150,6 @@ PyMethodDef Vector3D_methods[] = {
 
 static void Vector3D_dealloc(Vector3DObject *self)
 {
-    Py_XDECREF(self->Vector3D_attr);
     PyMem_DEL(self);
 }
 
@@ -178,7 +173,7 @@ int Vector3D_setattr(Vector3DObject *self, char *name, PyObject *v)
 
 static int Vector3D_compare(Vector3DObject * self, Vector3DObject * other)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)other) != &Vector3D_Type) {
+    if (!PyVector3D_Check(other)) {
         return -1;
     }
     if (self->coords == other->coords) {
@@ -189,7 +184,7 @@ static int Vector3D_compare(Vector3DObject * self, Vector3DObject * other)
 
 static Vector3DObject*Vector3D_num_add(Vector3DObject*self,Vector3DObject*other)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)other) != &Vector3D_Type) {
+    if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only add Vector3D to Vector3D");
         return NULL;
     }
@@ -203,7 +198,7 @@ static Vector3DObject*Vector3D_num_add(Vector3DObject*self,Vector3DObject*other)
 
 static Vector3DObject*Vector3D_num_sub(Vector3DObject*self,Vector3DObject*other)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)other) != &Vector3D_Type) {
+    if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only sub Vector3D from Vector3D");
         return NULL;
     }
@@ -312,6 +307,5 @@ Vector3DObject * newVector3DObject(PyObject *arg)
 	if (self == NULL) {
 		return NULL;
 	}
-	self->Vector3D_attr = NULL;
 	return self;
 }

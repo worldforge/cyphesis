@@ -1,5 +1,18 @@
 2000-12-16  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Fixed error in Thing::operator[] which meant attributes could not
+	  be accessed, and certain move operations caused an abort.
+
+	* Removed attributes from python object which don't have attributes.
+
+	* Added Py*_Check() macros, and used them for easier code reading.
+
+	* Added snow attribute to weather.
+
+	* Commented out code which makes server exit(0) after a certain time.
+
+2000-12-16  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Removed unecessary type checks
 
 2000-12-16  Al Riddoch  <ajr@ecs.soton.ac.uk>

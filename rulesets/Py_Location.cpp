@@ -37,7 +37,6 @@ static void Location_dealloc(LocationObject *self)
     if ((self->own != 0) && (self->location != NULL)) {
         delete self->location;
     }
-    Py_XDECREF(self->Location_attr);
     PyMem_DEL(self);
 }
 
@@ -81,7 +80,7 @@ int Location_setattr(LocationObject *self, char *name, PyObject *v)
         return -1;
     }
     if (strcmp(name, "parent") == 0) {
-        if ((PyTypeObject*)PyObject_Type(v) != &Thing_Type) {
+        if (!PyThing_Check(v)) {
             PyErr_SetString(PyExc_TypeError, "parent must be a thing");
             return -1;
         }
@@ -93,7 +92,7 @@ int Location_setattr(LocationObject *self, char *name, PyObject *v)
         self->location->parent = thing->m_thing;
         return(0);
     }
-    if ((PyTypeObject*)PyObject_Type(v) != &Vector3D_Type) {
+    if (!PyVector3D_Check(v)) {
         PyErr_SetString(PyExc_TypeError, "arg must be a vector");
         return -1;
     }
@@ -139,7 +138,6 @@ LocationObject * newLocationObject(PyObject *arg)
 	if (self == NULL) {
 		return NULL;
 	}
-	self->Location_attr = NULL;
         self->location = NULL;
         self->own = 0;
 	return self;

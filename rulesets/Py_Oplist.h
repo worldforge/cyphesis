@@ -1,9 +1,9 @@
 #ifndef PY_OPLIST_H
 #define PY_OPLIST_H
 
-// extern PyMethodDef Thing_methods[];
-
 extern PyTypeObject Oplist_Type;
+
+#define PyOplist_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Oplist_Type)
 
 OplistObject * newOplistObject(PyObject *);
 

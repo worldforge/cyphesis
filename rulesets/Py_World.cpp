@@ -41,7 +41,7 @@ static PyObject * World_is_object_deleted(WorldObject *self, PyObject *args, PyO
     if (!PyArg_ParseTuple(args, "O", &obj)) {
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type(obj) != &Thing_Type) {
+    if (!PyThing_Check(obj)) {
         PyErr_SetString(PyExc_TypeError,"Arg is not a thing");
         return NULL;
     }
@@ -61,7 +61,6 @@ PyMethodDef World_methods[] = {
 
 static void World_dealloc(WorldObject *self)
 {
-    Py_XDECREF(self->World_attr);
     PyMem_DEL(self);
 }
 
@@ -101,6 +100,5 @@ WorldObject * newWorldObject(PyObject *arg)
 	if (self == NULL) {
 		return NULL;
 	}
-	self->World_attr = NULL;
 	return self;
 }

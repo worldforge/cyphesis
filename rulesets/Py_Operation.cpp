@@ -168,7 +168,7 @@ static PyObject * Operation_SetArgs(RootOperationObject * self, PyObject * args)
     Object::ListType argslist;
     for(int i = 0; i < PyList_Size(args_object); i++) {
         AtlasObject * item = (AtlasObject *)PyList_GetItem(args_object, i);
-        if ((PyTypeObject*)PyObject_Type((PyObject *)item) != &Object_Type) {
+        if (!PyAtlasObject_Check(item)) {
             PyErr_SetString(PyExc_TypeError,"args contains non Atlas Object");
             return NULL;
         }
@@ -379,7 +379,7 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
         fflush(stdout);
         return (PyObject*)res;
     }
-    if ((PyTypeObject*)PyObject_Type(other) == & Oplist_Type) {
+    if (PyOplist_Check(other)) {
         OplistObject * opl = (OplistObject*)other;
         if (opl->ops == NULL) {
             PyErr_SetString(PyExc_TypeError, "invalid oplist");
@@ -396,7 +396,7 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
         fflush(stdout);
         return (PyObject*)res;
     }
-    if ((PyTypeObject*)PyObject_Type(other) == & RootOperation_Type) {
+    if (PyOperation_Check(other)) {
         RootOperationObject * op = (RootOperationObject*)other;
         if (op->operation == NULL) {
             PyErr_SetString(PyExc_TypeError, "invalid operation");

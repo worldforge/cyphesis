@@ -12,7 +12,6 @@ PyMethodDef Optime_methods[] = {
 
 static void Optime_dealloc(OptimeObject *self)
 {
-    Py_XDECREF(self->Optime_attr);
     PyMem_DEL(self);
 }
 
@@ -69,6 +68,5 @@ OptimeObject * newOptimeObject(PyObject *arg)
 	if (self == NULL) {
 		return NULL;
 	}
-	self->Optime_attr = NULL;
 	return self;
 }

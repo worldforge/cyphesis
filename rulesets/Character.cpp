@@ -189,7 +189,7 @@ Character::Character() : movement(this), autom(0),
                          mind(NULL), external_mind(NULL), player(NULL),
                          drunkness(0.0)
 {
-    attributes["weight"] = 60.0;
+    attributes["weight"] = Object(double(60.0));
     attributes["sex"] = Object("female");
     is_character = 1;
 }
@@ -313,11 +313,11 @@ oplist Character::Mind_Operation(const Move & op)
     Move * newop = new Move(op);
     const Message::Object::ListType & args = op.GetArgs();
     if ((0 == args.size()) || (!args.front().IsMap())) {
-        debug_movement && cout << "move op has no argument" << endl << flush;
+        cerr << "move op has no argument" << endl << flush;
     }
     Message::Object::MapType arg1 = args.front().AsMap();
     if ((arg1.find("id") == arg1.end()) || !arg1["id"].IsString()) {
-        debug_movement && cout << "Its got no id" << endl << flush;
+        cerr << "Its got no id" << endl << flush;
     }
     string & oname = arg1["id"].AsString();
     if (world->fobjects.find(oname) == world->fobjects.end()) {
@@ -344,7 +344,8 @@ oplist Character::Mind_Operation(const Move & op)
             }
         }
         catch (...) {
-            cerr << "EXCEPTION: caught while checking weight for movement" << endl << flush;
+            cerr << "EXCEPTION: caught while checking " << obj->fullid
+                 << " weight for movement of " << fullid << endl << flush;
         }
         newop->SetTo(oname);
         res.push_back(newop);

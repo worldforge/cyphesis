@@ -28,7 +28,6 @@ PyMethodDef WorldTime_methods[] = {
 
 static void WorldTime_dealloc(WorldTimeObject *self)
 {
-    Py_XDECREF(self->WorldTime_attr);
     PyMem_DEL(self);
 }
 
@@ -74,6 +73,5 @@ WorldTimeObject * newWorldTimeObject(PyObject *arg)
 	if (self == NULL) {
 		return NULL;
 	}
-	self->WorldTime_attr = NULL;
 	return self;
 }

@@ -41,32 +41,27 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
-    PyObject	* Map_attr;	/* Attributes dictionary */
     MemMap	* m_map;
 } MapObject;
 
 typedef struct {
     PyObject_HEAD
-    PyObject	* Location_attr;	/* Attributes dictionary */
     Location	* location;
     int		own;
 } LocationObject;
 
 typedef struct {
     PyObject_HEAD
-    PyObject	* Vector3D_attr;	/* Attributes dictionary */
     Vector3D	coords;
 } Vector3DObject;
 
 typedef struct {
     PyObject_HEAD
-    PyObject	* WorldTime_attr;	/* Attributes dictionary */
     WorldTime	* time;
 } WorldTimeObject;
 
 typedef struct {
     PyObject_HEAD
-    PyObject	* World_attr;	/* Attributes dictionary */
     WorldRouter	* world;
 } WorldObject;
 
@@ -81,7 +76,6 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
-    PyObject	* Oplist_attr;	/* Attributes dictionary */
     oplist	* ops;
 } OplistObject;
 
@@ -91,7 +85,6 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
-    PyObject	* Optime_attr;	/* Attributes dictionary */
     RootOperation	* operation;
 } OptimeObject;
 

@@ -5,17 +5,9 @@
 
 #include "Python_API.h"
 
-/*
- * Object methods structure.
- */
-
-// extern PyMethodDef Object_methods[];
-
-/*
- * Object type structure.
- */
-
 extern PyTypeObject Object_Type;
+
+#define PyAtlasObject_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Object_Type)
 
 /*
  * Object creation function.

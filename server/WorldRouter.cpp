@@ -49,9 +49,9 @@ inline void WorldRouter::add_operation_to_queue(RootOperation & op, BaseEntity *
     }
     update_time();
     double t = world_info::time;
-    if (t > halt_time) {
-        exit(0);
-    }
+    //if (t > halt_time) {
+        //exit(0);
+    //}
     t = t + op.GetFutureSeconds();
     op.SetSeconds(t);
     op.SetFutureSeconds(0.0);

@@ -31,11 +31,11 @@ class Thing : public BaseEntity {
     Thing();
     virtual ~Thing() { }
 
-    Message::Object & operator[](const string &) {
-        if (attributes.find(name) == attributes.end()) {
-            attributes[name]=Message::Object();
+    virtual Object & operator[](const string & aname) {
+        if (attributes.find(aname) == attributes.end()) {
+            attributes[aname]=Object();
         }
-        return(attributes[name]);
+        return(attributes[aname]);
     }
 
     int set_object(PyObject * obj) {

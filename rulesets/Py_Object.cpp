@@ -198,7 +198,7 @@ Object::ListType PyListObject_asListType(PyObject * list)
     AtlasObject * item;
     for(int i = 0; i < PyList_Size(list); i++) {
         item = (AtlasObject *)PyList_GetItem(list, i);
-        if ((PyTypeObject*)PyObject_Type((PyObject *)item) != &Object_Type) {
+        if (!PyAtlasObject_Check(item)) {
             PyErr_SetString(PyExc_TypeError,"list contains non Atlas Object");
             return Object::ListType();
         }
@@ -216,7 +216,7 @@ Object::MapType PyDictObject_asMapType(PyObject * dict)
     for(int i = 0; i < PyDict_Size(list); i++) {
         key = PyList_GetItem(list, i);
         item = (AtlasObject *)PyDict_GetItem(dict, key);
-        if ((PyTypeObject*)PyObject_Type((PyObject *)item) != &Object_Type) {
+        if (!PyAtlasObject_Check(item)) {
             PyErr_SetString(PyExc_TypeError,"dict contains non Atlas Object");
             Py_DECREF(list);
             return Object::MapType();
@@ -255,15 +255,15 @@ Object PyObject_asObject(PyObject * o)
         }
         return Object(list);
     }
-    if ((PyTypeObject*)PyObject_Type(o) == &Object_Type) {
+    if (PyAtlasObject_Check(o)) {
         AtlasObject * obj = (AtlasObject *)o;
         return *(obj->m_obj);
     }
-    if ((PyTypeObject*)PyObject_Type(o) == &RootOperation_Type) {
+    if (PyOperation_Check(o)) {
         RootOperationObject * op = (RootOperationObject *)o;
         return op->operation->AsObject();
     }
-    if ((PyTypeObject*)PyObject_Type(o) == &Oplist_Type) {
+    if (PyOplist_Check(o)) {
         OplistObject * opl = (OplistObject *)o;
         Object::ListType _list;
         Object msg(_list);
@@ -275,7 +275,7 @@ Object PyObject_asObject(PyObject * o)
         }
         return msg;
     }
-    if ((PyTypeObject*)PyObject_Type(o) == &Location_Type) {
+    if (PyLocation_Check(o)) {
         LocationObject * loc = (LocationObject *)o;
         Object::MapType _map;
         Object ent(_map);
