@@ -11,6 +11,8 @@
 
 #include <iostream>
 
+#include <cstdio>
+
 #include <sys/socket.h>
 
 static const bool debug_flag = false;
@@ -44,6 +46,7 @@ bool CommListener::setup(int port)
     listenPort = port;
     listenFd = ::socket(PF_INET, SOCK_STREAM, 0);
     if (listenFd < 0) {
+	perror("socket");
         return false;
     }
     int flag = 1;
@@ -52,10 +55,12 @@ bool CommListener::setup(int port)
     sin.sin_port = htons(port);
     sin.sin_addr.s_addr = 0L;
     if (::bind(listenFd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+	perror("bind");
         ::close(listenFd);
         return false;
     }
     ::listen(listenFd, 5);
+    return true;
 }
 
 bool CommListener::accept()

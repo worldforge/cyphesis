@@ -7,6 +7,8 @@
 
 #include <Atlas/Message/DecoderBase.h>
 
+#include <libpq-fe.h>
+
 class Decoder : public Atlas::Message::DecoderBase {
   private:
     virtual void ObjectArrived(const Atlas::Message::Object& obj) {
@@ -23,8 +25,6 @@ class Decoder : public Atlas::Message::DecoderBase {
     }
 };
 
-class PgDatabase;
-
 class Database {
   private:
     static Database * m_instance;
@@ -36,11 +36,14 @@ class Database {
     std::string rule_db;
     Decoder m_d;
 
-    PgDatabase * m_connection;
+    PGconn * m_connection;
 
     Database();
 
-    bool command(const std::string & cmd);
+    // bool command(const std::string & cmd);
+
+    bool tuplesOk();
+    bool commandOk();
 
   public:
     const std::string & account() const { return account_db; }

@@ -1,3 +1,10 @@
+2002-11-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommListener.cpp: Report socket errors.
+
+	* common/Database.h, common/Database.cpp: Re-write db code to use
+	  the non-blocking C API.
+
 2002-11-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommClient.cpp, server/CommClient.h, server/CommListener.h,

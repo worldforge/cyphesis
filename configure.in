@@ -193,9 +193,8 @@ AM_PATH_PSQL(7.1.0,
 )
 
 AC_CHECK_LIB(pq,main, ,AC_MSG_ERROR(Couldn't find PostgreSQL C bindings! [Did you compile PostgreSQL with --enable-CXX ?]))
-AC_CHECK_LIB(pq++,main, ,AC_MSG_ERROR(Couldn't find PostgreSQL C++ bindings! [Did you compile PostgreSQL with --enable-CXX ?]))
 
-SYSTEM_LIBS="$SYSTEM_LIBS -lpq -lpq++"
+SYSTEM_LIBS="$SYSTEM_LIBS -lpq"
 
 READLINE_LIBS=
 

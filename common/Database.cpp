@@ -14,8 +14,6 @@
 
 #include <varconf/Config.h>
 
-#include <libpq++/pgdatabase.h>
-
 #include <iostream>
 
 using Atlas::Message::Object;
@@ -32,6 +30,32 @@ Database::Database() : account_db("account"),
                        m_connection(NULL)
 {
     
+}
+
+bool Database::tuplesOk()
+{
+    bool status = false;
+
+    PGresult * res;
+    while ((res = PQgetResult(m_connection)) != NULL) {
+	if (PQresultStatus(res) == PGRES_TUPLES_OK) {
+	    status = true;
+	}
+    };
+    return status;
+}
+
+bool Database::commandOk()
+{
+    bool status = false;
+
+    PGresult * res;
+    while ((res = PQgetResult(m_connection)) != NULL) {
+	if (PQresultStatus(res) == PGRES_COMMAND_OK) {
+	    status = true;
+	}
+    };
+    return status;
 }
 
 bool Database::initConnection(bool createDatabase)
@@ -56,17 +80,14 @@ bool Database::initConnection(bool createDatabase)
     }
 
     const std::string cinfo = conninfos.str();
-    char * conninfo = new char [cinfo.size() + 1]; // , sizeof(char));
-    strcpy(conninfo, cinfo.c_str());
 
     if (createDatabase) {
         // Currently not able to create the database
     }
 
-    m_connection = new PgDatabase(conninfo);
-    delete [] conninfo;
+    m_connection = PQconnectdb(cinfo.c_str());
 
-    if (m_connection->Status() != CONNECTION_OK) {
+    if ((m_connection == NULL) || (PQstatus(m_connection) != CONNECTION_OK)) {
         log(ERROR, "Database connection failed");
         return false;
     }
@@ -77,21 +98,26 @@ bool Database::initConnection(bool createDatabase)
 bool Database::initAccount(bool createTables)
 {
     int status = 0;
-    // status = m_connection->ExecCommandOk("SELECT * FROM account WHERE id = 'test' AND type = 'test' AND password = 'test';");
-    status = m_connection->ExecTuplesOk("SELECT * FROM account WHERE id = 'admin';");
-    
+    status = PQsendQuery(m_connection, "SELECT * FROM account WHERE id = 'admin';");
     if (!status) {
+	reportError();
+        return false;
+    }
+
+    if (!tuplesOk()) {
         debug(std::cout << "Account table does not exist"
                         << std::endl << std::flush;);
         reportError();
         if (createTables) {
             debug(std::cout << "Account table does not exist"
                             << std::endl << std::flush;);
-            // status = m_connection->ExecCommandOk("CREATE TABLE account ( id varchar(80), type varchar(80), password varchar(80) };");
-            status = m_connection->ExecCommandOk("CREATE TABLE account ( id varchar(80)  PRIMARY KEY, contents text );");
+            status = PQsendQuery(m_connection, "CREATE TABLE account ( id varchar(80)  PRIMARY KEY, contents text );");
             if (!status) {
-                log(ERROR, "Error creating account table in database");
                 reportError();
+                return false;
+            }
+            if (!tuplesOk()) {
+                log(ERROR, "Error creating account table in database");
                 return false;
             }
         } else {
@@ -105,14 +131,22 @@ bool Database::initAccount(bool createTables)
 bool Database::initWorld(bool createTables)
 {
     int status = 0;
-    status = m_connection->ExecTuplesOk("SELECT * FROM world WHERE id = 'test' AND contents = 'test';");
-    
+    status = PQsendQuery(m_connection, "SELECT * FROM world WHERE id = 'test' AND contents = 'test';");
     if (!status) {
+	reportError();
+        return false;
+    }
+    
+    if (!tuplesOk()) {
         debug(std::cout << "World table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = m_connection->ExecCommandOk("CREATE TABLE world ( id varchar(80) PRIMARY KEY, contents text );");
+            status = PQsendQuery(m_connection, "CREATE TABLE world ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
+		reportError();
+		return false;
+	    }
+	    if (!tuplesOk()) {
                 log(ERROR, "Error creating world table in database");
                 reportError();
                 return false;
@@ -128,14 +162,22 @@ bool Database::initWorld(bool createTables)
 bool Database::initMind(bool createTables)
 {
     int status = 0;
-    status = m_connection->ExecTuplesOk("SELECT * FROM mind WHERE id = 'test' AND contents = 'test';");
-    
+    status = PQsendQuery(m_connection, "SELECT * FROM mind WHERE id = 'test' AND contents = 'test';");
     if (!status) {
+	reportError();
+        return false;
+    }
+    
+    if (!tuplesOk()) {
         debug(std::cout << "Mind table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = m_connection->ExecCommandOk("CREATE TABLE mind ( id varchar(80) PRIMARY KEY, contents text );");
+            status = PQsendQuery(m_connection, "CREATE TABLE mind ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
+		reportError();
+		return false;
+	    }
+	    if (!tuplesOk()) {
                 log(ERROR, "Error creating mind table in database");
                 reportError();
                 return false;
@@ -151,14 +193,22 @@ bool Database::initMind(bool createTables)
 bool Database::initServer(bool createTables)
 {
     int status = 0;
-    status = m_connection->ExecTuplesOk("SELECT * FROM server WHERE id = 'test' AND contents = 'test';");
-    
+    status = PQsendQuery(m_connection, "SELECT * FROM server WHERE id = 'test' AND contents = 'test';");
     if (!status) {
+	reportError();
+        return false;
+    }
+    
+    if (!tuplesOk()) {
         debug(std::cout << "Server table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = m_connection->ExecCommandOk("CREATE TABLE server ( id varchar(80) PRIMARY KEY, contents text );");
+            status = PQsendQuery(m_connection, "CREATE TABLE server ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
+		reportError();
+		return false;
+	    }
+	    if (!tuplesOk()) {
                 log(ERROR, "Error creating server table in database");
                 reportError();
                 return false;
@@ -174,14 +224,22 @@ bool Database::initServer(bool createTables)
 bool Database::initRule(bool createTables)
 {
     int status = 0;
-    status = m_connection->ExecTuplesOk("SELECT * FROM rules WHERE id = 'test' AND contents = 'test';");
-    
+    status = PQsendQuery(m_connection, "SELECT * FROM rules WHERE id = 'test' AND contents = 'test';");
     if (!status) {
+	reportError();
+        return false;
+    }
+    
+    if (!tuplesOk()) {
         debug(std::cout << "Rule table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = m_connection->ExecCommandOk("CREATE TABLE rules ( id varchar(80) PRIMARY KEY, contents text );");
+            status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(80) PRIMARY KEY, contents text );");
             if (!status) {
+		reportError();
+		return false;
+	    }
+	    if (!tuplesOk()) {
                 log(ERROR, "Error creating rules table in database");
                 reportError();
                 return false;
@@ -196,7 +254,7 @@ bool Database::initRule(bool createTables)
 
 void Database::shutdownConnection()
 {
-    delete m_connection;
+    PQfinish(m_connection);
 }
 
 Database * Database::instance()
@@ -232,32 +290,47 @@ bool Database::decodeObject(const std::string & data,
 bool Database::getObject(const std::string & table, const std::string & key,
                          Atlas::Message::Object::MapType & o)
 {
+    debug(std::cout << "Database::getObject() " << table << "." << key
+                    << std::endl << std::flush;);
     std::string query = std::string("SELECT * FROM ") + table + " WHERE id = '" + key + "';";
 
-    int status = m_connection->ExecTuplesOk(query.c_str());
-
+    int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
+	reportError();
+        return false;
+    }
+
+    PGresult * res;
+    if ((res = PQgetResult(m_connection)) == NULL) {
         debug(std::cout << "Error accessing " << key << " in " << table
                         << " table" << std::endl << std::flush;);
         return false;
     }
-    int results = m_connection->Tuples();
-    if (results < 1) {
+    if ((PQntuples(res) < 1) || (PQnfields(res) < 2)) {
         debug(std::cout << "No entry for " << key << " in " << table
                         << " table" << std::endl << std::flush;);
+        while ((res = PQgetResult(m_connection)) != NULL);
         return false;
     }
-    const char * data = m_connection->GetValue(0, 1);
+    const char * data = PQgetvalue(res, 0, 1);
     debug(std::cout << "Got record " << key << " from database, value " << data
                << std::endl << std::flush;);
-    
-    return decodeObject(data, o);
+
+    bool ret = decodeObject(data, o);
+
+    while ((res = PQgetResult(m_connection)) != NULL) {
+        log(ERROR, "Extra database result to simple query.");
+    };
+
+    return ret;
 }
 
 bool Database::putObject(const std::string & table,
                          const std::string & key,
                          const Atlas::Message::Object::MapType & o)
 {
+    debug(std::cout << "Database::putObject() " << table << "." << key
+                    << std::endl << std::flush;);
     std::stringstream str;
 
     Atlas::Codecs::XML codec(str, &m_d);
@@ -270,8 +343,12 @@ bool Database::putObject(const std::string & table,
     debug(std::cout << "Encoded to: " << str.str().c_str() << " "
                << str.str().size() << std::endl << std::flush;);
     std::string query = std::string("INSERT INTO ") + table + " VALUES ('" + key + "', '" + str.str() + "');";
-    int status = m_connection->ExecCommandOk(query.c_str());
+    int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
+	reportError();
+        return false;
+    }
+    if (!commandOk()) {
         debug(std::cerr << "Failed to insert item " << key << " into " << table
                         << " table" << std::endl << std::flush;);
         return false;
@@ -283,6 +360,8 @@ bool Database::updateObject(const std::string & table,
                             const std::string & key,
                             const Atlas::Message::Object::MapType & o)
 {
+    debug(std::cout << "Database::updateObject() " << table << "." << key
+                    << std::endl << std::flush;);
     std::stringstream str;
 
     Atlas::Codecs::XML codec(str, &m_d);
@@ -294,8 +373,12 @@ bool Database::updateObject(const std::string & table,
 
     std::string query = std::string("UPDATE ") + table + " SET contents = '" +
                         str.str() + "' WHERE id='" + key + "';";
-    int status = m_connection->ExecCommandOk(query.c_str());
+    int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
+	reportError();
+        return false;
+    }
+    if (!commandOk()) {
         debug(std::cerr << "Failed to update item " << key << " into " << table
                         << " table" << std::endl << std::flush;);
         return false;
@@ -325,24 +408,31 @@ bool Database::getTable(const std::string & table, Object::MapType &o)
 {
     std::string query = std::string("SELECT * FROM ") + table + ";";
 
-    int status = m_connection->ExecTuplesOk(query.c_str());
+    int status = PQsendQuery(m_connection, query.c_str());
 
     if (!status) {
-        debug(std::cout << "Error accessing " << table
-                        << " table" << std::endl << std::flush;);
         reportError();
         return false;
     }
-    int results = m_connection->Tuples();
-    if (results < 1) {
-        debug(std::cout << "No entries in " << table
+
+    PGresult * res;
+    if ((res = PQgetResult(m_connection)) == NULL) {
+        debug(std::cout << "Error accessing " << table
                         << " table" << std::endl << std::flush;);
         return false;
     }
+    int results = PQntuples(res);
+    if ((results < 1) || (PQnfields(res) < 2)) {
+        debug(std::cout << "No entries in " << table
+                        << " table" << std::endl << std::flush;);
+        while ((res = PQgetResult(m_connection)) != NULL);
+        return false;
+    }
+    const char * data = PQgetvalue(res, 0, 1);
     Object::MapType t;
     for(int i = 0; i < results; i++) {
-        const char * key = m_connection->GetValue(i, 0);
-        const char * data = m_connection->GetValue(i, 1);
+        const char * key = PQgetvalue(res, i, 0);
+        const char * data = PQgetvalue(res, i, 1);
         debug(std::cout << "Got record " << key << " from database, value "
                    << data << std::endl << std::flush;);
     
@@ -351,14 +441,23 @@ bool Database::getTable(const std::string & table, Object::MapType &o)
         }
         
     }
+
+    while ((res = PQgetResult(m_connection)) != NULL) {
+        log(ERROR, "Extra database result to simple query.");
+    };
+
     return true;
 }
 
 bool Database::clearTable(const std::string & table)
 {
     std::string query = std::string("DELETE FROM ") + table + ";";
-    int status = m_connection->ExecCommandOk(query.c_str());
+    int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
+        reportError();
+        return false;
+    }
+    if (!commandOk()) {
         debug(std::cout << "Error clearing " << table
                         << " table" << std::endl << std::flush;);
         reportError();
@@ -369,6 +468,6 @@ bool Database::clearTable(const std::string & table)
 
 void Database::reportError()
 {
-    std::string msg = std::string("DATABASE ERROR: ") + m_connection->ErrorMessage();
+    std::string msg = std::string("DATABASE ERROR: ") + PQerrorMessage(m_connection);
     log(ERROR, msg.c_str());
 }
