@@ -1,3 +1,8 @@
+2004-01-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommServer.cpp: Fully initialise epoll_event structure before
+	  passing to kernel.
+
 2004-01-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Use know() for prices rather

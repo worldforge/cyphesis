@@ -208,6 +208,7 @@ void CommServer::addSocket(CommSocket * cs)
 #ifdef HAVE_EPOLL_CREATE
     struct epoll_event ee;
     ee.events = EPOLLIN | EPOLLERR | EPOLLHUP;
+    ee.data.u64 = 0;
     ee.data.ptr = cs;
     int ret = ::epoll_ctl(m_epollFd, EPOLL_CTL_ADD, cs->getFd(), &ee);
     if (ret != 0) {
