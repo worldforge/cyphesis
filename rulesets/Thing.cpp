@@ -195,148 +195,150 @@ OpVector Thing::MoveOperation(const Move & op)
     }
     const Element::ListType & args = op.getArgs();
     if (args.empty()) {
-        debug( std::cout << "ERROR: move op has no argument" << std::endl << std::flush;);
-        return OpVector();
+        return error(op, "Move has no argument", getId());
     }
-    try {
-        Vector3D oldpos = m_location.m_pos;
-        const Element::MapType & ent = args.front().asMap();
-        Element::MapType::const_iterator I = ent.find("loc");
-        if ((I == ent.end()) || !I->second.isString()) {
-            return error(op, "Move op has no loc", getId());
-        }
-        const std::string & ref = I->second.asString();
-        EntityDict::const_iterator J = m_world->getObjects().find(ref);
-        if (J == m_world->getObjects().end()) {
-            return error(op, "Move op loc invalid", getId());
-        }
-        debug(std::cout << "{" << ref << "}" << std::endl << std::flush;);
-        Entity * newref = J->second;
-        if (newref == this) {
-            return error(op, "Attempt by entity to move into itself", getId());
-        }
-        I = ent.find("pos");
-        if ((I == ent.end()) || !I->second.isList()) {
-            return error(op, "Move op has no pos", getId());
-        }
+    Vector3D oldpos = m_location.m_pos;
+    const Element::MapType & ent = args.front().asMap();
+    Element::MapType::const_iterator I = ent.find("loc");
+    if ((I == ent.end()) || !I->second.isString()) {
+        return error(op, "Move op has no loc", getId());
+    }
+    const std::string & ref = I->second.asString();
+    EntityDict::const_iterator J = m_world->getObjects().find(ref);
+    if (J == m_world->getObjects().end()) {
+        return error(op, "Move op loc invalid", getId());
+    }
+    debug(std::cout << "{" << ref << "}" << std::endl << std::flush;);
+    Entity * newref = J->second;
+    if (newref == this) {
+        return error(op, "Attempt by entity to move into itself", getId());
+    }
+    I = ent.find("pos");
+    if ((I == ent.end()) || !I->second.isList()) {
+        return error(op, "Move op has no pos", getId());
+    }
 
-        // Up until this point nothing should have changed, but the changes
-        // have all now been checked for validity.
-    
-        if (m_location.m_loc != newref) {
-        // Update loc
-            m_location.m_loc->m_contains.erase(this);
-            if (m_location.m_loc->m_contains.empty()) {
-                m_location.m_loc->m_update_flags |= a_cont;
-                m_location.m_loc->updated.emit();
-            }
-            bool was_empty = newref->m_contains.empty();
-            newref->m_contains.insert(this);
-            if (was_empty) {
-                newref->m_update_flags |= a_cont;
-                newref->updated.emit();
-            }
-            m_location.m_loc = newref;
-            m_update_flags |= a_loc;
-        }
+    // Up until this point nothing should have changed, but the changes
+    // have all now been checked for validity.
 
-        // Update pos
-        m_location.m_pos.fromAtlas(I->second.asList());
-        m_update_flags |= a_pos;
-        I = ent.find("velocity");
-        if (I != ent.end()) {
-            // Update velocity
-            m_location.m_velocity.fromAtlas(I->second.asList());
-            // Velocity is not persistent so has no flag
+    if (m_location.m_loc != newref) {
+    // Update loc
+        m_location.m_loc->m_contains.erase(this);
+        if (m_location.m_loc->m_contains.empty()) {
+            m_location.m_loc->m_update_flags |= a_cont;
+            m_location.m_loc->updated.emit();
         }
-        I = ent.find("orientation");
-        if (I != ent.end()) {
-            // Update orientation
-            m_location.m_orientation.fromAtlas(I->second.asList());
-            m_update_flags |= a_orient;
+        bool was_empty = newref->m_contains.empty();
+        newref->m_contains.insert(this);
+        if (was_empty) {
+            newref->m_update_flags |= a_cont;
+            newref->updated.emit();
         }
+        m_location.m_loc = newref;
+        m_update_flags |= a_loc;
+    }
 
-        RootOperation * s = new Sight();
-        s->setArgs(Element::ListType(1,op.asObject()));
-        OpVector res2(1,s);
-        // I think it might be wise to send a set indicating we have changed
-        // modes, but this would probably be wasteful
+    // Update pos
+    m_location.m_pos.fromAtlas(I->second.asList());
+    m_update_flags |= a_pos;
+    I = ent.find("velocity");
+    if (I != ent.end()) {
+        // Update velocity
+        m_location.m_velocity.fromAtlas(I->second.asList());
+        // Velocity is not persistent so has no flag
+    }
+    I = ent.find("orientation");
+    if (I != ent.end()) {
+        // Update orientation
+        m_location.m_orientation.fromAtlas(I->second.asList());
+        m_update_flags |= a_orient;
+    }
 
-        // This code handles sending Appearance and Disappearance operations
-        // to this entity and others to indicate if one has gained or lost
-        // sight of the other because of this movement
-        if (consts::enable_ranges && isPerceptive()) {
-            debug(std::cout << "testing range" << std::endl;);
-            EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
-            Element::ListType appear, disappear;
-            Element::MapType this_ent;
-            this_ent["id"] = getId();
-            this_ent["stamp"] = (double)m_seq;
-            Element::ListType this_as_args(1,this_ent);
-            for(;I != m_location.m_loc->m_contains.end(); I++) {
-                const bool wasInRange = (*I)->m_location.inRange(oldpos,
-                                                          consts::sight_range);
-                const bool isInRange = (*I)->m_location.inRange(m_location.m_pos,
-                                                          consts::sight_range);
-                // Build appear and disappear lists, and send operations
-                // Also so operations to (dis)appearing perceptive
-                // entities saying that we are (dis)appearing
-                if (wasInRange ^ isInRange) {
-                    Element::MapType that_ent;
-                    that_ent["id"] = (*I)->getId();
-                    that_ent["stamp"] = (double)(*I)->getSeq();
-                    if (wasInRange) {
-                        // We are losing sight of that object
-                        disappear.push_back(that_ent);
-                        debug(std::cout << getId() << ": losing site of " <<(*I)->getId() << std::endl;);
-                        if ((*I)->isPerceptive()) {
-                            // Send operation to the entity in question so it
-                            // knows it is losing sight of us.
-                            Disappearance * d = new Disappearance();
-                            d->setArgs(this_as_args);
-                            d->setTo((*I)->getId());
-                            res2.push_back(d);
-                        }
-                    } else /*if (isInRange)*/ {
-                        // We are gaining sight of that object
-                        appear.push_back(that_ent);
-                        debug(std::cout << getId() << ": gaining site of " <<(*I)->getId() << std::endl;);
-                        if ((*I)->isPerceptive()) {
-                            // Send operation to the entity in question so it
-                            // knows it is gaining sight of us.
-                            Appearance * a = new Appearance();
-                            a->setArgs(this_as_args);
-                            a->setTo((*I)->getId());
-                            res2.push_back(a);
-                        }
+    RootOperation * s = new Sight();
+    s->setArgs(Element::ListType(1,op.asObject()));
+    OpVector res2(1,s);
+    // I think it might be wise to send a set indicating we have changed
+    // modes, but this would probably be wasteful
+
+    // This code handles sending Appearance and Disappearance operations
+    // to this entity and others to indicate if one has gained or lost
+    // sight of the other because of this movement
+    if (consts::enable_ranges && isPerceptive()) {
+        debug(std::cout << "testing range" << std::endl;);
+        float fromSquSize = boxSquareSize(m_location.m_bBox);
+        EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
+        Element::ListType appear, disappear;
+        Element::MapType this_ent;
+        this_ent["id"] = getId();
+        this_ent["stamp"] = (double)m_seq;
+        Element::ListType this_as_args(1,this_ent);
+        for(;I != m_location.m_loc->m_contains.end(); I++) {
+#if 0
+            const bool wasInRange = (*I)->m_location.inRange(oldpos,
+                                                      consts::sight_range);
+            const bool isInRange = (*I)->m_location.inRange(m_location.m_pos,
+                                                      consts::sight_range);
+#else
+            const Vector3D od((*I)->m_location.m_pos - oldpos),
+                           nd((*I)->m_location.m_pos - m_location.m_pos);
+            const bool wasInRange = ((fromSquSize / od.sqrMag()) > consts::square_sight_factor),
+                       isInRange = ((fromSquSize / nd.sqrMag()) > consts::square_sight_factor);
+#endif
+            // Build appear and disappear lists, and send operations
+            // Also so operations to (dis)appearing perceptive
+            // entities saying that we are (dis)appearing
+            if (wasInRange ^ isInRange) {
+                Element::MapType that_ent;
+                that_ent["id"] = (*I)->getId();
+                that_ent["stamp"] = (double)(*I)->getSeq();
+                if (wasInRange) {
+                    // We are losing sight of that object
+                    disappear.push_back(that_ent);
+                    debug(std::cout << getId() << ": losing site of " <<(*I)->getId() << std::endl;);
+                    if ((*I)->isPerceptive()) {
+                        // Send operation to the entity in question so it
+                        // knows it is losing sight of us.
+                        Disappearance * d = new Disappearance();
+                        d->setArgs(this_as_args);
+                        d->setTo((*I)->getId());
+                        res2.push_back(d);
+                    }
+                } else /*if (isInRange)*/ {
+                    // We are gaining sight of that object
+                    appear.push_back(that_ent);
+                    debug(std::cout << getId() << ": gaining site of " <<(*I)->getId() << std::endl;);
+                    if ((*I)->isPerceptive()) {
+                        // Send operation to the entity in question so it
+                        // knows it is gaining sight of us.
+                        // FIXME We don't need to do this, cos its about
+                        // to get our Sight(Move)
+                        Appearance * a = new Appearance();
+                        a->setArgs(this_as_args);
+                        a->setTo((*I)->getId());
+                        res2.push_back(a);
                     }
                 }
             }
-            if (!appear.empty()) {
-                // Send an operation to ourselves with a list of entities
-                // we are losing sight of
-                Appearance * a = new Appearance();
-                a->setArgs(appear);
-                a->setTo(getId());
-                res2.push_back(a);
-            }
-            if (!disappear.empty()) {
-                // Send an operation to ourselves with a list of entities
-                // we are gaining sight of
-                Disappearance * d = new Disappearance();
-                d->setArgs(disappear);
-                d->setTo(getId());
-                res2.push_back(d);
-            }
         }
+        if (!appear.empty()) {
+            // Send an operation to ourselves with a list of entities
+            // we are losing sight of
+            Appearance * a = new Appearance();
+            a->setArgs(appear);
+            a->setTo(getId());
+            res2.push_back(a);
+        }
+        if (!disappear.empty()) {
+            // Send an operation to ourselves with a list of entities
+            // we are gaining sight of
+            Disappearance * d = new Disappearance();
+            d->setArgs(disappear);
+            d->setTo(getId());
+            res2.push_back(d);
+        }
+    }
     updated.emit();
-        return res2;
-    }
-    catch (Atlas::Message::WrongTypeException) {
-        log(ERROR, "EXCEPTION: Malformed object to be moved");
-        return error(op, "Malformed object to be moved", getId());
-    }
-    return OpVector();
+    return res2;
 }
 
 OpVector Thing::SetOperation(const Set & op)
