@@ -5,7 +5,7 @@
 #
 # chkconfig: - 90 10
 # description: Cyphesis is a server for WorldForge online games.
-# probe: ???
+# processname: cyphesis
 
 if [ -f /etc/rc.d/init.d/functions ] ; then
         . /etc/rc.d/init.d/functions

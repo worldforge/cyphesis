@@ -15,7 +15,7 @@ Source1: cyphesis.init
 Source2: cyclient.init
 Source3: cyphesis.sysconfig
 PreReq: initscripts /usr/sbin/useradd /sbin/chkconfig
-Requires: Atlas-C++ >= 0.4.94 mercator varconf skstream >= 0.3.1 readline postgresql-libs >= 7.1 openssl python >= 1.5.2 libstdc++ postgresql-server >= 7.1
+Requires: Atlas-C++ >= 0.4.94 mercator varconf skstream >= 0.3.1 readline postgresql-libs >= 7.1 openssl python >= 1.5.2 postgresql-server >= 7.1
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 BuildRequires: Atlas-C++-devel >= 0.4.94 mercator-devel varconf-devel >= 0.6.2 skstream-devel >= 0.3.1 readline-devel postgresql-devel >= 7.1 openssl-devel python-devel >= 1.5.2 libstdc++-devel
 Obsoletes: cyphesis-service cyphesis-mason
@@ -72,7 +72,7 @@ if [ -d /etc/sysconfig ]
 then
         install -d $RPM_BUILD_ROOT/etc/sysconfig
         install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/cyphesis
-        echo /etc/sysconfig/cyphesis >> service.lst
+        echo %config(noreplace) /etc/sysconfig/cyphesis >> service.lst
 fi
 
 %pre
@@ -109,8 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f service.lst
 %defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/cyphesis/cyphesis.vconf
 %config %{_sysconfdir}/cyphesis/basic.xml
-%config %{_sysconfdir}/cyphesis/cyphesis.vconf
 %config %{_sysconfdir}/cyphesis/acorn.xml
 %config %{_sysconfdir}/cyphesis/mason.xml
 %config %{_sysconfdir}/cyphesis/werewolf.xml
