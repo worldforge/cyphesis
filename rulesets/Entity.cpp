@@ -188,7 +188,7 @@ void Entity::merge(const Element::MapType & ent)
 bool Entity::getLocation(const Element::MapType & entmap,
                          const EntityDict & eobjects)
 {
-    debug( std::cout << "Thing::getLocation" << std::endl << std::flush;);
+    debug( std::cout << "Entity::getLocation" << std::endl << std::flush;);
     Element::MapType::const_iterator I = entmap.find("loc");
     if ((I == entmap.end()) || !I->second.IsString()) {
         debug( std::cout << getId() << ".. has no loc" << std::endl << std::flush;);

@@ -26,7 +26,7 @@ static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
         return NULL;
     }
     LocationObject * where = (LocationObject *)where_obj;
-    ThingObject * thing;
+    EntityObject * thing;
     EntityVector res = self->m_map->findByLocation(*where->location,
                                                           radius);
     PyObject * list = PyList_New(res.size());
@@ -36,12 +36,12 @@ static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
     EntityVector::const_iterator I;
     int i = 0;
     for(I = res.begin(); I != res.end(); I++, i++) {
-        thing = newThingObject(NULL);
+        thing = newEntityObject(NULL);
         if (thing == NULL) {
             Py_DECREF(list);
             return NULL;
         }
-        thing->m_thing = *I;
+        thing->m_entity = *I;
         PyList_SetItem(list, i, (PyObject*)thing);
     }
     return list;
@@ -57,7 +57,7 @@ static PyObject * Map_find_by_type(MapObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s", &what)) {
         return NULL;
     }
-    ThingObject * thing;
+    EntityObject * thing;
     EntityVector res = self->m_map->findByType(std::string(what));
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
@@ -66,12 +66,12 @@ static PyObject * Map_find_by_type(MapObject * self, PyObject * args)
     EntityVector::const_iterator I;
     int i = 0;
     for(I = res.begin(); I != res.end(); I++, i++) {
-        thing = newThingObject(NULL);
+        thing = newEntityObject(NULL);
         if (thing == NULL) {
             Py_DECREF(list);
             return NULL;
         }
-        thing->m_thing = *I;
+        thing->m_entity = *I;
         PyList_SetItem(list, i, (PyObject*)thing);
     }
     return list;
@@ -84,18 +84,18 @@ static PyObject * Map_add_object(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "invalid memmap");
         return NULL;
     }
-    ThingObject * thing;
+    EntityObject * thing;
     if (!PyArg_ParseTuple(args, "O", &thing)) {
         PyErr_SetString(PyExc_TypeError,"arg not an object");
         return NULL;
     }
-    if (!PyThing_Check(thing)) {
-        PyErr_SetString(PyExc_TypeError,"arg not a Thing");
+    if (!PyEntity_Check(thing)) {
+        PyErr_SetString(PyExc_TypeError,"arg not a Entity");
         return NULL;
     }
-    Entity * ret = self->m_map->addObject(thing->m_thing);
-    thing = newThingObject(NULL);
-    thing->m_thing = ret;
+    Entity * ret = self->m_map->addObject(thing->m_entity);
+    thing = newEntityObject(NULL);
+    thing->m_entity = ret;
     return (PyObject *)thing;
 }
 #endif
@@ -137,8 +137,8 @@ static PyObject * Map_add(MapObject * self, PyObject * args)
         return NULL;
     }
     Entity * ret = self->m_map->add(obj->m_obj->AsMap());
-    ThingObject * thing = newThingObject(NULL);
-    thing->m_thing = ret;
+    EntityObject * thing = newEntityObject(NULL);
+    thing->m_entity = ret;
     return (PyObject *)thing;
 }
 
@@ -171,8 +171,8 @@ static PyObject * Map_get(MapObject * self, PyObject * args)
         return NULL;
     }
     Entity * ret = self->m_map->get(id);
-    ThingObject * thing = newThingObject(NULL);
-    thing->m_thing = ret;
+    EntityObject * thing = newEntityObject(NULL);
+    thing->m_entity = ret;
     return (PyObject *)thing;
 }
 
@@ -188,8 +188,8 @@ static PyObject * Map_get_add(MapObject * self, PyObject * args)
         return NULL;
     }
     Entity * ret = self->m_map->getAdd(id);
-    ThingObject * thing = newThingObject(NULL);
-    thing->m_thing = ret;
+    EntityObject * thing = newEntityObject(NULL);
+    thing->m_entity = ret;
     return (PyObject *)thing;
 }
 
@@ -209,8 +209,8 @@ static PyObject * Map_update(MapObject * self, PyObject * args)
         return NULL;
     }
     Entity * ret = self->m_map->update(obj->m_obj->AsMap());
-    ThingObject * thing = newThingObject(NULL);
-    thing->m_thing = ret;
+    EntityObject * thing = newEntityObject(NULL);
+    thing->m_entity = ret;
     return (PyObject *)thing;
 }
 
@@ -283,8 +283,8 @@ static PyMethodDef Map_methods[] = {
 
 static void Map_dealloc(MapObject *self)
 {
-    //if (self->m_thing != NULL) {
-        //delete self->m_thing;
+    //if (self->m_entity != NULL) {
+        //delete self->m_entity;
     //}
     PyMem_DEL(self);
 }

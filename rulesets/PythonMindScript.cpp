@@ -100,8 +100,8 @@ bool PythonMindScript::Operation(const std::string & op_type,
 
 void PythonMindScript::hook(const std::string & method, Entity * object)
 {
-    ThingObject * obj = newThingObject(NULL);
-    obj->m_thing = object;
+    EntityObject * obj = newEntityObject(NULL);
+    obj->m_entity = object;
     PyObject * ret = PyObject_CallMethod(scriptObject, (char *)(method.c_str()), "(O)", obj);
     Py_DECREF(ret);
     Py_DECREF(obj);

@@ -14,8 +14,9 @@
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
 
-Plant::Plant(const std::string & id) : Thing(id), m_fruits(0), m_radius(1),
-                                                  m_fruitName("seed")
+Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
+                                                         m_radius(1),
+                                                         m_fruitName("seed")
 {
     // Default to a 1m cube
     m_location.m_bBox = BBox(Vector3D(-0.5, -0.5, 0), Vector3D(0.5, 0.5, 1));
@@ -45,7 +46,7 @@ bool Plant::get(const std::string & aname, Element & attr) const
         attr = m_sizeAdult;
         return true;
     }
-    return Thing::get(aname, attr);
+    return Plant_parent::get(aname, attr);
 }
 
 void Plant::set(const std::string & aname, const Element & attr)
@@ -62,8 +63,18 @@ void Plant::set(const std::string & aname, const Element & attr)
     } else if ((aname == "sizeAdult") && attr.IsNum()) {
         m_sizeAdult = attr.AsNum();
     } else {
-        Thing::set(aname, attr);
+        Plant_parent::set(aname, attr);
     }
+}
+
+void Plant::addToObject(Element::MapType & omap) const
+{
+    omap["fruits"] = m_fruits;
+    omap["radius"] = m_radius;
+    omap["fruitName"] = m_fruitName;
+    omap["fruitChance"] = m_fruitChance;
+    omap["sizeAdult"] = m_sizeAdult;
+    Plant_parent::addToObject(omap);
 }
 
 int Plant::dropFruit(OpVector & res)

@@ -12,7 +12,9 @@
 // does not have any added attributes or functionality over
 // thing
 
-class Line : public Thing {
+typedef Thing Line_parent;
+
+class Line : public Line_parent {
   protected:
     IdList startIntersections;
     IdList endIntersections;

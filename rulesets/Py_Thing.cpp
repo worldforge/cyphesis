@@ -9,10 +9,10 @@
 #include "Py_World.h"
 #include "Entity.h"
 
-static PyObject * Thing_as_entity(ThingObject * self, PyObject * args)
+static PyObject * Entity_as_entity(EntityObject * self, PyObject * args)
 {
-    if (self->m_thing == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid thing as_entity");
+    if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid entity as_entity");
         return NULL;
     }
     if (!PyArg_ParseTuple(args, "")) {
@@ -23,14 +23,14 @@ static PyObject * Thing_as_entity(ThingObject * self, PyObject * args)
         return NULL;
     }
     ret->m_obj = new Element(Element::MapType());
-    self->m_thing->addToObject(ret->m_obj->AsMap());
+    self->m_entity->addToObject(ret->m_obj->AsMap());
     return (PyObject *)ret;
 }
 
-static PyObject * Thing_get_xyz(ThingObject * self, PyObject * args)
+static PyObject * Entity_get_xyz(EntityObject * self, PyObject * args)
 {
-    if (self->m_thing == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid thing get_xyz");
+    if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid entity get_xyz");
         return NULL;
     }
     if (!PyArg_ParseTuple(args, "")) {
@@ -40,30 +40,30 @@ static PyObject * Thing_get_xyz(ThingObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->m_thing->getXyz();
+    ret->coords = self->m_entity->getXyz();
     return (PyObject *)ret;
 }
 
-static PyMethodDef Thing_methods[] = {
-	{"get_xyz",        (PyCFunction)Thing_get_xyz,  1},
-	{"as_entity",        (PyCFunction)Thing_as_entity,  1},
+static PyMethodDef Entity_methods[] = {
+	{"get_xyz",        (PyCFunction)Entity_get_xyz,  1},
+	{"as_entity",        (PyCFunction)Entity_as_entity,  1},
 	{NULL,          NULL}           /* sentinel */
 };
 
-static void Thing_dealloc(ThingObject *self)
+static void Entity_dealloc(EntityObject *self)
 {
-    //if (self->m_thing != NULL) {
-        //delete self->m_thing;
+    //if (self->m_entity != NULL) {
+        //delete self->m_entity;
     //}
-    Py_XDECREF(self->Thing_attr);
+    Py_XDECREF(self->Entity_attr);
     PyMem_DEL(self);
 }
 
-static PyObject * Thing_getattr(ThingObject *self, char *name)
+static PyObject * Entity_getattr(EntityObject *self, char *name)
 {
-    // Fairly major re-write of this to use operator[] of Thing base class
-    if (self->m_thing == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid thing getattr");
+    // Fairly major re-write of this to use operator[] of Entity base class
+    if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid entity getattr");
         return NULL;
     }
     // If operation search gets to here, it goes no further
@@ -76,13 +76,13 @@ static PyObject * Thing_getattr(ThingObject *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        PyObject * ent = PyString_FromString(self->m_thing->getType().c_str());
+        PyObject * ent = PyString_FromString(self->m_entity->getType().c_str());
         PyList_Append(list, ent);
         Py_DECREF(ent);
         return list;
     }
     // if (strcmp(name, "map") == 0) {
-        // MemMap * tMap = self->m_thing->getMap();
+        // MemMap * tMap = self->m_entity->getMap();
         // if (tMap == NULL) {
             // PyErr_SetString(PyExc_TypeError, "Body entity has no map");
             // return NULL;
@@ -93,42 +93,42 @@ static PyObject * Thing_getattr(ThingObject *self, char *name)
     // }
     if (strcmp(name, "location") == 0) {
         LocationObject * loc = newLocationObject(NULL);
-        loc->location = &self->m_thing->m_location;
+        loc->location = &self->m_entity->m_location;
         loc->own = 0;
         return (PyObject *)loc;
     }
     if (strcmp(name, "world") == 0) {
         WorldObject * world = newWorldObject(NULL);
-        world->world = self->m_thing->m_world;
+        world->world = self->m_entity->m_world;
         return (PyObject *)world;
     }
-    if (self->Thing_attr != NULL) {
-        PyObject *v = PyDict_GetItemString(self->Thing_attr, name);
+    if (self->Entity_attr != NULL) {
+        PyObject *v = PyDict_GetItemString(self->Entity_attr, name);
         if (v != NULL) {
             Py_INCREF(v);
             return v;
         }
     }
-    Entity * thing = self->m_thing;
+    Entity * entity = self->m_entity;
     Element attr;
-    if (!thing->get(name, attr)) {
-        return Py_FindMethod(Thing_methods, (PyObject *)self, name);
+    if (!entity->get(name, attr)) {
+        return Py_FindMethod(Entity_methods, (PyObject *)self, name);
     }
     PyObject * ret = Object_asPyObject(attr);
     if (ret == NULL) {
-        return Py_FindMethod(Thing_methods, (PyObject *)self, name);
+        return Py_FindMethod(Entity_methods, (PyObject *)self, name);
     }
     return ret;
 }
 
-static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
+static int Entity_setattr(EntityObject *self, char *name, PyObject *v)
 {
-    if (self->m_thing == NULL) {
+    if (self->m_entity == NULL) {
         return -1;
     }
-    if (self->Thing_attr == NULL) {
-        self->Thing_attr = PyDict_New();
-        if (self->Thing_attr == NULL) {
+    if (self->Entity_attr == NULL) {
+        self->Entity_attr = PyDict_New();
+        if (self->Entity_attr == NULL) {
             return -1;
         }
     }
@@ -136,9 +136,9 @@ static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
         // This needs to be here until we can sort the difference
         // between floats and ints in python.
         if (PyInt_Check(v)) {
-            self->m_thing->setStatus((double)PyInt_AsLong(v));
+            self->m_entity->setStatus((double)PyInt_AsLong(v));
         } else if (PyFloat_Check(v)) {
-            self->m_thing->setStatus(PyFloat_AsDouble(v));
+            self->m_entity->setStatus(PyFloat_AsDouble(v));
         } else {
             PyErr_SetString(PyExc_TypeError, "status must be numeric type");
             return -1;
@@ -148,42 +148,42 @@ static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
     if (strcmp(name, "map") == 0) {
         return -1;
     }
-    Entity * thing = self->m_thing;
+    Entity * entity = self->m_entity;
     //std::string attr(name);
     //if (v == NULL) {
-        //thing->attributes.erase(attr);
+        //entity->attributes.erase(attr);
         //return 0;
     //}
     Element obj = PyObject_asObject(v);
     if (!obj.IsNone() && !obj.IsMap() && !obj.IsList()) {
-        thing->set(name, obj);
+        entity->set(name, obj);
         return 0;
     }
     // If we get here, then the attribute is not Atlas compatable, so we
     // need to store it in a python dictionary
-    return PyDict_SetItemString(self->Thing_attr, name, v);
+    return PyDict_SetItemString(self->Entity_attr, name, v);
 }
 
-static int Thing_compare(ThingObject *self, ThingObject *other)
+static int Entity_compare(EntityObject *self, EntityObject *other)
 {
-    if ((self->m_thing == NULL) || (other->m_thing == NULL)) {
+    if ((self->m_entity == NULL) || (other->m_entity == NULL)) {
         return -1;
     }
-    return (self->m_thing == other->m_thing) ? 0 : 1;
+    return (self->m_entity == other->m_entity) ? 0 : 1;
 }
 
-PyTypeObject Thing_Type = {
+PyTypeObject Entity_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,				/*ob_size*/
-	"cppThing",			/*tp_name*/
-	sizeof(ThingObject),		/*tp_basicsize*/
+	"cppEntity",			/*tp_name*/
+	sizeof(EntityObject),		/*tp_basicsize*/
 	0,				/*tp_itemsize*/
 	/* methods */
-	(destructor)Thing_dealloc,	/*tp_dealloc*/
+	(destructor)Entity_dealloc,	/*tp_dealloc*/
 	0,				/*tp_print*/
-	(getattrfunc)Thing_getattr,	/*tp_getattr*/
-	(setattrfunc)Thing_setattr,	/*tp_setattr*/
-	(cmpfunc)Thing_compare,		/*tp_compare*/
+	(getattrfunc)Entity_getattr,	/*tp_getattr*/
+	(setattrfunc)Entity_setattr,	/*tp_setattr*/
+	(cmpfunc)Entity_compare,		/*tp_compare*/
 	0,				/*tp_repr*/
 	0,				/*tp_as_number*/
 	0,				/*tp_as_sequence*/
@@ -191,13 +191,13 @@ PyTypeObject Thing_Type = {
 	0,				/*tp_hash*/
 };
 
-ThingObject * newThingObject(PyObject *arg)
+EntityObject * newEntityObject(PyObject *arg)
 {
-	ThingObject * self;
-	self = PyObject_NEW(ThingObject, &Thing_Type);
+	EntityObject * self;
+	self = PyObject_NEW(EntityObject, &Entity_Type);
 	if (self == NULL) {
 		return NULL;
 	}
-	self->Thing_attr = NULL;
+	self->Entity_attr = NULL;
 	return self;
 }

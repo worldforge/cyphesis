@@ -11,7 +11,9 @@
 // will be common to all plants, and most derived classes will probably
 // be in python.
 
-class Plant : public Thing {
+typedef Thing Plant_parent;
+
+class Plant : public Plant_parent {
   protected:
     int m_fruits; // Number of fruits on the plant
     int m_radius; // Proportion of height as radius
@@ -31,6 +33,7 @@ class Plant : public Thing {
 
     virtual bool get(const std::string &, Atlas::Message::Object &) const;
     virtual void set(const std::string &, const Atlas::Message::Object &);
+    virtual void addToObject(Atlas::Message::Object::MapType & obj) const;
 
     virtual OpVector TickOperation(const Tick & op);
 };

@@ -9,12 +9,12 @@
 
 class Entity;
 
-class PythonThingScript : public PythonScript {
+class PythonEntityScript : public PythonScript {
   private:
-    Entity & thing;
+    Entity & m_entity;
   public:
-    PythonThingScript(PyObject *, Entity &);
-    virtual ~PythonThingScript();
+    PythonEntityScript(PyObject *, Entity &);
+    virtual ~PythonEntityScript();
     virtual bool Operation(const std::string &,
                            const Atlas::Objects::Operation::RootOperation &,
                            OpVector &,

@@ -24,7 +24,7 @@ inline Entity * MemMap::addObject(Entity * object)
 {
     debug(std::cout << "MemMap::addObject " << object << " " << object->getId()
                     << std::endl << std::flush;);
-    m_things[object->getId()] = object;
+    m_entities[object->getId()] = object;
 
     debug( std::cout << this << std::endl << std::flush;);
     std::vector<std::string>::const_iterator I;
@@ -61,10 +61,10 @@ inline Entity * MemMap::addId(const std::string & id)
 
 inline void MemMap::del(const std::string & id)
 {
-    EntityDict::iterator I = m_things.find(id);
-    if (I != m_things.end()) {
+    EntityDict::iterator I = m_entities.find(id);
+    if (I != m_entities.end()) {
         Entity * obj = I->second;
-        m_things.erase(I);
+        m_entities.erase(I);
         std::vector<std::string>::const_iterator J;
         for(J = m_deleteHooks.begin(); J != m_deleteHooks.end(); J++) {
             m_script->hook(*J, obj);
@@ -77,8 +77,8 @@ inline Entity * MemMap::get(const std::string & id)
 {
     debug( std::cout << "MemMap::get" << std::endl << std::flush;);
     if (id.empty()) { return NULL; }
-    EntityDict::const_iterator I = m_things.find(id);
-    if (I != m_things.end()) {
+    EntityDict::const_iterator I = m_entities.find(id);
+    if (I != m_entities.end()) {
         return I->second;
     }
     return NULL;
@@ -88,8 +88,8 @@ inline Entity * MemMap::getAdd(const std::string & id)
 {
     debug( std::cout << "MemMap::getAdd" << std::endl << std::flush;);
     if (id.empty()) { return NULL; }
-    EntityDict::const_iterator I = m_things.find(id);
-    if (I != m_things.end()) {
+    EntityDict::const_iterator I = m_entities.find(id);
+    if (I != m_entities.end()) {
         return I->second;
     }
     return addId(id);

@@ -1,3 +1,28 @@
+2003-05-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp, rulesets/Python_API.h,
+	  rulesets/Python_API.cpp, rulesets/PythonThingScript.h,
+	  rulesets/PythonThingScript.cpp, rulesets/PythonMindScript.cpp,
+	  rulesets/Py_World.cpp, rulesets/Py_Thing.h, rulesets/Py_Thing.cpp,
+	  rulesets/Py_Operation.cpp, rulesets/Py_Map.cpp,
+	  rulesets/Py_Location.cpp, rulesets/Movement.h, 
+	  rulesets/MemMap_methods.h, rulesets/MemMap.h, rulesets/MemMap.cpp,
+	  rulesets/Entity.cpp, rulesets/BaseMind.cpp, 
+	  client/Py_CreatorClient.cpp:
+	  Rename all references from thing to entity, as thing is
+	  no longer the base class for IG entities.
+
+	* rulesets/World.h, rulesets/World.cpp, rulesets/Thing.h,
+	  rulesets/Structure.h, rulesets/Stackable.h, rulesets/Stackable.cpp,
+	  rulesets/Plant.h, rulesets/Plant.cpp, rulesets/Missile.h,
+	  rulesets/Line.h, rulesets/Line.cpp, rulesets/Food.h,
+	  rulesets/Food.cpp, rulesets/Creator.h, rulesets/Character.h,
+	  rulesets/Character.cpp, rulesets/Area.h, rulesets/Area.cpp:
+	  Add a typedef for the parent class of all entity classes.
+
+	* rulesets/Plant.h, rulesets/Plant.cpp:
+	  Add in code to fully integrate hardcoded attributes.
+
 2003-05-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* Clean up member variable names.

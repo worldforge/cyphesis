@@ -19,7 +19,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Movement {
   protected:
-    Thing & m_body;
+    Entity & m_body;
     double m_lastMovementTime;
     Vector3D m_targetPos;
     Vector3D m_updatedPos;

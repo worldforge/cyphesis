@@ -67,7 +67,7 @@ OpVector Character::metabolise(double ammount)
     return OpVector(1,s);
 }
 
-Character::Character(const std::string & id) : Thing(id),
+Character::Character(const std::string & id) : Character_parent(id),
                                               m_movement(*new Pedestrian(*this)),
                                               m_drunkness(0.0), m_sex("female"),
                                               m_food(0), m_maxMass(100),
@@ -131,7 +131,7 @@ bool Character::get(const std::string & aname, Element & attr) const
         attr = m_sex;
         return true;
     }
-    return Thing::get(aname, attr);
+    return Character_parent::get(aname, attr);
 }
 
 void Character::set(const std::string & aname, const Element & attr)
@@ -143,14 +143,14 @@ void Character::set(const std::string & aname, const Element & attr)
         m_sex = attr.AsString();
         m_update_flags |= a_sex;
     } else {
-        Thing::set(aname, attr);
+        Character_parent::set(aname, attr);
     }
 }
 
 void Character::addToObject(Element::MapType & omap) const
 {
     omap["sex"] = m_sex;
-    Entity::addToObject(omap);
+    Character_parent::addToObject(omap);
 }
 
 OpVector Character::ImaginaryOperation(const Imaginary & op)

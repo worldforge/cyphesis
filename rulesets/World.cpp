@@ -57,7 +57,7 @@ void World::setTerrain(const Element::MapType & t)
     }
 }
 
-World::World(const std::string & id) : Thing(id), m_terrain(*new Mercator::Terrain())
+World::World(const std::string & id) : World_parent(id), m_terrain(*new Mercator::Terrain())
 {
     subscribe("set", OP_SET);
 
@@ -79,7 +79,7 @@ bool World::get(const std::string & aname, Element & attr) const
         getTerrain(attr.AsMap());
         return true;
     }
-    return Entity::get(aname, attr);
+    return World_parent::get(aname, attr);
 }
 
 void World::set(const std::string & aname, const Element & attr)
@@ -87,14 +87,14 @@ void World::set(const std::string & aname, const Element & attr)
     if ((aname == "terrain") && attr.IsMap()) {
         setTerrain(attr.AsMap());
     } else {
-        Entity::set(aname, attr);
+        World_parent::set(aname, attr);
     }
 }
 
 void World::addToObject(Element::MapType & omap) const
 {
     getTerrain((omap["terrain"] = Element::MapType()).AsMap());
-    Entity::addToObject(omap);
+    World_parent::addToObject(omap);
 }
 
 OpVector World::LookOperation(const Look & op)
@@ -109,12 +109,12 @@ OpVector World::LookOperation(const Look & op)
     if (J == eobjects.end()) {
         debug(std::cout << "FATAL: Op has invalid from" << std::endl
                         << std::flush;);
-        return Entity::LookOperation(op);
+        return World_parent::LookOperation(op);
     }
     if (!consts::enable_ranges) {
         debug(std::cout << "WARNING: Sight ranges disabled." << std::endl
                         << std::flush;);
-        return Entity::LookOperation(op);
+        return World_parent::LookOperation(op);
     }
 
     Sight * s = new Sight(Sight::Instantiate());

@@ -14,7 +14,7 @@
 
 static const bool debug_flag = false;
 
-Creator::Creator(const std::string & id) : Character(id)
+Creator::Creator(const std::string & id) : Creator_parent(id)
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
     if (consts::enable_omnipresence) {
@@ -67,7 +67,7 @@ OpVector Creator::externalOperation(const RootOperation & op)
                      << std::flush;);
     if (op.GetTo().empty()) {
         debug( std::cout << "Creator handling op normally" << std::endl << std::flush;);
-        Character::externalOperation(op);
+        Creator_parent::externalOperation(op);
     } else if (op.GetTo()==getId()) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         OpVector lres = callOperation(op);

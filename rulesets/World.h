@@ -15,7 +15,9 @@ namespace Mercator {
 // because I was not happy with the way the old object model used an
 // out of game object (WorldRouter) to represent the world.
 
-class World : public Thing {
+typedef Thing World_parent;
+
+class World : public World_parent {
   protected:
     Mercator::Terrain & m_terrain;
 

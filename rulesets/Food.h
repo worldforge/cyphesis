@@ -11,8 +11,9 @@
 // will be common to all food, and most derived classes will probably
 // be in python.
 
+typedef Thing Food_parent;
 
-class Food : public Thing {
+class Food : public Food_parent {
   public:
 
     explicit Food(const std::string & id);

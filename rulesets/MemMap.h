@@ -27,7 +27,7 @@ class MemMap {
   private:
     friend class BaseMind;
 
-    EntityDict m_things;
+    EntityDict m_entities;
     std::list<std::string> m_additionsById;
     std::vector<std::string> m_addHooks;
     std::vector<std::string> m_updateHooks;
@@ -41,7 +41,7 @@ class MemMap {
     explicit MemMap(Script *& s) : m_script(s)  { }
 
     bool find(const std::string & id) {
-        return (m_things.find(id) != m_things.end());
+        return (m_entities.find(id) != m_entities.end());
     }
 
     inline Atlas::Objects::Operation::RootOperation * lookId();

@@ -11,7 +11,9 @@
 // Essentially represents an object with a complex shape which the character
 // can enter.
 
-class Structure : public Thing {
+typedef Thing Structure_parent;
+
+class Structure : public Structure_parent {
   public:
     explicit Structure(const std::string & id) : Thing(id) {
         m_location.m_solid = false;

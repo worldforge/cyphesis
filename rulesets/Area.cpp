@@ -6,7 +6,7 @@
 
 #include "common/type_utils.h"
 
-Area::Area(const std::string & id) : Thing(id)
+Area::Area(const std::string & id) : Area_parent(id)
 {
     // Default to a 0.1m cube
     m_location.m_bBox = BBox(Vector3D(0.1, 0.1, 0.1));
@@ -23,7 +23,7 @@ bool Area::get(const std::string & aname, Element & attr) const
         idListAsObject(m_segments, attr.AsList());
         return true;
     }
-    return Thing::get(aname, attr);
+    return Area_parent::get(aname, attr);
 }
 
 void Area::set(const std::string & aname, const Element & attr)
@@ -32,7 +32,7 @@ void Area::set(const std::string & aname, const Element & attr)
         idListFromAtlas(attr.AsList(), m_segments);
         m_update_flags |= a_area;
     } else {
-        Thing::set(aname, attr);
+        Area_parent::set(aname, attr);
     }
 }
 
@@ -41,4 +41,5 @@ void Area::addToObject(Element::MapType & omap) const
     Element::ListType & si =
         (omap["segments"] = Element::ListType()).AsList();
     idListAsObject(m_segments, si);
+    Area_parent::addToObject(omap);
 }

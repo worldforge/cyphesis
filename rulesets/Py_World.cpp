@@ -6,7 +6,7 @@
 #include "Py_WorldTime.h"
 #include "Py_Thing.h"
 
-#include "Thing.h"
+#include "Entity.h"
 
 #include "modules/WorldTime.h"
 
@@ -45,8 +45,8 @@ static PyObject * World_get_object(WorldObject *self, PyObject *args, PyObject *
         Py_INCREF(Py_None);
         return Py_None;
     }
-    ThingObject * o = newThingObject(NULL);
-    o->m_thing = ent;
+    EntityObject * o = newEntityObject(NULL);
+    o->m_entity = ent;
     return (PyObject *)o;
 }
 

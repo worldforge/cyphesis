@@ -13,7 +13,9 @@
 // inherit. It can be used itself to represent any in-game object for which
 // any special behavior can be described by a script.
 
-class Thing : public Entity {
+typedef Entity Thing_parent;
+
+class Thing : public Thing_parent {
   public:
 
     explicit Thing(const std::string & id);

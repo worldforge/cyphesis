@@ -77,7 +77,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
         if ((factory->m_language == "python") && (!factory->m_script.empty())) {
             debug(std::cout << "Class " << type << " has a python class"
                             << std::endl << std::flush;);
-            Create_PyThing(thing, factory->m_script, type);
+            Create_PyEntity(thing, factory->m_script, type);
         }
     } else {
         // This should be tolerated less

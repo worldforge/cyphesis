@@ -10,7 +10,9 @@
 class Movement;
 class BaseMind;
 
-class Character : public Thing {
+typedef Thing Character_parent;
+
+class Character : public Character_parent {
   protected:
     Movement & m_movement;
     double m_drunkness;

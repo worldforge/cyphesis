@@ -12,7 +12,9 @@
 // does not have any added attributes or functionality over
 // thing
 
-class Area : public Thing {
+typedef Thing Area_parent;
+
+class Area : public Area_parent {
   protected:
     IdList m_segments;
 

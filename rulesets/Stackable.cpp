@@ -13,7 +13,8 @@
 #include <Atlas/Objects/Operation/Divide.h>
 #include <Atlas/Objects/Operation/Delete.h>
 
-Stackable::Stackable(const std::string & id) : Thing(id), m_num(1)
+Stackable::Stackable(const std::string & id) : Stackable_parent(id),
+                                               m_num(1)
 {
     subscribe("combine", OP_COMBINE);
     subscribe("divide", OP_DIVIDE);
@@ -29,7 +30,7 @@ bool Stackable::get(const std::string & aname, Element & attr) const
         attr = m_num;
         return true;
     }
-    return Thing::get(aname, attr);
+    return Stackable_parent::get(aname, attr);
 }
 
 void Stackable::set(const std::string & aname, const Element & attr)
@@ -37,7 +38,7 @@ void Stackable::set(const std::string & aname, const Element & attr)
     if ((aname == "num") && attr.IsInt()) {
         m_num = attr.AsInt();
     } else {
-        Thing::set(aname, attr);
+        Stackable_parent::set(aname, attr);
     }
 }
 
@@ -46,7 +47,7 @@ void Stackable::addToObject(Element::MapType & omap) const
     if (m_num != 1) {
         omap["num"] = m_num;
     }
-    Entity::addToObject(omap);
+    Stackable_parent::addToObject(omap);
 }
 
 OpVector Stackable::CombineOperation(const Combine & op)

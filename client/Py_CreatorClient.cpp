@@ -72,8 +72,8 @@ static PyObject * CreatorClient_make(CreatorClientObject * self, PyObject * args
         PyErr_SetString(PyExc_TypeError, "Entity creation failed");
         return NULL;
     }
-    ThingObject * ret = newThingObject(NULL);
-    ret->m_thing = retval;
+    EntityObject * ret = newEntityObject(NULL);
+    ret->m_entity = retval;
     return (PyObject *)ret;
 }
 
@@ -112,8 +112,8 @@ static PyObject * CreatorClient_look(CreatorClientObject * self, PyObject * args
         PyErr_SetString(PyExc_TypeError, "Entity look failed");
         return NULL;
     }
-    ThingObject * ret = newThingObject(NULL);
-    ret->m_thing = retval;
+    EntityObject * ret = newEntityObject(NULL);
+    ret->m_entity = retval;
     return (PyObject *)ret;
 }
 static PyObject * CreatorClient_look_for(CreatorClientObject * self,
@@ -136,8 +136,8 @@ static PyObject * CreatorClient_look_for(CreatorClientObject * self,
         PyErr_SetString(PyExc_TypeError, "Entity look_for failed");
         return NULL;
     }
-    ThingObject * ret = newThingObject(NULL);
-    ret->m_thing = retval;
+    EntityObject * ret = newEntityObject(NULL);
+    ret->m_entity = retval;
     return (PyObject *)ret;
 }
 

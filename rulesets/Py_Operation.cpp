@@ -575,11 +575,11 @@ static PyObject * getattr(T * self, char * name)
     }
     if (strcmp(name, "from_") == 0) {
         if (self->from != NULL) {
-            ThingObject * thing_obj = newThingObject(NULL);
+            EntityObject * thing_obj = newEntityObject(NULL);
             if (thing_obj == NULL) {
                 return NULL;
             }
-            thing_obj->m_thing = self->from;
+            thing_obj->m_entity = self->from;
             return (PyObject *)thing_obj;
         } else {
             AtlasObject * obj = newAtlasObject(NULL);
@@ -590,11 +590,11 @@ static PyObject * getattr(T * self, char * name)
         }
     } else if (strcmp(name, "to") == 0) {
         if (self->to != NULL) {
-            ThingObject * thing_obj = newThingObject(NULL);
+            EntityObject * thing_obj = newEntityObject(NULL);
             if (thing_obj == NULL) {
                 return NULL;
             }
-            thing_obj->m_thing = self->to;
+            thing_obj->m_entity = self->to;
             return (PyObject *)thing_obj;
         } else {
             AtlasObject * obj = newAtlasObject(NULL);
@@ -642,9 +642,9 @@ static int Operation_setattr(OperationObject *self, char *name, PyObject *v)
             }
             return -1;
         }
-        if (((PyTypeObject*)PyObject_Type(v) == &Thing_Type) &&
-            (((ThingObject *)v)->m_thing != NULL)) {
-            self->from = ((ThingObject *)v)->m_thing;
+        if (((PyTypeObject*)PyObject_Type(v) == &Entity_Type) &&
+            (((EntityObject *)v)->m_entity != NULL)) {
+            self->from = ((EntityObject *)v)->m_entity;
         }
         self->operation->SetFrom(PyString_AsString(thing_id));
         Py_DECREF(thing_id);
@@ -659,9 +659,9 @@ static int Operation_setattr(OperationObject *self, char *name, PyObject *v)
             }
             return -1;
         }
-        if (((PyTypeObject*)PyObject_Type(v) == &Thing_Type) &&
-            (((ThingObject *)v)->m_thing != NULL)) {
-            self->to = ((ThingObject *)v)->m_thing;
+        if (((PyTypeObject*)PyObject_Type(v) == &Entity_Type) &&
+            (((EntityObject *)v)->m_entity != NULL)) {
+            self->to = ((EntityObject *)v)->m_entity;
         }
         self->operation->SetTo(PyString_AsString(thing_id));
         Py_DECREF(thing_id);

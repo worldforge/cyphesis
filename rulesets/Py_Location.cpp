@@ -8,7 +8,7 @@
 #include "Py_Quaternion.h"
 #include "Py_BBox.h"
 
-#include "Thing.h"
+#include "Entity.h"
 
 static PyObject * Location_copy(LocationObject *self, PyObject *args)
 {
@@ -50,8 +50,8 @@ static PyObject * Location_getattr(LocationObject *self, char *name)
             Py_INCREF(Py_None);
             return Py_None;
         }
-        ThingObject * thing = newThingObject(NULL);
-        thing->m_thing = self->location->m_loc;
+        EntityObject * thing = newEntityObject(NULL);
+        thing->m_entity = self->location->m_loc;
         return (PyObject *)thing;
     }
     if (strcmp(name, "coordinates") == 0) {
@@ -84,16 +84,16 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
         return -1;
     }
     if (strcmp(name, "parent") == 0) {
-        if (!PyThing_Check(v)) {
+        if (!PyEntity_Check(v)) {
             PyErr_SetString(PyExc_TypeError, "parent must be a thing");
             return -1;
         }
-        ThingObject * thing = (ThingObject *)v;
-        if (thing->m_thing == NULL) {
+        EntityObject * thing = (EntityObject *)v;
+        if (thing->m_entity == NULL) {
             PyErr_SetString(PyExc_TypeError, "invalid thing");
             return -1;
         }
-        self->location->m_loc = thing->m_thing;
+        self->location->m_loc = thing->m_entity;
         return 0;
     }
     if ((strcmp(name, "bbox") == 0) && PyBBox_Check(v)) {

@@ -7,7 +7,9 @@
 
 #include "Character.h"
 
-class Creator : public Character {
+typedef Character Creator_parent;
+
+class Creator : public Creator_parent {
   public:
     explicit Creator(const std::string & id);
 

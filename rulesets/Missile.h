@@ -22,7 +22,9 @@
 
 class Movement;
 
-class Missile : public Thing {
+typedef Thing Missile_parent;
+
+class Missile : public Missile_parent {
   protected:
     
   public:

@@ -9,7 +9,7 @@
 
 static const bool debug_flag = true;
 
-Line::Line(const std::string & id) : Thing(id)
+Line::Line(const std::string & id) : Line_parent(id)
 {
     // Default to a 0.1m cube
     m_location.m_bBox = BBox(Vector3D(0.1, 0.1, 0.1));
@@ -34,7 +34,7 @@ bool Line::get(const std::string & aname, Element & attr) const
         coordListAsObject(coords, attr.AsList());
         return true;
     }
-    return Thing::get(aname, attr);
+    return Line_parent::get(aname, attr);
 }
 
 void Line::set(const std::string & aname, const Element & attr)
@@ -51,7 +51,7 @@ void Line::set(const std::string & aname, const Element & attr)
         coordListFromAtlas(attr.AsList(), coords);
         m_update_flags |= a_line;
     } else {
-        Thing::set(aname, attr);
+        Line_parent::set(aname, attr);
     }
 }
 
@@ -65,4 +65,5 @@ void Line::addToObject(Element::MapType & omap) const
     idListAsObject(endIntersections, ei);
     Element::ListType & c = (omap["coords"] = Element::ListType()).AsList();
     coordListAsObject(coords, c);
+    Line_parent::addToObject(omap);
 }

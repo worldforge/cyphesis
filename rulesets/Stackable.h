@@ -12,8 +12,9 @@
 // between individual items. A good example is coins which are unmanageable
 // if each one must be represented by an object.
 
+typedef Thing Stackable_parent;
 
-class Stackable : public Thing {
+class Stackable : public Stackable_parent {
   protected:
     int m_num; // Number of items
 

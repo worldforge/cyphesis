@@ -7,7 +7,7 @@
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
 
-#include "Thing.h"
+#include "Entity.h"
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
@@ -15,16 +15,16 @@
 
 static const bool debug_flag = false;
 
-PythonThingScript::PythonThingScript(PyObject * o, Entity & t) :
-    PythonScript(o, t), thing(t)
+PythonEntityScript::PythonEntityScript(PyObject * o, Entity & t) :
+    PythonScript(o, t), m_entity(t)
 {
 }
 
-PythonThingScript::~PythonThingScript()
+PythonEntityScript::~PythonEntityScript()
 {
 }
 
-bool PythonThingScript::Operation(const std::string & op_type,
+bool PythonEntityScript::Operation(const std::string & op_type,
                                   const RootOperation & op,
                                   OpVector & ret_list, RootOperation * sub_op)
 {
@@ -44,8 +44,8 @@ bool PythonThingScript::Operation(const std::string & op_type,
     ConstOperationObject * py_op = newAtlasConstRootOperation(NULL);
     py_op->operation = &op;
     py_op->own = 0;
-    py_op->from = thing.m_world->getObject(op.GetFrom());
-    py_op->to = thing.m_world->getObject(op.GetTo());
+    py_op->from = m_entity.m_world->getObject(op.GetFrom());
+    py_op->to = m_entity.m_world->getObject(op.GetTo());
     PyObject * ret;
     ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(O)", py_op);
@@ -89,6 +89,6 @@ bool PythonThingScript::Operation(const std::string & op_type,
     return false;
 }
 
-void PythonThingScript::hook(const std::string &, Entity *)
+void PythonEntityScript::hook(const std::string &, Entity *)
 {
 }

@@ -56,7 +56,7 @@ BaseMind::BaseMind(const std::string & id, const std::string & body_name)
 
 BaseMind::~BaseMind()
 {
-    m_map.m_things.erase(getId());
+    m_map.m_entities.erase(getId());
     m_map.flushMap();
 }
 

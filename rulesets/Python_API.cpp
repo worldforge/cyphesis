@@ -20,7 +20,7 @@
 #include "PythonThingScript.h"
 #include "PythonMindScript.h"
 #include "World.h"
-#include "Thing.h"
+#include "Entity.h"
 #include "BaseMind.h"
 
 #include "common/globals.h"
@@ -88,7 +88,7 @@ PyTypeObject log_debug_type = {
 static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObject * kwds)
 {
     PyObject * dict;
-    ThingObject * item;
+    EntityObject * item;
     long remove_empty_key = 1;
     if (!PyArg_ParseTuple(args, "OO|i", &dict, &item, &remove_empty_key)) {
         return NULL;
@@ -111,8 +111,8 @@ static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObje
         PyObject * key = PyList_GetItem(keys, i);
         int j, lsize = PyList_Size(value);
         for(j = 0; j < lsize; j++) {
-            ThingObject * entry = (ThingObject*)PyList_GetItem(value, j);
-            if (entry->m_thing == item->m_thing) {
+            EntityObject * entry = (EntityObject*)PyList_GetItem(value, j);
+            if (entry->m_entity == item->m_entity) {
                 flag = 1;
                 PyList_SetSlice(value, j, j+1, NULL);
                 j--; lsize--;
@@ -149,7 +149,7 @@ PyTypeObject dictlist_remove_value_type = {
 static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject * kwds)
 {
     PyObject * dict;
-    ThingObject * item;
+    EntityObject * item;
     char * key;
     if (!PyArg_ParseTuple(args, "OsO", &dict, &key, &item)) {
         return NULL;
@@ -166,8 +166,8 @@ static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject 
         }
         int i, size = PyList_Size(list);
         for(i = 0; i < size; i++) {
-            ThingObject * entry = (ThingObject*)PyList_GetItem(list,i);
-            if (entry->m_thing == item->m_thing) {
+            EntityObject * entry = (EntityObject*)PyList_GetItem(list,i);
+            if (entry->m_entity == item->m_entity) {
                 goto present;
             }
         }
@@ -235,9 +235,9 @@ static PyObject * Get_PyClass(const std::string & package,
     return my_class;
 }
 
-static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyClass)
+static PyObject * Create_PyScript(PyObject * pyEntity, PyObject * pyClass)
 {
-    PyObject * pyob = PyEval_CallFunction(pyClass,"(O)", pyThing);
+    PyObject * pyob = PyEval_CallFunction(pyClass,"(O)", pyEntity);
     
     if (pyob == NULL) {
         if (PyErr_Occurred() == NULL) {
@@ -248,12 +248,13 @@ static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyClass)
         }
     }
     Py_DECREF(pyClass);
-    Py_DECREF(pyThing);
+    Py_DECREF(pyEntity);
     return pyob;
 }
 
 template<class T>
-void Subscribe_Script(T * thing, PyObject * pyclass, const std::string& package)
+void Subscribe_Script(T * entity, PyObject * pyclass,
+                      const std::string& package)
 {
     PyObject * dmap = PyObject_GetAttrString(pyclass, "__dict__");
     if (dmap == NULL) {
@@ -285,22 +286,22 @@ void Subscribe_Script(T * thing, PyObject * pyclass, const std::string& package)
             debug(std::cout << method << " is a method, it contains _op.. at "
                             << l << " so we can register for "
                             << method.substr(0,l) << std::endl << std::flush;);
-            thing->scriptSubscribe(op_name);
+            entity->scriptSubscribe(op_name);
         }
     }
 }
 
-void Create_PyThing(Entity * thing, const std::string & package,
+void Create_PyEntity(Entity * entity, const std::string & package,
                                     const std::string & _type)
 {
     PyObject * c = Get_PyClass(package, _type);
     if (c == NULL) { return; }
-    ThingObject * pyThing = newThingObject(NULL);
-    pyThing->m_thing = thing;
-    Subscribe_Script(thing, c, package);
-    PyObject * o = Create_PyScript((PyObject *)pyThing, c);
+    EntityObject * pyEntity = newEntityObject(NULL);
+    pyEntity->m_entity = entity;
+    Subscribe_Script(entity, c, package);
+    PyObject * o = Create_PyScript((PyObject *)pyEntity, c);
     if (o != NULL) {
-        thing->setScript(new PythonThingScript(o, *thing));
+        entity->setScript(new PythonEntityScript(o, *entity));
     }
 }
 
@@ -340,12 +341,12 @@ static PyObject * location_new(PyObject * self, PyObject * args)
     PyObject * refO, * coordsO = NULL;
     bool decrefO = false;
     if (PyArg_ParseTuple(args, "O|O", &refO, &coordsO)) {
-        if ((!PyThing_Check(refO)) && (!PyWorld_Check(refO)) && (!PyMind_Check(refO))) {
+        if ((!PyEntity_Check(refO)) && (!PyWorld_Check(refO)) && (!PyMind_Check(refO))) {
             if (PyObject_HasAttrString(refO, "cppthing")) {
                 refO = PyObject_GetAttrString(refO, "cppthing");
                 decrefO = true;
             }
-            if (!PyThing_Check(refO) && !PyMind_Check(refO)) {
+            if (!PyEntity_Check(refO) && !PyMind_Check(refO)) {
                 PyErr_SetString(PyExc_TypeError, "Arg ref required");
                 if (decrefO) { Py_DECREF(refO); }
                 return NULL;
@@ -375,13 +376,13 @@ static PyObject * location_new(PyObject * self, PyObject * args)
             }
             ref_ent = ref->m_mind;
         } else {
-            ThingObject * ref = (ThingObject*)refO;
-            if (ref->m_thing == NULL) {
+            EntityObject * ref = (EntityObject*)refO;
+            if (ref->m_entity == NULL) {
                 PyErr_SetString(PyExc_TypeError, "Parent thing is invalid");
                 if (decrefO) { Py_DECREF(refO); }
                 return NULL;
             }
-            ref_ent = ref->m_thing;
+            ref_ent = ref->m_entity;
         }
         if (decrefO) { Py_DECREF(refO); }
         Vector3DObject * coords = (Vector3DObject*)coordsO;
@@ -657,16 +658,16 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
 
 static PyObject * cppthing_new(PyObject * self, PyObject * args)
 {
-	ThingObject *o;
-	
-	if (!PyArg_ParseTuple(args, "")) {
-		return NULL;
-	}
-	o = newThingObject(args);
-	if ( o == NULL ) {
-		return NULL;
-	}
-	return (PyObject *)o;
+        EntityObject *o;
+
+        if (!PyArg_ParseTuple(args, "")) {
+                return NULL;
+        }
+        o = newEntityObject(args);
+        if ( o == NULL ) {
+                return NULL;
+        }
+        return (PyObject *)o;
 }
 
 static inline void addToArgs(Element::ListType & args, PyObject * ent)
@@ -887,7 +888,7 @@ static PyMethodDef atlas_methods[] = {
     {"Object",     object_new,			METH_VARARGS},
     {"Entity",     (PyCFunction)entity_new,	METH_VARARGS|METH_KEYWORDS},
     {"Message",    oplist_new,			METH_VARARGS},
-    {"cppThing",   cppthing_new,		METH_VARARGS},
+    {"cppEntity",   cppthing_new,		METH_VARARGS},
     {NULL,		NULL}				/* Sentinel */
 };
 
@@ -1020,7 +1021,7 @@ void init_python_api()
 
     PyObject * server;
     if ((server = Py_InitModule("server", server_methods)) == NULL) {
-        fprintf(stderr, "Failed to Create server thing\n");
+        fprintf(stderr, "Failed to Create server module\n");
         return;
     }
     dict = PyModule_GetDict(server);
