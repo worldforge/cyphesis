@@ -1,3 +1,14 @@
+2004-11-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Clarify error message on tool use.
+
+	* rulesets/Thing.cpp: Allow setting of mode attribute from args
+	  of move op for efficiency.
+
+	* server/Player.cpp, server/Admin.cpp, server/Player.cpp:
+	  Add TO to all accounts at the account level, so the client
+	  can tell they are for the account.
+
 2004-11-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Try and improve some more configure errors.

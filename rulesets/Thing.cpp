@@ -260,6 +260,14 @@ void Thing::MoveOperation(const Move & op, OpVector & res)
         m_location.m_orientation.fromAtlas(I->second.asList());
         m_update_flags |= a_orient;
     }
+    // Move ops often include a mode change, so we handle it here, even
+    // though it is not a special attribute for efficiency. Otherwise
+    // an additional Set op would be required.
+    I = ent.find("mode");
+    if (I != Iend) {
+        // Update the mode
+        set(I->first, I->second);
+    }
 
     Move m(op);
     m_location.addToMessage(m.getArgs().front().asMap());

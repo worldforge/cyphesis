@@ -184,7 +184,7 @@ void Account::CreateOperation(const Create & op, OpVector & res)
     if ((I == entmap.end()) || !(I->second.isList()) ||
         (I->second.asList().empty()) ||
         !(I->second.asList().front().isString()) ) {
-        error(op, "Character has no type", res);
+        error(op, "Character has no type", res, getId());
         return;
     }
     
@@ -195,7 +195,7 @@ void Account::CreateOperation(const Create & op, OpVector & res)
     BaseEntity * obj = addNewCharacter(typestr, entmap);
 
     if (obj == 0) {
-        error(op, "Character creation failed", res);
+        error(op, "Character creation failed", res, getId());
         return;
     }
 
@@ -221,14 +221,14 @@ void Account::SetOperation(const Set & op, OpVector & res)
 
     MapType::const_iterator I = entmap.find("id");
     if (I == entmap.end() || !(I->second.isString())) {
-        error(op, "Set character has no ID", res);
+        error(op, "Set character has no ID", res, getId());
         return;
     }
 
     const std::string & id = I->second.asString();
     EntityDict::const_iterator J = m_charactersDict.find(id);
     if (J == m_charactersDict.end()) {
-        return error(op, "Set character for unknown character", res);
+        return error(op, "Set character for unknown character", res, getId());
     }
 
     Entity * e = J->second;
@@ -332,7 +332,7 @@ void Account::LookOperation(const Look & op, OpVector & res)
     }
     MapType::const_iterator I = args.front().asMap().find("id");
     if ((I == args.front().asMap().end()) || (!I->second.isString())) {
-        error(op, "No target for look", res);
+        error(op, "No target for look", res, getId());
         return;
     }
     const std::string & to = I->second.asString();
@@ -361,5 +361,5 @@ void Account::LookOperation(const Look & op, OpVector & res)
         res.push_back(s);
         return;
     }
-    error(op, "Unknown look target", res);
+    error(op, "Unknown look target", res, getId());
 }

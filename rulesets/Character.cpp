@@ -501,7 +501,7 @@ void Character::mindUseOperation(const Use & op, OpVector & res)
     }
 
     if (op_type.empty()) {
-        error(op, "Use unable to determine target", res, getId());
+        error(op, "Use unable to determine op type to for tool", res, getId());
         return;
     }
 

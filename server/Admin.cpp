@@ -61,12 +61,12 @@ int Admin::characterError(const Create & op,
 {
     MapType::const_iterator I = ent.find("parents");
     if ((I == ent.end()) || !I->second.isList()) {
-        error(op, "You cannot create a character with no type.", res);
+        error(op, "You cannot create a character with no type.", res, getId());
         return true;
     }
     const ListType & parents = I->second.asList();
     if (parents.empty() || !parents.front().isString()) {
-        error(op, "You cannot create a character with non-string type.", res);
+        error(op, "You cannot create a character with non-string type.", res, getId());
         return true;
     }
     return false;
@@ -81,11 +81,11 @@ void Admin::LogoutOperation(const Logout & op, OpVector & res)
     } else {
         MapType::const_iterator I = args.front().asMap().find("id");
         if ((I == args.front().asMap().end()) || (!I->second.isString())) {
-            error(op, "No account id given", res);
+            error(op, "No account id given", res, getId());
             return;
         }
         if (m_connection == NULL) {
-            error(op,"Disconnected admin account handling explicit logout",res);
+            error(op,"Disconnected admin account handling explicit logout",res, getId());
             return;
         }
         const std::string & account_id = I->second.asString();
@@ -94,7 +94,7 @@ void Admin::LogoutOperation(const Logout & op, OpVector & res)
         }
         BaseEntity * player = m_connection->m_server.getObject(account_id);
         if (!player) {
-            error(op, "Logout failed", res);
+            error(op, "Logout failed", res, getId());
             return;
         }
         player->operation(op, res);
@@ -105,29 +105,29 @@ void Admin::GetOperation(const Get & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty()) {
-        error(op, "Get has no args.", res);
+        error(op, "Get has no args.", res, getId());
         return;
     }
     const Element & ent = args.front();
     if (!ent.isMap()) {
-        error(op, "Get arg is not a map.", res);
+        error(op, "Get arg is not a map.", res, getId());
         return;
     }
     const MapType & emap = ent.asMap();
     MapType::const_iterator I = emap.find("objtype");
     if (I == emap.end() || !I->second.isString()) {
-        error(op, "Get arg has no objtype.", res);
+        error(op, "Get arg has no objtype.", res, getId());
         return;
     }
     const std::string & objtype = I->second.asString();
     I = emap.find("id");
     if (I == emap.end() || !I->second.isString()) {
-        error(op, "Get arg has no id.", res);
+        error(op, "Get arg has no id.", res, getId());
         return;
     }
     const std::string & id = I->second.asString();
     if (id.empty()) {
-        error(op, "query id invalid", res);
+        error(op, "query id invalid", res, getId());
         return;
     }
     Info * info = new Info;
@@ -148,7 +148,7 @@ void Admin::GetOperation(const Get & op, OpVector & res)
             std::string msg("Unknown object id \"");
             msg += id;
             msg += "\" requested";
-            error(op, msg.c_str(), res);
+            error(op, msg.c_str(), res, getId());
             return;
         }
     } else if ((objtype == "class") ||
@@ -160,7 +160,7 @@ void Admin::GetOperation(const Get & op, OpVector & res)
             std::string msg("Unknown type definition for \"");
             msg += id;
             msg += "\" requested";
-            error(op, msg.c_str(), res);
+            error(op, msg.c_str(), res, getId());
             return;
         }
         ListType & iargs = info->getArgs();
@@ -172,7 +172,7 @@ void Admin::GetOperation(const Get & op, OpVector & res)
         msg += "\" requested for \"";
         msg += id;
         msg += "\"";
-        error(op, msg.c_str(), res);
+        error(op, msg.c_str(), res, getId());
         return;
     }
     info->setRefno(op.getSerialno());
@@ -184,24 +184,24 @@ void Admin::SetOperation(const Set & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty()) {
-        error(op, "Set has no args.", res);
+        error(op, "Set has no args.", res, getId());
         return;
     }
     const Element & ent = args.front();
     if (!ent.isMap()) {
-        error(op, "Set arg is not a map.", res);
+        error(op, "Set arg is not a map.", res, getId());
         return;
     }
     const MapType & emap = ent.asMap();
     MapType::const_iterator I = emap.find("objtype");
     if (I == emap.end() || !I->second.isString()) {
-        error(op, "Set arg has no objtype.", res);
+        error(op, "Set arg has no objtype.", res, getId());
         return;
     }
     const std::string & objtype = I->second.asString();
     I = emap.find("id");
     if (I == emap.end() || !I->second.isString()) {
-        error(op, "Set arg has no id.", res);
+        error(op, "Set arg has no id.", res, getId());
         return;
     }
     const std::string & id = I->second.asString();
@@ -220,26 +220,26 @@ void Admin::SetOperation(const Set & op, OpVector & res)
         // code needs description in a strange format for now.
         I = emap.find("parents");
         if (I == emap.end()) {
-            error(op, "Attempt to install type with no parents", res);
+            error(op, "Attempt to install type with no parents", res, getId());
             return;
         }
         if (!I->second.isList()) {
-            error(op, "Attempt to install type with non-list parents", res);
+            error(op, "Attempt to install type with non-list parents", res, getId());
             return;
         }
         const ListType & parents = I->second.asList();
         if (parents.empty() || !parents.front().isString()) {
-            error(op, "Attempt to install type with invalid parent", res);
+            error(op, "Attempt to install type with invalid parent", res, getId());
             return;
         }
         const std::string & parent = parents.front().asString();
         if (parent.empty()) {
-            error(op, "Attempt to install type with parent=\"\"", res);
+            error(op, "Attempt to install type with parent=\"\"", res, getId());
             return;
         }
         Atlas::Objects::Root * o = Inheritance::instance().get(id);
         if (o != 0) {
-            error(op, "Attempt to install type that already exists", res);
+            error(op, "Attempt to install type that already exists", res, getId());
             return;
         }
         o = Inheritance::instance().get(parent);
@@ -247,7 +247,7 @@ void Admin::SetOperation(const Set & op, OpVector & res)
             std::string msg("Attempt to install type with non-existant parent \"");
             msg += parent;
             msg += "\"";
-            error(op, msg.c_str(), res);
+            error(op, msg.c_str(), res, getId());
             return;
         }
         FactoryBase * f = EntityFactory::instance()->getNewFactory(parent);
@@ -255,7 +255,7 @@ void Admin::SetOperation(const Set & op, OpVector & res)
             std::string msg("Attempt to find factory for parent \"");
             msg += parent;
             msg += "\" failed.";
-            error(op, msg.c_str(), res);
+            error(op, msg.c_str(), res, getId());
             return;
         }
         debug(std::cout << "Install type \"" << id << "\" with parent \""
@@ -264,7 +264,7 @@ void Admin::SetOperation(const Set & op, OpVector & res)
     } else if (objtype == "op_definition") {
         // Install a new op type? Perhaps again this should be a create.
     } else {
-        error(op, "Unknow object type set", res);
+        error(op, "Unknow object type set", res, getId());
         return;
     }
 }
@@ -281,7 +281,7 @@ void Admin::CreateOperation(const Create & op, OpVector & res)
     if ((I == entmap.end()) || !(I->second.isList()) ||
         (I->second.asList().empty()) ||
         !(I->second.asList().front().isString()) ) {
-        error(op, "Character has no type", res);
+        error(op, "Character has no type", res, getId());
         return;
     }
 

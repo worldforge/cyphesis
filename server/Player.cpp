@@ -39,35 +39,35 @@ int Player::characterError(const Create & op,
 {
     MapType::const_iterator I = ent.find("name");
     if ((I == ent.end()) || !I->second.isString()) {
-        error(op, "Entity to be created has no name", res);
+        error(op, "Entity to be created has no name", res, getId());
         return true;
     }
 
 #if defined(__GNUC__) && __GNUC__ < 3
     if (!I->second.asString().substr(0,5).compare("admin")) {
-        error(op, "Entity to be created cannot start with admin", res);
+        error(op, "Entity to be created cannot start with admin", res, getId());
         return true;
     }
 #else
     if (!I->second.asString().compare(0,5,"admin")) {
-        error(op, "Entity to be created cannot start with admin", res);
+        error(op, "Entity to be created cannot start with admin", res, getId());
         return true;
     }
 #endif
 
     I = ent.find("parents");
     if ((I == ent.end()) || !I->second.isList()) {
-        error(op, "You cannot create a character with no type.", res);
+        error(op, "You cannot create a character with no type.", res, getId());
         return true;
     }
     const ListType & parents = I->second.asList();
     if (parents.empty() || !parents.front().isString()) {
-        error(op, "You cannot create a character with non-string type.", res);
+        error(op, "You cannot create a character with non-string type.", res, getId());
         return true;
     }
     const std::string& type = parents.front().asString(); 
     if (Player::playableTypes.find(type) == Player::playableTypes.end()) {
-        error(op, "You cannot create a character of this type.", res);
+        error(op, "You cannot create a character of this type.", res, getId());
         return true;
     }
     return false;
