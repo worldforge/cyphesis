@@ -1,3 +1,6 @@
+Sort persisting world so things like its orientation are initialised correctly.
+Either valid or invalid.
+
 CreateOperation and DeleteOperation behavoir probably should be moved from Thing to
 entity as they should work on entities.
 
