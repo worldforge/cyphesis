@@ -517,7 +517,7 @@ OpVector Character::mindMoveOperation(const Move & op)
                          << std::endl << std::flush;);
         direction = Vector3D(new_coords) - current_location.m_pos;
     }
-    if (direction.isValid() && (direction.mag() > 0)) {
+    if (direction.isValid() && !(direction.mag() > 0)) {
         direction.setValid(false);
     }
     if (direction.isValid()) {

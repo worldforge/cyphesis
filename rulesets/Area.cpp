@@ -8,6 +8,8 @@
 
 Area::Area(const std::string & id) : Area_parent(id)
 {
+    std::cout << "Instanced Area" << std::endl << std::flush;
+
     // Default to a 0.1m cube
     m_location.m_bBox = BBox(WFMath::Point<3>(0.f, 0.f, 0.f),
                              WFMath::Point<3>(0.1f, 0.1f, 0.1f));

@@ -1,3 +1,10 @@
+2004-01-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Fix logic error in direction
+	  processing code.
+
+	* rulesets/Area.cpp: Add debugging code.
+
 2004-01-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/nls.h, server/server.cpp: Try out gettext based
