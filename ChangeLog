@@ -1,3 +1,30 @@
+2000-12-27  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Fixed inheritance bug in BaseMind::operation()
+
+	* Tweaked the way Look operations are handled when sent from mind, so
+	  an argument is not required if to is set.
+
+	* Made some performance enhancements.
+
+2000-12-26  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Implemented nourish operation.
+
+2000-12-25  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Modifed move_me() goal so it sets face direction.
+
+	* Fixed memory leak in MemMap.
+
+	* Implemented fully deleting of entities.
+
+2000-12-23  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Cleaned up and tweaked python scripts so eating acorns now works.
+
+	* Implemented hooks in MemMap for python scripts.
+
 2000-12-17  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Cleaned up auto-* stuff, and created spec file for RPMs.

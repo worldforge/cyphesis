@@ -16,8 +16,8 @@ Base class from which all fruit/seed entities are derived.
 """
 
 class Seed(Thing):
-    def __init__(self, **kw):
-        self.base_init(kw)
+    def __init__(self, cppthing, **kw):
+        self.base_init(cppthing, kw)
         set_kw(self,kw,"weight",0.005)
     def tick_operation(self, op): pass
 #        opTick=Operation("tick",to=self)

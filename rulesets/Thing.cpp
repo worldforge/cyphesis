@@ -201,9 +201,7 @@ oplist Thing::Operation(const Setup & op)
 oplist Thing::Operation(const Tick & op)
 {
     oplist res;
-    if (script_Operation("tick", op, res) != 0) {
-        return(res);
-    }
+    script_Operation("tick", op, res);
     return(res);
 }
 
@@ -418,6 +416,13 @@ oplist Thing::Operation(const Move & op)
     return(res);
 }
 
+oplist Thing::Operation(const Nourish & op)
+{
+    oplist res;
+    script_Operation("nourish", op, res);
+    return res;
+}
+
 oplist Thing::Operation(const Set & op)
 {
     oplist res;
@@ -434,7 +439,11 @@ oplist Thing::Operation(const Set & op)
         for (I = ent.begin(); I != ent.end(); I++) {
             if (I->first == "id") continue;
             if (I->first == "status") {
-                status = I->second.AsFloat();
+                if (I->second.IsInt()) {
+                    status = (double)I->second.AsInt();
+                } else {
+                    status = I->second.AsFloat();
+                }
             } else {
                 attributes[I->first] = I->second;
             }

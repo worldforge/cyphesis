@@ -22,7 +22,7 @@ class WorldRouter : public Routing {
     void add_operation_to_queue(RootOperation & op, BaseEntity *);
     RootOperation * get_operation_from_queue();
     string get_id(string & name);
-    list_t & broadcastList(const RootOperation & op);
+    const list_t & broadcastList(const RootOperation & op);
     oplist operation(const RootOperation * op);
   public:
     ServerRouting * server;

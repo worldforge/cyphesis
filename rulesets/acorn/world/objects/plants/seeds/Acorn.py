@@ -11,7 +11,8 @@ class Acorn(Seed):
     def eat_operation(self, op):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)
-        to_ = self.world.get_object(op[1].id)
+        #to_ = self.world.get_object(op[1].id)
+        to_ = op.from_
         if not to_:
             return self.error(op,"To is undefined object")
         ent.weight=0.1

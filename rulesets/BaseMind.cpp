@@ -61,7 +61,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Create & sub_op)
     }
     Object obj = args.front();
     Root * arg = utility::Object_asRoot(obj);
-    if (arg->GetObjtype() == "object") {
+    if (arg->GetObjtype() != "op") {
         map.add(arg->AsObject());
     }
     delete arg;
@@ -77,6 +77,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Cut & sub_op)
 
 oplist BaseMind::Sight_Operation(const Sight & op, Delete & sub_op)
 {
+    debug_basemind && cout << "Sight Delete operation" << endl << flush;
     oplist res;
     if (script_Operation("sight_delete", op, res, &sub_op) != 0) {
         return(res);
@@ -91,7 +92,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Delete & sub_op)
         map._delete(obj.AsString());
     } else {
         Root * arg = utility::Object_asRoot(obj);
-        if (arg->GetObjtype() == "object") {
+        if (arg->GetObjtype() != "op") {
             map._delete(arg->GetId());
         }
         delete arg;
@@ -147,7 +148,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Set & sub_op)
     }
     Object obj = args.front();
     Root * arg = utility::Object_asRoot(obj);
-    if (arg->GetObjtype() == "object") {
+    if (arg->GetObjtype() != "op") {
         map.update(arg->AsObject());
     }
     delete arg;
@@ -279,7 +280,12 @@ int BaseMind::call_triggers(RootOperation & op)
 }
 #endif
 
-oplist BaseMind::operation(RootOperation & op)
+//oplist BaseMind::message(const RootOperation & msg)
+//{
+    //return operation(msg);
+//}
+
+oplist BaseMind::operation(const RootOperation & op)
 {
     // This might end up being quite tricky to do
 
@@ -290,7 +296,7 @@ oplist BaseMind::operation(RootOperation & op)
     oplist res;
     RootOperation * look;
     while ((look = map.look_id()) != NULL) {
-        look->SetFrom(fullid);
+        cout << "LOOKING" << endl << flush;
         res.push_back(look);
     }
     oplist res2 = call_operation(op);

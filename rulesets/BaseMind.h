@@ -8,12 +8,6 @@ class BaseMind : public Thing {
     BaseMind(string &, string &);
     virtual ~BaseMind() { }
 
-    //bad_type sight_create_operation(bad_type original_op, bad_type op)
-    //bad_type sight_delete_operation(bad_type original_op, bad_type op)
-    //bad_type sight_set_operation(bad_type original_op, bad_type op)
-    //bad_type sight_move_operation(bad_type original_op, bad_type op)
-    //bad_type sight_undefined_operation(bad_type original_op, bad_type op)
-    //bad_type sound_undefined_operation(bad_type original_op, bad_type op)
     virtual oplist Sight_Operation(const Sight & op, Login & sub_op);
     virtual oplist Sight_Operation(const Sight & op, Chop & sub_op);
     virtual oplist Sight_Operation(const Sight & op, Create & sub_op);
@@ -35,7 +29,8 @@ class BaseMind : public Thing {
     virtual oplist Operation(const Sound & op);
     //RootOperation * get_op_name_and_sub(RootOperation & op, string & name);
     //virtual int call_triggers(RootOperation & op);
-    virtual oplist operation(RootOperation & op);
+    //virtual oplist message(const RootOperation & msg);
+    virtual oplist operation(const RootOperation & op);
 
 };
 

@@ -77,6 +77,7 @@ static PyObject * Map_find_by_type(MapObject * self, PyObject * args)
     return list;
 }
 
+#if 0
 static PyObject * Map_add_object(MapObject * self, PyObject * args)
 {
     if (self->m_map == NULL) {
@@ -97,6 +98,7 @@ static PyObject * Map_add_object(MapObject * self, PyObject * args)
     thing->m_thing = ret;
     return (PyObject *)thing;
 }
+#endif
 
 static PyObject * Map_look_id(MapObject * self, PyObject * args)
 {
@@ -212,17 +214,70 @@ static PyObject * Map_update(MapObject * self, PyObject * args)
     return (PyObject *)thing;
 }
 
+static PyObject * Map_add_hooks_append(MapObject * self, PyObject * args)
+{
+    if (self->m_map == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        return NULL;
+    }
+    char * method;
+    if (!PyArg_ParseTuple(args, "s", &method)) {
+        PyErr_SetString(PyExc_TypeError,"arg is not an string");
+        return NULL;
+    }
+    self->m_map->add_hooks.push_back(string(method));
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject * Map_update_hooks_append(MapObject * self, PyObject * args)
+{
+    if (self->m_map == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        return NULL;
+    }
+    char * method;
+    if (!PyArg_ParseTuple(args, "s", &method)) {
+        PyErr_SetString(PyExc_TypeError,"arg is not an string");
+        return NULL;
+    }
+    self->m_map->update_hooks.push_back(string(method));
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject * Map_delete_hooks_append(MapObject * self, PyObject * args)
+{
+    if (self->m_map == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid memmap");
+        return NULL;
+    }
+    char * method;
+    if (!PyArg_ParseTuple(args, "s", &method)) {
+        PyErr_SetString(PyExc_TypeError,"arg is not an string");
+        return NULL;
+    }
+    self->m_map->delete_hooks.push_back(string(method));
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
 
 PyMethodDef Map_methods[] = {
     {"find_by_location",(PyCFunction)Map_find_by_location,	METH_VARARGS},
     {"find_by_type",	(PyCFunction)Map_find_by_type,	METH_VARARGS},
-    {"add_object",	(PyCFunction)Map_add_object,	METH_VARARGS},
+    //{"add_object",	(PyCFunction)Map_add_object,	METH_VARARGS},
     {"look_id",		(PyCFunction)Map_look_id,	METH_VARARGS},
     {"add",		(PyCFunction)Map_add,		METH_VARARGS},
     {"delete",		(PyCFunction)Map_delete,	METH_VARARGS},
     {"get",		(PyCFunction)Map_get,		METH_VARARGS},
     {"get_add",		(PyCFunction)Map_get_add,	METH_VARARGS},
     {"update",		(PyCFunction)Map_update,	METH_VARARGS},
+    {"add_hooks_append",(PyCFunction)Map_add_hooks_append,	METH_VARARGS},
+    {"update_hooks_append",	(PyCFunction)Map_update_hooks_append,	METH_VARARGS},
+    {"delete_hooks_append",	(PyCFunction)Map_delete_hooks_append,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };
 

@@ -46,7 +46,6 @@ class Character : public Thing {
     Character();
     virtual ~Character();
 
-
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
     virtual oplist Operation(const Talk & op);

@@ -31,7 +31,7 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr), next_id(0)
     illegal_thing->fullid = "illegal";
     illegal_thing->name = "illegal";
     illegal_thing->deleted = 1;
-    halt_time = 6000;
+    halt_time = 60 * 60 * 8;
     //WorldTime tmp_date("612-1-1 08:57:00");
     //This structure is used to tell libatlas about stuff
     //world_info.time.s=tmp_date.seconds();
@@ -49,9 +49,10 @@ inline void WorldRouter::add_operation_to_queue(RootOperation & op, BaseEntity *
     }
     update_time();
     double t = world_info::time;
-    //if (t > halt_time) {
-        //exit(0);
-    //}
+    if (t > halt_time) {
+        cout << "Exiting for memory leak report" << endl << flush;
+        exit(0);
+    }
     t = t + op.GetFutureSeconds();
     op.SetSeconds(t);
     op.SetFutureSeconds(0.0);
@@ -134,13 +135,16 @@ Thing * WorldRouter::add_object(const string & typestr, const Object & ent)
 
 void WorldRouter::del_object(BaseEntity * obj)
 {
-    // Do we need to remove object from contains of its real parent?
+    // Remove object from contains of its real parent?
+    if (obj->location.parent != NULL) {
+        obj->location.parent->contains.remove(obj);
+    }
+    // Remove object from world just to make sure
     contains.remove(obj);
     omnipresent_list.remove(obj);
     perceptives.remove(obj);
-
     objects_list.remove(obj);
-    fobjects[obj->fullid] = illegal_thing;
+    fobjects.erase(obj->fullid);
 }
 
 oplist WorldRouter::message(const RootOperation & msg)
@@ -157,7 +161,7 @@ oplist WorldRouter::message(RootOperation & msg, BaseEntity * obj)
     return(res);
 }
 
-inline list_t & WorldRouter::broadcastList(const RootOperation & op)
+inline const list_t & WorldRouter::broadcastList(const RootOperation & op)
 {
     const Object::ListType & parents = op.GetParents();
     if ((parents.size() > 0) && (parents.front().IsString())) {
@@ -179,35 +183,34 @@ oplist WorldRouter::operation(const RootOperation * op)
 
     debug_server && cout << 0 << flush;
     if ((to.size() != 0) && (to!="all")) {
-        debug_server && cout << 1 << flush;
         if (fobjects.find(to) == fobjects.end()) {
             debug_server && cout << "FATAL: Op has invalid to" << endl << flush;
+            return res;
             //return(*(RootOperation **)NULL);
         }
-        debug_server && cout << 2 << flush;
-        BaseEntity * d_to = fobjects[to];
+        BaseEntity * toEntity = fobjects[to];
         if ((to != fullid) || (op_type == OP_LOOK)) {
-            debug_server && cout << 3 << flush;
             if (to == fullid) {
                 res = ((BaseEntity *)this)->Operation((Look &)op_ref);
             } else {
-                res = d_to->operation(op_ref);
-            }
-            if (op_type == OP_DELETE) {
-                d_to->destroy();
-                d_to->deleted=1;
+                res = toEntity->operation(op_ref);
             }
             while (res.size() != 0) {
                 RootOperation * ro = res.front();
-                message(*ro, d_to);
+                message(*ro, toEntity);
                 res.pop_front();
+            }
+            if (op_type == OP_DELETE) {
+                toEntity->destroy();
+                toEntity->deleted=1;
+                delete toEntity;
+                toEntity = NULL;
             }
         }
     } else {
-        debug_server && cout << 4 << flush;
         RootOperation newop = op_ref;
-        list_t & broadcast = broadcastList(op_ref);
-        std::list<BaseEntity *>::iterator I;
+        const list_t & broadcast = broadcastList(op_ref);
+        std::list<BaseEntity *>::const_iterator I;
         for(I = broadcast.begin(); I != broadcast.end(); I++) {
             newop.SetTo((*I)->fullid);
             operation(&newop);

@@ -35,7 +35,6 @@ class Animal(Thing):
         #object
         #print self, self.status, self.weight
         res = Message()
-        res = res + Character.tick_operation(self, op)
         self.tickcount=self.tickcount+1
         if self.tickcount<30:
             return res

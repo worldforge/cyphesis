@@ -26,8 +26,9 @@ void BaseEntity::destroy()
     list_t::const_iterator I;
     for(I = contains.begin(); I != contains.end(); I++) {
         BaseEntity * obj = *I;
-        if (obj->deleted != 0) {
+        if (obj->deleted == 0) {
             obj->location.parent=location.parent;
+            obj->location.coords = location.coords + obj->location.coords;
         }
     }
     if (location) {
@@ -35,16 +36,16 @@ void BaseEntity::destroy()
     }
 }
 
-Vector3D BaseEntity::get_xyz()
+const Vector3D & BaseEntity::get_xyz()
 {
-    Location l=location;
+    //Location l=location;
     //if (!l) {
         //return Vector3D(0.0,0.0,0.0);
     //}
-    if (l.parent) {
-        return l.coords+l.parent->get_xyz();
+    if (location.parent) {
+        return location.coords+location.parent->get_xyz();
     } else {
-        return l.coords;
+        return location.coords;
     }
 }
 

@@ -39,6 +39,7 @@ class Thing : public BaseEntity {
     }
 
     int set_object(PyObject * obj) {
+        map.set_object(obj);
         script_object = obj;
         return(obj == NULL ? -1 : 0);
     }
@@ -60,6 +61,7 @@ class Thing : public BaseEntity {
     virtual oplist Operation(const Eat & op);
     virtual oplist Operation(const Fire & op);
     virtual oplist Operation(const Move & op);
+    virtual oplist Operation(const Nourish & op);
     virtual oplist Operation(const Set & op);
     virtual oplist Operation(const Sight & op);
     virtual oplist Operation(const Sound & op);

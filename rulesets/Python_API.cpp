@@ -7,6 +7,7 @@
 #include "Thing.h"
 
 #include <Atlas/Objects/Operation/Sight.h>
+#include <Atlas/Objects/Operation/Touch.h>
 
 #include <modules/Location.h>
 #include <server/WorldTime.h>
@@ -46,7 +47,8 @@ PyTypeObject log_debug_type = {
 
 static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObject * kwds)
 {
-    PyObject * dict, * item;
+    PyObject * dict;
+    ThingObject * item;
     long remove_empty_key = 1;
     if (!PyArg_ParseTuple(args, "OO|i", &dict, &item, &remove_empty_key)) {
         return NULL;
@@ -69,9 +71,11 @@ static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObje
         PyObject * key = PyList_GetItem(keys, i);
         int j, lsize = PyList_Size(value);
         for(j = 0; j < lsize; j++) {
-            if (PyList_GetItem(value, j) == item) {
+            ThingObject * entry = (ThingObject*)PyList_GetItem(value, j);
+            if (entry->m_thing == item->m_thing) {
                 flag = 1;
                 PyList_SetSlice(value, j, j+1, NULL);
+                j--; lsize--;
                 if ((remove_empty_key !=0) && (PyList_Size(value) == 0)) {
                     PyDict_DelItem(dict, key);
                 }
@@ -104,7 +108,8 @@ PyTypeObject dictlist_remove_value_type = {
 };
 static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject * kwds)
 {
-    PyObject * dict, * item;
+    PyObject * dict;
+    ThingObject * item;
     char * key;
     if (!PyArg_ParseTuple(args, "OsO", &dict, &key, &item)) {
         return NULL;
@@ -121,15 +126,16 @@ static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject 
         }
         int i, size = PyList_Size(list);
         for(i = 0; i < size; i++) {
-            if (PyList_GetItem(list, i) == item) {
+            ThingObject * entry = (ThingObject*)PyList_GetItem(list,i);
+            if (entry->m_thing == item->m_thing) {
                 goto present;
             }
         }
-        PyList_Append(list, item);
+        PyList_Append(list, (PyObject*)item);
     } else {
         list = PyList_New(0);
         //Py_INCREF(item);
-        PyList_Append(list, item);
+        PyList_Append(list, (PyObject*)item);
         PyDict_SetItemString(dict, key, list);
         Py_DECREF(list);
     }
@@ -409,18 +415,19 @@ static PyObject * object_new(PyObject * self, PyObject * args)
 
 static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
-	AtlasObject *o;
-        char * id = NULL;
-	
-	if (!PyArg_ParseTuple(args, "|s", &id)) {
+    AtlasObject *o;
+    char * id = NULL;
+    
+    if (!PyArg_ParseTuple(args, "|s", &id)) {
             return NULL;
-	}
-        Object::MapType _omap;
-        Object obj(_omap);
-        Object::MapType & omap = obj.AsMap();
-        if (id != NULL) {
-            omap["id"] = string(id);
-        }
+    }
+    Object::MapType _omap;
+    Object obj(_omap);
+    Object::MapType & omap = obj.AsMap();
+    if (id != NULL) {
+        omap["id"] = string(id);
+    }
+    if ((kwds != NULL) && (PyDict_Check(kwds))) {
         PyObject * keys = PyDict_Keys(kwds);
         PyObject * vals = PyDict_Values(kwds);
         if ((keys == NULL) || (vals == NULL)) {
@@ -448,13 +455,14 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
         }
         Py_DECREF(keys);
         Py_DECREF(vals);
-        
-	o = newAtlasObject(args);
-	if ( o == NULL ) {
-		return NULL;
-	}
-	o->m_obj = new Object(obj);
-	return (PyObject *)o;
+    }
+
+    o = newAtlasObject(args);
+    if ( o == NULL ) {
+        return NULL;
+    }
+    o->m_obj = new Object(obj);
+    return (PyObject *)o;
 }
 
 static PyObject * cppthing_new(PyObject * self, PyObject * args)
@@ -526,6 +534,12 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     } else if (strcmp(type, "fire") == 0) {
         op->operation = new Fire;
         *op->operation = Fire::Instantiate();
+    } else if (strcmp(type, "chop") == 0) {
+        op->operation = new Chop;
+        *op->operation = Chop::Instantiate();
+    } else if (strcmp(type, "cut") == 0) {
+        op->operation = new Cut;
+        *op->operation = Cut::Instantiate();
     } else if (strcmp(type, "create") == 0) {
         op->operation = new Create;
         *op->operation = Create::Instantiate();
@@ -541,6 +555,15 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     } else if (strcmp(type, "talk") == 0) {
         op->operation = new Talk;
         *op->operation = Talk::Instantiate();
+    } else if (strcmp(type, "touch") == 0) {
+        op->operation = new Touch;
+        *op->operation = Touch::Instantiate();
+    } else if (strcmp(type, "eat") == 0) {
+        op->operation = new Eat;
+        *op->operation = Eat::Instantiate();
+    } else if (strcmp(type, "nourish") == 0) {
+        op->operation = new Nourish;
+        *op->operation = Nourish::Instantiate();
     } else if ((strcmp(type,"thought")==0) || (strcmp(type,"goal_info")==0)) {
         Py_DECREF(op);
         Py_INCREF(Py_None);

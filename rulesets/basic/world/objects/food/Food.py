@@ -4,7 +4,7 @@
 from atlas import *
 
 from world.objects.Thing import Thing
-from .misc import set_kw
+from misc import set_kw
 
 class Food(Thing):
     def __init__(self, cppthing, **kw):
@@ -13,7 +13,8 @@ class Food(Thing):
     def eat_operation(self, op):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)
-        to_ = self.world.get_object(op[1].id)
+        #to_ = self.world.get_object(op[1].id)
+        to_ = op[1].id
         if not to_:
             return self.error(op,"To is undefined object")
         ent.weight=self.weight

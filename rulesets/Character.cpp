@@ -211,6 +211,9 @@ oplist Character::Operation(const Setup & op)
     debug_character && cout << "Character::tick" << endl << flush;
     oplist res;
     debug_character && cout << "CHaracter::Operation(setup)" << endl << flush;
+    if (script_Operation("setup", op, res) != 0) {
+        return(res);
+    }
     if (op.HasAttr("sub_to")) {
         debug_character && cout << "Has sub_to" << endl << flush;
         return(res);
@@ -232,10 +235,20 @@ oplist Character::Operation(const Setup & op)
     *l = Look::Instantiate();
     l->SetTo(world->fullid);
     res.push_back(l);
+    if (location.parent != world) {
+        l = new Look();
+        *l = Look::Instantiate();
+        l->SetTo(location.parent->fullid);
+        res.push_back(l);
+    }
     l = new Look();
     *l = Look::Instantiate();
     l->SetTo(fullid);
     res.push_back(l);
+    RootOperation * tick = new Tick;
+    *tick = Tick::Instantiate();
+    tick->SetTo(fullid);
+    res.push_back(tick);
     return(res);
 }
 
@@ -276,6 +289,14 @@ oplist Character::Operation(const Tick & op)
             res.push_back(tickOp);
             res.push_back(moveOp);
         }
+    } else {
+        // Could implement quite a lot of Animal.py here.
+        script_Operation("tick", op, res);
+        RootOperation * tickOp = new Tick();
+        *tickOp = Tick::Instantiate();
+        tickOp->SetTo(fullid);
+        tickOp->SetFutureSeconds(consts::basic_tick);
+        res.push_back(tickOp);
     }
     return(res);
 }
@@ -640,15 +661,17 @@ oplist Character::Mind_Operation(const Talk & op)
 oplist Character::Mind_Operation(const Look & op)
 {
     Look * l = new Look(op);
-    const Message::Object::ListType & args = op.GetArgs();
-    if (args.size() == 0) {
-        //l->SetTo("all");
-        l->SetTo(world->fullid);
-    } else {
-        if (args.front().IsMap()) {
-            Message::Object::MapType amap = args.front().AsMap();
-            if (amap.find("id") != amap.end() && amap["id"].IsString()) {
-                l->SetTo(amap["id"].AsString());
+    if (op.GetTo().size() == 0) {
+        const Message::Object::ListType & args = op.GetArgs();
+        if (args.size() == 0) {
+            //l->SetTo("all");
+            l->SetTo(world->fullid);
+        } else {
+            if (args.front().IsMap()) {
+                Message::Object::MapType amap = args.front().AsMap();
+                if (amap.find("id") != amap.end() && amap["id"].IsString()) {
+                    l->SetTo(amap["id"].AsString());
+                }
             }
         }
     }

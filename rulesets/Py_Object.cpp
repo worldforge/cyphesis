@@ -79,7 +79,6 @@ static int Object_setattr( AtlasObject *self, char *name, PyObject *v)
         if ((v_obj.GetType() != Object::TYPE_NONE) &&
             (v_obj.GetType() != Object::TYPE_MAP) &&
             (v_obj.GetType() != Object::TYPE_LIST)) {
-            printf("Setting attribute %s in Atlas Map Object\n", name);
             omap[name] = v_obj;
             return 0;
         }
@@ -198,11 +197,14 @@ Object::ListType PyListObject_asListType(PyObject * list)
     AtlasObject * item;
     for(int i = 0; i < PyList_Size(list); i++) {
         item = (AtlasObject *)PyList_GetItem(list, i);
-        if (!PyAtlasObject_Check(item)) {
-            PyErr_SetString(PyExc_TypeError,"list contains non Atlas Object");
-            return Object::ListType();
+        if (PyAtlasObject_Check(item)) {
+            argslist.push_back(*(item->m_obj));
+        } else {
+            Object o = PyObject_asObject((PyObject*)item);
+            if (o.GetType() != Object::TYPE_NONE) {
+                argslist.push_back(o);
+            }
         }
-        argslist.push_back(*(item->m_obj));
     }
     return(argslist);
 }

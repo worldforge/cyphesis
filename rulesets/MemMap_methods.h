@@ -20,9 +20,10 @@ inline Thing * MemMap::add_object(Thing * object)
 
     debug_map && cout << things[object->fullid] << endl << flush;
     debug_map && cout << this << endl << flush;
-    //for (/*hook in MemMap::add_hooks*/) {
-        //hook(object);
-    //}
+    list<string>::const_iterator I;
+    for(I = add_hooks.begin(); I != add_hooks.end(); I++) {
+        script_hook(*I, object);
+    }
     return object;
 }
 
@@ -34,9 +35,9 @@ inline RootOperation * MemMap::look_id()
         additions_by_id.pop_front();
         Look * l = new Look();
         *l = Look::Instantiate();
-        Object::MapType m;
-        m["id"] = Object(id);
-        l->SetArgs(Object::ListType(1, Object(m)));
+        //Object::MapType m;
+        //m["id"] = Object(id);
+        //l->SetArgs(Object::ListType(1, Object(m)));
         l->SetTo(id);
         return l;
     }
@@ -45,6 +46,7 @@ inline RootOperation * MemMap::look_id()
 
 inline Thing * MemMap::add_id(const string & id)
 {
+    if (id.size() == 0) { return NULL; }
     debug_map && cout << "MemMap::add_id" << endl << flush;
     additions_by_id.push_back(id);
     Object::MapType m;
@@ -76,25 +78,31 @@ inline Thing * MemMap::add(const Object & entity)
         thing->type = entmap["type"].AsString();
     }
     thing->merge(entmap);
+    if (entmap.find("loc") != entmap.end()) {
+        get_add(entmap["loc"].AsString());
+    }
     thing->getLocation(entmap, things);
     return add_object(thing);
 }
 
 inline void MemMap::_delete(const string & id)
 {
-    debug_map && cout << "MemMap::delete" << endl << flush;
+    if (id.size() == 0) { return; }
     if (things.find(id) != things.end()) {
         Thing * obj = (Thing*)things[id];
         things.erase(id);
-        //for (/*hook in MemMap::delete_hooks*/) {
-            //hook(obj);
-        //}
+        list<string>::const_iterator I;
+        for(I = delete_hooks.begin(); I != delete_hooks.end(); I++) {
+            script_hook(*I, obj);
+        }
+        delete obj;
     }
 }
 
 inline Thing * MemMap::get(const string & id)
 {
     debug_map && cout << "MemMap::get" << endl << flush;
+    if (id.size() == 0) { return NULL; }
     if (things.find(id) != things.end()) {
         return (Thing*)things[id];
     }
@@ -104,6 +112,7 @@ inline Thing * MemMap::get(const string & id)
 inline Thing * MemMap::get_add(const string & id)
 {
     debug_map && cout << "MemMap::get_add" << endl << flush;
+    if (id.size() == 0) { return NULL; }
     Thing * obj = MemMap::get(id);
     if (obj != NULL) {
         return obj;
@@ -149,6 +158,10 @@ inline Thing * MemMap::update(const Object & entity)
             //setattr(obj,key,value);
         //}
     //}
+    list<string>::const_iterator I;
+    for(I = update_hooks.begin(); I != update_hooks.end(); I++) {
+        script_hook(*I, thing);
+    }
     //for (/*hook in MemMap::update_hooks*/) {
         //hook(obj);
     //}

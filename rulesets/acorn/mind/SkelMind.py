@@ -9,12 +9,12 @@ class SkeletonMind(BaseMind):
         self.base_init(cppthing, kw)
     def sight_move_operation(self, original_op, op):
         self.map.update(op[0])
-        if op[0].id==self.id: return
+        other = self.map.update(op[0])
+        if other.id==self.id: return
         #target=op[0].location.copy()
-        other = self.map.add(op[0])
         if other.location.parent.id!=self.location.parent.id: return
-        if hasattr(op.from_, "type") and op.from_.type[0] not in ['pig', 'farmer', 'guard']: return
-        destination=op[0].location.coordinates
+        if hasattr(other, "type") and other.type[0] not in ['pig', 'farmer', 'guard']: return
+        destination=other.location.coordinates
         distance=destination.distance(self.location.coordinates)
         if distance<1: return
         # CHeat, random chance that it ignores movement

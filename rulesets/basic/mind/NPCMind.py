@@ -44,9 +44,9 @@ class NPCMind(BaseMind):
         self.message_queue=None
         self.time=WorldTime(31104000.0)
         #This is going to be really tricky
-        #self.map.add_hooks.append(self.add_map)
-        #self.map.update_hooks.append(self.update_map)
-        #self.map.delete_hooks.append(self.delete_map)
+        self.map.add_hooks_append("add_map")
+        self.map.update_hooks_append("update_map")
+        self.map.delete_hooks_append("delete_map")
     ########## Map updates
     def add_map(self, obj):
         #print "Map add",obj

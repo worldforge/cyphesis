@@ -150,6 +150,14 @@ int Thing_setattr(ThingObject *self, char *name, PyObject *v)
     return PyDict_SetItemString(self->Thing_attr, name, v);
 }
 
+int Thing_compare(ThingObject *self, ThingObject *other)
+{
+    if ((self->m_thing == NULL) || (other->m_thing == NULL)) {
+        return -1;
+    }
+    return (self->m_thing == other->m_thing) ? 0 : 1;
+}
+
 PyTypeObject Thing_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,				/*ob_size*/
@@ -161,7 +169,7 @@ PyTypeObject Thing_Type = {
 	0,				/*tp_print*/
 	(getattrfunc)Thing_getattr,	/*tp_getattr*/
 	(setattrfunc)Thing_setattr,	/*tp_setattr*/
-	0,				/*tp_compare*/
+	(cmpfunc)Thing_compare,		/*tp_compare*/
 	0,				/*tp_repr*/
 	0,				/*tp_as_number*/
 	0,				/*tp_as_sequence*/

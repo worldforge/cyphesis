@@ -70,10 +70,10 @@ class Tree(Thing):
         
         # How big the tree is #
         #set_kw(self,kw,"size",randint(1, 30))
-        set_kw(self,kw,"size",10)
+        set_kw(self,kw,"height",10)
         
         # Just a name for the client #
-        set_kw(self,kw,"sizename",size_to_name(self.size))
+        set_kw(self,kw,"sizename",size_to_name(self.height))
         
         # The number of fruit #
         set_kw(self,kw,"fruits",init_fruits)
@@ -83,7 +83,7 @@ class Tree(Thing):
 
     def tick_operation(self, op):
         if debug_tree:
-            print "I this big ", self.size
+            print "I this big ", self.height
             print `self`,"Got tick operation:"
         #in any case send ourself next tick#
         opTick=Operation("tick",to=self)
@@ -94,7 +94,7 @@ class Tree(Thing):
         fcount = self.fruits
         result = result + self.drop_fruit()
 
-        if self.size > sizeadult :
+        if self.height > sizeadult :
             if randint(1, fruitchance) == 1:
                 if debug_tree:
                     print "I'm growing a fruit!"
@@ -118,13 +118,13 @@ class Tree(Thing):
                 # pick a random spot between the 2 extremes of the plant
                 if debug_tree:
                     print "Creating Fruit"
-                randx = uniform ( self.location.coordinates.x - cs( x1 * self.size, x2 * self.size, xMax) , self.location.coordinates.x + cs( x2 * self.size, x1 * self.size, xMax) )
-                randy = uniform ( self.location.coordinates.y - cs( y1 * self.size, y2 * self.size, yMax) , self.location.coordinates.y + cs( y2 * self.size, y1 * self.size, yMax) )
+                randx = uniform ( self.location.coordinates.x - cs( x1 * self.height, x2 * self.height, xMax) , self.location.coordinates.x + cs( x2 * self.height, x1 * self.height, xMax) )
+                randy = uniform ( self.location.coordinates.y - cs( y1 * self.height, y2 * self.height, yMax) , self.location.coordinates.y + cs( y2 * self.height, y1 * self.height, yMax) )
                 #randz = uniform ( self.location.coordinates.z - cs( z1 * self.size, z2 * self.size, zMax) , self.location.coordinates.z + cs( z2 * self.size, z1 * self.size, zMax) )
                 randz = 0
                 if hasattr(self,"coords_modify"):
                     randx,randy,randz=coords_modify(randx,randy,randz)
-                fruit=Entity(name=self.fruitname,location=Location(self.world,Vector3D(randx,randy,randz)),type=[self.fruitname])
+                fruit=Entity(name=self.fruitname,location=Location(self.world,Vector3D(randx,randy,randz)),parents=[self.fruitname])
                 result = result + Operation("create",fruit,to=self)
                 if debug_tree:
                     print fruit

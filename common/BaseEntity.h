@@ -18,6 +18,7 @@ typedef enum op_no {
 	OP_ERROR,
 	OP_FIRE,
 	OP_MOVE,
+	OP_NOURISH,
 	OP_SET,
 	OP_SIGHT,
 	OP_SOUND,
@@ -56,6 +57,9 @@ typedef enum op_no {
             break; \
         case OP_MOVE: \
             _result = _prefix ## Operation((const Move &)_op); \
+            break; \
+        case OP_NOURISH: \
+            _result = _prefix ## Operation((const Nourish &)_op); \
             break; \
         case OP_SET: \
             _result = _prefix ## Operation((const Set &)_op); \
@@ -255,6 +259,25 @@ class Eat : public RootOperation {
     }
 };
 
+class Nourish : public RootOperation {
+  public:
+    Nourish() : RootOperation() {
+        SetId(string("nourish"));
+        Message::Object::ListType parents;
+        parents.push_back(string("root_operation"));
+        SetParents(parents);
+    }
+    virtual ~Nourish() { }
+    static Nourish Instantiate() {
+        Nourish value;
+        Message::Object::ListType parents;
+        parents.push_back(string("nourish"));
+        value.SetParents(parents);
+        value.SetObjtype(string("op"));
+        return value;
+    }
+};
+
 class Cut : public RootOperation {
   public:
     Cut() : RootOperation() {
@@ -337,12 +360,17 @@ class BaseEntity {
     BaseEntity();
     virtual ~BaseEntity() { }
 
-    Vector3D get_xyz();
+    const Vector3D & get_xyz();
     virtual void destroy();
-    virtual Message::Object asObject();
+
+    Message::Object asObject();
     virtual void addObject(Message::Object *);
+
     virtual oplist external_message(const RootOperation & msg);
     virtual oplist message(const RootOperation & msg);
+    virtual oplist operation(const RootOperation & op);
+    virtual oplist external_operation(const RootOperation & op);
+
     virtual oplist Operation(const Login & obj) { oplist res; return(res); }
     virtual oplist Operation(const Logout & obj) { oplist res; return(res); }
     virtual oplist Operation(const Chop & obj) { oplist res; return(res); }
@@ -352,6 +380,7 @@ class BaseEntity {
     virtual oplist Operation(const Eat & obj) { oplist res; return(res); }
     virtual oplist Operation(const Fire & obj) { oplist res; return(res); }
     virtual oplist Operation(const Move & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Nourish & obj) { oplist res; return(res); }
     virtual oplist Operation(const Set & obj) { oplist res; return(res); }
     virtual oplist Operation(const Sight & obj) { oplist res; return(res); }
     virtual oplist Operation(const Sound & obj) { oplist res; return(res); }
@@ -363,8 +392,6 @@ class BaseEntity {
     virtual oplist Operation(const Save & obj) { oplist res; return(res); }
     virtual oplist Operation(const Setup & obj) { oplist res; return(res); }
     virtual oplist Operation(const RootOperation & obj) { oplist res; return(res); }
-    virtual oplist operation(const RootOperation & op);
-    virtual oplist external_operation(const RootOperation & op);
 
     void set_refno_op(RootOperation * op, const RootOperation & ref_op) {
         op->SetRefno(ref_op.GetSerialno());
@@ -386,7 +413,7 @@ class BaseEntity {
         if (!parents.begin()->IsString()) {
             cerr << "This op has invalid parent.\n" << endl << flush;
         }
-        string parent(parents.begin()->AsString());
+        const string & parent = parents.begin()->AsString();
         if ("login" == parent)  { return(OP_LOGIN); }
         if ("chop" == parent)  { return(OP_CHOP); }
         if ("create" == parent)  { return(OP_CREATE); }
@@ -395,6 +422,7 @@ class BaseEntity {
         if ("eat" == parent)  { return(OP_EAT); }
         if ("fire" == parent)  { return(OP_FIRE); }
         if ("move" == parent)  { return(OP_MOVE); }
+        if ("nourish" == parent)  { return(OP_NOURISH); }
         if ("set" == parent)  { return(OP_SET); }
         if ("sight" == parent)  { return(OP_SIGHT); }
         if ("sound" == parent)  { return(OP_SOUND); }
@@ -411,7 +439,7 @@ class BaseEntity {
 
     oplist call_operation(const RootOperation & op) {
         oplist res;
-        op_no_t op_no = op_enumerate(&op);
+        const op_no_t op_no = op_enumerate(&op);
         OP_SWITCH(op, op_no, res,)
         return(res);
     }
