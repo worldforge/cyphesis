@@ -1047,6 +1047,41 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
     return runSimpleSelectQuery(query);
 }
 
+// Interface for tables for sparse sequences or arrays of data. Terrain
+// control points and other spatial data.
+
+bool Database::registerSpatialTable(const std::string & name,
+                                    unsigned int dimension,
+                                    const Atlas::Message::MapType & row_data)
+{
+    return false;
+}
+
+bool Database::createSpatialRow(const std::string & name,
+                                const std::string & id,
+                                const std::vector<int> & key,
+                                const Atlas::Message::MapType & data)
+{
+    return false;
+}
+
+bool Database::updateSpatialRow(const std::string & name,
+                                const std::string & id,
+                                const std::vector<int> & key,
+                                const Atlas::Message::MapType & data)
+{
+    return false;
+}
+
+bool Database::removeSpatialRow(const std::string & name,
+                                const std::string & id,
+                                const std::vector<int> & key)
+{
+    return false;
+}
+
+// General functions for handling queries at the low level.
+
 void Database::queryResult(ExecStatusType status)
 {
     if (!m_queryInProgress || pendingQueries.empty()) {

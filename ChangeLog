@@ -1,5 +1,9 @@
 2004-09-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Add stubs for new methods.
+
+2004-09-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Update FIXME so its clear its the same
 	  as all the other orientation related FIXMEs.
 
