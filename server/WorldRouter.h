@@ -35,6 +35,7 @@ class WorldRouter : public BaseWorld {
     const EntitySet & broadcastList(const RootOperation & op) const;
     inline void updateTime();
     void deliverTo(const RootOperation & op, Entity * e);
+    void deliverDeleteTo(const RootOperation & op, Entity * e);
   public:
     explicit WorldRouter();
     virtual ~WorldRouter();

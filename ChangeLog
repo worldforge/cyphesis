@@ -1,5 +1,14 @@
 2004-07-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/BaseMind.cpp: Make sure we don't delete ourself from
+	  map.
+
+	* server/WorldRouter.h, server/WorldRouter.cpp: Add more advanced
+	  handling for delete ops, so the response is broadcast before
+	  it is removed.
+
+2004-07-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Clean up a special case for TO="all" on
 	  ops, which we now disallow. Remove a verbose tests for NULL
 	  pointers in the world dictionary and replace with a simple assert.

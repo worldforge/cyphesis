@@ -249,7 +249,7 @@ inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) con
     return m_objectList;
 }
 
-inline void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
+void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
 {
     OpVector res = e->operation(op);
     setRefno(res, op);
@@ -257,6 +257,37 @@ inline void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
         setSerialnoOp(**I);
         message(**I, e);
     }
+}
+
+// Delete is special, as it causes the target to be removed, but
+// we need to handle the responses first
+void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
+{
+    OpVector res = e->operation(op);
+    setRefno(res, op);
+    for(OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
+        RootOperation & newOp = **I;
+        setSerialnoOp(newOp);
+        if (newOp.getParents().front().asString() == "delete") {
+            // If this is a delete, queue as normal to avoid a recursive loop
+            std::cerr << "Handling delete response to delete"
+                      << std::endl << std::flush;
+            message(newOp, e);
+        } else {
+            // Other ops we dispatch immediatly before deleting the source
+            std::cerr << "Handling normal response to delete"
+                      << std::endl << std::flush;
+            newOp.setFrom(e->getId());
+            operation(newOp);
+        }
+    }
+    if (e == &m_gameWorld) {
+        log(WARNING, "Attempt to delete game world");
+        return;
+    }
+    delObject(e);
+    e->destroy();
+    delete e;
 }
 
 OpVector WorldRouter::operation(const RootOperation & op)
@@ -279,12 +310,10 @@ OpVector WorldRouter::operation(const RootOperation & op)
         Entity * to_entity = I->second;
         assert(to_entity != 0);
 
-        deliverTo(op, to_entity);
-        if ((op.getParents().front().asString() == "delete") &&
-            (to_entity != &m_gameWorld)) {
-            delObject(to_entity);
-            to_entity->destroy();
-            delete to_entity;
+        if (op.getParents().front().asString() == "delete") {
+            deliverDeleteTo(op, to_entity);
+        } else {
+            deliverTo(op, to_entity);
         }
     } else {
         RootOperation newop = op;
@@ -298,6 +327,9 @@ OpVector WorldRouter::operation(const RootOperation & op)
             }
         }
         if ((J == m_eobjects.end()) || (!consts::enable_ranges)) {
+            log(WARNING, "WorldRouter::operation op with missing from");
+            std::cout << op.getParents().front().asString() << " op from "
+                      << from << std::endl << std::flush;
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 newop.setTo((*I)->getId());

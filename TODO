@@ -1,3 +1,6 @@
+It would probably be easier to move extraction of parents from a new entity
+to world.addNewObject() to avoid duplication.
+
 Use "REFERENCES foo ON DELETE CASCADE" SQL to make sure character table
 relations are removed when a character is deleted, or an account is deleted.
 
