@@ -8,10 +8,8 @@
 #include "CommClient.h"
 
 class CommRemoteClient : public CommClient {
-  private:
-    static char ipno[255];
   public:
-    CommRemoteClient(CommServer & svr, int fd);
+    CommRemoteClient(CommServer & svr, int fd, const std::string & address);
     virtual ~CommRemoteClient();
 
 };

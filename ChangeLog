@@ -1,5 +1,12 @@
 2003-04-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommListener.cpp, server/CommLocalClient.cpp,
+	  server/CommRemoteClient.cpp, server/CommRemoteClient.h,
+	  server/CommClient.cpp: Clean up code for getting
+	  presentation format addresses as connection id.
+
+2003-04-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommListener.cpp: Add IPv6 listen code.
 
 2003-04-22  Al Riddoch  <alriddoch@zepler.org>

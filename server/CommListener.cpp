@@ -100,7 +100,24 @@ bool CommListener::accept()
         return false;
     }
     debug(std::cout << "Accepted" << std::endl << std::flush;);
-    CommRemoteClient * newcli = new CommRemoteClient(commServer, asockfd);
+    
+    void * adr = 0;
+    if (sst.ss_family == AF_INET) {
+        adr = &((sockaddr_in&)sst).sin_addr;
+    } else if (sst.ss_family == AF_INET) {
+        adr = &((sockaddr_in6&)sst).sin6_addr;
+    }
+    char buf[INET6_ADDRSTRLEN];
+    const char * address = 0;
+    if (adr != 0) {
+        address = ::inet_ntop(sst.ss_family, adr, buf, INET6_ADDRSTRLEN);
+    }
+    if (address == 0) {
+        log(WARNING, "Unable to determine remote address for connection");
+        address = "unknown";
+    }
+    
+    CommRemoteClient * newcli = new CommRemoteClient(commServer, asockfd, address);
 
     newcli->setup();
 

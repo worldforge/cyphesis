@@ -34,17 +34,6 @@ CommClient::CommClient(CommServer & svr, int fd, Connection & c) :
             connection(c),
             reading(false)
 {
-#if 0
-    sockaddr_in client = clientIos.getOutpeer();
-    std::stringstream connectionId;
-    if (!inet_ntop(AF_INET, &client.sin_addr, ipno, 255)) {
-        connectionId << "UNKNOWN";
-    } else {
-        connectionId << ipno;
-    }
-    connectionId << ":" << client.sin_port;
-    connection.setId(connectionId.str());
-#endif
     clientIos.setTimeout(0,1000);
     commServer.server.incClients();
 }

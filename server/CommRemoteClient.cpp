@@ -7,12 +7,8 @@
 #include "Connection.h"
 #include "CommServer.h"
 
-char CommRemoteClient::ipno[255];
-
-CommRemoteClient::CommRemoteClient(CommServer & svr, int fd) :
-   CommClient(svr, fd, *new Connection((inet_ntop(AF_INET,
-              &((const sockaddr_in&)clientIos.getOutpeer()).sin_addr, ipno, 255)
-                                       ? ipno : "UNKNOWN"), *this, svr.server))
+CommRemoteClient::CommRemoteClient(CommServer & svr, int fd, const std::string & addr) :
+   CommClient(svr, fd, *new Connection(addr, *this, svr.server))
 {
 }
 
