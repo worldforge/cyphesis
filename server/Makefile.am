@@ -20,8 +20,8 @@ cyphesis_SOURCES = \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
+		Idle.cpp Idle.h \
 		CommSocket.cpp CommSocket.h \
-		CommIdleSocket.cpp CommIdleSocket.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
 		CommListener.cpp CommListener.h \
 		CommUnixListener.cpp CommUnixListener.h \

@@ -140,7 +140,7 @@ int main(int argc, char ** argv)
         log(ERROR, "Could not create listen socket. Init failed.");
         return EXIT_SOCKET_ERROR;
     }
-    commServer.add(listener);
+    commServer.addSocket(listener);
 
     CommUnixListener * llistener = new CommUnixListener(commServer);
     if (llistener->setup() != 0) {
@@ -150,18 +150,18 @@ int main(int argc, char ** argv)
         log(ERROR, str.str().c_str());
         delete llistener;
     } else {
-        commServer.add(llistener);
+        commServer.addSocket(llistener);
     }
 
     CommPSQLSocket * dbsocket = new CommPSQLSocket(commServer,
                                         Persistance::instance()->m_connection);
-    commServer.add(dbsocket);
+    commServer.addSocket(dbsocket);
     commServer.addIdle(dbsocket);
 
     if (useMetaserver) {
         CommMetaClient * cmc = new CommMetaClient(commServer);
         if (cmc->setup(mserver) == 0) {
-            commServer.add(cmc);
+            commServer.addSocket(cmc);
             commServer.addIdle(cmc);
         } else {
             log(ERROR, "Error creating metaserver comm channel.");
@@ -173,7 +173,7 @@ int main(int argc, char ** argv)
 
     CommMDNSPublisher * cmdns = new CommMDNSPublisher(commServer);
     if (cmdns->setup() == 0) {
-        commServer.add(cmdns);
+        commServer.addSocket(cmdns);
     } else {
         log(ERROR, "No MDNS Responder for me.");
         delete cmdns;

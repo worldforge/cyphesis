@@ -19,7 +19,7 @@ static const bool debug_flag = false;
 /// @param svr Reference to the object that manages all socket communication.
 /// @param db Reference to the low level database management object.
 CommPSQLSocket::CommPSQLSocket(CommServer & svr, Database & db) :
-                               CommIdleSocket(svr), m_db(db),
+                               Idle(svr), CommSocket(svr), m_db(db),
                                m_vacuumTime(0), m_reindexTime(0),
                                m_vacuumFull(false)
 {

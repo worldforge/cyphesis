@@ -83,7 +83,7 @@ int CommUnixListener::accept()
     newcli->setup();
 
     // Add this new client to the list.
-    m_commServer.add(newcli);
+    m_commServer.addSocket(newcli);
 
     return 0;
 }

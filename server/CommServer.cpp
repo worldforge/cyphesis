@@ -34,7 +34,7 @@ CommServer::~CommServer()
 
 /// \brief Idle function called from the main loop.
 ///
-/// Poll all the CommIdleSocket objects that want to be polled regularly,
+/// Poll all the Idle objects that want to be polled regularly,
 /// the call the core server object idle function.
 /// @return true if the core server wants to be called again as soon as
 /// possible.
@@ -46,8 +46,8 @@ bool CommServer::idle()
     // if the core server is busy. Cut it back a bit. Probably can avoid
     // calling them at all if we are busy.
     time_t ctime = time(NULL);
-    CommIdleSocketSet::const_iterator I = m_idleSockets.begin();
-    CommIdleSocketSet::const_iterator Iend = m_idleSockets.end();
+    IdleSet::const_iterator I = m_idlers.begin();
+    IdleSet::const_iterator Iend = m_idlers.end();
     for (; I != Iend; ++I) {
         (*I)->idle(ctime);
     }
@@ -138,6 +138,12 @@ void CommServer::loop()
     for (; J != Jend; ++J) {
         removeSocket(*J);
     }
+}
+
+/// Add a new CommSocket object to the manager.
+void CommServer::addSocket(CommSocket * cs)
+{
+    m_sockets.insert(cs);
 }
 
 /// \brief Remove and delete a CommSocket from the server.

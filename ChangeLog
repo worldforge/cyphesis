@@ -1,5 +1,18 @@
 2004-11-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommListener.cpp,
+	  server/CommMetaClient.cpp, server/CommMetaClient.h, 
+	  server/CommPSQLSocket.cpp, server/CommPSQLSocket.h
+	  server/CommServer.cpp, server/CommServer.h,
+	  server/CommUnixListener.cpp, server/server.cpp:
+	  Replace CommIdleSocket with pure virtual inferface Idle,
+	  and use multiple inheritance in classes which are both sockets
+	  and idlers. Rename add() in CommServer to make its function cleaner,
+	  and move its implementation into the cpp file in preparation for
+	  a more powerful CommServer implementation.
+
+2004-11-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/MindFactory.cpp, rulesets/Py_Object.h,
 	  rulesets/Py_Operation.h, rulesets/PythonScript.h,
 	  rulesets/Python_API.cpp: Include Python.h first to avoid some

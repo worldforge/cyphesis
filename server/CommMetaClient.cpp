@@ -38,7 +38,7 @@ static inline char *unpack_uint32(uint32_t *dest, char *buffer)
 /// \brief Constructor for metaserver communication socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommMetaClient::CommMetaClient(CommServer & svr) : CommIdleSocket(svr),
+CommMetaClient::CommMetaClient(CommServer & svr) : Idle(svr), CommSocket(svr),
                                                    m_lastTime(-1)
 {
 }

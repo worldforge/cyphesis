@@ -5,14 +5,15 @@
 #ifndef SERVER_COMM_META_CLIENT_H
 #define SERVER_COMM_META_CLIENT_H
 
-#include "CommIdleSocket.h"
+#include "CommSocket.h"
+#include "Idle.h"
 
 #include <string>
 
 #include <skstream/skstream.h>
 
 /// \brief Handle a socket used to communicate with the metaserver.
-class CommMetaClient : public CommIdleSocket {
+class CommMetaClient : public CommSocket, virtual public Idle {
   private:
     /// C++ iostream compatible socket object handling the socket IO.
     udp_socket_stream m_clientIos;

@@ -8,11 +8,11 @@
 #include <set>
 
 class CommSocket;
-class CommIdleSocket;
+class Idle;
 class ServerRouting;
 
 typedef std::set<CommSocket *> CommSocketSet;
-typedef std::set<CommIdleSocket *> CommIdleSocketSet;
+typedef std::set<Idle *> IdleSet;
 
 /// \brief Central class in the commications subsystem.
 ///
@@ -23,8 +23,8 @@ class CommServer {
   private:
     /// Set of pointers to CommSocket objects managed by this object.
     CommSocketSet m_sockets;
-    /// Set of pointer to CommIdleSocket object which need to be polled.
-    CommIdleSocketSet m_idleSockets;
+    /// Set of pointer to Idle objects which need to be polled.
+    IdleSet m_idlers;
 
     bool idle();
 
@@ -40,26 +40,22 @@ class CommServer {
     ~CommServer();
 
     void loop();
+    void addSocket(CommSocket * cs);
     void removeSocket(CommSocket * client);
 
-    /// Add a new CommSocket object to the manager.
-    void add(CommSocket * cs) {
-        m_sockets.insert(cs);
-    }
-
-    /// \brief Add a new CommIdleSocket object to the manager.
+    /// \brief Add a new Idle object to the manager.
     ///
-    /// CommIdleSocket objects are removed automatically from the
+    /// Idle objects are removed automatically from the
     /// destructor.
-    void addIdle(CommIdleSocket * cs) {
-        m_idleSockets.insert(cs);
+    void addIdle(Idle * cs) {
+        m_idlers.insert(cs);
     }
 
-    /// \brief Remove a CommIdleSocket object from the manager.
+    /// \brief Remove a Idle object from the manager.
     ///
-    /// Called from the CommIdleSocket destructor.
-    void removeIdle(CommIdleSocket * cs) {
-        m_idleSockets.erase(cs);
+    /// Called from the Idle destructor.
+    void removeIdle(Idle * cs) {
+        m_idlers.erase(cs);
     }
 };
 

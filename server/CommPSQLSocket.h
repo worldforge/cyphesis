@@ -5,13 +5,14 @@
 #ifndef SERVER_COMM_PSQL_SOCKET_H
 #define SERVER_COMM_PSQL_SOCKET_H
 
-#include "CommIdleSocket.h"
+#include "CommSocket.h"
+#include "Idle.h"
 
 class Database;
 
 /// \brief Handle polling the socket used to comminicate with the PostgreSQL
 /// RDBMS.
-class CommPSQLSocket : public CommIdleSocket {
+class CommPSQLSocket : public CommSocket, virtual public Idle {
   protected:
     /// Reference to the low level database management object.
     Database & m_db;
