@@ -17,15 +17,15 @@ static const bool debug_flag = false;
 // This is a template which requires debug flag to be declared.
 #include "rulesets/Entity_getLocation.h"
 
-CommClient::CommClient()
+BaseClient::BaseClient()
 {
 }
 
-CommClient::~CommClient()
+BaseClient::~BaseClient()
 {
 }
 
-MapType CommClient::createPlayer(const std::string & name,
+MapType BaseClient::createPlayer(const std::string & name,
                                  const std::string & password)
 {
     m_playerName = name;
@@ -67,7 +67,7 @@ MapType CommClient::createPlayer(const std::string & name,
     return ent;
 }
 
-CreatorClient * CommClient::createCharacter(const std::string & type)
+CreatorClient * BaseClient::createCharacter(const std::string & type)
 {
     MapType character;
     character["name"] = m_playerName;
@@ -100,11 +100,11 @@ CreatorClient * CommClient::createCharacter(const std::string & type)
 }
 
 // I'm making this pure virtual, to see if that is desired.
-//void CommClient::idle() {
+//void BaseClient::idle() {
 //    time.sleep(0.1);
 //}
 
-void CommClient::handleNet()
+void BaseClient::handleNet()
 {
     RootOperation * input;
     while ((input = m_connection.pop()) != NULL) {

@@ -11,7 +11,7 @@
 
 class CreatorClient;
 
-class CommClient {
+class BaseClient {
   protected:
     ClientConnection m_connection;
     CreatorClient * m_character;
@@ -20,8 +20,8 @@ class CommClient {
     std::string m_playerId;
 
   public:
-    CommClient();
-    virtual ~CommClient();
+    BaseClient();
+    virtual ~BaseClient();
 
     MapType createPlayer(const std::string & name, const std::string & pword);
     CreatorClient * createCharacter(const std::string & name);

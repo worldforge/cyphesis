@@ -11,7 +11,7 @@ class ClientConnection;
 
 class CharacterClient : public BaseMind {
   protected:
-    ClientConnection & connection;
+    ClientConnection & m_connection;
 
     bool findRefnoOp(const RootOperation & op, long refno);
     bool findRefno(const RootOperation & op, long refno);

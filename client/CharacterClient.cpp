@@ -15,7 +15,7 @@ static const bool debug_flag = false;
 CharacterClient::CharacterClient(const std::string & id,
                                  const std::string & name,
                                  ClientConnection & c) :
-                                 BaseMind(id,name), connection(c)
+                                 BaseMind(id, name), m_connection(c)
 {
 }
 
@@ -52,7 +52,7 @@ bad_type CharacterClient::set_from(bad_type msg) {
 void CharacterClient::send(RootOperation & op)
 {
     op.setFrom(getId());
-    connection.send(op);
+    m_connection.send(op);
 }
 
 inline bool CharacterClient::findRefnoOp(const RootOperation & op, long refno)
@@ -73,8 +73,8 @@ OpVector CharacterClient::sendAndWaitReply(RootOperation & op)
     send(op);
     long no = op.getSerialno();
     while (true) {
-        if (connection.pending()) {
-            RootOperation * input=CharacterClient::connection.pop();
+        if (m_connection.pending()) {
+            RootOperation * input=CharacterClient::m_connection.pop();
             if (input != NULL) {
                 // What the hell is this!
                 OpVector result;
@@ -89,7 +89,7 @@ OpVector CharacterClient::sendAndWaitReply(RootOperation & op)
                 }
                 delete input;
             }
-        } else if (connection.wait()) {
+        } else if (m_connection.wait()) {
             return OpVector();
         }
     }

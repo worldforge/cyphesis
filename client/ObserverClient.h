@@ -8,7 +8,7 @@
 #include "CommClient.h"
 #include "ClientConnection.h"
 
-class ObserverClient : public CommClient {
+class ObserverClient : public BaseClient {
   public:
     ObserverClient();
     virtual ~ObserverClient();

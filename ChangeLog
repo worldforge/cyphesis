@@ -1,5 +1,14 @@
 2004-09-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/CharacterClient.cpp, client/CharacterClient.h: Prefix
+	  members with m_.
+
+	* client/CommClient.cpp, client/CommClient.h, client/ObserverClient.h:
+	  Rename CommClient to BaseClient to avoid name clash with CommClient
+	  in the server directory.
+
+2004-09-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/CommClient.h, client/CommClient.cpp, client/ObserverClient.h,
 	  client/ObserverClient.cpp: Prefix members with m_, and remove
 	  pointless inheritance from BaseEntity. Add virtual destructors
