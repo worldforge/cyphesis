@@ -1,9 +1,3 @@
-Still not clearning rows from the character relation when the entities are
-deleted from world.
-
-Two important persistence issues; make sure the attributes of world are being
-handled correctly, and persist the "attributes" member of entity.
-
 Mind state is still utterly unpersisted, so creatures are waking up brain dead -
 mind does not even get kick started with a setup op.
 
