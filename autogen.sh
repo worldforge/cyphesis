@@ -32,6 +32,6 @@ echo autoconf...
 
 autoconf
 
-echo ready to configure
+./configure $@
 
 exit 0

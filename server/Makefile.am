@@ -13,6 +13,7 @@ cyphesis_SOURCES = \
 		WorldRouter.cpp WorldRouter.h \
 		Connection.cpp Connection.h \
 		WorldTime.h \
+		CommClient.h  CommServer.h \
 		server.cpp server.h
 
 cyphesis_LDADD = ../physics/libphysics.a ../rulesets/librulesets.a ../modules/libmodules.a ../common/libcommon.a # LeakTracer.o
