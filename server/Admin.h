@@ -9,9 +9,7 @@
 
 class Admin : public Account {
   protected:
-    virtual oplist character_error(const Create &, const Atlas::Message::Object &) const {
-        return oplist();
-    }
+    virtual oplist character_error(const Create &, const Atlas::Message::Object &) const;
   public:
     Admin(Connection * conn, const string & username, const string & passwd) :
         Account(conn, username, passwd) {
@@ -21,6 +19,7 @@ class Admin : public Account {
 
     virtual oplist Operation(const Load & op);
     virtual oplist Operation(const Save & op);
+    virtual oplist Operation(const Get & op);
     virtual oplist Operation(const Set & op);
 };
 

@@ -1,3 +1,21 @@
+2001-04-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.h: Moved many of the extra parts of this file
+	  into individual files for each bit.
+
+	* aiclient/*: Added client mode cyphesis for handling AI in another
+	  server. Not yet operational.
+
+	* */*: Moved large and virtual functions out of headers to reduce
+	  multiple instance problems, keep the binary size down, and speed
+	  up compilation.
+
+	* server/Admin.h/cpp: Added Get operation handling, thus dividing
+	  admin commands into two classes, one which does not alter
+	  the state of the server, the other which does. Added query
+	  command which allows admin client to retrive arbitrary objects
+	  from server id dictionary.
+
 2001-04-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/acorn/world/objects/animals/Deer.py, acorn.vconf: Added

@@ -73,47 +73,47 @@ class Character : public Thing {
     virtual oplist Operation(const Talk & op);
     virtual oplist Operation(const Eat & op);
     virtual oplist Operation(const Nourish & op);
-    virtual oplist Mind_Operation(const Login & op) { oplist res; return(res); }
+    virtual oplist Mind_Operation(const Login & op);
     virtual oplist Mind_Operation(const Create & op);
     virtual oplist Mind_Operation(const Cut & op);
     virtual oplist Mind_Operation(const Delete & op);
     virtual oplist Mind_Operation(const Eat & op);
     virtual oplist Mind_Operation(const Move & op);
     virtual oplist Mind_Operation(const Set & op);
-    virtual oplist Mind_Operation(const Sight & op) { oplist res; return(res); }
-    virtual oplist Mind_Operation(const Sound & op) { oplist res; return(res); }
+    virtual oplist Mind_Operation(const Sight & op);
+    virtual oplist Mind_Operation(const Sound & op);
     virtual oplist Mind_Operation(const Talk & op);
     virtual oplist Mind_Operation(const Tick & op);
     virtual oplist Mind_Operation(const Touch & op);
     virtual oplist Mind_Operation(const Look & op);
-    virtual oplist Mind_Operation(const Load & op) { oplist res; return(res); }
-    virtual oplist Mind_Operation(const Save & op) { oplist res; return(res); }
+    virtual oplist Mind_Operation(const Load & op);
+    virtual oplist Mind_Operation(const Save & op);
     virtual oplist Mind_Operation(const Setup & op);
-    virtual oplist Mind_Operation(const Appearance & op) { oplist res; return(res); }
-    virtual oplist Mind_Operation(const Disappearance & op) { oplist res; return(res); }
-    virtual oplist Mind_Operation(const Error & op) { oplist res; return(res); }
-    virtual oplist Mind_Operation(const RootOperation & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Login & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Chop & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Create & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Cut & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Delete & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Eat & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Fire & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Move & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Set & op) { oplist res; return(res); }
+    virtual oplist Mind_Operation(const Appearance & op);
+    virtual oplist Mind_Operation(const Disappearance & op);
+    virtual oplist Mind_Operation(const Error & op);
+    virtual oplist Mind_Operation(const RootOperation & op);
+    virtual oplist W2m_Operation(const Login & op);
+    virtual oplist W2m_Operation(const Chop & op);
+    virtual oplist W2m_Operation(const Create & op);
+    virtual oplist W2m_Operation(const Cut & op);
+    virtual oplist W2m_Operation(const Delete & op);
+    virtual oplist W2m_Operation(const Eat & op);
+    virtual oplist W2m_Operation(const Fire & op);
+    virtual oplist W2m_Operation(const Move & op);
+    virtual oplist W2m_Operation(const Set & op);
     virtual oplist W2m_Operation(const Sight & op);
     virtual oplist W2m_Operation(const Sound & op);
     virtual oplist W2m_Operation(const Touch & op);
     virtual oplist W2m_Operation(const Tick & op);
-    virtual oplist W2m_Operation(const Look & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Load & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Save & op) { oplist res; return(res); }
+    virtual oplist W2m_Operation(const Look & op);
+    virtual oplist W2m_Operation(const Load & op);
+    virtual oplist W2m_Operation(const Save & op);
     virtual oplist W2m_Operation(const Setup & op);
-    virtual oplist W2m_Operation(const Appearance & op) { oplist res; return(res); }
-    virtual oplist W2m_Operation(const Disappearance & op) { oplist res; return(res); }
+    virtual oplist W2m_Operation(const Appearance & op);
+    virtual oplist W2m_Operation(const Disappearance & op);
     virtual oplist W2m_Operation(const Error & op);
-    virtual oplist W2m_Operation(const RootOperation & op) { oplist res; return(res); }
+    virtual oplist W2m_Operation(const RootOperation & op);
     virtual oplist send_mind(const RootOperation & op);
     virtual oplist mind2body(const RootOperation & op);
     virtual oplist world2body(const RootOperation & op);

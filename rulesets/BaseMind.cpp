@@ -25,6 +25,7 @@
 
 #include <common/utility.h>
 #include <common/debug.h>
+#include <common/op_switch.h>
 
 #include "BaseMind.h"
 #include "MemMap_methods.h"
@@ -117,6 +118,16 @@ BaseMind::BaseMind(string & id, string & body_name)
     //else {
         //BaseMind::log_fp=NULL;
     //}
+}
+
+int BaseMind::set_object(PyObject * obj) {
+    map.set_object(obj);
+    script_object = obj;
+    return(obj == NULL ? -1 : 0);
+}
+
+MemMap * BaseMind::getMap() {
+    return &map;
 }
 
 oplist BaseMind::Sight_Operation(const Sight & op, Login & sub_op)
@@ -406,6 +417,18 @@ oplist BaseMind::operation(const RootOperation & op)
     }
     //res = call_triggers(op);
     return(res);
+}
+
+oplist BaseMind::call_sight_operation(const Sight& op, RootOperation& sub_op) {
+    map.get_add(sub_op.GetFrom());
+    op_no_t op_no = op_enumerate(&sub_op);
+    SUB_OP_SWITCH(op, op_no, Sight_, sub_op)
+}
+
+oplist BaseMind::call_sound_operation(const Sound& op, RootOperation& sub_op) {
+    map.get_add(sub_op.GetFrom());
+    op_no_t op_no = op_enumerate(&sub_op);
+    SUB_OP_SWITCH(op, op_no, Sound_, sub_op)
 }
 
 #if 0

@@ -6,6 +6,7 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation/Get.h>
 #include <Atlas/Objects/Operation/Info.h>
 
 #include <common/Load.h>
@@ -20,6 +21,10 @@
 
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::Info;
+
+oplist Admin::character_error(const Create &, const Object &) const {
+    return oplist();
+}
 
 oplist Admin::Operation(const Save & op)
 {
@@ -76,6 +81,47 @@ oplist Admin::Operation(const Load & op)
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());
     return oplist(1,info);
+}
+
+oplist Admin::Operation(const Get & op)
+{
+    const Object & ent = op.GetArgs().front();
+    try {
+        Object::MapType emap = ent.AsMap();
+        const string & id = emap["id"].AsString();
+        if (id == "server") {
+            const string & cmd = emap["cmd"].AsString();
+            Object arg;
+            if (emap.find("arg") != emap.end()) {
+                arg = emap["arg"];
+            }
+            if (cmd == "query") {
+                if (!arg.IsString()) {
+                    return error(op, "query with no id given");
+                }
+                const string & ent_id = arg.AsString();
+                if (ent_id.empty()) {
+                    return error(op, "query id invalid");
+                }
+                fdict_t::iterator I = world->server->id_dict.find(ent_id);
+                if (I == world->server->id_dict.end()) {
+                    return error(op, "query id not found");
+                }
+                Info * info = new Info();
+                *info = Info::Instantiate();
+                Object::ListType args(1,I->second->asObject());
+                info->SetArgs(args);
+                info->SetRefno(op.GetSerialno());
+                return oplist(1,info);
+            } else {
+                return error(op, "Unknown command");
+            }
+        }
+    }
+    catch (...) {
+        return error(op, "Invalid get");
+    }
+    return oplist();
 }
 
 oplist Admin::Operation(const Set & op)

@@ -24,6 +24,11 @@ Definitly for Acorn 0.4:
     o = new Opertion(Operation::Instantiate());
   cos it is about twice as quick.
 
+  Move virtual destructors and other functions into .cpp files.
+
+  Make sure that when an account is retrieved from the database, it is
+  properlly added to the server.
+
 Provisional for Acorn 0.4:
 
   Implement accelerated Atlas Objects API. MAYBE: POSTPONED FROM 0.3

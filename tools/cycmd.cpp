@@ -305,6 +305,19 @@ void Interactive::exec(const string & cmd, const string & arg)
     } else if (cmd == "help") {
         reply_expected = false;
         help();
+    } else if (cmd == "query") {
+        Get g = Get::Instantiate();
+
+        Object::MapType cmap;
+        cmap["id"] = "server";
+        cmap["cmd"] = cmd;
+        if (arg.size() != 0) {
+            cmap["arg"] = arg;
+        }
+        g.SetArgs(Object::ListType(1,cmap));
+        g.SetFrom("admin");
+
+        encoder->StreamMessage(&g);
     } else {
         Set s = Set::Instantiate();
 

@@ -33,17 +33,12 @@ class Thing : public BaseEntity {
     double weight;
 
     Thing();
-    virtual ~Thing() { }
+    virtual ~Thing();
 
     virtual const Atlas::Message::Object & operator[](const string & aname);
     virtual void set(const string & aname, const Atlas::Message::Object & attr);
-
-    virtual int set_object(PyObject * obj) {
-        script_object = obj;
-        return(obj == NULL ? -1 : 0);
-    }
-
-    virtual MemMap * getMap() { return NULL; }
+    virtual int set_object(PyObject * obj);
+    virtual MemMap * getMap();
 
     oplist send_world(RootOperation * op) const {
         return world->message(*op, this);

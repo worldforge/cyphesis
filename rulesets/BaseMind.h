@@ -16,13 +16,8 @@ class BaseMind : public Thing {
     BaseMind(string &, string &);
     virtual ~BaseMind() { }
 
-    virtual int set_object(PyObject * obj) {
-        map.set_object(obj);
-        script_object = obj;
-        return(obj == NULL ? -1 : 0);
-    }
-
-    virtual MemMap * getMap() { return &map; }
+    virtual int set_object(PyObject * obj);
+    virtual MemMap * getMap();
 
     virtual oplist Sight_Operation(const Sight & op, Login & sub_op);
     virtual oplist Sight_Operation(const Sight & op, Chop & sub_op);
@@ -48,17 +43,8 @@ class BaseMind : public Thing {
     //virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
 
-    oplist call_sight_operation(const Sight & op, RootOperation & sub_op) {
-        map.get_add(sub_op.GetFrom());
-        op_no_t op_no = op_enumerate(&sub_op);
-        SUB_OP_SWITCH(op, op_no, Sight_, sub_op)
-    }
-
-    oplist call_sound_operation(const Sound & op, RootOperation & sub_op) {
-        map.get_add(sub_op.GetFrom());
-        op_no_t op_no = op_enumerate(&sub_op);
-        SUB_OP_SWITCH(op, op_no, Sound_, sub_op)
-    }
+    oplist call_sight_operation(const Sight & op, RootOperation & sub_op);
+    oplist call_sound_operation(const Sound & op, RootOperation & sub_op);
 
 };
 

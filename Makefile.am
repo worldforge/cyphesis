@@ -1,5 +1,5 @@
 
-SUBDIRS = physics common modules rulesets server client watchdog tools
+SUBDIRS = physics common modules rulesets server aiclient client watchdog tools
 
 EXTRA_DIST = cyphesis.vconf basic.vconf acorn.vconf cyphesis.spec
 

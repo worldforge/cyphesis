@@ -45,6 +45,9 @@ Thing::Thing() : script_object(NULL), perceptive(false), status(1),
     attributes["mode"] = Object("birth");
 }
 
+Thing::~Thing() { }
+
+
 int Thing::script_Operation(const string & op_type, const RootOperation & op,
                      oplist & ret_list, RootOperation * sub_op)
 {
@@ -140,6 +143,15 @@ void Thing::set(const string & aname, const Object & attr)
     } else {
         attributes[aname] = attr;
     }
+}
+
+int Thing::set_object(PyObject * obj) {
+    script_object = obj;
+    return(obj == NULL ? -1 : 0);
+}
+
+MemMap * Thing::getMap() {
+    return NULL;
 }
 
 void Thing::addObject(Object * obj) const

@@ -28,6 +28,7 @@
 #include <common/Nourish.h>
 #include <common/Fire.h>
 
+#include <common/op_switch.h>
 
 #include <varconf/Config.h>
 
@@ -566,6 +567,11 @@ oplist Character::Operation(const Nourish & op)
     return oplist(1,si);
 }
 
+oplist Character::Mind_Operation(const Login & op)
+{
+    return oplist();
+}
+
 oplist Character::Mind_Operation(const Setup & op)
 {
     Setup *s = new Setup(op);
@@ -826,6 +832,16 @@ oplist Character::Mind_Operation(const Set & op)
     return oplist(1,s);
 }
 
+oplist Character::Mind_Operation(const Sight & op)
+{
+    return oplist();
+}
+
+oplist Character::Mind_Operation(const Sound & op)
+{
+    return oplist();
+}
+
 oplist Character::Mind_Operation(const Create & op)
 {
     // We need to call, THE THING FACTORY! Or maybe not
@@ -872,6 +888,16 @@ oplist Character::Mind_Operation(const Look & op)
     return oplist(1,l);
 }
 
+oplist Character::Mind_Operation(const Load & op)
+{
+    return oplist();
+}
+
+oplist Character::Mind_Operation(const Save & op)
+{
+    return oplist();
+}
+
 oplist Character::Mind_Operation(const Cut & op)
 {
     Cut * c = new Cut(op);
@@ -916,6 +942,102 @@ oplist Character::Mind_Operation(const Touch & op)
     s->SetArgs(setArgs);
     res[1] = s;
     return res;
+}
+
+oplist Character::Mind_Operation(const Appearance & op)
+{
+    return oplist();
+}
+
+oplist Character::Mind_Operation(const Disappearance & op)
+{
+    return oplist();
+}
+
+
+oplist Character::Mind_Operation(const Error & op)
+{
+    return oplist();
+}
+
+oplist Character::Mind_Operation(const RootOperation & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Login & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Chop & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Create & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Cut & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Delete & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Eat & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Fire & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Move & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Set & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Look & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Load & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Save & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Appearance & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const Disappearance & op)
+{
+    return oplist();
+}
+
+oplist Character::W2m_Operation(const RootOperation & op)
+{
+    return oplist();
 }
 
 oplist Character::W2m_Operation(const Error & op)
