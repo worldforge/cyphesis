@@ -13,3 +13,8 @@ Definitly for Acorn 0.4:
 Provisional for Acorn 0.4:
 
   Implement accelerated Atlas Objects API. MAYBE: POSTPONE!
+
+Required for werewolf:
+
+  Implement calendric time using WorldTime and DateTime classes, so nighttime
+  and moons are properlly handled.

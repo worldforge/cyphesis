@@ -58,6 +58,10 @@ class WorldRouter : public Routing {
         real_time = world_info::time;
     }
 
+    double upTime() {
+        return real_time - init_time;
+    }
+
     virtual oplist message(RootOperation & op, const BaseEntity * obj);
     virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);

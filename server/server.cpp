@@ -21,8 +21,10 @@ extern "C" {
     #include <sys/time.h>
     #include <sys/types.h>
     #include <sys/socket.h>
+    #include <arpa/inet.h>
     #include <netinet/in.h>
     #include <unistd.h>
+    #include <netdb.h>
 }
 
 #include <common/config.h>
@@ -47,7 +49,28 @@ using namespace Atlas;
 
 void init_python_api();
 
-CommClient::~CommClient() {
+static inline char *pack_uint32(uint32_t data, char *buffer, unsigned int *size)
+{
+    uint32_t netorder;
+
+    netorder = htonl(data);
+    memcpy(buffer, &netorder, sizeof(uint32_t));
+    *size += sizeof(uint32_t);
+    return buffer+sizeof(uint32_t);
+}
+
+static inline char *unpack_uint32(uint32_t *dest, char *buffer)
+{
+    uint32_t netorder;
+
+    memcpy(&netorder, buffer, sizeof(uint32_t));
+    *dest = ntohl(netorder);
+    return buffer+sizeof(uint32_t);
+}
+
+
+CommClient::~CommClient()
+{
     if (connection != NULL) {
         connection->destroy();
         delete connection;
@@ -163,6 +186,8 @@ void CommClient::ObjectArrived(const Objects::Operation::Get & op)
     message(op);
 }
 
+bool CommServer::use_metaserver = true;
+
 int CommServer::setup(int port)
 {
     struct sockaddr_in sin;
@@ -183,10 +208,37 @@ int CommServer::setup(int port)
     }
     listen(server_fd, 5);
     server=new ServerRouting(this,identity);
-    return(0);
+
+    if (!use_metaserver) {
+        return 0;
+    }
+    // Establish stuff for metaserver
+
+    memset(&meta_sa, 0, sizeof(meta_sa));
+    meta_sa.sin_family = AF_INET;
+    meta_sa.sin_port = htons(metaserver_port);
+
+    cout << "Connecting to metaserver." << endl << flush;
+    struct hostent * ms_addr = gethostbyname("metaserver.worldforge.org");
+    if (ms_addr == NULL) {
+        cerr << "metaserver lookup failed. Disabling metaserver." <<endl<<flush;
+        use_metaserver = false;
+        return 0;
+    }
+    memcpy(&meta_sa.sin_addr, ms_addr->h_addr_list[0], ms_addr->h_length);
+    
+    meta_fd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (meta_fd < 0) {
+        cerr << "WARNING: Could not create metaserver connection" <<endl<<flush;
+        use_metaserver = false;
+        perror("socket");
+    }
+
+    return 0;
 }
 
-int CommServer::accept() {
+int CommServer::accept()
+{
     struct sockaddr_in sin;
     unsigned int addr_len = sizeof(sin);
 
@@ -208,13 +260,22 @@ int CommServer::accept() {
     return(0);
 }
 
-inline void CommServer::idle() {
+inline void CommServer::idle()
+{
+    static time_t ltime = -1;
+    time_t ctime = time(NULL);
+    if ((ctime > (ltime + 5)) && use_metaserver) {
+        cout << "Sending keepalive" << endl << flush;
+        ltime = ctime;
+        metaserver_keepalive();
+    }
     server->idle();
 }
 
-void CommServer::loop() {
+void CommServer::loop()
+{
     fd_set sock_fds;
-    int highest = server_fd;
+    int highest;
     int client_fd;
     CommClient * client;
     struct timeval tv;
@@ -225,6 +286,12 @@ void CommServer::loop() {
     FD_ZERO(&sock_fds);
 
     FD_SET(server_fd, &sock_fds);
+    if (use_metaserver) {
+        FD_SET(meta_fd, &sock_fds);
+        highest = max(server_fd, meta_fd);
+    } else {
+        highest = server_fd;
+    }
     client_map_t::const_iterator I;
     for(I = clients.begin(); I != clients.end(); I++) {
        client_fd = I->first;
@@ -260,6 +327,10 @@ void CommServer::loop() {
         debug(cout << "selected on server" << endl << flush;);
         accept();
     }
+    if (use_metaserver && FD_ISSET(meta_fd, &sock_fds)) {
+        debug(cout << "selected on metaserver" << endl << flush;);
+        metaserver_reply();
+    }
     idle();
 }
 
@@ -289,6 +360,56 @@ void CommServer::remove_client(CommClient * client)
 {
     remove_client(client,"You caused exception. Connection closed");
 }
+
+#define MAXLINE 4096
+
+void CommServer::metaserver_keepalive()
+{
+    char         mesg[MAXLINE];
+    unsigned int packet_size=0;
+
+    pack_uint32(SKEEP_ALIVE, mesg, &packet_size);
+    sendto(meta_fd,mesg,packet_size,0, (sockaddr *)&meta_sa, sizeof(meta_sa));
+}
+
+void CommServer::metaserver_reply()
+{
+    char                mesg[MAXLINE];
+    char               *mesg_ptr;
+    uint32_t            handshake=0, command=0;
+    struct sockaddr	addr;
+    socklen_t           addrlen;
+    unsigned int        packet_size;
+
+    if (recvfrom(meta_fd, mesg, MAXLINE, 0, &addr, &addrlen) < 0) {
+        cerr << "WARNING: No reply from metaserver" << endl << flush;
+        return;
+    }
+    mesg_ptr = unpack_uint32(&command, mesg);
+
+    if(command == HANDSHAKE)
+    {
+        mesg_ptr = unpack_uint32(&handshake, mesg_ptr);
+        cout << "Server contacted successfully." << endl << flush;
+
+        packet_size = 0;
+        mesg_ptr = pack_uint32(SERVERSHAKE, mesg, &packet_size);
+        mesg_ptr = pack_uint32(handshake, mesg_ptr, &packet_size);
+
+        sendto(meta_fd,mesg,packet_size,0,(sockaddr*)&meta_sa,sizeof(meta_sa));
+    }
+
+}
+
+void CommServer::metaserver_terminate()
+{
+    char         mesg[MAXLINE];
+    unsigned int packet_size=0;
+
+    pack_uint32(TERMINATE, mesg, &packet_size);
+    sendto(meta_fd,mesg,packet_size, 0, (sockaddr *)&meta_sa, sizeof(meta_sa));
+}
+
 
 varconf::Config * global_conf = varconf::Config::inst();
 

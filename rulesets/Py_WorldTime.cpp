@@ -6,6 +6,9 @@
 #include <unistd.h>
 #include <string>
 
+#include <list>
+#include <map>
+
 #include <Python.h>
 
 #include <server/WorldTime.h>

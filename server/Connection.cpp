@@ -56,9 +56,7 @@ void Connection::destroy()
         if (obj->is_character == true) {
             Character * character = (Character *)obj;
             if (character->external_mind != NULL) {
-                if (character->external_mind != NULL) {
-                    character->external_mind=NULL;
-                }
+                character->external_mind = NULL;
             }
         }
     }

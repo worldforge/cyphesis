@@ -1,3 +1,15 @@
+2001-02-27  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* server/CommServer.h, server/server.cpp: Added metaserver code
+	  to network classes.
+
+	* server/CommServer.h, server/WorldRouter.h, server/ServerRouting.cpp:
+	  Added fields to server entity for number of players and uptime
+	  in seconds.
+
+	* Started implementation of WorldTime class for processing of calendric
+	  time.
+
 2001-02-26  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Re-wrote the way creating various types of in-game objects is
