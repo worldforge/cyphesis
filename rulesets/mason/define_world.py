@@ -301,7 +301,7 @@ def default(mapeditor):
                     xyz=(14,12,settlement_height), sex='male')
     m.know(marshall, [('deed','price','50')])
     m.know(marshall, village)
-    m.learn(marshall,(il.help,"add_help(['On behalf of the Duke I would like to welcome you to moraf.','If you are new here I suggest talking to the pig seller.','He will tell you what you can do to help out.','If you have decide you would like to settle here I can assign you some land'],['but you will need to show that you are a useful citizen.','If you can raise 50 coins herding pigs, then a plot of land is yours.'],['I would like to buy a deed','I will come back when I have raised some pigs'])"))
+    m.learn(marshall,(il.help,"add_help(['On behalf of the Duke I would like to welcome you to moraf.','If you are new here I suggest talking to the pig seller.','He will tell you what you can do to help out.','If you have decide you would like to settle here I can assign you some land','but you will need to show that you are a useful citizen.','If you can raise 50 coins herding pigs, then a plot of land is yours.'],['I would like to buy a deed','I will come back when I have raised some pigs'])"))
     plots=[]
     for i in range(20, 200, 20):
         for j in range(-100, 100, 20):

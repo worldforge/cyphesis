@@ -1,3 +1,10 @@
+2005-03-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: More experimenting with new movement code.
+
+	* rulesets/mason/define_world.py: Fix a bug in the marshall's
+	  dialogue.
+
 2005-03-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Property.cpp, rulesets/EntityProperties.cpp,

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2005 Alistair Riddoch
 
 #include "Thing.h"
 #include "Script.h"
@@ -286,11 +286,15 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     res.push_back(s);
 
-    Operation * u = new Update();
-    u->setFutureSeconds(consts::basic_tick);
-    u->setTo(getId());
+    if (m_location.m_velocity.isValid() &&
+        m_location.m_velocity.sqrMag() > WFMATH_EPSILON) {
+        std::cout << "Moving" << std::endl << std::flush;
+        Operation * u = new Update();
+        u->setFutureSeconds(consts::basic_tick);
+        u->setTo(getId());
 
-    res.push_back(u);
+        res.push_back(u);
+    }
 
     // I think it might be wise to send a set indicating we have changed
     // modes, but this would probably be wasteful
