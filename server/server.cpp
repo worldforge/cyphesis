@@ -11,6 +11,10 @@
 
 extern "C" {
     #include <sys/utsname.h>
+    #include <mcheck.h>
+    #include <signal.h>
+    #include <syslog.h>
+    #include <fcntl.h>
 }
 
 #include <rulesets/EntityFactory.h>
@@ -42,8 +46,64 @@ const std::string get_hostname()
     return std::string(host_ident.nodename);
 }
 
+extern "C" void signal_received(int signo)
+{
+    exit_flag = true;
+    signal(signo, SIG_IGN);
+}
+
+void interactive_signals()
+{
+    signal(SIGINT, signal_received);
+    signal(SIGTERM, signal_received);
+    signal(SIGQUIT, signal_received);
+}
+
+void daemon_signals()
+{
+    signal(SIGINT, SIG_IGN);
+    signal(SIGTERM, signal_received);
+    signal(SIGQUIT, SIG_IGN);
+}
+
+int daemonise()
+{
+    int pid = fork();
+    int new_stdio;
+    switch (pid) {
+        case 0:
+            // Child
+            // Switch signal behavoir
+            daemon_signals();
+            // Get rid if stdio
+            close(STDIN_FILENO);
+            close(STDOUT_FILENO);
+            close(STDERR_FILENO);
+            // Get rid of controlling tty, and start new session
+            setsid();
+            // Open /dev/null on the stdio file descriptors to avoid problems
+            new_stdio = open("/dev/null", O_RDWR);
+            dup2(new_stdio, STDIN_FILENO);
+            dup2(new_stdio, STDOUT_FILENO);
+            dup2(new_stdio, STDERR_FILENO);
+            // Initialise syslog for serious errors
+            openlog("WorldForge Cyphesis", LOG_PID, LOG_DAEMON);
+            break;
+        case -1:
+            // Error
+            std::cerr << "ERROR: Failed to fork() to go to the background"
+                      << std::endl << std::flush;
+            break;
+        default:
+            break;
+    }
+    return pid;
+}
+
 int main(int argc, char ** argv)
 {
+    mtrace();
+    interactive_signals();
     // Initialise the varconf system, and get a pointer to the config database
     global_conf = varconf::Config::inst();
 
@@ -132,23 +192,15 @@ int main(int argc, char ** argv)
         serverName = get_hostname();
     }
     
+    if (global_conf->findItem("cyphesis", "daemon")) {
+        daemon_flag = global_conf->getItem("cyphesis","daemon");
+    }
 
     // Start up the python subsystem. FIXME This needs to sorted into a
     // a way of handling script subsystems more generically.
     init_python_api();
     debug(cout << Py_GetPath() << std::endl << flush;);
 
-    if (consts::debug_level>=1) {
-        std::cout << "consts::debug_level>=1, logging to cyphesis_server*.log files" << std::endl;
-        // FIXME Added in a logging subsystem
-        // common::log::inform_fp.open("cyphesis_server.log",ios::out);
-        // common::log::debug_fp.open("cyphesis_server_debug.log",ios::out);
-    }
-    if (consts::debug_thinking>=1) {
-        char * log_name="thinking.log";
-        cout << "consts::debug_thinking>=1:, logging to" << log_name << std::endl;
-        // common::log::thinking_fp.open(log_name,ios::out);
-    }
     // Create commserver instance that will handle connections from clients.
     // The commserver will create the other server related objects, and the
     // world object pair (World + WorldRouter), and initialise the admin
@@ -187,7 +239,17 @@ int main(int argc, char ** argv)
         }
         // FIXME ? How to send this to admin account ?
     }
-    std::cout << "Running" << std::endl << std::flush;
+    if (daemon_flag) {
+        std::cout << "Going into background" << std::endl << std::flush;
+        int pid = daemonise();
+        if (pid == -1) {
+            exit_flag = true;
+        } else if (pid > 0) {
+            return 0;
+        }
+    } else {
+        std::cout << "Running" << std::endl << std::flush;
+    }
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
@@ -199,16 +261,22 @@ int main(int argc, char ** argv)
             // exceptions that can be caused  by external influences
             // should be caught close to where they are thrown. If
             // an exception makes it here then it should be debugged.
-            std::cerr << "*********** EMERGENCY ***********" << std::endl;
-            std::cerr << "EXCEPTION: Caught in main()" << std::endl;
-            std::cerr << "         : Continuing..." << std::endl << std::flush;
+            if (daemon_flag) {
+                syslog(LOG_ERR, "Exception caught in main()");
+            } else {
+                std::cerr << "*********** EMERGENCY ***********" << std::endl;
+                std::cerr << "EXCEPTION: Caught in main()" << std::endl;
+                std::cerr << "         : Continuing" << std::endl << std::flush;
+            }
         }
     }
     // exit flag has been set so we close down the databases, and indicate
     // to the metaserver (if we are using one) that this server is going down.
     // It is assumed that any preparation for the shutdown that is required
     // by the game has been done before exit flag was set.
-    std::cout << "Performing clean shutdown..." << std::endl << std::flush;
+    if (!daemon_flag) {
+        std::cout << "Performing clean shutdown..." << std::endl << std::flush;
+    }
 
     Persistance::shutdown();
 
@@ -218,6 +286,8 @@ int main(int argc, char ** argv)
     delete global_conf;
 
     s.metaserverTerminate();
-    std::cout << "Clean shutdown complete." << std::endl << std::flush;
+    if (!daemon_flag) {
+        std::cout << "Clean shutdown complete." << std::endl << std::flush;
+    }
     return 0;
 }

@@ -446,24 +446,6 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
         addToOplist(op2, o);
         addToOplist(op3, o);
         addToOplist(op4, o);
-#if 0
-        if (op1 != NULL) {
-           if (PyOperation_Check(op1)) {
-               o->ops->push_back(op1->operation);
-           } else if ((PyObject*)op1 != Py_None) {
-               PyErr_SetString(PyExc_TypeError, "Argument must be an op");
-               return NULL;
-           }
-        }
-        if (op2 != NULL) {
-           if (PyOperation_Check(op2)) {
-               o->ops->push_back(op2->operation);
-           } else if ((PyObject*)op1 != Py_None) {
-               PyErr_SetString(PyExc_TypeError, "Argument must be an op");
-               return NULL;
-           }
-        }
-#endif
 	return (PyObject *)o;
 }
 
@@ -833,30 +815,26 @@ void init_python_api()
     //PyDict_SetItemString(dict, "misc", misc);
     PyObject_SetAttrString(_const, "server_python", PyInt_FromLong(0));
     PyObject_SetAttrString(_const, "debug_level",
-    PyInt_FromLong(consts::debug_level));
+            PyInt_FromLong(consts::debug_level));
     PyObject_SetAttrString(_const, "debug_thinking",
-    PyInt_FromLong(consts::debug_thinking));
+            PyInt_FromLong(consts::debug_thinking));
 
     PyObject_SetAttrString(_const, "time_multiplier",
-    PyFloat_FromDouble(consts::time_multiplier));
+            PyFloat_FromDouble(consts::time_multiplier));
     PyObject_SetAttrString(_const, "base_velocity_coefficient",
-    PyFloat_FromDouble(consts::base_velocity_coefficient));
+            PyFloat_FromDouble(consts::base_velocity_coefficient));
     PyObject_SetAttrString(_const, "base_velocity",
-    PyFloat_FromDouble(consts::base_velocity));
+            PyFloat_FromDouble(consts::base_velocity));
 
     PyObject_SetAttrString(_const, "basic_tick",
-    PyFloat_FromDouble(consts::basic_tick));
-    PyObject_SetAttrString(_const, "day_in_seconds",
-    PyInt_FromLong(consts::day_in_seconds));
+            PyFloat_FromDouble(consts::basic_tick));
 
     PyObject_SetAttrString(_const, "sight_range",
-    PyFloat_FromDouble(consts::sight_range));
+            PyFloat_FromDouble(consts::sight_range));
     PyObject_SetAttrString(_const, "hearing_range",
-    PyFloat_FromDouble(consts::hearing_range));
-    PyObject_SetAttrString(_const, "collision_range",
-    PyFloat_FromDouble(consts::collision_range));
+            PyFloat_FromDouble(consts::hearing_range));
     PyObject_SetAttrString(_const, "enable_ranges",
-    PyInt_FromLong(consts::enable_ranges));
+            PyInt_FromLong(consts::enable_ranges));
 
     PyObject * server;
     if ((server = Py_InitModule("server", server_methods)) == NULL) {

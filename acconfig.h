@@ -5,4 +5,8 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
+#undef HAVE_PYTHON_H
+
+#undef HAVE_PYTHON_LIB
+
 #endif

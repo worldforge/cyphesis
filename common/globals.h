@@ -14,6 +14,7 @@ extern varconf::Config * global_conf;
 extern std::string share_directory;
 extern std::list<std::string> rulesets;
 extern bool exit_flag;
+extern bool daemon_flag;
 extern int timeoffset;
 
 #endif // COMMON_GLOBALS_H

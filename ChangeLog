@@ -1,5 +1,26 @@
 2001-10-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.in: Switch to using improved checks for Atlas-C++ and
+	  python.
+
+	* common/const.h, common/const.cpp, rulesets/Python_API.cpp:
+	  Removed unused consts.
+
+	* common/globals.h, common/globals.cpp, server/server.cpp:
+	  Enable running as a daemon in the background by default.
+	  This improves usability by removing dependance on users
+	  session. Install signal handlers so signals cause clean
+	  shutdown.
+
+	* tools/cycmd.cpp: If adminning server on localhost, get admin
+	  password directly from database, instead of asking user.
+	  Allows cycmd to be used in scripts. Ensure that exit
+	  status accuratly reveals whether the command was sent.
+
+	* tools/cypasswd.cpp: Switch to using common/accountbase.h.
+
+2001-10-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Mind.cpp: Fixed a leak python object.
 
 2001-10-03  Al Riddoch  <alriddoch@zepler.org>

@@ -14,6 +14,7 @@
 
 #include <common/Load.h>
 #include <common/Save.h>
+#include <common/accountbase.h>
 
 extern "C" {
     #include <stdio.h>
@@ -75,8 +76,12 @@ class Interactive : public Atlas::Objects::Decoder
     bool login();
     void exec(const std::string & cmd, const std::string & arg);
     void loop();
-    void getpassword();
+    void getPassword();
     void prompt();
+
+    void setPassword(const std::string & passwd) {
+        password = passwd;
+    }
 };
 
 void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
@@ -188,7 +193,7 @@ void Interactive::loop()
     }
 }
 
-void Interactive::getpassword()
+void Interactive::getPassword()
 {
     // This needs to be re-written to hide input, so the password can be
     // secret
@@ -365,11 +370,24 @@ int main(int argc, char ** argv)
     }
     Interactive bridge;
     if (!bridge.connect(server)) {
-        return 0;
+        return 1;
     }
-    bridge.getpassword();
+    Object::MapType adminAccount;
+    if ((strcmp(server, "localhost") == 0) &&
+        (AccountBase::instance()->getAccount("admin", adminAccount))) {
+        Object::MapType::const_iterator I = adminAccount.find("password");
+        if (I == adminAccount.end()) {
+            std::cerr << "Unable to read admin account from database"
+                      << std::endl << std::flush;
+            return 1;
+        }
+        bridge.setPassword(I->second.AsString());
+        AccountBase::instance()->shutdownAccount();
+    } else {
+        bridge.getPassword();
+    }
     if (!bridge.login()) {
-        return 0;
+        return 1;
     }
     if (!interactive) {
         bridge.exec(cmd, "");
@@ -377,4 +395,5 @@ int main(int argc, char ** argv)
     } else {
 	bridge.prompt();
     }
+    return 0;
 }

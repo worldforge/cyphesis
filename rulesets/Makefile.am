@@ -1,4 +1,4 @@
-SUBDIRS = astronomy skills
+# SUBDIRS = astronomy skills
 
 noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
                    libscriptpython.a

@@ -8,7 +8,7 @@
 #include <Atlas/Codecs/XML.h>
 
 #include <common/config.h>
-#include <common/database.h>
+#include <common/accountbase.h>
 
 #include <string>
 
@@ -23,30 +23,6 @@
 //       blatting it with a new Object.
 
 using Atlas::Message::Object;
-
-class AccountBase : public Database {
-  protected:
-    AccountBase() { }
-
-  public:
-    static AccountBase * instance() {
-        if (m_instance == NULL) {
-            m_instance = new AccountBase();
-        }
-        return (AccountBase *)m_instance;
-    }
-
-    bool putAccount(const Object::MapType & o, const std::string & account) {
-        return putObject(account_db, o, account.c_str());
-    }
-    bool delAccount(const std::string & account) {
-        return delObject(account_db, account.c_str());
-    }
-    bool getAccount(const std::string & account, Object::MapType & o) {
-        return getObject(account_db, account.c_str(), o);
-    }
-
-};
 
 #define ADD 0
 #define SET 1
@@ -108,7 +84,7 @@ int main(int argc, char ** argv)
     AccountBase * db = AccountBase::instance();
     db->initAccount(true);
 
-    Atlas::Message::Object::MapType data;
+    Object::MapType data;
 
     bool res = db->getAccount("admin", data);
 
@@ -140,7 +116,7 @@ int main(int argc, char ** argv)
     std::cout << "Retype " << acname << " password:" << flush;
     std::cin >> password2;
     if (password == password2) {
-        Atlas::Message::Object::MapType amap;
+        Object::MapType amap;
         amap["id"] = acname;
         amap["password"] = password;
 

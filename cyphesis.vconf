@@ -11,6 +11,8 @@ restricted="false"
 # Register server with the meta server
 usemetaserver="true"
 metaserver="metaserver.worldforge.org"
+# Run in daemon mode
+daemon="true"
 # Leave control of NPCs to AI client
 useaiclient="false"
 # Account to be used by the AI client
