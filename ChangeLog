@@ -1,3 +1,7 @@
+2003-08-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* Backport improved pthread check from devel code.
+
 2003-07-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Use PQClear() to free database result objects.

@@ -126,8 +126,21 @@ dnl build the library path from the found version
 python_lib_path=${python_prefix}/lib/${python_version}/config
 
 AC_CHECK_LIB(dl,dlopen)
-AC_CHECK_LIB(pthread,pthread_create)
 AC_CHECK_LIB(util,openpty)
+
+AC_CHECK_FUNC(pthread_mutex_trylock, ,
+[
+    ac_save_CXXFLAGS="$CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS -pthread"
+    AC_CHECK_FUNC(pthread_create, ,
+    [
+        CXXFLAGS="$ac_save_CXXFLAGS"
+        AC_CHECK_LIB(pthread, pthread_create, ,
+        [
+            AC_MSG_WARN([Couldn't find pthread library. Python lib check may fail])
+        ])
+    ])
+])
 
 AC_CHECK_LIB(${python_version}, 
     Py_Initialize,
