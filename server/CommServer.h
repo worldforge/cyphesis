@@ -16,8 +16,8 @@ typedef std::set<CommIdleSocket *> commi_set_t;
 
 class CommServer {
   private:
-    comm_set_t sockets;
-    commi_set_t idleSockets;
+    comm_set_t m_sockets;
+    commi_set_t m_idleSockets;
 
     void idle();
 
@@ -35,13 +35,13 @@ class CommServer {
     void removeSocket(CommSocket * client);
 
     void add(CommSocket * cs) {
-        sockets.insert(cs);
+        m_sockets.insert(cs);
     }
 
     // There is current no mechanism for removing things from the
     // idle set. If one is needed in future, it must be implemented.
     void addIdle(CommIdleSocket * cs) {
-        idleSockets.insert(cs);
+        m_idleSockets.insert(cs);
     }
 };
 

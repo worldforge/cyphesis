@@ -63,14 +63,14 @@ OpVector Admin::LogoutOperation(const Logout & op)
         if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
             return error(op, "No account id given");
         }
-        if (connection == NULL) {
+        if (m_connection == NULL) {
             return error(op, "Disconnected admin account handling explicit logout");
         }
         const std::string & account_id = I->second.AsString();
         if (account_id == getId()) {
            return Account::LogoutOperation(op);
         }
-        BaseEntity * player = connection->server.getObject(account_id);
+        BaseEntity * player = m_connection->m_server.getObject(account_id);
         if (!player) {
             return error(op, "Logout failed");
         }
@@ -104,9 +104,9 @@ OpVector Admin::GetOperation(const Get & op)
     }
     Info * info = new Info(Info::Instantiate());
     if (objtype == "object") {
-        const BaseDict & OOGDict = connection->server.getObjects();
+        const BaseDict & OOGDict = m_connection->m_server.getObjects();
         BaseDict::const_iterator J = OOGDict.find(id);
-        const EntityDict & worldDict = connection->server.world.getObjects();
+        const EntityDict & worldDict = m_connection->m_server.m_world.getObjects();
         EntityDict::const_iterator K = worldDict.find(id);
 
         Element::ListType & info_args = info->GetArgs();
@@ -134,7 +134,7 @@ OpVector Admin::GetOperation(const Get & op)
         return error(op, "Unknow object type requested");
     }
     info->SetRefno(op.GetSerialno());
-    info->SetSerialno(connection->server.getSerialNo());
+    info->SetSerialno(m_connection->m_server.getSerialNo());
     return OpVector(1,info);
 }
 

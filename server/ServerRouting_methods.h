@@ -11,7 +11,7 @@
 #if !defined(__GNUC__) || __GNUC__ > 2 || (__GNUC__ > 1 && __GNUC_MINOR__ > 95)
 
 inline int ServerRouting::idle() {
-    return world.idle();
+    return m_world.idle();
 }
 
 #endif // defined(__GNUC__) .....

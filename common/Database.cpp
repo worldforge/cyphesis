@@ -24,7 +24,7 @@ static const bool debug_flag = false;
 
 Database * Database::m_instance = NULL;
 
-Database::Database() : rule_db("rules"),
+Database::Database() : m_rule_db("rules"),
                        m_connection(NULL)
 {
     

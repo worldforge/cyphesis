@@ -11,7 +11,7 @@
 
 inline void Connection::send(const RootOperation & msg) const
 {
-    commClient.send(msg);
+    m_commClient.send(msg);
 }
 
 #endif // SERVER_CONNECTION_METHODS_H

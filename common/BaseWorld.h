@@ -17,18 +17,18 @@ class BaseWorld : public OOGThing {
     BaseWorld(const BaseWorld &);
     const BaseWorld & operator=(const BaseWorld &);
   protected:
-    double realTime;
-    EntityDict eobjects;
+    double m_realTime;
+    EntityDict m_eobjects;
 
   public:
-    Entity & gameWorld;
+    Entity & m_gameWorld;
 
     explicit BaseWorld(const std::string &, Entity &);
     virtual ~BaseWorld();
 
     Entity * getObject(const std::string & fid) {
-        EntityDict::const_iterator I = eobjects.find(fid);
-        if (I != eobjects.end()) {
+        EntityDict::const_iterator I = m_eobjects.find(fid);
+        if (I != m_eobjects.end()) {
             return I->second;
         } else {
             return NULL;
@@ -36,15 +36,15 @@ class BaseWorld : public OOGThing {
     }
 
     const EntityDict & getObjects() const {
-        return eobjects;
+        return m_eobjects;
     }
 
     const double & getTime() const {
-        return realTime;
+        return m_realTime;
     }
 
     const double upTime() const {
-        return realTime - timeoffset;
+        return m_realTime - timeoffset;
     }
 
     virtual int idle() = 0;

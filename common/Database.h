@@ -33,7 +33,7 @@ class Database {
   private:
     static Database * m_instance;
 
-    std::string rule_db;
+    std::string m_rule_db;
 
     TableDict entityTables;
 
@@ -51,7 +51,7 @@ class Database {
   public:
     typedef enum { OneToMany, ManyToMany, ManyToOne, OneToOne } RelationType;
 
-    const std::string & rule() const { return rule_db; }
+    const std::string & rule() const { return m_rule_db; }
 
     bool decodeObject(const std::string & data,
                       Atlas::Message::Object::MapType &);

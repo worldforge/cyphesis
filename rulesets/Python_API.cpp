@@ -365,7 +365,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
                 if (decrefO) { Py_DECREF(refO); }
                 return NULL;
             }
-            ref_ent = &ref->world->gameWorld;
+            ref_ent = &ref->world->m_gameWorld;
         } else if (PyMind_Check(refO)) {
             MindObject * ref = (MindObject*)refO;
             if (ref->m_mind == NULL) {
@@ -628,7 +628,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             } else if (strcmp(key, "xyz") == 0) {
                 omap["pos"] = PyObject_asObject(val);
             } else if ((strcmp(key, "parent") == 0) && (PyString_Check(val))) {
-                omap["loc"] = Element(std::string(PyString_AsString(val)));
+                omap["loc"] = PyString_AsString(val);
             } else if ((strcmp(key, "type") == 0) && (PyString_Check(val))) {
                 omap["parents"] = Element::ListType(1,std::string(PyString_AsString(val)));
             } else {

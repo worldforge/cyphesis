@@ -28,40 +28,40 @@ inline void WorldRouter::updateTime()
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    double tmp_time = (double)(tv.tv_sec - initTime) + (double)tv.tv_usec/1000000;
-    realTime = tmp_time;
+    double tmp_time = (double)(tv.tv_sec - m_initTime) + (double)tv.tv_usec/1000000;
+    m_realTime = tmp_time;
 }
 
 
 WorldRouter::WorldRouter() : BaseWorld(consts::rootWorldId,
-                                       *new World(consts::rootWorldId)), nextId(0)
+                                       *new World(consts::rootWorldId)), m_nextId(0)
 {
     // setId(consts::rootWorldId);
-    initTime = time(NULL) - timeoffset;
+    m_initTime = time(NULL) - timeoffset;
     updateTime();
-    // gameWorld.setId(getId());
-    gameWorld.m_world = this;
-    eobjects[getId()] = &gameWorld;
-    perceptives.insert(&gameWorld);
-    objectList.insert(&gameWorld);
+    // m_gameWorld.setId(getId());
+    m_gameWorld.m_world = this;
+    m_eobjects[getId()] = &m_gameWorld;
+    m_perceptives.insert(&m_gameWorld);
+    m_objectList.insert(&m_gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
     EntityFactory::init(*this);
 }
 
 WorldRouter::~WorldRouter()
 {
-    OpQueue::const_iterator I = operationQueue.begin();
-    for (; I != operationQueue.end(); I++) {
+    OpQueue::const_iterator I = m_operationQueue.begin();
+    for (; I != m_operationQueue.end(); I++) {
         delete *I;
     }
-    eobjects.erase(gameWorld.getId());
-    EntityDict::const_iterator J = eobjects.begin();
-    for(; J != eobjects.end(); J++) {
+    m_eobjects.erase(m_gameWorld.getId());
+    EntityDict::const_iterator J = m_eobjects.begin();
+    for(; J != m_eobjects.end(); J++) {
         delete J->second;
     }
     // This should be deleted here rather than in the base class because
     // we created it, and BaseWorld should not even know what it is.
-    delete &gameWorld;
+    delete &m_gameWorld;
 }
 
 inline void WorldRouter::addOperationToQueue(RootOperation & op,
@@ -73,25 +73,25 @@ inline void WorldRouter::addOperationToQueue(RootOperation & op,
         op.SetFrom(obj->getId());
     }
     updateTime();
-    double t = realTime;
+    double t = m_realTime;
     t = t + op.GetFutureSeconds();
     op.SetSeconds(t);
     op.SetFutureSeconds(0.0);
     OpQueue::iterator I;
-    for(I = operationQueue.begin();
-        (I != operationQueue.end()) && ((*I)->GetSeconds() <= t) ; I++);
-    operationQueue.insert(I, &op);
+    for(I = m_operationQueue.begin();
+        (I != m_operationQueue.end()) && ((*I)->GetSeconds() <= t) ; I++);
+    m_operationQueue.insert(I, &op);
 }
 
 inline RootOperation * WorldRouter::getOperationFromQueue()
 {
-    std::list<RootOperation *>::const_iterator I = operationQueue.begin();
-    if ((I == operationQueue.end()) || ((*I)->GetSeconds() > realTime)) {
+    std::list<RootOperation *>::const_iterator I = m_operationQueue.begin();
+    if ((I == m_operationQueue.end()) || ((*I)->GetSeconds() > m_realTime)) {
         return NULL;
     }
     debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
     RootOperation * op = *I;
-    operationQueue.pop_front();
+    m_operationQueue.pop_front();
     return op;
 }
 
@@ -111,7 +111,7 @@ inline const std::string WorldRouter::getNewId(const std::string & name)
 {
     std::stringstream buf;
 #ifdef DEBUG
-    buf << ++nextId;
+    buf << ++m_nextId;
     return buf.str();
     // buf << name << "_" << ++nextId;
     // std::string full_id = buf.str();
@@ -130,12 +130,12 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
 {
     debug(std::cout << "WorldRouter::addObject(Entity *)" << std::endl
                     << std::flush;);
-    eobjects[obj->getId()] = obj;
-    objectList.insert(obj);
+    m_eobjects[obj->getId()] = obj;
+    m_objectList.insert(obj);
     if (!obj->m_location.isValid()) {
-        debug(std::cout << "set loc " << &gameWorld  << std::endl
+        debug(std::cout << "set loc " << &m_gameWorld  << std::endl
                         << std::flush;);
-        obj->m_location.m_loc = &gameWorld;
+        obj->m_location.m_loc = &m_gameWorld;
         obj->m_location.m_pos = Vector3D(0,0,0);
         debug(std::cout << "loc set with loc " << obj->m_location.m_loc->getId()
                         << std::endl << std::flush;);
@@ -152,7 +152,7 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
     if (consts::enable_omnipresence &&
         (obj->getAttributes().find("omnipresent") !=
          obj->getAttributes().end())) {
-        omnipresentList.insert(obj);
+        m_omnipresentList.insert(obj);
     }
     if (setup) {
         Setup * s = new Setup(Setup::Instantiate());
@@ -183,11 +183,11 @@ Entity * WorldRouter::addObject(const std::string & typestr,
 void WorldRouter::delObject(Entity * obj)
 {
     if (consts::enable_omnipresence) {
-        omnipresentList.erase(obj);
+        m_omnipresentList.erase(obj);
     }
-    perceptives.erase(obj);
-    objectList.erase(obj);
-    eobjects.erase(obj->getId());
+    m_perceptives.erase(obj);
+    m_objectList.erase(obj);
+    m_eobjects.erase(obj->getId());
 }
 
 OpVector WorldRouter::message(const RootOperation & op)
@@ -208,7 +208,7 @@ inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) con
     if (!parents.empty() && (parents.front().IsString())) {
         const std::string & parent = parents.front().AsString();
         if ((parent == "sight") || (parent == "sound")) {
-            return perceptives;
+            return m_perceptives;
         }
         std::string msg = std::string("Broadcasting ") + parent + " op from "
                                                        + op.GetFrom();
@@ -218,7 +218,7 @@ inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) con
                                                        + op.GetFrom();
         log(ERROR, msg.c_str());
     }
-    return objectList;
+    return m_objectList;
 }
 
 inline void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
@@ -241,8 +241,8 @@ OpVector WorldRouter::operation(const RootOperation & op)
                     << std::flush;);
 
     if (!to.empty() && (to != "all")) {
-        EntityDict::const_iterator I = eobjects.find(to);
-        if (I == eobjects.end()) {
+        EntityDict::const_iterator I = m_eobjects.find(to);
+        if (I == m_eobjects.end()) {
             debug(std::cerr << "WARNING: Op to=\"" << to << "\""
                             << " does not exist" << std::endl << std::flush;);
             return OpVector();
@@ -259,7 +259,7 @@ OpVector WorldRouter::operation(const RootOperation & op)
         }
         deliverTo(op, to_entity);
         if ((op.GetParents().front().AsString() == "delete") &&
-            (to_entity != &gameWorld)) {
+            (to_entity != &m_gameWorld)) {
             delObject(to_entity);
             to_entity->destroy();
             delete to_entity;
@@ -268,8 +268,8 @@ OpVector WorldRouter::operation(const RootOperation & op)
         RootOperation newop = op;
         const EntitySet & broadcast = broadcastList(op);
         const std::string & from = newop.GetFrom();
-        EntityDict::const_iterator J = eobjects.find(from);
-        if (from.empty() || (J == eobjects.end()) || (!consts::enable_ranges)) {
+        EntityDict::const_iterator J = m_eobjects.find(from);
+        if (from.empty() || (J == m_eobjects.end()) || (!consts::enable_ranges)) {
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 newop.SetTo((*I)->getId());
@@ -307,9 +307,9 @@ OpVector WorldRouter::LookOperation(const Look & op)
 {
     debug(std::cout << "WorldRouter::Operation(Look)" << std::endl << std::flush;);
     const std::string & from = op.GetFrom();
-    EntityDict::const_iterator J = eobjects.find(from);
-    if (J != eobjects.end()) {
-        perceptives.insert(J->second);
+    EntityDict::const_iterator J = m_eobjects.find(from);
+    if (J != m_eobjects.end()) {
+        m_perceptives.insert(J->second);
     }
 
     return OpVector();
@@ -341,8 +341,8 @@ int WorldRouter::idle()
 
 Entity * WorldRouter::findByName(const std::string & name)
 {
-    EntityDict::const_iterator I = eobjects.begin();
-    for(; I != eobjects.end(); ++I) {
+    EntityDict::const_iterator I = m_eobjects.begin();
+    for(; I != m_eobjects.end(); ++I) {
         if (I->second->getName() == name) {
             return I->second;
         }
@@ -352,8 +352,8 @@ Entity * WorldRouter::findByName(const std::string & name)
 
 Entity * WorldRouter::findByType(const std::string & type)
 {
-    EntityDict::const_iterator I = eobjects.begin();
-    for(; I != eobjects.end(); ++I) {
+    EntityDict::const_iterator I = m_eobjects.begin();
+    for(; I != m_eobjects.end(); ++I) {
         if (I->second->getType() == type) {
             return I->second;
         }

@@ -10,7 +10,7 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
-Lobby::Lobby(const std::string & id, ServerRouting & s) : OOGThing(id), server(s)
+Lobby::Lobby(const std::string & id, ServerRouting & s) : OOGThing(id), m_server(s)
 {
 }
 
@@ -24,10 +24,10 @@ void Lobby::addObject(Account * ac)
     us["loc"] = "lobby";
     a.SetFrom(ac->getId());
     a.SetTo("lobby");
-    a.SetSerialno(server.getSerialNo());
+    a.SetSerialno(m_server.getSerialNo());
     operation(a);
 
-    accounts[ac->getId()] = ac;
+    m_accounts[ac->getId()] = ac;
 }
 
 void Lobby::delObject(Account * a)
@@ -40,10 +40,10 @@ void Lobby::delObject(Account * a)
     us["loc"] = "lobby";
     d.SetFrom(a->getId());
     d.SetTo("lobby");
-    d.SetSerialno(server.getSerialNo());
+    d.SetSerialno(m_server.getSerialNo());
     operation(d);
 
-    accounts.erase(a->getId());
+    m_accounts.erase(a->getId());
 }
 
 
@@ -51,21 +51,21 @@ OpVector Lobby::operation(const RootOperation & op)
 {
     const std::string & to = op.GetTo();
     if (to.empty() || to == "lobby") {
-        AccountDict::const_iterator I = accounts.begin();
+        AccountDict::const_iterator I = m_accounts.begin();
         RootOperation newop(op);
-        for (; I != accounts.end(); ++I) {
-            Connection * c = I->second->connection;
+        for (; I != m_accounts.end(); ++I) {
+            Connection * c = I->second->m_connection;
             if (c != NULL) {
                 newop.SetTo(I->first);
                 c->send(newop);
             }
         }
     } else {
-        AccountDict::const_iterator I = accounts.find(to);
-        if (I == accounts.end()) {
+        AccountDict::const_iterator I = m_accounts.find(to);
+        if (I == m_accounts.end()) {
             return error(op, "Target account not logged in");
         } else {
-            Connection * c = I->second->connection;
+            Connection * c = I->second->m_connection;
             if (c != NULL) {
                 c->send(op);
             }
@@ -82,8 +82,8 @@ void Lobby::addToObject(Element::MapType & omap) const
     Element::ListType plist(1, "room");
     omap["parents"] = plist;
     Element::ListType player_list;
-    AccountDict::const_iterator I = accounts.begin();
-    for(; I != accounts.end(); I++) {
+    AccountDict::const_iterator I = m_accounts.begin();
+    for(; I != m_accounts.end(); I++) {
         player_list.push_back(I->first);
     }
     omap["people"] = player_list;

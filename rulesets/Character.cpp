@@ -191,7 +191,7 @@ OpVector Character::SetupOperation(const Setup & op)
     Look * l = new Look(Look::Instantiate());
     l->SetTo(m_world->getId());
     res2[1] = l;
-    if (m_location.m_loc != &m_world->gameWorld) {
+    if (m_location.m_loc != &m_world->m_gameWorld) {
         l = new Look(Look::Instantiate());
         l->SetTo(m_location.m_loc->getId());
         res2.push_back(l);

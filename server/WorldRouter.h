@@ -20,12 +20,12 @@ class World;
 
 class WorldRouter : public BaseWorld {
   private:
-    OpQueue operationQueue;
-    time_t initTime;
-    EntitySet objectList;
-    EntitySet perceptives;
-    EntitySet omnipresentList;
-    int nextId;
+    OpQueue m_operationQueue;
+    time_t m_initTime;
+    EntitySet m_objectList;
+    EntitySet m_perceptives;
+    EntitySet m_omnipresentList;
+    int m_nextId;
 
     int getSerialNo() {
         return opSerialNo();

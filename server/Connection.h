@@ -14,15 +14,14 @@ class Account;
 class Connection : public OOGThing {
     typedef std::map<std::string, SigC::Connection *> ConMap;
 
-
-    BaseDict objects;
-    CommClient & commClient;
-    bool obsolete;
-    ConMap destroyedConnections;
+    BaseDict m_objects;
+    CommClient & m_commClient;
+    bool m_obsolete;
+    ConMap m_destroyedConnections;
 
     Account * addPlayer(const std::string &, const std::string &);
   public:
-    ServerRouting & server;
+    ServerRouting & m_server;
 
     Connection(const std::string & id, CommClient & client, ServerRouting & svr);
     virtual ~Connection();

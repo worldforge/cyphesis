@@ -15,14 +15,14 @@ class Lobby;
 
 class ServerRouting : public OOGThing {
   private:
-    BaseDict objects;
-    AccountDict accounts;
-    const std::string svrRuleset;
-    const std::string svrName;
-    int numClients;
+    BaseDict m_objects;
+    AccountDict m_accounts;
+    const std::string m_svrRuleset;
+    const std::string m_svrName;
+    int m_numClients;
   public:
-    BaseWorld & world;
-    Lobby & lobby;
+    BaseWorld & m_world;
+    Lobby & m_lobby;
 
     ServerRouting(BaseWorld & wrld,
                   const std::string & ruleset,
@@ -32,11 +32,11 @@ class ServerRouting : public OOGThing {
     int idle();
 
     void addObject(BaseEntity * obj) {
-        objects[obj->getId()] = obj;
+        m_objects[obj->getId()] = obj;
     }
 
     void addAccount(Account * a) {
-        accounts[a->username] = a;
+        m_accounts[a->m_username] = a;
         addObject(a);
     }
 
@@ -45,12 +45,12 @@ class ServerRouting : public OOGThing {
     }
 
     const BaseDict & getObjects() const {
-        return objects;
+        return m_objects;
     }
 
     BaseEntity * getObject(const std::string & id) const {
-        BaseDict::const_iterator I = objects.find(id);
-        if (I == objects.end()) {
+        BaseDict::const_iterator I = m_objects.find(id);
+        if (I == m_objects.end()) {
             return 0;
         } else {
             return I->second;
@@ -58,20 +58,20 @@ class ServerRouting : public OOGThing {
     }
 
     Account * getAccountByName(const std::string & username) const {
-        AccountDict::const_iterator I = accounts.find(username);
-        if (I == accounts.end()) {
+        AccountDict::const_iterator I = m_accounts.find(username);
+        if (I == m_accounts.end()) {
             return 0;
         } else {
             return I->second;
         }
     }
 
-    void incClients() { ++numClients; }
-    void decClients() { --numClients; }
+    void incClients() { ++m_numClients; }
+    void decClients() { --m_numClients; }
 
-    BaseWorld & getWorld() { return world; }
+    BaseWorld & getWorld() { return m_world; }
 
-    const std::string & getName() const { return svrName; }
+    const std::string & getName() const { return m_svrName; }
 
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
 };

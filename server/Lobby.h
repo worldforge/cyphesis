@@ -11,8 +11,8 @@ class ServerRouting;
 
 class Lobby : public OOGThing {
   private:
-    AccountDict accounts;
-    ServerRouting & server;
+    AccountDict m_accounts;
+    ServerRouting & m_server;
   public:
     explicit Lobby(const std::string & id, ServerRouting &);
 
@@ -20,7 +20,7 @@ class Lobby : public OOGThing {
     void delObject(Account * a);
 
     inline const AccountDict & getAccounts() const {
-        return accounts;
+        return m_accounts;
     }
 
     virtual OpVector operation(const RootOperation & op);

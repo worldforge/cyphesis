@@ -27,7 +27,7 @@ class EntityFactory {
     explicit EntityFactory(BaseWorld & w);
     static EntityFactory * m_instance;
 
-    FactoryDict factories;
+    FactoryDict m_factories;
     BaseWorld & m_world;
     PersistantThingFactory<Entity> * m_eft;
 

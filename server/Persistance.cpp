@@ -115,11 +115,11 @@ void Persistance::putAccount(const Account & ac)
 {
     std::string columns = "username, type, password";
     std::string values = "'";
-    values += ac.username;
+    values += ac.m_username;
     values += "', '";
     values += ac.getType();
     values += "', '";
-    values += ac.password;
+    values += ac.m_password;
     values += "'";
     m_connection.createSimpleRow("accounts", ac.getId(), columns, values);
 }

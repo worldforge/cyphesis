@@ -13,8 +13,8 @@ class Account : public OOGThing {
   private:
     typedef std::map<std::string, SigC::Connection *> ConMap;
 
-    EntityDict charactersDict;
-    ConMap destroyedConnections;
+    EntityDict m_charactersDict;
+    ConMap m_destroyedConnections;
 
     Entity * addCharacter(const std::string &,
                           const Atlas::Message::Object::MapType &);
@@ -24,9 +24,9 @@ class Account : public OOGThing {
     virtual OpVector characterError(const Create &, const Atlas::Message::Object::MapType &) const = 0;
 
   public:
-    Connection * connection;
-    std::string username;
-    std::string password;
+    Connection * m_connection;
+    std::string m_username;
+    std::string m_password;
 
     Account(Connection * conn, const std::string & username,
                                const std::string & passwd,
@@ -45,7 +45,7 @@ class Account : public OOGThing {
     void addCharacter(Entity *);
 
     const EntityDict & getCharacters() const {
-        return charactersDict;
+        return m_charactersDict;
     }
 };
 

@@ -22,8 +22,8 @@ CommServer::CommServer(ServerRouting & svr) : server(svr)
 
 CommServer::~CommServer()
 {
-    comm_set_t::const_iterator I = sockets.begin();
-    for(; I != sockets.end(); I++) {
+    comm_set_t::const_iterator I = m_sockets.begin();
+    for(; I != m_sockets.end(); I++) {
         delete *I;
     }
 }
@@ -34,7 +34,7 @@ inline void CommServer::idle()
     // stuff.
     time_t ctime = time(NULL);
     commi_set_t::const_iterator I;
-    for(I = idleSockets.begin(); I != idleSockets.end(); ++I) {
+    for(I = m_idleSockets.begin(); I != m_idleSockets.end(); ++I) {
         (*I)->idle(ctime);
     }
     // server.idle() is inlined, and simply calls the world idle method,
@@ -57,8 +57,8 @@ void CommServer::loop()
 
     FD_ZERO(&sock_fds);
 
-    comm_set_t::const_iterator I;
-    for(I = sockets.begin(); I != sockets.end(); I++) {
+    comm_set_t::const_iterator I = m_sockets.begin();
+    for(; I != m_sockets.end(); I++) {
        if (!(*I)->isOpen()) { continue; }
        int client_fd = (*I)->getFd();
        FD_SET(client_fd, &sock_fds);
@@ -74,7 +74,7 @@ void CommServer::loop()
     }
     
     std::set<CommSocket *> obsoleteConnections;
-    for(I = sockets.begin(); I != sockets.end(); I++) {
+    for(I = m_sockets.begin(); I != m_sockets.end(); I++) {
        CommSocket * client = *I;
        if (!client->isOpen()) {
            obsoleteConnections.insert(client);
@@ -117,7 +117,7 @@ inline void CommServer::removeSocket(CommSocket * client, char * error_msg)
     // if (client->online() && client->isOpen()) {
         // client->send(e);
     // }
-    sockets.erase(client);
+    m_sockets.erase(client);
     delete client;
 }
 

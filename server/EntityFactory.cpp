@@ -41,7 +41,7 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
     // This class can only have one instance, so a Factory is not installed
     PersistantThingFactory<World> * wft = new PersistantThingFactory<World>();
     installFactory("game_entity", "world", wft);
-    wft->m_p.persist((World &)m_world.gameWorld);
+    wft->m_p.persist((World &)m_world.m_gameWorld);
 
     PersistantThingFactory<Thing> * tft = new PersistantThingFactory<Thing>();
     installFactory("game_entity", "thing", tft);
@@ -66,9 +66,9 @@ Entity * EntityFactory::newEntity(const std::string & id,
 {
     Entity * thing = 0;
     Element::MapType attributes;
-    FactoryDict::const_iterator I = factories.find(type);
+    FactoryDict::const_iterator I = m_factories.find(type);
     PersistorBase * pc = 0;
-    if (I != factories.end()) {
+    if (I != m_factories.end()) {
         FactoryBase * factory = I->second;
         thing = factory->newPersistantThing(id, &pc);
         // FIXME Avoid this copy
@@ -103,7 +103,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
     thing->merge(attributes);
     // Get location from entity, if it is present
     if (thing->getLocation(attributes, m_world.getObjects())) {
-        thing->m_location.m_loc = &m_world.gameWorld;
+        thing->m_location.m_loc = &m_world.m_gameWorld;
     }
     if (!thing->m_location.m_pos.isValid()) {
         thing->m_location.m_pos = Vector3D(0,0,0);
@@ -118,8 +118,8 @@ Entity * EntityFactory::newEntity(const std::string & id,
 
 void EntityFactory::flushFactories()
 {
-    FactoryDict::const_iterator I = factories.begin();
-    for (; I != factories.end(); I++) {
+    FactoryDict::const_iterator I = m_factories.begin();
+    for (; I != m_factories.end(); I++) {
         delete I->second;
     }
     delete m_eft;
@@ -186,7 +186,7 @@ void EntityFactory::installFactory(const std::string & parent,
                                    FactoryBase * factory)
 {
     if (factory != NULL) {
-        factories[className] = factory;
+        m_factories[className] = factory;
     }
 
     Inheritance & i = Inheritance::instance();
@@ -200,8 +200,8 @@ void EntityFactory::installFactory(const std::string & parent,
 
 FactoryBase * EntityFactory::getFactory(const std::string & parent)
 {
-    FactoryDict::const_iterator I = factories.find(parent);
-    if (I == factories.end()) {
+    FactoryDict::const_iterator I = m_factories.find(parent);
+    if (I == m_factories.end()) {
         std::string msg = std::string("Failed to find factory for ") + parent
                      + " while installing a new type which inherits from it.";
         log(WARNING, msg.c_str());

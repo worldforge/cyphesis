@@ -32,8 +32,8 @@
 static const bool debug_flag = false;
 
 Connection::Connection(const std::string & id, CommClient & client,
-                       ServerRouting & svr) : OOGThing(id), commClient(client),
-                       obsolete(false), server(svr)
+                       ServerRouting & svr) : OOGThing(id), m_commClient(client),
+                       m_obsolete(false), m_server(svr)
 {
     subscribe("login", OP_LOGIN);
     subscribe("logout", OP_LOGOUT);
@@ -47,7 +47,7 @@ Connection::~Connection()
 
 void Connection::send(const RootOperation & msg) const
 {
-    commClient.send(msg);
+    m_commClient.send(msg);
 }
 
 Account * Connection::addPlayer(const std::string& username,
@@ -57,27 +57,27 @@ Account * Connection::addPlayer(const std::string& username,
     encrypt_password(password, hash);
     Player * player = new Player(this, username, hash);
     addObject(player);
-    player->connection = this;
-    server.addAccount(player);
-    server.lobby.addObject(player);
+    player->m_connection = this;
+    m_server.addAccount(player);
+    m_server.m_lobby.addObject(player);
     return player;
 }
 
 void Connection::addObject(BaseEntity * obj)
 {
-    objects[obj->getId()] = obj;
+    m_objects[obj->getId()] = obj;
     SigC::Connection * con = new SigC::Connection(obj->destroyed.connect(SigC::bind<std::string>(SigC::slot(*this, &Connection::objectDeleted), obj->getId())));
-    destroyedConnections[obj->getId()] = con;
+    m_destroyedConnections[obj->getId()] = con;
 }
 
 void Connection::removeObject(const std::string & id)
 {
-    if (!obsolete) {
-        objects.erase(id);
-        ConMap::iterator I = destroyedConnections.find(id);
-        if (I != destroyedConnections.end()) {
+    if (!m_obsolete) {
+        m_objects.erase(id);
+        ConMap::iterator I = m_destroyedConnections.find(id);
+        if (I != m_destroyedConnections.end()) {
             delete I->second;
-            destroyedConnections.erase(I);
+            m_destroyedConnections.erase(I);
         }
     }
 }
@@ -90,21 +90,21 @@ void Connection::destroy()
 {
     // Once we are obsolete, ExternalMind can no longer affect contents
     // of objects when we delete it.
-    assert(!obsolete);
-    obsolete = true;
-    ConMap::const_iterator J = destroyedConnections.begin();
-    for(; J != destroyedConnections.end(); J++) {
+    assert(!m_obsolete);
+    m_obsolete = true;
+    ConMap::const_iterator J = m_destroyedConnections.begin();
+    for(; J != m_destroyedConnections.end(); J++) {
         J->second->disconnect();
         delete J->second;
     }
 
     debug(std::cout << "destroy called" << std::endl << std::flush;);
     BaseDict::const_iterator I;
-    for(I = objects.begin(); I != objects.end(); I++) {
+    for(I = m_objects.begin(); I != m_objects.end(); I++) {
         Account * ac = dynamic_cast<Account *>(I->second);
         if (ac != NULL) {
-            server.lobby.delObject(ac);
-            ac->connection = NULL;
+            m_server.m_lobby.delObject(ac);
+            ac->m_connection = NULL;
             continue;
         }
         Character * character = dynamic_cast<Character *>(I->second);
@@ -119,7 +119,7 @@ void Connection::destroy()
 
 void Connection::close()
 {
-    commClient.close();
+    m_commClient.close();
 }
 
 bool Connection::verifyCredentials(const Account & account,
@@ -133,7 +133,7 @@ bool Connection::verifyCredentials(const Account & account,
 
     std::string hash;
     encrypt_password(passwd, hash);
-    if (hash != account.password) {
+    if (hash != account.m_password) {
         return false;
     }
     return true;
@@ -149,8 +149,8 @@ OpVector Connection::operation(const RootOperation & op)
     } else {
         debug(std::cout << "Must send on to account" << std::endl << std::flush;);
         debug(std::cout << "[" << from << "]" << std::endl << std::flush;);
-        BaseDict::const_iterator I = objects.find(from);
-        if (I == objects.end()) {
+        BaseDict::const_iterator I = m_objects.find(from);
+        if (I == m_objects.end()) {
             std::cout << "Illegal from \"" << from << "\" in " << op.GetParents().front().AsString() << " op from client" << std::endl << std::flush;
             std::string err = "From [";
             err += from;
@@ -168,7 +168,7 @@ OpVector Connection::operation(const RootOperation & op)
             info_args.push_back(Element::MapType());
             character->addToObject(info_args.front().AsMap());
             info->SetRefno(op.GetSerialno());
-            info->SetSerialno(server.getSerialNo());
+            info->SetSerialno(m_server.getSerialNo());
             OpVector res = ent->externalOperation(op);
             res.insert(res.begin(), info);
             return res;
@@ -206,22 +206,22 @@ OpVector Connection::LoginOperation(const Login & op)
     }
     // We now have username, so can check whether we know this
     // account, either from existing account ....
-    Account * player = server.getAccountByName(username);
+    Account * player = m_server.getAccountByName(username);
     // or if not, from the database
     if (player == 0) {
         debug(std::cout << "No " << username << " account in server. Checking in database." << std::endl << std::flush;);
         player = Persistance::instance()->getAccount(username);
         if (player != 0) {
             Persistance::instance()->registerCharacters(*player,
-                                                     server.world.getObjects());
-            server.addAccount(player);
+                                                     m_server.m_world.getObjects());
+            m_server.addAccount(player);
         }
     }
     if ((player == 0) || !verifyCredentials(*player, account)) {
         return error(op, "Login is invalid");
     }
     // Account appears to be who they say they are
-    if (player->connection) {
+    if (player->m_connection) {
         // Internals don't allow player to log in more than once.
         return error(op, "This account is already logged in");
     }
@@ -231,15 +231,15 @@ OpVector Connection::LoginOperation(const Login & op)
     for (; J != player->getCharacters().end(); J++) {
         addObject(J->second);
     }
-    player->connection = this;
-    server.lobby.addObject(player);
+    player->m_connection = this;
+    m_server.m_lobby.addObject(player);
     // Let the client know they have logged in
     Info * info = new Info(Info::Instantiate());
     Element::ListType & info_args = info->GetArgs();
     info_args.push_back(Element::MapType());
     player->addToObject(info_args.front().AsMap());
     info->SetRefno(op.GetSerialno());
-    info->SetSerialno(server.getSerialNo());
+    info->SetSerialno(m_server.getSerialNo());
     debug(std::cout << "Good login" << std::endl << std::flush;);
     return OpVector(1,info);
 }
@@ -274,7 +274,7 @@ OpVector Connection::CreateOperation(const Create & op)
     }
     const std::string & password = I->second.AsString();
 
-    if ((0 != server.getAccountByName(username)) ||
+    if ((0 != m_server.getAccountByName(username)) ||
         (Persistance::instance()->findAccount(username)) ||
         (username.empty()) || (password.empty())) {
         // Account exists, or creation data is duff
@@ -287,7 +287,7 @@ OpVector Connection::CreateOperation(const Create & op)
     info_args.push_back(Element::MapType());
     player->addToObject(info_args.front().AsMap());
     info->SetRefno(op.GetSerialno());
-    info->SetSerialno(server.getSerialNo());
+    info->SetSerialno(m_server.getSerialNo());
     debug(std::cout << "Good create" << std::endl << std::flush;);
     return OpVector(1,info);
 }
@@ -300,7 +300,7 @@ OpVector Connection::LogoutOperation(const Logout & op)
         Element::ListType & args = info.GetArgs();
         args.push_back(op.AsObject());
         info.SetRefno(op.GetSerialno());
-        info.SetSerialno(server.getSerialNo());
+        info.SetSerialno(m_server.getSerialNo());
         send(info);
         close();
         return OpVector();
@@ -324,8 +324,8 @@ OpVector Connection::LogoutOperation(const Logout & op)
         return error(op, "No account password given");
     }
     const std::string & password = I->second.AsString();
-    Account * player = server.getAccountByName(username);
-    if ((!player) || (password != player->password)) {
+    Account * player = m_server.getAccountByName(username);
+    if ((!player) || (password != player->m_password)) {
         return error(op, "Logout failed");
     }
     Logout l = op;
@@ -344,9 +344,9 @@ OpVector Connection::GetOperation(const Get & op)
         info = new Info(Info::Instantiate());
         Element::ListType & info_args = info->GetArgs();
         info_args.push_back(Element::MapType());
-        server.addToObject(info_args.front().AsMap());
+        m_server.addToObject(info_args.front().AsMap());
         info->SetRefno(op.GetSerialno());
-        info->SetSerialno(server.getSerialNo());
+        info->SetSerialno(m_server.getSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
         if (!args.front().IsMap()) {
@@ -366,7 +366,7 @@ OpVector Connection::GetOperation(const Get & op)
         Element::ListType & iargs = info->GetArgs();
         iargs.push_back(o->AsObject());
         info->SetRefno(op.GetSerialno());
-        info->SetSerialno(server.getSerialNo());
+        info->SetSerialno(m_server.getSerialNo());
     }
     
     return OpVector(1,info);

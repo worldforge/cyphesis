@@ -15,31 +15,31 @@ static bool debug_flag = false;
 
 ServerRouting::ServerRouting(BaseWorld & wrld,
                              const std::string & ruleset, const std::string & name) :
-        OOGThing(name), svrRuleset(ruleset), svrName(name), numClients(0),
-        world(wrld), lobby(*new Lobby("lobby", *this))
+        OOGThing(name), m_svrRuleset(ruleset), m_svrName(name), m_numClients(0),
+        m_world(wrld), m_lobby(*new Lobby("lobby", *this))
 {
 }
 
 ServerRouting::~ServerRouting()
 {
-    BaseDict::const_iterator I = objects.begin();
-    for(; I != objects.end(); I++) {
+    BaseDict::const_iterator I = m_objects.begin();
+    for(; I != m_objects.end(); I++) {
         debug(std::cout << "Del " << I->second->getId() << std::endl
                         << std::flush;);
         delete I->second;
     }
-    delete &lobby;
+    delete &m_lobby;
 }
 
 void ServerRouting::addToObject(Element::MapType & omap) const
 {
     omap["objtype"] = "object";
     omap["server"] = "cyphesis";
-    omap["ruleset"] = svrRuleset;
-    omap["name"] = svrName;
+    omap["ruleset"] = m_svrRuleset;
+    omap["name"] = m_svrName;
     omap["parents"] = Element::ListType(1, "server");
-    omap["clients"] = numClients;
-    omap["uptime"] = world.upTime();
+    omap["clients"] = m_numClients;
+    omap["uptime"] = m_world.upTime();
     omap["builddate"] = std::string(consts::buildTime)+", "+std::string(consts::buildDate);
     omap["version"] = std::string(consts::version);
     if (restricted_flag) {

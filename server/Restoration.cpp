@@ -68,10 +68,10 @@ void Restoration::restore(const std::string & id,
     if (loc == 0) {
         debug(std::cout << "DEBUG: No creation of world object " << id
                         << std::endl << std::flush;);
-        if (id != server.world.gameWorld.getId()) {
+        if (id != server.m_world.m_gameWorld.getId()) {
             abort();
         }
-        ent = &server.world.gameWorld;
+        ent = &server.m_world.m_gameWorld;
     } else {
         RestoreDict::const_iterator I = m_restorers.find(classn);
         if (I == m_restorers.end()) {
@@ -85,7 +85,7 @@ void Restoration::restore(const std::string & id,
             DatabaseResult::const_iterator J = res.begin();
             ent = I->second(id, J);
             ent->m_location.m_loc = loc;
-            server.world.addObject(ent, false);
+            server.m_world.addObject(ent, false);
         }
     }
     DatabaseResult res2 = database.selectClassByLoc(id);
@@ -181,7 +181,7 @@ void Restoration::restoreChildren(Entity * loc)
             }
             Entity * ent = restorer(id, L);
             ent->m_location.m_loc = loc;
-            server.world.addObject(ent, true);
+            server.m_world.addObject(ent, true);
             const char * c = L.column("cont");
             if (c != 0) {
                 if (*c != '0') {
@@ -233,8 +233,8 @@ void Restoration::read()
 #else
     // Fix me - restore attributes of the gameWorld object itself.
     DatabaseResult::const_iterator I = res.begin();
-    Restorer<World> & world = (Restorer<World> &)server.world.gameWorld;
+    Restorer<World> & world = (Restorer<World> &)server.m_world.m_gameWorld;
     world.populate(I);
-    restoreChildren(&server.world.gameWorld);
+    restoreChildren(&server.m_world.m_gameWorld);
 #endif
 }
