@@ -1,0 +1,7 @@
+Re-write Acorn independant mason ruleset.			DONE
+Test Mason ruleset.
+Find tool which can handle 16 bit depth images.
+Use it to generate some height maps.
+Port uclient to handle 16bit depth images.
+Port others to handle 16bit depth images.
+
