@@ -1,3 +1,8 @@
+2004-03-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Fix bootstrap bug by ensuring that all pending
+	  queries are cleared before launching a new query directly.
+
 2004-03-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp: Modify terrain structure to track

@@ -101,6 +101,7 @@ bool Database::initConnection(bool createDatabase)
 bool Database::initRule(bool createTables)
 {
     int status = 0;
+    clearPendingQuery();
     status = PQsendQuery(m_connection, "SELECT * FROM rules WHERE id = 'test' AND contents = 'test';");
     if (!status) {
         reportError();
@@ -433,6 +434,7 @@ bool Database::registerRelation(const std::string & name, RelationType kind)
 
 
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         log(ERROR, "Database query error.");
@@ -575,6 +577,7 @@ bool Database::registerSimpleTable(const std::string & name,
     query += ";";
 
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         log(ERROR, "Database query error.");
@@ -673,6 +676,7 @@ bool Database::updateSimpleRow(const std::string & name,
 
 bool Database::registerEntityIdGenerator()
 {
+    clearPendingQuery();
     int status = PQsendQuery(m_connection, "SELECT * FROM entity_ent_id_seq;");
     if (!status) {
         log(ERROR, "Database query error.");
@@ -805,6 +809,7 @@ bool Database::registerEntityTable(const std::string & classname,
     query += ";";
 
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         log(ERROR, "Database query error.");
