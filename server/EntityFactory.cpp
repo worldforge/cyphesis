@@ -37,6 +37,7 @@ EntityFactory * EntityFactory::m_instance = NULL;
 EntityFactory::EntityFactory()
 {
     // This class can only have one instance, so a Factory is not installed
+    // FIXME Add a factory in here so we have persist the world properlly
     installFactory("game_entity", "world", NULL);
 
     PersistantThingFactory<Entity> * eft = new PersistantThingFactory<Entity>();
@@ -45,12 +46,16 @@ EntityFactory::EntityFactory()
     installFactory("thing", "feature", tft);
     installFactory("feature", "line", new PersistantThingFactory<Line>());
     installFactory("feature", "area", new PersistantThingFactory<Area>());
-    installFactory("thing", "character", new PersistantThingFactory<Character>());
-    installFactory("character", "creator", new PersistantThingFactory<Creator>());
+    installFactory("thing", "character",
+                   new PersistantThingFactory<Character>());
+    installFactory("character", "creator",
+                   new PersistantThingFactory<Creator>());
     installFactory("thing", "plant", new PersistantThingFactory<Plant>());
     installFactory("thing", "food", new PersistantThingFactory<Food>());
-    installFactory("thing", "stackable", new PersistantThingFactory<Stackable>());
-    installFactory("thing", "structure", new PersistantThingFactory<Structure>());
+    installFactory("thing", "stackable",
+                   new PersistantThingFactory<Stackable>());
+    installFactory("thing", "structure",
+                   new PersistantThingFactory<Structure>());
 }
 
 Entity * EntityFactory::newEntity(const std::string & type,
@@ -61,9 +66,10 @@ Entity * EntityFactory::newEntity(const std::string & type,
     Entity * thing = 0;
     Fragment::MapType attributes;
     FactoryDict::const_iterator I = factories.find(type);
+    PersistorBase * pc = 0;
     if (I != factories.end()) {
         FactoryBase * factory = I->second;
-        thing = factory->newThing();
+        thing = factory->newPersistantThing(&pc);
         attributes = factory->attributes;
         // Sort out python object
         if ((factory->language == "python") && (!factory->script.empty())) {
@@ -94,7 +100,9 @@ Entity * EntityFactory::newEntity(const std::string & type,
     thing->merge(attributes);
     // Get location from entity, if it is present
     thing->getLocation(attributes, world);
-    // FIXME At this point in needs to be hooked into the persistance system
+    if (pc != 0) {
+        pc->persist();
+    }
     return thing;
 }
 
@@ -188,5 +196,5 @@ FactoryBase * EntityFactory::getFactory(const std::string & parent)
         // FIXME Don't creat another FSCKing factory here
         return new PersistantThingFactory<Thing>();
     }
-    return I->second->dupFactory();
+    return I->second->duplicateFactory();
 }

@@ -42,7 +42,7 @@ class FactoryBase {
 
     virtual Entity * newThing() = 0;
     virtual Entity * newPersistantThing(PersistorBase **) = 0;
-    virtual FactoryBase * dupFactory() = 0;
+    virtual FactoryBase * duplicateFactory() = 0;
 };
 
 // How do we make sure the peristance hooks are put in place in a typesafe way
@@ -54,6 +54,7 @@ class PersistantThingFactory : public FactoryBase {
     Persistor<T> & m_p;
   public:
     PersistantThingFactory() : m_p(* new Persistor<T>()) { }
+    PersistantThingFactory(PersistantThingFactory<T> & p) : m_p(p.m_p) { }
 
     T * newThing() {
         return new T();
@@ -63,8 +64,8 @@ class PersistantThingFactory : public FactoryBase {
         *p = new PersistorConnection<T>(*t, m_p);
         return t;
     }
-    FactoryBase * dupFactory() {
-        return new PersistantThingFactory<T>();
+    FactoryBase * duplicateFactory() {
+        return new PersistantThingFactory<T>(*this);
     }
 };
 

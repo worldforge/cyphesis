@@ -1,3 +1,10 @@
+2002-12-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/PersistantThingFactory.h: Prevent a new Persistor from
+	  being created when a factory is cloned.
+
+	* server/EntityFactory.cpp: Add in the persistor hooks.
+
 2002-12-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Clean up errors in new entity table
