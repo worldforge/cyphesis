@@ -22,7 +22,7 @@ AM_CONDITIONAL(BUILD_STATIC, test x$ac_build_static_binary = xyes)
 
 dnl Initialise automake
 
-AM_INIT_AUTOMAKE(cyphesis, 0.0.12)
+AM_INIT_AUTOMAKE(cyphesis, 0.0.13)
 
 dnl check if user wishes maintainer-mode ("--enable-maintainer-mode = yes")
 AM_MAINTAINER_MODE
@@ -155,7 +155,7 @@ AC_CHECK_LIB(pthread,pthread_create)
 dnl AC_CHECK_LIB(sigc,main)
 AM_PATH_SIGC(1.0.1,[
 	CPPFLAGS="$CPPFLAGS $SIGC_CFLAGS"
-	LIBS="LIBS $SIGC_LIBS"
+	LIBS="$LIBS $SIGC_LIBS"
 	],
 	AC_MSG_ERROR(Couldn't find libsigc++ config [or config failed])
 )

@@ -1,3 +1,8 @@
+2001-06-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.in: Tiny fix to jmt's improved sigc detection.
+	  Bumped version up to 0.0.13 for pre-release of Acorn 0.4.
+
 2001-06-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Pedestrian.cpp: Fixed setting of walking direction when
