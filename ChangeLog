@@ -1,3 +1,8 @@
+2005-02-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp: If no persistent ruleset exists in the
+	  database, print an error and load the rules from files instead.
+
 2005-01-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/werewolf.xml,

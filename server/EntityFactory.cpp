@@ -277,6 +277,14 @@ void EntityFactory::installRules()
         getRulesFromFiles(ruleTable);
     }
 
+    if (ruleTable.empty()) {
+        log(ERROR, "Rule database table contains no rules.");
+        if (consts::enable_database) {
+            log(NOTICE, "Attempting to load temporary ruleset from files.");
+            getRulesFromFiles(ruleTable);
+        }
+    }
+
     MapType::const_iterator Iend = ruleTable.end();
     for (MapType::const_iterator I = ruleTable.begin(); I != Iend; ++I) {
         const std::string & className = I->first;
