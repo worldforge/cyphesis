@@ -1,4 +1,9 @@
-2003-08-23  Al Riddoch  <alriddoch@zepler.org>
+2003-08-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cypasswd.cpp: Fix up cypasswd to work with updated accountbase.
+	  Needs more work on options, and admin account feature.
+
+2003-08-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/accountbase.h, common/accountbase.cpp: Add init
 	  method required to make the database connection.

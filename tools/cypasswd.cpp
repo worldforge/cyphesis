@@ -72,32 +72,35 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    AccountBase * db = AccountBase::instance(true);
+    AccountBase db;
 
-    Element::MapType data;
-
-    bool res = db->getAccount("admin", data);
-
-    if (!res) {
-        std::cout << "Admin account does not yet exist" << std::endl << std::flush;
-        acname = "admin";
-        action = ADD;
+    if (!db.init()) {
+        std::cerr << "Unable to connect to database" << std::endl << std::flush;
+        return 1;
     }
+
+    // Element::MapType data;
+
+    // bool res = db->getAccount("admin", data);
+
+    // if (!res) {
+        // std::cout << "Admin account does not yet exist" << std::endl << std::flush;
+        // acname = "admin";
+        // action = ADD;
+    // }
     if (action != ADD) {
         Element::MapType o;
-        res = db->getAccount(acname, o);
+        bool res = db.getAccount(acname, o);
         if (!res) {
             std::cout<<"Account "<<acname<<" does not yet exist"<<std::endl<<std::flush;
-            AccountBase::del();
             return 0;
         }
     }
     if (action == DEL) {
-        db->delAccount(acname);
+        bool res = db.delAccount(acname);
         if (res) {
             std::cout << "Account " << acname << " removed." << std::endl << std::flush;
         }
-        AccountBase::del();
         return 0;
     }
 
@@ -123,13 +126,14 @@ int main(int argc, char ** argv)
     
     if (password == password2) {
         Element::MapType amap;
-        amap["id"] = acname;
         amap["password"] = password;
 
+        bool res;
         if (action == ADD) {
-            res = db->putAccount(amap, acname);
+            amap["username"] = acname;
+            res = db.putAccount(amap);
         } else {
-            res = db->modAccount(amap, acname);
+            res = db.modAccount(amap, acname);
         }
         if (res) {
             std::cout << "Password changed." << std::endl << std::flush;
@@ -138,5 +142,4 @@ int main(int argc, char ** argv)
         std::cout << "Passwords did not match. Account database unchanged."
                   << std::endl << std::flush;
     }
-    AccountBase::del();
 }
