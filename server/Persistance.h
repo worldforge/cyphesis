@@ -18,9 +18,10 @@ class Persistance {
   private:
     Persistance();
 
-    Database & m_connection;
     static Persistance * m_instance;
   public:
+    Database & m_connection;
+
     static Persistance * instance();
     static bool init();
     static void shutdown();

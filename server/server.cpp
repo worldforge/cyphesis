@@ -5,6 +5,7 @@
 #include "CommServer.h"
 #include "CommListener.h"
 #include "CommUnixListener.h"
+#include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "ServerRouting.h"
 #include "EntityFactory.h"
@@ -131,6 +132,10 @@ int main(int argc, char ** argv)
     } else {
         commServer.add(llistener);
     }
+
+    CommPSQLSocket * dbsocket = new CommPSQLSocket(commServer,
+                                        Persistance::instance()->m_connection);
+    commServer.add(dbsocket);
 
     if (useMetaserver) {
         CommMetaClient * cmc = new CommMetaClient(commServer);

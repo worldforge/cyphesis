@@ -20,7 +20,7 @@ using Atlas::Message::Element;
 
 typedef Atlas::Codecs::XML Serialiser;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 Database * Database::m_instance = NULL;
 
@@ -189,6 +189,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
                     << std::endl << std::flush;);
     std::string query = std::string("SELECT * FROM ") + table + " WHERE id = '" + key + "';";
 
+    clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         reportError();
@@ -243,17 +244,7 @@ bool Database::putObject(const std::string & table,
     debug(std::cout << "Encoded to: " << str.str().c_str() << " "
                << str.str().size() << std::endl << std::flush;);
     std::string query = std::string("INSERT INTO ") + table + " VALUES ('" + key + "', '" + str.str() + "');";
-    int status = PQsendQuery(m_connection, query.c_str());
-    if (!status) {
-        reportError();
-        return false;
-    }
-    if (!commandOk()) {
-        debug(std::cerr << "Failed to insert item " << key << " into " << table
-                        << " table" << std::endl << std::flush;);
-        return false;
-    }
-    return true;
+    return scheduleCommand(query);
 }
 
 bool Database::updateObject(const std::string & table,
@@ -273,17 +264,7 @@ bool Database::updateObject(const std::string & table,
 
     std::string query = std::string("UPDATE ") + table + " SET contents = '" +
                         str.str() + "' WHERE id='" + key + "';";
-    int status = PQsendQuery(m_connection, query.c_str());
-    if (!status) {
-        reportError();
-        return false;
-    }
-    if (!commandOk()) {
-        debug(std::cerr << "Failed to update item " << key << " into " << table
-                        << " table" << std::endl << std::flush;);
-        return false;
-    }
-    return true;
+    return scheduleCommand(query);
 }
 
 bool Database::delObject(const std::string & table, const std::string & key)
@@ -308,6 +289,7 @@ bool Database::getTable(const std::string & table, Element::MapType &o)
 {
     std::string query = std::string("SELECT * FROM ") + table + ";";
 
+    clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
 
     if (!status) {
@@ -357,18 +339,7 @@ bool Database::getTable(const std::string & table, Element::MapType &o)
 bool Database::clearTable(const std::string & table)
 {
     std::string query = std::string("DELETE FROM ") + table + ";";
-    int status = PQsendQuery(m_connection, query.c_str());
-    if (!status) {
-        reportError();
-        return false;
-    }
-    if (!commandOk()) {
-        debug(std::cout << "Error clearing " << table
-                        << " table" << std::endl << std::flush;);
-        reportError();
-        return false;
-    }
-    return true;
+    return scheduleCommand(query);
 }
 
 void Database::reportError()
@@ -381,6 +352,7 @@ void Database::reportError()
 const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
 {
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         log(ERROR, "Database query error.");
@@ -413,6 +385,7 @@ const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
 
 bool Database::runCommandQuery(const std::string & query)
 {
+    clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         log(ERROR, "Database query error.");
@@ -518,7 +491,8 @@ bool Database::createRelationRow(const std::string & name,
     query += other;
     query += ");";
 
-    return runCommandQuery(query);
+    // return runCommandQuery(query);
+    return scheduleCommand(query);
 }
 
 bool Database::removeRelationRow(const std::string & name,
@@ -530,7 +504,8 @@ bool Database::removeRelationRow(const std::string & name,
     query += id;
     query += ";";
 
-    return runCommandQuery(query);
+    // return runCommandQuery(query);
+    return scheduleCommand(query);
 }
 
 bool Database::removeRelationRowByOther(const std::string & name,
@@ -544,7 +519,8 @@ bool Database::removeRelationRowByOther(const std::string & name,
     query += other;
     query += ";";
 
-    return runCommandQuery(query);
+    // return runCommandQuery(query);
+    return scheduleCommand(query);
 }
 
 bool Database::registerSimpleTable(const std::string & name,
@@ -661,7 +637,8 @@ bool Database::createSimpleRow(const std::string & name,
     query += values;
     query += ");";
 
-    return runCommandQuery(query);
+    // return runCommandQuery(query);
+    return scheduleCommand(query);
 }
 
 bool Database::updateSimpleRow(const std::string & name,
@@ -669,17 +646,18 @@ bool Database::updateSimpleRow(const std::string & name,
                                const std::string & value,
                                const std::string & columns)
 {
-   std::string query = "UPDATE ";
-   query += name;
-   query += " SET ";
-   query += columns;
-   query += " WHERE ";
-   query += key;
-   query += "='";
-   query += value;
-   query += "';";
+    std::string query = "UPDATE ";
+    query += name;
+    query += " SET ";
+    query += columns;
+    query += " WHERE ";
+    query += key;
+    query += "='";
+    query += value;
+    query += "';";
 
-   return runCommandQuery(query);
+    // return runCommandQuery(query);
+    return scheduleCommand(query);
 }
 
 bool Database::registerEntityIdGenerator()
@@ -703,6 +681,7 @@ bool Database::registerEntityIdGenerator()
 
 bool Database::getEntityId(std::string & id)
 {
+    clearPendingQuery();
     int status = PQsendQuery(m_connection,
                              "SELECT nextval('entity_ent_id_seq');");
     if (!status) {
@@ -864,7 +843,8 @@ bool Database::createEntityRow(const std::string & classname,
     query += ");";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
 
-    return runCommandQuery(query);
+    // return runCommandQuery(query);
+    return scheduleCommand(query);
 }
 
 bool Database::updateEntityRow(const std::string & classname,
@@ -889,7 +869,7 @@ bool Database::updateEntityRow(const std::string & classname,
     query += "';";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
 
-    return runCommandQuery(query);
+    return scheduleCommand(query);
 }
 
 bool Database::removeEntityRow(const std::string & classname,
@@ -907,7 +887,8 @@ bool Database::removeEntityRow(const std::string & classname,
     query += "';";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
 
-    return runCommandQuery(query);
+    // return runCommandQuery(query);
+    return scheduleCommand(query);
 }
 
 const DatabaseResult Database::selectEntityRow(const std::string & id,
@@ -985,6 +966,10 @@ void Database::queryResult(ExecStatusType status)
         std::cout << "Query status ok" << std::endl << std::flush;
         // Mark this query as done
         q.second = PGRES_EMPTY_QUERY;
+    } else {
+        log(ERROR, "Database error from async query");
+        reportError();
+        q.second = PGRES_EMPTY_QUERY;
     }
 }
 
@@ -996,23 +981,27 @@ void Database::queryComplete()
     }
     DatabaseQuery & q = pendingQueries.front();
     if (q.second != PGRES_EMPTY_QUERY) {
+        abort();
         log(ERROR, "Got database query complete when query was not done");
         return;
     }
+    std::cout << "Query complete" << std::endl << std::flush;
     pendingQueries.pop_front();
     m_queryInProgress = false;
 }
 
-void Database::launchNewQuery()
+bool Database::launchNewQuery()
 {
     if (m_queryInProgress) {
         log(ERROR, "Launching new query when query is in progress");
-        return;
+        return false;
     }
     if (pendingQueries.empty()) {
         std::cout << "No queries to launch" << std::endl << std::flush;
-        return;
+        return false;
     }
+    std::cout << pendingQueries.size() << " queries pending"
+              << std::endl << std::flush;
     DatabaseQuery & q = pendingQueries.front();
     std::cout << "Launching async query: " << q.first
               << std::endl << std::flush;
@@ -1020,14 +1009,46 @@ void Database::launchNewQuery()
     if (!status) {
         log(ERROR, "Database query error when launching.");
         reportError();
+        return false;
     } else {
+        m_queryInProgress = true;
         PQflush(m_connection);
+        return true;
     }
 }
 
-void Database::scheduleCommand(const std::string & query)
+bool Database::scheduleCommand(const std::string & query)
 {
     pendingQueries.push_back(std::make_pair(query, PGRES_COMMAND_OK));
+    if (!m_queryInProgress) {
+        std::cout << "Query: " << query << " launched"
+                  << std::endl << std::flush;
+        return launchNewQuery();
+    } else {
+        std::cout << "Query: " << query << " scheduled"
+                  << std::endl << std::flush;
+        return true;
+    }
+}
+
+bool Database::clearPendingQuery()
+{
+    if (!m_queryInProgress) {
+        return true;
+    }
+
+    assert(!pendingQueries.empty());
+    std::cout << "Clearing a pending query" << std::endl << std::flush;
+
+    DatabaseQuery & q = pendingQueries.front();
+    if (q.second == PGRES_COMMAND_OK) {
+        m_queryInProgress = false;
+        pendingQueries.pop_front();
+        return commandOk();
+    } else {
+        log(ERROR, "Pending query wants unknown status");
+        return false;
+    }
 }
 
 const char * DatabaseResult::field(const char * column, int row) const

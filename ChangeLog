@@ -1,3 +1,18 @@
+2003-10-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/server.cpp: Add communications object to handle getting
+	  the response to database queries without blocking.
+
+	* server/Persistance.h: Make database connection exposed so
+	  that CommPSQLSocket can access it.
+
+	* server/CommPSQLSocket.cpp: Add debugging output, and implement
+	  dispatching new queries once we have response to previous.
+
+	* common/Database.h, common/Database.cpp: Switch code to submit
+	  all command queries via the async que, so we don't block
+	  waiting for them to complete. Currently very noisy.
+
 2003-10-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Pedestrian.cpp: Re-order and simplify code for handling

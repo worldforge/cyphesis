@@ -56,8 +56,8 @@ class Database {
     typedef enum { OneToMany, ManyToMany, ManyToOne, OneToOne } RelationType;
 
     PGconn * getConnection() const { return m_connection; }
-
     const std::string & rule() const { return m_rule_db; }
+    bool queryInProgress() const { return m_queryInProgress; }
 
     bool decodeObject(const std::string & data,
                       Atlas::Message::Element::MapType &);
@@ -142,8 +142,9 @@ class Database {
     
     void queryResult(ExecStatusType);
     void queryComplete();
-    void launchNewQuery();
-    void scheduleCommand(const std::string & query);
+    bool launchNewQuery();
+    bool scheduleCommand(const std::string & query);
+    bool clearPendingQuery();
 
 };
 
