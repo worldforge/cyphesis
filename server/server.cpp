@@ -4,12 +4,12 @@
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Decoder.h>
 
+#include <varconf/Config.h>
 
 #include <iostream.h>
 #include <fstream.h>
 
 #include <Python.h>
-
 
 extern "C" {
     #include <stdio.h>
@@ -308,8 +308,19 @@ void CommServer::idle() {
 }
 
 
+varconf::Config * global_conf = varconf::Config::inst();
 
-int main(int argc, char ** argv) {
+#include <rulesets/ThingFactory.h>
+
+int main(int argc, char ** argv)
+{
+ 
+    global_conf->readFromFile("cyphesis.vconf");
+    global_conf->getCmdline(argc, argv);
+    const string & ruleset = global_conf->getItem("cyphesis", "ruleset");
+    cout << "Using ruleset: " << ruleset << endl << flush;
+    thing_factory.readRuleset(ruleset);
+
     if (consts::debug_level>=1) {
         cout << "consts::debug_level>=1, logging to cyphesis_server*.log files" << endl << flush;
 	//ofstream log_stream("cyphesis_server.log",ios::out);

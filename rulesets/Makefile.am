@@ -3,6 +3,7 @@ noinst_LIBRARIES = librulesets.a
 INCLUDES = -I..
 
 librulesets_a_SOURCES = Thing.cpp Thing.h \
+			ThingFactory.cpp ThingFactory.h \
 			BaseMind.cpp BaseMind.h \
 			MemMap.cpp MemMap.h \
 			ExternalMind.cpp ExternalMind.h \

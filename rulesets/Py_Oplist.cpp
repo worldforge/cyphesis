@@ -15,11 +15,12 @@ static PyObject* Oplist_append(OplistObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O", &op)) {
         return NULL;
     }
-    if ((PyTypeObject*)PyObject_Type(op) != &RootOperation_Type) {
+    if ((PyTypeObject*)PyObject_Type(op) == &RootOperation_Type) {
+        self->ops->push_back(((RootOperationObject*)op)->operation);
+    } else if (op != Py_None) {
         PyErr_SetString(PyExc_TypeError, "Append must be an op");
         return NULL;
     }
-    self->ops->push_back(((RootOperationObject*)op)->operation);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -53,7 +54,7 @@ PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         printf("Adding None to an oplist\n");
         OplistObject * res = newOplistObject(NULL);
         res->ops = new oplist();
-        *res->ops = *self->ops;
+        res->ops->merge(*self->ops);
         return (PyObject*)res;
     }
     if ((PyTypeObject*)PyObject_Type(other) == & Oplist_Type) {
@@ -64,7 +65,7 @@ PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         if (res == NULL) {
             return NULL;
         }
-        *res->ops = *self->ops;
+        res->ops->merge(*self->ops);
         res->ops->merge(*opl->ops);
         return (PyObject*)res;
     }
@@ -79,7 +80,7 @@ PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         if (res == NULL) {
             return NULL;
         }
-        *res->ops = *self->ops;
+        res->ops->merge(*self->ops);
         res->ops->push_back(op->operation);
         return (PyObject*)res;
     }
@@ -91,6 +92,7 @@ static int Oplist_num_coerce(PyObject ** self, PyObject ** other)
 {
     //if (*other == Py_None) {
         Py_INCREF(*self);
+        Py_INCREF(*other);
         return(0);
     //}
     //return -1;

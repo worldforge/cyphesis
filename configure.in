@@ -1,6 +1,25 @@
 dnl
 dnl $Log: configure.in,v $
-dnl Revision 1.8  2000-11-27 19:00:16  alriddoch
+dnl Revision 1.9  2000-12-03 14:23:26  alriddoch
+dnl 	* Added support for varconf config files.
+dnl
+dnl 	* Used config file to list enitity types and their python class files.
+dnl
+dnl 	* Cleaned up reference counting in Python API related C++ code.
+dnl 	  References should all now be handled correctly.
+dnl
+dnl 	* Added support for adding None to Operation and Oplist.
+dnl
+dnl Reference count changes have solved some segfaults I was getting. New
+dnl config files allows easy specification of rulesets, and has allowed
+dnl me to test the complete range of python entity classes used in Acorn.
+dnl
+dnl Import hook code does not appear to work for classes imported directly using
+dnl python API calls.
+dnl
+dnl Al
+dnl
+dnl Revision 1.8  2000/11/27 19:00:16  alriddoch
 dnl Fixed legacy Atlas error in configure.in
 dnl
 dnl Revision 1.7  2000/11/14 15:52:10  alriddoch
@@ -179,6 +198,7 @@ AC_CACHE_VAL(cyphesis_cv_python_headers,
 
 AC_CHECK_LIB(dl,dlopen)
 AC_CHECK_LIB(pthread,pthread_create)
+AC_CHECK_LIB(varconf,main)
 
 AC_CACHE_VAL(cyphesis_cv_python_libraries,
 [

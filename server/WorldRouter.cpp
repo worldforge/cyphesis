@@ -6,11 +6,14 @@
 #include "WorldRouter.h"
 
 #include <rulesets/Thing.h>
+#include <rulesets/ThingFactory.h>
 #include <common/WorldInfo.h>
 
 extern "C" {
     #include <stdio.h>
 }
+
+using Atlas::Message::Object;
 
 static int debug_server = 1;
 
@@ -83,12 +86,11 @@ Thing * WorldRouter::add_object(Thing * obj)
     return (obj);
 }
 
-Thing * WorldRouter::add_object(const string & typestr,
-                                     const Message::Object & ent)
+Thing * WorldRouter::add_object(const string & typestr, const Object & ent)
 {
     debug_server && cout << "WorldRouter::add_object(string, ent)" << endl << flush;
     Thing * obj;
-    obj = thing_factory.new_thing(typestr, ent, this);
+    obj = thing_factory.newThing(typestr, ent, this);
     return add_object(obj);
 }
 

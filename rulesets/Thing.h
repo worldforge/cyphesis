@@ -56,6 +56,7 @@ class Thing : public BaseEntity {
     friend int Thing_setattr(ThingObject *self, char *name, PyObject *v);
 };
 
+#if 0
 typedef std::pair<int, string> thing_t;
 
 #define BASE_THING	0
@@ -70,5 +71,7 @@ class ThingFactory {
 };
 
 extern ThingFactory thing_factory;
+
+#endif /* 0 */
 
 #endif /* THING_H */

@@ -18,7 +18,7 @@
 #include <common/const.h>
 
 
-Thing::Thing() : script_object(NULL), status(1), is_character(0)
+Thing::Thing() : script_object(NULL), status(1), is_character(0), type("thing")
 {
     name=string("Foo");
     attributes["age"] = 0;
@@ -168,8 +168,14 @@ oplist Thing::Operation(const Create & op)
             return error(op, "Object to be created has no type");
         }
         Message::Object::ListType & parents = ent["parents"].AsList();
-        string type = parents.front().AsString();
-        Thing * obj = (Thing *)world->add_object(type,ent);
+        string type;
+        if (parents.size() < 1) {
+            type = "thing";
+        } else {
+            type = parents.front().AsString();
+        }
+        cout << fullid << " creating " << type;
+        Thing * obj = world->add_object(type,ent);
         if (!obj->location) {
             obj->location=location;
             obj->location.velocity=Vector3D(0,0,0);
@@ -418,6 +424,7 @@ oplist Thing::Operation(const Look & op)
     return(BaseEntity::Operation(op));
 }
 
+#if 0
 
 #include "Character.h"
 #include "Creator.h"
@@ -501,3 +508,5 @@ Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent,
     thing->type = type;
     return(thing);
 }
+
+#endif /* 0 */

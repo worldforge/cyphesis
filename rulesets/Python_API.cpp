@@ -68,8 +68,10 @@ static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject 
         PyList_Append(list, item);
     } else {
         list = PyList_New(1);
+        Py_INCREF(item);
         PyList_SetItem(list, 1, item);
         PyDict_SetItemString(dict, key, list);
+        Py_DECREF(list);
     }
 present:
     Py_INCREF(Py_None);
@@ -96,11 +98,13 @@ PyTypeObject dictlist_add_value_type = {
 	dictlist_add_value,	/* tp_call */
 };
 
-void Create_PyThing(Thing * thing, const string & package, const string & type)
+void Create_PyThing(Thing * thing, const string & package, const string & _type)
 {
+    string type = _type;
+    type[0] = toupper(type[0]);
     PyObject * mod_dict;
     if ((mod_dict = PyImport_ImportModule((char *)package.c_str()))==NULL) {
-        cout << "Cld no find python module " << package << endl << flush;
+        cerr << "Cld no find python module " << package << endl << flush;
             PyErr_Print();
         return;
     } else {
@@ -108,7 +112,7 @@ void Create_PyThing(Thing * thing, const string & package, const string & type)
     }
     PyObject * my_class = PyObject_GetAttrString(mod_dict, (char *)type.c_str());
     if (my_class == NULL) {
-        cout << "Cld no find class in module " << package << endl << flush;
+        cerr << "Cld no find class in module " << package << endl << flush;
             PyErr_Print();
         return;
     } else {
@@ -122,7 +126,7 @@ void Create_PyThing(Thing * thing, const string & package, const string & type)
     pyThing->m_thing = thing;
     if (thing->set_object(PyEval_CallFunction(my_class,"(O)", (PyObject *)pyThing)) == -1) {
         if (PyErr_Occurred() == NULL) {
-            cout << "Could not get python obj" << endl << flush;
+            cerr << "Could not get python obj" << endl << flush;
         } else {
             cout << "Reporting python error for " << type << endl << flush;
             PyErr_Print();
@@ -190,7 +194,6 @@ static PyObject * worldtime_new(PyObject * self, PyObject * args)
         	
         int seconds;
 	if (!PyArg_ParseTuple(args, "i", &seconds)) {
-                printf("AWWWWWWOOOOOGA");
 		return NULL;
 	}
 	o = newWorldTimeObject(args);
@@ -215,18 +218,20 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
 	}
 	o->ops = new oplist();
         if (op1 != NULL) {
-           if ((PyTypeObject *)PyObject_Type(op1) != &RootOperation_Type) {
+           if ((PyTypeObject *)PyObject_Type(op1) == &RootOperation_Type) {
+               o->ops->push_back( ((RootOperationObject*)op1)->operation );
+           } else if (op1 != Py_None) {
                PyErr_SetString(PyExc_TypeError, "Argument must be an op");
                return NULL;
            }
-           o->ops->push_back( ((RootOperationObject*)op1)->operation );
         }
         if (op2 != NULL) {
-           if ((PyTypeObject *)PyObject_Type(op2) != &RootOperation_Type) {
+           if ((PyTypeObject *)PyObject_Type(op2) == &RootOperation_Type) {
+               o->ops->push_back( ((RootOperationObject*)op2)->operation );
+           } else if (op1 != Py_None) {
                PyErr_SetString(PyExc_TypeError, "Argument must be an op");
                return NULL;
            }
-           o->ops->push_back( ((RootOperationObject*)op2)->operation );
         }
 	return (PyObject *)o;
 }
@@ -277,7 +282,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             } else {
                 Object val_obj = PyObject_asObject(val);
                 if (val_obj.GetType() == Object::TYPE_NONE) {
-                    printf("Could not handle %s value in Entity()", key);
+                    fprintf(stderr, "Could not handle %s value in Entity()", key);
                     PyErr_SetString(PyExc_TypeError, "Argument type error to Entity()");
                     return NULL;
                 }
@@ -343,7 +348,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     } else if (strcmp(type, "talk") == 0) {
         *op->operation = Talk::Instantiate();
     } else {
-        printf("ERROR: PYTHON CREATING AN UNHANDLED OPERATION\n");
+        fprintf(stderr, "ERROR: PYTHON CREATING AN UNHANDLED %s OPERATION\n", type);
         *op->operation = RootOperation::Instantiate();
         // FIXME, just to test
         Py_INCREF(Py_None);
@@ -352,10 +357,12 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     if (PyMapping_HasKeyString(kwds, "to")) {
         to = PyMapping_GetItemString(kwds, "to");
         printf("Operation creation sets to\n");
+        // FIXME I think I need to actually do something with said value now
     }
     if (PyMapping_HasKeyString(kwds, "from_")) {
         from = PyMapping_GetItemString(kwds, "from_");
         printf("Operation creation sets from\n");
+        // FIXME I think I need to actually do something with said value now
     }
     return (PyObject *)op;
 }
@@ -391,7 +398,11 @@ static PyObject * set_kw(PyObject * meth_self, PyObject * args)
         }
         // Should I free entry at this point?
     }
-    PyList_Append(attr, PyString_FromString(name));
+    {
+      PyObject * namestr = PyString_FromString(name);
+      PyList_Append(attr, namestr);
+      Py_DECREF(namestr);
+    }
 list_contains_it:
     if (!PyDict_Check(kw)) {
         PyErr_SetString(PyExc_TypeError, "SET_KW: kw not a dict");
@@ -407,8 +418,8 @@ list_contains_it:
         }
     }
     if (value == NULL) {
-        value = Py_None;
         Py_INCREF(Py_None);
+        value = Py_None;
     }
     PyObject_SetAttrString(self, name, value);
     
@@ -454,31 +465,29 @@ void init_python_api()
                 size_t len = strlen(cwd) * 2 + 60;
                 char * pypath = (char *)malloc(len);
                 strcpy(pypath, cwd);
-                strcat(pypath, "/rulesets/basic");
+                strcat(pypath, "/rulesets/basic:");
                 // This should eventually pull in a ruleset name from
                 // the commandline args.
                 // basic ruleset should always be left on the end
-                // strcat(pypath, cwd);
-                // strcat(pypath, "/rulesets/acorn");
+                strcat(pypath, cwd);
+                strcat(pypath, "/rulesets/acorn");
 		setenv("PYTHONPATH", pypath, 1);
 	}
 
 	Py_Initialize();
 
-        //PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
-        //PyRun_SimpleString("ruleset_import_hooks.install(['basic','acorn'])\n");
+        PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
+        PyRun_SimpleString("ruleset_import_hooks.install(['acorn','basic'])\n");
 
 	if (Py_InitModule("atlas", atlas_methods) == NULL) {
 		printf("Failed to Create atlas thing\n");
 		return;
 	}
-	printf("Created atlas thing\n");
 
 	if (Py_InitModule("Vector3D", Vector3D_methods) == NULL) {
 		printf("Failed to Create Vector3D thing\n");
 		return;
 	}
-	printf("Created Vector3D thing\n");
 
         PyObject * misc;
         if ((misc = Py_InitModule("misc", misc_methods)) == NULL) {
@@ -492,7 +501,6 @@ void init_python_api()
 		printf("Failed to Create common thing\n");
 		return;
 	}
-	printf("Created common thing\n");
 	PyObject * _const = PyModule_New("const");
 	PyObject * log = PyModule_New("log");
 	dict = PyModule_GetDict(common);
@@ -538,7 +546,4 @@ void init_python_api()
         PyObject * add_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_add_value_type);
 	PyObject_SetAttrString(dictlist, "add_value", add_value);
 	PyDict_SetItemString(dict, "dictlist", dictlist);
-	if (PyExc_IOError != NULL) {
-		printf("Got PyExc_IOError\n");
-	}
 }

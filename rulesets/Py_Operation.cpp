@@ -362,14 +362,21 @@ static PyObject * Operation_seq_item(RootOperationObject * self, int item)
 
 PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
 {
+    printf("Adding to an operation\n");
+    fflush(stdout);
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid operation");
+        printf("1\n");
+        fflush(stdout);
+        return NULL;
     }
     if (other == Py_None) {
         printf("Adding None to an operation\n");
         OplistObject * res = newOplistObject(NULL);
         res->ops = new oplist();
         res->ops->push_back(self->operation);
+        printf("2\n");
+        fflush(stdout);
         return (PyObject*)res;
     }
     if ((PyTypeObject*)PyObject_Type(other) == & Oplist_Type) {
@@ -379,12 +386,14 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
             return NULL;
         }
         OplistObject * res = newOplistObject(NULL);
-        res->ops = new oplist();
         if (res == NULL) {
             return NULL;
         }
-        *res->ops = *opl->ops;
+        res->ops = new oplist();
+        res->ops->merge(*opl->ops);
         res->ops->push_back(self->operation);
+        printf("3\n");
+        fflush(stdout);
         return (PyObject*)res;
     }
     if ((PyTypeObject*)PyObject_Type(other) == & RootOperation_Type) {
@@ -393,14 +402,18 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
             PyErr_SetString(PyExc_TypeError, "invalid operation");
         }
         OplistObject * res = newOplistObject(NULL);
-        res->ops = new oplist();
         if (res == NULL) {
             return NULL;
         }
+        res->ops = new oplist();
         res->ops->push_back(op->operation);
         res->ops->push_back(self->operation);
+        printf("4\n");
+        fflush(stdout);
         return (PyObject*)res;
     }
+    printf("5\n");
+    fflush(stdout);
     return NULL;
 }
 
@@ -412,6 +425,7 @@ static int Operation_num_coerce(PyObject ** self, PyObject ** other)
 {
     //if (*other == Py_None) {
         Py_INCREF(*self);
+        Py_INCREF(*other);
         return(0);
     //}
     //return -1;

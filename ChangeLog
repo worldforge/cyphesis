@@ -1,3 +1,12 @@
+2000-12-03  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Added support for varconf config files.
+
+	* Used config file to list enitity types and their python class files.
+
+	* Cleaned up reference counting in Python API related C++ code.
+	  References should all now be handled correctly.
+
 2000-11-30  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Added dictfunc functionality to Python interface.
