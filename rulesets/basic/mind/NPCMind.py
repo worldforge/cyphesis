@@ -80,7 +80,14 @@ class NPCMind(BaseMind):
         return opTick+result
     ########## Persistance operations
     def save_operation(self, op):
+        mind = Entity(self.id)
+        mind.place = self.knowledge.place
+        mind.location = self.knowledge.location
+        mind.goal = self.knowledge.goal
+        mind.importance = self.knowledge.importance
+        mind.price = self.knowledge.price
         print "SAVE"
+        return Operation("info", mind)
     def load_operation(self, op):
         print "LOAD"
     ########## Sight operations

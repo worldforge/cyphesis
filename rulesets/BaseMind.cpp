@@ -279,9 +279,10 @@ oplist BaseMind::Operation(const Disappearance & op)
 
 oplist BaseMind::Operation(const Save & op)
 {
-    oplist(res);
+    oplist res;
     script->Operation("save", op, res);
     Object::MapType emap;
+    cout << res.size() << " Got stuff from mind" << endl << flush;
     if ((res.size() != 0) && (res.front()->GetArgs().size() != 0)) {
         emap = res.front()->GetArgs().front().AsMap();
         // FIXME Operations created in python are leaked
@@ -295,7 +296,7 @@ oplist BaseMind::Operation(const Save & op)
 
 oplist BaseMind::Operation(const Load & op)
 {
-    oplist(res);
+    oplist res;
     script->Operation("load", op, res);
     const Object::MapType & emap = op.GetArgs().front().AsMap();
     Object::MapType::const_iterator I = emap.find("map");

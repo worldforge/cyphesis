@@ -1,3 +1,8 @@
+2001-05-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Object.cpp: Added support for complex attributes
+	  for Entities used as argument for operations.
+
 2001-04-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.in: Added a bit of support for later version of the Python

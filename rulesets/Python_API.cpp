@@ -20,6 +20,7 @@
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Talk.h>
 #include <Atlas/Objects/Operation/Touch.h>
+#include <Atlas/Objects/Operation/Info.h>
 
 #include <modules/Location.h>
 #include <server/WorldTime.h>
@@ -500,6 +501,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
         return NULL;
     }
     o->m_obj = new Object(obj);
+    o->m_ent = true;
     return (PyObject *)o;
 }
 
@@ -588,6 +590,8 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         op->operation = new Eat(Eat::Instantiate());
     } else if (strcmp(type, "nourish") == 0) {
         op->operation = new Nourish(Nourish::Instantiate());
+    } else if (strcmp(type, "info") == 0) {
+        op->operation = new Info(Info::Instantiate());
     } else if ((strcmp(type,"thought")==0) || (strcmp(type,"goal_info")==0)) {
         Py_DECREF(op);
         Py_INCREF(Py_None);
