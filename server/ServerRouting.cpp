@@ -21,8 +21,8 @@ ServerRouting::ServerRouting(CommServer & server, const std::string & ruleset,
         commServer(server), svrRuleset(ruleset), svrName(name), opSerialNo(0),
         world(*new WorldRouter(*this)), lobby(*new Lobby())
 {
-    fullid = name;
-    idDict[fullid] = this;
+    setId(name);
+    idDict[getId()] = this;
     Account * adm = Persistance::loadAdminAccount();
     addObject(adm);
     adm->world=&world;
@@ -30,11 +30,11 @@ ServerRouting::ServerRouting(CommServer & server, const std::string & ruleset,
 
 ServerRouting::~ServerRouting()
 {
-    idDict.erase(fullid);
-    idDict.erase(world.fullid);
+    idDict.erase(getId());
+    idDict.erase(world.getId());
     dict_t::const_iterator I = idDict.begin();
     for(; I != idDict.end(); I++) {
-        debug(cout << "Del " << I->second->fullid << endl << flush;);
+        debug(cout << "Del " << I->second->getId() << endl << flush;);
         delete I->second;
     }
     delete &world;

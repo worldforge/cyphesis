@@ -300,8 +300,6 @@ bool ClientConnection::login(const std::string & account,
     acmap["id"] = account;
     acmap["password"] = password;
 
-    acName = account;
-
     l.SetArgs(Object::ListType(1,Object(acmap)));
 
     reply_flag = false;
@@ -317,8 +315,6 @@ bool ClientConnection::create(const std::string & account,
     Object::MapType acmap;
     acmap["id"] = account;
     acmap["password"] = password;
-
-    acName = account;
 
     c.SetArgs(Object::ListType(1,Object(acmap)));
 

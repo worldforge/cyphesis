@@ -8,8 +8,8 @@
 
 #include <server/Connection_methods.h>
 
-ExternalMind::ExternalMind(Connection & connection, std::string & id,
-                           std::string & name) :
+ExternalMind::ExternalMind(Connection & connection, const std::string & id,
+                           const std::string & name) :
 		BaseMind(id, name), connection(connection)
 {
 }

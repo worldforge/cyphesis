@@ -15,27 +15,17 @@
 #include <skstream.h>
 #include <deque>
 
-typedef enum client_state {
-    INIT,
-    CONNECTED,
-    LOGGEDIN,
-    ERROR
-} cstate_t;
-
 class ClientConnection : public Atlas::Objects::Decoder {
   private:
     bool reply_flag;
     bool error_flag;
-    cstate_t state;
     int client_fd;
     socket_stream ios;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
-    std::string acName;
     Atlas::Message::Object::MapType reply;
     int serialNo;
 
-    dict_t objects;
     std::deque<Atlas::Objects::Operation::RootOperation *> operationQueue;
 
     template<class O>

@@ -16,12 +16,21 @@
 // dictionary as they are called elsewhere in this code.
 
 class BaseEntity {
-  public:
+  private:
     std::string fullid;		// String id
+  public:
     bool inGame;		// true if in game object
 
     BaseEntity();
     virtual ~BaseEntity();
+
+    const std::string & getId() const {
+        return fullid;
+    }
+
+    void setId(const string & i) {
+        fullid = i;
+    }
 
     virtual void destroy();
 

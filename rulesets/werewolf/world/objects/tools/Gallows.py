@@ -19,7 +19,7 @@ class Gallows(Thing):
         to_ = op[0].id
         reply = Message()
         loc_ = Location(self.id, Vector3D(2.5,2.5,3))
-        reply.append(Operation("move",Entity(to_,location=loc_,mode="hanging"),to=to_)
-        reply.append(Operation("reveal",Entity(to_),to=to_)
+        reply.append(Operation("move",Entity(to_,location=loc_,mode="hanging"),to=to_))
+        reply.append(Operation("reveal",Entity(to_),to=to_))
         # Send op to target which makes it reveal its true nature, and then die
         return reply

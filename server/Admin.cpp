@@ -62,7 +62,7 @@ oplist Admin::SaveOperation(const Save & op)
             if ((res.size() != 0) && (res.front()->GetArgs().size() != 0)) {
                 cout << "Dumping mind to database" << endl << flush;
                 Object::MapType & mindmap = res.front()->GetArgs().front().AsMap();
-                p->putMind(c->fullid, mindmap);
+                p->putMind(c->getId(), mindmap);
                 ++mind_count;
             }
         }

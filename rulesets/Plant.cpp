@@ -86,7 +86,7 @@ oplist Plant::TickOperation(const Tick & op)
     oplist res;
     script->Operation("tick", op, res);
     RootOperation * tickOp = new Tick(Tick::Instantiate());
-    tickOp->SetTo(fullid);
+    tickOp->SetTo(getId());
     tickOp->SetFutureSeconds(consts::basic_tick * speed);
     res.push_back(tickOp);
     int dropped = dropFruit(res);
@@ -99,7 +99,7 @@ oplist Plant::TickOperation(const Tick & op)
     if (dropped != 0) {
         RootOperation * set = new Set(Set::Instantiate());
         Object::MapType pmap;
-        pmap["id"] = fullid;
+        pmap["id"] = getId();
         pmap["fruits"] = fruits;
         set->SetArgs(Object::ListType(1,pmap));
         res.push_back(set);

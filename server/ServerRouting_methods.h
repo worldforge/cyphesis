@@ -14,7 +14,7 @@ inline int ServerRouting::idle() {
 
 inline BaseEntity * ServerRouting::addObject(BaseEntity * obj) {
     obj = Routing::addObject(obj);
-    idDict[obj->fullid] = obj;
+    idDict[obj->getId()] = obj;
     return obj;
 }
 

@@ -1,3 +1,24 @@
+2001-09-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* BUGS: Note that C++ version of client currently does not work.
+
+	* TODO: Update on important issues which allow easy DOS attacks.
+
+	* client/ClientConnection.cpp, client/ClientConnection.h:
+	  Cleaned up unused code from ClientConnection class.
+
+	* client/client.cpp: Removed monitoring section of client
+	  so it simply exits once the world is initialised.
+
+	* rulesets/basic/mind/goals/humanoid/werewolf.py:
+	  Started work on dynamic goals for playing werewolf.
+
+	* rulesets/werewolf/define_world.py: Added in the mayor, who runs
+	  werewolf games.
+
+	* common/BaseEntity.h: Made id of entity private, and implemented
+	  accessors.
+
 2001-08-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CharacterClient.cpp: Removed commented out code.

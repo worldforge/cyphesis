@@ -58,7 +58,7 @@ oplist Stackable::CombineOperation(const Combine & op)
     const Object::ListType & args = op.GetArgs();
     for(Object::ListType::const_iterator I= args.begin(); I!= args.end(); I++) {
         const std::string & id = I->AsMap().find("id")->second.AsString();
-        if (id == fullid) { continue; }
+        if (id == getId()) { continue; }
         Stackable * obj = (Stackable*)world->getObject(id);
         if (obj->type != type) { continue; }
         num = num + obj->num;
@@ -96,7 +96,7 @@ oplist Stackable::DivideOperation(const Divide & op)
         new_ent["num"] = new_num;
         Create * c = new Create( Create::Instantiate());
         c->SetArgs(Object::ListType(1,new_ent));
-        c->SetTo(fullid);
+        c->SetTo(getId());
         res.push_back(c);
     }
     return res;

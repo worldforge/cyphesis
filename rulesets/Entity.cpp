@@ -51,7 +51,7 @@ const Object & Entity::operator[](const std::string & aname)
     if (aname == "status") {
         attributes[aname] = Object(status);
     } else if (aname == "id") {
-        attributes[aname] = Object(fullid);
+        attributes[aname] = Object(getId());
     } else if (aname == "name") {
         attributes[aname] = Object(name);
     } else if (aname == "weight") {
@@ -134,7 +134,7 @@ void Entity::addToObject(Object::MapType & omap) const
     location.addToObject(omap);
     Object::ListType contlist;
     for(elist_t::const_iterator I = contains.begin(); I!=contains.end(); I++) {
-        contlist.push_back(Object((*I)->fullid));
+        contlist.push_back(Object((*I)->getId()));
     }
     if (contlist.size() != 0) {
         omap["contains"] = Object(contlist);
@@ -347,7 +347,7 @@ oplist Entity::OtherOperation(const RootOperation & op)
 {
     const std::string & op_type = op.GetParents().front().AsString();
     oplist res;
-    debug(std::cout << "Entity " << fullid << " got custom " << op_type << " op"
+    debug(std::cout << "Entity " << getId() << " got custom " << op_type << " op"
                << std::endl << std::flush;);
     script->Operation(op_type, op, res);
     return res;

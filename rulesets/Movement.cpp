@@ -38,7 +38,7 @@ void Movement::checkCollisions(const Location & loc)
     // the next tick in consts::basic_tick seconds
     double collTime = consts::basic_tick + 1;
     elist_t::const_iterator I;
-    // cout << "checking " << body->fullid << loc.coords << loc.velocity << " against ";
+    // cout << "checking " << body->getId() << loc.coords << loc.velocity << " against ";
     m_collEntity = NULL;
     for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
         // if ((*I) == loc.ref) { continue; }
@@ -48,7 +48,7 @@ void Movement::checkCollisions(const Location & loc)
         int axis;
         double t = loc.hitTime(oloc, axis);
         if (t < 0) { continue; }
-        // cout << (*I)->fullid << oloc.coords << oloc.velocity;
+        // cout << (*I)->getId() << oloc.coords << oloc.velocity;
         // cout << "[" << t << "]";
         if (t < collTime) {
             m_collEntity = *I;

@@ -90,7 +90,7 @@ oplist Connection::operation(const RootOperation & op)
             if ((ent->inGame != false)&&(((Thing *)ent)->isCharacter != 0) &&
                 (((Character *)ent)->externalMind == NULL)) {
                 Character * pchar = (Character *)ent;
-                pchar->externalMind = new ExternalMind(*this, pchar->fullid, pchar ->name);
+                pchar->externalMind = new ExternalMind(*this, pchar->getId(), pchar ->name);
                 debug(cout << "Re-connecting existing character to new connection" << endl << flush;);
                 Info * info = new Info(Info::Instantiate());
                 info->SetArgs(Object::ListType(1,pchar->asObject()));
@@ -184,8 +184,8 @@ oplist Connection::LogoutOperation(const Logout & op)
         Player * player = (Player *)server.getObject(account_id);
         if (player) {
             Logout l = op;
-            l.SetFrom(player->fullid);
-            debug(cout << "Logout without from. Using " << player->fullid << " instead." << endl << flush;);
+            l.SetFrom(player->getId());
+            debug(cout << "Logout without from. Using " << player->getId() << " instead." << endl << flush;);
             operation(l);
         }
     }

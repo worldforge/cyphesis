@@ -52,7 +52,7 @@ oplist Character::metabolise(double ammount = 1)
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
     Object::MapType ent;
-    ent["id"] = fullid;
+    ent["id"] = getId();
     if ((status > (1.5 + energyLoss)) && (weight < maxWeight)) {
         status = status - energyLoss;
         ent["weight"] = weight + weightGain;
@@ -69,7 +69,7 @@ oplist Character::metabolise(double ammount = 1)
     }
 
     Set * s = new Set(Set::Instantiate());
-    s->SetTo(fullid);
+    s->SetTo(getId());
     s->SetArgs(Object::ListType(1,ent));
 
     return oplist(1,s);
@@ -146,7 +146,7 @@ oplist Character::SetupOperation(const Setup & op)
         return res;
     }
 
-    mind = new BaseMind(fullid, name);
+    mind = new BaseMind(getId(), name);
     std::string mind_class("NPCMind"), mind_package("mind.NPCMind");
     if (global_conf->findItem("mind", type)) {
         mind_package = global_conf->getItem("mind", type);
@@ -160,18 +160,18 @@ oplist Character::SetupOperation(const Setup & op)
     s->SetAttr("sub_to", Object("mind"));
     res2[0] = s;
     Look * l = new Look(Look::Instantiate());
-    l->SetTo(world->fullid);
+    l->SetTo(world->getId());
     res2[1] = l;
     if (location.ref != &world->gameWorld) {
         l = new Look(Look::Instantiate());
-        l->SetTo(location.ref->fullid);
+        l->SetTo(location.ref->getId());
         res2.push_back(l);
     }
     l = new Look(Look::Instantiate());
-    l->SetTo(fullid);
+    l->SetTo(getId());
     res2.push_back(l);
     Tick * tick = new Tick(Tick::Instantiate());
-    tick->SetTo(fullid);
+    tick->SetTo(getId());
     res2.push_back(tick);
     return res2;
 }
@@ -204,7 +204,7 @@ oplist Character::TickOperation(const Tick & op)
             entmap["serialno"]=Object(movement.m_serialno);
             Object ent(entmap);
             Tick * tickOp = new Tick(Tick::Instantiate());
-            tickOp->SetTo(fullid);
+            tickOp->SetTo(getId());
             tickOp->SetFutureSeconds(movement.getTickAddition(ret_loc.coords));
             tickOp->SetArgs(Object::ListType(1,ent));
             res[0] = tickOp;
@@ -223,14 +223,14 @@ oplist Character::TickOperation(const Tick & op)
             food = food - foodConsumption;
 
             Object::MapType food_ent;
-            food_ent["id"] = fullid;
+            food_ent["id"] = getId();
             food_ent["food"] = food;
             Set s = Set::Instantiate();
-            s.SetTo(fullid);
+            s.SetTo(getId());
             s.SetArgs(Object::ListType(1,food_ent));
 
             Sight * si = new Sight(Sight::Instantiate());
-            si->SetTo(fullid);
+            si->SetTo(getId());
             si->SetArgs(Object::ListType(1,s.AsObject()));
             res.push_back(si);
         }
@@ -243,7 +243,7 @@ oplist Character::TickOperation(const Tick & op)
         
         // TICK
         Tick * tickOp = new Tick(Tick::Instantiate());
-        tickOp->SetTo(fullid);
+        tickOp->SetTo(getId());
         tickOp->SetFutureSeconds(consts::basic_tick * 30);
         res.push_back(tickOp);
         return res;
@@ -268,11 +268,11 @@ oplist Character::EatOperation(const Eat & op)
         return res;
     }
     Object::MapType self_ent;
-    self_ent["id"] = fullid;
+    self_ent["id"] = getId();
     self_ent["status"] = -1;
 
     Set * s = new Set(Set::Instantiate());
-    s->SetTo(fullid);
+    s->SetTo(getId());
     s->SetArgs(Object::ListType(1,self_ent));
 
     const std::string & to = op.GetFrom();
@@ -297,7 +297,7 @@ oplist Character::NourishOperation(const Nourish & op)
     food = food + I->second.AsNum();
 
     Object::MapType food_ent;
-    food_ent["id"] = fullid;
+    food_ent["id"] = getId();
     food_ent["food"] = food;
     if ((I = nent.find("alcahol")) != nent.end()) {
         drunkness += I->second.AsNum() / weight;
@@ -307,7 +307,7 @@ oplist Character::NourishOperation(const Nourish & op)
     s.SetArgs(Object::ListType(1,food_ent));
 
     Sight * si = new Sight(Sight::Instantiate());
-    si->SetTo(fullid);
+    si->SetTo(getId());
     si->SetArgs(Object::ListType(1,s.AsObject()));
     return oplist(1,si);
 }
@@ -320,14 +320,14 @@ oplist Character::mindLoginOperation(const Login & op)
 oplist Character::mindActionOperation(const Action & op)
 {
     Action *a = new Action(op);
-    a->SetTo(fullid);
+    a->SetTo(getId());
     return oplist(1,a);
 }
 
 oplist Character::mindSetupOperation(const Setup & op)
 {
     Setup *s = new Setup(op);
-    s->SetTo(fullid);
+    s->SetTo(getId());
     s->SetAttr("sub_to", Object("mind"));
     return oplist(1,s);
 }
@@ -335,7 +335,7 @@ oplist Character::mindSetupOperation(const Setup & op)
 oplist Character::mindTickOperation(const Tick & op)
 {
     Tick *t = new Tick(op);
-    t->SetTo(fullid);
+    t->SetTo(getId());
     t->SetAttr("sub_to", Object("mind"));
     return oplist(1,t);
 }
@@ -410,9 +410,9 @@ oplist Character::mindMoveOperation(const Move & op)
 				* (drunkness * 10));
     }
     // Print out a bunch of debug info
-    debug( std::cout << ":" << location_ref << ":" << location.ref->fullid
+    debug( std::cout << ":" << location_ref << ":" << location.ref->getId()
                      << ":" << std::endl << std::flush;);
-    if (((location_ref == location.ref->fullid) || (location_ref.empty())) &&
+    if (((location_ref == location.ref->getId()) || (location_ref.empty())) &&
         (newop->GetFutureSeconds() >= 0)) {
         // Movement within current ref. Work out the speed and stuff and
         // use movement object to track movement.
@@ -488,7 +488,7 @@ oplist Character::mindMoveOperation(const Move & op)
         ent["name"] = Object("move");
         Object::ListType args(1,ent);
         tickOp->SetArgs(args);
-        tickOp->SetTo(fullid);
+        tickOp->SetTo(getId());
         // Need to add the arguments to this op before we return it
         // direction is already a unit vector
         debug( if (location_coords) { std::cout<<"\tUsing target"
@@ -526,7 +526,7 @@ oplist Character::mindSetOperation(const Set & op)
         Object::MapType::const_iterator I = amap.find("id");
         if (I != amap.end() && I->second.IsString()) {
             const std::string & opid = I->second.AsString();
-            if (opid != fullid) {
+            if (opid != getId()) {
                 s->SetTo(opid);
             }
         }
@@ -614,7 +614,7 @@ oplist Character::mindLookOperation(const Look & op)
     if (op.GetTo().size() == 0) {
         const Object::ListType & args = op.GetArgs();
         if (args.size() == 0) {
-            l->SetTo(world->fullid);
+            l->SetTo(world->getId());
         } else {
             if (args.front().IsMap()) {
                 const Object::MapType & amap = args.front().AsMap();
@@ -658,7 +658,7 @@ oplist Character::mindTouchOperation(const Touch & op)
     const Object::ListType & args = op.GetArgs();
     if ((op.GetTo().size() == 0) || (args.size() != 0)) {
         if (args.size() == 0) {
-            t->SetTo(world->fullid);
+            t->SetTo(world->getId());
         } else {
             if (args.front().IsMap()) {
                 const Object::MapType & amap = args.front().AsMap();
@@ -676,9 +676,9 @@ oplist Character::mindTouchOperation(const Touch & op)
     res[0] = t;
     // Send action "touch"
     Action * a = new Action(Action::Instantiate());
-    a->SetTo(fullid);
+    a->SetTo(getId());
     Object::MapType amap;
-    amap["id"] = fullid;
+    amap["id"] = getId();
     amap["action"] = "touch";
     Object::ListType setArgs(1,Object(amap));
     a->SetArgs(setArgs);
@@ -898,7 +898,7 @@ oplist Character::sendMind(const RootOperation & op)
         external_res = externalMind->message(op);
     } else {
         if (!autom) {
-            debug( std::cout << "Turning automatic on for " << fullid
+            debug( std::cout << "Turning automatic on for " << getId()
                              << std::endl << std::flush;);
             autom = true;
         }
@@ -927,7 +927,7 @@ oplist Character::mind2body(const RootOperation & op)
 
     if ((newop.GetTo().size() == 0) &&
         (op.GetParents().front().AsString() != "look")) {
-       newop.SetTo(fullid);
+       newop.SetTo(getId());
     }
     if (drunkness > 1.0) {
         return oplist();

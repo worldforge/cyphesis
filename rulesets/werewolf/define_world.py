@@ -23,7 +23,10 @@ gallows_xyz=(7,7,village_height)
 
 knowledge=[('gallows',gallows_xyz)]
 
-execute=(il.execute,"execute()")
+execute=(il.execute,"elect()")
+
+count=[(il.trade,"count_players()"),
+       (il.trade,"decount_players()")]
 
 hangman_goals=[execute]
 
@@ -45,6 +48,9 @@ def default(mapeditor):
 
 #   the gallows
     gallows = m.make('gallows', type='gallows', xyz=gallows_xyz)
+
+#   the mayor, who runs the game
+    mayor=m.make('mayor', type='mayor', xyz=(1, 1, village_height))
 
 #   the hangman, who lynches the villagers
     hangman=m.make('hangman', type='hangman', xyz=(5, 5, village_height))

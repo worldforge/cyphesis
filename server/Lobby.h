@@ -12,10 +12,10 @@ class Lobby : public OOGThing {
     adict_t accounts;
   public:
     inline void addObject(Account * a) {
-        accounts[a->fullid] = a;
+        accounts[a->getId()] = a;
     }
     inline void delObject(Account * a) {
-        accounts.erase(a->fullid);
+        accounts.erase(a->getId());
     }
     inline const adict_t & getAccounts() const {
         return accounts;

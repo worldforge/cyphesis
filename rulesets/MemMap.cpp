@@ -46,7 +46,7 @@ Entity * MemMap::add(const Object & entity)
         return update(entity);
     }
     Entity * thing = new Entity;
-    thing->fullid = id;
+    thing->setId(id);
     I = entmap.find("name");
     if ((I != entmap.end()) && I->second.IsString()) {
         thing->name = I->second.AsString();
@@ -124,7 +124,7 @@ std::list<Entity *> MemMap::findByType(const std::string & what)
     edict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         Entity * item = (Entity *)I->second;
-        debug( std::cout << "F" << what << ":" << item->type << ":" << item->fullid << std::endl << std::flush;);
+        debug( std::cout << "F" << what << ":" << item->type << ":" << item->getId() << std::endl << std::flush;);
         if (item->type == what) {
             res.push_back((Entity*)I->second);
         }
@@ -141,7 +141,7 @@ std::list<Entity *> MemMap::findByLocation(const Location & loc, double radius)
         if (!loc || !oloc) {
             continue;
         }
-        if ((oloc.ref->fullid == loc.ref->fullid) &&
+        if ((oloc.ref->getId() == loc.ref->getId()) &&
             (loc.coords.distance(oloc.coords) < radius)) {
             res.push_back((Entity*)I->second);
         }

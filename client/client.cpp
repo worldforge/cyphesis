@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
             return 1;
         }
         observer.loadDefault();
-        observer.run();
+        //observer.run();
     }
     catch (...) {
         std::cerr << "EMERGENCY: cyphesis_client: Exception caught in main; exiting" << std::endl << std::flush;

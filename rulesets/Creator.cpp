@@ -42,7 +42,7 @@ oplist Creator::operation(const RootOperation & op)
     }
     if (op_no == OP_SETUP) {
         Look look = Look::Instantiate();
-        look.SetFrom(fullid);
+        look.SetFrom(getId());
         return world->lookOperation(look);
     }
     return sendMind(op);
@@ -52,7 +52,7 @@ oplist Creator::externalOperation(const RootOperation & op)
 {
     debug( std::cout << "Creator::externalOperation" << std::endl
                      << std::flush;);
-    if ((op.GetTo()==fullid) || (op.GetTo()=="")) {
+    if ((op.GetTo()==getId()) || (op.GetTo()=="")) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         oplist lres = callOperation(op);
         setRefno(lres, op);

@@ -32,13 +32,13 @@ WorldRouter::WorldRouter(ServerRouting & srvr) : BaseWorld(*new World()),
                                                  nextId(0),
                                                  server(srvr)
 {
-    fullid = "world_0";
+    setId("world_0");
     initTime = time(NULL) - timeoffset;
     updateTime();
-    gameWorld.fullid = fullid;
+    gameWorld.setId(getId());
     gameWorld.world=this;
-    server.idDict[fullid]=&gameWorld;
-    eobjects[fullid]=&gameWorld;
+    server.idDict[getId()]=&gameWorld;
+    eobjects[getId()]=&gameWorld;
     perceptives.push_back(&gameWorld);
     objectList.push_back(&gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
@@ -59,7 +59,7 @@ inline void WorldRouter::addOperationToQueue(RootOperation & op,
     if (op.GetFrom() == "cheat") {
         op.SetFrom(op.GetTo());
     } else {
-        op.SetFrom(obj->fullid);
+        op.SetFrom(obj->getId());
     }
     updateTime();
     double t = realTime;
@@ -84,7 +84,7 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
     return *I;
 }
 
-inline std::string WorldRouter::getId(std::string & name)
+inline std::string WorldRouter::getNewId(std::string & name)
 {
     std::stringstream buf;
     buf << name << "_" << ++nextId;
@@ -100,17 +100,17 @@ Entity * WorldRouter::addObject(Entity * obj)
 {
     debug(std::cout << "WorldRouter::addObject(Entity *)" << std::endl
                     << std::flush;);
-    if (obj->fullid.empty()) {
-        obj->fullid=getId(obj->name);
+    if (obj->getId().empty()) {
+        obj->setId(getNewId(obj->name));
     }
-    server.idDict[obj->fullid]=eobjects[obj->fullid]=obj;
+    server.idDict[obj->getId()]=eobjects[obj->getId()]=obj;
     objectList.push_back(obj);
     if (!obj->location) {
         debug(std::cout << "set loc " << &gameWorld  << std::endl
                         << std::flush;);
         obj->location.ref=&gameWorld;
         obj->location.coords=Vector3D(0,0,0);
-        debug(std::cout << "loc set with ref " << obj->location.ref->fullid
+        debug(std::cout << "loc set with ref " << obj->location.ref->getId()
                         << std::endl << std::flush;);
     }
     if (obj->location.ref==&gameWorld) {
@@ -125,7 +125,7 @@ Entity * WorldRouter::addObject(Entity * obj)
         omnipresentList.push_back(obj);
     }
     Setup * s = new Setup(Setup::Instantiate());
-    s->SetTo(obj->fullid);
+    s->SetTo(obj->getId());
     s->SetFutureSeconds(-0.1);
     addOperationToQueue(*s, this);
     return (obj);
@@ -138,7 +138,7 @@ Entity * WorldRouter::addObject(const std::string & typestr, const Object & ent,
                     << std::flush;);
     Entity * obj;
     obj = EntityFactory::instance()->newThing(typestr, ent, eobjects);
-    obj->fullid = id;
+    obj->setId(id);
     return addObject(obj);
 }
 
@@ -153,8 +153,8 @@ void WorldRouter::delObject(Entity * obj)
     omnipresentList.remove(obj);
     perceptives.remove(obj);
     objectList.remove(obj);
-    eobjects.erase(obj->fullid);
-    server.idDict.erase(obj->fullid);
+    eobjects.erase(obj->getId());
+    server.idDict.erase(obj->getId());
 }
 
 oplist WorldRouter::message(const RootOperation & op)
@@ -226,12 +226,12 @@ oplist WorldRouter::operation(const RootOperation * op)
                     (!J->second->location.inRange((*I)->location,
                                                        consts::sight_range))) {
                         debug(std::cout << "Op from " <<from<< " cannot be seen by "
-                                   << (*I)->fullid << std::endl << std::flush;);
+                                   << (*I)->getId() << std::endl << std::flush;);
                              
                         continue;
                 }
             }
-            newop.SetTo((*I)->fullid);
+            newop.SetTo((*I)->getId());
             // FIXME THere must be a more efficient way to deliver, with less
             // chance of a loop.
             operation(&newop);
@@ -263,7 +263,7 @@ oplist WorldRouter::lookOperation(const Look & op)
             Sight * s = new Sight(Sight::Instantiate());
 
             Object::MapType omap;
-            omap["id"] = fullid;
+            omap["id"] = getId();
             omap["parents"] = Object::ListType(1, "world");
             omap["objtype"] = "object";
             Entity * opFrom = J->second;
@@ -272,7 +272,7 @@ oplist WorldRouter::lookOperation(const Look & op)
             elist_t::const_iterator I;
             for(I = gameWorld.contains.begin(); I != gameWorld.contains.end(); I++) {
                 if ((*I)->location.inRange(fromLoc, consts::sight_range)) {
-                    contlist.push_back(Object((*I)->fullid));
+                    contlist.push_back(Object((*I)->getId()));
                 }
             }
             if (contlist.size() != 0) {

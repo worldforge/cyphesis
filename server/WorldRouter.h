@@ -36,7 +36,7 @@ class WorldRouter : public BaseWorld {
         realTime = tmp_time;
     }
 
-    std::string getId(std::string & name);
+    std::string getNewId(std::string & name);
   public:
     ServerRouting & server;
 

@@ -45,7 +45,7 @@ bad_type CharacterClient::set_from(bad_type msg) {
 
 void CharacterClient::send(RootOperation & op)
 {
-    op.SetFrom(fullid);
+    op.SetFrom(getId());
     connection.send(op);
 }
 

@@ -11,7 +11,7 @@ using Atlas::Message::Object;
 ClientAccount::ClientAccount(const std::string & name, ClientConnection & con) :
     connection(con)
 {
-    fullid = name;
+    setId(name);
 }
 
 oplist ClientAccount::OtherOperation(const RootOperation & op)

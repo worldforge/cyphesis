@@ -48,9 +48,9 @@ Move * Pedestrian::genFaceOperation(const Location & loc)
         m_face = loc.face;
         debug( std::cout << "Turning" << std::endl << std::flush;);
         Move * moveOp = new Move(Move::Instantiate());
-        moveOp->SetTo(m_body.fullid);
+        moveOp->SetTo(m_body.getId());
         Object::MapType entmap;
-        entmap["id"] = m_body.fullid;
+        entmap["id"] = m_body.getId();
         loc.addToObject(entmap);
         Object::ListType args(1,entmap);
         moveOp->SetArgs(args);
@@ -89,11 +89,11 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
 
     // Create move operation
     Move * moveOp = new Move(Move::Instantiate());
-    moveOp->SetTo(m_body.fullid);
+    moveOp->SetTo(m_body.getId());
 
     // Set up argument for operation
     Object::MapType entmap;
-    entmap["id"] = m_body.fullid;
+    entmap["id"] = m_body.getId();
 
     // Walk out what the mode of the character should be.
     double vel_mag = m_velocity.mag();
@@ -145,7 +145,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
             debug( std::cout << "target achieved";);
             new_coords = target;
             if (m_collRefChange) {
-                debug(std::cout << "CONTACT " << m_collEntity->fullid
+                debug(std::cout << "CONTACT " << m_collEntity->getId()
                                 << std::endl << std::flush;);
                 if (m_collEntity == new_loc.ref->location.ref) {
                     debug(std::cout << "OUT" << target

@@ -58,7 +58,7 @@ oplist Thing::SetupOperation(const Setup & op)
     res[0] = sight;
 
     RootOperation * tick = new Tick(Tick::Instantiate());
-    tick->SetTo(fullid);
+    tick->SetTo(getId());
 
     res[1] = tick;
 
@@ -99,7 +99,7 @@ oplist Thing::CreateOperation(const Create & op)
         } else {
             type = parents.front().AsString();
         }
-        debug( std::cout << fullid << " creating " << type;);
+        debug( std::cout << getId() << " creating " << type;);
         Entity * obj = world->addObject(type,ent);
         if (!obj->location) {
             obj->location.ref = location.ref;
@@ -151,7 +151,7 @@ oplist Thing::FireOperation(const Fire & op)
     const Object::MapType & fire_ent = op.GetArgs().front().AsMap();
     double consumed = bs.AsNum() * fire_ent.find("status")->second.AsNum();
     Object::MapType self_ent;
-    self_ent["id"] = fullid;
+    self_ent["id"] = getId();
     self_ent["status"] = status - (consumed / weight);
 
     const std::string & to = fire_ent.find("id")->second.AsString();
@@ -160,7 +160,7 @@ oplist Thing::FireOperation(const Fire & op)
     nour_ent["weight"] = consumed;
 
     Set * s = new Set(Set::Instantiate());
-    s->SetTo(fullid);
+    s->SetTo(getId());
     s->SetArgs(Object::ListType(1,self_ent));
 
     Nourish * n = new Nourish(Nourish::Instantiate());
@@ -237,7 +237,7 @@ oplist Thing::MoveOperation(const Move & op)
             elist_t::const_iterator I = location.ref->contains.begin();
             Object::ListType appear, disappear;
             Object::MapType this_ent;
-            this_ent["id"] = fullid;
+            this_ent["id"] = getId();
             this_ent["stamp"] = (double)seq;
             Object::ListType this_as_args(1,this_ent);
             for(;I != location.ref->contains.end(); I++) {
@@ -248,30 +248,30 @@ oplist Thing::MoveOperation(const Move & op)
                 // entities saying that we are (dis)appearing
                 if (wasInRange ^ isInRange) {
                     Object::MapType that_ent;
-                    that_ent["id"] = (*I)->fullid;
+                    that_ent["id"] = (*I)->getId();
                     that_ent["stamp"] = (double)(*I)->seq;
                     if (wasInRange) {
                         // We are losing sight of that object
                         disappear.push_back(that_ent);
-                        debug(std::cout << fullid << ": losing site of " <<(*I)->fullid << std::endl;);
+                        debug(std::cout << getId() << ": losing site of " <<(*I)->getId() << std::endl;);
                         if (((Thing*)*I)->perceptive) {
                             // Send operation to the entity in question so it
                             // knows it is losing sight of us.
                             Disappearance * d = new Disappearance(Disappearance::Instantiate());
                             d->SetArgs(this_as_args);
-                            d->SetTo((*I)->fullid);
+                            d->SetTo((*I)->getId());
                             res2.push_back(d);
                         }
                     } else /*if (isInRange)*/ {
                         // We are gaining sight of that object
                         appear.push_back(that_ent);
-                        debug(std::cout << fullid << ": gaining site of " <<(*I)->fullid << std::endl;);
+                        debug(std::cout << getId() << ": gaining site of " <<(*I)->getId() << std::endl;);
                         if (((Thing*)*I)->perceptive) {
                             // Send operation to the entity in question so it
                             // knows it is gaining sight of us.
                             Appearance * a = new Appearance(Appearance::Instantiate());
                             a->SetArgs(this_as_args);
-                            a->SetTo((*I)->fullid);
+                            a->SetTo((*I)->getId());
                             res2.push_back(a);
                         }
                     }
@@ -282,7 +282,7 @@ oplist Thing::MoveOperation(const Move & op)
                 // we are losing sight of
                 Appearance * a = new Appearance(Appearance::Instantiate());
                 a->SetArgs(appear);
-                a->SetTo(fullid);
+                a->SetTo(getId());
                 res2.push_back(a);
             }
             if (disappear.size() != 0) {
@@ -290,7 +290,7 @@ oplist Thing::MoveOperation(const Move & op)
                 // we are gaining sight of
                 Disappearance * d = new Disappearance(Disappearance::Instantiate());
                 d->SetArgs(disappear);
-                d->SetTo(fullid);
+                d->SetTo(getId());
                 res2.push_back(d);
             }
         }
@@ -326,7 +326,7 @@ oplist Thing::SetOperation(const Set & op)
         if (status < 0) {
             RootOperation * d = new Delete(Delete::Instantiate());
             d->SetArgs(Object::ListType(1,this->asObject()));
-            d->SetTo(fullid);
+            d->SetTo(getId());
             res2.push_back(d);
         }
         return res2;

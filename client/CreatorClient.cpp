@@ -21,7 +21,7 @@ Entity * CreatorClient::make(const Object & entity)
     }
     Create op(Create::Instantiate());
     op.SetArgs(Object::ListType(1,entity));
-    op.SetFrom(fullid);
+    op.SetFrom(getId());
     oplist result = sendAndWaitReply(op);
     // FIXME I am pretty sure this is in practice a redundant check.
     if (result.empty()) {

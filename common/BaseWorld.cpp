@@ -27,13 +27,13 @@ static const bool debug_flag = false;
 
 BaseWorld::BaseWorld(Entity & gWorld) : gameWorld(gWorld)
 {
-    // fullid = "world_0";
+    // getId() = "world_0";
     // initTime = time(NULL) - timeoffset;
     // updateTime();
-    // gameWorld.fullid = fullid;
+    // gameWorld.getId() = getId();
     // gameWorld.world=this;
-    // server.idDict[fullid]=&gameWorld;
-    // eobjects[fullid]=&gameWorld;
+    // server.idDict[getId()]=&gameWorld;
+    // eobjects[getId()]=&gameWorld;
     // perceptives.push_back(&gameWorld);
     // objectList.push_back(&gameWorld);
 }
@@ -59,16 +59,16 @@ inline std::string BaseWorld::getId(std::string & name)
 Entity * BaseWorld::addObject(Entity * obj)
 {
     debug(cout << "BaseWorld::addObject(Entity *)" << endl << flush;);
-    if (obj->fullid.empty()) {
-        obj->fullid=getId(obj->name);
+    if (obj->getId().empty()) {
+        obj->getId()=getId(obj->name);
     }
-    server.idDict[obj->fullid]=eobjects[obj->fullid]=obj;
+    server.idDict[obj->getId()]=eobjects[obj->getId()]=obj;
     objectList.push_back(obj);
     if (!obj->location) {
         debug(cout << "set loc " << &gameWorld  << endl << flush;);
         obj->location.ref=&gameWorld;
         obj->location.coords=Vector3D(0,0,0);
-        debug(cout << "loc set with ref " << obj->location.ref->fullid << endl << flush;);
+        debug(cout << "loc set with ref " << obj->location.ref->getId() << endl << flush;);
     }
     if (obj->location.ref==&gameWorld) {
         debug(cout << "loc is world" << endl << flush;);
@@ -81,7 +81,7 @@ Entity * BaseWorld::addObject(Entity * obj)
         omnipresentList.push_back(obj);
     }
     Setup * s = new Setup(Setup::Instantiate());
-    s->SetTo(obj->fullid);
+    s->SetTo(obj->getId());
     s->SetFutureSeconds(-0.1);
     addOperationToQueue(*s, this);
     return (obj);
@@ -93,7 +93,7 @@ Entity * BaseWorld::addObject(const std::string & typestr, const Object & ent,
     debug(cout << "BaseWorld::addObject(std::string, ent)" << endl << flush;);
     Entity * obj;
     obj = EntityFactory::instance()->newThing(typestr, ent, eobjects);
-    obj->fullid = id;
+    obj->getId() = id;
     return addObject(obj);
 }
 
@@ -108,8 +108,8 @@ void BaseWorld::delObject(Entity * obj)
     omnipresentList.remove(obj);
     perceptives.remove(obj);
     objectList.remove(obj);
-    eobjects.erase(obj->fullid);
-    server.idDict.erase(obj->fullid);
+    eobjects.erase(obj->getId());
+    server.idDict.erase(obj->getId());
 }
 
 inline const elist_t& BaseWorld::broadcastList(const RootOperation & op) const

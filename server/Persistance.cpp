@@ -35,7 +35,7 @@ void Persistance::saveAdminAccount(Account & adm)
     std::ofstream adm_file("/tmp/admin.xml", std::ios::out);
     adm_file << "<atlas>" << endl << "<map>" << endl;
     adm_file << "    <string name=\"password\">" << adm.password << "</string>" << endl;
-    adm_file << "    <string name=\"id\">" << adm.fullid << "</string>" << endl;
+    adm_file << "    <string name=\"id\">" << adm.getId() << "</string>" << endl;
     adm_file << "    <list name=\"parents\">" << endl;
     adm_file << "    <string>admin</string>" << endl;
     adm_file << "    </list>" << endl;
@@ -115,7 +115,7 @@ Account * Persistance::getAccount(const std::string & name)
 
 void Persistance::putAccount(const Account & ac)
 {
-    putObject(account_db, ac.asObject().AsMap(), ac.fullid.c_str());
+    putObject(account_db, ac.asObject().AsMap(), ac.getId().c_str());
 }
 
 bool Persistance::getEntity(const std::string & id, Object::MapType & entity)
@@ -125,7 +125,7 @@ bool Persistance::getEntity(const std::string & id, Object::MapType & entity)
 
 void Persistance::putEntity(const Entity & be)
 {
-    putObject(world_db, be.asObject().AsMap(), be.fullid.c_str());
+    putObject(world_db, be.asObject().AsMap(), be.getId().c_str());
 }
 
 bool Persistance::getMind(const std::string & id, Object::MapType & entity)

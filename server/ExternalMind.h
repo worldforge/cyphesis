@@ -13,7 +13,7 @@ class ExternalMind : public BaseMind {
   public:
     Connection & connection;
 
-    ExternalMind(Connection & connection, std::string & id, std::string & name);
+    ExternalMind(Connection & connection, const std::string & id, const std::string & name);
 
     virtual oplist message(const RootOperation & op);
 };

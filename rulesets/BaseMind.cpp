@@ -39,7 +39,7 @@ using Atlas::Objects::Root;
 BaseMind::BaseMind(const std::string & id, const std::string & body_name)
                                : map(script), isAwake(true)
 {
-    fullid = id;
+    setId(id);
     name = body_name;
     map.addObject(this);
     //BaseMind::time=WorldTime();
@@ -47,7 +47,7 @@ BaseMind::BaseMind(const std::string & id, const std::string & body_name)
 
 BaseMind::~BaseMind()
 {
-    map.things.erase(fullid);
+    map.things.erase(getId());
     map.flushMap();
 }
 
@@ -425,7 +425,7 @@ oplist BaseMind::SaveOperation(const Save & op)
     }
     Info * i = new Info(Info::Instantiate());
     emap["map"] = map.asObject();
-    emap["id"] = fullid;
+    emap["id"] = getId();
     i->SetArgs(Object::ListType(1,emap));
     return oplist(1,i);
 }

@@ -8,3 +8,6 @@ up with being treated as if their bounding boxes were not solid.
 I suspect there may be something wrong with the _num_coerce functions
 in python interface code. Some of them do not increment references before
 returning.
+
+C++ version of the client is creating entities all in the center of the
+map.

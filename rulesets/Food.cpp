@@ -30,11 +30,11 @@ oplist Food::EatOperation(const Eat & op)
         return res;
     }
     Object::MapType self_ent;
-    self_ent["id"] = fullid;
+    self_ent["id"] = getId();
     self_ent["status"] = -1;
 
     Set * s = new Set(Set::Instantiate());
-    s->SetTo(fullid);
+    s->SetTo(getId());
     s->SetArgs(Object::ListType(1,self_ent));
 
     const std::string & to = op.GetFrom();
@@ -64,7 +64,7 @@ oplist Food::FireOperation(const Fire & op)
     }
     const Object::MapType & fire_ent = op.GetArgs().front().AsMap();
     Object::MapType self_ent;
-    self_ent["id"] = fullid;
+    self_ent["id"] = getId();
     // Currently this cooks pretty quick, and at the same speed for
     // everything. No mechanism for this yet.
     double fire_size = fire_ent.find("status")->second.AsNum();
@@ -74,7 +74,7 @@ oplist Food::FireOperation(const Fire & op)
     }
 
     Set * s = new Set(Set::Instantiate());
-    s->SetTo(fullid);
+    s->SetTo(getId());
     s->SetArgs(Object::ListType(1,self_ent));
 
     return oplist(1,s);

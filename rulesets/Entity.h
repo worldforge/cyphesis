@@ -77,7 +77,7 @@ class Entity : public BaseEntity {
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)
 {
-    return s << "{" << v.ref->fullid << "," << v.coords << "," << v.velocity << "}";
+    return s << "{" << v.ref->getId() << "," << v.coords << "," << v.velocity << "}";
 }
 
 #endif // ENTITY_H

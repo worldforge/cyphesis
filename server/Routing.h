@@ -16,12 +16,12 @@ class Routing : public OOGThing {
     virtual ~Routing();
 
     BaseEntity * addObject(BaseEntity * obj) {
-        objects[obj->fullid]=obj;
+        objects[obj->getId()]=obj;
         return obj;
     }
 
     void delObject(BaseEntity * obj) {
-        objects.erase(obj->fullid);
+        objects.erase(obj->getId());
         delete obj;
     }
 

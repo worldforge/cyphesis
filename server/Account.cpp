@@ -30,7 +30,7 @@ Account::Account(Connection * conn, const std::string & username,
                  : world(NULL), connection(conn), password(passwd),
                    type("account")
 {
-    fullid = username;
+    setId(username);
 }
 
 Account::~Account()
@@ -50,9 +50,9 @@ BaseEntity * Account::addCharacter(const std::string & typestr, const Object & e
     debug(cout << "Location set to: " << chr->location << endl << flush;);
     if (chr->isCharacter == true) {
         Character * pchar = (Character *)chr;
-        pchar->externalMind = new ExternalMind(*connection, pchar->fullid, pchar->name);
+        pchar->externalMind = new ExternalMind(*connection, pchar->getId(), pchar->name);
     }
-    charactersDict[chr->fullid]=chr;
+    charactersDict[chr->getId()]=chr;
     connection->addObject(chr);
 
     // Hack in default objects
@@ -60,12 +60,12 @@ BaseEntity * Account::addCharacter(const std::string & typestr, const Object & e
     Object::MapType entmap;
     entmap["parents"] = Object::ListType(1,"coin");
     entmap["pos"] = Vector3D(0,0,0).asObject();
-    entmap["loc"] = chr->fullid;
+    entmap["loc"] = chr->getId();
     entmap["name"] = "coin";
     for(int i=0; i < 10; i++) {
         Create * c = new Create(Create::Instantiate());
         c->SetArgs(Object::ListType(1,entmap));
-        c->SetTo(chr->fullid);
+        c->SetTo(chr->getId());
         world->message(*c, chr);
     }
 
@@ -82,14 +82,14 @@ BaseEntity * Account::addCharacter(const std::string & typestr, const Object & e
 
 oplist Account::LogoutOperation(const Logout & op)
 {
-    debug(cout << "Account logout: " << fullid << endl;);
+    debug(cout << "Account logout: " << getId() << endl;);
     connection->destroy();
     return oplist();
 }
 
 void Account::addToObject(Object::MapType & omap) const
 {
-    omap["id"] = Object(fullid);
+    omap["id"] = Object(getId());
     if (password.size() != 0) {
         omap["password"] = Object(password);
     }
@@ -156,14 +156,14 @@ oplist Account::LookOperation(const Look & op)
     const std::string & to = op.GetTo();
     if (to.empty()) {
         Sight * s = new Sight(Sight::Instantiate());
-        s->SetTo(fullid);
+        s->SetTo(getId());
         s->SetArgs(Object::ListType(1,connection->server.lobby.asObject()));
         return oplist(1,s);
     }
     edict_t::const_iterator I = charactersDict.find(to);
     if (I != charactersDict.end()) {
         Sight * s = new Sight(Sight::Instantiate());
-        s->SetTo(fullid);
+        s->SetTo(getId());
         s->SetArgs(Object::ListType(1,I->second->asObject()));
         return oplist(1,s);
     }
@@ -171,7 +171,7 @@ oplist Account::LookOperation(const Look & op)
     adict_t::const_iterator J = accounts.find(to);
     if (J != accounts.end()) {
         Sight * s = new Sight(Sight::Instantiate());
-        s->SetTo(fullid);
+        s->SetTo(getId());
         s->SetArgs(Object::ListType(1,J->second->asObject()));
         return oplist(1,s);
     }

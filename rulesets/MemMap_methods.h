@@ -21,13 +21,13 @@ static const bool debug_flag = false;
 
 inline Entity * MemMap::addObject(Entity * object)
 {
-    debug(std::cout << "MemMap::addObject " << object << " " << object->fullid
+    debug(std::cout << "MemMap::addObject " << object << " " << object->getId()
                     << std::endl << std::flush;);
     if (object != NULL) {
-        things[object->fullid] = object;
+        things[object->getId()] = object;
     }
 
-    debug( std::cout << things[object->fullid] << std::endl << std::flush;);
+    debug( std::cout << things[object->getId()] << std::endl << std::flush;);
     debug( std::cout << this << std::endl << std::flush;);
     std::list<std::string>::const_iterator I;
     for(I = addHooks.begin(); I != addHooks.end(); I++) {
