@@ -52,6 +52,10 @@ static void WorldTime_dealloc(PyWorldTime *self)
 
 static PyObject * WorldTime_getattr(PyWorldTime *self, char *name)
 {
+    std::string attr = (*self->time)[name];
+    if (attr != "") {
+        return PyString_FromString(attr.c_str());
+    }
     return Py_FindMethod(WorldTime_methods, (PyObject *)self, name);
 }
 

@@ -14,17 +14,17 @@
 
 class WorldTime {
   private:
-    typedef std::list<int> range;
-    typedef std::pair<range, std::string> period;
-    typedef std::map<std::string, period> time_info_t;
+    typedef std::list<int> Range;
+    typedef std::pair<Range, std::string> Period;
+    typedef std::map<std::string, Period> TimeInfo;
+    typedef std::map<unsigned int, std::string> SeasonInfo;
 
-    DateTime time;
+    DateTime m_time;
+    TimeInfo m_timeInfo;
+    SeasonInfo m_monthToSeason;
 
-    time_info_t	timeInfo;
-    std::map<int, std::string> monthToSeason;
-
-    range crange(int begin, int end) {
-        range ret;
+    Range crange(int begin, int end) {
+        Range ret;
         for(int i = begin; i <= end; i++) {
             ret.push_back(i);
         }
@@ -33,14 +33,14 @@ class WorldTime {
 
     void initTimeInfo();
   public:
-    explicit WorldTime(int scnds) : time(scnds) {
+    explicit WorldTime(int scnds) : m_time(scnds) {
         initTimeInfo();
     }
-    WorldTime() : time(0) {
+    WorldTime() : m_time(0) {
         initTimeInfo();
     }
-    double seconds() { return time.seconds(); }
-    void update(int secs) { time.update(secs); }
+    double seconds() { return m_time.seconds(); }
+    void update(int secs) { m_time.update(secs); }
     //explicit WorldTime(char * date_time);
     std::string operator[](const std::string & name);
     //std::string & __repr__();

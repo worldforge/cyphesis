@@ -34,34 +34,35 @@ inline const std::string seconds2string(double seconds) {
     return buffer;
 }
 
-void WorldTime::initTimeInfo() {
-    timeInfo["always"] = period(crange(1,13), "seasonal");
-    timeInfo["spring"] = period(crange(3,5), "seasonal");
-    timeInfo["summer"] = period(crange(6,8), "seasonal");
-    timeInfo["autumn"] = period(crange(9,11), "seasonal");
-    range winter = crange(1,2);
+void WorldTime::initTimeInfo()
+{
+    m_timeInfo["always"] = Period(crange(1,13), "seasonal");
+    m_timeInfo["spring"] = Period(crange(3,5), "seasonal");
+    m_timeInfo["summer"] = Period(crange(6,8), "seasonal");
+    m_timeInfo["autumn"] = Period(crange(9,11), "seasonal");
+    Range winter = crange(1,2);
     winter.push_back(12);
-    timeInfo["winter"] = period(winter, "seasonal");
-    timeInfo["dawn"] = period(range(1,8), "daily");
-    timeInfo["midday"] = period(range(1,12), "daily");
-    timeInfo["evening"] = period(range(1,20), "daily");
-    range night = crange(0,7);
+    m_timeInfo["winter"] = Period(winter, "seasonal");
+    m_timeInfo["dawn"] = Period(Range(1,8), "daily");
+    m_timeInfo["midday"] = Period(Range(1,12), "daily");
+    m_timeInfo["evening"] = Period(Range(1,20), "daily");
+    Range night = crange(0,7);
     night.push_front(23); night.push_front(22); night.push_front(21);
-    timeInfo["night"] = period(night,"daily");
-    timeInfo["day"] = period(crange(9,18), "daily");
-    timeInfo["morning"] = period(crange(9,11), "daily");
-    timeInfo["afternoon"] = period(crange(13,18), "daily");
-    timeInfo["now"] = period(crange(0,23), "daily");
+    m_timeInfo["night"] = Period(night,"daily");
+    m_timeInfo["day"] = Period(crange(9,18), "daily");
+    m_timeInfo["morning"] = Period(crange(9,11), "daily");
+    m_timeInfo["afternoon"] = Period(crange(13,18), "daily");
+    m_timeInfo["now"] = Period(crange(0,23), "daily");
     std::list<std::string> seasons(1, "summer");
     seasons.push_back("autumn");
     seasons.push_back("winter");
     seasons.push_back("spring");
     std::list<std::string>::const_iterator I;
     for(I = seasons.begin(); I != seasons.end(); I++) {
-        range::const_iterator J;
-        range & months = timeInfo[*I].first;
+        Range::const_iterator J;
+        Range & months = m_timeInfo[*I].first;
         for(J = months.begin(); J != months.end(); J++) {
-            monthToSeason[*J] = *I;
+            m_monthToSeason[*J] = *I;
         }
     }
 }
@@ -75,31 +76,34 @@ void WorldTime::initTimeInfo() {
 std::string WorldTime::operator[](const std::string & name)
 {
     // FIXME Return correct season
-    if( name=="season" ) {
-        //return month2season[month];
+    if (name == "season") {
+        SeasonInfo::const_iterator I = m_monthToSeason.find(m_time.month());
+        if (I != m_monthToSeason.end()) {
+            return I->second;
+        }
     }
-    return "what";
+    return "";
 }
 
 bool WorldTime::operator==(const WorldTime & other) const
 {
-    return time == other.time;
+    return m_time == other.m_time;
 }
 
 bool WorldTime::operator==(const std::string & when) const
 {
     debug(std::cout << "Checking whether it is " << when << " when the date is "
-                    << time << std::endl << std::flush;);
+                    << m_time << std::endl << std::flush;);
             
-    time_info_t::const_iterator I = timeInfo.find(when);
-    if (I == timeInfo.end()) {
+    TimeInfo::const_iterator I = m_timeInfo.find(when);
+    if (I == m_timeInfo.end()) {
         return false;
     }
     int check;
     if (I->second.second == "seasonal") {
-        check = time.month();
+        check = m_time.month();
     } else if (I->second.second == "daily") {
-        check = time.hour();
+        check = m_time.hour();
     } else {
         return false;
     }

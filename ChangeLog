@@ -1,5 +1,18 @@
 2004-09-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/WorldTime.h, modules/WorldTime.cpp: Clean up typedef
+	  and member names, and implement querying the season.
+
+	* client/CharacterClient.cpp: Remove some obsolete unconverted
+	  Python code.
+
+	* physics/Collision.h: Update some comments.
+
+	* rulesets/Py_WorldTime.cpp: Implement access to season lookup
+	  from scripts.
+
+2004-09-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/MemMap.cpp, rulesets/Py_Map.cpp, server/WorldRouter.h:
 	  Update comments to remove obsolete FIXMEs.
 

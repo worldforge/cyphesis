@@ -17,8 +17,9 @@ typedef std::multimap<int, WFMath::Vector<3> > NormalSet;
 
 ////////////////////////// COLLISION //////////////////////////
 
-// Predict collision between a point and a plane.
-// Returns true if p is infront of plane before collision
+/// \brief Predict collision between a point and a plane.
+///
+/// @return true if p is infront of plane before collision
 bool getCollisionTime(const Vector3D & p,     // Position of point
                       const Vector3D & u,     // Velocity of point
                       // float point_time,   // Time since position set
@@ -28,9 +29,10 @@ bool getCollisionTime(const Vector3D & p,     // Position of point
                       // float plane_time,   // Time since position set
                       float & time);         // Returned collision time
 
-// Predict collision between two sets of meshes, defined by vertices
-// and surface normals
-// Returns whether the collision will occur
+/// \brief Predict collision between two sets of meshes, defined by vertices
+/// and surface normals.
+///
+/// @return true if a collision will occur, false otherwise.
 bool predictCollision(const CoordList & l,    // Vertices of this mesh
                       const NormalSet & ln,   // Normals of this mesh
                       const Vector3D & u,     // Velocity of this mesh
@@ -40,8 +42,9 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
                       float & time,           // Returned time to collision
                       Vector3D & normal);     // Returned collision normal
 
-// Predict collision between 2 entity locations
-// Returns whether the collision will occur
+/// \brief Predict collision between 2 entity locations.
+///
+/// @return true if a collision will occur.
 bool predictCollision(const Location & l,     // Location data of this object
                       const Location & o,     // Location data of other object
                       float & time,           // Returned time to collision
@@ -49,8 +52,9 @@ bool predictCollision(const Location & l,     // Location data of this object
 
 ////////////////////////// EMERGENCE //////////////////////////
 
-// Predict collision between a point and a plane.
-// Returns true if p is behind plane before collision
+/// \brief Predict collision between a point and a plane.
+///
+/// @return true if p is behind plane before collision
 bool getEmergenceTime(const Vector3D & p,     // Position of point
                       const Vector3D & u,     // Velocity of point
                       // float point_time,   // Time since position set
@@ -60,18 +64,22 @@ bool getEmergenceTime(const Vector3D & p,     // Position of point
                       // float plane_time,   // Time since position set
                       float & time);         // Returned collision time
 
-// Predict collision between two sets of meshes, defined by vertices
-// and surface normals
-// Returns whether the collision will occur
+/// \brief Predict emergence of one mesh from inside another, the two meshes
+/// defined by vertices and surface normals.
+///
+/// @return true if the collision will occur within the timeframe,
+/// false otherwise.
 bool predictEmergence(const CoordList & l,      // Vertices of this mesh
                       const Vector3D & u,       // Velocity of this mesh
                       const WFMath::AxisBox<3>&,// Bounding box of container
                       float & time);            // Returned time to collision
 // FIXME Maybe another function like the above is required to handle if the
-// container is more complex and has a set of faces?
+// container is more complex and has a set of meshes?
 
-// Predict when entity emerges from inside other entity
-// Returns whether the emergence will occur
+/// \brief Predict when entity emerges from inside other entity.
+///
+/// @return true if the collision will occur within the timeframe,
+/// false otherwise.
 bool predictEmergence(const Location & l,     // Location data of this object
                       const Location & o,     // Location data of container
                       float & time);          // Returned time to collision

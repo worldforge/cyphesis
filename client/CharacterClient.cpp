@@ -28,27 +28,6 @@ void CharacterClient::soundTalkOperation(const Sound & , Talk &, OpVector &)
 {
 }
 
-#if 0
-//FIXME Dunno what all this trigger lark is about.
-bad_type CharacterClient::add_trigger(bad_type event_name, bad_type func) {
-    dictlist.add_value(CharacterClient::event_triggers,event_name, func);
-}
-bad_type CharacterClient::call_triggers(bad_type op) {
-    event_name, sub_op = CharacterClient::get_op_name_and_sub(op);
-    reply = Message();
-    for (/*func in CharacterClient::event_triggers.get(event_name,[])*/) {
-        reply = reply + func(op, sub_op);
-    }
-    return reply;
-}
-bad_type CharacterClient::set_from_op(bad_type op) {
-    op.from_=self;
-}
-bad_type CharacterClient::set_from(bad_type msg) {
-    CharacterClient::apply_to_operation(CharacterClient::set_from_op,msg);
-}
-#endif
-
 void CharacterClient::send(RootOperation & op)
 {
     op.setFrom(getId());
