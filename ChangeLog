@@ -1,3 +1,15 @@
+2004-11-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/goals/common/move.py:
+	  Try and make some of the move goals a bit more legible.
+
+	* rulesets/basic/mind/goals/humanoid/construction.py:
+	  Fix a bunch of bugs in the resource gathering goals.
+	  These now basically work.
+
+	* rulesets/mason/define_world.py: Add knowledge of a test location
+	  to the settler NPC testing code.
+
 2004-11-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/goals/common/move.py: Fix mistake converting

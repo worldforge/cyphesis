@@ -465,5 +465,5 @@ def test_settler(mapeditor):
     settler=m.make('A Settler',type='settler', xyz=(3,3,0), sex='male')
     axe=m.make('axe',type='axe',xyz=(0,0,0))
     m.own(settler,axe)
-    m.know(settler,[('market','location',butcher_stall_xyz)])
+    m.know(settler,[('origin','location',(0,0,0))])
     m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','origin','axe')"))

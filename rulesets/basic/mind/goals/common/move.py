@@ -31,14 +31,14 @@ class move_me(Goal):
         if type(location_)==StringType:
             location_=me.get_knowledge("location",location_)
         if not location_:
-            return false
+            return 0
         self.location=location_
         if me.location.parent.id!=location_.parent.id: return 0
         return me.location.coordinates.distance(location_.coordinates)<1.5
     def move_to_loc(self, me):
-        location_=self.location.copy()
-        if type(location_)!=InstanceType:
+        if type(self.location)!=InstanceType:
             return
+        location_=self.location.copy()
         location_.velocity=me.location.coordinates.unit_vector_to_another_vector(location_.coordinates)*self.speed
         location_.rotation=location_.velocity.unit_vector()
         if location_.velocity==me.location.velocity: return
@@ -57,12 +57,16 @@ class move_me_area(Goal):
         self.arrived=0
         self.vars=["location","range","arrived"]
     def am_I_in_area(self, me):
-        if not self.location: return 1
+        if not self.location:
+            return 1
         #CHEAT!: kludge!
-        if type(self.location)==LambdaType: self.location=self.location(me)
+        if type(self.location)==LambdaType:
+            self.location=self.location(me)
         #mind uses sometimes strings known only to him/her
         if type(self.location)==StringType:
             self.location=me.get_knowledge("location",self.location)
+            if not self.location:
+                return 0
         if self.arrived:
             square_dist=distance_to(me.location, self.location)
             if square_dist > self.square_range: self.arrived=0
@@ -151,7 +155,7 @@ class move_me_to_it(Goal):
     def am_i_at_it(self, me):
         what = self.what
         if type(what)==StringType:
-            if me.things.has_key(what)==0: return
+            if me.things.has_key(what)==0: return 0
             what=me.things[what][0]
         target=what.location.copy()
         if me.location.parent.id!=target.parent.id: return 0
