@@ -3,6 +3,7 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "globals.h"
+#include "log.h"
 
 #include <varconf/Config.h>
 
@@ -48,15 +49,14 @@ bool loadConfig(int argc, char ** argv, bool server)
     bool main_config = global_conf->readFromFile(etc_directory +
                                                  "/cyphesis/cyphesis.vconf");
     if (!main_config) {
-        std::cerr << "FATAL: Unable to read main config file "
-                  << etc_directory << "/cyphesis/cyphesis.vconf."
-                  << std::endl;
+        std::string msg("Unable to read main config file ");
+        msg += etc_directory;
+        msg += "/cyphesis/cyphesis.vconf.";
+        log(CRITICAL, msg.c_str());
         if (home_dir_config) {
-            std::cerr << "Try removing .cyphesis.vconf from your home directory as it may specify an invalid installation directory, and then restart cyphesis."
-                      << std::endl << std::flush;
+            log(INFO, "Try removing .cyphesis.vconf from your home directory as it may specify an invalid installation directory, and then restart cyphesis.");
         } else {
-            std::cerr << "Please ensure that cyphesis has been installed correctly."
-                      << std::endl << std::flush;
+            log(INFO, "Please ensure that cyphesis has been installed correctly.");
         }
         return true;
     }

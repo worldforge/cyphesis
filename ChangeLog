@@ -1,5 +1,12 @@
 2004-06-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/globals.cpp, rulesets/Area.cpp,
+	  rulesets/Python_API.cpp, server/Connection.cpp,
+	  server/Persistance.cpp: Ensure that all output goes either via
+	  the log system, or only in debug macros.
+
+2004-06-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.cpp: Remove debugging output.
 
 2004-06-13  Al Riddoch  <alriddoch@zepler.org>

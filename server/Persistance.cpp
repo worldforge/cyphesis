@@ -11,7 +11,10 @@
 
 #include "common/log.h"
 #include "common/const.h"
+#include "common/debug.h"
 #include "common/Database.h"
+
+static const bool debug_flag = false;
 
 Persistance * Persistance::m_instance = NULL;
 
@@ -47,7 +50,8 @@ bool Persistance::init()
     bool k = p->m_connection.registerRelation("character");
 
     if (!p->findAccount("admin")) {
-        std::cout << "BOOTSTRAP ADMIN ACCOUNT" << std::endl << std::flush;
+        debug(std::cout << "Bootstraping admin account."
+                        << std::endl << std::flush;);
         std::string adminAccountId;
         p->m_connection.getEntityId(adminAccountId);
         

@@ -5,10 +5,13 @@
 #include "Area.h"
 
 #include "common/type_utils.h"
+#include "common/debug.h"
+
+static const bool debug_flag = false;
 
 Area::Area(const std::string & id) : Area_parent(id)
 {
-    std::cout << "Instanced Area" << std::endl << std::flush;
+    debug(std::cout << "Instanced Area" << std::endl << std::flush;);
 
     // Default to a 0.1m cube
     m_location.m_bBox = BBox(WFMath::Point<3>(0.f, 0.f, 0.f),

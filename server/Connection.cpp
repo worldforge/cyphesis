@@ -156,12 +156,11 @@ OpVector Connection::operation(const RootOperation & op)
         debug(std::cout << "send on to " << from << std::endl << std::flush;);
         BaseDict::const_iterator I = m_objects.find(from);
         if (I == m_objects.end()) {
-            std::cerr << "Illegal from \"" << from << "\" in "
-                      << op.getParents().front().asString() << " op from client"
-                      << std::endl << std::flush;
-            std::string err = "Client op from [";
+            std::string err = "Client \"";
+            err += op.getParents().front().asString();
+            err += "\" op from \"";
             err += from;
-            err += "] is illegal";
+            err += "\" is from non existant object.";
             return error(op, err.c_str());
         }
         BaseEntity * ent = I->second;

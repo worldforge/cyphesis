@@ -1059,34 +1059,36 @@ void init_python_api()
     PyObject * sys_name = PyString_FromString("sys");
     PyObject * sys_module = PyImport_Import(sys_name);
     Py_DECREF(sys_name);
-    if (sys_module != 0) {
-        PyObject * logger = (PyObject*)PyObject_NEW(PyLogger, &PyLogger_Type);
-        PyObject_SetAttrString(sys_module, "stdout", logger);
-        Py_DECREF(logger);
-        PyObject * errorLogger = (PyObject*)PyObject_NEW(PyLogger,
-                                                         &PyErrorLogger_Type);
-        PyObject_SetAttrString(sys_module, "stderr", errorLogger);
-        Py_DECREF(errorLogger);
 
-        PyObject * sys_path = PyObject_GetAttrString(sys_module, "path");
-        if (sys_path != 0) {
-            if (PyList_Check(sys_path)) {
-                for(I = rulesets.begin(); I != rulesets.end(); I++) {
-                    std::string p = share_directory + "/cyphesis/rulesets/" +*I;
-                    PyObject * path = PyString_FromString(p.c_str());
-                    PyList_Append(sys_path, path);
-                    Py_DECREF(path);
-                }
-            } else {
-                std::cerr << "Its not a list" << std::endl << std::flush;
+    if (sys_module == 0) {
+        log(CRITICAL, "Python could not import sys module");
+        return;
+    }
+
+    PyObject * logger = (PyObject*)PyObject_NEW(PyLogger, &PyLogger_Type);
+    PyObject_SetAttrString(sys_module, "stdout", logger);
+    Py_DECREF(logger);
+    PyObject * errorLogger = (PyObject*)PyObject_NEW(PyLogger,
+                                                     &PyErrorLogger_Type);
+    PyObject_SetAttrString(sys_module, "stderr", errorLogger);
+    Py_DECREF(errorLogger);
+
+    PyObject * sys_path = PyObject_GetAttrString(sys_module, "path");
+    if (sys_path != 0) {
+        if (PyList_Check(sys_path)) {
+            for(I = rulesets.begin(); I != rulesets.end(); I++) {
+                std::string p = share_directory + "/cyphesis/rulesets/" + *I;
+                PyObject * path = PyString_FromString(p.c_str());
+                PyList_Append(sys_path, path);
+                Py_DECREF(path);
             }
         } else {
-            std::cerr << "Its not a list" << std::endl << std::flush;
+            log(CRITICAL, "Python sys.path is not a list");
         }
-        Py_DECREF(sys_module);
     } else {
-        log(ERROR, "Could not import sys module");
+        log(CRITICAL, "Python could not import sys.path");
     }
+    Py_DECREF(sys_module);
 
     if (Py_InitModule("atlas", atlas_methods) == NULL) {
         fprintf(stderr, "Failed to Create atlas module\n");
@@ -1193,7 +1195,7 @@ void init_python_api()
     PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
     PyRun_SimpleString((char *)importCmd.c_str());
 
-    // std::cout << Py_GetPath() << std::endl << std::flush;
+    debug(std::cout << Py_GetPath() << std::endl << std::flush;);
 }
 
 void shutdown_python_api()
