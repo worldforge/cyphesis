@@ -22,7 +22,7 @@ class ClientConnection : public Atlas::Objects::Decoder {
     bool reply_flag;
     bool error_flag;
     int client_fd;
-    client_socket_stream ios;
+    tcp_socket_stream ios;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
     Atlas::Message::Object::MapType reply;

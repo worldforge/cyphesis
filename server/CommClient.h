@@ -26,7 +26,7 @@ class CommClient : Atlas::Objects::Decoder {
 
   private:
     int clientFd;
-    socket_stream clientIos;
+    basic_socket_stream clientIos;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
     Atlas::Net::StreamAccept * accept;

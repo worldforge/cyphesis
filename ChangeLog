@@ -1,3 +1,8 @@
+2002-01-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/ClientConnection.h, server/CommClient.h, tools/cycmd.cpp:
+	  Ported to using skstream2.
+
 2002-01-17  Michael Koch <konqueror@gmx.de>
 
 	* configure.in, tools/cypasswd.cpp:

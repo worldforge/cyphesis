@@ -46,7 +46,7 @@ class Interactive : public Atlas::Objects::Decoder
     int cli_fd;
     Atlas::Objects::Encoder * encoder;
     Atlas::Codec<std::iostream> * codec;
-    client_socket_stream ios;
+    tcp_socket_stream ios;
     std::string password;
     enum {
        INIT,
