@@ -28,8 +28,7 @@ static const bool debug_flag = false;
 /// \brief Update the in-game time.
 ///
 /// Reads the system time, and applies the necessary offsets to calculate
-/// the in-game time. This is the stored, and can be accessed using.
-/// getTime() FIXME Use a doxygen reference.
+/// the in-game time. This is the stored, and can be accessed using getTime().
 void WorldRouter::updateTime()
 {
     struct timeval tv;
@@ -133,7 +132,7 @@ RootOperation * WorldRouter::getOperationFromQueue()
 
 /// \brief Give an operation a new serial number.
 ///
-/// Call newSerialNo() FIXME doxygen ref to get a new serial number,
+/// Call newSerialNo() to get a new serial number,
 /// and assign it to the operation provided.
 inline void WorldRouter::setSerialnoOp(RootOperation & op)
 {
@@ -232,7 +231,7 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
 /// \brief Create a new entity and add to the world.
 ///
 /// Construct a new entity using the entity description provided,
-/// and pass it to addObject() FIXME doxygen reference.
+/// and pass it to addObject().
 /// @return a pointer to the new entity.
 Entity * WorldRouter::addNewObject(const std::string & typestr,
                                    const MapType & ent)
@@ -269,7 +268,7 @@ void WorldRouter::delObject(Entity * obj)
 
 /// \brief Pass an operation to the World.
 ///
-/// Pass an operation to addOperationToQueue() FIXME doxygen reference
+/// Pass an operation to addOperationToQueue()
 /// so it gets added to the queue for dispatch.
 void WorldRouter::message(RootOperation & op, const Entity * obj)
 {

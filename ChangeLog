@@ -1,4 +1,8 @@
-2004-08-27  Al Riddoch  <alriddoch@zepler.org>
+2004-08-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Correct some comments.
+
+2004-08-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseWorld.h, server/CommSocket.h, server/CommIdleSocket.h:
 	  Make constructors of some base classes protected.
@@ -13,7 +17,7 @@
 	  server/CommPSQLSocket.h, server/CommRemoteClient.cpp,
 	  server/CommSocket.cpp, server/CommSocket.h,
 	  server/CommUnixListener.cpp, server/CommUnixListener.h:
-	  Clean up the Comm classes for consistancy and readability.
+	  Clean up the Comm classes for consistency and readability.
 
 2004-08-27  Al Riddoch  <alriddoch@zepler.org>
 
