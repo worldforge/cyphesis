@@ -31,7 +31,7 @@ class WorldBase : public Database {
         return (WorldBase *)m_instance;
     }
 
-    void storeInWorld(const Atlas::Message::Object & o, const char * key) {
+    void storeInWorld(const Atlas::Message::Object::MapType & o, const char * key) {
         putObject(world_db, o, key);
     }
 };
@@ -134,7 +134,7 @@ int main(int argc, char ** argv)
                     c[1] = object->anchor.GetY();
                     c[2] = object->anchor.GetZ();
                     omap["pos"] = c;
-                    db->storeInWorld(o, id.str().c_str());
+                    db->storeInWorld(omap, id.str().c_str());
                 }
                 // Get basename, lookup custumise and load into database
                 cout << graphic << " " << key << endl;

@@ -19,7 +19,7 @@
 #include "Thing.h"
 #include "Script.h"
 
-#include <server/WorldRouter.h>
+#include <common/BaseWorld.h>
 
 #include <common/const.h>
 #include <common/debug.h>
@@ -193,8 +193,8 @@ oplist Thing::MoveOperation(const Move & op)
             return error(op, "Move location has no ref");
         }
         const std::string & ref = I->second.AsString();
-        edict_t::iterator J = world->eobjects.find(ref);
-        if (J == world->eobjects.end()) {
+        edict_t::const_iterator J = world->getObjects().find(ref);
+        if (J == world->getObjects().end()) {
             return error(op, "Move location ref invalid");
         }
         debug(cout << "{" << ref << "}" << endl << flush;);

@@ -1,3 +1,60 @@
+2001-08-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/client.cpp,
+	  client/ObserverClient.cpp, client/ObserverClient.h,
+	  client/ClientConnection.cpp, client/ClientConnection.h,
+	  client/define_world.cpp, client define_world.h:
+	  Started re-coding of python client code in C++.
+
+	* common/accountbase.h:
+	  Database class used for simply accessing accounts.
+
+	* common/OOGThing.cpp, common/OOGThing.h, server/Account.h,
+	  server/Routing.h:
+	  Moved OOGThing class into common as it is not server specific.
+
+	* common/BaseWorld.cpp, common/BaseWorld.h,
+	  server/WorldRouter.cpp, server/WorldRouter.h,
+	  rulesets/Entity.h, rulesets/Py_World.cpp,
+	  rulesets/PythonThingScript.cpp, rulesets/Python_API.h,
+	  rulesets/Thing.cpp, rulesets/Thing.h:
+	  Added base class for WorldRouter so that code that previously
+	  used WorldRouter now used the interface defined by this
+	  new class. This means that the code in rulesets no longer
+	  has dependencies on code in server, so can be used in the client.
+
+	* server/ExternalMind.cpp, server/ExternalMind.h,
+	  rulesets/Character.h, rulesets/Creator.cpp,
+	  server/Account.cpp:
+	  Moved ExternalMind class into server as it is server specific,
+	  so that there is no dependancy on server in rulesets.
+
+	* server/Persistance.cpp. server/Persistance.h,
+	  server/Admin.cpp, server/ServerRouting.cpp, server/server.cpp:
+	  Moved high level server specific persistance class into
+	  server, so there is no dependency on server in common.
+
+	* common/database.cpp, common/database.h, server/Admin.cpp,
+	  tools/cydbload.cpp, tools/cyisoload.cpp, tools/cypasswd.cpp:
+	  Increases efficiency of some interfaces by passing Object::MapType
+	  instead of MapType, when the value must be a map.
+
+	* modules/WorldTime.cpp, modules/WorldTime.h,
+	  rulesets/Py_WorldTime.cpp, rulesets/Python_API.cpp:
+	  Brought the version of WorldTime in modules up to date, as this is
+	  the version now used.
+
+	* rulesets/Character.cpp, server/WorldRouter.cpp, rulesets/Thing.cpp,
+	  server/Admin.cpp:
+	  Made world objects dictionary private.
+
+	* rulesets/EntityFactory.cpp, rulesets/EntityFactory.h:
+	  Change newThing parameters so entity factory does not need to
+	  know about WorldRouter.
+
+	* server/Lobby.cpp: Added support for people and rooms attributes
+	  of OOG room class.
+
 2001-08-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/inheritance.cpp, common/inheritance.h: Added code to store

@@ -7,8 +7,8 @@
 
 #include <Python.h>
 
-#include <server/WorldRouter.h>
-#include <server/WorldTime.h>
+#include <common/BaseWorld.h>
+#include <modules/WorldTime.h>
 #include <rulesets/Thing.h>
 
 #include "Python_API.h"

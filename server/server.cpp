@@ -30,7 +30,6 @@ extern "C" {
 #include <common/const.h>
 #include <common/log.h>
 #include <common/debug.h>
-#include <common/persistance.h>
 #include <common/utility.h>
 #include <common/globals.h>
 
@@ -40,6 +39,7 @@ extern "C" {
 
 #include "ServerRouting_methods.h"
 #include "Connection.h"
+#include "Persistance.h"
 
 using Atlas::Message::Object;
 

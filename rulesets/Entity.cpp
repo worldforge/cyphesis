@@ -153,7 +153,7 @@ void Entity::merge(const Object::MapType & entmap)
     }
 }
 
-void Entity::getLocation(const Object::MapType & entmap, edict_t & eobjects)
+void Entity::getLocation(const Object::MapType & entmap, const edict_t & eobjects)
 {
     debug( cout << "Thing::getLocation" << endl << flush;);
     Object::MapType::const_iterator I = entmap.find("loc");

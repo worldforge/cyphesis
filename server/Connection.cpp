@@ -8,9 +8,7 @@
 #include <Atlas/Objects/Operation/Get.h>
 
 #include <rulesets/Character.h>
-#include <rulesets/ExternalMind.h>
 #include <common/debug.h>
-#include <common/persistance.h>
 #include <common/globals.h>
 #include <common/inheritance.h>
 
@@ -20,6 +18,8 @@
 #include "CommClient.h"
 #include "CommServer.h"
 #include "Player.h"
+#include "ExternalMind.h"
+#include "Persistance.h"
 
 static const bool debug_flag = false;
 

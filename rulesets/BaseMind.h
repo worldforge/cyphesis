@@ -5,7 +5,7 @@
 #ifndef RULESETS_BASE_MIND_H
 #define RULESETS_BASE_MIND_H
 
-#include <server/WorldTime.h>
+#include <modules/WorldTime.h>
 
 #include "Entity.h"
 #include "MemMap.h"

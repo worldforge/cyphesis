@@ -5,7 +5,7 @@
 #ifndef SERVER_ACCOUNT_H
 #define SERVER_ACCOUNT_H
 
-#include "OOG_Thing.h"
+#include <common/OOGThing.h>
 
 class Connection;
 class WorldRouter;

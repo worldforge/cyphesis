@@ -31,12 +31,12 @@ extern "C" {
 #include "Character.h"
 #include "Pedestrian.h"
 
-#include "ExternalMind.h"
+#include "BaseMind.h"
 #include "Script.h"
 #include "Python_API.h" // FIXME This must go
 #include "World.h"
 
-#include <server/WorldRouter.h>
+#include <common/BaseWorld.h>
 
 #include <common/op_switch.h>
 #include <common/const.h>
@@ -352,8 +352,8 @@ oplist Character::mindMoveOperation(const Move & op)
         cerr << "Its got no id" << endl << flush;
     }
     const std::string & oname = I->second.AsString();
-    edict_t::const_iterator J = world->eobjects.find(oname);
-    if (J == world->eobjects.end()) {
+    edict_t::const_iterator J = world->getObjects().find(oname);
+    if (J == world->getObjects().end()) {
         debug( cout << "This move op is for a phoney object" << endl << flush;);
         return oplist();
     }

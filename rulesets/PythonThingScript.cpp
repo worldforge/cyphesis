@@ -8,7 +8,7 @@
 
 #include "Thing.h"
 
-#include <server/WorldRouter.h>
+#include <common/BaseWorld.h>
 #include <common/debug.h>
 
 using Atlas::Objects::Operation::RootOperation;

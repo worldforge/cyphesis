@@ -94,7 +94,7 @@ Database * Database::instance()
     return m_instance;
 }
 
-bool Database::decodeObject(Dbt & data, Atlas::Message::Object &o)
+bool Database::decodeObject(Dbt & data, Atlas::Message::Object::MapType &o)
 {
     char * entry = (char *)data.get_data();
 
@@ -127,7 +127,7 @@ bool Database::decodeObject(Dbt & data, Atlas::Message::Object &o)
 }
 
 bool Database::getObject(Db & db, const char * keystr,
-                         Atlas::Message::Object & o)
+                         Atlas::Message::Object::MapType & o)
 {
     Dbt key, data;
 
@@ -148,7 +148,7 @@ bool Database::getObject(Db & db, const char * keystr,
     return decodeObject(data, o);
 }
 
-bool Database::putObject(Db & db, const Atlas::Message::Object & o,
+bool Database::putObject(Db & db, const Atlas::Message::Object::MapType & o,
                             const char * keystr)
 {
     std::stringstream str;
@@ -195,7 +195,7 @@ bool Database::delObject(Db & db, const char * keystr)
     return true;
 }
 
-bool DatabaseIterator::get(Atlas::Message::Object & o)
+bool DatabaseIterator::get(Atlas::Message::Object::MapType & o)
 {
     Dbt key, data;
 

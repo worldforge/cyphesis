@@ -4,11 +4,10 @@
 
 #include <Atlas/Objects/Operation/Look.h>
 
-#include <server/WorldRouter.h>
 #include <common/debug.h>
 
 #include "Creator.h"
-#include "ExternalMind.h"
+#include "BaseMind.h"
 
 static const bool debug_flag = false;
 

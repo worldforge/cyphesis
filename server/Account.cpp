@@ -12,13 +12,13 @@
 
 #include <rulesets/Character.h>
 #include <rulesets/World.h>
-#include <rulesets/ExternalMind.h>
 
 #include "Account.h"
 #include "Connection_methods.h"
 #include "WorldRouter.h"
 #include "ServerRouting.h"
 #include "Lobby.h"
+#include "ExternalMind.h"
 
 static const bool debug_flag = false;
 

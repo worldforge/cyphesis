@@ -1,17 +1,17 @@
 bin_PROGRAMS = cyphesis
 
 cyphesis_SOURCES = \
-		OOG_Thing.cpp OOG_Thing.h \
+		ExternalMind.cpp ExternalMind.h \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
+		Persistance.cpp Persistance.h \
 		Routing.cpp Routing.h \
 		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
 		WorldRouter.cpp WorldRouter.h \
 		Lobby.cpp Lobby.h \
-		WorldTime.cpp WorldTime.h \
 		Connection.cpp Connection.h Connection_methods.h \
-		CommClient.h  CommServer.h \
+		CommClient.h CommServer.h \
 		protocol_instructions.h \
 		server.cpp server.h
 

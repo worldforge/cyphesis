@@ -5,7 +5,6 @@
 #ifndef SERVER_LOBBY_H
 #define SERVER_LOBBY_H
 
-#include "OOG_Thing.h"
 #include "Account.h"
 
 class Lobby : public OOGThing {

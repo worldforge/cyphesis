@@ -7,7 +7,6 @@ librulesetbase_a_SOURCES = Entity.cpp Entity.h \
 			   Script.cpp Script.h
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
-			   ExternalMind.cpp ExternalMind.h \
 			   MindFactory.cpp MindFactory.h \
 			   MemMap.cpp MemMap.h MemMap_methods.h
 
@@ -43,9 +42,11 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 dist-hook:
 	tar cf - `find basic -name \*.py` | (cd $(distdir); tar xf -)
 	tar cf - `find acorn -name \*.py` | (cd $(distdir); tar xf -)
+	tar cf - `find werewolf -name \*.py` | (cd $(distdir); tar xf -)
 
 install-data-local:
 	mkdirhier $(datadir)/cyphesis/rulesets
 	tar cf - `find basic -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
 	tar cf - `find acorn -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
+	tar cf - `find werewolf -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
 	cat basic/hooks/ruleset_import_hooks.py | sed 's%PREFIX%$(datadir)/cyphesis%' > $(DESTDIR)$(datadir)/cyphesis/rulesets/basic/hooks/ruleset_import_hooks.py

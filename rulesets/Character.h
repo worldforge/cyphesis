@@ -9,7 +9,6 @@
 
 class Movement;
 class BaseMind;
-class ExternalMind;
 
 class Character : public Thing {
   protected:
@@ -33,7 +32,7 @@ class Character : public Thing {
     friend class Movement;
   public:
     BaseMind * mind;
-    ExternalMind * externalMind;
+    BaseMind * externalMind;
 
     Character();
     virtual ~Character();

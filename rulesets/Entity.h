@@ -8,7 +8,7 @@
 #include <modules/Location.h>
 #include <common/BaseEntity.h>
 
-class WorldRouter;
+class BaseWorld;
 class MemMap;
 class Script;
 
@@ -28,7 +28,7 @@ class Entity : public BaseEntity {
     Script * script;
     Atlas::Message::Object::MapType attributes;
   public:
-    WorldRouter * world;	// Exists in this world.
+    BaseWorld * world;		// Exists in this world.
     int seq;			// Sequence number
     Location location;		// Full details of location inc. ref pos and vel
     elist_t contains;		// List of entities which use this as ref
@@ -49,7 +49,7 @@ class Entity : public BaseEntity {
 
     void setScript(Script * scrpt);
     void merge(const Atlas::Message::Object::MapType &);
-    void getLocation(const Atlas::Message::Object::MapType &, edict_t &);
+    void getLocation(const Atlas::Message::Object::MapType &, const edict_t &);
     Vector3D getXyz() const;
 
     virtual void addToObject(Atlas::Message::Object::MapType & obj) const;

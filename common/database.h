@@ -21,14 +21,16 @@ class Decoder : public Atlas::Message::DecoderBase {
   private:
     virtual void ObjectArrived(const Atlas::Message::Object& obj) {
         m_check = true;
-        m_obj = obj;
+        m_obj = obj.AsMap();
     }
     bool m_check;
-    Atlas::Message::Object m_obj;
+    Atlas::Message::Object::MapType m_obj;
   public:
     Decoder() : m_check (false) { }
     bool check() const { return m_check; }
-    const Atlas::Message::Object & get() { m_check = false; return m_obj; }
+    const Atlas::Message::Object::MapType & get() {
+        m_check = false; return m_obj;
+    }
 };
 
 class DatabaseIterator;
@@ -46,9 +48,9 @@ class Database {
 
     Database();
 
-    bool decodeObject(Dbt & data, Atlas::Message::Object &);
-    bool putObject(Db &, const Atlas::Message::Object &, const char * key);
-    bool getObject(Db &, const char * key, Atlas::Message::Object &);
+    bool decodeObject(Dbt & data, Atlas::Message::Object::MapType &);
+    bool putObject(Db &, const Atlas::Message::Object::MapType &, const char *);
+    bool getObject(Db &, const char * key, Atlas::Message::Object::MapType &);
     bool delObject(Db &, const char * key);
   public:
     static Database * instance();
@@ -77,7 +79,7 @@ class DatabaseIterator {
     DatabaseIterator(Db & db ) : m_db(db) {
         db.cursor(NULL, &m_cursor, 0);
     }
-    bool get(Atlas::Message::Object & o);
+    bool get(Atlas::Message::Object::MapType & o);
     bool del();
 };
 

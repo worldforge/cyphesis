@@ -13,46 +13,21 @@ class ServerRouting;
 class Entity;
 class World;
 
-#include "OOG_Thing.h"
+#include <common/BaseWorld.h>
+#include <common/globals.h>
 
-class WorldRouter : public OOGThing {
+class WorldRouter : public BaseWorld {
   private:
-    double realTime;
     opqueue operationQueue;
-    elist_t objectList;
     time_t initTime;
+    elist_t perceptives;
+    elist_t omnipresentList;
+    int nextId;
 
     void addOperationToQueue(RootOperation & op, const BaseEntity *);
     RootOperation * getOperationFromQueue();
-    std::string getId(std::string & name);
     const elist_t & broadcastList(const RootOperation & op) const;
     oplist operation(const RootOperation * op);
-  public:
-    ServerRouting & server;
-    World & gameWorld;
-    int nextId;
-    elist_t perceptives;
-    elist_t omnipresentList;
-    edict_t eobjects;
-
-    WorldRouter(ServerRouting & server);
-    virtual ~WorldRouter();
-
-    int idle();
-    const double upTime() const;
-
-    Entity * addObject(Entity * obj);
-    Entity * addObject(const std::string &, const Atlas::Message::Object &,
-                       const std::string & id = std::string());
-    void delObject(Entity * obj);
-
-    Entity * getObject(const std::string & fid) {
-        return eobjects[fid];
-    }
-
-    Entity * findObject(const std::string & fid) {
-        return eobjects[fid];
-    }
 
     void updateTime() {
         struct timeval tv;
@@ -61,15 +36,29 @@ class WorldRouter : public OOGThing {
         realTime = tmp_time;
     }
 
-    const double & getTime() const {
-        return realTime;
+    std::string getId(std::string & name);
+  public:
+    ServerRouting & server;
+
+    WorldRouter(ServerRouting & server);
+    virtual ~WorldRouter();
+
+    int idle();
+    Entity * addObject(Entity * obj);
+    Entity * addObject(const std::string &, const Atlas::Message::Object &,
+                       const std::string & id = std::string());
+    void delObject(Entity * obj);
+
+    const double upTime() const {
+        return realTime - timeoffset;
     }
 
     virtual oplist message(RootOperation & op, const Entity * obj);
     virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
 
-    oplist lookOperation(const Look & op);
+    virtual oplist lookOperation(const Look & op);
+
 };
 
 #endif // SERVER_WORLD_ROUTER_H

@@ -28,9 +28,9 @@ using Atlas::Message::Object;
 
 static const bool debug_flag = false;
 
-WorldRouter::WorldRouter(ServerRouting & srvr) : server(srvr),
-                                                 gameWorld(*new World()),
-                                                 nextId(0)
+WorldRouter::WorldRouter(ServerRouting & srvr) : BaseWorld(*new World()),
+                                                 nextId(0),
+                                                 server(srvr)
 {
     fullid = "world_0";
     initTime = time(NULL) - timeoffset;
@@ -132,7 +132,7 @@ Entity * WorldRouter::addObject(const std::string & typestr, const Object & ent,
 {
     debug(cout << "WorldRouter::addObject(std::string, ent)" << endl << flush;);
     Entity * obj;
-    obj = EntityFactory::instance()->newThing(typestr, ent, this);
+    obj = EntityFactory::instance()->newThing(typestr, ent, eobjects);
     obj->fullid = id;
     return addObject(obj);
 }
@@ -303,7 +303,8 @@ int WorldRouter::idle()
     return 1;
 }
 
+#if 0
 const double WorldRouter::upTime() const {
     return realTime - timeoffset;
 }
-
+#endif

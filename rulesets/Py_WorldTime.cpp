@@ -11,7 +11,7 @@
 
 #include <Python.h>
 
-#include <server/WorldTime.h>
+#include <modules/WorldTime.h>
 
 #include "Python_API.h"
 

@@ -24,7 +24,7 @@
 #include <Atlas/Objects/Operation/Info.h>
 
 #include <modules/Location.h>
-#include <server/WorldTime.h>
+#include <modules/WorldTime.h>
 #include <common/globals.h>
 #include <common/const.h>
 

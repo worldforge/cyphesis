@@ -10,7 +10,7 @@
 #include <common/Load.h>
 #include <common/Save.h>
 
-#include <common/persistance.h>
+#include <server/Persistance.h>
 
 #include "Admin.h"
 #include "Connection.h"
@@ -40,7 +40,7 @@ oplist Admin::SaveOperation(const Save & op)
 {
     edict_t::const_iterator I;
     Persistance * p = Persistance::instance();
-    Object ent;
+    Object::MapType ent;
     DatabaseIterator dbi(p->getWorldDb());
     while (dbi.get(ent)) {
         dbi.del();
@@ -51,7 +51,7 @@ oplist Admin::SaveOperation(const Save & op)
     }
     int count = 0;
     int mind_count = 0;
-    for(I = world->eobjects.begin(); I != world->eobjects.end(); I++) {
+    for(I = world->getObjects().begin(); I != world->getObjects().end(); I++) {
         p->putEntity(*I->second);
         ++count;
         if (I->second->isCharacter) {
@@ -61,7 +61,7 @@ oplist Admin::SaveOperation(const Save & op)
             oplist res = c->mind->SaveOperation(op);
             if ((res.size() != 0) && (res.front()->GetArgs().size() != 0)) {
                 cout << "Dumping mind to database" << endl << flush;
-                Object & mindmap = res.front()->GetArgs().front();
+                Object::MapType & mindmap = res.front()->GetArgs().front().AsMap();
                 p->putMind(c->fullid, mindmap);
                 ++mind_count;
             }
@@ -80,26 +80,22 @@ oplist Admin::SaveOperation(const Save & op)
 
 void Admin::load(Persistance * p, const std::string & id, int & count)
 {
-    Object entity;
+    Object::MapType entity;
     if (!p->getEntity(id, entity)) {
         return;
     }
-    if (!entity.IsMap()) {
-        return;
-    }
-    Object::MapType & emap = entity.AsMap();
     Object::MapType::iterator I;
-    I = emap.find("parents");
+    I = entity.find("parents");
     std::string type("thing");
-    if ((I != emap.end()) && I->second.IsList()) {
+    if ((I != entity.end()) && I->second.IsList()) {
         type = I->second.AsList().front().AsString();
     }
     if (id != "world_0") {
         world->addObject(type, entity, id);
         count++;
     }
-    I = emap.find("contains");
-    if ((I != emap.end()) && I->second.IsList()) {
+    I = entity.find("contains");
+    if ((I != entity.end()) && I->second.IsList()) {
         Object::ListType & contains = I->second.AsList();
         Object::ListType::iterator J = contains.begin();
         for(;J != contains.end(); ++J) {
@@ -121,11 +117,10 @@ oplist Admin::LoadOperation(const Load & op)
 
     // Load the mind states
     DatabaseIterator dbi(p->getMindDb());
-    Object ent;
+    Object::MapType ent;
     while (dbi.get(ent)) {
-        const Object::MapType & m = ent.AsMap();
-        Object::MapType::const_iterator I = m.find("id");
-        if ((I != m.end()) && (I->second.IsString())) {
+        Object::MapType::const_iterator I = ent.find("id");
+        if ((I != ent.end()) && (I->second.IsString())) {
             const std::string & id = I->second.AsString();
             Entity * ent = world->getObject(id);
             if ((ent == NULL) || (!ent->isCharacter)) {

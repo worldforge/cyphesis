@@ -44,5 +44,6 @@ void Lobby::addToObject(Object::MapType & omap) const
     for(; I != accounts.end(); I++) {
         player_list.push_back(I->first);
     }
-    omap["players"] = player_list;
+    omap["people"] = player_list;
+    omap["rooms"] = Object::ListType();
 }

@@ -11,7 +11,7 @@ class BaseMind;
 class MemMap;
 class Location;
 class WorldTime;
-class WorldRouter;
+class BaseWorld;
 
 #include <common/types.h>
 #include <common/operations.h>
@@ -64,7 +64,7 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
-    WorldRouter	* world;
+    BaseWorld	* world;
 } WorldObject;
 
 typedef struct {

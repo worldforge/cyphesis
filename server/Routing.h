@@ -5,7 +5,7 @@
 #ifndef SERVER_ROUTING_H
 #define SERVER_ROUTING_H
 
-#include "OOG_Thing.h"
+#include <common/OOGThing.h>
 
 class Routing : public OOGThing {
   protected:

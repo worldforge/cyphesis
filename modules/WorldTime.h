@@ -7,16 +7,17 @@
 
 #include <modules/DateTime.h>
 
+#include <list>
+
 // timedata time2type(const std::string & t);
 
 class WorldTime {
+  private:
     typedef std::list<int> range;
     typedef std::pair<range, std::string> period;
     typedef std::map<std::string, period> time_info_t;
 
-    //DateTime time;
-    //string/int month;
-    double secs;
+    DateTime time;
 
     time_info_t	timeInfo;
     std::map<int, std::string> monthToSeason;
@@ -31,15 +32,20 @@ class WorldTime {
 
     void initTimeInfo();
   public:
-    WorldTime(double seconds) : secs(seconds) {
+    WorldTime(double scnds) : time((int)scnds) {
         initTimeInfo();
     }
-    double seconds() { return secs; }
+    WorldTime() : time(0) {
+        initTimeInfo();
+    }
+    double seconds() { return time.seconds(); }
+    void update(double secs) { time.update((int)secs); }
     //WorldTime(char * date_time);
-    const std::string & operator[](const std::string & name);
+    std::string operator[](const std::string & name);
     //std::string & __repr__();
     //std::string & __str__();
-    //bool operator==(const WorldTime & other);
+    bool operator==(const WorldTime & other) const;
+    bool operator==(const std::string & when) const;
 };
 
 const std::string & seconds2string(double seconds);

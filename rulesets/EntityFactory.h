@@ -10,7 +10,6 @@
 
 class Thing;
 class FactoryBase;
-class WorldRouter;
 
 typedef std::map<std::string, FactoryBase *> fdict_t;
 
@@ -31,7 +30,7 @@ class EntityFactory {
             delete m_instance;
         }
     }
-    Thing * newThing(const std::string &, const Atlas::Message::Object &, WorldRouter *);
+    Thing * newThing(const std::string &, const Atlas::Message::Object &, const edict_t &);
     void flushFactories();
 };
 

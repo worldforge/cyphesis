@@ -36,13 +36,13 @@ class AccountBase : public Database {
         return (AccountBase *)m_instance;
     }
 
-    bool putAccount(const Object & o, const std::string & account) {
+    bool putAccount(const Object::MapType & o, const std::string & account) {
         return putObject(account_db, o, account.c_str());
     }
     bool delAccount(const std::string & account) {
         return delObject(account_db, account.c_str());
     }
-    bool getAccount(const std::string & account, Object & o) {
+    bool getAccount(const std::string & account, Object::MapType & o) {
         return getObject(account_db, account.c_str(), o);
     }
 
@@ -108,7 +108,7 @@ int main(int argc, char ** argv)
     AccountBase * db = AccountBase::instance();
     db->initAccount(true);
 
-    Atlas::Message::Object data;
+    Atlas::Message::Object::MapType data;
 
     bool res = db->getAccount("admin", data);
 
@@ -118,7 +118,7 @@ int main(int argc, char ** argv)
         action = ADD;
     }
     if (action != ADD) {
-        Object o;
+        Object::MapType o;
         res = db->getAccount(acname, o);
         if (!res) {
             std::cout<<"Account "<<acname<<" does not yet exist"<<endl<<flush;

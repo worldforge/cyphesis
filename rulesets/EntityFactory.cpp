@@ -22,8 +22,6 @@
 #include <common/debug.h>
 #include <common/globals.h>
 
-#include <server/ServerRouting.h>
-
 #include "Character.h"
 #include "Creator.h"
 
@@ -44,7 +42,7 @@ EntityFactory::EntityFactory()
     factories["structure"] = new ThingFactory<Structure>();
 }
 
-Thing * EntityFactory::newThing(const std::string & type,const Object & ent, WorldRouter * svr)
+Thing * EntityFactory::newThing(const std::string & type,const Object & ent, const edict_t & world)
 {
     if (!ent.IsMap()) {
          debug( cout << "Entity is not a map" << endl << flush;);
@@ -84,7 +82,7 @@ Thing * EntityFactory::newThing(const std::string & type,const Object & ent, Wor
     }
     thing->merge(entmap);
     // Get location from entity, if it is present
-    thing->getLocation(entmap, svr->eobjects);
+    thing->getLocation(entmap, world);
     return thing;
 }
 
