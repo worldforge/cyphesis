@@ -13,7 +13,7 @@ class Persistance;
 
 class Admin : public Account {
   protected:
-    virtual OpVector characterError(const Create &, const Atlas::Message::Element::MapType &) const;
+    virtual OpVector characterError(const Create &, const MapType &) const;
     void opDispatched(RootOperation * op);
 
     SigC::Connection m_monitorConnection;

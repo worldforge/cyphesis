@@ -57,8 +57,8 @@ static PyObject * Object_getattr(PyMessageElement *self, char *name)
     }
 #endif // NDEBUG
     if (self->m_obj->isMap()) {
-        const Element::MapType & omap = self->m_obj->asMap();
-        Element::MapType::const_iterator I = omap.find(name);
+        const MapType & omap = self->m_obj->asMap();
+        MapType::const_iterator I = omap.find(name);
         if (I != omap.end()) {
             return MessageElement_asPyObject(I->second);
         }
@@ -82,7 +82,7 @@ static int Object_setattr( PyMessageElement *self, char *name, PyObject *v)
     }
 #endif // NDEBUG
     if (self->m_obj->isMap()) {
-        Element::MapType & omap = self->m_obj->asMap();
+        MapType & omap = self->m_obj->asMap();
         Element v_obj = PyObject_asMessageElement(v);
         if ((v_obj.getType() != Element::TYPE_NONE) &&
             (v_obj.getType() != Element::TYPE_MAP) &&
@@ -138,10 +138,10 @@ PyMessageElement * newPyMessageElement()
  * Utility functions to munge between Object related types and python types
  */
 
-static PyObject * MapType_asPyObject(const Element::MapType & map)
+static PyObject * MapType_asPyObject(const MapType & map)
 {
     PyObject * args_pydict = PyDict_New();
-    Element::MapType::const_iterator I;
+    MapType::const_iterator I;
     PyMessageElement * item;
     for(I = map.begin(); I != map.end(); I++) {
         const std::string & key = I->first;
@@ -158,10 +158,10 @@ static PyObject * MapType_asPyObject(const Element::MapType & map)
     return args_pydict;
 }
 
-static PyObject * ListType_asPyObject(const Element::ListType & list)
+static PyObject * ListType_asPyObject(const ListType & list)
 {
     PyObject * args_pylist = PyList_New(list.size());
-    Element::ListType::const_iterator I;
+    ListType::const_iterator I;
     int j = 0;
     PyMessageElement * item;
     for(I = list.begin(); I != list.end(); I++, j++) {
@@ -202,9 +202,9 @@ PyObject * MessageElement_asPyObject(const Element & obj)
     return ret;
 }
 
-Element::ListType PyListObject_asElementList(PyObject * list)
+ListType PyListObject_asElementList(PyObject * list)
 {
-    Element::ListType argslist;
+    ListType argslist;
     PyMessageElement * item;
     for(int i = 0; i < PyList_Size(list); i++) {
         item = (PyMessageElement *)PyList_GetItem(list, i);
@@ -220,9 +220,9 @@ Element::ListType PyListObject_asElementList(PyObject * list)
     return argslist;
 }
 
-Element::MapType PyDictObject_asElementMap(PyObject * dict)
+MapType PyDictObject_asElementMap(PyObject * dict)
 {
-    Element::MapType argsmap;
+    MapType argsmap;
     PyMessageElement * item;
     PyObject * keys = PyDict_Keys(dict);
     PyObject * vals = PyDict_Values(dict);
@@ -261,7 +261,7 @@ Element PyObject_asMessageElement(PyObject * o)
         return Element(PyDictObject_asElementMap(o));
     }
     if (PyTuple_Check(o)) {
-        Element::ListType list;
+        ListType list;
         int i, size = PyTuple_Size(o);
         for(i = 0; i < size; i++) {
             Element item = PyObject_asMessageElement(PyTuple_GetItem(o, i));
@@ -281,9 +281,9 @@ Element PyObject_asMessageElement(PyObject * o)
     }
     if (PyOplist_Check(o)) {
         PyOplist * opl = (PyOplist *)o;
-        Element::ListType _list;
+        ListType _list;
         Element msg(_list);
-        Element::ListType & entlist = msg.asList();
+        ListType & entlist = msg.asList();
         const OpVector & ops = *opl->ops;
         OpVector::const_iterator I;
         for(I = ops.begin(); I != ops.end(); I++) {
@@ -293,7 +293,7 @@ Element PyObject_asMessageElement(PyObject * o)
     }
     if (PyLocation_Check(o)) {
         PyLocation * loc = (PyLocation *)o;
-        Element::MapType _map;
+        MapType _map;
         loc->location->addToObject(_map);
         return Element(_map);
     }

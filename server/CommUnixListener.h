@@ -10,6 +10,8 @@
 
 #include <skstream/skserver_unix.h>
 
+/// \brief Handle the listen socket used to listen for unix socket connections
+/// on the local machine.
 class CommUnixListener : public CommSocket {
   private:
     unix_socket_server m_unixListener;

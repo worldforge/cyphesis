@@ -74,7 +74,7 @@ void Plant::set(const std::string & aname, const Element & attr)
     }
 }
 
-void Plant::addToObject(Element::MapType & omap) const
+void Plant::addToObject(MapType & omap) const
 {
     omap["fruits"] = m_fruits;
     omap["radius"] = m_radius;
@@ -98,14 +98,14 @@ int Plant::dropFruit(OpVector & res)
                                                   -height * m_radius);
         float ry = m_location.m_pos.y() + uniform( height * m_radius,
                                                   -height * m_radius);
-        Element::MapType fmap;
+        MapType fmap;
         fmap["name"] = m_fruitName;
-        fmap["parents"] = Element::ListType(1,m_fruitName);
+        fmap["parents"] = ListType(1,m_fruitName);
         Location floc(m_location.m_loc, Vector3D(rx, ry, 0));
         floc.addToObject(fmap);
         RootOperation * create = new Create();
         create->setTo(getId());
-        create->setArgs(Element::ListType(1, fmap));
+        create->setArgs(ListType(1, fmap));
         res.push_back(create);
     }
     return drop;
@@ -133,7 +133,7 @@ OpVector Plant::TickOperation(const Tick & op)
     }
     if ((dropped != 0) || (m_status < 1.)) {
         RootOperation * set = new Set();
-        Element::MapType pmap;
+        MapType pmap;
         pmap["id"] = getId();
         pmap["fruits"] = m_fruits;
         if (m_status < 1.) {
@@ -142,7 +142,7 @@ OpVector Plant::TickOperation(const Tick & op)
             pmap["status"] = (newStatus > 1.f) ? 1.f : newStatus;
         }
         set->setTo(getId());
-        set->setArgs(Element::ListType(1,pmap));
+        set->setArgs(ListType(1,pmap));
         res.push_back(set);
     }
     return res;
@@ -164,11 +164,11 @@ OpVector Plant::TouchOperation(const Touch & op)
     int dropped = dropFruit(res);
     if (dropped != 0) {
         RootOperation * set = new Set();
-        Element::MapType pmap;
+        MapType pmap;
         pmap["id"] = getId();
         pmap["fruits"] = m_fruits;
         set->setTo(getId());
-        set->setArgs(Element::ListType(1,pmap));
+        set->setArgs(ListType(1,pmap));
         res.push_back(set);
     }
     return res;

@@ -8,7 +8,7 @@
 #include "CommServer.h"
 
 CommRemoteClient::CommRemoteClient(CommServer & svr, int fd, const std::string & addr) :
-   CommClient(svr, fd, *new Connection(addr, *this, svr.server))
+   CommClient(svr, fd, *new Connection(addr, *this, svr.m_server))
 {
 }
 

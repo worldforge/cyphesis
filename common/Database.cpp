@@ -19,6 +19,8 @@
 #include <cassert>
 
 using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 
 typedef Atlas::Codecs::XML Serialiser;
 
@@ -157,7 +159,7 @@ Database * Database::instance()
 }
 
 bool Database::decodeObject(const std::string & data,
-                            Atlas::Message::Element::MapType &o)
+                            MapType &o)
 {
     if (data.empty()) {
         return true;
@@ -182,7 +184,7 @@ bool Database::decodeObject(const std::string & data,
     return true;
 }
 
-bool Database::encodeObject(const Atlas::Message::Element::MapType & o,
+bool Database::encodeObject(const MapType & o,
                             std::string & data)
 {
     std::stringstream str;
@@ -199,7 +201,7 @@ bool Database::encodeObject(const Atlas::Message::Element::MapType & o,
 }
 
 bool Database::getObject(const std::string & table, const std::string & key,
-                         Atlas::Message::Element::MapType & o)
+                         MapType & o)
 {
     debug(std::cout << "Database::getObject() " << table << "." << key
                     << std::endl << std::flush;);
@@ -244,7 +246,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
 
 bool Database::putObject(const std::string & table,
                          const std::string & key,
-                         const Atlas::Message::Element::MapType & o,
+                         const MapType & o,
                          const StringVector & c)
 {
     debug(std::cout << "Database::putObject() " << table << "." << key
@@ -273,7 +275,7 @@ bool Database::putObject(const std::string & table,
 
 bool Database::updateObject(const std::string & table,
                             const std::string & key,
-                            const Atlas::Message::Element::MapType & o)
+                            const MapType & o)
 {
     debug(std::cout << "Database::updateObject() " << table << "." << key
                     << std::endl << std::flush;);
@@ -340,7 +342,7 @@ bool Database::hasKey(const std::string & table, const std::string & key)
     return ret;
 }
 
-bool Database::getTable(const std::string & table, Element::MapType &o)
+bool Database::getTable(const std::string & table, MapType &o)
 {
     std::string query = std::string("SELECT * FROM ") + table + ";";
 
@@ -376,7 +378,7 @@ bool Database::getTable(const std::string & table, Element::MapType &o)
         return false;
     }
 
-    Element::MapType t;
+    MapType t;
     for(int i = 0; i < results; i++) {
         const char * key = PQgetvalue(res, i, id_column);
         const char * data = PQgetvalue(res, i, contents_column);
@@ -602,7 +604,7 @@ bool Database::removeRelationRowByOther(const std::string & name,
 }
 
 bool Database::registerSimpleTable(const std::string & name,
-                                   const Atlas::Message::Element::MapType & row)
+                                   const MapType & row)
 {
     if (row.empty()) {
         log(ERROR, "Attempt to create empty database table");
@@ -614,14 +616,14 @@ bool Database::registerSimpleTable(const std::string & name,
     createquery += name;
     query += " WHERE id = 0";
     createquery += " (id integer UNIQUE PRIMARY KEY";
-    Atlas::Message::Element::MapType::const_iterator I = row.begin();
+    MapType::const_iterator I = row.begin();
     for(; I != row.end(); ++I) {
         query += " AND ";
         createquery += ", ";
         const std::string & column = I->first;
         query += column;
         createquery += column;
-        const Atlas::Message::Element & type = I->second;
+        const Element & type = I->second;
         if (type.isString()) {
             query += " LIKE 'foo'";
             int size = type.asString().size();
@@ -791,7 +793,7 @@ bool Database::newId(std::string & id)
 }
 
 bool Database::registerEntityTable(const std::string & classname,
-                                   const Atlas::Message::Element::MapType & row,
+                                   const MapType & row,
                                    const std::string & parent)
 // TODO
 // row probably needs to be richer to provide a more detailed, and possibly
@@ -839,7 +841,7 @@ bool Database::registerEntityTable(const std::string & classname,
     if (parent.empty()) {
         createquery += "id integer UNIQUE PRIMARY KEY, ";
     }
-    Atlas::Message::Element::MapType::const_iterator I = row.begin();
+    MapType::const_iterator I = row.begin();
     for(; I != row.end(); ++I) {
         if (I != row.begin()) {
             query += " AND ";
@@ -848,7 +850,7 @@ bool Database::registerEntityTable(const std::string & classname,
         const std::string & column = I->first;
         query += column;
         createquery += column;
-        const Atlas::Message::Element & type = I->second;
+        const Element & type = I->second;
         if (type.isString()) {
             query += " LIKE 'foo'";
             int size = type.asString().size();

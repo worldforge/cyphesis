@@ -7,13 +7,10 @@
 
 #include "operations.h"
 
-#include <Atlas/Message/Element.h>
-
 namespace utility {
 
-  Atlas::Objects::Root * Object_asRoot(const Atlas::Message::Element &);
-  bool Object_asOperation(const Atlas::Message::Element::MapType &,
-                          Atlas::Objects::Operation::RootOperation &);
+  Atlas::Objects::Root * Object_asRoot(const Element &);
+  bool Object_asOperation(const MapType &, RootOperation &);
 
 }
 

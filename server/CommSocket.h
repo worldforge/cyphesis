@@ -10,17 +10,45 @@ class CommServer;
 /// \brief Base class for all classes for handling socket connections.
 class CommSocket {
   public:
-    CommServer & commServer;
+    CommServer & m_commServer;
 
     explicit CommSocket(CommServer & svr);
 
     virtual ~CommSocket();
 
+    /// \brief Get the socket file descriptor.
+    ///
+    /// Used to determine if this socket required attention using select().
     virtual int getFd() const = 0;
-    virtual bool eof() = 0;
+
+    /// \brief Determine whether this socket is open.
+    /// @return true if the socket conneciton is open, false otherwise.
     virtual bool isOpen() const = 0;
 
+    /// \brief Determine whether this socket has hung up.
+    /// @return true if the socket conneciton has hung up, false otherwise.
+    virtual bool eof() = 0;
+
+    /// \brief Read date from the socket.
+    ///
+    /// Called when select has determined that this socket requires attention.
+    /// This function should read data from the socket and do any initial
+    /// processing required, but must not write to the socket. Writing to
+    /// to the socket during this function could result in a timeout
+    /// which could result in the server locking up. An processing of the
+    /// incoming date which might result in a write to the socket must
+    /// be performed in the dispatch() memeber function.
+    /// @return true if some exceptional circumstance occured meaning this
+    /// socket is no longer usable, false otherwise.
     virtual bool read() = 0;
+
+    /// \brief Post process data read from the socket.
+    ///
+    /// Called after read(), this function should perform post any processing
+    /// or dispatch on data that has been read which might result in
+    /// writing to the client. A typical example is an Atlas operation
+    /// from the client which might have a reply. The Atlas decode is performed
+    /// in read(), but the dispatch is delayed until dispatch().
     virtual void dispatch() = 0;
 };
 

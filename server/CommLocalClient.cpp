@@ -9,7 +9,7 @@
 
 CommLocalClient::CommLocalClient(CommServer & svr, int fd) :
                  CommClient(svr, fd, *new TrustedConnection("local", *this,
-                                                            svr.server))
+                                                            svr.m_server))
 {
 }
 

@@ -1,5 +1,12 @@
+Sort out the way CONTAINS is done in Entity::addToObject and elsewhere,
+so that the delayed check, and deep copy is avoided. Test contains before
+doing it, and get a reference to the list inside the Element. World
+is even worse.
+
 Convert FormatedXMLWriter into a templat that can drive any Atlas codec.
 Thus we can have any Atlas Codec output in formatted human readable form.
+Formatter can be a generic non-template Brige that sits between Encoder
+and Codec.
 
 It might make sense to keep a pointer to the entity an operation is from
 in the queue, is its available at the point when we store it. How do we

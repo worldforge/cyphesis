@@ -14,9 +14,9 @@ bool AccountBase::init()
     return true;
 }
 
-bool AccountBase::putAccount(const Atlas::Message::Element::MapType & o)
+bool AccountBase::putAccount(const Atlas::Message::MapType & o)
 {
-    Atlas::Message::Element::MapType::const_iterator I = o.find("username");
+    Atlas::Message::MapType::const_iterator I = o.find("username");
     if ((I == o.end()) || (!I->second.isString())) {
         return false;
     }
@@ -50,13 +50,13 @@ bool AccountBase::putAccount(const Atlas::Message::Element::MapType & o)
     return m_connection.createSimpleRow("accounts", id, columns, values);
 }
 
-bool AccountBase::modAccount(const Atlas::Message::Element::MapType & o,
+bool AccountBase::modAccount(const Atlas::Message::MapType & o,
                              const std::string & accountId)
 {
     std::string columns;
     bool empty = true;
 
-    Atlas::Message::Element::MapType::const_iterator I = o.find("type");
+    Atlas::Message::MapType::const_iterator I = o.find("type");
     if ((I != o.end()) && (I->second.isString())) {
         empty = false;
         columns += "type = '";
@@ -83,7 +83,7 @@ bool AccountBase::delAccount(const std::string & account)
 }
 
 bool AccountBase::getAccount(const std::string & username,
-                             Atlas::Message::Element::MapType & o)
+                             Atlas::Message::MapType & o)
 {
     std::string namestr = "'" + username + "'";
     DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", namestr);

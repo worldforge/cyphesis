@@ -53,10 +53,10 @@ class Character : public Character_parent {
     const std::string & getSex() const { return m_sex; }
     const double getFood() const { return m_food; }
 
-    virtual bool get(const std::string &, Atlas::Message::Element &) const;
-    virtual void set(const std::string &, const Atlas::Message::Element &);
+    virtual bool get(const std::string &, Element &) const;
+    virtual void set(const std::string &, const Element &);
 
-    virtual void addToObject(Atlas::Message::Element::MapType &) const;
+    virtual void addToObject(MapType &) const;
 
     virtual OpVector operation(const RootOperation & op);
     virtual OpVector externalMessage(const RootOperation & op);

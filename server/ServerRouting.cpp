@@ -9,6 +9,8 @@
 #include "common/const.h"
 #include "common/BaseWorld.h"
 
+#include <Atlas/Message/Element.h>
+
 #include <iostream>
 
 static bool debug_flag = false;
@@ -38,13 +40,13 @@ ServerRouting::~ServerRouting()
 }
 
 /// Copies a representation of the server into an Atlas message.
-void ServerRouting::addToObject(Element::MapType & omap) const
+void ServerRouting::addToObject(MapType & omap) const
 {
     omap["objtype"] = "obj";
     omap["server"] = "cyphesis";
     omap["ruleset"] = m_svrRuleset;
     omap["name"] = m_svrName;
-    omap["parents"] = Element::ListType(1, "server");
+    omap["parents"] = ListType(1, "server");
     omap["clients"] = m_numClients;
     omap["uptime"] = m_world.upTime();
     omap["builddate"] = std::string(consts::buildTime)+", "+std::string(consts::buildDate);

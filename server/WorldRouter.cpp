@@ -235,7 +235,7 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
 /// and pass it to addObject() FIXME doxygen reference.
 /// @return a pointer to the new entity.
 Entity * WorldRouter::addNewObject(const std::string & typestr,
-                                   const Atlas::Message::Element::MapType & ent)
+                                   const MapType & ent)
 {
     debug(std::cout << "WorldRouter::addNewObject(\"" << typestr << "\", ent)"
                     << std::endl << std::flush;);
@@ -294,7 +294,7 @@ void WorldRouter::message(RootOperation & op, const Entity * obj)
 /// @return a reference to the list of entities to be used for braodcast.
 const EntitySet & WorldRouter::broadcastList(const RootOperation & op) const
 {
-    const Element::ListType & parents = op.getParents();
+    const ListType & parents = op.getParents();
     if (!parents.empty() && (parents.front().isString())) {
         const std::string & parent = parents.front().asString();
         if ((parent == "sight") || (parent == "sound") ||

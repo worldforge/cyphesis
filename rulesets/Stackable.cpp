@@ -42,7 +42,7 @@ void Stackable::set(const std::string & aname, const Element & attr)
     }
 }
 
-void Stackable::addToObject(Element::MapType & omap) const
+void Stackable::addToObject(MapType & omap) const
 {
     if (m_num != 1) {
         omap["num"] = m_num;
@@ -56,8 +56,8 @@ OpVector Stackable::CombineOperation(const Combine & op)
     if (m_script->Operation("combine", op, res) != 0) {
         return res;
     }
-    const Element::ListType & args = op.getArgs();
-    for(Element::ListType::const_iterator I = args.begin(); I!= args.end(); I++) {
+    const ListType & args = op.getArgs();
+    for(ListType::const_iterator I = args.begin(); I!= args.end(); I++) {
         const std::string & id = I->asMap().find("id")->second.asString();
         if (id == getId()) { continue; }
         Entity * ent = m_world->getObject(id);
@@ -68,10 +68,10 @@ OpVector Stackable::CombineOperation(const Combine & op)
         m_num = m_num + obj->m_num;
 
         Delete * d = new Delete();
-        Element::MapType dent;
+        MapType dent;
         dent["id"] = id;
         d->setTo(id);
-        d->setArgs(Element::ListType(1,dent));
+        d->setArgs(ListType(1,dent));
         res.push_back(d);
     }
     return res;
@@ -85,22 +85,22 @@ OpVector Stackable::DivideOperation(const Divide & op)
     if (m_script->Operation("divide", op, res) != 0) {
         return res;
     }
-    const Element::ListType & args = op.getArgs();
-    for(Element::ListType::const_iterator I = args.begin(); I!=args.end(); I++) {
-        const Element::MapType & ent = I->asMap();
+    const ListType & args = op.getArgs();
+    for(ListType::const_iterator I = args.begin(); I!=args.end(); I++) {
+        const MapType & ent = I->asMap();
         int new_num = 1;
-        Element::MapType::const_iterator J = ent.find("num");
+        MapType::const_iterator J = ent.find("num");
         if (J != ent.end()) {
             if (J->second.isInt()) { new_num = J->second.asInt(); }
         }
         if (m_num <= new_num) { continue; }
         
-        Element::MapType new_ent;
-        Element::ListType parents(1,m_type);
+        MapType new_ent;
+        ListType parents(1,m_type);
         new_ent["parents"] = parents;
         new_ent["num"] = new_num;
         Create * c = new Create( );
-        c->setArgs(Element::ListType(1,new_ent));
+        c->setArgs(ListType(1,new_ent));
         c->setTo(getId());
         res.push_back(c);
     }

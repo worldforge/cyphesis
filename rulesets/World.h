@@ -21,18 +21,18 @@ class World : public World_parent {
   protected:
     Mercator::Terrain & m_terrain;
 
-    void getTerrain(Atlas::Message::Element::MapType &) const;
-    void setTerrain(const Atlas::Message::Element::MapType &);
+    void getTerrain(MapType &) const;
+    void setTerrain(const MapType &);
   public:
     explicit World(const std::string & id);
     virtual ~World();
 
     float getHeight(float x, float y);
 
-    virtual bool get(const std::string &, Atlas::Message::Element &) const;
-    virtual void set(const std::string &, const Atlas::Message::Element &);
+    virtual bool get(const std::string &, Element &) const;
+    virtual void set(const std::string &, const Element &);
 
-    virtual void addToObject(Atlas::Message::Element::MapType &) const;
+    virtual void addToObject(MapType &) const;
 
     virtual OpVector LookOperation(const Look & op);
     virtual OpVector BurnOperation(const Burn & op);

@@ -34,8 +34,7 @@ class Connection : public OOGThing {
     void close();
     void send(const RootOperation & msg) const;
 
-    virtual bool verifyCredentials(const Account &,
-                               const Atlas::Message::Element::MapType &) const;
+    virtual bool verifyCredentials(const Account &, const MapType &) const;
 
     virtual OpVector operation(const RootOperation & op);
 

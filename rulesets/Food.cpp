@@ -31,21 +31,21 @@ OpVector Food::EatOperation(const Eat & op)
     if (m_script->Operation("eat", op, res) != 0) {
         return res;
     }
-    Element::MapType self_ent;
+    MapType self_ent;
     self_ent["id"] = getId();
     self_ent["status"] = -1;
 
     Set * s = new Set();
     s->setTo(getId());
-    s->setArgs(Element::ListType(1,self_ent));
+    s->setArgs(ListType(1,self_ent));
 
     const std::string & to = op.getFrom();
-    Element::MapType nour_ent;
+    MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["mass"] = m_mass;
     Nourish * n = new Nourish();
     n->setTo(to);
-    n->setArgs(Element::ListType(1,nour_ent));
+    n->setArgs(ListType(1,nour_ent));
 
     OpVector res2(2);
     res2[0] = s;
@@ -63,12 +63,12 @@ OpVector Food::BurnOperation(const Burn & op)
     if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
        return error(op, "Fire op has no argument", getId());
     }
-    Element::MapType::const_iterator I = m_attributes.find("cooked");
+    MapType::const_iterator I = m_attributes.find("cooked");
     if ((I != m_attributes.end()) && I->second.isNum()) {
         cooked = I->second.asNum();
     }
-    const Element::MapType & fire_ent = op.getArgs().front().asMap();
-    Element::MapType self_ent;
+    const MapType & fire_ent = op.getArgs().front().asMap();
+    MapType self_ent;
     self_ent["id"] = getId();
     // Currently this cooks pretty quick, and at the same speed for
     // everything. No mechanism for this yet.
@@ -80,7 +80,7 @@ OpVector Food::BurnOperation(const Burn & op)
 
     Set * s = new Set();
     s->setTo(getId());
-    s->setArgs(Element::ListType(1,self_ent));
+    s->setArgs(ListType(1,self_ent));
 
     return OpVector(1,s);
 }

@@ -30,19 +30,32 @@ class Connection;
 /// Used by subclasses to handle remote TCP clients and local UNIX clients.
 class CommClient : public Atlas::Objects::Decoder, public CommSocket {
   public:
+    /// \brief STL deque of pointers to operation objects.
     typedef std::deque<const Atlas::Objects::Operation::RootOperation *> DispatchQueue;
   protected:
-    tcp_socket_stream clientIos;
-    DispatchQueue opQueue;
-    Atlas::Codec<std::iostream> * codec;
-    Atlas::Objects::Encoder * encoder;
-    Atlas::Net::StreamAccept * accept;
-    Connection & connection;
+    /// \brief C++ iostream compatible socket object handling the socket IO.
+    tcp_socket_stream m_clientIos;
+    /// \brief Queue of operations that have been decoded by not dispatched.
+    DispatchQueue m_opQueue;
+    /// \brief Atlas codec that handles encoding and decoding traffic.
+    Atlas::Codec<std::iostream> * m_codec;
+    /// \brief high level encoder passes data to the codec for transmission.
+    Atlas::Objects::Encoder * m_encoder;
+    /// \brief Atlas negotiator for handling codec negotiation.
+    Atlas::Net::StreamAccept * m_accept;
+    /// \brief Server side object for handling connection level operations.
+    Connection & m_connection;
 
+    /// \brief Handle socket data related to codec negotiation.
     bool negotiate();
 
+    /// \brief Add an operation to the queue.
     template <class OpType>
     void queue(const OpType &);
+
+    bool timeout() { return m_clientIos.timeout(); }
+
+    void message(const Atlas::Objects::Operation::RootOperation &);
 
     virtual void unknownObjectArrived(const Atlas::Message::Element&);
     virtual void objectArrived(const Atlas::Objects::Operation::Login & op);
@@ -60,17 +73,15 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
     CommClient(CommServer &, int fd, Connection &);
     virtual ~CommClient();
 
-    int getFd() const { return clientIos.getSocket(); }
-    bool eof() { return clientIos.peek() == EOF; }
-    bool isOpen() const { return clientIos.is_open(); }
-    bool timeout() { return clientIos.timeout(); }
-    bool online() const { return (encoder != NULL); }
-    void close() { clientIos.close(); }
+    void close() { m_clientIos.close(); }
 
-    bool read();
-    void send(const Atlas::Objects::Operation::RootOperation &);
-    void message(const Atlas::Objects::Operation::RootOperation &);
     void setup();
+    void send(const Atlas::Objects::Operation::RootOperation &);
+
+    int getFd() const;
+    bool isOpen() const;
+    bool eof();
+    bool read();
     void dispatch();
 };
 

@@ -33,79 +33,79 @@ static const bool debug_flag = false;
 
 CommClient::CommClient(CommServer & svr, int fd, Connection & c) :
             CommSocket(svr),
-            clientIos(fd),
-            codec(NULL), encoder(NULL),
-            connection(c)
+            m_clientIos(fd),
+            m_codec(NULL), m_encoder(NULL),
+            m_connection(c)
 {
-    clientIos.setTimeout(0,1000);
-    commServer.server.incClients();
+    m_clientIos.setTimeout(0,1000);
+    m_commServer.m_server.incClients();
 }
 
 CommClient::~CommClient()
 {
-    connection.destroy();
-    delete &connection;
-    if (accept != NULL) {
-        delete accept;
+    m_connection.destroy();
+    delete &m_connection;
+    if (m_accept != NULL) {
+        delete m_accept;
     }
-    if (encoder != NULL) {
-        delete encoder;
+    if (m_encoder != NULL) {
+        delete m_encoder;
     }
-    if (codec != NULL) {
-        delete codec;
+    if (m_codec != NULL) {
+        delete m_codec;
     }
-    clientIos.close();
-    commServer.server.decClients();
+    m_clientIos.close();
+    m_commServer.m_server.decClients();
 }
 
 void CommClient::setup()
 {
     debug( std::cout << "Negotiating started" << std::endl << std::flush; );
     // Create the server side negotiator
-    accept =  new Atlas::Net::StreamAccept("cyphesis " + commServer.server.getName(), clientIos, this);
+    m_accept =  new Atlas::Net::StreamAccept("cyphesis " + m_commServer.m_server.getName(), m_clientIos, this);
 
-    accept->poll(false);
+    m_accept->poll(false);
 
-    clientIos << std::flush;
+    m_clientIos << std::flush;
 }
 
 bool CommClient::negotiate()
 {
     debug(std::cout << "Negotiating... " << std::flush;);
     // poll and check if negotiation is complete
-    accept->poll();
+    m_accept->poll();
 
-    if (accept->getState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
+    if (m_accept->getState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
         return false;
     }
     debug(std::cout << "done" << std::endl;);
 
     // Check if negotiation failed
-    if (accept->getState() == Atlas::Net::StreamAccept::FAILED) {
+    if (m_accept->getState() == Atlas::Net::StreamAccept::FAILED) {
         log(NOTICE, "Failed to negotiate");
         return true;
     }
     // Negotiation was successful
 
     // Get the codec that negotiation established
-    codec = accept->getCodec();
+    m_codec = m_accept->getCodec();
 
     // Create a new encoder to send high level objects to the codec
-    encoder = new Atlas::Objects::Encoder(codec);
+    m_encoder = new Atlas::Objects::Encoder(m_codec);
 
     // This should always be sent at the beginning of a session
-    codec->streamBegin();
+    m_codec->streamBegin();
 
     // Acceptor is now finished with
-    delete accept;
-    accept = NULL;
+    delete m_accept;
+    m_accept = NULL;
 
     return false;
 }
 
 void CommClient::message(const RootOperation & op)
 {
-    OpVector reply = connection.message(op);
+    OpVector reply = m_connection.message(op);
     for(OpVector::const_iterator I = reply.begin(); I != reply.end(); ++I) {
         debug(std::cout << "sending reply" << std::endl << std::flush;);
         send(**I);
@@ -117,21 +117,21 @@ template <class OpType>
 void CommClient::queue(const OpType & op)
 {
     OpType * nop = new OpType(op);
-    opQueue.push_back(nop);
+    m_opQueue.push_back(nop);
 }
 
 void CommClient::dispatch()
 {
-    DispatchQueue::const_iterator I = opQueue.begin();
-    for(; I != opQueue.end(); ++I) {
+    DispatchQueue::const_iterator I = m_opQueue.begin();
+    for(; I != m_opQueue.end(); ++I) {
         debug(std::cout << "dispatching op" << std::endl << std::flush;);
         message(**I);
         delete *I;
     }
-    opQueue.clear();
+    m_opQueue.clear();
 }
 
-void CommClient::unknownObjectArrived(const Atlas::Message::Element& o)
+void CommClient::unknownObjectArrived(const Element& o)
 {
     debug(std::cout << "An unknown has arrived." << std::endl << std::flush;);
     RootOperation r;
@@ -141,7 +141,7 @@ void CommClient::unknownObjectArrived(const Atlas::Message::Element& o)
     }
     if (debug_flag) {
         log(ERROR, "An unknown object has arrived from a client.");
-        Atlas::Message::Element::MapType::const_iterator I;
+        MapType::const_iterator I;
         for(I = o.asMap().begin(); I != o.asMap().end(); I++) {
             std::cerr << I->first << std::endl << std::flush;
             if (I->second.isString()) {
@@ -212,34 +212,49 @@ void CommClient::objectArrived(const Get & op)
 }
 
 bool CommClient::read() {
-    if (codec != NULL) {
-        codec->poll();
+    if (m_codec != NULL) {
+        m_codec->poll();
         return false;
     } else {
         return negotiate();
     }
 }
 
+int CommClient::getFd() const
+{
+    return m_clientIos.getSocket();
+}
+
+bool CommClient::isOpen() const
+{
+    return m_clientIos.is_open();
+}
+
+bool CommClient::eof()
+{
+    return m_clientIos.peek() == EOF;
+}
+
 void CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
 {
     if (isOpen()) {
-        encoder->streamMessage(&op);
+        m_encoder->streamMessage(&op);
         struct timeval tv = {0, 0};
         fd_set sfds;
-        int cfd = clientIos.getSocket();
+        int cfd = m_clientIos.getSocket();
         FD_ZERO(&sfds);
         FD_SET(cfd, &sfds);
         if (select(++cfd, NULL, &sfds, NULL, &tv) > 0) {
             // We only flush to the client if the client is ready
-            clientIos << std::flush;
+            m_clientIos << std::flush;
         } else {
             debug(std::cout << "Client not ready" << std::endl << std::flush;);
         }
         // This timeout should only occur if the client was really not
         // ready
-        if (clientIos.timeout()) {
+        if (m_clientIos.timeout()) {
             debug(std::cerr << "TIMEOUT" << std::endl << std::flush;);
-            clientIos.close();
+            m_clientIos.close();
         }
     }
 }

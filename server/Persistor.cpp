@@ -34,7 +34,7 @@ template class Persistor<World>;
 Persistor<Entity>::Persistor(bool temp) : m_class("entity")
 {
     if (temp) { return; }
-    Atlas::Message::Element::MapType desc;
+    MapType desc;
     desc["class"] = "                                                                                ";
     desc["type"] = "                                                                                ";
     // desc["loc"] = "                                                                                ";
@@ -66,7 +66,7 @@ Persistor<Entity>::Persistor(bool temp) : m_class("entity")
 Persistor<Thing>::Persistor<Thing>(bool temp) : m_class("thing")
 {
     if (temp) { return; }
-    Atlas::Message::Element::MapType desc;
+    MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "entity");
 }
@@ -74,7 +74,7 @@ Persistor<Thing>::Persistor<Thing>(bool temp) : m_class("thing")
 Persistor<Line>::Persistor<Line>(bool temp) : m_class("line")
 {
     if (temp) { return; }
-    Atlas::Message::Element::MapType desc;
+    MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
@@ -82,7 +82,7 @@ Persistor<Line>::Persistor<Line>(bool temp) : m_class("line")
 Persistor<Area>::Persistor<Area>(bool temp) : m_class("area")
 {
     if (temp) { return; }
-    Atlas::Message::Element::MapType desc;
+    MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
@@ -90,7 +90,7 @@ Persistor<Area>::Persistor<Area>(bool temp) : m_class("area")
 Persistor<Character>::Persistor<Character>(bool temp) : m_class("character")
 {
     if (temp) { return; }
-    Atlas::Message::Element::MapType desc;
+    MapType desc;
     // FIXME Sort out attributes
     desc["sex"] = "        ";
     desc["drunkness"] = 1.0;
@@ -107,7 +107,7 @@ Persistor<Creator>::Persistor<Creator>(bool temp) : m_class("creator")
 Persistor<Plant>::Persistor<Plant>(bool temp) : m_class("plant")
 {
     if (temp) { return; }
-    Atlas::Message::Element::MapType desc;
+    MapType desc;
     // FIXME Sort out attributes
     desc["fruits"] = 1;
     desc["fruitName"] = "                                                                                ";
@@ -119,7 +119,7 @@ Persistor<Plant>::Persistor<Plant>(bool temp) : m_class("plant")
 Persistor<Food>::Persistor<Food>(bool temp) : m_class("food")
 {
     if (temp) { return; }
-    Atlas::Message::Element::MapType desc;
+    MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
@@ -127,7 +127,7 @@ Persistor<Food>::Persistor<Food>(bool temp) : m_class("food")
 Persistor<Stackable>::Persistor<Stackable>(bool temp) : m_class("stackable")
 {
     if (temp) { return; }
-    Atlas::Message::Element::MapType desc;
+    MapType desc;
     // FIXME Sort out attributes
     desc["num"] = 1;
     Database::instance()->registerEntityTable(m_class, desc, "thing");
@@ -136,7 +136,7 @@ Persistor<Stackable>::Persistor<Stackable>(bool temp) : m_class("stackable")
 Persistor<Structure>::Persistor<Structure>(bool temp) : m_class("structure")
 {
     if (temp) { return; }
-    Atlas::Message::Element::MapType desc;
+    MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
@@ -144,7 +144,7 @@ Persistor<Structure>::Persistor<Structure>(bool temp) : m_class("structure")
 Persistor<World>::Persistor<World>(bool temp) : m_class("world")
 {
     if (temp) { return; }
-    Atlas::Message::Element::MapType desc;
+    MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "entity");
 }

@@ -42,7 +42,7 @@ bool Persistance::init()
         log(ERROR, "Faled to register Id generator in database.");
     }
 
-    Element::MapType tableDesc;
+    MapType tableDesc;
     tableDesc["username"] = "                                                                                ";
     tableDesc["password"] = "                                                                                ";
     tableDesc["type"] = "          ";
@@ -188,7 +188,7 @@ void Persistance::delCharacter(const std::string & id)
     m_connection.removeRelationRowByOther(m_characterRelation, id);
 }
 
-bool Persistance::getRules(Element::MapType & m)
+bool Persistance::getRules(MapType & m)
 {
     return m_connection.getTable(m_connection.rule(), m);
 }

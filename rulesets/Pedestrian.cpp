@@ -57,12 +57,12 @@ Move * Pedestrian::genFaceOperation()
         debug( std::cout << "Turning" << std::endl << std::flush;);
         Move * moveOp = new Move();
         moveOp->setTo(m_body.getId());
-        Element::MapType entmap;
+        MapType entmap;
         entmap["id"] = m_body.getId();
         entmap["loc"] = m_body.m_location.m_loc->getId();
         entmap["pos"] = m_body.m_location.m_pos.toAtlas();
         entmap["orientation"] = m_orientation.toAtlas();
-        Element::ListType args(1,entmap);
+        ListType args(1,entmap);
         moveOp->setArgs(args);
         return moveOp;
     }
@@ -103,7 +103,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     moveOp->setTo(m_body.getId());
 
     // Set up argument for operation
-    Element::MapType entmap;
+    MapType entmap;
     entmap["id"] = m_body.getId();
 
     // If velocity is not set, return this simple operation.
@@ -111,7 +111,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
         debug( std::cout << "only velocity changed." << std::endl
                          << std::flush;);
         new_loc.addToObject(entmap);
-        Element::ListType args(1,entmap);
+        ListType args(1,entmap);
         moveOp->setArgs(args);
         if (NULL != rloc) {
             *rloc = new_loc;
@@ -216,7 +216,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     debug( std::cout << "new coordinates: " << new_coords << std::endl
                      << std::flush;);
     new_loc.addToObject(entmap);
-    Element::ListType args2(1,entmap);
+    ListType args2(1,entmap);
     moveOp->setArgs(args2);
     if (NULL != rloc) {
         *rloc = new_loc;

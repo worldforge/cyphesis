@@ -106,12 +106,12 @@ bool CommListener::accept()
         address = "unknown";
     }
     
-    CommRemoteClient * newcli = new CommRemoteClient(commServer, asockfd, address);
+    CommRemoteClient * newcli = new CommRemoteClient(m_commServer, asockfd, address);
 
     newcli->setup();
 
     // Add this new client to the list.
-    commServer.add(newcli);
+    m_commServer.add(newcli);
 
     return true;
 }

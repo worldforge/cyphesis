@@ -34,7 +34,7 @@ class CommServer {
     CommServer & operator=(const CommServer &);
   public:
     /// Reference to the core ServerRouting object.
-    ServerRouting & server;
+    ServerRouting & m_server;
 
     explicit CommServer(ServerRouting & srv);
     ~CommServer();

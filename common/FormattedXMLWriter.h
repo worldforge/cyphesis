@@ -23,10 +23,10 @@ class FormattedXMLWriter {
     void outputValue(const Atlas::Message::Element &);
 
     /// Write the contents of this atlas list recursively to the stream.
-    void outputList(const Atlas::Message::Element::ListType &);
+    void outputList(const Atlas::Message::ListType &);
 
     /// Write the contents of this atlas map recursively to the stream.
-    void outputMap(const Atlas::Message::Element::MapType &);
+    void outputMap(const Atlas::Message::MapType &);
   public:
     /// Construct a writer object to write to the given ostream.
     explicit FormattedXMLWriter(std::ostream & stream);
@@ -38,5 +38,5 @@ class FormattedXMLWriter {
     void closeOutput();
 
     /// Write the contents of this top level object to the stream
-    void outputObject(const Atlas::Message::Element::MapType & o);
+    void outputObject(const Atlas::Message::MapType & o);
 };

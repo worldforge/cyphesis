@@ -7,6 +7,7 @@
 
 #include "CommClient.h"
 
+/// \brief Handle an internet socket connected to a remote client.
 class CommRemoteClient : public CommClient {
   public:
     CommRemoteClient(CommServer & svr, int fd, const std::string & address);

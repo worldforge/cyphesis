@@ -10,11 +10,11 @@
 #include <wfmath/atlasconv.h>
 
 template <class EntityType>
-bool Entity::getLocation(const Element::MapType & entmap,
+bool Entity::getLocation(const MapType & entmap,
                          const std::map<std::string, EntityType *> & eobjects)
 {
     debug( std::cout << "Entity::getLocation" << std::endl << std::flush;);
-    Element::MapType::const_iterator I = entmap.find("loc");
+    MapType::const_iterator I = entmap.find("loc");
     if ((I == entmap.end()) || !I->second.isString()) {
         debug( std::cout << getId() << ".. has no loc" << std::endl << std::flush;);
         return true;

@@ -84,15 +84,15 @@ bool Entity::get(const std::string & aname, Element & attr) const
         attr = m_location.m_bBox.toAtlas();
         return true;
     } else if (aname == "contains") {
-        attr = Element::ListType();
-        Element::ListType & contlist = attr.asList();
+        attr = ListType();
+        ListType & contlist = attr.asList();
         for(EntitySet::const_iterator I = m_contains.begin();
             I != m_contains.end(); I++) {
             contlist.push_back(*I);
         }
         return true;
     } else {
-        Element::MapType::const_iterator I = m_attributes.find(aname);
+        MapType::const_iterator I = m_attributes.find(aname);
         if (I != m_attributes.end()) {
             attr = I->second;
             return true;
@@ -154,10 +154,10 @@ void Entity::destroy()
     destroyed.emit();
 }
 
-void Entity::addToObject(Element::MapType & omap) const
+void Entity::addToObject(MapType & omap) const
 {
     // We need to have a list of keys to pull from attributes.
-    Element::MapType::const_iterator I = m_attributes.begin();
+    MapType::const_iterator I = m_attributes.begin();
     for (; I != m_attributes.end(); I++) {
         omap[I->first] = I->second;
     }
@@ -168,9 +168,9 @@ void Entity::addToObject(Element::MapType & omap) const
     omap["mass"] = m_mass;
     omap["status"] = m_status;
     omap["stamp"] = (double)m_seq;
-    omap["parents"] = Element::ListType(1, m_type);
+    omap["parents"] = ListType(1, m_type);
     m_location.addToObject(omap);
-    Element::ListType contlist;
+    ListType contlist;
     EntitySet::const_iterator J = m_contains.begin();
     for(; J != m_contains.end(); J++) {
         contlist.push_back((*J)->getId());
@@ -181,10 +181,10 @@ void Entity::addToObject(Element::MapType & omap) const
     BaseEntity::addToObject(omap);
 }
 
-void Entity::merge(const Element::MapType & ent)
+void Entity::merge(const MapType & ent)
 {
     const std::set<std::string> & imm = immutables();
-    for(Element::MapType::const_iterator I = ent.begin(); I != ent.end(); I++){
+    for(MapType::const_iterator I = ent.begin(); I != ent.end(); I++){
         const std::string & key = I->first;
         if (imm.find(key) != imm.end()) continue;
         set(key, I->second);
@@ -339,9 +339,9 @@ OpVector Entity::LookOperation(const Look & op)
     }
 
     Sight * s = new Sight( );
-    Element::ListType & args = s->getArgs();
-    args.push_back(Element::MapType());
-    Element::MapType & amap = args.front().asMap();
+    ListType & args = s->getArgs();
+    args.push_back(MapType());
+    MapType & amap = args.front().asMap();
     addToObject(amap);
     s->setTo(op.getFrom());
 

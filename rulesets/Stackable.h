@@ -23,10 +23,10 @@ class Stackable : public Stackable_parent {
     explicit Stackable(const std::string & id);
     virtual ~Stackable();
 
-    virtual bool get(const std::string &, Atlas::Message::Element &) const;
-    virtual void set(const std::string &, const Atlas::Message::Element &);
+    virtual bool get(const std::string &, Element &) const;
+    virtual void set(const std::string &, const Element &);
 
-    virtual void addToObject(Atlas::Message::Element::MapType &) const;
+    virtual void addToObject(MapType &) const;
 
     virtual OpVector CombineOperation(const Combine & op);
     virtual OpVector DivideOperation(const Divide & op);

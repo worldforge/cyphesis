@@ -25,7 +25,7 @@ class Lobby : public OOGThing {
 
     virtual OpVector operation(const RootOperation & op);
 
-    virtual void addToObject(Atlas::Message::Element::MapType &) const;
+    virtual void addToObject(MapType &) const;
 };
 
 #endif // SERVER_LOBBY_H

@@ -24,9 +24,9 @@ void Lobby::addObject(Account * ac)
                     << std::endl << std::flush;);
 
     Appearance a;
-    Element::ListType & args = a.getArgs();
-    args.push_back(Element::MapType());
-    Element::MapType & us = args.back().asMap();
+    ListType & args = a.getArgs();
+    args.push_back(MapType());
+    MapType & us = args.back().asMap();
     us["id"] = ac->getId();
     us["loc"] = "lobby";
     a.setFrom(ac->getId());
@@ -43,9 +43,9 @@ void Lobby::delObject(Account * a)
                     << std::endl << std::flush;);
                     
     Disappearance d;
-    Element::ListType & args = d.getArgs();
-    args.push_back(Element::MapType());
-    Element::MapType & us = args.back().asMap();
+    ListType & args = d.getArgs();
+    args.push_back(MapType());
+    MapType & us = args.back().asMap();
     us["id"] = a->getId();
     us["loc"] = "lobby";
     d.setFrom(a->getId());
@@ -87,18 +87,18 @@ OpVector Lobby::operation(const RootOperation & op)
     return OpVector();
 }
 
-void Lobby::addToObject(Element::MapType & omap) const
+void Lobby::addToObject(MapType & omap) const
 {
     omap["objtype"] = "object";
     omap["id"] = "lobby";
     omap["name"] = "lobby";
-    Element::ListType plist(1, "room");
+    ListType plist(1, "room");
     omap["parents"] = plist;
-    Element::ListType player_list;
+    ListType player_list;
     AccountDict::const_iterator I = m_accounts.begin();
     for(; I != m_accounts.end(); I++) {
         player_list.push_back(I->first);
     }
     omap["people"] = player_list;
-    omap["rooms"] = Element::ListType();
+    omap["rooms"] = ListType();
 }

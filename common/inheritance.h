@@ -6,7 +6,6 @@
 #define COMMON_INHERITANCE_H
 
 #include "log.h"
-#include "operations.h"
 #include "types.h"
 
 #include <iostream>

@@ -708,7 +708,7 @@ static PyObject * object_new(PyObject * self)
         if (o == NULL) {
                 return NULL;
         }
-        o->m_obj = new Element(Element::MapType());
+        o->m_obj = new Element(MapType());
         return (PyObject *)o;
 }
 
@@ -720,7 +720,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     if (!PyArg_ParseTuple(args, "|s", &id)) {
         return NULL;
     }
-    Element::MapType omap;
+    MapType omap;
     if (id != NULL) {
         omap["id"] = std::string(id);
     }
@@ -743,7 +743,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             } else if ((strcmp(key, "parent") == 0) && (PyString_Check(val))) {
                 omap["loc"] = PyString_AsString(val);
             } else if ((strcmp(key, "type") == 0) && (PyString_Check(val))) {
-                omap["parents"] = Element::ListType(1,std::string(PyString_AsString(val)));
+                omap["parents"] = ListType(1,std::string(PyString_AsString(val)));
             } else {
                 Element val_obj = PyObject_asMessageElement(val);
                 if (val_obj.getType() == Element::TYPE_NONE) {
@@ -777,7 +777,7 @@ static PyObject * cppthing_new(PyObject * self)
         return (PyObject *)o;
 }
 
-static inline void addToArgs(Element::ListType & args, PyObject * ent)
+static inline void addToArgs(ListType & args, PyObject * ent)
 {
     if (ent == NULL) {
         return;
@@ -790,9 +790,9 @@ static inline void addToArgs(Element::ListType & args, PyObject * ent)
         }
         Element o(*obj->m_obj);
         if (o.isMap() && (obj->Object_attr != NULL)) {
-            Element::MapType & ent = o.asMap();
-            Element::MapType ent2 = PyDictObject_asElementMap(obj->Object_attr);
-            Element::MapType::const_iterator I = ent2.begin();
+            MapType & ent = o.asMap();
+            MapType ent2 = PyDictObject_asElementMap(obj->Object_attr);
+            MapType::const_iterator I = ent2.begin();
             for(; I != ent2.end(); I++) {
                 if (ent.find(I->first) != ent.end()) {
                     ent[I->first] = I->second;
@@ -868,7 +868,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     } else {
         // FIXME use generic, once generic is fixed again.
         op->operation = new RootOperation();
-        op->operation->setParents(Element::ListType(1, type));
+        op->operation->setParents(ListType(1, type));
         // fprintf(stderr, "NOTICE: Python creating a custom %s op\n", type);
         //*op->operation = Root;
         // Py_DECREF(op);
@@ -917,7 +917,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         op->operation->setFrom(PyString_AsString(from_id));
         Py_DECREF(from_id);
     }
-    Element::ListType args_list;
+    ListType args_list;
     addToArgs(args_list, arg1);
     addToArgs(args_list, arg2);
     addToArgs(args_list, arg3);

@@ -73,12 +73,12 @@ bool CommUnixListener::accept()
         return false;
     }
     debug(std::cout << "Local accepted" << std::endl << std::flush;);
-    CommLocalClient * newcli = new CommLocalClient(commServer, asockfd);
+    CommLocalClient * newcli = new CommLocalClient(m_commServer, asockfd);
 
     newcli->setup();
 
     // Add this new client to the list.
-    commServer.add(newcli);
+    m_commServer.add(newcli);
 
     return true;
 }

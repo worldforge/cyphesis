@@ -8,8 +8,6 @@
 #include "types.h"
 #include "operations.h"
 
-#include <Atlas/Message/Element.h>
-
 #include <sigc++/object.h>
 #include <sigc++/signal.h>
 
@@ -44,7 +42,7 @@ class BaseEntity : virtual public SigC::Object {
         return m_id;
     }
 
-    virtual void addToObject(Atlas::Message::Element::MapType &) const;
+    virtual void addToObject(MapType &) const;
 
     virtual OpVector message(const RootOperation & op);
     virtual OpVector operation(const RootOperation & op);

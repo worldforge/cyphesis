@@ -17,7 +17,7 @@
 #include <wfmath/quaternion.h>
 
 template <class T>
-void Restorer<T>::restoreMap(const char * c, Atlas::Message::Element::MapType & ent)
+void Restorer<T>::restoreMap(const char * c, Atlas::Message::MapType & ent)
 {
     if (c == 0) { return; }
     Database::instance()->decodeObject(c, ent);

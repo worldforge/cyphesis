@@ -129,9 +129,9 @@ void Connection::close()
 }
 
 bool Connection::verifyCredentials(const Account & account,
-                                   const Element::MapType & creds) const
+                                   const MapType & creds) const
 {
-    Element::MapType::const_iterator I = creds.find("password");
+    MapType::const_iterator I = creds.find("password");
     if ((I == creds.end()) || !I->second.isString()) {
         return false;
     }
@@ -171,8 +171,8 @@ OpVector Connection::operation(const RootOperation & op)
             debug(std::cout << "Subscribing existing character" << std::endl
                             << std::flush;);
             Info * info = new Info;
-            Element::ListType & info_args = info->getArgs();
-            info_args.push_back(Element::MapType());
+            ListType & info_args = info->getArgs();
+            info_args.push_back(MapType());
             character->addToObject(info_args.front().asMap());
             info->setRefno(op.getSerialno());
             info->setSerialno(m_server.newSerialNo());
@@ -196,10 +196,10 @@ OpVector Connection::LoginOperation(const Login & op)
         return error(op, "Login arg is malformed");
     }
     // Account should be the first argument of the op
-    const Element::MapType & account = op.getArgs().front().asMap();
+    const MapType & account = op.getArgs().front().asMap();
     // Check for username, and if its not there, then check for
     // id in case we are dealing with an old client.
-    Element::MapType::const_iterator I = account.find("username");
+    MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.isString()) {
         log(WARNING, "Got Login with no username. Checking for old Login");
         I = account.find("id");
@@ -244,8 +244,8 @@ OpVector Connection::LoginOperation(const Login & op)
     m_server.m_lobby.addObject(player);
     // Let the client know they have logged in
     Info * info = new Info;
-    Element::ListType & info_args = info->getArgs();
-    info_args.push_back(Element::MapType());
+    ListType & info_args = info->getArgs();
+    info_args.push_back(MapType());
     player->addToObject(info_args.front().asMap());
     info->setRefno(op.getSerialno());
     info->setSerialno(m_server.newSerialNo());
@@ -265,12 +265,12 @@ OpVector Connection::CreateOperation(const Create & op)
     if (!op.getArgs().front().isMap()) {
         return error(op, "Create is malformed");
     }
-    const Element::MapType & account = op.getArgs().front().asMap();
+    const MapType & account = op.getArgs().front().asMap();
 
     if (restricted_flag) {
         return error(op, "Account creation on this server is restricted");
     }
-    Element::MapType::const_iterator I = account.find("username");
+    MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.isString()) {
         log(WARNING, "Got Create for account with no username. Checking for old style Create.");
         I = account.find("id");
@@ -295,8 +295,8 @@ OpVector Connection::CreateOperation(const Create & op)
     Account * player = addPlayer(username, password);
     Persistance::instance()->putAccount(*player);
     Info * info = new Info;
-    Element::ListType & info_args = info->getArgs();
-    info_args.push_back(Element::MapType());
+    ListType & info_args = info->getArgs();
+    info_args.push_back(MapType());
     player->addToObject(info_args.front().asMap());
     info->setRefno(op.getSerialno());
     info->setSerialno(m_server.newSerialNo());
@@ -309,7 +309,7 @@ OpVector Connection::LogoutOperation(const Logout & op)
     if (op.getArgs().empty()) {
         // Logging self out
         Info info;
-        Element::ListType & args = info.getArgs();
+        ListType & args = info.getArgs();
         args.push_back(op.asObject());
         info.setRefno(op.getSerialno());
         info.setSerialno(m_server.newSerialNo());
@@ -320,9 +320,9 @@ OpVector Connection::LogoutOperation(const Logout & op)
     if (!op.getArgs().front().isMap()) {
         return error(op, "Create arg is not a map");
     }
-    const Element::MapType & account = op.getArgs().front().asMap();
+    const MapType & account = op.getArgs().front().asMap();
     
-    Element::MapType::const_iterator I = account.find("username");
+    MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.isString()) {
         log(WARNING, "Got Logout with no username. Checking for old style Logout.");
         I = account.find("id");
@@ -349,13 +349,13 @@ OpVector Connection::LogoutOperation(const Logout & op)
 
 OpVector Connection::GetOperation(const Get & op)
 {
-    const Element::ListType & args = op.getArgs();
+    const ListType & args = op.getArgs();
 
     Info * info;
     if (args.empty()) {
         info = new Info;
-        Element::ListType & info_args = info->getArgs();
-        info_args.push_back(Element::MapType());
+        ListType & info_args = info->getArgs();
+        info_args.push_back(MapType());
         m_server.addToObject(info_args.front().asMap());
         info->setRefno(op.getSerialno());
         info->setSerialno(m_server.newSerialNo());
@@ -364,7 +364,7 @@ OpVector Connection::GetOperation(const Get & op)
         if (!args.front().isMap()) {
             return error(op, "Get op arg is not a map");
         }
-        Element::MapType::const_iterator I = args.front().asMap().find("id");
+        MapType::const_iterator I = args.front().asMap().find("id");
         if ((I == args.front().asMap().end()) || (!I->second.isString())) {
             return error(op, "Type definition requested with no id");
         }
@@ -378,7 +378,7 @@ OpVector Connection::GetOperation(const Get & op)
             return error(op, msg.c_str());
         }
         info = new Info;
-        Element::ListType & iargs = info->getArgs();
+        ListType & iargs = info->getArgs();
         iargs.push_back(o->asObject());
         info->setRefno(op.getSerialno());
         info->setSerialno(m_server.newSerialNo());

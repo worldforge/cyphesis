@@ -11,6 +11,7 @@
 
 #include <skstream/skstream.h>
 
+/// \brief Handle a socket used to communicate with the metaserver.
 class CommMetaClient : public CommIdleSocket {
   private:
     udp_socket_stream clientIos;

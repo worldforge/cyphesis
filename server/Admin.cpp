@@ -57,13 +57,13 @@ void Admin::opDispatched(RootOperation * op)
 }
 
 OpVector Admin::characterError(const Create & op,
-                               const Element::MapType & ent) const
+                               const MapType & ent) const
 {
-    Element::MapType::const_iterator I = ent.find("parents");
+    MapType::const_iterator I = ent.find("parents");
     if ((I == ent.end()) || !I->second.isList()) {
         return error(op, "You cannot create a character with no type.");
     }
-    const Element::ListType & parents = I->second.asList();
+    const ListType & parents = I->second.asList();
     if (parents.empty() || !parents.front().isString()) {
         return error(op, "You cannot create a character with non-string type.");
     }
@@ -72,12 +72,12 @@ OpVector Admin::characterError(const Create & op,
 
 OpVector Admin::LogoutOperation(const Logout & op)
 {
-    const Element::ListType & args = op.getArgs();
+    const ListType & args = op.getArgs();
     
     if (args.empty() || !args.front().isMap()) {
         return Account::LogoutOperation(op);
     } else {
-        Element::MapType::const_iterator I = args.front().asMap().find("id");
+        MapType::const_iterator I = args.front().asMap().find("id");
         if ((I == args.front().asMap().end()) || (!I->second.isString())) {
             return error(op, "No account id given");
         }
@@ -98,7 +98,7 @@ OpVector Admin::LogoutOperation(const Logout & op)
 
 OpVector Admin::GetOperation(const Get & op)
 {
-    const Element::ListType & args = op.getArgs();
+    const ListType & args = op.getArgs();
     if (args.empty()) {
         return error(op, "Get has no args.");
     }
@@ -106,8 +106,8 @@ OpVector Admin::GetOperation(const Get & op)
     if (!ent.isMap()) {
         return error(op, "Get arg is not a map.");
     }
-    const Element::MapType & emap = ent.asMap();
-    Element::MapType::const_iterator I = emap.find("objtype");
+    const MapType & emap = ent.asMap();
+    MapType::const_iterator I = emap.find("objtype");
     if (I == emap.end() || !I->second.isString()) {
         return error(op, "Get arg has no objtype.");
     }
@@ -127,8 +127,8 @@ OpVector Admin::GetOperation(const Get & op)
         const EntityDict & worldDict = m_connection->m_server.m_world.getObjects();
         EntityDict::const_iterator K = worldDict.find(id);
 
-        Element::ListType & info_args = info->getArgs();
-        info_args.push_back(Element::MapType());
+        ListType & info_args = info->getArgs();
+        info_args.push_back(MapType());
         if (J != OOGDict.end()) {
             J->second->addToObject(info_args.front().asMap());
         } else if (K != worldDict.end()) {
@@ -151,7 +151,7 @@ OpVector Admin::GetOperation(const Get & op)
             msg += "\" requested";
             return error(op, msg.c_str());
         }
-        Element::ListType & iargs = info->getArgs();
+        ListType & iargs = info->getArgs();
         iargs.push_back(o->asObject());
     } else {
         delete info;
@@ -169,7 +169,7 @@ OpVector Admin::GetOperation(const Get & op)
 
 OpVector Admin::SetOperation(const Set & op)
 {
-    const Element::ListType & args = op.getArgs();
+    const ListType & args = op.getArgs();
     if (args.empty()) {
         return error(op, "Set has no args.");
     }
@@ -177,8 +177,8 @@ OpVector Admin::SetOperation(const Set & op)
     if (!ent.isMap()) {
         return error(op, "Set arg is not a map.");
     }
-    const Element::MapType & emap = ent.asMap();
-    Element::MapType::const_iterator I = emap.find("objtype");
+    const MapType & emap = ent.asMap();
+    MapType::const_iterator I = emap.find("objtype");
     if (I == emap.end() || !I->second.isString()) {
         return error(op, "Set arg has no objtype.");
     }
@@ -207,7 +207,7 @@ OpVector Admin::SetOperation(const Set & op)
         if (!I->second.isList()) {
             return error(op, "Attempt to install type with non-list parents");
         }
-        const Element::ListType & parents = I->second.asList();
+        const ListType & parents = I->second.asList();
         if (parents.empty() || !parents.front().isString()) {
             return error(op, "Attempt to install type with invalid parent");
         }
@@ -247,13 +247,13 @@ OpVector Admin::SetOperation(const Set & op)
 
 OpVector Admin::CreateOperation(const Create & op)
 {
-    const Element::ListType & args = op.getArgs();
+    const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
         return OpVector();
     }
 
-    const Element::MapType & entmap = args.front().asMap();
-    Element::MapType::const_iterator I = entmap.find("parents");
+    const MapType & entmap = args.front().asMap();
+    MapType::const_iterator I = entmap.find("parents");
     if ((I == entmap.end()) || !(I->second.isList()) ||
         (I->second.asList().empty()) ||
         !(I->second.asList().front().isString()) ) {

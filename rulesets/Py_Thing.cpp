@@ -21,7 +21,7 @@ static PyObject * Entity_as_entity(PyEntity * self)
     if (ret == NULL) {
         return NULL;
     }
-    ret->m_obj = new Element(Element::MapType());
+    ret->m_obj = new Element(MapType());
     self->m_entity->addToObject(ret->m_obj->asMap());
     return (PyObject *)ret;
 }

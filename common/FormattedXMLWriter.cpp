@@ -5,8 +5,8 @@
 #include "FormattedXMLWriter.h"
 
 using Atlas::Message::Element;
-typedef Element::MapType MapType;
-typedef Element::ListType ListType;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 
 FormattedXMLWriter::FormattedXMLWriter(std::ostream & stream) :
                                        m_stream(stream), m_indent(0)
@@ -25,7 +25,7 @@ void FormattedXMLWriter::closeOutput()
     m_stream << "</atlas>" << std::endl;
 }
 
-void FormattedXMLWriter::outputObject(const Element::MapType & o)
+void FormattedXMLWriter::outputObject(const MapType & o)
 {
     m_stream << "  <map>" << std::endl;
     m_indent += 2;

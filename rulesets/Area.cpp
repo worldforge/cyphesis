@@ -26,7 +26,7 @@ Area::~Area()
 bool Area::get(const std::string & aname, Element & attr) const
 {
     if (aname == "segments") {
-        attr = Element::ListType();
+        attr = ListType();
         idListasObject(m_segments, attr.asList());
         return true;
     }
@@ -43,10 +43,10 @@ void Area::set(const std::string & aname, const Element & attr)
     }
 }
 
-void Area::addToObject(Element::MapType & omap) const
+void Area::addToObject(MapType & omap) const
 {
-    Element::ListType & si =
-        (omap["segments"] = Element::ListType()).asList();
+    ListType & si =
+        (omap["segments"] = ListType()).asList();
     idListasObject(m_segments, si);
     Area_parent::addToObject(omap);
 }

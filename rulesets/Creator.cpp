@@ -102,13 +102,13 @@ OpVector Creator::mindLookOperation(const Look & op)
     m_perceptive = true;
     Look * l = new Look(op);
     if (op.getTo().empty()) {
-        const Element::ListType & args = op.getArgs();
+        const ListType & args = op.getArgs();
         if (args.empty()) {
             l->setTo(m_world->m_gameWorld.getId());
         } else {
             if (args.front().isMap()) {
-                const Element::MapType & amap = args.front().asMap();
-                Element::MapType::const_iterator I = amap.find("id");
+                const MapType & amap = args.front().asMap();
+                MapType::const_iterator I = amap.find("id");
                 if (I != amap.end() && I->second.isString()) {
                     l->setTo(I->second.asString());
                 } else if ((I = amap.find("name")) != amap.end()) {

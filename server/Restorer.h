@@ -52,7 +52,7 @@ class Restorer : public T {
         if (c == 0) { return; }
         s = c;
     }
-    void restoreMap(const char * c, Atlas::Message::Element::MapType &);
+    void restoreMap(const char * c, Atlas::Message::MapType &);
 
     void rEntity(DatabaseResult::const_iterator & dr);
     void rCharacter(DatabaseResult::const_iterator & dr);

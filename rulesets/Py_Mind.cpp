@@ -24,7 +24,7 @@ static PyObject * Mind_as_entity(PyMind * self)
         PyErr_SetString(PyExc_MemoryError, "error creating MessageElement");
         return NULL;
     }
-    ret->m_obj = new Element(Element::MapType());
+    ret->m_obj = new Element(MapType());
     self->m_mind->addToObject(ret->m_obj->asMap());
     return (PyObject *)ret;
 }

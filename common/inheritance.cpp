@@ -74,7 +74,7 @@ OpNo Inheritance::opEnumerate(const std::string & parent) const
 
 OpNo Inheritance::opEnumerate(const RootOperation & op) const
 {
-    const Atlas::Message::Element::ListType & parents = op.getParents();
+    const ListType & parents = op.getParents();
     if (parents.size() != 1) {
         log(ERROR, "op with no parents");
     }
@@ -109,12 +109,12 @@ bool Inheritance::addChild(Atlas::Objects::Root * obj)
     if (I == atlasObjects.end()) {
         throw InheritanceException(parent);
     }
-    Atlas::Message::Element::ListType children(1, child);
+    ListType children(1, child);
     if (I->second->hasAttr("children")) {
         children = I->second->getAttr("children").asList();
         children.push_back(child);
     }
-    I->second->setAttr("children", Atlas::Message::Element(children));
+    I->second->setAttr("children", Element(children));
     atlasObjects[child] = obj;
     return false;
 }
@@ -126,6 +126,11 @@ using Atlas::Objects::Operation::Smell;
 using Atlas::Objects::Operation::Feel;
 using Atlas::Objects::Operation::Listen;
 using Atlas::Objects::Operation::Sniff;
+
+using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Entity::AdminEntity;
+using Atlas::Objects::Entity::Game;
+using Atlas::Objects::Entity::GameEntity;
 
 void installStandardObjects()
 {
@@ -180,13 +185,13 @@ void installStandardObjects()
     i.addChild(new Disappearance(Disappearance::Class()));
     i.opInstall("disappearance", OP_DISAPPEARANCE);
 
-    i.addChild(new Atlas::Objects::Entity::RootEntity(Atlas::Objects::Entity::RootEntity::Class()));
-    i.addChild(new Atlas::Objects::Entity::AdminEntity(Atlas::Objects::Entity::AdminEntity::Class()));
+    i.addChild(new RootEntity(RootEntity::Class()));
+    i.addChild(new AdminEntity(AdminEntity::Class()));
     i.addChild(new Atlas::Objects::Entity::Account(Atlas::Objects::Entity::Account::Class()));
     i.addChild(new Atlas::Objects::Entity::Player(Atlas::Objects::Entity::Player::Class()));
     i.addChild(new Atlas::Objects::Entity::Admin(Atlas::Objects::Entity::Admin::Class()));
-    i.addChild(new Atlas::Objects::Entity::Game(Atlas::Objects::Entity::Game::Class()));
-    i.addChild(new Atlas::Objects::Entity::GameEntity(Atlas::Objects::Entity::GameEntity::Class()));
+    i.addChild(new Game(Game::Class()));
+    i.addChild(new GameEntity(GameEntity::Class()));
 
     // And from here on we need to define the hierarchy as found in the C++
     // base classes. Script classes defined in rulsets need to be added

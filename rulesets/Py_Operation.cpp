@@ -174,7 +174,7 @@ static PyObject * Operation_setArgs(PyOperation * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"args not a list");
         return NULL;
     }
-    Element::ListType argslist;
+    ListType argslist;
     for(int i = 0; i < PyList_Size(args_object); i++) {
         PyObject * item = PyList_GetItem(args_object, i);
         if (PyMessageElement_Check(item)) {
@@ -286,9 +286,9 @@ static PyObject * Operation_getArgs(PyOperation * self)
     }
 #endif // NDEBUG
     // Here we go:- 
-    Element::ListType & args_list = self->operation->getArgs();
+    ListType & args_list = self->operation->getArgs();
     PyObject * args_pylist = PyList_New(args_list.size());
-    Element::ListType::const_iterator I;
+    ListType::const_iterator I;
     int j = 0;
     PyMessageElement * item;
     for(I = args_list.begin();I != args_list.end(); I++, j++) {
@@ -338,8 +338,8 @@ static PyObject * Operation_seq_item(PyOperation * self, int item)
         return 0;
     }
 #endif // NDEBUG
-    Element::ListType & args_list = self->operation->getArgs();
-    Element::ListType::const_iterator I = args_list.begin();
+    ListType & args_list = self->operation->getArgs();
+    ListType::const_iterator I = args_list.begin();
     int i;
     for(i = 0; i < item && I != args_list.end(); i++, I++);
     if (I == args_list.end()) {
@@ -350,7 +350,7 @@ static PyObject * Operation_seq_item(PyOperation * self, int item)
         PyErr_SetString(PyExc_TypeError,"op argument is not a map");
         return 0;
     }
-    const Element::MapType & obj = I->asMap();
+    const MapType & obj = I->asMap();
     RootOperation op;
     bool isOp = utility::Object_asOperation(obj, op);
     if (isOp) {
@@ -582,7 +582,7 @@ static PyObject * getattr(T * self, char * name)
             return (PyObject *)thing_obj;
         } else {
             PyMessageElement * obj = newPyMessageElement();
-            Element::MapType omap;
+            MapType omap;
             omap["id"] = Element(self->operation->getFrom());
             obj->m_obj = new Element(omap);
             return (PyObject *)obj;
@@ -597,7 +597,7 @@ static PyObject * getattr(T * self, char * name)
             return (PyObject *)thing_obj;
         } else {
             PyMessageElement * obj = newPyMessageElement();
-            Element::MapType omap;
+            MapType omap;
             omap["id"] = Element(self->operation->getTo());
             obj->m_obj = new Element(omap);
             return (PyObject *)obj;
@@ -605,7 +605,7 @@ static PyObject * getattr(T * self, char * name)
     } else if (strcmp(name, "time") == 0) {
         return handleTime(self);
     } else if (strcmp(name, "id") == 0) {
-        const Element::ListType & parents = self->operation->getParents();
+        const ListType & parents = self->operation->getParents();
         if ((parents.empty()) || (!parents.front().isString())) {
             PyErr_SetString(PyExc_TypeError, "Operation has no parents");
             return NULL;

@@ -57,11 +57,11 @@ void installCustomEntities()
 
     Root * r = new AdminEntity(AdminEntity::Class());
     r->setId("room");
-    r->setParents(Element::ListType(1,"admin_entity"));
+    r->setParents(ListType(1,"admin_entity"));
     i.addChild(r);
 
     r = new AdminEntity(AdminEntity::Class());
     r->setId("lobby");
-    r->setParents(Element::ListType(1,"room"));
+    r->setParents(ListType(1,"room"));
     i.addChild(r);
 }

@@ -67,7 +67,7 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
 
 Entity * EntityFactory::newEntity(const std::string & id,
                                   const std::string & type,
-                                  const Element::MapType & attributes)
+                                  const MapType & attributes)
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
     Entity * thing = 0;
@@ -125,9 +125,9 @@ void EntityFactory::flushFactories()
 }
 
 void EntityFactory::installRule(const std::string & className,
-                                const Element::MapType & classDesc)
+                                const MapType & classDesc)
 {
-    Element::MapType::const_iterator J = classDesc.find("parents");
+    MapType::const_iterator J = classDesc.find("parents");
     if (J == classDesc.end()) {
         std::string msg = std::string("Rule \"") + className 
                           + "\" has no parents. Skipping.";
@@ -140,7 +140,7 @@ void EntityFactory::installRule(const std::string & className,
         log(ERROR, msg.c_str());
         return;
     }
-    const Element::ListType & parents = J->second.asList();
+    const ListType & parents = J->second.asList();
     if (parents.empty()) {
         std::string msg = std::string("Rule \"") + className 
                           + "\" has empty parents. Skipping.";
@@ -169,7 +169,7 @@ void EntityFactory::installRule(const std::string & className,
     // if so, use it.
     J = classDesc.find("script");
     if ((J != classDesc.end()) && (J->second.isMap())) {
-        const Element::MapType & script = J->second.asMap();
+        const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
             f->m_script = J->second.asString();
@@ -184,7 +184,7 @@ void EntityFactory::installRule(const std::string & className,
     // and handle it.
     J = classDesc.find("mind");
     if ((J != classDesc.end()) && (J->second.isMap())) {
-        const Element::MapType & script = J->second.asMap();
+        const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
             const std::string mindType = J->second.asString();
@@ -200,15 +200,15 @@ void EntityFactory::installRule(const std::string & className,
     // Store the default attribute for entities create by this rule.
     J = classDesc.find("attributes");
     if ((J != classDesc.end()) && (J->second.isMap())) {
-        const Element::MapType & attrs = J->second.asMap();
-        Element::MapType::const_iterator K = attrs.begin();
+        const MapType & attrs = J->second.asMap();
+        MapType::const_iterator K = attrs.begin();
         for (; K != attrs.end(); ++K) {
             if (!K->second.isMap()) {
                 log(ERROR, "Attribute description in rule is not a map.");
                 continue;
             }
-            const Element::MapType & attr = K->second.asMap();
-            Element::MapType::const_iterator L = attr.find("default");
+            const MapType & attr = K->second.asMap();
+            MapType::const_iterator L = attr.find("default");
             if (L != attr.end()) {
                 f->m_attributes[K->first] = L->second;
             }
@@ -227,7 +227,7 @@ void EntityFactory::installRule(const std::string & className,
     RuleWaitList::iterator I = m_waitingRules.lower_bound(className);
     for (; I != m_waitingRules.upper_bound(className); ++I) {
         const std::string & wClassName = I->second.first;
-        const Element::MapType & wClassDesc = I->second.second;
+        const MapType & wClassDesc = I->second.second;
         debug(std::cout << "WAITING rule " << wClassName
                         << " now ready" << std::endl << std::flush;);
         installRule(wClassName, wClassDesc);
@@ -237,14 +237,14 @@ void EntityFactory::installRule(const std::string & className,
 
 void EntityFactory::installRules()
 {
-    Element::MapType ruleTable;
+    MapType ruleTable;
     Persistance * p = Persistance::instance();
     p->getRules(ruleTable);
 
-    Element::MapType::const_iterator I = ruleTable.begin();
+    MapType::const_iterator I = ruleTable.begin();
     for(; I != ruleTable.end(); ++I) {
         const std::string & className = I->first;
-        const Element::MapType & classDesc = I->second.asMap();
+        const MapType & classDesc = I->second.asMap();
         installRule(className, classDesc);
     }
     // Report on the non-cleared rules.
@@ -272,7 +272,7 @@ void EntityFactory::installFactory(const std::string & parent,
 
     Atlas::Objects::Root * r = new Atlas::Objects::Entity::GameEntity(Atlas::Objects::Entity::GameEntity::Class());
     r->setId(className);
-    r->setParents(Element::ListType(1, parent));
+    r->setParents(ListType(1, parent));
     i.addChild(r);
 
 }

@@ -35,7 +35,7 @@ class FactoryBase {
   public:
     std::string m_script;
     std::string m_language;
-    Atlas::Message::Element::MapType m_attributes;
+    Atlas::Message::MapType m_attributes;
 
     virtual ~FactoryBase() { }
 

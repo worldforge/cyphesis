@@ -10,8 +10,6 @@
 
 #include "physics/Vector3D.h"
 
-#include <Atlas/Message/Element.h>
-
 #include <sigc++/signal.h>
 
 class Entity;
@@ -57,7 +55,7 @@ class BaseWorld {
     virtual bool idle() = 0;
     virtual Entity * addObject(Entity * obj, bool setup = true) = 0;
     virtual Entity * addNewObject(const std::string &,
-                                  const Atlas::Message::Element::MapType &) = 0;
+                                  const MapType &) = 0;
     virtual void setSerialnoOp(RootOperation &) = 0;
     virtual void message(RootOperation & op, const Entity * obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;

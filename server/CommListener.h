@@ -10,6 +10,8 @@
 
 #include <skstream/skserver.h>
 
+/// \brief Handle the internet listen socket used to accept connections from
+/// remote clients.
 class CommListener : public CommSocket {
   private:
     tcp_socket_server m_listener;

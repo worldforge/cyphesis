@@ -1,5 +1,43 @@
 2004-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.cpp, common/BaseEntity.h, common/BaseWorld.h,
+	  common/Database.cpp, common/Database.h, common/FormattedXMLWriter.cpp,
+	  common/FormattedXMLWriter.h, common/accountbase.cpp,
+	  common/accountbase.h, common/custom.cpp, common/inheritance.cpp,
+	  common/inheritance.h, common/operations.h, common/type_utils.h,
+	  common/utility.cpp, common/utility.h, modules/Location.cpp,
+	  modules/Location.h, rulesets/Area.cpp, rulesets/Area.h,
+	  rulesets/BaseMind.cpp, rulesets/Character.cpp, rulesets/Character.h,
+	  rulesets/Creator.cpp, rulesets/Entity.cpp, rulesets/Entity.h,
+	  rulesets/Entity_getLocation.h, rulesets/Food.cpp, rulesets/Line.cpp,
+	  rulesets/Line.h, rulesets/MemMap.cpp, rulesets/MemMap.h,
+	  rulesets/Pedestrian.cpp, rulesets/Plant.cpp, rulesets/Plant.h,
+	  rulesets/Py_Mind.cpp, rulesets/Py_Object.cpp, rulesets/Py_Object.h,
+	  rulesets/Py_Operation.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/Python_API.cpp, rulesets/Stackable.cpp, rulesets/Stackable.h,
+	  rulesets/Thing.cpp, rulesets/World.cpp, rulesets/World.h,
+	  server/Account.cpp, server/Account.h, server/Admin.cpp,
+	  server/Admin.h, server/CommClient.cpp, server/CommClient.h,
+	  server/CommListener.cpp, server/CommListener.h,
+	  server/CommLocalClient.cpp, server/CommLocalClient.h,
+	  server/CommMetaClient.h, server/CommPSQLSocket.h,
+	  server/CommRemoteClient.cpp, server/CommRemoteClient.h,
+	  server/CommServer.cpp, server/CommServer.h, server/CommSocket.cpp,
+	  server/CommSocket.h, server/CommUnixListener.cpp,
+	  server/CommUnixListener.h, server/Connection.cpp,
+	  server/Connection.h, server/EntityFactory.cpp,
+	  server/EntityFactory.h, server/Lobby.cpp, server/Lobby.h,
+	  server/Persistance.cpp, server/Persistance.h,
+	  server/PersistantThingFactory.h, server/Persistor.cpp,
+	  server/Player.cpp, server/Player.h, server/Restorer.h,
+	  server/Restorer_impl.h, server/ServerRouting.cpp,
+	  server/ServerRouting.h, server/TrustedConnection.cpp,
+	  server/TrustedConnection.h, server/WorldRouter.cpp,
+	  server/WorldRouter.h: Convert code to using Atlas Message
+	  typedefs as found in Atlas-C++ 0.6 to aid conversion later.
+
+2004-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/FormattedXMLWriter.h: Add some notes about converting this
 	  class for use with any Atlas codec.
 

@@ -9,6 +9,8 @@
 
 class Database;
 
+/// \brief Handle polling the socket used to comminicate with the PostgreSQL
+/// RDBMS.
 class CommPSQLSocket : public CommIdleSocket {
   protected:
     Database & m_db;

@@ -4,7 +4,7 @@
 
 #include "CommSocket.h"
 
-CommSocket::CommSocket(CommServer & svr) : commServer(svr) { }
+CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
 
 CommSocket::~CommSocket()
 {

@@ -20,7 +20,7 @@ static const bool debug_flag = false;
 
 /// \brief Construct a new CommServer object, storing a reference to the core
 /// server object.
-CommServer::CommServer(ServerRouting & svr) : server(svr)
+CommServer::CommServer(ServerRouting & svr) : m_server(svr)
 {
 }
 
@@ -52,7 +52,7 @@ bool CommServer::idle()
     }
     // server.idle() is inlined, and simply calls the world idle method,
     // which is not directly accessible from here.
-    return server.idle();
+    return m_server.idle();
 }
 
 /// \brief Main program loop called repeatedly.
@@ -139,9 +139,9 @@ void CommServer::loop()
 inline void CommServer::removeSocket(CommSocket * client, char * error_msg)
 {
     // FIXME This code needs to be moved into CommClient
-    // Atlas::Message::Element::MapType err;
+    // MapType err;
     // err["message"] = error_msg;
-    // Atlas::Message::Element::ListType eargs(1,err);
+    // ListType eargs(1,err);
 
     // Error e;
 

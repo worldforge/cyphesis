@@ -23,15 +23,15 @@ Line::~Line()
 bool Line::get(const std::string & aname, Element & attr) const
 {
     if (aname == "start_intersections") {
-        attr = Element::ListType();
+        attr = ListType();
         idListasObject(startIntersections, attr.asList());
         return true;
     } else if (aname == "end_intersections") {
-        attr = Element::ListType();
+        attr = ListType();
         idListasObject(endIntersections, attr.asList());
         return true;
     } else if (aname == "coords") {
-        attr = Element::ListType();
+        attr = ListType();
         objectListAsMessage(coords, attr.asList());
         return true;
     }
@@ -56,15 +56,13 @@ void Line::set(const std::string & aname, const Element & attr)
     }
 }
 
-void Line::addToObject(Element::MapType & omap) const
+void Line::addToObject(MapType & omap) const
 {
-    Element::ListType & si =
-        (omap["start_intersections"] = Element::ListType()).asList();
+    ListType & si = (omap["start_intersections"] = ListType()).asList();
     idListasObject(startIntersections, si);
-    Element::ListType & ei =
-        (omap["end_intersections"] = Element::ListType()).asList();
+    ListType & ei = (omap["end_intersections"] = ListType()).asList();
     idListasObject(endIntersections, ei);
-    Element::ListType & c = (omap["coords"] = Element::ListType()).asList();
+    ListType & c = (omap["coords"] = ListType()).asList();
     objectListAsMessage(coords, c);
     Line_parent::addToObject(omap);
 }

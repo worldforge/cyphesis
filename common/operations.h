@@ -5,6 +5,10 @@
 #ifndef COMMON_OPERATIONS_H
 #define COMMON_OPERATIONS_H
 
+#include <string>
+#include <map>
+#include <vector>
+
 // Forward declarations of all the operation classes used in cyphesis. Use
 // of this file reduces complexities in the dependency tree, and speeds up
 // compile time.
@@ -12,6 +16,8 @@
 namespace Atlas {
     namespace Message {
         class Element;
+        typedef std::map<std::string, Element> MapType;
+        typedef std::vector<Element> ListType;
     }
     namespace Objects {
         class Root;
@@ -52,6 +58,8 @@ namespace Atlas {
 }
 
 using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Operation::Generic;

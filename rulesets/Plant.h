@@ -36,9 +36,9 @@ class Plant : public Plant_parent {
     const int getFruitChance() const { return m_fruitChance; }
     const double getSizeAdult() const { return m_sizeAdult; }
 
-    virtual bool get(const std::string &, Atlas::Message::Element &) const;
-    virtual void set(const std::string &, const Atlas::Message::Element &);
-    virtual void addToObject(Atlas::Message::Element::MapType & obj) const;
+    virtual bool get(const std::string &, Element &) const;
+    virtual void set(const std::string &, const Element &);
+    virtual void addToObject(MapType & obj) const;
 
     virtual OpVector TickOperation(const Tick & op);
     virtual OpVector TouchOperation(const Touch & op);

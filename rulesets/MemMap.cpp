@@ -39,10 +39,10 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
     return entity;
 }
 
-void MemMap::readEntity(MemEntity * entity, const Element::MapType & entmap)
+void MemMap::readEntity(MemEntity * entity, const MapType & entmap)
 // Read the contents of an Atlas message into an entity
 {
-    Element::MapType::const_iterator I = entmap.find("name");
+    MapType::const_iterator I = entmap.find("name");
     if (I != entmap.end() && I->second.isString()) {
         entity->setName(I->second.asString());
     }
@@ -66,7 +66,7 @@ void MemMap::readEntity(MemEntity * entity, const Element::MapType & entmap)
     addContents(entmap);
 }
 
-void MemMap::updateEntity(MemEntity * entity, const Element::MapType & entmap)
+void MemMap::updateEntity(MemEntity * entity, const MapType & entmap)
 // Update contents of entity an Atlas message.
 {
     assert(entity != 0);
@@ -82,7 +82,7 @@ void MemMap::updateEntity(MemEntity * entity, const Element::MapType & entmap)
 }
 
 MemEntity * MemMap::newEntity(const std::string & id,
-                              const Element::MapType & entmap)
+                              const MapType & entmap)
 // Create a new entity from an Atlas message.
 {
     assert(!id.empty());
@@ -106,9 +106,9 @@ RootOperation * MemMap::lookId()
     if (!m_additionsById.empty()) {
         const std::string & id = m_additionsById.front();
         Look * l = new Look();
-        Atlas::Message::Element::MapType m;
-        m["id"] = Atlas::Message::Element(id);
-        l->setArgs(Atlas::Message::Element::ListType(1, m));
+        MapType m;
+        m["id"] = id;
+        l->setArgs(ListType(1, m));
         l->setTo(id);
         m_additionsById.pop_front();
         return l;
@@ -202,10 +202,10 @@ MemEntity * MemMap::getAdd(const std::string & id)
     return addId(id);
 }
 
-void MemMap::addContents(const Element::MapType & entmap)
+void MemMap::addContents(const MapType & entmap)
 // Iterate over the contains attribute of a message, looking at all the contents
 {
-    Element::MapType::const_iterator I = entmap.find("contains");
+    MapType::const_iterator I = entmap.find("contains");
     if (I == entmap.end()) {
         return;
     }
@@ -213,8 +213,8 @@ void MemMap::addContents(const Element::MapType & entmap)
         log(ERROR, "MemMap::addContents, malformed contains is not list");
         return;
     }
-    const Element::ListType & contlist = I->second.asList();
-    Element::ListType::const_iterator J = contlist.begin();
+    const ListType & contlist = I->second.asList();
+    ListType::const_iterator J = contlist.begin();
     for(;J != contlist.end(); J++) {
         if (!J->isString()) {
             log(ERROR, "MemMap::addContents, malformed non-string in contains");
@@ -224,7 +224,7 @@ void MemMap::addContents(const Element::MapType & entmap)
     }
 }
 
-MemEntity * MemMap::updateAdd(const Element::MapType & entmap, const double & d)
+MemEntity * MemMap::updateAdd(const MapType & entmap, const double & d)
 // Update an entity in our memory, from an Atlas message
 // The mind code relies on this function never sending a Sight to
 // be sure that seeing something created does not imply that the created
@@ -232,7 +232,7 @@ MemEntity * MemMap::updateAdd(const Element::MapType & entmap, const double & d)
 // creator.
 {
     debug( std::cout << "MemMap::update" << std::endl << std::flush;);
-    Element::MapType::const_iterator I = entmap.find("id");
+    MapType::const_iterator I = entmap.find("id");
     if (I == entmap.end()) {
         log(ERROR, "MemMap::update, Missing id in updated entity");
         return NULL;
@@ -293,10 +293,10 @@ MemEntityVector MemMap::findByLocation(const Location & loc, double radius)
 
 const Element MemMap::asObject()
 {
-    Element::MapType omap;
+    MapType omap;
     MemEntityDict::const_iterator I = m_entities.begin();
     for(;I != m_entities.end(); I++) {
-        I->second->addToObject((omap[I->first] = Element::MapType()).asMap());
+        I->second->addToObject((omap[I->first] = MapType()).asMap());
     }
     return Element(omap);
 }

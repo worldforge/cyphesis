@@ -83,7 +83,7 @@ void Account::addCharacter(Entity * chr)
 }
 
 Entity * Account::addNewCharacter(const std::string & typestr,
-                               const Element::MapType & ent)
+                                  const MapType & ent)
 {
     BaseWorld & world = m_connection->m_server.m_world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
@@ -111,26 +111,26 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 
     // Hack in default objects
     // This needs to be done in a generic way
-    Element::MapType entmap;
-    entmap["parents"] = Element::ListType(1,"coin");
+    MapType entmap;
+    entmap["parents"] = ListType(1,"coin");
     entmap["pos"] = Vector3D(0,0,0).toAtlas();
     entmap["loc"] = chr->getId();
     entmap["name"] = "coin";
     for(int i = 0; i < 10; i++) {
         Create * c = new Create;
-        Element::ListType & args = c->getArgs();
+        ListType & args = c->getArgs();
         args.push_back(entmap);
         c->setTo(chr->getId());
         world.message(*c, chr);
     }
 
     Create c;
-    Element::ListType & cargs = c.getArgs();
-    cargs.push_back(Element::MapType());
+    ListType & cargs = c.getArgs();
+    cargs.push_back(MapType());
     chr->addToObject(cargs.front().asMap());
 
     Sight * s = new Sight;
-    Element::ListType & args = s->getArgs();
+    ListType & args = s->getArgs();
     args.push_back(c.asObject());
 
     world.message(*s, chr);
@@ -142,7 +142,7 @@ OpVector Account::LogoutOperation(const Logout & op)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
     Info info;
-    Element::ListType & args = info.getArgs();
+    ListType & args = info.getArgs();
     args.push_back(op.asObject());
     info.setRefno(op.getSerialno());
     info.setSerialno(m_connection->m_server.newSerialNo());
@@ -159,7 +159,7 @@ const char * Account::getType() const
     return "account";
 }
 
-void Account::addToObject(Element::MapType & omap) const
+void Account::addToObject(MapType & omap) const
 {
     omap["objtype"] = "obj";
     omap["id"] = getId();
@@ -168,8 +168,8 @@ void Account::addToObject(Element::MapType & omap) const
     if (!m_password.empty()) {
         omap["password"] = m_password;
     }
-    omap["parents"] = Element::ListType(1,getType());
-    Element::ListType charlist;
+    omap["parents"] = ListType(1,getType());
+    ListType charlist;
     EntityDict::const_iterator I;
     for(I = m_charactersDict.begin(); I != m_charactersDict.end(); I++) {
         charlist.push_back(I->first);
@@ -182,19 +182,19 @@ void Account::addToObject(Element::MapType & omap) const
 OpVector Account::CreateOperation(const Create & op)
 {
     debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
-    const Element::ListType & args = op.getArgs();
+    const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
         return OpVector();
     }
 
-    const Element::MapType & entmap = args.front().asMap();
+    const MapType & entmap = args.front().asMap();
 
     OpVector er = characterError(op, entmap);
     if (!er.empty()) {
         return er;
     }
 
-    Element::MapType::const_iterator I = entmap.find("parents");
+    MapType::const_iterator I = entmap.find("parents");
     if ((I == entmap.end()) || !(I->second.isList()) ||
         (I->second.asList().empty()) ||
         !(I->second.asList().front().isString()) ) {
@@ -212,8 +212,8 @@ OpVector Account::CreateOperation(const Create & op)
     }
 
     Info * info = new Info;
-    Element::ListType & info_args = info->getArgs();
-    info_args.push_back(Element::MapType());
+    ListType & info_args = info->getArgs();
+    info_args.push_back(MapType());
     obj->addToObject(info_args.front().asMap());
     info->setRefno(op.getSerialno());
     info->setSerialno(m_connection->m_server.newSerialNo());
@@ -224,14 +224,14 @@ OpVector Account::CreateOperation(const Create & op)
 OpVector Account::SetOperation(const Set & op)
 {
     debug(std::cout << "Account::Operation(set)" << std::endl << std::flush;);
-    const Element::ListType & args = op.getArgs();
+    const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
         return OpVector();
     }
 
-    const Element::MapType & entmap = args.front().asMap();
+    const MapType & entmap = args.front().asMap();
 
-    Element::MapType::const_iterator I = entmap.find("id");
+    MapType::const_iterator I = entmap.find("id");
     if (I == entmap.end() || !(I->second.isString())) {
         return error(op, "Set character has no ID");
     }
@@ -244,7 +244,7 @@ OpVector Account::SetOperation(const Set & op)
 
     Entity * e = J->second;
     I = entmap.find("guise");
-    Element::MapType newArg;
+    MapType newArg;
     if (I != entmap.end()) {
         debug(std::cout << "Got attempt to change characters guise"
                         << std::endl << std::flush;);
@@ -274,7 +274,7 @@ OpVector Account::SetOperation(const Set & op)
         Set * s = new Set;
         s->setTo(id);
         newArg["id"] = id;
-        Element::ListType & sarg = s->getArgs();
+        ListType & sarg = s->getArgs();
         sarg.push_back(newArg);
         m_connection->m_server.m_world.message(*s, e);
     }
@@ -283,19 +283,19 @@ OpVector Account::SetOperation(const Set & op)
 
 OpVector Account::ImaginaryOperation(const Imaginary & op)
 {
-    const Element::ListType & args = op.getArgs();
+    const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
         return OpVector();
     }
 
     Sight s;
-    Element::ListType & sargs = s.getArgs();
+    ListType & sargs = s.getArgs();
     sargs.push_back(op.asObject());
     s.setFrom(getId());
     s.setSerialno(m_connection->m_server.newSerialNo());
     setRefnoOp(&s, op);
-    const Element::MapType & arg = args.front().asMap();
-    Element::MapType::const_iterator I = arg.find("loc");
+    const MapType & arg = args.front().asMap();
+    MapType::const_iterator I = arg.find("loc");
     if (I != arg.end()) {
         s.setTo(I->second.asString());
     } else {
@@ -306,19 +306,19 @@ OpVector Account::ImaginaryOperation(const Imaginary & op)
 
 OpVector Account::TalkOperation(const Talk & op)
 {
-    const Element::ListType & args = op.getArgs();
+    const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
         return OpVector();
     }
 
     Sound s;
-    Element::ListType & sargs = s.getArgs();
+    ListType & sargs = s.getArgs();
     sargs.push_back(op.asObject());
     s.setFrom(getId());
     s.setSerialno(m_connection->m_server.newSerialNo());
     setRefnoOp(&s, op);
-    const Element::MapType & arg = args.front().asMap();
-    Element::MapType::const_iterator I = arg.find("loc");
+    const MapType & arg = args.front().asMap();
+    MapType::const_iterator I = arg.find("loc");
     if (I != arg.end()) {
         s.setTo(I->second.asString());
     } else {
@@ -329,18 +329,18 @@ OpVector Account::TalkOperation(const Talk & op)
 
 OpVector Account::LookOperation(const Look & op)
 {
-    const Element::ListType & args = op.getArgs();
+    const ListType & args = op.getArgs();
     if (args.empty()) {
         Sight * s = new Sight;
         s->setTo(getId());
-        Element::ListType & s_args = s->getArgs();
-        s_args.push_back(Element::MapType());
+        ListType & s_args = s->getArgs();
+        s_args.push_back(MapType());
         m_connection->m_server.m_lobby.addToObject(s_args.front().asMap());
         s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
     }
-    Element::MapType::const_iterator I = args.front().asMap().find("id");
+    MapType::const_iterator I = args.front().asMap().find("id");
     if ((I == args.front().asMap().end()) || (!I->second.isString())) {
         return error(op, "No target for look");
     }
@@ -349,8 +349,8 @@ OpVector Account::LookOperation(const Look & op)
     if (J != m_charactersDict.end()) {
         Sight * s = new Sight;
         s->setTo(getId());
-        Element::ListType & s_args = s->getArgs();
-        s_args.push_back(Element::MapType());
+        ListType & s_args = s->getArgs();
+        s_args.push_back(MapType());
         J->second->addToObject(s_args.front().asMap());
         s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);
@@ -361,8 +361,8 @@ OpVector Account::LookOperation(const Look & op)
     if (K != accounts.end()) {
         Sight * s = new Sight;
         s->setTo(getId());
-        Element::ListType & s_args = s->getArgs();
-        s_args.push_back(Element::MapType());
+        ListType & s_args = s->getArgs();
+        s_args.push_back(MapType());
         K->second->addToObject(s_args.front().asMap());
         s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);

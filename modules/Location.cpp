@@ -47,12 +47,12 @@ const Vector3D Location::getXyz(Entity * ent) const
     }
 }
 
-void Location::addToObject(Element::MapType & omap) const
+void Location::addToObject(MapType & omap) const
 {
     if (m_loc!=NULL) {
-        omap["loc"] = Element(m_loc->getId());
+        omap["loc"] = m_loc->getId();
     } else {
-        omap["loc"] = Element("");
+        omap["loc"] = "";
     }
     if (m_pos.isValid()) {
         omap["pos"] = m_pos.toAtlas();

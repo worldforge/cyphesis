@@ -19,12 +19,12 @@ class AccountBase {
 
     bool init();
 
-    bool putAccount(const Atlas::Message::Element::MapType & o);
-    bool modAccount(const Atlas::Message::Element::MapType & o,
+    bool putAccount(const Atlas::Message::MapType & o);
+    bool modAccount(const Atlas::Message::MapType & o,
                     const std::string & accountId);
     bool delAccount(const std::string & account);
     bool getAccount(const std::string & username,
-                    Atlas::Message::Element::MapType & o);
+                    Atlas::Message::MapType & o);
 
 };
 
