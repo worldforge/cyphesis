@@ -79,11 +79,19 @@ so in addition to the ruleset you are using you will need to load the
 rulesets on which it depends. A ruleset is distributed with cyphesis
 as an xml. The default is mason.xml, which depends on acorn.xml, which in
 turn depends on basic.xml. These three rulesets can be loaded into the
-database using the cyloadrules command as follows:
+database using the cyloadrules command, with no arguments. This
+automatically loads the rulesets in order into the database, first
+ensuring that the rules table is empty.
+
+cyloadrules can also be used to load individual rulesets into the database
+as follows:
 
 cyloadrules basic.xml
 cyloadrules acorn.xml
 cyloadrules mason.xml
+
+You will only need to do this if you are developing new rulesets, or
+customising existing ones.
 
 You should now load map data into the server using cydbload. The map for early
 mason release is the same as the acorn map, and is stored in agrilan*.xml:
@@ -94,8 +102,8 @@ cydbload agrilan_a2.xml
 cydbload agrilan_a3.xml
 cydbload agrilan_a4.xml
 
-Once this is done, it is safe to run cyphesis. You will not need to
-do this again. The database store is persistant. If new a ruleset
+Once these tasks are done, it is safe to run cyphesis. You will not need to
+do them again. The database store is persistant. If new a ruleset
 or map is provided, it will be necessary to clear the database tables
 before loading them with new data.
 

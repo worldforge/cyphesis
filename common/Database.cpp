@@ -360,40 +360,21 @@ bool Database::getTable(const std::string & table, Object::MapType &o)
     return true;
 }
 
+bool Database::clearTable(const std::string & table)
+{
+    std::string query = std::string("DELETE FROM ") + table + ";";
+    int status = m_connection->ExecCommandOk(query.c_str());
+    if (!status) {
+        debug(std::cout << "Error clearing " << table
+                        << " table" << endl << flush;);
+        reportError();
+        return false;
+    }
+    return true;
+}
+
 void Database::reportError()
 {
     std::cerr << "DATABASE ERROR: " << m_connection->ErrorMessage()
               << std::endl << std::flush;
 }
-
-#if 0
-DatabaseIterator::DatabaseIterator(Db & db ) : m_db(db)
-{
-    db.cursor(NULL, &m_cursor, 0);
-}
-
-bool DatabaseIterator::get(Atlas::Message::Object::MapType & o)
-{
-    Dbt key, data;
-
-    int res = m_cursor->get(&key, &data, DB_NEXT);
-    if (res == DB_NOTFOUND) {
-        debug(cout << "No entries remain in database" << endl << flush;);
-        return false;
-    } else if (res != 0) {
-        cerr << "WARNING: Error accessing database" << endl << flush;
-        return false;
-    }
-    return Database::instance()->decodeObject(data, o);
-}
-
-bool DatabaseIterator::del()
-{
-    int res = m_cursor->del(0);
-    if (res == 0) {
-        return true;
-    }
-    cerr << "WARNING: Error deleting from database" << endl << flush;
-    return false;
-}
-#endif

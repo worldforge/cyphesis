@@ -38,6 +38,9 @@ class Persistance : public Database {
     bool getRules(Atlas::Message::Object::MapType & m) {
         return getTable(rule_db, m);
     }
+    bool clearRules() {
+        return clearTable(rule_db);
+    }
 };
 
 #endif // SERVER_PERSISTANCE_H

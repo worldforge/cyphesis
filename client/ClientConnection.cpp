@@ -12,6 +12,7 @@
 #include "ClientConnection.h"
 
 #include "common/debug.h"
+#include "common/globals.h"
 
 static bool debug_flag = false;
 
@@ -222,7 +223,7 @@ bool ClientConnection::connect(const std::string & server)
 {
     debug(std::cout << "Connecting to " << server << std::endl << std::flush;);
 
-    ios.open(server.c_str(), 6767);
+    ios.open(server.c_str(), port_num);
     if (!ios.is_open()) {
         std::cerr << "ERROR: Could not connect to " << server << "."
                   << std::endl << std::flush;

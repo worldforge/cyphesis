@@ -52,9 +52,9 @@ class Database {
                    const std::string & key,
                    Atlas::Message::Object::MapType &);
     bool delObject(const std::string &, const std::string & key);
-
     bool getTable(const std::string & table,
                   Atlas::Message::Object::MapType &);
+    bool clearTable(const std::string & table);
 
     void reportError();
   public:

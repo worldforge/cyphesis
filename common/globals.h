@@ -18,6 +18,7 @@ extern std::list<std::string> rulesets;
 extern bool exit_flag;
 extern bool daemon_flag;
 extern int timeoffset;
+extern int port_num;
 
 extern bool loadConfig(int argc, char ** argv);
 

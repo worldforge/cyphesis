@@ -31,6 +31,9 @@ class RuleBase : public Database {
     void storeInRules(const Object::MapType & o, const std::string & key) {
         putObject(rule_db, key, o);
     }
+    bool clearRules() {
+        return clearTable(rule_db);
+    }
 };
 
 class FileDecoder : public Atlas::Message::DecoderBase {
@@ -42,12 +45,10 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     bool m_worldMerge;
 
     virtual void ObjectArrived(const Object & obj) {
-        cout << "OA" << endl << flush;
         const Object::MapType & omap = obj.AsMap();
         Object::MapType::const_iterator I;
         for (I = omap.begin(); I != omap.end(); ++I) {
             m_count++;
-            std::cerr << I->first << std::endl << std::flush;
             m_db->storeInRules(I->second.AsMap(), I->first);
         }
     }
@@ -78,7 +79,7 @@ static void usage(char * prgname)
 
 int main(int argc, char ** argv)
 {
-    if (argc != 2) {
+    if (argc > 2) {
         usage(argv[0]);
         return 1;
     }
@@ -95,9 +96,21 @@ int main(int argc, char ** argv)
     db->initConnection(true);
     db->initRule(true);
 
-    FileDecoder f(argv[1], db);
-    f.read();
-    f.report();
+    if (argc == 2) {
+        FileDecoder f(argv[1], db);
+        f.read();
+        f.report();
+    } else {
+        db->clearRules();
+        std::list<std::string>::reverse_iterator I = rulesets.rbegin();
+        for (; I != rulesets.rend(); ++I) {
+            std::cout << "Reading rules from " << *I << std::endl << std::flush;
+            FileDecoder f(share_directory + "/cyphesis/" + *I + ".xml", db);
+            f.read();
+            f.report();
+        }
+    }
+
     db->shutdownConnection();
     delete db;
 }

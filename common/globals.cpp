@@ -12,6 +12,7 @@ std::list<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;
 int timeoffset = 0;
+int port_num = 6767;
 
 bool loadConfig(int argc, char ** argv)
 {
@@ -23,14 +24,15 @@ bool loadConfig(int argc, char ** argv)
     if ((home = getenv("HOME")) != NULL) {
         home_dir_config = global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
-    // Check the command line options, and if the installation directory
-    // has been overriden, either on the command line or in the users
-    // config file, store this value in the users home directory.
-    // The effect of this code is that an installation directory, once
-    // chosen is fixed.
+    // Check the command line options, and if anything
+    // has been overriden, store this value in the users home directory.
+    // The effect of this code is that config settings, once
+    // chosen are fixed.
     global_conf->getCmdline(argc, argv);
     if (global_conf->findItem("cyphesis", "directory")) {
         share_directory = global_conf->getItem("cyphesis", "directory");
+    }
+    if (argc > 1) {
         if (home != NULL) {
             global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf");
         }
@@ -57,8 +59,14 @@ bool loadConfig(int argc, char ** argv)
     }
     global_conf->getCmdline(argc, argv);
 
+    // Config is now loaded. Now set the values of some globals.
+
     if (global_conf->findItem("cyphesis", "daemon")) {
         daemon_flag = global_conf->getItem("cyphesis","daemon");
+    }
+
+    if (global_conf->findItem("cyphesis", "tcpport")) {
+        port_num=global_conf->getItem("cyphesis","tcpport");
     }
 
     // Load up the rulesets. Rulesets are hierarchical, and are read in until

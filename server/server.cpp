@@ -178,11 +178,6 @@ int main(int argc, char ** argv)
     // can be stored and queried by clients.
     CommServer s(rulesets.front(), serverName);
     s.useMetaserver = use_metaserver;
-    // Get the port tcp port from the config file, and set up the listen socket
-    int port_num = 6767;
-    if (global_conf->findItem("cyphesis", "tcpport")) {
-        port_num=global_conf->getItem("cyphesis","tcpport");
-    }
     if (!s.setup(port_num)) {
         std::cerr << "Could not create listen socket." << std::endl << std::flush;
         return 1;

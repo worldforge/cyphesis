@@ -193,10 +193,8 @@ void Interactive::getPassword()
 }
 
 bool Interactive::connect(const std::string & host)
-// This deals with icky low-level socket rubbish. All this should be rubbed
-// and replaced with propper use of an iostream based socket library
 {
-    ios.open(host.c_str(), 6767);
+    ios.open(host.c_str(), port_num);
     if (!ios.is_open()) {
         std::cout << "Connection failed." << std::endl << std::flush;
         return false;

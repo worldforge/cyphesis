@@ -1,3 +1,23 @@
+2002-01-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/ClientConnection.cpp, client/CommClient.h,
+	  common/globals.cpp, common/globals.h, server/server.cpp,
+	  tools/cycmd.cpp:
+	  Make the TCP port number a global config setting, and
+	  ensure it is used everwhere, so it can be overriden, and all
+	  clients and tools will use it. Modify behavoir so that any
+	  settings overridden on the command line are made semi-permanent
+	  in the users home directory, making it easier for users to run
+	  two versions on one machine at the same time.
+
+	* common/Database.cpp, common/Database.h: Remove obsolete iterator
+	  code. Add a method to clear a given database table.
+
+	* server/Persistance.h, tools/cyloadrules.cpp:
+	  Automate loading of the ruleset given in the config file, and
+	  the rulesets it depends on, ensuring that the rules table
+	  is cleared first.
+
 2002-01-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/server.cpp, client/client.cpp, common/globals.cpp:
