@@ -1,5 +1,11 @@
 2004-11-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* cyphesis.spec.in: Resolve issues with upgrading from earlier
+	  versions by adding a trigger if cyphesis-service is removed
+	  when installing this rpm.
+
+2004-11-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* cyphesis.spec.in: Ensure rpm spec correctly obsoletes the old
 	  mason and service rpms.
 

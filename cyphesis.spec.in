@@ -8,6 +8,8 @@ Version: %{version}
 Release: %{release}
 Copyright: GPL
 Group: Amusements/Games
+URL: http://www.worldforge.org/dev/eng/servers/cyphesis
+Packager: Al Riddoch <alriddoch@zepler.org>
 Source0: %{name}-%{version}.tar.gz
 Source1: cyphesis.init
 Source2: cyclient.init
@@ -73,8 +75,14 @@ then
         echo /etc/sysconfig/cyphesis >> service.lst
 fi
 
+%pre
+useradd -M -n -r -s /bin/bash -c "Cyphesis user" cyphesis >/dev/null 2>&1 || :
+
 %post
-# FIXME These should only be done if we are not upgrading. How can we tell?
+chkconfig --add cyphesis
+chkconfig --add cyclient
+
+%triggerpostun -- cyphesis-service
 useradd -M -n -r -s /bin/bash -c "Cyphesis user" cyphesis >/dev/null 2>&1 || :
 chkconfig --add cyphesis
 chkconfig --add cyclient
