@@ -75,25 +75,30 @@ dnl
 dnl if found define HAVE_PYTHON_H
 dnl
 
+python_two=no
 AC_CHECK_HEADER(python2.3/Python.h,
 [
     python_include_path=-I${python_prefix}/include/python2.3
     python_version=python2.3
+    python_two=yes
 ],[
     AC_CHECK_HEADER(python2.2/Python.h,
     [
         python_include_path=-I${python_prefix}/include/python2.2
         python_version=python2.2
+        python_two=yes
     ],[
         AC_CHECK_HEADER(python2.1/Python.h,
         [
             python_include_path=-I${python_prefix}/include/python2.1
             python_version=python2.1
+            python_two=yes
         ],[
             AC_CHECK_HEADER(python2.0/Python.h,
             [
                 python_include_path=-I${python_prefix}/include/python2.0
                 python_version=python2.0
+                python_two=yes
             ],[
                 AC_CHECK_HEADER(python1.6/Python.h, 
                 [
@@ -110,6 +115,10 @@ AC_CHECK_HEADER(python2.3/Python.h,
         ])
     ])
 ])
+
+if test x$python_two == xyes; then
+    AC_DEFINE_UNQUOTED(HAVE_PYTHON_2, 1, [Using python 2.0 or later])
+fi
 
 PYTHON_INCLUDES=${python_include_path}
 CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
