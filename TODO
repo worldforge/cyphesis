@@ -3,16 +3,14 @@ Must fix for Mason 0.0.2
   Stop broadcasting passwords around the place. Probably best done by sorting
   out the account table properlly.
 
-  Lets get rid of this nonsense about ids having too much meaning.
-
-  Fix movement BUGS, and other BUGS
-
-  Test well the mind2body op filter, now that the copy has been eliminated.
-
   Perhaps look at the way idle handles internal and network traffic. It
   is possible that network traffic should be given a higher priority.
 
 General TODO
+
+  Come up with a way to persist general attributes.
+
+  Persist more complex things like geo stuff.
 
   Allow types to be installed from the client.
 

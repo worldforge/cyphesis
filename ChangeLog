@@ -1,5 +1,10 @@
 2002-12-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, server/Persistor.cpp, server/Persistor_impl.h:
+	  Clean up debugging output.
+
+2002-12-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp, server/PersistantThingFactory.cpp,
 	  server/PersistantThingFactory.h, 
 	  server/PersistantThingFactory_impl.h,

@@ -160,8 +160,6 @@ void Persistor<T>::cCharacter(Character & t, std::string & c, std::string & v)
 template <class T>
 void Persistor<T>::persist(T & t)
 {
-    std::cout << "Persistor::persist<T(" << m_class << ")>(" << t.getId()
-              << ")" << std::endl << std::flush;
     t.updated.connect(SigC::bind<T &>(SigC::slot(*this,
                                                  &Persistor<T>::update),
                                       t));
@@ -177,8 +175,6 @@ void Persistor<T>::persist(T & t)
 template <class T>
 void Persistor<T>::update(T & t)
 {
-    std::cout << "Persistor::update<T(" << m_class << ")>(" << t.getId() << ")"
-              << std::endl << std::flush;
     std::string columns;
     uEntity(t, columns);
     Database::instance()->updateEntityRow(m_class, t.getId(), columns);
@@ -188,8 +184,6 @@ void Persistor<T>::update(T & t)
 template <class T>
 void Persistor<T>::remove(T & t)
 {
-    std::cout << "Persistor::remove<" << m_class << ">(" << t.getId() << ")"
-              << std::endl << std::flush;
     Database::instance()->removeEntityRow(m_class, t.getId());
 }
 

@@ -126,8 +126,6 @@ Persistor<Structure>::Persistor<Structure>() : m_class("structure")
 
 void Persistor<Character>::update(Character & t)
 {
-    std::cout << "Persistor::update<" << m_class << ">(" << t.getId() << ")"
-              << std::endl << std::flush;
     std::string columns;
     uCharacter(t, columns);
     uEntity(t, columns);
@@ -137,8 +135,6 @@ void Persistor<Character>::update(Character & t)
 
 void Persistor<Creator>::update(Creator & t)
 {
-    std::cout << "Persistor::update<" << m_class << ">(" << t.getId() << ")"
-              << std::endl << std::flush;
     std::string columns;
     uCharacter(t, columns);
     uEntity(t, columns);
@@ -148,8 +144,6 @@ void Persistor<Creator>::update(Creator & t)
 
 void Persistor<Line>::update(Line & t)
 {
-    std::cout << "Persistor::update<" << m_class << ">(" << t.getId() << ")"
-              << std::endl << std::flush;
     std::string columns;
     uLine(t, columns);
     uEntity(t, columns);
@@ -159,8 +153,6 @@ void Persistor<Line>::update(Line & t)
 
 void Persistor<Area>::update(Area & t)
 {
-    std::cout << "Persistor::update<" << m_class << ">(" << t.getId() << ")"
-              << std::endl << std::flush;
     std::string columns;
     uArea(t, columns);
     uEntity(t, columns);
@@ -170,8 +162,6 @@ void Persistor<Area>::update(Area & t)
 
 void Persistor<Plant>::update(Plant & t)
 {
-    std::cout << "Persistor::update<" << m_class << ">(" << t.getId() << ")"
-              << std::endl << std::flush;
     std::string columns;
     uPlant(t, columns);
     uEntity(t, columns);
@@ -181,8 +171,6 @@ void Persistor<Plant>::update(Plant & t)
 
 void Persistor<Character>::persist(Character & t)
 {
-    std::cout << "Persistor::persist<" << m_class << ">(" << t.getId()
-              << ")" << std::endl << std::flush;
     t.updated.connect(SigC::bind<Character &>(SigC::slot(*this,
                                                  &Persistor<Character>::update),
                                       t));
@@ -198,8 +186,6 @@ void Persistor<Character>::persist(Character & t)
 
 void Persistor<Creator>::persist(Creator & t)
 {
-    std::cout << "Persistor::persist<" << m_class << ">(" << t.getId()
-              << ")" << std::endl << std::flush;
     t.updated.connect(SigC::bind<Creator &>(SigC::slot(*this,
                                                  &Persistor<Creator>::update),
                                       t));

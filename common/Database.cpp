@@ -618,7 +618,7 @@ bool Database::createEntityRow(const std::string & classname,
     query += "', ";
     query += values;
     query += ");";
-    std::cout << "QUERY: " << query << std::endl << std::flush;
+    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     // FIXME Actually run the query against the db
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
@@ -655,7 +655,7 @@ bool Database::updateEntityRow(const std::string & classname,
     query += " WHERE id='";
     query += id;
     query += "';";
-    std::cout << "QUERY: " << query << std::endl << std::flush;
+    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     // FIXME Actually run the query against the db
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
@@ -665,6 +665,7 @@ bool Database::updateEntityRow(const std::string & classname,
     }
     if (!commandOk()) {
         log(ERROR, "Error updating entity row.");
+        std::cout << "QUERY: " << query << std::endl << std::flush;
         reportError();
         debug(std::cout << "Row update didn't work"
                         << std::endl << std::flush;);
@@ -689,7 +690,7 @@ bool Database::removeEntityRow(const std::string & classname,
     query += " WHERE id='";
     query += id;
     query += "';";
-    std::cout << "QUERY: " << query << std::endl << std::flush;
+    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     // FIXME Actually run the query against the db
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
