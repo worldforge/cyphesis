@@ -105,7 +105,8 @@ Entity * Account::addCharacter(const std::string & typestr,
     entmap["name"] = "coin";
     for(int i = 0; i < 10; i++) {
         Create * c = new Create(Create::Instantiate());
-        c->SetArgs(Element::ListType(1,entmap));
+        Element::ListType & args = c->GetArgs();
+        args.push_back(entmap);
         c->SetTo(chr->getId());
         world.message(*c, chr);
     }
@@ -116,7 +117,8 @@ Entity * Account::addCharacter(const std::string & typestr,
     chr->addToObject(cargs.front().AsMap());
 
     Sight * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Element::ListType(1,c.AsObject()));
+    Element::ListType & args = s->GetArgs();
+    args.push_back(c.AsObject());
 
     world.message(*s, chr);
 
@@ -127,7 +129,8 @@ OpVector Account::LogoutOperation(const Logout & op)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
     Info info = Info(Info::Instantiate());
-    info.SetArgs(Element::ListType(1,op.AsObject()));
+    Element::ListType & args = info.GetArgs();
+    args.push_back(op.AsObject());
     info.SetRefno(op.GetSerialno());
     info.SetSerialno(connection->server.getSerialNo());
     info.SetFrom(getId());
@@ -209,7 +212,8 @@ OpVector Account::ImaginaryOperation(const Imaginary & op)
     }
 
     Sight s(Sight::Instantiate());
-    s.SetArgs(Element::ListType(1,op.AsObject()));
+    Element::ListType & sargs = s.GetArgs();
+    sargs.push_back(op.AsObject());
     s.SetFrom(getId());
     s.SetSerialno(connection->server.getSerialNo());
     setRefnoOp(&s, op);
@@ -231,7 +235,8 @@ OpVector Account::TalkOperation(const Talk & op)
     }
 
     Sound s(Sound::Instantiate());
-    s.SetArgs(Element::ListType(1,op.AsObject()));
+    Element::ListType & sargs = s.GetArgs();
+    sargs.push_back(op.AsObject());
     s.SetFrom(getId());
     s.SetSerialno(connection->server.getSerialNo());
     setRefnoOp(&s, op);

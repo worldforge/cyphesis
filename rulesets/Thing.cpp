@@ -56,7 +56,8 @@ OpVector Thing::SetupOperation(const Setup & op)
     addToObject(args.front().AsMap());
     c.SetTo(getId());
     c.SetFrom(getId());
-    sight->SetArgs(Element::ListType(1, c.AsObject()));
+    Element::ListType & sargs = sight->GetArgs();
+    sargs.push_back(c.AsObject());
 
     OpVector sres;
     if (script->Operation("setup", op, sres) != 0) {
@@ -164,9 +165,6 @@ OpVector Thing::BurnOperation(const Burn & op)
     double bspeed = I->second.AsNum();
     const Element::MapType & fire_ent = op.GetArgs().front().AsMap();
     double consumed = bspeed * fire_ent.find("status")->second.AsNum();
-    Element::MapType self_ent;
-    self_ent["id"] = getId();
-    self_ent["status"] = status - (consumed / mass);
 
     const std::string & to = fire_ent.find("id")->second.AsString();
     Element::MapType nour_ent;
@@ -175,7 +173,11 @@ OpVector Thing::BurnOperation(const Burn & op)
 
     Set * s = new Set(Set::Instantiate());
     s->SetTo(getId());
-    s->SetArgs(Element::ListType(1,self_ent));
+    Element::ListType & sargs = s->GetArgs();
+    sargs.push_back(Element::MapType());
+    Element::MapType & self_ent = sargs.back().AsMap();
+    self_ent["id"] = getId();
+    self_ent["status"] = status - (consumed / mass);
 
     Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);

@@ -1,3 +1,7 @@
+Benchmark various setting arguments ways. RESULT: When using Message::Object args,
+it is much much more efficient. When using op.AsObject(); for args, it is quite a
+bit more efficient.
+
 Put in different high level exception catchers, to differentiate between
 exceptions caused by a client, which should result in a kick, and bugs in game
 which need to be logged.

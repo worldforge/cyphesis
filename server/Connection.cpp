@@ -363,7 +363,8 @@ OpVector Connection::GetOperation(const Get & op)
             return error(op, "Unknown type definition requested");
         }
         info = new Info(Info::Instantiate());
-        info->SetArgs(Element::ListType(1,o->AsObject()));
+        Element::ListType & iargs = info->GetArgs();
+        iargs.push_back(o->AsObject());
         info->SetRefno(op.GetSerialno());
         info->SetSerialno(server.getSerialNo());
     }

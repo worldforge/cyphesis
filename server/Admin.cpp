@@ -127,7 +127,8 @@ OpVector Admin::GetOperation(const Get & op)
             delete info;
             return error(op, "Unknown type definition requested");
         }
-        info->SetArgs(Element::ListType(1,o->AsObject()));
+        Element::ListType & iargs = info->GetArgs();
+        iargs.push_back(o->AsObject());
     } else {
         delete info;
         return error(op, "Unknow object type requested");

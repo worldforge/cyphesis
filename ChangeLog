@@ -1,5 +1,11 @@
 2003-04-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp, server/Account.cpp, server/Admin.cpp,
+	  server/Connection.cpp, server/Lobby.cpp: Make setting
+	  op args more efficient.
+
+2003-04-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommMetaClient.h, server/CommMetaClient.cpp: Make metaserver
 	  code IPv6 compatable.
 

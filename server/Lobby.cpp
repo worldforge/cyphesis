@@ -17,10 +17,11 @@ Lobby::Lobby(const std::string & id, ServerRouting & s) : OOGThing(id), server(s
 void Lobby::addObject(Account * ac)
 {
     Appearance a(Appearance::Instantiate());
-    Element::MapType us;
+    Element::ListType & args = a.GetArgs();
+    args.push_back(Element::MapType());
+    Element::MapType & us = args.back().AsMap();
     us["id"] = ac->getId();
     us["loc"] = "lobby";
-    a.SetArgs(Element::ListType(1,us));
     a.SetFrom(ac->getId());
     a.SetTo("lobby");
     a.SetSerialno(server.getSerialNo());
@@ -32,10 +33,11 @@ void Lobby::addObject(Account * ac)
 void Lobby::delObject(Account * a)
 {
     Disappearance d(Disappearance::Instantiate());
-    Element::MapType us;
+    Element::ListType & args = d.GetArgs();
+    args.push_back(Element::MapType());
+    Element::MapType & us = args.back().AsMap();
     us["id"] = a->getId();
     us["loc"] = "lobby";
-    d.SetArgs(Element::ListType(1,us));
     d.SetFrom(a->getId());
     d.SetTo("lobby");
     d.SetSerialno(server.getSerialNo());
