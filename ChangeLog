@@ -1,3 +1,7 @@
+2003-07-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* Clean up and improve rpm spec using new found techniques.
+
 2003-06-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* Update Makefile.ams so that distcheck works.
