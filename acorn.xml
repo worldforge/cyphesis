@@ -3,7 +3,7 @@
   <map name="cleaver">
     <string name="parent">thing</string>
     <map name="attributes">
-      <float name="weight">1.5</float>
+      <float name="mass">1.5</float>
     </map>
     <map name="script">
       <string name="name">world.objects.tools.Cleaver</string>
@@ -55,7 +55,7 @@
   <map name="skull">
     <string name="parent">thing</string>
     <map name="attributes">
-      <float name="weight">1</float>
+      <float name="mass">1</float>
     </map>
     <map name="script">
       <string name="name">world.objects.undead.Skull</string>
@@ -66,7 +66,7 @@
   <map name="ribcage">
     <string name="parent">thing</string>
     <map name="attributes">
-      <float name="weight">1</float>
+      <float name="mass">1</float>
     </map>
     <map name="script">
       <string name="name">world.objects.undead.Ribcage</string>
@@ -77,7 +77,7 @@
   <map name="arm">
     <string name="parent">thing</string>
     <map name="attributes">
-      <float name="weight">1</float>
+      <float name="mass">1</float>
     </map>
     <map name="script">
       <string name="name">world.objects.undead.Arm</string>
@@ -88,7 +88,7 @@
   <map name="pelvis">
     <string name="parent">thing</string>
     <map name="attributes">
-      <float name="weight">1</float>
+      <float name="mass">1</float>
     </map>
     <map name="script">
       <string name="name">world.objects.undead.Pelvis</string>
@@ -99,7 +99,7 @@
   <map name="thigh">
     <string name="parent">thing</string>
     <map name="attributes">
-      <float name="weight">1</float>
+      <float name="mass">1</float>
     </map>
     <map name="script">
       <string name="name">world.objects.undead.Thigh</string>
@@ -110,7 +110,7 @@
   <map name="shin">
     <string name="parent">thing</string>
     <map name="attributes">
-      <float name="weight">1</float>
+      <float name="mass">1</float>
     </map>
     <map name="script">
       <string name="name">world.objects.undead.Shin</string>
@@ -132,7 +132,7 @@
   <map name="pig">
     <string name="parent">character</string>
     <map name="attributes">
-      <float name="weight">5</float>
+      <float name="mass">5</float>
     </map>
     <map name="script">
       <string name="name">world.objects.animals.Pig</string>
@@ -147,7 +147,7 @@
   <map name="deer">
     <string name="parent">character</string>
     <map name="attributes">
-      <float name="weight">100</float>
+      <float name="mass">100</float>
     </map>
     <map name="script">
       <string name="name">world.objects.animals.Deer</string>
@@ -158,7 +158,7 @@
   <map name="wolf">
     <string name="parent">character</string>
     <map name="attributes">
-      <float name="weight">20</float>
+      <float name="mass">20</float>
     </map>
     <map name="script">
       <string name="name">world.objects.animals.Wolf</string>
@@ -173,7 +173,7 @@
   <map name="crab">
     <string name="parent">character</string>
     <map name="attributes">
-      <float name="weight">20</float>
+      <float name="mass">20</float>
     </map>
     <map name="script">
       <string name="name">world.objects.animals.Crab</string>
@@ -184,7 +184,7 @@
   <map name="squirrel">
     <string name="parent">character</string>
     <map name="attributes">
-      <float name="weight">1</float>
+      <float name="mass">1</float>
     </map>
     <map name="script">
       <string name="name">world.objects.animals.Squirrel</string>
@@ -219,7 +219,7 @@
   <map name="seed">
     <string name="parent">food</string>
     <map name="attributes">
-      <float name="weight">0.05</float>
+      <float name="mass">0.05</float>
     </map>
     <map name="script">
       <string name="name">world.objects.plants.seeds.Seed</string>
@@ -230,7 +230,7 @@
   <map name="acorn">
     <string name="parent">food</string>
     <map name="attributes">
-      <float name="weight">0.05</float>
+      <float name="mass">0.05</float>
     </map>
     <map name="script">
       <string name="name">world.objects.plants.seeds.Acorn</string>
@@ -241,7 +241,7 @@
   <map name="apple">
     <string name="parent">food</string>
     <map name="attributes">
-      <float name="weight">0.2</float>
+      <float name="mass">0.2</float>
       <float name="alcahol">0</float>
     </map>
     <map name="script">
