@@ -247,6 +247,9 @@ OpVector Connection::LoginOperation(const Login & op)
 OpVector Connection::CreateOperation(const Create & op)
 {
     debug(std::cout << "Got create op" << std::endl << std::flush;);
+    if (!m_objects.empty()) {
+        return error(op, "Already logged in");
+    }
     if (op.GetArgs().empty()) {
         return error(op, "Create has no argument");
     }

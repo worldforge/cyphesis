@@ -1,3 +1,8 @@
+2003-05-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.cpp: Refuse to create an account if this
+	  connection already has one.
+
 2003-05-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp: Flatten out terrain a little, for a more

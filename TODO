@@ -1,3 +1,5 @@
+World doesn't have its type string set propper like.
+
 Test what happens if we use shutdown instead of close on a socket.
 
 Implement constraints on entities, which have to be checked before movement
