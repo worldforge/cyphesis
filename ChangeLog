@@ -1,5 +1,9 @@
 2004-12-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* Increment version to 0.3.7.
+
+2004-12-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/define_world.py,
 	  rulesets/basic/mind/goals/humanoid/mason.py: Add suggested responses
 	  to talk messages from NPCs. Helps the client make it easy
