@@ -1,5 +1,10 @@
 2004-11-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Add support for Python 2.4 and drop support
+	  for 1.5 and 1.6.
+
+2004-11-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp, common/stringstream.h, rulesets/MemMap.cpp,
 	  rulesets/World.cpp, server/CommClient.cpp, server/Persistor_impl.h,
 	  server/Restorer_impl.h, server/WorldRouter.cpp, server/server.cpp,

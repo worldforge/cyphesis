@@ -63,51 +63,36 @@ dnl
 dnl if found define HAVE_PYTHON_H
 dnl
 
-python_two=no
-AC_CHECK_HEADER(python2.3/Python.h,
+AC_CHECK_HEADER(python2.4/Python.h,
 [
-    python_include_path=-I${python_prefix}/include/python2.3
-    python_version=python2.3
-    python_two=yes
+    python_include_path=-I${python_prefix}/include/python2.4
+    python_version=python2.4
 ],[
-    AC_CHECK_HEADER(python2.2/Python.h,
+    AC_CHECK_HEADER(python2.3/Python.h,
     [
-        python_include_path=-I${python_prefix}/include/python2.2
-        python_version=python2.2
-        python_two=yes
+        python_include_path=-I${python_prefix}/include/python2.3
+        python_version=python2.3
     ],[
-        AC_MSG_WARN([Cannot find Python 2.2 or later. Checking for older versions which may not support cyphesis fully.])
-        AC_CHECK_HEADER(python2.1/Python.h,
+        AC_CHECK_HEADER(python2.2/Python.h,
         [
-            python_include_path=-I${python_prefix}/include/python2.1
-            python_version=python2.1
-            python_two=yes
+            python_include_path=-I${python_prefix}/include/python2.2
+            python_version=python2.2
         ],[
-            AC_CHECK_HEADER(python2.0/Python.h,
+            AC_MSG_WARN([Cannot find Python 2.2 or later. Checking for older versions which may not support cyphesis fully.])
+            AC_CHECK_HEADER(python2.1/Python.h,
             [
-                python_include_path=-I${python_prefix}/include/python2.0
-                python_version=python2.0
-                python_two=yes
+                python_include_path=-I${python_prefix}/include/python2.1
+                python_version=python2.1
             ],[
-                AC_CHECK_HEADER(python1.6/Python.h, 
+                AC_CHECK_HEADER(python2.0/Python.h,
                 [
-                    python_include_path=-I${python_prefix}/include/python1.6
-                    python_version=python1.6
-                ],[
-                    AC_CHECK_HEADER(python1.5/Python.h, 
-                    [
-                        python_include_path=-I${python_prefix}/include/python1.5
-                        python_version=python1.5
-                    ],AC_MSG_ERROR([Cannot find python headers. Please install Python. If Python is installed somewhere other than in /usr the please use the --with-python=DIR option to point to the prefix where Python is installed.]))
-                ])
+                    python_include_path=-I${python_prefix}/include/python2.0
+                    python_version=python2.0
+                ],AC_MSG_ERROR([Cannot find python headers. Please install Python. If Python is installed somewhere other than in /usr the please use the --with-python=DIR option to point to the prefix where Python is installed.]))
             ])
         ])
     ])
 ])
-
-if test x$python_two == xyes; then
-    AC_DEFINE_UNQUOTED(HAVE_PYTHON_2, 1, [Using python 2.0 or later])
-fi
 
 PYTHON_INCLUDES=${python_include_path}
 CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
