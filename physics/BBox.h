@@ -23,6 +23,26 @@ inline bool boxContains(const BBox & box, const Vector3D & other, double increas
             (other.z() < (box.highCorner().z() + increase)));
 }
 
+template<typename F>
+inline F square(F f) { return f * f; }
+
+/// What is the size of the box?
+inline WFMath::CoordType boxSquareSize(const BBox & box)
+{
+    WFMath::CoordType ans = 0;
+
+    for(int i = 0; i < 3; ++i) {
+        ans += square(box.highCorner()[i] - box.lowCorner()[i]);
+    }
+
+    return ans;
+}
+
+inline WFMath::CoordType boxSize(const BBox & box)
+{
+    return sqrtf(boxSquareSize(box));
+}
+
 /// Do this two boxes intersect
 inline bool hit(const BBox & box, const BBox & other) {
     return hit(box.lowCorner(), box.highCorner(),
