@@ -4,8 +4,11 @@
 
 #include "Restoration.h"
 #include "Restorer.h"
+#include "ServerRouting.h"
+#include "WorldRouter.h"
 
 #include <common/const.h>
+#include <common/log.h>
 #include <common/Database.h>
 
 #include <rulesets/Creator.h>
@@ -35,7 +38,7 @@ Restoration::Restoration(ServerRouting & svr) : server(svr),
 
 void Restoration::restore(const std::string & id,
                           const std::string & classn,
-                          bool create)
+                          Entity * loc)
 {
     DatabaseResult res = database.selectEntityRow(id, classn);
     if (res.error()) {
@@ -54,11 +57,26 @@ void Restoration::restore(const std::string & id,
         return;
     }
 
-    if (create) {
+    Entity * ent = 0;
+    if (loc == 0) {
+        std::cout << "DEBUG: No creation of world object " << id
+                  << std::endl << std::flush;
+        if (id != "world_0") {
+            abort();
+        }
+        ent = &server.world.gameWorld;
+    } else {
         RestoreDict::const_iterator I = m_restorers.find(classn);
         if (I == m_restorers.end()) {
-            Entity * ent = I->second(1);
-            // SHove this ent into the WorldRouter.
+            log(ERROR, "Could not find a restorer for class");
+            std::cerr << "ERROR: Class " << classn << " has no restorer."
+                      << std::endl << std::flush;
+        } else {
+            std::cout << "DEBUG: Creating object for " << id << " with loc "
+                      << loc->getId() << std::endl << std::flush;
+            ent = I->second(id, res);
+            ent->location.ref = loc;
+            server.world.addObject(ent, false);
         }
     }
     DatabaseResult res2 = database.selectClassByLoc(id);
@@ -86,7 +104,7 @@ void Restoration::restore(const std::string & id,
         std::cout << "DEBUG: Child is " << child_id
                   << " with class " << child_class
                   << std::endl << std::flush;
-        restore(child_id, child_class);
+        restore(child_id, child_class, ent);
 
     }
 }

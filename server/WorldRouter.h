@@ -41,7 +41,7 @@ class WorldRouter : public BaseWorld {
     virtual ~WorldRouter();
 
     int idle();
-    Entity * addObject(Entity * obj);
+    Entity * addObject(Entity * obj, bool setup = true);
     Entity * addObject(const std::string &,
                        const Atlas::Message::Object::MapType &,
                        const std::string & id = std::string());

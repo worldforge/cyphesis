@@ -55,6 +55,10 @@ class Vector3D {
         z = (++I)->AsNum();
     }
 
+    double & X() { return x; }
+    double & Y() { return y; }
+    double & Z() { return z; }
+
     double X() const { return x; }
     double Y() const { return y; }
     double Z() const { return z; }

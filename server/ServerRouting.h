@@ -18,8 +18,8 @@ class ServerRouting : public OOGThing {
     const std::string svrRuleset;
     const std::string svrName;
     int numClients;
-    WorldRouter & world;
   public:
+    WorldRouter & world;
     Lobby & lobby;
 
     ServerRouting(const std::string & ruleset, const std::string & name);

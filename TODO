@@ -1,3 +1,10 @@
+Having got persistance basics in place, the id space is now a disaster waiting to
+happen. The creation of ids now needs to be martialed - preferably by making the
+database do it with a sequence. Once we have this, we may be able to make id a
+thing that is set at construction time, and this immutable.
+Mind state is still utterly unpersisted, so creatures are waking up brain dead -
+mind does not even get kick started with a setup op.
+
 Must fix for Mason 0.0.2
 
   Stop broadcasting passwords around the place. Probably best done by sorting

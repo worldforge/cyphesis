@@ -54,10 +54,6 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
         if (!empty) { q << ", "; } else { empty = false; }
         q << "mass = " << t.getMass();
     }
-    if (t.getUpdateFlags() & a_mass) {
-        if (!empty) { q << ", "; } else { empty = false; }
-        q << "mass = " << t.getMass();
-    }
     if (!empty) {
         q << ", seq = " << t.getSeq();
         c += q.str();

@@ -1,3 +1,24 @@
+2002-12-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Quaternion.h, physics/Vector3D.h: Add accessors to
+	  allow direct modification of coordinates.
+
+	* server/Persistor_impl.h: Remove duplicate attribute handler.
+
+	* server/Restoration.cpp: And in the final code for loading
+	  restored entities from database.
+
+	* server/Restoration.h, server/Restorer.h,
+	  server/Restorer_impl.h: Implement handler that populate
+	  member variables of entity objects from database
+	  structures.
+
+	* server/ServerRouting.h: Make WorldRouter reference public.
+
+	* server/WorldRouter.cpp, server/WorldRouter.h: Slight
+	  modification to addObject(Entity *) to allow restored
+	  objects to be added as well as new ones.
+
 2002-12-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp, server/Admin.cpp:

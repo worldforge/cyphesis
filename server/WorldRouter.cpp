@@ -123,7 +123,7 @@ inline const std::string WorldRouter::getNewId(const std::string & name)
     return full_id;
 }
 
-Entity * WorldRouter::addObject(Entity * obj)
+Entity * WorldRouter::addObject(Entity * obj, bool setup)
 {
     debug(std::cout << "WorldRouter::addObject(Entity *)" << std::endl
                     << std::flush;);
@@ -146,11 +146,13 @@ Entity * WorldRouter::addObject(Entity * obj)
          obj->getAttributes().end())) {
         omnipresentList.insert(obj);
     }
-    Setup * s = new Setup(Setup::Instantiate());
-    s->SetTo(obj->getId());
-    s->SetFutureSeconds(-0.1);
-    s->SetSerialno(server.getSerialNo());
-    addOperationToQueue(*s, this);
+    if (setup) {
+        Setup * s = new Setup(Setup::Instantiate());
+        s->SetTo(obj->getId());
+        s->SetFutureSeconds(-0.1);
+        s->SetSerialno(server.getSerialNo());
+        addOperationToQueue(*s, this);
+    }
     return (obj);
 }
 

@@ -10,15 +10,16 @@
 
 class ServerRouting;
 class Database;
+class DatabaseResult;
 class Entity;
 
 class Restoration {
   private:
-    typedef Entity * (*restoreFunc)(int what_exactly);
+    typedef Entity * (*restoreFunc)(const std::string &, DatabaseResult &);
     typedef std::map<std::string, restoreFunc> RestoreDict;
     RestoreDict m_restorers;
     
-    void restore(const std::string &, const std::string &, bool create = true);
+    void restore(const std::string &, const std::string &, Entity * loc = 0);
   public:
     ServerRouting & server;
     Database & database;

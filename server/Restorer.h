@@ -8,6 +8,7 @@
 #include <string>
 
 class Entity;
+class DatabaseResult;
 
 // This class should never ever be instantiated, so the constructor is private
 // and unimplemented. Instead the template should be instantiated with
@@ -22,12 +23,25 @@ class Restorer : public T {
   private:
     Restorer(); // DO NOT IMPLEMENT THIS
 
-    void restoreInt(const char *, int &);
-    void restoreFloat(const char *, double &);
-    void restoreString(const char *, std::string &);
+    void restoreInt(const char * c, int & i) {
+        if (c == 0) { return; }
+        i = strtol(c, 0, 10);
+    }
+    void restoreFloat(const char * c, double & d) {
+        if (c == 0) { return; }
+        d = strtod(c, 0);
+    }
+    void restoreString(const char * c, std::string & s) {
+        if (c == 0) { return; }
+        s = c;
+    }
+
+    void rEntity(DatabaseResult & dr);
   public:
-    void populate(int what_exactly);
-    static Entity * restore(int what_exactly);
+    void populate(const std::string & id, DatabaseResult & dr);
+
+    static Entity * restore(const std::string & id, DatabaseResult & dr);
+
 };
 
 #endif // SERVER_RESTORER_H

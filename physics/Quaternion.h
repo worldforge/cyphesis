@@ -28,6 +28,11 @@ class Quaternion {
     }
     Quaternion(const Vector3D & from, const Vector3D & to);
 
+    double & X() { return x; }
+    double & Y() { return y; }
+    double & Z() { return z; }
+    double & W() { return w; }
+
     double X() const { return x; }
     double Y() const { return y; }
     double Z() const { return z; }
