@@ -18,6 +18,9 @@ namespace Mercator {
 class World : public Thing {
   protected:
     Mercator::Terrain & m_terrain;
+
+    void getTerrain(Atlas::Message::Object::MapType &) const;
+    void setTerrain(const Atlas::Message::Object::MapType &);
   public:
     explicit World(const std::string & id);
     virtual ~World();

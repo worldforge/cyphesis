@@ -1,3 +1,9 @@
+2003-05-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/World.cpp, rulesets/World.h: Rework terrain attribute
+	  handling to use new agreed format. Add terrain attribute
+	  to the special ranged sight handling.
+
 2003-04-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cyphesis-setup: Add #!/bin/sh to be sure it gets treated

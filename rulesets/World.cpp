@@ -17,6 +17,46 @@
 
 static const bool debug_flag = false;
 
+void World::getTerrain(Element::MapType & t) const
+{
+    Element::ListType & terrain = (t["points"] = Element::ListType()).AsList();
+
+    const Mercator::Terrain::Pointstore & points = m_terrain.getPoints();
+    Mercator::Terrain::Pointstore::const_iterator I = points.begin();
+    for(; I != points.end(); ++I) {
+        const Mercator::Terrain::Pointcolumn & pointcol = I->second;
+        Mercator::Terrain::Pointcolumn::const_iterator J = pointcol.begin();
+        for (; J != pointcol.end(); ++J) {
+            terrain.push_back(Element::ListType(3));
+            Element::ListType & point = terrain.back().AsList();
+            point[0] = (Element::FloatType)(I->first * 64);
+            point[1] = (Element::FloatType)(J->first * 64);
+            point[2] = (Element::FloatType)(J->second);
+        }
+    }
+}
+
+void World::setTerrain(const Element::MapType & t)
+{
+    Element::MapType::const_iterator I = t.find("points");
+    if ((I != t.end()) && (I->second.IsList())) {
+        const Element::ListType & points = I->second.AsList();
+        Element::ListType::const_iterator I = points.begin();
+        for(; I != points.end(); ++I) {
+            if (!I->IsList()) {
+                continue;
+            }
+            const Element::ListType & point = I->AsList();
+            if (point.size() != 3) {
+                continue;
+            }
+            int x = (int)floor(point[0].AsNum() / m_terrain.getRes());
+            int y = (int)floor(point[1].AsNum() / m_terrain.getRes());
+            m_terrain.setBasePoint(x, y, point[2].AsNum());
+        }
+    }
+}
+
 World::World(const std::string & id) : Thing(id), m_terrain(*new Mercator::Terrain())
 {
     subscribe("set", OP_SET);
@@ -35,21 +75,8 @@ World::~World()
 bool World::get(const std::string & aname, Element & attr) const
 {
     if (aname == "terrain") {
-        attr = Element::ListType();
-        Element::ListType & terrain = attr.AsList();
-        const Mercator::Terrain::Pointstore & points = m_terrain.getPoints();
-        Mercator::Terrain::Pointstore::const_iterator I = points.begin();
-        for(; I != points.end(); ++I) {
-            const Mercator::Terrain::Pointcolumn & pointcol = I->second;
-            Mercator::Terrain::Pointcolumn::const_iterator J = pointcol.begin();
-            for (; J != pointcol.end(); ++J) {
-                terrain.push_back(Element::ListType(3));
-                Element::ListType & point = terrain.back().AsList();
-                point[0] = (Element::FloatType)(I->first * 64);
-                point[1] = (Element::FloatType)(J->first * 64);
-                point[2] = (Element::FloatType)(J->second);
-            }
-        }
+        attr = Element::MapType();
+        getTerrain(attr.AsMap());
         return true;
     }
     return Entity::get(aname, attr);
@@ -57,21 +84,8 @@ bool World::get(const std::string & aname, Element & attr) const
 
 void World::set(const std::string & aname, const Element & attr)
 {
-    if ((aname == "terrain") && attr.IsList()) {
-        const Element::ListType & points = attr.AsList();
-        Element::ListType::const_iterator I = points.begin();
-        for(; I != points.end(); ++I) {
-            if (!I->IsList()) {
-                continue;
-            }
-            const Element::ListType & point = I->AsList();
-            if (point.size() != 3) {
-                continue;
-            }
-            int x = (int)floor(point[0].AsNum() / m_terrain.getRes());
-            int y = (int)floor(point[1].AsNum() / m_terrain.getRes());
-            m_terrain.setBasePoint(x, y, point[2].AsNum());
-        }
+    if ((aname == "terrain") && attr.IsMap()) {
+        setTerrain(attr.AsMap());
     } else {
         Entity::set(aname, attr);
     }
@@ -79,21 +93,7 @@ void World::set(const std::string & aname, const Element & attr)
 
 void World::addToObject(Element::MapType & omap) const
 {
-    omap["terrain"] = Element::ListType();
-    Element::ListType & terrain = omap["terrain"].AsList();
-    const Mercator::Terrain::Pointstore & points = m_terrain.getPoints();
-    Mercator::Terrain::Pointstore::const_iterator I = points.begin();
-    for(; I != points.end(); ++I) {
-        const Mercator::Terrain::Pointcolumn & pointcol = I->second;
-        Mercator::Terrain::Pointcolumn::const_iterator J = pointcol.begin();
-        for (; J != pointcol.end(); ++J) {
-            terrain.push_back(Element::ListType(3));
-            Element::ListType & point = terrain.back().AsList();
-            point[0] = (Element::FloatType)(I->first * 64);
-            point[1] = (Element::FloatType)(J->first * 64);
-            point[2] = (Element::FloatType)(J->second);
-        }
-    }
+    getTerrain((omap["terrain"] = Element::MapType()).AsMap());
     Entity::addToObject(omap);
 }
 
@@ -126,6 +126,8 @@ OpVector World::LookOperation(const Look & op)
     omap["id"] = getId();
     omap["parents"] = Element::ListType(1, "world");
     omap["objtype"] = "object";
+    // FIXME integrate setting terrain with setting contains.
+    getTerrain((omap["terrain"] = Element::MapType()).AsMap());
     Entity * opFrom = J->second;
     const Vector3D & fromLoc = opFrom->getXyz();
     Element::ListType & contlist = (omap["contains"] = Element(Element::ListType())).AsList();
