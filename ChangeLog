@@ -1,3 +1,9 @@
+2001-01-20  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* server/server.cpp: Modified argument processing so that installation
+	  directory can be set as a command line argument, and then stored
+	  persistantly in users config file.
+
 2001-01-18  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Change default acorn script to be text, and made the alternative
