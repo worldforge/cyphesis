@@ -131,11 +131,16 @@ OpVector Plant::TickOperation(const Tick & op)
             dropped--;
         }
     }
-    if (dropped != 0) {
+    if ((dropped != 0) || (m_status < 1.)) {
         RootOperation * set = new Set();
         Element::MapType pmap;
         pmap["id"] = getId();
         pmap["fruits"] = m_fruits;
+        if (m_status < 1.) {
+            // FIXME Very very fast recovery
+            double newStatus = m_status + 0.1;
+            pmap["status"] = (newStatus > 1.f) ? 1.f : newStatus;
+        }
         set->setTo(getId());
         set->setArgs(Element::ListType(1,pmap));
         res.push_back(set);

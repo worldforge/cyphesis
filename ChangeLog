@@ -1,5 +1,10 @@
 2004-06-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Plant.cpp: Implement recovering damage/health in all
+	  plants.
+
+2004-06-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* Warn if an up to date version of python is not available.
 
 2004-06-29  Al Riddoch  <alriddoch@zepler.org>
