@@ -302,3 +302,8 @@ int WorldRouter::idle()
     }
     return 1;
 }
+
+const double WorldRouter::upTime() const {
+    return realTime - timeoffset;
+}
+

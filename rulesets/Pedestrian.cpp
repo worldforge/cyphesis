@@ -166,6 +166,12 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     if (m_collPos) {
                         m_velocity[m_collAxis] = 0;
                         m_collPos = Vector3D();
+                        if ((m_velocity.mag() / consts::base_velocity) > 0.05) {
+                            new_loc.face=m_velocity;
+                        } else {
+                            reset();
+                            entmap["mode"] = Object("standing");
+                        }
                     } else {
                         reset();
                         entmap["mode"] = Object("standing");

@@ -1,3 +1,13 @@
+2001-06-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Pedestrian.cpp: Fixed setting of walking direction when
+	  a collision occurs.
+
+	* server/WorldRouter.cpp, server/WorldRouter.h: Fixed uptime
+	  measurement which was grossly out because it subtracted the
+	  server initTime twice, and did not take account of the
+	  in game start time offset.
+
 2001-05-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.in, common/config.h, common/database.h, tools/cypasswd.cpp:

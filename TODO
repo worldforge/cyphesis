@@ -74,4 +74,9 @@ Possible ideas:
   be a good time to get cyphesis working as a mindless server, without
   any AI code.
 
-  Need to get rid of leaking default ScriptObject.
+  Route finding for the AI. NPCs already have symbolic knowledge of places.
+  All we need is a mechanism for describing that two places (or nodes) have
+  a direct route between them, and then the mind can build a graph which
+  allows them to find a route. We also need to provide a mechanism so that
+  NPCs know about a particular entity. This can be done by sending a generated
+  sight operation.

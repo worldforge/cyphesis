@@ -39,6 +39,7 @@ class WorldRouter : public OOGThing {
     virtual ~WorldRouter();
 
     int idle();
+    const double upTime() const;
 
     Thing * addObject(Thing * obj);
     Thing * addObject(const string &, const Atlas::Message::Object &,
@@ -61,11 +62,7 @@ class WorldRouter : public OOGThing {
         realTime = tmp_time;
     }
 
-    const double upTime() {
-        return realTime - initTime;
-    }
-
-    const double & getTime() {
+    const double & getTime() const {
         return realTime;
     }
 
