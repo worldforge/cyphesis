@@ -13,7 +13,8 @@ class Memory:
         if not type: return result_all
         result=[]
         for place in result_all:
-            if place[1].type[0]==type:
+            #if place[1].type[0]==type:
+            if place.type[0]==type:
                 result.append(place)
         return result
     def remember_event(self, event):

@@ -70,9 +70,8 @@ Thing * WorldRouter::add_object(Thing * obj)
         debug_server && cout << "set parent" << endl << flush;
         obj->location.parent=this;
     }
-    if (obj->location.parent==this /*&& contains[obj->id]*/) {
+    if (obj->location.parent==this) {
         debug_server && cout << "loc is world" << endl << flush;
-        // Nasty kludge
         contains.push_back(obj);
         contains.unique();
     }
@@ -101,6 +100,7 @@ Thing * WorldRouter::add_object(const string & typestr, const Object & ent)
 
 void WorldRouter::del_object(BaseEntity * obj)
 {
+    // Do we need to remove object from contains of its real parent?
     contains.remove(obj);
     omnipresent_list.remove(obj);
     perceptives.remove(obj);
@@ -262,7 +262,7 @@ void WorldRouter::add_operation_to_queue(RootOperation & op, BaseEntity * obj)
     std::list<RootOperation *>::iterator I;
     int i = 0;
     for(I = operation_queue.begin();
-        (I != operation_queue.end()) && ((*I)->GetSeconds() < t) ; I++,i++);
+        (I != operation_queue.end()) && ((*I)->GetSeconds() <= t) ; I++,i++);
     operation_queue.insert(I, &op);
     debug_server && cout << i << " operation added to queue" << endl << flush;
 }

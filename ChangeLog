@@ -1,5 +1,20 @@
 2000-12-07  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Fixed so that we are no longer sending broadcast look ops, which
+	  clag the server up and are not correct behavoir.
+
+	* Minor fixes/python tweaks.
+
+	* Slight change to ordering of ops in the queue, so more recently
+	  created ops with the same time stamp come of the queue after
+	  older ops.
+
+	* Implemented contains attribute so newly created objects are added
+	  to their parents contains list, and when objects are move, they are
+	  transfered from old parents to new parents contains list.
+
+2000-12-07  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Added handling for removing connections.
 
 	* Removed some unused code.

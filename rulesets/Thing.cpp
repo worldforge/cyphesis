@@ -24,7 +24,7 @@ Thing::Thing() : script_object(NULL), status(1), is_character(0), type("thing")
     name=string("Foo");
     attributes["age"] = 0;
     attributes["mode"] = Message::Object("birth");
-    attributes["weight"] = (float)-1;
+    attributes["weight"] = (double)-1;
     attributes["description"] = Message::Object("Some Thing");
 }
 
@@ -140,10 +140,17 @@ void Thing::merge(const Message::Object::MapType & entmap)
 
 void Thing::getLocation(Message::Object::MapType & entmap, fdict_t & fobjects)
 {
+    cout << "Thing::getLocation" << endl << flush;
     if (entmap.find("loc") != entmap.end()) {
+        cout << "Thing::getLocation, getting it" << endl << flush;
         try {
             const string & parent_id = entmap["loc"].AsString();
             BaseEntity * parent_obj;
+            if (fobjects.find(parent_id) == fobjects.end()) {
+                cout << "ERROR: Can't get parent from objects dictionary" << endl << flush;
+                return;
+            }
+                
             parent_obj = fobjects[parent_id];
             Vector3D pos(0, 0, 0);
             Vector3D velocity(0, 0, 0);
@@ -222,11 +229,10 @@ oplist Thing::Operation(const Create & op)
             obj->location=location;
             obj->location.velocity=Vector3D(0,0,0);
         }
-        //if (obj->location.parent->contains.find(obj->fullid) !=
-                            //obj->location.parent->contains.end()) {
-            //obj->location.parent->contains.append(obj);
-        //}
-        //log.debug(3,"Created: "+str(obj)+" now: "+str(Thing::world.objects));
+        if (obj->location.parent != NULL) {
+            obj->location.parent->contains.push_back(obj);
+            obj->location.parent->contains.unique();
+        }
         Create c(op);
         list<Message::Object> args2(1,obj->asObject());
         c.SetArgs(args2);
@@ -269,6 +275,7 @@ oplist Thing::Operation(const Move & op)
         cout << "ERROR: move op has no argument" << endl << flush;
         return(res);
     }
+    BaseEntity * newparent;
     try {
         cout << 1;
         Message::Object::MapType ent = args.front().AsMap();
@@ -285,18 +292,17 @@ oplist Thing::Operation(const Move & op)
         cout << "Got old style ref in move op" << endl << flush;
 #else
         string parent=ent["loc"].AsString();
-        if (location.parent->fullid!=parent) {
-            //location.parent.contains.remove(this);
-            //ent.location.parent.contains.append(this);
-        }
-#endif
-        cout << 3;
-        if (world->server->id_dict.find(parent) == world->server->id_dict.end()) {
+        if (world->fobjects.find(parent) == world->fobjects.end()) {
             cout << "ERROR: move op arg parent is invalid" << endl << flush;
             return(error(op, "Move location parent invalid"));
         }
-        cout << 4;
-        location.parent=world->server->id_dict[parent];
+        newparent = world->fobjects[parent];
+        if (location.parent != newparent) {
+            location.parent->contains.remove(this);
+            newparent->contains.push_back(this);
+        }
+#endif
+        location.parent=newparent;
 #if USE_OLD_LOC
         if (lmap.find("coords") == lmap.end()) {
             return(error(op, "Move location has no position"));

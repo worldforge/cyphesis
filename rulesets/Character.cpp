@@ -211,6 +211,11 @@ oplist Character::Operation(const Setup & op)
     res.push_back(s);
     Look * l = new Look();
     *l = Look::Instantiate();
+    l->SetTo(world->fullid);
+    res.push_back(l);
+    l = new Look();
+    *l = Look::Instantiate();
+    l->SetTo(fullid);
     res.push_back(l);
     return(res);
 }
@@ -305,7 +310,7 @@ oplist Character::Mind_Operation(const Move & op)
     if (obj != this) {
         cout << "Moving something else. " << oname << endl << flush;
         double weight = attributes["weight"].AsFloat();
-        double oweight = obj->operator[]("weight").AsFloat();
+        double oweight = (*obj)["weight"].AsFloat();
         if ((oweight < 0) || (oweight > weight)) {
             cout << "We can't move this. Just too heavy" << endl << flush;
             return(res);
@@ -598,8 +603,8 @@ oplist Character::Mind_Operation(const Look & op)
     Look * l = new Look(op);
     const Message::Object::ListType & args = op.GetArgs();
     if (args.size() == 0) {
-        l->SetTo("all");
-        //l->SetTo(world->fullid);
+        //l->SetTo("all");
+        l->SetTo(world->fullid);
     } else {
         if (args.front().IsMap()) {
             Message::Object::MapType amap = args.front().AsMap();

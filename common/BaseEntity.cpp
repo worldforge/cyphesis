@@ -48,30 +48,30 @@ Vector3D BaseEntity::get_xyz()
     }
 }
 
-Message::Object BaseEntity::asObject()
+Object BaseEntity::asObject()
 {
     debug_ops && cout << "BaseEntity::asObject" << endl << flush;
-    Message::Object::MapType map;
-    Message::Object obj(map);
+    Object::MapType map;
+    Object obj(map);
     addObject(&obj);
     return(obj);
 }
 
 
-void BaseEntity::addObject(Message::Object * obj)
+void BaseEntity::addObject(Object * obj)
 {
     debug_ops && cout << "BaseEntity::addObject" << endl << flush;
-    Message::Object::MapType & omap = obj->AsMap();
+    Object::MapType & omap = obj->AsMap();
     if (fullid.size() != 0) {
         omap["id"] = fullid;
     }
-    Message::Object::ListType contlist;
+    Object::ListType contlist;
     list_t::const_iterator I;
     for(I = contains.begin(); I != contains.end(); I++) {
-        contlist.push_back(Message::Object((*I)->fullid));
+        contlist.push_back(Object((*I)->fullid));
     }
     if (contlist.size() != 0) {
-        omap["contains"] = Message::Object(contlist);
+        omap["contains"] = Object(contlist);
     }
 }
 
@@ -91,7 +91,7 @@ oplist BaseEntity::Operation(const Look & op)
     debug_ops && cout << "look op got all the way to here" << endl << flush;
     Sight * s = new Sight();
     *s = Sight::Instantiate();
-    Message::Object::ListType args(1,asObject());
+    Object::ListType args(1,asObject());
     s->SetArgs(args);
     s->SetTo(op.GetFrom());
 
@@ -116,7 +116,7 @@ void BaseEntity::set_refno(oplist ret, const RootOperation & ref_op)
 
 op_no_t BaseEntity::op_enumerate(const RootOperation * op)
 {
-    const Message::Object & parents = op->GetAttr("parents");
+    const Object & parents = op->GetAttr("parents");
     if (!parents.IsList()) {
         debug_ops && cout << "This isn't an operation." << endl << flush;
     }
@@ -201,10 +201,10 @@ oplist BaseEntity::error(const RootOperation & op, const char * string)
     Error * e = new Error();
     *e = Error::Instantiate();
 
-    list<Message::Object> args;
-    Message::Object::MapType errmsg;
-    errmsg["message"] = Message::Object(string);
-    args.push_back(Message::Object(errmsg));
+    list<Object> args;
+    Object::MapType errmsg;
+    errmsg["message"] = Object(string);
+    args.push_back(Object(errmsg));
     args.push_back(op.AsObject());
 
     e->SetArgs(args);
