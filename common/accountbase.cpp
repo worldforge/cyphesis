@@ -6,6 +6,14 @@
 
 #include "system.h"
 
+bool AccountBase::init()
+{
+    if (!m_connection.initConnection(false)) {
+        return false;
+    }
+    return true;
+}
+
 bool AccountBase::putAccount(const Atlas::Message::Element::MapType & o)
 {
     Atlas::Message::Element::MapType::const_iterator I = o.find("username");
@@ -49,7 +57,7 @@ bool AccountBase::modAccount(const Atlas::Message::Element::MapType & o,
     bool empty = true;
 
     Atlas::Message::Element::MapType::const_iterator I = o.find("type");
-    if ((I != o.end()) && (!I->second.isString())) {
+    if ((I != o.end()) && (I->second.isString())) {
         empty = false;
         columns += "type = '";
         columns += I->second.asString();
@@ -57,13 +65,16 @@ bool AccountBase::modAccount(const Atlas::Message::Element::MapType & o,
     }
 
     I = o.find("password");
-    if ((I != o.end()) && (!I->second.isString())) {
+    if ((I != o.end()) && (I->second.isString())) {
         if (!empty) { columns += ", "; }
+        std::string hash;
+        encrypt_password(I->second.asString(), hash);
         columns += "password = '";
-        columns += I->second.asString();
+        columns += hash;
         columns += "'";
     }
-    m_connection.updateSimpleRow("accounts", accountId, columns);
+    return m_connection.updateSimpleRow("accounts", "username",
+                                        accountId, columns);
 }
 
 bool AccountBase::delAccount(const std::string & account)
@@ -77,33 +88,33 @@ bool AccountBase::getAccount(const std::string & username,
     std::string namestr = "'" + username + "'";
     DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", namestr);
     if (dr.error()) {
-        return 0;
+        return false;
     }
     if (dr.empty()) {
         dr.clear();
-        return 0;
+        return false;
     }
     if (dr.size() > 1) {
-        return 0;
+        return false;
     }
     const char * c = dr.field("id");
     if (c == 0) {
         dr.clear();
-        return 0;
+        return false;
     }
     std::string id = c;
 
     c = dr.field("password");
     if (c == 0) {
         dr.clear();
-        return 0;
+        return false;
     }
     std::string password = c;
 
     c = dr.field("type");
     if (c == 0) {
         dr.clear();
-        return 0;
+        return false;
     }
     std::string type = c;
 
@@ -113,4 +124,6 @@ bool AccountBase::getAccount(const std::string & username,
     o["username"] = username;
     o["password"] = password;
     o["type"] = type;
+
+    return true;
 }

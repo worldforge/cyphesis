@@ -107,7 +107,8 @@ class Database {
                          const std::string & columns,
                          const std::string & values);
     bool updateSimpleRow(const std::string & name,
-                         const std::string & id,
+                         const std::string & key,
+                         const std::string & value,
                          const std::string & columns);
 
     bool registerEntityIdGenerator();

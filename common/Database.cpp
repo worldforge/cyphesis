@@ -664,15 +664,18 @@ bool Database::createSimpleRow(const std::string & name,
 }
 
 bool Database::updateSimpleRow(const std::string & name,
-                               const std::string & id,
+                               const std::string & key,
+                               const std::string & value,
                                const std::string & columns)
 {
    std::string query = "UPDATE ";
    query += name;
    query += " SET ";
    query += columns;
-   query += " WHERE id='";
-   query += id;
+   query += " WHERE ";
+   query += key;
+   query += "='";
+   query += value;
    query += "';";
 
    return runCommandQuery(query);

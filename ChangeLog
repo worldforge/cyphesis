@@ -1,5 +1,15 @@
 2003-08-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/accountbase.h, common/accountbase.cpp: Add init
+	  method required to make the database connection.
+	  Clear up bugs in putAccount, and get putAccount to return
+	  true/false correctly.
+
+	* common/Database.h, common/Database.cpp: Add extra arg to
+	  updateSimpleRow so it can use any column as the key.
+
+2003-08-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cypasswd.cpp: Remove an obsolete comment.
 
 	* common/Database.h, common/Database.cpp: Add the method required

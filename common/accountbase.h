@@ -17,6 +17,8 @@ class AccountBase {
         m_connection.shutdownConnection();
     }
 
+    bool init();
+
     bool putAccount(const Atlas::Message::Element::MapType & o);
     bool modAccount(const Atlas::Message::Element::MapType & o,
                     const std::string & accountId);
