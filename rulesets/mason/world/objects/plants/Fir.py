@@ -1,9 +1,9 @@
 from atlas import *
-from world.objects.plants.Tree import Tree
+from world.objects.Thing import Thing
 
 import atlas
 
-class Fir(Tree):
+class Fir(Thing):
     def eat_operation(self, op):
         ent = Entity(self.id, status = self.status - 0.001)
         res = Operation("set", ent, to=self)

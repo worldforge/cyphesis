@@ -1,5 +1,16 @@
 2005-01-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Remove scripts from a number of classes which are
+	  are not using them. Add necessary init values for properties.
+
+	* rulesets/mason/world/objects/animals/Pig.py: Remove obsolete
+	  constructor, as we no longer initialise properties that way.
+
+	* rulesets/mason/world/objects/plants/Fir.py: Eliminate inheritance
+	  from Tree script, as Tree does nothing and is being removed.
+
+2005-01-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cyphesis.sh: Add some notes on how to build a redistributable
 	  binary.
 

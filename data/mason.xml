@@ -54,11 +54,11 @@
         <string name="default">apple</string>
         <string name="visibility">public</string>
       </map>
-      <map name="fruitchance">
+      <map name="fruitChance">
         <int name="default">15</int>
         <string name="visibility">public</string>
       </map>
-      <map name="init_fruits">
+      <map name="fruits">
         <int name="default">3</int>
         <string name="visibility">public</string>
       </map>
@@ -67,10 +67,6 @@
     <list name="parents">
       <string>tree</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.plants.AppleTree</string>
-    </map>
   </map>
 
   <map>
@@ -132,10 +128,6 @@
     <list name="parents">
       <string>tree</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.plants.Birch</string>
-    </map>
   </map>
 
   <map>
@@ -436,10 +428,6 @@
     <list name="parents">
       <string>tree</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.plants.Hickory</string>
-    </map>
   </map>
 
   <map>
@@ -587,6 +575,10 @@
         <string name="default">acorn</string>
         <string name="visibility">public</string>
       </map>
+      <map name="fruits">
+        <int name="default">20</int>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">oak</string>
     <list name="parents">
@@ -636,6 +628,10 @@
       <map name="mass">
         <float name="default">5</float>
         <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">30</float>
+        <string name="visibility">private</string>
       </map>
     </map>
     <string name="id">pig</string>
@@ -773,6 +769,10 @@
         <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
+      <map name="maxmass">
+        <float name="default">2</float>
+        <string name="visibility">private</string>
+      </map>
     </map>
     <string name="id">squirrel</string>
     <list name="parents">
@@ -841,10 +841,6 @@
     <list name="parents">
       <string>plant</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.plants.Tree</string>
-    </map>
   </map>
 
   <map>
@@ -910,10 +906,6 @@
     <list name="parents">
       <string>tree</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.plants.Willow</string>
-    </map>
   </map>
 
   <map>
@@ -921,6 +913,10 @@
       <map name="mass">
         <float name="default">20</float>
         <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">30</float>
+        <string name="visibility">private</string>
       </map>
     </map>
     <string name="id">wolf</string>
@@ -931,10 +927,6 @@
     <list name="parents">
       <string>character</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.animals.Wolf</string>
-    </map>
   </map>
 
 </atlas>
