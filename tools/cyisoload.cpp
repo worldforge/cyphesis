@@ -15,6 +15,10 @@
 #include <string>
 #include <fstream>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+
 class WorldBase : public Database {
   protected:
     WorldBase() { }
@@ -27,24 +31,23 @@ class WorldBase : public Database {
         return (WorldBase *)m_instance;
     }
 
-    void storeInWorld(const Atlas::Message::Element::MapType & o, const char * key) {
+    void storeInWorld(const MapType & o, const char * key) {
         putObject(world_db, o, key);
     }
 };
 
 class TemplatesLoader : public Atlas::Message::DecoderBase {
     ifstream m_file;
-    Atlas::Message::Element::MapType m_db;
+    MapType m_db;
     Atlas::Codecs::XML m_codec;
     int m_count;
 
-    virtual void objectArrived(const Atlas::Message::Element& o) {
-        Atlas::Message::Element obj(o);
-        if (!obj.isMap()) {
+    virtual void objectArrived(const Element& o) {
+        if (!o.isMap()) {
             cerr << "ERROR: Non map object in file" << endl << flush;
             return;
         }
-        Atlas::Message::Element::MapType & omap = obj.asMap();
+        MapType & omap = o.asMap();
         if (omap.find("graphic") == omap.end()) {
             cerr<<"WARNING: Template Object in file has no graphic. Not stored."
                 << endl << flush;
@@ -71,11 +74,11 @@ class TemplatesLoader : public Atlas::Message::DecoderBase {
                   << endl << flush;
     }
 
-    Atlas::Message::Element::MapType & db() {
+    MapType & db() {
         return m_db;
     }
 
-    const Atlas::Message::Element & get(const std::string & graphic) {
+    const Element & get(const std::string & graphic) {
         return m_db[graphic];
     }
 };
@@ -115,17 +118,17 @@ int main(int argc, char ** argv)
                 size_t b = graphic.rfind('/') + 1;
                 size_t e = graphic.rfind('.');
                 std::string key(graphic, b, e - b);
-                Atlas::Message::Element::MapType & tdb = f.db();
-                Atlas::Message::Element::MapType::iterator t = tdb.find(key);
+                MapType & tdb = f.db();
+                MapType::iterator t = tdb.find(key);
                 if (t != tdb.end()) {
-                    Atlas::Message::Element o = t->second;
-                    Atlas::Message::Element::MapType & omap = o.asMap();
+                    Element o = t->second;
+                    MapType & omap = o.asMap();
                     omap.erase("graphic");
                     stringstream id;
                     id << omap["name"].asString() << "_" << ++id_no << "_m";
                     omap["id"] = id.str();
                     omap["loc"] = "world_0";
-                    Atlas::Message::Element::ListType c(3);
+                    ListType c(3);
                     c[0] = object->anchor.GetX();
                     c[1] = object->anchor.GetY();
                     c[2] = object->anchor.GetZ();

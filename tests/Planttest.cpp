@@ -58,10 +58,10 @@ int main()
     e.set("test_int", 1);
     e.set("test_float", 1.f);
     e.set("test_list_string", "test_value");
-    e.set("test_list_int", Element::ListType(1, 1));
-    e.set("test_list_float", Element::ListType(1, 1.f));
-    e.set("test_map_string", Element::ListType(1, "test_value"));
-    Element::MapType test_map;
+    e.set("test_list_int", ListType(1, 1));
+    e.set("test_list_float", ListType(1, 1.f));
+    e.set("test_map_string", ListType(1, "test_value"));
+    MapType test_map;
     test_map["test_key"] = 1;
     e.set("test_map_int", test_map);
     test_map["test_key"] = 1.f;
@@ -72,7 +72,7 @@ int main()
     // Make sure we have the test attributes now
     assert(ee.checkAttributes(attrNames));
 
-    Element::MapType entityAsAtlas;
+    MapType entityAsAtlas;
 
     // Dump a representation of the entity into an Atlas Message
     e.addToObject(entityAsAtlas);

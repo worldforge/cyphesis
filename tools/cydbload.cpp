@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
+#error This file has been removed from the build.
+
 #include "common/Database.h"
 #include "common/globals.h"
 
@@ -10,7 +12,8 @@
 
 #include <fstream>
 
-using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 
 class WorldAccessor {
   protected:
@@ -32,15 +35,15 @@ class WorldAccessor {
         return m_instance;
     }
 
-    void storeInWorld(const Element::MapType & o, const std::string & key) {
+    void storeInWorld(const MapType & o, const std::string & key) {
         m_connection.putObject(m_connection.world(), key, o);
     }
 
-    void updateInWorld(const Element::MapType & o, const std::string & key) {
+    void updateInWorld(const MapType & o, const std::string & key) {
         m_connection.updateObject(m_connection.world(), key, o);
     }
 
-    bool getWorld(Element::MapType & o) {
+    bool getWorld(MapType & o) {
         return m_connection.getObject(m_connection.world(), "world_0", o);
     }
 };
@@ -51,13 +54,13 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     std::fstream m_file;
     WorldAccessor & m_db;
     Atlas::Codecs::XML m_codec;
-    Element::MapType m_world;
+    MapType m_world;
     int m_count;
     bool m_worldMerge;
 
     virtual void objectArrived(const Object & obj) {
-        const Element::MapType & omap = obj.asMap();
-        Element::MapType::const_iterator I;
+        const MapType & omap = obj.asMap();
+        MapType::const_iterator I;
         if ((I = omap.find("id")) == omap.end()) {
             std::cerr << "WARNING: Object in file has no id. Not stored."
                       << std::endl << std::flush;
@@ -69,9 +72,9 @@ class FileDecoder : public Atlas::Message::DecoderBase {
             std::cout << "Merging into existing world object" << std::endl << std::flush;
             if (((I = omap.find("contains")) != omap.end()) &&
                 (I->second.isList())) {
-                const Element::ListType & contlist = I->second.asList();
-                Element::ListType & worldlist = m_world.find("contains")->second.asList();
-                Element::ListType::const_iterator J = contlist.begin();
+                const ListType & contlist = I->second.asList();
+                ListType & worldlist = m_world.find("contains")->second.asList();
+                ListType::const_iterator J = contlist.begin();
                 for (;J != contlist.end(); ++J) {
                     worldlist.push_back(*J);
                 }

@@ -20,13 +20,13 @@ void descendTree(Root * type, Inheritance & i, int & count)
 
     Element childrenobj = type->getAttr("children");
     assert(childrenobj.isList());
-    Element::ListType & children = childrenobj.asList();
+    ListType & children = childrenobj.asList();
 
-    Element::ListType::const_iterator I = children.begin();
+    ListType::const_iterator I = children.begin();
     for(; I != children.end(); ++I) {
         const Element & e = *I;
         assert(e.isString());
-        const Element::StringType & es = e.asString();
+        const std::string & es = e.asString();
         assert(!es.empty());
         Root * child = i.get(es);
         descendTree(child, i, count);
@@ -80,7 +80,7 @@ int main()
     bool thrown = false;
     Root r;
     r.setId("squigglymuff");
-    r.setParents(Element::ListType(1, "ludricous_test_parent"));
+    r.setParents(ListType(1, "ludricous_test_parent"));
     try {
        i.addChild(&r);
     }

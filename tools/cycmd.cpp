@@ -58,6 +58,9 @@ extern "C" {
 #include <cstdio>
 
 using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Generic;
@@ -98,7 +101,7 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     int monitor_op_count;
     int monitor_start_time;
 
-    void output(const Atlas::Message::Element & item, bool recurse = true);
+    void output(const Element & item, bool recurse = true);
     void logOp(const Atlas::Objects::Operation::RootOperation &);
   protected:
     void objectArrived(const Atlas::Objects::Operation::Action& op) { logOp(op); }
@@ -158,22 +161,22 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
 };
 
 template <class Stream>
-void Interactive<Stream>::output(const Atlas::Message::Element & item, bool recurse)
+void Interactive<Stream>::output(const Element & item, bool recurse)
 {
     std::cout << " ";
     switch (item.getType()) {
-        case Atlas::Message::Element::TYPE_INT:
+        case Element::TYPE_INT:
             std::cout << item.asInt();
             break;
-        case Atlas::Message::Element::TYPE_FLOAT:
+        case Element::TYPE_FLOAT:
             std::cout << item.asFloat();
             break;
-        case Atlas::Message::Element::TYPE_STRING:
+        case Element::TYPE_STRING:
             std::cout << item.asString();
             break;
-        case Atlas::Message::Element::TYPE_LIST:
+        case Element::TYPE_LIST:
             if (recurse) {
-                Atlas::Message::Element::ListType::const_iterator I = item.asList().begin();
+                ListType::const_iterator I = item.asList().begin();
                 std::cout << "[ ";
                 for(; I != item.asList().end(); ++I) {
                     output(*I, true);
@@ -183,9 +186,9 @@ void Interactive<Stream>::output(const Atlas::Message::Element & item, bool recu
                 std::cout << "(list)";
             }
             break;
-        case Atlas::Message::Element::TYPE_MAP:
+        case Element::TYPE_MAP:
             if (recurse) {
-                Atlas::Message::Element::MapType::const_iterator I = item.asMap().begin();
+                MapType::const_iterator I = item.asMap().begin();
                 std::cout << "{ ";
                 for(; I != item.asMap().end(); ++I) {
                     std::cout << I->first << ": ";
@@ -224,8 +227,8 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Appeara
     if (o.getArgs().empty()) {
         return;
     }
-    const Atlas::Message::Element::MapType & ent = o.getArgs().front().asMap();
-    Atlas::Message::Element::MapType::const_iterator I = ent.find("id");
+    const MapType & ent = o.getArgs().front().asMap();
+    MapType::const_iterator I = ent.find("id");
     if (!I->second.isString()) {
         std::cerr << "Got Appearance of non-string ID" << std::endl << std::flush;
         return;
@@ -273,8 +276,8 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Disappe
     if (o.getArgs().empty()) {
         return;
     }
-    const Atlas::Message::Element::MapType & ent = o.getArgs().front().asMap();
-    Atlas::Message::Element::MapType::const_iterator I = ent.find("id");
+    const MapType & ent = o.getArgs().front().asMap();
+    MapType::const_iterator I = ent.find("id");
     if (!I->second.isString()) {
         std::cerr << "Got Disappearance of non-string ID" << std::endl << std::flush;
         return;
@@ -305,8 +308,8 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& o
     if (o.getArgs().empty()) {
         return;
     }
-    const Atlas::Message::Element::MapType & ent = o.getArgs().front().asMap();
-    Atlas::Message::Element::MapType::const_iterator I;
+    const MapType & ent = o.getArgs().front().asMap();
+    MapType::const_iterator I;
     if (login_flag) {
         I = ent.find("id");
         if (I == ent.end() || !I->second.isString()) {
@@ -319,7 +322,7 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& o
     } else {
         std::cout << "Info(" << std::endl;
         for (I = ent.begin(); I != ent.end(); I++) {
-            const Atlas::Message::Element & item = I->second;
+            const Element & item = I->second;
             std::cout << "     " << I->first << ": ";
             output(item);
             std::cout << std::endl;
@@ -335,8 +338,8 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Error& 
     reply_flag = true;
     error_flag = true;
     std::cout << "Error(";
-    const Atlas::Message::Element::ListType & args = o.getArgs();
-    const Atlas::Message::Element & arg = args.front();
+    const ListType & args = o.getArgs();
+    const Element & arg = args.front();
     if (arg.isString()) {
         std::cout << arg.asString();
     } else if (arg.isMap()) {
@@ -358,10 +361,10 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sight& 
     }
     reply_flag = true;
     std::cout << "Sight(" << std::endl;
-    const Atlas::Message::Element::MapType & ent = o.getArgs().front().asMap();
-    Atlas::Message::Element::MapType::const_iterator I;
+    const MapType & ent = o.getArgs().front().asMap();
+    MapType::const_iterator I;
     for (I = ent.begin(); I != ent.end(); I++) {
-        const Atlas::Message::Element & item = I->second;
+        const Element & item = I->second;
         std::cout << "      " << I->first << ":";
         output(item);
         std::cout << std::endl;
@@ -381,8 +384,8 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sound& 
         return;
     }
     reply_flag = true;
-    const Atlas::Message::Element::MapType & arg = o.getArgs().front().asMap();
-    Atlas::Message::Element::MapType::const_iterator I = arg.find("from");
+    const MapType & arg = o.getArgs().front().asMap();
+    MapType::const_iterator I = arg.find("from");
     if (I == arg.end() || !I->second.isString()) {
         std::cout << "Sound arg has no from" << std::endl << std::flush;
         return;
@@ -395,7 +398,7 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sound& 
         std::cout << "Sound arg has no args" << std::endl << std::flush;
         return;
     }
-    const Atlas::Message::Element::MapType & ent = I->second.asList().front().asMap();
+    const MapType & ent = I->second.asList().front().asMap();
     I = ent.find("say");
     if (I == ent.end() || !I->second.isString()) {
         std::cout << "Sound arg arg has no say" << std::endl << std::flush;
@@ -570,7 +573,7 @@ bool Interactive<Stream>::login()
     account.setAttr("username", username);
     account.setAttr("password", password);
  
-    Atlas::Message::Element::ListType args(1,account.asObject());
+    ListType args(1,account.asObject());
  
     l.setArgs(args);
  
@@ -608,11 +611,11 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         } else {
             Set s;
             s.setFrom(accountId);
-            Atlas::Message::Element::MapType ent;
+            MapType ent;
             ent["id"] = std::string(arg, 0, space);
             ent["objtype"] = "class";
-            ent["parents"] = Atlas::Message::Element::ListType(1, std::string(arg, space + 1));
-            s.setArgs(Atlas::Message::Element::ListType(1, ent));
+            ent["parents"] = ListType(1, std::string(arg, space + 1));
+            s.setArgs(ListType(1, ent));
             encoder->streamMessage(&s);
         }
         reply_expected = false;
@@ -624,17 +627,17 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         Logout l;
         l.setFrom(accountId);
         if (!arg.empty()) {
-            Atlas::Message::Element::MapType lmap;
+            MapType lmap;
             lmap["id"] = arg;
-            l.setArgs(Atlas::Message::Element::ListType(1, lmap));
+            l.setArgs(ListType(1, lmap));
             reply_expected = false;
         }
         encoder->streamMessage(&l);
     } else if (cmd == "say") {
         Talk t;
-        Atlas::Message::Element::MapType ent;
+        MapType ent;
         ent["say"] = arg;
-        t.setArgs(Atlas::Message::Element::ListType(1,ent));
+        t.setArgs(ListType(1,ent));
         t.setFrom(accountId);
         encoder->streamMessage(&t);
     } else if ((cmd == "help") || (cmd == "?")) {
@@ -643,24 +646,24 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
     } else if (cmd == "query") {
         Get g;
 
-        Atlas::Message::Element::MapType cmap;
+        MapType cmap;
         cmap["objtype"] = "obj";
         if (!arg.empty()) {
             cmap["id"] = arg;
         }
-        g.setArgs(Atlas::Message::Element::ListType(1,cmap));
+        g.setArgs(ListType(1,cmap));
         g.setFrom(accountId);
 
         encoder->streamMessage(&g);
     } else if (cmd == "get") {
         Get g;
 
-        Atlas::Message::Element::MapType cmap;
+        MapType cmap;
         cmap["objtype"] = "class";
         if (!arg.empty()) {
             cmap["id"] = arg;
         }
-        g.setArgs(Atlas::Message::Element::ListType(1,cmap));
+        g.setArgs(ListType(1,cmap));
         g.setFrom(accountId);
 
         encoder->streamMessage(&g);
@@ -668,7 +671,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         reply_expected = false;
         Generic m("monitor");
 
-        m.getArgs().push_back(Atlas::Message::Element::MapType());
+        m.getArgs().push_back(MapType());
         m.setFrom(accountId);
 
         encoder->streamMessage(&m);

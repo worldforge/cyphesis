@@ -26,6 +26,8 @@
 //       blatting it with a new Object.
 
 using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 
 #define ADD 0
 #define SET 1
@@ -79,7 +81,7 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    // Element::MapType data;
+    // MapType data;
 
     // bool res = db->getAccount("admin", data);
 
@@ -89,7 +91,7 @@ int main(int argc, char ** argv)
         // action = ADD;
     // }
     if (action != ADD) {
-        Element::MapType o;
+        MapType o;
         bool res = db.getAccount(acname, o);
         if (!res) {
             std::cout<<"Account "<<acname<<" does not yet exist"<<std::endl<<std::flush;
@@ -125,7 +127,7 @@ int main(int argc, char ** argv)
 #endif
     
     if (password == password2) {
-        Element::MapType amap;
+        MapType amap;
         amap["password"] = password;
 
         bool res;

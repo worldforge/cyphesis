@@ -12,6 +12,8 @@
 #include <fstream>
 
 using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 
 class RuleBase {
   protected:
@@ -39,7 +41,7 @@ class RuleBase {
         return m_instance;
     }
 
-    void storeInRules(const Element::MapType & o, const std::string & key) {
+    void storeInRules(const MapType & o, const std::string & key) {
         if (m_connection.hasKey(m_connection.rule(), key)) {
             return;
         }
@@ -66,8 +68,8 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     int m_count;
 
     virtual void objectArrived(const Element & obj) {
-        const Element::MapType & omap = obj.asMap();
-        Element::MapType::const_iterator I = omap.find("id");
+        const MapType & omap = obj.asMap();
+        MapType::const_iterator I = omap.find("id");
         if (I == omap.end()) {
             std::cerr << "Found rule with no id" << std::endl << std::flush;
             return;

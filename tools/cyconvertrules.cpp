@@ -11,8 +11,8 @@
 #include <fstream>
 
 using Atlas::Message::Element;
-typedef Element::MapType MapType;
-typedef Element::ListType ListType;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 
 /// Class to read old cyphesis rules on standard input, and output in new
 /// standard format.
@@ -96,7 +96,7 @@ void FileConverter::objectArrived(const Element & obj)
                       << std::endl << std::flush;
             continue;
         }
-        newObject["parents"] = Element::ListType(1, J->second.asString());
+        newObject["parents"] = ListType(1, J->second.asString());
 
         // Default attribute values, which straightforward values in the old
         // format, are converted to more complex structures defining

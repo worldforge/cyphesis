@@ -11,7 +11,7 @@
 int main()
 {
     RootOperation op;
-    Element::MapType map;
+    MapType map;
 
     assert(utility::Object_asOperation(map, op) == false);
 
