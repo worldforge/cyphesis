@@ -403,3 +403,10 @@ def modify_terrain(mapeditor):
     points['1x1'] = [1, 1, 19.7]
 
     m.set(world.id, terrain={'points' : points})
+
+def test_coll(mapeditor):
+#   general things
+
+    m=editor(mapeditor)
+
+    sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[5,5,3], orientation=directions[0])
