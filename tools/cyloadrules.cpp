@@ -40,6 +40,9 @@ class RuleBase {
     }
 
     void storeInRules(const Element::MapType & o, const std::string & key) {
+        if (m_connection.hasKey(m_connection.rule(), key)) {
+            return;
+        }
         m_connection.putObject(m_connection.rule(), key, o, StringVector(1, m_rulesetName));
         if (!m_connection.clearPendingQuery()) {
             std::cerr << "Failed" << std::endl << std::flush;

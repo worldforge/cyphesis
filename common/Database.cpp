@@ -309,6 +309,37 @@ bool Database::delObject(const std::string & table, const std::string & key)
     return true;
 }
 
+bool Database::hasKey(const std::string & table, const std::string & key)
+{
+    std::string query = std::string("SELECT id FROM ") + table +
+                        " WHERE id='" + key + "';";
+
+    clearPendingQuery();
+    int status = PQsendQuery(m_connection, query.c_str());
+
+    if (!status) {
+        reportError();
+        return false;
+    }
+
+    PGresult * res;
+    bool ret = false;
+    if ((res = PQgetResult(m_connection)) == NULL) {
+        debug(std::cout << "Error accessing " << table
+                        << " table" << std::endl << std::flush;);
+        return false;
+    }
+    int results = PQntuples(res);
+    if (results > 0) {
+        ret = true;
+    }
+    PQclear(res);
+    while ((res = PQgetResult(m_connection)) != NULL) {
+        PQclear(res);
+    }
+    return ret;
+}
+
 bool Database::getTable(const std::string & table, Element::MapType &o)
 {
     std::string query = std::string("SELECT * FROM ") + table + ";";

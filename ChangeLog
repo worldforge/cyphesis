@@ -1,5 +1,13 @@
 2004-07-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/Database.h: Add function to check
+	  whether an Atlas table has a given key.
+
+	* tools/cyloadrules.cpp: Use hasKey() function to make sure we
+	  don't get errors when inserting rules.
+
+2004-07-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/MemEntity.h, rulesets/MemMap.cpp, server/WorldRouter.cpp:
 	  Remove some debugging output.
 

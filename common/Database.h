@@ -84,6 +84,7 @@ class Database {
                       const std::string & key,
                       const Atlas::Message::Element::MapType&);
     bool delObject(const std::string &, const std::string & key);
+    bool hasKey(const std::string &, const std::string & key);
     bool getTable(const std::string & table,
                   Atlas::Message::Element::MapType &);
     bool clearTable(const std::string & table);
