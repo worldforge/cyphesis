@@ -1,3 +1,7 @@
+2004-04-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Python_API.cpp: Add comments on new Python type API.
+
 2004-03-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/const.cpp: Make sight range bigger.

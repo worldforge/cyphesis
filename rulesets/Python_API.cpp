@@ -334,6 +334,7 @@ static PyObject * Get_PyClass(const std::string & package,
         return NULL;
     }
 #if 0
+    // In later versions of python using PyType_* will become the right thing to do.
     if (PyType_Check(my_class) == 0) {
         std::cerr << "PyCallable_Check returned true, but PyType_Check returned false " << package << "." << type << std::endl << std::flush;
     } else {
