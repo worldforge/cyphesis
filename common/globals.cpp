@@ -34,11 +34,11 @@ bool loadConfig(int argc, char ** argv, bool server)
     global_conf->getCmdline(argc, argv);
     if (global_conf->findItem("cyphesis", "directory")) {
         store_config = true;
-        share_directory = (std::string)global_conf->getItem("cyphesis", "directory");
+        share_directory = global_conf->getItem("cyphesis", "directory");
     }
     if (global_conf->findItem("cyphesis", "confdir")) {
         store_config = true;
-        etc_directory = (std::string)global_conf->getItem("cyphesis", "confdir");
+        etc_directory = global_conf->getItem("cyphesis", "confdir");
     }
     if (store_config && (home != NULL)) {
         global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf");
@@ -79,7 +79,7 @@ bool loadConfig(int argc, char ** argv, bool server)
     // one is read in that does not specify its parent ruleset.
     std::string ruleset = "cyphesis";
     while (global_conf->findItem(ruleset, "ruleset")) {
-        ruleset = (std::string)global_conf->getItem(ruleset, "ruleset");
+        ruleset = global_conf->getItem(ruleset, "ruleset");
         rulesets.push_back(ruleset);
     };
 

@@ -23,22 +23,22 @@ int main(int argc, char ** argv)
 
     std::string package;
     if (global_conf->findItem("client", "package")) {
-        package = (std::string)global_conf->getItem("client", "package");
+        package = global_conf->getItem("client", "package");
     }
 
     std::string function;
     if (global_conf->findItem("client", "function")) {
-        function = (std::string)global_conf->getItem("client", "function");
+        function = global_conf->getItem("client", "function");
     }
 
     std::string account = "admin";
     if (global_conf->findItem("client", "account")) {
-        account = (std::string)global_conf->getItem("client", "account");
+        account = global_conf->getItem("client", "account");
     }
 
     std::string password;
     if (global_conf->findItem("client", "password")) {
-        password = (std::string)global_conf->getItem("client", "password");
+        password = global_conf->getItem("client", "password");
     }
 
     try {

@@ -1,3 +1,9 @@
+2004-02-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/client.cpp, common/globals.cpp: Remove some dodgey
+	  casts required by strange versions of gcc, which should
+	  be handled by the provided patch.
+
 2004-02-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* Clean up Makefile.ams a bit.
