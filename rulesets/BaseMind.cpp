@@ -79,7 +79,6 @@ bad_type BaseMind::sound_operation(bad_type op)
     log.debug(3,"sound: "+str(operation_method));
     return operation_method(op,op2);
 }
-#endif
 
 oplist BaseMind::Operation(const Sound & op)
 {
@@ -97,7 +96,6 @@ oplist BaseMind::Operation(const Sight & op)
 
 RootOperation * BaseMind::get_op_name_and_sub(RootOperation & op, string & name)
 {
-#if 0
     event_name = op.id;
     sub_op = op;
     while (len(sub_op) and sub_op[0].get_name()=="op") {
@@ -105,19 +103,25 @@ RootOperation * BaseMind::get_op_name_and_sub(RootOperation & op, string & name)
         event_name = event_name + "_" + sub_op.id;
     }
     return event_name, sub_op;
-#endif
-    return(NULL);
 }
 
 int BaseMind::call_triggers(RootOperation & op)
 {
     return(0);
 }
+#endif
 
 oplist BaseMind::operation(RootOperation & op)
 {
     // This might end up being quite tricky to do
+
+    // In the python the following happens here:
+    //   Find out if the op refers to any ids we don't know about.
+    //   If so create look operations to those ids
+    //   Set the minds time and date 
     oplist res;
+    res = call_operation(op);
+    //res = call_triggers(op);
     return(res);
 }
 

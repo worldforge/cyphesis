@@ -317,13 +317,19 @@ op_no_t BaseEntity::op_enumerate(const RootOperation * op)
     return (OP_INVALID);
 }
 
-oplist BaseEntity::operation(const RootOperation & op)
+oplist BaseEntity::call_operation(const RootOperation & op)
 {
-    debug_ops && cout << "BaseEntity::operation" << endl << flush;
+    debug_ops && cout << "BaseEntity::call_operation" << endl << flush;
     oplist res;
     op_no_t op_no = op_enumerate(&op);
     OP_SWITCH(op, op_no, res,)
     return(res);
+}
+
+oplist BaseEntity::operation(const RootOperation & op)
+{
+    debug_ops && cout << "BaseEntity::operation" << endl << flush;
+    return call_operation(op);
 }
 
 oplist BaseEntity::external_operation(const RootOperation & op)

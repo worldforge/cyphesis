@@ -1,7 +1,7 @@
 #ifndef PY_THING_H
 #define PY_THING_H
 
-extern PyMethodDef Thing_methods[];
+// extern PyMethodDef Thing_methods[];
 
 extern PyTypeObject Thing_Type;
 

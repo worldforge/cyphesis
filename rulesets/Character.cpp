@@ -148,6 +148,7 @@ oplist Character::Operation(const Setup & op)
     }
 
     mind = new BaseMind();
+    Create_PyThing(mind, "mind.BaseMind", "BaseMind");
 
     Setup * s = new Setup(op);
     // THis is so not the right thing to do
@@ -703,7 +704,7 @@ oplist Character::mind2body(const RootOperation & op)
 oplist Character::world2body(const RootOperation & op)
 {
     cout << "Character::world2body" << endl << flush;
-    oplist res = BaseEntity::operation(op);
+    oplist res = call_operation(op);
     // Set refno?
     // do debugging?
     //Nothing done yet, must try harder

@@ -84,6 +84,7 @@ typedef int bad_type; // Remove this to get unset type reporting
 //typedef std::pair<cid_t, BaseEntity *> idpair_t;
 
 typedef std::map<string, BaseEntity *> fdict_t;
+typedef std::list<BaseEntity *> flist_t;
 typedef std::pair<string, BaseEntity *> fidpair_t;
 
 #define NO_ID 0
@@ -295,6 +296,7 @@ class BaseEntity {
     bad_type undefined_operation(bad_type op);
     bad_type call_operation(bad_type op);
     op_no_t op_enumerate(const RootOperation * op);
+    oplist call_operation(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
     virtual oplist external_operation(const RootOperation & op);
     //bad_type external_operation(bad_type op);

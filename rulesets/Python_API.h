@@ -16,6 +16,7 @@ using Atlas::Objects::Operation::RootOperation;
 //using Atlas::Objects::Operation::Set;
 
 class Thing;
+class MemMap;
 
 typedef struct {
     PyObject_HEAD
@@ -28,6 +29,12 @@ typedef struct {
     PyObject	* Thing_attr;	/* Attributes dictionary */
     Thing	* m_thing;
 } ThingObject;
+
+typedef struct {
+    PyObject_HEAD
+    PyObject	* Map_attr;	/* Attributes dictionary */
+    MemMap	* m_map;
+} MapObject;
 
 #define ATLAS_OPERATION(_name) typedef struct { \
     PyObject_HEAD \
@@ -80,6 +87,9 @@ ATLAS_OPERATION(RootOperation)
 
 #include "Py_Object.h"
 #include "Py_Thing.h"
+#include "Py_Map.h"
 #include "Py_Operation.h"
+
+void Create_PyThing(Thing * thing, const string & package, const string & type);
 
 #endif /* PYTHON_API_H */

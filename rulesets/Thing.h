@@ -9,6 +9,7 @@
 #include <common/BaseEntity.h>
 
 #include "Python_API.h"
+#include "MemMap.h"
 
 class Player;
 class Routing;
@@ -20,6 +21,7 @@ class Thing : public BaseEntity {
     int script_Operation(const string &, const RootOperation &, oplist &);
 
     Message::Object::MapType attributes;
+    MemMap map;
   public:
     double status;
     string type;

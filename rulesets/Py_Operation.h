@@ -36,7 +36,7 @@ static PyObject * Operation_GetArgs(RootOperationObject *, PyObject *);
  *
  */
 
-extern PyMethodDef RootOperation_methods[];
+// extern PyMethodDef RootOperation_methods[];
 
 extern PyTypeObject RootOperation_Type;
 

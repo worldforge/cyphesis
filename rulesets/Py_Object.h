@@ -9,7 +9,7 @@
  * Object methods structure.
  */
 
-extern PyMethodDef Object_methods[];
+// extern PyMethodDef Object_methods[];
 
 /*
  * Object type structure.

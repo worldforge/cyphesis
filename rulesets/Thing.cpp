@@ -40,9 +40,11 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
                  << "." << op_name << endl << flush;
             return(0);
         }
+        RootOperationObject * py_op = newAtlasRootOperation(NULL);
+        py_op->operation = new RootOperation(op);
         PyObject * ret = PyObject_CallMethod(script_object,
                                              (char *)(op_name.c_str()),
-                                             "()");
+                                             "(O)", py_op);
         if (ret != NULL) {
             cout << "Called python method " << op_name << " for object "
                  << fullid << endl << flush;
@@ -418,7 +420,7 @@ Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent,
         t_type = thing_map[type];
     }
     Thing * thing;
-    const string & py_class = t_type.second;
+    const string & py_package = t_type.second;
     switch (t_type.first) {
         case BASE_CREATOR:
             thing = new Creator();
@@ -455,38 +457,9 @@ Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent,
         }
     }
     // Sort out python object
-    if (py_class.size() != 0) {
-        PyObject * mod_dict;
-        if ((mod_dict = PyImport_ImportModule((char *)py_class.c_str()))==NULL) {
-            cout << "Cld no find python module " << py_class << endl << flush;
-            goto py_fail;
-        } else {
-            cout << "Got python module " << py_class << endl << flush;
-        }
-        PyObject * my_class = PyObject_GetAttrString(mod_dict, (char *)type.c_str());
-        if (my_class == NULL) {
-            cout << "Cld no find class in module " << py_class << endl << flush;
-            goto py_fail;
-        } else {
-            cout << "Got python class " << type << " in " << py_class << endl << flush;
-        }
-        if (PyCallable_Check(my_class) == 0) {
-            cout << "It does not seem to be a class at all" << endl << flush;
-            goto py_fail;
-        }
-        ThingObject * pyThing = newThingObject(NULL);
-        pyThing->m_thing = thing;
-        if (thing->set_object(PyEval_CallFunction(my_class,"(O)", (PyObject *)pyThing)) == -1) {
-
-            if (PyErr_Occurred() == NULL) {
-                cout << "Could not get python obj" << endl << flush;
-            } else {
-                cout << "Reporting python error for " << type << endl << flush;
-                PyErr_Print();
-            }
-        }
+    if (py_package.size() != 0) {
+        Create_PyThing(thing, py_package, type);
     }
-py_fail:
     if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
         thing->name = entmap["name"].AsString();
     } else {

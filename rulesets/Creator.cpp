@@ -53,7 +53,7 @@ oplist Creator::external_operation(const RootOperation & op)
     cout << "Creator::external_operation" << endl << flush;
     oplist res;
     if ((op.GetTo()==fullid) || (op.GetTo()=="")) {
-        oplist local_res = BaseEntity::operation(op);
+        oplist local_res = call_operation(op);
         set_refno(local_res, op);
         while (local_res.size() != 0) {
             RootOperation * br = local_res.front();

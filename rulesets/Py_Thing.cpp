@@ -23,6 +23,12 @@ static void Thing_dealloc(ThingObject *self)
 PyObject * Thing_getattr(ThingObject *self, char *name)
 {
     cout << "Thing_getattr" << endl << flush;
+    if ((strcmp(name, "map") == 0) && (self->m_thing != NULL)) {
+        cout << "Thing_getattr(map)" << endl << flush;
+        MapObject * map = newMapObject(NULL);
+        map->m_map = &self->m_thing->map;
+        return (PyObject *)map;
+    }
     if (self->m_thing != NULL) {
         cout << "got thing" << endl << flush;
         Thing * thing = self->m_thing;
@@ -41,6 +47,9 @@ int Thing_setattr(ThingObject *self, char *name, PyObject *v)
 {
     cout << "Thing_setattr" << endl << flush;
     if (self->m_thing == NULL) {
+        return -1;
+    }
+    if (strcmp(name, "map") == 0) {
         return -1;
     }
     Thing * thing = self->m_thing;
