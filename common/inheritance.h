@@ -33,7 +33,7 @@ class Inheritance {
     Atlas::Objects::Root * get(const std::string & parent) {
         std::map<std::string, Atlas::Objects::Root *>::const_iterator I = atlasObjects.find(parent);
         if (I == atlasObjects.end()) {
-            throw InheritanceException(parent);
+            return NULL;
         }
         return I->second;
     }

@@ -1,5 +1,13 @@
 2001-11-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/inheritance.h, server/Connection.cpp: Simplify behavoir when
+	  type is unknown, and return an error to the client.
+
+	* server/Admin.cpp, server/Account.cpp, server/Connection.cpp: Ensure
+	  serial number is set on all OOG operations.
+
+2001-11-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Lobby.cpp: Removed debugging output.
 
 	* server/Account.cpp: Added handling of private chat.

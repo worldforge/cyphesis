@@ -129,6 +129,7 @@ oplist Account::CreateOperation(const Create & op)
     Info * info = new Info(Info::Instantiate());
     info->SetArgs(Object::ListType(1,obj->asObject()));
     info->SetRefno(op.GetSerialno());
+    info->SetSerialno(connection->server.getSerialNo());
 
     return oplist(1,info);
 }
@@ -144,6 +145,7 @@ oplist Account::ImaginaryOperation(const Imaginary & op)
             s.SetArgs(Object::ListType(1,op.AsObject()));
             s.SetTo(I->second.AsString());
             s.SetFrom(getId());
+            s.SetSerialno(connection->server.getSerialNo());
             return connection->server.lobby.operation(s);
         }
     }
@@ -153,10 +155,11 @@ oplist Account::ImaginaryOperation(const Imaginary & op)
 oplist Account::TalkOperation(const Talk & op)
 {
     const Object::ListType & args = op.GetArgs();
-    Sound s(Sound::Instantiate());
-    s.SetArgs(Object::ListType(1,op.AsObject()));
-    s.SetFrom(getId());
     if ((args.size() > 0) && (args.front().IsMap())) {
+        Sound s(Sound::Instantiate());
+        s.SetArgs(Object::ListType(1,op.AsObject()));
+        s.SetFrom(getId());
+        s.SetSerialno(connection->server.getSerialNo());
         const Object::MapType & arg = args.front().AsMap();
         Object::MapType::const_iterator I = arg.find("loc");
         if (I != arg.end()) {
@@ -176,6 +179,7 @@ oplist Account::LookOperation(const Look & op)
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
         s->SetArgs(Object::ListType(1,connection->server.lobby.asObject()));
+        s->SetSerialno(connection->server.getSerialNo());
         return oplist(1,s);
     }
     edict_t::const_iterator I = charactersDict.find(to);
@@ -183,6 +187,7 @@ oplist Account::LookOperation(const Look & op)
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
         s->SetArgs(Object::ListType(1,I->second->asObject()));
+        s->SetSerialno(connection->server.getSerialNo());
         return oplist(1,s);
     }
     const adict_t & accounts = connection->server.lobby.getAccounts();
@@ -191,6 +196,7 @@ oplist Account::LookOperation(const Look & op)
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
         s->SetArgs(Object::ListType(1,J->second->asObject()));
+        s->SetSerialno(connection->server.getSerialNo());
         return oplist(1,s);
     }
     return error(op, "Unknown look target");

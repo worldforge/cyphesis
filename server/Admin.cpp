@@ -14,6 +14,7 @@
 #include "Admin.h"
 #include "ServerRouting.h"
 #include "WorldRouter.h"
+#include "Connection.h"
 #include <rulesets/Character.h>
 #include <rulesets/BaseMind.h>
 
@@ -72,6 +73,7 @@ oplist Admin::SaveOperation(const Save & op)
     Object::ListType args(1,report);
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());
+    info->SetSerialno(connection->server.getSerialNo());
     return oplist(1,info);
 }
 
@@ -131,15 +133,20 @@ oplist Admin::LoadOperation(const Load & op)
             ++mind_count;
         }
     }
-    Object::MapType report;
-    report["message"] = "Objects loaded from database";
-    report["object_count"] = count;
-    report["mind_count"] = mind_count;
-    Info * info = new Info(Info::Instantiate());
-    Object::ListType args(1,report);
-    info->SetArgs(args);
-    info->SetRefno(op.GetSerialno());
-    return oplist(1,info);
+    if (connection != NULL) {
+        Object::MapType report;
+        report["message"] = "Objects loaded from database";
+        report["object_count"] = count;
+        report["mind_count"] = mind_count;
+        Info * info = new Info(Info::Instantiate());
+        Object::ListType args(1,report);
+        info->SetArgs(args);
+        info->SetRefno(op.GetSerialno());
+        info->SetSerialno(connection->server.getSerialNo());
+        return oplist(1,info);
+    } else {
+        return oplist();
+    }
 }
 
 oplist Admin::GetOperation(const Get & op)
@@ -170,6 +177,7 @@ oplist Admin::GetOperation(const Get & op)
                 Info * info = new Info(Info::Instantiate());
                 info->SetArgs(Object::ListType(1,I->second->asObject()));
                 info->SetRefno(op.GetSerialno());
+                info->SetSerialno(connection->server.getSerialNo());
                 return oplist(1,info);
             } else {
                 return error(op, "Unknown command");
@@ -203,6 +211,7 @@ oplist Admin::SetOperation(const Set & op)
                 Object::ListType args(1,report);
                 info->SetArgs(args);
                 info->SetRefno(op.GetSerialno());
+                info->SetSerialno(connection->server.getSerialNo());
                 return oplist(1,info);
             } else {
                 return error(op, "Unknown command");

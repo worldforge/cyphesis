@@ -56,6 +56,7 @@ Account * Connection::addPlayer(const std::string& username,
     a.SetArgs(Object::ListType(1,us));
     a.SetFrom(username);
     a.SetTo("lobby");
+    a.SetSerialno(server.getSerialNo());
     server.lobby.operation(a);
     server.lobby.addObject(player);
     return player;
@@ -76,6 +77,7 @@ void Connection::destroy()
             d.SetArgs(Object::ListType(1,us));
             d.SetFrom(I->first);
             d.SetTo("lobby");
+            d.SetSerialno(server.getSerialNo());
             server.lobby.operation(d);
             continue;
         }
@@ -112,6 +114,7 @@ oplist Connection::operation(const RootOperation & op)
                 Info * info = new Info(Info::Instantiate());
                 info->SetArgs(Object::ListType(1,pchar->asObject()));
                 info->SetRefno(op.GetSerialno());
+                info->SetSerialno(server.getSerialNo());
                 oplist res = ent->externalOperation(op);
                 res.insert(res.begin(), info);
                 return res;
@@ -158,11 +161,13 @@ oplist Connection::LoginOperation(const Login & op)
             a.SetArgs(Object::ListType(1,us));
             a.SetFrom(account_id);
             a.SetTo("lobby");
+            a.SetSerialno(server.getSerialNo());
             server.lobby.operation(a);
             server.lobby.addObject(player);
             Info * info = new Info(Info::Instantiate());
             info->SetArgs(Object::ListType(1,player->asObject()));
             info->SetRefno(op.GetSerialno());
+            info->SetSerialno(server.getSerialNo());
             debug(cout << "Good login" << endl << flush;);
             return oplist(1,info);
         }
@@ -191,6 +196,7 @@ oplist Connection::CreateOperation(const Create & op)
             Info * info = new Info(Info::Instantiate());
             info->SetArgs(Object::ListType(1,player->asObject()));
             info->SetRefno(op.GetSerialno());
+            info->SetSerialno(server.getSerialNo());
             debug(cout << "Good create" << endl << flush;);
             return oplist(1,info);
         }
@@ -228,18 +234,23 @@ oplist Connection::GetOperation(const Get & op)
         info = new Info(Info::Instantiate());
         info->SetArgs(Object::ListType(1,server.asObject()));
         info->SetRefno(op.GetSerialno());
+        info->SetSerialno(server.getSerialNo());
         debug(cout << "Replying to empty get" << endl << flush;);
     } else {
         Object::MapType::const_iterator I = args.front().AsMap().find("id");
         if (I == args.front().AsMap().end()) {
-            return oplist();
+            return error(op, "Type definition requested with no id");
         }
         const std::string & id = I->second.AsString();
         std::cout << "Get got for " << id << std::endl << std::flush;
         Atlas::Objects::Root * o = Inheritance::instance().get(id);
+        if (o == NULL) {
+            return error(op, "Unknown type definition requested");
+        }
         info = new Info(Info::Instantiate());
         info->SetArgs(Object::ListType(1,o->AsObject()));
         info->SetRefno(op.GetSerialno());
+        info->SetSerialno(server.getSerialNo());
     }
     
     return oplist(1,info);
