@@ -1,5 +1,10 @@
 2004-09-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Add multicolumn unique index to array tables
+	  to ensure contents is sane.
+
+2004-09-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Supress debug output.
 
 	* common/terrain_utils.cpp: Free up database results after processing

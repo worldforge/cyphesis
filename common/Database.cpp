@@ -1062,6 +1062,7 @@ bool Database::registerArrayTable(const std::string & name,
 
     std::string query("SELECT * from ");
     std::string createquery("CREATE TABLE ");
+    std::string indexquery("CREATE UNIQUE INDEX ");
 
     query += name;
     query += " WHERE id = 0";
@@ -1069,7 +1070,12 @@ bool Database::registerArrayTable(const std::string & name,
     createquery += name;
     // FIXME This is a foreign key to an inherited table.
     // Implement referential integrity once PostgreSQL works.
-    createquery += " (id integer";
+    createquery += " (id integer NOT NULL";
+
+    indexquery += name;
+    indexquery += "_point_idx on ";
+    indexquery += name;
+    indexquery += " (id";
 
     for (unsigned int i = 0; i < dimension; ++i) {
         query += " AND ";
@@ -1079,6 +1085,9 @@ bool Database::registerArrayTable(const std::string & name,
         createquery += ", ";
         createquery += array_axes[i];
         createquery += " integer NOT NULL";
+
+        indexquery += ", ";
+        indexquery += array_axes[i];
     }
 
     for (MapType::const_iterator I = row.begin(); I != row.end(); ++I) {
@@ -1137,10 +1146,18 @@ bool Database::registerArrayTable(const std::string & name,
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
     bool ret = runCommandQuery(createquery);
-    if (ret) {
-        allTables.insert(name);
+    if (!ret) {
+        return false;
     }
-    return ret;
+    indexquery += ");";
+    std::cout << "INDEX QUERY: " << indexquery
+                    << std::endl << std::flush;
+    ret = runCommandQuery(indexquery);
+    if (!ret) {
+        return false;
+    }
+    allTables.insert(name);
+    return true;
 }
 
 const DatabaseResult Database::selectArrayRows(const std::string & name,
