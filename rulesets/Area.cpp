@@ -16,18 +16,20 @@ Area::~Area()
 {
 }
 
-const Element Area::get(const std::string & aname) const
+bool Area::get(const std::string & aname, Element & attr) const
 {
     if (aname == "segments") {
-        return idListAsObject(segments);
+        attr = Element::ListType();
+        idListAsObject(segments, attr.AsList());
+        return true;
     }
-    return Thing::get(aname);
+    return Thing::get(aname, attr);
 }
 
 void Area::set(const std::string & aname, const Element & attr)
 {
     if ((aname == "segments") && attr.IsList()) {
-        segments = idListFromAtlas(attr);
+        idListFromAtlas(attr.AsList(), segments);
         update_flags |= a_area;
     } else {
         Thing::set(aname, attr);
@@ -36,5 +38,7 @@ void Area::set(const std::string & aname, const Element & attr)
 
 void Area::addToObject(Element::MapType & omap) const
 {
-    omap["segments"] = idListAsObject(segments);
+    Element::ListType & si =
+        (omap["segments"] = Element::ListType()).AsList();
+    idListAsObject(segments, si);
 }

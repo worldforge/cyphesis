@@ -22,8 +22,8 @@ class Stackable : public Thing {
     explicit Stackable(const std::string & id);
     virtual ~Stackable();
 
-    virtual const Atlas::Message::Object get(const std::string &) const;
-    virtual void set(const std::string & aname, const Atlas::Message::Object & attr);
+    virtual bool get(const std::string &, Atlas::Message::Object &) const;
+    virtual void set(const std::string &, const Atlas::Message::Object &);
 
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
 

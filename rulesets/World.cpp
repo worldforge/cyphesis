@@ -32,11 +32,11 @@ World::~World()
 {
 }
 
-const Element World::get(const std::string & aname) const
+bool World::get(const std::string & aname, Element & attr) const
 {
     if (aname == "terrain") {
-        Element e = Element::ListType();
-        Element::ListType & terrain = e.AsList();
+        attr = Element::ListType();
+        Element::ListType & terrain = attr.AsList();
         const Mercator::Terrain::Pointstore & points = m_terrain.getPoints();
         Mercator::Terrain::Pointstore::const_iterator I = points.begin();
         for(; I != points.end(); ++I) {
@@ -50,9 +50,9 @@ const Element World::get(const std::string & aname) const
                 point[2] = (Element::FloatType)(J->second);
             }
         }
-        return e;
+        return true;
     }
-    return Entity::get(aname);
+    return Entity::get(aname, attr);
 }
 
 void World::set(const std::string & aname, const Element & attr)

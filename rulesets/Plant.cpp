@@ -26,20 +26,25 @@ Plant::~Plant()
 {
 }
 
-const Element Plant::get(const std::string & aname) const
+bool Plant::get(const std::string & aname, Element & attr) const
 {
     if (aname == "fruits") {
-        return fruits;
+        attr = fruits;
+        return true;
     } else if (aname == "radius") {
-        return radius;
+        attr = radius;
+        return true;
     } else if (aname == "fruitName") {
-        return fruitName;
+        attr = fruitName;
+        return true;
     } else if (aname == "fruitChance") {
-        return fruitChance;
+        attr = fruitChance;
+        return true;
     } else if (aname == "sizeAdult") {
-        return sizeAdult;
+        attr = sizeAdult;
+        return true;
     }
-    return Thing::get(aname);
+    return Thing::get(aname, attr);
 }
 
 void Plant::set(const std::string & aname, const Element & attr)

@@ -23,12 +23,13 @@ Stackable::~Stackable()
 {
 }
 
-const Element Stackable::get(const std::string & aname) const
+bool Stackable::get(const std::string & aname, Element & attr) const
 {
     if (aname == "num") {
-        return Element(num);
+        attr = num;
+        return true;
     }
-    return Thing::get(aname);
+    return Thing::get(aname, attr);
 }
 
 void Stackable::set(const std::string & aname, const Element & attr)

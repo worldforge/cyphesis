@@ -19,16 +19,22 @@ Line::~Line()
 {
 }
 
-const Element Line::get(const std::string & aname) const
+bool Line::get(const std::string & aname, Element & attr) const
 {
     if (aname == "start_intersections") {
-        return idListAsObject(startIntersections);
+        attr = Element::ListType();
+        idListAsObject(startIntersections, attr.AsList());
+        return true;
     } else if (aname == "end_intersections") {
-        return idListAsObject(endIntersections);
+        attr = Element::ListType();
+        idListAsObject(endIntersections, attr.AsList());
+        return true;
     } else if (aname == "coords") {
-        return coordListAsObject(coords);
+        attr = Element::ListType();
+        coordListAsObject(coords, attr.AsList());
+        return true;
     }
-    return Thing::get(aname);
+    return Thing::get(aname, attr);
 }
 
 void Line::set(const std::string & aname, const Element & attr)
@@ -36,13 +42,13 @@ void Line::set(const std::string & aname, const Element & attr)
     debug( std::cout << "Setting " << aname << " in line" << std::endl
                      << std::flush;);
     if ((aname == "start_intersections") && attr.IsList()) {
-        startIntersections = idListFromAtlas(attr);
+        idListFromAtlas(attr.AsList(), startIntersections);
         update_flags |= a_line;
     } else if ((aname == "end_intersections") && attr.IsList()) {
-        startIntersections = idListFromAtlas(attr);
+        idListFromAtlas(attr.AsList(), endIntersections);
         update_flags |= a_line;
     } else if ((aname == "coords") && attr.IsList()) {
-        coords = coordListFromAtlas(attr);
+        coordListFromAtlas(attr.AsList(), coords);
         update_flags |= a_line;
     } else {
         Thing::set(aname, attr);
@@ -51,7 +57,12 @@ void Line::set(const std::string & aname, const Element & attr)
 
 void Line::addToObject(Element::MapType & omap) const
 {
-    omap["start_intersections"] = idListAsObject(startIntersections);
-    omap["end_intersections"] = idListAsObject(endIntersections);
-    omap["coords"] = coordListAsObject(coords);
+    Element::ListType & si =
+        (omap["start_intersections"] = Element::ListType()).AsList();
+    idListAsObject(startIntersections, si);
+    Element::ListType & ei =
+        (omap["end_intersections"] = Element::ListType()).AsList();
+    idListAsObject(endIntersections, ei);
+    Element::ListType & c = (omap["coords"] = Element::ListType()).AsList();
+    coordListAsObject(coords, c);
 }

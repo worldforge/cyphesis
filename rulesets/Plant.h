@@ -29,7 +29,7 @@ class Plant : public Thing {
     explicit Plant(const std::string & id);
     virtual ~Plant();
 
-    virtual const Atlas::Message::Object get(const std::string &) const;
+    virtual bool get(const std::string &, Atlas::Message::Object &) const;
     virtual void set(const std::string &, const Atlas::Message::Object &);
 
     virtual OpVector TickOperation(const Tick & op);

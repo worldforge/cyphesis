@@ -1,5 +1,16 @@
 2003-04-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.h, rulesets/World.cpp, rulesets/Stackable.h,
+	  rulesets/Stackable.cpp, rulesets/Plant.h,
+	  rulesets/Plant.cpp, rulesets/Line.h, rulesets/Line.cpp,
+	  rulesets/Entity.h, rulesets/Entity.cpp, rulesets/Character.h,
+	  rulesets/Character.cpp, rulesets/Area.h, rulesets/Area.cpp,
+	  common/type_utils.h, rulesets/Py_Thing.cpp, rulesets/Py_Mind.cpp,
+	  client/Py_CreatorClient.cpp: Modify the way entities are queried
+	  to avoid return by value, and use references instead.
+
+2003-04-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* Switch to requiring pkg-config versions of libs, and make
 	  postgres check more verbose.
 

@@ -120,14 +120,16 @@ Character::~Character()
     }
 }
 
-const Element Character::get(const std::string & aname) const
+bool Character::get(const std::string & aname, Element & attr) const
 {
     if (aname == "drunkness") {
-        return drunkness;
+        attr = drunkness;
+        return true;
     } else if (aname == "sex") {
-        return sex;
+        attr = sex;
+        return true;
     }
-    return Thing::get(aname);
+    return Thing::get(aname, attr);
 }
 
 void Character::set(const std::string & aname, const Element & attr)
