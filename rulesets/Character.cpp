@@ -111,6 +111,7 @@ void MovementInfo::check_collisions(const Location & loc)
             return;
         }
         double t = loc.inTime(oloc);
+        if (t < 0) { return; }
         collTime = min(collTime, t);
         if (collTime > consts::basic_tick) { return; }
         cout << "Collision with parent bounding box" << endl << flush;
@@ -140,6 +141,8 @@ void MovementInfo::check_collisions(const Location & loc)
     }
     // cout << "COLLISION" << endl << flush;
     if (collTime < get_tick_addition(loc.coords)) {
+        cout << "Setting target loc to " << loc.coords << "+" << loc.velocity
+             << "*" << collTime;
         target_location = loc.coords + loc.velocity * collTime;
     } else {
         target_ref = NULL;

@@ -25,3 +25,6 @@ animal		= "world.objects.animals.Animal"
 [food]
 ham		= ""
 vodka		= "world.objects.food.Vodka"
+
+[structure]
+sty		= ""

@@ -1,5 +1,15 @@
 2001-03-19  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* physics/Vector3D.h: Corrected variable name convention error in
+	  inTime() function.
+
+	* rulesets/Character.cpp: Detect what if entity has already left
+	  refs bounding box.
+
+	* basic.vconf: Made sty use the Structure base class.
+
+2001-03-19  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* modules/Location.h, physics/Vector3D.h: Added collision checking
 	  functions to work out when an entity inside a box will hit the
 	  outside.

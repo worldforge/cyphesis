@@ -26,7 +26,7 @@ static inline range hitTime(double s, double r, double u, double v, double p, do
 }
 
 static inline range inTime(double s, double r, double u, double p, double q) {
-    return range((p - q + r - s)/u, (p + q - r - s)/u);
+    return range((r - q + p - s)/u, (r + q - p - s)/u);
 }
 
 static inline double max(range r) {
@@ -234,6 +234,7 @@ class Vector3D {
         range zt = ::inTime(z+m.z, om.z, v.z, s.z, os.z);
         double enter = max(min(xt), max(min(yt),min(zt)));
         double leave = min(max(xt), min(max(yt),max(zt)));
+        cout << "E" << enter << " L" << leave << endl << flush;
         if (enter > 0) { return -1; }
         return leave;
     }
