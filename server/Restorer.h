@@ -5,6 +5,8 @@
 #ifndef SERVER_RESTORER_H
 #define SERVER_RESTORER_H
 
+class Entity;
+
 // This class should never ever be instantiated, so the constructor is private
 // and unimplemented. Instead the template should be instantiated with
 // T as the class to be restored, and a reference to the object being
@@ -18,7 +20,8 @@ class Restorer : public T {
   private:
     Restorer();
   public:
-    restore(int what_exactly);
+    void populate(int what_exactly);
+    static Entity * restore(int what_exactly);
 };
 
 #endif // SERVER_RESTORER_H

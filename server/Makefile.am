@@ -7,8 +7,9 @@ cyphesis_SOURCES = \
 		Admin.cpp Admin.h \
 		Persistor.cpp Persistor.h \
 		Persistance.cpp Persistance.h \
-		Restoration.cpp Restoration.h \
 		PersistantThingFactory.cpp PersistantThingFactory.h \
+		Restoration.cpp Restoration.h \
+		Restorer.cpp Restorer_impl.h Restorer.h \
 		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
 		WorldRouter.cpp WorldRouter.h \
 		EntityFactory.cpp EntityFactory.h \
