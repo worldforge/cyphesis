@@ -12,8 +12,7 @@
 
 #include "config.h"
 
-#define _NO_DAEMON
-#define USE_SYSLOG
+// #define _NO_DAEMON
 
 char * inst_dir = INSTALLDIR;
 
@@ -51,6 +50,8 @@ int wait30(int pid)
 {
 	int ret;
 #ifdef USE_ALARM
+	/* I can't get this to work. The alarm signal does not seem to make
+	 * the wait4() system call return */
 	alarm(30);
 	printf("Alarm set\n"); fflush(stdout);
 	ret = wait4(pid, NULL, 0, NULL);
@@ -58,6 +59,9 @@ int wait30(int pid)
 	alarm(0);
 	printf("Alarm cleared\n"); fflush(stdout);
 #else
+	/* This is a poor substitute as it frequently blocks for 30
+	 * seconds on a process which has not quite exited when the
+	 * first wait4() call is made */
 	ret = wait4(pid, NULL, WNOHANG, NULL);
 	if (ret != 0) {
 		return ret;
@@ -80,10 +84,8 @@ int script_wait()
 
 void script_signal(int signo)
 {
-	if (server.s_state == SVR_SCRIPT) {
-		printf("Killing script %d with %d\n", server.s_spid, signo); fflush(stdout);
-		kill(server.s_spid, signo);
-	}
+	printf("Killing script %d with %d\n", server.s_spid, signo); fflush(stdout);
+	kill(server.s_spid, signo);
 }
 
 void server_signal(int signo)
@@ -128,7 +130,7 @@ int script_start()
 	strcpy(binary, inst_dir);
 	strcat(binary, "/bin/acorn");
 	execlp(binary, binary, NULL);
-	perror("EXEC");
+	perror("exec");
 	syslog(LOG_CRIT, "script exec failed");
 	exit(-1);
 }
@@ -146,6 +148,7 @@ int server_start()
 		server.s_pid = new_pid;
 		server.s_state = SVR_START;
 		syslog(LOG_INFO, "Server started with with pid %d", new_pid);
+		server.s_uptime = 0;
 		return new_pid;
 	}
 	binary = malloc(strlen(inst_dir) + 15);
@@ -164,7 +167,16 @@ int server_start()
 
 void signal_hup(int signo)
 {
+	/* Terminate server and re-run */
+	syslog(LOG_NOTICE, "Re-starting server");
 	last_signal = signo;
+	if (server.s_state==SVR_SCRIPT) {
+		script_signal(SIGTERM);
+		if (script_wait() < 1) {
+			script_signal(SIGKILL);
+			script_wait();
+		}
+	}
 	server_term();
 	if (server_wait() == -1) {
 		server_kill();
@@ -178,10 +190,15 @@ void signal_hup(int signo)
 void signal_term(int signo)
 {
 	/* Terminate server and exit */
-	syslog(LOG_INFO, "Shutting server down");
+	syslog(LOG_NOTICE, "Shutting server down");
 	last_signal = signo;
-	script_signal(SIGTERM);
-	script_signal(SIGKILL);
+	if (server.s_state==SVR_SCRIPT) {
+		script_signal(SIGTERM);
+		if (script_wait() < 1) {
+			script_signal(SIGKILL);
+			script_wait();
+		}
+	}
 	server_term();
 	server.s_state = SVR_TERM;
 	server_wait();
@@ -193,12 +210,16 @@ void signal_term(int signo)
 void signal_user(int signo)
 {
 	/* Restart the script */
+	syslog(LOG_NOTICE, "Re-initialising server");
 	last_signal = signo;
-	if ((server.s_state==SVR_SCRIPT)||(server.s_state==SVR_RUNNING)) {
+	if (server.s_state==SVR_SCRIPT) {
 		script_signal(SIGTERM);
-		script_wait();
-		script_signal(SIGKILL);
-		script_wait();
+		if (script_wait() < 1) {
+			script_signal(SIGKILL);
+			script_wait();
+		}
+	}
+	if ((server.s_state==SVR_SCRIPT)||(server.s_state==SVR_RUNNING)) {
 		server.s_state = SVR_START;
 	}
         signal(SIGUSR1, signal_user);
@@ -253,9 +274,10 @@ int main(int argc, char ** argv)
 				server.s_stime++;
 				if (server.s_stime > 5) {
 					script_signal(SIGTERM);
-					script_wait();
-					script_signal(SIGKILL);
-					script_wait();
+					if (script_wait() < 1) {
+						script_signal(SIGKILL);
+						script_wait();
+					}
 					server.s_state = SVR_RUNNING;
 				}
 				break;

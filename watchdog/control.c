@@ -3,6 +3,7 @@
 // Copyright (C) 2000 Alistair Riddoch
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <signal.h>
 #include <errno.h>
 
@@ -36,8 +37,26 @@ void daemon_kill(int pid, int signo)
 	perror("kill");
 }
 
-void daemon_start()
+int daemon_start()
 {
+	int new_pid = fork();
+	char * binary;
+	if (new_pid < 0) {
+		perror("fork");
+		return -1;
+	} else if (new_pid > 0) {
+		return new_pid;
+	}
+	binary = malloc(strlen(inst_dir) + 15);
+	if (binary == NULL) {
+		perror("malloc");
+		exit(1);
+	}
+	strcpy(binary, inst_dir);
+	strcat(binary, "/bin/cyphesisd");
+	execlp(binary, binary, NULL);
+	perror("exec");
+	exit(-1);
 }
 
 int main(int argc, char ** argv)
@@ -50,9 +69,9 @@ int main(int argc, char ** argv)
 		usage(argv);
 		exit(1);
 	}
-        if (strcmp(inst_dir, "NONE") == 0) {
-                inst_dir = "/usr/local";
-        }
+	if (strcmp(inst_dir, "NONE") == 0) {
+		inst_dir = "/usr/local";
+	}
 	if (strcmp(argv[1], "start") == 0) {
 		job = CY_START;
 	} else if (strcmp(argv[1], "stop") == 0) {

@@ -1,3 +1,9 @@
+2001-02-07  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* watchdog/*: Watchdog and control program now work just fine,
+	  though it is not always easy to tell whether the acorn script
+	  is working or not.
+
 2001-02-05  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* watchdog/*: Fleshed out watchdog functionality, which is now working
