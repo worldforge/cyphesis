@@ -1,5 +1,10 @@
 2004-09-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/BaseMind.cpp: Use parent of sub op when dispatching
+	  sight and sound ops to mind scripts.
+
+2004-09-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/WorldTime.cpp: Use 0-11 for months instead of 1-12.
 
 	* tests/WorldTimetest.cpp: Test the "season" querying interface.

@@ -243,8 +243,11 @@ void BaseMind::sightTouchOperation(const Sight & op, Touch & sub_op, OpVector & 
 void BaseMind::sightOtherOperation(const Sight & op, RootOperation & sub_op, OpVector & res)
 {
     debug( std::cout << "BaseMind::sightOperation(Sight, RootOperation)" << std::endl << std::flush;);
-    // FIXME Should use type of sub_op to build the name of the call.
-    m_script->Operation("sight_undefined", op, res, &sub_op);
+
+    std::string event_name("sight_");
+    event_name += sub_op.getParents().front().asString();
+
+    m_script->Operation(event_name, op, res, &sub_op);
 }
 
 void BaseMind::soundLoginOperation(const Sound & op, Login & sub_op, OpVector & res)
@@ -326,7 +329,11 @@ void BaseMind::soundTalkOperation(const Sound & op, Talk & sub_op, OpVector & re
 void BaseMind::soundOtherOperation(const Sound & op, RootOperation & sub_op, OpVector & res)
 {
     debug( std::cout << "BaseMind::soundOperation(Sound, RootOperation)" << std::endl << std::flush;);
-    m_script->Operation("sound_undefined", op, res, &sub_op);
+
+    std::string event_name("sound_");
+    event_name += sub_op.getParents().front().asString();
+
+    m_script->Operation(event_name, op, res, &sub_op);
 }
 
 void BaseMind::SoundOperation(const Sound & op, OpVector & res)
