@@ -9,7 +9,7 @@ AC_CANONICAL_SYSTEM
 
 dnl Initialise automake
 
-VERSION=0.3.0
+VERSION=0.3.1
 
 AM_INIT_AUTOMAKE(cyphesis, $VERSION)
 AM_CONFIG_HEADER(config.h)
@@ -237,6 +237,7 @@ AC_OUTPUT([
     rulesets/Makefile
     server/Makefile
     client/Makefile
-    tests/Makefile
     tools/Makefile
+    data/Makefile
+    tests/Makefile
 ], [chmod +x cyphesis-config])

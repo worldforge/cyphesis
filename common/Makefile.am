@@ -14,7 +14,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		FormattedXMLWriter.cpp FormattedXMLWriter.h \
 		utility.cpp utility.h \
 		system.cpp system.h \
-		serialno.cpp serialno.h \
+		serialno.cpp serialno.h refno.h \
 		inheritance.cpp inheritance.h \
 		custom.cpp \
 		BaseEntity.cpp BaseEntity.h \
@@ -22,4 +22,5 @@ libcommon_a_SOURCES = const.cpp const.h \
 		BaseWorld.cpp BaseWorld.h \
 		Burn.h Chop.h Cut.h Eat.h \
 		Nourish.h Setup.h Tick.h Generic.h \
+		Use.h Wield.h \
 		stringstream.h

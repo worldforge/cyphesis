@@ -1,5 +1,9 @@
 2004-07-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* Clean up files for distribution.
+
+2004-07-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/MemMap.cpp: Very carefully ensure that the garbage
 	  collection iterator is not reset to the beginning too often
 	  so that we cover the whole mind.

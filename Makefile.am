@@ -1,11 +1,8 @@
 
-SUBDIRS = physics common modules rulesets server client tests tools
+SUBDIRS = physics common modules rulesets server client data tools tests
 
 docdir = $(datadir)/doc/cyphesis-$(VERSION)
 dist_doc_DATA = README COPYING AUTHORS THANKS NEWS
-
-confdir = $(sysconfdir)/cyphesis
-dist_conf_DATA = cyphesis.vconf data/basic.xml data/acorn.xml data/mason.xml data/werewolf.xml
 
 rulesetdir = $(datadir)/cyphesis/rulesets
 
