@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include <stdio.h>
+
 #include "DateTime.h"
 
 // date_pat=re.compile("^|[-:]|\s+");
@@ -33,12 +35,20 @@ inline void DateTime::set(int t)
     
 }
 
-DateTime::DateTime(char * date_time)
+DateTime::DateTime(char * date_time) :
+  m_second(0), m_minute(0), m_hour(0), m_day(0), m_month(0), m_year(0)
 {
-	// extract numbers from string
-        //(DateTime::year,DateTime::month,DateTime::day,;
-         //DateTime::hour,DateTime::minute,DateTime::second)=\;
-         //map(float,date_pat.split(date_time));
+    // Wouldnt it be better do make date_time a std::string directly ?
+    std::string date( date_time );
+    if( date.length() == 19 )
+    {
+        m_year = atoi( date.substr( 0, 4 ).c_str() );
+	m_month = atoi( date.substr( 5, 2 ).c_str() );
+	m_day = atoi( date.substr( 8, 2 ).c_str() );
+	m_hour = atoi( date.substr( 11, 2 ).c_str() );
+	m_minute = atoi( date.substr( 14, 2 ).c_str() );
+	m_second = atoi( date.substr( 17, 2 ).c_str() );
+    }
 }
 
 DateTime::DateTime(int t)
@@ -50,6 +60,15 @@ DateTime::DateTime(int t)
 DateTime::DateTime(int yr, int mn, int da, int hr, int mt, int sc) :
   m_second(sc), m_minute(mt), m_hour(hr), m_day(da), m_month(mn), m_year(yr)
 {
+}
+
+bool DateTime::isValid() const
+{
+    return ( m_second < m_spm ) &&
+           ( m_minute < m_mph ) &&
+           ( m_hour   < m_hpd ) &&
+           ( m_day    < m_dpm ) &&
+           ( m_month  < m_mpy );
 }
 
 int DateTime::seconds()
@@ -70,7 +89,17 @@ void DateTime::update(int t)
 std::string DateTime::asString()
 {
     //Convert date into string
-    //return "%04i-%02i-%02i %02i:%02i:%04.1f" %
-         //(DateTime::year,DateTime::month,DateTime::day,;
-            //DateTime::hour,DateTime::minute,DateTime::second);
+    char buffer[ 100 ];
+    snprintf( buffer, 100, "%4d-%2d-%2d %2d:%2d:%2d", m_year, m_month, m_day, m_hour, m_minute, m_second );
+    return std::string( buffer );
+}
+
+bool DateTime::operator==( const DateTime & date ) const
+{
+    return ( m_year == date.m_year ) &&
+           ( m_month == date.m_month ) &&
+           ( m_day == date.m_day ) && 
+           ( m_hour == date.m_hour ) &&
+           ( m_minute == date.m_minute ) &&
+           ( m_second == date.m_second );
 }

@@ -5,6 +5,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <stdio.h>
 
 #include "WorldTime.h"
 
@@ -27,9 +28,10 @@ static inline double days(const double & n) { return hours(24)*n; }
 static inline double months(const double & n) { return days(30)*n; }
 static inline double years(const double & n) { return months(12)*n; }
 
-inline const std::string & seconds2string(double seconds) {
-    // date_time=DateTime(seconds);
-    // return str(date_time);
+inline const std::string seconds2string(double seconds) {
+    char buffer[ 100 ];
+    snprintf( buffer, 100, "%f", seconds );
+    return buffer;
 }
 
 void WorldTime::initTimeInfo() {
@@ -72,17 +74,16 @@ void WorldTime::initTimeInfo() {
 
 std::string WorldTime::operator[](const std::string & name)
 {
-    //if (name=="season") {
+#warning TODO return the correct season
+    if( name=="season" ) {
         //return month2season[month];
-    //}
+    }
     return "what";
 }
 
 bool WorldTime::operator==(const WorldTime & other) const
 {
-    // Why the hell won't this work?
-    // return (time==other.time);
-    return false;
+    return time == other.time;
 }
 
 bool WorldTime::operator==(const std::string & when) const

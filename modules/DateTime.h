@@ -9,12 +9,12 @@
 
 class DateTime {
   protected:
-    int m_second;
-    int m_minute;
-    int m_hour;
-    int m_day;
-    int m_month;
-    int m_year;
+    unsigned int m_second;
+    unsigned int m_minute;
+    unsigned int m_hour;
+    unsigned int m_day;
+    unsigned int m_month;
+    unsigned int m_year;
 
     static unsigned int m_spm; // seconds per minute
     static unsigned int m_mph; // minutes per hour
@@ -28,7 +28,7 @@ class DateTime {
     explicit DateTime(int);
     DateTime(int, int, int, int, int, int);
 
-    //bool operator==(const DateTime & other) const { }
+    bool isValid() const;
 
     static void define(unsigned int spm, unsigned int mph, unsigned int hpd,
                        unsigned int dpm, unsigned int mpy) {
@@ -51,6 +51,8 @@ class DateTime {
     unsigned int hpd() { return m_hpd; }
     unsigned int dpm() { return m_dpm; }
     unsigned int mpy() { return m_mpy; }
+
+    bool operator==( const DateTime & ) const;
 };
 
 inline std::ostream & operator<<(std::ostream& s, const DateTime& d) {

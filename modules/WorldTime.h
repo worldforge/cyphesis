@@ -49,6 +49,6 @@ class WorldTime {
     bool operator==(const std::string & when) const;
 };
 
-const std::string & seconds2string(double seconds);
+const std::string seconds2string(double seconds);
 
 #endif // MODULES_WORLD_TIME_H

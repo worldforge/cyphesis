@@ -1,5 +1,12 @@
 2002-01-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/DateTime.cpp, modules/DateTime.h,
+	  modules/WorldTime.cpp, modules/WorldTime.h:
+	  Patch by Michael Koch to fix bugs, and pad out the implementation
+	  of the time and date code.
+
+2002-01-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/client.cpp, server/server.cpp, common/globals.cpp,
 	  common/globals.h, tools/cycmd.cpp, tools/cydbload.cpp,
 	  tools/cypasswd.cpp: Move code for handling loading of config
