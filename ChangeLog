@@ -1,3 +1,7 @@
+2004-12-31  Al Riddoch  <alriddoch@zepler.org>
+
+	* cyphesis.spec.in: Change "Copyright" tag to "License"
+
 2004-12-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/const.h: Make the coments doxygen compatable.

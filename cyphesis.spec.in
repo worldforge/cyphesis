@@ -6,7 +6,7 @@ Summary: A simple personal server for the WorldForge project
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Copyright: GPL
+License: GPL
 Group: Amusements/Games
 URL: http://www.worldforge.org/dev/eng/servers/cyphesis
 Packager: Al Riddoch <alriddoch@zepler.org>
