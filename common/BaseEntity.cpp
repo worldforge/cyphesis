@@ -280,6 +280,15 @@ op_no_t BaseEntity::op_enumerate(const RootOperation & op)
     if ("look" == parent) {
         return(OP_LOOK);
     }
+    if ("load" == parent) {
+        return(OP_LOAD);
+    }
+    if ("save" == parent) {
+        return(OP_SAVE);
+    }
+    if ("setup" == parent) {
+        return(OP_SETUP);
+    }
     return (OP_INVALID);
 }
 
@@ -304,6 +313,12 @@ RootOperation * BaseEntity::operation(const RootOperation & op)
             return Operation((const Touch &)op);
         case OP_LOOK:
             return Operation((const Look &)op);
+        case OP_LOAD:
+            return Operation((const Load &)op);
+        case OP_SAVE:
+            return Operation((const Save &)op);
+        case OP_SETUP:
+            return Operation((const Setup &)op);
         default:
             cout << "nothing doing here" << endl;
     }

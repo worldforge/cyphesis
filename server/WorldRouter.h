@@ -32,8 +32,9 @@ class WorldRouter : public Routing {
     ofstream queue_fp;
 
     WorldRouter(ServerRouting * server);
-    bad_type get_id(char * name, string & full_id);
-    bad_type add_object(BaseEntity * obj, bad_type ent=None);
+    bad_type get_id(string & name, string & full_id);
+    virtual BaseEntity * add_object(BaseEntity * obj);
+    virtual BaseEntity * add_object(const string & type, const Message::Object & ent);
     void del_object(BaseEntity * obj);
     bad_type is_object_deleted(BaseEntity *);
     bad_type message(bad_type msg, BaseEntity *);

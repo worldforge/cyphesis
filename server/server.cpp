@@ -151,7 +151,8 @@ void CommClient::ObjectArrived(const Objects::Operation::Touch & obj)
     cout << "A touch object thingy here!" << endl << flush;
 }
 
-int CommServer::setup(int port) {
+int CommServer::setup(int port)
+{
     struct sockaddr_in sin;
 
     server_port = port;
@@ -171,6 +172,11 @@ int CommServer::setup(int port) {
     cout << "Listening... " << flush;
     server=new ServerRouting(this,"server");
     return(0);
+}
+
+inline int CommClient::peek()
+{
+    return client_ios.peek();
 }
 
 int CommServer::accept() {
@@ -229,7 +235,13 @@ void CommServer::loop() {
        client_fd = I->first;
        if (FD_ISSET(client_fd, &sock_fds)) {
            client = I->second;
-           client->read();
+           if (client->peek() == -1) {
+               remove_client(client);
+               cout << "Client disconnected. Handle it here" << endl << flush;
+               exit(1);
+           } else {
+               client->read();
+           }
        }
     }
     if (FD_ISSET(server_fd, &sock_fds)) {

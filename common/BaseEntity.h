@@ -80,7 +80,7 @@ class BaseEntity {
   public:
     cid_t id;
     string fullid;
-    char * name;
+    string name;
     Location location;
     list_t contains;
     double stamp;

@@ -16,8 +16,8 @@ ServerRouting::ServerRouting(CommServer * server, char * name) : svr_name(name)
     //obj.world=ServerRouting::world;
 }
 
-BaseEntity * ServerRouting::add_object(BaseEntity * obj, bad_type ent=None) {
-    obj=Routing::add_object(obj, ent);
+BaseEntity * ServerRouting::add_object(BaseEntity * obj) {
+    obj=Routing::add_object(obj);
     id_dict[obj->id] = obj;
     return obj;
 }

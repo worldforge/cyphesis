@@ -15,7 +15,7 @@ public:
 
     Routing();
     bad_type check_operation(bad_type op);
-    BaseEntity * add_object(BaseEntity * obj, bad_type ent);
+    virtual BaseEntity * add_object(BaseEntity * obj);
     BaseEntity * del_object(BaseEntity * obj);
     BaseEntity * get_object(cid_t id);
     BaseEntity * get_object(string fid);

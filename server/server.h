@@ -52,6 +52,7 @@ class CommClient : Objects::Decoder {
     void message(const Objects::Operation::RootOperation &);
     //void destroy();
     void setup();
+    int peek();
 };
 
 // BaseServer is an libatlaspy class

@@ -85,7 +85,7 @@ RootOperation * Connection::Operation(const Login & obj)
 
         Player * player = (Player *)server->get_object(account_id);
         if (player && (account_id.size()!=0) && (password==player->password)) {
-            add_object(player, None);
+            add_object(player);
             player->connection=this;
             Info * info = new Info();
             *info = Info::Instantiate();
@@ -221,7 +221,7 @@ bad_type Connection::operation(bad_type op)
 Account * Connection::add_player(string & username, string & password)
 {
     Player * player=new Player(this, username, password);
-    add_object(player, None);
+    add_object(player);
     player->connection=this;
     player->world=server->world;
     server->add_object(player);

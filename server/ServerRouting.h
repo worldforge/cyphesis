@@ -21,7 +21,7 @@ class ServerRouting : public Routing {
 
     ServerRouting(CommServer * server, char * name);
 
-    BaseEntity * add_object(BaseEntity * obj, bad_type ent=0);
+    virtual BaseEntity * add_object(BaseEntity * obj);
     void save(char * filename);
     void load(char * filename);
     int idle();

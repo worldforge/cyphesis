@@ -18,7 +18,7 @@ bad_type Routing::check_operation(bad_type op)
     return None;
 }
 
-BaseEntity * Routing::add_object(BaseEntity * obj, bad_type ent=None)
+BaseEntity * Routing::add_object(BaseEntity * obj)
 {
     objects[obj->id]=obj;
     fobjects[obj->fullid]=obj;

@@ -2,12 +2,14 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Info.h>
 
 
 #include <common/log.h>
 
 #include "Account.h"
 #include "Connection.h"
+#include "WorldRouter.h"
 
 
 RootOperation * Account::Operation(const Logout & op)
@@ -45,30 +47,34 @@ RootOperation * Account::Operation(const Create & op)
     if (error) {
         return error;
     }
-    //type_class=get_thing_class(ent.type[0],"character");
-    //obj=Account::add_character(type_class,ent);
+    const string & type = entmap["parents"].AsList().front().AsString();
+
+    BaseEntity * obj = add_character(type, ent);
     //log.inform("Player "+Account::id+" adds character "+`obj`,op);
     //return Operation("info", obj.as_entity());
-    return(NULL);
+    Info * info = new Info();
+    *info = Info::Instantiate();
+    Message::Object::ListType args(1,obj->asObject());
+    info->SetArgs(args);
+
+    return(info);
 }
 
-Thing * Account::add_character(string character_class, const Message::Object & ent)
+BaseEntity * Account::add_character(const string & type, const Message::Object & ent)
 {
-    //char=Account::world.add_object(character_class, ent);
-    //if (not char.location) {
-        //char.location=Location(parent=Account::world,;
-                               //coordinates=\;
-                               //Vector3D(randint(0,9),randint(0,4),0.0));
-    //}
-    //char.player=this;
+    BaseEntity * chr = world->add_object(type, ent);
+    if (!chr->location) {
+        chr->location = Location(world, Vector3D(0,0,0));
+    }
+    //chr->player=this;
     //char.external_mind=ExternalMind(id=char.id, body=char,;
                                     //connection=Account::connection);
     //Account::characters_dict[char.id]=char;
     //Account::characters.append(char.id);
-    //Account::connection.add_object(char);
+    connection->add_object(chr);
     //Account::world.message(Operation("sight",;
                                  //Operation("create",char.as_entity())),;
                        //char);
     //return char;
-    return(NULL);
+    return(chr);
 }

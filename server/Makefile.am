@@ -14,4 +14,4 @@ cyphesis_SOURCES = \
 		Connection.cpp Connection.h \
 		server.cpp server.h
 
-cyphesis_LDADD = ../common/libcommon.a ../modules/libmodules.a ../physics/libphysics.a
+cyphesis_LDADD = ../common/libcommon.a ../modules/libmodules.a ../physics/libphysics.a ../rulesets/librulesets.a

@@ -4,6 +4,8 @@
 
 #include "WorldRouter.h"
 
+#include <rulesets/Thing.h>
+
 extern "C" {
     #include <stdio.h>
 }
@@ -29,12 +31,12 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
     //world_info.string2DateTime=WorldTime;
 }
 
-cid_t WorldRouter::get_id(char * name, string & full_id)
+cid_t WorldRouter::get_id(string & name, string & full_id)
 {
-    char * buf = (char *)malloc(strlen(name) + 32);
+    char * buf = (char *)malloc(strlen(name.c_str()) + 32);
     next_id++;
     if (buf) {
-        sprintf(buf, "%s_%d", name, next_id);
+        sprintf(buf, "%s_%d", name.c_str(), next_id);
         full_id = string(buf);
     } else {
         cout << "BARRRRF" << endl << flush;
@@ -42,11 +44,8 @@ cid_t WorldRouter::get_id(char * name, string & full_id)
     return(next_id);
 }
 
-bad_type WorldRouter::add_object(BaseEntity * obj, bad_type ent=None)
+BaseEntity * WorldRouter::add_object(BaseEntity * obj)
 {
-    //if (ent) {
-        //obj=object_from_entity(obj,ent);
-    //}
     obj->id=get_id(obj->name, obj->fullid);
     server->id_dict[obj->id]=fobjects[obj->fullid]=objects[obj->id]=obj;
     if (!obj->location) {
@@ -71,7 +70,18 @@ bad_type WorldRouter::add_object(BaseEntity * obj, bad_type ent=None)
     //op.time.sadd=-0.01;
     //WorldRouter::add_operation_to_queue(op,self);
     //return obj;
-    return None;
+    return (obj);
+}
+
+BaseEntity * WorldRouter::add_object(const string & type,
+                                     const Message::Object & ent)
+{
+    BaseEntity * obj;
+    obj = ThingFactory::new_thing(type, ent);
+    //if (ent) {
+        //obj=object_from_entity(type,ent);
+    //}
+    return add_object(obj);
 }
 
 void WorldRouter::del_object(BaseEntity * obj)
