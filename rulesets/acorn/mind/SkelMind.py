@@ -8,8 +8,7 @@ class SkeletonMind(BaseMind):
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
     def sight_move_operation(self, original_op, op):
-        self.map.update(op[0])
-        other = self.map.update(op[0])
+        other = self.map.update(op[0], op.getSeconds())
         if other.id==self.id: return
         #target=op[0].location.copy()
         if other.location.parent.id!=self.location.parent.id: return

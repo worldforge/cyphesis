@@ -282,16 +282,16 @@ const Element MemMap::asObject()
     return Element(omap);
 }
 
-void MemMap::check()
+void MemMap::check(const double & time)
 {
     if (m_checkIterator == m_entities.end()) {
         m_checkIterator = m_entities.begin();
     } else {
         MemEntity * me = m_checkIterator->second;
         assert(me != 0);
-        if (!me->isVisible() && (me->lastSeen() < 0.1) && (me->m_contains.empty())) {
-            debug(std::cout << me->getId() << "|" << me->getType()
-                      << " is a waste of space" << std::endl << std::flush;);
+        if (!me->isVisible() && ((time - me->lastSeen()) > 600) && (me->m_contains.empty())) {
+            std::cout << me->getId() << "|" << me->getType()
+                      << " is a waste of space" << std::endl << std::flush;
             MemEntityDict::const_iterator J = m_checkIterator;
             std::string next;
             if (++J != m_entities.end()) {

@@ -494,7 +494,7 @@ OpVector BaseMind::operation(const RootOperation & op)
     debug(std::cout << "BaseMind::operation(" << op.getParents().front().asString() << ")" << std::endl << std::flush;);
     OpVector res;
     m_time.update((int)op.getSeconds());
-    m_map.check();
+    m_map.check(op.getSeconds());
     m_map.getAdd(op.getFrom());
     RootOperation * look;
     while ((look = m_map.lookId()) != NULL) {

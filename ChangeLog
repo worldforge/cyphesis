@@ -1,5 +1,18 @@
 2004-07-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/BaseMind.cpp, rulesets/MemMap.cpp, rulesets/MemMap.h,
+	  rulesets/Py_Map.cpp: Modify python API so it passes in time
+	  to map.update and map.get. Use time elapsed to decide if something
+	  is ready for removal. Newly created entities are now less likely
+	  to get removed before they are verified.
+
+	* rulesets/basic/mind/NPCMind.py,
+	  rulesets/basic/mind/goals/humanoid/mason.py,
+	  rulesets/acorn/mind/SkelMind.py, rulesets/mason/mind/SkelMind.py:
+	  Update python code to new API.
+
+2004-07-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* Clean up files for distribution.
 
 2004-07-21  Al Riddoch  <alriddoch@zepler.org>

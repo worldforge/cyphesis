@@ -93,12 +93,12 @@ class NPCMind(BaseMind):
     ########## Sight operations
     def sight_create_operation(self, original_op, op):
         #BaseMind version overridden!
-        obj=self.map.add(op[0])
+        obj=self.map.add(op[0], op.getSeconds())
         if original_op.from_==self:
             self.add_thing(obj)
     def sight_move_operation(self, original_op, op):
         """change position in out local map"""
-        obj=self.map.update(op[0])
+        obj=self.map.update(op[0], op.getSeconds())
         if obj.location.parent.id==self.id:
             self.add_thing(obj)
             if obj.type[0]=="coin":

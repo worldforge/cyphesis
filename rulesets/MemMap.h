@@ -65,7 +65,7 @@ class MemMap {
 
     const Atlas::Message::Element asObject();
 
-    void check();
+    void check(const double &);
     void flush();
 
     std::vector<std::string> & getAddHooks() { return m_addHooks; }

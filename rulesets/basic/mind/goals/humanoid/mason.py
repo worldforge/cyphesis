@@ -26,7 +26,7 @@ class welcome(DynamicGoal):
         self.player=player
         self.message=message
     def event(self, me, original_op, op):
-        obj = me.map.add(op[0])
+        obj = me.map.update(op[0], op.getSeconds())
         if original_op.from_==self:
             self.add_thing(obj)
         if obj.type[0]==self.player:

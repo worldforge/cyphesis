@@ -110,7 +110,8 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
     }
 #endif // NDEBUG
     PyMessageElement * obj;
-    if (!PyArg_ParseTuple(args, "O", &obj)) {
+    double time;
+    if (!PyArg_ParseTuple(args, "Od", &obj, &time)) {
         return NULL;
     }
     if (!PyMessageElement_Check(obj)) {
@@ -120,7 +121,7 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
     // FIXME We are passing in 0, which will have no effect, but
     // we should really pass in the right time. Would need a new arg
     // to be added.
-    MemEntity * ret = self->m_map->updateAdd(obj->m_obj->asMap(), 0);
+    MemEntity * ret = self->m_map->updateAdd(obj->m_obj->asMap(), time);
     PyEntity * thing = newPyEntity();
     thing->m_entity = ret;
     return (PyObject *)thing;
