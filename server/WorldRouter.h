@@ -59,7 +59,6 @@ class WorldRouter : public BaseWorld {
     const EntitySet & broadcastList(const Operation &) const;
     void updateTime(int sec, int usec);
     void deliverTo(const Operation &, Entity &);
-    void deliverDeleteTo(const Operation &, Entity &);
     void delEntity(Entity * obj);
   public:
     explicit WorldRouter();

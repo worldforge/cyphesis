@@ -1,5 +1,11 @@
 2004-01-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.h, server/WorldRouter.cpp: Completey remove
+	  deliverDeleteTo(), and handle all the delete special case stuff
+	  in delEntity().
+
+2004-01-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseWorld.h, rulesets/Character.cpp, rulesets/Py_World.cpp,
 	  rulesets/PythonThingScript.cpp, rulesets/Stackable.cpp,
 	  rulesets/Thing.cpp, rulesets/World.cpp, server/Account.cpp,

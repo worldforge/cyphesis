@@ -263,17 +263,24 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
 /// \brief Remove an entity from the world.
 ///
 /// Remove an entity from the various lists in which it is stored.
-/// The entity is not deleted, nor any attend made to handle
-/// the loc/contains. It would probably be a good idea to move
-/// some of this handling to this function.
+/// The entity is removed from the LOC/CONTAINS tree, and the
+/// reference held by the world is decremented. There may still be
+/// a reference held by an operation in the queue from the removed
+/// entity.
 void WorldRouter::delEntity(Entity * ent)
 {
+    if (ent == &m_gameWorld) {
+        log(WARNING, "Attempt to delete game world");
+        return;
+    }
     if (consts::enable_omnipresence) {
         m_omnipresentList.erase(ent);
     }
     m_perceptives.erase(ent);
     m_objectList.erase(ent);
     m_eobjects.erase(ent->getId());
+    ent->destroy();
+    ent->decRef();
 }
 
 /// \brief Pass an operation to the World.
@@ -334,25 +341,8 @@ void WorldRouter::deliverTo(const Operation & op, Entity & ent)
     }
 }
 
-/// \brief Special version of WorldRouter::deliverTo() for Delete ops.
+/// \brief Main in-game operation dispatch function.
 ///
-/// Delete is special. It causes the target to be removed, but
-/// we need to handle the responses first. To prevent a tight loop,
-/// we do not attempt to immediatly handle the response to a Delete op
-/// if it is anothe Delete op.
-void WorldRouter::deliverDeleteTo(const Operation & op, Entity & ent)
-{
-    deliverTo(op, ent);
-    if (&ent == &m_gameWorld) {
-        log(WARNING, "Attempt to delete game world");
-        return;
-    }
-    delEntity(&ent);
-    ent.destroy();
-    ent.decRef();
-}
-
-/// Main in-game operation dispatch function.
 /// Operations are passed here when they are due for dispatch.
 /// Determine the target of the operation and deliver it directly,
 /// or broadcast if broadcast is required. This function implements
@@ -378,18 +368,14 @@ void WorldRouter::operation(Operation & op, Entity & from)
         Entity * to_entity = I->second;
         assert(to_entity != 0);
 
+        deliverTo(op, *to_entity);
         if (op.getParents().front().asString() == "delete") {
-            deliverDeleteTo(op, *to_entity);
-        } else {
-            deliverTo(op, *to_entity);
+            delEntity(to_entity);
         }
     } else {
         // Where broadcasts go depends on type of op
         const EntitySet & broadcast = broadcastList(op);
         assert(op.getFrom() == from.getId());
-        if (from.isDestroyed()) {
-            log(WARNING, "Broadcasting op from deleted entity.");
-        }
         if (!consts::enable_ranges) {
             EntitySet::const_iterator I = broadcast.begin();
             EntitySet::const_iterator Iend = broadcast.end();
