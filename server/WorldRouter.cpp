@@ -190,7 +190,8 @@ inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) con
     const Element::ListType & parents = op.getParents();
     if (!parents.empty() && (parents.front().isString())) {
         const std::string & parent = parents.front().asString();
-        if ((parent == "sight") || (parent == "sound")) {
+        if ((parent == "sight") || (parent == "sound") ||
+            (parent == "appearance") || (parent == "disappearance")) {
             return m_perceptives;
         }
         std::string msg = std::string("Broadcasting ") + parent + " op from "

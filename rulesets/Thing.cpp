@@ -45,31 +45,21 @@ Thing::~Thing() { }
 
 OpVector Thing::SetupOperation(const Setup & op)
 {
-
-    // This is a bit of a hack that I am not entirely happy with.
-    // We broadcast a sight of create of ourselves so that everything
-    // nearby can see us. This is to get round the fact that the sight
-    // of create broadcast by the entity that created us may have
-    // been elsewhere on the map.
-    RootOperation * sight = new Sight();
-    Create c;
-    Element::ListType & args = c.getArgs();
+    Appearance * app = new Appearance();
+    Element::ListType & args = app->getArgs();
     args.push_back(Element::MapType());
-    addToObject(args.front().asMap());
-    c.setTo(getId());
-    c.setFrom(getId());
-    Element::ListType & sargs = sight->getArgs();
-    sargs.push_back(c.asObject());
+    Element::MapType & arg = args.back().asMap();
+    arg["id"] = getId();
 
     OpVector sres;
     if (m_script->Operation("setup", op, sres) != 0) {
-        sres.push_back(sight);
+        sres.push_back(app);
         return sres;
     }
 
     OpVector res(2);
 
-    res[0] = sight;
+    res[0] = app;
 
     RootOperation * tick = new Tick();
     tick->setTo(getId());

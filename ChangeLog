@@ -1,5 +1,13 @@
 2004-05-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Send an Appearance op from new entities
+	  rather than Sight(Create).
+
+	* server/WorldRouter.cpp: Accept Appearance and Disappearance
+	  as ops which can be broadcast.
+
+2004-05-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseWorld.h, server/CommServer.cpp, server/CommServer.h,
 	  server/ServerRouting.cpp, server/ServerRouting.h,
 	  server/ServerRouting_methods.h, server/WorldRouter.cpp,
