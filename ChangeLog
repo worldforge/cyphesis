@@ -1,5 +1,9 @@
 2004-11-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp: Fix leak of Property objects.
+
+2004-11-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/utility.cpp: Add a FIXME note about more correctly
 	  converting a message to an op.
 

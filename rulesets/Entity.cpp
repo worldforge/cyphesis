@@ -71,6 +71,11 @@ Entity::~Entity()
     if (m_script != NULL) {
         delete m_script;
     }
+    PropertyDict::const_iterator I = m_properties.begin();
+    PropertyDict::const_iterator Iend = m_properties.end();
+    for (; I != Iend; ++I) {
+        delete I->second;
+    }
 }
 
 bool Entity::has(const std::string & aname) const

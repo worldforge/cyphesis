@@ -1,3 +1,5 @@
+Fix leak of all op factories in inheritance code.
+
 In timeout handling, the socket is currently closed. This is wrong,
 as it removes the socket from epoll, causing the CommClient object to
 be leaked.
