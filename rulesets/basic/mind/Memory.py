@@ -1,6 +1,8 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
+from types import *
+
 class Memory:
     def __init__(self, map):
         self.events=[]
@@ -8,14 +10,18 @@ class Memory:
     def destroy(self):
         self.events=None
         self.map=None
-    def recall_place(self, location, radius=0.0, type=None):
+    def recall_place(self, location, radius=0.0, otype=None):
         result_all=self.map.find_by_location(location,radius)
-        if not type: return result_all
+        if not otype: return result_all
         result=[]
         for place in result_all:
-            #if place[1].type[0]==type:
-            if place.type[0]==type:
-                result.append(place)
+            #if place[1].type[0]==otype:
+            if type(otype)==ListType:
+                if place.type[0] in otype:
+                    result.append(place)
+            else:
+                if place.type[0]==otype:
+                    result.append(place)
         return result
     def remember_event(self, event):
         "add new memory with age"

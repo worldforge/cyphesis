@@ -1,6 +1,6 @@
 [cyphesis]
 ruleset="basic"
-inittime=28798
+inittime=9400
 
 [thing]
 cleaver		= "world.objects.tools.Cleaver"

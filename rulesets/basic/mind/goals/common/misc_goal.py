@@ -209,6 +209,20 @@ class transport_something(Goal):
         self.what=what
         self.vars=["what"]
 
+############################### SIT DOWN ######################################
+
+class sit_down(Goal):
+    def __init__(self, where):
+        Goal.__init__(self,"sit down",
+                      self.am_i_sat,
+                      [spot_something(where),
+                       move_me_to_it(where),
+                       sit])
+    def am_i_sat(self,me):
+        return me.mode=="sitting"
+    def sit(self,me):
+        return Operation("set", Entity(me.id, mode="sitting"),to=me)
+
 ############################ FEED (FOR FOOD) ##################################
 
 class feed(Goal):
@@ -226,6 +240,30 @@ class feed(Goal):
             else:
                 self.subgoals[0].range = self.range
         return 0
+
+########################## BUY AND EAT A MEAL #################################
+
+class meal(feed):
+    def __init__(self, me, what, time, place, seat=None):
+        if seat==None:
+            Goal.__init__(self,"have a meal",
+                          self.am_i_full,
+                          [move_me_area(place,10),
+                           acquire_thing(me,what),
+                           self.eat],time)
+        else:
+            Goal.__init__(self,"have a meal",
+                          self.am_i_full,
+                          [move_me_area(place,10),
+                           acquire_thing(me,what),
+                           sit_down(seat),
+                           self.eat],time)
+        self.what=what
+        self.place=place
+        self.full=0.01
+        self.vars=["what","place"]
+    def imaginary(self,me):
+        return Operation("imaginary",Entity(description=self.desc))
 
 ############################ FORAGE (FOR FOOD) ################################
 
@@ -403,6 +441,33 @@ class trade(Goal):
         tool=me.find_thing(self.tool)[0]
         return Operation(self.op,Entity(tool.id),Entity(thing.id),to=tool)
 
+############################# RUN MARKET STALL ##############################
+
+class market(Goal):
+    def is_it(self,me):
+        print self.shop, "?"
+        if me.things.has_key(self.shop)==0: return 0
+        shop=me.find_thing(self.shop)[0]
+        print "checking ", self.shop
+        return shop.mode==self.state
+    def set_it(self,me):
+        print self.shop, "??"
+        if me.things.has_key(self.shop)==0: return
+        shop=me.find_thing(self.shop)[0]
+        print self.state,"ing ", self.shop
+        return Operation("set", Entity(shop.id, mode=state),to=me)
+
+class run_shop(market):
+    def __init__(self, shop, updown, time):
+        Goal.__init__(self, "run a shop",
+                      self.is_it,
+                      [spot_something(shop),
+                       self.set_it],time)
+        print "Init run_shop", shop, " ", updown
+        self.shop=shop
+        self.state=updown
+        self.vars=["shop"]
+
 ######################### KEEP (Things that I own in place) #################
 
 class keep(Goal):
@@ -485,6 +550,7 @@ class assemble(Goal):
             cmpnt=me.find_thing(item)[0]
             retops = retops + Operation("set", Entity(cmpnt.id,status=-1), to=cmpnt)
         retops = retops + Operation("create", Entity(name=self.what,parents=[self.what], location=me.location.copy()), to=me)
+        retops = retops + Operation("action", Entity(me.id, action="conjure"), to=me)
         return retops
 
 ######################## TRANSACTION (Sell thing) #######################

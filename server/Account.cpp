@@ -152,12 +152,19 @@ oplist Account::TalkOperation(const Talk & op)
 
 oplist Account::LookOperation(const Look & op)
 {
+    const string & to = op.GetTo();
+    //if (to.empty()) {
+        //Sight * s = new Sight(Sight::Instantiate());
+        //s->SetTo(fullid);
+        //s->SetArgs(Object::ListType(1,connection->server.lobby.asObject()));
+        //return oplist(1,s);
+    //}
     edict_t::const_iterator I = charactersDict.find(op.GetTo());
-    if (I == charactersDict.end()) {
-        return error(op, "Unknown character");
+    if (I != charactersDict.end()) {
+        Sight * s = new Sight(Sight::Instantiate());
+        s->SetTo(fullid);
+        s->SetArgs(Object::ListType(1,I->second->asObject()));
+        return oplist(1,s);
     }
-    Sight * s = new Sight(Sight::Instantiate());
-    s->SetTo(fullid);
-    s->SetArgs(Object::ListType(1,I->second->asObject()));
-    return oplist(1,s);
+    return error(op, "Unknown character");
 }

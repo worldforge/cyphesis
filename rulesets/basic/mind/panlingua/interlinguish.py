@@ -30,6 +30,7 @@ add_word('avoid','#avoid_verb1')
 add_word('hunt','#hunt_verb1')
 add_word('transport','#transport_verb1')
 add_word('assemble','#assemble_verb1')
+add_word('market','#market_verb1')
 
 #I would like to buy an axe.
 add_word('I','#I_pron0')

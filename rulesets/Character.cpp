@@ -540,8 +540,8 @@ oplist Character::mindCombineOperation(const Combine & op)
 
 oplist Character::mindCreateOperation(const Create & op)
 {
-    debug( cout << "Character::mindOperation(Create)" << endl << flush;);
-    return oplist();
+    Create * c = new Create(op);
+    return oplist(1,c);
 }
 
 oplist Character::mindDeleteOperation(const Delete & op)

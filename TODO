@@ -1,29 +1,34 @@
 Definitly for Acorn 0.4:
 
-  Initialise people so they are not facing east. Islam has not been invented
-  yet, and statistically some of the people must be of some other religion.
-
   Implement a time mechanism. This would probably best be a person.
-
-  Fix lych behavoir and get it moving around.
+  I think the conn (who seems to be some kind of leader) should do it.
 
   Pigs seem to be gaining weight irespective of whether they eat.
+  Cannot re-produce this at the moment.
 
   Add some sitting NPCs. Use mode="sitt" for sitting NPCs.
 
-  Add sending of touch op on collision.
-
-  Remove little camp near origin, cos Uta sez so.
-
-  Fix market stalls and sound effects in sprites.xml.
+  Fix sound effects in sprites.xml.
 
   Implement archer sitting and yawning.
 
-  Implement market stall setup and take down.
+  Implement market stall setup and take down. Need lots of traders.
 
-  Cut down the rate at which apples are dropped to reduce lag.
+  Cut down the rate at which apples are dropped to reduce lag. done ??
+
+  Sort out a decent working Inn. Inn keeper lady is documented.
+
+  Do collision boxes for furniture.
+
+  Do collision boxes for ting_sign_cam_grey_light (stone circle)
+
+  Insist that Karsten fix the mouse pointer hot spot problem.
+
+  Add in some actual deer (herds?)
 
 Provisional for Acorn 0.4:
+
+  Add sending of touch op on collision.
 
 Provisional for Acorn 0.5:
 

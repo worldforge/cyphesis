@@ -80,7 +80,6 @@ class move_it(Goal):
     def is_it_at_loc(self, me):
         #CHEAT!: cludge
         if self.wait>0:
-            self.wait=self.wait-1
             return 0
         if type(self.location)==StringType: 
             self.location=me.get_knowledge("location",self.location)
@@ -93,13 +92,15 @@ class move_it(Goal):
         return what.location.coordinates.distance(self.location.coordinates)<1.5
     def move_it_to_loc(self, me):
         if self.wait>0:
+            self.wait=self.wait-1
             return
         if type(self.location)==StringType: 
             self.location=me.get_knowledge("location",self.location)
         elif not isLocation(self.location):
             self.location=Location(self.location,Vector3D(0.0,0.0,0.0))
         if type(self.what)==StringType:
-            if me.things.has_key(self.what)==0: return
+            if me.things.has_key(self.what)==0:
+                return
             what=me.things[self.what][0]
         if self.speed==0 or what.location.parent.id!=self.location.parent.id:
             return Operation("move", Entity(what.id, location=self.location))

@@ -1,3 +1,24 @@
+2001-06-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Lobby.h, server/Lobby.cpp, server/Account.cpp: Added code
+	  for querying lobby, then disabled it as it seems to hang uclient.
+
+	* rulesets/basic/mind/panlingua/interlinguish.py, 
+	  rulesets/basic/mind/goals/common/misc_goal.py,
+	  client/mind/panlingua/interlinguish.py: Added goal to
+	  maintain opening and closing market stalls, and goal for having 
+	  a meal.
+
+	* rulesets/basic/mind/goals/common/move.py: Fixed assemble goal
+	  meaning lych now works again.
+
+	* rulesets/basic/mind/Memory.py: Adapted query for location of
+	  entity so that it accepts lists of possible types.
+
+	* rulesets/Character.cpp: Enabled creating items by NPCs.
+
+	* client/define_world.py: Updated NPC behavoir.
+
 2001-06-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/server.cpp: Fixed leak of codec and varconf configuration.

@@ -28,7 +28,7 @@ pig_stall_xyz=(-27,1,village_height)
 pig_sty_xyz=(-26,2,village_height)
 butcher_stall_xyz=(-41.5,-6.3,village_height)
 tree_xyz=(-35,-25,village_height)
-inn_xyz=(20,-25,village_height)
+inn_xyz=(12,-20,village_height)
 
 
 knowledge=[('axe','smithy'),
@@ -52,10 +52,16 @@ gknowledge=[('m1',(-17, -1,    village_height)),
             ('m4',(-38, -10,   village_height)),
             ('m5',(-43, -15,   village_height)),
             ('m6',(-43, -14.5, village_height))]
+
 wolf_knowledge=[('w1',(90,-90,village_height)),
-            ('w2',(110,-90,village_height)),
-            ('w3',(110,90,village_height)),
-            ('w4',(90,90,village_height))]
+                ('w2',(110,-90,village_height)),
+                ('w3',(110,90,village_height)),
+                ('w4',(90,90,village_height))]
+
+lych_knowledge=[('w1',(0,-96,village_height)),
+                ('w2',(-70,-70,village_height)),
+                ('w3',(-100,70,village_height)),
+                ('w4',(-147,-90,village_height))]
 
 wander=(il.wander,"wander()")
 forage=(il.forage,"forage()")
@@ -64,8 +70,9 @@ keep=(il.keep,"keep()")
 sell=(il.sell,"sell_trade()")
 patrol=(il.patrol,"patrol()")
 
-pig_goals=[(il.avoid,"avoid('wolf',10.0)"),
+pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.forage,"forage(self, 'acorn')"),
+           (il.forage,"forage(self, 'apple')"),
            (il.herd,"herd()")]
 
 wolf_goals=[(il.forage,"forage(self, 'ham')"),
@@ -76,11 +83,21 @@ wolf_goals=[(il.forage,"forage(self, 'ham')"),
 crab_goals=[(il.avoid,"avoid('wolf',10.0)"),
             (il.hunt,"predate_small(self,'pig',30.0,10.0)")]
 
+lych_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"),
+            (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
+
 #observer calls this
 def default(mapeditor):
 #   general things
 
     m=editor(mapeditor)
+
+# a wall around the world
+
+    m.make('wall',type='wall',xyz=(-151,-101,village_height),bbox=[1,102,2.5])
+    m.make('wall',type='wall',xyz=(-151,-101,village_height),bbox=[152,1,2.5])
+    m.make('wall',type='wall',xyz=(-151,100,village_height),bbox=[152,1,2.5])
+    m.make('wall',type='wall',xyz=(100,-101,village_height),bbox=[1,102,2.5])
 
 # a camp near the origin
 
@@ -121,17 +138,21 @@ def default(mapeditor):
            xyz=(0,1,0), rain=0.0)
 
 #   bones all over the place
-    for i in range(0, 2):
-        m.make('skull', type='skull', xyz=(uniform(-100,100),uniform(-100,100),village_height))
-        m.make('pelvis', type='pelvis', xyz=(uniform(-100,100),uniform(-100,100),village_height))
-        m.make('arm', type='arm', xyz=(uniform(-100,100),uniform(-100,100),village_height))
-        m.make('thigh', type='thigh', xyz=(uniform(-100,100),uniform(-100,100),village_height))
-        m.make('shin', type='shin', xyz=(uniform(-100,100),uniform(-100,100),village_height))
-        m.make('ribcage', type='ribcage', xyz=(uniform(-100,100),uniform(-100,100),village_height))
+    for i in range(0, 10):
+        xpos = uniform(-150,100)
+        ypos = uniform(-100,100)
+        m.make('skull', type='skull', xyz=(xpos+uniform(-2,2),ypos+uniform(-2,2),village_height))
+        m.make('pelvis', type='pelvis', xyz=(xpos+uniform(-2,2),ypos+uniform(-2,2),village_height))
+        m.make('arm', type='arm', xyz=(xpos+uniform(-2,2),ypos+uniform(-2,2),village_height))
+        m.make('thigh', type='thigh', xyz=(xpos+uniform(-2,2),ypos+uniform(-2,2),village_height))
+        m.make('shin', type='shin', xyz=(xpos+uniform(-2,2),ypos+uniform(-2,2),village_height))
+        m.make('ribcage', type='ribcage', xyz=(xpos+uniform(-2,2),ypos+uniform(-2,2),village_height))
 
 #   the lych, who makes bones into skeletons
-    lych=m.make('lych', type='lych', xyz=(2, 3, village_height))
-    m.learn(lych,(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"))
+    lych=m.make('lych', type='lych', xyz=(-21, -89, village_height))
+    m.learn(lych,lych_goals)
+    m.know(lych,lych_knowledge)
+    m.tell_importance(lych,il.assemble,'>',il.patrol)
 
 #   animals
     piglet = m.make('pig', type='pig', xyz=(-31,-16,village_height))
@@ -156,7 +177,7 @@ def default(mapeditor):
 
 #   villagers
 
-    m.make('bstall',type='bstall',xyz=(-41,-5,village_height))
+    #m.make('bstall',type='bstall',xyz=(-41,-5,village_height))
 
     home1_xyz=(90,-90,village_height)
 
@@ -164,6 +185,8 @@ def default(mapeditor):
                  xyz=butcher_stall_xyz,age=probability.fertility_age,sex='male')
     m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'cut', 'ham', 'market','day')"))
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
+    m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','open','dawn')"))
+    m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','closed','evening')"))
     m.know(butcher,bknowledge)
     m.price(butcher,bprices)
     cleaver=m.make('cleaver',desc='cleaver for cutting meat',place='market',
@@ -178,9 +201,9 @@ def default(mapeditor):
 
     home2_xyz=(80,80,village_height)
     merchant=m.make('Dyfed Searae',type='merchant',desc='the pig merchant',
-                   xyz=pig_stall_xyz,age=probability.fertility_age,sex='male')
+         xyz=pig_stall_xyz,age=probability.fertility_age,sex='male',face=[-1,0,0])
     merchant2=m.make('Dylan Searae',type='merchant',desc='the pig merchant',
-                   xyz=pig_stall_xyz,age=probability.fertility_age,sex='male')
+         xyz=(-28,2,village_height),age=probability.fertility_age,sex='male',face=[0,-1,0])
     merchants=[merchant, merchant2]
     sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[2.5,2.5,3])
     m.know(merchants,mknowledge)
@@ -191,8 +214,8 @@ def default(mapeditor):
     m.learn(merchant,(il.keep,"keep('pig', 'sty')"))
     m.learn(merchant, (il.sell,"sell_trade('pig', 'market', 'morning')"))
     m.learn(merchant2,(il.sell,"sell_trade('pig', 'market', 'afternoon')"))
-    m.learn(merchants,(il.lunch,"imaginary('have lunch', 'midday', 'inn')"))
-    m.learn(merchants,(il.sup,"imaginary('have a drink', 'evening', 'inn')"))
+    m.learn(merchants,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
+    m.learn(merchants,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
     piglets=[]
     for i in range(0, 6):
         piglets.append(m.make('pig',type='pig',xyz=(uniform(0,4),uniform(0,4),village_height),parent=sty.id))
@@ -202,35 +225,35 @@ def default(mapeditor):
     # Warriors - the more adventurous types
 
     warriors=[]
-    warrior=m.make('Tom Harrowe', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male')
+    warrior=m.make('Tom Harrowe', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male',face=[0.7,-0.7,0])
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
-    warrior=m.make('Mae Dollor', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='female')
+    warrior=m.make('Mae Dollor', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='female',face=[-0.7,1,0])
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
-    warrior=m.make('Covan Dubneal',type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male')
+    warrior=m.make('Covan Dubneal',type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male',face=[-0.7,-0.7,0])
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
-    warrior=m.make('Roal Guddon', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male')
+    warrior=m.make('Roal Guddon', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male',face=[1,-0.7,0])
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
     m.learn(warriors,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
 
-    warrior=m.make('Vonaa Barile',type='archer',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='female')
+    warrior=m.make('Vonaa Barile',type='archer',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='female',face=[-1,0,0])
     m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     warriors.append(warrior)
 
-    warrior=m.make('Lile Birloc', type='archer',xyz=(-2,-2,village_height),sex='female')
+    warrior=m.make('Lile Birloc', type='archer',xyz=(-2,-2,village_height),sex='female',face=[0,1,0])
     m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
@@ -243,8 +266,8 @@ def default(mapeditor):
     m.know(warriors,village)
 
     # Warriors enjoy their food and drink
-    m.learn(warriors,(il.lunch,"imaginary('have lunch', 'midday', 'inn')"))
-    m.learn(warriors,(il.sup,"imaginary('have a drink', 'evening', 'inn')"))
+    m.learn(warriors,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
+    m.learn(warriors,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
 
     m.make('deer',type='deer',xyz=(2,2,village_height))
 

@@ -5,6 +5,8 @@
 #include "Lobby.h"
 #include "Connection.h"
 
+using Atlas::Message::Object;
+
 oplist Lobby::operation(const RootOperation & op)
 {
     const string & to = op.GetTo();
@@ -29,4 +31,18 @@ oplist Lobby::operation(const RootOperation & op)
         }
     }
     return oplist();
+}
+
+void Lobby::addToObject(Object & obj) const
+{
+    Object::MapType & omap = obj.AsMap();
+    omap["name"] = "lobby";
+    Object::ListType plist(1, "lobby");
+    omap["parents"] = plist;
+    Object::ListType player_list;
+    adict_t::const_iterator I = accounts.begin();
+    for(; I != accounts.end(); I++) {
+        player_list.push_back(I->first);
+    }
+    omap["players"] = player_list;
 }
