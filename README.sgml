@@ -27,7 +27,8 @@ the WorldForge project. GNU readline is required by some of the included tools.
 
     <para>
 If built from source the software and data must be installed using
-"make install" before it can be run.
+"make install" before it will be ready. Go to <xref linkend="setup-section">
+for information on the setup steps required after installation.
     </para>
   </sect1>
 
@@ -36,33 +37,30 @@ If built from source the software and data must be installed using
     <para>
 If the software has been installed from source, binary package or rpm then it
 requires some post-installation configuration before it will run correctly. If
-you plan to run a server using the System V init service provided by the
+you plan to run a server using the System V init services provided by the
 cyphesis-service rpm then the rpm installation and service startup will ensure
-that this configuration is handled for you.
+that this configuration is handled for you automatically. If this is the
+case there is no need to read the rest of this document.
     </para>
 
     <para>
-Setup of cyphesis is most easily handled using the cyphesis-setup script
-included.
-    </para>
-
-    <para>
-The most important thing to setup is the database access. A postgresql server
+The first step is to setup the database access. The database is required
+to store account and rule information. If full server persistence is enabled,
+the database is also used to store the entire world state. A postgresql server
 must be running on the system where you plan to run cyphesis, and the user who
 will run cyphesis must have access to the database. If you do not have root
 access on the system you will need to contact the system administrator to
-request a database account. If you have root access then cyphesis-setup can
-sort out access for you. You must ensure that the database server is running.
+request a database account. By default cyphesis assumes that access to a
+PostgreSQL RDBMS running on the same machine from a user account with the
+same name as the database account does not require a password. If this is
+not the case you can either configure the PostgreSQL RDBMS to work this way,
+or specify a password in the config file.
     </para>
 
     <para>
-Run cyphesis-setup to have it setup everything that is needed to run cyphesis.
-If you need it to sort out database access then run it as root and provide the
-name of the user that will run cyphesis. If you already have database access,
-run the script as the user that will run cyphesis. If the command indicates
-that any errors occurred by printing ERROR then there may be something wrong
-with your cyphesis installation. See the "Usage and configuration" section for
-details of the manual setup process
+Run cyloadrules to load the default rulesets into the database. For more
+information on how cyloadrules works, including advanced usage see
+<xref linkend="usage-section">.
     </para>
   </sect1>
 
