@@ -44,7 +44,7 @@ MovementInfo::MovementInfo(Character * body) : body(body)
 
 void MovementInfo::reset()
 {
-    serialno = MovementInfo::serialno+1;
+    serialno = serialno+1;
     target_location=Vector3D();
     velocity=Vector3D();
     last_movement_time=world_info::time;
@@ -69,33 +69,21 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
 #ifdef DEBUG_MOVEMENT
             cout << "gen_move_operation: Update needed...";
 #endif /* DEBUG_MOVEMENT */
-        cout << 1;
         double current_time=world_info::time;
-        cout << 2;
         double time_diff=current_time-last_movement_time;
-        cout << 3;
 #ifdef DEBUG_MOVEMENT
             cout << "time_diff:" << time_diff << endl << flush;
 #endif /* DEBUG_MOVEMENT */
         last_movement_time=current_time;
-        cout << 4;
         Location new_loc=loc;
-        cout << 5;
         Message::Object * ent = new Message::Object(Message::Object::MapType());
-        cout << 6;
         new_loc.velocity=velocity;
-        cout << 7;
         Move * moveOp = new Move;
         *moveOp = Move::Instantiate();
-        cout << 8;
         moveOp->SetTo(body->fullid);
-        cout << 9;
         new_loc.addObject(ent);
-        cout << 10;
         list<Message::Object> args(1,*ent);
-        cout << 11;
         moveOp->SetArgs(args);
-        cout << 12;
         if (!velocity) {
 #ifdef DEBUG_MOVEMENT
                 cout << "only velocity changed..." << endl << flush;
@@ -106,7 +94,7 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
             return(moveOp);
         }
         Vector3D new_coords=loc.coords+(velocity*time_diff);
-        if (!target_location) {
+        if (!(!target_location)) {
             Vector3D new_coords2 = new_coords+velocity/consts::basic_tick/10.0;
             double dist=target_location.distance(new_coords);
             double dist2=target_location.distance(new_coords2);
