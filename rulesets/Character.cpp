@@ -942,30 +942,35 @@ bool Character::w2mTouchOperation(const Touch & op)
 OpVector Character::sendMind(const RootOperation & op)
 {
     debug( std::cout << "Character::sendMind" << std::endl << std::flush;);
-    if (mind == NULL) {
-        return OpVector();
-    }
-    OpVector res = mind->message(op);
 
-    if (NULL != externalMind) {
-        debug( std::cout << "Sending to external mind" << std::endl
-                         << std::flush;);
-        // Discard all the local results
-        OpVector::const_iterator J = res.begin(); 
-        for(; J != res.end(); J++) {
-            delete *J;
+    if (0 != externalMind) {
+        if (0 != mind) {
+            OpVector res = mind->message(op);
+            // Discard all the local results
+            OpVector::const_iterator J = res.begin(); 
+            for(; J != res.end(); J++) {
+                delete *J;
+            }
         }
-        res = externalMind->message(op);
+        debug(std::cout << "Sending to external mind" << std::endl
+                         << std::flush;);
+        debug(std::cout << "Using ops from external mind"
+                        << std::endl << std::flush;);
+        return externalMind->message(op);
+    } else {
+        debug(std::cout << "Using ops from local mind"
+                        << std::endl << std::flush;);
+        if (0 != mind) {
+            return mind->message(op);
+        }
     }
 
     // At this point there is a bunch of conversion stuff that I don't
-    // understand
+    // understand. This function has now been restructed heavily compared
+    // with the python version, and our ops don't really require conversion
+    // so this comment is not especiialy valid.
     
-    debug(std::cout << "Using " << res.size() << " ops from "
-                    << ((NULL == externalMind) ? "local mind" : "external mind")
-                    << std::endl << std::flush;);
-
-    return res;
+    return OpVector();
 }
 
 OpVector Character::mind2body(const RootOperation & op)

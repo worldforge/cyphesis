@@ -25,6 +25,10 @@ has no children, and make only select once per table when getting children of a
 given entity. This is a fairly major reworking, but selects are too expensive
 to make one per entity.
 
+Just realised that in my almost mindnumbingly incredible stupdidity I am making
+no attempt at all to continue persistance of restored entities, and I have not
+noticed because until now they did not move.
+
 Write a base class for plant which has a standard forumala for managing the
 growth of plants - the fundamental messure of which is mass, then another
 formula for calculating the size (height, width) etc from the mass, so the
