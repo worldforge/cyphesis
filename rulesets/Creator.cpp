@@ -23,7 +23,7 @@ Creator::Creator(const std::string & id) : Creator_parent(id)
     }
 }
 
-OpVector Creator::sendMind(const RootOperation & op)
+void Creator::sendMind(const RootOperation & op, OpVector & res)
 {
     debug( std::cout << "Creator::sendMind" << std::endl << std::flush;);
     // Simpified version of character method sendMind() because local mind
@@ -31,8 +31,7 @@ OpVector Creator::sendMind(const RootOperation & op)
     if (0 != m_externalMind) {
         debug( std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
-        return m_externalMind->operation(op);
-        // If there is some kinf of error in the connection, we turn autom on
+        m_externalMind->operation(op, res);
     } else {
         // If we do not have an external mind, and therefor a connection,
         // there is no purpose to our existance, so we should die.
@@ -40,31 +39,36 @@ OpVector Creator::sendMind(const RootOperation & op)
                          << std::endl << std::flush;);
         Delete * d = new Delete();
         d->setTo(getId());
-        return OpVector(1,d);
+        res.push_back(d);
     }
 }
 
-OpVector Creator::operation(const RootOperation & op)
+void Creator::operation(const RootOperation & op, OpVector & res)
 {
     debug( std::cout << "Creator::operation" << std::endl << std::flush;);
+    // FIXME Why is this function here? If we want to block some ops,
+    // why not just override them? Set and Burn are perhaps candidates.
+    // Talk and Imaginary are currently blocked, and perhaps it is best
+    // to leave normal communication unimplemented. Tick is required for
+    // movement to function, but is currenlty blocked. Eat and
+    // Nourish should remain blocked.
     OpNo op_no = opEnumerate(op);
     if (op_no == OP_CREATE) {
-        return CreateOperation((Create &)op);
-    }
-    if (op_no == OP_LOOK) {
-        return LookOperation((Look &)op);
-    }
-    if (op_no == OP_MOVE) {
-        return MoveOperation((Move &)op);
-    }
-    if (op_no == OP_SETUP) {
+        CreateOperation((Create &)op, res);
+    } else if (op_no == OP_LOOK) {
+        LookOperation((Look &)op, res);
+    } else if (op_no == OP_MOVE) {
+        MoveOperation((Move &)op, res);
+    } else if (op_no == OP_SETUP) {
         m_world->addPerceptive(getId());
-        return OpVector();
+    } else if (op_no == OP_DELETE) {
+        DeleteOperation((Delete &)op, res);
+    } else {
+        sendMind(op, res);
     }
-    return sendMind(op);
 }
 
-OpVector Creator::externalOperation(const RootOperation & op)
+void Creator::externalOperation(const RootOperation & op, OpVector & res)
 {
     // If an admin connection specifies a TO on the op, we treat
     // it specially, and make sure it goes direct, otherwise
@@ -72,28 +76,29 @@ OpVector Creator::externalOperation(const RootOperation & op)
     debug( std::cout << "Creator::externalOperation" << std::endl
                      << std::flush;);
     if (op.getTo().empty()) {
-        debug( std::cout << "Creator handling op normally" << std::endl << std::flush;);
-        Creator_parent::externalOperation(op);
-    } else if (op.getTo()==getId()) {
+        debug( std::cout << "Creator handling op normally" << std::endl
+                         << std::flush;);
+        Creator_parent::externalOperation(op, res);
+    } else if (op.getTo() == getId()) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
-        OpVector lres = callOperation(op);
+        OpVector lres;
+        callOperation(op, lres);
         setRefno(lres, op);
-        for(OpVector::const_iterator I = lres.begin(); I != lres.end(); I++) {
+        for (OpVector::const_iterator I = lres.begin(); I != lres.end(); I++) {
             m_world->setSerialnoOp(**I);
             sendWorld(*I);
-            // Don't delete lres as it has gone into worlds queue
+            // Don't delete lres as it has gone into World's queue
             // World will deal with it.
         }
     } else {
         RootOperation * new_op = new RootOperation(op);
-        //make it appear like it came from character itself;
+        //make it appear like it came from target itself;
         new_op->setFrom("cheat");
         sendWorld(new_op);
     }
-    return OpVector();
 }
 
-OpVector Creator::mindLookOperation(const Look & op)
+void Creator::mindLookOperation(const Look & op, OpVector & res)
 {
     // This overriden version allows the creator to search the world for
     // entities by type or by name
@@ -133,5 +138,5 @@ OpVector Creator::mindLookOperation(const Look & op)
         }
     }
     debug( std::cout <<"    now to ["<<l->getTo()<<"]"<<std::endl<<std::flush;);
-    return OpVector(1,l);
+    res.push_back(l);
 }

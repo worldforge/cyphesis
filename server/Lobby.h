@@ -28,7 +28,7 @@ class Lobby : public OOGThing {
         return m_accounts;
     }
 
-    virtual OpVector operation(const RootOperation & op);
+    virtual void operation(const RootOperation &, OpVector &);
 
     virtual void addToMessage(MapType &) const;
 };

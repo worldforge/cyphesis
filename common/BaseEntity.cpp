@@ -32,160 +32,250 @@ void BaseEntity::addToMessage(MapType & omap) const
     omap["id"] = getId();
 }
 
-OpVector BaseEntity::operation(const RootOperation & op)
+void BaseEntity::operation(const RootOperation & op, OpVector & res)
 {
     debug( std::cout << "BaseEntity::operation" << std::endl << std::flush;);
-    return callOperation(op);
+    return callOperation(op, res);
 }
 
-OpVector BaseEntity::LoginOperation(const Login & op)
+/// \brief Process a Login operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::LoginOperation(const Login & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::LogoutOperation(const Logout & op)
+/// \brief Process a Logout operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::LogoutOperation(const Logout & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::ActionOperation(const Action & op)
+/// \brief Process a Action operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::ActionOperation(const Action & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::ChopOperation(const Chop & op)
+/// \brief Process a Chop operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::ChopOperation(const Chop & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::CombineOperation(const Combine & op)
+/// \brief Process a Combine operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::CombineOperation(const Combine & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::CreateOperation(const Create & op)
+/// \brief Process a Create operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::CreateOperation(const Create & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::CutOperation(const Cut & op)
+/// \brief Process a Cut operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::CutOperation(const Cut & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::DeleteOperation(const Delete & op)
+/// \brief Process a Delete operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::DeleteOperation(const Delete & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::DivideOperation(const Divide & op)
+/// \brief Process a Divide operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::DivideOperation(const Divide & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::EatOperation(const Eat & op)
+/// \brief Process a Eat operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::EatOperation(const Eat & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::BurnOperation(const Burn & op)
+/// \brief Process a Burn operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::BurnOperation(const Burn & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::GetOperation(const Get & op)
+/// \brief Process a Get operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::GetOperation(const Get & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::ImaginaryOperation(const Imaginary & op)
+/// \brief Process a Imaginary operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::ImaginaryOperation(const Imaginary & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::InfoOperation(const Info & op)
+/// \brief Process a Info operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::InfoOperation(const Info & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::MoveOperation(const Move & op)
+/// \brief Process a Move operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::MoveOperation(const Move & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::NourishOperation(const Nourish & op)
+/// \brief Process a Nourish operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::NourishOperation(const Nourish & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::SetOperation(const Set & op)
+/// \brief Process a Set operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::SetOperation(const Set & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::SightOperation(const Sight & op)
+/// \brief Process a Sight operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::SightOperation(const Sight & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::SoundOperation(const Sound & op)
+/// \brief Process a Sound operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::SoundOperation(const Sound & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::TalkOperation(const Talk & op)
+/// \brief Process a Talk operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::TalkOperation(const Talk & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::TouchOperation(const Touch & op)
+/// \brief Process a Touch operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::TouchOperation(const Touch & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::TickOperation(const Tick & op)
+/// \brief Process a Tick operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::TickOperation(const Tick & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::LookOperation(const Look & op)
+/// \brief Process a Look operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::LookOperation(const Look & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::SetupOperation(const Setup & op)
+/// \brief Process a Setup operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::SetupOperation(const Setup & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::AppearanceOperation(const Appearance & op)
+/// \brief Process a Appearance operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::AppearanceOperation(const Appearance & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::DisappearanceOperation(const Disappearance & op)
+/// \brief Process a Disappearance operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::DisappearanceOperation(const Disappearance & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::UseOperation(const Use & op)
+/// \brief Process a Use operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::UseOperation(const Use & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::WieldOperation(const Wield & op)
+/// \brief Process a Wield operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::WieldOperation(const Wield & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::OtherOperation(const RootOperation & op)
+/// \brief Process a Other operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::OtherOperation(const RootOperation & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector BaseEntity::ErrorOperation(const RootOperation & op)
+/// \brief Process a Error operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::ErrorOperation(const RootOperation & op, OpVector & res)
 {
-    return OpVector();
 }
 
 OpNo BaseEntity::opEnumerate(const RootOperation & op) const
@@ -236,15 +326,14 @@ void BaseEntity::subscribe(const std::string & op)
     }
 }
 
-OpVector BaseEntity::callOperation(const RootOperation & op)
+void BaseEntity::callOperation(const RootOperation & op, OpVector & res)
 {
     const OpNo op_no = opEnumerate(op);
-    OP_SWITCH(op, op_no,)
-    return OpVector();
+    OP_SWITCH(op, op_no, res,)
 }
 
-OpVector BaseEntity::error(const RootOperation& op, const char* errstring,
-                           const std::string & to) const
+void BaseEntity::error(const RootOperation& op, const char* errstring,
+                       OpVector & res, const std::string & to) const
 {
     Error * e = new Error;
 
@@ -260,6 +349,6 @@ OpVector BaseEntity::error(const RootOperation& op, const char* errstring,
     e->setSerialno(opSerialNo());
     e->setTo(to);
 
-    return OpVector(1,e);
+    res.push_back(e);
 }
 

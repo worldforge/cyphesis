@@ -145,13 +145,14 @@ bool Connection::verifyCredentials(const Account & account,
     return true;
 }
 
-OpVector Connection::operation(const RootOperation & op)
+void Connection::operation(const RootOperation & op, OpVector & res)
 {
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
     const std::string & from = op.getFrom();
     if (from.empty()) {
         debug(std::cout << "deliver locally" << std::endl << std::flush;);
-        return callOperation(op);
+        callOperation(op, res);
+        return;
     } else {
         debug(std::cout << "send on to " << from << std::endl << std::flush;);
         BaseDict::const_iterator I = m_objects.find(from);
@@ -161,12 +162,14 @@ OpVector Connection::operation(const RootOperation & op)
             err += "\" op from \"";
             err += from;
             err += "\" is from non existant object.";
-            return error(op, err.c_str());
+            error(op, err.c_str(), res);
+            return;
         }
         BaseEntity * b_ent = I->second;
         Entity * ig_ent = dynamic_cast<Character *>(b_ent);
         if (ig_ent == NULL) {
-            return b_ent->operation(op);
+            return b_ent->operation(op, res);
+            return;
         }
         Character * character = dynamic_cast<Character *>(b_ent);
         if ((character != NULL) && (character->m_externalMind == NULL)) {
@@ -180,24 +183,27 @@ OpVector Connection::operation(const RootOperation & op)
             character->addToMessage(info_args.front().asMap());
             info->setRefno(op.getSerialno());
             info->setSerialno(m_server.newSerialNo());
-            OpVector res = character->externalOperation(op);
-            res.insert(res.begin(), info);
-            return res;
+
+            res.push_back(info);
+            character->externalOperation(op, res);
+            return;
         }
-        return ig_ent->externalOperation(op);
+        ig_ent->externalOperation(op, res);
+        return;
     }
-    return OpVector();
 }
 
-OpVector Connection::LoginOperation(const Login & op)
+void Connection::LoginOperation(const Login & op, OpVector & res)
 {
 
     debug(std::cout << "Got login op" << std::endl << std::flush;);
     if (op.getArgs().empty()) {
-        return error(op, "Login has no argument");
+        error(op, "Login has no argument", res);
+        return;
     }
     if (!op.getArgs().front().isMap()) {
-        return error(op, "Login arg is malformed");
+        error(op, "Login arg is malformed", res);
+        return;
     }
     // Account should be the first argument of the op
     const MapType & account = op.getArgs().front().asMap();
@@ -208,12 +214,14 @@ OpVector Connection::LoginOperation(const Login & op)
         log(WARNING, "Got Login with no username. Checking for old Login");
         I = account.find("id");
         if ((I == account.end()) || !I->second.isString()) {
-            return error(op, "No username provided for Login");
+            error(op, "No username provided for Login", res);
+            return;
         }
     }
     const std::string & username = I->second.asString();
     if (username.empty()) {
-        return error(op, "Empty username provided for Login");
+        error(op, "Empty username provided for Login", res);
+        return;
     }
     // We now have username, so can check whether we know this
     // account, either from existing account ....
@@ -231,12 +239,14 @@ OpVector Connection::LoginOperation(const Login & op)
         }
     }
     if ((player == 0) || !verifyCredentials(*player, account)) {
-        return error(op, "Login is invalid");
+        error(op, "Login is invalid", res);
+        return;
     }
     // Account appears to be who they say they are
     if (player->m_connection) {
         // Internals don't allow player to log in more than once.
-        return error(op, "This account is already logged in");
+        error(op, "This account is already logged in", res);
+        return;
     }
     // Connect everything up
     addObject(player);
@@ -254,39 +264,45 @@ OpVector Connection::LoginOperation(const Login & op)
     info->setRefno(op.getSerialno());
     info->setSerialno(m_server.newSerialNo());
     debug(std::cout << "Good login" << std::endl << std::flush;);
-    return OpVector(1,info);
+    res.push_back(info);
 }
 
-OpVector Connection::CreateOperation(const Create & op)
+void Connection::CreateOperation(const Create & op, OpVector & res)
 {
     debug(std::cout << "Got create op" << std::endl << std::flush;);
     if (!m_objects.empty()) {
-        return error(op, "Already logged in");
+        error(op, "Already logged in", res);
+        return;
     }
     if (op.getArgs().empty()) {
-        return error(op, "Create has no argument");
+        error(op, "Create has no argument", res);
+        return;
     }
     if (!op.getArgs().front().isMap()) {
-        return error(op, "Create is malformed");
+        error(op, "Create is malformed", res);
+        return;
     }
     const MapType & account = op.getArgs().front().asMap();
 
     if (restricted_flag) {
-        return error(op, "Account creation on this server is restricted");
+        error(op, "Account creation on this server is restricted", res);
+        return;
     }
     MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.isString()) {
         log(WARNING, "Got Create for account with no username. Checking for old style Create.");
         I = account.find("id");
         if ((I == account.end()) || !I->second.isString()) {
-            return error(op, "Account creation with no username");
+            error(op, "Account creation with no username", res);
+            return;
         }
     }
 
     const std::string & username = I->second.asString();
     I = account.find("password");
     if ((I == account.end()) || !I->second.isString()) {
-        return error(op, "Account creation with no password");
+        error(op, "Account creation with no password", res);
+        return;
     }
     const std::string & password = I->second.asString();
 
@@ -294,7 +310,8 @@ OpVector Connection::CreateOperation(const Create & op)
         (Persistance::instance()->findAccount(username)) ||
         (username.empty()) || (password.empty())) {
         // Account exists, or creation data is duff
-        return error(op, "Account creation is invalid");
+        error(op, "Account creation is invalid", res);
+        return;
     }
     Account * player = addPlayer(username, password);
     Persistance::instance()->putAccount(*player);
@@ -305,10 +322,10 @@ OpVector Connection::CreateOperation(const Create & op)
     info->setRefno(op.getSerialno());
     info->setSerialno(m_server.newSerialNo());
     debug(std::cout << "Good create" << std::endl << std::flush;);
-    return OpVector(1,info);
+    res.push_back(info);
 }
 
-OpVector Connection::LogoutOperation(const Logout & op)
+void Connection::LogoutOperation(const Logout & op, OpVector & res)
 {
     if (op.getArgs().empty()) {
         // Logging self out
@@ -319,10 +336,11 @@ OpVector Connection::LogoutOperation(const Logout & op)
         info.setSerialno(m_server.newSerialNo());
         send(info);
         close();
-        return OpVector();
+        return;
     }
     if (!op.getArgs().front().isMap()) {
-        return error(op, "Create arg is not a map");
+        error(op, "Create arg is not a map", res);
+        return;
     }
     const MapType & account = op.getArgs().front().asMap();
     
@@ -331,27 +349,33 @@ OpVector Connection::LogoutOperation(const Logout & op)
         log(WARNING, "Got Logout with no username. Checking for old style Logout.");
         I = account.find("id");
         if ((I == account.end()) || !I->second.isString()) {
-            return error(op, "Logout is invalid");
+            error(op, "Logout is invalid", res);
+            return;
         }
     }
     const std::string & username = I->second.asString();
     I = account.find("password");
     if ((I == account.end()) || (!I->second.isString())) {
-        return error(op, "No account password given");
+        error(op, "No account password given", res);
+        return;
     }
     const std::string & password = I->second.asString();
     Account * player = m_server.getAccountByName(username);
     if ((!player) || (password != player->m_password)) {
-        return error(op, "Logout failed");
+        error(op, "Logout failed", res);
+        return;
     }
-    Logout l = op;
+    Logout l(op);
     l.setFrom(player->getId());
-    operation(l);
 
-    return OpVector();
+    OpVector tres;
+    operation(l, tres);
+    // Its not safe to assert this. FIXME Look into what might be returned
+    // in the way of errors, and where they should go.
+    assert(tres.empty());
 }
 
-OpVector Connection::GetOperation(const Get & op)
+void Connection::GetOperation(const Get & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
 
@@ -366,11 +390,13 @@ OpVector Connection::GetOperation(const Get & op)
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
         if (!args.front().isMap()) {
-            return error(op, "Get op arg is not a map");
+            error(op, "Get op arg is not a map", res);
+            return;
         }
         MapType::const_iterator I = args.front().asMap().find("id");
         if ((I == args.front().asMap().end()) || (!I->second.isString())) {
-            return error(op, "Type definition requested with no id");
+            error(op, "Type definition requested with no id", res);
+            return;
         }
         const std::string & id = I->second.asString();
         debug(std::cout << "Get got for " << id << std::endl << std::flush;);
@@ -379,7 +405,8 @@ OpVector Connection::GetOperation(const Get & op)
             std::string msg("Unknown type definition for \"");
             msg += id;
             msg += "\" requested";
-            return error(op, msg.c_str());
+            error(op, msg.c_str(), res);
+            return;
         }
         info = new Info;
         ListType & iargs = info->getArgs();
@@ -388,5 +415,5 @@ OpVector Connection::GetOperation(const Get & op)
         info->setSerialno(m_server.newSerialNo());
     }
     
-    return OpVector(1,info);
+    res.push_back(info);
 }

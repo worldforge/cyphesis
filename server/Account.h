@@ -27,7 +27,8 @@ class Account : public OOGThing {
     Entity * addNewCharacter(const std::string &, const MapType &);
     void characterDestroyed(std::string);
 
-    virtual OpVector characterError(const Create &, const MapType &) const = 0;
+    virtual bool characterError(const Create &,
+                                const MapType &, OpVector &) const = 0;
 
   public:
     Connection * m_connection;
@@ -42,12 +43,12 @@ class Account : public OOGThing {
     virtual const char * getType() const;
 
     virtual void addToMessage(MapType &) const;
-    virtual OpVector LogoutOperation(const Logout & op);
-    virtual OpVector CreateOperation(const Create & op);
-    virtual OpVector SetOperation(const Set & op);
-    virtual OpVector ImaginaryOperation(const Imaginary & op);
-    virtual OpVector TalkOperation(const Talk & op);
-    virtual OpVector LookOperation(const Look & op);
+    virtual void LogoutOperation(const Logout &, OpVector &);
+    virtual void CreateOperation(const Create &, OpVector &);
+    virtual void SetOperation(const Set &, OpVector &);
+    virtual void ImaginaryOperation(const Imaginary &, OpVector &);
+    virtual void TalkOperation(const Talk &, OpVector &);
+    virtual void LookOperation(const Look &, OpVector &);
 
     void addCharacter(Entity *);
 

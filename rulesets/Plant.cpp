@@ -111,13 +111,12 @@ int Plant::dropFruit(OpVector & res)
     return drop;
 }
 
-OpVector Plant::TickOperation(const Tick & op)
+void Plant::TickOperation(const Tick & op, OpVector & res)
 {
     debug(std::cout << "Plant::Tick(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);
-    OpVector res;
     if (m_script->Operation("tick", op, res)) {
-        return res;
+        return;
     }
     RootOperation * tickOp = new Tick();
     tickOp->setTo(getId());
@@ -145,18 +144,16 @@ OpVector Plant::TickOperation(const Tick & op)
         set->setArgs(ListType(1,pmap));
         res.push_back(set);
     }
-    return res;
 }
 
-OpVector Plant::TouchOperation(const Touch & op)
+void Plant::TouchOperation(const Touch & op, OpVector & res)
 {
     debug(std::cout << "Plant::Touch(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);
     debug(std::cout << "Plant has " << m_fruits << " fruits right now"
                     << std::endl << std::flush;);
-    OpVector res;
     if (m_script->Operation("touch", op, res)) {
-        return res;
+        return;
     }
     debug(std::cout << "Checking for drop"
                     << std::endl << std::flush;);
@@ -171,5 +168,4 @@ OpVector Plant::TouchOperation(const Touch & op)
         set->setArgs(ListType(1,pmap));
         res.push_back(set);
     }
-    return res;
 }

@@ -9,8 +9,8 @@
 
 class Player : public Account {
   protected:
-    virtual OpVector characterError(const Create & op,
-                                    const MapType & ent) const;
+    virtual bool characterError(const Create &,
+                                const MapType &, OpVector &) const;
   public:
     Player(Connection * conn, const std::string & username,
                               const std::string & passwd,

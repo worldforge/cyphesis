@@ -317,7 +317,8 @@ const EntitySet & WorldRouter::broadcastList(const RootOperation & op) const
 /// dispatch.
 void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
 {
-    OpVector res = e->operation(op);
+    OpVector res;
+    e->operation(op, res);
     setRefno(res, op);
     for(OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
         setSerialnoOp(**I);
@@ -332,7 +333,8 @@ void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
 /// if it is anothe delete op.
 void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
 {
-    OpVector res = e->operation(op);
+    OpVector res;
+    e->operation(op, res);
     setRefno(res, op);
     for(OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
         RootOperation & newOp = **I;

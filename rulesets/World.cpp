@@ -149,7 +149,7 @@ void World::addToMessage(MapType & omap) const
     World_parent::addToMessage(omap);
 }
 
-OpVector World::LookOperation(const Look & op)
+void World::LookOperation(const Look & op, OpVector & res)
 {
     // Let the worldrouter know we have been looked at.
     assert(m_world != 0);
@@ -162,12 +162,12 @@ OpVector World::LookOperation(const Look & op)
     if (J == eobjects.end()) {
         debug(std::cout << "ERROR: Op has invalid from" << std::endl
                         << std::flush;);
-        return World_parent::LookOperation(op);
+        return World_parent::LookOperation(op, res);
     }
     if (!consts::enable_ranges) {
         debug(std::cout << "WARNING: Sight ranges disabled." << std::endl
                         << std::flush;);
-        return World_parent::LookOperation(op);
+        return World_parent::LookOperation(op, res);
     }
 
     Sight * s = new Sight();
@@ -198,35 +198,32 @@ OpVector World::LookOperation(const Look & op)
     }
 
     s->setTo(op.getFrom());
-    return OpVector(1,s);
+    res.push_back(s);
 }
 
-OpVector World::BurnOperation(const Burn & op)
+void World::BurnOperation(const Burn & op, OpVector & res)
 {
     // Can't burn the world.
-    return OpVector();
 }
 
-OpVector World::MoveOperation(const Move & op)
+void World::MoveOperation(const Move & op, OpVector & res)
 {
     // Can't move the world.
-    return OpVector();
 }
 
-OpVector World::DeleteOperation(const Delete & op)
+void World::DeleteOperation(const Delete & op, OpVector & res)
 {
     // Deleting has no effect.
-    return OpVector();
 }
 
-OpVector World::SetOperation(const Set & op)
+void World::SetOperation(const Set & op, OpVector & res)
 {
     // This is the same as Thing::Operation(Set), except world does not
     // get deleted if its status goes below 0.
     m_seq++;
     const ListType & args = op.getArgs();
     if (args.empty()) {
-       return OpVector();
+       return;
     }
     try {
         const MapType & ent = args.front().asMap();
@@ -239,11 +236,11 @@ OpVector World::SetOperation(const Set & op)
         if (m_update_flags != 0) {
             updated.emit();
         }
-        return OpVector(1,s);
+        res.push_back(s);
     }
     catch (Atlas::Message::WrongTypeException) {
         log(ERROR, "EXCEPTION: Malformed set operation");
-        return error(op, "Malformed set operation", getId());
+        error(op, "Malformed set operation", res, getId());
+        return;
     }
-    return OpVector();
 }

@@ -67,7 +67,10 @@ bool PythonEntityScript::Operation(const std::string & op_type,
         } else if (PyOplist_Check(ret)) {
             PyOplist * op = (PyOplist*)ret;
             if (op->ops != NULL) {
-                ret_list = *op->ops;
+                OpVector & o = *op->ops;
+                for (OpVector::iterator I = o.begin(); I != o.end(); ++I) {
+                    ret_list.push_back(*I);
+                }
             } else {
                 debug( std::cout << "Method returned invalid OpVector"
                                  << std::endl << std::flush;);

@@ -131,7 +131,6 @@ void Entity::setScript(Script * scrpt)
         delete m_script;
     }
     m_script = scrpt;
-    return;
 }
 
 void Entity::destroy()
@@ -192,7 +191,6 @@ void Entity::merge(const MapType & ent)
 
 Vector3D Entity::getXyz() const
 {
-    //Location l=location;
     if (!m_location.isValid()) {
         static Vector3D ret(0.0,0.0,0.0);
         return ret;
@@ -218,128 +216,95 @@ void Entity::scriptSubscribe(const std::string & op)
     }
 }
 
-OpVector Entity::externalOperation(const RootOperation & op)
+void Entity::externalOperation(const RootOperation & op, OpVector & res)
 {
-    return operation(op);
+    operation(op, res);
 }
 
-OpVector Entity::SetupOperation(const Setup & op)
+void Entity::SetupOperation(const Setup & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("setup", op, res);
-    return res;
 }
 
-OpVector Entity::TickOperation(const Tick & op)
+void Entity::TickOperation(const Tick & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("tick", op, res);
-    return res;
 }
 
-OpVector Entity::ActionOperation(const Action & op)
+void Entity::ActionOperation(const Action & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("action", op, res);
-    return res;
 }
 
-OpVector Entity::ChopOperation(const Chop & op)
+void Entity::ChopOperation(const Chop & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("chop", op, res);
-    return res;
 }
 
-OpVector Entity::CreateOperation(const Create & op)
+void Entity::CreateOperation(const Create & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("create", op, res);
-    return res;
 }
 
-OpVector Entity::CutOperation(const Cut & op)
+void Entity::CutOperation(const Cut & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("cut", op, res);
-    return res;
 }
 
-OpVector Entity::DeleteOperation(const Delete & op)
+void Entity::DeleteOperation(const Delete & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("delete", op, res);
-    return res;
 }
 
-OpVector Entity::EatOperation(const Eat & op)
+void Entity::EatOperation(const Eat & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("eat", op, res);
-    return res;
 }
 
-OpVector Entity::BurnOperation(const Burn & op)
+void Entity::BurnOperation(const Burn & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("burn", op, res);
-    return res;
 }
 
-OpVector Entity::ImaginaryOperation(const Imaginary & op)
+void Entity::ImaginaryOperation(const Imaginary & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("imaginary", op, res);
-    return res;
 }
 
-OpVector Entity::MoveOperation(const Move & op)
+void Entity::MoveOperation(const Move & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("move", op, res);
-    return res;
 }
 
-OpVector Entity::NourishOperation(const Nourish & op)
+void Entity::NourishOperation(const Nourish & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("nourish", op, res);
-    return res;
 }
 
-OpVector Entity::SetOperation(const Set & op)
+void Entity::SetOperation(const Set & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("set", op, res);
-    return res;
 }
 
-OpVector Entity::SightOperation(const Sight & op)
+void Entity::SightOperation(const Sight & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("sight", op, res);
-    return res;
 }
 
-OpVector Entity::SoundOperation(const Sound & op)
+void Entity::SoundOperation(const Sound & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("sound", op, res);
-    return res;
 }
 
-OpVector Entity::TouchOperation(const Touch & op)
+void Entity::TouchOperation(const Touch & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("touch", op, res);
-    return res;
 }
 
-OpVector Entity::LookOperation(const Look & op)
+void Entity::LookOperation(const Look & op, OpVector & res)
 {
-    OpVector res;
     if (m_script->Operation("look", op, res) != 0) {
-        return res;
+        return;
     }
 
     Sight * s = new Sight( );
@@ -349,29 +314,23 @@ OpVector Entity::LookOperation(const Look & op)
     addToMessage(amap);
     s->setTo(op.getFrom());
 
-    return OpVector(1,s);
+    res.push_back(s);
 }
 
-OpVector Entity::AppearanceOperation(const Appearance & op)
+void Entity::AppearanceOperation(const Appearance & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("appearance", op, res);
-    return res;
 }
 
-OpVector Entity::DisappearanceOperation(const Disappearance & op)
+void Entity::DisappearanceOperation(const Disappearance & op, OpVector & res)
 {
-    OpVector res;
     m_script->Operation("disappearance", op, res);
-    return res;
 }
 
-OpVector Entity::OtherOperation(const RootOperation & op)
+void Entity::OtherOperation(const RootOperation & op, OpVector & res)
 {
     const std::string & op_type = op.getParents().front().asString();
-    OpVector res;
-    debug(std::cout << "Entity " << getId() << " got custom " << op_type << " op"
-               << std::endl << std::flush;);
+    debug(std::cout << "Entity " << getId() << " got custom " << op_type
+                    << " op" << std::endl << std::flush;);
     m_script->Operation(op_type, op, res);
-    return res;
 }

@@ -31,8 +31,8 @@ class Stackable : public Stackable_parent {
 
     virtual void addToMessage(MapType &) const;
 
-    virtual OpVector CombineOperation(const Combine & op);
-    virtual OpVector DivideOperation(const Divide & op);
+    virtual void CombineOperation(const Combine &, OpVector &);
+    virtual void DivideOperation(const Divide &, OpVector &);
 };
 
 #endif // RULESETS_STACKABLE_H

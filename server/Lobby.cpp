@@ -12,6 +12,8 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
+#include <cassert>
+
 static const bool debug_flag = false;
 
 Lobby::Lobby(const std::string & id, ServerRouting & s) : OOGThing(id), m_server(s)
@@ -32,7 +34,10 @@ void Lobby::addObject(Account * ac)
     a.setFrom(ac->getId());
     a.setTo("lobby");
     a.setSerialno(m_server.newSerialNo());
-    operation(a);
+
+    OpVector res;
+    operation(a, res);
+    assert(res.empty());
 
     m_accounts[ac->getId()] = ac;
 }
@@ -51,13 +56,16 @@ void Lobby::delObject(Account * a)
     d.setFrom(a->getId());
     d.setTo("lobby");
     d.setSerialno(m_server.newSerialNo());
-    operation(d);
+
+    OpVector res;
+    operation(d, res);
+    assert(res.empty());
 
     m_accounts.erase(a->getId());
 }
 
 
-OpVector Lobby::operation(const RootOperation & op)
+void Lobby::operation(const RootOperation & op, OpVector & res)
 {
     debug(std::cout << "Lobby::operation(" << op.getParents().front().asString()
                                            << std::endl << std::flush; );
@@ -76,7 +84,8 @@ OpVector Lobby::operation(const RootOperation & op)
     } else {
         AccountDict::const_iterator I = m_accounts.find(to);
         if (I == m_accounts.end()) {
-            return error(op, "Target account not logged in");
+            error(op, "Target account not logged in", res);
+            return;
         } else {
             Connection * c = I->second->m_connection;
             if (c != NULL) {
@@ -84,7 +93,6 @@ OpVector Lobby::operation(const RootOperation & op)
             }
         }
     }
-    return OpVector();
 }
 
 void Lobby::addToMessage(MapType & omap) const

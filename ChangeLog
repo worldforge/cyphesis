@@ -1,3 +1,25 @@
+2004-09-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/CharacterClient.cpp, client/CharacterClient.h,
+	  client/CommClient.cpp, common/BaseEntity.cpp,
+	  common/BaseEntity.h, common/OOGThing.cpp,
+	  common/OOGThing.h, common/op_switch.h,
+	  rulesets/BaseMind.cpp, rulesets/BaseMind.h,
+	  rulesets/Character.cpp, rulesets/Character.h,
+	  rulesets/Creator.cpp, rulesets/Creator.h, rulesets/Entity.cpp,
+	  rulesets/Entity.h, rulesets/Food.cpp, rulesets/Food.h,
+	  rulesets/Missile.h, rulesets/Plant.cpp, rulesets/Plant.h,
+	  rulesets/PythonMindScript.cpp, rulesets/PythonThingScript.cpp,
+	  rulesets/Stackable.cpp, rulesets/Stackable.h, rulesets/Thing.cpp,
+	  rulesets/Thing.h, rulesets/World.cpp, rulesets/World.h,
+	  server/Account.cpp, server/Account.h, server/Admin.cpp,
+	  server/Admin.h, server/CommClient.cpp, server/Connection.cpp,
+	  server/Connection.h, server/ExternalMind.cpp, server/ExternalMind.h,
+	  server/Lobby.cpp, server/Lobby.h, server/Player.cpp,
+	  server/Player.h, server/WorldRouter.cpp:
+	  Re-work basic op dispatch mechanism so result is passed by
+	  a reference argument rather than returning by value.
+
 2004-09-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.h, common/OOGThing.h, rulesets/Area.h,

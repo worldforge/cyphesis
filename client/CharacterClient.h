@@ -19,10 +19,8 @@ class CharacterClient : public BaseMind {
   public:
     CharacterClient(const std::string&, const std::string&, ClientConnection&);
 
-    virtual OpVector sightImaginaryOperation(const Sight& op,
-                                             Imaginary & sub_op);
-
-    virtual OpVector soundTalkOperation(const Sound & op, Talk & sub_op);
+    virtual void sightImaginaryOperation(const Sight&, Imaginary &, OpVector &);
+    virtual void soundTalkOperation(const Sound &, Talk &, OpVector &);
 
     void send(RootOperation & op);
 };

@@ -67,7 +67,6 @@ class Entity : public BaseEntity {
     EntitySet m_contains;       // List of entities which use this as ref
     unsigned int m_update_flags;
 
-    // Entity();
     explicit Entity(const std::string & id);
     virtual ~Entity();
 
@@ -118,28 +117,28 @@ class Entity : public BaseEntity {
 
     virtual void addToMessage(MapType & obj) const;
 
-    virtual OpVector externalOperation(const RootOperation & op);
+    virtual void externalOperation(const RootOperation & op, OpVector &);
 
-    virtual OpVector SetupOperation(const Setup & op);
-    virtual OpVector TickOperation(const Tick & op);
-    virtual OpVector ActionOperation(const Action & op);
-    virtual OpVector ChopOperation(const Chop & op);
-    virtual OpVector CreateOperation(const Create & op);
-    virtual OpVector CutOperation(const Cut & op);
-    virtual OpVector DeleteOperation(const Delete & op);
-    virtual OpVector EatOperation(const Eat & op);
-    virtual OpVector BurnOperation(const Burn & op);
-    virtual OpVector ImaginaryOperation(const Imaginary & op);
-    virtual OpVector MoveOperation(const Move & op);
-    virtual OpVector NourishOperation(const Nourish & op);
-    virtual OpVector SetOperation(const Set & op);
-    virtual OpVector SightOperation(const Sight & op);
-    virtual OpVector SoundOperation(const Sound & op);
-    virtual OpVector TouchOperation(const Touch & op);
-    virtual OpVector LookOperation(const Look & op);
-    virtual OpVector AppearanceOperation(const Appearance & op);
-    virtual OpVector DisappearanceOperation(const Disappearance & op);
-    virtual OpVector OtherOperation(const RootOperation & op);
+    virtual void SetupOperation(const Setup & op, OpVector &);
+    virtual void TickOperation(const Tick & op, OpVector &);
+    virtual void ActionOperation(const Action & op, OpVector &);
+    virtual void ChopOperation(const Chop & op, OpVector &);
+    virtual void CreateOperation(const Create & op, OpVector &);
+    virtual void CutOperation(const Cut & op, OpVector &);
+    virtual void DeleteOperation(const Delete & op, OpVector &);
+    virtual void EatOperation(const Eat & op, OpVector &);
+    virtual void BurnOperation(const Burn & op, OpVector &);
+    virtual void ImaginaryOperation(const Imaginary & op, OpVector &);
+    virtual void MoveOperation(const Move & op, OpVector &);
+    virtual void NourishOperation(const Nourish & op, OpVector &);
+    virtual void SetOperation(const Set & op, OpVector &);
+    virtual void SightOperation(const Sight & op, OpVector &);
+    virtual void SoundOperation(const Sound & op, OpVector &);
+    virtual void TouchOperation(const Touch & op, OpVector &);
+    virtual void LookOperation(const Look & op, OpVector &);
+    virtual void AppearanceOperation(const Appearance & op, OpVector &);
+    virtual void DisappearanceOperation(const Disappearance & op, OpVector &);
+    virtual void OtherOperation(const RootOperation & op, OpVector &);
 
     SigC::Signal0<void> updated;
 };

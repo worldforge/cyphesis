@@ -34,11 +34,11 @@ class World : public World_parent {
 
     virtual void addToMessage(MapType &) const;
 
-    virtual OpVector LookOperation(const Look & op);
-    virtual OpVector BurnOperation(const Burn & op);
-    virtual OpVector DeleteOperation(const Delete & op);
-    virtual OpVector MoveOperation(const Move & op);
-    virtual OpVector SetOperation(const Set & op);
+    virtual void LookOperation(const Look & op, OpVector &);
+    virtual void BurnOperation(const Burn & op, OpVector &);
+    virtual void DeleteOperation(const Delete & op, OpVector &);
+    virtual void MoveOperation(const Move & op, OpVector &);
+    virtual void SetOperation(const Set & op, OpVector &);
 };
 
 #endif // RULESETS_WORLD_H

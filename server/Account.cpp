@@ -140,7 +140,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     return chr;
 }
 
-OpVector Account::LogoutOperation(const Logout & op)
+void Account::LogoutOperation(const Logout & op, OpVector &)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
     Info info;
@@ -152,8 +152,6 @@ OpVector Account::LogoutOperation(const Logout & op)
     info.setTo(getId());
     m_connection->send(info);
     m_connection->close();
-    
-    return OpVector();
 }
 
 const char * Account::getType() const
@@ -178,26 +176,26 @@ void Account::addToMessage(MapType & omap) const
     BaseEntity::addToMessage(omap);
 }
 
-OpVector Account::CreateOperation(const Create & op)
+void Account::CreateOperation(const Create & op, OpVector & res)
 {
     debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
-        return OpVector();
+        return;
     }
 
     const MapType & entmap = args.front().asMap();
 
-    OpVector er = characterError(op, entmap);
-    if (!er.empty()) {
-        return er;
+    if (characterError(op, entmap, res)) {
+        return;
     }
 
     MapType::const_iterator I = entmap.find("parents");
     if ((I == entmap.end()) || !(I->second.isList()) ||
         (I->second.asList().empty()) ||
         !(I->second.asList().front().isString()) ) {
-        return error(op, "Character has no type");
+        error(op, "Character has no type", res);
+        return;
     }
     
     const std::string & typestr = I->second.asList().front().asString();
@@ -207,7 +205,8 @@ OpVector Account::CreateOperation(const Create & op)
     BaseEntity * obj = addNewCharacter(typestr, entmap);
 
     if (obj == 0) {
-        return error(op, "Character creation failed");
+        error(op, "Character creation failed", res);
+        return;
     }
 
     Info * info = new Info;
@@ -217,28 +216,29 @@ OpVector Account::CreateOperation(const Create & op)
     info->setRefno(op.getSerialno());
     info->setSerialno(m_connection->m_server.newSerialNo());
 
-    return OpVector(1,info);
+    res.push_back(info);
 }
 
-OpVector Account::SetOperation(const Set & op)
+void Account::SetOperation(const Set & op, OpVector & res)
 {
     debug(std::cout << "Account::Operation(set)" << std::endl << std::flush;);
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
-        return OpVector();
+        return;
     }
 
     const MapType & entmap = args.front().asMap();
 
     MapType::const_iterator I = entmap.find("id");
     if (I == entmap.end() || !(I->second.isString())) {
-        return error(op, "Set character has no ID");
+        error(op, "Set character has no ID", res);
+        return;
     }
 
     const std::string & id = I->second.asString();
     EntityDict::const_iterator J = m_charactersDict.find(id);
     if (J == m_charactersDict.end()) {
-        return error(op, "Set character for unknown character");
+        return error(op, "Set character for unknown character", res);
     }
 
     Entity * e = J->second;
@@ -267,6 +267,7 @@ OpVector Account::SetOperation(const Set & op)
             newArg["bbox"] = newBox.toAtlas();
         }
     }
+
     if (!newArg.empty()) {
         debug(std::cout << "Passing character mods in-game"
                         << std::endl << std::flush;);
@@ -277,14 +278,13 @@ OpVector Account::SetOperation(const Set & op)
         sarg.push_back(newArg);
         m_connection->m_server.m_world.message(*s, e);
     }
-    return OpVector();
 }
 
-OpVector Account::ImaginaryOperation(const Imaginary & op)
+void Account::ImaginaryOperation(const Imaginary & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
-        return OpVector();
+        return;
     }
 
     Sight s;
@@ -300,14 +300,14 @@ OpVector Account::ImaginaryOperation(const Imaginary & op)
     } else {
         s.setTo(op.getTo());
     }
-    return m_connection->m_server.m_lobby.operation(s);
+    m_connection->m_server.m_lobby.operation(s, res);
 }
 
-OpVector Account::TalkOperation(const Talk & op)
+void Account::TalkOperation(const Talk & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
-        return OpVector();
+        return;
     }
 
     Sound s;
@@ -323,10 +323,10 @@ OpVector Account::TalkOperation(const Talk & op)
     } else {
         s.setTo(op.getTo());
     }
-    return m_connection->m_server.m_lobby.operation(s);
+    m_connection->m_server.m_lobby.operation(s, res);
 }
 
-OpVector Account::LookOperation(const Look & op)
+void Account::LookOperation(const Look & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty()) {
@@ -337,11 +337,13 @@ OpVector Account::LookOperation(const Look & op)
         m_connection->m_server.m_lobby.addToMessage(s_args.front().asMap());
         s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);
-        return OpVector(1,s);
+        res.push_back(s);
+        return;
     }
     MapType::const_iterator I = args.front().asMap().find("id");
     if ((I == args.front().asMap().end()) || (!I->second.isString())) {
-        return error(op, "No target for look");
+        error(op, "No target for look", res);
+        return;
     }
     const std::string & to = I->second.asString();
     EntityDict::const_iterator J = m_charactersDict.find(to);
@@ -353,7 +355,8 @@ OpVector Account::LookOperation(const Look & op)
         J->second->addToMessage(s_args.front().asMap());
         s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);
-        return OpVector(1,s);
+        res.push_back(s);
+        return;
     }
     const AccountDict & accounts = m_connection->m_server.m_lobby.getAccounts();
     AccountDict::const_iterator K = accounts.find(to);
@@ -365,7 +368,8 @@ OpVector Account::LookOperation(const Look & op)
         K->second->addToMessage(s_args.front().asMap());
         s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);
-        return OpVector(1,s);
+        res.push_back(s);
+        return;
     }
-    return error(op, "Unknown look target");
+    error(op, "Unknown look target", res);
 }

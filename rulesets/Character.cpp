@@ -43,7 +43,7 @@
 
 static const bool debug_flag = false;
 
-OpVector Character::metabolise(double ammount)
+void Character::metabolise(OpVector & res, double ammount)
 {
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
@@ -68,7 +68,7 @@ OpVector Character::metabolise(double ammount)
     s->setTo(getId());
     s->setArgs(ListType(1,ent));
 
-    return OpVector(1,s);
+    res.push_back(s);
 }
 
 Character::Character(const std::string & id) : Character_parent(id),
@@ -160,25 +160,23 @@ void Character::addToMessage(MapType & omap) const
     Character_parent::addToMessage(omap);
 }
 
-OpVector Character::ImaginaryOperation(const Imaginary & op)
+void Character::ImaginaryOperation(const Imaginary & op, OpVector & res)
 {
     Sight * s = new Sight();
     s->setArgs(ListType(1,op.asObject()));
-    return OpVector(1,s);
+    res.push_back(s);
 }
 
-OpVector Character::SetupOperation(const Setup & op)
+void Character::SetupOperation(const Setup & op, OpVector & res)
 {
-    debug( std::cout << "Character::tick" << std::endl << std::flush;);
-    OpVector res;
     debug( std::cout << "CHaracter::Operation(setup)" << std::endl
                      << std::flush;);
     if (m_script->Operation("setup", op, res) != 0) {
-        return res;
+        return;
     }
     if (op.hasAttr("sub_to")) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
-        return res;
+        return;
     }
 
     if (0 == m_externalMind) {
@@ -204,14 +202,13 @@ OpVector Character::SetupOperation(const Setup & op)
     Tick * tick = new Tick();
     tick->setTo(getId());
     res.push_back(tick);
-    return res;
 }
 
-OpVector Character::TickOperation(const Tick & op)
+void Character::TickOperation(const Tick & op, OpVector & res)
 {
     if (op.hasAttr("sub_to")) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
-        return OpVector();
+        return;
     }
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
@@ -223,16 +220,16 @@ OpVector Character::TickOperation(const Tick & op)
         if ((I != arg1.end()) && (I->second.isInt())) {
             if (I->second.asInt() < m_movement.m_serialno) {
                 debug(std::cout << "Old tick" << std::endl << std::flush;);
-                return OpVector();
+                return;
             }
         }
         Location ret_loc;
         Move * moveOp = m_movement.genMoveUpdate(&ret_loc);
         if (moveOp) {
+            res.push_back(moveOp);
             if (!m_movement.moving()) {
-                return OpVector (1,moveOp);
+                return;
             }
-            OpVector res(2);
             MapType entmap;
             entmap["name"] = "move";
             entmap["serialno"] = m_movement.m_serialno;
@@ -240,12 +237,10 @@ OpVector Character::TickOperation(const Tick & op)
             tickOp->setTo(getId());
             tickOp->setFutureSeconds(m_movement.getTickAddition(ret_loc.m_pos));
             tickOp->setArgs(ListType(1,entmap));
-            res[0] = tickOp;
-            res[1] = moveOp;
-            return res;
+            res.push_back(tickOp);
+            return;
         }
     } else {
-        OpVector res;
         m_script->Operation("tick", op, res);
 
         // DIGEST
@@ -269,37 +264,32 @@ OpVector Character::TickOperation(const Tick & op)
         }
 
         // METABOLISE
-        OpVector mres = metabolise();
-        for(OpVector::const_iterator I = mres.begin(); I != mres.end(); I++) {
-            res.push_back(*I);
-        }
+        metabolise(res);
         
         // TICK
         Tick * tickOp = new Tick();
         tickOp->setTo(getId());
         tickOp->setFutureSeconds(consts::basic_tick * 30);
         res.push_back(tickOp);
-        return res;
     }
-    return OpVector();
 }
 
-OpVector Character::TalkOperation(const Talk & op)
+void Character::TalkOperation(const Talk & op, OpVector & res)
 {
     debug( std::cout << "Character::OPeration(Talk)" << std::endl<<std::flush;);
     Sound * s = new Sound();
     s->setArgs(ListType(1,op.asObject()));
-    return OpVector(1,s);
+    res.push_back(s);
 }
 
-OpVector Character::EatOperation(const Eat & op)
+void Character::EatOperation(const Eat & op, OpVector & res)
 {
-    // This is identical to Foof::Operation(Eat &)
+    // This is identical to Food::Operation(Eat &)
     // Perhaps animal should inherit from Food?
-    OpVector res;
     if (m_script->Operation("eat", op, res) != 0) {
-        return res;
+        return;
     }
+
     MapType self_ent;
     self_ent["id"] = getId();
     self_ent["status"] = -1;
@@ -316,23 +306,25 @@ OpVector Character::EatOperation(const Eat & op)
     n->setTo(to);
     n->setArgs(ListType(1,nour_ent));
 
-    OpVector res2(2);
-    res2[0] = s;
-    res2[1] = n;
-    return res2;
+    res.push_back(s);
+    res.push_back(n);
 }
 
-OpVector Character::NourishOperation(const Nourish & op)
+void Character::NourishOperation(const Nourish & op, OpVector & res)
 {
     if (op.getArgs().empty()) {
-        return error(op, "Nourish has no argument", getId());
+        error(op, "Nourish has no argument", res, getId());
+        return;
     }
     if (!op.getArgs().front().isMap()) {
-        return error(op, "Nourish arg is malformed", getId());
+        error(op, "Nourish arg is malformed", res, getId());
+        return;
     }
     const MapType & nent = op.getArgs().front().asMap();
     MapType::const_iterator I = nent.find("mass");
-    if ((I == nent.end()) || !I->second.isNum()) { return OpVector(); }
+    if ((I == nent.end()) || !I->second.isNum()) {
+        return;
+    }
     m_food = m_food + I->second.asNum();
 
     MapType food_ent;
@@ -348,67 +340,65 @@ OpVector Character::NourishOperation(const Nourish & op)
     Sight * si = new Sight();
     si->setTo(getId());
     si->setArgs(ListType(1,s.asObject()));
-    return OpVector(1,si);
+    res.push_back(si);
 }
 
-OpVector Character::mindLoginOperation(const Login & op)
+void Character::mindLoginOperation(const Login & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindLogoutOperation(const Logout & op)
+void Character::mindLogoutOperation(const Logout & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindActionOperation(const Action & op)
+void Character::mindActionOperation(const Action & op, OpVector & res)
 {
     Action *a = new Action(op);
     a->setTo(getId());
-    return OpVector(1,a);
+    res.push_back(a);
 }
 
-OpVector Character::mindSetupOperation(const Setup & op)
+void Character::mindSetupOperation(const Setup & op, OpVector & res)
 {
     Setup *s = new Setup(op);
     s->setTo(getId());
     s->setAttr("sub_to", "mind");
-    return OpVector(1,s);
+    res.push_back(s);
 }
 
-OpVector Character::mindUseOperation(const Use & op)
+void Character::mindUseOperation(const Use & op, OpVector & res)
 {
     std::cout << "Got Use op from mind" << std::endl << std::flush;
     Use *s = new Use(op);
     s->setTo(getId());
     s->setAttr("sub_to", "mind");
-    return OpVector(1,s);
+    res.push_back(s);
 }
 
-OpVector Character::mindWieldOperation(const Wield & op)
+void Character::mindWieldOperation(const Wield & op, OpVector & res)
 {
     std::cout << "Got Wield op from mind" << std::endl << std::flush;
     Wield *s = new Wield(op);
     s->setTo(getId());
     s->setAttr("sub_to", "mind");
-    return OpVector(1,s);
+    res.push_back(s);
 }
 
-OpVector Character::mindTickOperation(const Tick & op)
+void Character::mindTickOperation(const Tick & op, OpVector & res)
 {
     Tick *t = new Tick(op);
     t->setTo(getId());
     t->setAttr("sub_to", "mind");
-    return OpVector(1,t);
+    res.push_back(t);
 }
 
-OpVector Character::mindMoveOperation(const Move & op)
+void Character::mindMoveOperation(const Move & op, OpVector & res)
 {
     debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
         log(ERROR, "mindMoveOperation: move op has no argument");
-        return OpVector();
+        return;
     }
     const MapType & arg1 = args.front().asMap();
     MapType::const_iterator I = arg1.find("id");
@@ -419,18 +409,19 @@ OpVector Character::mindMoveOperation(const Move & op)
     EntityDict::const_iterator J = m_world->getObjects().find(oname);
     if (J == m_world->getObjects().end()) {
         log(ERROR, "mindMoveOperation: This move op is for a phoney id");
-        return OpVector();
+        return;
     }
     Entity * obj = J->second;
     if (obj != this) {
         debug( std::cout << "Moving something else. " << oname << std::endl << std::flush;);
         if ((obj->getMass() < 0) || (obj->getMass() > m_mass)) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
-            return OpVector();
+            return;
         }
         Move * newop = new Move(op);
         newop->setTo(oname);
-        return OpVector(1,newop);
+        res.push_back(newop);
+        return;
     }
     std::string new_ref;
     I = arg1.find("loc");
@@ -484,7 +475,8 @@ OpVector Character::mindMoveOperation(const Move & op)
         Move * newop = new Move(op);
         newop->setTo(getId());
         newop->setFutureSeconds(futureSeconds);
-        return OpVector(1,newop);
+        res.push_back(newop);
+        return;
     }
     // Movement within current ref. Work out the speed and stuff and
     // use movement object to track movement.
@@ -573,9 +565,9 @@ OpVector Character::mindMoveOperation(const Move & op)
             moveOp = m_movement.genFaceOperation();
         }
         if (NULL != moveOp) {
-            return OpVector(1,moveOp);
+            res.push_back(moveOp);
         }
-        return OpVector();
+        return;
     }
     if (NULL != moveOp) {
         delete moveOp;
@@ -605,17 +597,16 @@ OpVector Character::mindMoveOperation(const Move & op)
     if (moveOp == NULL) {
         // FIXME migrate this to being an assert
         log(ERROR, "No move operation generated in mindMoveOp");
-        return OpVector();
+        return;
     }
     // return moveOp and tickOp;
-    OpVector res(2);
-    res[0] = moveOp;
-    res[1] = tickOp;
-    return res;
+    res.push_back(moveOp);
+    res.push_back(tickOp);
 }
 
-OpVector Character::mindSetOperation(const Set & op)
+void Character::mindSetOperation(const Set & op, OpVector & res)
 {
+    // FIXME Segfaults if there are no args.
     const ListType & args = op.getArgs();
     if (args.front().isMap()) {
         Set * s = new Set(op);
@@ -629,87 +620,77 @@ OpVector Character::mindSetOperation(const Set & op)
                 s->setTo(getId());
             }
         }
-        return OpVector(1,s);
+        res.push_back(s);
     }
-    return OpVector();
 }
 
-OpVector Character::mindSightOperation(const Sight & op)
+void Character::mindSightOperation(const Sight & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindSoundOperation(const Sound & op)
+void Character::mindSoundOperation(const Sound & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindChopOperation(const Chop & op)
+void Character::mindChopOperation(const Chop & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindCombineOperation(const Combine & op)
+void Character::mindCombineOperation(const Combine & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindCreateOperation(const Create & op)
+void Character::mindCreateOperation(const Create & op, OpVector & res)
 {
     Create * c = new Create(op);
     c->setTo(getId());
-    return OpVector(1,c);
+    res.push_back(c);
 }
 
-OpVector Character::mindDeleteOperation(const Delete & op)
+void Character::mindDeleteOperation(const Delete & op, OpVector & res)
 {
     Delete * d = new Delete(op);
     d->setTo(getId());
-    return OpVector(1,d);
+    res.push_back(d);
 }
 
-OpVector Character::mindDivideOperation(const Divide & op)
+void Character::mindDivideOperation(const Divide & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindBurnOperation(const Burn & op)
+void Character::mindBurnOperation(const Burn & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindGetOperation(const Get & op)
+void Character::mindGetOperation(const Get & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindImaginaryOperation(const Imaginary & op)
+void Character::mindImaginaryOperation(const Imaginary & op, OpVector & res)
 {
     Imaginary * i = new Imaginary(op);
     i->setTo(getId());
-    return OpVector(1,i);
+    res.push_back(i);
 }
 
-OpVector Character::mindInfoOperation(const Info & op)
+void Character::mindInfoOperation(const Info & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindNourishOperation(const Nourish & op)
+void Character::mindNourishOperation(const Nourish & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindTalkOperation(const Talk & op)
+void Character::mindTalkOperation(const Talk & op, OpVector & res)
 {
     debug( std::cout << "Character::mindOPeration(Talk)"
                      << std::endl << std::flush;);
     Talk * t = new Talk(op);
     t->setTo(getId());
-    return OpVector(1,t);
+    res.push_back(t);
 }
 
-OpVector Character::mindLookOperation(const Look & op)
+void Character::mindLookOperation(const Look & op, OpVector & res)
 {
     debug(std::cout << "Got look up from mind from [" << op.getFrom()
                << "] to [" << op.getTo() << "]" << std::endl << std::flush;);
@@ -730,28 +711,28 @@ OpVector Character::mindLookOperation(const Look & op)
         }
     }
     debug( std::cout <<"    now to ["<<l->getTo()<<"]"<<std::endl<<std::flush;);
-    return OpVector(1,l);
+    res.push_back(l);
 }
 
-OpVector Character::mindCutOperation(const Cut & op)
+void Character::mindCutOperation(const Cut & op, OpVector & res)
 {
     Cut * c = new Cut(op);
     if (op.getTo().empty()) {
         c->setTo(getId());
     }
-    return OpVector(1,c);
+    res.push_back(c);
 }
 
-OpVector Character::mindEatOperation(const Eat & op)
+void Character::mindEatOperation(const Eat & op, OpVector & res)
 {
     Eat * e = new Eat(op);
     if (op.getTo().empty()) {
         e->setTo(getId());
     }
-    return OpVector(1,e);
+    res.push_back(e);
 }
 
-OpVector Character::mindTouchOperation(const Touch & op)
+void Character::mindTouchOperation(const Touch & op, OpVector & res)
 {
     Touch * t = new Touch(op);
     // Work out what is being touched.
@@ -772,8 +753,7 @@ OpVector Character::mindTouchOperation(const Touch & op)
         }
     }
     // Pass the modified touch operation on to target.
-    OpVector res(2);
-    res[0] = t;
+    res.push_back(t);
     // Send action "touch"
     Action * a = new Action();
     a->setTo(getId());
@@ -782,33 +762,29 @@ OpVector Character::mindTouchOperation(const Touch & op)
     amap["action"] = "touch";
     ListType setArgs(1,amap);
     a->setArgs(setArgs);
-    res[1] = a;
-    return res;
+    res.push_back(a);
 }
 
-OpVector Character::mindAppearanceOperation(const Appearance & op)
+void Character::mindAppearanceOperation(const Appearance & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindDisappearanceOperation(const Disappearance & op)
+void Character::mindDisappearanceOperation(const Disappearance & op, OpVector & res)
 {
-    return OpVector();
 }
 
 
-OpVector Character::mindErrorOperation(const Error & op)
+void Character::mindErrorOperation(const Error & op, OpVector & res)
 {
-    return OpVector();
 }
 
-OpVector Character::mindOtherOperation(const RootOperation & op)
+void Character::mindOtherOperation(const RootOperation & op, OpVector & res)
 {
     RootOperation * e = new RootOperation(op);
     if (op.getTo().empty()) {
         e->setTo(getId());
     }
-    return OpVector(1,e);
+    res.push_back(e);
 }
 
 bool Character::w2mActionOperation(const Action & op)
@@ -988,104 +964,99 @@ bool Character::w2mTouchOperation(const Touch & op)
     return true;
 }
 
-OpVector Character::sendMind(const RootOperation & op)
+void Character::sendMind(const RootOperation & op, OpVector & res)
 {
     debug( std::cout << "Character::sendMind" << std::endl << std::flush;);
 
     if (0 != m_externalMind) {
         if (0 != m_mind) {
-            OpVector res = m_mind->operation(op);
+            OpVector mindRes;
+            m_mind->operation(op, mindRes);
             // Discard all the local results
-            OpVector::const_iterator J = res.begin(); 
-            for(; J != res.end(); J++) {
+            OpVector::const_iterator J = mindRes.begin(); 
+            for(; J != mindRes.end(); J++) {
                 delete *J;
             }
         }
         debug(std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
-        return m_externalMind->operation(op);
+        m_externalMind->operation(op, res);
     } else {
         debug(std::cout << "Using ops from local mind"
                         << std::endl << std::flush;);
         if (0 != m_mind) {
-            return m_mind->operation(op);
+            m_mind->operation(op, res);
         }
     }
 
-    // At this point there is a bunch of conversion stuff that I don't
-    // understand. This function has now been restructed heavily compared
-    // with the python version, and our ops don't really require conversion
-    // so this comment is not especiialy valid.
-    
-    return OpVector();
+    // At this point the python code did some conversion.
+    // FIXME to check we really don't care any more.
 }
 
-OpVector Character::mind2body(const RootOperation & op)
+void Character::mind2body(const RootOperation & op, OpVector & res)
 {
     debug( std::cout << "Character::mind2body" << std::endl << std::flush;);
 
     if (m_drunkness > 1.0) {
-        return OpVector();
+        return;
     }
     OpNo otype = opEnumerate(op, opMindLookup);
-    OP_SWITCH(op, otype, mind)
-    return OpVector();
+    OP_SWITCH(op, otype, res, mind)
 }
 
-OpVector Character::world2body(const RootOperation & op)
+void Character::world2body(const RootOperation & op, OpVector & res)
 {
     debug( std::cout << "Character::world2body" << std::endl << std::flush;);
-    return callOperation(op);
+    callOperation(op, res);
 }
 
 bool Character::world2mind(const RootOperation & op)
 {
     debug( std::cout << "Character::world2mind" << std::endl << std::flush;);
     OpNo otype = opEnumerate(op, opW2mLookup);
-    OP_SWITCH(op, otype, w2m)
+    POLL_OP_SWITCH(op, otype, w2m)
     return false;
 }
 
-OpVector Character::operation(const RootOperation & op)
+void Character::operation(const RootOperation & op, OpVector & res)
 {
     debug( std::cout << "Character::operation" << std::endl << std::flush;);
-    OpVector result = world2body(op);
+    world2body(op, res);
     // set refno on result?
     if (!m_isAlive) {
-        return result;
+        return;
     }
     if (world2mind(op)) {
-        OpVector mres2 = sendMind(op);
-        for(OpVector::const_iterator I = mres2.begin(); I != mres2.end(); I++) {
+        OpVector mres, tmp;
+        sendMind(op, mres);
+        for(OpVector::const_iterator I = mres.begin(); I != mres.end(); I++) {
             //RootOperation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
-            externalOperation(**I);
+            externalOperation(**I, tmp);
             delete *I;
         }
     }
-    return result;
 }
 
-OpVector Character::externalOperation(const RootOperation & op)
+void Character::externalOperation(const RootOperation & op, OpVector & res)
 {
     debug( std::cout << "Character::externalOperation" << std::endl << std::flush;);
-    OpVector res = mind2body(op);
+    OpVector mres;
+    mind2body(op, mres);
     
     // We require that the first op is the direct consequence of the minds
     // op, so it gets the same serialno
     // FIXME in Atlas-C++ 0.6 we can do this by relying on being able
     // to query if an object has a certain attribute. A copied op will have
     // it, a new op won't.
-    OpVector::const_iterator I = res.begin();
-    for(; I != res.end(); I++) {
-        if (I == res.begin()) {
+    for (OpVector::const_iterator I = mres.begin(); I != mres.end(); ++I) {
+        if (I == mres.begin()) {
             (*I)->setSerialno(op.getSerialno());
         } else {
             m_world->setSerialnoOp(**I);
         }
         sendWorld(*I);
-        // Don't delete br as it has gone into worlds queue
+        // Don't delete br as it has gone into World's queue
         // World will deal with it.
     }
-    return OpVector();
 }

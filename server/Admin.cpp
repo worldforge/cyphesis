@@ -56,69 +56,79 @@ void Admin::opDispatched(RootOperation * op)
     }
 }
 
-OpVector Admin::characterError(const Create & op,
-                               const MapType & ent) const
+bool Admin::characterError(const Create & op,
+                           const MapType & ent, OpVector & res) const
 {
     MapType::const_iterator I = ent.find("parents");
     if ((I == ent.end()) || !I->second.isList()) {
-        return error(op, "You cannot create a character with no type.");
+        error(op, "You cannot create a character with no type.", res);
+        return true;
     }
     const ListType & parents = I->second.asList();
     if (parents.empty() || !parents.front().isString()) {
-        return error(op, "You cannot create a character with non-string type.");
+        error(op, "You cannot create a character with non-string type.", res);
+        return true;
     }
-    return OpVector();
+    return false;
 }
 
-OpVector Admin::LogoutOperation(const Logout & op)
+void Admin::LogoutOperation(const Logout & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     
     if (args.empty() || !args.front().isMap()) {
-        return Account::LogoutOperation(op);
+        Account::LogoutOperation(op, res);
     } else {
         MapType::const_iterator I = args.front().asMap().find("id");
         if ((I == args.front().asMap().end()) || (!I->second.isString())) {
-            return error(op, "No account id given");
+            error(op, "No account id given", res);
+            return;
         }
         if (m_connection == NULL) {
-            return error(op, "Disconnected admin account handling explicit logout");
+            error(op,"Disconnected admin account handling explicit logout",res);
+            return;
         }
         const std::string & account_id = I->second.asString();
         if (account_id == getId()) {
-           return Account::LogoutOperation(op);
+           Account::LogoutOperation(op, res);
         }
         BaseEntity * player = m_connection->m_server.getObject(account_id);
         if (!player) {
-            return error(op, "Logout failed");
+            error(op, "Logout failed", res);
+            return;
         }
-        return player->operation(op);
+        player->operation(op, res);
     }
 }
 
-OpVector Admin::GetOperation(const Get & op)
+void Admin::GetOperation(const Get & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty()) {
-        return error(op, "Get has no args.");
+        error(op, "Get has no args.", res);
+        return;
     }
     const Element & ent = args.front();
     if (!ent.isMap()) {
-        return error(op, "Get arg is not a map.");
+        error(op, "Get arg is not a map.", res);
+        return;
     }
     const MapType & emap = ent.asMap();
     MapType::const_iterator I = emap.find("objtype");
     if (I == emap.end() || !I->second.isString()) {
-        return error(op, "Get arg has no objtype.");
+        error(op, "Get arg has no objtype.", res);
+        return;
     }
     const std::string & objtype = I->second.asString();
     I = emap.find("id");
     if (I == emap.end() || !I->second.isString()) {
-        return error(op, "Get arg has no id.");
+        error(op, "Get arg has no id.", res);
+        return;
     }
     const std::string & id = I->second.asString();
     if (id.empty()) {
-        return error(op, "query id invalid");
+        error(op, "query id invalid", res);
+        return;
     }
     Info * info = new Info;
     if ((objtype == "object") || (objtype == "obj")) {
@@ -138,7 +148,8 @@ OpVector Admin::GetOperation(const Get & op)
             std::string msg("Unknown object id \"");
             msg += id;
             msg += "\" requested";
-            return error(op, msg.c_str());
+            error(op, msg.c_str(), res);
+            return;
         }
     } else if ((objtype == "class") ||
                (objtype == "meta") ||
@@ -149,7 +160,8 @@ OpVector Admin::GetOperation(const Get & op)
             std::string msg("Unknown type definition for \"");
             msg += id;
             msg += "\" requested";
-            return error(op, msg.c_str());
+            error(op, msg.c_str(), res);
+            return;
         }
         ListType & iargs = info->getArgs();
         iargs.push_back(o->asObject());
@@ -160,32 +172,37 @@ OpVector Admin::GetOperation(const Get & op)
         msg += "\" requested for \"";
         msg += id;
         msg += "\"";
-        return error(op, msg.c_str());
+        error(op, msg.c_str(), res);
+        return;
     }
     info->setRefno(op.getSerialno());
     info->setSerialno(m_connection->m_server.newSerialNo());
-    return OpVector(1,info);
+    res.push_back(info);
 }
 
-OpVector Admin::SetOperation(const Set & op)
+void Admin::SetOperation(const Set & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty()) {
-        return error(op, "Set has no args.");
+        error(op, "Set has no args.", res);
+        return;
     }
     const Element & ent = args.front();
     if (!ent.isMap()) {
-        return error(op, "Set arg is not a map.");
+        error(op, "Set arg is not a map.", res);
+        return;
     }
     const MapType & emap = ent.asMap();
     MapType::const_iterator I = emap.find("objtype");
     if (I == emap.end() || !I->second.isString()) {
-        return error(op, "Set arg has no objtype.");
+        error(op, "Set arg has no objtype.", res);
+        return;
     }
     const std::string & objtype = I->second.asString();
     I = emap.find("id");
     if (I == emap.end() || !I->second.isString()) {
-        return error(op, "Set arg has no id.");
+        error(op, "Set arg has no id.", res);
+        return;
     }
     const std::string & id = I->second.asString();
     // FIXME Use this id to install a type from the client
@@ -193,7 +210,8 @@ OpVector Admin::SetOperation(const Set & op)
 
     if ((objtype == "object") || (objtype == "obj")) {
         if (m_charactersDict.find(id) != m_charactersDict.end()) {
-            return Account::SetOperation(op);
+            Account::SetOperation(op, res);
+            return;
         }
         log(WARNING, "Unable to set attributes of non-character yet");
         // Manipulate attributes of existing objects.
@@ -202,37 +220,43 @@ OpVector Admin::SetOperation(const Set & op)
         // code needs description in a strange format for now.
         I = emap.find("parents");
         if (I == emap.end()) {
-            return error(op, "Attempt to install type with no parents");
+            error(op, "Attempt to install type with no parents", res);
+            return;
         }
         if (!I->second.isList()) {
-            return error(op, "Attempt to install type with non-list parents");
+            error(op, "Attempt to install type with non-list parents", res);
+            return;
         }
         const ListType & parents = I->second.asList();
         if (parents.empty() || !parents.front().isString()) {
-            return error(op, "Attempt to install type with invalid parent");
+            error(op, "Attempt to install type with invalid parent", res);
+            return;
         }
         const std::string & parent = parents.front().asString();
         if (parent.empty()) {
-            return error(op, "Attempt to install type with parent=\"\"");
+            error(op, "Attempt to install type with parent=\"\"", res);
+            return;
         }
         Atlas::Objects::Root * o = Inheritance::instance().get(id);
         if (o != 0) {
-            return error(op, "Attempt to install type that already exists");
+            error(op, "Attempt to install type that already exists", res);
+            return;
         }
         o = Inheritance::instance().get(parent);
         if (o == 0) {
             std::string msg("Attempt to install type with non-existant parent \"");
             msg += parent;
             msg += "\"";
-            return error(op, msg.c_str());
+            error(op, msg.c_str(), res);
+            return;
         }
         FactoryBase * f = EntityFactory::instance()->getNewFactory(parent);
         if (f == 0) {
             std::string msg("Attempt to find factory for parent \"");
             msg += parent;
             msg += "\" failed.";
-            return error(op, msg.c_str());
-
+            error(op, msg.c_str(), res);
+            return;
         }
         debug(std::cout << "Install type \"" << id << "\" with parent \""
                         << parent << "\"" << std::endl << std::flush;);
@@ -240,16 +264,16 @@ OpVector Admin::SetOperation(const Set & op)
     } else if (objtype == "op_definition") {
         // Install a new op type? Perhaps again this should be a create.
     } else {
-        return error(op, "Unknow object type set");
+        error(op, "Unknow object type set", res);
+        return;
     }
-    return OpVector();
 }
 
-OpVector Admin::CreateOperation(const Create & op)
+void Admin::CreateOperation(const Create & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
-        return OpVector();
+        return;
     }
 
     const MapType & entmap = args.front().asMap();
@@ -257,13 +281,14 @@ OpVector Admin::CreateOperation(const Create & op)
     if ((I == entmap.end()) || !(I->second.isList()) ||
         (I->second.asList().empty()) ||
         !(I->second.asList().front().isString()) ) {
-        return error(op, "Character has no type");
+        error(op, "Character has no type", res);
+        return;
     }
 
-    return Account::CreateOperation(op);
+    Account::CreateOperation(op, res);
 }
 
-OpVector Admin::OtherOperation(const RootOperation & op)
+void Admin::OtherOperation(const RootOperation & op, OpVector & res)
 {
     const std::string & op_type = op.getParents().front().asString();
     if (op_type == "monitor") {
@@ -279,7 +304,6 @@ OpVector Admin::OtherOperation(const RootOperation & op)
             }
         }
     }
-    return OpVector();
 }
 // There used to be a code operation handler here. It may become desirable in
 // the future for the admin account to be able to send script fragments.

@@ -12,7 +12,9 @@ OOGThing::~OOGThing()
 {
 }
 
-OpVector OOGThing::OtherOperation(const RootOperation & op) {
-    return error(op, "Unknown operation");
+void OOGThing::OtherOperation(const RootOperation & op, OpVector & res)
+{
+    
+    error(op, "Unknown operation", res);
 }
 

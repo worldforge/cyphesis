@@ -43,7 +43,7 @@ Thing::Thing(const std::string & id) : Entity(id)
 
 Thing::~Thing() { }
 
-OpVector Thing::SetupOperation(const Setup & op)
+void Thing::SetupOperation(const Setup & op, OpVector & res)
 {
     Appearance * app = new Appearance();
     ListType & args = app->getArgs();
@@ -51,54 +51,48 @@ OpVector Thing::SetupOperation(const Setup & op)
     MapType & arg = args.back().asMap();
     arg["id"] = getId();
 
-    OpVector sres;
-    if (m_script->Operation("setup", op, sres) != 0) {
-        sres.push_back(app);
-        return sres;
+    res.push_back(app);
+
+    if (m_script->Operation("setup", op, res) != 0) {
+        return;
     }
-
-    OpVector res(2);
-
-    res[0] = app;
 
     RootOperation * tick = new Tick();
     tick->setTo(getId());
 
-    res[1] = tick;
-
-    return res;
+    res.push_back(tick);
 }
 
-OpVector Thing::ActionOperation(const Action & op)
+void Thing::ActionOperation(const Action & op, OpVector & res)
 {
-    OpVector res;
     if (m_script->Operation("action", op, res) != 0) {
-        return res;
+        return;
     }
     RootOperation * s = new Sight();
     s->setArgs(ListType(1,op.asObject()));
-    return OpVector(1,s);
+    res.push_back(s);
 }
 
-OpVector Thing::CreateOperation(const Create & op)
+void Thing::CreateOperation(const Create & op, OpVector & res)
 {
-    OpVector res;
     if (m_script->Operation("create", op, res) != 0) {
-        return res;
+        return;
     }
     const ListType & args = op.getArgs();
     if (args.empty()) {
-       return OpVector();
+       return;
     }
     try {
         MapType ent = args.front().asMap();
         MapType::const_iterator I = ent.find("parents");
         if ((I == ent.end()) || !I->second.isList()) {
-            return error(op, "Entity to be created has no type", getId());
+            error(op, "Entity to be created has no type", res, getId());
+            return;
         }
         const ListType & parents = I->second.asList();
         if (parents.empty() || !parents.front().isString()) {
-            return error(op, "Entity to be created has invalid type list", getId());
+            error(op, "Entity to be created has invalid type", res, getId());
+            return;
         }
         if ((ent.find("loc") == ent.end()) && (m_location.m_loc != 0)) {
             ent["loc"] = m_location.m_loc->getId();
@@ -112,7 +106,8 @@ OpVector Thing::CreateOperation(const Create & op)
         Entity * obj = m_world->addNewObject(type,ent);
 
         if (obj == 0) {
-            return error(op, "Create op failed.", op.getFrom());
+            error(op, "Create op failed.", res, op.getFrom());
+            return;
         }
 
         Create c(op);
@@ -123,40 +118,39 @@ OpVector Thing::CreateOperation(const Create & op)
         s->setArgs(ListType(1,c.asObject()));
         // This should no longer be required as it is now handled centrally
         // s->setRefno(op.getSerialno());
-        return OpVector(1,s);
+        res.push_back(s);
     }
     catch (Atlas::Message::WrongTypeException) {
         log(ERROR, "EXCEPTION: Malformed object to be created");
-        return error(op, "Malformed object to be created", getId());
+        error(op, "Malformed object to be created", res, getId());
+        return;
     }
-    return OpVector();
 }
 
-OpVector Thing::DeleteOperation(const Delete & op)
+void Thing::DeleteOperation(const Delete & op, OpVector & res)
 {
-    OpVector res;
     if (m_script->Operation("delete", op, res) != 0) {
-        return res;
+        return;
     }
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
     RootOperation * s = new Sight();
     s->setArgs(ListType(1,op.asObject()));
-    return OpVector(1,s);
+    res.push_back(s);
 }
 
-OpVector Thing::BurnOperation(const Burn & op)
+void Thing::BurnOperation(const Burn & op, OpVector & res)
 {
-    OpVector res;
     if (m_script->Operation("burn", op, res) != 0) {
-        return res;
+        return;
     }
     if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
-        return error(op, "Fire op has no argument", getId());
+        error(op, "Fire op has no argument", res, getId());
+        return;
     }
     MapType::const_iterator I = m_attributes.find("burn_speed");
     if ((I == m_attributes.end()) || !I->second.isNum()) {
-        return res;
+        return;
     }
     double bspeed = I->second.asNum();
     const MapType & fire_ent = op.getArgs().front().asMap();
@@ -175,47 +169,50 @@ OpVector Thing::BurnOperation(const Burn & op)
     self_ent["id"] = getId();
     self_ent["status"] = m_status - (consumed / m_mass);
 
+    res.push_back(s);
+
     Nourish * n = new Nourish();
     n->setTo(to);
     n->setArgs(ListType(1,nour_ent));
 
-    OpVector res2(2);
-    res2[0] = s;
-    res2[1] = n;
-    return res2;
+    res.push_back(n);
 }
 
-OpVector Thing::MoveOperation(const Move & op)
+void Thing::MoveOperation(const Move & op, OpVector & res)
 {
     debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
     m_seq++;
-    OpVector res;
     if (m_script->Operation("move", op, res) != 0) {
-        return res;
+        return;
     }
     const ListType & args = op.getArgs();
     if (args.empty()) {
-        return error(op, "Move has no argument", getId());
+        error(op, "Move has no argument", res, getId());
+        return;
     }
     Vector3D oldpos = m_location.m_pos;
     const MapType & ent = args.front().asMap();
     MapType::const_iterator I = ent.find("loc");
     if ((I == ent.end()) || !I->second.isString()) {
-        return error(op, "Move op has no loc", getId());
+        error(op, "Move op has no loc", res, getId());
+        return;
     }
     const std::string & ref = I->second.asString();
     EntityDict::const_iterator J = m_world->getObjects().find(ref);
     if (J == m_world->getObjects().end()) {
-        return error(op, "Move op loc invalid", getId());
+        error(op, "Move op loc invalid", res, getId());
+        return;
     }
     debug(std::cout << "{" << ref << "}" << std::endl << std::flush;);
     Entity * newref = J->second;
     if (newref == this) {
-        return error(op, "Attempt by entity to move into itself", getId());
+        error(op, "Attempt by entity to move into itself", res, getId());
+        return;
     }
     I = ent.find("pos");
     if ((I == ent.end()) || !I->second.isList()) {
-        return error(op, "Move op has no pos", getId());
+        error(op, "Move op has no pos", res, getId());
+        return;
     }
 
     // Up until this point nothing should have changed, but the changes
@@ -262,7 +259,9 @@ OpVector Thing::MoveOperation(const Move & op)
 
     RootOperation * s = new Sight();
     s->setArgs(ListType(1,m.asObject()));
-    OpVector res2(1,s);
+
+    res.push_back(s);
+
     // I think it might be wise to send a set indicating we have changed
     // modes, but this would probably be wasteful
 
@@ -296,7 +295,7 @@ OpVector Thing::MoveOperation(const Move & op)
                         Disappearance * d = new Disappearance();
                         d->setArgs(this_as_args);
                         d->setTo((*I)->getId());
-                        res2.push_back(d);
+                        res.push_back(d);
                     } else /*if (isInRange)*/ {
                         // Send operation to the entity in question so it
                         // knows it is gaining sight of us.
@@ -305,7 +304,7 @@ OpVector Thing::MoveOperation(const Move & op)
                         Appearance * a = new Appearance();
                         a->setArgs(this_as_args);
                         a->setTo((*I)->getId());
-                        res2.push_back(a);
+                        res.push_back(a);
                     }
                 }
             }
@@ -335,7 +334,7 @@ OpVector Thing::MoveOperation(const Move & op)
             Appearance * a = new Appearance();
             a->setArgs(appear);
             a->setTo(getId());
-            res2.push_back(a);
+            res.push_back(a);
         }
         if (!disappear.empty()) {
             // Send an operation to ourselves with a list of entities
@@ -343,30 +342,28 @@ OpVector Thing::MoveOperation(const Move & op)
             Disappearance * d = new Disappearance();
             d->setArgs(disappear);
             d->setTo(getId());
-            res2.push_back(d);
+            res.push_back(d);
         }
     }
     updated.emit();
-    return res2;
 }
 
-OpVector Thing::SetOperation(const Set & op)
+void Thing::SetOperation(const Set & op, OpVector & res)
 {
     m_seq++;
-    OpVector res;
     if (m_script->Operation("set", op, res) != 0) {
-        return res;
+        return;
     }
     const ListType & args = op.getArgs();
     if (args.empty()) {
-       return OpVector();
+        return;
     }
     try {
         const MapType & ent = args.front().asMap();
         merge(ent);
         RootOperation * s = new Sight();
         s->setArgs(ListType(1,op.asObject()));
-        OpVector res2(1,s);
+        res.push_back(s);
         if (m_status < 0) {
             RootOperation * d = new Delete();
             ListType & dargs = d->getArgs();
@@ -374,16 +371,14 @@ OpVector Thing::SetOperation(const Set & op)
             // FIXME Is it necessary to include a full description?
             addToMessage(dargs.front().asMap());
             d->setTo(getId());
-            res2.push_back(d);
+            res.push_back(d);
         }
         if (m_update_flags != 0) {
             updated.emit();
         }
-        return res2;
     }
     catch (Atlas::Message::WrongTypeException) {
         log(ERROR, "EXCEPTION: Malformed set operation");
-        return error(op, "Malformed set operationn", getId());
+        error(op, "Malformed set operationn", res, getId());
     }
-    return OpVector();
 }

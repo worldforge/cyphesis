@@ -13,7 +13,8 @@ class Persistance;
 
 class Admin : public Account {
   protected:
-    virtual OpVector characterError(const Create &, const MapType &) const;
+    virtual bool characterError(const Create &,
+                                const MapType &, OpVector &) const;
     void opDispatched(RootOperation * op);
 
     SigC::Connection m_monitorConnection;
@@ -25,11 +26,11 @@ class Admin : public Account {
 
     virtual const char * getType() const;
 
-    virtual OpVector LogoutOperation(const Logout & op);
-    virtual OpVector GetOperation(const Get & op);
-    virtual OpVector SetOperation(const Set & op);
-    virtual OpVector CreateOperation(const Create & op);
-    virtual OpVector OtherOperation(const RootOperation & op);
+    virtual void LogoutOperation(const Logout &, OpVector &);
+    virtual void GetOperation(const Get &, OpVector &);
+    virtual void SetOperation(const Set &, OpVector &);
+    virtual void CreateOperation(const Create &, OpVector &);
+    virtual void OtherOperation(const RootOperation &, OpVector &);
 };
 
 #endif // SERVER_ADMIN_H

@@ -33,7 +33,8 @@ class Connection : public OOGThing {
   public:
     ServerRouting & m_server;
 
-    Connection(const std::string & id, CommClient & client, ServerRouting & svr);
+    Connection(const std::string & id, CommClient & client,
+               ServerRouting & svr);
     virtual ~Connection();
 
     void addObject(BaseEntity * obj);
@@ -46,12 +47,12 @@ class Connection : public OOGThing {
 
     virtual bool verifyCredentials(const Account &, const MapType &) const;
 
-    virtual OpVector operation(const RootOperation & op);
+    virtual void operation(const RootOperation &, OpVector &);
 
-    virtual OpVector LoginOperation(const Login & op);
-    virtual OpVector LogoutOperation(const Logout & op);
-    virtual OpVector CreateOperation(const Create & op);
-    virtual OpVector GetOperation(const Get & op);
+    virtual void LoginOperation(const Login &, OpVector &);
+    virtual void LogoutOperation(const Logout &, OpVector &);
+    virtual void CreateOperation(const Create &, OpVector &);
+    virtual void GetOperation(const Get &, OpVector &);
 };
 
 #endif // SERVER_CONNECTION_H

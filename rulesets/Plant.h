@@ -44,8 +44,8 @@ class Plant : public Plant_parent {
     virtual void set(const std::string &, const Element &);
     virtual void addToMessage(MapType & obj) const;
 
-    virtual OpVector TickOperation(const Tick & op);
-    virtual OpVector TouchOperation(const Touch & op);
+    virtual void TickOperation(const Tick &, OpVector &);
+    virtual void TouchOperation(const Touch &, OpVector &);
 };
 
 #endif // RULESETS_PLANT_H

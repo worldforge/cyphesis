@@ -18,8 +18,8 @@ class Food : public Food_parent {
     explicit Food(const std::string & id);
     virtual ~Food();
 
-    virtual OpVector EatOperation(const Eat & op);
-    virtual OpVector BurnOperation(const Burn & op);
+    virtual void EatOperation(const Eat & op, OpVector &);
+    virtual void BurnOperation(const Burn & op, OpVector &);
 };
 
 #endif // RULESETS_FOOD_H

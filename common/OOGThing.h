@@ -16,7 +16,7 @@ class OOGThing : public BaseEntity {
     explicit OOGThing(const std::string & id);
   public:
     virtual ~OOGThing();
-    virtual OpVector OtherOperation(const RootOperation & op);
+    virtual void OtherOperation(const RootOperation & op, OpVector &);
 };
 
 #endif // SERVER_OOG_THING_H

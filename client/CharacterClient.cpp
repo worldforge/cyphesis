@@ -19,14 +19,13 @@ CharacterClient::CharacterClient(const std::string & id,
 {
 }
 
-OpVector CharacterClient::sightImaginaryOperation(const Sight &, Imaginary &)
+void CharacterClient::sightImaginaryOperation(const Sight &,
+                                              Imaginary &, OpVector &)
 {
-    return OpVector();
 }
 
-OpVector CharacterClient::soundTalkOperation(const Sound & op, Talk & subop)
+void CharacterClient::soundTalkOperation(const Sound & , Talk &, OpVector &)
 {
-    return OpVector();
 }
 
 #if 0
@@ -78,7 +77,8 @@ OpVector CharacterClient::sendAndWaitReply(RootOperation & op)
             RootOperation * input=CharacterClient::connection.pop();
             if (input != NULL) {
                 // What the hell is this!
-                OpVector result = operation(*input);
+                OpVector result;
+                operation(*input, result);
                 OpVector::const_iterator I;
                 for (I=result.begin();I!=result.end();I++) {
                     send(*(*I));

@@ -50,11 +50,10 @@ void Stackable::addToMessage(MapType & omap) const
     Stackable_parent::addToMessage(omap);
 }
 
-OpVector Stackable::CombineOperation(const Combine & op)
+void Stackable::CombineOperation(const Combine & op, OpVector & res)
 {
-    OpVector res;
     if (m_script->Operation("combine", op, res) != 0) {
-        return res;
+        return;
     }
     const ListType & args = op.getArgs();
     for(ListType::const_iterator I = args.begin(); I!= args.end(); I++) {
@@ -74,16 +73,14 @@ OpVector Stackable::CombineOperation(const Combine & op)
         d->setArgs(ListType(1,dent));
         res.push_back(d);
     }
-    return res;
     // Currently does not send sight ops, as the Sight ops for this type of
     // thing have not been discussed
 }
 
-OpVector Stackable::DivideOperation(const Divide & op)
+void Stackable::DivideOperation(const Divide & op, OpVector & res)
 {
-    OpVector res;
     if (m_script->Operation("divide", op, res) != 0) {
-        return res;
+        return;
     }
     const ListType & args = op.getArgs();
     for(ListType::const_iterator I = args.begin(); I!=args.end(); I++) {
@@ -104,7 +101,6 @@ OpVector Stackable::DivideOperation(const Divide & op)
         c->setTo(getId());
         res.push_back(c);
     }
-    return res;
     // Currently does not send sight ops, as the Sight ops for this type of
     // thing have not been discussed
 }

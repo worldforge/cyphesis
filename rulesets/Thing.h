@@ -29,18 +29,17 @@ class Thing : public Thing_parent {
     /// sendWorld() bipasses serialno assignment, so you must ensure
     /// that serialno is sorted. This allows client serialnos to get
     /// in, so that client gets correct usefull refnos back.
-    OpVector sendWorld(RootOperation * op) const {
+    void sendWorld(RootOperation * op) const {
         m_world->message(*op, this);
-        return OpVector();
     }
 
-    virtual OpVector SetupOperation(const Setup & op);
-    virtual OpVector ActionOperation(const Action & op);
-    virtual OpVector CreateOperation(const Create & op);
-    virtual OpVector DeleteOperation(const Delete & op);
-    virtual OpVector BurnOperation(const Burn & op);
-    virtual OpVector MoveOperation(const Move & op);
-    virtual OpVector SetOperation(const Set & op);
+    virtual void SetupOperation(const Setup & op, OpVector &);
+    virtual void ActionOperation(const Action & op, OpVector &);
+    virtual void CreateOperation(const Create & op, OpVector &);
+    virtual void DeleteOperation(const Delete & op, OpVector &);
+    virtual void BurnOperation(const Burn & op, OpVector &);
+    virtual void MoveOperation(const Move & op, OpVector &);
+    virtual void SetOperation(const Set & op, OpVector &);
 };
 
 #endif // RULESETS_THING_H

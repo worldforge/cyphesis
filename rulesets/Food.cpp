@@ -25,11 +25,10 @@ Food::~Food()
 {
 }
 
-OpVector Food::EatOperation(const Eat & op)
+void Food::EatOperation(const Eat & op, OpVector & res)
 {
-    OpVector res;
     if (m_script->Operation("eat", op, res) != 0) {
-        return res;
+        return;
     }
     MapType self_ent;
     self_ent["id"] = getId();
@@ -43,25 +42,24 @@ OpVector Food::EatOperation(const Eat & op)
     MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["mass"] = m_mass;
+
     Nourish * n = new Nourish();
     n->setTo(to);
     n->setArgs(ListType(1,nour_ent));
 
-    OpVector res2(2);
-    res2[0] = s;
-    res2[1] = n;
-    return res2;
+    res.push_back(s);
+    res.push_back(n);
 }
 
-OpVector Food::BurnOperation(const Burn & op)
+void Food::BurnOperation(const Burn & op, OpVector & res)
 {
-    OpVector res;
     if (m_script->Operation("burn", op, res) != 0) {
-        return res;
+        return;
     }
     double cooked = 0;
     if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
-       return error(op, "Fire op has no argument", getId());
+       error(op, "Fire op has no argument", res, getId());
+       return;
     }
     MapType::const_iterator I = m_attributes.find("cooked");
     if ((I != m_attributes.end()) && I->second.isNum()) {
@@ -82,6 +80,6 @@ OpVector Food::BurnOperation(const Burn & op)
     s->setTo(getId());
     s->setArgs(ListType(1,self_ent));
 
-    return OpVector(1,s);
+    res.push_back(s);
 }
 
