@@ -1,3 +1,8 @@
+2002-07-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* Change fire operation to burn operation, to avoid clash with
+	  fire entity. Change currently incomplete.
+
 2002-07-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/const.h: Fix } position.

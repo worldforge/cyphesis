@@ -92,7 +92,7 @@ class Entity : public BaseEntity {
     virtual OpVector CutOperation(const Cut & op);
     virtual OpVector DeleteOperation(const Delete & op);
     virtual OpVector EatOperation(const Eat & op);
-    virtual OpVector FireOperation(const Fire & op);
+    virtual OpVector BurnOperation(const Burn & op);
     virtual OpVector ImaginaryOperation(const Imaginary & op);
     virtual OpVector MoveOperation(const Move & op);
     virtual OpVector NourishOperation(const Nourish & op);

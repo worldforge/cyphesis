@@ -19,7 +19,7 @@ class Food : public Thing {
     virtual ~Food();
 
     virtual OpVector EatOperation(const Eat & op);
-    virtual OpVector FireOperation(const Fire & op);
+    virtual OpVector BurnOperation(const Burn & op);
 };
 
 #endif // RULESETS_FOOD_H

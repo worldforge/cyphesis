@@ -38,7 +38,7 @@
             return _prefix ## EatOperation((const Eat &)_op); \
             break; \
         case OP_FIRE: \
-            return _prefix ## FireOperation((const Fire &)_op); \
+            return _prefix ## BurnOperation((const Burn &)_op); \
             break; \
         case OP_IMAGINARY: \
             return _prefix ## ImaginaryOperation((const Imaginary &)_op); \
@@ -131,7 +131,7 @@
             return _prefix ## EatOperation(_op, (Eat &)_sub_op); \
             break; \
         case OP_FIRE: \
-            return _prefix ## FireOperation(_op, (Fire &)_sub_op); \
+            return _prefix ## BurnOperation(_op, (Burn &)_sub_op); \
             break; \
         case OP_IMAGINARY: \
             return _prefix ## ImaginaryOperation(_op, (Imaginary &)_sub_op); \

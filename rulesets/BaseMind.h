@@ -48,7 +48,7 @@ class BaseMind : public Entity {
     virtual OpVector sightDeleteOperation(const Sight & op, Delete & sub_op);
     virtual OpVector sightDivideOperation(const Sight & op, Divide & sub_op);
     virtual OpVector sightEatOperation(const Sight & op, Eat & sub_op);
-    virtual OpVector sightFireOperation(const Sight & op, Fire & sub_op);
+    virtual OpVector sightBurnOperation(const Sight & op, Burn & sub_op);
     virtual OpVector sightImaginaryOperation(const Sight & op, Imaginary& sub_op);
     virtual OpVector sightMoveOperation(const Sight & op, Move & sub_op);
     virtual OpVector sightSetOperation(const Sight & op, Set & sub_op);
@@ -67,7 +67,7 @@ class BaseMind : public Entity {
     virtual OpVector soundDeleteOperation(const Sound & op, Delete & sub_op);
     virtual OpVector soundDivideOperation(const Sound & op, Divide & sub_op);
     virtual OpVector soundEatOperation(const Sound & op, Eat & sub_op);
-    virtual OpVector soundFireOperation(const Sound & op, Fire & sub_op);
+    virtual OpVector soundBurnOperation(const Sound & op, Burn & sub_op);
     virtual OpVector soundImaginaryOperation(const Sound & op, Imaginary& sub_op);
     virtual OpVector soundMoveOperation(const Sound & op, Move & sub_op);
     virtual OpVector soundSetOperation(const Sound & op, Set & sub_op);

@@ -8,7 +8,7 @@
 #include "Chop.h"
 #include "Cut.h"
 #include "Eat.h"
-#include "Fire.h"
+#include "Burn.h"
 #include "Generic.h"
 #include "Load.h"
 #include "Nourish.h"
@@ -28,8 +28,8 @@ void installCustomOperations()
     i.opInstall("cut", OP_CUT);
     i.addChild(new Eat());
     i.opInstall("eat", OP_EAT);
-    i.addChild(new Fire());
-    i.opInstall("fire", OP_FIRE);
+    i.addChild(new Burn());
+    i.opInstall("burn", OP_BURN);
     i.addChild(new Load());
     i.opInstall("load", OP_LOAD);
     i.addChild(new Nourish());

@@ -58,7 +58,7 @@ class BaseEntity {
     virtual OpVector DeleteOperation(const Delete & op);
     virtual OpVector DivideOperation(const Divide & op);
     virtual OpVector EatOperation(const Eat & op);
-    virtual OpVector FireOperation(const Fire & op);
+    virtual OpVector BurnOperation(const Burn & op);
     virtual OpVector GetOperation(const Get & op);
     virtual OpVector ImaginaryOperation(const Imaginary & op);
     virtual OpVector InfoOperation(const Info & op);

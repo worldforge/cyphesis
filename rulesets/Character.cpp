@@ -634,7 +634,7 @@ OpVector Character::mindDivideOperation(const Divide & op)
     return OpVector();
 }
 
-OpVector Character::mindFireOperation(const Fire & op)
+OpVector Character::mindBurnOperation(const Burn & op)
 {
     return OpVector();
 }
@@ -822,7 +822,7 @@ bool Character::w2mEatOperation(const Eat & op)
     return false;
 }
 
-bool Character::w2mFireOperation(const Fire & op)
+bool Character::w2mBurnOperation(const Burn & op)
 {
     return false;
 }

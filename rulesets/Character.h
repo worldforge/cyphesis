@@ -73,7 +73,7 @@ class Character : public Thing {
     OpVector mindDeleteOperation(const Delete & op);
     OpVector mindDivideOperation(const Divide & op);
     OpVector mindEatOperation(const Eat & op);
-    OpVector mindFireOperation(const Fire & op);
+    OpVector mindBurnOperation(const Burn & op);
     OpVector mindGetOperation(const Get & op);
     OpVector mindImaginaryOperation(const Imaginary & op);
     OpVector mindInfoOperation(const Info & op);
@@ -104,7 +104,7 @@ class Character : public Thing {
     bool w2mDeleteOperation(const Delete & op);
     bool w2mDivideOperation(const Divide & op);
     bool w2mEatOperation(const Eat & op);
-    bool w2mFireOperation(const Fire & op);
+    bool w2mBurnOperation(const Burn & op);
     bool w2mGetOperation(const Get & op);
     bool w2mImaginaryOperation(const Imaginary & op);
     bool w2mInfoOperation(const Info & op);

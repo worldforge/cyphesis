@@ -15,7 +15,7 @@
 
 using Atlas::Message::Object;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 CommClient::CommClient(CommServer & svr, int fd, int port) :
             commServer(svr),

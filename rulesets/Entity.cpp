@@ -14,7 +14,7 @@
 #include <common/Cut.h>
 #include <common/Eat.h>
 #include <common/Nourish.h>
-#include <common/Fire.h>
+#include <common/Burn.h>
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sight.h>
@@ -281,7 +281,7 @@ OpVector Entity::EatOperation(const Eat & op)
     return res;
 }
 
-OpVector Entity::FireOperation(const Fire & op)
+OpVector Entity::BurnOperation(const Burn & op)
 {
     OpVector res;
     script->Operation("fire", op, res);

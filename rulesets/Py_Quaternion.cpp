@@ -41,7 +41,7 @@ static PyObject * Quaternion_getattr(QuaternionObject *self, char *name)
     if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->rotation.X()); }
     if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->rotation.Y()); }
     if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->rotation.Z()); }
-    if (strcmp(name, "2") == 0) { return PyFloat_FromDouble(self->rotation.W()); }
+    if (strcmp(name, "w") == 0) { return PyFloat_FromDouble(self->rotation.W()); }
 
     return Py_FindMethod(Quaternion_methods, (PyObject *)self, name);
 }

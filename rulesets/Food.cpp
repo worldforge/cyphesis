@@ -6,7 +6,7 @@
 #include "Script.h"
 
 #include <common/Eat.h>
-#include <common/Fire.h>
+#include <common/Burn.h>
 #include <common/Nourish.h>
 
 #include <Atlas/Objects/Operation/Login.h>
@@ -53,7 +53,7 @@ OpVector Food::EatOperation(const Eat & op)
     return res2;
 }
 
-OpVector Food::FireOperation(const Fire & op)
+OpVector Food::BurnOperation(const Burn & op)
 {
     OpVector res;
     if (script->Operation("fire", op, res) != 0) {

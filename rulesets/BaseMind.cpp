@@ -14,7 +14,7 @@
 #include <common/Chop.h>
 #include <common/Cut.h>
 #include <common/Eat.h>
-#include <common/Fire.h>
+#include <common/Burn.h>
 #include <common/Load.h>
 #include <common/Save.h>
 
@@ -214,7 +214,7 @@ OpVector BaseMind::sightEatOperation(const Sight & op, Eat & sub_op)
     return res;
 }
 
-OpVector BaseMind::sightFireOperation(const Sight & op, Fire & sub_op)
+OpVector BaseMind::sightBurnOperation(const Sight & op, Burn & sub_op)
 {
     OpVector res;
     script->Operation("sight_fire", op, res, &sub_op);
@@ -339,7 +339,7 @@ OpVector BaseMind::soundEatOperation(const Sound & op, Eat & sub_op)
     return res;
 }
 
-OpVector BaseMind::soundFireOperation(const Sound & op, Fire & sub_op)
+OpVector BaseMind::soundBurnOperation(const Sound & op, Burn & sub_op)
 {
     OpVector res;
     script->Operation("sound_fire", op, res, &sub_op);

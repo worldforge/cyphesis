@@ -32,7 +32,7 @@ class Thing : public Entity {
     virtual OpVector ActionOperation(const Action & op);
     virtual OpVector CreateOperation(const Create & op);
     virtual OpVector DeleteOperation(const Delete & op);
-    virtual OpVector FireOperation(const Fire & op);
+    virtual OpVector BurnOperation(const Burn & op);
     virtual OpVector MoveOperation(const Move & op);
     virtual OpVector SetOperation(const Set & op);
     virtual OpVector LookOperation(const Look & op);

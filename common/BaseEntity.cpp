@@ -89,7 +89,7 @@ OpVector BaseEntity::CutOperation(const Cut & op) { return OpVector(); }
 OpVector BaseEntity::DeleteOperation(const Delete & op) { return OpVector(); }
 OpVector BaseEntity::DivideOperation(const Divide & op) { return OpVector(); }
 OpVector BaseEntity::EatOperation(const Eat & op) { return OpVector(); }
-OpVector BaseEntity::FireOperation(const Fire & op) { return OpVector(); }
+OpVector BaseEntity::BurnOperation(const Burn & op) { return OpVector(); }
 OpVector BaseEntity::GetOperation(const Get & op) { return OpVector(); }
 OpVector BaseEntity::ImaginaryOperation(const Imaginary & op) { return OpVector(); }
 OpVector BaseEntity::InfoOperation(const Info & op) { return OpVector(); }

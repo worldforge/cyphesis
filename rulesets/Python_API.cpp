@@ -29,7 +29,7 @@
 #include <common/log.h>
 
 #include <common/Tick.h>
-#include <common/Fire.h>
+#include <common/Burn.h>
 #include <common/Chop.h>
 #include <common/Cut.h>
 #include <common/Setup.h>
@@ -725,7 +725,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     } else if (strcmp(type, "set") == 0) {
         op->operation = new Set(Set::Instantiate());
     } else if (strcmp(type, "fire") == 0) {
-        op->operation = new Fire(Fire::Instantiate());
+        op->operation = new Burn(Burn::Instantiate());
     } else if (strcmp(type, "action") == 0) {
         op->operation = new Action(Action::Instantiate());
     } else if (strcmp(type, "chop") == 0) {

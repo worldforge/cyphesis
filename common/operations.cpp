@@ -5,7 +5,7 @@
 #include "Chop.h"
 #include "Cut.h"
 #include "Eat.h"
-#include "Fire.h"
+#include "Burn.h"
 #include "Generic.h"
 #include "Load.h"
 #include "Nourish.h"
@@ -51,14 +51,14 @@ Eat Eat::Instantiate() {
     return value;
 }
 
-Fire::Fire() : Action("fire", "action") {
+Burn::Burn() : Action("burn", "action") {
 }
 
-Fire::~Fire() { }
+Burn::~Burn() { }
 
-Fire Fire::Instantiate() {
-    Fire value;
-    value.SetParents(Message::Object::ListType(1, "fire"));
+Burn Burn::Instantiate() {
+    Burn value;
+    value.SetParents(Message::Object::ListType(1, "burn"));
     value.SetObjtype(std::string("op"));
     return value;
 }

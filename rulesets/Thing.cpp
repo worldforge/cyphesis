@@ -14,7 +14,7 @@
 #include <common/Setup.h>
 #include <common/Tick.h>
 #include <common/Nourish.h>
-#include <common/Fire.h>
+#include <common/Burn.h>
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sight.h>
@@ -161,7 +161,7 @@ OpVector Thing::DeleteOperation(const Delete & op)
     return OpVector(1,s);
 }
 
-OpVector Thing::FireOperation(const Fire & op)
+OpVector Thing::BurnOperation(const Burn & op)
 {
     OpVector res;
     if (script->Operation("fire", op, res) != 0) {

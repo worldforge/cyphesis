@@ -5,6 +5,8 @@
 #ifndef COMMON_FIRE_H
 #define COMMON_FIRE_H
 
+#error This file has been removed from the build
+
 #include <Atlas/Objects/Operation/Action.h>
 
 namespace Atlas { namespace Objects { namespace Operation {

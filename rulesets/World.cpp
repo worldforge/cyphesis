@@ -23,7 +23,7 @@ OpVector World::LookOperation(const Look & op)
     return world->LookOperation(op);
 }
 
-OpVector World::FireOperation(const Fire & op)
+OpVector World::BurnOperation(const Burn & op)
 {
     // Can't burn the world.
     return OpVector();
