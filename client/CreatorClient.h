@@ -11,7 +11,7 @@ class Entity;
 
 class CreatorClient : public CharacterClient {
   private:
-    Entity * sendLook(RootOperation & op);
+    Entity * sendLook(Operation & op);
   public:
     CreatorClient(const std::string&, const std::string&, ClientConnection&);
 

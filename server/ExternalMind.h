@@ -21,7 +21,7 @@ class ExternalMind : public BaseEntity {
     ExternalMind(Connection & connection, const std::string & id);
     virtual ~ExternalMind();
 
-    virtual void operation(const RootOperation &, OpVector &);
+    virtual void operation(const Operation &, OpVector &);
 };
 
 #endif // SERVER_EXTERNAL_MIND_H

@@ -133,7 +133,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     return chr;
 }
 
-void Account::LogoutOperation(const RootOperation & op, OpVector &)
+void Account::LogoutOperation(const Operation & op, OpVector &)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
     Info info;
@@ -170,7 +170,7 @@ void Account::addToMessage(MapType & omap) const
     BaseEntity::addToMessage(omap);
 }
 
-void Account::CreateOperation(const RootOperation & op, OpVector & res)
+void Account::CreateOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
     const ListType & args = op.getArgs();
@@ -213,7 +213,7 @@ void Account::CreateOperation(const RootOperation & op, OpVector & res)
     res.push_back(info);
 }
 
-void Account::SetOperation(const RootOperation & op, OpVector & res)
+void Account::SetOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Account::Operation(set)" << std::endl << std::flush;);
     const ListType & args = op.getArgs();
@@ -274,7 +274,7 @@ void Account::SetOperation(const RootOperation & op, OpVector & res)
     }
 }
 
-void Account::ImaginaryOperation(const RootOperation & op, OpVector & res)
+void Account::ImaginaryOperation(const Operation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
@@ -297,7 +297,7 @@ void Account::ImaginaryOperation(const RootOperation & op, OpVector & res)
     m_connection->m_server.m_lobby.operation(s, res);
 }
 
-void Account::TalkOperation(const RootOperation & op, OpVector & res)
+void Account::TalkOperation(const Operation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
@@ -320,7 +320,7 @@ void Account::TalkOperation(const RootOperation & op, OpVector & res)
     m_connection->m_server.m_lobby.operation(s, res);
 }
 
-void Account::LookOperation(const RootOperation & op, OpVector & res)
+void Account::LookOperation(const Operation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty()) {

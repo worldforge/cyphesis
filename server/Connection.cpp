@@ -83,7 +83,7 @@ Connection::~Connection()
     }
 }
 
-void Connection::send(const RootOperation & msg) const
+void Connection::send(const Operation & msg) const
 {
     m_commClient.send(msg);
 }
@@ -152,7 +152,7 @@ bool Connection::verifyCredentials(const Account & account,
     return true;
 }
 
-void Connection::operation(const RootOperation & op, OpVector & res)
+void Connection::operation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
     const std::string & from = op.getFrom();
@@ -200,7 +200,7 @@ void Connection::operation(const RootOperation & op, OpVector & res)
     }
 }
 
-void Connection::LoginOperation(const RootOperation & op, OpVector & res)
+void Connection::LoginOperation(const Operation & op, OpVector & res)
 {
 
     debug(std::cout << "Got login op" << std::endl << std::flush;);
@@ -275,7 +275,7 @@ void Connection::LoginOperation(const RootOperation & op, OpVector & res)
     res.push_back(info);
 }
 
-void Connection::CreateOperation(const RootOperation & op, OpVector & res)
+void Connection::CreateOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got create op" << std::endl << std::flush;);
     if (!m_objects.empty()) {
@@ -333,7 +333,7 @@ void Connection::CreateOperation(const RootOperation & op, OpVector & res)
     res.push_back(info);
 }
 
-void Connection::LogoutOperation(const RootOperation & op, OpVector & res)
+void Connection::LogoutOperation(const Operation & op, OpVector & res)
 {
     if (op.getArgs().empty()) {
         // Logging self out
@@ -377,7 +377,7 @@ void Connection::LogoutOperation(const RootOperation & op, OpVector & res)
     // FIXME This won't work. This connection won't have the account ID
     // so won't be able to find it. If it did, then it could just log out
     // the normal way. Pointless.
-    RootOperation l(op);
+    Operation l(op);
     l.setFrom(player->getId());
 
     OpVector tres;
@@ -387,7 +387,7 @@ void Connection::LogoutOperation(const RootOperation & op, OpVector & res)
     assert(tres.empty());
 }
 
-void Connection::GetOperation(const RootOperation & op, OpVector & res)
+void Connection::GetOperation(const Operation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
 

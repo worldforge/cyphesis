@@ -28,7 +28,7 @@ Food::~Food()
 {
 }
 
-void Food::EatOperation(const RootOperation & op, OpVector & res)
+void Food::EatOperation(const Operation & op, OpVector & res)
 {
     if (m_script->Operation("eat", op, res) != 0) {
         return;
@@ -54,7 +54,7 @@ void Food::EatOperation(const RootOperation & op, OpVector & res)
     res.push_back(n);
 }
 
-void Food::BurnOperation(const RootOperation & op, OpVector & res)
+void Food::BurnOperation(const Operation & op, OpVector & res)
 {
     if (m_script->Operation("burn", op, res) != 0) {
         return;

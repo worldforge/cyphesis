@@ -90,7 +90,7 @@ static PyObject * Map_look_id(PyMap * self)
         return NULL;
     }
 #endif // NDEBUG
-    RootOperation * op = self->m_map->lookId();
+    Operation * op = self->m_map->lookId();
     if (op == NULL) {
         Py_INCREF(Py_None);
         return Py_None;

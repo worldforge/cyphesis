@@ -96,7 +96,7 @@ WorldRouter::~WorldRouter()
 /// the entity that is responsible for adding the operation to the
 /// queue, unless it is set to "cheat". This is used to spook
 /// operations when they come from an admin.
-void WorldRouter::addOperationToQueue(RootOperation & op,
+void WorldRouter::addOperationToQueue(Operation & op,
                          const Entity * obj)
 {
     if (op.getFrom() == "cheat") {
@@ -120,14 +120,14 @@ void WorldRouter::addOperationToQueue(RootOperation & op,
 /// If the operation at the end of the queue is now due, return it.
 /// @return a pointer to the operation due for dispatch, or 0 if none
 /// is due.
-RootOperation * WorldRouter::getOperationFromQueue()
+Operation * WorldRouter::getOperationFromQueue()
 {
-    std::list<RootOperation *>::const_iterator I = m_operationQueue.begin();
+    OpQueue::const_iterator I = m_operationQueue.begin();
     if ((I == m_operationQueue.end()) || ((*I)->getSeconds() > m_realTime)) {
         return NULL;
     }
     debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
-    RootOperation * op = *I;
+    Operation * op = *I;
     m_operationQueue.pop_front();
     return op;
 }
@@ -136,7 +136,7 @@ RootOperation * WorldRouter::getOperationFromQueue()
 ///
 /// Call newSerialNo() to get a new serial number,
 /// and assign it to the operation provided.
-inline void WorldRouter::setSerialnoOp(RootOperation & op)
+inline void WorldRouter::setSerialnoOp(Operation & op)
 {
     op.setSerialno(newSerialNo());
 }
@@ -271,7 +271,7 @@ void WorldRouter::delObject(Entity * obj)
 ///
 /// Pass an operation to addOperationToQueue()
 /// so it gets added to the queue for dispatch.
-void WorldRouter::message(RootOperation & op, const Entity * obj)
+void WorldRouter::message(Operation & op, const Entity * obj)
 {
     debug(std::cout << "WorldRouter::message {"
                     << op.getParents().front().asString() << ":"
@@ -292,7 +292,7 @@ void WorldRouter::message(RootOperation & op, const Entity * obj)
 /// This should probably go, as there is essentially no sane reason
 /// for broadcasting a random op to all entities.
 /// @return a reference to the list of entities to be used for braodcast.
-const EntitySet & WorldRouter::broadcastList(const RootOperation & op) const
+const EntitySet & WorldRouter::broadcastList(const Operation & op) const
 {
     const ListType & parents = op.getParents();
     if (!parents.empty() && (parents.front().isString())) {
@@ -317,7 +317,7 @@ const EntitySet & WorldRouter::broadcastList(const RootOperation & op) const
 /// Pass the operation to the target entity. The resulting operations
 /// have their ref numbers set, and are added to the queue for
 /// dispatch.
-void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
+void WorldRouter::deliverTo(const Operation & op, Entity * e)
 {
     OpVector res;
     e->operation(op, res);
@@ -335,14 +335,14 @@ void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
 /// we need to handle the responses first. To prevent a tight loop,
 /// we do not attempt to immediatly handle the response to a delete op
 /// if it is anothe delete op.
-void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
+void WorldRouter::deliverDeleteTo(const Operation & op, Entity * e)
 {
     OpVector res;
     e->operation(op, res);
     setRefno(res, op);
     OpVector::const_iterator Iend = res.end();
     for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-        RootOperation & newOp = **I;
+        Operation & newOp = **I;
         setSerialnoOp(newOp);
         if (newOp.getParents().front().asString() == "delete") {
             // If this is a delete, queue as normal to avoid a recursive loop
@@ -375,7 +375,7 @@ void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
 /// sight ranges for perception operations.
 /// @param op operation to be dispatched to the world. This is non-const
 /// so that broadcast ops can have their TO set correctly for each target.
-void WorldRouter::operation(RootOperation & op)
+void WorldRouter::operation(Operation & op)
 {
     const std::string & to = op.getTo();
     debug(std::cout << "WorldRouter::operation {"
@@ -400,7 +400,7 @@ void WorldRouter::operation(RootOperation & op)
             deliverTo(op, to_entity);
         }
     } else {
-        // RootOperation newop = op;
+        // Operation newop = op;
         const EntitySet & broadcast = broadcastList(op);
         const std::string & from = op.getFrom();
         EntityDict::const_iterator J = m_eobjects.find(from);
@@ -479,7 +479,7 @@ bool WorldRouter::idle()
 {
     updateTime();
     unsigned int op_count = 0;
-    RootOperation * op;
+    Operation * op;
     while ((++op_count < 10) && ((op = getOperationFromQueue()) != NULL)) {
         Dispatching.emit(op);
         try {

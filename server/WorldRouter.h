@@ -17,7 +17,7 @@ extern "C" {
 
 class Entity;
 
-typedef std::list<Atlas::Objects::Operation::RootOperation *> OpQueue;
+typedef std::list<Operation *> OpQueue;
 
 /// \brief WorldRouter encapsulates the game world running in the server.
 ///
@@ -43,31 +43,26 @@ class WorldRouter : public BaseWorld {
         return opSerialNo();
     }
 
-    void addOperationToQueue(Atlas::Objects::Operation::RootOperation &,
-                             const Entity *);
-    Atlas::Objects::Operation::RootOperation * getOperationFromQueue();
-    const EntitySet & broadcastList(const Atlas::Objects::Operation::RootOperation &) const;
+    void addOperationToQueue(Operation &, const Entity *);
+    Operation * getOperationFromQueue();
+    const EntitySet & broadcastList(const Operation &) const;
     void updateTime();
-    void deliverTo(const Atlas::Objects::Operation::RootOperation &,
-                   Entity *);
-    void deliverDeleteTo(const Atlas::Objects::Operation::RootOperation &,
-                         Entity *);
+    void deliverTo(const Operation &, Entity *);
+    void deliverDeleteTo(const Operation &, Entity *);
   public:
     explicit WorldRouter();
     virtual ~WorldRouter();
 
     bool idle();
     Entity * addObject(Entity * obj, bool setup = true);
-    Entity * addNewObject(const std::string &,
-                          const Atlas::Message::MapType &);
+    Entity * addNewObject(const std::string &, const Atlas::Message::MapType &);
     void delObject(Entity * obj);
-    void setSerialnoOp(Atlas::Objects::Operation::RootOperation &);
+    void setSerialnoOp(Operation &);
 
-    void operation(Atlas::Objects::Operation::RootOperation &);
+    void operation(Operation &);
 
     virtual void addPerceptive(const std::string &);
-    virtual void message(Atlas::Objects::Operation::RootOperation &,
-                         const Entity *);
+    virtual void message(Operation &, const Entity *);
     virtual Entity * findByName(const std::string & name);
     virtual Entity * findByType(const std::string & type);
     virtual float constrainHeight(Entity *, const Point3D &);

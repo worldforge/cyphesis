@@ -70,13 +70,13 @@ void Lobby::delObject(Account * a)
 }
 
 
-void Lobby::operation(const RootOperation & op, OpVector & res)
+void Lobby::operation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Lobby::operation(" << op.getParents().front().asString()
                                            << std::endl << std::flush; );
     const std::string & to = op.getTo();
     if (to.empty() || to == "lobby") {
-        RootOperation newop(op);
+        Operation newop(op);
         AccountDict::const_iterator I = m_accounts.begin();
         AccountDict::const_iterator Iend = m_accounts.end();
         for (; I != Iend; ++I) {

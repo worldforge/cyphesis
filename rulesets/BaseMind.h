@@ -45,49 +45,49 @@ class BaseMind : public MemEntity {
 
     void scriptSubscribe(const std::string &);
 
-    virtual void sightLoginOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightActionOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightChopOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightCombineOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightCreateOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightCutOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightDeleteOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightDivideOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightEatOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightBurnOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightImaginaryOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightMoveOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightSetOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightTalkOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightTouchOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void sightOtherOperation(const RootOperation &,RootOperation &, OpVector &);
+    virtual void sightLoginOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightActionOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightChopOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightCombineOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightCreateOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightCutOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightDeleteOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightDivideOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightEatOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightBurnOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightImaginaryOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightMoveOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightSetOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightTalkOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightTouchOperation(const Operation &, Operation &, OpVector &);
+    virtual void sightOtherOperation(const Operation &,Operation &, OpVector &);
 
-    virtual void soundLoginOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundActionOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundChopOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundCombineOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundCreateOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundCutOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundDeleteOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundDivideOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundEatOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundBurnOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundImaginaryOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundMoveOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundSetOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundTalkOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundTouchOperation(const RootOperation &, RootOperation &, OpVector &);
-    virtual void soundOtherOperation(const RootOperation &,RootOperation &, OpVector &);
+    virtual void soundLoginOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundActionOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundChopOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundCombineOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundCreateOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundCutOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundDeleteOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundDivideOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundEatOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundBurnOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundImaginaryOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundMoveOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundSetOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundTalkOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundTouchOperation(const Operation &, Operation &, OpVector &);
+    virtual void soundOtherOperation(const Operation &,Operation &, OpVector &);
 
-    virtual void SightOperation(const RootOperation &, OpVector &);
-    virtual void SoundOperation(const RootOperation &, OpVector &);
-    virtual void AppearanceOperation(const RootOperation &, OpVector &);
-    virtual void DisappearanceOperation(const RootOperation &, OpVector &);
+    virtual void SightOperation(const Operation &, OpVector &);
+    virtual void SoundOperation(const Operation &, OpVector &);
+    virtual void AppearanceOperation(const Operation &, OpVector &);
+    virtual void DisappearanceOperation(const Operation &, OpVector &);
 
-    virtual void operation(const RootOperation &, OpVector &);
+    virtual void operation(const Operation &, OpVector &);
 
-    void callSightOperation(const RootOperation &, RootOperation &, OpVector &);
-    void callSoundOperation(const RootOperation &, RootOperation &, OpVector &);
+    void callSightOperation(const Operation &, Operation &, OpVector &);
+    void callSoundOperation(const Operation &, Operation &, OpVector &);
 
     friend class PythonMindScript;
 };

@@ -97,7 +97,7 @@
         case OP_INVALID: \
             break; \
         default: \
-            _prefix ## OtherOperation((const RootOperation &)_op, _result); \
+            _prefix ## OtherOperation((const Operation &)_op, _result); \
             break; \
     }
 

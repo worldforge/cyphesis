@@ -28,7 +28,7 @@ class Account : public OOGThing {
                              const Atlas::Message::MapType &);
     void characterDestroyed(std::string);
 
-    virtual int characterError(const RootOperation &,
+    virtual int characterError(const Operation &,
                                const Atlas::Message::MapType &,
                                OpVector &) const = 0;
 
@@ -45,12 +45,12 @@ class Account : public OOGThing {
     virtual const char * getType() const;
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
-    virtual void LogoutOperation(const RootOperation &, OpVector &);
-    virtual void CreateOperation(const RootOperation &, OpVector &);
-    virtual void SetOperation(const RootOperation &, OpVector &);
-    virtual void ImaginaryOperation(const RootOperation &, OpVector &);
-    virtual void TalkOperation(const RootOperation &, OpVector &);
-    virtual void LookOperation(const RootOperation &, OpVector &);
+    virtual void LogoutOperation(const Operation &, OpVector &);
+    virtual void CreateOperation(const Operation &, OpVector &);
+    virtual void SetOperation(const Operation &, OpVector &);
+    virtual void ImaginaryOperation(const Operation &, OpVector &);
+    virtual void TalkOperation(const Operation &, OpVector &);
+    virtual void LookOperation(const Operation &, OpVector &);
 
     void addCharacter(Entity *);
 

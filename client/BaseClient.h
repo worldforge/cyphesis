@@ -7,8 +7,6 @@
 
 #include "ClientConnection.h"
 
-#include "common/BaseEntity.h"
-
 class CreatorClient;
 
 class BaseClient {
@@ -38,7 +36,7 @@ class BaseClient {
         return m_connection.connect(server);
     }
 
-    void send(RootOperation & op) {
+    void send(Atlas::Objects::Operation::RootOperation & op) {
         m_connection.send(op);
     }
 

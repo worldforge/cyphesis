@@ -27,8 +27,9 @@ PythonEntityScript::~PythonEntityScript()
 }
 
 bool PythonEntityScript::Operation(const std::string & op_type,
-                                  const RootOperation & op,
-                                  OpVector & ret_list, RootOperation * sub_op)
+                                   const Atlas::Objects::Operation::RootOperation & op,
+                                   OpVector & ret_list,
+                                   Atlas::Objects::Operation::RootOperation * sub_op)
 {
     if (scriptObject == NULL) {
         debug( std::cout << "No script object asociated" << std::endl

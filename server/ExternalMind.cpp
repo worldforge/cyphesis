@@ -16,7 +16,7 @@ ExternalMind::~ExternalMind()
     m_connection.removeObject(getId());
 }
 
-void ExternalMind::operation(const RootOperation & op, OpVector &)
+void ExternalMind::operation(const Operation & op, OpVector &)
 {
     m_connection.send(op);
 }

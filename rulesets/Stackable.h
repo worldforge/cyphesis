@@ -26,8 +26,8 @@ class Stackable : public Stackable_parent {
     explicit Stackable(const std::string & id);
     virtual ~Stackable();
 
-    virtual void CombineOperation(const RootOperation &, OpVector &);
-    virtual void DivideOperation(const RootOperation &, OpVector &);
+    virtual void CombineOperation(const Operation &, OpVector &);
+    virtual void DivideOperation(const Operation &, OpVector &);
 };
 
 #endif // RULESETS_STACKABLE_H

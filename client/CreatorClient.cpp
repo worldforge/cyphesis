@@ -20,7 +20,6 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Create;
-using Atlas::Objects::Operation::RootOperation;
 
 CreatorClient::CreatorClient(const std::string & id, const std::string & name,
                              ClientConnection &c) : CharacterClient(id,name,c)
@@ -43,7 +42,7 @@ Entity * CreatorClient::make(const Atlas::Message::Element & entity)
         return NULL;
     }
     assert(!result.empty());
-    RootOperation * res = result.front();
+    Operation * res = result.front();
     if (res == NULL) {
         std::cerr << "NULL reply to make" << std::endl << std::flush;
         return NULL;
@@ -137,7 +136,7 @@ Entity * CreatorClient::lookFor(const Atlas::Message::Element & ent)
     return sendLook(op);
 }
 
-Entity * CreatorClient::sendLook(RootOperation & op)
+Entity * CreatorClient::sendLook(Operation & op)
 {
     OpVector result;
     if (sendAndWaitReply(op, result) != 0) {
@@ -145,7 +144,7 @@ Entity * CreatorClient::sendLook(RootOperation & op)
         return NULL;
     }
     assert(!result.empty());
-    RootOperation * res = result.front();
+    Operation * res = result.front();
     if (res == NULL) {
         std::cerr << "NULL reply to look" << std::endl << std::flush;
         return NULL;

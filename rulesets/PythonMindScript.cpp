@@ -29,8 +29,9 @@ PythonMindScript::~PythonMindScript()
 }
 
 bool PythonMindScript::Operation(const std::string & op_type,
-                                 const RootOperation & op,
-                                 OpVector & ret_list, RootOperation * sub_op)
+                                 const Atlas::Objects::Operation::RootOperation & op,
+                                 OpVector & ret_list,
+                                 Atlas::Objects::Operation::RootOperation * sub_op)
 {
     std::string op_name = op_type + "_operation";
     debug( std::cout << "Got script object for " << op_name << std::endl

@@ -27,7 +27,7 @@ Creator::Creator(const std::string & id) : Creator_parent(id)
     }
 }
 
-void Creator::sendExternalMind(const RootOperation & op, OpVector & res)
+void Creator::sendExternalMind(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Creator::sendExternalMind" << std::endl << std::flush;);
     // Simpified version of Character method sendMind() because local
@@ -50,7 +50,7 @@ void Creator::sendExternalMind(const RootOperation & op, OpVector & res)
     }
 }
 
-void Creator::operation(const RootOperation & op, OpVector & res)
+void Creator::operation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Creator::operation" << std::endl << std::flush;);
     // FIXME Why not just call callOperation() to handle the type switch?
@@ -91,7 +91,7 @@ void Creator::operation(const RootOperation & op, OpVector & res)
     sendExternalMind(op, res);
 }
 
-void Creator::externalOperation(const RootOperation & op)
+void Creator::externalOperation(const Operation & op)
 {
     // If an admin connection specifies a TO on the op, we treat
     // it specially, and make sure it goes direct, otherwise
@@ -115,21 +115,21 @@ void Creator::externalOperation(const RootOperation & op)
             // World will deal with it.
         }
     } else {
-        RootOperation * new_op = new RootOperation(op);
+        Operation * new_op = new Operation(op);
         //make it appear like it came from target itself;
         new_op->setFrom("cheat");
         sendWorld(new_op);
     }
 }
 
-void Creator::mindLookOperation(const RootOperation & op, OpVector & res)
+void Creator::mindLookOperation(const Operation & op, OpVector & res)
 {
     // This overriden version allows the Creator to search the world for
     // entities by type or by name
     debug(std::cout << "Got look up from prived mind from [" << op.getFrom()
                << "] to [" << op.getTo() << "]" << std::endl << std::flush;);
     m_perceptive = true;
-    RootOperation * l = new RootOperation(op);
+    Operation * l = new Operation(op);
     if (op.getTo().empty()) {
         const ListType & args = op.getArgs();
         if (args.empty() || !args.front().isMap()) {

@@ -9,7 +9,7 @@
 
 #include "CommClient.h"
 
-inline void Connection::send(const RootOperation & msg) const
+inline void Connection::send(const Operation & msg) const
 {
     m_commClient.send(msg);
 }

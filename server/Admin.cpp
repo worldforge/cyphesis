@@ -49,7 +49,7 @@ const char * Admin::getType() const
     return "admin";
 }
 
-void Admin::opDispatched(RootOperation * op)
+void Admin::opDispatched(Operation * op)
 {
     if (m_connection != 0) {
         m_connection->send(*op);
@@ -60,7 +60,7 @@ void Admin::opDispatched(RootOperation * op)
     }
 }
 
-int Admin::characterError(const RootOperation & op,
+int Admin::characterError(const Operation & op,
                           const MapType & ent, OpVector & res) const
 {
     MapType::const_iterator I = ent.find("parents");
@@ -76,7 +76,7 @@ int Admin::characterError(const RootOperation & op,
     return false;
 }
 
-void Admin::LogoutOperation(const RootOperation & op, OpVector & res)
+void Admin::LogoutOperation(const Operation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     
@@ -105,7 +105,7 @@ void Admin::LogoutOperation(const RootOperation & op, OpVector & res)
     }
 }
 
-void Admin::GetOperation(const RootOperation & op, OpVector & res)
+void Admin::GetOperation(const Operation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty()) {
@@ -184,7 +184,7 @@ void Admin::GetOperation(const RootOperation & op, OpVector & res)
     res.push_back(info);
 }
 
-void Admin::SetOperation(const RootOperation & op, OpVector & res)
+void Admin::SetOperation(const Operation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty()) {
@@ -273,7 +273,7 @@ void Admin::SetOperation(const RootOperation & op, OpVector & res)
     }
 }
 
-void Admin::CreateOperation(const RootOperation & op, OpVector & res)
+void Admin::CreateOperation(const Operation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
@@ -292,7 +292,7 @@ void Admin::CreateOperation(const RootOperation & op, OpVector & res)
     Account::CreateOperation(op, res);
 }
 
-void Admin::OtherOperation(const RootOperation & op, OpVector & res)
+void Admin::OtherOperation(const Operation & op, OpVector & res)
 {
     const std::string & op_type = op.getParents().front().asString();
     if (op_type == "monitor") {

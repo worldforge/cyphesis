@@ -28,7 +28,7 @@ class Lobby : public OOGThing {
         return m_accounts;
     }
 
-    virtual void operation(const RootOperation &, OpVector &);
+    virtual void operation(const Operation &, OpVector &);
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
 };

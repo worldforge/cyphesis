@@ -46,14 +46,14 @@ class Connection : public OOGThing {
 
     void destroy();
     void disconnect();
-    void send(const RootOperation & msg) const;
+    void send(const Operation & msg) const;
 
-    virtual void operation(const RootOperation &, OpVector &);
+    virtual void operation(const Operation &, OpVector &);
 
-    virtual void LoginOperation(const RootOperation &, OpVector &);
-    virtual void LogoutOperation(const RootOperation &, OpVector &);
-    virtual void CreateOperation(const RootOperation &, OpVector &);
-    virtual void GetOperation(const RootOperation &, OpVector &);
+    virtual void LoginOperation(const Operation &, OpVector &);
+    virtual void LogoutOperation(const Operation &, OpVector &);
+    virtual void CreateOperation(const Operation &, OpVector &);
+    virtual void GetOperation(const Operation &, OpVector &);
 };
 
 #endif // SERVER_CONNECTION_H

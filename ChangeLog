@@ -1,5 +1,28 @@
 2004-12-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/BaseClient.cpp, client/BaseClient.h, client/CreatorClient.cpp,
+	  client/CreatorClient.h, common/BaseEntity.cpp, common/BaseEntity.h,
+	  common/BaseWorld.h, common/OOGThing.cpp, common/OOGThing.h,
+	  common/op_switch.h, common/refno.h, common/types.h,
+	  rulesets/BaseMind.cpp, rulesets/BaseMind.h, rulesets/Character.cpp,
+	  rulesets/Character.h, rulesets/Creator.cpp, rulesets/Creator.h,
+	  rulesets/Entity.cpp, rulesets/Entity.h, rulesets/Food.cpp,
+	  rulesets/Food.h, rulesets/MemMap.cpp, rulesets/Plant.cpp,
+	  rulesets/Plant.h, rulesets/Py_Map.cpp, rulesets/PythonMindScript.cpp,
+	  rulesets/PythonThingScript.cpp, rulesets/Stackable.cpp,
+	  rulesets/Stackable.h, rulesets/Thing.cpp, rulesets/Thing.h,
+	  rulesets/World.cpp, rulesets/World.h, server/Account.cpp,
+	  server/Account.h, server/Admin.cpp, server/Admin.h,
+	  server/CommClient.cpp, server/Connection.cpp, server/Connection.h,
+	  server/Connection_methods.h, server/ExternalMind.cpp,
+	  server/ExternalMind.h, server/Lobby.cpp, server/Lobby.h,
+	  server/Player.cpp, server/Player.h, server/WorldRouter.cpp,
+	  server/WorldRouter.h, tests/Creatortest.cpp, tests/Worldtest.cpp:
+	  Add a new Operation typedef to clean up headers, and get round
+	  limitation in doxygen.
+
+2004-12-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Collision.cpp: Remove unused function stub.
 
 2004-12-05  Al Riddoch  <alriddoch@zepler.org>

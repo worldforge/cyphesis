@@ -13,12 +13,12 @@ class Creator : public Creator_parent {
   public:
     explicit Creator(const std::string & id);
 
-    void sendExternalMind(const RootOperation & msg, OpVector &);
+    void sendExternalMind(const Operation & msg, OpVector &);
 
-    virtual void operation(const RootOperation & op, OpVector &);
-    virtual void externalOperation(const RootOperation & op);
+    virtual void operation(const Operation & op, OpVector &);
+    virtual void externalOperation(const Operation & op);
 
-    virtual void mindLookOperation(const RootOperation & op, OpVector &);
+    virtual void mindLookOperation(const Operation & op, OpVector &);
 };
 
 #endif // RULESETS_CREATOR_H

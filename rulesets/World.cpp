@@ -49,7 +49,7 @@ float World::getHeight(float x, float y)
     return m_terrain.get(x, y);
 }
 
-void World::LookOperation(const RootOperation & op, OpVector & res)
+void World::LookOperation(const Operation & op, OpVector & res)
 {
     // Let the worldrouter know we have been looked at.
     assert(m_world != 0);
@@ -105,22 +105,22 @@ void World::LookOperation(const RootOperation & op, OpVector & res)
     res.push_back(s);
 }
 
-void World::BurnOperation(const RootOperation & op, OpVector & res)
+void World::BurnOperation(const Operation & op, OpVector & res)
 {
     // Can't burn the world.
 }
 
-void World::MoveOperation(const RootOperation & op, OpVector & res)
+void World::MoveOperation(const Operation & op, OpVector & res)
 {
     // Can't move the world.
 }
 
-void World::DeleteOperation(const RootOperation & op, OpVector & res)
+void World::DeleteOperation(const Operation & op, OpVector & res)
 {
     // Deleting has no effect.
 }
 
-void World::SetOperation(const RootOperation & op, OpVector & res)
+void World::SetOperation(const Operation & op, OpVector & res)
 {
     // This is the same as Thing::Operation(Set), except world does not
     // get deleted if its status goes below 0.
@@ -131,7 +131,7 @@ void World::SetOperation(const RootOperation & op, OpVector & res)
     }
     const MapType & ent = args.front().asMap();
     merge(ent);
-    RootOperation * s = new Sight();
+    Operation * s = new Sight();
     s->setArgs(ListType(1,op.asObject()));
     res.push_back(s);
 

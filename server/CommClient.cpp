@@ -105,7 +105,7 @@ int CommClient::negotiate()
     return 0;
 }
 
-void CommClient::message(const RootOperation & op)
+void CommClient::message(const Atlas::Objects::Operation::RootOperation & op)
 {
     OpVector reply;
     m_connection.operation(op, reply);
@@ -138,7 +138,7 @@ void CommClient::dispatch()
 void CommClient::unknownObjectArrived(const Atlas::Message::Element& o)
 {
     debug(std::cout << "An unknown has arrived." << std::endl << std::flush;);
-    RootOperation r;
+    Atlas::Objects::Operation::RootOperation r;
     bool isOp = utility::Object_asOperation(o.asMap(), r);
     if (isOp) {
         queue(r);

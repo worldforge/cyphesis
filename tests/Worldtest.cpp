@@ -21,8 +21,8 @@ class TestWorld : public BaseWorld {
     virtual Entity * addNewObject(const std::string &, const MapType &) {
         return 0;
     }
-    virtual void setSerialnoOp(RootOperation &) { }
-    virtual void message(RootOperation & op, const Entity * obj) { }
+    virtual void setSerialnoOp(Operation &) { }
+    virtual void message(Operation & op, const Entity * obj) { }
     virtual Entity * findByName(const std::string & name) { return 0; }
     virtual Entity * findByType(const std::string & type) { return 0; }
     virtual float constrainHeight(Entity*, const Point3D&) { return 0.f; }

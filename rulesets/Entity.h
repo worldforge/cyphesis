@@ -56,20 +56,33 @@ class Entity : public BaseEntity {
     static std::set<std::string> m_immutable;
     static const std::set<std::string> & immutables();
   protected:
+    /// Script associated with this entity
     Script * m_script;
+    /// Map of non-hardcoded attributes
     Atlas::Message::MapType m_attributes;
+    /// Map of properties
     PropertyDict m_properties;
 
-    int m_seq;                  // Sequence number
-    double m_status;            // Health/damage coeficient
-    std::string m_type;         // Easy access to primary parent
-    std::string m_name;         // Entities name
-    double m_mass;              // Mass in kg
-    bool m_perceptive;          // Is this perceptive
+    /// Sequence number
+    int m_seq;
+    /// Health/damage coeficient
+    double m_status;
+    /// Easy access to primary parent
+    std::string m_type;
+    /// Entities name
+    std::string m_name;
+    /// Mass in kg
+    double m_mass;
+    /// Is this perceptive
+    bool m_perceptive;
   public:
-    BaseWorld * m_world;        // Exists in this world.
-    Location m_location;        // Full details of location
-    EntitySet m_contains;       // List of entities which use this as ref
+    /// Exists in this world.
+    BaseWorld * m_world;
+    /// Full details of location
+    Location m_location;
+    /// List of entities which use this as ref
+    EntitySet m_contains;
+    /// Flags indicating changes to attributes
     unsigned int m_update_flags;
 
     explicit Entity(const std::string & id);
@@ -80,7 +93,7 @@ class Entity : public BaseEntity {
     /// sendWorld() bipasses serialno assignment, so you must ensure
     /// that serialno is sorted. This allows client serialnos to get
     /// in, so that client gets correct usefull refnos back.
-    void sendWorld(RootOperation * op) const {
+    void sendWorld(Operation * op) const {
         m_world->message(*op, this);
     }
 
@@ -130,29 +143,30 @@ class Entity : public BaseEntity {
     void destroy();
     void scriptSubscribe(const std::string &);
 
-    virtual void externalOperation(const RootOperation & op);
+    virtual void externalOperation(const Operation & op);
 
-    virtual void SetupOperation(const RootOperation & op, OpVector &);
-    virtual void TickOperation(const RootOperation & op, OpVector &);
-    virtual void ActionOperation(const RootOperation & op, OpVector &);
-    virtual void ChopOperation(const RootOperation & op, OpVector &);
-    virtual void CreateOperation(const RootOperation & op, OpVector &);
-    virtual void CutOperation(const RootOperation & op, OpVector &);
-    virtual void DeleteOperation(const RootOperation & op, OpVector &);
-    virtual void EatOperation(const RootOperation & op, OpVector &);
-    virtual void BurnOperation(const RootOperation & op, OpVector &);
-    virtual void ImaginaryOperation(const RootOperation & op, OpVector &);
-    virtual void MoveOperation(const RootOperation & op, OpVector &);
-    virtual void NourishOperation(const RootOperation & op, OpVector &);
-    virtual void SetOperation(const RootOperation & op, OpVector &);
-    virtual void SightOperation(const RootOperation & op, OpVector &);
-    virtual void SoundOperation(const RootOperation & op, OpVector &);
-    virtual void TouchOperation(const RootOperation & op, OpVector &);
-    virtual void LookOperation(const RootOperation & op, OpVector &);
-    virtual void AppearanceOperation(const RootOperation & op, OpVector &);
-    virtual void DisappearanceOperation(const RootOperation & op, OpVector &);
-    virtual void OtherOperation(const RootOperation & op, OpVector &);
+    virtual void SetupOperation(const Operation & op, OpVector &);
+    virtual void TickOperation(const Operation & op, OpVector &);
+    virtual void ActionOperation(const Operation & op, OpVector &);
+    virtual void ChopOperation(const Operation & op, OpVector &);
+    virtual void CreateOperation(const Operation & op, OpVector &);
+    virtual void CutOperation(const Operation & op, OpVector &);
+    virtual void DeleteOperation(const Operation & op, OpVector &);
+    virtual void EatOperation(const Operation & op, OpVector &);
+    virtual void BurnOperation(const Operation & op, OpVector &);
+    virtual void ImaginaryOperation(const Operation & op, OpVector &);
+    virtual void MoveOperation(const Operation & op, OpVector &);
+    virtual void NourishOperation(const Operation & op, OpVector &);
+    virtual void SetOperation(const Operation & op, OpVector &);
+    virtual void SightOperation(const Operation & op, OpVector &);
+    virtual void SoundOperation(const Operation & op, OpVector &);
+    virtual void TouchOperation(const Operation & op, OpVector &);
+    virtual void LookOperation(const Operation & op, OpVector &);
+    virtual void AppearanceOperation(const Operation & op, OpVector &);
+    virtual void DisappearanceOperation(const Operation & op, OpVector &);
+    virtual void OtherOperation(const Operation & op, OpVector &);
 
+    /// Signal indicating that this entity has been changed
     SigC::Signal0<void> updated;
 };
 

@@ -62,6 +62,11 @@ Entity::~Entity()
     }
 }
 
+/// \brief Check if this entity has a property with the given name
+///
+/// @param aname Name of attribute to be checked
+/// @return trye if this entity has an attribute with the name given
+/// false otherwise
 bool Entity::has(const std::string & aname) const
 {
     PropertyDict::const_iterator I = m_properties.find(aname);
@@ -76,6 +81,12 @@ bool Entity::has(const std::string & aname) const
     
 }
 
+/// \brief Get the value of an attribute
+///
+/// @param aname Name of attribute to be retrieved
+/// @param attr Reference used to store value
+/// @return trye if this entity has an attribute with the name given
+/// false otherwise
 bool Entity::get(const std::string & aname, Element & attr) const
 {
     PropertyDict::const_iterator I = m_properties.find(aname);
@@ -91,6 +102,10 @@ bool Entity::get(const std::string & aname, Element & attr) const
     return false;
 }
 
+/// \brief Set the value of an attribute
+///
+/// @param aname Name of attribute to be changed
+/// @param attr Value to be stored
 void Entity::set(const std::string & aname, const Element & attr)
 {
     PropertyDict::const_iterator I = m_properties.find(aname);
@@ -103,6 +118,9 @@ void Entity::set(const std::string & aname, const Element & attr)
     m_update_flags |= a_attr;
 }
 
+/// \brief Copy attributes into an Atlas element
+///
+/// @param omap Atlas map element this entity should be copied into
 void Entity::addToMessage(MapType & omap) const
 {
     // We need to have a list of keys to pull from attributes.
@@ -121,6 +139,10 @@ void Entity::addToMessage(MapType & omap) const
     omap["objtype"] = "obj";
 }
 
+/// \brief Associate a script with this entity
+///
+/// The previously associated script is deleted.
+/// @param scrpt Pointer to the script to be associated with this entity
 void Entity::setScript(Script * scrpt)
 {
     if (m_script != NULL) {
@@ -129,6 +151,10 @@ void Entity::setScript(Script * scrpt)
     m_script = scrpt;
 }
 
+/// \brief Destroy this entity
+///
+/// Do the jobs required to remove this entity from the world. Handles
+/// removing from the containership tree.
 void Entity::destroy()
 {
     assert(m_location.m_loc != NULL);
@@ -157,6 +183,9 @@ void Entity::destroy()
     destroyed.emit();
 }
 
+/// \brief Read attributes from an Atlas element
+///
+/// @param ent The Atlas map element containing the attribute values
 void Entity::merge(const MapType & ent)
 {
     const std::set<std::string> & imm = immutables();
@@ -168,6 +197,9 @@ void Entity::merge(const MapType & ent)
     }
 }
 
+/// \brief Subscribe this entity to operations of the type given
+///
+/// @param op Type of operation this entity should be subscribed to
 void Entity::scriptSubscribe(const std::string & op)
 {
     OpNo n = Inheritance::instance().opEnumerate(op);
@@ -182,7 +214,11 @@ void Entity::scriptSubscribe(const std::string & op)
     }
 }
 
-void Entity::externalOperation(const RootOperation & op)
+/// \brief Process an operation from an external source.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void Entity::externalOperation(const Operation & op)
 {
     OpVector res;
     operation(op, res);
@@ -193,87 +229,87 @@ void Entity::externalOperation(const RootOperation & op)
     }
 }
 
-void Entity::SetupOperation(const RootOperation & op, OpVector & res)
+void Entity::SetupOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("setup", op, res);
 }
 
-void Entity::TickOperation(const RootOperation & op, OpVector & res)
+void Entity::TickOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("tick", op, res);
 }
 
-void Entity::ActionOperation(const RootOperation & op, OpVector & res)
+void Entity::ActionOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("action", op, res);
 }
 
-void Entity::ChopOperation(const RootOperation & op, OpVector & res)
+void Entity::ChopOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("chop", op, res);
 }
 
-void Entity::CreateOperation(const RootOperation & op, OpVector & res)
+void Entity::CreateOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("create", op, res);
 }
 
-void Entity::CutOperation(const RootOperation & op, OpVector & res)
+void Entity::CutOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("cut", op, res);
 }
 
-void Entity::DeleteOperation(const RootOperation & op, OpVector & res)
+void Entity::DeleteOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("delete", op, res);
 }
 
-void Entity::EatOperation(const RootOperation & op, OpVector & res)
+void Entity::EatOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("eat", op, res);
 }
 
-void Entity::BurnOperation(const RootOperation & op, OpVector & res)
+void Entity::BurnOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("burn", op, res);
 }
 
-void Entity::ImaginaryOperation(const RootOperation & op, OpVector & res)
+void Entity::ImaginaryOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("imaginary", op, res);
 }
 
-void Entity::MoveOperation(const RootOperation & op, OpVector & res)
+void Entity::MoveOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("move", op, res);
 }
 
-void Entity::NourishOperation(const RootOperation & op, OpVector & res)
+void Entity::NourishOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("nourish", op, res);
 }
 
-void Entity::SetOperation(const RootOperation & op, OpVector & res)
+void Entity::SetOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("set", op, res);
 }
 
-void Entity::SightOperation(const RootOperation & op, OpVector & res)
+void Entity::SightOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("sight", op, res);
 }
 
-void Entity::SoundOperation(const RootOperation & op, OpVector & res)
+void Entity::SoundOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("sound", op, res);
 }
 
-void Entity::TouchOperation(const RootOperation & op, OpVector & res)
+void Entity::TouchOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("touch", op, res);
 }
 
-void Entity::LookOperation(const RootOperation & op, OpVector & res)
+void Entity::LookOperation(const Operation & op, OpVector & res)
 {
     if (m_script->Operation("look", op, res) != 0) {
         return;
@@ -289,17 +325,17 @@ void Entity::LookOperation(const RootOperation & op, OpVector & res)
     res.push_back(s);
 }
 
-void Entity::AppearanceOperation(const RootOperation & op, OpVector & res)
+void Entity::AppearanceOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("appearance", op, res);
 }
 
-void Entity::DisappearanceOperation(const RootOperation & op, OpVector & res)
+void Entity::DisappearanceOperation(const Operation & op, OpVector & res)
 {
     m_script->Operation("disappearance", op, res);
 }
 
-void Entity::OtherOperation(const RootOperation & op, OpVector & res)
+void Entity::OtherOperation(const Operation & op, OpVector & res)
 {
     const std::string & op_type = op.getParents().front().asString();
     debug(std::cout << "Entity " << getId() << " got custom " << op_type

@@ -16,6 +16,7 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::RootOperation;
 
 static const bool debug_flag = false;
 

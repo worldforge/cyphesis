@@ -9,7 +9,7 @@
 
 class Player : public Account {
   protected:
-    virtual int characterError(const RootOperation &,
+    virtual int characterError(const Operation &,
                                const Atlas::Message::MapType &,
                                OpVector &) const;
   public:

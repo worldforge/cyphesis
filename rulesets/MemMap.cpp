@@ -110,7 +110,7 @@ MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s)
 {
 }
 
-RootOperation * MemMap::lookId()
+Atlas::Objects::Operation::RootOperation * MemMap::lookId()
 // Generate a look operation to look at an entity we are interested in
 {
     debug( std::cout << "MemMap::lookId" << std::endl << std::flush;);

@@ -64,4 +64,6 @@ typedef std::set<Entity *> EntitySet;
 typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
 typedef std::map<std::string,OpNo> OpNoDict;
 
+typedef Atlas::Objects::Operation::RootOperation Operation;
+
 #endif // TYPES_H

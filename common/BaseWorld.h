@@ -58,16 +58,15 @@ class BaseWorld {
     virtual Entity * addObject(Entity * obj, bool setup = true) = 0;
     virtual Entity * addNewObject(const std::string &,
                                   const Atlas::Message::MapType &) = 0;
-    virtual void setSerialnoOp(Atlas::Objects::Operation::RootOperation &) = 0;
-    virtual void message(Atlas::Objects::Operation::RootOperation &,
-                         const Entity * obj) = 0;
+    virtual void setSerialnoOp(Operation &) = 0;
+    virtual void message(Operation &, const Entity * obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;
     virtual float constrainHeight(Entity *, const Point3D &) = 0;
     virtual void addPerceptive(const std::string & id) = 0;
 
 
-    SigC::Signal1<void, Atlas::Objects::Operation::RootOperation *> Dispatching;
+    SigC::Signal1<void, Operation *> Dispatching;
 };
 
 #endif // COMMON_BASE_WORLD_H

@@ -74,7 +74,7 @@ int Plant::dropFruit(OpVector & res)
         fmap["parents"] = ListType(1,m_fruitName);
         Location floc(m_location.m_loc, Point3D(rx, ry, 0));
         floc.addToMessage(fmap);
-        RootOperation * create = new Create();
+        Operation * create = new Create();
         create->setTo(getId());
         create->setArgs(ListType(1, fmap));
         res.push_back(create);
@@ -82,7 +82,7 @@ int Plant::dropFruit(OpVector & res)
     return drop;
 }
 
-void Plant::ChopOperation(const RootOperation & op, OpVector & res)
+void Plant::ChopOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant got chop op" << std::endl << std::flush;);
     if (m_script->Operation("tick", op, res)) {
@@ -91,7 +91,7 @@ void Plant::ChopOperation(const RootOperation & op, OpVector & res)
     Element mode;
     if (get("mode", mode) && mode.isString() && mode.asString() == "felled") {
         debug(std::cout << "Plant is already down" << std::endl << std::flush;);
-        RootOperation * op = new Set;
+        Operation * op = new Set;
         ListType & setArgs = op->getArgs();
         setArgs.push_back(MapType());
         MapType & setArg = setArgs.back().asMap();
@@ -115,7 +115,7 @@ void Plant::ChopOperation(const RootOperation & op, OpVector & res)
         return;
     }
     // FIXME In the future it will take more than one chop to chop down a tree.
-    RootOperation * move = new Move;
+    Operation * move = new Move;
     ListType & moveArgs = move->getArgs();
     moveArgs.push_back(MapType());
     MapType & moveArg = moveArgs.back().asMap();
@@ -138,14 +138,14 @@ void Plant::ChopOperation(const RootOperation & op, OpVector & res)
     res.push_back(move);
 }
 
-void Plant::TickOperation(const RootOperation & op, OpVector & res)
+void Plant::TickOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant::Tick(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);
     if (m_script->Operation("tick", op, res)) {
         return;
     }
-    RootOperation * tickOp = new Tick;
+    Operation * tickOp = new Tick;
     tickOp->setTo(getId());
     tickOp->setFutureSeconds(consts::basic_tick * m_speed);
     res.push_back(tickOp);
@@ -158,7 +158,7 @@ void Plant::TickOperation(const RootOperation & op, OpVector & res)
         }
     }
     if ((dropped != 0) || (m_status < 1.)) {
-        RootOperation * set = new Set();
+        Operation * set = new Set();
         MapType pmap;
         pmap["id"] = getId();
         pmap["fruits"] = m_fruits;
@@ -173,7 +173,7 @@ void Plant::TickOperation(const RootOperation & op, OpVector & res)
     }
 }
 
-void Plant::TouchOperation(const RootOperation & op, OpVector & res)
+void Plant::TouchOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant::Touch(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);
@@ -187,7 +187,7 @@ void Plant::TouchOperation(const RootOperation & op, OpVector & res)
 
     int dropped = dropFruit(res);
     if (dropped != 0) {
-        RootOperation * set = new Set();
+        Operation * set = new Set();
         MapType pmap;
         pmap["id"] = getId();
         pmap["fruits"] = m_fruits;

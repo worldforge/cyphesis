@@ -14,8 +14,6 @@
 
 #include <string>
 
-using Atlas::Objects::Operation::RootOperation;
-
 /// \brief This is the base class from which all other entity like classes
 /// inherit, both in game and out of game.
 ///
@@ -52,44 +50,44 @@ class BaseEntity : virtual public SigC::Object {
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
 
-    virtual void operation(const RootOperation &, OpVector &);
+    virtual void operation(const Operation &, OpVector &);
 
-    virtual void LoginOperation(const RootOperation &, OpVector &);
-    virtual void LogoutOperation(const RootOperation &, OpVector &);
-    virtual void ActionOperation(const RootOperation &, OpVector &);
-    virtual void ChopOperation(const RootOperation &, OpVector &);
-    virtual void CombineOperation(const RootOperation &, OpVector &);
-    virtual void CreateOperation(const RootOperation &, OpVector &);
-    virtual void CutOperation(const RootOperation &, OpVector &);
-    virtual void DeleteOperation(const RootOperation &, OpVector &);
-    virtual void DivideOperation(const RootOperation &, OpVector &);
-    virtual void EatOperation(const RootOperation &, OpVector &);
-    virtual void BurnOperation(const RootOperation &, OpVector &);
-    virtual void GetOperation(const RootOperation &, OpVector &);
-    virtual void ImaginaryOperation(const RootOperation &, OpVector &);
-    virtual void InfoOperation(const RootOperation &, OpVector &);
-    virtual void MoveOperation(const RootOperation &, OpVector &);
-    virtual void NourishOperation(const RootOperation &, OpVector &);
-    virtual void SetOperation(const RootOperation &, OpVector &);
-    virtual void SightOperation(const RootOperation &, OpVector &);
-    virtual void SoundOperation(const RootOperation &, OpVector &);
-    virtual void TalkOperation(const RootOperation &, OpVector &);
-    virtual void TouchOperation(const RootOperation &, OpVector &);
-    virtual void TickOperation(const RootOperation &, OpVector &);
-    virtual void LookOperation(const RootOperation &, OpVector &);
-    virtual void SetupOperation(const RootOperation &, OpVector &);
-    virtual void AppearanceOperation(const RootOperation &, OpVector &);
-    virtual void DisappearanceOperation(const RootOperation &, OpVector &);
-    virtual void UseOperation(const RootOperation &, OpVector &);
-    virtual void WieldOperation(const RootOperation &, OpVector &);
-    virtual void OtherOperation(const RootOperation &, OpVector &);
-    virtual void ErrorOperation(const RootOperation &, OpVector &);
+    virtual void LoginOperation(const Operation &, OpVector &);
+    virtual void LogoutOperation(const Operation &, OpVector &);
+    virtual void ActionOperation(const Operation &, OpVector &);
+    virtual void ChopOperation(const Operation &, OpVector &);
+    virtual void CombineOperation(const Operation &, OpVector &);
+    virtual void CreateOperation(const Operation &, OpVector &);
+    virtual void CutOperation(const Operation &, OpVector &);
+    virtual void DeleteOperation(const Operation &, OpVector &);
+    virtual void DivideOperation(const Operation &, OpVector &);
+    virtual void EatOperation(const Operation &, OpVector &);
+    virtual void BurnOperation(const Operation &, OpVector &);
+    virtual void GetOperation(const Operation &, OpVector &);
+    virtual void ImaginaryOperation(const Operation &, OpVector &);
+    virtual void InfoOperation(const Operation &, OpVector &);
+    virtual void MoveOperation(const Operation &, OpVector &);
+    virtual void NourishOperation(const Operation &, OpVector &);
+    virtual void SetOperation(const Operation &, OpVector &);
+    virtual void SightOperation(const Operation &, OpVector &);
+    virtual void SoundOperation(const Operation &, OpVector &);
+    virtual void TalkOperation(const Operation &, OpVector &);
+    virtual void TouchOperation(const Operation &, OpVector &);
+    virtual void TickOperation(const Operation &, OpVector &);
+    virtual void LookOperation(const Operation &, OpVector &);
+    virtual void SetupOperation(const Operation &, OpVector &);
+    virtual void AppearanceOperation(const Operation &, OpVector &);
+    virtual void DisappearanceOperation(const Operation &, OpVector &);
+    virtual void UseOperation(const Operation &, OpVector &);
+    virtual void WieldOperation(const Operation &, OpVector &);
+    virtual void OtherOperation(const Operation &, OpVector &);
+    virtual void ErrorOperation(const Operation &, OpVector &);
 
-    OpNo opEnumerate(const RootOperation &) const;
-    OpNo opEnumerate(const RootOperation &, const OpNoDict & d) const;
+    OpNo opEnumerate(const Operation &) const;
+    OpNo opEnumerate(const Operation &, const OpNoDict & d) const;
     void subscribe(const std::string &);
-    void callOperation(const RootOperation &, OpVector &);
-    void error(const RootOperation &, const char * errstring, OpVector &,
+    void callOperation(const Operation &, OpVector &);
+    void error(const Operation &, const char * errstring, OpVector &,
                    const std::string & to = "") const;
 
     SigC::Signal0<void> destroyed;

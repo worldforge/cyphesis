@@ -33,7 +33,7 @@ Stackable::~Stackable()
 {
 }
 
-void Stackable::CombineOperation(const RootOperation & op, OpVector & res)
+void Stackable::CombineOperation(const Operation & op, OpVector & res)
 {
     if (m_script->Operation("combine", op, res) != 0) {
         return;
@@ -61,7 +61,7 @@ void Stackable::CombineOperation(const RootOperation & op, OpVector & res)
     // thing have not been discussed
 }
 
-void Stackable::DivideOperation(const RootOperation & op, OpVector & res)
+void Stackable::DivideOperation(const Operation & op, OpVector & res)
 {
     if (m_script->Operation("divide", op, res) != 0) {
         return;

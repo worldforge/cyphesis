@@ -34,7 +34,7 @@ void Player::addToMessage(MapType & omap) const
     }
 }
 
-int Player::characterError(const RootOperation & op,
+int Player::characterError(const Operation & op,
                            const MapType & ent, OpVector & res) const
 {
     MapType::const_iterator I = ent.find("name");

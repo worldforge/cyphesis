@@ -137,14 +137,14 @@ Character::~Character()
     }
 }
 
-void Character::ImaginaryOperation(const RootOperation & op, OpVector & res)
+void Character::ImaginaryOperation(const Operation & op, OpVector & res)
 {
     Sight * s = new Sight();
     s->setArgs(ListType(1,op.asObject()));
     res.push_back(s);
 }
 
-void Character::SetupOperation(const RootOperation & op, OpVector & res)
+void Character::SetupOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "CHaracter::Operation(setup)" << std::endl
                      << std::flush;);
@@ -176,7 +176,7 @@ void Character::SetupOperation(const RootOperation & op, OpVector & res)
 
         m_mind = MindFactory::instance()->newMind(getId(), m_name, m_type);
 
-        RootOperation * s = new RootOperation(op);
+        Operation * s = new Operation(op);
         // THis is so not the right thing to do
         s->setAttr("sub_to", "mind");
         res.push_back(s);
@@ -191,7 +191,7 @@ void Character::SetupOperation(const RootOperation & op, OpVector & res)
     res.push_back(tick);
 }
 
-void Character::TickOperation(const RootOperation & op, OpVector & res)
+void Character::TickOperation(const Operation & op, OpVector & res)
 {
     if (op.hasAttr("sub_to")) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
@@ -261,7 +261,7 @@ void Character::TickOperation(const RootOperation & op, OpVector & res)
     }
 }
 
-void Character::TalkOperation(const RootOperation & op, OpVector & res)
+void Character::TalkOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::OPeration(Talk)" << std::endl<<std::flush;);
     Sound * s = new Sound();
@@ -269,7 +269,7 @@ void Character::TalkOperation(const RootOperation & op, OpVector & res)
     res.push_back(s);
 }
 
-void Character::EatOperation(const RootOperation & op, OpVector & res)
+void Character::EatOperation(const Operation & op, OpVector & res)
 {
     // This is identical to Food::Operation(Eat &)
     // Perhaps animal should inherit from Food?
@@ -297,7 +297,7 @@ void Character::EatOperation(const RootOperation & op, OpVector & res)
     res.push_back(n);
 }
 
-void Character::NourishOperation(const RootOperation & op, OpVector & res)
+void Character::NourishOperation(const Operation & op, OpVector & res)
 {
     if (op.getArgs().empty()) {
         error(op, "Nourish has no argument", res, getId());
@@ -330,7 +330,7 @@ void Character::NourishOperation(const RootOperation & op, OpVector & res)
     res.push_back(si);
 }
 
-void Character::WieldOperation(const RootOperation & op, OpVector & res)
+void Character::WieldOperation(const Operation & op, OpVector & res)
 {
     if (op.getArgs().empty()) {
         // FIXME Wield nothing perhaps?
@@ -364,30 +364,30 @@ void Character::WieldOperation(const RootOperation & op, OpVector & res)
     debug(std::cout << "Wielding " << m_rightHandWield << std::endl << std::flush;);
 }
 
-void Character::mindLoginOperation(const RootOperation & op, OpVector & res)
+void Character::mindLoginOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindLogoutOperation(const RootOperation & op, OpVector & res)
+void Character::mindLogoutOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindActionOperation(const RootOperation & op, OpVector & res)
+void Character::mindActionOperation(const Operation & op, OpVector & res)
 {
-    RootOperation *a = new RootOperation(op);
+    Operation *a = new Operation(op);
     a->setTo(getId());
     res.push_back(a);
 }
 
-void Character::mindSetupOperation(const RootOperation & op, OpVector & res)
+void Character::mindSetupOperation(const Operation & op, OpVector & res)
 {
-    RootOperation *s = new RootOperation(op);
+    Operation *s = new Operation(op);
     s->setTo(getId());
     s->setAttr("sub_to", "mind");
     res.push_back(s);
 }
 
-void Character::mindUseOperation(const RootOperation & op, OpVector & res)
+void Character::mindUseOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Use op from mind" << std::endl << std::flush;);
 
@@ -507,7 +507,7 @@ void Character::mindUseOperation(const RootOperation & op, OpVector & res)
         return;
     }
 
-    RootOperation * rop = Inheritance::instance().newOperation(op_type);
+    Operation * rop = Inheritance::instance().newOperation(op_type);
     if (target.empty()) {
         debug(std::cout << "No target" << std::endl << std::flush;);
     } else {
@@ -521,23 +521,23 @@ void Character::mindUseOperation(const RootOperation & op, OpVector & res)
     res.push_back(rop);
 }
 
-void Character::mindWieldOperation(const RootOperation & op, OpVector & res)
+void Character::mindWieldOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Wield op from mind" << std::endl << std::flush;);
-    RootOperation *w = new RootOperation(op);
+    Operation *w = new Operation(op);
     w->setTo(getId());
     res.push_back(w);
 }
 
-void Character::mindTickOperation(const RootOperation & op, OpVector & res)
+void Character::mindTickOperation(const Operation & op, OpVector & res)
 {
-    RootOperation *t = new RootOperation(op);
+    Operation *t = new Operation(op);
     t->setTo(getId());
     t->setAttr("sub_to", "mind");
     res.push_back(t);
 }
 
-void Character::mindMoveOperation(const RootOperation & op, OpVector & res)
+void Character::mindMoveOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
     const ListType & args = op.getArgs();
@@ -563,7 +563,7 @@ void Character::mindMoveOperation(const RootOperation & op, OpVector & res)
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
         }
-        RootOperation * newop = new RootOperation(op);
+        Operation * newop = new Operation(op);
         newop->setTo(oname);
         res.push_back(newop);
         return;
@@ -618,7 +618,7 @@ void Character::mindMoveOperation(const RootOperation & op, OpVector & res)
     if ((futureSeconds < 0.) ||
         ((new_ref != m_location.m_loc->getId()) &&
          (!new_ref.empty())) ) {
-        RootOperation * newop = new RootOperation(op);
+        Operation * newop = new Operation(op);
         newop->setTo(getId());
         newop->setFutureSeconds(futureSeconds);
         res.push_back(newop);
@@ -747,13 +747,13 @@ void Character::mindMoveOperation(const RootOperation & op, OpVector & res)
     res.push_back(tickOp);
 }
 
-void Character::mindSetOperation(const RootOperation & op, OpVector & res)
+void Character::mindSetOperation(const Operation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty() || !args.front().isMap()) {
         return;
     }
-    RootOperation * s = new RootOperation(op);
+    Operation * s = new Operation(op);
     const MapType & amap = args.front().asMap();
     MapType::const_iterator I = amap.find("id");
     if (I != amap.end() && I->second.isString()) {
@@ -767,78 +767,78 @@ void Character::mindSetOperation(const RootOperation & op, OpVector & res)
     res.push_back(s);
 }
 
-void Character::mindSightOperation(const RootOperation & op, OpVector & res)
+void Character::mindSightOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindSoundOperation(const RootOperation & op, OpVector & res)
+void Character::mindSoundOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindChopOperation(const RootOperation & op, OpVector & res)
+void Character::mindChopOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindCombineOperation(const RootOperation & op, OpVector & res)
+void Character::mindCombineOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindCreateOperation(const RootOperation & op, OpVector & res)
+void Character::mindCreateOperation(const Operation & op, OpVector & res)
 {
-    RootOperation * c = new RootOperation(op);
+    Operation * c = new Operation(op);
     c->setTo(getId());
     res.push_back(c);
 }
 
-void Character::mindDeleteOperation(const RootOperation & op, OpVector & res)
+void Character::mindDeleteOperation(const Operation & op, OpVector & res)
 {
-    RootOperation * d = new RootOperation(op);
+    Operation * d = new Operation(op);
     d->setTo(getId());
     res.push_back(d);
 }
 
-void Character::mindDivideOperation(const RootOperation & op, OpVector & res)
+void Character::mindDivideOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindBurnOperation(const RootOperation & op, OpVector & res)
+void Character::mindBurnOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindGetOperation(const RootOperation & op, OpVector & res)
+void Character::mindGetOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindImaginaryOperation(const RootOperation & op, OpVector & res)
+void Character::mindImaginaryOperation(const Operation & op, OpVector & res)
 {
-    RootOperation * i = new RootOperation(op);
+    Operation * i = new Operation(op);
     i->setTo(getId());
     res.push_back(i);
 }
 
-void Character::mindInfoOperation(const RootOperation & op, OpVector & res)
+void Character::mindInfoOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindNourishOperation(const RootOperation & op, OpVector & res)
+void Character::mindNourishOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindTalkOperation(const RootOperation & op, OpVector & res)
+void Character::mindTalkOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mindOPeration(Talk)"
                      << std::endl << std::flush;);
-    RootOperation * t = new RootOperation(op);
+    Operation * t = new Operation(op);
     t->setTo(getId());
     res.push_back(t);
 }
 
-void Character::mindLookOperation(const RootOperation & op, OpVector & res)
+void Character::mindLookOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got look up from mind from [" << op.getFrom()
                << "] to [" << op.getTo() << "]" << std::endl << std::flush;);
     m_perceptive = true;
-    RootOperation * l = new RootOperation(op);
+    Operation * l = new Operation(op);
     if (op.getTo().empty()) {
         const ListType & args = op.getArgs();
         if (args.empty() || !args.front().isMap()) {
@@ -855,18 +855,18 @@ void Character::mindLookOperation(const RootOperation & op, OpVector & res)
     res.push_back(l);
 }
 
-void Character::mindCutOperation(const RootOperation & op, OpVector & res)
+void Character::mindCutOperation(const Operation & op, OpVector & res)
 {
-    RootOperation * c = new RootOperation(op);
+    Operation * c = new Operation(op);
     if (op.getTo().empty()) {
         c->setTo(getId());
     }
     res.push_back(c);
 }
 
-void Character::mindEatOperation(const RootOperation & op, OpVector & res)
+void Character::mindEatOperation(const Operation & op, OpVector & res)
 {
-    RootOperation * e = new RootOperation(op);
+    Operation * e = new Operation(op);
     // FIXME Need to get what food to eat from the arg, and sort out goals
     // so they don't set TO
     if (op.getTo().empty()) {
@@ -875,9 +875,9 @@ void Character::mindEatOperation(const RootOperation & op, OpVector & res)
     res.push_back(e);
 }
 
-void Character::mindTouchOperation(const RootOperation & op, OpVector & res)
+void Character::mindTouchOperation(const Operation & op, OpVector & res)
 {
-    RootOperation * t = new RootOperation(op);
+    Operation * t = new Operation(op);
     // Work out what is being touched.
     const ListType & args = op.getArgs();
     if (op.getTo().empty()) {
@@ -904,124 +904,124 @@ void Character::mindTouchOperation(const RootOperation & op, OpVector & res)
     res.push_back(a);
 }
 
-void Character::mindAppearanceOperation(const RootOperation & op, OpVector & res)
+void Character::mindAppearanceOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindDisappearanceOperation(const RootOperation & op, OpVector & res)
+void Character::mindDisappearanceOperation(const Operation & op, OpVector & res)
 {
 }
 
 
-void Character::mindErrorOperation(const RootOperation & op, OpVector & res)
+void Character::mindErrorOperation(const Operation & op, OpVector & res)
 {
 }
 
-void Character::mindOtherOperation(const RootOperation & op, OpVector & res)
+void Character::mindOtherOperation(const Operation & op, OpVector & res)
 {
-    RootOperation * e = new RootOperation(op);
+    Operation * e = new Operation(op);
     if (op.getTo().empty()) {
         e->setTo(getId());
     }
     res.push_back(e);
 }
 
-bool Character::w2mActionOperation(const RootOperation & op)
+bool Character::w2mActionOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mLoginOperation(const RootOperation & op)
+bool Character::w2mLoginOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mLogoutOperation(const RootOperation & op)
+bool Character::w2mLogoutOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mChopOperation(const RootOperation & op)
+bool Character::w2mChopOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mCreateOperation(const RootOperation & op)
+bool Character::w2mCreateOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mCutOperation(const RootOperation & op)
+bool Character::w2mCutOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mDeleteOperation(const RootOperation & op)
+bool Character::w2mDeleteOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mEatOperation(const RootOperation & op)
+bool Character::w2mEatOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mBurnOperation(const RootOperation & op)
+bool Character::w2mBurnOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mMoveOperation(const RootOperation & op)
+bool Character::w2mMoveOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mSetOperation(const RootOperation & op)
+bool Character::w2mSetOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mLookOperation(const RootOperation & op)
+bool Character::w2mLookOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mDivideOperation(const RootOperation & op)
+bool Character::w2mDivideOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mCombineOperation(const RootOperation & op)
+bool Character::w2mCombineOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mGetOperation(const RootOperation & op)
+bool Character::w2mGetOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mImaginaryOperation(const RootOperation & op)
+bool Character::w2mImaginaryOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mInfoOperation(const RootOperation & op)
+bool Character::w2mInfoOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mTalkOperation(const RootOperation & op)
+bool Character::w2mTalkOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mNourishOperation(const RootOperation & op)
+bool Character::w2mNourishOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mAppearanceOperation(const RootOperation & op)
+bool Character::w2mAppearanceOperation(const Operation & op)
 {
     if (m_drunkness > 1.0) {
         return false;
@@ -1029,7 +1029,7 @@ bool Character::w2mAppearanceOperation(const RootOperation & op)
     return true;
 }
 
-bool Character::w2mDisappearanceOperation(const RootOperation & op)
+bool Character::w2mDisappearanceOperation(const Operation & op)
 {
     if (m_drunkness > 1.0) {
         return false;
@@ -1037,17 +1037,17 @@ bool Character::w2mDisappearanceOperation(const RootOperation & op)
     return true;
 }
 
-bool Character::w2mErrorOperation(const RootOperation & op)
+bool Character::w2mErrorOperation(const Operation & op)
 {
     return true;
 }
 
-bool Character::w2mOtherOperation(const RootOperation & op)
+bool Character::w2mOtherOperation(const Operation & op)
 {
     return true;
 }
 
-bool Character::w2mSetupOperation(const RootOperation & op)
+bool Character::w2mSetupOperation(const Operation & op)
 {
     if (op.hasAttr("sub_to")) {
         return true;
@@ -1055,17 +1055,17 @@ bool Character::w2mSetupOperation(const RootOperation & op)
     return false;
 }
 
-bool Character::w2mUseOperation(const RootOperation & op)
+bool Character::w2mUseOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mWieldOperation(const RootOperation & op)
+bool Character::w2mWieldOperation(const Operation & op)
 {
     return false;
 }
 
-bool Character::w2mTickOperation(const RootOperation & op)
+bool Character::w2mTickOperation(const Operation & op)
 {
     if (op.hasAttr("sub_to")) {
         return true;
@@ -1073,7 +1073,7 @@ bool Character::w2mTickOperation(const RootOperation & op)
     return false;
 }
 
-bool Character::w2mSightOperation(const RootOperation & op)
+bool Character::w2mSightOperation(const Operation & op)
 {
     if (m_drunkness > 1.0) {
         return false;
@@ -1081,7 +1081,7 @@ bool Character::w2mSightOperation(const RootOperation & op)
     return true;
 }
 
-bool Character::w2mSoundOperation(const RootOperation & op)
+bool Character::w2mSoundOperation(const Operation & op)
 {
     if (m_drunkness > 1.0) {
         return false;
@@ -1089,7 +1089,7 @@ bool Character::w2mSoundOperation(const RootOperation & op)
     return true;
 }
 
-bool Character::w2mTouchOperation(const RootOperation & op)
+bool Character::w2mTouchOperation(const Operation & op)
 {
     if (m_drunkness > 1.0) {
         return false;
@@ -1097,7 +1097,7 @@ bool Character::w2mTouchOperation(const RootOperation & op)
     return true;
 }
 
-void Character::sendMind(const RootOperation & op, OpVector & res)
+void Character::sendMind(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::sendMind" << std::endl << std::flush;);
 
@@ -1123,7 +1123,7 @@ void Character::sendMind(const RootOperation & op, OpVector & res)
     }
 }
 
-void Character::mind2body(const RootOperation & op, OpVector & res)
+void Character::mind2body(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mind2body" << std::endl << std::flush;);
 
@@ -1138,7 +1138,7 @@ void Character::mind2body(const RootOperation & op, OpVector & res)
     OP_SWITCH(op, otype, res, mind)
 }
 
-bool Character::world2mind(const RootOperation & op)
+bool Character::world2mind(const Operation & op)
 {
     debug( std::cout << "Character::world2mind" << std::endl << std::flush;);
     OpNo otype = opEnumerate(op, opW2mLookup);
@@ -1146,7 +1146,7 @@ bool Character::world2mind(const RootOperation & op)
     return false;
 }
 
-void Character::operation(const RootOperation & op, OpVector & res)
+void Character::operation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::operation" << std::endl << std::flush;);
     callOperation(op, res);
@@ -1159,7 +1159,7 @@ void Character::operation(const RootOperation & op, OpVector & res)
         sendMind(op, mres);
         OpVector::const_iterator Iend = mres.end();
         for (OpVector::const_iterator I = mres.begin(); I != Iend; ++I) {
-            //RootOperation * mr2 = mind2_res.front();
+            //Operation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
             m_world->setSerialnoOp(**I);
             externalOperation(**I);
@@ -1168,7 +1168,7 @@ void Character::operation(const RootOperation & op, OpVector & res)
     }
 }
 
-void Character::externalOperation(const RootOperation & op)
+void Character::externalOperation(const Operation & op)
 {
     debug( std::cout << "Character::externalOperation" << std::endl << std::flush;);
     OpVector mres;

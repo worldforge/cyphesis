@@ -13,10 +13,10 @@ class Persistance;
 
 class Admin : public Account {
   protected:
-    virtual int characterError(const RootOperation &,
+    virtual int characterError(const Operation &,
                                const Atlas::Message::MapType &,
                                OpVector &) const;
-    void opDispatched(RootOperation * op);
+    void opDispatched(Operation * op);
 
     SigC::Connection m_monitorConnection;
   public:
@@ -27,11 +27,11 @@ class Admin : public Account {
 
     virtual const char * getType() const;
 
-    virtual void LogoutOperation(const RootOperation &, OpVector &);
-    virtual void GetOperation(const RootOperation &, OpVector &);
-    virtual void SetOperation(const RootOperation &, OpVector &);
-    virtual void CreateOperation(const RootOperation &, OpVector &);
-    virtual void OtherOperation(const RootOperation &, OpVector &);
+    virtual void LogoutOperation(const Operation &, OpVector &);
+    virtual void GetOperation(const Operation &, OpVector &);
+    virtual void SetOperation(const Operation &, OpVector &);
+    virtual void CreateOperation(const Operation &, OpVector &);
+    virtual void OtherOperation(const Operation &, OpVector &);
 };
 
 #endif // SERVER_ADMIN_H
