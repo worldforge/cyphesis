@@ -140,12 +140,14 @@ oplist Thing::Operation(const Move & op)
     }
     const Message::Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
-       return(res);
+        cout << "ERROR: move op has no argument" << endl << flush;
+        return(res);
     }
     try {
         cout << 1;
         Message::Object::MapType ent = args.front().AsMap();
         if (ent.find("loc") == ent.end()) {
+            cout << "ERROR: move op arg has no parent" << endl << flush;
             return(error(op, "Move location has no parent"));
         }
         cout << 2;
@@ -162,6 +164,7 @@ oplist Thing::Operation(const Move & op)
 #endif
         cout << 3;
         if (world->server->id_dict.find(parent) == world->server->id_dict.end()) {
+            cout << "ERROR: move op arg parent is invalid" << endl << flush;
             return(error(op, "Move location parent invalid"));
         }
         cout << 4;
@@ -214,8 +217,10 @@ oplist Thing::Operation(const Move & op)
         double y = vector.front().AsFloat();
         vector.pop_front();
         double z = vector.front().AsFloat();
+        cout << "POS: " << x << " " << y << " " << z << endl << flush;
         location.coords = Vector3D(x, y, z);
         if (ent.find("velocity") == ent.end()) {
+            cout << "ERROR: Move location has no velocity";
             return(error(op, "Move location has no velocity"));
         }
         cout << 7;
@@ -224,6 +229,7 @@ oplist Thing::Operation(const Move & op)
         vector = ent["velocity"].AsList();
         cout << 8;
         if (vector.size()!=3) {
+            cout << "ERROR: Move location velocity is malformed";
             return(error(op, "Move location velocity is malformed"));
         }
         x = vector.front().AsFloat();
@@ -231,8 +237,11 @@ oplist Thing::Operation(const Move & op)
         y = vector.front().AsFloat();
         vector.pop_front();
         z = vector.front().AsFloat();
+        cout << "VEL: " << x << " " << y << " " << z << endl << flush;
         location.velocity = Vector3D(x, y, z);
 #endif
+        cout << "MOVE calculate vel=" << location.velocity
+             << " coord=" << location.coords;
 
         cout << 9;
         double speed_ratio;

@@ -1,3 +1,9 @@
+2000-11-05  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* More movement fixes, including lots of clearer debugging output.
+	  Still does not seem to correctly handle moves which don't 
+	  specify direction.
+
 2000-11-04  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* More movement fixes. I now get almost expected behavoir

@@ -21,6 +21,8 @@ public:
     //void operator=(const Location&);
 
     void addObject(Atlas::Message::Object *);
+
+    friend ostream & operator<<(ostream& s, Location& v);
 };
 
 #endif /* LOCATION_H */

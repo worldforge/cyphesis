@@ -75,7 +75,7 @@ BaseEntity * Account::add_character(const string & type, const Message::Object &
         cout << "Setting location" << endl << flush;
         chr->location = Location(world, Vector3D(0,0,0));
     }
-    cout << "[" << chr->location.parent->fullid << "]" << endl << flush;
+    cout << "Location set to: " << chr->location << endl << flush;
     if (chr->is_character != 0) {
         Character * pchar = (Character *)chr;
         pchar->player = this;

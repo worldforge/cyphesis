@@ -305,4 +305,9 @@ class BaseEntity {
     oplist error(const RootOperation & op, const char * string);
 };
 
+inline ostream & operator<<(ostream& s, Location& v)
+{
+    return s << "{" << v.parent->fullid << "," << v.coords << "," << v.velocity << "}";
+}
+
 #endif /* BASE_ENTITY_H */

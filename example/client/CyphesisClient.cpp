@@ -206,9 +206,9 @@ void CyphesisClient::move()
     Message::Object::MapType ent;
     ent["id"] = character_id;
     Message::Object::ListType coords;
-    coords.push_back(100);
-    coords.push_back(100);
-    coords.push_back(0);
+    coords.push_back(100.0);
+    coords.push_back(100.0);
+    coords.push_back(0.0);
     ent["pos"] = coords;
     ent["loc"] = string("world_0");
     Objects::Operation::Move m = Objects::Operation::Move::Instantiate();

@@ -293,6 +293,7 @@ oplist Character::Mind_Operation(const Move & op)
                 }
                 catch (Message::WrongTypeException) {
                     cout << "EXCEPTION: Malformed coords move operation" << endl << flush;
+                    return(error("Malformed coords move operation"));
                 }
             }
         }
@@ -310,6 +311,7 @@ oplist Character::Mind_Operation(const Move & op)
                 }
                 catch (Message::WrongTypeException) {
                     cout << "EXCEPTION: Malformed velocity move operation" << endl << flush;
+                    return(error("Malformed velocity move operation"));
                 }
             }
         }
