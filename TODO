@@ -1,3 +1,6 @@
+Make cyphesis less reluctant to shutdown. Check for exit_flag in more
+places.
+
 Can we get a code size or performance improvement by passing in the result
 list as part of the operation method call. The answer is yes, but the
 further question is whether this will break anything.

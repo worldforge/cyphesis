@@ -1,3 +1,8 @@
+2003-11-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Fix logic when charging mind touch op
+	  args.
+
 2003-11-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Additional error reporting for bad update

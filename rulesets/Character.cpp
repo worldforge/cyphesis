@@ -734,7 +734,7 @@ OpVector Character::mindTouchOperation(const Touch & op)
     Touch * t = new Touch(op);
     // Work out what is being touched.
     const Element::ListType & args = op.getArgs();
-    if ((op.getTo().empty()) || (!args.empty())) {
+    if (op.getTo().empty()) {
         if (args.empty()) {
             t->setTo(m_world->getId());
         } else {
