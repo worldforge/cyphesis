@@ -1,3 +1,7 @@
+2004-06-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp: Remove debugging output.
+
 2004-06-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* Make sure ruleset script files are correctly handled by

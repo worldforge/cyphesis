@@ -231,7 +231,7 @@ OpVector Account::CreateOperation(const Create & op)
 
 OpVector Account::SetOperation(const Set & op)
 {
-    std::cout << "Account::Operation(set)" << std::endl << std::flush;
+    debug(std::cout << "Account::Operation(set)" << std::endl << std::flush;);
     const Element::ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
         return OpVector();
@@ -254,15 +254,15 @@ OpVector Account::SetOperation(const Set & op)
     I = entmap.find("guise");
     Element::MapType newArg;
     if (I != entmap.end()) {
-        std::cout << "Got attempt to change characters guise"
-                  << std::endl << std::flush;
+        debug(std::cout << "Got attempt to change characters guise"
+                        << std::endl << std::flush;);
         // Apply change to character in-game
         newArg["guise"] = I->second;
     }
     I = entmap.find("height");
     if (I != entmap.end() && (I->second.isNum())) {
-        std::cout << "Got attempt to change characters height"
-                  << std::endl << std::flush;
+        debug(std::cout << "Got attempt to change characters height"
+                        << std::endl << std::flush;);
         BBox & bbox = e->m_location.m_bBox;
         if (bbox.isValid()) {
             float old_height = bbox.highCorner().z() - bbox.lowCorner().z();
@@ -274,14 +274,11 @@ OpVector Account::SetOperation(const Set & op)
                                          bbox.highCorner().y() * scale,
                                          bbox.highCorner().z() * scale));
             newArg["bbox"] = newBox.toAtlas();
-        } else {
-            std::cout << "Got attempt to change characters height with no bbox"
-                      << std::endl << std::flush;
         }
     }
     if (!newArg.empty()) {
-        std::cout << "Passing character mods in-game"
-                  << std::endl << std::flush;
+        debug(std::cout << "Passing character mods in-game"
+                        << std::endl << std::flush;);
         Set * s = new Set;
         s->setTo(id);
         newArg["id"] = id;
