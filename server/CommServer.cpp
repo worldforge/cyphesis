@@ -208,11 +208,10 @@ void CommServer::loop()
                    debug(std::cout << "Removing client due to failed negotiation or timeout" << std::endl << std::flush;);
                    obsoleteConnections.insert(client);
                }
-           } else if (client->eof()) {
-               obsoleteConnections.insert(client);
            } else {
-               // It is not clear why this happens.
-               log(WARNING, "Client peek failed, but eof() is not set");
+               // It is not clear why but on some implementation/circumstances
+               // client->eof() is true, and sometimes it isn't.
+               // Either way, the stream is now done, and we should remove it
                obsoleteConnections.insert(client);
            }
        }

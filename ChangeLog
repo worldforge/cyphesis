@@ -1,3 +1,8 @@
+2002-08-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommServer.cpp: Simplify handling of socket errors,
+	  and remove pointless warning.
+
 2002-08-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* mason.xml, rulesets/mason/world/objects/plants/Birch.py,
