@@ -1,5 +1,10 @@
 2004-11-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.cpp: Add some checks and error reporting that
+	  prevent a segfault when distance_to is used in the mind code.
+
+2004-11-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, rulesets/Plant.cpp: Encapsulate the
 	  debugging output relating to tool use into the debug macro, so it
 	  is no longer printed.

@@ -4,6 +4,8 @@
 
 #include "rulesets/Entity.h"
 
+#include "common/log.h"
+
 #include <wfmath/atlasconv.h>
 
 using Atlas::Message::Element;
@@ -73,7 +75,8 @@ static bool distanceToAncestor(const Location & self,
     c.setToOrigin();
     if (distanceFromAncestor(self, other, c)) {
         return true;
-    } else if (distanceToAncestor(self.m_loc->m_location, other, c)) {
+    } else if ((self.m_loc != 0) &&
+               distanceToAncestor(self.m_loc->m_location, other, c)) {
         if (self.m_orientation.isValid()) {
             c = c.toLocalCoords(self.m_pos, self.m_orientation);
         } else {
@@ -82,6 +85,16 @@ static bool distanceToAncestor(const Location & self,
         }
         return true;
     }
+    log(ERROR, "Broken entity hierarchy doing distance calculation");
+    if (self.m_loc != 0) {
+        std::cerr << "Self(" << self.m_loc->getId() << "," << self.m_loc << ")"
+                  << std::endl << std::flush;
+    }
+    if (other.m_loc != 0) {
+        std::cerr << "Other(" << other.m_loc->getId() << "," << other.m_loc << ")"
+                  << std::endl << std::flush;
+    }
+     
     return false;
 }
 
