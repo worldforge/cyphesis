@@ -1,3 +1,8 @@
+2004-01-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Fix some bugs which can occur if from
+	  normalising a zero-length vector.
+
 2004-01-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* Add rule for forest entity.

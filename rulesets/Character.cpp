@@ -517,6 +517,9 @@ OpVector Character::mindMoveOperation(const Move & op)
                          << std::endl << std::flush;);
         direction = Vector3D(new_coords) - current_location.m_pos;
     }
+    if (direction.isValid() && (direction.mag() > 0)) {
+        direction.setValid(false);
+    }
     if (direction.isValid()) {
         direction.normalize();
         debug( std::cout << "Direction: " << direction << std::endl
@@ -525,11 +528,13 @@ OpVector Character::mindMoveOperation(const Move & op)
             // This is a character walking, so it should stap upright
             Vector3D uprightDirection = direction;
             uprightDirection[cZ] = 0;
-            uprightDirection.normalize();
-            new_orientation = quaternionFromTo(Vector3D(1,0,0),
-                                                    uprightDirection);
-            debug( std::cout << "Orientation: " << new_orientation
-                             << std::endl << std::flush;);
+            if (uprightDirection.mag() > 0) {
+                uprightDirection.normalize();
+                new_orientation = quaternionFromTo(Vector3D(1,0,0),
+                                                   uprightDirection);
+                debug( std::cout << "Orientation: " << new_orientation
+                                 << std::endl << std::flush;);
+            }
         }
     }
 
