@@ -259,13 +259,19 @@ oplist Character::Mind_Operation(const Move & op)
         cout << "This move op is for a phoney object" << endl << flush;
     }
     Thing * obj = (Thing *)world->fobjects[oname];
-    double weight = attributes["weight"].AsFloat();
-    double oweight = obj->operator[]("weight").AsFloat();
-    if ((oweight < 0) || (oweight > weight)) {
-        // We can't move this. Just too heavy
+    if (obj != this) {
+        cout << "Moving something else." << endl << flush;
+        double weight = attributes["weight"].AsFloat();
+        double oweight = obj->operator[]("weight").AsFloat();
+        if ((oweight < 0) || (oweight > weight)) {
+            // We can't move this. Just too heavy
+            return(res);
+        }
+        newop->SetTo(oname);
+        res.push_back(newop);
         return(res);
     }
-    string location_parent("");
+    string location_parent;
 #if USE_OLD_LOC
     Vector3D location_coords;
     Vector3D location_vel;
@@ -309,7 +315,7 @@ oplist Character::Mind_Operation(const Move & op)
         }
 
     } else {
-        cout << "Parent not set" << endl << flush;
+        cout << "Location not set" << endl << flush;
     }
 #else
     if ((arg1.find("loc") != arg1.end()) && (arg1["loc"].IsString())) {

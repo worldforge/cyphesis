@@ -1,5 +1,12 @@
 2000-11-04  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* More movement fixes. I now get almost expected behavoir
+
+	* Switched over to new Atlas location spec now that this is supported
+	  by uclient.
+
+2000-11-04  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Improved debugging output in movement code, and fixed some critical
 	  bugs which meant that movement was not working correctly.
 

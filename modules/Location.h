@@ -3,7 +3,7 @@
 
 #include <physics/Vector3D.h>
 
-#define USE_OLD_LOC 1
+#define USE_OLD_LOC 0
 
 class BaseEntity;
 
