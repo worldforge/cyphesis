@@ -54,9 +54,9 @@ sort out access for you. You must ensure that the database server is running.
 Run cyphesis-setup to have it setup everything that is needed to run cyphesis.
 If you need it to sort out database access then run it as root and provide the
 name of the user that will run cyphesis. If you already have database access,
-run the script as the user that will run cyphesis. If the command indicates that
-any errors occurred by printing ERROR then there may be something wrong with
-your cyphesis installation. See the "Usage and configuration" section for
+run the script as the user that will run cyphesis. If the command indicates
+that any errors occurred by printing ERROR then there may be something wrong
+with your cyphesis installation. See the "Usage and configuration" section for
 details of the manual setup process
 
 4 - Running a standard server
