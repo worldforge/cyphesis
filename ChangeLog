@@ -1,5 +1,9 @@
 2002-07-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.h: Fix } position.
+
+2002-07-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/const.cpp, common/const.h: Make consts modifiable in
 	  the debug build.
 

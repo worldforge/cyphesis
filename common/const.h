@@ -52,7 +52,7 @@ namespace consts {
   extern bool enable_ranges;
   extern const char * defaultAdminPassword;
 
-}
 #endif // NDEBUG
+}
 
 #endif // COMMON_CONST_H
