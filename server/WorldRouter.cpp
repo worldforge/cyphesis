@@ -379,7 +379,7 @@ void WorldRouter::deliverDeleteTo(const Operation & op, Entity & ent)
 /// sight ranges for perception operations.
 /// @param op operation to be dispatched to the world. This is non-const
 /// so that broadcast ops can have their TO set correctly for each target.
-void WorldRouter::operation(Operation & op, Entity & fromPtr)
+void WorldRouter::operation(Operation & op, Entity & from)
 {
     const std::string & to = op.getTo();
     debug(std::cout << "WorldRouter::operation {"
@@ -404,19 +404,10 @@ void WorldRouter::operation(Operation & op, Entity & fromPtr)
             deliverTo(op, *to_entity);
         }
     } else {
+        // Where broadcasts go depends on type of op
         const EntitySet & broadcast = broadcastList(op);
-        const std::string & from = op.getFrom();
-        EntityDict::const_iterator J = m_eobjects.find(from);
-        if (from.empty()) {
-            log(ERROR, "WorldRouter::operation dispatching op with no from");
-            if (J != m_eobjects.end()) {
-                log(ERROR, "WorldRouter::operation empty id found in IG map");
-            }
-        }
-        if ((J == m_eobjects.end()) || (!consts::enable_ranges)) {
-            log(ERROR, "WorldRouter::operation broadcasting op with missing from");
-            std::cerr << op.getParents().front().asString() << " op from "
-                      << from << std::endl << std::flush;
+        assert(op.getFrom() == from.getId());
+        if (!consts::enable_ranges) {
             EntitySet::const_iterator I = broadcast.begin();
             EntitySet::const_iterator Iend = broadcast.end();
             for (; I != Iend; ++I) {
@@ -424,26 +415,15 @@ void WorldRouter::operation(Operation & op, Entity & fromPtr)
                 deliverTo(op, **I);
             }
         } else {
-            Entity * fromEnt = J->second;
-            assert(fromEnt == &fromPtr);
-            assert(fromEnt != NULL);
-            float fromSquSize = boxSquareSize(fromEnt->m_location.m_bBox);
+            float fromSquSize = boxSquareSize(from.m_location.m_bBox);
             EntitySet::const_iterator I = broadcast.begin();
             EntitySet::const_iterator Iend = broadcast.end();
             for (; I != Iend; ++I) {
                 // Calculate square distance to target
-                float dist = squareDistance(fromEnt->m_location, (*I)->m_location);
+                float dist = squareDistance(from.m_location, (*I)->m_location);
                 float view_factor = fromSquSize / dist;
-#if 0
-                if (view_factor > consts::square_sight_factor) {
-                    std::cout << "Distance from " << fromEnt->getType() << " to "
-                              << (*I)->getType() << " is " << dist << " which gives "
-                              << fromSquSize << " / " << dist << " = "
-                              << view_factor << std::endl << std::flush;
-                }
-#endif
                 if (view_factor < consts::square_sight_factor) {
-                    debug(std::cout << "Op from " << from
+                    debug(std::cout << "Op from " << from.getId()
                                     << " cannot be seen by " << (*I)->getId()
                                     << std::endl << std::flush;);
                     continue;
