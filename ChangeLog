@@ -1,5 +1,11 @@
 2002-11-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommClient.cpp, server/CommClient.h, server/CommListener.h,
+	  server/CommServer.cpp, server/CommServer.h: Remove code commented
+	  out during refactoring.
+
+2002-11-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommMetaClient.cpp: Compliance fix. htons is not a function.
 
 2002-11-23  Al Riddoch  <alriddoch@zepler.org>

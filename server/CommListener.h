@@ -8,10 +8,6 @@
 
 #include "CommSocket.h"
 
-extern "C" {
-    #include <netinet/in.h>
-}
-
 class CommListener : public CommSocket {
   private:
     int listenFd;

@@ -8,10 +8,6 @@
 #include <set>
 #include <string>
 
-// extern "C" {
-    // #include <netinet/in.h>
-// }
-
 class CommSocket;
 class CommMetaClient;
 class ServerRouting;
@@ -20,19 +16,12 @@ typedef std::set<CommSocket *> comm_set_t;
 
 class CommServer {
   private:
-    // int serverFd;
-    // int serverPort;
     comm_set_t sockets;
     time_t metaserverTime;
     CommMetaClient & metaClient;
     bool useMetaserver;
-    // struct sockaddr_in meta_sa;
-    // int metaFd;
 
-    // bool accept();
     void idle();
-
-    static const int metaserverPort = 8453;
 
   public:
     const std::string identity;
@@ -47,9 +36,6 @@ class CommServer {
     void loop();
     void removeSocket(CommSocket * client, char * msg);
     void removeSocket(CommSocket * client);
-    // void metaserverKeepalive();
-    // void metaserverReply();
-    // void metaserverTerminate();
 
     int numClients() {
         return sockets.size();

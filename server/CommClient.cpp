@@ -11,6 +11,10 @@
 #include <common/utility.h>
 #include <common/stringstream.h>
 
+#include <Atlas/Objects/Encoder.h>
+#include <Atlas/Net/Stream.h>
+#include <Atlas/Codec.h>
+
 #include <iostream>
 #include <stdexcept>
 

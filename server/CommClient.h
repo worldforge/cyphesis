@@ -8,11 +8,18 @@
 #include "CommSocket.h"
 
 #include <Atlas/Objects/Decoder.h>
-#include <Atlas/Objects/Encoder.h>
-#include <Atlas/Net/Stream.h>
-#include <Atlas/Codec.h>
 
 #include <skstream/skstream.h>
+
+namespace Atlas {
+  template <class Stream> class Codec;
+  namespace Objects {
+    class Encoder;
+  }
+  namespace Net {
+    class StreamAccept;
+  }
+}
 
 class CommServer;
 class Connection;
