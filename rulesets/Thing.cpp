@@ -51,8 +51,8 @@ OpVector Thing::SetupOperation(const Setup & op)
     // nearby can see us. This is to get round the fact that the sight
     // of create broadcast by the entity that created us may have
     // been elsewhere on the map.
-    RootOperation * sight = new Sight(Sight::Instantiate());
-    Create c(Create::Instantiate());
+    RootOperation * sight = new Sight();
+    Create c;
     Element::ListType & args = c.getArgs();
     args.push_back(Element::MapType());
     addToObject(args.front().asMap());
@@ -71,7 +71,7 @@ OpVector Thing::SetupOperation(const Setup & op)
 
     res[0] = sight;
 
-    RootOperation * tick = new Tick(Tick::Instantiate());
+    RootOperation * tick = new Tick();
     tick->setTo(getId());
 
     res[1] = tick;
@@ -85,7 +85,7 @@ OpVector Thing::ActionOperation(const Action & op)
     if (m_script->Operation("action", op, res) != 0) {
         return res;
     }
-    RootOperation * s = new Sight(Sight::Instantiate());
+    RootOperation * s = new Sight();
     s->setArgs(Element::ListType(1,op.asObject()));
     return OpVector(1,s);
 }
@@ -129,7 +129,7 @@ OpVector Thing::CreateOperation(const Create & op)
         Element::ListType & args = c.getArgs();
         args.push_back(Element::MapType());
         obj->addToObject(args.front().asMap());
-        RootOperation * s = new Sight(Sight::Instantiate());
+        RootOperation * s = new Sight();
         s->setArgs(Element::ListType(1,c.asObject()));
         // This should no longer be required as it is now handled centrally
         // s->setRefno(op.getSerialno());
@@ -150,7 +150,7 @@ OpVector Thing::DeleteOperation(const Delete & op)
     }
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
-    RootOperation * s = new Sight(Sight::Instantiate());
+    RootOperation * s = new Sight();
     s->setArgs(Element::ListType(1,op.asObject()));
     return OpVector(1,s);
 }
@@ -177,7 +177,7 @@ OpVector Thing::BurnOperation(const Burn & op)
     nour_ent["id"] = to;
     nour_ent["mass"] = consumed;
 
-    Set * s = new Set(Set::Instantiate());
+    Set * s = new Set();
     s->setTo(getId());
     Element::ListType & sargs = s->getArgs();
     sargs.push_back(Element::MapType());
@@ -185,7 +185,7 @@ OpVector Thing::BurnOperation(const Burn & op)
     self_ent["id"] = getId();
     self_ent["status"] = m_status - (consumed / m_mass);
 
-    Nourish * n = new Nourish(Nourish::Instantiate());
+    Nourish * n = new Nourish();
     n->setTo(to);
     n->setArgs(Element::ListType(1,nour_ent));
 
@@ -266,7 +266,7 @@ OpVector Thing::MoveOperation(const Move & op)
             m_update_flags |= a_orient;
         }
 
-        RootOperation * s = new Sight(Sight::Instantiate());
+        RootOperation * s = new Sight();
         s->setArgs(Element::ListType(1,op.asObject()));
         OpVector res2(1,s);
         // I think it might be wise to send a set indicating we have changed
@@ -302,7 +302,7 @@ OpVector Thing::MoveOperation(const Move & op)
                         if ((*I)->isPerceptive()) {
                             // Send operation to the entity in question so it
                             // knows it is losing sight of us.
-                            Disappearance * d = new Disappearance(Disappearance::Instantiate());
+                            Disappearance * d = new Disappearance();
                             d->setArgs(this_as_args);
                             d->setTo((*I)->getId());
                             res2.push_back(d);
@@ -314,7 +314,7 @@ OpVector Thing::MoveOperation(const Move & op)
                         if ((*I)->isPerceptive()) {
                             // Send operation to the entity in question so it
                             // knows it is gaining sight of us.
-                            Appearance * a = new Appearance(Appearance::Instantiate());
+                            Appearance * a = new Appearance();
                             a->setArgs(this_as_args);
                             a->setTo((*I)->getId());
                             res2.push_back(a);
@@ -325,7 +325,7 @@ OpVector Thing::MoveOperation(const Move & op)
             if (!appear.empty()) {
                 // Send an operation to ourselves with a list of entities
                 // we are losing sight of
-                Appearance * a = new Appearance(Appearance::Instantiate());
+                Appearance * a = new Appearance();
                 a->setArgs(appear);
                 a->setTo(getId());
                 res2.push_back(a);
@@ -333,7 +333,7 @@ OpVector Thing::MoveOperation(const Move & op)
             if (!disappear.empty()) {
                 // Send an operation to ourselves with a list of entities
                 // we are gaining sight of
-                Disappearance * d = new Disappearance(Disappearance::Instantiate());
+                Disappearance * d = new Disappearance();
                 d->setArgs(disappear);
                 d->setTo(getId());
                 res2.push_back(d);
@@ -366,11 +366,11 @@ OpVector Thing::SetOperation(const Set & op)
         for (I = ent.begin(); I != ent.end(); I++) {
             set(I->first, I->second);
         }
-        RootOperation * s = new Sight(Sight::Instantiate());
+        RootOperation * s = new Sight();
         s->setArgs(Element::ListType(1,op.asObject()));
         OpVector res2(1,s);
         if (m_status < 0) {
-            RootOperation * d = new Delete(Delete::Instantiate());
+            RootOperation * d = new Delete();
             Element::ListType & dargs = d->getArgs();
             dargs.push_back(Element::MapType());
             // FIXME Is it necessary to include a full description?

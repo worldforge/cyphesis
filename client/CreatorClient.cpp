@@ -26,7 +26,7 @@ Entity * CreatorClient::make(const Element & entity)
         std::cerr << "make: entity is not map" << std::endl << std::flush;
         return NULL;
     }
-    Create op(Create::Instantiate());
+    Create op;
     op.setArgs(Element::ListType(1,entity));
     op.setFrom(getId());
     op.setTo(getId());
@@ -101,7 +101,7 @@ void CreatorClient::sendSet(const std::string & id, const Element & entity)
         std::cerr << "set: " << id << " entity is not map" << std::endl << std::flush;
         return;
     }
-    Set op(Set::Instantiate());
+    Set op;
     op.setArgs(Element::ListType(1,entity));
     op.setFrom(getId());
     op.setTo(id);
@@ -110,7 +110,7 @@ void CreatorClient::sendSet(const std::string & id, const Element & entity)
 
 Entity * CreatorClient::look(const std::string & id)
 {
-    Look op(Look::Instantiate());
+    Look op;
     if (!id.empty()) {
         Element::MapType ent;
         ent["id"] = id;
@@ -122,7 +122,7 @@ Entity * CreatorClient::look(const std::string & id)
 
 Entity * CreatorClient::lookFor(const Element & ent)
 {
-    Look op(Look::Instantiate());
+    Look op;
     op.setArgs(Element::ListType(1,ent));
     op.setFrom(getId());
     return sendLook(op);

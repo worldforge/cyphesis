@@ -10,10 +10,12 @@
 namespace Atlas { namespace Objects { namespace Operation {
 
 class Setup : public RootOperation {
+  protected:
+    Setup(const char *, const char *);
   public:
     Setup();
     virtual ~Setup();
-    static Setup Instantiate();
+    static Setup Class();
 };
 
 } } }

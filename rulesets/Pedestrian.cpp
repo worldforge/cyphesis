@@ -17,7 +17,7 @@
 
 #include <Atlas/Objects/Operation/Move.h>
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 Pedestrian::Pedestrian(Entity & body) : Movement(body)
 {
@@ -55,7 +55,7 @@ Move * Pedestrian::genFaceOperation()
     if (m_orientation.isValid() &&
         (m_orientation != m_body.m_location.m_orientation)) {
         debug( std::cout << "Turning" << std::endl << std::flush;);
-        Move * moveOp = new Move(Move::Instantiate());
+        Move * moveOp = new Move();
         moveOp->setTo(m_body.getId());
         Element::MapType entmap;
         entmap["id"] = m_body.getId();
@@ -99,7 +99,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     new_loc.m_orientation = m_orientation;
 
     // Create move operation
-    Move * moveOp = new Move(Move::Instantiate());
+    Move * moveOp = new Move();
     moveOp->setTo(m_body.getId());
 
     // Set up argument for operation

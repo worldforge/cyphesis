@@ -170,7 +170,7 @@ OpVector Connection::operation(const RootOperation & op)
                        character->getId(), character->getName());
             debug(std::cout << "Subscribing existing character" << std::endl
                             << std::flush;);
-            Info * info = new Info(Info::Instantiate());
+            Info * info = new Info;
             Element::ListType & info_args = info->getArgs();
             info_args.push_back(Element::MapType());
             character->addToObject(info_args.front().asMap());
@@ -243,7 +243,7 @@ OpVector Connection::LoginOperation(const Login & op)
     player->m_connection = this;
     m_server.m_lobby.addObject(player);
     // Let the client know they have logged in
-    Info * info = new Info(Info::Instantiate());
+    Info * info = new Info;
     Element::ListType & info_args = info->getArgs();
     info_args.push_back(Element::MapType());
     player->addToObject(info_args.front().asMap());
@@ -294,7 +294,7 @@ OpVector Connection::CreateOperation(const Create & op)
     }
     Account * player = addPlayer(username, password);
     Persistance::instance()->putAccount(*player);
-    Info * info = new Info(Info::Instantiate());
+    Info * info = new Info;
     Element::ListType & info_args = info->getArgs();
     info_args.push_back(Element::MapType());
     player->addToObject(info_args.front().asMap());
@@ -308,7 +308,7 @@ OpVector Connection::LogoutOperation(const Logout & op)
 {
     if (op.getArgs().empty()) {
         // Logging self out
-        Info info = Info(Info::Instantiate());
+        Info info;
         Element::ListType & args = info.getArgs();
         args.push_back(op.asObject());
         info.setRefno(op.getSerialno());
@@ -353,7 +353,7 @@ OpVector Connection::GetOperation(const Get & op)
 
     Info * info;
     if (args.empty()) {
-        info = new Info(Info::Instantiate());
+        info = new Info;
         Element::ListType & info_args = info->getArgs();
         info_args.push_back(Element::MapType());
         m_server.addToObject(info_args.front().asMap());
@@ -377,7 +377,7 @@ OpVector Connection::GetOperation(const Get & op)
             msg += "\" requested";
             return error(op, msg.c_str());
         }
-        info = new Info(Info::Instantiate());
+        info = new Info;
         Element::ListType & iargs = info->getArgs();
         iargs.push_back(o->asObject());
         info->setRefno(op.getSerialno());

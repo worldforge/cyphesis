@@ -10,10 +10,12 @@
 namespace Atlas { namespace Objects { namespace Operation {
 
 class Chop : public Action {
+  protected:
+    Chop(const char *, const char *);
   public:
     Chop();
     virtual ~Chop();
-    static Chop Instantiate();
+    static Chop Class();
 };
 
 } } }

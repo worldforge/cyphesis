@@ -86,169 +86,169 @@ template <class EntityType>
 inline void EntityExerciser<EntityType>::runOperations()
 {
     {
-        Login op(Login::Instantiate());
+        Login op;
         dispatchOp(op);
         OpVector ov = m_ent.LoginOperation(op);
         flushOperations(ov);
     }
     {
-        Logout op(Logout::Instantiate());
+        Logout op;
         dispatchOp(op);
         OpVector ov = m_ent.LogoutOperation(op);
         flushOperations(ov);
     }
     {
-        Action op(Action::Instantiate());
+        Action op;
         dispatchOp(op);
         OpVector ov = m_ent.ActionOperation(op);
         flushOperations(ov);
     }
     {
-        Chop op(Chop::Instantiate());
+        Chop op;
         dispatchOp(op);
         OpVector ov = m_ent.ChopOperation(op);
         flushOperations(ov);
     }
     {
-        Combine op(Combine::Instantiate());
+        Combine op;
         dispatchOp(op);
         OpVector ov = m_ent.CombineOperation(op);
         flushOperations(ov);
     }
     {
-        Create op(Create::Instantiate());
+        Create op;
         dispatchOp(op);
         OpVector ov = m_ent.CreateOperation(op);
         flushOperations(ov);
     }
     {
-        Cut op(Cut::Instantiate());
+        Cut op;
         dispatchOp(op);
         OpVector ov = m_ent.CutOperation(op);
         flushOperations(ov);
     }
     {
-        Delete op(Delete::Instantiate());
+        Delete op;
         dispatchOp(op);
         OpVector ov = m_ent.DeleteOperation(op);
         flushOperations(ov);
     }
     {
-        Divide op(Divide::Instantiate());
+        Divide op;
         dispatchOp(op);
         OpVector ov = m_ent.DivideOperation(op);
         flushOperations(ov);
     }
     {
-        Eat op(Eat::Instantiate());
+        Eat op;
         dispatchOp(op);
         OpVector ov = m_ent.EatOperation(op);
         flushOperations(ov);
     }
     {
-        Burn op(Burn::Instantiate());
+        Burn op;
         dispatchOp(op);
         OpVector ov = m_ent.BurnOperation(op);
         flushOperations(ov);
     }
     {
-        Get op(Get::Instantiate());
+        Get op;
         dispatchOp(op);
         OpVector ov = m_ent.GetOperation(op);
         flushOperations(ov);
     }
     {
-        Imaginary op(Imaginary::Instantiate());
+        Imaginary op;
         dispatchOp(op);
         OpVector ov = m_ent.ImaginaryOperation(op);
         flushOperations(ov);
     }
     {
-        Info op(Info::Instantiate());
+        Info op;
         dispatchOp(op);
         OpVector ov = m_ent.InfoOperation(op);
         flushOperations(ov);
     }
     {
-        Move op(Move::Instantiate());
+        Move op;
         dispatchOp(op);
         OpVector ov = m_ent.MoveOperation(op);
         flushOperations(ov);
     }
     {
-        Nourish op(Nourish::Instantiate());
+        Nourish op;
         dispatchOp(op);
         OpVector ov = m_ent.NourishOperation(op);
         flushOperations(ov);
     }
     {
-        Set op(Set::Instantiate());
+        Set op;
         dispatchOp(op);
         OpVector ov = m_ent.SetOperation(op);
         flushOperations(ov);
     }
     {
-        Sight op(Sight::Instantiate());
+        Sight op;
         dispatchOp(op);
         OpVector ov = m_ent.SightOperation(op);
         flushOperations(ov);
     }
     {
-        Sound op(Sound::Instantiate());
+        Sound op;
         dispatchOp(op);
         OpVector ov = m_ent.SoundOperation(op);
         flushOperations(ov);
     }
     {
-        Talk op(Talk::Instantiate());
+        Talk op;
         dispatchOp(op);
         OpVector ov = m_ent.TalkOperation(op);
         flushOperations(ov);
     }
     {
-        Touch op(Touch::Instantiate());
+        Touch op;
         dispatchOp(op);
         OpVector ov = m_ent.TouchOperation(op);
         flushOperations(ov);
     }
     {
-        Tick op(Tick::Instantiate());
+        Tick op;
         dispatchOp(op);
         OpVector ov = m_ent.TickOperation(op);
         flushOperations(ov);
     }
     {
-        Look op(Look::Instantiate());
+        Look op;
         dispatchOp(op);
         OpVector ov = m_ent.LookOperation(op);
         flushOperations(ov);
     }
     {
-        Setup op(Setup::Instantiate());
+        Setup op;
         dispatchOp(op);
         OpVector ov = m_ent.SetupOperation(op);
         flushOperations(ov);
     }
     {
-        Appearance op(Appearance::Instantiate());
+        Appearance op;
         dispatchOp(op);
         OpVector ov = m_ent.AppearanceOperation(op);
         flushOperations(ov);
     }
     {
-        Disappearance op(Disappearance::Instantiate());
+        Disappearance op;
         dispatchOp(op);
         OpVector ov = m_ent.DisappearanceOperation(op);
         flushOperations(ov);
     }
     {
-        Error op(Error::Instantiate());
+        Error op;
         dispatchOp(op);
         OpVector ov = m_ent.ErrorOperation(op);
         flushOperations(ov);
     }
     {
-        RootOperation op(RootOperation::Instantiate());
+        RootOperation op;
         dispatchOp(op);
         OpVector ov = m_ent.OtherOperation(op);
         flushOperations(ov);

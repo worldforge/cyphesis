@@ -10,10 +10,12 @@
 namespace Atlas { namespace Objects { namespace Operation {
 
 class Tick : public RootOperation {
+  protected:
+    Tick(const char *, const char *);
   public:
     Tick();
     virtual ~Tick();
-    static Tick Instantiate();
+    static Tick Class();
 };
 
 } } }

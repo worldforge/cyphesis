@@ -10,10 +10,12 @@
 namespace Atlas { namespace Objects { namespace Operation {
 
 class Eat : public Action {
+  protected:
+    Eat(const char *, const char *);
   public:
     Eat();
     virtual ~Eat();
-    static Eat Instantiate();
+    static Eat Class();
 };
 
 } } }

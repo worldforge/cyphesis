@@ -37,7 +37,7 @@ OpVector Creator::sendMind(const RootOperation & msg)
         // there is no purpose to our existance, so we should die.
         debug( std::cout << "NOTICE: Creator self destruct"
                          << std::endl << std::flush;);
-        Delete * d = new Delete(Delete::Instantiate());
+        Delete * d = new Delete();
         d->setTo(getId());
         return OpVector(1,d);
     }
@@ -51,7 +51,7 @@ OpVector Creator::operation(const RootOperation & op)
         return LookOperation((Look &)op);
     }
     if (op_no == OP_SETUP) {
-        Look look = Look::Instantiate();
+        Look look;
         look.setFrom(getId());
         return m_world->LookOperation(look);
     }

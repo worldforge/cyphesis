@@ -13,99 +13,149 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-Chop::Chop() : Action("chop", "action") {
+Chop::Chop() : Action("", "chop")
+{
 }
 
-Chop::~Chop() { }
+Chop::Chop(const char * id, const char * parent) : Action(id, parent)
+{
+}
 
-Chop Chop::Instantiate() {
-    Chop value;
-    value.setParents(Message::Element::ListType(1,std::string("chop")));
-    value.setObjtype(std::string("op"));
+Chop::~Chop()
+{
+}
+
+Chop Chop::Class()
+{
+    Chop value("chop", "action");
+    value.setObjtype(std::string("op_definition"));
     return value;
 }
 
-Cut::Cut() : Action("cut", "action") {
+Cut::Cut() : Action("", "cut")
+{
+}
+
+Cut::Cut(const char * id, const char * parent) : Action(id, parent)
+{
 }
 
 Cut::~Cut() { }
 
-Cut Cut::Instantiate() {
-    Cut value;
-    value.setParents(Message::Element::ListType(1,std::string("cut")));
-    value.setObjtype(std::string("op"));
+Cut Cut::Class()
+{
+    Cut value("cut", "action");
+    value.setObjtype(std::string("op_definition"));
     return value;
 }
 
-Eat::Eat() : Action("eat", "action") {
+Eat::Eat() : Action("", "eat")
+{
 }
 
-Eat::~Eat() { }
+Eat::Eat(const char * id, const char * parent) : Action(id, parent)
+{
+}
 
-Eat Eat::Instantiate() {
-    Eat value;
-    value.setParents(Message::Element::ListType(1,std::string("eat")));
-    value.setObjtype(std::string("op"));
+Eat::~Eat()
+{
+}
+
+Eat Eat::Class()
+{
+    Eat value("eat", "action");
+    value.setObjtype(std::string("op_definition"));
     return value;
 }
 
-Burn::Burn() : Action("burn", "action") {
+Burn::Burn() : Action("", "burn")
+{
 }
 
-Burn::~Burn() { }
+Burn::Burn(const char * id, const char * parent) : Action(id, parent)
+{
+}
 
-Burn Burn::Instantiate() {
-    Burn value;
-    value.setParents(Message::Element::ListType(1, "burn"));
-    value.setObjtype(std::string("op"));
+Burn::~Burn()
+{
+}
+
+Burn Burn::Class()
+{
+    Burn value("burn", "action");
+    value.setObjtype(std::string("op_definition"));
     return value;
 }
 
-Generic::Generic(const std::string & p) : RootOperation(p.c_str(), "root_operation") {
+Generic::Generic(const std::string & p) : RootOperation("", p.c_str())
+{
 }
 
-Generic::~Generic() { }
+Generic::~Generic()
+{
+}
 
-Generic Generic::Instantiate(const std::string & p) {
+Generic Generic::Class(const std::string & p)
+{
     Generic value(p);
-    value.setParents(Message::Element::ListType(1,p));
-    value.setObjtype(std::string("op"));
+    value.setObjtype(std::string("op_definition"));
     return value;
 }
 
-Nourish::Nourish() : Action("nourish", "action") {
+Nourish::Nourish() : Action("", "nourish")
+{
 }
 
-Nourish::~Nourish() { }
+Nourish::Nourish(const char * id, const char * parent) : Action(id, parent)
+{
+}
 
-Nourish Nourish::Instantiate() {
-    Nourish value;
-    value.setParents(Message::Element::ListType(1, std::string("nourish")));
-    value.setObjtype(std::string("op"));
+Nourish::~Nourish()
+{
+}
+
+Nourish Nourish::Class()
+{
+    Nourish value("nourish", "action");
+    value.setObjtype(std::string("op_definition"));
     return value;
 }
 
-Setup::Setup() : RootOperation("setup", "root_operation") {
+Setup::Setup() : RootOperation("setup", "root_operation")
+{
 }
 
-Setup::~Setup() { }
+Setup::Setup(const char * id, const char * parent) : RootOperation(id, parent)
+{
+}
 
-Setup Setup::Instantiate() {
+Setup::~Setup()
+{
+}
+
+Setup Setup::Class()
+{
     Setup value;
-    value.setParents(Message::Element::ListType(1, "setup"));
-    value.setObjtype(std::string("op"));
+    value.setObjtype(std::string("op_definition"));
     return value;
 }
 
-Tick::Tick() : RootOperation("tick", "root_operation") {
+Tick::Tick() : RootOperation("", "tick")
+{
 }
 
-Tick::~Tick() { }
+Tick::Tick(const char * id, const char * parent) : RootOperation(id, parent)
+{
+}
 
-Tick Tick::Instantiate() {
-    Tick value;
-    value.setParents(Message::Element::ListType(1,"tick"));
-    value.setObjtype(std::string("op"));
+Tick::~Tick()
+{
+}
+
+Tick Tick::Class()
+{
+    Tick value("tick", "root_operation");
+    value.setObjtype(std::string("op_definition"));
     return value;
 }
 

@@ -40,7 +40,7 @@ inline RootOperation * MemMap::lookId()
     debug( std::cout << "MemMap::lookId" << std::endl << std::flush;);
     if (!m_additionsById.empty()) {
         const std::string & id = m_additionsById.front();
-        Look * l = new Look(Look::Instantiate());
+        Look * l = new Look();
         Atlas::Message::Element::MapType m;
         m["id"] = Atlas::Message::Element(id);
         l->setArgs(Atlas::Message::Element::ListType(1, m));

@@ -137,7 +137,7 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
         m_omnipresentList.insert(obj);
     }
     if (setup) {
-        Setup * s = new Setup(Setup::Instantiate());
+        Setup * s = new Setup;
         s->setTo(obj->getId());
         s->setFutureSeconds(-0.1);
         s->setSerialno(getSerialNo());

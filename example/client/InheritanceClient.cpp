@@ -65,7 +65,7 @@ void InheritanceClient::send(RootOperation * op)
 
 void InheritanceClient::get(const std::string & id)
 {
-    Get g(Get::Instantiate());
+    Get g;
     Element::MapType ent;
     ent["id"] = id;
     g.setArgs(Element::ListType(1,ent));

@@ -143,7 +143,7 @@ OpVector World::LookOperation(const Look & op)
         return World_parent::LookOperation(op);
     }
 
-    Sight * s = new Sight(Sight::Instantiate());
+    Sight * s = new Sight();
 
     Element::ListType & sargs = s->getArgs();
     sargs.push_back(Element::MapType());
@@ -205,7 +205,7 @@ OpVector World::SetOperation(const Set & op)
         for (I = ent.begin(); I != ent.end(); I++) {
             set(I->first, I->second);
         }
-        RootOperation * s = new Sight(Sight::Instantiate());
+        RootOperation * s = new Sight();
         s->setArgs(Element::ListType(1,op.asObject()));
         if (m_update_flags != 0) {
             updated.emit();

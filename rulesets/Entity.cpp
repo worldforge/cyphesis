@@ -379,7 +379,7 @@ OpVector Entity::LookOperation(const Look & op)
         return res;
     }
 
-    Sight * s = new Sight( Sight::Instantiate());
+    Sight * s = new Sight( );
     Element::ListType & args = s->getArgs();
     args.push_back(Element::MapType());
     Element::MapType & amap = args.front().asMap();

@@ -13,7 +13,7 @@ class Location;
 
 typedef std::multimap<int, WFMath::Vector<3> > NormalSet;
 
-////////////////////////// COLLISION ////////////////////////// 
+////////////////////////// COLLISION //////////////////////////
 
 // Predict collision between a point and a plane.
 // Returns true if p is infront of plane before collision
@@ -45,7 +45,7 @@ bool predictCollision(const Location & l,     // Location data of this object
                       float & time,           // Returned time to collision
                       Vector3D & normal);     // Returned collision normal
 
-////////////////////////// EMERGENCE ////////////////////////// 
+////////////////////////// EMERGENCE //////////////////////////
 
 // Predict collision between a point and a plane.
 // Returns true if p is behind plane before collision

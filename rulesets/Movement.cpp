@@ -15,7 +15,7 @@
 
 #include <Atlas/Objects/Operation/Move.h>
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 Movement::Movement(Entity & body) : m_body(body), m_lastMovementTime(-1),
                                     m_velocity(0,0,0), m_serialno(0),

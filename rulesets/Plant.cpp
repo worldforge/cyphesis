@@ -101,7 +101,7 @@ int Plant::dropFruit(OpVector & res)
         fmap["parents"] = Element::ListType(1,m_fruitName);
         Location floc(m_location.m_loc, Vector3D(rx, ry, 0));
         floc.addToObject(fmap);
-        RootOperation * create = new Create(Create::Instantiate());
+        RootOperation * create = new Create();
         create->setTo(getId());
         create->setArgs(Element::ListType(1, fmap));
         res.push_back(create);
@@ -117,7 +117,7 @@ OpVector Plant::TickOperation(const Tick & op)
     if (m_script->Operation("tick", op, res)) {
         return res;
     }
-    RootOperation * tickOp = new Tick(Tick::Instantiate());
+    RootOperation * tickOp = new Tick();
     tickOp->setTo(getId());
     tickOp->setFutureSeconds(consts::basic_tick * m_speed);
     res.push_back(tickOp);
@@ -130,7 +130,7 @@ OpVector Plant::TickOperation(const Tick & op)
         }
     }
     if (dropped != 0) {
-        RootOperation * set = new Set(Set::Instantiate());
+        RootOperation * set = new Set();
         Element::MapType pmap;
         pmap["id"] = getId();
         pmap["fruits"] = m_fruits;

@@ -18,7 +18,7 @@ class Generic : public RootOperation {
     explicit Generic(const std::string & p);
   public:
     virtual ~Generic();
-    static Generic Instantiate(const std::string & p);
+    static Generic Class(const std::string & p);
 };
 
 } } }

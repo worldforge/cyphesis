@@ -845,46 +845,48 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         return NULL;
     }
     if (strcmp(type, "tick") == 0) {
-        op->operation = new Tick(Tick::Instantiate());
+        op->operation = new Tick();
     } else if (strcmp(type, "sight") == 0) {
-        op->operation = new Sight(Sight::Instantiate());
+        op->operation = new Sight();
     } else if (strcmp(type, "set") == 0) {
-        op->operation = new Set(Set::Instantiate());
+        op->operation = new Set();
     } else if (strcmp(type, "burn") == 0) {
-        op->operation = new Burn(Burn::Instantiate());
+        op->operation = new Burn();
     } else if (strcmp(type, "action") == 0) {
-        op->operation = new Action(Action::Instantiate());
+        op->operation = new Action();
     } else if (strcmp(type, "chop") == 0) {
-        op->operation = new Chop(Chop::Instantiate());
+        op->operation = new Chop();
     } else if (strcmp(type, "cut") == 0) {
-        op->operation = new Cut(Cut::Instantiate());
+        op->operation = new Cut();
     } else if (strcmp(type, "create") == 0) {
-        op->operation = new Create(Create::Instantiate());
+        op->operation = new Create();
     } else if (strcmp(type, "setup") == 0) {
-        op->operation = new Setup(Setup::Instantiate());
+        op->operation = new Setup();
     } else if (strcmp(type, "look") == 0) {
-        op->operation = new Look(Look::Instantiate());
+        op->operation = new Look();
     } else if (strcmp(type, "move") == 0) {
-        op->operation = new Move(Move::Instantiate());
+        op->operation = new Move();
     } else if (strcmp(type, "talk") == 0) {
-        op->operation = new Talk(Talk::Instantiate());
+        op->operation = new Talk();
     } else if (strcmp(type, "touch") == 0) {
-        op->operation = new Touch(Touch::Instantiate());
+        op->operation = new Touch();
     } else if (strcmp(type, "eat") == 0) {
-        op->operation = new Eat(Eat::Instantiate());
+        op->operation = new Eat();
     } else if (strcmp(type, "nourish") == 0) {
-        op->operation = new Nourish(Nourish::Instantiate());
+        op->operation = new Nourish();
     } else if (strcmp(type, "info") == 0) {
-        op->operation = new Info(Info::Instantiate());
+        op->operation = new Info();
     } else if (strcmp(type, "thought") == 0 ||
                strcmp(type, "goal_info") == 0) {
         Py_DECREF(op);
         Py_INCREF(Py_None);
         return Py_None;
     } else {
-        op->operation = new RootOperation(Generic::Instantiate(type));
+        // FIXME use generic, once generic is fixed again.
+        op->operation = new RootOperation();
+        op->operation->setParents(Element::ListType(1, type));
         // fprintf(stderr, "NOTICE: Python creating a custom %s op\n", type);
-        //*op->operation = RootOperation::Instantiate();
+        //*op->operation = Root;
         // Py_DECREF(op);
         // Py_INCREF(Py_None);
         // return Py_None;

@@ -12,10 +12,12 @@
 namespace Atlas { namespace Objects { namespace Operation {
 
 class Save : public Get {
+  protected:
+    Save(const char *, const char *);
   public:
     Save();
     virtual ~Save();
-    static Save Instantiate();
+    static Save Class();
 };
 
 } } }

@@ -185,7 +185,7 @@ bool ClientConnection::connect(const std::string & server)
 bool ClientConnection::login(const std::string & account,
                              const std::string & password)
 {
-    Atlas::Objects::Operation::Login l = Atlas::Objects::Operation::Login::Instantiate();
+    Atlas::Objects::Operation::Login l;
     Element::MapType acmap;
     acmap["id"] = account;
     acmap["password"] = password;

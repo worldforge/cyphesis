@@ -10,10 +10,12 @@
 namespace Atlas { namespace Objects { namespace Operation {
 
 class Burn : public Action {
+  protected:
+    Burn(const char *, const char *);
   public:
     Burn();
     virtual ~Burn();
-    static Burn Instantiate();
+    static Burn Class();
 };
 
 } } }

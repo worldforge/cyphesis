@@ -80,8 +80,8 @@ void CyphesisClient::send(Objects::Operation::RootOperation * op)
 
 void CyphesisClient::login()
 {
-   Objects::Entity::Account account = Objects::Entity::Account::Instantiate();
-   Objects::Operation::Login l = Objects::Operation::Login::Instantiate();
+   Objects::Entity::Account account;
+   Objects::Operation::Login l;
    erflag = 0;
    reply_flag = 0;
 
@@ -103,7 +103,7 @@ void CyphesisClient::login()
    }
    cout << "login failed" << endl << flush;
 
-   Objects::Operation::Create c = Objects::Operation::Create::Instantiate();
+   Objects::Operation::Create c;
    erflag = 0;
    reply_flag = 0;
 
@@ -174,8 +174,8 @@ int CyphesisClient::connect()
 
 void CyphesisClient::create_char()
 {
-   Objects::Entity::GameEntity character = Objects::Entity::GameEntity::Instantiate();
-   Objects::Operation::Create c = Objects::Operation::Create::Instantiate();
+   Objects::Entity::GameEntity character;
+   Objects::Operation::Create c;
    erflag = 0;
    reply_flag = 0;
 
@@ -199,7 +199,7 @@ void CyphesisClient::create_char()
 
 void CyphesisClient::look()
 {
-   Objects::Operation::Look l = Objects::Operation::Look::Instantiate();
+   Objects::Operation::Look l;
    l.setAttr("from", character_id);
 
    encoder->streamMessage(&l);
@@ -216,7 +216,7 @@ void CyphesisClient::move()
     coords.push_back(0.0);
     ent["pos"] = coords;
     ent["loc"] = std::string("world_0");
-    Objects::Operation::Move m = Objects::Operation::Move::Instantiate();
+    Objects::Operation::Move m;
     m.setAttr("from", character_id);
 
     m.setArgs(Message::Element::ListType(1,ent));
@@ -322,7 +322,7 @@ void CyphesisClient::objectArrived(const Operation::Info& o)
     }
     if (state == INIT) {
         Message::Element account = args.asList().front();
-        Objects::Entity::Account obj = Objects::Entity::Account::Instantiate();
+        Objects::Entity::Account obj;
         for (Message::Element::MapType::const_iterator I = account.asMap().begin();
             I != account.asMap().end(); I++)
             obj.setAttr(I->first, I->second);

@@ -35,7 +35,7 @@ OpVector Food::EatOperation(const Eat & op)
     self_ent["id"] = getId();
     self_ent["status"] = -1;
 
-    Set * s = new Set(Set::Instantiate());
+    Set * s = new Set();
     s->setTo(getId());
     s->setArgs(Element::ListType(1,self_ent));
 
@@ -43,7 +43,7 @@ OpVector Food::EatOperation(const Eat & op)
     Element::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["mass"] = m_mass;
-    Nourish * n = new Nourish(Nourish::Instantiate());
+    Nourish * n = new Nourish();
     n->setTo(to);
     n->setArgs(Element::ListType(1,nour_ent));
 
@@ -78,7 +78,7 @@ OpVector Food::BurnOperation(const Burn & op)
         self_ent["status"] = m_status - (m_attributes["burn_speed"].asNum()) * fire_size;
     }
 
-    Set * s = new Set(Set::Instantiate());
+    Set * s = new Set();
     s->setTo(getId());
     s->setArgs(Element::ListType(1,self_ent));
 

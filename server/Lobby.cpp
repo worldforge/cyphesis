@@ -23,7 +23,7 @@ void Lobby::addObject(Account * ac)
     debug(std::cout << "Lobby::addObject(" << ac->getId() << ")"
                     << std::endl << std::flush;);
 
-    Appearance a(Appearance::Instantiate());
+    Appearance a;
     Element::ListType & args = a.getArgs();
     args.push_back(Element::MapType());
     Element::MapType & us = args.back().asMap();
@@ -42,7 +42,7 @@ void Lobby::delObject(Account * a)
     debug(std::cout << "Lobby::delObject(" << a->getId() << ")"
                     << std::endl << std::flush;);
                     
-    Disappearance d(Disappearance::Instantiate());
+    Disappearance d;
     Element::ListType & args = d.getArgs();
     args.push_back(Element::MapType());
     Element::MapType & us = args.back().asMap();

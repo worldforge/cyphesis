@@ -12,10 +12,12 @@
 namespace Atlas { namespace Objects { namespace Operation {
 
 class Load : public Set {
+  protected:
+    Load(const char *, const char *);
   public:
     Load();
     virtual ~Load();
-    static Load Instantiate();
+    static Load Class();
 };
 
 } } }

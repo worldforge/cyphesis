@@ -62,7 +62,7 @@ OpVector Character::metabolise(double ammount)
         ent["drunkness"] = m_drunkness - 0.1;
     }
 
-    Set * s = new Set(Set::Instantiate());
+    Set * s = new Set();
     s->setTo(getId());
     s->setArgs(Element::ListType(1,ent));
 
@@ -158,7 +158,7 @@ void Character::addToObject(Element::MapType & omap) const
 
 OpVector Character::ImaginaryOperation(const Imaginary & op)
 {
-    Sight * s = new Sight(Sight::Instantiate());
+    Sight * s = new Sight();
     s->setArgs(Element::ListType(1,op.asObject()));
     return OpVector(1,s);
 }
@@ -191,18 +191,18 @@ OpVector Character::SetupOperation(const Setup & op)
     // THis is so not the right thing to do
     s->setAttr("sub_to", "mind");
     res2[0] = s;
-    Look * l = new Look(Look::Instantiate());
+    Look * l = new Look();
     l->setTo(m_world->getId());
     res2[1] = l;
     if (m_location.m_loc != &m_world->m_gameWorld) {
-        l = new Look(Look::Instantiate());
+        l = new Look();
         l->setTo(m_location.m_loc->getId());
         res2.push_back(l);
     }
-    l = new Look(Look::Instantiate());
+    l = new Look();
     l->setTo(getId());
     res2.push_back(l);
-    Tick * tick = new Tick(Tick::Instantiate());
+    Tick * tick = new Tick();
     tick->setTo(getId());
     res2.push_back(tick);
     return res2;
@@ -237,7 +237,7 @@ OpVector Character::TickOperation(const Tick & op)
             Element::MapType entmap;
             entmap["name"] = "move";
             entmap["serialno"] = m_movement.m_serialno;
-            Tick * tickOp = new Tick(Tick::Instantiate());
+            Tick * tickOp = new Tick();
             tickOp->setTo(getId());
             tickOp->setFutureSeconds(m_movement.getTickAddition(ret_loc.m_pos));
             tickOp->setArgs(Element::ListType(1,entmap));
@@ -259,11 +259,11 @@ OpVector Character::TickOperation(const Tick & op)
             Element::MapType food_ent;
             food_ent["id"] = getId();
             food_ent["food"] = m_food;
-            Set s = Set::Instantiate();
+            Set s;
             s.setTo(getId());
             s.setArgs(Element::ListType(1,food_ent));
 
-            Sight * si = new Sight(Sight::Instantiate());
+            Sight * si = new Sight();
             si->setTo(getId());
             si->setArgs(Element::ListType(1,s.asObject()));
             res.push_back(si);
@@ -276,7 +276,7 @@ OpVector Character::TickOperation(const Tick & op)
         }
         
         // TICK
-        Tick * tickOp = new Tick(Tick::Instantiate());
+        Tick * tickOp = new Tick();
         tickOp->setTo(getId());
         tickOp->setFutureSeconds(consts::basic_tick * 30);
         res.push_back(tickOp);
@@ -288,7 +288,7 @@ OpVector Character::TickOperation(const Tick & op)
 OpVector Character::TalkOperation(const Talk & op)
 {
     debug( std::cout << "Character::OPeration(Talk)" << std::endl<<std::flush;);
-    Sound * s = new Sound(Sound::Instantiate());
+    Sound * s = new Sound();
     s->setArgs(Element::ListType(1,op.asObject()));
     return OpVector(1,s);
 }
@@ -305,7 +305,7 @@ OpVector Character::EatOperation(const Eat & op)
     self_ent["id"] = getId();
     self_ent["status"] = -1;
 
-    Set * s = new Set(Set::Instantiate());
+    Set * s = new Set();
     s->setTo(getId());
     s->setArgs(Element::ListType(1,self_ent));
 
@@ -313,7 +313,7 @@ OpVector Character::EatOperation(const Eat & op)
     Element::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["mass"] = m_mass;
-    Nourish * n = new Nourish(Nourish::Instantiate());
+    Nourish * n = new Nourish();
     n->setTo(to);
     n->setArgs(Element::ListType(1,nour_ent));
 
@@ -343,10 +343,10 @@ OpVector Character::NourishOperation(const Nourish & op)
         m_drunkness += I->second.asNum() / m_mass;
         food_ent["drunkness"] = m_drunkness;
     }
-    Set s = Set::Instantiate();
+    Set s;
     s.setArgs(Element::ListType(1,food_ent));
 
-    Sight * si = new Sight(Sight::Instantiate());
+    Sight * si = new Sight();
     si->setTo(getId());
     si->setArgs(Element::ListType(1,s.asObject()));
     return OpVector(1,si);
@@ -564,7 +564,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         delete moveOp;
     }
 
-    Tick * tickOp = new Tick(Tick::Instantiate());
+    Tick * tickOp = new Tick();
     Element::MapType ent;
     ent["serialno"] = m_movement.m_serialno;
     ent["name"] = "move";
@@ -758,7 +758,7 @@ OpVector Character::mindTouchOperation(const Touch & op)
     OpVector res(2);
     res[0] = t;
     // Send action "touch"
-    Action * a = new Action(Action::Instantiate());
+    Action * a = new Action();
     a->setTo(getId());
     Element::MapType amap;
     amap["id"] = getId();

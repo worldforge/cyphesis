@@ -467,8 +467,8 @@ bool Interactive<Stream>::negotiate()
 template <class Stream>
 bool Interactive<Stream>::login()
 {
-    Atlas::Objects::Entity::Account account = Atlas::Objects::Entity::Account::Instantiate();
-    Atlas::Objects::Operation::Login l = Atlas::Objects::Operation::Login::Instantiate();
+    Atlas::Objects::Entity::Account account;
+    Atlas::Objects::Operation::Login l;
     error_flag = false;
     reply_flag = false;
     login_flag = true;
@@ -504,14 +504,14 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
     error_flag = false;
 
     if (cmd == "stat") {
-        Get g = Get::Instantiate();
+        Get g;
         encoder->streamMessage(&g);
     } else if (cmd == "look") {
-        Look l = Look::Instantiate();
+        Look l;
         l.setFrom(accountId);
         encoder->streamMessage(&l);
     } else if (cmd == "logout") {
-        Logout l = Logout::Instantiate();
+        Logout l;
         l.setFrom(accountId);
         if (!arg.empty()) {
             Atlas::Message::Element::MapType lmap;
@@ -521,7 +521,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         }
         encoder->streamMessage(&l);
     } else if (cmd == "say") {
-        Talk t = Talk::Instantiate();
+        Talk t;
         Atlas::Message::Element::MapType ent;
         ent["say"] = arg;
         t.setArgs(Atlas::Message::Element::ListType(1,ent));
@@ -531,7 +531,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         reply_expected = false;
         help();
     } else if (cmd == "query") {
-        Get g = Get::Instantiate();
+        Get g;
 
         Atlas::Message::Element::MapType cmap;
         cmap["objtype"] = "object";
@@ -543,7 +543,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
 
         encoder->streamMessage(&g);
     } else if (cmd == "get") {
-        Get g = Get::Instantiate();
+        Get g;
 
         Atlas::Message::Element::MapType cmap;
         cmap["objtype"] = "class";

@@ -102,7 +102,7 @@ OpVector Admin::GetOperation(const Get & op)
     if (id.empty()) {
         return error(op, "query id invalid");
     }
-    Info * info = new Info(Info::Instantiate());
+    Info * info = new Info;
     if (objtype == "object") {
         const BaseDict & OOGDict = m_connection->m_server.getObjects();
         BaseDict::const_iterator J = OOGDict.find(id);

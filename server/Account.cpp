@@ -113,19 +113,19 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     entmap["loc"] = chr->getId();
     entmap["name"] = "coin";
     for(int i = 0; i < 10; i++) {
-        Create * c = new Create(Create::Instantiate());
+        Create * c = new Create;
         Element::ListType & args = c->getArgs();
         args.push_back(entmap);
         c->setTo(chr->getId());
         world.message(*c, chr);
     }
 
-    Create c = Create::Instantiate();
+    Create c;
     Element::ListType & cargs = c.getArgs();
     cargs.push_back(Element::MapType());
     chr->addToObject(cargs.front().asMap());
 
-    Sight * s = new Sight(Sight::Instantiate());
+    Sight * s = new Sight;
     Element::ListType & args = s->getArgs();
     args.push_back(c.asObject());
 
@@ -137,7 +137,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 OpVector Account::LogoutOperation(const Logout & op)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
-    Info info = Info(Info::Instantiate());
+    Info info;
     Element::ListType & args = info.getArgs();
     args.push_back(op.asObject());
     info.setRefno(op.getSerialno());
@@ -207,7 +207,7 @@ OpVector Account::CreateOperation(const Create & op)
         return error(op, "Character creation failed");
     }
 
-    Info * info = new Info(Info::Instantiate());
+    Info * info = new Info;
     Element::ListType & info_args = info->getArgs();
     info_args.push_back(Element::MapType());
     obj->addToObject(info_args.front().asMap());
@@ -224,7 +224,7 @@ OpVector Account::ImaginaryOperation(const Imaginary & op)
         return OpVector();
     }
 
-    Sight s(Sight::Instantiate());
+    Sight s;
     Element::ListType & sargs = s.getArgs();
     sargs.push_back(op.asObject());
     s.setFrom(getId());
@@ -247,7 +247,7 @@ OpVector Account::TalkOperation(const Talk & op)
         return OpVector();
     }
 
-    Sound s(Sound::Instantiate());
+    Sound s;
     Element::ListType & sargs = s.getArgs();
     sargs.push_back(op.asObject());
     s.setFrom(getId());
@@ -267,7 +267,7 @@ OpVector Account::LookOperation(const Look & op)
 {
     const Element::ListType & args = op.getArgs();
     if (args.empty()) {
-        Sight * s = new Sight(Sight::Instantiate());
+        Sight * s = new Sight;
         s->setTo(getId());
         Element::ListType & s_args = s->getArgs();
         s_args.push_back(Element::MapType());
@@ -283,7 +283,7 @@ OpVector Account::LookOperation(const Look & op)
     const std::string & to = I->second.asString();
     EntityDict::const_iterator J = m_charactersDict.find(to);
     if (J != m_charactersDict.end()) {
-        Sight * s = new Sight(Sight::Instantiate());
+        Sight * s = new Sight;
         s->setTo(getId());
         Element::ListType & s_args = s->getArgs();
         s_args.push_back(Element::MapType());
@@ -295,7 +295,7 @@ OpVector Account::LookOperation(const Look & op)
     const AccountDict & accounts = m_connection->m_server.m_lobby.getAccounts();
     AccountDict::const_iterator K = accounts.find(to);
     if (K != accounts.end()) {
-        Sight * s = new Sight(Sight::Instantiate());
+        Sight * s = new Sight;
         s->setTo(getId());
         Element::ListType & s_args = s->getArgs();
         s_args.push_back(Element::MapType());

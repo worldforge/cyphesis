@@ -27,12 +27,12 @@ Element::MapType CommClient::createPlayer(const std::string & name,
     debug(std::cout << "Loggin " << name << " in with " << password << " as password"
                << std::endl << std::flush;);
     
-    Login loginAccountOp(Login::Instantiate());
+    Login loginAccountOp;
     loginAccountOp.setArgs(Element::ListType(1,player_ent));
     send(loginAccountOp);
 
     if (connection.wait()) {
-        Create createAccountOp(Create::Instantiate());
+        Create createAccountOp;
         createAccountOp.setArgs(Element::ListType(1,player_ent));
         send(createAccountOp);
         if (connection.wait()) {
@@ -63,7 +63,7 @@ CreatorClient * CommClient::createCharacter(const std::string & type)
     character["name"] = playerName;
     character["parents"] = Element::ListType(1,type);
 
-    Create createOp=Create::Instantiate();
+    Create createOp;
     createOp.setFrom(playerId);
     createOp.setArgs(Element::ListType(1,character));
     send(createOp);

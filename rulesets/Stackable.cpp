@@ -67,7 +67,7 @@ OpVector Stackable::CombineOperation(const Combine & op)
         if (obj->m_type != m_type) { continue; }
         m_num = m_num + obj->m_num;
 
-        Delete * d = new Delete(Delete::Instantiate());
+        Delete * d = new Delete();
         Element::MapType dent;
         dent["id"] = id;
         d->setTo(id);
@@ -99,7 +99,7 @@ OpVector Stackable::DivideOperation(const Divide & op)
         Element::ListType parents(1,m_type);
         new_ent["parents"] = parents;
         new_ent["num"] = new_num;
-        Create * c = new Create( Create::Instantiate());
+        Create * c = new Create( );
         c->setArgs(Element::ListType(1,new_ent));
         c->setTo(getId());
         res.push_back(c);

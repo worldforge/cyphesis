@@ -20,19 +20,19 @@ void installCustomOperations()
 {
     Inheritance & i = Inheritance::instance();
 
-    i.addChild(new Chop());
+    i.addChild(new Chop(Chop::Class()));
     i.opInstall("chop", OP_CHOP);
-    i.addChild(new Cut());
+    i.addChild(new Cut(Cut::Class()));
     i.opInstall("cut", OP_CUT);
-    i.addChild(new Eat());
+    i.addChild(new Eat(Eat::Class()));
     i.opInstall("eat", OP_EAT);
-    i.addChild(new Burn());
+    i.addChild(new Burn(Burn::Class()));
     i.opInstall("burn", OP_BURN);
-    i.addChild(new Nourish());
+    i.addChild(new Nourish(Nourish::Class()));
     i.opInstall("nourish", OP_NOURISH);
-    i.addChild(new Setup());
+    i.addChild(new Setup(Setup::Class()));
     i.opInstall("setup", OP_SETUP);
-    i.addChild(new Tick());
+    i.addChild(new Tick(Tick::Class()));
     i.opInstall("tick", OP_TICK);
 
 

@@ -124,7 +124,7 @@ inline void CommServer::removeSocket(CommSocket * client, char * error_msg)
     // err["message"] = error_msg;
     // Atlas::Message::Element::ListType eargs(1,err);
 
-    // Error e(Error::Instantiate());
+    // Error e;
 
     // e.setArgs(eargs);
 
