@@ -6,6 +6,7 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Combine.h>
 #include <Atlas/Objects/Operation/Divide.h>
+#include <Atlas/Objects/Operation/Delete.h>
 #include <Atlas/Objects/Operation/Login.h>
 
 #include <common/const.h>
@@ -57,12 +58,12 @@ oplist Stackable::Operation(const Combine & op)
     for(Object::ListType::iterator I = args.begin(); I != args.end(); I++) {
         const string & id = I->AsMap()["id"].AsString();
         if (id == fullid) { continue; }
-        Stackable * obj = world.get_object(id);
-        if (!obj.in_game) { continue; }
-        if (obj.type != type) { continue; }
+        Stackable * obj = (Stackable*)world->get_object(id);
+        if (!obj->in_game) { continue; }
+        if (obj->type != type) { continue; }
         num = num + obj->num;
         Delete * d = new Delete();
-        *d = Delete()::Instantiate();
+        *d = Delete::Instantiate();
         Object::MapType dent;
         dent["id"] = id;
         d->SetTo(id);
