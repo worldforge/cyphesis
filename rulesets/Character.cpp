@@ -146,7 +146,7 @@ double MovementInfo::get_tick_addition(const Vector3D & coordinates)
 
 Character::Character() : movement(this), sex("female"), autom(0), drunkness(0.0)
 {
-    weight = 60.0;
+    attributes["weight"] = 60.0;
     is_character = 1;
 }
 
@@ -257,7 +257,9 @@ oplist Character::Mind_Operation(const Move & op)
         cout << "This move op is for a phoney object" << endl << flush;
     }
     Thing * obj = (Thing *)world->fobjects[oname];
-    if ((obj->weight < 0) || (obj->weight > weight)) {
+    double weight = attributes["weight"].AsFloat();
+    double oweight = obj->operator[]("weight").AsFloat();
+    if ((oweight < 0) || (oweight > weight)) {
         // We can't move this. Just too heavy
         return(res);
     }

@@ -1,7 +1,11 @@
 #ifndef THING_H
 #define THING_H
 
+#include <Python.h>
+
 typedef int bad_type; // Remove this to get unset type reporting
+
+typedef std::map<string, Atlas::Message::Object> a_map_t;
 
 #define None 0 // Remove this to deal with un-initialied vars
 
@@ -12,16 +16,20 @@ typedef int bad_type; // Remove this to get unset type reporting
 class Player;
 
 class Thing : public BaseEntity {
+  protected:
+    PyObject * script_object;
+
+    int script_Operation(const string &, const RootOperation &, oplist &);
+
+    a_map_t attributes;
   public:
-    string description;
-    string mode;
     double status;
-    double weight;
-    double age;
     int is_character;
 
     Thing();
     virtual ~Thing() { }
+
+    Message::Object & operator[](const string &);
 
     virtual void addObject(Message::Object *);
     oplist send_world(RootOperation * msg);

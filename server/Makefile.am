@@ -1,7 +1,7 @@
 bin_PROGRAMS = cyphesis
 
 INCLUDES = -I..
-LIBS = -L/home/ajr/atlas-install/lib -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity
+LIBS = -L/home/ajr/atlas-install/lib -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lpython1.5 -ldl -lpthread
 
 cyphesis_SOURCES = \
 		OOG_Thing.cpp OOG_Thing.h \

@@ -1,0 +1,9 @@
+2000-10-24  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Fixed movement code which now works.
+
+	* Fixed set operation, and added attributes map to Thing.
+
+	* Started adding Python interface code.
+
+        * Starting changelog from initial attempt to port cyphesis into C++.

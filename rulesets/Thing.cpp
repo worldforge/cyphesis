@@ -15,10 +15,44 @@
 #include <common/const.h>
 
 
-Thing::Thing() : description("Some Thing"), mode("birth"),
-		status(1.0), weight(-1), age(0.0), is_character(0)
+Thing::Thing() : script_object(NULL), status(1), is_character(0)
 {
     name=string("Foo");
+    attributes["age"] = 0;
+    attributes["mode"] = Message::Object("birth");
+    attributes["weight"] = -1;
+    attributes["description"] = Message::Object("Some Thing");
+}
+
+int Thing::script_Operation(const string & op_type, const RootOperation & op,
+                     oplist & ret_list)
+{
+    if (script_object != NULL) {
+        string op_name = op_type+"_operation";
+        // Construct apropriate python object thingies from op
+        PyObject * ret = PyObject_CallMethod(script_object,
+                                             (char *)(op_name.c_str()),
+                                             "()");
+        if (ret != NULL) {
+            cout << "Called python method " << op_name << " for object "
+                 << fullid << endl << flush;
+            // Get oplist from ret and
+            return(1);
+        }
+    } else {
+        cout << "No script object asociated" << endl << flush;
+    }
+    cout << "No method to be found for " << fullid << endl << flush;
+    return(0);
+}
+
+Message::Object & Thing::operator[](const string & name)
+{
+    if (attributes.find(name) == attributes.end()) {
+        cout << "SETTING NEW" << name << endl << flush;
+        attributes[name]=Message::Object();
+    }
+    return(attributes[name]);
 }
 
 void Thing::addObject(Message::Object * obj)
@@ -87,7 +121,6 @@ oplist Thing::Operation(const Create & op)
 oplist Thing::Operation(const Delete & op)
 {
     world->del_object(this);
-    //log.debug(3,"Deleted: "+str(this)+" now: "+str(Thing::world.objects));
     RootOperation * sight = new Sight;
     list<Message::Object> args(1,op.AsObject());
     sight->SetArgs(args);
@@ -98,6 +131,9 @@ oplist Thing::Operation(const Move & op)
 {
     cout << "Thing::move_operation" << endl << flush;
     oplist res;
+    if (script_Operation("move", op, res) != 0) {
+        return(res);
+    }
     const Message::Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
        return(res);
@@ -161,6 +197,7 @@ oplist Thing::Operation(const Move & op)
             speed_ratio = location.velocity.mag()/consts::base_velocity;
         }
         cout << 10;
+        string mode;
         if (speed_ratio > 0.5) {
             mode = string("running");
         } else if (speed_ratio > 0.0) {
@@ -169,7 +206,7 @@ oplist Thing::Operation(const Move & op)
             mode = string("standing");
         }
         cout << 11;
-        ent["mode"] = Message::Object(mode);
+        attributes["mode"] = ent["mode"] = Message::Object(mode);
         RootOperation * s = new Sight;
         *s = Sight::Instantiate();
         Message::Object::ListType args2(1,op.AsObject());
@@ -186,24 +223,39 @@ oplist Thing::Operation(const Move & op)
 
 oplist Thing::Operation(const Set & op)
 {
-    //ent=op[0];
-    //needTrueValue=["type","contains","instance","id","location","stamp"];
-    //for (/*(key,value) in ent.__dict__.items()*/) {
-        //if (not key in Thing::attributes) {
-            //return Thing::error(op,"Illegal attribute in set_operation:"+key);
-        //}
-        //if (value or not key in needTrueValue) {
-            //setattr(this,key,value);
-        //}
-    //}
-    //opSight=Operation("sight",op);
-    //if (Thing::status<0.0) {
-        //; //oops, we stopped existing...;
-        //opDestroy=Operation("delete",Entity(this),to=this);
-        //return Message(opSight,opDestroy);
-    //}
-    //return opSight;
     oplist res;
+    const Message::Object::ListType & args=op.GetArgs();
+    if (args.size() == 0) {
+       return(res);
+    }
+    try {
+        Message::Object::MapType ent = args.front().AsMap();
+        Message::Object::MapType::const_iterator I;
+        for (I = ent.begin(); I != ent.end(); I++) {
+            if (I->first == "id") continue;
+            if (I->first == "status") {
+                status = I->second.AsFloat();
+            } else {
+                attributes[I->first] = I->second;
+            }
+        }
+        RootOperation * s = new Sight();
+        *s = Sight::Instantiate();
+        Message::Object::ListType args2(1,op.AsObject());
+        s->SetArgs(args2);
+        res.push_back(s);
+        if (status < 0) {
+            RootOperation * d = new Delete();
+            *d = Delete::Instantiate();
+            Message::Object::ListType args3(1,this->asObject());
+            d->SetArgs(args3);
+            d->SetTo(fullid);
+            res.push_back(d);
+        }
+    }
+    catch (Message::WrongTypeException) {
+        return(error(op, "Malformed set operation\n"));
+    }
     return(res);
 }
 

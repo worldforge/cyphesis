@@ -1,6 +1,15 @@
 dnl
 dnl $Log: configure.in,v $
-dnl Revision 1.5  2000-08-30 05:25:52  karsten
+dnl Revision 1.6  2000-10-24 12:50:22  alriddoch
+dnl 	* Fixed movement code which now works.
+dnl
+dnl 	* Fixed set operation, and added attributes map to Thing.
+dnl
+dnl 	* Started adding Python interface code.
+dnl
+dnl         * Starting changelog from initial attempt to port cyphesis into C++.
+dnl
+dnl Revision 1.5  2000/08/30 05:25:52  karsten
 dnl sorry ... config.cache has played a trick on me ...
 dnl this should work now.
 dnl
@@ -95,6 +104,34 @@ dnl for some reason this only works if outside AC_CACHE_CHECK(..)
 dnl (probably the check is only run if there is no config.cache file)
 CPPFLAGS="$CPPFLAGS -I${cyphesis_cv_libatlas}/include"
 LDFLAGS="$LDFLAGS -L${cyphesis_cv_libatlas}/lib"
+
+AC_CACHE_CHECK(for location of python headers, cyphesis_cv_python,
+[
+	cyphesis_cv_python=/usr/include/python1.5
+	AC_ARG_WITH(python,
+	[  --with-python=DIR          python includes in ].
+	[
+		if test $withval != yes; then
+			cyphesis_cv_python=$withval
+		fi
+	])
+])
+dnl for some reason this only works if outside AC_CACHE_CHECK(..)
+dnl (probably the check is only run if there is no config.cache file)
+CPPFLAGS="$CPPFLAGS -I${cyphesis_cv_python}"
+AC_CACHE_CHECK(for location of python libs, cyphesis_cv_libpython,
+[
+	cyphesis_cv_libpython=/usr/lib/python1.5/config
+	AC_ARG_WITH(python,
+	[  --with-pythonlib=DIR          python includes in ].
+	[
+		if test $withval != yes; then
+			cyphesis_cv_libpython=$withval
+		fi
+	])
+])
+
+LDFLAGS="$LDFLAGS -L${cyphesis_cv_libpython}"
  
 
 AC_CACHE_VAL(cyphesis_cv_atlas_headers,
@@ -113,7 +150,6 @@ AC_CACHE_VAL(cyphesis_cv_atlas_libraries,
 [
 	AC_CHECK_LIB(AtlasDebug, main,
     [
-	LIBS="$LIBS -L/home/ajr/atlas-install/lib"
         LIBS="$LIBS -lAtlas"
         LIBS="$LIBS -lAtlasCodecs"
         LIBS="$LIBS -lAtlasMessage"
@@ -124,7 +160,24 @@ AC_CACHE_VAL(cyphesis_cv_atlas_libraries,
 	])
 ])
 
+AC_CACHE_VAL(cyphesis_cv_python_headers,
+[
+	AC_CHECK_HEADERS(Python.h, [],
+	[
+		AC_MSG_ERROR(Couldn't find working Python headers.)
+	])
+])
 
+AC_CHECK_LIB(dl,dlopen)
+AC_CHECK_LIB(pthread,pthread_create)
+
+AC_CACHE_VAL(cyphesis_cv_python_libraries,
+[
+	AC_CHECK_LIB(python1.5, Py_Initialize, LIBS="$LIBS -lpython1.5",
+	[
+		AC_MSG_ERROR(Couln't find working Python libraries.);
+	])
+])
 
 dnl Generate files
 AC_OUTPUT([
