@@ -196,6 +196,14 @@ static void Vector3D_dealloc(Vector3DObject *self)
 
 PyObject * Vector3D_getattr(Vector3DObject *self, char *name)
 {
+    if (!self->coords) {
+        PyErr_SetString(PyExc_TypeError, "unset Vector");
+        return NULL;
+    }
+    if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->coords.X()); }
+    if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->coords.Y()); }
+    if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->coords.Z()); }
+
     return Py_FindMethod(Vector3D_methods, (PyObject *)self, name);
 }
 

@@ -6,6 +6,6 @@ from common.misc import set_kw
 
 class Vodka(Alcohol):
     """More potent than beer"""
-    def __init__(self, **kw):
-    	self.base_init(kw)
+    def __init__(self, cppthing, **kw):
+    	self.base_init(cppthing, kw)
     	set_kw(self,kw,"potency",0.2)

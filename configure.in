@@ -1,11 +1,11 @@
 dnl Initialise autoconf
 
 AC_INIT()
+AM_CONFIG_HEADER(config.h)
 
 dnl Initialise automake
 
 AM_INIT_AUTOMAKE(cyphesis, 0.0.2)
-AM_CONFIG_HEADER
 AC_ARG_PROGRAM
 
 dnl Need libtool
@@ -19,6 +19,7 @@ AC_PROG_CXX
 
 CXXFLAGS='-Wall -g'
 
+AC_PREFIX_DEFAULT("/usr/local")
 AC_DEFINE_UNQUOTED(INSTALLDIR,"$prefix")
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 

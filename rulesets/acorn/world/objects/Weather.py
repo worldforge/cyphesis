@@ -4,12 +4,12 @@
 from atlas import *
 from world.objects.Thing import Thing
 from common import log,const
-from common.misc import set_kw
+from misc import set_kw
 from whrandom import *
 
 class Weather(Thing):
-    def __init__(self, **kw):
-        self.base_init(kw)
+    def __init__(self, cppthing, **kw):
+        self.base_init(cppthing, kw)
         set_kw(self,kw,"rain",1.0)
     def tick_operation(self, op):
         res = Message()

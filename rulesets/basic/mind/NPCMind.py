@@ -149,7 +149,6 @@ class NPCMind(BaseMind):
             #CHEAT!: remove eval
             xyz=list(eval(object))
             loc=self.location.copy()
-            print xyz
             loc.coordinates=Vector3D(xyz)
             self.add_knowledge("location",subject,loc)
         else:
@@ -200,7 +199,6 @@ class NPCMind(BaseMind):
             say=talk_entity
             if hasattr(say,"say"): say=say.say
         log.debug(3,"talk: "+str(operation_method))
-        print res, operation_method, talk_entity
         res = res + operation_method(original_op,say)
         return res
     ########## Other operations
@@ -287,7 +285,6 @@ class NPCMind(BaseMind):
         what=thing.as_entity()
         ent = Entity(description=desc, what=what)
         self.send(Operation("thought",ent))
-        print "add_thing", thing
         dictlist.add_value(self.things,thing.name,thing)
         log.debug(3,"\tafter: "+str(self.things))
     def find_thing(self, thing):

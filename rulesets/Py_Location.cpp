@@ -13,7 +13,6 @@
 
 PyObject * Location_copy(LocationObject *self, PyObject *args)
 {
-    cout << "Location_copy" << endl << flush;
     if (self->location == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid location");
         return NULL;

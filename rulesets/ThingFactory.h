@@ -15,7 +15,7 @@ extern varconf::Config * global_conf;
 
 class ThingFactory {
   public:
-    ThingFactory();
+    ThingFactory() { }
     void readRuleset(const string & file);
     Thing * newThing(const string &, const Message::Object &, Routing *);
 };

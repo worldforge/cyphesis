@@ -25,6 +25,10 @@ class Vector3D {
         z = vector.front().AsFloat();
     }
 
+    double X() const { return x; }
+    double Y() const { return y; }
+    double Z() const { return z; }
+
     bool operator==(const Vector3D & other) const {
         //"Check if two vector are equal";
         return ((x==other.x) && (y==other.y) && (z==other.z));

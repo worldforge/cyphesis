@@ -2,9 +2,9 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 from atlas import *
-from world.objects.Character import Character
+from world.objects.Thing import Thing
 from common import log,const
-from common.misc import set_kw
+from misc import set_kw
 
 # Rate at which energy is used per tick
 energyConsumption = 0.01
@@ -19,10 +19,10 @@ energyLoss = 0.1
 # Weight gained from the excess energy
 weightGain = 0.5
 
-class Animal(Character):
+class Animal(Thing):
     """This is base class for all kind of animals"""
-    def __init__(self, **kw):
-        self.base_init(kw)
+    def __init__(self, cppthing, **kw):
+        self.base_init(cppthing, kw)
         set_kw(self,kw,"status",1.0)
         set_kw(self,kw,"weight",1.0)
         self.food=0

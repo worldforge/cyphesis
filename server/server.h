@@ -1,13 +1,8 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <fstream>
+extern string install_directory;
 
-#include <common/const.h>
-
-#include "ServerRouting.h"
-#include "Connection.h"
-
-using namespace Atlas;
+extern list<string> rulesets;
 
 #endif /* SERVER_H */

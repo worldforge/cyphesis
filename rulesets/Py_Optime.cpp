@@ -28,11 +28,15 @@ static int Optime_setattr(OptimeObject *self, char *name, PyObject *v)
         return -1;
     }
     if (strcmp(name, "sadd") == 0) {
-        if (!PyFloat_Check(v)) {
+        double fsecs;
+        if (PyFloat_Check(v)) {
+            fsecs = PyFloat_AsDouble(v);
+        } else if (PyInt_Check(v)) {
+            fsecs = double(PyInt_AsLong(v));
+        } else {
             PyErr_SetString(PyExc_TypeError, "setting time to non number");
             return -1;
         }
-        double fsecs = PyFloat_AsDouble(v);
         self->operation->SetFutureSeconds(fsecs);
         return 0;
     }

@@ -3,24 +3,17 @@
 from atlas import *
 
 from world.objects.animals.Animal import Animal
-from mind.PigMind import PigMind
-from common.misc import set_kw
+from misc import set_kw
 from whrandom import *
-from world.physics.Vector3D import Vector3D
+from Vector3D import Vector3D
 
 import atlas
 
 class Pig(Animal):
-    def __init__(self, **kw):
-        self.base_init(kw)
+    def __init__(self, cppthing, **kw):
+        self.base_init(cppthing, kw)
         set_kw(self,kw,"weight",5.0)
         self.maxweight=100.0
-    def setup_operation(self, op):
-        """do once first after character creation"""
-        if hasattr(op,"sub_to"): return None #meant for mind
-        self.mind=PigMind(id=self.id, body=self)
-        opMindSetup=Operation("setup",to=self,sub_to=self.mind)
-        return opMindSetup
     def chop_operation(self, op):
         if self.weight<1:
             return(Operation("set",Entity(self.id,status=-1),to=self))

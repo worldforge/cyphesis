@@ -8,6 +8,7 @@
 
 #include <modules/Location.h>
 #include <server/WorldTime.h>
+#include <server/server.h>
 #include <common/const.h>
 
 static void Function_dealloc(FunctionObject * self)
@@ -160,7 +161,8 @@ void Create_PyThing(Thing * thing, const string & package, const string & _type)
     string type = _type;
     type[0] = toupper(type[0]);
     PyObject * mod_dict;
-    if ((mod_dict = PyImport_ImportModule((char *)package.c_str()))==NULL) {
+    PyObject * package_name = PyString_FromString((char *)package.c_str());
+    if ((mod_dict = PyImport_Import(package_name))==NULL) {
         cerr << "Cld no find python module " << package << endl << flush;
             PyErr_Print();
         return;
@@ -210,7 +212,8 @@ static PyObject * location_new(PyObject * self, PyObject * args)
     // We need to deal with actual args here
     PyObject * parentO, * coordsO = NULL;
     if (PyArg_ParseTuple(args, "O|O", &parentO, &coordsO)) {
-        if ((PyTypeObject *)PyObject_Type(parentO) != &Thing_Type) {
+        if (((PyTypeObject *)PyObject_Type(parentO) != &Thing_Type) &&
+            ((PyTypeObject *)PyObject_Type(parentO) != &World_Type)) {
             if (PyObject_HasAttrString(parentO, "cppthing")) {
                 parentO = PyObject_GetAttrString(parentO, "cppthing");
             }
@@ -224,20 +227,32 @@ static PyObject * location_new(PyObject * self, PyObject * args)
             PyErr_SetString(PyExc_TypeError, "Arg coords required");
             return NULL;
         }
-        ThingObject * parent = (ThingObject*)parentO;
-        Vector3DObject * coords = (Vector3DObject*)coordsO;
-        if (parent->m_thing == NULL) {
-            PyErr_SetString(PyExc_TypeError, "Parent is invalid");
-            return NULL;
+
+        BaseEntity * parent_ent;
+        if ((PyTypeObject *)PyObject_Type(parentO) == &World_Type) {
+            WorldObject * parent = (WorldObject*)parentO;
+            if (parent->world == NULL) {
+                PyErr_SetString(PyExc_TypeError, "Parent world is invalid");
+                return NULL;
+            }
+            parent_ent = parent->world;
+        } else {
+            ThingObject * parent = (ThingObject*)parentO;
+            if (parent->m_thing == NULL) {
+                PyErr_SetString(PyExc_TypeError, "Parent thing is invalid");
+                return NULL;
+            }
+            parent_ent = parent->m_thing;
         }
+        Vector3DObject * coords = (Vector3DObject*)coordsO;
         o = newLocationObject(NULL);
         if ( o == NULL ) {
             return NULL;
         }
         if (coords == NULL) {
-            o->location = new Location(parent->m_thing, Vector3D());
+            o->location = new Location(parent_ent, Vector3D());
         } else {
-            o->location = new Location(parent->m_thing, coords->coords);
+            o->location = new Location(parent_ent, coords->coords);
         }
         o->own = 1;
     } else if (PyArg_ParseTuple(args, "")) {
@@ -633,93 +648,86 @@ static PyMethodDef misc_methods[] = {
 
 void init_python_api()
 {
-	char * cwd;
+    string pypath("");
+    list<string>::const_iterator I;
+    for(I = rulesets.begin(); I != rulesets.end(); I++) {
+        pypath = pypath + install_directory + "/share/cyphesis/rulesets/" +
+                 *I + ":";
+    }
+    setenv("PYTHONPATH", pypath.c_str(), 1);
 
-	if ((cwd = getcwd(NULL, 0)) != NULL) {
-                size_t len = strlen(cwd) * 2 + 60;
-                char * pypath = (char *)malloc(len);
-                strcpy(pypath, cwd);
-                strcat(pypath, "/rulesets/basic:");
-                // This should eventually pull in a ruleset name from
-                // the commandline args.
-                // basic ruleset should always be left on the end
-                strcat(pypath, cwd);
-                strcat(pypath, "/rulesets/acorn");
-		setenv("PYTHONPATH", pypath, 1);
-	}
+    Py_Initialize();
 
-	Py_Initialize();
+    PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
+    PyRun_SimpleString("ruleset_import_hooks.install([\"acorn\",\"basic\"])\n");
 
-        PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
-        PyRun_SimpleString("ruleset_import_hooks.install(['acorn','basic'])\n");
+    if (Py_InitModule("atlas", atlas_methods) == NULL) {
+        fprintf(stderr, "Failed to Create atlas module\n");
+        return;
+    }
 
-	if (Py_InitModule("atlas", atlas_methods) == NULL) {
-		fprintf(stderr, "Failed to Create atlas module\n");
-		return;
-	}
+    if (Py_InitModule("Vector3D", Vector3D_methods) == NULL) {
+        fprintf(stderr, "Failed to Create Vector3D module\n");
+        return;
+    }
 
-	if (Py_InitModule("Vector3D", Vector3D_methods) == NULL) {
-		fprintf(stderr, "Failed to Create Vector3D module\n");
-		return;
-	}
+    PyObject * misc;
+    if ((misc = Py_InitModule("misc", misc_methods)) == NULL) {
+        fprintf(stderr, "Failed to Create misc module\n");
+        return;
+    }
 
-        PyObject * misc;
-        if ((misc = Py_InitModule("misc", misc_methods)) == NULL) {
-		fprintf(stderr, "Failed to Create misc module\n");
-		return;
-	}
+    PyObject * common;
+    PyObject * dict;
+    if ((common = Py_InitModule("common", common_methods)) == NULL) {
+        fprintf(stderr, "Failed to Create common module\n");
+        return;
+    }
+    PyObject * _const = PyModule_New("const");
+    PyObject * log = PyModule_New("log");
+    dict = PyModule_GetDict(common);
+    PyDict_SetItemString(dict, "const", _const);
+    PyDict_SetItemString(dict, "log", log);
+    PyObject * debug = (PyObject *)PyObject_NEW(FunctionObject, &log_debug_type);
+    PyObject_SetAttrString(log, "debug", debug);
+    //PyDict_SetItemString(dict, "misc", misc);
+    PyObject_SetAttrString(_const, "server_python", PyInt_FromLong(0));
+    PyObject_SetAttrString(_const, "debug_level",
+    PyInt_FromLong(consts::debug_level));
+    PyObject_SetAttrString(_const, "debug_thinking",
+    PyInt_FromLong(consts::debug_thinking));
 
-	PyObject * common;
-	PyObject * dict;
-	if ((common = Py_InitModule("common", common_methods)) == NULL) {
-		fprintf(stderr, "Failed to Create common module\n");
-		return;
-	}
-	PyObject * _const = PyModule_New("const");
-	PyObject * log = PyModule_New("log");
-	dict = PyModule_GetDict(common);
-	PyDict_SetItemString(dict, "const", _const);
-	PyDict_SetItemString(dict, "log", log);
-        PyObject * debug = (PyObject *)PyObject_NEW(FunctionObject, &log_debug_type);
-	PyObject_SetAttrString(log, "debug", debug);
-	//PyDict_SetItemString(dict, "misc", misc);
-	PyObject_SetAttrString(_const, "server_python", PyInt_FromLong(0));
-	PyObject_SetAttrString(_const, "debug_level",
-			PyInt_FromLong(consts::debug_level));
-	PyObject_SetAttrString(_const, "debug_thinking",
-			PyInt_FromLong(consts::debug_thinking));
+    PyObject_SetAttrString(_const, "time_multiplier",
+    PyFloat_FromDouble(consts::time_multiplier));
+    PyObject_SetAttrString(_const, "base_velocity_coefficient",
+    PyFloat_FromDouble(consts::base_velocity_coefficient));
+    PyObject_SetAttrString(_const, "base_velocity",
+    PyFloat_FromDouble(consts::base_velocity));
 
-	PyObject_SetAttrString(_const, "time_multiplier",
-			PyFloat_FromDouble(consts::time_multiplier));
-	PyObject_SetAttrString(_const, "base_velocity_coefficient",
-			PyFloat_FromDouble(consts::base_velocity_coefficient));
-	PyObject_SetAttrString(_const, "base_velocity",
-			PyFloat_FromDouble(consts::base_velocity));
+    PyObject_SetAttrString(_const, "basic_tick",
+    PyFloat_FromDouble(consts::basic_tick));
+    PyObject_SetAttrString(_const, "day_in_seconds",
+    PyInt_FromLong(consts::day_in_seconds));
 
-	PyObject_SetAttrString(_const, "basic_tick",
-			PyFloat_FromDouble(consts::basic_tick));
-	PyObject_SetAttrString(_const, "day_in_seconds",
-			PyInt_FromLong(consts::day_in_seconds));
+    PyObject_SetAttrString(_const, "sight_range",
+    PyFloat_FromDouble(consts::sight_range));
+    PyObject_SetAttrString(_const, "hearing_range",
+    PyFloat_FromDouble(consts::hearing_range));
+    PyObject_SetAttrString(_const, "collision_range",
+    PyFloat_FromDouble(consts::collision_range));
+    PyObject_SetAttrString(_const, "enable_ranges",
+    PyInt_FromLong(consts::enable_ranges));
 
-	PyObject_SetAttrString(_const, "sight_range",
-			PyFloat_FromDouble(consts::sight_range));
-	PyObject_SetAttrString(_const, "hearing_range",
-			PyFloat_FromDouble(consts::hearing_range));
-	PyObject_SetAttrString(_const, "collision_range",
-			PyFloat_FromDouble(consts::collision_range));
-	PyObject_SetAttrString(_const, "enable_ranges",
-			PyInt_FromLong(consts::enable_ranges));
-
-	PyObject * server;
-	if ((server = Py_InitModule("server", server_methods)) == NULL) {
-		fprintf(stderr, "Failed to Create server thing\n");
-		return;
-	}
-	dict = PyModule_GetDict(server);
-	PyObject * dictlist = PyModule_New("dictlist");
-        PyObject * add_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_add_value_type);
-	PyObject_SetAttrString(dictlist, "add_value", add_value);
-        PyObject * remove_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_remove_value_type);
-	PyObject_SetAttrString(dictlist, "remove_value", remove_value);
-	PyDict_SetItemString(dict, "dictlist", dictlist);
+    PyObject * server;
+    if ((server = Py_InitModule("server", server_methods)) == NULL) {
+        fprintf(stderr, "Failed to Create server thing\n");
+        return;
+    }
+    dict = PyModule_GetDict(server);
+    PyObject * dictlist = PyModule_New("dictlist");
+    PyObject * add_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_add_value_type);
+    PyObject_SetAttrString(dictlist, "add_value", add_value);
+    PyObject * remove_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_remove_value_type);
+    PyObject_SetAttrString(dictlist, "remove_value", remove_value);
+    PyDict_SetItemString(dict, "dictlist", dictlist);
 }

@@ -1,0 +1,24 @@
+[cyphesis]
+ruleset="basic"
+
+[things]
+cleaver		= "world.objects.tools.Cleaver"
+tree		= "world.objects.plants.Tree"
+oak		= "world.objects.plants.Oak"
+seed		= "world.objects.plants.Seed"
+acorn		= "world.objects.plants.Acorn"
+skull		= "world.objects.undead.Skull"
+ribcage		= "world.objects.undead.Ribcage"
+arm		= "world.objects.undead.Arm"
+pelvis		= "world.objects.undead.Pelvis"
+thigh		= "world.objects.undead.Thigh"
+shin		= "world.objects.undead.Shin"
+weather		= "world.objects.Weather"
+
+[characters]
+pig		= "world.objects.animals.Pig"
+wolf		= "world.objects.animals.Wolf"
+crab		= "world.objects.animals.Crab"
+squirrel	= "world.objects.animals.Squirrel"
+skeleton	= "world.objects.undead.Skeleton"
+lych		= "world.objects.undead.Lych"

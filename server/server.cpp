@@ -11,6 +11,7 @@
 
 #include <Python.h>
 
+
 extern "C" {
     #include <stdio.h>
     #include <sys/time.h>
@@ -20,9 +21,14 @@ extern "C" {
     #include <unistd.h>
 }
 
+#include <common/config.h>
 #include <common/const.h>
 #include <common/log.h>
 
+#include <fstream>
+
+#include "ServerRouting.h"
+#include "Connection.h"
 #include "server.h"
 #include "CommClient.h"
 #include "CommServer.h"
@@ -30,7 +36,11 @@ extern "C" {
 int profile_flag=0;
 static int debug_server = 0;
 
+string install_directory = string(INSTALLDIR);
+
 using namespace Atlas;
+
+void init_python_api();
 
 CommClient::~CommClient() {
     if (connection != NULL) {
@@ -270,16 +280,30 @@ void CommServer::remove_client(CommClient * client)
 
 varconf::Config * global_conf = varconf::Config::inst();
 
+list<string> rulesets;
+
 #include <rulesets/ThingFactory.h>
 
 int main(int argc, char ** argv)
 {
- 
-    global_conf->readFromFile("cyphesis.vconf");
+    if (install_directory=="NONE") {
+        install_directory = "/usr/local";
+    }
+
+    string ruleset;
+    global_conf->readFromFile(install_directory + "/share/cyphesis/cyphesis.vconf");
     global_conf->getCmdline(argc, argv);
-    const string & ruleset = global_conf->getItem("cyphesis", "ruleset");
-    debug_server && cout << "Using ruleset: " << ruleset << endl << flush;
-    thing_factory.readRuleset(ruleset);
+    while (global_conf->findItem("cyphesis", "ruleset")) {
+        ruleset = global_conf->getItem("cyphesis", "ruleset");
+        global_conf->erase("cyphesis", "ruleset");
+        cout << "Reading in " << ruleset << endl << flush;
+        thing_factory.readRuleset(install_directory + "/share/cyphesis/" + ruleset);
+        rulesets.push_back(ruleset);
+    };
+    
+
+    init_python_api();
+    cout << Py_GetPath() << endl << flush;
 
     if (consts::debug_level>=1) {
         cout << "consts::debug_level>=1, logging to cyphesis_server*.log files" << endl << flush;
@@ -287,7 +311,6 @@ int main(int argc, char ** argv)
         common::log::inform_fp.open("cyphesis_server.log",ios::out);
         common::log::debug_fp.open("cyphesis_server_debug.log",ios::out);
     }
-    cout << Py_GetPath() << endl << flush;
     if (consts::debug_thinking>=1) {
         char * log_name="thinking.log";
         cout << "consts::debug_thinking>=1:, logging to" << log_name << endl;
@@ -308,43 +331,13 @@ int main(int argc, char ** argv)
     }
     int exit_flag=0;
     while (!exit_flag) {
-        //try {
-            //try {
-                if (profile_flag) {
-                    //profile.run('s.loop()', 'server.prof');
-                } else {
-                    s.loop();
-                }
-            //}
-            //catch (KeyboardInterrupt) {
-                //print "Exit requested";
-                //exit_flag=1;
-                //raise;
-            //}
-        //}
-        //catch (ConnectionError) {
-            //print "Removing disconnected client", s.current_client;
-            //s.remove_client(s.current_client);
-        //}
-        //catch () {
-            //fp = StringIO();
-            //traceback.print_exc(None,fp);
-            //error_msg = string.replace(fp.getvalue(),"\n","[newline]");
-            //fp.close();
-//
-            //if (init.security_flag and not exit_flag) {
-                //print "Exception at client",\;
-                      //s.current_client;
-            //}
-            //else {
-                //exit_flag=0;
-                //traceback.print_exc();
-                //info=sys.exc_info();
-                //print "Use --security argument to continue on errors!";
-                //print "To continue now: press q<enter>";
-                //print "Press (again) ctrl-c to exit";
-                //pdb.post_mortem(info[2]);
-            //}
-            //s.remove_client(s.current_client, error_msg);
+        try {
+            s.loop();
+        }
+        catch (...) {
+            cerr << "*********** EMERGENCY ***********" << endl;
+            cerr << "EXCEPTION: Caught in main()" << endl;
+            cerr << "         : Continuing..." << endl;
+        }
     }
 }

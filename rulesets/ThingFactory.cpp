@@ -16,14 +16,7 @@ static int debug_thingf = 0;
 
 using Atlas::Message::Object;
 
-void init_python_api();
-
 ThingFactory thing_factory;
-
-ThingFactory::ThingFactory()
-{
-    init_python_api();
-}
 
 void ThingFactory::readRuleset(const string & setname)
 {

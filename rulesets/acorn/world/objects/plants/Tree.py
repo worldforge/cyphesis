@@ -4,10 +4,9 @@ from world.objects.Thing import Thing
 from world.objects.plants.seeds.Seed import *
 from common import log,const
 #from world.objects.plants import prob
-from common.misc import set_kw
+from misc import set_kw
 from whrandom import *
-from world.physics.Vector3D import Vector3D
-import atlas
+from Vector3D import Vector3D
 
 debug_tree = 0
 
@@ -66,8 +65,8 @@ def size_to_name(size):
 
 class Tree(Thing):
     #This base class for houses, building material is wood#
-    def __init__(self, **kw):
-        self.base_init(kw)
+    def __init__(self, cppthing, **kw):
+        self.base_init(cppthing, kw)
         
         # How big the tree is #
         #set_kw(self,kw,"size",randint(1, 30))

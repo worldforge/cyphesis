@@ -2,7 +2,7 @@ from atlas import *
 
 from world.objects.Thing import Thing
 from world.objects.plants.seeds.Seed import Seed
-from common.misc import set_kw
+from misc import set_kw
 
 import atlas
 

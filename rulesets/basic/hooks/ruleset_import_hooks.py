@@ -22,7 +22,7 @@ class RulesetModuleLoader(ihooks.ModuleLoader):
         self.rulesets = rulesets
         self.ruleset_paths = []
         for ruleset in rulesets:
-            self.ruleset_paths.append("/export/2/WF/cvs/forge/servers/cyphesis-C++/rulesets/"+ruleset)
+            self.ruleset_paths.append("PREFIX/rulesets/"+ruleset)
         #print self.ruleset_paths
     def ihooks_find_module_in_dir(self, name, dir, allow_packages=1):
         return ihooks.ModuleLoader.find_module_in_dir(self, name, dir,

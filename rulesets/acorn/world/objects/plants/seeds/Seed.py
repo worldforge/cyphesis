@@ -1,7 +1,7 @@
 from atlas import *
 
 from world.objects.Thing import Thing
-from common.misc import set_kw
+from misc import set_kw
 from common import log,const
 from whrandom import *
 
