@@ -1,5 +1,10 @@
 2004-05-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/MemMap.cpp, rulesets/MemMap.h: More cleanup of AI
+	  memory code.
+
+2004-05-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/MemMap.cpp, rulesets/MemMap.h: Major cleanup of AI
 	  memory code, including lots more error reporting, and more
 	  efficient handling of add/update.

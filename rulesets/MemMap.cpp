@@ -32,9 +32,8 @@ Entity * MemMap::addObject(Entity * object)
     return object;
 }
 
-void MemMap::updateObject(Entity * object, const Element::MapType & entmap)
+void MemMap::readObject(Entity * object, const Element::MapType & entmap)
 {
-    debug( std::cout << " got " << object << std::endl << std::flush;);
     Element::MapType::const_iterator I = entmap.find("name");
     if (I != entmap.end() && I->second.isString()) {
         object->setName(I->second.asString());
@@ -43,9 +42,6 @@ void MemMap::updateObject(Entity * object, const Element::MapType & entmap)
     if (I != entmap.end() && I->second.isString()) {
         object->setType(I->second.asString());
     }
-    // It is important that the object is not mutated here. Ie, an update
-    // should not affect its type, contain or id, and location and
-    // stamp should be updated with accurate information
     object->merge(entmap);
     I = entmap.find("loc");
     if ((I != entmap.end()) && I->second.isString()) {
@@ -53,10 +49,33 @@ void MemMap::updateObject(Entity * object, const Element::MapType & entmap)
     }
     object->getLocation(entmap, m_entities);
     addContents(entmap);
+}
+
+void MemMap::updateObject(Entity * object, const Element::MapType & entmap)
+{
+    assert(object != 0);
+
+    debug( std::cout << " got " << object << std::endl << std::flush;);
+
+    readObject(object, entmap);
+
     std::vector<std::string>::const_iterator K;
     for(K = m_updateHooks.begin(); K != m_updateHooks.end(); K++) {
         m_script->hook(*K, object);
     }
+}
+
+Entity * MemMap::newObject(const std::string & id,
+                           const Element::MapType & entmap)
+{
+    assert(!id.empty());
+    assert(m_entities.find(id) == m_entities.end());
+
+    Entity * object = new Entity(id);
+
+    readObject(object, entmap);
+
+    return addObject(object);
 }
 
 RootOperation * MemMap::lookId()
@@ -171,74 +190,38 @@ Entity * MemMap::add(const Element::MapType & entmap)
         return NULL;
     }
     EntityDict::const_iterator J = m_entities.find(id);
-    if (J != m_entities.end()) {
-        updateObject(J->second, entmap);
-        return J->second;
+    if (J == m_entities.end()) {
+        return newObject(id, entmap);
     }
-    Entity * entity = new Entity(id);
-    I = entmap.find("name");
-    if ((I != entmap.end()) && I->second.isString()) {
-        entity->setName(I->second.asString());
-    }
-    I = entmap.find("type");
-    if ((I != entmap.end()) && I->second.isString()) {
-        entity->setType(I->second.asString());
-    }
-    entity->merge(entmap);
-    I = entmap.find("loc");
-    if ((I != entmap.end()) && I->second.isString()) {
-        getAdd(I->second.asString());
-    }
-    entity->getLocation(entmap, m_entities);
-    addContents(entmap);
-    return addObject(entity);
+    Entity * object = J->second;
+    updateObject(object, entmap);
+    return object;
 }
 
 Entity * MemMap::update(const Element::MapType & entmap)
 {
     debug( std::cout << "MemMap::update" << std::endl << std::flush;);
     Element::MapType::const_iterator I = entmap.find("id");
-    if ((I == entmap.end()) || !I->second.isString()) {
+    if (I == entmap.end()) {
+        log(ERROR, "MemMap::update, Missing id in updated entity");
+        return NULL;
+    }
+    if (!I->second.isString()) {
+        log(ERROR, "MemMap::update, Malformed non-string id in updated entity");
         return NULL;
     }
     const std::string & id = I->second.asString();
     if (id.empty()) {
+        log(ERROR, "MemMap::update, Empty id in updated entity");
         return NULL;
     }
-    debug( std::cout << " updating " << id << std::endl << std::flush;);
     EntityDict::const_iterator J = m_entities.find(id);
     if (J == m_entities.end()) {
-        return add(entmap);
+        return newObject(id, entmap);
     }
-    debug( std::cout << " " << id << " has already been spotted" << std::endl << std::flush;);
-    Entity * entity = J->second;
-    updateObject(entity, entmap);
-#if 0
-    debug( std::cout << " got " << entity << std::endl << std::flush;);
-    I = entmap.find("name");
-    if (I != entmap.end() && I->second.isString()) {
-        entity->setName(I->second.asString());
-    }
-    I = entmap.find("type");
-    if (I != entmap.end() && I->second.isString()) {
-        entity->setType(I->second.asString());
-    }
-    // It is important that the entity is not mutated here. Ie, an update
-    // should not affect its type, contain or id, and location and
-    // stamp should be updated with accurate information
-    entity->merge(entmap);
-    I = entmap.find("loc");
-    if ((I != entmap.end()) && I->second.isString()) {
-        getAdd(I->second.asString());
-    }
-    entity->getLocation(entmap,m_entities);
-    addContents(entmap);
-    std::vector<std::string>::const_iterator K;
-    for(K = m_updateHooks.begin(); K != m_updateHooks.end(); K++) {
-        m_script->hook(*K, entity);
-    }
-#endif
-    return entity;
+    Entity * object = J->second;
+    updateObject(object, entmap);
+    return object;
 }
 
 EntityVector MemMap::findByType(const std::string & what)
@@ -277,7 +260,7 @@ const Element MemMap::asObject()
     Element::MapType omap;
     EntityDict::const_iterator I = m_entities.begin();
     for(;I != m_entities.end(); I++) {
-        I->second->addToObject((omap[I->first] = Element(Element::MapType())).asMap());
+        I->second->addToObject((omap[I->first] = Element::MapType()).asMap());
     }
     return Element(omap);
 }

@@ -35,8 +35,12 @@ class MemMap {
     Script *& m_script;
 
     Entity * addObject(Entity * object);
+    void readObject(Entity * object,
+                    const Atlas::Message::Element::MapType & entmap);
     void updateObject(Entity * object,
                       const Atlas::Message::Element::MapType & entmap);
+    Entity * newObject(const std::string & id,
+                       const Atlas::Message::Element::MapType & entmap);
     void addContents(const Atlas::Message::Element::MapType & entmap);
     Entity * addId(const std::string & id);
   public:
@@ -52,6 +56,7 @@ class MemMap {
     Entity * get(const std::string & id);
     Entity * getAdd(const std::string & id);
     Entity * update(const Atlas::Message::Element::MapType & entity);
+
     EntityVector findByType(const std::string & what);
     EntityVector findByLocation(const Location & where, double radius);
     const Atlas::Message::Element asObject();
