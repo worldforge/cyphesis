@@ -23,6 +23,8 @@
 #include "common/Eat.h"
 #include "common/Nourish.h"
 
+#include <wfmath/atlasconv.h>
+
 #include <Atlas/Objects/Operation/Action.h>
 #include <Atlas/Objects/Operation/Sound.h>
 #include <Atlas/Objects/Operation/Set.h>

@@ -13,6 +13,8 @@
 
 #include "common/Tick.h"
 
+#include <wfmath/atlasconv.h>
+
 #include <Atlas/Objects/Operation/Move.h>
 
 static const bool debug_flag = false;
