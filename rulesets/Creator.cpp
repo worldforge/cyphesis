@@ -83,7 +83,7 @@ void Creator::operation(const RootOperation & op, OpVector & res)
     sendExternalMind(op, res);
 }
 
-void Creator::externalOperation(const RootOperation & op, OpVector & res)
+void Creator::externalOperation(const RootOperation & op)
 {
     // If an admin connection specifies a TO on the op, we treat
     // it specially, and make sure it goes direct, otherwise
@@ -93,7 +93,7 @@ void Creator::externalOperation(const RootOperation & op, OpVector & res)
     if (op.getTo().empty()) {
         debug( std::cout << "Creator handling op normally" << std::endl
                          << std::flush;);
-        Creator_parent::externalOperation(op, res);
+        Creator_parent::externalOperation(op);
     } else if (op.getTo() == getId()) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         OpVector lres;

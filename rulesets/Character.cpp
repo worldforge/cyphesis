@@ -1023,18 +1023,18 @@ void Character::operation(const RootOperation & op, OpVector & res)
         return;
     }
     if (world2mind(op)) {
-        OpVector mres, tmp;
+        OpVector mres;
         sendMind(op, mres);
         for(OpVector::const_iterator I = mres.begin(); I != mres.end(); I++) {
             //RootOperation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
-            externalOperation(**I, tmp);
+            externalOperation(**I);
             delete *I;
         }
     }
 }
 
-void Character::externalOperation(const RootOperation & op, OpVector & res)
+void Character::externalOperation(const RootOperation & op)
 {
     debug( std::cout << "Character::externalOperation" << std::endl << std::flush;);
     OpVector mres;

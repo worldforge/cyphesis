@@ -168,7 +168,7 @@ void Connection::operation(const RootOperation & op, OpVector & res)
         BaseEntity * b_ent = I->second;
         Entity * ig_ent = dynamic_cast<Character *>(b_ent);
         if (ig_ent == NULL) {
-            return b_ent->operation(op, res);
+            b_ent->operation(op, res);
             return;
         }
         Character * character = dynamic_cast<Character *>(b_ent);
@@ -185,10 +185,10 @@ void Connection::operation(const RootOperation & op, OpVector & res)
             info->setSerialno(m_server.newSerialNo());
 
             res.push_back(info);
-            character->externalOperation(op, res);
+            character->externalOperation(op);
             return;
         }
-        ig_ent->externalOperation(op, res);
+        ig_ent->externalOperation(op);
         return;
     }
 }

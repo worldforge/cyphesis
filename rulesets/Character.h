@@ -70,7 +70,7 @@ class Character : public Character_parent {
     virtual void addToMessage(MapType &) const;
 
     virtual void operation(const RootOperation & op, OpVector &);
-    virtual void externalOperation(const RootOperation & op, OpVector &);
+    virtual void externalOperation(const RootOperation & op);
 
     virtual void ImaginaryOperation(const Imaginary & op, OpVector &);
     virtual void SetupOperation(const Setup & op, OpVector &);

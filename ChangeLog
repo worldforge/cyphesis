@@ -1,5 +1,14 @@
 2004-09-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Connection.cpp, rulesets/Thing.h, rulesets/Entity.h,
+	  rulesets/Entity.cpp, rulesets/Creator.h, rulesets/Creator.cpp,
+	  rulesets/Character.h, rulesets/Character.cpp: Modify
+	  externalOperation() so it no longer returns anything, ensuring
+	  that Entity::externalOperation() passes its results back to
+	  the world.
+
+2004-09-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Check if a Setup op is for the mind
 	  before dispatching to script, and ensure that Appearance
 	  is always broadcast.

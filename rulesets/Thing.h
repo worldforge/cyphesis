@@ -7,8 +7,6 @@
 
 #include "Entity.h"
 
-#include "common/BaseWorld.h"
-
 typedef Entity Thing_parent;
 
 /// \brief This is the base class from which all physical or tangiable in-game
@@ -23,15 +21,6 @@ class Thing : public Thing_parent {
 
     explicit Thing(const std::string & id);
     virtual ~Thing();
-
-    /// \brief Send an operation to the world for dispatch.
-    ///
-    /// sendWorld() bipasses serialno assignment, so you must ensure
-    /// that serialno is sorted. This allows client serialnos to get
-    /// in, so that client gets correct usefull refnos back.
-    void sendWorld(RootOperation * op) const {
-        m_world->message(*op, this);
-    }
 
     virtual void SetupOperation(const Setup & op, OpVector &);
     virtual void ActionOperation(const Action & op, OpVector &);

@@ -10,10 +10,10 @@
 #include "modules/Location.h"
 
 #include "common/BaseEntity.h"
+#include "common/BaseWorld.h"
 
 #include <iostream>
 
-class BaseWorld;
 class Script;
 
 // Work in progress, this will be a way of inferring type relationships,
@@ -70,6 +70,15 @@ class Entity : public BaseEntity {
     explicit Entity(const std::string & id);
     virtual ~Entity();
 
+    /// \brief Send an operation to the world for dispatch.
+    ///
+    /// sendWorld() bipasses serialno assignment, so you must ensure
+    /// that serialno is sorted. This allows client serialnos to get
+    /// in, so that client gets correct usefull refnos back.
+    void sendWorld(RootOperation * op) const {
+        m_world->message(*op, this);
+    }
+
     const int getUpdateFlags() const { return m_update_flags; }
     const int getSeq() const { return m_seq; }
     const double getStatus() const { return m_status; }
@@ -117,7 +126,7 @@ class Entity : public BaseEntity {
 
     virtual void addToMessage(MapType & obj) const;
 
-    virtual void externalOperation(const RootOperation & op, OpVector &);
+    virtual void externalOperation(const RootOperation & op);
 
     virtual void SetupOperation(const Setup & op, OpVector &);
     virtual void TickOperation(const Tick & op, OpVector &);

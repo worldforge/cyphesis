@@ -216,9 +216,14 @@ void Entity::scriptSubscribe(const std::string & op)
     }
 }
 
-void Entity::externalOperation(const RootOperation & op, OpVector & res)
+void Entity::externalOperation(const RootOperation & op)
 {
+    OpVector res;
     operation(op, res);
+    for (OpVector::const_iterator I = res.begin(); I != res.end(); ++I) {
+        (*I)->setRefno(op.getSerialno());
+        sendWorld(*I);
+    }
 }
 
 void Entity::SetupOperation(const Setup & op, OpVector & res)

@@ -16,7 +16,7 @@ class Creator : public Creator_parent {
     void sendExternalMind(const RootOperation & msg, OpVector &);
 
     virtual void operation(const RootOperation & op, OpVector &);
-    virtual void externalOperation(const RootOperation & op, OpVector &);
+    virtual void externalOperation(const RootOperation & op);
 
     virtual void mindLookOperation(const Look & op, OpVector &);
 };
