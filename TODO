@@ -1,3 +1,5 @@
+Fix problem with database bootstrap. (See BUGS)
+
 Fix problem with vertical movement. (See BUGS)
 
 Debug collision with sty.

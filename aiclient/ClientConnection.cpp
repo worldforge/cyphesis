@@ -33,7 +33,7 @@ extern "C" {
     #include <netdb.h>
 }
 
-static bool debug_flag = true;
+static bool debug_flag = false;
 
 using Atlas::Message::Element;
 

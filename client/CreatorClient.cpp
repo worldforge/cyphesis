@@ -11,7 +11,7 @@
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Set.h>
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 using Atlas::Objects::Operation::RootOperation;
 

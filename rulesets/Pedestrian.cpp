@@ -17,7 +17,7 @@
 
 #include <Atlas/Objects/Operation/Move.h>
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 Pedestrian::Pedestrian(Entity & body) : Movement(body)
 {

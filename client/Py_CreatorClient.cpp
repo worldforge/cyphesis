@@ -16,7 +16,7 @@
 
 #include "common/debug.h"
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 static PyObject * CreatorClient_as_entity(PyCreatorClient * self, PyObject * args)
 {
