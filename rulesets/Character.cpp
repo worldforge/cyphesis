@@ -63,20 +63,14 @@ Move * MovementInfo::gen_move_operation(Location * rloc)
 
 Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
 {
-#ifdef DEBUG_MOVEMENT
-        cout << "gen_move_operation: status: MovementInfo(" << serialno
+        debug_movement && cout << "gen_move_operation: status: MovementInfo(" << serialno
              << "," << target_location << "," << velocity << ","
              << last_movement_time << ")" << endl << flush;
-#endif /* DEBUG_MOVEMENT */
     if (update_needed(loc)) {
-#ifdef DEBUG_MOVEMENT
-            cout << "gen_move_operation: Update needed..." << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+        debug_movement && cout << "gen_move_operation: Update needed..." << endl << flush;
         double current_time=world_info::time;
         double time_diff=current_time-last_movement_time;
-#ifdef DEBUG_MOVEMENT
-            cout << "time_diff:" << time_diff << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+        debug_movement && cout << "time_diff:" << time_diff << endl << flush;
         last_movement_time=current_time;
         Location new_loc=loc;
         Message::Object * ent = new Message::Object(Message::Object::MapType());
@@ -85,13 +79,12 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
         *moveOp = Move::Instantiate();
         moveOp->SetTo(body->fullid);
         ent->AsMap()["id"] = body->fullid;
-        new_loc.addObject(ent);
-        list<Message::Object> args(1,*ent);
-        moveOp->SetArgs(args);
+        ent->AsMap()["mode"] = body->attributes["mode"];
         if (!velocity) {
-#ifdef DEBUG_MOVEMENT
-                cout << "only velocity changed..." << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+            debug_movement && cout << "only velocity changed." << endl << flush;
+            new_loc.addObject(ent);
+            Message::Object::ListType args(1,*ent);
+            moveOp->SetArgs(args);
             if (NULL != rloc) {
                 *rloc = new_loc;
             }
@@ -102,24 +95,18 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
             Vector3D new_coords2 = new_coords+velocity/consts::basic_tick/10.0;
             double dist=target_location.distance(new_coords);
             double dist2=target_location.distance(new_coords2);
-#ifdef DEBUG_MOVEMENT
-                cout << "dist: " << dist << "," << dist2 << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+            debug_movement && cout << "dist: " << dist << "," << dist2 << endl << flush;
             if (dist2>dist) {
-#ifdef DEBUG_MOVEMENT
-                    cout << "target achieved";
-#endif /* DEBUG_MOVEMENT */
+                debug_movement && cout << "target achieved";
                 new_coords=target_location;
                 reset();
                 new_loc.velocity=velocity;
             }
         }
         new_loc.coords=new_coords;
-#ifdef DEBUG_MOVEMENT
-            cout << "new coordinates: " << new_coords << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+        debug_movement && cout << "new coordinates: " << new_coords << endl << flush;
         new_loc.addObject(ent);
-        list<Message::Object> args2(1,*ent);
+        Message::Object::ListType args2(1,*ent);
         moveOp->SetArgs(args2);
         if (NULL != rloc) {
             *rloc = new_loc;
@@ -134,14 +121,10 @@ double MovementInfo::get_tick_addition(const Vector3D & coordinates)
     double basic_distance=velocity.mag()*consts::basic_tick;
     if (!(!target_location)) {
         double distance=coordinates.distance(target_location);
-#ifdef DEBUG_MOVEMENT
-            cout << "basic_distance: " << basic_distance << endl << flush;
-            cout << "distance: " << distance << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+        debug_movement && cout << "basic_distance: " << basic_distance << endl << flush;
+        debug_movement && cout << "distance: " << distance << endl << flush;
         if (basic_distance>distance) {
-#ifdef DEBUG_MOVEMENT
-                cout << "\tshortened tick" << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+            debug_movement && cout << "\tshortened tick" << endl << flush;
             return distance/basic_distance*consts::basic_tick;
         }
     }
@@ -266,7 +249,7 @@ oplist Character::Mind_Operation(const Move & op)
         double weight = attributes["weight"].AsFloat();
         double oweight = obj->operator[]("weight").AsFloat();
         if ((oweight < 0) || (oweight > weight)) {
-            // We can't move this. Just too heavy
+            cout << "We can't move this. Just too heavy" << endl << flush;
             return(res);
         }
         newop->SetTo(oname);
@@ -364,6 +347,24 @@ oplist Character::Mind_Operation(const Move & op)
             }
         }
     }
+    Vector3D location_face;
+    if ((arg1.find("face") != arg1.end()) && (arg1["face"].IsList())) {
+        Message::Object::ListType vector = arg1["face"].AsList();
+        if (vector.size()==3) {
+            try {
+                double x = vector.front().AsFloat();
+                vector.pop_front();
+                double y = vector.front().AsFloat();
+                vector.pop_front();
+                double z = vector.front().AsFloat();
+                location_face = Vector3D(x, y, z);
+                cout << "Got new format face: " << location_face << endl << flush;
+            }
+            catch (Message::WrongTypeException) {
+                cout << "EXCEPTION: Malformed face move operation" << endl << flush;
+            }
+        }
+    }
 #endif 
     if (!location_coords) {
         if (op.GetFutureSeconds() < 0) {
@@ -396,19 +397,39 @@ oplist Character::Mind_Operation(const Move & op)
                 vel_mag = consts::base_velocity;
             }
         }
+        if (!(!location_face)) {
+            location.face = location_face;
+        }
+        double speed_ratio;
+        if (vel_mag == 0.0) {
+            speed_ratio = 0.0;
+        } else {
+            speed_ratio = location.velocity.mag()/consts::base_velocity;
+        }
+        string mode;
+        if (speed_ratio > 0.5) {
+            mode = string("running");
+        } else if (speed_ratio > 0.0) {
+            mode = string("walking");
+        } else {
+            mode = string("standing");
+        }
+        attributes["mode"] = Message::Object(mode);
+
         Vector3D direction;
         if (location_coords == location.coords) {
             location_coords = Vector3D();
         }
         if (!location_coords) {
-#ifdef DEBUG_MOVEMENT
-            cout << "\tUsing velocity for direction" << endl << flush;
-#endif /* DEBUG_MOVEMENT */
-            direction=location_vel;
+            if (!location_vel) {
+                debug_movement && cout << "\tUsing velocity for direction" << endl << flush;
+                direction=location_vel;
+            } else {
+                debug_movement && cout << "\tUsing face for direction" << endl << flush;
+                direction=location_face;
+            }
         } else {
-#ifdef DEBUG_MOVEMENT
-            cout << "\tUsing destination coords for direction" << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+            debug_movement && cout << "\tUsing destination coords for direction" << endl << flush;
             direction=location_coords-location.coords;
         }
         direction=direction.unit_vector();
@@ -424,9 +445,7 @@ oplist Character::Mind_Operation(const Move & op)
         }
         movement.reset();
         if ((vel_mag==0) || !direction) {
-#ifdef DEBUG_MOVEMENT
-                cout << "\tMovement stopped" << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+            debug_movement && cout << "\tMovement stopped" << endl << flush;
             if (NULL != moveOp) {
                 Message::Object::ListType & args = moveOp->GetArgs();
                 Message::Object::MapType & ent = args.front().AsMap();
@@ -450,25 +469,17 @@ oplist Character::Mind_Operation(const Move & op)
         // Need to add the arguments to this op before we return it
         // direction is already a unit vector
         if (!location_coords) {
-#ifdef DEBUG_MOVEMENT
-                cout << "\tNo target location" << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+            debug_movement && cout << "\tNo target location" << endl << flush;
             movement.target_location = Vector3D();
         } else {
-#ifdef DEBUG_MOVEMENT
-                cout << "\tUsing target location" << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+            debug_movement && cout << "\tUsing target location" << endl << flush;
             movement.target_location = location_coords;
         }
         movement.velocity=direction*vel_mag;
-#ifdef DEBUG_MOVEMENT
-            cout << "Velocity " << vel_mag << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+        debug_movement && cout << "Velocity " << vel_mag << endl << flush;
         RootOperation * moveOp2 = movement.gen_move_operation(NULL,current_location);
         tickOp->SetFutureSeconds(movement.get_tick_addition(location.coords));
-#ifdef DEBUG_MOVEMENT
-            cout << "Next tick " << tickOp->GetFutureSeconds() << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+        debug_movement && cout << "Next tick " << tickOp->GetFutureSeconds() << endl << flush;
         if (NULL!=moveOp2) {
             moveOp=moveOp2;
         }

@@ -12,6 +12,8 @@ extern "C" {
     #include <stdio.h>
 }
 
+static int debug_server = 1;
+
 
 WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
 {
@@ -41,27 +43,27 @@ string WorldRouter::get_id(string & name)
         sprintf(buf, "%s_%d", name.c_str(), next_id);
         full_id = string(buf);
     } else {
-        cout << "BARRRRF" << endl << flush;
+        debug_server && cout << "BARRRRF" << endl << flush;
     }
     return(full_id);
 }
 
 Thing * WorldRouter::add_object(Thing * obj)
 {
-    cout << "WorldRouter::add_object(Thing *)" << endl << flush;
+    debug_server && cout << "WorldRouter::add_object(Thing *)" << endl << flush;
     obj->fullid=get_id(obj->name);
     server->id_dict[obj->fullid]=fobjects[obj->fullid]=obj;
     if (!obj->location) {
-        cout << "set loc " << this  << endl << flush;
+        debug_server && cout << "set loc " << this  << endl << flush;
         obj->location=Location(this, Vector3D(0,0,0));
-        cout << "loc set with parent " << obj->location.parent->fullid << endl << flush;
+        debug_server && cout << "loc set with parent " << obj->location.parent->fullid << endl << flush;
     }
     if (NULL == obj->location.parent) {
-        cout << "set parent" << endl << flush;
+        debug_server && cout << "set parent" << endl << flush;
         obj->location.parent=this;
     }
     if (obj->location.parent==this /*&& contains[obj->id]*/) {
-        cout << "loc is world" << endl << flush;
+        debug_server && cout << "loc is world" << endl << flush;
         // Nasty kludge
         contains.push_back(obj);
         contains.unique();
@@ -84,9 +86,9 @@ Thing * WorldRouter::add_object(Thing * obj)
 Thing * WorldRouter::add_object(const string & typestr,
                                      const Message::Object & ent)
 {
-    cout << "WorldRouter::add_object(string, ent)" << endl << flush;
+    debug_server && cout << "WorldRouter::add_object(string, ent)" << endl << flush;
     Thing * obj;
-    obj = thing_factory.new_thing(typestr, ent);
+    obj = thing_factory.new_thing(typestr, ent, this);
     return add_object(obj);
 }
 
@@ -106,7 +108,7 @@ bad_type WorldRouter::is_object_deleted(BaseEntity * obj)
 
 oplist WorldRouter::message(const RootOperation & msg)
 {
-    cout << "FATAL: Wrong type of WorldRouter message function called" << endl << flush;
+    debug_server && cout << "FATAL: Wrong type of WorldRouter message function called" << endl << flush;
     // You may eventually want to remove this as it causes a deliberate segfault
     //return(*(RootOperation **)NULL);
 }
@@ -147,20 +149,20 @@ oplist WorldRouter::operation(const RootOperation * op)
     oplist res;
     const RootOperation & op_ref = *op;
     string to = op_ref.GetTo();
-    cout << "WorldRouter::operation {" << to << "}" << endl << flush;
+    debug_server && cout << "WorldRouter::operation {" << to << "}" << endl << flush;
     op_no_t op_type = op_enumerate(op);
 
-    cout << 0 << flush;
+    debug_server && cout << 0 << flush;
     if ((to.size() != 0) && (to!="all")) {
-        cout << 1 << flush;
+        debug_server && cout << 1 << flush;
         if (fobjects.find(to) == fobjects.end()) {
-            cout << "FATAL: Op has invalid to" << endl << flush;
+            debug_server && cout << "FATAL: Op has invalid to" << endl << flush;
             //return(*(RootOperation **)NULL);
         }
-        cout << 2 << flush;
+        debug_server && cout << 2 << flush;
         BaseEntity * d_to = fobjects[to];
         if ((to != fullid) || (op_type == OP_LOOK)) {
-            cout << 3 << flush;
+            debug_server && cout << 3 << flush;
             if (to == fullid) {
                 res = ((BaseEntity *)this)->Operation((Look &)op_ref);
             } else {
@@ -177,7 +179,7 @@ oplist WorldRouter::operation(const RootOperation * op)
             }
         }
     } else {
-        cout << 4 << flush;
+        debug_server && cout << 4 << flush;
         RootOperation newop = op_ref;
         std::list<BaseEntity *>::iterator I;
         for(I = perceptives.begin(); I != perceptives.end(); I++) {
@@ -197,13 +199,13 @@ oplist WorldRouter::operation(const RootOperation & op)
 
 oplist WorldRouter::Operation(const Look & op)
 {
-    cout << "WorldRouter::Operation(Look)" << endl << flush;
+    debug_server && cout << "WorldRouter::Operation(Look)" << endl << flush;
     string from = op.GetFrom();
     if (fobjects.find(from) == fobjects.end()) {
-        cout << "FATAL: Op has invalid from" << endl << flush;
+        debug_server && cout << "FATAL: Op has invalid from" << endl << flush;
         //return(*(RootOperation **)NULL);
     } else {
-        cout << "Adding [" << from << "] to perceptives" << endl << flush;
+        debug_server && cout << "Adding [" << from << "] to perceptives" << endl << flush;
         perceptives.push_back(fobjects[from]);
         perceptives.unique();
     }
@@ -241,7 +243,7 @@ void WorldRouter::add_operation_to_queue(RootOperation & op, BaseEntity * obj)
     for(I = operation_queue.begin();
         (I != operation_queue.end()) && ((*I)->GetSeconds() < t) ; I++,i++);
     operation_queue.insert(I, &op);
-    cout << i << " operation added to queue" << endl << flush;
+    debug_server && cout << i << " operation added to queue" << endl << flush;
 }
 
 RootOperation * WorldRouter::get_operation_from_queue()
@@ -253,7 +255,7 @@ RootOperation * WorldRouter::get_operation_from_queue()
     if ((*I)->GetSeconds() > real_time) {
         return(NULL);
     }
-    cout << "pulled op off queue" << endl << flush;
+    debug_server && cout << "pulled op off queue" << endl << flush;
     RootOperation * op = (*I);
     operation_queue.pop_front();
     return(op);

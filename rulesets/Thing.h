@@ -8,6 +8,7 @@
 #include <common/BaseEntity.h>
 
 class Player;
+class Routing;
 
 class Thing : public BaseEntity {
   protected:
@@ -57,7 +58,7 @@ class ThingFactory {
     map<string,thing_t> thing_map;
   public:
     ThingFactory();
-    Thing * new_thing(const string & type, const Message::Object & ent);
+    Thing * new_thing(const string &, const Message::Object &, Routing *);
 };
 
 extern ThingFactory thing_factory;

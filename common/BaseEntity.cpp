@@ -12,7 +12,7 @@
 
 #include "BaseEntity.h"
 
-
+static int debug_ops = 1;
 
 #if 0
 bad_type get_dict_func(bad_type dict, bad_type func_str, bad_type func_undefined)
@@ -115,7 +115,7 @@ Vector3D BaseEntity::get_xyz()
 
 Message::Object & BaseEntity::asObject()
 {
-    cout << "BaseEntity::asObject" << endl << flush;
+    debug_ops && cout << "BaseEntity::asObject" << endl << flush;
     Message::Object::MapType map;
     Message::Object * obj = new Message::Object(map);
     addObject(obj);
@@ -125,12 +125,19 @@ Message::Object & BaseEntity::asObject()
 
 void BaseEntity::addObject(Message::Object * obj)
 {
-    cout << "BaseEntity::addObject" << endl << flush;
+    debug_ops && cout << "BaseEntity::addObject" << endl << flush;
     Message::Object::MapType & omap = obj->AsMap();
     if (fullid.size() != 0) {
         omap["id"] = fullid;
     }
-        
+    Message::Object::ListType contlist;
+    list_t::const_iterator I;
+    for(I = contains.begin(); I != contains.end(); I++) {
+        contlist.push_back(Message::Object((*I)->fullid));
+    }
+    if (contlist.size() != 0) {
+        omap["contains"] = Message::Object(contlist);
+    }
 }
 
 oplist BaseEntity::external_message(const RootOperation & op)
@@ -140,7 +147,7 @@ oplist BaseEntity::external_message(const RootOperation & op)
 
 oplist BaseEntity::message(const RootOperation & op)
 {
-    cout << "BaseEntity::message" << endl << flush;
+    debug_ops && cout << "BaseEntity::message" << endl << flush;
     return operation(op);
 }
 
@@ -225,7 +232,7 @@ bad_type BaseEntity::call_operation(bad_type op)
 
 oplist BaseEntity::Operation(const Look & op)
 {
-    cout << "look op got all the way to here" << endl << flush;
+    debug_ops && cout << "look op got all the way to here" << endl << flush;
     Sight * s = new Sight();
     *s = Sight::Instantiate();
     Message::Object::ListType args(1,asObject());
@@ -255,16 +262,16 @@ op_no_t BaseEntity::op_enumerate(const RootOperation * op)
 {
     const Message::Object & parents = op->GetAttr("parents");
     if (!parents.IsList()) {
-        cout << "This isn't an operation." << endl << flush;
+        debug_ops && cout << "This isn't an operation." << endl << flush;
     }
     if (parents.AsList().size() != 1) {
-        cout << "This is a weird operation." << endl << flush;
+        debug_ops && cout << "This is a weird operation." << endl << flush;
     }
     if (!parents.AsList().begin()->IsString()) {
-        cout << "This op is screwed.\n" << endl << flush;
+        debug_ops && cout << "This op is screwed.\n" << endl << flush;
     }
     string parent(parents.AsList().begin()->AsString());
-    cout << "BaseEntity::op_enumarate [" << parent << "]" << endl << flush;
+    debug_ops && cout << "BaseEntity::op_enumarate [" << parent << "]" << endl << flush;
     if ("login" == parent) {
         return(OP_LOGIN);
     }
@@ -312,7 +319,7 @@ op_no_t BaseEntity::op_enumerate(const RootOperation * op)
 
 oplist BaseEntity::operation(const RootOperation & op)
 {
-    cout << "BaseEntity::operation" << endl << flush;
+    debug_ops && cout << "BaseEntity::operation" << endl << flush;
     oplist res;
     op_no_t op_no = op_enumerate(&op);
     OP_SWITCH(op, op_no, res,)

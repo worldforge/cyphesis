@@ -9,7 +9,7 @@ class Vector3D {
 
     Vector3D() : x(0), y(0), z(0), _set(0) { }
     Vector3D(double x, double y, double z) : x(x), y(y), z(z), _set(1) { }
-    Vector3D(Atlas::Message::Object::ListType & vector) {
+    Vector3D(Atlas::Message::Object::ListType vector) {
         x = vector.front().AsFloat();
         vector.pop_front();
         y = vector.front().AsFloat();

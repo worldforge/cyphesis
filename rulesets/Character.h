@@ -32,6 +32,7 @@ class MovementInfo {
 class Character : public Thing {
   protected:
     MovementInfo movement;
+    friend class MovementInfo;
     string sex;
     int autom;
   public:

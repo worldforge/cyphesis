@@ -22,7 +22,7 @@ Thing::Thing() : script_object(NULL), status(1), is_character(0)
     name=string("Foo");
     attributes["age"] = 0;
     attributes["mode"] = Message::Object("birth");
-    attributes["weight"] = -1;
+    attributes["weight"] = (float)-1;
     attributes["description"] = Message::Object("Some Thing");
 }
 
@@ -80,6 +80,8 @@ void Thing::merge(const Message::Object::MapType & entmap)
     for (I=entmap.begin(); I!=entmap.end(); I++) {
         const string & key = I->first;
         if ((key == "name") || (key == "id") || (key == "parents")) continue;
+        if ((key == "pos") || (key == "loc") || (key == "velocity")) continue;
+        if ((key == "face") || (key == "contains")) continue;
         attributes[key] = I->second;
     }
 }
@@ -284,16 +286,6 @@ oplist Thing::Operation(const Move & op)
             speed_ratio = location.velocity.mag()/consts::base_velocity;
         }
         cout << 10;
-        string mode;
-        if (speed_ratio > 0.5) {
-            mode = string("running");
-        } else if (speed_ratio > 0.0) {
-            mode = string("walking");
-        } else {
-            mode = string("standing");
-        }
-        cout << 11;
-        attributes["mode"] = ent["mode"] = Message::Object(mode);
         RootOperation * s = new Sight;
         *s = Sight::Instantiate();
         Message::Object::ListType args2(1,op.AsObject());
@@ -375,8 +367,10 @@ oplist Thing::Operation(const Touch & op)
 oplist Thing::Operation(const Look & op)
 {
     oplist res;
-    script_Operation("look", op, res);
-    return(res);
+    if (script_Operation("tick", op, res) != 0) {
+        return(res);
+    }
+    return(BaseEntity::Operation(op));
 }
 
 
@@ -396,7 +390,7 @@ ThingFactory::ThingFactory()
     thing_map["creator"] = thing_t(BASE_CREATOR, "");
 }
 
-Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)
+Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent, Routing * svr)
 {
     if (!ent.IsMap()) {
          cout << "Entity is not a map" << endl << flush;
@@ -421,7 +415,31 @@ Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)
         default:
             thing = new Thing();
     }
-    // Sort out python object here FIXME.
+    // Get location from entity, if it is present
+    if (entmap.find("loc") != entmap.end()) {
+        try {
+            string & parent_id = entmap["loc"].AsString();
+            BaseEntity * parent_obj = svr->fobjects[parent_id];
+            Vector3D pos(0, 0, 0);
+            Vector3D velocity(0, 0, 0);
+            Vector3D face(1, 0, 0);
+            if (entmap.find("pos") != entmap.end()) {
+                pos = Vector3D(entmap["pos"].AsList());
+            }
+            if (entmap.find("velocity") != entmap.end()) {
+                velocity = Vector3D(entmap["velocity"].AsList());
+            }
+            if (entmap.find("face") != entmap.end()) {
+                face = Vector3D(entmap["face"].AsList());
+            }
+            Location thing_loc(parent_obj, pos, velocity, face);
+            thing->location = thing_loc;
+        }
+        catch (Message::WrongTypeException) {
+            cout << "ERROR: Create operation has bad location" << endl << flush;
+        }
+    }
+    // Sort out python object
     if (py_class.size() != 0) {
         PyObject * mod_dict;
         if ((mod_dict = PyImport_ImportModule((char *)py_class.c_str()))==NULL) {

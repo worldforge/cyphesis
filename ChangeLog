@@ -1,5 +1,17 @@
 2000-11-10  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Fixed setting location of newly created objects
+
+	* Fixed setting weight as float on default Thing.
+
+	* Added more support for mode and face in movement code.
+
+	* Cleaned up the debugging output code.
+
+	* Fixed looking, and added support for contains attribute
+
+2000-11-10  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Added more refno capabilities
 
 	* Fixed some operation instantiation bugs
