@@ -1,6 +1,6 @@
 bin_PROGRAMS = cyphesis
 
-INCLUDES = -I.. -I/home/ajr/atlas-install/include
+INCLUDES = -I..
 LIBS = -L/home/ajr/atlas-install/lib -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity
 
 cyphesis_SOURCES = \

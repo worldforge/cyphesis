@@ -15,13 +15,9 @@ extern "C" {
 
 WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
 {
-    //id = 0;
     fullid = "world_0";
     update_time();
-    // real_time=time(NULL);
-    // world_info::time = time(NULL);
     server->id_dict[fullid]=this;
-    //objects[id]=this;
     fobjects[fullid]=this;
     illegal_thing = new Thing();
     illegal_thing->fullid = "illegal";
@@ -93,14 +89,11 @@ void WorldRouter::del_object(BaseEntity * obj)
     omnipresent_list.remove(obj);
     perceptives.remove(obj);
 
-    //objects.erase(obj->id);
-    //objects[obj->id] = illegal_thing;
     fobjects[obj->fullid] = illegal_thing;
 }
 
 bad_type WorldRouter::is_object_deleted(BaseEntity * obj)
 {
-    //return (objects.find(obj->id)!=objects.end());
     return find_object(obj->fullid)->fullid=="illegal";
 }
 
@@ -116,7 +109,7 @@ RootOperation * WorldRouter::message(RootOperation & msg, BaseEntity * obj)
     return(NULL);
 }
 
-BaseEntity * WorldRouter::get_operation_place(bad_type op)
+BaseEntity * WorldRouter::get_operation_place(const RootOperation & op)
 {
 #ifdef BLUE_MOON
     if (len(op)) {
@@ -236,27 +229,6 @@ void WorldRouter::add_operation_to_queue(RootOperation & op, BaseEntity * obj)
         (I != operation_queue.end()) && ((*I)->GetSeconds() < t) ; I++,i++);
     operation_queue.insert(I, &op);
     cout << i << " operation added to queue" << endl << flush;
-        
-        
-#if 0
-    if (op.from_ == "cheat" and not init.security_flag) {
-        op.from_ = op.to;
-    }
-    else {
-        op.from_ = obj;
-    }
-    if (WorldRouter::queue_fp) {
-        WorldRouter::queue_fp.write("add_operation_to_queue:\n"+str(op)+"\n");
-        WorldRouter::queue_fp.flush();
-    }
-    WorldRouter::debug(op,"world.add_operation_to_queue");
-    WorldRouter::operation_queue.insert(op);
-    if (op.id=="error" and const.debug_level>=1) {
-        log.inform("error operation in World.add_operation_to_queue",op);
-    }
-    log.debug(3,WorldRouter::print_queue("added!!"));
-    log.debug(4,"",op);
-#endif
 }
 
 RootOperation * WorldRouter::get_operation_from_queue()
@@ -391,22 +363,6 @@ bad_type WorldRouter::collision(BaseEntity * obj)
     return None;
 }
 
-bad_type WorldRouter::execute_code(bad_type code)
-{
-#if 0
-    exec(code);
-#endif
-    return None;
-}
-
-bad_type WorldRouter::eval_code(bad_type code)
-{
-#if 0
-    return eval(code);
-#endif
-    return None;
-}
-
 bad_type WorldRouter::save(bad_type filename)
 {
 #if 0
@@ -423,17 +379,11 @@ bad_type WorldRouter::load(bad_type filename)
     return None;
 }
 
-bad_type WorldRouter::update_time()
+void WorldRouter::update_time()
 {
-#if 0
-    new_time=time();
-    world_info.time.s=world_info.time.s+\;
-                       const.time_multiplier*(new_time-WorldRouter::real_time);
-    WorldRouter::real_time=new_time;
-#endif
+    // This is still lots simpler than the version in cyphesis-py
     world_info::time = time(NULL);
     real_time = world_info::time;
-    return None;
 }
 
 bad_type WorldRouter::get_time()
@@ -444,25 +394,15 @@ bad_type WorldRouter::get_time()
     return None;
 }
 
-bad_type WorldRouter::idle()
+int WorldRouter::idle()
 {
     update_time();
     RootOperation * op;
     while ((op = get_operation_from_queue()) != NULL) {
-        cout << "OP" << endl << flush;
         operation(op);
     }
     if (op==NULL) {
         return(0);
     }
     return(1);
-#if 0
-    WorldRouter::update_time();
-    op=WorldRouter::get_operation_from_queue();
-    if (not op) {
-        return 0;
-    }
-    WorldRouter::operation(op);
-    return 1;
-#endif
 }

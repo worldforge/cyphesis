@@ -53,38 +53,8 @@ double Vector3D::operator[](int index)
 
 bool Vector3D::operator!() const
 {
-    return((x == 0) && (y == 0) && (z == 0));
+    return(!_set);
 }
-
-//Do we need this
-//bad_type Vector3D::__len__()
-//{
-        //"Define the length of a vector";
-        //return 3;
-//}
-
-#if 0
-bad_type Vector3D::__repr__()
-{
-        "String representation of a vector";
-        return 'Vector3D' + `(Vector3D::x, Vector3D::y, Vector3D::z)`;
-}
-
-
-bad_type Vector3D::__neg__()
-{
-        "The negative of a vector";
-        return Vector3D(map(neg,Vector3D::vector));
-}
-
-
-bad_type Vector3D::__nonzero__()
-{
-        "Check for nonzero vector";
-        return not (Vector3D::x==Vector3D::y==Vector3D::y==0.0);
-}
-#endif
-
 
 double Vector3D::dot(Vector3D v)
 {

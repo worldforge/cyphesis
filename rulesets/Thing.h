@@ -25,12 +25,12 @@ class Thing : public BaseEntity {
 
     virtual void addObject(Message::Object *);
     RootOperation * send_world(RootOperation * msg);
-    bad_type setup_operation(bad_type op);
-    bad_type tick_operation(bad_type op);
-    bad_type create_operation(bad_type op);
-    bad_type delete_operation(bad_type op);
-    bad_type move_operation(bad_type op);
-    bad_type set_operation(bad_type op);
+    virtual RootOperation * Operation(const Setup & op);
+    virtual RootOperation * Operation(const Tick & op);
+    virtual RootOperation * Operation(const Create & op);
+    virtual RootOperation * Operation(const Delete & op);
+    virtual RootOperation * Operation(const Move & op);
+    virtual RootOperation * Operation(const Set & op);
 };
 
 class ThingFactory {

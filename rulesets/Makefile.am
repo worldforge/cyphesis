@@ -1,6 +1,6 @@
 noinst_LIBRARIES = librulesets.a
 
-INCLUDES = -I.. -I/home/ajr/atlas-install/include
+INCLUDES = -I..
 
 librulesets_a_SOURCES = Thing.cpp Thing.h \
 			BaseMind.cpp BaseMind.h \

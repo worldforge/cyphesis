@@ -1,10 +1,6 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-typedef int bad_type; // Remove this to get unset type reporting
-
-#define None 0 // Remove this to deal with un-initialied vars
-
 class BaseMind;
 class ExternalMind;
 class Account;
@@ -17,20 +13,20 @@ class Location;
 
 class MovementInfo {
     Character * body;
-    Vector3D target_location;
-    Vector3D velocity;
     double last_movement_time;
-    int serialno;
-    //bad_type last_movement_time;
 
   public:
+    Vector3D target_location;
+    Vector3D velocity;
+    int serialno;
+
     MovementInfo(Character * body);
+
     bool update_needed(const Location & location);
     double get_tick_addition(const Vector3D & coordinates);
-    //bad_type __str__();
     void reset();
-    RootOperation * gen_move_operation(Location &);
-    RootOperation * gen_move_operation();
+    RootOperation * gen_move_operation(Location *,Location &);
+    RootOperation * gen_move_operation(Location *);
 };
 
 class Character : public Thing {

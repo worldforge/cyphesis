@@ -22,7 +22,6 @@ typedef int bad_type; // Remove this to get unset type reporting
 //typedef bad_type(WorldRouter::*method_t)(bad_type, BaseEntity *);
 
 class WorldRouter : public Routing {
-    ServerRouting * server;
     Thing * illegal_thing;
     double real_time;
     std::list<RootOperation *> operation_queue;
@@ -30,6 +29,7 @@ class WorldRouter : public Routing {
   public:
     //dict_t objects;
     //fdict_t fobjects;
+    ServerRouting * server;
     list_t perceptives;
     list_t omnipresent_list;
     ofstream queue_fp;
@@ -44,7 +44,7 @@ class WorldRouter : public Routing {
     bad_type is_object_deleted(BaseEntity *);
     virtual RootOperation * message(RootOperation & msg, BaseEntity * obj);
     virtual RootOperation * message(const RootOperation & msg);
-    BaseEntity * get_operation_place(bad_type op);
+    BaseEntity * get_operation_place(const RootOperation & op);
     virtual RootOperation * operation(const RootOperation * op);
     virtual RootOperation * operation(const RootOperation & op);
     virtual RootOperation * Operation(const Look & op);
@@ -55,13 +55,11 @@ class WorldRouter : public Routing {
     bad_type update_all_ranges(BaseEntity *);
     bad_type update_range(BaseEntity *, bad_type attribute, bad_type range, bad_type generate_messages=0);
     bad_type collision(BaseEntity *);
-    bad_type execute_code(bad_type code);
-    bad_type eval_code(bad_type code);
     bad_type save(bad_type filename);
     bad_type load(bad_type filename);
-    bad_type update_time();
+    void update_time();
     bad_type get_time();
-    bad_type idle();
+    int idle();
 };
 
 #endif /* WORLD_ROUTER_H */

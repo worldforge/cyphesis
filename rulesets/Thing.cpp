@@ -1,15 +1,22 @@
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Sight.h>
+#include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation/Delete.h>
+#include <Atlas/Objects/Operation/Move.h>
 
 #include "Thing.h"
 #include "Character.h"
 
 #include <server/WorldRouter.h>
 
+#include <common/const.h>
+
 
 Thing::Thing() : description("Some Thing"), mode("birth"),
-		status(1.0), age(0.0), is_character(0)
+		status(1.0), weight(-1), age(0.0), is_character(0)
 {
     name=string("Foo");
 }
@@ -26,85 +33,141 @@ RootOperation * Thing::send_world(RootOperation * msg)
     return world->message(*msg, this);
 }
 
-bad_type Thing::setup_operation(bad_type op)
+RootOperation * Thing::Operation(const Setup & op)
 {
-    //return Operation("tick",to=this);
-    return None;
+    RootOperation * tick = new Tick;
+    tick->SetTo(fullid);
+    return(tick);
 }
 
-bad_type Thing::tick_operation(bad_type op)
+RootOperation * Thing::Operation(const Tick & op)
 {
-    return None;
+    return(NULL);
 }
 
-bad_type Thing::create_operation(bad_type op)
+RootOperation * Thing::Operation(const Create & op)
 {
-    //ent=op[0];
-    //if (len(ent.type)!=1) {
-        //return Thing::error(op,"Type field should contain exactly one type");
-    //}
-    //type=string.capitalize(ent.type[0]);
-    //type_class=get_thing_class(type,"Thing");
-    //obj=Thing::world.add_object(type_class,ent);
-    //if (not obj.location) {
-        //log.debug(3,"??????? no obj.location: "+str(Thing::id)+" "+str(obj.id));
-        //if (hasattr(ent,"copy")) {
-            //log.debug(3,str(ent.copy.id)+" "+str(ent.copy.location));
+    const Message::Object::ListType & args=op.GetArgs();
+    if (args.size() == 0) {
+       return(NULL);
+    }
+    try {
+        Message::Object::MapType ent = args.front().AsMap();
+        if (ent.find("parents") == ent.end()) {
+            return error(op, "Object to be created has no type");
+        }
+        Message::Object::ListType & parents = ent["parents"].AsList();
+        string type = parents.front().AsString();
+        Thing * obj = (Thing *)world->add_object(type,ent);
+        if (!obj->location) {
+            obj->location=location;
+            obj->location.velocity=Vector3D(0,0,0);
+        }
+        //if (obj->location.parent->contains.find(obj->fullid) !=
+                            //obj->location.parent->contains.end()) {
+            //obj->location.parent->contains.append(obj);
         //}
-        //obj.location=Thing::location.copy();
-        //obj.location.velocity=Vector3D(0,0,0);
-    //}
-    //if (not obj in obj.location.parent.contains) {
-        //obj.location.parent.contains.append(obj);
-    //}
-    //log.debug(3,"Created: "+str(obj)+" now: "+str(Thing::world.objects));
-    //op[0]=obj.as_entity();
-    //return Operation("sight",op);
-    return None;
+        //log.debug(3,"Created: "+str(obj)+" now: "+str(Thing::world.objects));
+        Create * c = new Create(op);
+        list<Message::Object> args2(1,obj->asObject());
+        c->SetArgs(args2);
+        RootOperation * s = new Sight();
+        list<Message::Object> args3(1,c->AsObject());
+        s->SetArgs(args3);
+        return(s);
+    }
+    catch (Message::WrongTypeException) {
+        return error(op, "Malformed object to be created\n");
+    }
+    return(NULL);
 }
 
-bad_type Thing::delete_operation(bad_type op)
+RootOperation * Thing::Operation(const Delete & op)
 {
-    //Thing::world.del_object(this);
+    world->del_object(this);
     //log.debug(3,"Deleted: "+str(this)+" now: "+str(Thing::world.objects));
-    //return Operation("sight",op);
+    RootOperation * sight = new Sight;
+    list<Message::Object> args(1,op.AsObject());
+    sight->SetArgs(args);
+    return(sight);
 }
 
-bad_type Thing::move_operation(bad_type op)
+RootOperation * Thing::Operation(const Move & op)
 {
-    //ent=op[0];
-    //if (Thing::location.parent!=ent.location.parent) {
-        //Thing::location.parent.contains.remove(this);
-        //ent.location.parent.contains.append(this);
-    //}
-    //Thing::location=ent.location;
-    //if (type(Thing::location.velocity)==NoneType) {
-        //speed_ratio = 0.0;
-    //}
-    //else {
-        //speed_ratio = Thing::location.velocity.mag()/const.base_velocity;
-    //}
-    //if (speed_ratio > 0.5) {
-        //Thing::mode = "running";
-    //}
-    //else if (speed_ratio > 0.0) {
-        //Thing::mode = "walking";
-    //}
-    //else {
-        //Thing::mode = "standing";
-    //}
-    //ent.mode = Thing::mode;
-    //if (const.enable_ranges) {
-        //log.debug(1,"="*60);
-        //log.debug(1,"%s %s %s" % (this,Thing::location.parent.id,Thing::location.coordinates));
-        //res = Thing::world.update_all_ranges(this);
-        //res2 = Thing::world.collision(this);
-    //}
-    //return Operation("sight",op) ; //+ res + res2;
-    return None;
+    const Message::Object::ListType & args=op.GetArgs();
+    if (args.size() == 0) {
+       return(NULL);
+    }
+    try {
+        Message::Object::MapType ent = args.front().AsMap();
+        if (ent.find("parent") == ent.end()) {
+            return(error(op, "Move location has no parent"));
+        }
+        if (location.parent->fullid!=ent["parent"].AsString()) {
+            //location.parent.contains.remove(this);
+            //ent.location.parent.contains.append(this);
+        }
+        string parent=ent["parent"].AsString();
+        if (world->server->id_dict.find(parent) == world->server->id_dict.end()) {
+            return(error(op, "Move location parent invalid"));
+        }
+        location.parent=world->server->id_dict[parent];
+        if (ent.find("pos") == ent.end()) {
+            return(error(op, "Move location has no position"));
+        }
+        Message::Object::ListType vector = ent["pos"].AsList();
+        if (vector.size()!=3) {
+            return(error(op, "Move location pos is malformed"));
+        }
+        int x = vector.front().AsInt();
+        vector.pop_front();
+        int y = vector.front().AsInt();
+        vector.pop_front();
+        int z = vector.front().AsInt();
+        location.coords = Vector3D(x, y, z);
+        if (ent.find("velocity") == ent.end()) {
+            return(error(op, "Move location has no"));
+        }
+        vector.clear();
+        vector = ent["velocity"].AsList();
+        if (vector.size()!=3) {
+            return(error(op, "Move location pos is malformed"));
+        }
+        x = vector.front().AsInt();
+        vector.pop_front();
+        y = vector.front().AsInt();
+        vector.pop_front();
+        z = vector.front().AsInt();
+        location.velocity = Vector3D(x, y, z);
+
+        double speed_ratio;
+        if (!(location.velocity)) {
+            speed_ratio = 0.0;
+        } else {
+            speed_ratio = location.velocity.mag()/consts::base_velocity;
+        }
+        if (speed_ratio > 0.5) {
+            mode = string("running");
+        } else if (speed_ratio > 0.0) {
+            mode = string("walking");
+        } else {
+            mode = string("standing");
+        }
+        ent["mode"] = Message::Object(mode);
+        RootOperation * s = new Sight;
+        Message::Object::ListType args2(1,op.AsObject());
+        s->SetArgs(args2);
+        return(s); //+ res + res2;
+        // I think it might be wise to send a set indicating we have changed
+        // modes
+    }
+    catch (Message::WrongTypeException) {
+        return(error(op, "Malformed object to be moved\n"));
+    }
+    return(NULL);
 }
 
-bad_type Thing::set_operation(bad_type op)
+RootOperation * Thing::Operation(const Set & op)
 {
     //ent=op[0];
     //needTrueValue=["type","contains","instance","id","location","stamp"];
@@ -123,7 +186,7 @@ bad_type Thing::set_operation(bad_type op)
         //return Message(opSight,opDestroy);
     //}
     //return opSight;
-    return None;
+    return(NULL);
 }
 
 Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)

@@ -13,6 +13,10 @@
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Move.h>
 
+extern "C" {
+    #include <stdlib.h>
+}
+
 
 #include "Character.h"
 #include "Thing.h"
@@ -38,8 +42,8 @@ MovementInfo::MovementInfo(Character * body) : body(body)
 void MovementInfo::reset()
 {
     serialno = MovementInfo::serialno+1;
-    target_location=Vector3D(0,0,0);
-    velocity=Vector3D(0,0,0);
+    target_location=Vector3D();
+    velocity=Vector3D();
     last_movement_time=world_info::time;
 }
 
@@ -48,12 +52,12 @@ bool MovementInfo::update_needed(const Location & location)
     return((velocity!=Vector3D(0,0,0))||(location.velocity!=Vector3D(0,0,0)));
 }
 
-RootOperation * MovementInfo::gen_move_operation()
+RootOperation * MovementInfo::gen_move_operation(Location * rloc)
 {
-    return(gen_move_operation(body->location));
+    return(gen_move_operation(rloc, body->location));
 }
 
-RootOperation * MovementInfo::gen_move_operation(Location & loc)
+RootOperation * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
 {
     if (debug_movement) {
         cout << "gen_move_operation: status:" << endl << flush;
@@ -71,14 +75,17 @@ RootOperation * MovementInfo::gen_move_operation(Location & loc)
         Location new_loc=loc;
         Message::Object * ent = new Message::Object;
         new_loc.velocity=velocity;
-        new_loc.addObject(ent);
         Move * moveOp = new Move;
         moveOp->SetTo(body->fullid);
+        new_loc.addObject(ent);
         list<Message::Object> args(1,*ent);
         moveOp->SetArgs(args);
         if (!velocity) {
             if (debug_movement) {
                 cout << "only velocity changed..." << endl << flush;
+            }
+            if (NULL != rloc) {
+                *rloc = new_loc;
             }
             return moveOp;
         }
@@ -102,6 +109,12 @@ RootOperation * MovementInfo::gen_move_operation(Location & loc)
         new_loc.coords=new_coords;
         if (debug_movement) {
             cout << "new coordinates:" << endl << flush; //new_loc.coordinates;
+        }
+        new_loc.addObject(ent);
+        list<Message::Object> args2(1,*ent);
+        moveOp->SetArgs(args2);
+        if (NULL != rloc) {
+            *rloc = new_loc;
         }
         return(moveOp);
     }
@@ -127,26 +140,16 @@ double MovementInfo::get_tick_addition(const Vector3D & coordinates)
     return consts::basic_tick;
 }
 
-
-//bad_type MovementInfo::__str__()
-//{
-    //return "MovementInfo(%i,%s,%s,%s)" %
-           //(MovementInfo::serialno,MovementInfo::target_location,MovementInfo::velocity,;
-            //MovementInfo::last_movement_time);
-//}
-
-
-//"This is generic body class that all characters inherit from";
 Character::Character() : movement(this), sex("female"), autom(0), drunkness(0.0)
 {
     weight = 60.0;
     is_character = 1;
-    //movement=MovementInfo();
 }
 
 RootOperation * Character::Operation(const Setup & op)
 {
     cout << "CHaracter::Operation(setup)" << endl << flush;
+    // HasAttr() is logically backwards
     if (!op.HasAttr("sub_to")) {
         cout << "Has sub_to" << endl << flush;
         return(NULL);
@@ -155,66 +158,51 @@ RootOperation * Character::Operation(const Setup & op)
     mind = new BaseMind();
 
     Setup * s = new Setup(op);
-    // Man this is fxored up
     // THis is so not the right thing to do
     s->SetAttr("sub_to", Message::Object("mind"));
     return(s);
     // We also need to return a look op, but don't support multiple ops yet
 }
 
-#if 0
-bad_type Character::setup_operation(bad_type op)
-{
-    log.debug(4,"Character.setup_operation:",op);
-    if (hasattr(op,"sub_to")) {
-        return None ; //meant for mind;
-    }
-    Character::mind=NPCMind(id=Character::id, body=this);
-    opMindSetup=Operation("setup",to=this,sub_to=Character::mind);
-    return opMindSetup + Operation("look");
-}
-#endif
-
 RootOperation * Character::Operation(const Tick & op)
 {
-    return(NULL);
-    //This is going to be a tough one
-}
-
-#if 0
-bad_type Character::tick_operation(bad_type op)
-{
-    log.debug(4,"Character.tick_operation:",op);
-    if (hasattr(op,"sub_to")) {
-        return None ; //meant for mind;
+    // HasAttr() is logically backwards
+    if (!op.HasAttr("sub_to")) {
+        cout << "Has sub_to" << endl << flush;
+        return(NULL);
     }
-    time=world_info::time;
     if (debug_movement) {
-        print "="*60;
+        cout << "================================" << endl << flush;
     }
-    if (len(op)) {
-        arg1=op[0];
-        if (arg1.serialno<Character::movement.serialno) {
-            if (debug_movement) {
-                print "Old tick!:",arg1.serialno;
+    const Message::Object::ListType & args = op.GetArgs();
+    if ((0 != args.size()) && (args.front().IsMap())) {
+        Message::Object::MapType arg1 = args.front().AsMap();
+        if ((arg1.find("serialno") != arg1.end()) &&
+           (arg1["serialno"].IsInt())) {
+            if (arg1["serialno"].AsInt() < movement.serialno) {
+                if (debug_movement) {
+                    cout << "Old tick" << endl << flush;
+                }
+                return(NULL);
             }
-            return;
         }
-        moveOp=Character::movement.gen_move_operation(this);
+        Location ret_loc;
+        RootOperation * moveOp = movement.gen_move_operation(&ret_loc);
         if (moveOp) {
-            ent=Entity("move",serialno=Character::movement.serialno);
-            tickOp=Operation("tick",ent,to=this);
-            tickOp.time.sadd=Character::movement.get_tick_addition(\;
-                moveOp[0].location.coordinates);
-            if (debug_movement) {
-                print "Next tick:",tickOp.time.sadd;
-            }
-            return moveOp+tickOp;
+            Message::Object::MapType entmap;
+            entmap["name"]=Message::Object("move");
+            entmap["serialno"]=Message::Object(movement.serialno);
+            Message::Object end(entmap);
+            RootOperation * tickOp = new Tick();
+            tickOp->SetTo(fullid);
+            tickOp->SetFutureSeconds(movement.get_tick_addition(ret_loc.coords));
+            // Arrrg we need to return both the tickOP and the moveOp!
+            return(tickOp); // + moveOp
         }
-        return moveOp;
+        return(moveOp);
     }
+    return(NULL);
 }
-#endif
 
 RootOperation * Character::Operation(const Talk & op)
 {
@@ -225,24 +213,6 @@ RootOperation * Character::Operation(const Talk & op)
     return(s);
 }
 
-#if 0
-bad_type Character::talk_operation(bad_type op)
-{
-    return Operation("sound",op);
-}
-
-// WHat to do with this?
-bad_type Character::thought_operation(bad_type op)
-{
-    return Operation("telepathy",op);
-}
-
-bad_type Character::goal_info_operation(bad_type op)
-{
-    return Operation("telepathy",op);
-}
-#endif
-
 RootOperation * Character::Mind_Operation(const Setup & op)
 {
     Setup *s = new Setup(op);
@@ -250,16 +220,6 @@ RootOperation * Character::Mind_Operation(const Setup & op)
     s->SetAttr("sub_to", Message::Object("mind"));
     return(s);
 }
-
-#if 0
-bad_type Character::mind_setup_operation(bad_type op)
-{
-    log.debug(4,"Character.mind_setup_operation:",op);
-    op.to=this;
-    op.sub_to=Character::mind;
-    return op;
-}
-#endif
 
 RootOperation * Character::Mind_Operation(const Tick & op)
 {
@@ -269,147 +229,168 @@ RootOperation * Character::Mind_Operation(const Tick & op)
     return(t);
 }
 
-#if 0
-bad_type Character::mind_tick_operation(bad_type op)
-{
-    log.debug(4,"Character.mind_tick_operation:",op);
-    op.to=this;
-    op.sub_to=Character::mind;
-    return op;
-}
-#endif
-
 RootOperation * Character::Mind_Operation(const Move & op)
 {
-    // A whole load of scary shit *************
-    return(NULL);
-}
-
-#if 0
-bad_type Character::mind_move_operation(bad_type op)
-{
-    ent_id=op[0].id;
-    if (ent_id!=Character::id) {
-        op.to=Character::world.server.id_dict[ent_id];
-        if (not hasattr(op.to, "weight")) {
-            return;
-        }
-        if (not hasattr(this, "weight")) {
-            return;
-        }
-        if (Character::weight < op.to.weight) {
-            return;
-        }
-        return op;
+    Move * newop = new Move(op);
+    const Message::Object::ListType & args = op.GetArgs();
+    if ((0 == args.size()) || (!args.front().IsMap())) {
+        cout << "move op has no argument" << endl << flush;
     }
-    location=op[0].location;
-
-    if (location.coordinates) {
-        location.coordinates=location.coordinates+\;
-                              Vector3D(random(),random(),0.0)*Character::drunkness*10.0;
+    Message::Object::MapType arg1 = args.front().AsMap();
+    if ((arg1.find("id") == arg1.end()) || !arg1["id"].IsString()) {
+        cout << "Its got no id" << endl << flush;
     }
-    else {
-        if (op.time.sadd<0.0) {
-            op.time.sadd=0.0;
-        }
+    string & oname = arg1["id"].AsString();
+    if (world->fobjects.find(oname) == world->fobjects.end()) {
+        cout << "This move op is for a phoney object" << endl << flush;
     }
-
-    if (debug_movement) {
-        print "-"*60;
-        print "Current:",this,world_info::time,`Character::location`,;
-        print "Velocity:",Character::location.velocity;
-        print "Requested:",`location`,"Velocity:",location.velocity;
-        if (location.coordinates) {
-            print "Distance:", Character::location.coordinates.distance(location.coordinates);
+    Thing * obj = (Thing *)world->fobjects[oname];
+    if ((obj->weight < 0) || (obj->weight > weight)) {
+        // We can't move this. Just too heavy
+        return(NULL);
+    }
+    string location_parent("");
+    if ((arg1.find("loc") != arg1.end()) && (arg1["loc"].IsString())) {
+        location_parent = arg1["parent"].AsString();
+    }
+    Vector3D location_coords;
+    if ((arg1.find("pos") != arg1.end()) && (arg1["pos"].IsList())) {
+        Message::Object::ListType vector = arg1["pos"].AsList();
+        if (vector.size()==3) {
+            try {
+                int x = vector.front().AsInt();
+                vector.pop_front();
+                int y = vector.front().AsInt();
+                vector.pop_front();
+                int z = vector.front().AsInt();
+                location_coords = Vector3D(x, y, z);
+            }
+            catch (Message::WrongTypeException) {
+            }
         }
     }
-    if (Character::location.parent==Character::world==location.parent and op.time.sadd>=0.0) {
-        if (debug_movement) {
-            print "Velocity handling...";
-        }
-        if (location.velocity) {
-            if (debug_movement) {
-                print "\tVelocity given";
-            }
-            velocityMagnitude=min(const.base_velocity,;
-                                  location.velocity.mag());
-        }
-        else {
-            if (debug_movement) {
-                print "\tUsing default";
-            }
-            velocityMagnitude=const.base_velocity;
-        }
-        if (debug_movement) {
-            print "Coordinates handling...";
-        }
-        if (location.coordinates) {
-            if (debug_movement) {
-                print "\tTarget coordinates given";
-            }
-            direction=location.coordinates-Character::location.coordinates;
-        }
-        else {
-            if (debug_movement) {
-                print "\tUsing velocity as direction";
-            }
-            direction=location.velocity;
-        }
 
-        moveOp=Character::movement.gen_move_operation(this);
-        if (moveOp) {
-            currentLocation=moveOp[0].location;
+    Vector3D location_vel;
+    if ((arg1.find("velocity") != arg1.end()) && (arg1["velocity"].IsList())) {
+        Message::Object::ListType vector = arg1["velocity"].AsList();
+        if (vector.size()==3) {
+            try {
+                int x = vector.front().AsInt();
+                vector.pop_front();
+                int y = vector.front().AsInt();
+                vector.pop_front();
+                int z = vector.front().AsInt();
+                location_vel = Vector3D(x, y, z);
+            }
+            catch (Message::WrongTypeException) {
+            }
         }
-        else {
-            currentLocation=Character::location;
+    }
+    if (!location_coords) {
+        if (op.GetFutureSeconds() < 0) {
+            newop->SetFutureSeconds(0);
         }
-        Character::movement.reset();
-        if (not (velocityMagnitude and direction)) {
+    } else {
+        location_coords = location_coords +
+            (Vector3D(((double)rand())/RAND_MAX, ((double)rand())/RAND_MAX, 0)
+				* drunkness * 10);
+    }
+    double vel_mag;
+    // Print out a bunch of debug info
+    if ( (location_parent==world->fullid) &&
+         (location_parent==location.parent->fullid) &&
+         (newop->GetFutureSeconds() >= 0) ) {
+        // Movement within current parent. Work out the speed and stuff and
+        // use movementinfo to track movement.
+        if (!location_vel) {
             if (debug_movement) {
-                print "Movement stopped";
+                cout << "\tVelocity default" << endl << flush;
             }
-            if (moveOp) {
-                moveOp[0].location.velocity=Vector3D(0.0,0.0,0.0);
-            }
-            return moveOp;
-        }
-
-        ent=Entity("move",serialno=Character::movement.serialno);
-        tickOp=Operation("tick",ent,to=this);
-
-        direction=direction/direction.mag();
-
-        if (location.coordinates) {
+            vel_mag=consts::base_velocity;
+        } else {
             if (debug_movement) {
-                print "\tUsing target location:",location.coordinates;
+                cout << "\tVelocity given" << endl << flush;
             }
-            Character::movement.target_location=location.coordinates;
+            vel_mag=location_vel.mag();
+            if (vel_mag > consts::base_velocity) {
+                vel_mag = consts::base_velocity;
+            }
         }
-        else {
+        Vector3D direction;
+        if (!location_coords) {
             if (debug_movement) {
-                print "\tNot target location";
+                cout << "\tUsing velocity for direction" << endl << flush;
             }
-            Character::movement.target_location=Vector3D(0,0,0);
+            direction=location_vel;
+        } else {
+            if (debug_movement) {
+                cout << "\tDestination coordinates given" << endl << flush;
+            }
+            direction=location_coords-location.coords;
         }
-        Character::movement.velocity=direction*velocityMagnitude;
+        direction=direction.unit_vector();
+        
+        Location ret_location;
+        Location current_location;
+        RootOperation * moveOp = movement.gen_move_operation(&ret_location);
+        if (NULL!=moveOp) {
+            current_location = ret_location;
+        } else {
+            current_location = location;
+        }
+        movement.reset();
+        if ((vel_mag==0) || !direction) {
+            if (debug_movement) {
+                cout << "\tMovement stopped" << endl << flush;
+            }
+            if (NULL != moveOp) {
+                Message::Object::ListType & args = moveOp->GetArgs();
+                Message::Object::MapType & ent = args.front().AsMap();
+                Message::Object::ListType velocity;
+                velocity.push_back(Message::Object(0.0));
+                velocity.push_back(Message::Object(0.0));
+                velocity.push_back(Message::Object(0.0));
+                ent["vel"]=Message::Object(velocity);
+            }
+            return(moveOp);
+        }
+        RootOperation * tickOp = new Tick;
+        Message::Object::MapType ent;
+        ent["serialno"] = Message::Object(movement.serialno);
+        ent["name"] = Message::Object("move");
+        Message::Object::ListType args(1,ent);
+        tickOp->SetArgs(args);
+        tickOp->SetTo(fullid);
+        // Need to add the arguments to this op before we return it
+        // direction is already a unit vector
+        if (!location_coords) {
+            if (debug_movement) {
+                cout << "\tNo target location" << endl << flush;
+            }
+            movement.target_location = Vector3D(0,0,0);
+        } else {
+            if (debug_movement) {
+                cout << "\tUsing target location" << endl << flush;
+            }
+            movement.target_location = location_coords;
+        }
+        movement.velocity=direction*vel_mag;
         if (debug_movement) {
-            print "Velocity:",velocityMagnitude,Character::movement.velocity;
+            cout << "Velocity " << vel_mag << endl << flush;
         }
-        moveOp2=Character::movement.gen_move_operation(this,currentLocation);
-        tickOp.time.sadd=Character::movement.get_tick_addition(Character::location.coordinates);
+        RootOperation * moveOp2 = movement.gen_move_operation(NULL,current_location);
+        tickOp->SetFutureSeconds(movement.get_tick_addition(location.coords));
         if (debug_movement) {
-            print "Next tick:",tickOp.time.sadd;
+            cout << "Next tick " << tickOp->GetFutureSeconds() << endl << flush;
         }
-        if (moveOp2) {
+        if (NULL!=moveOp2) {
             moveOp=moveOp2;
         }
-        resultOp=moveOp+tickOp;
-        return resultOp;
+        // return moveOp and tickOp;
+        return(moveOp);
     }
-
-    return op;
+    return(newop);
 }
-#endif
 
 RootOperation * Character::Mind_Operation(const Set & op)
 {
@@ -426,18 +407,6 @@ RootOperation * Character::Mind_Operation(const Set & op)
     }
     return(s);
 }
-
-#if 0
-bad_type Character::mind_set_operation(bad_type op)
-{
-    ent_id=op[0].id;
-    if (ent_id!=Character::id) {
-        op.to=Character::world.server.id_dict[ent_id];
-        return op;
-    }
-    return op;
-}
-#endif
 
 RootOperation * Character::Mind_Operation(const Create & op)
 {
@@ -468,28 +437,6 @@ RootOperation * Character::Mind_Operation(const Talk & op)
     return(t);
 }
 
-#if 0
-bad_type Character::mind_delete_operation(bad_type op)
-{
-    return op;
-}
-
-bad_type Character::mind_talk_operation(bad_type op)
-{
-    return op;
-}
-
-bad_type Character::mind_goal_info_operation(bad_type op)
-{
-    return op;
-}
-
-bad_type Character::mind_thought_operation(bad_type op)
-{
-    return op;
-}
-#endif
-
 RootOperation * Character::Mind_Operation(const Look & op)
 {
     Look * l = new Look(op);
@@ -507,20 +454,6 @@ RootOperation * Character::Mind_Operation(const Look & op)
     return(l);
 }
 
-#if 0
-bad_type Character::mind_look_operation(bad_type op)
-{
-    if (len(op)==0) {
-        op.to=Character::world;
-    }
-    else {
-        ent=op[0];
-        op.to=Character::world.server.id_dict[ent.id];
-    }
-    return op;
-}
-#endif
-
 RootOperation * Character::Mind_Operation(const Cut & op)
 {
     Cut * c = new Cut(op);
@@ -532,18 +465,6 @@ RootOperation * Character::Mind_Operation(const Eat & op)
     Eat * e = new Eat(op);
     return(e);
 }
-
-#if 0
-bad_type Character::mind_cut_operation(bad_type op)
-{
-    return op;
-}
-
-bad_type Character::mind_eat_operation(bad_type op)
-{
-    return op;
-}
-#endif
 
 RootOperation * Character::Mind_Operation(const Touch & op)
 {
@@ -562,27 +483,6 @@ RootOperation * Character::Mind_Operation(const Touch & op)
     return(NULL);
 }
 
-#if 0
-bad_type Character::mind_touch_operation(bad_type op)
-{
-     ent_id=op[0].id;
-     if (ent_id!=Character::id) {
-         op.to=Character::world.server.id_dict[ent_id];
-         return op;
-     }
-}
-
-bad_type Character::mind_extinguish_operation(bad_type op)
-{
-    return op;
-}
-
-bad_type Character::mind_imaginary_operation(bad_type op)
-{
-    return op;
-}
-#endif
-
 RootOperation * Character::W2m_Operation(const Setup & op)
 {
     if (op.HasAttr("sub_to")) {
@@ -600,24 +500,6 @@ RootOperation * Character::W2m_Operation(const Tick & op)
     }
     return(NULL);
 }
-
-#if 0
-bad_type Character::w2m_setup_operation(bad_type op)
-{
-    log.debug(4,"Character.w2m_setup_operation:",op);
-    if (hasattr(op,"sub_to")) {
-        return op ; //meant for mind;
-    }
-}
-
-bad_type Character::w2m_tick_operation(bad_type op)
-{
-    log.debug("Character.w2m_tick_operation:",op);
-    if (hasattr(op,"sub_to")) {
-        return op ; //meant for mind;
-    }
-}
-#endif
 
 RootOperation * Character::W2m_Operation(const Sight & op)
 {
@@ -645,32 +527,6 @@ RootOperation * Character::W2m_Operation(const Touch & op)
     Touch * t = new Touch(op);
     return(t);
 }
-
-#if 0
-bad_type Character::w2m_sight_operation(bad_type op)
-{
-    if (Character::drunkness>1.0) {
-        return None;
-    }
-    return op;
-}
-
-bad_type Character::w2m_sound_operation(bad_type op)
-{
-    if (Character::drunkness>1.0) {
-        return None;
-    }
-    return op;
-}
-
-bad_type Character::w2m_touch_operation(bad_type op)
-{
-    if (Character::drunkness>1.0) {
-        return None;
-    }
-    return op;
-}
-#endif
 
 RootOperation * Character::send_mind(RootOperation & msg)
 {
@@ -704,76 +560,6 @@ RootOperation * Character::send_mind(RootOperation & msg)
     return(res);
 }
 
-#if 0
-bad_type Character::send_mind(bad_type msg)
-{
-    if (not hasattr(this,"mind")) {
-        return;
-    }
-    if (msg) {
-        msg.internal2atlas();
-    }
-    if (init.security_flag) {
-        local_res = None;
-    }
-    else {
-        local_res=Character::mind.message(msg);
-    }
-    if (local_res) {
-        local_res.internal2atlas();
-    }
-    external_res=None;
-    try {
-        em=Character::external_mind;
-    }
-    catch (AttributeError) {
-        em=None;
-    }
-    if (em and em.connection) {
-        try {
-            external_res=em.message(msg);
-        }
-        catch (ConnectionError) {
-            if (not Character::auto and not init.security_flag) {
-                log.inform("Auto flag on for "+Character::id,msg);
-                Character::auto=1;
-            }
-        }
-    }
-    else {
-        if (not Character::auto and not init.security_flag) {
-            log.inform("Auto flag on for "+Character::id,msg);
-            Character::auto=1;
-        }
-    }
-    if (Character::auto and not init.security_flag) {
-        if (local_res==external_res==None) {
-            res=None;
-        }
-        else {
-            res=local_res+external_res;
-        }
-    }
-    else {
-        res=external_res;
-    }
-    conversion_result=None;
-    if (msg: conversion_result=msg.atlas2internal(Character:) {
-        world.server.id_dict);
-    }
-    if (conversion_result) {
-        raise KeyError,conversion_result;
-    }
-    if (res: conversion_result=res.atlas2internal(Character:) {
-        world.server.id_dict);
-    }
-    if (conversion_result) {
-        raise KeyError,conversion_result;
-    }
-    return res;
-}
-#endif
-
 RootOperation * Character::mind2body(const RootOperation & op)
 {
     cout << "Character::mind2body" << endl << flush;
@@ -788,75 +574,11 @@ RootOperation * Character::mind2body(const RootOperation & op)
     op_no_t otype = op_enumerate(&newop);
     RootOperation * res = NULL;
     OP_SWITCH(op, otype, res, Mind_)
-#if 0
-    switch (otype) {
-        case OP_LOGIN:
-            res = Mind_Operation((const Login &)op);
-            break;
-        case OP_CREATE:
-            res = Mind_Operation((const Create &)op);
-            break;
-        case OP_DELETE:
-            res = Mind_Operation((const Delete &)op);
-            break;
-        case OP_MOVE:
-            res = Mind_Operation((const Move &)op);
-            break;
-        case OP_SET:
-            res = Mind_Operation((const Set &)op);
-            break;
-        case OP_SIGHT:
-            res = Mind_Operation((const Sight &)op);
-            break;
-        case OP_SOUND:
-            res = Mind_Operation((const Sound &)op);
-            break;
-        case OP_TOUCH:
-            res = Mind_Operation((const Touch &)op);
-            break;
-        case OP_TICK:
-            res = Mind_Operation((const Tick &)op);
-            break;
-        case OP_LOOK:
-            res = Mind_Operation((const Look &)op);
-            break;
-        case OP_LOAD:
-            res = Mind_Operation((const Load &)op);
-            break;
-        case OP_SAVE:
-            res = Mind_Operation((const Save &)op);
-            break;
-        case OP_SETUP:
-            res = Mind_Operation((const Setup &)op);
-            break;
-        default:
-            cout << "nothing doing here in character mind_" << endl;
-            res = Mind_Operation(op);
-            break;
-    }
-#endif
     // Set refno?
     // do debugging?
     //Nothing done yet, must try harder
     return(res);
 }
-
-#if 0
-bad_type Character::mind2body(bad_type op)
-{
-    if (op.to==None) {
-        op.to=this;
-    }
-    if (Character::drunkness>1.0) {
-        return None;
-    }
-    operation_method=Character::find_operation(op.id,"mind_");
-    res=operation_method(op);
-    Character::set_refno(res,op);
-    Character::debug(res,"mind2body");
-    return res;
-}
-#endif
 
 RootOperation * Character::world2body(const RootOperation & op)
 {
@@ -868,84 +590,17 @@ RootOperation * Character::world2body(const RootOperation & op)
     return(res);
 }
 
-#if 0
-bad_type Character::world2body(bad_type op)
-{
-    res=Character::call_operation(op);
-    Character::set_refno(res,op);
-    Character::debug(res,"world2body");
-    return res;
-}
-#endif
-
 RootOperation * Character::world2mind(const RootOperation & op)
 {
     cout << "Character::world2mind" << endl << flush;
     op_no_t otype = op_enumerate(&op);
     RootOperation * res = NULL;
     OP_SWITCH(op, otype, res, W2m_)
-#if 0
-    switch (otype) {
-        case OP_LOGIN:
-            res = W2m_Operation((const Login &)op);
-            break;
-        case OP_CREATE:
-            res = W2m_Operation((const Create &)op);
-            break;
-        case OP_DELETE:
-            res = W2m_Operation((const Delete &)op);
-            break;
-        case OP_MOVE:
-            res = W2m_Operation((const Move &)op);
-            break;
-        case OP_SET:
-            res = W2m_Operation((const Set &)op);
-            break;
-        case OP_SIGHT:
-            res = W2m_Operation((const Sight &)op);
-            break;
-        case OP_SOUND:
-            res = W2m_Operation((const Sound &)op);
-            break;
-        case OP_TOUCH:
-            res = W2m_Operation((const Touch &)op);
-            break;
-        case OP_TICK:
-            res = W2m_Operation((const Tick &)op);
-            break;
-        case OP_LOOK:
-            res = W2m_Operation((const Look &)op);
-            break;
-        case OP_LOAD:
-            res = W2m_Operation((const Load &)op);
-            break;
-        case OP_SAVE:
-            res = W2m_Operation((const Save &)op);
-            break;
-        case OP_SETUP:
-            res = W2m_Operation((const Setup &)op);
-            break;
-        default:
-            cout << "nothing doing here in character w2m" << endl;
-            res = W2m_Operation(op);
-            break;
-    }
-#endif
     // Set refno?
     // do debugging?
     //Nothing done yet, must try harder
     return(res);
 }
-
-#if 0
-bad_type Character::world2mind(bad_type op)
-{
-    operation_method=Character::find_operation(op.id,"w2m_");
-    res=operation_method(op);
-    Character::debug(res,"world2mind");
-    return res;
-}
-#endif
 
 RootOperation * Character::external_message(const RootOperation & op)
 {
@@ -974,18 +629,3 @@ RootOperation * Character::external_operation(const RootOperation & op)
     send_world(mind2body(op));
     return(NULL);
 }
-
-#if 0
-bad_type Character::operation(bad_type op)
-{
-    result=Character::world2body(op);
-    mind_result=Character::send_mind(Character::world2mind(op));
-    Character::external_message(mind_result);
-    return result;
-}
-
-bad_type Character::external_operation(bad_type op)
-{
-    Character::send_world(Character::mind2body(op));
-}
-#endif
