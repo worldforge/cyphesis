@@ -88,8 +88,8 @@ configuration are managed by varconf, which means options can be set in
 configuration files and on the command line. The main configuration file is
 called cyphesis.vconf, and server settings are stored in the [cyphesis]
 section. The file can be found in the cyphesis source directory, and is
-installed into the sysconf directory, which is by default /etc.  Settings
-in this configuration file can be overridden in on the command line, and once
+installed into the sysconf directory, which is by default /etc.  Settings in
+this configuration file can be overridden in on the command line, and once
 overridden they will be stored permanently in .cyphesis.vconf in the users home
 directory. In order to drop back to the default settings, remove this file.
 Settings can be incrementally overridden in ~/.cyphesis.vconf non-interactively
