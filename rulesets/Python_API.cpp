@@ -967,26 +967,28 @@ void init_python_api()
         return;
     }
 
-    PyObject * common;
-    if ((common = Py_InitModule("common", common_methods)) == NULL) {
+    PyObject * common = Py_InitModule("common", common_methods);
+    if (common == NULL) {
         fprintf(stderr, "Failed to Create common module\n");
         return;
     }
-    PyObject * _const = PyModule_New("const");
-    PyObject * globals = PyModule_New("globals");
+
+    PyObject * common_dict = PyModule_GetDict(common);
+
+    /// Create the common.log module
     PyObject * log = PyModule_New("log");
+    PyDict_SetItemString(common_dict, "log", log);
 
-    PyObject * dict = PyModule_GetDict(common);
-
-    PyDict_SetItemString(dict, "const", _const);
-    PyDict_SetItemString(dict, "globals", globals);
-    PyDict_SetItemString(dict, "log", log);
-
-    PyObject * debug = (PyObject *)PyObject_NEW(FunctionObject, &log_debug_type);
+    PyObject * debug = (PyObject*)PyObject_NEW(FunctionObject, &log_debug_type);
     PyObject_SetAttrString(log, "debug", debug);
     Py_DECREF(debug);
     Py_DECREF(log);
+
     PyObject * o;
+
+    /// Create the common.const module
+    PyObject * _const = PyModule_New("const");
+    PyDict_SetItemString(common_dict, "const", _const);
 
     o = PyInt_FromLong(0);
     PyObject_SetAttrString(_const, "server_python", o);
@@ -1023,6 +1025,9 @@ void init_python_api()
     Py_DECREF(o);
     Py_DECREF(_const);
 
+    /// Create the common.globals module
+    PyObject * globals = PyModule_New("globals");
+    PyDict_SetItemString(common_dict, "globals", globals);
     o = PyString_FromString(share_directory.c_str());
     PyObject_SetAttrString(globals, "share_directory", o);
     Py_DECREF(o);
@@ -1033,7 +1038,7 @@ void init_python_api()
         fprintf(stderr, "Failed to Create server module\n");
         return;
     }
-    dict = PyModule_GetDict(server);
+    PyObject * server_dict = PyModule_GetDict(server);
     PyObject * dictlist = PyModule_New("dictlist");
     PyObject * add_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_add_value_type);
     PyObject_SetAttrString(dictlist, "add_value", add_value);
@@ -1041,7 +1046,7 @@ void init_python_api()
     PyObject * remove_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_remove_value_type);
     PyObject_SetAttrString(dictlist, "remove_value", remove_value);
     Py_DECREF(remove_value);
-    PyDict_SetItemString(dict, "dictlist", dictlist);
+    PyDict_SetItemString(server_dict, "dictlist", dictlist);
     Py_DECREF(dictlist);
 
     PyRun_SimpleString("from hooks import ruleset_import_hooks\n");

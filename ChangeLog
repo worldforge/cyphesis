@@ -1,5 +1,10 @@
 2003-07-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Clean up initialisation of python modules to
+	  make code readable.
+
+2003-07-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Persistance.cpp, server/Restoration.cpp: Use DatabaseResult
 	  clear() method to free result objects.
 
