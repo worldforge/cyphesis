@@ -1,5 +1,10 @@
 2004-01-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommMetaClient.cpp: Add warning to help debug problems
+	  communicating with the metaserver.
+
+2004-01-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp: Add a config setting for the var directory
 	  as well as share and etc. Document all three in the man page.
 

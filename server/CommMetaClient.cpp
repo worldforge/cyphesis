@@ -111,7 +111,9 @@ void CommMetaClient::metaserverReply()
     uint32_t handshake = 0, command = 0;
     unsigned int packet_size;
 
-    m_clientIos.peek();
+    if (m_clientIos.peek() == EOF) {
+        log(ERROR, "EOF on metaserver socket.");
+    }
     if (m_clientIos.readsome(mesg, MAXLINE) < (std::streamsize)sizeof(command)) {
         log(WARNING, "WARNING: Reply from metaserver too short");
     }
