@@ -63,7 +63,10 @@ class get_knowledge(Goal):
     def do_I_know_about_this(self, me):
         if me.things.has_key(self.what):
             return 1
-        return me.get_knowledge("place",self.what)
+        if me.get_knowledge("place",self.what):
+            return 1
+        return 0
+            
 
 ############################ BUY KNOWN THING ##################################
 
@@ -122,7 +125,6 @@ class acquire_thing(acquire):
                        acquire_known_thing(me,what)])
         self.what=what
         self.vars=["what"]
-
         
 ############################ TASK WITH PLACE AND TOOL #########################
 
@@ -410,7 +412,6 @@ class buy_trade(get_thing):
             self.ticks=0
             es=Entity(say="Sell your " + self.what + " here!")
             return Operation("talk",es,from_=me,to=me)
-
 
 ############################ SELL SOMETHING (AS TRADER) ########################
 

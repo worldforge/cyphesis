@@ -252,14 +252,14 @@ def default(mapeditor):
 
     butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
                  xyz=butcher_stall_xyz,age=probability.fertility_age,sex='male')
-    m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'cut', 'ham', 'market','day')"))
+    m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'cut', 'ham', 'market')"))
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','open','dawn')"))
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','closed','evening')"))
     m.know(butcher,bknowledge)
     m.know(butcher,bprices)
     cleaver=m.make('cleaver', type='cleaver', desc='cleaver for cutting meat',
-                   place='market', xyz=(-41,-5,settlement_height))
+                   place='market', xyz=(0, 0, 0), parent=butcher.id)
     m.own(butcher,cleaver)
     m.learn(butcher,(il.sell,"sell_trade('ham', 'market')"))
     coins=[]
@@ -296,6 +296,9 @@ def default(mapeditor):
     warrior=m.make('Vonaa Barile',type='mercenary',xyz=(uniform(-2,2),uniform(-2,2),settlement_height),sex='female',orientation=directions[randint(0,7)])
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
+    for i in range(0, 6):
+        arrow=m.make('arrow',type='arrow',xyz=(0,0,0), parent=warrior.id)
+        m.own(warrior,arrow)
     warriors.append(warrior)
 
     warrior=m.make('Lile Birloc', type='mercenary',xyz=(uniform(-2,2),uniform(-2,2),settlement_height),sex='female',orientation=directions[randint(0,7)])
@@ -437,12 +440,15 @@ def test_coll(mapeditor):
 
     sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[5,5,3], orientation=directions[0])
 
-def test_deer(mapeditor):
+def test_butcher(mapeditor):
 
     m=editor(mapeditor)
 
-    deer=m.make('deer', type='deer', xyz=(10, 10, settlement_height))
-    m.learn(deer,deer_goals)
+    butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
+                 xyz=(3,3,0),age=probability.fertility_age,sex='male')
+    cleaver=m.make('cleaver', type='cleaver', desc='cleaver for cutting meat',
+                   place='market', xyz=(3,2.5,settlement_height))
+    m.own(butcher,cleaver)
+    m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'cut', 'ham', 'market')"))
+    piglet = m.make('pig', type='pig', xyz=(3,2,0))
 
-    chicken=m.make('chicken', type='chicken', xyz=(5, 10, settlement_height))
-    m.learn(chicken,chicken_goals)

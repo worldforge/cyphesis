@@ -1,5 +1,14 @@
 2004-10-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py: Clarify logic
+	  in get_knowledge().
+
+	* rulesets/mason/define_world.py: Make the butcher work all day for
+	  now. Give all the warriors arrows. Add a test function for the
+	  deer.
+
+2004-10-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/werewolf/world/objects/tools/Gallows.py: Make sure
 	  Point3D module is imported.
 
