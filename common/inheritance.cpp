@@ -52,224 +52,51 @@ Inheritance * Inheritance::m_instance = NULL;
 
 Inheritance::Inheritance()
 {
-    Root * obj;
-    Object::ListType children;
+    atlasObjects["root"] = new Root();
+}
 
-    obj = new Root();
-    children.push_back("root_operation");
-    children.push_back("root_entity");
-    obj->SetAttr("children", children);
-    atlasObjects["root"] = obj;
+void installStandardObjects()
+{
+    Inheritance & i = Inheritance::instance();
 
-    obj = new RootOperation();
-    children = Object::ListType();
-    children.push_back("action");
-    children.push_back("info");
-    obj->SetAttr("children", children);
-    atlasObjects["root_operation"] = obj;
+    i.addChild("root", new RootOperation());
+    i.addChild("root_operation", new Action());
+    i.addChild("action", new Create());
+    i.addChild("action", new Delete());
+    i.addChild("root_operation", new Info());
+    i.addChild("action", new Set());
+    i.addChild("action", new Get());
+    i.addChild("info", new Perception());
+    i.addChild("info", new Error());
+    i.addChild("create", new Combine());
+    i.addChild("create", new Divide());
+    i.addChild("create", new Communicate());
+    i.addChild("set", new Move());
+    i.addChild("get", new Perceive());
+    i.addChild("get", new Login());
+    i.addChild("login", new Logout());
+    i.addChild("perception", new Sight());
+    i.addChild("perception", new Sound());
+    i.addChild("perception", new Smell());
+    i.addChild("perception", new Feel());
+    i.addChild("action", new Imaginary());
+    i.addChild("communicate", new Talk());
+    i.addChild("perceive", new Look());
+    i.addChild("perceive", new Listen());
+    i.addChild("perceive", new Sniff());
+    i.addChild("perceive", new Touch());
+    i.addChild("sight", new Appearance());
+    i.addChild("sight", new Disappearance());
 
-    obj = new Action();
-    children = Object::ListType();
-    children.push_back("create");
-    children.push_back("delete");
-    children.push_back("set");
-    children.push_back("get");
-    children.push_back("imaginary");
-    obj->SetAttr("children", children);
-    atlasObjects["action"] = obj;
+    i.addChild("root", new RootEntity());
+    i.addChild("root_entity", new AdminEntity());
+    i.addChild("admin_entity", new Account());
+    i.addChild("account", new Player());
+    i.addChild("account", new Admin());
+    i.addChild("admin_entity", new Game());
+    i.addChild("root_entity", new GameEntity());
 
-    obj = new Create();
-    children = Object::ListType();
-    children.push_back("combine");
-    children.push_back("divide");
-    children.push_back("communicate");
-    obj->SetAttr("children", children);
-    atlasObjects["create"] = obj;
-
-    obj = new Delete();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["delete"] = obj;
-
-    obj = new Info();
-    children = Object::ListType();
-    children.push_back("perception");
-    children.push_back("error");
-    obj->SetAttr("children", children);
-    atlasObjects["info"] = obj;
-
-    obj = new Set();
-    children = Object::ListType();
-    children.push_back("move");
-    obj->SetAttr("children", children);
-    atlasObjects["set"] = obj;
-
-    obj = new Get();
-    children = Object::ListType();
-    children.push_back("login");
-    children.push_back("perceive");
-    obj->SetAttr("children", children);
-    atlasObjects["get"] = obj;
-
-    obj = new Perception();
-    children = Object::ListType();
-    children.push_back("feel");
-    children.push_back("smell");
-    children.push_back("sound");
-    children.push_back("sight");
-    obj->SetAttr("children", children);
-    atlasObjects["perception"] = obj;
-
-    obj = new Error();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["error"] = obj;
-
-    obj = new Combine();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["combine"] = obj;
-
-    obj = new Divide();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["divide"] = obj;
-
-    obj = new Communicate();
-    children = Object::ListType();
-    children.push_back("talk");
-    obj->SetAttr("children", children);
-    atlasObjects["communicate"] = obj;
-
-    obj = new Move();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["move"] = obj;
-
-    obj = new Perceive();
-    children = Object::ListType();
-    children.push_back("look");
-    children.push_back("listen");
-    children.push_back("sniff");
-    children.push_back("touch");
-    obj->SetAttr("children", children);
-    atlasObjects["perceive"] = obj;
-
-    obj = new Login();
-    children = Object::ListType();
-    children.push_back("logout");
-    obj->SetAttr("children", children);
-    atlasObjects["login"] = obj;
-
-    obj = new Logout();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["logout"] = obj;
-
-    obj = new Sight();
-    children = Object::ListType();
-    children.push_back("appearance");
-    children.push_back("disappearance");
-    obj->SetAttr("children", children);
-    atlasObjects["sight"] = obj;
-
-    obj = new Sound();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["sound"] = obj;
-
-    obj = new Smell();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["smell"] = obj;
-
-    obj = new Feel();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["feel"] = obj;
-
-    obj = new Imaginary();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["imaginary"] = obj;
-
-    obj = new Talk();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["talk"] = obj;
-
-    obj = new Look();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["look"] = obj;
-
-    obj = new Listen();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["listen"] = obj;
-
-    obj = new Sniff();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["sniff"] = obj;
-
-    obj = new Touch();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["touch"] = obj;
-
-    obj = new Appearance();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["appearance"] = obj;
-
-    obj = new Disappearance();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["disappearance"] = obj;
-
-    obj = new RootEntity();
-    children = Object::ListType();
-    children.push_back("admin_entity");
-    obj->SetAttr("children", children);
-    atlasObjects["root_entity"] = obj;
-
-    obj = new AdminEntity();
-    children = Object::ListType();
-    children.push_back("account");
-    children.push_back("game");
-    obj->SetAttr("children", children);
-    atlasObjects["admin_entity"] = obj;
-
-    obj = new Account();
-    children = Object::ListType();
-    children.push_back("player");
-    children.push_back("admin");
-    obj->SetAttr("children", children);
-    atlasObjects["account"] = obj;
-
-    obj = new Player();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["player"] = obj;
-
-    obj = new Admin();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["admin"] = obj;
-
-    obj = new Game();
-    children = Object::ListType();
-    obj->SetAttr("children", children);
-    atlasObjects["game"] = obj;
-
-    obj = new GameEntity();
-    children = Object::ListType();
-    // children.push_back("");
-    obj->SetAttr("children", children);
-    atlasObjects["game_entity"] = obj;
     // And from here on we need to define the hierarchy as found in the C++
     // base classes. Script classes defined in rulsets need to be added
     // at runtime.
-
 }

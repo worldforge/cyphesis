@@ -7,6 +7,9 @@
 
 #include "operations.h"
 
+void installStandardObjects();
+void installCustomOperations();
+
 class InheritanceException {
   private:
     const std::string parent;
@@ -26,6 +29,8 @@ class Inheritance {
     static Inheritance & instance() {
         if (m_instance == NULL) {
             m_instance = new Inheritance();
+            installStandardObjects();
+            installCustomOperations();
         }
         return *m_instance;
     }
@@ -38,13 +43,19 @@ class Inheritance {
         return I->second;
     }
 
-    void addChild(const std::string & parent, const std::string & child) {
-        std::map<std::string, Atlas::Objects::Root *>::const_iterator I = atlasObjects.find(parent);
+    void addChild(const std::string & parent, Atlas::Objects::Root * obj) {
+        const std::string & child = obj->GetId();
+        std::map<std::string, Atlas::Objects::Root *>::iterator I = atlasObjects.find(parent);
         if (I == atlasObjects.end()) {
             throw InheritanceException(parent);
         }
-        Atlas::Message::Object::ListType & children = I->second->GetAttr("children").AsList();
-        children.push_back(child);
+        Atlas::Message::Object::ListType children(1, child);
+        if (I->second->HasAttr("children")) {
+            children = I->second->GetAttr("children").AsList();
+            children.push_back(child);
+        }
+        I->second->SetAttr("children", Atlas::Message::Object(children));
+        atlasObjects[child] = obj;
     }
 };
 

@@ -16,7 +16,7 @@ using Atlas::Message::Object;
 
 ServerRouting::ServerRouting(CommServer & server, const std::string & ruleset,
                              const std::string & name) :
-        commServer(server), svrRuleset(ruleset), svrName(name), opSerialNo(0),
+        commServer(server), svrRuleset(ruleset), svrName(name),
         world(*new WorldRouter(*this)), lobby(*new Lobby())
 {
     setId(name);

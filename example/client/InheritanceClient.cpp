@@ -60,7 +60,7 @@ int main(int argc, char ** argv)
 void InheritanceClient::send(RootOperation * op)
 {
     encoder->StreamMessage(op);
-    *ios << flush;
+    ios << flush;
 }
 
 void InheritanceClient::get(const std::string & id)
@@ -81,28 +81,20 @@ void InheritanceClient::start()
 int InheritanceClient::connect()
 {
 
-  struct sockaddr_in sin;
-
-  cli_fd = socket(PF_INET, SOCK_STREAM, 0);
-  if (cli_fd < 0) {
-    return 1;
-  }
-  sin.sin_family = AF_INET;
-  sin.sin_port = htons(6767);
-  sin.sin_addr.s_addr = htonl(0x7f000001);
-
   cout << "Connecting to cyphesis.." << endl << flush;
 
-  if (::connect(cli_fd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
-    close(cli_fd);
-    return -1;
+  ios.open("localhost", 6767);
+  if (!ios.is_open()) {
+    std::cerr << "ERROR: Could not connect to localhost"
+              << std::endl << std::flush;
+    return false;
   }
+
   cout << "Connected to cyphesis" << endl << flush;
   // Connect to the server
-  ios = new fstream(cli_fd);
 
   // Do client negotiation with the server
-  StreamConnect conn("cyphesis_client", *ios, this);
+  StreamConnect conn("cyphesis_client", ios, this);
 
   cout << "Negotiating... " << flush;
   // conn.Poll() does all the negotiation
@@ -147,7 +139,7 @@ void InheritanceClient::loop()
 
       if (retval) {
           if (FD_ISSET(cli_fd, &infds)) {
-              if (ios->peek() == -1) {
+              if (ios.peek() == -1) {
                   cout << "Server disconnected" << endl << flush;
                   exit(1);
               }

@@ -10,6 +10,7 @@
 
 #include <common/debug.h>
 #include <common/op_switch.h>
+#include <common/serialno.h>
 
 #include <iostream>
 
@@ -178,6 +179,7 @@ oplist BaseEntity::error(const RootOperation& op, const char* errstring) const
 
     e->SetArgs(args);
     e->SetRefno(op.GetSerialno());
+    e->SetSerialno(opSerialNo());
 
     return oplist(1,e);
 }

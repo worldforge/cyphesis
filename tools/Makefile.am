@@ -4,9 +4,10 @@ INCLUDES = -DBINDIR=\"@bindir@\" -DVARDIR=\"@localstatedir@\"
 
 if BUILD_STATIC
 
-LDFLAGS = -Wl,-static
+LDFLAGS = -all-static
 
-LIBS = -ldb_cxx-3.1 -ldb-3.1 /usr/local/lib/libAtlasObjects.a /usr/local/lib/libAtlasObjectsOperation.a /usr/local/lib/libAtlasObjectsEntity.a /usr/local/lib/libAtlasNet.a /usr/local/lib/libAtlas.a /usr/local/lib/libAtlasCodecs.a /usr/local/lib/libAtlasMessage.a /usr/local/lib/libAtlas.a  -lreadline -ltermcap
+# LIBS = -ldb_cxx-3.2 -ldb-3.2 /usr/local/lib/libAtlasObjects.a /usr/local/lib/libAtlasObjectsOperation.a /usr/local/lib/libAtlasObjectsEntity.a /usr/local/lib/libAtlasNet.a /usr/local/lib/libAtlas.a /usr/local/lib/libAtlasCodecs.a /usr/local/lib/libAtlasMessage.a /usr/local/lib/libAtlas.a  -lreadline -ltermcap
+LIBS = /usr/lib/libdb_cxx-3.2.a /usr/lib/libdb-3.2.a -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -lreadline -ltermcap -lskstream
 
 else
 

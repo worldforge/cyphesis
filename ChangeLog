@@ -1,3 +1,18 @@
+2001-11-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.cpp: Set serialnos on error ops.
+
+	* common/inheritance.cpp, common/inheritance.h, common/custom.cpp:
+	  Rationalise the way types are stored in the inheritance system
+	  and install info about cyphesis custom operations.
+
+	* example/client/InheritanceClient.cpp,
+	  example/client/InheritanceClient.h: Update to use skstream.
+
+	* server/ServerRouting.cpp, server/ServerRouting.h,
+          common/serialno.h, common/serialno.cpp: Switch to using
+	  a more global easier to access source of serial numbers.
+
 2001-11-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* Release cyphesis 0.1.

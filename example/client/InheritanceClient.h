@@ -19,6 +19,8 @@
 #include <stdio.h>
 #include <list>
 
+#include <skstream.h>
+
 class InheritanceClient : public Atlas::Objects::Decoder
 {
   private:
@@ -26,7 +28,7 @@ class InheritanceClient : public Atlas::Objects::Decoder
 
     Atlas::Objects::Encoder * encoder;
     Atlas::Codec<iostream> * codec;
-    fstream * ios;
+    client_socket_stream ios;
 
   protected:
     void UnknownObjectArrived(const Atlas::Message::Object&);

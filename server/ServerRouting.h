@@ -7,6 +7,8 @@
 
 #include "Routing.h"
 
+#include <common/serialno.h>
+
 class WorldRouter;
 class Lobby;
 class CommServer;
@@ -16,7 +18,6 @@ class ServerRouting : public Routing {
     CommServer & commServer;
     const std::string svrRuleset;
     const std::string svrName;
-    int opSerialNo;
   public:
     dict_t idDict;
   private:
@@ -31,7 +32,7 @@ class ServerRouting : public Routing {
     inline BaseEntity * addObject(BaseEntity * obj);
 
     inline int getSerialNo() {
-        return ++opSerialNo;
+        return opSerialNo();
     }
 
     WorldRouter & getWorld() { return world; }

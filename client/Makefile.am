@@ -10,21 +10,18 @@ cyclient_SOURCES = \
 		Py_CreatorClient.cpp Py_CreatorClient.h \
 		client.cpp
 
+if BUILD_STATIC
+
+cyclient_LDADD = ../rulesets/librulesetbase.a ../rulesets/librulesetentity.a ../rulesets/librulesetmind.a ../rulesets/libscriptpython.a ../modules/libmodules.a ../common/libcommon.a ../physics/libphysics.a /usr/local/lib/libAtlasObjects.a /usr/local/lib/libAtlasObjectsOperation.a /usr/local/lib/libAtlasObjectsEntity.a /usr/local/lib/libAtlasNet.a /usr/local/lib/libAtlas.a /usr/local/lib/libAtlasCodecs.a /usr/local/lib/libAtlasMessage.a /usr/local/lib/libAtlas.a /usr/lib/libdb_cxx-3.2.a /usr/lib/libdb-3.2.a /usr/local/lib/libvarconf.a /usr/lib/libsigc.a /opt/forge/lib/python2.1/config/libpython2.1.a /usr/lib/libutil.a /usr/lib/libdl.a /usr/lib/libpthread.a /usr/lib/libstdc++-3-libc6.2-2-2.10.0.a -lc -lm /usr/lib/gcc-lib/i386-redhat-linux/2.96/libgcc.a /usr/local/lib/libskstream.a
+
+# LIBS = # -ldl -lm -lpthread
+
+cyclient_LDFLAGS = -Wl,-export-dynamic -nodefaultlibs
+
+else
+
 cyclient_LDFLAGS = -export-dynamic
 
 cyclient_LDADD = ../rulesets/librulesetbase.a ../rulesets/librulesetentity.a ../rulesets/librulesetmind.a ../rulesets/libscriptpython.a ../rulesets/librulesetentity.a ../rulesets/librulesetbase.a ../modules/libmodules.a ../common/libcommon.a ../physics/libphysics.a
 
-#atlas:
-#	(cd ../../../protocols; tar cf - atlas/libatlas/libAtlasPy/*.py) | tar xf -
-#
-#dist-hook: atlas
-#	tar cf - `find . -name \*.py` | (cd $(DESTDIR)$(distdir); tar xf -)
-#	cp acorn acorn_graphic $(DESTDIR)$(distdir)/
-#
-#
-#install-data-local: atlas
-#	mkdirhier $(DESTDIR)$(datadir)/cyphesis/client
-#	tar cf - `find . -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/client; tar xf -)
-#	cat acorn | sed 's%PREFIX%$(datadir)\/cyphesis%' > $(DESTDIR)$(bindir)/acorn
-#	cat acorn_graphic | sed 's%PREFIX%$(datadir)\/cyphesis%' > $(DESTDIR)$(bindir)/acorn_graphic
-#	chmod 755 $(DESTDIR)$(bindir)/acorn $(DESTDIR)$(bindir)/acorn_graphic
+endif

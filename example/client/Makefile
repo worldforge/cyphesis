@@ -16,7 +16,7 @@ CyphesisClient.o: CyphesisClient.cpp CyphesisClient.h
 	$(CC_COMPILE) CyphesisClient.o CyphesisClient.cpp $(INCLUDE)
 
 InheritanceClient: InheritanceClient.o
-	g++ -g -o InheritanceClient InheritanceClient.o -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage  -lAtlasObjects -lAtlasObjectsEntity -lAtlasObjectsOperation
+	g++ -g -o InheritanceClient InheritanceClient.o -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage  -lAtlasObjects -lAtlasObjectsEntity -lAtlasObjectsOperation -lskstream
 
 InheritanceClient.o: InheritanceClient.cpp InheritanceClient.h
 	$(CC_COMPILE) InheritanceClient.o InheritanceClient.cpp $(INCLUDE)
