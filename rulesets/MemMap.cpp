@@ -290,8 +290,8 @@ void MemMap::check(const double & time)
         MemEntity * me = m_checkIterator->second;
         assert(me != 0);
         if (!me->isVisible() && ((time - me->lastSeen()) > 600) && (me->m_contains.empty())) {
-            std::cout << me->getId() << "|" << me->getType()
-                      << " is a waste of space" << std::endl << std::flush;
+            debug(std::cout << me->getId() << "|" << me->getType()
+                      << " is a waste of space" << std::endl << std::flush;);
             MemEntityDict::const_iterator J = m_checkIterator;
             std::string next;
             if (++J != m_entities.end()) {

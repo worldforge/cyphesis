@@ -1,3 +1,8 @@
+2004-07-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/MemEntity.h, rulesets/MemMap.cpp, server/WorldRouter.cpp:
+	  Remove some debugging output.
+
 2004-07-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/Worldtest.cpp: Update test for new world base class.

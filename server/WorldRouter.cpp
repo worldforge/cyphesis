@@ -255,13 +255,13 @@ void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
         setSerialnoOp(newOp);
         if (newOp.getParents().front().asString() == "delete") {
             // If this is a delete, queue as normal to avoid a recursive loop
-            std::cerr << "Handling delete response to delete"
-                      << std::endl << std::flush;
+            debug(std::cerr << "Handling delete response to delete"
+                            << std::endl << std::flush;);
             message(newOp, e);
         } else {
             // Other ops we dispatch immediatly before deleting the source
-            std::cerr << "Handling normal response to delete"
-                      << std::endl << std::flush;
+            debug(std::cerr << "Handling normal response to delete"
+                            << std::endl << std::flush;);
             newOp.setFrom(e->getId());
             operation(newOp);
             delete &newOp;
