@@ -47,6 +47,6 @@ class Yetown_inn_deco_agril_2_sw(Thing):
         loc.bbox = Vector3D(3,0.25,2.5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
 	loc = Location(self, Vector3D(7.5,4,0))
-        loc.bbox = Vector3D(0.25,8,2.5)
+        loc.bbox = Vector3D(0.25,3.5,2.5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         return ret
