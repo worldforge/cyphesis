@@ -214,7 +214,7 @@ def default(mapeditor):
     squirrel = m.make('squirrel', type='squirrel', desc='test squirrel',
                     xyz=(-32,-15,settlement_height))
     m.know(squirrel,sknowledge)
-    m.learn(squirrel,squirrel_knowledge)
+    m.learn(squirrel,sknowledge)
 
 #   villagers
     #directions = [[0,1,0],[1,0,0],[0,-1,0],[-1,0,0],
