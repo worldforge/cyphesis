@@ -382,7 +382,7 @@ int main(int argc, char ** argv)
             return 1;
         }
         bridge.setPassword(I->second.AsString());
-        AccountBase::instance()->shutdownAccount();
+        AccountBase::del();
     } else {
         bridge.getPassword();
     }

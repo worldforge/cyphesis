@@ -37,28 +37,28 @@ Database::Database() : account_db(NULL, DB_CXX_NO_EXCEPTIONS),
 bool Database::initAccount(bool create)
 {
     int i = account_db.open(db_file.c_str(), "account",
-                               DB_BTREE, create ? DB_CREATE : 0, 0600);
+                               DB_BTREE, create ? DB_CREATE : DB_RDONLY, 0600);
     return (i == 0);
 }
 
 bool Database::initWorld(bool create)
 {
     int j = world_db.open(db_file.c_str(), "world",
-                             DB_BTREE, create ? DB_CREATE : 0, 0600);
+                             DB_BTREE, create ? DB_CREATE : DB_RDONLY, 0600);
     return (j == 0);
 }
 
 bool Database::initMind(bool create)
 {
     int k = mind_db.open(db_file.c_str(), "mind",
-                             DB_BTREE, create ? DB_CREATE : 0, 0600);
+                             DB_BTREE, create ? DB_CREATE : DB_RDONLY, 0600);
     return (k == 0);
 }
 
 bool Database::initServer(bool create)
 {
     int l = server_db.open(db_file.c_str(), "server",
-                             DB_BTREE, create ? DB_CREATE : 0, 0600);
+                             DB_BTREE, create ? DB_CREATE : DB_RDONLY, 0600);
     return (l == 0);
 }
 

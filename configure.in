@@ -154,6 +154,5 @@ AC_OUTPUT([
 	rulesets/Makefile
 	server/Makefile
 	client/Makefile
-	watchdog/Makefile
 	tools/Makefile
 ])

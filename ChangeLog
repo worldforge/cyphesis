@@ -1,3 +1,18 @@
+2001-10-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* watchdog/watchdog.c: Deprecated non-working watchdog program.
+
+	* tools/cypasswd.cpp, tools/cycmd.cpp, client/ObserverClient.cpp,
+	  common/accountbase.h Added database delete method, which closes
+	  the database, and make sure it is used.
+
+	* server/server.cpp: Moved the point where the server drops to
+	  a daemon, as doing this after the db was open seems to corrupt
+	  the db.
+
+	* common/database.cpp: If a db is opened but not created, then it
+	  is read only.
+
 2001-10-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.in: Switch to using improved checks for Atlas-C++ and

@@ -1,4 +1,6 @@
-bin_PROGRAMS = cypasswd cycmd cydbload cyisoload
+bin_PROGRAMS = cypasswd cycmd cydbload cyisoload cywatchdog
+
+INCLUDES = -DBINDIR=\"@bindir@\" -DVARDIR=\"@localstatedir@\"
 
 if BUILD_STATIC
 
@@ -29,5 +31,9 @@ cydbload_LDADD = ../common/database.o
 cyisoload_SOURCES = cyisoload.cpp sstream.h iotraits.h
 
 cyisoload_LDADD = ../common/database.o
+
+cywatchdog_SOURCES = cywatchdog.cpp
+
+cywatchdog_LDADD = ../common/database.o
 
 EXTRA_DIST = sstream.cc

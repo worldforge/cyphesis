@@ -1,4 +1,8 @@
   Write a watchdog for the poor happless game admins.
+  Current version keeps server running. Should a future version ensure
+  that the server is working?
+
+  Implement propper multi-process access to database
 
 Provisional for Acorn 0.5:
 

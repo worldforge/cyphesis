@@ -107,11 +107,6 @@ int main(int argc, char ** argv)
     // Initialise the varconf system, and get a pointer to the config database
     global_conf = varconf::Config::inst();
 
-    // Initialise the persistance subsystem. If we have been built with
-    // database support, this will open the various databases used to
-    // store server data.
-    Persistance::init();
-
     // See if the user has set the install directory on the command line
     char * home;
     bool home_dir_config = false;
@@ -161,6 +156,26 @@ int main(int argc, char ** argv)
         global_conf->readFromFile(share_directory + "/cyphesis/" + ruleset + ".vconf");
         rulesets.push_back(ruleset);
     };
+
+    if (global_conf->findItem("cyphesis", "daemon")) {
+        daemon_flag = global_conf->getItem("cyphesis","daemon");
+    }
+
+    if (daemon_flag) {
+        std::cout << "Going into background" << std::endl << std::flush;
+        int pid = daemonise();
+        if (pid == -1) {
+            exit_flag = true;
+        } else if (pid > 0) {
+            return 0;
+        }
+    }
+
+    // Initialise the persistance subsystem. If we have been built with
+    // database support, this will open the various databases used to
+    // store server data.
+    Persistance::init();
+
     // If the restricted flag is set in the config file, then we
     // don't allow connecting users to create accounts. Accounts must
     // be created manually by the server administrator.
@@ -192,10 +207,6 @@ int main(int argc, char ** argv)
         serverName = get_hostname();
     }
     
-    if (global_conf->findItem("cyphesis", "daemon")) {
-        daemon_flag = global_conf->getItem("cyphesis","daemon");
-    }
-
     // Start up the python subsystem. FIXME This needs to sorted into a
     // a way of handling script subsystems more generically.
     init_python_api();
@@ -217,11 +228,6 @@ int main(int argc, char ** argv)
         cerr << "Could not create listen socket." << std::endl << std::flush;
         return 1;
     }
-    if (consts::debug_level>=1) {
-        char * log_name="cyphesis_world.log";
-        cout << "consts::debug_level>=1:, logging to" << log_name << std::endl;
-        // FIXME Added in a logging subsystem
-    }
 
     if (load_database) {
         Load l(Load::Instantiate());
@@ -230,24 +236,20 @@ int main(int argc, char ** argv)
         if (admin == NULL) {
             std::cout << "CRITICAL: Admin account not found." << std::endl;
         } else {
-            std::cout << "Loading world state from database..." << std::flush;
+            if (!daemon_flag) {
+                std::cout << "Loading world from database..." << std::flush;
+            }
             oplist res = admin->LoadOperation(l);
             // Delete the resulting op
             oplist::iterator I = res.begin();
             for(;I != res.end(); I++) { delete *I; }
-            std::cout << " done" << std::endl;
+            if (!daemon_flag) {
+                std::cout << " done" << std::endl;
+            }
         }
         // FIXME ? How to send this to admin account ?
     }
-    if (daemon_flag) {
-        std::cout << "Going into background" << std::endl << std::flush;
-        int pid = daemonise();
-        if (pid == -1) {
-            exit_flag = true;
-        } else if (pid > 0) {
-            return 0;
-        }
-    } else {
+    if (!daemon_flag) {
         std::cout << "Running" << std::endl << std::flush;
     }
     // Loop until the exit flag is set. The exit flag can be set anywhere in

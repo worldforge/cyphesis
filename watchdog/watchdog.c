@@ -14,6 +14,8 @@
 
 /* #define _NO_DAEMON */
 
+#error This program is no longer recommended for use with cyphesis
+
 char * inst_dir = SHAREDIR;
 
 typedef enum server_state {

@@ -81,8 +81,7 @@ int main(int argc, char ** argv)
     //Dbt key((void*)"admin", 6);
     //Dbt data;
 
-    AccountBase * db = AccountBase::instance();
-    db->initAccount(true);
+    AccountBase * db = AccountBase::instance(true);
 
     Object::MapType data;
 
@@ -98,7 +97,7 @@ int main(int argc, char ** argv)
         res = db->getAccount(acname, o);
         if (!res) {
             std::cout<<"Account "<<acname<<" does not yet exist"<<endl<<flush;
-            db->shutdownAccount();
+            AccountBase::del();
             return 0;
         }
     }
@@ -107,7 +106,7 @@ int main(int argc, char ** argv)
         if (res) {
             cout << "Account " << acname << " removed." << endl << flush;
         }
-        db->shutdownAccount();
+        AccountBase::del();
         return 0;
     }
     std::string password, password2;
@@ -128,5 +127,5 @@ int main(int argc, char ** argv)
         std::cout << "Passwords did not match. Account database unchanged."
                   << endl << std::flush;
     }
-    db->shutdownAccount();
+    AccountBase::del();
 }

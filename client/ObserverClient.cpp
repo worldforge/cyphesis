@@ -27,9 +27,10 @@ bool ObserverClient::setup()
                   << std::endl << std::flush;
         return false;
     }
+    AccountBase::del();
     Object::MapType::const_iterator I = adminAccount.find("password");
     if (I == adminAccount.end()) {
-        std::cerr << "Unable to read admin account from database"
+        std::cerr << "Admin account from database has no password"
                   << std::endl << std::flush;
         return false;
     }

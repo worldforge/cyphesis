@@ -16,12 +16,20 @@ class AccountBase : public Database {
     AccountBase() { }
 
   public:
-    static AccountBase * instance() {
+    static AccountBase * instance(bool create = false) {
         if (m_instance == NULL) {
             m_instance = new AccountBase();
-            m_instance->initAccount();
+            m_instance->initAccount(create);
         }
         return (AccountBase *)m_instance;
+    }
+
+    static void del() {
+        if (m_instance != NULL) {
+            m_instance->shutdownAccount();
+            delete m_instance;
+            m_instance = NULL;
+        }
     }
 
     bool putAccount(const Object::MapType & o, const std::string & account) {
