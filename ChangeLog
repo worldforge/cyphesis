@@ -1,5 +1,10 @@
 2003-10-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/Collision.cpp: Add notes on how collision code has
+	  to be modified.
+
+2003-10-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Collision.cpp: Main body of collision code in place.
 	  Needs cleaning, debugging and testing.
 

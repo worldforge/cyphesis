@@ -73,6 +73,13 @@ void predictEntryExit(const CoordList & c,          // Vertices of this mesh
                       Vector3D & normal)            // Returned collision normal
 {
     // Check l vertices against o surfaces
+    // FIXME AJR 2003-10-17
+    // I think I have these the wrong way around. Need to check a vertex
+    // against all the surfaces - not the other way around
+    // Also there are two issues, not one. Vertex collision is detected
+    // by the last plane a vertex moves behind. Object collision is
+    // detected by the first vertex to collide with the other object.
+    // Trickier than I thought.
     CoordList::const_iterator I = c.begin();
     NormalSet::const_iterator J = n.begin();
     for (; J != n.end(); ++J) {
