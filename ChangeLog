@@ -1,5 +1,21 @@
 2004-11-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Clear up the logging wrappers.
+	  Add python wrapper for squareDistance which is more efficient
+	  in the goal code that distanceTo. Remove some old python functions
+	  which serve no purpose. Move distanceTo and squareDistance into
+	  their own module.
+
+	* rulesets/basic/mind/NPCMind.py: Remove obsolete import.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py,
+	  rulesets/basic/mind/goals/common/move.py,
+	  rulesets/basic/mind/goals/humanoid/construction.py: Use the new
+	  physics.square_distance where linear distance is required
+	  in goals.
+
+2004-11-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/operations.cpp, common/operations.h, common/Unseen.h:
 	  Add new unseen operation.
 
