@@ -37,5 +37,43 @@
    fun:__GI___libc_res_nquery
    fun:__libc_res_nquerydomain
 }
-
-
+{
+   VectorRotate
+   Memcheck:Value4
+   fun:_ZN6WFMath6VectorILi3EE6rotateERKNS_10QuaternionE
+   fun:_ZNK6WFMath5PointILi3EE14toParentCoordsERKS1_RKNS_10QuaternionE
+   fun:_ZN11WorldRouter15constrainHeightEP6EntityRKN6WFMath5PointILi3EEE
+   fun:_ZN11WorldRouter9addObjectEP6Entityb
+}
+{
+   ScaleEpsilonRotate
+   Memcheck:Value4
+   fun:_ZN6WFMath13_ScaleEpsilonEPKfS1_id
+   fun:_ZN6WFMath6VectorILi3EE6rotateERKNS_10QuaternionE
+   fun:_ZNK6WFMath5PointILi3EE14toParentCoordsERKS1_RKNS_10QuaternionE
+   fun:_ZN11WorldRouter15constrainHeightEP6EntityRKN6WFMath5PointILi3EEE
+}
+{
+   ScaleEpsilonCross
+   Memcheck:Value4
+   fun:_ZN6WFMath13_ScaleEpsilonEPKfS1_id
+   fun:_ZN6WFMath5CrossERKNS_6VectorILi3EEES3_
+   fun:_ZN6WFMath6VectorILi3EE6rotateERKNS_10QuaternionE
+   fun:_ZNK6WFMath5PointILi3EE14toParentCoordsERKS1_RKNS_10QuaternionE
+}
+{
+   CrossVector
+   Memcheck:Value4
+   fun:_ZN6WFMath5CrossERKNS_6VectorILi3EEES3_
+   fun:_ZN6WFMath6VectorILi3EE6rotateERKNS_10QuaternionE
+   fun:_ZNK6WFMath5PointILi3EE14toParentCoordsERKS1_RKNS_10QuaternionE
+   fun:_ZN11WorldRouter15constrainHeightEP6EntityRKN6WFMath5PointILi3EEE
+}
+{
+   epoll_ctl_param
+   Memcheck:Param
+   epoll_ctl(event)
+   fun:epoll_ctl
+   fun:_ZN10CommServer4pollEv
+   fun:main
+}
