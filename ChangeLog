@@ -1,3 +1,13 @@
+2004-06-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/NPCMind.py, rulesets/BaseMind.cpp,
+	  modules/WorldTime.h: WorldTime now handles time in
+	  integer seconds.
+
+	* rulesets/Python_API.cpp: Handle all variations of args with one
+	  call to PyArg_ParseTuple as multiple calls are not
+	  allowed.
+
 2004-06-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Ensure that Use and Wield ops are

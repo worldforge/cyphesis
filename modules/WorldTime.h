@@ -33,14 +33,14 @@ class WorldTime {
 
     void initTimeInfo();
   public:
-    explicit WorldTime(double scnds) : time((int)scnds) {
+    explicit WorldTime(int scnds) : time(scnds) {
         initTimeInfo();
     }
     WorldTime() : time(0) {
         initTimeInfo();
     }
     double seconds() { return time.seconds(); }
-    void update(double secs) { time.update((int)secs); }
+    void update(int secs) { time.update(secs); }
     //explicit WorldTime(char * date_time);
     std::string operator[](const std::string & name);
     //std::string & __repr__();

@@ -447,9 +447,13 @@ static PyObject * location_new(PyObject * self, PyObject * args)
 {
     PyLocation *o;
     // We need to deal with actual args here
-    PyObject * refO, * coordsO = NULL;
+    PyObject * refO = NULL, * coordsO = NULL;
+    Entity * ref_ent = NULL;
     bool decrefO = false;
-    if (PyArg_ParseTuple(args, "O|O", &refO, &coordsO)) {
+    if (!PyArg_ParseTuple(args, "|OO", &refO, &coordsO)) {
+        return NULL;
+    }
+    if (refO != NULL) {
         if ((!PyEntity_Check(refO)) && (!PyWorld_Check(refO)) && (!PyMind_Check(refO))) {
             if (PyObject_HasAttrString(refO, "cppthing")) {
                 refO = PyObject_GetAttrString(refO, "cppthing");
@@ -466,8 +470,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
             if (decrefO) { Py_DECREF(refO); }
             return NULL;
         }
-
-        Entity * ref_ent;
+    
         if (PyWorld_Check(refO)) {
             PyWorld * ref = (PyWorld*)refO;
 #ifndef NDEBUG
@@ -499,27 +502,18 @@ static PyObject * location_new(PyObject * self, PyObject * args)
 #endif // NDEBUG
             ref_ent = ref->m_entity;
         }
-        if (decrefO) { Py_DECREF(refO); }
-        PyVector3D * coords = (PyVector3D*)coordsO;
-        o = newPyLocation();
-        if ( o == NULL ) {
-            return NULL;
-        }
-        if (coords == NULL) {
-            o->location = new Location(ref_ent);
-        } else {
-            o->location = new Location(ref_ent, coords->coords);
-        }
-        o->own = 1;
-    } else if (PyArg_ParseTuple(args, "")) {
-        o = newPyLocation();
-        if ( o == NULL ) {
-            return NULL;
-        }
-        o->location = new Location;
-        o->own = 1;
-    } else {
+    }
+    if (decrefO) { Py_DECREF(refO); }
+    PyVector3D * coords = (PyVector3D*)coordsO;
+    o = newPyLocation();
+    if ( o == NULL ) {
         return NULL;
+    }
+    o->own = 1;
+    if (coords == NULL) {
+        o->location = new Location(ref_ent);
+    } else {
+        o->location = new Location(ref_ent, coords->coords);
     }
     return (PyObject *)o;
 }

@@ -42,7 +42,7 @@ class NPCMind(BaseMind):
         #???self.debug=debug(self.name+".mind.log")
         self.tick_count=0
         self.message_queue=None
-        self.time=WorldTime(31104000.0)
+        self.time=WorldTime(31104000)
         #This is going to be really tricky
         self.map.add_hooks_append("add_map")
         self.map.update_hooks_append("update_map")

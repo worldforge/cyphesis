@@ -466,7 +466,7 @@ OpVector BaseMind::operation(const RootOperation & op)
     //   If so create look operations to those ids
     //   Set the minds time and date 
     OpVector res;
-    m_time.update(op.getSeconds());
+    m_time.update((int)op.getSeconds());
     m_map.getAdd(op.getFrom());
     RootOperation * look;
     while ((look = m_map.lookId()) != NULL) {
