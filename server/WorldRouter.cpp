@@ -157,7 +157,7 @@ float WorldRouter::constrainHeight(Entity * parent, const Vector3D & pos)
                         << std::endl << std::flush;);
         return h;
     } else {
-        // FIXME No correction for orientation
+        // FIXME take account of orientation
         const Vector3D & ppos = parent->m_location.m_pos;
         debug(std::cout << "parent " << parent->getId() << " of type "
                         << parent->getType() << " pos " << ppos.z()

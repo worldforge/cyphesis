@@ -101,6 +101,8 @@ class Database {
     const DatabaseResult runSimpleSelectQuery(const std::string & query);
     bool runCommandQuery(const std::string & query);
 
+    // Interface for relations between tables.
+
     bool registerRelation(std::string & tablename,
                           const std::string & sourcetable,
                           const std::string & targettable,
@@ -114,6 +116,8 @@ class Database {
                            const std::string & id);
     bool removeRelationRowByOther(const std::string & name,
                                   const std::string & other);
+
+    // Interface for simple tables that mainly just store Atlasish data.
 
     bool registerSimpleTable(const std::string & name,
                              const Atlas::Message::MapType & row);
@@ -131,8 +135,12 @@ class Database {
                          const std::string & value,
                          const std::string & columns);
 
+    // Interface for the ID generation sequence.
+
     bool registerEntityIdGenerator();
     bool newId(std::string & id);
+
+    // Interface for inherited tables for storing IG entities.
 
     bool registerEntityTable(const std::string & classname,
                              const Atlas::Message::MapType & row,
@@ -151,6 +159,23 @@ class Database {
     const DatabaseResult selectClassByLoc(const std::string & loc);
     const DatabaseResult selectOnlyByLoc(const std::string & loc,
                                          const std::string & classname);
+
+    // Interface for tables for terrain control points and other spatial data.
+
+    bool registerSpatialTable(const std::string & name,
+                              unsigned int dimension,
+                              const Atlas::Message::MapType & row_data);
+    bool createSpatialRow(const std::string & name,
+                          const std::string & id,
+                          const std::vector<int> & key,
+                          const Atlas::Message::MapType & data);
+    bool updateSpatialRow(const std::string & name,
+                          const std::string & id,
+                          const std::vector<int> & key,
+                          const Atlas::Message::MapType & data);
+    bool removeSpatialRow(const std::string & name,
+                          const std::string & id,
+                          const std::vector<int> & key);
                                    
     // Interface for CommPSQLSocket, so it can give us feedback
     

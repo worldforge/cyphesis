@@ -1,5 +1,16 @@
 2004-09-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Update FIXME so its clear its the same
+	  as all the other orientation related FIXMEs.
+
+	* server/Connection.cpp: New FIXME for password based Logout which
+	  won't work.
+
+	* common/Database.h: Add interface for an idea which may help with
+	  terrain persistence.
+
+2004-09-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp, rulesets/Creator.cpp, rulesets/Character.cpp:
 	  Check and clean up places where args are checked before querying
 	  their contents.

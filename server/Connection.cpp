@@ -365,6 +365,10 @@ void Connection::LogoutOperation(const Logout & op, OpVector & res)
         error(op, "Logout failed", res);
         return;
     }
+
+    // FIXME This won't work. This connection won't have the account ID
+    // so won't be able to find it. If it did, then it could just log out
+    // the normal way. Pointless.
     Logout l(op);
     l.setFrom(player->getId());
 
