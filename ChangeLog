@@ -1,3 +1,7 @@
+2003-01-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* Make use of new varconf pkgconfig checks.
+
 2003-01-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* mason.xml, rulesets/mason/world/objects/plants/Fir.py: Add new
