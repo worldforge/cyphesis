@@ -41,6 +41,7 @@ WorldRouter::WorldRouter() : BaseWorld(consts::rootWorldId,
     updateTime();
     // m_gameWorld.setId(getId());
     m_gameWorld.m_world = this;
+    m_gameWorld.setType("world");
     m_eobjects[getId()] = &m_gameWorld;
     m_perceptives.insert(&m_gameWorld);
     m_objectList.insert(&m_gameWorld);

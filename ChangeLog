@@ -1,5 +1,9 @@
 2003-07-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Ensure world entity has its type set.
+
+2003-07-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseWorld.h, server/WorldRouter.cpp, server/WorldRouter.h:
 	  Remove old obsolete code for handling id generation.
 
