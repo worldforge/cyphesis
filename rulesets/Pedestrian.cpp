@@ -158,6 +158,8 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                                     << std::endl << std::flush;);
                     // FIXME take account of orientation
                     new_coords = new_coords.toParentCoords(loc.m_loc->m_location.m_pos, loc.m_loc->m_location.m_orientation);
+                    m_orientation *= loc.m_loc->m_location.m_orientation;
+                    m_velocity.rotate(loc.m_loc->m_location.m_orientation);
                     // FIXME velocity take account of orientation
                     if (m_targetPos.isValid()) {
                         m_targetPos = m_targetPos.toParentCoords(loc.m_loc->m_location.m_pos, loc.m_loc->m_location.m_orientation);
@@ -166,6 +168,8 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     debug(std::cout << "IN" << std::endl << std::flush;);
                     // FIXME take account of orientation
                     new_coords = new_coords.toLocalCoords(m_collEntity->m_location.m_pos, m_collEntity->m_location.m_orientation);
+                    m_orientation /= m_collEntity->m_location.m_orientation;
+                    m_velocity.rotate(m_collEntity->m_location.m_orientation.inverse());
                     // FIXME velocity take account of orientation
                     if (m_targetPos.isValid()) {
                         m_targetPos = m_targetPos.toLocalCoords(m_collEntity->m_location.m_pos, m_collEntity->m_location.m_orientation);
@@ -178,6 +182,8 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     log(ERROR, msg.c_str());
                 }
                 new_loc.m_loc = m_collEntity;
+                new_loc.m_velocity = m_velocity;
+                new_loc.m_orientation = m_orientation;
                 m_collEntity = NULL;
                 m_collRefChange = false;
                 m_collPos = Point3D();
