@@ -5,17 +5,9 @@
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H
 
-#include "config.h"
-
-#ifdef CYPHESIS_USE_DB3
-
-#ifdef HAVE_DB3_DB_CXX_H
-#include <db3/db_cxx.h>
-#else
-#include <db_cxx.h>
-#endif
-
 #include <Atlas/Message/DecoderBase.h>
+
+#include <db3/db_cxx.h>
 
 class Decoder : public Atlas::Message::DecoderBase {
   private:
@@ -82,20 +74,5 @@ class DatabaseIterator {
     bool get(Atlas::Message::Object::MapType & o);
     bool del();
 };
-
-#else // CYPHESIS_USE_DB3
-
-#error Cannot build without db3 currently
-
-class Database {
-  protected:
-    Database() { }
-
-    static Database * m_instance;
-  public:
-    static Database * instance();
-};
-
-#endif // CYPHESIS_USE_DB3
 
 #endif // COMMON_DATABSE_H

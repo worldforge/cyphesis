@@ -5,7 +5,6 @@
 #error This file has been removed from the build
 
 #include <fstream.h>
-// #include <strstream>
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -16,18 +15,12 @@
 #include <server/Player.h>
 #include <rulesets/Entity.h>
 
-#include <common/config.h>
-
 #include "persistance.h"
 
 // It seems that gcc does not yet include sstream.h
 // Included is a version written explicitly for gcc, which will be used
 // if the header is not present.
-#ifdef HAVE_SSTREAM
-#include <sstream>
-#else
-#include "sstream.h"
-#endif
+#include <common/stringstream.h>
 
 using Atlas::Message::Object;
 

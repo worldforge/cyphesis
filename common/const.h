@@ -19,6 +19,8 @@ namespace consts {
   const double hearing_range = 13.0;
   const bool enable_ranges = true;
 
+  const char * const defaultAdminPassword = "zjvspoehrgopes";
+
 }
 
 #endif // COMMON_CONST_H

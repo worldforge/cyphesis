@@ -15,16 +15,10 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Generic : public RootOperation {
   private:
-    Generic(const std::string & p) : RootOperation(p, "root_operation") {
-    }
+    Generic(const std::string & p);
   public:
-    virtual ~Generic() { }
-    static Generic Instantiate(const std::string & p) {
-        Generic value(p);
-        value.SetParents(Message::Object::ListType(1,p));
-        value.SetObjtype(std::string("op"));
-        return value;
-    }
+    virtual ~Generic();
+    static Generic Instantiate(const std::string & p);
 };
 
 } } }

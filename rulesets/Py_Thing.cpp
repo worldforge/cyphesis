@@ -76,7 +76,7 @@ static PyObject * Thing_getattr(ThingObject *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        PyObject * ent = PyString_FromString(self->m_thing->type.c_str());
+        PyObject * ent = PyString_FromString(self->m_thing->getType().c_str());
         PyList_Append(list, ent);
         Py_DECREF(ent);
         return list;
@@ -133,9 +133,9 @@ static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
         // This needs to be here until we can sort the difference
         // between floats and ints in python.
         if (PyInt_Check(v)) {
-            self->m_thing->status = (double)PyInt_AsLong(v);
+            self->m_thing->setStatus((double)PyInt_AsLong(v));
         } else if (PyFloat_Check(v)) {
-            self->m_thing->status = PyFloat_AsDouble(v);
+            self->m_thing->setStatus(PyFloat_AsDouble(v));
         } else {
             PyErr_SetString(PyExc_TypeError, "status must be numeric type");
             return -1;

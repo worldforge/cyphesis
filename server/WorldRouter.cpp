@@ -84,7 +84,7 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
     return *I;
 }
 
-inline std::string WorldRouter::getNewId(std::string & name)
+inline std::string WorldRouter::getNewId(const std::string & name)
 {
     std::stringstream buf;
     buf << name << "_" << ++nextId;
@@ -101,7 +101,7 @@ Entity * WorldRouter::addObject(Entity * obj)
     debug(std::cout << "WorldRouter::addObject(Entity *)" << std::endl
                     << std::flush;);
     if (obj->getId().empty()) {
-        obj->setId(getNewId(obj->name));
+        obj->setId(getNewId(obj->getName()));
     }
     server.idDict[obj->getId()]=eobjects[obj->getId()]=obj;
     objectList.push_back(obj);
@@ -121,7 +121,7 @@ Entity * WorldRouter::addObject(Entity * obj)
     debug(std::cout << "Entity loc " << obj->location << std::endl
                     << std::flush;);
     obj->world=this;
-    if (obj->omnipresent) {
+    if (obj->isOmnipresent()) {
         omnipresentList.push_back(obj);
     }
     Setup * s = new Setup(Setup::Instantiate());
@@ -209,7 +209,6 @@ oplist WorldRouter::operation(const RootOperation * op)
         if ((op_type == OP_DELETE) && (to_entity != &gameWorld)) {
             delObject(to_entity);
             to_entity->destroy();
-            to_entity->deleted = true;
             delete to_entity;
             to_entity = NULL;
         }

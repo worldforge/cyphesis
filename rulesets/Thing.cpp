@@ -253,7 +253,7 @@ oplist Thing::MoveOperation(const Move & op)
                 if (wasInRange ^ isInRange) {
                     Object::MapType that_ent;
                     that_ent["id"] = (*I)->getId();
-                    that_ent["stamp"] = (double)(*I)->seq;
+                    that_ent["stamp"] = (double)(*I)->getSeq();
                     if (wasInRange) {
                         // We are losing sight of that object
                         disappear.push_back(that_ent);

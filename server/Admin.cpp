@@ -54,7 +54,7 @@ oplist Admin::SaveOperation(const Save & op)
     for(I = world->getObjects().begin(); I != world->getObjects().end(); I++) {
         p->putEntity(*I->second);
         ++count;
-        if (I->second->isCharacter) {
+        if (I->second->isCharacter()) {
             cout << "Dumping character to database" << endl << flush;
             Character * c = (Character *)I->second;
             if (c->mind == NULL) { continue; }
@@ -123,7 +123,7 @@ oplist Admin::LoadOperation(const Load & op)
         if ((I != ent.end()) && (I->second.IsString())) {
             const std::string & id = I->second.AsString();
             Entity * ent = world->getObject(id);
-            if ((ent == NULL) || (!ent->isCharacter)) {
+            if ((ent == NULL) || (!ent->isCharacter())) {
                 continue;
             }
             Character * c = (Character *)ent;

@@ -9,15 +9,9 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Cut : public RootOperation {
   public:
-    Cut() : RootOperation("cut", "root_operation") {
-    }
-    virtual ~Cut() { }
-    static Cut Instantiate() {
-        Cut value;
-        value.SetParents(Message::Object::ListType(1,std::string("cut")));
-        value.SetObjtype(std::string("op"));
-        return value;
-    }
+    Cut();
+    virtual ~Cut();
+    static Cut Instantiate();
 };
 
 } } }

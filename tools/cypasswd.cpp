@@ -7,7 +7,6 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <common/config.h>
 #include <common/accountbase.h>
 
 #include <string>
@@ -38,10 +37,6 @@ void usage(char * n)
 
 int main(int argc, char ** argv)
 {
-#ifndef HAVE_LIBDB_CXX
-    std::cerr << "This version of cyphesis was built without persistant account support" << endl << flush;
-    exit(0);
-#endif
     std::string acname;
     int action;
 

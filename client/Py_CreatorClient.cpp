@@ -123,7 +123,7 @@ static PyObject * CreatorClient_getattr(CreatorClientObject *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        PyList_Append(list, PyString_FromString(self->m_mind->type.c_str()));
+        PyList_Append(list, PyString_FromString(self->m_mind->getType().c_str()));
         return list;
     }
     if (strcmp(name, "map") == 0) {
@@ -173,9 +173,9 @@ static int CreatorClient_setattr(CreatorClientObject *self, char *name, PyObject
         // This needs to be here until we can sort the difference
         // between floats and ints in python.
         if (PyInt_Check(v)) {
-            self->m_mind->status = (double)PyInt_AsLong(v);
+            self->m_mind->setStatus((double)PyInt_AsLong(v));
         } else if (PyFloat_Check(v)) {
-            self->m_mind->status = PyFloat_AsDouble(v);
+            self->m_mind->setStatus(PyFloat_AsDouble(v));
         } else {
             PyErr_SetString(PyExc_TypeError, "status must be numeric type");
             return -1;

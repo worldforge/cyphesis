@@ -80,7 +80,7 @@ Character::Character() : movement(*new Pedestrian(*this)), autom(false),
                          maxWeight(100), isAlive(true),
                          mind(NULL), externalMind(NULL)
 {
-    isCharacter = true;
+    character = true;
     weight = 60;
     location.bbox = Vector3D(0.25, 0.25, 1);
     location.bmedian = Vector3D(0, 0, 1);
@@ -363,7 +363,7 @@ oplist Character::mindMoveOperation(const Move & op)
     Entity * obj = J->second;
     if (obj != this) {
         debug( std::cout << "Moving something else. " << oname << std::endl << std::flush;);
-        if ((obj->weight < 0) || (obj->weight > weight)) {
+        if ((obj->getWeight() < 0) || (obj->getWeight() > weight)) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             delete newop;
             return oplist();

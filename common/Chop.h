@@ -9,15 +9,9 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Chop : public RootOperation {
   public:
-    Chop() : RootOperation("chop", "root_operation") {
-    }
-    virtual ~Chop() { }
-    static Chop Instantiate() {
-        Chop value;
-        value.SetParents(Message::Object::ListType(1,std::string("chop")));
-        value.SetObjtype(std::string("op"));
-        return value;
-    }
+    Chop();
+    virtual ~Chop();
+    static Chop Instantiate();
 };
 
 } } }

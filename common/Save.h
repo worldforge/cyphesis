@@ -9,15 +9,9 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Save : public RootOperation {
   public:
-    Save() : RootOperation("save", "root_operation") {
-    }
-    virtual ~Save() { }
-    static Save Instantiate() {
-        Save value;
-        value.SetParents(Message::Object::ListType(1,"save"));
-        value.SetObjtype(std::string("op"));
-        return value;
-    }
+    Save();
+    virtual ~Save();
+    static Save Instantiate();
 };
 
 } } }

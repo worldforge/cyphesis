@@ -1,14 +1,9 @@
-  Write a watchdog for the poor happless game admins.
-  Current version keeps server running. Should a future version ensure
+  Current watchdog keeps server running. Should a future version ensure
   that the server is working?
 
   Implement propper multi-process access to database
 
-  DECREF pyThing and pyMind as we drop references to these
-
-  Add support for appearance and disappearance ops in lobby.
-
-Provisional for Acorn 0.5:
+  Add support for maps list attribute on world_0
 
   Implement accelerated Atlas Objects API. MAYBE:
     POSTPONED FROM 0.3
@@ -18,6 +13,8 @@ Provisional for Acorn 0.5:
   Use combine operation to deal with making more than one object into one.
 
   Add sending of touch op on collision.
+
+  Implement omnipresent
 
 Required for werewolf:
 

@@ -14,7 +14,7 @@ static const bool debug_flag = false;
 Creator::Creator()
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
-    isCharacter = true;
+    character = true;
     omnipresent = true;
     location.bbox = Vector3D();
 }

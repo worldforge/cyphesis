@@ -7,10 +7,4 @@
 
 #include "../config.h"
 
-#if defined(HAVE_LIBDB_CXX) || defined(HAVE_LIBDB3_CXX)
-
-#define CYPHESIS_USE_DB3
-
-#endif // HAVE_LIBDB_CXX
-
 #endif // COMMON_CONFIG_H

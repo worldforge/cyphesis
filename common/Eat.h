@@ -9,15 +9,9 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Eat : public RootOperation {
   public:
-    Eat() : RootOperation("eat", "root_operation") {
-    }
-    virtual ~Eat() { }
-    static Eat Instantiate() {
-        Eat value;
-        value.SetParents(Message::Object::ListType(1,std::string("eat")));
-        value.SetObjtype(std::string("op"));
-        return value;
-    }
+    Eat();
+    virtual ~Eat();
+    static Eat Instantiate();
 };
 
 } } }

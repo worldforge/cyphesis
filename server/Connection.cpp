@@ -68,7 +68,7 @@ void Connection::destroy()
     dict_t::const_iterator I;
     for(I = objects.begin(); I != objects.end(); I++) {
         BaseEntity * ent = I->second;
-        if (ent->inGame == false) {
+        if (!ent->inGame()) {
             server.lobby.delObject((Account *)ent);
             Disappearance d(Disappearance::Instantiate());
             Object::MapType us;
@@ -81,7 +81,7 @@ void Connection::destroy()
             continue;
         }
         Thing * obj = (Thing*)ent;
-        if (obj->isCharacter == true) {
+        if (obj->isCharacter()) {
             Character * character = (Character *)obj;
             if (character->externalMind != NULL) {
                 delete character->externalMind;
@@ -105,10 +105,10 @@ oplist Connection::operation(const RootOperation & op)
         dict_t::const_iterator I = objects.find(from);
         if (I != objects.end()) {
             BaseEntity * ent = I->second;
-            if ((ent->inGame != false)&&(((Thing *)ent)->isCharacter != 0) &&
+            if (ent->inGame() && ((Thing *)ent)->isCharacter() &&
                 (((Character *)ent)->externalMind == NULL)) {
                 Character * pchar = (Character *)ent;
-                pchar->externalMind = new ExternalMind(*this, pchar->getId(), pchar ->name);
+                pchar->externalMind = new ExternalMind(*this, pchar->getId(), pchar->getName());
                 debug(cout << "Re-connecting existing character to new connection" << endl << flush;);
                 Info * info = new Info(Info::Instantiate());
                 info->SetArgs(Object::ListType(1,pchar->asObject()));

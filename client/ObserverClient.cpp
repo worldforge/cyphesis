@@ -6,6 +6,7 @@
 #include "define_world.h"
 
 #include <common/accountbase.h>
+#include <common/const.h>
 
 #include <unistd.h>
 
@@ -22,19 +23,21 @@ bool ObserverClient::setup()
     }
 
     Object::MapType adminAccount;
+    std::string password = consts::defaultAdminPassword;
     if (!AccountBase::instance()->getAccount("admin", adminAccount)) {
-        std::cerr << "Unable to read admin account from database"
+        std::cerr << "WARNING: Unable to read admin account from database"
+                  << std::endl << "Using default"
                   << std::endl << std::flush;
-        return false;
+    } else {
+        Object::MapType::const_iterator I = adminAccount.find("password");
+        if (I == adminAccount.end()) {
+            std::cerr << "WARNING: Admin account from database has no password"
+                      << std::endl << std::flush;
+        } else {
+            password = I->second.AsString();
+        }
     }
     AccountBase::del();
-    Object::MapType::const_iterator I = adminAccount.find("password");
-    if (I == adminAccount.end()) {
-        std::cerr << "Admin account from database has no password"
-                  << std::endl << std::flush;
-        return false;
-    }
-    const std::string & password = I->second.AsString();
     player = createPlayer("admin",password);
     if (player.empty()) {
         return false;

@@ -9,6 +9,8 @@
 
 #include <common/config.h>
 
+#error This file has been removed from the build
+
 usage(char ** argv)
 {
 	fprintf(stderr, "Usage: %s {start|stop|kill|restart|reinit}\n",

@@ -27,21 +27,47 @@ class Entity : public BaseEntity {
   protected:
     Script * script;
     Atlas::Message::Object::MapType attributes;
-  public:
-    BaseWorld * world;		// Exists in this world.
     int seq;			// Sequence number
-    Location location;		// Full details of location inc. ref pos and vel
-    elist_t contains;		// List of entities which use this as ref
     double status;		// Health/damage coeficient
     std::string type;		// Easy access to primary parent
     std::string name;		// Entities name
     double weight;		// Weight in kg
-    bool isCharacter;		// Is this a character
+    bool character;		// Is this a character
     bool deleted;		// Has this been deleted
     bool omnipresent;		// Is this omnipresent
+  public:
+    BaseWorld * world;		// Exists in this world.
+    Location location;		// Full details of location inc. ref pos and vel
+    elist_t contains;		// List of entities which use this as ref
 
     Entity();
     virtual ~Entity();
+
+    const int getSeq() const { return seq; }
+    const double getStatus() const { return status; }
+    const std::string & getName() const { return name; }
+    const std::string & getType() const { return type; }
+    const double getWeight() const { return weight; }
+
+    const bool isCharacter() const { return character; }
+    const bool isDeleted() const { return deleted; }
+    const bool isOmnipresent() const { return omnipresent; }
+
+    void setStatus(const double s) {
+        status = s;
+    }
+
+    void setName(const std::string & n) {
+        name = n;
+    }
+
+    void setType(const std::string & t) {
+        type = t;
+    }
+
+    void setWeight(const double w) {
+        weight = w;
+    }
 
     virtual const Atlas::Message::Object & operator[](const std::string & aname);
     virtual void set(const std::string & aname, const Atlas::Message::Object & attr);

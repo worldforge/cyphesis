@@ -29,7 +29,6 @@ extern "C" {
 #include "ClientConnection.h"
 
 #include <common/debug.h>
-#include <common/config.h>
 #include <common/globals.h>
 
 static bool debug_flag = false;

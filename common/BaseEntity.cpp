@@ -17,7 +17,7 @@ static const bool debug_flag = false;
 
 using Atlas::Message::Object;
 
-BaseEntity::BaseEntity() : inGame(false)
+BaseEntity::BaseEntity() : game(false)
 {
 }
 

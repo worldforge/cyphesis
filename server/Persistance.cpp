@@ -3,7 +3,6 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <fstream.h>
-// #include <strstream>
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
@@ -14,7 +13,7 @@
 #include <server/Player.h>
 #include <rulesets/Entity.h>
 
-#include <common/config.h>
+#include <common/const.h>
 
 #include "Persistance.h"
 
@@ -42,8 +41,6 @@ void Persistance::saveAdminAccount(Account & adm)
     adm_file << "</map>" << endl << "</atlas>" << endl << flush;
     adm_file.close();
 }
-
-#ifdef CYPHESIS_USE_DB3
 
 // This is the version of the persistance code which is enabled if 
 // there is db support.
@@ -78,7 +75,7 @@ Account * Persistance::loadAdminAccount()
     Persistance * p = instance();
     Account * adm = p->getAccount("admin");
     if (adm == NULL) {
-        adm = new Admin(NULL, "admin", "zjvspoehrgopes");
+        adm = new Admin(NULL, "admin", consts::defaultAdminPassword);
         p->putAccount(*adm);
     }
     saveAdminAccount(*adm);
@@ -140,30 +137,3 @@ void Persistance::putMind(const std::string & id, const Object::MapType & be)
 {
     putObject(mind_db, be, id.c_str());
 }
-
-#else // HAVE_LIBDB_CXX
-
-Persistance::Persistance() { }
-
-Account * Persistance::loadAdminAccount()
-{
-    // Eventually this should actually load the account. For now it just
-    // creates it.
-    Account * adm = new Admin(NULL, "admin", "test");
-    saveAdminAccount(adm);
-    return adm;
-}
-
-bool Persistance::findAccount(const std::string &) { return false; }
-
-Account * Persistance::getAccount(const std::string & name) { return NULL; }
-
-void Persistance::putAccount(const Account *) { }
-
-void Persistance::putEntity(const BaseEntity *) { }
-
-bool Persistance::init() { return true; }
-
-void Persistance::shutdown() { }
-
-#endif // HAVE_LIBDB_CXX

@@ -9,15 +9,9 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Load : public RootOperation {
   public:
-    Load() : RootOperation("load", "root_operation") {
-    }
-    virtual ~Load() { }
-    static Load Instantiate() {
-        Load value;
-        value.SetParents(Message::Object::ListType(1, "load"));
-        value.SetObjtype(std::string("op"));
-        return value;
-    }
+    Load();
+    virtual ~Load();
+    static Load Instantiate();
 };
 
 } } }

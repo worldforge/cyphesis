@@ -3,7 +3,6 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "globals.h"
-#include "config.h"
 
 varconf::Config * global_conf = NULL;
 std::string share_directory = SHAREDIR;

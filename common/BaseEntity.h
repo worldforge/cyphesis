@@ -17,19 +17,21 @@
 
 class BaseEntity {
   private:
-    std::string fullid;		// String id
+    std::string m_id;		// String id
+  protected:
+    bool game;		// true if in game object
   public:
-    bool inGame;		// true if in game object
-
     BaseEntity();
     virtual ~BaseEntity();
 
+    const bool inGame() const { return game; }
+
     const std::string & getId() const {
-        return fullid;
+        return m_id;
     }
 
     void setId(const string & i) {
-        fullid = i;
+        m_id = i;
     }
 
     virtual void destroy();

@@ -9,15 +9,9 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Nourish : public RootOperation {
   public:
-    Nourish() : RootOperation("nourish", "root_operation") {
-    }
-    virtual ~Nourish() { }
-    static Nourish Instantiate() {
-        Nourish value;
-        value.SetParents(Message::Object::ListType(1, std::string("nourish")));
-        value.SetObjtype(std::string("op"));
-        return value;
-    }
+    Nourish();
+    virtual ~Nourish();
+    static Nourish Instantiate();
 };
 
 } } }

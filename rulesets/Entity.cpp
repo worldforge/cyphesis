@@ -32,11 +32,12 @@ static const bool debug_flag = false;
 
 using Atlas::Message::Object;
 
-Entity::Entity() : script(new Script), world(NULL), seq(0), status(1),
+Entity::Entity() : script(new Script), seq(0), status(1),
                    type("thing"), weight(-1),
-                   isCharacter(false), deleted(false), omnipresent(false)
+                   character(false), deleted(false), omnipresent(false),
+                   world(NULL)
 {
-    inGame = true;
+    game = true;
 }
 
 Entity::~Entity()
@@ -101,12 +102,12 @@ void Entity::setScript(Script * scrpt)
 
 void Entity::destroy()
 {
-    if (deleted == true) {
+    if (deleted) {
         return;
     }
     for(elist_t::const_iterator I=contains.begin(); I != contains.end(); I++) {
         Entity * obj = *I;
-        if (obj->deleted == false) {
+        if (!obj->deleted) {
             obj->location.ref = location.ref;
             obj->location.coords = location.coords + obj->location.coords;
         }
@@ -114,6 +115,7 @@ void Entity::destroy()
     if (location) {
         location.ref->contains.remove(this);
     }
+    deleted = true;
 }
 
 void Entity::addToObject(Object::MapType & omap) const

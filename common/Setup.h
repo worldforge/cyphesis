@@ -9,15 +9,9 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Setup : public RootOperation {
   public:
-    Setup() : RootOperation("setup", "root_operation") {
-    }
-    virtual ~Setup() { }
-    static Setup Instantiate() {
-        Setup value;
-        value.SetParents(Message::Object::ListType(1, "setup"));
-        value.SetObjtype(std::string("op"));
-        return value;
-    }
+    Setup();
+    virtual ~Setup();
+    static Setup Instantiate();
 };
 
 } } }

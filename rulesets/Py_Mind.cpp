@@ -76,7 +76,7 @@ static PyObject * Mind_getattr(MindObject *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        PyObject * ent = PyString_FromString(self->m_mind->type.c_str());
+        PyObject * ent = PyString_FromString(self->m_mind->getType().c_str());
         PyList_Append(list, ent);
         Py_DECREF(ent);
         return list;
@@ -128,9 +128,9 @@ static int Mind_setattr(MindObject *self, char *name, PyObject *v)
         // This needs to be here until we can sort the difference
         // between floats and ints in python.
         if (PyInt_Check(v)) {
-            self->m_mind->status = (double)PyInt_AsLong(v);
+            self->m_mind->setStatus((double)PyInt_AsLong(v));
         } else if (PyFloat_Check(v)) {
-            self->m_mind->status = PyFloat_AsDouble(v);
+            self->m_mind->setStatus(PyFloat_AsDouble(v));
         } else {
             PyErr_SetString(PyExc_TypeError, "status must be numeric type");
             return -1;

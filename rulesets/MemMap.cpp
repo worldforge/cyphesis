@@ -49,11 +49,11 @@ Entity * MemMap::add(const Object & entity)
     thing->setId(id);
     I = entmap.find("name");
     if ((I != entmap.end()) && I->second.IsString()) {
-        thing->name = I->second.AsString();
+        thing->setName(I->second.AsString());
     }
     I = entmap.find("type");
     if ((I != entmap.end()) && I->second.IsString()) {
-        thing->type = I->second.AsString();
+        thing->setType(I->second.AsString());
     }
     thing->merge(entmap);
     I = entmap.find("loc");
@@ -92,11 +92,11 @@ Entity * MemMap::update(const Object & entity)
     // below yet. FIXME find out exactly what is required.
     I = entmap.find("name");
     if (I != entmap.end() && I->second.IsString()) {
-        thing->name = I->second.AsString();
+        thing->setName(I->second.AsString());
     }
     I = entmap.find("type");
     if (I != entmap.end() && I->second.IsString()) {
-        thing->type = I->second.AsString();
+        thing->setType(I->second.AsString());
     }
     debug( std::cout << " got " << thing << std::endl << std::flush;);
     thing->merge(entmap);
@@ -124,8 +124,8 @@ std::list<Entity *> MemMap::findByType(const std::string & what)
     edict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         Entity * item = (Entity *)I->second;
-        debug( std::cout << "F" << what << ":" << item->type << ":" << item->getId() << std::endl << std::flush;);
-        if (item->type == what) {
+        debug( std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
+        if (item->getType() == what) {
             res.push_back((Entity*)I->second);
         }
     }

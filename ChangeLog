@@ -1,5 +1,48 @@
 2001-10-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* aiclient/ClientConnection.cpp, aiclient/client.cpp,
+	  client/ClientConnection.cpp, common/database.h, common/globals.cpp,
+	  common/persistance.cpp, common/stringstream.h, server/CommClient.cpp,
+	  server/CommServer.cpp, server/Persistance.cpp, tools/cyctrl.cpp,
+	  tools/cyctrl.cpp, tools/cydbload.cpp, tools/cyisoload.cpp,
+	  tools/cypasswd.cpp: Removed unused config.h.
+
+	* client/ObserverClient.cpp, common/const.h, tools/cycmd.cpp:
+	  Use default password if the admin account cannot be fetched from
+	  the database.
+
+	* client/Py_CreatorClient.cpp, common/BaseEntity.cpp,
+	  common/BaseEntity.h, rulesets/Character.cpp, rulesets/Creator.cpp,
+	  rulesets/Entity.cpp, rulesets/Entity.h, rulesets/EntityFactory.cpp,
+	  rulesets/MemMap.cpp, rulesets/Py_Mind.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/Py_World.cpp, rulesets/Thing.cpp, server/Account.cpp,
+	  server/Admin.cpp, server/Connection.cpp, tools/cywatchdog.cpp:
+	  Make many of the member variables of Entity protected, and add
+	  the required accessors. Changed the name of the id attribute
+	  to m_id.
+
+	* common/BaseWorld.h, common/database.cpp, common/persistance.cpp:
+	  Removed unused includes.
+
+	* common/Chop.h, common/Cut.h, common/Eat.h, common/Fire.h,
+	  common/Generic.h, common/Load.h, common/Nourish.h, common/Save.h,
+	  common/Setup.h, common/Tick.h: Moved definition of virtual
+	  functions into cpp file, to reduce wasted code.
+
+	* common/Makefile.am: Create cyphesis library, which can be used by
+	  other applications to access cyphesis databases.
+
+	* common/config.h, common/database.h, server/Persistance.cpp,
+	  tools/cydbload.cpp, tools/cyisoload.cpp, tools/cypasswd.cpp:
+	  Remove conditional compilation of db code. db3 is now required.
+
+	* server/WorldRouter.h: Fixed getNewId() so it take const string.
+
+	* server/server.cpp: Removed python shutdown, so it does not
+	  mess up the db if it causes a segfault.
+
+2001-10-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.cpp: Modified semantics of OOG ops, so the args
 	  have a loc attribute indicating what room they take place in.
 

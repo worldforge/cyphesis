@@ -15,6 +15,7 @@
 #include <common/Load.h>
 #include <common/Save.h>
 #include <common/accountbase.h>
+#include <common/const.h>
 
 extern "C" {
     #include <stdio.h>
@@ -373,15 +374,23 @@ int main(int argc, char ** argv)
         return 1;
     }
     Object::MapType adminAccount;
-    if ((strcmp(server, "localhost") == 0) &&
-        (AccountBase::instance()->getAccount("admin", adminAccount))) {
-        Object::MapType::const_iterator I = adminAccount.find("password");
-        if (I == adminAccount.end()) {
-            std::cerr << "Unable to read admin account from database"
+    if (strcmp(server, "localhost") == 0) {
+        if (!AccountBase::instance()->getAccount("admin", adminAccount)) {
+            std::cerr << "WARNING: Unable to read admin account from database"
+                      << std::endl << "Using default"
                       << std::endl << std::flush;
-            return 1;
+            bridge.setPassword(consts::defaultAdminPassword);
+        } else {
+            Object::MapType::const_iterator I = adminAccount.find("password");
+            if (I == adminAccount.end()) {
+                std::cerr << "WARNING: Admin account has no password"
+                          << std::endl << "Using default"
+                          << std::endl << std::flush;
+                bridge.setPassword(consts::defaultAdminPassword);
+            } else {
+                bridge.setPassword(I->second.AsString());
+            }
         }
-        bridge.setPassword(I->second.AsString());
         AccountBase::del();
     } else {
         bridge.getPassword();

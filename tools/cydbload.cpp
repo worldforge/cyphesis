@@ -8,13 +8,10 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <common/config.h>
 #include <common/database.h>
 
 #include <string>
 #include <fstream>
-
-#ifdef HAVE_LIBDB_CXX
 
 using Atlas::Message::Object;
 
@@ -121,13 +118,3 @@ int main(int argc, char ** argv)
     db->shutdownWorld();
     delete db;
 }
-
-#else // HAVE_LIBDB_CXX
-
-int main(int argc, char ** argv)
-{
-    std::cerr << "This version of cyphesis was built without persistant world support" << endl << flush;
-    exit(0);
-}
-
-#endif // HAVE_LIBDB_CXX

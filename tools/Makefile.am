@@ -22,7 +22,7 @@ cycmd_SOURCES = cycmd.cpp
 
 cycmd_LIBS = -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlasNet -lAtlasObjects -lAtlasObjectsEntity -lAtlasObjectsOperation
 
-cycmd_LDADD = ../common/database.o
+cycmd_LDADD = ../common/database.o ../common/operations.o
 
 cydbload_SOURCES = cydbload.cpp
 

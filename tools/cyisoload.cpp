@@ -8,7 +8,6 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <common/config.h>
 #include <common/database.h>
 
 #include <string>
@@ -16,8 +15,6 @@
 #include <common/stringstream.h>
 
 #include <coal/isoloader.h>
-
-#if defined(CYPHESIS_USE_DB3) && defined(HAVE_LIBCOALISO)
 
 class WorldBase : public Database {
   protected:
@@ -145,18 +142,3 @@ int main(int argc, char ** argv)
     db->shutdownWorld();
     delete db;
 }
-
-#else // defined(CYPHESIS_USE_DB3) && defined(HAVE_LIBCOALISO)
-
-int main(int argc, char ** argv)
-{
-#ifndef CYPHESIS_USE_DB3
-    std::cerr << "This version of cyphesis was built without persistant world support" << endl << flush;
-#endif
-#ifndef HAVE_LIBCOALISO
-    std::cerr << "This version of cyphesis was built without map loader support" << endl << flush;
-#endif
-    exit(0);
-}
-
-#endif // defined(CYPHESIS_USE_DB3) && defined(HAVE_LIBCOALISO)

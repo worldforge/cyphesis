@@ -15,7 +15,6 @@ extern "C" {
 
 #include <cstdio>
 
-#include <common/config.h>
 #include <common/debug.h>
 
 #include "ServerRouting_methods.h"

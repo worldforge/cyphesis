@@ -13,8 +13,6 @@
 #include <string>
 #include <fstream>
 
-#include <common/config.h>
-
 // #define _NO_DAEMON
 
 std::string bin_dir = BINDIR;

@@ -5,9 +5,6 @@
 #ifndef COMMON_BASE_WORLD_H
 #define COMMON_BASE_WORLD_H
 
-#include <sys/time.h>
-#include <unistd.h>
-
 class WorldRouter;
 class ServerRouting;
 class Entity;

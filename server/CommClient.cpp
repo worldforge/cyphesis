@@ -7,7 +7,6 @@
 
 #include <iostream>
 
-#include <common/config.h>
 #include <common/debug.h>
 #include <common/utility.h>
 

@@ -2,24 +2,19 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#include <fstream.h>
-// #include <strstream>
-
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Operation/Login.h>
-#include <Atlas/Codecs/XML.h>
-
-#include <common/config.h>
-#include <common/debug.h>
-#include <common/globals.h>
-
 #include "database.h"
+
+#include <Atlas/Message/Encoder.h>
+#include <Atlas/Codecs/XML.h>
 
 // It seems that GNU libstdc++ does not yet include sstream.h
 // Included is a version written explicitly for gcc, which will be used
 // if the header is not present.
 #include <common/stringstream.h>
+#include <common/debug.h>
+
+#include <fstream.h>
+
 
 static const bool debug_flag = false;
 

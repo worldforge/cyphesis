@@ -22,7 +22,9 @@ AM_CONDITIONAL(BUILD_STATIC, test x$ac_build_static_binary = xyes)
 
 dnl Initialise automake
 
-AM_INIT_AUTOMAKE(cyphesis, 0.1.0)
+VERSION=0.1.0
+
+AM_INIT_AUTOMAKE(cyphesis, $VERSION)
 
 dnl check if user wishes maintainer-mode ("--enable-maintainer-mode = yes")
 AM_MAINTAINER_MODE
@@ -88,7 +90,7 @@ AC_CHECK_HEADER(python2.1/Python.h,
 				[ python_include_path=-I${python_prefix}/include/python1.5
 				  python_version=python1.5
 				  AC_DEFINE(HAVE_PYTHON_H)
-                                ])
+				])
 			])
 		])
 	])
@@ -127,7 +129,7 @@ AC_CHECK_HEADERS(db3/db_cxx.h, ,
 ])
 
 dnl AC_CHECK_LIB(sigc,main)
-AM_PATH_SIGC(1.0.1,[
+AM_PATH_SIGC(1.0.2,[
 	CPPFLAGS="$CPPFLAGS $SIGC_CFLAGS"
 	LIBS="$LIBS $SIGC_LIBS"
 	],
@@ -147,6 +149,7 @@ AC_CHECK_LIB(readline,readline)
 
 dnl Generate files
 AC_OUTPUT([
+	cyphesis.spec
 	Makefile
 	physics/Makefile
 	common/Makefile

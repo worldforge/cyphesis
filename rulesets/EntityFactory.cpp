@@ -67,9 +67,9 @@ Thing * EntityFactory::newThing(const std::string & type,const Object & ent, con
     if (thing == NULL) {
         thing = new Thing();
     }
-    debug( std::cout << "[" << type << " " << thing->name << "]" << std::endl
-                     << std::flush;);
-    thing->type = type;
+    debug( std::cout << "[" << type << " " << thing->getName() << "]"
+                     << std::endl << std::flush;);
+    thing->setType(type);
     // Sort out python object
     if (py_package.size() != 0) {
         Create_PyThing(thing, py_package, type);
@@ -77,7 +77,7 @@ Thing * EntityFactory::newThing(const std::string & type,const Object & ent, con
     const Object::MapType & entmap = ent.AsMap();
     Object::MapType::const_iterator K = entmap.find("name");
     if ((K != entmap.end()) && K->second.IsString()) {
-        thing->name = K->second.AsString();
+        thing->setName(K->second.AsString());
     } else {
         debug( std::cout << "Got no name" << std::endl << std::flush;);
     }

@@ -9,15 +9,9 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Tick : public RootOperation {
   public:
-    Tick() : RootOperation("tick", "root_operation") {
-    }
-    virtual ~Tick() { }
-    static Tick Instantiate() {
-        Tick value;
-        value.SetParents(Message::Object::ListType(1,"tick"));
-        value.SetObjtype(std::string("op"));
-        return value;
-    }
+    Tick();
+    virtual ~Tick();
+    static Tick Instantiate();
 };
 
 } } }

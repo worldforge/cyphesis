@@ -9,8 +9,6 @@
 #include <unistd.h>
 #include <string>
 
-#include <common/config.h>
-
 void usage(char ** argv)
 {
     fprintf(stderr, "Usage: %s {start|stop|kill|restart|reinit}\n",

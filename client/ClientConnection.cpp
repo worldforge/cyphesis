@@ -32,8 +32,6 @@ extern "C" {
 
 #include "common/debug.h"
 
-#include "config.h"
-
 static bool debug_flag = false;
 
 using Atlas::Message::Object;

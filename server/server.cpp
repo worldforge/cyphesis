@@ -20,7 +20,6 @@ extern "C" {
 
 #include <rulesets/EntityFactory.h>
 
-#include <common/config.h>
 #include <common/const.h>
 #include <common/log.h>
 #include <common/debug.h>
@@ -288,12 +287,14 @@ int main(int argc, char ** argv)
 
     } // close scope of CommServer
 
-    shutdown_python_api();
-
     Persistance::shutdown();
 
     EntityFactory::instance()->flushFactories();
     EntityFactory::del();
+
+    // This sometimes causes a segfault, so important things like the
+    // persistance need to come first
+    shutdown_python_api();
 
     delete global_conf;
 
