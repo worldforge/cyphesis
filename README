@@ -64,7 +64,7 @@ details of the manual setup process
 
 Each time the server is run it needs to be populated with game data before it
 does anything useful. If you are running the server using the SYSV init service
-then this is handled for you by the cyclient service. 
+then this is handled for you by the cyclient service.
 
 Start the server with the cyphesis command. It will output some startup
 messages and then run in the foreground. In another terminal you should then run
