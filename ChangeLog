@@ -1,3 +1,8 @@
+2003-05-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/World.cpp: Flatten out terrain a little, for a more
+	  realistic test.
+
 2003-05-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp: Add a bit more terrain.
