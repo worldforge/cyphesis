@@ -1,3 +1,5 @@
+Move big functions out of physics headers into .cpp files
+
 Long term, try and sort out the way object factories, scripts, and atlas
 inheritance are handled, so they are a bit more coherant.
 

@@ -1,5 +1,10 @@
 2003-10-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/BBox.h, physics/Vector3D.h: Remove historical vector
+	  and bbox classes.
+
+2003-10-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/collisiontest.cpp: Add unit test for new collision code.
 	  Seems to work.
 
