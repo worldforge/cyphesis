@@ -1,3 +1,49 @@
+2002-07-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cyloadrules.cpp, server/server.cpp,
+	  aiclient/ClientConnection.cpp, client/ClientConnection.cpp,
+	  common/inheritance.h: Use const iterators and references
+	  whenever possible.
+
+	* client/CommClient.cpp, client/CreatorClient.cpp,
+	  client/ObserverClient.cpp, client/Py_CreatorClient.cpp,
+	  common/BaseEntity.cpp, common/BaseEntity.h,
+	  common/types.h, rulesets/Area.cpp, rulesets/BaseMind.cpp,
+	  rulesets/Character.cpp, rulesets/Entity.cpp,
+	  rulesets/Food.cpp, rulesets/Line.cpp,
+	  rulesets/MemMap.cpp, rulesets/Pedestrian.cpp,
+	  rulesets/Plant.cpp, rulesets/Py_Mind.cpp,
+	  rulesets/Py_Object.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/Python_API.cpp, rulesets/Stackable.cpp,
+	  rulesets/Thing.cpp, rulesets/World.cpp,
+	  server/Account.cpp, server/Admin.cpp, server/CommClient.cpp,
+	  server/CommServer.cpp, server/Connection.cpp,
+	  server/EntityFactory.cpp, server/Lobby.cpp,
+	  server/Persistance.cpp, server/Player.cpp,
+	  server/ServerRouting.cpp, server/WorldRouter.cpp:
+	  Switch to using Fragment as name for Atlas::Message::Object,
+	  to avoid name clashes on Object.
+
+	* common/BaseEntity.h: Make BaseEntity inherit from SigC::Object,
+	  so signals and callbacks can be used, and add destroyed
+	  signal.
+
+	* common/accountbase.h, physics/BBox.h, physics/Quaternion.h,
+	  physics/Vector3D.h, rulesets/MemMap_methods.h,
+	  rulesets/Movement.cpp, rulesets/Plant.h,
+	  rulesets/Py_Operation.cpp, rulesets/PythonMindScript.cpp,
+	  rulesets/PythonThingScript.cpp, rulesets/Script.cpp,
+	  common/inheritance.cpp: Cleaned up Atlas::Message::Object
+	  use, and excessive use of "using ...".
+
+	* rulesets/Movement.h, rulesets/Pedestrian.h:
+	  Use forward declarations rather than including Move.h
+
+	* server/Account.cpp, server/Account.h, server/Connection.cpp,
+	  server/Connection.h: Use destroyed signal to ensure references
+	  to in game entities are removed when those entities are
+	  destroyed. Ensure Connection is only destroyed once.
+
 2002-07-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cycmd.cpp, client/CommClient.h, client/CommClient.cpp: Fixed

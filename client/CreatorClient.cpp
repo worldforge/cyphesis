@@ -8,21 +8,19 @@
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Set.h>
 
-using Atlas::Message::Object;
-
 CreatorClient::CreatorClient(const std::string & id, const std::string & name,
                              ClientConnection &c) : CharacterClient(id,name,c)
 {
 }
 
-Entity * CreatorClient::make(const Object & entity)
+Entity * CreatorClient::make(const Fragment & entity)
 {
     if (!entity.IsMap()) {
         std::cerr << "entity is not map" << std::endl << std::flush;
         return NULL;
     }
     Create op(Create::Instantiate());
-    op.SetArgs(Object::ListType(1,entity));
+    op.SetArgs(Fragment::ListType(1,entity));
     op.SetFrom(getId());
     op.SetTo(getId());
     OpVector result = sendAndWaitReply(op);
@@ -44,8 +42,8 @@ Entity * CreatorClient::make(const Object & entity)
         std::cerr << "Reply to make has no args" << std::endl << std::flush;
         return NULL;
     }
-    const Object::MapType & arg = res->GetArgs().front().AsMap();
-    Object::MapType::const_iterator I = arg.find("parents");
+    const Fragment::MapType & arg = res->GetArgs().front().AsMap();
+    Fragment::MapType::const_iterator I = arg.find("parents");
     if ((I == arg.end()) || !I->second.IsList() || I->second.AsList().empty()) {
         std::cerr << "Arg of reply to make has no parents"
                   << std::endl << std::flush;
@@ -63,7 +61,7 @@ Entity * CreatorClient::make(const Object & entity)
                   << std::endl << std::flush;
         return NULL;
     }
-    const Object::MapType & created = I->second.AsList().front().AsMap();
+    const Fragment::MapType & created = I->second.AsList().front().AsMap();
     I = created.find("id");
     if ((I == created.end()) || !I->second.IsString()) {
         std::cerr << "Created entity has no id"
@@ -77,14 +75,14 @@ Entity * CreatorClient::make(const Object & entity)
 }
 
 
-void CreatorClient::set(const std::string & id, const Object & entity)
+void CreatorClient::set(const std::string & id, const Fragment & entity)
 {
     if (!entity.IsMap()) {
         std::cerr << "entity is not map" << std::endl << std::flush;
         return;
     }
     Set op(Set::Instantiate());
-    op.SetArgs(Object::ListType(1,entity));
+    op.SetArgs(Fragment::ListType(1,entity));
     op.SetFrom(getId());
     op.SetTo(id);
     send(op);
@@ -94,9 +92,9 @@ Entity * CreatorClient::look(const std::string & id)
 {
     Look op(Look::Instantiate());
     if (!id.empty()) {
-        Object::MapType ent;
+        Fragment::MapType ent;
         ent["id"] = id;
-        op.SetArgs(Object::ListType(1,ent));
+        op.SetArgs(Fragment::ListType(1,ent));
     }
     op.SetFrom(getId());
     OpVector result = sendAndWaitReply(op);
@@ -118,8 +116,8 @@ Entity * CreatorClient::look(const std::string & id)
         std::cerr << "Reply to look has no args" << std::endl << std::flush;
         return NULL;
     }
-    const Object::MapType & seen = res->GetArgs().front().AsMap();
-    Object::MapType::const_iterator I = seen.find("id");
+    const Fragment::MapType & seen = res->GetArgs().front().AsMap();
+    Fragment::MapType::const_iterator I = seen.find("id");
     if ((I == seen.end()) || !I->second.IsString()) {
         std::cerr << "Looked at entity has no id"
                   << std::endl << std::flush;

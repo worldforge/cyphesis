@@ -30,7 +30,7 @@ class Plant : public Thing {
     virtual ~Plant();
 
     virtual const Atlas::Message::Object get(const std::string &) const;
-    virtual void set(const std::string & aname, const Object & attr);
+    virtual void set(const std::string &, const Atlas::Message::Object &);
 
     virtual OpVector TickOperation(const Tick & op);
 };

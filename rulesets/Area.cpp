@@ -6,8 +6,6 @@
 
 #include <common/type_utils.h>
 
-using Atlas::Message::Object;
-
 Area::Area()
 {
     // Default to a 0.1m cube
@@ -18,7 +16,7 @@ Area::~Area()
 {
 }
 
-const Object Area::get(const std::string & aname) const
+const Fragment Area::get(const std::string & aname) const
 {
     if (aname == "segments") {
         return idListAsObject(segments);
@@ -26,7 +24,7 @@ const Object Area::get(const std::string & aname) const
     return Thing::get(aname);
 }
 
-void Area::set(const std::string & aname, const Object & attr)
+void Area::set(const std::string & aname, const Fragment & attr)
 {
     if ((aname == "segments") && attr.IsList()) {
         segments = idListFromAtlas(attr);
@@ -35,7 +33,7 @@ void Area::set(const std::string & aname, const Object & attr)
     }
 }
 
-void Area::addToObject(Atlas::Message::Object::MapType & omap) const
+void Area::addToObject(Fragment::MapType & omap) const
 {
     omap["segments"] = idListAsObject(segments);
 }

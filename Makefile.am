@@ -1,5 +1,5 @@
 
-SUBDIRS = physics modules common rulesets server client tools
+SUBDIRS = physics common modules rulesets server client tools
 
 EXTRA_DIST = cyphesis.vconf basic.xml acorn.xml mason.xml werewolf.xml \
              cyphesis.spec.in TODO.mason acinclude.m4 autogen.sh \

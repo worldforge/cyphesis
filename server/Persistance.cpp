@@ -15,8 +15,6 @@
 
 #include <fstream>
 
-using Atlas::Message::Object;
-
 bool Persistance::restricted = false;
 Persistance * Persistance::m_instance = NULL;
 
@@ -69,17 +67,17 @@ Account * Persistance::loadAdminAccount()
 
 bool Persistance::findAccount(const std::string & name)
 {
-    Object::MapType account;
+    Fragment::MapType account;
     return m_connection.getObject(m_connection.account(), name, account);
 }
 
 Account * Persistance::getAccount(const std::string & name)
 {
-    Object::MapType account;
+    Fragment::MapType account;
     if (!m_connection.getObject(m_connection.account(), name, account)) {
         return NULL;
     }
-    Object::MapType::const_iterator I = account.find("id"),
+    Fragment::MapType::const_iterator I = account.find("id"),
                                     J = account.find("password");
     if ((I == account.end()) || (J == account.end())){
         std::string msg  = std::string("Database account entry ") + name
@@ -87,7 +85,7 @@ Account * Persistance::getAccount(const std::string & name)
         log(ERROR, msg.c_str());
         return NULL;
     }
-    const Object & acn = I->second, & acp = J->second;
+    const Fragment & acn = I->second, & acp = J->second;
     if (!acn.IsString() || !acp.IsString()) {
         std::string msg = std::string("Database account entry ") + name
                         + " is corrupt.";
@@ -105,7 +103,7 @@ void Persistance::putAccount(const Account & ac)
     m_connection.putObject(m_connection.account(), ac.getId(), ac.asObject().AsMap());
 }
 
-bool Persistance::getEntity(const std::string & id, Object::MapType & entity)
+bool Persistance::getEntity(const std::string & id, Fragment::MapType & entity)
 {
     return m_connection.getObject(m_connection.world(), id, entity);
 }
@@ -115,17 +113,17 @@ void Persistance::putEntity(const Entity & be)
     m_connection.putObject(m_connection.world(), be.getId(), be.asObject().AsMap());
 }
 
-bool Persistance::getMind(const std::string & id, Object::MapType & entity)
+bool Persistance::getMind(const std::string & id, Fragment::MapType & entity)
 {
     return m_connection.getObject(m_connection.mind(), id, entity);
 }
 
-void Persistance::putMind(const std::string & id, const Object::MapType & be)
+void Persistance::putMind(const std::string & id, const Fragment::MapType & be)
 {
     m_connection.putObject(m_connection.mind(), id, be);
 }
 
-bool Persistance::getRules(Atlas::Message::Object::MapType & m)
+bool Persistance::getRules(Fragment::MapType & m)
 {
     return m_connection.getTable(m_connection.rule(), m);
 }

@@ -100,7 +100,7 @@ class Inheritance {
             delete obj;
             return true;
         }
-        std::map<std::string, Atlas::Objects::Root *>::iterator I = atlasObjects.find(parent);
+        std::map<std::string, Atlas::Objects::Root *>::const_iterator I = atlasObjects.find(parent);
         if (I == atlasObjects.end()) {
             throw InheritanceException(parent);
         }

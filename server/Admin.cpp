@@ -22,8 +22,6 @@
 
 static const bool debug_flag = true;
 
-using Atlas::Message::Object;
-
 Admin::Admin(Connection * conn, const std::string& username,
              const std::string& passwd) : Account(conn, username, passwd)
 {
@@ -39,18 +37,18 @@ Admin::~Admin()
 {
 }
 
-OpVector Admin::characterError(const Create &, const Object::MapType &) const {
+OpVector Admin::characterError(const Create &, const Fragment::MapType &) const {
     return OpVector();
 }
 
 OpVector Admin::LogoutOperation(const Logout & op)
 {
-    const Object::ListType & args = op.GetArgs();
+    const Fragment::ListType & args = op.GetArgs();
     
     if (args.empty()) {
         return Account::LogoutOperation(op);
     } else {
-        Object::MapType::const_iterator I = args.front().AsMap().find("id");
+        Fragment::MapType::const_iterator I = args.front().AsMap().find("id");
         if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
             return error(op, "No account id given");
         }
@@ -73,7 +71,7 @@ OpVector Admin::SaveOperation(const Save & op)
 {
     EntityDict::const_iterator I;
     Persistance * p = Persistance::instance();
-    Object::MapType ent;
+    Fragment::MapType ent;
     // Clear the world database
     //DatabaseIterator dbi(p->getWorldDb());
     //while (dbi.get(ent)) {
@@ -100,17 +98,17 @@ OpVector Admin::SaveOperation(const Save & op)
         if ((!res.empty()) && (!res.front()->GetArgs().empty())) {
             debug(std::cout << "Dumping mind to database" << std::endl
                             << std::flush;);
-            Object::MapType & mindmap = res.front()->GetArgs().front().AsMap();
+            const Fragment::MapType & mindmap = res.front()->GetArgs().front().AsMap();
             p->putMind(c->getId(), mindmap);
             ++mind_count;
         }
     }
-    Object::MapType report;
+    Fragment::MapType report;
     report["message"] = "Objects saved to database";
     report["object_count"] = count;
     report["mind_count"] = mind_count;
     Info * info = new Info(Info::Instantiate());
-    Object::ListType args(1,report);
+    Fragment::ListType args(1,report);
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());
     info->SetSerialno(connection->server.getSerialNo());
@@ -119,11 +117,11 @@ OpVector Admin::SaveOperation(const Save & op)
 
 void Admin::load(Persistance * p, const std::string & id, int & count)
 {
-    Object::MapType entity;
+    Fragment::MapType entity;
     if (!p->getEntity(id, entity)) {
         return;
     }
-    Object::MapType::iterator I;
+    Fragment::MapType::const_iterator I;
     I = entity.find("parents");
     std::string type("thing");
     if ((I != entity.end()) && I->second.IsList()) {
@@ -135,8 +133,8 @@ void Admin::load(Persistance * p, const std::string & id, int & count)
     }
     I = entity.find("contains");
     if ((I != entity.end()) && I->second.IsList()) {
-        Object::ListType & contains = I->second.AsList();
-        Object::ListType::iterator J = contains.begin();
+        const Fragment::ListType & contains = I->second.AsList();
+        Fragment::ListType::const_iterator J = contains.begin();
         for(;J != contains.end(); ++J) {
             if (J->IsString()) {
                 load(p, J->AsString(), count);
@@ -156,9 +154,9 @@ OpVector Admin::LoadOperation(const Load & op)
 
     // Load the mind states
     //DatabaseIterator dbi(p->getMindDb());
-    //Object::MapType ent;
+    //Fragment::MapType ent;
     //while (dbi.get(ent)) {
-        //Object::MapType::const_iterator I = ent.find("id");
+        //Fragment::MapType::const_iterator I = ent.find("id");
         //if ((I != ent.end()) && (I->second.IsString())) {
             //const std::string & id = I->second.AsString();
             //Entity * ent = world->getObject(id);
@@ -168,18 +166,18 @@ OpVector Admin::LoadOperation(const Load & op)
             //Character * c = (Character *)ent;
             //if (c->mind == NULL) { continue; }
             //Load l(op);
-            //l.SetArgs(Object::ListType(1,ent));
+            //l.SetArgs(Fragment::ListType(1,ent));
             //c->mind->LoadOperation(l);
             //++mind_count;
         //}
     //}
     if (connection != NULL) {
-        Object::MapType report;
+        Fragment::MapType report;
         report["message"] = "Objects loaded from database";
         report["object_count"] = count;
         report["mind_count"] = mind_count;
         Info * info = new Info(Info::Instantiate());
-        Object::ListType args(1,report);
+        Fragment::ListType args(1,report);
         info->SetArgs(args);
         info->SetRefno(op.GetSerialno());
         info->SetSerialno(connection->server.getSerialNo());
@@ -191,14 +189,14 @@ OpVector Admin::LoadOperation(const Load & op)
 
 OpVector Admin::GetOperation(const Get & op)
 {
-    const Object & ent = op.GetArgs().front();
+    const Fragment & ent = op.GetArgs().front();
     try {
-        const Object::MapType & emap = ent.AsMap();
+        const Fragment::MapType & emap = ent.AsMap();
         const std::string & id = emap.find("id")->second.AsString();
         if (id == "server") {
             const std::string & cmd = emap.find("cmd")->second.AsString();
-            Object arg;
-            Object::MapType::const_iterator I = emap.find("arg");
+            Fragment arg;
+            Fragment::MapType::const_iterator I = emap.find("arg");
             if (I != emap.end()) {
                 arg = I->second;
             }
@@ -221,9 +219,9 @@ OpVector Admin::GetOperation(const Get & op)
 
                 Info * info = new Info(Info::Instantiate());
                 if (I != OOGDict.end()) {
-                    info->SetArgs(Object::ListType(1,I->second->asObject()));
+                    info->SetArgs(Fragment::ListType(1,I->second->asObject()));
                 } else {
-                    info->SetArgs(Object::ListType(1,J->second->asObject()));
+                    info->SetArgs(Fragment::ListType(1,J->second->asObject()));
                 }
                 info->SetRefno(op.GetSerialno());
                 info->SetSerialno(connection->server.getSerialNo());
@@ -241,19 +239,19 @@ OpVector Admin::GetOperation(const Get & op)
 
 OpVector Admin::SetOperation(const Set & op)
 {
-    const Object & ent = op.GetArgs().front();
+    const Fragment & ent = op.GetArgs().front();
     try {
-        const Object::MapType & emap = ent.AsMap();
+        const Fragment::MapType & emap = ent.AsMap();
         const std::string & id = emap.find("id")->second.AsString();
         const std::string & objtype = emap.find("objtype")->second.AsString();
         if (id == "server") {
             const std::string & cmd = emap.find("cmd")->second.AsString();
             if (cmd == "shutdown") {
                 exit_flag = true;
-                Object::MapType report;
+                Fragment::MapType report;
                 report["message"] = "Shutdown initiated";
                 Info * info = new Info(Info::Instantiate());
-                Object::ListType args(1,report);
+                Fragment::ListType args(1,report);
                 info->SetArgs(args);
                 info->SetRefno(op.GetSerialno());
                 info->SetSerialno(connection->server.getSerialNo());
@@ -265,7 +263,7 @@ OpVector Admin::SetOperation(const Set & op)
 #warning Install a new type from the client
             const std::string & parent = emap.find("parents")->second.AsList().front().AsString();
             std::string script;
-            Object::MapType::const_iterator I = emap.find("script");
+            Fragment::MapType::const_iterator I = emap.find("script");
             if ((I != emap.end()) && I->second.IsString()) {
                 script = I->second.AsString();
             }

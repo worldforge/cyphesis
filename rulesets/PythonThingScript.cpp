@@ -13,8 +13,6 @@
 #include <common/log.h>
 #include <common/debug.h>
 
-using Atlas::Objects::Operation::RootOperation;
-
 static const bool debug_flag = false;
 
 PythonThingScript::PythonThingScript(PyObject * o, Thing & t) :

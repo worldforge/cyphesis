@@ -33,11 +33,6 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
-//static const bool debug_flag = false;
-
-using Atlas::Message::Object;
-using Atlas::Objects::Root;
-
 BaseMind::BaseMind(const std::string & id, const std::string & body_name)
                                : map(script), isAwake(true)
 {
@@ -168,12 +163,12 @@ OpVector BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
     if (script->Operation("sight_create", op, res, &sub_op) != 0) {
         return res;
     }
-    const Object::ListType & args = sub_op.GetArgs();
+    const Fragment::ListType & args = sub_op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Object::MapType & obj = args.front().AsMap();
+    const Fragment::MapType & obj = args.front().AsMap();
     map.add(obj);
     return res;
 }
@@ -192,13 +187,13 @@ OpVector BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op)
     if (script->Operation("sight_delete", op, res, &sub_op) != 0) {
         return res;
     }
-    const Object::ListType & args = sub_op.GetArgs();
+    const Fragment::ListType & args = sub_op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Object::MapType & obj = args.front().AsMap();
-    Object::MapType::const_iterator I = obj.find("id");
+    const Fragment::MapType & obj = args.front().AsMap();
+    Fragment::MapType::const_iterator I = obj.find("id");
     if ((I != obj.end()) && (I->second.IsString())) {
         map.del(I->second.AsString());
     } else {
@@ -235,12 +230,12 @@ OpVector BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
     if (script->Operation("sight_move", op, res, &sub_op) != 0) {
         return res;
     }
-    const Object::ListType & args = sub_op.GetArgs();
+    const Fragment::ListType & args = sub_op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Object::MapType & obj = args.front().AsMap();
+    const Fragment::MapType & obj = args.front().AsMap();
     map.update(obj);
     return res;
 }
@@ -251,12 +246,12 @@ OpVector BaseMind::sightSetOperation(const Sight & op, Set & sub_op)
     if (script->Operation("sight_set", op, res, &sub_op) != 0) {
         return res;
     }
-    const Object::ListType & args = sub_op.GetArgs();
+    const Fragment::ListType & args = sub_op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Object::MapType & obj = args.front().AsMap();
+    const Fragment::MapType & obj = args.front().AsMap();
     map.update(obj);
     return res;
 }
@@ -399,12 +394,12 @@ OpVector BaseMind::SoundOperation(const Sound & op)
     if (script->Operation("sound", op, res) != 0) {
         return res;
     }
-    const Object::ListType & args = op.GetArgs();
+    const Fragment::ListType & args = op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Object::MapType & obj = args.front().AsMap();
+    const Fragment::MapType & obj = args.front().AsMap();
     RootOperation op2;
     bool isOp = utility::Object_asOperation(obj, op2);
     if (isOp) {
@@ -424,12 +419,12 @@ OpVector BaseMind::SightOperation(const Sight & op)
         debug( std::cout << " its in the script" << std::endl << std::flush;);
         return res;
     }
-    const Object::ListType & args = op.GetArgs();
+    const Fragment::ListType & args = op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Object::MapType & obj = args.front().AsMap();
+    const Fragment::MapType & obj = args.front().AsMap();
     RootOperation op2;
     bool isOp = utility::Object_asOperation(obj, op2);
     if (isOp) {
@@ -447,8 +442,8 @@ OpVector BaseMind::AppearanceOperation(const Appearance & op)
     if (!isAwake) { return OpVector(); }
     OpVector res;
     script->Operation("appearance", op, res);
-    const Object::ListType & args = op.GetArgs();
-    Object::ListType::const_iterator I;
+    const Fragment::ListType & args = op.GetArgs();
+    Fragment::ListType::const_iterator I;
     for(I = args.begin(); I != args.end(); I++) {
         map.getAdd(I->AsMap().find("id")->second.AsString());
     }
@@ -468,7 +463,7 @@ OpVector BaseMind::SaveOperation(const Save & op)
 {
     OpVector res;
     script->Operation("save", op, res);
-    Object::MapType emap;
+    Fragment::MapType emap;
     debug(std::cout << "Got " << res.size() << " stuff to save from mind"
                     << std::endl << std::flush;);
     OpVector::const_iterator I = res.begin();
@@ -481,7 +476,7 @@ OpVector BaseMind::SaveOperation(const Save & op)
     Info * i = new Info(Info::Instantiate());
     emap["map"] = map.asObject();
     emap["id"] = getId();
-    i->SetArgs(Object::ListType(1,emap));
+    i->SetArgs(Fragment::ListType(1,emap));
     return OpVector(1,i);
 }
 
@@ -490,11 +485,11 @@ OpVector BaseMind::LoadOperation(const Load & op)
     OpVector res;
     script->Operation("load", op, res);
     if (!op.GetArgs().empty()) {
-        const Object::MapType & emap = op.GetArgs().front().AsMap();
-        Object::MapType::const_iterator I = emap.find("map");
+        const Fragment::MapType & emap = op.GetArgs().front().AsMap();
+        Fragment::MapType::const_iterator I = emap.find("map");
         if ((I != emap.end()) && I->second.IsMap()) {
-            const Object::MapType & memmap = I->second.AsMap();
-            Object::MapType::const_iterator J = memmap.begin();
+            const Fragment::MapType & memmap = I->second.AsMap();
+            Fragment::MapType::const_iterator J = memmap.begin();
             for(; J != memmap.end(); J++) {
                 map.add(J->second.AsMap());
             }

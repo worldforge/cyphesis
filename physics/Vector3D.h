@@ -16,8 +16,6 @@ using std::sin;
 
 typedef std::pair<double, double> range;
 
-using Atlas::Message::Object;
-
 static inline const range timeToHit(double n, double f, double u,
                                     double on, double of) {
     return range((on - f)/u, (of - n)/u);
@@ -50,8 +48,8 @@ class Vector3D {
     Vector3D() : x(0), y(0), z(0), _set(false) { }
     explicit Vector3D(double size) : x(size), y(size), z(size), _set(true) { }
     Vector3D(double x, double y, double z) : x(x), y(y), z(z), _set(true) { }
-    explicit Vector3D(const Object::ListType & vector) : _set(true) {
-        Object::ListType::const_iterator I = vector.begin();
+    explicit Vector3D(const Atlas::Message::Object::ListType&vector):_set(true){
+        Atlas::Message::Object::ListType::const_iterator I = vector.begin();
         x = I->AsNum();
         y = (++I)->AsNum();
         z = (++I)->AsNum();
@@ -311,19 +309,19 @@ class Vector3D {
         return leave;
     }
 
-    const Object asObject() const {
-        Object::ListType coords;
-        coords.push_back(Object(x));
-        coords.push_back(Object(y));
-        coords.push_back(Object(z));
-        return Object(coords);
+    const Atlas::Message::Object asObject() const {
+        Atlas::Message::Object::ListType coords;
+        coords.push_back(Atlas::Message::Object(x));
+        coords.push_back(Atlas::Message::Object(y));
+        coords.push_back(Atlas::Message::Object(z));
+        return Atlas::Message::Object(coords);
     }
 
-    const Object::ListType asList() const {
-        Object::ListType coords;
-        coords.push_back(Object(x));
-        coords.push_back(Object(y));
-        coords.push_back(Object(z));
+    const Atlas::Message::Object::ListType asList() const {
+        Atlas::Message::Object::ListType coords;
+        coords.push_back(Atlas::Message::Object(x));
+        coords.push_back(Atlas::Message::Object(y));
+        coords.push_back(Atlas::Message::Object(z));
         return coords;
     }
 

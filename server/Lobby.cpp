@@ -10,10 +10,6 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
-#include <iostream>
-
-using Atlas::Message::Object;
-
 Lobby::Lobby(ServerRouting & s) : server(s)
 {
 }
@@ -21,10 +17,10 @@ Lobby::Lobby(ServerRouting & s) : server(s)
 void Lobby::addObject(Account * ac)
 {
     Appearance a(Appearance::Instantiate());
-    Object::MapType us;
+    Fragment::MapType us;
     us["id"] = ac->getId();
     us["loc"] = "lobby";
-    a.SetArgs(Object::ListType(1,us));
+    a.SetArgs(Fragment::ListType(1,us));
     a.SetFrom(ac->getId());
     a.SetTo("lobby");
     a.SetSerialno(server.getSerialNo());
@@ -36,10 +32,10 @@ void Lobby::addObject(Account * ac)
 void Lobby::delObject(Account * a)
 {
     Disappearance d(Disappearance::Instantiate());
-    Object::MapType us;
+    Fragment::MapType us;
     us["id"] = a->getId();
     us["loc"] = "lobby";
-    d.SetArgs(Object::ListType(1,us));
+    d.SetArgs(Fragment::ListType(1,us));
     d.SetFrom(a->getId());
     d.SetTo("lobby");
     d.SetSerialno(server.getSerialNo());
@@ -76,17 +72,17 @@ OpVector Lobby::operation(const RootOperation & op)
     return OpVector();
 }
 
-void Lobby::addToObject(Object::MapType & omap) const
+void Lobby::addToObject(Fragment::MapType & omap) const
 {
     omap["id"] = "lobby";
     omap["name"] = "lobby";
-    Object::ListType plist(1, "room");
+    Fragment::ListType plist(1, "room");
     omap["parents"] = plist;
-    Object::ListType player_list;
+    Fragment::ListType player_list;
     AccountDict::const_iterator I = accounts.begin();
     for(; I != accounts.end(); I++) {
         player_list.push_back(I->first);
     }
     omap["people"] = player_list;
-    omap["rooms"] = Object::ListType();
+    omap["rooms"] = Fragment::ListType();
 }

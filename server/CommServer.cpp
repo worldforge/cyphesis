@@ -20,8 +20,6 @@ extern "C" {
     #include <netdb.h>
 }
 
-using Atlas::Message::Object;
-
 static const bool debug_flag = false;
 
 static inline char *pack_uint32(uint32_t data, char *buffer, unsigned int *size)
@@ -238,9 +236,9 @@ void CommServer::loop()
 
 inline void CommServer::removeClient(CommClient * client, char * error_msg)
 {
-    Object::MapType err;
-    err["message"] = Object(error_msg);
-    Object::ListType eargs(1,Object(err));
+    Atlas::Message::Object::MapType err;
+    err["message"] = error_msg;
+    Atlas::Message::Object::ListType eargs(1,err);
 
     Error e(Error::Instantiate());
 

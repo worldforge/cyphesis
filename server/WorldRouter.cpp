@@ -22,8 +22,6 @@
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
 
-using Atlas::Message::Object;
-
 static const bool debug_flag = false;
 
 inline void WorldRouter::updateTime() {
@@ -86,7 +84,7 @@ inline void WorldRouter::addOperationToQueue(RootOperation & op,
 
 inline RootOperation * WorldRouter::getOperationFromQueue()
 {
-    std::list<RootOperation *>::iterator I = operationQueue.begin();
+    std::list<RootOperation *>::const_iterator I = operationQueue.begin();
     if ((I == operationQueue.end()) || ((*I)->GetSeconds() > realTime)) {
         return NULL;
     }
@@ -98,7 +96,7 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
 
 inline void WorldRouter::setSerialno(OpVector & ops)
 {
-    for (OpVector::iterator I = ops.begin(); I != ops.end(); ++I) {
+    for (OpVector::const_iterator I = ops.begin(); I != ops.end(); ++I) {
        (*I)->SetSerialno(server.getSerialNo());
     }
 }
@@ -153,7 +151,7 @@ Entity * WorldRouter::addObject(Entity * obj)
 }
 
 Entity * WorldRouter::addObject(const std::string & typestr,
-                                const Object::MapType & ent,
+                                const Fragment::MapType & ent,
                                 const std::string & id)
 {
     debug(std::cout << "WorldRouter::addObject(std::string, ent)" << std::endl
@@ -186,7 +184,7 @@ OpVector WorldRouter::message(RootOperation & op, const Entity * obj)
 
 inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) const
 {
-    const Object::ListType & parents = op.GetParents();
+    const Fragment::ListType & parents = op.GetParents();
     if (!parents.empty() && (parents.front().IsString())) {
         const std::string & parent = parents.front().AsString();
         if ((parent == "sight") || (parent == "sound")) {
@@ -305,24 +303,24 @@ OpVector WorldRouter::LookOperation(const Look & op)
         if (consts::enable_ranges) {
             Sight * s = new Sight(Sight::Instantiate());
 
-            Object::MapType omap;
+            Fragment::MapType omap;
             omap["id"] = getId();
-            omap["parents"] = Object::ListType(1, "world");
+            omap["parents"] = Fragment::ListType(1, "world");
             omap["objtype"] = "object";
             Entity * opFrom = J->second;
             const Vector3D & fromLoc = opFrom->getXyz();
-            Object::ListType contlist;
+            Fragment::ListType contlist;
             EntitySet::const_iterator I;
             for(I = gameWorld.contains.begin(); I != gameWorld.contains.end(); I++) {
                 if ((*I)->location.inRange(fromLoc, consts::sight_range)) {
-                    contlist.push_back(Object((*I)->getId()));
+                    contlist.push_back(Fragment((*I)->getId()));
                 }
             }
             if (!contlist.empty()) {
-                omap["contains"] = Object(contlist);
+                omap["contains"] = Fragment(contlist);
             }
 
-            Object::ListType args(1,Object(omap));
+            Fragment::ListType args(1,Fragment(omap));
             s->SetArgs(args);
             s->SetTo(op.GetFrom());
             return OpVector(1,s);

@@ -8,6 +8,9 @@
 #include "types.h"
 #include "operations.h"
 
+#include <sigc++/object.h>
+#include <sigc++/signal_system.h>
+
 // This is the base class from which all other entity like classes inherit,
 // both in game and out of game.
 // This class basically provides a means of delivering operations to
@@ -15,7 +18,7 @@
 // It has an id which is typically used to store it in a map or
 // dictionary as they are called elsewhere in this code.
 
-class BaseEntity {
+class BaseEntity : public SigC::Object {
   private:
     std::string m_id;		// String id
 
@@ -90,6 +93,7 @@ class BaseEntity {
         op->SetRefno(ref_op.GetSerialno());
     }
 
+    SigC::Signal0<void> destroyed;
 };
 
 #endif // COMMON_BASE_ENTITY_H

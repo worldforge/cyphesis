@@ -7,14 +7,20 @@
 
 #include <common/OOGThing.h>
 
+#include <sigc++/bind.h>
+
 class ServerRouting;
 class CommClient;
 class Account;
 
 class Connection : public OOGThing {
+    typedef std::map<std::string, SigC::Connection *> ConMap;
+
+
     BaseDict objects;
     CommClient & commClient;
     bool obsolete;
+    ConMap destroyedConnections;
 
     Account * addPlayer(const std::string &, const std::string &);
   public:
@@ -23,14 +29,20 @@ class Connection : public OOGThing {
     explicit Connection(CommClient & client);
     virtual ~Connection();
 
-    BaseEntity * addObject(BaseEntity * obj) {
+    void addObject(BaseEntity * obj) {
         objects[obj->getId()] = obj;
-        return obj;
+        SigC::Connection * con = new SigC::Connection(obj->destroyed.connect(SigC::bind<const std::string&>(slot(this, &Connection::removeObject), obj->getId())));
+        destroyedConnections[obj->getId()] = con;
     }
 
     void removeObject(const std::string & id) {
         if (!obsolete) {
             objects.erase(id);
+            ConMap::iterator I = destroyedConnections.find(id);
+            if (I != destroyedConnections.end()) {
+                delete I->second;
+                destroyedConnections.erase(I);
+            }
         }
     }
 

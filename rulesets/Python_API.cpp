@@ -593,7 +593,7 @@ static PyObject * object_new(PyObject * self, PyObject * args)
 	if ( o == NULL ) {
 		return NULL;
 	}
-	o->m_obj = new Object(Object::MapType());
+	o->m_obj = new Fragment(Fragment::MapType());
 	return (PyObject *)o;
 }
 
@@ -605,7 +605,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     if (!PyArg_ParseTuple(args, "|s", &id)) {
         return NULL;
     }
-    Object::MapType omap;
+    Fragment::MapType omap;
     if (id != NULL) {
         omap["id"] = std::string(id);
     }
@@ -626,12 +626,12 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             } else if (strcmp(key, "xyz") == 0) {
                 omap["pos"] = PyObject_asObject(val);
             } else if ((strcmp(key, "parent") == 0) && (PyString_Check(val))) {
-                omap["loc"] = Object(std::string(PyString_AsString(val)));
+                omap["loc"] = Fragment(std::string(PyString_AsString(val)));
             } else if ((strcmp(key, "type") == 0) && (PyString_Check(val))) {
-                omap["parents"] = Object::ListType(1,std::string(PyString_AsString(val)));
+                omap["parents"] = Fragment::ListType(1,std::string(PyString_AsString(val)));
             } else {
-                Object val_obj = PyObject_asObject(val);
-                if (val_obj.GetType() == Object::TYPE_NONE) {
+                Fragment val_obj = PyObject_asObject(val);
+                if (val_obj.GetType() == Fragment::TYPE_NONE) {
                     fprintf(stderr, "Could not handle %s value in Entity()", key);
                     PyErr_SetString(PyExc_TypeError, "Argument type error to Entity()");
                     Py_DECREF(keys);
@@ -649,7 +649,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     if ( o == NULL ) {
         return NULL;
     }
-    o->m_obj = new Object(omap);
+    o->m_obj = new Fragment(omap);
     return (PyObject *)o;
 }
 
@@ -667,7 +667,7 @@ static PyObject * cppthing_new(PyObject * self, PyObject * args)
 	return (PyObject *)o;
 }
 
-static inline void addToArgs(Object::ListType & args, PyObject * ent)
+static inline void addToArgs(Fragment::ListType & args, PyObject * ent)
 {
     if (ent == NULL) {
         return;
@@ -678,11 +678,11 @@ static inline void addToArgs(Object::ListType & args, PyObject * ent)
             fprintf(stderr, "Invalid object in Operation arguments\n");
             return;
         }
-        Object o(*obj->m_obj);
+        Fragment o(*obj->m_obj);
         if (o.IsMap() && (obj->Object_attr != NULL)) {
-            Object::MapType & ent = o.AsMap();
-            Object::MapType ent2 = PyDictObject_asMapType(obj->Object_attr);
-            Object::MapType::iterator I = ent2.begin();
+            Fragment::MapType & ent = o.AsMap();
+            Fragment::MapType ent2 = PyDictObject_asMapType(obj->Object_attr);
+            Fragment::MapType::const_iterator I = ent2.begin();
             for(; I != ent2.end(); I++) {
                 if (ent.find(I->first) != ent.end()) {
                     ent[I->first] = I->second;
@@ -804,7 +804,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         op->operation->SetFrom(PyString_AsString(from_id));
         Py_DECREF(from_id);
     }
-    Object::ListType args_list;
+    Fragment::ListType args_list;
     addToArgs(args_list, arg1);
     addToArgs(args_list, arg2);
     addToArgs(args_list, arg3);

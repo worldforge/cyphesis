@@ -22,8 +22,6 @@
 
 static const bool debug_flag = false;
 
-using Atlas::Message::Object;
-
 Account::Account(Connection * conn, const std::string & username,
                  const std::string& passwd)
                  : world(NULL), connection(conn),
@@ -40,10 +38,25 @@ Account::Account(Connection * conn, const std::string & username,
 
 Account::~Account()
 {
+    ConMap::const_iterator J = destroyedConnections.begin();
+    for(; J != destroyedConnections.end(); J++) {
+        J->second->disconnect();
+        delete J->second;
+    }
+}
+
+void Account::characterDestroyed(const std::string & id)
+{
+    charactersDict.erase(id);
+    ConMap::iterator I = destroyedConnections.find(id);
+    if (I != destroyedConnections.end()) {
+        delete I->second;
+        destroyedConnections.erase(I);
+    }
 }
 
 BaseEntity * Account::addCharacter(const std::string & typestr,
-                                   const Object::MapType & ent)
+                                   const Fragment::MapType & ent)
 {
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
     Entity * chr = world->addObject(typestr, ent);
@@ -61,28 +74,30 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.
         charactersDict[chr->getId()] = chr;
+        SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<const std::string&>(slot(this, &Account::characterDestroyed), chr->getId())));
+        destroyedConnections[chr->getId()] = con;
         connection->addObject(chr);
     }
 
     // Hack in default objects
     // This needs to be done in a generic way
-    Object::MapType entmap;
-    entmap["parents"] = Object::ListType(1,"coin");
+    Fragment::MapType entmap;
+    entmap["parents"] = Fragment::ListType(1,"coin");
     entmap["pos"] = Vector3D(0,0,0).asObject();
     entmap["loc"] = chr->getId();
     entmap["name"] = "coin";
     for(int i=0; i < 10; i++) {
         Create * c = new Create(Create::Instantiate());
-        c->SetArgs(Object::ListType(1,entmap));
+        c->SetArgs(Fragment::ListType(1,entmap));
         c->SetTo(chr->getId());
         world->message(*c, chr);
     }
 
     Create c = Create::Instantiate();
-    c.SetArgs(Object::ListType(1,chr->asObject()));
+    c.SetArgs(Fragment::ListType(1,chr->asObject()));
 
     Sight * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Object::ListType(1,c.AsObject()));
+    s->SetArgs(Fragment::ListType(1,c.AsObject()));
 
     world->message(*s, chr);
 
@@ -93,7 +108,7 @@ OpVector Account::LogoutOperation(const Logout & op)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
     Info info = Info(Info::Instantiate());
-    info.SetArgs(Object::ListType(1,op.AsObject()));
+    info.SetArgs(Fragment::ListType(1,op.AsObject()));
     info.SetRefno(op.GetSerialno());
     info.SetSerialno(connection->server.getSerialNo());
     info.SetFrom(getId());
@@ -104,21 +119,21 @@ OpVector Account::LogoutOperation(const Logout & op)
     return OpVector();
 }
 
-void Account::addToObject(Object::MapType & omap) const
+void Account::addToObject(Fragment::MapType & omap) const
 {
-    omap["id"] = Object(getId());
-    omap["username"] = Object(getId());
-    omap["name"] = Object(getId());
+    omap["id"] = getId();
+    omap["username"] = getId();
+    omap["name"] = getId();
     if (!password.empty()) {
-        omap["password"] = Object(password);
+        omap["password"] = password;
     }
-    omap["parents"] = Object(Object::ListType(1,Object(type)));
-    Object::ListType charlist;
+    omap["parents"] = Fragment::ListType(1,type);
+    Fragment::ListType charlist;
     EntityDict::const_iterator I;
     for(I = charactersDict.begin(); I != charactersDict.end(); I++) {
-        charlist.push_back(Object(I->first));
+        charlist.push_back(I->first);
     }
-    omap["characters"] = Object(charlist);
+    omap["characters"] = charlist;
     // No need to call BaseEntity::addToObject, as none of the default
     // attributes (location, contains etc.) are relevant to accounts
 }
@@ -126,12 +141,12 @@ void Account::addToObject(Object::MapType & omap) const
 OpVector Account::CreateOperation(const Create & op)
 {
     debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
-    const Object & ent = op.GetArgs().front();
+    const Fragment & ent = op.GetArgs().front();
     if (!ent.IsMap()) {
         return error(op, "Invalid character");
     }
-    const Object::MapType & entmap = ent.AsMap();
-    Object::MapType::const_iterator I = entmap.find("parents");
+    const Fragment::MapType & entmap = ent.AsMap();
+    Fragment::MapType::const_iterator I = entmap.find("parents");
     if ((I == entmap.end()) || !(I->second.IsList()) ||
         (I->second.AsList().empty()) ||
         !(I->second.AsList().front().IsString()) ) {
@@ -149,7 +164,7 @@ OpVector Account::CreateOperation(const Create & op)
     BaseEntity * obj = addCharacter(typestr, entmap);
     //log.inform("Player "+Account::id+" adds character "+`obj`,op);
     Info * info = new Info(Info::Instantiate());
-    info->SetArgs(Object::ListType(1,obj->asObject()));
+    info->SetArgs(Fragment::ListType(1,obj->asObject()));
     info->SetRefno(op.GetSerialno());
     info->SetSerialno(connection->server.getSerialNo());
 
@@ -158,13 +173,13 @@ OpVector Account::CreateOperation(const Create & op)
 
 OpVector Account::ImaginaryOperation(const Imaginary & op)
 {
-    const Object::ListType & args = op.GetArgs();
+    const Fragment::ListType & args = op.GetArgs();
     if ((!args.empty()) && (args.front().IsMap())) {
-        const Object::MapType & arg = args.front().AsMap();
-        Object::MapType::const_iterator I = arg.find("loc");
+        const Fragment::MapType & arg = args.front().AsMap();
+        Fragment::MapType::const_iterator I = arg.find("loc");
         if (I != arg.end()) {
             Sight s(Sight::Instantiate());
-            s.SetArgs(Object::ListType(1,op.AsObject()));
+            s.SetArgs(Fragment::ListType(1,op.AsObject()));
             s.SetTo(I->second.AsString());
             s.SetFrom(getId());
             s.SetSerialno(connection->server.getSerialNo());
@@ -176,14 +191,14 @@ OpVector Account::ImaginaryOperation(const Imaginary & op)
 
 OpVector Account::TalkOperation(const Talk & op)
 {
-    const Object::ListType & args = op.GetArgs();
+    const Fragment::ListType & args = op.GetArgs();
     if ((!args.empty()) && (args.front().IsMap())) {
         Sound s(Sound::Instantiate());
-        s.SetArgs(Object::ListType(1,op.AsObject()));
+        s.SetArgs(Fragment::ListType(1,op.AsObject()));
         s.SetFrom(getId());
         s.SetSerialno(connection->server.getSerialNo());
-        const Object::MapType & arg = args.front().AsMap();
-        Object::MapType::const_iterator I = arg.find("loc");
+        const Fragment::MapType & arg = args.front().AsMap();
+        Fragment::MapType::const_iterator I = arg.find("loc");
         if (I != arg.end()) {
             s.SetTo(I->second.AsString());
         } else {
@@ -196,15 +211,15 @@ OpVector Account::TalkOperation(const Talk & op)
 
 OpVector Account::LookOperation(const Look & op)
 {
-    const Object::ListType & args = op.GetArgs();
+    const Fragment::ListType & args = op.GetArgs();
     if (args.empty()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
-        s->SetArgs(Object::ListType(1,connection->server.lobby.asObject()));
+        s->SetArgs(Fragment::ListType(1,connection->server.lobby.asObject()));
         s->SetSerialno(connection->server.getSerialNo());
         return OpVector(1,s);
     }
-    Object::MapType::const_iterator I = args.front().AsMap().find("id");
+    Fragment::MapType::const_iterator I = args.front().AsMap().find("id");
     if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
         return error(op, "No target for look");
     }
@@ -213,7 +228,7 @@ OpVector Account::LookOperation(const Look & op)
     if (J != charactersDict.end()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
-        s->SetArgs(Object::ListType(1,J->second->asObject()));
+        s->SetArgs(Fragment::ListType(1,J->second->asObject()));
         s->SetSerialno(connection->server.getSerialNo());
         return OpVector(1,s);
     }
@@ -222,7 +237,7 @@ OpVector Account::LookOperation(const Look & op)
     if (K != accounts.end()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
-        s->SetArgs(Object::ListType(1,K->second->asObject()));
+        s->SetArgs(Fragment::ListType(1,K->second->asObject()));
         s->SetSerialno(connection->server.getSerialNo());
         return OpVector(1,s);
     }
@@ -240,14 +255,14 @@ void Account::checkCharacters()
     }
     std::set<std::string> obsoleteChars;
     const EntityDict & worldEntities = world->getObjects();
-    EntityDict::iterator I = charactersDict.begin();
+    EntityDict::const_iterator I = charactersDict.begin();
     for(; I != charactersDict.end(); I++) {
         const std::string & charId = I->first;
         if (worldEntities.find(charId) == worldEntities.end()) {
             obsoleteChars.insert(charId);
         }
     }
-    std::set<std::string>::iterator J = obsoleteChars.begin();
+    std::set<std::string>::const_iterator J = obsoleteChars.begin();
     for(; J != obsoleteChars.end(); J++) {
         charactersDict.erase(*J);
     }

@@ -31,21 +31,21 @@ OpVector Food::EatOperation(const Eat & op)
     if (script->Operation("eat", op, res) != 0) {
         return res;
     }
-    Object::MapType self_ent;
+    Fragment::MapType self_ent;
     self_ent["id"] = getId();
     self_ent["status"] = -1;
 
     Set * s = new Set(Set::Instantiate());
     s->SetTo(getId());
-    s->SetArgs(Object::ListType(1,self_ent));
+    s->SetArgs(Fragment::ListType(1,self_ent));
 
     const std::string & to = op.GetFrom();
-    Object::MapType nour_ent;
+    Fragment::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["mass"] = mass;
     Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
-    n->SetArgs(Object::ListType(1,nour_ent));
+    n->SetArgs(Fragment::ListType(1,nour_ent));
 
     OpVector res2(2);
     res2[0] = s;
@@ -60,12 +60,12 @@ OpVector Food::BurnOperation(const Burn & op)
         return res;
     }
     double cooked = 0;
-    Object::MapType::iterator I = attributes.find("cooked");
+    Fragment::MapType::const_iterator I = attributes.find("cooked");
     if ((I != attributes.end()) && I->second.IsNum()) {
         cooked = I->second.AsNum();
     }
-    const Object::MapType & fire_ent = op.GetArgs().front().AsMap();
-    Object::MapType self_ent;
+    const Fragment::MapType & fire_ent = op.GetArgs().front().AsMap();
+    Fragment::MapType self_ent;
     self_ent["id"] = getId();
     // Currently this cooks pretty quick, and at the same speed for
     // everything. No mechanism for this yet.
@@ -77,7 +77,7 @@ OpVector Food::BurnOperation(const Burn & op)
 
     Set * s = new Set(Set::Instantiate());
     s->SetTo(getId());
-    s->SetArgs(Object::ListType(1,self_ent));
+    s->SetArgs(Fragment::ListType(1,self_ent));
 
     return OpVector(1,s);
 }

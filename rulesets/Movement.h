@@ -8,14 +8,14 @@
 #include <physics/Vector3D.h>
 #include <physics/Quaternion.h>
 
-#include <Atlas/Objects/Operation/Move.h>
-
 class Entity;
 class Thing;
 class Character;
 class Location;
 
-using Atlas::Objects::Operation::Move;
+namespace Atlas { namespace Objects { namespace Operation {
+  class Move;
+} } }
 
 class Movement {
   protected:
@@ -43,9 +43,10 @@ class Movement {
     bool moving() const;
 
     virtual double getTickAddition(const Vector3D & coordinates) const = 0;
-    virtual Move * genFaceOperation() = 0;
-    virtual Move * genMoveOperation(Location *,const Location &) = 0;
-    virtual Move * genMoveOperation(Location *) = 0;
+    virtual Atlas::Objects::Operation::Move * genFaceOperation() = 0;
+    virtual Atlas::Objects::Operation::Move * genMoveOperation(Location *,
+                                                        const Location &) = 0;
+    virtual Atlas::Objects::Operation::Move * genMoveOperation(Location *) = 0;
 };
 
 #endif // RULESETS_MOVEMENT_H

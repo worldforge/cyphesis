@@ -12,16 +12,14 @@
 
 #include <Atlas/Objects/Operation/Look.h>
 
-using Atlas::Objects::Operation::Look;
-
-void MemMap::addContents(const Object::MapType & entmap)
+void MemMap::addContents(const Fragment::MapType & entmap)
 {
-    Object::MapType::const_iterator I = entmap.find("contains");
+    Fragment::MapType::const_iterator I = entmap.find("contains");
     if ((I == entmap.end()) || (!I->second.IsList())) {
         return;
     }
-    const Object::ListType & contlist = I->second.AsList();
-    Object::ListType::const_iterator J = contlist.begin();
+    const Fragment::ListType & contlist = I->second.AsList();
+    Fragment::ListType::const_iterator J = contlist.begin();
     for(;J != contlist.end(); J++) {
         if (!J->IsString()) {
             continue;
@@ -30,10 +28,10 @@ void MemMap::addContents(const Object::MapType & entmap)
     }
 }
 
-Entity * MemMap::add(const Object::MapType & entmap)
+Entity * MemMap::add(const Fragment::MapType & entmap)
 {
     debug( std::cout << "MemMap::add" << std::endl << std::flush;);
-    Object::MapType::const_iterator I = entmap.find("id");
+    Fragment::MapType::const_iterator I = entmap.find("id");
     if ((I == entmap.end()) || (I->second.AsString().empty())) {
         return NULL;
     }
@@ -61,10 +59,10 @@ Entity * MemMap::add(const Object::MapType & entmap)
     return addObject(thing);
 }
 
-Entity * MemMap::update(const Object::MapType & entmap)
+Entity * MemMap::update(const Fragment::MapType & entmap)
 {
     debug( std::cout << "MemMap::update" << std::endl << std::flush;);
-    Object::MapType::const_iterator I = entmap.find("id");
+    Fragment::MapType::const_iterator I = entmap.find("id");
     if ((I == entmap.end()) || !I->second.IsString()) {
         return NULL;
     }
@@ -73,7 +71,7 @@ Entity * MemMap::update(const Object::MapType & entmap)
         return NULL;
     }
     debug( std::cout << " updating " << id << std::endl << std::flush;);
-    EntityDict::iterator J = things.find(id);
+    EntityDict::const_iterator J = things.find(id);
     if (J == things.end()) {
         return add(entmap);
     }
@@ -133,14 +131,14 @@ EntityVector MemMap::findByLocation(const Location & loc, double radius)
     return res;
 }
 
-const Object MemMap::asObject()
+const Fragment MemMap::asObject()
 {
-    Object::MapType omap;
-    EntityDict::iterator I = things.begin();
+    Fragment::MapType omap;
+    EntityDict::const_iterator I = things.begin();
     for(;I != things.end(); I++) {
         omap[I->first] = I->second->asObject();
     }
-    return Object(omap);
+    return Fragment(omap);
 }
 
 void MemMap::flushMap()

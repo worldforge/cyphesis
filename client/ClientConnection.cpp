@@ -35,13 +35,13 @@ void ClientConnection::operation(const RootOperation & op)
         std::cerr << "ERROR: Operation with no destination" << std::endl << std::flush;
         return;
     }
-    dict_t::iterator I = objects.find(from);
+    dict_t::const_iterator I = objects.find(from);
     if (I == objects.end()) {
         std::cerr << "ERROR: Operation with invalid destination" << std::endl << std::flush;
         return;
     }
     OpVector res = I->second->message(op);
-    OpVector::iterator J = res.begin();
+    OpVector::const_iterator J = res.begin();
     for(J = res.begin(); J != res.end(); ++J) {
         (*J)->SetFrom(I->first);
         send(*(*J));

@@ -114,7 +114,7 @@ int main(int argc, char ** argv)
         f.report();
     } else {
         db.clearRules();
-        std::vector<std::string>::iterator I = rulesets.begin();
+        std::vector<std::string>::const_iterator I = rulesets.begin();
         for (; I != rulesets.end(); ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
             FileDecoder f(etc_directory + "/cyphesis/" + *I + ".xml", db);

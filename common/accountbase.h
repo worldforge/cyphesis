@@ -9,8 +9,6 @@
 
 #include <Atlas/Message/Object.h>
 
-using Atlas::Message::Object;
-
 class AccountBase {
   protected:
     AccountBase() : m_connection(*Database::instance()) { }
@@ -35,16 +33,19 @@ class AccountBase {
         }
     }
 
-    bool putAccount(const Object::MapType & o, const std::string & account) {
+    bool putAccount(const Atlas::Message::Object::MapType & o,
+                    const std::string & account) {
         return m_connection.putObject(m_connection.account(), account, o);
     }
-    bool modAccount(const Object::MapType & o, const std::string & account) {
+    bool modAccount(const Atlas::Message::Object::MapType & o,
+                    const std::string & account) {
         return m_connection.updateObject(m_connection.account(), account, o);
     }
     bool delAccount(const std::string & account) {
         return m_connection.delObject(m_connection.account(), account);
     }
-    bool getAccount(const std::string & account, Object::MapType & o) {
+    bool getAccount(const std::string & account,
+                    Atlas::Message::Object::MapType & o) {
         return m_connection.getObject(m_connection.account(), account, o);
     }
 

@@ -30,11 +30,6 @@
 
 static const bool debug_flag = false;
 
-using Atlas::Objects::Root;
-using Atlas::Objects::Entity::GameEntity;
-
-typedef Atlas::Message::Object MObject;
-
 EntityFactory * EntityFactory::m_instance = NULL;
 
 EntityFactory::EntityFactory()
@@ -55,12 +50,12 @@ EntityFactory::EntityFactory()
 }
 
 Thing * EntityFactory::newThing(const std::string & type,
-                                const MObject::MapType & entmap,
+                                const Fragment::MapType & entmap,
                                 const EntityDict & world)
 {
     Thing * thing = NULL;
-    MObject::MapType attributes;
-    FactoryDict::iterator I = factories.find(type);
+    Fragment::MapType attributes;
+    FactoryDict::const_iterator I = factories.find(type);
     if (I != factories.end()) {
         FactoryBase * factory = I->second;
         thing = factory->newThing();
@@ -85,7 +80,7 @@ Thing * EntityFactory::newThing(const std::string & type,
                      << std::endl << std::flush;);
     thing->setType(type);
     // I am pretty sure this name handling is redundant
-    MObject::MapType::const_iterator K = entmap.find("name");
+    Fragment::MapType::const_iterator K = entmap.find("name");
     if ((K != entmap.end()) && K->second.IsString()) {
         thing->setName(K->second.AsString());
     } else {
@@ -111,21 +106,21 @@ void EntityFactory::flushFactories()
 
 void EntityFactory::installBaseClasses()
 {
-    MObject::MapType ruleTable;
+    Fragment::MapType ruleTable;
     Persistance * p = Persistance::instance();
     p->getRules(ruleTable);
 
-    MObject::MapType::const_iterator I = ruleTable.begin();
+    Fragment::MapType::const_iterator I = ruleTable.begin();
     for(; I != ruleTable.end(); ++I) {
         const std::string & type = I->first;
-        const MObject::MapType & classDesc = I->second.AsMap();
-        MObject::MapType::const_iterator J = classDesc.find("parent");
+        const Fragment::MapType & classDesc = I->second.AsMap();
+        Fragment::MapType::const_iterator J = classDesc.find("parent");
         if ((J == classDesc.end()) || (!J->second.IsString())) { continue; }
         const std::string & parent = J->second.AsString();
         FactoryBase * f = getFactory(parent);
         J = classDesc.find("script");
         if ((J != classDesc.end()) && (J->second.IsMap())) {
-            const MObject::MapType & script = J->second.AsMap();
+            const Fragment::MapType & script = J->second.AsMap();
             J = script.find("name");
             if ((J != script.end()) && (J->second.IsString())) {
                 f->script = J->second.AsString();
@@ -137,7 +132,7 @@ void EntityFactory::installBaseClasses()
         }
         J = classDesc.find("mind");
         if ((J != classDesc.end()) && (J->second.IsMap())) {
-            const MObject::MapType & script = J->second.AsMap();
+            const Fragment::MapType & script = J->second.AsMap();
             J = script.find("name");
             if ((J != script.end()) && (J->second.IsString())) {
                 const std::string mindType = J->second.AsString();
@@ -174,9 +169,9 @@ void EntityFactory::installFactory(const std::string & parent,
 
     Inheritance & i = Inheritance::instance();
 
-    Root * r = new GameEntity();
+    Atlas::Objects::Root * r = new Atlas::Objects::Entity::GameEntity();
     r->SetId(className);
-    r->SetParents(MObject::ListType(1, parent));
+    r->SetParents(Fragment::ListType(1, parent));
     i.addChild(r);
 
 }

@@ -14,8 +14,6 @@
 
 #include <Atlas/Objects/Operation/Move.h>
 
-using Atlas::Message::Object;
-
 static const bool debug_flag = false;
 
 Pedestrian::Pedestrian(Character & body) : Movement(body)
@@ -56,12 +54,12 @@ Move * Pedestrian::genFaceOperation()
         debug( std::cout << "Turning" << std::endl << std::flush;);
         Move * moveOp = new Move(Move::Instantiate());
         moveOp->SetTo(m_body.getId());
-        Object::MapType entmap;
+        Fragment::MapType entmap;
         entmap["id"] = m_body.getId();
         entmap["loc"] = m_body.location.ref->getId();
         entmap["pos"] = m_body.location.coords.asObject();
         entmap["orientation"] = m_orientation.asObject();
-        Object::ListType args(1,entmap);
+        Fragment::ListType args(1,entmap);
         moveOp->SetArgs(args);
         return moveOp;
     }
@@ -101,7 +99,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     moveOp->SetTo(m_body.getId());
 
     // Set up argument for operation
-    Object::MapType entmap;
+    Fragment::MapType entmap;
     entmap["id"] = m_body.getId();
 
     // Walk out what the mode of the character should be.
@@ -122,14 +120,14 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
         mode = std::string("standing");
     }
     debug( std::cout << "Mode set to " << mode << std::endl << std::flush;);
-    entmap["mode"] = Object(mode);
+    entmap["mode"] = mode;
 
     // If velocity is not set, return this simple operation.
     if (!m_velocity.isValid()) {
         debug( std::cout << "only velocity changed." << std::endl
                          << std::flush;);
         new_loc.addToObject(entmap);
-        Object::ListType args(1,entmap);
+        Fragment::ListType args(1,entmap);
         moveOp->SetArgs(args);
         if (NULL != rloc) {
         *rloc = new_loc;
@@ -197,11 +195,11 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                         // movement doesn't get screwed up
                     } else {
                         reset();
-                        entmap["mode"] = Object("standing");
+                        entmap["mode"] = "standing";
                     }
                 } else {
                     reset();
-                    entmap["mode"] = Object("standing");
+                    entmap["mode"] = "standing";
                 }
                 new_loc.velocity = m_velocity;
             }
@@ -216,7 +214,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     debug( std::cout << "new coordinates: " << new_coords << std::endl
                      << std::flush;);
     new_loc.addToObject(entmap);
-    Object::ListType args2(1,entmap);
+    Fragment::ListType args2(1,entmap);
     moveOp->SetArgs(args2);
     if (NULL != rloc) {
         *rloc = new_loc;

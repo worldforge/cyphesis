@@ -30,8 +30,6 @@
 
 static const bool debug_flag = false;
 
-using Atlas::Message::Object;
-
 std::set<std::string> Entity::m_immutable;
 
 const std::set<std::string> & Entity::immutables()
@@ -61,35 +59,35 @@ Entity::~Entity()
     }
 }
 
-const Object Entity::get(const std::string & aname) const
+const Fragment Entity::get(const std::string & aname) const
 {
     if (aname == "status") {
-        return Object(status);
+        return Fragment(status);
     } else if (aname == "id") {
-        return Object(getId());
+        return Fragment(getId());
     } else if (aname == "name") {
-        return Object(name);
+        return Fragment(name);
     } else if (aname == "mass") {
-        return Object(mass);
+        return Fragment(mass);
     } else if (aname == "bbox") {
         return location.bBox.asList();
     } else if (aname == "contains") {
-        Object::ListType contlist;
+        Fragment::ListType contlist;
         for(EntitySet::const_iterator I=contains.begin();I!=contains.end();I++){
             contlist.push_back(*I);
         }
-        return Object(contlist);
+        return Fragment(contlist);
     } else {
-        Object::MapType::const_iterator I = attributes.find(aname);
+        Fragment::MapType::const_iterator I = attributes.find(aname);
         if (I != attributes.end()) {
             return I->second;
         } else {
-            return Object();
+            return Fragment();
         }
     }
 }
 
-void Entity::set(const std::string & aname, const Object & attr)
+void Entity::set(const std::string & aname, const Fragment & attr)
 {
     if ((aname == "status") && attr.IsNum()) {
         status = attr.AsNum();
@@ -133,12 +131,13 @@ void Entity::destroy()
     }
     refContains.erase(this);
     deleted = true;
+    destroyed.emit();
 }
 
-void Entity::addToObject(Object::MapType & omap) const
+void Entity::addToObject(Fragment::MapType & omap) const
 {
     // We need to have a list of keys to pull from attributes.
-    Object::MapType::const_iterator I = attributes.begin();
+    Fragment::MapType::const_iterator I = attributes.begin();
     for (; I != attributes.end(); I++) {
         omap[I->first] = I->second;
     }
@@ -149,33 +148,33 @@ void Entity::addToObject(Object::MapType & omap) const
     omap["mass"] = mass;
     omap["status"] = status;
     omap["stamp"] = (double)seq;
-    omap["parents"] = Object(Object::ListType(1,Object(type)));
+    omap["parents"] = Fragment(Fragment::ListType(1,Fragment(type)));
     location.addToObject(omap);
-    Object::ListType contlist;
+    Fragment::ListType contlist;
     for(EntitySet::const_iterator I = contains.begin(); I!=contains.end(); I++){
-        contlist.push_back(Object((*I)->getId()));
+        contlist.push_back(Fragment((*I)->getId()));
     }
     if (!contlist.empty()) {
-        omap["contains"] = Object(contlist);
+        omap["contains"] = Fragment(contlist);
     }
     BaseEntity::addToObject(omap);
 }
 
-void Entity::merge(const Object::MapType & entmap)
+void Entity::merge(const Fragment::MapType & ent)
 {
     const std::set<std::string> & imm = immutables();
-    for (Object::MapType::const_iterator I=entmap.begin();I!=entmap.end();I++) {
+    for (Fragment::MapType::const_iterator I=ent.begin();I!=ent.end();I++) {
         const std::string & key = I->first;
         if (imm.find(key) != imm.end()) continue;
         set(key, I->second);
     }
 }
 
-void Entity::getLocation(const Object::MapType & entmap,
+void Entity::getLocation(const Fragment::MapType & entmap,
                          const EntityDict & eobjects)
 {
     debug( std::cout << "Thing::getLocation" << std::endl << std::flush;);
-    Object::MapType::const_iterator I = entmap.find("loc");
+    Fragment::MapType::const_iterator I = entmap.find("loc");
     if ((I == entmap.end()) || !I->second.IsString()) {
         debug( std::cout << getId() << ".. has no loc" << std::endl << std::flush;);
         return;

@@ -13,8 +13,6 @@
 
 #include <Atlas/Objects/Operation/Move.h>
 
-using Atlas::Message::Object;
-
 static const bool debug_flag = false;
 
 Movement::Movement(Thing & body) : m_body(body), m_lastMovementTime(-1),

@@ -27,8 +27,6 @@
 
 static const bool debug_flag = false;
 
-using Atlas::Message::Object;
-
 Thing::Thing()
 {
     subscribe("setup", OP_SETUP);
@@ -67,10 +65,10 @@ OpVector Thing::SetupOperation(const Setup & op)
     // been elsewhere on the map.
     RootOperation * sight = new Sight(Sight::Instantiate());
     Create c(Create::Instantiate());
-    c.SetArgs(Object::ListType(1,asObject()));
+    c.SetArgs(Fragment::ListType(1,asObject()));
     c.SetTo(getId());
     c.SetFrom(getId());
-    sight->SetArgs(Object::ListType(1, c.AsObject()));
+    sight->SetArgs(Fragment::ListType(1, c.AsObject()));
 
     OpVector sres;
     if (script->Operation("setup", op, sres) != 0) {
@@ -97,7 +95,7 @@ OpVector Thing::ActionOperation(const Action & op)
         return res;
     }
     RootOperation * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Object::ListType(1,op.AsObject()));
+    s->SetArgs(Fragment::ListType(1,op.AsObject()));
     return OpVector(1,s);
 }
 
@@ -107,17 +105,17 @@ OpVector Thing::CreateOperation(const Create & op)
     if (script->Operation("create", op, res) != 0) {
         return res;
     }
-    const Object::ListType & args=op.GetArgs();
+    const Fragment::ListType & args=op.GetArgs();
     if (args.empty()) {
        return OpVector();
     }
     try {
-        Object::MapType ent = args.front().AsMap();
-        Object::MapType::const_iterator I = ent.find("parents");
+        Fragment::MapType ent = args.front().AsMap();
+        Fragment::MapType::const_iterator I = ent.find("parents");
         if ((I == ent.end()) || !I->second.IsList()) {
-            return error(op, "Object to be created has no type");
+            return error(op, "Entity to be created has no type");
         }
-        const Object::ListType & parents = I->second.AsList();
+        const Fragment::ListType & parents = I->second.AsList();
         I = ent.find("loc");
         if ((I == ent.end()) && (location.ref != NULL)) {
             ent["loc"] = location.ref->getId();
@@ -134,9 +132,9 @@ OpVector Thing::CreateOperation(const Create & op)
         debug( std::cout << getId() << " creating " << type;);
         Entity * obj = world->addObject(type,ent);
         Create c(op);
-        c.SetArgs(Object::ListType(1,obj->asObject()));
+        c.SetArgs(Fragment::ListType(1,obj->asObject()));
         RootOperation * s = new Sight(Sight::Instantiate());
-        s->SetArgs(Object::ListType(1,c.AsObject()));
+        s->SetArgs(Fragment::ListType(1,c.AsObject()));
         // This should no longer be required as it is now handled centrally
         // s->SetRefno(op.GetSerialno());
         return OpVector(1,s);
@@ -157,7 +155,7 @@ OpVector Thing::DeleteOperation(const Delete & op)
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
     RootOperation * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Object::ListType(1,op.AsObject()));
+    s->SetArgs(Fragment::ListType(1,op.AsObject()));
     return OpVector(1,s);
 }
 
@@ -167,29 +165,29 @@ OpVector Thing::BurnOperation(const Burn & op)
     if (script->Operation("burn", op, res) != 0) {
         return res;
     }
-    Object::MapType::iterator I = attributes.find("burn_speed");
+    Fragment::MapType::const_iterator I = attributes.find("burn_speed");
     if ((I == attributes.end()) || !I->second.IsNum() || op.GetArgs().empty()) {
         return res;
     }
     double bspeed = I->second.AsNum();
-    const Object::MapType & fire_ent = op.GetArgs().front().AsMap();
+    const Fragment::MapType & fire_ent = op.GetArgs().front().AsMap();
     double consumed = bspeed * fire_ent.find("status")->second.AsNum();
-    Object::MapType self_ent;
+    Fragment::MapType self_ent;
     self_ent["id"] = getId();
     self_ent["status"] = status - (consumed / mass);
 
     const std::string & to = fire_ent.find("id")->second.AsString();
-    Object::MapType nour_ent;
+    Fragment::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["mass"] = consumed;
 
     Set * s = new Set(Set::Instantiate());
     s->SetTo(getId());
-    s->SetArgs(Object::ListType(1,self_ent));
+    s->SetArgs(Fragment::ListType(1,self_ent));
 
     Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
-    n->SetArgs(Object::ListType(1,nour_ent));
+    n->SetArgs(Fragment::ListType(1,nour_ent));
 
     OpVector res2(2);
     res2[0] = s;
@@ -205,15 +203,15 @@ OpVector Thing::MoveOperation(const Move & op)
     if (script->Operation("move", op, res) != 0) {
         return res;
     }
-    const Object::ListType & args=op.GetArgs();
+    const Fragment::ListType & args=op.GetArgs();
     if (args.empty()) {
         debug( std::cout << "ERROR: move op has no argument" << std::endl << std::flush;);
         return OpVector();
     }
     try {
         Vector3D oldpos = location.coords;
-        const Object::MapType & ent = args.front().AsMap();
-        Object::MapType::const_iterator I = ent.find("loc");
+        const Fragment::MapType & ent = args.front().AsMap();
+        Fragment::MapType::const_iterator I = ent.find("loc");
         if ((I == ent.end()) || !I->second.IsString()) {
             return error(op, "Move location has no ref");
         }
@@ -248,7 +246,7 @@ OpVector Thing::MoveOperation(const Move & op)
         }
 
         RootOperation * s = new Sight(Sight::Instantiate());
-        s->SetArgs(Object::ListType(1,op.AsObject()));
+        s->SetArgs(Fragment::ListType(1,op.AsObject()));
         OpVector res2(1,s);
         // I think it might be wise to send a set indicating we have changed
         // modes, but this would probably be wasteful
@@ -259,11 +257,11 @@ OpVector Thing::MoveOperation(const Move & op)
         if (consts::enable_ranges && isPerceptive()) {
             debug(std::cout << "testing range" << std::endl;);
             EntitySet::const_iterator I = location.ref->contains.begin();
-            Object::ListType appear, disappear;
-            Object::MapType this_ent;
+            Fragment::ListType appear, disappear;
+            Fragment::MapType this_ent;
             this_ent["id"] = getId();
             this_ent["stamp"] = (double)seq;
-            Object::ListType this_as_args(1,this_ent);
+            Fragment::ListType this_as_args(1,this_ent);
             for(;I != location.ref->contains.end(); I++) {
                 const bool wasInRange = (*I)->location.inRange(oldpos, consts::sight_range);
                 const bool isInRange = (*I)->location.inRange(location.coords, consts::sight_range);
@@ -271,7 +269,7 @@ OpVector Thing::MoveOperation(const Move & op)
                 // Also so operations to (dis)appearing perceptive
                 // entities saying that we are (dis)appearing
                 if (wasInRange ^ isInRange) {
-                    Object::MapType that_ent;
+                    Fragment::MapType that_ent;
                     that_ent["id"] = (*I)->getId();
                     that_ent["stamp"] = (double)(*I)->getSeq();
                     if (wasInRange) {
@@ -334,22 +332,22 @@ OpVector Thing::SetOperation(const Set & op)
     if (script->Operation("set", op, res) != 0) {
         return res;
     }
-    const Object::ListType & args=op.GetArgs();
+    const Fragment::ListType & args=op.GetArgs();
     if (args.empty()) {
        return OpVector();
     }
     try {
-        const Object::MapType & ent = args.front().AsMap();
-        Object::MapType::const_iterator I;
+        const Fragment::MapType & ent = args.front().AsMap();
+        Fragment::MapType::const_iterator I;
         for (I = ent.begin(); I != ent.end(); I++) {
             set(I->first, I->second);
         }
         RootOperation * s = new Sight(Sight::Instantiate());
-        s->SetArgs(Object::ListType(1,op.AsObject()));
+        s->SetArgs(Fragment::ListType(1,op.AsObject()));
         OpVector res2(1,s);
         if (status < 0) {
             RootOperation * d = new Delete(Delete::Instantiate());
-            d->SetArgs(Object::ListType(1,this->asObject()));
+            d->SetArgs(Fragment::ListType(1,this->asObject()));
             d->SetTo(getId());
             res2.push_back(d);
         }

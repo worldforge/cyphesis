@@ -15,8 +15,6 @@
 #include <common/log.h>
 #include <common/debug.h>
 
-using Atlas::Objects::Operation::RootOperation;
-
 PythonMindScript::PythonMindScript(PyObject * o, BaseMind & m) :
     PythonScript(o, m), mind(m)
 {

@@ -27,7 +27,7 @@ static PyObject * CreatorClient_as_entity(CreatorClientObject * self, PyObject *
     if (ret == NULL) {
         return NULL;
     }
-    ret->m_obj = new Object(self->m_mind->asObject());
+    ret->m_obj = new Fragment(self->m_mind->asObject());
     return (PyObject *)ret;
 }
 
@@ -235,7 +235,7 @@ static int CreatorClient_setattr(CreatorClientObject *self, char *name, PyObject
         //thing->attributes.erase(attr);
         //return 0;
     //}
-    Object obj = PyObject_asObject(v);
+    Fragment obj = PyObject_asObject(v);
     if (!obj.IsNone() && !obj.IsMap() && !obj.IsList()) {
         thing->set(name, obj);
         return 0;

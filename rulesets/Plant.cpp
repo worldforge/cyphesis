@@ -14,8 +14,6 @@
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
 
-using Atlas::Message::Object;
-
 Plant::Plant() : fruits(0), radius(1), fruitName("seed")
 {
     // Default to a 1m cube
@@ -28,23 +26,23 @@ Plant::~Plant()
 {
 }
 
-const Object Plant::get(const std::string & aname) const
+const Fragment Plant::get(const std::string & aname) const
 {
     if (aname == "fruits") {
-        return Object(fruits);
+        return fruits;
     } else if (aname == "radius") {
-        return Object(radius);
+        return radius;
     } else if (aname == "fruitName") {
-        return Object(fruitName);
+        return fruitName;
     } else if (aname == "fruitChance") {
-        return Object(fruitChance);
+        return fruitChance;
     } else if (aname == "sizeAdult") {
-        return Object(sizeAdult);
+        return sizeAdult;
     }
     return Thing::get(aname);
 }
 
-void Plant::set(const std::string & aname, const Object & attr)
+void Plant::set(const std::string & aname, const Fragment & attr)
 {
     if ((aname == "fruits") && attr.IsInt()) {
         fruits = attr.AsInt();
@@ -70,13 +68,13 @@ int Plant::dropFruit(OpVector & res)
     for(int i = 0; i < drop; i++) {
         double rx = location.coords.X()+uniform(height*radius, -height*radius);
         double ry = location.coords.X()+uniform(height*radius, -height*radius);
-        Object::MapType fmap;
+        Fragment::MapType fmap;
         fmap["name"] = fruitName;
-        fmap["parents"] = Object::ListType(1,fruitName);
+        fmap["parents"] = Fragment::ListType(1,fruitName);
         Location floc(location.ref, Vector3D(rx, ry, 0));
         floc.addToObject(fmap);
         RootOperation * create = new Create(Create::Instantiate());
-        create->SetArgs(Object::ListType(1, fmap));
+        create->SetArgs(Fragment::ListType(1, fmap));
         res.push_back(create);
     }
     return drop;
@@ -99,10 +97,10 @@ OpVector Plant::TickOperation(const Tick & op)
     }
     if (dropped != 0) {
         RootOperation * set = new Set(Set::Instantiate());
-        Object::MapType pmap;
+        Fragment::MapType pmap;
         pmap["id"] = getId();
         pmap["fruits"] = fruits;
-        set->SetArgs(Object::ListType(1,pmap));
+        set->SetArgs(Fragment::ListType(1,pmap));
         res.push_back(set);
     }
     return res;

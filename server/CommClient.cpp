@@ -13,8 +13,6 @@
 
 #include <iostream>
 
-using Atlas::Message::Object;
-
 static const bool debug_flag = false;
 
 CommClient::CommClient(CommServer & svr, int fd, int port) :
@@ -108,7 +106,7 @@ void CommClient::message(const RootOperation & op)
     }
 }
 
-void CommClient::UnknownObjectArrived(const Object& o)
+void CommClient::UnknownObjectArrived(const Atlas::Message::Object& o)
 {
     debug(std::cout << "An unknown has arrived." << std::endl << std::flush;);
     RootOperation r;
@@ -118,7 +116,7 @@ void CommClient::UnknownObjectArrived(const Object& o)
     }
     if (debug_flag) {
         std::cout << "An unknown has arrived." << std::endl << std::flush;
-        Object::MapType::const_iterator I;
+        Atlas::Message::Object::MapType::const_iterator I;
         for(I = o.AsMap().begin(); I != o.AsMap().end(); I++) {
             std::cout << I->first << std::endl << std::flush;
             if (I->second.IsString()) {

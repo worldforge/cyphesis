@@ -11,43 +11,40 @@
 
 static const bool debug_flag = false;
 
-using Atlas::Message::Object;
-
 CommClient::CommClient()
 {
 }
 
-Object::MapType
-CommClient::createPlayer(const std::string & name,
-                               const std::string & password)
+Fragment::MapType CommClient::createPlayer(const std::string & name,
+                                           const std::string & password)
 {
     playerName = name;
-    Object::MapType player_ent;
+    Fragment::MapType player_ent;
     player_ent["username"] = name;
     player_ent["password"] = password;
-    player_ent["parents"] = Object::ListType(1, "player");
+    player_ent["parents"] = Fragment::ListType(1, "player");
     
     debug(std::cout << "Loggin " << name << " in with " << password << " as password"
                << std::endl << std::flush;);
     
     Login loginAccountOp(Login::Instantiate());
-    loginAccountOp.SetArgs(Object::ListType(1,player_ent));
+    loginAccountOp.SetArgs(Fragment::ListType(1,player_ent));
     send(loginAccountOp);
 
     if (connection.wait()) {
         Create createAccountOp(Create::Instantiate());
-        createAccountOp.SetArgs(Object::ListType(1,player_ent));
+        createAccountOp.SetArgs(Fragment::ListType(1,player_ent));
         send(createAccountOp);
         if (connection.wait()) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
                       << std::flush;
-            return Object::MapType();
+            return Fragment::MapType();
         }
     }
 
-    Object::MapType ent = connection.getReply();
+    const Fragment::MapType & ent = connection.getReply();
 
-    Object::MapType::const_iterator I = ent.find("id");
+    Fragment::MapType::const_iterator I = ent.find("id");
     if (I == ent.end() || !I->second.IsString()) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
                   << std::flush;
@@ -62,13 +59,13 @@ CommClient::createPlayer(const std::string & name,
 
 CreatorClient * CommClient::createCharacter(const std::string & type)
 {
-    Object::MapType character;
+    Fragment::MapType character;
     character["name"] = playerName;
-    character["parents"] = Object::ListType(1,type);
+    character["parents"] = Fragment::ListType(1,type);
 
     Create createOp=Create::Instantiate();
     createOp.SetFrom(playerId);
-    createOp.SetArgs(Object::ListType(1,character));
+    createOp.SetArgs(Fragment::ListType(1,character));
     send(createOp);
 
     if (connection.wait()) {
@@ -76,7 +73,7 @@ CreatorClient * CommClient::createCharacter(const std::string & type)
                   << type << std::endl << std::flush;
         return NULL;
     }
-    Object::MapType body=connection.getReply();
+    const Fragment::MapType & body = connection.getReply();
 
     const std::string & id = body.find("id")->second.AsString();
 

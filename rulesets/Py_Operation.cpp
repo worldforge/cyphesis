@@ -11,7 +11,6 @@
 #include <common/utility.h>
 
 using Atlas::Message::Object;
-using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
 
 /*
@@ -296,10 +295,10 @@ static PyObject * Operation_GetArgs(OperationObject * self, PyObject * args)
     // Here we go:- 
     Object::ListType & args_list = self->operation->GetArgs();
     PyObject * args_pylist = PyList_New(args_list.size());
-    Object::ListType::iterator I;
+    Object::ListType::const_iterator I;
     int j=0;
     AtlasObject * item;
-    for(I=args_list.begin();I!=args_list.end();I++,j++) {
+    for(I = args_list.begin();I != args_list.end(); I++, j++) {
         item = newAtlasObject(NULL);
         if (item == NULL) {
             PyErr_SetString(PyExc_TypeError,"error creating list");
@@ -345,7 +344,7 @@ static PyObject * Operation_seq_item(OperationObject * self, int item)
         return 0;
     }
     Object::ListType & args_list = self->operation->GetArgs();
-    Object::ListType::iterator I = args_list.begin();
+    Object::ListType::const_iterator I = args_list.begin();
     int i;
     for(i = 0; i < item && I != args_list.end(); i++, I++);
     if ((I != args_list.end()) && (I->IsMap())) {

@@ -30,8 +30,6 @@ extern "C" {
     #include <unistd.h>
 }
 
-using Atlas::Message::Object;
-
 static const bool debug_flag = false;
 
 const std::string get_hostname()
@@ -189,7 +187,7 @@ int main(int argc, char ** argv)
             log(INFO, "Loading world from database...");
             OpVector res = admin->LoadOperation(l);
             // Delete the resulting op
-            OpVector::iterator I = res.begin();
+            OpVector::const_iterator I = res.begin();
             for(;I != res.end(); I++) { delete *I; }
             log(INFO, " world loaded");
         }

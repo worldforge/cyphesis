@@ -9,8 +9,6 @@
 
 static const bool debug_flag = true;
 
-using Atlas::Message::Object;
-
 Line::Line()
 {
     // Default to a 0.1m cube
@@ -21,7 +19,7 @@ Line::~Line()
 {
 }
 
-const Object Line::get(const std::string & aname) const
+const Fragment Line::get(const std::string & aname) const
 {
     if (aname == "start_intersections") {
         return idListAsObject(startIntersections);
@@ -33,7 +31,7 @@ const Object Line::get(const std::string & aname) const
     return Thing::get(aname);
 }
 
-void Line::set(const std::string & aname, const Object & attr)
+void Line::set(const std::string & aname, const Fragment & attr)
 {
     debug( std::cout << "Setting " << aname << " in line" << std::endl
                      << std::flush;);
@@ -48,7 +46,7 @@ void Line::set(const std::string & aname, const Object & attr)
     }
 }
 
-void Line::addToObject(Atlas::Message::Object::MapType & omap) const
+void Line::addToObject(Fragment::MapType & omap) const
 {
     omap["start_intersections"] = idListAsObject(startIntersections);
     omap["end_intersections"] = idListAsObject(endIntersections);

@@ -13,8 +13,6 @@
 #include <Atlas/Objects/Operation/Divide.h>
 #include <Atlas/Objects/Operation/Delete.h>
 
-using Atlas::Message::Object;
-
 Stackable::Stackable() : num(1)
 {
     subscribe("combine", OP_COMBINE);
@@ -25,15 +23,15 @@ Stackable::~Stackable()
 {
 }
 
-const Object Stackable::get(const std::string & aname) const
+const Fragment Stackable::get(const std::string & aname) const
 {
     if (aname == "num") {
-        return Object(num);
+        return Fragment(num);
     }
     return Thing::get(aname);
 }
 
-void Stackable::set(const std::string & aname, const Object & attr)
+void Stackable::set(const std::string & aname, const Fragment & attr)
 {
     if ((aname == "num") && attr.IsInt()) {
         num = attr.AsInt();
@@ -42,10 +40,10 @@ void Stackable::set(const std::string & aname, const Object & attr)
     }
 }
 
-void Stackable::addToObject(Object::MapType & omap) const
+void Stackable::addToObject(Fragment::MapType & omap) const
 {
     if (num != 1) {
-        omap["num"] = Object(num);
+        omap["num"] = Fragment(num);
     }
     Entity::addToObject(omap);
 }
@@ -56,8 +54,8 @@ OpVector Stackable::CombineOperation(const Combine & op)
     if (script->Operation("combine", op, res) != 0) {
         return res;
     }
-    const Object::ListType & args = op.GetArgs();
-    for(Object::ListType::const_iterator I= args.begin(); I!= args.end(); I++) {
+    const Fragment::ListType & args = op.GetArgs();
+    for(Fragment::ListType::const_iterator I= args.begin(); I!= args.end(); I++) {
         const std::string & id = I->AsMap().find("id")->second.AsString();
         if (id == getId()) { continue; }
         Entity * ent = world->getObject(id);
@@ -68,10 +66,10 @@ OpVector Stackable::CombineOperation(const Combine & op)
         num = num + obj->num;
 
         Delete * d = new Delete(Delete::Instantiate());
-        Object::MapType dent;
+        Fragment::MapType dent;
         dent["id"] = id;
         d->SetTo(id);
-        d->SetArgs(Object::ListType(1,dent));
+        d->SetArgs(Fragment::ListType(1,dent));
         res.push_back(d);
     }
     return res;
@@ -85,22 +83,22 @@ OpVector Stackable::DivideOperation(const Divide & op)
     if (script->Operation("divide", op, res) != 0) {
         return res;
     }
-    const Object::ListType & args = op.GetArgs();
-    for(Object::ListType::const_iterator I= args.begin(); I!= args.end(); I++) {
-        const Object::MapType & ent = I->AsMap();
+    const Fragment::ListType & args = op.GetArgs();
+    for(Fragment::ListType::const_iterator I=args.begin(); I!=args.end(); I++) {
+        const Fragment::MapType & ent = I->AsMap();
         int new_num = 1;
-        Object::MapType::const_iterator J = ent.find("num");
+        Fragment::MapType::const_iterator J = ent.find("num");
         if (J != ent.end()) {
             if (J->second.IsInt()) { new_num = J->second.AsInt(); }
         }
         if (num <= new_num) { continue; }
         
-        Object::MapType new_ent;
-        Object::ListType parents(1,type);
+        Fragment::MapType new_ent;
+        Fragment::ListType parents(1,type);
         new_ent["parents"] = parents;
         new_ent["num"] = new_num;
         Create * c = new Create( Create::Instantiate());
-        c->SetArgs(Object::ListType(1,new_ent));
+        c->SetArgs(Fragment::ListType(1,new_ent));
         c->SetTo(getId());
         res.push_back(c);
     }

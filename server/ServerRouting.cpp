@@ -19,8 +19,6 @@
 
 static bool debug_flag = false;
 
-using Atlas::Message::Object;
-
 ServerRouting::ServerRouting(CommServer & server, const std::string & ruleset,
                              const std::string & name) :
         commServer(server), svrRuleset(ruleset), svrName(name),
@@ -45,12 +43,12 @@ ServerRouting::~ServerRouting()
     delete &lobby;
 }
 
-void ServerRouting::addToObject(Object::MapType & omap) const
+void ServerRouting::addToObject(Fragment::MapType & omap) const
 {
     omap["server"] = "cyphesis";
     omap["ruleset"] = svrRuleset;
     omap["name"] = svrName;
-    Object::ListType plist(1, "server");
+    Fragment::ListType plist(1, "server");
     omap["parents"] = plist;
     omap["clients"] = commServer.numClients();
     omap["uptime"] = world.upTime();

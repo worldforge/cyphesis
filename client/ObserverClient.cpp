@@ -13,8 +13,6 @@
 
 #include <unistd.h>
 
-using Atlas::Message::Object;
-
 ObserverClient::ObserverClient()
 {
 }
@@ -25,14 +23,14 @@ bool ObserverClient::setup()
         return false;
     }
 
-    Object::MapType adminAccount;
+    Fragment::MapType adminAccount;
     std::string password = consts::defaultAdminPassword;
     if (!AccountBase::instance()->getAccount("admin", adminAccount)) {
         std::cerr << "WARNING: Unable to read admin account from database"
                   << std::endl << "Using default"
                   << std::endl << std::flush;
     } else {
-        Object::MapType::const_iterator I = adminAccount.find("password");
+        Fragment::MapType::const_iterator I = adminAccount.find("password");
         if (I == adminAccount.end()) {
             std::cerr << "WARNING: Admin account from database has no password"
                       << std::endl << std::flush;

@@ -18,8 +18,6 @@
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Look.h>
 
-using Atlas::Objects::Operation::Look;
-
 static const bool debug_flag = false;
 
 inline Entity * MemMap::addObject(Entity * object)
@@ -42,9 +40,9 @@ inline RootOperation * MemMap::lookId()
     if (!additionsById.empty()) {
         const std::string & id = additionsById.front();
         Look * l = new Look(Look::Instantiate());
-        Object::MapType m;
-        m["id"] = Object(id);
-        l->SetArgs(Object::ListType(1, Object(m)));
+        Atlas::Message::Object::MapType m;
+        m["id"] = Atlas::Message::Object(id);
+        l->SetArgs(Atlas::Message::Object::ListType(1, m));
         l->SetTo(id);
         additionsById.pop_front();
         return l;
@@ -56,8 +54,8 @@ inline Entity * MemMap::addId(const std::string & id)
 {
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     additionsById.push_back(id);
-    Object::MapType m;
-    m["id"] = Object(id);
+    Atlas::Message::Object::MapType m;
+    m["id"] = Atlas::Message::Object(id);
     return add(m);
 }
 
@@ -67,9 +65,9 @@ inline void MemMap::del(const std::string & id)
     if (I != things.end()) {
         Entity * obj = I->second;
         things.erase(I);
-        std::vector<std::string>::const_iterator I;
-        for(I = deleteHooks.begin(); I != deleteHooks.end(); I++) {
-            script->hook(*I, obj);
+        std::vector<std::string>::const_iterator J;
+        for(J = deleteHooks.begin(); J != deleteHooks.end(); J++) {
+            script->hook(*J, obj);
         }
         delete obj;
     }

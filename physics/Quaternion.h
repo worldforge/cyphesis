@@ -69,19 +69,19 @@ class Quaternion {
 
     const Atlas::Message::Object asObject() const {
         Atlas::Message::Object::ListType quat;
-        quat.push_back(Object(x));
-        quat.push_back(Object(y));
-        quat.push_back(Object(z));
-        quat.push_back(Object(w));
+        quat.push_back(Atlas::Message::Object(x));
+        quat.push_back(Atlas::Message::Object(y));
+        quat.push_back(Atlas::Message::Object(z));
+        quat.push_back(Atlas::Message::Object(w));
         return Atlas::Message::Object(quat);
     }
 
     const Atlas::Message::Object::ListType asList() const {
         Atlas::Message::Object::ListType quat;
-        quat.push_back(Object(x));
-        quat.push_back(Object(y));
-        quat.push_back(Object(z));
-        quat.push_back(Object(w));
+        quat.push_back(Atlas::Message::Object(x));
+        quat.push_back(Atlas::Message::Object(y));
+        quat.push_back(Atlas::Message::Object(z));
+        quat.push_back(Atlas::Message::Object(w));
         return quat;
     }
 
