@@ -121,6 +121,9 @@ class Entity : public BaseEntity {
     void scriptSubscribe(const std::string &);
 
     virtual void addToMessage(MapType & obj) const;
+
+    virtual OpVector externalOperation(const RootOperation & op);
+
     virtual OpVector SetupOperation(const Setup & op);
     virtual OpVector TickOperation(const Tick & op);
     virtual OpVector ActionOperation(const Action & op);

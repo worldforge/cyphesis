@@ -1046,12 +1046,6 @@ bool Character::world2mind(const RootOperation & op)
     return false;
 }
 
-OpVector Character::externalMessage(const RootOperation & op)
-{
-    debug( std::cout << "Character::externalMessage" << std::endl << std::flush;);
-    return externalOperation(op);
-}
-
 OpVector Character::operation(const RootOperation & op)
 {
     debug( std::cout << "Character::operation" << std::endl << std::flush;);
@@ -1065,7 +1059,7 @@ OpVector Character::operation(const RootOperation & op)
         for(OpVector::const_iterator I = mres2.begin(); I != mres2.end(); I++) {
             //RootOperation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
-            externalMessage(**I);
+            externalOperation(**I);
             delete *I;
         }
     }

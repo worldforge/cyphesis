@@ -32,11 +32,6 @@ void BaseEntity::addToMessage(MapType & omap) const
     omap["id"] = getId();
 }
 
-OpVector BaseEntity::externalMessage(const RootOperation & op)
-{
-    return message(op);
-}
-
 OpVector BaseEntity::message(const RootOperation & op)
 {
     debug( std::cout << "BaseEntity::message" << std::endl << std::flush;);
@@ -47,11 +42,6 @@ OpVector BaseEntity::operation(const RootOperation & op)
 {
     debug( std::cout << "BaseEntity::operation" << std::endl << std::flush;);
     return callOperation(op);
-}
-
-OpVector BaseEntity::externalOperation(const RootOperation & op)
-{
-    return operation(op);
 }
 
 OpVector BaseEntity::LoginOperation(const Login & op)

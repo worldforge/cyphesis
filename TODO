@@ -1,3 +1,6 @@
+The results of externalOperation() are discarded, even though they could
+have stuff in.
+
 Look at the FIXME in Account related to broadcasting a sight of a new
 character on creation.
 

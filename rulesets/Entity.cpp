@@ -218,6 +218,11 @@ void Entity::scriptSubscribe(const std::string & op)
     }
 }
 
+OpVector Entity::externalOperation(const RootOperation & op)
+{
+    return operation(op);
+}
+
 OpVector Entity::SetupOperation(const Setup & op)
 {
     OpVector res;

@@ -77,9 +77,7 @@ class BaseMind : public MemEntity {
     virtual OpVector SoundOperation(const Sound & op);
     virtual OpVector AppearanceOperation(const Appearance & op);
     virtual OpVector DisappearanceOperation(const Disappearance & op);
-    //RootOperation * get_op_name_and_sub(RootOperation & op, std::string & name);
-    //virtual int call_triggers(RootOperation & op);
-    //virtual OpVector message(const RootOperation & op);
+
     virtual OpVector operation(const RootOperation & op);
 
     OpVector callSightOperation(const Sight & op, RootOperation & sub_op);

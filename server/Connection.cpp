@@ -163,8 +163,12 @@ OpVector Connection::operation(const RootOperation & op)
             err += "\" is from non existant object.";
             return error(op, err.c_str());
         }
-        BaseEntity * ent = I->second;
-        Character * character = dynamic_cast<Character *>(ent);
+        BaseEntity * b_ent = I->second;
+        Entity * ig_ent = dynamic_cast<Character *>(b_ent);
+        if (ig_ent == NULL) {
+            return b_ent->operation(op);
+        }
+        Character * character = dynamic_cast<Character *>(b_ent);
         if ((character != NULL) && (character->m_externalMind == NULL)) {
             character->m_externalMind = new ExternalMind(*this,
                        character->getId(), character->getName());
@@ -176,11 +180,11 @@ OpVector Connection::operation(const RootOperation & op)
             character->addToMessage(info_args.front().asMap());
             info->setRefno(op.getSerialno());
             info->setSerialno(m_server.newSerialNo());
-            OpVector res = ent->externalOperation(op);
+            OpVector res = character->externalOperation(op);
             res.insert(res.begin(), info);
             return res;
         }
-        return ent->externalOperation(op);
+        return ig_ent->externalOperation(op);
     }
     return OpVector();
 }

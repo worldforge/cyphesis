@@ -34,7 +34,6 @@ cyphesis_SOURCES = \
 		server.cpp server.h
 
 cyphesis_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
-                 $(top_builddir)/rulesets/librulesetbase.a \
                  $(top_builddir)/rulesets/librulesetmind.a \
                  $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/rulesets/librulesetbase.a \

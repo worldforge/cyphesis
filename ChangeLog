@@ -1,5 +1,17 @@
 2004-08-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.h, common/BaseEntity.cpp, rulesets/BaseMind.h,
+	  rulesets/Character.h, rulesets/Character.cpp, rulesets/Entity.cpp,
+	  rulesets/Entity.h, server/Connection.cpp, tests/EntityExerciser.h:
+	  Remove externalMessage() completely as its redundant, and remove
+	  externalOperation() from the BaseEntity class, and into
+	  Entity as its only applicable in-game.
+
+	* tests/Charactertest.cpp, tests/Creatortest.cpp:
+	  Add tests for more IG classes.
+
+2004-08-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Correct some comments.
 
 2004-08-28  Al Riddoch  <alriddoch@zepler.org>

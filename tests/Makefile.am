@@ -6,7 +6,8 @@ PHYSICS_TESTS = collisiontest emergencetest
 MODULE_TESTS = Locationtest
 
 RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
-                 Stackabletest Structuretest Thingtest Worldtest
+                 Stackabletest Structuretest Thingtest Worldtest \
+                 Charactertest Creatortest
 
 INCLUDES = -I$(top_srcdir)
 
@@ -245,3 +246,42 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/common/BaseWorld.o \
                   $(top_builddir)/common/const.o
 
+Charactertest_SOURCES = Charactertest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Charactertest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
+                 $(top_builddir)/rulesets/librulesetmind.a \
+                 $(top_builddir)/rulesets/librulesetbase.a \
+                $(top_builddir)/modules/libmodules.a \
+                $(top_builddir)/physics/libphysics.a \
+                      $(top_builddir)/common/inheritance.o \
+                      $(top_builddir)/common/BaseEntity.o \
+                      $(top_builddir)/common/log.o \
+                      $(top_builddir)/common/globals.o \
+                      $(top_builddir)/common/serialno.o \
+                      $(top_builddir)/common/custom.o \
+                      $(top_builddir)/common/operations.o \
+                      $(top_builddir)/common/OOGThing.o \
+                      $(top_builddir)/common/BaseWorld.o \
+                      $(top_builddir)/common/const.o
+
+Creatortest_SOURCES = Creatortest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Creatortest_LDADD = $(top_builddir)/modules/Location.o \
+                    $(top_builddir)/modules/DateTime.o \
+                    $(top_builddir)/physics/BBox.o \
+                    $(top_builddir)/physics/Vector3D.o \
+                    $(top_builddir)/rulesets/Creator.o \
+                    $(top_builddir)/rulesets/Character.o \
+                    $(top_builddir)/rulesets/Entity.o \
+                    $(top_builddir)/rulesets/Thing.o \
+                    $(top_builddir)/rulesets/Script.o \
+                    $(top_builddir)/rulesets/Pedestrian.o \
+                    $(top_builddir)/rulesets/Movement.o \
+                    $(top_builddir)/common/inheritance.o \
+                    $(top_builddir)/common/BaseEntity.o \
+                    $(top_builddir)/common/log.o \
+                    $(top_builddir)/common/globals.o \
+                    $(top_builddir)/common/serialno.o \
+                    $(top_builddir)/common/custom.o \
+                    $(top_builddir)/common/operations.o \
+                    $(top_builddir)/common/OOGThing.o \
+                    $(top_builddir)/common/BaseWorld.o \
+                    $(top_builddir)/common/const.o

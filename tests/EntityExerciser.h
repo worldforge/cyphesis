@@ -21,12 +21,8 @@ class EntityExerciser {
     virtual void dispatchOp(const RootOperation & op) {
         OpVector ov1 = m_ent.message(op);
         OpVector ov2 = m_ent.operation(op);
-        OpVector ov3 = m_ent.externalMessage(op);
-        OpVector ov4 = m_ent.externalOperation(op);
         flushOperations(ov1);
         flushOperations(ov2);
-        flushOperations(ov3);
-        flushOperations(ov4);
     }
 
     virtual void subscribeOp(const std::string & op) {

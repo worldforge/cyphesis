@@ -59,7 +59,6 @@ class Character : public Character_parent {
     virtual void addToMessage(MapType &) const;
 
     virtual OpVector operation(const RootOperation & op);
-    virtual OpVector externalMessage(const RootOperation & op);
     virtual OpVector externalOperation(const RootOperation & op);
 
     virtual OpVector ImaginaryOperation(const Imaginary & op);

@@ -46,8 +46,6 @@ class BaseEntity : virtual public SigC::Object {
 
     virtual OpVector message(const RootOperation & op);
     virtual OpVector operation(const RootOperation & op);
-    virtual OpVector externalMessage(const RootOperation & op);
-    virtual OpVector externalOperation(const RootOperation & op);
 
     virtual OpVector LoginOperation(const Login & op);
     virtual OpVector LogoutOperation(const Logout & op);
