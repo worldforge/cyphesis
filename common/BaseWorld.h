@@ -63,7 +63,7 @@ class BaseWorld {
     virtual Entity * addObject(Entity * obj, bool setup = true) = 0;
     virtual Entity * addNewObject(const std::string &,
                                   const Atlas::Message::MapType &) = 0;
-    virtual void message(Operation &, const Entity * obj) = 0;
+    virtual void message(Operation &, Entity & obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;
     virtual float constrainHeight(Entity *, const Point3D &) = 0;

@@ -16,7 +16,24 @@ extern "C" {
 
 class Entity;
 
-typedef std::list<Operation *> OpQueue;
+struct OpQueEntry {
+    Operation & op;
+    Entity & from;
+
+    explicit OpQueEntry(Operation & o, Entity & f);
+    OpQueEntry(const OpQueEntry & o);
+    ~OpQueEntry();
+
+    Operation & operator*() const {
+        return op;
+    }
+
+    Operation * operator->() const {
+        return &op;
+    }
+};
+
+typedef std::list<OpQueEntry> OpQueue;
 
 /// \brief WorldRouter encapsulates the game world running in the server.
 ///
@@ -37,12 +54,12 @@ class WorldRouter : public BaseWorld {
     /// List of omnipresent entities. Obsolete.
     EntitySet m_omnipresentList;
 
-    void addOperationToQueue(Operation &, const Entity *);
+    void addOperationToQueue(Operation &, Entity &);
     Operation * getOperationFromQueue();
     const EntitySet & broadcastList(const Operation &) const;
     void updateTime(int sec, int usec);
-    void deliverTo(const Operation &, Entity *);
-    void deliverDeleteTo(const Operation &, Entity *);
+    void deliverTo(const Operation &, Entity &);
+    void deliverDeleteTo(const Operation &, Entity &);
   public:
     explicit WorldRouter();
     virtual ~WorldRouter();
@@ -55,7 +72,7 @@ class WorldRouter : public BaseWorld {
     void operation(Operation &);
 
     virtual void addPerceptive(const std::string &);
-    virtual void message(Operation &, const Entity *);
+    virtual void message(Operation &, Entity &);
     virtual Entity * findByName(const std::string & name);
     virtual Entity * findByType(const std::string & type);
     virtual float constrainHeight(Entity *, const Point3D &);

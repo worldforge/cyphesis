@@ -1,5 +1,13 @@
 2004-01-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseWorld.h, rulesets/Entity.h, rulesets/MemMap.cpp,
+	  server/Account.cpp, server/WorldRouter.cpp, server/WorldRouter.h:
+	  Use reference count functions to handle deleting entities.
+	  Modify main op queue to hold a reference to the entity the op
+	  is from. Fix up arg naming conventions in WorldRouter.
+
+2004-01-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.h, rulesets/Entity.cpp, server/WorldRouter.cpp:
 	  Add basic reference counting to Entity, and use it for deleting
 	  objects from world.

@@ -107,8 +107,8 @@ class Entity : public BaseEntity {
     /// sendWorld() bipasses serialno assignment, so you must ensure
     /// that serialno is sorted. This allows client serialnos to get
     /// in, so that client gets correct usefull refnos back.
-    void sendWorld(Operation * op) const {
-        m_world->message(*op, this);
+    void sendWorld(Operation * op) {
+        m_world->message(*op, *this);
     }
 
     const int getUpdateFlags() const { return m_update_flags; }

@@ -179,7 +179,7 @@ void MemMap::del(const std::string & id)
         for(; J != Jend; ++J) {
             m_script->hook(*J, ent);
         }
-        delete ent;
+        ent->decRef();
     }
 }
 
@@ -345,7 +345,7 @@ void MemMap::check(const double & time)
             // m_checkIterator = m_entities.begin();
             m_checkIterator = m_entities.find(next);
             // attribute of its its parent.
-            delete me;
+            me->decRef();
         } else {
             debug(std::cout << me->getId() << "|" << me->getType() << "|"
                             << me->lastSeen() << "|" << me->isVisible()
@@ -362,6 +362,6 @@ void MemMap::flush()
     
     MemEntityDict::const_iterator Iend = m_entities.end();
     for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
-        delete I->second;
+        I->second->decRef();
     }
 }

@@ -28,6 +28,22 @@ using Atlas::Objects::Operation::Setup;
 
 static const bool debug_flag = false;
 
+inline OpQueEntry::OpQueEntry(Operation & o, Entity & f) : op(o), from(f)
+{
+    from.incRef();
+}
+
+inline OpQueEntry::OpQueEntry(const OpQueEntry & o) : op(o.op), from(o.from)
+{
+    from.incRef();
+}
+
+inline OpQueEntry::~OpQueEntry()
+{
+    from.decRef();
+}
+
+
 /// \brief Update the in-game time.
 ///
 /// Reads the system time, and applies the necessary offsets to calculate
@@ -50,6 +66,7 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId))
     gettimeofday(&tv, NULL);
     m_initTime = tv.tv_sec;
     updateTime(tv.tv_sec, tv.tv_usec);
+    m_gameWorld.incRef();
     m_gameWorld.m_world = this;
     m_gameWorld.setType("world");
     m_eobjects[m_gameWorld.getId()] = &m_gameWorld;
@@ -71,21 +88,19 @@ WorldRouter::~WorldRouter()
     }
     OpQueue::const_iterator Iend = m_operationQueue.end();
     for (OpQueue::const_iterator I = m_operationQueue.begin(); I != Iend; ++I) {
-        delete *I;
+        delete &I->op;
     }
     { 
         debug(std::cout << "Flushing world with " << m_eobjects.size()
                         << " entities" << std::endl << std::flush;);
     }
-    m_eobjects.erase(m_gameWorld.getId());
     EntityDict::const_iterator Jend = m_eobjects.end();
     for (EntityDict::const_iterator J = m_eobjects.begin(); J != Jend; ++J) {
-        // delete J->second;
         J->second->decRef();
     }
     // This should be deleted here rather than in the base class because
     // we created it, and BaseWorld should not even know what it is.
-    delete &m_gameWorld;
+    m_gameWorld.decRef();
 }
 
 /// \brief Add an operation to the ordered op queue.
@@ -96,12 +111,12 @@ WorldRouter::~WorldRouter()
 /// the entity that is responsible for adding the operation to the
 /// queue, unless it is set to "cheat". This is used to spook
 /// operations when they come from an admin.
-void WorldRouter::addOperationToQueue(Operation & op, const Entity * obj)
+void WorldRouter::addOperationToQueue(Operation & op, Entity & ent)
 {
     if (op.getFrom() == "cheat") {
         op.setFrom(op.getTo());
     } else {
-        op.setFrom(obj->getId());
+        op.setFrom(ent.getId());
     }
     double t = m_realTime + op.getFutureSeconds();
     op.setSeconds(t);
@@ -109,7 +124,7 @@ void WorldRouter::addOperationToQueue(Operation & op, const Entity * obj)
     OpQueue::iterator I = m_operationQueue.begin();
     OpQueue::iterator Iend = m_operationQueue.end();
     for (; (I != Iend) && ((*I)->getSeconds() <= t) ; ++I);
-    m_operationQueue.insert(I, &op);
+    m_operationQueue.insert(I, OpQueEntry(op, ent));
 }
 
 /// \brief Get the next due operation from the queue.
@@ -124,7 +139,7 @@ Operation * WorldRouter::getOperationFromQueue()
         return NULL;
     }
     debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
-    Operation * op = *I;
+    Operation * op = &(**I);
     m_operationQueue.pop_front();
     return op;
 }
@@ -174,47 +189,47 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos)
 /// entity into the loc/contains tree maintained by the Entity
 /// class. Handle omnipresent entities, and sending a Setup op
 /// to the entity.
-Entity * WorldRouter::addObject(Entity * obj, bool setup)
+Entity * WorldRouter::addObject(Entity * ent, bool setup)
 {
     debug(std::cout << "WorldRouter::addObject(Entity *)" << std::endl
                     << std::flush;);
-    m_eobjects[obj->getId()] = obj;
-    m_objectList.insert(obj);
-    assert(obj->m_location.isValid());
+    m_eobjects[ent->getId()] = ent;
+    m_objectList.insert(ent);
+    assert(ent->m_location.isValid());
 
-    if (!obj->m_location.isValid()) {
+    if (!ent->m_location.isValid()) {
         log(ERROR, "Entity added to world with invalid location!");
         debug(std::cout << "set loc " << &m_gameWorld  << std::endl
                         << std::flush;);
-        obj->m_location.m_loc = &m_gameWorld;
-        obj->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
-        debug(std::cout << "loc set with loc " << obj->m_location.m_loc->getId()
+        ent->m_location.m_loc = &m_gameWorld;
+        ent->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
+        debug(std::cout << "loc set with loc " << ent->m_location.m_loc->getId()
                         << std::endl << std::flush;);
     }
-    obj->m_location.m_pos.z() = constrainHeight(obj->m_location.m_loc,
-                                                obj->m_location.m_pos);
-    bool cont_change = obj->m_location.m_loc->m_contains.empty();
-    obj->m_location.m_loc->m_contains.insert(obj);
+    ent->m_location.m_pos.z() = constrainHeight(ent->m_location.m_loc,
+                                                ent->m_location.m_pos);
+    bool cont_change = ent->m_location.m_loc->m_contains.empty();
+    ent->m_location.m_loc->m_contains.insert(ent);
     if (cont_change) {
-        obj->m_location.m_loc->m_update_flags |= a_cont;
-        obj->m_location.m_loc->updated.emit();
+        ent->m_location.m_loc->m_update_flags |= a_cont;
+        ent->m_location.m_loc->updated.emit();
     }
-    debug(std::cout << "Entity loc " << obj->m_location << std::endl
+    debug(std::cout << "Entity loc " << ent->m_location << std::endl
                     << std::flush;);
-    obj->m_world = this;
+    ent->m_world = this;
     if (consts::enable_omnipresence &&
-        (obj->getAttributes().find("omnipresent") !=
-         obj->getAttributes().end())) {
-        m_omnipresentList.insert(obj);
+        (ent->getAttributes().find("omnipresent") !=
+         ent->getAttributes().end())) {
+        m_omnipresentList.insert(ent);
     }
     if (setup) {
         Setup * s = new Setup;
-        s->setTo(obj->getId());
+        s->setTo(ent->getId());
         s->setFutureSeconds(-0.1);
         s->setSerialno(newSerialNo());
-        message(*s, &m_gameWorld);
+        message(*s, m_gameWorld);
     }
-    return (obj);
+    return ent;
 }
 
 /// \brief Create a new entity and add to the world.
@@ -223,9 +238,9 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
 /// and pass it to addObject().
 /// @return a pointer to the new entity.
 Entity * WorldRouter::addNewObject(const std::string & typestr,
-                                   const MapType & ent)
+                                   const MapType & attrs)
 {
-    debug(std::cout << "WorldRouter::addNewObject(\"" << typestr << "\", ent)"
+    debug(std::cout << "WorldRouter::addNewObject(\"" << typestr << "\", attrs)"
                     << std::endl << std::flush;);
     std::string id;
     if (consts::enable_database) {
@@ -234,14 +249,14 @@ Entity * WorldRouter::addNewObject(const std::string & typestr,
         newId(id);
     }
     assert(!id.empty());
-    Entity * obj = EntityFactory::instance()->newEntity(id, typestr, ent);
-    if (obj == 0) {
+    Entity * ent = EntityFactory::instance()->newEntity(id, typestr, attrs);
+    if (ent == 0) {
         std::string msg = std::string("Attempt to create an entity of type \"")
                           + typestr + "\" but type is unknown";
         log(ERROR, msg.c_str());
         return 0;
     }
-    return addObject(obj);
+    return addObject(ent);
 }
 
 /// \brief Remove an entity from the world.
@@ -250,27 +265,27 @@ Entity * WorldRouter::addNewObject(const std::string & typestr,
 /// The entity is not deleted, nor any attend made to handle
 /// the loc/contains. It would probably be a good idea to move
 /// some of this handling to this function.
-void WorldRouter::delObject(Entity * obj)
+void WorldRouter::delObject(Entity * ent)
 {
     if (consts::enable_omnipresence) {
-        m_omnipresentList.erase(obj);
+        m_omnipresentList.erase(ent);
     }
-    m_perceptives.erase(obj);
-    m_objectList.erase(obj);
-    m_eobjects.erase(obj->getId());
+    m_perceptives.erase(ent);
+    m_objectList.erase(ent);
+    m_eobjects.erase(ent->getId());
 }
 
 /// \brief Pass an operation to the World.
 ///
 /// Pass an operation to addOperationToQueue()
 /// so it gets added to the queue for dispatch.
-void WorldRouter::message(Operation & op, const Entity * obj)
+void WorldRouter::message(Operation & op, Entity & ent)
 {
     debug(std::cout << "WorldRouter::message {"
                     << op.getParents().front().asString() << ":"
                     << op.getFrom() << ":" << op.getTo() << "}" << std::endl
                     << std::flush;);
-    addOperationToQueue(op, obj);
+    addOperationToQueue(op, ent);
     debug(std::cout << "WorldRouter::message {"
                     << op.getParents().front().asString() << ":"
                     << op.getFrom() << ":" << op.getTo() << "}" << std::endl
@@ -310,55 +325,55 @@ const EntitySet & WorldRouter::broadcastList(const Operation & op) const
 /// Pass the operation to the target entity. The resulting operations
 /// have their ref numbers set, and are added to the queue for
 /// dispatch.
-void WorldRouter::deliverTo(const Operation & op, Entity * e)
+void WorldRouter::deliverTo(const Operation & op, Entity & ent)
 {
     OpVector res;
-    e->operation(op, res);
+    ent.operation(op, res);
     setRefno(res, op);
     OpVector::const_iterator Iend = res.end();
     for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
         (*I)->setSerialno(newSerialNo());
-        message(**I, e);
+        message(**I, ent);
     }
 }
 
-/// \brief Special version of WorldRouter::deliverTo() for delete ops.
+/// \brief Special version of WorldRouter::deliverTo() for Delete ops.
 ///
 /// Delete is special. It causes the target to be removed, but
 /// we need to handle the responses first. To prevent a tight loop,
-/// we do not attempt to immediatly handle the response to a delete op
-/// if it is anothe delete op.
-void WorldRouter::deliverDeleteTo(const Operation & op, Entity * e)
+/// we do not attempt to immediatly handle the response to a Delete op
+/// if it is anothe Delete op.
+void WorldRouter::deliverDeleteTo(const Operation & op, Entity & ent)
 {
     OpVector res;
-    e->operation(op, res);
+    ent.operation(op, res);
     setRefno(res, op);
     OpVector::const_iterator Iend = res.end();
     for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
         Operation & newOp = **I;
         newOp.setSerialno(newSerialNo());
         if (newOp.getParents().front().asString() == "delete") {
-            // If this is a delete, queue as normal to avoid a recursive loop
-            debug(std::cerr << "Handling delete response to delete"
+            // If this is a Delete, queue as normal to avoid a recursive loop
+            debug(std::cerr << "Handling Delete response to Delete"
                             << std::endl << std::flush;);
             log(WARNING, "Response to Delete op is another Delete.");
-            message(newOp, e);
+            message(newOp, ent);
         } else {
             // Other ops we dispatch immediatly before deleting the source
-            debug(std::cerr << "Handling normal response to delete"
+            debug(std::cerr << "Handling normal response to Delete"
                             << std::endl << std::flush;);
-            newOp.setFrom(e->getId());
+            newOp.setFrom(ent.getId());
             operation(newOp);
             delete &newOp;
         }
     }
-    if (e == &m_gameWorld) {
+    if (&ent == &m_gameWorld) {
         log(WARNING, "Attempt to delete game world");
         return;
     }
-    delObject(e);
-    e->destroy();
-    delete e;
+    delObject(&ent);
+    ent.destroy();
+    ent.decRef();
 }
 
 /// Main in-game operation dispatch function.
@@ -388,9 +403,9 @@ void WorldRouter::operation(Operation & op)
         assert(to_entity != 0);
 
         if (op.getParents().front().asString() == "delete") {
-            deliverDeleteTo(op, to_entity);
+            deliverDeleteTo(op, *to_entity);
         } else {
-            deliverTo(op, to_entity);
+            deliverTo(op, *to_entity);
         }
     } else {
         // Operation newop = op;
@@ -411,7 +426,7 @@ void WorldRouter::operation(Operation & op)
             EntitySet::const_iterator Iend = broadcast.end();
             for (; I != Iend; ++I) {
                 op.setTo((*I)->getId());
-                deliverTo(op, *I);
+                deliverTo(op, **I);
             }
         } else {
             Entity * fromEnt = J->second;
@@ -438,7 +453,7 @@ void WorldRouter::operation(Operation & op)
                     continue;
                 }
                 op.setTo((*I)->getId());
-                deliverTo(op, *I);
+                deliverTo(op, **I);
             }
         }
     }

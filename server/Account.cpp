@@ -126,7 +126,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         args.push_back(entmap);
         c->setTo(chr->getId());
         c->setSerialno(newSerialNo());
-        world.message(*c, chr);
+        world.message(*c, *chr);
     }
 
     return chr;
@@ -269,7 +269,7 @@ void Account::SetOperation(const Operation & op, OpVector & res)
         newArg["id"] = id;
         ListType & sarg = s->getArgs();
         sarg.push_back(newArg);
-        m_connection->m_server.m_world.message(*s, e);
+        m_connection->m_server.m_world.message(*s, *e);
     }
 }
 
