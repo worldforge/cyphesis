@@ -48,6 +48,7 @@ class Database {
     bool decodeObject(Dbt & data, Atlas::Message::Object &);
     bool putObject(Db &, const Atlas::Message::Object &, const char * key);
     bool getObject(Db &, const char * key, Atlas::Message::Object &);
+    bool delObject(Db &, const char * key);
   public:
     static Database * instance();
 

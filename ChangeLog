@@ -1,3 +1,14 @@
+2001-07-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/define_world.py: Fixed and refined the market traders.
+	  Sorted out random face direction.
+
+	* tools/cypasswd.c: Re-wrote tool to use database class, and thus
+	  ensure it is trying to access the right database.
+
+	* common/database.cpp, common/database.h: Added function to remove
+	  accounts from the account database.
+
 2001-07-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Characters now sober up over time.

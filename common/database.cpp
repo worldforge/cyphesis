@@ -180,6 +180,21 @@ bool Database::putObject(Db & db, const Atlas::Message::Object & o,
     return true;
 }
 
+bool Database::delObject(Db & db, const char * keystr)
+{
+    Dbt key, data;
+
+    key.set_data((void*)keystr);
+    key.set_size(strlen(keystr) + 1);
+
+    int err;
+    if ((err = db.del(NULL, &key, 0)) != 0) {
+        debug(cout << "db.del.ERROR! " << err << endl << flush;);
+        return false;
+    }
+    return true;
+}
+
 bool DatabaseIterator::get(Atlas::Message::Object & o)
 {
     Dbt key, data;

@@ -187,12 +187,15 @@ def default(mapeditor):
                   'mstall_magic_items_1_sw', 'mstall_milk_2_se',
                   'mstall_seamstress_1_sw', 'mstall_vegetables_1_se',
                   'mstall_wine_1_se']
-    trader_list = ['seller', 'maid_brown', 'maid_blond', 'maid_red']
+    directions = [[0,1,0],[1,0,0],[0,-1,0],[-1,0,0],
+                  [0.7,0.7,0],[0.7,-0.7,0],[-0.7,-0.7,0],[-0.7,0.7,0]]
+    trader_list = ['merchant', 'maid_brown', 'maid_blond', 'maid_red']
     for stall in stall_list:
         trader=m.make('trader',type=trader_list[randint(0,3)],
-                 xyz=butcher_stall_xyz,age=probability.fertility_age)
-        m.learn(trader,(il.market,"run_shop(stall,'open','dawn')"))
-        m.learn(trader,(il.market,"run_shop(stall,'closed','evening')"))
+                 xyz=(uniform(-36,-56),uniform(-7,-17),village_height),
+                 age=probability.fertility_age,face=directions[randint(0,7)])
+        m.learn(trader,(il.market,"run_shop('"+stall+"','open','dawn')"))
+        m.learn(trader,(il.market,"run_shop('"+stall+"','closed','evening')"))
 
     #m.make('bstall',type='bstall',xyz=(-41,-5,village_height))
 
@@ -235,42 +238,42 @@ def default(mapeditor):
     m.learn(merchants,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
     piglets=[]
     for i in range(0, 6):
-        piglets.append(m.make('pig',type='pig',xyz=(uniform(0,4),uniform(0,4),village_height),parent=sty.id))
+        piglets.append(m.make('pig',type='pig',xyz=(uniform(0,4),uniform(0,4),village_height),parent=sty.id,face=directions[randint(0,7)]))
     m.learn(piglets,pig_goals)
     m.own(merchants,piglets)
 
     # Warriors - the more adventurous types
 
     warriors=[]
-    warrior=m.make('Tom Harrowe', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male',face=[0.7,-0.7,0])
+    warrior=m.make('Tom Harrowe', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male',face=directions[randint(0,7)])
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
-    warrior=m.make('Mae Dollor', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='female',face=[-0.7,1,0])
+    warrior=m.make('Mae Dollor', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='female',face=directions[randint(0,7)])
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
-    warrior=m.make('Covan Dubneal',type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male',face=[-0.7,-0.7,0])
+    warrior=m.make('Covan Dubneal',type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male',face=directions[randint(0,7)])
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
-    warrior=m.make('Roal Guddon', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male',face=[1,-0.7,0])
+    warrior=m.make('Roal Guddon', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male',face=directions[randint(0,7)])
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
     m.learn(warriors,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
 
-    warrior=m.make('Vonaa Barile',type='archer',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='female',face=[-1,0,0])
+    warrior=m.make('Vonaa Barile',type='archer',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='female',face=directions[randint(0,7)])
     m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     warriors.append(warrior)
 
-    warrior=m.make('Lile Birloc', type='archer',xyz=(-2,-2,village_height),sex='female',face=[0,1,0])
+    warrior=m.make('Lile Birloc', type='archer',xyz=(-2,-2,village_height),sex='female',face=directions[randint(0,7)])
     m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)

@@ -8,21 +8,9 @@
 #include <Atlas/Codecs/XML.h>
 
 #include <common/config.h>
-
-#ifdef HAVE_DB3_DB_CXX_H
-#include <db3/db_cxx.h>
-#else
-#include <db_cxx.h>
-#endif
+#include <common/database.h>
 
 #include <string>
-
-#ifdef HAVE_SSTREAM_H
-#include <sstream.h>
-#else
-#include "sstream.h"
-#endif
-
 
 #include <signal.h>
 
@@ -34,8 +22,30 @@
 // TODO: Make sure the rest of the Object is preserver, rather than just
 //       blatting it with a new Object.
 
-class Decoder : public Atlas::Message::DecoderBase {
-    virtual void ObjectArrived(const Atlas::Message::Object& obj) { }
+using Atlas::Message::Object;
+
+class AccountBase : public Database {
+  protected:
+    AccountBase() { }
+
+  public:
+    static AccountBase * instance() {
+        if (m_instance == NULL) {
+            m_instance = new AccountBase();
+        }
+        return (AccountBase *)m_instance;
+    }
+
+    bool putAccount(const Object & o, const string & account) {
+        return putObject(account_db, o, account.c_str());
+    }
+    bool delAccount(const string & account) {
+        return delObject(account_db, account.c_str());
+    }
+    bool getAccount(const string & account, Object & o) {
+        return getObject(account_db, account.c_str(), o);
+    }
+
 };
 
 #define ADD 0
@@ -48,27 +58,6 @@ void usage(char * n)
     // database will not be closed.
     std::cout << "usage: " << n << " -[asd] account" << endl << flush;
     exit(0);
-}
-
-void acput(Db & db, const string & name, const string & password)
-{
-    Decoder dec;
-    std::stringstream str;
-    Atlas::Codecs::XML codec(str, &dec);
-    Atlas::Message::Encoder enc(&codec);
-
-    Atlas::Message::Object::MapType ac_map;
-    ac_map["id"] = name;
-    ac_map["password"] = password;
-
-    codec.StreamBegin();
-    enc.StreamMessage(ac_map);
-    codec.StreamEnd();
-
-    Dbt key, data;
-    key = Dbt((void*)name.c_str(), name.size() + 1);
-    data = Dbt((void*)str.str().c_str(), str.str().size() + 1);
-    db.put(NULL, &key, &data, 0);
 }
 
 int main(int argc, char ** argv)
@@ -107,37 +96,42 @@ int main(int argc, char ** argv)
     // cause the program to exit without cleaning up the database.
     signal(SIGINT, SIG_IGN);
     
-    Db db(NULL, DB_CXX_NO_EXCEPTIONS);
+    //Db db(NULL, DB_CXX_NO_EXCEPTIONS);
 
-    if (db.open("/var/forge/cyphesis/db","account",DB_BTREE,DB_CREATE,0600)) {
-        std::cerr << "Failed to open password database" << endl << flush;
-    }
+    //if (db.open("/var/forge/cyphesis/db","account",DB_BTREE,DB_CREATE,0600)) {
+        //std::cerr << "Failed to open password database" << endl << flush;
+    //}
     
-    Dbt key((void*)"admin", 6);
-    Dbt data;
+    //Dbt key((void*)"admin", 6);
+    //Dbt data;
 
-    int res = db.get(NULL, &key, &data, 0);
+    AccountBase * db = AccountBase::instance();
+    db->initAccount(true);
 
-    if (res == DB_NOTFOUND) {
+    Atlas::Message::Object data;
+
+    bool res = db->getAccount("admin", data);
+
+    if (!res) {
         std::cout << "Admin account does not yet exist" << endl << flush;
         acname = "admin";
         action = ADD;
     }
     if (action != ADD) {
-        key = Dbt((void*)acname.c_str(), acname.size() +1);
-        data = Dbt();
-        res = db.get(NULL, &key, &data, 0);
-        if (res == DB_NOTFOUND) {
+        Object o;
+        res = db->getAccount(acname, o);
+        if (!res) {
             std::cout<<"Account "<<acname<<" does not yet exist"<<endl<<flush;
-            db.close(0);
+            db->shutdownAccount();
             return 0;
         }
     }
     if (action == DEL) {
-        key = Dbt((void*)acname.c_str(), acname.size() +1);
-        db.del(NULL, &key, 0);
-        cout << "Account " << acname << " removed." << endl << flush;
-        db.close(0);
+        db->delAccount(acname);
+        if (res) {
+            cout << "Account " << acname << " removed." << endl << flush;
+        }
+        db->shutdownAccount();
         return 0;
     }
     std::string password, password2;
@@ -146,11 +140,17 @@ int main(int argc, char ** argv)
     std::cout << "Retype " << acname << " password:" << flush;
     std::cin >> password2;
     if (password == password2) {
-        acput(db, acname, password);
-        std::cout << "Password changed." << endl << std::flush;
+        Atlas::Message::Object::MapType amap;
+        amap["id"] = acname;
+        amap["password"] = password;
+
+        res = db->putAccount(amap, acname);
+        if (res) {
+            std::cout << "Password changed." << endl << std::flush;
+        }
     } else {
         std::cout << "Passwords did not match. Account database unchanged."
                   << endl << std::flush;
     }
-    db.close(0);
+    db->shutdownAccount();
 }

@@ -14,7 +14,7 @@ endif
 
 cypasswd_SOURCES = cypasswd.cpp sstream.h iotraits.h
 
-cypasswd_LDADD = 
+cypasswd_LDADD = ../common/database.o
 
 cycmd_SOURCES = cycmd.cpp
 
