@@ -83,6 +83,7 @@ transformtest_SOURCES = transformtest.cpp
 
 distancetest_SOURCES = distancetest.cpp
 distancetest_LDADD = $(top_builddir)/rulesets/Entity.o \
+                     $(top_builddir)/rulesets/EntityProperties.o \
                      $(top_builddir)/rulesets/Script.o \
                      $(top_builddir)/modules/Location.o \
                      $(top_builddir)/modules/DateTime.o \
@@ -92,6 +93,7 @@ distancetest_LDADD = $(top_builddir)/rulesets/Entity.o \
                      $(top_builddir)/common/serialno.o \
                      $(top_builddir)/common/log.o \
                      $(top_builddir)/common/globals.o \
+                     $(top_builddir)/common/Property.o \
                      $(top_builddir)/common/BaseEntity.o
 
 # MODULE_TESTS
@@ -100,6 +102,7 @@ Locationtest_SOURCES = Locationtest.cpp
 Locationtest_LDADD = $(top_builddir)/modules/Location.o \
                      $(top_builddir)/modules/DateTime.o \
                      $(top_builddir)/rulesets/Entity.o \
+                     $(top_builddir)/rulesets/EntityProperties.o \
                      $(top_builddir)/rulesets/Script.o \
                      $(top_builddir)/common/inheritance.o \
                      $(top_builddir)/common/BaseEntity.o \
@@ -107,6 +110,7 @@ Locationtest_LDADD = $(top_builddir)/modules/Location.o \
                      $(top_builddir)/common/globals.o \
                      $(top_builddir)/common/serialno.o \
                      $(top_builddir)/common/custom.o \
+                     $(top_builddir)/common/Property.o \
                      $(top_builddir)/common/operations.o
 
 WorldTimetest_SOURCES = WorldTimetest.cpp
@@ -119,8 +123,10 @@ Entitytest_SOURCES = Entitytest.cpp IGEntityExerciser.h EntityExerciser.h allOpe
 Entitytest_LDADD = $(top_builddir)/modules/Location.o \
                    $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/rulesets/Entity.o \
+                   $(top_builddir)/rulesets/EntityProperties.o \
                    $(top_builddir)/rulesets/Script.o \
                    $(top_builddir)/common/inheritance.o \
+                   $(top_builddir)/common/Property.o \
                    $(top_builddir)/common/BaseEntity.o \
                    $(top_builddir)/common/log.o \
                    $(top_builddir)/common/globals.o \
@@ -135,9 +141,11 @@ Areatest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/physics/Vector3D.o \
                  $(top_builddir)/rulesets/Area.o \
                  $(top_builddir)/rulesets/Entity.o \
+                 $(top_builddir)/rulesets/EntityProperties.o \
                  $(top_builddir)/rulesets/Thing.o \
                  $(top_builddir)/rulesets/Script.o \
                  $(top_builddir)/common/inheritance.o \
+                 $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/globals.o \
@@ -153,9 +161,11 @@ Foodtest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/physics/Vector3D.o \
                  $(top_builddir)/rulesets/Food.o \
                  $(top_builddir)/rulesets/Entity.o \
+                 $(top_builddir)/rulesets/EntityProperties.o \
                  $(top_builddir)/rulesets/Thing.o \
                  $(top_builddir)/rulesets/Script.o \
                  $(top_builddir)/common/inheritance.o \
+                 $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/globals.o \
@@ -170,10 +180,13 @@ Linetest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/physics/BBox.o \
                  $(top_builddir)/physics/Vector3D.o \
                  $(top_builddir)/rulesets/Line.o \
+                 $(top_builddir)/rulesets/LineProperty.o \
                  $(top_builddir)/rulesets/Entity.o \
+                 $(top_builddir)/rulesets/EntityProperties.o \
                  $(top_builddir)/rulesets/Thing.o \
                  $(top_builddir)/rulesets/Script.o \
                  $(top_builddir)/common/inheritance.o \
+                 $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/globals.o \
@@ -189,9 +202,11 @@ Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/physics/Vector3D.o \
                   $(top_builddir)/rulesets/Plant.o \
                   $(top_builddir)/rulesets/Entity.o \
+                  $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Script.o \
                   $(top_builddir)/common/inheritance.o \
+                  $(top_builddir)/common/Property.o \
                   $(top_builddir)/common/BaseEntity.o \
                   $(top_builddir)/common/log.o \
                   $(top_builddir)/common/globals.o \
@@ -207,9 +222,11 @@ Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/physics/Vector3D.o \
                       $(top_builddir)/rulesets/Stackable.o \
                       $(top_builddir)/rulesets/Entity.o \
+                      $(top_builddir)/rulesets/EntityProperties.o \
                       $(top_builddir)/rulesets/Thing.o \
                       $(top_builddir)/rulesets/Script.o \
                       $(top_builddir)/common/inheritance.o \
+                      $(top_builddir)/common/Property.o \
                       $(top_builddir)/common/BaseEntity.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/globals.o \
@@ -225,9 +242,11 @@ Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/physics/Vector3D.o \
                       $(top_builddir)/rulesets/Structure.o \
                       $(top_builddir)/rulesets/Entity.o \
+                      $(top_builddir)/rulesets/EntityProperties.o \
                       $(top_builddir)/rulesets/Thing.o \
                       $(top_builddir)/rulesets/Script.o \
                       $(top_builddir)/common/inheritance.o \
+                      $(top_builddir)/common/Property.o \
                       $(top_builddir)/common/BaseEntity.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/globals.o \
@@ -242,9 +261,11 @@ Thingtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/physics/BBox.o \
                   $(top_builddir)/physics/Vector3D.o \
                   $(top_builddir)/rulesets/Entity.o \
+                  $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Script.o \
                   $(top_builddir)/common/inheritance.o \
+                  $(top_builddir)/common/Property.o \
                   $(top_builddir)/common/BaseEntity.o \
                   $(top_builddir)/common/log.o \
                   $(top_builddir)/common/globals.o \
@@ -258,11 +279,14 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
                   $(top_builddir)/physics/BBox.o \
                   $(top_builddir)/physics/Vector3D.o \
-                  $(top_builddir)/rulesets/World.o \
                   $(top_builddir)/rulesets/Entity.o \
+                  $(top_builddir)/rulesets/EntityProperties.o \
+                  $(top_builddir)/rulesets/World.o \
+                  $(top_builddir)/rulesets/TerrainProperty.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Script.o \
                   $(top_builddir)/common/inheritance.o \
+                  $(top_builddir)/common/Property.o \
                   $(top_builddir)/common/BaseEntity.o \
                   $(top_builddir)/common/log.o \
                   $(top_builddir)/common/globals.o \
@@ -281,6 +305,7 @@ Charactertest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                       $(top_builddir)/modules/libmodules.a \
                       $(top_builddir)/physics/libphysics.a \
                       $(top_builddir)/common/inheritance.o \
+                      $(top_builddir)/common/Property.o \
                       $(top_builddir)/common/BaseEntity.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/globals.o \
@@ -301,6 +326,7 @@ Creatortest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                     $(top_builddir)/modules/libmodules.a \
                     $(top_builddir)/physics/libphysics.a \
                     $(top_builddir)/common/inheritance.o \
+                    $(top_builddir)/common/Property.o \
                     $(top_builddir)/common/BaseEntity.o \
                     $(top_builddir)/common/log.o \
                     $(top_builddir)/common/globals.o \

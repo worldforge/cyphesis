@@ -73,7 +73,7 @@ int main()
     e.addToMessage(entityAsAtlas);
 
     // Make sure we got at least some of it
-    assert(entityAsAtlas.size() > 14);
+    assert(entityAsAtlas.size() >= 14);
 
     // Read the contents of the Atlas Message back in
     e.merge(entityAsAtlas);

@@ -1,5 +1,14 @@
 2004-11-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Charactertest.cpp, tests/Creatortest.cpp:
+	  Update tests to check for all static attributes.
+
+	* tests/Entitytest.cpp, tests/Structuretest.cpp,
+	  tests/Thingtest.cpp: Update the number of attributes
+	  entities should have, now that LOC may not be present.
+
+2004-11-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Property.cpp: Add required type checks to property set
 	  methods.
 

@@ -38,6 +38,8 @@ int main(int argc, char ** argv)
     attrNames.insert("mass");
     attrNames.insert("bbox");
     attrNames.insert("contains");
+    attrNames.insert("drunkness");
+    attrNames.insert("sex");
 
     // Make sure we have all the default attributes
     assert(ee.checkAttributes(attrNames));
