@@ -1,5 +1,13 @@
 2003-03-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* Depend on devel skstream.
+
+	* server/CommLocalClient.cpp, server/TrustedConnection.h,
+	  server/TrustedConnection.cpp: Added trusted connection on local
+	  unix socket clients, which does not require a password for logins.
+
+2003-03-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.h, server/Connection.cpp: Add virtual method
 	  to verify account credentials.
 

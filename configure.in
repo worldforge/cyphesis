@@ -156,20 +156,13 @@ PKG_CHECK_MODULES(ATLAS, atlascpp-0.4 >= 0.4.4,
         )
     ])
 
-PKG_CHECK_MODULES(SKSTREAM, skstream-0.2 >= 0.2.4,
+PKG_CHECK_MODULES(SKSTREAM, skstream-0.3 >= 0.2.90,
     [
         CPPFLAGS="$CPPFLAGS $SKSTREAM_CFLAGS"
         LIBS="$LIBS $SKSTREAM_LIBS"
     ],
     [
-        AM_PATH_SKSTREAM("0.2.4",[
-                if test "$SKSTREAM_CFLAGS" != "-I/usr/include"; then
-                    CPPFLAGS="$CPPFLAGS $SKSTREAM_CFLAGS"
-                fi
-                LIBS="$LIBS $SKSTREAM_LIBS"
-            ],
-                AC_MSG_ERROR(Cannot find valid version of skstream)
-        )
+        AC_MSG_ERROR(Cannot find valid version of skstream)
     ])
 
 PKG_CHECK_MODULES(VARCONF, varconf-0.5 >= 0.5.4,

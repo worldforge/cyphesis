@@ -4,11 +4,11 @@
 
 #include "CommLocalClient.h"
 
-#include "Connection.h"
+#include "TrustedConnection.h"
 #include "CommServer.h"
 
 CommLocalClient::CommLocalClient(CommServer & svr, int fd) :
-                 CommClient(svr, fd, *new Connection("local", *this, svr.server))
+                 CommClient(svr, fd, *new TrustedConnection("local", *this, svr.server))
 {
 }
 

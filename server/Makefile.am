@@ -15,6 +15,7 @@ cyphesis_SOURCES = \
 		EntityFactory.cpp EntityFactory.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
+		TrustedConnection.cpp TrustedConnection.h \
 		CommSocket.cpp CommSocket.h \
 		CommListener.cpp CommListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
@@ -45,6 +46,7 @@ cyslave_SOURCES = \
 		EntityFactory.cpp EntityFactory.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
+		TrustedConnection.cpp TrustedConnection.h \
 		CommSocket.cpp CommSocket.h \
 		CommListener.cpp CommListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
