@@ -64,6 +64,7 @@ oplist Admin::Operation(const Set & op)
                     if (m.find("id") != m.end()) {
                         const string & id = m["id"].AsString();
                         world->add_object(type, ent, id);
+                        ++count;
                     }
                 }
                 Object::MapType report;
@@ -74,6 +75,7 @@ oplist Admin::Operation(const Set & op)
                 Object::ListType args(1,report);
                 info->SetArgs(args);
                 info->SetRefno(op.GetSerialno());
+                return oplist(1,info);
             } else {
                 return error(op, "Unknown command");
             }

@@ -155,6 +155,7 @@ AC_CHECK_LIB(db_cxx,main)
 AC_CHECK_HEADERS(sstream.h)
 AC_CHECK_LIB(coal,main)
 AC_CHECK_LIB(coaliso,main)
+AC_CHECK_LIB(readline,readline)
 
 
 dnl Generate files

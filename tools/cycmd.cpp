@@ -24,6 +24,11 @@ extern "C" {
 
 #include <fstream>
 
+extern "C" {
+    #include <readline/readline.h>
+    #include <readline/history.h>
+};
+
 using Atlas::Message::Object;
 
 class Interactive : public Atlas::Objects::Decoder
@@ -55,7 +60,7 @@ class Interactive : public Atlas::Objects::Decoder
     void exec(const string & cmd, const string & arg);
     void loop();
     void getpassword();
-    //void prompt();
+    void prompt();
 };
 
 void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
@@ -109,7 +114,6 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Error& o)
     }
 }
 
-#if 0
 void Interactive::prompt()
 {
     bool exit = false;
@@ -138,12 +142,9 @@ void Interactive::prompt()
 
         //string command(cmd), argument(arg);
         
-        if (exec(cmd, arg)) {
-            getReply();
-        }
+        exec(cmd, arg);
     }
 }
-#endif
 
 void Interactive::loop()
 // Poll the codec if select says there is something there.
@@ -274,6 +275,7 @@ void Interactive::exec(const string & cmd, const string & arg)
 
     Atlas::Objects::Operation::Set s = Atlas::Objects::Operation::Set::Instantiate();
     if (cmd == "stat") { reply_expected = true; }
+    if (cmd == "load") { reply_expected = true; }
 
     Object::MapType cmap;
     cmap["id"] = "server";
@@ -285,6 +287,8 @@ void Interactive::exec(const string & cmd, const string & arg)
     s.SetFrom("admin");
 
     encoder->StreamMessage(&s);
+
+    *ios << flush;
 
     if (!reply_expected) { return; }
     while (!reply_flag) {
@@ -302,30 +306,27 @@ int main(int argc, char ** argv)
 {
     bool interactive = false;
     string cmd;
-    char * server;
+    char * server = "localhost";
     if (argc != 1) {
-        if (argc == 2) {
-            server = "localhost";
-        } else {
+        if (argc != 2) {
             server = argv[2];
         }
         cmd = argv[1];
     } else {
         interactive = true;
-        cout << "Interactive mode as yet unsupported" << endl << flush;
-        return 0;
     }
     Interactive bridge;
+    if (!bridge.connect(server)) {
+        return 0;
+    }
+    bridge.getpassword();
+    if (!bridge.login()) {
+        return 0;
+    }
     if (!interactive) {
-        if (!bridge.connect(server)) {
-            return 0;
-        }
-        bridge.getpassword();
-        if (!bridge.login()) {
-            return 0;
-        }
-        bridge.loop();
         bridge.exec(cmd, "");
         return 0;
+    } else {
+	bridge.prompt();
     }
 }
