@@ -1,5 +1,9 @@
 2004-06-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.h, common/const.cpp: Increase sight range setting.
+
+2004-06-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Change check in new Entity code to ensure
 	  that entities already have valid location at this point.
 

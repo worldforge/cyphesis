@@ -30,7 +30,7 @@ namespace consts {
   static const float sight_range = 26.0;
   static const float square_sight_range = (sight_range * sight_range);
   // sin() of minimum angle subtended by visible object
-  static const float sight_factor = 0.1;
+  static const float sight_factor = 0.03;
   static const float square_sight_factor = (sight_factor * sight_factor);
   // Range of broadcast sound ops
   static const float hearing_range = 13.0;
