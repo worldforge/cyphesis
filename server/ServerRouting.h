@@ -13,15 +13,26 @@
 class BaseWorld;
 class Lobby;
 
+/// \brief ServerRouting represents the core of the server.
+///
+/// This class has one instance which is the core object in the server.
+/// It maintains list of all out-of-game (OOG) objects in the server.
 class ServerRouting : public OOGThing {
   private:
+    /// A mapping of ID to object of all the OOG objects in the server.
     BaseDict m_objects;
+    /// A mapping of ID to object of all the accounts in the server.
     AccountDict m_accounts;
+    /// The text name of the ruleset this server is running.
     const std::string m_svrRuleset;
+    /// The name of this server.
     const std::string m_svrName;
+    /// The number of clients currently connected.
     int m_numClients;
   public:
+    /// A reference to the World management object.
     BaseWorld & m_world;
+    /// A reference to the Lobby management object.
     Lobby & m_lobby;
 
     ServerRouting(BaseWorld & wrld,

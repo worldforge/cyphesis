@@ -9,6 +9,11 @@ rulesetdir = $(datadir)/cyphesis/rulesets
 socketdir = $(localstatedir)/tmp
 socket_DATA =
 
-EXTRA_DIST = cyphesis.spec.in cyphesis.spec \
+EXTRA_DIST = cyphesis.spec.in cyphesis.spec Doxyfile \
              TODO.mason acinclude.m4 autogen.sh \
              cyphesis.init cyclient.init cyphesis.sysconfig
+
+docs:
+	@echo "running doxygen..."
+	@doxygen Doxyfile
+	@echo "documentation is in doc/."

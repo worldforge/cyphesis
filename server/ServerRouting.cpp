@@ -13,13 +13,19 @@
 
 static bool debug_flag = false;
 
+/// \brief Constructor for server object.
+///
+/// Requires a reference to the World management object, as well as the
+/// ruleset and server name. Implicitly creates the Lobby management object.
 ServerRouting::ServerRouting(BaseWorld & wrld,
-                             const std::string & ruleset, const std::string & name) :
+                             const std::string & ruleset,
+                             const std::string & name) :
         OOGThing(name), m_svrRuleset(ruleset), m_svrName(name), m_numClients(0),
         m_world(wrld), m_lobby(*new Lobby("lobby", *this))
 {
 }
 
+/// Server destructor, implicitly destroys all OOG objects in the server.
 ServerRouting::~ServerRouting()
 {
     BaseDict::const_iterator I = m_objects.begin();
@@ -31,6 +37,7 @@ ServerRouting::~ServerRouting()
     delete &m_lobby;
 }
 
+/// Copies a representation of the server into an Atlas message.
 void ServerRouting::addToObject(Element::MapType & omap) const
 {
     omap["objtype"] = "obj";

@@ -10,6 +10,10 @@
 
 #if !defined(__GNUC__) || __GNUC__ > 2 || (__GNUC__ > 1 && __GNUC_MINOR__ > 95)
 
+/// \brief Called whenever the comms system is idle.
+///
+/// @return True if it did not have time to do everything, and would like to
+/// be called again as soon as possible.
 inline bool ServerRouting::idle() {
     return m_world.idle();
 }

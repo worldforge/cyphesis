@@ -1,5 +1,12 @@
 2004-07-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* Makefile.am, index.dox, Doxyfile: Add support for doxygen.
+
+	* server/ServerRouting.cpp, server/ServerRouting.h,
+	  server/ServerRouting_methods.h: Document a class a bit.
+
+2004-07-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp, server/CommClient.cpp:
 	  Clean up some error output, making sure it goes to the right place.
 
