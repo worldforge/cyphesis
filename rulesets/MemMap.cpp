@@ -73,7 +73,7 @@ Entity * MemMap::update(const Object::MapType & entmap)
         return NULL;
     }
     debug( std::cout << " updating " << id << std::endl << std::flush;);
-    edict_t::iterator J = things.find(id);
+    EntityDict::iterator J = things.find(id);
     if (J == things.end()) {
         return add(entmap);
     }
@@ -110,10 +110,10 @@ Entity * MemMap::update(const Object::MapType & entmap)
     return thing;
 }
 
-evec_t MemMap::findByType(const std::string & what)
+EntityVector MemMap::findByType(const std::string & what)
 {
-    evec_t res;
-    edict_t::const_iterator I;
+    EntityVector res;
+    EntityDict::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         Entity * item = I->second;
         debug( std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
@@ -124,10 +124,10 @@ evec_t MemMap::findByType(const std::string & what)
     return res;
 }
 
-evec_t MemMap::findByLocation(const Location & loc, double radius)
+EntityVector MemMap::findByLocation(const Location & loc, double radius)
 {
-    evec_t res;
-    edict_t::const_iterator I;
+    EntityVector res;
+    EntityDict::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         const Location & oloc = I->second->location;
         if (!loc || !oloc) {
@@ -135,7 +135,7 @@ evec_t MemMap::findByLocation(const Location & loc, double radius)
         }
         if ((oloc.ref->getId() == loc.ref->getId()) &&
             (loc.coords.distance(oloc.coords) < radius)) {
-            res.push_back((Entity*)I->second);
+            res.push_back(I->second);
         }
     }
     return res;
@@ -144,7 +144,7 @@ evec_t MemMap::findByLocation(const Location & loc, double radius)
 const Object MemMap::asObject()
 {
     Object::MapType omap;
-    edict_t::iterator I = things.begin();
+    EntityDict::iterator I = things.begin();
     for(;I != things.end(); I++) {
         omap[I->first] = I->second->asObject();
     }
@@ -153,7 +153,7 @@ const Object MemMap::asObject()
 
 void MemMap::flushMap()
 {
-    edict_t::const_iterator I = things.begin();
+    EntityDict::const_iterator I = things.begin();
     for (; I != things.end(); I++) {
         delete I->second;
     }

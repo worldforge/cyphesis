@@ -529,7 +529,7 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
 	if ( o == NULL ) {
 		return NULL;
 	}
-	o->ops = new oplist();
+	o->ops = new OpVector();
         addToOplist(op1, o);
         addToOplist(op2, o);
         addToOplist(op3, o);

@@ -21,18 +21,18 @@ class Thing : public Entity {
     Thing();
     virtual ~Thing();
 
-    oplist sendWorld(RootOperation * op) const {
+    OpVector sendWorld(RootOperation * op) const {
         return world->message(*op, this);
     }
 
-    virtual oplist SetupOperation(const Setup & op);
-    virtual oplist ActionOperation(const Action & op);
-    virtual oplist CreateOperation(const Create & op);
-    virtual oplist DeleteOperation(const Delete & op);
-    virtual oplist FireOperation(const Fire & op);
-    virtual oplist MoveOperation(const Move & op);
-    virtual oplist SetOperation(const Set & op);
-    virtual oplist LookOperation(const Look & op);
+    virtual OpVector SetupOperation(const Setup & op);
+    virtual OpVector ActionOperation(const Action & op);
+    virtual OpVector CreateOperation(const Create & op);
+    virtual OpVector DeleteOperation(const Delete & op);
+    virtual OpVector FireOperation(const Fire & op);
+    virtual OpVector MoveOperation(const Move & op);
+    virtual OpVector SetOperation(const Set & op);
+    virtual OpVector LookOperation(const Look & op);
 };
 
 #endif // RULESETS_THING_H

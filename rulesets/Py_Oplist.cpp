@@ -8,7 +8,7 @@
 static PyObject* Oplist_append(OplistObject * self, PyObject * args)
 {
     if (self->ops == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid oplist");
+        PyErr_SetString(PyExc_TypeError, "invalid OpVector");
         return NULL;
     }
     OperationObject * op;
@@ -49,7 +49,7 @@ static PyObject * Oplist_getattr(OplistObject *self, char *name)
 static PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
 {
     if (self->ops == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid oplist");
+        PyErr_SetString(PyExc_TypeError, "invalid OpVector");
         return NULL;
     }
     if (other == Py_None) {
@@ -62,9 +62,9 @@ static PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         if (res == NULL) {
             return NULL;
         }
-        res->ops = new oplist(*self->ops);
+        res->ops = new OpVector(*self->ops);
         // res->ops->merge(*self->ops);
-        for(oplist::const_iterator I=opl->ops->begin();I!=opl->ops->end();I++) {
+        for(OpVector::const_iterator I=opl->ops->begin();I!=opl->ops->end();I++) {
             res->ops->push_back(*I);
         }
         //res->ops->merge(*opl->ops);
@@ -79,7 +79,7 @@ static PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         if (res == NULL) {
             return NULL;
         }
-        res->ops = new oplist(*self->ops);
+        res->ops = new OpVector(*self->ops);
         // res->ops->merge(*self->ops);
         res->ops->push_back(op->operation);
         op->own = 0;

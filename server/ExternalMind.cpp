@@ -3,8 +3,7 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "ExternalMind.h"
-
-#include <server/Connection_methods.h>
+#include "Connection_methods.h"
 
 ExternalMind::ExternalMind(Connection & connection, const std::string & id,
                            const std::string & name) :
@@ -12,8 +11,8 @@ ExternalMind::ExternalMind(Connection & connection, const std::string & id,
 {
 }
 
-oplist ExternalMind::message(const RootOperation & op)
+OpVector ExternalMind::message(const RootOperation & op)
 {
     connection.send(&op);
-    return oplist();
+    return OpVector();
 }

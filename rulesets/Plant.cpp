@@ -59,7 +59,7 @@ void Plant::set(const std::string & aname, const Object & attr)
     }
 }
 
-int Plant::dropFruit(oplist & res)
+int Plant::dropFruit(OpVector & res)
 {
     if (fruits < 1) { return 0; }
     int drop = std::min(fruits, randint(minuDrop, maxuDrop));
@@ -80,9 +80,9 @@ int Plant::dropFruit(oplist & res)
     return drop;
 }
 
-oplist Plant::TickOperation(const Tick & op)
+OpVector Plant::TickOperation(const Tick & op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("tick", op, res);
     RootOperation * tickOp = new Tick(Tick::Instantiate());
     tickOp->SetTo(getId());

@@ -85,8 +85,8 @@ bool CommClient::negotiate()
 
 void CommClient::message(const RootOperation & op)
 {
-    oplist reply = connection.message(op);
-    for(oplist::const_iterator I = reply.begin(); I != reply.end(); I++) {
+    OpVector reply = connection.message(op);
+    for(OpVector::const_iterator I = reply.begin(); I != reply.end(); I++) {
         debug(std::cout << "sending reply" << std::endl << std::flush;);
         send(*I);
         delete *I;

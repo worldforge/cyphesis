@@ -18,8 +18,8 @@ class Script {
     Script();
     virtual ~Script();
     virtual bool Operation(const std::string &,
-                      const Atlas::Objects::Operation::RootOperation&, oplist&,
-                      Atlas::Objects::Operation::RootOperation * sub_op=NULL);
+                    const Atlas::Objects::Operation::RootOperation&, OpVector&,
+                    Atlas::Objects::Operation::RootOperation * sub_op=NULL);
     virtual void hook(const std::string &, Entity *);
 };
 

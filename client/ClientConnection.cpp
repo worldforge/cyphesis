@@ -43,8 +43,8 @@ void ClientConnection::operation(const RootOperation & op)
         std::cerr << "ERROR: Operation with invalid destination" << std::endl << std::flush;
         return;
     }
-    oplist res = I->second->message(op);
-    oplist::iterator J = res.begin();
+    OpVector res = I->second->message(op);
+    OpVector::iterator J = res.begin();
     for(J = res.begin(); J != res.end(); ++J) {
         (*J)->SetFrom(I->first);
         send(*(*J));

@@ -54,11 +54,11 @@ EntityFactory::EntityFactory()
 
 Thing * EntityFactory::newThing(const std::string & type,
                                 const MObject::MapType & entmap,
-                                const edict_t & world)
+                                const EntityDict & world)
 {
     Thing * thing = NULL;
     MObject::MapType attributes;
-    fdict_t::iterator I = factories.find(type);
+    FactoryDict::iterator I = factories.find(type);
     if (I != factories.end()) {
         FactoryBase * factory = I->second;
         thing = factory->newThing();
@@ -101,7 +101,7 @@ Thing * EntityFactory::newThing(const std::string & type,
 
 void EntityFactory::flushFactories()
 {
-    fdict_t::const_iterator I = factories.begin();
+    FactoryDict::const_iterator I = factories.begin();
     for (; I != factories.end(); I++) {
         delete I->second;
     }
@@ -177,7 +177,7 @@ void EntityFactory::installFactory(const std::string & parent,
 
 FactoryBase * EntityFactory::getFactory(const std::string & parent)
 {
-    fdict_t::const_iterator I = factories.find(parent);
+    FactoryDict::const_iterator I = factories.find(parent);
     if (I == factories.end()) {
         std::cerr << "WARNING: Failed to find factory for type " << parent
                   << " while installing a new type which inherits from it."

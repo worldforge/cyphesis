@@ -32,7 +32,7 @@ ServerRouting::~ServerRouting()
 {
     idDict.erase(getId());
     idDict.erase(world.getId());
-    dict_t::const_iterator I = idDict.begin();
+    BaseDict::const_iterator I = idDict.begin();
     for(; I != idDict.end(); I++) {
         debug(std::cout << "Del " << I->second->getId() << std::endl
                         << std::flush;);

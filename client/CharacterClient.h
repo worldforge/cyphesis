@@ -15,13 +15,14 @@ class CharacterClient : public BaseMind {
 
     bool findRefnoOp(const RootOperation & op, long refno);
     bool findRefno(const RootOperation & op, long refno);
-    oplist sendAndWaitReply(RootOperation & op);
+    OpVector sendAndWaitReply(RootOperation & op);
   public:
     CharacterClient(const std::string&, const std::string&, ClientConnection&);
 
-    virtual oplist sightImaginaryOperation(const Sight& op, Imaginary & sub_op);
+    virtual OpVector sightImaginaryOperation(const Sight& op,
+                                             Imaginary & sub_op);
 
-    virtual oplist soundTalkOperation(const Sound & op, Talk & sub_op);
+    virtual OpVector soundTalkOperation(const Sound & op, Talk & sub_op);
 
     void send(RootOperation & op);
 };

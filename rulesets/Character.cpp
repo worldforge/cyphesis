@@ -41,7 +41,7 @@ using Atlas::Message::Object;
 
 static const bool debug_flag = false;
 
-oplist Character::metabolise(double ammount = 1)
+OpVector Character::metabolise(double ammount = 1)
 {
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
@@ -66,7 +66,7 @@ oplist Character::metabolise(double ammount = 1)
     s->SetTo(getId());
     s->SetArgs(Object::ListType(1,ent));
 
-    return oplist(1,s);
+    return OpVector(1,s);
 }
 
 Character::Character() : movement(*new Pedestrian(*this)), autom(false),
@@ -118,17 +118,17 @@ void Character::addToObject(Object::MapType & omap) const
     Entity::addToObject(omap);
 }
 
-oplist Character::ImaginaryOperation(const Imaginary & op)
+OpVector Character::ImaginaryOperation(const Imaginary & op)
 {
     Sight * s = new Sight(Sight::Instantiate());
     s->SetArgs(Object::ListType(1,op.AsObject()));
-    return oplist(1,s);
+    return OpVector(1,s);
 }
 
-oplist Character::SetupOperation(const Setup & op)
+OpVector Character::SetupOperation(const Setup & op)
 {
     debug( std::cout << "Character::tick" << std::endl << std::flush;);
-    oplist res;
+    OpVector res;
     debug( std::cout << "CHaracter::Operation(setup)" << std::endl
                      << std::flush;);
     if (script->Operation("setup", op, res) != 0) {
@@ -148,7 +148,7 @@ oplist Character::SetupOperation(const Setup & op)
     //Create_PyMind(mind, mind_package, mind_class);
     mind = MindFactory::instance()->newMind(getId(), name, type);
 
-    oplist res2(2);
+    OpVector res2(2);
     Setup * s = new Setup(op);
     // THis is so not the right thing to do
     s->SetAttr("sub_to", Object("mind"));
@@ -170,11 +170,11 @@ oplist Character::SetupOperation(const Setup & op)
     return res2;
 }
 
-oplist Character::TickOperation(const Tick & op)
+OpVector Character::TickOperation(const Tick & op)
 {
     if (op.HasAttr("sub_to")) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
-        return oplist();
+        return OpVector();
     }
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
@@ -186,13 +186,13 @@ oplist Character::TickOperation(const Tick & op)
         if ((I != arg1.end()) && (I->second.IsInt())) {
             if (I->second.AsInt() < movement.m_serialno) {
                 debug(std::cout << "Old tick" << std::endl << std::flush;);
-                return oplist();
+                return OpVector();
             }
         }
         Location ret_loc;
         Move * moveOp = movement.genMoveOperation(&ret_loc);
         if (moveOp) {
-            oplist res(2);
+            OpVector res(2);
             Object::MapType entmap;
             entmap["name"]=Object("move");
             entmap["serialno"]=Object(movement.m_serialno);
@@ -206,7 +206,7 @@ oplist Character::TickOperation(const Tick & op)
             return res;
         }
     } else {
-        oplist res;
+        OpVector res;
         script->Operation("tick", op, res);
 
         // DIGEST
@@ -230,8 +230,8 @@ oplist Character::TickOperation(const Tick & op)
         }
 
         // METABOLISE
-        oplist mres = metabolise();
-        for(oplist::const_iterator I = mres.begin(); I != mres.end(); I++) {
+        OpVector mres = metabolise();
+        for(OpVector::const_iterator I = mres.begin(); I != mres.end(); I++) {
             res.push_back(*I);
         }
         
@@ -242,22 +242,22 @@ oplist Character::TickOperation(const Tick & op)
         res.push_back(tickOp);
         return res;
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::TalkOperation(const Talk & op)
+OpVector Character::TalkOperation(const Talk & op)
 {
     debug( std::cout << "Character::OPeration(Talk)" << std::endl<<std::flush;);
     Sound * s = new Sound(Sound::Instantiate());
     s->SetArgs(Object::ListType(1,op.AsObject()));
-    return oplist(1,s);
+    return OpVector(1,s);
 }
 
-oplist Character::EatOperation(const Eat & op)
+OpVector Character::EatOperation(const Eat & op)
 {
     // This is identical to Foof::Operation(Eat &)
     // Perhaps animal should inherit from Food?
-    oplist res;
+    OpVector res;
     if (script->Operation("eat", op, res) != 0) {
         return res;
     }
@@ -277,17 +277,17 @@ oplist Character::EatOperation(const Eat & op)
     n->SetTo(to);
     n->SetArgs(Object::ListType(1,nour_ent));
 
-    oplist res2(2);
+    OpVector res2(2);
     res2[0] = s;
     res2[1] = n;
     return res2;
 }
 
-oplist Character::NourishOperation(const Nourish & op)
+OpVector Character::NourishOperation(const Nourish & op)
 {
     const Object::MapType & nent = op.GetArgs().front().AsMap();
     Object::MapType::const_iterator I = nent.find("weight");
-    if ((I == nent.end()) || !I->second.IsNum()) { return oplist(); }
+    if ((I == nent.end()) || !I->second.IsNum()) { return OpVector(); }
     food = food + I->second.AsNum();
 
     Object::MapType food_ent;
@@ -303,44 +303,44 @@ oplist Character::NourishOperation(const Nourish & op)
     Sight * si = new Sight(Sight::Instantiate());
     si->SetTo(getId());
     si->SetArgs(Object::ListType(1,s.AsObject()));
-    return oplist(1,si);
+    return OpVector(1,si);
 }
 
-oplist Character::mindLoginOperation(const Login & op)
+OpVector Character::mindLoginOperation(const Login & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindActionOperation(const Action & op)
+OpVector Character::mindActionOperation(const Action & op)
 {
     Action *a = new Action(op);
     a->SetTo(getId());
-    return oplist(1,a);
+    return OpVector(1,a);
 }
 
-oplist Character::mindSetupOperation(const Setup & op)
+OpVector Character::mindSetupOperation(const Setup & op)
 {
     Setup *s = new Setup(op);
     s->SetTo(getId());
     s->SetAttr("sub_to", Object("mind"));
-    return oplist(1,s);
+    return OpVector(1,s);
 }
 
-oplist Character::mindTickOperation(const Tick & op)
+OpVector Character::mindTickOperation(const Tick & op)
 {
     Tick *t = new Tick(op);
     t->SetTo(getId());
     t->SetAttr("sub_to", Object("mind"));
-    return oplist(1,t);
+    return OpVector(1,t);
 }
 
-oplist Character::mindMoveOperation(const Move & op)
+OpVector Character::mindMoveOperation(const Move & op)
 {
     debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
     const Object::ListType & args = op.GetArgs();
     if ((args.empty()) || (!args.front().IsMap())) {
         std::cerr << "mindMoveOperation: move op has no argument" << std::endl << std::flush;
-        return oplist();
+        return OpVector();
     }
     const Object::MapType & arg1 = args.front().AsMap();
     Object::MapType::const_iterator I = arg1.find("id");
@@ -348,10 +348,10 @@ oplist Character::mindMoveOperation(const Move & op)
         std::cerr << "mindMoveOperation: Args has got no id" << std::endl << std::flush;
     }
     const std::string & oname = I->second.AsString();
-    edict_t::const_iterator J = world->getObjects().find(oname);
+    EntityDict::const_iterator J = world->getObjects().find(oname);
     if (J == world->getObjects().end()) {
         std::cerr << "mindMoveOperation: This move op is for a phoney object" << std::endl << std::flush;
-        return oplist();
+        return OpVector();
     }
     Move * newop = new Move(op);
     Entity * obj = J->second;
@@ -360,10 +360,10 @@ oplist Character::mindMoveOperation(const Move & op)
         if ((obj->getWeight() < 0) || (obj->getWeight() > weight)) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             delete newop;
-            return oplist();
+            return OpVector();
         }
         newop->SetTo(oname);
-        return oplist(1,newop);
+        return OpVector(1,newop);
     }
     std::string location_ref;
     I = arg1.find("loc");
@@ -478,9 +478,9 @@ oplist Character::mindMoveOperation(const Move & op)
             }
             delete newop;
             if (NULL != moveOp) {
-                return oplist(1,moveOp);
+                return OpVector(1,moveOp);
             }
-            return oplist();
+            return OpVector();
         }
         Tick * tickOp = new Tick(Tick::Instantiate());
         Object::MapType ent;
@@ -512,19 +512,19 @@ oplist Character::mindMoveOperation(const Move & op)
         if (moveOp == NULL) {
             std::cerr << "ERROR: No move operation generated in mindMoveOp"
                       << std::endl << std::flush;
-            return oplist();
+            return OpVector();
         }
         // return moveOp and tickOp;
-        oplist res(2);
+        OpVector res(2);
         res[0] = moveOp;
         res[1] = tickOp;
         delete newop;
         return res;
     }
-    return oplist(1,newop);
+    return OpVector(1,newop);
 }
 
-oplist Character::mindSetOperation(const Set & op)
+OpVector Character::mindSetOperation(const Set & op)
 {
     Set * s = new Set(op);
     const Object::ListType & args = op.GetArgs();
@@ -538,81 +538,81 @@ oplist Character::mindSetOperation(const Set & op)
             }
         }
     }
-    return oplist(1,s);
+    return OpVector(1,s);
 }
 
-oplist Character::mindSightOperation(const Sight & op)
+OpVector Character::mindSightOperation(const Sight & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindSoundOperation(const Sound & op)
+OpVector Character::mindSoundOperation(const Sound & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindChopOperation(const Chop & op)
+OpVector Character::mindChopOperation(const Chop & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindCombineOperation(const Combine & op)
+OpVector Character::mindCombineOperation(const Combine & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindCreateOperation(const Create & op)
+OpVector Character::mindCreateOperation(const Create & op)
 {
     Create * c = new Create(op);
-    return oplist(1,c);
+    return OpVector(1,c);
 }
 
-oplist Character::mindDeleteOperation(const Delete & op)
+OpVector Character::mindDeleteOperation(const Delete & op)
 {
     Delete * d = new Delete(op);
-    return oplist(1,d);
+    return OpVector(1,d);
 }
 
-oplist Character::mindDivideOperation(const Divide & op)
+OpVector Character::mindDivideOperation(const Divide & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindFireOperation(const Fire & op)
+OpVector Character::mindFireOperation(const Fire & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindGetOperation(const Get & op)
+OpVector Character::mindGetOperation(const Get & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindImaginaryOperation(const Imaginary & op)
+OpVector Character::mindImaginaryOperation(const Imaginary & op)
 {
     Imaginary * i = new Imaginary(op);
-    return oplist(1,i);
+    return OpVector(1,i);
 }
 
-oplist Character::mindInfoOperation(const Info & op)
+OpVector Character::mindInfoOperation(const Info & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindNourishOperation(const Nourish & op)
+OpVector Character::mindNourishOperation(const Nourish & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindTalkOperation(const Talk & op)
+OpVector Character::mindTalkOperation(const Talk & op)
 {
     debug( std::cout << "Character::mindOPeration(Talk)"
                      << std::endl << std::flush;);
     Talk * t = new Talk(op);
-    return oplist(1,t);
+    return OpVector(1,t);
 }
 
-oplist Character::mindLookOperation(const Look & op)
+OpVector Character::mindLookOperation(const Look & op)
 {
     debug(std::cout << "Got look up from mind from [" << op.GetFrom()
                << "] to [" << op.GetTo() << "]" << std::endl << std::flush;);
@@ -633,32 +633,32 @@ oplist Character::mindLookOperation(const Look & op)
         }
     }
     debug( std::cout <<"    now to ["<<l->GetTo()<<"]"<<std::endl<<std::flush;);
-    return oplist(1,l);
+    return OpVector(1,l);
 }
 
-oplist Character::mindLoadOperation(const Load & op)
+OpVector Character::mindLoadOperation(const Load & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindSaveOperation(const Save & op)
+OpVector Character::mindSaveOperation(const Save & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindCutOperation(const Cut & op)
+OpVector Character::mindCutOperation(const Cut & op)
 {
     Cut * c = new Cut(op);
-    return oplist(1,c);
+    return OpVector(1,c);
 }
 
-oplist Character::mindEatOperation(const Eat & op)
+OpVector Character::mindEatOperation(const Eat & op)
 {
     Eat * e = new Eat(op);
-    return oplist(1,e);
+    return OpVector(1,e);
 }
 
-oplist Character::mindTouchOperation(const Touch & op)
+OpVector Character::mindTouchOperation(const Touch & op)
 {
     Touch * t = new Touch(op);
     // Work out what is being touched.
@@ -679,7 +679,7 @@ oplist Character::mindTouchOperation(const Touch & op)
         }
     }
     // Pass the modified touch operation on to target.
-    oplist res(2);
+    OpVector res(2);
     res[0] = t;
     // Send action "touch"
     Action * a = new Action(Action::Instantiate());
@@ -693,211 +693,211 @@ oplist Character::mindTouchOperation(const Touch & op)
     return res;
 }
 
-oplist Character::mindAppearanceOperation(const Appearance & op)
+OpVector Character::mindAppearanceOperation(const Appearance & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindDisappearanceOperation(const Disappearance & op)
+OpVector Character::mindDisappearanceOperation(const Disappearance & op)
 {
-    return oplist();
+    return OpVector();
 }
 
 
-oplist Character::mindErrorOperation(const Error & op)
+OpVector Character::mindErrorOperation(const Error & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::mindOtherOperation(const RootOperation & op)
+OpVector Character::mindOtherOperation(const RootOperation & op)
 {
     RootOperation * e = new RootOperation(op);
-    return oplist(1,e);
+    return OpVector(1,e);
 }
 
-oplist Character::w2mActionOperation(const Action & op)
+OpVector Character::w2mActionOperation(const Action & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mLoginOperation(const Login & op)
+OpVector Character::w2mLoginOperation(const Login & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mChopOperation(const Chop & op)
+OpVector Character::w2mChopOperation(const Chop & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mCreateOperation(const Create & op)
+OpVector Character::w2mCreateOperation(const Create & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mCutOperation(const Cut & op)
+OpVector Character::w2mCutOperation(const Cut & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mDeleteOperation(const Delete & op)
+OpVector Character::w2mDeleteOperation(const Delete & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mEatOperation(const Eat & op)
+OpVector Character::w2mEatOperation(const Eat & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mFireOperation(const Fire & op)
+OpVector Character::w2mFireOperation(const Fire & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mMoveOperation(const Move & op)
+OpVector Character::w2mMoveOperation(const Move & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mSetOperation(const Set & op)
+OpVector Character::w2mSetOperation(const Set & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mLookOperation(const Look & op)
+OpVector Character::w2mLookOperation(const Look & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mLoadOperation(const Load & op)
+OpVector Character::w2mLoadOperation(const Load & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mSaveOperation(const Save & op)
+OpVector Character::w2mSaveOperation(const Save & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mDivideOperation(const Divide & op)
+OpVector Character::w2mDivideOperation(const Divide & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mCombineOperation(const Combine & op)
+OpVector Character::w2mCombineOperation(const Combine & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mGetOperation(const Get & op)
+OpVector Character::w2mGetOperation(const Get & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mImaginaryOperation(const Imaginary & op)
+OpVector Character::w2mImaginaryOperation(const Imaginary & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mInfoOperation(const Info & op)
+OpVector Character::w2mInfoOperation(const Info & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mTalkOperation(const Talk & op)
+OpVector Character::w2mTalkOperation(const Talk & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mNourishOperation(const Nourish & op)
+OpVector Character::w2mNourishOperation(const Nourish & op)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mAppearanceOperation(const Appearance & op)
+OpVector Character::w2mAppearanceOperation(const Appearance & op)
 {
     if (drunkness > 1.0) {
-        return oplist();
+        return OpVector();
     }
     Appearance * a = new Appearance(op);
-    return oplist(1,a);
+    return OpVector(1,a);
 }
 
-oplist Character::w2mDisappearanceOperation(const Disappearance & op)
+OpVector Character::w2mDisappearanceOperation(const Disappearance & op)
 {
     if (drunkness > 1.0) {
-        return oplist();
+        return OpVector();
     }
     Disappearance * d = new Disappearance(op);
-    return oplist(1,d);
+    return OpVector(1,d);
 }
 
-oplist Character::w2mErrorOperation(const Error & op)
+OpVector Character::w2mErrorOperation(const Error & op)
 {
     Error * e = new Error(op);
-    return oplist(1,e);
+    return OpVector(1,e);
 }
 
-oplist Character::w2mOtherOperation(const RootOperation & op)
+OpVector Character::w2mOtherOperation(const RootOperation & op)
 {
     RootOperation * r = new RootOperation(op);
-    return oplist(1,r);
+    return OpVector(1,r);
 }
 
-oplist Character::w2mSetupOperation(const Setup & op)
+OpVector Character::w2mSetupOperation(const Setup & op)
 {
     if (op.HasAttr("sub_to")) {
         Setup * s = new Setup(op);
-        return oplist(1,s);
+        return OpVector(1,s);
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mTickOperation(const Tick & op)
+OpVector Character::w2mTickOperation(const Tick & op)
 {
     if (op.HasAttr("sub_to")) {
         Tick * t = new Tick(op);
-        return oplist(1,t);
+        return OpVector(1,t);
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Character::w2mSightOperation(const Sight & op)
+OpVector Character::w2mSightOperation(const Sight & op)
 {
     if (drunkness > 1.0) {
-        return oplist();
+        return OpVector();
     }
     Sight * s = new Sight(op);
-    return oplist(1,s);
+    return OpVector(1,s);
 }
 
-oplist Character::w2mSoundOperation(const Sound & op)
+OpVector Character::w2mSoundOperation(const Sound & op)
 {
     if (drunkness > 1.0) {
-        return oplist();
+        return OpVector();
     }
     Sound * s = new Sound(op);
-    return oplist(1,s);
+    return OpVector(1,s);
 }
 
-oplist Character::w2mTouchOperation(const Touch & op)
+OpVector Character::w2mTouchOperation(const Touch & op)
 {
     if (drunkness > 1.0) {
-        return oplist();
+        return OpVector();
     }
     Touch * t = new Touch(op);
-    return oplist(1,t);
+    return OpVector(1,t);
 }
 
-oplist Character::sendMind(const RootOperation & op)
+OpVector Character::sendMind(const RootOperation & op)
 {
     debug( std::cout << "Character::sendMind" << std::endl << std::flush;);
     if (mind == NULL) {
-        return oplist();
+        return OpVector();
     }
-    oplist local_res = mind->message(op);
-    oplist external_res;
+    OpVector local_res = mind->message(op);
+    OpVector external_res;
 
     if (NULL != externalMind) {
         debug( std::cout << "Sending to external mind" << std::endl
@@ -915,10 +915,10 @@ oplist Character::sendMind(const RootOperation & op)
                << std::endl << std::flush;);
 
     // This is the list that is to be passed back to the world
-    const oplist & res = autom ? local_res : external_res;
+    const OpVector & res = autom ? local_res : external_res;
     // This list of ops is to be discarded
-    const oplist & dump_res = autom ? external_res : local_res ;
-    for(oplist::const_iterator J = dump_res.begin(); J != dump_res.end(); J++) {
+    const OpVector & dump_res = autom ? external_res : local_res ;
+    for(OpVector::const_iterator J = dump_res.begin(); J != dump_res.end(); J++) {
         delete *J;
     }
     // At this point there is a bunch of conversion stuff that I don't
@@ -927,7 +927,7 @@ oplist Character::sendMind(const RootOperation & op)
     return res;
 }
 
-oplist Character::mind2body(const RootOperation & op)
+OpVector Character::mind2body(const RootOperation & op)
 {
     debug( std::cout << "Character::mind2body" << std::endl << std::flush;);
     RootOperation newop(op);
@@ -937,45 +937,45 @@ oplist Character::mind2body(const RootOperation & op)
        newop.SetTo(getId());
     }
     if (drunkness > 1.0) {
-        return oplist();
+        return OpVector();
     }
-    op_no_t otype = opEnumerate(newop);
+    OpNo otype = opEnumerate(newop);
     OP_SWITCH(newop, otype, mind)
 }
 
-oplist Character::world2body(const RootOperation & op)
+OpVector Character::world2body(const RootOperation & op)
 {
     debug( std::cout << "Character::world2body" << std::endl << std::flush;);
     return callOperation(op);
 }
 
-oplist Character::world2mind(const RootOperation & op)
+OpVector Character::world2mind(const RootOperation & op)
 {
     debug( std::cout << "Character::world2mind" << std::endl << std::flush;);
-    op_no_t otype = opEnumerate(op);
+    OpNo otype = opEnumerate(op);
     OP_SWITCH(op, otype, w2m)
 }
 
-oplist Character::externalMessage(const RootOperation & op)
+OpVector Character::externalMessage(const RootOperation & op)
 {
     debug( std::cout << "Character::externalMessage" << std::endl << std::flush;);
     return externalOperation(op);
 }
 
-oplist Character::operation(const RootOperation & op)
+OpVector Character::operation(const RootOperation & op)
 {
     debug( std::cout << "Character::operation" << std::endl << std::flush;);
-    oplist result = world2body(op);
+    OpVector result = world2body(op);
     // set refno on result?
     if (!isAlive) {
         return result;
     }
-    oplist mres = world2mind(op);
+    OpVector mres = world2mind(op);
     // set refno on mres?
-    for(oplist::const_iterator I = mres.begin(); I != mres.end(); I++) {
+    for(OpVector::const_iterator I = mres.begin(); I != mres.end(); I++) {
         //RootOperation * mr = mind_res.front();
-        oplist mres2 = sendMind(**I);
-        for(oplist::const_iterator J = mres2.begin(); J != mres2.end(); J++) {
+        OpVector mres2 = sendMind(**I);
+        for(OpVector::const_iterator J = mres2.begin(); J != mres2.end(); J++) {
             //RootOperation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
             externalMessage(**J);
@@ -986,16 +986,16 @@ oplist Character::operation(const RootOperation & op)
     return result;
 }
 
-oplist Character::externalOperation(const RootOperation & op)
+OpVector Character::externalOperation(const RootOperation & op)
 {
     debug( std::cout << "Character::externalOperation" << std::endl << std::flush;);
-    oplist body_res = mind2body(op);
+    OpVector body_res = mind2body(op);
     // set refno on body_res?
     
-    for(oplist::const_iterator I = body_res.begin(); I != body_res.end(); I++) {
+    for(OpVector::const_iterator I = body_res.begin(); I != body_res.end(); I++) {
         sendWorld(*I);
         // Don't delete br as it has gone into worlds queue
         // World will deal with it.
     }
-    return oplist();
+    return OpVector();
 }

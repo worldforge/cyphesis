@@ -19,7 +19,7 @@ Creator::Creator()
     location.bBox = BBox();
 }
 
-oplist Creator::sendMind(const RootOperation & msg)
+OpVector Creator::sendMind(const RootOperation & msg)
 {
     debug( std::cout << "Creator::sendMind" << std::endl << std::flush;);
     // Simpified version of character method sendMind() because local mind
@@ -30,15 +30,15 @@ oplist Creator::sendMind(const RootOperation & msg)
         return externalMind->message(msg);
         // If there is some kinf of error in the connection, we turn autom on
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Creator::operation(const RootOperation & op)
+OpVector Creator::operation(const RootOperation & op)
 {
     debug( std::cout << "Creator::operation" << std::endl << std::flush;);
-    op_no_t op_no = opEnumerate(op);
+    OpNo op_no = opEnumerate(op);
     if (op_no == OP_LOOK) {
-        return ((BaseEntity *)this)->LookOperation((Look &)op);
+        return LookOperation((Look &)op);
     }
     if (op_no == OP_SETUP) {
         Look look = Look::Instantiate();
@@ -48,7 +48,7 @@ oplist Creator::operation(const RootOperation & op)
     return sendMind(op);
 }
 
-oplist Creator::externalOperation(const RootOperation & op)
+OpVector Creator::externalOperation(const RootOperation & op)
 {
     // FIXME Here we have a problem. For ops like move with velocity, and
     // Look, it is necessary for the operation to be hindled by
@@ -64,17 +64,17 @@ oplist Creator::externalOperation(const RootOperation & op)
                      << std::flush;);
     if (op.GetTo()=="") {
         debug( std::cout << "Creator handling op normally" << std::endl << std::flush;);
-        oplist lres = mind2body(op);
-        for(oplist::const_iterator I = lres.begin(); I != lres.end(); I++) {
+        OpVector lres = mind2body(op);
+        for(OpVector::const_iterator I = lres.begin(); I != lres.end(); I++) {
             sendWorld(*I);
             // Don't delete lres as it has gone into worlds queue
             // World will deal with it.
         }
     } else if (op.GetTo()==getId()) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
-        oplist lres = callOperation(op);
+        OpVector lres = callOperation(op);
         setRefno(lres, op);
-        for(oplist::const_iterator I = lres.begin(); I != lres.end(); I++) {
+        for(OpVector::const_iterator I = lres.begin(); I != lres.end(); I++) {
             sendWorld(*I);
             // Don't delete lres as it has gone into worlds queue
             // World will deal with it.
@@ -85,5 +85,5 @@ oplist Creator::externalOperation(const RootOperation & op)
         new_op->SetFrom("cheat");
         sendWorld(new_op);
     }
-    return oplist();
+    return OpVector();
 }

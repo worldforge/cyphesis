@@ -73,7 +73,7 @@ CreatorClient * CommClient::createCharacter(const std::string & type)
 
     const std::string & id = body.find("id")->second.AsString();
 
-    edict_t tmp;
+    EntityDict tmp;
 
     CreatorClient * obj = new CreatorClient(id, type, connection);
     obj->merge(body);
@@ -94,8 +94,8 @@ void CommClient::handleNet()
 {
     RootOperation * input;
     while ((input = connection.pop()) != NULL) {
-        oplist result = character->message(*input);
-        for (oplist::const_iterator I=result.begin(); I != result.end(); I++) {
+        OpVector result = character->message(*input);
+        for (OpVector::const_iterator I=result.begin(); I != result.end(); I++) {
             send(*(*I));
         }
         delete input;

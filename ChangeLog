@@ -1,5 +1,10 @@
 2002-03-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* Changed typedef names to ones which make more sense, and are
+	  clearer. There is no change in functionality in this commit.
+
+2002-03-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp, common/globals.h, rulesets/Python_API.cpp,
 	  tools/cyloadrules.cpp: Make rulesets list a vector for
 	  efficiency.

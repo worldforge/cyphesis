@@ -12,11 +12,11 @@ class WorldRouter;
 
 class Account : public OOGThing {
     friend class Connection;
-    edict_t charactersDict;
+    EntityDict charactersDict;
     BaseEntity * addCharacter(const std::string &,
                               const Atlas::Message::Object::MapType &);
   protected:
-    virtual oplist characterError(const Create &, const Atlas::Message::Object::MapType &) const = 0;
+    virtual OpVector characterError(const Create &, const Atlas::Message::Object::MapType &) const = 0;
 
   public:
     WorldRouter * world;
@@ -28,11 +28,11 @@ class Account : public OOGThing {
     virtual ~Account();
 
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
-    virtual oplist LogoutOperation(const Logout & op);
-    virtual oplist CreateOperation(const Create & op);
-    virtual oplist ImaginaryOperation(const Imaginary & op);
-    virtual oplist TalkOperation(const Talk & op);
-    virtual oplist LookOperation(const Look & op);
+    virtual OpVector LogoutOperation(const Logout & op);
+    virtual OpVector CreateOperation(const Create & op);
+    virtual OpVector ImaginaryOperation(const Imaginary & op);
+    virtual OpVector TalkOperation(const Talk & op);
+    virtual OpVector LookOperation(const Look & op);
 };
 
 #endif // SERVER_ACCOUNT_H

@@ -19,7 +19,7 @@ class ServerRouting : public Routing {
     const std::string svrRuleset;
     const std::string svrName;
   public:
-    dict_t idDict;
+    BaseDict idDict;
   private:
     WorldRouter & world;
   public:

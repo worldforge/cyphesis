@@ -56,7 +56,7 @@ Account * Connection::addPlayer(const std::string& username,
 void Connection::destroy()
 {
     debug(std::cout << "destroy called";);
-    dict_t::const_iterator I;
+    BaseDict::const_iterator I;
     for(I = objects.begin(); I != objects.end(); I++) {
         BaseEntity * ent = I->second;
         if (!ent->inGame()) {
@@ -75,7 +75,7 @@ void Connection::destroy()
     BaseEntity::destroy();
 }
 
-oplist Connection::operation(const RootOperation & op)
+OpVector Connection::operation(const RootOperation & op)
 {
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
     const std::string & from = op.GetFrom();
@@ -85,7 +85,7 @@ oplist Connection::operation(const RootOperation & op)
     } else {
         debug(std::cout << "Must send on to account" << std::endl << std::flush;);
         debug(std::cout << "[" << from << "]" << std::endl << std::flush;);
-        dict_t::const_iterator I = objects.find(from);
+        BaseDict::const_iterator I = objects.find(from);
         if (I != objects.end()) {
             BaseEntity * ent = I->second;
             if (ent->inGame() && ((Thing *)ent)->isCharacter() &&
@@ -97,7 +97,7 @@ oplist Connection::operation(const RootOperation & op)
                 info->SetArgs(Object::ListType(1,pchar->asObject()));
                 info->SetRefno(op.GetSerialno());
                 info->SetSerialno(server.getSerialNo());
-                oplist res = ent->externalOperation(op);
+                OpVector res = ent->externalOperation(op);
                 res.insert(res.begin(), info);
                 return res;
             }
@@ -107,10 +107,10 @@ oplist Connection::operation(const RootOperation & op)
             return error(op, "From is illegal");
         }
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Connection::LoginOperation(const Login & op)
+OpVector Connection::LoginOperation(const Login & op)
 {
 
     debug(std::cout << "Got login op" << std::endl << std::flush;);
@@ -130,7 +130,7 @@ oplist Connection::LoginOperation(const Login & op)
         }
         if (player && !account_id.empty() && (password==player->password)) {
             addObject(player);
-            edict_t::const_iterator I;
+            EntityDict::const_iterator I;
             for (I=player->charactersDict.begin();
                  I!=player->charactersDict.end(); I++) {
                 addObject(I->second);
@@ -142,13 +142,13 @@ oplist Connection::LoginOperation(const Login & op)
             info->SetRefno(op.GetSerialno());
             info->SetSerialno(server.getSerialNo());
             debug(std::cout << "Good login" << std::endl << std::flush;);
-            return oplist(1,info);
+            return OpVector(1,info);
         }
     }
     return error(op, "Login is invalid");
 }
 
-oplist Connection::CreateOperation(const Create & op)
+OpVector Connection::CreateOperation(const Create & op)
 {
     debug(std::cout << "Got create op" << std::endl << std::flush;);
     const Object & account = op.GetArgs().front();
@@ -171,14 +171,14 @@ oplist Connection::CreateOperation(const Create & op)
             info->SetRefno(op.GetSerialno());
             info->SetSerialno(server.getSerialNo());
             debug(std::cout << "Good create" << std::endl << std::flush;);
-            return oplist(1,info);
+            return OpVector(1,info);
         }
     }
     return error(op, "Account creation is invalid");
 
 }
 
-oplist Connection::LogoutOperation(const Logout & op)
+OpVector Connection::LogoutOperation(const Logout & op)
 {
     const Object & account = op.GetArgs().front();
     
@@ -201,10 +201,10 @@ oplist Connection::LogoutOperation(const Logout & op)
         l.SetFrom(player->getId());
         operation(l);
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Connection::GetOperation(const Get & op)
+OpVector Connection::GetOperation(const Get & op)
 {
     const Object::ListType & args = op.GetArgs();
 
@@ -232,5 +232,5 @@ oplist Connection::GetOperation(const Get & op)
         info->SetSerialno(server.getSerialNo());
     }
     
-    return oplist(1,info);
+    return OpVector(1,info);
 }

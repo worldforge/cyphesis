@@ -4,7 +4,6 @@
 
 #include "BaseWorld.h"
 
-#include <rulesets/Entity.h>
 #include <common/debug.h>
 
 using Atlas::Message::Object;
@@ -17,5 +16,4 @@ BaseWorld::BaseWorld(Entity & gWorld) : gameWorld(gWorld)
 
 BaseWorld::~BaseWorld()
 {
-    delete &gameWorld;
 }

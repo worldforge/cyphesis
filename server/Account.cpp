@@ -78,7 +78,7 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
     return chr;
 }
 
-oplist Account::LogoutOperation(const Logout & op)
+OpVector Account::LogoutOperation(const Logout & op)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
     Info info = Info(Info::Instantiate());
@@ -89,7 +89,7 @@ oplist Account::LogoutOperation(const Logout & op)
     info.SetTo(getId());
     connection->send(&info);
     connection->destroy();
-    return oplist();
+    return OpVector();
 }
 
 void Account::addToObject(Object::MapType & omap) const
@@ -100,7 +100,7 @@ void Account::addToObject(Object::MapType & omap) const
     }
     omap["parents"] = Object(Object::ListType(1,Object(type)));
     Object::ListType charlist;
-    edict_t::const_iterator I;
+    EntityDict::const_iterator I;
     for(I = charactersDict.begin(); I != charactersDict.end(); I++) {
         charlist.push_back(Object(I->first));
     }
@@ -109,7 +109,7 @@ void Account::addToObject(Object::MapType & omap) const
     // attributes (location, contains etc.) are relevant to accounts
 }
 
-oplist Account::CreateOperation(const Create & op)
+OpVector Account::CreateOperation(const Create & op)
 {
     debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
     const Object & ent = op.GetArgs().front();
@@ -124,7 +124,7 @@ oplist Account::CreateOperation(const Create & op)
         return error(op, "Character has no type");
     }
     
-    oplist error = characterError(op, entmap);
+    OpVector error = characterError(op, entmap);
     if (!error.empty()) {
         return error;
     }
@@ -139,10 +139,10 @@ oplist Account::CreateOperation(const Create & op)
     info->SetRefno(op.GetSerialno());
     info->SetSerialno(connection->server.getSerialNo());
 
-    return oplist(1,info);
+    return OpVector(1,info);
 }
 
-oplist Account::ImaginaryOperation(const Imaginary & op)
+OpVector Account::ImaginaryOperation(const Imaginary & op)
 {
     const Object::ListType & args = op.GetArgs();
     if ((!args.empty()) && (args.front().IsMap())) {
@@ -157,10 +157,10 @@ oplist Account::ImaginaryOperation(const Imaginary & op)
             return connection->server.lobby.operation(s);
         }
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Account::TalkOperation(const Talk & op)
+OpVector Account::TalkOperation(const Talk & op)
 {
     const Object::ListType & args = op.GetArgs();
     if ((!args.empty()) && (args.front().IsMap())) {
@@ -177,10 +177,10 @@ oplist Account::TalkOperation(const Talk & op)
         }
         return connection->server.lobby.operation(s);
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Account::LookOperation(const Look & op)
+OpVector Account::LookOperation(const Look & op)
 {
     const Object::ListType & args = op.GetArgs();
     if (args.empty()) {
@@ -188,29 +188,29 @@ oplist Account::LookOperation(const Look & op)
         s->SetTo(getId());
         s->SetArgs(Object::ListType(1,connection->server.lobby.asObject()));
         s->SetSerialno(connection->server.getSerialNo());
-        return oplist(1,s);
+        return OpVector(1,s);
     }
     Object::MapType::const_iterator I = args.front().AsMap().find("id");
     if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
         return error(op, "No target for look");
     }
     const std::string & to = I->second.AsString();
-    edict_t::const_iterator J = charactersDict.find(to);
+    EntityDict::const_iterator J = charactersDict.find(to);
     if (J != charactersDict.end()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
         s->SetArgs(Object::ListType(1,J->second->asObject()));
         s->SetSerialno(connection->server.getSerialNo());
-        return oplist(1,s);
+        return OpVector(1,s);
     }
-    const adict_t & accounts = connection->server.lobby.getAccounts();
-    adict_t::const_iterator K = accounts.find(to);
+    const AccountDict & accounts = connection->server.lobby.getAccounts();
+    AccountDict::const_iterator K = accounts.find(to);
     if (K != accounts.end()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
         s->SetArgs(Object::ListType(1,K->second->asObject()));
         s->SetSerialno(connection->server.getSerialNo());
-        return oplist(1,s);
+        return OpVector(1,s);
     }
     return error(op, "Unknown look target");
 }

@@ -13,11 +13,11 @@
 
 class World : public Thing {
   public:
-    virtual oplist LookOperation(const Look & op);
-    virtual oplist FireOperation(const Fire & op);
-    virtual oplist DeleteOperation(const Delete & op);
-    virtual oplist MoveOperation(const Move & op);
-    virtual oplist SetOperation(const Set & op);
+    virtual OpVector LookOperation(const Look & op);
+    virtual OpVector FireOperation(const Fire & op);
+    virtual OpVector DeleteOperation(const Delete & op);
+    virtual OpVector MoveOperation(const Move & op);
+    virtual OpVector SetOperation(const Set & op);
 };
 
 #endif // RULESETS_WORLD_H

@@ -47,9 +47,9 @@ void Stackable::addToObject(Object::MapType & omap) const
     Entity::addToObject(omap);
 }
 
-oplist Stackable::CombineOperation(const Combine & op)
+OpVector Stackable::CombineOperation(const Combine & op)
 {
-    oplist res;
+    OpVector res;
     if (script->Operation("combine", op, res) != 0) {
         return res;
     }
@@ -72,9 +72,9 @@ oplist Stackable::CombineOperation(const Combine & op)
     // FIXME DO we need to send a sight?
 }
 
-oplist Stackable::DivideOperation(const Divide & op)
+OpVector Stackable::DivideOperation(const Divide & op)
 {
-    oplist res;
+    OpVector res;
     if (script->Operation("divide", op, res) != 0) {
         return res;
     }

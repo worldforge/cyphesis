@@ -18,16 +18,16 @@ class World;
 
 class WorldRouter : public BaseWorld {
   private:
-    opqueue operationQueue;
+    OpQueue operationQueue;
     time_t initTime;
-    eset_t perceptives;
-    eset_t omnipresentList;
+    EntitySet perceptives;
+    EntitySet omnipresentList;
     int nextId;
 
     void addOperationToQueue(RootOperation & op, const BaseEntity *);
     RootOperation * getOperationFromQueue();
-    const eset_t & broadcastList(const RootOperation & op) const;
-    oplist operation(const RootOperation * op);
+    const EntitySet & broadcastList(const RootOperation & op) const;
+    OpVector operation(const RootOperation * op);
 
     void updateTime() {
         struct timeval tv;
@@ -54,11 +54,11 @@ class WorldRouter : public BaseWorld {
         return realTime - timeoffset;
     }
 
-    virtual oplist message(RootOperation & op, const Entity * obj);
-    virtual oplist message(const RootOperation & op);
-    virtual oplist operation(const RootOperation & op);
+    virtual OpVector message(RootOperation & op, const Entity * obj);
+    virtual OpVector message(const RootOperation & op);
+    virtual OpVector operation(const RootOperation & op);
 
-    virtual oplist lookOperation(const Look & op);
+    virtual OpVector lookOperation(const Look & op);
 
 };
 

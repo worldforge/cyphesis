@@ -26,8 +26,8 @@ class Missile : public Thing {
   protected:
     
   public:
-    virtual oplist MoveOperation(const Move & op);
-    virtual oplist TickOperation(const Tick & op);
+    virtual OpVector MoveOperation(const Move & op);
+    virtual OpVector TickOperation(const Tick & op);
 };
 
 #endif // RULESETS_MISSILE_H

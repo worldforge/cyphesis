@@ -17,7 +17,7 @@ Script::~Script()
 }
 
 bool Script::Operation(const std::string & opname, const RootOperation & op,
-                        oplist & res, RootOperation * sub_op)
+                        OpVector & res, RootOperation * sub_op)
 {
    return false;
 }

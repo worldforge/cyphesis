@@ -51,51 +51,51 @@ BaseMind::~BaseMind()
     map.flushMap();
 }
 
-oplist BaseMind::sightLoginOperation(const Sight & op, Login & sub_op)
+OpVector BaseMind::sightLoginOperation(const Sight & op, Login & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sight_login", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::sightCombineOperation(const Sight & op, Combine & sub_op)
+OpVector BaseMind::sightCombineOperation(const Sight & op, Combine & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sight_combine", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::sightDivideOperation(const Sight & op, Divide & sub_op)
+OpVector BaseMind::sightDivideOperation(const Sight & op, Divide & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sight_divide", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::sightTalkOperation(const Sight & op, Talk & sub_op)
+OpVector BaseMind::sightTalkOperation(const Sight & op, Talk & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sight_talk", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::sightActionOperation(const Sight & op, Action & sub_op)
+OpVector BaseMind::sightActionOperation(const Sight & op, Action & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sight_action", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::sightChopOperation(const Sight & op, Chop & sub_op)
+OpVector BaseMind::sightChopOperation(const Sight & op, Chop & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sight_chop", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
+OpVector BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
 {
-    oplist res;
+    OpVector res;
     if (script->Operation("sight_create", op, res, &sub_op) != 0) {
         return res;
     }
@@ -109,17 +109,17 @@ oplist BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
     return res;
 }
 
-oplist BaseMind::sightCutOperation(const Sight & op, Cut & sub_op)
+OpVector BaseMind::sightCutOperation(const Sight & op, Cut & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sight_cut", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op)
+OpVector BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op)
 {
     debug( std::cout << "Sight Delete operation" << std::endl << std::flush;);
-    oplist res;
+    OpVector res;
     if (script->Operation("sight_delete", op, res, &sub_op) != 0) {
         return res;
     }
@@ -138,31 +138,31 @@ oplist BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op)
     return res;
 }
 
-oplist BaseMind::sightEatOperation(const Sight & op, Eat & sub_op)
+OpVector BaseMind::sightEatOperation(const Sight & op, Eat & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sight_eat", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::sightFireOperation(const Sight & op, Fire & sub_op)
+OpVector BaseMind::sightFireOperation(const Sight & op, Fire & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sight_fire", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::sightImaginaryOperation(const Sight & op, Imaginary & sub_op)
+OpVector BaseMind::sightImaginaryOperation(const Sight & op, Imaginary & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sight_imaginary", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
+OpVector BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
 {
     debug( std::cout << "BaseMind::sightOperation(Sight, Move)" << std::endl << std::flush;);
-    oplist res;
+    OpVector res;
     if (script->Operation("sight_move", op, res, &sub_op) != 0) {
         return res;
     }
@@ -176,9 +176,9 @@ oplist BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
     return res;
 }
 
-oplist BaseMind::sightSetOperation(const Sight & op, Set & sub_op)
+OpVector BaseMind::sightSetOperation(const Sight & op, Set & sub_op)
 {
-    oplist res;
+    OpVector res;
     if (script->Operation("sight_set", op, res, &sub_op) != 0) {
         return res;
     }
@@ -192,141 +192,141 @@ oplist BaseMind::sightSetOperation(const Sight & op, Set & sub_op)
     return res;
 }
 
-oplist BaseMind::sightTouchOperation(const Sight & op, Touch & sub_op)
+OpVector BaseMind::sightTouchOperation(const Sight & op, Touch & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sight_touch", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::sightOtherOperation(const Sight & op, RootOperation & sub_op)
+OpVector BaseMind::sightOtherOperation(const Sight & op, RootOperation & sub_op)
 {
     debug( std::cout << "BaseMind::sightOperation(Sight, RootOperation)" << std::endl << std::flush;);
-    oplist res;
+    OpVector res;
     script->Operation("sight_undefined", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundLoginOperation(const Sound & op, Login & sub_op)
+OpVector BaseMind::soundLoginOperation(const Sound & op, Login & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_login", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundActionOperation(const Sound & op, Action & sub_op)
+OpVector BaseMind::soundActionOperation(const Sound & op, Action & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_action", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundCutOperation(const Sound & op, Cut & sub_op)
+OpVector BaseMind::soundCutOperation(const Sound & op, Cut & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_cut", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundChopOperation(const Sound & op, Chop & sub_op)
+OpVector BaseMind::soundChopOperation(const Sound & op, Chop & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_chop", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundCombineOperation(const Sound & op, Combine & sub_op)
+OpVector BaseMind::soundCombineOperation(const Sound & op, Combine & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_combine", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundCreateOperation(const Sound & op, Create & sub_op)
+OpVector BaseMind::soundCreateOperation(const Sound & op, Create & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_create", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundDeleteOperation(const Sound & op, Delete & sub_op)
+OpVector BaseMind::soundDeleteOperation(const Sound & op, Delete & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_delete", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundDivideOperation(const Sound & op, Divide & sub_op)
+OpVector BaseMind::soundDivideOperation(const Sound & op, Divide & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_divide", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundEatOperation(const Sound & op, Eat & sub_op)
+OpVector BaseMind::soundEatOperation(const Sound & op, Eat & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_eat", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundFireOperation(const Sound & op, Fire & sub_op)
+OpVector BaseMind::soundFireOperation(const Sound & op, Fire & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_fire", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundImaginaryOperation(const Sound & op, Imaginary & sub_op)
+OpVector BaseMind::soundImaginaryOperation(const Sound & op, Imaginary & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_imaginary", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundMoveOperation(const Sound & op, Move & sub_op)
+OpVector BaseMind::soundMoveOperation(const Sound & op, Move & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_move", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundSetOperation(const Sound & op, Set & sub_op)
+OpVector BaseMind::soundSetOperation(const Sound & op, Set & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_set", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundTouchOperation(const Sound & op, Touch & sub_op)
+OpVector BaseMind::soundTouchOperation(const Sound & op, Touch & sub_op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("sound_touch", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundTalkOperation(const Sound & op, Talk & sub_op)
+OpVector BaseMind::soundTalkOperation(const Sound & op, Talk & sub_op)
 {
     debug( std::cout << "BaseMind::soundOperation(Sound, Talk)" << std::endl << std::flush;);
-    oplist res;
+    OpVector res;
     script->Operation("sound_talk", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::soundOtherOperation(const Sound & op, RootOperation & sub_op)
+OpVector BaseMind::soundOtherOperation(const Sound & op, RootOperation & sub_op)
 {
     debug( std::cout << "BaseMind::soundOperation(Sound, RootOperation)" << std::endl << std::flush;);
-    oplist res;
+    OpVector res;
     script->Operation("sound_undefined", op, res, &sub_op);
     return res;
 }
 
-oplist BaseMind::SoundOperation(const Sound & op)
+OpVector BaseMind::SoundOperation(const Sound & op)
 {
     // Louder sounds might eventually make character wake up
-    if (!isAwake) { return oplist(); }
+    if (!isAwake) { return OpVector(); }
     // Deliver argument to sound things
-    oplist res;
+    OpVector res;
     if (script->Operation("sound", op, res) != 0) {
         return res;
     }
@@ -345,12 +345,12 @@ oplist BaseMind::SoundOperation(const Sound & op)
     return res;
 }
 
-oplist BaseMind::SightOperation(const Sight & op)
+OpVector BaseMind::SightOperation(const Sight & op)
 {
-    if (!isAwake) { return oplist(); }
+    if (!isAwake) { return OpVector(); }
     debug( std::cout << "BaseMind::Operation(Sight)" << std::endl << std::flush;);
     // Deliver argument to sight things
-    oplist res;
+    OpVector res;
     if (script->Operation("sight", op, res) != 0) {
         debug( std::cout << " its in the script" << std::endl << std::flush;);
         return res;
@@ -366,9 +366,6 @@ oplist BaseMind::SightOperation(const Sight & op)
     if (isOp) {
         debug( std::cout << " args is an op!" << std::endl << std::flush;);
         res = callSightOperation(op, op2);
-        //std::string & op2type = op2->GetParents().front().AsString();
-        //std::string subop = "sight_" + op2type;
-        //script->Operation(subop, op, res, (RootOperation *)op2);
     } else /* if (op2->GetObjtype() == "object") */ {
         debug( std::cout << " arg is an entity!" << std::endl << std::flush;);
         map.add(obj);
@@ -376,10 +373,10 @@ oplist BaseMind::SightOperation(const Sight & op)
     return res;
 }
 
-oplist BaseMind::AppearanceOperation(const Appearance & op)
+OpVector BaseMind::AppearanceOperation(const Appearance & op)
 {
-    if (!isAwake) { return oplist(); }
-    oplist res;
+    if (!isAwake) { return OpVector(); }
+    OpVector res;
     script->Operation("appearance", op, res);
     const Object::ListType & args = op.GetArgs();
     Object::ListType::const_iterator I;
@@ -389,18 +386,18 @@ oplist BaseMind::AppearanceOperation(const Appearance & op)
     return res;
 }
 
-oplist BaseMind::DisappearanceOperation(const Disappearance & op)
+OpVector BaseMind::DisappearanceOperation(const Disappearance & op)
 {
-    if (!isAwake) { return oplist(); }
-    oplist res;
+    if (!isAwake) { return OpVector(); }
+    OpVector res;
     script->Operation("disappearance", op, res);
     // Not quite sure what to do to the map here, but should do something.
     return res;
 }
 
-oplist BaseMind::SaveOperation(const Save & op)
+OpVector BaseMind::SaveOperation(const Save & op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("save", op, res);
     Object::MapType emap;
     std::cout << res.size() << " Got stuff from mind" << std::endl << std::flush;
@@ -412,12 +409,12 @@ oplist BaseMind::SaveOperation(const Save & op)
     emap["map"] = map.asObject();
     emap["id"] = getId();
     i->SetArgs(Object::ListType(1,emap));
-    return oplist(1,i);
+    return OpVector(1,i);
 }
 
-oplist BaseMind::LoadOperation(const Load & op)
+OpVector BaseMind::LoadOperation(const Load & op)
 {
-    oplist res;
+    OpVector res;
     script->Operation("load", op, res);
     if (!op.GetArgs().empty()) {
         const Object::MapType & emap = op.GetArgs().front().AsMap();
@@ -430,7 +427,7 @@ oplist BaseMind::LoadOperation(const Load & op)
             }
         }
     }
-    return oplist();
+    return OpVector();
 }
 
 #if 0
@@ -451,12 +448,12 @@ int BaseMind::call_triggers(RootOperation & op)
 }
 #endif
 
-//oplist BaseMind::message(const RootOperation & msg)
+//OpVector BaseMind::message(const RootOperation & msg)
 //{
     //return operation(msg);
 //}
 
-oplist BaseMind::operation(const RootOperation & op)
+OpVector BaseMind::operation(const RootOperation & op)
 {
     // This might end up being quite tricky to do
 
@@ -464,35 +461,35 @@ oplist BaseMind::operation(const RootOperation & op)
     //   Find out if the op refers to any ids we don't know about.
     //   If so create look operations to those ids
     //   Set the minds time and date 
-    oplist res;
+    OpVector res;
     time.update(op.GetSeconds());
     map.getAdd(op.GetFrom());
     RootOperation * look;
     while ((look = map.lookId()) != NULL) {
         res.push_back(look);
     }
-    oplist res2 = callOperation(op);
-    for(oplist::const_iterator I = res2.begin(); I != res2.end(); I++) {
+    OpVector res2 = callOperation(op);
+    for(OpVector::const_iterator I = res2.begin(); I != res2.end(); I++) {
         res.push_back(*I);
     }
     //res = call_triggers(op);
     return res;
 }
 
-oplist BaseMind::callSightOperation(const Sight& op, RootOperation& sub_op) {
+OpVector BaseMind::callSightOperation(const Sight& op, RootOperation& sub_op) {
     map.getAdd(sub_op.GetFrom());
-    op_no_t op_no = opEnumerate(sub_op);
+    OpNo op_no = opEnumerate(sub_op);
     SUB_OP_SWITCH(op, op_no, sight, sub_op)
 }
 
-oplist BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op) {
+OpVector BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op) {
     map.getAdd(sub_op.GetFrom());
-    op_no_t op_no = opEnumerate(sub_op);
+    OpNo op_no = opEnumerate(sub_op);
     SUB_OP_SWITCH(op, op_no, sound, sub_op)
 }
 
 #if 0
-oplist BaseMind::operation(const RootOperation & op)
+OpVector BaseMind::operation(const RootOperation & op)
 {
     if (hasattr(this,"lock")) {
         return;

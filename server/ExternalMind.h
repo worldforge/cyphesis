@@ -15,7 +15,7 @@ class ExternalMind : public BaseMind {
 
     ExternalMind(Connection & connection, const std::string & id, const std::string & name);
 
-    virtual oplist message(const RootOperation & op);
+    virtual OpVector message(const RootOperation & op);
 };
 
 #endif // RULESETS_EXTERNAL_MIND_H

@@ -5,13 +5,13 @@
 #ifndef SERVER_OOG_THING_H
 #define SERVER_OOG_THING_H
 
-#include <common/BaseEntity.h>
+#include "BaseEntity.h"
 
 class OOGThing : public BaseEntity {
   public:
     OOGThing() { }
     virtual ~OOGThing();
-    virtual oplist OtherOperation(const RootOperation & op);
+    virtual OpVector OtherOperation(const RootOperation & op);
 };
 
 #endif // SERVER_OOG_THING_H

@@ -48,11 +48,11 @@ void Lobby::delObject(Account * a)
 }
 
 
-oplist Lobby::operation(const RootOperation & op)
+OpVector Lobby::operation(const RootOperation & op)
 {
     const std::string & to = op.GetTo();
     if (to.empty() || to == "lobby") {
-        adict_t::const_iterator I = accounts.begin();
+        AccountDict::const_iterator I = accounts.begin();
         RootOperation newop(op);
         for (; I != accounts.end(); ++I) {
             Connection * c = I->second->connection;
@@ -62,7 +62,7 @@ oplist Lobby::operation(const RootOperation & op)
             }
         }
     } else {
-        adict_t::const_iterator I = accounts.find(to);
+        AccountDict::const_iterator I = accounts.find(to);
         if (I == accounts.end()) {
             return error(op, "Target account not logged in");
         } else {
@@ -72,7 +72,7 @@ oplist Lobby::operation(const RootOperation & op)
             }
         }
     }
-    return oplist();
+    return OpVector();
 }
 
 void Lobby::addToObject(Object::MapType & omap) const
@@ -82,7 +82,7 @@ void Lobby::addToObject(Object::MapType & omap) const
     Object::ListType plist(1, "room");
     omap["parents"] = plist;
     Object::ListType player_list;
-    adict_t::const_iterator I = accounts.begin();
+    AccountDict::const_iterator I = accounts.begin();
     for(; I != accounts.end(); I++) {
         player_list.push_back(I->first);
     }

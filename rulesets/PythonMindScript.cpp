@@ -27,7 +27,7 @@ PythonMindScript::~PythonMindScript()
 
 bool PythonMindScript::Operation(const std::string & op_type,
                                  const RootOperation & op,
-                                 oplist & ret_list, RootOperation * sub_op)
+                                 OpVector & ret_list, RootOperation * sub_op)
 {
     debug( std::cout << "Got script object for " << std::endl << std::flush;);
     std::string op_name = op_type+"_operation";
@@ -75,7 +75,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
             if (op->ops != NULL) {
                 ret_list = *op->ops;
             } else {
-                debug(std::cout << "Method returned invalid oplist" << std::endl
+                debug(std::cout << "Method returned invalid OpVector" << std::endl
                                 << std::flush;);
             }
         } else {

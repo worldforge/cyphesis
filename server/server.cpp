@@ -194,9 +194,9 @@ int main(int argc, char ** argv)
             if (!daemon_flag) {
                 std::cout << "Loading world from database..." << std::flush;
             }
-            oplist res = admin->LoadOperation(l);
+            OpVector res = admin->LoadOperation(l);
             // Delete the resulting op
-            oplist::iterator I = res.begin();
+            OpVector::iterator I = res.begin();
             for(;I != res.end(); I++) { delete *I; }
             if (!daemon_flag) {
                 std::cout << " done" << std::endl;

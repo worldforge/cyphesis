@@ -18,8 +18,8 @@ class Food : public Thing {
     Food();
     virtual ~Food();
 
-    virtual oplist EatOperation(const Eat & op);
-    virtual oplist FireOperation(const Fire & op);
+    virtual OpVector EatOperation(const Eat & op);
+    virtual OpVector FireOperation(const Fire & op);
 };
 
 #endif // RULESETS_FOOD_H

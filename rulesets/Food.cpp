@@ -23,9 +23,9 @@ Food::~Food()
 {
 }
 
-oplist Food::EatOperation(const Eat & op)
+OpVector Food::EatOperation(const Eat & op)
 {
-    oplist res;
+    OpVector res;
     if (script->Operation("eat", op, res) != 0) {
         return res;
     }
@@ -45,15 +45,15 @@ oplist Food::EatOperation(const Eat & op)
     n->SetTo(to);
     n->SetArgs(Object::ListType(1,nour_ent));
 
-    oplist res2(2);
+    OpVector res2(2);
     res2[0] = s;
     res2[1] = n;
     return res2;
 }
 
-oplist Food::FireOperation(const Fire & op)
+OpVector Food::FireOperation(const Fire & op)
 {
-    oplist res;
+    OpVector res;
     if (script->Operation("fire", op, res) != 0) {
         return res;
     }
@@ -77,6 +77,6 @@ oplist Food::FireOperation(const Fire & op)
     s->SetTo(getId());
     s->SetArgs(Object::ListType(1,self_ent));
 
-    return oplist(1,s);
+    return OpVector(1,s);
 }
 

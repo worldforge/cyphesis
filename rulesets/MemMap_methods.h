@@ -80,7 +80,7 @@ inline Entity * MemMap::get(const std::string & id)
 {
     debug( std::cout << "MemMap::get" << std::endl << std::flush;);
     if (id.empty()) { return NULL; }
-    edict_t::const_iterator I = things.find(id);
+    EntityDict::const_iterator I = things.find(id);
     if (I != things.end()) {
         return I->second;
     }
@@ -91,7 +91,7 @@ inline Entity * MemMap::getAdd(const std::string & id)
 {
     debug( std::cout << "MemMap::getAdd" << std::endl << std::flush;);
     if (id.empty()) { return NULL; }
-    edict_t::const_iterator I = things.find(id);
+    EntityDict::const_iterator I = things.find(id);
     if (I != things.end()) {
         return I->second;
     }

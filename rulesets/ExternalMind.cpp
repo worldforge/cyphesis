@@ -16,8 +16,8 @@ ExternalMind::ExternalMind(Connection & connection, std::string & id,
 {
 }
 
-oplist ExternalMind::message(const RootOperation & op)
+OpVector ExternalMind::message(const RootOperation & op)
 {
     connection.send(&op);
-    return oplist();
+    return OpVector();
 }

@@ -279,8 +279,8 @@ Object PyObject_asObject(PyObject * o)
         Object::ListType _list;
         Object msg(_list);
         Object::ListType & entlist = msg.AsList();
-        const oplist & ops = *opl->ops;
-        oplist::const_iterator I;
+        const OpVector & ops = *opl->ops;
+        OpVector::const_iterator I;
         for(I = ops.begin(); I != ops.end(); I++) {
             entlist.push_back((*I)->AsObject());
         }

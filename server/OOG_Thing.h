@@ -13,7 +13,7 @@ class OOGThing : public BaseEntity {
   public:
     OOGThing() { }
     virtual ~OOGThing();
-    virtual oplist OtherOperation(const RootOperation & op);
+    virtual OpVector OtherOperation(const RootOperation & op);
 };
 
 #endif // SERVER_OOG_THING_H

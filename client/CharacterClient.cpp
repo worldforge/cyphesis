@@ -12,14 +12,14 @@ CharacterClient::CharacterClient(const std::string & id,
 {
 }
 
-oplist CharacterClient::sightImaginaryOperation(const Sight &, Imaginary &)
+OpVector CharacterClient::sightImaginaryOperation(const Sight &, Imaginary &)
 {
-    return oplist();
+    return OpVector();
 }
 
-oplist CharacterClient::soundTalkOperation(const Sound & op, Talk & subop)
+OpVector CharacterClient::soundTalkOperation(const Sound & op, Talk & subop)
 {
-    return oplist();
+    return OpVector();
 }
 
 #if 0
@@ -62,7 +62,7 @@ inline bool CharacterClient::findRefno(const RootOperation & msg, long refno)
     return findRefnoOp(msg,refno);
 }
 
-oplist CharacterClient::sendAndWaitReply(RootOperation & op)
+OpVector CharacterClient::sendAndWaitReply(RootOperation & op)
 {
     send(op);
     long no = op.GetSerialno();
@@ -71,14 +71,14 @@ oplist CharacterClient::sendAndWaitReply(RootOperation & op)
             RootOperation * input=CharacterClient::connection.pop();
             if (input != NULL) {
                 // What the hell is this!
-                oplist result = message(*input);
-                oplist::const_iterator I;
+                OpVector result = message(*input);
+                OpVector::const_iterator I;
                 for (I=result.begin();I!=result.end();I++) {
                     send(*(*I));
                 }
     
                 if (findRefno(*input,no)) {
-                    return oplist(1,input);
+                    return OpVector(1,input);
                 }
             }
             delete input;

@@ -9,7 +9,8 @@
 
 class Player : public Account {
   protected:
-    virtual oplist characterError(const Create & op, const Atlas::Message::Object::MapType & ent) const;
+    virtual OpVector characterError(const Create & op,
+                            const Atlas::Message::Object::MapType & ent) const;
   public:
     Player(Connection * conn, const std::string & username, const std::string & passwd);
     virtual ~Player();

@@ -47,23 +47,23 @@ typedef enum op_no {
 	OP_APPEARANCE,
 	OP_DISAPPEARANCE,
 	OP_INVALID
-} op_no_t;
+} OpNo;
 
-typedef std::map<std::string, BaseEntity *> dict_t;
-typedef std::list<BaseEntity *> list_t;
-typedef std::pair<std::string, BaseEntity *> idpair_t;
+typedef std::map<std::string, BaseEntity *> BaseDict;
+typedef std::list<BaseEntity *> BaseList;
+typedef std::pair<std::string, BaseEntity *> BasePair;
 typedef std::vector<std::string> IdList;
 
-typedef std::map<std::string, Entity *> edict_t;
-typedef std::list<Entity *> elist_t;
-typedef std::vector<Entity *> evec_t;
-typedef std::set<Entity *> eset_t;
+typedef std::map<std::string, Entity *> EntityDict;
+typedef std::list<Entity *> EntityList;
+typedef std::vector<Entity *> EntityVector;
+typedef std::set<Entity *> EntitySet;
 
-typedef std::map<std::string, Account *> adict_t;
-typedef std::list<Account *> alist_t;
+typedef std::map<std::string, Account *> AccountDict;
+typedef std::list<Account *> AccountList;
 
-typedef std::vector<Atlas::Objects::Operation::RootOperation *> oplist;
-typedef std::list<Atlas::Objects::Operation::RootOperation *> opqueue;
+typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
+typedef std::list<Atlas::Objects::Operation::RootOperation *> OpQueue;
 
 typedef std::vector<Vector3D> CoordList;
 

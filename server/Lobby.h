@@ -11,7 +11,7 @@ class ServerRouting;
 
 class Lobby : public OOGThing {
   private:
-    adict_t accounts;
+    AccountDict accounts;
     ServerRouting & server;
   public:
     explicit Lobby(ServerRouting &);
@@ -19,11 +19,11 @@ class Lobby : public OOGThing {
     void addObject(Account * a);
     void delObject(Account * a);
 
-    inline const adict_t & getAccounts() const {
+    inline const AccountDict & getAccounts() const {
         return accounts;
     }
 
-    virtual oplist operation(const RootOperation & op);
+    virtual OpVector operation(const RootOperation & op);
 
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
 };

@@ -29,11 +29,11 @@ Admin::~Admin()
 {
 }
 
-oplist Admin::characterError(const Create &, const Object::MapType &) const {
-    return oplist();
+OpVector Admin::characterError(const Create &, const Object::MapType &) const {
+    return OpVector();
 }
 
-oplist Admin::LogoutOperation(const Logout & op)
+OpVector Admin::LogoutOperation(const Logout & op)
 {
     const Object::ListType & args = op.GetArgs();
     
@@ -59,9 +59,9 @@ oplist Admin::LogoutOperation(const Logout & op)
     }
 }
 
-oplist Admin::SaveOperation(const Save & op)
+OpVector Admin::SaveOperation(const Save & op)
 {
-    edict_t::const_iterator I;
+    EntityDict::const_iterator I;
     Persistance * p = Persistance::instance();
     Object::MapType ent;
     // Clear the world database
@@ -82,7 +82,7 @@ oplist Admin::SaveOperation(const Save & op)
             std::cout << "Dumping character to database" << std::endl << std::flush;
             Character * c = (Character *)I->second;
             if (c->mind == NULL) { continue; }
-            oplist res = c->mind->SaveOperation(op);
+            OpVector res = c->mind->SaveOperation(op);
             if ((!res.empty()) && (!res.front()->GetArgs().empty())) {
                 std::cout << "Dumping mind to database" << std::endl << std::flush;
                 Object::MapType & mindmap = res.front()->GetArgs().front().AsMap();
@@ -100,7 +100,7 @@ oplist Admin::SaveOperation(const Save & op)
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());
     info->SetSerialno(connection->server.getSerialNo());
-    return oplist(1,info);
+    return OpVector(1,info);
 }
 
 void Admin::load(Persistance * p, const std::string & id, int & count)
@@ -131,7 +131,7 @@ void Admin::load(Persistance * p, const std::string & id, int & count)
     }
 }
 
-oplist Admin::LoadOperation(const Load & op)
+OpVector Admin::LoadOperation(const Load & op)
 {
     int count = 0;
     int mind_count = 0;
@@ -169,13 +169,13 @@ oplist Admin::LoadOperation(const Load & op)
         info->SetArgs(args);
         info->SetRefno(op.GetSerialno());
         info->SetSerialno(connection->server.getSerialNo());
-        return oplist(1,info);
+        return OpVector(1,info);
     } else {
-        return oplist();
+        return OpVector();
     }
 }
 
-oplist Admin::GetOperation(const Get & op)
+OpVector Admin::GetOperation(const Get & op)
 {
     const Object & ent = op.GetArgs().front();
     try {
@@ -196,7 +196,7 @@ oplist Admin::GetOperation(const Get & op)
                 if (ent_id.empty()) {
                     return error(op, "query id invalid");
                 }
-                dict_t::iterator I = world->server.idDict.find(ent_id);
+                BaseDict::iterator I = world->server.idDict.find(ent_id);
                 if (I == world->server.idDict.end()) {
                     return error(op, "query id not found");
                 }
@@ -204,7 +204,7 @@ oplist Admin::GetOperation(const Get & op)
                 info->SetArgs(Object::ListType(1,I->second->asObject()));
                 info->SetRefno(op.GetSerialno());
                 info->SetSerialno(connection->server.getSerialNo());
-                return oplist(1,info);
+                return OpVector(1,info);
             } else {
                 return error(op, "Unknown command");
             }
@@ -213,10 +213,10 @@ oplist Admin::GetOperation(const Get & op)
     catch (...) {
         return error(op, "Invalid get");
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Admin::SetOperation(const Set & op)
+OpVector Admin::SetOperation(const Set & op)
 {
     const Object & ent = op.GetArgs().front();
     try {
@@ -234,7 +234,7 @@ oplist Admin::SetOperation(const Set & op)
                 info->SetArgs(args);
                 info->SetRefno(op.GetSerialno());
                 info->SetSerialno(connection->server.getSerialNo());
-                return oplist(1,info);
+                return OpVector(1,info);
             } else {
                 return error(op, "Unknown command");
             }
@@ -252,7 +252,7 @@ oplist Admin::SetOperation(const Set & op)
     catch (...) {
         return error(op, "Invalid set");
     }
-    return oplist();
+    return OpVector();
 }
 
 // There used to be a code operation handler here. It may become desirable in

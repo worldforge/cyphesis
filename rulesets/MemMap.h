@@ -27,7 +27,7 @@ class MemMap {
   private:
     friend class BaseMind;
 
-    edict_t things;
+    EntityDict things;
     std::list<std::string> additionsById;
     std::vector<std::string> addHooks;
     std::vector<std::string> updateHooks;
@@ -46,8 +46,8 @@ class MemMap {
     inline Entity * get(const std::string & id);
     inline Entity * getAdd(const std::string & id);
     Entity * update(const Atlas::Message::Object::MapType & entity);
-    evec_t findByType(const std::string & what);
-    evec_t findByLocation(const Location & where, double radius);
+    EntityVector findByType(const std::string & what);
+    EntityVector findByLocation(const Location & where, double radius);
     const Atlas::Message::Object asObject();
     void flushMap();
 

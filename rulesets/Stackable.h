@@ -27,8 +27,8 @@ class Stackable : public Thing {
 
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
 
-    virtual oplist CombineOperation(const Combine & op);
-    virtual oplist DivideOperation(const Divide & op);
+    virtual OpVector CombineOperation(const Combine & op);
+    virtual OpVector DivideOperation(const Divide & op);
 };
 
 #endif // RULESETS_STACKABLE_H

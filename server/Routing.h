@@ -9,7 +9,7 @@
 
 class Routing : public OOGThing {
   protected:
-    dict_t objects;
+    BaseDict objects;
   public:
 
     Routing() { }
@@ -26,7 +26,7 @@ class Routing : public OOGThing {
     }
 
     BaseEntity * getObject(const std::string & fid) const {
-        dict_t::const_iterator I = objects.find(fid);
+        BaseDict::const_iterator I = objects.find(fid);
         if (I == objects.end()) {
             return NULL;
         } else {
@@ -35,7 +35,7 @@ class Routing : public OOGThing {
     }
 
     BaseEntity * findObject(const std::string & fid) const {
-        dict_t::const_iterator I = objects.find(fid);
+        BaseDict::const_iterator I = objects.find(fid);
         if (I == objects.end()) {
             return NULL;
         } else {

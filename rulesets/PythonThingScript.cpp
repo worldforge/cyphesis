@@ -27,7 +27,7 @@ PythonThingScript::~PythonThingScript()
 
 bool PythonThingScript::Operation(const std::string & op_type,
                                   const RootOperation & op,
-                                  oplist & ret_list, RootOperation * sub_op)
+                                  OpVector & ret_list, RootOperation * sub_op)
 {
     if (scriptObject == NULL) {
         debug( std::cout << "No script object asociated" << std::endl
@@ -69,7 +69,7 @@ bool PythonThingScript::Operation(const std::string & op_type,
             if (op->ops != NULL) {
                 ret_list = *op->ops;
             } else {
-                debug( std::cout << "Method returned invalid oplist"
+                debug( std::cout << "Method returned invalid OpVector"
                                  << std::endl << std::flush;);
             }
         } else {

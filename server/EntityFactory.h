@@ -16,13 +16,13 @@ namespace Atlas { namespace Message {
 class Thing;
 class FactoryBase;
 
-typedef std::map<std::string, FactoryBase *> fdict_t;
+typedef std::map<std::string, FactoryBase *> FactoryDict;
 
 class EntityFactory : public SigC::Object {
     EntityFactory();
     static EntityFactory * m_instance;
 
-    fdict_t factories;
+    FactoryDict factories;
   public:
     static EntityFactory * instance() {
         if (m_instance == NULL) {
@@ -37,7 +37,7 @@ class EntityFactory : public SigC::Object {
     }
     Thing * newThing(const std::string &,
                      const Atlas::Message::Object::MapType &,
-                     const edict_t &);
+                     const EntityDict &);
     void flushFactories();
 
     void installBaseClasses();

@@ -16,7 +16,7 @@ Player::Player(Connection* conn, const std::string& username,
 
 Player::~Player() { }
 
-oplist Player::characterError(const Create& op,const Object::MapType& ent) const
+OpVector Player::characterError(const Create& op,const Object::MapType& ent) const
 {
     Object::MapType::const_iterator I = ent.find("name");
     if ((I == ent.end()) || !I->second.IsString()) {
@@ -40,5 +40,5 @@ oplist Player::characterError(const Create& op,const Object::MapType& ent) const
         (type!="swineherd") && (type!="warrior") && (type!="watermage")) {
         return error(op, "Object of that type cannot be created by this account");
     }
-    return oplist();
+    return OpVector();
 }

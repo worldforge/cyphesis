@@ -10,7 +10,7 @@
 
 typedef struct {
     PyObject_HEAD
-    oplist	* ops;
+    OpVector	* ops;
 } OplistObject;
 
 extern PyTypeObject Oplist_Type;

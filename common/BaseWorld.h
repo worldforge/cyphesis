@@ -10,7 +10,7 @@ class ServerRouting;
 class Entity;
 class World;
 
-#include <common/OOGThing.h>
+#include "OOGThing.h"
 
 class BaseWorld : public OOGThing {
   private:
@@ -19,9 +19,9 @@ class BaseWorld : public OOGThing {
     const BaseWorld & operator=(const BaseWorld &);
   protected:
     double realTime;
-    eset_t objectList;
+    EntitySet objectList;
     // int nextId;
-    edict_t eobjects;
+    EntityDict eobjects;
 
     // std::string getId(std::string & name);
   public:
@@ -40,7 +40,7 @@ class BaseWorld : public OOGThing {
         return eobjects[fid];
     }
 
-    const edict_t & getObjects() {
+    const EntityDict & getObjects() {
         return eobjects;
     }
 
@@ -52,11 +52,11 @@ class BaseWorld : public OOGThing {
         return realTime;
     }
 
-    virtual oplist message(RootOperation & op, const Entity * obj) = 0;
-    virtual oplist message(const RootOperation & op) = 0;
-    virtual oplist operation(const RootOperation & op) = 0;
+    virtual OpVector message(RootOperation & op, const Entity * obj) = 0;
+    virtual OpVector message(const RootOperation & op) = 0;
+    virtual OpVector operation(const RootOperation & op) = 0;
 
-    virtual oplist lookOperation(const Look & op) = 0;
+    virtual OpVector lookOperation(const Look & op) = 0;
 };
 
 #endif // COMMON_BASE_WORLD_H

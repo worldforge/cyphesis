@@ -19,8 +19,8 @@ class PythonScript : public Script {
     PythonScript(PyObject *, Entity &);
     virtual ~PythonScript();
     virtual bool Operation(const std::string&,
-                      const Atlas::Objects::Operation::RootOperation&, oplist&,
-                      Atlas::Objects::Operation::RootOperation * sub_op=NULL) = 0;
+                    const Atlas::Objects::Operation::RootOperation&, OpVector&,
+                    Atlas::Objects::Operation::RootOperation * sub_op=NULL) = 0;
     virtual void hook(const std::string &, Entity *) = 0;
 };
 

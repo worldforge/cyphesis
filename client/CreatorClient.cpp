@@ -23,7 +23,7 @@ Entity * CreatorClient::make(const Object & entity)
     op.SetArgs(Object::ListType(1,entity));
     op.SetFrom(getId());
     op.SetTo(getId());
-    oplist result = sendAndWaitReply(op);
+    OpVector result = sendAndWaitReply(op);
     // FIXME I am pretty sure this is in practice a redundant check.
     if (result.empty()) {
         std::cerr << "No reply to make" << std::endl << std::flush;

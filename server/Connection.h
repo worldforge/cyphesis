@@ -24,12 +24,12 @@ class Connection : public Routing {
     void destroy();
     inline void send(const RootOperation * msg) const;
 
-    virtual oplist operation(const RootOperation & op);
+    virtual OpVector operation(const RootOperation & op);
 
-    virtual oplist LoginOperation(const Login & op);
-    virtual oplist LogoutOperation(const Logout & op);
-    virtual oplist CreateOperation(const Create & op);
-    virtual oplist GetOperation(const Get & op);
+    virtual OpVector LoginOperation(const Login & op);
+    virtual OpVector LogoutOperation(const Logout & op);
+    virtual OpVector CreateOperation(const Create & op);
+    virtual OpVector GetOperation(const Get & op);
 };
 
 #endif // SERVER_CONNECTION_H

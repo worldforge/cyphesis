@@ -23,7 +23,7 @@ class Plant : public Thing {
     static const int minuDrop = 0; // min fruit dropped
     static const int maxuDrop = 2; // max fruit dropped
 
-    int dropFruit(oplist & res);
+    int dropFruit(OpVector & res);
   public:
 
     Plant();
@@ -32,7 +32,7 @@ class Plant : public Thing {
     virtual const Object & operator[](const std::string & aname);
     virtual void set(const std::string & aname, const Object & attr);
 
-    virtual oplist TickOperation(const Tick & op);
+    virtual OpVector TickOperation(const Tick & op);
 };
 
 #endif // RULESETS_PLANT_H

@@ -33,7 +33,7 @@ class RuleBase {
             m_instance->m_connection.initConnection(true);
             m_instance->m_connection.initRule(true);
         }
-        return (RuleBase *)m_instance;
+        return m_instance;
     }
 
     void storeInRules(const Object::MapType & o, const std::string & key) {

@@ -39,10 +39,13 @@ WorldRouter::WorldRouter(ServerRouting & srvr) : BaseWorld(*new World()),
 
 WorldRouter::~WorldRouter()
 {
-    opqueue::const_iterator I = operationQueue.begin();
+    OpQueue::const_iterator I = operationQueue.begin();
     for (; I != operationQueue.end(); I++) {
         delete *I;
     }
+    // This should be deleted here rather than in the base class because
+    // we created it, and BaseWorld should not even know what it is.
+    delete &gameWorld;
 }
 
 inline void WorldRouter::addOperationToQueue(RootOperation & op,
@@ -58,7 +61,7 @@ inline void WorldRouter::addOperationToQueue(RootOperation & op,
     t = t + op.GetFutureSeconds();
     op.SetSeconds(t);
     op.SetFutureSeconds(0.0);
-    opqueue::iterator I;
+    OpQueue::iterator I;
     for(I = operationQueue.begin();
         (I != operationQueue.end()) && ((*I)->GetSeconds() <= t) ; I++);
     operationQueue.insert(I, &op);
@@ -153,19 +156,19 @@ void WorldRouter::delObject(Entity * obj)
     server.idDict.erase(obj->getId());
 }
 
-oplist WorldRouter::message(const RootOperation & op)
+OpVector WorldRouter::message(const RootOperation & op)
 {
     debug(std::cout << "FATAL: Wrong type of WorldRouter message function called" << std::endl << std::flush;);
-    return oplist();
+    return OpVector();
 }
 
-oplist WorldRouter::message(RootOperation & op, const Entity * obj)
+OpVector WorldRouter::message(RootOperation & op, const Entity * obj)
 {
     addOperationToQueue(op, obj);
-    return oplist();
+    return OpVector();
 }
 
-inline const eset_t& WorldRouter::broadcastList(const RootOperation & op) const
+inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) const
 {
     const Object::ListType & parents = op.GetParents();
     if (!parents.empty() && (parents.front().IsString())) {
@@ -177,29 +180,29 @@ inline const eset_t& WorldRouter::broadcastList(const RootOperation & op) const
     return objectList;
 }
 
-oplist WorldRouter::operation(const RootOperation * op)
+OpVector WorldRouter::operation(const RootOperation * op)
 {
     const RootOperation & op_ref = *op;
     std::string to = op_ref.GetTo();
     debug(std::cout << "WorldRouter::operation {" << to << "}" << std::endl
                     << std::flush;);
-    op_no_t op_type = opEnumerate(*op);
+    OpNo op_type = opEnumerate(*op);
 
     if (!to.empty() && (to != "all")) {
-        edict_t::const_iterator I = eobjects.find(to);
+        EntityDict::const_iterator I = eobjects.find(to);
         if (I == eobjects.end()) {
             debug(std::cerr << "WARNING: Op to=\"" << to << "\""
                             << " does not exist" << std::endl << std::flush;);
-            return oplist();
+            return OpVector();
         }
         Entity * to_entity = I->second;
         if (to_entity == NULL) {
             std::cerr << "CRITICAL: Op to=\"" << to << "\"" << " is NULL"
                       << std::endl << std::flush;
-            return oplist();
+            return OpVector();
         }
-        oplist res = to_entity->operation(op_ref);
-        for(oplist::const_iterator I = res.begin(); I != res.end(); I++) {
+        OpVector res = to_entity->operation(op_ref);
+        for(OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
             message(**I, to_entity);
         }
         if ((op_type == OP_DELETE) && (to_entity != &gameWorld)) {
@@ -210,11 +213,11 @@ oplist WorldRouter::operation(const RootOperation * op)
         }
     } else {
         RootOperation newop = op_ref;
-        const eset_t & broadcast = broadcastList(op_ref);
+        const EntitySet & broadcast = broadcastList(op_ref);
         const std::string & from = newop.GetFrom();
-        edict_t::const_iterator J = eobjects.find(from);
+        EntityDict::const_iterator J = eobjects.find(from);
         if (from.empty() || (J == eobjects.end()) || (!consts::enable_ranges)) {
-            eset_t::const_iterator I;
+            EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 newop.SetTo((*I)->getId());
                 // FIXME: There must be a more efficient way to deliver,
@@ -229,7 +232,7 @@ oplist WorldRouter::operation(const RootOperation * op)
                           << "We will probably crash now." << std::endl
                           << std::flush;
             }
-            eset_t::const_iterator I;
+            EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 if ((!J->second->location.inRange((*I)->location,
                                                        consts::sight_range))) {
@@ -245,19 +248,19 @@ oplist WorldRouter::operation(const RootOperation * op)
         }
     }
                 
-    return oplist();
+    return OpVector();
 }
 
-oplist WorldRouter::operation(const RootOperation & op)
+OpVector WorldRouter::operation(const RootOperation & op)
 {
     return operation(&op);
 }
 
-oplist WorldRouter::lookOperation(const Look & op)
+OpVector WorldRouter::lookOperation(const Look & op)
 {
     debug(std::cout << "WorldRouter::Operation(Look)" << std::endl << std::flush;);
     const std::string & from = op.GetFrom();
-    edict_t::const_iterator J = eobjects.find(from);
+    EntityDict::const_iterator J = eobjects.find(from);
     if (J == eobjects.end()) {
         debug(std::cout << "FATAL: Op has invalid from" << std::endl
                         << std::flush;);
@@ -275,7 +278,7 @@ oplist WorldRouter::lookOperation(const Look & op)
             Entity * opFrom = J->second;
             const Vector3D & fromLoc = opFrom->getXyz();
             Object::ListType contlist;
-            eset_t::const_iterator I;
+            EntitySet::const_iterator I;
             for(I = gameWorld.contains.begin(); I != gameWorld.contains.end(); I++) {
                 if ((*I)->location.inRange(fromLoc, consts::sight_range)) {
                     contlist.push_back(Object((*I)->getId()));
@@ -288,7 +291,7 @@ oplist WorldRouter::lookOperation(const Look & op)
             Object::ListType args(1,Object(omap));
             s->SetArgs(args);
             s->SetTo(op.GetFrom());
-            return oplist(1,s);
+            return OpVector(1,s);
         }
     }
     return BaseEntity::LookOperation(op);

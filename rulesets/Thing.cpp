@@ -34,7 +34,7 @@ Thing::Thing() : perceptive(false)
 
 Thing::~Thing() { }
 
-oplist Thing::SetupOperation(const Setup & op)
+OpVector Thing::SetupOperation(const Setup & op)
 {
 
     // This is a bit of a hack that I am not entirely happy with.
@@ -49,13 +49,13 @@ oplist Thing::SetupOperation(const Setup & op)
     c.SetFrom(getId());
     sight->SetArgs(Object::ListType(1, c.AsObject()));
 
-    oplist sres;
+    OpVector sres;
     if (script->Operation("setup", op, sres) != 0) {
         sres.push_back(sight);
         return sres;
     }
 
-    oplist res(2);
+    OpVector res(2);
 
     res[0] = sight;
 
@@ -67,26 +67,26 @@ oplist Thing::SetupOperation(const Setup & op)
     return res;
 }
 
-oplist Thing::ActionOperation(const Action & op)
+OpVector Thing::ActionOperation(const Action & op)
 {
-    oplist res;
+    OpVector res;
     if (script->Operation("action", op, res) != 0) {
         return res;
     }
     RootOperation * s = new Sight(Sight::Instantiate());
     s->SetArgs(Object::ListType(1,op.AsObject()));
-    return oplist(1,s);
+    return OpVector(1,s);
 }
 
-oplist Thing::CreateOperation(const Create & op)
+OpVector Thing::CreateOperation(const Create & op)
 {
-    oplist res;
+    OpVector res;
     if (script->Operation("create", op, res) != 0) {
         return res;
     }
     const Object::ListType & args=op.GetArgs();
     if (args.empty()) {
-       return oplist();
+       return OpVector();
     }
     try {
         Object::MapType ent = args.front().AsMap();
@@ -119,18 +119,18 @@ oplist Thing::CreateOperation(const Create & op)
         RootOperation * s = new Sight(Sight::Instantiate());
         s->SetArgs(Object::ListType(1,c.AsObject()));
         s->SetRefno(op.GetSerialno());
-        return oplist(1,s);
+        return OpVector(1,s);
     }
     catch (Atlas::Message::WrongTypeException) {
         std::cerr << "EXCEPTION: Malformed object to be created\n";
         return error(op, "Malformed object to be created\n");
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Thing::DeleteOperation(const Delete & op)
+OpVector Thing::DeleteOperation(const Delete & op)
 {
-    oplist res;
+    OpVector res;
     if (script->Operation("delete", op, res) != 0) {
         return res;
     }
@@ -138,12 +138,12 @@ oplist Thing::DeleteOperation(const Delete & op)
     // by the WorldRouter
     RootOperation * s = new Sight(Sight::Instantiate());
     s->SetArgs(Object::ListType(1,op.AsObject()));
-    return oplist(1,s);
+    return OpVector(1,s);
 }
 
-oplist Thing::FireOperation(const Fire & op)
+OpVector Thing::FireOperation(const Fire & op)
 {
-    oplist res;
+    OpVector res;
     if (script->Operation("fire", op, res) != 0) {
         return res;
     }
@@ -171,24 +171,24 @@ oplist Thing::FireOperation(const Fire & op)
     n->SetTo(to);
     n->SetArgs(Object::ListType(1,nour_ent));
 
-    oplist res2(2);
+    OpVector res2(2);
     res2[0] = s;
     res2[1] = n;
     return res2;
 }
 
-oplist Thing::MoveOperation(const Move & op)
+OpVector Thing::MoveOperation(const Move & op)
 {
     debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
     seq++;
-    oplist res;
+    OpVector res;
     if (script->Operation("move", op, res) != 0) {
         return res;
     }
     const Object::ListType & args=op.GetArgs();
     if (args.empty()) {
         debug( std::cout << "ERROR: move op has no argument" << std::endl << std::flush;);
-        return oplist();
+        return OpVector();
     }
     try {
         Vector3D oldpos = location.coords;
@@ -198,7 +198,7 @@ oplist Thing::MoveOperation(const Move & op)
             return error(op, "Move location has no ref");
         }
         const std::string & ref = I->second.AsString();
-        edict_t::const_iterator J = world->getObjects().find(ref);
+        EntityDict::const_iterator J = world->getObjects().find(ref);
         if (J == world->getObjects().end()) {
             return error(op, "Move location ref invalid");
         }
@@ -229,7 +229,7 @@ oplist Thing::MoveOperation(const Move & op)
 
         RootOperation * s = new Sight(Sight::Instantiate());
         s->SetArgs(Object::ListType(1,op.AsObject()));
-        oplist res2(1,s);
+        OpVector res2(1,s);
         // I think it might be wise to send a set indicating we have changed
         // modes, but this would probably be wasteful
 
@@ -238,7 +238,7 @@ oplist Thing::MoveOperation(const Move & op)
         // sight of the other because of this movement
         if (consts::enable_ranges && perceptive) {
             debug(std::cout << "testing range" << std::endl;);
-            eset_t::const_iterator I = location.ref->contains.begin();
+            EntitySet::const_iterator I = location.ref->contains.begin();
             Object::ListType appear, disappear;
             Object::MapType this_ent;
             this_ent["id"] = getId();
@@ -304,19 +304,19 @@ oplist Thing::MoveOperation(const Move & op)
         std::cerr << "EXCEPTION: Malformed object to be moved\n";
         return error(op, "Malformed object to be moved\n");
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Thing::SetOperation(const Set & op)
+OpVector Thing::SetOperation(const Set & op)
 {
     seq++;
-    oplist res;
+    OpVector res;
     if (script->Operation("set", op, res) != 0) {
         return res;
     }
     const Object::ListType & args=op.GetArgs();
     if (args.empty()) {
-       return oplist();
+       return OpVector();
     }
     try {
         const Object::MapType & ent = args.front().AsMap();
@@ -326,7 +326,7 @@ oplist Thing::SetOperation(const Set & op)
         }
         RootOperation * s = new Sight(Sight::Instantiate());
         s->SetArgs(Object::ListType(1,op.AsObject()));
-        oplist res2(1,s);
+        OpVector res2(1,s);
         if (status < 0) {
             RootOperation * d = new Delete(Delete::Instantiate());
             d->SetArgs(Object::ListType(1,this->asObject()));
@@ -339,12 +339,12 @@ oplist Thing::SetOperation(const Set & op)
         std::cerr << "EXCEPTION: Malformed set operation\n";
         return error(op, "Malformed set operation\n");
     }
-    return oplist();
+    return OpVector();
 }
 
-oplist Thing::LookOperation(const Look & op)
+OpVector Thing::LookOperation(const Look & op)
 {
-    oplist res;
+    OpVector res;
     if (script->Operation("look", op, res) != 0) {
         return res;
     }
