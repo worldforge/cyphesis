@@ -1,5 +1,9 @@
 2003-07-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* Switch to using configure.ac
+
+2003-07-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Debugging output to help debug
 	  orientation.
 

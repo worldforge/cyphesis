@@ -3,9 +3,14 @@ dnl Initialise autoconf
 AC_INIT()
 AM_CONFIG_HEADER(config.h)
 
+dnl Detect the canonical host and target environment
+
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
 dnl Initialise automake
 
-VERSION=0.3.0
+VERSION=0.3.0.20030719
 
 AM_INIT_AUTOMAKE(cyphesis, $VERSION)
 
@@ -49,21 +54,8 @@ AC_CHECK_FUNCS([sigset sigaction])
 
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
-dnl Test for WorldForge Atlas Libraries
-
-dnl a general directory where worldforge related libs have been installed
-dnl
-AC_ARG_WITH(worldforge,
-    [ --with-worldforge=DIR directory where worldforge libs are installed ],
-    [
-        worldforgedir=$withval
-        CPPFLAGS="$CPPFLAGS -I${worldforgedir}/include"
-        LIBS="$LIBS -L${worldforgedir}/lib"
-    ]
-)
-
 dnl allow the user to provide the directory where python is installed in
-dnl
+
 AC_CACHE_CHECK(for location of python, python_prefix,
 [
     python_prefix=/usr
@@ -193,7 +185,7 @@ AC_CHECK_LIB(readline,readline,
         READLINE_LIBS="$READLINE_LIBS -lreadline"
     ],
     [
-        AC_MSG_ERROR([Couldn'y find readline!])
+        AC_MSG_ERROR([Couldn't find readline!])
     ],[ $READLINE_LIBS ]
 )
     
@@ -206,7 +198,6 @@ AC_TRY_COMPILE(
     AC_DEFINE(READLINE_CXX_SANE, 1, [Define if readline headers are C++ aware]),
     AC_MSG_WARN(Readline C++ workaround enabled)
 )
-
 
 AC_SUBST(VARCONF_LIBS)
 AC_SUBST(SYSTEM_LIBS)
