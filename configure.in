@@ -179,6 +179,7 @@ AC_CHECK_LIB(termcap,tgetent,
     )
 )
 
+AC_CHECK_HEADERS(termios.h unistd.h signal.h)
 AC_CHECK_LIB(readline,readline)
 
 dnl Generate files

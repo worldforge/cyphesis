@@ -12,7 +12,14 @@
 
 #include <string>
 
+#include "config.h"
+
 #include <signal.h>
+#include <unistd.h>
+
+#ifdef HAVE_TERMIOS_H
+#include <termios.h>
+#endif
 
 // This is the currently very basic password management tool, which can
 // be used to control the passwords of accounts in the main servers account
@@ -110,11 +117,27 @@ int main(int argc, char ** argv)
         AccountBase::del();
         return 0;
     }
+
+#ifdef HAVE_TERMIOS_H
+    termios termios_old, termios_new;
+    
+    tcgetattr( STDIN_FILENO, &termios_old );
+    termios_new = termios_old;
+    termios_new.c_lflag &= ~(ICANON|ECHO);
+    tcsetattr( STDIN_FILENO, TCSADRAIN, &termios_new );
+#endif
+    
     std::string password, password2;
     std::cout << "New " << acname << " password:" << std::flush;
     std::cin >> password;
-    std::cout << "Retype " << acname << " password:" << std::flush;
+    std::cout << std::endl << "Retype " << acname << " password:" << std::flush;
     std::cin >> password2;
+    std::cout << std::endl << std::flush;
+    
+#ifdef HAVE_TERMIOS_H
+    tcsetattr( STDIN_FILENO, TCSADRAIN, &termios_old );
+#endif
+    
     if (password == password2) {
         Object::MapType amap;
         amap["id"] = acname;
