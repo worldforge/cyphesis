@@ -25,6 +25,8 @@ class CommServer {
     CommSocketSet m_sockets;
     /// Set of pointer to Idle objects which need to be polled.
     IdleSet m_idlers;
+    /// File descriptor used as handle for Linux epoll.
+    int m_epollFd;
 
     bool idle();
 

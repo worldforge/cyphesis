@@ -257,7 +257,7 @@ void CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
         // ready
         if (m_clientIos.timeout()) {
             debug(std::cerr << "TIMEOUT" << std::endl << std::flush;);
-            m_clientIos.close();
+            m_clientIos.shutdown();
         }
     }
 }

@@ -1,3 +1,10 @@
+In timeout handling, the socket is currently closed. This is wrong,
+as it removes the socket from epoll, causing the CommClient object to
+be leaked.
+
+In an idle loop, time() and gettimeofday() get called straight after each
+other. Stupid.
+
 Write an implementation of the select() code in CommServer that uses epoll
 instead. Much more efficient if its available.
 

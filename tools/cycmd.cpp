@@ -136,8 +136,16 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     int negotiate();
   public:
     Interactive() : error_flag(false), reply_flag(false), login_flag(false),
-                    encoder(NULL), codec(NULL), exit(false),
+                    encoder(0), codec(0), exit(false),
                     monitor_op_count(0), monitor_start_time(0) { }
+    ~Interactive() {
+        if (encoder != 0) {
+            delete encoder;
+        }
+        if (codec != 0) {
+            delete codec;
+        }
+    }
 
     void send(const Atlas::Objects::Operation::RootOperation &);
     int connect(const std::string & host);
@@ -795,9 +803,9 @@ int main(int argc, char ** argv)
     }
     if (!interactive) {
         bridge.exec(cmd, "");
-        return 0;
     } else {
         bridge.loop();
     }
+    delete global_conf;
     return 0;
 }

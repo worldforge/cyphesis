@@ -125,9 +125,9 @@ void Connection::destroy()
 {
 }
 
-void Connection::close()
+void Connection::disconnect()
 {
-    m_commClient.close();
+    m_commClient.disconnect();
 }
 
 bool Connection::verifyCredentials(const Account & account,
@@ -338,7 +338,7 @@ void Connection::LogoutOperation(const Logout & op, OpVector & res)
         info.setRefno(op.getSerialno());
         info.setSerialno(m_server.newSerialNo());
         send(info);
-        close();
+        disconnect();
         return;
     }
     if (!op.getArgs().front().isMap()) {

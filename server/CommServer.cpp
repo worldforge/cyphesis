@@ -2,6 +2,10 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "CommServer.h"
 
 #include "CommClient.h"
@@ -14,6 +18,10 @@
 
 #include <iostream>
 
+#ifdef HAVE_EPOLL_CREATE
+#include <sys/epoll.h>
+#endif // HAVE_EPOLL_CREATE
+
 #include <errno.h>
 
 static const bool debug_flag = false;
@@ -22,10 +30,24 @@ static const bool debug_flag = false;
 /// server object.
 CommServer::CommServer(ServerRouting & svr) : m_server(svr)
 {
+#ifdef HAVE_EPOLL_CREATE
+    // FIXME 64 is a random figure I pulled out of the air. I don't even know
+    // what this is used for.
+    m_epollFd = epoll_create(64);
+    // FIXME This should only fail if there is a shortage of kernel memory,
+    // which should never happen.
+    if (m_epollFd < 0) {
+        log(CRITICAL, "Out of memory calling epoll_create()");
+        exit_flag = true;
+    }
+#endif // HAVE_EPOLL_CREATE
 }
 
 CommServer::~CommServer()
 {
+#ifdef HAVE_EPOLL_CREATE
+    close(m_epollFd);
+#endif // HAVE_EPOLL_CREATE
     CommSocketSet::const_iterator Iend = m_sockets.end();
     for (CommSocketSet::const_iterator I = m_sockets.begin(); I != Iend; ++I) {
         delete *I;
@@ -70,6 +92,40 @@ void CommServer::loop()
     // It may be beneficial to re-write this code to use the poll(2) system
     // call.
     bool busy = idle();
+
+#ifdef HAVE_EPOLL_CREATE
+#warning No epoll implementation yet
+    static struct epoll_event events[16];
+
+    int rval = ::epoll_wait(m_epollFd, events, 16, (busy ? 0 : 100));
+
+    for (int i = 0; i < rval; ++i) {
+        struct epoll_event & event = events[i];
+        CommSocket * cs = (CommSocket *)event.data.ptr;
+        if (event.events & EPOLLHUP) {
+            removeSocket(cs);
+        } else {
+            // FIXME If this never happens, then it can go
+            if (event.events & EPOLLERR) {
+                log(WARNING, "Socket error returned by epoll()");
+            }
+            if (event.events & EPOLLIN) {
+                if (cs->eof()) {
+                    removeSocket(cs);
+                } else {
+                    if (cs->read() != 0) {
+                        // Remove it?
+                        // FIXME It could be bad to do this, as dispatch()
+                        // has not been called.
+                        removeSocket(cs);
+                    } else {
+                        cs->dispatch();
+                    }
+                }
+            }
+        }
+    }
+#else // HAVE_EPOLL_CREATE
 
     fd_set sock_fds;
     int highest = 0;
@@ -138,11 +194,22 @@ void CommServer::loop()
     for (; J != Jend; ++J) {
         removeSocket(*J);
     }
+#endif // HAVE_EPOLL_CREATE
 }
 
 /// Add a new CommSocket object to the manager.
 void CommServer::addSocket(CommSocket * cs)
 {
+#ifdef HAVE_EPOLL_CREATE
+    struct epoll_event ee;
+    ee.events = EPOLLIN | EPOLLERR | EPOLLHUP;
+    ee.data.ptr = cs;
+    int ret = ::epoll_ctl(m_epollFd, EPOLL_CTL_ADD, cs->getFd(), &ee);
+    if (ret != 0) {
+        log(ERROR, "Error calling epoll_ctl to add socket");
+        perror("epoll_ctl");
+    }
+#endif // HAVE_EPOLL_CREATE
     m_sockets.insert(cs);
 }
 
@@ -150,8 +217,17 @@ void CommServer::addSocket(CommSocket * cs)
 ///
 /// Does not take into account if the socket is
 /// @param socket Pointer to the socket object to be removed.
-void CommServer::removeSocket(CommSocket * socket)
+void CommServer::removeSocket(CommSocket * cs)
 {
-    m_sockets.erase(socket);
-    delete socket;
+#ifdef HAVE_EPOLL_CREATE
+    struct epoll_event ee;
+    // FIXME This may not be necessary
+    int ret = ::epoll_ctl(m_epollFd, EPOLL_CTL_DEL, cs->getFd(), &ee);
+    if (ret != 0) {
+        log(ERROR, "Error calling epoll_ctl to remove socket");
+        perror("epoll_ctl");
+    }
+#endif // HAVE_EPOLL_CREATE
+    m_sockets.erase(cs);
+    delete cs;
 }

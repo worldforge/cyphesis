@@ -38,6 +38,7 @@ Root * Object_asRoot(const Element & o)
     return obj;
 }
 
+// FIXME Use factory to create op of the right type.
 bool Object_asOperation(const MapType & ent, RootOperation & op)
 {
     MapType::const_iterator I = ent.find("objtype");

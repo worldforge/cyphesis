@@ -140,7 +140,7 @@ void Account::LogoutOperation(const Logout & op, OpVector &)
     info.setFrom(getId());
     info.setTo(getId());
     m_connection->send(info);
-    m_connection->close();
+    m_connection->disconnect();
 }
 
 const char * Account::getType() const

@@ -73,7 +73,7 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
     CommClient(CommServer &, int fd, Connection &);
     virtual ~CommClient();
 
-    void close() { m_clientIos.close(); }
+    void disconnect() { m_clientIos.shutdown(); }
 
     void setup();
     void send(const Atlas::Objects::Operation::RootOperation &);

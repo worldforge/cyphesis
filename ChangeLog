@@ -1,3 +1,24 @@
+2004-11-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/utility.cpp: Add a FIXME note about more correctly
+	  converting a message to an op.
+
+	* server/CommClient.h, server/CommClient.cpp: Call new shutdown()
+	  method in skstream instead of close when disconnecting or
+	  timing out, so that the socket is still valid. Otherwise
+	  there is no reliable way to detect that the socket is no longer
+	  connected.
+
+	* server/CommClient.h, server/CommClient.cpp, server/Account.cpp,
+	  server/Connection.h, server/Connection.cpp: Rename close() to
+	  disconect() to more accuratly reflect its function.
+
+	* server/CommServer.h, server/CommServer.cpp: Add an implementation
+	  based on epoll which is used if available. Much more efficient
+	  and scalable.
+
+	* tools/cycmd.cpp: Fix a couple of memory leaks.
+
 2004-11-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Check for epoll.

@@ -42,7 +42,7 @@ class Connection : public OOGThing {
     void objectDeleted(std::string id);
 
     void destroy();
-    void close();
+    void disconnect();
     void send(const RootOperation & msg) const;
 
     virtual bool verifyCredentials(const Account &, const MapType &) const;
