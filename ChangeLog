@@ -1,5 +1,10 @@
 2004-11-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/operations.cpp, common/operations.h, common/Unseen.h:
+	  Add new unseen operation.
+
+2004-11-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/BBox.cpp, physics/BBox.h: Add functions to cheapy
 	  determine the bounding radius of a bounding box.
 

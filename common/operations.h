@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2004 Alistair Riddoch
 
 #ifndef COMMON_OPERATIONS_H
 #define COMMON_OPERATIONS_H
@@ -33,6 +33,7 @@ namespace Atlas {
             class Move;
             class Set;
             class Get;
+            class Perception;
             class Sight;
             class Sound;
             class Touch;
@@ -51,6 +52,7 @@ namespace Atlas {
             class Burn;
             class Use;
             class Wield;
+            class Unseen;
             class Generic;
             class RootOperation;
         }

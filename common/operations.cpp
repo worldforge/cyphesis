@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2004 Alistair Riddoch
 
 #include "Chop.h"
 #include "Cut.h"
@@ -10,6 +10,7 @@
 #include "Nourish.h"
 #include "Setup.h"
 #include "Tick.h"
+#include "Unseen.h"
 #include "Use.h"
 #include "Wield.h"
 
@@ -157,6 +158,25 @@ Tick::~Tick()
 Tick Tick::Class()
 {
     Tick value("tick", "root_operation");
+    value.setObjtype(std::string("op_definition"));
+    return value;
+}
+
+Unseen::Unseen() : Perception("", "unseen")
+{
+}
+
+Unseen::Unseen(const char * id, const char * parent) : Perception(id, parent)
+{
+}
+
+Unseen::~Unseen()
+{
+}
+
+Unseen Unseen::Class()
+{
+    Unseen value("unseen", "perception");
     value.setObjtype(std::string("op_definition"));
     return value;
 }
