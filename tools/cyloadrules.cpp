@@ -27,8 +27,13 @@ class RuleBase {
     static RuleBase * instance() {
         if (m_instance == NULL) {
             m_instance = new RuleBase();
-            m_instance->m_connection.initConnection(true);
-            m_instance->m_connection.initRule(true);
+            if (!m_instance->m_connection.initConnection(true)) {
+                delete m_instance;
+                m_instance = 0;
+            } else if (!m_instance->m_connection.initRule(true)) {
+                delete m_instance;
+                m_instance = 0;
+            }
         }
         return m_instance;
     }
@@ -101,10 +106,16 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    RuleBase & db = *RuleBase::instance();
+    RuleBase * db = RuleBase::instance();
+
+    if (db == 0) {
+        std::cerr << argv[0] << ": Could not make database connection."
+                  << std::endl << std::flush;
+        return 1;
+    }
 
     if (argc == 2) {
-        FileDecoder f(argv[1], db);
+        FileDecoder f(argv[1], *db);
         if (!f.isOpen()) {
             std::cerr << "ERROR: Unable to open file " << argv[1]
                       << std::endl << std::flush;
@@ -113,11 +124,11 @@ int main(int argc, char ** argv)
         f.read();
         f.report();
     } else {
-        db.clearRules();
+        db->clearRules();
         std::vector<std::string>::const_iterator I = rulesets.begin();
         for (; I != rulesets.end(); ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
-            FileDecoder f(etc_directory + "/cyphesis/" + *I + ".xml", db);
+            FileDecoder f(etc_directory + "/cyphesis/" + *I + ".xml", *db);
             if (!f.isOpen()) {
                 std::cerr << "ERROR: Unable to open file " << argv[1]
                           << std::endl << std::flush;
@@ -128,5 +139,5 @@ int main(int argc, char ** argv)
         }
     }
 
-    delete &db;
+    delete db;
 }

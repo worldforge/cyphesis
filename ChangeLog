@@ -1,3 +1,9 @@
+2003-09-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cydbload.cpp, tools/cyloadrules.cpp: Fix tools so that
+	  they detect if they cannot connect to the database, and do
+	  not incorrectly report that they have succeeded.
+
 2003-09-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* Version 0.2.3 release.

@@ -26,8 +26,13 @@ class WorldAccessor {
     static WorldAccessor * instance() {
         if (m_instance == NULL) {
             m_instance = new WorldAccessor();
-            m_instance->m_connection.initConnection(true);
-            m_instance->m_connection.initWorld(true);
+            if (!m_instance->m_connection.initConnection(true)) {
+                delete m_instance;
+                m_instance = 0;
+            } else if (!m_instance->m_connection.initWorld(true)) {
+                delete m_instance;
+                m_instance = 0;
+            }
         }
         return m_instance;
     }
@@ -133,9 +138,15 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    WorldAccessor & db = *WorldAccessor::instance();
+    WorldAccessor * db = WorldAccessor::instance();
 
-    FileDecoder f(argv[1], db);
+    if (db == 0) {
+        std::cerr << argv[0] << ": Could not make database connection."
+                  << std::endl << std::flush;
+        return 1;
+    }
+
+    FileDecoder f(argv[1], *db);
     if (!f.isOpen()) {
         std::cerr << "ERROR: Unable to open file " << argv[1]
                   << std::endl << std::flush;
@@ -143,5 +154,5 @@ int main(int argc, char ** argv)
     }
     f.read();
     f.report();
-    delete &db;
+    delete db;
 }
