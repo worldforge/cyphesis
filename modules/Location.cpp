@@ -42,7 +42,7 @@ using namespace Message;
 void Location::addObject(Object * obj)
 {
     Object::MapType & omap = obj->AsMap();
-#if 0
+#if !USE_OLD_LOC
     if (parent!=NULL) {
         omap["loc"] = Object(parent->fullid);
     } else {

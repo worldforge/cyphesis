@@ -141,7 +141,6 @@ oplist Thing::Operation(const Move & op)
     if (args.size() == 0) {
        return(res);
     }
-#define USE_OLD_LOC 1
     try {
         cout << 1;
         Message::Object::MapType ent = args.front().AsMap();

@@ -239,8 +239,6 @@ oplist Character::Mind_Operation(const Tick & op)
     return(oplist(1,t));
 }
 
-#define USE_OLD_LOC 1
-
 oplist Character::Mind_Operation(const Move & op)
 {
     cout << "Character::mind_move_op" << endl << flush;

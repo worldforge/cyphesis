@@ -3,6 +3,8 @@
 
 #include <physics/Vector3D.h>
 
+#define USE_OLD_LOC 1
+
 class BaseEntity;
 
 class Location {
