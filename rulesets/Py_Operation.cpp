@@ -365,6 +365,13 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid operation");
     }
+    if (other == Py_None) {
+        printf("Adding None to an operation\n");
+        OplistObject * res = newOplistObject(NULL);
+        res->ops = new oplist();
+        res->ops->push_back(self->operation);
+        return (PyObject*)res;
+    }
     if ((PyTypeObject*)PyObject_Type(other) == & Oplist_Type) {
         OplistObject * opl = (OplistObject*)other;
         if (opl->ops == NULL) {
@@ -398,6 +405,20 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
 }
 
 /*
+ * Operation numerical methods.
+ */
+
+static int Operation_num_coerce(PyObject ** self, PyObject ** other)
+{
+    //if (*other == Py_None) {
+        Py_INCREF(*self);
+        return(0);
+    //}
+    //return -1;
+}
+
+
+/*
  * Operation numerical methods structure.
  */
 
@@ -419,7 +440,7 @@ static PyNumberMethods Operation_num = {
 	0,
 	0,
 	0,
-	0,
+	Operation_num_coerce,
 	0,
 	0,
 	0,

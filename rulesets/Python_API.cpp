@@ -15,7 +15,7 @@ static void Function_dealloc(FunctionObject * self)
     PyMem_DEL(self);
 }
 
-static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * foo)
+static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * kwds)
 {
     printf("LOG.DEBUG\n");
     Py_INCREF(Py_None);
@@ -40,6 +40,60 @@ PyTypeObject log_debug_type = {
 	0,		/* tp_as_mapping */
 	0,		/* tp_hash */
 	log_debug,	/* tp_call */
+};
+
+static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject * kwds)
+{
+    PyObject * dict, * item;
+    char * key;
+    if (!PyArg_ParseTuple(args, "OsO", &dict, &key, &item)) {
+        return NULL;
+    }
+    if (!PyDict_Check(dict)) {
+        PyErr_SetString(PyExc_TypeError, "Dict is not a dictionary");
+        return NULL;
+    }
+    PyObject * list = PyDict_GetItemString(dict, key);
+    if (list != NULL) {
+        if (!PyList_Check(list)) {
+            PyErr_SetString(PyExc_TypeError, "Dict does not contain a list");
+            return NULL;
+        }
+        int i, size = PyList_Size(list);
+        for(i = 0; i < size; i++) {
+            if (PyList_GetItem(list, i) == item) {
+                goto present;
+            }
+        }
+        PyList_Append(list, item);
+    } else {
+        list = PyList_New(1);
+        PyList_SetItem(list, 1, item);
+        PyDict_SetItemString(dict, key, list);
+    }
+present:
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+PyTypeObject dictlist_add_value_type = {
+	PyObject_HEAD_INIT(&PyType_Type)
+	0,
+	"Function",
+	sizeof(FunctionObject),
+	0,
+	/* methods */
+	(destructor)Function_dealloc,
+	0,		/* tp_print */
+	0,		/* tp_getattr */
+	0,		/* tp_setattr */
+	0,		/* tp_compare */
+	0,		/* tp_repr */
+	0,		/* tp_as_number */
+	0,		/* tp_as_sequence */
+	0,		/* tp_as_mapping */
+	0,		/* tp_hash */
+	dictlist_add_value,	/* tp_call */
 };
 
 void Create_PyThing(Thing * thing, const string & package, const string & type)
@@ -94,14 +148,39 @@ static PyObject * location_new(PyObject * self, PyObject * args)
 static PyObject * vector3d_new(PyObject * self, PyObject * args)
 {
 	Vector3DObject *o;
+        Vector3D val;
 	// We need to deal with actual args here
-	if (!PyArg_ParseTuple(args, "")) {
-		return NULL;
-	}
+        PyObject * clist;
+        double x,y,z;
+        if ( (PyArg_ParseTuple(args, "O", &clist)) &&
+                    (PyList_Check(clist)) &&
+                    (PyList_Size(clist) == 3) ) {
+            PyObject * X = PyList_GetItem(clist, 0);
+            PyObject * Y = PyList_GetItem(clist, 1);
+            PyObject * Z = PyList_GetItem(clist, 2);
+            if (PyFloat_Check(X) && PyFloat_Check(Y) && PyFloat_Check(Z)) {
+                val = Vector3D(PyFloat_AsDouble(X),
+                               PyFloat_AsDouble(Y),
+                               PyFloat_AsDouble(Z));
+            } else if (PyInt_Check(X) && PyInt_Check(Y) && PyInt_Check(Z)) {
+                val = Vector3D(double(PyInt_AsLong(X)),
+                               double(PyInt_AsLong(Y)),
+                               double(PyInt_AsLong(Z)));
+            } else {
+                PyErr_SetString(PyExc_TypeError, "Vector3D must take list of floats, or ints");
+                return NULL;
+            }
+        } else if (PyArg_ParseTuple(args, "ddd", &x, &y, &z)) {
+            val = Vector3D(x,y,z);
+        } else if (!PyArg_ParseTuple(args, "")) {
+            return NULL;
+        }
+            
 	o = newVector3DObject(args);
 	if ( o == NULL ) {
 		return NULL;
 	}
+        o->coords = val;
 	return (PyObject *)o;
 }
 
@@ -126,7 +205,8 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
 {
 	OplistObject *o;
 	
-	if (!PyArg_ParseTuple(args, "")) {
+        PyObject * op1 = NULL, * op2 = NULL;
+	if (!PyArg_ParseTuple(args, "|OO", &op1, &op2)) {
 		return NULL;
 	}
 	o = newOplistObject(args);
@@ -134,6 +214,20 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
 		return NULL;
 	}
 	o->ops = new oplist();
+        if (op1 != NULL) {
+           if ((PyTypeObject *)PyObject_Type(op1) != &RootOperation_Type) {
+               PyErr_SetString(PyExc_TypeError, "Argument must be an op");
+               return NULL;
+           }
+           o->ops->push_back( ((RootOperationObject*)op1)->operation );
+        }
+        if (op2 != NULL) {
+           if ((PyTypeObject *)PyObject_Type(op2) != &RootOperation_Type) {
+               PyErr_SetString(PyExc_TypeError, "Argument must be an op");
+               return NULL;
+           }
+           o->ops->push_back( ((RootOperationObject*)op2)->operation );
+        }
 	return (PyObject *)o;
 }
 
@@ -149,6 +243,53 @@ static PyObject * object_new(PyObject * self, PyObject * args)
 		return NULL;
 	}
 	o->m_obj = new Object;
+	return (PyObject *)o;
+}
+
+static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
+{
+	AtlasObject *o;
+        char * id = NULL;
+	
+	if (!PyArg_ParseTuple(args, "|s", id)) {
+		return NULL;
+	}
+        Object::MapType _omap;
+        Object obj(_omap);
+        Object::MapType & omap = obj.AsMap();
+        if (id != NULL) {
+            omap["id"] = string(id);
+        }
+        PyObject * keys = PyMapping_Keys(kwds);
+        PyObject * vals = PyMapping_Values(kwds);
+        if ((keys == NULL) || (vals == NULL)) {
+            PyErr_SetString(PyExc_TypeError, "Error in keywords");
+            return NULL;
+        }
+        int i, size=PyMapping_Length(keys); 
+        for(i = 0; i < size; i++) {
+            char * key = PyString_AsString(PyList_GetItem(keys, i));
+            PyObject * val = PyList_GetItem(vals, i);
+            if ((strcmp(key, "location") == 0) &&
+                ((PyTypeObject *)PyObject_Type(val) == &Location_Type)) {
+                LocationObject * loc = (LocationObject*)val;
+                loc->location->addObject(&obj);
+            } else {
+                Object val_obj = PyObject_asObject(val);
+                if (val_obj.GetType() == Object::TYPE_NONE) {
+                    printf("Could not handle %s value in Entity()", key);
+                    PyErr_SetString(PyExc_TypeError, "Argument type error to Entity()");
+                    return NULL;
+                }
+                omap[key] = val_obj;
+            }
+        }
+        
+	o = newAtlasObject(args);
+	if ( o == NULL ) {
+		return NULL;
+	}
+	o->m_obj = new Object(obj);
 	return (PyObject *)o;
 }
 
@@ -204,6 +345,9 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     } else {
         printf("ERROR: PYTHON CREATING AN UNHANDLED OPERATION\n");
         *op->operation = RootOperation::Instantiate();
+        // FIXME, just to test
+        Py_INCREF(Py_None);
+        return Py_None;
     }
     if (PyMapping_HasKeyString(kwds, "to")) {
         to = PyMapping_GetItemString(kwds, "to");
@@ -276,6 +420,7 @@ static PyMethodDef atlas_methods[] = {
     {"Operation",  (PyCFunction)operation_new,	METH_VARARGS|METH_KEYWORDS},
     {"Location",   location_new,		METH_VARARGS},
     {"Object",     object_new,			METH_VARARGS},
+    {"Entity",     (PyCFunction)entity_new,	METH_VARARGS|METH_KEYWORDS},
     {"Message",    oplist_new,			METH_VARARGS},
     {"cppThing",   cppthing_new,		METH_VARARGS},
     {NULL,		NULL}				/* Sentinel */
@@ -350,10 +495,10 @@ void init_python_api()
 	printf("Created common thing\n");
 	PyObject * _const = PyModule_New("const");
 	PyObject * log = PyModule_New("log");
-        PyObject * debug = (PyObject *)PyObject_NEW(FunctionObject, &log_debug_type);
 	dict = PyModule_GetDict(common);
 	PyDict_SetItemString(dict, "const", _const);
 	PyDict_SetItemString(dict, "log", log);
+        PyObject * debug = (PyObject *)PyObject_NEW(FunctionObject, &log_debug_type);
 	PyObject_SetAttrString(log, "debug", debug);
 	//PyDict_SetItemString(dict, "misc", misc);
 	PyObject_SetAttrString(_const, "server_python", PyInt_FromLong(0));
@@ -390,6 +535,8 @@ void init_python_api()
 	}
 	dict = PyModule_GetDict(server);
 	PyObject * dictlist = PyModule_New("dictlist");
+        PyObject * add_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_add_value_type);
+	PyObject_SetAttrString(dictlist, "add_value", add_value);
 	PyDict_SetItemString(dict, "dictlist", dictlist);
 	if (PyExc_IOError != NULL) {
 		printf("Got PyExc_IOError\n");

@@ -3,6 +3,7 @@
 
 from atlas import *
 from misc import set_kw
+from types import *
 
 def get_dict_func(self, dict, func_str, func_undefined):
     """get method by name from dictionary

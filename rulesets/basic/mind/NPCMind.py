@@ -3,6 +3,7 @@
 
 from atlas import *
 from common import const
+from types import *
 
 if const.server_python:
     from world.physics.Vector3D import Vector3D
@@ -34,7 +35,7 @@ class NPCMind(BaseMind):
         self.knowledge=Knowledge()
         self.mem=Memory(map=self.map)
         self.things={}
-        self.reverse_knowledge()
+        self._reverse_knowledge()
         self.goals=[]
         self.money_transfers=[]
         self.trigger_goals={}
@@ -76,7 +77,7 @@ class NPCMind(BaseMind):
         if self.message_queue:
             result = self.message_queue + result
             self.message_queue = None
-        return result+opTick
+        return opTick+result
     ########## Sight operations
     def sight_create_operation(self, original_op, op):
         #BaseMind version overridden!
@@ -217,7 +218,7 @@ class NPCMind(BaseMind):
             reply = reply + goal.event(self, op, sub_op)
         return reply
     ########## Generic knowledge
-    def reverse_knowledge(self):
+    def _reverse_knowledge(self):
         """normally location: tell where items reside
            reverse location tells what resides in this spot"""
         self.reverse_knowledge=Knowledge()

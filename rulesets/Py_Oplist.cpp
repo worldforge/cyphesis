@@ -5,8 +5,28 @@
 
 #include "Python_API.h"
 
+static PyObject* Oplist_append(OplistObject * self, PyObject * args)
+{
+    if (self->ops == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid oplist");
+        return NULL;
+    }
+    PyObject * op;
+    if (!PyArg_ParseTuple(args, "O", &op)) {
+        return NULL;
+    }
+    if ((PyTypeObject*)PyObject_Type(op) != &RootOperation_Type) {
+        PyErr_SetString(PyExc_TypeError, "Append must be an op");
+        return NULL;
+    }
+    self->ops->push_back(((RootOperationObject*)op)->operation);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+
 PyMethodDef Oplist_methods[] = {
-    //{"update",		(PyCFunction)Oplist_update,	METH_VARARGS},
+    {"append",		(PyCFunction)Oplist_append,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };
 
