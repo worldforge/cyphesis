@@ -11,6 +11,8 @@ inheritancetest
 systemtest
 utilitytest
 type_utilstest
+consttest
+randomtest
 emergencetest
 collisiontest
 transformtest
