@@ -1,5 +1,10 @@
 2004-06-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* Add internal wall structure for house3, and setup rule for
+	  new blockhouse model.
+
+2004-06-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* Add to the list of predators that chicken avoids.
 
 	* rulesets/Thing.cpp, rulesets/Entity.cpp: Don't read bbox in
