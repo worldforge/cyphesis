@@ -175,8 +175,10 @@ int main(int argc, char ** argv)
     // by the game has been done before exit flag was set.
     log(NOTICE, "Performing clean shutdown...");
 
-    } // close scope of CommServer, which cause the destruction of the
-      // server and world objects, and the entire world contents
+    } // close scope of CommServer, WorldRouter, and ServerRouting, which
+      // cause the destruction of the server and world objects, and the entire
+      // world contents
+    log(NOTICE, "World deleted...");
 
     Persistance::shutdown();
 

@@ -1,3 +1,5 @@
+Get rid of fallback stringstream implementation.
+
 It may be possible to get rid of getXyz() (crappy absolute position)
 
 Re-write Thing Appearance / Disappearance checking to use squareDistance()

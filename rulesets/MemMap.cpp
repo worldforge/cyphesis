@@ -11,6 +11,7 @@
 
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/stringstream.h"
 
 #include <Atlas/Objects/Operation/Look.h>
 
@@ -252,6 +253,9 @@ const Element MemMap::asObject()
 
 void MemMap::flush()
 {
+    std::stringstream s;
+    s << "Flushing memory with " << m_entities.size() << " memories";
+    log(NOTICE, s.str().c_str());
     MemEntityDict::const_iterator I = m_entities.begin();
     for (; I != m_entities.end(); I++) {
         delete I->second;
