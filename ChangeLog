@@ -1,5 +1,10 @@
 2004-09-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Creator.cpp: Update a FIXME comment with a new possible
+	  solution.
+
+2004-09-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/BaseMind.cpp: Use parent of sub op when dispatching
 	  sight and sound ops to mind scripts.
 

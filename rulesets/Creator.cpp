@@ -46,14 +46,15 @@ void Creator::sendExternalMind(const RootOperation & op, OpVector & res)
 void Creator::operation(const RootOperation & op, OpVector & res)
 {
     debug( std::cout << "Creator::operation" << std::endl << std::flush;);
-    // FIXME Why is this function here? If we want to block some ops,
-    // why not just override them? Set and Burn are perhaps candidates.
-    // Talk and Imaginary are currently blocked, and perhaps it is best
-    // to leave normal communication unimplemented. Tick is required for
-    // movement to function, but is currenlty blocked. Eat and
-    // Nourish should remain blocked.
-    // One reason this is here so so that all ops from world are sent
-    // to the mind, skipping the world2mind() filter.
+    // FIXME Why not just call callOperation() to handle the type switch?
+    // The only real reason is that we avoid passing the Delete op to the
+    // mind, so we return early here. Could check for the Delete op in
+    // sendExternalMind() when the mind is gone, thus getting rid of the
+    // problem.
+    // To switch to using callOperation(), some more op handlers would
+    // need to be implemented, in particular SetupOperation() would need
+    // need to be implemented as below. Some might need to be blocked
+    // to prevent anyone from messing with us, like SetOperation().
     OpNo op_no = opEnumerate(op);
     switch(op_no) {
         case OP_CREATE:
