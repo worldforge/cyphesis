@@ -1,6 +1,6 @@
 2004-12-10  Al Riddoch  <alriddoch@zepler.org>
 
-	* tests/Creatortest.cpp, tests/Worldtest.cpp: Fix some tests.
+	* tests/Creatortest.cpp, tests/Worldtest.cpp: Fix up the tests.
 
 2004-12-08  Al Riddoch  <alriddoch@zepler.org>
 
