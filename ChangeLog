@@ -1,5 +1,10 @@
 2003-10-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/Collision.cpp: Main body of collision code in place.
+	  Needs cleaning, debugging and testing.
+
+2003-10-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Collision.cpp: Collision code now builds again.
 
 2003-10-16  Al Riddoch  <alriddoch@zepler.org>

@@ -63,6 +63,58 @@ bool predictCollision(const Vector3D & p,     // Position of point
     return (Dot(p - l, n) > 0.);
 }
 
+void predictEntryExit(const CoordList & c,          // Vertices of this mesh
+                      const Vector3D & u,           // Velocity of this mesh
+                      const CoordList & o,          // Vertices of other mesh
+                      const NormalSet & n,          // Normals of other mesh
+                      const Vector3D & v,           // Velocity of other mesh
+                      double & latest_entry_time,   // Time last vertex enters
+                      double & earliest_exit_time,  // Time last vertex leaves
+                      Vector3D & normal)            // Returned collision normal
+{
+    // Check l vertices against o surfaces
+    CoordList::const_iterator I = c.begin();
+    NormalSet::const_iterator J = n.begin();
+    for (; J != n.end(); ++J) {
+        const Vector3D & s_pos = o[J->first];
+        const Vector3D & s_norm = J->second;
+        for (; I != c.end(); ++I) {
+            double time;
+            Vector3D entry_normal;
+            if (predictCollision(*I, u, s_pos, s_norm, v, time, entry_normal)) {
+                // We are in front of the plane, so time is time to hit
+                if (time > 0) {
+                    if (time > latest_entry_time) {
+                        latest_entry_time = time;
+                        normal = entry_normal;
+                    }
+                // or time since we exited
+                } else {
+                    // Irrelevant case I think
+                    if (time < earliest_exit_time) {
+                        earliest_exit_time = time;
+                    }
+                }
+            } else {
+                // We are behind the plane, so time is time to exit
+                if (time > 0) {
+                    if (time < earliest_exit_time) {
+                        earliest_exit_time = time;
+                    }
+                // or time since we hit
+                } else {
+                    // Irrelevant case I think
+                    if (time > latest_entry_time) {
+                        latest_entry_time = time;
+                    }
+                }
+            }
+                
+            // FIXME Now what?
+        }
+    }
+}
+
 bool predictCollision(const CoordList & l,    // Vertices of this mesh
                       const NormalSet & ln,   // Normals of this mesh
                       const Vector3D & u,     // Velocity of this mesh
@@ -70,23 +122,12 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
                       const NormalSet & on,   // Normals of other mesh
                       const Vector3D & v,     // Velocity of other mesh
                       double & time,          // Returned time to collision
-                      Vector3D & normal)      // Returned collision normal
+                      Vector3D & n)      // Returned collision normal
 {
-    // Check l vertices against o surfaces
-    CoordList::const_iterator I = l.begin();
-    NormalSet::const_iterator J = on.begin();
-    for (; J != on.end(); ++J) {
-        const Vector3D & surface_pos = o[J->first];
-        const Vector3D & surface_normal = J->second;
-        for (; I != l.end(); ++I) {
-            double time;
-            bool collision = predictCollision(*I, u,
-                                              surface_pos, surface_normal, v,
-                                              time, normal);
-            // FIXME Now what?
-        }
-    }
-    return false;
+    double latest_entry_time = 0, earliest_exit_time = -0.1;
+    predictEntryExit(l, u, o, on, v, latest_entry_time, earliest_exit_time, n);
+    predictEntryExit(o, v, l, ln, u, latest_entry_time, earliest_exit_time, n);
+    return (earliest_exit_time > latest_entry_time);
 }
 
 //
