@@ -1,14 +1,8 @@
 Definitly for Acorn 0.4:
 
-  Implement ranges.
-  Fully implement propper range checking for broadcast operations, instead
-  if the primitive implementation currently in place.
   Add handling of Appearance operations to BaseMind.
 
   Implement loading the same map as the client.
-
-  Sort out setting of bounding boxes on objects, particularly objects
-  of similar type with varying shape such as buildings.
 
   Sort out collision detection wrt moving alongside an object in close
   proximity, and add CD for two moving objects.
@@ -33,7 +27,7 @@ Definitly for Acorn 0.4:
 
 Provisional for Acorn 0.4:
 
-  Implement accelerated Atlas Objects API. MAYBE: POSTPONE!
+  Implement accelerated Atlas Objects API. MAYBE: POSTPONED FROM 0.3
 
 Required for werewolf:
 

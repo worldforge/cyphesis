@@ -235,7 +235,7 @@ class Vector3D {
         double enter = max(min(xt), max(min(yt),min(zt)));
         double leave = min(max(xt), min(max(yt),max(zt)));
         cout << "E" << enter << " L" << leave << endl << flush;
-        if (enter > 0) { return -1; }
+        // if (enter > 0) { return -1; }
         return leave;
     }
 

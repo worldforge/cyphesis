@@ -18,6 +18,8 @@
 #include <common/debug.h>
 #include <common/const.h>
 
+#include <strstream>
+
 extern "C" {
     #include <stdio.h>
 }
@@ -79,15 +81,15 @@ inline RootOperation * WorldRouter::get_operation_from_queue()
     return(op);
 }
 
-inline string WorldRouter::get_id(string & name)
+inline std::string WorldRouter::get_id(std::string & name)
 {
-    string full_id;
+    std::string full_id;
 
-    char buf[32];
-    sprintf(buf, "%d", ++next_id);
-    full_id = name + string("_") + string(buf);
+    std::strstream buf;
+    buf << name << "_" << ++next_id;
+    full_id = std::string(buf.str(), buf.pcount());
     size_t index;
-    while ((index = full_id.find(' ', 0)) != string::npos) {
+    while ((index = full_id.find(' ', 0)) != std::string::npos) {
         full_id[index] = '_';
     }
     return(full_id);
@@ -221,8 +223,7 @@ oplist WorldRouter::operation(const RootOperation * op)
                 const string & from = newop.GetFrom();
                 if ((from.size() != 0) &&
                     (fobjects.find(from) != fobjects.end()) &&
-                    (fobjects[from]->location.ref == (*I)->location.ref) &&
-                    (!fobjects[from]->location.inRange((*I)->location.coords,
+                    (!fobjects[from]->location.inRange((*I)->location,
                                                        consts::sight_range))) {
                         debug(cout << "Op from " <<from<< " cannot be seen by "
                                    << (*I)->fullid << endl << flush;);

@@ -1,3 +1,20 @@
+2001-03-20  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* physics/Vector3D.h: Detect leaving time of bounding box, even if
+	  entity is not yet in it.
+
+	* modules/Location.h, modules/Location.cpp: Added get_xyz() to
+	  find absolute coordinates.
+
+	* modules/Location.h: Added true location based range checking.
+
+	* servers/WorldRouter.cpp: Implemented new location based range
+	  checking so that operations that take place inside buildings are
+	  range checked properly.
+
+	* servers/WorldRouter.cpp: Re-wrote id generation code to be a bit
+	  more robust.
+
 2001-03-19  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* physics/Vector3D.h: Corrected variable name convention error in
