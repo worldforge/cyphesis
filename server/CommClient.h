@@ -35,6 +35,7 @@ class CommClient : Atlas::Objects::Decoder {
   protected:
     virtual void UnknownObjectArrived(const Atlas::Message::Object&);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Login & op);
+    virtual void ObjectArrived(const Atlas::Objects::Operation::Logout & op);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Create & op);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Imaginary & op);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Move & op);
@@ -57,15 +58,15 @@ class CommClient : Atlas::Objects::Decoder {
         }
     }
 
-    void send(const Atlas::Objects::Operation::RootOperation * op) {
-        if (op && isOpen()) {
+    void send(const Atlas::Objects::Operation::RootOperation & op) {
+        if (isOpen()) {
             //    std::fstream file(1);
             //    Atlas::Codecs::XML c(file, (Atlas::Bridge*)this);
             //    Atlas::Objects::Encoder enc(&c);
             //    enc.StreamMessage(op);
             //    std::cout << std::endl << flush;
 
-            encoder->StreamMessage(op);
+            encoder->StreamMessage(&op);
             clientIos << std::flush;
             if (clientIos.timeout()) {
                 clientIos.close();

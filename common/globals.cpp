@@ -47,7 +47,7 @@ bool loadConfig(int argc, char ** argv)
                                                  "/cyphesis/cyphesis.vconf");
     if (!main_config) {
         std::cerr << "FATAL: Unable to read main config file "
-                  << share_directory << "/cyphesis/cyphesis.vconf."
+                  << etc_directory << "/cyphesis/cyphesis.vconf."
                   << std::endl;
         if (home_dir_config) {
             std::cerr << "Try removing .cyphesis.vconf from your home directory as it may specify an invalid installation directory, and then restart cyphesis."

@@ -41,7 +41,7 @@ Connection::~Connection()
 {
 }
 
-void Connection::send(const RootOperation * msg) const
+void Connection::send(const RootOperation & msg) const
 {
     commClient.send(msg);
 }

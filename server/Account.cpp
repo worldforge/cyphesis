@@ -96,7 +96,7 @@ OpVector Account::LogoutOperation(const Logout & op)
     info.SetSerialno(connection->server.getSerialNo());
     info.SetFrom(getId());
     info.SetTo(getId());
-    connection->send(&info);
+    connection->send(info);
     connection->destroy();
     return OpVector();
 }

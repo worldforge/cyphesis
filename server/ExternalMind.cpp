@@ -18,6 +18,6 @@ ExternalMind::~ExternalMind()
 
 OpVector ExternalMind::message(const RootOperation & op)
 {
-    connection.send(&op);
+    connection.send(op);
     return OpVector();
 }

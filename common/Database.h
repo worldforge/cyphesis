@@ -23,7 +23,6 @@ class Decoder : public Atlas::Message::DecoderBase {
     }
 };
 
-class DatabaseIterator;
 class PgDatabase;
 
 class Database {
@@ -78,8 +77,6 @@ class Database {
     bool initRule(bool createTables = false);
 
     void shutdownConnection();
-
-    friend class DatabaseIterator;
 };
 
 #endif // COMMON_DATABSE_H

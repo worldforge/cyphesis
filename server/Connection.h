@@ -35,7 +35,7 @@ class Connection : public OOGThing {
     }
 
     void destroy();
-    inline void send(const RootOperation * msg) const;
+    inline void send(const RootOperation & msg) const;
 
     virtual OpVector operation(const RootOperation & op);
 

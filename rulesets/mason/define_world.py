@@ -101,6 +101,8 @@ def default(mapeditor):
     m.make('boundary',type='boundary',xyz=(-201, 200,settlement_height),bbox=[304,2,50])
     m.make('boundary',type='boundary',xyz=( 200,-201,settlement_height),bbox=[2,204,50])
 
+    m.make('willow',type='willow',xyz=(-10,-0,settlement_height))
+    m.make('hickory',type='hickory',xyz=(-0,-10,settlement_height))
 # a camp near the origin
 
     #cfire=m.make('campfire',type='campfire',xyz=(0,4,settlement_height))

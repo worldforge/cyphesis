@@ -58,7 +58,7 @@ OpVector Lobby::operation(const RootOperation & op)
             Connection * c = I->second->connection;
             if (c != NULL) {
                 newop.SetTo(I->first);
-                c->send(&newop);
+                c->send(newop);
             }
         }
     } else {
@@ -68,7 +68,7 @@ OpVector Lobby::operation(const RootOperation & op)
         } else {
             Connection * c = I->second->connection;
             if (c != NULL) {
-                c->send(&op);
+                c->send(op);
             }
         }
     }

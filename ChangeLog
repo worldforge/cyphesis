@@ -1,3 +1,18 @@
+2002-06-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.h: Remove stray code.
+
+	* common/globals.cpp: Fix incorrect usage of share dir.
+
+	* server/Account.cpp, server/CommClient.cpp, server/CommClient.h,
+	  server/CommServer.cpp, server/Connection.cpp, server/Connection.h,
+	  server/Connection_methods.h, server/ExternalMind.cpp,
+	  server/Lobby.cpp: Use reference instead of pointer in send
+	  methods.
+
+	* server/CommClient.h, server/CommClient.cpp: Adding missing handling
+	  for Logout.
+
 2002-06-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp, rulesets/Python_API.cpp: Remove some

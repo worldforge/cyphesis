@@ -247,7 +247,7 @@ inline void CommServer::removeClient(CommClient * client, char * error_msg)
     e.SetArgs(eargs);
 
     if (client->online() && client->isOpen()) {
-        client->send(&e);
+        client->send(e);
     }
     clients.erase(client);
     delete client;

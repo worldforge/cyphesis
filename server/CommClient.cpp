@@ -92,7 +92,7 @@ void CommClient::message(const RootOperation & op)
     OpVector reply = connection.message(op);
     for(OpVector::const_iterator I = reply.begin(); I != reply.end(); I++) {
         debug(std::cout << "sending reply" << std::endl << std::flush;);
-        send(*I);
+        send(**I);
         delete *I;
     }
 }
@@ -120,6 +120,12 @@ void CommClient::UnknownObjectArrived(const Object& o)
 void CommClient::ObjectArrived(const Login & op)
 {
     debug(std::cout << "A login operation thingy here!" << std::endl << std::flush;);
+    message(op);
+}
+
+void CommClient::ObjectArrived(const Logout & op)
+{
+    debug(std::cout << "A logout operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
