@@ -140,7 +140,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     const Vector3D & target = m_collPos ? m_collPos : m_targetPos;
     if (target) {
         Vector3D new_coords2 = new_coords;
-        new_coords2 += Vector3D(m_velocity) /= (consts::basic_tick / 10.0);
+        new_coords2 += Vector3D(m_velocity) *= (consts::basic_tick / 10.0);
         // The values returned by relativeDistance are squares, so
         // cannot be used except for comparison
         double dist = target.relativeDistance(new_coords);

@@ -1,3 +1,11 @@
+2002-05-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Pedestrian.cpp: Fix bug in movement logic that meant
+	  small moves occured instantaneously.
+
+	* rulesets/Line.cpp: Fix to line code. Thanks to Wolfgang Beutner
+	  for pointing out the bug.
+
 2002-05-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Creator.cpp: Admin's creator entity serves no purpose

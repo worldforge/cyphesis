@@ -50,7 +50,7 @@ void Line::set(const std::string & aname, const Object & attr)
 
 void Line::addToObject(Atlas::Message::Object::MapType & omap) const
 {
-    omap["start_intersections"] = idListAsObject(endIntersections);
+    omap["start_intersections"] = idListAsObject(startIntersections);
     omap["end_intersections"] = idListAsObject(endIntersections);
     omap["coords"] = coordListAsObject(coords);
 }
