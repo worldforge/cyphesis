@@ -225,7 +225,7 @@ oplist WorldRouter::operation(const RootOperation * op)
                 }
             }
             newop.SetTo((*I)->getId());
-            // FIXME THere must be a more efficient way to deliver, with less
+            // FIXME: There must be a more efficient way to deliver, with less
             // chance of a loop.
             operation(&newop);
         }
