@@ -1,11 +1,29 @@
+2001-03-14  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* *: Removed use of "using namespace ..." throughout.
+
+	* modules/Location.h: Fixed error in inRange() and finally got rid
+	  of the Compiler warning.
+
+	* rulesets/Food.cpp: Fleshed out the cooking code, including how
+	  food burns when it is overcooked.
+
+	* rulesets/Stackable.cpp: Implemented divide.
+
+	* common/persistance.*: Added the beginnings of a database backend
+	  using the Berkeley db library.
+
+	* server/Account.cpp: Modified addObject, because the attrivutes
+	  added by BaseEntity::addObject are not important to accounts.
+
 2001-03-09  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
-	* src/rulesets/EntityFactory.cpp: Removed ThingShape.h
+	* rulesets/EntityFactory.cpp: Removed ThingShape.h
 	  which was unused, and thus removed dependancy on SOLID.
 
 2001-03-09  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
-	* src/Stackable.cpp: Fixed Stackable code so it now compiles.
+	* rulesets/Stackable.cpp: Fixed Stackable code so it now compiles.
 
 2001-03-05  Al Riddoch  <ajr@ecs.soton.ac.uk>
 

@@ -36,7 +36,7 @@ public:
     bool inRange(const Vector3D & pos, const double distance) const {
         if (!coords) { return false; }
         if (!bbox) {
-            pos.inBox(coords, distance);
+            return pos.inBox(coords, distance);
         } else {
             const Vector3D & median = bmedian ? bmedian : bbox;
             return pos.inBox(coords + median, bbox + distance);

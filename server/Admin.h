@@ -9,7 +9,7 @@
 
 class Admin : public Account {
   protected:
-    virtual oplist character_error(const Create &, const Message::Object &) const {
+    virtual oplist character_error(const Create &, const Atlas::Message::Object &) const {
         return oplist();
     }
   public:

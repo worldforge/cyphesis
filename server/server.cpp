@@ -31,6 +31,7 @@ extern "C" {
 #include <common/const.h>
 #include <common/log.h>
 #include <common/debug.h>
+#include <common/persistance.h>
 
 #include <fstream>
 
@@ -45,7 +46,7 @@ static const bool debug_flag = false;
 
 string install_directory = string(INSTALLDIR);
 
-using namespace Atlas;
+// using Atlas::Message::Object;
 
 void init_python_api();
 
@@ -85,12 +86,12 @@ int CommClient::setup()
     Atlas::Net::StreamAccept accept("cyphesis " + server->identity, client_ios, this);
 
     debug(cout << "Negotiating... " << flush;);
-    while (accept.GetState() == Negotiate<iostream>::IN_PROGRESS) {
+    while (accept.GetState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
         accept.Poll();
     }
     debug(cout << "done" << endl;);
 
-    if (accept.GetState() == Negotiate<iostream>::FAILED) {
+    if (accept.GetState() == Atlas::Net::StreamAccept::FAILED) {
         cerr << "Failed to negotiate" << endl;
         return(0);
     }
@@ -101,7 +102,7 @@ int CommClient::setup()
 
     // This should always be sent at the beginning of a session
 
-    encoder = new Objects::Encoder(codec);
+    encoder = new Atlas::Objects::Encoder(codec);
 
     codec->StreamBegin();
 
@@ -109,7 +110,7 @@ int CommClient::setup()
     return(1);
 }
 
-void CommClient::message(const Objects::Operation::RootOperation & op)
+void CommClient::message(const RootOperation & op)
 {
     oplist reply = connection->message(op);
     for(oplist::const_iterator I = reply.begin(); I != reply.end(); I++) {
@@ -119,12 +120,12 @@ void CommClient::message(const Objects::Operation::RootOperation & op)
     }
 }
 
-void CommClient::UnknownObjectArrived(const Atlas::Message::Object& o)
+void CommClient::UnknownObjectArrived(const Object& o)
 {
 #if 0
     debug(cout << "An unknown has arrived." << endl << flush;);
     if (o.IsMap()) {
-        for(Message::Object::MapType::const_iterator I = o.AsMap().begin();
+        for(Object::MapType::const_iterator I = o.AsMap().begin();
 		I != o.AsMap().end();
 		I++) {
 		debug(cout << I->first << endl << flush;);
@@ -138,49 +139,49 @@ void CommClient::UnknownObjectArrived(const Atlas::Message::Object& o)
 #endif
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Login & op)
+void CommClient::ObjectArrived(const Login & op)
 {
     debug(cout << "A login operation thingy here!" << endl << flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Create & op)
+void CommClient::ObjectArrived(const Create & op)
 {
     debug(cout << "A create operation thingy here!" << endl << flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Move & op)
+void CommClient::ObjectArrived(const Move & op)
 {
     debug(cout << "A move operation thingy here!" << endl << flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Set & op)
+void CommClient::ObjectArrived(const Set & op)
 {
     debug(cout << "A set operation thingy here!" << endl << flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Touch & op)
+void CommClient::ObjectArrived(const Touch & op)
 {
     debug(cout << "A touch operation thingy here!" << endl << flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Look & op)
+void CommClient::ObjectArrived(const Look & op)
 {
     debug(cout << "A look operation thingy here!" << endl << flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Talk & op)
+void CommClient::ObjectArrived(const Talk & op)
 {
     debug(cout << "A talk operation thingy here!" << endl << flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Get & op)
+void CommClient::ObjectArrived(const Get & op)
 {
     debug(cout << "A get operation thingy here!" << endl << flush;);
     message(op);
@@ -336,9 +337,9 @@ void CommServer::loop()
 
 inline void CommServer::remove_client(CommClient * client, char * error_msg)
 {
-    Message::Object::MapType err;
-    err["message"] = Message::Object(error_msg);
-    Message::Object::ListType eargs(1,Message::Object(err));
+    Object::MapType err;
+    err["message"] = Object(error_msg);
+    Object::ListType eargs(1,Object(err));
 
     Error * e = new Error();
     *e = Error::Instantiate();
@@ -422,6 +423,8 @@ int main(int argc, char ** argv)
     if (install_directory=="NONE") {
         install_directory = "/usr/local";
     }
+
+    Persistance::init();
 
     // See if the user has set the install directory on the command line
     char * home;

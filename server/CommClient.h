@@ -19,7 +19,7 @@ class sockbuf : public filebuf {
     virtual streampos sys_seek(streamoff, _seek_dir) { return streampos(); }
 };
 
-class CommClient : Objects::Decoder {
+class CommClient : Atlas::Objects::Decoder {
     int client_fd;
     //ofstream log_file;
     sockbuf client_buf;
@@ -61,7 +61,7 @@ class CommClient : Objects::Decoder {
         }
     }
 
-    void send(const Objects::Operation::RootOperation * op) {
+    void send(const RootOperation * op) {
         if (op) {
             encoder->StreamMessage(op);
             client_ios << flush;
@@ -72,7 +72,7 @@ class CommClient : Objects::Decoder {
     int eof() { return client_ios.eof(); }
     int get_fd() { return client_fd; }
 
-    void message(const Atlas::Objects::Operation::RootOperation &);
+    void message(const RootOperation &);
     int setup();
 };
 

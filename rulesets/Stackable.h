@@ -7,9 +7,10 @@
 
 #include "Thing.h"
 
-// This is the base class for flowering plants. Most of the functionality
-// will be common to all plants, and most derived classes will probably
-// be in python.
+// This is the base class for items which are stackable objects, which are
+// mostly used in multiple quantities, and there is usually no difference
+// between individual items. A good example is coins which are unmanageable
+// if each one must be represented by an object.
 
 
 class Stackable : public Thing {
@@ -21,10 +22,10 @@ class Stackable : public Thing {
     Stackable();
     virtual ~Stackable() { }
 
-    virtual const Object & operator[](const string & aname);
-    virtual void set(const string & aname, const Object & attr);
+    virtual const Atlas::Message::Object & operator[](const string & aname);
+    virtual void set(const string & aname, const Atlas::Message::Object & attr);
 
-    virtual void addObject(Message::Object *) const;
+    virtual void addObject(Atlas::Message::Object *) const;
     virtual oplist Operation(const Combine & op);
     virtual oplist Operation(const Divide & op);
 };

@@ -30,8 +30,8 @@
 
 static const bool debug_flag = false;
 
-using namespace Atlas;
-using namespace Objects;
+using Atlas::Message::Object;
+using Atlas::Objects::Operation::Info;
 
 inline Account * Connection::add_player(string & username, string & password)
 {
@@ -83,7 +83,7 @@ oplist Connection::operation(const RootOperation & op)
                 cout << "Re-connecting existing character to new connection" << endl << flush;
                 Info * info = new Info();
                 *info = Info::Instantiate();
-                Message::Object::ListType args(1,pchar->asObject());
+                Object::ListType args(1,pchar->asObject());
                 info->SetArgs(args);
                 info->SetRefno(op.GetSerialno());
                 oplist res = ent->external_operation(op);
@@ -102,7 +102,7 @@ oplist Connection::Operation(const Login & op)
 {
 
     debug(cout << "Got login op" << endl << flush;);
-    const Message::Object & account = op.GetArgs().front();
+    const Object & account = op.GetArgs().front();
 
     if (account.IsMap()) {
         string account_id = account.AsMap().find("id")->second.AsString();
@@ -119,7 +119,7 @@ oplist Connection::Operation(const Login & op)
             player->connection=this;
             Info * info = new Info();
             *info = Info::Instantiate();
-            Message::Object::ListType args(1,player->asObject());
+            Object::ListType args(1,player->asObject());
             info->SetArgs(args);
             info->SetRefno(op.GetSerialno());
             debug(cout << "Good login" << endl << flush;);
@@ -132,7 +132,7 @@ oplist Connection::Operation(const Login & op)
 oplist Connection::Operation(const Create & op)
 {
     debug(cout << "Got create op" << endl << flush;);
-    const Message::Object & account = op.GetArgs().front();
+    const Object & account = op.GetArgs().front();
 
     if (account.IsMap()) {
         string account_id = account.AsMap().find("id")->second.AsString();
@@ -143,7 +143,7 @@ oplist Connection::Operation(const Create & op)
             Account * player = add_player(account_id, password);
             Info * info = new Info();
             *info = Info::Instantiate();
-            Message::Object::ListType args(1,player->asObject());
+            Object::ListType args(1,player->asObject());
             info->SetArgs(args);
             info->SetRefno(op.GetSerialno());
             debug(cout << "Good create" << endl << flush;);
@@ -156,7 +156,7 @@ oplist Connection::Operation(const Create & op)
 
 oplist Connection::Operation(const Logout & op)
 {
-    const Message::Object & account = op.GetArgs().front();
+    const Object & account = op.GetArgs().front();
     
     if (account.IsMap()) {
         string account_id = account.AsMap().find("id")->second.AsString();
@@ -177,7 +177,7 @@ oplist Connection::Operation(const Get & op)
     cout << "Got get" << endl << flush;
     Info * info = new Info();
     *info = Info::Instantiate(); 
-    Message::Object::ListType args(1,server->asObject());
+    Object::ListType args(1,server->asObject());
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());
     cout << "Replying to get" << endl << flush;

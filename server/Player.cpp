@@ -9,9 +9,11 @@
 
 #include "Player.h"
 
-oplist Player::character_error(const Create & op, const Message::Object & ent) const
+using Atlas::Message::Object;
+
+oplist Player::character_error(const Create & op, const Object & ent) const
 {
-    Message::Object::MapType entmap = ent.AsMap();
+    Object::MapType entmap = ent.AsMap();
 
     if ((entmap.find("name")==entmap.end()) || !entmap["name"].IsString()) {
         return error(op, "Object to be created has no name");

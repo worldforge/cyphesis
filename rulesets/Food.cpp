@@ -15,6 +15,7 @@
 Food::Food()
 {
     attributes["cooked"] = 0;
+    attributes["burn_speed"] = 0.1;
     weight = 1;
 }
 
@@ -63,7 +64,11 @@ oplist Food::Operation(const Fire & op)
     self_ent["id"] = fullid;
     // Currently this cooks pretty quick, and at the same speed for
     // everything. No mechanism for this yet.
-    self_ent["cooked"] = cooked - (fire_ent["status"].AsNum()/weight);
+    double fire_size = fire_ent["status"].AsNum();
+    self_ent["cooked"] = cooked + (fire_size/weight);
+    if (cooked > 1.0) {
+        self_ent["status"] = status - (attributes["burn_speed"].AsNum()) * fire_size;
+    }
 
     Set * s = new Set();
     *s = Set::Instantiate();

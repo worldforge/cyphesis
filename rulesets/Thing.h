@@ -22,7 +22,7 @@ class Routing;
 class Thing : public BaseEntity {
   protected:
     PyObject * script_object;
-    Message::Object::MapType attributes;
+    Atlas::Message::Object::MapType attributes;
 
     virtual int script_Operation(const string &, const RootOperation &, oplist &, RootOperation * sub_op=NULL);
   public:
@@ -35,8 +35,8 @@ class Thing : public BaseEntity {
     Thing();
     virtual ~Thing() { }
 
-    virtual const Object & operator[](const string & aname);
-    virtual void set(const string & aname, const Object & attr);
+    virtual const Atlas::Message::Object & operator[](const string & aname);
+    virtual void set(const string & aname, const Atlas::Message::Object & attr);
 
     virtual int set_object(PyObject * obj) {
         script_object = obj;
@@ -49,10 +49,10 @@ class Thing : public BaseEntity {
         return world->message(*op, this);
     }
 
-    void merge(const Message::Object::MapType &);
-    void getLocation(Message::Object::MapType &, fdict_t &);
+    void merge(const Atlas::Message::Object::MapType &);
+    void getLocation(Atlas::Message::Object::MapType &, fdict_t &);
 
-    virtual void addObject(Message::Object *) const;
+    virtual void addObject(Atlas::Message::Object *) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
     virtual oplist Operation(const Chop & op);

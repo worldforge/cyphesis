@@ -2,24 +2,120 @@
 // the GNU Lesser General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
+#include <fstream.h>
+
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
 
 #include <server/Admin.h>
 
+#include <config.h>
+
 #include "persistance.h"
 
-#include <fstream.h>
+Persistance * Persistance::m_instance = NULL;
 
-namespace Persistance {
+Persistance * Persistance::instance()
+{
+    if (m_instance == NULL) {
+        m_instance = new Persistance();
+    }
+    return m_instance;
+}
 
-Admin * load_admin_account()
+#ifdef HAVE_LIBDB_CXX
+
+// This is the version of the persistance code which is enabled if 
+// there is db support.
+
+// DB_CXX_NO_EXCEPTIONS is set for now to enable easier debugging. Later
+// once the code is padded out, this should be removed to allow exceptions.
+
+Persistance::Persistance() : account_db(NULL, DB_CXX_NO_EXCEPTIONS),
+                             world_db(NULL, DB_CXX_NO_EXCEPTIONS) { }
+
+bool Persistance::init()
+{
+    Persistance * p = instance();
+    int i = p->account_db.open("/var/forge/cyphesis/db", "account",
+                               DB_BTREE, DB_CREATE, 0600);
+    int j = p->world_db.open("/var/forge/cyphesis/db", "world",
+                             DB_BTREE, 0, 0600);
+    return ((i == 0) && (j == 0));
+}
+
+Admin * Persistance::load_admin_account()
+{
+    Admin * adm;
+    if ((adm = getAccount("admin")) == NULL) {
+        adm = new Admin(NULL, "admin", "test");
+        save_admin_account(adm);
+    }
+    
+}
+
+void Persistance::save_admin_account(Admin * adm)
+{
+    putAccount(adm);
+}
+
+Account * Persistance::getAccount(const std::string & name)
+{
+}
+
+void Persistance::putAccount(const Account * ac)
+{
+    putObject(account_db, ac.asObject() ,ac->fullid.c_str()
+}
+
+Object * Persistance::getObject(Db & db, char * key)
+{
+    // FIXME
+    return NULL;
+}
+
+bool Persistance::putObject(Db & db, Object & o, char * key)
+{
+    std::strstream str;
+
+    Atlas::Codecs::XML codec(str, &m_d);
+    Atlas::Message::Encoder enc(&codec);
+
+    enc.StreamMessage(o);
+
+    Dbt key, data;
+
+    key.set_data(key);
+    key.set_size(strlen(key) + 1);
+
+    data.set_data(str.str());
+    data.set_size(str.pcount() + 1);
+
+    int err;
+    if ((err = db.put(NULL, &key, &data, 0)) != 0) {
+        cout << "db.put.ERROR! " << err << endl << flush;
+        return false;
+    }
+    return true;
+}
+
+#else // HAVE_LIBDB_CXX
+
+Persistance::Persistance() { }
+
+Admin * Persistance::load_admin_account()
 {
     // Eventually this should actually load the account. For now it just
     // creates it.
     Admin * adm = new Admin(NULL, "admin", "test");
-    ofstream adm_file("/tmp/admin.xml", ios::out, 0600);
+    save_admin_account(adm);
+    return(adm);
+}
+
+void Persistance::save_admin_account(Admin * adm)
+{
+    std::ofstream adm_file("/tmp/admin.xml", ios::out, 0600);
     adm_file << "<atlas>" << endl << "<map>" << endl;
     adm_file << "    <string name=\"password\">" << adm->password << "</string>" << endl;
     adm_file << "    <string name=\"id\">" << adm->fullid << "</string>" << endl;
@@ -28,7 +124,19 @@ Admin * load_admin_account()
     adm_file << "    </list>" << endl;
     adm_file << "</map>" << endl << "</atlas>" << endl << flush;
     adm_file.close();
-    return(adm);
 }
 
+Account * Persistance::getAccount(const std::string & name)
+{
+    return NULL;
 }
+
+void Persistance::putAccount(const Account * ac) { }
+
+bool Persistance::init()
+{
+    instance();
+    return true;
+}
+
+#endif // HAVE_LIBDB_CXX

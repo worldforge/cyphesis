@@ -16,7 +16,7 @@ class Player : public Account {
     virtual ~Player() { }
 
   protected:
-    virtual oplist character_error(const Create & op, const Message::Object & ent) const;
+    virtual oplist character_error(const Create & op, const Atlas::Message::Object & ent) const;
 };
 
 #endif /* PLAYER_H */

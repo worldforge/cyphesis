@@ -219,7 +219,7 @@ Move * MovementInfo::gen_move_operation(Location * rloc, const Location & loc)
 
         debug( cout << "new coordinates: " << new_coords << endl << flush;);
         new_loc.addObject(&ent);
-        Message::Object::ListType args2(1,ent);
+        Object::ListType args2(1,ent);
         moveOp->SetArgs(args2);
         if (NULL != rloc) {
             *rloc = new_loc;
@@ -311,11 +311,11 @@ void Character::set(const string & aname, const Object & attr)
     }
 }
 
-void Character::addObject(Message::Object * obj) const
+void Character::addObject(Object * obj) const
 {
-    Message::Object::MapType & omap = obj->AsMap();
-    omap["weight"] = Message::Object(weight);
-    omap["sex"] = Message::Object(sex);
+    Object::MapType & omap = obj->AsMap();
+    omap["weight"] = Object(weight);
+    omap["sex"] = Object(sex);
     Thing::addObject(obj);
 }
 
@@ -346,7 +346,7 @@ oplist Character::Operation(const Setup & op)
     oplist res2(2);
     Setup * s = new Setup(op);
     // THis is so not the right thing to do
-    s->SetAttr("sub_to", Message::Object("mind"));
+    s->SetAttr("sub_to", Object("mind"));
     res2[0] = s;
     Look * l = new Look();
     *l = Look::Instantiate();
@@ -376,9 +376,9 @@ oplist Character::Operation(const Tick & op)
         return oplist();
     }
     debug(cout << "================================" << endl << flush;);
-    const Message::Object::ListType & args = op.GetArgs();
+    const Object::ListType & args = op.GetArgs();
     if ((0 != args.size()) && (args.front().IsMap())) {
-        Message::Object::MapType arg1 = args.front().AsMap();
+        Object::MapType arg1 = args.front().AsMap();
         if ((arg1.find("serialno") != arg1.end()) &&
            (arg1["serialno"].IsInt())) {
             if (arg1["serialno"].AsInt() < movement.serialno) {
@@ -390,15 +390,15 @@ oplist Character::Operation(const Tick & op)
         RootOperation * moveOp = movement.gen_move_operation(&ret_loc);
         if (moveOp) {
             oplist res(2);
-            Message::Object::MapType entmap;
-            entmap["name"]=Message::Object("move");
-            entmap["serialno"]=Message::Object(movement.serialno);
-            Message::Object ent(entmap);
+            Object::MapType entmap;
+            entmap["name"]=Object("move");
+            entmap["serialno"]=Object(movement.serialno);
+            Object ent(entmap);
             RootOperation * tickOp = new Tick();
             *tickOp = Tick::Instantiate();
             tickOp->SetTo(fullid);
             tickOp->SetFutureSeconds(movement.get_tick_addition(ret_loc.coords));
-            tickOp->SetArgs(Message::Object::ListType(1,ent));
+            tickOp->SetArgs(Object::ListType(1,ent));
             res[0] = tickOp;
             res[1] = moveOp;
             return res;
@@ -450,7 +450,7 @@ oplist Character::Operation(const Talk & op)
     debug( cout << "Character::OPeration(Talk)" << endl << flush;);
     Sound * s = new Sound();
     *s = Sound::Instantiate();
-    Message::Object::ListType args(1,op.AsObject());
+    Object::ListType args(1,op.AsObject());
     s->SetArgs(args);
     return oplist(1,s);
 }
@@ -509,7 +509,7 @@ oplist Character::Mind_Operation(const Setup & op)
 {
     Setup *s = new Setup(op);
     s->SetTo(fullid);
-    s->SetAttr("sub_to", Message::Object("mind"));
+    s->SetAttr("sub_to", Object("mind"));
     return oplist(1,s);
 }
 
@@ -517,7 +517,7 @@ oplist Character::Mind_Operation(const Tick & op)
 {
     Tick *t = new Tick(op);
     t->SetTo(fullid);
-    t->SetAttr("sub_to", Message::Object("mind"));
+    t->SetAttr("sub_to", Object("mind"));
     return oplist(1,t);
 }
 
@@ -525,11 +525,11 @@ oplist Character::Mind_Operation(const Move & op)
 {
     debug( cout << "Character::mind_move_op" << endl << flush;);
     Move * newop = new Move(op);
-    const Message::Object::ListType & args = op.GetArgs();
+    const Object::ListType & args = op.GetArgs();
     if ((0 == args.size()) || (!args.front().IsMap())) {
         cerr << "move op has no argument" << endl << flush;
     }
-    Message::Object::MapType arg1 = args.front().AsMap();
+    Object::MapType arg1 = args.front().AsMap();
     if ((arg1.find("id") == arg1.end()) || !arg1["id"].IsString()) {
         cerr << "Its got no id" << endl << flush;
     }
@@ -558,7 +558,7 @@ oplist Character::Mind_Operation(const Move & op)
     }
     Vector3D location_coords;
     if ((arg1.find("pos") != arg1.end()) && (arg1["pos"].IsList())) {
-        Message::Object::ListType vector = arg1["pos"].AsList();
+        Object::ListType vector = arg1["pos"].AsList();
         if (vector.size()==3) {
             try {
                 // FIXME
@@ -573,7 +573,7 @@ oplist Character::Mind_Operation(const Move & op)
                 location_coords = Vector3D(x, y, z);
                 debug( cout << "Got new format coords: " << location_coords << endl << flush;);
             }
-            catch (Message::WrongTypeException) {
+            catch (Atlas::Message::WrongTypeException) {
                 cerr << "EXCEPTION: Malformed pos move operation" << endl << flush;
             }
         }
@@ -581,7 +581,7 @@ oplist Character::Mind_Operation(const Move & op)
 
     Vector3D location_vel;
     if ((arg1.find("velocity") != arg1.end()) && (arg1["velocity"].IsList())) {
-        Message::Object::ListType vector = arg1["velocity"].AsList();
+        Object::ListType vector = arg1["velocity"].AsList();
         if (vector.size()==3) {
             try {
                 // FIXME
@@ -596,14 +596,14 @@ oplist Character::Mind_Operation(const Move & op)
                 location_vel = Vector3D(x, y, z);
                 debug( cout << "Got new format velocity: " << location_vel << endl << flush;);
             }
-            catch (Message::WrongTypeException) {
+            catch (Atlas::Message::WrongTypeException) {
                 cerr << "EXCEPTION: Malformed vel move operation" << endl << flush;
             }
         }
     }
     Vector3D location_face;
     if ((arg1.find("face") != arg1.end()) && (arg1["face"].IsList())) {
-        Message::Object::ListType vector = arg1["face"].AsList();
+        Object::ListType vector = arg1["face"].AsList();
         if (vector.size()==3) {
             try {
                 // FIXME
@@ -618,7 +618,7 @@ oplist Character::Mind_Operation(const Move & op)
                 location_face = Vector3D(x, y, z);
                 debug( cout << "Got new format face: " << location_face << endl << flush;);
             }
-            catch (Message::WrongTypeException) {
+            catch (Atlas::Message::WrongTypeException) {
                 cerr << "EXCEPTION: Malformed face move operation" << endl << flush;
             }
         }
@@ -692,14 +692,14 @@ oplist Character::Mind_Operation(const Move & op)
         if ((vel_mag==0) || !direction) {
             debug( cout << "\tMovement stopped" << endl << flush;);
             if (NULL != moveOp) {
-                Message::Object::ListType & args = moveOp->GetArgs();
-                Message::Object::MapType & ent = args.front().AsMap();
-                Message::Object::ListType velocity;
-                velocity.push_back(Message::Object(0.0));
-                velocity.push_back(Message::Object(0.0));
-                velocity.push_back(Message::Object(0.0));
-                ent["velocity"]=Message::Object(velocity);
-                ent["mode"]=Message::Object("standing");
+                Object::ListType & args = moveOp->GetArgs();
+                Object::MapType & ent = args.front().AsMap();
+                Object::ListType velocity;
+                velocity.push_back(Object(0.0));
+                velocity.push_back(Object(0.0));
+                velocity.push_back(Object(0.0));
+                ent["velocity"]=Object(velocity);
+                ent["mode"]=Object("standing");
                 moveOp->SetArgs(args);
             } else {
                 moveOp = movement.gen_face_operation(location);
@@ -712,10 +712,10 @@ oplist Character::Mind_Operation(const Move & op)
         }
         RootOperation * tickOp = new Tick;
         *tickOp = Tick::Instantiate();
-        Message::Object::MapType ent;
-        ent["serialno"] = Message::Object(movement.serialno);
-        ent["name"] = Message::Object("move");
-        Message::Object::ListType args(1,ent);
+        Object::MapType ent;
+        ent["serialno"] = Object(movement.serialno);
+        ent["name"] = Object("move");
+        Object::ListType args(1,ent);
         tickOp->SetArgs(args);
         tickOp->SetTo(fullid);
         // Need to add the arguments to this op before we return it
@@ -751,9 +751,9 @@ oplist Character::Mind_Operation(const Move & op)
 oplist Character::Mind_Operation(const Set & op)
 {
     Set * s = new Set(op);
-    const Message::Object::ListType & args = op.GetArgs();
+    const Object::ListType & args = op.GetArgs();
     if (args.front().IsMap()) {
-        Message::Object::MapType amap = args.front().AsMap();
+        Object::MapType amap = args.front().AsMap();
         if (amap.find("id") != amap.end() && amap["id"].IsString()) {
             string opid = amap["id"].AsString();
             if (opid != fullid) {
@@ -794,12 +794,12 @@ oplist Character::Mind_Operation(const Look & op)
     perceptive = true;
     Look * l = new Look(op);
     if (op.GetTo().size() == 0) {
-        const Message::Object::ListType & args = op.GetArgs();
+        const Object::ListType & args = op.GetArgs();
         if (args.size() == 0) {
             l->SetTo(world->fullid);
         } else {
             if (args.front().IsMap()) {
-                Message::Object::MapType amap = args.front().AsMap();
+                Object::MapType amap = args.front().AsMap();
                 if (amap.find("id") != amap.end() && amap["id"].IsString()) {
                     l->SetTo(amap["id"].AsString());
                 }
@@ -826,13 +826,13 @@ oplist Character::Mind_Operation(const Touch & op)
 {
     Touch * t = new Touch(op);
     // Work out what is being touched.
-    const Message::Object::ListType & args = op.GetArgs();
+    const Object::ListType & args = op.GetArgs();
     if ((op.GetTo().size() == 0) || (args.size() != 0)) {
         if (args.size() == 0) {
             t->SetTo(world->fullid);
         } else {
             if (args.front().IsMap()) {
-                Message::Object::MapType amap = args.front().AsMap();
+                Object::MapType amap = args.front().AsMap();
                 if (amap.find("id") != amap.end() && amap["id"].IsString()) {
                     t->SetTo(amap["id"].AsString());
                 }

@@ -150,6 +150,8 @@ AC_CACHE_VAL(cyphesis_cv_python_libraries,
 
 AC_CHECK_LIB(sigc,main)
 AC_CHECK_LIB(varconf,main)
+AC_CHECK_LIB(db,db_create)
+AC_CHECK_LIB(db_cxx,main)
 
 dnl Generate files
 AC_OUTPUT([

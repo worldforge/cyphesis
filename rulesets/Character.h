@@ -63,10 +63,10 @@ class Character : public Thing {
     Character();
     virtual ~Character();
 
-    virtual const Object & operator[](const string & aname);
-    virtual void set(const string & aname, const Object & attr);
+    virtual const Atlas::Message::Object & operator[](const string & aname);
+    virtual void set(const string & aname, const Atlas::Message::Object & attr);
 
-    virtual void addObject(Message::Object *) const;
+    virtual void addObject(Atlas::Message::Object *) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
     virtual oplist Operation(const Talk & op);

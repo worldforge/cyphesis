@@ -31,7 +31,7 @@ class EntityFactory {
         return m_instance;
     }
     void readRuleset(const string & file);
-    Thing * newThing(const string &, const Message::Object &, Routing *);
+    Thing * newThing(const string &, const Atlas::Message::Object &, Routing *);
 };
 
 #endif /* ENTITY_FACTORY_H */

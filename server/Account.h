@@ -14,9 +14,9 @@ class Thing;
 class Account : public OOG_Thing {
     friend class Connection;
     fdict_t characters_dict;
-    BaseEntity * add_character(const string &, const Message::Object &);
+    BaseEntity * add_character(const string &, const Atlas::Message::Object &);
   protected:
-    virtual oplist character_error(const Create &, const Message::Object &) const = 0;
+    virtual oplist character_error(const Create &, const Atlas::Message::Object &) const = 0;
   public:
     Connection * connection;
     string password;
@@ -28,7 +28,7 @@ class Account : public OOG_Thing {
     }
     virtual ~Account() { }
 
-    virtual void addObject(Message::Object *) const;
+    virtual void addObject(Atlas::Message::Object *) const;
     virtual oplist Operation(const Logout & op);
     virtual oplist Operation(const Create & op);
 };

@@ -17,27 +17,32 @@ Definitly for Acorn 0.4:
   is that it is not possible to tell when movement started, and thus get
   correct starting position for the movement.
 
-  Add cookable food. (STARTED)
-
   Use drunkness.
 
   Use combine operation to deal with making more than one object into one.
 
   Fully implement stackable objects.
 
+  Replace
+    o = new Operation(); *o = Operation::Instantiate();
+  with
+    o = new Opertion(Operation::Instantiate());
+  cos it is about twice as quick.
+
 Provisional for Acorn 0.4:
 
   Implement accelerated Atlas Objects API. MAYBE: POSTPONE!
-
-  Implement stackable objects.
 
 Required for werewolf:
 
   Implement calendric time using WorldTime and DateTime classes, so nighttime
   and moons are properlly handled.
 
+  Implement sleeping.
+
 Possible ideas:
 
   Try out optimisations such as -funroll_loops -fstrict_aliasing -ffast_math
   -mx86. Consider a custom python interpreter build.
 
+  Add fully featured database persistance.

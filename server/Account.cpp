@@ -29,7 +29,10 @@
 
 static const bool debug_flag = false;
 
-inline BaseEntity * Account::add_character(const string & typestr, const Message::Object & ent)
+using Atlas::Message::Object;
+using Atlas::Objects::Operation::Info;
+
+inline BaseEntity * Account::add_character(const string & typestr, const Object & ent)
 {
     debug(cout << "Account::Add_character" << endl << flush;);
     Thing * chr = world->add_object(typestr, ent);
@@ -50,13 +53,13 @@ inline BaseEntity * Account::add_character(const string & typestr, const Message
 
     Create c = Create::Instantiate();
 
-    Message::Object::ListType cargs(1,chr->asObject());
+    Object::ListType cargs(1,chr->asObject());
     c.SetArgs(cargs);
 
     Sight * s = new Sight;
     *s = Sight::Instantiate();
     
-    Message::Object::ListType sargs(1,c.AsObject());
+    Object::ListType sargs(1,c.AsObject());
     s->SetArgs(sargs);
 
     world->message(*s, chr);
@@ -71,30 +74,32 @@ oplist Account::Operation(const Logout & op)
     return oplist();
 }
 
-void Account::addObject(Message::Object * obj) const
+void Account::addObject(Object * obj) const
 {
-    Message::Object::MapType & omap = obj->AsMap();
+    Object::MapType & omap = obj->AsMap();
+    omap["id"] = Object(fullid);
     if (password.size() != 0) {
-        omap["password"] = Message::Object(password);
+        omap["password"] = Object(password);
     }
-    omap["parents"] = Message::Object(Message::Object::ListType(1,Message::Object(type)));
+    omap["parents"] = Object(Object::ListType(1,Object(type)));
     Object::ListType charlist;
     fdict_t::const_iterator I;
     for(I = characters_dict.begin(); I != characters_dict.end(); I++) {
         charlist.push_back(Object(I->first));
     }
     omap["characters"] = Object(charlist);
-    BaseEntity::addObject(obj);
+    // No need to call BaseEntity::addObject, as none of the default
+    // attributes (location, contains etc.) are relevant to accounts
 }
 
 oplist Account::Operation(const Create & op)
 {
     debug(cout << "Account::Operation(create)" << endl << flush;);
-    const Message::Object & ent = op.GetArgs().front();
+    const Object & ent = op.GetArgs().front();
     if (!ent.IsMap()) {
         return(error(op, "Invalid character"));
     }
-    Message::Object::MapType entmap = ent.AsMap();
+    Object::MapType entmap = ent.AsMap();
     if ((entmap.find("parents")==entmap.end()) ||
         !(entmap["parents"].IsList()) ||
         (entmap["parents"].AsList().size()==0) ||
@@ -113,7 +118,7 @@ oplist Account::Operation(const Create & op)
     //log.inform("Player "+Account::id+" adds character "+`obj`,op);
     Info * info = new Info();
     *info = Info::Instantiate();
-    Message::Object::ListType args(1,obj->asObject());
+    Object::ListType args(1,obj->asObject());
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());
 

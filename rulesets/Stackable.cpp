@@ -39,11 +39,11 @@ void Stackable::set(const string & aname, const Object & attr)
     }
 }
 
-void Stackable::addObject(Message::Object * obj) const
+void Stackable::addObject(Object * obj) const
 {
-    Message::Object::MapType & omap = obj->AsMap();
+    Object::MapType & omap = obj->AsMap();
     if (num != 1) {
-        omap["num"] = Message::Object(num);
+        omap["num"] = Object(num);
     }
     Thing::addObject(obj);
 }
@@ -62,6 +62,7 @@ oplist Stackable::Operation(const Combine & op)
         if (!obj->in_game) { continue; }
         if (obj->type != type) { continue; }
         num = num + obj->num;
+
         Delete * d = new Delete();
         *d = Delete::Instantiate();
         Object::MapType dent;
@@ -71,6 +72,7 @@ oplist Stackable::Operation(const Combine & op)
         res.push_back(d);
     }
     return res;
+    // FIXME DO we need to send a sight?
 }
 
 oplist Stackable::Operation(const Divide & op)
@@ -79,5 +81,25 @@ oplist Stackable::Operation(const Divide & op)
     if (script_Operation("divide", op, res) != 0) {
         return(res);
     }
-    // FIXME
+    Object::ListType args = op.GetArgs();
+    for(Object::ListType::iterator I = args.begin(); I != args.end(); I++) {
+        Object::MapType & ent = I->AsMap();
+        int new_num = 1;
+        if (ent.find("num") != ent.end()) {
+            if (ent["num"].IsInt()) { new_num = ent["num"].AsInt(); }
+        }
+        if (num <= new_num) { continue; }
+        
+        Object::MapType new_ent;
+        Object::ListType parents(1,type);
+        new_ent["parents"] = parents;
+        new_ent["num"] = new_num;
+        Create * c = new Create();
+        *c = Create::Instantiate();
+        c->SetArgs(Object::ListType(1,new_ent));
+        c->SetTo(fullid);
+        res.push_back(c);
+    }
+    return res;
+    // FIXME DO we need to send a sight?
 }

@@ -23,7 +23,7 @@ class ServerRouting : public Routing {
     ServerRouting(CommServer * server, const string & name);
     ~ServerRouting() { }
 
-    virtual void addObject(Message::Object *) const;
+    virtual void addObject(Atlas::Message::Object *) const;
 
     int idle() {
         return world->idle();

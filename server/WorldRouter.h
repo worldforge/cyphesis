@@ -43,7 +43,7 @@ class WorldRouter : public Routing {
     int idle();
 
     Thing * add_object(Thing * obj);
-    Thing * add_object(const string &, const Message::Object &);
+    Thing * add_object(const string &, const Atlas::Message::Object &);
     void del_object(BaseEntity * obj);
         
     bool is_object_deleted(BaseEntity * obj) const {
