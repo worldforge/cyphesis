@@ -133,6 +133,7 @@ OpVector Connection::operation(const RootOperation & op)
         debug(std::cout << "[" << from << "]" << std::endl << std::flush;);
         BaseDict::const_iterator I = objects.find(from);
         if (I == objects.end()) {
+	    std::cout << "Illegal from \"" << from << "\" in " << op.GetParents().front().AsString() << " op from client" << std::endl << std::flush;
             std::string err = "From [";
             err += from;
             err += "] is illegal";

@@ -7,6 +7,10 @@
 # description: Cyphesis is a server for WorldForge online games.
 # probe: ???
 
+if [ -f /etc/rc.d/init.d/functions ] ; then
+        . /etc/rc.d/init.d/functions
+fi
+
 # Source cyphesis service configuration
 if [ -f /etc/sysconfig/cyphesis ] ; then
         . /etc/sysconfig/cyphesis
@@ -21,53 +25,75 @@ start() {
         # Start the daemon.
 
         # Make sure postgres superuser exists
-        if ! su $POSTGRESUSER -c true ; then
+        if ! su $POSTGRESUSER -c true >/dev/null 2>&1; then
             echo
             echo $"Could not check for running PostgreSQL database."
             exit 1
         fi
 
         # Make sure postgres is running
-        if ! su $POSTGRESUSER -c "psql -c \"\" template1" ; then
+        if ! su $POSTGRESUSER -c "psql -c \"\" template1" >/dev/null 2>&1; then
             echo $"PostgreSQL server is not running."
             exit 1
         fi
 
         # Make sure the user we are going to run as exists
-        if ! su $CYPHESISUSER -c true ; then
+        if ! su $CYPHESISUSER -c true >/dev/null 2>&1; then
             echo $"Cannot find user $CYPHESISUSER to run cyphesis service."
             exit 1
         fi
 
         # Make sure the user has a postgres account
-        if ! su $CYPHESISUSER -c "psql -c \"\" template1" ; then
+        if ! su $CYPHESISUSER -c "psql -c \"\" template1" >/dev/null 2>&1; then
             echo -n $"Creating PostgreSQL account: "
-            su postgres -c "createuser $CYPHESISUSER"
+            su postgres -c "createuser -A -d $CYPHESISUSER" >/dev/null 2>&1
+            RETVAL=$?
+            if [ $RETVAL -eq 0 ]; then
+                echo_success
+            else
+                echo_failure
+            fi
+            echo
         fi
 
         # Make sure the database exists
-        if ! su $CYPHESISUSER -c "psql -c \"\" cyphesis" ; then
+        if ! su $CYPHESISUSER -c "psql -c \"\" cyphesis" >/dev/null 2>&1; then
             # Create the database
             echo -n $"Creating PostgreSQL database: "
-            su $CYPHESISUSER -c "createdb $CYPHESISDBASE"
+            su $CYPHESISUSER -c "createdb $CYPHESISDBASE" >/dev/null 2>&1
+            RETVAL=$?
+            if [ $RETVAL -eq 0 ]; then
+                echo_success
+            else
+                echo_failure
+            fi
+            echo
         fi
 
         echo -n $"Starting cyphesis: "
 
         # Run the server, in self daemonising mode
-        su $CYPHESISUSER /usr/bin/cyphesis --cyphesis:daemon=true --cyphesis:dbname=cyphesis > /dev/null 1>&1
+        su $CYPHESISUSER -c "/usr/bin/cyphesis --cyphesis:daemon=true --cyphesis:dbname=$CYPHESISDBASE" >/dev/null 2>&1
         RETVAL=$?
-        if [ $ret -eq 0 ]; then
+        if [ $RETVAL -eq 0 ]; then
             echo_success
             touch /var/lock/subsys/cyphesis
         else
             echo_failure
         fi
+        echo
         return $RETVAL
 }
 
 stop() {
         # Stop server
+        echo -n $"Shutting down cyphesis: "
+        killproc cyphesis
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/cyphesis
+        return $RETVAL
+}
 
 case "$1" in
   start)

@@ -152,6 +152,8 @@ int daemonise()
 
             if (wait4(pid, &status, 0, NULL) < 0) {
                 running = true;
+            } else {
+                pid = -1;
             }
 
             if (running == true) {

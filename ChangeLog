@@ -1,3 +1,12 @@
+2002-10-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* init script fixes.
+
+	* common/system.cpp: Ensure that parent of daemon exit status indicates
+	  whether the daemon has started properlly.
+
+	* server/Connection.cpp: Clarify error reporting.
+
 2002-10-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Account.cpp: Fix up handling of imaginary ops.
