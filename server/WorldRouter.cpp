@@ -319,25 +319,26 @@ OpVector WorldRouter::LookOperation(const Look & op)
         if (consts::enable_ranges) {
             Sight * s = new Sight(Sight::Instantiate());
 
-            Fragment::MapType omap;
+            Fragment::ListType & sargs = s->GetArgs();
+            sargs.push_back(Fragment::MapType());
+            Fragment::MapType & omap = sargs.front().AsMap();
+
             omap["id"] = getId();
             omap["parents"] = Fragment::ListType(1, "world");
             omap["objtype"] = "object";
             Entity * opFrom = J->second;
             const Vector3D & fromLoc = opFrom->getXyz();
-            Fragment::ListType contlist;
-            EntitySet::const_iterator I;
-            for(I = gameWorld.contains.begin(); I != gameWorld.contains.end(); I++) {
+            Fragment::ListType & contlist = (omap["contains"] = Fragment(Fragment::ListType())).AsList();
+            EntitySet::const_iterator I = gameWorld.contains.begin();
+            for(; I != gameWorld.contains.end(); I++) {
                 if ((*I)->location.inRange(fromLoc, consts::sight_range)) {
                     contlist.push_back(Fragment((*I)->getId()));
                 }
             }
-            if (!contlist.empty()) {
-                omap["contains"] = Fragment(contlist);
+            if (contlist.empty()) {
+                omap.erase("contains");
             }
 
-            Fragment::ListType args(1,Fragment(omap));
-            s->SetArgs(args);
             s->SetTo(op.GetFrom());
             return OpVector(1,s);
         }

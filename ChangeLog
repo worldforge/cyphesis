@@ -1,3 +1,7 @@
+2003-03-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Re-work handling look ops for efficiency.
+
 2003-03-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* Depend on devel skstream.
