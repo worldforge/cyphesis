@@ -1044,22 +1044,15 @@ static PyMethodDef misc_methods[] = {
 
 void init_python_api()
 {
-    std::string pypath("");
     std::string importCmd("ruleset_import_hooks.install([");
     std::vector<std::string>::const_iterator I;
     for(I = rulesets.begin(); I != rulesets.end(); I++) {
-        pypath = pypath + share_directory + "/cyphesis/rulesets/" + *I + ":";
         if (I != rulesets.begin()) {
             importCmd = importCmd + ",";
         }
         importCmd = importCmd + "\"" + *I + "\"";
     }
     importCmd = importCmd + "])\n";
-
-    std::string pathEnvStr = std::string("PYTHONPATH=") + pypath;
-    char * path_environment = new char[pathEnvStr.size() + 1];
-    strcpy(path_environment, pathEnvStr.c_str());
-    putenv(path_environment);
 
     Py_Initialize();
 
@@ -1074,6 +1067,22 @@ void init_python_api()
                                                          &PyErrorLogger_Type);
         PyObject_SetAttrString(sys_module, "stderr", errorLogger);
         Py_DECREF(errorLogger);
+
+        PyObject * sys_path = PyObject_GetAttrString(sys_module, "path");
+        if (sys_path != 0) {
+            if (PyList_Check(sys_path)) {
+                for(I = rulesets.begin(); I != rulesets.end(); I++) {
+                    std::string p = share_directory + "/cyphesis/rulesets/" +*I;
+                    PyObject * path = PyString_FromString(p.c_str());
+                    PyList_Append(sys_path, path);
+                    Py_DECREF(path);
+                }
+            } else {
+                std::cerr << "Its not a list" << std::endl << std::flush;
+            }
+        } else {
+            std::cerr << "Its not a list" << std::endl << std::flush;
+        }
         Py_DECREF(sys_module);
     } else {
         log(ERROR, "Could not import sys module");

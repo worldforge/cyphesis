@@ -1,3 +1,8 @@
+2004-05-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Python_API.cpp: Add to python search path directly, rather
+	  than using an environment hack.
+
 2004-05-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* Fix the tests so they link.
