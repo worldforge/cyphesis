@@ -9,10 +9,10 @@
 #include <map>
 
 class Thing;
-class ThingFactory;
+class FactoryBase;
 class WorldRouter;
 
-typedef std::map<std::string, ThingFactory *> fdict_t;
+typedef std::map<std::string, FactoryBase *> fdict_t;
 
 class EntityFactory {
     EntityFactory();

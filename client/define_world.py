@@ -129,10 +129,6 @@ def default(mapeditor):
         m.make('shin', type='shin', xyz=(uniform(-100,100),uniform(-100,100),village_height))
         m.make('ribcage', type='ribcage', xyz=(uniform(-100,100),uniform(-100,100),village_height))
 
-#   some coins near the start for people who are penniless
-    for i in range(0, 30):
-        m.make('coin',type='coin',xyz=(uniform(-6,-2),uniform(-2,2),village_height))
-
 #   the lych, who makes bones into skeletons
     lych=m.make('lych', type='lych', xyz=(2, 3, village_height))
     m.learn(lych,(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"))

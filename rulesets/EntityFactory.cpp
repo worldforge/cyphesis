@@ -11,12 +11,12 @@
 #include "Python_API.h"
 
 #include "ThingFactory.h"
-#include "CharacterFactory.h"
-#include "CreatorFactory.h"
-#include "PlantFactory.h"
-#include "FoodFactory.h"
-#include "StackFactory.h"
-#include "StructFactory.h"
+#include "Character.h"
+#include "Creator.h"
+#include "Plant.h"
+#include "Food.h"
+#include "Stackable.h"
+#include "Structure.h"
 
 #include <common/const.h>
 #include <common/debug.h>
@@ -35,13 +35,13 @@ EntityFactory * EntityFactory::m_instance = NULL;
 
 EntityFactory::EntityFactory()
 {
-    factories["thing"] = new ThingFactory();
-    factories["character"] = new CharacterFactory();
-    factories["creator"] = new CreatorFactory();
-    factories["plant"] = new PlantFactory();
-    factories["food"] = new FoodFactory();
-    factories["stackable"] = new StackFactory();
-    factories["structure"] = new StructureFactory();
+    factories["thing"] = new ThingFactory<Thing>();
+    factories["character"] = new ThingFactory<Character>();
+    factories["creator"] = new ThingFactory<Creator>();
+    factories["plant"] = new ThingFactory<Plant>();
+    factories["food"] = new ThingFactory<Food>();
+    factories["stackable"] = new ThingFactory<Stackable>();
+    factories["structure"] = new ThingFactory<Structure>();
 }
 
 void EntityFactory::readRuleset(const string & setname)

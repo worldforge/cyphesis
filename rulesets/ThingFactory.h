@@ -5,12 +5,18 @@
 #ifndef THING_FACTORY_H
 #define THING_FACTORY_H
 
-#include "Thing.h"
+class Thing;
 
-class ThingFactory {
+class FactoryBase {
+  public:
+    virtual Thing * newThing() = 0;
+};
+
+template <typename T>
+class ThingFactory : public FactoryBase {
   public:
     ThingFactory() { }
-    virtual Thing * newThing();
+    Thing * newThing() { return new T(); }
 };
 
 #endif // THING_FACTORY_H

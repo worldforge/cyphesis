@@ -1,3 +1,13 @@
+2001-06-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/define_world.py: Removed heap of coins from startup.
+	  No longer required as characters get given coins at startup.
+
+	* rulesets/ThingFactory.h, rulesets/ThingFactory.cpp,
+	  rulesets/EntityFactory.h, rulesets/EntityFactory.cpp:
+	  Removed bulky manual factory system with a proper template based
+	  factory system.
+
 2001-06-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/define_world.py: Add bounding boxes to oak trees.

@@ -20,14 +20,8 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Stackable.cpp Stackable.h \
 			     Movement.cpp Movement.h \
 			     Pedestrian.cpp Pedestrian.h \
-			     EntityFactory.cpp EntityFactory.h \
 			     ThingFactory.cpp ThingFactory.h \
-			     CharacterFactory.cpp CharacterFactory.h \
-			     CreatorFactory.cpp CreatorFactory.h \
-			     PlantFactory.cpp PlantFactory.h \
-			     FoodFactory.cpp FoodFactory.h \
-			     StackFactory.cpp StackFactory.h \
-			     StructFactory.cpp StructFactory.h
+			     EntityFactory.cpp EntityFactory.h
 
 libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    Py_Operation.cpp Py_Operation.h \
