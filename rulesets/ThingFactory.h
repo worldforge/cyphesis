@@ -3,7 +3,7 @@
 // Copyright (C) 2000 Alistair Riddoch
 
 #ifndef THING_FACTORY_H
-#define THING_H
+#define THING_FACTORY_H
 
 #include <Python.h>
 

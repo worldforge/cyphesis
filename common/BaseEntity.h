@@ -33,6 +33,8 @@ typedef enum op_no {
 	OP_LOAD,
 	OP_SAVE,
 	OP_SETUP,
+	OP_APPEARANCE,
+	OP_DISAPPEARANCE,
 	OP_INVALID
 } op_no_t;
 
@@ -94,6 +96,12 @@ typedef enum op_no {
             break; \
         case OP_SETUP: \
             _result = _prefix ## Operation((const Setup &)_op); \
+            break; \
+        case OP_APPEARANCE: \
+            _result = _prefix ## Operation((const Appearance &)_op); \
+            break; \
+        case OP_DISAPPEARANCE: \
+            _result = _prefix ## Operation((const Disappearance &)_op); \
             break; \
         case OP_ERROR: \
             _result = _prefix ## Operation((const Error &)_op); \
@@ -166,6 +174,8 @@ class Sound;
 class Touch;
 class Talk;
 class Look;
+class Appearance;
+class Disappearance;
 class Error;
 
 class Load : public RootOperation {
@@ -363,7 +373,7 @@ class BaseEntity {
     BaseEntity();
     virtual ~BaseEntity() { }
 
-    const Vector3D & get_xyz() const;
+    Vector3D get_xyz() const;
     virtual void destroy();
 
     Message::Object asObject() const;
@@ -394,6 +404,8 @@ class BaseEntity {
     virtual oplist Operation(const Load & op) { oplist res; return(res); }
     virtual oplist Operation(const Save & op) { oplist res; return(res); }
     virtual oplist Operation(const Setup & op) { oplist res; return(res); }
+    virtual oplist Operation(const Appearance & op) { oplist res; return(res); }
+    virtual oplist Operation(const Disappearance & op) { oplist res; return(res); }
     virtual oplist Operation(const RootOperation & op) { oplist res; return(res); }
 
     void set_refno_op(RootOperation * op, const RootOperation & ref_op) const {
@@ -436,6 +448,8 @@ class BaseEntity {
         if ("load" == parent)  { return(OP_LOAD); }
         if ("save" == parent)  { return(OP_SAVE); }
         if ("setup" == parent)  { return(OP_SETUP); }
+        if ("appearance" == parent)  { return(OP_APPEARANCE); }
+        if ("disappearance" == parent)  { return(OP_DISAPPEARANCE); }
         if ("error" == parent)  { return(OP_ERROR); }
         return (OP_INVALID);
     }
@@ -468,7 +482,7 @@ class BaseEntity {
 
 inline ostream & operator<<(ostream& s, Location& v)
 {
-    return s << "{" << v.parent->fullid << "," << v.coords << "," << v.velocity << "}";
+    return s << "{" << v.ref->fullid << "," << v.coords << "," << v.velocity << "}";
 }
 
 #endif /* BASE_ENTITY_H */

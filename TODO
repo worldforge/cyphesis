@@ -1,11 +1,5 @@
 Must be sorted out immediatly after Acorn 0.3:
 
-  Sort out floating point world_info::time. Currently time is fetched
-  using time(2). Should use gettimeofday(2) I think.
-
-  Implement get_object from Python, so that entities can look things up by id.
-  I am currently trying to avoid having to do this, so far successfully.
-
   Modify Thing::operator[] so that it handles attributes that are static.
   Make it virtual, etc. Then clean up get/setattr in Python/C API code.
 
@@ -14,9 +8,12 @@ Must be sorted out immediatly after Acorn 0.3:
 
 Definitly for Acorn 0.4:
 
-  Implement accelerated Atlas Objects API.
+  Implement accelerated Atlas Objects API. MAYBE
 
   Implement ranges.
+    Fully implement propper range checking for broadcast operations, instead
+    if the primitive implementation currently in place.
+    Add handling of Appearance operations to BaseMind.
 
   Implement collison detection.
 

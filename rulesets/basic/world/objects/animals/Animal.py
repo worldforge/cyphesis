@@ -71,9 +71,10 @@ class Animal(Thing):
     def eat_operation(self, op):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)
-        to_ = self.world.get_object(op[1].id)
-        if not to_:
-            return self.error(op,"To is undefined object")
+        #to_ = self.world.get_object(op[1].id)
+        #if not to_:
+            #return self.error(op,"To is undefined object")
+        to_ = op[1].id
         ent.weight=self.weight
         res = res + Operation("nourish",op[1],ent,to=to_,from_=self)
         return res

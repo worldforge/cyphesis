@@ -33,24 +33,24 @@ void BaseEntity::destroy()
     for(I = contains.begin(); I != contains.end(); I++) {
         BaseEntity * obj = *I;
         if (obj->deleted == false) {
-            obj->location.parent = location.parent;
+            obj->location.ref = location.ref;
             obj->location.coords = location.coords + obj->location.coords;
         }
     }
     if (location) {
-        location.parent->contains.remove(this);
+        location.ref->contains.remove(this);
     }
 }
 
-const Vector3D & BaseEntity::get_xyz() const
+Vector3D BaseEntity::get_xyz() const
 {
     //Location l=location;
     if (!location) {
         static Vector3D ret(0.0,0.0,0.0);
         return ret;
     }
-    if (location.parent) {
-        return location.coords+location.parent->get_xyz();
+    if (location.ref) {
+        return location.coords+location.ref->get_xyz();
     } else {
         return location.coords;
     }

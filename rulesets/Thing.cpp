@@ -13,6 +13,8 @@
 #include <Atlas/Objects/Operation/Sound.h>
 #include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Appearance.h>
+#include <Atlas/Objects/Operation/Disappearance.h>
 
 #include "Thing.h"
 #include "MemMap_methods.h"
@@ -25,8 +27,8 @@
 
 //static const bool debug_flag = false;
 
-Thing::Thing() : script_object(NULL), status(1), type("thing"),
-                 is_character(false)
+Thing::Thing() : script_object(NULL), perceptive(false), status(1),
+                 type("thing"), is_character(false)
 {
     in_game = true;
     name = string("Foo");
@@ -125,14 +127,14 @@ void Thing::getLocation(Message::Object::MapType & entmap, fdict_t & fobjects)
     if (entmap.find("loc") != entmap.end()) {
         debug( cout << "Thing::getLocation, getting it" << endl << flush;);
         try {
-            const string & parent_id = entmap["loc"].AsString();
-            BaseEntity * parent_obj;
-            if (fobjects.find(parent_id) == fobjects.end()) {
-                debug( cout << "ERROR: Can't get parent from objects dictionary" << endl << flush;);
+            const string & ref_id = entmap["loc"].AsString();
+            BaseEntity * ref_obj;
+            if (fobjects.find(ref_id) == fobjects.end()) {
+                debug( cout << "ERROR: Can't get ref from objects dictionary" << endl << flush;);
                 return;
             }
                 
-            parent_obj = fobjects[parent_id];
+            ref_obj = fobjects[ref_id];
             Vector3D pos(0, 0, 0);
             Vector3D velocity(0, 0, 0);
             Vector3D face(1, 0, 0);
@@ -151,7 +153,7 @@ void Thing::getLocation(Message::Object::MapType & entmap, fdict_t & fobjects)
             } else if (location) {
                 face = location.face;
             }
-            Location thing_loc(parent_obj, pos, velocity, face);
+            Location thing_loc(ref_obj, pos, velocity, face);
             location = thing_loc;
         }
         catch (Message::WrongTypeException) {
@@ -215,9 +217,9 @@ oplist Thing::Operation(const Create & op)
             obj->location=location;
             obj->location.velocity=Vector3D(0,0,0);
         }
-        if (obj->location.parent != NULL) {
-            obj->location.parent->contains.push_back(obj);
-            obj->location.parent->contains.unique();
+        if (obj->location.ref != NULL) {
+            obj->location.ref->contains.push_back(obj);
+            obj->location.ref->contains.unique();
         }
         Create c(op);
         list<Message::Object> args2(1,obj->asObject());
@@ -282,26 +284,27 @@ oplist Thing::Operation(const Move & op)
         debug( cout << "ERROR: move op has no argument" << endl << flush;);
         return(res);
     }
-    BaseEntity * newparent;
+    BaseEntity * newref;
     try {
+        Vector3D oldpos = location.coords;
         Message::Object::MapType ent = args.front().AsMap();
         string & oname = ent["id"].AsString();
         debug( cout << "In " << fullid << " got moveop for " << oname << endl << flush;);
         if (ent.find("loc") == ent.end()) {
-            debug( cout << "ERROR: move op arg has no parent" << endl << flush;);
-            return(error(op, "Move location has no parent"));
+            debug( cout << "ERROR: move op arg has no ref" << endl << flush;);
+            return(error(op, "Move location has no ref"));
         }
-        string parent=ent["loc"].AsString();
-        if (world->fobjects.find(parent) == world->fobjects.end()) {
-            debug( cout << "ERROR: move op arg parent is invalid" << endl << flush;);
-            return(error(op, "Move location parent invalid"));
+        string ref=ent["loc"].AsString();
+        if (world->fobjects.find(ref) == world->fobjects.end()) {
+            debug( cout << "ERROR: move op arg ref is invalid" << endl << flush;);
+            return(error(op, "Move location ref invalid"));
         }
-        newparent = world->fobjects[parent];
-        if (location.parent != newparent) {
-            location.parent->contains.remove(this);
-            newparent->contains.push_back(this);
+        newref = world->fobjects[ref];
+        if (location.ref != newref) {
+            location.ref->contains.remove(this);
+            newref->contains.push_back(this);
         }
-        location.parent=newparent;
+        location.ref=newref;
         if (ent.find("pos") == ent.end()) {
             return(error(op, "Move location has no position"));
         }
@@ -346,7 +349,45 @@ oplist Thing::Operation(const Move & op)
         s->SetArgs(args2);
         res.push_back(s);
         // I think it might be wise to send a set indicating we have changed
-        // modes
+        // modes, but this would probably be wasteful
+        if (consts::enable_ranges && perceptive) {
+            debug(cout << "testing range" << endl;);
+            list_t::const_iterator I = location.ref->contains.begin();
+            Object::ListType appear, disappear;
+            for(;I != location.ref->contains.end(); I++) {
+              const bool wasInRange = (*I)->location.inRange(oldpos, consts::sight_range);
+              const bool isInRange = (*I)->location.inRange(location.coords, consts::sight_range);
+              // Build appear and disappear lists, and send operations
+              // Also so operations to (dis)appearing perceptive
+              // entities saying that we are (dis)appearing
+              if (wasInRange && !isInRange) {
+                  Object::MapType dent;
+                  dent["id"] = (*I)->fullid;
+                  disappear.push_back(dent);
+                  debug(cout << fullid << ": losing site of " <<(*I)->fullid << endl;);
+              }
+              if (!wasInRange && isInRange) {
+                  Object::MapType aent;
+                  aent["id"] = (*I)->fullid;
+                  appear.push_back(aent);
+                  debug(cout << fullid << ": gaining site of " <<(*I)->fullid << endl;);
+              }
+            }
+            if (disappear.size() != 0) {
+                Appearance * a = new Appearance();
+                *a = Appearance::Instantiate();
+                a->SetArgs(appear);
+                a->SetTo(fullid);
+                res.push_back(a);
+            }
+            if (appear.size() != 0) {
+                Disappearance * d = new Disappearance();
+                *d = Disappearance::Instantiate();
+                d->SetArgs(disappear);
+                d->SetTo(fullid);
+                res.push_back(d);
+            }
+        }
     }
     catch (Message::WrongTypeException) {
         cerr << "EXCEPTION: Malformed object to be moved\n";
@@ -436,4 +477,18 @@ oplist Thing::Operation(const Look & op)
         return(res);
     }
     return(BaseEntity::Operation(op));
+}
+
+oplist Thing::Operation(const Appearance & op)
+{
+    oplist res;
+    script_Operation("appearance", op, res);
+    return(res);
+}
+
+oplist Thing::Operation(const Disappearance & op)
+{
+    oplist res;
+    script_Operation("disappearance", op, res);
+    return(res);
 }

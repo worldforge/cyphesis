@@ -69,6 +69,8 @@ class Character : public Thing {
     virtual oplist Mind_Operation(const Load & op) { oplist res; return(res); }
     virtual oplist Mind_Operation(const Save & op) { oplist res; return(res); }
     virtual oplist Mind_Operation(const Setup & op);
+    virtual oplist Mind_Operation(const Appearance & op) { oplist res; return(res); }
+    virtual oplist Mind_Operation(const Disappearance & op) { oplist res; return(res); }
     virtual oplist Mind_Operation(const Error & op) { oplist res; return(res); }
     virtual oplist Mind_Operation(const RootOperation & op) { oplist res; return(res); }
     virtual oplist W2m_Operation(const Login & op) { oplist res; return(res); }
@@ -88,6 +90,8 @@ class Character : public Thing {
     virtual oplist W2m_Operation(const Load & op) { oplist res; return(res); }
     virtual oplist W2m_Operation(const Save & op) { oplist res; return(res); }
     virtual oplist W2m_Operation(const Setup & op);
+    virtual oplist W2m_Operation(const Appearance & op) { oplist res; return(res); }
+    virtual oplist W2m_Operation(const Disappearance & op) { oplist res; return(res); }
     virtual oplist W2m_Operation(const Error & op);
     virtual oplist W2m_Operation(const RootOperation & op) { oplist res; return(res); }
     virtual oplist send_mind(const RootOperation & op);

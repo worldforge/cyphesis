@@ -6,6 +6,7 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Sight.h>
 
 #include "WorldRouter.h"
 #include "ServerRouting.h"
@@ -13,6 +14,7 @@
 #include <rulesets/Thing.h>
 #include <rulesets/ThingFactory.h>
 #include <common/debug.h>
+#include <common/const.h>
 
 extern "C" {
     #include <stdio.h>
@@ -104,13 +106,13 @@ Thing * WorldRouter::add_object(Thing * obj)
     if (!obj->location) {
         debug(cout << "set loc " << this  << endl << flush;);
         obj->location=Location(this, Vector3D(0,0,0));
-        debug(cout << "loc set with parent " << obj->location.parent->fullid << endl << flush;);
+        debug(cout << "loc set with ref " << obj->location.ref->fullid << endl << flush;);
     }
-    if (NULL == obj->location.parent) {
-        debug(cout << "set parent" << endl << flush;);
-        obj->location.parent=this;
+    if (NULL == obj->location.ref) {
+        debug(cout << "set ref" << endl << flush;);
+        obj->location.ref=this;
     }
-    if (obj->location.parent==this) {
+    if (obj->location.ref==this) {
         debug(cout << "loc is world" << endl << flush;);
         contains.push_back(obj);
         contains.unique();
@@ -137,9 +139,9 @@ Thing * WorldRouter::add_object(const string & typestr, const Object & ent)
 
 void WorldRouter::del_object(BaseEntity * obj)
 {
-    // Remove object from contains of its real parent?
-    if (obj->location.parent != NULL) {
-        obj->location.parent->contains.remove(obj);
+    // Remove object from contains of its real ref?
+    if (obj->location.ref != NULL) {
+        obj->location.ref->contains.remove(obj);
     }
     // Remove object from world just to make sure
     contains.remove(obj);
@@ -221,6 +223,19 @@ oplist WorldRouter::operation(const RootOperation * op)
         const list_t & broadcast = broadcastList(op_ref);
         std::list<BaseEntity *>::const_iterator I;
         for(I = broadcast.begin(); I != broadcast.end(); I++) {
+            if (consts::enable_ranges) {
+                const string & from = newop.GetFrom();
+                if ((from.size() != 0) &&
+                    (fobjects.find(from) != fobjects.end()) &&
+                    (fobjects[from]->location.ref == (*I)->location.ref) &&
+                    (!fobjects[from]->location.inRange((*I)->location.coords,
+                                                       consts::sight_range))) {
+                        debug(cout << "Op from " <<from<< " cannot be seen by "
+                                   << (*I)->fullid << endl << flush;);
+                             
+                        continue;
+                }
+            }
             newop.SetTo((*I)->fullid);
             operation(&newop);
         }
@@ -246,6 +261,30 @@ oplist WorldRouter::Operation(const Look & op)
         debug(cout << "Adding [" << from << "] to perceptives" << endl << flush;);
         perceptives.push_back(fobjects[from]);
         perceptives.unique();
+        if (consts::enable_ranges) {
+            Sight * s = new Sight();
+            *s = Sight::Instantiate();
+
+            Object::MapType omap;
+            omap["id"] = fullid;
+            BaseEntity * opFrom = fobjects[from];
+            const Vector3D & fromLoc = opFrom->get_xyz();
+            Object::ListType contlist;
+            list_t::const_iterator I;
+            for(I = contains.begin(); I != contains.end(); I++) {
+                if ((*I)->location.inRange(fromLoc, consts::sight_range)) {
+                    contlist.push_back(Object((*I)->fullid));
+                }
+            }
+            if (contlist.size() != 0) {
+                omap["contains"] = Object(contlist);
+            }
+
+            Object::ListType args(1,Object(omap));
+            s->SetArgs(args);
+            s->SetTo(op.GetFrom());
+            return(oplist(1,s));
+        }
     }
     return(BaseEntity::Operation(op));
 }

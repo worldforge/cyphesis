@@ -9,21 +9,23 @@
 
 namespace consts {
 
-  extern int debug_level;
-  extern int debug_thinking;
+  const int debug_level = 0;
+  const int debug_thinking = 0;
 
-  extern double fzero;
+  const double fzero = 1e-13; //float zero;
 
-  extern double time_multiplier;
-  extern double basic_tick;
-  extern double base_velocity_coefficient;
-  extern double base_velocity;
-  extern int day_in_seconds;
+  const double time_multiplier = 1.0;
+  // In Real time how many seconds between ticks;
+  const double basic_tick = time_multiplier*3.0;
+  const double base_velocity_coefficient = 5.0;
+  const double base_velocity = base_velocity_coefficient/time_multiplier;
+  const int day_in_seconds = 3600*24;
 
-  extern double sight_range;
-  extern double hearing_range;
-  extern double collision_range;
-  extern int enable_ranges;
+
+  const double sight_range = 10.0;
+  const double hearing_range = 10.0;
+  const double collision_range = 1.0;
+  const bool enable_ranges = true;
 
 }
 

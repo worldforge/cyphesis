@@ -6,6 +6,8 @@
 #define WORLD_ROUTER_H
 
 #include <fstream.h>
+#include <sys/time.h>
+#include <unistd.h>
 
 class WorldRouter;
 class ServerRouting;
@@ -47,7 +49,9 @@ class WorldRouter : public Routing {
     }
 
     void update_time() {
-        time_t tmp_time = time(NULL) - init_time;
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        double tmp_time = (double)(tv.tv_sec - init_time) + (double)tv.tv_usec/1000000;
         world_info::time = double(tmp_time);
         real_time = world_info::time;
     }

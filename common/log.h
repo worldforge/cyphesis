@@ -11,7 +11,7 @@ namespace common {
     extern ofstream debug_fp;
     extern ofstream thinking_fp;
 
-    void debug(int level, char * msg, int op=0);
+    void debugn(int level, char * msg, int op=0);
     void inform(char * msg, int op);
     void thinking(char * msg);
 

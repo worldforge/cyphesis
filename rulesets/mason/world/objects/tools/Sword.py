@@ -14,7 +14,7 @@ class Sword(Thing):
         set_kw(self,kw,"weight",4.0)
     def cut_operation(self, op):
         #to_ = self.world.get_object(op[1].id)
+        #if not to_:
+            #return self.error(op,"To is undefined object")
         to_ = op[1].id
-        if not to_:
-            return self.error(op,"To is undefined object")
         return Operation("touch",op[1],to=to_,from_=self)

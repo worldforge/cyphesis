@@ -7,6 +7,7 @@
 
 #include "Thing.h"
 #include "ThingFactory.h"
+#include "ThingShape.h"
 #include "Python_API.h"
 
 #include <server/WorldRouter.h>
@@ -20,6 +21,8 @@
 static const bool debug_flag = false;
 
 using Atlas::Message::Object;
+
+map<string, ThingShape *> * ThingShape::dict = NULL;
 
 ThingFactory thing_factory;
 

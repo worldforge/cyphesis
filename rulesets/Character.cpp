@@ -239,10 +239,10 @@ oplist Character::Operation(const Setup & op)
     *l = Look::Instantiate();
     l->SetTo(world->fullid);
     res.push_back(l);
-    if (location.parent != world) {
+    if (location.ref != world) {
         l = new Look();
         *l = Look::Instantiate();
-        l->SetTo(location.parent->fullid);
+        l->SetTo(location.ref->fullid);
         res.push_back(l);
     }
     l = new Look();
@@ -376,9 +376,9 @@ oplist Character::Mind_Operation(const Move & op)
         res.push_back(newop);
         return(res);
     }
-    string location_parent;
+    string location_ref;
     if ((arg1.find("loc") != arg1.end()) && (arg1["loc"].IsString())) {
-        location_parent = arg1["loc"].AsString();
+        location_ref = arg1["loc"].AsString();
     } else {
         debug( cout << "Parent not set" << endl << flush;);
     }
@@ -448,11 +448,11 @@ oplist Character::Mind_Operation(const Move & op)
     }
     double vel_mag;
     // Print out a bunch of debug info
-    debug( cout << ":" << location_parent << ":" << world->fullid << ":" << location.parent->fullid << ":" << endl << flush;);
-    if ( (location_parent==world->fullid) &&
-         (location_parent==location.parent->fullid) &&
+    debug( cout << ":" << location_ref << ":" << world->fullid << ":" << location.ref->fullid << ":" << endl << flush;);
+    if ( (location_ref==world->fullid) &&
+         (location_ref==location.ref->fullid) &&
          (newop->GetFutureSeconds() >= 0) ) {
-        // Movement within current parent. Work out the speed and stuff and
+        // Movement within current ref. Work out the speed and stuff and
         // use movementinfo to track movement.
         if (!location_vel) {
             debug( cout << "\tVelocity default" << endl << flush;);
@@ -607,6 +607,7 @@ oplist Character::Mind_Operation(const Look & op)
 {
     debug( cout << "Got look up from mind from [" << op.GetFrom()
                             << "] to [" << op.GetTo() << "]" << endl << flush;);
+    perceptive = true;
     Look * l = new Look(op);
     if (op.GetTo().size() == 0) {
         const Message::Object::ListType & args = op.GetArgs();

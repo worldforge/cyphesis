@@ -48,7 +48,7 @@ list<Thing *> MemMap::find_by_location(const Location & loc, double radius)
         if (!loc || !oloc) {
             continue;
         }
-        if ((oloc.parent->fullid == loc.parent->fullid) &&
+        if ((oloc.ref->fullid == loc.ref->fullid) &&
             (loc.coords.distance(oloc.coords) < radius)) {
             res.push_back((Thing*)I->second);
         }

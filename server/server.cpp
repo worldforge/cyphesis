@@ -52,6 +52,9 @@ CommClient::~CommClient() {
         connection->destroy();
         delete connection;
     }
+    if (encoder != NULL) {
+        delete encoder;
+    }
 }
 
 int CommClient::setup()

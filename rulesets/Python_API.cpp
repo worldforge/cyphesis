@@ -222,14 +222,14 @@ static PyObject * location_new(PyObject * self, PyObject * args)
 {
     LocationObject *o;
     // We need to deal with actual args here
-    PyObject * parentO, * coordsO = NULL;
-    if (PyArg_ParseTuple(args, "O|O", &parentO, &coordsO)) {
-        if ((!PyThing_Check(parentO)) && (!PyWorld_Check(parentO))) {
-            if (PyObject_HasAttrString(parentO, "cppthing")) {
-                parentO = PyObject_GetAttrString(parentO, "cppthing");
+    PyObject * refO, * coordsO = NULL;
+    if (PyArg_ParseTuple(args, "O|O", &refO, &coordsO)) {
+        if ((!PyThing_Check(refO)) && (!PyWorld_Check(refO))) {
+            if (PyObject_HasAttrString(refO, "cppthing")) {
+                refO = PyObject_GetAttrString(refO, "cppthing");
             }
-            if (!PyThing_Check(parentO)) {
-                PyErr_SetString(PyExc_TypeError, "Arg parent required");
+            if (!PyThing_Check(refO)) {
+                PyErr_SetString(PyExc_TypeError, "Arg ref required");
                 return NULL;
             }
         }
@@ -238,21 +238,21 @@ static PyObject * location_new(PyObject * self, PyObject * args)
             return NULL;
         }
 
-        BaseEntity * parent_ent;
-        if (PyWorld_Check(parentO)) {
-            WorldObject * parent = (WorldObject*)parentO;
-            if (parent->world == NULL) {
+        BaseEntity * ref_ent;
+        if (PyWorld_Check(refO)) {
+            WorldObject * ref = (WorldObject*)refO;
+            if (ref->world == NULL) {
                 PyErr_SetString(PyExc_TypeError, "Parent world is invalid");
                 return NULL;
             }
-            parent_ent = parent->world;
+            ref_ent = ref->world;
         } else {
-            ThingObject * parent = (ThingObject*)parentO;
-            if (parent->m_thing == NULL) {
+            ThingObject * ref = (ThingObject*)refO;
+            if (ref->m_thing == NULL) {
                 PyErr_SetString(PyExc_TypeError, "Parent thing is invalid");
                 return NULL;
             }
-            parent_ent = parent->m_thing;
+            ref_ent = ref->m_thing;
         }
         Vector3DObject * coords = (Vector3DObject*)coordsO;
         o = newLocationObject(NULL);
@@ -260,9 +260,9 @@ static PyObject * location_new(PyObject * self, PyObject * args)
             return NULL;
         }
         if (coords == NULL) {
-            o->location = new Location(parent_ent, Vector3D());
+            o->location = new Location(ref_ent, Vector3D());
         } else {
-            o->location = new Location(parent_ent, coords->coords);
+            o->location = new Location(ref_ent, coords->coords);
         }
         o->own = 1;
     } else if (PyArg_ParseTuple(args, "")) {

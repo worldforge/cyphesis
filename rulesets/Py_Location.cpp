@@ -51,12 +51,12 @@ PyObject * Location_getattr(LocationObject *self, char *name)
         return NULL;
     }
     if (strcmp(name, "parent") == 0) {
-        if (self->location->parent == NULL) {
+        if (self->location->ref == NULL) {
             Py_INCREF(Py_None);
             return Py_None;
         }
         ThingObject * thing = newThingObject(NULL);
-        thing->m_thing = (Thing *)self->location->parent;
+        thing->m_thing = (Thing *)self->location->ref;
         return (PyObject *)thing;
     }
     if (strcmp(name, "coordinates") == 0) {
@@ -93,7 +93,7 @@ int Location_setattr(LocationObject *self, char *name, PyObject *v)
             PyErr_SetString(PyExc_TypeError, "invalid thing");
             return -1;
         }
-        self->location->parent = thing->m_thing;
+        self->location->ref = thing->m_thing;
         return(0);
     }
     if (!PyVector3D_Check(v)) {

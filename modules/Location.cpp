@@ -20,8 +20,8 @@ using Atlas::Message::Object;
 void Location::addObject(Object * obj) const
 {
     Object::MapType & omap = obj->AsMap();
-    if (parent!=NULL) {
-        omap["loc"] = Object(parent->fullid);
+    if (ref!=NULL) {
+        omap["loc"] = Object(ref->fullid);
     } else {
         omap["loc"] = Object("");
     }
@@ -33,5 +33,8 @@ void Location::addObject(Object * obj) const
     }
     if (face) {
         omap["face"] = face.asObject();
+    }
+    if (bbox) {
+        omap["bbox"] = bbox.asObject();
     }
 }

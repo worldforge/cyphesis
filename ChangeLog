@@ -1,3 +1,38 @@
+2001-02-17  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Implemented beginnings of ranges code:
+
+	* modules/Location.h: Added inRange() method which can be used
+	  to check whether location, including bounding box, is within
+	  given range of a given location. Changed parent member
+	  variable to ref to fit with Atlas spec. Changed all code
+	  related to using the term ref instead of parent so
+	  that there is no confusion between ref for coordinates
+	  and parent in the Atlas hierarchy.
+
+	* rulesets/Thing.cpp: Added code to move operation to check
+	  what entities come into and out of range when entity moves.
+	  Appearance and Disappearance operations are sent to the
+	  moving entity with a list of the relevant entities as their
+	  argument.
+
+	* server/WorldRouter.h/cpp: Added overloaded Look operation
+	  handler which applies range constraints to the contains
+	  attribute before returning.
+
+	* common/BaseEntity.h, rulesets/Thing.h, rulesets/Character.h:
+	  Added handling of Appearance and Disappearance operations.
+
+	* server/WorldRouter.cpp: Added primitive check to broadcast
+	  operations to avoid delivering broadcast operation to
+	  entities out of range.
+
+	* Removed world.get_object() use from server python code, as
+	  its use is not required.
+
+	* server/WorldRouter.h: Implemented fetching of floating point time
+	  from the OS so movement is much smoother.
+
 2001-02-07  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* watchdog/*: Watchdog and control program now work just fine,

@@ -2,6 +2,8 @@
 // the GNU Lesser General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
+#if 0
+
 #include "const.h"
 
 namespace consts {
@@ -25,3 +27,5 @@ namespace consts {
   int enable_ranges = 0;
 
 }
+
+#endif

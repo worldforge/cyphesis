@@ -26,6 +26,7 @@ class Thing : public BaseEntity {
 
     virtual int script_Operation(const string &, const RootOperation &, oplist &, RootOperation * sub_op=NULL);
   public:
+    bool perceptive;
     double status;
     string type;
     bool is_character;
@@ -70,6 +71,8 @@ class Thing : public BaseEntity {
     virtual oplist Operation(const Sound & op);
     virtual oplist Operation(const Touch & op);
     virtual oplist Operation(const Look & op);
+    virtual oplist Operation(const Appearance & op);
+    virtual oplist Operation(const Disappearance & op);
 
     friend PyObject * Thing_getattr(ThingObject *self, char *name);
     friend int Thing_setattr(ThingObject *self, char *name, PyObject *v);
