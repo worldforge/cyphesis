@@ -14,21 +14,21 @@ class Shop_vacant_deco_2_se(Thing):
         ret = Message()
         # South wall with door
 	loc = Location(self, Vector3D(-0.5,0.5,0))
-        loc.bbox = Vector3D(3,0.25,2.5)
+        loc.bbox = Vector3D(6,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
 	loc = Location(self, Vector3D(7.5,0.5,0))
-        loc.bbox = Vector3D(1,0.25,2.5)
+        loc.bbox = Vector3D(2,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # West wall
 	loc = Location(self, Vector3D(-0.5,0.5,0))
-        loc.bbox = Vector3D(0.25,4,2.5)
+        loc.bbox = Vector3D(0.5,8,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # North wall
 	loc = Location(self, Vector3D(-0.5,8,0))
-        loc.bbox = Vector3D(5,0.25,2.5)
+        loc.bbox = Vector3D(10,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # East wall
 	loc = Location(self, Vector3D(9,0.5,0))
-        loc.bbox = Vector3D(0.25,4,2.5)
+        loc.bbox = Vector3D(0.5,8,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         return ret

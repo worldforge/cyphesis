@@ -14,21 +14,21 @@ class House_deco_3(Thing):
         ret = Message()
         # South wall  with door
 	loc = Location(self, Vector3D(-0.5,-0.5,0))
-        loc.bbox = Vector3D(1,0.25,2.5)
+        loc.bbox = Vector3D(2,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
 	loc = Location(self, Vector3D(3.5,-0.5,0))
-        loc.bbox = Vector3D(2,0.25,2.5)
+        loc.bbox = Vector3D(4,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # West wall
 	loc = Location(self, Vector3D(-0.5,-0.5,0))
-        loc.bbox = Vector3D(0.25,4,2.5)
+        loc.bbox = Vector3D(0.5,8,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # North wall
 	loc = Location(self, Vector3D(-0.5,7,0))
-        loc.bbox = Vector3D(4,0.25,2.5)
+        loc.bbox = Vector3D(8,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # East wall
 	loc = Location(self, Vector3D(7,-0.5,0))
-        loc.bbox = Vector3D(0.25,4,2.5)
+        loc.bbox = Vector3D(0.5,8,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         return ret

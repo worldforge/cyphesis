@@ -14,28 +14,28 @@ class House_deco_2(Thing):
         ret = Message()
         # South wall
 	loc = Location(self, Vector3D(2,-2,0))
-        loc.bbox = Vector3D(4,0.25,2.5)
+        loc.bbox = Vector3D(8,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # West wall with door
 	loc = Location(self, Vector3D(2,-2,0))
-        loc.bbox = Vector3D(0.25,1,2.5)
+        loc.bbox = Vector3D(0.5,2,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
 	loc = Location(self, Vector3D(2,4,0))
-        loc.bbox = Vector3D(0.25,5,2.5)
+        loc.bbox = Vector3D(0.5,10,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # North wall
 	loc = Location(self, Vector3D(2,13.5,0))
-        loc.bbox = Vector3D(4,0.25,2.5)
+        loc.bbox = Vector3D(8,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # East wall with door
 	loc = Location(self, Vector3D(9.5,-2,0))
-        loc.bbox = Vector3D(0.25,2,2.5)
+        loc.bbox = Vector3D(0.5,4,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
 	loc = Location(self, Vector3D(9.5,4,0))
-        loc.bbox = Vector3D(0.25,5,2.5)
+        loc.bbox = Vector3D(0.5,10,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # Internal wall
 	loc = Location(self, Vector3D(2,6,0))
-        loc.bbox = Vector3D(2,0.25,2.5)
+        loc.bbox = Vector3D(4,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         return ret

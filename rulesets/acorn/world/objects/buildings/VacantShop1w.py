@@ -14,28 +14,28 @@ class Shop_vacant_deco_1_sw(Thing):
         ret = Message()
         # South wall
 	loc = Location(self, Vector3D(0.5,-0.5,0))
-        loc.bbox = Vector3D(4,0.25,2.5)
+        loc.bbox = Vector3D(8,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # West wall with door
 	loc = Location(self, Vector3D(0.5,-0.5,0))
-        loc.bbox = Vector3D(0.25,1,2.5)
+        loc.bbox = Vector3D(0.5,2,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
 	loc = Location(self, Vector3D(0.5,3.5,0))
-        loc.bbox = Vector3D(0.25,2,2.5)
+        loc.bbox = Vector3D(0.5,4,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # North wall
 	loc = Location(self, Vector3D(0.5,7,0))
-        loc.bbox = Vector3D(4,0.25,2.5)
+        loc.bbox = Vector3D(8,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # North outer wall
 	loc = Location(self, Vector3D(2.5,11,0))
-        loc.bbox = Vector3D(3,0.25,2.5)
+        loc.bbox = Vector3D(6,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # East wall with door
 	loc = Location(self, Vector3D(8,-0.5,0))
-        loc.bbox = Vector3D(0.25,1,2.5)
+        loc.bbox = Vector3D(0.5,2,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
 	loc = Location(self, Vector3D(8,3.5,0))
-        loc.bbox = Vector3D(0.25,4,2.5)
+        loc.bbox = Vector3D(0.5,8,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         return ret

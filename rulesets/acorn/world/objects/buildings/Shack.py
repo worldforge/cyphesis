@@ -14,14 +14,14 @@ class Shack_deco_1(Thing):
         ret = Message()
         # West wall
 	loc = Location(self, Vector3D(-0.5,3.5,0))
-        loc.bbox = Vector3D(0.25,2,2.5)
+        loc.bbox = Vector3D(0.5,4,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # North wall
 	loc = Location(self, Vector3D(-0.5,7,0))
-        loc.bbox = Vector3D(4,0.25,2.5)
+        loc.bbox = Vector3D(8,0.5,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # East wall
 	loc = Location(self, Vector3D(7,-0.5,0))
-        loc.bbox = Vector3D(0.25,4,2.5)
+        loc.bbox = Vector3D(0.5,8,5)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         return ret

@@ -14,11 +14,11 @@ class Stall_se(Thing):
         ret = Message()
         # South counter
 	loc = Location(self, Vector3D(-0.5,-0.5,0))
-        loc.bbox = Vector3D(1.5,0.25,0.5)
+        loc.bbox = Vector3D(3,0.5,1)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # North back wall
 	loc = Location(self, Vector3D(-0.5,1.3,0))
-        loc.bbox = Vector3D(1.5,0.1,1.5)
+        loc.bbox = Vector3D(3,0.2,3)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         return ret
 
@@ -27,11 +27,11 @@ class Stall_sw(Thing):
         ret = Message()
         # West counter
 	loc = Location(self, Vector3D(-0.5,-0.5,0))
-        loc.bbox = Vector3D(0.25,1.5,0.5)
+        loc.bbox = Vector3D(0.5,3,1)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         # North back wall
 	loc = Location(self, Vector3D(1.3,-0.5,0))
-        loc.bbox = Vector3D(0.1,1.5,1.5)
+        loc.bbox = Vector3D(0.2,3,3)
         ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
         return ret
 
