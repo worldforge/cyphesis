@@ -333,11 +333,13 @@ static PyObject * Get_PyClass(const std::string & package,
         Py_DECREF(my_class);
         return NULL;
     }
+#if 0
     if (PyType_Check(my_class) == 0) {
         std::cerr << "PyCallable_Check returned true, but PyType_Check returned false " << package << "." << type << std::endl << std::flush;
     } else {
         std::cerr << "PyType_Check returned true" << std::endl << std::flush;
     }
+#endif
     return my_class;
 }
 

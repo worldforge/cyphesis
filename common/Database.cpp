@@ -871,6 +871,7 @@ bool Database::updateEntityRow(const std::string & classname,
 {
     if (columns.empty()) {
         log(WARNING, "Update query passed to database with no columns.");
+        std::cerr << "From " << id << std::endl << std::flush;
         return false;
     }
     TableDict::const_iterator I = entityTables.find(classname);

@@ -1,5 +1,17 @@
 2003-11-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Additional error reporting for bad update
+	  queries.
+
+	* rulesets/Plant.h: Add accessor for number of fruits.
+
+	* rulesets/Python_API.cpp: Remove experimental Python type code.
+
+	* server/Persistor_impl.h: Fix persisting plant fruits, and 
+	  character attributes.
+
+2003-11-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Plant.cpp: Fix TickOperation() so it only runs if the
 	  script doesn't handle it.
 

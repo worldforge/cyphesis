@@ -92,6 +92,9 @@ void Persistor<T>::uCharacter(Character & t, std::string & c)
         if (!empty) { q << ", "; } else { empty = false; }
         q << "food = " << t.getFood();
     }
+    if (!empty) {
+        c += q.str();
+    }
 }
 
 template <class T>
@@ -107,6 +110,15 @@ void Persistor<T>::uArea(Area & t, std::string & c)
 template <class T>
 void Persistor<T>::uPlant(Plant & t, std::string & c)
 {
+    std::stringstream q;
+    bool empty = c.empty();
+    if (t.getUpdateFlags() & a_fruit) {
+        if (!empty) { q << ", "; } else { empty = false; }
+        q << "fruits = " << t.getFruits();
+    }
+    if (!empty) {
+        c += q.str();
+    }
 }
 
 template <class T>

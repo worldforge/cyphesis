@@ -31,6 +31,8 @@ class Plant : public Plant_parent {
     explicit Plant(const std::string & id);
     virtual ~Plant();
 
+    const int getFruits() const { return m_fruits; }
+
     virtual bool get(const std::string &, Atlas::Message::Element &) const;
     virtual void set(const std::string &, const Atlas::Message::Element &);
     virtual void addToObject(Atlas::Message::Element::MapType & obj) const;
