@@ -17,6 +17,8 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Plant.cpp Plant.h \
 			     Food.cpp Food.h \
 			     Stackable.cpp Stackable.h \
+			     Movement.cpp Movement.h \
+			     Pedestrian.cpp Pedestrian.h \
 			     EntityFactory.cpp EntityFactory.h \
 			     ThingFactory.cpp ThingFactory.h \
 			     CharacterFactory.cpp CharacterFactory.h \

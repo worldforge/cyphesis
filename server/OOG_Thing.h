@@ -7,10 +7,10 @@
 
 #include <common/BaseEntity.h>
 
-class OOG_Thing : public BaseEntity {
+class OOGThing : public BaseEntity {
   public:
-    OOG_Thing() { }
-    virtual ~OOG_Thing() { }
+    OOGThing() { }
+    virtual ~OOGThing() { }
     virtual oplist Operation(const RootOperation & op);
 };
 

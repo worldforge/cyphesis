@@ -19,7 +19,7 @@ Player::Player(Connection* conn, const string& username, const string& passwd) :
 
 Player::~Player() { }
 
-oplist Player::character_error(const Create & op, const Object & ent) const
+oplist Player::characterError(const Create & op, const Object & ent) const
 {
     Object::MapType entmap = ent.AsMap();
 

@@ -13,10 +13,10 @@ class Player;
 class CommClient;
 
 class Connection : public Routing {
-    CommClient & comm_client;
+    CommClient & commClient;
     ServerRouting & server;
 
-    Account * add_player(string &, string &);
+    Account * addPlayer(string &, string &);
   public:
 
     Connection(CommClient & client);

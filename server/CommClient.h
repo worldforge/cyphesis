@@ -28,10 +28,9 @@ class CommClient : Atlas::Objects::Decoder {
     CommServer & commServer;
 
   private:
-    int client_fd;
-    //ofstream log_file;
-    sockbuf client_buf;
-    iostream client_ios;
+    int clientFd;
+    sockbuf clientBuf;
+    iostream clientIos;
     Atlas::Codec<iostream> * codec;
     Atlas::Objects::Encoder * encoder;
     Connection & connection;
@@ -49,18 +48,10 @@ class CommClient : Atlas::Objects::Decoder {
 
   public:
     CommClient(CommServer & svr, int fd, int port);
-                //: commServer(svr),
-		//client_fd(fd), client_buf(fd), client_ios(&client_buf)
-                //connection(new Connection(*this) {
-        //if (consts::debug_level>=1) {
-            //char * log_name = "log.log";
-            //log_file.open(log_name);
-        //}
-    //}
     virtual ~CommClient();
 
     int read() {
-        if (client_ios) {
+        if (clientIos) {
             codec->Poll();
             return(0);
         } else {
@@ -71,13 +62,13 @@ class CommClient : Atlas::Objects::Decoder {
     void send(const RootOperation * op) {
         if (op) {
             encoder->StreamMessage(op);
-            client_ios << flush;
+            clientIos << flush;
         }
     }
 
-    int peek() { return client_ios.peek(); }
-    int eof() { return client_ios.eof(); }
-    int get_fd() { return client_fd; }
+    int peek() { return clientIos.peek(); }
+    int eof() { return clientIos.eof(); }
+    int getFd() { return clientFd; }
 
     void message(const RootOperation &);
     int setup();

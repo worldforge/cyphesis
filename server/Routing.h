@@ -9,29 +9,29 @@
 
 #include "OOG_Thing.h"
 
-class Routing : public OOG_Thing {
+class Routing : public OOGThing {
 public:
-    fdict_t fobjects;
+    dict_t objects;
 
     Routing() { }
     ~Routing() { }
 
-    BaseEntity * add_object(BaseEntity * obj) {
-        fobjects[obj->fullid]=obj;
+    BaseEntity * addObject(BaseEntity * obj) {
+        objects[obj->fullid]=obj;
         return obj;
     }
 
-    void del_object(BaseEntity * obj) {
-        fobjects.erase(obj->fullid);
+    void delObject(BaseEntity * obj) {
+        objects.erase(obj->fullid);
         delete obj;
     }
 
-    BaseEntity * get_object(const string & fid) const {
-        return Routing::fobjects[fid];
+    BaseEntity * getObject(const string & fid) const {
+        return Routing::objects[fid];
     }
 
-    BaseEntity * find_object(const string & fid) const {
-        return Routing::fobjects[fid];
+    BaseEntity * findObject(const string & fid) const {
+        return Routing::objects[fid];
     }
 };
 

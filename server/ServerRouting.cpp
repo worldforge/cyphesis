@@ -12,25 +12,29 @@
 #include <common/persistance.h>
 
 
-ServerRouting::ServerRouting(CommServer * server, const string & name) :
-        comm_server(server), svr_name(name)
+ServerRouting::ServerRouting(CommServer & server, const string & name) :
+        commServer(server), svrName(name)
 {
     fullid = name;
-    id_dict[fullid] = this;
-    world=new WorldRouter(this); //game world;
-    BaseEntity * obj=add_object((BaseEntity*)Persistance::load_admin_account());
+    idDict[fullid] = this;
+    world=new WorldRouter(*this); //game world;
+    BaseEntity * obj=addObject((BaseEntity*)Persistance::load_admin_account());
     //obj->server=this;
     obj->world=world;
 }
 
-void ServerRouting::addObject(Object * obj) const
+ServerRouting::~ServerRouting()
+{
+}
+
+void ServerRouting::addToObject(Object * obj) const
 {
     Object::MapType & omap = obj->AsMap();
     omap["server"] = "cyphesis";
-    omap["ruleset"] = svr_name;
+    omap["ruleset"] = svrName;
     Object::ListType plist(1, "server");
     omap["parents"] = plist;
-    omap["clients"] = comm_server->numClients();
+    omap["clients"] = commServer.numClients();
     omap["uptime"] = world->upTime();
     if (Persistance::restricted) {
         omap["restricted"] = "true";

@@ -13,19 +13,18 @@ class WorldRouter;
 class CommServer;
 
 class ServerRouting : public Routing {
-    CommServer * comm_server;
-    const string svr_name;
+    CommServer & commServer;
+    const string svrName;
   public:
-    WorldRouter * world;
-    fdict_t id_dict;
+    dict_t idDict;
 
-    ServerRouting(CommServer * server, const string & name);
-    ~ServerRouting() { }
+    ServerRouting(CommServer & server, const string & name);
+    ~ServerRouting();
 
     int idle();
-    BaseEntity * add_object(BaseEntity * obj);
+    BaseEntity * addObject(BaseEntity * obj);
 
-    virtual void addObject(Atlas::Message::Object *) const;
+    virtual void addToObject(Atlas::Message::Object *) const;
 };
 
 #endif /* SERVER_ROUTING_H */

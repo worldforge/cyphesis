@@ -67,12 +67,9 @@ static inline char *unpack_uint32(uint32_t *dest, char *buffer)
 
 CommClient::CommClient(CommServer & svr, int fd, int port) :
             commServer(svr),
-            client_fd(fd), client_buf(fd), client_ios(&client_buf),
-            connection(*new Connection(*this)) {
-    //if (consts::debug_level>=1) {
-        //char * log_name = "log.log";
-        //log_file.open(log_name);
-    //}
+            clientFd(fd), clientBuf(fd), clientIos(&clientBuf),
+            connection(*new Connection(*this))
+{
 }
 
 
@@ -87,7 +84,7 @@ CommClient::~CommClient()
 
 int CommClient::setup()
 {
-    Atlas::Net::StreamAccept accept("cyphesis " + commServer.identity, client_ios, this);
+    Atlas::Net::StreamAccept accept("cyphesis " + commServer.identity, clientIos, this);
 
     debug(cout << "Negotiating... " << flush;);
     while (accept.GetState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
@@ -195,55 +192,55 @@ void CommClient::ObjectArrived(const Get & op)
     message(op);
 }
 
-bool CommServer::use_metaserver = true;
+bool CommServer::useMetaserver = true;
 
 CommServer::CommServer(const string & ident) :
-              identity(ident), server(*new ServerRouting(this, ident)) { }
+              identity(ident), server(*new ServerRouting(*this, ident)) { }
 
 
 int CommServer::setup(int port)
 {
     struct sockaddr_in sin;
 
-    server_port = port;
-    server_fd = socket(PF_INET, SOCK_STREAM, 0);
-    if (server_fd < 0) {
+    serverPort = port;
+    serverFd = socket(PF_INET, SOCK_STREAM, 0);
+    if (serverFd < 0) {
         return(-1);
     }
     int flag=1;
-    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+    setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
     sin.sin_family = AF_INET;
     sin.sin_port = htons(port);
     sin.sin_addr.s_addr = 0L;
-    if (bind(server_fd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
-        close(server_fd);
+    if (bind(serverFd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+        close(serverFd);
         return(-1);
     }
-    listen(server_fd, 5);
+    listen(serverFd, 5);
     // server=new ServerRouting(this,identity);
 
-    if (!use_metaserver) {
+    if (!useMetaserver) {
         return 0;
     }
     // Establish stuff for metaserver
 
     memset(&meta_sa, 0, sizeof(meta_sa));
     meta_sa.sin_family = AF_INET;
-    meta_sa.sin_port = htons(metaserver_port);
+    meta_sa.sin_port = htons(metaserverPort);
 
     cout << "Connecting to metaserver..." << endl << flush;
     struct hostent * ms_addr = gethostbyname("metaserver.worldforge.org");
     if (ms_addr == NULL) {
         cerr << "metaserver lookup failed. Disabling metaserver." <<endl<<flush;
-        use_metaserver = false;
+        useMetaserver = false;
         return 0;
     }
     memcpy(&meta_sa.sin_addr, ms_addr->h_addr_list[0], ms_addr->h_length);
     
-    meta_fd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (meta_fd < 0) {
+    metaFd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (metaFd < 0) {
         cerr << "WARNING: Could not create metaserver connection" <<endl<<flush;
-        use_metaserver = false;
+        useMetaserver = false;
         perror("socket");
     }
 
@@ -256,11 +253,11 @@ int CommServer::accept()
     unsigned int addr_len = sizeof(sin);
 
     sin.sin_family = AF_INET;
-    sin.sin_port = htons(server_port);
+    sin.sin_port = htons(serverPort);
     sin.sin_addr.s_addr = 0L;
 
     debug(cout << "Accepting.." << endl << flush;);
-    int asockfd = ::accept(server_fd, (struct sockaddr *)&sin, &addr_len);
+    int asockfd = ::accept(serverFd, (struct sockaddr *)&sin, &addr_len);
 
     if (asockfd < 0) {
         return(-1);
@@ -277,10 +274,10 @@ inline void CommServer::idle()
 {
     static time_t ltime = -1;
     time_t ctime = time(NULL);
-    if ((ctime > (ltime + 5 * 60)) && use_metaserver) {
+    if ((ctime > (ltime + 5 * 60)) && useMetaserver) {
         cout << "Sending keepalive" << endl << flush;
         ltime = ctime;
-        metaserver_keepalive();
+        metaserverKeepalive();
     }
     server.idle();
 }
@@ -298,12 +295,12 @@ void CommServer::loop()
 
     FD_ZERO(&sock_fds);
 
-    FD_SET(server_fd, &sock_fds);
-    if (use_metaserver) {
-        FD_SET(meta_fd, &sock_fds);
-        highest = max(server_fd, meta_fd);
+    FD_SET(serverFd, &sock_fds);
+    if (useMetaserver) {
+        FD_SET(metaFd, &sock_fds);
+        highest = max(serverFd, metaFd);
     } else {
-        highest = server_fd;
+        highest = serverFd;
     }
     client_map_t::const_iterator I;
     for(I = clients.begin(); I != clients.end(); I++) {
@@ -327,27 +324,27 @@ void CommServer::loop()
            if (client->peek() != -1) {
                client->read();
            } else if (client->eof()) {
-               remove_client(client);
+               removeClient(client);
                break;
            } else {
                cerr << "FATAL THIS SHOULD NEVER HAPPEN" << endl << flush;
-               remove_client(client);
+               removeClient(client);
                break;
            }
        }
     }
-    if (FD_ISSET(server_fd, &sock_fds)) {
+    if (FD_ISSET(serverFd, &sock_fds)) {
         debug(cout << "selected on server" << endl << flush;);
         accept();
     }
-    if (use_metaserver && FD_ISSET(meta_fd, &sock_fds)) {
+    if (useMetaserver && FD_ISSET(metaFd, &sock_fds)) {
         debug(cout << "selected on metaserver" << endl << flush;);
-        metaserver_reply();
+        metaserverReply();
     }
     idle();
 }
 
-inline void CommServer::remove_client(CommClient * client, char * error_msg)
+inline void CommServer::removeClient(CommClient * client, char * error_msg)
 {
     Object::MapType err;
     err["message"] = Object(error_msg);
@@ -363,29 +360,29 @@ inline void CommServer::remove_client(CommClient * client, char * error_msg)
     
     if (client) {
         client->send(e);
-        clients.erase(client->get_fd());
+        clients.erase(client->getFd());
     }
     delete e;
     delete client;
 }
 
-void CommServer::remove_client(CommClient * client)
+void CommServer::removeClient(CommClient * client)
 {
-    remove_client(client,"You caused exception. Connection closed");
+    removeClient(client,"You caused exception. Connection closed");
 }
 
 #define MAXLINE 4096
 
-void CommServer::metaserver_keepalive()
+void CommServer::metaserverKeepalive()
 {
     char         mesg[MAXLINE];
     unsigned int packet_size=0;
 
     pack_uint32(SKEEP_ALIVE, mesg, &packet_size);
-    sendto(meta_fd,mesg,packet_size,0, (sockaddr *)&meta_sa, sizeof(meta_sa));
+    sendto(metaFd,mesg,packet_size,0, (sockaddr *)&meta_sa, sizeof(meta_sa));
 }
 
-void CommServer::metaserver_reply()
+void CommServer::metaserverReply()
 {
     char                mesg[MAXLINE];
     char               *mesg_ptr;
@@ -394,7 +391,7 @@ void CommServer::metaserver_reply()
     socklen_t           addrlen;
     unsigned int        packet_size;
 
-    if (recvfrom(meta_fd, mesg, MAXLINE, 0, &addr, &addrlen) < 0) {
+    if (recvfrom(metaFd, mesg, MAXLINE, 0, &addr, &addrlen) < 0) {
         cerr << "WARNING: No reply from metaserver" << endl << flush;
         return;
     }
@@ -409,18 +406,18 @@ void CommServer::metaserver_reply()
         mesg_ptr = pack_uint32(SERVERSHAKE, mesg, &packet_size);
         mesg_ptr = pack_uint32(handshake, mesg_ptr, &packet_size);
 
-        sendto(meta_fd,mesg,packet_size,0,(sockaddr*)&meta_sa,sizeof(meta_sa));
+        sendto(metaFd,mesg,packet_size,0,(sockaddr*)&meta_sa,sizeof(meta_sa));
     }
 
 }
 
-void CommServer::metaserver_terminate()
+void CommServer::metaserverTerminate()
 {
     char         mesg[MAXLINE];
     unsigned int packet_size=0;
 
     pack_uint32(TERMINATE, mesg, &packet_size);
-    sendto(meta_fd,mesg,packet_size, 0, (sockaddr *)&meta_sa, sizeof(meta_sa));
+    sendto(metaFd,mesg,packet_size, 0, (sockaddr *)&meta_sa, sizeof(meta_sa));
 }
 
 #include <rulesets/EntityFactory.h>
@@ -467,9 +464,9 @@ int main(int argc, char ** argv)
             cout << "Running in restricted mode" << endl << flush;
         }
     }
-    bool usemetaserver = true;
+    bool use_metaserver = true;
     if (global_conf->findItem("cyphesis", "usemetaserver")) {
-        usemetaserver=global_conf->getItem("cyphesis","usemetaserver");
+        use_metaserver=global_conf->getItem("cyphesis","usemetaserver");
     }
 
     init_python_api();
@@ -487,7 +484,7 @@ int main(int argc, char ** argv)
         common::log::thinking_fp.open(log_name,ios::out);
     }
     CommServer s(rulesets.front());
-    s.use_metaserver = usemetaserver;
+    s.useMetaserver = use_metaserver;
     if (s.setup(6767)) {
         cerr << "Could not create listen socket." << endl << flush;
         exit(1);
@@ -509,7 +506,7 @@ int main(int argc, char ** argv)
     }
     cout << "Performing clean shutdown..." << endl << flush;
     Persistance::shutdown();
-    s.metaserver_terminate();
+    s.metaserverTerminate();
     cout << "Clean shutdown complete." << endl << flush;
     return 0;
 }

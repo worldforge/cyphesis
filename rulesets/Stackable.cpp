@@ -40,13 +40,13 @@ void Stackable::set(const string & aname, const Object & attr)
     }
 }
 
-void Stackable::addObject(Object * obj) const
+void Stackable::addToObject(Object * obj) const
 {
     Object::MapType & omap = obj->AsMap();
     if (num != 1) {
         omap["num"] = Object(num);
     }
-    Thing::addObject(obj);
+    Thing::addToObject(obj);
 }
 
 oplist Stackable::Operation(const Combine & op)
@@ -59,8 +59,8 @@ oplist Stackable::Operation(const Combine & op)
     for(Object::ListType::iterator I = args.begin(); I != args.end(); I++) {
         const string & id = I->AsMap()["id"].AsString();
         if (id == fullid) { continue; }
-        Stackable * obj = (Stackable*)world->get_object(id);
-        if (!obj->in_game) { continue; }
+        Stackable * obj = (Stackable*)world->getObject(id);
+        if (!obj->inGame) { continue; }
         if (obj->type != type) { continue; }
         num = num + obj->num;
 

@@ -33,13 +33,13 @@ Admin::~Admin()
 {
 }
 
-oplist Admin::character_error(const Create &, const Object &) const {
+oplist Admin::characterError(const Create &, const Object &) const {
     return oplist();
 }
 
 oplist Admin::Operation(const Save & op)
 {
-    fdict_t::const_iterator I;
+    dict_t::const_iterator I;
     Persistance * p = Persistance::instance();
     DatabaseIterator dbi(p->getWorld());
     Object ent;
@@ -47,7 +47,7 @@ oplist Admin::Operation(const Save & op)
         dbi.del();
     }
     int count = 0;
-    for(I = world->fobjects.begin(); I != world->fobjects.end(); I++) {
+    for(I = world->objects.begin(); I != world->objects.end(); I++) {
         p->putEntity(I->second);
         ++count;
     }
@@ -78,7 +78,7 @@ oplist Admin::Operation(const Load & op)
             if (id == "world_0") {
                 // Ignore the world entry. No info required at the moment.
             } else {
-                world->add_object(type, ent, id);
+                world->addObject(type, ent, id);
                 ++count;
             }
         }
@@ -114,8 +114,8 @@ oplist Admin::Operation(const Get & op)
                 if (ent_id.empty()) {
                     return error(op, "query id invalid");
                 }
-                fdict_t::iterator I = world->server->id_dict.find(ent_id);
-                if (I == world->server->id_dict.end()) {
+                dict_t::iterator I = world->server.idDict.find(ent_id);
+                if (I == world->server.idDict.end()) {
                     return error(op, "query id not found");
                 }
                 Info * info = new Info();

@@ -16,9 +16,9 @@ using Atlas::Objects::Operation::Look;
 
 static const bool debug_flag = false;
 
-inline Entity * MemMap::add_object(Entity * object)
+inline Entity * MemMap::addToObject(Entity * object)
 {
-    debug( cout << "MemMap::add_object " << object << " " << object->fullid
+    debug( cout << "MemMap::addToObject " << object << " " << object->fullid
          << endl << flush;);
     if (object != NULL) {
         things[object->fullid] = object;
@@ -27,18 +27,18 @@ inline Entity * MemMap::add_object(Entity * object)
     debug( cout << things[object->fullid] << endl << flush;);
     debug( cout << this << endl << flush;);
     list<string>::const_iterator I;
-    for(I = add_hooks.begin(); I != add_hooks.end(); I++) {
+    for(I = addHooks.begin(); I != addHooks.end(); I++) {
         script->hook(*I, object);
     }
     return object;
 }
 
-inline RootOperation * MemMap::look_id()
+inline RootOperation * MemMap::lookId()
 {
-    debug( cout << "MemMap::look_id" << endl << flush;);
-    if (additions_by_id.size() != 0) {
-        string id = additions_by_id.front();
-        additions_by_id.pop_front();
+    debug( cout << "MemMap::lookId" << endl << flush;);
+    if (additionsById.size() != 0) {
+        string id = additionsById.front();
+        additionsById.pop_front();
         Look * l = new Look();
         *l = Look::Instantiate();
         //Object::MapType m;
@@ -50,11 +50,11 @@ inline RootOperation * MemMap::look_id()
     return(NULL);
 }
 
-inline Entity * MemMap::add_id(const string & id)
+inline Entity * MemMap::addId(const string & id)
 {
     if (id.size() == 0) { return NULL; }
     debug( cout << "MemMap::add_id" << endl << flush;);
-    additions_by_id.push_back(id);
+    additionsById.push_back(id);
     Object::MapType m;
     m["id"] = Object(string(id));
     Object obj(m);
@@ -85,20 +85,20 @@ inline Entity * MemMap::add(const Object & entity)
     }
     thing->merge(entmap);
     if (entmap.find("loc") != entmap.end()) {
-        get_add(entmap["loc"].AsString());
+        getAdd(entmap["loc"].AsString());
     }
     thing->getLocation(entmap, things);
-    return add_object(thing);
+    return addToObject(thing);
 }
 
-inline void MemMap::_delete(const string & id)
+inline void MemMap::del(const string & id)
 {
     if (id.size() == 0) { return; }
     if (things.find(id) != things.end()) {
         Entity * obj = (Entity*)things[id];
         things.erase(id);
         list<string>::const_iterator I;
-        for(I = delete_hooks.begin(); I != delete_hooks.end(); I++) {
+        for(I = deleteHooks.begin(); I != deleteHooks.end(); I++) {
             script->hook(*I, obj);
         }
         delete obj;
@@ -115,15 +115,15 @@ inline Entity * MemMap::get(const string & id)
     return(NULL);
 }
 
-inline Entity * MemMap::get_add(const string & id)
+inline Entity * MemMap::getAdd(const string & id)
 {
-    debug( cout << "MemMap::get_add" << endl << flush;);
+    debug( cout << "MemMap::getAdd" << endl << flush;);
     if (id.size() == 0) { return NULL; }
     Entity * obj = MemMap::get(id);
     if (obj != NULL) {
         return obj;
     }
-    return add_id(id);
+    return addId(id);
 }
 
 inline Entity * MemMap::update(const Object & entity)
@@ -165,7 +165,7 @@ inline Entity * MemMap::update(const Object & entity)
         //}
     //}
     list<string>::const_iterator I;
-    for(I = update_hooks.begin(); I != update_hooks.end(); I++) {
+    for(I = updateHooks.begin(); I != updateHooks.end(); I++) {
         script->hook(*I, thing);
     }
     //for (/*hook in MemMap::update_hooks*/) {

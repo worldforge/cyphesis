@@ -16,15 +16,15 @@ class Plant : public Thing {
   protected:
     int fruits; // Number of fruits on the plant
     int radius; // Proportion of height as radius
-    int fruitchance; // chance of growing fruit
-    double sizeadult; // chance of growing fruit
-    std::string fruitname;
+    int fruitChance; // chance of growing fruit
+    double sizeAdult; // chance of growing fruit
+    std::string fruitName;
 
     static const int speed = 20; // Number of basic_ticks per tick
-    static const int minudrop = 0; // min fruit dropped
-    static const int maxudrop = 2; // max fruit dropped
+    static const int minuDrop = 0; // min fruit dropped
+    static const int maxuDrop = 2; // max fruit dropped
 
-    int drop_fruit(oplist & res);
+    int dropFruit(oplist & res);
   public:
 
     Plant();

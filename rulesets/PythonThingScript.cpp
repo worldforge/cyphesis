@@ -27,14 +27,14 @@ PythonThingScript::~PythonThingScript()
 bool PythonThingScript::Operation(const string& op_type,const RootOperation& op,
                          oplist & ret_list, RootOperation * sub_op)
 {
-    if (script_object == NULL) {
+    if (scriptObject == NULL) {
         debug( cout << "No script object asociated" << endl << flush;);
         return false;
     }
     debug( cout << "Got script object for " << endl << flush;);
     string op_name = op_type+"_operation";
     // Construct apropriate python object thingies from op
-    if (!PyObject_HasAttrString(script_object, (char *)(op_name.c_str()))) {
+    if (!PyObject_HasAttrString(scriptObject, (char *)(op_name.c_str()))) {
         debug( cout << "No method to be found for " 
              << "." << op_name << endl << flush;);
         return false;
@@ -42,10 +42,10 @@ bool PythonThingScript::Operation(const string& op_type,const RootOperation& op,
     RootOperationObject * py_op = newAtlasRootOperation(NULL);
     py_op->operation = new RootOperation(op);
     py_op->own = 0;
-    py_op->from = (Entity *)thing.world->get_object(op.GetFrom());
-    py_op->to = (Entity *)thing.world->get_object(op.GetTo());
+    py_op->from = (Entity *)thing.world->getObject(op.GetFrom());
+    py_op->to = (Entity *)thing.world->getObject(op.GetTo());
     PyObject * ret;
-    ret = PyObject_CallMethod(script_object, (char *)(op_name.c_str()),
+    ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(O)", py_op);
     delete py_op->operation;
     Py_DECREF(py_op);

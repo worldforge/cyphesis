@@ -40,7 +40,7 @@ class ClientConnection : public Atlas::Objects::Decoder {
     Atlas::Objects::Encoder * encoder;
     std::string acName;
 
-    fdict_t objects;
+    dict_t objects;
 
     void operation(const Atlas::Objects::Operation::RootOperation&);
 

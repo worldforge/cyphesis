@@ -1,7 +1,5 @@
 Definitly for Acorn 0.4:
 
-  Add handling of Appearance operations to BaseMind.
-
   Implement loading the same map as the client.
 
   Sort out collision detection wrt moving alongside an object in close
@@ -14,9 +12,8 @@ Definitly for Acorn 0.4:
 
   Use drunkness.
 
-  Use combine operation to deal with making more than one object into one.
-
   Fully implement stackable objects.
+  Use combine operation to deal with making more than one object into one.
 
   Replace
     o = new Operation(); *o = Operation::Instantiate();
@@ -25,9 +22,6 @@ Definitly for Acorn 0.4:
   cos it is about twice as quick.
 
   Move virtual destructors and other functions into .cpp files.
-
-  Make sure that when an account is retrieved from the database, it is
-  properlly added to the server.
 
 Provisional for Acorn 0.4:
 
@@ -54,5 +48,4 @@ Possible ideas:
   be a good time to get cyphesis working as a mindless server, without
   any AI code.
 
-  Re-code python interface as generic script interface. Need to get rid of
-  leaking default ScriptObject.
+  Need to get rid of leaking default ScriptObject.

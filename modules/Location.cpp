@@ -17,15 +17,15 @@
 
 using Atlas::Message::Object;
 
-Vector3D Location::get_xyz() const {
+Vector3D Location::getXyz() const {
     if (ref && coords) {
-        return coords + ref->get_xyz();
+        return coords + ref->getXyz();
     } else {
         return Vector3D(0,0,0);
     }
 }
 
-void Location::addObject(Object * obj) const
+void Location::addToObject(Object * obj) const
 {
     Object::MapType & omap = obj->AsMap();
     if (ref!=NULL) {

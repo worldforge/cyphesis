@@ -31,19 +31,19 @@ static const bool debug_flag = false;
 Creator::Creator()
 {
     debug( cout << "Creator::Creator" << endl << flush;);
-    is_character = true;
+    isCharacter = true;
     omnipresent = true;
     location.bbox = Vector3D();
 }
 
-oplist Creator::send_mind(const RootOperation & msg)
+oplist Creator::sendMind(const RootOperation & msg)
 {
-    debug( cout << "Creator::send_mind" << endl << flush;);
-    // Simpified version of character method send_mind() because local mind
+    debug( cout << "Creator::sendMind" << endl << flush;);
+    // Simpified version of character method sendMind() because local mind
     // of creator is irrelevant
-    if ((NULL != external_mind) && (NULL != external_mind->connection)) {
+    if (NULL != externalMind) {
         debug( cout << "Sending to external mind" << endl << flush;);
-        return external_mind->message(msg);
+        return externalMind->message(msg);
         // If there is some kinf of error in the connection, we turn autom on
     }
     return oplist();
@@ -52,7 +52,7 @@ oplist Creator::send_mind(const RootOperation & msg)
 oplist Creator::operation(const RootOperation & op)
 {
     debug( cout << "Creator::operation" << endl << flush;);
-    op_no_t op_no = op_enumerate(&op);
+    op_no_t op_no = opEnumerate(&op);
     if (op_no == OP_LOOK) {
         return ((BaseEntity *)this)->Operation((Look &)op);
     }
@@ -61,23 +61,23 @@ oplist Creator::operation(const RootOperation & op)
         look.SetFrom(fullid);
         return world->Operation(look);
     }
-    return send_mind(op);
+    return sendMind(op);
 }
 
-oplist Creator::external_operation(const RootOperation & op)
+oplist Creator::externalOperation(const RootOperation & op)
 {
-    debug( cout << "Creator::external_operation" << endl << flush;);
+    debug( cout << "Creator::externalOperation" << endl << flush;);
     if ((op.GetTo()==fullid) || (op.GetTo()=="")) {
-        oplist lres = call_operation(op);
-        set_refno(lres, op);
+        oplist lres = callOperation(op);
+        setRefno(lres, op);
         for(oplist::const_iterator I = lres.begin(); I != lres.end(); I++) {
-            send_world(*I);
+            sendWorld(*I);
         }
     } else {
         RootOperation * new_op = new RootOperation(op);
         //make it appear like it came from character itself;
         new_op->SetFrom("cheat");
-        send_world(new_op);
+        sendWorld(new_op);
     }
     return oplist();
 }

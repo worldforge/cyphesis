@@ -8,7 +8,7 @@
 
 #include "OOG_Thing.h"
 
-oplist OOG_Thing::Operation(const RootOperation & op) {
+oplist OOGThing::Operation(const RootOperation & op) {
     return(error(op, "Unknown operation"));
 }
 

@@ -10,38 +10,17 @@ class ExternalMind;
 class Account;
 class Character;
 class Location;
+class Movement;
 
 #include "Thing.h"
 
 #include <physics/Vector3D.h>
 
-class MovementInfo {
-    Character * body;
-    friend class Character;
-    double last_movement_time;
-    BaseEntity * target_ref;
-    Vector3D target_location;
-    Vector3D updated_location;
-    Vector3D velocity;
-    Vector3D face;
-    int serialno;
-
-  public:
-    MovementInfo(Character * body);
-
-    bool update_needed(const Location & location) const;
-    double get_tick_addition(const Vector3D & coordinates) const;
-    void reset();
-    void check_collisions(const Location & loc);
-    Move * gen_face_operation(const Location &);
-    Move * gen_move_operation(Location *,const Location &);
-    Move * gen_move_operation(Location *);
-};
+class Movement;
 
 class Character : public Thing {
   protected:
-    MovementInfo movement;
-    friend class MovementInfo;
+    Movement & movement;
     int autom;
 
     static const double energyConsumption = 0.001;
@@ -52,14 +31,15 @@ class Character : public Thing {
     static const double weightGain = 0.5;
 
     oplist metabolise(double ammount = 1); 
+
+    friend class Movement;
   public:
     BaseMind * mind;
-    ExternalMind * external_mind;
-    Account * player;
+    ExternalMind * externalMind;
     double drunkness;
     string sex;
     double food;
-    double maxweight;
+    double maxWeight;
 
     Character();
     virtual ~Character();
@@ -67,60 +47,60 @@ class Character : public Thing {
     virtual const Atlas::Message::Object & operator[](const string & aname);
     virtual void set(const string & aname, const Atlas::Message::Object & attr);
 
-    virtual void addObject(Atlas::Message::Object *) const;
+    virtual void addToObject(Atlas::Message::Object *) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
     virtual oplist Operation(const Talk & op);
     virtual oplist Operation(const Eat & op);
     virtual oplist Operation(const Nourish & op);
-    virtual oplist Mind_Operation(const Login & op);
-    virtual oplist Mind_Operation(const Create & op);
-    virtual oplist Mind_Operation(const Cut & op);
-    virtual oplist Mind_Operation(const Delete & op);
-    virtual oplist Mind_Operation(const Eat & op);
-    virtual oplist Mind_Operation(const Move & op);
-    virtual oplist Mind_Operation(const Set & op);
-    virtual oplist Mind_Operation(const Sight & op);
-    virtual oplist Mind_Operation(const Sound & op);
-    virtual oplist Mind_Operation(const Talk & op);
-    virtual oplist Mind_Operation(const Tick & op);
-    virtual oplist Mind_Operation(const Touch & op);
-    virtual oplist Mind_Operation(const Look & op);
-    virtual oplist Mind_Operation(const Load & op);
-    virtual oplist Mind_Operation(const Save & op);
-    virtual oplist Mind_Operation(const Setup & op);
-    virtual oplist Mind_Operation(const Appearance & op);
-    virtual oplist Mind_Operation(const Disappearance & op);
-    virtual oplist Mind_Operation(const Error & op);
-    virtual oplist Mind_Operation(const RootOperation & op);
-    virtual oplist W2m_Operation(const Login & op);
-    virtual oplist W2m_Operation(const Chop & op);
-    virtual oplist W2m_Operation(const Create & op);
-    virtual oplist W2m_Operation(const Cut & op);
-    virtual oplist W2m_Operation(const Delete & op);
-    virtual oplist W2m_Operation(const Eat & op);
-    virtual oplist W2m_Operation(const Fire & op);
-    virtual oplist W2m_Operation(const Move & op);
-    virtual oplist W2m_Operation(const Set & op);
-    virtual oplist W2m_Operation(const Sight & op);
-    virtual oplist W2m_Operation(const Sound & op);
-    virtual oplist W2m_Operation(const Touch & op);
-    virtual oplist W2m_Operation(const Tick & op);
-    virtual oplist W2m_Operation(const Look & op);
-    virtual oplist W2m_Operation(const Load & op);
-    virtual oplist W2m_Operation(const Save & op);
-    virtual oplist W2m_Operation(const Setup & op);
-    virtual oplist W2m_Operation(const Appearance & op);
-    virtual oplist W2m_Operation(const Disappearance & op);
-    virtual oplist W2m_Operation(const Error & op);
-    virtual oplist W2m_Operation(const RootOperation & op);
-    virtual oplist send_mind(const RootOperation & op);
+    virtual oplist mindOperation(const Login & op);
+    virtual oplist mindOperation(const Create & op);
+    virtual oplist mindOperation(const Cut & op);
+    virtual oplist mindOperation(const Delete & op);
+    virtual oplist mindOperation(const Eat & op);
+    virtual oplist mindOperation(const Move & op);
+    virtual oplist mindOperation(const Set & op);
+    virtual oplist mindOperation(const Sight & op);
+    virtual oplist mindOperation(const Sound & op);
+    virtual oplist mindOperation(const Talk & op);
+    virtual oplist mindOperation(const Tick & op);
+    virtual oplist mindOperation(const Touch & op);
+    virtual oplist mindOperation(const Look & op);
+    virtual oplist mindOperation(const Load & op);
+    virtual oplist mindOperation(const Save & op);
+    virtual oplist mindOperation(const Setup & op);
+    virtual oplist mindOperation(const Appearance & op);
+    virtual oplist mindOperation(const Disappearance & op);
+    virtual oplist mindOperation(const Error & op);
+    virtual oplist mindOperation(const RootOperation & op);
+    virtual oplist w2mOperation(const Login & op);
+    virtual oplist w2mOperation(const Chop & op);
+    virtual oplist w2mOperation(const Create & op);
+    virtual oplist w2mOperation(const Cut & op);
+    virtual oplist w2mOperation(const Delete & op);
+    virtual oplist w2mOperation(const Eat & op);
+    virtual oplist w2mOperation(const Fire & op);
+    virtual oplist w2mOperation(const Move & op);
+    virtual oplist w2mOperation(const Set & op);
+    virtual oplist w2mOperation(const Sight & op);
+    virtual oplist w2mOperation(const Sound & op);
+    virtual oplist w2mOperation(const Touch & op);
+    virtual oplist w2mOperation(const Tick & op);
+    virtual oplist w2mOperation(const Look & op);
+    virtual oplist w2mOperation(const Load & op);
+    virtual oplist w2mOperation(const Save & op);
+    virtual oplist w2mOperation(const Setup & op);
+    virtual oplist w2mOperation(const Appearance & op);
+    virtual oplist w2mOperation(const Disappearance & op);
+    virtual oplist w2mOperation(const Error & op);
+    virtual oplist w2mOperation(const RootOperation & op);
+    virtual oplist sendMind(const RootOperation & op);
     virtual oplist mind2body(const RootOperation & op);
     virtual oplist world2body(const RootOperation & op);
     virtual oplist world2mind(const RootOperation & op);
-    virtual oplist external_message(const RootOperation & op);
+    virtual oplist externalMessage(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
-    virtual oplist external_operation(const RootOperation & op);
+    virtual oplist externalOperation(const RootOperation & op);
 };
 
 #endif /* CHARACTER_H */

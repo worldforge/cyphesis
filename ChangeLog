@@ -1,3 +1,18 @@
+2001-04-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* Re-wrote class headers files so that all class members now
+	  begin with a lower case letter and do not contain _.
+
+	* Fixed retrieval of Account from database so that the Account
+	  is now correctly referenced in the server object.
+
+	* common/types.h: Changed type name to make them clearer.
+
+	* rulesets/Character.h: Moved MovementInfo into its own class
+	  file, and made it a base class, with a Pedestrian super class.
+	  This allows different types of movement handling classes
+	  to be used to handle things that move differently.
+
 2001-04-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* Complete re-write of python script interface to allow other

@@ -33,16 +33,16 @@ public:
         return(ref!=NULL && coords);
     }
 
-    Vector3D get_xyz() const;
+    Vector3D getXyz() const;
 
-    void addObject(Atlas::Message::Object * obj) const;
+    void addToObject(Atlas::Message::Object * obj) const;
 
     bool inRange(const Location & loc, const double distance) const {
         if (!bbox) {
-            return loc.get_xyz().inBox(get_xyz(), distance);
+            return loc.getXyz().inBox(getXyz(), distance);
         } else {
             const Vector3D & median = bmedian ? bmedian : bbox;
-            return loc.get_xyz().inBox(get_xyz() + median, bbox + distance);
+            return loc.getXyz().inBox(getXyz() + median, bbox + distance);
         }
     }
 

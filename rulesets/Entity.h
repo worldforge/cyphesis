@@ -21,7 +21,7 @@ class Entity : public BaseEntity {
   public:
     double status;
     string type;
-    bool is_character;
+    bool isCharacter;
     double weight;
 
     Entity();
@@ -29,13 +29,13 @@ class Entity : public BaseEntity {
 
     virtual const Atlas::Message::Object & operator[](const string & aname);
     virtual void set(const string & aname, const Atlas::Message::Object & attr);
-    virtual int set_script(Script * scrpt);
     virtual MemMap * getMap();
 
+    int setScript(Script * scrpt);
     void merge(const Atlas::Message::Object::MapType &);
-    void getLocation(Atlas::Message::Object::MapType &, fdict_t &);
+    void getLocation(Atlas::Message::Object::MapType &, dict_t &);
 
-    virtual void addObject(Object * obj) const;
+    virtual void addToObject(Object * obj) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
     virtual oplist Operation(const Chop & op);

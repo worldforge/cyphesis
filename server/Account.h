@@ -11,12 +11,12 @@ class Connection;
 class WorldRouter;
 class Thing;
 
-class Account : public OOG_Thing {
+class Account : public OOGThing {
     friend class Connection;
-    fdict_t characters_dict;
-    BaseEntity * add_character(const string &, const Atlas::Message::Object &);
+    dict_t charactersDict;
+    BaseEntity * addCharacter(const string &, const Atlas::Message::Object &);
   protected:
-    virtual oplist character_error(const Create &, const Atlas::Message::Object &) const = 0;
+    virtual oplist characterError(const Create &, const Atlas::Message::Object &) const = 0;
   public:
     Connection * connection;
     string password;
@@ -25,7 +25,7 @@ class Account : public OOG_Thing {
     Account(Connection * conn, const string & username, const string & passwd);
     virtual ~Account();
 
-    virtual void addObject(Atlas::Message::Object *) const;
+    virtual void addToObject(Atlas::Message::Object *) const;
     virtual oplist Operation(const Logout & op);
     virtual oplist Operation(const Create & op);
 };

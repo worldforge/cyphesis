@@ -28,15 +28,15 @@ using Atlas::Message::Object;
 
 static const bool debug_flag = false;
 
-WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr), next_id(0)
+WorldRouter::WorldRouter(ServerRouting & srvr) : server(srvr), nextId(0)
 {
     fullid = "world_0";
-    init_time = time(NULL);
-    update_time();
-    server->id_dict[fullid]=this;
-    fobjects[fullid]=this;
+    initTime = time(NULL);
+    updateTime();
+    server.idDict[fullid]=this;
+    objects[fullid]=this;
     perceptives.push_back(this);
-    objects_list.push_back(this);
+    objectList.push_back(this);
     //WorldTime tmp_date("612-1-1 08:57:00");
     //This structure is used to tell libatlas about stuff
     //world_info.time.s=tmp_date.seconds();
@@ -45,7 +45,7 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr), next_id(0)
     //world_info.string2DateTime=WorldTime;
 }
 
-inline void WorldRouter::add_operation_to_queue(RootOperation & op,
+inline void WorldRouter::addOperationToQueue(RootOperation & op,
                          const BaseEntity * obj)
 {
     if (op.GetFrom() == "cheat") {
@@ -53,40 +53,40 @@ inline void WorldRouter::add_operation_to_queue(RootOperation & op,
     } else {
         op.SetFrom(obj->fullid);
     }
-    update_time();
+    updateTime();
     double t = world_info::time;
     t = t + op.GetFutureSeconds();
     op.SetSeconds(t);
     op.SetFutureSeconds(0.0);
     opqueue::iterator I;
     int i = 0;
-    for(I = operation_queue.begin();
-        (I != operation_queue.end()) && ((*I)->GetSeconds() <= t) ; I++,i++);
-    operation_queue.insert(I, &op);
+    for(I = operationQueue.begin();
+        (I != operationQueue.end()) && ((*I)->GetSeconds() <= t) ; I++,i++);
+    operationQueue.insert(I, &op);
     debug(cout << i << " operation added to queue" << endl << flush;);
 }
 
-inline RootOperation * WorldRouter::get_operation_from_queue()
+inline RootOperation * WorldRouter::getOperationFromQueue()
 {
-    std::list<RootOperation *>::iterator I = operation_queue.begin();
-    if (I == operation_queue.end()) {
+    std::list<RootOperation *>::iterator I = operationQueue.begin();
+    if (I == operationQueue.end()) {
         return(NULL);
     }
-    if ((*I)->GetSeconds() > real_time) {
+    if ((*I)->GetSeconds() > realTime) {
         return(NULL);
     }
     debug(cout << "pulled op off queue" << endl << flush;);
     RootOperation * op = (*I);
-    operation_queue.pop_front();
+    operationQueue.pop_front();
     return(op);
 }
 
-inline std::string WorldRouter::get_id(std::string & name)
+inline std::string WorldRouter::getId(std::string & name)
 {
     std::string full_id;
 
     std::strstream buf;
-    buf << name << "_" << ++next_id;
+    buf << name << "_" << ++nextId;
     full_id = std::string(buf.str(), buf.pcount());
     size_t index;
     while ((index = full_id.find(' ', 0)) != std::string::npos) {
@@ -95,16 +95,16 @@ inline std::string WorldRouter::get_id(std::string & name)
     return(full_id);
 }
 
-Thing * WorldRouter::add_object(Thing * obj)
+Thing * WorldRouter::addObject(Thing * obj)
 {
-    debug(cout << "WorldRouter::add_object(Thing *)" << endl << flush;);
+    debug(cout << "WorldRouter::addObject(Thing *)" << endl << flush;);
     if (obj->fullid.size() == 0) {
-        obj->fullid=get_id(obj->name);
+        obj->fullid=getId(obj->name);
     } else {
         cout << "Adding object with known id" << endl << flush;
     }
-    server->id_dict[obj->fullid]=fobjects[obj->fullid]=obj;
-    objects_list.push_back(obj);
+    server.idDict[obj->fullid]=objects[obj->fullid]=obj;
+    objectList.push_back(obj);
     if (!obj->location) {
         debug(cout << "set loc " << this  << endl << flush;);
         obj->location.ref=this;
@@ -118,27 +118,27 @@ Thing * WorldRouter::add_object(Thing * obj)
     }
     obj->world=this;
     if (obj->omnipresent) {
-        omnipresent_list.push_back(obj);
+        omnipresentList.push_back(obj);
     }
     Setup * s = new Setup();
     *s = Setup::Instantiate();
     s->SetTo(obj->fullid);
     s->SetFutureSeconds(-0.1);
-    add_operation_to_queue(*s, this);
+    addOperationToQueue(*s, this);
     return (obj);
 }
 
-Thing * WorldRouter::add_object(const string & typestr, const Object & ent,
+Thing * WorldRouter::addObject(const string & typestr, const Object & ent,
                                 const string & id)
 {
-    debug(cout << "WorldRouter::add_object(string, ent)" << endl << flush;);
+    debug(cout << "WorldRouter::addObject(string, ent)" << endl << flush;);
     Thing * obj;
     obj = EntityFactory::instance()->newThing(typestr, ent, this);
     obj->fullid = id;
-    return add_object(obj);
+    return addObject(obj);
 }
 
-void WorldRouter::del_object(BaseEntity * obj)
+void WorldRouter::delObject(BaseEntity * obj)
 {
     // Remove object from contains of its real ref?
     if (obj->location.ref != NULL) {
@@ -146,10 +146,10 @@ void WorldRouter::del_object(BaseEntity * obj)
     }
     // Remove object from world just to make sure
     contains.remove(obj);
-    omnipresent_list.remove(obj);
+    omnipresentList.remove(obj);
     perceptives.remove(obj);
-    objects_list.remove(obj);
-    fobjects.erase(obj->fullid);
+    objectList.remove(obj);
+    objects.erase(obj->fullid);
 }
 
 oplist WorldRouter::message(const RootOperation & op)
@@ -162,7 +162,7 @@ oplist WorldRouter::message(const RootOperation & op)
 
 oplist WorldRouter::message(RootOperation & op, const BaseEntity * obj)
 {
-    add_operation_to_queue(op, obj);
+    addOperationToQueue(op, obj);
     return oplist();
 }
 
@@ -175,7 +175,7 @@ inline const list_t & WorldRouter::broadcastList(const RootOperation & op) const
             return perceptives;
         }
     }
-    return objects_list;
+    return objectList;
 }
 
 oplist WorldRouter::operation(const RootOperation * op)
@@ -183,16 +183,16 @@ oplist WorldRouter::operation(const RootOperation * op)
     const RootOperation & op_ref = *op;
     string to = op_ref.GetTo();
     debug(cout << "WorldRouter::operation {" << to << "}" << endl << flush;);
-    op_no_t op_type = op_enumerate(op);
+    op_no_t op_type = opEnumerate(op);
 
     debug(cout << 0 << flush;);
     if ((to.size() != 0) && (to!="all")) {
-        if (fobjects.find(to) == fobjects.end()) {
+        if (objects.find(to) == objects.end()) {
             cerr << "CRITICAL: Op to=\"" << to << "\"" << " does not exist"
                  << endl << flush;
             return oplist();
         }
-        BaseEntity * toEntity = fobjects[to];
+        BaseEntity * toEntity = objects[to];
         if (toEntity == NULL) {
             cerr << "CRITICAL: Op to=\"" << to << "\"" << " is NULL"
                  << endl << flush;
@@ -209,7 +209,7 @@ oplist WorldRouter::operation(const RootOperation * op)
                 message(**I, toEntity);
             }
             if (op_type == OP_DELETE) {
-                del_object(toEntity);
+                delObject(toEntity);
                 toEntity->destroy();
                 toEntity->deleted = true;
                 delete toEntity;
@@ -224,8 +224,8 @@ oplist WorldRouter::operation(const RootOperation * op)
             if (consts::enable_ranges) {
                 const string & from = newop.GetFrom();
                 if ((from.size() != 0) &&
-                    (fobjects.find(from) != fobjects.end()) &&
-                    (!fobjects[from]->location.inRange((*I)->location,
+                    (objects.find(from) != objects.end()) &&
+                    (!objects[from]->location.inRange((*I)->location,
                                                        consts::sight_range))) {
                         debug(cout << "Op from " <<from<< " cannot be seen by "
                                    << (*I)->fullid << endl << flush;);
@@ -250,12 +250,12 @@ oplist WorldRouter::Operation(const Look & op)
 {
     debug(cout << "WorldRouter::Operation(Look)" << endl << flush;);
     string from = op.GetFrom();
-    if (fobjects.find(from) == fobjects.end()) {
+    if (objects.find(from) == objects.end()) {
         debug(cout << "FATAL: Op has invalid from" << endl << flush;);
         //return(*(RootOperation **)NULL);
     } else {
         debug(cout << "Adding [" << from << "] to perceptives" << endl << flush;);
-        perceptives.push_back(fobjects[from]);
+        perceptives.push_back(objects[from]);
         perceptives.unique();
         if (consts::enable_ranges) {
             Sight * s = new Sight();
@@ -263,8 +263,8 @@ oplist WorldRouter::Operation(const Look & op)
 
             Object::MapType omap;
             omap["id"] = fullid;
-            BaseEntity * opFrom = fobjects[from];
-            const Vector3D & fromLoc = opFrom->get_xyz();
+            BaseEntity * opFrom = objects[from];
+            const Vector3D & fromLoc = opFrom->getXyz();
             Object::ListType contlist;
             list_t::const_iterator I;
             for(I = contains.begin(); I != contains.end(); I++) {
@@ -287,9 +287,9 @@ oplist WorldRouter::Operation(const Look & op)
 
 int WorldRouter::idle()
 {
-    update_time();
+    updateTime();
     RootOperation * op;
-    while ((op = get_operation_from_queue()) != NULL) {
+    while ((op = getOperationFromQueue()) != NULL) {
         try {
             operation(op);
         }

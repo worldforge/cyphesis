@@ -22,11 +22,11 @@ class Thing : public Entity {
     Thing();
     virtual ~Thing();
 
-    oplist send_world(RootOperation * op) const {
+    oplist sendWorld(RootOperation * op) const {
         return world->message(*op, this);
     }
 
-    virtual void addObject(Atlas::Message::Object *) const;
+    virtual void addToObject(Atlas::Message::Object *) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Create & op);
     virtual oplist Operation(const Delete & op);

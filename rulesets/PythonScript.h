@@ -13,7 +13,7 @@ class Entity;
 
 class PythonScript : public Script {
   protected:
-    PyObject * script_object;
+    PyObject * scriptObject;
     Entity & entity;
   public:
     PythonScript(PyObject *, Entity &);

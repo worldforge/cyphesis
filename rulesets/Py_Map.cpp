@@ -34,7 +34,7 @@ static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
     }
     LocationObject * where = (LocationObject *)where_obj;
     ThingObject * thing;
-    list<Entity *> res = self->m_map->find_by_location(*where->location,radius);
+    list<Entity *> res = self->m_map->findByLocation(*where->location,radius);
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
         return NULL;
@@ -63,7 +63,7 @@ static PyObject * Map_find_by_type(MapObject * self, PyObject * args)
         return NULL;
     }
     ThingObject * thing;
-    list<Entity *> res = self->m_map->find_by_type(string(what));
+    list<Entity *> res = self->m_map->findByType(string(what));
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
         return NULL;
@@ -97,7 +97,7 @@ static PyObject * Map_add_object(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg not a Thing");
         return NULL;
     }
-    Entity * ret = self->m_map->add_object(thing->m_thing);
+    Entity * ret = self->m_map->addObject(thing->m_thing);
     thing = newThingObject(NULL);
     thing->m_thing = ret;
     return (PyObject *)thing;
@@ -114,7 +114,7 @@ static PyObject * Map_look_id(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"expected 1, got multiple");
         return NULL;
     }
-    RootOperation * op = self->m_map->look_id();
+    RootOperation * op = self->m_map->lookId();
     if (op == NULL) {
         Py_INCREF(Py_None);
         return Py_None;
@@ -157,7 +157,7 @@ static PyObject * Map_delete(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"id not a string");
         return NULL;
     }
-    self->m_map->_delete(id);
+    self->m_map->del(id);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -191,7 +191,7 @@ static PyObject * Map_get_add(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"id not a string");
         return NULL;
     }
-    Entity * ret = self->m_map->get_add(id);
+    Entity * ret = self->m_map->getAdd(id);
     ThingObject * thing = newThingObject(NULL);
     thing->m_thing = ret;
     return (PyObject *)thing;
@@ -229,7 +229,7 @@ static PyObject * Map_add_hooks_append(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an string");
         return NULL;
     }
-    self->m_map->add_hooks.push_back(string(method));
+    self->m_map->addHooks.push_back(string(method));
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -246,7 +246,7 @@ static PyObject * Map_update_hooks_append(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an string");
         return NULL;
     }
-    self->m_map->update_hooks.push_back(string(method));
+    self->m_map->updateHooks.push_back(string(method));
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -263,7 +263,7 @@ static PyObject * Map_delete_hooks_append(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an string");
         return NULL;
     }
-    self->m_map->delete_hooks.push_back(string(method));
+    self->m_map->deleteHooks.push_back(string(method));
 
     Py_INCREF(Py_None);
     return Py_None;

@@ -6,7 +6,7 @@
 
 #include "ClientAccount.h"
 
-ClientAccount::ClientAccount(const string & name, ClientConnection * con) :
+ClientAccount::ClientAccount(const string & name, ClientConnection & con) :
     connection(con)
 {
     fullid = name;

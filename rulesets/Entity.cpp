@@ -35,9 +35,9 @@ static const bool debug_flag = false;
 using Atlas::Message::Object;
 
 Entity::Entity() : script(new Script), status(1),
-                 type("thing"), is_character(false), weight(-1)
+                 type("thing"), isCharacter(false), weight(-1)
 {
-    in_game = true;
+    inGame = true;
     name = string("Foo");
     attributes["mode"] = Object("birth");
 }
@@ -79,7 +79,7 @@ void Entity::set(const string & aname, const Object & attr)
     }
 }
 
-int Entity::set_script(Script * scrpt) {
+int Entity::setScript(Script * scrpt) {
     script = scrpt;
     return(scrpt == NULL ? -1 : 0);
 }
@@ -88,15 +88,15 @@ MemMap * Entity::getMap() {
     return NULL;
 }
 
-void Entity::addObject(Object * obj) const
+void Entity::addToObject(Object * obj) const
 {
     Object::MapType & omap = obj->AsMap();
     omap["name"] = Object(name);
     omap["type"] = Object(type);
     omap["parents"] = Object(Object::ListType(1,Object(type)));
     // We need to have a list of keys to pull from attributes.
-    location.addObject(obj);
-    BaseEntity::addObject(obj);
+    location.addToObject(obj);
+    BaseEntity::addToObject(obj);
 }
 
 void Entity::merge(const Object::MapType & entmap)
@@ -111,19 +111,19 @@ void Entity::merge(const Object::MapType & entmap)
     }
 }
 
-void Entity::getLocation(Object::MapType & entmap, fdict_t & fobjects)
+void Entity::getLocation(Object::MapType & entmap, dict_t & objects)
 {
     debug( cout << "Thing::getLocation" << endl << flush;);
     if (entmap.find("loc") != entmap.end()) {
         debug( cout << "Thing::getLocation, getting it" << endl << flush;);
         try {
             const string & ref_id = entmap["loc"].AsString();
-            if (fobjects.find(ref_id) == fobjects.end()) {
+            if (objects.find(ref_id) == objects.end()) {
                 debug( cout << "ERROR: Can't get ref from objects dictionary" << endl << flush;);
                 return;
             }
                 
-            location.ref = fobjects[ref_id];
+            location.ref = objects[ref_id];
             if (entmap.find("pos") != entmap.end()) {
                 location.coords = Vector3D(entmap["pos"].AsList());
             }

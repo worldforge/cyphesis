@@ -43,12 +43,10 @@ typedef enum op_no {
 	OP_INVALID
 } op_no_t;
 
-typedef std::map<string, BaseEntity *> fdict_t;
-typedef std::list<BaseEntity *> flist_t;
-typedef std::pair<string, BaseEntity *> fidpair_t;
+typedef std::map<string, BaseEntity *> dict_t;
+typedef std::list<BaseEntity *> list_t;
+typedef std::pair<string, BaseEntity *> idpair_t;
 
 typedef std::vector<Atlas::Objects::Operation::RootOperation *> oplist;
-
-typedef std::list<BaseEntity *> list_t;
 
 #endif /* TYPES_H */

@@ -40,7 +40,7 @@ static PyObject * Thing_get_xyz(ThingObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->m_thing->get_xyz();
+    ret->coords = self->m_thing->getXyz();
     return (PyObject *)ret;
 }
 

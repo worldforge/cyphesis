@@ -21,42 +21,42 @@ class Thing;
 typedef std::list<RootOperation *> opqueue;
 
 class WorldRouter : public Routing {
-    double real_time;
-    opqueue operation_queue;
-    list_t objects_list;
-    time_t init_time;
+    double realTime;
+    opqueue operationQueue;
+    list_t objectList;
+    time_t initTime;
 
-    void add_operation_to_queue(RootOperation & op, const BaseEntity *);
-    RootOperation * get_operation_from_queue();
-    string get_id(string & name);
+    void addOperationToQueue(RootOperation & op, const BaseEntity *);
+    RootOperation * getOperationFromQueue();
+    string getId(string & name);
     const list_t & broadcastList(const RootOperation & op) const;
     oplist operation(const RootOperation * op);
   public:
-    ServerRouting * server;
-    int next_id;
+    ServerRouting & server;
+    int nextId;
     list_t perceptives;
-    list_t omnipresent_list;
+    list_t omnipresentList;
 
-    WorldRouter(ServerRouting * server);
+    WorldRouter(ServerRouting & server);
     virtual ~WorldRouter() { }
 
     int idle();
 
-    Thing * add_object(Thing * obj);
-    Thing * add_object(const string &, const Atlas::Message::Object &,
+    Thing * addObject(Thing * obj);
+    Thing * addObject(const string &, const Atlas::Message::Object &,
                        const string & id = string());
-    void del_object(BaseEntity * obj);
+    void delObject(BaseEntity * obj);
         
-    void update_time() {
+    void updateTime() {
         struct timeval tv;
         gettimeofday(&tv, NULL);
-        double tmp_time = (double)(tv.tv_sec - init_time) + (double)tv.tv_usec/1000000;
+        double tmp_time = (double)(tv.tv_sec - initTime) + (double)tv.tv_usec/1000000;
         world_info::time = double(tmp_time);
-        real_time = world_info::time;
+        realTime = world_info::time;
     }
 
     double upTime() {
-        return real_time - init_time;
+        return realTime - initTime;
     }
 
     virtual oplist message(RootOperation & op, const BaseEntity * obj);

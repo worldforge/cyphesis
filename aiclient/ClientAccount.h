@@ -11,9 +11,9 @@ class ClientConnection;
 
 class ClientAccount : public BaseEntity {
   private:
-    ClientConnection * connection;
+    ClientConnection & connection;
   public:
-    ClientAccount(const string & name, ClientConnection * con);
+    ClientAccount(const string & name, ClientConnection & con);
     virtual ~ClientAccount() { }
 
     virtual oplist Operation(const RootOperation & op);

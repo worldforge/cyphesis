@@ -18,34 +18,33 @@ class ServerRouting;
 typedef std::map<int, CommClient *> client_map_t;
 
 class CommServer {
-    int server_fd;
-    int server_port;
+    int serverFd;
+    int serverPort;
     client_map_t clients;
 
     int accept();
     void idle();
 
-    static const int metaserver_port = 8453;
+    static const int metaserverPort = 8453;
     struct sockaddr_in meta_sa;
-    int meta_fd;
+    int metaFd;
   public:
-    static bool use_metaserver;
+    static bool useMetaserver;
     const string identity;
     ServerRouting & server;
 
     CommServer(const string & ident);
- // : identity(ident), server(new ServerRouting(this, identity)) { }
 
     int setup(int port);
     void loop();
-    void remove_client(CommClient * client, char * msg);
-    void remove_client(CommClient * client);
-    void metaserver_keepalive();
-    void metaserver_reply();
-    void metaserver_terminate();
+    void removeClient(CommClient * client, char * msg);
+    void removeClient(CommClient * client);
+    void metaserverKeepalive();
+    void metaserverReply();
+    void metaserverTerminate();
     int numClients() {
         return clients.size();
     }
 };
 
-#endif /* COMM_SERVER_H */
+#endif // COMM_SERVER_H

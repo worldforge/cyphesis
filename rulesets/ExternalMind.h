@@ -11,9 +11,9 @@ class Connection;
 
 class ExternalMind : public BaseMind {
   public:
-    Connection * connection;
+    Connection & connection;
 
-    ExternalMind(Connection * connection, string & id, string & name);
+    ExternalMind(Connection & connection, string & id, string & name);
 
     virtual oplist message(const RootOperation & op);
 };

@@ -12,9 +12,9 @@ inline int ServerRouting::idle() {
     return world->idle();
 }
 
-inline BaseEntity * ServerRouting::add_object(BaseEntity * obj) {
-    obj = Routing::add_object(obj);
-    id_dict[obj->fullid] = obj;
+inline BaseEntity * ServerRouting::addObject(BaseEntity * obj) {
+    obj = Routing::addObject(obj);
+    idDict[obj->fullid] = obj;
     return obj;
 }
 

@@ -57,7 +57,7 @@ void ClientConnection::operation(const RootOperation & op)
         cerr << "ERROR: Operation with no destination" << endl << flush;
         return;
     }
-    fdict_t::iterator I = objects.find(from);
+    dict_t::iterator I = objects.find(from);
     if (I == objects.end()) {
         cerr << "ERROR: Operation with invalid destination" << endl << flush;
         return;
@@ -87,7 +87,7 @@ void ClientConnection::ObjectArrived(const Info & op)
         try {
             Object ac = op.GetArgs().front();
             const string & acid = ac.AsMap()["id"].AsString();
-            objects[acid] = new ClientAccount(acid, this);
+            objects[acid] = new ClientAccount(acid, *this);
         }
         catch (...) {
             cerr << "WARNING: Malformed account from server" << endl << flush;

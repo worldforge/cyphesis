@@ -21,23 +21,23 @@ class BaseEntity {
     Location location;		// Full details of location inc. ref pos and vel
     list_t contains;		// List of entities which use this as ref
     bool deleted;		// true if deleted
-    bool in_game;		// true if in game object
+    bool inGame;		// true if in game object
     bool omnipresent;		// true if omnipresent in game.
     WorldRouter * world;	// Exists in this world.
 
     BaseEntity();
     virtual ~BaseEntity() { }
 
-    Vector3D get_xyz() const;
+    Vector3D getXyz() const;
     virtual void destroy();
 
     Atlas::Message::Object asObject() const;
-    virtual void addObject(Atlas::Message::Object *) const;
+    virtual void addToObject(Atlas::Message::Object *) const;
 
-    virtual oplist external_message(const RootOperation & op);
+    virtual oplist externalMessage(const RootOperation & op);
     virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
-    virtual oplist external_operation(const RootOperation & op);
+    virtual oplist externalOperation(const RootOperation & op);
 
     virtual oplist Operation(const Login & op);
     virtual oplist Operation(const Logout & op);
@@ -67,12 +67,12 @@ class BaseEntity {
     virtual oplist Operation(const Disappearance & op);
     virtual oplist Operation(const RootOperation & op);
 
-    void set_refno(oplist & ret, const RootOperation & ref_op) const;
-    op_no_t op_enumerate(const RootOperation * op) const;
-    oplist call_operation(const RootOperation & op);
+    void setRefno(oplist & ret, const RootOperation & ref_op) const;
+    op_no_t opEnumerate(const RootOperation * op) const;
+    oplist callOperation(const RootOperation & op);
     oplist error(const RootOperation & op, const char * errstring) const;
 
-    void set_refno_op(RootOperation * op, const RootOperation & ref_op) const {
+    void setRefnoOp(RootOperation * op, const RootOperation & ref_op) const {
         op->SetRefno(ref_op.GetSerialno());
     }
 

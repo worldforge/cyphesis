@@ -18,13 +18,13 @@
 
 #include <server/Connection_methods.h>
 
-ExternalMind::ExternalMind(Connection * connection, string & id, string & name):
+ExternalMind::ExternalMind(Connection & connection, string & id, string & name):
 		BaseMind(id, name), connection(connection)
 {
 }
 
 oplist ExternalMind::message(const RootOperation & op)
 {
-    connection->send(&op);
+    connection.send(&op);
     return oplist();
 }

@@ -39,184 +39,23 @@ using Atlas::Message::Object;
 
 Thing::Thing() : perceptive(false)
 {
-    in_game = true;
+    inGame = true;
     name = string("Foo");
     attributes["mode"] = Object("birth");
 }
 
 Thing::~Thing() { }
 
-#if 0
-int Thing::script->Operation(const string & op_type, const RootOperation & op,
-                     oplist & ret_list, RootOperation * sub_op)
-{
-    if (script_object == NULL) {
-        debug( cout << "No script object asociated" << endl << flush;);
-        return 0;
-    }
-    debug( cout << "Got script object for " << fullid << endl << flush;);
-    string op_name = op_type+"_operation";
-    // Construct apropriate python object thingies from op
-    if (!PyObject_HasAttrString(script_object, (char *)(op_name.c_str()))) {
-        debug( cout << "No method to be found for " << fullid
-             << "." << op_name << endl << flush;);
-        return(0);
-    }
-    RootOperationObject * py_op = newAtlasRootOperation(NULL);
-    py_op->operation = new RootOperation(op);
-    py_op->own = 0;
-    py_op->from = (Thing *)world->get_object(op.GetFrom());
-    py_op->to = (Thing *)world->get_object(op.GetTo());
-    PyObject * ret;
-    ret = PyObject_CallMethod(script_object, (char *)(op_name.c_str()),
-                                         "(O)", py_op);
-    delete py_op->operation;
-    Py_DECREF(py_op);
-    if (ret != NULL) {
-        debug( cout << "Called python method " << op_name
-                            << " for object " << fullid << endl << flush;);
-        if (PyOperation_Check(ret)) {
-            RootOperationObject * op = (RootOperationObject*)ret;
-            if (op->operation != NULL) {
-                ret_list.push_back(op->operation);
-                op->own = 0;
-            } else {
-                debug( cout << "Method returned invalid operation"
-                     << endl << flush;);
-            }
-        } else if (PyOplist_Check(ret)) {
-            OplistObject * op = (OplistObject*)ret;
-            if (op->ops != NULL) {
-                ret_list = *op->ops;
-            } else {
-                debug( cout << "Method returned invalid oplist"
-                     << endl << flush;);
-            }
-        } else {
-            debug( cout << "Method returned invalid object" << endl << flush;);
-        }
-        
-        Py_DECREF(ret);
-        return 1;
-    } else {
-        if (PyErr_Occurred() == NULL) {
-            debug( cout << "No method to be found for " << fullid << endl << flush;);
-        } else {
-            cerr << "Reporting python error for " << fullid << endl << flush;
-            PyErr_Print();
-        }
-    }
-    return 0;
-}
-#endif
-
-#if 0
-const Object & Thing::operator[](const string & aname)
-{
-    if (aname == "status") {
-        attributes[aname] = Object(status);
-    } else if (aname == "id") {
-        attributes[aname] = Object(fullid);
-    } else if (aname == "name") {
-        attributes[aname] = Object(name);
-    } else if (aname == "weight") {
-        attributes[aname] = Object(weight);
-    } else if (aname == "contains") {
-        Object::ListType contlist;
-        for(list_t::const_iterator I=contains.begin();I!=contains.end();I++) {
-            contlist.push_back(*I);
-        }
-        attributes[aname] = Object(contlist);
-    } else if (attributes.find(aname) == attributes.end()) {
-        attributes[aname] = Object();
-    }
-    return(attributes[aname]);
-}
-
-void Thing::set(const string & aname, const Object & attr)
-{
-    if ((aname == "status") && attr.IsFloat()) {
-        status = attr.AsFloat();
-    } else if ((aname == "name") && attr.IsString()) {
-        name = attr.AsString();
-    } else if ((aname == "weight") && attr.IsFloat()) {
-        weight = attr.AsFloat();
-    } else {
-        attributes[aname] = attr;
-    }
-}
-
-int Thing::set_script(Script * scrpt) {
-    script = scrpt;
-    return(scrpt == NULL ? -1 : 0);
-}
-
-MemMap * Thing::getMap() {
-    return NULL;
-}
-#endif
-
-void Thing::addObject(Object * obj) const
+void Thing::addToObject(Object * obj) const
 {
     Object::MapType & omap = obj->AsMap();
     omap["name"] = Object(name);
     omap["type"] = Object(type);
     omap["parents"] = Object(Object::ListType(1,Object(type)));
     // We need to have a list of keys to pull from attributes.
-    location.addObject(obj);
-    BaseEntity::addObject(obj);
+    location.addToObject(obj);
+    BaseEntity::addToObject(obj);
 }
-
-#if 0
-void Thing::merge(const Object::MapType & entmap)
-{
-    Object::MapType::const_iterator I;
-    for (I=entmap.begin(); I!=entmap.end(); I++) {
-        const string & key = I->first;
-        if ((key == "name") || (key == "id") || (key == "parents")) continue;
-        if ((key == "pos") || (key == "loc") || (key == "velocity")) continue;
-        if ((key == "face") || (key == "contains")) continue;
-        attributes[key] = I->second;
-    }
-}
-
-void Thing::getLocation(Object::MapType & entmap, fdict_t & fobjects)
-{
-    debug( cout << "Thing::getLocation" << endl << flush;);
-    if (entmap.find("loc") != entmap.end()) {
-        debug( cout << "Thing::getLocation, getting it" << endl << flush;);
-        try {
-            const string & ref_id = entmap["loc"].AsString();
-            if (fobjects.find(ref_id) == fobjects.end()) {
-                debug( cout << "ERROR: Can't get ref from objects dictionary" << endl << flush;);
-                return;
-            }
-                
-            location.ref = fobjects[ref_id];
-            if (entmap.find("pos") != entmap.end()) {
-                location.coords = Vector3D(entmap["pos"].AsList());
-            }
-            if (entmap.find("velocity") != entmap.end()) {
-                location.velocity = Vector3D(entmap["velocity"].AsList());
-            }
-            if (entmap.find("face") != entmap.end()) {
-                location.face = Vector3D(entmap["face"].AsList());
-            } else if (!location.face) {
-                location.face = Vector3D(1, 0, 0);
-            }
-            if (entmap.find("bbox") != entmap.end()) {
-                location.bbox = Vector3D(entmap["bbox"].AsList());
-            }
-            if (entmap.find("bmedian") != entmap.end()) {
-                location.bmedian = Vector3D(entmap["bmedian"].AsList());
-            }
-        }
-        catch (Atlas::Message::WrongTypeException) {
-            cerr << "ERROR: Create operation has bad location" << endl << flush;
-        }
-    }
-}
-#endif
 
 oplist Thing::Operation(const Setup & op)
 {
@@ -253,7 +92,7 @@ oplist Thing::Operation(const Create & op)
             type = parents.front().AsString();
         }
         debug( cout << fullid << " creating " << type;);
-        Thing * obj = world->add_object(type,ent);
+        Thing * obj = world->addObject(type,ent);
         if (!obj->location) {
             obj->location=location;
             obj->location.velocity=Vector3D(0,0,0);
@@ -284,7 +123,7 @@ oplist Thing::Operation(const Delete & op)
     if (script->Operation("delete", op, res) != 0) {
         return(res);
     }
-    // world->del_object(this);
+    // world->delObject(this);
     RootOperation * s = new Sight;
     *s = Sight::Instantiate();
     Object::ListType args(1,op.AsObject());
@@ -360,12 +199,12 @@ oplist Thing::Operation(const Move & op)
             debug( cout << "ERROR: attempt by entity to move into itself" << endl << flush;);
             return error(op, "Attempt by entity to move into itself");
         }
-        if (world->fobjects.find(ref) == world->fobjects.end()) {
+        if (world->objects.find(ref) == world->objects.end()) {
             debug( cout << "ERROR: move op arg ref is invalid" << endl << flush;);
             return(error(op, "Move location ref invalid"));
         }
         cout << "{" << ref << "}" << endl << flush;
-        newref = world->fobjects[ref];
+        newref = world->objects[ref];
         if (location.ref != newref) {
             location.ref->contains.remove(this);
             newref->contains.push_back(this);

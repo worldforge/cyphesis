@@ -34,37 +34,37 @@ static const bool debug_flag = false;
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::Info;
 
-Connection::Connection(CommClient & client) : comm_client(client),
-    server(comm_client.commServer.server) { }
+Connection::Connection(CommClient & client) : commClient(client),
+    server(commClient.commServer.server) { }
 
 void Connection::send(const RootOperation * msg) const {
-    comm_client.send(msg);
+    commClient.send(msg);
 }
 
-Account * Connection::add_player(string & username, string & password)
+Account * Connection::addPlayer(string & username, string & password)
 {
     Player * player=new Player(this, username, password);
-    add_object(player);
+    addObject(player);
     player->connection=this;
     player->world=server.world;
-    server.add_object(player);
+    server.addObject(player);
     return(player);
 }
 
 void Connection::destroy()
 {
     debug(cout << "destroy called";);
-    fdict_t::const_iterator I;
-    for(I = fobjects.begin(); I != fobjects.end(); I++) {
+    dict_t::const_iterator I;
+    for(I = objects.begin(); I != objects.end(); I++) {
         BaseEntity * ent = I->second;
-        if (ent->in_game == false) {
+        if (ent->inGame == false) {
             continue;
         }
         Thing * obj = (Thing*)ent;
-        if (obj->is_character == true) {
+        if (obj->isCharacter == true) {
             Character * character = (Character *)obj;
-            if (character->external_mind != NULL) {
-                character->external_mind = NULL;
+            if (character->externalMind != NULL) {
+                character->externalMind = NULL;
             }
         }
     }
@@ -81,23 +81,23 @@ oplist Connection::operation(const RootOperation & op)
     } else {
         debug(cout << "Must send on to account" << endl << flush;);
         debug(cout << "[" << from << "]" << endl << flush;);
-        if (fobjects.find(from)!=fobjects.end()) {
-            BaseEntity * ent = fobjects[from];
-            if ((ent->in_game != false)&&(((Thing *)ent)->is_character != 0) &&
-                (((Character *)ent)->external_mind == NULL)) {
+        if (objects.find(from)!=objects.end()) {
+            BaseEntity * ent = objects[from];
+            if ((ent->inGame != false)&&(((Thing *)ent)->isCharacter != 0) &&
+                (((Character *)ent)->externalMind == NULL)) {
                 Character * pchar = (Character *)ent;
-                pchar->external_mind = new ExternalMind(this, pchar->fullid, pchar ->name);
+                pchar->externalMind = new ExternalMind(*this, pchar->fullid, pchar ->name);
                 cout << "Re-connecting existing character to new connection" << endl << flush;
                 Info * info = new Info();
                 *info = Info::Instantiate();
                 Object::ListType args(1,pchar->asObject());
                 info->SetArgs(args);
                 info->SetRefno(op.GetSerialno());
-                oplist res = ent->external_operation(op);
+                oplist res = ent->externalOperation(op);
                 res.insert(res.begin(), info);
                 return res;
             }
-            return ent->external_operation(op);
+            return ent->externalOperation(op);
         } else {
             return error(op, "From is illegal");
         }
@@ -115,16 +115,20 @@ oplist Connection::Operation(const Login & op)
         string account_id = account.AsMap().find("id")->second.AsString();
         string password = account.AsMap().find("password")->second.AsString();
 
-        Account * player = (Player *)server.get_object(account_id);
+        Account * player = (Player *)server.getObject(account_id);
         if (player == NULL) {
             player = Persistance::instance()->getAccount(account_id);
+            if (player != NULL) {
+                player->world=server.world;
+                server.addObject(player);
+            }
         }
         if (player && (account_id.size()!=0) && (password==player->password)) {
-            add_object(player);
-            fdict_t::const_iterator I;
-            for (I=player->characters_dict.begin();
-                 I!=player->characters_dict.end(); I++) {
-                add_object(I->second);
+            addObject(player);
+            dict_t::const_iterator I;
+            for (I=player->charactersDict.begin();
+                 I!=player->charactersDict.end(); I++) {
+                addObject(I->second);
             }
             player->connection=this;
             Info * info = new Info();
@@ -152,10 +156,10 @@ oplist Connection::Operation(const Create & op)
         string account_id = account.AsMap().find("id")->second.AsString();
         string password = account.AsMap().find("password")->second.AsString();
 
-        if ((NULL==server.get_object(account_id)) && 
+        if ((NULL==server.getObject(account_id)) && 
             (!Persistance::instance()->findAccount(account_id)) &&
             (account_id.size() != 0) && (password.size() != 0)) {
-            Account * player = add_player(account_id, password);
+            Account * player = addPlayer(account_id, password);
             Persistance::instance()->putAccount(player);
             Info * info = new Info();
             *info = Info::Instantiate();
@@ -177,7 +181,7 @@ oplist Connection::Operation(const Logout & op)
     if (account.IsMap()) {
         string account_id = account.AsMap().find("id")->second.AsString();
         string password = account.AsMap().find("password")->second.AsString();
-        Player * player = (Player *)server.get_object(account_id);
+        Player * player = (Player *)server.getObject(account_id);
         if (player) {
             Logout l = op;
             l.SetFrom(player->fullid);

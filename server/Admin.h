@@ -9,7 +9,7 @@
 
 class Admin : public Account {
   protected:
-    virtual oplist character_error(const Create &, const Atlas::Message::Object &) const;
+    virtual oplist characterError(const Create &, const Atlas::Message::Object &) const;
   public:
     Admin(Connection * conn, const string & username, const string & passwd);
     virtual ~Admin();

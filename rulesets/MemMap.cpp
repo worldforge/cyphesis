@@ -15,22 +15,10 @@ using Atlas::Objects::Operation::Look;
 
 static const bool debug_flag = false;
 
-#if 0
-void MemMap::script_hook(const string & method, Entity * object)
-{
-    if (script_object != NULL) {
-        ThingObject * obj = newThingObject(NULL);
-        obj->m_thing = object;
-        PyObject_CallMethod(script_object, (char *)(method.c_str()), "(O)",obj);
-        Py_DECREF(obj);
-    }
-}
-#endif
-
-list<Entity *> MemMap::find_by_type(const string & what)
+list<Entity *> MemMap::findByType(const string & what)
 {
     list<Entity *> res;
-    fdict_t::const_iterator I;
+    dict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         Entity * item = (Entity *)I->second;
         debug( cout << "F" << what << ":" << item->type << ":" << item->fullid << endl << flush;);
@@ -41,10 +29,10 @@ list<Entity *> MemMap::find_by_type(const string & what)
     return res;
 }
 
-list<Entity *> MemMap::find_by_location(const Location & loc, double radius)
+list<Entity *> MemMap::findByLocation(const Location & loc, double radius)
 {
     list<Entity *> res;
-    fdict_t::const_iterator I;
+    dict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         const Location & oloc = I->second->location;
         if (!loc || !oloc) {

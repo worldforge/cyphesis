@@ -28,7 +28,6 @@
 #include <common/Nourish.h>
 #include <common/Fire.h>
 
-#include <common/op_switch.h>
 
 #include <varconf/Config.h>
 
@@ -40,6 +39,7 @@ extern "C" {
 
 
 #include "Character.h"
+#include "Pedestrian.h"
 
 #include "BaseMind.h"
 #include "ExternalMind.h"
@@ -51,262 +51,14 @@ extern "C" {
 #include <modules/Location.h>
 
 #include <common/WorldInfo.h>
+#include <common/op_switch.h>
 #include <common/const.h>
 #include <common/debug.h>
+#include <common/globals.h>
 
 using Atlas::Message::Object;
 
 static const bool debug_flag = false;
-
-//-------------------------------MovementInfo-------------------------------
-
-MovementInfo::MovementInfo(Character * body) : body(body), target_ref(NULL)
-{
-    serialno=-1;
-    reset();
-    debug( cout << "MOVEMENTINFO: " << last_movement_time <<  endl << flush;);
-}
-
-void MovementInfo::reset()
-{
-    serialno = serialno+1;
-    target_ref=NULL;
-    target_location=Vector3D();
-    updated_location=Vector3D();
-    velocity=Vector3D(0,0,0);
-    last_movement_time=world_info::time;
-}
-
-bool MovementInfo::update_needed(const Location & location) const
-{
-    return((velocity!=Vector3D(0,0,0))||(location.velocity!=Vector3D(0,0,0)));
-}
-
-void MovementInfo::check_collisions(const Location & loc)
-{
-    // Check to see whether a collision is going to occur from now until the
-    // the next tick in consts::basic_tick seconds
-    double collTime = consts::basic_tick + 1;
-    list_t::const_iterator I;
-    // cout << "checking " << body->fullid << loc.coords << loc.velocity << " against ";
-    BaseEntity * collEntity = NULL;
-    for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
-        // if ((*I) == loc.ref) { continue; }
-        if ((*I) == body) { continue; }
-        const Location & oloc = (*I)->location;
-        if (!oloc.bbox) { continue; }
-        double t = loc.hitTime(oloc);
-        if (t < 0) { continue; }
-        // cout << (*I)->fullid << oloc.coords << oloc.velocity;
-        // cout << "[" << t << "]";
-        if (t < collTime) {
-            collEntity = *I;
-        }
-        collTime = min(collTime, t);
-    }
-    // cout << endl << flush;
-    if (collTime > consts::basic_tick) {
-        // Check whethe we are moving out of parents bounding box
-        // If ref has no bounding box, or itself has no ref, then we can't
-        // Move out of it.
-        const Location & oloc = loc.ref->location;
-        if (!oloc.bbox || (oloc.ref == NULL)) {
-            return;
-        }
-        double t = loc.inTime(oloc);
-        if (t < 0) { return; }
-        collTime = min(collTime, t);
-        if (collTime > consts::basic_tick) { return; }
-        cout << "Collision with parent bounding box" << endl << flush;
-        target_ref = oloc.ref;
-    } else if (!collEntity->location.solid) {
-        cout << "Collision with non-solid object" << endl << flush;
-        // Non solid container - check for collision with its contents.
-        const Location & lc2 = collEntity->location;
-        Location rloc(loc);
-        rloc.ref = collEntity; rloc.coords = loc.coords - lc2.coords;
-        double coll2Time = consts::basic_tick + 1;
-        // rloc is coords of character ref collEntity
-        for(I = lc2.ref->contains.begin(); I != lc2.ref->contains.end(); I++) {
-            const Location & oloc = (*I)->location;
-            if (!oloc.bbox) { continue; }
-            double t = rloc.hitTime(oloc);
-            if (t < 0) { continue; }
-            coll2Time = min(coll2Time, t);
-        }
-        if (coll2Time > collTime) {
-            cout << "passing into it" << endl << flush;
-            // We are entering collEntity.
-            // Set target_ref ????????????????
-            target_ref = collEntity;
-            // if (coll2Time > consts::basic_tick) { return; }
-        }
-    }
-    // cout << "COLLISION" << endl << flush;
-    if (collTime < get_tick_addition(loc.coords)) {
-        cout << "Setting target loc to " << loc.coords << "+" << loc.velocity
-             << "*" << collTime;
-        target_location = loc.coords + loc.velocity * collTime;
-    } else {
-        target_ref = NULL;
-    }
-}
-
-Move * MovementInfo::gen_face_operation(const Location & loc)
-{
-    if (face != loc.face) {
-        face = loc.face;
-        debug( cout << "Turning" << endl << flush;);
-        Move * moveOp = new Move;
-        *moveOp = Move::Instantiate();
-        moveOp->SetTo(body->fullid);
-        Object::MapType _map;
-        Object ent(_map);
-        Object::MapType & entmap = ent.AsMap();
-        entmap["id"] = body->fullid;
-        loc.addObject(&ent);
-        Object::ListType args(1,ent);
-        moveOp->SetArgs(args);
-        return moveOp;
-    }
-    return(NULL);
-}
-
-Move * MovementInfo::gen_move_operation(Location * rloc)
-{
-    return(gen_move_operation(rloc, body->location));
-}
-
-Move * MovementInfo::gen_move_operation(Location * rloc, const Location & loc)
-{
-        debug( cout << "gen_move_operation: status: MovementInfo(" << serialno
-             << "," << target_location << "," << velocity << ","
-             << last_movement_time << ")" << endl << flush;);
-    if (update_needed(loc)) {
-        debug(cout << "gen_move_operation: Update needed..." << endl << flush;);
-
-        // Sort out time difference, and set updated time
-        double current_time=world_info::time;
-        double time_diff=current_time-last_movement_time;
-        debug( cout << "time_diff:" << time_diff << endl << flush;);
-        last_movement_time=current_time;
-
-        face = loc.face;
-        
-        Location new_loc(loc);
-        new_loc.velocity=velocity;
-
-        // Create move operation
-        Move * moveOp = new Move;
-        *moveOp = Move::Instantiate();
-        moveOp->SetTo(body->fullid);
-
-        // Set up argument for operation
-        Object::MapType _map;
-        Object ent(_map);
-        Object::MapType & entmap = ent.AsMap();
-        entmap["id"] = body->fullid;
-
-        // Walk out what the mode of the character should be.
-        double vel_mag = velocity.mag();
-        double speed_ratio;
-        if (vel_mag == 0.0) {
-            speed_ratio = 0.0;
-        } else {
-            speed_ratio = vel_mag/consts::base_velocity;
-        }
-        string mode;
-        if (speed_ratio > 0.5) {
-            mode = string("running");
-        } else if (speed_ratio > 0.05) {
-            mode = string("walking");
-        } else {
-            mode = string("standing");
-        }
-        debug( cout << "Mode set to " << mode << endl << flush;);
-        entmap["mode"] = Object(mode);
-
-        // If velocity is not set, return this simple operation.
-        if (!velocity) {
-            debug( cout << "only velocity changed." << endl << flush;);
-            new_loc.addObject(&ent);
-            Object::ListType args(1,ent);
-            moveOp->SetArgs(args);
-            if (NULL != rloc) {
-                *rloc = new_loc;
-            }
-            return(moveOp);
-        }
-
-        // Update location
-        Vector3D new_coords;
-        if (updated_location) {
-            new_coords=updated_location+(velocity*time_diff);
-        } else {
-            new_coords=loc.coords+(velocity*time_diff);
-        }
-        if (target_location) {
-            Vector3D new_coords2 = new_coords+velocity/consts::basic_tick/10.0;
-            double dist=target_location.distance(new_coords);
-            double dist2=target_location.distance(new_coords2);
-            debug( cout << "dist: " << dist << "," << dist2 << endl << flush;);
-            if (dist2>dist) {
-                debug( cout << "target achieved";);
-                new_coords=target_location;
-                if (target_ref != NULL) {
-                    cout << "CONTACT " << target_ref->fullid << endl << flush;
-                    if (target_ref == new_loc.ref->location.ref) {
-                        cout << "OUT" << target_location << new_loc.ref->location.coords << endl << flush;
-                        new_coords=target_location+new_loc.ref->location.coords;
-                    } else {
-                        cout << "IN" << endl << flush;
-                        new_coords=target_location-target_ref->location.coords;
-                    }
-                    new_loc.ref = target_ref;
-                    target_ref = NULL;
-                    // This needs to be the previously stored target location
-                    target_location = Vector3D();
-                } else {
-                    reset();
-                    entmap["mode"] = Object("standing");
-                    new_loc.velocity=velocity;
-                }
-            }
-        }
-        new_loc.coords = new_coords;
-        updated_location = new_coords;
-
-        // Check for collisions
-        check_collisions(new_loc);
-
-        debug( cout << "new coordinates: " << new_coords << endl << flush;);
-        new_loc.addObject(&ent);
-        Object::ListType args2(1,ent);
-        moveOp->SetArgs(args2);
-        if (NULL != rloc) {
-            *rloc = new_loc;
-        }
-        return(moveOp);
-    }
-    return(NULL);
-}
-
-double MovementInfo::get_tick_addition(const Vector3D & coordinates) const
-{
-    double basic_distance=velocity.mag()*consts::basic_tick;
-    if (target_location) {
-        double distance=coordinates.distance(target_location);
-        debug( cout << "basic_distance: " << basic_distance << endl << flush;);
-        debug( cout << "distance: " << distance << endl << flush;);
-        if (basic_distance>distance) {
-            debug( cout << "\tshortened tick" << endl << flush;);
-            return distance/basic_distance*consts::basic_tick;
-        }
-    }
-    return consts::basic_tick;
-}
-
-//-------------------------------Character----------------------------------
 
 inline oplist Character::metabolise(double ammount = 1)
 {
@@ -314,7 +66,7 @@ inline oplist Character::metabolise(double ammount = 1)
     // We should probably call this whenever the entity performs a movement.
     Object::MapType ent;
     ent["id"] = fullid;
-    if ((status > (1.5 + energyLoss)) && (weight < maxweight)) {
+    if ((status > (1.5 + energyLoss)) && (weight < maxWeight)) {
         status = status - energyLoss;
         ent["weight"] = weight + weightGain;
     }
@@ -334,11 +86,11 @@ inline oplist Character::metabolise(double ammount = 1)
     return oplist(1,s);
 }
 
-Character::Character() : movement(this), autom(0), mind(NULL),
-                         external_mind(NULL), player(NULL), drunkness(0.0),
-                         sex("female"), food(0), maxweight(100)
+Character::Character() : movement(*new Pedestrian(*this)), autom(0), mind(NULL),
+                         externalMind(NULL), drunkness(0.0),
+                         sex("female"), food(0), maxWeight(100)
 {
-    is_character = true;
+    isCharacter = true;
     weight = 60;
     location.bbox = Vector3D(0.25, 0.25, 1);
     location.bmedian = Vector3D(0, 0, 1);
@@ -349,8 +101,8 @@ Character::~Character()
     if (mind != NULL) {
         delete mind;
     }
-    if (external_mind != NULL) {
-        delete external_mind;
+    if (externalMind != NULL) {
+        delete externalMind;
     }
 }
 
@@ -368,21 +120,20 @@ void Character::set(const string & aname, const Object & attr)
 {
     if ((aname == "drunkness") && attr.IsFloat()) {
         drunkness = attr.AsFloat();
+    } else if ((aname == "sex") && attr.IsString()) {
+        sex = attr.AsString();
     } else {
         Thing::set(aname, attr);
     }
 }
 
-void Character::addObject(Object * obj) const
+void Character::addToObject(Object * obj) const
 {
     Object::MapType & omap = obj->AsMap();
     omap["weight"] = Object(weight);
     omap["sex"] = Object(sex);
-    Thing::addObject(obj);
+    Thing::addToObject(obj);
 }
-
-
-extern varconf::Config * global_conf;
 
 oplist Character::Operation(const Setup & op)
 {
@@ -450,7 +201,7 @@ oplist Character::Operation(const Tick & op)
             }
         }
         Location ret_loc;
-        RootOperation * moveOp = movement.gen_move_operation(&ret_loc);
+        RootOperation * moveOp = movement.genMoveOperation(&ret_loc);
         if (moveOp) {
             oplist res(2);
             Object::MapType entmap;
@@ -460,7 +211,7 @@ oplist Character::Operation(const Tick & op)
             RootOperation * tickOp = new Tick();
             *tickOp = Tick::Instantiate();
             tickOp->SetTo(fullid);
-            tickOp->SetFutureSeconds(movement.get_tick_addition(ret_loc.coords));
+            tickOp->SetFutureSeconds(movement.getTickAddition(ret_loc.coords));
             tickOp->SetArgs(Object::ListType(1,ent));
             res[0] = tickOp;
             res[1] = moveOp;
@@ -568,12 +319,12 @@ oplist Character::Operation(const Nourish & op)
     return oplist(1,si);
 }
 
-oplist Character::Mind_Operation(const Login & op)
+oplist Character::mindOperation(const Login & op)
 {
     return oplist();
 }
 
-oplist Character::Mind_Operation(const Setup & op)
+oplist Character::mindOperation(const Setup & op)
 {
     Setup *s = new Setup(op);
     s->SetTo(fullid);
@@ -581,7 +332,7 @@ oplist Character::Mind_Operation(const Setup & op)
     return oplist(1,s);
 }
 
-oplist Character::Mind_Operation(const Tick & op)
+oplist Character::mindOperation(const Tick & op)
 {
     Tick *t = new Tick(op);
     t->SetTo(fullid);
@@ -589,7 +340,7 @@ oplist Character::Mind_Operation(const Tick & op)
     return oplist(1,t);
 }
 
-oplist Character::Mind_Operation(const Move & op)
+oplist Character::mindOperation(const Move & op)
 {
     debug( cout << "Character::mind_move_op" << endl << flush;);
     Move * newop = new Move(op);
@@ -603,12 +354,12 @@ oplist Character::Mind_Operation(const Move & op)
         cerr << "Its got no id" << endl << flush;
     }
     string & oname = arg1["id"].AsString();
-    if (world->fobjects.find(oname) == world->fobjects.end()) {
+    if (world->objects.find(oname) == world->objects.end()) {
         debug( cout << "This move op is for a phoney object" << endl << flush;);
         delete newop;
         return oplist();
     }
-    Thing * obj = (Thing *)world->fobjects[oname];
+    Thing * obj = (Thing *)world->objects[oname];
     if (obj != this) {
         debug( cout << "Moving something else. " << oname << endl << flush;);
         if ((obj->weight < 0) || (obj->weight > weight)) {
@@ -750,7 +501,7 @@ oplist Character::Mind_Operation(const Move & op)
             location.face = direction;
         }
         Location ret_location;
-        RootOperation * moveOp = movement.gen_move_operation(&ret_location);
+        RootOperation * moveOp = movement.genMoveOperation(&ret_location);
         const Location & current_location = (NULL!=moveOp) ? ret_location : location;
         //if (NULL!=moveOp) {
             //current_location = ret_location;
@@ -771,7 +522,7 @@ oplist Character::Mind_Operation(const Move & op)
                 ent["mode"]=Object("standing");
                 moveOp->SetArgs(args);
             } else {
-                moveOp = movement.gen_face_operation(location);
+                moveOp = movement.genFaceOperation(location);
             }
             delete newop;
             if (NULL != moveOp) {
@@ -791,15 +542,15 @@ oplist Character::Mind_Operation(const Move & op)
         // direction is already a unit vector
         if (!location_coords) {
             debug( cout << "\tNo target location" << endl << flush;);
-            movement.target_location = Vector3D();
+            movement.targetLocation = Vector3D();
         } else {
             debug( cout << "\tUsing target location" << endl << flush;);
-            movement.target_location = location_coords;
+            movement.targetLocation = location_coords;
         }
         movement.velocity=direction*vel_mag;
         debug( cout << "Velocity " << vel_mag << endl << flush;);
-        RootOperation * moveOp2 = movement.gen_move_operation(NULL,current_location);
-        tickOp->SetFutureSeconds(movement.get_tick_addition(location.coords));
+        RootOperation * moveOp2 = movement.genMoveOperation(NULL,current_location);
+        tickOp->SetFutureSeconds(movement.getTickAddition(location.coords));
         debug( cout << "Next tick " << tickOp->GetFutureSeconds() << endl << flush;);
         if (NULL!=moveOp2) {
             if (NULL!=moveOp) {
@@ -817,7 +568,7 @@ oplist Character::Mind_Operation(const Move & op)
     return oplist(1,newop);
 }
 
-oplist Character::Mind_Operation(const Set & op)
+oplist Character::mindOperation(const Set & op)
 {
     Set * s = new Set(op);
     const Object::ListType & args = op.GetArgs();
@@ -833,40 +584,40 @@ oplist Character::Mind_Operation(const Set & op)
     return oplist(1,s);
 }
 
-oplist Character::Mind_Operation(const Sight & op)
+oplist Character::mindOperation(const Sight & op)
 {
     return oplist();
 }
 
-oplist Character::Mind_Operation(const Sound & op)
+oplist Character::mindOperation(const Sound & op)
 {
     return oplist();
 }
 
-oplist Character::Mind_Operation(const Create & op)
+oplist Character::mindOperation(const Create & op)
 {
     // We need to call, THE THING FACTORY! Or maybe not
     // This currently does nothing, so characters are not able to directly
     // create objects. By and large a tool must be used. This should at some
     // point be able to send create operations on to other entities
-    debug( cout << "Character::Mind_Operation(Create)" << endl << flush;);
+    debug( cout << "Character::mindOperation(Create)" << endl << flush;);
     return oplist();
 }
 
-oplist Character::Mind_Operation(const Delete & op)
+oplist Character::mindOperation(const Delete & op)
 {
     Delete * d = new Delete(op);
     return oplist(1,d);
 }
 
-oplist Character::Mind_Operation(const Talk & op)
+oplist Character::mindOperation(const Talk & op)
 {
-    debug( cout << "Character::Mind_OPeration(Talk)" << endl << flush;);
+    debug( cout << "Character::mindOPeration(Talk)" << endl << flush;);
     Talk * t = new Talk(op);
     return oplist(1,t);
 }
 
-oplist Character::Mind_Operation(const Look & op)
+oplist Character::mindOperation(const Look & op)
 {
     debug( cout << "Got look up from mind from [" << op.GetFrom()
                             << "] to [" << op.GetTo() << "]" << endl << flush;);
@@ -889,29 +640,29 @@ oplist Character::Mind_Operation(const Look & op)
     return oplist(1,l);
 }
 
-oplist Character::Mind_Operation(const Load & op)
+oplist Character::mindOperation(const Load & op)
 {
     return oplist();
 }
 
-oplist Character::Mind_Operation(const Save & op)
+oplist Character::mindOperation(const Save & op)
 {
     return oplist();
 }
 
-oplist Character::Mind_Operation(const Cut & op)
+oplist Character::mindOperation(const Cut & op)
 {
     Cut * c = new Cut(op);
     return oplist(1,c);
 }
 
-oplist Character::Mind_Operation(const Eat & op)
+oplist Character::mindOperation(const Eat & op)
 {
     Eat * e = new Eat(op);
     return oplist(1,e);
 }
 
-oplist Character::Mind_Operation(const Touch & op)
+oplist Character::mindOperation(const Touch & op)
 {
     Touch * t = new Touch(op);
     // Work out what is being touched.
@@ -945,109 +696,109 @@ oplist Character::Mind_Operation(const Touch & op)
     return res;
 }
 
-oplist Character::Mind_Operation(const Appearance & op)
+oplist Character::mindOperation(const Appearance & op)
 {
     return oplist();
 }
 
-oplist Character::Mind_Operation(const Disappearance & op)
+oplist Character::mindOperation(const Disappearance & op)
 {
     return oplist();
 }
 
 
-oplist Character::Mind_Operation(const Error & op)
+oplist Character::mindOperation(const Error & op)
 {
     return oplist();
 }
 
-oplist Character::Mind_Operation(const RootOperation & op)
+oplist Character::mindOperation(const RootOperation & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Login & op)
+oplist Character::w2mOperation(const Login & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Chop & op)
+oplist Character::w2mOperation(const Chop & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Create & op)
+oplist Character::w2mOperation(const Create & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Cut & op)
+oplist Character::w2mOperation(const Cut & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Delete & op)
+oplist Character::w2mOperation(const Delete & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Eat & op)
+oplist Character::w2mOperation(const Eat & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Fire & op)
+oplist Character::w2mOperation(const Fire & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Move & op)
+oplist Character::w2mOperation(const Move & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Set & op)
+oplist Character::w2mOperation(const Set & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Look & op)
+oplist Character::w2mOperation(const Look & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Load & op)
+oplist Character::w2mOperation(const Load & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Save & op)
+oplist Character::w2mOperation(const Save & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Appearance & op)
+oplist Character::w2mOperation(const Appearance & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Disappearance & op)
+oplist Character::w2mOperation(const Disappearance & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const RootOperation & op)
+oplist Character::w2mOperation(const RootOperation & op)
 {
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Error & op)
+oplist Character::w2mOperation(const Error & op)
 {
     Error * e = new Error(op);
     return oplist(1,e);
 }
 
-oplist Character::W2m_Operation(const Setup & op)
+oplist Character::w2mOperation(const Setup & op)
 {
     if (op.HasAttr("sub_to")) {
         Setup * s = new Setup(op);
@@ -1056,7 +807,7 @@ oplist Character::W2m_Operation(const Setup & op)
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Tick & op)
+oplist Character::w2mOperation(const Tick & op)
 {
     if (op.HasAttr("sub_to")) {
         Tick * t = new Tick(op);
@@ -1065,7 +816,7 @@ oplist Character::W2m_Operation(const Tick & op)
     return oplist();
 }
 
-oplist Character::W2m_Operation(const Sight & op)
+oplist Character::w2mOperation(const Sight & op)
 {
     if (drunkness > 1.0) {
         return oplist();
@@ -1074,7 +825,7 @@ oplist Character::W2m_Operation(const Sight & op)
     return oplist(1,s);
 }
 
-oplist Character::W2m_Operation(const Sound & op)
+oplist Character::w2mOperation(const Sound & op)
 {
     if (drunkness > 1.0) {
         return oplist();
@@ -1083,7 +834,7 @@ oplist Character::W2m_Operation(const Sound & op)
     return oplist(1,s);
 }
 
-oplist Character::W2m_Operation(const Touch & op)
+oplist Character::w2mOperation(const Touch & op)
 {
     if (drunkness > 1.0) {
         return oplist();
@@ -1092,27 +843,27 @@ oplist Character::W2m_Operation(const Touch & op)
     return oplist(1,t);
 }
 
-oplist Character::send_mind(const RootOperation & op)
+oplist Character::sendMind(const RootOperation & op)
 {
-    debug( cout << "Character::send_mind" << endl << flush;);
+    debug( cout << "Character::sendMind" << endl << flush;);
     if (mind == NULL) {
         return oplist();
     }
     oplist local_res = mind->message(op);
     oplist external_res;
 
-    if ((NULL != external_mind) && (NULL != external_mind->connection)) {
+    if (NULL != externalMind) {
         debug( cout << "Sending to external mind" << endl << flush;);
-        external_res = external_mind->message(op);
+        external_res = externalMind->message(op);
         // If there is some kinf of error in the connection, we turn autom on
     } else {
         //return(*(RootOperation **)NULL);
         if (autom == 0) {
             debug( cout << "Turning automatic on for " << fullid << endl << flush;);
             autom = 1;
-            if (external_mind != NULL) {
-                delete external_mind;
-                external_mind = NULL;
+            if (externalMind != NULL) {
+                delete externalMind;
+                externalMind = NULL;
             }
         }
     }
@@ -1144,27 +895,27 @@ oplist Character::mind2body(const RootOperation & op)
     if (drunkness > 1.0) {
         return oplist();
     }
-    op_no_t otype = op_enumerate(&newop);
-    OP_SWITCH(newop, otype, Mind_)
+    op_no_t otype = opEnumerate(&newop);
+    OP_SWITCH(newop, otype, mind)
 }
 
 oplist Character::world2body(const RootOperation & op)
 {
     debug( cout << "Character::world2body" << endl << flush;);
-    return call_operation(op);
+    return callOperation(op);
 }
 
 oplist Character::world2mind(const RootOperation & op)
 {
     debug( cout << "Character::world2mind" << endl << flush;);
-    op_no_t otype = op_enumerate(&op);
-    OP_SWITCH(op, otype, W2m_)
+    op_no_t otype = opEnumerate(&op);
+    OP_SWITCH(op, otype, w2m)
 }
 
-oplist Character::external_message(const RootOperation & op)
+oplist Character::externalMessage(const RootOperation & op)
 {
-    debug( cout << "Character::external_message" << endl << flush;);
-    return external_operation(op);
+    debug( cout << "Character::externalMessage" << endl << flush;);
+    return externalOperation(op);
 }
 
 oplist Character::operation(const RootOperation & op)
@@ -1176,11 +927,11 @@ oplist Character::operation(const RootOperation & op)
     // set refno on mres?
     for(oplist::const_iterator I = mres.begin(); I != mres.end(); I++) {
         //RootOperation * mr = mind_res.front();
-        oplist mres2 = send_mind(**I);
+        oplist mres2 = sendMind(**I);
         for(oplist::const_iterator J = mres2.begin(); J != mres2.end(); J++) {
             //RootOperation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
-            external_message(**J);
+            externalMessage(**J);
             delete *J;
         }
         delete *I;
@@ -1188,14 +939,14 @@ oplist Character::operation(const RootOperation & op)
     return result;
 }
 
-oplist Character::external_operation(const RootOperation & op)
+oplist Character::externalOperation(const RootOperation & op)
 {
-    debug( cout << "Character::external_operation" << endl << flush;);
+    debug( cout << "Character::externalOperation" << endl << flush;);
     oplist body_res = mind2body(op);
     // set refno on body_res?
     
     for(oplist::const_iterator I = body_res.begin(); I != body_res.end(); I++) {
-        send_world(*I);
+        sendWorld(*I);
         // Don't delete br as it has gone into worlds queue
         // World will deal with it.
     }

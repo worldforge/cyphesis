@@ -5,16 +5,12 @@
 #ifndef ENTITY_FACTORY_H
 #define ENTITY_FACTORY_H
 
-#include <varconf/Config.h>
-
 #include <string>
 
 #include <common/BaseEntity.h>
 
 class Thing;
 class ThingFactory;
-
-extern varconf::Config * global_conf;
 
 class EntityFactory {
     EntityFactory();

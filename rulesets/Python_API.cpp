@@ -221,7 +221,7 @@ void Create_PyThing(Thing * thing, const string& package, const string& _type)
 {
     PyObject * o = Create_PyScript(thing, package, _type);
     if (o != NULL) {
-        thing->set_script(new PythonThingScript(o, *thing));
+        thing->setScript(new PythonThingScript(o, *thing));
     }
 }
 
@@ -229,7 +229,7 @@ void Create_PyMind(BaseMind * mind, const string& package, const string& _type)
 {
     PyObject * o = Create_PyScript(mind, package, _type);
     if (o != NULL) {
-        mind->set_script(new PythonMindScript(o, *mind));
+        mind->setScript(new PythonMindScript(o, *mind));
     }
 }
 
@@ -473,7 +473,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             PyObject * val = PyList_GetItem(vals, i);
             if ((strcmp(key, "location") == 0) && (PyLocation_Check(val))) {
                 LocationObject * loc = (LocationObject*)val;
-                loc->location->addObject(&obj);
+                loc->location->addToObject(&obj);
             } else {
                 Object val_obj = PyObject_asObject(val);
                 if (val_obj.GetType() == Object::TYPE_NONE) {

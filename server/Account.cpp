@@ -42,10 +42,10 @@ Account::~Account()
 {
 }
 
-BaseEntity * Account::add_character(const string & typestr, const Object & ent)
+BaseEntity * Account::addCharacter(const string & typestr, const Object & ent)
 {
     debug(cout << "Account::Add_character" << endl << flush;);
-    Thing * chr = world->add_object(typestr, ent);
+    Thing * chr = world->addObject(typestr, ent);
     debug(cout << "Added" << endl << flush;);
     if (!chr->location) {
         debug(cout << "Setting location" << endl << flush;);
@@ -53,13 +53,12 @@ BaseEntity * Account::add_character(const string & typestr, const Object & ent)
         chr->location.coords = Vector3D(0, 0, 0);
     }
     debug(cout << "Location set to: " << chr->location << endl << flush;);
-    if (chr->is_character == true) {
+    if (chr->isCharacter == true) {
         Character * pchar = (Character *)chr;
-        pchar->player = this;
-        pchar->external_mind = new ExternalMind(connection, pchar->fullid, pchar->name);
+        pchar->externalMind = new ExternalMind(*connection, pchar->fullid, pchar->name);
     }
-    characters_dict[chr->fullid]=chr;
-    connection->add_object(chr);
+    charactersDict[chr->fullid]=chr;
+    connection->addObject(chr);
 
     Create c = Create::Instantiate();
 
@@ -84,7 +83,7 @@ oplist Account::Operation(const Logout & op)
     return oplist();
 }
 
-void Account::addObject(Object * obj) const
+void Account::addToObject(Object * obj) const
 {
     Object::MapType & omap = obj->AsMap();
     omap["id"] = Object(fullid);
@@ -93,12 +92,12 @@ void Account::addObject(Object * obj) const
     }
     omap["parents"] = Object(Object::ListType(1,Object(type)));
     Object::ListType charlist;
-    fdict_t::const_iterator I;
-    for(I = characters_dict.begin(); I != characters_dict.end(); I++) {
+    dict_t::const_iterator I;
+    for(I = charactersDict.begin(); I != charactersDict.end(); I++) {
         charlist.push_back(Object(I->first));
     }
     omap["characters"] = Object(charlist);
-    // No need to call BaseEntity::addObject, as none of the default
+    // No need to call BaseEntity::addToObject, as none of the default
     // attributes (location, contains etc.) are relevant to accounts
 }
 
@@ -117,14 +116,14 @@ oplist Account::Operation(const Create & op)
         return(error(op, "Character has no type"));
     }
     
-    oplist error = character_error(op, ent);
+    oplist error = characterError(op, ent);
     if (error.size() != 0) {
         return(error);
     }
     const string & typestr = entmap["parents"].AsList().front().AsString();
     debug(cout << "Account creating a " << typestr << " object" << endl << flush;);
 
-    BaseEntity * obj = add_character(typestr, ent);
+    BaseEntity * obj = addCharacter(typestr, ent);
     //log.inform("Player "+Account::id+" adds character "+`obj`,op);
     Info * info = new Info();
     *info = Info::Instantiate();

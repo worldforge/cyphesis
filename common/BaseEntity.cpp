@@ -21,7 +21,7 @@
 
 static const bool debug_flag = false;
 
-BaseEntity::BaseEntity() : seq(0), deleted(false), in_game(false),
+BaseEntity::BaseEntity() : seq(0), deleted(false), inGame(false),
                            omnipresent(false), world(NULL) {
 }
 
@@ -43,7 +43,7 @@ void BaseEntity::destroy()
     }
 }
 
-Vector3D BaseEntity::get_xyz() const
+Vector3D BaseEntity::getXyz() const
 {
     //Location l=location;
     if (!location) {
@@ -51,7 +51,7 @@ Vector3D BaseEntity::get_xyz() const
         return ret;
     }
     if (location.ref) {
-        return location.coords+location.ref->get_xyz();
+        return location.coords+location.ref->getXyz();
     } else {
         return location.coords;
     }
@@ -63,14 +63,14 @@ Object BaseEntity::asObject() const
     Object::MapType map;
     map["objtype"] = "object";
     Object obj(map);
-    addObject(&obj);
+    addToObject(&obj);
     return(obj);
 }
 
 
-void BaseEntity::addObject(Object * obj) const
+void BaseEntity::addToObject(Object * obj) const
 {
-    debug( cout << "BaseEntity::addObject" << endl << flush;);
+    debug( cout << "BaseEntity::addToObject" << endl << flush;);
     Object::MapType & omap = obj->AsMap();
     if (fullid.size() != 0) {
         omap["id"] = fullid;
@@ -86,7 +86,7 @@ void BaseEntity::addObject(Object * obj) const
     }
 }
 
-oplist BaseEntity::external_message(const RootOperation & op)
+oplist BaseEntity::externalMessage(const RootOperation & op)
 {
     return message(op);
 }
@@ -114,10 +114,10 @@ oplist BaseEntity::Operation(const Look & op)
 oplist BaseEntity::operation(const RootOperation & op)
 {
     debug( cout << "BaseEntity::operation" << endl << flush;);
-    return call_operation(op);
+    return callOperation(op);
 }
 
-oplist BaseEntity::external_operation(const RootOperation & op)
+oplist BaseEntity::externalOperation(const RootOperation & op)
 {
     return operation(op);
 }
@@ -149,13 +149,13 @@ oplist BaseEntity::Operation(const Appearance & op) { oplist res; return(res); }
 oplist BaseEntity::Operation(const Disappearance & op) { oplist res; return(res); }
 oplist BaseEntity::Operation(const RootOperation & op) { oplist res; return(res); }
 
-void BaseEntity::set_refno(oplist & ret, const RootOperation & ref_op) const {
+void BaseEntity::setRefno(oplist & ret, const RootOperation & ref_op) const {
     for(oplist::const_iterator I = ret.begin(); I != ret.end(); I++) {
-        set_refno_op(*I, ref_op);
+        setRefnoOp(*I, ref_op);
     }
 }
 
-op_no_t BaseEntity::op_enumerate(const RootOperation * op) const {
+op_no_t BaseEntity::opEnumerate(const RootOperation * op) const {
     const Atlas::Message::Object::ListType & parents = op->GetParents();
     if (parents.size() != 1) {
         cerr << "This is a weird operation." << endl << flush;
@@ -193,8 +193,8 @@ op_no_t BaseEntity::op_enumerate(const RootOperation * op) const {
     return (OP_INVALID);
 }
 
-oplist BaseEntity::call_operation(const RootOperation & op) {
-    const op_no_t op_no = op_enumerate(&op);
+oplist BaseEntity::callOperation(const RootOperation & op) {
+    const op_no_t op_no = opEnumerate(&op);
     OP_SWITCH(op, op_no,)
 }
 

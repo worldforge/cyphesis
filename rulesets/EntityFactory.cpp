@@ -18,10 +18,9 @@
 #include "StackFactory.h"
 #include "StructFactory.h"
 
-#include <server/WorldRouter.h>
-
 #include <common/const.h>
 #include <common/debug.h>
+#include <common/globals.h>
 
 #include "Character.h"
 #include "Creator.h"
@@ -88,6 +87,6 @@ Thing * EntityFactory::newThing(const string & type,const Object & ent, Routing 
     }
     thing->merge(entmap);
     // Get location from entity, if it is present
-    thing->getLocation(entmap, svr->fobjects);
+    thing->getLocation(entmap, svr->objects);
     return(thing);
 }

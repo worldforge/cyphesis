@@ -285,7 +285,7 @@ Object PyObject_asObject(PyObject * o)
         LocationObject * loc = (LocationObject *)o;
         Object::MapType _map;
         Object ent(_map);
-        loc->location->addObject(&ent);
+        loc->location->addToObject(&ent);
         return ent;
     }
     return Object();

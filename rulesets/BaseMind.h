@@ -15,23 +15,22 @@ class BaseMind : public Entity {
     BaseMind(const string &, const string &);
     virtual ~BaseMind();
 
-    virtual int set_script(Script * scrpt);
     virtual MemMap * getMap();
 
-    virtual oplist Sight_Operation(const Sight & op, Login & sub_op);
-    virtual oplist Sight_Operation(const Sight & op, Chop & sub_op);
-    virtual oplist Sight_Operation(const Sight & op, Create & sub_op);
-    virtual oplist Sight_Operation(const Sight & op, Cut & sub_op);
-    virtual oplist Sight_Operation(const Sight & op, Delete & sub_op);
-    virtual oplist Sight_Operation(const Sight & op, Eat & sub_op);
-    virtual oplist Sight_Operation(const Sight & op, Fire & sub_op);
-    virtual oplist Sight_Operation(const Sight & op, Move & sub_op);
-    virtual oplist Sight_Operation(const Sight & op, Set & sub_op);
-    virtual oplist Sight_Operation(const Sight & op, Touch & sub_op);
-    virtual oplist Sight_Operation(const Sight & op, RootOperation & sub_op);
+    virtual oplist sightOperation(const Sight & op, Login & sub_op);
+    virtual oplist sightOperation(const Sight & op, Chop & sub_op);
+    virtual oplist sightOperation(const Sight & op, Create & sub_op);
+    virtual oplist sightOperation(const Sight & op, Cut & sub_op);
+    virtual oplist sightOperation(const Sight & op, Delete & sub_op);
+    virtual oplist sightOperation(const Sight & op, Eat & sub_op);
+    virtual oplist sightOperation(const Sight & op, Fire & sub_op);
+    virtual oplist sightOperation(const Sight & op, Move & sub_op);
+    virtual oplist sightOperation(const Sight & op, Set & sub_op);
+    virtual oplist sightOperation(const Sight & op, Touch & sub_op);
+    virtual oplist sightOperation(const Sight & op, RootOperation & sub_op);
 
-    virtual oplist Sound_Operation(const Sound & op, Talk & sub_op);
-    virtual oplist Sound_Operation(const Sound & op, RootOperation & sub_op);
+    virtual oplist soundOperation(const Sound & op, Talk & sub_op);
+    virtual oplist soundOperation(const Sound & op, RootOperation & sub_op);
 
     virtual oplist Operation(const Sight & op);
     virtual oplist Operation(const Sound & op);
@@ -42,8 +41,8 @@ class BaseMind : public Entity {
     //virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
 
-    oplist call_sight_operation(const Sight & op, RootOperation & sub_op);
-    oplist call_sound_operation(const Sound & op, RootOperation & sub_op);
+    oplist callSightOperation(const Sight & op, RootOperation & sub_op);
+    oplist callSoundOperation(const Sound & op, RootOperation & sub_op);
 
     friend class PythonMindScript;
 };

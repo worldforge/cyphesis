@@ -7,8 +7,8 @@
 
 #include "Thing.h"
 
-// This is the base class for flowering plants. Most of the functionality
-// will be common to all plants, and most derived classes will probably
+// This is the base class for edible things. Most of the functionality
+// will be common to all food, and most derived classes will probably
 // be in python.
 
 
