@@ -10,8 +10,9 @@ librulesetbase_a_SOURCES = Entity.cpp Entity.h attributes.h \
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 			   MindFactory.cpp MindFactory.h \
-			   MemEntity.cpp MemEntity.h \
 			   MemMap.cpp MemMap.h
+
+#			   MemEntity.cpp MemEntity.h
 
 librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     World.cpp World.h \

@@ -92,40 +92,6 @@ class Location {
         }
     }
 
-    bool hit(const Location & o) const {
-        if (!(m_bBox.isValid() && o.m_bBox.isValid())) { return false; }
-        // const Vector3D & m = bmedian ? bmedian : bbox;
-        // const Vector3D & om = other.bmedian ? other.bmedian : other.bbox;
-        // return m_pos.hitBox(m, bbox, other.m_pos + om, other.bbox);
-        BBox us(m_bBox), them(o.m_bBox);
-        us.shift(m_pos);
-        them.shift(o.m_pos);
-        return ::hit(us, them);
-    }
-
-    double timeToHit(const Location & o, int & axis) const {
-        if (!o.m_bBox.isValid()) { return -1; }
-        if (o.m_velocity.isValid() && (o.m_velocity.sqrMag() > 0.0001)) {
-            // We don't currently have a viable way of making this work
-            // so I am just saying that two moving entities cannot collide
-            // Short term this should not be a problem
-            return -1;
-        }
-        BBox us(m_bBox), them(o.m_bBox);
-        us.shift(m_pos);
-        them.shift(o.m_pos);
-        return ::timeToHit(us, m_velocity, them, axis);
-    }
-
-    double timeToExit(const Location & o) const {
-        if (!o.m_bBox.isValid()) { return -1; }
-        // It is assumed that o is the location of our current parent entity
-        // so o.m_bBox has the same terms of reference as we do.
-        BBox us(m_bBox);
-        us.shift(m_pos);
-        return ::timeToExit(us, m_velocity, o.m_bBox);
-    }
-
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };
 
