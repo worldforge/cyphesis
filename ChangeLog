@@ -1,3 +1,13 @@
+2001-06-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/acorn/world/objects/plants/seeds/Seed.py,
+	  rulesets/acorn/world/objects/plants/seeds/Apple.py,
+	  rulesets/acorn/world/objects/plants/Tree.py,
+	  rulesets/acorn/world/objects/plants/AppleTree.py:
+	  Adjusted the weight and therefor the nutritional value of
+	  apples and acorns. Reduced the number dropped by trees to
+	  improve game performance.
+
 2001-06-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/acorn/world/objects/plants/Tree.py,

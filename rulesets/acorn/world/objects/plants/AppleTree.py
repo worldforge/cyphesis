@@ -16,6 +16,8 @@ class Appletree(Tree):
         self.base_init(cppthing, kw)
         # The type of fruit #
         set_kw(self,kw,"fruitname","apple")
+        set_kw(self,kw,"fruitchance", 15)
+        set_kw(self,kw,"init_fruits", 3)
     def touch_operation(self, op):
         # If somebody shakes us we drop a fruit, and make sound #
         fcount = self.fruits

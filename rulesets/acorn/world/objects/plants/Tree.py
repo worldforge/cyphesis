@@ -44,8 +44,8 @@ zMax = 40
 
 # Chances
   # The chance for a flower to germinate
-init_fruits = 30
-fruitchance = 1
+init_fruits = 20
+fruitchance = 2
 minudrop = 0
 maxudrop = 2
 
@@ -81,6 +81,9 @@ class Tree(Thing):
 	# The type of fruit #
         set_kw(self,kw,"fruitname","Seed")
 
+        # Chance of fruit #
+        set_kw(self,kw,"fruitchance",fruitchance)
+
     def tick_operation(self, op):
         if debug_tree:
             print "I this big ", self.height
@@ -95,7 +98,7 @@ class Tree(Thing):
         result = result + self.drop_fruit()
 
         if self.height > sizeadult :
-            if randint(1, fruitchance) == 1:
+            if randint(1, self.fruitchance) == 1:
                 if debug_tree:
                     print "I'm growing a fruit!"
                 self.fruits = self.fruits + 1

@@ -197,7 +197,6 @@ AC_OUTPUT([
 	rulesets/astronomy/Makefile
 	rulesets/skills/Makefile
 	server/Makefile
-	aiclient/Makefile
 	client/Makefile
 	watchdog/Makefile
 	tools/Makefile
