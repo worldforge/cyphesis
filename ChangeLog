@@ -1,5 +1,11 @@
 2002-04-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Connection.cpp: Correctly handle connections on account
+	  object, so multiple logins on same account does not result in
+	  corruption or crashes.
+
+2002-04-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.cpp, rulesets/Entity.h, rulesets/Character.cpp,
 	  rulesets/Character.h, rulesets/Thing.cpp, rulesets/Food.cpp:
 	  Renamed weight member as mass, and use this name in Atlas,

@@ -65,6 +65,7 @@ void Connection::destroy()
         Account * ac = dynamic_cast<Account *>(I->second);
         if (ac != NULL) {
             server.lobby.delObject(ac);
+            ac->connection = NULL;
             continue;
         }
         Character * character = dynamic_cast<Character *>(I->second);
@@ -136,6 +137,9 @@ OpVector Connection::LoginOperation(const Login & op)
             player = dynamic_cast<Account *>(ent);
         }
         if (player && !account_id.empty() && (password==player->password)) {
+            if (player->connection) {
+                return error(op, "This account is already logged in");
+            }
             addObject(player);
             EntityDict::const_iterator I;
             for (I=player->charactersDict.begin();
