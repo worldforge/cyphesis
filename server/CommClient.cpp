@@ -39,6 +39,8 @@ CommClient::CommClient(CommServer & svr, int fd, BaseEntity & c) :
             m_connection(c)
 {
     m_clientIos.setTimeout(0,1000);
+
+    m_negotiate =  new Atlas::Net::StreamAccept("cyphesis " + m_commServer.m_server.getName(), m_clientIos, this);
 }
 
 CommClient::CommClient(CommServer & svr, BaseEntity & c) :
@@ -47,13 +49,15 @@ CommClient::CommClient(CommServer & svr, BaseEntity & c) :
             m_connection(c)
 {
     m_clientIos.setTimeout(0,1000);
+
+    m_negotiate =  new Atlas::Net::StreamConnect("cyphesis " + m_commServer.m_server.getName(), m_clientIos, this);
 }
 
 CommClient::~CommClient()
 {
     delete &m_connection;
-    if (m_accept != NULL) {
-        delete m_accept;
+    if (m_negotiate != NULL) {
+        delete m_negotiate;
     }
     if (m_encoder != NULL) {
         delete m_encoder;
@@ -68,9 +72,8 @@ void CommClient::setup()
 {
     debug( std::cout << "Negotiating started" << std::endl << std::flush; );
     // Create the server side negotiator
-    m_accept =  new Atlas::Net::StreamAccept("cyphesis " + m_commServer.m_server.getName(), m_clientIos, this);
 
-    m_accept->poll(false);
+    m_negotiate->poll(false);
 
     m_clientIos << std::flush;
 }
@@ -79,22 +82,22 @@ int CommClient::negotiate()
 {
     debug(std::cout << "Negotiating... " << std::flush;);
     // poll and check if negotiation is complete
-    m_accept->poll();
+    m_negotiate->poll();
 
-    if (m_accept->getState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
+    if (m_negotiate->getState() == Atlas::Negotiate<std::iostream>::IN_PROGRESS) {
         return 0;
     }
     debug(std::cout << "done" << std::endl;);
 
     // Check if negotiation failed
-    if (m_accept->getState() == Atlas::Net::StreamAccept::FAILED) {
+    if (m_negotiate->getState() == Atlas::Negotiate<std::iostream>::FAILED) {
         log(NOTICE, "Failed to negotiate");
         return -1;
     }
     // Negotiation was successful
 
     // Get the codec that negotiation established
-    m_codec = m_accept->getCodec();
+    m_codec = m_negotiate->getCodec();
 
     // Create a new encoder to send high level objects to the codec
     m_encoder = new Atlas::Objects::Encoder(m_codec);
@@ -103,8 +106,8 @@ int CommClient::negotiate()
     m_codec->streamBegin();
 
     // Acceptor is now finished with
-    delete m_accept;
-    m_accept = NULL;
+    delete m_negotiate;
+    m_negotiate = NULL;
 
     return 0;
 }

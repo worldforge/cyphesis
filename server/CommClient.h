@@ -18,9 +18,7 @@ namespace Atlas {
   namespace Objects {
     class Encoder;
   }
-  namespace Net {
-    class StreamAccept;
-  }
+  template <class Stream> class Negotiate;
 }
 
 class BaseEntity;
@@ -42,7 +40,7 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
     /// \brief high level encoder passes data to the codec for transmission.
     Atlas::Objects::Encoder * m_encoder;
     /// \brief Atlas negotiator for handling codec negotiation.
-    Atlas::Net::StreamAccept * m_accept;
+    Atlas::Negotiate<std::iostream> * m_negotiate;
     /// \brief Server side object for handling connection level operations.
     BaseEntity & m_connection;
 

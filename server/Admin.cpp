@@ -338,6 +338,7 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
         return;
     }
     log(INFO, "Connection succeeded");
+    cp->setup();
     m_connection->m_commClient.m_commServer.addSocket(cp);
     // Fix it up
 }

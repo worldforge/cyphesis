@@ -1,3 +1,5 @@
+When CommClient is connecting, it needs to do different negotiation stuff.
+
 We could move the loop into ServerRouting, rather than CommServer.
 Rename CommServer::idle to CommServer::poll or something like that.
 Perhaps we don't even need idle any more. Idle objects would then

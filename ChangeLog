@@ -1,5 +1,15 @@
 2004-12-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Admin.cpp: Make sure setup is called on peer connection.
+
+	* server/CommClient.h, server/CommClient.cpp: Adapt code so it
+	  can be used for both establishing and accepting connections.
+
+	* server/Connection.cpp: Re-order initialisations in constructor
+	  to eliminate warnings.
+
+2004-12-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommListener.cpp, server/CommListener.h: Add a virtual
 	  create method, so it can be overriden to make different kinds
 	  of listener.
