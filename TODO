@@ -3,17 +3,12 @@ find target to be derived from velocity.
 
 Fix or get rid of cyphesis-setup
 
-Fix openssl dep in rpm.
-
 Fix usage of map.get in BaseMind and NPCMind
 
 Make ExternalMind inherit from something higher that BaseMind. It has so
 few features.
 
 It may be possible to get rid of getXyz() (crappy absolute position)
-
-Re-write Thing Appearance / Disappearance checking to use squareDistance()
-function for copy-less distance checking.
 
 Its really not necessary for WorldRouter and its base to be so virtual, or
 inherit from BaseEntity. Get rid of that, shift all the serialno stuff into

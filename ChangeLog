@@ -1,3 +1,9 @@
+2004-06-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* Remove obsolete or useless tools, and clean up Makefile.
+
+	* Clean up TODO files.
+
 2004-06-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/world/objects/animals/Squirrel.py: Fix import error.
