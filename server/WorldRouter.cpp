@@ -425,7 +425,7 @@ void WorldRouter::operation(const RootOperation & op)
                 if (view_factor > consts::square_sight_factor) {
                     std::cout << "Distance from " << fromEnt->getType() << " to "
                               << (*I)->getType() << " is " << d << " which gives "
-                              << fromSquSize << " / " << d.sqrMag() << " = "
+                              << fromSquSize << " / " << sqrMag(d) << " = "
                               << view_factor << std::endl << std::flush;
                 }
 #endif

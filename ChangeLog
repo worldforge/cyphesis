@@ -1,5 +1,13 @@
 2004-09-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Fixe debug output to work with new
+	  pos type.
+
+	* modules/Location.cpp: Fix one of the transforms, so distance
+	  calculation works again.
+
+2004-09-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Collision.cpp: Need to check whether orientation
 	  is valid, and if not apply just translation.
 

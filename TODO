@@ -1,4 +1,10 @@
-Sort out trees thrashing database.
+Debug broadcasting of perception ops, as a Character seems only to be able
+to see itself near the origin. Orientation is making a huge difference
+to whether the character can see itself. That is wrong. The wrong
+orientating is getting used in relativePosition() somewhere.
+
+Sort out trees thrashing database. Postpone until we have done something
+about database transactions.
 
 Make sure that terrain modified points does not contain any points still
 listed as created points.

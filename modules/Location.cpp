@@ -61,6 +61,7 @@ void Location::addToMessage(MapType & omap) const
 bool Location::distanceLeft(const Location & other, Point3D & c) const
 {
     if (m_loc == other.m_loc) {
+        // c = (c - m_pos).rotate(m_orientation.inVerse();
         c = c.toLocalCoords(m_pos, m_orientation);
         return true;
     } else if (m_loc == NULL) {
@@ -78,7 +79,8 @@ bool Location::distanceRight(const Location & other, Point3D & c) const
 {
     // In an intact system, other->m_loc should never be NULL or invalid
     if (distanceLeft(other,c) || distanceRight(other.m_loc->m_location,c)) {
-        c = other.m_pos.toParentCoords(c, m_orientation);
+        // c = c + m_pos.rotate(m_orientation);
+        c = other.m_pos.toParentCoords(c, m_orientation.inverse());
         return true;
     }
     return false;
