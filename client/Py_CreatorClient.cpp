@@ -2,12 +2,13 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#include <stdio.h>
-#include <unistd.h>
-
-#include <Python.h>
-
-#include <rulesets/Python_API.h>
+#include <rulesets/Py_Operation.h>
+#include <rulesets/Py_WorldTime.h>
+#include <rulesets/Py_Vector3D.h>
+#include <rulesets/Py_Location.h>
+#include <rulesets/Py_Object.h>
+#include <rulesets/Py_Thing.h>
+#include <rulesets/Py_Map.h>
 
 #include "CreatorClient.h"
 #include "Py_CreatorClient.h"
@@ -76,7 +77,7 @@ static PyObject * CreatorClient_send(CreatorClientObject * self, PyObject * args
         PyErr_SetString(PyExc_TypeError, "invalid creator send");
         return NULL;
     }
-    RootOperationObject * op;
+    OperationObject * op;
     if (!PyArg_ParseTuple(args, "O", &op)) {
         return NULL;
     }

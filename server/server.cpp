@@ -8,8 +8,6 @@
 
 #include <iostream.h>
 
-#include <Python.h>
-
 extern "C" {
     #include <sys/utsname.h>
     #include <mcheck.h>
@@ -19,11 +17,10 @@ extern "C" {
 }
 
 #include <rulesets/EntityFactory.h>
+#include <rulesets/Python_API.h>
 
-#include <common/log.h>
 #include <common/debug.h>
 #include <common/globals.h>
-#include <common/operations.h>
 
 #include <common/Load.h>
 
@@ -33,9 +30,6 @@ extern "C" {
 using Atlas::Message::Object;
 
 static const bool debug_flag = false;
-
-void init_python_api();
-void shutdown_python_api();
 
 const std::string get_hostname()
 {
@@ -210,7 +204,6 @@ int main(int argc, char ** argv)
     // Start up the python subsystem. FIXME This needs to sorted into a
     // a way of handling script subsystems more generically.
     init_python_api();
-    debug(cout << Py_GetPath() << std::endl << flush;);
 
     { // scope for CommServer
 

@@ -5,6 +5,14 @@
 #ifndef RULESETS_PY_OPLIST_H
 #define RULESETS_PY_OPLIST_H
 
+#include <common/types.h>
+#include <Python.h>
+
+typedef struct {
+    PyObject_HEAD
+    oplist	* ops;
+} OplistObject;
+
 extern PyTypeObject Oplist_Type;
 
 #define PyOplist_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Oplist_Type)

@@ -2,12 +2,10 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#include <stdio.h>
-#include <unistd.h>
-
-#include <Python.h>
-
-#include "Python_API.h"
+#include "Py_Object.h"
+#include "Py_Operation.h"
+#include "Py_Oplist.h"
+#include "Py_Location.h"
 
 #include <modules/Location.h>
 /*
@@ -273,7 +271,7 @@ Object PyObject_asObject(PyObject * o)
         return *(obj->m_obj);
     }
     if (PyOperation_Check(o)) {
-        RootOperationObject * op = (RootOperationObject *)o;
+        OperationObject * op = (OperationObject *)o;
         return op->operation->AsObject();
     }
     if (PyOplist_Check(o)) {

@@ -2,12 +2,20 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#include <stdio.h>
-#include <unistd.h>
-
-#include <Python.h>
-
 #include "Python_API.h"
+
+#include "Py_Object.h"
+#include "Py_Thing.h"
+#include "Py_Mind.h"
+#include "Py_Map.h"
+#include "Py_Location.h"
+#include "Py_Vector3D.h"
+#include "Py_WorldTime.h"
+#include "Py_World.h"
+#include "Py_Operation.h"
+#include "Py_Oplist.h"
+#include "Py_Optime.h"
+
 #include "PythonThingScript.h"
 #include "PythonMindScript.h"
 #include "World.h"
@@ -23,8 +31,6 @@
 #include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Info.h>
 
-#include <modules/Location.h>
-#include <modules/WorldTime.h>
 #include <common/globals.h>
 #include <common/const.h>
 
@@ -36,6 +42,10 @@
 #include <common/Eat.h>
 #include <common/Nourish.h>
 #include <common/Generic.h>
+
+typedef struct {
+    PyObject_HEAD
+} FunctionObject;
 
 static void Function_dealloc(FunctionObject * self)
 {
@@ -423,7 +433,7 @@ static PyObject * worldtime_new(PyObject * self, PyObject * args)
 	return (PyObject *)o;
 }
 
-static inline void addToOplist(RootOperationObject * op, OplistObject * o)
+static inline void addToOplist(OperationObject * op, OplistObject * o)
 {
     if (op != NULL) {
        if (PyOperation_Check(op)) {
@@ -441,7 +451,7 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
 {
 	OplistObject *o;
 	
-        RootOperationObject *op1 = NULL, *op2 = NULL, *op3 = NULL, *op4 = NULL;
+        OperationObject *op1 = NULL, *op2 = NULL, *op3 = NULL, *op4 = NULL;
 	if (!PyArg_ParseTuple(args, "|OOOO", &op1, &op2, &op3, &op4)) {
 		return NULL;
 	}
@@ -566,7 +576,7 @@ static inline void addToArgs(Object::ListType & args, PyObject * ent)
         }
         args.push_back(o);
     } else if (PyOperation_Check(ent)) {
-        RootOperationObject * op = (RootOperationObject*)ent;
+        OperationObject * op = (OperationObject*)ent;
         if (op->operation == NULL) {
             fprintf(stderr, "Invalid operation in Operation arguments\n");
             return;
@@ -579,7 +589,7 @@ static inline void addToArgs(Object::ListType & args, PyObject * ent)
 
 static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
-    RootOperationObject * op;
+    OperationObject * op;
 
     char * type;
     PyObject * arg1 = NULL;
@@ -885,6 +895,8 @@ void init_python_api()
     Py_DECREF(remove_value);
     PyDict_SetItemString(dict, "dictlist", dictlist);
     Py_DECREF(dictlist);
+
+    std::cout << Py_GetPath() << std::endl << std::flush;
 }
 
 void shutdown_python_api()

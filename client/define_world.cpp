@@ -3,15 +3,11 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "define_world.h"
-
-#include <Python.h>
 #include "Py_CreatorClient.h"
 
 #include <iostream>
 
 namespace DefineWorld {
-
-void init_python_api();
 
 bool define(CreatorClient * character)
 {

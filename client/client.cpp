@@ -4,9 +4,9 @@
 
 #include "ObserverClient.h"
 
-#include <common/globals.h>
+#include <rulesets/Python_API.h>
 
-void init_python_api();
+#include <common/globals.h>
 
 int main(int argc, char ** argv)
 {

@@ -2,12 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#include <stdio.h>
-#include <unistd.h>
-
-#include <Python.h>
-
-#include "Python_API.h"
+#include "Py_Vector3D.h"
 
 static PyObject * Vector3D_dot(Vector3DObject * self, PyObject * args)
 {

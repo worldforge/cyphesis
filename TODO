@@ -19,6 +19,10 @@
   Establish a way to handle the location of db3 headers on debian without
   library header file requiring config.h
 
+  Clean out C isms in watchdog and control tool
+
+  Clean up Python_API.h, and add init/shutdown functions.
+
 Required for werewolf:
 
   Implement calendric time using WorldTime and DateTime classes, so nighttime

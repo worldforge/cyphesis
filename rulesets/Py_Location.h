@@ -5,6 +5,16 @@
 #ifndef RULESETS_PY_LOCATION_H
 #define RULESETS_PY_LOCATION_H
 
+#include <Python.h>
+
+class Location;
+
+typedef struct {
+    PyObject_HEAD
+    Location	* location;
+    int		own;
+} LocationObject;
+
 extern PyTypeObject Location_Type;
 
 #define PyLocation_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Location_Type)

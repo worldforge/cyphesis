@@ -5,6 +5,16 @@
 #ifndef RULESETS_PY_THING_H
 #define RULESETS_PY_THING_H
 
+#include <Python.h>
+
+class Entity;
+
+typedef struct {
+    PyObject_HEAD
+    PyObject	* Thing_attr;	// Attributes dictionary
+    Entity	* m_thing;
+} ThingObject;
+
 extern PyTypeObject Thing_Type;
 
 #define PyThing_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Thing_Type)

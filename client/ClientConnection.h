@@ -6,21 +6,23 @@
 #define CLIENT_CONNECTION_H
 
 #include <Atlas/Objects/Decoder.h>
-#include <Atlas/Objects/Encoder.h>
 #include <Atlas/Codec.h>
 
 #include <common/operations.h>
-#include <common/types.h>
 
 #include <skstream.h>
 #include <deque>
+
+namespace Atlas { namespace Objects {
+    class Encoder;
+} }
 
 class ClientConnection : public Atlas::Objects::Decoder {
   private:
     bool reply_flag;
     bool error_flag;
     int client_fd;
-    socket_stream ios;
+    client_socket_stream ios;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
     Atlas::Message::Object::MapType reply;
@@ -73,7 +75,6 @@ class ClientConnection : public Atlas::Objects::Decoder {
     bool create(const std::string &, const string &);
     bool wait();
     void send(Atlas::Objects::Operation::RootOperation & op);
-    void error(const std::string & message);
 
     int peek() {
         return ios.peek();

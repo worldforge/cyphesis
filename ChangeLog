@@ -1,3 +1,34 @@
+2001-10-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/ClientConnection.cpp, client/ClientConnection.h,
+	  tools/cycmd.cpp: Switched to using skstream to completely handle
+	   client socket connections.
+
+	* client/ClientConnection.cpp, client/ClientConnection.h,
+	  common/log.cpp, rulesets/EntityFactory.h, rulesets/MemMap.h,
+	  server/server.cpp, tools/cycmd.cpp: Removed unused includes.
+
+	* client/Py_CreatorClient.cpp, client/client.cpp,
+	  client/define_world.cpp, rulesets/Py_Location.cpp,
+	  rulesets/Py_Location.h, rulesets/Py_Map.cpp,
+	  rulesets/Py_Map.h, rulesets/Py_Mind.cpp, rulesets/Py_Mind.h,
+	  rulesets/Py_Object.cpp, rulesets/Py_Object.h,
+	  rulesets/Py_Operation.cpp, rulesets/Py_Operation.h,
+	  rulesets/Py_Oplist.cpp, rulesets/Py_Oplist.h,
+	  rulesets/Py_Optime.cpp, rulesets/Py_Optime.h,
+	  rulesets/Py_Thing.cpp, rulesets/Py_Thing.h,
+	  rulesets/Py_Vector3D.cpp, rulesets/Py_Vector3D.h,
+	  rulesets/Py_World.cpp, rulesets/Py_World.h,
+	  rulesets/Py_WorldTime.cpp, rulesets/Py_WorldTime.h,
+	  rulesets/PythonMindScript.cpp, rulesets/PythonThingScript.cpp,
+	  rulesets/PythonThingScript.h, rulesets/Python_API.cpp,
+	  rulesets/Python_API.h, server/server.cpp:
+	  Reorganised python header files so that each header includes
+	  all the code relevant for a particular type. Tidied up
+	  the type implementations. Added prototypes to init_python_api()
+	  to the Python_API.h header, and removed other dependencies from
+	  it.
+
 2001-10-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseWorld.cpp, common/OOGThing.cpp, rulesets/Entity.cpp,

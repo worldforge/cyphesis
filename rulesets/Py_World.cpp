@@ -2,16 +2,13 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#include <stdio.h>
-#include <unistd.h>
-
-#include <Python.h>
+#include "Py_World.h"
+#include "Py_WorldTime.h"
+#include "Py_Thing.h"
 
 #include <common/BaseWorld.h>
 #include <modules/WorldTime.h>
 #include <rulesets/Thing.h>
-
-#include "Python_API.h"
 
 static PyObject * World_get_time(WorldObject *self, PyObject *args, PyObject *kw)
 {

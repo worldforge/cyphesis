@@ -5,11 +5,23 @@
 #ifndef RULESETS_MEM_MAP_H
 #define RULESETS_MEM_MAP_H
 
-using Atlas::Message::Object;
-using Atlas::Objects::Operation::RootOperation;
+#include <common/types.h>
+
+#include <string>
+#include <list>
+
+namespace Atlas {
+  namespace Message {
+    class Object;
+  }
+  namespace Objects { namespace Operation {
+    class RootOperation;
+  } }
+}
 
 class Entity;
 class Script;
+class Location;
 
 class MemMap {
   private:
@@ -23,17 +35,17 @@ class MemMap {
     Script *& script;
 
     inline Entity * addObject(Entity * object);
-    inline void addContents(const Object::MapType & entmap);
+    inline void addContents(const Atlas::Message::Object::MapType & entmap);
   public:
     MemMap(Script *& s) : script(s)  { }
 
-    inline RootOperation * lookId();
+    inline Atlas::Objects::Operation::RootOperation * lookId();
     inline Entity * addId(const std::string & id);
-    Entity * add(const Object & entity);
+    Entity * add(const Atlas::Message::Object & entity);
     inline void del(const std::string & id);
     inline Entity * get(const std::string & id);
     inline Entity * getAdd(const std::string & id);
-    Entity * update(const Object & entity);
+    Entity * update(const Atlas::Message::Object & entity);
     elist_t findByType(const std::string & what);
     elist_t findByLocation(const Location & where, double radius);
     const Atlas::Message::Object asObject();

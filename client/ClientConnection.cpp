@@ -2,31 +2,12 @@
 // the GNU Lesser General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#include <Atlas/Codec.h>
 #include <Atlas/Codecs/XML.h>
-#include <Atlas/Message/Object.h>
 #include <Atlas/Net/Stream.h>
-#include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/Encoder.h>
-
-#include <varconf/Config.h>
 
 #include <skstream.h>
 #include <fstream>
-
-extern "C" {
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <errno.h>
-    #include <fcntl.h>
-    #include <sys/time.h>
-    #include <sys/types.h>
-    #include <sys/socket.h>
-    #include <netinet/in.h>
-    #include <sys/stat.h>
-    #include <unistd.h>
-    #include <netdb.h>
-}
 
 #include "ClientConnection.h"
 
@@ -239,36 +220,15 @@ int ClientConnection::read() {
 
 bool ClientConnection::connect(const std::string & server)
 {
-    struct sockaddr_in serv_sa;
-
     debug(cout << "Connecting to " << server << endl << flush;);
-    memset(&serv_sa, 0, sizeof(serv_sa));
-    serv_sa.sin_family = AF_INET;
-    serv_sa.sin_port = htons(6767);
 
-    struct hostent * serv_addr = gethostbyname(server.c_str());
-    if (serv_addr == NULL) {
-        cerr << "ERROR: Lookup failed for " << server << endl;
+    ios.open(server.c_str(), 6767);
+    if (!ios.is_open()) {
+        std::cerr << "ERROR: Could not connect to " << server << "."
+                  << std::endl << std::flush;
         return false;
     }
-    memcpy(&serv_sa.sin_addr, serv_addr->h_addr_list[0], serv_addr->h_length);
-
-    client_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (client_fd < 0) {
-        cerr << "ERROR: Could not create server connection" <<endl<<flush;
-        perror("socket");
-        return false;
-    }
-
-    int ret;
-    ret = ::connect(client_fd, (struct sockaddr *)&serv_sa, sizeof(serv_sa));
-    if (ret < 0) {
-        cerr << "ERROR: Could not connect to " << server<<"." << endl << flush;
-        perror("connect");
-        return false;
-    }
-
-    ios.attach(client_fd);
+    client_fd = ios.getSocket();
 
     Atlas::Net::StreamConnect conn("cyphesis_aiclient", ios, this);
 
@@ -348,10 +308,6 @@ void ClientConnection::send(Atlas::Objects::Operation::RootOperation & op)
     op.SetSerialno(++serialNo);
     encoder->StreamMessage(&op);
     ios << flush;
-}
-
-void ClientConnection::error(const std::string & message) {
-    // FIXME Need operation based error function
 }
 
 void ClientConnection::poll()

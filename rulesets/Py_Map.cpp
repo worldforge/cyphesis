@@ -2,17 +2,12 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include "Py_Map.h"
+#include "Py_Location.h"
+#include "Py_Thing.h"
+#include "Py_Operation.h"
+#include "Py_Object.h"
 
-#include <stdio.h>
-#include <unistd.h>
-
-#include <Python.h>
-
-#include <common/BaseEntity.h>
-
-#include "Python_API.h"
-#include "MemMap.h"
 #include "MemMap_methods.h"
 
 static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
@@ -120,7 +115,7 @@ static PyObject * Map_look_id(MapObject * self, PyObject * args)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    RootOperationObject * py_op = newAtlasRootOperation(NULL);
+    OperationObject * py_op = newAtlasRootOperation(NULL);
     py_op->operation = op;
     py_op->own = 1;
     return (PyObject *)py_op;

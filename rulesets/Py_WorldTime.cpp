@@ -2,18 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#include <stdio.h>
-#include <unistd.h>
-#include <string>
-
-#include <list>
-#include <map>
-
-#include <Python.h>
-
+#include "Py_WorldTime.h"
 #include <modules/WorldTime.h>
-
-#include "Python_API.h"
 
 static PyObject *WorldTime_seconds(WorldTimeObject *self, PyObject *args, PyObject *kwds)
 {

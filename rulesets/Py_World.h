@@ -5,6 +5,15 @@
 #ifndef RULESETS_PY_WORLD_H
 #define RULESETS_PY_WORLD_H
 
+#include <Python.h>
+
+class BaseWorld;
+
+typedef struct {
+    PyObject_HEAD
+    BaseWorld	* world;
+} WorldObject;
+
 extern PyTypeObject World_Type;
 
 #define PyWorld_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&World_Type)

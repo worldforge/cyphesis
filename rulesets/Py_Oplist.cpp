@@ -2,12 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#include <stdio.h>
-#include <unistd.h>
-
-#include <Python.h>
-
-#include "Python_API.h"
+#include "Py_Operation.h"
+#include "Py_Oplist.h"
 
 static PyObject* Oplist_append(OplistObject * self, PyObject * args)
 {
@@ -15,7 +11,7 @@ static PyObject* Oplist_append(OplistObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "invalid oplist");
         return NULL;
     }
-    RootOperationObject * op;
+    OperationObject * op;
     if (!PyArg_ParseTuple(args, "O", &op)) {
         return NULL;
     }
@@ -75,7 +71,7 @@ static PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         return (PyObject*)res;
     }
     if (PyOperation_Check(other)) {
-        RootOperationObject * op = (RootOperationObject*)other;
+        OperationObject * op = (OperationObject*)other;
         if (op->operation == NULL) {
             PyErr_SetString(PyExc_TypeError, "invalid operation");
         }

@@ -4,7 +4,9 @@
 
 #include "PythonMindScript.h"
 
-#include "Python_API.h"
+#include "Py_Operation.h"
+#include "Py_Oplist.h"
+#include "Py_Thing.h"
 
 #include <common/debug.h>
 
@@ -35,7 +37,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
                          << std::flush;);
         return false;
     }
-    RootOperationObject * py_op = newAtlasRootOperation(NULL);
+    OperationObject * py_op = newAtlasRootOperation(NULL);
     py_op->operation = new RootOperation(op);
     py_op->own = 0;
     py_op->from = mind.map.getAdd(op.GetFrom());
@@ -45,7 +47,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
         ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(O)", py_op);
     } else {
-        RootOperationObject * py_sub_op = newAtlasRootOperation(NULL);
+        OperationObject * py_sub_op = newAtlasRootOperation(NULL);
         py_sub_op->operation = sub_op;
         py_sub_op->own = 0;
         py_sub_op->from = mind.map.getAdd(sub_op->GetFrom());
@@ -60,7 +62,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
         debug( std::cout << "Called python method " << op_name << std::endl
                          << std::flush;);
         if (PyOperation_Check(ret)) {
-            RootOperationObject * op = (RootOperationObject*)ret;
+            OperationObject * op = (OperationObject*)ret;
             if (op->operation != NULL) {
                 ret_list.push_back(op->operation);
                 op->own = 0;

@@ -2,19 +2,17 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#include <stdio.h>
-#include <unistd.h>
-
-#include <Python.h>
-
-#include "Python_API.h"
-
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include "Py_Operation.h"
+#include "Py_Oplist.h"
+#include "Py_Optime.h"
+#include "Py_Object.h"
+#include "Py_Thing.h"
 
 #include <common/utility.h>
 
 using Atlas::Message::Object;
 using Atlas::Objects::Root;
+using Atlas::Objects::Operation::RootOperation;
 
 /*
  * Beginning of Operation section.
@@ -28,7 +26,7 @@ using Atlas::Objects::Root;
  * Beginning of Operation methods section.
  */
 
-static PyObject * Operation_SetSerialno(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_SetSerialno(OperationObject * self, PyObject * args)
 {
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError,"invalid operation");
@@ -46,7 +44,7 @@ static PyObject * Operation_SetSerialno(RootOperationObject * self, PyObject * a
     return Py_None;
 }
 
-static PyObject * Operation_SetRefno(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_SetRefno(OperationObject * self, PyObject * args)
 {
     // Takes integer, returns none
     if (self->operation == NULL) {
@@ -64,7 +62,7 @@ static PyObject * Operation_SetRefno(RootOperationObject * self, PyObject * args
     return Py_None;
 }
 
-static PyObject * Operation_SetFrom(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_SetFrom(OperationObject * self, PyObject * args)
 {
     // Takes string, returns none
     if (self->operation == NULL) {
@@ -82,7 +80,7 @@ static PyObject * Operation_SetFrom(RootOperationObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * Operation_SetTo(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_SetTo(OperationObject * self, PyObject * args)
 {
     // Takes string, returns none
     if (self->operation == NULL) {
@@ -100,7 +98,7 @@ static PyObject * Operation_SetTo(RootOperationObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * Operation_SetSeconds(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_SetSeconds(OperationObject * self, PyObject * args)
 {
     // Takes float, returns none
     if (self->operation == NULL) {
@@ -118,7 +116,7 @@ static PyObject * Operation_SetSeconds(RootOperationObject * self, PyObject * ar
     return Py_None;
 }
 
-static PyObject * Operation_SetFutureSeconds(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_SetFutureSeconds(OperationObject * self, PyObject * args)
 {
     // Takes float, returns none
     if (self->operation == NULL) {
@@ -136,7 +134,7 @@ static PyObject * Operation_SetFutureSeconds(RootOperationObject * self, PyObjec
     return Py_None;
 }
 
-static PyObject * Operation_SetTimeString(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_SetTimeString(OperationObject * self, PyObject * args)
 {
     // Takes string, returns none
     if (self->operation == NULL) {
@@ -154,7 +152,7 @@ static PyObject * Operation_SetTimeString(RootOperationObject * self, PyObject *
     return Py_None;
 }
 
-static PyObject * Operation_SetArgs(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_SetArgs(OperationObject * self, PyObject * args)
 {
     // Takes List, returns none
     if (self->operation == NULL) {
@@ -186,7 +184,7 @@ static PyObject * Operation_SetArgs(RootOperationObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * Operation_GetSerialno(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_GetSerialno(OperationObject * self, PyObject * args)
 {
     // Returns int
     if (self->operation == NULL) {
@@ -200,7 +198,7 @@ static PyObject * Operation_GetSerialno(RootOperationObject * self, PyObject * a
     return PyInt_FromLong(self->operation->GetSerialno());
 }
 
-static PyObject * Operation_GetRefno(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_GetRefno(OperationObject * self, PyObject * args)
 {
     // Returns int
     if (self->operation == NULL) {
@@ -214,7 +212,7 @@ static PyObject * Operation_GetRefno(RootOperationObject * self, PyObject * args
     return PyInt_FromLong(self->operation->GetRefno());
 }
 
-static PyObject * Operation_GetFrom(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_GetFrom(OperationObject * self, PyObject * args)
 {
     // Returns string
     if (self->operation == NULL) {
@@ -228,7 +226,7 @@ static PyObject * Operation_GetFrom(RootOperationObject * self, PyObject * args)
     return PyString_FromString(self->operation->GetFrom().c_str());
 }
 
-static PyObject * Operation_GetTo(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_GetTo(OperationObject * self, PyObject * args)
 {
     // Returns string
     if (self->operation == NULL) {
@@ -242,7 +240,7 @@ static PyObject * Operation_GetTo(RootOperationObject * self, PyObject * args)
     return PyString_FromString(self->operation->GetTo().c_str());
 }
 
-static PyObject * Operation_GetSeconds(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_GetSeconds(OperationObject * self, PyObject * args)
 {
     // Returns float
     if (self->operation == NULL) {
@@ -256,7 +254,7 @@ static PyObject * Operation_GetSeconds(RootOperationObject * self, PyObject * ar
     return PyFloat_FromDouble(self->operation->GetSeconds());
 }
 
-static PyObject * Operation_GetFutureSeconds(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_GetFutureSeconds(OperationObject * self, PyObject * args)
 {
     // Returns float
     if (self->operation == NULL) {
@@ -270,7 +268,7 @@ static PyObject * Operation_GetFutureSeconds(RootOperationObject * self, PyObjec
     return PyFloat_FromDouble(self->operation->GetFutureSeconds());
 }
 
-static PyObject * Operation_GetTimeString(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_GetTimeString(OperationObject * self, PyObject * args)
 {
     // Returns string
     if (self->operation == NULL) {
@@ -284,7 +282,7 @@ static PyObject * Operation_GetTimeString(RootOperationObject * self, PyObject *
     return PyString_FromString(self->operation->GetTimeString().c_str());
 }
 
-static PyObject * Operation_GetArgs(RootOperationObject * self, PyObject * args)
+static PyObject * Operation_GetArgs(OperationObject * self, PyObject * args)
 {
     // Returns list
     if (self->operation == NULL) {
@@ -314,7 +312,7 @@ static PyObject * Operation_GetArgs(RootOperationObject * self, PyObject * args)
     return args_pylist;
 }
 
-static PyObject* Operation_get_name(RootOperationObject * self, PyObject * args)
+static PyObject* Operation_get_name(OperationObject * self, PyObject * args)
 {
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError,"invalid operation");
@@ -331,7 +329,7 @@ static PyObject* Operation_get_name(RootOperationObject * self, PyObject * args)
  * Operation sequence methods.
  */
 
-static int Operation_seq_length(RootOperationObject * self)
+static int Operation_seq_length(OperationObject * self)
 {
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError,"invalid operation");
@@ -340,7 +338,7 @@ static int Operation_seq_length(RootOperationObject * self)
     return self->operation->GetArgs().size();
 } 
 
-static PyObject * Operation_seq_item(RootOperationObject * self, int item)
+static PyObject * Operation_seq_item(OperationObject * self, int item)
 {
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError,"invalid operation");
@@ -354,7 +352,7 @@ static PyObject * Operation_seq_item(RootOperationObject * self, int item)
         Object * obj = new Object(*I);
         Root * op = utility::Object_asRoot(*obj);
         if ((op != NULL) && (op->GetObjtype() == "op")) {
-            RootOperationObject * ret_op = newAtlasRootOperation(NULL);
+            OperationObject * ret_op = newAtlasRootOperation(NULL);
             ret_op->operation = (RootOperation *)op;
             ret_op->own = 1;
             delete obj;
@@ -369,7 +367,7 @@ static PyObject * Operation_seq_item(RootOperationObject * self, int item)
     return NULL;
 }
 
-static PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
+static PyObject * Operation_num_add(OperationObject *self, PyObject *other)
 {
     fflush(stdout);
     if (self->operation == NULL) {
@@ -402,7 +400,7 @@ static PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
         return (PyObject*)res;
     }
     if (PyOperation_Check(other)) {
-        RootOperationObject * op = (RootOperationObject*)other;
+        OperationObject * op = (OperationObject*)other;
         if (op->operation == NULL) {
             PyErr_SetString(PyExc_TypeError, "invalid operation");
         }
@@ -514,7 +512,7 @@ PyMethodDef RootOperation_methods[] = {
  * Beginning of Operation standard methods section.
  */
 
-static void Operation_dealloc(RootOperationObject *self)
+static void Operation_dealloc(OperationObject *self)
 {
         if ((self->own != 0) && (self->operation != NULL)) {
             // Can't delete until I have sorted out bugs with own flag
@@ -523,7 +521,7 @@ static void Operation_dealloc(RootOperationObject *self)
 	PyMem_DEL(self);
 }
 
-static PyObject * Operation_getattr(RootOperationObject * self, char * name)
+static PyObject * Operation_getattr(OperationObject * self, char * name)
 {
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid operation");
@@ -577,7 +575,7 @@ static PyObject * Operation_getattr(RootOperationObject * self, char * name)
     return Py_FindMethod(RootOperation_methods, (PyObject *)self, name);
 }
 
-static int Operation_setattr(RootOperationObject *self, char *name, PyObject *v)
+static int Operation_setattr(OperationObject *self, char *name, PyObject *v)
 {
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid operation");
@@ -620,11 +618,11 @@ static int Operation_setattr(RootOperationObject *self, char *name, PyObject *v)
     return 0;
 }
 
-PyTypeObject RootOperation_Type = {
+PyTypeObject Operation_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                                      // ob_size
         "Operation",                            // tp_name
-        sizeof(RootOperationObject),            // tp_basicsize
+        sizeof(OperationObject),            // tp_basicsize
         0,                                      // tp_itemsize
         //  methods 
         (destructor)Operation_dealloc,          // tp_dealloc
@@ -643,10 +641,10 @@ PyTypeObject RootOperation_Type = {
  * Beginning of Operation creation functions section.
  */
 
-RootOperationObject * newAtlasRootOperation(PyObject *arg)
+OperationObject * newAtlasRootOperation(PyObject *arg)
 {
-	RootOperationObject * self;
-	self = PyObject_NEW(RootOperationObject, &RootOperation_Type);
+	OperationObject * self;
+	self = PyObject_NEW(OperationObject, &Operation_Type);
 	if (self == NULL) {
 		return NULL;
 	}

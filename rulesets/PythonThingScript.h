@@ -7,8 +7,6 @@
 
 #include "PythonScript.h"
 
-#include <Python.h>
-
 class Thing;
 
 class PythonThingScript : public PythonScript {

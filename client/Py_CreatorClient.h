@@ -5,6 +5,8 @@
 #ifndef CLIENT_PY_CREATORCLIENT_H
 #define CLIENT_PY_CREATORCLIENT_H
 
+#include <Python.h>
+
 extern PyTypeObject CreatorClient_Type;
 
 typedef struct {

@@ -2,10 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-extern "C" {
-    #include <stdio.h>
-}
-
 #include "log.h"
 #include "const.h"
 

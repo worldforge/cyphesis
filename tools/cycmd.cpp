@@ -2,12 +2,10 @@
 // the GNU Lesser General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Decoder.h>
-#include <Atlas/Codecs/XML.h>
+#include <Atlas/Codec.h>
 #include <Atlas/Objects/Entity/Account.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Get.h>
@@ -16,17 +14,6 @@
 #include <common/Save.h>
 #include <common/accountbase.h>
 #include <common/const.h>
-
-extern "C" {
-    #include <stdio.h>
-    #include <sys/time.h>
-    #include <sys/types.h>
-    #include <sys/socket.h>
-    #include <arpa/inet.h>
-    #include <netinet/in.h>
-    #include <unistd.h>
-    #include <netdb.h>
-}
 
 #include <skstream.h>
 
@@ -56,7 +43,7 @@ class Interactive : public Atlas::Objects::Decoder
     int cli_fd;
     Atlas::Objects::Encoder * encoder;
     Atlas::Codec<std::iostream> * codec;
-    socket_stream ios;
+    client_socket_stream ios;
     std::string password;
     enum {
        INIT,
@@ -206,33 +193,11 @@ bool Interactive::connect(const std::string & host)
 // This deals with icky low-level socket rubbish. All this should be rubbed
 // and replaced with propper use of an iostream based socket library
 {
-    struct sockaddr_in sin;
-    memset(&sin, 0, sizeof(sin));
-
-    struct hostent * ms_addr = gethostbyname(host.c_str());
-    if (ms_addr == NULL) {
-        std::cerr << "server lookup failed." <<std::endl<<flush;
-        return false;
-    }
-    memcpy(&sin.sin_addr, ms_addr->h_addr_list[0], ms_addr->h_length);
-
-    cli_fd = socket(PF_INET, SOCK_STREAM, 0);
-    if (cli_fd < 0) {
-        return false;
-    }
-    sin.sin_family = AF_INET;
-    sin.sin_port = htons(6767);
-
-    std::cout << "Connecting to cyphesis.." << std::endl << std::flush;
-
-    if (::connect(cli_fd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+    ios.open(host.c_str(), 6767);
+    if (!ios.is_open()) {
         std::cout << "Connection failed." << std::endl << std::flush;
-        close(cli_fd);
-        return false;
     }
-    std::cout << "Connected to cyphesis." << std::endl << std::flush;
-    // Connect to the server
-    ios.attach(cli_fd);
+    cli_fd = ios.getSocket();
 
     // Do client negotiation with the server
     Atlas::Net::StreamConnect conn("cycmd", ios, this);

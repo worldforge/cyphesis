@@ -4,7 +4,8 @@
 
 #include "PythonThingScript.h"
 
-#include "Python_API.h"
+#include "Py_Operation.h"
+#include "Py_Oplist.h"
 
 #include "Thing.h"
 
@@ -41,7 +42,7 @@ bool PythonThingScript::Operation(const std::string & op_type,
                          << "." << op_name << std::endl << std::flush;);
         return false;
     }
-    RootOperationObject * py_op = newAtlasRootOperation(NULL);
+    OperationObject * py_op = newAtlasRootOperation(NULL);
     py_op->operation = new RootOperation(op);
     py_op->own = 0;
     py_op->from = thing.world->getObject(op.GetFrom());
@@ -55,7 +56,7 @@ bool PythonThingScript::Operation(const std::string & op_type,
         debug( std::cout << "Called python method " << op_name
                          << " for object " << std::endl << std::flush;);
         if (PyOperation_Check(ret)) {
-            RootOperationObject * op = (RootOperationObject*)ret;
+            OperationObject * op = (OperationObject*)ret;
             if (op->operation != NULL) {
                 ret_list.push_back(op->operation);
                 op->own = 0;

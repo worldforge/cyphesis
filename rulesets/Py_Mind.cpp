@@ -2,12 +2,13 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-#include <stdio.h>
-#include <unistd.h>
-
-#include <Python.h>
-
-#include "Python_API.h"
+#include "Py_Mind.h"
+#include "Py_Map.h"
+#include "Py_Object.h"
+#include "Py_Vector3D.h"
+#include "Py_Location.h"
+#include "Py_World.h"
+#include "Py_WorldTime.h"
 #include "BaseMind.h"
 
 static PyObject * Mind_as_entity(MindObject * self, PyObject * args)

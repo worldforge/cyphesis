@@ -5,7 +5,9 @@
 #ifndef RULESETS_ENTITY_FACTORY_H
 #define RULESETS_ENTITY_FACTORY_H
 
-#include <Atlas/Message/Object.h>
+namespace Atlas { namespace Message {
+  class Object;
+} }
 
 #include <common/types.h>
 
