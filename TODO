@@ -1,3 +1,6 @@
+Implement consts::enable_database, ie add the option to not touch the database
+at all.
+
 Add propper reference counting to MemEntity. Also make sure stamp is updated
 and checked, and implement Unseen.
 
