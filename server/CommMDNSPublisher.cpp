@@ -26,7 +26,9 @@ static sw_result reply_callback(sw_discovery,
                                 sw_opaque)
 {
     if (status == SW_DISCOVERY_PUBLISH_STARTED) {
+        // log(WARNING, "Started publishing using MDNS");
     } else if (status == SW_DISCOVERY_PUBLISH_STOPPED) {
+        // log(WARNING, "Stopped publishing using MDNS");
     } else if (status == SW_DISCOVERY_PUBLISH_NAME_COLLISION) {
         log(WARNING, "Name collision publishing using MDNS");
     } else if (status == SW_DISCOVERY_PUBLISH_INVALID) {
