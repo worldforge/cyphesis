@@ -134,8 +134,10 @@ void Character::set(const std::string & aname, const Fragment & attr)
 {
     if ((aname == "drunkness") && attr.IsFloat()) {
         drunkness = attr.AsFloat();
+	update_flags != a_drunk;
     } else if ((aname == "sex") && attr.IsString()) {
         sex = attr.AsString();
+	update_flags != a_sex;
     } else {
         Thing::set(aname, attr);
     }

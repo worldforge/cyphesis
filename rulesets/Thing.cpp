@@ -152,7 +152,7 @@ OpVector Thing::BurnOperation(const Burn & op)
         return res;
     }
     if (op.GetArgs().empty() || !op.GetArgs().front().IsMap()) {
-	return error(op, "Fire op has no argument");
+    return error(op, "Fire op has no argument");
     }
     Fragment::MapType::const_iterator I = attributes.find("burn_speed");
     if ((I == attributes.end()) || !I->second.IsNum()) {
@@ -202,36 +202,47 @@ OpVector Thing::MoveOperation(const Move & op)
         const Fragment::MapType & ent = args.front().AsMap();
         Fragment::MapType::const_iterator I = ent.find("loc");
         if ((I == ent.end()) || !I->second.IsString()) {
-            return error(op, "Move location has no ref");
+            return error(op, "Move op has no loc");
         }
         const std::string & ref = I->second.AsString();
         EntityDict::const_iterator J = world->getObjects().find(ref);
         if (J == world->getObjects().end()) {
-            return error(op, "Move location ref invalid");
+            return error(op, "Move op loc invalid");
         }
         debug(std::cout << "{" << ref << "}" << std::endl << std::flush;);
         Entity * newref = J->second;
         if (newref == this) {
             return error(op, "Attempt by entity to move into itself");
         }
+        I = ent.find("pos");
+        if ((I == ent.end()) || !I->second.IsList()) {
+            return error(op, "Move op has no pos");
+        }
+
+        // Up until this point nothing should have changed, but the changes
+        // have all now been checked for validity.
+    
         if (location.ref != newref) {
+        // Update loc
             location.ref->contains.erase(this);
             newref->contains.insert(this);
             location.ref = newref;
-        }
-        I = ent.find("pos");
-        if ((I == ent.end()) || !I->second.IsList()) {
-            return error(op, "Move location has no position");
+            update_flags |= a_loc;
         }
 
+        // Update pos
         location.coords = Vector3D(I->second.AsList());
+        update_flags |= a_pos;
         I = ent.find("velocity");
         if (I != ent.end()) {
+        // Update velocity
             location.velocity = Vector3D(I->second.AsList());
         }
         I = ent.find("orientation");
         if (I != ent.end()) {
+        // Update orientation
             location.orientation = Quaternion(I->second.AsList());
+            update_flags |= a_orient;
         }
 
         RootOperation * s = new Sight(Sight::Instantiate());
@@ -305,6 +316,7 @@ OpVector Thing::MoveOperation(const Move & op)
                 res2.push_back(d);
             }
         }
+    updated.emit();
         return res2;
     }
     catch (Atlas::Message::WrongTypeException) {
@@ -340,6 +352,9 @@ OpVector Thing::SetOperation(const Set & op)
             d->SetTo(getId());
             res2.push_back(d);
         }
+    if (update_flags != 0) {
+        updated.emit();
+    }
         return res2;
     }
     catch (Atlas::Message::WrongTypeException) {

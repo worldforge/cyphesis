@@ -28,6 +28,7 @@ void Area::set(const std::string & aname, const Fragment & attr)
 {
     if ((aname == "segments") && attr.IsList()) {
         segments = idListFromAtlas(attr);
+	update_flags != a_area;
     } else {
         Thing::set(aname, attr);
     }

@@ -46,6 +46,7 @@ void Plant::set(const std::string & aname, const Fragment & attr)
 {
     if ((aname == "fruits") && attr.IsInt()) {
         fruits = attr.AsInt();
+	update_flags != a_fruit;
     } else if ((aname == "radius") && attr.IsInt()) {
         radius = attr.AsInt();
     } else if ((aname == "fruitName") && attr.IsString()) {

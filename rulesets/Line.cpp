@@ -37,10 +37,13 @@ void Line::set(const std::string & aname, const Fragment & attr)
                      << std::flush;);
     if ((aname == "start_intersections") && attr.IsList()) {
         startIntersections = idListFromAtlas(attr);
+	update_flags != a_line;
     } else if ((aname == "end_intersections") && attr.IsList()) {
         startIntersections = idListFromAtlas(attr);
+	update_flags != a_line;
     } else if ((aname == "coords") && attr.IsList()) {
         coords = coordListFromAtlas(attr);
+	update_flags != a_line;
     } else {
         Thing::set(aname, attr);
     }

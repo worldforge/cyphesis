@@ -1,3 +1,13 @@
+2002-12-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: Fix very long standing moving bug, which
+	  sometimes caused big jumps in character position.
+
+	* rulesets/Area.cpp, rulesets/Character.cpp, rulesets/Entity.cpp,
+	  rulesets/Entity.cpp, rulesets/Entity.h, rulesets/Line.cpp,
+	  rulesets/Plant.cpp, rulesets/Thing.cpp: Add in the hooks required
+	  to inform persistance system when changes have taken place.
+
 2002-11-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/const.cpp, common/const.h, rulesets/Creator.cpp,

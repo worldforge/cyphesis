@@ -5,6 +5,8 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include "attributes.h"
+
 #include <modules/Location.h>
 
 #include <common/BaseEntity.h>
@@ -23,12 +25,18 @@ class Script;
 // this one.
 // It also provides the script interface for handling operations
 // in scripts rather than in the C++ code.
+//
+// 2002-11-28 Al Riddoch
+//
+// This is now also intended to be the base for in-game persistance.
+// It implements the basic types required for persistance.
 
 class Entity : public BaseEntity {
   private:
     static std::set<std::string> m_immutable;
     static const std::set<std::string> & immutables();
   protected:
+    unsigned int update_flags;
     Script * script;
     Atlas::Message::Object::MapType attributes;
     int seq;			// Sequence number
@@ -105,6 +113,8 @@ class Entity : public BaseEntity {
     virtual OpVector AppearanceOperation(const Appearance & op);
     virtual OpVector DisappearanceOperation(const Disappearance & op);
     virtual OpVector OtherOperation(const RootOperation & op);
+
+    SigC::Signal0<void> updated;
 };
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)

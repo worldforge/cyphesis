@@ -46,7 +46,7 @@ const std::set<std::string> & Entity::immutables()
     return m_immutable;
 }
 
-Entity::Entity() : script(new Script), seq(0), status(1),
+Entity::Entity() : update_flags(0), script(new Script), seq(0), status(1),
                    type("entity"), mass(-1), perceptive(false), world(NULL)
 {
 }
@@ -91,16 +91,21 @@ void Entity::set(const std::string & aname, const Fragment & attr)
 {
     if ((aname == "status") && attr.IsNum()) {
         status = attr.AsNum();
+	update_flags |= a_status;
     } else if (aname == "id") {
         return;
     } else if ((aname == "name") && attr.IsString()) {
         name = attr.AsString();
+	update_flags |= a_name;
     } else if ((aname == "mass") && attr.IsNum()) {
         mass = attr.AsNum();
+	update_flags |= a_mass;
     } else if ((aname == "bbox") && attr.IsList() &&
                (attr.AsList().size() > 2)) {
+	update_flags |= a_bbox;
         location.bBox = BBox(attr.AsList());
     } else {
+	update_flags |= a_attr;
         attributes[aname] = attr;
     }
 }

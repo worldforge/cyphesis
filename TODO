@@ -12,10 +12,6 @@ Must fix for Mason 0.0.2
   Perhaps look at the way idle handles internal and network traffic. It
   is possible that network traffic should be given a higher priority.
 
-  Generalise the way CommClinet objects work so there is a generic
-  interface, and object of different types can work, including
-  different listeners.
-
 General TODO
 
   Allow types to be installed from the client.
