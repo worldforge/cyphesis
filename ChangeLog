@@ -1,3 +1,7 @@
+2003-02-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* Use PKG_CONFIG_CHECKS to get latest versions of libs.
+
 2003-01-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* mason.xml, rulesets/mason/world/objects/outdoor/Campfire.py:

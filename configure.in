@@ -135,47 +135,80 @@ AC_CHECK_LIB(${python_version},
 PYTHON_LIBS=${python_libs}
 LIBS="$LIBS $PYTHON_LIBS"
 
-ATLAS_VERSION=0.4.3
-AM_PATH_ATLAS($ATLAS_VERSION)
-if test "$ATLAS_CFLAGS" != "-I/usr/include"; then
-    CPPFLAGS="$CPPFLAGS $ATLAS_CFLAGS"
-    CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $ATLAS_CFLAGS"
-fi
-LIBS="$LIBS $ATLAS_LIBS"
-SYSTEM_LIBS="$SYSTEM_LIBS $ATLAS_LIBS"
-
-VARCONF_VERSION=0.5.0
-AM_PATH_VARCONF($VARCONF_VERSION)
-if test "$VARCONF_CFLAGS" != "-I/usr/include"; then
-    CPPFLAGS="$CPPFLAGS $VARCONF_CFLAGS"
-    CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $VARCONF_CFLAGS"
-fi
-LIBS="$LIBS $VARCONF_LIBS"
-SYSTEM_LIBS="$SYSTEM_LIBS $VARCONF_LIBS"
-
-SKSTREAM_VERSION=0.2.0
-AM_PATH_SKSTREAM($SKSTREAM_VERSION)
-if test "$SKSTREAM_CFLAGS" != "-I/usr/include"; then
-    CPPFLAGS="$CPPFLAGS $SKSTREAM_CFLAGS"
-fi
-LIBS="$LIBS $SKSTREAM_LIBS"
-
-PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.1.11,
+PKG_CHECK_MODULES(ATLAS, atlascpp-0.4 >= 0.4.4,
     [
-        CPPFLAGS="$CPPFLAGS $SIGC_CFLAGS"
-        CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $SIGC_CFLAGS"
-        LIBS="$LIBS $SIGC_LIBS"
-        SYSTEM_LIBS="$SYSTEM_LIBS $SIGC_LIBS"
+        CPPFLAGS="$CPPFLAGS $ATLAS_CFLAGS"
+        CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $ATLAS_CFLAGS"
+        LIBS="$LIBS $ATLAS_LIBS"
+        SYSTEM_LIBS="$SYSTEM_LIBS $ATLAS_LIBS"
     ],
     [
-        AM_PATH_SIGC(1.0.3,[
+        AM_PATH_ATLAS("0.4.4",[
+                if test "$ATLAS_CFLAGS" != "-I/usr/include"; then
+                    CPPFLAGS="$CPPFLAGS $ATLAS_CFLAGS"
+                    CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $ATLAS_CFLAGS"
+                fi
+                LIBS="$LIBS $ATLAS_LIBS"
+                SYSTEM_LIBS="$SYSTEM_LIBS $ATLAS_LIBS"
+            ],
+                AC_MSG_ERROR(Cannot find valid version of Atlas-C++)
+        )
+    ])
+
+PKG_CHECK_MODULES(SKSTREAM, skstream-0.2 >= 0.2.4,
+    [
+        CPPFLAGS="$CPPFLAGS $SKSTREAM_CFLAGS"
+        LIBS="$LIBS $SKSTREAM_LIBS"
+        SYSTEM_LIBS="$SYSTEM_LIBS $SKSTREAM_LIBS"
+    ],
+    [
+        SKSTREAM_VERSION=0.2.4
+        AM_PATH_SKSTREAM("0.2.4",[
+                if test "$SKSTREAM_CFLAGS" != "-I/usr/include"; then
+                    CPPFLAGS="$CPPFLAGS $SKSTREAM_CFLAGS"
+                fi
+                LIBS="$LIBS $SKSTREAM_LIBS"
+            ],
+                AC_MSG_ERROR(Cannot find valid version of skstream)
+        )
+    ])
+
+PKG_CHECK_MODULES(VARCONF, varconf-0.5 >= 0.5.4,
+    [
+        CPPFLAGS="$CPPFLAGS $VARCONF_CFLAGS"
+        CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $VARCONF_CFLAGS"
+        LIBS="$LIBS $VARCONF_LIBS"
+        SYSTEM_LIBS="$SYSTEM_LIBS $VARCONF_LIBS"
+    ],
+    [
+        AM_PATH_VARCONF("0.5.3", [
+                if test "$VARCONF_CFLAGS" != "-I/usr/include"; then
+                    CPPFLAGS="$CPPFLAGS $VARCONF_CFLAGS"
+                    CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $VARCONF_CFLAGS"
+                fi
+                LIBS="$LIBS $VARCONF_LIBS"
+                SYSTEM_LIBS="$SYSTEM_LIBS $VARCONF_LIBS"
+            ],
+                AC_MSG_ERROR([Couldn't find varconf library!])
+        )
+
+        PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.2,
+            [
                 CPPFLAGS="$CPPFLAGS $SIGC_CFLAGS"
                 CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $SIGC_CFLAGS"
                 LIBS="$LIBS $SIGC_LIBS"
                 SYSTEM_LIBS="$SYSTEM_LIBS $SIGC_LIBS"
-                ],
-		AC_MSG_ERROR([Couldn't find sigc++ library!])
-        )
+            ],
+            [
+                AM_PATH_SIGC(1.0.3,[
+                        CPPFLAGS="$CPPFLAGS $SIGC_CFLAGS"
+                        CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $SIGC_CFLAGS"
+                        LIBS="$LIBS $SIGC_LIBS"
+                        SYSTEM_LIBS="$SYSTEM_LIBS $SIGC_LIBS"
+                    ],
+                        AC_MSG_ERROR([Couldn't find sigc++ library!])
+                )
+            ])
     ])
 
 AM_PATH_PSQL(7.1.0,
