@@ -13,24 +13,15 @@ Definitly for Acorn 0.4:
 
   Implement a time mechanism. This would probably best be a person.
 
-  Fix bounding boxes on oak trees. They currently don't have one.
-
   Client should not assume that mode is birth when entity appearance received.
 
   Fix lych behavoir and get it moving around.
 
-  Sort out the problem that items traders can't see are not understood.
-  Need to get BaseMind's map to descend the tree.
-
   Pigs seem to be gaining weight irespective of whether they eat.
 
-  Add some sitting NPCs.
+  Add some sitting NPCs. Use mode="sitt" for sitting NPCs.
 
-  Test daylight code.
-
-  Align all the bounding boxes with the buildings.
-
-  Use mode="sitt" for sitting NPCs.
+  Return error if attempting to login to account that is already logged in.
 
 Provisional for Acorn 0.4:
 
@@ -104,3 +95,4 @@ Possible ideas:
   This now works, but the direction the moving entity is facing is sometimes not
   modified.
 
+  Modify map to make more use of stamp.

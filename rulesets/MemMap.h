@@ -19,6 +19,7 @@ class MemMap {
     Script *& script;
 
     inline Entity * addObject(Entity * object);
+    inline void addContents(const Object::MapType & entmap);
   public:
     MemMap(Script *& s) : script(s)  { }
 

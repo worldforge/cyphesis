@@ -56,6 +56,8 @@ const Object & Entity::operator[](const string & aname)
         attributes[aname] = Object(name);
     } else if (aname == "weight") {
         attributes[aname] = Object(weight);
+    } else if (aname == "bbox") {
+        attributes[aname] = location.bbox.asObject();
     } else if (aname == "contains") {
         Object::ListType contlist;
         for(elist_t::const_iterator I=contains.begin();I!=contains.end();I++) {
@@ -81,6 +83,8 @@ void Entity::set(const string & aname, const Object & attr)
         name = attr.AsString();
     } else if ((aname == "weight") && attr.IsNum()) {
         weight = attr.AsNum();
+    } else if ((aname=="bbox") && attr.IsList() && (attr.AsList().size()==3)) {
+        location.bbox = Vector3D(attr.AsList());
     } else {
         attributes[aname] = attr;
     }

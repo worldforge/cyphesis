@@ -14,6 +14,22 @@
 
 using Atlas::Objects::Operation::Look;
 
+void MemMap::addContents(const Object::MapType & entmap)
+{
+    Object::MapType::const_iterator I = entmap.find("contains");
+    if ((I == entmap.end()) || (!I->second.IsList())) {
+        return;
+    }
+    const Object::ListType & contlist = I->second.AsList();
+    Object::ListType::const_iterator J = contlist.begin();
+    for(;J != contlist.end(); J++) {
+        if (!J->IsString()) {
+            continue;
+        }
+        getAdd(J->AsString());
+    }
+}
+
 Entity * MemMap::add(const Object & entity)
 {
     debug( cout << "MemMap::add" << endl << flush;);
@@ -45,6 +61,7 @@ Entity * MemMap::add(const Object & entity)
         getAdd(I->second.AsString());
     }
     thing->getLocation(entmap, things);
+    addContents(entmap);
     return addObject(thing);
 }
 
@@ -84,6 +101,7 @@ Entity * MemMap::update(const Object & entity)
     debug( cout << " got " << thing << endl << flush;);
     thing->merge(entmap);
     thing->getLocation(entmap,things);
+    addContents(entmap);
     //needTrueValue=["type","contains","instance","id","location","stamp"];
     //for (/*(key,value) in entity.__dict__.items()*/) {
         //if (value or not key in needTrueValue) {
