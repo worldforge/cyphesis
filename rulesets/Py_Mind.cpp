@@ -11,7 +11,7 @@
 #include "Py_WorldTime.h"
 #include "BaseMind.h"
 
-static PyObject * Mind_as_entity(PyMind * self, PyObject * args)
+static PyObject * Mind_as_entity(PyMind * self)
 {
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
@@ -19,9 +19,6 @@ static PyObject * Mind_as_entity(PyMind * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     PyMessageElement * ret = newPyMessageElement();
     if (ret == NULL) {
         PyErr_SetString(PyExc_MemoryError, "error creating MessageElement");
@@ -32,7 +29,7 @@ static PyObject * Mind_as_entity(PyMind * self, PyObject * args)
     return (PyObject *)ret;
 }
 
-static PyObject * Mind_get_xyz(PyMind * self, PyObject * args)
+static PyObject * Mind_get_xyz(PyMind * self)
 {
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
@@ -40,9 +37,6 @@ static PyObject * Mind_get_xyz(PyMind * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     PyVector3D * ret = newPyVector3D();
     if (ret == NULL) {
         return NULL;
@@ -52,8 +46,8 @@ static PyObject * Mind_get_xyz(PyMind * self, PyObject * args)
 }
 
 static PyMethodDef Mind_methods[] = {
-        {"get_xyz",        (PyCFunction)Mind_get_xyz,  1},
-        {"as_entity",        (PyCFunction)Mind_as_entity,  1},
+        {"get_xyz",        (PyCFunction)Mind_get_xyz,  METH_NOARGS},
+        {"as_entity",        (PyCFunction)Mind_as_entity,  METH_NOARGS},
         {NULL,          NULL}           /* sentinel */
 };
 

@@ -9,7 +9,7 @@
 #include "Py_World.h"
 #include "Entity.h"
 
-static PyObject * Entity_as_entity(PyEntity * self, PyObject * args)
+static PyObject * Entity_as_entity(PyEntity * self)
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
@@ -17,9 +17,6 @@ static PyObject * Entity_as_entity(PyEntity * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     PyMessageElement * ret = newPyMessageElement();
     if (ret == NULL) {
         return NULL;
@@ -29,7 +26,7 @@ static PyObject * Entity_as_entity(PyEntity * self, PyObject * args)
     return (PyObject *)ret;
 }
 
-static PyObject * Entity_get_xyz(PyEntity * self, PyObject * args)
+static PyObject * Entity_get_xyz(PyEntity * self)
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
@@ -37,9 +34,6 @@ static PyObject * Entity_get_xyz(PyEntity * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     PyVector3D * ret = newPyVector3D();
     if (ret == NULL) {
         return NULL;
@@ -49,8 +43,8 @@ static PyObject * Entity_get_xyz(PyEntity * self, PyObject * args)
 }
 
 static PyMethodDef Entity_methods[] = {
-        {"get_xyz",        (PyCFunction)Entity_get_xyz,  1},
-        {"as_entity",        (PyCFunction)Entity_as_entity,  1},
+        {"get_xyz",        (PyCFunction)Entity_get_xyz,  METH_NOARGS},
+        {"as_entity",        (PyCFunction)Entity_as_entity,  METH_NOARGS},
         {NULL,          NULL}           /* sentinel */
 };
 

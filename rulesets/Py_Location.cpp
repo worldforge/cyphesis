@@ -10,7 +10,7 @@
 
 #include "Entity.h"
 
-static PyObject * Location_copy(PyLocation *self, PyObject *args)
+static PyObject * Location_copy(PyLocation *self)
 {
 #ifndef NDEBUG
     if (self->location == NULL) {
@@ -18,9 +18,6 @@ static PyObject * Location_copy(PyLocation *self, PyObject *args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     PyLocation * ret = newPyLocation();
     ret->location = new Location(self->location->m_loc, self->location->m_pos, self->location->m_velocity);
     ret->own = 1;
@@ -28,7 +25,7 @@ static PyObject * Location_copy(PyLocation *self, PyObject *args)
 }
 
 static PyMethodDef Location_methods[] = {
-    {"copy",            (PyCFunction)Location_copy,     METH_VARARGS},
+    {"copy",            (PyCFunction)Location_copy,     METH_NOARGS},
     {NULL,              NULL}           /* sentinel */
 };
 

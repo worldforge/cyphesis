@@ -1,5 +1,13 @@
 2004-06-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Location.cpp, rulesets/Py_Map.cpp, rulesets/Py_Mind.cpp,
+	  rulesets/Py_Object.cpp, rulesets/Py_Operation.cpp,
+	  rulesets/Py_Quaternion.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/Py_Vector3D.cpp, rulesets/Python_API.cpp:
+	  Change some methods to use METH_NOARGS for simplicity.
+
+2004-06-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* Fix bounding boxes for fir and oak scaling.
 
 	* common/globals.cpp: Default to starting at dawn.

@@ -15,7 +15,7 @@
  * Beginning of Object methods section.
  */
 
-static PyObject* Object_get_name(PyMessageElement * self, PyObject * args)
+static PyObject* Object_get_name(PyMessageElement * self)
 {
 #ifndef NDEBUG
     if (self->m_obj == NULL) {
@@ -23,9 +23,6 @@ static PyObject* Object_get_name(PyMessageElement * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     return PyString_FromString("obj");
 }
 
@@ -34,7 +31,7 @@ static PyObject* Object_get_name(PyMessageElement * self, PyObject * args)
  */
 
 static PyMethodDef Object_methods[] = {
-        {"get_name",    (PyCFunction)Object_get_name,  1},
+        {"get_name",    (PyCFunction)Object_get_name,  METH_NOARGS},
         {NULL,          NULL}           /* sentinel */
 };
 

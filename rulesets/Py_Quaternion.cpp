@@ -4,11 +4,8 @@
 
 #include "Py_Quaternion.h"
 
-static PyObject * Quaternion_as_list(PyQuaternion * self, PyObject * args)
+static PyObject * Quaternion_as_list(PyQuaternion * self)
 {
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     PyObject * r = PyList_New(0);
     PyObject * i = PyFloat_FromDouble(self->rotation.vector().x());
     PyList_Append(r, i);
@@ -26,7 +23,7 @@ static PyObject * Quaternion_as_list(PyQuaternion * self, PyObject * args)
 }
 
 static PyMethodDef Quaternion_methods[] = {
-    {"as_list",         (PyCFunction)Quaternion_as_list, METH_VARARGS},
+    {"as_list",         (PyCFunction)Quaternion_as_list, METH_NOARGS},
     {NULL,              NULL}           /* sentinel */
 };
 

@@ -192,7 +192,7 @@ static PyObject * Operation_setArgs(PyOperation * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * Operation_getSerialno(PyOperation * self, PyObject * args)
+static PyObject * Operation_getSerialno(PyOperation * self)
 {
     // Returns int
 #ifndef NDEBUG
@@ -201,13 +201,10 @@ static PyObject * Operation_getSerialno(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     return PyInt_FromLong(self->operation->getSerialno());
 }
 
-static PyObject * Operation_getRefno(PyOperation * self, PyObject * args)
+static PyObject * Operation_getRefno(PyOperation * self)
 {
     // Returns int
 #ifndef NDEBUG
@@ -216,13 +213,10 @@ static PyObject * Operation_getRefno(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     return PyInt_FromLong(self->operation->getRefno());
 }
 
-static PyObject * Operation_getFrom(PyOperation * self, PyObject * args)
+static PyObject * Operation_getFrom(PyOperation * self)
 {
     // Returns string
 #ifndef NDEBUG
@@ -231,13 +225,10 @@ static PyObject * Operation_getFrom(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     return PyString_FromString(self->operation->getFrom().c_str());
 }
 
-static PyObject * Operation_getTo(PyOperation * self, PyObject * args)
+static PyObject * Operation_getTo(PyOperation * self)
 {
     // Returns string
 #ifndef NDEBUG
@@ -246,13 +237,10 @@ static PyObject * Operation_getTo(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     return PyString_FromString(self->operation->getTo().c_str());
 }
 
-static PyObject * Operation_getSeconds(PyOperation * self, PyObject * args)
+static PyObject * Operation_getSeconds(PyOperation * self)
 {
     // Returns float
 #ifndef NDEBUG
@@ -261,13 +249,10 @@ static PyObject * Operation_getSeconds(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     return PyFloat_FromDouble(self->operation->getSeconds());
 }
 
-static PyObject * Operation_getFutureSeconds(PyOperation * self, PyObject * args)
+static PyObject * Operation_getFutureSeconds(PyOperation * self)
 {
     // Returns float
 #ifndef NDEBUG
@@ -276,13 +261,10 @@ static PyObject * Operation_getFutureSeconds(PyOperation * self, PyObject * args
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     return PyFloat_FromDouble(self->operation->getFutureSeconds());
 }
 
-static PyObject * Operation_getTimeString(PyOperation * self, PyObject * args)
+static PyObject * Operation_getTimeString(PyOperation * self)
 {
     // Returns string
 #ifndef NDEBUG
@@ -291,13 +273,10 @@ static PyObject * Operation_getTimeString(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     return PyString_FromString(self->operation->getTimeString().c_str());
 }
 
-static PyObject * Operation_getArgs(PyOperation * self, PyObject * args)
+static PyObject * Operation_getArgs(PyOperation * self)
 {
     // Returns list
 #ifndef NDEBUG
@@ -306,9 +285,6 @@ static PyObject * Operation_getArgs(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     // Here we go:- 
     Element::ListType & args_list = self->operation->getArgs();
     PyObject * args_pylist = PyList_New(args_list.size());
@@ -328,7 +304,7 @@ static PyObject * Operation_getArgs(PyOperation * self, PyObject * args)
     return args_pylist;
 }
 
-static PyObject* Operation_get_name(PyOperation * self, PyObject * args)
+static PyObject* Operation_get_name(PyOperation * self)
 {
 #ifndef NDEBUG
     if (self->operation == NULL) {
@@ -336,9 +312,6 @@ static PyObject* Operation_get_name(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     return PyString_FromString("op");
 }
 
@@ -523,28 +496,28 @@ PyMethodDef RootOperation_methods[] = {
     {"setFutureSeconds",(PyCFunction)Operation_setFutureSeconds,METH_VARARGS},
     {"setTimeString",   (PyCFunction)Operation_setTimeString,   METH_VARARGS},
     {"setArgs",         (PyCFunction)Operation_setArgs,         METH_VARARGS},
-    {"getSerialno",     (PyCFunction)Operation_getSerialno,     METH_VARARGS},
-    {"getRefno",        (PyCFunction)Operation_getRefno,        METH_VARARGS},
-    {"getFrom",         (PyCFunction)Operation_getFrom,         METH_VARARGS},
-    {"getTo",           (PyCFunction)Operation_getTo,           METH_VARARGS},
-    {"getSeconds",      (PyCFunction)Operation_getSeconds,      METH_VARARGS},
-    {"getFutureSeconds",(PyCFunction)Operation_getFutureSeconds,METH_VARARGS},
-    {"getTimeString",   (PyCFunction)Operation_getTimeString,   METH_VARARGS},
-    {"getArgs",         (PyCFunction)Operation_getArgs,         METH_VARARGS},
-    {"get_name",        (PyCFunction)Operation_get_name,        METH_VARARGS},
+    {"getSerialno",     (PyCFunction)Operation_getSerialno,     METH_NOARGS},
+    {"getRefno",        (PyCFunction)Operation_getRefno,        METH_NOARGS},
+    {"getFrom",         (PyCFunction)Operation_getFrom,         METH_NOARGS},
+    {"getTo",           (PyCFunction)Operation_getTo,           METH_NOARGS},
+    {"getSeconds",      (PyCFunction)Operation_getSeconds,      METH_NOARGS},
+    {"getFutureSeconds",(PyCFunction)Operation_getFutureSeconds,METH_NOARGS},
+    {"getTimeString",   (PyCFunction)Operation_getTimeString,   METH_NOARGS},
+    {"getArgs",         (PyCFunction)Operation_getArgs,         METH_NOARGS},
+    {"get_name",        (PyCFunction)Operation_get_name,        METH_NOARGS},
     {NULL,          NULL}
 };
 
 PyMethodDef ConstRootOperation_methods[] = {
-    {"getSerialno",     (PyCFunction)Operation_getSerialno,     METH_VARARGS},
-    {"getRefno",        (PyCFunction)Operation_getRefno,        METH_VARARGS},
-    {"getFrom",         (PyCFunction)Operation_getFrom,         METH_VARARGS},
-    {"getTo",           (PyCFunction)Operation_getTo,           METH_VARARGS},
-    {"getSeconds",      (PyCFunction)Operation_getSeconds,      METH_VARARGS},
-    {"getFutureSeconds",(PyCFunction)Operation_getFutureSeconds,METH_VARARGS},
-    {"getTimeString",   (PyCFunction)Operation_getTimeString,   METH_VARARGS},
-    {"getArgs",         (PyCFunction)Operation_getArgs,         METH_VARARGS},
-    {"get_name",        (PyCFunction)Operation_get_name,        METH_VARARGS},
+    {"getSerialno",     (PyCFunction)Operation_getSerialno,     METH_NOARGS},
+    {"getRefno",        (PyCFunction)Operation_getRefno,        METH_NOARGS},
+    {"getFrom",         (PyCFunction)Operation_getFrom,         METH_NOARGS},
+    {"getTo",           (PyCFunction)Operation_getTo,           METH_NOARGS},
+    {"getSeconds",      (PyCFunction)Operation_getSeconds,      METH_NOARGS},
+    {"getFutureSeconds",(PyCFunction)Operation_getFutureSeconds,METH_NOARGS},
+    {"getTimeString",   (PyCFunction)Operation_getTimeString,   METH_NOARGS},
+    {"getArgs",         (PyCFunction)Operation_getArgs,         METH_NOARGS},
+    {"get_name",        (PyCFunction)Operation_get_name,        METH_NOARGS},
     {NULL,          NULL}
 };
 

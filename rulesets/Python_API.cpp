@@ -708,15 +708,10 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
         return (PyObject *)o;
 }
 
-static PyObject * object_new(PyObject * self, PyObject * args)
+static PyObject * object_new(PyObject * self)
 {
-        PyMessageElement *o;
-        
-        if (!PyArg_ParseTuple(args, "")) {
-                return NULL;
-        }
-        o = newPyMessageElement();
-        if ( o == NULL ) {
+        PyMessageElement * o = newPyMessageElement();
+        if (o == NULL) {
                 return NULL;
         }
         o->m_obj = new Element(Element::MapType());
@@ -779,14 +774,9 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     return (PyObject *)o;
 }
 
-static PyObject * cppthing_new(PyObject * self, PyObject * args)
+static PyObject * cppthing_new(PyObject * self)
 {
-        PyEntity *o;
-
-        if (!PyArg_ParseTuple(args, "")) {
-                return NULL;
-        }
-        o = newPyEntity();
+        PyEntity * o = newPyEntity();
         if ( o == NULL ) {
                 return NULL;
         }
@@ -1010,10 +1000,10 @@ static PyMethodDef atlas_methods[] = {
     {"Operation",  (PyCFunction)operation_new,  METH_VARARGS|METH_KEYWORDS},
     {"isLocation", is_location,                 METH_VARARGS},
     {"Location",   location_new,                METH_VARARGS},
-    {"Object",     object_new,                  METH_VARARGS},
+    {"Object",     (PyCFunction)object_new,     METH_NOARGS},
     {"Entity",     (PyCFunction)entity_new,     METH_VARARGS|METH_KEYWORDS},
     {"Message",    oplist_new,                  METH_VARARGS},
-    {"cppEntity",   cppthing_new,               METH_VARARGS},
+    {"cppEntity",  (PyCFunction)cppthing_new,   METH_NOARGS},
     {NULL,              NULL}                           /* Sentinel */
 };
 
