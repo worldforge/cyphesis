@@ -1,5 +1,10 @@
 2003-07-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Debugging output to help debug
+	  orientation.
+
+2003-07-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_BBox.cpp, rulesets/Py_Quaternion.cpp,
 	  rulesets/Python_API.cpp, server/Restorer_impl.h:
 	  Add some casts and tweaks so that wrappers and
@@ -7,8 +12,8 @@
 
 2003-07-18  Al Riddoch  <alriddoch@zepler.org>
 
-	* rulesets/Py_BBox.cpp, rulesets/Python_API.cpp, server/Restorer_impl.h:
-	  Put back the code won't work with WFMath.
+	* rulesets/Py_BBox.cpp, rulesets/Python_API.cpp,
+	  server/Restorer_impl.h: Put back the code won't work with WFMath.
 
 2003-07-18  Al Riddoch  <alriddoch@zepler.org>
 

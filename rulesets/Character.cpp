@@ -515,6 +515,8 @@ OpVector Character::mindMoveOperation(const Move & op)
                 uprightDirection.normalize();
                 location_orientation = quaternionFromTo(Vector3D(1,0,0),
                                                         uprightDirection);
+                debug( std::cout << "Orientation: " << location_orientation
+                                 << std::endl << std::flush;);
             }
         }
         Location ret_location;
