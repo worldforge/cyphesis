@@ -1,7 +1,7 @@
 dnl Initialise autoconf
 
 AC_INIT()
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_SRCDIR([server/server.cpp])
 
 dnl Detect the canonical host and target environment
 
@@ -12,6 +12,7 @@ dnl Initialise automake
 VERSION=0.3.0
 
 AM_INIT_AUTOMAKE(cyphesis, $VERSION)
+AM_CONFIG_HEADER(config.h)
 
 dnl check if user wishes maintainer-mode ("--enable-maintainer-mode = yes")
 AM_MAINTAINER_MODE
@@ -38,8 +39,7 @@ AC_ARG_ENABLE(debug,
     ]
 )
 
-AC_LANG_CPLUSPLUS
-AC_REQUIRE_CPP
+AC_LANG(C++)
 
 dnl Flags that are required by programs linking against libcyphesis
 SYSTEM_LIBS=
@@ -85,6 +85,7 @@ AC_CHECK_HEADER(python2.3/Python.h,
         python_version=python2.2
         python_two=yes
     ],[
+        AC_MSG_WARN([Cannot find Python 2.2 or later. Checking for older versions which may not support cyphesis fully.])
         AC_CHECK_HEADER(python2.1/Python.h,
         [
             python_include_path=-I${python_prefix}/include/python2.1
@@ -106,7 +107,7 @@ AC_CHECK_HEADER(python2.3/Python.h,
                     [
                         python_include_path=-I${python_prefix}/include/python1.5
                         python_version=python1.5
-                    ],AC_MSG_ERROR([Couldn't find python headers. Do you have python development installed?]))
+                    ],AC_MSG_ERROR([Cannot find python headers. Do you have python development installed?]))
                 ])
             ])
         ])
@@ -135,7 +136,7 @@ AC_CHECK_FUNC(pthread_mutex_trylock, ,
         CXXFLAGS="$ac_save_CXXFLAGS"
         AC_CHECK_LIB(pthread, pthread_create, ,
         [
-            AC_MSG_WARN([Couldn't find pthread library. Python lib check may fail])
+            AC_MSG_WARN([Cannot find pthread library. Python lib check may fail])
         ])
     ])
 ])
@@ -144,7 +145,7 @@ AC_CHECK_LIB(${python_version},
     Py_Initialize,
     [
         python_libs="-L${python_lib_path} -l${python_version}"
-    ],AC_MSG_ERROR([Couldn't find python libraries. Do you have python development installed]),
+    ],AC_MSG_ERROR([Cannot find python libraries. Do you have python development installed?]),
     [-L${python_lib_path}]
 )
 
@@ -156,7 +157,7 @@ AC_CHECK_LIB(crypto, MD5,
         AC_DEFINE(CYPHESIS_MD5_PASSWORDS, 1, [Use md5 hash for passwords])
     ],
     [
-        AC_MSG_ERROR([Could not find a way of encrypting passwords.])
+        AC_MSG_ERROR([Cannot find a way of encrypting passwords. Please install the openssl development libraries.])
     ])
 
 PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.90 skstream-0.3 >= 0.2.90 varconf-1.0 >= 0.6.0 mercator-0.2,
@@ -167,7 +168,7 @@ PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.90 skstream-0.3 >= 0.2.90 varconf-1.
         SYSTEM_LIBS="$SYSTEM_LIBS $DEPS_LIBS"
     ],
     [
-        AC_MSG_ERROR("Cannot find valid versions of required libraries")
+        AC_MSG_ERROR([Cannot find valid versions of required WorldForge libraries.])
     ])
 
 AM_PATH_PSQL(7.1.0,
@@ -181,10 +182,10 @@ AM_PATH_PSQL(7.1.0,
             SYSTEM_LIBS="$SYSTEM_LIBS $PG_LIBS"
         fi
     ],
-    AC_MSG_ERROR(Couldn't find PostgreSQL config [or config failed])
+    AC_MSG_ERROR([Cannot find PostgreSQL config or config failed])
 )
 
-AC_CHECK_LIB(pq,PQconnectdb, ,AC_MSG_ERROR(Couldn't find PostgreSQL bindings! [Have you installed the PostgreSQL development software]))
+AC_CHECK_LIB(pq,PQconnectdb, ,AC_MSG_ERROR([Cannot find PostgreSQL bindings! Have you installed the PostgreSQL development software?]))
 
 SYSTEM_LIBS="$SYSTEM_LIBS -lpq"
 
@@ -194,7 +195,7 @@ AC_CHECK_LIB(termcap,tgetent,
     [READLINE_LIBS="$READLINE_LIBS -ltermcap"],
     AC_CHECK_LIB(ncurses, tgetent, 
         [READLINE_LIBS="$READLINE_LIBS -lncurses"],
-        AC_MSG_ERROR([Couldn't find tgetent in termcap or ncurses libraries!])
+        AC_MSG_ERROR([Cannot find tgetent in termcap or ncurses libraries!])
     )
 )
 
@@ -204,7 +205,7 @@ AC_CHECK_LIB(readline,readline,
         READLINE_LIBS="$READLINE_LIBS -lreadline"
     ],
     [
-        AC_MSG_ERROR([Couldn't find readline!])
+        AC_MSG_ERROR([Cannot find readline!])
     ],[ $READLINE_LIBS ]
 )
     

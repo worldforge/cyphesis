@@ -1,5 +1,9 @@
 2004-06-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* Warn if an up to date version of python is not available.
+
+2004-06-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/NPCMind.py, rulesets/BaseMind.cpp,
 	  modules/WorldTime.h: WorldTime now handles time in
 	  integer seconds.
