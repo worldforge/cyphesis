@@ -40,7 +40,6 @@ class CommServer {
     ~CommServer();
 
     void loop();
-    void removeSocket(CommSocket * client, char * msg);
     void removeSocket(CommSocket * client);
 
     /// Add a new CommSocket object to the manager.

@@ -155,7 +155,8 @@ void MemMap::del(const std::string & id)
         for (; K != ent->m_contains.end(); ++K) {
             Entity * cent = *K;
             cent->m_location.m_loc = mloc;
-            // FIXME Handle cent's postion
+            // FIXME adjust pos and:
+            // FIXME take account of orientation
             if (mloc != 0) {
                 mloc->m_contains.insert(cent);
             }

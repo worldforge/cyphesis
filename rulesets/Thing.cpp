@@ -365,7 +365,7 @@ void Thing::SetOperation(const Set & op, OpVector & res)
         s->setArgs(ListType(1,op.asObject()));
         res.push_back(s);
         if (m_status < 0) {
-            RootOperation * d = new Delete();
+            Delete * d = new Delete();
             ListType & dargs = d->getArgs();
             dargs.push_back(MapType());
             // FIXME Is it necessary to include a full description?

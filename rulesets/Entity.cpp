@@ -140,7 +140,7 @@ void Entity::destroy()
     EntitySet::const_iterator I = m_contains.begin();
     for(; I != m_contains.end(); I++) {
         Entity * obj = *I;
-        // FIXME Need to do a real coord fixup here.
+        // FIXME take account of orientation
         obj->m_location.m_loc = m_location.m_loc;
         obj->m_location.m_pos += m_location.m_pos;
         refContains.insert(obj);

@@ -1,3 +1,14 @@
+2004-09-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.cpp, rulesets/MemMap.cpp: Modify FIXME text so
+	  its clearer which ones are part of the same problem.
+
+	* rulesets/Thing.cpp: Use a Delete pointer for a Delete operation.
+
+	* server/CommServer.cpp, server/CommServer.h: Change references
+	  to clients into sockets. Remove unused version of removeSocket()
+	  which takes an error message.
+
 2004-09-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: Use the Generic operation class for ops

@@ -65,7 +65,7 @@ bool CommServer::idle()
 void CommServer::loop()
 {
     // This is the main code loop.
-    // Classic select code for checking incoming data or client connections.
+    // Classic select code for checking incoming data on sockets.
     // It may be beneficial to re-write this code to use the poll(2) system
     // call.
     bool busy = idle();
@@ -86,10 +86,10 @@ void CommServer::loop()
            pendingConnections = true;
            continue;
        }
-       int client_fd = (*I)->getFd();
-       FD_SET(client_fd, &sock_fds);
-       if (client_fd > highest) {
-           highest = client_fd;
+       int socket_fd = (*I)->getFd();
+       FD_SET(socket_fd, &sock_fds);
+       if (socket_fd > highest) {
+           highest = socket_fd;
        }
     }
     highest++;
@@ -109,23 +109,23 @@ void CommServer::loop()
     
     std::set<CommSocket *> obsoleteConnections;
     for(I = m_sockets.begin(); I != m_sockets.end(); I++) {
-       CommSocket * client = *I;
-       if (!client->isOpen()) {
-           obsoleteConnections.insert(client);
+       CommSocket * socket = *I;
+       if (!socket->isOpen()) {
+           obsoleteConnections.insert(socket);
            continue;
        }
-       if (FD_ISSET(client->getFd(), &sock_fds)) {
-           if (!client->eof()) {
-               if (client->read()) {
-                   debug(std::cout << "Removing client due to failed negotiation or timeout" << std::endl << std::flush;);
-                   obsoleteConnections.insert(client);
+       if (FD_ISSET(socket->getFd(), &sock_fds)) {
+           if (!socket->eof()) {
+               if (socket->read()) {
+                   debug(std::cout << "Removing socket due to failed negotiation or timeout" << std::endl << std::flush;);
+                   obsoleteConnections.insert(socket);
                }
-               client->dispatch();
+               socket->dispatch();
            } else {
                // It is not clear why but on some implementation/circumstances
-               // client->eof() is true, and sometimes it isn't.
+               // socket->eof() is true, and sometimes it isn't.
                // Either way, the stream is now done, and we should remove it
-               obsoleteConnections.insert(client);
+               obsoleteConnections.insert(socket);
            }
        }
     }
@@ -135,27 +135,12 @@ void CommServer::loop()
     }
 }
 
-/// Remove and delete a CommSocket from the server.
-inline void CommServer::removeSocket(CommSocket * client, char * error_msg)
+/// \brief Remove and delete a CommSocket from the server.
+///
+/// Does not take into account if the socket is
+/// @param socket Pointer to the socket object to be removed.
+void CommServer::removeSocket(CommSocket * socket)
 {
-    // FIXME This code needs to be moved into CommClient
-    // MapType err;
-    // err["message"] = error_msg;
-    // ListType eargs(1,err);
-
-    // Error e;
-
-    // e.setArgs(eargs);
-
-    // if (client->online() && client->isOpen()) {
-        // client->send(e);
-    // }
-    m_sockets.erase(client);
-    delete client;
-}
-
-/// Remove and delete a CommSocket from the server.
-void CommServer::removeSocket(CommSocket * client)
-{
-    removeSocket(client,"You caused exception. Connection closed");
+    m_sockets.erase(socket);
+    delete socket;
 }
