@@ -203,12 +203,21 @@ OpVector Admin::GetOperation(const Get & op)
                 if (ent_id.empty()) {
                     return error(op, "query id invalid");
                 }
-                BaseDict::iterator I = world->server.idDict.find(ent_id);
-                if (I == world->server.idDict.end()) {
+                const BaseDict & OOGDict = world->server.getObjects();
+                BaseDict::const_iterator I = OOGDict.find(ent_id);
+                const EntityDict & worldDict = world->getObjects();
+                EntityDict::const_iterator J = worldDict.find(ent_id);
+
+                if ((I == OOGDict.end()) && (J == worldDict.end())) {
                     return error(op, "query id not found");
                 }
+
                 Info * info = new Info(Info::Instantiate());
-                info->SetArgs(Object::ListType(1,I->second->asObject()));
+                if (I != OOGDict.end()) {
+                    info->SetArgs(Object::ListType(1,I->second->asObject()));
+                } else {
+                    info->SetArgs(Object::ListType(1,J->second->asObject()));
+                }
                 info->SetRefno(op.GetSerialno());
                 info->SetSerialno(connection->server.getSerialNo());
                 return OpVector(1,info);

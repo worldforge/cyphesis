@@ -40,7 +40,7 @@ class BaseWorld : public OOGThing {
         return eobjects[fid];
     }
 
-    const EntityDict & getObjects() {
+    const EntityDict & getObjects() const {
         return eobjects;
     }
 

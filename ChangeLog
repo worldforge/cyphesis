@@ -1,3 +1,17 @@
+2002-03-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp, server/ServerRouting_methods.h,
+	  server/ServerRouting.h, server/ServerRouting.cpp,
+	  server/Routing.h, server/Routing.cpp, server/Connection.h,
+	  server/Admin.cpp:
+	  Removed inheritance from Routing by Connection and ServerRouting,
+	  as there is almost no functionality in common. Get rid of global
+	  idDict in ServerRouting is it serves little or no useful purpose.
+	  IG objects are now managed in WorldRouter, and OOG objects in
+	  ServerRouting.
+
+	* common/BaseWorld.h: Made accessor method const, as it should be.
+
 2002-03-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/server.cpp, rulesets/Python_API.cpp, rulesets/Line.cpp,

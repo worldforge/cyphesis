@@ -6,7 +6,6 @@ cyphesis_SOURCES = \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
 		Persistance.cpp Persistance.h \
-		Routing.cpp Routing.h \
 		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
 		WorldRouter.cpp WorldRouter.h \
 		EntityFactory.cpp EntityFactory.h \

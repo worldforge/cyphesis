@@ -5,7 +5,7 @@
 #ifndef SERVER_SERVER_ROUTING_H
 #define SERVER_SERVER_ROUTING_H
 
-#include "Routing.h"
+#include <common/OOGThing.h>
 
 #include <common/serialno.h>
 
@@ -13,14 +13,12 @@ class WorldRouter;
 class Lobby;
 class CommServer;
 
-class ServerRouting : public Routing {
+class ServerRouting : public OOGThing {
   private:
+    BaseDict objects;
     CommServer & commServer;
     const std::string svrRuleset;
     const std::string svrName;
-  public:
-    BaseDict idDict;
-  private:
     WorldRouter & world;
   public:
     Lobby & lobby;
@@ -33,6 +31,19 @@ class ServerRouting : public Routing {
 
     inline int getSerialNo() {
         return opSerialNo();
+    }
+
+    const BaseDict & getObjects() const {
+        return objects;
+    }
+
+    BaseEntity * getObject(const std::string & fid) const {
+        BaseDict::const_iterator I = objects.find(fid);
+        if (I == objects.end()) {
+            return NULL;
+        } else {
+            return I->second;
+        }
     }
 
     WorldRouter & getWorld() { return world; }

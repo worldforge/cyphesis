@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#error This file has been removed from the build
+
 #ifndef SERVER_ROUTING_H
 #define SERVER_ROUTING_H
 
@@ -20,12 +22,13 @@ class Routing : public OOGThing {
         return obj;
     }
 
+#if 0
     void delObject(BaseEntity * obj) {
         objects.erase(obj->getId());
         delete obj;
     }
 
-    BaseEntity * getObject(const std::string & fid) const {
+    BaseEntity * findObject(const std::string & fid) const {
         BaseDict::const_iterator I = objects.find(fid);
         if (I == objects.end()) {
             return NULL;
@@ -33,8 +36,9 @@ class Routing : public OOGThing {
             return I->second;
         }
     }
+#endif
 
-    BaseEntity * findObject(const std::string & fid) const {
+    BaseEntity * getObject(const std::string & fid) const {
         BaseDict::const_iterator I = objects.find(fid);
         if (I == objects.end()) {
             return NULL;

@@ -30,7 +30,6 @@ WorldRouter::WorldRouter(ServerRouting & srvr) : BaseWorld(*new World()),
     updateTime();
     gameWorld.setId(getId());
     gameWorld.world=this;
-    server.idDict[getId()]=&gameWorld;
     eobjects[getId()]=&gameWorld;
     perceptives.insert(&gameWorld);
     objectList.insert(&gameWorld);
@@ -42,6 +41,11 @@ WorldRouter::~WorldRouter()
     OpQueue::const_iterator I = operationQueue.begin();
     for (; I != operationQueue.end(); I++) {
         delete *I;
+    }
+    eobjects.erase(gameWorld.getId());
+    EntityDict::const_iterator J = eobjects.begin();
+    for(; J != eobjects.end(); J++) {
+        delete J->second;
     }
     // This should be deleted here rather than in the base class because
     // we created it, and BaseWorld should not even know what it is.
@@ -99,7 +103,7 @@ Entity * WorldRouter::addObject(Entity * obj)
     if (obj->getId().empty()) {
         obj->setId(getNewId(obj->getName()));
     }
-    server.idDict[obj->getId()]=eobjects[obj->getId()]=obj;
+    eobjects[obj->getId()]=obj;
     objectList.insert(obj);
     if (!obj->location) {
         debug(std::cout << "set loc " << &gameWorld  << std::endl
@@ -141,7 +145,6 @@ void WorldRouter::delObject(Entity * obj)
     perceptives.erase(obj);
     objectList.erase(obj);
     eobjects.erase(obj->getId());
-    server.idDict.erase(obj->getId());
 }
 
 OpVector WorldRouter::message(const RootOperation & op)

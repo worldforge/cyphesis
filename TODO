@@ -1,3 +1,6 @@
+  Clean up the removal of idDict. Need to fix deletion of idDict contents,
+  and arbitrary object requesting by admin.
+
   Why don't the pigs eat?
 
   Looking at contains attribute currently only applies sight ranges in
