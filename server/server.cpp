@@ -14,102 +14,29 @@
 #include <common/debug.h>
 #include <common/globals.h>
 #include <common/inheritance.h>
+#include <common/system.h>
 
 #include <common/Load.h>
 
 #include <varconf/Config.h>
 
-#include <iostream>
-
-extern "C" {
-    #include <sys/utsname.h>
-    #include <sys/types.h>
-    #include <mcheck.h>
-    #include <signal.h>
-    #include <fcntl.h>
-    #include <unistd.h>
-}
-
 static const bool debug_flag = false;
-
-const std::string get_hostname()
-{
-    struct utsname host_ident;
-    if (uname(&host_ident) != 0) {
-        return "UNKNOWN";
-    }
-    return std::string(host_ident.nodename);
-}
-
-extern "C" void signal_received(int signo)
-{
-    exit_flag = true;
-    signal(signo, SIG_IGN);
-}
-
-void interactive_signals()
-{
-    signal(SIGINT, signal_received);
-    signal(SIGTERM, signal_received);
-    signal(SIGQUIT, signal_received);
-}
-
-void daemon_signals()
-{
-    signal(SIGINT, SIG_IGN);
-    signal(SIGTERM, signal_received);
-    signal(SIGQUIT, SIG_IGN);
-}
-
-int daemonise()
-{
-    int pid = fork();
-    int new_stdio;
-    switch (pid) {
-        case 0:
-            // Child
-            // Switch signal behavoir
-            daemon_signals();
-            // Get rid if stdio
-            close(STDIN_FILENO);
-            close(STDOUT_FILENO);
-            close(STDERR_FILENO);
-            // Get rid of controlling tty, and start new session
-            setsid();
-            // Open /dev/null on the stdio file descriptors to avoid problems
-            new_stdio = open("/dev/null", O_RDWR);
-            dup2(new_stdio, STDIN_FILENO);
-            dup2(new_stdio, STDOUT_FILENO);
-            dup2(new_stdio, STDERR_FILENO);
-            break;
-        case -1:
-            // Error
-            std::cerr << "ERROR: Failed to fork() to go to the background"
-                      << std::endl << std::flush;
-            break;
-        default:
-            break;
-    }
-    return pid;
-}
 
 int main(int argc, char ** argv)
 {
-    mtrace();
     interactive_signals();
 
     if (loadConfig(argc, argv, true)) {
         // Fatal error loading config file
-        return 1;
+        return EXIT_CONFIG_ERROR;
     }
 
     if (daemon_flag) {
-        std::cout << "Going into background" << std::endl << std::flush;
         int pid = daemonise();
         if (pid == -1) {
-            exit_flag = true;
+	    return EXIT_FORK_ERROR;
         } else if (pid > 0) {
-            return 0;
+            return EXIT_SUCCESS;
         }
     }
 
@@ -122,7 +49,7 @@ int main(int argc, char ** argv)
     if (!dbInit) {
         log(CRITICAL, "Critical error opening databases. Init failed.");
         log(INFO, "Please ensure that the database tables can be created or accessed by cyphesis.");
-        return 0;
+        return EXIT_DATABASE_ERROR;
     }
 
     EntityFactory::instance()->installBaseClasses();
@@ -172,7 +99,7 @@ int main(int argc, char ** argv)
     s.useMetaserver = use_metaserver;
     if (!s.setup(port_num)) {
         log(ERROR, "Could not create listen socket. Init failed.");
-        return 1;
+        return EXIT_SOCKET_ERROR;
     }
 
     if (load_database) {
@@ -180,9 +107,7 @@ int main(int argc, char ** argv)
         l.SetFrom("admin");
         BaseEntity * admin = s.server.getObject("admin");
         if (admin == NULL) {
-            if (!daemon_flag) {
-                log(ERROR, "Admin account not found.");
-            }
+            log(ERROR, "Admin account not found, world not loaded.");
         } else {
             log(INFO, "Loading world from database...");
             OpVector res = admin->LoadOperation(l);
@@ -193,6 +118,8 @@ int main(int argc, char ** argv)
         }
     }
     log(INFO, "Running");
+
+    running();
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
@@ -238,6 +165,5 @@ int main(int argc, char ** argv)
     delete global_conf;
 
     log(INFO, "Clean shutdown complete.");
-    muntrace();
     return 0;
 }

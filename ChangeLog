@@ -1,3 +1,11 @@
+2002-10-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/system.h, common/system.cpp, server/server.cpp: Moved all
+	  the system dependant signal handling and background handling
+	  code into system module, and implemented propper handling of
+	  going into the background, including reporting error status
+	  back to the waiting parent using exit status and user signals.
+
 2002-10-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* physics/Vector3D.h: Cleaned up arithmetic operators.

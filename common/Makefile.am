@@ -13,6 +13,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		Database.cpp Database.h \
 		accountbase.cpp accountbase.h \
 		utility.cpp utility.h \
+		system.cpp system.h \
 		serialno.cpp serialno.h \
 		inheritance.cpp inheritance.h \
 		custom.cpp \
