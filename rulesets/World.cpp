@@ -168,18 +168,13 @@ OpVector World::LookOperation(const Look & op)
     // FIXME integrate setting terrain with setting contains.
     getTerrain((omap["terrain"] = Element::MapType()).asMap());
     Entity * lookFrom = J->second;
-    // const Vector3D & fromLoc = lookFrom->getXyz();
     Element::ListType & contlist = (omap["contains"] = Element(Element::ListType())).asList();
     EntitySet::const_iterator I = m_contains.begin();
     for(; I != m_contains.end(); I++) {
         float fromSquSize = boxSquareSize((*I)->m_location.m_bBox);
         Vector3D d((*I)->m_location.distanceTo(lookFrom));
         float view_factor = fromSquSize / d.sqrMag();
-#if 0
-        if ((*I)->m_location.inRange(fromLoc, consts::sight_range)) {
-#else
         if (view_factor > consts::square_sight_factor) {
-#endif
             contlist.push_back(Element((*I)->getId()));
         }
     }

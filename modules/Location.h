@@ -53,45 +53,6 @@ class Location {
         return dist;
     }
 
-    /// Is entity with location other within distance range of this location.
-    bool inRange(const Location & other, const double range) const {
-        if (!m_bBox.isValid()) {
-            //return loc.getXyz().inBox(getXyz(), Vector3D(distance));
-
-            // return other.getXyz().in(getXyz(), range);
-            return in(distanceTo(other), range);
-        } else {
-            // const Vector3D & median = bmedian ? bmedian : bbox;
-            // return loc.getXyz().inBox(getXyz() + median, bbox + distance);
-
-            //const Vector3D xyz = getXyz();
-            //return loc.getXyz().inBox(m_bBox.nearPoint() + xyz,
-                                      //m_bBox.farPoint() + xyz);
-
-            return boxContains(m_bBox, distanceTo(other), range);
-        }
-    }
-
-    /// Is entity with position pos within distance range of this location.
-    bool inRange(const Vector3D & pos, const double range) const {
-        if (!m_pos.isValid()) { return false; }
-        if (!m_bBox.isValid()) {
-            // return pos.inBox(m_pos, Vector3D(distance));
-
-            return in(pos, m_pos, range);
-        } else {
-            // const Vector3D & median = bmedian ? bmedian : bbox;
-            // return pos.inBox(m_pos + median, bbox + distance);
-
-            //return pos.inBox(m_pos + m_bBox.nearPoint(),
-                             //m_pos + m_bBox.farPoint());
-
-            Vector3D rpos = pos;
-            rpos -= m_pos;
-            return boxContains(m_bBox, rpos, range);
-        }
-    }
-
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };
 

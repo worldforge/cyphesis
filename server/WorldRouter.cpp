@@ -282,12 +282,7 @@ OpVector WorldRouter::operation(const RootOperation & op)
                               << view_factor << std::endl << std::flush;
                 }
 #endif
-#if 0
-                if ((!fromEnt->m_location.inRange((*I)->m_location,
-                                                       consts::sight_range))) {
-#else
                 if (view_factor < consts::square_sight_factor) {
-#endif
                     debug(std::cout << "Op from " << from
                                     << " cannot be seen by " << (*I)->getId()
                                     << std::endl << std::flush;);

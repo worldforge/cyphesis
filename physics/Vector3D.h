@@ -8,8 +8,6 @@
 #include <wfmath/vector.h>
 
 #include <cmath>
-#include <algorithm>
-#include <iostream>
 #include <vector>
 
 /// Used to indicate which axis
@@ -27,20 +25,6 @@ float squareDistance(const Vector3D & u, const Vector3D & v);
 inline float distance(const Vector3D & u, const Vector3D & v)
 {
     return sqrt(squareDistance(u, v));
-}
-
-/// Is vector u less than size in every direction
-inline bool in(const Vector3D & u, float size)
-{
-    return ((u.x() < size) && (u.y() < size) && (u.z() < size));
-}
-
-// Is vector u inside a box defined by center point p, size in all directions
-inline bool in(const Vector3D & u, const Vector3D & p, const float size)
-{
-    return ((u.x() < (p.x() + size)) && (u.x() > (p.x() - size)) &&
-            (u.y() < (p.y() + size)) && (u.y() > (p.y() - size)) &&
-            (u.z() < (p.z() + size)) && (u.z() > (p.z() - size)));
 }
 
 inline bool isZero(const Vector3D & u)

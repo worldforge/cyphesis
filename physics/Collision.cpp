@@ -8,6 +8,8 @@
 
 #include "common/debug.h"
 
+#include <iostream>
+
 static const bool debug_flag = false;
 
 ////////////////////////// COLLISION //////////////////////////

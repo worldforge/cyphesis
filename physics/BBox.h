@@ -9,20 +9,6 @@
 
 typedef WFMath::AxisBox<3> BBox;
 
-#include "physics/Vector3D.h"
-
-// FIXME This boxContains function is deprecated
-// Is point other inside this box, when this box is increased in each direction
-inline bool boxContains(const BBox& box, const Vector3D& other, float increase)
-{
-    return ((other.x() > (box.lowCorner().x() - increase)) &&
-            (other.x() < (box.highCorner().x() + increase)) &&
-            (other.y() > (box.lowCorner().y() - increase)) &&
-            (other.y() < (box.highCorner().y() + increase)) &&
-            (other.z() > (box.lowCorner().z() - increase)) &&
-            (other.z() < (box.highCorner().z() + increase)));
-}
-
 template<typename F>
 inline F square(F f) { return f * f; }
 

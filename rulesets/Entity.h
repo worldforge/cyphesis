@@ -11,6 +11,8 @@
 
 #include "common/BaseEntity.h"
 
+#include <iostream>
+
 class BaseWorld;
 class Script;
 

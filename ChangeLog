@@ -1,5 +1,14 @@
 2004-05-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp, rulesets/World.cpp, server/WorldRouter.cpp:
+	  Delete commented out code for old range checks.
+
+	* modules/Location.h, physics/BBox.h, physics/Collision.cpp,
+	  physics/Vector3D.h, rulesets/Entity.h: Remove obsolete math
+	  functions for doing silly calculations with boxes.
+
+2004-05-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Remove some verbose debugging output.
 
 2004-05-13  Al Riddoch  <alriddoch@zepler.org>
