@@ -1,3 +1,7 @@
+2001-10-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Mind.cpp: Fixed a leak python object.
+
 2001-10-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommServer.cpp: Remove non-fatal "FATAL..." message when
