@@ -1,3 +1,6 @@
+  Omnipresence currently has no effect. If its really needed, do something
+  with it, otherwise remove it from the code.
+
   Investigate why attempt to make admin entities move around doesn't work
   right now.
 

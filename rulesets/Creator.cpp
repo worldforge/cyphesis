@@ -3,6 +3,7 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Delete.h>
 
 #include <common/debug.h>
 
@@ -15,7 +16,7 @@ Creator::Creator()
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
     omnipresent = true;
-    location.bBox = BBox();
+    // location.bBox = BBox();
 }
 
 OpVector Creator::sendMind(const RootOperation & msg)
@@ -28,8 +29,15 @@ OpVector Creator::sendMind(const RootOperation & msg)
                          << std::flush;);
         return externalMind->message(msg);
         // If there is some kinf of error in the connection, we turn autom on
+    } else {
+        // If we do not have an external mind, and therefor a connection,
+        // there is no purpose to our existance, so we should die.
+        debug( std::cout << "NOTICE: Creator self destruct"
+                         << std::endl << std::flush;);
+        Delete * d = new Delete(Delete::Instantiate());
+        d->SetTo(getId());
+        return OpVector(1,d);
     }
-    return OpVector();
 }
 
 OpVector Creator::operation(const RootOperation & op)
