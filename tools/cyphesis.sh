@@ -1,4 +1,8 @@
 #!/bin/sh
+# To create a binary to run with this script, a build should be done
+# with --enable-static-link specified on configure, enable_database
+# disabled in common/const and HAVE_EPOLL_CREATE undefined in
+# config.h
 
 if [ ! -f ./bin/cyphesis ] ; then
     echo Unable to locate ./bin/cyphesis

@@ -1,5 +1,13 @@
 2005-01-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cyphesis.sh: Add some notes on how to build a redistributable
+	  binary.
+
+	* tools/copy_python.sh: Add a script that copies the essential
+	  elements of python runtime required to run cyphesis.
+
+2005-01-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/objects/tools/Cleaver.py,
 	  rulesets/mason/world/objects/animals/Deer.py,
 	  rulesets/basic/world/objects/tools/Axe.py:
