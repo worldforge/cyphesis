@@ -59,7 +59,7 @@ CommClient::~CommClient() {
 
 int CommClient::setup()
 {
-    Atlas::Net::StreamAccept accept("cyphesis", client_ios, this);
+    Atlas::Net::StreamAccept accept("cyphesis " + server->identity, client_ios, this);
 
     debug(cout << "Negotiating... " << flush;);
     while (accept.GetState() == Negotiate<iostream>::IN_PROGRESS) {
@@ -159,6 +159,12 @@ void CommClient::ObjectArrived(const Objects::Operation::Talk & op)
     message(op);
 }
 
+void CommClient::ObjectArrived(const Objects::Operation::Get & op)
+{
+    debug(cout << "A get operation thingy here!" << endl << flush;);
+    message(op);
+}
+
 int CommServer::setup(int port)
 {
     struct sockaddr_in sin;
@@ -178,7 +184,7 @@ int CommServer::setup(int port)
         return(-1);
     }
     listen(server_fd, 5);
-    server=new ServerRouting(this,"server");
+    server=new ServerRouting(this,identity);
     return(0);
 }
 
@@ -339,7 +345,7 @@ int main(int argc, char ** argv)
         cout << "consts::debug_thinking>=1:, logging to" << log_name << endl;
         common::log::thinking_fp.open(log_name,ios::out);
     }
-    CommServer s;
+    CommServer s(rulesets.front());
     if (s.setup(6767)) {
         cerr << "Could not create listen socket." << endl << flush;
         exit(1);

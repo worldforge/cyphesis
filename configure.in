@@ -34,7 +34,7 @@ dnl Test for C++ compiler
 
 AC_PROG_CXX
 
-CXXFLAGS='-Wall -g'
+CXXFLAGS='-Wall -ggdb3 -pg'
 
 AC_PREFIX_DEFAULT("/usr/local")
 AC_DEFINE_UNQUOTED(INSTALLDIR,"$prefix")

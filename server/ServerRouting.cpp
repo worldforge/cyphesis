@@ -11,7 +11,7 @@
 #include <common/persistance.h>
 
 
-ServerRouting::ServerRouting(CommServer * server, char * name) :
+ServerRouting::ServerRouting(CommServer * server, const string & name) :
         comm_server(server), svr_name(name)
 {
     fullid = name;
@@ -20,4 +20,12 @@ ServerRouting::ServerRouting(CommServer * server, char * name) :
     BaseEntity * obj=add_object((BaseEntity*)Persistance::load_admin_account());
     //obj->server=this;
     obj->world=world;
+}
+
+void ServerRouting::addObject(Object * obj) const
+{
+    Object::MapType & omap = obj->AsMap();
+    omap["server"] = "cyphesis";
+    omap["ruleset"] = svr_name;
+    // We could add all sorts of stats here, but I don't know exactly what yet.
 }

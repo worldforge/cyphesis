@@ -40,6 +40,7 @@ class Connection : public Routing {
     virtual oplist Operation(const Login & op);
     virtual oplist Operation(const Logout & op);
     virtual oplist Operation(const Create & op);
+    virtual oplist Operation(const Get & op);
 };
 
 #endif /* CONNECTION_H */

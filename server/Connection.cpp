@@ -10,6 +10,7 @@
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Info.h>
+#include <Atlas/Objects/Operation/Get.h>
 
 #include <rulesets/Character.h>
 #include <rulesets/ExternalMind.h>
@@ -151,21 +152,37 @@ oplist Connection::Operation(const Create & op)
 
 }
 
-oplist Connection::Operation(const Logout & obj)
+oplist Connection::Operation(const Logout & op)
 {
-    const Message::Object & account = obj.GetArgs().front();
+    const Message::Object & account = op.GetArgs().front();
     
     if (account.IsMap()) {
         string account_id = account.AsMap().find("id")->second.AsString();
         string password = account.AsMap().find("password")->second.AsString();
         Player * player = (Player *)server->get_object(account_id);
         if (player) {
-            Logout l = obj;
+            Logout l = op;
             l.SetFrom(player->fullid);
             debug(cout << "Logout without from. Using " << player->fullid << " instead." << endl << flush;);
             operation(l);
         }
     }
     oplist res;
+    return(res);
+}
+
+oplist Connection::Operation(const Get & op)
+{
+    oplist res;
+
+    cout << "Got get" << endl << flush;
+    Info * info = new Info();
+    *info = Info::Instantiate(); 
+    Message::Object::ListType args(1,server->asObject());
+    info->SetArgs(args);
+    info->SetRefno(op.GetSerialno());
+    cout << "Replying to get" << endl << flush;
+    
+    res.push_back(info);
     return(res);
 }

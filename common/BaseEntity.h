@@ -24,6 +24,7 @@ typedef enum op_no {
 	OP_MOVE,
 	OP_NOURISH,
 	OP_SET,
+	OP_GET,
 	OP_SIGHT,
 	OP_SOUND,
 	OP_TOUCH,
@@ -69,6 +70,9 @@ typedef enum op_no {
             break; \
         case OP_SET: \
             _result = _prefix ## Operation((const Set &)_op); \
+            break; \
+        case OP_GET: \
+            _result = _prefix ## Operation((const Get &)_op); \
             break; \
         case OP_SIGHT: \
             _result = _prefix ## Operation((const Sight &)_op); \
@@ -169,6 +173,7 @@ class Create;
 class Delete;
 class Move;
 class Set;
+class Get;
 class Sight;
 class Sound;
 class Touch;
@@ -392,6 +397,7 @@ class BaseEntity {
     virtual oplist Operation(const Delete & op) { oplist res; return(res); }
     virtual oplist Operation(const Eat & op) { oplist res; return(res); }
     virtual oplist Operation(const Fire & op) { oplist res; return(res); }
+    virtual oplist Operation(const Get & op) { oplist res; return(res); }
     virtual oplist Operation(const Move & op) { oplist res; return(res); }
     virtual oplist Operation(const Nourish & op) { oplist res; return(res); }
     virtual oplist Operation(const Set & op) { oplist res; return(res); }
@@ -436,6 +442,7 @@ class BaseEntity {
         if ("delete" == parent)  { return(OP_DELETE); }
         if ("eat" == parent)  { return(OP_EAT); }
         if ("fire" == parent)  { return(OP_FIRE); }
+        if ("get" == parent)  { return(OP_GET); }
         if ("move" == parent)  { return(OP_MOVE); }
         if ("nourish" == parent)  { return(OP_NOURISH); }
         if ("set" == parent)  { return(OP_SET); }

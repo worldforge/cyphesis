@@ -23,7 +23,7 @@ extern "C" {
 using Atlas::Message::Object;
 
 static const bool debug_flag = false;
-static int halt_time;
+static const int halt_time = 60 * 8;
 
 WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr), next_id(0)
 {
@@ -34,7 +34,6 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr), next_id(0)
     fobjects[fullid]=this;
     perceptives.push_back(this);
     objects_list.push_back(this);
-    halt_time = 60 * 60 * 8;
     //WorldTime tmp_date("612-1-1 08:57:00");
     //This structure is used to tell libatlas about stuff
     //world_info.time.s=tmp_date.seconds();
@@ -54,7 +53,7 @@ inline void WorldRouter::add_operation_to_queue(RootOperation & op,
     update_time();
     double t = world_info::time;
     //if (t > halt_time) {
-        //cout << "Exiting for memory leak report" << endl << flush;
+        //cout << "Exiting for memory leak and profiler report" << endl << flush;
         //exit(0);
     //}
     t = t + op.GetFutureSeconds();

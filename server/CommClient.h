@@ -19,26 +19,25 @@ class sockbuf : public filebuf {
     virtual streampos sys_seek(streamoff, _seek_dir) { return streampos(); }
 };
 
-using namespace Atlas;
-
 class CommClient : Objects::Decoder {
     int client_fd;
     //ofstream log_file;
     sockbuf client_buf;
     iostream client_ios;
-    Codec<iostream> * codec;
-    Objects::Encoder * encoder;
+    Atlas::Codec<iostream> * codec;
+    Atlas::Objects::Encoder * encoder;
     Connection * connection;
 
   protected:
     virtual void UnknownObjectArrived(const Atlas::Message::Object&);
-    virtual void ObjectArrived(const Objects::Operation::Login & op);
-    virtual void ObjectArrived(const Objects::Operation::Create & op);
-    virtual void ObjectArrived(const Objects::Operation::Move & op);
-    virtual void ObjectArrived(const Objects::Operation::Set & op);
-    virtual void ObjectArrived(const Objects::Operation::Touch & op);
-    virtual void ObjectArrived(const Objects::Operation::Look & op);
-    virtual void ObjectArrived(const Objects::Operation::Talk & op);
+    virtual void ObjectArrived(const Atlas::Objects::Operation::Login & op);
+    virtual void ObjectArrived(const Atlas::Objects::Operation::Create & op);
+    virtual void ObjectArrived(const Atlas::Objects::Operation::Move & op);
+    virtual void ObjectArrived(const Atlas::Objects::Operation::Set & op);
+    virtual void ObjectArrived(const Atlas::Objects::Operation::Touch & op);
+    virtual void ObjectArrived(const Atlas::Objects::Operation::Look & op);
+    virtual void ObjectArrived(const Atlas::Objects::Operation::Talk & op);
+    virtual void ObjectArrived(const Atlas::Objects::Operation::Get & op);
 
   public:
     CommServer * server;
@@ -73,7 +72,7 @@ class CommClient : Objects::Decoder {
     int eof() { return client_ios.eof(); }
     int get_fd() { return client_fd; }
 
-    void message(const Objects::Operation::RootOperation &);
+    void message(const Atlas::Objects::Operation::RootOperation &);
     int setup();
 };
 

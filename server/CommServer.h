@@ -21,6 +21,9 @@ class CommServer {
 
   public:
     ServerRouting * server;
+    const string identity;
+
+    CommServer(const string & ident) : identity(ident) { }
 
     int setup(int port);
     void loop();

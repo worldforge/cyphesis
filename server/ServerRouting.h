@@ -15,13 +15,15 @@ class CommServer;
 
 class ServerRouting : public Routing {
     CommServer * comm_server;
-    char * svr_name;
+    const string svr_name;
   public:
     WorldRouter * world;
     fdict_t id_dict;
 
-    ServerRouting(CommServer * server, char * name);
+    ServerRouting(CommServer * server, const string & name);
     ~ServerRouting() { }
+
+    virtual void addObject(Message::Object *) const;
 
     int idle() {
         return world->idle();
