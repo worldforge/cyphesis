@@ -1,3 +1,8 @@
+2004-06-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: Fix sight range calculations for Appearance
+	  and Disappearance ops.
+
 2004-05-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp, rulesets/MemMap.cpp, server/server.cpp:

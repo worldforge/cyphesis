@@ -273,32 +273,25 @@ OpVector Thing::MoveOperation(const Move & op)
         this_ent["stamp"] = (double)m_seq;
         Element::ListType this_as_args(1,this_ent);
         for(;I != m_location.m_loc->m_contains.end(); I++) {
-            const bool wasInRange = ((fromSquSize / squareDistance((*I)->m_location.m_pos, oldpos)) > consts::square_sight_factor),
-                       isInRange = ((fromSquSize / squareDistance((*I)->m_location.m_pos, m_location.m_pos)) > consts::square_sight_factor);
+            float oldDist = squareDistance((*I)->m_location.m_pos, oldpos),
+                  newDist = squareDistance((*I)->m_location.m_pos, m_location.m_pos),
+                  oSquSize = boxSquareSize((*I)->m_location.m_bBox);
+
             // Build appear and disappear lists, and send operations
             // Also so operations to (dis)appearing perceptive
             // entities saying that we are (dis)appearing
-            if (wasInRange ^ isInRange) {
-                Element::MapType that_ent;
-                that_ent["id"] = (*I)->getId();
-                that_ent["stamp"] = (double)(*I)->getSeq();
-                if (wasInRange) {
-                    // We are losing sight of that object
-                    disappear.push_back(that_ent);
-                    debug(std::cout << getId() << ": losing site of " <<(*I)->getId() << std::endl;);
-                    if ((*I)->isPerceptive()) {
+            if ((*I)->isPerceptive()) {
+                bool wasInRange = ((fromSquSize / oldDist) > consts::square_sight_factor),
+                     isInRange = ((fromSquSize / newDist) > consts::square_sight_factor);
+                if (wasInRange ^ isInRange) {
+                    if (wasInRange) {
                         // Send operation to the entity in question so it
                         // knows it is losing sight of us.
                         Disappearance * d = new Disappearance();
                         d->setArgs(this_as_args);
                         d->setTo((*I)->getId());
                         res2.push_back(d);
-                    }
-                } else /*if (isInRange)*/ {
-                    // We are gaining sight of that object
-                    appear.push_back(that_ent);
-                    debug(std::cout << getId() << ": gaining site of " <<(*I)->getId() << std::endl;);
-                    if ((*I)->isPerceptive()) {
+                    } else /*if (isInRange)*/ {
                         // Send operation to the entity in question so it
                         // knows it is gaining sight of us.
                         // FIXME We don't need to do this, cos its about
@@ -308,6 +301,25 @@ OpVector Thing::MoveOperation(const Move & op)
                         a->setTo((*I)->getId());
                         res2.push_back(a);
                     }
+                }
+            }
+            
+            bool couldSee = ((oSquSize / oldDist) > consts::square_sight_factor),
+                 canSee = ((oSquSize / newDist) > consts::square_sight_factor);
+            if (couldSee ^ canSee) {
+                Element::MapType that_ent;
+                that_ent["id"] = (*I)->getId();
+                that_ent["stamp"] = (double)(*I)->getSeq();
+                if (couldSee) {
+                    // We are losing sight of that object
+                    disappear.push_back(that_ent);
+                    debug(std::cout << getId() << ": losing site of "
+                                    << (*I)->getId() << std::endl;);
+                } else /*if (canSee)*/ {
+                    // We are gaining sight of that object
+                    appear.push_back(that_ent);
+                    debug(std::cout << getId() << ": gaining site of "
+                                    << (*I)->getId() << std::endl;);
                 }
             }
         }
