@@ -1,5 +1,5 @@
-COMMON_TESTS = logtest inheritancetest BaseEntitytest OOGThingtest \
-               systemtest utilitytest
+COMMON_TESTS = logtest inheritancetest Propertytest BaseEntitytest \
+               OOGThingtest systemtest utilitytest
 
 PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
 
@@ -29,6 +29,9 @@ inheritancetest_LDADD = $(top_builddir)/modules/DateTime.o \
                         $(top_builddir)/common/operations.o \
                         $(top_builddir)/common/log.o \
                         $(top_builddir)/common/globals.o
+
+Propertytest_SOURCES = Propertytest.cpp
+Propertytest_LDADD = $(top_builddir)/common/Property.o
 
 BaseEntitytest_SOURCES = BaseEntitytest.cpp EntityExerciser.h allOperations.h
 BaseEntitytest_LDADD = $(top_builddir)/modules/DateTime.o \

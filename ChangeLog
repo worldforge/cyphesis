@@ -1,5 +1,13 @@
 2004-10-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Property.cpp, common/Property.h, common/Property_impl.h:
+	  New class to automate and simplify handled of hard coded
+	  proerties.
+
+	* tests/Propertytest.cpp: Test for new Property class.
+
+2004-10-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp: Change default startup TOD to 9am so that
 	  its more light.
 

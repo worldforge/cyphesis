@@ -18,6 +18,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		serialno.cpp serialno.h refno.h \
 		inheritance.cpp inheritance.h \
 		custom.cpp \
+		Property.cpp Property_impl.h Property.h \
 		BaseEntity.cpp BaseEntity.h \
 		OOGThing.cpp OOGThing.h \
 		BaseWorld.cpp BaseWorld.h \
