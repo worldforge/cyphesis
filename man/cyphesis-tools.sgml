@@ -21,7 +21,7 @@
   </cmdsynopsis>
   <cmdsynopsis>
    <command>/usr/bin/cyloadrules</command>
-   <arg choice="opt">rulesetname atlas-map-file</arg>
+   <arg choice="opt">rulesetname atlas-xml-file</arg>
   </cmdsynopsis>
   <cmdsynopsis>
    <command>/usr/bin/cypasswd</command>
