@@ -106,26 +106,6 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     Element::MapType entmap;
     entmap["id"] = m_body.getId();
 
-    // Walk out what the mode of the character should be.
-    // Performed in squares to save on that critical sqrt() call
-    double vel_square_mag = m_velocity.sqrMag();
-    double square_speed_ratio;
-    if (vel_square_mag == 0.0) {
-        square_speed_ratio = 0.0;
-    } else {
-        square_speed_ratio = vel_square_mag / consts::square_base_velocity;
-    }
-    std::string mode;
-    if (square_speed_ratio > 0.25) { // 0.5 ^ 2
-        mode = std::string("running");
-    } else if (square_speed_ratio > 0.0025) { // 0.05 ^ 2
-        mode = std::string("walking");
-    } else {
-        mode = std::string("standing");
-    }
-    debug( std::cout << "Mode set to " << mode << std::endl << std::flush;);
-    entmap["mode"] = mode;
-
     // If velocity is not set, return this simple operation.
     if (!m_velocity.isValid()) {
         debug( std::cout << "only velocity changed." << std::endl
@@ -137,6 +117,19 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
             *rloc = new_loc;
         }
         return moveOp;
+    }
+
+    // Walk out what the mode of the character should be.
+    // Performed in squares to save on that critical sqrt() call
+    double vel_square_mag = m_velocity.sqrMag();
+    double square_speed_ratio = vel_square_mag / consts::square_base_velocity;
+
+    if (square_speed_ratio > 0.25) { // 0.5 ^ 2
+        entmap["mode"] = "running";
+    } else if (square_speed_ratio > 0.0025) { // 0.05 ^ 2
+        entmap["mode"] = "walking";
+    } else {
+        entmap["mode"] = "standing";
     }
 
     // Update location
@@ -187,12 +180,9 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
             } else {
                 if (m_collPos.isValid()) {
                     // Generate touch ops
-                    // m_velocity[m_collAxis] = 0; // FIXME Sort out with collision normal
-                    m_velocity = Vector3D(0,0,0);
+                    // This code relies on m_collNormal being a unit vector
+                    m_velocity -= m_collNormal * Dot(m_collNormal, m_velocity);
                     if ((m_velocity.mag() / consts::base_velocity) > 0.05) {
-                        // Wrong: orientation should not be affected by a
-                        // collision
-                        // new_loc.m_orientation = Quaternion(Vector3D(1,0,0), m_velocity.unitVector());
                         m_collPos = Vector3D();
                         m_collEntity = NULL;
                         m_velocity.normalize();

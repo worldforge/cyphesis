@@ -1,3 +1,9 @@
+2003-10-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Pedestrian.cpp: Re-order and simplify code for handling
+	  characters mode string. Implement changing characters direction
+	  at collision.
+
 2003-10-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommPSQLSocket.cpp: Implement processing the response to
