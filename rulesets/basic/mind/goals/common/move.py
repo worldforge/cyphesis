@@ -253,12 +253,13 @@ class hunt(pursuit):
 
 class hunt_for(pursuit):
     """hunt something at range"""
-    def __init__(self, what, range):
+    def __init__(self, what, range, proximity=5):
         Goal.__init__(self,"hunt for something",
                       self.in_range,
                       [self.run])
         self.what = what
         self.range = range
+        self.proximity = proximity
         self.direction = 1
         self.vars=["what","range","direction"]
     def in_range(self,me):
@@ -266,7 +267,7 @@ class hunt_for(pursuit):
         thing=me.find_thing(self.what)[0]
 	thing_xyz = thing.get_xyz()
         distance = me.get_xyz().distance(thing.get_xyz())
-        return distance < 5
+        return distance < self.proximity
 
 ############################ HUNT ####################################
 

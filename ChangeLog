@@ -1,5 +1,34 @@
 2001-05-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/define_world.py: Added archers who can hunt deer.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py:
+	  Added the hunting goal.
+
+	* rulesets/basic/mind/goals/common/move.py: Modified hunt_for()
+	  goal so it has variable attack proximity.
+
+	* common/op_switch.h, common/operations.h, common/Generic.h,
+	  rulesets/Character.cpp, rulesets/Entity.h, rulesets/Entity.cpp,
+	  rulesets/Python_API.cpp: Added handling of operation types not
+	  directly supported by C++ classes in the scripting engine. In
+	  order for these to be used they must be created in a script, and
+	  received in a script.
+
+	* rulesets/Character.cpp: Avoid using RootOperation pointers unless
+	  that is really what we mean.
+
+	* rulesets/Character.cpp: Added code to delete operations from
+	  internal mind when external mind is active.
+
+	* rulesets/Entity.cpp: Handled leaking of null script objects,
+	  and python script objects.
+
+	* rulesets/Connection.cpp: Delete characters external mind when
+	  connection goes down.
+
+2001-05-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/define_world.py: Started coding new NPC's for Acorn 0.4
 
 	* rulesets/basic/mind/goals/common/misc_goal.py: Fixed bug in

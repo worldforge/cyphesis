@@ -42,12 +42,14 @@ namespace Atlas {
             class Cut;
             class Chop;
             class Fire;
+            class Generic;
             class RootOperation;
         }
     }
 }
 
 using Atlas::Objects::Operation::RootOperation;
+using Atlas::Objects::Operation::Generic;
 
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;

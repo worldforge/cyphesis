@@ -213,7 +213,16 @@ def default(mapeditor):
     m.own(warrior,sword)
 
     warrior=m.make('Vonaa Barile',type='archer',xyz=inn_xyz,sex='female')
+    m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
+    bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
+    m.own(warrior,bow)
+
     warrior=m.make('Lile Birloc', type='archer',xyz=inn_xyz,sex='female')
+    m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
+    bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
+    m.own(warrior,bow)
+
+    m.make('deer',type='deer',xyz=inn_xyz)
 
     # I am not sure if we need a guard
     #m.know(guard,gknowledge)

@@ -69,8 +69,8 @@ void Connection::destroy()
         Thing * obj = (Thing*)ent;
         if (obj->isCharacter == true) {
             Character * character = (Character *)obj;
-            // FIXME Should do something to delete the external mind
             if (character->externalMind != NULL) {
+                delete character->externalMind;
                 character->externalMind = NULL;
             }
         }

@@ -41,7 +41,12 @@ Entity::Entity() : script(new Script), world(NULL), seq(0), status(1),
     inGame = true;
 }
 
-Entity::~Entity() { }
+Entity::~Entity()
+{
+    if (script != NULL) {
+        delete script;
+    }
+}
 
 const Object & Entity::operator[](const string & aname)
 {
@@ -83,9 +88,13 @@ void Entity::set(const string & aname, const Object & attr)
     }
 }
 
-int Entity::setScript(Script * scrpt) {
+void Entity::setScript(Script * scrpt)
+{
+    if (script != NULL) {
+        delete script;
+    }
     script = scrpt;
-    return (scrpt == NULL ? -1 : 0);
+    return;
 }
 
 MemMap * Entity::getMap() {
@@ -323,5 +332,14 @@ oplist Entity::Operation(const Disappearance & op)
 {
     oplist res;
     script->Operation("disappearance", op, res);
+    return res;
+}
+
+oplist Entity::Operation(const RootOperation & op)
+{
+    const string & op_type = op.GetParents().front().AsString();
+    oplist res;
+    cout << "Entity " << fullid << " got custom " << op_type << " op" << endl << flush;
+    script->Operation(op_type, op, res);
     return res;
 }

@@ -34,6 +34,7 @@
 #include <common/Setup.h>
 #include <common/Eat.h>
 #include <common/Nourish.h>
+#include <common/Generic.h>
 
 static void Function_dealloc(FunctionObject * self)
 {
@@ -609,11 +610,12 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         Py_INCREF(Py_None);
         return Py_None;
     } else {
-        fprintf(stderr, "ERROR: PYTHON CREATING AN UNHANDLED %s OPERATION\n", type);
+        op->operation = new RootOperation(Generic::Instantiate(type));
+        fprintf(stderr, "NOTICE: Python creating a custom %s op\n", type);
         //*op->operation = RootOperation::Instantiate();
-        Py_DECREF(op);
-        Py_INCREF(Py_None);
-        return Py_None;
+        // Py_DECREF(op);
+        // Py_INCREF(Py_None);
+        // return Py_None;
     }
     op->own = 1;
     if (PyMapping_HasKeyString(kwds, "to")) {

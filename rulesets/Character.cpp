@@ -174,7 +174,7 @@ oplist Character::Operation(const Setup & op)
     l = new Look(Look::Instantiate());
     l->SetTo(fullid);
     res2.push_back(l);
-    RootOperation * tick = new Tick(Tick::Instantiate());
+    Tick * tick = new Tick(Tick::Instantiate());
     tick->SetTo(fullid);
     res2.push_back(tick);
     return res2;
@@ -199,14 +199,14 @@ oplist Character::Operation(const Tick & op)
             }
         }
         Location ret_loc;
-        RootOperation * moveOp = movement.genMoveOperation(&ret_loc);
+        Move * moveOp = movement.genMoveOperation(&ret_loc);
         if (moveOp) {
             oplist res(2);
             Object::MapType entmap;
             entmap["name"]=Object("move");
             entmap["serialno"]=Object(movement.serialno);
             Object ent(entmap);
-            RootOperation * tickOp = new Tick(Tick::Instantiate());
+            Tick * tickOp = new Tick(Tick::Instantiate());
             tickOp->SetTo(fullid);
             tickOp->SetFutureSeconds(movement.getTickAddition(ret_loc.coords));
             tickOp->SetArgs(Object::ListType(1,ent));
@@ -245,7 +245,7 @@ oplist Character::Operation(const Tick & op)
         }
         
         // TICK
-        RootOperation * tickOp = new Tick(Tick::Instantiate());
+        Tick * tickOp = new Tick(Tick::Instantiate());
         tickOp->SetTo(fullid);
         tickOp->SetFutureSeconds(consts::basic_tick * 30);
         res.push_back(tickOp);
@@ -450,7 +450,7 @@ oplist Character::mindOperation(const Move & op)
             location.face = direction;
         }
         Location ret_location;
-        RootOperation * moveOp = movement.genMoveOperation(&ret_location);
+        Move * moveOp = movement.genMoveOperation(&ret_location);
         const Location & current_location = (NULL!=moveOp) ? ret_location : location;
         movement.reset();
         if ((vel_mag==0) || !direction) {
@@ -470,7 +470,7 @@ oplist Character::mindOperation(const Move & op)
             }
             return oplist();
         }
-        RootOperation * tickOp = new Tick(Tick::Instantiate());
+        Tick * tickOp = new Tick(Tick::Instantiate());
         Object::MapType ent;
         ent["serialno"] = Object(movement.serialno);
         ent["name"] = Object("move");
@@ -483,7 +483,7 @@ oplist Character::mindOperation(const Move & op)
         movement.targetPos = location_coords;
         movement.velocity = direction * vel_mag;
         debug( cout << "Velocity " << vel_mag << endl << flush;);
-        RootOperation * moveOp2 = movement.genMoveOperation(NULL,current_location);
+        Move * moveOp2 = movement.genMoveOperation(NULL,current_location);
         tickOp->SetFutureSeconds(movement.getTickAddition(location.coords));
         debug( cout << "Next tick " << tickOp->GetFutureSeconds() << endl << flush;);
         if (NULL != moveOp2) {
@@ -647,7 +647,8 @@ oplist Character::mindOperation(const Error & op)
 
 oplist Character::mindOperation(const RootOperation & op)
 {
-    return oplist();
+    RootOperation * e = new RootOperation(op);
+    return oplist(1,e);
 }
 
 oplist Character::w2mOperation(const Action & op)
@@ -735,7 +736,8 @@ oplist Character::w2mOperation(const Disappearance & op)
 
 oplist Character::w2mOperation(const RootOperation & op)
 {
-    return oplist();
+    RootOperation * r = new RootOperation(op);
+    return oplist(1,r);
 }
 
 oplist Character::w2mOperation(const Error & op)
@@ -805,16 +807,19 @@ oplist Character::sendMind(const RootOperation & op)
         if (!autom) {
             debug( cout << "Turning automatic on for " << fullid << endl << flush;);
             autom = true;
-            if (externalMind != NULL) {
-                delete externalMind;
-                externalMind = NULL;
-            }
         }
     }
     debug(cout << "Using " << local_res.size() << " ops from "
                << (autom ? "local mind" : "external mind")
                << endl << flush;);
+
+    // This is the list that is to be passed back to the world
     const oplist & res = autom ? local_res : external_res;
+    // This list of ops is to be discarded
+    const oplist & dump_res = autom ? external_res : local_res ;
+    for(oplist::const_iterator J = dump_res.begin(); J != dump_res.end(); J++) {
+        delete *J;
+    }
     // At this point there is a bunch of conversion stuff that I don't
     // understand
     

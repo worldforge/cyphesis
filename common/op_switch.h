@@ -89,8 +89,7 @@
             return _prefix ## Operation((const Error &)_op); \
             break; \
         default: \
-            cout << "nothing doing here {" << _op.GetParents().front().AsString() << "}" << endl; \
-            return _prefix ## Operation(_op); \
+            return _prefix ## Operation((const RootOperation &)_op); \
             break; \
     }
 

@@ -48,7 +48,7 @@ class Entity : public BaseEntity {
     virtual MemMap * getMap();
     virtual void destroy();
 
-    int setScript(Script * scrpt);
+    void setScript(Script * scrpt);
     void merge(const Atlas::Message::Object::MapType &);
     void getLocation(const Atlas::Message::Object::MapType &, edict_t &);
     Vector3D getXyz() const;
@@ -72,6 +72,7 @@ class Entity : public BaseEntity {
     virtual oplist Operation(const Look & op);
     virtual oplist Operation(const Appearance & op);
     virtual oplist Operation(const Disappearance & op);
+    virtual oplist Operation(const RootOperation & op);
 };
 
 inline ostream & operator<<(ostream& s, Location& v)
