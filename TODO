@@ -1,3 +1,8 @@
+Knowledge needs to work with arbitrary predicates. Currently a hard coded set.
+
+MemEntity needs some kind of reference flag/count if a python object
+is holding a reference.
+
 Fix unit_vector_to in python interface to make sure it doesn't cause
 a normalise() abort(). Probably re-write to use relativePosition() which
 may need to be fixed to give the right direction. The correct direction
