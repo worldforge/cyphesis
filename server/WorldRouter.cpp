@@ -6,6 +6,7 @@
 #include "WorldRouter.h"
 
 #include <rulesets/Thing.h>
+#include <common/WorldInfo.h>
 
 extern "C" {
     #include <stdio.h>
@@ -14,18 +15,18 @@ extern "C" {
 
 WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
 {
-    id = 0;
+    //id = 0;
     fullid = "world_0";
-    //WorldRouter::base_init(kw);
-    //WorldRouter::operation_queue=avl_tree();
-    real_time=time(NULL);
-    server->id_dict[id]=this;
-    objects[id]=this;
+    update_time();
+    // real_time=time(NULL);
+    // world_info::time = time(NULL);
+    server->id_dict[fullid]=this;
+    //objects[id]=this;
     fobjects[fullid]=this;
-    //WorldRouter::illegal_thing =
-                         //server.id_dict["illegal"]=
-                         //objects["illegal"]=Thing(id="illegal",name="illegal");
-    //WorldRouter::illegal_thing.deleted=1;
+    illegal_thing = new Thing();
+    illegal_thing->fullid = "illegal";
+    illegal_thing->name = "illegal";
+    illegal_thing->deleted = 1;
     //WorldTime tmp_date("612-1-1 08:57:00");
     //This structure is used to tell libatlas about stuff
     //world_info.time.s=tmp_date.seconds();
@@ -34,8 +35,9 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
     //world_info.string2DateTime=WorldTime;
 }
 
-cid_t WorldRouter::get_id(string & name, string & full_id)
+string WorldRouter::get_id(string & name)
 {
+    string full_id;
     char * buf = (char *)malloc(strlen(name.c_str()) + 32);
     next_id++;
     if (buf) {
@@ -44,13 +46,13 @@ cid_t WorldRouter::get_id(string & name, string & full_id)
     } else {
         cout << "BARRRRF" << endl << flush;
     }
-    return(next_id);
+    return(full_id);
 }
 
 BaseEntity * WorldRouter::add_object(BaseEntity * obj)
 {
-    obj->id=get_id(obj->name, obj->fullid);
-    server->id_dict[obj->id]=fobjects[obj->fullid]=objects[obj->id]=obj;
+    obj->fullid=get_id(obj->name);
+    server->id_dict[obj->fullid]=fobjects[obj->fullid]=obj;
     if (!obj->location) {
         obj->location=Location(this, Vector3D(0,0,0));
     }
@@ -82,9 +84,6 @@ BaseEntity * WorldRouter::add_object(const string & type,
 {
     BaseEntity * obj;
     obj = ThingFactory::new_thing(type, ent);
-    //if (ent) {
-        //obj=object_from_entity(type,ent);
-    //}
     return add_object(obj);
 }
 
@@ -94,27 +93,15 @@ void WorldRouter::del_object(BaseEntity * obj)
     omnipresent_list.remove(obj);
     perceptives.remove(obj);
 
-    // This code used to replace the endtry in object with illegal_object
-    // I don't know is this is necessary
-    //cid_t tid=obj->id;
-    //dict_t::const_iterator I;
-    //if ((I=objects.find(tid))!=objects.end()) {
-        //objects.erase(I);
-    //}
-    objects.erase(obj->id);
+    //objects.erase(obj->id);
+    //objects[obj->id] = illegal_thing;
+    fobjects[obj->fullid] = illegal_thing;
 }
 
 bad_type WorldRouter::is_object_deleted(BaseEntity * obj)
 {
-    // THis code used to check with object[obj->id] was illegal_thing
-    // so I am not sure if this is the right way to do it.
-    return (objects.find(obj->id)!=objects.end());
-}
-
-bad_type WorldRouter::message(bad_type msg, BaseEntity * obj)
-{
-    //apply_to_operation(&WorldRouter::add_operation_to_queue,msg,obj);
-    return None;
+    //return (objects.find(obj->id)!=objects.end());
+    return find_object(obj->fullid)->fullid=="illegal";
 }
 
 RootOperation * WorldRouter::message(const RootOperation & msg)
@@ -278,33 +265,13 @@ RootOperation * WorldRouter::get_operation_from_queue()
     if (I == operation_queue.end()) {
         return(NULL);
     }
-    double t = double(time(NULL));
-    if ((*I)->GetSeconds() > t) {
+    if ((*I)->GetSeconds() > real_time) {
         return(NULL);
     }
     cout << "pulled op off queue" << endl << flush;
     RootOperation * op = (*I);
     operation_queue.pop_front();
     return(op);
-#if 0
-    if (not WorldRouter::operation_queue) {
-        return None;
-    }
-    op=WorldRouter::operation_queue[0];
-    if (op.time>world_info.time.s) {
-        return None;
-    }
-    WorldRouter::operation_queue.remove(op);
-    op.time.s=op.time.s+op.time.sadd;
-    op.time.sadd=0.0;
-    log.debug(3,WorldRouter::print_queue("removed!!"));
-    if (WorldRouter::queue_fp) {
-        WorldRouter::queue_fp.write("get_operation_from_queue:\n"+str(op)+"\n");
-        WorldRouter::queue_fp.flush();
-    }
-    return op;
-#endif
-    return None;
 }
 
 bad_type WorldRouter::find_range(BaseEntity * obj, bad_type attribute, bad_type range, bad_type generate_messages=0)
@@ -464,6 +431,8 @@ bad_type WorldRouter::update_time()
                        const.time_multiplier*(new_time-WorldRouter::real_time);
     WorldRouter::real_time=new_time;
 #endif
+    world_info::time = time(NULL);
+    real_time = world_info::time;
     return None;
 }
 
@@ -477,11 +446,15 @@ bad_type WorldRouter::get_time()
 
 bad_type WorldRouter::idle()
 {
-    RootOperation * op = get_operation_from_queue();
-    if (!op) {
+    update_time();
+    RootOperation * op;
+    while ((op = get_operation_from_queue()) != NULL) {
+        cout << "OP" << endl << flush;
+        operation(op);
+    }
+    if (op==NULL) {
         return(0);
     }
-    operation(op);
     return(1);
 #if 0
     WorldRouter::update_time();

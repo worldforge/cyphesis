@@ -9,18 +9,16 @@ typedef int bad_type; // Remove this to get unset type reporting
 
 class Routing : public OOG_Thing {
 public:
-    dict_t objects;
+    //dict_t objects;
     fdict_t fobjects;
-    cid_t next_id;
+    int next_id;
 
     Routing();
     virtual ~Routing() { }
-    bad_type check_operation(bad_type op);
     virtual BaseEntity * add_object(BaseEntity * obj);
-    BaseEntity * del_object(BaseEntity * obj);
-    BaseEntity * get_object(cid_t id);
-    BaseEntity * get_object(string fid);
-    BaseEntity * find_object(cid_t id);
+    virtual void del_object(BaseEntity * obj);
+    BaseEntity * get_object(const string & fid);
+    BaseEntity * find_object(const string & fid);
 };
 
 #endif /* ROUTING_H */

@@ -8,22 +8,29 @@ typedef int bad_type; // Remove this to get unset type reporting
 class BaseMind;
 class ExternalMind;
 class Account;
+class Character;
+class Location;
 
 #include "Thing.h"
 
-class MovementInfo {
-    bad_type target_location;
-    bad_type velocity;
-    bad_type serialno;
-    bad_type last_movement_time;
+#include <physics/Vector3D.h>
 
-    public:
-    MovementInfo();
-    bad_type update_needed(bad_type location);
-    bad_type get_tick_addition(bad_type coordinates);
-    bad_type __str__();
-    bad_type reset();
-    bad_type gen_move_operation(bad_type body, bad_type loc=None);
+class MovementInfo {
+    Character * body;
+    Vector3D target_location;
+    Vector3D velocity;
+    double last_movement_time;
+    int serialno;
+    //bad_type last_movement_time;
+
+  public:
+    MovementInfo(Character * body);
+    bool update_needed(const Location & location);
+    double get_tick_addition(const Vector3D & coordinates);
+    //bad_type __str__();
+    void reset();
+    RootOperation * gen_move_operation(Location &);
+    RootOperation * gen_move_operation();
 };
 
 class Character : public Thing {

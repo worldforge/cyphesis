@@ -4,6 +4,7 @@
 #include <fstream.h>
 
 class WorldRouter;
+class Thing;
 
 #include "Routing.h"
 #include "ServerRouting.h"
@@ -22,6 +23,7 @@ typedef int bad_type; // Remove this to get unset type reporting
 
 class WorldRouter : public Routing {
     ServerRouting * server;
+    Thing * illegal_thing;
     double real_time;
     std::list<RootOperation *> operation_queue;
 
@@ -34,16 +36,15 @@ class WorldRouter : public Routing {
 
     WorldRouter(ServerRouting * server);
     virtual ~WorldRouter() { }
-    bad_type get_id(string & name, string & full_id);
+
+    string get_id(string & name);
     virtual BaseEntity * add_object(BaseEntity * obj);
     virtual BaseEntity * add_object(const string & type, const Message::Object & ent);
-    void del_object(BaseEntity * obj);
+    virtual void del_object(BaseEntity * obj);
     bad_type is_object_deleted(BaseEntity *);
     virtual RootOperation * message(RootOperation & msg, BaseEntity * obj);
     virtual RootOperation * message(const RootOperation & msg);
-    bad_type message(bad_type msg, BaseEntity *);
     BaseEntity * get_operation_place(bad_type op);
-    bad_type operation(bad_type op);
     virtual RootOperation * operation(const RootOperation * op);
     virtual RootOperation * operation(const RootOperation & op);
     virtual RootOperation * Operation(const Look & op);

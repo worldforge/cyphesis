@@ -5,45 +5,38 @@
 #include "Routing.h"
 
 
-Routing::Routing() : next_id(0)
-{
-    //Routing::base_init(kw);
-}
-
-bad_type Routing::check_operation(bad_type op)
-{
-    //if (op.id=="check") {
-        //return Routing::error(op,"Check operation not supported");
-    //}
-    return None;
-}
+Routing::Routing() : next_id(0) { }
 
 BaseEntity * Routing::add_object(BaseEntity * obj)
 {
-    objects[obj->id]=obj;
+    //objects[obj->id]=obj;
     fobjects[obj->fullid]=obj;
     return obj;
 }
 
-BaseEntity * Routing::del_object(BaseEntity * obj)
+void Routing::del_object(BaseEntity * obj)
 {
-    delete objects[obj->id];
-    return(NULL);
-    // Is the return type wrong here?
+    fobjects.erase(obj->fullid);
+    delete obj;
 }
 
-BaseEntity * Routing::get_object(cid_t id)
+//BaseEntity * Routing::get_object(cid_t id)
+//{
+    //return Routing::objects[id];
+//}
+
+BaseEntity * Routing::get_object(const string & fid)
 {
-    return Routing::objects[id];
+    return Routing::fobjects[fid];
 }
 
-BaseEntity * Routing::get_object(string fid)
+BaseEntity * Routing::find_object(const string & fid)
 {
     return Routing::fobjects[fid];
 }
 
 
-BaseEntity * Routing::find_object(cid_t id)
-{
-    return Routing::objects[id];
-}
+//BaseEntity * Routing::find_object(cid_t id)
+//{
+    //return Routing::objects[id];
+//}

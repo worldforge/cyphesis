@@ -11,6 +11,7 @@
 #include <Atlas/Objects/Operation/Talk.h>
 #include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Sight.h>
+#include <Atlas/Objects/Operation/Move.h>
 
 
 #include "Character.h"
@@ -21,116 +22,122 @@
 
 #include <server/WorldRouter.h>
 
-MovementInfo::MovementInfo() { }
+#include <modules/Location.h>
 
-#if 0
-// debug_movement=0;
+#include <common/WorldInfo.h>
+#include <common/const.h>
 
-    MovementInfo::MovementInfo()
-    {
-        MovementInfo::serialno=-1;
-        MovementInfo::reset();
+static int debug_movement=0;
+
+MovementInfo::MovementInfo(Character * body) : body(body)
+{
+    serialno=-1;
+    reset();
+}
+
+void MovementInfo::reset()
+{
+    serialno = MovementInfo::serialno+1;
+    target_location=Vector3D(0,0,0);
+    velocity=Vector3D(0,0,0);
+    last_movement_time=world_info::time;
+}
+
+bool MovementInfo::update_needed(const Location & location)
+{
+    return((velocity!=Vector3D(0,0,0))||(location.velocity!=Vector3D(0,0,0)));
+}
+
+RootOperation * MovementInfo::gen_move_operation()
+{
+    return(gen_move_operation(body->location));
+}
+
+RootOperation * MovementInfo::gen_move_operation(Location & loc)
+{
+    if (debug_movement) {
+        cout << "gen_move_operation: status:" << endl << flush;
     }
-
-    bad_type MovementInfo::reset()
-    {
-        MovementInfo::serialno=MovementInfo::serialno+1;
-        MovementInfo::target_location=Vector3D(0,0,0);
-        MovementInfo::velocity=Vector3D(0,0,0);
-        MovementInfo::last_movement_time=world_info.time.s;
-    }
-
-    bad_type MovementInfo::update_needed(bad_type location)
-    {
-        if (MovementInfo::velocity or location.velocity) {
-            return 1;
-        }
-    }
-
-    bad_type MovementInfo::gen_move_operation(bad_type body, bad_type loc=None)
-    {
-        if (not loc) {
-            loc=body.location;
-        }
+    if (update_needed(loc)) {
         if (debug_movement) {
-            print "gen_move_operation: status:",this;
+            cout << "gen_move_operation: Update needed...";
         }
-        if (MovementInfo::update_needed(loc)) {
+        double current_time=world_info::time;
+        double time_diff=current_time-last_movement_time;
+        if (debug_movement) {
+            cout << "time_diff:" << time_diff << endl << flush;
+        }
+        last_movement_time=current_time;
+        Location new_loc=loc;
+        Message::Object * ent = new Message::Object;
+        new_loc.velocity=velocity;
+        new_loc.addObject(ent);
+        Move * moveOp = new Move;
+        moveOp->SetTo(body->fullid);
+        list<Message::Object> args(1,*ent);
+        moveOp->SetArgs(args);
+        if (!velocity) {
             if (debug_movement) {
-                print "gen_move_operation: Update needed...";
-            }
-            current_time=world_info.time.s;
-            time_diff=current_time-MovementInfo::last_movement_time;
-            if (debug_movement) {
-                print "time_diff:",time_diff;
-            }
-            MovementInfo::last_movement_time=current_time;
-            new_loc=loc.copy();
-            ent=Entity(body.id,location=new_loc);
-            moveOp=Operation("move",ent,to=body);
-            new_loc.velocity=MovementInfo::velocity;
-            if (not MovementInfo::velocity) {
-                if (debug_movement) {
-                    print "only velocity changed...";
-                }
-                return moveOp;
-            }
-            new_coords=loc.coordinates+MovementInfo::velocity*time_diff;
-            if (MovementInfo::target_location) {
-                new_coords2=new_coords+MovementInfo::velocity/const.basic_tick/10.0;
-                dist=MovementInfo::target_location.distance(new_coords);
-                dist2=MovementInfo::target_location.distance(new_coords2);
-                if (debug_movement) {
-                    print "dist:",dist,dist2;
-                }
-                if (dist2>dist) {
-                    if (debug_movement) {
-                        print "target achieved";
-                    }
-                    new_coords=MovementInfo::target_location;
-                    MovementInfo::reset();
-                    new_loc.velocity=MovementInfo::velocity;
-                }
-            }
-            new_loc.coordinates=new_coords;
-            if (debug_movement) {
-                print "new coordinates:",new_loc.coordinates;
+                cout << "only velocity changed..." << endl << flush;
             }
             return moveOp;
         }
-    }
-
-    bad_type MovementInfo::get_tick_addition(bad_type coordinates)
-    {
-        basic_distance=MovementInfo::velocity.mag()*const.basic_tick;
-        if (MovementInfo::target_location) {
-            distance=coordinates.distance(MovementInfo::target_location);
+        Vector3D new_coords=loc.coords+(velocity*time_diff);
+        if (!target_location) {
+            Vector3D new_coords2 = new_coords+velocity/consts::basic_tick/10.0;
+            double dist=target_location.distance(new_coords);
+            double dist2=target_location.distance(new_coords2);
             if (debug_movement) {
-                print "basic_distance:",basic_distance,;
-                print "distance:",distance;
+                cout << "dist:" << endl << flush; //,dist,dist2;
             }
-            if (basic_distance>distance) {
+            if (dist2>dist) {
                 if (debug_movement) {
-                    print "\tshortened tick";
+                    cout << "target achieved";
                 }
-                return distance/basic_distance*const.basic_tick;
+                new_coords=target_location;
+                reset();
+                new_loc.velocity=velocity;
             }
         }
-        return const.basic_tick;
+        new_loc.coords=new_coords;
+        if (debug_movement) {
+            cout << "new coordinates:" << endl << flush; //new_loc.coordinates;
+        }
+        return(moveOp);
     }
+    return(NULL);
+}
+
+double MovementInfo::get_tick_addition(const Vector3D & coordinates)
+{
+    double basic_distance=velocity.mag()*consts::basic_tick;
+    if (!(!target_location)) {
+        double distance=coordinates.distance(target_location);
+        if (debug_movement) {
+            cout << "basic_distance:" << endl << flush; //basic_distance,;
+            cout << "distance:" << endl << flush; //distance;
+        }
+        if (basic_distance>distance) {
+            if (debug_movement) {
+                cout << "\tshortened tick" << endl << flush;
+            }
+            return distance/basic_distance*consts::basic_tick;
+        }
+    }
+    return consts::basic_tick;
+}
 
 
-    bad_type MovementInfo::__str__()
-    {
-        return "MovementInfo(%i,%s,%s,%s)" % \;
-               (MovementInfo::serialno,MovementInfo::target_location,MovementInfo::velocity,;
-                MovementInfo::last_movement_time);
-    }
-#endif
+//bad_type MovementInfo::__str__()
+//{
+    //return "MovementInfo(%i,%s,%s,%s)" %
+           //(MovementInfo::serialno,MovementInfo::target_location,MovementInfo::velocity,;
+            //MovementInfo::last_movement_time);
+//}
 
 
 //"This is generic body class that all characters inherit from";
-Character::Character() : movement(), sex("female"), drunkness(0.0), autom(0)
+Character::Character() : movement(this), sex("female"), autom(0), drunkness(0.0)
 {
     weight = 60.0;
     is_character = 1;
@@ -181,7 +188,7 @@ bad_type Character::tick_operation(bad_type op)
     if (hasattr(op,"sub_to")) {
         return None ; //meant for mind;
     }
-    time=world_info.time.s;
+    time=world_info::time;
     if (debug_movement) {
         print "="*60;
     }
@@ -309,7 +316,7 @@ bad_type Character::mind_move_operation(bad_type op)
 
     if (debug_movement) {
         print "-"*60;
-        print "Current:",this,world_info.time.s,`Character::location`,;
+        print "Current:",this,world_info::time,`Character::location`,;
         print "Velocity:",Character::location.velocity;
         print "Requested:",`location`,"Velocity:",location.velocity;
         if (location.coordinates) {

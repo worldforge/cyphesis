@@ -75,10 +75,10 @@ typedef int bad_type; // Remove this to get unset type reporting
 
 #define None 0 // Remove this to deal with un-initialied vars
 
-typedef int cid_t;
+//typedef int cid_t;
 
-typedef std::map<cid_t, BaseEntity *> dict_t;
-typedef std::pair<cid_t, BaseEntity *> idpair_t;
+//typedef std::map<cid_t, BaseEntity *> dict_t;
+//typedef std::pair<cid_t, BaseEntity *> idpair_t;
 
 typedef std::map<string, BaseEntity *> fdict_t;
 typedef std::pair<string, BaseEntity *> fidpair_t;
@@ -240,7 +240,7 @@ bad_type get_dict_func(bad_type dict, bad_type func_str, bad_type func_undefined
 
 class BaseEntity {
   public:
-    cid_t id;
+    //cid_t id;
     string fullid;
     string name;
     Location location;
@@ -258,7 +258,6 @@ class BaseEntity {
     bad_type __repr__();
     bad_type get_type();
     Vector3D get_xyz();
-    bad_type as_entity();
     bad_type message(bad_type msg, bad_type op_method);
     bad_type external_message(bad_type msg);
 

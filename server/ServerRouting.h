@@ -17,7 +17,7 @@ class ServerRouting : public Routing {
     char * svr_name;
   public:
     WorldRouter * world;
-    dict_t id_dict;
+    fdict_t id_dict;
 
     ServerRouting(CommServer * server, char * name);
     virtual ~ServerRouting() { }

@@ -1,13 +1,15 @@
+#include <Atlas/Message/Object.h>
+
 #include "Vector3D.h"
 
 
 //Vector3D::Vector3D(double x, double y, double z) : x(x), y(y), z(z) { }
 
 
-bool Vector3D::operator==(Vector3D other)
+bool Vector3D::operator==(Vector3D other) const
 {
         //"Check if two vector are equal";
-        return ((x==other.x) && (y==other.y) && (z=other.z));
+        return ((x==other.x) && (y==other.y) && (z==other.z));
 }
 
 
@@ -47,6 +49,11 @@ double Vector3D::operator[](int index)
 			//Throw an exception here maybe
 			return(0);
 	}
+}
+
+bool Vector3D::operator!() const
+{
+    return((x == 0) && (y == 0) && (z == 0));
 }
 
 //Do we need this
@@ -149,8 +156,21 @@ double Vector3D::mag()
 }
 
 
-double Vector3D::distance(Vector3D v)
+double Vector3D::distance(Vector3D v) const
 {
         //"Find the distance between two vectors";
         return sqrt((x - v.x)*(x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z));
+}
+
+using namespace Atlas;
+using namespace Message;
+
+Object & Vector3D::asObject() const
+{
+    Object::ListType coords;
+    coords.push_back(Object(x));
+    coords.push_back(Object(y));
+    coords.push_back(Object(z));
+    Object * obj = new Object(coords);
+    return(*obj);
 }

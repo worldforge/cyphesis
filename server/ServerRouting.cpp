@@ -7,9 +7,10 @@
 
 ServerRouting::ServerRouting(CommServer * server, char * name) : svr_name(name)
 {
+    fullid = name;
     //ServerRouting::base_init(kw);
     comm_server=server ; //communication server;
-    id_dict[id] = this;
+    id_dict[fullid] = this;
     world=new WorldRouter(this); //game world;
     //obj=add_object(persistence.load_admin_account());
     //obj.server=self;
@@ -18,7 +19,7 @@ ServerRouting::ServerRouting(CommServer * server, char * name) : svr_name(name)
 
 BaseEntity * ServerRouting::add_object(BaseEntity * obj) {
     obj=Routing::add_object(obj);
-    id_dict[obj->id] = obj;
+    id_dict[obj->fullid] = obj;
     return obj;
 }
 

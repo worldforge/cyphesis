@@ -15,7 +15,7 @@ class Account : public OOG_Thing {
   public:
     WorldRouter * world;
     Connection * connection;
-    dict_t characters;
+    fdict_t characters;
     string password;
 
     Account() { }

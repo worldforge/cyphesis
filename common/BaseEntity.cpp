@@ -33,7 +33,7 @@ bad_type get_dict_func(bad_type dict, bad_type func_str, bad_type func_undefined
 #endif
 
 //base entity for IG and OOG things
-BaseEntity::BaseEntity() : id(NO_ID), stamp(0.0), deleted(0), omnipresent(0) {
+BaseEntity::BaseEntity() : stamp(0.0), deleted(0), omnipresent(0) {
     //type",[BaseEntity::get_type()]);
     //if (kw.get("location",1)==None) {
         //del kw["location"];
@@ -112,23 +112,6 @@ Vector3D BaseEntity::get_xyz()
         return l.coords;
     }
 }
-
-bad_type BaseEntity::as_entity()
-{
-    Entity e=Entity(BaseEntity::id);
-    for (char * a;;/*a in BaseEntity::attributes*/) {
-        if (a=="location") {
-            //Location loc=location;
-            //if (loc) {
-                //e.location=loc.copy();
-            //}
-        } else {
-            //setattr(e,a,getattr(BaseEntity::a));
-        }
-    }
-    return e;
-}
-
 
 Message::Object & BaseEntity::asObject()
 {
