@@ -89,6 +89,7 @@ void Account::addCharacter(Entity * chr)
 Entity * Account::addNewCharacter(const std::string & typestr,
                                   const MapType & ent)
 {
+    assert(m_connection != 0);
     BaseWorld & world = m_connection->m_server.m_world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
     Entity * chr = world.addNewEntity(typestr, ent);
@@ -135,6 +136,13 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 void Account::LogoutOperation(const Operation & op, OpVector &)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
+
+    // It is possible this account is being forcibly logged out at a time
+    // when it is not logged in.
+    if (m_connection == 0) {
+        return;
+    }
+
     Info info;
     ListType & args = info.getArgs();
     args.push_back(op.asObject());
@@ -269,6 +277,7 @@ void Account::SetOperation(const Operation & op, OpVector & res)
         newArg["id"] = id;
         ListType & sarg = s->getArgs();
         sarg.push_back(newArg);
+        assert(m_connection != 0);
         m_connection->m_server.m_world.message(*s, *e);
     }
 }
@@ -293,6 +302,7 @@ void Account::ImaginaryOperation(const Operation & op, OpVector & res)
     } else {
         s.setTo(op.getTo());
     }
+    assert(m_connection != 0);
     m_connection->m_server.m_lobby.operation(s, res);
 }
 
@@ -316,11 +326,13 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
     } else {
         s.setTo(op.getTo());
     }
+    assert(m_connection != 0);
     m_connection->m_server.m_lobby.operation(s, res);
 }
 
 void Account::LookOperation(const Operation & op, OpVector & res)
 {
+    assert(m_connection != 0);
     const ListType & args = op.getArgs();
     if (args.empty()) {
         Sight * s = new Sight;

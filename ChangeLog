@@ -1,3 +1,11 @@
+2005-04-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp: Improve checks to make sure account is connected
+	  when processing ops.
+
+	* server/Admin.cpp: Improve logout op handling so its cleaner, and
+	  improve a couple of variable names.
+
 2005-04-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cyphesis.sh: Remove echo commands so script is now functional.

@@ -83,33 +83,39 @@ void Admin::LogoutOperation(const Operation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     
-    if (args.empty() || !args.front().isMap()) {
+    if (args.empty()) {
         Account::LogoutOperation(op, res);
-    } else {
-        MapType::const_iterator I = args.front().asMap().find("id");
-        if ((I == args.front().asMap().end()) || (!I->second.isString())) {
-            error(op, "No account id given", res, getId());
-            return;
-        }
-        if (m_connection == NULL) {
-            error(op,"Disconnected admin account handling explicit logout",res, getId());
-            return;
-        }
-        const std::string & account_id = I->second.asString();
-        if (account_id == getId()) {
-           Account::LogoutOperation(op, res);
-        }
-        BaseEntity * player = m_connection->m_server.getObject(account_id);
-        if (!player) {
-            error(op, "Logout failed", res, getId());
-            return;
-        }
-        player->operation(op, res);
+        return;
     }
+    if (!args.front().isMap()) {
+        error(op, "Malforned args on logout op", res, getId());
+        return;
+    }
+    const MapType & arg1 = args.front().asMap();
+    MapType::const_iterator I = arg1.find("id");
+    if ((I == arg1.end()) || (!I->second.isString())) {
+        error(op, "No account id given on logout op", res, getId());
+        return;
+    }
+    if (m_connection == NULL) {
+        error(op,"Disconnected admin account handling explicit logout",res, getId());
+        return;
+    }
+    const std::string & account_id = I->second.asString();
+    if (account_id == getId()) {
+       Account::LogoutOperation(op, res);
+    }
+    BaseEntity * account = m_connection->m_server.getObject(account_id);
+    if (!account) {
+        error(op, "Logout failed", res, getId());
+        return;
+    }
+    account->operation(op, res);
 }
 
 void Admin::GetOperation(const Operation & op, OpVector & res)
 {
+    assert(m_connection != 0);
     const ListType & args = op.getArgs();
     if (args.empty()) {
         error(op, "Get has no args.", res, getId());
@@ -326,10 +332,11 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
         error(op, "Argument to connect op has non string hostname", res, getId());
         return;
     }
-    const std::string & hostname = I->second.asString();
     if (m_connection == 0) {
         log(ERROR, "Attempt to make peer connection from unconnected account");
+        return;
     }
+    const std::string & hostname = I->second.asString();
     CommPeer * cp = new CommPeer(m_connection->m_commClient.m_commServer,
                                  hostname);
     std::cout << "Connecting to " << hostname << std::endl << std::flush;
