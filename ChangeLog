@@ -1,5 +1,9 @@
 2003-07-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp: Tweak terrain to look a little better.
+
+2003-07-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, rulesets/Pedestrian.cpp:
 	  Include atlasconv.h so that the conversions work.
 

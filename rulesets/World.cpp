@@ -73,7 +73,7 @@ World::World(const std::string & id) : World_parent(id),
     m_terrain.setBasePoint(0, 0, 2.8);
     m_terrain.setBasePoint(1, 0, 7.1);
     m_terrain.setBasePoint(0, 1, 0.2);
-    m_terrain.setBasePoint(1, 1, 8.7);
+    m_terrain.setBasePoint(1, 1, 14.7);
 }
 
 World::~World()
