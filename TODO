@@ -1,3 +1,6 @@
+Add propper reference counting to MemEntity. Also make sure stamp is updated
+and checked, and implement Unseen.
+
 Implement trivial combat, and code up a bunny bashing quests for the hard
 of thinking.
 
