@@ -71,13 +71,19 @@ patrol=(il.patrol,"patrol()")
 pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.forage,"forage(self, 'acorn')"),
            (il.forage,"forage(self, 'apple')"),
+           (il.forage,"forage(self, 'mushroom')"),
            (il.herd,"herd()")]
 
 deer_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
+            (il.forage,"forage(self, 'apple')"),
+            (il.forage,"forage(self, 'mushroom')"),
             (il.flock,"flock()")]
 
 chicken_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
                (il.flock,"flock()")]
+
+squirrel_goals=[(il.avoid,"avoid(['wolf','crab'],10.0)"),
+                (il.forage,"forage(self, 'acorn')")]
 
 wolf_goals=[(il.forage,"forage(self, 'ham')"),
             (il.hunt,"predate(self,'pig',30.0)"),

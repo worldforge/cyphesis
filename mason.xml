@@ -321,6 +321,17 @@
     </map>
   </map>
 
+  <map name="mushroom">
+    <string name="parent">food</string>
+    <map name="attributes">
+      <float name="mass">0.1</float>
+      <list name="bbox">
+        <float>-0.05</float><float>-0.05</float><float>0</float>
+        <float>0.05</float><float>0.05</float><float>0.1</float>
+      </list>
+    </map>
+  </map>
+
   <map name="acorn">
     <string name="parent">seed</string>
     <map name="attributes">

@@ -1,5 +1,9 @@
 2004-06-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* Add a mushroom rule, and make deer and pigs eat them.
+
+2004-06-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Fix move op sight propagation so that
 	  the corrected height is sent.
 
