@@ -47,7 +47,7 @@ bool Entity::getLocation(const Atlas::Message::MapType & entmap,
             // m_location.m_bBox.fromAtlas(I->second.asList());
         // }
     }
-    catch (Atlas::Message::WrongTypeException) {
+    catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "getLocation: Bad location data");
         return true;
     }

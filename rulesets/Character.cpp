@@ -616,7 +616,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             debug( std::cout << "ori set to " << new_orientation << std::endl << std::flush;);
         }
     }
-    catch (Atlas::Message::WrongTypeException) {
+    catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "EXCEPTION: mindMoveOperation: Malformed move operation");
     }
 

@@ -118,7 +118,7 @@ int main()
     try {
        i.addChild(&r);
     }
-    catch (InheritanceException ie) {
+    catch (InheritanceException &ie) {
         thrown = true;
     }
     assert(thrown == true);

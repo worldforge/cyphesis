@@ -1,5 +1,9 @@
 2005-02-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/Makefile.am: Add copy_python.sh to the distribution.
+
+2005-02-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Fix a problem with the libcrypto test that
 	  does not add it to the right list of libs.
 

@@ -3,7 +3,7 @@ INCLUDES = -I$(top_srcdir)
 bin_PROGRAMS = cycmd cyconfig cyconvertrules cyloadrules cypasswd
 noinst_SCRIPTS = cyphesis.sh
 
-EXTRA_DIST = cyphesis.sh
+EXTRA_DIST = cyphesis.sh copy_python.sh
 
 if LINK_STATIC
 

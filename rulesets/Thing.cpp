@@ -124,7 +124,7 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
         // s->setRefno(op.getSerialno());
         res.push_back(s);
     }
-    catch (Atlas::Message::WrongTypeException) {
+    catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "EXCEPTION: Malformed object to be created");
         error(op, "Malformed object to be created", res, getId());
         return;
