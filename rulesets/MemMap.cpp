@@ -8,6 +8,7 @@
 
 #include "modules/Location.h"
 
+#include "common/log.h"
 #include "common/debug.h"
 
 #include <Atlas/Objects/Operation/Look.h>
@@ -16,6 +17,9 @@ static const bool debug_flag = false;
 
 Entity * MemMap::addObject(Entity * object)
 {
+    assert(object != 0);
+    assert(!object->getId().empty());
+
     debug(std::cout << "MemMap::addObject " << object << " " << object->getId()
                     << std::endl << std::flush;);
     m_entities[object->getId()] = object;
@@ -26,6 +30,33 @@ Entity * MemMap::addObject(Entity * object)
         m_script->hook(*I, object);
     }
     return object;
+}
+
+void MemMap::updateObject(Entity * object, const Element::MapType & entmap)
+{
+    debug( std::cout << " got " << object << std::endl << std::flush;);
+    Element::MapType::const_iterator I = entmap.find("name");
+    if (I != entmap.end() && I->second.isString()) {
+        object->setName(I->second.asString());
+    }
+    I = entmap.find("type");
+    if (I != entmap.end() && I->second.isString()) {
+        object->setType(I->second.asString());
+    }
+    // It is important that the object is not mutated here. Ie, an update
+    // should not affect its type, contain or id, and location and
+    // stamp should be updated with accurate information
+    object->merge(entmap);
+    I = entmap.find("loc");
+    if ((I != entmap.end()) && I->second.isString()) {
+        getAdd(I->second.asString());
+    }
+    object->getLocation(entmap, m_entities);
+    addContents(entmap);
+    std::vector<std::string>::const_iterator K;
+    for(K = m_updateHooks.begin(); K != m_updateHooks.end(); K++) {
+        m_script->hook(*K, object);
+    }
 }
 
 RootOperation * MemMap::lookId()
@@ -46,14 +77,13 @@ RootOperation * MemMap::lookId()
 
 Entity * MemMap::addId(const std::string & id)
 {
-    debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
+    assert(!id.empty());
     assert(m_entities.find(id) == m_entities.end());
+
+    debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     m_additionsById.push_back(id);
     Entity * entity = new Entity(id);
     return addObject(entity);
-    // Atlas::Message::Element::MapType m;
-    // m["id"] = Atlas::Message::Element(id);
-    // return add(m);
 }
 
 void MemMap::del(const std::string & id)
@@ -61,6 +91,7 @@ void MemMap::del(const std::string & id)
     EntityDict::iterator I = m_entities.find(id);
     if (I != m_entities.end()) {
         Entity * obj = I->second;
+        assert(obj != 0);
         m_entities.erase(I);
         std::vector<std::string>::const_iterator J;
         for(J = m_deleteHooks.begin(); J != m_deleteHooks.end(); J++) {
@@ -73,9 +104,14 @@ void MemMap::del(const std::string & id)
 Entity * MemMap::get(const std::string & id)
 {
     debug( std::cout << "MemMap::get" << std::endl << std::flush;);
-    if (id.empty()) { return NULL; }
+    if (id.empty()) {
+        // This shouldn't really occur, and shouldn't be a problem
+        log(ERROR, "MemMap::get queried for empty id string");
+        return NULL;
+    }
     EntityDict::const_iterator I = m_entities.find(id);
     if (I != m_entities.end()) {
+        assert(I->second != 0);
         return I->second;
     }
     return NULL;
@@ -84,7 +120,11 @@ Entity * MemMap::get(const std::string & id)
 Entity * MemMap::getAdd(const std::string & id)
 {
     debug( std::cout << "MemMap::getAdd(" << id << ")" << std::endl << std::flush;);
-    if (id.empty()) { return NULL; }
+    if (id.empty()) {
+        // This shouldn't really occur, and shouldn't be a problem
+        log(ERROR, "MemMap::getAdd queried for empty id string");
+        return NULL;
+    }
     EntityDict::const_iterator I = m_entities.find(id);
     if (I != m_entities.end()) {
         return I->second;
@@ -95,13 +135,18 @@ Entity * MemMap::getAdd(const std::string & id)
 void MemMap::addContents(const Element::MapType & entmap)
 {
     Element::MapType::const_iterator I = entmap.find("contains");
-    if ((I == entmap.end()) || (!I->second.isList())) {
+    if (I == entmap.end()) {
+        return;
+    }
+    if (!I->second.isList()) {
+        log(ERROR, "MemMap::addContents, malformed contains is not list");
         return;
     }
     const Element::ListType & contlist = I->second.asList();
     Element::ListType::const_iterator J = contlist.begin();
     for(;J != contlist.end(); J++) {
         if (!J->isString()) {
+            log(ERROR, "MemMap::addContents, malformed non-string in contains");
             continue;
         }
         getAdd(J->asString());
@@ -112,15 +157,25 @@ Entity * MemMap::add(const Element::MapType & entmap)
 {
     debug( std::cout << "MemMap::add" << std::endl << std::flush;);
     Element::MapType::const_iterator I = entmap.find("id");
-    if ((I == entmap.end()) || (I->second.asString().empty())) {
+    if (I == entmap.end()) {
+        log(ERROR, "MemMap::add, Missing id in added entity");
+        return NULL;
+    }
+    if (!I->second.isString()) {
+        log(ERROR, "MemMap::add, Malformed non-string id in added entity");
         return NULL;
     }
     const std::string & id = I->second.asString();
-    if (find(id)) {
-        return update(entmap);
+    if (id.empty()) {
+        log(ERROR, "MemMap::add, Empty id in added entity");
+        return NULL;
+    }
+    EntityDict::const_iterator J = m_entities.find(id);
+    if (J != m_entities.end()) {
+        updateObject(J->second, entmap);
+        return J->second;
     }
     Entity * entity = new Entity(id);
-    // entity->setId(id);
     I = entmap.find("name");
     if ((I != entmap.end()) && I->second.isString()) {
         entity->setName(I->second.asString());
@@ -157,6 +212,8 @@ Entity * MemMap::update(const Element::MapType & entmap)
     }
     debug( std::cout << " " << id << " has already been spotted" << std::endl << std::flush;);
     Entity * entity = J->second;
+    updateObject(entity, entmap);
+#if 0
     debug( std::cout << " got " << entity << std::endl << std::flush;);
     I = entmap.find("name");
     if (I != entmap.end() && I->second.isString()) {
@@ -180,6 +237,7 @@ Entity * MemMap::update(const Element::MapType & entmap)
     for(K = m_updateHooks.begin(); K != m_updateHooks.end(); K++) {
         m_script->hook(*K, entity);
     }
+#endif
     return entity;
 }
 

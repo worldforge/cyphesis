@@ -3,8 +3,8 @@ bullshit.
 
 Real sight ranges
 
-Do minds delete stuff from memory?
-
+Do minds delete stuff from memory? Replace Entity with a special class
+for memory entities, includin some kind of LRU thingy.
 Implement LRU culling to minds, only for things with empty contains.
 
 Add Restore op if required which does the same as Setup, but for restore.
