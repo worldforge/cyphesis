@@ -119,11 +119,13 @@ bool Database::initRule(bool createTables)
                 reportError();
                 return false;
             }
+            allTables.insert("rules");
         } else {
             log(ERROR, "Server table does not exist in database");
             return false;
         }
     }
+    allTables.insert("rules");
     return true;
 }
 
@@ -441,6 +443,7 @@ bool Database::registerRelation(const std::string & name, RelationType kind)
                         << std::endl << std::flush;);
     } else {
         debug(std::cout << "Table exists" << std::endl << std::flush;);
+        allTables.insert(name);
         return true;
     }
 
@@ -449,6 +452,7 @@ bool Database::registerRelation(const std::string & name, RelationType kind)
     if (!runCommandQuery(createquery)) {
         return false;
     }
+    allTables.insert(name);
     if ((kind == ManyToOne) || (kind == OneToOne)) {
         return true;
     } else {
@@ -581,13 +585,18 @@ bool Database::registerSimpleTable(const std::string & name,
                         << std::endl << std::flush;);
     } else {
         debug(std::cout << "Table exists" << std::endl << std::flush;);
+        allTables.insert(name);
         return true;
     }
 
     createquery += ");";
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
-    return runCommandQuery(createquery);
+    bool ret = runCommandQuery(createquery);
+    if (ret) {
+        allTables.insert(name);
+    }
+    return ret;
 }
 
 const DatabaseResult Database::selectSimpleRow(const std::string & id,
@@ -805,6 +814,9 @@ bool Database::registerEntityTable(const std::string & classname,
         debug(std::cout << "Table does not yet exist"
                         << std::endl << std::flush;);
     } else {
+        if (parent.empty()) {
+            allTables.insert(tablename);
+        }
         debug(std::cout << "Table exists" << std::endl << std::flush;);
         return true;
     }
@@ -819,7 +831,11 @@ bool Database::registerEntityTable(const std::string & classname,
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
 
-    return runCommandQuery(createquery);
+    bool ret = runCommandQuery(createquery);
+    if (ret && parent.empty()) {
+        allTables.insert(tablename);
+    }
+    return ret;
 }
 
 bool Database::createEntityRow(const std::string & classname,
@@ -1051,23 +1067,32 @@ bool Database::clearPendingQuery()
     }
 }
 
-bool Database::runDatabaseMaintainance(int command)
+bool Database::runMaintainance(int command)
 {
-    if ((command | MAINTAIN_REINDEX) == MAINTAIN_REINDEX) {
-        std::cout << "Re-indexing" << std::endl << std::flush;
-        return scheduleCommand("REINDEX;");
-    } else if ((command | MAINTAIN_REINDEX) == MAINTAIN_REINDEX) {
-        std::string query("VACUUM");
-        if ((command | MAINTAIN_VACUUM_ANALYZE) == MAINTAIN_VACUUM_ANALYZE) {
-            query += " ANALYZE";
+    // FIXME VACUUM and REINDEX tables from a common store
+    if ((command & MAINTAIN_REINDEX) == MAINTAIN_REINDEX) {
+        std::string query("REINDEX TABLE ");
+        TableSet::const_iterator I = allTables.begin();
+        for(; I != allTables.end(); ++I) {
+            debug(std::cout << (query + *I) << std::endl << std::flush;);
+            scheduleCommand(query + *I);
         }
-        if ((command | MAINTAIN_VACUUM_FULL) == MAINTAIN_VACUUM_FULL) {
-            query += " FULL";
-        }
-        query += ";";
-        std::cout << "Running: " << query << std::endl << std::flush;
-        return scheduleCommand(query);
     }
+    if ((command & MAINTAIN_VACUUM) == MAINTAIN_VACUUM) {
+        std::string query("VACUUM ");
+        if ((command & MAINTAIN_VACUUM_ANALYZE) == MAINTAIN_VACUUM_ANALYZE) {
+            query += "ANALYZE ";
+        }
+        if ((command & MAINTAIN_VACUUM_FULL) == MAINTAIN_VACUUM_FULL) {
+            query += "FULL ";
+        }
+        TableSet::const_iterator I = allTables.begin();
+        for(; I != allTables.end(); ++I) {
+            debug(std::cout << (query + *I) << std::endl << std::flush;);
+            scheduleCommand(query + *I);
+        }
+    }
+    return true;
 }
 
 const char * DatabaseResult::field(const char * column, int row) const

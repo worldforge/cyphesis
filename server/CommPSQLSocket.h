@@ -12,7 +12,14 @@ class Database;
 class CommPSQLSocket : public CommIdleSocket {
   protected:
     Database & m_db;
+
+    time_t m_vacuumTime;
+    time_t m_reindexTime;;
+    bool m_vacuumFull;
   public:
+    static const int vacFreq = 25;
+    static const int reindexFreq = 30;
+
     CommPSQLSocket(CommServer & svr, Database & db);
     virtual ~CommPSQLSocket();
 

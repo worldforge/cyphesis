@@ -9,6 +9,8 @@
 
 #include <libpq-fe.h>
 
+#include <set>
+
 class Decoder : public Atlas::Message::DecoderBase {
   private:
     virtual void objectArrived(const Atlas::Message::Element& obj) {
@@ -28,6 +30,7 @@ class Decoder : public Atlas::Message::DecoderBase {
 class DatabaseResult;
 
 typedef std::map<std::string, std::string> TableDict;
+typedef std::set<std::string> TableSet;
 typedef std::pair<std::string, ExecStatusType> DatabaseQuery;
 typedef std::deque<DatabaseQuery> QueryQue;
 
@@ -37,6 +40,7 @@ class Database {
 
     std::string m_rule_db;
 
+    TableSet allTables;
     TableDict entityTables;
     QueryQue pendingQueries;
     bool m_queryInProgress;
@@ -150,7 +154,7 @@ class Database {
     bool launchNewQuery();
     bool scheduleCommand(const std::string & query);
     bool clearPendingQuery();
-    bool runDatabaseMaintainance(int command = MAINTAIN_VACUUM);
+    bool runMaintainance(int command = MAINTAIN_VACUUM);
 
 };
 

@@ -1,3 +1,16 @@
+2003-10-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.h: Add a registry for all tables.
+
+	* common/Database.cpp: Add names of all database tables to the
+	  registry. Clean up, fix and fully implement running maintainance
+	  commands on all tables on request.
+
+	* server/CommPSQLSocket.h, server/CommPSQLSocket.cpp: Implement
+	  timing variables for handling regular running of database
+	  maintainance commands. Add code to schedule the commands to
+	  idle method, alternating between VACUUM FULL and VACUUM ANALYZE.
+
 2003-10-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/random.h: Fix code so there is no floating point exception

@@ -15,7 +15,9 @@
 static const bool debug_flag = false;
 
 CommPSQLSocket::CommPSQLSocket(CommServer & svr, Database & db) :
-                               CommIdleSocket(svr), m_db(db)
+                               CommIdleSocket(svr), m_db(db),
+                               m_vacuumTime(0), m_reindexTime(0),
+                               m_vacuumFull(0)
 {
     // This assumes the database connection is already sorted, which I think
     // is okay
@@ -92,6 +94,19 @@ void CommPSQLSocket::idle(time_t t)
 {
     debug(std::cout << "CommPSQLSocket::idle()" << std::endl << std::flush;);
 
-    // FIXME
-    // Run database maintenance
+    if (t > m_vacuumTime) {
+        if (m_vacuumFull) {
+            m_db.runMaintainance(Database::MAINTAIN_VACUUM |
+                                         Database::MAINTAIN_VACUUM_FULL);
+        } else {
+            m_db.runMaintainance(Database::MAINTAIN_VACUUM |
+                                         Database::MAINTAIN_VACUUM_ANALYZE);
+        }
+        m_vacuumFull = !m_vacuumFull;
+        m_vacuumTime = t + vacFreq;
+    }
+    if (t > m_reindexTime) {
+        m_db.runMaintainance(Database::MAINTAIN_REINDEX);
+        m_reindexTime = t + reindexFreq;
+    }
 }
