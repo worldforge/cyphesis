@@ -37,8 +37,8 @@ for information on the setup steps required after installation.
     <para>
 The software requires some post-installation configuration before it will run
 correctly. If you plan to run a server using the System V init services as
-provided by the cyphesis-service rpm then most of this configuration is handled
-for you automatically. If this is the case please see
+provided by the cyphesis rpm then most of this configuration is handled for
+you automatically. If this is the case please see
 <xref linkend="service-section"> for more information.
     </para>
 
@@ -72,7 +72,7 @@ server see <xref linkend="usage-section">.
     <title>Setup as a System Service</title>
     <para>
 Running cyphesis as a service is the simplest way to get the server up and
-running. If you are using rpm packages, the cyphesis service rpm handles
+running. If you are using rpm packages, the cyphesis rpm handles
 creating a user account so that cyphesis does not run as the superuser.
 In order to run the server correctly, the cyphesis service must be
 started, followed by the cyclient service. This can be handled by configuring

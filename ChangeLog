@@ -1,3 +1,8 @@
+2004-10-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* cyphesis.spec.in: Modify the rpm spec to build fewer packages,
+	  so that everything required to run a server is in one package.
+
 2004-10-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.h, rulesets/Character.cpp: Add new variable for
