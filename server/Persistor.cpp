@@ -198,11 +198,11 @@ void Persistor<Plant>::update(Plant * t)
 
 void Persistor<World>::update(World * t)
 {
-    std::string columns;
-    uEntity(*t, columns);
-    Database::instance()->updateEntityRow(m_class, t->getId(), columns);
-
-    std::cout << "Persistor<World>::update()" << std::endl << std::flush;
+    if (t->getUpdateFlags() & ~a_terrain) {
+        std::string columns;
+        uEntity(*t, columns);
+        Database::instance()->updateEntityRow(m_class, t->getId(), columns);
+    }
 
     if (t->getUpdateFlags() & a_terrain) {
         updateStoredTerrain(t->getId(), t->terrain(), t->modifiedTerrain(),

@@ -1,5 +1,13 @@
 2004-09-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/terrain_utils.cpp: Disable debugging
+	  output.
+
+	* server/Persistor.cpp: Don't update the main entity table if we
+	  have no attributes modified other than terrain.
+
+2004-09-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/World.cpp: Remove some debug output.
 
 2004-09-25  Al Riddoch  <alriddoch@zepler.org>

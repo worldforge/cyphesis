@@ -13,7 +13,7 @@
 
 #include <vector>
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 typedef Mercator::Terrain::Pointstore Pointstore;
 typedef Mercator::Terrain::Pointcolumn Pointcolumn;

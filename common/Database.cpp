@@ -1150,8 +1150,8 @@ bool Database::registerArrayTable(const std::string & name,
         return false;
     }
     indexquery += ");";
-    std::cout << "INDEX QUERY: " << indexquery
-                    << std::endl << std::flush;
+    debug(std::cout << "INDEX QUERY: " << indexquery
+                    << std::endl << std::flush;);
     ret = runCommandQuery(indexquery);
     if (!ret) {
         return false;
@@ -1215,7 +1215,7 @@ bool Database::createArrayRow(const std::string & name,
     query << ");";
 
     std::string qstr = query.str();
-    std::cout << "QUery: " << qstr << std::endl << std::flush;
+    debug(std::cout << "QUery: " << qstr << std::endl << std::flush;);
     return scheduleCommand(qstr);
 }
 
@@ -1259,7 +1259,7 @@ bool Database::updateArrayRow(const std::string & name,
     query << ";";
     
     std::string qstr = query.str();
-    std::cout << "QUery: " << qstr << std::endl << std::flush;
+    debug(std::cout << "QUery: " << qstr << std::endl << std::flush;);
     return scheduleCommand(qstr);
 }
 
@@ -1290,7 +1290,7 @@ void Database::queryResult(ExecStatusType status)
         q.second = PGRES_EMPTY_QUERY;
     } else {
         log(ERROR, "Database error from async query");
-        std::cout << "Query error in : " << q.first << std::endl << std::flush;
+        std::cerr << "Query error in : " << q.first << std::endl << std::flush;
         reportError();
         q.second = PGRES_EMPTY_QUERY;
     }
