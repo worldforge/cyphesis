@@ -7,6 +7,7 @@
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
+#include "common/stringstream.h"
 
 #include <Mercator/Terrain.h>
 
@@ -23,7 +24,7 @@ static const bool debug_flag = false;
 
 void World::getTerrain(Element::MapType & t) const
 {
-    Element::ListType & terrain = (t["points"] = Element::ListType()).asList();
+    Element::MapType & terrain = (t["points"] = Element::MapType()).asMap();
 
     const Mercator::Terrain::Pointstore & points = m_terrain.getPoints();
     Mercator::Terrain::Pointstore::const_iterator I = points.begin();
@@ -31,10 +32,12 @@ void World::getTerrain(Element::MapType & t) const
         const Mercator::Terrain::Pointcolumn & pointcol = I->second;
         Mercator::Terrain::Pointcolumn::const_iterator J = pointcol.begin();
         for (; J != pointcol.end(); ++J) {
-            terrain.push_back(Element::ListType(3));
-            Element::ListType & point = terrain.back().asList();
-            point[0] = (Element::FloatType)(I->first/* * 64*/);
-            point[1] = (Element::FloatType)(J->first/* * 64*/);
+            std::stringstream key;
+            key << I->first << "x" << J->first;
+            Element::ListType & point =
+                    (terrain[key.str()] = Element::ListType(3)).asList();
+            point[0] = (Element::FloatType)(I->first);
+            point[1] = (Element::FloatType)(J->first);
             point[2] = (Element::FloatType)(J->second.height());
         }
     }

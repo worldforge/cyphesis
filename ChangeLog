@@ -1,5 +1,10 @@
 2004-03-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp: Modify terrain structure to track
+	  the new format already implemented in apogee.
+
+2004-03-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* aiclient/ClientConnection.cpp, client/CreatorClient.cpp,
 	  client/Py_CreatorClient.cpp, rulesets/Movement.cpp,
 	  rulesets/Pedestrian.cpp: Clean up some debug flags.
