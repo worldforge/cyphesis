@@ -86,7 +86,7 @@ int Plant::dropFruit(OpVector & res)
 {
     if (m_fruits < 1) { return 0; }
     int drop = std::min(m_fruits, randint(m_minuDrop, m_maxuDrop));
-    m_fruits = m_fruits - drop;
+    m_fruits -= drop;
     debug(std::cout << "Dropping " << drop << " fruits from "
                     << m_type << " plant." << std::endl << std::flush;);
     float height = m_location.m_bBox.highCorner().z(); 
@@ -110,8 +110,12 @@ int Plant::dropFruit(OpVector & res)
 
 OpVector Plant::TickOperation(const Tick & op)
 {
+    debug(std::cout << "Plant::Tick(" << getId() << "," << m_type << ")"
+                    << std::endl << std::flush;);
     OpVector res;
-    m_script->Operation("tick", op, res);
+    if (m_script->Operation("tick", op, res)) {
+        return res;
+    }
     RootOperation * tickOp = new Tick(Tick::Instantiate());
     tickOp->setTo(getId());
     tickOp->setFutureSeconds(consts::basic_tick * m_speed);

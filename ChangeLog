@@ -1,3 +1,11 @@
+2003-11-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Plant.cpp: Fix TickOperation() so it only runs if the
+	  script doesn't handle it.
+
+	* rulesets/mason/world/objects/plants/Tree.py: Remove tickop
+	  handler which is now in the base class.
+
 2003-11-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* Ensure var directory for unix socket is available at install time.
