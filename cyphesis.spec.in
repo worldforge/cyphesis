@@ -14,7 +14,7 @@ Source2: cyclient.init
 Source3: cyphesis.sysconfig
 Requires: Atlas-C++ >= 0.4.94 mercator varconf skstream >= 0.3.1 readline postgresql-libs >= 7.1 openssl python >= 1.5.2 libstdc++
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
-BuildRequires: Atlas-C++-devel >= 0.4.94 mercator-devel varconf-devel skstream-devel >= 0.3.1 readline-devel postgresql-devel >= 7.1 openssl-devel python-devel >= 1.5.2 libstdc++-devel
+BuildRequires: Atlas-C++-devel >= 0.4.94 mercator-devel varconf-devel >= 0.6.2 skstream-devel >= 0.3.1 readline-devel postgresql-devel >= 7.1 openssl-devel python-devel >= 1.5.2 libstdc++-devel
 
 %description
 Cyphesis is a very simple world simulator. NPCs that do things according to
