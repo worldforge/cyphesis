@@ -5,7 +5,9 @@
 
 #include "Python_API.h"
 #include "Thing.h"
+
 #include <modules/Location.h>
+#include <common/const.h>
 
 
 void Create_PyThing(Thing * thing, const string & package, const string & type)
@@ -101,29 +103,53 @@ static PyObject * cppthing_new(PyObject * self, PyObject * args)
 	return (PyObject *)o;
 }
 
-static PyObject * operation_new(PyObject * self, PyObject * args)
+static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
-	RootOperationObject * op;
+    printf("New Operation\n");
+    RootOperationObject * op;
 
-	if (!PyArg_ParseTuple(args, "")) {
-		return NULL;
-	}
-	op = newAtlasRootOperation(args);
-	if (op == NULL) {
-		return NULL;
-	}
-	op->operation = new RootOperation;
-	*op->operation = RootOperation::Instantiate();
-	return (PyObject *)op;
+    char * type;
+    PyObject * to = NULL;
+    PyObject * from = NULL;
+    PyObject * arg1 = NULL;
+    PyObject * arg2 = NULL;
+    PyObject * arg3 = NULL;
+
+    printf("New Operation: parsing args\n");
+    if (!PyArg_ParseTuple(args, "s|OOO", &type, &arg1, &arg2, &arg3)) {
+        return NULL;
+    }
+    printf("New Operation: creating operation\n");
+    op = newAtlasRootOperation(args);
+    if (op == NULL) {
+        return NULL;
+    }
+    op->operation = new RootOperation;
+    if (strcpy(type, "tick") == 0) {
+        *op->operation = Tick::Instantiate();
+    } else if (strcpy(type, "create") == 0) {
+        *op->operation = Create::Instantiate();
+    } else {
+        *op->operation = RootOperation::Instantiate();
+    }
+    if (PyMapping_HasKeyString(kwds, "to")) {
+        to = PyMapping_GetItemString(kwds, "to");
+        printf("Operation creation sets to\n");
+    }
+    if (PyMapping_HasKeyString(kwds, "from_")) {
+        from = PyMapping_GetItemString(kwds, "from_");
+        printf("Operation creation sets from\n");
+    }
+    return (PyObject *)op;
 }
 
 static PyMethodDef atlas_methods[] = {
-	/* {"system",	spam_system, METH_VARARGS}, */
-	{"Operation",	operation_new,	METH_VARARGS},
-	{"Location",	location_new,	METH_VARARGS},
-	{"Object",	object_new,	METH_VARARGS},
-	{"cppThing",	cppthing_new,	METH_VARARGS},
-	{NULL,		NULL}				/* Sentinel */
+    /* {"system",	spam_system, METH_VARARGS}, */
+    {"Operation",  (PyCFunction)operation_new,	METH_VARARGS|METH_KEYWORDS},
+    {"Location",   location_new,		METH_VARARGS},
+    {"Object",     object_new,			METH_VARARGS},
+    {"cppThing",   cppthing_new,		METH_VARARGS},
+    {NULL,		NULL}				/* Sentinel */
 };
 
 static PyMethodDef Vector3D_methods[] = {
@@ -180,6 +206,31 @@ void init_python_api()
 	PyDict_SetItemString(dict, "const", _const);
 	PyDict_SetItemString(dict, "log", log);
 	PyObject_SetAttrString(_const, "server_python", PyInt_FromLong(0));
+	PyObject_SetAttrString(_const, "debug_level",
+			PyInt_FromLong(consts::debug_level));
+	PyObject_SetAttrString(_const, "debug_thinking",
+			PyInt_FromLong(consts::debug_thinking));
+
+	PyObject_SetAttrString(_const, "time_multiplier",
+			PyFloat_FromDouble(consts::time_multiplier));
+	PyObject_SetAttrString(_const, "base_velocity_coefficient",
+			PyFloat_FromDouble(consts::base_velocity_coefficient));
+	PyObject_SetAttrString(_const, "base_velocity",
+			PyFloat_FromDouble(consts::base_velocity));
+
+	PyObject_SetAttrString(_const, "basic_tick",
+			PyInt_FromLong(consts::basic_tick));
+	PyObject_SetAttrString(_const, "day_in_seconds",
+			PyInt_FromLong(consts::day_in_seconds));
+
+	PyObject_SetAttrString(_const, "sight_range",
+			PyFloat_FromDouble(consts::sight_range));
+	PyObject_SetAttrString(_const, "hearing_range",
+			PyFloat_FromDouble(consts::hearing_range));
+	PyObject_SetAttrString(_const, "collision_range",
+			PyFloat_FromDouble(consts::collision_range));
+	PyObject_SetAttrString(_const, "enable_ranges",
+			PyInt_FromLong(consts::enable_ranges));
 
 	PyObject * server;
 	if ((server = Py_InitModule("server", server_methods)) == NULL) {

@@ -110,7 +110,7 @@ void Thing::merge(const Message::Object::MapType & entmap)
 oplist Thing::Operation(const Setup & op)
 {
     oplist res;
-    if (script_Operation("tick", op, res) != 0) {
+    if (script_Operation("setup", op, res) != 0) {
         return(res);
     }
     RootOperation * tick = new Tick;
@@ -174,7 +174,7 @@ oplist Thing::Operation(const Create & op)
 oplist Thing::Operation(const Delete & op)
 {
     oplist res;
-    if (script_Operation("tick", op, res) != 0) {
+    if (script_Operation("delete", op, res) != 0) {
         return(res);
     }
     world->del_object(this);
@@ -325,7 +325,7 @@ oplist Thing::Operation(const Move & op)
 oplist Thing::Operation(const Set & op)
 {
     oplist res;
-    if (script_Operation("tick", op, res) != 0) {
+    if (script_Operation("set", op, res) != 0) {
         return(res);
     }
     const Message::Object::ListType & args=op.GetArgs();
@@ -388,7 +388,7 @@ oplist Thing::Operation(const Touch & op)
 oplist Thing::Operation(const Look & op)
 {
     oplist res;
-    if (script_Operation("tick", op, res) != 0) {
+    if (script_Operation("look", op, res) != 0) {
         return(res);
     }
     return(BaseEntity::Operation(op));

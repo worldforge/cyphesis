@@ -1,3 +1,13 @@
+2000-11-21  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Filled out the python common.const module will all its values.
+
+	* Added code required to create an operation from with python.
+
+	* Modified the Thing python interface so that python objects
+	  that Atlas doesn't want to know about are stored in a normal
+	  attributes list.
+
 2000-11-20  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Added some more python interface classes. There is now enough code

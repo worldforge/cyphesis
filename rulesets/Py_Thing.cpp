@@ -29,6 +29,13 @@ PyObject * Thing_getattr(ThingObject *self, char *name)
         map->m_map = &self->m_thing->map;
         return (PyObject *)map;
     }
+    if (self->Thing_attr != NULL) {
+        PyObject *v = PyDict_GetItemString(self->Thing_attr, name);
+        if (v != NULL) {
+            Py_INCREF(v);
+            return v;
+        }
+    }
     if (self->m_thing != NULL) {
         cout << "got thing" << endl << flush;
         Thing * thing = self->m_thing;
@@ -49,6 +56,12 @@ int Thing_setattr(ThingObject *self, char *name, PyObject *v)
     if (self->m_thing == NULL) {
         return -1;
     }
+    if (self->Thing_attr == NULL) {
+        self->Thing_attr = PyDict_New();
+        if (self->Thing_attr == NULL) {
+            return -1;
+        }
+    }
     if (strcmp(name, "map") == 0) {
         return -1;
     }
@@ -57,11 +70,15 @@ int Thing_setattr(ThingObject *self, char *name, PyObject *v)
     if (v == NULL) {
         thing->attributes.erase(attr);
         return(0);
-    } else {
-        Object obj = PyObject_asObject(v);
+    }
+    Object obj = PyObject_asObject(v);
+    if (!obj.IsNone()) {
         thing->attributes[name] = obj;
         return(0);
     }
+    // If we get here, then the attribute is not Atlas compatable, so we
+    // need to store it in a python dictionary
+    return PyDict_SetItemString(self->Thing_attr, name, v);
 }
 
 PyTypeObject Thing_Type = {
