@@ -1,3 +1,8 @@
+genMoveOperation will always return NULL if updateNeeded() returns
+false, and never otherwise, so we can avoid a bunch of checking
+in the Character.cpp code by only calling genMoveOperation if
+it is apropriate.
+
 Looks like zero collision time results in move then stop being sent
 almost immediatly. Check for it, and send nothing.
 
