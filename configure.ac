@@ -127,16 +127,21 @@ dnl build the library path from the found version
 python_lib_path=${python_prefix}/lib/${python_version}/config
 
 AC_CHECK_LIB(dl,dlopen)
-AC_CHECK_LIB(pthread,pthread_create)
 AC_CHECK_LIB(util,openpty)
 
-AC_CHECK_LIB(crypto, MD5,
+AC_CHECK_FUNC(pthread_mutex_trylock, ,
+[
+    ac_save_CXXFLAGS="$CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS -pthread"
+    AC_CHECK_FUNC(pthread_create, ,
     [
-        AC_DEFINE(CYPHESIS_MD5_PASSWORDS, 1, [Use md5 hash for passwords])
-    ],
-    [
-        AC_MSG_ERROR([Could not find a way of encrypting passwords.])
+        CXXFLAGS="$ac_save_CXXFLAGS"
+        AC_CHECK_LIB(pthread, pthread_create, ,
+        [
+            AC_MSG_WARN([Couldn't find pthread library. Python lib check may fail])
+        ])
     ])
+])
 
 AC_CHECK_LIB(${python_version}, 
     Py_Initialize,
@@ -148,6 +153,14 @@ AC_CHECK_LIB(${python_version},
 
 PYTHON_LIBS=${python_libs}
 LIBS="$LIBS $PYTHON_LIBS"
+
+AC_CHECK_LIB(crypto, MD5,
+    [
+        AC_DEFINE(CYPHESIS_MD5_PASSWORDS, 1, [Use md5 hash for passwords])
+    ],
+    [
+        AC_MSG_ERROR([Could not find a way of encrypting passwords.])
+    ])
 
 PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.90 skstream-0.3 >= 0.2.90 varconf-1.0 >= 0.6.0 mercator-0.2,
     [

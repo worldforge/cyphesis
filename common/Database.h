@@ -135,7 +135,11 @@ class Database {
 // upper layers in a database independant way.
 // Perhaps an iterator model might be nice later?
 class DatabaseResult {
+#if defined (__GNUC__) && __GNUC__ < 3 && __GNUC_MINOR__ <= 95
   private:
+#else
+  public:
+#endif
     PGresult * m_res;
   public:
     explicit DatabaseResult(PGresult * r) : m_res(r) { }
