@@ -1,5 +1,13 @@
 2002-12-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/Database.h: Handle the way SQL INSERT
+	  requires column headers and values to be separated.
+
+	* server/Persistor.cpp, server/Persistor.h, server/Persistor_impl.h:
+	  Add functions to generate INSERT queries for new entities.
+
+2002-12-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Fix badly generated insert query.
 
 	* rulesets/Character.h: Add accessors for some hard attributes.

@@ -97,9 +97,66 @@ void Persistor<T>::uPlant(Plant & t, std::string & c)
 }
 
 template <class T>
+void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
+{
+    const char * cs = ", ";
+    const char * sq = "'";
+    if (!c.empty()) {
+        c += cs;
+    }
+    c += "loc, px, py, pz, ox, oy, oz, ow, bnx, bny, bnz, bfx, bfx, bfz, status, name, mass, seq";
+
+    std::stringstream q;
+    q << sq << t.location.ref->getId() << sq << cs
+      << t.location.coords.X() << cs
+      << t.location.coords.Y() << cs
+      << t.location.coords.Z() << cs
+      << t.location.orientation.X() << cs
+      << t.location.orientation.Y() << cs
+      << t.location.orientation.Z() << cs
+      << t.location.orientation.W() << cs
+      << t.location.bBox.nearPoint().X() << cs
+      << t.location.bBox.nearPoint().Y() << cs
+      << t.location.bBox.nearPoint().Z() << cs
+      << t.location.bBox.farPoint().X() << cs
+      << t.location.bBox.farPoint().Y() << cs
+      << t.location.bBox.farPoint().Z() << cs
+      << t.getStatus() << cs
+      << sq << t.getName() << sq << cs
+      << t.getMass() << cs
+      << t.getSeq();
+
+    if (!v.empty()) {
+        v += cs;
+    }
+    v += q.str();
+}
+
+template <class T>
+void Persistor<T>::cCharacter(Character & t, std::string & c, std::string & v)
+{
+    const char * cs = ", ";
+    const char * sq = "'";
+    if (!c.empty()) {
+        c += cs;
+    }
+    c += "drunk, sex, food";
+
+    std::stringstream q;
+    q << t.getDrunkness() << cs
+      << sq << t.getSex() << sq << cs
+      << t.getFood();
+
+    if (!v.empty()) {
+        v += cs;
+    }
+    v += q.str();
+}
+
+template <class T>
 void Persistor<T>::persist(T & t)
 {
-    std::cout << "Persistor::persist<" << m_class << ">(" << t.getId()
+    std::cout << "Persistor::persist<T(" << m_class << ")>(" << t.getId()
               << ")" << std::endl << std::flush;
     t.updated.connect(SigC::bind<T &>(SigC::slot(*this,
                                                  &Persistor<T>::update),
@@ -107,7 +164,10 @@ void Persistor<T>::persist(T & t)
     t.destroyed.connect(SigC::bind<T &>(SigC::slot(*this,
                                                    &Persistor<T>::remove),
                                         t));
-    Database::instance()->createEntityRow(m_class, t.getId(), "");
+    std::string columns;
+    std::string values;
+    cEntity(t, columns, values);
+    Database::instance()->createEntityRow(m_class, t.getId(), columns, values);
 }
 
 template <class T>

@@ -18,13 +18,16 @@ class Plant;
 template <class T>
 class Persistor : public SigC::Object {
   private:
-    std::string m_class;
+    const std::string m_class;
 
     void uEntity(Entity &, std::string &);
     void uCharacter(Character &, std::string &);
     void uLine(Line &, std::string &);
     void uArea(Area &, std::string &);
     void uPlant(Plant &, std::string &);
+
+    void cEntity(Entity &, std::string &, std::string &);
+    void cCharacter(Character &, std::string &, std::string &);
   public:
     // Register table with database
     Persistor();

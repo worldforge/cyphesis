@@ -165,3 +165,37 @@ void Persistor<Plant>::update(Plant & t)
     Database::instance()->updateEntityRow(m_class, t.getId(), columns);
     t.clearUpdateFlags();
 }
+
+void Persistor<Character>::persist(Character & t)
+{
+    std::cout << "Persistor::persist<" << m_class << ">(" << t.getId()
+              << ")" << std::endl << std::flush;
+    t.updated.connect(SigC::bind<Character &>(SigC::slot(*this,
+                                                 &Persistor<Character>::update),
+                                      t));
+    t.destroyed.connect(SigC::bind<Character &>(SigC::slot(*this,
+                                                   &Persistor<Character>::remove),
+                                        t));
+    std::string columns;
+    std::string values;
+    cEntity(t, columns, values);
+    cCharacter(t, columns, values);
+    Database::instance()->createEntityRow(m_class, t.getId(), columns, values);
+}
+
+void Persistor<Creator>::persist(Creator & t)
+{
+    std::cout << "Persistor::persist<" << m_class << ">(" << t.getId()
+              << ")" << std::endl << std::flush;
+    t.updated.connect(SigC::bind<Creator &>(SigC::slot(*this,
+                                                 &Persistor<Creator>::update),
+                                      t));
+    t.destroyed.connect(SigC::bind<Creator &>(SigC::slot(*this,
+                                                   &Persistor<Creator>::remove),
+                                        t));
+    std::string columns;
+    std::string values;
+    cEntity(t, columns, values);
+    cCharacter(t, columns, values);
+    Database::instance()->createEntityRow(m_class, t.getId(), columns, values);
+}

@@ -600,7 +600,8 @@ bool Database::registerEntityTable(const std::string & classname,
 
 bool Database::createEntityRow(const std::string & classname,
                                const std::string & id,
-                               const std::string & columns)
+                               const std::string & columns,
+                               const std::string & values)
 {
     TableDict::const_iterator I = entityTables.find(classname);
     if (I == entityTables.end()) {
@@ -610,10 +611,12 @@ bool Database::createEntityRow(const std::string & classname,
     std::string table = classname + "_ent";
     std::string query = "INSERT INTO ";
     query += table;
-    query += " VALUES (id = '";
-    query += id;
-    query += "'";
+    query += " ( id, ";
     query += columns;
+    query += " ) VALUES ( '";
+    query += id;
+    query += "', ";
+    query += values;
     query += ");";
     std::cout << "QUERY: " << query << std::endl << std::flush;
     // FIXME Actually run the query against the db

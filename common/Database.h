@@ -91,7 +91,8 @@ class Database {
                              const std::string & parent = "");
     bool createEntityRow(const std::string & classname,
                          const std::string & id,
-                         const std::string & columns);
+                         const std::string & columns,
+                         const std::string & values);
     bool updateEntityRow(const std::string & classname,
                          const std::string & id,
                          const std::string & columns);
