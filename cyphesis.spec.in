@@ -89,7 +89,7 @@ Werewolf is not yet functional.
 %setup -q
 
 %build
-CXXFLAGS="" ./configure --prefix=%{prefix} --sysconfdir=%{sysconfdir}
+CXXFLAGS=$RPM_OPT_FLAGS ./configure --prefix=%{prefix} --sysconfdir=%{sysconfdir}
 make
 
 %install
@@ -98,13 +98,13 @@ make prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} ins
 if [ -d /etc/rc.d/init.d ]
 then
 	install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
-	install -m 755 $SOURCE1 $RPM_BUILD_ROOT/etc/rc.d/init.d/cyphesis
+	install -m 755 %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/cyphesis
         echo /etc/rc.d/init.d/cyphesis >> service.lst
 fi
 if [ -d /etc/sysconfig ]
 then
 	install -d $RPM_BUILD_ROOT/etc/sysconfig
-	install -m 644 $SOURCE2 $RPM_BUILD_ROOT/etc/sysconfig/cyphesis
+	install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/cyphesis
         echo /etc/sysconfig/cyphesis >> service.lst
 fi
 
@@ -159,6 +159,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files mason
 %config %{sysconfdir}/cyphesis/mason.xml
+%config %{sysconfdir}/cyphesis/moraf.xml
 %{prefix}/share/cyphesis/rulesets/mason
 
 %files werewolf
