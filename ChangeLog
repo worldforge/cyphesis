@@ -1,3 +1,8 @@
+2002-06-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* Makefile.am, cyphesis.spec.in: Clean up install process, and update
+	  rpm spec.
+
 2002-06-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Start re-work of NPC initialisation
