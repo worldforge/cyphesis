@@ -12,16 +12,8 @@
 
 #include <skstream/skstream.h>
 
-#include <stdexcept>
-
 class CommServer;
 class Connection;
-
-class ClientTimeOutException : public std::runtime_error {
-  public:
-    ClientTimeOutException() : std::runtime_error("Client write timeout") { }
-    virtual ~ClientTimeOutException() throw() { }
-};
 
 class CommClient : Atlas::Objects::Decoder {
   public:

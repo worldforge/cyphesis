@@ -12,8 +12,15 @@
 #include <common/stringstream.h>
 
 #include <iostream>
+#include <stdexcept>
 
 static const bool debug_flag = false;
+
+class ClientTimeOutException : public std::runtime_error {
+  public:
+    ClientTimeOutException() : std::runtime_error("Client write timeout") { }
+    virtual ~ClientTimeOutException() throw() { }
+};
 
 CommClient::CommClient(CommServer & svr, int fd, int port) :
             commServer(svr),
@@ -216,19 +223,18 @@ void CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
         FD_SET(cfd, &sfds);
         if (select(++cfd, NULL, &sfds, NULL, &tv) > 0) {
             // We only flush to the client if the client is ready
-            std::cout << "Client is ready for data" << std::endl << std::flush;
             clientIos << std::flush;
         } else {
-            std::cout << "Client isn't ready" << std::endl << std::flush;
+            debug(std::cout << "Client not ready" << std::endl << std::flush;);
         }
         // This timeout should only occur if the client was really not
         // ready
         if (clientIos.timeout()) {
             if (reading) {
-                std::cerr << "TIMEOUT while readind" << std::endl << std::flush;
+                debug(std::cerr << "READ TIMEOUT" << std::endl << std::flush;);
                 throw ClientTimeOutException();
             } else {
-                std::cerr << "TIMEOUT" << std::endl << std::flush;
+                debug(std::cerr << "TIMEOUT" << std::endl << std::flush;);
                 clientIos.close();
             }
         }
