@@ -6,7 +6,7 @@ echo aclocal...
     exit 1
 }
 
-aclocal -I /usr/local/share/aclocal
+aclocal $ACLOCAL_FLAGS
 
 echo autoheader...
 (autoheader --version) < /dev/null > /dev/null 2>&1 || {
