@@ -160,6 +160,7 @@ PYTHON_LIBS=${python_libs}
 AC_CHECK_LIB(crypto, MD5,
     [
         AC_DEFINE(CYPHESIS_MD5_PASSWORDS, 1, [Use md5 hash for passwords])
+        COMMON_LIBS="$COMMON_LIBS -lcrypto"
     ],
     [
         AC_MSG_ERROR([Cannot find a way of encrypting passwords. Please install the openssl development libraries.])

@@ -1,3 +1,8 @@
+2005-02-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Fix a problem with the libcrypto test that
+	  does not add it to the right list of libs.
+
 2005-02-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Fix a problem linking postgresql in the tests if
