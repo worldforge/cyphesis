@@ -1,17 +1,17 @@
 #include <Atlas/Message/Object.h>
-#include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Encoder.h>
-#include <Atlas/Message/DecoderBase.h>
-
+#include <Atlas/Objects/Operation/Login.h>
 
 #include "WorldRouter.h"
 
+extern "C" {
+    #include <stdio.h>
+}
 
 
-
-WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr), next_id(0)
+WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
 {
+    id = 0;
     //WorldRouter::base_init(kw);
     //WorldRouter::operation_queue=avl_tree();
     WorldRouter::real_time=time(NULL);
@@ -29,9 +29,16 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr), next_id(0)
     //world_info.string2DateTime=WorldTime;
 }
 
-cid_t WorldRouter::get_id(char * name)
+cid_t WorldRouter::get_id(char * name, string & full_id)
 {
+    char * buf = (char *)malloc(strlen(name) + 32);
     next_id++;
+    if (buf) {
+        sprintf(buf, "%s_%d", name, next_id);
+        full_id = string(buf);
+    } else {
+        cout << "BARRRRF" << endl << flush;
+    }
     return(next_id);
 }
 
@@ -40,8 +47,8 @@ bad_type WorldRouter::add_object(BaseEntity * obj, bad_type ent=None)
     //if (ent) {
         //obj=object_from_entity(obj,ent);
     //}
-    obj->id=WorldRouter::get_id(obj->name);
-    server->id_dict[obj->id]=WorldRouter::objects[obj->id]=obj;
+    obj->id=get_id(obj->name, obj->fullid);
+    server->id_dict[obj->id]=fobjects[obj->fullid]=objects[obj->id]=obj;
     if (!obj->location) {
         obj->location=Location(this, Vector3D(0,0,0));
     }
@@ -64,6 +71,7 @@ bad_type WorldRouter::add_object(BaseEntity * obj, bad_type ent=None)
     //op.time.sadd=-0.01;
     //WorldRouter::add_operation_to_queue(op,self);
     //return obj;
+    return None;
 }
 
 void WorldRouter::del_object(BaseEntity * obj)
@@ -92,6 +100,7 @@ bad_type WorldRouter::is_object_deleted(BaseEntity * obj)
 bad_type WorldRouter::message(bad_type msg, BaseEntity * obj)
 {
     apply_to_operation(&WorldRouter::add_operation_to_queue,msg,obj);
+    return None;
 }
 
 BaseEntity * WorldRouter::get_operation_place(bad_type op)
@@ -115,6 +124,7 @@ BaseEntity * WorldRouter::get_operation_place(bad_type op)
     }
     return(NULL);
 #endif
+    return NULL;
 }
 
 bad_type WorldRouter::operation(bad_type op)
@@ -187,6 +197,7 @@ bad_type WorldRouter::operation(bad_type op)
             op.to=save_to;
     }
 #endif
+    return None;
 }
 
 bad_type WorldRouter::look_operation(bad_type op)
@@ -196,6 +207,7 @@ bad_type WorldRouter::look_operation(bad_type op)
     WorldRouter::perceptives[op.from_.id]=op.from_;
     return BaseEntity.look_operation(self, op);
 #endif
+    return None;
 }
 
 bad_type WorldRouter::print_queue(bad_type msg)
@@ -210,6 +222,7 @@ bad_type WorldRouter::print_queue(bad_type msg)
     }
     return str(msg)+"\n"+string.join(s);
 #endif
+    return None;
 }
 
 bad_type WorldRouter::add_operation_to_queue(bad_type op, BaseEntity * obj)
@@ -233,6 +246,7 @@ bad_type WorldRouter::add_operation_to_queue(bad_type op, BaseEntity * obj)
     log.debug(3,WorldRouter::print_queue("added!!"));
     log.debug(4,"",op);
 #endif
+    return None;
 }
 
 bad_type WorldRouter::get_operation_from_queue()
@@ -255,6 +269,7 @@ bad_type WorldRouter::get_operation_from_queue()
     }
     return op;
 #endif
+    return None;
 }
 
 bad_type WorldRouter::find_range(BaseEntity * obj, bad_type attribute, bad_type range, bad_type generate_messages=0)
@@ -293,6 +308,7 @@ bad_type WorldRouter::find_range(BaseEntity * obj, bad_type attribute, bad_type 
         return res;
     }
 #endif
+    return None;
 }
 
 bad_type WorldRouter::update_all_ranges(BaseEntity * obj)
@@ -301,6 +317,7 @@ bad_type WorldRouter::update_all_ranges(BaseEntity * obj)
     WorldRouter::update_range(obj, "audible", const.hearing_range);
     return WorldRouter::update_range(obj, "visible", const.sight_range, 1);
 #endif
+    return None;
 }
 
 bad_type WorldRouter::update_range(BaseEntity * obj, bad_type attribute, bad_type range, bad_type generate_messages=0)
@@ -350,6 +367,7 @@ bad_type WorldRouter::update_range(BaseEntity * obj, bad_type attribute, bad_typ
         return res + res2;
     }
 #endif
+    return None;
 }
 
 bad_type WorldRouter::collision(BaseEntity * obj)
@@ -368,6 +386,7 @@ bad_type WorldRouter::collision(BaseEntity * obj)
     }
     return res;
 #endif
+    return None;
 }
 
 bad_type WorldRouter::execute_code(bad_type code)
@@ -375,6 +394,7 @@ bad_type WorldRouter::execute_code(bad_type code)
 #if 0
     exec(code);
 #endif
+    return None;
 }
 
 bad_type WorldRouter::eval_code(bad_type code)
@@ -382,6 +402,7 @@ bad_type WorldRouter::eval_code(bad_type code)
 #if 0
     return eval(code);
 #endif
+    return None;
 }
 
 bad_type WorldRouter::save(bad_type filename)
@@ -389,6 +410,7 @@ bad_type WorldRouter::save(bad_type filename)
 #if 0
     persistence.save_world(self, filename);
 #endif
+    return None;
 }
 
 bad_type WorldRouter::load(bad_type filename)
@@ -396,6 +418,7 @@ bad_type WorldRouter::load(bad_type filename)
 #if 0
     persistence.load_world(self, filename);
 #endif
+    return None;
 }
 
 bad_type WorldRouter::update_time()
@@ -406,6 +429,7 @@ bad_type WorldRouter::update_time()
                        const.time_multiplier*(new_time-WorldRouter::real_time);
     WorldRouter::real_time=new_time;
 #endif
+    return None;
 }
 
 bad_type WorldRouter::get_time()
@@ -413,6 +437,7 @@ bad_type WorldRouter::get_time()
 #if 0
     return WorldTime(world_info.time.s);
 #endif
+    return None;
 }
 
 bad_type WorldRouter::idle()
@@ -426,4 +451,5 @@ bad_type WorldRouter::idle()
     WorldRouter::operation(op);
     return 1;
 #endif
+    return None;
 }

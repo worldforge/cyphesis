@@ -1,6 +1,3 @@
-#ifndef WORLD_TIME_H
-#define WORLD_TIME_H
-
 #include "WorldTime.h"
 
 
@@ -96,5 +93,3 @@ dobule WorldTime::seconds()
 {
     return WorldTime::time.seconds();
 }
-
-#endif WORLD_TIME_H

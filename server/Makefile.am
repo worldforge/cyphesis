@@ -1,12 +1,17 @@
 bin_PROGRAMS = cyphesis
 
 INCLUDES = -I.. -I/home/ajr/atlas-install/include
-LIBS = -L/home/ajr/atlas-install/lib -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage
+LIBS = -L/home/ajr/atlas-install/lib -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity
 
-cyphesis_SOURCES = server.cpp server.h \
-		ServerRouting.cpp ServerRouting.h \
+cyphesis_SOURCES = \
+		OOG_Thing.cpp OOG_Thing.h \
+		Account.cpp Account.h \
+		Player.cpp Player.h \
+		Admin.cpp Admin.h \
 		Routing.cpp Routing.h \
+		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
-		OOG_Thing.cpp OOG_Thing.h
+		Connection.cpp Connection.h \
+		server.cpp server.h
 
 cyphesis_LDADD = ../common/libcommon.a ../modules/libmodules.a ../physics/libphysics.a

@@ -2,7 +2,7 @@
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Encoder.h>
-#include <Atlas/Message/DecoderBase.h>
+#include <Atlas/Objects/Decoder.h>
 
 
 #include <iostream.h>
@@ -50,6 +50,14 @@ void CommClient::message(bad_type msg) {
 #endif
 
 
+bad_type CommClient::send(Objects::Operation::RootOperation * op)
+{
+    if (op) {
+        encoder->StreamMessage(op);
+        client_ios << flush;
+    }
+}
+
 int CommClient::read()
 {
     if (client_ios) {
@@ -85,11 +93,62 @@ void CommClient::setup()
 
     codec->StreamBegin();
 
+    client=new Connection(this);
 }
 
-void CommClient::ObjectArrived(const Message::Object & obj)
+void CommClient::message(const Objects::Operation::RootOperation & obj)
 {
-    cout << "A bally object thingy here!" << endl << flush;
+    Objects::Operation::RootOperation * reply = client->message(obj);
+    if (NULL!=reply) {
+        cout << "sending reply" << endl << flush;
+        send(reply);
+    }
+}
+
+void CommClient::UnknownObjectArrived(const Atlas::Message::Object& o)
+{
+#if 0
+    cout << "An unknown has arrived." << endl << flush;
+    if (o.IsMap()) {
+        for(Message::Object::MapType::const_iterator I = o.AsMap().begin();
+		I != o.AsMap().end();
+		I++) {
+		cout << I->first << endl << flush;
+                if (I->second.IsString()) {
+		    cout << I->second.AsString() << endl << flush;
+                }
+	}
+    } else {
+        cout << "Its not a map." << endl << flush;
+    }
+#endif
+}
+
+void CommClient::ObjectArrived(const Objects::Operation::Login & obj)
+{
+    cout << "A login object thingy here!" << endl << flush;
+    message(obj);
+}
+
+void CommClient::ObjectArrived(const Objects::Operation::Create & obj)
+{
+    cout << "A create object thingy here!" << endl << flush;
+    message(obj);
+}
+
+void CommClient::ObjectArrived(const Objects::Operation::Move & obj)
+{
+    cout << "A move object thingy here!" << endl << flush;
+}
+
+void CommClient::ObjectArrived(const Objects::Operation::Set & obj)
+{
+    cout << "A set object thingy here!" << endl << flush;
+}
+
+void CommClient::ObjectArrived(const Objects::Operation::Touch & obj)
+{
+    cout << "A touch object thingy here!" << endl << flush;
 }
 
 int CommServer::setup(int port) {
@@ -129,7 +188,7 @@ int CommServer::accept() {
         return(-1);
     }
     cout << "Accepted" << endl << flush;
-    CommClient * newcli = new CommClient(asockfd, sin.sin_port);
+    CommClient * newcli = new CommClient(this, asockfd, sin.sin_port);
     newcli->setup();
     clients.insert(std::pair<int, CommClient *>(asockfd, newcli));
     return(0);

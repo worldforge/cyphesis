@@ -1,8 +1,6 @@
 #include <Atlas/Message/Object.h>
-#include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Encoder.h>
-#include <Atlas/Message/DecoderBase.h>
+#include <Atlas/Objects/Operation/Login.h>
 
 #include "ServerRouting.h"
 
@@ -20,7 +18,7 @@ ServerRouting::ServerRouting(CommServer * server, char * name) : svr_name(name)
 
 BaseEntity * ServerRouting::add_object(BaseEntity * obj, bad_type ent=None) {
     obj=Routing::add_object(obj, ent);
-    id_dict.insert(idpair_t(obj->id, obj));
+    id_dict[obj->id] = obj;
     return obj;
 }
 

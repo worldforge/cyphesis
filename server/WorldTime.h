@@ -1,3 +1,6 @@
+#ifndef WORLD_TIME_H
+#define WORLD_TIME_H
+
 typedef int bad_type; // Remove this to get unset type reporting
 
 #define None 0 // Remove this to deal with un-initialied vars
@@ -22,3 +25,5 @@ class WorldTime {
 };
 
 bad_type seconds2string(bad_type seconds);
+
+#endif /* WORLD_TIME_H */

@@ -14,26 +14,32 @@ extern int profile_flag;
 class CommServer;
 
 #include "ServerRouting.h"
+#include "Connection.h"
 
 using namespace Atlas;
 
-class CommClient : Message::DecoderBase {
-    CommServer * server;
+class CommClient : Objects::Decoder {
     int client_fd;
     bad_type layer;
     ofstream log_file;
     fstream client_ios;
     Codec<iostream> * codec;
     Objects::Encoder * encoder;
+    Connection * client;
 
   protected:
-    void ObjectArrived(const Message::Object & obj);
+    void UnknownObjectArrived(const Atlas::Message::Object&);
+    void ObjectArrived(const Objects::Operation::Login & obj);
+    void ObjectArrived(const Objects::Operation::Create & obj);
+    void ObjectArrived(const Objects::Operation::Move & obj);
+    void ObjectArrived(const Objects::Operation::Set & obj);
+    void ObjectArrived(const Objects::Operation::Touch & obj);
 
   public:
-#if 0
-    CommClient(int fd, int port);
-#else
-    CommClient(int fd, int port) : client_fd(fd), client_ios(fd) {
+    CommServer * server;
+
+    CommClient(CommServer * svr, int fd, int port) :
+		server(svr), client_fd(fd), client_ios(fd) {
         if (consts::debug_level>=1) {
             char * log_name = "log.log";
             //const char * log_name = port+".log";
@@ -41,8 +47,9 @@ class CommClient : Message::DecoderBase {
             log_file.open(log_name);
         }
     }
-#endif
     int read();
+    bad_type send(Objects::Operation::RootOperation *);
+    void message(const Objects::Operation::RootOperation &);
     //void destroy();
     void setup();
 };
@@ -51,23 +58,22 @@ class CommClient : Message::DecoderBase {
 typedef std::map<int, CommClient *> client_map_t;
 
 class CommServer {
-    int accept();
-    void idle();
-
     int server_fd;
     int server_port;
     bad_type id;
     client_map_t clients;
 
+    int accept();
+    void idle();
+
   public:
+    ServerRouting * server;
+    int loop_max;
+
     int setup(int port);
     void loop();
     void remove_client(CommClient * client, char * msg);
     void remove_client(CommClient * client);
-
-    int loop_max;
-    ServerRouting * server;
-    //bad_type * server;
 };
 
 int main(int argc, char ** argv);

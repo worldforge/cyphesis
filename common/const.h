@@ -10,7 +10,7 @@ namespace consts {
 
   extern double fzero;
 
-  extern int time_multiplier;
+  extern double time_multiplier;
   extern int basic_tick;
   extern double base_velocity_coefficient;
   extern double base_velocity;

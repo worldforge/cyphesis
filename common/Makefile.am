@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libcommon.a
 
-INCLUDES = -I..
+INCLUDES = -I..  -I/home/ajr/atlas-install/include
 
 libcommon_a_SOURCES = const.cpp const.h \
 		log.cpp log.h \

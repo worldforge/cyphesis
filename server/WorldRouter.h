@@ -22,17 +22,17 @@ typedef int bad_type; // Remove this to get unset type reporting
 
 class WorldRouter : public Routing {
     ServerRouting * server;
-    cid_t next_id;
-    cid_t id;
     double real_time;
+
   public:
-    dict_t objects;
+    //dict_t objects;
+    //fdict_t fobjects;
     list_t perceptives;
     list_t omnipresent_list;
     ofstream queue_fp;
 
     WorldRouter(ServerRouting * server);
-    bad_type get_id(char * name);
+    bad_type get_id(char * name, string & full_id);
     bad_type add_object(BaseEntity * obj, bad_type ent=None);
     void del_object(BaseEntity * obj);
     bad_type is_object_deleted(BaseEntity *);
