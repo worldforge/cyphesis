@@ -22,7 +22,7 @@ AtlasObject * newAtlasObject(PyObject *arg);
 // PyObject * MapType_asPyObject(const Object::MapType & map);
 // PyObject * ListType_asPyObject(const Object::ListType & list);
 PyObject * Object_asPyObject(const Object & obj);
-// Object::ListType PyListObject_asListType(PyObject * list);
-// Object::MapType PyDictObject_asMapType(PyObject * dict);
+Object::ListType PyListObject_asListType(PyObject * list);
+Object::MapType PyDictObject_asMapType(PyObject * dict);
 Object PyObject_asObject(PyObject * o);
 

@@ -26,7 +26,6 @@ typedef struct {
     PyObject_HEAD
     PyObject	* Object_attr;	// Attributes dictionary
     Object	* m_obj;
-    bool	m_ent;		// How complex member should be handled
 } AtlasObject;
 
 typedef struct {

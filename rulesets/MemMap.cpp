@@ -36,6 +36,7 @@ Entity * MemMap::add(const Object & entity)
     I = entmap.find("name");
     if ((I != entmap.end()) && I->second.IsString()) {
         thing->name = I->second.AsString();
+        cout << id << ", has name " << thing->name << endl << flush;
     }
     I = entmap.find("type");
     if ((I != entmap.end()) && I->second.IsString()) {

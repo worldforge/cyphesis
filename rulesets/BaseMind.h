@@ -11,11 +11,15 @@
 class BaseMind : public Entity {
   protected:
     MemMap map;
+    bool isAwake;
   public:
     BaseMind(const string &, const string &);
     virtual ~BaseMind();
 
     virtual MemMap * getMap();
+
+    void sleep() { isAwake = false; }
+    void awake() { isAwake = true; }
 
     virtual oplist sightOperation(const Sight & op, Login & sub_op);
     virtual oplist sightOperation(const Sight & op, Action & sub_op);

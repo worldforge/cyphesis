@@ -48,9 +48,21 @@ oplist Thing::Operation(const Setup & op)
     if (script->Operation("setup", op, res) != 0) {
         return res;
     }
+    oplist r(2);
     RootOperation * tick = new Tick(Tick::Instantiate());
     tick->SetTo(fullid);
-    return oplist(1,tick);
+    r[0] = tick;
+    // This is a bit of a hack that I am not entirely happy with.
+    // We broadcast a sight of create of ourselves so that everything
+    // nearby can see us. This is to get round the fact that the sight
+    // of create broadcast by the entity that created us may have
+    // been elsewhere on the map.
+    RootOperation * sight = new Sight(Sight::Instantiate());
+    Create c(Create::Instantiate());
+    c.SetArgs(Object::ListType(1,asObject()));
+    sight->SetArgs(Object::ListType(1, c.AsObject()));
+    r[1] = sight;
+    return r;
 }
 
 oplist Thing::Operation(const Action & op)

@@ -501,7 +501,6 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
         return NULL;
     }
     o->m_obj = new Object(obj);
-    o->m_ent = true;
     return (PyObject *)o;
 }
 
@@ -520,7 +519,7 @@ static PyObject * cppthing_new(PyObject * self, PyObject * args)
 	return (PyObject *)o;
 }
 
-inline void addToArgs(Object::ListType & args, PyObject * ent)
+static inline void addToArgs(Object::ListType & args, PyObject * ent)
 {
     if (ent == NULL) {
         return;
@@ -531,7 +530,18 @@ inline void addToArgs(Object::ListType & args, PyObject * ent)
             fprintf(stderr, "Invalid object in Operation arguments\n");
             return;
         }
-        args.push_back(*obj->m_obj);
+        Object o(*obj->m_obj);
+        if (o.IsMap() && (obj->Object_attr != NULL)) {
+            Object::MapType & ent = o.AsMap();
+            Object::MapType ent2 = PyDictObject_asMapType(obj->Object_attr);
+            Object::MapType::iterator I = ent2.begin();
+            for(; I != ent2.end(); I++) {
+                if (ent.find(I->first) != ent.end()) {
+                    ent[I->first] = I->second;
+                }
+            }
+        }
+        args.push_back(o);
     } else if (PyOperation_Check(ent)) {
         RootOperationObject * op = (RootOperationObject*)ent;
         if (op->operation == NULL) {

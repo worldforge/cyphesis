@@ -6,7 +6,7 @@ from mind.goals.common.common import *
 from mind.goals.common.move import *
 from whrandom import *
 
-########################## MAKE LOTS OF SOMETHING #################################
+######################## MAKE LOTS OF SOMETHING ###############################
 
 class make_amount(Goal):
     def __init__(self, what, amount, what_desc="some thing", place=None):
@@ -30,7 +30,7 @@ class make_amount(Goal):
         return Operation("create",Entity(name=self.what,parents=[self.what],
                                          description=self.what_desc))
 
-############################ NOT YET IMPLEMENTED ####################################
+########################## NOT YET IMPLEMENTED ################################
 
 class nyi(Goal):
     def __init__(self, desc):
@@ -42,7 +42,7 @@ class nyi(Goal):
         #CHEAT! (make it so that it asks other people for knowledge)
         return Operation("NYI",Entity(description=self.desc))
 
-############################ IMAGINARY TASK ####################################
+############################ IMAGINARY TASK ###################################
 
 class imaginary(Goal):
     def __init__(self, desc, time, place):
@@ -51,7 +51,7 @@ class imaginary(Goal):
     def imaginary(self,me):
         return Operation("imaginary",Entity(description=self.desc))
 
-############################ GET KNOWLEDEGE ABOUT THING #############################
+####################### GET KNOWLEDEGE ABOUT THING ############################
 
 class get_knowledge(Goal):
     def __init__(self, me, what):
@@ -65,7 +65,7 @@ class get_knowledge(Goal):
             return 1
         return me.get_knowledge("place",self.what)
 
-############################ BUY KNOWN THING ##############################
+############################ BUY KNOWN THING ##################################
 
 class get_thing(Goal):
     def do_I_have_it(self, me):

@@ -35,7 +35,8 @@
 
 //static const bool debug_flag = false;
 
-BaseMind::BaseMind(const string & id, const string & body_name) : map(script)
+BaseMind::BaseMind(const string & id, const string & body_name) : map(script),
+                                                                  isAwake(true)
 {
     fullid = id;
     name = body_name;
@@ -76,6 +77,7 @@ oplist BaseMind::sightOperation(const Sight & op, Chop & sub_op)
 
 oplist BaseMind::sightOperation(const Sight & op, Create & sub_op)
 {
+    cout << "sighCreate " << fullid << endl << flush;
     oplist res;
     if (script->Operation("sight_create", op, res, &sub_op) != 0) {
         return res;
@@ -214,6 +216,8 @@ oplist BaseMind::soundOperation(const Sound & op, RootOperation & sub_op)
 
 oplist BaseMind::Operation(const Sound & op)
 {
+    // Louder sounds might eventually make character wake up
+    if (!isAwake) { return oplist(); }
     // Deliver argument to sound things
     oplist res;
     if (script->Operation("sound", op, res) != 0) {
@@ -236,6 +240,7 @@ oplist BaseMind::Operation(const Sound & op)
 
 oplist BaseMind::Operation(const Sight & op)
 {
+    if (!isAwake) { return oplist(); }
     debug( cout << "BaseMind::Operation(Sight)" << endl << flush;);
     // Deliver argument to sight things
     oplist res;
@@ -266,6 +271,7 @@ oplist BaseMind::Operation(const Sight & op)
 
 oplist BaseMind::Operation(const Appearance & op)
 {
+    if (!isAwake) { return oplist(); }
     oplist res;
     script->Operation("appearance", op, res);
     const Object::ListType & args = op.GetArgs();
@@ -278,6 +284,7 @@ oplist BaseMind::Operation(const Appearance & op)
 
 oplist BaseMind::Operation(const Disappearance & op)
 {
+    if (!isAwake) { return oplist(); }
     oplist res;
     script->Operation("disappearance", op, res);
     // Not quite sure what to do to the map here, but should do something.

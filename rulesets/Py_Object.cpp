@@ -82,9 +82,8 @@ static int Object_setattr( AtlasObject *self, char *name, PyObject *v)
         Object::MapType & omap = self->m_obj->AsMap();
         Object v_obj = PyObject_asObject(v);
         if ((v_obj.GetType() != Object::TYPE_NONE) &&
-            (self->m_ent ||
-             (v_obj.GetType() != Object::TYPE_MAP) &&
-             (v_obj.GetType() != Object::TYPE_LIST))) {
+            (v_obj.GetType() != Object::TYPE_MAP) &&
+            (v_obj.GetType() != Object::TYPE_LIST)) {
             omap[name] = v_obj;
             return 0;
         }
@@ -129,7 +128,6 @@ AtlasObject * newAtlasObject(PyObject *arg)
 		return NULL;
 	}
 	self->Object_attr = NULL;
-	self->m_ent = false;
 	return self;
 }
 
@@ -198,7 +196,7 @@ PyObject * Object_asPyObject(const Object & obj)
     return ret;
 }
 
-static Object::ListType PyListObject_asListType(PyObject * list)
+Object::ListType PyListObject_asListType(PyObject * list)
 {
     Object::ListType argslist;
     AtlasObject * item;
@@ -216,7 +214,7 @@ static Object::ListType PyListObject_asListType(PyObject * list)
     return argslist;
 }
 
-static Object::MapType PyDictObject_asMapType(PyObject * dict)
+Object::MapType PyDictObject_asMapType(PyObject * dict)
 {
     Object::MapType argsmap;
     AtlasObject * item;

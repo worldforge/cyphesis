@@ -1,3 +1,20 @@
+2001-05-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/BaseMind.h/cpp: Added isAwake flag to indicate whether the
+	  mind is active or not. Defaults to true.
+
+	* rulesets/Py_Object.cpp: Reverted to storing complex attributes
+	  in a python dict.
+
+	* rulesets/Python_API.cpp: Get complex attributes from operation
+	  arguments.
+
+	* rulesets/Thing.cpp: Added in broadcast of sight(create) operation
+	  to setup when object is created. See Thing::Opertion(Create) for
+	  details.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Cleaned up comments.
+
 2001-05-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* Added ruleset entries for characters to match all the recently
