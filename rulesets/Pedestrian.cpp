@@ -161,12 +161,17 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     if (m_targetPos) {
                         m_targetPos += new_loc.ref->location.coords;
                     }
-                } else {
+                } else if (m_collEntity->location.ref == new_loc.ref) {
                     debug(std::cout << "IN" << std::endl << std::flush;);
                     new_coords -= m_collEntity->location.coords;
                     if (m_targetPos) {
                         m_targetPos -= m_collEntity->location.coords;
                     }
+                } else {
+                    std::cerr << "BAD COLLISION: " << m_body.getId()
+                              << " with " << m_collEntity->getId()
+                              << ". Making no coord adjustment"
+                              << std::endl << std::flush;
                 }
                 new_loc.ref = m_collEntity;
                 m_collEntity = NULL;

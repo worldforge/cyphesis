@@ -1,3 +1,9 @@
+2002-05-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Movement.cpp, rulesets/Pedestrian.cpp: Hardened collision
+	  code to try and catch the bug simon is seeing. Fixed some slight
+	  bugs and inefficiencies in the process.
+
 2002-05-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Pedestrian.cpp: Fix bug in movement logic that meant

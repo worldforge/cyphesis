@@ -36,14 +36,15 @@ void Movement::checkCollisions(const Location & loc)
 {
     // Check to see whether a collision is going to occur from now until the
     // the next tick in consts::basic_tick seconds
-    double collTime = consts::basic_tick + 1;
+    double collTime = consts::basic_tick;
     EntitySet::const_iterator I;
     debug( std::cout << "checking " << m_body.getId() << loc.coords
                      << loc.velocity << " in " << loc.ref->getId()
                      << " against "; );
     m_collEntity = NULL;
+    // Check against everything within the current container
     for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
-        // if ((*I) == loc.ref) { continue; }
+        // Don't check for collisions with ourselves
         if ((*I) == &m_body) { continue; }
         const Location & oloc = (*I)->location;
         if (!oloc.bBox) { continue; }
@@ -52,14 +53,14 @@ void Movement::checkCollisions(const Location & loc)
         if (t < 0) { continue; }
         debug( std::cout << (*I)->getId() << oloc.coords << oloc.velocity; );
         debug( std::cout << "[" << t << "]"; );
-        if (t < collTime) {
+        if (t <= collTime) {
             m_collEntity = *I;
             m_collAxis = axis;
+            collTime = t;
         }
-        collTime = std::min(collTime, t);
     }
     debug( std::cout << std::endl << std::flush; );
-    if (collTime > consts::basic_tick) {
+    if (m_collEntity == NULL) {
         // Check whethe we are moving out of parents bounding box
         // If ref has no bounding box, or itself has no ref, then we can't
         // Move out of it.
@@ -70,8 +71,8 @@ void Movement::checkCollisions(const Location & loc)
         double t = loc.timeToExit(oloc);
         if (t == 0) { return; }
         if (t < 0) { t=0; }
-        collTime = std::min(collTime, t);
-        if (collTime > consts::basic_tick) { return; }
+        if (t > consts::basic_tick) { return; }
+        collTime = t;
         debug(std::cout << "Collision with parent bounding box in "
                         << collTime << std::endl << std::flush;);
         m_collEntity = oloc.ref;
@@ -82,8 +83,9 @@ void Movement::checkCollisions(const Location & loc)
         // Non solid container - check for collision with its contents.
         const Location & lc2 = m_collEntity->location;
         Location rloc(loc);
-        rloc.ref = m_collEntity; rloc.coords = Vector3D(loc.coords) -= lc2.coords;
-        double coll2Time = consts::basic_tick + 1;
+        rloc.ref = m_collEntity;
+        rloc.coords = Vector3D(loc.coords) -= lc2.coords;
+        double coll2Time = consts::basic_tick;
         // rloc is coords of character with ref to m_collEntity
         for(I = m_collEntity->contains.begin(); I != m_collEntity->contains.end(); I++) {
             const Location & oloc = (*I)->location;
@@ -91,15 +93,17 @@ void Movement::checkCollisions(const Location & loc)
             int axis;
             double t = rloc.timeToHit(oloc, axis);
             if (t < 0) { continue; }
-            coll2Time = std::min(coll2Time, t);
+            if (t <= coll2Time) {
+                coll2Time = t;
+            }
         }
+        // There is a small possibility that if
+        // coll2Time == collTime == basic_tick, we will miss a collision
         if (coll2Time > collTime) {
             debug(std::cout << "passing into it " << collTime << ":"
                             << coll2Time << std::endl << std::flush;);
             // We are entering collEntity.
-            // Set collRef ????????????????
             m_collRefChange = true;
-            // if (coll2Time > consts::basic_tick) { return; }
         }
     }
     debug( std::cout << "COLLISION" << std::endl << std::flush; );
