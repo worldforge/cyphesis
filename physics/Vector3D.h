@@ -374,13 +374,13 @@ bool timeToHit(const Vector3D & p,     // Position of point
                const Vector3D & n,     // Plane normal
                const Vector3D & v,     // Velocity of plane
                // double plane_time,   // Time since position set
-               double time,            // Collision time return
+               double & time,            // Collision time return
                Vector3D & normal)      // Collision normal return
 //
 //
-//                point_vel   |     \ plane_normal
-//                     ___    |    __\ plane_vel
-//               point \      |      / plane
+//                            |     \ n
+//                   p ___ u  |  v __\ l
+//                     \      |      /
 //                      \     |     /
 //                       \    |    /
 //                        \   |   /
@@ -390,7 +390,7 @@ bool timeToHit(const Vector3D & p,     // Position of point
 //
 //  The time when point hits plane is as follows:
 //
-//  ( (point + point_vel * t) - (plane + plane_vel * t) ) . plane_normal = 0
+//  ( (p + u * t) - (l + v * t) ) . n = 0
 //
 //  dot product ( . ) is x*x + y*y + z*z
 //
@@ -412,8 +412,15 @@ bool timeToHit(const Vector3D & p,     // Position of point
 //
 // return value should indicate whether we are infront of or behind the 
 // plane. There is math in common, but I'm not sure how much it will help
+//
 {
-    return 0.;
+    time = (  p.x() * n.x() - l.x() * n.x()
+            + p.y() * n.y() - l.y() * n.y()
+            + p.z() * n.z() - l.z() * n.z() ) /
+           (  v.x() * n.x() + v.y() * n.y()
+            + v.z() * n.z() - u.x() * n.x()
+            - u.y() * n.y() - u.z() * n.z() );
+    return (Dot(p - l, n) > 0.);
 }
 
 inline bool isZero(const Vector3D & u)

@@ -1,5 +1,10 @@
 2003-10-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/Vector3D.h: Clean up notes, and implement collision
+	  prediction function.
+
+2003-10-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Vector3D.h: Clean up collision code, and add work in
 	  progress on function to predict collision between point and
 	  plane.
