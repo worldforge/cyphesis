@@ -16,7 +16,7 @@ class Quaternion {
     static const int cZ = 2;
     static const int cW = 3;
 
-    Quaternion() : x(0), y(0), z(0), w(0), _set(false) { }
+    Quaternion() : x(0), y(0), z(0), w(1), _set(false) { }
     Quaternion(double x, double y, double z, double w) : x(x), y(y), z(z), w(w),
                                                          _set(true) { }
     explicit Quaternion(const Atlas::Message::Object::ListType &l) : _set(true)

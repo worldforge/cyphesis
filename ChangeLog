@@ -1,3 +1,8 @@
+2003-05-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Quaternion.h: Intialise quaternion to unit length, in
+	  case it leaks.
+
 2003-05-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Connection.cpp: Refuse to create an account if this

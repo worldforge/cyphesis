@@ -1,3 +1,5 @@
+Sort out persistance when quaternion is not initialised.
+
 World doesn't have its type string set propper like.
 
 Test what happens if we use shutdown instead of close on a socket.
