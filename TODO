@@ -1,3 +1,7 @@
+Fix or get rid of cyphesis-setup
+
+Fix openssl dep in rpm.
+
 Fix usage of map.get in BaseMind and NPCMind
 
 Make ExternalMind inherit from something higher that BaseMind. It has so
