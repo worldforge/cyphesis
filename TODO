@@ -1,3 +1,5 @@
+Sort out SO_REUSEADDR You FUCKTARD!
+
 Fix movement bug with destination based movement after collision. Ammend
 find target to be derived from velocity.
 
