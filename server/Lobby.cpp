@@ -2,12 +2,12 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <common/debug.h>
-
 #include "Lobby.h"
 
 #include "Connection_methods.h"
 #include "ServerRouting.h"
+
+#include "common/debug.h"
 
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>

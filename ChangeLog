@@ -1,5 +1,9 @@
 2004-10-31  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Lobby.cpp: Tweak incorrect header order.
+
+2004-10-31  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Property.cpp, common/Property.h, common/Property_impl.h:
 	  Add new ImmutableProperty for properties that cannot be
 	  modified, and hold a const reference.
