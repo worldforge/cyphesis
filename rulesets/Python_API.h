@@ -7,11 +7,11 @@
 
 #include <string>
 
-class Thing;
+class Entity;
 class BaseMind;
 
-void Create_PyThing(Thing * thing, const std::string & package,
-                                   const std::string & type);
+void Create_PyThing(Entity * thing, const std::string & package,
+                                    const std::string & type);
 void Create_PyMind(BaseMind * mind, const std::string & package,
                                     const std::string & type);
 

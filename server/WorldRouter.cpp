@@ -157,7 +157,7 @@ Entity * WorldRouter::addObject(const std::string & typestr,
     debug(std::cout << "WorldRouter::addObject(std::string, ent)" << std::endl
                     << std::flush;);
     Entity * obj;
-    obj = EntityFactory::instance()->newThing(typestr, ent, eobjects);
+    obj = EntityFactory::instance()->newEntity(typestr, ent, eobjects);
     obj->setId(id);
     return addObject(obj);
 }

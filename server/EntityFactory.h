@@ -35,9 +35,9 @@ class EntityFactory {
             delete m_instance;
         }
     }
-    Thing * newThing(const std::string &,
-                     const Atlas::Message::Object::MapType &,
-                     const EntityDict &);
+    Entity * newEntity(const std::string &,
+                      const Atlas::Message::Object::MapType &,
+                      const EntityDict &);
     void flushFactories();
 
     void installBaseClasses();

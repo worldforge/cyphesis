@@ -290,8 +290,8 @@ void Subscribe_Script(T * thing, PyObject * pyclass, const std::string& package)
     }
 }
 
-void Create_PyThing(Thing * thing, const std::string & package,
-                                   const std::string & _type)
+void Create_PyThing(Entity * thing, const std::string & package,
+                                    const std::string & _type)
 {
     PyObject * c = Get_PyClass(package, _type);
     if (c == NULL) { return; }

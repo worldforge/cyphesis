@@ -37,7 +37,7 @@ class EntityFactory : public SigC::Object {
             delete m_instance;
         }
     }
-    Thing * newThing(const std::string &, const Atlas::Message::Object &, const edict_t &);
+    Entity * newEntity(const std::string &, const Atlas::Message::Object &, const edict_t &);
     void flushFactories();
 
     void installBaseClasses();

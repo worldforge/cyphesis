@@ -41,7 +41,7 @@ echo autoconf...
 autoconf
 
 if test "x$NOCONFIGURE" = "x" ; then
-    CONFIGUREFLAGS="--prefix=/opt/worldforge --enable-maintainer-mode=yes --enable-debug=yes $@"
+    CONFIGUREFLAGS="--prefix=/opt/worldforge --enable-maintainer-mode=yes --enable-debug=yes --disable-shared --disable-static $@"
     echo Running: configure $CONFIGUREFLAGS
     ./configure $CONFIGUREFLAGS
 fi

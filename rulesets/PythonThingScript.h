@@ -7,13 +7,13 @@
 
 #include "PythonScript.h"
 
-class Thing;
+class Entity;
 
 class PythonThingScript : public PythonScript {
   private:
-    Thing & thing;
+    Entity & thing;
   public:
-    PythonThingScript(PyObject *, Thing &);
+    PythonThingScript(PyObject *, Entity &);
     virtual ~PythonThingScript();
     virtual bool Operation(const std::string &,
                            const Atlas::Objects::Operation::RootOperation &,

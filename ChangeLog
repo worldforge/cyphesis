@@ -1,5 +1,18 @@
 2002-11-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.h, common/Database.cpp, server/Persistance.cpp:
+	  Finish entity table creation code, and test it.
+
+	* rulesets/Entity.cpp, rulesets/Entity.h, rulesets/EntityFactory.h,
+	  rulesets/PythonThingScript.cpp, rulesets/PythonThingScript.h,
+	  rulesets/Python_API.cpp, rulesets/Python_API.h,
+	  rulesets/Thing.cpp, rulesets/Thing.h, server/EntityFactory.cpp,
+	  server/EntityFactory.h, server/WorldRouter.cpp: Sort out
+	  some incorrect use of Thing instead of Entity. Move some code
+	  from Thing into Entity.
+
+2002-11-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.h, common/Database.cpp: Method to register new
 	  entity tables.
 

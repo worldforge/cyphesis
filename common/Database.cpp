@@ -428,7 +428,7 @@ bool Database::getTable(const std::string & table, Object::MapType &o)
         while ((res = PQgetResult(m_connection)) != NULL);
         return false;
     }
-    const char * data = PQgetvalue(res, 0, 1);
+    // const char * data = PQgetvalue(res, 0, 1);
     Object::MapType t;
     for(int i = 0; i < results; i++) {
         const char * key = PQgetvalue(res, i, 0);
@@ -475,38 +475,123 @@ void Database::reportError()
 bool Database::registerEntityTable(const std::string & classname,
 	                           const Atlas::Message::Object::MapType & row,
 				   const std::string & parent)
+// TODO
+// row probably needs to be richer to provide a more detailed, and possibly
+// ordered description of each the columns required.
 {
-    const std::string tablename = classname + "ent";
+    if (entityTables.find(classname) != entityTables.end()) {
+        log(ERROR, "Attempt to register entity table already registered.");
+        debug(std::cerr << "Table for class " << classname
+		        << " already registered." << std::endl << std::flush;);
+        return false;
+    }
+    if (!parent.empty()) {
+        if (entityTables.empty()) {
+            log(ERROR, "Attempt to create non-root entity class table when no root registered.");
+            debug(std::cerr << "Table for class " << classname
+		            << " cannot be non-root."
+			    << std::endl << std::flush;);
+            return false;
+        }
+        if (entityTables.find(parent) == entityTables.end()) {
+	    log(ERROR, "Attempt to create entity class table with non existant parent.");
+            debug(std::cerr << "Table for class " << classname
+		            << " cannot have non-existant parent " << parent
+                            << std::endl << std::flush;);
+            return false;
+	}
+    } else if (!entityTables.empty()) {
+        log(ERROR, "Attempt to create root entity class table when one already registered.");
+        debug(std::cerr << "Table for class " << classname
+		        << " cannot be root." << std::endl << std::flush;);
+        return false;
+    }
+    // At this point we know the table request make sense.
+    entityTables[classname] = parent;
+    const std::string tablename = classname + "_ent";
     // Check whether the table exists
     std::string query = "SELECT * FROM ";
+    std::string createquery = "CREATE TABLE ";
     query += tablename;
+    createquery += tablename;
     query += " WHERE ";
+    createquery += "(";
+    if (parent.empty()) {
+	createquery += "id varchar(80), tablename varchar(20)";
+    }
     Atlas::Message::Object::MapType::const_iterator I = row.begin();
     for(; I != row.end(); ++I) {
-	if (I != row.begin()) {
-	    query += " and ";
+        if (I != row.begin()) {
+            query += " AND ";
 	}
-	const std::string & column = I->first;
-	query += column;
-	const Atlas::Message::Object & type = I->second;
+        createquery += ", ";
+        const std::string & column = I->first;
+        query += column;
+        createquery += column;
+        const Atlas::Message::Object & type = I->second;
         if (type.IsString()) {
-	    query += " LIKE 'foo'";
-        } else if (type.IsNum()) {
-	    query += " = 1";
-        }
+            query += " LIKE 'foo'";
+	    int size = type.AsString().size();
+	    if (size == 0) {
+		createquery += " text";
+	    } else {
+		char buf[32];
+		snprintf(buf, 32, "%d", size);
+	        createquery += " varchar(";
+	        createquery += buf;
+	        createquery += ")";
+	    }
+        } else if (type.IsInt()) {
+            query += " = 1";
+	    createquery += " integer";
+        } else if (type.IsFloat()) {
+            query += " = 1.0";
+	    createquery += " float";
+        } else {
+	    log(ERROR, "Illegal column type in database entity row");
+	}
     }
     query += ";";
 
-    std::cout << "QUERY: " << query << std::endl << std::flush;
-    int status = PQsendQuery(m_connection, "CREATE TABLE account ( id varchar(80)  PRIMARY KEY, contents text );");
+    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-	reportError();
+	log(ERROR, "Database query error.");
+        reportError();
         return false;
     }
     if (!tuplesOk()) {
-	std::cout << "returned error" << std::endl << std::flush;
+        debug(reportError(););
+        debug(std::cout << "Table does not yet exist"
+		        << std::endl << std::flush;);
     } else {
-	std::cout << "returned error" << std::endl << std::flush;
+        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        return true;
+    }
+    // create table
+    createquery += ")";
+    if (!parent.empty()) {
+	createquery += " INHERITS (";
+	createquery += parent;
+	createquery += "_ent)";
+    }
+    createquery += ";";
+    debug(std::cout << "CREATE QUERY: " << createquery
+	            << std::endl << std::flush;);
+    status = PQsendQuery(m_connection, createquery.c_str());
+    if (!status) {
+	log(ERROR, "Database query error.");
+        reportError();
+        return false;
+    }
+    if (!commandOk()) {
+	log(ERROR, "Error creating database table.");
+        reportError();
+        debug(std::cout << "Table create didn't work"
+		        << std::endl << std::flush;);
+    } else {
+        debug(std::cout << "Table created" << std::endl << std::flush;);
+        return true;
     }
     return true;
 }

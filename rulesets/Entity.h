@@ -80,6 +80,7 @@ class Entity : public BaseEntity {
                      const EntityDict &);
     Vector3D getXyz() const;
     void destroy();
+    void scriptSubscribe(const std::string &);
 
     virtual void addToObject(Atlas::Message::Object::MapType & obj) const;
     virtual OpVector SetupOperation(const Setup & op);

@@ -41,6 +41,23 @@ bool Persistance::init()
     bool k = p->m_connection.initMind(true);
     bool l = p->m_connection.initServer(true);
     bool m = p->m_connection.initRule(true);
+
+    Atlas::Message::Object::MapType desc;
+    desc["name"] = "                                                                                ";
+    desc["height"] = 1.0;
+    desc["fingers"] = 10;
+    p->m_connection.registerEntityTable("entity", desc);
+
+    Atlas::Message::Object::MapType chardesc;
+    chardesc["mode"] = "                                                                                ";
+    p->m_connection.registerEntityTable("character", chardesc, "entity");
+
+    Atlas::Message::Object::MapType piledesc;
+    piledesc["stuff"] = "                                                                                ";
+    piledesc["count"] = 0;
+    piledesc["volume"] = 10;
+    p->m_connection.registerEntityTable("pile", piledesc, "entity");
+
     return (i && j && k && l && m);
 }
 

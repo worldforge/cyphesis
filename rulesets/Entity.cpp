@@ -7,6 +7,7 @@
 
 #include <common/log.h>
 #include <common/debug.h>
+#include <common/inheritance.h>
 
 #include <common/Setup.h>
 #include <common/Tick.h>
@@ -216,6 +217,20 @@ Vector3D Entity::getXyz() const
         return Vector3D(location.coords) += location.ref->getXyz();
     } else {
         return location.coords;
+    }
+}
+
+void Entity::scriptSubscribe(const std::string & op)
+{
+    OpNo n = Inheritance::instance().opEnumerate(op);
+    if (n != OP_INVALID) {
+        debug(std::cout << "SCRIPT requesting subscription to " << op
+                        << std::endl << std::flush;);
+        subscribe(op, n);
+    } else {
+        std::string msg = std::string("SCRIPT requesting subscription to ")
+                        + op + " but inheritance could not give me a reference";
+        log(ERROR, msg.c_str());
     }
 }
 

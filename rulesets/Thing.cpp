@@ -41,20 +41,6 @@ Thing::Thing()
 
 Thing::~Thing() { }
 
-void Thing::scriptSubscribe(const std::string & op)
-{
-    OpNo n = Inheritance::instance().opEnumerate(op);
-    if (n != OP_INVALID) {
-        debug(std::cout << "SCRIPT requesting subscription to " << op
-                        << std::endl << std::flush;);
-        subscribe(op, n);
-    } else {
-        std::string msg = std::string("SCRIPT requesting subscription to ")
-                        + op + " but inheritance could not give me a reference";
-        log(ERROR, msg.c_str());
-    }
-}
-
 OpVector Thing::SetupOperation(const Setup & op)
 {
 

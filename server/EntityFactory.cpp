@@ -49,11 +49,11 @@ EntityFactory::EntityFactory()
     installFactory("thing", "structure", new ThingFactory<Structure>());
 }
 
-Thing * EntityFactory::newThing(const std::string & type,
-                                const Fragment::MapType & entmap,
-                                const EntityDict & world)
+Entity * EntityFactory::newEntity(const std::string & type,
+                                  const Fragment::MapType & entmap,
+                                  const EntityDict & world)
 {
-    Thing * thing = NULL;
+    Entity * thing = NULL;
     Fragment::MapType attributes;
     FactoryDict::const_iterator I = factories.find(type);
     if (I != factories.end()) {
@@ -67,8 +67,9 @@ Thing * EntityFactory::newThing(const std::string & type,
             Create_PyThing(thing, factory->script, type);
         }
     } else {
+	// This should be tolerated less
         if (type.empty()) {
-            log(NOTICE, "Empty string type passed to EntityFactory::newThing");
+            log(NOTICE, "Empty string type passed to EntityFactory::newEntity");
         } else {
             installFactory("thing", type, new ThingFactory<Thing>());
             std::string msg = std::string("Installing patch-in factory for ") + type;

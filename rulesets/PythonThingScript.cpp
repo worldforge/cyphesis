@@ -15,7 +15,7 @@
 
 static const bool debug_flag = false;
 
-PythonThingScript::PythonThingScript(PyObject * o, Thing & t) :
+PythonThingScript::PythonThingScript(PyObject * o, Entity & t) :
     PythonScript(o, t), thing(t)
 {
 }

@@ -34,6 +34,9 @@ class Database {
     std::string mind_db;
     std::string server_db;
     std::string rule_db;
+
+    std::map<std::string, std::string> entityTables;
+
     Decoder m_d;
 
     PGconn * m_connection;
@@ -79,11 +82,12 @@ class Database {
     bool initServer(bool createTables = false);
     bool initRule(bool createTables = false);
 
+    void shutdownConnection();
+
     bool registerEntityTable(const std::string & classname,
 	                     const Atlas::Message::Object::MapType & row,
 			     const std::string & parent = "");
 
-    void shutdownConnection();
 };
 
 #endif // COMMON_DATABSE_H
