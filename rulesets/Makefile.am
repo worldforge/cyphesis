@@ -7,6 +7,7 @@ noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
 
 librulesetbase_a_SOURCES = Entity.cpp Entity.h \
 			   Entity_getLocation.h attributes.h \
+			   EntityProperties.cpp \
 			   Script.cpp Script.h 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
@@ -26,7 +27,9 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Line.cpp Line.h \
 			     Area.cpp Area.h \
 			     Movement.cpp Movement.h \
-			     Pedestrian.cpp Pedestrian.h
+			     Pedestrian.cpp Pedestrian.h \
+			     LineProperty.cpp LineProperty.h \
+			     TerrainProperty.cpp TerrainProperty.h
 
 libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    Py_Operation.cpp Py_Operation.h \
