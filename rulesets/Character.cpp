@@ -84,6 +84,7 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
         Move * moveOp = new Move;
         *moveOp = Move::Instantiate();
         moveOp->SetTo(body->fullid);
+        ent->AsMap()["id"] = body->fullid;
         new_loc.addObject(ent);
         list<Message::Object> args(1,*ent);
         moveOp->SetArgs(args);

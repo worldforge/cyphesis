@@ -6,6 +6,9 @@
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Delete.h>
 #include <Atlas/Objects/Operation/Move.h>
+#include <Atlas/Objects/Operation/Sound.h>
+#include <Atlas/Objects/Operation/Touch.h>
+#include <Atlas/Objects/Operation/Look.h>
 
 #include "Thing.h"
 #include "Character.h"
@@ -72,6 +75,10 @@ oplist Thing::send_world(RootOperation * msg)
 
 oplist Thing::Operation(const Setup & op)
 {
+    oplist res;
+    if (script_Operation("tick", op, res) != 0) {
+        return(res);
+    }
     RootOperation * tick = new Tick;
     tick->SetTo(fullid);
     return(oplist(1,tick));
@@ -80,12 +87,18 @@ oplist Thing::Operation(const Setup & op)
 oplist Thing::Operation(const Tick & op)
 {
     oplist res;
+    if (script_Operation("tick", op, res) != 0) {
+        return(res);
+    }
     return(res);
 }
 
 oplist Thing::Operation(const Create & op)
 {
     oplist res;
+    if (script_Operation("create", op, res) != 0) {
+        return(res);
+    }
     const Message::Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
        return(res);
@@ -124,9 +137,13 @@ oplist Thing::Operation(const Create & op)
 
 oplist Thing::Operation(const Delete & op)
 {
+    oplist res;
+    if (script_Operation("tick", op, res) != 0) {
+        return(res);
+    }
     world->del_object(this);
     RootOperation * sight = new Sight;
-    list<Message::Object> args(1,op.AsObject());
+    Message::Object::ListType args(1,op.AsObject());
     sight->SetArgs(args);
     return(oplist(1,sight));
 }
@@ -146,6 +163,8 @@ oplist Thing::Operation(const Move & op)
     try {
         cout << 1;
         Message::Object::MapType ent = args.front().AsMap();
+        string & oname = ent["id"].AsString();
+        cout << "In " << fullid << " got moveop for " << oname << endl << flush;
         if (ent.find("loc") == ent.end()) {
             cout << "ERROR: move op arg has no parent" << endl << flush;
             return(error(op, "Move location has no parent"));
@@ -279,6 +298,9 @@ oplist Thing::Operation(const Move & op)
 oplist Thing::Operation(const Set & op)
 {
     oplist res;
+    if (script_Operation("tick", op, res) != 0) {
+        return(res);
+    }
     const Message::Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
        return(res);
@@ -314,6 +336,36 @@ oplist Thing::Operation(const Set & op)
     }
     return(res);
 }
+
+oplist Thing::Operation(const Sight & op)
+{
+    oplist res;
+    script_Operation("sight", op, res);
+    return(res);
+}
+
+oplist Thing::Operation(const Sound & op)
+{
+    oplist res;
+    script_Operation("sound", op, res);
+    return(res);
+}
+
+oplist Thing::Operation(const Touch & op)
+{
+    oplist res;
+    script_Operation("touch", op, res);
+    return(res);
+}
+
+oplist Thing::Operation(const Look & op)
+{
+    oplist res;
+    script_Operation("look", op, res);
+    return(res);
+}
+
+
 
 ThingFactory thing_factory;
 

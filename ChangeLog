@@ -1,5 +1,10 @@
 2000-11-07  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Fixed movement code so that id of object to be moved is correctly
+	  present. uclient now sees movement. Woohoo!
+
+2000-11-07  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* More movement fixed. uclient movement now works within the server,
 	  but uclient does not like the responses it gets.
 

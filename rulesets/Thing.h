@@ -34,6 +34,10 @@ class Thing : public BaseEntity {
     virtual oplist Operation(const Delete & op);
     virtual oplist Operation(const Move & op);
     virtual oplist Operation(const Set & op);
+    virtual oplist Operation(const Sight & op);
+    virtual oplist Operation(const Sound & op);
+    virtual oplist Operation(const Touch & op);
+    virtual oplist Operation(const Look & op);
 };
 
 typedef std::pair<int, string> thing_t;
