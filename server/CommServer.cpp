@@ -204,17 +204,8 @@ void CommServer::loop()
        }
        if (FD_ISSET(client->getFd(), &sock_fds)) {
            if (client->peek() != EOF) {
-               try {
-                   if (client->read()) {
-                       debug(std::cout << "Removing client due to failed negotiation" << std::endl << std::flush;);
-                       obsoleteConnections.insert(client);
-                   }
-               }
-               catch (ClientTimeOutException) {
-                   obsoleteConnections.insert(client);
-               }
-               catch (...) {
-                   std::cerr << "FUCKING ARSE" << std::endl << std::flush;
+               if (client->read()) {
+                   debug(std::cout << "Removing client due to failed negotiation or timeout" << std::endl << std::flush;);
                    obsoleteConnections.insert(client);
                }
            } else if (client->eof()) {

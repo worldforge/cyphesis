@@ -190,7 +190,13 @@ void CommClient::ObjectArrived(const Get & op)
 bool CommClient::read() {
     if (codec != NULL) {
         reading = true;
-        codec->Poll();
+        try {
+            codec->Poll();
+        }
+        catch (ClientTimeOutException) {
+            reading = false;
+            return true;
+        }
         reading = false;
         return false;
     } else {

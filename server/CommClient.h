@@ -12,12 +12,14 @@
 
 #include <skstream/skstream.h>
 
+#include <stdexcept>
+
 class CommServer;
 class Connection;
 
 class ClientTimeOutException : public std::runtime_error {
   public:
-    ClientTimeOutException() { }
+    ClientTimeOutException() : std::runtime_error("Client write timeout") { }
     virtual ~ClientTimeOutException() throw() { }
 };
 
