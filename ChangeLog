@@ -1,5 +1,11 @@
 2004-09-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/WorldTime.cpp: Use 0-11 for months instead of 1-12.
+
+	* tests/WorldTimetest.cpp: Test the "season" querying interface.
+
+2004-09-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/WorldTime.h, modules/WorldTime.cpp: Clean up typedef
 	  and member names, and implement querying the season.
 

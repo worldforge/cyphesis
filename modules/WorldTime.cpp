@@ -36,12 +36,12 @@ inline const std::string seconds2string(double seconds) {
 
 void WorldTime::initTimeInfo()
 {
-    m_timeInfo["always"] = Period(crange(1,13), "seasonal");
-    m_timeInfo["spring"] = Period(crange(3,5), "seasonal");
-    m_timeInfo["summer"] = Period(crange(6,8), "seasonal");
-    m_timeInfo["autumn"] = Period(crange(9,11), "seasonal");
-    Range winter = crange(1,2);
-    winter.push_back(12);
+    m_timeInfo["always"] = Period(crange(0,12), "seasonal");
+    m_timeInfo["spring"] = Period(crange(2,4), "seasonal");
+    m_timeInfo["summer"] = Period(crange(5,7), "seasonal");
+    m_timeInfo["autumn"] = Period(crange(8,10), "seasonal");
+    Range winter = crange(0,1);
+    winter.push_back(11);
     m_timeInfo["winter"] = Period(winter, "seasonal");
     m_timeInfo["dawn"] = Period(Range(1,8), "daily");
     m_timeInfo["midday"] = Period(Range(1,12), "daily");
@@ -75,7 +75,6 @@ void WorldTime::initTimeInfo()
 
 std::string WorldTime::operator[](const std::string & name)
 {
-    // FIXME Return correct season
     if (name == "season") {
         SeasonInfo::const_iterator I = m_monthToSeason.find(m_time.month());
         if (I != m_monthToSeason.end()) {

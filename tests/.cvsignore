@@ -5,6 +5,7 @@ Makefile
 Makefile.in
 logtest
 Locationtest
+WorldTimetest
 OOGThingtest
 inheritancetest
 systemtest

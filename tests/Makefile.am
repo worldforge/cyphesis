@@ -3,7 +3,7 @@ COMMON_TESTS = logtest inheritancetest BaseEntitytest OOGThingtest \
 
 PHYSICS_TESTS = collisiontest emergencetest
 
-MODULE_TESTS = Locationtest
+MODULE_TESTS = Locationtest WorldTimetest
 
 RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
                  Stackabletest Structuretest Thingtest Worldtest \
@@ -85,6 +85,10 @@ Locationtest_LDADD = $(top_builddir)/modules/Location.o \
                      $(top_builddir)/common/serialno.o \
                      $(top_builddir)/common/custom.o \
                      $(top_builddir)/common/operations.o
+
+WorldTimetest_SOURCES = WorldTimetest.cpp
+WorldTimetest_LDADD = $(top_builddir)/modules/WorldTime.o \
+                      $(top_builddir)/modules/DateTime.o
 
 # RULESETS_TESTS
 
