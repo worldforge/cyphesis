@@ -47,10 +47,6 @@ class WorldRouter : public Routing {
                        const string & id = string());
     void del_object(BaseEntity * obj);
         
-    bool is_object_deleted(BaseEntity * obj) const {
-        return find_object(obj->fullid)->deleted;
-    }
-
     void update_time() {
         struct timeval tv;
         gettimeofday(&tv, NULL);

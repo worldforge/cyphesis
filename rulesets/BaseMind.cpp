@@ -14,6 +14,7 @@
 #include <Atlas/Objects/Operation/Divide.h>
 #include <Atlas/Objects/Operation/Move.h>
 #include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation/Talk.h>
 #include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
@@ -32,80 +33,7 @@
 
 //static const bool debug_flag = false;
 
-int BaseMind::script_Operation(const string & op_type, const RootOperation & op,
-                        oplist & ret_list, RootOperation * sub_op)
-{
-    if (script_object != NULL) {
-        debug( cout << "Got script object for " << fullid << endl << flush;);
-        string op_name = op_type+"_operation";
-        // Construct apropriate python object thingies from op
-        if (!PyObject_HasAttrString(script_object, (char *)(op_name.c_str()))) {
-            debug( cout << "No method to be found for " << fullid
-                 << "." << op_name << endl << flush;);
-            return(0);
-        }
-        RootOperationObject * py_op = newAtlasRootOperation(NULL);
-        py_op->operation = new RootOperation(op);
-        py_op->own = 0;
-        py_op->from = map.get_add(op.GetFrom());
-        py_op->to = map.get_add(op.GetTo());
-        PyObject * ret;
-        if (sub_op == NULL) {
-            ret = PyObject_CallMethod(script_object, (char *)(op_name.c_str()),
-                                             "(O)", py_op);
-        } else {
-            RootOperationObject * py_sub_op = newAtlasRootOperation(NULL);
-            py_sub_op->operation = sub_op;
-            py_sub_op->own = 0;
-            py_sub_op->from = map.get_add(sub_op->GetFrom());
-            py_sub_op->to = map.get_add(sub_op->GetTo());
-            ret = PyObject_CallMethod(script_object, (char *)(op_name.c_str()),
-                                             "(OO)", py_op, py_sub_op);
-            Py_DECREF(py_sub_op);
-        }
-        delete py_op->operation;
-        Py_DECREF(py_op);
-        if (ret != NULL) {
-            debug( cout << "Called python method " << op_name
-                                << " for object " << fullid << endl << flush;);
-            if (PyOperation_Check(ret)) {
-                RootOperationObject * op = (RootOperationObject*)ret;
-                if (op->operation != NULL) {
-                    ret_list.push_back(op->operation);
-                    op->own = 0;
-                } else {
-                    debug( cout << "Method returned invalid operation"
-                         << endl << flush;);
-                }
-            } else if (PyOplist_Check(ret)) {
-                OplistObject * op = (OplistObject*)ret;
-                if (op->ops != NULL) {
-                    ret_list = *op->ops;
-                } else {
-                    debug( cout << "Method returned invalid oplist"
-                         << endl << flush;);
-                }
-            } else {
-                debug( cout << "Method returned invalid object" << endl << flush;);
-            }
-            
-            Py_DECREF(ret);
-            return(1);
-        } else {
-            if (PyErr_Occurred() == NULL) {
-                debug( cout << "No method to be found for " << fullid << endl << flush;);
-            } else {
-                cerr << "Reporting python error for " << fullid << endl << flush;
-                PyErr_Print();
-            }
-        }
-    } else {
-        debug( cout << "No script object asociated" << endl << flush;);
-    }
-    return(0);
-}
-
-BaseMind::BaseMind(string & id, string & body_name)
+BaseMind::BaseMind(const string & id, const string & body_name)
 {
     //map=MemMap();
     fullid = id;
@@ -120,10 +48,14 @@ BaseMind::BaseMind(string & id, string & body_name)
     //}
 }
 
-int BaseMind::set_object(PyObject * obj) {
-    map.set_object(obj);
-    script_object = obj;
-    return(obj == NULL ? -1 : 0);
+BaseMind::~BaseMind()
+{
+}
+
+int BaseMind::set_script(Script * scrpt) {
+    map.set_script(scrpt);
+    script = scrpt;
+    return(scrpt == NULL ? -1 : 0);
 }
 
 MemMap * BaseMind::getMap() {
@@ -133,7 +65,7 @@ MemMap * BaseMind::getMap() {
 oplist BaseMind::Sight_Operation(const Sight & op, Login & sub_op)
 {
     oplist res;
-    if (script_Operation("sight_login", op, res, &sub_op) != 0) {
+    if (script->Operation("sight_login", op, res, &sub_op) != 0) {
         return(res);
     }
     return(res);
@@ -142,14 +74,14 @@ oplist BaseMind::Sight_Operation(const Sight & op, Login & sub_op)
 oplist BaseMind::Sight_Operation(const Sight & op, Chop & sub_op)
 {
     oplist res;
-    script_Operation("sight_chop", op, res, &sub_op);
+    script->Operation("sight_chop", op, res, &sub_op);
     return(res);
 }
 
 oplist BaseMind::Sight_Operation(const Sight & op, Create & sub_op)
 {
     oplist res;
-    if (script_Operation("sight_create", op, res, &sub_op) != 0) {
+    if (script->Operation("sight_create", op, res, &sub_op) != 0) {
         return(res);
     }
     const Object::ListType & args = sub_op.GetArgs();
@@ -169,7 +101,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Create & sub_op)
 oplist BaseMind::Sight_Operation(const Sight & op, Cut & sub_op)
 {
     oplist res;
-    script_Operation("sight_cut", op, res, &sub_op);
+    script->Operation("sight_cut", op, res, &sub_op);
     return(res);
 }
 
@@ -177,7 +109,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Delete & sub_op)
 {
     debug( cout << "Sight Delete operation" << endl << flush;);
     oplist res;
-    if (script_Operation("sight_delete", op, res, &sub_op) != 0) {
+    if (script->Operation("sight_delete", op, res, &sub_op) != 0) {
         return(res);
     }
     const Object::ListType & args = sub_op.GetArgs();
@@ -201,14 +133,14 @@ oplist BaseMind::Sight_Operation(const Sight & op, Delete & sub_op)
 oplist BaseMind::Sight_Operation(const Sight & op, Eat & sub_op)
 {
     oplist res;
-    script_Operation("sight_eat", op, res, &sub_op);
+    script->Operation("sight_eat", op, res, &sub_op);
     return(res);
 }
 
 oplist BaseMind::Sight_Operation(const Sight & op, Fire & sub_op)
 {
     oplist res;
-    script_Operation("sight_fire", op, res, &sub_op);
+    script->Operation("sight_fire", op, res, &sub_op);
     return(res);
 }
 
@@ -216,7 +148,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Move & sub_op)
 {
     debug( cout << "BaseMind::Sight_Operation(Sight, Move)" << endl << flush;);
     oplist res;
-    if (script_Operation("sight_move", op, res, &sub_op) != 0) {
+    if (script->Operation("sight_move", op, res, &sub_op) != 0) {
         return(res);
     }
     const Object::ListType & args = sub_op.GetArgs();
@@ -236,7 +168,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Move & sub_op)
 oplist BaseMind::Sight_Operation(const Sight & op, Set & sub_op)
 {
     oplist res;
-    if (script_Operation("sight_set", op, res, &sub_op) != 0) {
+    if (script->Operation("sight_set", op, res, &sub_op) != 0) {
         return(res);
     }
     const Object::ListType & args = sub_op.GetArgs();
@@ -256,7 +188,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Set & sub_op)
 oplist BaseMind::Sight_Operation(const Sight & op, Touch & sub_op)
 {
     oplist res;
-    script_Operation("sight_touch", op, res, &sub_op);
+    script->Operation("sight_touch", op, res, &sub_op);
     return(res);
 }
 
@@ -264,7 +196,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, RootOperation & sub_op)
 {
     debug( cout << "BaseMind::Sight_Operation(Sight, RootOperation)" << endl << flush;);
     oplist res;
-    script_Operation("sight_undefined", op, res, &sub_op);
+    script->Operation("sight_undefined", op, res, &sub_op);
     return(res);
 }
 
@@ -272,7 +204,7 @@ oplist BaseMind::Sound_Operation(const Sound & op, Talk & sub_op)
 {
     debug( cout << "BaseMind::Sound_Operation(Sound, Talk)" << endl << flush;);
     oplist res;
-    script_Operation("sound_talk", op, res, &sub_op);
+    script->Operation("sound_talk", op, res, &sub_op);
     return(res);
 }
 
@@ -280,7 +212,7 @@ oplist BaseMind::Sound_Operation(const Sound & op, RootOperation & sub_op)
 {
     debug( cout << "BaseMind::Sound_Operation(Sound, RootOperation)" << endl << flush;);
     oplist res;
-    script_Operation("sound_undefined", op, res, &sub_op);
+    script->Operation("sound_undefined", op, res, &sub_op);
     return(res);
 }
 
@@ -297,7 +229,7 @@ oplist BaseMind::Operation(const Sound & op)
 {
     // Deliver argument to Sound_ things
     oplist res;
-    if (script_Operation("sound", op, res) != 0) {
+    if (script->Operation("sound", op, res) != 0) {
         return(res);
     }
     const Object::ListType & args = op.GetArgs();
@@ -329,7 +261,7 @@ oplist BaseMind::Operation(const Sight & op)
     debug( cout << "BaseMind::Operation(Sight)" << endl << flush;);
     // Deliver argument to Sight_ things
     oplist(res);
-    if (script_Operation("sight", op, res) != 0) {
+    if (script->Operation("sight", op, res) != 0) {
         debug( cout << " its in the script" << endl << flush;);
         return(res);
     }
@@ -345,7 +277,7 @@ oplist BaseMind::Operation(const Sight & op)
         res = call_sight_operation(op, *(RootOperation *)op2);
         //string & op2type = op2->GetParents().front().AsString();
         //string subop = "sight_" + op2type;
-        //script_Operation(subop, op, res, (RootOperation *)op2);
+        //script->Operation(subop, op, res, (RootOperation *)op2);
     } else /* if (op2->GetObjtype() == "object") */ {
         debug( cout << " arg is an entity!" << endl << flush;);
         map.add(obj);
@@ -357,7 +289,7 @@ oplist BaseMind::Operation(const Sight & op)
 oplist BaseMind::Operation(const Appearance & op)
 {
     oplist(res);
-    script_Operation("appearance", op, res);
+    script->Operation("appearance", op, res);
     Object::ListType args = op.GetArgs();
     Object::ListType::iterator I;
     for(I = args.begin(); I != args.end(); I++) {
@@ -369,7 +301,7 @@ oplist BaseMind::Operation(const Appearance & op)
 oplist BaseMind::Operation(const Disappearance & op)
 {
     oplist(res);
-    script_Operation("disappearance", op, res);
+    script->Operation("disappearance", op, res);
     // Not quite sure what to do to the map here, but should do something.
     return res;
 }

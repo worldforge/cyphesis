@@ -25,7 +25,7 @@
 #include <common/Fire.h>
 
 #include "Thing.h"
-#include "MemMap_methods.h"
+#include "Script.h"
 #include "Python_API.h"
 
 #include <server/WorldRouter.h>
@@ -33,12 +33,11 @@
 #include <common/const.h>
 #include <common/debug.h>
 
-// static const bool debug_flag = false;
+static const bool debug_flag = false;
 
 using Atlas::Message::Object;
 
-Thing::Thing() : script_object(NULL), perceptive(false), status(1),
-                 type("thing"), is_character(false), weight(-1)
+Thing::Thing() : perceptive(false)
 {
     in_game = true;
     name = string("Foo");
@@ -47,8 +46,8 @@ Thing::Thing() : script_object(NULL), perceptive(false), status(1),
 
 Thing::~Thing() { }
 
-
-int Thing::script_Operation(const string & op_type, const RootOperation & op,
+#if 0
+int Thing::script->Operation(const string & op_type, const RootOperation & op,
                      oplist & ret_list, RootOperation * sub_op)
 {
     if (script_object == NULL) {
@@ -109,7 +108,9 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
     }
     return 0;
 }
+#endif
 
+#if 0
 const Object & Thing::operator[](const string & aname)
 {
     if (aname == "status") {
@@ -145,14 +146,15 @@ void Thing::set(const string & aname, const Object & attr)
     }
 }
 
-int Thing::set_object(PyObject * obj) {
-    script_object = obj;
-    return(obj == NULL ? -1 : 0);
+int Thing::set_script(Script * scrpt) {
+    script = scrpt;
+    return(scrpt == NULL ? -1 : 0);
 }
 
 MemMap * Thing::getMap() {
     return NULL;
 }
+#endif
 
 void Thing::addObject(Object * obj) const
 {
@@ -165,6 +167,7 @@ void Thing::addObject(Object * obj) const
     BaseEntity::addObject(obj);
 }
 
+#if 0
 void Thing::merge(const Object::MapType & entmap)
 {
     Object::MapType::const_iterator I;
@@ -212,13 +215,13 @@ void Thing::getLocation(Object::MapType & entmap, fdict_t & fobjects)
             cerr << "ERROR: Create operation has bad location" << endl << flush;
         }
     }
-
 }
+#endif
 
 oplist Thing::Operation(const Setup & op)
 {
     oplist res;
-    if (script_Operation("setup", op, res) != 0) {
+    if (script->Operation("setup", op, res) != 0) {
         return res;
     }
     RootOperation * tick = new Tick;
@@ -227,24 +230,10 @@ oplist Thing::Operation(const Setup & op)
     return oplist(1,tick);
 }
 
-oplist Thing::Operation(const Tick & op)
-{
-    oplist res;
-    script_Operation("tick", op, res);
-    return res;
-}
-
-oplist Thing::Operation(const Chop & op)
-{
-    oplist res;
-    script_Operation("chop", op, res);
-    return res;
-}
-
 oplist Thing::Operation(const Create & op)
 {
     oplist res;
-    if (script_Operation("create", op, res) != 0) {
+    if (script->Operation("create", op, res) != 0) {
         return(res);
     }
     const Object::ListType & args=op.GetArgs();
@@ -289,20 +278,13 @@ oplist Thing::Operation(const Create & op)
     return oplist();
 }
 
-oplist Thing::Operation(const Cut & op)
-{
-    oplist res;
-    script_Operation("cut", op, res);
-    return res;
-}
-
 oplist Thing::Operation(const Delete & op)
 {
     oplist res;
-    if (script_Operation("delete", op, res) != 0) {
+    if (script->Operation("delete", op, res) != 0) {
         return(res);
     }
-    world->del_object(this);
+    // world->del_object(this);
     RootOperation * s = new Sight;
     *s = Sight::Instantiate();
     Object::ListType args(1,op.AsObject());
@@ -310,17 +292,10 @@ oplist Thing::Operation(const Delete & op)
     return oplist(1,s);
 }
 
-oplist Thing::Operation(const Eat & op)
-{
-    oplist res;
-    script_Operation("eat", op, res);
-    return res;
-}
-
 oplist Thing::Operation(const Fire & op)
 {
     oplist res;
-    if (script_Operation("fire", op, res) != 0) {
+    if (script->Operation("fire", op, res) != 0) {
         return(res);
     }
     if (attributes.find("burn_speed") == attributes.end()) {
@@ -360,7 +335,7 @@ oplist Thing::Operation(const Move & op)
     debug( cout << "Thing::move_operation" << endl << flush;);
     seq++;
     oplist res;
-    if (script_Operation("move", op, res) != 0) {
+    if (script->Operation("move", op, res) != 0) {
         return(res);
     }
     const Object::ListType & args=op.GetArgs();
@@ -529,18 +504,11 @@ oplist Thing::Operation(const Move & op)
     return oplist();
 }
 
-oplist Thing::Operation(const Nourish & op)
-{
-    oplist res;
-    script_Operation("nourish", op, res);
-    return res;
-}
-
 oplist Thing::Operation(const Set & op)
 {
     seq++;
     oplist res;
-    if (script_Operation("set", op, res) != 0) {
+    if (script->Operation("set", op, res) != 0) {
         return(res);
     }
     const Object::ListType & args=op.GetArgs();
@@ -584,46 +552,11 @@ oplist Thing::Operation(const Set & op)
     return oplist();
 }
 
-oplist Thing::Operation(const Sight & op)
-{
-    oplist res;
-    script_Operation("sight", op, res);
-    return(res);
-}
-
-oplist Thing::Operation(const Sound & op)
-{
-    oplist res;
-    script_Operation("sound", op, res);
-    return(res);
-}
-
-oplist Thing::Operation(const Touch & op)
-{
-    oplist res;
-    script_Operation("touch", op, res);
-    return(res);
-}
-
 oplist Thing::Operation(const Look & op)
 {
     oplist res;
-    if (script_Operation("look", op, res) != 0) {
+    if (script->Operation("look", op, res) != 0) {
         return(res);
     }
     return(BaseEntity::Operation(op));
-}
-
-oplist Thing::Operation(const Appearance & op)
-{
-    oplist res;
-    script_Operation("appearance", op, res);
-    return(res);
-}
-
-oplist Thing::Operation(const Disappearance & op)
-{
-    oplist res;
-    script_Operation("disappearance", op, res);
-    return(res);
 }

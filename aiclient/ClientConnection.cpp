@@ -28,12 +28,13 @@ extern "C" {
 }
 
 #include "ClientConnection.h"
+#include "ClientAccount.h"
 
 #include "common/debug.h"
 
 #include "config.h"
 
-static bool debug_flag = false;
+static bool debug_flag = true;
 
 using Atlas::Message::Object;
 
@@ -49,8 +50,24 @@ ClientConnection::~ClientConnection()
     }
 }
 
-void ClientConnection::operation(const RootOperation&)
+void ClientConnection::operation(const RootOperation & op)
 {
+    const string & from = op.GetFrom();
+    if (from.empty()) {
+        cerr << "ERROR: Operation with no destination" << endl << flush;
+        return;
+    }
+    fdict_t::iterator I = objects.find(from);
+    if (I == objects.end()) {
+        cerr << "ERROR: Operation with invalid destination" << endl << flush;
+        return;
+    }
+    oplist res = I->second->message(op);
+    oplist::iterator J = res.begin();
+    for(J = res.begin(); J != res.end(); ++J) {
+        (*J)->SetFrom(I->first);
+        send(*(*J));
+    }
 }
 
 void ClientConnection::ObjectArrived(const Error&)
@@ -60,11 +77,24 @@ void ClientConnection::ObjectArrived(const Error&)
     error_flag = true;
 }
 
-void ClientConnection::ObjectArrived(const Info&)
+void ClientConnection::ObjectArrived(const Info & op)
 {
     cout << "INFO" << endl << flush;
-    reply_flag = true;
-    error_flag = false;
+    const string & from = op.GetFrom();
+    if (from.empty()) {
+        reply_flag = true;
+        error_flag = false;
+        try {
+            Object ac = op.GetArgs().front();
+            const string & acid = ac.AsMap()["id"].AsString();
+            objects[acid] = new ClientAccount(acid, this);
+        }
+        catch (...) {
+            cerr << "WARNING: Malformed account from server" << endl << flush;
+        }
+    } else {
+        operation(op);
+    }
 }
 
 void ClientConnection::ObjectArrived(const Sight&)
@@ -159,6 +189,8 @@ bool ClientConnection::login(const string & account, const string & password)
     Object::MapType acmap;
     acmap["id"] = account;
     acmap["password"] = password;
+
+    acName = account;
 
     l.SetArgs(Object::ListType(1,Object(acmap)));
 

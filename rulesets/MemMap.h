@@ -8,38 +8,37 @@
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::RootOperation;
 
-#include <Python.h>
-
-class Thing;
+class Entity;
+class Script;
 
 class MemMap {
     friend class BaseMind;
 
     fdict_t things;
     std::list<string> additions_by_id;
-    PyObject * script_object;
+    Script * script;
 
-    Thing * add_object(Thing * object);
+    Entity * add_object(Entity * object);
   public:
-    MemMap() : script_object(NULL)  { }
+    MemMap() : script(NULL)  { }
 
-    int set_object(PyObject * obj) {
-        script_object = obj;
-        return(obj == NULL ? -1 : 0);
+    int set_script(Script * scrpt) {
+        script = scrpt;
+        return(scrpt == NULL ? -1 : 0);
     }
 
-    void script_hook(const string & method, Thing * object);
+    // void script_hook(const string & method, Entity * object);
 
     RootOperation * look_id();
-    Thing * add_id(const string & id);
-    Thing * add(const Object & entity);
+    Entity * add_id(const string & id);
+    Entity * add(const Object & entity);
     void _delete(const string & id);
-    Thing * get(const string & id);
-    //Thing * __getitem__(const string & id) // operator[] perhaps?
-    Thing * get_add(const string & id);
-    Thing * update(const Object & entity);
-    list<Thing *> find_by_type(const string & what);
-    list<Thing *> find_by_location(const Location & where, double radius);
+    Entity * get(const string & id);
+    //Entity * __getitem__(const string & id) // operator[] perhaps?
+    Entity * get_add(const string & id);
+    Entity * update(const Object & entity);
+    list<Entity *> find_by_type(const string & what);
+    list<Entity *> find_by_location(const Location & where, double radius);
 
     list<string> add_hooks;
     list<string> update_hooks;

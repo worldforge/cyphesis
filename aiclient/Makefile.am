@@ -2,6 +2,7 @@ bin_PROGRAMS = cyphesisc
 
 cyphesisc_SOURCES = \
 		ClientConnection.cpp ClientConnection.h \
+		ClientAccount.cpp ClientAccount.h \
 		client.cpp client.h
 
 if BUILD_STATIC
@@ -14,7 +15,7 @@ cyphesisc_LDFLAGS = -Wl,-export-dynamic
 
 else
 
-cyphesisc_LDADD = ../physics/libphysics.a ../rulesets/librulesetsc.a ../modules/libmodules.a ../common/libcommon.a
+cyphesisc_LDADD = ../physics/libphysics.a ../rulesets/libscriptpython.a ../rulesets/librulesetmind.a ../rulesets/librulesetbase.a ../rulesets/libscriptpython.a ../rulesets/MemMap.o ../modules/libmodules.a ../common/libcommon.a ../server/OOG_Thing.o
 
 LIBS = -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -lpython1.5 -ldl -lm -lpthread -lvarconf -lsigc -ldb_cxx # -lefence
 

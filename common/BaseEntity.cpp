@@ -133,6 +133,7 @@ oplist BaseEntity::Operation(const Divide & op) { oplist res; return(res); }
 oplist BaseEntity::Operation(const Eat & op) { oplist res; return(res); }
 oplist BaseEntity::Operation(const Fire & op) { oplist res; return(res); }
 oplist BaseEntity::Operation(const Get & op) { oplist res; return(res); }
+oplist BaseEntity::Operation(const Info & op) { oplist res; return(res); }
 oplist BaseEntity::Operation(const Move & op) { oplist res; return(res); }
 oplist BaseEntity::Operation(const Nourish & op) { oplist res; return(res); }
 oplist BaseEntity::Operation(const Set & op) { oplist res; return(res); }
@@ -173,6 +174,7 @@ op_no_t BaseEntity::op_enumerate(const RootOperation * op) const {
     if ("eat" == parent)  { return(OP_EAT); }
     if ("fire" == parent)  { return(OP_FIRE); }
     if ("get" == parent)  { return(OP_GET); }
+    if ("info" == parent)  { return(OP_INFO); }
     if ("move" == parent)  { return(OP_MOVE); }
     if ("nourish" == parent)  { return(OP_NOURISH); }
     if ("set" == parent)  { return(OP_SET); }

@@ -17,10 +17,21 @@
 #include "Admin.h"
 #include "Connection.h"
 #include "ServerRouting.h"
-#include "server.h"
+#include "WorldRouter.h"
+#include <common/globals.h>
 
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::Info;
+
+Admin::Admin(Connection * conn, const string& username, const string& passwd) :
+             Account(conn, username, passwd)
+{
+    type = "admin";
+}
+
+Admin::~Admin()
+{
+}
 
 oplist Admin::character_error(const Create &, const Object &) const {
     return oplist();

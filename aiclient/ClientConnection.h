@@ -35,9 +35,10 @@ class ClientConnection : public Atlas::Objects::Decoder {
     cstate_t state;
     int client_fd;
     sockbuf * client_buf;
-    iostream * ios;
-    Atlas::Codec<iostream> * codec;
+    std::iostream * ios;
+    Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
+    std::string acName;
 
     fdict_t objects;
 

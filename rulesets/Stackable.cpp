@@ -15,6 +15,7 @@
 // same type. Used for things like coins.
 
 #include "Stackable.h"
+#include "Script.h"
 
 using Atlas::Message::Object;
 
@@ -51,7 +52,7 @@ void Stackable::addObject(Object * obj) const
 oplist Stackable::Operation(const Combine & op)
 {
     oplist res;
-    if (script_Operation("combine", op, res) != 0) {
+    if (script->Operation("combine", op, res) != 0) {
         return(res);
     }
     Object::ListType args = op.GetArgs();
@@ -78,7 +79,7 @@ oplist Stackable::Operation(const Combine & op)
 oplist Stackable::Operation(const Divide & op)
 {
     oplist res;
-    if (script_Operation("divide", op, res) != 0) {
+    if (script->Operation("divide", op, res) != 0) {
         return(res);
     }
     Object::ListType args = op.GetArgs();

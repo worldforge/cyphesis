@@ -5,10 +5,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <Python.h>
-
-#include "Python_API.h"
-
 extern PyTypeObject Object_Type;
 
 #define PyAtlasObject_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Object_Type)

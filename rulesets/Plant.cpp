@@ -5,6 +5,7 @@
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
 
 #include <common/Tick.h>
@@ -12,6 +13,7 @@
 #include <common/random.h>
 
 #include "Plant.h"
+#include "Script.h"
 
 using Atlas::Message::Object;
 
@@ -82,7 +84,7 @@ inline int Plant::drop_fruit(oplist & res)
 oplist Plant::Operation(const Tick & op)
 {
     oplist res;
-    script_Operation("tick", op, res);
+    script->Operation("tick", op, res);
     RootOperation * tickOp = new Tick();
     *tickOp = Tick::Instantiate();
     tickOp->SetTo(fullid);

@@ -34,6 +34,9 @@
         case OP_FIRE: \
             return _prefix ## Operation((const Fire &)_op); \
             break; \
+        case OP_INFO: \
+            return _prefix ## Operation((const Info &)_op); \
+            break; \
         case OP_MOVE: \
             return _prefix ## Operation((const Move &)_op); \
             break; \

@@ -40,10 +40,11 @@ extern "C" {
 
 
 #include "Character.h"
-#include "Thing.h"
 
 #include "BaseMind.h"
 #include "ExternalMind.h"
+#include "Script.h"
+#include "Python_API.h" // FIXME This must go
 
 #include <server/WorldRouter.h>
 
@@ -388,7 +389,7 @@ oplist Character::Operation(const Setup & op)
     debug( cout << "Character::tick" << endl << flush;);
     oplist res;
     debug( cout << "CHaracter::Operation(setup)" << endl << flush;);
-    if (script_Operation("setup", op, res) != 0) {
+    if (script->Operation("setup", op, res) != 0) {
         return res;
     }
     if (op.HasAttr("sub_to")) {
@@ -402,7 +403,7 @@ oplist Character::Operation(const Setup & op)
         mind_package = global_conf->getItem("mind", type);
         mind_class = type + "Mind";
     }
-    Create_PyThing(mind, mind_package, mind_class);
+    Create_PyMind(mind, mind_package, mind_class);
 
     oplist res2(2);
     Setup * s = new Setup(op);
@@ -467,7 +468,7 @@ oplist Character::Operation(const Tick & op)
         }
     } else {
         oplist res;
-        script_Operation("tick", op, res);
+        script->Operation("tick", op, res);
 
         // DIGEST
         if ((food >= foodConsumption) && (status < 2)) {
@@ -522,7 +523,7 @@ oplist Character::Operation(const Eat & op)
     // This is identical to Foof::Operation(Eat &)
     // Perhaps animal should inherit from Food?
     oplist res;
-    if (script_Operation("eat", op, res) != 0) {
+    if (script->Operation("eat", op, res) != 0) {
         return(res);
     }
     Object::MapType self_ent;

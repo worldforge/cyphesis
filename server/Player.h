@@ -9,11 +9,8 @@
 
 class Player : public Account {
   public:
-    Player(Connection * conn, const string & username, const string & passwd) :
-        Account(conn, username, passwd) {
-        type = "player";
-    }
-    virtual ~Player() { }
+    Player(Connection * conn, const string & username, const string & passwd);
+    virtual ~Player();
 
   protected:
     virtual oplist character_error(const Create & op, const Atlas::Message::Object & ent) const;

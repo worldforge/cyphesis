@@ -24,7 +24,7 @@
 #include <rulesets/ExternalMind.h>
 
 #include "Account.h"
-#include "Connection.h"
+#include "Connection_methods.h"
 #include "WorldRouter.h"
 
 static const bool debug_flag = false;
@@ -32,7 +32,17 @@ static const bool debug_flag = false;
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::Info;
 
-inline BaseEntity * Account::add_character(const string & typestr, const Object & ent)
+Account::Account(Connection* conn, const string& username, const string& passwd)
+               : connection(conn), password(passwd), type("account")
+{
+    fullid = username;
+}
+
+Account::~Account()
+{
+}
+
+BaseEntity * Account::add_character(const string & typestr, const Object & ent)
 {
     debug(cout << "Account::Add_character" << endl << flush;);
     Thing * chr = world->add_object(typestr, ent);
@@ -70,7 +80,7 @@ inline BaseEntity * Account::add_character(const string & typestr, const Object 
 oplist Account::Operation(const Logout & op)
 {
     debug(cout << "Account logout: " << name << endl;);
-    connection->disconnect();
+    connection->destroy();
     return oplist();
 }
 

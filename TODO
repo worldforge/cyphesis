@@ -53,3 +53,6 @@ Possible ideas:
   Get system working as an AI client to another server. This would also
   be a good time to get cyphesis working as a mindless server, without
   any AI code.
+
+  Re-code python interface as generic script interface. Need to get rid of
+  leaking default ScriptObject.

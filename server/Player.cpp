@@ -11,6 +11,14 @@
 
 using Atlas::Message::Object;
 
+Player::Player(Connection* conn, const string& username, const string& passwd) :
+               Account(conn, username, passwd)
+{
+    type = "player";
+}
+
+Player::~Player() { }
+
 oplist Player::character_error(const Create & op, const Object & ent) const
 {
     Object::MapType entmap = ent.AsMap();

@@ -8,14 +8,17 @@
 #include <Python.h>
 
 #include "Python_API.h"
+#include "PythonThingScript.h"
+#include "PythonMindScript.h"
 #include "Thing.h"
+#include "BaseMind.h"
 
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Touch.h>
 
 #include <modules/Location.h>
 #include <server/WorldTime.h>
-#include <server/server.h>
+#include <common/globals.h>
 #include <common/const.h>
 
 #include <common/Tick.h>
@@ -176,7 +179,7 @@ PyTypeObject dictlist_add_value_type = {
 	dictlist_add_value,	/* tp_call */
 };
 
-void Create_PyThing(Thing * thing, const string & package, const string & _type)
+static PyObject * Create_PyScript(Entity * thing, const string & package, const string & _type)
 {
     string type = _type;
     type[0] = toupper(type[0]);
@@ -185,22 +188,24 @@ void Create_PyThing(Thing * thing, const string & package, const string & _type)
     if ((mod_dict = PyImport_Import(package_name))==NULL) {
         cerr << "Cld no find python module " << package << endl << flush;
             PyErr_Print();
-        return;
+        return NULL;
     }
     PyObject * my_class = PyObject_GetAttrString(mod_dict, (char *)type.c_str());
+    Py_DECREF(mod_dict);
     if (my_class == NULL) {
         cerr << "Cld not find class " << type << " in module " << package
              << endl << flush;
         PyErr_Print();
-        return;
+        return NULL;
     }
     if (PyCallable_Check(my_class) == 0) {
         cerr << "It does not seem to be a class at all" << endl << flush;
-        return;
+        return NULL;
     }
     ThingObject * pyThing = newThingObject(NULL);
     pyThing->m_thing = thing;
-    if (thing->set_object(PyEval_CallFunction(my_class,"(O)", (PyObject *)pyThing)) == -1) {
+    PyObject * pyob;
+    if ((pyob = PyEval_CallFunction(my_class,"(O)", (PyObject *)pyThing)) == NULL) {
         if (PyErr_Occurred() == NULL) {
             cerr << "Could not get python obj" << endl << flush;
         } else {
@@ -209,7 +214,23 @@ void Create_PyThing(Thing * thing, const string & package, const string & _type)
         }
     }
     Py_DECREF(my_class);
-    Py_DECREF(mod_dict);
+    return pyob;
+}
+
+void Create_PyThing(Thing * thing, const string& package, const string& _type)
+{
+    PyObject * o = Create_PyScript(thing, package, _type);
+    if (o != NULL) {
+        thing->set_script(new PythonThingScript(o, *thing));
+    }
+}
+
+void Create_PyMind(BaseMind * mind, const string& package, const string& _type)
+{
+    PyObject * o = Create_PyScript(mind, package, _type);
+    if (o != NULL) {
+        mind->set_script(new PythonMindScript(o, *mind));
+    }
 }
 
 static PyObject * is_location(PyObject * self, PyObject * args)
@@ -253,7 +274,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
                 PyErr_SetString(PyExc_TypeError, "Parent world is invalid");
                 return NULL;
             }
-            ref_ent = ref->world;
+            ref_ent = (BaseEntity *)ref->world;
         } else {
             ThingObject * ref = (ThingObject*)refO;
             if (ref->m_thing == NULL) {

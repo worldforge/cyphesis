@@ -1,3 +1,30 @@
+2001-04-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* Complete re-write of python script interface to allow other
+	  script types to be cleanly dropped in.
+
+	* Re-work on server and communication related classes to use
+	  references where they are apropriate. Code is now much more
+	  robust.
+
+	* Huge cleanup of header files removing redundant includes.
+
+	* server/WorldRouter.h: Removed is_object_deleted because it
+	  is broken and not used.
+
+	* server/Connection.h: Removed unused disconnect() methods.
+
+	* rulesets/Entity.*: Added new in game base class from which
+	  all mind and object classes are derived. This removes
+	  clutter of Thing class from mind classes.
+
+	* aiclient/*: Progress with creating AI client for mind handling.
+
+	* common/globals.*: Moved some globals out of server specific files.
+
+	* rulesets/Makefile.am: Separated rulesets code into 3 almost stand
+	  alone packages; entities, mind and python interface code.
+
 2001-04-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.h: Moved many of the extra parts of this file

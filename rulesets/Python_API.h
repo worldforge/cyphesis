@@ -21,7 +21,9 @@ using Atlas::Objects::Operation::RootOperation;
 //using Atlas::Objects::Operation::Move;
 //using Atlas::Objects::Operation::Set;
 
+class Entity;
 class Thing;
+class BaseMind;
 class MemMap;
 class Location;
 class WorldTime;
@@ -33,6 +35,8 @@ typedef std::vector<RootOperation *> oplist;
 
 #include <physics/Vector3D.h>
 
+#include <Python.h>
+
 typedef struct {
     PyObject_HEAD
     PyObject	* Object_attr;	/* Attributes dictionary */
@@ -42,7 +46,7 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     PyObject	* Thing_attr;	/* Attributes dictionary */
-    Thing	* m_thing;
+    Entity	* m_thing;
 } ThingObject;
 
 typedef struct {
@@ -76,8 +80,8 @@ typedef struct {
     PyObject	* Operation_attr; \
     _name	* operation; \
     int		own; \
-    Thing	* from; \
-    Thing	* to; \
+    Entity	* from; \
+    Entity	* to; \
 } _name ## Object;
 
 typedef struct {
@@ -149,6 +153,7 @@ ATLAS_OPERATION(RootOperation)
 #include "Py_Oplist.h"
 #include "Py_Optime.h"
 
-void Create_PyThing(Thing * thing, const string & package, const string & type);
+void Create_PyThing(Thing * thing, const string& package, const string& type);
+void Create_PyMind(BaseMind * mind, const string& package, const string& type);
 
 #endif /* PYTHON_API_H */

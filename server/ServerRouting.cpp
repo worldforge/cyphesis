@@ -6,7 +6,7 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
 
-#include "ServerRouting.h"
+#include "ServerRouting_methods.h"
 #include "CommServer.h"
 
 #include <common/persistance.h>

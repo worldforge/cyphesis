@@ -9,27 +9,25 @@
 
 #include <string>
 
-#include <common/BaseEntity.h>
+#include <common/globals.h>
 
-class Thing;
-class ThingFactory;
+class BaseMind;
+class Routing;
 
-extern varconf::Config * global_conf;
+class MindFactory {
+    MindFactory();
+    static MindFactory * m_instance;
 
-class EntityFactory {
-    EntityFactory();
-    static EntityFactory * m_instance;
-
-    std::map<std::string, ThingFactory *> factories;
   public:
-    static EntityFactory * instance() {
+    static MindFactory * instance() {
         if (m_instance == NULL) {
-            m_instance = new EntityFactory();
+            m_instance = new MindFactory();
         }
         return m_instance;
     }
     void readRuleset(const string & file);
-    Thing * newThing(const string &, const Atlas::Message::Object &, Routing *);
+    BaseMind * newMind(const string &, const string &, const string &,
+                       const Atlas::Message::Object &, Routing *);
 };
 
 #endif /* ENTITY_FACTORY_H */

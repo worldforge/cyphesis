@@ -24,13 +24,17 @@ class sockbuf : public filebuf {
 };
 
 class CommClient : Atlas::Objects::Decoder {
+  public:
+    CommServer & commServer;
+
+  private:
     int client_fd;
     //ofstream log_file;
     sockbuf client_buf;
     iostream client_ios;
     Atlas::Codec<iostream> * codec;
     Atlas::Objects::Encoder * encoder;
-    Connection * connection;
+    Connection & connection;
 
   protected:
     virtual void UnknownObjectArrived(const Atlas::Message::Object&);
@@ -44,16 +48,15 @@ class CommClient : Atlas::Objects::Decoder {
     virtual void ObjectArrived(const Atlas::Objects::Operation::Get & op);
 
   public:
-    CommServer * server;
-
-    CommClient(CommServer * svr, int fd, int port) :
-		client_fd(fd), client_buf(fd), client_ios(&client_buf),
-                server(svr) {
+    CommClient(CommServer & svr, int fd, int port);
+                //: commServer(svr),
+		//client_fd(fd), client_buf(fd), client_ios(&client_buf)
+                //connection(new Connection(*this) {
         //if (consts::debug_level>=1) {
             //char * log_name = "log.log";
             //log_file.open(log_name);
         //}
-    }
+    //}
     virtual ~CommClient();
 
     int read() {

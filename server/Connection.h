@@ -6,8 +6,6 @@
 #define CONNECTION_H
 
 #include "Routing.h"
-#include "CommClient.h"
-#include "CommServer.h"
 
 class ServerRouting;
 class Account;
@@ -15,27 +13,17 @@ class Player;
 class CommClient;
 
 class Connection : public Routing {
-    CommClient * comm_client;
+    CommClient & comm_client;
+    ServerRouting & server;
 
     Account * add_player(string &, string &);
   public:
-    ServerRouting * server;
 
-    Connection(CommClient * client) : comm_client(client) {
-        server=comm_client->server->server;
-    }
+    Connection(CommClient & client);
     virtual ~Connection() { }
+
     void destroy();
-
-    void disconnect() {
-        destroy();
-    }
-
-    void send(const RootOperation * msg) const {
-        if (comm_client != NULL) {
-            comm_client->send(msg);
-        }
-    }
+    void send(const RootOperation * msg) const;
 
     virtual oplist operation(const RootOperation & op);
     virtual oplist Operation(const Login & op);

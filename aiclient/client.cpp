@@ -28,13 +28,11 @@ extern "C" {
 
 #include "ClientConnection.h"
 
-#include "common/debug.h"
-
+#include <common/debug.h>
 #include <common/config.h>
+#include <common/globals.h>
 
 static bool debug_flag = false;
-
-std::string install_directory = string(INSTALLDIR);
 
 char * getHome()
 {
@@ -45,9 +43,7 @@ char * getHome()
     return NULL;
 }
 
-varconf::Config * global_conf;
-
-int exit_flag = 0;
+#include <rulesets/MindFactory.h>
 
 int main(int argc, char ** argv)
 {
@@ -72,6 +68,16 @@ int main(int argc, char ** argv)
         global_conf->readFromFile(string(home) + "/.cyphesis.vconf");
     }
     global_conf->getCmdline(argc, argv);
+
+    string ruleset;
+    while (global_conf->findItem("cyphesis", "ruleset")) {
+        ruleset = global_conf->getItem("cyphesis", "ruleset");
+        global_conf->erase("cyphesis", "ruleset");
+        cout << "Reading in " << ruleset << endl << flush;
+        MindFactory::instance()->readRuleset(install_directory + "/share/cyphesis/" + ruleset);
+        rulesets.push_back(ruleset);
+    };
+
 
     if (global_conf->findItem("aiclient", "server")) {
         server = global_conf->getItem("aiclient", "server");

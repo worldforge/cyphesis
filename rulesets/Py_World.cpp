@@ -54,7 +54,7 @@ static PyObject * World_is_object_deleted(WorldObject *self, PyObject *args, PyO
         PyErr_SetString(PyExc_TypeError,"Invalid thing");
         return NULL;
     }
-    return PyInt_FromLong(self->world->is_object_deleted(o->m_thing));
+    return PyInt_FromLong(o->m_thing->deleted);
 }
 
 static PyMethodDef World_methods[] = {

@@ -7,11 +7,10 @@
 
 #include <map>
 
-class ServerRouting;
-class CommServer;
-
-#include "WorldRouter.h"
 #include "Routing.h"
+
+class WorldRouter;
+class CommServer;
 
 class ServerRouting : public Routing {
     CommServer * comm_server;
@@ -23,17 +22,10 @@ class ServerRouting : public Routing {
     ServerRouting(CommServer * server, const string & name);
     ~ServerRouting() { }
 
-    virtual void addObject(Atlas::Message::Object *) const;
+    int idle();
+    BaseEntity * add_object(BaseEntity * obj);
 
-    int idle() {
-        return world->idle();
-    }
-    
-    BaseEntity * add_object(BaseEntity * obj) {
-        obj = Routing::add_object(obj);
-        id_dict[obj->fullid] = obj;
-        return obj;
-    }
+    virtual void addObject(Atlas::Message::Object *) const;
 };
 
 #endif /* SERVER_ROUTING_H */

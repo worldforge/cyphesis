@@ -10,6 +10,7 @@
 namespace Atlas {
     namespace Objects {
         namespace Operation {
+            class Login;
             class Logout;
             class Combine;
             class Create;

@@ -16,7 +16,7 @@
 
 #include "ExternalMind.h"
 
-#include <server/Connection.h>
+#include <server/Connection_methods.h>
 
 ExternalMind::ExternalMind(Connection * connection, string & id, string & name):
 		BaseMind(id, name), connection(connection)

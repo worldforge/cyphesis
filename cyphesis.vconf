@@ -3,3 +3,5 @@
 ruleset="acorn"
 restricted="false"
 usemetaserver="false"
+useaiclient="false"
+aiaccount="ai"

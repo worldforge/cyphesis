@@ -209,6 +209,7 @@ oplist WorldRouter::operation(const RootOperation * op)
                 message(**I, toEntity);
             }
             if (op_type == OP_DELETE) {
+                del_object(toEntity);
                 toEntity->destroy();
                 toEntity->deleted = true;
                 delete toEntity;

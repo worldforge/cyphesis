@@ -22,11 +22,8 @@ class Account : public OOG_Thing {
     string password;
     string type;
 
-    Account(Connection * conn, const string & username, const string & passwd) :
-        connection(conn), password(passwd), type("account") {
-        fullid = username;
-    }
-    virtual ~Account() { }
+    Account(Connection * conn, const string & username, const string & passwd);
+    virtual ~Account();
 
     virtual void addObject(Atlas::Message::Object *) const;
     virtual oplist Operation(const Logout & op);

@@ -32,6 +32,6 @@ echo autoconf...
 
 autoconf
 
-./configure --prefix=/opt/forge $@
+./configure --prefix=/opt/forge --enable-maintainer-mode=yes $@
 
 exit 0

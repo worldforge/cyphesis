@@ -5,12 +5,14 @@
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
-
-#include "Food.h"
+#include <Atlas/Objects/Operation/Set.h>
 
 #include <common/Eat.h>
 #include <common/Fire.h>
 #include <common/Nourish.h>
+
+#include "Food.h"
+#include "Script.h"
 
 Food::Food()
 {
@@ -22,7 +24,7 @@ Food::Food()
 oplist Food::Operation(const Eat & op)
 {
     oplist res;
-    if (script_Operation("eat", op, res) != 0) {
+    if (script->Operation("eat", op, res) != 0) {
         return(res);
     }
     Object::MapType self_ent;
@@ -52,7 +54,7 @@ oplist Food::Operation(const Eat & op)
 oplist Food::Operation(const Fire & op)
 {
     oplist res;
-    if (script_Operation("fire", op, res) != 0) {
+    if (script->Operation("fire", op, res) != 0) {
         return(res);
     }
     double cooked;

@@ -30,10 +30,11 @@ class CommServer {
     int meta_fd;
   public:
     static bool use_metaserver;
-    ServerRouting * server;
     const string identity;
+    ServerRouting & server;
 
-    CommServer(const string & ident) : identity(ident) { }
+    CommServer(const string & ident);
+ // : identity(ident), server(new ServerRouting(this, identity)) { }
 
     int setup(int port);
     void loop();

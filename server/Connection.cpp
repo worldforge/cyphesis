@@ -21,26 +21,33 @@
 #include <rulesets/ExternalMind.h>
 #include <common/debug.h>
 #include <common/persistance.h>
+#include <common/globals.h>
 
 #include "Connection.h"
 #include "ServerRouting.h"
 #include "CommClient.h"
+#include "CommServer.h"
 #include "Player.h"
-
-#include "server.h"
 
 static const bool debug_flag = false;
 
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::Info;
 
-inline Account * Connection::add_player(string & username, string & password)
+Connection::Connection(CommClient & client) : comm_client(client),
+    server(comm_client.commServer.server) { }
+
+void Connection::send(const RootOperation * msg) const {
+    comm_client.send(msg);
+}
+
+Account * Connection::add_player(string & username, string & password)
 {
     Player * player=new Player(this, username, password);
     add_object(player);
     player->connection=this;
-    player->world=server->world;
-    server->add_object(player);
+    player->world=server.world;
+    server.add_object(player);
     return(player);
 }
 
@@ -61,7 +68,6 @@ void Connection::destroy()
             }
         }
     }
-    comm_client = NULL;
     BaseEntity::destroy();
 }
 
@@ -109,7 +115,7 @@ oplist Connection::Operation(const Login & op)
         string account_id = account.AsMap().find("id")->second.AsString();
         string password = account.AsMap().find("password")->second.AsString();
 
-        Account * player = (Player *)server->get_object(account_id);
+        Account * player = (Player *)server.get_object(account_id);
         if (player == NULL) {
             player = Persistance::instance()->getAccount(account_id);
         }
@@ -146,7 +152,7 @@ oplist Connection::Operation(const Create & op)
         string account_id = account.AsMap().find("id")->second.AsString();
         string password = account.AsMap().find("password")->second.AsString();
 
-        if ((NULL==server->get_object(account_id)) && 
+        if ((NULL==server.get_object(account_id)) && 
             (!Persistance::instance()->findAccount(account_id)) &&
             (account_id.size() != 0) && (password.size() != 0)) {
             Account * player = add_player(account_id, password);
@@ -171,7 +177,7 @@ oplist Connection::Operation(const Logout & op)
     if (account.IsMap()) {
         string account_id = account.AsMap().find("id")->second.AsString();
         string password = account.AsMap().find("password")->second.AsString();
-        Player * player = (Player *)server->get_object(account_id);
+        Player * player = (Player *)server.get_object(account_id);
         if (player) {
             Logout l = op;
             l.SetFrom(player->fullid);
@@ -187,7 +193,7 @@ oplist Connection::Operation(const Get & op)
     cout << "Got get" << endl << flush;
     Info * info = new Info();
     *info = Info::Instantiate(); 
-    Object::ListType args(1,server->asObject());
+    Object::ListType args(1,server.asObject());
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());
     cout << "Replying to get" << endl << flush;

@@ -8,7 +8,7 @@
 #include <Python.h>
 
 #include "Python_API.h"
-#include "Thing.h"
+#include "Entity.h"
 
 static PyObject * Thing_as_entity(ThingObject * self, PyObject * args)
 {
@@ -107,7 +107,7 @@ static PyObject * Thing_getattr(ThingObject *self, char *name)
             return v;
         }
     }
-    Thing * thing = self->m_thing;
+    Entity * thing = self->m_thing;
     string attr(name);
     PyObject * ret = Object_asPyObject((*thing)[attr]);
     if (ret == NULL) {
@@ -143,7 +143,7 @@ static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
     if (strcmp(name, "map") == 0) {
         return -1;
     }
-    Thing * thing = self->m_thing;
+    Entity * thing = self->m_thing;
     //string attr(name);
     //if (v == NULL) {
         //thing->attributes.erase(attr);

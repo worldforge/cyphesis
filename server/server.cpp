@@ -33,21 +33,16 @@ extern "C" {
 #include <common/debug.h>
 #include <common/persistance.h>
 #include <common/utility.h>
+#include <common/globals.h>
 
 #include <fstream>
 
-#include "ServerRouting.h"
+#include "ServerRouting_methods.h"
 #include "Connection.h"
-#include "server.h"
 #include "CommClient.h"
 #include "CommServer.h"
 
-int profile_flag=0;
 static const bool debug_flag = false;
-
-string install_directory = string(INSTALLDIR);
-
-// using Atlas::Message::Object;
 
 void init_python_api();
 
@@ -70,13 +65,21 @@ static inline char *unpack_uint32(uint32_t *dest, char *buffer)
     return buffer+sizeof(uint32_t);
 }
 
+CommClient::CommClient(CommServer & svr, int fd, int port) :
+            commServer(svr),
+            client_fd(fd), client_buf(fd), client_ios(&client_buf),
+            connection(*new Connection(*this)) {
+    //if (consts::debug_level>=1) {
+        //char * log_name = "log.log";
+        //log_file.open(log_name);
+    //}
+}
+
 
 CommClient::~CommClient()
 {
-    if (connection != NULL) {
-        connection->destroy();
-        delete connection;
-    }
+    connection.destroy();
+    delete &connection;
     if (encoder != NULL) {
         delete encoder;
     }
@@ -84,7 +87,7 @@ CommClient::~CommClient()
 
 int CommClient::setup()
 {
-    Atlas::Net::StreamAccept accept("cyphesis " + server->identity, client_ios, this);
+    Atlas::Net::StreamAccept accept("cyphesis " + commServer.identity, client_ios, this);
 
     debug(cout << "Negotiating... " << flush;);
     while (accept.GetState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
@@ -107,13 +110,12 @@ int CommClient::setup()
 
     codec->StreamBegin();
 
-    connection=new Connection(this);
     return(1);
 }
 
 void CommClient::message(const RootOperation & op)
 {
-    oplist reply = connection->message(op);
+    oplist reply = connection.message(op);
     for(oplist::const_iterator I = reply.begin(); I != reply.end(); I++) {
         debug(cout << "sending reply" << endl << flush;);
         send(*I);
@@ -195,6 +197,10 @@ void CommClient::ObjectArrived(const Get & op)
 
 bool CommServer::use_metaserver = true;
 
+CommServer::CommServer(const string & ident) :
+              identity(ident), server(*new ServerRouting(this, ident)) { }
+
+
 int CommServer::setup(int port)
 {
     struct sockaddr_in sin;
@@ -214,7 +220,7 @@ int CommServer::setup(int port)
         return(-1);
     }
     listen(server_fd, 5);
-    server=new ServerRouting(this,identity);
+    // server=new ServerRouting(this,identity);
 
     if (!use_metaserver) {
         return 0;
@@ -260,7 +266,7 @@ int CommServer::accept()
         return(-1);
     }
     debug(cout << "Accepted" << endl << flush;);
-    CommClient * newcli = new CommClient(this, asockfd, sin.sin_port);
+    CommClient * newcli = new CommClient(*this, asockfd, sin.sin_port);
     if (newcli->setup()) {
         clients.insert(std::pair<int, CommClient *>(asockfd, newcli));
     }
@@ -276,7 +282,7 @@ inline void CommServer::idle()
         ltime = ctime;
         metaserver_keepalive();
     }
-    server->idle();
+    server.idle();
 }
 
 void CommServer::loop()
@@ -417,17 +423,12 @@ void CommServer::metaserver_terminate()
     sendto(meta_fd,mesg,packet_size, 0, (sockaddr *)&meta_sa, sizeof(meta_sa));
 }
 
-
-varconf::Config * global_conf = varconf::Config::inst();
-
-list<string> rulesets;
-
 #include <rulesets/EntityFactory.h>
-
-bool exit_flag=false;
 
 int main(int argc, char ** argv)
 {
+    global_conf = varconf::Config::inst();
+
     if (install_directory=="NONE") {
         install_directory = "/usr/local";
     }

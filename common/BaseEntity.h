@@ -50,6 +50,7 @@ class BaseEntity {
     virtual oplist Operation(const Eat & op);
     virtual oplist Operation(const Fire & op);
     virtual oplist Operation(const Get & op);
+    virtual oplist Operation(const Info & op);
     virtual oplist Operation(const Move & op);
     virtual oplist Operation(const Nourish & op);
     virtual oplist Operation(const Set & op);

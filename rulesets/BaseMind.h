@@ -5,18 +5,17 @@
 #ifndef BASE_MIND_H
 #define BASE_MIND_H
 
-#include "Thing.h"
+#include "Entity.h"
+#include "MemMap.h"
 
-class BaseMind : public Thing {
+class BaseMind : public Entity {
   protected:
-    virtual int script_Operation(const string &, const RootOperation &, oplist &, RootOperation * sub_op=NULL);
-
     MemMap map;
   public:
-    BaseMind(string &, string &);
-    virtual ~BaseMind() { }
+    BaseMind(const string &, const string &);
+    virtual ~BaseMind();
 
-    virtual int set_object(PyObject * obj);
+    virtual int set_script(Script * scrpt);
     virtual MemMap * getMap();
 
     virtual oplist Sight_Operation(const Sight & op, Login & sub_op);
@@ -46,6 +45,7 @@ class BaseMind : public Thing {
     oplist call_sight_operation(const Sight & op, RootOperation & sub_op);
     oplist call_sound_operation(const Sound & op, RootOperation & sub_op);
 
+    friend class PythonMindScript;
 };
 
 #endif /* BASE_MIND_H */

@@ -8,14 +8,15 @@
 
 using Atlas::Objects::Operation::Look;
 
-#include "Thing.h"
+#include "Entity.h"
 #include "MemMap.h"
+#include "Script.h"
 #include <modules/Location.h>
 #include <common/debug.h>
 
 static const bool debug_flag = false;
 
-inline Thing * MemMap::add_object(Thing * object)
+inline Entity * MemMap::add_object(Entity * object)
 {
     debug( cout << "MemMap::add_object " << object << " " << object->fullid
          << endl << flush;);
@@ -27,7 +28,7 @@ inline Thing * MemMap::add_object(Thing * object)
     debug( cout << this << endl << flush;);
     list<string>::const_iterator I;
     for(I = add_hooks.begin(); I != add_hooks.end(); I++) {
-        script_hook(*I, object);
+        script->hook(*I, object);
     }
     return object;
 }
@@ -49,7 +50,7 @@ inline RootOperation * MemMap::look_id()
     return(NULL);
 }
 
-inline Thing * MemMap::add_id(const string & id)
+inline Entity * MemMap::add_id(const string & id)
 {
     if (id.size() == 0) { return NULL; }
     debug( cout << "MemMap::add_id" << endl << flush;);
@@ -60,7 +61,7 @@ inline Thing * MemMap::add_id(const string & id)
     return add(obj);
 }
 
-inline Thing * MemMap::add(const Object & entity)
+inline Entity * MemMap::add(const Object & entity)
 {
     debug( cout << "MemMap::add" << endl << flush;);
     if (!entity.IsMap()) {
@@ -74,7 +75,7 @@ inline Thing * MemMap::add(const Object & entity)
     if (get(entmap["id"].AsString())) {
         return update(entity);
     }
-    Thing * thing = new Thing;
+    Entity * thing = new Entity;
     thing->fullid = entmap["id"].AsString();
     if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
         thing->name = entmap["name"].AsString();
@@ -94,38 +95,38 @@ inline void MemMap::_delete(const string & id)
 {
     if (id.size() == 0) { return; }
     if (things.find(id) != things.end()) {
-        Thing * obj = (Thing*)things[id];
+        Entity * obj = (Entity*)things[id];
         things.erase(id);
         list<string>::const_iterator I;
         for(I = delete_hooks.begin(); I != delete_hooks.end(); I++) {
-            script_hook(*I, obj);
+            script->hook(*I, obj);
         }
         delete obj;
     }
 }
 
-inline Thing * MemMap::get(const string & id)
+inline Entity * MemMap::get(const string & id)
 {
     debug( cout << "MemMap::get" << endl << flush;);
     if (id.size() == 0) { return NULL; }
     if (things.find(id) != things.end()) {
-        return (Thing*)things[id];
+        return (Entity*)things[id];
     }
     return(NULL);
 }
 
-inline Thing * MemMap::get_add(const string & id)
+inline Entity * MemMap::get_add(const string & id)
 {
     debug( cout << "MemMap::get_add" << endl << flush;);
     if (id.size() == 0) { return NULL; }
-    Thing * obj = MemMap::get(id);
+    Entity * obj = MemMap::get(id);
     if (obj != NULL) {
         return obj;
     }
     return add_id(id);
 }
 
-inline Thing * MemMap::update(const Object & entity)
+inline Entity * MemMap::update(const Object & entity)
 {
     debug( cout << "MemMap::update" << endl << flush;);
     if (!entity.IsMap()) {
@@ -144,7 +145,7 @@ inline Thing * MemMap::update(const Object & entity)
         return add(entity);
     }
     debug( cout << " " << id << " has already been spotted" << endl << flush;);
-    Thing * thing = (Thing*)things[id];
+    Entity * thing = (Entity*)things[id];
     debug( cout << " got " << thing << endl << flush;);
     // I am not sure what the deal is with all the "needTrueValue stuff
     // below yet. FIXME find out exactly what is required.
@@ -165,7 +166,7 @@ inline Thing * MemMap::update(const Object & entity)
     //}
     list<string>::const_iterator I;
     for(I = update_hooks.begin(); I != update_hooks.end(); I++) {
-        script_hook(*I, thing);
+        script->hook(*I, thing);
     }
     //for (/*hook in MemMap::update_hooks*/) {
         //hook(obj);
