@@ -42,7 +42,6 @@ class Location {
     }
 
     const Point3D getXyz() const;
-    const Point3D getXyz(Entity *) const;
 
     void addToMessage(Atlas::Message::MapType & ent) const;
 

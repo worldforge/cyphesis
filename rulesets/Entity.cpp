@@ -197,11 +197,6 @@ void Entity::merge(const MapType & ent)
     }
 }
 
-Point3D Entity::getXyz() const
-{
-    return m_location.getXyz();
-}
-
 void Entity::scriptSubscribe(const std::string & op)
 {
     OpNo n = Inheritance::instance().opEnumerate(op);

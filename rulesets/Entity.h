@@ -110,6 +110,10 @@ class Entity : public BaseEntity {
         return m_attributes;
     }
 
+    const Point3D getXyz() const {
+        return m_location.getXyz();
+    }
+
     virtual bool get(const std::string &, Element &) const;
     virtual void set(const std::string &, const Element &);
 
@@ -120,7 +124,6 @@ class Entity : public BaseEntity {
     bool getLocation(const MapType &,
                      const std::map<std::string, EntityType *> &);
 
-    Point3D getXyz() const;
     void destroy();
     void scriptSubscribe(const std::string &);
 

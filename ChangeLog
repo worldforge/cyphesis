@@ -1,5 +1,14 @@
 2004-10-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/Knowledge.py: Simplify constructor.
+
+	* rulesets/Entity.h, rulesets/Entity.cpp: Make getXyz() inline.
+
+	* modules/Location.h: Remove obsolete unimplemented
+	  getXyz() method.
+
+2004-10-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/Location.cpp: Ensure that orientation is not used
 	  when its invalid.
 

@@ -2,15 +2,11 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 class Knowledge:
-    def __init__(self, place=None, location=None, goal=None, importance=None):
-        if place: self.place=place
-        else: self.place={}
-        if location: self.location=location
-        else: self.location={}
-        if goal: self.goal=goal
-        else: self.goal={}
-        if importance: self.importance=importance
-        else: self.importance={}
+    def __init__(self, place={}, location={}, goal={}, importance={}):
+        self.place=place
+        self.location=location
+        self.goal=goal
+        self.importance=importance
     def add(self, what, key, value):
         if not hasattr(self, what):
             setattr(self, what, {})
@@ -22,6 +18,5 @@ class Knowledge:
         s=s+"location: "+str(self.location)+"\n"
         s=s+"goal: "+str(self.goal)+"\n"
         s=s+"importance: "+str(self.importance)+"\n"
-        s=s+"price: "+str(self.price)+"\n"
         return s+">\n"
 
