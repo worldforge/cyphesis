@@ -37,14 +37,18 @@ discusion within the Free Software movement about this issue, which some
 see as a hole in the GPL, and it is possible that a future version of the
 GNU General Public License will forbid using a modified version of a GPL
 licensed program to run a service unless the changes to the source code
-are made available. The licensing of this program permits redistribution
+are made available. The licensing of many programs permit redistribution
 under the terms of the GNU General Public License version 2 or at the
-licensees option, a later version, so it is possible that a version of
-this program may be released that is under the terms of a license which
+licensee's option, a later version, so it is possible that a version of
+those programs may be released that is under the terms of a license which
 requires the source code changes to be published for a modified version
 being used to run an online service. As the current author and owner of
 the source code to this program, I have never intended that this restriction
-be placed on the software, and do not support its enforcement. The scripts
+be placed on the software, and do not support its enforcement. I have
+therefor chosen to restrict redistribution of this program to the license
+provided with the source, which at the time of writing is the GPL version
+2. If a new version of the GPL is released, I will consider on its merits
+whether or not to make this code available under that license. The scripts
 provided with this software should be considered a separate work, as they
 were not written by me. Nothing in this paragraph should be considered to
 be a legal statement of any kind. It is simply a clarification of my
@@ -52,7 +56,7 @@ opinion on some of the terms of the GNU General Public License. If anything
 in the above paragraph is unclear, please feel free to contact me to discuss
 it.
 
-  Al Riddoch <alriddoch@zepler.org> 22nd February 2002
+  Al Riddoch <alriddoch@zepler.org> 2nd April 2002
 
 Usage and configuration:
 
