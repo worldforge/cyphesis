@@ -29,9 +29,7 @@ Definitly for Acorn 0.4:
     o = new Opertion(Operation::Instantiate());
   cos it is about twice as quick.
 
-  In movement code, if target_ref is set, once target is achieved, change
-  the ref of the character, and recalculate its coords, then carry on the
-  movement.
+  Tidy up the details of moving in and out of other entities, ie. structures.
 
 Provisional for Acorn 0.4:
 

@@ -63,6 +63,13 @@ public:
         return coords.hitTime(m, bbox, velocity, other.coords + om, other.bbox);
     }
 
+    double inTime(const Location & other) const {
+        if (!other.bbox) { return -1; }
+        const Vector3D & m = bmedian ? bmedian : bbox;
+        const Vector3D & om = other.bmedian ? other.bmedian : other.bbox;
+        return coords.inTime(m, bbox, velocity, om, other.bbox);
+    }
+
     friend ostream & operator<<(ostream& s, Location& v);
 };
 

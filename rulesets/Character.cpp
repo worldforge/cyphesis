@@ -102,9 +102,21 @@ void MovementInfo::check_collisions(const Location & loc)
         collTime = min(collTime, t);
     }
     // cout << endl << flush;
-    if (collTime > consts::basic_tick) { return; }
-    // Collision!
-    if (!collEntity->location.solid) {
+    if (collTime > consts::basic_tick) {
+        // Check whethe we are moving out of parents bounding box
+        // If ref has no bounding box, or itself has no ref, then we can't
+        // Move out of it.
+        const Location & oloc = loc.ref->location;
+        if (!oloc.bbox || (oloc.ref == NULL)) {
+            return;
+        }
+        double t = loc.inTime(oloc);
+        collTime = min(collTime, t);
+        if (collTime > consts::basic_tick) { return; }
+        cout << "Collision with parent bounding box" << endl << flush;
+        target_ref = oloc.ref;
+    } else if (!collEntity->location.solid) {
+        cout << "Collision with non-solid object" << endl << flush;
         // Non solid container - check for collision with its contents.
         const Location & lc2 = collEntity->location;
         Location rloc(loc);
@@ -119,15 +131,18 @@ void MovementInfo::check_collisions(const Location & loc)
             coll2Time = min(coll2Time, t);
         }
         if (coll2Time > collTime) {
+            cout << "passing through it" << endl << flush;
             // We are entering collEntity.
             // Set target_ref ????????????????
             target_ref = collEntity;
-            if (coll2Time > consts::basic_tick) { return; }
+            // if (coll2Time > consts::basic_tick) { return; }
         }
     }
     // cout << "COLLISION" << endl << flush;
     if (collTime < get_tick_addition(loc.coords)) {
         target_location = loc.coords + loc.velocity * collTime;
+    } else {
+        target_ref = NULL;
     }
 }
 
@@ -233,8 +248,15 @@ Move * MovementInfo::gen_move_operation(Location * rloc, const Location & loc)
                 debug( cout << "target achieved";);
                 new_coords=target_location;
                 if (target_ref != NULL) {
+                    cout << "CONTACT " << target_ref->fullid << endl << flush;
+                    if (target_ref == new_loc.ref->location.ref) {
+                        cout << "OUT" << target_location << new_loc.ref->location.coords << endl << flush;
+                        new_coords=target_location+new_loc.ref->location.coords;
+                    } else {
+                        cout << "IN" << endl << flush;
+                        new_coords=target_location-target_ref->location.coords;
+                    }
                     new_loc.ref = target_ref;
-                    new_coords = target_location - target_ref->location.coords;
                     target_ref = NULL;
                     // This needs to be the previously stored target location
                     target_location = Vector3D();

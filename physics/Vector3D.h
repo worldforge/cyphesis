@@ -25,6 +25,10 @@ static inline range hitTime(double s, double r, double u, double v, double p, do
     return range((r - s + p + q)/(u - v), (r - s - p - q)/(u - v));
 }
 
+static inline range inTime(double s, double r, double u, double p, double q) {
+    return range((p - q + r - s)/u, (p + q - r - s)/u);
+}
+
 static inline double max(range r) {
     return max(r.first, r.second);
 }
@@ -221,6 +225,17 @@ class Vector3D {
         // If the start is before the end, then there is a collision
         if (end < start) { return -1; }
         return start;
+    }
+
+    double inTime(const Vector3D & m, const Vector3D & s, const Vector3D & v,
+                   const Vector3D & om, const Vector3D & os) const {
+        range xt = ::inTime(x+m.x, om.x, v.x, s.x, os.x);
+        range yt = ::inTime(y+m.y, om.y, v.y, s.y, os.y);
+        range zt = ::inTime(z+m.z, om.z, v.z, s.z, os.z);
+        double enter = max(min(xt), max(min(yt),min(zt)));
+        double leave = min(max(xt), min(max(yt),max(zt)));
+        if (enter > 0) { return -1; }
+        return leave;
     }
 
     Object asObject() const {

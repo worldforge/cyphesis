@@ -1,3 +1,12 @@
+2001-03-19  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* modules/Location.h, physics/Vector3D.h: Added collision checking
+	  functions to work out when an entity inside a box will hit the
+	  outside.
+
+	* rulesets/Character.cpp: Added check in collision code to see when
+	  entity will leave the bouding box of its current parent.
+
 2001-03-18  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Modified database code so that entries have the correct begin

@@ -33,7 +33,7 @@
 #include <common/const.h>
 #include <common/debug.h>
 
-//static const bool debug_flag = false;
+// static const bool debug_flag = false;
 
 using Atlas::Message::Object;
 
@@ -362,6 +362,7 @@ oplist Thing::Operation(const Move & op)
         Object::MapType ent = args.front().AsMap();
         string & oname = ent["id"].AsString();
         debug( cout << "In " << fullid << " got moveop for " << oname << endl << flush;);
+        cout << "In " << fullid << " got moveop for " << oname << endl << flush;
         if (ent.find("loc") == ent.end()) {
             debug( cout << "ERROR: move op arg has no ref" << endl << flush;);
             return(error(op, "Move location has no ref"));
@@ -371,6 +372,7 @@ oplist Thing::Operation(const Move & op)
             debug( cout << "ERROR: move op arg ref is invalid" << endl << flush;);
             return(error(op, "Move location ref invalid"));
         }
+        cout << "{" << ref << "}" << endl << flush;
         newref = world->fobjects[ref];
         if (location.ref != newref) {
             location.ref->contains.remove(this);
@@ -394,6 +396,7 @@ oplist Thing::Operation(const Move & op)
         double y = vector[1].AsFloat();
         double z = vector[2].AsFloat();
         debug( cout << "POS: " << x << " " << y << " " << z << endl << flush;);
+        cout << "POS: " << x << " " << y << " " << z << endl << flush;
         location.coords = Vector3D(x, y, z);
         if (ent.find("velocity") != ent.end()) {
             vector.clear();
