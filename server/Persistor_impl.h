@@ -159,14 +159,18 @@ void Persistor<T>::cCharacter(Character & t, std::string & c, std::string & v)
 }
 
 template <class T>
+void Persistor<T>::hookup(T & t)
+{
+    t.updated.connect(SigC::bind<T*>(SigC::slot(*this, &Persistor<T>::update),
+                                      &t));
+    t.destroyed.connect(SigC::bind<T*>(SigC::slot(*this, &Persistor<T>::remove),
+                                        &t));
+}
+
+template <class T>
 void Persistor<T>::persist(T & t)
 {
-    t.updated.connect(SigC::bind<T *>(SigC::slot(*this,
-                                                 &Persistor<T>::update),
-                                      &t));
-    t.destroyed.connect(SigC::bind<T *>(SigC::slot(*this,
-                                                   &Persistor<T>::remove),
-                                        &t));
+    hookup(t);
     std::string columns;
     std::string values;
     cEntity(t, columns, values);

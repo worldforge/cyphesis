@@ -24,6 +24,17 @@ template class Restorer<Line>;
 template class Restorer<Stackable>;
 template class Restorer<Structure>;
 
+Persistor<Entity> Restorer<Entity>::m_persist(true);
+Persistor<Thing> Restorer<Thing>::m_persist(true);
+Persistor<Character> Restorer<Character>::m_persist(true);
+Persistor<Creator> Restorer<Creator>::m_persist(true);
+Persistor<Plant> Restorer<Plant>::m_persist(true);
+Persistor<Food> Restorer<Food>::m_persist(true);
+Persistor<Area> Restorer<Area>::m_persist(true);
+Persistor<Line> Restorer<Line>::m_persist(true);
+Persistor<Stackable> Restorer<Stackable>::m_persist(true);
+Persistor<Structure> Restorer<Structure>::m_persist(true);
+
 void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
 {
     restoreFloat(dr.column("drunkness"), drunkness);

@@ -31,8 +31,9 @@ template class Persistor<Stackable>;
 template class Persistor<Structure>;
 template class Persistor<World>;
 
-Persistor<Entity>::Persistor() : m_class("entity")
+Persistor<Entity>::Persistor(bool temp) : m_class("entity")
 {
+    if (temp) { return; }
     Atlas::Message::Object::MapType desc;
     desc["class"] = "                                                                                ";
     desc["type"] = "                                                                                ";
@@ -60,29 +61,33 @@ Persistor<Entity>::Persistor() : m_class("entity")
     Database::instance()->registerEntityTable(m_class, desc);
 }
 
-Persistor<Thing>::Persistor<Thing>() : m_class("thing")
+Persistor<Thing>::Persistor<Thing>(bool temp) : m_class("thing")
 {
+    if (temp) { return; }
     Atlas::Message::Object::MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "entity");
 }
 
-Persistor<Line>::Persistor<Line>() : m_class("line")
+Persistor<Line>::Persistor<Line>(bool temp) : m_class("line")
 {
+    if (temp) { return; }
     Atlas::Message::Object::MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
-Persistor<Area>::Persistor<Area>() : m_class("area")
+Persistor<Area>::Persistor<Area>(bool temp) : m_class("area")
 {
+    if (temp) { return; }
     Atlas::Message::Object::MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
-Persistor<Character>::Persistor<Character>() : m_class("character")
+Persistor<Character>::Persistor<Character>(bool temp) : m_class("character")
 {
+    if (temp) { return; }
     Atlas::Message::Object::MapType desc;
     // FIXME Sort out attributes
     desc["sex"] = "        ";
@@ -91,43 +96,49 @@ Persistor<Character>::Persistor<Character>() : m_class("character")
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
-Persistor<Creator>::Persistor<Creator>() : m_class("creator")
+Persistor<Creator>::Persistor<Creator>(bool temp) : m_class("creator")
 {
+    if (temp) { return; }
     // Creator entities are not persisted
 }
 
-Persistor<Plant>::Persistor<Plant>() : m_class("plant")
+Persistor<Plant>::Persistor<Plant>(bool temp) : m_class("plant")
 {
+    if (temp) { return; }
     Atlas::Message::Object::MapType desc;
     // FIXME Sort out attributes
     desc["fruits"] = 1;
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
-Persistor<Food>::Persistor<Food>() : m_class("food")
+Persistor<Food>::Persistor<Food>(bool temp) : m_class("food")
 {
+    if (temp) { return; }
     Atlas::Message::Object::MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
-Persistor<Stackable>::Persistor<Stackable>() : m_class("stackable")
+Persistor<Stackable>::Persistor<Stackable>(bool temp) : m_class("stackable")
 {
+    if (temp) { return; }
     Atlas::Message::Object::MapType desc;
     // FIXME Sort out attributes
     desc["num"] = 1;
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
-Persistor<Structure>::Persistor<Structure>() : m_class("structure")
+Persistor<Structure>::Persistor<Structure>(bool temp) : m_class("structure")
 {
+    if (temp) { return; }
     Atlas::Message::Object::MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
-Persistor<World>::Persistor<World>() : m_class("world")
+Persistor<World>::Persistor<World>(bool temp) : m_class("world")
 {
+    if (temp) { return; }
     Atlas::Message::Object::MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "entity");
@@ -179,7 +190,7 @@ void Persistor<Plant>::update(Plant * t)
     t->clearUpdateFlags();
 }
 
-void Persistor<Character>::persist(Character & t)
+void Persistor<Character>::hookup(Character & t)
 {
     t.updated.connect(SigC::bind<Character *>(SigC::slot(*this,
                                               &Persistor<Character>::update),
@@ -187,6 +198,11 @@ void Persistor<Character>::persist(Character & t)
     t.destroyed.connect(SigC::bind<Character *>(SigC::slot(*this,
                                                 &Persistor<Character>::remove),
                                                 &t));
+}
+
+void Persistor<Character>::persist(Character & t)
+{
+    hookup(t);
     std::string columns;
     std::string values;
     cEntity(t, columns, values);
@@ -199,10 +215,15 @@ void Persistor<Creator>::persist(Creator & t)
     // Creator entities are not persisted
 }
 
-void Persistor<World>::persist(World & t)
+void Persistor<World>::hookup(World & t)
 {
     t.updated.connect(SigC::bind<World *>(SigC::slot(*this,
                                           &Persistor<World>::update), &t));
+}
+
+void Persistor<World>::persist(World & t)
+{
+    hookup(t);
     // The game world should never be destroyed, so we don't connect
     // it to a remove function.
     // We do not create the row in the database. This is handled in a slightly

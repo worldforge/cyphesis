@@ -11,6 +11,9 @@
 
 class Entity;
 
+template <class T>
+class Persistor;
+
 // This class should never ever be instantiated, so the constructor is private
 // and unimplemented. Instead the template should be instantiated with
 // T as the class to be restored, and a reference to the object being
@@ -23,6 +26,8 @@ template <class T>
 class Restorer : public T {
   private:
     Restorer(); // DO NOT IMPLEMENT THIS
+
+    static Persistor<T> m_persist;
 
     void restoreInt(const char * c, int & i) {
         if (c == 0) { return; }

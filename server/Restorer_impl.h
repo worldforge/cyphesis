@@ -7,6 +7,8 @@
 
 #include "Restorer.h"
 
+#include "Persistor.h"
+
 #include <common/Database.h>
 
 template <class T>
@@ -51,6 +53,8 @@ Entity * Restorer<T>::restore(const std::string & id, DatabaseResult::const_iter
     Restorer<T> * rt = (Restorer<T> *)t;
 
     rt->populate(id, dr);
+
+    m_persist.hookup(*t);
 
     return t;
 }

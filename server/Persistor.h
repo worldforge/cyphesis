@@ -30,8 +30,9 @@ class Persistor : virtual public SigC::Object {
     void cCharacter(Character &, std::string &, std::string &);
   public:
     // Register table with database
-    Persistor();
+    explicit Persistor(bool temp = false);
 
+    void hookup(T &);
     void persist(T &);
     void update(T *);
     void remove(T *);

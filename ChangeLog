@@ -1,5 +1,18 @@
 2003-01-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Persistor.cpp, server/Persistor.h, server/Persistor_impl.h:
+	  Separate the insertion of a new row from connecting and entities
+	  signals to the persistor, and put them into different methods.
+	  Modify constructor to allow subsidiary persistor objects to
+	  be constructed, which don't try to register with the database.
+
+	* server/Restorer.cpp, server/Restorer.h, server/Restorer_impl.h:
+	  Each Restorer template instance has a static Persistor
+	  which it connects up to entities as it restores them, ensuring
+	  that changes to restored entities are persisted.
+
+2003-01-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Re-write the way ops are passed to mind
 	  so that a character still works if it has no AI mind.
 
