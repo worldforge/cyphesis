@@ -487,11 +487,11 @@ OpVector Character::mindMoveOperation(const Move & op)
 
     // If the position is given, and it is about right, don't bother to 
     // use it. FIXME This breaks the idea that if position is given
-    // it is destination
-    if (new_coords.isValid() &&
-        (squareDistance(new_coords, m_location.m_pos) < 0.01)) {
-        new_coords = Vector3D();
-    }
+    // it is destination. Removed for now, but may be of future interest
+    // if (new_coords.isValid() &&
+        // (squareDistance(new_coords, m_location.m_pos) < 0.01)) {
+        // new_coords = Vector3D();
+    // }
 
     Location ret_location;
     Move * moveOp = m_movement.genMoveUpdate(&ret_location);

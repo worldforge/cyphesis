@@ -18,20 +18,21 @@
 static const bool debug_flag = true;
 
 Movement::Movement(Entity & body) : m_body(body), m_lastMovementTime(-1),
-                                   m_velocity(0,0,0), m_serialno(0),
-                                   m_collEntity(NULL), m_collRefChange(false),
-                                   m_collAxis(-1)
+                                    m_velocity(0,0,0), m_serialno(0),
+                                    m_collEntity(NULL), m_collRefChange(false),
+                                    m_collAxis(-1)
 {
+    // FIXME I think setting velocity to (0,0,0) is a weird way to do it.
 }
 
 Movement::~Movement()
 {
 }
 
-bool Movement::updateNeeded(const Location & location) const
+bool Movement::updateNeeded(const Location & loc) const
 {
-    return((m_velocity != Vector3D(0,0,0)) ||
-           (location.m_velocity != Vector3D(0,0,0)));
+    return((m_velocity.isValid() && m_velocity != Vector3D(0,0,0)) ||
+           (loc.m_velocity.isValid() && loc.m_velocity != Vector3D(0,0,0)));
 }
 
 
@@ -139,6 +140,6 @@ void Movement::reset()
 
 bool Movement::moving() const
 {
-    return (m_velocity != Vector3D(0,0,0));
+    return (m_velocity.isValid() && m_velocity != Vector3D(0,0,0));
 }
 
