@@ -1,3 +1,11 @@
+2002-10-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Vector3D.h: Cleaned up arithmetic operators.
+
+	* Clarified rpm descriptions.
+
+	* Big changes to make README more accurate and readable.
+
 2002-09-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cyphesis-setup: Re-write of script to handle server setup.
@@ -8,20 +16,21 @@
 	* server/Admin.cpp: Cleaned up an unimplemented feature, and added it
 	  to the TODO.
 
-	* server/Account.h, server/Account.cpp: Removed unused obsolete code for
-	  checking character types.
+	* server/Account.h, server/Account.cpp: Removed unused obsolete code
+	  for checking character types.
 
-	* rulesets/Python_API.cpp: Add new globals module to python API which exposes
-	  core settings to the python scripts.
+	* rulesets/Python_API.cpp: Add new globals module to python API which
+	  exposes core settings to the python scripts.
 
-	* rulesets/basic/hooks/ruleset_import_hooks.py: Abolish autogeneration of
-	  this file using new globals module in the python API.
+	* rulesets/basic/hooks/ruleset_import_hooks.py: Abolish autogeneration
+	  of this file using new globals module in the python API.
 
 	* configure.in, cyphesis-config.in: Expose conf and data dirs.
 
 	* tools/cyphesis-setup: New script to set the server up.
 
-	* tools/cyconfig.cpp: New tool to make persistant changes to the server config.
+	* tools/cyconfig.cpp: New tool to make persistant changes to the
+	  server config.
 
 2002-09-13  Al Riddoch  <alriddoch@zepler.org>
 

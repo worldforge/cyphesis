@@ -28,8 +28,8 @@ Requires: varconf postgresql > 7.1
 %description libs
 Cyphesis is a very simple world simulator. These libraries allow other
 applications to access the databases cyphesis uses to store its data.
-This access can be used to facilitate rapid world editing, account
-management and building, or other tasks.
+This access can be used to facilitate rapid world editing and building,
+account management, or other tasks.
 
 %package devel
 Summary: Libraries for using cyphesis databases static libs and headers
@@ -49,6 +49,7 @@ BuildArchitectures: noarch
 %description acorn
 This is the rules data, scripts and map data required for the Acorn
 game. Install this package if you intend to run an Acorn server.
+Acorn is deprecated. See README for details.
 
 %package mason
 Summary: Game data for running the Mason game in cyphesis
@@ -69,6 +70,7 @@ BuildArchitectures: noarch
 %description werewolf
 This is the rules data, scripts and map data required for the Werewolf
 game. Install this package if you intend to run an Werewolf server.
+Werewolf is not yet functional.
 
 
 %prep

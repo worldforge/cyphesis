@@ -69,11 +69,6 @@ class Vector3D {
         return ((x!=other.x) || (y!=other.y) || (z!=other.z));
     }
 
-    const Vector3D operator+(const Vector3D & other) const {
-        // Add two vectors
-        return Vector3D(x+other.x, y+other.y, z+other.z);
-    }
-
     Vector3D & operator+=(const Vector3D & other) {
         x += other.x;
         y += other.y;
@@ -91,11 +86,6 @@ class Vector3D {
         y += other;
         z += other;
         return *this;
-    }
-
-    const Vector3D operator-(const Vector3D & other) const {
-        // Subtract two vectors
-        return Vector3D(x-other.x, y-other.y, z-other.z);
     }
 
     Vector3D & operator-=(const Vector3D & other) {
@@ -325,8 +315,21 @@ class Vector3D {
         return coords;
     }
 
+    friend const Vector3D operator+(const Vector3D&, const Vector3D&);
+    friend const Vector3D operator-(const Vector3D&, const Vector3D&);
     friend std::ostream & operator<<(std::ostream& s, const Vector3D& v);
 };
+
+inline const Vector3D operator+(const Vector3D & lhs, const Vector3D & rhs) {
+    // Add two vectors
+    return Vector3D(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
+}
+
+inline const Vector3D operator-(const Vector3D & lhs, const Vector3D & rhs) {
+    // Subtract two vectors
+    return Vector3D(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
+}
+
 
 inline std::ostream & operator<<(std::ostream& s, const Vector3D& v) {
     return s << "[" << v.x << "," << v.y << "," << v.z << "]";
