@@ -111,7 +111,9 @@ Entity * Account::addCharacter(const std::string & typestr,
     }
 
     Create c = Create::Instantiate();
-    c.SetArgs(Fragment::ListType(1,chr->asObject()));
+    Fragment::ListType & cargs = c.GetArgs();
+    cargs.push_back(Fragment::MapType());
+    chr->addToObject(cargs.front().AsMap());
 
     Sight * s = new Sight(Sight::Instantiate());
     s->SetArgs(Fragment::ListType(1,c.AsObject()));
@@ -143,6 +145,7 @@ const char * Account::getType() const
 
 void Account::addToObject(Fragment::MapType & omap) const
 {
+    omap["objtype"] = "object";
     omap["id"] = getId();
     omap["username"] = username;
     omap["name"] = username;
@@ -189,7 +192,9 @@ OpVector Account::CreateOperation(const Create & op)
     BaseEntity * obj = addCharacter(typestr, entmap);
 
     Info * info = new Info(Info::Instantiate());
-    info->SetArgs(Fragment::ListType(1,obj->asObject()));
+    Fragment::ListType & info_args = info->GetArgs();
+    info_args.push_back(Fragment::MapType());
+    obj->addToObject(info_args.front().AsMap());
     info->SetRefno(op.GetSerialno());
     info->SetSerialno(connection->server.getSerialNo());
 
@@ -246,7 +251,9 @@ OpVector Account::LookOperation(const Look & op)
     if (args.empty()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
-        s->SetArgs(Fragment::ListType(1,connection->server.lobby.asObject()));
+        Fragment::ListType & s_args = s->GetArgs();
+        s_args.push_back(Fragment::MapType());
+        connection->server.lobby.addToObject(s_args.front().AsMap());
         s->SetSerialno(connection->server.getSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
@@ -260,7 +267,9 @@ OpVector Account::LookOperation(const Look & op)
     if (J != charactersDict.end()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
-        s->SetArgs(Fragment::ListType(1,J->second->asObject()));
+        Fragment::ListType & s_args = s->GetArgs();
+        s_args.push_back(Fragment::MapType());
+        J->second->addToObject(s_args.front().AsMap());
         s->SetSerialno(connection->server.getSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
@@ -270,7 +279,9 @@ OpVector Account::LookOperation(const Look & op)
     if (K != accounts.end()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
-        s->SetArgs(Fragment::ListType(1,K->second->asObject()));
+        Fragment::ListType & s_args = s->GetArgs();
+        s_args.push_back(Fragment::MapType());
+        K->second->addToObject(s_args.front().AsMap());
         s->SetSerialno(connection->server.getSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);

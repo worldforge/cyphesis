@@ -109,10 +109,12 @@ OpVector Admin::GetOperation(const Get & op)
         const EntityDict & worldDict = connection->server.world.getObjects();
         EntityDict::const_iterator K = worldDict.find(id);
 
+        Fragment::ListType & info_args = info->GetArgs();
+        info_args.push_back(Fragment::MapType());
         if (J != OOGDict.end()) {
-            info->SetArgs(Fragment::ListType(1,J->second->asObject()));
+            J->second->addToObject(info_args.front().AsMap());
         } else if (K != worldDict.end()) {
-            info->SetArgs(Fragment::ListType(1,K->second->asObject()));
+            K->second->addToObject(info_args.front().AsMap());
         } else {
             delete info;
             return error(op, "Get id not found");

@@ -9,8 +9,6 @@
 #include "op_switch.h"
 #include "serialno.h"
 
-#include <Atlas/Objects/Operation/Sight.h>
-#include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Error.h>
 
 #include <iostream>
@@ -33,19 +31,10 @@ BaseEntity::~BaseEntity()
 {
 }
 
-Fragment BaseEntity::asObject() const
-{
-    debug( std::cout << "BaseEntity::asObject" << std::endl << std::flush;);
-    Fragment::MapType omap;
-    omap["objtype"] = "object";
-    addToObject(omap);
-    return Fragment(omap);
-}
-
-
 void BaseEntity::addToObject(Fragment::MapType & omap) const
 {
     debug( std::cout << "BaseEntity::addToObject" << std::endl << std::flush;);
+    omap["objtype"] = "object";
     omap["id"] = getId();
 }
 
@@ -58,19 +47,6 @@ OpVector BaseEntity::message(const RootOperation & op)
 {
     debug( std::cout << "BaseEntity::message" << std::endl << std::flush;);
     return operation(op);
-}
-
-OpVector BaseEntity::LookOperation(const Look & op)
-{
-    debug( std::cout << "look op got all the way to here"
-                     << std::endl << std::flush;);
-    Sight * s = new Sight( Sight::Instantiate());
-    Fragment::ListType args(1,asObject());
-    s->SetArgs(args);
-    s->SetTo(op.GetFrom());
-
-    // Set refno?
-    return OpVector(1,s);
 }
 
 OpVector BaseEntity::operation(const RootOperation & op)
@@ -106,6 +82,7 @@ OpVector BaseEntity::SoundOperation(const Sound & op) { return OpVector(); }
 OpVector BaseEntity::TalkOperation(const Talk & op) { return OpVector(); }
 OpVector BaseEntity::TouchOperation(const Touch & op) { return OpVector(); }
 OpVector BaseEntity::TickOperation(const Tick & op) { return OpVector(); }
+OpVector BaseEntity::LookOperation(const Look & op) { return OpVector(); }
 OpVector BaseEntity::SetupOperation(const Setup & op) { return OpVector(); }
 OpVector BaseEntity::AppearanceOperation(const Appearance & op) { return OpVector(); }
 OpVector BaseEntity::DisappearanceOperation(const Disappearance & op) { return OpVector(); }

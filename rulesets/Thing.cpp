@@ -51,7 +51,9 @@ OpVector Thing::SetupOperation(const Setup & op)
     // been elsewhere on the map.
     RootOperation * sight = new Sight(Sight::Instantiate());
     Create c(Create::Instantiate());
-    c.SetArgs(Fragment::ListType(1,asObject()));
+    Fragment::ListType & args = c.GetArgs();
+    args.push_back(Element::MapType());
+    addToObject(args.front().AsMap());
     c.SetTo(getId());
     c.SetFrom(getId());
     sight->SetArgs(Fragment::ListType(1, c.AsObject()));
@@ -117,7 +119,9 @@ OpVector Thing::CreateOperation(const Create & op)
         Entity * obj = world->addObject(type,ent);
 
         Create c(op);
-        c.SetArgs(Fragment::ListType(1,obj->asObject()));
+        Fragment::ListType & args = c.GetArgs();
+        args.push_back(Fragment::MapType());
+        obj->addToObject(args.front().AsMap());
         RootOperation * s = new Sight(Sight::Instantiate());
         s->SetArgs(Fragment::ListType(1,c.AsObject()));
         // This should no longer be required as it is now handled centrally
@@ -358,7 +362,10 @@ OpVector Thing::SetOperation(const Set & op)
         OpVector res2(1,s);
         if (status < 0) {
             RootOperation * d = new Delete(Delete::Instantiate());
-            d->SetArgs(Fragment::ListType(1,this->asObject()));
+            Fragment::ListType & dargs = d->GetArgs();
+            dargs.push_back(Fragment::MapType());
+            // FIXME Is it necessary to include a full description?
+            addToObject(dargs.front().AsMap());
             d->SetTo(getId());
             res2.push_back(d);
         }
@@ -372,13 +379,4 @@ OpVector Thing::SetOperation(const Set & op)
         return error(op, "Malformed set operationn", getId());
     }
     return OpVector();
-}
-
-OpVector Thing::LookOperation(const Look & op)
-{
-    OpVector res;
-    if (script->Operation("look", op, res) != 0) {
-        return res;
-    }
-    return BaseEntity::LookOperation(op);
 }

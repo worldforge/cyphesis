@@ -46,11 +46,6 @@ class BaseEntity : virtual public SigC::Object {
         return m_id;
     }
 
-    // void setId(const std::string & i) {
-        // m_id = i;
-    // }
-
-    Atlas::Message::Object asObject() const;
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
 
     virtual OpVector message(const RootOperation & op);

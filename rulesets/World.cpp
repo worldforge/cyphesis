@@ -5,9 +5,15 @@
 #include "World.h"
 
 #include "common/log.h"
+#include "common/const.h"
+#include "common/debug.h"
 
+#include <Atlas/Objects/Operation/Error.h>
+#include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
+
+static const bool debug_flag = false;
 
 World::World(const std::string & id) : Thing(id)
 {
@@ -20,7 +26,49 @@ World::~World()
 
 OpVector World::LookOperation(const Look & op)
 {
-    return world->LookOperation(op);
+    // Let the worldrouter know we have been looked at.
+    world->LookOperation(op);
+
+    debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
+    const EntityDict & eobjects = world->getObjects();
+    const std::string & from = op.GetFrom();
+    EntityDict::const_iterator J = eobjects.find(from);
+    if (J == eobjects.end()) {
+        debug(std::cout << "FATAL: Op has invalid from" << std::endl
+                        << std::flush;);
+        return Entity::LookOperation(op);
+    }
+    if (!consts::enable_ranges) {
+        debug(std::cout << "WARNING: Sight ranges disabled." << std::endl
+                        << std::flush;);
+        return Entity::LookOperation(op);
+    }
+
+    Sight * s = new Sight(Sight::Instantiate());
+
+    Element::ListType & sargs = s->GetArgs();
+    sargs.push_back(Element::MapType());
+    Element::MapType & omap = sargs.front().AsMap();
+
+    omap["id"] = getId();
+    omap["parents"] = Element::ListType(1, "world");
+    omap["objtype"] = "object";
+    Entity * opFrom = J->second;
+    const Vector3D & fromLoc = opFrom->getXyz();
+    Element::ListType & contlist = (omap["contains"] = Element(Element::ListType())).AsList();
+    EntitySet::const_iterator I = contains.begin();
+    for(; I != contains.end(); I++) {
+        if ((*I)->location.inRange(fromLoc, consts::sight_range)) {
+            contlist.push_back(Element((*I)->getId()));
+        }
+    }
+    if (contlist.empty()) {
+        debug(std::cout << "WARNING: contains empty." << std::endl << std::flush;);
+        omap.erase("contains");
+    }
+
+    s->SetTo(op.GetFrom());
+    return OpVector(1,s);
 }
 
 OpVector World::BurnOperation(const Burn & op)

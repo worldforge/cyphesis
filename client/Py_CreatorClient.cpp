@@ -31,7 +31,8 @@ static PyObject * CreatorClient_as_entity(CreatorClientObject * self, PyObject *
     if (ret == NULL) {
         return NULL;
     }
-    ret->m_obj = new Fragment(self->m_mind->asObject());
+    ret->m_obj = new Fragment(Fragment::MapType());
+    self->m_mind->addToObject(ret->m_obj->AsMap());
     return (PyObject *)ret;
 }
 

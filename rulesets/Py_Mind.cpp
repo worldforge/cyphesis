@@ -24,7 +24,8 @@ static PyObject * Mind_as_entity(MindObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->m_obj = new Fragment(self->m_mind->asObject());
+    ret->m_obj = new Fragment(Fragment::MapType());
+    self->m_mind->addToObject(ret->m_obj->AsMap());
     return (PyObject *)ret;
 }
 

@@ -360,8 +360,18 @@ OpVector Entity::TouchOperation(const Touch & op)
 OpVector Entity::LookOperation(const Look & op)
 {
     OpVector res;
-    script->Operation("look", op, res);
-    return res;
+    if (script->Operation("look", op, res) != 0) {
+        return res;
+    }
+
+    Sight * s = new Sight( Sight::Instantiate());
+    Fragment::ListType & args = s->GetArgs();
+    args.push_back(Fragment::MapType());
+    Fragment::MapType & amap = args.front().AsMap();
+    addToObject(amap);
+    s->SetTo(op.GetFrom());
+
+    return OpVector(1,s);
 }
 
 OpVector Entity::AppearanceOperation(const Appearance & op)

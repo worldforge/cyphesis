@@ -158,7 +158,9 @@ OpVector Connection::operation(const RootOperation & op)
                        character->getId(), character->getName());
             debug(std::cout << "Re-connecting existing character to new connection" << std::endl << std::flush;);
             Info * info = new Info(Info::Instantiate());
-            info->SetArgs(Fragment::ListType(1,character->asObject()));
+            Fragment::ListType & info_args = info->GetArgs();
+            info_args.push_back(Fragment::MapType());
+            character->addToObject(info_args.front().AsMap());
             info->SetRefno(op.GetSerialno());
             info->SetSerialno(server.getSerialNo());
             OpVector res = ent->externalOperation(op);
@@ -227,7 +229,9 @@ OpVector Connection::LoginOperation(const Login & op)
     server.lobby.addObject(player);
     // Let the client know they have logged in
     Info * info = new Info(Info::Instantiate());
-    info->SetArgs(Fragment::ListType(1,player->asObject()));
+    Fragment::ListType & info_args = info->GetArgs();
+    info_args.push_back(Fragment::MapType());
+    player->addToObject(info_args.front().AsMap());
     info->SetRefno(op.GetSerialno());
     info->SetSerialno(server.getSerialNo());
     debug(std::cout << "Good login" << std::endl << std::flush;);
@@ -273,7 +277,9 @@ OpVector Connection::CreateOperation(const Create & op)
     Account * player = addPlayer(username, password);
     Persistance::instance()->putAccount(*player);
     Info * info = new Info(Info::Instantiate());
-    info->SetArgs(Fragment::ListType(1,player->asObject()));
+    Fragment::ListType & info_args = info->GetArgs();
+    info_args.push_back(Fragment::MapType());
+    player->addToObject(info_args.front().AsMap());
     info->SetRefno(op.GetSerialno());
     info->SetSerialno(server.getSerialNo());
     debug(std::cout << "Good create" << std::endl << std::flush;);
@@ -329,7 +335,9 @@ OpVector Connection::GetOperation(const Get & op)
     Info * info;
     if (args.empty()) {
         info = new Info(Info::Instantiate());
-        info->SetArgs(Fragment::ListType(1,server.asObject()));
+        Fragment::ListType & info_args = info->GetArgs();
+        info_args.push_back(Fragment::MapType());
+        server.addToObject(info_args.front().AsMap());
         info->SetRefno(op.GetSerialno());
         info->SetSerialno(server.getSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);

@@ -67,5 +67,6 @@ typedef std::map<std::string,OpNo> OpNoDict;
 typedef std::vector<Vector3D> CoordList;
 
 typedef Atlas::Message::Object Fragment;
+typedef Atlas::Message::Object Element;
 
 #endif // TYPES_H

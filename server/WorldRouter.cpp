@@ -34,8 +34,7 @@ inline void WorldRouter::updateTime()
 
 
 WorldRouter::WorldRouter() : BaseWorld(consts::rootWorldId,
-                                                         *new World(consts::rootWorldId)),
-                                               nextId(0)
+                                       *new World(consts::rootWorldId)), nextId(0)
 {
     // setId(consts::rootWorldId);
     initTime = time(NULL) - timeoffset;
@@ -309,41 +308,11 @@ OpVector WorldRouter::LookOperation(const Look & op)
     debug(std::cout << "WorldRouter::Operation(Look)" << std::endl << std::flush;);
     const std::string & from = op.GetFrom();
     EntityDict::const_iterator J = eobjects.find(from);
-    if (J == eobjects.end()) {
-        debug(std::cout << "FATAL: Op has invalid from" << std::endl
-                        << std::flush;);
-    } else {
-        debug(std::cout << "Adding [" << from << "] to perceptives"
-                        << std::endl << std::flush;);
+    if (J != eobjects.end()) {
         perceptives.insert(J->second);
-        if (consts::enable_ranges) {
-            Sight * s = new Sight(Sight::Instantiate());
-
-            Fragment::ListType & sargs = s->GetArgs();
-            sargs.push_back(Fragment::MapType());
-            Fragment::MapType & omap = sargs.front().AsMap();
-
-            omap["id"] = getId();
-            omap["parents"] = Fragment::ListType(1, "world");
-            omap["objtype"] = "object";
-            Entity * opFrom = J->second;
-            const Vector3D & fromLoc = opFrom->getXyz();
-            Fragment::ListType & contlist = (omap["contains"] = Fragment(Fragment::ListType())).AsList();
-            EntitySet::const_iterator I = gameWorld.contains.begin();
-            for(; I != gameWorld.contains.end(); I++) {
-                if ((*I)->location.inRange(fromLoc, consts::sight_range)) {
-                    contlist.push_back(Fragment((*I)->getId()));
-                }
-            }
-            if (contlist.empty()) {
-                omap.erase("contains");
-            }
-
-            s->SetTo(op.GetFrom());
-            return OpVector(1,s);
-        }
     }
-    return BaseEntity::LookOperation(op);
+
+    return OpVector();
 }
 
 int WorldRouter::idle()

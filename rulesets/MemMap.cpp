@@ -137,7 +137,7 @@ const Fragment MemMap::asObject()
     Fragment::MapType omap;
     EntityDict::const_iterator I = things.begin();
     for(;I != things.end(); I++) {
-        omap[I->first] = I->second->asObject();
+        I->second->addToObject((omap[I->first] = Fragment(Fragment::MapType())).AsMap());
     }
     return Fragment(omap);
 }

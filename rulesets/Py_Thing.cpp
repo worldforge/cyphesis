@@ -22,7 +22,8 @@ static PyObject * Thing_as_entity(ThingObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->m_obj = new Fragment(self->m_thing->asObject());
+    ret->m_obj = new Fragment(Fragment::MapType());
+    self->m_thing->addToObject(ret->m_obj->AsMap());
     return (PyObject *)ret;
 }
 

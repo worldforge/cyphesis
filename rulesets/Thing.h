@@ -33,7 +33,6 @@ class Thing : public Entity {
     virtual OpVector BurnOperation(const Burn & op);
     virtual OpVector MoveOperation(const Move & op);
     virtual OpVector SetOperation(const Set & op);
-    virtual OpVector LookOperation(const Look & op);
 };
 
 #endif // RULESETS_THING_H

@@ -74,6 +74,7 @@ OpVector Lobby::operation(const RootOperation & op)
 
 void Lobby::addToObject(Fragment::MapType & omap) const
 {
+    omap["objtype"] = "object";
     omap["id"] = "lobby";
     omap["name"] = "lobby";
     Fragment::ListType plist(1, "room");

@@ -1,3 +1,17 @@
+2003-03-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/Py_CreatorClient.cpp, common/BaseEntity.cpp,
+	  common/BaseEntity.h, rulesets/MemMap.cpp, rulesets/Py_Mind.cpp,
+	  rulesets/Py_Thing.cpp, rulesets/Thing.cpp, rulesets/Thing.h,
+	  server/Account.cpp, server/Admin.cpp, server/Connection.cpp,
+	  server/Lobby.cpp, server/ServerRouting.cpp: 
+	  Use a more efficient technique to set the attributes on
+	  operation arguments without a copy.
+
+	* common/BaseEntity.cpp, rulesets/Entity.cpp, rulesets/Thing.h,
+	  rulesets/World.cpp, server/WorldRouter.cpp:
+	  Move handling IG Look ops into the IG code in rulesets.
+
 2003-03-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp: Re-work handling look ops for efficiency.
