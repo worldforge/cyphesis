@@ -40,6 +40,7 @@ CommClient::~CommClient()
 
 void CommClient::setup()
 {
+    debug( cout << "Negotiating started" << endl << flush; );
     // Create the server side negotiator
     accept =  new Atlas::Net::StreamAccept("cyphesis " + commServer.identity, clientIos, this);
 
