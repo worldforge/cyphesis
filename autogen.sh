@@ -32,6 +32,6 @@ echo autoconf...
 
 autoconf
 
-./configure $@
+./configure --prefix=/opt/forge $@
 
 exit 0
