@@ -216,26 +216,30 @@ OpVector Thing::MoveOperation(const Move & op)
         const Fragment::MapType & ent = args.front().AsMap();
         Fragment::MapType::const_iterator I = ent.find("loc");
         if ((I == ent.end()) || !I->second.IsString()) {
-            return error(op, "Move location has no ref");
+            return error(op, "Move op has no loc");
         }
         const std::string & ref = I->second.AsString();
         EntityDict::const_iterator J = world->getObjects().find(ref);
         if (J == world->getObjects().end()) {
-            return error(op, "Move location ref invalid");
+            return error(op, "Move op loc invalid");
         }
         debug(std::cout << "{" << ref << "}" << std::endl << std::flush;);
         Entity * newref = J->second;
         if (newref == this) {
             return error(op, "Attempt by entity to move into itself");
         }
+        I = ent.find("pos");
+        if ((I == ent.end()) || !I->second.IsList()) {
+            return error(op, "Move op has no pos");
+        }
+
+        // Up until this point nothing should have changed, but the changes
+        // have all now been checked for validity.
+
         if (location.ref != newref) {
             location.ref->contains.erase(this);
             newref->contains.insert(this);
             location.ref = newref;
-        }
-        I = ent.find("pos");
-        if ((I == ent.end()) || !I->second.IsList()) {
-            return error(op, "Move location has no position");
         }
 
         location.coords = Vector3D(I->second.AsList());

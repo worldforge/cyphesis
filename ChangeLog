@@ -1,3 +1,8 @@
+2002-12-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: Fix very long standing moving bug, which sometimes
+	  caused big jumps in character position.
+
 2002-11-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* Enable static libs in the rpm spec.
