@@ -1,3 +1,6 @@
+Clean the database. Use VACUUM once an hour, and probably VACUUM ANALYSE
+and VACUUM FULL each once per day. REINDEX may also be required.
+
 Sort out socket address re-use, and work out what the hell James was doing
 with that socket option in Indri.
 
