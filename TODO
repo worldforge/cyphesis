@@ -5,7 +5,10 @@ places.
 
 Can we get a code size or performance improvement by passing in the result
 list as part of the operation method call. The answer is yes, but the
-further question is whether this will break anything.
+further question is whether this will break anything. We can also stop
+calling the script post dispatch, and call it before op dispatch instead,
+giving a single call point, instead of loads of call points all the way
+through the code.
 
 Think about how to deal with things that probably don't need persistance.
 Seeds in particular. Flag in the rules?
