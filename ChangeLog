@@ -1,3 +1,20 @@
+2004-07-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/define_world.py: Add a couple more test functions.
+
+	* rulesets/MemMap.h: Add accessor for internal data for debugging.
+
+	* rulesets/MemMap.cpp: Comments and debugging output to help solve
+	  memory bloat.
+
+	* rulesets/MemEntity.h, rulesets/MemEntity.cpp: Add flag to track
+	  whether entities in memory are visible to the NPC.
+
+	* rulesets/Entity.cpp: FIXME note for coordinate conversion.
+
+	* rulesets/BaseMind.cpp: Track the visibility of entities in
+	  the mind.
+
 2004-07-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Try out creating database tables without an

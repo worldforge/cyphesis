@@ -343,12 +343,13 @@ def add_village(mapeditor):
     m.make('house3',type='house3',xyz=(150,142,22),orientation=directions[2])
     m.make('house3',type='house3',xyz=(158,142,22),orientation=directions[5])
 
-def test_know(mapeditor):
+def test_pig(mapeditor):
 #   general things
 
     m=editor(mapeditor)
-    wolf = m.make('wolf', type='wolf', xyz=(90,-90,settlement_height))
-    m.know(wolf,wolf_knowledge)
+    pig = m.make('pig', type='pig', xyz=(3,3,settlement_height))
+    m.learn(pig,pig_goals)
+    m.make('acorn', type='acorn', xyz=(4,4,settlement_height))
 
 def test_browse(mapeditor):
 #   test if browsing works
@@ -361,3 +362,11 @@ def test_browse(mapeditor):
     m.make('fir',type='fir',xyz=(0,10,settlement_height))
     m.make('fir',type='fir',xyz=(10,0,settlement_height))
     
+def test_forest(mapeditor):
+#   test if browsing works
+    
+    m=editor(mapeditor)
+    for i in forests:
+        for j in range(0, i[1]):
+            m.make(i[0],type=i[0],xyz=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)])
+

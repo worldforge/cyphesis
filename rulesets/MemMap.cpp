@@ -115,6 +115,7 @@ MemEntity * MemMap::addId(const std::string & id)
 void MemMap::del(const std::string & id)
 // Delete an entity from memory
 {
+    debug( std::cout << "MemMap::del(" << id << ")" << std::endl << std::flush;);
     MemEntityDict::iterator I = m_entities.find(id);
     if (I != m_entities.end()) {
         MemEntity * obj = I->second;
@@ -154,6 +155,7 @@ MemEntity * MemMap::getAdd(const std::string & id)
     }
     MemEntityDict::const_iterator I = m_entities.find(id);
     if (I != m_entities.end()) {
+        assert(I->second != 0);
         return I->second;
     }
     return addId(id);
@@ -183,6 +185,10 @@ void MemMap::addContents(const Element::MapType & entmap)
 
 MemEntity * MemMap::updateAdd(const Element::MapType & entmap)
 // Update an entity in our memory, from an Atlas message
+// The mind code relies on this function never sending a Sight to
+// be sure that seeing something created does not imply that the created
+// entity is visible, as we may have received it because we can see the
+// creator.
 {
     debug( std::cout << "MemMap::update" << std::endl << std::flush;);
     Element::MapType::const_iterator I = entmap.find("id");

@@ -8,9 +8,20 @@
 #include "rulesets/Entity.h"
 
 class MemEntity : public Entity {
+  protected:
+    bool m_visible;
+    double m_lastSeen;
   public:
     explicit MemEntity(const std::string & id);
     virtual ~MemEntity();
+
+    bool isVisible() const {
+        return m_visible;
+    }
+
+    void setVisible(bool v = true) {
+        m_visible = true;
+    }
 };
 
 #endif // MEM_ENTITY_H

@@ -167,6 +167,8 @@ OpVector BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
         return res;
     }
     const Element::MapType & obj = args.front().asMap();
+    // This does not send a look, so anything added this way will not
+    // get flagged as visible until we get an appearance. This is important.
     m_map.updateAdd(obj);
     return res;
 }
@@ -435,7 +437,10 @@ OpVector BaseMind::SightOperation(const Sight & op)
         res = callSightOperation(op, op2);
     } else /* if (op2->getObjtype() == "object") */ {
         debug( std::cout << " arg is an entity!" << std::endl << std::flush;);
-        m_map.updateAdd(obj);
+        MemEntity * me = m_map.updateAdd(obj);
+        if (me != 0) {
+            me->setVisible();
+        }
     }
     return res;
 }
@@ -448,7 +453,10 @@ OpVector BaseMind::AppearanceOperation(const Appearance & op)
     const Element::ListType & args = op.getArgs();
     Element::ListType::const_iterator I;
     for(I = args.begin(); I != args.end(); I++) {
-        m_map.getAdd(I->asMap().find("id")->second.asString());
+        MemEntity * me = m_map.getAdd(I->asMap().find("id")->second.asString());
+        if (me != 0) {
+            me->setVisible();
+        }
     }
     return res;
 }
@@ -458,7 +466,14 @@ OpVector BaseMind::DisappearanceOperation(const Disappearance & op)
     if (!m_isAwake) { return OpVector(); }
     OpVector res;
     m_script->Operation("disappearance", op, res);
-    // Not quite sure what to do to the map here, but should do something.
+    const Element::ListType & args = op.getArgs();
+    Element::ListType::const_iterator I;
+    for(I = args.begin(); I != args.end(); I++) {
+        MemEntity * me = m_map.getAdd(I->asMap().find("id")->second.asString());
+        if (me != 0) {
+            me->setVisible(false);
+        }
+    }
     return res;
 }
 
@@ -490,7 +505,8 @@ OpVector BaseMind::operation(const RootOperation & op)
     return res;
 }
 
-OpVector BaseMind::callSightOperation(const Sight& op, RootOperation& sub_op) {
+OpVector BaseMind::callSightOperation(const Sight& op, RootOperation& sub_op)
+{
     m_map.getAdd(sub_op.getFrom());
     OpNo op_no = opEnumerate(sub_op, opSightLookup);
     if (debug_flag && (op_no == OP_INVALID)) {
@@ -510,6 +526,17 @@ OpVector BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op) {
                   << sub_op.getParents().front().asString()
                   << std::endl << std::flush;
     }
+
+#if 0
+    const MemEntityDict & ents = m_map.getEntities();
+    for (MemEntityDict::const_iterator I = ents.begin(); I != ents.end(); ++I) {
+        std::cout << I->second->getId() << ":" << I->second->getType() << " is "
+                  << ( I->second->isVisible() ? "visible" : "hid" )
+                  << std::endl << std::flush;
+    }
+#endif
+
     SUB_OP_SWITCH(op, op_no, sound, sub_op)
+
     return OpVector();
 }

@@ -48,6 +48,10 @@ class MemMap {
         return (m_entities.find(id) != m_entities.end());
     }
 
+    const MemEntityDict & getEntities() const {
+        return m_entities;
+    }
+
     Atlas::Objects::Operation::RootOperation * lookId();
     void del(const std::string & id);
     MemEntity * get(const std::string & id);
