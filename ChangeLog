@@ -1,3 +1,15 @@
+2002-03-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.h, server/WorldRouter.cpp, rulesets/Thing.cpp,
+	  rulesets/Entity.h, rulesets/Entity.cpp, common/types.h,
+	  common/BaseWorld.h: Switched to using sets instead of lists
+	  for contains, and other data structore for performance.
+
+	* rulesets/Line.cpp: Added debugging.
+
+	* rulesets/MemMap.cpp, rulesets/MemMap.h, rulesets/MemMap_methods.h:
+	  Switch to using vectors instead of lists for performance.
+
 2002-03-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/types.h: Added typedefs for some sequences used in

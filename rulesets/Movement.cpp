@@ -37,7 +37,7 @@ void Movement::checkCollisions(const Location & loc)
     // Check to see whether a collision is going to occur from now until the
     // the next tick in consts::basic_tick seconds
     double collTime = consts::basic_tick + 1;
-    elist_t::const_iterator I;
+    eset_t::const_iterator I;
     debug( std::cout << "checking " << m_body.getId() << loc.coords
                      << loc.velocity << " in " << loc.ref->getId()
                      << " against "; );

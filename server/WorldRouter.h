@@ -20,13 +20,13 @@ class WorldRouter : public BaseWorld {
   private:
     opqueue operationQueue;
     time_t initTime;
-    elist_t perceptives;
-    elist_t omnipresentList;
+    eset_t perceptives;
+    eset_t omnipresentList;
     int nextId;
 
     void addOperationToQueue(RootOperation & op, const BaseEntity *);
     RootOperation * getOperationFromQueue();
-    const elist_t & broadcastList(const RootOperation & op) const;
+    const eset_t & broadcastList(const RootOperation & op) const;
     oplist operation(const RootOperation * op);
 
     void updateTime() {

@@ -29,7 +29,7 @@ inline Entity * MemMap::addObject(Entity * object)
 
     debug( std::cout << things[object->getId()] << std::endl << std::flush;);
     debug( std::cout << this << std::endl << std::flush;);
-    std::list<std::string>::const_iterator I;
+    std::vector<std::string>::const_iterator I;
     for(I = addHooks.begin(); I != addHooks.end(); I++) {
         script->hook(*I, object);
     }
@@ -69,7 +69,7 @@ inline void MemMap::del(const std::string & id)
     if (things.find(id) != things.end()) {
         Entity * obj = (Entity*)things[id];
         things.erase(id);
-        std::list<std::string>::const_iterator I;
+        std::vector<std::string>::const_iterator I;
         for(I = deleteHooks.begin(); I != deleteHooks.end(); I++) {
             script->hook(*I, obj);
         }

@@ -7,6 +7,7 @@
 
 #include <list>
 #include <vector>
+#include <set>
 
 #include <Atlas/Objects/Operation/RootOperation.h>
 
@@ -55,6 +56,8 @@ typedef std::vector<std::string> IdList;
 
 typedef std::map<std::string, Entity *> edict_t;
 typedef std::list<Entity *> elist_t;
+typedef std::vector<Entity *> evec_t;
+typedef std::set<Entity *> eset_t;
 
 typedef std::map<std::string, Account *> adict_t;
 typedef std::list<Account *> alist_t;

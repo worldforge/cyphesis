@@ -112,8 +112,7 @@ oplist Thing::CreateOperation(const Create & op)
             obj->location.coords = location.coords;
         }
         if (obj->location.ref != NULL) {
-            obj->location.ref->contains.push_back(obj);
-            obj->location.ref->contains.unique();
+            obj->location.ref->contains.insert(obj);
         }
         Create c(op);
         c.SetArgs(Object::ListType(1,obj->asObject()));
@@ -209,8 +208,8 @@ oplist Thing::MoveOperation(const Move & op)
             return error(op, "Attempt by entity to move into itself");
         }
         if (location.ref != newref) {
-            location.ref->contains.remove(this);
-            newref->contains.push_back(this);
+            location.ref->contains.erase(this);
+            newref->contains.insert(this);
             location.ref = newref;
         }
         I = ent.find("pos");
@@ -239,7 +238,7 @@ oplist Thing::MoveOperation(const Move & op)
         // sight of the other because of this movement
         if (consts::enable_ranges && perceptive) {
             debug(std::cout << "testing range" << std::endl;);
-            elist_t::const_iterator I = location.ref->contains.begin();
+            eset_t::const_iterator I = location.ref->contains.begin();
             Object::ListType appear, disappear;
             Object::MapType this_ent;
             this_ent["id"] = getId();

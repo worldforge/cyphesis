@@ -60,7 +60,7 @@ const Object & Entity::operator[](const std::string & aname)
         attributes[aname] = location.bBox.asList();
     } else if (aname == "contains") {
         Object::ListType contlist;
-        for(elist_t::const_iterator I=contains.begin();I!=contains.end();I++) {
+        for(eset_t::const_iterator I=contains.begin();I!=contains.end();I++) {
             contlist.push_back(*I);
         }
         attributes[aname] = Object(contlist);
@@ -104,7 +104,7 @@ void Entity::destroy()
     if (deleted) {
         return;
     }
-    for(elist_t::const_iterator I=contains.begin(); I != contains.end(); I++) {
+    for(eset_t::const_iterator I=contains.begin(); I != contains.end(); I++) {
         Entity * obj = *I;
         if (!obj->deleted) {
             obj->location.ref = location.ref;
@@ -113,7 +113,7 @@ void Entity::destroy()
         }
     }
     if (location) {
-        location.ref->contains.remove(this);
+        location.ref->contains.erase(this);
     }
     deleted = true;
 }
@@ -135,7 +135,7 @@ void Entity::addToObject(Object::MapType & omap) const
     omap["parents"] = Object(Object::ListType(1,Object(type)));
     location.addToObject(omap);
     Object::ListType contlist;
-    for(elist_t::const_iterator I = contains.begin(); I!=contains.end(); I++) {
+    for(eset_t::const_iterator I = contains.begin(); I!=contains.end(); I++) {
         contlist.push_back(Object((*I)->getId()));
     }
     if (!contlist.empty()) {

@@ -202,6 +202,12 @@ class Vector3D {
         return sqrt(x*x + y*y + z*z);
     }
 
+    double relMag() const {
+        //"Find relative magnitude. This value is cheaper to calculate
+        // than the real magnitude, so should be used for comparison.
+        return (x*x + y*y + z*z);
+    }
+
     double angle(const Vector3D & v) const {
         //"Find the angle between two vectors";
         double d = v.x * x + v.y * y + v.z * z;

@@ -29,9 +29,9 @@ class MemMap {
 
     edict_t things;
     std::list<std::string> additionsById;
-    std::list<std::string> addHooks;
-    std::list<std::string> updateHooks;
-    std::list<std::string> deleteHooks;
+    std::vector<std::string> addHooks;
+    std::vector<std::string> updateHooks;
+    std::vector<std::string> deleteHooks;
     Script *& script;
 
     inline Entity * addObject(Entity * object);
@@ -46,14 +46,14 @@ class MemMap {
     inline Entity * get(const std::string & id);
     inline Entity * getAdd(const std::string & id);
     Entity * update(const Atlas::Message::Object & entity);
-    elist_t findByType(const std::string & what);
-    elist_t findByLocation(const Location & where, double radius);
+    evec_t findByType(const std::string & what);
+    evec_t findByLocation(const Location & where, double radius);
     const Atlas::Message::Object asObject();
     void flushMap();
 
-    std::list<std::string> & getAddHooks() { return addHooks; }
-    std::list<std::string> & getUpdateHooks() { return updateHooks; }
-    std::list<std::string> & getDeleteHooks() { return deleteHooks; }
+    std::vector<std::string> & getAddHooks() { return addHooks; }
+    std::vector<std::string> & getUpdateHooks() { return updateHooks; }
+    std::vector<std::string> & getDeleteHooks() { return deleteHooks; }
 };
 
 #endif // RULESETS_MEM_MAP_H

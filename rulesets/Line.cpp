@@ -5,6 +5,9 @@
 #include "Line.h"
 
 #include <common/type_utils.h>
+#include <common/debug.h>
+
+static const bool debug_flag = true;
 
 using Atlas::Message::Object;
 
@@ -32,6 +35,8 @@ const Object & Line::operator[](const std::string & aname)
 
 void Line::set(const std::string & aname, const Object & attr)
 {
+    debug( std::cout << "Setting " << aname << " in line" << std::endl
+                     << std::flush;);
     if ((aname == "start_intersections") && attr.IsList()) {
         startIntersections = idListFromAtlas(attr);
     } else if ((aname == "end_intersections") && attr.IsList()) {

@@ -27,13 +27,13 @@ static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
     }
     LocationObject * where = (LocationObject *)where_obj;
     ThingObject * thing;
-    std::list<Entity *> res = self->m_map->findByLocation(*where->location,
+    evec_t res = self->m_map->findByLocation(*where->location,
                                                           radius);
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
         return NULL;
     } 
-    std::list<Entity*>::iterator I;
+    evec_t::const_iterator I;
     int i = 0;
     for(I = res.begin(); I != res.end(); I++, i++) {
         thing = newThingObject(NULL);
@@ -58,12 +58,12 @@ static PyObject * Map_find_by_type(MapObject * self, PyObject * args)
         return NULL;
     }
     ThingObject * thing;
-    std::list<Entity *> res = self->m_map->findByType(std::string(what));
+    evec_t res = self->m_map->findByType(std::string(what));
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
         return NULL;
     } 
-    std::list<Entity*>::iterator I;
+    evec_t::const_iterator I;
     int i = 0;
     for(I = res.begin(); I != res.end(); I++, i++) {
         thing = newThingObject(NULL);

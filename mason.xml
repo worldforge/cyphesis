@@ -1,11 +1,5 @@
 <atlas>
 <map>
-  <map name="area">
-    <string name="parent">thing</string>
-    <map name="attributes">
-    </map>
-  </map>
-
   <map name="stall">
     <string name="parent">thing</string>
     <map name="attributes">
@@ -23,7 +17,7 @@
     <map name="attributes">
     </map>
     <map name="script">
-      <string name="name">world.objects.characters.Villager</string>
+      <string name="name">world.objects.characters.Settler</string>
       <string name="language">python</string>
     </map>
   </map>

@@ -38,7 +38,7 @@ class Entity : public BaseEntity {
   public:
     BaseWorld * world;		// Exists in this world.
     Location location;		// Full details of location inc. ref pos and vel
-    elist_t contains;		// List of entities which use this as ref
+    eset_t contains;		// List of entities which use this as ref
 
     Entity();
     virtual ~Entity();

@@ -19,7 +19,7 @@ class BaseWorld : public OOGThing {
     const BaseWorld & operator=(const BaseWorld &);
   protected:
     double realTime;
-    elist_t objectList;
+    eset_t objectList;
     // int nextId;
     edict_t eobjects;
 

@@ -108,7 +108,7 @@ Entity * MemMap::update(const Object & entity)
             //setattr(obj,key,value);
         //}
     //}
-    std::list<std::string>::const_iterator K;
+    std::vector<std::string>::const_iterator K;
     for(K = updateHooks.begin(); K != updateHooks.end(); K++) {
         script->hook(*K, thing);
     }
@@ -118,23 +118,23 @@ Entity * MemMap::update(const Object & entity)
     return thing;
 }
 
-std::list<Entity *> MemMap::findByType(const std::string & what)
+evec_t MemMap::findByType(const std::string & what)
 {
-    std::list<Entity *> res;
+    evec_t res;
     edict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
-        Entity * item = (Entity *)I->second;
+        Entity * item = I->second;
         debug( std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
         if (item->getType() == what) {
-            res.push_back((Entity*)I->second);
+            res.push_back(I->second);
         }
     }
     return res;
 }
 
-std::list<Entity *> MemMap::findByLocation(const Location & loc, double radius)
+evec_t MemMap::findByLocation(const Location & loc, double radius)
 {
-    std::list<Entity *> res;
+    evec_t res;
     edict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         const Location & oloc = I->second->location;

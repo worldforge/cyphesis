@@ -32,8 +32,8 @@ WorldRouter::WorldRouter(ServerRouting & srvr) : BaseWorld(*new World()),
     gameWorld.world=this;
     server.idDict[getId()]=&gameWorld;
     eobjects[getId()]=&gameWorld;
-    perceptives.push_back(&gameWorld);
-    objectList.push_back(&gameWorld);
+    perceptives.insert(&gameWorld);
+    objectList.insert(&gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
 }
 
@@ -71,9 +71,10 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
         return NULL;
     }
     debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
+    RootOperation * op = *I;
     operationQueue.pop_front();
-    (*I)->SetSerialno(server.getSerialNo());
-    return *I;
+    op->SetSerialno(server.getSerialNo());
+    return op;
 }
 
 inline std::string WorldRouter::getNewId(const std::string & name)
@@ -96,7 +97,7 @@ Entity * WorldRouter::addObject(Entity * obj)
         obj->setId(getNewId(obj->getName()));
     }
     server.idDict[obj->getId()]=eobjects[obj->getId()]=obj;
-    objectList.push_back(obj);
+    objectList.insert(obj);
     if (!obj->location) {
         debug(std::cout << "set loc " << &gameWorld  << std::endl
                         << std::flush;);
@@ -107,8 +108,7 @@ Entity * WorldRouter::addObject(Entity * obj)
     }
     if (obj->location.ref==&gameWorld) {
         debug(std::cout << "loc is world" << std::endl << std::flush;);
-        gameWorld.contains.push_back(obj);
-        gameWorld.contains.unique();
+        gameWorld.contains.insert(obj);
         // FIXME Check here and in Thing/Entity::CreateOperation() and
         // sort out a clean way to ensure contains is correct
     }
@@ -116,7 +116,7 @@ Entity * WorldRouter::addObject(Entity * obj)
                     << std::flush;);
     obj->world=this;
     if (obj->isOmnipresent()) {
-        omnipresentList.push_back(obj);
+        omnipresentList.insert(obj);
     }
     Setup * s = new Setup(Setup::Instantiate());
     s->SetTo(obj->getId());
@@ -141,13 +141,14 @@ void WorldRouter::delObject(Entity * obj)
 {
     // Remove object from contains of its real ref?
     if (obj->location.ref != NULL) {
-        obj->location.ref->contains.remove(obj);
+        obj->location.ref->contains.erase(obj);
     }
     // Remove object from world just to make sure
-    gameWorld.contains.remove(obj);
-    omnipresentList.remove(obj);
-    perceptives.remove(obj);
-    objectList.remove(obj);
+    // For the love of god, do we really need to do this?
+    gameWorld.contains.erase(obj);
+    omnipresentList.erase(obj);
+    perceptives.erase(obj);
+    objectList.erase(obj);
     eobjects.erase(obj->getId());
     server.idDict.erase(obj->getId());
 }
@@ -164,7 +165,7 @@ oplist WorldRouter::message(RootOperation & op, const Entity * obj)
     return oplist();
 }
 
-inline const elist_t& WorldRouter::broadcastList(const RootOperation & op) const
+inline const eset_t& WorldRouter::broadcastList(const RootOperation & op) const
 {
     const Object::ListType & parents = op.GetParents();
     if (!parents.empty() && (parents.front().IsString())) {
@@ -209,11 +210,11 @@ oplist WorldRouter::operation(const RootOperation * op)
         }
     } else {
         RootOperation newop = op_ref;
-        const elist_t & broadcast = broadcastList(op_ref);
+        const eset_t & broadcast = broadcastList(op_ref);
         const std::string & from = newop.GetFrom();
         edict_t::const_iterator J = eobjects.find(from);
         if (from.empty() || (J == eobjects.end()) || (!consts::enable_ranges)) {
-            elist_t::const_iterator I;
+            eset_t::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 newop.SetTo((*I)->getId());
                 // FIXME: There must be a more efficient way to deliver,
@@ -228,7 +229,7 @@ oplist WorldRouter::operation(const RootOperation * op)
                           << "We will probably crash now." << std::endl
                           << std::flush;
             }
-            elist_t::const_iterator I;
+            eset_t::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 if ((!J->second->location.inRange((*I)->location,
                                                        consts::sight_range))) {
@@ -263,8 +264,7 @@ oplist WorldRouter::lookOperation(const Look & op)
     } else {
         debug(std::cout << "Adding [" << from << "] to perceptives"
                         << std::endl << std::flush;);
-        perceptives.push_back(J->second);
-        perceptives.unique();
+        perceptives.insert(J->second);
         if (consts::enable_ranges) {
             Sight * s = new Sight(Sight::Instantiate());
 
@@ -275,7 +275,7 @@ oplist WorldRouter::lookOperation(const Look & op)
             Entity * opFrom = J->second;
             const Vector3D & fromLoc = opFrom->getXyz();
             Object::ListType contlist;
-            elist_t::const_iterator I;
+            eset_t::const_iterator I;
             for(I = gameWorld.contains.begin(); I != gameWorld.contains.end(); I++) {
                 if ((*I)->location.inRange(fromLoc, consts::sight_range)) {
                     contlist.push_back(Object((*I)->getId()));
