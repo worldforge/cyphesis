@@ -185,7 +185,7 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
 Entity * WorldRouter::addNewObject(const std::string & typestr,
                                    const Element::MapType & ent)
 {
-    debug(std::cout << "WorldRouter::addNewObject(std::string, ent)"
+    debug(std::cout << "WorldRouter::addNewObject(\"" << typestr << "\", ent)"
                     << std::endl << std::flush;);
     std::string id;
     Database::instance()->newId(id);
@@ -211,7 +211,15 @@ void WorldRouter::delObject(Entity * obj)
 
 void WorldRouter::message(RootOperation & op, const Entity * obj)
 {
+    debug(std::cout << "WorldRouter::message {"
+                    << op.getParents().front().asString() << ":"
+                    << op.getFrom() << ":" << op.getTo() << "}" << std::endl
+                    << std::flush;);
     addOperationToQueue(op, obj);
+    debug(std::cout << "WorldRouter::message {"
+                    << op.getParents().front().asString() << ":"
+                    << op.getFrom() << ":" << op.getTo() << "}" << std::endl
+                    << std::flush;);
 }
 
 const EntitySet & WorldRouter::broadcastList(const RootOperation & op) const
