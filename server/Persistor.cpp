@@ -58,6 +58,7 @@ Persistor<Entity>::Persistor(bool temp) : m_class("entity")
     desc["name"] = "                                                                                ";
     desc["mass"] = 1.0;
     desc["seq"] = 0;
+    desc["attributes"] = "";
     Database::instance()->registerEntityTable(m_class, desc);
 }
 

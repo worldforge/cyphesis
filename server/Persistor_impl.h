@@ -58,6 +58,12 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
         if (!empty) { q << ", "; } else { empty = false; }
         q << "mass = " << t.getMass();
     }
+    if (t.getUpdateFlags() & a_attr) {
+        if (!empty) { q << ", "; } else { empty = false; }
+        std::string aString;
+        Database::instance()->encodeObject(t.getAttributes(), aString);
+        q << "attributes = '" << aString << "'";
+    }
     if (!empty) {
         q << ", seq = " << t.getSeq();
         c += q.str();
@@ -106,7 +112,7 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
     if (!c.empty()) {
         c += cs;
     }
-    c += "class, type, loc, cont, px, py, pz, ox, oy, oz, ow, bnx, bny, bnz, bfx, bfy, bfz, status, name, mass, seq";
+    c += "class, type, loc, cont, px, py, pz, ox, oy, oz, ow, bnx, bny, bnz, bfx, bfy, bfz, status, name, mass, seq, attributes";
 
     std::stringstream q;
     q << sq << m_class << sq << cs
@@ -129,7 +135,15 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
       << t.getStatus() << cs
       << sq << t.getName() << sq << cs
       << t.getMass() << cs
-      << t.getSeq();
+      << t.getSeq() << cs;
+
+    if (t.getAttributes().empty()) {
+        q << "''";
+    } else {
+        std::string aString;
+        Database::instance()->encodeObject(t.getAttributes(), aString);
+        q << "'" << aString << "'";
+    }
 
     if (!v.empty()) {
         v += cs;

@@ -1,3 +1,14 @@
+2003-01-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp, common/Database.h: Add method to generalise
+	  encoding atlas maps to string. Make the codec used by the database
+	  code into a typedef, so production systems can use a more efficient
+	  one.
+
+	* server/Persistor.cpp, server/Persistor_impl.h: Persist
+	  Entity::attributes as an atlas encoded string column. Not yet
+	  restored.
+
 2003-01-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Persistor.cpp, server/Persistor.h, server/Persistor_impl.h:

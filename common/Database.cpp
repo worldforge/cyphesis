@@ -18,6 +18,8 @@
 
 using Atlas::Message::Object;
 
+typedef Atlas::Codecs::XML Serialiser;
+
 static const bool debug_flag = false;
 
 Database * Database::m_instance = NULL;
@@ -140,7 +142,7 @@ bool Database::decodeObject(const std::string & data,
 {
     std::stringstream str(data, std::ios::in);
 
-    Atlas::Codecs::XML codec(str, &m_d);
+    Serialiser codec(str, &m_d);
     Atlas::Message::Encoder enc(&codec);
 
     // Clear the decoder
@@ -154,6 +156,22 @@ bool Database::decodeObject(const std::string & data,
     }
     
     o = m_d.get();
+    return true;
+}
+
+bool Database::encodeObject(const Atlas::Message::Object::MapType & o,
+                            std::string & data)
+{
+    std::stringstream str;
+
+    Serialiser codec(str, &m_d);
+    Atlas::Message::Encoder enc(&codec);
+
+    codec.StreamBegin();
+    enc.StreamMessage(o);
+    codec.StreamEnd();
+
+    data = str.str();
     return true;
 }
 
@@ -203,7 +221,7 @@ bool Database::putObject(const std::string & table,
                     << std::endl << std::flush;);
     std::stringstream str;
 
-    Atlas::Codecs::XML codec(str, &m_d);
+    Serialiser codec(str, &m_d);
     Atlas::Message::Encoder enc(&codec);
 
     codec.StreamBegin();
@@ -234,7 +252,7 @@ bool Database::updateObject(const std::string & table,
                     << std::endl << std::flush;);
     std::stringstream str;
 
-    Atlas::Codecs::XML codec(str, &m_d);
+    Serialiser codec(str, &m_d);
     Atlas::Message::Encoder enc(&codec);
 
     codec.StreamBegin();
