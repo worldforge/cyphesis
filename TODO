@@ -1,5 +1,6 @@
-Stop creating new objects from causing so much activity. Perception of the new object
-must be based on its visibility.
+Stop creating new objects from causing so much activity. Perception of the
+new object must be based on its visibility. Perception of its deletion
+should also be limited. Implement LRU in mind.
 
 Upsidedown chickens suck!
 
