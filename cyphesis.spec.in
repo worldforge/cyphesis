@@ -82,6 +82,9 @@ useradd -M -n -r -s /bin/bash -c "Cyphesis user" cyphesis >/dev/null 2>&1 || :
 chkconfig --add cyphesis
 chkconfig --add cyclient
 
+# If we obsolete cyphesis-service, then it will delete its service entries
+# and account after our %pre and %post have run. We need to ensure they
+# are re-added.
 %triggerpostun -- cyphesis-service
 useradd -M -n -r -s /bin/bash -c "Cyphesis user" cyphesis >/dev/null 2>&1 || :
 chkconfig --add cyphesis
