@@ -1,5 +1,9 @@
 2005-04-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cyphesis.sh: Remove echo commands so script is now functional.
+
+2005-04-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* Version 0.3.9 released.
 
 2005-04-03  Al Riddoch  <alriddoch@zepler.org>

@@ -14,7 +14,7 @@ TOP=`pwd`
 export PYTHONHOME=${TOP}
 DIROPTS="--cyphesis:directory=${TOP}/share --cyphesis:confdir=${TOP}/etc --cyphesis:vardir=${TOP}/var"
 
-echo ${TOP}/bin/cyphesis --cyphesis:daemon=true ${DIROPTS}
+${TOP}/bin/cyphesis --cyphesis:daemon=true ${DIROPTS}
 
 RETVAL=$?
 if [ $RETVAL -ne 0 ] ; then
@@ -25,4 +25,4 @@ fi
 
 sleep 5
 
-echo ${TOP}/bin/cyclient ${DIROPTS}
+${TOP}/bin/cyclient ${DIROPTS}
