@@ -47,6 +47,9 @@ OpVector Creator::operation(const RootOperation & op)
 {
     debug( std::cout << "Creator::operation" << std::endl << std::flush;);
     OpNo op_no = opEnumerate(op);
+    if (op_no == OP_CREATE) {
+        return CreateOperation((Create &)op);
+    }
     if (op_no == OP_LOOK) {
         return LookOperation((Look &)op);
     }

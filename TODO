@@ -1,3 +1,6 @@
+Fix issue with contrainHeight() change to height is not reflected in the
+Sight(Move()) op.
+
 Make chickens afraid of wolf.
 
 Make vis re-calculated on bbox change.

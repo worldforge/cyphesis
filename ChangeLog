@@ -1,5 +1,9 @@
 2004-06-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Creator.cpp: Allow a creator to create things.
+
+2004-06-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* Add type for wooden building materials.
 
 2004-06-24  Al Riddoch  <alriddoch@zepler.org>
