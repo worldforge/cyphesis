@@ -9,6 +9,10 @@
 
 #include <server/WorldRouter.h>
 
+// This is the base class from which all physical or tangiable in-game objects
+// inherit. It can be used itself to represent any in-game object for which
+// any special behavoir can be described by a script.
+
 class Thing : public Entity {
   protected:
     bool perceptive;

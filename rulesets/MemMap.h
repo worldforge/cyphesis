@@ -18,16 +18,16 @@ class MemMap {
     std::list<std::string> additionsById;
     Script *& script;
 
-    Entity * addObject(Entity * object);
+    inline Entity * addObject(Entity * object);
   public:
     MemMap(Script *& s) : script(s)  { }
 
-    RootOperation * lookId();
-    Entity * addId(const std::string & id);
+    inline RootOperation * lookId();
+    inline Entity * addId(const std::string & id);
     Entity * add(const Object & entity);
-    void del(const std::string & id);
-    Entity * get(const std::string & id);
-    Entity * getAdd(const std::string & id);
+    inline void del(const std::string & id);
+    inline Entity * get(const std::string & id);
+    inline Entity * getAdd(const std::string & id);
     Entity * update(const Object & entity);
     elist_t findByType(const std::string & what);
     elist_t findByLocation(const Location & where, double radius);

@@ -12,12 +12,24 @@ class WorldRouter;
 class MemMap;
 class Script;
 
+// This is the base class from which all in-game objects inherit.
+// This class should not be instantiiated directly.
+// This class provides all the static atributes which are common to most
+// in game objects, the dynamic attributes map, and a means to access both
+// transparantly without needing to know which are which.
+// It provides a physical location for the entity, and a contains list
+// which lists other entities which specify their location with reference to
+// this one.
+// It also provides the script interface for handling operations
+// in scripts rather than in the C++ code.
+
 class Entity : public BaseEntity {
   protected:
     Script * script;
     Atlas::Message::Object::MapType attributes;
   public:
     WorldRouter * world;	// Exists in this world.
+    int seq;			// Sequence number
     Location location;		// Full details of location inc. ref pos and vel
     elist_t contains;		// List of entities which use this as ref
     double status;		// Health/damage coeficient

@@ -12,6 +12,8 @@ extern "C" {
 namespace common {
 namespace log {
 
+#if 0
+
 ofstream inform_fp;
 ofstream debug_fp;
 ofstream thinking_fp;
@@ -56,6 +58,8 @@ void thinking(char * msg)
         }
     }
 }
+
+#endif
 
 }
 }

@@ -22,8 +22,8 @@ class ServerRouting : public Routing {
     ServerRouting(CommServer & server, const string & name);
     ~ServerRouting();
 
-    int idle();
-    BaseEntity * addObject(BaseEntity * obj);
+    inline int idle();
+    inline BaseEntity * addObject(BaseEntity * obj);
 
     WorldRouter & getWorld() { return world; }
 

@@ -3,7 +3,7 @@
 # Default ruleset config file and script directory
 ruleset="acorn"
 # TCP port to listen on
-port=6767
+tcpport=6767
 # Resticted mode prevents creation of user accounts
 restricted="false"
 # Register server with the meta server

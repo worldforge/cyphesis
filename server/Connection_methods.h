@@ -9,8 +9,9 @@
 #include "CommClient.h"
 #include "CommServer.h"
 
-// inline void Connection::send(const RootOperation * msg) const {
-    // comm_client.send(msg);
-// }
+inline void Connection::send(const RootOperation * msg) const
+{
+    commClient.send(msg);
+}
 
 #endif // CONNECTION_METHODS_H

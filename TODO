@@ -34,6 +34,10 @@ Definitly for Acorn 0.4:
   Implement the movement modes from clients/minds required for xclient,
   and better client support in general.
 
+  Sort out a reasonable way of representing day and night to client. Look
+  up info on Durals astronomy. Weather (clouds, snow, rain, thunder and
+  lightening).
+
 Provisional for Acorn 0.4:
 
 Provisional for Acorn 0.5:

@@ -3,7 +3,6 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
-#include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Decoder.h>

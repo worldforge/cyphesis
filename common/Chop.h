@@ -9,18 +9,12 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Chop : public RootOperation {
   public:
-    Chop() : RootOperation() {
-        SetId(string("chop"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
+    Chop() : RootOperation("chop", "root_operation") {
     }
     virtual ~Chop() { }
     static Chop Instantiate() {
         Chop value;
-        Message::Object::ListType parents;
-        parents.push_back(string("chop"));
-        value.SetParents(parents);
+        value.SetParents(Message::Object::ListType(1,string("chop")));
         value.SetObjtype(string("op"));
         return value;
     }

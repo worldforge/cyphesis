@@ -5,6 +5,10 @@
 #ifndef OPERATIONS_H
 #define OPERATIONS_H
 
+// Forward declarations of all the operation classes used in cyphesis. Use
+// of this file reduces complexities in the dependency tree, and speeds up
+// compile time.
+
 #include <Atlas/Objects/Operation/RootOperation.h>
 
 namespace Atlas {

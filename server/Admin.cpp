@@ -179,8 +179,7 @@ oplist Admin::Operation(const Get & op)
                     return error(op, "query id not found");
                 }
                 Info * info = new Info(Info::Instantiate());
-                Object::ListType args(1,I->second->asObject());
-                info->SetArgs(args);
+                info->SetArgs(Object::ListType(1,I->second->asObject()));
                 info->SetRefno(op.GetSerialno());
                 return oplist(1,info);
             } else {

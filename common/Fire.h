@@ -9,18 +9,12 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Fire : public RootOperation {
   public:
-    Fire() : RootOperation() {
-        SetId(string("fire"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
+    Fire() : RootOperation("fire", "root_operation") {
     }
     virtual ~Fire() { }
     static Fire Instantiate() {
         Fire value;
-        Message::Object::ListType parents;
-        parents.push_back(string("fire"));
-        value.SetParents(parents);
+        value.SetParents(Message::Object::ListType(1, "fire"));
         value.SetObjtype(string("op"));
         return value;
     }

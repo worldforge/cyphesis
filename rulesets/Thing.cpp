@@ -38,9 +38,6 @@ using Atlas::Message::Object;
 
 Thing::Thing() : perceptive(false)
 {
-    inGame = true;
-    name = string("Foo");
-    attributes["mode"] = Object("birth");
 }
 
 Thing::~Thing() { }
@@ -63,8 +60,7 @@ oplist Thing::Operation(const Action & op)
         return res;
     }
     RootOperation * s = new Sight(Sight::Instantiate());
-    Object::ListType args(1,op.AsObject());
-    s->SetArgs(args);
+    s->SetArgs(Object::ListType(1,op.AsObject()));
     return oplist(1,s);
 }
 
@@ -102,11 +98,9 @@ oplist Thing::Operation(const Create & op)
             obj->location.ref->contains.unique();
         }
         Create c(op);
-        Object::ListType args2(1,obj->asObject());
-        c.SetArgs(args2);
+        c.SetArgs(Object::ListType(1,obj->asObject()));
         RootOperation * s = new Sight(Sight::Instantiate());
-        Object::ListType args3(1,c.AsObject());
-        s->SetArgs(args3);
+        s->SetArgs(Object::ListType(1,c.AsObject()));
         return oplist(1,s);
     }
     catch (Atlas::Message::WrongTypeException) {
@@ -122,10 +116,10 @@ oplist Thing::Operation(const Delete & op)
     if (script->Operation("delete", op, res) != 0) {
         return res;
     }
-    // world->delObject(this);
+    // The actual destruction and removal of this entity will be handled
+    // by the WorldRouter
     RootOperation * s = new Sight(Sight::Instantiate());
-    Object::ListType args(1,op.AsObject());
-    s->SetArgs(args);
+    s->SetArgs(Object::ListType(1,op.AsObject()));
     return oplist(1,s);
 }
 
@@ -182,24 +176,18 @@ oplist Thing::Operation(const Move & op)
     try {
         Vector3D oldpos = location.coords;
         const Object::MapType & ent = args.front().AsMap();
-        const string & oname = ent.find("id")->second.AsString();
-        debug( cout << "In " << fullid << " got moveop for " << oname << endl << flush;);
         Object::MapType::const_iterator I = ent.find("loc");
         if (I == ent.end()) {
-            debug( cout << "ERROR: move op arg has no ref" << endl << flush;);
             return error(op, "Move location has no ref");
         }
         const string & ref = I->second.AsString();
         edict_t::iterator J = world->eobjects.find(ref);
         if (J == world->eobjects.end()) {
-            debug( cout << "ERROR: move op arg ref is invalid" << endl << flush;);
             return error(op, "Move location ref invalid");
         }
         debug(cout << "{" << ref << "}" << endl << flush;);
         Entity * newref = J->second;
         if (newref == this) {
-            debug( cout << "ERROR: move op arg ref is same as entity" << endl << flush;);
-            debug( cout << "ERROR: attempt by entity to move into itself" << endl << flush;);
             return error(op, "Attempt by entity to move into itself");
         }
         if (location.ref != newref) {
@@ -217,13 +205,20 @@ oplist Thing::Operation(const Move & op)
         if (I != ent.end()) {
             location.velocity = Vector3D(I->second.AsList());
         }
+        I = ent.find("face");
+        if (I != ent.end()) {
+            location.face = Vector3D(I->second.AsList());
+        }
 
         RootOperation * s = new Sight(Sight::Instantiate());
-        Object::ListType args2(1,op.AsObject());
-        s->SetArgs(args2);
+        s->SetArgs(Object::ListType(1,op.AsObject()));
         oplist res2(1,s);
         // I think it might be wise to send a set indicating we have changed
         // modes, but this would probably be wasteful
+
+        // This code handles sending Appearance and Disappearance operations
+        // to this entity and others to indicate if one has gained or lost
+        // sight of the other because of this movement
         if (consts::enable_ranges && perceptive) {
             debug(cout << "testing range" << endl;);
             elist_t::const_iterator I = location.ref->contains.begin();
@@ -312,13 +307,11 @@ oplist Thing::Operation(const Set & op)
             set(I->first, I->second);
         }
         RootOperation * s = new Sight(Sight::Instantiate());
-        Object::ListType args2(1,op.AsObject());
-        s->SetArgs(args2);
+        s->SetArgs(Object::ListType(1,op.AsObject()));
         oplist res2(1,s);
         if (status < 0) {
             RootOperation * d = new Delete(Delete::Instantiate());
-            Object::ListType args3(1,this->asObject());
-            d->SetArgs(args3);
+            d->SetArgs(Object::ListType(1,this->asObject()));
             d->SetTo(fullid);
             res2.push_back(d);
         }

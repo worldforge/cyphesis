@@ -50,13 +50,8 @@ class CommClient : Atlas::Objects::Decoder {
     CommClient(CommServer & svr, int fd, int port);
     virtual ~CommClient();
 
-    int read() {
-        if (clientIos) {
-            codec->Poll();
-            return 0;
-        } else {
-            return -1;
-        }
+    void read() {
+        codec->Poll();
     }
 
     void send(const RootOperation * op) {
@@ -71,7 +66,7 @@ class CommClient : Atlas::Objects::Decoder {
     int getFd() { return clientFd; }
 
     void message(const RootOperation &);
-    int setup();
+    bool setup();
 };
 
 #endif // COMM_CLIENT_H

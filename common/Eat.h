@@ -9,18 +9,12 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Eat : public RootOperation {
   public:
-    Eat() : RootOperation() {
-        SetId(string("eat"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
+    Eat() : RootOperation("eat", "root_operation") {
     }
     virtual ~Eat() { }
     static Eat Instantiate() {
         Eat value;
-        Message::Object::ListType parents;
-        parents.push_back(string("eat"));
-        value.SetParents(parents);
+        value.SetParents(Message::Object::ListType(1,string("eat")));
         value.SetObjtype(string("op"));
         return value;
     }

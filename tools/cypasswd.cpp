@@ -4,7 +4,6 @@
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Message/Encoder.h>
-#include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 

@@ -50,8 +50,7 @@ oplist World::Operation(const Set & op)
             set(I->first, I->second);
         }
         RootOperation * s = new Sight(Sight::Instantiate());
-        Object::ListType args2(1,op.AsObject());
-        s->SetArgs(args2);
+        s->SetArgs(Object::ListType(1,op.AsObject()));
         oplist res2(1,s);
         return res2;
     }

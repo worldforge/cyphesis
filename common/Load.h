@@ -9,18 +9,12 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Load : public RootOperation {
   public:
-    Load() : RootOperation() {
-        SetId(string("load"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
+    Load() : RootOperation("load", "root_operation") {
     }
     virtual ~Load() { }
     static Load Instantiate() {
         Load value;
-        Message::Object::ListType parents;
-        parents.push_back(string("load"));
-        value.SetParents(parents);
+        value.SetParents(Message::Object::ListType(1, "load"));
         value.SetObjtype(string("op"));
         return value;
     }

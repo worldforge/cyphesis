@@ -5,6 +5,8 @@
 #ifndef ELEVATION_H
 #define ELEVATION_H
 
+#include <list>
+
 #include <Atlas/Message/Object.h>
 
 #include <physics/Vector3D.h>

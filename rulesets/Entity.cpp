@@ -34,13 +34,11 @@ static const bool debug_flag = false;
 
 using Atlas::Message::Object;
 
-Entity::Entity() : script(new Script), world(NULL), status(1),
+Entity::Entity() : script(new Script), world(NULL), seq(0), status(1),
                    type("thing"), weight(-1),
                    isCharacter(false), deleted(false), omnipresent(false)
 {
     inGame = true;
-    name = string("Foo");
-    attributes["mode"] = Object("birth");
 }
 
 Entity::~Entity() { }
@@ -99,8 +97,7 @@ void Entity::destroy()
     if (deleted == true) {
         return;
     }
-    elist_t::const_iterator I;
-    for(I = contains.begin(); I != contains.end(); I++) {
+    for(elist_t::const_iterator I=contains.begin(); I != contains.end(); I++) {
         Entity * obj = *I;
         if (obj->deleted == false) {
             obj->location.ref = location.ref;
@@ -116,15 +113,17 @@ void Entity::addToObject(Object & obj) const
 {
     Object::MapType & omap = obj.AsMap();
     // We need to have a list of keys to pull from attributes.
-    omap["name"] = name;
+    if (!name.empty()) {
+        omap["name"] = name;
+    }
     omap["type"] = type;
     omap["weight"] = weight;
     omap["status"] = status;
+    omap["stamp"] = (double)seq;
     omap["parents"] = Object(Object::ListType(1,Object(type)));
     location.addToObject(obj);
     Object::ListType contlist;
-    elist_t::const_iterator I;
-    for(I = contains.begin(); I != contains.end(); I++) {
+    for(elist_t::const_iterator I = contains.begin(); I!=contains.end(); I++) {
         contlist.push_back(Object((*I)->fullid));
     }
     if (contlist.size() != 0) {
@@ -135,8 +134,7 @@ void Entity::addToObject(Object & obj) const
 
 void Entity::merge(const Object::MapType & entmap)
 {
-    Object::MapType::const_iterator I;
-    for (I=entmap.begin(); I!=entmap.end(); I++) {
+    for (Object::MapType::const_iterator I=entmap.begin();I!=entmap.end();I++) {
         const string & key = I->first;
         if ((key == "parents")||(key == "bbox") || (key == "bmedian")) continue;
         if ((key == "pos") || (key == "loc") || (key == "velocity")) continue;

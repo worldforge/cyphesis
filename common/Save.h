@@ -9,18 +9,12 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Save : public RootOperation {
   public:
-    Save() : RootOperation() {
-        SetId(string("save"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
+    Save() : RootOperation("save", "root_operation") {
     }
     virtual ~Save() { }
     static Save Instantiate() {
         Save value;
-        Message::Object::ListType parents;
-        parents.push_back(string("save"));
-        value.SetParents(parents);
+        value.SetParents(Message::Object::ListType(1,"save"));
         value.SetObjtype(string("op"));
         return value;
     }

@@ -3,7 +3,6 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
-#include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Decoder.h>
@@ -98,8 +97,7 @@ oplist Connection::operation(const RootOperation & op)
                 pchar->externalMind = new ExternalMind(*this, pchar->fullid, pchar ->name);
                 cout << "Re-connecting existing character to new connection" << endl << flush;
                 Info * info = new Info(Info::Instantiate());
-                Object::ListType args(1,pchar->asObject());
-                info->SetArgs(args);
+                info->SetArgs(Object::ListType(1,pchar->asObject()));
                 info->SetRefno(op.GetSerialno());
                 oplist res = ent->externalOperation(op);
                 res.insert(res.begin(), info);
@@ -140,8 +138,7 @@ oplist Connection::Operation(const Login & op)
             }
             player->connection=this;
             Info * info = new Info(Info::Instantiate());
-            Object::ListType args(1,player->asObject());
-            info->SetArgs(args);
+            info->SetArgs(Object::ListType(1,player->asObject()));
             info->SetRefno(op.GetSerialno());
             debug(cout << "Good login" << endl << flush;);
             return oplist(1,info);
@@ -169,8 +166,7 @@ oplist Connection::Operation(const Create & op)
             Account * player = addPlayer(account_id, password);
             Persistance::instance()->putAccount(*player);
             Info * info = new Info(Info::Instantiate());
-            Object::ListType args(1,player->asObject());
-            info->SetArgs(args);
+            info->SetArgs(Object::ListType(1,player->asObject()));
             info->SetRefno(op.GetSerialno());
             debug(cout << "Good create" << endl << flush;);
             return oplist(1,info);
@@ -202,8 +198,7 @@ oplist Connection::Operation(const Get & op)
 {
     cout << "Got get" << endl << flush;
     Info * info = new Info(Info::Instantiate());
-    Object::ListType args(1,server.asObject());
-    info->SetArgs(args);
+    info->SetArgs(Object::ListType(1,server.asObject()));
     info->SetRefno(op.GetSerialno());
     cout << "Replying to get" << endl << flush;
     

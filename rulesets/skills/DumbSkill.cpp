@@ -12,7 +12,6 @@ using Atlas::Message::Object;
 oplist DumbSkill::action(const std::string & skill, const RootOperation & op)
 {
     RootOperation * s = new Sight(Sight::Instantiate());
-    Object::ListType args(1,op.AsObject());
-    s->SetArgs(args);
+    s->SetArgs(Object::ListType(1,op.AsObject()));
     return oplist(1,s);
 }

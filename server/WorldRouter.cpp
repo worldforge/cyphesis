@@ -63,26 +63,20 @@ inline void WorldRouter::addOperationToQueue(RootOperation & op,
     op.SetSeconds(t);
     op.SetFutureSeconds(0.0);
     opqueue::iterator I;
-    int i = 0;
     for(I = operationQueue.begin();
-        (I != operationQueue.end()) && ((*I)->GetSeconds() <= t) ; I++,i++);
+        (I != operationQueue.end()) && ((*I)->GetSeconds() <= t) ; I++);
     operationQueue.insert(I, &op);
-    debug(cout << i << " operation added to queue" << endl << flush;);
 }
 
 inline RootOperation * WorldRouter::getOperationFromQueue()
 {
     std::list<RootOperation *>::iterator I = operationQueue.begin();
-    if (I == operationQueue.end()) {
-        return NULL;
-    }
-    if ((*I)->GetSeconds() > realTime) {
+    if ((I == operationQueue.end()) || ((*I)->GetSeconds() > realTime)) {
         return NULL;
     }
     debug(cout << "pulled op off queue" << endl << flush;);
-    RootOperation * op = (*I);
     operationQueue.pop_front();
-    return op;
+    return *I;
 }
 
 inline std::string WorldRouter::getId(std::string & name)
@@ -102,10 +96,8 @@ inline std::string WorldRouter::getId(std::string & name)
 Thing * WorldRouter::addObject(Thing * obj)
 {
     debug(cout << "WorldRouter::addObject(Thing *)" << endl << flush;);
-    if (obj->fullid.size() == 0) {
+    if (obj->fullid.empty()) {
         obj->fullid=getId(obj->name);
-    } else {
-        cout << "Adding object with known id" << endl << flush;
     }
     server.idDict[obj->fullid]=eobjects[obj->fullid]=obj;
     objectList.push_back(obj);
@@ -186,12 +178,11 @@ oplist WorldRouter::operation(const RootOperation * op)
     debug(cout << "WorldRouter::operation {" << to << "}" << endl << flush;);
     op_no_t op_type = opEnumerate(*op);
 
-    debug(cout << 0 << flush;);
     if ((to.size() != 0) && (to!="all")) {
         edict_t::const_iterator I = eobjects.find(to);
         if (I == eobjects.end()) {
-            cerr << "CRITICAL: Op to=\"" << to << "\"" << " does not exist"
-                 << endl << flush;
+            debug(cerr << "WARNING: Op to=\"" << to << "\"" << " does not exist"
+                       << endl << flush;);
             return oplist();
         }
         Entity * to_entity = I->second;

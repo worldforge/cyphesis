@@ -22,7 +22,7 @@ class CommServer {
     int serverPort;
     client_map_t clients;
 
-    int accept();
+    bool accept();
     void idle();
 
     static const int metaserverPort = 8453;
@@ -30,13 +30,13 @@ class CommServer {
     struct sockaddr_in meta_sa;
     int metaFd;
   public:
-    static bool useMetaserver;
+    bool useMetaserver;
     const string identity;
     ServerRouting & server;
 
     CommServer(const string & ident);
 
-    int setup(int port);
+    bool setup(int port);
     void loop();
     void removeClient(CommClient * client, char * msg);
     void removeClient(CommClient * client);

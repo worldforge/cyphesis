@@ -12,9 +12,15 @@
 
 class WorldRouter;
 
+// This is the base class from which all other entity like classes inherit,
+// both in game and out of game.
+// This class basically provides a means of delivering operations to
+// an object, and the structure required to process those operations.
+// It has an id which is typically used to store it in a map or
+// dictionary as they are called elsewhere in this code.
+
 class BaseEntity {
   public:
-    int seq;			// Sequence number
     string fullid;		// String id
     bool inGame;		// true if in game object
 

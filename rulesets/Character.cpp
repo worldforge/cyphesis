@@ -94,6 +94,7 @@ Character::Character() : movement(*new Pedestrian(*this)), autom(false),
     weight = 60;
     location.bbox = Vector3D(0.25, 0.25, 1);
     location.bmedian = Vector3D(0, 0, 1);
+    attributes["mode"] = Object("birth");
 }
 
 Character::~Character()
@@ -255,8 +256,7 @@ oplist Character::Operation(const Talk & op)
 {
     debug( cout << "Character::OPeration(Talk)" << endl << flush;);
     Sound * s = new Sound(Sound::Instantiate());
-    Object::ListType args(1,op.AsObject());
-    s->SetArgs(args);
+    s->SetArgs(Object::ListType(1,op.AsObject()));
     return oplist(1,s);
 }
 
@@ -373,37 +373,25 @@ oplist Character::mindOperation(const Move & op)
     } else {
         debug( cout << "Parent not set" << endl << flush;);
     }
-    Vector3D location_coords;
-    I = arg1.find("pos");
-    if ((I != arg1.end()) /* && (I->second.IsList()) */) {
-        try {
+    Vector3D location_coords, location_vel, location_face;
+    try {
+        I = arg1.find("pos");
+        if ((I != arg1.end()) /* && (I->second.IsList()) */) {
             location_coords = Vector3D(I->second.AsList());
         }
-        catch (Atlas::Message::WrongTypeException) {
-            cerr << "EXCEPTION: Malformed pos move operation" << endl << flush;
-        }
-    }
 
-    Vector3D location_vel;
-    I = arg1.find("velocity");
-    if ((I != arg1.end()) /* && (I->second.IsList()) */) {
-        try {
+        I = arg1.find("velocity");
+        if ((I != arg1.end()) /* && (I->second.IsList()) */) {
             location_vel = Vector3D(I->second.AsList());
         }
-        catch (Atlas::Message::WrongTypeException) {
-            cerr << "EXCEPTION: Malformed vel move operation" << endl << flush;
-        }
-    }
 
-    Vector3D location_face;
-    I = arg1.find("face");
-    if ((I != arg1.end()) /* && (I->second.IsList()) */) {
-        try {
+        I = arg1.find("face");
+        if ((I != arg1.end()) /* && (I->second.IsList()) */) {
             location_face = Vector3D(I->second.AsList());
         }
-        catch (Atlas::Message::WrongTypeException) {
-            cerr << "EXCEPTION: Malformed face move operation" << endl << flush;
-        }
+    }
+    catch (Atlas::Message::WrongTypeException) {
+        cerr << "EXCEPTION: Malformed move operation from mind" <<endl<<flush;
     }
 
     if (!location_coords) {
@@ -418,21 +406,19 @@ oplist Character::mindOperation(const Move & op)
     double vel_mag;
     // Print out a bunch of debug info
     debug( cout << ":" << location_ref << ":" << location.ref->fullid << ":" << endl << flush;);
-    if ( //(location_ref==world->fullid) &&
-         (location_ref==location.ref->fullid) &&
-         (newop->GetFutureSeconds() >= 0) ) {
+    if ((location_ref==location.ref->fullid)&&(newop->GetFutureSeconds()>=0)) {
         // Movement within current ref. Work out the speed and stuff and
-        // use movementinfo to track movement.
+        // use movement object to track movement.
+        //
         if (!location_vel) {
             debug( cout << "\tVelocity default" << endl << flush;);
             vel_mag=consts::base_velocity;
         } else {
+            debug( cout << "\tVelocity: " << location_vel << endl << flush;);
             vel_mag=location_vel.mag();
             if (vel_mag > consts::base_velocity) {
                 vel_mag = consts::base_velocity;
             }
-            debug( cout << "\tVelocity given: " << location_vel
-                                   << "," << vel_mag << endl << flush;);
         }
         if (location_face) {
             location.face = location_face;
@@ -447,16 +433,14 @@ oplist Character::mindOperation(const Move & op)
                 debug( cout << "\tUsing face for direction" << endl << flush;);
                 direction=location.face;
             } else {
-                debug( cout << "\tUsing velocity for direction" << endl << flush;);
+                debug( cout << "\tUsing velocity for direction"<<endl<<flush;);
                 direction=location_vel;
             }
         } else {
-            debug( cout << "\tUsing destination coords for direction" << endl << flush;);
+            debug( cout << "\tUsing destination for direction"<< endl<< flush;);
             direction=location_coords-location.coords;
         }
-        if (!direction) {
-            debug( cout << "No direction" << endl << flush;);
-        } else {
+        if (direction) {
             direction=direction.unitVector();
             debug( cout << "Direction: " << direction << endl << flush;);
         }
@@ -545,10 +529,6 @@ oplist Character::mindOperation(const Sound & op)
 
 oplist Character::mindOperation(const Create & op)
 {
-    // We need to call, THE THING FACTORY! Or maybe not
-    // This currently does nothing, so characters are not able to directly
-    // create eobjects. By and large a tool must be used. This should at some
-    // point be able to send create operations on to other entities
     debug( cout << "Character::mindOperation(Create)" << endl << flush;);
     return oplist();
 }

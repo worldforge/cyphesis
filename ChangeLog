@@ -1,3 +1,52 @@
+2001-05-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/server.cpp: Added several options to the config file to
+	  make server operation customisable. Added comments.
+
+	* server/server.cpp, server/CommServer.h: Changed methods which
+	  return int to returning bool if they are success/faul results.
+
+	* server/WorldRouter.cpp: Removed some unused debugging code.
+	  Optimised heavily used code. Changed error message on
+	  sending to a non-existant entity so that it is no longer
+	  reported as a critical error.
+
+	* server/ServerRouting.h, server/Connection.h,
+	  server/Connection_methods.h: inlined simple methods.
+
+	* server/Connection.cpp: Optimised frequently used code.
+
+	* server/CommClient.h: Simplified read method so it no
+	  longer checks status redundantly.
+
+	* common/BaseEntity.h, rulesets/Thing.h, rulesets/Entity.h: Added
+	  comments explaing purpose of classes.
+
+	* rulesets/Thing.cpp: Added detailed comments, and removed unnecessary
+	  initialisation of some attributes.
+
+	* rulesets/PythonMindScript.cpp: Removed redundant NULL check.
+
+	* rulesets/MemMap.h: Added inlines for inlined methods.
+
+	* rulesets/Entity.h, common/BaseEntity.h: Moved seq from BaseEntity
+	  to Entity as it does not apply to Out Of Game objects.
+
+	* rulesets/Entity.cpp: Added in stamp/seq attribute. Nade name
+	  attribute optional.
+
+	* rulesets/Character.cpp: Simplified some op handling code
+	  to make it more readable and hopefully faster. Added comments
+	  explaining movement, removed unused commented out code, and
+	  removed some unnecessary debugging code.
+
+	* common/operations.h: Explanatory comments.
+
+	* common/*.h: Re-wrote extended operations to fit in
+	  with Atlas-C++ 0.4.2 conventions.
+
+	* common/log.*: Commented out unused logging code.
+
 2001-05-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Admin.cpp: Modified database loading code so it picks up

@@ -22,7 +22,7 @@ class Connection : public Routing {
     virtual ~Connection();
 
     void destroy();
-    void send(const RootOperation * msg) const;
+    inline void send(const RootOperation * msg) const;
 
     virtual oplist operation(const RootOperation & op);
     virtual oplist Operation(const Login & op);

@@ -9,18 +9,12 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 class Tick : public RootOperation {
   public:
-    Tick() : RootOperation() {
-        SetId(string("tick"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
+    Tick() : RootOperation("tick", "root_operation") {
     }
     virtual ~Tick() { }
     static Tick Instantiate() {
         Tick value;
-        Message::Object::ListType parents;
-        parents.push_back(string("tick"));
-        value.SetParents(parents);
+        value.SetParents(Message::Object::ListType(1,"tick"));
         value.SetObjtype(string("op"));
         return value;
     }

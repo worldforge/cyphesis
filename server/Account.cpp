@@ -3,7 +3,6 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <Atlas/Message/Object.h>
-#include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/Encoder.h>
@@ -63,14 +62,10 @@ BaseEntity * Account::addCharacter(const string & typestr, const Object & ent)
     connection->addObject(chr);
 
     Create c = Create::Instantiate();
-
-    Object::ListType cargs(1,chr->asObject());
-    c.SetArgs(cargs);
+    c.SetArgs(Object::ListType(1,chr->asObject()));
 
     Sight * s = new Sight(Sight::Instantiate());
-    
-    Object::ListType sargs(1,c.AsObject());
-    s->SetArgs(sargs);
+    s->SetArgs(Object::ListType(1,c.AsObject()));
 
     world->message(*s, chr);
 
@@ -127,8 +122,7 @@ oplist Account::Operation(const Create & op)
     BaseEntity * obj = addCharacter(typestr, ent);
     //log.inform("Player "+Account::id+" adds character "+`obj`,op);
     Info * info = new Info(Info::Instantiate());
-    Object::ListType args(1,obj->asObject());
-    info->SetArgs(args);
+    info->SetArgs(Object::ListType(1,obj->asObject()));
     info->SetRefno(op.GetSerialno());
 
     return oplist(1,info);

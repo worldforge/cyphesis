@@ -23,7 +23,7 @@ static const bool debug_flag = false;
 
 using Atlas::Message::Object;
 
-BaseEntity::BaseEntity() : seq(0), inGame(false)
+BaseEntity::BaseEntity() : inGame(false)
 {
 }
 
@@ -38,9 +38,10 @@ void BaseEntity::destroy()
 Object BaseEntity::asObject() const
 {
     debug( cout << "BaseEntity::asObject" << endl << flush;);
-    Object::MapType map;
-    map["objtype"] = "object";
-    Object obj(map);
+    Object::MapType _m;
+    Object obj(_m);
+    Object::MapType & omap = obj.AsMap();
+    omap["objtype"] = "object";
     addToObject(obj);
     return obj;
 }
@@ -53,17 +54,6 @@ void BaseEntity::addToObject(Object & obj) const
     if (fullid.size() != 0) {
         omap["id"] = fullid;
     }
-    omap["stamp"] = (double)seq;
-#if 0
-    Object::ListType contlist;
-    list_t::const_iterator I;
-    for(I = contains.begin(); I != contains.end(); I++) {
-        contlist.push_back(Object((*I)->fullid));
-    }
-    if (contlist.size() != 0) {
-        omap["contains"] = Object(contlist);
-    }
-#endif
 }
 
 oplist BaseEntity::externalMessage(const RootOperation & op)
