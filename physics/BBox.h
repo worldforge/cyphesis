@@ -20,4 +20,11 @@ inline WFMath::CoordType boxSize(const BBox & box)
     return sqrtf(boxSquareSize(box));
 }
 
+WFMath::CoordType boxSquareBoundingRadius(const BBox & box);
+
+inline WFMath::CoordType boxBoundingRadius(const BBox & box)
+{
+    return sqrtf(boxSquareBoundingRadius(box));
+}
+
 #endif // PHYSICS_BBOX_H

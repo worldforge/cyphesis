@@ -20,3 +20,13 @@ WFMath::CoordType boxSquareSize(const BBox & box)
 
     return ans;
 }
+
+static WFMath::CoordType sqrMag(const WFMath::Point<3> & p)
+{
+    return p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
+}
+
+WFMath::CoordType boxSquareBoundingRadius(const BBox & box)
+{
+    return std::max(sqrMag(box.lowCorner()), sqrMag(box.highCorner()));
+}

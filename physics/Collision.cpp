@@ -190,6 +190,11 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
 //       y\ | /x                     0
 //         \|/
 
+static
+bool roughCheck(const Location & l, const Location & o, float time)
+{
+    // Cheap sphere based collision plausibility test.
+}
 
 bool predictCollision(const Location & l,  // This location
                       const Location & o,  // Other location
@@ -205,6 +210,21 @@ bool predictCollision(const Location & l,  // This location
 
     assert(l.m_bBox.isValid());
     assert(o.m_bBox.isValid());
+
+    assert(l.m_velocity.isValid());
+    Vector3D notMoving(0., 0., 0.);
+
+    bool oMoving = o.m_velocity.isValid();
+    const Vector3D & o_velocity = oMoving ? o.m_velocity : notMoving;
+
+    assert(o_velocity.isValid());
+
+    Vector3D dist = o.m_pos - l.m_pos;
+    if ((dist.mag() - l.m_velocity.mag() * time - o_velocity.mag() * time) >
+        (boxBoundingRadius(l.m_bBox) + boxBoundingRadius(o.m_bBox))) {
+        return false;
+    }
+
 
     const WFMath::Point<3> & ln = l.m_bBox.lowCorner();
     const WFMath::Point<3> & lf = l.m_bBox.highCorner();
@@ -283,14 +303,6 @@ bool predictCollision(const Location & l,  // This location
         obox[i] += o.m_pos;
     }
 #endif
-
-    assert(l.m_velocity.isValid());
-    Vector3D notMoving(0., 0., 0.);
-
-    bool oMoving = o.m_velocity.isValid();
-    const Vector3D & o_velocity = oMoving ? o.m_velocity : notMoving;
-
-    assert(o_velocity.isValid());
 
     // Predict the collision using the generic mesh function
     return predictCollision(lbox, lnormals, l.m_velocity,

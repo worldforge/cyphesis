@@ -1,5 +1,14 @@
 2004-11-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/BBox.cpp, physics/BBox.h: Add functions to cheapy
+	  determine the bounding radius of a bounding box.
+
+	* physics/Collision.cpp: Add a coarse collision test to the beginning
+	  of collision prediction, to avoid the full expensive test in
+	  most cases.
+
+2004-11-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.h, server/TrustedConnection.h: Make
 	  verifyCredentials protected.
 
