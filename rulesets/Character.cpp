@@ -328,12 +328,17 @@ oplist Character::Mind_Operation(const Move & op)
     Thing * obj = (Thing *)world->fobjects[oname];
     if (obj != this) {
         debug_movement && cout << "Moving something else. " << oname << endl << flush;
-        double weight = attributes["weight"].AsFloat();
-        double oweight = (*obj)["weight"].AsFloat();
-        if ((oweight < 0) || (oweight > weight)) {
-            debug_movement && cout << "We can't move this. Just too heavy" << endl << flush;
-            delete newop;
-            return(res);
+        try {
+            double weight = attributes["weight"].AsFloat();
+            double oweight = (*obj)["weight"].AsFloat();
+            if ((oweight < 0) || (oweight > weight)) {
+                debug_movement && cout << "We can't move this. Just too heavy" << endl << flush;
+                delete newop;
+                return(res);
+            }
+        }
+        catch (...) {
+            cerr << "EXCEPTION: caught while checking weight for movement" << endl << flush;
         }
         newop->SetTo(oname);
         res.push_back(newop);

@@ -11,7 +11,8 @@ class SkeletonMind(BaseMind):
         self.map.update(op[0])
         if op[0].id==self.id: return
         #target=op[0].location.copy()
-        if op[0].location.parent!=self.location.parent: return
+        other = self.map.add(op[0])
+        if other.location.parent.id!=self.location.parent.id: return
         if hasattr(op.from_, "type") and op.from_.type[0] not in ['pig', 'farmer', 'guard']: return
         destination=op[0].location.coordinates
         distance=destination.distance(self.location.coordinates)

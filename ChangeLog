@@ -1,3 +1,9 @@
+2000-12-15  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Added in exception handler to catch if weight is not a float.
+
+	* Tweaked SkeletonMind so it now works.
+
 2000-12-14  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Modifed python interface Operation() function so that it accepts
