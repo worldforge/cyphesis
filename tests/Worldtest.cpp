@@ -17,11 +17,11 @@ class TestWorld : public BaseWorld {
     explicit TestWorld(Entity & gw) : BaseWorld(gw) { }
 
     virtual bool idle(int, int) { return false; }
-    virtual Entity * addObject(Entity * obj, bool setup = true) { return 0; }
+    virtual Entity * addObject(Entity * ent, bool setup = true) { return 0; }
     virtual Entity * addNewObject(const std::string &, const MapType &) {
         return 0;
     }
-    virtual void message(Operation & op, const Entity * obj) { }
+    virtual void message(Operation & op, Entity & ent) { }
     virtual Entity * findByName(const std::string & name) { return 0; }
     virtual Entity * findByType(const std::string & type) { return 0; }
     virtual float constrainHeight(Entity*, const Point3D&) { return 0.f; }

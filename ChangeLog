@@ -1,5 +1,10 @@
 2004-01-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Creatortest.cpp, tests/Worldtest.cpp: Update tests to deal
+	  with change in the World interface.
+
+2004-01-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseWorld.h, rulesets/Entity.h, rulesets/MemMap.cpp,
 	  server/Account.cpp, server/WorldRouter.cpp, server/WorldRouter.h:
 	  Use reference count functions to handle deleting entities.
