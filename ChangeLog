@@ -1,3 +1,20 @@
+2001-06-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/server.cpp: Handle cleaning up after database load.
+
+	* server/WorldRouter.cpp: Switch to using stringstream to
+	  generate ids.
+
+	* rulesets/Thing.cpp: Re-write SetupOperation so Sight
+	  operation is not lost and leaked.
+
+	* rulesets/Python_API.h, rulesets/Python_API.cpp,
+	  rulesets/Py_WorldTime.cpp, rulesets/Py_World.cpp,
+	  rulesets/Py_Thing.cpp, rulesets/Py_Operation.cpp,
+	  rulesets/Py_Object.cpp: Sort out correct handling of
+	  python references, and ensure C++ objects are 
+	  deleted as required.
+
 2001-06-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/acorn/world/objects/plants/seeds/Seed.py,
