@@ -1,3 +1,8 @@
+2004-02-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* Update PostgreSQL autoconf macro so it works with RedHat
+	  versions of PostgreSQL.
+
 2003-09-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* Remove unused libcyphesis from the build.

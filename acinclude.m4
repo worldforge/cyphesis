@@ -47,11 +47,11 @@ AC_ARG_ENABLE(psqltest, [  --disable-psqltest     Do not try to compile and run 
     PG_LIBS="-L`$PG_CONFIG $psqlconf_args --libdir`"
 
     psql_major_version=`$PG_CONFIG $psql_args --version | \
-           sed 's/PostgreSQL \([[0-9]]*\).\([[0-9]]*\)\(.\([[0-9]]*\)\)\?/\1/'`
+           sed 's/PostgreSQL \([[0-9]]*\).\([[0-9]]*\)\(.\([[0-9]]*\)\).*$/\1/'`
     psql_minor_version=`$PG_CONFIG $psql_args --version | \
-           sed 's/PostgreSQL \([[0-9]]*\).\([[0-9]]*\)\(.\([[0-9]]*\)\)\?/\2/'`
+           sed 's/PostgreSQL \([[0-9]]*\).\([[0-9]]*\)\(.\([[0-9]]*\)\).*$/\2/'`
     psql_micro_version=`$PG_CONFIG $psql_config_args --version | \
-           sed 's/PostgreSQL \([[0-9]]*\).\([[0-9]]*\)\(.\([[0-9]]*\)\)\?/\4/'`
+           sed 's/PostgreSQL \([[0-9]]*\).\([[0-9]]*\)\(.\([[0-9]]*\)\).*$/\4/'`
     if test "x$psql_micro_version" = "x" ; then
       psql_micro_version=0
     fi
@@ -127,7 +127,7 @@ int main (int argc, char *argv[])
      fi
   fi
   if test "x$no_psql" = x ; then
-     AC_MSG_RESULT(yes)
+     AC_MSG_RESULT($psql_major_version.$psql_minor_version.$psql_micro_version)
      ifelse([$2], , :, [$2])     
   else
      AC_MSG_RESULT(no)
