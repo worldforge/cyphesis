@@ -180,6 +180,10 @@ static PyObject * Map_get(PyMap * self, PyObject * args)
         return NULL;
     }
     Entity * ret = self->m_map->get(id);
+    if (ret == NULL) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
     PyEntity * thing = newPyEntity();
     thing->m_entity = ret;
     return (PyObject *)thing;

@@ -1,3 +1,13 @@
+2004-04-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* Add some chickens.
+
+	* rulesets/Py_Map.cpp: Handle null entities cleanly.
+
+	* rulesets/Plant.cpp: Don't drop generic seeds.
+
+	* common/const.cpp: Cut down sight range.
+
 2004-04-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/operations.cpp: Fix typo in Setup ops, which meant that

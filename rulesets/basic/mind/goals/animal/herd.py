@@ -12,6 +12,44 @@ else:
 
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
+class flock(DynamicGoal):
+    def __init__(self, members=[], desc="move in flocks with other animals like me"):
+        DynamicGoal.__init__(self,
+                             trigger="sight_move",
+                             desc=desc)
+    def event(self, me, original_op, op):
+        ent=op[0]
+        if ent.id==me.id: return
+        ent=me.map.get(ent.id)
+        if ent==None: return
+        if ent.type[0]!=me.type[0]: return
+        if type(ent.location.parent) == type(None):
+            print "flock.event, ent.location.parent is None"
+            return
+        if type(me.location.parent) == type(None):
+            print "flock.event, me.location.parent is None"
+            return
+        if me.location.parent.id!=ent.location.parent.id: return
+        if type(ent.location.coordinates)!=InstanceType:
+            return
+        if ent.location.velocity:
+            myvel=me.location.velocity.unit_vector()
+            evel=ent.location.velocity.unit_vector()
+            edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
+            #If I am moving towards them, or in the same direction, then do nothing
+            if myvel and (evel.dot(myvel) > 0.5 or edir.dot(myvel) > 0.5):
+                return
+            #If they are coming towards me, then do nothing
+            if edir.dot(evel) < - 0.5:
+                return
+            new_loc=Location(me.location.parent)
+            new_loc.velocity=ent.location.velocity
+        else:
+            new_loc=ent.location.copy()
+            edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
+            new_loc.coordinates=new_loc.coordinates-edir
+        return Operation("move", Entity(me.id, location=new_loc))
+
 class herd(DynamicGoal):
     def __init__(self, members=[], desc="move in herds with other animals like me"):
         DynamicGoal.__init__(self,

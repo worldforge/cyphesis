@@ -74,10 +74,10 @@ pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.herd,"herd()")]
 
 deer_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
-            (il.herd,"herd()")]
+            (il.flock,"flock()")]
 
 chicken_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
-               (il.herd,"herd()")]
+               (il.flock,"flock()")]
 
 wolf_goals=[(il.forage,"forage(self, 'ham')"),
             (il.hunt,"predate(self,'pig',30.0)"),
@@ -119,6 +119,16 @@ def default(mapeditor):
     m.make('fir',type='fir',xyz=(-10,-0,settlement_height))
     m.make('fir',type='fir',xyz=(-0,-10,settlement_height))
 
+    chickens=[]
+    xbase = uniform(0,20)
+    ybase = uniform(0,20)
+    for i in range(0, 10):
+        xpos = xbase + uniform(-5,5)
+        ypos = ybase + uniform(-5,5)
+        d=m.make('chicken', type='chicken', xyz=(xpos, ypos, settlement_height))
+        chickens.append(d)
+    m.learn(chickens,chicken_goals)
+    
     # m.make('sherwood',type='forest',xyz=(-50, 10,settlement_height),bbox=[40,40,40])
 
     m.make('jetty',type='jetty',xyz=(-22,-48,0))

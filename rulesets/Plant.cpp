@@ -21,8 +21,7 @@ static const bool debug_flag = false;
 Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
                                                          m_radius(1),
                                                          m_fruitChance(2),
-                                                         m_sizeAdult(4),
-                                                         m_fruitName("seed")
+                                                         m_sizeAdult(4)
 {
     // Default to a 1m cube
     m_location.m_bBox = BBox(WFMath::Point<3>(-0.5, -0.5, 0),
@@ -88,6 +87,7 @@ void Plant::addToObject(Element::MapType & omap) const
 int Plant::dropFruit(OpVector & res)
 {
     if (m_fruits < 1) { return 0; }
+    if (m_fruitName.empty()) { return 0; }
     int drop = std::min(m_fruits, randint(m_minuDrop, m_maxuDrop));
     m_fruits -= drop;
     debug(std::cout << "Dropping " << drop << " fruits from "

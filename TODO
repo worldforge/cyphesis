@@ -1,3 +1,7 @@
+Debug why me.location.parent is None in mind code.
+
+Add a search function to cycmd to search for entities by type or name.
+
 There is probably a problem with getLocation bailing if LOC is not of the
 data from the mind code's point of view.
 

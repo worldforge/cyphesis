@@ -23,6 +23,7 @@ class buy_livestock(DynamicGoal):
     def event(self, me, op, say):
         object=say[1].word
         thing=me.map.get(object)
+        if thing==None: return
         who=op.from_
         if not self.what in thing.type: return
         if thing in me.find_thing(self.what): return

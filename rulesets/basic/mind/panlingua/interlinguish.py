@@ -29,6 +29,7 @@ add_word('add_extinguish_fire','#add_extinguish_fire_sentence0') #CHEAT!
 add_word('wander','#wander_verb1')
 add_word('forage','#forage_verb1')
 add_word('avoid','#avoid_verb1')
+add_word('flock','#flock_verb1')
 add_word('hunt','#hunt_verb1')
 add_word('transport','#transport_verb1')
 add_word('assemble','#assemble_verb1')
