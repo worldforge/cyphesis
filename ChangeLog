@@ -1,3 +1,14 @@
+2004-06-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cypasswd.cpp, tools/cyloadrules.cpp, tools/cycmd.cpp: Fix
+	  usage functions to output to standard error.
+
+	* server/Admin.cpp: Add quick code to install new types.
+
+	* tools/cyconvertrules.cpp: Add placeholder for tool to convert
+	  old format rules files into a new format to be common with
+	  indri.
+
 2004-06-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* Fix dependencies in the rpm spec.

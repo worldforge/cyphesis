@@ -1,4 +1,5 @@
-bin_PROGRAMS = cycmd cypasswd cyloadrules cywatchdog cyctrl cyconfig
+bin_PROGRAMS = cycmd cypasswd cyloadrules cyconvertrules cywatchdog cyctrl \
+               cyconfig
 
 bin_SCRIPTS = cyphesis-setup
 
@@ -30,6 +31,8 @@ cyloadrules_SOURCES = cyloadrules.cpp
 cyloadrules_LDADD = $(top_builddir)/common/Database.o \
                     $(top_builddir)/common/globals.o \
                     $(top_builddir)/common/log.o
+
+cyconvertrules_SOURCES = cyconvertrules.cpp
 
 cywatchdog_SOURCES = cywatchdog.cpp
 

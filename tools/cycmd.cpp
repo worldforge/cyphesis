@@ -689,7 +689,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
 
 static void usage(char * prg)
 {
-    std::cout << "usage: " << prg << " [ cmd [ server ] ]" << std::endl << std::flush;
+    std::cerr << "usage: " << prg << " [ cmd [ server ] ]" << std::endl << std::flush;
 }
 
 int main(int argc, char ** argv)

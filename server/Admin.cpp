@@ -6,6 +6,7 @@
 
 #include "ServerRouting.h"
 #include "Connection.h"
+#include "EntityFactory.h"
 
 #include "rulesets/Character.h"
 
@@ -186,22 +187,50 @@ OpVector Admin::SetOperation(const Set & op)
     if (I == emap.end() || !I->second.isString()) {
         return error(op, "Set arg has no id.");
     }
+    const std::string & id = I->second.asString();
     // FIXME Use this id to install a type from the client
     // const std::string & id = I->second.asString();
 
     if ((objtype == "object") || (objtype == "obj")) {
         // Manipulate attributes of existing objects.
     } else if (objtype == "class") {
-        // Install a new type from the client
-        // It is possible this should actually be a create op that does
-        // this. If so, set could perhaps be used to change things
-        // in existing classes.
-        // const std::string & parent = emap.find("parents")->second.asList().front().asString();
-        // std::string script;
-        // Element::MapType::const_iterator I = emap.find("script");
-        // if ((I != emap.end()) && I->second.isString()) {
-        // script = I->second.asString();
-        // }
+        // Quick hack. This should eventually use EntityFactory, but that
+        // code needs description in a strange format for now.
+        I = emap.find("parents");
+        if (I == emap.end()) {
+            return error(op, "Attempt to install type with no parents");
+        }
+        if (!I->second.isList()) {
+            return error(op, "Attempt to install type with non-list parents");
+        }
+        const Element::ListType & parents = I->second.asList();
+        if (parents.empty() || !parents.front().isString()) {
+            return error(op, "Attempt to install type with invalid parent");
+        }
+        const std::string & parent = parents.front().asString();
+        if (parent.empty()) {
+            return error(op, "Attempt to install type with parent=\"\"");
+        }
+        Atlas::Objects::Root * o = Inheritance::instance().get(id);
+        if (o != 0) {
+            return error(op, "Attempt to install type that already exists");
+        }
+        o = Inheritance::instance().get(parent);
+        if (o == 0) {
+            std::string msg("Attempt to install type with non-existant parent \"");
+            msg += parent;
+            msg += "\"";
+            return error(op, msg.c_str());
+        }
+        FactoryBase * f = EntityFactory::instance()->getNewFactory(parent);
+        if (f == 0) {
+            std::string msg("Attempt to find factory for parent \"");
+            msg += parent;
+            msg += "\" failed.";
+            return error(op, msg.c_str());
+
+        }
+        EntityFactory::instance()->installFactory(parent, id, f);
     } else if (objtype == "op_definition") {
         // Install a new op type? Perhaps again this should be a create.
     } else {

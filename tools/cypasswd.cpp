@@ -33,7 +33,7 @@ using Atlas::Message::Element;
 
 void usage(char * n)
 {
-    std::cout << "usage: " << n << " -[asd] account" << std::endl << std::flush;
+    std::cerr << "usage: " << n << " -[asd] account" << std::endl << std::flush;
 }
 
 int main(int argc, char ** argv)
