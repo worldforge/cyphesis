@@ -1,3 +1,13 @@
+2004-09-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* modules/Location.cpp, modules/Location.h: Improve algorithm
+	  of distance function to handle corner cases, and add a second
+	  interface so that both scalar distance and relative position
+	  can be found.
+
+	* tests/distancetest.cpp: Update tests to test for cases where
+	  distance to or from an entity directly below.
+
 2004-09-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* modules/Location.cpp, modules/Location.h: Add new improved
