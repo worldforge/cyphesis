@@ -2,6 +2,7 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 #return Operation("create",Entity(name='wood',type=['lumber'],location=self.location.parent.location.copy()),to=self)
 
+from Point3D import Point3D
 from atlas import *
 
 from world.objects.Thing import Thing
