@@ -41,8 +41,6 @@ class Location {
         m_solid = s;
     }
 
-    const Point3D getXyz() const;
-
     void addToMessage(Atlas::Message::MapType & ent) const;
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);

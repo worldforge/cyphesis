@@ -1,5 +1,11 @@
 2004-11-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.h, modules/Location.cpp, rulesets/Entity.h:
+	  Finally remove the getXyz() implementation, this getting
+	  rid of absolute coords entirely.
+
+2004-11-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Thing.cpp, rulesets/Py_Mind.cpp,
 	  client/Py_CreatorClient.cpp: Remove get_xyz() from the API
 	  available to Python. Its never necessary to deal in absolute
