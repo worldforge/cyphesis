@@ -67,10 +67,16 @@ void interactive_signals()
     action.sa_flags = 0;
     action.sa_handler = signal_received;
     sigaction(SIGQUIT, &action, NULL);
+
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = SIG_IGN;
+    sigaction(SIGPIPE, &action, NULL);
 #else
     signal(SIGINT, signal_received);
     signal(SIGTERM, signal_received);
     signal(SIGQUIT, signal_received);
+    signal(SIGPIPE, SIG_IGN);
 #endif
 }
 
@@ -93,9 +99,15 @@ void daemon_signals()
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
     sigaction(SIGQUIT, &action, NULL);
+
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = SIG_IGN;
+    sigaction(SIGPIPE, &action, NULL);
 #else
     signal(SIGINT, SIG_IGN);
     signal(SIGTERM, signal_received);
+    signal(SIGPIPE, SIG_IGN);
     signal(SIGQUIT, SIG_IGN);
 #endif
 }

@@ -1,5 +1,10 @@
 2002-10-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/system.cpp: Ignore sigpipe so we don't abort on some
+	  systems if the client quits unexpectedly.
+
+2002-10-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.in, cyphesis-config.in: Fix the way sysconfdir and
 	  datadir are handled in the config script.
 
