@@ -1,3 +1,15 @@
+Replace PyExc_TypeError with the correct exception in most cases.
+
+Use PyInstance_New to create an instance given a class.
+
+Use PyModule_AddObject(), PyModule_AddIntConstant(), and PyModule_AddStringConstant()
+when setting up the python consts module. (new in version 2).
+
+Look at re-writing python API code to work with python GC
+
+Look at using zipfiles to store entrie trees of python files for a ruleset.
+Look at making sure .pyc and .pyo files are included in the distribution.
+
 Check if "common" module reference in init_python_api() should be decrefed,
 and also any others.
 
