@@ -1,3 +1,5 @@
+Implement Task interface, which represent enduring tasks, including combat.
+
 When calling NPCMind.face when buying an item, for some reason the velocity
 of Pedestrian is valid and set to a weird value. This is because the
 target position where the merchant wants to be is at a different z value
