@@ -212,6 +212,16 @@ void Persistor<Character>::persist(Character & t)
     Database::instance()->createEntityRow(m_class, t.getId(), columns, values);
 }
 
+void Persistor<Plant>::persist(Plant & p)
+{
+    hookup(p);
+    std::string columns;
+    std::string values;
+    cEntity(p, columns, values);
+    cPlant(p, columns, values);
+    Database::instance()->createEntityRow(m_class, p.getId(), columns, values);
+}
+
 void Persistor<Creator>::persist(Creator & t)
 {
     // Creator entities are not persisted

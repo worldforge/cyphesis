@@ -14,6 +14,7 @@
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation/Touch.h>
 
 static const bool debug_flag = false;
 
@@ -28,6 +29,9 @@ Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
                              WFMath::Point<3>(0.5, 0.5, 1));
 
     subscribe("tick", OP_TICK);
+    subscribe("touch", OP_TOUCH);
+
+    std::cout << "New plant" << std::endl << std::flush;
 }
 
 Plant::~Plant()
@@ -129,6 +133,28 @@ OpVector Plant::TickOperation(const Tick & op)
             dropped--;
         }
     }
+    if (dropped != 0) {
+        RootOperation * set = new Set();
+        Element::MapType pmap;
+        pmap["id"] = getId();
+        pmap["fruits"] = m_fruits;
+        set->setTo(getId());
+        set->setArgs(Element::ListType(1,pmap));
+        res.push_back(set);
+    }
+    return res;
+}
+
+OpVector Plant::TouchOperation(const Touch & op)
+{
+    debug(std::cout << "Plant::Touch(" << getId() << "," << m_type << ")"
+                    << std::endl << std::flush;);
+    OpVector res;
+    if (m_script->Operation("tick", op, res)) {
+        return res;
+    }
+
+    int dropped = dropFruit(res);
     if (dropped != 0) {
         RootOperation * set = new Set();
         Element::MapType pmap;

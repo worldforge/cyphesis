@@ -38,6 +38,7 @@ class Plant : public Plant_parent {
     virtual void addToObject(Atlas::Message::Element::MapType & obj) const;
 
     virtual OpVector TickOperation(const Tick & op);
+    virtual OpVector TouchOperation(const Touch & op);
 };
 
 #endif // RULESETS_PLANT_H

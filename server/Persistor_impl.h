@@ -199,6 +199,24 @@ void Persistor<T>::cCharacter(Character & t, std::string & c, std::string & v)
 }
 
 template <class T>
+void Persistor<T>::cPlant(Plant & p, std::string & c, std::string & v)
+{
+    const char * cs = ", ";
+    if (!c.empty()) {
+        c += cs;
+    }
+    c += "fruits";
+
+    std::stringstream q;
+    q << p.getFruits();
+
+    if (!v.empty()) {
+        v += cs;
+    }
+    v += q.str();
+}
+
+template <class T>
 void Persistor<T>::hookup(T & t)
 {
     t.updated.connect(SigC::bind<T*>(SigC::slot(*this, &Persistor<T>::update),

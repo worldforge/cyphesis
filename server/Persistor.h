@@ -28,6 +28,7 @@ class Persistor : virtual public SigC::Object {
 
     void cEntity(Entity &, std::string &, std::string &);
     void cCharacter(Character &, std::string &, std::string &);
+    void cPlant(Plant &, std::string &, std::string &);
   public:
     // Register table with database
     explicit Persistor(bool temp = false);

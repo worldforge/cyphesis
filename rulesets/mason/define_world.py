@@ -91,9 +91,10 @@ directions = [[0,0,0.707,0.707],[0,0,0,1],[0,0,-0.707,0.707],[0,0,1,0],
               [0,0,0.387,0.921],[0,0,-0.387,0.921],[0,0,-0.921,0.387],[0,0,0.921,0.387]]
 
 forests = [
-           ('oak', 50, 50, 200, 50, 200),
-           ('fir', 100,  450,  550, -550, -550),
-           ('fir', 100, -550, -550,  450,  550)
+           ('oak', 20, 20, 200, -100, 200, 20),
+           ('oak', 20, -100, 20, 20, 200, 20),
+           ('fir', 200,  200,  300, -300, 300, 50),
+           ('fir', 200, -300, 300,  200,  300, 50)
           ]
 
 #observer calls this
@@ -112,8 +113,8 @@ def default(mapeditor):
     m.make('boundary',type='boundary',xyz=(-257, 256,settlement_height),bbox=[514,2,256])
     m.make('boundary',type='boundary',xyz=( 256,-257,settlement_height),bbox=[2,514,256])
 
-    m.make('willow',type='willow',xyz=(-10,-0,settlement_height))
-    m.make('hickory',type='hickory',xyz=(-0,-10,settlement_height))
+    m.make('fir',type='fir',xyz=(-10,-0,settlement_height))
+    m.make('fir',type='fir',xyz=(-0,-10,settlement_height))
 
     # m.make('sherwood',type='forest',xyz=(-50, 10,settlement_height),bbox=[40,40,40])
 
@@ -144,6 +145,10 @@ def default(mapeditor):
 
     for i in range(0, 20):
         m.make('lumber',type='lumber',xyz=(uniform(-200,0),uniform(-200,0),settlement_height))
+
+    for i in forests:
+        for j in range(0, i[1]):
+            m.make(i[0],type=i[0],xyz=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]))
 
     m.make('weather',type='weather',desc='object that describes the weather',
            xyz=(0,1,0), rain=0.0)

@@ -26,12 +26,12 @@
   </map>
 
   <map name="oak">
-    <string name="parent">thing</string>
+    <string name="parent">tree</string>
     <map name="attributes">
       <list name="bbox">
         <float>1</float><float>1</float><float>6</float>
       </list>
-      <string name="fruitname">acorn</string>
+      <string name="fruitName">acorn</string>
     </map>
     <map name="script">
       <string name="name">world.objects.plants.Oak</string>
@@ -46,7 +46,7 @@
         <float>-0.4</float><float>-0.4</float><float>0</float>
         <float>-0.1</float><float>-0.1</float><float>5</float>
       </list>
-      <string name="fruitname">apple</string>
+      <string name="fruitName">apple</string>
       <int name="fruitchance">15</int>
       <int name="init_fruits">3</int>
     </map>
@@ -379,7 +379,7 @@
   </map>
 
   <map name="jetty">
-    <string name="parent">thing</string>
+    <string name="parent">structure</string>
     <map name="attributes">
       <list name="bbox">
         <float>-5</float><float>-5</float><float>-2</float>

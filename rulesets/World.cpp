@@ -78,10 +78,14 @@ World::World(const std::string & id) : World_parent(id),
 
     for (int i = -5; i < 6; ++i) {
         for (int j = -5; j < 6; ++j) {
-            if (i == -5 || i == 5 || j == -5 || j == 5) {
+            if (i == 5 || j == 5) {
                 m_terrain.setBasePoint(i, j, 100 + rng() * 50);
-            } else if (i == -4 || i == 4 || j == -4 || j == 4) {
+            } else if (i == -5 || j == -5) {
+                m_terrain.setBasePoint(i, j, -10 - rng() * 20);
+            } else if (i == 4 || j == 4) {
                 m_terrain.setBasePoint(i, j, 30 + rng() * 50);
+            } else if (i == -4 || j == -4) {
+                m_terrain.setBasePoint(i, j, -2 + rng() * 5);
             } else {
                 float mult = abs(i) + abs(j);
                 m_terrain.setBasePoint(i, j, 1 + rng() * mult * 8);

@@ -1,8 +1,27 @@
-2004-04-20  Al Riddoch  <alriddoch@zepler.org>
+2004-04-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* Fix some tree related rules
+
+	* rulesets/Plant.cpp, rulesets/Plant.h: Implement touching to release
+	  seeds on all plants.
+
+	* rulesets/World.cpp: Get rid of mountains on one side.
+
+	* Add some auto generated forests to world init script.
+
+	* rulesets/mason/world/objects/plants/Fir.py,
+	  rulesets/mason/world/objects/plants/Oak.py: Simplify some scripts.
+
+	* server/CommListener.cpp: Set RESUSEADDR on listen sockets.
+
+	* server/Persistor.cpp, server/Persistor.h, server/Persistor_impl.h:
+	  Fix persistance of plant's static fruits attribute.
+
+2004-04-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* Add lists of forest areas for automatic forect population.
 
-2004-04-20  Al Riddoch  <alriddoch@zepler.org>
+2004-04-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* Fix types for boat and jetty.
 
@@ -11,7 +30,7 @@
 	* Define new boandary objects, and start work on major map
 	  improvements.
 
-2004-04-20  Al Riddoch  <alriddoch@zepler.org>
+2004-04-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: Add comments on new Python type API.
 
