@@ -15,24 +15,24 @@ class Location {
     bool distanceLeft(const Location & other, Vector3D & c) const;
     bool distanceRight(const Location & other, Vector3D & c) const;
   public:
-    Entity * ref;
-    Vector3D coords;   // Coords relative to ref entity
-    Vector3D velocity; // Veclociy vector, relative to ref entity.
-    Quaternion orientation;
+    Entity * m_loc;
+    Vector3D m_pos;   // Coords relative to m_loc entity
+    Vector3D m_velocity; // Veclociy vector, relative to m_loc entity.
+    Quaternion m_orientation;
 
-    BBox bBox;
-    bool solid;
+    BBox m_bBox;
+    bool m_solid;
 
-    Location() : ref(NULL), solid(true) { }
+    Location() : m_loc(NULL), m_solid(true) { }
     Location(Entity * rf) :
-            ref(rf), solid(true) { }
+            m_loc(rf), m_solid(true) { }
     Location(Entity * rf, const Vector3D& crds) :
-            ref(rf), coords(crds), solid(true) { }
+            m_loc(rf), m_pos(crds), m_solid(true) { }
     Location(Entity * rf, const Vector3D& crds, const Vector3D& vel) :
-            ref(rf), coords(crds), velocity(vel), solid(true) { }
+            m_loc(rf), m_pos(crds), m_velocity(vel), m_solid(true) { }
 
     bool isValid() const {
-        return ((ref != NULL) && coords.isValid());
+        return ((m_loc != NULL) && m_pos.isValid());
     }
 
     const Vector3D getXyz() const;
@@ -51,7 +51,7 @@ class Location {
     }
 
     bool inRange(const Location & other, const double range) const {
-        if (!bBox.isValid()) {
+        if (!m_bBox.isValid()) {
             //return loc.getXyz().inBox(getXyz(), Vector3D(distance));
 
             // return other.getXyz().in(getXyz(), range);
@@ -61,64 +61,64 @@ class Location {
             // return loc.getXyz().inBox(getXyz() + median, bbox + distance);
 
             //const Vector3D xyz = getXyz();
-            //return loc.getXyz().inBox(bBox.nearPoint() + xyz,
-                                      //bBox.farPoint() + xyz);
+            //return loc.getXyz().inBox(m_bBox.nearPoint() + xyz,
+                                      //m_bBox.farPoint() + xyz);
 
-            return bBox.contains(distanceTo(other), range);
+            return m_bBox.contains(distanceTo(other), range);
         }
     }
 
     bool inRange(const Vector3D & pos, const double range) const {
-        if (!coords.isValid()) { return false; }
-        if (!bBox.isValid()) {
-            // return pos.inBox(coords, Vector3D(distance));
+        if (!m_pos.isValid()) { return false; }
+        if (!m_bBox.isValid()) {
+            // return pos.inBox(m_pos, Vector3D(distance));
 
-            return pos.in(coords, range);
+            return pos.in(m_pos, range);
         } else {
             // const Vector3D & median = bmedian ? bmedian : bbox;
-            // return pos.inBox(coords + median, bbox + distance);
+            // return pos.inBox(m_pos + median, bbox + distance);
 
-            //return pos.inBox(coords + bBox.nearPoint(),
-                             //coords + bBox.farPoint());
+            //return pos.inBox(m_pos + m_bBox.nearPoint(),
+                             //m_pos + m_bBox.farPoint());
 
             Vector3D rpos = pos;
-            rpos -= coords;
-            return bBox.contains(rpos, range);
+            rpos -= m_pos;
+            return m_bBox.contains(rpos, range);
         }
     }
 
     bool hit(const Location & o) const {
-        if (!(bBox.isValid() && o.bBox.isValid())) { return false; }
+        if (!(m_bBox.isValid() && o.m_bBox.isValid())) { return false; }
         // const Vector3D & m = bmedian ? bmedian : bbox;
         // const Vector3D & om = other.bmedian ? other.bmedian : other.bbox;
-        // return coords.hitBox(m, bbox, other.coords + om, other.bbox);
-        BBox us(bBox), them(o.bBox);
-        us += coords;
-        them += o.coords;
+        // return m_pos.hitBox(m, bbox, other.m_pos + om, other.bbox);
+        BBox us(m_bBox), them(o.m_bBox);
+        us += m_pos;
+        them += o.m_pos;
         return us.hit(them);
     }
 
     double timeToHit(const Location & o, int & axis) const {
-        if (!o.bBox.isValid()) { return -1; }
-        if (o.velocity.isValid() && (o.velocity.relMag() > 0.0001)) {
+        if (!o.m_bBox.isValid()) { return -1; }
+        if (o.m_velocity.isValid() && (o.m_velocity.relMag() > 0.0001)) {
             // We don't currently have a viable way of making this work
             // so I am just saying that two moving entities cannot collide
             // Short term this should not be a problem
             return -1;
         }
-        BBox us(bBox), them(o.bBox);
-        us += coords;
-        them += o.coords;
-        return us.timeToHit(velocity, them, axis);
+        BBox us(m_bBox), them(o.m_bBox);
+        us += m_pos;
+        them += o.m_pos;
+        return us.timeToHit(m_velocity, them, axis);
     }
 
     double timeToExit(const Location & o) const {
-        if (!o.bBox.isValid()) { return -1; }
+        if (!o.m_bBox.isValid()) { return -1; }
         // It is assumed that o is the location of our current parent entity
-        // so o.bBox has the same terms of reference as we do.
-        BBox us(bBox);
-        us += coords;
-        return us.timeToExit(velocity, o.bBox);
+        // so o.m_bBox has the same terms of reference as we do.
+        BBox us(m_bBox);
+        us += m_pos;
+        return us.timeToExit(m_velocity, o.m_bBox);
     }
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);

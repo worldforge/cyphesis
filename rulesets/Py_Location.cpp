@@ -21,7 +21,7 @@ static PyObject * Location_copy(LocationObject *self, PyObject *args)
         return NULL;
     }
     LocationObject * ret = newLocationObject(NULL);
-    ret->location = new Location(self->location->ref, self->location->coords, self->location->velocity);
+    ret->location = new Location(self->location->m_loc, self->location->m_pos, self->location->m_velocity);
     ret->own = 1;
     return (PyObject *)ret;
 }
@@ -46,32 +46,32 @@ static PyObject * Location_getattr(LocationObject *self, char *name)
         return NULL;
     }
     if (strcmp(name, "parent") == 0) {
-        if (self->location->ref == NULL) {
+        if (self->location->m_loc == NULL) {
             Py_INCREF(Py_None);
             return Py_None;
         }
         ThingObject * thing = newThingObject(NULL);
-        thing->m_thing = self->location->ref;
+        thing->m_thing = self->location->m_loc;
         return (PyObject *)thing;
     }
     if (strcmp(name, "coordinates") == 0) {
         Vector3DObject * v = newVector3DObject(NULL);
-        v->coords = self->location->coords;
+        v->coords = self->location->m_pos;
         return (PyObject *)v;
     }
     if (strcmp(name, "velocity") == 0) {
         Vector3DObject * v = newVector3DObject(NULL);
-        v->coords = self->location->velocity;
+        v->coords = self->location->m_velocity;
         return (PyObject *)v;
     }
     if (strcmp(name, "orientation") == 0) {
         QuaternionObject * v = newQuaternionObject(NULL);
-        v->rotation = self->location->orientation;
+        v->rotation = self->location->m_orientation;
         return (PyObject *)v;
     }
     if (strcmp(name, "bbox") == 0) {
         BBoxObject * b = newBBoxObject(NULL);
-        b->box = self->location->bBox;
+        b->box = self->location->m_bBox;
         return (PyObject *)b;
     }
     return Py_FindMethod(Location_methods, (PyObject *)self, name);
@@ -93,17 +93,17 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
             PyErr_SetString(PyExc_TypeError, "invalid thing");
             return -1;
         }
-        self->location->ref = thing->m_thing;
+        self->location->m_loc = thing->m_thing;
         return 0;
     }
     if ((strcmp(name, "bbox") == 0) && PyBBox_Check(v)) {
         BBoxObject * box = (BBoxObject *)v;
-        self->location->bBox = box->box;
+        self->location->m_bBox = box->box;
         return 0;
     }
     if ((strcmp(name, "orientation") == 0) && PyQuaternion_Check(v)) {
         QuaternionObject * quat = (QuaternionObject *)v;
-        self->location->orientation = quat->rotation;
+        self->location->m_orientation = quat->rotation;
         return 0;
     }
     Vector3D vector;
@@ -144,13 +144,13 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
         return -1;
     }
     if (strcmp(name, "coordinates") == 0) {
-        self->location->coords = vector;
+        self->location->m_pos = vector;
     }
     if (strcmp(name, "velocity") == 0) {
-        self->location->velocity = vector;
+        self->location->m_velocity = vector;
     }
     if (strcmp(name, "bbox") == 0) {
-        self->location->bBox = BBox(vector);
+        self->location->m_bBox = BBox(vector);
     }
     return 0;
 }

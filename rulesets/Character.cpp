@@ -73,7 +73,7 @@ Character::Character(const std::string & id) : Thing(id), movement(*new Pedestri
                                                mind(NULL), externalMind(NULL)
 {
     mass = 60;
-    location.bBox = BBox(Vector3D(-0.25, -0.25, 0), Vector3D(0.25, 0.25, 2));
+    location.m_bBox = BBox(Vector3D(-0.25, -0.25, 0), Vector3D(0.25, 0.25, 2));
     attributes["mode"] = "birth";
 
     subscribe("imaginary", OP_IMAGINARY);
@@ -187,9 +187,9 @@ OpVector Character::SetupOperation(const Setup & op)
     Look * l = new Look(Look::Instantiate());
     l->SetTo(world->getId());
     res2[1] = l;
-    if (location.ref != &world->gameWorld) {
+    if (location.m_loc != &world->gameWorld) {
         l = new Look(Look::Instantiate());
-        l->SetTo(location.ref->getId());
+        l->SetTo(location.m_loc->getId());
         res2.push_back(l);
     }
     l = new Look(Look::Instantiate());
@@ -232,7 +232,7 @@ OpVector Character::TickOperation(const Tick & op)
             entmap["serialno"] = movement.m_serialno;
             Tick * tickOp = new Tick(Tick::Instantiate());
             tickOp->SetTo(getId());
-            tickOp->SetFutureSeconds(movement.getTickAddition(ret_loc.coords));
+            tickOp->SetFutureSeconds(movement.getTickAddition(ret_loc.m_pos));
             tickOp->SetArgs(Fragment::ListType(1,entmap));
             res[0] = tickOp;
             res[1] = moveOp;
@@ -453,9 +453,9 @@ OpVector Character::mindMoveOperation(const Move & op)
 				*= (drunkness * 10));
     }
     // Print out a bunch of debug info
-    debug( std::cout << ":" << location_ref << ":" << location.ref->getId()
+    debug( std::cout << ":" << location_ref << ":" << location.m_loc->getId()
                      << ":" << std::endl << std::flush;);
-    if (((location_ref == location.ref->getId()) || (location_ref.empty())) &&
+    if (((location_ref == location.m_loc->getId()) || (location_ref.empty())) &&
         (newop->GetFutureSeconds() >= 0)) {
         // Movement within current ref. Work out the speed and stuff and
         // use movement object to track movement.
@@ -477,7 +477,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         // If the position is given, and it is about right, don't bother to 
         // use it.
         if (location_coords.isValid() &&
-            (location_coords.relativeDistance(location.coords) < 0.01)) {
+            (location_coords.relativeDistance(location.m_pos) < 0.01)) {
             location_coords = Vector3D();
         }
         if (!location_coords.isValid()) {
@@ -495,7 +495,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         } else {
             debug( std::cout << "\tUsing destination for direction"
                              << std::endl << std::flush;);
-            direction = Vector3D(location_coords) -= location.coords;
+            direction = Vector3D(location_coords) -= location.m_pos;
         }
         if (direction.isValid()) {
             direction.unit();
@@ -556,7 +556,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         movement.m_orientation = location_orientation;
         debug( std::cout << "Velocity " << vel_mag << std::endl << std::flush;);
         Move * moveOp2 = movement.genMoveOperation(NULL,current_location);
-        tickOp->SetFutureSeconds(movement.getTickAddition(location.coords));
+        tickOp->SetFutureSeconds(movement.getTickAddition(location.m_pos));
         debug( std::cout << "Next tick " << tickOp->GetFutureSeconds()
                          << std::endl << std::flush;);
         debug( std::cout << "moveOp = " << moveOp << ", moveOp2 = "

@@ -18,29 +18,29 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
     bool empty = c.empty();
     if (t.getUpdateFlags() & a_loc) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "loc = '" << t.location.ref->getId() << "'";
+        q << "loc = '" << t.location.m_loc->getId() << "'";
     }
     if (t.getUpdateFlags() & a_pos) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "px = " << t.location.coords.X()
-          << ", py = " << t.location.coords.Y()
-          << ", pz = " << t.location.coords.Z();
+        q << "px = " << t.location.m_pos.X()
+          << ", py = " << t.location.m_pos.Y()
+          << ", pz = " << t.location.m_pos.Z();
     }
     if (t.getUpdateFlags() & a_orient) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "ox = " << t.location.orientation.X()
-          << ", oy = " << t.location.orientation.Y()
-          << ", oz = " << t.location.orientation.Z()
-          << ", ow = " << t.location.orientation.W();
+        q << "ox = " << t.location.m_orientation.X()
+          << ", oy = " << t.location.m_orientation.Y()
+          << ", oz = " << t.location.m_orientation.Z()
+          << ", ow = " << t.location.m_orientation.W();
     }
     if (t.getUpdateFlags() & a_bbox) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "bnx = " << t.location.bBox.nearPoint().X()
-          << ", bny = " << t.location.bBox.nearPoint().Y()
-          << ", bnz = " << t.location.bBox.nearPoint().Z()
-          << ", bfx = " << t.location.bBox.farPoint().X()
-          << ", bfy = " << t.location.bBox.farPoint().Y()
-          << ", bfz = " << t.location.bBox.farPoint().Z();
+        q << "bnx = " << t.location.m_bBox.nearPoint().X()
+          << ", bny = " << t.location.m_bBox.nearPoint().Y()
+          << ", bnz = " << t.location.m_bBox.nearPoint().Z()
+          << ", bfx = " << t.location.m_bBox.farPoint().X()
+          << ", bfy = " << t.location.m_bBox.farPoint().Y()
+          << ", bfz = " << t.location.m_bBox.farPoint().Z();
     }
     if (t.getUpdateFlags() & a_cont) {
         if (!empty) { q << ", "; } else { empty = false; }
@@ -117,21 +117,21 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
     std::stringstream q;
     q << sq << m_class << sq << cs
       << sq << t.getType() << sq << cs
-      << sq << t.location.ref->getId() << sq << cs
+      << sq << t.location.m_loc->getId() << sq << cs
       << t.contains.size() << cs
-      << t.location.coords.X() << cs
-      << t.location.coords.Y() << cs
-      << t.location.coords.Z() << cs
-      << t.location.orientation.X() << cs
-      << t.location.orientation.Y() << cs
-      << t.location.orientation.Z() << cs
-      << t.location.orientation.W() << cs
-      << t.location.bBox.nearPoint().X() << cs
-      << t.location.bBox.nearPoint().Y() << cs
-      << t.location.bBox.nearPoint().Z() << cs
-      << t.location.bBox.farPoint().X() << cs
-      << t.location.bBox.farPoint().Y() << cs
-      << t.location.bBox.farPoint().Z() << cs
+      << t.location.m_pos.X() << cs
+      << t.location.m_pos.Y() << cs
+      << t.location.m_pos.Z() << cs
+      << t.location.m_orientation.X() << cs
+      << t.location.m_orientation.Y() << cs
+      << t.location.m_orientation.Z() << cs
+      << t.location.m_orientation.W() << cs
+      << t.location.m_bBox.nearPoint().X() << cs
+      << t.location.m_bBox.nearPoint().Y() << cs
+      << t.location.m_bBox.nearPoint().Z() << cs
+      << t.location.m_bBox.farPoint().X() << cs
+      << t.location.m_bBox.farPoint().Y() << cs
+      << t.location.m_bBox.farPoint().Z() << cs
       << t.getStatus() << cs
       << sq << t.getName() << sq << cs
       << t.getMass() << cs

@@ -71,7 +71,7 @@ const Fragment Entity::get(const std::string & aname) const
     } else if (aname == "mass") {
         return Fragment(mass);
     } else if (aname == "bbox") {
-        return location.bBox.asList();
+        return location.m_bBox.asList();
     } else if (aname == "contains") {
         Fragment::ListType contlist;
         for(EntitySet::const_iterator I = contains.begin();
@@ -105,7 +105,7 @@ void Entity::set(const std::string & aname, const Fragment & attr)
     } else if ((aname == "bbox") && attr.IsList() &&
                (attr.AsList().size() > 2)) {
 	update_flags |= a_bbox;
-        location.bBox = BBox(attr.AsList());
+        location.m_bBox = BBox(attr.AsList());
     } else {
 	update_flags |= a_attr;
         attributes[aname] = attr;
@@ -123,18 +123,18 @@ void Entity::setScript(Script * scrpt)
 
 void Entity::destroy()
 {
-    assert(location.ref != NULL);
-    EntitySet & refContains = location.ref->contains;
+    assert(location.m_loc != NULL);
+    EntitySet & refContains = location.m_loc->contains;
     for(EntitySet::const_iterator I=contains.begin(); I != contains.end(); I++){
         Entity * obj = *I;
-        obj->location.ref = location.ref;
-        obj->location.coords += location.coords;
+        obj->location.m_loc = location.m_loc;
+        obj->location.m_pos += location.m_pos;
         refContains.insert(obj);
     }
     refContains.erase(this);
-    if (location.ref->contains.empty()) {
-        location.ref->update_flags |= a_cont;
-        location.ref->updated.emit();
+    if (location.m_loc->contains.empty()) {
+        location.m_loc->update_flags |= a_cont;
+        location.m_loc->updated.emit();
     }
     destroyed.emit();
 }
@@ -192,22 +192,22 @@ bool Entity::getLocation(const Fragment::MapType & entmap,
             return true;
         }
             
-        location.ref = J->second;
+        location.m_loc = J->second;
         I = entmap.find("pos");
         if (I != entmap.end()) {
-            location.coords = Vector3D(I->second.AsList());
+            location.m_pos = Vector3D(I->second.AsList());
         }
         I = entmap.find("velocity");
         if (I != entmap.end()) {
-            location.velocity = Vector3D(I->second.AsList());
+            location.m_velocity = Vector3D(I->second.AsList());
         }
         I = entmap.find("orientation");
         if (I != entmap.end()) {
-            location.orientation = Quaternion(I->second.AsList());
+            location.m_orientation = Quaternion(I->second.AsList());
         }
         I = entmap.find("bbox");
         if (I != entmap.end()) {
-            location.bBox = BBox(I->second.AsList());
+            location.m_bBox = BBox(I->second.AsList());
         }
     }
     catch (Atlas::Message::WrongTypeException) {
@@ -224,10 +224,10 @@ Vector3D Entity::getXyz() const
         static Vector3D ret(0.0,0.0,0.0);
         return ret;
     }
-    if (location.ref) {
-        return Vector3D(location.coords) += location.ref->getXyz();
+    if (location.m_loc) {
+        return Vector3D(location.m_pos) += location.m_loc->getXyz();
     } else {
-        return location.coords;
+        return location.m_pos;
     }
 }
 

@@ -50,14 +50,14 @@ double Pedestrian::getTickAddition(const Vector3D & coordinates) const
 Move * Pedestrian::genFaceOperation()
 {
     if (m_orientation.isValid() &&
-        (m_orientation != m_body.location.orientation)) {
+        (m_orientation != m_body.location.m_orientation)) {
         debug( std::cout << "Turning" << std::endl << std::flush;);
         Move * moveOp = new Move(Move::Instantiate());
         moveOp->SetTo(m_body.getId());
         Fragment::MapType entmap;
         entmap["id"] = m_body.getId();
-        entmap["loc"] = m_body.location.ref->getId();
-        entmap["pos"] = m_body.location.coords.asObject();
+        entmap["loc"] = m_body.location.m_loc->getId();
+        entmap["pos"] = m_body.location.m_pos.asObject();
         entmap["orientation"] = m_orientation.asObject();
         Fragment::ListType args(1,entmap);
         moveOp->SetArgs(args);
@@ -91,8 +91,8 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     m_lastMovementTime = current_time;
 
     Location new_loc(loc);
-    new_loc.velocity = m_velocity;
-    new_loc.orientation = m_orientation;
+    new_loc.m_velocity = m_velocity;
+    new_loc.m_orientation = m_orientation;
 
     // Create move operation
     Move * moveOp = new Move(Move::Instantiate());
@@ -136,7 +136,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     }
 
     // Update location
-    Vector3D new_coords = m_updatedPos.isValid() ? m_updatedPos : loc.coords;
+    Vector3D new_coords = m_updatedPos.isValid() ? m_updatedPos : loc.m_pos;
     new_coords += Vector3D(m_velocity) *= time_diff;
     const Vector3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
     if (target.isValid()) {
@@ -154,19 +154,19 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
             if (m_collRefChange) {
                 debug(std::cout << "CONTACT " << m_collEntity->getId()
                                 << std::endl << std::flush;);
-                if (m_collEntity == new_loc.ref->location.ref) {
+                if (m_collEntity == new_loc.m_loc->location.m_loc) {
                     debug(std::cout << "OUT" << target
-                                    << new_loc.ref->location.coords
+                                    << new_loc.m_loc->location.m_pos
                                     << std::endl << std::flush;);
-                    new_coords += new_loc.ref->location.coords;
+                    new_coords += new_loc.m_loc->location.m_pos;
                     if (m_targetPos.isValid()) {
-                        m_targetPos += new_loc.ref->location.coords;
+                        m_targetPos += new_loc.m_loc->location.m_pos;
                     }
-                } else if (m_collEntity->location.ref == new_loc.ref) {
+                } else if (m_collEntity->location.m_loc == new_loc.m_loc) {
                     debug(std::cout << "IN" << std::endl << std::flush;);
-                    new_coords -= m_collEntity->location.coords;
+                    new_coords -= m_collEntity->location.m_pos;
                     if (m_targetPos.isValid()) {
-                        m_targetPos -= m_collEntity->location.coords;
+                        m_targetPos -= m_collEntity->location.m_pos;
                     }
                 } else {
                     std::string msg = std::string("BAD COLLISION: ")
@@ -175,7 +175,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                                     + ". Making no coord adjustment.";
                     log(ERROR, msg.c_str());
                 }
-                new_loc.ref = m_collEntity;
+                new_loc.m_loc = m_collEntity;
                 m_collEntity = NULL;
                 m_collRefChange = false;
                 m_collPos = Vector3D();
@@ -186,7 +186,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     if ((m_velocity.mag() / consts::base_velocity) > 0.05) {
                         // Wrong: orientation should not be affected by a
                         // collision
-                        // new_loc.orientation = Quaternion(Vector3D(1,0,0), m_velocity.unitVector());
+                        // new_loc.m_orientation = Quaternion(Vector3D(1,0,0), m_velocity.unitVector());
                         m_collPos = Vector3D();
                         m_collEntity = NULL;
                         m_velocity.unit();
@@ -201,11 +201,11 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     reset();
                     entmap["mode"] = "standing";
                 }
-                new_loc.velocity = m_velocity;
+                new_loc.m_velocity = m_velocity;
             }
         }
     }
-    new_loc.coords = new_coords;
+    new_loc.m_pos = new_coords;
     m_updatedPos = new_coords;
 
     // Check for collisions

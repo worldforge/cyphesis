@@ -102,10 +102,10 @@ Entity * EntityFactory::newEntity(const std::string & id,
     thing->merge(attributes);
     // Get location from entity, if it is present
     if (thing->getLocation(attributes, m_world.getObjects())) {
-        thing->location.ref = &m_world.gameWorld;
+        thing->location.m_loc = &m_world.gameWorld;
     }
-    if (!thing->location.coords.isValid()) {
-        thing->location.coords = Vector3D(0,0,0);
+    if (!thing->location.m_pos.isValid()) {
+        thing->location.m_pos = Vector3D(0,0,0);
     }
     if (pc != 0) {
         pc->persist();

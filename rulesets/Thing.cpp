@@ -107,10 +107,10 @@ OpVector Thing::CreateOperation(const Create & op)
         if (parents.empty()) {
             return error(op, "Entity to be create has empty type list", getId());
         }
-        if ((ent.find("loc") == ent.end()) && (location.ref != 0)) {
-            ent["loc"] = location.ref->getId();
+        if ((ent.find("loc") == ent.end()) && (location.m_loc != 0)) {
+            ent["loc"] = location.m_loc->getId();
             if (ent.find("pos") == ent.end()) {
-                ent["pos"] = location.coords.asObject();
+                ent["pos"] = location.m_pos.asObject();
             }
         }
         const std::string & type = parents.front().AsString();
@@ -201,7 +201,7 @@ OpVector Thing::MoveOperation(const Move & op)
         return OpVector();
     }
     try {
-        Vector3D oldpos = location.coords;
+        Vector3D oldpos = location.m_pos;
         const Fragment::MapType & ent = args.front().AsMap();
         Fragment::MapType::const_iterator I = ent.find("loc");
         if ((I == ent.end()) || !I->second.IsString()) {
@@ -225,12 +225,12 @@ OpVector Thing::MoveOperation(const Move & op)
         // Up until this point nothing should have changed, but the changes
         // have all now been checked for validity.
     
-        if (location.ref != newref) {
+        if (location.m_loc != newref) {
         // Update loc
-            location.ref->contains.erase(this);
-            if (location.ref->contains.empty()) {
-                location.ref->update_flags |= a_cont;
-                location.ref->updated.emit();
+            location.m_loc->contains.erase(this);
+            if (location.m_loc->contains.empty()) {
+                location.m_loc->update_flags |= a_cont;
+                location.m_loc->updated.emit();
             }
             bool was_empty = newref->contains.empty();
             newref->contains.insert(this);
@@ -238,22 +238,22 @@ OpVector Thing::MoveOperation(const Move & op)
                 newref->update_flags |= a_cont;
                 newref->updated.emit();
             }
-            location.ref = newref;
+            location.m_loc = newref;
             update_flags |= a_loc;
         }
 
         // Update pos
-        location.coords = Vector3D(I->second.AsList());
+        location.m_pos = Vector3D(I->second.AsList());
         update_flags |= a_pos;
         I = ent.find("velocity");
         if (I != ent.end()) {
         // Update velocity
-            location.velocity = Vector3D(I->second.AsList());
+            location.m_velocity = Vector3D(I->second.AsList());
         }
         I = ent.find("orientation");
         if (I != ent.end()) {
         // Update orientation
-            location.orientation = Quaternion(I->second.AsList());
+            location.m_orientation = Quaternion(I->second.AsList());
             update_flags |= a_orient;
         }
 
@@ -268,16 +268,16 @@ OpVector Thing::MoveOperation(const Move & op)
         // sight of the other because of this movement
         if (consts::enable_ranges && isPerceptive()) {
             debug(std::cout << "testing range" << std::endl;);
-            EntitySet::const_iterator I = location.ref->contains.begin();
+            EntitySet::const_iterator I = location.m_loc->contains.begin();
             Fragment::ListType appear, disappear;
             Fragment::MapType this_ent;
             this_ent["id"] = getId();
             this_ent["stamp"] = (double)seq;
             Fragment::ListType this_as_args(1,this_ent);
-            for(;I != location.ref->contains.end(); I++) {
+            for(;I != location.m_loc->contains.end(); I++) {
                 const bool wasInRange = (*I)->location.inRange(oldpos,
                                                           consts::sight_range);
-                const bool isInRange = (*I)->location.inRange(location.coords,
+                const bool isInRange = (*I)->location.inRange(location.m_pos,
                                                           consts::sight_range);
                 // Build appear and disappear lists, and send operations
                 // Also so operations to (dis)appearing perceptive

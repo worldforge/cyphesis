@@ -1,5 +1,11 @@
 2003-03-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.h, modules/Location.cpp: Change location
+	  member names to fit the Atlas attributes they map to, and
+	  make it clear they are members.
+
+2003-03-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/Py_CreatorClient.cpp, common/BaseEntity.cpp,
 	  common/BaseEntity.h, rulesets/MemMap.cpp, rulesets/Py_Mind.cpp,
 	  rulesets/Py_Thing.cpp, rulesets/Thing.cpp, rulesets/Thing.h,

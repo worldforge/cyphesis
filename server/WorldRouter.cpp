@@ -135,16 +135,16 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
     if (!obj->location.isValid()) {
         debug(std::cout << "set loc " << &gameWorld  << std::endl
                         << std::flush;);
-        obj->location.ref = &gameWorld;
-        obj->location.coords = Vector3D(0,0,0);
-        debug(std::cout << "loc set with ref " << obj->location.ref->getId()
+        obj->location.m_loc = &gameWorld;
+        obj->location.m_pos = Vector3D(0,0,0);
+        debug(std::cout << "loc set with loc " << obj->location.m_loc->getId()
                         << std::endl << std::flush;);
     }
-    bool cont_change = obj->location.ref->contains.empty();
-    obj->location.ref->contains.insert(obj);
+    bool cont_change = obj->location.m_loc->contains.empty();
+    obj->location.m_loc->contains.insert(obj);
     if (cont_change) {
-        obj->location.ref->update_flags |= a_cont;
-        obj->location.ref->updated.emit();
+        obj->location.m_loc->update_flags |= a_cont;
+        obj->location.m_loc->updated.emit();
     }
     debug(std::cout << "Entity loc " << obj->location << std::endl
                     << std::flush;);

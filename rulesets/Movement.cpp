@@ -29,7 +29,7 @@ Movement::~Movement()
 bool Movement::updateNeeded(const Location & location) const
 {
     return((m_velocity != Vector3D(0,0,0)) ||
-           (location.velocity != Vector3D(0,0,0)));
+           (location.m_velocity != Vector3D(0,0,0)));
 }
 
 void Movement::checkCollisions(const Location & loc)
@@ -38,20 +38,20 @@ void Movement::checkCollisions(const Location & loc)
     // the next tick in consts::basic_tick seconds
     double collTime = consts::basic_tick;
     EntitySet::const_iterator I;
-    debug( std::cout << "checking " << m_body.getId() << loc.coords
-                     << loc.velocity << " in " << loc.ref->getId()
+    debug( std::cout << "checking " << m_body.getId() << loc.m_pos
+                     << loc.m_velocity << " in " << loc.m_loc->getId()
                      << " against "; );
     m_collEntity = NULL;
     // Check against everything within the current container
-    for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
+    for(I = loc.m_loc->contains.begin(); I != loc.m_loc->contains.end(); I++) {
         // Don't check for collisions with ourselves
         if ((*I) == &m_body) { continue; }
         const Location & oloc = (*I)->location;
-        if (!oloc.bBox.isValid()) { continue; }
+        if (!oloc.m_bBox.isValid()) { continue; }
         int axis;
         double t = loc.timeToHit(oloc, axis);
         if (t < 0) { continue; }
-        debug( std::cout << (*I)->getId() << oloc.coords << oloc.velocity; );
+        debug( std::cout << (*I)->getId() << oloc.m_pos << oloc.m_velocity; );
         debug( std::cout << "[" << t << "]"; );
         if (t <= collTime) {
             m_collEntity = *I;
@@ -64,8 +64,8 @@ void Movement::checkCollisions(const Location & loc)
         // Check whethe we are moving out of parents bounding box
         // If ref has no bounding box, or itself has no ref, then we can't
         // Move out of it.
-        const Location & oloc = loc.ref->location;
-        if (!oloc.bBox.isValid() || (oloc.ref == NULL)) {
+        const Location & oloc = loc.m_loc->location;
+        if (!oloc.m_bBox.isValid() || (oloc.m_loc == NULL)) {
             return;
         }
         double t = loc.timeToExit(oloc);
@@ -75,21 +75,21 @@ void Movement::checkCollisions(const Location & loc)
         collTime = t;
         debug(std::cout << "Collision with parent bounding box in "
                         << collTime << std::endl << std::flush;);
-        m_collEntity = oloc.ref;
+        m_collEntity = oloc.m_loc;
         m_collRefChange = true;
-    } else if (!m_collEntity->location.solid) {
+    } else if (!m_collEntity->location.m_solid) {
         debug(std::cout << "Collision with non-solid object" << std::endl
                         << std::flush;);
         // Non solid container - check for collision with its contents.
         const Location & lc2 = m_collEntity->location;
         Location rloc(loc);
-        rloc.ref = m_collEntity;
-        rloc.coords = Vector3D(loc.coords) -= lc2.coords;
+        rloc.m_loc = m_collEntity;
+        rloc.m_pos = Vector3D(loc.m_pos) -= lc2.m_pos;
         double coll2Time = consts::basic_tick;
         // rloc is coords of character with ref to m_collEntity
         for(I = m_collEntity->contains.begin(); I != m_collEntity->contains.end(); I++) {
             const Location & oloc = (*I)->location;
-            if (!oloc.bBox.isValid()) { continue; }
+            if (!oloc.m_bBox.isValid()) { continue; }
             int axis;
             double t = rloc.timeToHit(oloc, axis);
             if (t < 0) { continue; }
@@ -107,11 +107,11 @@ void Movement::checkCollisions(const Location & loc)
         }
     }
     debug( std::cout << "COLLISION" << std::endl << std::flush; );
-    if (collTime < getTickAddition(loc.coords)) {
-        debug(std::cout << "Setting target loc to " << loc.coords << "+"
-                        << loc.velocity << "*" << collTime;);
-        m_collPos = loc.coords;
-        m_collPos += Vector3D(loc.velocity) *= collTime;
+    if (collTime < getTickAddition(loc.m_pos)) {
+        debug(std::cout << "Setting target loc to " << loc.m_pos << "+"
+                        << loc.m_velocity << "*" << collTime;);
+        m_collPos = loc.m_pos;
+        m_collPos += Vector3D(loc.m_velocity) *= collTime;
     } else {
         m_collEntity = NULL;
         m_collRefChange = false;

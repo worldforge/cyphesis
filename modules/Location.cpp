@@ -8,8 +8,8 @@ using Atlas::Message::Object;
 
 const Vector3D Location::getXyz() const
 {
-    if (ref) {
-        return Vector3D(coords) += ref->getXyz();
+    if (m_loc) {
+        return Vector3D(m_pos) += m_loc->getXyz();
     } else {
         return Vector3D(0,0,0);
     }
@@ -17,55 +17,55 @@ const Vector3D Location::getXyz() const
 
 const Vector3D Location::getXyz(Entity * ent) const
 {
-    if (ref == ent) {
-        return Vector3D(coords);
-    } else if (ref == NULL) {
+    if (m_loc == ent) {
+        return Vector3D(m_pos);
+    } else if (m_loc == NULL) {
         return Vector3D(0,0,0);
     } else {
-        return Vector3D(coords) += ref->location.getXyz(ent);
+        return Vector3D(m_pos) += m_loc->location.getXyz(ent);
     }
 }
 
 void Location::addToObject(Object::MapType & omap) const
 {
-    if (ref!=NULL) {
-        omap["loc"] = Object(ref->getId());
+    if (m_loc!=NULL) {
+        omap["loc"] = Object(m_loc->getId());
     } else {
         omap["loc"] = Object("");
     }
-    if (coords.isValid()) {
-        omap["pos"] = coords.asObject();
+    if (m_pos.isValid()) {
+        omap["pos"] = m_pos.asObject();
     }
-    if (velocity.isValid()) {
-        omap["velocity"] = velocity.asObject();
+    if (m_velocity.isValid()) {
+        omap["velocity"] = m_velocity.asObject();
     }
-    if (orientation.isValid()) {
-        omap["orientation"] = orientation.asObject();
+    if (m_orientation.isValid()) {
+        omap["orientation"] = m_orientation.asObject();
     }
-    if (bBox.isValid()) {
-        omap["bbox"] = bBox.asList();
+    if (m_bBox.isValid()) {
+        omap["bbox"] = m_bBox.asList();
     }
 }
 
 bool Location::distanceLeft(const Location & other, Vector3D & c) const {
-    if (ref == other.ref) {
-        c -= coords;
+    if (m_loc == other.m_loc) {
+        c -= m_pos;
         return true;
-    } else if (ref == NULL) {
+    } else if (m_loc == NULL) {
         return false;
     } else {
-        bool ret = ref->location.distanceLeft(other,c);
+        bool ret = m_loc->location.distanceLeft(other,c);
         if (ret) {
-            c -= coords;
+            c -= m_pos;
         }
         return ret;
     }
 }
 
 bool Location::distanceRight(const Location & other, Vector3D & c) const {
-    // In an intact system, other->ref should never be NULL or invalid
-    if (distanceLeft(other,c) || distanceRight(other.ref->location,c)) {
-        c += other.coords;
+    // In an intact system, other->m_loc should never be NULL or invalid
+    if (distanceLeft(other,c) || distanceRight(other.m_loc->location,c)) {
+        c += other.m_pos;
         return true;
     }
     return false;
