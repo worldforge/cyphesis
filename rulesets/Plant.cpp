@@ -19,6 +19,7 @@ static const bool debug_flag = false;
 
 Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
                                                          m_radius(1),
+                                                         m_fruitChance(2),
                                                          m_fruitName("seed")
 {
     // Default to a 1m cube

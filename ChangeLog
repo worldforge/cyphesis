@@ -1,5 +1,12 @@
 2003-10-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/random.h: Fix code so there is no floating point exception
+	  if randint is passed min == max.
+
+	* rulesets/Plant.cpp: Ensure that fruitchance is always initialised.
+
+2003-10-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.h, common/Database.cpp: Add function which
 	  schedules queries required for routine database maintainance.
 

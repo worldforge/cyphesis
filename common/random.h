@@ -11,7 +11,11 @@ extern "C" {
 
 static inline int randint(int min, int max)
 {
-    return rand() % (max - min) + min;
+    if (max == min) {
+        return min;
+    } else {
+        return rand() % (max - min) + min;
+    }
 }
 
 static double uniform(double min, double max)
