@@ -35,8 +35,6 @@ Make vis re-calculated on bbox change.
 
 Make walking speed depend on height.
 
-Sort out linger on sockets.
-
 Make cyclient more robust about receiving random ops.
 
 Implement spawn points in the EntityFactory.
