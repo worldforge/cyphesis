@@ -5,6 +5,8 @@
 #ifndef COMMON_SAVE_H
 #define COMMON_SAVE_H
 
+#error This file has been removed from the build
+
 #include <Atlas/Objects/Operation/Get.h>
 
 namespace Atlas { namespace Objects { namespace Operation {

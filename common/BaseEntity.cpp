@@ -106,8 +106,6 @@ OpVector BaseEntity::SoundOperation(const Sound & op) { return OpVector(); }
 OpVector BaseEntity::TalkOperation(const Talk & op) { return OpVector(); }
 OpVector BaseEntity::TouchOperation(const Touch & op) { return OpVector(); }
 OpVector BaseEntity::TickOperation(const Tick & op) { return OpVector(); }
-OpVector BaseEntity::LoadOperation(const Load & op) { return OpVector(); }
-OpVector BaseEntity::SaveOperation(const Save & op) { return OpVector(); }
 OpVector BaseEntity::SetupOperation(const Setup & op) { return OpVector(); }
 OpVector BaseEntity::AppearanceOperation(const Appearance & op) { return OpVector(); }
 OpVector BaseEntity::DisappearanceOperation(const Disappearance & op) { return OpVector(); }
@@ -168,7 +166,8 @@ OpVector BaseEntity::callOperation(const RootOperation & op)
     return OpVector();
 }
 
-OpVector BaseEntity::error(const RootOperation& op, const char* errstring) const
+OpVector BaseEntity::error(const RootOperation& op, const char* errstring,
+                           const std::string & to) const
 {
     Error * e = new Error(Error::Instantiate());
 
@@ -183,6 +182,7 @@ OpVector BaseEntity::error(const RootOperation& op, const char* errstring) const
     e->SetArgs(args);
     e->SetRefno(op.GetSerialno());
     e->SetSerialno(opSerialNo());
+    e->SetTo(to);
 
     return OpVector(1,e);
 }

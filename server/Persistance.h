@@ -32,13 +32,6 @@ class Persistance {
     Account * getAccount(const std::string &);
     void putAccount(const Account &);
     
-    //bool findEntity(const std::string &);
-    bool getEntity(const std::string &, Atlas::Message::Object::MapType &);
-    void putEntity(const Entity &);
-
-    bool getMind(const std::string &, Atlas::Message::Object::MapType &);
-    void putMind(const std::string &, const Atlas::Message::Object::MapType &);
-
     bool getRules(Atlas::Message::Object::MapType & m);
     bool clearRules();
 };

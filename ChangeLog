@@ -1,3 +1,37 @@
+2002-12-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.cpp, common/BaseEntity.h, rulesets/Character.cpp,
+	  rulesets/Food.cpp, rulesets/Thing.cpp, rulesets/World.cpp:
+	  Add arg to error method specifying where the error should go. Use
+	  this arg to ensure that errors don't get broadcast.
+
+	* common/Database.cpp, common/Database.h, common/const.cpp,
+	  server/Persistor.cpp, server/Restoration.cpp,
+	  server/WorldRouter.cpp
+	  Change id and loc column in entity tables to integer for
+	  performance. Add id generator sequence to database
+
+	* common/Database.cpp, common/Database.h, server/Persistance.cpp,
+	  server/Persistance.h: Remove old legacy world, mind and server
+	  tables as they are no longer used.
+
+	* common/BaseEntity.cpp, common/Load.h, common/Save.h,
+	  common/custom.cpp, common/op_switch.h, common/operations.cpp,
+	  common/operations.h, common/types.h, rulesets/BaseMind.cpp,
+	  rulesets/BaseMind.h, rulesets/Character.cpp, rulesets/Character.h,
+	  server/Admin.cpp, server/Admin.h, server/server.cpp,
+	  tools/cycmd.cpp: Remove Load and Save ops.
+
+	* rulesets/Area.cpp, rulesets/Character.cpp, rulesets/Line.cpp,
+	  rulesets/Plant.cpp: Fix != to |= when setting update flags.
+
+	* server/CommMetaClient.cpp, server/CommMetaClient.h,
+	  server/CommServer.cpp, server/CommServer.h, server/server.cpp:
+	  Add mechanism for sockets to be called whenever the server
+	  is idle, so that they do period things. Use this mechanis,
+	  to handle sending periodic packets to the metaserver, removing
+	  special case code from CommServer.
+
 2002-12-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.h, common/BaseWorld.cpp, common/BaseWorld.h,

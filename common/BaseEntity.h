@@ -81,8 +81,6 @@ class BaseEntity : public SigC::Object {
     virtual OpVector TouchOperation(const Touch & op);
     virtual OpVector TickOperation(const Tick & op);
     virtual OpVector LookOperation(const Look & op);
-    virtual OpVector LoadOperation(const Load & op);
-    virtual OpVector SaveOperation(const Save & op);
     virtual OpVector SetupOperation(const Setup & op);
     virtual OpVector AppearanceOperation(const Appearance & op);
     virtual OpVector DisappearanceOperation(const Disappearance & op);
@@ -94,7 +92,8 @@ class BaseEntity : public SigC::Object {
     OpNo opEnumerate(const RootOperation & op, const OpNoDict & d) const;
     void subscribe(const std::string & op);
     OpVector callOperation(const RootOperation & op);
-    OpVector error(const RootOperation & op, const char * errstring) const;
+    OpVector error(const RootOperation & op, const char * errstring,
+                   const std::string & to = "") const;
 
     void setRefnoOp(RootOperation * op, const RootOperation & ref_op) const {
         op->SetRefno(ref_op.GetSerialno());

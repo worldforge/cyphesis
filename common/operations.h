@@ -34,8 +34,6 @@ namespace Atlas {
             class Appearance;
             class Disappearance;
             class Error;
-            class Load;
-            class Save;
             class Setup;
             class Tick;
             class Eat;
@@ -72,8 +70,6 @@ using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Error;
-using Atlas::Objects::Operation::Load;
-using Atlas::Objects::Operation::Save;
 using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Eat;

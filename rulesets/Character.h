@@ -90,8 +90,6 @@ class Character : public Thing {
     virtual OpVector mindTickOperation(const Tick & op);
     virtual OpVector mindTouchOperation(const Touch & op);
     virtual OpVector mindLookOperation(const Look & op);
-    virtual OpVector mindLoadOperation(const Load & op);
-    virtual OpVector mindSaveOperation(const Save & op);
     virtual OpVector mindSetupOperation(const Setup & op);
     virtual OpVector mindAppearanceOperation(const Appearance & op);
     virtual OpVector mindDisappearanceOperation(const Disappearance & op);
@@ -120,8 +118,6 @@ class Character : public Thing {
     bool w2mTouchOperation(const Touch & op);
     bool w2mTickOperation(const Tick & op);
     bool w2mLookOperation(const Look & op);
-    bool w2mLoadOperation(const Load & op);
-    bool w2mSaveOperation(const Save & op);
     bool w2mSetupOperation(const Setup & op);
     bool w2mTalkOperation(const Talk & op);
     bool w2mAppearanceOperation(const Appearance & op);

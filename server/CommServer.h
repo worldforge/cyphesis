@@ -9,17 +9,17 @@
 #include <string>
 
 class CommSocket;
+class CommIdleSocket;
 class CommMetaClient;
 class ServerRouting;
 
 typedef std::set<CommSocket *> comm_set_t;
+typedef std::set<CommIdleSocket *> commi_set_t;
 
 class CommServer {
   private:
     comm_set_t sockets;
-    time_t metaserverTime;
-    CommMetaClient & metaClient;
-    bool useMetaserver;
+    commi_set_t idleSockets;
 
     void idle();
 
@@ -30,19 +30,18 @@ class CommServer {
     CommServer(ServerRouting & srv, const std::string & ident);
     ~CommServer();
 
-    void setupMetaserver(const std::string &);
-    void shutdown();
-
     void loop();
     void removeSocket(CommSocket * client, char * msg);
     void removeSocket(CommSocket * client);
 
-    int numClients() {
-        return sockets.size();
-    }
-
     void add(CommSocket * cs) {
         sockets.insert(cs);
+    }
+
+    // There is current no mechanism for removing things from the
+    // idle set. If one is needed in future, it must be implemented.
+    void addIdle(CommIdleSocket * cs) {
+        idleSockets.insert(cs);
     }
 };
 

@@ -77,8 +77,6 @@ class BaseMind : public Entity {
 
     virtual OpVector SightOperation(const Sight & op);
     virtual OpVector SoundOperation(const Sound & op);
-    virtual OpVector SaveOperation(const Save & op);
-    virtual OpVector LoadOperation(const Load & op);
     virtual OpVector AppearanceOperation(const Appearance & op);
     virtual OpVector DisappearanceOperation(const Disappearance & op);
     //RootOperation * get_op_name_and_sub(RootOperation & op, std::string & name);

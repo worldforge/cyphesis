@@ -1,4 +1,4 @@
-bin_PROGRAMS = cycmd cypasswd cydbload cyloadrules cywatchdog cyctrl cyconfig
+bin_PROGRAMS = cycmd cypasswd cyloadrules cywatchdog cyctrl cyconfig
 
 bin_SCRIPTS = cyphesis-setup
 
@@ -12,9 +12,9 @@ cycmd_SOURCES = cycmd.cpp
 
 cycmd_LDADD = ../common/Database.o ../common/accountbase.o ../common/operations.o ../common/globals.o ../common/log.o ../common/const.o $(READLINE_LIBS)
 
-cydbload_SOURCES = cydbload.cpp
+# cydbload_SOURCES = cydbload.cpp
 
-cydbload_LDADD = ../common/Database.o ../common/globals.o ../common/log.o
+# cydbload_LDADD = ../common/Database.o ../common/globals.o ../common/log.o
 
 cyloadrules_SOURCES = cyloadrules.cpp
 

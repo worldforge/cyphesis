@@ -19,8 +19,6 @@
 #include <common/inheritance.h>
 #include <common/system.h>
 
-#include <common/Load.h>
-
 #include <varconf/Config.h>
 
 static const bool debug_flag = false;
@@ -67,11 +65,6 @@ int main(int argc, char ** argv)
 
     if (global_conf->findItem("cyphesis", "inittime")) {
         timeoffset = global_conf->getItem("cyphesis","inittime");
-    }
-
-    bool load_database = false;
-    if (global_conf->findItem("cyphesis", "loadonstartup")) {
-        load_database = global_conf->getItem("cyphesis","loadonstartup");
     }
 
     bool useMetaserver = false;
@@ -127,24 +120,13 @@ int main(int argc, char ** argv)
     commServer.add(listener);
 
     if (useMetaserver) {
-        commServer.setupMetaserver(mserver);
-    }
-
-    if (load_database) {
-        Load l(Load::Instantiate());
-        l.SetFrom("admin");
-        BaseEntity * admin = commServer.server.getObject("admin");
-        if (admin == NULL) {
-            log(ERROR, "Admin account not found, world not loaded.");
-        } else {
-            log(INFO, "Loading world from legacy database...");
-            OpVector res = admin->LoadOperation(l);
-            // Delete the resulting op
-            OpVector::const_iterator I = res.begin();
-            for(;I != res.end(); I++) { delete *I; }
-            log(INFO, " world loaded");
+        CommMetaClient * cmc = new CommMetaClient(commServer);
+        if (cmc->setup(mserver)) {
+            commServer.add(cmc);
+            commServer.addIdle(cmc);
         }
     }
+
     log(INFO, "Running");
 
     // Inform things that want to know that we are running.
@@ -169,8 +151,6 @@ int main(int argc, char ** argv)
     // It is assumed that any preparation for the shutdown that is required
     // by the game has been done before exit flag was set.
     log(NOTICE, "Performing clean shutdown...");
-
-    commServer.shutdown();
 
     } // close scope of CommServer, which cause the destruction of the
       // server and world objects, and the entire world contents

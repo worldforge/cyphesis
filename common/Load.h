@@ -5,6 +5,8 @@
 #ifndef COMMON_LOAD_H
 #define COMMON_LOAD_H
 
+#error This file has been removed from the build
+
 #include <Atlas/Objects/Operation/Set.h>
 
 namespace Atlas { namespace Objects { namespace Operation {

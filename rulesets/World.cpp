@@ -63,7 +63,7 @@ OpVector World::SetOperation(const Set & op)
     }
     catch (Atlas::Message::WrongTypeException) {
         log(ERROR, "EXCEPTION: Malformed set operation");
-        return error(op, "Malformed set operation\n");
+        return error(op, "Malformed set operation", getId());
     }
     return OpVector();
 }

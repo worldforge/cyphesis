@@ -17,8 +17,7 @@
 static const bool debug_flag = false;
 
 CommServer::CommServer(ServerRouting & svr, const std::string & ident) :
-              metaserverTime(-1), metaClient(* new CommMetaClient(*this)),
-              useMetaserver(true), identity(ident), server(svr)
+              identity(ident), server(svr)
 {
 }
 
@@ -30,33 +29,14 @@ CommServer::~CommServer()
     }
 }
 
-void CommServer::setupMetaserver(const std::string & address)
-{
-    if (metaClient.setup(address)) {
-        add(&metaClient);
-        useMetaserver = true;
-    } else {
-        useMetaserver = false;
-    }
-    return;
-}
-
-void CommServer::shutdown()
-{
-    if (useMetaserver) {
-        metaClient.metaserverTerminate();
-    }
-}
-
 inline void CommServer::idle()
 {
     // Update the time, and get the core server object to process
     // stuff.
     time_t ctime = time(NULL);
-    if ((ctime > (metaserverTime + 5 * 60)) && useMetaserver) {
-        debug(std::cout << "Sending keepalive" << std::endl << std::flush;);
-        metaserverTime = ctime;
-        metaClient.metaserverKeepalive();
+    commi_set_t::const_iterator I;
+    for(I = idleSockets.begin(); I != idleSockets.end(); ++I) {
+        (*I)->idle(ctime);
     }
     // server.idle() is inlined, and simply calls the world idle method,
     // which is not directly accessible from here.

@@ -41,6 +41,11 @@ static inline char *unpack_uint32(uint32_t *dest, char *buffer)
     return buffer+sizeof(uint32_t);
 }
 
+CommMetaClient::~CommMetaClient()
+{
+    metaserverTerminate();
+}
+
 int CommMetaClient::getFd() const
 {
     return metaFd;
@@ -135,4 +140,12 @@ void CommMetaClient::metaserverTerminate()
 
     pack_uint32(TERMINATE, mesg, &packet_size);
     sendto(metaFd,mesg,packet_size, 0, (sockaddr *)&meta_sa, sizeof(meta_sa));
+}
+
+void CommMetaClient::idle(time_t t)
+{
+    if (t > (lastTime + 5 * 60)) {
+        lastTime = t;
+        metaserverKeepalive();
+    }
 }

@@ -23,9 +23,6 @@ static const bool debug_flag = false;
 Database * Database::m_instance = NULL;
 
 Database::Database() : account_db("account"),
-                       world_db("world"),
-                       mind_db("mind"),
-                       server_db("server"),
                        rule_db("rules"),
                        m_connection(NULL)
 {
@@ -122,99 +119,6 @@ bool Database::initAccount(bool createTables)
             }
         } else {
             log(ERROR, "Account table does not exist in database");
-            return false;
-        }
-    }
-    return true;
-}
-
-bool Database::initWorld(bool createTables)
-{
-    int status = 0;
-    status = PQsendQuery(m_connection, "SELECT * FROM world WHERE id = 'test' AND contents = 'test';");
-    if (!status) {
-        reportError();
-        return false;
-    }
-    
-    if (!tuplesOk()) {
-        debug(std::cout << "World table does not exist"
-                        << std::endl << std::flush;);
-        if (createTables) {
-            status = PQsendQuery(m_connection, "CREATE TABLE world ( id varchar(80) PRIMARY KEY, contents text );");
-            if (!status) {
-                reportError();
-                return false;
-            }
-            if (!commandOk()) {
-                log(ERROR, "Error creating world table in database");
-                reportError();
-                return false;
-            }
-        } else {
-            log(ERROR, "World table does not exist in database");
-            return false;
-        }
-    }
-    return true;
-}
-
-bool Database::initMind(bool createTables)
-{
-    int status = 0;
-    status = PQsendQuery(m_connection, "SELECT * FROM mind WHERE id = 'test' AND contents = 'test';");
-    if (!status) {
-        reportError();
-        return false;
-    }
-    
-    if (!tuplesOk()) {
-        debug(std::cout << "Mind table does not exist"
-                        << std::endl << std::flush;);
-        if (createTables) {
-            status = PQsendQuery(m_connection, "CREATE TABLE mind ( id varchar(80) PRIMARY KEY, contents text );");
-            if (!status) {
-                reportError();
-                return false;
-            }
-            if (!commandOk()) {
-                log(ERROR, "Error creating mind table in database");
-                reportError();
-                return false;
-            }
-        } else {
-            log(ERROR, "Mind table does not exist in database");
-            return false;
-        }
-    }
-    return true;
-}
-
-bool Database::initServer(bool createTables)
-{
-    int status = 0;
-    status = PQsendQuery(m_connection, "SELECT * FROM server WHERE id = 'test' AND contents = 'test';");
-    if (!status) {
-        reportError();
-        return false;
-    }
-    
-    if (!tuplesOk()) {
-        debug(std::cout << "Server table does not exist"
-                        << std::endl << std::flush;);
-        if (createTables) {
-            status = PQsendQuery(m_connection, "CREATE TABLE server ( id varchar(80) PRIMARY KEY, contents text );");
-            if (!status) {
-                reportError();
-                return false;
-            }
-            if (!commandOk()) {
-                log(ERROR, "Error creating server table in database");
-                reportError();
-                return false;
-            }
-        } else {
-            log(ERROR, "Server table does not exist in database");
             return false;
         }
     }
@@ -468,8 +372,65 @@ bool Database::clearTable(const std::string & table)
 
 void Database::reportError()
 {
-    std::string msg = std::string("DATABASE ERROR: ") + PQerrorMessage(m_connection);
+    std::string msg = std::string("DATABASE ERROR: ") +
+                      PQerrorMessage(m_connection);
     log(ERROR, msg.c_str());
+}
+
+bool Database::registerEntityIdGenerator()
+{
+    int status = PQsendQuery(m_connection, "SELECT * FROM entity_ent_id_seq;");
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return false;
+    }
+    if (!tuplesOk()) {
+        debug(reportError(););
+        debug(std::cout << "Sequence does not yet exist"
+                        << std::endl << std::flush;);
+    } else {
+        debug(std::cout << "Sequence exists" << std::endl << std::flush;);
+        return true;
+    }
+    status = PQsendQuery(m_connection, "CREATE SEQUENCE entity_ent_id_seq;");
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return false;
+    }
+    if (!commandOk()) {
+        debug(reportError(););
+        debug(std::cout << "Sequence creation failed"
+                        << std::endl << std::flush;);
+        return false;
+    } else {
+        debug(std::cout << "Sequence created" << std::endl << std::flush;);
+        return true;
+    }
+
+}
+
+std::string Database::getEntityId()
+{
+    int status = PQsendQuery(m_connection,
+                             "SELECT nextval('entity_ent_id_seq');");
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return false;
+    }
+    PGresult * res;
+    if ((res = PQgetResult(m_connection)) == NULL) {
+        log(ERROR, "Error getting new ID.");
+        reportError();
+        return "";
+    }
+    while (PQgetResult(m_connection) != NULL) {
+        log(ERROR, "Extra database result to simple query.");
+    };
+    const char * id = PQgetvalue(res, 0, 0);
+    return id;
 }
 
 bool Database::registerEntityTable(const std::string & classname,
@@ -487,14 +448,14 @@ bool Database::registerEntityTable(const std::string & classname,
     }
     if (!parent.empty()) {
         if (entityTables.empty()) {
-            log(ERROR, "Attempt to create non-root entity class table when no root registered.");
+            log(ERROR, "Registering non-root entity table when no root registered.");
             debug(std::cerr << "Table for class " << classname
                             << " cannot be non-root."
                             << std::endl << std::flush;);
             return false;
         }
         if (entityTables.find(parent) == entityTables.end()) {
-            log(ERROR, "Attempt to create entity class table with non existant parent.");
+            log(ERROR, "Registering entity table with non existant parent.");
             debug(std::cerr << "Table for class " << classname
                             << " cannot have non-existant parent " << parent
                             << std::endl << std::flush;);
@@ -505,6 +466,10 @@ bool Database::registerEntityTable(const std::string & classname,
         debug(std::cerr << "Table for class " << classname
                         << " cannot be root." << std::endl << std::flush;);
         return false;
+    } else {
+        if (!registerEntityIdGenerator()) {
+            log(ERROR, "Faled to register Id generator in database.");
+        }
     }
     // At this point we know the table request make sense.
     entityTables[classname] = parent;
@@ -519,7 +484,7 @@ bool Database::registerEntityTable(const std::string & classname,
     }
     createquery += "(";
     if (parent.empty()) {
-        createquery += "id varchar(80) UNIQUE PRIMARY KEY, ";
+        createquery += "id integer UNIQUE PRIMARY KEY, ";
     }
     Atlas::Message::Object::MapType::const_iterator I = row.begin();
     for(; I != row.end(); ++I) {
@@ -745,9 +710,14 @@ const DatabaseResult Database::selectEntityRow(const std::string & id,
 
 const DatabaseResult Database::selectClassByLoc(const std::string & loc)
 {
-    std::string query = "SELECT id, class FROM entity_ent WHERE loc='";
-    query += loc;
-    query += "';";
+    std::string query = "SELECT id, class FROM entity_ent WHERE loc";
+    if (loc.empty()) {
+        query += " is null;";
+    } else {
+        query += "=";
+        query += loc;
+        query += ";";
+    }
 
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     int status = PQsendQuery(m_connection, query.c_str());
@@ -761,6 +731,7 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
     if ((res = PQgetResult(m_connection)) == 0) {
         log(ERROR, "Error selecting entity row.");
         reportError();
+        std::cout << "QUERY: " << query << std::endl << std::flush;
         debug(std::cout << "Row query didn't work"
                         << std::endl << std::flush;);
         return DatabaseResult(0);
@@ -768,6 +739,7 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         log(ERROR, "Error selecting entity row.");
         reportError();
+        std::cout << "QUERY: " << query << std::endl << std::flush;
         res = 0;
     }
 

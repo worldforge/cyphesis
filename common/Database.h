@@ -34,9 +34,6 @@ class Database {
     static Database * m_instance;
 
     std::string account_db;
-    std::string world_db;
-    std::string mind_db;
-    std::string server_db;
     std::string rule_db;
 
     TableDict entityTables;
@@ -54,9 +51,6 @@ class Database {
 
   public:
     const std::string & account() const { return account_db; }
-    const std::string & world() const { return world_db; }
-    const std::string & mind() const { return mind_db; }
-    const std::string & server() const { return server_db; }
     const std::string & rule() const { return rule_db; }
 
     bool decodeObject(const std::string & data,
@@ -81,12 +75,12 @@ class Database {
 
     bool initConnection(bool createDatabase = false);
     bool initAccount(bool createTables = false);
-    bool initWorld(bool createTables = false);
-    bool initMind(bool createTables = false);
-    bool initServer(bool createTables = false);
     bool initRule(bool createTables = false);
 
     void shutdownConnection();
+
+    bool registerEntityIdGenerator();
+    std::string getEntityId();
 
     bool registerEntityTable(const std::string & classname,
                              const Atlas::Message::Object::MapType & row,

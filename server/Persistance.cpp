@@ -37,30 +37,9 @@ bool Persistance::init()
         return false;
     }
     bool i = p->m_connection.initAccount(true);
-    bool j = p->m_connection.initWorld(true);
-    bool k = p->m_connection.initMind(true);
-    bool l = p->m_connection.initServer(true);
-    bool m = p->m_connection.initRule(true);
+    bool j = p->m_connection.initRule(true);
 
-#if 0
-    Atlas::Message::Object::MapType desc;
-    desc["name"] = "                                                                                ";
-    desc["height"] = 1.0;
-    desc["fingers"] = 10;
-    p->m_connection.registerEntityTable("entity", desc);
-
-    Atlas::Message::Object::MapType chardesc;
-    chardesc["mode"] = "                                                                                ";
-    p->m_connection.registerEntityTable("character", chardesc, "entity");
-
-    Atlas::Message::Object::MapType piledesc;
-    piledesc["stuff"] = "                                                                                ";
-    piledesc["count"] = 0;
-    piledesc["volume"] = 10;
-    p->m_connection.registerEntityTable("pile", piledesc, "entity");
-#endif
-
-    return (i && j && k && l && m);
+    return (i && j);
 }
 
 void Persistance::shutdown()
@@ -120,26 +99,6 @@ Account * Persistance::getAccount(const std::string & name)
 void Persistance::putAccount(const Account & ac)
 {
     m_connection.putObject(m_connection.account(), ac.getId(), ac.asObject().AsMap());
-}
-
-bool Persistance::getEntity(const std::string & id, Fragment::MapType & entity)
-{
-    return m_connection.getObject(m_connection.world(), id, entity);
-}
-
-void Persistance::putEntity(const Entity & be)
-{
-    m_connection.putObject(m_connection.world(), be.getId(), be.asObject().AsMap());
-}
-
-bool Persistance::getMind(const std::string & id, Fragment::MapType & entity)
-{
-    return m_connection.getObject(m_connection.mind(), id, entity);
-}
-
-void Persistance::putMind(const std::string & id, const Fragment::MapType & be)
-{
-    m_connection.putObject(m_connection.mind(), id, be);
 }
 
 bool Persistance::getRules(Fragment::MapType & m)

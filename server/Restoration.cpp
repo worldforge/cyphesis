@@ -66,7 +66,7 @@ void Restoration::restore(const std::string & id,
     if (loc == 0) {
         debug(std::cout << "DEBUG: No creation of world object " << id
                         << std::endl << std::flush;);
-        if (id != "world_0") {
+        if (id != server.world.gameWorld.getId()) {
             abort();
         }
         ent = &server.world.gameWorld;
@@ -128,8 +128,8 @@ void Restoration::read()
         debug(std::cout << "DEBUG: No world in database"
                         << std::endl << std::flush;);
         database.clearTable("entity_ent");
-        database.createEntityRow("world", consts::rootWorldId, "class, loc",
-                                                               "'world', ''");
+        database.createEntityRow("world", consts::rootWorldId, "class",
+                                                               "'world'");
         return;
     }
     if (res.size() > 1) {

@@ -76,12 +76,6 @@
         case OP_LOOK: \
             return _prefix ## LookOperation((const Look &)_op); \
             break; \
-        case OP_LOAD: \
-            return _prefix ## LoadOperation((const Load &)_op); \
-            break; \
-        case OP_SAVE: \
-            return _prefix ## SaveOperation((const Save &)_op); \
-            break; \
         case OP_SETUP: \
             return _prefix ## SetupOperation((const Setup &)_op); \
             break; \

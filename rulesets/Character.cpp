@@ -134,10 +134,10 @@ void Character::set(const std::string & aname, const Fragment & attr)
 {
     if ((aname == "drunkness") && attr.IsFloat()) {
         drunkness = attr.AsFloat();
-	update_flags != a_drunk;
+        update_flags |= a_drunk;
     } else if ((aname == "sex") && attr.IsString()) {
         sex = attr.AsString();
-	update_flags != a_sex;
+        update_flags |= a_sex;
     } else {
         Thing::set(aname, attr);
     }
@@ -319,10 +319,10 @@ OpVector Character::EatOperation(const Eat & op)
 OpVector Character::NourishOperation(const Nourish & op)
 {
     if (op.GetArgs().empty()) {
-        return error(op, "Nourish has no argument");
+        return error(op, "Nourish has no argument", getId());
     }
     if (!op.GetArgs().front().IsMap()) {
-        return error(op, "Nourish arg is malformed");
+        return error(op, "Nourish arg is malformed", getId());
     }
     const Fragment::MapType & nent = op.GetArgs().front().AsMap();
     Fragment::MapType::const_iterator I = nent.find("mass");
@@ -700,16 +700,6 @@ OpVector Character::mindLookOperation(const Look & op)
     return OpVector(1,l);
 }
 
-OpVector Character::mindLoadOperation(const Load & op)
-{
-    return OpVector();
-}
-
-OpVector Character::mindSaveOperation(const Save & op)
-{
-    return OpVector();
-}
-
 OpVector Character::mindCutOperation(const Cut & op)
 {
     Cut * c = new Cut(op);
@@ -844,16 +834,6 @@ bool Character::w2mSetOperation(const Set & op)
 }
 
 bool Character::w2mLookOperation(const Look & op)
-{
-    return false;
-}
-
-bool Character::w2mLoadOperation(const Load & op)
-{
-    return false;
-}
-
-bool Character::w2mSaveOperation(const Save & op)
 {
     return false;
 }

@@ -6,8 +6,6 @@
 #include "config.h"
 #endif
 
-#include <common/Load.h>
-#include <common/Save.h>
 #include <common/accountbase.h>
 #include <common/const.h>
 #include <common/globals.h>
@@ -52,8 +50,6 @@ using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Get;
 using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Load;
-using Atlas::Objects::Operation::Save;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Talk;
@@ -65,9 +61,7 @@ static void help()
     std::cout << "    help      Display this help" << std::endl;
     std::cout << "    look      Return current server lobby" << std::endl;
     std::cout << "    logout    Log user out of server" << std::endl;
-    std::cout << "    load      Load world state from database status" << std::endl;
     std::cout << "    query     Examine an object on the server" << std::endl;
-    std::cout << "    save      Save world state to database status" << std::endl;
     std::cout << "    stat      Return current server status" << std::endl;
     std::cout << std::endl << std::flush;
 }
@@ -490,14 +484,6 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             reply_expected = false;
         }
         encoder->StreamMessage(&l);
-    } else if (cmd == "load") {
-        Load l = Load::Instantiate();
-        l.SetFrom(accountId);
-        encoder->StreamMessage(&l);
-    } else if (cmd == "save") {
-        Save s = Save::Instantiate();
-        s.SetFrom(accountId);
-        encoder->StreamMessage(&s);
     } else if (cmd == "say") {
         Talk t = Talk::Instantiate();
         Atlas::Message::Object::MapType ent;

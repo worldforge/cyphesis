@@ -99,11 +99,11 @@ OpVector Thing::CreateOperation(const Create & op)
         Fragment::MapType ent = args.front().AsMap();
         Fragment::MapType::const_iterator I = ent.find("parents");
         if ((I == ent.end()) || !I->second.IsList()) {
-            return error(op, "Entity to be created has no type");
+            return error(op, "Entity to be created has no type", getId());
         }
         const Fragment::ListType & parents = I->second.AsList();
         if (parents.empty()) {
-            return error(op, "Entity to be create has empty type list");
+            return error(op, "Entity to be create has empty type list", getId());
         }
         if ((ent.find("loc") == ent.end()) && (location.ref != 0)) {
             ent["loc"] = location.ref->getId();
@@ -126,7 +126,7 @@ OpVector Thing::CreateOperation(const Create & op)
     }
     catch (Atlas::Message::WrongTypeException) {
         log(ERROR, "EXCEPTION: Malformed object to be created");
-        return error(op, "Malformed object to be created\n");
+        return error(op, "Malformed object to be created", getId());
     }
     return OpVector();
 }
@@ -151,7 +151,7 @@ OpVector Thing::BurnOperation(const Burn & op)
         return res;
     }
     if (op.GetArgs().empty() || !op.GetArgs().front().IsMap()) {
-    return error(op, "Fire op has no argument");
+        return error(op, "Fire op has no argument", getId());
     }
     Fragment::MapType::const_iterator I = attributes.find("burn_speed");
     if ((I == attributes.end()) || !I->second.IsNum()) {
@@ -201,21 +201,21 @@ OpVector Thing::MoveOperation(const Move & op)
         const Fragment::MapType & ent = args.front().AsMap();
         Fragment::MapType::const_iterator I = ent.find("loc");
         if ((I == ent.end()) || !I->second.IsString()) {
-            return error(op, "Move op has no loc");
+            return error(op, "Move op has no loc", getId());
         }
         const std::string & ref = I->second.AsString();
         EntityDict::const_iterator J = world->getObjects().find(ref);
         if (J == world->getObjects().end()) {
-            return error(op, "Move op loc invalid");
+            return error(op, "Move op loc invalid", getId());
         }
         debug(std::cout << "{" << ref << "}" << std::endl << std::flush;);
         Entity * newref = J->second;
         if (newref == this) {
-            return error(op, "Attempt by entity to move into itself");
+            return error(op, "Attempt by entity to move into itself", getId());
         }
         I = ent.find("pos");
         if ((I == ent.end()) || !I->second.IsList()) {
-            return error(op, "Move op has no pos");
+            return error(op, "Move op has no pos", getId());
         }
 
         // Up until this point nothing should have changed, but the changes
@@ -262,8 +262,10 @@ OpVector Thing::MoveOperation(const Move & op)
             this_ent["stamp"] = (double)seq;
             Fragment::ListType this_as_args(1,this_ent);
             for(;I != location.ref->contains.end(); I++) {
-                const bool wasInRange = (*I)->location.inRange(oldpos, consts::sight_range);
-                const bool isInRange = (*I)->location.inRange(location.coords, consts::sight_range);
+                const bool wasInRange = (*I)->location.inRange(oldpos,
+                                                          consts::sight_range);
+                const bool isInRange = (*I)->location.inRange(location.coords,
+                                                          consts::sight_range);
                 // Build appear and disappear lists, and send operations
                 // Also so operations to (dis)appearing perceptive
                 // entities saying that we are (dis)appearing
@@ -320,7 +322,7 @@ OpVector Thing::MoveOperation(const Move & op)
     }
     catch (Atlas::Message::WrongTypeException) {
         log(ERROR, "EXCEPTION: Malformed object to be moved");
-        return error(op, "Malformed object to be moved\n");
+        return error(op, "Malformed object to be moved", getId());
     }
     return OpVector();
 }
@@ -358,7 +360,7 @@ OpVector Thing::SetOperation(const Set & op)
     }
     catch (Atlas::Message::WrongTypeException) {
         log(ERROR, "EXCEPTION: Malformed set operation");
-        return error(op, "Malformed set operation\n");
+        return error(op, "Malformed set operationn", getId());
     }
     return OpVector();
 }

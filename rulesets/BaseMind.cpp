@@ -15,8 +15,6 @@
 #include <common/Cut.h>
 #include <common/Eat.h>
 #include <common/Burn.h>
-#include <common/Load.h>
-#include <common/Save.h>
 
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Sight.h>
@@ -43,8 +41,6 @@ BaseMind::BaseMind(const std::string & id, const std::string & body_name)
 
     subscribe("sight", OP_SIGHT);
     subscribe("sound", OP_SOUND);
-    subscribe("save", OP_SAVE);
-    subscribe("load", OP_LOAD);
     subscribe("tick", OP_TICK);
     subscribe("setup", OP_SETUP);
     subscribe("appearance", OP_APPEARANCE);
@@ -457,45 +453,6 @@ OpVector BaseMind::DisappearanceOperation(const Disappearance & op)
     script->Operation("disappearance", op, res);
     // Not quite sure what to do to the map here, but should do something.
     return res;
-}
-
-OpVector BaseMind::SaveOperation(const Save & op)
-{
-    OpVector res;
-    script->Operation("save", op, res);
-    Fragment::MapType emap;
-    debug(std::cout << "Got " << res.size() << " stuff to save from mind"
-                    << std::endl << std::flush;);
-    OpVector::const_iterator I = res.begin();
-    if ((I != res.end()) && !((*I)->GetArgs().empty())) {
-        emap = (*I)->GetArgs().front().AsMap();
-    }
-    for (; I != res.end(); ++I) {
-        delete *I;
-    }
-    Info * i = new Info(Info::Instantiate());
-    emap["map"] = map.asObject();
-    emap["id"] = getId();
-    i->SetArgs(Fragment::ListType(1,emap));
-    return OpVector(1,i);
-}
-
-OpVector BaseMind::LoadOperation(const Load & op)
-{
-    OpVector res;
-    script->Operation("load", op, res);
-    if (!op.GetArgs().empty() && op.GetArgs().front().IsMap()) {
-        const Fragment::MapType & emap = op.GetArgs().front().AsMap();
-        Fragment::MapType::const_iterator I = emap.find("map");
-        if ((I != emap.end()) && I->second.IsMap()) {
-            const Fragment::MapType & memmap = I->second.AsMap();
-            Fragment::MapType::const_iterator J = memmap.begin();
-            for(; J != memmap.end(); J++) {
-                map.add(J->second.AsMap());
-            }
-        }
-    }
-    return OpVector();
 }
 
 OpVector BaseMind::operation(const RootOperation & op)

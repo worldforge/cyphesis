@@ -1,7 +1,3 @@
-Having got persistance basics in place, the id space is now a disaster waiting to
-happen. The creation of ids now needs to be martialed - preferably by making the
-database do it with a sequence. Once we have this, we may be able to make id a
-thing that is set at construction time, and this immutable.
 Mind state is still utterly unpersisted, so creatures are waking up brain dead -
 mind does not even get kick started with a setup op.
 
@@ -10,7 +6,19 @@ Two tables - account table and account-character relation.
 
 Putting an index on entity_ent.loc massively improves database loading
 performance. Need to assess impact on runtime performance. Should definitly
-consider putting this index in place permanently.
+consider putting this index in place permanently. Why is it that on some cases
+this does not help?
+
+When deleting an entity, need to deal with reparenting its children in the
+database.
+
+Experiment with BEGIN / COMMIT blocks to reduce load on database. A
+possibility is starting a transaction, and then commiting, delaying if their
+are requests which have not yet been sent. This of course pre-supposes that
+the mechanism for sending queries to the database asynchronously has
+been done. It is probably acceptible to only accept queries that do not
+return any tuples, and then the asyncronous recieve mechanism doesn't need
+to worry about who wants the tuples.
 
 Must fix for Mason 0.0.2
 

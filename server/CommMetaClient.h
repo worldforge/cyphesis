@@ -5,7 +5,7 @@
 #ifndef SERVER_COMM_META_CLIENT_H
 #define SERVER_COMM_META_CLIENT_H
 
-#include "CommSocket.h"
+#include "CommIdleSocket.h"
 
 #include <string>
 
@@ -13,15 +13,18 @@ extern "C" {
     #include <netinet/in.h>
 }
 
-class CommMetaClient : public CommSocket {
+class CommMetaClient : public CommIdleSocket {
   private:
     struct sockaddr_in meta_sa;
     int metaFd;
+    time_t lastTime;
 
     static const int metaserverPort = 8453;
 
   public:
-    CommMetaClient(CommServer & svr) : CommSocket(svr) { }
+    CommMetaClient(CommServer & svr) : CommIdleSocket(svr), lastTime(-1) { }
+
+    virtual ~CommMetaClient();
 
     void metaserverKeepalive();
     void metaserverReply();
@@ -33,6 +36,7 @@ class CommMetaClient : public CommSocket {
     bool read();
 
     bool setup(const std::string &);
+    void idle(time_t t);
 };
 
 #endif // SERVER_COMM_META_CLIENT_H

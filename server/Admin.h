@@ -19,8 +19,6 @@ class Admin : public Account {
     virtual ~Admin();
 
     virtual OpVector LogoutOperation(const Logout & op);
-    virtual OpVector LoadOperation(const Load & op);
-    virtual OpVector SaveOperation(const Save & op);
     virtual OpVector GetOperation(const Get & op);
     virtual OpVector SetOperation(const Set & op);
 };

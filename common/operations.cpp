@@ -7,9 +7,7 @@
 #include "Eat.h"
 #include "Burn.h"
 #include "Generic.h"
-#include "Load.h"
 #include "Nourish.h"
-#include "Save.h"
 #include "Setup.h"
 #include "Tick.h"
 
@@ -75,18 +73,6 @@ Generic Generic::Instantiate(const std::string & p) {
     return value;
 }
 
-Load::Load() : Set("load", "set") {
-}
-
-Load::~Load() { }
-
-Load Load::Instantiate() {
-    Load value;
-    value.SetParents(Message::Object::ListType(1, "load"));
-    value.SetObjtype(std::string("op"));
-    return value;
-}
-
 Nourish::Nourish() : Action("nourish", "action") {
 }
 
@@ -95,18 +81,6 @@ Nourish::~Nourish() { }
 Nourish Nourish::Instantiate() {
     Nourish value;
     value.SetParents(Message::Object::ListType(1, std::string("nourish")));
-    value.SetObjtype(std::string("op"));
-    return value;
-}
-
-Save::Save() : Get("save", "get") {
-}
-
-Save::~Save() { }
-
-Save Save::Instantiate() {
-    Save value;
-    value.SetParents(Message::Object::ListType(1,"save"));
     value.SetObjtype(std::string("op"));
     return value;
 }

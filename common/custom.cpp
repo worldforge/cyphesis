@@ -10,9 +10,7 @@
 #include "Eat.h"
 #include "Burn.h"
 #include "Generic.h"
-#include "Load.h"
 #include "Nourish.h"
-#include "Save.h"
 #include "Setup.h"
 #include "Tick.h"
 
@@ -30,12 +28,8 @@ void installCustomOperations()
     i.opInstall("eat", OP_EAT);
     i.addChild(new Burn());
     i.opInstall("burn", OP_BURN);
-    i.addChild(new Load());
-    i.opInstall("load", OP_LOAD);
     i.addChild(new Nourish());
     i.opInstall("nourish", OP_NOURISH);
-    i.addChild(new Save());
-    i.opInstall("save", OP_SAVE);
     i.addChild(new Setup());
     i.opInstall("setup", OP_SETUP);
     i.addChild(new Tick());

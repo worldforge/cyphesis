@@ -16,6 +16,7 @@
 #include <common/stringstream.h>
 #include <common/BaseWorld.h>
 #include <common/globals.h>
+#include <common/Database.h>
 
 #include <common/Setup.h>
 
@@ -24,7 +25,8 @@
 
 static const bool debug_flag = false;
 
-inline void WorldRouter::updateTime() {
+inline void WorldRouter::updateTime()
+{
     struct timeval tv;
     gettimeofday(&tv, NULL);
     double tmp_time = (double)(tv.tv_sec - initTime) + (double)tv.tv_usec/1000000;
@@ -111,16 +113,19 @@ inline const std::string WorldRouter::getNewId(const std::string & name)
 {
     std::stringstream buf;
 #ifdef DEBUG
-    buf << name << "_" << ++nextId;
+    buf << ++nextId;
+    return buf.str();
+    // buf << name << "_" << ++nextId;
+    // std::string full_id = buf.str();
+    // size_t index;
+    // while ((index = full_id.find(' ', 0)) != std::string::npos) {
+        // full_id[index] = '_';
+    // }
+    // return full_id;
 #else
     buf << ++nextId;
+    return buf.str();
 #endif
-    std::string full_id = buf.str();
-    size_t index;
-    while ((index = full_id.find(' ', 0)) != std::string::npos) {
-        full_id[index] = '_';
-    }
-    return full_id;
 }
 
 Entity * WorldRouter::addObject(Entity * obj, bool setup)
@@ -162,12 +167,12 @@ Entity * WorldRouter::addObject(const std::string & typestr,
 {
     debug(std::cout << "WorldRouter::addObject(std::string, ent)" << std::endl
                     << std::flush;);
-    std::string id;
-    if (cid.empty()) {
-        id = getNewId(typestr);
-    } else {
-        id = cid;
-    }
+    std::string id = Database::instance()->getEntityId();
+    // if (cid.empty()) {
+        // id = getNewId(typestr);
+    // } else {
+        // id = cid;
+    // }
     Entity * obj = EntityFactory::instance()->newEntity(id, typestr, ent);
     return addObject(obj);
 }

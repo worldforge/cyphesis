@@ -40,8 +40,6 @@ typedef enum op_no {
 	OP_TALK,
 	OP_TICK,
 	OP_LOOK,
-	OP_LOAD,
-	OP_SAVE,
 	OP_SETUP,
 	OP_APPEARANCE,
 	OP_DISAPPEARANCE,
