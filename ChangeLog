@@ -1,3 +1,8 @@
+2001-02-03  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* all files: Re-worked the way debugging is handled to that it no
+	  longer gives warnings.
+
 2001-01-26  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* all file: Added copyright statement

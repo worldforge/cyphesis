@@ -16,7 +16,7 @@ namespace consts {
   double basic_tick = time_multiplier*3.0;
   double base_velocity_coefficient = 5.0;
   double base_velocity = base_velocity_coefficient/time_multiplier;
-  int day_in_seconds = 3600*24.0;
+  int day_in_seconds = 3600*24;
 
 
   double sight_range = 100.0;

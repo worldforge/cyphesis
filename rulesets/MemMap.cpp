@@ -11,8 +11,9 @@ using Atlas::Objects::Operation::Look;
 #include "Thing.h"
 #include "MemMap.h"
 #include <modules/Location.h>
+#include "common/debug.h"
 
-static int debug_map = 0;
+static const bool debug_flag = false;
 
 void MemMap::script_hook(const string & method, Thing * object)
 {
@@ -30,7 +31,7 @@ list<Thing *> MemMap::find_by_type(const string & what)
     fdict_t::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         Thing * item = (Thing *)I->second;
-        debug_map && cout << "F" << what << ":" << item->type << ":" << item->fullid << endl << flush;
+        debug( cout << "F" << what << ":" << item->type << ":" << item->fullid << endl << flush;);
         if (item->type == what) {
             res.push_back((Thing*)I->second);
         }

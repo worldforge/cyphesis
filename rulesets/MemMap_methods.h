@@ -11,19 +11,20 @@ using Atlas::Objects::Operation::Look;
 #include "Thing.h"
 #include "MemMap.h"
 #include <modules/Location.h>
+#include <common/debug.h>
 
-static int debug_map = 0;
+static const bool debug_flag = false;
 
 inline Thing * MemMap::add_object(Thing * object)
 {
-    debug_map && cout << "MemMap::add_object " << object << " " << object->fullid
-         << endl << flush;
+    debug( cout << "MemMap::add_object " << object << " " << object->fullid
+         << endl << flush;);
     if (object != NULL) {
         things[object->fullid] = object;
     }
 
-    debug_map && cout << things[object->fullid] << endl << flush;
-    debug_map && cout << this << endl << flush;
+    debug( cout << things[object->fullid] << endl << flush;);
+    debug( cout << this << endl << flush;);
     list<string>::const_iterator I;
     for(I = add_hooks.begin(); I != add_hooks.end(); I++) {
         script_hook(*I, object);
@@ -33,7 +34,7 @@ inline Thing * MemMap::add_object(Thing * object)
 
 inline RootOperation * MemMap::look_id()
 {
-    debug_map && cout << "MemMap::look_id" << endl << flush;
+    debug( cout << "MemMap::look_id" << endl << flush;);
     if (additions_by_id.size() != 0) {
         string id = additions_by_id.front();
         additions_by_id.pop_front();
@@ -51,7 +52,7 @@ inline RootOperation * MemMap::look_id()
 inline Thing * MemMap::add_id(const string & id)
 {
     if (id.size() == 0) { return NULL; }
-    debug_map && cout << "MemMap::add_id" << endl << flush;
+    debug( cout << "MemMap::add_id" << endl << flush;);
     additions_by_id.push_back(id);
     Object::MapType m;
     m["id"] = Object(string(id));
@@ -61,7 +62,7 @@ inline Thing * MemMap::add_id(const string & id)
 
 inline Thing * MemMap::add(const Object & entity)
 {
-    debug_map && cout << "MemMap::add" << endl << flush;
+    debug( cout << "MemMap::add" << endl << flush;);
     if (!entity.IsMap()) {
         return NULL;
     }
@@ -105,7 +106,7 @@ inline void MemMap::_delete(const string & id)
 
 inline Thing * MemMap::get(const string & id)
 {
-    debug_map && cout << "MemMap::get" << endl << flush;
+    debug( cout << "MemMap::get" << endl << flush;);
     if (id.size() == 0) { return NULL; }
     if (things.find(id) != things.end()) {
         return (Thing*)things[id];
@@ -115,7 +116,7 @@ inline Thing * MemMap::get(const string & id)
 
 inline Thing * MemMap::get_add(const string & id)
 {
-    debug_map && cout << "MemMap::get_add" << endl << flush;
+    debug( cout << "MemMap::get_add" << endl << flush;);
     if (id.size() == 0) { return NULL; }
     Thing * obj = MemMap::get(id);
     if (obj != NULL) {
@@ -126,7 +127,7 @@ inline Thing * MemMap::get_add(const string & id)
 
 inline Thing * MemMap::update(const Object & entity)
 {
-    debug_map && cout << "MemMap::update" << endl << flush;
+    debug( cout << "MemMap::update" << endl << flush;);
     if (!entity.IsMap()) {
         return NULL;
     }
@@ -138,13 +139,13 @@ inline Thing * MemMap::update(const Object & entity)
     if (id.size() == 0) {
         return NULL;
     }
-    debug_map && cout << " updating " << id << endl << flush;
+    debug( cout << " updating " << id << endl << flush;);
     if (things.find(id) == things.end()) {
         return add(entity);
     }
-    debug_map && cout << " " << id << " has already been spotted" << endl << flush;
+    debug( cout << " " << id << " has already been spotted" << endl << flush;);
     Thing * thing = (Thing*)things[id];
-    debug_map && cout << " got " << thing << endl << flush;
+    debug( cout << " got " << thing << endl << flush;);
     // I am not sure what the deal is with all the "needTrueValue stuff
     // below yet. FIXME find out exactly what is required.
     if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
@@ -153,7 +154,7 @@ inline Thing * MemMap::update(const Object & entity)
     if (entmap.find("type") != entmap.end() && entmap["type"].IsString()) {
         thing->type = entmap["type"].AsString();
     }
-    debug_map && cout << " got " << thing << endl << flush;
+    debug( cout << " got " << thing << endl << flush;);
     thing->merge(entmap);
     thing->getLocation(entmap,things);
     //needTrueValue=["type","contains","instance","id","location","stamp"];

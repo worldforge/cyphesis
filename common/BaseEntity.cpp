@@ -16,7 +16,9 @@
 
 #include "BaseEntity.h"
 
-static int debug_ops = 0;
+#include "common/debug.h"
+
+static const bool debug_flag = false;
 
 BaseEntity::BaseEntity() : deleted(false), in_game(false),
                            omnipresent(false), world(NULL) {
@@ -44,7 +46,8 @@ const Vector3D & BaseEntity::get_xyz() const
 {
     //Location l=location;
     if (!location) {
-        return Vector3D(0.0,0.0,0.0);
+        static Vector3D ret(0.0,0.0,0.0);
+        return ret;
     }
     if (location.parent) {
         return location.coords+location.parent->get_xyz();
@@ -55,7 +58,7 @@ const Vector3D & BaseEntity::get_xyz() const
 
 Object BaseEntity::asObject() const
 {
-    debug_ops && cout << "BaseEntity::asObject" << endl << flush;
+    debug( cout << "BaseEntity::asObject" << endl << flush;);
     Object::MapType map;
     Object obj(map);
     addObject(&obj);
@@ -65,7 +68,7 @@ Object BaseEntity::asObject() const
 
 void BaseEntity::addObject(Object * obj) const
 {
-    debug_ops && cout << "BaseEntity::addObject" << endl << flush;
+    debug( cout << "BaseEntity::addObject" << endl << flush;);
     Object::MapType & omap = obj->AsMap();
     if (fullid.size() != 0) {
         omap["id"] = fullid;
@@ -87,13 +90,13 @@ oplist BaseEntity::external_message(const RootOperation & op)
 
 oplist BaseEntity::message(const RootOperation & op)
 {
-    debug_ops && cout << "BaseEntity::message" << endl << flush;
+    debug( cout << "BaseEntity::message" << endl << flush;);
     return operation(op);
 }
 
 oplist BaseEntity::Operation(const Look & op)
 {
-    debug_ops && cout << "look op got all the way to here" << endl << flush;
+    debug( cout << "look op got all the way to here" << endl << flush;);
     Sight * s = new Sight();
     *s = Sight::Instantiate();
     Object::ListType args(1,asObject());
@@ -107,7 +110,7 @@ oplist BaseEntity::Operation(const Look & op)
 
 oplist BaseEntity::operation(const RootOperation & op)
 {
-    debug_ops && cout << "BaseEntity::operation" << endl << flush;
+    debug( cout << "BaseEntity::operation" << endl << flush;);
     return call_operation(op);
 }
 
@@ -135,16 +138,16 @@ op_no_t BaseEntity::op_enumerate(const RootOperation * op)
 {
     const Object & parents = op->GetAttr("parents");
     if (!parents.IsList()) {
-        debug_ops && cout << "This isn't an operation." << endl << flush;
+        debug( cout << "This isn't an operation." << endl << flush;);
     }
     if (parents.AsList().size() != 1) {
-        debug_ops && cout << "This is a weird operation." << endl << flush;
+        debug( cout << "This is a weird operation." << endl << flush;);
     }
     if (!parents.AsList().begin()->IsString()) {
-        debug_ops && cout << "This op is screwed.\n" << endl << flush;
+        debug( cout << "This op is screwed.\n" << endl << flush;);
     }
     string parent(parents.AsList().begin()->AsString());
-    debug_ops && cout << "BaseEntity::op_enumarate [" << parent << "]" << endl << flush;
+    debug( cout << "BaseEntity::op_enumarate [" << parent << "]" << endl << flush;);
     if ("login" == parent) {
         return(OP_LOGIN);
     }
@@ -207,7 +210,7 @@ op_no_t BaseEntity::op_enumerate(const RootOperation * op)
 
 oplist BaseEntity::call_operation(const RootOperation & op)
 {
-    debug_ops && cout << "BaseEntity::call_operation" << endl << flush;
+    debug( cout << "BaseEntity::call_operation" << endl << flush;);
     oplist res;
     op_no_t op_no = op_enumerate(&op);
     OP_SWITCH(op, op_no, res,)

@@ -8,28 +8,29 @@
 #include <Atlas/Objects/Operation/Look.h>
 
 #include <server/WorldRouter.h>
+#include <common/debug.h>
 
 #include "Creator.h"
 
 #include "ExternalMind.h"
 
-static int debug_creator = 0;
+static const bool debug_flag = false;
 
 Creator::Creator()
 {
-    debug_creator && cout << "Creator::Creator" << endl << flush;
+    debug( cout << "Creator::Creator" << endl << flush;);
     is_character = true;
     omnipresent = true;
 }
 
 oplist Creator::send_mind(const RootOperation & msg)
 {
-    debug_creator && cout << "Creator::send_mind" << endl << flush;
+    debug( cout << "Creator::send_mind" << endl << flush;);
     // Simpified version of character method send_mind() because local mind
     // of creator is irrelevant
     oplist res;
     if ((NULL != external_mind) && (NULL != external_mind->connection)) {
-        debug_creator && cout << "Sending to external mind" << endl << flush;
+        debug( cout << "Sending to external mind" << endl << flush;);
         res = external_mind->message(msg);
         // If there is some kinf of error in the connection, we turn autom on
     }
@@ -38,7 +39,7 @@ oplist Creator::send_mind(const RootOperation & msg)
 
 oplist Creator::operation(const RootOperation & op)
 {
-    debug_creator && cout << "Creator::operation" << endl << flush;
+    debug( cout << "Creator::operation" << endl << flush;);
     op_no_t op_no = op_enumerate(&op);
     if (op_no == OP_LOOK) {
         return ((BaseEntity *)this)->Operation((Look &)op);
@@ -53,7 +54,7 @@ oplist Creator::operation(const RootOperation & op)
 
 oplist Creator::external_operation(const RootOperation & op)
 {
-    debug_creator && cout << "Creator::external_operation" << endl << flush;
+    debug( cout << "Creator::external_operation" << endl << flush;);
     oplist res;
     if ((op.GetTo()==fullid) || (op.GetTo()=="")) {
         oplist local_res = call_operation(op);

@@ -14,6 +14,7 @@
 
 
 #include <common/log.h>
+#include <common/debug.h>
 
 #include <rulesets/Character.h>
 #include <rulesets/ExternalMind.h>
@@ -22,18 +23,18 @@
 #include "Connection.h"
 #include "WorldRouter.h"
 
-static int debug_server = 0;
+static const bool debug_flag = false;
 
 inline BaseEntity * Account::add_character(const string & typestr, const Message::Object & ent)
 {
-    debug_server && cout << "Account::Add_character" << endl << flush;
+    debug(cout << "Account::Add_character" << endl << flush;);
     Thing * chr = world->add_object(typestr, ent);
-    debug_server && cout << "Added" << endl << flush;
+    debug(cout << "Added" << endl << flush;);
     if (!chr->location) {
-        debug_server && cout << "Setting location" << endl << flush;
+        debug(cout << "Setting location" << endl << flush;);
         chr->location = Location(world, Vector3D(0,0,0));
     }
-    debug_server && cout << "Location set to: " << chr->location << endl << flush;
+    debug(cout << "Location set to: " << chr->location << endl << flush;);
     if (chr->is_character == true) {
         Character * pchar = (Character *)chr;
         pchar->player = this;
@@ -60,7 +61,7 @@ inline BaseEntity * Account::add_character(const string & typestr, const Message
 
 oplist Account::Operation(const Logout & op)
 {
-    debug_server && cout << "Account logout: " << name << endl;
+    debug(cout << "Account logout: " << name << endl;);
     connection->disconnect();
     oplist res;
     return(res);
@@ -84,7 +85,7 @@ void Account::addObject(Message::Object * obj) const
 
 oplist Account::Operation(const Create & op)
 {
-    debug_server && cout << "Account::Operation(create)" << endl << flush;
+    debug(cout << "Account::Operation(create)" << endl << flush;);
     const Message::Object & ent = op.GetArgs().front();
     if (!ent.IsMap()) {
         return(error(op, "Invalid character"));
@@ -102,7 +103,7 @@ oplist Account::Operation(const Create & op)
         return(error);
     }
     const string & typestr = entmap["parents"].AsList().front().AsString();
-    debug_server && cout << "Account creating a " << typestr << " object" << endl << flush;
+    debug(cout << "Account creating a " << typestr << " object" << endl << flush;);
 
     BaseEntity * obj = add_character(typestr, ent);
     //log.inform("Player "+Account::id+" adds character "+`obj`,op);

@@ -15,22 +15,23 @@
 #include <Atlas/Objects/Operation/Touch.h>
 
 #include <common/utility.h>
+#include <common/debug.h>
 
 #include "BaseMind.h"
 #include "MemMap_methods.h"
 
-static bool debug_basemind = 0;
+//static const bool debug_flag = false;
 
 int BaseMind::script_Operation(const string & op_type, const RootOperation & op,
                         oplist & ret_list, RootOperation * sub_op)
 {
     if (script_object != NULL) {
-        debug_basemind && cout << "Got script object for " << fullid << endl << flush;
+        debug( cout << "Got script object for " << fullid << endl << flush;);
         string op_name = op_type+"_operation";
         // Construct apropriate python object thingies from op
         if (!PyObject_HasAttrString(script_object, (char *)(op_name.c_str()))) {
-            debug_basemind && cout << "No method to be found for " << fullid
-                 << "." << op_name << endl << flush;
+            debug( cout << "No method to be found for " << fullid
+                 << "." << op_name << endl << flush;);
             return(0);
         }
         RootOperationObject * py_op = newAtlasRootOperation(NULL);
@@ -55,41 +56,41 @@ int BaseMind::script_Operation(const string & op_type, const RootOperation & op,
         delete py_op->operation;
         Py_DECREF(py_op);
         if (ret != NULL) {
-            debug_basemind && cout << "Called python method " << op_name
-                                << " for object " << fullid << endl << flush;
+            debug( cout << "Called python method " << op_name
+                                << " for object " << fullid << endl << flush;);
             if (PyOperation_Check(ret)) {
                 RootOperationObject * op = (RootOperationObject*)ret;
                 if (op->operation != NULL) {
                     ret_list.push_back(op->operation);
                     op->own = 0;
                 } else {
-                    debug_basemind && cout << "Method returned invalid operation"
-                         << endl << flush;
+                    debug( cout << "Method returned invalid operation"
+                         << endl << flush;);
                 }
             } else if (PyOplist_Check(ret)) {
                 OplistObject * op = (OplistObject*)ret;
                 if (op->ops != NULL) {
                     ret_list = *op->ops;
                 } else {
-                    debug_basemind && cout << "Method returned invalid oplist"
-                         << endl << flush;
+                    debug( cout << "Method returned invalid oplist"
+                         << endl << flush;);
                 }
             } else {
-                debug_basemind && cout << "Method returned invalid object" << endl << flush;
+                debug( cout << "Method returned invalid object" << endl << flush;);
             }
             
             Py_DECREF(ret);
             return(1);
         } else {
             if (PyErr_Occurred() == NULL) {
-                debug_basemind && cout << "No method to be found for " << fullid << endl << flush;
+                debug( cout << "No method to be found for " << fullid << endl << flush;);
             } else {
                 cerr << "Reporting python error for " << fullid << endl << flush;
                 PyErr_Print();
             }
         }
     } else {
-        debug_basemind && cout << "No script object asociated" << endl << flush;
+        debug( cout << "No script object asociated" << endl << flush;);
     }
     return(0);
 }
@@ -133,7 +134,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Create & sub_op)
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        debug_basemind && cout << " no args!" << endl << flush;
+        debug( cout << " no args!" << endl << flush;);
         return(res);
     }
     Object obj = args.front();
@@ -154,14 +155,14 @@ oplist BaseMind::Sight_Operation(const Sight & op, Cut & sub_op)
 
 oplist BaseMind::Sight_Operation(const Sight & op, Delete & sub_op)
 {
-    debug_basemind && cout << "Sight Delete operation" << endl << flush;
+    debug( cout << "Sight Delete operation" << endl << flush;);
     oplist res;
     if (script_Operation("sight_delete", op, res, &sub_op) != 0) {
         return(res);
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        debug_basemind && cout << " no args!" << endl << flush;
+        debug( cout << " no args!" << endl << flush;);
         return(res);
     }
     Object obj = args.front();
@@ -193,14 +194,14 @@ oplist BaseMind::Sight_Operation(const Sight & op, Fire & sub_op)
 
 oplist BaseMind::Sight_Operation(const Sight & op, Move & sub_op)
 {
-    debug_basemind && cout << "BaseMind::Sight_Operation(Sight, Move)" << endl << flush;
+    debug( cout << "BaseMind::Sight_Operation(Sight, Move)" << endl << flush;);
     oplist res;
     if (script_Operation("sight_move", op, res, &sub_op) != 0) {
         return(res);
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        debug_basemind && cout << " no args!" << endl << flush;
+        debug( cout << " no args!" << endl << flush;);
         return(res);
     }
     const Object & obj = args.front();
@@ -220,7 +221,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Set & sub_op)
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        debug_basemind && cout << " no args!" << endl << flush;
+        debug( cout << " no args!" << endl << flush;);
         return(res);
     }
     const Object & obj = args.front();
@@ -243,7 +244,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Touch & sub_op)
 
 oplist BaseMind::Sight_Operation(const Sight & op, RootOperation & sub_op)
 {
-    debug_basemind && cout << "BaseMind::Sight_Operation(Sight, RootOperation)" << endl << flush;
+    debug( cout << "BaseMind::Sight_Operation(Sight, RootOperation)" << endl << flush;);
     oplist res;
     if (script_Operation("sight_undefined", op, res, &sub_op) != 0) {
         return(res);
@@ -253,7 +254,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, RootOperation & sub_op)
 
 oplist BaseMind::Sound_Operation(const Sound & op, Talk & sub_op)
 {
-    debug_basemind && cout << "BaseMind::Sound_Operation(Sound, Talk)" << endl << flush;
+    debug( cout << "BaseMind::Sound_Operation(Sound, Talk)" << endl << flush;);
     oplist res;
     if (script_Operation("sound_talk", op, res, &sub_op) != 0) {
         return(res);
@@ -263,7 +264,7 @@ oplist BaseMind::Sound_Operation(const Sound & op, Talk & sub_op)
 
 oplist BaseMind::Sound_Operation(const Sound & op, RootOperation & sub_op)
 {
-    debug_basemind && cout << "BaseMind::Sound_Operation(Sound, RootOperation)" << endl << flush;
+    debug( cout << "BaseMind::Sound_Operation(Sound, RootOperation)" << endl << flush;);
     oplist res;
     if (script_Operation("sound_undefined", op, res, &sub_op) != 0) {
         return(res);
@@ -289,13 +290,13 @@ oplist BaseMind::Operation(const Sound & op)
     }
     const Object::ListType & args = op.GetArgs();
     if (args.size() == 0) {
-        debug_basemind && cout << " no args!" << endl << flush;
+        debug( cout << " no args!" << endl << flush;);
         return(res);
     }
     Object obj = args.front();
     Root * op2 = utility::Object_asRoot(obj);
     if (op2->GetObjtype() == "op") {
-        debug_basemind && cout << " args is an op!" << endl << flush;
+        debug( cout << " args is an op!" << endl << flush;);
         res = call_sound_operation(op, *(RootOperation *)op2);
     }
     delete op2;
@@ -313,28 +314,28 @@ oplist BaseMind::call_sight_operation(const Sight & op, RootOperation & sub_op)
 
 oplist BaseMind::Operation(const Sight & op)
 {
-    debug_basemind && cout << "BaseMind::Operation(Sight)" << endl << flush;
+    debug( cout << "BaseMind::Operation(Sight)" << endl << flush;);
     // Deliver argument to Sight_ things
     oplist(res);
     if (script_Operation("sight", op, res) != 0) {
-        debug_basemind && cout << " its in the script" << endl << flush;
+        debug( cout << " its in the script" << endl << flush;);
         return(res);
     }
     const Object::ListType & args = op.GetArgs();
     if (args.size() == 0) {
-        debug_basemind && cout << " no args!" << endl << flush;
+        debug( cout << " no args!" << endl << flush;);
         return(res);
     }
     Object obj = args.front();
     Root * op2 = utility::Object_asRoot(obj);
     if (op2->GetObjtype() == "op") {
-        debug_basemind && cout << " args is an op!" << endl << flush;
+        debug( cout << " args is an op!" << endl << flush;);
         res = call_sight_operation(op, *(RootOperation *)op2);
         //string & op2type = op2->GetParents().front().AsString();
         //string subop = "sight_" + op2type;
         //script_Operation(subop, op, res, (RootOperation *)op2);
     } else /* if (op2->GetObjtype() == "object") */ {
-        debug_basemind && cout << " arg is an entity!" << endl << flush;
+        debug( cout << " arg is an entity!" << endl << flush;);
         map.add(obj);
     }
     delete op2;

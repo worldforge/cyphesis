@@ -27,4 +27,4 @@ install-data-local:
 	mkdirhier $(datadir)/cyphesis/rulesets
 	tar cf - `find basic -name \*.py` | (cd $(datadir)/cyphesis/rulesets; tar xf -)
 	tar cf - `find acorn -name \*.py` | (cd $(datadir)/cyphesis/rulesets; tar xf -)
-	cat basic/hooks/ruleset_import_hooks.py | sed 's%PREFIX%$(datadir)\/cyphesis%' > $(datadir)/cyphesis/rulesets/basic/hooks/ruleset_import_hooks.py
+	cat basic/hooks/ruleset_import_hooks.py | sed 's%PREFIX%$(datadir)/cyphesis%' > $(datadir)/cyphesis/rulesets/basic/hooks/ruleset_import_hooks.py

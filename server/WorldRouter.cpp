@@ -12,6 +12,7 @@
 
 #include <rulesets/Thing.h>
 #include <rulesets/ThingFactory.h>
+#include <common/debug.h>
 
 extern "C" {
     #include <stdio.h>
@@ -19,7 +20,7 @@ extern "C" {
 
 using Atlas::Message::Object;
 
-static int debug_server = 0;
+static const bool debug_flag = false;
 static int halt_time;
 
 WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr), next_id(0)
@@ -62,7 +63,7 @@ inline void WorldRouter::add_operation_to_queue(RootOperation & op,
     for(I = operation_queue.begin();
         (I != operation_queue.end()) && ((*I)->GetSeconds() <= t) ; I++,i++);
     operation_queue.insert(I, &op);
-    debug_server && cout << i << " operation added to queue" << endl << flush;
+    debug(cout << i << " operation added to queue" << endl << flush;);
 }
 
 inline RootOperation * WorldRouter::get_operation_from_queue()
@@ -74,7 +75,7 @@ inline RootOperation * WorldRouter::get_operation_from_queue()
     if ((*I)->GetSeconds() > real_time) {
         return(NULL);
     }
-    debug_server && cout << "pulled op off queue" << endl << flush;
+    debug(cout << "pulled op off queue" << endl << flush;);
     RootOperation * op = (*I);
     operation_queue.pop_front();
     return(op);
@@ -96,21 +97,21 @@ inline string WorldRouter::get_id(string & name)
 
 Thing * WorldRouter::add_object(Thing * obj)
 {
-    debug_server && cout << "WorldRouter::add_object(Thing *)" << endl << flush;
+    debug(cout << "WorldRouter::add_object(Thing *)" << endl << flush;);
     obj->fullid=get_id(obj->name);
     server->id_dict[obj->fullid]=fobjects[obj->fullid]=obj;
     objects_list.push_back(obj);
     if (!obj->location) {
-        debug_server && cout << "set loc " << this  << endl << flush;
+        debug(cout << "set loc " << this  << endl << flush;);
         obj->location=Location(this, Vector3D(0,0,0));
-        debug_server && cout << "loc set with parent " << obj->location.parent->fullid << endl << flush;
+        debug(cout << "loc set with parent " << obj->location.parent->fullid << endl << flush;);
     }
     if (NULL == obj->location.parent) {
-        debug_server && cout << "set parent" << endl << flush;
+        debug(cout << "set parent" << endl << flush;);
         obj->location.parent=this;
     }
     if (obj->location.parent==this) {
-        debug_server && cout << "loc is world" << endl << flush;
+        debug(cout << "loc is world" << endl << flush;);
         contains.push_back(obj);
         contains.unique();
     }
@@ -128,7 +129,7 @@ Thing * WorldRouter::add_object(Thing * obj)
 
 Thing * WorldRouter::add_object(const string & typestr, const Object & ent)
 {
-    debug_server && cout << "WorldRouter::add_object(string, ent)" << endl << flush;
+    debug(cout << "WorldRouter::add_object(string, ent)" << endl << flush;);
     Thing * obj;
     obj = thing_factory.newThing(typestr, ent, this);
     return add_object(obj);
@@ -150,9 +151,11 @@ void WorldRouter::del_object(BaseEntity * obj)
 
 oplist WorldRouter::message(const RootOperation & op)
 {
-    debug_server && cout << "FATAL: Wrong type of WorldRouter message function called" << endl << flush;
+    debug(cout << "FATAL: Wrong type of WorldRouter message function called" << endl << flush;);
     // You may eventually want to remove this as it causes a deliberate segfault
     //return(*(RootOperation **)NULL);
+    oplist res;
+    return(res);
 }
 
 oplist WorldRouter::message(RootOperation & op, const BaseEntity * obj)
@@ -179,10 +182,10 @@ oplist WorldRouter::operation(const RootOperation * op)
     oplist res;
     const RootOperation & op_ref = *op;
     string to = op_ref.GetTo();
-    debug_server && cout << "WorldRouter::operation {" << to << "}" << endl << flush;
+    debug(cout << "WorldRouter::operation {" << to << "}" << endl << flush;);
     op_no_t op_type = op_enumerate(op);
 
-    debug_server && cout << 0 << flush;
+    debug(cout << 0 << flush;);
     if ((to.size() != 0) && (to!="all")) {
         if (fobjects.find(to) == fobjects.end()) {
             cerr << "CRITICAL: Op to=\"" << to << "\"" << " does not exist"
@@ -234,13 +237,13 @@ oplist WorldRouter::operation(const RootOperation & op)
 
 oplist WorldRouter::Operation(const Look & op)
 {
-    debug_server && cout << "WorldRouter::Operation(Look)" << endl << flush;
+    debug(cout << "WorldRouter::Operation(Look)" << endl << flush;);
     string from = op.GetFrom();
     if (fobjects.find(from) == fobjects.end()) {
-        debug_server && cout << "FATAL: Op has invalid from" << endl << flush;
+        debug(cout << "FATAL: Op has invalid from" << endl << flush;);
         //return(*(RootOperation **)NULL);
     } else {
-        debug_server && cout << "Adding [" << from << "] to perceptives" << endl << flush;
+        debug(cout << "Adding [" << from << "] to perceptives" << endl << flush;);
         perceptives.push_back(fobjects[from]);
         perceptives.unique();
     }

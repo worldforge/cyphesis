@@ -28,6 +28,7 @@ extern "C" {
 #include <common/config.h>
 #include <common/const.h>
 #include <common/log.h>
+#include <common/debug.h>
 
 #include <fstream>
 
@@ -38,7 +39,7 @@ extern "C" {
 #include "CommServer.h"
 
 int profile_flag=0;
-static int debug_server = 0;
+static const bool debug_flag = false;
 
 string install_directory = string(INSTALLDIR);
 
@@ -57,11 +58,11 @@ int CommClient::setup()
 {
     Atlas::Net::StreamAccept accept("cyphesis", client_ios, this);
 
-    debug_server && cout << "Negotiating... " << flush;
+    debug(cout << "Negotiating... " << flush;);
     while (accept.GetState() == Negotiate<iostream>::IN_PROGRESS) {
         accept.Poll();
     }
-    debug_server && cout << "done" << endl;
+    debug(cout << "done" << endl;);
 
     if (accept.GetState() == Negotiate<iostream>::FAILED) {
         cerr << "Failed to negotiate" << endl;
@@ -87,7 +88,7 @@ void CommClient::message(const Objects::Operation::RootOperation & op)
     oplist reply = connection->message(op);
     while (reply.size() != 0) {
         Objects::Operation::RootOperation * rep_op = reply.front();
-        debug_server && cout << "sending reply" << endl << flush;
+        debug(cout << "sending reply" << endl << flush;);
         send(rep_op);
         delete rep_op;
         reply.pop_front();
@@ -97,61 +98,61 @@ void CommClient::message(const Objects::Operation::RootOperation & op)
 void CommClient::UnknownObjectArrived(const Atlas::Message::Object& o)
 {
 #if 0
-    debug_server && cout << "An unknown has arrived." << endl << flush;
+    debug(cout << "An unknown has arrived." << endl << flush;);
     if (o.IsMap()) {
         for(Message::Object::MapType::const_iterator I = o.AsMap().begin();
 		I != o.AsMap().end();
 		I++) {
-		debug_server && cout << I->first << endl << flush;
+		debug(cout << I->first << endl << flush;);
                 if (I->second.IsString()) {
-		    debug_server && cout << I->second.AsString() << endl << flush;
+		    debug(cout << I->second.AsString() << endl << flush;);
                 }
 	}
     } else {
-        debug_server && cout << "Its not a map." << endl << flush;
+        debug(cout << "Its not a map." << endl << flush;);
     }
 #endif
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Login & op)
 {
-    debug_server && cout << "A login operation thingy here!" << endl << flush;
+    debug(cout << "A login operation thingy here!" << endl << flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Create & op)
 {
-    debug_server && cout << "A create operation thingy here!" << endl << flush;
+    debug(cout << "A create operation thingy here!" << endl << flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Move & op)
 {
-    debug_server && cout << "A move operation thingy here!" << endl << flush;
+    debug(cout << "A move operation thingy here!" << endl << flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Set & op)
 {
-    debug_server && cout << "A set operation thingy here!" << endl << flush;
+    debug(cout << "A set operation thingy here!" << endl << flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Touch & op)
 {
-    debug_server && cout << "A touch operation thingy here!" << endl << flush;
+    debug(cout << "A touch operation thingy here!" << endl << flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Look & op)
 {
-    debug_server && cout << "A look operation thingy here!" << endl << flush;
+    debug(cout << "A look operation thingy here!" << endl << flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Talk & op)
 {
-    debug_server && cout << "A talk operation thingy here!" << endl << flush;
+    debug(cout << "A talk operation thingy here!" << endl << flush;);
     message(op);
 }
 
@@ -186,13 +187,13 @@ int CommServer::accept() {
     sin.sin_port = htons(server_port);
     sin.sin_addr.s_addr = 0L;
 
-    debug_server && cout << "Accepting.." << endl << flush;
+    debug(cout << "Accepting.." << endl << flush;);
     int asockfd = ::accept(server_fd, (struct sockaddr *)&sin, &addr_len);
 
     if (asockfd < 0) {
         return(-1);
     }
-    debug_server && cout << "Accepted" << endl << flush;
+    debug(cout << "Accepted" << endl << flush;);
     CommClient * newcli = new CommClient(this, asockfd, sin.sin_port);
     if (newcli->setup()) {
         clients.insert(std::pair<int, CommClient *>(asockfd, newcli));
@@ -249,7 +250,7 @@ void CommServer::loop() {
        }
     }
     if (FD_ISSET(server_fd, &sock_fds)) {
-        debug_server && cout << "selected on server" << endl << flush;
+        debug(cout << "selected on server" << endl << flush;);
         accept();
     }
     idle();

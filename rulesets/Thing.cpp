@@ -21,11 +21,12 @@
 #include <server/WorldRouter.h>
 
 #include <common/const.h>
+#include <common/debug.h>
 
-static int debug_thing = 0;
+//static const bool debug_flag = false;
 
-Thing::Thing() : script_object(NULL), status(1), is_character(false),
-                 type("thing")
+Thing::Thing() : script_object(NULL), status(1), type("thing"),
+                 is_character(false)
 {
     in_game = true;
     name = string("Foo");
@@ -37,15 +38,15 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
                      oplist & ret_list, RootOperation * sub_op)
 {
     if (script_object == NULL) {
-        debug_thing && cout << "No script object asociated" << endl << flush;
+        debug( cout << "No script object asociated" << endl << flush;);
         return 0;
     }
-    debug_thing && cout << "Got script object for " << fullid << endl << flush;
+    debug( cout << "Got script object for " << fullid << endl << flush;);
     string op_name = op_type+"_operation";
     // Construct apropriate python object thingies from op
     if (!PyObject_HasAttrString(script_object, (char *)(op_name.c_str()))) {
-        debug_thing && cout << "No method to be found for " << fullid
-             << "." << op_name << endl << flush;
+        debug( cout << "No method to be found for " << fullid
+             << "." << op_name << endl << flush;);
         return(0);
     }
     RootOperationObject * py_op = newAtlasRootOperation(NULL);
@@ -59,34 +60,34 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
     delete py_op->operation;
     Py_DECREF(py_op);
     if (ret != NULL) {
-        debug_thing && cout << "Called python method " << op_name
-                            << " for object " << fullid << endl << flush;
+        debug( cout << "Called python method " << op_name
+                            << " for object " << fullid << endl << flush;);
         if (PyOperation_Check(ret)) {
             RootOperationObject * op = (RootOperationObject*)ret;
             if (op->operation != NULL) {
                 ret_list.push_back(op->operation);
                 op->own = 0;
             } else {
-                debug_thing && cout << "Method returned invalid operation"
-                     << endl << flush;
+                debug( cout << "Method returned invalid operation"
+                     << endl << flush;);
             }
         } else if (PyOplist_Check(ret)) {
             OplistObject * op = (OplistObject*)ret;
             if (op->ops != NULL) {
                 ret_list = *op->ops;
             } else {
-                debug_thing && cout << "Method returned invalid oplist"
-                     << endl << flush;
+                debug( cout << "Method returned invalid oplist"
+                     << endl << flush;);
             }
         } else {
-            debug_thing && cout << "Method returned invalid object" << endl << flush;
+            debug( cout << "Method returned invalid object" << endl << flush;);
         }
         
         Py_DECREF(ret);
         return 1;
     } else {
         if (PyErr_Occurred() == NULL) {
-            debug_thing && cout << "No method to be found for " << fullid << endl << flush;
+            debug( cout << "No method to be found for " << fullid << endl << flush;);
         } else {
             cerr << "Reporting python error for " << fullid << endl << flush;
             PyErr_Print();
@@ -120,14 +121,14 @@ void Thing::merge(const Message::Object::MapType & entmap)
 
 void Thing::getLocation(Message::Object::MapType & entmap, fdict_t & fobjects)
 {
-    debug_thing && cout << "Thing::getLocation" << endl << flush;
+    debug( cout << "Thing::getLocation" << endl << flush;);
     if (entmap.find("loc") != entmap.end()) {
-        debug_thing && cout << "Thing::getLocation, getting it" << endl << flush;
+        debug( cout << "Thing::getLocation, getting it" << endl << flush;);
         try {
             const string & parent_id = entmap["loc"].AsString();
             BaseEntity * parent_obj;
             if (fobjects.find(parent_id) == fobjects.end()) {
-                debug_thing && cout << "ERROR: Can't get parent from objects dictionary" << endl << flush;
+                debug( cout << "ERROR: Can't get parent from objects dictionary" << endl << flush;);
                 return;
             }
                 
@@ -208,7 +209,7 @@ oplist Thing::Operation(const Create & op)
         } else {
             type = parents.front().AsString();
         }
-        debug_thing && cout << fullid << " creating " << type;
+        debug( cout << fullid << " creating " << type;);
         Thing * obj = world->add_object(type,ent);
         if (!obj->location) {
             obj->location=location;
@@ -271,28 +272,28 @@ oplist Thing::Operation(const Fire & op)
 
 oplist Thing::Operation(const Move & op)
 {
-    debug_thing && cout << "Thing::move_operation" << endl << flush;
+    debug( cout << "Thing::move_operation" << endl << flush;);
     oplist res;
     if (script_Operation("move", op, res) != 0) {
         return(res);
     }
     const Message::Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
-        debug_thing && cout << "ERROR: move op has no argument" << endl << flush;
+        debug( cout << "ERROR: move op has no argument" << endl << flush;);
         return(res);
     }
     BaseEntity * newparent;
     try {
         Message::Object::MapType ent = args.front().AsMap();
         string & oname = ent["id"].AsString();
-        debug_thing && cout << "In " << fullid << " got moveop for " << oname << endl << flush;
+        debug( cout << "In " << fullid << " got moveop for " << oname << endl << flush;);
         if (ent.find("loc") == ent.end()) {
-            debug_thing && cout << "ERROR: move op arg has no parent" << endl << flush;
+            debug( cout << "ERROR: move op arg has no parent" << endl << flush;);
             return(error(op, "Move location has no parent"));
         }
         string parent=ent["loc"].AsString();
         if (world->fobjects.find(parent) == world->fobjects.end()) {
-            debug_thing && cout << "ERROR: move op arg parent is invalid" << endl << flush;
+            debug( cout << "ERROR: move op arg parent is invalid" << endl << flush;);
             return(error(op, "Move location parent invalid"));
         }
         newparent = world->fobjects[parent];
@@ -313,7 +314,7 @@ oplist Thing::Operation(const Move & op)
         double y = vector.front().AsFloat();
         vector.pop_front();
         double z = vector.front().AsFloat();
-        debug_thing && cout << "POS: " << x << " " << y << " " << z << endl << flush;
+        debug( cout << "POS: " << x << " " << y << " " << z << endl << flush;);
         location.coords = Vector3D(x, y, z);
         if (ent.find("velocity") != ent.end()) {
             vector.clear();
@@ -327,11 +328,11 @@ oplist Thing::Operation(const Move & op)
             y = vector.front().AsFloat();
             vector.pop_front();
             z = vector.front().AsFloat();
-            debug_thing && cout << "VEL: " << x << " " << y << " " << z << endl << flush;
+            debug( cout << "VEL: " << x << " " << y << " " << z << endl << flush;);
             location.velocity = Vector3D(x, y, z);
         }
-        debug_thing && cout << "MOVE calculate vel=" << location.velocity
-             << " coord=" << location.coords;
+        debug( cout << "MOVE calculate vel=" << location.velocity
+             << " coord=" << location.coords;);
 
         double speed_ratio;
         if (!(location.velocity)) {

@@ -13,6 +13,7 @@
 
 #include <rulesets/Character.h>
 #include <rulesets/ExternalMind.h>
+#include <common/debug.h>
 
 #include "Connection.h"
 #include "ServerRouting.h"
@@ -21,7 +22,7 @@
 
 #include "server.h"
 
-static int debug_server = 0;
+static const bool debug_flag = false;
 
 using namespace Atlas;
 using namespace Objects;
@@ -38,7 +39,7 @@ inline Account * Connection::add_player(string & username, string & password)
 
 void Connection::destroy()
 {
-    debug_server && cout << "destroy called";
+    debug(cout << "destroy called";);
     fdict_t::const_iterator I;
     for(I = fobjects.begin(); I != fobjects.end(); I++) {
         BaseEntity * ent = I->second;
@@ -61,14 +62,14 @@ void Connection::destroy()
 
 oplist Connection::operation(const RootOperation & op)
 {
-    debug_server && cout << "Connection::operation" << endl << flush;
+    debug(cout << "Connection::operation" << endl << flush;);
     const string & from = op.GetFrom();
     if (0==from.size()) {
-        debug_server && cout << "deliver locally as normal" << endl << flush;
+        debug(cout << "deliver locally as normal" << endl << flush;);
         return BaseEntity::operation(op);
     } else {
-        debug_server && cout << "Must send on to account" << endl << flush;
-        debug_server && cout << "[" << from << "]" << endl << flush;
+        debug(cout << "Must send on to account" << endl << flush;);
+        debug(cout << "[" << from << "]" << endl << flush;);
         if (fobjects.find(from)!=fobjects.end()) {
             BaseEntity * ent = fobjects[from];
             if ((ent->in_game != 0) && (((Thing *)ent)->is_character != 0) &&
@@ -97,7 +98,7 @@ oplist Connection::operation(const RootOperation & op)
 oplist Connection::Operation(const Login & op)
 {
 
-    debug_server && cout << "Got login op" << endl << flush;
+    debug(cout << "Got login op" << endl << flush;);
     const Message::Object & account = op.GetArgs().front();
 
     if (account.IsMap()) {
@@ -118,7 +119,7 @@ oplist Connection::Operation(const Login & op)
             Message::Object::ListType args(1,player->asObject());
             info->SetArgs(args);
             info->SetRefno(op.GetSerialno());
-            debug_server && cout << "Good login" << endl << flush;
+            debug(cout << "Good login" << endl << flush;);
             return(oplist(1,info));
         }
     }
@@ -127,7 +128,7 @@ oplist Connection::Operation(const Login & op)
 
 oplist Connection::Operation(const Create & op)
 {
-    debug_server && cout << "Got create op" << endl << flush;
+    debug(cout << "Got create op" << endl << flush;);
     const Message::Object & account = op.GetArgs().front();
 
     if (account.IsMap()) {
@@ -142,7 +143,7 @@ oplist Connection::Operation(const Create & op)
             Message::Object::ListType args(1,player->asObject());
             info->SetArgs(args);
             info->SetRefno(op.GetSerialno());
-            debug_server && cout << "Good create" << endl << flush;
+            debug(cout << "Good create" << endl << flush;);
             return(oplist(1,info));
         }
     }
@@ -161,7 +162,7 @@ oplist Connection::Operation(const Logout & obj)
         if (player) {
             Logout l = obj;
             l.SetFrom(player->fullid);
-            debug_server && cout << "Logout without from. Using " << player->fullid << " instead." << endl << flush;
+            debug(cout << "Logout without from. Using " << player->fullid << " instead." << endl << flush;);
             operation(l);
         }
     }
