@@ -1,3 +1,11 @@
+2004-09-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp, server/Account.cpp:
+	  Add serialno assignments to character inventory creation ops,
+	  and ops from builtin mind.
+
+	* server/WorldRouter.cpp: Remove an obsolete comment.
+
 2004-09-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CharacterClient.cpp, client/CharacterClient.h: Prefix

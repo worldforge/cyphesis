@@ -121,6 +121,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         ListType & args = c->getArgs();
         args.push_back(entmap);
         c->setTo(chr->getId());
+        world.setSerialnoOp(*c);
         world.message(*c, chr);
     }
 

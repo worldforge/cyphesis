@@ -1028,6 +1028,7 @@ void Character::operation(const RootOperation & op, OpVector & res)
         for(OpVector::const_iterator I = mres.begin(); I != mres.end(); I++) {
             //RootOperation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
+            m_world->setSerialnoOp(**I);
             externalOperation(**I);
             delete *I;
         }

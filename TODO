@@ -18,8 +18,6 @@ Thing::SetupOperation() _ALWAYS_ emits an Appearance op, but then processes
 op as normal.
 World provides no script overloading for any of its methods.
 
-Rename client/CommClient.h. Without namespacing its dangerous.
-
 Sort out the way CONTAINS is done in Entity::addToObject and elsewhere,
 so that the delayed check, and deep copy is avoided. Test contains before
 doing it, and get a reference to the list inside the Element. World

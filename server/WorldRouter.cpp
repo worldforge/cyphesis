@@ -372,7 +372,6 @@ void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
 /// sight ranges for perception operations.
 void WorldRouter::operation(const RootOperation & op)
 {
-    // const RootOperation & op = *op_ptr;
     const std::string & to = op.getTo();
     debug(std::cout << "WorldRouter::operation {"
                     << op.getParents().front().asString() << ":"
