@@ -188,6 +188,7 @@ static int Vector3D_setattr(PyVector3D *self, char *name, PyObject *v)
     } else if (strcmp(name, "z") == 0) {
         self->coords.z() = val;
     } else {
+        PyErr_SetString(PyExc_AttributeError, "Vector3D attribute does not exist");
         return -1;
     }
     return 0;

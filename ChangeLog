@@ -1,5 +1,10 @@
 2004-01-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Point3D.cpp, rulesets/Py_Vector3D.cpp: Improve
+	  error reporting in setattr.
+
+2004-01-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/const.cpp, common/const.h: Re-enable database code by default
 	  as the disable option is now well tested.
 

@@ -71,7 +71,8 @@ static PyObject * Point3D_getattr(PyPoint3D *self, char *name)
 
 static int Point3D_setattr(PyPoint3D *self, char *name, PyObject *v)
 {
-    return 0;
+    PyErr_SetString(PyExc_AttributeError, "Point3D attribute cannot be set");
+    return -1;
 }
 
 static int Point3D_compare(PyPoint3D * self, PyPoint3D * other)
