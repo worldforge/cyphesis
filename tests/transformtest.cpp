@@ -27,5 +27,14 @@ int main()
         std::cout << position << ", " << transformed << std::endl << std::flush;
     }
 
+    {
+        WFMath::Vector<3> direction(0, 1, 0);
+        const WFMath::Quaternion quat(0.707, 0, 0, 0.707);
+
+        std::cout << direction << std::endl << std::flush;
+
+        std::cout << ", " << direction.rotate(quat) << std::endl << std::flush;
+    }
+
     return ret;
 }

@@ -38,6 +38,9 @@ void Creator::sendExternalMind(const RootOperation & op, OpVector & res)
         debug( std::cout << "NOTICE: Creator self destruct"
                          << std::endl << std::flush;);
         Delete * d = new Delete();
+        ListType & dargs = d->getArgs();
+        dargs.push_back(MapType());
+        dargs.front().asMap()["id"] = getId();
         d->setTo(getId());
         res.push_back(d);
     }

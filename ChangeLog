@@ -1,3 +1,11 @@
+2004-09-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Creator.cpp: Ensure self-destruct delete ops have
+	  an argument.
+
+	* tests/transformtest.cpp: Add a vector rotation test to clarify
+	  quaternion sign conventions.
+
 2004-09-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp: Fixe debug output to work with new
