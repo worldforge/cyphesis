@@ -32,8 +32,10 @@ echo autoconf...
 
 autoconf
 
-CONFIGUREFLAGS="--prefix=/opt/worldforge --enable-maintainer-mode=yes $@"
-echo Running: configure $CONFIGUREFLAGS
-./configure $CONFIGUREFLAGS
-
+if test "x$NOCONFIGURE" = "x" ; then
+    CONFIGUREFLAGS="--prefix=/opt/worldforge --enable-maintainer-mode=yes $@"
+    echo Running: configure $CONFIGUREFLAGS
+    ./configure $CONFIGUREFLAGS
+fi
+   
 exit 0
