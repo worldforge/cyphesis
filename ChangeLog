@@ -1,3 +1,28 @@
+2002-12-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Don't make update requests if no columns
+	  are given to be updated.
+
+	* common/Database.cpp, common/Database.h: Add new method to select
+	  all rows in a given class table with a given location.
+
+	* rulesets/Entity.cpp, rulesets/Entity.h: Make update_flags
+	  public.
+
+	* rulesets/Entity.cpp, rulesets/Thing.cpp, rulesets/attributes.h,
+	  server/Persistor.cpp, server/Persistor_impl.h,
+	  server/WorldRouter.cpp: Add new cont column to entity tables which
+	  is zero if the entity has no contained entities.
+
+	* server/Restoration.cpp, server/Restoration.h, server/Restorer.cpp,
+	  server/Restorer.h, server/Restorer_impl.h:
+	  Modify restorers so they now use a database result iterator to
+	  indicate the row they should restore from.
+
+	* server/Restoration.cpp: Implement new way of restoring world from
+	  database using new function to fetch multiple complete entities
+	  from database at the same time. Massive speedup.
+
 2002-12-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.cpp, common/BaseEntity.h, rulesets/Character.cpp,

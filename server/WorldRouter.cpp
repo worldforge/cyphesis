@@ -142,7 +142,12 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
         debug(std::cout << "loc set with ref " << obj->location.ref->getId()
                         << std::endl << std::flush;);
     }
+    bool cont_change = obj->location.ref->contains.empty();
     obj->location.ref->contains.insert(obj);
+    if (cont_change) {
+        obj->location.ref->update_flags |= a_cont;
+        obj->location.ref->updated.emit();
+    }
     debug(std::cout << "Entity loc " << obj->location << std::endl
                     << std::flush;);
     obj->world = this;

@@ -38,6 +38,7 @@ Persistor<Entity>::Persistor() : m_class("entity")
     desc["type"] = "                                                                                ";
     // desc["loc"] = "                                                                                ";
     desc["loc"] = 0;
+    desc["cont"] = 0;
     desc["px"] = 1.0;
     desc["py"] = 1.0;
     desc["pz"] = 1.0;

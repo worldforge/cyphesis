@@ -24,14 +24,15 @@ template class Restorer<Line>;
 template class Restorer<Stackable>;
 template class Restorer<Structure>;
 
-void Restorer<Character>::rCharacter(DatabaseResult & dr)
+void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
 {
-    restoreFloat(dr.field("drunkness"), drunkness);
-    restoreString(dr.field("sex"), sex);
-    restoreFloat(dr.field("food"), food);
+    restoreFloat(dr.column("drunkness"), drunkness);
+    restoreString(dr.column("sex"), sex);
+    restoreFloat(dr.column("food"), food);
 }
 
-void Restorer<Character>::populate(const std::string & id, DatabaseResult & dr)
+void Restorer<Character>::populate(const std::string & id,
+                                   DatabaseResult::const_iterator & dr)
 {
     // setId(id);
     rEntity(dr);

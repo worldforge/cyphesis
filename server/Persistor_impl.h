@@ -42,6 +42,10 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
           << ", bfy = " << t.location.bBox.farPoint().Y()
           << ", bfz = " << t.location.bBox.farPoint().Z();
     }
+    if (t.getUpdateFlags() & a_cont) {
+        if (!empty) { q << ", "; } else { empty = false; }
+        q << "cont = " << t.contains.size();
+    }
     if (t.getUpdateFlags() & a_status) {
         if (!empty) { q << ", "; } else { empty = false; }
         q << "status = " << t.getStatus();
@@ -102,12 +106,13 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
     if (!c.empty()) {
         c += cs;
     }
-    c += "class, type, loc, px, py, pz, ox, oy, oz, ow, bnx, bny, bnz, bfx, bfy, bfz, status, name, mass, seq";
+    c += "class, type, loc, cont, px, py, pz, ox, oy, oz, ow, bnx, bny, bnz, bfx, bfy, bfz, status, name, mass, seq";
 
     std::stringstream q;
     q << sq << m_class << sq << cs
       << sq << t.getType() << sq << cs
       << sq << t.location.ref->getId() << sq << cs
+      << t.contains.size() << cs
       << t.location.coords.X() << cs
       << t.location.coords.Y() << cs
       << t.location.coords.Z() << cs

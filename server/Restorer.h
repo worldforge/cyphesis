@@ -5,10 +5,11 @@
 #ifndef SERVER_RESTORER_H
 #define SERVER_RESTORER_H
 
+#include <common/Database.h>
+
 #include <string>
 
 class Entity;
-class DatabaseResult;
 
 // This class should never ever be instantiated, so the constructor is private
 // and unimplemented. Instead the template should be instantiated with
@@ -36,12 +37,12 @@ class Restorer : public T {
         s = c;
     }
 
-    void rEntity(DatabaseResult & dr);
-    void rCharacter(DatabaseResult & dr);
+    void rEntity(DatabaseResult::const_iterator & dr);
+    void rCharacter(DatabaseResult::const_iterator & dr);
   public:
-    void populate(const std::string & id, DatabaseResult & dr);
+    void populate(const std::string & id, DatabaseResult::const_iterator & dr);
 
-    static Entity * restore(const std::string & id, DatabaseResult & dr);
+    static Entity * restore(const std::string & id, DatabaseResult::const_iterator & dr);
 
 };
 

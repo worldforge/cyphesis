@@ -224,7 +224,16 @@ OpVector Thing::MoveOperation(const Move & op)
         if (location.ref != newref) {
         // Update loc
             location.ref->contains.erase(this);
+            if (location.ref->contains.empty()) {
+                location.ref->update_flags |= a_cont;
+                location.ref->updated.emit();
+            }
+            bool was_empty = newref->contains.empty();
             newref->contains.insert(this);
+            if (was_empty) {
+                newref->update_flags |= a_cont;
+                newref->updated.emit();
+            }
             location.ref = newref;
             update_flags |= a_loc;
         }

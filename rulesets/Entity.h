@@ -36,7 +36,6 @@ class Entity : public BaseEntity {
     static std::set<std::string> m_immutable;
     static const std::set<std::string> & immutables();
   protected:
-    unsigned int update_flags;
     Script * script;
     Atlas::Message::Object::MapType attributes;
     int seq;                    // Sequence number
@@ -49,6 +48,7 @@ class Entity : public BaseEntity {
     BaseWorld * world;          // Exists in this world.
     Location location;          // Full details of location inc. ref pos and vel
     EntitySet contains;         // List of entities which use this as ref
+    unsigned int update_flags;
 
     // Entity();
     explicit Entity(const std::string & id);

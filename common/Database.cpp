@@ -606,6 +606,10 @@ bool Database::updateEntityRow(const std::string & classname,
                                const std::string & id,
                                const std::string & columns)
 {
+    if (columns.empty()) {
+        log(WARNING, "Update query passed to database with no columns.");
+        return false;
+    }
     TableDict::const_iterator I = entityTables.find(classname);
     if (I == entityTables.end()) {
         log(ERROR, "Attempt to update entity table not registered.");
@@ -687,12 +691,14 @@ const DatabaseResult Database::selectEntityRow(const std::string & id,
     query += id;
     query += "';";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    debug(std::cout << "Selecting on id = " << id << " ... " << std::flush;);
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         log(ERROR, "Database query error.");
         reportError();
         return DatabaseResult(0);
     }
+    debug(std::cout << "done" << std::endl << std::flush;);
 
     PGresult * res;
     if ((res = PQgetResult(m_connection)) == NULL) {
@@ -703,6 +709,44 @@ const DatabaseResult Database::selectEntityRow(const std::string & id,
         return DatabaseResult(0);
     }
     while (PQgetResult(m_connection) != NULL) {
+        log(ERROR, "Extra database result to simple query.");
+    };
+    return DatabaseResult(res);
+}
+
+const DatabaseResult Database::selectOnlyByLoc(const std::string & loc,
+                                               const std::string & classname)
+{
+    std::string query = "SELECT * FROM ONLY ";
+    query += classname;
+    query += "_ent WHERE loc=";
+    query += loc;
+    query += ";";
+    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    int status = PQsendQuery(m_connection, query.c_str());
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return DatabaseResult(0);
+    }
+
+    PGresult * res;
+    if ((res = PQgetResult(m_connection)) == 0) {
+        log(ERROR, "Error selecting entity row.");
+        reportError();
+        std::cout << "QUERY: " << query << std::endl << std::flush;
+        debug(std::cout << "Row query didn't work"
+                        << std::endl << std::flush;);
+        return DatabaseResult(0);
+    }
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        log(ERROR, "Error selecting entity row.");
+        reportError();
+        std::cout << "QUERY: " << query << std::endl << std::flush;
+        res = 0;
+    }
+
+    while (PQgetResult(m_connection) != 0) {
         log(ERROR, "Extra database result to simple query.");
     };
     return DatabaseResult(res);
@@ -720,12 +764,14 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
     }
 
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    debug(std::cout << "Selecting on loc = " << loc << " ... " << std::flush;);
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         log(ERROR, "Database query error.");
         reportError();
         return DatabaseResult(0);
     }
+    debug(std::cout << "done" << std::endl << std::flush;);
 
     PGresult * res;
     if ((res = PQgetResult(m_connection)) == 0) {

@@ -10,41 +10,41 @@
 #include <common/Database.h>
 
 template <class T>
-void Restorer<T>::rEntity(DatabaseResult & dr)
+void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
 {
-    restoreString(dr.field("type"), type);
-    restoreString(dr.field("name"), name);
-    restoreFloat(dr.field("px"), location.coords.X());
-    restoreFloat(dr.field("py"), location.coords.Y());
-    restoreFloat(dr.field("pz"), location.coords.Z());
+    restoreString(dr.column("type"), type);
+    restoreString(dr.column("name"), name);
+    restoreFloat(dr.column("px"), location.coords.X());
+    restoreFloat(dr.column("py"), location.coords.Y());
+    restoreFloat(dr.column("pz"), location.coords.Z());
     location.coords.set();
-    restoreFloat(dr.field("ox"), location.orientation.X());
-    restoreFloat(dr.field("oy"), location.orientation.Y());
-    restoreFloat(dr.field("oz"), location.orientation.Z());
-    restoreFloat(dr.field("ow"), location.orientation.W());
+    restoreFloat(dr.column("ox"), location.orientation.X());
+    restoreFloat(dr.column("oy"), location.orientation.Y());
+    restoreFloat(dr.column("oz"), location.orientation.Z());
+    restoreFloat(dr.column("ow"), location.orientation.W());
     location.orientation.set();
-    restoreFloat(dr.field("bnx"), location.bBox.nearPoint().X());
-    restoreFloat(dr.field("bny"), location.bBox.nearPoint().Y());
-    restoreFloat(dr.field("bnz"), location.bBox.nearPoint().Z());
+    restoreFloat(dr.column("bnx"), location.bBox.nearPoint().X());
+    restoreFloat(dr.column("bny"), location.bBox.nearPoint().Y());
+    restoreFloat(dr.column("bnz"), location.bBox.nearPoint().Z());
     location.bBox.nearPoint().set();
-    restoreFloat(dr.field("bfx"), location.bBox.farPoint().X());
-    restoreFloat(dr.field("bfy"), location.bBox.farPoint().Y());
-    restoreFloat(dr.field("bfz"), location.bBox.farPoint().Z());
+    restoreFloat(dr.column("bfx"), location.bBox.farPoint().X());
+    restoreFloat(dr.column("bfy"), location.bBox.farPoint().Y());
+    restoreFloat(dr.column("bfz"), location.bBox.farPoint().Z());
     location.bBox.farPoint().set();
-    restoreFloat(dr.field("status"), status);
-    restoreFloat(dr.field("mass"), mass);
-    restoreInt(dr.field("seq"), seq);
+    restoreFloat(dr.column("status"), status);
+    restoreFloat(dr.column("mass"), mass);
+    restoreInt(dr.column("seq"), seq);
 }
 
 template <class T>
-void Restorer<T>::populate(const std::string & id, DatabaseResult & dr)
+void Restorer<T>::populate(const std::string & id, DatabaseResult::const_iterator & dr)
 {
     // setId(id);
     rEntity(dr);
 }
 
 template <class T>
-Entity * Restorer<T>::restore(const std::string & id, DatabaseResult & dr)
+Entity * Restorer<T>::restore(const std::string & id, DatabaseResult::const_iterator & dr)
 {
     T * t = new T(id);
     

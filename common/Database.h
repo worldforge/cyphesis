@@ -97,6 +97,8 @@ class Database {
     const DatabaseResult selectEntityRow(const std::string & id,
                                          const std::string & classname = "");
     const DatabaseResult selectClassByLoc(const std::string & loc);
+    const DatabaseResult selectOnlyByLoc(const std::string & loc,
+                                         const std::string & classname);
                                    
 
 };
@@ -160,11 +162,11 @@ class DatabaseResult {
     int columns() const { return PQnfields(m_res); }
     bool error() const { return (m_res == NULL); }
 
-    const const_iterator begin() const {
+    const_iterator begin() const {
         return const_iterator(*this);
     }
 
-    const const_iterator end() const {
+    const_iterator end() const {
         return const_iterator(*this, -1);
     }
 

@@ -46,10 +46,10 @@ const std::set<std::string> & Entity::immutables()
     return m_immutable;
 }
 
-Entity::Entity(const std::string & id) : BaseEntity(id), update_flags(0),
+Entity::Entity(const std::string & id) : BaseEntity(id),
                                          script(new Script), seq(0), status(1),
                                          type("entity"), mass(-1),
-                                         perceptive(false), world(NULL)
+                                         perceptive(false), world(NULL), update_flags(0)
 {
 }
 
@@ -132,6 +132,10 @@ void Entity::destroy()
         refContains.insert(obj);
     }
     refContains.erase(this);
+    if (location.ref->contains.empty()) {
+        location.ref->update_flags |= a_cont;
+        location.ref->updated.emit();
+    }
     destroyed.emit();
 }
 

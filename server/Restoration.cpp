@@ -80,7 +80,8 @@ void Restoration::restore(const std::string & id,
             debug(std::cout << "DEBUG: Creating object for " << id
                             << " with loc " << loc->getId() << std::endl
                             << std::flush;);
-            ent = I->second(id, res);
+            DatabaseResult::const_iterator J = res.begin();
+            ent = I->second(id, J);
             ent->location.ref = loc;
             server.world.addObject(ent, false);
         }
@@ -115,6 +116,85 @@ void Restoration::restore(const std::string & id,
     }
 }
 
+void Restoration::restoreChildren(Entity * loc)
+{
+    const std::string & parent = loc->getId();
+    DatabaseResult res = database.selectClassByLoc(parent);
+    if (res.error()) {
+        debug(std::cout << "DEBUG: Problem getting " << parent
+                        << "'s child list from world db"
+                        << std::endl << std::flush;);
+        return;
+    }
+    if (res.empty()) {
+        debug(std::cout << "DEBUG: No " << parent << " children in database"
+                        << std::endl << std::flush;);
+        return;
+    }
+    std::set<std::string> classes;
+    DatabaseResult::const_iterator I = res.begin();
+    for(; I != res.end(); ++I) {
+        // As we are iterating, we should find the number of the
+        // column first, and then use that. Cheaper.
+        std::string child_id = I.column("id");
+        std::string child_class = I.column("class");
+        if (child_id.empty() || child_class.empty()) {
+            log(ERROR, "Malformed (id,class) record from database.");
+            debug(std::cout << "DEBUG: Empty record when reading children of "
+                            << parent << std::endl << std::flush;);
+            continue;
+        }
+        classes.insert(child_class);
+        debug(std::cout << "DEBUG: Child is " << child_id
+                        << " with class " << child_class
+                        << std::endl << std::flush;);
+    }
+    std::list<Entity *> children;
+    std::set<std::string>::const_iterator J = classes.begin();
+    for(; J != classes.end(); ++J) {
+        RestoreDict::const_iterator K = m_restorers.find(*J);
+        if (K == m_restorers.end()) {
+            log(ERROR, "Could not find a restorer for class");
+            continue;
+        }
+        restoreFunc restorer = K->second;
+        res = database.selectOnlyByLoc(parent, *J);
+        if (res.error()) {
+            log(ERROR, "Database query error.");
+            debug(std::cout << "DEBUG: Problem getting " << parent
+                            << "'s child list from world db"
+                            << std::endl << std::flush;);
+            return;
+        }
+        if (res.empty()) {
+            debug(std::cout << "DEBUG: No " << parent << " children in database"
+                            << std::endl << std::flush;);
+            continue;
+        }
+        DatabaseResult::const_iterator L = res.begin();
+        for(; L != res.end(); ++L) {
+            const char * id = L.column("id");
+            if (id == 0) {
+                continue;
+            }
+            Entity * ent = restorer(id, L);
+            ent->location.ref = loc;
+            server.world.addObject(ent, false);
+            const char * c = L.column("cont");
+            if (c != 0) {
+                if (*c != '0') {
+                    children.push_back(ent);
+                }
+            }
+        }
+
+    }
+    std::list<Entity *>::const_iterator L = children.begin();
+    for(; L != children.end(); ++L) {
+        restoreChildren(*L);
+    }
+}
+
 void Restoration::read()
 {
     DatabaseResult res = database.selectClassByLoc("");
@@ -146,5 +226,10 @@ void Restoration::read()
     }
     debug(std::cout << "DEBUG: World is " << rootId << " with class "
                     << rootClass << std::endl << std::flush;);
+#if 0
     restore(rootId, rootClass, false);
+#else
+    // Fix me - restore attributes of the gameWorld object itself.
+    restoreChildren(&server.world.gameWorld);
+#endif
 }
