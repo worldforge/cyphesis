@@ -221,19 +221,22 @@ Object::MapType PyDictObject_asMapType(PyObject * dict)
 {
     Object::MapType argsmap;
     AtlasObject * item;
-    PyObject * list = PyDict_Keys(dict);
-    PyObject * key;
-    for(int i = 0; i < PyDict_Size(list); i++) {
-        key = PyList_GetItem(list, i);
-        item = (AtlasObject *)PyDict_GetItem(dict, key);
-        if (!PyAtlasObject_Check(item)) {
-            PyErr_SetString(PyExc_TypeError,"dict contains non Atlas Object");
-            Py_DECREF(list);
-            return Object::MapType();
+    PyObject * keys = PyDict_Keys(dict);
+    PyObject * vals = PyDict_Values(dict);
+    for(int i = 0; i < PyDict_Size(dict); i++) {
+        PyObject * key = PyList_GetItem(keys, i);
+        item = (AtlasObject *)PyList_GetItem(vals, i);
+        if (PyAtlasObject_Check(item)) {
+            argsmap[PyString_AsString(key)] = *(item->m_obj);
+        } else {
+            Object o = PyObject_asObject((PyObject*)item);
+            if (o.GetType() != Object::TYPE_NONE) {
+                argsmap[PyString_AsString(key)] = o;
+            }
         }
-        argsmap[PyString_AsString(key)] = *(item->m_obj);
     }
-    Py_DECREF(list);
+    Py_DECREF(keys);
+    Py_DECREF(vals);
     return argsmap;
 }
 

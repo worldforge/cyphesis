@@ -33,11 +33,13 @@ class ClientConnection : public Atlas::Objects::Decoder {
     Atlas::Objects::Encoder * encoder;
     std::string acName;
     Atlas::Message::Object::MapType reply;
+    int serialNo;
 
     dict_t objects;
     std::deque<Atlas::Objects::Operation::RootOperation *> operationQueue;
 
-    template<class O> void push(const O &);
+    template<class O>
+    void push(const O &);
 
     void operation(const Atlas::Objects::Operation::RootOperation&);
 
@@ -80,7 +82,7 @@ class ClientConnection : public Atlas::Objects::Decoder {
     bool login(const std::string &, const string &);
     bool create(const std::string &, const string &);
     bool wait();
-    void send(const Atlas::Objects::Root & obj);
+    void send(Atlas::Objects::Operation::RootOperation & op);
     void error(const std::string & message);
 
     int peek() {
@@ -99,6 +101,7 @@ class ClientConnection : public Atlas::Objects::Decoder {
     int setup();
     void poll();
     RootOperation * pop();
+    bool pending();
 };
 
 #endif // CLIENT_CONNECTION_H

@@ -42,6 +42,10 @@ class Character : public Thing {
 
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
 
+    virtual oplist operation(const RootOperation & op);
+    virtual oplist externalMessage(const RootOperation & op);
+    virtual oplist externalOperation(const RootOperation & op);
+
     virtual oplist ImaginaryOperation(const Imaginary & op);
     virtual oplist SetupOperation(const Setup & op);
     virtual oplist TickOperation(const Tick & op);
@@ -113,9 +117,6 @@ class Character : public Thing {
     virtual oplist mind2body(const RootOperation & op);
     virtual oplist world2body(const RootOperation & op);
     virtual oplist world2mind(const RootOperation & op);
-    virtual oplist externalMessage(const RootOperation & op);
-    virtual oplist operation(const RootOperation & op);
-    virtual oplist externalOperation(const RootOperation & op);
 };
 
 #endif // RULESETS_CHARACTER_H

@@ -13,7 +13,7 @@
 static PyObject * Thing_as_entity(ThingObject * self, PyObject * args)
 {
     if (self->m_thing == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid thing");
+        PyErr_SetString(PyExc_TypeError, "invalid thing as_entity");
         return NULL;
     }
     if (!PyArg_ParseTuple(args, "")) {
@@ -30,7 +30,7 @@ static PyObject * Thing_as_entity(ThingObject * self, PyObject * args)
 static PyObject * Thing_get_xyz(ThingObject * self, PyObject * args)
 {
     if (self->m_thing == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid thing");
+        PyErr_SetString(PyExc_TypeError, "invalid thing get_xyz");
         return NULL;
     }
     if (!PyArg_ParseTuple(args, "")) {
@@ -63,7 +63,7 @@ static PyObject * Thing_getattr(ThingObject *self, char *name)
 {
     // Fairly major re-write of this to use operator[] of Thing base class
     if (self->m_thing == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid thing");
+        PyErr_SetString(PyExc_TypeError, "invalid thing getattr");
         return NULL;
     }
     // If operation search gets to here, it goes no further

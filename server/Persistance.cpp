@@ -15,7 +15,6 @@
 #include <rulesets/Entity.h>
 
 #include <common/config.h>
-#include <common/stringstream.h>
 
 #include "Persistance.h"
 

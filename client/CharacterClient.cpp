@@ -75,19 +75,23 @@ oplist CharacterClient::sendAndWaitReply(RootOperation & op)
     send(op);
     long no = op.GetSerialno();
     while (true) {
-        connection.wait();
-        RootOperation * input=CharacterClient::connection.pop();
-        if (input != NULL) {
-            // What the hell is this!
-            oplist result = message(*input);
-            for (oplist::const_iterator I=result.begin();I!=result.end();I++) {
-                send(*(*I));
+        if (connection.pending()) {
+            RootOperation * input=CharacterClient::connection.pop();
+            if (input != NULL) {
+                // What the hell is this!
+                oplist result = message(*input);
+                oplist::const_iterator I;
+                for (I=result.begin();I!=result.end();I++) {
+                    send(*(*I));
+                }
+    
+                if (findRefno(*input,no)) {
+                    return oplist(1,input);
+                }
             }
-
-            if (findRefno(*input,no)) {
-                return oplist(1,opFound);
-            }
+            delete input;
+        } else {
+            connection.wait();
         }
-        delete input;
     }
 }

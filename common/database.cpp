@@ -19,11 +19,7 @@
 // It seems that GNU libstdc++ does not yet include sstream.h
 // Included is a version written explicitly for gcc, which will be used
 // if the header is not present.
-#ifdef HAVE_SSTREAM
-#include <sstream>
-#else
-#include "sstream.h"
-#endif
+#include <common/stringstream.h>
 
 static const bool debug_flag = false;
 
@@ -106,7 +102,7 @@ bool Database::decodeObject(Dbt & data, Atlas::Message::Object::MapType &o)
         return false;
     }
     
-    std::stringstream str(std::string () + std::string(entry));
+    std::stringstream str(std::string () + std::string(entry), std::ios::in);
 
     Atlas::Codecs::XML codec(str, &m_d);
     Atlas::Message::Encoder enc(&codec);

@@ -157,8 +157,8 @@ def default(mapeditor):
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
     m.know(butcher,bknowledge)
     m.price(butcher,bprices)
-    cleaver=m.make('cleaver',desc='cleaver for cutting meat',place='market',
-                   xyz=(-34,-8,village_height),status=1.0)
+    cleaver=m.make('cleaver',type='cleaver',desc='cleaver for cutting meat',
+                   place='market',xyz=(-34,-8,village_height),status=1.0)
     m.own(butcher,cleaver)
     m.learn(butcher,(il.sell,"sell_trade('ham', 'market')"))
     coins=[]

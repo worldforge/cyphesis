@@ -113,6 +113,7 @@ oplist Thing::CreateOperation(const Create & op)
         c.SetArgs(Object::ListType(1,obj->asObject()));
         RootOperation * s = new Sight(Sight::Instantiate());
         s->SetArgs(Object::ListType(1,c.AsObject()));
+        s->SetRefno(op.GetSerialno());
         return oplist(1,s);
     }
     catch (Atlas::Message::WrongTypeException) {

@@ -1,3 +1,64 @@
+2001-08-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp: Ensure that login op is flushed after it is sent.
+
+	* server/Player.cpp: Arg order of std::string.compare() is
+	  incompatable between recent libstdc++ versions. Switch
+	  back to old version, still in most common use.
+
+	* rulesets/Thing.cpp: Set refno on ops handled in game.
+
+	* rulesets/Python_API.cpp: Modify Entity() python constructor
+	  so that commonly used attributes from old atlas are translated
+	  to their modern equivalents.
+
+	* rulesets/Py_Thing.cpp, rulesets/Py_Mind.cpp: Differentiate
+	  between previously identical error messages in several places.
+
+	* rulesets/Py_Object.cpp: Rework conversion of python dict to
+	  Atlas map to be more efficient and clean.
+
+	* rulesets/Py_Location.cpp: Rework setting of vector parts of
+	  location so that it can accept vectors from python in more
+	  formats, including lists and tuples.
+
+	* rulesets/Creator.h, rulesets/Character.h, common/BaseEntity.h:
+	  Re-order virtual methods declarations to fit a convention.
+
+	* common/stringstream.h: Hardcode use of local stringstream class,
+	  as the version provided with older libstdc++ seems to be broken.
+
+	* common/database.cpp: Use the common header to pick the right
+	  stringstream implementation.
+
+	* common/BaseWorld.cpp, server/Persistance.cpp: Removed unused
+	  stringstream include.
+
+	* rulesets/Creator.cpp: Added extra debug output.
+
+	* client/define_world.h, client/define_world.cpp, client/CommClient.h:
+	  Use CreatorClient to store Creators mind, instead of BaseMind.
+
+	* client/client.cpp,
+	  client/ObserverClient.h, client/ObserverClient.cpp,
+	  client/CreatorClient.h, client/CommClient.h, client/CommClient.cpp:
+	  Modify method names to fit capitalisation conventions.
+
+	* client/CreatorClient.cpp: Implement creation of in-game entities,
+	  using creator entity.
+
+	* client/CommClient.cpp: Added correct client side monitoring of
+	  creator entity.
+
+	* client/ClientConnection.h, client/ClientConnection.cpp: Added
+	  pending method to establish if ops are in the queue. Switched send()
+	  method so we only send ops. Add setting of serialno of sent
+	  ops, starting with an offset of 512.
+
+	* client/CharacterClient.h: Removed unused member, opFound.
+
+	* client/CharacterClient.cpp: Debugged sendAndWait() method.
+
 2001-08-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/server.cpp, server/CommClient.h, client/ClientConnection.h,

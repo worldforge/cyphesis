@@ -5,11 +5,11 @@
 #ifndef CLIENT_DEFINE_WORLD_H
 #define CLIENT_DEFINE_WORLD_H
 
-class BaseEntity;
+class CreatorClient;
 
 namespace DefineWorld {
 
-bool define(BaseEntity * character);
+bool define(CreatorClient * character);
 
 }
 

@@ -488,7 +488,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     char * id = NULL;
     
     if (!PyArg_ParseTuple(args, "|s", &id)) {
-            return NULL;
+        return NULL;
     }
     Object::MapType omap;
     if (id != NULL) {
@@ -508,6 +508,12 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             if ((strcmp(key, "location") == 0) && (PyLocation_Check(val))) {
                 LocationObject * loc = (LocationObject*)val;
                 loc->location->addToObject(omap);
+            } else if (strcmp(key, "xyz") == 0) {
+                omap["pos"] = PyObject_asObject(val);
+            } else if ((strcmp(key, "parent") == 0) && (PyString_Check(val))) {
+                omap["loc"] = Object(std::string(PyString_AsString(val)));
+            } else if ((strcmp(key, "type") == 0) && (PyString_Check(val))) {
+                omap["parents"] = Object::ListType(1,std::string(PyString_AsString(val)));
             } else {
                 Object val_obj = PyObject_asObject(val);
                 if (val_obj.GetType() == Object::TYPE_NONE) {

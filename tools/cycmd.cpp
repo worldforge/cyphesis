@@ -272,6 +272,8 @@ bool Interactive::login()
     l.SetArgs(args);
  
     encoder->StreamMessage(&l);
+
+    ios << std::flush;
  
     while (!reply_flag) {
        codec->Poll();

@@ -8,7 +8,7 @@ bad_type sc(bad_type x,bad_type min,bad_type max,bad_type s);
 class ObserverClient : public CommClient {
   public:
     ObserverClient();
-    void load_default();
+    void loadDefault();
     void idle();
 };
 

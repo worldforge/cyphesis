@@ -13,7 +13,7 @@
 static PyObject * Mind_as_entity(MindObject * self, PyObject * args)
 {
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid thing");
+        PyErr_SetString(PyExc_TypeError, "invalid mind as_entity");
         return NULL;
     }
     if (!PyArg_ParseTuple(args, "")) {
@@ -30,7 +30,7 @@ static PyObject * Mind_as_entity(MindObject * self, PyObject * args)
 static PyObject * Mind_get_xyz(MindObject * self, PyObject * args)
 {
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid thing");
+        PyErr_SetString(PyExc_TypeError, "invalid mind get_xyz");
         return NULL;
     }
     if (!PyArg_ParseTuple(args, "")) {
@@ -63,7 +63,7 @@ static PyObject * Mind_getattr(MindObject *self, char *name)
 {
     // Fairly major re-write of this to use operator[] of Mind base class
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_TypeError, "invalid thing");
+        PyErr_SetString(PyExc_TypeError, "invalid mind getattr");
         return NULL;
     }
     // If operation search gets to here, it goes no further

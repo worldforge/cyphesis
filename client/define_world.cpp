@@ -5,16 +5,15 @@
 #include "define_world.h"
 
 #include <Python.h>
+#include "Py_CreatorClient.h"
 
 #include <iostream>
-
-class BaseEntity;
 
 namespace DefineWorld {
 
 void init_python_api();
 
-bool define(BaseEntity * character)
+bool define(CreatorClient * character)
 {
     PyObject * package_name = PyString_FromString("define_world");
     PyObject * mod_dict = PyImport_Import(package_name);
@@ -39,7 +38,9 @@ bool define(BaseEntity * character)
         Py_DECREF(function);
         return false;
     }
-    PyObject * pyob = PyEval_CallFunction(function, "()");
+    CreatorClientObject * editor = newCreatorClientObject(NULL);
+    editor->m_mind = character;
+    PyObject * pyob = PyEval_CallFunction(function, "(O)", editor);
 
     if (pyob == NULL) {
         if (PyErr_Occurred() == NULL) {

@@ -11,7 +11,7 @@ class Entity;
 
 class CreatorClient : public CharacterClient {
   public:
-    CreatorClient();
+    CreatorClient(const std::string&, const std::string&, ClientConnection&);
 
     Entity * make(const Atlas::Message::Object&);
 };

@@ -37,7 +37,7 @@ static bool debug_flag = true;
 using Atlas::Message::Object;
 
 ClientConnection::ClientConnection() :
-    client_fd(-1), encoder(NULL)
+    client_fd(-1), encoder(NULL), serialNo(512)
 {
 }
 
@@ -70,10 +70,10 @@ void ClientConnection::operation(const RootOperation & op)
 #endif
 }
 
-void ClientConnection::ObjectArrived(const Error&)
+void ClientConnection::ObjectArrived(const Error&op)
 {
     cout << "ERROR" << endl << flush;
-    reply_flag = true;
+    push(op);
     error_flag = true;
 }
 
@@ -340,8 +340,10 @@ bool ClientConnection::wait()
    return error_flag;
 }
 
-void ClientConnection::send(const Atlas::Objects::Root & obj) {
-    encoder->StreamMessage(&obj);
+void ClientConnection::send(Atlas::Objects::Operation::RootOperation & op)
+{
+    op.SetSerialno(++serialNo);
+    encoder->StreamMessage(&op);
     ios << flush;
 }
 
@@ -386,8 +388,15 @@ RootOperation * ClientConnection::pop()
     return op;
 }
 
-template<class O> void ClientConnection::push(const O & op)
+bool ClientConnection::pending()
 {
+    return !operationQueue.empty();
+}
+
+template<class O>
+void ClientConnection::push(const O & op)
+{
+    reply_flag = true;
     RootOperation * new_op = new O(op); 
     operationQueue.push_back(new_op);
 }

@@ -23,7 +23,7 @@ oplist Player::characterError(const Create& op,const Object::MapType& ent) const
         return error(op, "Object to be created has no name");
     }
 
-    if (!I->second.AsString().compare(0,5, "admin")) {
+    if (!I->second.AsString().compare("admin",0,5)) {
         return error(op, "Object to be created cannot start with admin");
     }
 

@@ -42,11 +42,11 @@ ObserverClient::ObserverClient()
         return;
     }
     const std::string & password = I->second.AsString();
-    player = create_player("admin",password);
-    character = (BaseEntity*)create_character("creator");
+    player = createPlayer("admin",password);
+    character = createCharacter("creator");
 }
 
-void ObserverClient::load_default() {
+void ObserverClient::loadDefault() {
     DefineWorld::define(character);
 }
 

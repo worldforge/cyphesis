@@ -8,7 +8,7 @@ LIBS = -ldb_cxx-3.1 -ldb-3.1 /usr/local/lib/libAtlasObjects.a /usr/local/lib/lib
 
 else
 
-LIBS = -ldb_cxx -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlasNet -lAtlasObjects -lAtlasObjectsEntity -lAtlasObjectsOperation -lreadline -ltermcap -lcoal -lcoaliso
+LIBS = -ldb_cxx -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlasNet -lAtlasObjects -lAtlasObjectsEntity -lAtlasObjectsOperation -lreadline -ltermcap -lcoal -lcoaliso -lskstream
 
 endif
 

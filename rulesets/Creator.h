@@ -10,9 +10,11 @@
 class Creator : public Character {
   public:
     Creator();
-    virtual oplist sendMind(const RootOperation & msg);
+
     virtual oplist operation(const RootOperation & op);
     virtual oplist externalOperation(const RootOperation & op);
+
+    virtual oplist sendMind(const RootOperation & msg);
 };
 
 #endif // RULESETS_CREATOR_H

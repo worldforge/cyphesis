@@ -53,6 +53,7 @@ oplist Creator::externalOperation(const RootOperation & op)
     debug( std::cout << "Creator::externalOperation" << std::endl
                      << std::flush;);
     if ((op.GetTo()==fullid) || (op.GetTo()=="")) {
+        debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         oplist lres = callOperation(op);
         setRefno(lres, op);
         for(oplist::const_iterator I = lres.begin(); I != lres.end(); I++) {

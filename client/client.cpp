@@ -61,7 +61,7 @@ int main(int argc, char ** argv)
         // if init.display:;
             // print "Use --nodisplay to hide 'text graphics'";
         ObserverClient & observer = *new ObserverClient();
-        observer.load_default();
+        observer.loadDefault();
         observer.run();
     }
     catch (...) {

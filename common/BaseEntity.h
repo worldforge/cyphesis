@@ -30,8 +30,8 @@ class BaseEntity {
 
     virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
-    virtual oplist externalOperation(const RootOperation & op);
     virtual oplist externalMessage(const RootOperation & op);
+    virtual oplist externalOperation(const RootOperation & op);
 
     virtual oplist LoginOperation(const Login & op);
     virtual oplist LogoutOperation(const Logout & op);

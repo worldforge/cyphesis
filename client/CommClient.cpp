@@ -6,6 +6,7 @@
 #include <rulesets/EntityFactory.h>
 
 #include "CommClient.h"
+#include "CreatorClient.h"
 
 using Atlas::Message::Object;
 
@@ -14,7 +15,7 @@ CommClient::CommClient()
 }
 
 Object::MapType
-CommClient::create_player(const std::string & name,
+CommClient::createPlayer(const std::string & name,
                                const std::string & password)
 {
     playerName = name;
@@ -49,7 +50,7 @@ CommClient::create_player(const std::string & name,
     return ent;
 }
 
-Thing * CommClient::create_character(const std::string & type)
+CreatorClient * CommClient::createCharacter(const std::string & type)
 {
     Object::MapType character;
     character["name"] = playerName;
@@ -67,9 +68,14 @@ Thing * CommClient::create_character(const std::string & type)
     }
     Object::MapType body=connection.getReply();
 
+    const std::string & id = body.find("id")->second.AsString();
+
     edict_t tmp;
 
-    Thing * obj = EntityFactory::instance()->newThing(type, body, tmp);
+    CreatorClient * obj = new CreatorClient(id, type, connection);
+    obj->merge(body);
+    obj->getLocation(body, tmp);
+    // obj = EntityFactory::instance()->newThing(type, body, tmp);
     // FIXME Do we need to create a local entity for this as is done in
     // the python version? If so, do we need to keep track of a full world
     // model here, or just in the minds (when we become an AI client
@@ -81,7 +87,7 @@ Thing * CommClient::create_character(const std::string & type)
 //    time.sleep(0.1);
 //}
 
-void CommClient::handle_net()
+void CommClient::handleNet()
 {
     RootOperation * input;
     while ((input = connection.pop()) != NULL) {

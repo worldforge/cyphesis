@@ -102,28 +102,58 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
         self->location->ref = thing->m_thing;
         return 0;
     }
-    if (!PyVector3D_Check(v)) {
+    Vector3D vector;
+    if (PyVector3D_Check(v)) {
+        Vector3DObject * vec = (Vector3DObject *)v;
+        if (!vec->coords) {
+            fprintf(stderr, "This vector is not set\n");
+        }
+        vector = vec->coords;
+    } else if (PyTuple_Check(v) && (PyTuple_Size(v) == 3)) {
+        for(int i = 0; i < 3; i++) {
+            PyObject * item = PyTuple_GetItem(v, i);
+            if (PyInt_Check(item)) {
+                vector[i] = (double)PyInt_AsLong(item);
+            } else if (PyFloat_Check(item)) {
+                vector[i] = PyFloat_AsDouble(item);
+            } else {
+                PyErr_SetString(PyExc_TypeError, "Vector3D() must take tuple of floats, or ints");
+                return -1;
+            }
+        }
+        vector.set();
+    } else if (PyList_Check(v) && (PyList_Size(v) == 3)) {
+        for(int i = 0; i < 3; i++) {
+            PyObject * item = PyList_GetItem(v, i);
+            if (PyInt_Check(item)) {
+                vector[i] = (double)PyInt_AsLong(item);
+            } else if (PyFloat_Check(item)) {
+                vector[i] = PyFloat_AsDouble(item);
+            } else {
+                std::cerr << i << std::endl << std::flush;
+                PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
+                return -1;
+            }
+        }
+        vector.set();
+    } else {
         PyErr_SetString(PyExc_TypeError, "arg must be a vector");
         return -1;
     }
-    Vector3DObject * vec = (Vector3DObject *)v;
-    if (!vec->coords) {
-        fprintf(stderr, "This vector is not set\n");
-    }
     if (strcmp(name, "coordinates") == 0) {
-        self->location->coords = vec->coords;
+        self->location->coords = vector;
     }
     if (strcmp(name, "velocity") == 0) {
-        self->location->velocity = vec->coords;
+        self->location->velocity = vector;
     }
     if (strcmp(name, "rotation") == 0) {
-        self->location->face = vec->coords;
+        self->location->face = vector;
     }
     if (strcmp(name, "bbox") == 0) {
-        self->location->bbox = vec->coords;
+        self->location->bbox = vector;
     }
     if (strcmp(name, "bmedian") == 0) {
-        self->location->bmedian = vec->coords;
+        self->location->bmedian = vector;
     }
     return 0;
 }

@@ -1,4 +1,4 @@
-typedef int bad_type; // Remove this to get unset type reporting
+// Remove this to get unset type reporting
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
@@ -7,28 +7,28 @@ typedef int bad_type; // Remove this to get unset type reporting
 
 #include "ClientConnection.h"
 
-class Thing;
+class CreatorClient;
 
 class CommClient : public BaseEntity {
   protected:
     // bad_type time;
     ClientConnection connection;
-    BaseEntity * character;
+    CreatorClient * character;
     Atlas::Message::Object::MapType player;
     std::string playerName;
 
   public:
     CommClient();
 
-    Atlas::Message::Object::MapType create_player(const std::string & name,
-                                                  const std::string & pword);
-    Thing * create_character(const std::string & name);
-    void handle_net();
+    Atlas::Message::Object::MapType createPlayer(const std::string & name,
+                                                 const std::string & pword);
+    CreatorClient * createCharacter(const std::string & name);
+    void handleNet();
     
     virtual void idle() = 0;
 
     bool connect(const std::string & server = "localhost", int port=6767) {
-        connection.connect(server);
+        return connection.connect(server);
     }
     void send(Atlas::Objects::Operation::RootOperation & op) {
         connection.send(op);
@@ -36,7 +36,7 @@ class CommClient : public BaseEntity {
 
     void run(const bool loop = true) {
         while (loop) {
-            handle_net();
+            handleNet();
             idle();
         };
     }
