@@ -1,3 +1,8 @@
+2002-12-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommMetaClient.cpp: Correctly initialise the size of
+	  the from address structure.
+
 2002-12-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp, common/Database.h: Backport switch to C PostgreSQL
