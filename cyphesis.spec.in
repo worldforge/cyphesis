@@ -44,6 +44,7 @@ required to compile application which requires access to cyphesis databases.
 Summary: Game data for running the Acorn game in cyphesis
 Group: Amusements/Games
 Requires: %{name} = %{version}
+BuildArchitectures: noarch
 
 %description acorn
 This is the rules data, scripts and map data required for the Acorn
@@ -53,6 +54,7 @@ game. Install this package if you intend to run an Acorn server.
 Summary: Game data for running the Mason game in cyphesis
 Group: Amusements/Games
 Requires: %{name} = %{version}
+BuildArchitectures: noarch
 
 %description mason
 This is the rules data, scripts and map data required for the Mason
@@ -62,6 +64,7 @@ game. Install this package if you intend to run an Mason server.
 Summary: Game data for running the Werewolf game in cyphesis
 Group: Amusements/Games
 Requires: %{name} = %{version}
+BuildArchitectures: noarch
 
 %description werewolf
 This is the rules data, scripts and map data required for the Werewolf
