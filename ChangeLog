@@ -1,5 +1,11 @@
 2003-06-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Fix variable name bug in non-debug build.
+
+	* Update Makefile.ams so that distcheck works.
+
+2003-06-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/World.cpp: Take account of Mercator API changes.
 
 2003-06-15  Al Riddoch  <alriddoch@zepler.org>

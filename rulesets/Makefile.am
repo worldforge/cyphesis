@@ -1,5 +1,7 @@
 # SUBDIRS = astronomy skills
 
+INCLUDES = -I$(top_srcdir)
+
 noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
                    libscriptpython.a
 

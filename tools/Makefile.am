@@ -2,7 +2,7 @@ bin_PROGRAMS = cycmd cypasswd cyloadrules cywatchdog cyctrl cyconfig
 
 bin_SCRIPTS = cyphesis-setup
 
-INCLUDES = -DBINDIR=\"@bindir@\" -DVARDIR=\"@localstatedir@\"
+INCLUDES = -I$(top_srcdir) -DBINDIR=\"@bindir@\" -DVARDIR=\"@localstatedir@\"
 
 cypasswd_SOURCES = cypasswd.cpp sstream.h iotraits.h
 

@@ -121,7 +121,7 @@ inline const std::string WorldRouter::getNewId(const std::string & name)
     // }
     // return full_id;
 #else
-    buf << ++nextId;
+    buf << ++m_nextId;
     return buf.str();
 #endif
 }

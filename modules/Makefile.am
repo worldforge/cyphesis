@@ -1,3 +1,5 @@
+INCLUDES = -I$(top_srcdir)
+
 noinst_LIBRARIES = libmodules.a
 
 libmodules_a_SOURCES = DateTime.cpp DateTime.h \
