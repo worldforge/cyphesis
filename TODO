@@ -1,3 +1,7 @@
+Each entity could have a Mode object which controls how its movement/position
+is simulated, including the effect of gravity etc. This would be associated
+with a mode string.
+
 Convert python code that uses get_xyz() to use distance_to instead.
 
 If the character moves an entity into another similar entity, then
