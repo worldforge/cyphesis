@@ -65,6 +65,11 @@ World::World(const std::string & id) : World_parent(id),
     subscribe("set", OP_SET);
 
     // FIXME Just for testin
+    m_terrain.setBasePoint(-1, -1, -6.8);
+    m_terrain.setBasePoint(0, -1, -7.8);
+    m_terrain.setBasePoint(-1, 0, -6.8);
+    m_terrain.setBasePoint(-1, 1, -4.8);
+    m_terrain.setBasePoint(1, -1, -5.8);
     m_terrain.setBasePoint(0, 0, 24.8);
     m_terrain.setBasePoint(1, 0, 27.1);
     m_terrain.setBasePoint(0, 1, 20.2);

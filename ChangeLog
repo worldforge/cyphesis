@@ -1,3 +1,7 @@
+2003-05-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/World.cpp: Add a bit more terrain.
+
 2003-05-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommServer.cpp: Don't report Interrupted System Call on
