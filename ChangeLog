@@ -1,3 +1,8 @@
+2005-02-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Fix a problem linking postgresql in the tests if
+	  its libs are in a weird place.
+
 2005-02-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.cpp: If no persistent ruleset exists in the

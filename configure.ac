@@ -196,10 +196,13 @@ AM_PATH_PSQL(7.1.0,
     AC_MSG_ERROR([Cannot find PostgreSQL config or config failed. Please install PostgreSQL and ensure than pg_config is on the PATH.])
 )
 
+ac_save_LIBS="$LIBS"
+LIBS="$LIBS $PG_LIBS"
 AC_CHECK_LIB(pq,PQconnectdb,
 [
     PGSQL_LIBS="$PGSQL_LIBS -lpq"
 ],AC_MSG_ERROR([Cannot find PostgreSQL bindings! Have you installed the PostgreSQL development software?]))
+LIBS="$ac_save_LIBS"
 
 READLINE_LIBS=
 
