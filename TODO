@@ -1,3 +1,5 @@
+Think about adding UPnP here or to skstream (or both)
+
 Replace PyExc_TypeError with the correct exception in most cases.
 
 Use PyInstance_New to create an instance given a class.
