@@ -1,0 +1,6 @@
+.deps
+.libs
+BaseEntitytest
+Makefile
+Makefile.in
+logtest
