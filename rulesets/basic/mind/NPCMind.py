@@ -19,6 +19,7 @@ else:
 from mind.Memory import Memory
 from mind.Knowledge import Knowledge
 from mind.panlingua import interlinguish,ontology
+from mind.compass import vector_to_compass
 from common import log,const
 from server import dictlist
 import mind.goals
@@ -167,6 +168,24 @@ class NPCMind(BaseMind):
             self.add_knowledge(predicate,subject,loc)
         else:
             self.add_knowledge(predicate,subject,object)
+    def interlinguish_tell_verb1_operation(self, op, say):
+        # Currently no checking for trus here.
+        # We are being liberal with interpretation of "subject" and "object"
+        subject=say[1].word
+        predicate=say[2].word
+        object=say[3].word
+        k=self.get_knowledge(predicate, object)
+        if k==None:
+            return Operation('talk',Entity(say="I know nothing about the "+predicate+" of "+object))
+        else:
+            k_type = type(k)
+            if k_type==type(Location()):
+                dist = distance_to(self.location, k)
+                # Currently this assumes dist is relative to TLVE
+                k='%f metres %s' % (dist.mag(), vector_to_compass(dist))
+            elif k_type!=StringType:
+                k='difficult to explain'
+            return Operation('talk', Entity(say="The "+predicate+" of "+object+" is "+k))
     def interlinguish_price_verb1_operation(self, op, say):
         if not self.admin_sound(op):
             return self.interlinguish_warning(op,say,"You are not admin")

@@ -1,3 +1,18 @@
+2004-01-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Vector3D.cpp: Add print handler for Vector3D, which
+	  doesn't seem to work yet.
+
+	* rulesets/basic/mind/panlingua/interlinguish.py: Add tell verb.
+	  Modify regexs for simple sentences so they tolerate more
+	  variation in the structure.
+
+	* rulesets/basic/mind/compass.py: New function to convert direction
+	  vector into a compass direction string.
+
+	* rulesets/basic/mind/NPCMind.py: Add handler for tell verb, to
+	  query knowledge from NPCs.
+
 2004-01-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/consttest.cpp: Check the values of all config variables,

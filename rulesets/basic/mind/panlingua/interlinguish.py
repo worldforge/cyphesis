@@ -120,6 +120,7 @@ def add_vspo_word(words,index):
     vspo_dict[words]=(words,index)
 
 add_vspo_word('know','#know_verb1')
+add_vspo_word('tell','#tell_verb1')
 
 def verb_subject_object(verb,subject,object):
     """this function is partially cheat and not real translation"""
@@ -138,20 +139,22 @@ def verb_subject_predicate_object(verb,subject,predicate,object):
     return (verb+" "+subject+" "+predicate+" "+object,
             (a1,a2,a3,a4))
 
-vso_pattern=re.compile(r"(\w+)\s+((\w+)|(\(.+?\)))\s+(.*)")
-vspo_pattern=re.compile(r"(\w+)\s+((\w+)|(\(.+?\)))\s+(\w+)\s+(.*)")
+# <verb> [ the | a ] <subject> [ is | has ] <object>
+vso_pattern=re.compile(r"(\w+)\s+(the\s+)?(a\s+)?((\w+)|(\(.+?\)))\s+(is\s+)?(has\s+)?(.*)")
+# <verb> [ the | a ] <subject> [ is | has ] <predicate> [ of ] <object>
+vspo_pattern=re.compile(r"(\w+)\s+(the\s+)?(a\s+)?((\w+)|(\(.+?\)))\s+(is\s+)?(has\s+)?(\w+)\s+(of\s+)?(.*)")
 def match_verb_subject_object_string(say):
     m=vso_pattern.match(say)
     if m:
         verb=m.group(1)
         if vso_dict.has_key(verb):
-            subject,object=m.group(2),m.group(5)
+            subject,object=m.group(4),m.group(9)
             return verb_subject_object(verb,subject,object)
     m=vspo_pattern.match(say)
     if m:
         verb=m.group(1)
         if vspo_dict.has_key(verb):
-            subject,predicate,object=m.group(2),m.group(5),m.group(6)
+            subject,predicate,object=m.group(4),m.group(9),m.group(11)
             return verb_subject_predicate_object(verb,subject,predicate,object)
     return None
 
