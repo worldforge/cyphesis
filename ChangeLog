@@ -1,5 +1,9 @@
 2003-07-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/BBox.cpp: New file to check BBox.h.
+
+2003-07-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/World.cpp: Tweak terrain to look a little better.
 
 2003-07-18  Al Riddoch  <alriddoch@zepler.org>
