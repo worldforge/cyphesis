@@ -1,5 +1,12 @@
 2004-11-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* README: Updated to latest contents of README.sgml
+
+	* cyphesis.spec.in, rulesets/Makefile.am: Remove the acorn and
+	  werewolf rules from the distribution, to simplify things.
+
+2004-11-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/objects/tools/Cleaver.py: Scrub some debug
 	  output.
 

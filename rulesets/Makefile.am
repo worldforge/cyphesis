@@ -52,19 +52,13 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 
 dist-hook:
 	tar cf - `find basic -name \*.py` | (cd $(distdir); tar xf -)
-	tar cf - `find acorn -name \*.py` | (cd $(distdir); tar xf -)
-	tar cf - `find werewolf -name \*.py` | (cd $(distdir); tar xf -)
 	tar cf - `find mason -name \*.py` | (cd $(distdir); tar xf -)
 
 install-data-local:
 	mkdir -p $(DESTDIR)$(datadir)/cyphesis/rulesets
 	(cd $(top_srcdir)/rulesets; tar cf - `find basic -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
-	(cd $(top_srcdir)/rulesets; tar cf - `find acorn -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
-	(cd $(top_srcdir)/rulesets; tar cf - `find werewolf -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
 	(cd $(top_srcdir)/rulesets; tar cf - `find mason -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
 
 uninstall-local:
 	find $(DESTDIR)$(datadir)/cyphesis/rulesets/basic -name \*.py | xargs rm
-	find $(DESTDIR)$(datadir)/cyphesis/rulesets/acorn -name \*.py | xargs rm
-	find $(DESTDIR)$(datadir)/cyphesis/rulesets/werewolf -name \*.py | xargs rm
 	find $(DESTDIR)$(datadir)/cyphesis/rulesets/mason -name \*.py | xargs rm

@@ -23,7 +23,7 @@ Introduction
    will also be used to control NPCs in future servers such as STAGE using AI
    techniques.
 
-     ----------------------------------------------------------------------
+   ---------------------------------------------------------------------------
 
 Building from Source
 
@@ -37,15 +37,15 @@ Building from Source
    install" before it will be ready. Go to the Section called Setup for
    information on the setup steps required after installation.
 
-     ----------------------------------------------------------------------
+   ---------------------------------------------------------------------------
 
 Setup
 
    The software requires some post-installation configuration before it will
    run correctly. If you plan to run a server using the System V init
-   services as provided by the cyphesis-service rpm then most of this
-   configuration is handled for you automatically. If this is the case please
-   see the Section called Setup as a System Service for more information.
+   services as provided by the cyphesis rpm then most of this configuration
+   is handled for you automatically. If this is the case please see the
+   Section called Setup as a System Service for more information.
 
    The first step is to setup the database access. The database is required
    to store account and rule information. If full server persistence is
@@ -62,23 +62,23 @@ Setup
 
    Once database access has been granted you must run cyloadrules to load the
    default rulesets into the database. For more information on how
-   cyloadrules works, including advanced usage see the Section called Usage
-   and configuration.
+   cyloadrules works, including advanced usage see the Section called
+   Usage and configuration.
 
    The server is now ready to run. For for more information on how to start
    the server see the Section called Usage and configuration.
 
-     ----------------------------------------------------------------------
+   ---------------------------------------------------------------------------
 
 Setup as a System Service
 
    Running cyphesis as a service is the simplest way to get the server up and
-   running. If you are using rpm packages, the cyphesis service rpm handles
-   creating a user account so that cyphesis does not run as the superuser. In
-   order to run the server correctly, the cyphesis service must be started,
-   followed by the cyclient service. This can be handled by configuring the
-   system to start these services at boot time, or by running the init
-   scripts manually as root as follows:
+   running. If you are using rpm packages, the cyphesis rpm handles creating
+   a user account so that cyphesis does not run as the superuser. In order to
+   run the server correctly, the cyphesis service must be started, followed
+   by the cyclient service. This can be handled by configuring the system to
+   start these services at boot time, or by running the init scripts manually
+   as root as follows:
 
    # /etc/init.d/cyphesis start                                               
    # /etc/init.d/cyclient start                                               
@@ -121,7 +121,7 @@ Setup as a System Service
    syslog documentation for information about how to control these log
    messages.
 
-     ----------------------------------------------------------------------
+   ---------------------------------------------------------------------------
 
 Running a basic server
 
@@ -149,7 +149,7 @@ Running a basic server
    server or world development at this time then you do not need to read any
    of the rest of these instructions.
 
-     ----------------------------------------------------------------------
+   ---------------------------------------------------------------------------
 
 Usage and configuration
 
@@ -261,7 +261,7 @@ Usage and configuration
    cyclient once the server is running. You will need to do this each time
    cyphesis is started.
 
-     ----------------------------------------------------------------------
+   ---------------------------------------------------------------------------
 
 Copyright notices
 

@@ -30,25 +30,25 @@ build home for me or go to dinner).
 This package includes the rules data, scripts and map data required for the
 Mason game. Use this package if you intend to run an Mason server.
 
-%package acorn
-Summary: Game data for running the Acorn game in cyphesis
-Group: Amusements/Games
-Requires: %{name} = %{version}
+#%package acorn
+#Summary: Game data for running the Acorn game in cyphesis
+#Group: Amusements/Games
+#Requires: %{name} = %{version}
 
-%description acorn
-This is the rules data, scripts and map data required for the Acorn
-game. Install this package if you intend to run an Acorn server.
-Acorn is deprecated. See README for details.
+#%description acorn
+#This is the rules data, scripts and map data required for the Acorn
+#game. Install this package if you intend to run an Acorn server.
+#Acorn is deprecated. See README for details.
 
-%package werewolf
-Summary: Game data for running the Werewolf game in cyphesis
-Group: Amusements/Games
-Requires: %{name} = %{version} %{name}-acorn
+#%package werewolf
+#Summary: Game data for running the Werewolf game in cyphesis
+#Group: Amusements/Games
+#Requires: %{name} = %{version} %{name}-acorn
 
-%description werewolf
-This is the rules data, scripts and map data required for the Werewolf
-game. Install this package if you intend to run an Werewolf server.
-Werewolf is not yet functional.
+#%description werewolf
+#This is the rules data, scripts and map data required for the Werewolf
+#game. Install this package if you intend to run an Werewolf server.
+#Werewolf is not yet functional.
 
 %prep
 %setup -q
@@ -111,19 +111,21 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %config %{_sysconfdir}/cyphesis/basic.xml
 %config %{_sysconfdir}/cyphesis/cyphesis.vconf
+%config %{_sysconfdir}/cyphesis/acorn.xml
 %config %{_sysconfdir}/cyphesis/mason.xml
+%config %{_sysconfdir}/cyphesis/werewolf.xml
 %{_bindir}/cy*
 %{_datadir}/cyphesis/rulesets/basic
 %{_datadir}/cyphesis/rulesets/mason
 %{_mandir}/man1/*.1.gz
 %doc README COPYING AUTHORS THANKS NEWS
 
-%files acorn
-%defattr(-,root,root)
-%config %{_sysconfdir}/cyphesis/acorn.xml
-%{_datadir}/cyphesis/rulesets/acorn
+#%files acorn
+#%defattr(-,root,root)
+#%config %{_sysconfdir}/cyphesis/acorn.xml
+#%{_datadir}/cyphesis/rulesets/acorn
 
-%files werewolf
-%defattr(-,root,root)
-%config %{_sysconfdir}/cyphesis/werewolf.xml
-%{_datadir}/cyphesis/rulesets/werewolf
+#%files werewolf
+#%defattr(-,root,root)
+#%config %{_sysconfdir}/cyphesis/werewolf.xml
+#%{_datadir}/cyphesis/rulesets/werewolf
