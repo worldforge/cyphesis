@@ -103,8 +103,8 @@ void CommMetaClient::metaserverReply()
     char                mesg[MAXLINE];
     char               *mesg_ptr;
     uint32_t            handshake = 0, command = 0;
-    struct sockaddr	addr;
-    socklen_t           addrlen;
+    struct sockaddr     addr;
+    socklen_t           addrlen = sizeof(addr);
     unsigned int        packet_size;
 
     if (recvfrom(metaFd, mesg, MAXLINE, 0, &addr, &addrlen) < 0) {

@@ -20,7 +20,8 @@ class BaseWorld;
 typedef std::map<std::string, FactoryBase *> FactoryDict;
 
 class EntityFactory {
-    EntityFactory(BaseWorld & w);
+  private:
+    explicit EntityFactory(BaseWorld & w);
     static EntityFactory * m_instance;
 
     FactoryDict factories;

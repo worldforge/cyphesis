@@ -1,3 +1,13 @@
+2002-12-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommMetaClient.cpp: Correctly initialise the size of
+	  the from address structure.
+
+	* server/EntityFactory.cpp: Delete persistor connection once
+	  its been used.
+
+	* server/EntityFactory.h: Ensure constructor is explicit.
+
 2002-12-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp: Shuffle the way id is generated, so

@@ -109,6 +109,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
     if (pc != 0) {
         pc->persist();
     }
+    delete pc;
     return thing;
 }
 
