@@ -1,6 +1,3 @@
-%define prefix /usr
-%define sysconfdir /etc
-
 Summary: A simple personal server for the WorldForge project
 Name: cyphesis
 Version: @VERSION@
@@ -87,12 +84,12 @@ Werewolf is not yet functional.
 %setup -q
 
 %build
-CXXFLAGS=$RPM_OPT_FLAGS ./configure --prefix=%{prefix} --enable-static --sysconfdir=%{sysconfdir}
+%configure --enable-static
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} install
+%makeinstall
 if [ -d /etc/rc.d/init.d ]
 then
 	install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
@@ -137,10 +134,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{prefix}/bin/cy*
-%{prefix}/share/cyphesis/rulesets/basic
-%config %{sysconfdir}/cyphesis/basic.xml
-%config %{sysconfdir}/cyphesis/cyphesis.vconf
+%{_bindir}/cy*
+%{_datadir}/cyphesis/rulesets/basic
+%config %{_sysconfdir}/cyphesis/basic.xml
+%config %{_sysconfdir}/cyphesis/cyphesis.vconf
 %doc README COPYING AUTHORS THANKS NEWS
 
 %files service -f service.lst
@@ -148,28 +145,29 @@ rm -rf $RPM_BUILD_ROOT
 
 %files libs
 %defattr(-,root,root)
-%{prefix}/lib/libcyphesis.so.0.0.0
-%{prefix}/lib/libcyphesis.so.0
+%{_libdir}/libcyphesis.so.0.0.0
+%{_libdir}/libcyphesis.so.0
 
 %files devel
 %defattr(-,root,root)
-%{prefix}/lib/libcyphesis.so
-%{prefix}/lib/libcyphesis.a
-%{prefix}/include/cyphesis
+%{_libdir}/libcyphesis.so
+%{_libdir}/libcyphesis.la
+%{_libdir}/libcyphesis.a
+%{_includedir}/cyphesis
 
 %files acorn
 %defattr(-,root,root)
-%config %{sysconfdir}/cyphesis/acorn.xml
-%config %{sysconfdir}/cyphesis/agrilan*.xml
-%{prefix}/share/cyphesis/rulesets/acorn
+%config %{_sysconfdir}/cyphesis/acorn.xml
+%config %{_sysconfdir}/cyphesis/agrilan*.xml
+%{_datadir}/cyphesis/rulesets/acorn
 
 %files mason
 %defattr(-,root,root)
-%config %{sysconfdir}/cyphesis/mason.xml
-%config %{sysconfdir}/cyphesis/moraf.xml
-%{prefix}/share/cyphesis/rulesets/mason
+%config %{_sysconfdir}/cyphesis/mason.xml
+%config %{_sysconfdir}/cyphesis/moraf.xml
+%{_datadir}/cyphesis/rulesets/mason
 
 %files werewolf
 %defattr(-,root,root)
-%config %{sysconfdir}/cyphesis/werewolf.xml
-%{prefix}/share/cyphesis/rulesets/werewolf
+%config %{_sysconfdir}/cyphesis/werewolf.xml
+%{_datadir}/cyphesis/rulesets/werewolf
