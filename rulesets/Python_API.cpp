@@ -36,6 +36,8 @@
 #include "common/Eat.h"
 #include "common/Nourish.h"
 
+#include "common/Generic.h"
+
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Move.h>
@@ -866,14 +868,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         Py_INCREF(Py_None);
         return Py_None;
     } else {
-        // FIXME use generic, once generic is fixed again.
-        op->operation = new RootOperation();
-        op->operation->setParents(ListType(1, type));
-        // fprintf(stderr, "NOTICE: Python creating a custom %s op\n", type);
-        //*op->operation = Root;
-        // Py_DECREF(op);
-        // Py_INCREF(Py_None);
-        // return Py_None;
+        op->operation = new Generic(type);
     }
     op->own = 1;
     if (PyMapping_HasKeyString(kwds, "to")) {

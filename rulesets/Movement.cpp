@@ -54,7 +54,7 @@ void Movement::checkCollisions(const Location & loc)
         if (!oloc.m_bBox.isValid()) { continue; }
         debug( std::cout << " " << (*I)->getId(); );
         Vector3D normal;
-        float t = 4; // FIXME relate to tick time
+        float t = consts::basic_tick + 1;
         if (!predictCollision(loc, oloc, t, normal) || (t < 0)) { continue; }
         debug( std::cout << (*I)->getId() << oloc.m_pos << oloc.m_velocity; );
         debug( std::cout << "[" << t << "]"; );
@@ -99,7 +99,7 @@ void Movement::checkCollisions(const Location & loc)
             const Location & oloc = (*I)->m_location;
             if (!oloc.m_bBox.isValid()) { continue; }
             Vector3D normal;
-            float t = 4; // FIXME relate to tick time
+            float t = consts::basic_tick + 1;
             if (!predictCollision(rloc,oloc,t,normal) || (t < 0)) { continue; }
             if (t <= coll2Time) {
                 coll2Time = t;

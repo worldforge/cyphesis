@@ -1,5 +1,13 @@
 2004-09-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Use the Generic operation class for ops
+	  with no hard coded type.
+
+	* rulesets/Movement.cpp: Make the time periods used when checking
+	  collisions dependent on the standard tick time.
+
+2004-09-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Creator.cpp: Update a FIXME comment with a new possible
 	  solution.
 
