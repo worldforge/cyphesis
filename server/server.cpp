@@ -18,11 +18,14 @@
 #include "Persistance.h"
 #include "Restoration.h"
 #include "WorldRouter.h"
+#include "Admin.h"
 
 #include "rulesets/Python_API.h"
 #include "rulesets/MindFactory.h"
 
+#include "common/id.h"
 #include "common/log.h"
+#include "common/const.h"
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/inheritance.h"
@@ -59,26 +62,28 @@ int main(int argc, char ** argv)
     // Initialise the persistance subsystem. If we have been built with
     // database support, this will open the various databases used to
     // store server data.
-    int dbstatus = Persistance::init();
-    if (dbstatus < 0) {
-        log(CRITICAL, _("Critical error opening databases. Init failed."));
-        if (dbstatus == -2) {
-            log(INFO, "Database connection established, but unable to create required tables.");
-            log(INFO, "Please ensure that any obsolete database tables have been removed.");
-        } else {
-            log(INFO, "Unable to connect to the RDBMS.");
-            log(INFO, "Please ensure that the RDBMS is running, the cyphesis database exists and is accessible to the user running cyphesis.");
+    if (consts::enable_database) {
+        int dbstatus = Persistance::init();
+        if (dbstatus < 0) {
+            log(CRITICAL, _("Critical error opening databases. Init failed."));
+            if (dbstatus == -2) {
+                log(INFO, "Database connection established, but unable to create required tables.");
+                log(INFO, "Please ensure that any obsolete database tables have been removed.");
+            } else {
+                log(INFO, "Unable to connect to the RDBMS.");
+                log(INFO, "Please ensure that the RDBMS is running, the cyphesis database exists and is accessible to the user running cyphesis.");
+            }
+            return EXIT_DATABASE_ERROR;
         }
-        return EXIT_DATABASE_ERROR;
-    }
 
-    // If the restricted flag is set in the config file, then we
-    // don't allow connecting users to create accounts. Accounts must
-    // be created manually by the server administrator.
-    if (global_conf->findItem("cyphesis", "restricted")) {
-        restricted_flag = global_conf->getItem("cyphesis","restricted");
-        if (restricted_flag) {
-            log(INFO, "Setting restricted mode.");
+        // If the restricted flag is set in the config file, then we
+        // don't allow connecting users to create accounts. Accounts must
+        // be created manually by the server administrator.
+        if (global_conf->findItem("cyphesis", "restricted")) {
+            restricted_flag = global_conf->getItem("cyphesis","restricted");
+            if (restricted_flag) {
+                log(INFO, "Setting restricted mode.");
+            }
         }
     }
 
@@ -125,15 +130,28 @@ int main(int argc, char ** argv)
     // not creating a new world using the contents of the database as a
     // template
 
-    log(INFO, _("Restoring world from database..."));
+    if (consts::enable_database) {
+        log(INFO, _("Restoring world from database..."));
 
-    Restoration restore(server);
-    if (restore.read() == 1) {
-        debug(std::cout << "Bootstrapping world" << std::endl << std::flush;);
-        EntityFactory::instance()->initWorld();
+        Restoration restore(server);
+        if (restore.read() == 1) {
+            debug(std::cout << "Bootstrapping world" << std::endl << std::flush;);
+            EntityFactory::instance()->initWorld();
+        }
+
+        log(INFO, _(" world restored"));
+
+        CommPSQLSocket * dbsocket = new CommPSQLSocket(commServer,
+                                        Persistance::instance()->m_connection);
+        commServer.addSocket(dbsocket);
+        commServer.addIdle(dbsocket);
+    } else {
+        std::string adminId;
+        newId(adminId);
+        assert(!adminId.empty());
+        Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId);
+        server.addAccount(admin);
     }
-
-    log(INFO, _(" world restored"));
 
     CommListener * listener = new CommListener(commServer);
     if (listener->setup(client_port_num) != 0) {
@@ -160,11 +178,6 @@ int main(int argc, char ** argv)
     } else {
         commServer.addSocket(localListener);
     }
-
-    CommPSQLSocket * dbsocket = new CommPSQLSocket(commServer,
-                                        Persistance::instance()->m_connection);
-    commServer.addSocket(dbsocket);
-    commServer.addIdle(dbsocket);
 
     if (useMetaserver) {
         CommMetaClient * cmc = new CommMetaClient(commServer);

@@ -63,6 +63,7 @@ namespace consts {
   extern bool enable_ranges;
   extern bool enable_omnipresence;
   extern float minSqrBoxSize;
+  extern bool enable_database;
   extern bool enable_persistence;
 
 #endif // NDEBUG

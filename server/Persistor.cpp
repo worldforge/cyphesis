@@ -17,6 +17,7 @@
 #include "rulesets/Structure.h"
 #include "rulesets/World.h"
 
+#include "common/const.h"
 #include "common/Database.h"
 #include "common/terrain_utils.h"
 
@@ -63,7 +64,9 @@ Persistor<Entity>::Persistor(bool temp) : m_class("entity")
     desc["mass"] = 1.0;
     desc["seq"] = 0;
     desc["attributes"] = "";
-    Database::instance()->registerEntityTable(m_class, desc);
+    if (consts::enable_database) {
+        Database::instance()->registerEntityTable(m_class, desc);
+    }
 }
 
 Persistor<Thing>::Persistor<Thing>(bool temp) : m_class("thing")
@@ -71,7 +74,9 @@ Persistor<Thing>::Persistor<Thing>(bool temp) : m_class("thing")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    Database::instance()->registerEntityTable(m_class, desc, "entity");
+    if (consts::enable_database) {
+        Database::instance()->registerEntityTable(m_class, desc, "entity");
+    }
 }
 
 Persistor<Line>::Persistor<Line>(bool temp) : m_class("line")
@@ -79,7 +84,9 @@ Persistor<Line>::Persistor<Line>(bool temp) : m_class("line")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    Database::instance()->registerEntityTable(m_class, desc, "thing");
+    if (consts::enable_database) {
+        Database::instance()->registerEntityTable(m_class, desc, "thing");
+    }
 }
 
 Persistor<Area>::Persistor<Area>(bool temp) : m_class("area")
@@ -87,7 +94,9 @@ Persistor<Area>::Persistor<Area>(bool temp) : m_class("area")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    Database::instance()->registerEntityTable(m_class, desc, "thing");
+    if (consts::enable_database) {
+        Database::instance()->registerEntityTable(m_class, desc, "thing");
+    }
 }
 
 Persistor<Character>::Persistor<Character>(bool temp) : m_class("character")
@@ -98,7 +107,9 @@ Persistor<Character>::Persistor<Character>(bool temp) : m_class("character")
     desc["sex"] = "        ";
     desc["drunkness"] = 1.0;
     desc["food"] = 1.0;
-    Database::instance()->registerEntityTable(m_class, desc, "thing");
+    if (consts::enable_database) {
+        Database::instance()->registerEntityTable(m_class, desc, "thing");
+    }
 }
 
 Persistor<Creator>::Persistor<Creator>(bool temp) : m_class("creator")
@@ -116,7 +127,9 @@ Persistor<Plant>::Persistor<Plant>(bool temp) : m_class("plant")
     desc["fruitName"] = "                                                                                ";
     desc["fruitChance"] = 1;
     desc["sizeAdult"] = 1.0;
-    Database::instance()->registerEntityTable(m_class, desc, "thing");
+    if (consts::enable_database) {
+        Database::instance()->registerEntityTable(m_class, desc, "thing");
+    }
 }
 
 Persistor<Food>::Persistor<Food>(bool temp) : m_class("food")
@@ -124,7 +137,9 @@ Persistor<Food>::Persistor<Food>(bool temp) : m_class("food")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    Database::instance()->registerEntityTable(m_class, desc, "thing");
+    if (consts::enable_database) {
+        Database::instance()->registerEntityTable(m_class, desc, "thing");
+    }
 }
 
 Persistor<Stackable>::Persistor<Stackable>(bool temp) : m_class("stackable")
@@ -133,7 +148,9 @@ Persistor<Stackable>::Persistor<Stackable>(bool temp) : m_class("stackable")
     MapType desc;
     // FIXME Sort out attributes
     desc["num"] = 1;
-    Database::instance()->registerEntityTable(m_class, desc, "thing");
+    if (consts::enable_database) {
+        Database::instance()->registerEntityTable(m_class, desc, "thing");
+    }
 }
 
 Persistor<Structure>::Persistor<Structure>(bool temp) : m_class("structure")
@@ -141,7 +158,9 @@ Persistor<Structure>::Persistor<Structure>(bool temp) : m_class("structure")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    Database::instance()->registerEntityTable(m_class, desc, "thing");
+    if (consts::enable_database) {
+        Database::instance()->registerEntityTable(m_class, desc, "thing");
+    }
 }
 
 Persistor<World>::Persistor<World>(bool temp) : m_class("world")
@@ -149,11 +168,15 @@ Persistor<World>::Persistor<World>(bool temp) : m_class("world")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    Database::instance()->registerEntityTable(m_class, desc, "entity");
+    if (consts::enable_database) {
+        Database::instance()->registerEntityTable(m_class, desc, "entity");
+    }
 
     desc.clear();
     desc["height"] = 0.1f;
-    Database::instance()->registerArrayTable("terrain", 2, desc);
+    if (consts::enable_database) {
+        Database::instance()->registerArrayTable("terrain", 2, desc);
+    }
 }
 
 void Persistor<Character>::update(Character * t)

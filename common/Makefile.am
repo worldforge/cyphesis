@@ -4,6 +4,7 @@ INCLUDES = -I$(top_srcdir) -DSHAREDIR=\"@datadir@\" -DETCDIR=\"@sysconfdir@\" \
            -DVARDIR=\"@localstatedir@\"
 
 libcommon_a_SOURCES = const.cpp const.h \
+		      id.cpp id.h \
 		      log.cpp log.h \
 		      debug.h random.h nls.h \
 		      types.h type_utils.h op_switch.h \
@@ -20,6 +21,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      BaseEntity.cpp BaseEntity.h \
 		      OOGThing.cpp OOGThing.h \
 		      BaseWorld.cpp BaseWorld.h \
+		      AtlasFileLoader.cpp AtlasFileLoader.h \
 		      Burn.h Chop.h Cut.h Eat.h \
 		      Nourish.h Setup.h Tick.h Generic.h \
 		      Unseen.h Use.h Wield.h

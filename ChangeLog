@@ -1,3 +1,22 @@
+2004-01-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Improve error reporting for query errors.
+
+	* common/const.cpp, common/const.h: Add full details and comments
+	  for enable_database option.
+
+	* common/id.h, common/id.cpp: New ID generator for use when we
+	  are not using the Database.
+
+	* common/AtlasFileLoader.cpp, common/AtlasFileLoader.h: Generic
+	  class for loading Atlas data from a file.
+
+	* server/Connection.cpp, server/EntityFactory.h,
+	  server/EntityFactory.cpp, server/Persistor.cpp,
+	  server/WorldRouter.cpp, server/server.cpp:
+	  Implement the enable_database option by wrapping all use of database
+	  in if statements. Rules are loaded from files instead.
+
 2004-01-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/const.h: Add a new config flag for completely disabling the

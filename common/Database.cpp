@@ -438,7 +438,7 @@ const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-        log(ERROR, "Database query error.");
+        log(ERROR, "runSimpleSelectQuery(): Database query error.");
         reportError();
         return DatabaseResult(0);
     }
@@ -471,7 +471,7 @@ bool Database::runCommandQuery(const std::string & query)
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-        log(ERROR, "Database query error.");
+        log(ERROR, "runCommandQuery(): Database query error.");
         reportError();
         return false;
     }
@@ -528,7 +528,7 @@ bool Database::registerRelation(std::string & tablename,
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-        log(ERROR, "Database query error.");
+        log(ERROR, "registerRelation(): Database query error.");
         reportError();
         return false;
     }
@@ -663,7 +663,7 @@ bool Database::registerSimpleTable(const std::string & name,
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-        log(ERROR, "Database query error.");
+        log(ERROR, "registerSimpleTable(): Database query error.");
         reportError();
         return false;
     }
@@ -760,7 +760,7 @@ bool Database::registerEntityIdGenerator()
     clearPendingQuery();
     int status = PQsendQuery(m_connection, "SELECT * FROM entity_ent_id_seq");
     if (!status) {
-        log(ERROR, "Database query error.");
+        log(ERROR, "registerEntityIdGenerator(): Database query error.");
         reportError();
         return false;
     }
@@ -781,7 +781,7 @@ bool Database::newId(std::string & id)
     int status = PQsendQuery(m_connection,
                              "SELECT nextval('entity_ent_id_seq')");
     if (!status) {
-        log(ERROR, "Database query error.");
+        log(ERROR, "newId(): Database query error.");
         reportError();
         return false;
     }
@@ -892,7 +892,7 @@ bool Database::registerEntityTable(const std::string & classname,
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-        log(ERROR, "Database query error.");
+        log(ERROR, "registerEntityTable(): Database query error.");
         reportError();
         return false;
     }
@@ -1137,7 +1137,7 @@ bool Database::registerArrayTable(const std::string & name,
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
-        log(ERROR, "Database query error.");
+        log(ERROR, "registerArrayTable(): Database query error.");
         reportError();
         return false;
     }

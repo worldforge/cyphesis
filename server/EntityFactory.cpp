@@ -27,6 +27,7 @@
 #include "common/globals.h"
 #include "common/const.h"
 #include "common/inheritance.h"
+#include "common/AtlasFileLoader.h"
 #include "common/random.h"
 
 #include <Atlas/Message/Element.h>
@@ -143,7 +144,8 @@ void EntityFactory::installRule(const std::string & className,
                                 const MapType & classDesc)
 {
     MapType::const_iterator J = classDesc.find("parents");
-    if (J == classDesc.end()) {
+    MapType::const_iterator classDescEnd = classDesc.end();
+    if (J == classDescEnd) {
         std::string msg = std::string("Rule \"") + className 
                           + "\" has no parents. Skipping.";
         log(ERROR, msg.c_str());
@@ -183,7 +185,7 @@ void EntityFactory::installRule(const std::string & className,
     // Establish whether this rule has an associated script, and
     // if so, use it.
     J = classDesc.find("script");
-    if ((J != classDesc.end()) && (J->second.isMap())) {
+    if ((J != classDescEnd) && (J->second.isMap())) {
         const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
@@ -198,7 +200,7 @@ void EntityFactory::installRule(const std::string & className,
     // Establish whether this rule has an associated mind rule,
     // and handle it.
     J = classDesc.find("mind");
-    if ((J != classDesc.end()) && (J->second.isMap())) {
+    if ((J != classDescEnd) && (J->second.isMap())) {
         const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
@@ -214,7 +216,7 @@ void EntityFactory::installRule(const std::string & className,
 
     // Store the default attribute for entities create by this rule.
     J = classDesc.find("attributes");
-    if ((J != classDesc.end()) && (J->second.isMap())) {
+    if ((J != classDescEnd) && (J->second.isMap())) {
         const MapType & attrs = J->second.asMap();
         MapType::const_iterator Kend = attrs.end();
         for (MapType::const_iterator K = attrs.begin(); K != Kend; ++K) {
@@ -231,7 +233,7 @@ void EntityFactory::installRule(const std::string & className,
     }
     // Check whether it should be available to players.
     J = classDesc.find("playable");
-    if ((J != classDesc.end()) && (J->second.isInt())) {
+    if ((J != classDescEnd) && (J->second.isInt())) {
         Player::playableTypes.insert(className);
     }
     debug(std::cout << "INSTALLING " << className << ":" << parent
@@ -250,11 +252,30 @@ void EntityFactory::installRule(const std::string & className,
     m_waitingRules.erase(className);
 }
 
+void EntityFactory::getRulesFromFiles(MapType & rules)
+{
+    std::vector<std::string>::const_iterator I = rulesets.begin();
+    std::vector<std::string>::const_iterator Iend = rulesets.end();
+    for (; I != Iend; ++I) {
+        std::string filename = etc_directory + "/cyphesis/" + *I + ".xml";
+        AtlasFileLoader f(filename, rules);
+        if (!f.isOpen()) {
+            log(ERROR, "Unable to open rule file.");
+        }
+        f.read();
+    }
+}
+
 void EntityFactory::installRules()
 {
     MapType ruleTable;
-    Persistance * p = Persistance::instance();
-    p->getRules(ruleTable);
+
+    if (consts::enable_database) {
+        Persistance * p = Persistance::instance();
+        p->getRules(ruleTable);
+    } else {
+        getRulesFromFiles(ruleTable);
+    }
 
     MapType::const_iterator Iend = ruleTable.end();
     for (MapType::const_iterator I = ruleTable.begin(); I != Iend; ++I) {

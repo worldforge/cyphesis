@@ -14,7 +14,9 @@
 
 #include "rulesets/Character.h"
 
+#include "common/id.h"
 #include "common/log.h"
+#include "common/const.h"
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/serialno.h"
@@ -98,9 +100,15 @@ Account * Connection::addPlayer(const std::string& username,
     std::string hash;
     encrypt_password(password, hash);
     std::string newAccountId;
-    Database::instance()->newId(newAccountId);
+    if (consts::enable_database) {
+        Database::instance()->newId(newAccountId);
+    } else {
+        newId(newAccountId);
+    }
+    assert(!newAccountId.empty());
     Player * player = new Player(this, username, hash, newAccountId);
     addObject(player);
+    assert(player->m_connection == this);
     player->m_connection = this;
     m_server.addAccount(player);
     m_server.m_lobby.addObject(player);
@@ -235,7 +243,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     // account, either from existing account ....
     Account * player = m_server.getAccountByName(username);
     // or if not, from the database
-    if (player == 0) {
+    if (consts::enable_database && player == 0) {
         debug(std::cout << "No account called " << username
                         << " in server. Checking in database."
                         << std::endl << std::flush;);
@@ -316,14 +324,16 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     const std::string & password = I->second.asString();
 
     if ((0 != m_server.getAccountByName(username)) ||
-        (Persistance::instance()->findAccount(username)) ||
+        (consts::enable_database && Persistance::instance()->findAccount(username)) ||
         (username.empty()) || (password.empty())) {
         // Account exists, or creation data is duff
         error(op, "Account creation is invalid", res);
         return;
     }
     Account * player = addPlayer(username, password);
-    Persistance::instance()->putAccount(*player);
+    if (consts::enable_database) {
+        Persistance::instance()->putAccount(*player);
+    }
     Info * info = new Info;
     ListType & info_args = info->getArgs();
     info_args.push_back(MapType());

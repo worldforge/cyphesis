@@ -55,7 +55,9 @@ namespace consts {
   bool enable_omnipresence = false;
   // What is the minimum size of an object when calculating visibility
   float minSqrBoxSize = 0.1f;
-  // Should everything be persistent
+  /// \brief Should we use a database
+  bool enable_database = false;
+  /// \brief Should world state be persistent
   bool enable_persistence = false;
 
 #endif

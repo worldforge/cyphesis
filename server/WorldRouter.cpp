@@ -8,6 +8,7 @@
 
 #include "rulesets/World.h"
 
+#include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/const.h"
@@ -226,7 +227,12 @@ Entity * WorldRouter::addNewObject(const std::string & typestr,
     debug(std::cout << "WorldRouter::addNewObject(\"" << typestr << "\", ent)"
                     << std::endl << std::flush;);
     std::string id;
-    Database::instance()->newId(id);
+    if (consts::enable_database) {
+        Database::instance()->newId(id);
+    } else {
+        newId(id);
+    }
+    assert(!id.empty());
     Entity * obj = EntityFactory::instance()->newEntity(id, typestr, ent);
     if (obj == 0) {
         std::string msg = std::string("Attempt to create an entity of type \"")

@@ -34,6 +34,7 @@ class EntityFactory {
     PersistantThingFactory<Entity> * m_eft;
 
     void installRule(const std::string &, const Atlas::Message::MapType&);
+    void getRulesFromFiles(Atlas::Message::MapType&);
     void installRules();
   public:
     static void init(BaseWorld & w) {
