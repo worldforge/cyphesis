@@ -154,22 +154,24 @@ void MemMap::del(const std::string & id)
 
         // Handling re-parenting is done very similarly to Entity::destroy,
         // but is slightly different as we tolerate LOC being null.
-        Entity * mloc = ent->m_location.m_loc;
-        if (mloc != 0) {
+        Entity * ent_loc = ent->m_location.m_loc;
+        if (ent_loc != 0) {
             // Remove deleted entity from its parents contains
-            mloc->m_contains.erase(ent);
+            ent_loc->m_contains.erase(ent);
         }
+        // FIXME This is required until MemMap uses parent refcounting
+        ent->m_location.m_loc = 0;
 
         // Add deleted entities children into its parents contains
         EntitySet::const_iterator K = ent->m_contains.begin();
         EntitySet::const_iterator Kend = ent->m_contains.end();
         for (; K != Kend; ++K) {
-            Entity * cent = *K;
-            cent->m_location.m_loc = mloc;
+            Entity * child_ent = *K;
+            child_ent->m_location.m_loc = ent_loc;
             // FIXME adjust pos and:
             // FIXME take account of orientation
-            if (mloc != 0) {
-                mloc->m_contains.insert(cent);
+            if (ent_loc != 0) {
+                ent_loc->m_contains.insert(child_ent);
             }
         }
 
@@ -342,7 +344,10 @@ void MemMap::check(const double & time)
             if (me->m_location.m_loc != 0) {
                 me->m_location.m_loc->m_contains.erase(me);
             }
-            // m_checkIterator = m_entities.begin();
+            
+            // FIXME This is required until MemMap uses parent refcounting
+            me->m_location.m_loc = 0;
+
             m_checkIterator = m_entities.find(next);
             // attribute of its its parent.
             me->decRef();
@@ -362,6 +367,8 @@ void MemMap::flush()
     
     MemEntityDict::const_iterator Iend = m_entities.end();
     for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
+        // FIXME This is required until MemMap uses parent refcounting
+        I->second->m_location.m_loc = 0;
         I->second->decRef();
     }
 }

@@ -1,5 +1,15 @@
 2004-01-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp: Call decRef() on parent from the destructor
+	  so that entities removed from the world can still have a reference
+	  to their parent safely.
+
+	* rulesets/BaseMind.cpp, rulesets/MemMap.cpp, tests/distancetest.cpp:
+	  Make sure parent is 0 before deleting, as reference counting is not
+	  implemented in the mind yet.
+
+2004-01-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.cpp, rulesets/Entity.h, rulesets/Thing.cpp,
 	  server/WorldRouter.cpp: Increment reference count on parent
 	  entity when a child has a reference to it.

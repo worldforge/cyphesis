@@ -63,6 +63,8 @@ BaseMind::BaseMind(const std::string & id, const std::string & body_name)
 BaseMind::~BaseMind()
 {
     m_map.m_entities.erase(getId());
+    // FIXME Remove this once MemMap uses parent refcounting
+    m_location.m_loc = 0;
     debug(std::cout << getId() << ":" << getType() << " flushing mind with "
                     << m_map.getEntities().size() << " entities in it"
                     << std::endl << std::flush;);

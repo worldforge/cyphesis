@@ -39,6 +39,8 @@ int main()
 
         std::cout << "RelPos tlve -> ent: " << relPos
                   << std::endl << std::flush;
+
+        ent.m_location.m_loc = 0;
     }
 
     {
@@ -56,6 +58,9 @@ int main()
 
         std::cout << "RelPos ent1 -> ent2: " << relPos
                   << std::endl << std::flush;
+
+        ent1.m_location.m_loc = 0;
+        ent2.m_location.m_loc = 0;
     }
 
     {
@@ -81,6 +86,11 @@ int main()
 
         std::cout << "RelPos ent3 -> ent4: " << relPos
                   << std::endl << std::flush;
+
+        ent1.m_location.m_loc = 0;
+        ent2.m_location.m_loc = 0;
+        ent3.m_location.m_loc = 0;
+        ent4.m_location.m_loc = 0;
     }
 
     {
@@ -106,6 +116,11 @@ int main()
 
         std::cout << "RelPos ent3 -> ent4: " << relPos
                   << std::endl << std::flush;
+
+        ent1.m_location.m_loc = 0;
+        ent2.m_location.m_loc = 0;
+        ent3.m_location.m_loc = 0;
+        ent4.m_location.m_loc = 0;
     }
 
     {
@@ -131,6 +146,11 @@ int main()
 
         std::cout << "RelPos ent3 -> ent4: " << relPos
                   << std::endl << std::flush;
+
+        ent1.m_location.m_loc = 0;
+        ent2.m_location.m_loc = 0;
+        ent3.m_location.m_loc = 0;
+        ent4.m_location.m_loc = 0;
     }
 
     {
@@ -158,6 +178,11 @@ int main()
         std::cout << "RelPos ent3 -> ent4: " << relPos
                   << " Distance ent3 -> ent4: " << distance
                   << std::endl << std::flush;
+
+        ent1.m_location.m_loc = 0;
+        ent2.m_location.m_loc = 0;
+        ent3.m_location.m_loc = 0;
+        ent4.m_location.m_loc = 0;
     }
 
     return ret;

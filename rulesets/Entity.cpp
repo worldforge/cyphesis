@@ -60,6 +60,9 @@ Entity::~Entity()
     for (; I != Iend; ++I) {
         delete I->second;
     }
+    if (m_location.m_loc != 0) {
+        m_location.m_loc->decRef();
+    }
 }
 
 /// \brief Check if this entity has a property with the given name
@@ -177,9 +180,11 @@ void Entity::destroy()
         refContains.insert(obj);
     }
     refContains.erase(this);
-    // FIXME This needs to be removed if we want to this reference to
-    // remain after this entity has been destroyed, but not deleted.
-    m_location.m_loc->decRef();
+
+    // We don't call decRef() on our parent, because we may not get deleted
+    // yet, and we need to keep a reference to our parent in case there
+    // are broadcast ops left that we have not yet sent.
+
     if (m_location.m_loc->m_contains.empty()) {
         m_location.m_loc->m_update_flags |= a_cont;
         m_location.m_loc->updated.emit();
