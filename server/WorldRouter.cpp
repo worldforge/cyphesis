@@ -27,10 +27,6 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr), next_id(0)
     fobjects[fullid]=this;
     perceptives.push_back(this);
     objects_list.push_back(this);
-    illegal_thing = new Thing();
-    illegal_thing->fullid = "illegal";
-    illegal_thing->name = "illegal";
-    illegal_thing->deleted = 1;
     halt_time = 60 * 60 * 8;
     //WorldTime tmp_date("612-1-1 08:57:00");
     //This structure is used to tell libatlas about stuff
@@ -40,7 +36,8 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr), next_id(0)
     //world_info.string2DateTime=WorldTime;
 }
 
-inline void WorldRouter::add_operation_to_queue(RootOperation & op, BaseEntity * obj)
+inline void WorldRouter::add_operation_to_queue(RootOperation & op,
+                         const BaseEntity * obj)
 {
     if (op.GetFrom() == "cheat") {
         op.SetFrom(op.GetTo());
@@ -147,21 +144,21 @@ void WorldRouter::del_object(BaseEntity * obj)
     fobjects.erase(obj->fullid);
 }
 
-oplist WorldRouter::message(const RootOperation & msg)
+oplist WorldRouter::message(const RootOperation & op)
 {
     debug_server && cout << "FATAL: Wrong type of WorldRouter message function called" << endl << flush;
     // You may eventually want to remove this as it causes a deliberate segfault
     //return(*(RootOperation **)NULL);
 }
 
-oplist WorldRouter::message(RootOperation & msg, BaseEntity * obj)
+oplist WorldRouter::message(RootOperation & op, const BaseEntity * obj)
 {
-    add_operation_to_queue(msg, obj);
+    add_operation_to_queue(op, obj);
     oplist res;
     return(res);
 }
 
-inline const list_t & WorldRouter::broadcastList(const RootOperation & op)
+inline const list_t & WorldRouter::broadcastList(const RootOperation & op) const
 {
     const Object::ListType & parents = op.GetParents();
     if ((parents.size() > 0) && (parents.front().IsString())) {
@@ -207,7 +204,7 @@ oplist WorldRouter::operation(const RootOperation * op)
             }
             if (op_type == OP_DELETE) {
                 toEntity->destroy();
-                toEntity->deleted=1;
+                toEntity->deleted = true;
                 delete toEntity;
                 toEntity = NULL;
             }

@@ -24,7 +24,7 @@ class Thing : public BaseEntity {
   public:
     double status;
     string type;
-    int is_character;
+    bool is_character;
 
     Thing();
     virtual ~Thing() { }
@@ -43,14 +43,14 @@ class Thing : public BaseEntity {
 
     virtual MemMap * getMap() { return NULL; }
 
-    oplist send_world(RootOperation * msg) {
-        return world->message(*msg, this);
+    oplist send_world(RootOperation * op) const {
+        return world->message(*op, this);
     }
 
     void merge(const Message::Object::MapType &);
     void getLocation(Message::Object::MapType &, fdict_t &);
 
-    virtual void addObject(Message::Object *);
+    virtual void addObject(Message::Object *) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
     virtual oplist Operation(const Chop & op);

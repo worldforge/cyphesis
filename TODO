@@ -1,0 +1,24 @@
+Must be sorted out immediatly after Acorn 0.3:
+
+  Sort out floating point world_info::time. Currently time is fetched
+  using time(2). Should use gettimeofday(2) I think.
+
+  Implement get_object from Python, so that entities can look things up by id.
+  I am currently trying to avoid having to do this, so far successfully.
+
+  Modify Thing::operator[] so that it handles attributes that are static.
+  Make it virtual, etc. Then clean up get/setattr in Python/C API code.
+
+  Think of a way to correctly handle the fact that world is top level container.
+  Should it list itself as loc, or not?
+
+Definitly for Acorn 0.4:
+
+  Implement accelerated Atlas Objects API.
+
+  Implement ranges.
+
+  Implement collison detection.
+
+  Implement loading the same map as the client.
+

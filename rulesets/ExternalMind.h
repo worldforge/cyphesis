@@ -11,7 +11,7 @@ class ExternalMind : public BaseMind {
 
     ExternalMind(Connection * connection, string & id, string & name);
 
-    virtual oplist message(const RootOperation & msg);
+    virtual oplist message(const RootOperation & op);
 };
 
 #endif /* EXTERNAL_MIND_H */

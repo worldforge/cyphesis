@@ -13,7 +13,7 @@
 
 using Atlas::Message::Object;
 
-void Location::addObject(Object * obj)
+void Location::addObject(Object * obj) const
 {
     Object::MapType & omap = obj->AsMap();
     if (parent!=NULL) {

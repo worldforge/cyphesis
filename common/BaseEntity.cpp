@@ -14,20 +14,20 @@
 
 static int debug_ops = 0;
 
-BaseEntity::BaseEntity() : stamp(0.0), deleted(0), in_game(0),
-                           omnipresent(0), world(NULL) {
+BaseEntity::BaseEntity() : deleted(false), in_game(false),
+                           omnipresent(false), world(NULL) {
 }
 
 void BaseEntity::destroy()
 {
-    if (deleted != 0) {
+    if (deleted == true) {
         return;
     }
     list_t::const_iterator I;
     for(I = contains.begin(); I != contains.end(); I++) {
         BaseEntity * obj = *I;
-        if (obj->deleted == 0) {
-            obj->location.parent=location.parent;
+        if (obj->deleted == false) {
+            obj->location.parent = location.parent;
             obj->location.coords = location.coords + obj->location.coords;
         }
     }
@@ -36,7 +36,7 @@ void BaseEntity::destroy()
     }
 }
 
-const Vector3D & BaseEntity::get_xyz()
+const Vector3D & BaseEntity::get_xyz() const
 {
     //Location l=location;
     if (!location) {
@@ -49,7 +49,7 @@ const Vector3D & BaseEntity::get_xyz()
     }
 }
 
-Object BaseEntity::asObject()
+Object BaseEntity::asObject() const
 {
     debug_ops && cout << "BaseEntity::asObject" << endl << flush;
     Object::MapType map;
@@ -59,7 +59,7 @@ Object BaseEntity::asObject()
 }
 
 
-void BaseEntity::addObject(Object * obj)
+void BaseEntity::addObject(Object * obj) const
 {
     debug_ops && cout << "BaseEntity::addObject" << endl << flush;
     Object::MapType & omap = obj->AsMap();

@@ -42,7 +42,7 @@ void Connection::destroy()
             continue;
         }
         Thing * obj = (Thing*)ent;
-        if (obj->is_character != 0) {
+        if (obj->is_character == true) {
             Character * character = (Character *)obj;
             if (character->external_mind != NULL) {
                 if (character->external_mind != NULL) {

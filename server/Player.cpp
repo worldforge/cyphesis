@@ -5,7 +5,7 @@
 
 #include "Player.h"
 
-oplist Player::character_error(const Create & op, const Message::Object & ent)
+oplist Player::character_error(const Create & op, const Message::Object & ent) const
 {
     Message::Object::MapType entmap = ent.AsMap();
 

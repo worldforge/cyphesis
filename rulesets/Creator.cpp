@@ -14,8 +14,8 @@ static int debug_creator = 0;
 Creator::Creator()
 {
     debug_creator && cout << "Creator::Creator" << endl << flush;
-    omnipresent = 1;
-    is_character = 1;
+    is_character = true;
+    omnipresent = true;
 }
 
 oplist Creator::send_mind(const RootOperation & msg)

@@ -3,7 +3,6 @@
 
 namespace world_info {
 
-extern int operation_no;
 extern double time;
 
 }

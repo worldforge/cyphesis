@@ -26,16 +26,16 @@ class Connection : public Routing {
         destroy();
     }
 
-    void send(const RootOperation * msg) {
+    void send(const RootOperation * msg) const {
         if (comm_client != NULL) {
             comm_client->send(msg);
         }
     }
 
     virtual oplist operation(const RootOperation & op);
-    virtual oplist Operation(const Login & obj);
-    virtual oplist Operation(const Logout & obj);
-    virtual oplist Operation(const Create & obj);
+    virtual oplist Operation(const Login & op);
+    virtual oplist Operation(const Logout & op);
+    virtual oplist Operation(const Create & op);
 };
 
 #endif /* CONNECTION_H */

@@ -351,53 +351,52 @@ class BaseEntity {
     string name;
     Location location;
     list_t contains;
-    double stamp;
-    int deleted;
-    int in_game;
+    bool deleted;
+    bool in_game;
     bool omnipresent;
     WorldRouter * world;
 
     BaseEntity();
     virtual ~BaseEntity() { }
 
-    const Vector3D & get_xyz();
+    const Vector3D & get_xyz() const;
     virtual void destroy();
 
-    Message::Object asObject();
-    virtual void addObject(Message::Object *);
+    Message::Object asObject() const;
+    virtual void addObject(Message::Object *) const;
 
-    virtual oplist external_message(const RootOperation & msg);
-    virtual oplist message(const RootOperation & msg);
+    virtual oplist external_message(const RootOperation & op);
+    virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
     virtual oplist external_operation(const RootOperation & op);
 
-    virtual oplist Operation(const Login & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Logout & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Chop & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Create & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Cut & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Delete & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Eat & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Fire & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Move & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Nourish & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Set & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Sight & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Sound & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Talk & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Touch & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Tick & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Look & obj);
-    virtual oplist Operation(const Load & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Save & obj) { oplist res; return(res); }
-    virtual oplist Operation(const Setup & obj) { oplist res; return(res); }
-    virtual oplist Operation(const RootOperation & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Login & op) { oplist res; return(res); }
+    virtual oplist Operation(const Logout & op) { oplist res; return(res); }
+    virtual oplist Operation(const Chop & op) { oplist res; return(res); }
+    virtual oplist Operation(const Create & op) { oplist res; return(res); }
+    virtual oplist Operation(const Cut & op) { oplist res; return(res); }
+    virtual oplist Operation(const Delete & op) { oplist res; return(res); }
+    virtual oplist Operation(const Eat & op) { oplist res; return(res); }
+    virtual oplist Operation(const Fire & op) { oplist res; return(res); }
+    virtual oplist Operation(const Move & op) { oplist res; return(res); }
+    virtual oplist Operation(const Nourish & op) { oplist res; return(res); }
+    virtual oplist Operation(const Set & op) { oplist res; return(res); }
+    virtual oplist Operation(const Sight & op) { oplist res; return(res); }
+    virtual oplist Operation(const Sound & op) { oplist res; return(res); }
+    virtual oplist Operation(const Talk & op) { oplist res; return(res); }
+    virtual oplist Operation(const Touch & op) { oplist res; return(res); }
+    virtual oplist Operation(const Tick & op) { oplist res; return(res); }
+    virtual oplist Operation(const Look & op);
+    virtual oplist Operation(const Load & op) { oplist res; return(res); }
+    virtual oplist Operation(const Save & op) { oplist res; return(res); }
+    virtual oplist Operation(const Setup & op) { oplist res; return(res); }
+    virtual oplist Operation(const RootOperation & op) { oplist res; return(res); }
 
-    void set_refno_op(RootOperation * op, const RootOperation & ref_op) {
+    void set_refno_op(RootOperation * op, const RootOperation & ref_op) const {
         op->SetRefno(ref_op.GetSerialno());
     }
 
-    void set_refno(oplist ret, const RootOperation & ref_op) {
+    void set_refno(oplist ret, const RootOperation & ref_op) const {
         while (ret.size() != 0) {
             RootOperation * br = ret.front();
             set_refno_op(br, ref_op);
@@ -405,7 +404,7 @@ class BaseEntity {
         }
     }
 
-    op_no_t op_enumerate(const RootOperation * op) {
+    op_no_t op_enumerate(const RootOperation * op) const {
         const Object::ListType & parents = op->GetParents();
         if (parents.size() != 1) {
             cerr << "This is a weird operation." << endl << flush;
@@ -444,7 +443,7 @@ class BaseEntity {
         return(res);
     }
 
-    oplist error(const RootOperation & op, const char * errstring) {
+    oplist error(const RootOperation & op, const char * errstring) const {
         Error * e = new Error();
         *e = Error::Instantiate();
 

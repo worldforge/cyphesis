@@ -24,8 +24,8 @@ class MovementInfo {
   public:
     MovementInfo(Character * body);
 
-    bool update_needed(const Location & location);
-    double get_tick_addition(const Vector3D & coordinates);
+    bool update_needed(const Location & location) const;
+    double get_tick_addition(const Vector3D & coordinates) const;
     void reset();
     Move * gen_face_operation(Location &);
     Move * gen_move_operation(Location *,Location &);
@@ -86,7 +86,7 @@ class Character : public Thing {
     virtual oplist W2m_Operation(const Setup & op);
     virtual oplist W2m_Operation(const Error & op);
     virtual oplist W2m_Operation(const RootOperation & op) { oplist res; return(res); }
-    virtual oplist send_mind(const RootOperation & msg);
+    virtual oplist send_mind(const RootOperation & op);
     virtual oplist mind2body(const RootOperation & op);
     virtual oplist world2body(const RootOperation & op);
     virtual oplist world2mind(const RootOperation & op);

@@ -20,14 +20,13 @@
 
 static int debug_thing = 0;
 
-Thing::Thing() : script_object(NULL), status(1), is_character(0), type("thing")
+Thing::Thing() : script_object(NULL), status(1), is_character(false),
+                 type("thing")
 {
-    in_game = 1;
-    name=string("Foo");
-    attributes["age"] = 0;
+    in_game = true;
+    name = string("Foo");
     attributes["mode"] = Message::Object("birth");
     attributes["weight"] = (double)-1;
-    // attributes["description"] = Message::Object("Some Thing");
 }
 
 int Thing::script_Operation(const string & op_type, const RootOperation & op,
@@ -92,7 +91,7 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
     return 0;
 }
 
-void Thing::addObject(Message::Object * obj)
+void Thing::addObject(Message::Object * obj) const
 {
     Message::Object::MapType & omap = obj->AsMap();
     omap["name"] = Message::Object(name);

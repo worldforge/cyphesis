@@ -22,11 +22,11 @@ public:
         delete obj;
     }
 
-    BaseEntity * get_object(const string & fid) {
+    BaseEntity * get_object(const string & fid) const {
         return Routing::fobjects[fid];
     }
 
-    BaseEntity * find_object(const string & fid) {
+    BaseEntity * find_object(const string & fid) const {
         return Routing::fobjects[fid];
     }
 };

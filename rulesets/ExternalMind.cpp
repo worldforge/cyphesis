@@ -14,9 +14,9 @@ ExternalMind::ExternalMind(Connection * connection, string & id, string & name):
 {
 }
 
-oplist ExternalMind::message(const RootOperation & msg)
+oplist ExternalMind::message(const RootOperation & op)
 {
-    connection->send(&msg);
+    connection->send(&op);
     oplist res;
     return(res);
 }

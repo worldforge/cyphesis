@@ -10,7 +10,6 @@ typedef std::map<int, CommClient *> client_map_t;
 class CommServer {
     int server_fd;
     int server_port;
-    bad_type id;
     client_map_t clients;
 
     int accept();
@@ -18,7 +17,6 @@ class CommServer {
 
   public:
     ServerRouting * server;
-    int loop_max;
 
     int setup(int port);
     void loop();

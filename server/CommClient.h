@@ -19,8 +19,7 @@ using namespace Atlas;
 
 class CommClient : Objects::Decoder {
     int client_fd;
-    bad_type layer;
-    ofstream log_file;
+    //ofstream log_file;
     sockbuf client_buf;
     iostream client_ios;
     Codec<iostream> * codec;
@@ -29,13 +28,13 @@ class CommClient : Objects::Decoder {
 
   protected:
     virtual void UnknownObjectArrived(const Atlas::Message::Object&);
-    virtual void ObjectArrived(const Objects::Operation::Login & obj);
-    virtual void ObjectArrived(const Objects::Operation::Create & obj);
-    virtual void ObjectArrived(const Objects::Operation::Move & obj);
-    virtual void ObjectArrived(const Objects::Operation::Set & obj);
-    virtual void ObjectArrived(const Objects::Operation::Touch & obj);
-    virtual void ObjectArrived(const Objects::Operation::Look & obj);
-    virtual void ObjectArrived(const Objects::Operation::Talk & obj);
+    virtual void ObjectArrived(const Objects::Operation::Login & op);
+    virtual void ObjectArrived(const Objects::Operation::Create & op);
+    virtual void ObjectArrived(const Objects::Operation::Move & op);
+    virtual void ObjectArrived(const Objects::Operation::Set & op);
+    virtual void ObjectArrived(const Objects::Operation::Touch & op);
+    virtual void ObjectArrived(const Objects::Operation::Look & op);
+    virtual void ObjectArrived(const Objects::Operation::Talk & op);
 
   public:
     CommServer * server;
@@ -43,10 +42,10 @@ class CommClient : Objects::Decoder {
     CommClient(CommServer * svr, int fd, int port) :
 		client_fd(fd), client_buf(fd), client_ios(&client_buf),
                 server(svr) {
-        if (consts::debug_level>=1) {
-            char * log_name = "log.log";
-            log_file.open(log_name);
-        }
+        //if (consts::debug_level>=1) {
+            //char * log_name = "log.log";
+            //log_file.open(log_name);
+        //}
     }
     virtual ~CommClient();
 

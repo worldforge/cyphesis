@@ -31,7 +31,7 @@ class MemMap {
     Thing * add(const Object & entity);
     void _delete(const string & id);
     Thing * get(const string & id);
-    //bad_type __getitem__(bad_type id)
+    //Thing * __getitem__(const string & id) // operator[] perhaps?
     Thing * get_add(const string & id);
     Thing * update(const Object & entity);
     list<Thing *> find_by_type(const string & what);

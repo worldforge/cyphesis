@@ -12,7 +12,7 @@ ofstream inform_fp;
 ofstream debug_fp;
 ofstream thinking_fp;
 
-void debug(int level, char * msg, bad_type op=0)
+void debug(int level, char * msg, int op=0)
 {
     if (consts::debug_level>=level) {
         if (debug_fp) {
@@ -30,7 +30,7 @@ void debug(int level, char * msg, bad_type op=0)
     }
 }
 
-void inform(char * msg, bad_type op)
+void inform(char * msg, int op)
 {
     if (consts::debug_level) {
         if (inform_fp) {

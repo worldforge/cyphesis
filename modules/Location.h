@@ -24,7 +24,7 @@ public:
         return(parent!=NULL && coords);
     }
 
-    void addObject(Atlas::Message::Object * obj);
+    void addObject(Atlas::Message::Object * obj) const;
 
     friend ostream & operator<<(ostream& s, Location& v);
 };

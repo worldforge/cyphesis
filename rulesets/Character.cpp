@@ -57,7 +57,7 @@ void MovementInfo::reset()
     last_movement_time=world_info::time;
 }
 
-bool MovementInfo::update_needed(const Location & location)
+bool MovementInfo::update_needed(const Location & location) const
 {
     return((velocity!=Vector3D(0,0,0))||(location.velocity!=Vector3D(0,0,0)));
 }
@@ -170,7 +170,7 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
     return(NULL);
 }
 
-double MovementInfo::get_tick_addition(const Vector3D & coordinates)
+double MovementInfo::get_tick_addition(const Vector3D & coordinates) const
 {
     double basic_distance=velocity.mag()*consts::basic_tick;
     if (target_location) {
@@ -191,7 +191,7 @@ Character::Character() : movement(this), autom(0),
 {
     attributes["weight"] = Object(double(60.0));
     attributes["sex"] = Object("female");
-    is_character = 1;
+    is_character = true;
 }
 
 Character::~Character()
@@ -577,22 +577,14 @@ oplist Character::Mind_Operation(const Set & op)
 
 oplist Character::Mind_Operation(const Create & op)
 {
-    // We need to call, THE THING FACTORY!
+    // We need to call, THE THING FACTORY! Or maybe not
+    // This currently does nothing, so characters are not able to directly
+    // create objects. By and large a tool must be used. This should at some
+    // point be able to send create operations on to other entities
     debug_character && cout << "Character::Mind_Operation(Create)" << endl << flush;
     oplist res;
     return(res);
 }
-
-#if 0
-bad_type Character::mind_create_operation(bad_type op)
-{
-    if (not init.security_flag) {
-        ent=op[0];
-        ent.status=0.1;
-        return op;
-    }
-}
-#endif
 
 oplist Character::Mind_Operation(const Delete & op)
 {
@@ -609,8 +601,8 @@ oplist Character::Mind_Operation(const Talk & op)
 
 oplist Character::Mind_Operation(const Look & op)
 {
-    cout << "Got look up from mind from [" << op.GetFrom() << "] to ["
-         << op.GetTo() << "]" << endl << flush;
+    debug_character && cout << "Got look up from mind from [" << op.GetFrom()
+                            << "] to [" << op.GetTo() << "]" << endl << flush;
     Look * l = new Look(op);
     if (op.GetTo().size() == 0) {
         const Message::Object::ListType & args = op.GetArgs();
@@ -734,7 +726,7 @@ oplist Character::W2m_Operation(const Touch & op)
     return(res);
 }
 
-oplist Character::send_mind(const RootOperation & msg)
+oplist Character::send_mind(const RootOperation & op)
 {
     debug_character && cout << "Character::send_mind" << endl << flush;
     oplist res;
@@ -743,11 +735,11 @@ oplist Character::send_mind(const RootOperation & msg)
     }
     oplist local_res;
     oplist external_res;
-    local_res = mind->message(msg);
+    local_res = mind->message(op);
 
     if ((NULL != external_mind) && (NULL != external_mind->connection)) {
         debug_character && cout << "Sending to external mind" << endl << flush;
-        external_res = external_mind->message(msg);
+        external_res = external_mind->message(op);
         // If there is some kinf of error in the connection, we turn autom on
     } else {
         //return(*(RootOperation **)NULL);

@@ -101,7 +101,7 @@ BaseMind::BaseMind(string & id, string & body_name)
         //BaseMind::log_fp=open("mind_"+BaseMind::id+".log","w");
     //}
     //else {
-        //BaseMind::log_fp=None;
+        //BaseMind::log_fp=NULL;
     //}
 }
 
@@ -381,7 +381,7 @@ oplist BaseMind::operation(const RootOperation & op)
 }
 
 #if 0
-bad_type BaseMind::operation(bad_type op)
+oplist BaseMind::operation(const RootOperation & op)
 {
     if (hasattr(this,"lock")) {
         return;

@@ -30,13 +30,12 @@ inline BaseEntity * Account::add_character(const string & typestr, const Message
         chr->location = Location(world, Vector3D(0,0,0));
     }
     debug_server && cout << "Location set to: " << chr->location << endl << flush;
-    if (chr->is_character != 0) {
+    if (chr->is_character == true) {
         Character * pchar = (Character *)chr;
         pchar->player = this;
         pchar->external_mind = new ExternalMind(connection, pchar->fullid, pchar->name);
     }
     characters_dict[chr->fullid]=chr;
-    characters.push_back(chr->fullid);
     connection->add_object(chr);
 
     Create c = Create::Instantiate();
@@ -63,7 +62,7 @@ oplist Account::Operation(const Logout & op)
     return(res);
 }
 
-void Account::addObject(Message::Object * obj)
+void Account::addObject(Message::Object * obj) const
 {
     Message::Object::MapType & omap = obj->AsMap();
     if (password.size() != 0) {
@@ -71,9 +70,9 @@ void Account::addObject(Message::Object * obj)
     }
     omap["parents"] = Message::Object(Message::Object::ListType(1,Message::Object(type)));
     Object::ListType charlist;
-    list<string>::const_iterator I;
-    for(I = characters.begin(); I != characters.end(); I++) {
-        charlist.push_back(Object(*I));
+    fdict_t::const_iterator I;
+    for(I = characters_dict.begin(); I != characters_dict.end(); I++) {
+        charlist.push_back(Object(I->first));
     }
     omap["characters"] = Object(charlist);
     BaseEntity::addObject(obj);

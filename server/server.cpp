@@ -78,9 +78,9 @@ int CommClient::setup()
     return(1);
 }
 
-void CommClient::message(const Objects::Operation::RootOperation & obj)
+void CommClient::message(const Objects::Operation::RootOperation & op)
 {
-    oplist reply = connection->message(obj);
+    oplist reply = connection->message(op);
     while (reply.size() != 0) {
         Objects::Operation::RootOperation * rep_op = reply.front();
         debug_server && cout << "sending reply" << endl << flush;
@@ -109,46 +109,46 @@ void CommClient::UnknownObjectArrived(const Atlas::Message::Object& o)
 #endif
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Login & obj)
+void CommClient::ObjectArrived(const Objects::Operation::Login & op)
 {
-    debug_server && cout << "A login object thingy here!" << endl << flush;
-    message(obj);
+    debug_server && cout << "A login operation thingy here!" << endl << flush;
+    message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Create & obj)
+void CommClient::ObjectArrived(const Objects::Operation::Create & op)
 {
-    debug_server && cout << "A create object thingy here!" << endl << flush;
-    message(obj);
+    debug_server && cout << "A create operation thingy here!" << endl << flush;
+    message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Move & obj)
+void CommClient::ObjectArrived(const Objects::Operation::Move & op)
 {
-    debug_server && cout << "A move object thingy here!" << endl << flush;
-    message(obj);
+    debug_server && cout << "A move operation thingy here!" << endl << flush;
+    message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Set & obj)
+void CommClient::ObjectArrived(const Objects::Operation::Set & op)
 {
-    debug_server && cout << "A set object thingy here!" << endl << flush;
-    message(obj);
+    debug_server && cout << "A set operation thingy here!" << endl << flush;
+    message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Touch & obj)
+void CommClient::ObjectArrived(const Objects::Operation::Touch & op)
 {
-    debug_server && cout << "A touch object thingy here!" << endl << flush;
-    message(obj);
+    debug_server && cout << "A touch operation thingy here!" << endl << flush;
+    message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Look & obj)
+void CommClient::ObjectArrived(const Objects::Operation::Look & op)
 {
-    debug_server && cout << "A look object thingy here!" << endl << flush;
-    message(obj);
+    debug_server && cout << "A look operation thingy here!" << endl << flush;
+    message(op);
 }
 
-void CommClient::ObjectArrived(const Objects::Operation::Talk & obj)
+void CommClient::ObjectArrived(const Objects::Operation::Talk & op)
 {
-    debug_server && cout << "A talk object thingy here!" << endl << flush;
-    message(obj);
+    debug_server && cout << "A talk operation thingy here!" << endl << flush;
+    message(op);
 }
 
 int CommServer::setup(int port)
@@ -335,9 +335,6 @@ int main(int argc, char ** argv)
     if (s.setup(6767)) {
         cerr << "Could not create listen socket." << endl << flush;
         exit(1);
-    }
-    if (profile_flag) {
-        s.loop_max=1000;
     }
     if (consts::debug_level>=1) {
         char * log_name="cyphesis_world.log";
