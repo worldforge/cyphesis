@@ -1,5 +1,11 @@
 2005-02-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/inheritancetest.cpp, rulesets/Thing.cpp,
+	  rulesets/Entity_getLocation.h, rulesets/Character.cpp:
+	  Catch exceptions by reference for efficiency.
+
+2005-02-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/Makefile.am: Add copy_python.sh to the distribution.
 
 2005-02-15  Al Riddoch  <alriddoch@zepler.org>
