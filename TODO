@@ -13,10 +13,13 @@ return by value. Take note of the places where behavoir is not the standard.
 BaseMind::AppearanceOperation() uses both results from script and from
 from the C++ methods. As does BaseMind::DisappearanceOperation().
 Character::ImaginaryOperation() does not call a script at all.
+Character::TalkOperation() does not call a script at all.
 Character::TickOperation() does not initially call a script, and when it
 does, it continues and merges the result.
-Character::TalkOperation() does not call a script at all.
 Character::NourishOperation() does not call a script at all.
+Thing::SetupOperation() _ALWAYS_ emits an Appearance op, but then processes
+op as normal.
+World provides no script overloading for any of its methods.
 
 Could make all operation calls in BaseEntity pure virtual. I guess no real
 reason.
