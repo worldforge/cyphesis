@@ -1,3 +1,6 @@
+Fix movement bug with destination based movement after collision. Ammend
+find target to be derived from velocity.
+
 Fix or get rid of cyphesis-setup
 
 Fix openssl dep in rpm.
