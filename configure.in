@@ -121,7 +121,6 @@ AC_CHECK_HEADER(python2.2/Python.h,
 
 PYTHON_INCLUDES=${python_include_path}
 CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
-AC_SUBST(PYTHON_INCLUDES)
 
 dnl build the library path from the found version
 python_lib_path=${python_prefix}/lib/${python_version}/config
@@ -140,7 +139,6 @@ AC_CHECK_LIB(${python_version},
 
 PYTHON_LIBS=${python_libs}
 LIBS="$LIBS $PYTHON_LIBS"
-AC_SUBST(PYTHON_LIBS)
 
 ATLAS_VERSION=0.4.3
 AM_PATH_ATLAS($ATLAS_VERSION)

@@ -129,7 +129,7 @@ OpVector Connection::LoginOperation(const Login & op)
     // id in case we are dealing with an old client.
     Object::MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.IsString()) {
-        std::cerr << "WARNING: Got Login with no useraname."
+        std::cerr << "WARNING: Got Login with no username."
                   << "Checking for old style Login"
                   << std::endl << std::flush;
         I = account.find("id");
@@ -196,7 +196,7 @@ OpVector Connection::CreateOperation(const Create & op)
     }
     Object::MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.IsString()) {
-        std::cerr << "WARNING: Got Create for account with no useraname."
+        std::cerr << "WARNING: Got Create for account with no username."
                   << "Checking for old style Create."
                   << std::endl << std::flush;
         I = account.find("id");
@@ -237,7 +237,7 @@ OpVector Connection::LogoutOperation(const Logout & op)
     
     Object::MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.IsString()) {
-        std::cerr << "WARNING: Got Logout with no useraname."
+        std::cerr << "WARNING: Got Logout with no username."
                   << "Checking for old style Create."
                   << std::endl << std::flush;
         I = account.find("id");

@@ -1,3 +1,9 @@
+2002-07-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.cpp: Spelling errors.
+
+	* configure.in: Remove unused cruft.
+
 2002-07-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cypasswd.cpp, tools/cyloadrules.cpp: Cleaned up tool source.
