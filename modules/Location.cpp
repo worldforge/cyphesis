@@ -30,7 +30,7 @@ Location::Location(Entity * rf, const Vector3D& crds, const Vector3D& vel) :
 const Vector3D Location::getXyz() const
 {
     if (m_loc) {
-        return Vector3D(m_pos) + m_loc->getXyz();
+        return Vector3D(m_pos) + m_loc->m_location.getXyz();
     } else {
         return Vector3D(0,0,0);
     }

@@ -57,10 +57,12 @@ utilitytest_LDADD = $(top_builddir)/common/utility.o
 # PHYSICS_TESTS
 
 collisiontest_SOURCES = collisiontest.cpp
-collisiontest_LDADD = $(top_builddir)/physics/Collision.o
+collisiontest_LDADD = $(top_builddir)/physics/Collision.o \
+                      $(top_builddir)/modules/Location.o
 
 emergencetest_SOURCES = emergencetest.cpp
-emergencetest_LDADD = $(top_builddir)/physics/Collision.o
+emergencetest_LDADD = $(top_builddir)/physics/Collision.o \
+                      $(top_builddir)/modules/Location.o
 
 
 # MODULE_TESTS
@@ -180,6 +182,7 @@ Structuretest_SOURCES = Structuretest.cpp IGEntityExerciser.h EntityExerciser.h 
 Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/physics/BBox.o \
                       $(top_builddir)/physics/Vector3D.o \
+                      $(top_builddir)/rulesets/Structure.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/Thing.o \
                       $(top_builddir)/rulesets/Script.o \
