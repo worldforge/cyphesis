@@ -35,6 +35,26 @@ static PyObject * World_get_time(WorldObject *self, PyObject *args, PyObject *kw
     return (PyObject *)wtime;
 }
 
+static PyObject * World_get_object(WorldObject *self, PyObject *args, PyObject *kw)
+{
+    if (self->world == NULL) {
+        PyErr_SetString(PyExc_TypeError,"invalid world object");
+        return NULL;
+    }
+    char * id = NULL;
+    if (!PyArg_ParseTuple(args, "s", &id)) {
+        return NULL;
+    }
+    Entity * ent = self->world->getObject(id);
+    if (ent == NULL) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    ThingObject * o = newThingObject(NULL);
+    o->m_thing = ent;
+    return (PyObject *)o;
+}
+
 static PyObject * World_is_object_deleted(WorldObject *self, PyObject *args, PyObject *kw)
 {
     if (self->world == NULL) {
@@ -59,6 +79,7 @@ static PyObject * World_is_object_deleted(WorldObject *self, PyObject *args, PyO
 
 static PyMethodDef World_methods[] = {
     {"get_time",	(PyCFunction)World_get_time,	METH_VARARGS},
+    {"get_object",	(PyCFunction)World_get_object,	METH_VARARGS},
     {"is_object_deleted",	(PyCFunction)World_is_object_deleted,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };

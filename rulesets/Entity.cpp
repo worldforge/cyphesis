@@ -122,6 +122,10 @@ void Entity::addToObject(Object & obj) const
 {
     Object::MapType & omap = obj.AsMap();
     // We need to have a list of keys to pull from attributes.
+    Object::MapType::const_iterator I = attributes.begin();
+    for (; I != attributes.end(); I++) {
+        omap[I->first] = I->second;
+    }
     if (!name.empty()) {
         omap["name"] = name;
     }

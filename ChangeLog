@@ -1,3 +1,20 @@
+2001-05-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.cpp: Added dynamic attributes to atlas entity
+	  representation.
+
+	* rulesets/Py_World.cpp: Added get_object() method so that python
+	  scripts can actually interact with other objects.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Fixed hunt goal
+	  so that the arrow is removed from inventory as it is fired.
+
+	* client/define_world.py: Added archer, arrow and deer to test
+	  shooting code.
+
+	* server/server.cpp: Made CommClient more robust in the event
+	  if immediate disconnection by initialising pointers to NULL;
+
 2001-05-23  Al Riddoch  <alriddoch@zepler.org>
 
 	The memory leak crackdown

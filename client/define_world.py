@@ -212,17 +212,20 @@ def default(mapeditor):
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
 
-    warrior=m.make('Vonaa Barile',type='archer',xyz=inn_xyz,sex='female')
+    #warrior=m.make('Vonaa Barile',type='archer',xyz=inn_xyz,sex='female')
+    #m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
+    #bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
+    #m.own(warrior,bow)
+
+    warrior=m.make('Lile Birloc', type='archer',xyz=(-2,-2,village_height),sex='female')
     m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
+    for i in range(0, 6):
+        arrow=m.make('arrow',type='arrow',xyz=(0,0,0), parent=warrior.id)
+        m.own(warrior,arrow)
 
-    warrior=m.make('Lile Birloc', type='archer',xyz=inn_xyz,sex='female')
-    m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
-    bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
-    m.own(warrior,bow)
-
-    m.make('deer',type='deer',xyz=inn_xyz)
+    m.make('deer',type='deer',xyz=(2,2,village_height))
 
     # I am not sure if we need a guard
     #m.know(guard,gknowledge)

@@ -289,12 +289,19 @@ class hunt(Goal):
                 return 0
         return 1
     def fight(self, me):
-        if me.things.has_key(self.with)==0: return
+        if me.things.has_key(self.with)==0:
+            print "no weapon"
+            return
         weapon=me.find_thing(self.with)[0]
-        if me.things.has_key(weapon.ammo)==0: return
+        if me.things.has_key(weapon.ammo)==0:
+            print "no ammo"
+            return
         ammo=me.find_thing(weapon.ammo)[0]
-        if me.things.has_key(self.what)==0: return
+        if me.things.has_key(self.what)==0:
+            print "no target"
+            return
         enemy=me.find_thing(self.what)[0]
+        me.remove_thing(ammo)
         return Operation("shoot",Entity(ammo.id),Entity(enemy.id),to=weapon)
 
 ##################### DEFEND (SPOT SOMETHING, THEN KILL IT) ###################
