@@ -106,6 +106,7 @@ class Character : public Character_parent {
     virtual void mindSetupOperation(const Operation &, OpVector &);
     virtual void mindAppearanceOperation(const Operation &, OpVector &);
     virtual void mindDisappearanceOperation(const Operation &, OpVector &);
+    virtual void mindUpdateOperation(const Operation &, OpVector &);
     virtual void mindUseOperation(const Operation &, OpVector &);
     virtual void mindWieldOperation(const Operation &, OpVector &);
     virtual void mindErrorOperation(const Operation &, OpVector &);

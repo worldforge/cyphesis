@@ -254,6 +254,14 @@ void BaseEntity::DisappearanceOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Process an Update operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::UpdateOperation(const Operation & op, OpVector & res)
+{
+}
+
 /// \brief Process a Use operation.
 ///
 /// @param op The operation to be processed.

@@ -1,3 +1,11 @@
+2005-02-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.cpp, common/BaseEntity.h, common/op_switch.h,
+	  common/operations.cpp, common/operations.h, common/types.h,
+	  rulesets/Character.cpp, rulesets/Character.h, rulesets/Thing.cpp,
+	  rulesets/Thing.h: Add core op handling for update operation, used
+	  to handle move ops better.
+
 2005-02-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/inheritancetest.cpp, rulesets/Thing.cpp,

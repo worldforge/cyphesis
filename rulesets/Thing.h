@@ -29,6 +29,7 @@ class Thing : public Thing_parent {
     virtual void BurnOperation(const Operation & op, OpVector &);
     virtual void MoveOperation(const Operation & op, OpVector &);
     virtual void SetOperation(const Operation & op, OpVector &);
+    virtual void UpdateOperation(const Operation & op, OpVector &);
 };
 
 #endif // RULESETS_THING_H

@@ -85,6 +85,9 @@
         case OP_DISAPPEARANCE: \
             _prefix ## DisappearanceOperation(_op, _result); \
             break; \
+        case OP_UPDATE: \
+            _prefix ## UpdateOperation(_op, _result); \
+            break; \
         case OP_USE: \
             _prefix ## UseOperation(_op, _result); \
             break; \

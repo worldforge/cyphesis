@@ -11,6 +11,7 @@
 #include "Setup.h"
 #include "Tick.h"
 #include "Unseen.h"
+#include "Update.h"
 #include "Use.h"
 #include "Wield.h"
 
@@ -212,6 +213,29 @@ Unseen::~Unseen()
 Unseen Unseen::Class()
 {
     Unseen value("unseen", "perception");
+    value.setObjtype(std::string("op_definition"));
+    return value;
+}
+
+/// \brief Constructor for Update operation instances
+Update::Update() : Tick("", "update")
+{
+}
+
+/// \brief Constructor for operation instances that inherit from Update
+Update::Update(const char * id, const char * parent) : Tick(id, parent)
+{
+}
+
+/// \breif Destructor for Update operations
+Update::~Update()
+{
+}
+
+/// \brief Return an object containing the op_definition for Update operation
+Update Update::Class()
+{
+    Update value("update", "tick");
     value.setObjtype(std::string("op_definition"));
     return value;
 }

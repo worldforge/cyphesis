@@ -540,6 +540,10 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     res.push_back(rop);
 }
 
+void Character::mindUpdateOperation(const Operation & op, OpVector & res)
+{
+}
+
 void Character::mindWieldOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Wield op from mind" << std::endl << std::flush;);

@@ -53,6 +53,7 @@ namespace Atlas {
             class Use;
             class Wield;
             class Unseen;
+            class Update;
             class Generic;
             class RootOperation;
         }
@@ -93,6 +94,8 @@ using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Cut;
 using Atlas::Objects::Operation::Chop;
 using Atlas::Objects::Operation::Burn;
+using Atlas::Objects::Operation::Unseen;
+using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Operation::Wield;
 

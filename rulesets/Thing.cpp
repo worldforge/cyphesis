@@ -11,6 +11,7 @@
 
 #include "common/Tick.h"
 #include "common/Nourish.h"
+#include "common/Update.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -26,6 +27,7 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Delete;
+using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
@@ -43,6 +45,7 @@ Thing::Thing(const std::string & id) : Entity(id)
     subscribe("move", OP_MOVE);
     subscribe("set", OP_SET);
     subscribe("look", OP_LOOK);
+    subscribe("update", OP_UPDATE);
 }
 
 Thing::~Thing() { }
@@ -283,6 +286,12 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     res.push_back(s);
 
+    Operation * u = new Update();
+    u->setFutureSeconds(consts::basic_tick);
+    u->setTo(getId());
+
+    res.push_back(u);
+
     // I think it might be wise to send a set indicating we have changed
     // modes, but this would probably be wasteful
 
@@ -397,4 +406,12 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
     if (m_update_flags != 0) {
         updated.emit();
     }
+}
+
+void Thing::UpdateOperation(const Operation & op, OpVector & res)
+{
+    debug(std::cout << "Update" << std::endl << std::flush;);
+    // This is where we will handle movement simulation from now on, rather
+    // than in the mind interface. The details will be sorted by a new type
+    // of object which will handle the specifics.
 }

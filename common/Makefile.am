@@ -24,7 +24,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      AtlasFileLoader.cpp AtlasFileLoader.h \
 		      Burn.h Chop.h Cut.h Eat.h \
 		      Nourish.h Setup.h Tick.h Generic.h \
-		      Unseen.h Use.h Wield.h
+		      Unseen.h Update.h Use.h Wield.h
 
 libtools_a_SOURCES = accountbase.cpp accountbase.h \
 		     FormattedXMLWriter.cpp FormattedXMLWriter.h
