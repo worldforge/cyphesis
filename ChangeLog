@@ -1,5 +1,17 @@
 2004-12-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommUnixListener.cpp, server/CommUnixListener.h:
+	  Virtualise creating client sockets so this class can
+	  be overidden like CommListener.
+
+	* server/CommPeerListener.h, server/CommListener.cpp:
+	  Correct some comments.
+
+	* server/CommSlaveListener.h: Listener class for management
+	  connections to a slave server.
+
+2004-12-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Admin.cpp: Make sure setup is called on peer connection.
 
 	* server/CommClient.h, server/CommClient.cpp: Adapt code so it

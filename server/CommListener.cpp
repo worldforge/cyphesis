@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2004 Alistair Riddoch
 
 #include "CommListener.h"
 
@@ -122,5 +122,4 @@ void CommListener::create(int asockfd, const char * address)
 
     // Add this new client to the list.
     m_commServer.addSocket(newcli);
-
 }

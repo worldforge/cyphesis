@@ -23,6 +23,8 @@ class CommUnixListener : public CommSocket {
 
     int accept();
 
+    virtual void create(int fd, const char * address);
+
   public:
     explicit CommUnixListener(CommServer & svr);
     virtual ~CommUnixListener();
