@@ -15,6 +15,12 @@
 class CommServer;
 class Connection;
 
+class ClientTimeOutException : public std::runtime_error {
+  public:
+    ClientTimeOutException() { }
+    virtual ~ClientTimeOutException() throw() { }
+};
+
 class CommClient : Atlas::Objects::Decoder {
   public:
     CommServer & commServer;
@@ -25,6 +31,7 @@ class CommClient : Atlas::Objects::Decoder {
     Atlas::Objects::Encoder * encoder;
     Atlas::Net::StreamAccept * accept;
     Connection & connection;
+    bool reading;
 
     bool negotiate();
   protected:
@@ -44,40 +51,16 @@ class CommClient : Atlas::Objects::Decoder {
     CommClient(CommServer & svr, int fd, int port);
     virtual ~CommClient();
 
-    bool read() {
-        if (codec != NULL) {
-            codec->Poll();
-            return false;
-        } else {
-            return negotiate();
-        }
-    }
-
-    void send(const Atlas::Objects::Operation::RootOperation & op) {
-        if (isOpen()) {
-            //    std::fstream file(1);
-            //    Atlas::Codecs::XML c(file, (Atlas::Bridge*)this);
-            //    Atlas::Objects::Encoder enc(&c);
-            //    enc.StreamMessage(op);
-            //    std::cout << std::endl << flush;
-
-            encoder->StreamMessage(&op);
-            clientIos << std::flush;
-            if (clientIos.timeout()) {
-                // FIXME DO we need to disconnect here?
-                // Should we keep track of errant clients?
-                // clientIos.close();
-            }
-        }
-    }
-
     int peek() { return clientIos.peek(); }
     int eof() { return clientIos.eof(); }
     int getFd() { return clientIos.getSocket(); }
     bool isOpen() { return clientIos.is_open(); }
+    bool timeout() { return clientIos.timeout(); }
     bool online() { return (encoder != NULL); }
     void close() { clientIos.close(); }
 
+    bool read();
+    void send(const Atlas::Objects::Operation::RootOperation &);
     void message(const Atlas::Objects::Operation::RootOperation &);
     void setup();
 };

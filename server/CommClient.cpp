@@ -19,7 +19,8 @@ CommClient::CommClient(CommServer & svr, int fd, int port) :
             commServer(svr),
             clientIos(fd),
             codec(NULL), encoder(NULL),
-            connection(*new Connection(*this))
+            connection(*new Connection(*this)),
+            reading(false)
 {
     char ipno[255];
     sockaddr_in client = clientIos.getOutpeer();
@@ -184,4 +185,46 @@ void CommClient::ObjectArrived(const Get & op)
 {
     debug(std::cout << "A get operation thingy here!" << std::endl << std::flush;);
     message(op);
+}
+
+bool CommClient::read() {
+    if (codec != NULL) {
+        reading = true;
+        codec->Poll();
+        reading = false;
+        return false;
+    } else {
+        return negotiate();
+    }
+}
+
+
+void CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
+{
+    if (isOpen()) {
+        encoder->StreamMessage(&op);
+        struct timeval tv = {0, 0};
+        fd_set sfds;
+        int cfd = clientIos.getSocket();
+        FD_ZERO(&sfds);
+        FD_SET(cfd, &sfds);
+        if (select(++cfd, NULL, &sfds, NULL, &tv) > 0) {
+            // We only flush to the client if the client is ready
+            std::cout << "Client is ready for data" << std::endl << std::flush;
+            clientIos << std::flush;
+        } else {
+            std::cout << "Client isn't ready" << std::endl << std::flush;
+        }
+        // This timeout should only occur if the client was really not
+        // ready
+        if (clientIos.timeout()) {
+            if (reading) {
+                std::cerr << "TIMEOUT while readind" << std::endl << std::flush;
+                throw ClientTimeOutException();
+            } else {
+                std::cerr << "TIMEOUT" << std::endl << std::flush;
+                clientIos.close();
+            }
+        }
+    }
 }
