@@ -1,3 +1,7 @@
+Currently we have to copy broadcast ops. This isn't necessary. It should be
+ok to just modify the TO, if we modify the method to take a non-const
+reference to the op.
+
 Currently no mechanism to inform client/mind that the ID they just
 specified is gone. Need to think of something, and make sure mind
 deals correctly.
