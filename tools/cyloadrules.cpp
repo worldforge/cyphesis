@@ -30,7 +30,7 @@ class RuleBase {
     static RuleBase * instance() {
         if (m_instance == NULL) {
             m_instance = new RuleBase();
-            if (!m_instance->m_connection.initConnection(true)) {
+            if (m_instance->m_connection.initConnection(true) != 0) {
                 delete m_instance;
                 m_instance = 0;
             } else if (!m_instance->m_connection.initRule(true)) {

@@ -30,11 +30,11 @@ Persistance * Persistance::instance()
     return m_instance;
 }
 
-bool Persistance::init()
+int Persistance::init()
 {
     Persistance * p = instance();
-    if (!p->m_connection.initConnection(false)) {
-        return false;
+    if (p->m_connection.initConnection(false) != 0) {
+        return -1;
     }
     bool i = p->m_connection.initRule(true);
 
@@ -63,7 +63,7 @@ bool Persistance::init()
         p->putAccount(dummyAdminAccount);
     }
 
-    return (i && j && k);
+    return (i && j && k) ? 0 : -1;
 }
 
 void Persistance::shutdown()

@@ -93,7 +93,7 @@ class Database {
 
     static Database * instance();
 
-    bool initConnection(bool createDatabase = false);
+    int initConnection(bool createDatabase = false);
     bool initRule(bool createTables = false);
 
     void shutdownConnection();

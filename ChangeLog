@@ -1,5 +1,12 @@
 2004-10-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/Database.h, common/accountbase.cpp,
+	  common/accountbase.h, server/Persistance.cpp, server/Persistance.h,
+	  server/server.cpp, tools/cyloadrules.cpp, tools/cypasswd.cpp:
+	  Use int for returning error status.
+
+2004-10-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommListener.cpp, server/CommListener.h,
 	  server/CommUnixListener.cpp, server/CommUnixListener.h:
 	  Use int for returning error status.

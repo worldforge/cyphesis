@@ -64,7 +64,7 @@ bool Database::commandOk()
     return status;
 }
 
-bool Database::initConnection(bool createDatabase)
+int Database::initConnection(bool createDatabase)
 {
     std::stringstream conninfos;
     if (global_conf->findItem("cyphesis", "dbserver")) {
@@ -105,10 +105,10 @@ bool Database::initConnection(bool createDatabase)
 
     if ((m_connection == NULL) || (PQstatus(m_connection) != CONNECTION_OK)) {
         log(ERROR, "Database connection failed");
-        return false;
+        return -1;
     }
 
-    return true;
+    return 0;
 }
 
 bool Database::initRule(bool createTables)

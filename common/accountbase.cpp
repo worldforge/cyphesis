@@ -6,12 +6,9 @@
 
 #include "system.h"
 
-bool AccountBase::init()
+int AccountBase::init()
 {
-    if (!m_connection.initConnection(false)) {
-        return false;
-    }
-    return true;
+    return m_connection.initConnection(false);
 }
 
 bool AccountBase::putAccount(const Atlas::Message::MapType & o)

@@ -76,7 +76,7 @@ int main(int argc, char ** argv)
 
     AccountBase db;
 
-    if (!db.init()) {
+    if (db.init() != 0) {
         std::cerr << "Unable to connect to database" << std::endl << std::flush;
         return 1;
     }

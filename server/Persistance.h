@@ -25,7 +25,7 @@ class Persistance {
     Database & m_connection;
 
     static Persistance * instance();
-    static bool init();
+    static int init();
     static void shutdown();
 
     bool findAccount(const std::string &);
