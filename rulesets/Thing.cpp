@@ -260,18 +260,39 @@ oplist Thing::Operation(const Set & op)
     return(res);
 }
 
+ThingFactory thing_factory;
+
+ThingFactory::ThingFactory()
+{
+    thing_map["thing"] = thing_t(BASE_THING, "");
+    thing_map["house"] = thing_t(BASE_THING, "");
+    thing_map["farmer"] = thing_t(BASE_CHARACTER, "");
+    thing_map["guard"] = thing_t(BASE_CHARACTER, "");
+    thing_map["butcher"] = thing_t(BASE_CHARACTER, "");
+}
+
 Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)
 {
     if (!ent.IsMap()) {
          cout << "Entity is not a map" << endl << flush;
     }
     Message::Object::MapType entmap = ent.AsMap();
-    Thing * thing = new Thing();
-    if (type.size() != 0) {
-        thing = new Character();
+    thing_t t_type;
+    if (type.size() == 0) {
+        t_type = thing_map["thing"];
     } else {
-        thing = new Thing();
+        t_type = thing_map[type];
     }
+    Thing * thing;
+    switch (t_type.first) {
+        case BASE_CHARACTER:
+            thing = new Character();
+            break;
+        case BASE_THING:
+        default:
+            thing = new Thing();
+    }
+    // Sort out python object here FIXME.
     if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
         thing->name = entmap["name"].AsString();
     } else {

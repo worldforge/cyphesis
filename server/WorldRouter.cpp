@@ -84,7 +84,7 @@ Thing * WorldRouter::add_object(const string & type,
                                      const Message::Object & ent)
 {
     Thing * obj;
-    obj = ThingFactory::new_thing(type, ent);
+    obj = thing_factory.new_thing(type, ent);
     return add_object(obj);
 }
 

@@ -35,9 +35,18 @@ class Thing : public BaseEntity {
     virtual oplist Operation(const Set & op);
 };
 
+typedef std::pair<int, string> thing_t;
+
+#define BASE_THING	0
+#define BASE_CHARACTER	1
+
 class ThingFactory {
+    map<string,thing_t> thing_map;
   public:
-    static Thing * new_thing(const string & type, const Message::Object & ent);
+    ThingFactory();
+    Thing * new_thing(const string & type, const Message::Object & ent);
 };
+
+extern ThingFactory thing_factory;
 
 #endif /* THING_H */

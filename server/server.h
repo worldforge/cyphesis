@@ -61,8 +61,9 @@ class CommClient : Objects::Decoder {
     bad_type send(const Objects::Operation::RootOperation *);
     void message(const Objects::Operation::RootOperation &);
     //void destroy();
-    void setup();
+    int setup();
     int peek();
+    int eof();
     int get_fd() { return client_fd; }
 };
 

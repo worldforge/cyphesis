@@ -69,7 +69,7 @@ int CommClient::read()
     }
 }
 
-void CommClient::setup()
+int CommClient::setup()
 {
     Atlas::Net::StreamAccept accept("cyphesis", client_ios, this);
 
@@ -81,7 +81,7 @@ void CommClient::setup()
 
     if (accept.GetState() == Negotiate<iostream>::FAILED) {
         cerr << "Failed to negotiate" << endl;
-        exit(2);
+        return(0);
     }
     // Negotiation was successful
 
@@ -95,6 +95,7 @@ void CommClient::setup()
     codec->StreamBegin();
 
     client=new Connection(this);
+    return(1);
 }
 
 void CommClient::message(const Objects::Operation::RootOperation & obj)
@@ -192,6 +193,11 @@ inline int CommClient::peek()
     return client_ios.peek();
 }
 
+inline int CommClient::eof()
+{
+    return client_ios.eof();
+}
+
 int CommServer::accept() {
     struct sockaddr_in sin;
     unsigned int addr_len = sizeof(sin);
@@ -208,8 +214,9 @@ int CommServer::accept() {
     }
     cout << "Accepted" << endl << flush;
     CommClient * newcli = new CommClient(this, asockfd, sin.sin_port);
-    newcli->setup();
-    clients.insert(std::pair<int, CommClient *>(asockfd, newcli));
+    if (newcli->setup()) {
+        clients.insert(std::pair<int, CommClient *>(asockfd, newcli));
+    }
     return(0);
 }
 
@@ -245,12 +252,15 @@ void CommServer::loop() {
        client_fd = I->first;
        if (FD_ISSET(client_fd, &sock_fds)) {
            client = I->second;
-           if (client->peek() == -1) {
+           if (client->peek() != -1) {
+               client->read();
+           } else if (client->eof()) {
                remove_client(client);
                cout << "Client disconnected. Handle it here" << endl << flush;
                break;
            } else {
-               client->read();
+               cout << "FATAL THIS SHOULD NEVER HAPPEN" << endl << flush;
+               abort();
            }
        }
     }
