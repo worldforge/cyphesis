@@ -1,5 +1,9 @@
 2004-05-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* Release 0.3.0
+
+2004-05-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* cyphesis.spec.in: Final deps tweak.
 
 	* cyphesis.vconf: Enable metaserver by default.
