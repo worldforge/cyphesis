@@ -643,7 +643,9 @@ oplist Character::Mind_Operation(const Eat & op)
 
 oplist Character::Mind_Operation(const Touch & op)
 {
+    oplist res;
     Touch * t = new Touch(op);
+    // Work out what is being touched.
     const Message::Object::ListType & args = op.GetArgs();
     if ((op.GetTo().size() == 0) || (args.size() != 0)) {
         if (args.size() == 0) {
@@ -659,7 +661,18 @@ oplist Character::Mind_Operation(const Touch & op)
             }
         }
     }
-    return(oplist(1,t));
+    // Pass the modified touch operation on to target.
+    res.push_back(t);
+    // Set our mode to "touching"
+    Set * s = new Set(Set::Instantiate());
+    s->SetTo(fullid);
+    Object::MapType amap;
+    amap["id"] = fullid;
+    amap["mode"] = "touching";
+    Object::ListType setArgs(1,Object(amap));
+    s->SetArgs(setArgs);
+    res.push_back(s);
+    return res;
 }
 
 oplist Character::W2m_Operation(const Error & op)

@@ -1,5 +1,10 @@
 2001-01-23  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* rulesets/Character.cpp: Set character mode to "touching" when a
+	  touch operation is created by the mind.
+
+2001-01-23  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Modified build system so a static binary can be built.
 
 	* server/WorldRouter.cpp: Modified some behavoir on critical errors.
