@@ -8,8 +8,10 @@
 #include "BaseEntity.h"
 
 class OOGThing : public BaseEntity {
-  public:
+  protected:
+    OOGThing(const std::string & id) : BaseEntity(id) { }
     OOGThing() { }
+  public:
     virtual ~OOGThing();
     virtual OpVector OtherOperation(const RootOperation & op);
 };

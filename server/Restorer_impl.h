@@ -12,28 +12,28 @@
 template <class T>
 void Restorer<T>::rEntity(DatabaseResult & dr)
 {
-    restoreString(dr.field(0, "type"), type);
-    restoreString(dr.field(0, "name"), name);
-    restoreFloat(dr.field(0, "px"), location.coords.X());
-    restoreFloat(dr.field(0, "py"), location.coords.Y());
-    restoreFloat(dr.field(0, "pz"), location.coords.Z());
+    restoreString(dr.field("type"), type);
+    restoreString(dr.field("name"), name);
+    restoreFloat(dr.field("px"), location.coords.X());
+    restoreFloat(dr.field("py"), location.coords.Y());
+    restoreFloat(dr.field("pz"), location.coords.Z());
     location.coords.set();
-    restoreFloat(dr.field(0, "ox"), location.orientation.X());
-    restoreFloat(dr.field(0, "oy"), location.orientation.Y());
-    restoreFloat(dr.field(0, "oz"), location.orientation.Z());
-    restoreFloat(dr.field(0, "ow"), location.orientation.W());
+    restoreFloat(dr.field("ox"), location.orientation.X());
+    restoreFloat(dr.field("oy"), location.orientation.Y());
+    restoreFloat(dr.field("oz"), location.orientation.Z());
+    restoreFloat(dr.field("ow"), location.orientation.W());
     location.orientation.set();
-    restoreFloat(dr.field(0, "bnx"), location.bBox.nearPoint().X());
-    restoreFloat(dr.field(0, "bny"), location.bBox.nearPoint().Y());
-    restoreFloat(dr.field(0, "bnz"), location.bBox.nearPoint().Z());
+    restoreFloat(dr.field("bnx"), location.bBox.nearPoint().X());
+    restoreFloat(dr.field("bny"), location.bBox.nearPoint().Y());
+    restoreFloat(dr.field("bnz"), location.bBox.nearPoint().Z());
     location.bBox.nearPoint().set();
-    restoreFloat(dr.field(0, "bfx"), location.bBox.farPoint().X());
-    restoreFloat(dr.field(0, "bfy"), location.bBox.farPoint().Y());
-    restoreFloat(dr.field(0, "bfz"), location.bBox.farPoint().Z());
+    restoreFloat(dr.field("bfx"), location.bBox.farPoint().X());
+    restoreFloat(dr.field("bfy"), location.bBox.farPoint().Y());
+    restoreFloat(dr.field("bfz"), location.bBox.farPoint().Z());
     location.bBox.farPoint().set();
-    restoreFloat(dr.field(0, "status"), status);
-    restoreFloat(dr.field(0, "mass"), mass);
-    restoreInt(dr.field(0, "seq"), seq);
+    restoreFloat(dr.field("status"), status);
+    restoreFloat(dr.field("mass"), mass);
+    restoreInt(dr.field("seq"), seq);
 }
 
 template <class T>

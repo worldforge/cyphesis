@@ -112,8 +112,12 @@ int main(int argc, char ** argv)
     // not creating a new world using the contents of the database as a
     // template
 
+    log(INFO, "Restoring world from database...");
+
     Restoration restore(server);
     restore.read();
+
+    log(INFO, " world restored");
 
     CommListener * listener = new CommListener(commServer);
     if (!listener->setup(port_num)) {
@@ -133,7 +137,7 @@ int main(int argc, char ** argv)
         if (admin == NULL) {
             log(ERROR, "Admin account not found, world not loaded.");
         } else {
-            log(INFO, "Loading world from database...");
+            log(INFO, "Loading world from legacy database...");
             OpVector res = admin->LoadOperation(l);
             // Delete the resulting op
             OpVector::const_iterator I = res.begin();

@@ -23,3 +23,17 @@ template class Restorer<Area>;
 template class Restorer<Line>;
 template class Restorer<Stackable>;
 template class Restorer<Structure>;
+
+void Restorer<Character>::rCharacter(DatabaseResult & dr)
+{
+    restoreFloat(dr.field("drunkness"), drunkness);
+    restoreString(dr.field("sex"), sex);
+    restoreFloat(dr.field("food"), food);
+}
+
+void Restorer<Character>::populate(const std::string & id, DatabaseResult & dr)
+{
+    setId(id);
+    rEntity(dr);
+    rCharacter(dr);
+}

@@ -176,10 +176,10 @@ class DatabaseResult {
 
     // const_iterator find() perhaps
 
-    const char * field(int row, int column) const {
+    const char * field(int column,  int row = 0) const {
         return PQgetvalue(m_res, row, column);
     }
-    const char * field(int row, const char * column) const;
+    const char * field(const char * column, int row = 0) const;
 };
 
 #endif // COMMON_DATABSE_H

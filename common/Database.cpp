@@ -777,7 +777,7 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
     return DatabaseResult(res);
 }
 
-const char * DatabaseResult::field(int row, const char * column) const
+const char * DatabaseResult::field(const char * column, int row) const
 {
     int col_num = PQfnumber(m_res, column);
     if (col_num == -1) {

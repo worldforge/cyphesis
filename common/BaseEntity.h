@@ -33,11 +33,13 @@ class BaseEntity : public SigC::Object {
   protected:
     OpNoDict opLookup;
 
+    explicit BaseEntity(const std::string & id);
+    BaseEntity();
+
     void subscribe(const std::string& op, OpNo no) {
         opLookup[op] = no;
     }
   public:
-    BaseEntity();
     virtual ~BaseEntity();
 
     const std::string & getId() const {

@@ -1,5 +1,23 @@
 2002-12-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.cpp, common/BaseEntity.h, common/OOGThing.h:
+	  Add a protected constructor for initialising id at construction
+	  time.
+
+	* common/Database.cpp, common/Database.h, server/Restorer_impl.h:
+	  Switch argument order so default row can be first row.
+
+	* server/Persistor.cpp: Don't persist Creator objects.
+
+	* server/Restoration.cpp: Clean up debugging output, and report
+	  serious errors.
+
+	* server/Restorer.cpp, server/Restorer.h: Add restorers for Character.
+
+	* server/server.cpp: Add log calls for restoring from database.
+
+2002-12-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Quaternion.h, physics/Vector3D.h: Add accessors to
 	  allow direct modification of coordinates.
 

@@ -91,9 +91,7 @@ Persistor<Character>::Persistor<Character>() : m_class("character")
 
 Persistor<Creator>::Persistor<Creator>() : m_class("creator")
 {
-    Atlas::Message::Object::MapType desc;
-    // FIXME Sort out attributes
-    Database::instance()->registerEntityTable(m_class, desc, "character");
+    // Creator entities are not persisted
 }
 
 Persistor<Plant>::Persistor<Plant>() : m_class("plant")
@@ -144,11 +142,12 @@ void Persistor<Character>::update(Character & t)
 
 void Persistor<Creator>::update(Creator & t)
 {
-    std::string columns;
-    uCharacter(t, columns);
-    uEntity(t, columns);
-    Database::instance()->updateEntityRow(m_class, t.getId(), columns);
-    t.clearUpdateFlags();
+    // Creator entities are not persisted
+    // std::string columns;
+    // uCharacter(t, columns);
+    // uEntity(t, columns);
+    // Database::instance()->updateEntityRow(m_class, t.getId(), columns);
+    // t.clearUpdateFlags();
 }
 
 void Persistor<Line>::update(Line & t)
@@ -181,11 +180,11 @@ void Persistor<Plant>::update(Plant & t)
 void Persistor<Character>::persist(Character & t)
 {
     t.updated.connect(SigC::bind<Character &>(SigC::slot(*this,
-                                                 &Persistor<Character>::update),
-                                      t));
+                                              &Persistor<Character>::update),
+                                              t));
     t.destroyed.connect(SigC::bind<Character &>(SigC::slot(*this,
-                                                   &Persistor<Character>::remove),
-                                        t));
+                                                &Persistor<Character>::remove),
+                                                t));
     std::string columns;
     std::string values;
     cEntity(t, columns, values);
@@ -195,25 +194,15 @@ void Persistor<Character>::persist(Character & t)
 
 void Persistor<Creator>::persist(Creator & t)
 {
-    t.updated.connect(SigC::bind<Creator &>(SigC::slot(*this,
-                                                 &Persistor<Creator>::update),
-                                      t));
-    t.destroyed.connect(SigC::bind<Creator &>(SigC::slot(*this,
-                                                   &Persistor<Creator>::remove),
-                                        t));
-    std::string columns;
-    std::string values;
-    cEntity(t, columns, values);
-    cCharacter(t, columns, values);
-    Database::instance()->createEntityRow(m_class, t.getId(), columns, values);
+    // Creator entities are not persisted
 }
 
 void Persistor<World>::persist(World & t)
 {
     t.updated.connect(SigC::bind<World &>(SigC::slot(*this,
-                                            &Persistor<World>::update), t));
-    t.destroyed.connect(SigC::bind<World &>(SigC::slot(*this,
-                                              &Persistor<World>::remove), t));
+                                          &Persistor<World>::update), t));
+    // The game world should never be destroyed, so we don't connect
+    // it to a remove function.
     // We do not create the row in the database. This is handled in a slightly
     // special way.
 }

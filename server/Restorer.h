@@ -37,6 +37,7 @@ class Restorer : public T {
     }
 
     void rEntity(DatabaseResult & dr);
+    void rCharacter(DatabaseResult & dr);
   public:
     void populate(const std::string & id, DatabaseResult & dr);
 
