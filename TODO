@@ -1,3 +1,7 @@
+Fix problem where duplicate ticks are created in Plant::TickOperation()
+because script also exists. We aren't we returned if the script is
+there?
+
 Can we run our own RDBMS in the event that root access is not available.
 
 Modify var dir for socket so it is actually the right place.
