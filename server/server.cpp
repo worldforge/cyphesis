@@ -152,7 +152,7 @@ int main(int argc, char ** argv)
     }
 
     CommUnixListener * localListener = new CommUnixListener(commServer);
-    if (localListener->setup(socket_name) != 0) {
+    if (localListener->setup(client_socket_name) != 0) {
         std::stringstream str;
         str << "Could not create local listen socket with address \"";
         str << localListener->getPath() << "\".";

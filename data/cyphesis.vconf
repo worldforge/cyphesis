@@ -43,7 +43,10 @@ package="define_world"
 function="default"
 
 [slave]
-# 
+# Unix socket to listen on
+unixport="cyslave.sock"
+# TCP port to listen on
+tcpport=6768
 
 [mason]
 ruleset="basic"

@@ -1,5 +1,20 @@
 2004-12-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp, common/globals.h: Separate globals for server
+	  and slave sockets. Add code for reading slave settings.
+
+	* client/ClientConnection.cpp, server/server.cpp: Use modified
+	  global socket_name setting.
+
+	* server/slave.cpp: Update for changed return values from bool to
+	  int. Remove metaserver functionality. Switch to using
+	  CommSlaveListener.
+
+	* tools/cycmd.cpp: Add config option to connect to slave rather
+	  than core server.
+
+2004-12-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/slave.cpp: Update so slave server builds again.
 
 	* server/CommUnixListener.h, server/CommUnixListener.cpp:

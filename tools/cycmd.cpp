@@ -746,6 +746,11 @@ int main(int argc, char ** argv)
         server = global_conf->getItem("client", "serverhost").as_string();
     }
 
+    int useslave;
+    if (global_conf->findItem("client", "useslave")) {
+        useslave = global_conf->getItem("client", "useslave");
+    }
+
     bool interactive = true;
     std::string cmd;
     if (optind < argc) {
@@ -761,7 +766,12 @@ int main(int argc, char ** argv)
 
     if (server.empty()) {
         // FIXME This socket name should be an option
-        std::string localSocket = var_directory + "/tmp/" + socket_name;
+        std::string localSocket = var_directory + "/tmp/";
+        if (useslave != 0) {
+            localSocket += slave_socket_name;
+        } else {
+            localSocket += client_socket_name;
+        }
 
         std::cerr << "Attempting local connection" << std::endl << std::flush;
         Interactive<unix_socket_stream> bridge;

@@ -15,7 +15,8 @@ varconf::Config * global_conf = NULL;
 std::string share_directory(SHAREDIR);
 std::string etc_directory(ETCDIR);
 std::string var_directory(VARDIR);
-std::string socket_name("cyphesis.sock");
+std::string client_socket_name("cyphesis.sock");
+std::string slave_socket_name("cyslave.sock");
 std::vector<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;
@@ -85,7 +86,15 @@ int loadConfig(int argc, char ** argv, bool server)
     }
 
     if (global_conf->findItem("cyphesis", "unixport")) {
-        socket_name = global_conf->getItem("cyphesis","unixport").as_string();
+        client_socket_name = global_conf->getItem("cyphesis","unixport").as_string();
+    }
+
+    if (global_conf->findItem("slave", "tcpport")) {
+        slave_port_num = global_conf->getItem("slave","tcpport");
+    }
+
+    if (global_conf->findItem("slave", "unixport")) {
+        slave_socket_name = global_conf->getItem("slave","unixport").as_string();
     }
 
     // Load up the rulesets. Rulesets are hierarchical, and are read in until

@@ -3,8 +3,7 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "CommServer.h"
-#include "CommListener.h"
-#include "CommMetaClient.h"
+#include "CommSlaveListener.h"
 #include "ServerRouting.h"
 #include "EntityFactory.h"
 #include "Persistance.h"
@@ -48,8 +47,8 @@ int main(int argc, char ** argv)
     // Initialise the persistance subsystem. If we have been built with
     // database support, this will open the various databases used to
     // store server data.
-    bool dbInit = Persistance::init();
-    if (!dbInit) {
+    int dbstatus = Persistance::init();
+    if (dbstatus < 0) {
         log(CRITICAL, "Critical error opening databases. Init failed.");
         log(INFO, "Please ensure that the database tables can be created or accessed by cyphesis.");
         return EXIT_DATABASE_ERROR;
@@ -67,11 +66,6 @@ int main(int argc, char ** argv)
 
     if (global_conf->findItem("cyphesis", "inittime")) {
         timeoffset = global_conf->getItem("cyphesis","inittime");
-    }
-
-    bool useMetaserver = false;
-    if (global_conf->findItem("cyphesis", "usemetaserver")) {
-        useMetaserver = global_conf->getItem("cyphesis","usemetaserver");
     }
 
     std::string mserver("metaserver.worldforge.org");
@@ -116,20 +110,12 @@ int main(int argc, char ** argv)
 
     log(INFO, " world restored");
 
-    CommListener * listener = new CommListener(commServer);
-    if (!listener->setup(slave_port_num)) {
+    CommSlaveListener * listener = new CommSlaveListener(commServer);
+    if (listener->setup(slave_socket_name) != 0) {
         log(ERROR, "Could not create listen socket. Init failed.");
         return EXIT_SOCKET_ERROR;
     }
     commServer.addSocket(listener);
-
-    if (useMetaserver) {
-        CommMetaClient * cmc = new CommMetaClient(commServer);
-        if (cmc->setup(mserver)) {
-            commServer.addSocket(cmc);
-            commServer.addIdle(cmc);
-        }
-    }
 
     log(INFO, "Running");
 
