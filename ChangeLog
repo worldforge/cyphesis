@@ -1,4 +1,4 @@
-2004-05-16  Al Riddoch  <alriddoch@zepler.org>
+2004-05-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/BaseMind.cpp: Re-order the way ops are handled to avoid
 	  re-adding deleted entities to memory.
