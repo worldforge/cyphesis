@@ -1,3 +1,5 @@
+Fix up python checks so they work with a prefix other than /usr
+
 Is socket getting opened before it will accept or negotiate?
 
 Fix up cypasswd to allow creation of additional admin accounts.
