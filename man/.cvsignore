@@ -1,2 +1,4 @@
 *.1
 manpage.*
+Makefile
+Makefile.in
