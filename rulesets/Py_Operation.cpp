@@ -305,6 +305,7 @@ static PyObject * Operation_GetArgs(RootOperationObject * self, PyObject * args)
         item = newAtlasObject(NULL);
         if (item == NULL) {
             PyErr_SetString(PyExc_TypeError,"error creating list");
+            Py_DECREF(args_pylist);
             return NULL;
         }
         item->m_obj = new Object(*I);
@@ -586,6 +587,9 @@ static int Operation_setattr(RootOperationObject *self, char *name, PyObject *v)
         PyObject * thing_id = PyObject_GetAttrString(v, "id");
         if ((thing_id == NULL) || (!PyString_Check(thing_id))) {
             PyErr_SetString(PyExc_TypeError, "invalid from");
+            if (thing_id != NULL) {
+                Py_DECREF(thing_id);
+            }
             return -1;
         }
         if (((PyTypeObject*)PyObject_Type(v) == &Thing_Type) &&
@@ -593,12 +597,16 @@ static int Operation_setattr(RootOperationObject *self, char *name, PyObject *v)
             self->from = ((ThingObject *)v)->m_thing;
         }
         self->operation->SetFrom(PyString_AsString(thing_id));
+        Py_DECREF(thing_id);
         return 0;
     }
     if (strcmp(name, "to") == 0) {
         PyObject * thing_id = PyObject_GetAttrString(v, "id");
         if ((thing_id == NULL) || (!PyString_Check(thing_id))) {
             PyErr_SetString(PyExc_TypeError, "invalid to");
+            if (thing_id != NULL) {
+                Py_DECREF(thing_id);
+            }
             return -1;
         }
         if (((PyTypeObject*)PyObject_Type(v) == &Thing_Type) &&
@@ -606,6 +614,7 @@ static int Operation_setattr(RootOperationObject *self, char *name, PyObject *v)
             self->to = ((ThingObject *)v)->m_thing;
         }
         self->operation->SetTo(PyString_AsString(thing_id));
+        Py_DECREF(thing_id);
         return 0;
     }
     return 0;

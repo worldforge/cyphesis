@@ -1,5 +1,12 @@
 2001-10-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp, rulesets/PythonMindScript.cpp,
+	  rulesets/Py_Oplist.cpp, rulesets/Py_Operation.cpp,
+	  rulesets/Py_Map.cpp: Fixed some points in the code where Python
+	  objects are not decreffed, and are thus leaked.
+
+2001-10-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/server.cpp, rulesets/Python_API.cpp: Added function
 	  to shutdown python. Ensure that all references that should be
 	  decrefed during initialisation are.

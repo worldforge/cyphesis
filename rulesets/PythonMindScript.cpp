@@ -99,6 +99,7 @@ void PythonMindScript::hook(const std::string & method, Entity * object)
 {
     ThingObject * obj = newThingObject(NULL);
     obj->m_thing = object;
-    PyObject_CallMethod(scriptObject, (char *)(method.c_str()), "(O)", obj);
+    PyObject * ret = PyObject_CallMethod(scriptObject, (char *)(method.c_str()), "(O)", obj);
+    Py_DECREF(ret);
     Py_DECREF(obj);
 }

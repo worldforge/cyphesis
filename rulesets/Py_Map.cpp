@@ -43,6 +43,7 @@ static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
     for(I = res.begin(); I != res.end(); I++, i++) {
         thing = newThingObject(NULL);
         if (thing == NULL) {
+            Py_DECREF(list);
             return NULL;
         }
         thing->m_thing = *I;
@@ -72,6 +73,7 @@ static PyObject * Map_find_by_type(MapObject * self, PyObject * args)
     for(I = res.begin(); I != res.end(); I++, i++) {
         thing = newThingObject(NULL);
         if (thing == NULL) {
+            Py_DECREF(list);
             return NULL;
         }
         thing->m_thing = *I;

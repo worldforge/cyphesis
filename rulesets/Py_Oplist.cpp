@@ -63,10 +63,10 @@ static PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
     if (PyOplist_Check(other)) {
         OplistObject * opl = (OplistObject*)other;
         OplistObject * res = newOplistObject(NULL);
-        res->ops = new oplist(*self->ops);
         if (res == NULL) {
             return NULL;
         }
+        res->ops = new oplist(*self->ops);
         // res->ops->merge(*self->ops);
         for(oplist::const_iterator I=opl->ops->begin();I!=opl->ops->end();I++) {
             res->ops->push_back(*I);
@@ -80,10 +80,10 @@ static PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
             PyErr_SetString(PyExc_TypeError, "invalid operation");
         }
         OplistObject * res = newOplistObject(NULL);
-        res->ops = new oplist(*self->ops);
         if (res == NULL) {
             return NULL;
         }
+        res->ops = new oplist(*self->ops);
         // res->ops->merge(*self->ops);
         res->ops->push_back(op->operation);
         op->own = 0;

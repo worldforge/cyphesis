@@ -4,6 +4,8 @@
 
   Implement propper multi-process access to database
 
+  DECREF pyThing and pyMind as we drop references to these
+
 Provisional for Acorn 0.5:
 
   Implement accelerated Atlas Objects API. MAYBE:

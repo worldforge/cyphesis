@@ -157,7 +157,6 @@ static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject 
         PyList_Append(list, (PyObject*)item);
     } else {
         list = PyList_New(0);
-        //Py_INCREF(item);
         PyList_Append(list, (PyObject*)item);
         PyDict_SetItemString(dict, key, list);
         Py_DECREF(list);
@@ -280,18 +279,22 @@ static PyObject * location_new(PyObject * self, PyObject * args)
     LocationObject *o;
     // We need to deal with actual args here
     PyObject * refO, * coordsO = NULL;
+    bool decrefO = false;
     if (PyArg_ParseTuple(args, "O|O", &refO, &coordsO)) {
         if ((!PyThing_Check(refO)) && (!PyWorld_Check(refO)) && (!PyMind_Check(refO))) {
             if (PyObject_HasAttrString(refO, "cppthing")) {
                 refO = PyObject_GetAttrString(refO, "cppthing");
+                decrefO = true;
             }
             if (!PyThing_Check(refO) && !PyMind_Check(refO)) {
                 PyErr_SetString(PyExc_TypeError, "Arg ref required");
+                if (decrefO) { Py_DECREF(refO); }
                 return NULL;
             }
         }
         if ((coordsO != NULL) && (!PyVector3D_Check(coordsO))) {
             PyErr_SetString(PyExc_TypeError, "Arg coords required");
+            if (decrefO) { Py_DECREF(refO); }
             return NULL;
         }
 
@@ -300,6 +303,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
             WorldObject * ref = (WorldObject*)refO;
             if (ref->world == NULL) {
                 PyErr_SetString(PyExc_TypeError, "Parent world is invalid");
+                if (decrefO) { Py_DECREF(refO); }
                 return NULL;
             }
             ref_ent = &ref->world->gameWorld;
@@ -307,6 +311,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
             MindObject * ref = (MindObject*)refO;
             if (ref->m_mind == NULL) {
                 PyErr_SetString(PyExc_TypeError, "Parent mind is invalid");
+                if (decrefO) { Py_DECREF(refO); }
                 return NULL;
             }
             ref_ent = ref->m_mind;
@@ -314,10 +319,12 @@ static PyObject * location_new(PyObject * self, PyObject * args)
             ThingObject * ref = (ThingObject*)refO;
             if (ref->m_thing == NULL) {
                 PyErr_SetString(PyExc_TypeError, "Parent thing is invalid");
+                if (decrefO) { Py_DECREF(refO); }
                 return NULL;
             }
             ref_ent = ref->m_thing;
         }
+        if (decrefO) { Py_DECREF(refO); }
         Vector3DObject * coords = (Vector3DObject*)coordsO;
         o = newLocationObject(NULL);
         if ( o == NULL ) {
@@ -574,8 +581,6 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     RootOperationObject * op;
 
     char * type;
-    PyObject * to = NULL;
-    PyObject * from = NULL;
     PyObject * arg1 = NULL;
     PyObject * arg2 = NULL;
     PyObject * arg3 = NULL;
@@ -633,34 +638,45 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     }
     op->own = 1;
     if (PyMapping_HasKeyString(kwds, "to")) {
-        to = PyMapping_GetItemString(kwds, "to");
+        PyObject * to = PyMapping_GetItemString(kwds, "to");
         PyObject * to_id;
         if (PyString_Check(to)) {
             to_id = to;
         } else if ((to_id = PyObject_GetAttrString(to, "id")) == NULL) {
             fprintf(stderr, "To was not really an entity, as it had no id\n");
+            Py_DECREF(to);
             return NULL;
+        } else {
+            // to_id == to.getattr("id") and to is finished with
+            Py_DECREF(to);
         }
         if (!PyString_Check(to_id)) {
             fprintf(stderr, "To id is not a string\n");
+            Py_DECREF(to_id);
             return NULL;
         }
         op->operation->SetTo(PyString_AsString(to_id));
+        Py_DECREF(to_id);
     }
     if (PyMapping_HasKeyString(kwds, "from_")) {
-        from = PyMapping_GetItemString(kwds, "from_");
+        PyObject * from = PyMapping_GetItemString(kwds, "from_");
         PyObject * from_id;
         if (PyString_Check(from)) {
             from_id = from;
         } else if ((from_id = PyObject_GetAttrString(from, "id")) == NULL) {
             fprintf(stderr, "From was not really an entity, as it had no id\n");
+            Py_DECREF(from);
             return NULL;
+        } else {
+            Py_DECREF(from);
         }
         if (!PyString_Check(from_id)) {
             fprintf(stderr, "From id is not a string\n");
+            Py_DECREF(from_id);
             return NULL;
         }
         op->operation->SetFrom(PyString_AsString(from_id));
+        Py_DECREF(from_id);
         // FIXME I think I need to actually do something with said value now
     }
     Object::ListType args_list;
@@ -707,15 +723,18 @@ static PyObject * set_kw(PyObject * meth_self, PyObject * args)
       Py_DECREF(namestr);
     }
 list_contains_it:
+    Py_DECREF(attr);
     if (!PyDict_Check(kw)) {
         PyErr_SetString(PyExc_TypeError, "SET_KW: kw not a dict");
         return NULL;
     }
     PyObject * value = NULL;
+    bool decvalue = false;
     if ((value = PyDict_GetItemString(kw, name)) == NULL) {
         PyObject * copy = PyDict_GetItemString(kw, "copy");
         if ((copy != NULL) && (PyObject_HasAttrString(copy, name))) {
             value = PyObject_GetAttrString(copy, name);
+            decvalue = true;
         } else {
             value = def;
         }
@@ -725,6 +744,8 @@ list_contains_it:
         value = Py_None;
     }
     PyObject_SetAttrString(self, name, value);
+
+    if (decvalue) { Py_DECREF(value); }
     
     Py_INCREF(Py_None);
     return Py_None;
