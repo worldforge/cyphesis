@@ -23,7 +23,7 @@ class ClientTimeOutException : public std::runtime_error {
 };
 
 CommClient::CommClient(CommServer & svr, int fd, int port) :
-            commServer(svr),
+            CommSocket(svr),
             clientIos(fd),
             codec(NULL), encoder(NULL),
             connection(*new Connection(*this)),

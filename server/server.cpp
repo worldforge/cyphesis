@@ -63,11 +63,6 @@ int main(int argc, char ** argv)
             log(INFO, "Running in restricted mode");
         }
     }
-    // Read the metaserver usage flag from config file.
-    bool use_metaserver = true;
-    if (global_conf->findItem("cyphesis", "usemetaserver")) {
-        use_metaserver = global_conf->getItem("cyphesis","usemetaserver");
-    }
 
     if (global_conf->findItem("cyphesis", "inittime")) {
         timeoffset = global_conf->getItem("cyphesis","inittime");
@@ -96,7 +91,7 @@ int main(int argc, char ** argv)
     // account. The primary ruleset name is passed in so it
     // can be stored and queried by clients.
     CommServer s(rulesets.front(), serverName);
-    s.useMetaserver = use_metaserver;
+
     if (!s.setup(port_num)) {
         log(ERROR, "Could not create listen socket. Init failed.");
         return EXIT_SOCKET_ERROR;
@@ -140,9 +135,7 @@ int main(int argc, char ** argv)
     // by the game has been done before exit flag was set.
     log(NOTICE, "Performing clean shutdown...");
 
-    if (use_metaserver) {
-        s.metaserverTerminate();
-    }
+    s.shutdown();
 
     } // close scope of CommServer, which cause the destruction of the
       // server and world objects, and the entire world contents

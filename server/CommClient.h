@@ -5,6 +5,8 @@
 #ifndef SERVER_COMM_CLIENT_H
 #define SERVER_COMM_CLIENT_H
 
+#include "CommSocket.h"
+
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>
@@ -15,10 +17,7 @@
 class CommServer;
 class Connection;
 
-class CommClient : Atlas::Objects::Decoder {
-  public:
-    CommServer & commServer;
-
+class CommClient : public Atlas::Objects::Decoder, public CommSocket {
   private:
     basic_socket_stream clientIos;
     Atlas::Codec<std::iostream> * codec;
@@ -45,12 +44,11 @@ class CommClient : Atlas::Objects::Decoder {
     CommClient(CommServer & svr, int fd, int port);
     virtual ~CommClient();
 
-    int peek() { return clientIos.peek(); }
-    int eof() { return clientIos.eof(); }
-    int getFd() { return clientIos.getSocket(); }
-    bool isOpen() { return clientIos.is_open(); }
+    int getFd() const { return clientIos.getSocket(); }
+    bool eof() { return clientIos.peek() == EOF; }
+    bool isOpen() const { return clientIos.is_open(); }
     bool timeout() { return clientIos.timeout(); }
-    bool online() { return (encoder != NULL); }
+    bool online() const { return (encoder != NULL); }
     void close() { clientIos.close(); }
 
     bool read();

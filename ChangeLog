@@ -1,3 +1,14 @@
+2002-11-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* Increment to devel version 0.3, and start breaking things.
+
+	* server/CommClient.cpp, server/CommClient.h, server/CommServer.cpp,
+	  server/CommServer.h, server/server.cpp, server/CommListener.cpp,
+	  server/CommListener.h, server/CommMetaClient.cpp,
+	  server/CommMetaClient.h, server/CommSocket.cpp, server/CommSocket.h:
+	  Refactor network code so metaserver and listen socket are no longer
+	  special cases, opening up the way for a database connection handler.
+
 2002-11-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* Enable static libs in the rpm spec.

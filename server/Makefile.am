@@ -11,8 +11,11 @@ cyphesis_SOURCES = \
 		EntityFactory.cpp EntityFactory.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
-		CommServer.cpp CommServer.h \
+		CommSocket.cpp CommSocket.h \
+		CommListener.cpp CommListener.h \
 		CommClient.cpp CommClient.h \
+		CommMetaClient.cpp CommMetaClient.h \
+		CommServer.cpp CommServer.h \
 		protocol_instructions.h \
 		server.cpp server.h
 

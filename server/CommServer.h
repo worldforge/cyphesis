@@ -8,31 +8,33 @@
 #include <set>
 #include <string>
 
-extern "C" {
-    #include <netinet/in.h>
-}
+// extern "C" {
+    // #include <netinet/in.h>
+// }
 
-class CommClient;
+class CommSocket;
+class CommMetaClient;
 class ServerRouting;
 
-typedef std::set<CommClient *> client_set_t;
+typedef std::set<CommSocket *> comm_set_t;
 
 class CommServer {
   private:
-    int serverFd;
-    int serverPort;
-    client_set_t clients;
+    // int serverFd;
+    // int serverPort;
+    comm_set_t sockets;
     time_t metaserverTime;
-    struct sockaddr_in meta_sa;
-    int metaFd;
+    CommMetaClient & metaClient;
+    bool useMetaserver;
+    // struct sockaddr_in meta_sa;
+    // int metaFd;
 
-    bool accept();
+    // bool accept();
     void idle();
 
     static const int metaserverPort = 8453;
 
   public:
-    bool useMetaserver;
     const std::string identity;
     ServerRouting & server;
 
@@ -40,15 +42,21 @@ class CommServer {
     ~CommServer();
 
     bool setup(int port);
+    void shutdown();
+
     void loop();
-    void removeClient(CommClient * client, char * msg);
-    void removeClient(CommClient * client);
-    void metaserverKeepalive();
-    void metaserverReply();
-    void metaserverTerminate();
+    void removeSocket(CommSocket * client, char * msg);
+    void removeSocket(CommSocket * client);
+    // void metaserverKeepalive();
+    // void metaserverReply();
+    // void metaserverTerminate();
 
     int numClients() {
-        return clients.size();
+        return sockets.size();
+    }
+
+    void add(CommSocket * cs) {
+	sockets.insert(cs);
     }
 };
 

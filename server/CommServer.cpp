@@ -2,8 +2,11 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include "CommClient.h"
 #include "CommServer.h"
+
+#include "CommClient.h"
+#include "CommListener.h"
+#include "CommMetaClient.h"
 #include "ServerRouting_methods.h"
 #include "protocol_instructions.h"
 
@@ -14,14 +17,9 @@
 
 #include <iostream>
 
-#include <cstdio>
-
-extern "C" {
-    #include <netdb.h>
-}
-
 static const bool debug_flag = false;
 
+#if 0
 static inline char *pack_uint32(uint32_t data, char *buffer, unsigned int *size)
 {
     uint32_t netorder;
@@ -40,23 +38,64 @@ static inline char *unpack_uint32(uint32_t *dest, char *buffer)
     *dest = ntohl(netorder);
     return buffer+sizeof(uint32_t);
 }
+#endif
 
 CommServer::CommServer(const std::string & ruleset, const std::string & ident) :
-              metaserverTime(-1), useMetaserver(true),
-              identity(ident), server(*new ServerRouting(*this, ruleset, ident))
+              metaserverTime(-1), metaClient(* new CommMetaClient(*this)),
+              useMetaserver(true), identity(ident),
+              server(*new ServerRouting(*this, ruleset, ident))
 {
 }
 
 CommServer::~CommServer()
 {
-    client_set_t::const_iterator I = clients.begin();
-    for(; I != clients.end(); I++) {
+    comm_set_t::const_iterator I = sockets.begin();
+    for(; I != sockets.end(); I++) {
         delete *I;
     }
     delete &server;
 }
 
 bool CommServer::setup(int port)
+{
+    CommListener * cl = new CommListener(*this);
+
+    if (!cl->setup(port)) {
+	return false;
+    }
+
+    add(cl);
+
+    if (global_conf->findItem("cyphesis", "usemetaserver")) {
+        useMetaserver = global_conf->getItem("cyphesis","usemetaserver");
+    }
+
+    if (!useMetaserver) {
+        return true;
+    }
+
+    std::string mserver("metaserver.worldforge.org");
+
+    if (global_conf->findItem("cyphesis", "metaserver")) {
+        mserver = global_conf->getItem("cyphesis", "metaserver");
+    }
+
+    if (metaClient.setup(mserver)) {
+	add(&metaClient);
+    } else {
+	useMetaserver = false;
+    }
+    return true;
+}
+
+void CommServer::shutdown()
+{
+    if (useMetaserver) {
+	metaClient.metaserverTerminate();
+    }
+}
+
+#if 0
 {
     // Nasty low level socket code to set up listen socket. This should be
     // replaced with a socket class library.
@@ -136,10 +175,11 @@ bool CommServer::accept()
     newcli->setup();
 
     // Add this new client to the list.
-    clients.insert(newcli);
+    sockets.insert(newcli);
 
     return true;
 }
+#endif
 
 inline void CommServer::idle()
 {
@@ -149,7 +189,7 @@ inline void CommServer::idle()
     if ((ctime > (metaserverTime + 5 * 60)) && useMetaserver) {
         debug(std::cout << "Sending keepalive" << std::endl << std::flush;);
         metaserverTime = ctime;
-        metaserverKeepalive();
+        metaClient.metaserverKeepalive();
     }
     // server.idle() is inlined, and simply calls the world idle method,
     // which is not directly accessible from here.
@@ -171,6 +211,7 @@ void CommServer::loop()
 
     FD_ZERO(&sock_fds);
 
+#if 0
     FD_SET(serverFd, &sock_fds);
     if (useMetaserver) {
         FD_SET(metaFd, &sock_fds);
@@ -178,9 +219,10 @@ void CommServer::loop()
     } else {
         highest = serverFd;
     }
+#endif
 
-    client_set_t::const_iterator I;
-    for(I = clients.begin(); I != clients.end(); I++) {
+    comm_set_t::const_iterator I;
+    for(I = sockets.begin(); I != sockets.end(); I++) {
        if (!(*I)->isOpen()) { continue; }
        int client_fd = (*I)->getFd();
        FD_SET(client_fd, &sock_fds);
@@ -195,15 +237,15 @@ void CommServer::loop()
         return;
     }
     
-    std::set<CommClient *> obsoleteConnections;
-    for(I = clients.begin(); I != clients.end(); I++) {
-       CommClient * client = *I;
+    std::set<CommSocket *> obsoleteConnections;
+    for(I = sockets.begin(); I != sockets.end(); I++) {
+       CommSocket * client = *I;
        if (!client->isOpen()) {
            obsoleteConnections.insert(client);
            continue;
        }
        if (FD_ISSET(client->getFd(), &sock_fds)) {
-           if (client->peek() != EOF) {
+           if (!client->eof()) {
                if (client->read()) {
                    debug(std::cout << "Removing client due to failed negotiation or timeout" << std::endl << std::flush;);
                    obsoleteConnections.insert(client);
@@ -216,6 +258,7 @@ void CommServer::loop()
            }
        }
     }
+#if 0
     if (FD_ISSET(serverFd, &sock_fds)) {
         debug(std::cout << "selected on server" << std::endl << std::flush;);
         accept();
@@ -224,37 +267,40 @@ void CommServer::loop()
         debug(std::cout << "selected on metaserver" << std::endl << std::flush;);
         metaserverReply();
     }
-    std::set<CommClient *>::const_iterator J = obsoleteConnections.begin();
+#endif
+    std::set<CommSocket *>::const_iterator J = obsoleteConnections.begin();
     for(; J != obsoleteConnections.end(); ++J) {
-        removeClient(*J);
+        removeSocket(*J);
     }
     // Once we have done all socket related stuff, proceed with processing
     // the world.
     idle();
 }
 
-inline void CommServer::removeClient(CommClient * client, char * error_msg)
+inline void CommServer::removeSocket(CommSocket * client, char * error_msg)
 {
-    Atlas::Message::Object::MapType err;
-    err["message"] = error_msg;
-    Atlas::Message::Object::ListType eargs(1,err);
+    // FIXME This code needs to be moved into CommClient
+    // Atlas::Message::Object::MapType err;
+    // err["message"] = error_msg;
+    // Atlas::Message::Object::ListType eargs(1,err);
 
-    Error e(Error::Instantiate());
+    // Error e(Error::Instantiate());
 
-    e.SetArgs(eargs);
+    // e.SetArgs(eargs);
 
-    if (client->online() && client->isOpen()) {
-        client->send(e);
-    }
-    clients.erase(client);
+    // if (client->online() && client->isOpen()) {
+        // client->send(e);
+    // }
+    sockets.erase(client);
     delete client;
 }
 
-void CommServer::removeClient(CommClient * client)
+void CommServer::removeSocket(CommSocket * client)
 {
-    removeClient(client,"You caused exception. Connection closed");
+    removeSocket(client,"You caused exception. Connection closed");
 }
 
+#if 0
 #define MAXLINE 4096
 
 void CommServer::metaserverKeepalive()
@@ -303,3 +349,4 @@ void CommServer::metaserverTerminate()
     pack_uint32(TERMINATE, mesg, &packet_size);
     sendto(metaFd,mesg,packet_size, 0, (sockaddr *)&meta_sa, sizeof(meta_sa));
 }
+#endif

@@ -5,7 +5,7 @@ AM_CONFIG_HEADER(config.h)
 
 dnl Initialise automake
 
-VERSION=0.2
+VERSION=0.3.0
 
 AM_INIT_AUTOMAKE(cyphesis, $VERSION)
 
