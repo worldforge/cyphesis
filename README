@@ -2,9 +2,11 @@ Table of Contents
 -----------------
 
     1 - Introduction
-    2 - Installation
-    3 - Usage and configuration
-    4 - Copyright notes
+    2 - Building and Installation
+    3 - Standard Setup
+    4 - Running a standard server
+    5 - Usage and configuration
+    6 - Copyright notes
 
 1 - Introduction
 ----------------
@@ -16,7 +18,7 @@ new techniques and technologies for the WorldForge project. Code from cyphesis
 will also be used to control NPCs in future servers such as STAGE using AI
 techniques.
 
-2 - Installation
+2 - Building
 ----------------
 
 cyphesis is built using autoconf. Please see the file INSTALL for details.  It
@@ -27,15 +29,66 @@ are building PostgreSQL from source, please check the PostgreSQL documentation
 for information on how to enable building the C++ libraries. GNU readline is
 required by some of the included tools.
 
-3 - Usage and configuration
+If built from source the software and data must be installed using "make install"
+before it can be run.
+
+3 - Standard Setup
+------------------
+
+If the software has been installed from source, binary package or rpm then it
+requires some post-installation configuration before it will run correctly. If
+you plan to run a server using the SYSV init service provided by the
+cyphesis-service rpm then the rpm installation and service startup will ensure
+that this configuration is handled for you.
+
+Setup of cyphesis is most easily handled using the cyphesis-setup script
+included.
+
+The most important thing to setup is the database access. A postgresql server
+must be running on the system where you plan to run cyphesis, and the user who
+will run cyphesis must have access to the database. If you do not have root
+access on the system you will need to contact the system administrator to
+request a database account. If you have root access then cyphesis-setup can
+sort out access for you. You must ensure that the database server is running.
+
+Run cyphesis-setup to have it setup everything that is needed to run cyphesis.
+If you need it to sort out database access then run it as root and provide the
+name of the user that will run cyphesis. If you already have database access,
+run the script as the user that will run cyphesis. If the command indicates that
+any errors occurred by printing ERROR then there may be something wrong with
+your cyphesis installation. See the "Usage and configuration" section for
+details of the manual setup process
+
+4 - Running a standard server
+-----------------------------
+
+Each time the server is run it needs to be populated with game data before it
+does anything useful. If you are running the server using the SYSV init service
+then this is handled for you by the cyclient service.
+
+Start the server with the cyphesis command. It will output some startup
+messages and then run in the foreground. In another terminal you should then run
+the cyclient command, which will populate the server, outputting messages as it
+does this. Once it has completed cyclient will exit, and the server will be
+ready. The server will automatically register its presence with the metaserver
+so you will not need to advertise it.
+
+If you want to run the server in the background, start the server with the
+argument " --cyphesis:daemon=true ".
+
+If you everything has worked so far, and you are not planning to do any server
+or world development at this time then you do not need to read any of the rest
+of these instructions.
+
+5 - Usage and configuration
 ---------------------------
 
 The main server binary is called cyphesis. Its command line arguments and
-configuration are managed by varconf, which means options are set in
+configuration are managed by varconf, which means options can be set in
 configuration files and on the command line. The main configuration file is
 called cyphesis.vconf, and server settings are stored in the [cyphesis]
 section. The file can be found in the cyphesis source directory, and is
-installed into the sysconf directory, which is by default called etc.  Settings
+installed into the sysconf directory, which is by default /etc.  Settings
 in this configuration file can be overridden in on the command line, and once
 overridden they will be stored permanently in .cyphesis.vconf in the users home
 directory. In order to drop back to the default settings, remove this file.
@@ -164,7 +217,7 @@ found in rulesets/mason/define_world.py. In order to populate the world, simply
 run cyclient once the server is running. You will need to do this each time
 cyphesis is started.
 
-4 - Copyright notes
+6 - Copyright notes
 -------------------
 
 The server code in C++ is distributed under the GNU General Public License.
@@ -191,7 +244,7 @@ permit redistribution under the terms of the GNU General Public License version
 2 or at the licensee's option, a later version, so it is possible that a
 version of those programs may be released that is under the terms of a license
 which requires the source code changes to be published for a modified version
-being used to run an online service. As the current author and owner of the
+being used to run an on-line service. As the current author and owner of the
 source code to this program, I have never intended that this restriction be
 placed on the software, and do not support its enforcement. I have therefor
 chosen to restrict redistribution of this program to the license provided with
