@@ -12,6 +12,7 @@
 
 #include "rulesets/Character.h"
 
+#include "common/const.h"
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/BaseWorld.h"
@@ -67,7 +68,9 @@ void Account::characterDestroyed(std::string id)
         delete I->second;
         m_destroyedConnections.erase(I);
     }
-    Persistance::instance()->delCharacter(id);
+    if (consts::enable_persistence) {
+        Persistance::instance()->delCharacter(id);
+    }
 }
 
 void Account::addCharacter(Entity * chr)
@@ -107,7 +110,9 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<std::string>(slot(*this, &Account::characterDestroyed), chr->getId())));
         m_destroyedConnections[chr->getId()] = con;
         m_connection->addObject(chr);
-        Persistance::instance()->addCharacter(*this, *chr);
+        if (consts::enable_persistence) {
+            Persistance::instance()->addCharacter(*this, *chr);
+        }
     }
 
     // Hack in default objects
