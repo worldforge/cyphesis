@@ -228,7 +228,7 @@ OpVector Character::TickOperation(const Tick & op)
             }
         }
         Location ret_loc;
-        Move * moveOp = m_movement.genMoveOperation(&ret_loc);
+        Move * moveOp = m_movement.genMoveUpdate(&ret_loc);
         if (moveOp) {
             if (!m_movement.moving()) {
                 return OpVector (1,moveOp);
@@ -525,7 +525,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         }
     }
     Location ret_location;
-    Move * moveOp = m_movement.genMoveOperation(&ret_location);
+    Move * moveOp = m_movement.genMoveUpdate(&ret_location);
     const Location & current_location = (NULL!=moveOp) ? ret_location : m_location;
     m_movement.reset();
     if ((vel_mag == 0) || !direction.isValid()) {
@@ -550,6 +550,10 @@ OpVector Character::mindMoveOperation(const Move & op)
         }
         return OpVector();
     }
+    if (NULL != moveOp) {
+        delete moveOp;
+    }
+
     Tick * tickOp = new Tick(Tick::Instantiate());
     Element::MapType ent;
     ent["serialno"] = m_movement.m_serialno;
@@ -567,19 +571,12 @@ OpVector Character::mindMoveOperation(const Move & op)
     m_movement.m_velocity *= vel_mag;
     m_movement.m_orientation = location_orientation;
     debug( std::cout << "Velocity " << vel_mag << std::endl << std::flush;);
-    Move * moveOp2 = m_movement.genMoveOperation(NULL,current_location);
+    moveOp = m_movement.genMoveOperation(NULL, current_location);
     tickOp->setFutureSeconds(m_movement.getTickAddition(m_location.m_pos));
     debug( std::cout << "Next tick " << tickOp->getFutureSeconds()
                      << std::endl << std::flush;);
-    debug( std::cout << "moveOp = " << moveOp << ", moveOp2 = "
-                     << moveOp2 << std::endl << std::flush; );
-    if (NULL != moveOp2) {
-        if (NULL != moveOp) {
-            delete moveOp;
-        }
-        moveOp=moveOp2;
-    }
     if (moveOp == NULL) {
+        // FIXME migrate this to being an assert
         log(ERROR, "No move operation generated in mindMoveOp");
         return OpVector();
     }

@@ -1,5 +1,20 @@
 2003-10-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Movement.h, rulesets/Pedestrian.h: Update movement
+	  interface to reflect the different jobs done by genMoveOperation().
+
+	* rulesets/Movement.cpp: Fix badly named argument.
+
+	* rulesets/Pedestrian.cpp: Shift code around a little to ensure
+	  it is clear that genMoveUpdate() only produces an op if one
+	  is necessary, but genMoveOperation() should always return
+	  one.
+
+	* rulesets/Character.cpp: Get rid of confusing logic now
+	  That we know genMoveOperation() never returns NULL.
+
+2003-10-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Re-work mind movement processing code,
 	  eliminating some nasty corner cases, and making the whole
 	  lot more readable.

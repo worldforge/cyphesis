@@ -28,11 +28,12 @@ Movement::~Movement()
 {
 }
 
-bool Movement::updateNeeded(const Location & m_location) const
+bool Movement::updateNeeded(const Location & location) const
 {
     return((m_velocity != Vector3D(0,0,0)) ||
-           (m_location.m_velocity != Vector3D(0,0,0)));
+           (location.m_velocity != Vector3D(0,0,0)));
 }
+
 
 void Movement::checkCollisions(const Location & loc)
 {

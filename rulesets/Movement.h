@@ -44,9 +44,9 @@ class Movement {
 
     virtual double getTickAddition(const Vector3D & coordinates) const = 0;
     virtual Atlas::Objects::Operation::Move * genFaceOperation() = 0;
+    virtual Atlas::Objects::Operation::Move * genMoveUpdate(Location *) = 0;
     virtual Atlas::Objects::Operation::Move * genMoveOperation(Location *,
                                                         const Location &) = 0;
-    virtual Atlas::Objects::Operation::Move * genMoveOperation(Location *) = 0;
 };
 
 #endif // RULESETS_MOVEMENT_H

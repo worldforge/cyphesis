@@ -19,9 +19,9 @@ class Pedestrian : public Movement {
 
     double getTickAddition(const Vector3D & coordinates) const;
     Atlas::Objects::Operation::Move * genFaceOperation();
+    Atlas::Objects::Operation::Move * genMoveUpdate(Location *);
     Atlas::Objects::Operation::Move * genMoveOperation(Location *,
                                                  const Location &);
-    Atlas::Objects::Operation::Move * genMoveOperation(Location *);
 };
 
 #endif // RULESETS_PEDESTRIAN_H

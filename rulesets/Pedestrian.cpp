@@ -69,8 +69,16 @@ Move * Pedestrian::genFaceOperation()
     return NULL;
 }
 
-Move * Pedestrian::genMoveOperation(Location * rloc)
+Move * Pedestrian::genMoveUpdate(Location * rloc)
 {
+    if (!updateNeeded(m_body.m_location)) {
+        debug( std::cout << "No update needed" << std::endl << std::flush; );
+        return NULL;
+    }
+
+    debug(std::cout << "genMoveUpdate: Update needed..." << std::endl
+                    << std::flush;);
+
     return genMoveOperation(rloc, m_body.m_location);
 }
 
@@ -79,13 +87,6 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     debug(std::cout << "genMoveOperation: Pedestrian(" << m_serialno << ","
                << m_collPos << "," << m_targetPos << "," << m_velocity << ","
                << m_lastMovementTime << ")" << std::endl << std::flush;);
-    if (!updateNeeded(loc)) {
-        debug( std::cout << "No update needed" << std::endl << std::flush; );
-        return NULL;
-    }
-
-    debug(std::cout << "genMoveOperation: Update needed..." << std::endl
-                    << std::flush;);
 
     // Sort out time difference, and set updated time
     const double & current_time = m_body.m_world->getTime();
@@ -133,7 +134,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
         Element::ListType args(1,entmap);
         moveOp->setArgs(args);
         if (NULL != rloc) {
-        *rloc = new_loc;
+            *rloc = new_loc;
         }
         return moveOp;
     }

@@ -1,3 +1,8 @@
+direction is probably not being set correctly on destination ops because
+it is calculated before the updated position is checked.
+First call to genMoveOperation tells us where we currently are,
+and we need to get it from this.
+
 genMoveOperation will always return NULL if updateNeeded() returns
 false, and never otherwise, so we can avoid a bunch of checking
 in the Character.cpp code by only calling genMoveOperation if
