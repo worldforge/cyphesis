@@ -1,4 +1,7 @@
 Makefile
 Makefile.in
 .deps
+.libs
 admin.xml
+*.lo
+*.la

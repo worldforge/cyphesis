@@ -3,6 +3,7 @@
 Makefile
 Makefile.in
 cycmd
+cyctrl
 cydbload
 cyisoload
 cypasswd
