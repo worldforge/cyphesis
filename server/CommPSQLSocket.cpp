@@ -7,6 +7,8 @@
 #include "common/Database.h"
 #include "common/log.h"
 
+#include <cassert>
+
 CommPSQLSocket::CommPSQLSocket(CommServer & svr, Database & db) :
                                CommIdleSocket(svr), m_db(db)
 {

@@ -8,8 +8,8 @@ int main(int argc, char ** argv)
 {
     char * home;
     if ((home = getenv("HOME")) == NULL) {
-	std::cerr << "ERROR: Unable to get home directory." << std::endl << std::flush;
-	return 1;
+        std::cerr << "ERROR: Unable to get home directory." << std::endl << std::flush;
+        return 1;
     }
     std::string homeDirConfig = std::string(home) + "/.cyphesis.vconf";
     varconf::Config * global_conf = varconf::Config::inst();

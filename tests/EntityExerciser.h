@@ -9,6 +9,8 @@
 #include "common/inheritance.h"
 #include "common/types.h"
 
+#include <cassert>
+
 template <class EntityType>
 class EntityExerciser {
   protected:
