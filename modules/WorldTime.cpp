@@ -74,7 +74,7 @@ void WorldTime::initTimeInfo() {
 
 std::string WorldTime::operator[](const std::string & name)
 {
-#warning TODO return the correct season
+    // FIXME Return correct season
     if( name=="season" ) {
         //return month2season[month];
     }

@@ -1,3 +1,10 @@
+2004-03-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* modules/WorldTime.cpp: Remove an old #warning.
+
+	* server/Admin.cpp: Comment out a currently unused
+	  variable.
+
 2004-02-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/client.cpp, common/globals.cpp: Remove some dodgey

@@ -169,7 +169,8 @@ OpVector Admin::SetOperation(const Set & op)
     if (I == emap.end() || !I->second.isString()) {
         return error(op, "Set arg has no id.");
     }
-    const std::string & id = I->second.asString();
+    // FIXME Use this id to install a type from the client
+    // const std::string & id = I->second.asString();
 
     if (objtype == "object") {
         // Manipulate attributes of existing objects.
