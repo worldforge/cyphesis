@@ -6,6 +6,7 @@
 #include <common/globals.h>
 
 #include <string>
+#include <iostream>
 
 #include "config.h"
 
