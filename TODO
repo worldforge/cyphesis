@@ -1,3 +1,7 @@
+Sort out deer animations.
+
+Add grasing.
+
 By adding a skill class to be referenced by character, and defining Teach 
 (transfer skill) Sling (stop wielding tool, and place somewhere convenient)
 we can have almost a complete system. Implicitly, the click action when a tool

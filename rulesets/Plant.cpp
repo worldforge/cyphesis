@@ -138,7 +138,7 @@ OpVector Plant::TickOperation(const Tick & op)
         pmap["fruits"] = m_fruits;
         if (m_status < 1.) {
             // FIXME Very very fast recovery
-            double newStatus = m_status + 0.1;
+            double newStatus = m_status + 0.0001;
             pmap["status"] = (newStatus > 1.f) ? 1.f : newStatus;
         }
         set->setTo(getId());

@@ -1,5 +1,10 @@
 2004-07-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Plant.cpp: Slow down the rate of recovery for damaged
+	  plants.
+
+2004-07-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Plant.cpp: Implement recovering damage/health in all
 	  plants.
 
