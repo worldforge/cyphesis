@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef RULESETS_THING_FACTORY_H
-#define RULESETS_THING_FACTORY_H
+#ifndef SERVER_THING_FACTORY_H
+#define SERVER_THING_FACTORY_H
 
 #include <Atlas/Message/Object.h>
 
@@ -60,4 +60,4 @@ class PersistantThingFactory : public FactoryBase {
     FactoryBase * duplicateFactory();
 };
 
-#endif // RULESETS_THING_FACTORY_H
+#endif // SERVER_THING_FACTORY_H

@@ -8,6 +8,7 @@
 #include "ServerRouting.h"
 #include "EntityFactory.h"
 #include "Persistance.h"
+#include "Restoration.h"
 
 #include <rulesets/Python_API.h>
 #include <rulesets/MindFactory.h>
@@ -110,6 +111,9 @@ int main(int argc, char ** argv)
     // attempting to construct the internal state from the database,
     // not creating a new world using the contents of the database as a
     // template
+
+    Restoration restore(server);
+    restore.read();
 
     CommListener * listener = new CommListener(commServer);
     if (!listener->setup(port_num)) {

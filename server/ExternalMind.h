@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef RULESETS_EXTERNAL_MIND_H
-#define RULESETS_EXTERNAL_MIND_H
+#ifndef SERVER_EXTERNAL_MIND_H
+#define SERVER_EXTERNAL_MIND_H
 
 #include <rulesets/BaseMind.h>
 
@@ -19,4 +19,4 @@ class ExternalMind : public BaseMind {
     virtual OpVector message(const RootOperation & op);
 };
 
-#endif // RULESETS_EXTERNAL_MIND_H
+#endif // SERVER_EXTERNAL_MIND_H

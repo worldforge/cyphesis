@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef RULESETS_ENTITY_FACTORY_H
-#define RULESETS_ENTITY_FACTORY_H
+#ifndef SERVER_ENTITY_FACTORY_H
+#define SERVER_ENTITY_FACTORY_H
 
 #include <common/types.h>
 
@@ -50,4 +50,4 @@ class EntityFactory {
     FactoryBase * getFactory(const std::string &);
 };
 
-#endif // ENTITY_FACTORY_H
+#endif // SERVER_ENTITY_FACTORY_H

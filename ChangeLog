@@ -1,5 +1,13 @@
 2002-12-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.h, server/ExternalMind.h,
+	  server/PersistantThingFactory.h: Fix header guard names.
+
+	* server/server.cpp, server/Restoration.h, server/Restoration.cpp:
+	  Add beginning of class to handle restoring world state from database.
+
+2002-12-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommClient.cpp, server/CommServer.cpp, server/CommServer.h,
 	  server/ServerRouting.cpp, server/ServerRouting.h,
 	  server/server.cpp: Change the way main server object are created
