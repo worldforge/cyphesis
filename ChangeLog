@@ -1,3 +1,8 @@
+2003-07-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/type_utils.h, server/Account.cpp: Use wfmath
+	  Atlas conversion functions correctly.
+
 2003-07-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: Clean up initialisation of python modules to

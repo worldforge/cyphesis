@@ -7,6 +7,8 @@
 
 #include "types.h"
 
+#include <wfmath/atlasconv.h>
+
 inline void idListAsObject(const IdList & l,
                            Atlas::Message::Object::ListType & ol)
 {

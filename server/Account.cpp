@@ -16,6 +16,8 @@
 #include "common/debug.h"
 #include "common/BaseWorld.h"
 
+#include <wfmath/atlasconv.h>
+
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Create.h>
