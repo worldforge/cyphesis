@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2001 Alistair Riddoch
+// Copyright (C) 2001-2003 Alistair Riddoch
 
 #include "Database.h"
 
@@ -15,6 +15,8 @@
 #include <varconf/Config.h>
 
 #include <iostream>
+
+#include <cassert>
 
 using Atlas::Message::Element;
 
