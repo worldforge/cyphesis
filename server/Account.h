@@ -7,6 +7,8 @@
 
 #include "common/OOGThing.h"
 
+#include <sigc++/connection.h>
+
 class Connection;
 
 class Account : public OOGThing {

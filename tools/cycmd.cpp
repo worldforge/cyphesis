@@ -39,11 +39,8 @@
 #include <skstream/skstream_unix.h>
 
 #include <sigc++/object_slot.h>
-#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
-#include <sigc++/signal_system.h>
-#else
 #include <sigc++/signal.h>
-#endif
+#include <sigc++/connection.h>
 
 #ifndef READLINE_CXX_SANE   // defined in config.h
 extern "C" {

@@ -1,3 +1,9 @@
+2004-08-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp, server/Account.h, server/Connection.h,
+	  tools/cycmd.cpp: Tweak SigC++ includes to be compatible with
+	  SigC++ 2.0.
+
 2004-08-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/Py_CreatorClient.cpp, common/BaseEntity.cpp,

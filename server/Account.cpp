@@ -78,7 +78,7 @@ void Account::addCharacter(Entity * chr)
         return;
     }
     m_charactersDict[chr->getId()] = chr;
-    SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<std::string>(slot(*this, &Account::characterDestroyed), chr->getId())));
+    SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<std::string>(SigC::slot(*this, &Account::characterDestroyed), chr->getId())));
     m_destroyedConnections[chr->getId()] = con;
 }
 
@@ -101,7 +101,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.
         m_charactersDict[chr->getId()] = chr;
-        SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<std::string>(slot(*this, &Account::characterDestroyed), chr->getId())));
+        SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<std::string>(SigC::slot(*this, &Account::characterDestroyed), chr->getId())));
         m_destroyedConnections[chr->getId()] = con;
         m_connection->addObject(chr);
         if (consts::enable_persistence) {
