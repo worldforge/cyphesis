@@ -501,11 +501,18 @@ oplist Character::mindMoveOperation(const Move & op)
         tickOp->SetFutureSeconds(movement.getTickAddition(location.coords));
         debug( std::cout << "Next tick " << tickOp->GetFutureSeconds()
                          << std::endl << std::flush;);
+        debug( std::cout << "moveOp = " << moveOp << ", moveOp2 = "
+                         << moveOp2 << std::endl << std::flush; );
         if (NULL != moveOp2) {
             if (NULL != moveOp) {
                 delete moveOp;
             }
             moveOp=moveOp2;
+        }
+        if (moveOp == NULL) {
+            std::cerr << "ERROR: No move operation generated in mindMoveOp"
+                      << std::endl << std::flush;
+            return oplist();
         }
         // return moveOp and tickOp;
         oplist res(2);

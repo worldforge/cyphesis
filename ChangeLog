@@ -1,5 +1,19 @@
 2002-03-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Routing.h: Map dictionary function more robust.
+
+	* rulesets/Pedestrian.cpp: Increased debugging output.
+
+	* rulesets/Character.cpp: Ensure it is handled if no move
+	  op is created.
+
+	* physics/Vector3D.h: Ensure operator!= is implemented as
+	  compiler cannot be relied upon to use operator== instead.
+
+	* common/inheritance.h, common/Database.cpp: ISO C++ fixes.
+
+2002-03-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Line.h, rulesets/Line.cpp, rulesets/Area.h,
 	  rulesets/Area.cpp, server/EntityFactory.cpp: Added stub
 	  base classes for new geometric entities.

@@ -26,11 +26,21 @@ class Routing : public OOGThing {
     }
 
     BaseEntity * getObject(const std::string & fid) const {
-        return Routing::objects[fid];
+        dict_t::const_iterator I = objects.find(fid);
+        if (I == objects.end()) {
+            return NULL;
+        } else {
+            return I->second;
+        }
     }
 
     BaseEntity * findObject(const std::string & fid) const {
-        return Routing::objects[fid];
+        dict_t::const_iterator I = objects.find(fid);
+        if (I == objects.end()) {
+            return NULL;
+        } else {
+            return I->second;
+        }
     }
 };
 

@@ -66,6 +66,11 @@ class Vector3D {
         return ((x==other.x) && (y==other.y) && (z==other.z));
     }
 
+    bool operator!=(const Vector3D & other) const {
+        //"Check if two vector are equal";
+        return ((x!=other.x) || (y!=other.y) || (z!=other.z));
+    }
+
     const Vector3D operator+(const Vector3D & other) const {
         // Add two vectors
         return Vector3D(x+other.x, y+other.y, z+other.z);
@@ -140,6 +145,10 @@ class Vector3D {
 
     operator bool() const {
         return _set;
+    }
+
+    bool isZero() const {
+        return (_set && (x == 0) && (y == 0) && (z == 0));
     }
 
     double & operator[](int index) {

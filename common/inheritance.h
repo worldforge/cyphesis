@@ -7,6 +7,8 @@
 
 #include "operations.h"
 
+#include <iostream>
+
 void installStandardObjects();
 void installCustomOperations();
 void installCustomEntities();

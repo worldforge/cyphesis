@@ -70,6 +70,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                << m_collPos << "," << m_targetPos << "," << m_velocity << ","
                << m_lastMovementTime << ")" << std::endl << std::flush;);
     if (!updateNeeded(loc)) {
+        debug( std::cout << "No update needed" << std::endl << std::flush; );
         return NULL;
     }
 

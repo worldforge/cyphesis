@@ -235,8 +235,8 @@ bool Database::decodeObject(const std::string & data,
     codec.Poll();
 
     if (!m_d.check()) {
-        cerr << "WARNING: Database entry does not appear to be decodable"
-             << endl << flush;
+        std::cerr << "WARNING: Database entry does not appear to be decodable"
+                  << std::endl << std::flush;
         return false;
     }
     
@@ -253,7 +253,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
 
     if (!status) {
         debug(std::cout << "Error accessing " << key << " in " << table
-                        << " table" << endl << flush;);
+                        << " table" << std::endl << std::flush;);
         return false;
     }
     int results = m_connection->Tuples();
@@ -263,7 +263,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
         return false;
     }
     const char * data = m_connection->GetValue(0, 1);
-    debug(cout << "Got record " << key << " from database, value " << data
+    debug(std::cout << "Got record " << key << " from database, value " << data
                << std::endl << std::flush;);
     
     return decodeObject(data, o);
@@ -282,8 +282,8 @@ bool Database::putObject(const std::string & table,
     enc.StreamMessage(o);
     codec.StreamEnd();
 
-    debug(cout << "Encoded to: " << str.str().c_str() << " "
-               << str.str().size() << endl << flush;);
+    debug(std::cout << "Encoded to: " << str.str().c_str() << " "
+               << str.str().size() << std::endl << std::flush;);
     std::string query = std::string("INSERT INTO ") + table + " VALUES ('" + key + "', '" + str.str() + "');";
     int status = m_connection->ExecCommandOk(query.c_str());
     if (!status) {
@@ -343,7 +343,7 @@ bool Database::getTable(const std::string & table, Object::MapType &o)
 
     if (!status) {
         debug(std::cout << "Error accessing " << table
-                        << " table" << endl << flush;);
+                        << " table" << std::endl << std::flush;);
         reportError();
         return false;
     }
@@ -357,8 +357,8 @@ bool Database::getTable(const std::string & table, Object::MapType &o)
     for(int i = 0; i < results; i++) {
         const char * key = m_connection->GetValue(i, 0);
         const char * data = m_connection->GetValue(i, 1);
-        debug(cout << "Got record " << key << " from database, value " << data
-                   << std::endl << std::flush;);
+        debug(std::cout << "Got record " << key << " from database, value "
+                   << data << std::endl << std::flush;);
     
         if (decodeObject(data, t)) {
             o[key] = t;
@@ -374,7 +374,7 @@ bool Database::clearTable(const std::string & table)
     int status = m_connection->ExecCommandOk(query.c_str());
     if (!status) {
         debug(std::cout << "Error clearing " << table
-                        << " table" << endl << flush;);
+                        << " table" << std::endl << std::flush;);
         reportError();
         return false;
     }
