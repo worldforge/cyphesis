@@ -1,3 +1,13 @@
+2005-03-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Property.cpp, rulesets/EntityProperties.cpp,
+	  server/Persistor.cpp, server/Restorer.cpp, tools/cycmd.cpp:
+	  Tweak template code to work with stricter standard compliance
+	  of gcc 4.
+
+	* rulesets/Character.h, rulesets/Character.cpp: static const
+	  members need to be defined in the .cpp to satisfy all compilers.
+
 2005-02-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.cpp, common/BaseEntity.h, common/op_switch.h,

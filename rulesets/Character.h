@@ -37,12 +37,12 @@ class Character : public Character_parent {
     double m_food;
     double m_maxMass;
 
-    static const double energyConsumption = 0.001;
-    static const double foodConsumption = 0.1;
-    static const double weightConsumption = 1.0;
-    static const double energyGain = 0.5;
-    static const double energyLoss = 0.1;
-    static const double weightGain = 0.5;
+    static const double energyConsumption;
+    static const double foodConsumption;
+    static const double weightConsumption;
+    static const double energyGain;
+    static const double energyLoss;
+    static const double weightGain;
 
     void metabolise(OpVector &, double ammount = 1); 
 

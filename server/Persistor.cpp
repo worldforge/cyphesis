@@ -21,20 +21,9 @@
 #include "common/Database.h"
 #include "common/terrain_utils.h"
 
-template class Persistor<Entity>;
-template class Persistor<Thing>;
-template class Persistor<Line>;
-template class Persistor<Area>;
-template class Persistor<Character>;
-template class Persistor<Creator>;
-template class Persistor<Food>;
-template class Persistor<Plant>;
-template class Persistor<Stackable>;
-template class Persistor<Structure>;
-template class Persistor<World>;
-
 using Atlas::Message::MapType;
 
+template<>
 Persistor<Entity>::Persistor(bool temp) : m_class("entity")
 {
     if (temp) { return; }
@@ -69,7 +58,8 @@ Persistor<Entity>::Persistor(bool temp) : m_class("entity")
     }
 }
 
-Persistor<Thing>::Persistor<Thing>(bool temp) : m_class("thing")
+template<>
+Persistor<Thing>::Persistor(bool temp) : m_class("thing")
 {
     if (temp) { return; }
     MapType desc;
@@ -79,7 +69,8 @@ Persistor<Thing>::Persistor<Thing>(bool temp) : m_class("thing")
     }
 }
 
-Persistor<Line>::Persistor<Line>(bool temp) : m_class("line")
+template<>
+Persistor<Line>::Persistor(bool temp) : m_class("line")
 {
     if (temp) { return; }
     MapType desc;
@@ -89,7 +80,8 @@ Persistor<Line>::Persistor<Line>(bool temp) : m_class("line")
     }
 }
 
-Persistor<Area>::Persistor<Area>(bool temp) : m_class("area")
+template<>
+Persistor<Area>::Persistor(bool temp) : m_class("area")
 {
     if (temp) { return; }
     MapType desc;
@@ -99,7 +91,8 @@ Persistor<Area>::Persistor<Area>(bool temp) : m_class("area")
     }
 }
 
-Persistor<Character>::Persistor<Character>(bool temp) : m_class("character")
+template<>
+Persistor<Character>::Persistor(bool temp) : m_class("character")
 {
     if (temp) { return; }
     MapType desc;
@@ -112,13 +105,15 @@ Persistor<Character>::Persistor<Character>(bool temp) : m_class("character")
     }
 }
 
-Persistor<Creator>::Persistor<Creator>(bool temp) : m_class("creator")
+template<>
+Persistor<Creator>::Persistor(bool temp) : m_class("creator")
 {
     if (temp) { return; }
     // Creator entities are not persisted
 }
 
-Persistor<Plant>::Persistor<Plant>(bool temp) : m_class("plant")
+template<>
+Persistor<Plant>::Persistor(bool temp) : m_class("plant")
 {
     if (temp) { return; }
     MapType desc;
@@ -132,7 +127,8 @@ Persistor<Plant>::Persistor<Plant>(bool temp) : m_class("plant")
     }
 }
 
-Persistor<Food>::Persistor<Food>(bool temp) : m_class("food")
+template<>
+Persistor<Food>::Persistor(bool temp) : m_class("food")
 {
     if (temp) { return; }
     MapType desc;
@@ -142,7 +138,8 @@ Persistor<Food>::Persistor<Food>(bool temp) : m_class("food")
     }
 }
 
-Persistor<Stackable>::Persistor<Stackable>(bool temp) : m_class("stackable")
+template<>
+Persistor<Stackable>::Persistor(bool temp) : m_class("stackable")
 {
     if (temp) { return; }
     MapType desc;
@@ -153,7 +150,8 @@ Persistor<Stackable>::Persistor<Stackable>(bool temp) : m_class("stackable")
     }
 }
 
-Persistor<Structure>::Persistor<Structure>(bool temp) : m_class("structure")
+template<>
+Persistor<Structure>::Persistor(bool temp) : m_class("structure")
 {
     if (temp) { return; }
     MapType desc;
@@ -163,7 +161,8 @@ Persistor<Structure>::Persistor<Structure>(bool temp) : m_class("structure")
     }
 }
 
-Persistor<World>::Persistor<World>(bool temp) : m_class("world")
+template<>
+Persistor<World>::Persistor(bool temp) : m_class("world")
 {
     if (temp) { return; }
     MapType desc;
@@ -179,6 +178,7 @@ Persistor<World>::Persistor<World>(bool temp) : m_class("world")
     }
 }
 
+template<>
 void Persistor<Character>::update(Character * t)
 {
     std::string columns;
@@ -188,12 +188,14 @@ void Persistor<Character>::update(Character * t)
     t->clearUpdateFlags();
 }
 
+template<>
 void Persistor<Creator>::update(Creator * t)
 {
     // Creator entities are not persisted
     // Is this really needed? Probably not, as its never called.
 }
 
+template<>
 void Persistor<Line>::update(Line * t)
 {
     std::string columns;
@@ -203,6 +205,7 @@ void Persistor<Line>::update(Line * t)
     t->clearUpdateFlags();
 }
 
+template<>
 void Persistor<Area>::update(Area * t)
 {
     std::string columns;
@@ -212,6 +215,7 @@ void Persistor<Area>::update(Area * t)
     t->clearUpdateFlags();
 }
 
+template<>
 void Persistor<Plant>::update(Plant * t)
 {
     std::string columns;
@@ -221,6 +225,7 @@ void Persistor<Plant>::update(Plant * t)
     t->clearUpdateFlags();
 }
 
+template<>
 void Persistor<World>::update(World * t)
 {
     if (t->getUpdateFlags() & ~a_terrain) {
@@ -238,6 +243,7 @@ void Persistor<World>::update(World * t)
     t->clearUpdateFlags();
 }
 
+template<>
 void Persistor<Character>::hookup(Character & t)
 {
     t.updated.connect(SigC::bind<Character *>(SigC::slot(*this,
@@ -248,6 +254,7 @@ void Persistor<Character>::hookup(Character & t)
                                                 &t));
 }
 
+template<>
 void Persistor<Character>::persist(Character & t)
 {
     hookup(t);
@@ -258,6 +265,7 @@ void Persistor<Character>::persist(Character & t)
     Database::instance()->createEntityRow(m_class, t.getId(), columns, values);
 }
 
+template<>
 void Persistor<Plant>::persist(Plant & p)
 {
     hookup(p);
@@ -268,11 +276,13 @@ void Persistor<Plant>::persist(Plant & p)
     Database::instance()->createEntityRow(m_class, p.getId(), columns, values);
 }
 
+template<>
 void Persistor<Creator>::persist(Creator & t)
 {
     // Creator entities are not persisted
 }
 
+template<>
 void Persistor<World>::hookup(World & t)
 {
     t.updated.connect(SigC::bind<World *>(SigC::slot(*this,
@@ -281,6 +291,7 @@ void Persistor<World>::hookup(World & t)
     // it to a remove function.
 }
 
+template<>
 void Persistor<World>::cEntity(Entity & t, std::string & c, std::string & v)
 {
     const char * cs = ", ";
@@ -335,6 +346,7 @@ void Persistor<World>::cEntity(Entity & t, std::string & c, std::string & v)
     v += q.str();
 }
 
+template<>
 void Persistor<World>::persist(World & t)
 {
     hookup(t);
@@ -345,3 +357,15 @@ void Persistor<World>::persist(World & t)
 
     storeTerrain(t.getId(), t.terrain());
 }
+
+template class Persistor<Entity>;
+template class Persistor<Thing>;
+template class Persistor<Line>;
+template class Persistor<Area>;
+template class Persistor<Character>;
+template class Persistor<Creator>;
+template class Persistor<Food>;
+template class Persistor<Plant>;
+template class Persistor<Stackable>;
+template class Persistor<Structure>;
+template class Persistor<World>;

@@ -48,6 +48,14 @@ using Atlas::Objects::Operation::Appearance;
 
 static const bool debug_flag = false;
 
+const double Character::energyConsumption = 0.001;
+const double Character::foodConsumption = 0.1;
+const double Character::weightConsumption = 1.0;
+const double Character::energyGain = 0.5;
+const double Character::energyLoss = 0.1;
+const double Character::weightGain = 0.5;
+
+
 void Character::metabolise(OpVector & res, double ammount)
 {
     // Currently handles energy

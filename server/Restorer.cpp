@@ -16,18 +16,6 @@
 
 #include "common/terrain_utils.h"
 
-template class Restorer<Entity>;
-template class Restorer<Thing>;
-template class Restorer<Character>;
-template class Restorer<Creator>;
-template class Restorer<Plant>;
-template class Restorer<Food>;
-template class Restorer<Area>;
-template class Restorer<Line>;
-template class Restorer<Stackable>;
-template class Restorer<Structure>;
-template class Restorer<World>;
-
 template <> Persistor<Entity> Restorer<Entity>::m_persist(true);
 template <> Persistor<Thing> Restorer<Thing>::m_persist(true);
 template <> Persistor<Character> Restorer<Character>::m_persist(true);
@@ -40,6 +28,7 @@ template <> Persistor<Stackable> Restorer<Stackable>::m_persist(true);
 template <> Persistor<Structure> Restorer<Structure>::m_persist(true);
 template <> Persistor<World> Restorer<World>::m_persist(true);
 
+template<>
 void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
 {
     dr.readColumn("drunkness", m_drunkness);
@@ -47,12 +36,14 @@ void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
     dr.readColumn("food", m_food);
 }
 
+template<>
 void Restorer<Character>::populate(DatabaseResult::const_iterator & dr)
 {
     rEntity(dr);
     rCharacter(dr);
 }
 
+template<>
 void Restorer<Plant>::rPlant(DatabaseResult::const_iterator & dr)
 {
     dr.readColumn("fruits", m_fruits);
@@ -61,12 +52,14 @@ void Restorer<Plant>::rPlant(DatabaseResult::const_iterator & dr)
     dr.readColumn("fruitName", m_fruitName);
 }
 
+template<>
 void Restorer<Plant>::populate(DatabaseResult::const_iterator & dr)
 {
     rEntity(dr);
     rPlant(dr);
 }
 
+template<>
 void Restorer<World>::populate(DatabaseResult::const_iterator & dr)
 {
     rEntity(dr);
@@ -74,3 +67,15 @@ void Restorer<World>::populate(DatabaseResult::const_iterator & dr)
     // Restore the terrain
     loadTerrain(getId(), m_terrain);
 }
+
+template class Restorer<Entity>;
+template class Restorer<Thing>;
+template class Restorer<Character>;
+template class Restorer<Creator>;
+template class Restorer<Plant>;
+template class Restorer<Food>;
+template class Restorer<Area>;
+template class Restorer<Line>;
+template class Restorer<Stackable>;
+template class Restorer<Structure>;
+template class Restorer<World>;

@@ -4,14 +4,6 @@
 
 #include "Property_impl.h"
 
-template class Property<int>;
-template class Property<long>;
-template class Property<float>;
-template class Property<double>;
-template class Property<std::string>;
-
-template class ImmutableProperty<std::string>;
-
 /// \brief Constructor called from classes which inherit from Property
 /// @param flags default value for the Property flags
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
@@ -27,6 +19,7 @@ void PropertyBase::add(const std::string & s, Atlas::Message::MapType & ent)
     get(ent[s]);
 }
 
+template<>
 void Property<int>::set(const Atlas::Message::Element & e)
 {
     if (e.isInt()) {
@@ -34,6 +27,7 @@ void Property<int>::set(const Atlas::Message::Element & e)
     }
 }
 
+template<>
 void Property<long>::set(const Atlas::Message::Element & e)
 {
     if (e.isInt()) {
@@ -41,6 +35,7 @@ void Property<long>::set(const Atlas::Message::Element & e)
     }
 }
 
+template<>
 void Property<float>::set(const Atlas::Message::Element & e)
 {
     if (e.isNum()) {
@@ -48,6 +43,7 @@ void Property<float>::set(const Atlas::Message::Element & e)
     }
 }
 
+template<>
 void Property<double>::set(const Atlas::Message::Element & e)
 {
     if (e.isNum()) {
@@ -55,6 +51,7 @@ void Property<double>::set(const Atlas::Message::Element & e)
     }
 }
 
+template<>
 void Property<std::string>::set(const Atlas::Message::Element & e)
 {
     if (e.isString()) {
@@ -62,6 +59,7 @@ void Property<std::string>::set(const Atlas::Message::Element & e)
     }
 }
 
+template<>
 void Property<std::string>::add(const std::string & s,
                                 Atlas::Message::MapType & ent)
 {
@@ -69,3 +67,11 @@ void Property<std::string>::add(const std::string & s,
         ent[s] = m_data;
     }
 }
+
+template class Property<int>;
+template class Property<long>;
+template class Property<float>;
+template class Property<double>;
+template class Property<std::string>;
+
+template class ImmutableProperty<std::string>;

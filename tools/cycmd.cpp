@@ -511,6 +511,7 @@ void Interactive<Stream>::getLogin()
     std::cin >> password;
 }
 
+template<>
 int Interactive<tcp_socket_stream>::connect(const std::string & host)
 {
     std::cout << "Connecting... " << std::flush;
@@ -525,6 +526,7 @@ int Interactive<tcp_socket_stream>::connect(const std::string & host)
     return negotiate();
 }
 
+template<>
 int Interactive<unix_socket_stream>::connect(const std::string & filename)
 {
     std::cout << "Connecting... " << std::flush;
