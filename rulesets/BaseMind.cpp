@@ -77,7 +77,6 @@ oplist BaseMind::sightOperation(const Sight & op, Chop & sub_op)
 
 oplist BaseMind::sightOperation(const Sight & op, Create & sub_op)
 {
-    cout << "sighCreate " << fullid << endl << flush;
     oplist res;
     if (script->Operation("sight_create", op, res, &sub_op) != 0) {
         return res;

@@ -1,3 +1,11 @@
+2001-05-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Added sending of appearance and
+	  disappearance operations to mind and client.
+
+	* rulesets/BaseMind.cpp, rulesets/MemMap.cpp: Removed redundant debug
+	  output.
+
 2001-05-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/BaseMind.h/cpp: Added isAwake flag to indicate whether the

@@ -20,6 +20,8 @@
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Move.h>
 #include <Atlas/Objects/Operation/Error.h>
+#include <Atlas/Objects/Operation/Appearance.h>
+#include <Atlas/Objects/Operation/Disappearance.h>
 
 #include <common/Setup.h>
 #include <common/Tick.h>
@@ -715,12 +717,20 @@ oplist Character::w2mOperation(const Save & op)
 
 oplist Character::w2mOperation(const Appearance & op)
 {
-    return oplist();
+    if (drunkness > 1.0) {
+        return oplist();
+    }
+    Appearance * a = new Appearance(op);
+    return oplist(1,a);
 }
 
 oplist Character::w2mOperation(const Disappearance & op)
 {
-    return oplist();
+    if (drunkness > 1.0) {
+        return oplist();
+    }
+    Disappearance * d = new Disappearance(op);
+    return oplist(1,d);
 }
 
 oplist Character::w2mOperation(const RootOperation & op)
