@@ -1,8 +1,5 @@
 bin_PROGRAMS = cyphesis
 
-INCLUDES = -I..
-LIBS = -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lpython1.5 -ldl -lm -lpthread -lvarconf # -lefence
-
 cyphesis_SOURCES = \
 		OOG_Thing.cpp OOG_Thing.h \
 		Account.cpp Account.h \
@@ -18,4 +15,16 @@ cyphesis_SOURCES = \
 
 cyphesis_LDADD = ../physics/libphysics.a ../rulesets/librulesets.a ../modules/libmodules.a ../common/libcommon.a # LeakTracer.o
 
-cyphesis_LDFLAGS = -Xlinker -export-dynamic
+if BUILD_STATIC
+
+LIBS = -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -lpython1.5 -ldl -lm -lpthread -lvarconf -lsigc # -lefence
+
+cyphesis_LDFLAGS = -all-static -Wl,-export-dynamic
+
+else
+
+LIBS = -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lAtlasNet -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlas -lpython1.5 -ldl -lm -lpthread -lvarconf -lsigc # -lefence
+
+cyphesis_LDFLAGS = -export-dynamic
+
+endif

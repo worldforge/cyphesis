@@ -184,11 +184,16 @@ oplist WorldRouter::operation(const RootOperation * op)
     debug_server && cout << 0 << flush;
     if ((to.size() != 0) && (to!="all")) {
         if (fobjects.find(to) == fobjects.end()) {
-            debug_server && cout << "FATAL: Op has invalid to" << endl << flush;
+            cerr << "CRITICAL: Op to=\"" << to << "\"" << " does not exist"
+                 << endl << flush;
             return res;
-            //return(*(RootOperation **)NULL);
         }
         BaseEntity * toEntity = fobjects[to];
+        if (toEntity == NULL) {
+            cerr << "CRITICAL: Op to=\"" << to << "\"" << " is NULL"
+                 << endl << flush;
+            return res;
+        }
         if ((to != fullid) || (op_type == OP_LOOK)) {
             if (to == fullid) {
                 res = ((BaseEntity *)this)->Operation((Look &)op_ref);

@@ -3,6 +3,23 @@ dnl Initialise autoconf
 AC_INIT()
 AM_CONFIG_HEADER(config.h)
 
+dnl Check for static build
+
+AC_ARG_ENABLE(static-binary,[  --enable-static-binary      enable building of static binary [default=yes]],
+[
+    if test "$enableval" = "yes"; then
+                 ac_build_static_binary="yes"
+    else
+                 ac_build_static_binary="no"
+    fi
+], [ac_build_static_binary="no"])
+
+if test "$ac_build_static_binary" = "yes"; then
+      AC_ENABLE_STATIC
+fi
+
+AM_CONDITIONAL(BUILD_STATIC, test x$ac_build_static_binary = xyes)
+
 dnl Initialise automake
 
 AM_INIT_AUTOMAKE(cyphesis, 0.0.11)
@@ -36,8 +53,6 @@ AC_ARG_ENABLE(debug,[  --enable-debug           creates debugging code [default=
                 ac_use_debug_code="yes"
    fi
 ], [ac_use_debug_code="no"])
-
-
 
 AC_CACHE_CHECK(for location of Atlas, cyphesis_cv_libatlas,
 [
@@ -100,10 +115,14 @@ AC_CACHE_VAL(cyphesis_cv_atlas_libraries,
 [
 	AC_CHECK_LIB(Atlas, main,
     [
+        LIBS="$LIBS -lAtlasObjects"
+        LIBS="$LIBS -lAtlasObjectsOperation"
+        LIBS="$LIBS -lAtlasObjectsEntity"
         LIBS="$LIBS -lAtlas"
+        LIBS="$LIBS -lAtlasNet"
         LIBS="$LIBS -lAtlasCodecs"
         LIBS="$LIBS -lAtlasMessage"
-        LIBS="$LIBS -lAtlasNet"
+        LIBS="$LIBS -lAtlas"
     ],
 	[
 		AC_MSG_ERROR(Couldn't find working Atlas libraries.);
@@ -118,10 +137,6 @@ AC_CACHE_VAL(cyphesis_cv_python_headers,
 	])
 ])
 
-AC_CHECK_LIB(dl,dlopen)
-AC_CHECK_LIB(pthread,pthread_create)
-AC_CHECK_LIB(varconf,main)
-
 AC_CACHE_VAL(cyphesis_cv_python_libraries,
 [
 	AC_CHECK_LIB(python1.5, Py_Initialize, LIBS="$LIBS -lpython1.5",
@@ -129,6 +144,11 @@ AC_CACHE_VAL(cyphesis_cv_python_libraries,
 		AC_MSG_ERROR(Couln't find working Python libraries.);
 	])
 ])
+
+AC_CHECK_LIB(dl,dlopen)
+AC_CHECK_LIB(pthread,pthread_create)
+AC_CHECK_LIB(sigc,main)
+AC_CHECK_LIB(varconf,main)
 
 dnl Generate files
 AC_OUTPUT([
