@@ -36,6 +36,7 @@ class EntityExerciser {
             OpNo opNo = i.opEnumerate(*I);
             assert(opNo != OP_INVALID);
             subscribeOp(*I);
+            opNo = OP_INVALID; // Supresses warning about unused variable.
         }
     }
 

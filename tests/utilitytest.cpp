@@ -23,5 +23,7 @@ int main()
 
     assert(r != 0);
 
+    delete r; // Supresses warning about unused variable, and eliminates leak.
+
     return 0;
 }
