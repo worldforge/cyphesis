@@ -1,3 +1,8 @@
+2004-06-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Handle empty strings in config file
+	  so they are less likely to cause problems.
+
 2004-06-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommUnixListener.cpp, server/CommUnixListener.h:

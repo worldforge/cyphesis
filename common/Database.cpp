@@ -65,7 +65,12 @@ bool Database::initConnection(bool createDatabase)
 {
     std::stringstream conninfos;
     if (global_conf->findItem("cyphesis", "dbserver")) {
-        conninfos << "host=" << std::string(global_conf->getItem("cyphesis", "dbserver")) << " ";
+        std::string db_server(global_conf->getItem("cyphesis", "dbserver"));
+        if (db_server.empty()) {
+            log(WARNING, "Empty database hostname specified in config file. Using none.");
+        } else {
+            conninfos << "host=" << " ";
+        }
     }
 
     std::string dbname = "cyphesis";
@@ -75,7 +80,12 @@ bool Database::initConnection(bool createDatabase)
     conninfos << "dbname=" << dbname << " ";
 
     if (global_conf->findItem("cyphesis", "dbuser")) {
-        conninfos << "user=" << std::string(global_conf->getItem("cyphesis", "dbuser")) << " ";
+        std::string db_user(global_conf->getItem("cyphesis", "dbuser"));
+        if (db_user.empty()) {
+            log(WARNING, "Empty username specified in config file. Using current user.");
+        } else {
+            conninfos << "user=" << db_user << " ";
+        }
     }
 
     if (global_conf->findItem("cyphesis", "dbpasswd")) {
