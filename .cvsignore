@@ -16,6 +16,7 @@ cyphesis-config
 cyphesis-*.tar.gz
 cyphesis.spec
 depcomp
+doc
 gmon.out
 install-sh
 libtool
