@@ -1,3 +1,9 @@
+2000-11-15  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Fixed silly typo in movement code which meant that velocity was
+	  not being used to calculate direction when only velocity is
+	  specified.
+
 2000-11-14  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Added more Python/C API code. Basic framework now exists for

@@ -422,11 +422,11 @@ oplist Character::Mind_Operation(const Move & op)
         }
         if (!location_coords) {
             if (!location_vel) {
-                debug_movement && cout << "\tUsing velocity for direction" << endl << flush;
-                direction=location_vel;
-            } else {
                 debug_movement && cout << "\tUsing face for direction" << endl << flush;
                 direction=location_face;
+            } else {
+                debug_movement && cout << "\tUsing velocity for direction" << endl << flush;
+                direction=location_vel;
             }
         } else {
             debug_movement && cout << "\tUsing destination coords for direction" << endl << flush;
