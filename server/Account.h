@@ -41,8 +41,6 @@ class Account : public OOGThing {
     virtual OpVector TalkOperation(const Talk & op);
     virtual OpVector LookOperation(const Look & op);
 
-    void checkCharacters();
-
     const EntityDict & getCharacters() {
         return charactersDict;
     }

@@ -62,6 +62,12 @@ while test $# -gt 0; do
       fi
       echo $libdirs @CYPHESIS_LIBS@ @SYSTEM_LIBS@
       ;;
+    --config-dir)
+      echo @CONF_DIR@
+      ;;
+    --data-dir)
+      echo @DATA_DIR@
+      ;;
     *)
       echo "${usage}" 1>&2
       exit 1

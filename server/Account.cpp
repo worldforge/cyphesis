@@ -246,29 +246,3 @@ OpVector Account::LookOperation(const Look & op)
     }
     return error(op, "Unknown look target");
 }
-
-void Account::checkCharacters()
-{
-    // FIXME This function is obsolete. Don't use it.
-    if (world == NULL) {
-        std::string msg = std::string("WARNING: Account ") + getId()
-                        + " beging asked to check characters"
-                        + "but it is not currently connected to a world";
-        log(WARNING, msg.c_str());
-        return;
-    }
-    std::set<std::string> obsoleteChars;
-    const EntityDict & worldEntities = world->getObjects();
-    EntityDict::const_iterator I = charactersDict.begin();
-    for(; I != charactersDict.end(); I++) {
-        const std::string & charId = I->first;
-        if (worldEntities.find(charId) == worldEntities.end()) {
-            obsoleteChars.insert(charId);
-            log(ERROR, "Found dead character in account");
-        }
-    }
-    std::set<std::string>::const_iterator J = obsoleteChars.begin();
-    for(; J != obsoleteChars.end(); J++) {
-        charactersDict.erase(*J);
-    }
-}

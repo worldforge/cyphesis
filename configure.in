@@ -47,8 +47,11 @@ CYPHESIS_VERSION=$VERSION
 
 
 dnl FIXME This will break if $datadir != $prefix/share
-RULESET_DIR="$prefix/share/cyphesis"
-AC_SUBST(RULESET_DIR)
+DATA_DIR="$prefix/share"
+CONF_DIR="$prefix/etc"
+
+AC_SUBST(DATA_DIR)
+AC_SUBST(CONF_DIR)
 
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
@@ -252,5 +255,4 @@ AC_OUTPUT([
     server/Makefile
     client/Makefile
     tools/Makefile
-    rulesets/basic/hooks/ruleset_import_hooks.py
 ], [chmod +x cyphesis-config])

@@ -1,4 +1,6 @@
-bin_PROGRAMS = cycmd cypasswd cydbload cyloadrules cywatchdog cyctrl
+bin_PROGRAMS = cycmd cypasswd cydbload cyloadrules cywatchdog cyctrl cyconfig
+
+bin_SCRIPTS = cyphesis-setup
 
 INCLUDES = -DBINDIR=\"@bindir@\" -DVARDIR=\"@localstatedir@\"
 
@@ -21,5 +23,7 @@ cyloadrules_LDADD = ../common/Database.o ../common/globals.o ../common/log.o
 cywatchdog_SOURCES = cywatchdog.cpp
 
 cyctrl_SOURCES = cyctrl.cpp
+
+cyconfig_SOURCES = cyconfig.cpp
 
 EXTRA_DIST = sstream.cc

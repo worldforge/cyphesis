@@ -3,6 +3,7 @@
 Makefile
 Makefile.in
 cycmd
+cyconfig
 cyctrl
 cydbload
 cyisoload

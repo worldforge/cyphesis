@@ -260,14 +260,13 @@ OpVector Admin::SetOperation(const Set & op)
                 return error(op, "Unknown command");
             }
         } else if (objtype == "class") {
-#warning Install a new type from the client
-            const std::string & parent = emap.find("parents")->second.AsList().front().AsString();
-            std::string script;
-            Fragment::MapType::const_iterator I = emap.find("script");
-            if ((I != emap.end()) && I->second.IsString()) {
-                script = I->second.AsString();
-            }
-            // global_conf->setItem(parent, id, varconf::Variable(script));
+            // Install a new type from the client
+            // const std::string & parent = emap.find("parents")->second.AsList().front().AsString();
+            // std::string script;
+            // Fragment::MapType::const_iterator I = emap.find("script");
+            // if ((I != emap.end()) && I->second.IsString()) {
+                // script = I->second.AsString();
+            // }
         }
     }
     catch (...) {

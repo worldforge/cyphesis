@@ -1,0 +1,174 @@
+cat << EOWELCOME
+Welcome to cyphesis.
+
+This script will go through the steps required to configure
+your system so that you can run cyphesis. An important part of this
+process is setting up access to the PostgreSQL RDBMS, so this script
+must be run as root. It is strongly recommended that you run cyphesis
+using a normal user account, and you will need to set up access for this
+account to the database.
+
+This script will remove any existing server rules and maps, but will
+preserve any user accounts in the server.
+
+EOWELCOME
+
+if test `whoami` != "root"; then
+    echo ERROR: $0: This script must be run as root.
+    exit 1
+fi
+
+CYPHESIS_BINDIR=`dirname $0`
+
+if test "x$CYPHESIS_BINDIR" != "x"; then
+    PATH=$CYPHESIS_BINDIR:$PATH
+fi
+
+CUSTOM_OPTIONS=no
+
+if test "x$1" = "x--custom"; then
+    CUSTOM_OPTIONS=yes
+fi
+
+echo Please give the name of the user you want to configure to run cyphesis.
+echo It is not recommended that the server be run as root.
+
+read -e -p 'cyphesis user> ' CYPHESIS_USER
+
+if sudo -u $CYPHESIS_USER true ; then
+    echo Verified user $CYPHESIS_USER okay
+else
+    echo ERROR: $0: User $CYPHESIS_USER does not exist
+    exit 1
+fi
+
+echo
+
+CREATE_USER_CMD=`which createuser 2>/dev/null`
+CREATE_DATABASE_CMD=`which createdb 2>/dev/null`
+POSTGRESQL_SUSER=postgres
+POSTGRESQL_QUERY_CMD=`which psql 2>/dev/null`
+POSTGRESQL_TEMPLATE=template1
+
+if test $CUSTOM_OPTIONS = "yes" ; then
+    read -e -p "PostgreSQL user create command [$CREATE_USER_CMD] >" CMD
+    if test "x$CMD" != "x" ; then
+        CREATE_USER_CMD=CMD
+    fi
+
+    read -e -p "PostgreSQL database create command [$CREATE_DATABASE_CMD] >" CMD
+    if test "x$CMD" != "x" ; then
+        CREATE_DATABASE_CMD=CMD
+    fi
+
+    read -e -p "PostgreSQL superuser [$POSTGRESQL_SUSER] >" SUSER
+    if test "x$SUSER" != "x" ; then
+        POSTGRESQL_SUSER=SUSER
+    fi
+
+    read -e -p "PostgreSQL query commmand [$POSTGRESQL_QUERY_CMD] >" CMD
+    if test "x$CMD" != "x" ; then
+        POSTGRESQL_QUERY_CMD=CMD
+    fi
+
+    read -e -p "PostgreSQL template database [$POSTGRESQL_TEMPLATE] >" TEMP
+    if test "x$TEMP" != "x" ; then
+        POSTGRESQL_TEMPLATE=TEMP
+    fi
+fi
+
+if sudo -u $CYPHESIS_USER $POSTGRESQL_QUERY_CMD -c "" template1 ; then
+    echo PostgreSQL user $CYPHESIS_USER already exists
+else
+    echo Creating PostgreSQL account for user $CYPHESIS_USER
+    sudo -u $POSTGRESQL_SUSER $CREATE_USER_CMD -A -d $CYPHESIS_USER || \
+        (echo ERROR: $0: Unable to create database account $CYPHESIS_USER ; \
+         exit 1)
+    echo PostgreSQL user $CYPHESIS_USER created
+fi
+
+if sudo -u $CYPHESIS_USER $POSTGRESQL_QUERY_CMD -c "" cyphesis ; then
+    echo PostgreSQL database cyphesis already exists
+else
+    echo Creating PostgreSQL database cyphesis as user $CYPHESIS_USER
+    sudo -u $CYPHESIS_USER $CREATE_DATABASE_CMD cyphesis
+    echo PostgreSQL database cyphesis created as $CYPHESIS_USER
+fi
+
+echo
+
+echo Clearing rules and world data...
+sudo -u $CYPHESIS_USER $POSTGRESQL_QUERY_CMD -c "DROP TABLE rules;" cyphesis > /dev/null 2>&1
+sudo -u $CYPHESIS_USER $POSTGRESQL_QUERY_CMD -c "DROP TABLE world;" cyphesis > /dev/null 2>&1
+echo Cleared.
+
+CYPHESIS_DIR=""
+
+if cyphesis-config --version > /dev/null ; then
+    true
+else
+    read -e -p "Please give directory where cyphesis has been installed> " CYPHESIS_DIR
+    CYPHESIS_BINDIR=$CYPHESIS_DIR/bin
+    PATH=$CYPHESIS_BINDIR:$PATH
+    if cyphesis-config --version > /dev/null ; then
+        true
+    else
+        echo "ERROR: $0: Unable to find location of cyphesis programs."
+        exit 1
+    fi
+fi
+
+CYPHESIS_COMPILED_CONF_DIR=`cyphesis-config --config-dir`
+CYPHESIS_COMPILED_DATA_DIR=`cyphesis-config --data-dir`
+
+CYPHESIS_CONF_DIR=$CYPHESIS_COMPILED_CONF_DIR
+CYPHESIS_DATA_DIR=$CYPHESIS_COMPILED_DATA_DIR
+
+echo Trying $CYPHESIS_CONF_DIR
+
+if test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
+    true
+else
+    if test "x$CYPHESIS_BINDIR" !=  "x"; then
+        echo TWEAK
+        CYPHESIS_CONF_DIR=`dirname $CYPHESIS_BINDIR`/etc
+        CYPHESIS_DATA_DIR=`dirname $CYPHESIS_BINDIR`/share
+    fi
+    echo "Trying $CYPHESIS_BINDIR -> $CYPHESIS_CONF_DIR"
+    if test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
+        true
+    else
+        echo ERROR: $0: Unable to find config files for cyphesis.
+    fi
+fi
+
+if test $CYPHESIS_COMPILED_CONF_DIR != $CYPHESIS_CONF_DIR; then
+    if sudo -H -u $CYPHESIS_USER cyconfig --cyphesis:directory=$CYPHESIS_DATA_DIR --cyphesis:confdir=$CYPHESIS_CONF_DIR; then
+        true
+    else
+        echo ERROR: $0: Failed to configure cyphesis config and data directories.
+    fi
+fi
+
+echo
+
+echo Loading game rules into database...
+if sudo -H -u $CYPHESIS_USER cyloadrules; then
+    echo Loaded.
+else
+    echo ERROR: $0: Unable to load rules into database.
+    exit 1
+fi
+
+echo
+
+echo Loading world data into database...
+if sudo -H -u $CYPHESIS_USER cydbload $CYPHESIS_CONF_DIR/cyphesis/moraf.xml; then
+    echo Loaded.
+else
+    echo ERROR: $0: Unable to load rules into database.
+    exit 1
+fi
+
+echo
+echo This system is now ready to run cyphesis.

@@ -18,6 +18,8 @@ Must fix for Mason 0.0.2
 
 General TODO
 
+  Allow types to be installed from the client.
+
   Calculating absolute entity position has now ignored orientation for
   too long. This needs to be fixed after this next release of mason,
   or we are screwed. This would probably be best achieved simultaneously

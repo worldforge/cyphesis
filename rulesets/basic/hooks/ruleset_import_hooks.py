@@ -1,4 +1,5 @@
 import ihooks
+from common import globals
 #this is needed because python v1.5.1 doesn't include enough recent ihooks
 #ihooks = module_ihooks
 
@@ -22,7 +23,7 @@ class RulesetModuleLoader(ihooks.ModuleLoader):
         self.rulesets = rulesets
         self.ruleset_paths = []
         for ruleset in rulesets:
-            self.ruleset_paths.append("/opt/worldforge/share/cyphesis/rulesets/"+ruleset)
+            self.ruleset_paths.append(globals.share_directory+"/cyphesis/rulesets/"+ruleset)
         #print self.ruleset_paths
     def ihooks_find_module_in_dir(self, name, dir, allow_packages=1):
         return ihooks.ModuleLoader.find_module_in_dir(self, name, dir,

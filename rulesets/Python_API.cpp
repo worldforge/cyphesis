@@ -932,9 +932,6 @@ void init_python_api()
 
     Py_Initialize();
 
-    PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
-    PyRun_SimpleString((char *)importCmd.c_str());
-
     if (Py_InitModule("atlas", atlas_methods) == NULL) {
         fprintf(stderr, "Failed to Create atlas module\n");
         return;
@@ -961,15 +958,21 @@ void init_python_api()
         return;
     }
     PyObject * _const = PyModule_New("const");
+    PyObject * globals = PyModule_New("globals");
     PyObject * log = PyModule_New("log");
+
     PyObject * dict = PyModule_GetDict(common);
+
     PyDict_SetItemString(dict, "const", _const);
+    PyDict_SetItemString(dict, "globals", globals);
     PyDict_SetItemString(dict, "log", log);
+
     PyObject * debug = (PyObject *)PyObject_NEW(FunctionObject, &log_debug_type);
     PyObject_SetAttrString(log, "debug", debug);
     Py_DECREF(debug);
     Py_DECREF(log);
     PyObject * o;
+
     o = PyInt_FromLong(0);
     PyObject_SetAttrString(_const, "server_python", o);
     Py_DECREF(o);
@@ -1005,6 +1008,11 @@ void init_python_api()
     Py_DECREF(o);
     Py_DECREF(_const);
 
+    o = PyString_FromString(share_directory.c_str());
+    PyObject_SetAttrString(globals, "share_directory", o);
+    Py_DECREF(o);
+    Py_DECREF(globals);
+
     PyObject * server;
     if ((server = Py_InitModule("server", server_methods)) == NULL) {
         fprintf(stderr, "Failed to Create server thing\n");
@@ -1020,6 +1028,9 @@ void init_python_api()
     Py_DECREF(remove_value);
     PyDict_SetItemString(dict, "dictlist", dictlist);
     Py_DECREF(dictlist);
+
+    PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
+    PyRun_SimpleString((char *)importCmd.c_str());
 
     // std::cout << Py_GetPath() << std::endl << std::flush;
 }
