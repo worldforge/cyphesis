@@ -1,5 +1,19 @@
 2004-12-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/slave.cpp: Update so slave server builds again.
+
+	* server/CommUnixListener.h, server/CommUnixListener.cpp:
+	  Remove address string to Unix sockets.
+
+	* server/CommSlaveListener.h, server/CommSlaveListener.cpp:
+	  Complete implementation of client listener for slave server.
+
+	* server/CommSlaveClient.h, server/CommSlaveClient.cpp,
+	  server/SlaveClientConnection.cpp, server/SlaveClientConnection.h:
+	  Handlers for client connections to a slave server.
+
+2004-12-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommUnixListener.cpp, server/CommUnixListener.h:
 	  Virtualise creating client sockets so this class can
 	  be overidden like CommListener.

@@ -5,17 +5,17 @@
 #ifndef SERVER_COMM_SLAVE_LISTENER_H
 #define SERVER_COMM_SLAVE_LISTENER_H
 
-#include "CommListener.h"
+#include "CommUnixListener.h"
 
 /// \brief Handle the unix listen socket used to accept connections from
 /// local clients to admin a slave server.
 class CommSlaveListener : public CommUnixListener {
   private:
-    virtual void create(int fd, const char * address);
+    virtual void create(int fd);
 
   public:
-    explicit CommPeerListener(CommServer & svr);
-    virtual ~CommPeerListener();
+    explicit CommSlaveListener(CommServer & svr);
+    virtual ~CommSlaveListener();
 };
 
 #endif // SERVER_COMM_SLAVE_LISTENER_H

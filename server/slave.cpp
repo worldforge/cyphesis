@@ -76,13 +76,13 @@ int main(int argc, char ** argv)
 
     std::string mserver("metaserver.worldforge.org");
     if (global_conf->findItem("cyphesis", "metaserver")) {
-        mserver = global_conf->getItem("cyphesis", "metaserver");
+        mserver = global_conf->getItem("cyphesis", "metaserver").as_string();
     }
 
 
     std::string serverName;
     if (global_conf->findItem("cyphesis", "servername")) {
-        serverName = global_conf->getItem("cyphesis","servername");
+        serverName = global_conf->getItem("cyphesis","servername").as_string();
     } else {
         serverName = get_hostname();
     }
@@ -121,12 +121,12 @@ int main(int argc, char ** argv)
         log(ERROR, "Could not create listen socket. Init failed.");
         return EXIT_SOCKET_ERROR;
     }
-    commServer.add(listener);
+    commServer.addSocket(listener);
 
     if (useMetaserver) {
         CommMetaClient * cmc = new CommMetaClient(commServer);
         if (cmc->setup(mserver)) {
-            commServer.add(cmc);
+            commServer.addSocket(cmc);
             commServer.addIdle(cmc);
         }
     }
@@ -140,7 +140,7 @@ int main(int argc, char ** argv)
     // the code easily.
     while (!exit_flag) {
         try {
-            commServer.loop();
+            commServer.poll();
         }
         catch (...) {
             // It is hoped that commonly thrown exception, particularly

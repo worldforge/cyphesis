@@ -2,9 +2,9 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2004 Alistair Riddoch
 
-#include "CommPeerListener.h"
+#include "CommSlaveListener.h"
 
-#include "CommPeer.h"
+#include "CommSlaveClient.h"
 #include "CommServer.h"
 
 static const bool debug_flag = false;
@@ -12,17 +12,17 @@ static const bool debug_flag = false;
 /// \brief Constructor for listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommPeerListener::CommPeerListener(CommServer & svr) : CommListener(svr)
+CommSlaveListener::CommSlaveListener(CommServer & svr) : CommUnixListener(svr)
 {
 }
 
-CommPeerListener::~CommPeerListener()
+CommSlaveListener::~CommSlaveListener()
 {
 }
 
-void CommPeerListener::create(int asockfd, const char * address)
+void CommSlaveListener::create(int asockfd)
 {
-    CommPeer * newpeer = new CommPeer(m_commServer, asockfd, address);
+    CommSlaveClient * newpeer = new CommSlaveClient(m_commServer, asockfd);
 
     newpeer->setup();
 

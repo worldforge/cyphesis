@@ -91,10 +91,12 @@ int CommUnixListener::accept()
     }
     debug(std::cout << "Local accepted" << std::endl << std::flush;);
 
+    create(asockfd);
+
     return 0;
 }
 
-void CommUnixListener::create(int asockfd, const char * address)
+void CommUnixListener::create(int asockfd)
 {
     CommLocalClient * newcli = new CommLocalClient(m_commServer, asockfd);
 

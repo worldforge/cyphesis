@@ -1,7 +1,7 @@
 INCLUDES = -I$(top_srcdir)
 
-bin_PROGRAMS = cyphesis
-EXTRA_PROGRAMS = cyslave
+bin_PROGRAMS = cyphesis cyslave
+# EXTRA_PROGRAMS = cyslave
 
 cyphesis_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \
@@ -20,6 +20,7 @@ cyphesis_SOURCES = \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
+		SlaveClientConnection.cpp SlaveClientConnection.h \
 		Peer.cpp Peer.h \
 		Idle.cpp Idle.h \
 		CommSocket.cpp CommSocket.h \
@@ -27,10 +28,12 @@ cyphesis_SOURCES = \
 		CommListener.cpp CommListener.h \
 		CommPeerListener.cpp CommPeerListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
+		CommSlaveListener.cpp CommSlaveListener.h \
 		CommClient.cpp CommClient.h \
 		CommLocalClient.cpp CommLocalClient.h \
 		CommRemoteClient.cpp CommRemoteClient.h \
 		CommPeer.cpp CommPeer.h \
+		CommSlaveClient.cpp CommSlaveClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
@@ -64,15 +67,22 @@ cyslave_SOURCES = \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
+		SlaveClientConnection.cpp SlaveClientConnection.h \
+		Peer.cpp Peer.h \
+		Idle.cpp Idle.h \
 		CommSocket.cpp CommSocket.h \
-		CommIdleSocket.cpp CommIdleSocket.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
 		CommListener.cpp CommListener.h \
+		CommPeerListener.cpp CommPeerListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
+		CommSlaveListener.cpp CommSlaveListener.h \
 		CommClient.cpp CommClient.h \
 		CommLocalClient.cpp CommLocalClient.h \
 		CommRemoteClient.cpp CommRemoteClient.h \
+		CommPeer.cpp CommPeer.h \
+		CommSlaveClient.cpp CommSlaveClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
+		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
 		protocol_instructions.h \
 		slave.cpp
