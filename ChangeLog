@@ -1,3 +1,16 @@
+2004-08-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/FormattedXMLWriter.h: Add some notes about converting this
+	  class for use with any Atlas codec.
+
+	* server/CommClient.h, server/CommIdleSocket.h, server/CommServer.cpp,
+	  server/CommServer.h, server/CommSocket.h, server/ServerRouting.h,
+	  server/WorldRouter.cpp:
+	  Improve the names of some typedefs and clean up some comments.
+
+	* server/WorldRouter.h: Remove declaration of obsolete unimplemented
+	  setSerialno() member function.
+
 2004-08-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp, server/WorldRouter.h: Code formatting

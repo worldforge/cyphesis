@@ -131,7 +131,7 @@ RootOperation * WorldRouter::getOperationFromQueue()
     return op;
 }
 
-//// \brief Give an operation a new serial number.
+/// \brief Give an operation a new serial number.
 ///
 /// Call newSerialNo() FIXME doxygen ref to get a new serial number,
 /// and assign it to the operation provided.
@@ -140,7 +140,7 @@ inline void WorldRouter::setSerialnoOp(RootOperation & op)
     op.setSerialno(newSerialNo());
 }
 
-//// \brief Provide an adjusted heigh for the given entity.
+/// \brief Provide an adjusted heigh for the given entity.
 ///
 /// If the position has a parent which has an associated geometry
 /// which define its childrens position, e.g terrain or a floor,
@@ -312,6 +312,10 @@ const EntitySet & WorldRouter::broadcastList(const RootOperation & op) const
     return m_objectList;
 }
 
+/// Deliver an operation to its target.
+/// Pass the operation to the target entity. The resulting operations
+/// have their ref numbers set, and are added to the queue for
+/// dispatch.
 void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
 {
     OpVector res = e->operation(op);
@@ -322,8 +326,11 @@ void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
     }
 }
 
-// Delete is special, as it causes the target to be removed, but
-// we need to handle the responses first
+/// Special version of WorldRouter::deliverTo() for delete ops.
+/// Delete is special. It causes the target to be removed, but
+/// we need to handle the responses first. To prevent a tight loop,
+/// we do not attempt to immediatly handle the response to a delete op
+/// if it is anothe delete op.
 void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
 {
     OpVector res = e->operation(op);
@@ -354,6 +361,11 @@ void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
     delete e;
 }
 
+/// Main in-game operation dispatch function.
+/// Operations are passed here when they are due for dispatch.
+/// Determine the target of the operation and deliver it directly,
+/// or broadcast if broadcast is required. This function implements
+/// sight ranges for perception operations.
 void WorldRouter::operation(const RootOperation & op)
 {
     // const RootOperation & op = *op_ptr;
@@ -429,6 +441,11 @@ void WorldRouter::operation(const RootOperation & op)
     }
 }
 
+/// Add entity provided to this list of perceptive entities.
+/// Look up the entity with the id provided, and add a pointer
+/// to the entity to the set of perceptive entities. This method is
+/// called when key events occur that indicate that the entity in
+/// question can receive broadcase perception operations.
 void WorldRouter::addPerceptive(const std::string & id)
 {
     debug(std::cout << "WorldRouter::addPerceptive" << std::endl << std::flush;);
@@ -438,6 +455,16 @@ void WorldRouter::addPerceptive(const std::string & id)
     }
 }
 
+/// Main world loop function.
+/// This function is called whenever the communications code is idle.
+/// It updates the in-game time, and dispatches operations that are
+/// now due for dispatch. The number of operations dispatched is limited
+/// to 10 to ensure that client communications are always handled in a timely
+/// manner. If the maximum number of operations are dispatched, the return 
+/// value indicates that this is the case, and the communications code
+/// will call this function again as soon as possible rather than sleeping.
+/// This ensures that the maximum possible number of operations are dispatched
+/// without becoming unresponsive to client communications traffic.
 bool WorldRouter::idle()
 {
     updateTime();
@@ -465,6 +492,12 @@ bool WorldRouter::idle()
     return (op_count >= 10);
 }
 
+/// Find an entity of the given name. This is provided to allow administrators
+/// to perform certain admin tasks. It finds and returns the first instance
+/// with the name provided in the game world.
+/// @param name string specifying name of the instance required.
+/// @return a pointer to an entity with the type required, or zero if an
+/// instance with this name was not found.
 Entity * WorldRouter::findByName(const std::string & name)
 {
     EntityDict::const_iterator I = m_eobjects.begin();
@@ -476,6 +509,12 @@ Entity * WorldRouter::findByName(const std::string & name)
     return NULL;
 }
 
+/// Find an entity of the given type. This is provided to allow administrators
+/// to perform certain admin tasks. It finds and returns the first instance
+/// of the type provided in the game world.
+/// @param type string specifying the class name of the instance required.
+/// @return a pointer to an entity of the type required, or zero if no
+/// instance was found.
 Entity * WorldRouter::findByType(const std::string & type)
 {
     EntityDict::const_iterator I = m_eobjects.begin();

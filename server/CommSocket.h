@@ -7,6 +7,7 @@
 
 class CommServer;
 
+/// \brief Base class for all classes for handling socket connections.
 class CommSocket {
   public:
     CommServer & commServer;

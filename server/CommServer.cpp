@@ -18,24 +18,35 @@
 
 static const bool debug_flag = false;
 
+/// \brief Construct a new CommServer object, storing a reference to the core
+/// server object.
 CommServer::CommServer(ServerRouting & svr) : server(svr)
 {
 }
 
 CommServer::~CommServer()
 {
-    comm_set_t::const_iterator I = m_sockets.begin();
+    CommSocketSet::const_iterator I = m_sockets.begin();
     for(; I != m_sockets.end(); I++) {
         delete *I;
     }
 }
 
-inline bool CommServer::idle()
+/// \brief Idle function called from the main loop.
+///
+/// Poll all the CommIdleSocket objects that want to be polled regularly,
+/// the call the core server object idle function.
+/// @return true if the core server wants to be called again as soon as
+/// possible.
+bool CommServer::idle()
 {
     // Update the time, and get the core server object to process
     // stuff.
+    // FIXME These idle methods are now getting called way too often
+    // if the core server is busy. Cut it back a bit. Probably can avoid
+    // calling them at all if we are busy.
     time_t ctime = time(NULL);
-    commi_set_t::const_iterator I;
+    CommIdleSocketSet::const_iterator I;
     for(I = m_idleSockets.begin(); I != m_idleSockets.end(); ++I) {
         (*I)->idle(ctime);
     }
@@ -44,6 +55,13 @@ inline bool CommServer::idle()
     return server.idle();
 }
 
+/// \brief Main program loop called repeatedly.
+///
+/// Call the server idle function to do its processing. If the server is
+/// is currently busy, poll all the sockets as quickly as possible.
+/// If the server is idle, use select() to sleep on the sockets for
+/// a short period of time. If any sockets get broken or disconnected,
+/// they are noted and closed down at the end of the process.
 void CommServer::loop()
 {
     // This is the main code loop.
@@ -62,7 +80,7 @@ void CommServer::loop()
     FD_ZERO(&sock_fds);
 
     bool pendingConnections = false;
-    comm_set_t::const_iterator I = m_sockets.begin();
+    CommSocketSet::const_iterator I = m_sockets.begin();
     for(; I != m_sockets.end(); I++) {
        if (!(*I)->isOpen()) {
            pendingConnections = true;
@@ -117,6 +135,7 @@ void CommServer::loop()
     }
 }
 
+/// Remove and delete a CommSocket from the server.
 inline void CommServer::removeSocket(CommSocket * client, char * error_msg)
 {
     // FIXME This code needs to be moved into CommClient
@@ -135,6 +154,7 @@ inline void CommServer::removeSocket(CommSocket * client, char * error_msg)
     delete client;
 }
 
+/// Remove and delete a CommSocket from the server.
 void CommServer::removeSocket(CommSocket * client)
 {
     removeSocket(client,"You caused exception. Connection closed");

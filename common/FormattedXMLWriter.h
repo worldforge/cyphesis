@@ -7,8 +7,7 @@
 #include <string>
 #include <fstream>
 
-/// Class to read old cyphesis rules on standard input, and output in new
-/// standard format.
+/// \brief Class to output Atlas data in human readable formatted XML-like.
 class FormattedXMLWriter {
   private:
     /// Output file

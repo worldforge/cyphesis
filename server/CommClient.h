@@ -25,6 +25,9 @@ namespace Atlas {
 
 class Connection;
 
+/// \brief Base class for Atlas clients connected to the server.
+///
+/// Used by subclasses to handle remote TCP clients and local UNIX clients.
 class CommClient : public Atlas::Objects::Decoder, public CommSocket {
   public:
     typedef std::deque<const Atlas::Objects::Operation::RootOperation *> DispatchQueue;

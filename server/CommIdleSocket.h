@@ -9,6 +9,10 @@
 
 #include <time.h>
 
+/// \brief Base class for any socket which needs to be polled regularly.
+///
+/// This could probably be re-implemented as a pure virtual interface which
+/// does not inherit from CommSocket.
 class CommIdleSocket : public CommSocket {
   public:
     explicit CommIdleSocket(CommServer & svr);

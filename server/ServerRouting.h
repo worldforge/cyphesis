@@ -42,23 +42,31 @@ class ServerRouting : public OOGThing {
 
     bool idle();
 
+    /// Add an OOG object to the server.
     void addObject(BaseEntity * obj) {
         m_objects[obj->getId()] = obj;
     }
 
+    /// Add an Account object to the server.
     void addAccount(Account * a) {
         m_accounts[a->m_username] = a;
         addObject(a);
     }
 
+    /// Generate a new operation serial number.
     int newSerialNo() {
         return opSerialNo();
     }
 
+    /// Accessor for OOG objects map.
     const BaseDict & getObjects() const {
         return m_objects;
     }
 
+    /// \brief Find an object with the given id.
+    ///
+    /// @return a pointer to the object with the given id, or
+    /// zero if no object with this id is present.
     BaseEntity * getObject(const std::string & id) const {
         BaseDict::const_iterator I = m_objects.find(id);
         if (I == m_objects.end()) {
@@ -68,6 +76,12 @@ class ServerRouting : public OOGThing {
         }
     }
 
+    /// \brief Find an account with a given username.
+    ///
+    /// @return a pointer to the Account object with the given
+    /// username, or zero if the Account is not present. Does
+    /// not check any external authentication sources, or the
+    /// database.
     Account * getAccountByName(const std::string & username) const {
         AccountDict::const_iterator I = m_accounts.find(username);
         if (I == m_accounts.end()) {
@@ -77,13 +91,18 @@ class ServerRouting : public OOGThing {
         }
     }
 
+    /// Increment the number of clients connected to this server.
     void incClients() { ++m_numClients; }
+    /// Decrement the number of clients connected to this server.
     void decClients() { --m_numClients; }
 
+    /// Accessor for world manager object.
     BaseWorld & getWorld() { return m_world; }
 
+    /// Accessor for server name.
     const std::string & getName() const { return m_svrName; }
 
+    /// Copy the attribute values of this object into an Atlas message.
     virtual void addToObject(Atlas::Message::Element::MapType &) const;
 };
 

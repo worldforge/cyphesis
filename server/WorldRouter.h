@@ -57,7 +57,6 @@ class WorldRouter : public BaseWorld {
     Entity * addNewObject(const std::string &,
                           const Atlas::Message::Element::MapType &);
     void delObject(Entity * obj);
-    void setSerialno(OpVector &);
     void setSerialnoOp(RootOperation &);
 
     void operation(const RootOperation & op);
