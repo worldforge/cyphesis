@@ -799,7 +799,6 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         }
         op->operation->SetFrom(PyString_AsString(from_id));
         Py_DECREF(from_id);
-        // FIXME I think I need to actually do something with said value now
     }
     Object::ListType args_list;
     addToArgs(args_list, arg1);

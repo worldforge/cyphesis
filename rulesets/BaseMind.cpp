@@ -466,10 +466,14 @@ OpVector BaseMind::SaveOperation(const Save & op)
     OpVector res;
     script->Operation("save", op, res);
     Object::MapType emap;
-    std::cout << res.size() << " Got stuff from mind" << std::endl << std::flush;
-    if ((!res.empty()) && !(res.front()->GetArgs().empty())) {
-        emap = res.front()->GetArgs().front().AsMap();
-        // FIXME Operations created in python are leaked
+    debug(std::cout << "Got " << res.size() << " stuff to save from mind"
+                    << std::endl << std::flush;);
+    OpVector::const_iterator I = res.begin();
+    if ((I != res.end()) && !((*I)->GetArgs().empty())) {
+        emap = (*I)->GetArgs().front().AsMap();
+    }
+    for (; I != res.end(); ++I) {
+        delete *I;
     }
     Info * i = new Info(Info::Instantiate());
     emap["map"] = map.asObject();
@@ -495,29 +499,6 @@ OpVector BaseMind::LoadOperation(const Load & op)
     }
     return OpVector();
 }
-
-#if 0
-RootOperation * BaseMind::get_op_name_and_sub(RootOperation & op, std::string & name)
-{
-    event_name = op.id;
-    sub_op = op;
-    while (len(sub_op) and sub_op[0].get_name()=="op") {
-        sub_op = sub_op[0];
-        event_name = event_name + "_" + sub_op.id;
-    }
-    return event_name, sub_op;
-}
-
-int BaseMind::call_triggers(RootOperation & op)
-{
-    return 0;
-}
-#endif
-
-//OpVector BaseMind::message(const RootOperation & msg)
-//{
-    //return operation(msg);
-//}
 
 OpVector BaseMind::operation(const RootOperation & op)
 {
@@ -563,50 +544,3 @@ OpVector BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op) {
     }
     SUB_OP_SWITCH(op, op_no, sound, sub_op)
 }
-
-#if 0
-OpVector BaseMind::operation(const RootOperation & op)
-{
-    if (hasattr(this,"lock")) {
-        return;
-    }
-    if (BaseMind::log_fp) {
-        BaseMind::log_fp.write("receiving:\n");
-        BaseMind::log_fp.write(str(op)+"\n");
-    }
-    reply=Message();
-    res=op.atlas2internal(BaseMind::map.things);
-    if (res) {
-        log.debug(3,str(BaseMind::id)+" : new id: "+str(res));
-        for (/*(err_op,attr,id) in res*/) {
-            obj=BaseMind::map.add_id(id);
-            if (type(err_op)==InstanceType) {
-                setattr(err_op,attr,obj);
-            }
-            else {
-                err_op[attr]=obj;
-            }
-            log.debug(3,str(obj));
-        }
-    }
-    while (1) {
-        look=BaseMind::map.look_id();
-        if (not look) {
-            break;
-        }
-        look.from_=this;
-        reply.append(look);
-    }
-    if (hasattr(op.time,"dateTime")) {
-        BaseMind::time=op.time.dateTime;
-    }
-    reply=reply+BaseMind::call_operation(op);
-    reply=reply+BaseMind::call_triggers(op);
-    op.internal2atlas();
-    if (BaseMind::log_fp) {
-        BaseMind::log_fp.write("sending:\n");
-        BaseMind::log_fp.write(str(reply)+"\n");
-    }
-    return reply;
-}
-#endif

@@ -37,6 +37,7 @@ class WorldRouter : public BaseWorld {
     }
 
     std::string getNewId(const std::string & name);
+    void deliverTo(const RootOperation & op, Entity * e);
   public:
     ServerRouting & server;
 

@@ -24,13 +24,11 @@ Entity * CreatorClient::make(const Object & entity)
     op.SetFrom(getId());
     op.SetTo(getId());
     OpVector result = sendAndWaitReply(op);
-    // FIXME I am pretty sure this is in practice a redundant check.
     if (result.empty()) {
         std::cerr << "No reply to make" << std::endl << std::flush;
         return NULL;
     }
     RootOperation * res = result.front();
-    // FIXME This is probably a redundant check
     if (res == NULL) {
         std::cerr << "NULL reply to make" << std::endl << std::flush;
         return NULL;

@@ -23,8 +23,7 @@ static PyObject * World_get_time(WorldObject *self, PyObject *args, PyObject *kw
     if (wtime == NULL) {
         return NULL;
     }
-    // wtime->time = self->world->get_time(); FIXME (IT)
-    wtime->time = new WorldTime(0);
+    wtime->time = new WorldTime(self->world->getTime());
     wtime->own = true;
     return (PyObject *)wtime;
 }

@@ -50,7 +50,6 @@ void Line::set(const std::string & aname, const Object & attr)
 
 void Line::addToObject(Atlas::Message::Object::MapType & omap) const
 {
-    // FIXME: write code to convert vector to Object
     omap["start_intersections"] = idListAsObject(endIntersections);
     omap["end_intersections"] = idListAsObject(endIntersections);
     omap["coords"] = coordListAsObject(coords);

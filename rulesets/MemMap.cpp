@@ -80,8 +80,6 @@ Entity * MemMap::update(const Object::MapType & entmap)
     debug( std::cout << " " << id << " has already been spotted" << std::endl << std::flush;);
     Entity * thing = J->second;
     debug( std::cout << " got " << thing << std::endl << std::flush;);
-    // I am not sure what the deal is with all the "needTrueValue stuff
-    // below yet. FIXME find out exactly what is required.
     I = entmap.find("name");
     if (I != entmap.end() && I->second.IsString()) {
         thing->setName(I->second.AsString());
@@ -94,6 +92,8 @@ Entity * MemMap::update(const Object::MapType & entmap)
     thing->merge(entmap);
     thing->getLocation(entmap,things);
     addContents(entmap);
+    // I am not sure what the deal is with all the "needTrueValue stuff
+    // below yet. FIXME find out exactly what is required.
     //needTrueValue=["type","contains","instance","id","location","stamp"];
     //for (/*(key,value) in entity.__dict__.items()*/) {
         //if (value or not key in needTrueValue) {
@@ -104,9 +104,6 @@ Entity * MemMap::update(const Object::MapType & entmap)
     for(K = updateHooks.begin(); K != updateHooks.end(); K++) {
         script->hook(*K, thing);
     }
-    //for (/*hook in MemMap::update_hooks*/) {
-        //hook(obj);
-    //}
     return thing;
 }
 

@@ -80,8 +80,8 @@ OpVector CharacterClient::sendAndWaitReply(RootOperation & op)
                 if (findRefno(*input,no)) {
                     return OpVector(1,input);
                 }
+                delete input;
             }
-            delete input;
         } else {
             connection.wait();
         }

@@ -61,7 +61,7 @@ OpVector Creator::externalOperation(const RootOperation & op)
     // problem.
     debug( std::cout << "Creator::externalOperation" << std::endl
                      << std::flush;);
-    if (op.GetTo()=="") {
+    if (op.GetTo().empty()) {
         debug( std::cout << "Creator handling op normally" << std::endl << std::flush;);
         OpVector lres = mind2body(op);
         for(OpVector::const_iterator I = lres.begin(); I != lres.end(); I++) {

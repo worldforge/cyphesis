@@ -119,6 +119,9 @@ OpVector Thing::CreateOperation(const Create & op)
         I = ent.find("loc");
         if ((I == ent.end()) && (location.ref != NULL)) {
             ent["loc"] = location.ref->getId();
+            if (ent.find("pos") == ent.end()) {
+                ent["pos"] = location.coords.asObject();
+            }
         }
         std::string type;
         if (parents.empty()) {
@@ -128,13 +131,6 @@ OpVector Thing::CreateOperation(const Create & op)
         }
         debug( std::cout << getId() << " creating " << type;);
         Entity * obj = world->addObject(type,ent);
-        if (!obj->location) {
-            obj->location.ref = location.ref;
-            obj->location.coords = location.coords;
-        }
-        if (obj->location.ref != NULL) {
-            obj->location.ref->contains.insert(obj);
-        }
         Create c(op);
         c.SetArgs(Object::ListType(1,obj->asObject()));
         RootOperation * s = new Sight(Sight::Instantiate());

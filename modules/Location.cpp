@@ -47,7 +47,6 @@ void Location::addToObject(Object::MapType & omap) const
     }
 }
 
-// FIXME This double recursive pair of function is unverified
 bool Location::distanceLeft(const Location & other, Vector3D & c) const {
     if (ref == other.ref) {
         c -= coords;

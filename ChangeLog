@@ -1,3 +1,34 @@
+2002-03-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/server.cpp, rulesets/Python_API.cpp, rulesets/Line.cpp,
+	  modules/Location.cpp, client/CreatorClient.cpp:
+	  Removed some obsolete comments.
+
+	* server/WorldRouter.h, server/WorldRouter.cpp: Add member to
+	  deliver operation to known entity. Make use if it to avoid
+	  having to recurse in operation() when broadcasting. Ensure
+	  that the container of new entities is managed from here.
+
+	* rulesets/Thing.cpp: Tell world to create new entities at the
+	  same position as the creator if no other info is provided.
+	  Do not attempt to handle setting up the default containership
+	  of entity once created, as this is always handled by the
+	  WorldRouter from now on.
+
+	* rulesets/Py_World.cpp: Implement getting time info from world.
+
+	* rulesets/Py_Location.cpp: Implement handling of the orientation
+	  attribute from python.
+
+	* rulesets/MemMap.cpp: Update comments about unimplemented code.
+
+	* rulesets/Creator.cpp: Check for string.empty() instead of "".
+
+	* rulesets/BaseMind.cpp: Remove reference python code.
+	  Cleanly handle and delete operations returned when savinf mind state.
+
+	* client/CharacterClient.cpp: Move delete to the right place.
+
 2002-03-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cycmd.cpp, server/Lobby.cpp, server/Connection.cpp,

@@ -5,6 +5,7 @@
 #include "Py_Location.h"
 #include "Py_Thing.h"
 #include "Py_Vector3D.h"
+#include "Py_Quaternion.h"
 #include "Py_BBox.h"
 
 #include "Thing.h"
@@ -63,13 +64,11 @@ static PyObject * Location_getattr(LocationObject *self, char *name)
         v->coords = self->location->velocity;
         return (PyObject *)v;
     }
-    // FIXME No current handling of this in python
-    // Needs to be handled in some other way that a Vector3D
-    //if (strcmp(name, "orientation") == 0) {
-        //QuaternionObject * v = newQuaternionObject(NULL);
-        //v->rotation = self->location->orientation;
-        //return (PyObject *)v;
-    //}
+    if (strcmp(name, "orientation") == 0) {
+        QuaternionObject * v = newQuaternionObject(NULL);
+        v->rotation = self->location->orientation;
+        return (PyObject *)v;
+    }
     if (strcmp(name, "bbox") == 0) {
         BBoxObject * b = newBBoxObject(NULL);
         b->box = self->location->bBox;
@@ -100,6 +99,11 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
     if ((strcmp(name, "bbox") == 0) && PyBBox_Check(v)) {
         BBoxObject * box = (BBoxObject *)v;
         self->location->bBox = box->box;
+        return 0;
+    }
+    if ((strcmp(name, "orientation") == 0) && PyQuaternion_Check(v)) {
+        QuaternionObject * quat = (QuaternionObject *)v;
+        self->location->orientation = quat->rotation;
         return 0;
     }
     Vector3D vector;
@@ -146,10 +150,6 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
     if (strcmp(name, "velocity") == 0) {
         self->location->velocity = vector;
     }
-    // FIXME No current handling of this in python
-    //if (strcmp(name, "rotation") == 0) {
-        //self->location->face = vector;
-    //}
     if (strcmp(name, "bbox") == 0) {
         self->location->bBox = BBox(vector);
     }

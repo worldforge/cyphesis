@@ -109,12 +109,7 @@ Entity * WorldRouter::addObject(Entity * obj)
         debug(std::cout << "loc set with ref " << obj->location.ref->getId()
                         << std::endl << std::flush;);
     }
-    if (obj->location.ref==&gameWorld) {
-        debug(std::cout << "loc is world" << std::endl << std::flush;);
-        gameWorld.contains.insert(obj);
-        // FIXME Check here and in Thing/Entity::CreateOperation() and
-        // sort out a clean way to ensure contains is correct
-    }
+    obj->location.ref->contains.insert(obj);
     debug(std::cout << "Entity loc " << obj->location << std::endl
                     << std::flush;);
     obj->world=this;
@@ -173,12 +168,20 @@ inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) con
     return objectList;
 }
 
-OpVector WorldRouter::operation(const RootOperation * op)
+inline void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
 {
-    const RootOperation & op_ref = *op;
-    std::string to = op_ref.GetTo();
+        OpVector res = e->operation(op);
+        for(OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
+            message(**I, e);
+        }
+}
+
+OpVector WorldRouter::operation(const RootOperation * op_ptr)
+{
+    const RootOperation & op = *op_ptr;
+    std::string to = op.GetTo();
     debug(std::cout << "WorldRouter::operation {"
-                    << op_ref.GetParents().front().AsString() << ":"
+                    << op.GetParents().front().AsString() << ":"
                     << to << "}" << std::endl
                     << std::flush;);
 
@@ -195,37 +198,32 @@ OpVector WorldRouter::operation(const RootOperation * op)
                       << std::endl << std::flush;
             return OpVector();
         }
-        OpVector res = to_entity->operation(op_ref);
-        for(OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
-            message(**I, to_entity);
-        }
-        if ((op_ref.GetParents().front().AsString() == "delete") &&
+        deliverTo(op, to_entity);
+        if ((op.GetParents().front().AsString() == "delete") &&
             (to_entity != &gameWorld)) {
             delObject(to_entity);
             to_entity->destroy();
             delete to_entity;
-            to_entity = NULL;
         }
     } else {
-        RootOperation newop = op_ref;
-        const EntitySet & broadcast = broadcastList(op_ref);
+        RootOperation newop = op;
+        const EntitySet & broadcast = broadcastList(op);
         const std::string & from = newop.GetFrom();
         EntityDict::const_iterator J = eobjects.find(from);
         if (from.empty() || (J == eobjects.end()) || (!consts::enable_ranges)) {
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 newop.SetTo((*I)->getId());
-                // FIXME: There must be a more efficient way to deliver,
-                // with less chance of a loop.
-                operation(&newop);
+                deliverTo(newop, *I);
             }
         } else {
             // FIXME This is temporary until we find out how NULL pointers
             // get in there
             if (J->second == NULL) {
-                std::cerr << "ERROR: NULL pointer in world dictionary. "
-                          << "We will probably crash now." << std::endl
-                          << std::flush;
+                std::cerr << "ERROR: " << from
+                          << " has a NULL pointer in world dictionary. "
+                          << std::endl << "We will probably crash now."
+                          << std::endl << std::flush;
             }
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
@@ -236,9 +234,7 @@ OpVector WorldRouter::operation(const RootOperation * op)
                     continue;
                 }
                 newop.SetTo((*I)->getId());
-                // FIXME: There must be a more efficient way to deliver,
-                // with less chance of a loop.
-                operation(&newop);
+                deliverTo(newop, *I);
             }
         }
     }

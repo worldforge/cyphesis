@@ -166,8 +166,7 @@ int main(int argc, char ** argv)
         serverName = get_hostname();
     }
     
-    // Start up the python subsystem. FIXME This needs to sorted into a
-    // a way of handling script subsystems more generically.
+    // Start up the python subsystem.
     init_python_api();
 
     { // scope for CommServer
@@ -202,7 +201,6 @@ int main(int argc, char ** argv)
                 std::cout << " done" << std::endl;
             }
         }
-        // FIXME ? How to send this to admin account ?
     }
     if (!daemon_flag) {
         std::cout << "Running" << std::endl << std::flush;
