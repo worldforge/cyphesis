@@ -15,8 +15,13 @@
 #include <cstdio>
 
 #include <sys/socket.h>
+#include <arpa/inet.h>
 
 static const bool debug_flag = false;
+
+CommListener::~CommListener()
+{
+}
 
 int CommListener::getFd() const
 {

@@ -11,10 +11,6 @@
 
 #include <skstream/skstream.h>
 
-// extern "C" {
-    // #include <sys/socket.h>
-// }
-
 class CommMetaClient : public CommIdleSocket {
   private:
     udp_socket_stream clientIos;

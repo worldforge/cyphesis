@@ -12,7 +12,7 @@
 class CommIdleSocket : public CommSocket {
   public:
     CommIdleSocket(CommServer & svr) : CommSocket(svr) { }
-    virtual ~CommIdleSocket() { }
+    virtual ~CommIdleSocket();
 
     virtual void idle(time_t t) = 0;
 };

@@ -1,5 +1,17 @@
 2003-08-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommIdleSocket.h, server/CommIdleSocket.cpp,
+	  server/CommListener.h, server/CommListener.cpp:
+	  Fix virtual destructors.
+
+	* server/CommMetaClient.h: Remove obsolete includes.
+
+	* server/CommUnixListener.cpp, server/CommUnixListener.h:
+	  Convert unix listener class to use the skstream listener
+	  code.
+
+2003-08-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/server.cpp: Handle the case correctly if the metaserver
 	  socket setup does not work.
 

@@ -8,16 +8,17 @@
 
 #include "CommSocket.h"
 
+#include <skstream/skserver_unix.h>
+
 class CommUnixListener : public CommSocket {
   private:
-    int listenFd;
+    unix_socket_server m_unixListener;
     bool bound;
 
     bool accept();
 
   public:
-    CommUnixListener(CommServer & svr) : CommSocket(svr),
-                                         listenFd(-1), bound(false) { }
+    CommUnixListener(CommServer & svr) : CommSocket(svr), bound(false) { }
     virtual ~CommUnixListener();
 
     bool setup();
