@@ -1,3 +1,8 @@
+2003-10-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Collision.h, physics/Collision.cpp: More work on
+	  collision detection.
+
 2003-10-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* physics/BBox.h, physics/Vector3D.h: Remove historical vector
