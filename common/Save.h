@@ -5,9 +5,11 @@
 #ifndef COMMON_SAVE_H
 #define COMMON_SAVE_H
 
+#include <Atlas/Objects/Operation/Get.h>
+
 namespace Atlas { namespace Objects { namespace Operation {
 
-class Save : public RootOperation {
+class Save : public Get {
   public:
     Save();
     virtual ~Save();

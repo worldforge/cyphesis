@@ -5,9 +5,11 @@
 #ifndef COMMON_CUT_H
 #define COMMON_CUT_H
 
+#include <Atlas/Objects/Operation/Action.h>
+
 namespace Atlas { namespace Objects { namespace Operation {
 
-class Cut : public RootOperation {
+class Cut : public Action {
   public:
     Cut();
     virtual ~Cut();

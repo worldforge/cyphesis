@@ -5,9 +5,11 @@
 #ifndef COMMON_EAT_H
 #define COMMON_EAT_H
 
+#include <Atlas/Objects/Operation/Action.h>
+
 namespace Atlas { namespace Objects { namespace Operation {
 
-class Eat : public RootOperation {
+class Eat : public Action {
   public:
     Eat();
     virtual ~Eat();

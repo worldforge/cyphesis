@@ -1,4 +1,11 @@
-2001-11-29  Al Riddoch  <alriddoch@zepler.org>
+2001-11-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/operations.cpp, common/Save.h, common/Nourish.h, common/Load.h,
+	  common/Fire.h, common/Eat.h, common/Cut.h, common/Chop.h:
+	  Fixed custom operations so they really do inherit from what I
+	  claim they do.
+
+2001-11-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.cpp: Set serialnos on error ops.
 

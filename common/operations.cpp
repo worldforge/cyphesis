@@ -17,7 +17,7 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-Chop::Chop() : RootOperation("chop", "root_operation") {
+Chop::Chop() : Action("chop", "action") {
 }
 
 Chop::~Chop() { }
@@ -29,7 +29,7 @@ Chop Chop::Instantiate() {
     return value;
 }
 
-Cut::Cut() : RootOperation("cut", "root_operation") {
+Cut::Cut() : Action("cut", "action") {
 }
 
 Cut::~Cut() { }
@@ -41,7 +41,7 @@ Cut Cut::Instantiate() {
     return value;
 }
 
-Eat::Eat() : RootOperation("eat", "root_operation") {
+Eat::Eat() : Action("eat", "action") {
 }
 
 Eat::~Eat() { }
@@ -53,7 +53,7 @@ Eat Eat::Instantiate() {
     return value;
 }
 
-Fire::Fire() : RootOperation("fire", "root_operation") {
+Fire::Fire() : Action("fire", "action") {
 }
 
 Fire::~Fire() { }
@@ -77,7 +77,7 @@ Generic Generic::Instantiate(const std::string & p) {
     return value;
 }
 
-Load::Load() : RootOperation("load", "root_operation") {
+Load::Load() : Set("load", "set") {
 }
 
 Load::~Load() { }
@@ -89,7 +89,7 @@ Load Load::Instantiate() {
     return value;
 }
 
-Nourish::Nourish() : RootOperation("nourish", "root_operation") {
+Nourish::Nourish() : Action("nourish", "action") {
 }
 
 Nourish::~Nourish() { }
@@ -101,7 +101,7 @@ Nourish Nourish::Instantiate() {
     return value;
 }
 
-Save::Save() : RootOperation("save", "root_operation") {
+Save::Save() : Get("save", "get") {
 }
 
 Save::~Save() { }

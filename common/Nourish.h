@@ -5,9 +5,11 @@
 #ifndef COMMON_NOURISH_H
 #define COMMON_NOURISH_H
 
+#include <Atlas/Objects/Operation/Action.h>
+
 namespace Atlas { namespace Objects { namespace Operation {
 
-class Nourish : public RootOperation {
+class Nourish : public Action {
   public:
     Nourish();
     virtual ~Nourish();

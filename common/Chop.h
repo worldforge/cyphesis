@@ -5,9 +5,11 @@
 #ifndef COMMON_CHOP_H
 #define COMMON_CHOP_H
 
+#include <Atlas/Objects/Operation/Action.h>
+
 namespace Atlas { namespace Objects { namespace Operation {
 
-class Chop : public RootOperation {
+class Chop : public Action {
   public:
     Chop();
     virtual ~Chop();

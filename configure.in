@@ -22,7 +22,7 @@ AM_CONDITIONAL(BUILD_STATIC, test x$ac_build_static_binary = xyes)
 
 dnl Initialise automake
 
-VERSION=0.1.0
+VERSION=0.1.1
 
 AM_INIT_AUTOMAKE(cyphesis, $VERSION)
 

@@ -5,9 +5,11 @@
 #ifndef COMMON_LOAD_H
 #define COMMON_LOAD_H
 
+#include <Atlas/Objects/Operation/Set.h>
+
 namespace Atlas { namespace Objects { namespace Operation {
 
-class Load : public RootOperation {
+class Load : public Set {
   public:
     Load();
     virtual ~Load();
