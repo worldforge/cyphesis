@@ -1,5 +1,9 @@
 2002-12-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Fix error creating tables.
+
+2002-12-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/PersistantThingFactory.h: Prevent a new Persistor from
 	  being created when a factory is cloned.
 

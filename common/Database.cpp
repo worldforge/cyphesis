@@ -116,7 +116,7 @@ bool Database::initAccount(bool createTables)
                 reportError();
                 return false;
             }
-            if (!tuplesOk()) {
+            if (!commandOk()) {
                 log(ERROR, "Error creating account table in database");
                 return false;
             }
@@ -146,7 +146,7 @@ bool Database::initWorld(bool createTables)
                 reportError();
                 return false;
             }
-            if (!tuplesOk()) {
+            if (!commandOk()) {
                 log(ERROR, "Error creating world table in database");
                 reportError();
                 return false;
@@ -177,7 +177,7 @@ bool Database::initMind(bool createTables)
                 reportError();
                 return false;
             }
-            if (!tuplesOk()) {
+            if (!commandOk()) {
                 log(ERROR, "Error creating mind table in database");
                 reportError();
                 return false;
@@ -208,7 +208,7 @@ bool Database::initServer(bool createTables)
                 reportError();
                 return false;
             }
-            if (!tuplesOk()) {
+            if (!commandOk()) {
                 log(ERROR, "Error creating server table in database");
                 reportError();
                 return false;
@@ -239,7 +239,7 @@ bool Database::initRule(bool createTables)
                 reportError();
                 return false;
             }
-            if (!tuplesOk()) {
+            if (!commandOk()) {
                 log(ERROR, "Error creating rules table in database");
                 reportError();
                 return false;
