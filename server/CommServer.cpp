@@ -211,7 +211,9 @@ void CommServer::loop()
                removeClient(client);
                break;
            } else {
-               cerr << "FATAL THIS SHOULD NEVER HAPPEN" << endl << flush;
+               // It is not clear why this happens.
+               debug(std::cout << "WARNING: client read failed, but eof() is not set" << std::endl << std::flush;);
+                          
                removeClient(client);
                break;
            }

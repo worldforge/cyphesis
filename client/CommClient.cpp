@@ -8,6 +8,10 @@
 #include "CommClient.h"
 #include "CreatorClient.h"
 
+#include <common/debug.h>
+
+static const bool debug_flag = false;
+
 using Atlas::Message::Object;
 
 CommClient::CommClient()
@@ -24,17 +28,17 @@ CommClient::createPlayer(const std::string & name,
     player_ent["password"] = password;
     player_ent["parents"] = Object::ListType(1, "player");
     
-    cout << "Loggin " << name << " in with " << password << " as password"
-         << endl << flush;
+    debug(cout << "Loggin " << name << " in with " << password << " as password"
+               << endl << flush;);
     
-    Create createAccountOp(Create::Instantiate());
-    createAccountOp.SetArgs(Object::ListType(1,player_ent));
-    send(createAccountOp);
+    Login loginAccountOp(Login::Instantiate());
+    loginAccountOp.SetArgs(Object::ListType(1,player_ent));
+    send(loginAccountOp);
 
     if (connection.wait()) {
-        Login loginAccountOp(Login::Instantiate());
-        loginAccountOp.SetArgs(Object::ListType(1,player_ent));
-        send(loginAccountOp);
+        Create createAccountOp(Create::Instantiate());
+        createAccountOp.SetArgs(Object::ListType(1,player_ent));
+        send(createAccountOp);
         if (connection.wait()) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
                       << std::flush;

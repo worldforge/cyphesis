@@ -7,7 +7,7 @@ the email address given in the AUTHORS file.
 
 Al Riddoch <alriddoch@zepler.org>, Saturday May 12th, 2001
 
-The following guidelines should be observer when coding cyphesis-C++.
+The following guidelines should be observed when coding cyphesis-C++.
 
 TEMPLATES
 
@@ -15,7 +15,7 @@ Use of templates is not encouraged.
 
 REFERENCES
 
-References should be used instead of pointers whereever it is possible.
+References should be used instead of pointers wherever it is possible.
 If necessary the design of the code should reflect this preference.
 If a pointer is to be used which will be initialised to a value, will
 never change and can never be NULL, then that pointer should be a reference.

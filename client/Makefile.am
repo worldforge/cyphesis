@@ -2,7 +2,7 @@ bin_PROGRAMS = cyclient
 
 cyclient_SOURCES = \
 		CharacterClient.cpp CharacterClient.h \
-		CreatorClient.cpp CreateClient.h \
+		CreatorClient.cpp CreatorClient.h \
 		CommClient.cpp CommClient.h \
 		ObserverClient.cpp ObserverClient.h \
 		ClientConnection.cpp ClientConnection.h \

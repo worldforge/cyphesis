@@ -14,8 +14,6 @@ Definitly for Acorn 0.4:
 
   Implement market stall setup and take down. Need lots of traders.
 
-  Cut down the rate at which apples are dropped to reduce lag. done ??
-
   Sort out a decent working Inn. Inn keeper lady is documented.
 
   Do collision boxes for furniture.

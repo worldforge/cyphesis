@@ -157,8 +157,10 @@ void Entity::getLocation(const Object::MapType & entmap, const edict_t & eobject
 {
     debug( std::cout << "Thing::getLocation" << std::endl << std::flush;);
     Object::MapType::const_iterator I = entmap.find("loc");
-    if (I == entmap.end()) { return; }
-    debug( std::cout << "Thing::getLocation, getting it" << std::endl << std::flush;);
+    if (I == entmap.end()) {
+        debug( std::cout << getId() << ".. has no loc" << std::endl << std::flush;);
+        return;
+    }
     try {
         const std::string & ref_id = I->second.AsString();
         edict_t::const_iterator J = eobjects.find(ref_id);

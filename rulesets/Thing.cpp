@@ -87,12 +87,16 @@ oplist Thing::CreateOperation(const Create & op)
        return oplist();
     }
     try {
-        const Object::MapType & ent = args.front().AsMap();
+        Object::MapType ent = args.front().AsMap();
         Object::MapType::const_iterator I = ent.find("parents");
         if (I == ent.end()) {
             return error(op, "Object to be created has no type");
         }
         const Object::ListType & parents = I->second.AsList();
+        I = ent.find("loc");
+        if ((I == ent.end()) && (location.ref != NULL)) {
+            ent["loc"] = location.ref->getId();
+        }
         std::string type;
         if (parents.size() < 1) {
             type = "thing";

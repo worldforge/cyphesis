@@ -3,6 +3,7 @@
 // Copyright (C) 2001 Alistair Riddoch
 
 #include <Atlas/Codec.h>
+#include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/Object.h>
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Decoder.h>
@@ -11,6 +12,7 @@
 #include <varconf/Config.h>
 
 #include <skstream.h>
+#include <fstream>
 
 extern "C" {
     #include <stdio.h>
@@ -32,7 +34,7 @@ extern "C" {
 
 #include "config.h"
 
-static bool debug_flag = true;
+static bool debug_flag = false;
 
 using Atlas::Message::Object;
 
@@ -72,14 +74,14 @@ void ClientConnection::operation(const RootOperation & op)
 
 void ClientConnection::ObjectArrived(const Error&op)
 {
-    cout << "ERROR" << endl << flush;
+    debug(cout << "ERROR" << endl << flush;);
     push(op);
     error_flag = true;
 }
 
 void ClientConnection::ObjectArrived(const Info & op)
 {
-    cout << "INFO" << endl << flush;
+    debug(cout << "INFO" << endl << flush;);
     const std::string & from = op.GetFrom();
     if (from.empty()) {
         reply_flag = true;
@@ -241,7 +243,7 @@ bool ClientConnection::connect(const std::string & server)
 {
     struct sockaddr_in serv_sa;
 
-    cout << "Connecting to " << server << endl << flush;
+    debug(cout << "Connecting to " << server << endl << flush;);
     memset(&serv_sa, 0, sizeof(serv_sa));
     serv_sa.sin_family = AF_INET;
     serv_sa.sin_port = htons(6767);
@@ -272,11 +274,11 @@ bool ClientConnection::connect(const std::string & server)
 
     Atlas::Net::StreamConnect conn("cyphesis_aiclient", ios, this);
 
-    cout << "Negotiating... " << flush;
+    debug(cout << "Negotiating... " << flush;);
     while (conn.GetState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
       conn.Poll();
     }
-    cout << "done" << endl;
+    debug(cout << "done" << endl;);
   
     if (conn.GetState() == Atlas::Net::StreamConnect::FAILED) {
         cerr << "Failed to negotiate" << endl;
@@ -338,6 +340,13 @@ bool ClientConnection::wait()
 
 void ClientConnection::send(Atlas::Objects::Operation::RootOperation & op)
 {
+    debug(std::fstream f(1);
+          Atlas::Codecs::XML c(f, (Atlas::Bridge*)this);
+          Atlas::Objects::Encoder enc(&c);
+          enc.StreamMessage(&op);
+          std::cout << std::endl << flush;);
+    
+
     op.SetSerialno(++serialNo);
     encoder->StreamMessage(&op);
     ios << flush;

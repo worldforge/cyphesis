@@ -1,3 +1,19 @@
+2001-10-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommServer.cpp: Remove non-fatal "FATAL..." message when
+	  client closes connection.
+
+	* rulesets/Thing.cpp: If object to be created has no loc, set loc
+	  to be the same as creator before passing to the factory.
+
+	* rulesets/Entity.cpp: Clarify debug output when determining location
+	  of new entities.
+
+	* client/CommClient.cpp: Push output into debug mecanism. Switch
+	  order of Create/Login for admin account so ordinary operation
+	  does not issue an error. Admin account is created at startup,
+	  so there is no need for the client to create it.
+
 2001-09-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommClient.cpp, server/CommClient.h, server/CommServer.cpp:
