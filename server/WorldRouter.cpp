@@ -419,13 +419,15 @@ void WorldRouter::operation(const RootOperation & op)
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 // Calculate square distance to target
-                Point3D d(fromEnt->m_location.relativePosition((*I)->m_location));
-                float view_factor = fromSquSize / sqrMag(d);
+                std::cout << "Distance from " << fromEnt->getId() << " to "
+                          << (*I)->getId() << std::endl << std::flush;
+                float dist = squareDistance(fromEnt->m_location, (*I)->m_location);
+                float view_factor = fromSquSize / dist;
 #if 0
                 if (view_factor > consts::square_sight_factor) {
                     std::cout << "Distance from " << fromEnt->getType() << " to "
-                              << (*I)->getType() << " is " << d << " which gives "
-                              << fromSquSize << " / " << sqrMag(d) << " = "
+                              << (*I)->getType() << " is " << dist << " which gives "
+                              << fromSquSize << " / " << dist << " = "
                               << view_factor << std::endl << std::flush;
                 }
 #endif

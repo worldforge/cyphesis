@@ -1,5 +1,10 @@
 2004-09-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Switch to new distance algorithm for
+	  broadcasts.
+
+2004-09-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/Location.cpp, modules/Location.h: Improve algorithm
 	  of distance function to handle corner cases, and add a second
 	  interface so that both scalar distance and relative position
