@@ -1,5 +1,13 @@
 2000-11-15  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Added code for standard Get/Set methods for operations.
+	  Eventually this functionality will be moved into getattr
+	  and setattr methods.
+
+	* Added code for a Thing object which wrappers a C++ Thing * pointer.
+
+2000-11-15  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Cleaned up problems with mode in move operations, and dealt
 	  with stopping when velocity is set to zero.
 

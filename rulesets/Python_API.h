@@ -15,11 +15,19 @@ using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Set;
 
+class Thing;
+
 typedef struct {
     PyObject_HEAD
     PyObject	* Object_attr;	/* Attributes dictionary */
     Object	* m_obj;
 } AtlasObject;
+
+typedef struct {
+    PyObject_HEAD
+    PyObject	* Thing_attr;	/* Attributes dictionary */
+    Thing	* m_thing;
+} ThingObject;
 
 #define ATLAS_OPERATION(_name) typedef struct { \
     PyObject_HEAD \
