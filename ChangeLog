@@ -1,3 +1,15 @@
+2004-07-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/PythonMindScript.cpp: Go back to using getAdd.
+
+	* rulesets/MemEntity.h: Tweak check for backwards time so we
+	  only report an error if it really is backwards.
+
+	* rulesets/BaseMind.cpp, rulesets/MemEntity.h,
+	  rulesets/MemMap.cpp, rulesets/MemMap.h: Implement a function
+	  which slowly iterates over the contents of the mind checking
+	  for things which are obsolete, and removes them.
+
 2004-07-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cyconvertrules.cpp: Add code to handle conversion of rules

@@ -28,6 +28,7 @@ class MemMap {
     friend class BaseMind;
 
     MemEntityDict m_entities;
+    MemEntityDict::iterator m_checkIterator;
     std::list<std::string> m_additionsById;
     std::vector<std::string> m_addHooks;
     std::vector<std::string> m_updateHooks;
@@ -42,7 +43,7 @@ class MemMap {
     void addContents(const Atlas::Message::Element::MapType &);
     MemEntity * addId(const std::string & id);
   public:
-    explicit MemMap(Script *& s) : m_script(s)  { }
+    explicit MemMap(Script *& s);
 
     bool find(const std::string & id) {
         return (m_entities.find(id) != m_entities.end());
@@ -63,6 +64,8 @@ class MemMap {
     MemEntityVector findByLocation(const Location & where, double radius);
 
     const Atlas::Message::Element asObject();
+
+    void check();
     void flush();
 
     std::vector<std::string> & getAddHooks() { return m_addHooks; }

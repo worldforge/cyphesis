@@ -25,6 +25,7 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
     debug(std::cout << "MemMap::addEntity " << entity << " " << entity->getId()
                     << std::endl << std::flush;);
     m_entities[entity->getId()] = entity;
+    m_checkIterator = m_entities.begin();
 
     debug( std::cout << this << std::endl << std::flush;);
     std::vector<std::string>::const_iterator I;
@@ -50,7 +51,14 @@ void MemMap::readEntity(MemEntity * entity, const Element::MapType & entmap)
     if ((I != entmap.end()) && I->second.isString()) {
         getAdd(I->second.asString());
     }
+    Entity * old_loc = entity->m_location.m_loc;
     entity->getLocation(entmap, m_entities);
+    if (old_loc != entity->m_location.m_loc) {
+        if (old_loc != 0) {
+            old_loc->m_contains.erase(entity);
+        }
+        entity->m_location.m_loc->m_contains.insert(entity);
+    }
     addContents(entmap);
 }
 
@@ -70,7 +78,7 @@ void MemMap::updateEntity(MemEntity * entity, const Element::MapType & entmap)
 }
 
 MemEntity * MemMap::newEntity(const std::string & id,
-                           const Element::MapType & entmap)
+                              const Element::MapType & entmap)
 // Create a new entity from an Atlas message.
 {
     assert(!id.empty());
@@ -81,6 +89,10 @@ MemEntity * MemMap::newEntity(const std::string & id,
     readEntity(entity, entmap);
 
     return addEntity(entity);
+}
+
+MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s)
+{
 }
 
 RootOperation * MemMap::lookId()
@@ -121,6 +133,7 @@ void MemMap::del(const std::string & id)
         MemEntity * obj = I->second;
         assert(obj != 0);
         m_entities.erase(I);
+        m_checkIterator = m_entities.begin();
         std::vector<std::string>::const_iterator J;
         for(J = m_deleteHooks.begin(); J != m_deleteHooks.end(); J++) {
             m_script->hook(*J, obj);
@@ -207,11 +220,14 @@ MemEntity * MemMap::updateAdd(const Element::MapType & entmap, const double & d)
         return NULL;
     }
     MemEntityDict::const_iterator J = m_entities.find(id);
+    MemEntity * entity;
     if (J == m_entities.end()) {
-        return newEntity(id, entmap);
+        entity = newEntity(id, entmap);
+    } else {
+        entity = J->second;
+        updateEntity(entity, entmap);
     }
-    MemEntity * entity = J->second;
-    updateEntity(entity, entmap);
+    entity->update(d);
     return entity;
 }
 
@@ -256,6 +272,30 @@ const Element MemMap::asObject()
         I->second->addToObject((omap[I->first] = Element::MapType()).asMap());
     }
     return Element(omap);
+}
+
+void MemMap::check()
+{
+    if (m_checkIterator == m_entities.end()) {
+        m_checkIterator = m_entities.begin();
+    } else {
+        MemEntity * me = m_checkIterator->second;
+        assert(me != 0);
+        if (!me->isVisible() && (me->lastSeen() < 0.1) && (me->m_contains.empty())) {
+            debug(std::cout << me->getId() << "|" << me->getType()
+                      << " is a waste of space" << std::endl << std::flush;);
+            // MemEntityDict::const_iterator J = m_checkIterator;
+            // const std::string & next = (++J)->first;
+            m_entities.erase(m_checkIterator);
+            m_checkIterator = m_entities.begin();
+            delete me;
+        } else {
+            debug(std::cout << me->getId() << "|" << me->getType() << "|"
+                            << me->lastSeen() << "|" << me->isVisible()
+                            << " is fine" << std::endl << std::flush;);
+            ++m_checkIterator;
+        }
+    }
 }
 
 void MemMap::flush()

@@ -28,7 +28,7 @@ class MemEntity : public Entity {
     }
 
     void update(const double & d) {
-        if (d > m_lastSeen) {
+        if (d >= m_lastSeen) {
             m_lastSeen = d;
         } else {
             std::cout << "Going back in time from " << m_lastSeen << " to "

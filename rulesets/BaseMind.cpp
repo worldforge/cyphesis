@@ -38,6 +38,7 @@ BaseMind::BaseMind(const std::string & id, const std::string & body_name)
 {
     // setId(id);
     m_name = body_name;
+    setVisible(true);
     m_map.addEntity(this);
     //BaseMind::time=WorldTime();
 
@@ -487,8 +488,10 @@ OpVector BaseMind::operation(const RootOperation & op)
     //   Find out if the op refers to any ids we don't know about.
     //   If so create look operations to those ids
     //   Set the minds time and date 
+    debug(std::cout << "BaseMind::operation(" << op.getParents().front().asString() << ")" << std::endl << std::flush;);
     OpVector res;
     m_time.update((int)op.getSeconds());
+    m_map.check();
     m_map.getAdd(op.getFrom());
     RootOperation * look;
     while ((look = m_map.lookId()) != NULL) {
@@ -534,7 +537,8 @@ OpVector BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op)
     const MemEntityDict & ents = m_map.getEntities();
     for (MemEntityDict::const_iterator I = ents.begin(); I != ents.end(); ++I) {
         std::cout << I->second->getId() << ":" << I->second->getType() << " is "
-                  << ( I->second->isVisible() ? "visible" : "hid" )
+                  << ( I->second->isVisible() ? "visible " : "hid " )
+                  << I->second->lastSeen()
                   << std::endl << std::flush;
     }
 #endif
