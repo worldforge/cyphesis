@@ -14,7 +14,7 @@
 
 static const bool debug_flag = false;
 
-Creator::Creator()
+Creator::Creator(const std::string & id) : Character(id)
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
     if (consts::enable_omnipresence) {

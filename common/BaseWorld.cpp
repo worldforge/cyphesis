@@ -10,7 +10,7 @@ using Atlas::Message::Object;
 
 static const bool debug_flag = false;
 
-BaseWorld::BaseWorld(Entity & gWorld) : gameWorld(gWorld)
+BaseWorld::BaseWorld(const std::string & id, Entity & gw) : OOGThing(id), gameWorld(gw)
 {
 }
 

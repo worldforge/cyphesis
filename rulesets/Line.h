@@ -20,7 +20,7 @@ class Line : public Thing {
 
   public:
 
-    Line();
+    explicit Line(const std::string & id);
     virtual ~Line();
 
     virtual const Atlas::Message::Object get(const std::string &) const;

@@ -13,7 +13,7 @@
 
 class World : public Thing {
   public:
-    World();
+    explicit World(const std::string & id);
     virtual ~World();
 
     virtual OpVector LookOperation(const Look & op);

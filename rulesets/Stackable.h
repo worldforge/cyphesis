@@ -19,7 +19,7 @@ class Stackable : public Thing {
 
   public:
 
-    Stackable();
+    explicit Stackable(const std::string & id);
     virtual ~Stackable();
 
     virtual const Atlas::Message::Object get(const std::string &) const;

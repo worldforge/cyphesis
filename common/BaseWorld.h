@@ -21,7 +21,7 @@ class BaseWorld : public OOGThing {
   public:
     Entity & gameWorld;
 
-    explicit BaseWorld(Entity &);
+    explicit BaseWorld(const std::string &, Entity &);
     virtual ~BaseWorld();
 
     Entity * getObject(const std::string & fid) {

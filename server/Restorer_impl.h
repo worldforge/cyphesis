@@ -39,14 +39,14 @@ void Restorer<T>::rEntity(DatabaseResult & dr)
 template <class T>
 void Restorer<T>::populate(const std::string & id, DatabaseResult & dr)
 {
-    setId(id);
+    // setId(id);
     rEntity(dr);
 }
 
 template <class T>
 Entity * Restorer<T>::restore(const std::string & id, DatabaseResult & dr)
 {
-    T * t = new T();
+    T * t = new T(id);
     
     Restorer<T> * rt = (Restorer<T> *)t;
 

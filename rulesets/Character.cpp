@@ -67,10 +67,10 @@ OpVector Character::metabolise(double ammount)
     return OpVector(1,s);
 }
 
-Character::Character() : movement(*new Pedestrian(*this)),
-                         drunkness(0.0), sex("female"), food(0),
-                         maxMass(100), isAlive(true),
-                         mind(NULL), externalMind(NULL)
+Character::Character(const std::string & id) : Thing(id), movement(*new Pedestrian(*this)),
+                                               drunkness(0.0), sex("female"), food(0),
+                                               maxMass(100), isAlive(true),
+                                               mind(NULL), externalMind(NULL)
 {
     mass = 60;
     location.bBox = BBox(Vector3D(-0.25, -0.25, 0), Vector3D(0.25, 0.25, 2));

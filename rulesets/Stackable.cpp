@@ -13,7 +13,7 @@
 #include <Atlas/Objects/Operation/Divide.h>
 #include <Atlas/Objects/Operation/Delete.h>
 
-Stackable::Stackable() : num(1)
+Stackable::Stackable(const std::string & id) : Thing(id), num(1)
 {
     subscribe("combine", OP_COMBINE);
     subscribe("divide", OP_DIVIDE);

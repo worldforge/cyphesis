@@ -34,9 +34,9 @@
 #include <Atlas/Objects/Operation/Disappearance.h>
 
 BaseMind::BaseMind(const std::string & id, const std::string & body_name)
-                               : map(script), isAwake(true)
+                               : Entity(id), map(script), isAwake(true)
 {
-    setId(id);
+    // setId(id);
     name = body_name;
     map.addObject(this);
     //BaseMind::time=WorldTime();

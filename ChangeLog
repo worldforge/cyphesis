@@ -1,5 +1,26 @@
 2002-12-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.h, common/BaseWorld.cpp, common/BaseWorld.h,
+	  common/OOGThing.h, rulesets/Area.cpp, rulesets/Area.h,
+	  rulesets/BaseMind.cpp, rulesets/Character.cpp,
+	  rulesets/Character.h, rulesets/Creator.cpp, rulesets/Creator.h,
+	  rulesets/Entity.cpp, rulesets/Entity.h, rulesets/Food.cpp,
+	  rulesets/Food.h, rulesets/Line.cpp, rulesets/Line.h,
+	  rulesets/MemMap.cpp, rulesets/Plant.cpp, rulesets/Plant.h,
+	  rulesets/Stackable.cpp, rulesets/Stackable.h,
+	  rulesets/Structure.h, rulesets/Thing.cpp, rulesets/Thing.h,
+	  rulesets/World.cpp, rulesets/World.h, server/Account.cpp,
+	  server/CommClient.cpp, server/CommClient.h,
+	  server/Connection.cpp, server/Connection.h,
+	  server/EntityFactory.cpp, server/Lobby.cpp, server/Lobby.h,
+	  server/PersistantThingFactory.h,
+	  server/PersistantThingFactory_impl.h,
+	  server/Restorer.cpp, server/Restorer_impl.h, server/ServerRouting.cpp,
+	  server/WorldRouter.cpp: Assign ID at entity construction time,
+	  and make it constant, and thus unmodifiable.
+
+2002-12-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.cpp, common/BaseEntity.h, common/OOGThing.h:
 	  Add a protected constructor for initialising id at construction
 	  time.

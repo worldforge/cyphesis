@@ -14,7 +14,7 @@
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
 
-Plant::Plant() : fruits(0), radius(1), fruitName("seed")
+Plant::Plant(const std::string & id) : Thing(id), fruits(0), radius(1), fruitName("seed")
 {
     // Default to a 1m cube
     location.bBox = BBox(Vector3D(-0.5, -0.5, 0), Vector3D(0.5, 0.5, 1));

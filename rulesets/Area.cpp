@@ -6,7 +6,7 @@
 
 #include <common/type_utils.h>
 
-Area::Area()
+Area::Area(const std::string & id) : Thing(id)
 {
     // Default to a 0.1m cube
     location.bBox = BBox(Vector3D(0.1, 0.1, 0.1));

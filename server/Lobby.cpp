@@ -10,7 +10,7 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
-Lobby::Lobby(ServerRouting & s) : server(s)
+Lobby::Lobby(const std::string & id, ServerRouting & s) : OOGThing(id), server(s)
 {
 }
 

@@ -33,7 +33,7 @@ void Restorer<Character>::rCharacter(DatabaseResult & dr)
 
 void Restorer<Character>::populate(const std::string & id, DatabaseResult & dr)
 {
-    setId(id);
+    // setId(id);
     rEntity(dr);
     rCharacter(dr);
 }

@@ -13,7 +13,7 @@
 
 class Structure : public Thing {
   public:
-    Structure() {
+    explicit Structure(const std::string & id) : Thing(id) {
         location.solid = false;
     }
 };

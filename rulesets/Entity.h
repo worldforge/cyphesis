@@ -50,7 +50,8 @@ class Entity : public BaseEntity {
     Location location;          // Full details of location inc. ref pos and vel
     EntitySet contains;         // List of entities which use this as ref
 
-    Entity();
+    // Entity();
+    explicit Entity(const std::string & id);
     virtual ~Entity();
 
     const int getUpdateFlags() const { return update_flags; }

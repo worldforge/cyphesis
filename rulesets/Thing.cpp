@@ -27,7 +27,7 @@
 
 static const bool debug_flag = false;
 
-Thing::Thing()
+Thing::Thing(const std::string & id) : Entity(id)
 {
     subscribe("setup", OP_SETUP);
     subscribe("action", OP_ACTION);

@@ -18,7 +18,7 @@ class Area : public Thing {
 
   public:
 
-    Area();
+    Area(const std::string & id);
     virtual ~Area();
 
     virtual const Atlas::Message::Object get(const std::string &) const;

@@ -32,14 +32,14 @@ inline void WorldRouter::updateTime() {
 }
 
 
-WorldRouter::WorldRouter(ServerRouting & srvr) : BaseWorld(*new World()),
-                                                 nextId(0),
-                                                 server(srvr)
+WorldRouter::WorldRouter(ServerRouting & sr) : BaseWorld(consts::rootWorldId,
+                                                         *new World(consts::rootWorldId)),
+                                               nextId(0), server(sr)
 {
-    setId(consts::rootWorldId);
+    // setId(consts::rootWorldId);
     initTime = time(NULL) - timeoffset;
     updateTime();
-    gameWorld.setId(getId());
+    // gameWorld.setId(getId());
     gameWorld.world = this;
     eobjects[getId()] = &gameWorld;
     perceptives.insert(&gameWorld);

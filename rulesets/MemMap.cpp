@@ -39,8 +39,8 @@ Entity * MemMap::add(const Fragment::MapType & entmap)
     if (find(id)) {
         return update(entmap);
     }
-    Entity * thing = new Entity;
-    thing->setId(id);
+    Entity * thing = new Entity(id);
+    // thing->setId(id);
     I = entmap.find("name");
     if ((I != entmap.end()) && I->second.IsString()) {
         thing->setName(I->second.AsString());

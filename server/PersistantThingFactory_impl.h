@@ -15,15 +15,15 @@ void PersistorConnection<T>::persist()
 }
 
 template <class T>
-T * PersistantThingFactory<T>::newThing()
+T * PersistantThingFactory<T>::newThing(const std::string & id)
 {
-    return new T();
+    return new T(id);
 }
 
 template <class T>
-T * PersistantThingFactory<T>::newPersistantThing(PersistorBase ** p)
+T * PersistantThingFactory<T>::newPersistantThing(const std::string &id, PersistorBase ** p)
 {
-    T * t = new T();
+    T * t = new T(id);
     *p = new PersistorConnection<T>(*t, m_p);
     return t;
 }

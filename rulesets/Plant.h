@@ -26,7 +26,7 @@ class Plant : public Thing {
     int dropFruit(OpVector & res);
   public:
 
-    Plant();
+    explicit Plant(const std::string & id);
     virtual ~Plant();
 
     virtual const Atlas::Message::Object get(const std::string &) const;

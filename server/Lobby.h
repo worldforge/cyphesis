@@ -14,7 +14,7 @@ class Lobby : public OOGThing {
     AccountDict accounts;
     ServerRouting & server;
   public:
-    explicit Lobby(ServerRouting &);
+    explicit Lobby(const std::string & id, ServerRouting &);
 
     void addObject(Account * a);
     void delObject(Account * a);

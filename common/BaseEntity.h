@@ -25,7 +25,7 @@
 
 class BaseEntity : public SigC::Object {
   private:
-    std::string m_id;		// String id
+    const std::string m_id;		// String id
 
     // Private and un-implemented, to make sure slicing is impossible
     BaseEntity(const BaseEntity &);
@@ -46,9 +46,9 @@ class BaseEntity : public SigC::Object {
         return m_id;
     }
 
-    void setId(const std::string & i) {
-        m_id = i;
-    }
+    // void setId(const std::string & i) {
+        // m_id = i;
+    // }
 
     Atlas::Message::Object asObject() const;
     virtual void addToObject(Atlas::Message::Object::MapType &) const;

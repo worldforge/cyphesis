@@ -26,6 +26,7 @@ class Connection;
 
 class CommClient : public Atlas::Objects::Decoder, public CommSocket {
   private:
+    static char ipno[255];
     basic_socket_stream clientIos;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;

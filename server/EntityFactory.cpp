@@ -73,7 +73,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
     PersistorBase * pc = 0;
     if (I != factories.end()) {
         FactoryBase * factory = I->second;
-        thing = factory->newPersistantThing(&pc);
+        thing = factory->newPersistantThing(id, &pc);
         attributes = factory->attributes;
         // Sort out python object
         if ((factory->language == "python") && (!factory->script.empty())) {
@@ -89,11 +89,11 @@ Entity * EntityFactory::newEntity(const std::string & id,
             std::string msg = std::string("Unknown type ") + type + " passed to EntityFactory::newEntity";
             log(ERROR, msg.c_str());
         }
-        thing = new Thing();
+        thing = new Thing(id);
     }
     debug( std::cout << "[" << type << " " << thing->getName() << "]"
                      << std::endl << std::flush;);
-    thing->setId(id);
+    // thing->setId(id);
     thing->setType(type);
     // merge attributes from the creation op over default attributes.
     // FIXME Is it practical to avoid this merge copy by calling merge twice?

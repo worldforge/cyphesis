@@ -10,7 +10,7 @@
 class OOGThing : public BaseEntity {
   protected:
     OOGThing(const std::string & id) : BaseEntity(id) { }
-    OOGThing() { }
+    // OOGThing() { }
   public:
     virtual ~OOGThing();
     virtual OpVector OtherOperation(const RootOperation & op);

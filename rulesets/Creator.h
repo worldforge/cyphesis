@@ -9,7 +9,7 @@
 
 class Creator : public Character {
   public:
-    Creator();
+    explicit Creator(const std::string & id);
 
     virtual OpVector operation(const RootOperation & op);
     virtual OpVector externalOperation(const RootOperation & op);

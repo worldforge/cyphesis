@@ -17,11 +17,11 @@
 static bool debug_flag = false;
 
 ServerRouting::ServerRouting(const std::string & ruleset, const std::string & name) :
-        svrRuleset(ruleset), svrName(name), numClients(0),
-        world(*new WorldRouter(*this)), lobby(*new Lobby(*this))
+        OOGThing(name), svrRuleset(ruleset), svrName(name), numClients(0),
+        world(*new WorldRouter(*this)), lobby(*new Lobby("lobby", *this))
 {
-    setId(name);
-    lobby.setId("lobby");
+    // setId(name);
+    // lobby.setId("lobby");
     Account * adm = Persistance::loadAdminAccount();
     addObject(adm);
     adm->world = &world;

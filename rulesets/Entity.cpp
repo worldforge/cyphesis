@@ -46,8 +46,10 @@ const std::set<std::string> & Entity::immutables()
     return m_immutable;
 }
 
-Entity::Entity() : update_flags(0), script(new Script), seq(0), status(1),
-                   type("entity"), mass(-1), perceptive(false), world(NULL)
+Entity::Entity(const std::string & id) : BaseEntity(id), update_flags(0),
+                                         script(new Script), seq(0), status(1),
+                                         type("entity"), mass(-1),
+                                         perceptive(false), world(NULL)
 {
 }
 

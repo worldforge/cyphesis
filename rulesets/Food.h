@@ -15,7 +15,7 @@
 class Food : public Thing {
   public:
 
-    Food();
+    explicit Food(const std::string & id);
     virtual ~Food();
 
     virtual OpVector EatOperation(const Eat & op);

@@ -12,7 +12,7 @@
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Set.h>
 
-Food::Food()
+Food::Food(const std::string & id) : Thing (id)
 {
     attributes["cooked"] = 0;
     attributes["burn_speed"] = 0.1;

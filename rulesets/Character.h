@@ -44,7 +44,7 @@ class Character : public Thing {
     BaseMind * mind;
     BaseMind * externalMind;
 
-    Character();
+    explicit Character(const std::string & id);
     virtual ~Character();
 
     const double getDrunkness() const { return drunkness; }

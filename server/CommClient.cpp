@@ -21,6 +21,8 @@
 
 static const bool debug_flag = false;
 
+char CommClient::ipno[255];
+
 class ClientTimeOutException : public std::runtime_error {
   public:
     ClientTimeOutException() : std::runtime_error("Client write timeout") { }
@@ -31,10 +33,13 @@ CommClient::CommClient(CommServer & svr, int fd, int port) :
             CommSocket(svr),
             clientIos(fd),
             codec(NULL), encoder(NULL),
-            connection(*new Connection(*this)),
+            connection(*new Connection((inet_ntop(AF_INET,
+                                                  &clientIos.getOutpeer().sin_addr,
+                                                  ipno, 255)
+                                        ? ipno : "UNKNOWN"), *this)),
             reading(false)
 {
-    char ipno[255];
+#if 0
     sockaddr_in client = clientIos.getOutpeer();
     std::stringstream connectionId;
     if (!inet_ntop(AF_INET, &client.sin_addr, ipno, 255)) {
@@ -44,6 +49,7 @@ CommClient::CommClient(CommServer & svr, int fd, int port) :
     }
     connectionId << ":" << client.sin_port;
     connection.setId(connectionId.str());
+#endif
     clientIos.setTimeout(0,1000);
     commServer.server.incClients();
 }

@@ -16,7 +16,7 @@
 class Thing : public Entity {
   public:
 
-    Thing();
+    explicit Thing(const std::string & id);
     virtual ~Thing();
 
     // sendWorld bipasses serialno assignment, so you must ensure

@@ -9,7 +9,7 @@
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
 
-World::World()
+World::World(const std::string & id) : Thing(id)
 {
     subscribe("set", OP_SET);
 }

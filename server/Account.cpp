@@ -27,10 +27,10 @@ static const bool debug_flag = false;
 
 Account::Account(Connection * conn, const std::string & username,
                  const std::string& passwd)
-                 : world(NULL), connection(conn),
+                 : OOGThing(username), world(NULL), connection(conn),
                    password(passwd), type("account")
 {
-    setId(username);
+    // setId(username);
 
     subscribe("logout", OP_LOGOUT);
     subscribe("create", OP_CREATE);
