@@ -147,7 +147,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                 debug(cout << "CONTACT " << m_collEntity->fullid << endl << flush;);
                 if (m_collEntity == new_loc.ref->location.ref) {
                     debug(cout << "OUT" << target << new_loc.ref->location.coords << endl << flush;);
-                    new_coords=target + new_loc.ref->location.coords;
+                    new_coords = target + new_loc.ref->location.coords;
                 } else {
                     debug(cout << "IN" << endl << flush;);
                     new_coords = target - m_collEntity->location.coords;
@@ -163,7 +163,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     m_velocity[m_collAxis] = 0;
                     m_collPos = Vector3D();
                     if ((m_velocity.mag() / consts::base_velocity) > 0.05) {
-                        new_loc.face=m_velocity;
+                        new_loc.face = m_velocity;
                     } else {
                         reset();
                         entmap["mode"] = Object("standing");
@@ -172,7 +172,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     reset();
                     entmap["mode"] = Object("standing");
                 }
-                new_loc.velocity=m_velocity;
+                new_loc.velocity = m_velocity;
             }
         }
     }

@@ -22,7 +22,7 @@ AM_CONDITIONAL(BUILD_STATIC, test x$ac_build_static_binary = xyes)
 
 dnl Initialise automake
 
-AM_INIT_AUTOMAKE(cyphesis, 0.0.14)
+AM_INIT_AUTOMAKE(cyphesis, 0.0.16)
 
 dnl check if user wishes maintainer-mode ("--enable-maintainer-mode = yes")
 AM_MAINTAINER_MODE
@@ -38,7 +38,7 @@ dnl Test for C++ compiler
 
 AC_PROG_CXX
 
-CXXFLAGS='-Wall -Winline -g -O2'
+CXXFLAGS='-Wall -g -O2'
 
 AC_PREFIX_DEFAULT("/usr/local")
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])

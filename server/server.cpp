@@ -480,8 +480,9 @@ int main(int argc, char ** argv)
 
     // See if the user has set the install directory on the command line
     char * home;
+    bool home_dir_config = false;
     if ((home = getenv("HOME")) != NULL) {
-        global_conf->readFromFile(string(home) + "/.cyphesis.vconf");
+        home_dir_config = global_conf->readFromFile(string(home) + "/.cyphesis.vconf");
     }
     // Check the command line options, and if the installation directory
     // has been overriden, either on the command line or in the users
@@ -497,19 +498,33 @@ int main(int argc, char ** argv)
     }
     // Load up the rest of the system config file, and then ensure that
     // settings are overridden in the users config file, and the command line
-    global_conf->readFromFile(share_directory + "/cyphesis/cyphesis.vconf");
-    if ((home = getenv("HOME")) != NULL) {
+    bool main_config = global_conf->readFromFile(share_directory +
+                                                 "/cyphesis/cyphesis.vconf");
+    if (!main_config) {
+        std::cerr << "FATAL: Unable to read main config file "
+                  << share_directory << "/cyphesis/cyphesis.vconf."
+                  << std::endl << std::flush;
+        if (home_dir_config) {
+            std::cerr << "Try removing .cyphesis.vconf from your home directory as it may specify an invalid installation directory, and then restart cyphesis."
+                      << std::endl << std::flush;
+        } else {
+            std::cerr << "Please ensure that cyphesis has been installed correctly."
+                      << std::endl << std::flush;
+        }
+        return 1;
+    }
+    if (home_dir_config) {
         global_conf->readFromFile(string(home) + "/.cyphesis.vconf");
     }
     global_conf->getCmdline(argc, argv);
     // Load up the rulesets. Rulesets are hierarchical, and are read in until
     // a file is read in that does not specify its parent ruleset.
-    string ruleset;
+    std::string ruleset;
     while (global_conf->findItem("cyphesis", "ruleset")) {
         ruleset = global_conf->getItem("cyphesis", "ruleset");
         global_conf->erase("cyphesis", "ruleset");
         cout << "Reading in " << ruleset << endl << flush;
-        EntityFactory::instance()->readRuleset(share_directory + "/cyphesis/" + ruleset);
+        global_conf->readFromFile(share_directory + "/cyphesis/" + ruleset + ".vconf");
         rulesets.push_back(ruleset);
     };
     // If the restricted flag is set in the config file, then we
@@ -617,7 +632,7 @@ int main(int argc, char ** argv)
     delete Persistance::instance();
 
     EntityFactory::instance()->flushFactories();
-    delete EntityFactory::instance();
+    EntityFactory::del();
 
     delete global_conf;
 

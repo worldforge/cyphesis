@@ -44,11 +44,6 @@ EntityFactory::EntityFactory()
     factories["structure"] = new ThingFactory<Structure>();
 }
 
-void EntityFactory::readRuleset(const string & setname)
-{
-    global_conf->readFromFile(setname+".vconf");
-}
-
 Thing * EntityFactory::newThing(const string & type,const Object & ent, WorldRouter * svr)
 {
     if (!ent.IsMap()) {

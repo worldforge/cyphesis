@@ -26,7 +26,11 @@ class EntityFactory {
         }
         return m_instance;
     }
-    void readRuleset(const string & file);
+    static EntityFactory * del() {
+        if (m_instance != NULL) {
+            delete m_instance;
+        }
+    }
     Thing * newThing(const string &, const Atlas::Message::Object &, WorldRouter *);
     void flushFactories();
 };

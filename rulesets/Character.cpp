@@ -380,17 +380,17 @@ oplist Character::mindMoveOperation(const Move & op)
     Vector3D location_coords, location_vel, location_face;
     try {
         I = arg1.find("pos");
-        if ((I != arg1.end()) /* && (I->second.IsList()) */) {
+        if (I != arg1.end()) {
             location_coords = Vector3D(I->second.AsList());
         }
 
         I = arg1.find("velocity");
-        if ((I != arg1.end()) /* && (I->second.IsList()) */) {
+        if (I != arg1.end()) {
             location_vel = Vector3D(I->second.AsList());
         }
 
         I = arg1.find("face");
-        if ((I != arg1.end()) /* && (I->second.IsList()) */) {
+        if (I != arg1.end()) {
             location_face = Vector3D(I->second.AsList());
         }
     }
@@ -407,19 +407,20 @@ oplist Character::mindMoveOperation(const Move & op)
             (Vector3D(((double)rand())/RAND_MAX, ((double)rand())/RAND_MAX, 0)
 				* drunkness * 10);
     }
-    double vel_mag;
     // Print out a bunch of debug info
     debug( cout << ":" << location_ref << ":" << location.ref->fullid << ":" << endl << flush;);
-    if ((location_ref==location.ref->fullid)&&(newop->GetFutureSeconds()>=0)) {
+    if (((location_ref == location.ref->fullid) || (location_ref.empty())) &&
+        (newop->GetFutureSeconds() >= 0)) {
         // Movement within current ref. Work out the speed and stuff and
         // use movement object to track movement.
         //
+        double vel_mag;
         if (!location_vel) {
             debug( cout << "\tVelocity default" << endl << flush;);
-            vel_mag=consts::base_velocity;
+            vel_mag = consts::base_velocity;
         } else {
             debug( cout << "\tVelocity: " << location_vel << endl << flush;);
-            vel_mag=location_vel.mag();
+            vel_mag = location_vel.mag();
             if (vel_mag > consts::base_velocity) {
                 vel_mag = consts::base_velocity;
             }
@@ -460,8 +461,8 @@ oplist Character::mindMoveOperation(const Move & op)
             if (NULL != moveOp) {
                 Object::ListType & args = moveOp->GetArgs();
                 Object::MapType & ent = args.front().AsMap();
-                ent["velocity"]=Vector3D(0,0,0).asObject();
-                ent["mode"]=Object("standing");
+                ent["velocity"] = Vector3D(0,0,0).asObject();
+                ent["mode"] = Object("standing");
                 moveOp->SetArgs(args);
             } else {
                 moveOp = movement.genFaceOperation(location);

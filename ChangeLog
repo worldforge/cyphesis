@@ -1,3 +1,28 @@
+2001-07-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/server.cpp: Cleaned up loading of config files, so that
+	  an invalid installation is reported more clearly, and more
+	  usefully.
+
+	* rulesets/acorn/world/objects/animals/Pig.py: Fixed creating ham in
+	  the right place.
+
+	* rulesets/Movement.cpp: Fixed leaving containers so that if the		  initial collision with parnet bounding box is missed, character
+	  does not get stuck.
+
+	* rulesets/EntityFactory.h: Cleanup code is now cleaner.
+
+	* rulesets/EntityFactory.cpp: Removed unecessary varconf dependancy
+	  in rulesets code.
+
+	* rulesets/Character.cpp: Allow move ops from mind with no loc set.
+
+	* physics/Vector3D.h: Included check for inTime so that if entering
+	  time is in the future, this is detected.
+
+	* modules/Location.cpp, modules/Location.h: Provided method
+	  to add location to a map.
+
 2001-07-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/define_world.py: Fixed and refined the market traders.

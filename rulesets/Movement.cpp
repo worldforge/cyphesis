@@ -66,7 +66,7 @@ void Movement::checkCollisions(const Location & loc)
             return;
         }
         double t = loc.inTime(oloc);
-        if (t < 0) { return; }
+        if (t < 0) { t=0; }
         collTime = min(collTime, t);
         if (collTime > consts::basic_tick) { return; }
         debug(cout << "Collision with parent bounding box" << endl << flush;);

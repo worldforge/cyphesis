@@ -46,3 +46,24 @@ void Location::addToObject(Object & obj) const
         omap["bbox"] = bbox.asObject();
     }
 }
+
+void Location::addToObject(Object::MapType & omap) const
+{
+    if (ref!=NULL) {
+        omap["loc"] = Object(ref->fullid);
+    } else {
+        omap["loc"] = Object("");
+    }
+    if (coords) {
+        omap["pos"] = coords.asObject();
+    }
+    if (velocity) {
+        omap["velocity"] = velocity.asObject();
+    }
+    if (face) {
+        omap["face"] = face.asObject();
+    }
+    if (bbox) {
+        omap["bbox"] = bbox.asObject();
+    }
+}

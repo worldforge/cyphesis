@@ -244,9 +244,10 @@ class Vector3D {
         range yt = ::inTime(y+m.y, om.y, v.y, s.y, os.y);
         range zt = ::inTime(z+m.z, om.z, v.z, s.z, os.z);
         double leave = min(max(xt), min(max(yt),max(zt)));
-        // Is this a useful check ?
-        // double enter = max(min(xt), max(min(yt),min(zt)));
-        // if (enter > 0) { return -1; }
+        // This check is required to make sure we don't accidentally
+        // get stuck in an entity outside its bbox.
+        double enter = max(min(xt), max(min(yt),min(zt)));
+        if (enter > 0) { return -1; }
         return leave;
     }
 

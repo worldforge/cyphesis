@@ -20,7 +20,7 @@ class Pig(Thing):
         res = Message()
         ent=Entity(self.id,mode="dead",weight=self.weight-1)
         res.append(Operation("set",ent,to=self))
-        ham_ent=Entity(name='ham',parents=['ham'])
+        ham_ent=Entity(name='ham',parents=['ham'],location=self.location.copy())
         if (len(op)>1):
             #to_=self.world.get_object(op[1].id)
             to_ = op[1].id
