@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2001 Alistair Riddoch
+// Copyright (C) 2001-2004 Alistair Riddoch
 
 #ifndef COMMON_ACCOUNT_BASE_H
 #define COMMON_ACCOUNT_BASE_H

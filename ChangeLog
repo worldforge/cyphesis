@@ -1,5 +1,21 @@
 2004-11-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.cpp, common/BaseEntity.h, common/BaseWorld.cpp,
+	  common/BaseWorld.h, common/Burn.h, common/Chop.h, common/Cut.h,
+	  common/Database.cpp, common/Database.h, common/Eat.h,
+	  common/Generic.h, common/Load.h, common/Nourish.h,
+	  common/OOGThing.cpp, common/OOGThing.h, common/Save.h,
+	  common/Setup.h, common/Tick.h, common/accountbase.cpp,
+	  common/accountbase.h, common/const.cpp, common/const.h,
+	  common/custom.cpp, common/debug.h, common/globals.cpp,
+	  common/globals.h, common/inheritance.cpp, common/inheritance.h,
+	  common/log.cpp, common/log.h, common/op_switch.h, common/random.h,
+	  common/serialno.h, common/system.cpp, common/system.h,
+	  common/type_utils.h, common/types.h, common/utility.cpp,
+	  common/utility.h: Update copyright dates in files as appropriate.
+
+2004-11-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Clear up the logging wrappers.
 	  Add python wrapper for squareDistance which is more efficient
 	  in the goal code that distanceTo. Remove some old python functions
