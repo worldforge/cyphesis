@@ -16,18 +16,22 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
+/// \brief Constructor for Chop operation instances
 Chop::Chop() : Action("", "chop")
 {
 }
 
+/// \brief Constructor for operation instances that inherit from Chop
 Chop::Chop(const char * id, const char * parent) : Action(id, parent)
 {
 }
 
+/// \brief Destructor for Chop operations
 Chop::~Chop()
 {
 }
 
+/// \brief Return an object containing the op_definition for Chop operation
 Chop Chop::Class()
 {
     Chop value("chop", "action");
@@ -35,16 +39,20 @@ Chop Chop::Class()
     return value;
 }
 
+/// \brief Constructor for Cut operation instances
 Cut::Cut() : Action("", "cut")
 {
 }
 
+/// \brief Constructor for operation instances that inherit from Cut
 Cut::Cut(const char * id, const char * parent) : Action(id, parent)
 {
 }
 
+/// \brief Destructor for Cut operations
 Cut::~Cut() { }
 
+/// \brief Return an object containing the op_definition for Cut operation
 Cut Cut::Class()
 {
     Cut value("cut", "action");
@@ -52,18 +60,22 @@ Cut Cut::Class()
     return value;
 }
 
+/// \brief Constructor for Eat operation instances
 Eat::Eat() : Action("", "eat")
 {
 }
 
+/// \brief Constructor for operation instances that inherit from Eat
 Eat::Eat(const char * id, const char * parent) : Action(id, parent)
 {
 }
 
+/// \brief Destructor for Eat operations
 Eat::~Eat()
 {
 }
 
+/// \brief Return an object containing the op_definition for Eat operation
 Eat Eat::Class()
 {
     Eat value("eat", "action");
@@ -71,18 +83,22 @@ Eat Eat::Class()
     return value;
 }
 
+/// \brief Constructor for Burn operation instances
 Burn::Burn() : Action("", "burn")
 {
 }
 
+/// \brief Constructor for operation instances that inherit from Burn
 Burn::Burn(const char * id, const char * parent) : Action(id, parent)
 {
 }
 
+/// \brief Destructor for Burn operations
 Burn::~Burn()
 {
 }
 
+/// \brief Return an object containing the op_definition for Burn operation
 Burn Burn::Class()
 {
     Burn value("burn", "action");
@@ -90,14 +106,17 @@ Burn Burn::Class()
     return value;
 }
 
+/// \brief Constructor for Generic operation instances
 Generic::Generic(const std::string & p) : RootOperation("", p.c_str())
 {
 }
 
+/// \brief Destructor for Generic operations
 Generic::~Generic()
 {
 }
 
+/// \brief Return an object containing the op_definition for Generic operations
 Generic Generic::Class(const std::string & p)
 {
     Generic value(p);
@@ -105,18 +124,22 @@ Generic Generic::Class(const std::string & p)
     return value;
 }
 
+/// \brief Constructor for Nourish operation instances
 Nourish::Nourish() : Action("", "nourish")
 {
 }
 
+/// \brief Constructor for operation instances that inherit from Nourish
 Nourish::Nourish(const char * id, const char * parent) : Action(id, parent)
 {
 }
 
+/// \brief Destructor for Nourish operations
 Nourish::~Nourish()
 {
 }
 
+/// \brief Return an object containing the op_definition for Nourish operation
 Nourish Nourish::Class()
 {
     Nourish value("nourish", "action");
@@ -124,18 +147,22 @@ Nourish Nourish::Class()
     return value;
 }
 
+/// \brief Constructor for Setup operation instances
 Setup::Setup() : RootOperation("", "setup")
 {
 }
 
+/// \brief Constructor for operation instances that inherit from Setup
 Setup::Setup(const char * id, const char * parent) : RootOperation(id, parent)
 {
 }
 
+/// \brief Destructor for Setup operations
 Setup::~Setup()
 {
 }
 
+/// \brief Return an object containing the op_definition for Setup operation
 Setup Setup::Class()
 {
     Setup value("setup", "root_operation");
@@ -143,18 +170,22 @@ Setup Setup::Class()
     return value;
 }
 
+/// \brief Constructor for Tick operation instances
 Tick::Tick() : RootOperation("", "tick")
 {
 }
 
+/// \brief Constructor for operation instances that inherit from Tick
 Tick::Tick(const char * id, const char * parent) : RootOperation(id, parent)
 {
 }
 
+/// \brief Destructor for Tick operations
 Tick::~Tick()
 {
 }
 
+/// \brief Return an object containing the op_definition for Tick operation
 Tick Tick::Class()
 {
     Tick value("tick", "root_operation");
@@ -162,18 +193,22 @@ Tick Tick::Class()
     return value;
 }
 
+/// \brief Constructor for Unseen operation instances
 Unseen::Unseen() : Perception("", "unseen")
 {
 }
 
+/// \brief Constructor for operation instances that inherit from Unseen
 Unseen::Unseen(const char * id, const char * parent) : Perception(id, parent)
 {
 }
 
+/// \brief Destructor for Unseen operations
 Unseen::~Unseen()
 {
 }
 
+/// \brief Return an object containing the op_definition for Unseen operation
 Unseen Unseen::Class()
 {
     Unseen value("unseen", "perception");
@@ -181,18 +216,22 @@ Unseen Unseen::Class()
     return value;
 }
 
+/// \brief Constructor for Use operation instances
 Use::Use() : Action("", "use")
 {
 }
 
+/// \brief Constructor for operation instances that inherit from Use
 Use::Use(const char * id, const char * parent) : Action(id, parent)
 {
 }
 
+/// \brief Destructor for Use operations
 Use::~Use()
 {
 }
 
+/// \brief Return an object containing the op_definition for Use operation
 Use Use::Class()
 {
     Use value("use", "action");
@@ -200,18 +239,22 @@ Use Use::Class()
     return value;
 }
 
+/// \brief Constructor for Wield operation instances
 Wield::Wield() : Set("", "wield")
 {
 }
 
+/// \brief Constructor for operation instances that inherit from Wield
 Wield::Wield(const char * id, const char * parent) : Set(id, parent)
 {
 }
 
+/// \brief Destructor for Wield operations
 Wield::~Wield()
 {
 }
 
+/// \brief Return an object containing the op_definition for Wield operation
 Wield Wield::Class()
 {
     Wield value("wield", "set");

@@ -26,6 +26,7 @@ using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 using Atlas::Objects::Operation::Sight;
 
+/// \brief Constructor for the World entity
 World::World(const std::string & id) : World_parent(id),
                                        m_terrain(*new Mercator::Terrain())
 {
@@ -40,6 +41,7 @@ World::~World()
     delete &m_terrain;
 }
 
+/// \brief Calculate the terrain height at the given x,y coordinates
 float World::getHeight(float x, float y)
 {
     Mercator::Segment * s = m_terrain.getSegment(x, y);

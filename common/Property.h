@@ -10,11 +10,13 @@
 /// \brief Interface for Entity properties
 class PropertyBase {
   protected:
+    /// \brief Flags indicating how this Property should be handled
     const unsigned int m_flags;
     explicit PropertyBase(unsigned int);
   public:
     virtual ~PropertyBase();
 
+    /// \brief Accessor for Property flags
     unsigned int flags() const { return m_flags; }
 
     /// \brief Copy the value of the property into an Atlas Message
@@ -29,6 +31,7 @@ class PropertyBase {
 template <typename T>
 class Property : public PropertyBase {
   protected:
+    /// \brief Reference to variable holding the value of this Property
     T & m_data;
   public:
     explicit Property(T & data, unsigned int flags);
@@ -46,6 +49,7 @@ class Property : public PropertyBase {
 template <typename T>
 class ImmutableProperty : public PropertyBase {
   protected:
+    /// \brief Reference to variable holding the value of this Property
     const T & m_data;
   public:
     explicit ImmutableProperty(const T & data);

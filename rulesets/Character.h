@@ -8,6 +8,7 @@
 #include "Thing.h"
 
 class Movement;
+class Task;
 class BaseMind;
 
 typedef Thing Character_parent;
@@ -26,6 +27,7 @@ typedef Thing Character_parent;
 class Character : public Character_parent {
   protected:
     Movement & m_movement;
+    Task * m_task;
     bool m_isAlive;
     std::string m_rightHandWield;
 

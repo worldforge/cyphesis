@@ -5,6 +5,7 @@
 #include "Character.h"
 
 #include "Pedestrian.h"
+#include "Task.h"
 #include "MindFactory.h"
 #include "BaseMind.h"
 #include "Script.h"
@@ -77,7 +78,7 @@ void Character::metabolise(OpVector & res, double ammount)
 
 Character::Character(const std::string & id) : Character_parent(id),
                                             m_movement(*new Pedestrian(*this)),
-                                            m_isAlive(true),
+                                            m_task(0), m_isAlive(true),
                                             m_drunkness(0.0), m_sex("female"),
                                             m_food(0), m_maxMass(100),
                                             m_mind(NULL), m_externalMind(NULL)
@@ -195,6 +196,19 @@ void Character::TickOperation(const Operation & op, OpVector & res)
 {
     if (op.hasAttr("sub_to")) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
+        Element sub_to = op.getAttr("sub_to");
+        if (!sub_to.isString()) {
+            error(op, "Tick op sub_to is not string", res, getId());
+            return;
+        }
+        if (sub_to.asString() == "task") {
+            std::cout << "Task tick" << std::endl << std::flush;
+            if (m_task == 0) {
+                log(ERROR, "Got Tick op for task, but task is null");
+                return;
+            }
+            m_task->TickOperation(op, res);
+        }
         return;
     }
     debug(std::cout << "================================" << std::endl

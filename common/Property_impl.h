@@ -7,6 +7,7 @@
 
 #include "Property.h"
 
+/// \brief Constructor for standard Propertys
 template <typename T>
 Property<T>::Property(T & data, unsigned int flags) : PropertyBase(flags),
                                                       m_data(data)
@@ -31,6 +32,7 @@ void Property<T>::add(const std::string & s, Atlas::Message::MapType & ent)
     get(ent[s]);
 }
 
+/// \brief Constructor for immutable Propertys
 template <typename T>
 ImmutableProperty<T>::ImmutableProperty(const T & data) : PropertyBase(0),
                                                           m_data(data)

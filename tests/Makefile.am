@@ -7,7 +7,7 @@ MODULE_TESTS = Locationtest WorldTimetest
 
 RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
                  Stackabletest Structuretest Thingtest Worldtest \
-                 Charactertest Creatortest Containertest
+                 Charactertest Creatortest Containertest Tasktest
 
 INCLUDES = -I$(top_srcdir)
 
@@ -347,3 +347,20 @@ Creatortest_LDFLAGS = -export-dynamic
 
 Containertest_SOURCES = Containertest.cpp
 Containertest_LDADD = $(top_builddir)/rulesets/Container.o
+
+Tasktest_SOURCES = Tasktest.cpp
+Tasktest_LDADD = $(top_builddir)/rulesets/Fell.o \
+                 $(top_builddir)/rulesets/Task.o \
+                 $(top_builddir)/rulesets/Entity.o \
+                 $(top_builddir)/rulesets/EntityProperties.o \
+                 $(top_builddir)/rulesets/Script.o \
+                 $(top_builddir)/modules/Location.o \
+                 $(top_builddir)/modules/DateTime.o \
+                 $(top_builddir)/common/inheritance.o \
+                 $(top_builddir)/common/Property.o \
+                 $(top_builddir)/common/BaseEntity.o \
+                 $(top_builddir)/common/log.o \
+                 $(top_builddir)/common/globals.o \
+                 $(top_builddir)/common/serialno.o \
+                 $(top_builddir)/common/custom.o \
+                 $(top_builddir)/common/operations.o

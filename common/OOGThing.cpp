@@ -4,6 +4,9 @@
 
 #include "OOGThing.h"
 
+/// \brief Constructor called from classes that inherit from OOGThing
+///
+/// @param id identifier of new entity
 OOGThing::OOGThing(const std::string & id) : BaseEntity(id)
 {
 }

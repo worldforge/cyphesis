@@ -1,5 +1,19 @@
 2004-12-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/OOGThing.cpp, common/Property.cpp, common/Property.h,
+	  common/Property_impl.h, common/inheritance.h, common/operations.cpp,
+	  rulesets/World.cpp: Update some comments.
+
+	* rulesets/Task.h, rulesets/Task.cpp, tests/Tasktest.cpp,
+	  rulesets/Fell.h, rulesets/Fell.cpp: New Task interface for
+	  tasks which take a while to complete. Sample implentation provided
+	  in the form of a Fell task for felling trees.
+
+	* rulesets/Character.cpp, rulesets/Character.h: Try out Task
+	  implementation with Fell.
+
+2004-12-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Makefile.am: Separate object files not used in the core
 	  server binary into a different library.
 

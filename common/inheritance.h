@@ -34,8 +34,12 @@ class OpFactoryBase {
   public:
     virtual ~OpFactoryBase();
 
-    virtual Atlas::Objects::Operation::RootOperation * newOperation() = 0;
-    virtual void newOperation(Atlas::Objects::Operation::RootOperation &) = 0;
+    /// \brief Create a new operation using this factory on the heap
+    virtual Operation * newOperation() = 0;
+    /// \brief Create a new operation using this factory
+    ///
+    /// @param o Operation structure used to store the new operation
+    virtual void newOperation(Operation & o) = 0;
 };
 
 /// \brief Class template for factories to create Operation instances of
@@ -43,8 +47,8 @@ class OpFactoryBase {
 template <class OpClass>
 class OpFactory : public OpFactoryBase {
   public:
-    virtual Atlas::Objects::Operation::RootOperation * newOperation();
-    virtual void newOperation(Atlas::Objects::Operation::RootOperation &);
+    virtual Operation * newOperation();
+    virtual void newOperation(Operation &);
 };
 
 /// \brief Class for factories to create Operation instance with no hard coded
@@ -55,8 +59,8 @@ class GenericOpFactory : public OpFactoryBase {
   public:
     explicit GenericOpFactory(const std::string & opType);
 
-    virtual Atlas::Objects::Operation::RootOperation * newOperation();
-    virtual void newOperation(Atlas::Objects::Operation::RootOperation &);
+    virtual Operation * newOperation();
+    virtual void newOperation(Operation &);
 };
 
 typedef std::map<std::string, OpFactoryBase *> OpFactoryDict;
@@ -84,11 +88,11 @@ class Inheritance {
     }
 
     OpNo opEnumerate(const std::string & parent) const;
-    OpNo opEnumerate(const Atlas::Objects::Operation::RootOperation &) const;
+    OpNo opEnumerate(const Operation &) const;
     Atlas::Objects::Root * get(const std::string & parent);
     int addChild(Atlas::Objects::Root * obj);
-    Atlas::Objects::Operation::RootOperation * newOperation(const std::string &);
-    int newOperation(const std::string &, Atlas::Objects::Operation::RootOperation &);
+    Operation * newOperation(const std::string &);
+    int newOperation(const std::string &, Operation &);
 };
 
 #endif // COMMON_INHERITANCE_H
