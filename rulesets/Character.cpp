@@ -996,12 +996,6 @@ void Character::mind2body(const RootOperation & op, OpVector & res)
     OP_SWITCH(op, otype, res, mind)
 }
 
-void Character::world2body(const RootOperation & op, OpVector & res)
-{
-    debug( std::cout << "Character::world2body" << std::endl << std::flush;);
-    callOperation(op, res);
-}
-
 bool Character::world2mind(const RootOperation & op)
 {
     debug( std::cout << "Character::world2mind" << std::endl << std::flush;);
@@ -1013,7 +1007,7 @@ bool Character::world2mind(const RootOperation & op)
 void Character::operation(const RootOperation & op, OpVector & res)
 {
     debug( std::cout << "Character::operation" << std::endl << std::flush;);
-    world2body(op, res);
+    callOperation(op, res);
     // set refno on result?
     if (!m_isAlive) {
         return;

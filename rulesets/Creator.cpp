@@ -23,11 +23,11 @@ Creator::Creator(const std::string & id) : Creator_parent(id)
     }
 }
 
-void Creator::sendMind(const RootOperation & op, OpVector & res)
+void Creator::sendExternalMind(const RootOperation & op, OpVector & res)
 {
-    debug( std::cout << "Creator::sendMind" << std::endl << std::flush;);
-    // Simpified version of character method sendMind() because local mind
-    // of creator is irrelevant
+    debug(std::cout << "Creator::sendExternalMind" << std::endl << std::flush;);
+    // Simpified version of Character method sendMind() because local
+    // mind of Creator is irrelevant
     if (0 != m_externalMind) {
         debug( std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
@@ -70,6 +70,9 @@ void Creator::operation(const RootOperation & op, OpVector & res)
             break;
         case OP_DELETE:
             DeleteOperation((Delete &)op, res);
+            // Prevent Delete op from being sent to mind, so another delete
+            // is not created in response.
+            return;
             break;
         case OP_TICK:
             TickOperation((Tick &)op, res);
@@ -77,7 +80,7 @@ void Creator::operation(const RootOperation & op, OpVector & res)
         default:
             break;
     }
-    sendMind(op, res);
+    sendExternalMind(op, res);
 }
 
 void Creator::externalOperation(const RootOperation & op, OpVector & res)
@@ -112,7 +115,7 @@ void Creator::externalOperation(const RootOperation & op, OpVector & res)
 
 void Creator::mindLookOperation(const Look & op, OpVector & res)
 {
-    // This overriden version allows the creator to search the world for
+    // This overriden version allows the Creator to search the world for
     // entities by type or by name
     debug(std::cout << "Got look up from prived mind from [" << op.getFrom()
                << "] to [" << op.getTo() << "]" << std::endl << std::flush;);

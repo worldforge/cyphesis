@@ -1,5 +1,14 @@
 2004-09-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Creator.h, rulesets/Creator.cpp: Rename sendMind() to
+	  sendExternalMind() to make it clear that its not the same as the
+	  method in Character.
+
+	* rulesets/Character.h, rulesets/Character.cpp: Remove world2body()
+	  as it was identical in semantics to callOperation().
+
+2004-09-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Creator.cpp: Allow creator to handle a few more op
 	  types, and use switch to determine what to do.
 

@@ -13,7 +13,7 @@ class Creator : public Creator_parent {
   public:
     explicit Creator(const std::string & id);
 
-    void sendMind(const RootOperation & msg, OpVector &);
+    void sendExternalMind(const RootOperation & msg, OpVector &);
 
     virtual void operation(const RootOperation & op, OpVector &);
     virtual void externalOperation(const RootOperation & op, OpVector &);

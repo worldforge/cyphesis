@@ -143,7 +143,6 @@ class Character : public Character_parent {
 
     void sendMind(const RootOperation & op, OpVector &);
     void mind2body(const RootOperation & op, OpVector &);
-    void world2body(const RootOperation & op, OpVector &);
     bool world2mind(const RootOperation & op);
 };
 
