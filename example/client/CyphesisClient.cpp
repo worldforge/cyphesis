@@ -316,13 +316,22 @@ void CyphesisClient::ObjectArrived(const Operation::Info& o)
         return;
     }
     if (state == INIT) {
-        const Message::Object & account = args.AsList().front();
+        Message::Object account = args.AsList().front();
         Objects::Entity::Account obj = Objects::Entity::Account::Instantiate();
         for (Message::Object::MapType::const_iterator I = account.AsMap().begin();
             I != account.AsMap().end(); I++)
             obj.SetAttr(I->first, I->second);
         account_id = obj.GetAttr("id").AsString();
         state = LOGGED_IN;
+        Message::Object::MapType & ac_map = account.AsMap();
+        if (ac_map.find("characters") != ac_map.end()) {
+            const Message::Object::ListType & chars = ac_map["characters"].AsList();
+            cout << "Got " << chars.size() << " characters:" << endl << flush;
+            for(Message::Object::ListType::const_iterator I = chars.begin();
+                        I != chars.end(); I++) {
+                cout << "Character " << I->AsString() << endl << flush;
+            }
+        }
     } else if (state == LOGGED_IN) {
         Message::Object::MapType character = args.AsList().front().AsMap();
         character_id = character["id"].AsString();

@@ -1,3 +1,16 @@
+2001-01-04  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Fixed pig behavoir bug so location coordinates are now not added
+	  to object if they have not been set.
+
+	* Added code to example client so it now reads characters list 
+	  when it logs in.
+
+	* Removed support for obsolete old-atlas locations.
+
+	* Changed behavoir on unexpected error from client socket, so
+	  it no longer causes an abort.
+
 2001-01-02  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Fixed pig mind so it is now better able to detect "Sowee"

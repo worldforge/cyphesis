@@ -236,11 +236,11 @@ void CommServer::loop() {
                client->read();
            } else if (client->eof()) {
                remove_client(client);
-               debug_server && cout << "Client disconnected. Handle it here" << endl << flush;
                break;
            } else {
                cerr << "FATAL THIS SHOULD NEVER HAPPEN" << endl << flush;
-               abort();
+               remove_client(client);
+               break;
            }
        }
     }

@@ -39,9 +39,9 @@ void BaseEntity::destroy()
 const Vector3D & BaseEntity::get_xyz()
 {
     //Location l=location;
-    //if (!l) {
-        //return Vector3D(0.0,0.0,0.0);
-    //}
+    if (!location) {
+        return Vector3D(0.0,0.0,0.0);
+    }
     if (location.parent) {
         return location.coords+location.parent->get_xyz();
     } else {

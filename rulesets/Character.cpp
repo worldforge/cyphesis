@@ -373,56 +373,6 @@ oplist Character::Mind_Operation(const Move & op)
         return(res);
     }
     string location_parent;
-#if USE_OLD_LOC
-    Vector3D location_coords;
-    Vector3D location_vel;
-    if ((arg1.find("loc") != arg1.end()) && (arg1["loc"].IsMap())) {
-        Message::Object::MapType & lmap = arg1["loc"].AsMap();
-        location_parent = lmap["ref"].AsString();
-        debug_movement && cout << "Got old parent format" << endl << flush;
-        if ((lmap.find("coords") != lmap.end()) && (lmap["coords"].IsList())) {
-            Message::Object::ListType vector = lmap["coords"].AsList();
-            if (vector.size()==3) {
-                try {
-                    double x = vector.front().AsFloat();
-                    vector.pop_front();
-                    double y = vector.front().AsFloat();
-                    vector.pop_front();
-                    double z = vector.front().AsFloat();
-                    location_coords = Vector3D(x, y, z);
-                    debug_movement && cout << "Got old coords format: " << location_coords << endl << flush;
-                }
-                catch (Message::WrongTypeException) {
-                    cerr << "EXCEPTION: Malformed coords move operation" << endl << flush;
-                    delete newop;
-                    return(error("Malformed coords move operation"));
-                }
-            }
-        }
-        if ((lmap.find("velocity") != lmap.end()) && (lmap["velocity"].IsList())) {
-            Message::Object::ListType vector = lmap["velocity"].AsList();
-            if (vector.size()==3) {
-                try {
-                    double x = vector.front().AsFloat();
-                    vector.pop_front();
-                    double y = vector.front().AsFloat();
-                    vector.pop_front();
-                    double z = vector.front().AsFloat();
-                    location_vel = Vector3D(x, y, z);
-                    debug_movement && cout << "Got old velocity format: " << location_vel << endl << flush;
-                }
-                catch (Message::WrongTypeException) {
-                    cerr << "EXCEPTION: Malformed velocity move operation" << endl << flush;
-                    delete newop;
-                    return(error("Malformed velocity move operation"));
-                }
-            }
-        }
-
-    } else {
-        debug_movement && cout << "Location not set" << endl << flush;
-    }
-#else
     if ((arg1.find("loc") != arg1.end()) && (arg1["loc"].IsString())) {
         location_parent = arg1["loc"].AsString();
     } else {
@@ -483,7 +433,6 @@ oplist Character::Mind_Operation(const Move & op)
             }
         }
     }
-#endif 
     if (!location_coords) {
         if (op.GetFutureSeconds() < 0) {
             newop->SetFutureSeconds(0);

@@ -287,11 +287,6 @@ oplist Thing::Operation(const Move & op)
             debug_thing && cout << "ERROR: move op arg has no parent" << endl << flush;
             return(error(op, "Move location has no parent"));
         }
-#if USE_OLD_LOC
-        Message::Object::MapType lmap = ent["loc"].AsMap();
-        string parent = lmap["ref"].AsString();
-        debug_thing && cout << "Got old style ref in move op" << endl << flush;
-#else
         string parent=ent["loc"].AsString();
         if (world->fobjects.find(parent) == world->fobjects.end()) {
             debug_thing && cout << "ERROR: move op arg parent is invalid" << endl << flush;
@@ -302,37 +297,7 @@ oplist Thing::Operation(const Move & op)
             location.parent->contains.remove(this);
             newparent->contains.push_back(this);
         }
-#endif
         location.parent=newparent;
-#if USE_OLD_LOC
-        if (lmap.find("coords") == lmap.end()) {
-            return(error(op, "Move location has no position"));
-        }
-        Message::Object::ListType vector = lmap["coords"].AsList();
-        if (vector.size()!=3) {
-            return(error(op, "Move location pos is malformed"));
-        }
-        double x = vector.front().AsFloat();
-        vector.pop_front();
-        double y = vector.front().AsFloat();
-        vector.pop_front();
-        double z = vector.front().AsFloat();
-        location.coords = Vector3D(x, y, z);
-        if (lmap.find("velocity") == lmap.end()) {
-            return(error(op, "Move location has no velocity"));
-        }
-        vector.clear();
-        vector = lmap["velocity"].AsList();
-        if (vector.size()!=3) {
-            return(error(op, "Move location velocity is malformed"));
-        }
-        x = vector.front().AsFloat();
-        vector.pop_front();
-        y = vector.front().AsFloat();
-        vector.pop_front();
-        z = vector.front().AsFloat();
-        location.velocity = Vector3D(x, y, z);
-#else
         if (ent.find("pos") == ent.end()) {
             return(error(op, "Move location has no position"));
         }
@@ -362,7 +327,6 @@ oplist Thing::Operation(const Move & op)
             debug_thing && cout << "VEL: " << x << " " << y << " " << z << endl << flush;
             location.velocity = Vector3D(x, y, z);
         }
-#endif
         debug_thing && cout << "MOVE calculate vel=" << location.velocity
              << " coord=" << location.coords;
 

@@ -1,4 +1,4 @@
-ATLAS_INCLUDES=-I/home/ajr/atlas-install/include 
+ATLAS_INCLUDES=-I/usr/local/include 
 ATLAS_INCLUDES2=-I/opt/atlas-install/include 
 INCLUDE = -I. -I/usr/include/python1.5 $(ATLAS_INCLUDES)
 INCLUDE2 = -I. -I/usr/include/python1.5 $(ATLAS_INCLUDES2)
@@ -7,7 +7,7 @@ PROF = -pg
 CC_COMPILE = g++ -g $(OPTIMIZE) -c $(PROF) -Wall -o 
 
 #all: CyphesisClient CyphesisClient2
-all: CyphesisClient2
+all: CyphesisClient
 
 CyphesisClient: CyphesisClient.o
 	g++ -o CyphesisClient CyphesisClient.o -L/home/ajr/atlas-install/lib -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage  -lAtlasObjects -lAtlasObjectsEntity -lAtlasObjectsOperation
