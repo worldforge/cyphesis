@@ -26,7 +26,7 @@ class ServerRouting : public OOGThing {
     ServerRouting(CommServer & server, const std::string & ruleset, const std::string & name);
     ~ServerRouting();
 
-    inline int idle();
+    int idle();
 
     BaseEntity * addObject(BaseEntity * obj) {
         objects[obj->getId()] = obj;

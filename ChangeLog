@@ -1,3 +1,9 @@
+2002-05-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/ServerRouting.cpp, server/ServerRouting.h,
+	  server/ServerRouting_methods.h: Workaround for older GNU compilers
+	  that can't inline under certain circumstances.
+
 2002-05-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Account.cpp: Provide names on accounts for uclient.
