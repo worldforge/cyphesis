@@ -26,7 +26,7 @@ tavern_xyz=(40,-00,village_height)
 market_xyz=(-44,-10,village_height)
 pig_stall_xyz=(-27,1,village_height)
 pig_sty_xyz=(-26,2,village_height)
-butcher_stall_xyz=(-33,-7,village_height)
+butcher_stall_xyz=(-41.5,-6.3,village_height)
 tree_xyz=(-35,-25,village_height)
 
 
@@ -41,14 +41,12 @@ bknowledge=[('market',butcher_stall_xyz)]
 mknowledge=[('market',pig_stall_xyz)]
 sknowledge=[('forest',(-30,-116,village_height)),
             ('stash',(-98,-97,village_height))]
-gknowledge=[('m1',pig_stall_xyz),
-            ('m2',(-31,-7,village_height)),
-            ('m3',butcher_stall_xyz),
-            ('m4',(-42,-6,village_height)),
-            ('m5',(-45,-12,village_height)),
-            ('m6',(-42,-15,village_height)),
-            ('m7',(-35,-14,village_height)),
-            ('m8',(-33,-9,village_height))]
+gknowledge=[('m1',(-17, -1,    village_height)),
+            ('m2',(-29, -1,    village_height)),
+            ('m3',(-29, -7.5,  village_height)),
+            ('m4',(-38, -10,   village_height)),
+            ('m5',(-43, -15,   village_height)),
+            ('m8',(-43, -14.5, village_height))]
 wknowledge=[('w1',(90,-90,village_height)),
             ('w2',(110,-90,village_height)),
             ('w3',(110,90,village_height)),
@@ -88,20 +86,32 @@ def default(mapeditor):
     m.make('lumber',type='lumber',xyz=(-1,3,village_height))
     m.make('lumber',type='lumber',xyz=(-1,2.5,village_height))
 
-    m.make('sign_market_w',type='sign_market_w',xyz=(-2,-28,village_height))
+    cfire=m.make('campfire',type='campfire',xyz=(35,54,village_height))
+    m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
+
+    cfire=m.make('campfire',type='campfire',xyz=(42,51,village_height))
+    m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
+
+    cfire=m.make('campfire',type='campfire',xyz=(43,39,village_height))
+    m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
+
+    m.make('sign_market_w',type='sign_market_w',xyz=(-8.7,-21.2,village_height))
+
+    for i in range(0, 20):
+        m.make('lumber',type='lumber',xyz=(uniform(-100,0),uniform(-100,-80),village_height))
 
 #   general
     m.make('oak',type='oak',xyz=(-70,-86,village_height))
-    m.make('oak',type='oak',xyz=(-10,-87,village_height))
+    m.make('oak',type='oak',xyz=(-6,-77,village_height))
     m.make('oak',type='oak',xyz=(-24,-90,village_height))
     m.make('oak',type='oak',xyz=(-49,-90,village_height))
     m.make('oak',type='oak',xyz=(-86,-81,village_height))
     m.make('oak',type='oak',xyz=(-12,-98,village_height))
-    m.make('oak',type='oak',xyz=(-41,-98,village_height))
-    m.make('oak',type='oak',xyz=(-97,-80,village_height))
+    m.make('oak',type='oak',xyz=(-35,-73,village_height))
+    m.make('oak',type='oak',xyz=(-83,-66,village_height))
     m.make('oak',type='oak',xyz=(-87,-34,village_height))
     m.make('oak',type='oak',xyz=(-98,-28,village_height))
-    m.make('oak',type='oak',xyz=(-87,25,village_height))
+    m.make('oak',type='oak',xyz=(-75,31,village_height))
 
     m.make('weather',type='weather',desc='object that describes the weather',
            xyz=(0,1,0), rain=0.0)
@@ -145,9 +155,7 @@ def default(mapeditor):
 #   farmers
 
     sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0)
-    m.make('bstall',type='bstall',xyz=(-35,-5,village_height))
-    #m.make('stall',type='stall',xyz=(-45,-2,village_height))
-    #m.make('stall',type='stall',xyz=(-45,-32,village_height))
+    m.make('bstall',type='bstall',xyz=(-41,-5,village_height))
 
     home1_xyz=(90,-90,village_height)
 

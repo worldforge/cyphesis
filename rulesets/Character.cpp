@@ -617,7 +617,7 @@ oplist Character::Mind_Operation(const Look & op)
             }
         }
     }
-    cout << "    now to [" << l->GetTo() << "]" << endl << flush;
+    debug_character && cout <<"    now to ["<<l->GetTo()<<"]"<<endl<<flush;
     return(oplist(1,l));
 }
 
