@@ -1,5 +1,6 @@
-orientation seems to have died completely, and client no longer seems to be
-able to populate world.
+Client no longer seems to be able to populate world.
+
+Persistance problems. Characters that can't move etc. Bad after a restart.
 
 Persistence and other words with the same root are incorrectly spelt
 Persistance throughout.
