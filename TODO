@@ -28,10 +28,6 @@ General TODO
 
   Generalise and virtualise the collision code. Handle at very least obboxes
 
-  Implement base class for CommClient and other connections which listen/talk
-  on a socket, such as the database connection, so we can have non blocking
-  db access.
-
   Implement jump operation, which specifies target, and comes back with,
   a sight of a jump which has the starting velocity, and finish position.
   If the client sends only velocity, then something else happens. Add
@@ -85,18 +81,9 @@ General TODO
 
   Find out why pure orientation changes don't get echoed by the server.
 
-  Add custom ops into the global opEnumerator as OP_OTHER or something.
-
   Once the subscription mechanism works, transfer its setup into the factories,
   and use it to inform the clients what op types are meaningful for object
   types.
-
-  Its probably a good idea to make sure Location has an operator== and
-  operator!= to make sure operator bool is not stuffing it up.
-
-  fire is being installed as a type of operation, and as an entity class.
-
-  Lookup whether c_str() returns a pointer which must be deleted.
 
   Fix the database so it handles updating entities. Need to actually lookup
   how this is done. Need to lock row if its being updated.
