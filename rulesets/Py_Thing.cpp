@@ -40,6 +40,7 @@ static PyObject * Entity_get_xyz(PyEntity * self)
         return NULL;
     }
     ret->coords = self->m_entity->getXyz();
+    assert(ret->coords.isValid());
     return (PyObject *)ret;
 }
 

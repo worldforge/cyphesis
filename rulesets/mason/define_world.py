@@ -432,8 +432,17 @@ def modify_terrain(mapeditor):
     m.set(world.id, terrain={'points' : points})
 
 def test_coll(mapeditor):
-#   general things
 
     m=editor(mapeditor)
 
     sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[5,5,3], orientation=directions[0])
+
+def test_deer(mapeditor):
+
+    m=editor(mapeditor)
+
+    deer=m.make('deer', type='deer', xyz=(10, 10, settlement_height))
+    m.learn(deer,deer_goals)
+
+    chicken=m.make('chicken', type='chicken', xyz=(5, 10, settlement_height))
+    m.learn(chicken,chicken_goals)

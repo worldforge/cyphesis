@@ -43,6 +43,7 @@ static PyObject * Mind_get_xyz(PyMind * self)
         return NULL;
     }
     ret->coords = self->m_mind->getXyz();
+    assert(ret->coords.isValid());
     return (PyObject *)ret;
 }
 

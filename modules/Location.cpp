@@ -30,8 +30,12 @@ Location::Location(Entity * rf, const Point3D& crds, const Vector3D& vel) :
 const Point3D Location::getXyz() const
 {
     if (m_loc != 0) {
-        return m_pos.toParentCoords(m_loc->m_location.getXyz(),
+        if (m_loc->m_location.m_orientation.isValid()) {
+            return m_pos.toParentCoords(m_loc->m_location.getXyz(),
                                     m_loc->m_location.m_orientation);
+        } else {
+            return m_pos.toParentCoords(m_loc->m_location.getXyz());
+        }
     } else {
         return Point3D(0,0,0);
     }
