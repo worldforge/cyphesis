@@ -11,7 +11,7 @@ inline Atlas::Message::Object::ListType idListAsObject(const IdList &l)
 {
     Atlas::Message::Object::ListType ret;
     for(IdList::const_iterator I = l.begin(); I != l.end(); I++) {
-        ret.push_back(I);
+        ret.push_back(*I);
     }
     return ret;
 }
