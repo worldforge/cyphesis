@@ -21,9 +21,6 @@ various server classes.
 
 Make Connection::verifyCredentials() protected.
 
-Move the functions for reading values from database columns to being
-methods of the DatabaseResult::iterator.
-
 Track down anywhere where a normal mind is setting TO on IG operations sent
 to body.
 
@@ -31,13 +28,10 @@ Centralise serialno assigment on IG ops, checking for 0 to see if we should?
 
 Sort out FIXME in Creator::operation().
 
-Account sends a Sight(Create) IG of the newly created character. Is this
-required? Surely the broadcast Appearance() will be enough.
-
 Character creation should not fail if creating its bootstrap inventory fails.
+Errors from coin creation are confusing clients.
 
-Make all operation handlers return operations in a argument rather than
-return by value. Take note of the places where behavoir is not the standard.
+Take note of the places where behavoir is not the standard.
 BaseMind::AppearanceOperation() uses both results from script and from
 from the C++ methods. As does BaseMind::DisappearanceOperation().
 Character::ImaginaryOperation() does not call a script at all.
@@ -48,11 +42,6 @@ Character::NourishOperation() does not call a script at all.
 Thing::SetupOperation() _ALWAYS_ emits an Appearance op, but then processes
 op as normal.
 World provides no script overloading for any of its methods.
-
-Sort out the way CONTAINS is done in Entity::addToObject and elsewhere,
-so that the delayed check, and deep copy is avoided. Test contains before
-doing it, and get a reference to the list inside the Element. World
-is even worse.
 
 Convert FormatedXMLWriter into a templat that can drive any Atlas codec.
 Thus we can have any Atlas Codec output in formatted human readable form.
@@ -75,9 +64,6 @@ to world.addNewObject() to avoid duplication.
 
 Use "REFERENCES foo ON DELETE CASCADE" SQL to make sure character table
 relations are removed when a character is deleted, or an account is deleted.
-
-Consider forcing dispatch of reply to delete op before deleting that entity.
-Might mean recursing slightly.
 
 So, we have skill, which is a way of mapping tool use into actions.
 How about tasks, which are a way of giving persistence and state to actions?
