@@ -609,6 +609,8 @@ oplist Character::Mind_Operation(const Talk & op)
 
 oplist Character::Mind_Operation(const Look & op)
 {
+    cout << "Got look up from mind from [" << op.GetFrom() << "] to ["
+         << op.GetTo() << "]" << endl << flush;
     Look * l = new Look(op);
     if (op.GetTo().size() == 0) {
         const Message::Object::ListType & args = op.GetArgs();
@@ -623,6 +625,7 @@ oplist Character::Mind_Operation(const Look & op)
             }
         }
     }
+    cout << "    now to [" << l->GetTo() << "]" << endl << flush;
     return(oplist(1,l));
 }
 
@@ -765,7 +768,8 @@ oplist Character::mind2body(const RootOperation & op)
     RootOperation newop(op);
     oplist res;
 
-    if (newop.GetTo().size() == 0) {
+    if ((newop.GetTo().size() == 0) &&
+        (op.GetParents().front().AsString() != "look")) {
        newop.SetTo(fullid);
     }
     if (drunkness > 1.0) {
