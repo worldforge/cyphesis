@@ -1,0 +1,11 @@
+The C++ version of cyphesis was written by Al Riddoch based on the original
+Python version written by aloril and other members of the WorldForge
+project listed in AUTHORS. My thanks to aloril for all the help
+with understanding the python version.
+
+Also thanks to:
+
+Stefanus du Toit for writing Atlas-C++.
+
+Karsten-Olaf Laux, author of uclient, for help and feedback debugging
+cyphesis.

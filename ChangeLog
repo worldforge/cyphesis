@@ -1,5 +1,11 @@
 2001-01-24  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Added THANKS file.
+
+	* Added rules to top level Makefile to install some docs.
+
+2001-01-24  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Throughout entire code base:
 	  Removed all obsolete code and commented out code relating to porting
 	  from python. Removed interim data types bad_type and None. Added
