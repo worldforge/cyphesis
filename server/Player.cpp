@@ -34,7 +34,7 @@ oplist Player::characterError(const Create& op,const Object::MapType& ent) const
 #endif
 
     const std::string& type= ent.find("parents")->second.AsList().front().AsString(); 
-    if ((type!="character") && (type!="archer") && (type!="druid") &&
+    if ((type!="settler") && (type!="archer") && (type!="druid") &&
         (type!="farmer") && (type!="khatinid") && (type!="guard") &&
         (type!="butcher") && (type!="merchant") && (type!="seller") &&
         (type!="swineherd") && (type!="warrior") && (type!="watermage")) {

@@ -13,6 +13,10 @@ class World;
 #include <common/OOGThing.h>
 
 class BaseWorld : public OOGThing {
+  private:
+    // Private and un-implemented to prevent slicing
+    BaseWorld(const BaseWorld &);
+    const BaseWorld & operator=(const BaseWorld &);
   protected:
     double realTime;
     elist_t objectList;

@@ -1,5 +1,13 @@
 2002-02-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseWorld.h:
+	  Prevent slicing.
+
+	* ./server/Player.cpp:
+	  Add settler class to mason ruleset.
+
+2002-02-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.h:
 	  Private un-implemented copy constructor and assignment operator,
 	  so slicing won't occur.

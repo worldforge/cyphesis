@@ -18,7 +18,7 @@
     </map>
   </map>
 
-  <map name="villager">
+  <map name="settler">
     <string name="parent">character</string>
     <map name="attributes">
     </map>
