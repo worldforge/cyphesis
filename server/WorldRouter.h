@@ -8,6 +8,8 @@
 #include "common/BaseWorld.h"
 #include "common/serialno.h"
 
+#include <list>
+
 extern "C" {
     #include <sys/time.h>
     #include <unistd.h>

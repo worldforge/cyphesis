@@ -1,5 +1,11 @@
 2004-12-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.h: Add missing <list> include.
+
+	* tests/type_utilstest.cpp: Add missing wfmath include.
+
+2004-12-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/inheritance.cpp, common/inheritance.h, common/refno.h,
 	  common/type_utils.h, rulesets/Entity.cpp, rulesets/LineProperty.cpp,
 	  rulesets/MemMap.h, rulesets/Py_Oplist.h, rulesets/Script.h,

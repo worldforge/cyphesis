@@ -6,6 +6,8 @@
 
 #include "physics/Vector3D.h"
 
+#include <wfmath/atlasconv.h>
+
 #include <cassert>
 
 int main()
