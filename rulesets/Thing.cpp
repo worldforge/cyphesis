@@ -141,6 +141,7 @@ oplist Thing::Operation(const Move & op)
     if (args.size() == 0) {
        return(res);
     }
+#define USE_OLD_LOC 1
     try {
         cout << 1;
         Message::Object::MapType ent = args.front().AsMap();
@@ -148,17 +149,57 @@ oplist Thing::Operation(const Move & op)
             return(error(op, "Move location has no parent"));
         }
         cout << 2;
+#if USE_OLD_LOC
+        Message::Object::MapType lmap = ent["loc"].AsMap();
+        string parent = lmap["ref"].AsString();
+        cout << "Got old style ref in move op" << endl << flush;
+#else
         string parent=ent["loc"].AsString();
         if (location.parent->fullid!=parent) {
             //location.parent.contains.remove(this);
             //ent.location.parent.contains.append(this);
         }
+#endif
         cout << 3;
         if (world->server->id_dict.find(parent) == world->server->id_dict.end()) {
             return(error(op, "Move location parent invalid"));
         }
         cout << 4;
         location.parent=world->server->id_dict[parent];
+#if USE_OLD_LOC
+        if (lmap.find("coords") == lmap.end()) {
+            return(error(op, "Move location has no position"));
+        }
+        cout << 5;
+        Message::Object::ListType vector = lmap["coords"].AsList();
+        if (vector.size()!=3) {
+            return(error(op, "Move location pos is malformed"));
+        }
+        cout << 6;
+        double x = vector.front().AsFloat();
+        vector.pop_front();
+        double y = vector.front().AsFloat();
+        vector.pop_front();
+        double z = vector.front().AsFloat();
+        location.coords = Vector3D(x, y, z);
+        if (lmap.find("velocity") == lmap.end()) {
+            return(error(op, "Move location has no velocity"));
+        }
+        cout << 7;
+        vector.clear();
+        cout << 7.5;
+        vector = lmap["velocity"].AsList();
+        cout << 8;
+        if (vector.size()!=3) {
+            return(error(op, "Move location velocity is malformed"));
+        }
+        x = vector.front().AsFloat();
+        vector.pop_front();
+        y = vector.front().AsFloat();
+        vector.pop_front();
+        z = vector.front().AsFloat();
+        location.velocity = Vector3D(x, y, z);
+#else
         if (ent.find("pos") == ent.end()) {
             return(error(op, "Move location has no position"));
         }
@@ -183,7 +224,7 @@ oplist Thing::Operation(const Move & op)
         vector = ent["velocity"].AsList();
         cout << 8;
         if (vector.size()!=3) {
-            return(error(op, "Move location pos is malformed"));
+            return(error(op, "Move location velocity is malformed"));
         }
         x = vector.front().AsFloat();
         vector.pop_front();
@@ -191,6 +232,7 @@ oplist Thing::Operation(const Move & op)
         vector.pop_front();
         z = vector.front().AsFloat();
         location.velocity = Vector3D(x, y, z);
+#endif
 
         cout << 9;
         double speed_ratio;

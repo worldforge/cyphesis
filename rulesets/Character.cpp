@@ -239,6 +239,8 @@ oplist Character::Mind_Operation(const Tick & op)
     return(oplist(1,t));
 }
 
+#define USE_OLD_LOC 1
+
 oplist Character::Mind_Operation(const Move & op)
 {
     cout << "Character::mind_move_op" << endl << flush;
@@ -264,6 +266,50 @@ oplist Character::Mind_Operation(const Move & op)
         return(res);
     }
     string location_parent("");
+#if USE_OLD_LOC
+    Vector3D location_coords;
+    Vector3D location_vel;
+    if ((arg1.find("loc") != arg1.end()) && (arg1["loc"].IsMap())) {
+        Message::Object::MapType & lmap = arg1["loc"].AsMap();
+        location_parent = lmap["ref"].AsString();
+        cout << "Got old parent format" << endl << flush;
+        if ((lmap.find("coords") != lmap.end()) && (lmap["coords"].IsList())) {
+            Message::Object::ListType vector = lmap["coords"].AsList();
+            if (vector.size()==3) {
+                try {
+                    int x = vector.front().AsInt();
+                    vector.pop_front();
+                    int y = vector.front().AsInt();
+                    vector.pop_front();
+                    int z = vector.front().AsInt();
+                    location_coords = Vector3D(x, y, z);
+                    cout << "Got old coords format" << endl << flush;
+                }
+                catch (Message::WrongTypeException) {
+                }
+            }
+        }
+        if ((lmap.find("velocity") != lmap.end()) && (lmap["velocity"].IsList())) {
+            Message::Object::ListType vector = lmap["velocity"].AsList();
+            if (vector.size()==3) {
+                try {
+                    int x = vector.front().AsInt();
+                    vector.pop_front();
+                    int y = vector.front().AsInt();
+                    vector.pop_front();
+                    int z = vector.front().AsInt();
+                    location_vel = Vector3D(x, y, z);
+                    cout << "Got old velocity format" << endl << flush;
+                }
+                catch (Message::WrongTypeException) {
+                }
+            }
+        }
+
+    } else {
+        cout << "Parent not set" << endl << flush;
+    }
+#else
     if ((arg1.find("loc") != arg1.end()) && (arg1["loc"].IsString())) {
         location_parent = arg1["loc"].AsString();
     } else {
@@ -302,6 +348,7 @@ oplist Character::Mind_Operation(const Move & op)
             }
         }
     }
+#endif 
     if (!location_coords) {
         if (op.GetFutureSeconds() < 0) {
             newop->SetFutureSeconds(0);

@@ -1,5 +1,11 @@
 2000-11-02  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Added temporary support for old Atlas style location object
+	  in entity to move operations. This allows uclient to work for
+	  now until it moves over to the latest Atlas spec.
+
+2000-11-02  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Fixed some attributes of in-game object
 
 	* Added temporary support for old style Atlas location so we still

@@ -58,6 +58,7 @@ void Location::addObject(Object * obj)
         lmap["ref"] = Object("");
     }
     lmap["coords"] = coords.asObject();
+    lmap["velocity"] = velocity.asObject();
     omap["loc"] = Object(lmap);
 #endif
 }
