@@ -105,6 +105,7 @@ void Account::addToObject(Object::MapType & omap) const
 {
     omap["id"] = Object(getId());
     omap["username"] = Object(getId());
+    omap["name"] = Object(getId());
     if (!password.empty()) {
         omap["password"] = Object(password);
     }

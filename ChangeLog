@@ -1,5 +1,9 @@
 2002-05-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.cpp: Provide names on accounts for uclient.
+
+2002-05-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Fix loss of set ops from mind.
 
 2002-05-18  Al Riddoch  <alriddoch@zepler.org>
