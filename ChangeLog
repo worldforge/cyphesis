@@ -1,3 +1,7 @@
+2002-05-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Fix loss of set ops from mind.
+
 2002-05-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/ObserverClient.cpp, server/Account.cpp, server/Connection.h,

@@ -17,10 +17,6 @@
     <int name="playable">1</int>
     <map name="attributes">
     </map>
-    <map name="script">
-      <string name="name">world.objects.characters.Settler</string>
-      <string name="language">python</string>
-    </map>
   </map>
 </map>
 </atlas>

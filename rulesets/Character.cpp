@@ -587,6 +587,7 @@ OpVector Character::mindSetOperation(const Set & op)
                 s->SetTo(getId());
             }
         }
+        return OpVector(1,s);
     }
     return OpVector();
 }
