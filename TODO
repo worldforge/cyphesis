@@ -7,13 +7,9 @@ Fix python code so that output goes to the logging mechanism:
 Confirm if custom python ops in the API code are working at all.
 Also goes for stable branch. They might not be getting returned.
 
-Check if -pthread arg is required to get pthread.
-
 Is socket getting opened before it will accept or negotiate?
 
 Fix up cypasswd to work, and allow creation of additional admin accounts.
-
-Give skstream server listener classes a go
 
 Think about adding UPnP here or to skstream (or both)
 
