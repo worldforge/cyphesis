@@ -11,6 +11,8 @@
 #include "common/random.h"
 #include "common/Property.h"
 
+#include "common/log.h"
+
 #include "common/Tick.h"
 #include "common/Chop.h"
 
@@ -84,7 +86,11 @@ void Plant::ChopOperation(const Chop & op, OpVector & res)
     ListType & moveArgs = move->getArgs();
     moveArgs.push_back(MapType());
     MapType & moveArg = moveArgs.back().asMap();
-    moveArg["loc"] = m_location.m_loc->getId();
+    if (m_location.m_loc != NULL) {
+        moveArg["loc"] = m_location.m_loc->getId();
+    } else {
+        log(ERROR, "Plant generating invalid Move op because LOC is NULL");
+    }
     Vector3D axis(uniform(-1, 1), uniform(-1, 1), 0);
     axis.normalize();
     // FIXME Make tree fall away from axe, by using cross product of

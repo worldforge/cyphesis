@@ -1,3 +1,9 @@
+2004-11-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Try and improve some more configure errors.
+
+	* rulesets/Plant.cpp: Prevent a segfault in the unit tests.
+
 2004-11-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Tighten up check on Move ops, and improve

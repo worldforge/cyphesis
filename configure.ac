@@ -98,7 +98,7 @@ AC_CHECK_HEADER(python2.3/Python.h,
                     [
                         python_include_path=-I${python_prefix}/include/python1.5
                         python_version=python1.5
-                    ],AC_MSG_ERROR([Cannot find python headers. Do you have python development installed?]))
+                    ],AC_MSG_ERROR([Cannot find python headers. Please install Python. If Python is installed somewhere other than in /usr the please use the --with-python=DIR option to point to the prefix where Python is installed.]))
                 ])
             ])
         ])
@@ -179,7 +179,7 @@ AM_PATH_PSQL(7.1.0,
             LIBS="$LIBS $PG_LIBS"
         fi
     ],
-    AC_MSG_ERROR([Cannot find PostgreSQL config or config failed])
+    AC_MSG_ERROR([Cannot find PostgreSQL config or config failed. Please install PostgreSQL and ensure than pg_config is on the PATH.])
 )
 
 AC_CHECK_LIB(pq,PQconnectdb, ,AC_MSG_ERROR([Cannot find PostgreSQL bindings! Have you installed the PostgreSQL development software?]))

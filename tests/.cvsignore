@@ -10,6 +10,7 @@ OOGThingtest
 inheritancetest
 systemtest
 utilitytest
+type_utilstest
 emergencetest
 collisiontest
 transformtest
