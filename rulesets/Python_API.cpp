@@ -288,6 +288,7 @@ void Subscribe_Script(T * thing, PyObject * pyclass, const std::string& package)
             thing->scriptSubscribe(op_name);
         }
     }
+    Py_DECREF(keys);
 }
 
 void Create_PyThing(Thing * thing, const std::string & package,
