@@ -292,7 +292,7 @@ bool ClientConnection::wait()
    error_flag = false;
    reply_flag = false;
    while (!reply_flag) {
-      codec->Poll();
+      poll(1);
    }
    return error_flag;
 }
@@ -309,7 +309,7 @@ void ClientConnection::send(Atlas::Objects::Operation::RootOperation & op)
     ios << std::flush;
 }
 
-void ClientConnection::poll()
+void ClientConnection::poll(int timeOut)
 {
     fd_set infds;
     struct timeval tv;
@@ -318,7 +318,7 @@ void ClientConnection::poll()
 
     FD_SET(client_fd, &infds);
 
-    tv.tv_sec = 0;
+    tv.tv_sec = timeOut;
     tv.tv_usec = 0;
 
     int retval = select(client_fd+1, &infds, NULL, NULL, &tv);

@@ -1,5 +1,11 @@
 2002-03-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/ClientConnection.h, client/ClientConnection.cpp:
+	  Added a select() timeout to the connection polling, so the
+	  client thrashes a bit less.
+
+2002-03-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Eliminate unnecessary call to opEnumerate()
 	  and enhance debugging output.
 

@@ -90,7 +90,7 @@ class ClientConnection : public Atlas::Objects::Decoder {
     }
 
     int setup();
-    void poll();
+    void poll(int timeOut = 0);
     RootOperation * pop();
     bool pending();
 };
