@@ -8,9 +8,9 @@ sowee_pattern = re.compile("[Ss]owee")
 
 class PigMind(NPCMind):
     def touch_operation(self, op):
-        source=op.from_.get_xyz()
+        distance=distance_to(op.from_.location, self.location)
         destination=Location()
-        destination.velocity=source.unit_vector_to_another_vector(self.get_xyz())
+        destination.velocity=distance.unit_vector()
         return Operation("move", Entity(self.id, location=destination))
     def sound_talk_operation(self, original_op, op):
         talk_entity=op[0]

@@ -175,13 +175,16 @@ class spot_something(Goal):
     def do(self,me):
         thing_all=me.map.find_by_type(self.what)
         nearest=None
-        neardist=self.range
+        nearsqrdist=self.range*self.range
         for thing in thing_all:
-            distance = me.get_xyz().distance(thing.get_xyz())
-            if distance < neardist and thing.location.parent.id==me.location.parent.id:
+            sqr_dist = distance_to(me.location, thing.location).square_mag()
+            # FIXME We need a more sophisticated check for parent. Perhaps just
+            # check its not in a persons inventory? Requires the ability to
+            # do decent type checks
+            if sqr_dist < nearsqrdist and thing.location.parent.id==me.location.parent.id:
                 if self.condition(thing):
                     nearest = thing
-                    neardist = distance
+                    nearsqrdist = nearsqrdist
         if nearest:
             me.add_thing(nearest)
                       
@@ -344,11 +347,12 @@ class hunt(Goal):
         self.with=with
         self.what=what
         self.range=range
+        self.square_range=range*range
         self.vars=["with", "what", "range"]
     def none_in_range(self, me):
         thing_all=me.map.find_by_type(self.what)
         for thing in thing_all:
-            if me.get_xyz().distance(thing.get_xyz()) < self.range:
+            if distance_to(me.location, thing.location).square_mag() < self.square_range():
                 return 0
         return 1
     def fight(self, me):
@@ -384,7 +388,7 @@ class defend(Goal):
     def none_in_range(self, me):
         thing_all=me.map.find_by_type(self.what)
         for thing in thing_all:
-            if me.get_xyz().distance(thing.get_xyz()) < self.range:
+            if distance_to(me.location, thing.location).square_mag() < self.square_range():
                 return 0
         return 1
     def fight(self, me):

@@ -1,5 +1,15 @@
 2004-11-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/acorn/mind/PigMind.py,
+	  rulesets/basic/mind/goals/common/misc_goal.py,
+	  rulesets/basic/mind/goals/common/move.py,
+	  rulesets/mason/define_world.py,
+	  rulesets/mason/mind/PigMind.py: Re-write all code that uses
+	  get_xyz() to use the code for calculating relative distance
+	  vector.
+
+2004-11-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* Purge a bunch of very historic python files from the client
 	  directory.
 

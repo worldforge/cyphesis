@@ -452,3 +452,10 @@ def test_butcher(mapeditor):
     m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'cut', 'ham', 'market')"))
     piglet = m.make('pig', type='pig', xyz=(3,2,0))
 
+def test_pig(mapeditor):
+
+    m=editor(mapeditor)
+
+    piglet = m.make('pig', type='pig', xyz=(-3,-1,settlement_height))
+    m.learn(piglet,pig_goals)
+

@@ -53,6 +53,7 @@ class move_me_area(Goal):
                       [move_me(location),self.latch_loc])
         self.location=location
         self.range=range
+        self.square_range=range*range
         self.arrived=0
         self.vars=["location","range","arrived"]
     def am_I_in_area(self, me):
@@ -63,9 +64,9 @@ class move_me_area(Goal):
         if type(self.location)==StringType:
             self.location=me.get_knowledge("location",self.location)
         if self.arrived:
-            distance=me.get_xyz().distance(self.location.coordinates)
-            if distance > self.range: self.arrived=0
-            return distance < self.range
+            square_dist=distance_to(me.location, self.location)
+            if square_dist > self.square_range: self.arrived=0
+            return square_dist < self.square_range
         return 0
     def latch_loc(self, me):
         self.arrived=1
@@ -231,10 +232,7 @@ class pursuit(Goal):
     def run(self, me):
         lst_of_what = me.mem.recall_place(me.location,self.range,self.what)
         if lst_of_what==[]: return
-        me_xyz = me.get_xyz()
-        other_xyz = lst_of_what[0].get_xyz()
-        if me_xyz == other_xyz: return
-        dist_vect = me_xyz.unit_vector_to_another_vector(other_xyz)
+        dist_vect=distance_to(me.location,lst_of_what[0].location).unit_vector()
         multiply = const.base_velocity * self.direction
         loc = Location(me.location.parent)
         loc.coordinates =  me_xyz + (dist_vect * multiply)
@@ -266,14 +264,14 @@ class hunt_for(pursuit):
         self.what = what
         self.range = range
         self.proximity = proximity
+        self.square_proximity = proximity*proximity
         self.direction = 1
         self.vars=["what","range","direction"]
     def in_range(self,me):
         if me.things.has_key(self.what)==0: return
         thing=me.find_thing(self.what)[0]
-        thing_xyz = thing.get_xyz()
-        distance = me.get_xyz().distance(thing.get_xyz())
-        return distance < self.proximity
+        square_dist = distance_to(me.location, thing.location).square_mag()
+        return square_dist < self.square_proximity
 
 ################################ HUNT ################################
 
