@@ -1,5 +1,10 @@
 2003-10-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/Collision.h, physics/Collision.cpp: More work on
+	  collision detection implementation.
+
+2003-10-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/Location.cpp, physics/Collision.cpp, physics/Collision.h,
 	  physics/Vector3D.h: Move recently developed collision code into
 	  module of its own, and give functions a new name.

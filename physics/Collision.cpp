@@ -50,7 +50,7 @@ bool predictCollision(const Vector3D & p,     // Position of point
 // ( p.x * n.x - l.x * n.x + p.y * n.y - l.y * n.y + p.z * n.z - l.z * n.z ) /
 // ( v.x * n.x + v.y * n.y + v.z * n.z - u.x * n.x - u.y * n.y - u.z * n.z )
 //
-// return value should indicate whether we are infront of or behind the 
+// return value should indicate whether we are infront of or behind the
 // plane. There is math in common, but I'm not sure how much it will help
 //
 {
@@ -61,6 +61,30 @@ bool predictCollision(const Vector3D & p,     // Position of point
             + v.z() * n.z() - u.x() * n.x()
             - u.y() * n.y() - u.z() * n.z() );
     return (Dot(p - l, n) > 0.);
+}
+
+bool predictCollision(const CoordList & l,    // Vertices of this mesh
+                      const NormalSet & ln,   // Normals of this mesh
+                      const Vector3D & u,     // Velocity of this mesh
+                      const CoordList & o,    // Vertices of other mesh
+                      const NormalSet & on,   // Normals of other mesh
+                      const Vector3D & v,     // Velocity of other mesh
+                      double & time,          // Returned time to collision
+                      Vector3D & normal)      // Returned collision normal
+{
+    Vector3D foo;
+    // Check l vertices against o surfaces
+    CoordList::const_iterator I = l.begin();
+    NormalSet::const_iterator J = on.begin();
+    for (; J != on.end(); ++J) {
+        Vector3D & surface = o[I->first];
+        for (; I != l.end(); ++I) {
+            double time;
+            collision = predictCollision(*I, u, surface, v, time, normal);
+            // FIXME Now what?
+        }
+    }
+    return false;
 }
 
 //
@@ -81,10 +105,10 @@ bool predictCollision(const Vector3D & p,     // Position of point
 //
 //
 //                         3                    1
-//
-//
-//                                   0
-//
+//          z
+//          |
+//       y\ | /x                     0
+//         \|/
 
 
 bool predictCollision(const Location & l,
@@ -97,7 +121,8 @@ bool predictCollision(const Location & l,
     const WFMath::Point<3> & on = o.m_bBox.lowCorner();
     const WFMath::Point<3> & of = o.m_bBox.highCorner();
 
-    std::vector<WFMath::Vector<3> > lbox(8), obox(8);
+    // Create a set of vertices representing the box corners
+    CoordList lbox(8), obox(8);
 
     lbox[0] = WFMath::Vector<3>(ln.x(), ln.y(), ln.z());
     lbox[1] = WFMath::Vector<3>(lf.x(), ln.y(), ln.z());
@@ -117,11 +142,33 @@ bool predictCollision(const Location & l,
     obox[6] = WFMath::Vector<3>(of.x(), of.y(), of.z());
     obox[7] = WFMath::Vector<3>(of.x(), on.y(), of.z());
 
+    // Orient the box corners
     for(int i = 0; i < 8; ++i) {
         lbox[i].rotate(l.m_orientation);
         obox[i].rotate(o.m_orientation);
     }
 
-    // FIXME Lots more to write yet
-    return false;
+    // Set up a set of surface normals, each with an assoicated corner
+    NormalSet lnormals;
+
+    lnormals.insert(std::make_pair(0, Vector3D( 0.,  0., -1.))); // Bottom face
+    lnormals.insert(std::make_pair(1, Vector3D( 0., -1.,  0.))); // South face
+    lnormals.insert(std::make_pair(3, Vector3D(-1.,  0.,  0.))); // West face
+    lnormals.insert(std::make_pair(2, Vector3D( 1.,  0.,  0.))); // East face
+    lnormals.insert(std::make_pair(6, Vector3D( 0.,  1.,  0.))); // North face
+    lnormals.insert(std::make_pair(4, Vector3D( 0.,  0.,  1.))); // Top face
+
+    NormalSet onormals;
+
+    // Orient the surface normals
+    for(NormalSet::iterator I = lnormals.begin(); I != lnormals.end(); ++I) {
+        I->second.rotate(l.m_orientation);
+    }
+
+    for(NormalSet::iterator I = onormals.begin(); I != onormals.end(); ++I) {
+        I->second.rotate(o.m_orientation);
+    }
+
+    // Predict the collision using the generic mesh function
+    return predictCollision(lbox, lnormals, obox, onormals, time, normal);
 }
