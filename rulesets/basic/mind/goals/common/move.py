@@ -249,7 +249,7 @@ class avoid(pursuit):
     def __init__(self, what, range):
         pursuit.__init__(self,"avoid something",what,range,-1)
 
-############################ HUNT ####################################
+################################ HUNT ################################
 
 class hunt(pursuit):
     """hunt something at range"""
@@ -271,11 +271,11 @@ class hunt_for(pursuit):
     def in_range(self,me):
         if me.things.has_key(self.what)==0: return
         thing=me.find_thing(self.what)[0]
-	thing_xyz = thing.get_xyz()
+        thing_xyz = thing.get_xyz()
         distance = me.get_xyz().distance(thing.get_xyz())
         return distance < self.proximity
 
-############################ HUNT ####################################
+################################ HUNT ################################
 
 class patrol(Goal):
     def __init__(self, whlist):
@@ -292,3 +292,43 @@ class patrol(Goal):
         if self.stage >= self.count:
             self.stage = 0
         self.subgoals[0].location = self.list[self.stage]
+
+############################## ACCOMPANY ##############################
+
+class accompany(Goal):
+    def __init__(self, who):
+        Goal.__init__(self, "stay with someone",
+                      self.am_i_with, 
+                      [self.follow])
+        self.who=who
+        self.vars=["who"]
+    def am_i_with(self, me):
+        who=me.map.get(self.who)
+        dist=distance_to(me.location, who.location)
+        # Are we further than 3 metres away
+        if dist.square_mag() > 25:
+            #print "We are far away", dist
+            if me.location.velocity.is_valid() and me.location.velocity.dot(dist) > 0.5:
+                #print "We moving towards them already"
+                return 1
+            return 0
+        else:
+            #print "We are close", dist
+            if me.location.velocity.is_valid() and me.location.velocity.dot(dist) < 0.5:
+                #print "We going away from them"
+                return 0
+            return 1
+    def follow(self, me):
+        who=me.map.get(self.who)
+        dist=distance_to(me.location, who.location)
+        target = Location(me.location.parent)
+        if dist.square_mag() > 64:
+            #print "We must be far far away - run"
+            target.velocity = dist.unit_vector() * 3
+        elif dist.square_mag() > 25:
+            #print "We must be far away - walk"
+            target.velocity = dist.unit_vector()
+        else:
+            #print "We must be close - stop"
+            target.velocity = Vector3D(0,0,0)
+        return Operation("move", Entity(me.id, location=target))

@@ -1,5 +1,24 @@
 2004-10-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Add a note to check the code.
+
+	* rulesets/basic/mind/goals/humanoid/transaction.py: Remove debug
+	  output.
+
+	* rulesets/basic/mind/goals/common/move.py: New goal to accompany
+	  another person.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Use new accompany
+	  goal for hirelings.
+
+	* rulesets/Python_API.cpp: Fix distance_to arg checking error
+	  message.
+
+	* rulesets/Py_Vector3D.cpp: Add square magnitude and distance checking
+	  methods.
+
+2004-10-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/Knowledge.py: Simplify constructor.
 
 	* rulesets/Entity.h, rulesets/Entity.cpp: Make getXyz() inline.

@@ -469,7 +469,7 @@ static PyObject * distance_to(PyObject * self, PyObject * args)
         return NULL;
     }
     if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
-        PyErr_SetString(PyExc_TypeError, "Arg coords required");
+        PyErr_SetString(PyExc_TypeError, "Arg Location required");
         return NULL;
     }
     PyLocation * sloc = (PyLocation *)near,

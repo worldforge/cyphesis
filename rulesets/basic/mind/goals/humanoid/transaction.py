@@ -21,12 +21,12 @@ class hire_trade(DynamicGoal):
                              trigger="interlinguish_desire_verb3_hire_verb1",
                              desc=desc)
     def event(self, me, op, say):
-        print "To got hired"
+        #print "To got hired"
         price = me.get_knowledge('price', 'services')
         if not price:
             print "No price"
             return
-        print "I go for " + str(price) + " coins"
+        #print "I go for " + str(price) + " coins"
         goal = mind.goals.common.misc_goal.hireling_transaction('services', op.from_, price)
         me.goals.insert(0,goal)
         return Operation("talk", Entity(say=op.from_.name+" one day will be "+str(price)+" coins"))

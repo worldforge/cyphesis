@@ -1,5 +1,3 @@
-Knowledge needs to work with arbitrary predicates. Currently a hard coded set.
-
 MemEntity needs some kind of reference flag/count if a python object
 is holding a reference.
 
@@ -12,10 +10,8 @@ is probably currently returning it in the entities local coords.
 Stop creator characters for getting filed into the accounts_entity_ent
 table.
 
-Create multi-column unique index on terrain and other array tables.
-
 Transforming with an invalid quaternion creates an invalid vector or point.
-We must not do it.
+We must not do it. See FIXME in WorldRouter.cpp.
 
 Is it necessary to copy new_coords in Pedestrain::genMoveOperation()?
 

@@ -81,9 +81,19 @@ static PyObject * Vector3D_angle(PyVector3D * self, PyObject * args)
     return PyFloat_FromDouble(Angle(self->coords, other->coords));
 }
 
+static PyObject * Vector3D_sqr_mag(PyVector3D * self)
+{
+    return PyFloat_FromDouble(self->coords.sqrMag());
+}
+
 static PyObject * Vector3D_mag(PyVector3D * self)
 {
     return PyFloat_FromDouble(self->coords.mag());
+}
+
+static PyObject * Vector3D_is_valid(PyVector3D * self)
+{
+    return PyBool_FromLong(self->coords.isValid());
 }
 
 static PyObject * Vector3D_unit_vector(PyVector3D * self)
@@ -123,7 +133,9 @@ static PyMethodDef Vector3D_methods[] = {
     {"rotatey",         (PyCFunction)Vector3D_rotatey,  METH_VARARGS},
     {"rotatez",         (PyCFunction)Vector3D_rotatez,  METH_VARARGS},
     {"angle",           (PyCFunction)Vector3D_angle,    METH_VARARGS},
+    {"square_mag",      (PyCFunction)Vector3D_sqr_mag,  METH_NOARGS},
     {"mag",             (PyCFunction)Vector3D_mag,      METH_NOARGS},
+    {"is_valid",        (PyCFunction)Vector3D_is_valid, METH_NOARGS},
     {"unit_vector",     (PyCFunction)Vector3D_unit_vector,      METH_NOARGS},
     {"unit_vector_to_another_vector",   (PyCFunction)Vector3D_unit_vector_to,   METH_VARARGS},
     {NULL,              NULL}           /* sentinel */

@@ -628,6 +628,8 @@ class hireling_transaction(transaction):
         res=Message()
         me.add_knowledge('employer', me.id, self.who.id)
         # FIXME add the new goal
+        goal = accompany(self.who.id)
+        me.goals.insert(0,goal)
         res.append(Operation("talk",Entity(say="I will help you out until sundown today.")))
         self.irrelevant=1
         return res
