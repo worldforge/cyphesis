@@ -28,6 +28,7 @@ pig_stall_xyz=(-27,1,village_height)
 pig_sty_xyz=(-26,2,village_height)
 butcher_stall_xyz=(-41.5,-6.3,village_height)
 tree_xyz=(-35,-25,village_height)
+inn_xyz=(20,-25,village_height)
 
 
 knowledge=[('axe','smithy'),
@@ -154,19 +155,18 @@ def default(mapeditor):
 
 #   farmers
 
-    sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[2.5,2.5,3])
     m.make('bstall',type='bstall',xyz=(-41,-5,village_height))
 
     home1_xyz=(90,-90,village_height)
 
-    butcher=m.make('Bill Brondmore',type='butcher',desc='the butcher',
-                   xyz=home1_xyz,age=probability.fertility_age,sex='male')
+    butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
+                 xyz=butcher_stall_xyz,age=probability.fertility_age,sex='male')
     m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'cut', 'ham', 'market')"))
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
     m.know(butcher,bknowledge)
     m.price(butcher,bprices)
     cleaver=m.make('cleaver',desc='cleaver for cutting meat',place='market',
-                   xyz=(-34,-8,village_height),status=1.0)
+                   xyz=(-41,-5,village_height))
     m.own(butcher,cleaver)
     m.learn(butcher,(il.sell,"sell_trade('ham', 'market')"))
     coins=[]
@@ -176,8 +176,9 @@ def default(mapeditor):
     
 
     home2_xyz=(80,80,village_height)
-    merchant=m.make('Indor Fergman',type='merchant',desc='the pig merchant',
-                   xyz=home2_xyz,age=probability.fertility_age,sex='male')
+    merchant=m.make('Dyfed Searae',type='merchant',desc='the pig merchant',
+                   xyz=pig_stall_xyz,age=probability.fertility_age,sex='male')
+    sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[2.5,2.5,3])
     m.know(merchant,mknowledge)
     m.price(merchant,mprices)
     m.own(merchant,sty)
@@ -189,15 +190,36 @@ def default(mapeditor):
     m.learn(piglets,pig_goals)
     m.own(merchant,piglets)
 
-    guard=m.make('Pirla Krond', type='guard',desc='the village guard',
-                xyz=pig_stall_xyz,age=probability.fertility_age,sex='female')
-    m.know(guard,gknowledge)
-    m.learn(guard,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
-    m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))
-    m.tell_importance(guard,il.defend,'>',il.patrol)
+    # Warriors - the more adventurous types
 
-    sword=m.make('sword', type='sword', xyz=(-35,-8,village_height))
-    m.own(guard,sword)
+    warrior=m.make('Tom Harrowe', type='guard',xyz=inn_xyz,sex='male')
+    m.learn(warrior,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
+    sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
+    m.own(warrior,sword)
+
+    warrior=m.make('Mae Dollor', type='guard',xyz=inn_xyz,sex='female')
+    m.learn(warrior,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
+    sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
+    m.own(warrior,sword)
+
+    warrior=m.make('Covan Dubneal',type='guard',xyz=inn_xyz,sex='male')
+    m.learn(warrior,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
+    sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
+    m.own(warrior,sword)
+
+    warrior=m.make('Roal Guddon', type='guard',xyz=inn_xyz,sex='male')
+    m.learn(warrior,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
+    sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
+    m.own(warrior,sword)
+
+    warrior=m.make('Vonaa Barile',type='archer',xyz=inn_xyz,sex='female')
+    warrior=m.make('Lile Birloc', type='archer',xyz=inn_xyz,sex='female')
+
+    # I am not sure if we need a guard
+    #m.know(guard,gknowledge)
+    #m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))
+    #m.tell_importance(guard,il.defend,'>',il.patrol)
+
 
 def dont_run_me(foo):
     # generated entries

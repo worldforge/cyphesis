@@ -332,7 +332,6 @@ class sell_trade(Goal):
             return 1
     def announce_trade(self,me):
         self.ticks=self.ticks+1
-        mode_=me.mode
         ret = Message()
         if self.ticks==5:
             self.ticks=0
