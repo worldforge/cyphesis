@@ -12,6 +12,7 @@ cyphesis_SOURCES = \
 		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
 		Connection.cpp Connection.h \
+		WorldTime.h
 		server.cpp server.h
 
 cyphesis_LDADD = ../common/libcommon.a ../modules/libmodules.a ../physics/libphysics.a ../rulesets/librulesets.a
