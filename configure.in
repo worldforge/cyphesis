@@ -134,7 +134,7 @@ AC_CHECK_LIB(crypto, MD5,
         AC_DEFINE(CYPHESIS_MD5_PASSWORDS, 1, [Use md5 hash for passwords])
     ],
     [
-        AC_MSG_ERROR([Could not find a way of encrypting passwords.])
+        AC_MSG_WARN([No MD5 library found.  Passwords will be plaintext])
     ])
 
 AC_CHECK_LIB(${python_version}, 
