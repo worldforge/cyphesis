@@ -1,3 +1,7 @@
+2003-08-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* Comment out the exported libs, as nothing is using them.
+
 2003-08-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Lobby.cpp: Add some debugging messages.
