@@ -45,6 +45,4 @@ class ImmutableProperty : public PropertyBase {
     virtual void add(const std::string &, Atlas::Message::MapType & map);
 };
 
-// FIXME also needs to handle the setting of flags etc.
-
 #endif // COMMON_PROPERTY_H
