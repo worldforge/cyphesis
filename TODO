@@ -1,3 +1,6 @@
+Location objects which are not valid parts of the tree are getting into
+the mind maps.
+
 The spot_something goal is a hack - need something better. Probably need
 some kind of Knowledge about target entity.
 
