@@ -16,11 +16,14 @@
 #include "common/BaseWorld.h"
 
 #include <Atlas/Objects/Operation/Info.h>
-#include <Atlas/Objects/Operation/Logout.h>
-#include <Atlas/Objects/Operation/Set.h>
-#include <Atlas/Objects/Operation/Create.h>
 
 #include <sigc++/object_slot.h>
+
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+
+using Atlas::Objects::Operation::Info;
 
 static const bool debug_flag = false;
 
@@ -56,8 +59,8 @@ void Admin::opDispatched(RootOperation * op)
     }
 }
 
-int Admin::characterError(const Create & op,
-                           const MapType & ent, OpVector & res) const
+int Admin::characterError(const RootOperation & op,
+                          const MapType & ent, OpVector & res) const
 {
     MapType::const_iterator I = ent.find("parents");
     if ((I == ent.end()) || !I->second.isList()) {
@@ -72,7 +75,7 @@ int Admin::characterError(const Create & op,
     return false;
 }
 
-void Admin::LogoutOperation(const Logout & op, OpVector & res)
+void Admin::LogoutOperation(const RootOperation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     
@@ -101,7 +104,7 @@ void Admin::LogoutOperation(const Logout & op, OpVector & res)
     }
 }
 
-void Admin::GetOperation(const Get & op, OpVector & res)
+void Admin::GetOperation(const RootOperation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty()) {
@@ -180,7 +183,7 @@ void Admin::GetOperation(const Get & op, OpVector & res)
     res.push_back(info);
 }
 
-void Admin::SetOperation(const Set & op, OpVector & res)
+void Admin::SetOperation(const RootOperation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty()) {
@@ -269,7 +272,7 @@ void Admin::SetOperation(const Set & op, OpVector & res)
     }
 }
 
-void Admin::CreateOperation(const Create & op, OpVector & res)
+void Admin::CreateOperation(const RootOperation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {

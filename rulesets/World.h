@@ -51,11 +51,11 @@ class World : public World_parent {
 
     float getHeight(float x, float y);
 
-    virtual void LookOperation(const Look & op, OpVector &);
-    virtual void BurnOperation(const Burn & op, OpVector &);
-    virtual void DeleteOperation(const Delete & op, OpVector &);
-    virtual void MoveOperation(const Move & op, OpVector &);
-    virtual void SetOperation(const Set & op, OpVector &);
+    virtual void LookOperation(const RootOperation &, OpVector &);
+    virtual void BurnOperation(const RootOperation &, OpVector &);
+    virtual void DeleteOperation(const RootOperation &, OpVector &);
+    virtual void MoveOperation(const RootOperation &, OpVector &);
+    virtual void SetOperation(const RootOperation &, OpVector &);
 };
 
 #endif // RULESETS_WORLD_H

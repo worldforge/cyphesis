@@ -17,7 +17,7 @@
 class TrustedConnection : public Connection {
   protected:
     virtual bool verifyCredentials(const Account &,
-                                   const MapType &) const;
+                                   const Atlas::Message::MapType &) const;
   public:
     TrustedConnection(const std::string & id,
                       CommClient & client,

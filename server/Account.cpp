@@ -34,6 +34,15 @@
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Info;
+using Atlas::Objects::Operation::Sight;
+using Atlas::Objects::Operation::Sound;
+using Atlas::Objects::Operation::Create;
+
 static const bool debug_flag = false;
 
 Account::Account(Connection * conn, const std::string & uname,
@@ -129,7 +138,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     return chr;
 }
 
-void Account::LogoutOperation(const Logout & op, OpVector &)
+void Account::LogoutOperation(const RootOperation & op, OpVector &)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
     Info info;
@@ -166,7 +175,7 @@ void Account::addToMessage(MapType & omap) const
     BaseEntity::addToMessage(omap);
 }
 
-void Account::CreateOperation(const Create & op, OpVector & res)
+void Account::CreateOperation(const RootOperation & op, OpVector & res)
 {
     debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
     const ListType & args = op.getArgs();
@@ -209,7 +218,7 @@ void Account::CreateOperation(const Create & op, OpVector & res)
     res.push_back(info);
 }
 
-void Account::SetOperation(const Set & op, OpVector & res)
+void Account::SetOperation(const RootOperation & op, OpVector & res)
 {
     debug(std::cout << "Account::Operation(set)" << std::endl << std::flush;);
     const ListType & args = op.getArgs();
@@ -270,7 +279,7 @@ void Account::SetOperation(const Set & op, OpVector & res)
     }
 }
 
-void Account::ImaginaryOperation(const Imaginary & op, OpVector & res)
+void Account::ImaginaryOperation(const RootOperation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
@@ -293,7 +302,7 @@ void Account::ImaginaryOperation(const Imaginary & op, OpVector & res)
     m_connection->m_server.m_lobby.operation(s, res);
 }
 
-void Account::TalkOperation(const Talk & op, OpVector & res)
+void Account::TalkOperation(const RootOperation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if ((args.empty()) || (!args.front().isMap())) {
@@ -316,7 +325,7 @@ void Account::TalkOperation(const Talk & op, OpVector & res)
     m_connection->m_server.m_lobby.operation(s, res);
 }
 
-void Account::LookOperation(const Look & op, OpVector & res)
+void Account::LookOperation(const RootOperation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
     if (args.empty()) {

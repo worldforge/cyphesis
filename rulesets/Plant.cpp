@@ -23,6 +23,15 @@
 #include <Atlas/Objects/Operation/Touch.h>
 #include <Atlas/Objects/Operation/Move.h>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Touch;
+using Atlas::Objects::Operation::Move;
+using Atlas::Objects::Operation::Tick;
+
 static const bool debug_flag = false;
 
 Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
@@ -76,7 +85,7 @@ int Plant::dropFruit(OpVector & res)
     return drop;
 }
 
-void Plant::ChopOperation(const Chop & op, OpVector & res)
+void Plant::ChopOperation(const RootOperation & op, OpVector & res)
 {
     debug(std::cout << "Plant got chop op" << std::endl << std::flush;);
     if (m_script->Operation("tick", op, res)) {
@@ -132,7 +141,7 @@ void Plant::ChopOperation(const Chop & op, OpVector & res)
     res.push_back(move);
 }
 
-void Plant::TickOperation(const Tick & op, OpVector & res)
+void Plant::TickOperation(const RootOperation & op, OpVector & res)
 {
     debug(std::cout << "Plant::Tick(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);
@@ -167,7 +176,7 @@ void Plant::TickOperation(const Tick & op, OpVector & res)
     }
 }
 
-void Plant::TouchOperation(const Touch & op, OpVector & res)
+void Plant::TouchOperation(const RootOperation & op, OpVector & res)
 {
     debug(std::cout << "Plant::Touch(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);

@@ -9,6 +9,9 @@
 
 #include <cassert>
 
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+
 int main()
 {
     Plant e("testId");

@@ -36,6 +36,11 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::RootOperation;
+
 static bool debug_flag = false;
 
 ClientConnection::ClientConnection() :
@@ -72,14 +77,14 @@ void ClientConnection::operation(const RootOperation & op)
 #endif
 }
 
-void ClientConnection::objectArrived(const Error&op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Error&op)
 {
     debug(std::cout << "ERROR" << std::endl << std::flush;);
     push(op);
     error_flag = true;
 }
 
-void ClientConnection::objectArrived(const Info & op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Info & op)
 {
     debug(std::cout << "INFO" << std::endl << std::flush;);
     const std::string & from = op.getFrom();
@@ -100,17 +105,17 @@ void ClientConnection::objectArrived(const Info & op)
     }
 }
 
-void ClientConnection::objectArrived(const Action& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Action& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Appearance& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Appearance& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Combine& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Combine& op)
 {
     push(op);
 }
@@ -120,22 +125,22 @@ void ClientConnection::objectArrived(const Atlas::Objects::Operation::Communicat
     push(op);
 }
 
-void ClientConnection::objectArrived(const Create& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Create& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Delete& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Delete& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Disappearance& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Disappearance& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Divide& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Divide& op)
 {
     push(op);
 }
@@ -145,12 +150,12 @@ void ClientConnection::objectArrived(const Atlas::Objects::Operation::Feel& op)
     push(op);
 }
 
-void ClientConnection::objectArrived(const Get& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Get& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Imaginary& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Imaginary& op)
 {
     push(op);
 }
@@ -160,22 +165,22 @@ void ClientConnection::objectArrived(const Atlas::Objects::Operation::Listen& op
     push(op);
 }
 
-void ClientConnection::objectArrived(const Login& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Login& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Logout& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Logout& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Look& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Look& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Move& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Move& op)
 {
     push(op);
 }
@@ -190,17 +195,17 @@ void ClientConnection::objectArrived(const Atlas::Objects::Operation::Perception
     push(op);
 }
 
-void ClientConnection::objectArrived(const RootOperation& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::RootOperation& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Set& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Set& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Sight& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Sight& op)
 {
     push(op);
 }
@@ -215,17 +220,17 @@ void ClientConnection::objectArrived(const Atlas::Objects::Operation::Sniff& op)
     push(op);
 }
 
-void ClientConnection::objectArrived(const Sound& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Sound& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Talk& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Talk& op)
 {
     push(op);
 }
 
-void ClientConnection::objectArrived(const Touch& op)
+void ClientConnection::objectArrived(const Atlas::Objects::Operation::Touch& op)
 {
     push(op);
 }
@@ -324,7 +329,7 @@ int ClientConnection::negotiate()
 void ClientConnection::login(const std::string & account,
                              const std::string & password)
 {
-    Login l;
+    Atlas::Objects::Operation::Login l;
     MapType acmap;
     acmap["username"] = account;
     acmap["password"] = password;
@@ -339,7 +344,7 @@ void ClientConnection::login(const std::string & account,
 void ClientConnection::create(const std::string & account,
                               const std::string & password)
 {
-    Create c;
+    Atlas::Objects::Operation::Create c;
     MapType acmap;
     acmap["id"] = account;
     acmap["password"] = password;

@@ -5,8 +5,6 @@
 #ifndef TESTS_ALL_OPERATIONS_H
 #define TESTS_ALL_OPERATIONS_H
 
-#include "common/operations.h"
-
 #include "common/Chop.h"
 #include "common/Cut.h"
 #include "common/Eat.h"

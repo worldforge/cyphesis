@@ -30,7 +30,7 @@ class Lobby : public OOGThing {
 
     virtual void operation(const RootOperation &, OpVector &);
 
-    virtual void addToMessage(MapType &) const;
+    virtual void addToMessage(Atlas::Message::MapType &) const;
 };
 
 #endif // SERVER_LOBBY_H

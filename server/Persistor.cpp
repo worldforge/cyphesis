@@ -32,6 +32,8 @@ template class Persistor<Stackable>;
 template class Persistor<Structure>;
 template class Persistor<World>;
 
+using Atlas::Message::MapType;
+
 Persistor<Entity>::Persistor(bool temp) : m_class("entity")
 {
     if (temp) { return; }

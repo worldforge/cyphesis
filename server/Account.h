@@ -24,11 +24,13 @@ class Account : public OOGThing {
     EntityDict m_charactersDict;
     ConMap m_destroyedConnections;
 
-    Entity * addNewCharacter(const std::string &, const MapType &);
+    Entity * addNewCharacter(const std::string &,
+                             const Atlas::Message::MapType &);
     void characterDestroyed(std::string);
 
-    virtual int characterError(const Create &,
-                               const MapType &, OpVector &) const = 0;
+    virtual int characterError(const RootOperation &,
+                               const Atlas::Message::MapType &,
+                               OpVector &) const = 0;
 
   public:
     Connection * m_connection;
@@ -42,13 +44,13 @@ class Account : public OOGThing {
 
     virtual const char * getType() const;
 
-    virtual void addToMessage(MapType &) const;
-    virtual void LogoutOperation(const Logout &, OpVector &);
-    virtual void CreateOperation(const Create &, OpVector &);
-    virtual void SetOperation(const Set &, OpVector &);
-    virtual void ImaginaryOperation(const Imaginary &, OpVector &);
-    virtual void TalkOperation(const Talk &, OpVector &);
-    virtual void LookOperation(const Look &, OpVector &);
+    virtual void addToMessage(Atlas::Message::MapType &) const;
+    virtual void LogoutOperation(const RootOperation &, OpVector &);
+    virtual void CreateOperation(const RootOperation &, OpVector &);
+    virtual void SetOperation(const RootOperation &, OpVector &);
+    virtual void ImaginaryOperation(const RootOperation &, OpVector &);
+    virtual void TalkOperation(const RootOperation &, OpVector &);
+    virtual void LookOperation(const RootOperation &, OpVector &);
 
     void addCharacter(Entity *);
 
@@ -56,5 +58,7 @@ class Account : public OOGThing {
         return m_charactersDict;
     }
 };
+
+typedef std::map<std::string, Account *> AccountDict;
 
 #endif // SERVER_ACCOUNT_H

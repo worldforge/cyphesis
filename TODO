@@ -1,3 +1,5 @@
+Does sightFooOperation etc. in BaseMind.h have to be virtual? I think not.
+
 CONTAINS could be some kind of spatial set of buckets for efficiency
 when doing collision detection, but if this is not to be true for all entities
 then the mechanism for modifying CONTAINS needs to be virtualised, and

@@ -29,7 +29,7 @@ Location::Location(Entity * rf, const Point3D& crds, const Vector3D& vel) :
 {
 }
 
-void Location::addToMessage(MapType & omap) const
+void Location::addToMessage(Atlas::Message::MapType & omap) const
 {
     if (m_loc!=NULL) {
         omap["loc"] = m_loc->getId();

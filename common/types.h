@@ -5,16 +5,20 @@
 #ifndef COMMON_TYPES_H
 #define COMMON_TYPES_H
 
-#include "operations.h"
-
-#include <list>
 #include <set>
 #include <map>
 #include <vector>
 
 class BaseEntity;
 class Entity;
-class Account;
+
+namespace Atlas {
+  namespace Objects {
+    namespace Operation {
+      class RootOperation;
+    }
+  }
+}
 
 typedef enum op_no {
 	OP_LOGIN,
@@ -52,20 +56,12 @@ typedef enum op_no {
 } OpNo;
 
 typedef std::map<std::string, BaseEntity *> BaseDict;
-typedef std::list<BaseEntity *> BaseList;
-typedef std::pair<std::string, BaseEntity *> BasePair;
 typedef std::vector<std::string> IdList;
 
 typedef std::map<std::string, Entity *> EntityDict;
-typedef std::list<Entity *> EntityList;
-typedef std::vector<Entity *> EntityVector;
 typedef std::set<Entity *> EntitySet;
 
-typedef std::map<std::string, Account *> AccountDict;
-typedef std::list<Account *> AccountList;
-
 typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
-typedef std::list<Atlas::Objects::Operation::RootOperation *> OpQueue;
 typedef std::map<std::string,OpNo> OpNoDict;
 
 #endif // TYPES_H

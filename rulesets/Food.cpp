@@ -5,12 +5,17 @@
 #include "Food.h"
 #include "Script.h"
 
-#include "common/Eat.h"
-#include "common/Burn.h"
 #include "common/Nourish.h"
 
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Set.h>
+
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Login;
+using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Nourish;
 
 Food::Food(const std::string & id) : Food_parent(id)
 {
@@ -25,7 +30,7 @@ Food::~Food()
 {
 }
 
-void Food::EatOperation(const Eat & op, OpVector & res)
+void Food::EatOperation(const RootOperation & op, OpVector & res)
 {
     if (m_script->Operation("eat", op, res) != 0) {
         return;
@@ -51,7 +56,7 @@ void Food::EatOperation(const Eat & op, OpVector & res)
     res.push_back(n);
 }
 
-void Food::BurnOperation(const Burn & op, OpVector & res)
+void Food::BurnOperation(const RootOperation & op, OpVector & res)
 {
     if (m_script->Operation("burn", op, res) != 0) {
         return;

@@ -18,7 +18,7 @@ class IGEntityExerciser : public EntityExerciser<EntityType> {
 template <class EntityType>
 inline bool IGEntityExerciser<EntityType>::checkAttributes(const std::set<std::string> & attr_names)
 {
-    Element null;
+    Atlas::Message::Element null;
     std::set<std::string>::const_iterator I = attr_names.begin();
     std::set<std::string>::const_iterator Iend = attr_names.end();
     for (; I != Iend; ++I) {

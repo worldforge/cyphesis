@@ -8,6 +8,8 @@
 #include "log.h"
 #include "types.h"
 
+#include <Atlas/Objects/Root.h>
+
 #include <iostream>
 
 void installStandardObjects();
@@ -26,15 +28,15 @@ class OpFactoryBase {
   public:
     virtual ~OpFactoryBase();
 
-    virtual RootOperation * newOperation() = 0;
-    virtual void newOperation(RootOperation &) = 0;
+    virtual Atlas::Objects::Operation::RootOperation * newOperation() = 0;
+    virtual void newOperation(Atlas::Objects::Operation::RootOperation &) = 0;
 };
 
 template <class OpClass>
 class OpFactory : public OpFactoryBase {
   public:
-    virtual RootOperation * newOperation();
-    virtual void newOperation(RootOperation &);
+    virtual Atlas::Objects::Operation::RootOperation * newOperation();
+    virtual void newOperation(Atlas::Objects::Operation::RootOperation &);
 };
 
 class GenericOpFactory : public OpFactoryBase {
@@ -43,8 +45,8 @@ class GenericOpFactory : public OpFactoryBase {
   public:
     explicit GenericOpFactory(const std::string & opType);
 
-    virtual RootOperation * newOperation();
-    virtual void newOperation(RootOperation &);
+    virtual Atlas::Objects::Operation::RootOperation * newOperation();
+    virtual void newOperation(Atlas::Objects::Operation::RootOperation &);
 };
 
 typedef std::map<std::string, OpFactoryBase *> OpFactoryDict;
@@ -71,11 +73,11 @@ class Inheritance {
     }
 
     OpNo opEnumerate(const std::string & parent) const;
-    OpNo opEnumerate(const RootOperation & op) const;
+    OpNo opEnumerate(const Atlas::Objects::Operation::RootOperation &) const;
     Atlas::Objects::Root * get(const std::string & parent);
     int addChild(Atlas::Objects::Root * obj);
-    RootOperation * newOperation(const std::string & op_type);
-    int newOperation(const std::string & op_type, RootOperation & ret);
+    Atlas::Objects::Operation::RootOperation * newOperation(const std::string &);
+    int newOperation(const std::string &, Atlas::Objects::Operation::RootOperation &);
 };
 
 #endif // COMMON_INHERITANCE_H

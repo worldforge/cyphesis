@@ -14,6 +14,8 @@
 #include "common/debug.h"
 #include "common/Database.h"
 
+using Atlas::Message::MapType;
+
 static const bool debug_flag = false;
 
 Persistance * Persistance::m_instance = NULL;

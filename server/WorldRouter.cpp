@@ -24,6 +24,10 @@
 
 #include <sstream>
 
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Setup;
+
 static const bool debug_flag = false;
 
 /// \brief Update the in-game time.

@@ -11,6 +11,10 @@
 
 #include <Atlas/Objects/Operation/RootOperation.h>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+
 /*
  * Beginning of Object methods section.
  */

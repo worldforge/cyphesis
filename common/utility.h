@@ -5,12 +5,26 @@
 #ifndef COMMON_UTILITY_H
 #define COMMON_UTILITY_H
 
-#include "operations.h"
+#include <map>
+
+namespace Atlas {
+  namespace Message {
+    class Element;
+    typedef std::map<std::string, Element> MapType;
+  }
+  namespace Objects {
+    class Root;
+    namespace Operation {
+      class RootOperation;
+    }
+  }
+}
 
 namespace utility {
 
-  Atlas::Objects::Root * Object_asRoot(const Element &);
-  bool Object_asOperation(const MapType &, RootOperation &);
+  Atlas::Objects::Root * Object_asRoot(const Atlas::Message::Element &);
+  bool Object_asOperation(const Atlas::Message::MapType &,
+                          Atlas::Objects::Operation::RootOperation &);
 
 }
 

@@ -8,6 +8,9 @@
 
 #include <cassert>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 
 void descendTree(Root * type, Inheritance & i, int & count)

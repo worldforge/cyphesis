@@ -69,16 +69,20 @@ type_utilstest_SOURCES = type_utilstest.cpp
 
 collisiontest_SOURCES = collisiontest.cpp
 collisiontest_LDADD = $(top_builddir)/physics/Collision.o \
+                      $(top_builddir)/physics/BBox.o \
                       $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/common/log.o \
+                      $(top_builddir)/common/const.o \
                       $(top_builddir)/common/globals.o
 
 emergencetest_SOURCES = emergencetest.cpp
 emergencetest_LDADD = $(top_builddir)/physics/Collision.o \
+                      $(top_builddir)/physics/BBox.o \
                       $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/common/log.o \
+                      $(top_builddir)/common/const.o \
                       $(top_builddir)/common/globals.o
 
 transformtest_SOURCES = transformtest.cpp

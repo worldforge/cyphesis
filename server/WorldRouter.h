@@ -6,7 +6,6 @@
 #define SERVER_WORLD_ROUTER_H
 
 #include "common/BaseWorld.h"
-#include "common/globals.h"
 #include "common/serialno.h"
 
 extern "C" {
@@ -14,9 +13,9 @@ extern "C" {
     #include <unistd.h>
 }
 
-class WorldRouter;
 class Entity;
-class World;
+
+typedef std::list<Atlas::Objects::Operation::RootOperation *> OpQueue;
 
 /// \brief WorldRouter encapsulates the game world running in the server.
 ///
@@ -42,12 +41,15 @@ class WorldRouter : public BaseWorld {
         return opSerialNo();
     }
 
-    void addOperationToQueue(RootOperation & op, const Entity *);
-    RootOperation * getOperationFromQueue();
-    const EntitySet & broadcastList(const RootOperation & op) const;
+    void addOperationToQueue(Atlas::Objects::Operation::RootOperation &,
+                             const Entity *);
+    Atlas::Objects::Operation::RootOperation * getOperationFromQueue();
+    const EntitySet & broadcastList(const Atlas::Objects::Operation::RootOperation &) const;
     void updateTime();
-    void deliverTo(const RootOperation & op, Entity * e);
-    void deliverDeleteTo(const RootOperation & op, Entity * e);
+    void deliverTo(const Atlas::Objects::Operation::RootOperation &,
+                   Entity *);
+    void deliverDeleteTo(const Atlas::Objects::Operation::RootOperation &,
+                         Entity *);
   public:
     explicit WorldRouter();
     virtual ~WorldRouter();
@@ -55,14 +57,15 @@ class WorldRouter : public BaseWorld {
     bool idle();
     Entity * addObject(Entity * obj, bool setup = true);
     Entity * addNewObject(const std::string &,
-                          const MapType &);
+                          const Atlas::Message::MapType &);
     void delObject(Entity * obj);
-    void setSerialnoOp(RootOperation &);
+    void setSerialnoOp(Atlas::Objects::Operation::RootOperation &);
 
-    void operation(RootOperation & op);
+    void operation(Atlas::Objects::Operation::RootOperation &);
 
     virtual void addPerceptive(const std::string &);
-    virtual void message(RootOperation & op, const Entity * obj);
+    virtual void message(Atlas::Objects::Operation::RootOperation &,
+                         const Entity *);
     virtual Entity * findByName(const std::string & name);
     virtual Entity * findByType(const std::string & type);
     virtual float constrainHeight(Entity *, const Point3D &);

@@ -10,6 +10,9 @@
 
 #include <cassert>
 
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+
 int main(int argc, char ** argv)
 {
     loadConfig(argc, argv);

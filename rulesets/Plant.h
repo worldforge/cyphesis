@@ -40,9 +40,9 @@ class Plant : public Plant_parent {
     const int getFruitChance() const { return m_fruitChance; }
     const double getSizeAdult() const { return m_sizeAdult; }
 
-    virtual void ChopOperation(const Chop &, OpVector &);
-    virtual void TickOperation(const Tick &, OpVector &);
-    virtual void TouchOperation(const Touch &, OpVector &);
+    virtual void ChopOperation(const RootOperation &, OpVector &);
+    virtual void TickOperation(const RootOperation &, OpVector &);
+    virtual void TouchOperation(const RootOperation &, OpVector &);
 };
 
 #endif // RULESETS_PLANT_H

@@ -14,6 +14,11 @@
 
 #include <iostream>
 
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Error;
+using Atlas::Objects::Operation::RootOperation;
+
 static const bool debug_flag = false;
 
 BaseEntity::BaseEntity(const std::string & id) : m_id(id)
@@ -42,7 +47,7 @@ void BaseEntity::operation(const RootOperation & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::LoginOperation(const Login & op, OpVector & res)
+void BaseEntity::LoginOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -50,7 +55,7 @@ void BaseEntity::LoginOperation(const Login & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::LogoutOperation(const Logout & op, OpVector & res)
+void BaseEntity::LogoutOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -58,7 +63,7 @@ void BaseEntity::LogoutOperation(const Logout & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::ActionOperation(const Action & op, OpVector & res)
+void BaseEntity::ActionOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -66,7 +71,7 @@ void BaseEntity::ActionOperation(const Action & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::ChopOperation(const Chop & op, OpVector & res)
+void BaseEntity::ChopOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -74,7 +79,7 @@ void BaseEntity::ChopOperation(const Chop & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::CombineOperation(const Combine & op, OpVector & res)
+void BaseEntity::CombineOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -82,7 +87,7 @@ void BaseEntity::CombineOperation(const Combine & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::CreateOperation(const Create & op, OpVector & res)
+void BaseEntity::CreateOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -90,7 +95,7 @@ void BaseEntity::CreateOperation(const Create & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::CutOperation(const Cut & op, OpVector & res)
+void BaseEntity::CutOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -98,7 +103,7 @@ void BaseEntity::CutOperation(const Cut & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::DeleteOperation(const Delete & op, OpVector & res)
+void BaseEntity::DeleteOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -106,7 +111,7 @@ void BaseEntity::DeleteOperation(const Delete & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::DivideOperation(const Divide & op, OpVector & res)
+void BaseEntity::DivideOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -114,7 +119,7 @@ void BaseEntity::DivideOperation(const Divide & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::EatOperation(const Eat & op, OpVector & res)
+void BaseEntity::EatOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -122,7 +127,7 @@ void BaseEntity::EatOperation(const Eat & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::BurnOperation(const Burn & op, OpVector & res)
+void BaseEntity::BurnOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -130,7 +135,7 @@ void BaseEntity::BurnOperation(const Burn & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::GetOperation(const Get & op, OpVector & res)
+void BaseEntity::GetOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -138,7 +143,7 @@ void BaseEntity::GetOperation(const Get & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::ImaginaryOperation(const Imaginary & op, OpVector & res)
+void BaseEntity::ImaginaryOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -146,7 +151,7 @@ void BaseEntity::ImaginaryOperation(const Imaginary & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::InfoOperation(const Info & op, OpVector & res)
+void BaseEntity::InfoOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -154,7 +159,7 @@ void BaseEntity::InfoOperation(const Info & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::MoveOperation(const Move & op, OpVector & res)
+void BaseEntity::MoveOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -162,7 +167,7 @@ void BaseEntity::MoveOperation(const Move & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::NourishOperation(const Nourish & op, OpVector & res)
+void BaseEntity::NourishOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -170,7 +175,7 @@ void BaseEntity::NourishOperation(const Nourish & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::SetOperation(const Set & op, OpVector & res)
+void BaseEntity::SetOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -178,7 +183,7 @@ void BaseEntity::SetOperation(const Set & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::SightOperation(const Sight & op, OpVector & res)
+void BaseEntity::SightOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -186,7 +191,7 @@ void BaseEntity::SightOperation(const Sight & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::SoundOperation(const Sound & op, OpVector & res)
+void BaseEntity::SoundOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -194,7 +199,7 @@ void BaseEntity::SoundOperation(const Sound & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::TalkOperation(const Talk & op, OpVector & res)
+void BaseEntity::TalkOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -202,7 +207,7 @@ void BaseEntity::TalkOperation(const Talk & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::TouchOperation(const Touch & op, OpVector & res)
+void BaseEntity::TouchOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -210,7 +215,7 @@ void BaseEntity::TouchOperation(const Touch & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::TickOperation(const Tick & op, OpVector & res)
+void BaseEntity::TickOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -218,7 +223,7 @@ void BaseEntity::TickOperation(const Tick & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::LookOperation(const Look & op, OpVector & res)
+void BaseEntity::LookOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -226,7 +231,7 @@ void BaseEntity::LookOperation(const Look & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::SetupOperation(const Setup & op, OpVector & res)
+void BaseEntity::SetupOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -234,7 +239,7 @@ void BaseEntity::SetupOperation(const Setup & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::AppearanceOperation(const Appearance & op, OpVector & res)
+void BaseEntity::AppearanceOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -242,7 +247,7 @@ void BaseEntity::AppearanceOperation(const Appearance & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::DisappearanceOperation(const Disappearance & op, OpVector & res)
+void BaseEntity::DisappearanceOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -250,7 +255,7 @@ void BaseEntity::DisappearanceOperation(const Disappearance & op, OpVector & res
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::UseOperation(const Use & op, OpVector & res)
+void BaseEntity::UseOperation(const RootOperation & op, OpVector & res)
 {
 }
 
@@ -258,7 +263,7 @@ void BaseEntity::UseOperation(const Use & op, OpVector & res)
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::WieldOperation(const Wield & op, OpVector & res)
+void BaseEntity::WieldOperation(const RootOperation & op, OpVector & res)
 {
 }
 

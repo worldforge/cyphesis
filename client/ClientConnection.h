@@ -5,8 +5,6 @@
 #ifndef CLIENT_CONNECTION_H
 #define CLIENT_CONNECTION_H
 
-#include "common/operations.h"
-
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codec.h>
 
@@ -26,47 +24,47 @@ class ClientConnection : public Atlas::Objects::Decoder {
     tcp_socket_stream ios;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
-    MapType reply;
+    Atlas::Message::MapType reply;
     int serialNo;
 
-    std::deque<RootOperation *> operationQueue;
+    std::deque<Atlas::Objects::Operation::RootOperation *> operationQueue;
 
     template<class O>
     void push(const O &);
 
-    void operation(const RootOperation&);
+    void operation(const Atlas::Objects::Operation::RootOperation&);
 
     int negotiate();
 
-    virtual void objectArrived(const Error&);
-    virtual void objectArrived(const Info&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Error&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Info&);
 
-    virtual void objectArrived(const Action&);
-    virtual void objectArrived(const Appearance&);
-    virtual void objectArrived(const Combine&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Action&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Appearance&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Combine&);
     virtual void objectArrived(const Atlas::Objects::Operation::Communicate&);
-    virtual void objectArrived(const Create&);
-    virtual void objectArrived(const Delete&);
-    virtual void objectArrived(const Disappearance&);
-    virtual void objectArrived(const Divide&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Create&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Delete&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Disappearance&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Divide&);
     virtual void objectArrived(const Atlas::Objects::Operation::Feel&);
-    virtual void objectArrived(const Get&);
-    virtual void objectArrived(const Imaginary&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Get&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Imaginary&);
     virtual void objectArrived(const Atlas::Objects::Operation::Listen&);
-    virtual void objectArrived(const Login&);
-    virtual void objectArrived(const Logout&);
-    virtual void objectArrived(const Look&);
-    virtual void objectArrived(const Move&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Login&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Logout&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Look&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Move&);
     virtual void objectArrived(const Atlas::Objects::Operation::Perceive&);
     virtual void objectArrived(const Atlas::Objects::Operation::Perception&);
-    virtual void objectArrived(const RootOperation&);
-    virtual void objectArrived(const Set&);
-    virtual void objectArrived(const Sight&);
+    virtual void objectArrived(const Atlas::Objects::Operation::RootOperation&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Set&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Sight&);
     virtual void objectArrived(const Atlas::Objects::Operation::Smell&);
     virtual void objectArrived(const Atlas::Objects::Operation::Sniff&);
-    virtual void objectArrived(const Sound&);
-    virtual void objectArrived(const Talk&);
-    virtual void objectArrived(const Touch&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Sound&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Talk&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Touch&);
 
   public:
     ClientConnection();
@@ -78,7 +76,7 @@ class ClientConnection : public Atlas::Objects::Decoder {
     void login(const std::string &, const std::string &);
     void create(const std::string &, const std::string &);
     int wait();
-    void send(RootOperation & op);
+    void send(Atlas::Objects::Operation::RootOperation & op);
 
     int peek() {
         return ios.peek();
@@ -89,12 +87,12 @@ class ClientConnection : public Atlas::Objects::Decoder {
     int get_fd() {
         return client_fd;
     }
-    const MapType & getReply() {
+    const Atlas::Message::MapType & getReply() {
         return reply;
     }
 
     void poll(int timeOut = 0);
-    RootOperation * pop();
+    Atlas::Objects::Operation::RootOperation * pop();
     bool pending();
 };
 

@@ -13,6 +13,9 @@
 
 #include <iostream>
 
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+
 static bool debug_flag = false;
 
 /// \brief Constructor for server object.

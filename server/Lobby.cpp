@@ -14,6 +14,11 @@
 
 #include <cassert>
 
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Appearance;
+using Atlas::Objects::Operation::Disappearance;
+
 static const bool debug_flag = false;
 
 Lobby::Lobby(const std::string & id, ServerRouting & s) : OOGThing(id), m_server(s)

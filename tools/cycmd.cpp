@@ -264,7 +264,7 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Appeara
 template <class Stream>
 void Interactive<Stream>::unknownObjectArrived(const Element & e)
 {
-    RootOperation r;
+    Atlas::Objects::Operation::RootOperation r;
     bool isOp = utility::Object_asOperation(e.asMap(), r);
     if (isOp) {
         logOp(r);

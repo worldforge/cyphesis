@@ -11,7 +11,7 @@
 
 #include <wfmath/atlasconv.h>
 
-inline void idListasObject(const IdList & l, ListType & ol)
+inline void idListasObject(const IdList & l, Atlas::Message::ListType & ol)
 {
     ol.clear();
     IdList::const_iterator Iend = l.end();
@@ -20,11 +20,11 @@ inline void idListasObject(const IdList & l, ListType & ol)
     }
 }
 
-inline void idListFromAtlas(const ListType & l, IdList & ol)
+inline void idListFromAtlas(const Atlas::Message::ListType & l, IdList & ol)
 {
     ol.clear();
-    ListType::const_iterator Iend = l.end();
-    for (ListType::const_iterator I = l.begin(); I != Iend; ++I) {
+    Atlas::Message::ListType::const_iterator Iend = l.end();
+    for (Atlas::Message::ListType::const_iterator I = l.begin(); I != Iend; ++I) {
         ol.push_back(I->asString());
     }
 }
@@ -32,7 +32,7 @@ inline void idListFromAtlas(const ListType & l, IdList & ol)
 // This could probably be made into a template, as it will work
 // on any type which implements asMessage()
 template<typename List_T>
-void objectListAsMessage(const List_T & l, ListType & ol)
+void objectListAsMessage(const List_T & l, Atlas::Message::ListType & ol)
 {
     ol.clear();
     typename List_T::const_iterator Iend = l.end();
@@ -42,12 +42,12 @@ void objectListAsMessage(const List_T & l, ListType & ol)
 }
 
 template<typename T, typename List_T>
-inline void objectListFromMessage(const ListType & l, List_T & ol)
+inline void objectListFromMessage(const Atlas::Message::ListType & l, List_T & ol)
 {
     ol.clear();
     
-    ListType::const_iterator Iend = l.end();
-    for (ListType::const_iterator I = l.begin(); I != Iend; ++I) {
+    Atlas::Message::ListType::const_iterator Iend = l.end();
+    for (Atlas::Message::ListType::const_iterator I = l.begin(); I != Iend; ++I) {
         ol.push_back(T(I->asList()));
     }
 }

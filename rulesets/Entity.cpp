@@ -35,6 +35,11 @@
 
 #include <cassert>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Sight;
+
 static const bool debug_flag = false;
 
 std::set<std::string> Entity::m_immutable;
@@ -209,87 +214,87 @@ void Entity::externalOperation(const RootOperation & op)
     }
 }
 
-void Entity::SetupOperation(const Setup & op, OpVector & res)
+void Entity::SetupOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("setup", op, res);
 }
 
-void Entity::TickOperation(const Tick & op, OpVector & res)
+void Entity::TickOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("tick", op, res);
 }
 
-void Entity::ActionOperation(const Action & op, OpVector & res)
+void Entity::ActionOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("action", op, res);
 }
 
-void Entity::ChopOperation(const Chop & op, OpVector & res)
+void Entity::ChopOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("chop", op, res);
 }
 
-void Entity::CreateOperation(const Create & op, OpVector & res)
+void Entity::CreateOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("create", op, res);
 }
 
-void Entity::CutOperation(const Cut & op, OpVector & res)
+void Entity::CutOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("cut", op, res);
 }
 
-void Entity::DeleteOperation(const Delete & op, OpVector & res)
+void Entity::DeleteOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("delete", op, res);
 }
 
-void Entity::EatOperation(const Eat & op, OpVector & res)
+void Entity::EatOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("eat", op, res);
 }
 
-void Entity::BurnOperation(const Burn & op, OpVector & res)
+void Entity::BurnOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("burn", op, res);
 }
 
-void Entity::ImaginaryOperation(const Imaginary & op, OpVector & res)
+void Entity::ImaginaryOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("imaginary", op, res);
 }
 
-void Entity::MoveOperation(const Move & op, OpVector & res)
+void Entity::MoveOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("move", op, res);
 }
 
-void Entity::NourishOperation(const Nourish & op, OpVector & res)
+void Entity::NourishOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("nourish", op, res);
 }
 
-void Entity::SetOperation(const Set & op, OpVector & res)
+void Entity::SetOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("set", op, res);
 }
 
-void Entity::SightOperation(const Sight & op, OpVector & res)
+void Entity::SightOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("sight", op, res);
 }
 
-void Entity::SoundOperation(const Sound & op, OpVector & res)
+void Entity::SoundOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("sound", op, res);
 }
 
-void Entity::TouchOperation(const Touch & op, OpVector & res)
+void Entity::TouchOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("touch", op, res);
 }
 
-void Entity::LookOperation(const Look & op, OpVector & res)
+void Entity::LookOperation(const RootOperation & op, OpVector & res)
 {
     if (m_script->Operation("look", op, res) != 0) {
         return;
@@ -305,12 +310,12 @@ void Entity::LookOperation(const Look & op, OpVector & res)
     res.push_back(s);
 }
 
-void Entity::AppearanceOperation(const Appearance & op, OpVector & res)
+void Entity::AppearanceOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("appearance", op, res);
 }
 
-void Entity::DisappearanceOperation(const Disappearance & op, OpVector & res)
+void Entity::DisappearanceOperation(const RootOperation & op, OpVector & res)
 {
     m_script->Operation("disappearance", op, res);
 }

@@ -31,6 +31,9 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+
 static const bool debug_flag = false;
 
 BaseMind::BaseMind(const std::string & id, const std::string & body_name)
@@ -117,37 +120,37 @@ void BaseMind::scriptSubscribe(const std::string & op)
     }
 }
 
-void BaseMind::sightLoginOperation(const Sight & op, Login & sub_op, OpVector & res)
+void BaseMind::sightLoginOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sight_login", op, res, &sub_op);
 }
 
-void BaseMind::sightCombineOperation(const Sight & op, Combine & sub_op, OpVector & res)
+void BaseMind::sightCombineOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sight_combine", op, res, &sub_op);
 }
 
-void BaseMind::sightDivideOperation(const Sight & op, Divide & sub_op, OpVector & res)
+void BaseMind::sightDivideOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sight_divide", op, res, &sub_op);
 }
 
-void BaseMind::sightTalkOperation(const Sight & op, Talk & sub_op, OpVector & res)
+void BaseMind::sightTalkOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sight_talk", op, res, &sub_op);
 }
 
-void BaseMind::sightActionOperation(const Sight & op, Action & sub_op, OpVector & res)
+void BaseMind::sightActionOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sight_action", op, res, &sub_op);
 }
 
-void BaseMind::sightChopOperation(const Sight & op, Chop & sub_op, OpVector & res)
+void BaseMind::sightChopOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sight_chop", op, res, &sub_op);
 }
 
-void BaseMind::sightCreateOperation(const Sight & op, Create & sub_op, OpVector & res)
+void BaseMind::sightCreateOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     if (m_script->Operation("sight_create", op, res, &sub_op) != 0) {
         return;
@@ -163,12 +166,12 @@ void BaseMind::sightCreateOperation(const Sight & op, Create & sub_op, OpVector 
     m_map.updateAdd(obj, op.getSeconds());
 }
 
-void BaseMind::sightCutOperation(const Sight & op, Cut & sub_op, OpVector & res)
+void BaseMind::sightCutOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sight_cut", op, res, &sub_op);
 }
 
-void BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op, OpVector & res)
+void BaseMind::sightDeleteOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     debug( std::cout << "Sight Delete operation" << std::endl << std::flush;);
     if (m_script->Operation("sight_delete", op, res, &sub_op) != 0) {
@@ -191,22 +194,22 @@ void BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op, OpVector 
     }
 }
 
-void BaseMind::sightEatOperation(const Sight & op, Eat & sub_op, OpVector & res)
+void BaseMind::sightEatOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sight_eat", op, res, &sub_op);
 }
 
-void BaseMind::sightBurnOperation(const Sight & op, Burn & sub_op, OpVector & res)
+void BaseMind::sightBurnOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sight_burn", op, res, &sub_op);
 }
 
-void BaseMind::sightImaginaryOperation(const Sight & op, Imaginary & sub_op, OpVector & res)
+void BaseMind::sightImaginaryOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sight_imaginary", op, res, &sub_op);
 }
 
-void BaseMind::sightMoveOperation(const Sight & op, Move & sub_op, OpVector & res)
+void BaseMind::sightMoveOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     debug( std::cout << "BaseMind::sightOperation(Sight, Move)" << std::endl << std::flush;);
     if (m_script->Operation("sight_move", op, res, &sub_op) != 0) {
@@ -221,7 +224,7 @@ void BaseMind::sightMoveOperation(const Sight & op, Move & sub_op, OpVector & re
     m_map.updateAdd(obj, op.getSeconds());
 }
 
-void BaseMind::sightSetOperation(const Sight & op, Set & sub_op, OpVector & res)
+void BaseMind::sightSetOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     if (m_script->Operation("sight_set", op, res, &sub_op) != 0) {
         return;
@@ -235,12 +238,12 @@ void BaseMind::sightSetOperation(const Sight & op, Set & sub_op, OpVector & res)
     m_map.updateAdd(obj, op.getSeconds());
 }
 
-void BaseMind::sightTouchOperation(const Sight & op, Touch & sub_op, OpVector & res)
+void BaseMind::sightTouchOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sight_touch", op, res, &sub_op);
 }
 
-void BaseMind::sightOtherOperation(const Sight & op, RootOperation & sub_op, OpVector & res)
+void BaseMind::sightOtherOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     debug( std::cout << "BaseMind::sightOperation(Sight, RootOperation)" << std::endl << std::flush;);
 
@@ -250,83 +253,83 @@ void BaseMind::sightOtherOperation(const Sight & op, RootOperation & sub_op, OpV
     m_script->Operation(event_name, op, res, &sub_op);
 }
 
-void BaseMind::soundLoginOperation(const Sound & op, Login & sub_op, OpVector & res)
+void BaseMind::soundLoginOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_login", op, res, &sub_op);
 }
 
-void BaseMind::soundActionOperation(const Sound & op, Action & sub_op, OpVector & res)
+void BaseMind::soundActionOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_action", op, res, &sub_op);
 }
 
-void BaseMind::soundCutOperation(const Sound & op, Cut & sub_op, OpVector & res)
+void BaseMind::soundCutOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_cut", op, res, &sub_op);
 }
 
-void BaseMind::soundChopOperation(const Sound & op, Chop & sub_op, OpVector & res)
+void BaseMind::soundChopOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_chop", op, res, &sub_op);
 }
 
-void BaseMind::soundCombineOperation(const Sound & op, Combine & sub_op, OpVector & res)
+void BaseMind::soundCombineOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_combine", op, res, &sub_op);
 }
 
-void BaseMind::soundCreateOperation(const Sound & op, Create & sub_op, OpVector & res)
+void BaseMind::soundCreateOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_create", op, res, &sub_op);
 }
 
-void BaseMind::soundDeleteOperation(const Sound & op, Delete & sub_op, OpVector & res)
+void BaseMind::soundDeleteOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_delete", op, res, &sub_op);
 }
 
-void BaseMind::soundDivideOperation(const Sound & op, Divide & sub_op, OpVector & res)
+void BaseMind::soundDivideOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_divide", op, res, &sub_op);
 }
 
-void BaseMind::soundEatOperation(const Sound & op, Eat & sub_op, OpVector & res)
+void BaseMind::soundEatOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_eat", op, res, &sub_op);
 }
 
-void BaseMind::soundBurnOperation(const Sound & op, Burn & sub_op, OpVector & res)
+void BaseMind::soundBurnOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_burn", op, res, &sub_op);
 }
 
-void BaseMind::soundImaginaryOperation(const Sound & op, Imaginary & sub_op, OpVector & res)
+void BaseMind::soundImaginaryOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_imaginary", op, res, &sub_op);
 }
 
-void BaseMind::soundMoveOperation(const Sound & op, Move & sub_op, OpVector & res)
+void BaseMind::soundMoveOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_move", op, res, &sub_op);
 }
 
-void BaseMind::soundSetOperation(const Sound & op, Set & sub_op, OpVector & res)
+void BaseMind::soundSetOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_set", op, res, &sub_op);
 }
 
-void BaseMind::soundTouchOperation(const Sound & op, Touch & sub_op, OpVector & res)
+void BaseMind::soundTouchOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     m_script->Operation("sound_touch", op, res, &sub_op);
 }
 
-void BaseMind::soundTalkOperation(const Sound & op, Talk & sub_op, OpVector & res)
+void BaseMind::soundTalkOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     debug( std::cout << "BaseMind::soundOperation(Sound, Talk)" << std::endl << std::flush;);
     m_script->Operation("sound_talk", op, res, &sub_op);
 }
 
-void BaseMind::soundOtherOperation(const Sound & op, RootOperation & sub_op, OpVector & res)
+void BaseMind::soundOtherOperation(const RootOperation & op, RootOperation & sub_op, OpVector & res)
 {
     debug( std::cout << "BaseMind::soundOperation(Sound, RootOperation)" << std::endl << std::flush;);
 
@@ -336,7 +339,7 @@ void BaseMind::soundOtherOperation(const Sound & op, RootOperation & sub_op, OpV
     m_script->Operation(event_name, op, res, &sub_op);
 }
 
-void BaseMind::SoundOperation(const Sound & op, OpVector & res)
+void BaseMind::SoundOperation(const RootOperation & op, OpVector & res)
 {
     // Louder sounds might eventually make character wake up
     if (!m_isAwake) { return; }
@@ -358,7 +361,7 @@ void BaseMind::SoundOperation(const Sound & op, OpVector & res)
     }
 }
 
-void BaseMind::SightOperation(const Sight & op, OpVector & res)
+void BaseMind::SightOperation(const RootOperation & op, OpVector & res)
 {
     if (!m_isAwake) { return; }
     debug( std::cout << "BaseMind::Operation(Sight)" << std::endl << std::flush;);
@@ -387,7 +390,7 @@ void BaseMind::SightOperation(const Sight & op, OpVector & res)
     }
 }
 
-void BaseMind::AppearanceOperation(const Appearance & op, OpVector & res)
+void BaseMind::AppearanceOperation(const RootOperation & op, OpVector & res)
 {
     if (!m_isAwake) { return; }
     m_script->Operation("appearance", op, res);
@@ -402,7 +405,7 @@ void BaseMind::AppearanceOperation(const Appearance & op, OpVector & res)
     }
 }
 
-void BaseMind::DisappearanceOperation(const Disappearance & op, OpVector & res)
+void BaseMind::DisappearanceOperation(const RootOperation & op, OpVector & res)
 {
     if (!m_isAwake) { return; }
     m_script->Operation("disappearance", op, res);
@@ -439,8 +442,9 @@ void BaseMind::operation(const RootOperation & op, OpVector & res)
     callOperation(op, res);
 }
 
-void BaseMind::callSightOperation(const Sight& op, RootOperation & sub_op,
-                                                   OpVector & res)
+void BaseMind::callSightOperation(const RootOperation & op,
+                                  RootOperation & sub_op,
+                                  OpVector & res)
 {
     m_map.getAdd(sub_op.getFrom());
     OpNo op_no = opEnumerate(sub_op, opSightLookup);
@@ -452,8 +456,9 @@ void BaseMind::callSightOperation(const Sight& op, RootOperation & sub_op,
     SUB_OP_SWITCH(op, op_no, res, sight, sub_op)
 }
 
-void BaseMind::callSoundOperation(const Sound& op, RootOperation & sub_op,
-                                                   OpVector & res)
+void BaseMind::callSoundOperation(const RootOperation & op,
+                                  RootOperation & sub_op,
+                                  OpVector & res)
 {
     m_map.getAdd(sub_op.getFrom());
     OpNo op_no = opEnumerate(sub_op, opSoundLookup);

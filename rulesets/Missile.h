@@ -32,8 +32,8 @@ class Missile : public Missile_parent {
   protected:
     
   public:
-    virtual void MoveOperation(const Move &, OpVector &);
-    virtual void TickOperation(const Tick &, OpVector &);
+    virtual void MoveOperation(const RootOperation &, OpVector &);
+    virtual void TickOperation(const RootOperation &, OpVector &);
 };
 
 #endif // RULESETS_MISSILE_H

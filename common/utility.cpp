@@ -7,8 +7,11 @@
 #include <Atlas/Objects/Entity/RootEntity.h>
 #include <Atlas/Objects/Operation/RootOperation.h>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Operation::RootOperation;
 
 namespace utility {
 

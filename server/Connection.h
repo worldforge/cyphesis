@@ -31,7 +31,8 @@ class Connection : public OOGThing {
 
     Account * addPlayer(const std::string &, const std::string &);
   protected:
-    virtual bool verifyCredentials(const Account &, const MapType &) const;
+    virtual bool verifyCredentials(const Account &,
+                                   const Atlas::Message::MapType &) const;
   public:
     ServerRouting & m_server;
 
@@ -49,10 +50,10 @@ class Connection : public OOGThing {
 
     virtual void operation(const RootOperation &, OpVector &);
 
-    virtual void LoginOperation(const Login &, OpVector &);
-    virtual void LogoutOperation(const Logout &, OpVector &);
-    virtual void CreateOperation(const Create &, OpVector &);
-    virtual void GetOperation(const Get &, OpVector &);
+    virtual void LoginOperation(const RootOperation &, OpVector &);
+    virtual void LogoutOperation(const RootOperation &, OpVector &);
+    virtual void CreateOperation(const RootOperation &, OpVector &);
+    virtual void GetOperation(const RootOperation &, OpVector &);
 };
 
 #endif // SERVER_CONNECTION_H

@@ -10,7 +10,7 @@ TrustedConnection::TrustedConnection(const std::string & id, CommClient & client
 }
 
 bool TrustedConnection::verifyCredentials(const Account &,
-                                          const MapType &) const
+                                          const Atlas::Message::MapType &) const
 {
     return true;
 }

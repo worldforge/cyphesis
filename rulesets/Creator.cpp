@@ -13,6 +13,12 @@
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Delete.h>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Operation::Delete;
+
 static const bool debug_flag = false;
 
 Creator::Creator(const std::string & id) : Creator_parent(id)
@@ -61,25 +67,25 @@ void Creator::operation(const RootOperation & op, OpVector & res)
     OpNo op_no = opEnumerate(op);
     switch(op_no) {
         case OP_CREATE:
-            CreateOperation((Create &)op, res);
+            CreateOperation(op, res);
             break;
         case OP_LOOK:
-            LookOperation((Look &)op, res);
+            LookOperation(op, res);
             break;
         case OP_MOVE:
-            MoveOperation((Move &)op, res);
+            MoveOperation(op, res);
             break;
         case OP_SETUP:
             m_world->addPerceptive(getId());
             break;
         case OP_DELETE:
-            DeleteOperation((Delete &)op, res);
+            DeleteOperation(op, res);
             // Prevent Delete op from being sent to mind, so another delete
             // is not created in response.
             return;
             break;
         case OP_TICK:
-            TickOperation((Tick &)op, res);
+            TickOperation(op, res);
             break;
         default:
             break;
@@ -118,14 +124,14 @@ void Creator::externalOperation(const RootOperation & op)
     }
 }
 
-void Creator::mindLookOperation(const Look & op, OpVector & res)
+void Creator::mindLookOperation(const RootOperation & op, OpVector & res)
 {
     // This overriden version allows the Creator to search the world for
     // entities by type or by name
     debug(std::cout << "Got look up from prived mind from [" << op.getFrom()
                << "] to [" << op.getTo() << "]" << std::endl << std::flush;);
     m_perceptive = true;
-    Look * l = new Look(op);
+    RootOperation * l = new RootOperation(op);
     if (op.getTo().empty()) {
         const ListType & args = op.getArgs();
         if (args.empty() || !args.front().isMap()) {

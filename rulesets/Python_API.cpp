@@ -52,6 +52,27 @@
 
 #include <cstdio>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Sight;
+using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Burn;
+using Atlas::Objects::Operation::Action;
+using Atlas::Objects::Operation::Chop;
+using Atlas::Objects::Operation::Cut;
+using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Setup;
+using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Operation::Move;
+using Atlas::Objects::Operation::Talk;
+using Atlas::Objects::Operation::Touch;
+using Atlas::Objects::Operation::Eat;
+using Atlas::Objects::Operation::Nourish;
+using Atlas::Objects::Operation::Info;
+using Atlas::Objects::Operation::Tick;
+using Atlas::Objects::Operation::Generic;
+
 static const bool debug_flag = false;
 
 typedef struct {

@@ -9,6 +9,9 @@
 
 #include <cassert>
 
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+
 class TestWorld : public BaseWorld {
   public:
     explicit TestWorld(Entity & gw) : BaseWorld(gw) { }

@@ -57,7 +57,7 @@ class Entity : public BaseEntity {
     static const std::set<std::string> & immutables();
   protected:
     Script * m_script;
-    MapType m_attributes;
+    Atlas::Message::MapType m_attributes;
     PropertyDict m_properties;
 
     int m_seq;                  // Sequence number
@@ -111,20 +111,20 @@ class Entity : public BaseEntity {
         m_mass = w;
     }
 
-    const MapType & getAttributes() const {
+    const Atlas::Message::MapType & getAttributes() const {
         return m_attributes;
     }
 
     bool has(const std::string &) const;
-    bool get(const std::string &, Element &) const;
-    void set(const std::string &, const Element &);
-    void addToMessage(MapType & obj) const;
+    bool get(const std::string &, Atlas::Message::Element &) const;
+    void set(const std::string &, const Atlas::Message::Element &);
+    void addToMessage(Atlas::Message::MapType & obj) const;
 
     void setScript(Script * scrpt);
-    void merge(const MapType &);
+    void merge(const Atlas::Message::MapType &);
 
     template <class EntityType>
-    bool getLocation(const MapType &,
+    bool getLocation(const Atlas::Message::MapType &,
                      const std::map<std::string, EntityType *> &);
 
     void destroy();
@@ -132,25 +132,25 @@ class Entity : public BaseEntity {
 
     virtual void externalOperation(const RootOperation & op);
 
-    virtual void SetupOperation(const Setup & op, OpVector &);
-    virtual void TickOperation(const Tick & op, OpVector &);
-    virtual void ActionOperation(const Action & op, OpVector &);
-    virtual void ChopOperation(const Chop & op, OpVector &);
-    virtual void CreateOperation(const Create & op, OpVector &);
-    virtual void CutOperation(const Cut & op, OpVector &);
-    virtual void DeleteOperation(const Delete & op, OpVector &);
-    virtual void EatOperation(const Eat & op, OpVector &);
-    virtual void BurnOperation(const Burn & op, OpVector &);
-    virtual void ImaginaryOperation(const Imaginary & op, OpVector &);
-    virtual void MoveOperation(const Move & op, OpVector &);
-    virtual void NourishOperation(const Nourish & op, OpVector &);
-    virtual void SetOperation(const Set & op, OpVector &);
-    virtual void SightOperation(const Sight & op, OpVector &);
-    virtual void SoundOperation(const Sound & op, OpVector &);
-    virtual void TouchOperation(const Touch & op, OpVector &);
-    virtual void LookOperation(const Look & op, OpVector &);
-    virtual void AppearanceOperation(const Appearance & op, OpVector &);
-    virtual void DisappearanceOperation(const Disappearance & op, OpVector &);
+    virtual void SetupOperation(const RootOperation & op, OpVector &);
+    virtual void TickOperation(const RootOperation & op, OpVector &);
+    virtual void ActionOperation(const RootOperation & op, OpVector &);
+    virtual void ChopOperation(const RootOperation & op, OpVector &);
+    virtual void CreateOperation(const RootOperation & op, OpVector &);
+    virtual void CutOperation(const RootOperation & op, OpVector &);
+    virtual void DeleteOperation(const RootOperation & op, OpVector &);
+    virtual void EatOperation(const RootOperation & op, OpVector &);
+    virtual void BurnOperation(const RootOperation & op, OpVector &);
+    virtual void ImaginaryOperation(const RootOperation & op, OpVector &);
+    virtual void MoveOperation(const RootOperation & op, OpVector &);
+    virtual void NourishOperation(const RootOperation & op, OpVector &);
+    virtual void SetOperation(const RootOperation & op, OpVector &);
+    virtual void SightOperation(const RootOperation & op, OpVector &);
+    virtual void SoundOperation(const RootOperation & op, OpVector &);
+    virtual void TouchOperation(const RootOperation & op, OpVector &);
+    virtual void LookOperation(const RootOperation & op, OpVector &);
+    virtual void AppearanceOperation(const RootOperation & op, OpVector &);
+    virtual void DisappearanceOperation(const RootOperation & op, OpVector &);
     virtual void OtherOperation(const RootOperation & op, OpVector &);
 
     SigC::Signal0<void> updated;

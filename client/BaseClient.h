@@ -15,7 +15,7 @@ class BaseClient {
   protected:
     ClientConnection m_connection;
     CreatorClient * m_character;
-    MapType m_player;
+    Atlas::Message::MapType m_player;
     std::string m_playerName;
     std::string m_playerId;
 
@@ -23,7 +23,8 @@ class BaseClient {
     BaseClient();
     virtual ~BaseClient();
 
-    MapType createPlayer(const std::string & name, const std::string & pword);
+    Atlas::Message::MapType createPlayer(const std::string & name,
+                                         const std::string & pword);
     CreatorClient * createCharacter(const std::string & name);
     void handleNet();
     

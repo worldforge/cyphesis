@@ -8,13 +8,13 @@
 #include "inheritance.h"
 
 template <class OpClass>
-RootOperation * OpFactory<OpClass>::newOperation()
+Atlas::Objects::Operation::RootOperation * OpFactory<OpClass>::newOperation()
 {
     return new OpClass();
 }
 
 template <class OpClass>
-void OpFactory<OpClass>::newOperation(RootOperation & op)
+void OpFactory<OpClass>::newOperation(Atlas::Objects::Operation::RootOperation & op)
 {
     op = OpClass();
 }

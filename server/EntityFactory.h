@@ -22,7 +22,7 @@ typedef std::map<std::string, FactoryBase *> FactoryDict;
 
 class EntityFactory {
   private:
-    typedef std::multimap<std::string, std::pair<std::string, MapType> > RuleWaitList;
+    typedef std::multimap<std::string, std::pair<std::string, Atlas::Message::MapType> > RuleWaitList;
     explicit EntityFactory(BaseWorld & w);
     static EntityFactory * m_instance;
 
@@ -31,7 +31,7 @@ class EntityFactory {
     RuleWaitList m_waitingRules;
     PersistantThingFactory<Entity> * m_eft;
 
-    void installRule(const std::string &, const MapType&);
+    void installRule(const std::string &, const Atlas::Message::MapType&);
     void installRules();
   public:
     static void init(BaseWorld & w) {
@@ -48,7 +48,7 @@ class EntityFactory {
     }
     void initWorld();
     Entity * newEntity(const std::string &, const std::string &,
-                       const MapType &);
+                       const Atlas::Message::MapType &);
     void flushFactories();
 
     void installFactory(const std::string &, const std::string &, FactoryBase*);

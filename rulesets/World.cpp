@@ -26,7 +26,13 @@
 
 static const bool debug_flag = false;
 
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
+using Atlas::Objects::Operation::Error;
+using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Operation::Sight;
+using Atlas::Objects::Operation::Set;
 
 World::World(const std::string & id) : World_parent(id),
                                        m_terrain(*new Mercator::Terrain())
@@ -51,7 +57,7 @@ float World::getHeight(float x, float y)
     return m_terrain.get(x, y);
 }
 
-void World::LookOperation(const Look & op, OpVector & res)
+void World::LookOperation(const RootOperation & op, OpVector & res)
 {
     // Let the worldrouter know we have been looked at.
     assert(m_world != 0);
@@ -107,22 +113,22 @@ void World::LookOperation(const Look & op, OpVector & res)
     res.push_back(s);
 }
 
-void World::BurnOperation(const Burn & op, OpVector & res)
+void World::BurnOperation(const RootOperation & op, OpVector & res)
 {
     // Can't burn the world.
 }
 
-void World::MoveOperation(const Move & op, OpVector & res)
+void World::MoveOperation(const RootOperation & op, OpVector & res)
 {
     // Can't move the world.
 }
 
-void World::DeleteOperation(const Delete & op, OpVector & res)
+void World::DeleteOperation(const RootOperation & op, OpVector & res)
 {
     // Deleting has no effect.
 }
 
-void World::SetOperation(const Set & op, OpVector & res)
+void World::SetOperation(const RootOperation & op, OpVector & res)
 {
     // This is the same as Thing::Operation(Set), except world does not
     // get deleted if its status goes below 0.

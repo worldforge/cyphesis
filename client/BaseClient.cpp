@@ -12,6 +12,11 @@
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Login.h>
 
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Login;
+using Atlas::Objects::Operation::Create;
+
 static const bool debug_flag = false;
 
 // This is a template which requires debug flag to be declared.

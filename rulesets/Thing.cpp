@@ -27,6 +27,17 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Tick;
+using Atlas::Objects::Operation::Sight;
+using Atlas::Objects::Operation::Delete;
+using Atlas::Objects::Operation::Nourish;
+using Atlas::Objects::Operation::Appearance;
+using Atlas::Objects::Operation::Disappearance;
+using Atlas::Objects::Operation::RootOperation;
+
 static const bool debug_flag = false;
 
 Thing::Thing(const std::string & id) : Entity(id)
@@ -43,7 +54,7 @@ Thing::Thing(const std::string & id) : Entity(id)
 
 Thing::~Thing() { }
 
-void Thing::SetupOperation(const Setup & op, OpVector & res)
+void Thing::SetupOperation(const RootOperation & op, OpVector & res)
 {
     Appearance * app = new Appearance();
     ListType & args = app->getArgs();
@@ -63,7 +74,7 @@ void Thing::SetupOperation(const Setup & op, OpVector & res)
     res.push_back(tick);
 }
 
-void Thing::ActionOperation(const Action & op, OpVector & res)
+void Thing::ActionOperation(const RootOperation & op, OpVector & res)
 {
     if (m_script->Operation("action", op, res) != 0) {
         return;
@@ -73,7 +84,7 @@ void Thing::ActionOperation(const Action & op, OpVector & res)
     res.push_back(s);
 }
 
-void Thing::CreateOperation(const Create & op, OpVector & res)
+void Thing::CreateOperation(const RootOperation & op, OpVector & res)
 {
     if (m_script->Operation("create", op, res) != 0) {
         return;
@@ -110,7 +121,7 @@ void Thing::CreateOperation(const Create & op, OpVector & res)
             return;
         }
 
-        Create c(op);
+        RootOperation c(op);
         ListType & args = c.getArgs();
         args.push_back(MapType());
         obj->addToMessage(args.front().asMap());
@@ -127,7 +138,7 @@ void Thing::CreateOperation(const Create & op, OpVector & res)
     }
 }
 
-void Thing::DeleteOperation(const Delete & op, OpVector & res)
+void Thing::DeleteOperation(const RootOperation & op, OpVector & res)
 {
     if (m_script->Operation("delete", op, res) != 0) {
         return;
@@ -139,7 +150,7 @@ void Thing::DeleteOperation(const Delete & op, OpVector & res)
     res.push_back(s);
 }
 
-void Thing::BurnOperation(const Burn & op, OpVector & res)
+void Thing::BurnOperation(const RootOperation & op, OpVector & res)
 {
     if (m_script->Operation("burn", op, res) != 0) {
         return;
@@ -178,7 +189,7 @@ void Thing::BurnOperation(const Burn & op, OpVector & res)
     res.push_back(n);
 }
 
-void Thing::MoveOperation(const Move & op, OpVector & res)
+void Thing::MoveOperation(const RootOperation & op, OpVector & res)
 {
     debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
     m_seq++;
@@ -269,7 +280,7 @@ void Thing::MoveOperation(const Move & op, OpVector & res)
         set(I->first, I->second);
     }
 
-    Move m(op);
+    RootOperation m(op);
     m_location.addToMessage(m.getArgs().front().asMap());
 
     RootOperation * s = new Sight();
@@ -364,7 +375,7 @@ void Thing::MoveOperation(const Move & op, OpVector & res)
     updated.emit();
 }
 
-void Thing::SetOperation(const Set & op, OpVector & res)
+void Thing::SetOperation(const RootOperation & op, OpVector & res)
 {
     m_seq++;
     if (m_script->Operation("set", op, res) != 0) {

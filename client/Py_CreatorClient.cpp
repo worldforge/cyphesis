@@ -16,6 +16,9 @@
 
 #include "common/debug.h"
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+
 static const bool debug_flag = false;
 
 static PyObject * CreatorClient_as_entity(PyCreatorClient * self, PyObject * args)

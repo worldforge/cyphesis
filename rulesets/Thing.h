@@ -22,13 +22,13 @@ class Thing : public Thing_parent {
     explicit Thing(const std::string & id);
     virtual ~Thing();
 
-    virtual void SetupOperation(const Setup & op, OpVector &);
-    virtual void ActionOperation(const Action & op, OpVector &);
-    virtual void CreateOperation(const Create & op, OpVector &);
-    virtual void DeleteOperation(const Delete & op, OpVector &);
-    virtual void BurnOperation(const Burn & op, OpVector &);
-    virtual void MoveOperation(const Move & op, OpVector &);
-    virtual void SetOperation(const Set & op, OpVector &);
+    virtual void SetupOperation(const RootOperation & op, OpVector &);
+    virtual void ActionOperation(const RootOperation & op, OpVector &);
+    virtual void CreateOperation(const RootOperation & op, OpVector &);
+    virtual void DeleteOperation(const RootOperation & op, OpVector &);
+    virtual void BurnOperation(const RootOperation & op, OpVector &);
+    virtual void MoveOperation(const RootOperation & op, OpVector &);
+    virtual void SetOperation(const RootOperation & op, OpVector &);
 };
 
 #endif // RULESETS_THING_H

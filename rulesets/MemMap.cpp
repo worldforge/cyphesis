@@ -18,6 +18,11 @@ static const bool debug_flag = false;
 // This is a template which requires debug flag to be declared.
 #include "Entity_getLocation.h"
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Look;
+
 MemEntity * MemMap::addEntity(MemEntity * entity)
 {
     assert(entity != 0);

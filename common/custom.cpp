@@ -3,7 +3,6 @@
 // Copyright (C) 2000-2004 Alistair Riddoch
 
 #include "inheritance_impl.h"
-#include "operations.h"
 
 #include "Chop.h"
 #include "Cut.h"
@@ -17,6 +16,19 @@
 #include "Wield.h"
 
 #include <Atlas/Objects/Entity/AdminEntity.h>
+
+using Atlas::Message::ListType;
+using Atlas::Objects::Root;
+using Atlas::Objects::Entity::AdminEntity;
+using Atlas::Objects::Operation::Setup;
+using Atlas::Objects::Operation::Tick;
+using Atlas::Objects::Operation::Eat;
+using Atlas::Objects::Operation::Nourish;
+using Atlas::Objects::Operation::Cut;
+using Atlas::Objects::Operation::Chop;
+using Atlas::Objects::Operation::Burn;
+using Atlas::Objects::Operation::Use;
+using Atlas::Objects::Operation::Wield;
 
 void installCustomOperations()
 {
@@ -47,9 +59,6 @@ void installCustomOperations()
     i.opInstall("shoot", OP_OTHER, new GenericOpFactory("shoot"));
     i.opInstall("extinguish", OP_OTHER, new GenericOpFactory("extinguish"));
 }
-
-using Atlas::Objects::Root;
-using Atlas::Objects::Entity::AdminEntity;
 
 void installCustomEntities()
 {

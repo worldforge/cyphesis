@@ -11,9 +11,14 @@
 
 #include "common/Property.h"
 
-#include <Atlas/Objects/Operation/Combine.h>
-#include <Atlas/Objects/Operation/Divide.h>
+#include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Delete.h>
+
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Delete;
 
 Stackable::Stackable(const std::string & id) : Stackable_parent(id),
                                                m_num(1)
@@ -28,7 +33,7 @@ Stackable::~Stackable()
 {
 }
 
-void Stackable::CombineOperation(const Combine & op, OpVector & res)
+void Stackable::CombineOperation(const RootOperation & op, OpVector & res)
 {
     if (m_script->Operation("combine", op, res) != 0) {
         return;
@@ -56,7 +61,7 @@ void Stackable::CombineOperation(const Combine & op, OpVector & res)
     // thing have not been discussed
 }
 
-void Stackable::DivideOperation(const Divide & op, OpVector & res)
+void Stackable::DivideOperation(const RootOperation & op, OpVector & res)
 {
     if (m_script->Operation("divide", op, res) != 0) {
         return;

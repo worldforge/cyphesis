@@ -10,8 +10,8 @@
 
 int main()
 {
-    RootOperation op;
-    MapType map;
+    Atlas::Objects::Operation::RootOperation op;
+    Atlas::Message::MapType map;
 
     assert(utility::Object_asOperation(map, op) == false);
 

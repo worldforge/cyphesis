@@ -30,8 +30,11 @@
 #include "common/random.h"
 
 #include <Atlas/Message/Element.h>
-#include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Entity/GameEntity.h>
+
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 
 static const bool debug_flag = false;
 

@@ -10,6 +10,9 @@
 #include "Py_World.h"
 #include "Entity.h"
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+
 static PyObject * Entity_as_entity(PyEntity * self)
 {
 #ifndef NDEBUG

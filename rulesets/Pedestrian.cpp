@@ -17,6 +17,11 @@
 
 #include <Atlas/Objects/Operation/Move.h>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Move;
+
 static const bool debug_flag = false;
 
 Pedestrian::Pedestrian(Entity & body) : Movement(body)

@@ -33,6 +33,11 @@
 
 #include <cassert>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Operation::Info;
+
 static const bool debug_flag = false;
 
 Connection::Connection(const std::string & id, CommClient & client,
@@ -195,7 +200,7 @@ void Connection::operation(const RootOperation & op, OpVector & res)
     }
 }
 
-void Connection::LoginOperation(const Login & op, OpVector & res)
+void Connection::LoginOperation(const RootOperation & op, OpVector & res)
 {
 
     debug(std::cout << "Got login op" << std::endl << std::flush;);
@@ -270,7 +275,7 @@ void Connection::LoginOperation(const Login & op, OpVector & res)
     res.push_back(info);
 }
 
-void Connection::CreateOperation(const Create & op, OpVector & res)
+void Connection::CreateOperation(const RootOperation & op, OpVector & res)
 {
     debug(std::cout << "Got create op" << std::endl << std::flush;);
     if (!m_objects.empty()) {
@@ -328,7 +333,7 @@ void Connection::CreateOperation(const Create & op, OpVector & res)
     res.push_back(info);
 }
 
-void Connection::LogoutOperation(const Logout & op, OpVector & res)
+void Connection::LogoutOperation(const RootOperation & op, OpVector & res)
 {
     if (op.getArgs().empty()) {
         // Logging self out
@@ -372,7 +377,7 @@ void Connection::LogoutOperation(const Logout & op, OpVector & res)
     // FIXME This won't work. This connection won't have the account ID
     // so won't be able to find it. If it did, then it could just log out
     // the normal way. Pointless.
-    Logout l(op);
+    RootOperation l(op);
     l.setFrom(player->getId());
 
     OpVector tres;
@@ -382,7 +387,7 @@ void Connection::LogoutOperation(const Logout & op, OpVector & res)
     assert(tres.empty());
 }
 
-void Connection::GetOperation(const Get & op, OpVector & res)
+void Connection::GetOperation(const RootOperation & op, OpVector & res)
 {
     const ListType & args = op.getArgs();
 

@@ -1,3 +1,46 @@
+2004-12-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/BaseClient.cpp, client/BaseClient.h,
+	  client/CharacterClient.cpp, client/CharacterClient.h,
+	  client/ClientConnection.cpp, client/ClientConnection.h,
+	  client/CreatorClient.cpp, client/CreatorClient.h,
+	  client/Py_CreatorClient.cpp, common/BaseEntity.cpp,
+	  common/BaseEntity.h, common/BaseWorld.h, common/custom.cpp,
+	  common/inheritance.cpp, common/inheritance.h,
+	  common/inheritance_impl.h, common/op_switch.h, common/type_utils.h,
+	  common/types.h, common/utility.cpp, common/utility.h,
+	  modules/Location.cpp, rulesets/BaseMind.cpp, rulesets/BaseMind.h,
+	  rulesets/Character.cpp, rulesets/Character.h, rulesets/Creator.cpp,
+	  rulesets/Creator.h, rulesets/Entity.cpp, rulesets/Entity.h,
+	  rulesets/EntityProperties.cpp, rulesets/Entity_getLocation.h,
+	  rulesets/Food.cpp, rulesets/Food.h, rulesets/MemMap.cpp,
+	  rulesets/MemMap.h, rulesets/Missile.h, rulesets/Pedestrian.cpp,
+	  rulesets/Plant.cpp, rulesets/Plant.h, rulesets/Py_Mind.cpp,
+	  rulesets/Py_Object.cpp, rulesets/Py_Operation.cpp,
+	  rulesets/Py_Operation.h, rulesets/Py_Thing.cpp,
+	  rulesets/PythonMindScript.h, rulesets/PythonScript.h,
+	  rulesets/PythonThingScript.h, rulesets/Python_API.cpp,
+	  rulesets/Script.cpp, rulesets/Script.h, rulesets/Stackable.cpp,
+	  rulesets/Stackable.h, rulesets/Thing.cpp, rulesets/Thing.h,
+	  rulesets/World.cpp, rulesets/World.h,
+	  server/Account.cpp, server/Account.h server/Admin.cpp, server/Admin.h,
+	  server/CommClient.cpp, server/Connection.cpp, server/Connection.h,
+	  server/EntityFactory.cpp, server/EntityFactory.h, server/Lobby.cpp,
+	  server/Lobby.h, server/Persistance.cpp, server/Persistance.h,
+	  server/Persistor.cpp, server/Player.cpp, server/Player.h,
+	  server/ServerRouting.cpp, server/ServerRouting.h,
+	  server/TrustedConnection.cpp, server/TrustedConnection.h,
+	  server/WorldRouter.cpp, server/WorldRouter.h, tests/Areatest.cpp,
+	  tests/Charactertest.cpp, tests/Creatortest.cpp,
+	  tests/EntityExerciser.h, tests/Entitytest.cpp, tests/Foodtest.cpp,
+	  tests/IGEntityExerciser.h, tests/Linetest.cpp, tests/Planttest.cpp,
+	  tests/Stackabletest.cpp, tests/Structuretest.cpp, tests/Thingtest.cpp,
+	  tests/Worldtest.cpp, tests/allOperations.h, tests/inheritancetest.cpp,
+	  tests/utilitytest.cpp, tools/cycmd.cpp:
+	  Modify the entity interface so that all Operation methods
+	  take references to RootOperation, as its cleaner, and requires
+	  less nasty casts. Clean up operations in headers generally.
+
 2004-11-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* RELEASE-check: Update list of things to do when releasing.

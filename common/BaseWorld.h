@@ -10,6 +10,8 @@
 
 #include "physics/Vector3D.h"
 
+#include <Atlas/Message/Element.h>
+
 #include <sigc++/signal.h>
 
 class Entity;
@@ -55,16 +57,17 @@ class BaseWorld {
     virtual bool idle() = 0;
     virtual Entity * addObject(Entity * obj, bool setup = true) = 0;
     virtual Entity * addNewObject(const std::string &,
-                                  const MapType &) = 0;
-    virtual void setSerialnoOp(RootOperation &) = 0;
-    virtual void message(RootOperation & op, const Entity * obj) = 0;
+                                  const Atlas::Message::MapType &) = 0;
+    virtual void setSerialnoOp(Atlas::Objects::Operation::RootOperation &) = 0;
+    virtual void message(Atlas::Objects::Operation::RootOperation &,
+                         const Entity * obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;
     virtual float constrainHeight(Entity *, const Point3D &) = 0;
     virtual void addPerceptive(const std::string & id) = 0;
 
 
-    SigC::Signal1<void, RootOperation *> Dispatching;
+    SigC::Signal1<void, Atlas::Objects::Operation::RootOperation *> Dispatching;
 };
 
 #endif // COMMON_BASE_WORLD_H

@@ -18,7 +18,7 @@ class Creator : public Creator_parent {
     virtual void operation(const RootOperation & op, OpVector &);
     virtual void externalOperation(const RootOperation & op);
 
-    virtual void mindLookOperation(const Look & op, OpVector &);
+    virtual void mindLookOperation(const RootOperation & op, OpVector &);
 };
 
 #endif // RULESETS_CREATOR_H

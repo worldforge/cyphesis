@@ -10,6 +10,10 @@
 
 std::set<std::string> Player::playableTypes;
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+
 Player::Player(Connection * conn, const std::string& username,
                const std::string& passwd, const std::string & id) :
                Account(conn, username, passwd, id)
@@ -34,8 +38,8 @@ void Player::addToMessage(MapType & omap) const
     }
 }
 
-int Player::characterError(const Create & op,
-                            const MapType & ent, OpVector & res) const
+int Player::characterError(const RootOperation & op,
+                           const MapType & ent, OpVector & res) const
 {
     MapType::const_iterator I = ent.find("name");
     if ((I == ent.end()) || !I->second.isString()) {

@@ -7,8 +7,6 @@
 
 #include <Python.h>
 
-#include "common/operations.h"
-
 namespace Atlas { namespace Objects { namespace Operation {
   class RootOperation;
 } } }

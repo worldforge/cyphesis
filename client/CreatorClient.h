@@ -15,10 +15,10 @@ class CreatorClient : public CharacterClient {
   public:
     CreatorClient(const std::string&, const std::string&, ClientConnection&);
 
-    Entity * make(const Element &);
-    void sendSet(const std::string &, const Element &);
+    Entity * make(const Atlas::Message::Element &);
+    void sendSet(const std::string &, const Atlas::Message::Element &);
     Entity * look(const std::string &);
-    Entity * lookFor(const Element &);
+    Entity * lookFor(const Atlas::Message::Element &);
     int runScript(const std::string & package, const std::string & function);
 };
 

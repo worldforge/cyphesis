@@ -12,6 +12,9 @@
 #include "Py_WorldTime.h"
 #include "BaseMind.h"
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+
 static PyObject * Mind_as_entity(PyMind * self)
 {
 #ifndef NDEBUG

@@ -37,7 +37,7 @@ void Property<BBox>::add(const std::string & s, Atlas::Message::MapType & ent)
 
 void Property<IdList>::get(Atlas::Message::Element & e)
 {
-    e = ListType();
+    e = Atlas::Message::ListType();
     idListasObject(m_data, e.asList());
 }
 
@@ -57,8 +57,8 @@ void Property<IdList>::add(const std::string & s, Atlas::Message::MapType & ent)
 
 void ImmutableProperty<EntitySet>::get(Atlas::Message::Element & e)
 {
-    e = ListType();
-    ListType & contlist = e.asList();
+    e = Atlas::Message::ListType();
+    Atlas::Message::ListType & contlist = e.asList();
     EntitySet::const_iterator Iend = m_data.end();
     for (EntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
         contlist.push_back((*I)->getId());
