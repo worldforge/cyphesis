@@ -16,7 +16,6 @@ if [ -f /etc/sysconfig/cyphesis ] ; then
         . /etc/sysconfig/cyphesis
 else
         CYPHESISUSER=cyphesis
-        CYPHESISDBASE=cyphesis
 fi
 
 start() {
@@ -26,7 +25,7 @@ start() {
         echo -n $"Populating cyphesis world: "
 
         # Run the server, in self daemonising mode
-        su $CYPHESISUSER -c "/usr/bin/cyclient --cyphesis:dbname=$CYPHESISDBASE" >/dev/null 2>&1
+        su $CYPHESISUSER -c "/usr/bin/cyclient" >/dev/null 2>&1
         RETVAL=$?
         if [ $RETVAL -eq 0 ]; then
             echo_success

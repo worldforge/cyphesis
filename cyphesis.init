@@ -16,7 +16,6 @@ if [ -f /etc/sysconfig/cyphesis ] ; then
         . /etc/sysconfig/cyphesis
 else
         CYPHESISUSER=cyphesis
-        CYPHESISDBASE=cyphesis
 fi
 
 POSTGRESUSER=postgres
@@ -52,6 +51,8 @@ start() {
                 echo_success
             else
                 echo_failure
+                echo
+                return 1
             fi
             echo
         fi
@@ -60,12 +61,13 @@ start() {
         if ! su $CYPHESISUSER -c "psql -c \"\" cyphesis" >/dev/null 2>&1; then
             # Create the database
             echo -n $"Creating PostgreSQL database: "
-            su $CYPHESISUSER -c "createdb $CYPHESISDBASE" >/dev/null 2>&1
+            su $CYPHESISUSER -c "createdb cyphesis" >/dev/null 2>&1
             RETVAL=$?
             if [ $RETVAL -eq 0 ]; then
                 echo_success
             else
                 echo_failure
+                echo
                 return 1
             fi
             echo
@@ -77,6 +79,7 @@ start() {
                 echo_success
             else
                 echo_failure
+                echo
                 return 1
             fi
             echo
@@ -92,6 +95,7 @@ start() {
             touch /var/lock/subsys/cyphesis
         else
             echo_failure
+            echo
         fi
         echo
         return $RETVAL
