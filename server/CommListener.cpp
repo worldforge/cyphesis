@@ -104,16 +104,19 @@ bool CommListener::accept()
     void * adr = 0;
     if (sst.ss_family == AF_INET) {
         adr = &((sockaddr_in&)sst).sin_addr;
-    } else if (sst.ss_family == AF_INET) {
+    } else if (sst.ss_family == AF_INET6) {
         adr = &((sockaddr_in6&)sst).sin6_addr;
     }
     char buf[INET6_ADDRSTRLEN];
     const char * address = 0;
     if (adr != 0) {
         address = ::inet_ntop(sst.ss_family, adr, buf, INET6_ADDRSTRLEN);
+    } else {
+        log(WARNING, "Unable to determine address type for connection");
     }
     if (address == 0) {
         log(WARNING, "Unable to determine remote address for connection");
+        perror("inet_ntop");
         address = "unknown";
     }
     
