@@ -1,3 +1,8 @@
+By adding a skill class to be referenced by character, and defining Teach 
+(transfer skill) Sling (stop wielding tool, and place somewhere convenient)
+we can have almost a complete system. Implicitly, the click action when a tool
+is wielded is to use that tool.
+
 Re-work the way PyEntity and PyMind are defined so the inheritence is
 available, and open up the scope for exposing more directly the functionality
 of other entity classes.
