@@ -1,3 +1,12 @@
+2004-12-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommUnixListener.cpp: Improve recovery from a crash by
+	  ensuring that CommUnixListener always opens its socket, even if it
+	  already exists. This is ok because if a cyphesis process is already
+	  running, then CommUnixListener won't even get created because the
+	  attempt to create a TCP listen socket in CommListener will fail
+	  first.
+
 2004-12-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CharacterClient.cpp, client/CharacterClient.h: Eliminate

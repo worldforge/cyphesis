@@ -58,13 +58,25 @@ void CommUnixListener::dispatch()
 #define UNIX_PATH_MAX 108
 
 /// \brief Create and bind the listen socket.
+///
+/// If an initial attempt fails, then this function attempts to unlink the
+/// unix socket path, and tries again. This method is deliberatly called
+/// _after_ attempting to open the TCP listen socket, so that this
+/// will never be called in an instance of cyphesis already exists.
 int CommUnixListener::setup()
 {
     m_path = var_directory + "/tmp/" + socket_name;
 
     m_unixListener.open(m_path);
-
     m_bound = m_unixListener.is_open();
+
+    if (!m_bound) {
+        ::unlink(m_path.c_str());
+
+        m_unixListener.open(m_path);
+        m_bound = m_unixListener.is_open();
+    }
+
     return m_bound ? 0 : 1;
 }
 
