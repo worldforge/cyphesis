@@ -1,3 +1,21 @@
+2004-12-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Vector3D.cpp: Allow setting of Vector3D attributes
+	  x y and z.
+
+	* rulesets/Python_API.cpp: Fix bug in calculating orientation
+	  Quaternion for rotation between two unit vectors.
+
+	* rulesets/basic/mind/NPCMind.py: Implement a method which calculates
+	  the orientation required to face another entity. Use it to face
+	  a character which wants to buy something.
+
+	* rulesets/mason/define_world.py: Tweak orientation of pig merchant
+	  so he doesn't end up upside down.
+
+	* server/Makefile.am: Remove cyslave from the build for now, as its
+	  not functional.
+
 2004-12-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/panlingua/interlinguish.py: Added new noun for

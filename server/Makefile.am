@@ -1,7 +1,7 @@
 INCLUDES = -I$(top_srcdir)
 
-bin_PROGRAMS = cyphesis cyslave
-# EXTRA_PROGRAMS = cyslave
+bin_PROGRAMS = cyphesis
+EXTRA_PROGRAMS = cyslave
 
 cyphesis_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \

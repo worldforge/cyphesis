@@ -2,6 +2,8 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 from atlas import *
+from physics import *
+from Quaternion import Quaternion
 from common import const
 from types import *
 
@@ -132,7 +134,7 @@ class NPCMind(BaseMind):
                 return
             goal=mind.goals.common.misc_goal.transaction(object, op.from_, price)
             self.goals.insert(0,goal)
-            return Operation("talk", Entity(say=op.from_.name+" one "+object+" will be "+str(price)+" coins"))
+            return Operation("talk", Entity(say=op.from_.name+" one "+object+" will be "+str(price)+" coins")) + self.face(op.from_)
     def interlinguish_desire_verb3_operation(self, op, say):
         object=say[2:]
         verb=interlinguish.get_verb(object)
@@ -377,5 +379,9 @@ class NPCMind(BaseMind):
             self.message_queue.append(op)
     ########## turn to face other entity
     def face(self, other):
-        vector = distance_to(self, other)
-        print "I cannot face this"
+        vector = distance_to(self.location, other.location)
+        vector.z = 0
+        vector = vector.unit_vector()
+        newloc = Location(self.location.parent)
+        newloc.orientation = Quaternion(Vector3D(1,0,0), vector)
+        return Operation("move", Entity(self.id, location=newloc))

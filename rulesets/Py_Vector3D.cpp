@@ -164,6 +164,17 @@ static PyObject * Vector3D_getattr(PyVector3D *self, char *name)
 
 static int Vector3D_setattr(PyVector3D *self, char *name, PyObject *v)
 {
+    float val;
+    if (PyInt_Check(v)) {
+        val = PyInt_AsLong(v);
+    } else if (PyFloat_Check(v)) {
+        val = PyFloat_AsDouble(v);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Vector3D attributes must be numeric");
+    }
+    if (strcmp(name, "x") == 0) { self->coords.x() = val; }
+    if (strcmp(name, "y") == 0) { self->coords.y() = val; }
+    if (strcmp(name, "z") == 0) { self->coords.z() = val; }
     return 0;
 }
 

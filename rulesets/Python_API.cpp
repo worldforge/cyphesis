@@ -752,7 +752,7 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
             case 2:
                 {
                 PyObject * v1 = PyTuple_GetItem(args, 0);
-                PyObject * v2 = PyTuple_GetItem(args, 0);
+                PyObject * v2 = PyTuple_GetItem(args, 1);
                 if (!PyVector3D_Check(v1) || !PyVector3D_Check(v2)) {
                     PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take two vectors");
                     return NULL;
