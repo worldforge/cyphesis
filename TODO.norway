@@ -1,0 +1,7 @@
+If its not done yet, look at movement in MoveOperation rather than in
+mindMoveOperation. Probably mean adding a new movement class linked to
+Thing. Perhaps rename Thing to PhysicalEntity.
+
+Sort returning ops by reference argument rather than by return value.
+
+Think about migrating to Atlas-C++ 0.6.
