@@ -9,6 +9,13 @@ class Vector3D {
 
     Vector3D() : x(0), y(0), z(0), _set(0) { }
     Vector3D(double x, double y, double z) : x(x), y(y), z(z), _set(1) { }
+    Vector3D(Atlas::Message::Object::ListType & vector) {
+        x = vector.front().AsFloat();
+        vector.pop_front();
+        y = vector.front().AsFloat();
+        vector.pop_front();
+        z = vector.front().AsFloat();
+    }
 
     bool operator==(Vector3D other) const;
     Vector3D operator+(Vector3D other);
@@ -28,6 +35,13 @@ class Vector3D {
     double mag();
     double distance(Vector3D v) const;
     Atlas::Message::Object asObject() const;
+
+    friend ostream & operator<<(ostream& s, Vector3D& v);
 };
+
+inline ostream & operator<<(ostream& s, Vector3D& v) {
+    return s << "[" << v.x << "," << v.y << "," << v.z << "]";
+}
+
 
 #endif VECTOR_3D_H

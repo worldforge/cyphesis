@@ -132,6 +132,11 @@ double Vector3D::distance(Vector3D v) const
         return sqrt((x - v.x)*(x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z));
 }
 
+//ostream & operator<<(ostream& s, Vector3D& v) {
+    //return s << "[" << v.x << "," << v.y << "," << v.z << "]";
+//}
+
+
 using namespace Atlas;
 using namespace Message;
 

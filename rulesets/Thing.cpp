@@ -116,6 +116,7 @@ oplist Thing::Operation(const Create & op)
         res.push_back(s);
     }
     catch (Message::WrongTypeException) {
+        cout << "EXCEPTION: Malformed object to be created\n";
         return(error(op, "Malformed object to be created\n"));
     }
     return(res);
@@ -260,6 +261,7 @@ oplist Thing::Operation(const Move & op)
         // modes
     }
     catch (Message::WrongTypeException) {
+        cout << "EXCEPTION: Malformed object to be moved\n";
         return(error(op, "Malformed object to be moved\n"));
     }
     return(res);
@@ -298,6 +300,7 @@ oplist Thing::Operation(const Set & op)
         }
     }
     catch (Message::WrongTypeException) {
+        cout << "EXCEPTION: Malformed set operation\n";
         return(error(op, "Malformed set operation\n"));
     }
     return(res);

@@ -63,11 +63,13 @@ Move * MovementInfo::gen_move_operation(Location * rloc)
 Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
 {
 #ifdef DEBUG_MOVEMENT
-        cout << "gen_move_operation: status:" << endl << flush;
+        cout << "gen_move_operation: status: MovementInfo(" << serialno
+             << "," << target_location << "," << velocity << ","
+             << last_movement_time << ")" << endl << flush;
 #endif /* DEBUG_MOVEMENT */
     if (update_needed(loc)) {
 #ifdef DEBUG_MOVEMENT
-            cout << "gen_move_operation: Update needed...";
+            cout << "gen_move_operation: Update needed..." << endl << flush;
 #endif /* DEBUG_MOVEMENT */
         double current_time=world_info::time;
         double time_diff=current_time-last_movement_time;
@@ -99,7 +101,7 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
             double dist=target_location.distance(new_coords);
             double dist2=target_location.distance(new_coords2);
 #ifdef DEBUG_MOVEMENT
-                cout << "dist:" << endl << flush; //,dist,dist2;
+                cout << "dist: " << dist << "," << dist2 << endl << flush;
 #endif /* DEBUG_MOVEMENT */
             if (dist2>dist) {
 #ifdef DEBUG_MOVEMENT
@@ -112,7 +114,7 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
         }
         new_loc.coords=new_coords;
 #ifdef DEBUG_MOVEMENT
-            cout << "new coordinates:" << endl << flush; //new_loc.coordinates;
+            cout << "new coordinates: " << new_coords << endl << flush;
 #endif /* DEBUG_MOVEMENT */
         new_loc.addObject(ent);
         list<Message::Object> args2(1,*ent);
@@ -131,8 +133,8 @@ double MovementInfo::get_tick_addition(const Vector3D & coordinates)
     if (!(!target_location)) {
         double distance=coordinates.distance(target_location);
 #ifdef DEBUG_MOVEMENT
-            cout << "basic_distance:" << basic_distance << endl << flush; //basic_distance,;
-            cout << "distance:" << distance << endl << flush; //distance;
+            cout << "basic_distance: " << basic_distance << endl << flush;
+            cout << "distance: " << distance << endl << flush;
 #endif /* DEBUG_MOVEMENT */
         if (basic_distance>distance) {
 #ifdef DEBUG_MOVEMENT
@@ -275,15 +277,16 @@ oplist Character::Mind_Operation(const Move & op)
             Message::Object::ListType vector = lmap["coords"].AsList();
             if (vector.size()==3) {
                 try {
-                    int x = vector.front().AsInt();
+                    double x = vector.front().AsFloat();
                     vector.pop_front();
-                    int y = vector.front().AsInt();
+                    double y = vector.front().AsFloat();
                     vector.pop_front();
-                    int z = vector.front().AsInt();
+                    double z = vector.front().AsFloat();
                     location_coords = Vector3D(x, y, z);
-                    cout << "Got old coords format" << endl << flush;
+                    cout << "Got old coords format: " << location_coords << endl << flush;
                 }
                 catch (Message::WrongTypeException) {
+                    cout << "EXCEPTION: Malformed coords move operation" << endl << flush;
                 }
             }
         }
@@ -291,15 +294,16 @@ oplist Character::Mind_Operation(const Move & op)
             Message::Object::ListType vector = lmap["velocity"].AsList();
             if (vector.size()==3) {
                 try {
-                    int x = vector.front().AsInt();
+                    double x = vector.front().AsFloat();
                     vector.pop_front();
-                    int y = vector.front().AsInt();
+                    double y = vector.front().AsFloat();
                     vector.pop_front();
-                    int z = vector.front().AsInt();
+                    double z = vector.front().AsFloat();
                     location_vel = Vector3D(x, y, z);
-                    cout << "Got old velocity format" << endl << flush;
+                    cout << "Got old velocity format: " << location_vel << endl << flush;
                 }
                 catch (Message::WrongTypeException) {
+                    cout << "EXCEPTION: Malformed velocity move operation" << endl << flush;
                 }
             }
         }
@@ -318,14 +322,15 @@ oplist Character::Mind_Operation(const Move & op)
         Message::Object::ListType vector = arg1["pos"].AsList();
         if (vector.size()==3) {
             try {
-                int x = vector.front().AsInt();
+                double x = vector.front().AsFloat();
                 vector.pop_front();
-                int y = vector.front().AsInt();
+                double y = vector.front().AsFloat();
                 vector.pop_front();
-                int z = vector.front().AsInt();
+                double z = vector.front().AsFloat();
                 location_coords = Vector3D(x, y, z);
             }
             catch (Message::WrongTypeException) {
+                cout << "EXCEPTION: Malformed pos move operation" << endl << flush;
             }
         }
     }
@@ -335,14 +340,15 @@ oplist Character::Mind_Operation(const Move & op)
         Message::Object::ListType vector = arg1["velocity"].AsList();
         if (vector.size()==3) {
             try {
-                int x = vector.front().AsInt();
+                double x = vector.front().AsFloat();
                 vector.pop_front();
-                int y = vector.front().AsInt();
+                double y = vector.front().AsFloat();
                 vector.pop_front();
-                int z = vector.front().AsInt();
+                double z = vector.front().AsFloat();
                 location_vel = Vector3D(x, y, z);
             }
             catch (Message::WrongTypeException) {
+                cout << "EXCEPTION: Malformed vel move operation" << endl << flush;
             }
         }
     }
@@ -371,7 +377,7 @@ oplist Character::Mind_Operation(const Move & op)
             vel_mag=consts::base_velocity;
         } else {
 #ifdef DEBUG_MOVEMENT
-                cout << "\tVelocity given" << endl << flush;
+                cout << "\tVelocity given: " << location_vel << endl << flush;
 #endif /* DEBUG_MOVEMENT */
             vel_mag=location_vel.mag();
             if (vel_mag > consts::base_velocity) {
@@ -391,6 +397,7 @@ oplist Character::Mind_Operation(const Move & op)
             direction=location_coords-location.coords;
         }
         direction=direction.unit_vector();
+        cout << "Direction: " << direction << endl << flush;
         
         Location ret_location;
         Location current_location;
