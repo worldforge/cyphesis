@@ -1,5 +1,11 @@
 2002-10-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* Clean up README.
+
+	* Set version to 0.1.93 and release.
+
+2002-10-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Add environment variables using a more
 	  portable call to putenv() instead of setenv().
 

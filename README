@@ -1,3 +1,14 @@
+Table of Contents
+-----------------
+
+    1 - Introduction
+    2 - Installation
+    3 - Usage and configuration
+    4 - Copyright notes
+
+1 - Introduction
+----------------
+
 Welcome to cyphesis, at the time of writing the only fully armed and
 operational WorldForge server. Cyphesis is being developed as a small scale or
 personal server for WorldForge games, and is currently being used to develop
@@ -5,7 +16,8 @@ new techniques and technologies for the WorldForge project. Code from cyphesis
 will also be used to control NPCs in future servers such as STAGE using AI
 techniques.
 
-Installation:
+2 - Installation
+----------------
 
 cyphesis is built using autoconf. Please see the file INSTALL for details.  It
 requires Python and PostgreSQL which are include with most Linux distributions,
@@ -15,7 +27,8 @@ are building PostgreSQL from source, please check the PostgreSQL documentation
 for information on how to enable building the C++ libraries. GNU readline is
 required by some of the included tools.
 
-Usage and configuration:
+3 - Usage and configuration
+---------------------------
 
 The main server binary is called cyphesis. Its command line arguments and
 configuration are managed by varconf, which means options are set in
@@ -35,13 +48,13 @@ the easiest way to handle the differences in configuration would be to use the
 
 As an example, the ruleset to be used is set in cyphesis.vconf as follows:
 
-[cyphesis]
-ruleset="mason"
+    [cyphesis]
+    ruleset="mason"
 
 This setting can be overridden by invoking cyphesis with the following
 option:
 
---cyphesis:ruleset=werewolf
+    --cyphesis:ruleset=werewolf
 
 For more details of vconf usage see the Varconf documentation. For full details
 on configuring cyphesis, see the configuration documentation.
@@ -114,9 +127,9 @@ in order into the database, first ensuring that the rules table is empty.
 cyloadrules can also be used to load individual rulesets into the database as
 follows:
 
-cyloadrules basic.xml
-cyloadrules acorn.xml
-cyloadrules mason.xml
+    cyloadrules basic.xml
+    cyloadrules acorn.xml
+    cyloadrules mason.xml
 
 You will only need to do this if you are developing new rulesets, or
 customising existing ones.
@@ -124,17 +137,17 @@ customising existing ones.
 You should now load map data into the server using cydbload. The map for Mason
 is called moraf.
 
-cydbload moraf.xml
+    cydbload moraf.xml
 
 The map for the Acorn ruleset is stored in agrilan*.xml. The Acorn map is much
 more detailed than the Mason map, but we no longer have access to the artwork
 for this map.
 
-cydbload agrilan.xml
-cydbload agrilan_a1.xml
-cydbload agrilan_a2.xml
-cydbload agrilan_a3.xml
-cydbload agrilan_a4.xml
+    cydbload agrilan.xml
+    cydbload agrilan_a1.xml
+    cydbload agrilan_a2.xml
+    cydbload agrilan_a3.xml
+    cydbload agrilan_a4.xml
 
 Once these tasks are done, it is safe to run cyphesis. You will not need to do
 them again. The database store is persistent. If new a ruleset or map is
@@ -151,7 +164,8 @@ found in rulesets/mason/define_world.py. In order to populate the world, simply
 run cyclient once the server is running. You will need to do this each time
 cyphesis is started.
 
-Copyright:
+4 - Copyright notes
+-------------------
 
 The server code in C++ is distributed under the GNU General Public License.
 See the file COPYING for details. The script files included with this
