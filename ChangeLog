@@ -1,3 +1,11 @@
+2004-06-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* Add to the list of predators that chicken avoids.
+
+	* rulesets/Thing.cpp, rulesets/Entity.cpp: Don't read bbox in
+	  Entity::getLocation, as it needs to be trivially modifiable,
+	  so it is now only read in Entity::merge.
+
 2004-06-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* Add a mushroom rule, and make deer and pigs eat them.

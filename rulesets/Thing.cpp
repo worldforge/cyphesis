@@ -363,10 +363,7 @@ OpVector Thing::SetOperation(const Set & op)
     }
     try {
         const Element::MapType & ent = args.front().asMap();
-        Element::MapType::const_iterator I;
-        for (I = ent.begin(); I != ent.end(); I++) {
-            set(I->first, I->second);
-        }
+        merge(ent);
         RootOperation * s = new Sight();
         s->setArgs(Element::ListType(1,op.asObject()));
         OpVector res2(1,s);

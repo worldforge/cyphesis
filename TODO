@@ -1,5 +1,25 @@
-Fix issue with contrainHeight() change to height is not reflected in the
-Sight(Move()) op.
+Upsidedown chickens suck!
+
+Use tool, Wield op and Use op.
+
+Add beet.
+
+Look at me Swimming!
+
+Debug skellys.
+
+Make lych move. Construct skeleton nearby.
+
+Handle modifying bbox proportionally to parameters.
+
+Linears and stuff.
+
+Path finder based roads and stuff.
+
+Create pig pen.
+
+Generalise money_transfers in mind to store general information about
+all transfers of ownership. Preferably in knowledge.
 
 Make chickens afraid of wolf.
 

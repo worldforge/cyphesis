@@ -79,7 +79,7 @@ deer_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
             (il.forage,"forage(self, 'mushroom')"),
             (il.flock,"flock()")]
 
-chicken_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
+chicken_goals=[(il.avoid,"avoid(['settler','orc','wolf'],10.0)"),
                (il.flock,"flock()")]
 
 squirrel_goals=[(il.avoid,"avoid(['wolf','crab'],10.0)"),
