@@ -92,7 +92,7 @@ int Thing_setattr(ThingObject *self, char *name, PyObject *v)
         return(0);
     }
     Object obj = PyObject_asObject(v);
-    if (!obj.IsNone()) {
+    if (!obj.IsNone() && !obj.IsMap() && !obj.IsList()) {
         thing->attributes[name] = obj;
         return(0);
     }

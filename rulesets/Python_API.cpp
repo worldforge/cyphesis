@@ -134,6 +134,20 @@ void Create_PyThing(Thing * thing, const string & package, const string & _type)
     }
 }
 
+static PyObject * is_location(PyObject * self, PyObject * args)
+{
+    PyObject * loc;
+    if (!PyArg_ParseTuple(args, "O", &loc)) {
+        return NULL;
+    }
+    if ((PyTypeObject*)PyObject_Type(loc) == &Location_Type) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    Py_INCREF(Py_False);
+    return Py_False;
+}
+
 static PyObject * location_new(PyObject * self, PyObject * args)
 {
 	LocationObject *o;
@@ -352,6 +366,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         return NULL;
     }
     op->operation = new RootOperation;
+    op->own = 1;
     if (strcmp(type, "tick") == 0) {
         *op->operation = Tick::Instantiate();
     } else if (strcmp(type, "create") == 0) {
@@ -367,6 +382,8 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     } else {
         fprintf(stderr, "ERROR: PYTHON CREATING AN UNHANDLED %s OPERATION\n", type);
         *op->operation = RootOperation::Instantiate();
+        Py_INCREF(Py_None);
+        return Py_None;
     }
     if (PyMapping_HasKeyString(kwds, "to")) {
         to = PyMapping_GetItemString(kwds, "to");
@@ -471,6 +488,7 @@ list_contains_it:
 static PyMethodDef atlas_methods[] = {
     /* {"system",	spam_system, METH_VARARGS}, */
     {"Operation",  (PyCFunction)operation_new,	METH_VARARGS|METH_KEYWORDS},
+    {"isLocation", is_location,			METH_VARARGS},
     {"Location",   location_new,		METH_VARARGS},
     {"Object",     object_new,			METH_VARARGS},
     {"Entity",     (PyCFunction)entity_new,	METH_VARARGS|METH_KEYWORDS},

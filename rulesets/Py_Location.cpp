@@ -47,8 +47,12 @@ PyObject * Location_getattr(LocationObject *self, char *name)
     }
     if (strcmp(name, "parent") == 0) {
         cout << "Location_getattr(parent)" << endl << flush;
+        if (self->location->parent == NULL) {
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
         ThingObject * thing = newThingObject(NULL);
-        thing->m_thing = (Thing *)&self->location->parent;
+        thing->m_thing = (Thing *)self->location->parent;
         return (PyObject *)thing;
     }
     if (strcmp(name, "coordinates") == 0) {

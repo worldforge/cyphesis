@@ -39,6 +39,7 @@ class Thing : public BaseEntity {
 
     oplist send_world(RootOperation * msg);
     void merge(const Message::Object::MapType &);
+    void getLocation(Message::Object::MapType &);
 
     virtual void addObject(Message::Object *);
     virtual oplist Operation(const Setup & op);

@@ -351,6 +351,7 @@ static PyObject * Operation_seq_item(RootOperationObject * self, int item)
         if ((op != NULL) && (op->GetObjtype() == "op")) {
             RootOperationObject * ret_op = newAtlasRootOperation(NULL);
             ret_op->operation = (RootOperation *)op;
+            ret_op->own = 1;
             return (PyObject *)ret_op;
         }
         AtlasObject * ret = newAtlasObject(NULL);
@@ -375,6 +376,7 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
         OplistObject * res = newOplistObject(NULL);
         res->ops = new oplist();
         res->ops->push_back(self->operation);
+        self->own = 0;
         printf("2\n");
         fflush(stdout);
         return (PyObject*)res;
@@ -392,6 +394,7 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
         res->ops = new oplist();
         res->ops->merge(*opl->ops);
         res->ops->push_back(self->operation);
+        self->own = 0;
         printf("3\n");
         fflush(stdout);
         return (PyObject*)res;
@@ -407,7 +410,9 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
         }
         res->ops = new oplist();
         res->ops->push_back(op->operation);
+        op->own = 0;
         res->ops->push_back(self->operation);
+        self->own = 0;
         printf("4\n");
         fflush(stdout);
         return (PyObject*)res;
@@ -498,6 +503,9 @@ ATLAS_OPERATION_METHODS(RootOperation)
 static void Operation_dealloc(RootOperationObject *self)
 {
 	Py_XDECREF(self->Operation_attr);
+        if ((self->own != 0) && (self->operation != NULL)) {
+            delete self->operation;
+        }
 	PyMem_DEL(self);
 }
 

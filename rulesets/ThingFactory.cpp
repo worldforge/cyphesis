@@ -55,21 +55,7 @@ Thing * ThingFactory::newThing(const string & type,const Object & ent, Routing *
     if (entmap.find("loc") != entmap.end()) {
         try {
             string & parent_id = entmap["loc"].AsString();
-            BaseEntity * parent_obj = svr->fobjects[parent_id];
-            Vector3D pos(0, 0, 0);
-            Vector3D velocity(0, 0, 0);
-            Vector3D face(1, 0, 0);
-            if (entmap.find("pos") != entmap.end()) {
-                pos = Vector3D(entmap["pos"].AsList());
-            }
-            if (entmap.find("velocity") != entmap.end()) {
-                velocity = Vector3D(entmap["velocity"].AsList());
-            }
-            if (entmap.find("face") != entmap.end()) {
-                face = Vector3D(entmap["face"].AsList());
-            }
-            Location thing_loc(parent_obj, pos, velocity, face);
-            thing->location = thing_loc;
+            thing->location.parent = svr->fobjects[parent_id];
         }
         catch (Message::WrongTypeException) {
             cout << "ERROR: Create operation has bad location" << endl << flush;
@@ -85,5 +71,6 @@ Thing * ThingFactory::newThing(const string & type,const Object & ent, Routing *
         cout << "Got no name" << endl << flush;
     }
     thing->merge(entmap);
+    thing->getLocation(entmap);
     return(thing);
 }

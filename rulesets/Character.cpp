@@ -128,7 +128,7 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
             return(moveOp);
         }
         Vector3D new_coords=loc.coords+(velocity*time_diff);
-        if (!(!target_location)) {
+        if (target_location) {
             Vector3D new_coords2 = new_coords+velocity/consts::basic_tick/10.0;
             double dist=target_location.distance(new_coords);
             double dist2=target_location.distance(new_coords2);
@@ -156,7 +156,7 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
 double MovementInfo::get_tick_addition(const Vector3D & coordinates)
 {
     double basic_distance=velocity.mag()*consts::basic_tick;
-    if (!(!target_location)) {
+    if (target_location) {
         double distance=coordinates.distance(target_location);
         debug_movement && cout << "basic_distance: " << basic_distance << endl << flush;
         debug_movement && cout << "distance: " << distance << endl << flush;
@@ -186,7 +186,7 @@ oplist Character::Operation(const Setup & op)
         return(res);
     }
 
-    mind = new BaseMind(fullid);
+    mind = new BaseMind(fullid, name);
     Create_PyThing(mind, "mind.NPCMind", "NPCMind");
 
     Setup * s = new Setup(op);
@@ -436,7 +436,7 @@ oplist Character::Mind_Operation(const Move & op)
             debug_movement && cout << "\tVelocity given: " << location_vel
                                    << "," << vel_mag << endl << flush;
         }
-        if (!(!location_face)) {
+        if (location_face) {
             location.face = location_face;
         }
 
@@ -733,7 +733,7 @@ oplist Character::mind2body(const RootOperation & op)
         return(res);
     }
     op_no_t otype = op_enumerate(&newop);
-    OP_SWITCH(op, otype, res, Mind_)
+    OP_SWITCH(newop, otype, res, Mind_)
     // Set refno?
     // do debugging?
     //Nothing done yet, must try harder

@@ -22,22 +22,11 @@ Location::Location(BaseEntity * parnt, Vector3D crds, Vector3D vel) :
 Location::Location(BaseEntity * parnt, Vector3D crds, Vector3D vel, Vector3D fce) :
         parent(parnt), coords(crds), velocity(vel), face(fce) { }
 
-bool Location::operator!() const
+Location::operator bool() const
 {
-    cout << "operator! " << (parent==NULL && !coords) << endl << flush;
-    return(parent==NULL && !coords);
+    cout << "operator bool" << (parent!=NULL && coords) << endl << flush;
+    return(parent!=NULL && coords);
 }
-#if 0
-void Location::operator=(const Location& loc)
-{
-    cout << "operator= " << endl << flush;
-    cout << "{" << loc.parent << "}" << endl << flush;
-    parent=loc.parent;
-    coords=loc.coords;
-    velocity=loc.velocity;
-    cout << "{" << parent << "}" << endl << flush;
-}
-#endif
 
 using namespace Atlas;
 using namespace Message;

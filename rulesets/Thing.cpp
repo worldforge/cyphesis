@@ -42,6 +42,7 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
         }
         RootOperationObject * py_op = newAtlasRootOperation(NULL);
         py_op->operation = new RootOperation(op);
+        py_op->own = 1;
         py_op->from = map.get_add(op.GetFrom());
         py_op->to = map.get_add(op.GetTo());
         PyObject * ret;
@@ -51,11 +52,14 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
         } else {
             RootOperationObject * py_sub_op = newAtlasRootOperation(NULL);
             py_sub_op->operation = sub_op;
+            py_sub_op->own = 0;
             py_sub_op->from = map.get_add(sub_op->GetFrom());
             py_sub_op->to = map.get_add(sub_op->GetTo());
             ret = PyObject_CallMethod(script_object, (char *)(op_name.c_str()),
                                              "(OO)", py_op, py_sub_op);
+            Py_DECREF(py_sub_op);
         }
+        Py_DECREF(py_op);
         if (ret != NULL) {
             cout << "Called python method " << op_name << " for object "
                  << fullid << endl << flush;
@@ -63,6 +67,7 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
                 RootOperationObject * op = (RootOperationObject*)ret;
                 if (op->operation != NULL) {
                     ret_list.push_back(op->operation);
+                    op->own = 0;
                 } else {
                     cout << "Method returned invalid operation"
                          << endl << flush;
@@ -79,7 +84,7 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
                 cout << "Method returned invalid object" << endl << flush;
             }
             
-            // Get oplist from ret and
+            Py_DECREF(ret);
             return(1);
         } else {
             if (PyErr_Occurred() == NULL) {
@@ -129,6 +134,45 @@ void Thing::merge(const Message::Object::MapType & entmap)
         if ((key == "face") || (key == "contains")) continue;
         attributes[key] = I->second;
     }
+}
+
+void Thing::getLocation(Message::Object::MapType & entmap)
+{
+    if (entmap.find("loc") != entmap.end()) {
+        try {
+            const string & parent_id = entmap["loc"].AsString();
+            BaseEntity * parent_obj;
+            if (world != NULL) {
+                parent_obj = world->fobjects[parent_id];
+            } else {
+                parent_obj = location.parent;
+            }
+            Vector3D pos(0, 0, 0);
+            Vector3D velocity(0, 0, 0);
+            Vector3D face(1, 0, 0);
+            if (entmap.find("pos") != entmap.end()) {
+                pos = Vector3D(entmap["pos"].AsList());
+            } else if (location) {
+                pos = location.coords;
+            }
+            if (entmap.find("velocity") != entmap.end()) {
+                velocity = Vector3D(entmap["velocity"].AsList());
+            } else if (location) {
+                velocity = location.velocity;
+            }
+            if (entmap.find("face") != entmap.end()) {
+                face = Vector3D(entmap["face"].AsList());
+            } else if (location) {
+                face = location.face;
+            }
+            Location thing_loc(parent_obj, pos, velocity, face);
+            location = thing_loc;
+        }
+        catch (Message::WrongTypeException) {
+            cout << "ERROR: Create operation has bad location" << endl << flush;
+        }
+    }
+
 }
 
 oplist Thing::Operation(const Setup & op)

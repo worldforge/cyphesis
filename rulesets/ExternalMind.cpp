@@ -6,8 +6,8 @@
 
 #include <server/Connection.h>
 
-ExternalMind::ExternalMind(Connection * connection, string & id) :
-		BaseMind(id), connection(connection)
+ExternalMind::ExternalMind(Connection * connection, string & id, string & name):
+		BaseMind(id, name), connection(connection)
 {
 }
 

@@ -45,8 +45,8 @@ class Vector3D {
         return Vector3D(x/other,y/other,z/other);
     }
 
-    bool operator!() const {
-        return(!_set);
+    operator bool() const {
+        return(_set);
     }
 
     double operator[](int index) const {

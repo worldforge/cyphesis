@@ -48,6 +48,9 @@ string WorldRouter::get_id(string & name)
     while ((index = full_id.find(' ', 0)) != string::npos) {
         full_id[index] = '_';
     }
+    //if (next_id > 20) {
+        //exit(0);
+    //}
 #if 0
     char * buf = (char *)malloc(strlen(name.c_str()) + 32);
     next_id++;
@@ -442,6 +445,7 @@ int WorldRouter::idle()
     RootOperation * op;
     while ((op = get_operation_from_queue()) != NULL) {
         operation(op);
+        delete op;
     }
     if (op==NULL) {
         return(0);

@@ -33,7 +33,7 @@ bad_type get_dict_func(bad_type dict, bad_type func_str, bad_type func_undefined
 #endif
 
 //base entity for IG and OOG things
-BaseEntity::BaseEntity() : stamp(0.0), deleted(0), omnipresent(0) {
+BaseEntity::BaseEntity() : stamp(0.0), deleted(0), omnipresent(0), world(NULL) {
     //type",[BaseEntity::get_type()]);
     //if (kw.get("location",1)==None) {
         //del kw["location"];

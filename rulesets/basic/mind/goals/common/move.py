@@ -82,8 +82,8 @@ class move_it(Goal):
             return 0
         if type(self.location)==StringType: 
             self.location=me.get_knowledge("location",self.location)
-        if not isinstance(self.location,Location):
-            self.location=Location(self.location,Vector3D(0,0,0))
+        if not isLocation(self.location):
+            self.location=Location(self.location,Vector3D(0.0,0.0,0.0))
         if type(self.what)==StringType:
             if me.things.has_key(self.what)==0: return 1
             what=me.things[self.what][0]
@@ -94,8 +94,8 @@ class move_it(Goal):
             return
         if type(self.location)==StringType: 
             self.location=me.get_knowledge("location",self.location)
-        elif not isinstance(self.location,Location):
-            self.location=Location(self.location,Vector3D(0,0,0))
+        elif not isLocation(self.location):
+            self.location=Location(self.location,Vector3D(0.0,0.0,0.0))
         if type(self.what)==StringType:
             if me.things.has_key(self.what)==0: return
             what=me.things[self.what][0]
@@ -104,7 +104,7 @@ class move_it(Goal):
         iloc=what.location.copy()
         vel=what.location.coordinates.unit_vector_to_another_vector(self.location.coordinates)
         iloc.velocity = vel * self.speed
-        self.location.velocity=Vector3D(0,0,0)
+        self.location.velocity=Vector3D(0.0,0.0,0.0)
         mOp1=Operation("move", Entity(what.id, location=iloc))
         mOp2=Operation("move", Entity(what.id, location=self.location))
         time=((self.location.coordinates-what.location.coordinates).mag() / self.speed)

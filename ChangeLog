@@ -1,3 +1,34 @@
+2000-12-04  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Started working on sorting out memory leaks.
+
+	* Implemented python function to deal with not being able to check
+	  type of python objects implemented in C.
+
+	* Added method to thing for extracting location data from a
+	  Message::Object
+
+	* More work on python references to improve leakage.
+
+	* Added flag so that python Operation object can own
+	  the operation they point to, and thus delete it in dealloc().
+
+	* Implemented find_by_location() and find_by_type() as required in
+	  MemMap, and corresponding python interface.
+
+	* Put in temporary work around to deal with the fact that a mind
+	  does not know its name. Currently the mind is not able to
+	  discover any of its bodies attributes, and I am not sure how
+	  to solve this.
+
+	* Fixed Location and Vector3D so they use operator bool() to detect
+	  whether they are set.
+
+	* Fixed bugs in getting parent from Location in python which caused
+	  segfaults.
+
+	* Imported all the basic ruleset entity python scripts.
+
 2000-12-03  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Corrected broadcasting of non-perception operations to

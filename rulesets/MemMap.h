@@ -20,6 +20,8 @@ class MemMap {
     //bad_type __getitem__(bad_type id)
     Thing * get_add(const string & id);
     Thing * update(const Object & entity);
+    list<Thing *> find_by_type(const string & what);
+    list<Thing *> find_by_location(const Location & where, double radius);
     //bad_type find_by_location(bad_type location, bad_type radius=0.0)
     //bad_type find_by_type(bad_type what)
 

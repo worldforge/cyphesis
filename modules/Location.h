@@ -19,8 +19,7 @@ public:
     Location(BaseEntity * parent, Vector3D coords, Vector3D velocity);
     Location(BaseEntity * parent, Vector3D coords, Vector3D velocity, Vector3D face);
 
-    bool operator!() const;
-    //void operator=(const Location&);
+    operator bool() const;
 
     void addObject(Atlas::Message::Object *);
 

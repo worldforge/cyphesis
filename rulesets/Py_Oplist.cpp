@@ -52,10 +52,12 @@ PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
     }
     if (other == Py_None) {
         printf("Adding None to an oplist\n");
-        OplistObject * res = newOplistObject(NULL);
-        res->ops = new oplist();
-        res->ops->merge(*self->ops);
-        return (PyObject*)res;
+        //OplistObject * res = newOplistObject(NULL);
+        //res->ops = new oplist();
+        //res->ops->merge(*self->ops);
+        //return (PyObject*)res;
+        Py_INCREF(self);
+        return (PyObject*)self;
     }
     if ((PyTypeObject*)PyObject_Type(other) == & Oplist_Type) {
         printf("Adding oplist to an oplist\n");
@@ -82,6 +84,7 @@ PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         }
         res->ops->merge(*self->ops);
         res->ops->push_back(op->operation);
+        op->own = 0;
         return (PyObject*)res;
     }
     printf("Failed to find out how to add it\n");

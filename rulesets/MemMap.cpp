@@ -6,6 +6,7 @@ using Atlas::Objects::Operation::Look;
 
 #include "Thing.h"
 #include "MemMap.h"
+#include <modules/Location.h>
 
 
 Thing * MemMap::add_object(Thing * object)
@@ -70,6 +71,7 @@ Thing * MemMap::add(const Object & entity)
         thing->name = entmap["name"].AsString();
     }
     thing->merge(entmap);
+    thing->getLocation(entmap);
     return add_object(thing);
 }
 
@@ -139,6 +141,7 @@ Thing * MemMap::update(const Object & entity)
     }
     cout << " got " << thing << endl << flush;
     thing->merge(entmap);
+    thing->getLocation(entmap);
     //needTrueValue=["type","contains","instance","id","location","stamp"];
     //for (/*(key,value) in entity.__dict__.items()*/) {
         //if (value or not key in needTrueValue) {
@@ -149,6 +152,35 @@ Thing * MemMap::update(const Object & entity)
         //hook(obj);
     //}
     return thing;
+}
+
+list<Thing *> MemMap::find_by_type(const string & what)
+{
+    list<Thing *> res;
+    map<string, Thing *>::const_iterator I;
+    for(I = things.begin(); I != things.end(); I++) {
+        if (I->second->type == what) {
+            res.push_back(I->second);
+        }
+    }
+    return res;
+}
+
+list<Thing *> MemMap::find_by_location(const Location & loc, double radius)
+{
+    list<Thing *> res;
+    map<string, Thing *>::const_iterator I;
+    for(I = things.begin(); I != things.end(); I++) {
+        const Location & oloc = I->second->location;
+        if (!loc || !oloc) {
+            continue;
+        }
+        if ((oloc.parent->fullid == loc.parent->fullid) &&
+            (loc.coords.distance(oloc.coords) < radius)) {
+            res.push_back(I->second);
+        }
+    }
+    return res;
 }
 
 #if 0 
