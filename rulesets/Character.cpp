@@ -384,18 +384,15 @@ oplist Character::Mind_Operation(const Move & op)
         // Movement within current parent. Work out the speed and stuff and
         // use movementinfo to track movement.
         if (!location_vel) {
-#ifdef DEBUG_MOVEMENT
-                cout << "\tVelocity default" << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+            debug_movement && cout << "\tVelocity default" << endl << flush;
             vel_mag=consts::base_velocity;
         } else {
-#ifdef DEBUG_MOVEMENT
-                cout << "\tVelocity given: " << location_vel << endl << flush;
-#endif /* DEBUG_MOVEMENT */
             vel_mag=location_vel.mag();
             if (vel_mag > consts::base_velocity) {
                 vel_mag = consts::base_velocity;
             }
+            debug_movement && cout << "\tVelocity given: " << location_vel
+                                   << "," << vel_mag << endl << flush;
         }
         if (!(!location_face)) {
             location.face = location_face;
@@ -404,7 +401,7 @@ oplist Character::Mind_Operation(const Move & op)
         if (vel_mag == 0.0) {
             speed_ratio = 0.0;
         } else {
-            speed_ratio = location.velocity.mag()/consts::base_velocity;
+            speed_ratio = location_vel.mag()/consts::base_velocity;
         }
         string mode;
         if (speed_ratio > 0.5) {
@@ -415,13 +412,14 @@ oplist Character::Mind_Operation(const Move & op)
             mode = string("standing");
         }
         attributes["mode"] = Message::Object(mode);
+        debug_movement && cout << "Mode set to " << mode << endl << flush;
 
         Vector3D direction;
         if (location_coords == location.coords) {
             location_coords = Vector3D();
         }
         if (!location_coords) {
-            if (!location_vel) {
+            if (!location_vel || (location_vel==Vector3D(0,0,0))) {
                 debug_movement && cout << "\tUsing face for direction" << endl << flush;
                 direction=location_face;
             } else {
@@ -432,8 +430,12 @@ oplist Character::Mind_Operation(const Move & op)
             debug_movement && cout << "\tUsing destination coords for direction" << endl << flush;
             direction=location_coords-location.coords;
         }
-        direction=direction.unit_vector();
-        cout << "Direction: " << direction << endl << flush;
+        if (!direction) {
+            cout << "No direction" << endl << flush;
+        } else {
+            direction=direction.unit_vector();
+            cout << "Direction: " << direction << endl << flush;
+        }
         
         Location ret_location;
         Location current_location;
@@ -453,7 +455,8 @@ oplist Character::Mind_Operation(const Move & op)
                 velocity.push_back(Message::Object(0.0));
                 velocity.push_back(Message::Object(0.0));
                 velocity.push_back(Message::Object(0.0));
-                ent["vel"]=Message::Object(velocity);
+                ent["velocity"]=Message::Object(velocity);
+                moveOp->SetArgs(args);
                 res.push_back(moveOp);
             }
             return(res);

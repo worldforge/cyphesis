@@ -1,5 +1,10 @@
 2000-11-15  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Cleaned up problems with mode in move operations, and dealt
+	  with stopping when velocity is set to zero.
+
+2000-11-15  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Fixed silly typo in movement code which meant that velocity was
 	  not being used to calculate direction when only velocity is
 	  specified.
