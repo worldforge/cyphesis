@@ -44,8 +44,8 @@ double Pedestrian::getTickAddition(const Vector3D & coordinates) const
 
 Move * Pedestrian::genFaceOperation(const Location & loc)
 {
-    if (m_face != loc.face) {
-        m_face = loc.face;
+    if (m_orientation != loc.orientation) {
+        m_orientation = loc.orientation;
         debug( std::cout << "Turning" << std::endl << std::flush;);
         Move * moveOp = new Move(Move::Instantiate());
         moveOp->SetTo(m_body.getId());
@@ -82,7 +82,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     debug( std::cout << "time_diff:" << time_diff << std::endl << std::flush;);
     m_lastMovementTime = current_time;
 
-    m_face = loc.face;
+    m_orientation = loc.orientation;
     
     Location new_loc(loc);
     new_loc.velocity = m_velocity;
@@ -167,7 +167,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     m_velocity[m_collAxis] = 0;
                     m_collPos = Vector3D();
                     if ((m_velocity.mag() / consts::base_velocity) > 0.05) {
-                        new_loc.face = m_velocity;
+                        new_loc.orientation = Quaternion(Vector3D(1,0,0), m_velocity.unitVector());
                     } else {
                         reset();
                         entmap["mode"] = Object("standing");

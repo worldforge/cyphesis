@@ -1,3 +1,33 @@
+2001-12-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/database.h: Add function to query database path for
+	  error reporting.
+
+	* server/server.cpp: Added check to database initialisation so
+	  that an error opening the databases is reported with explanation,
+	  or logged as apropriate, and startup is aborted.
+
+	* phyics/Quaternion.h: Added quaternion class for represening rotation.
+
+	* modules/Location.cpp, modules/Location.h: Removed face attribute and
+	  replaced with orientation which is a quaternion.
+
+	* rulesets/Character.cpp: Modified code which handles the direction
+	  of movement, and how this affects the character rotation so it
+	  now uses orientation.
+
+	* rulesets/Entity.cpp: Switch attribute checks from face to
+	  orientation.
+
+	* rulesets/Movement.h, rulesets/Pedestrian.cpp: Modify movement
+	  code so that orientation used instead of face.
+
+	* rulesets/Py_Location.cpp: Removed support for obsolete and
+	  unused rotation attriute from python code.
+
+	* rulesets/Thing.cpp: Modified attriute handling to use orientation
+	  instead of face.
+
 2001-12-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* Fixed build files for debian, and converted bbox in define_world.py

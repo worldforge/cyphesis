@@ -61,6 +61,8 @@ class Database {
     Db & getWorldDb() { return world_db; }
     Db & getMindDb() { return mind_db; }
 
+    const std::string & getFilename() const { return db_file; }
+
     friend class DatabaseIterator;
 };
 

@@ -63,11 +63,12 @@ static PyObject * Location_getattr(LocationObject *self, char *name)
         v->coords = self->location->velocity;
         return (PyObject *)v;
     }
-    if (strcmp(name, "rotation") == 0) {
-        Vector3DObject * v = newVector3DObject(NULL);
-        v->coords = self->location->face;
-        return (PyObject *)v;
-    }
+    // FIXME No current handling of this in python
+    //if (strcmp(name, "rotation") == 0) {
+        //Vector3DObject * v = newVector3DObject(NULL);
+        //v->coords = self->location->face;
+        //return (PyObject *)v;
+    //}
     if (strcmp(name, "bbox") == 0) {
         BBoxObject * b = newBBoxObject(NULL);
         b->box = self->location->bBox;
@@ -144,9 +145,10 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
     if (strcmp(name, "velocity") == 0) {
         self->location->velocity = vector;
     }
-    if (strcmp(name, "rotation") == 0) {
-        self->location->face = vector;
-    }
+    // FIXME No current handling of this in python
+    //if (strcmp(name, "rotation") == 0) {
+        //self->location->face = vector;
+    //}
     if (strcmp(name, "bbox") == 0) {
         self->location->bBox = BBox(vector);
     }

@@ -150,7 +150,7 @@ void Entity::merge(const Object::MapType & entmap)
         const std::string & key = I->first;
         if ((key == "parents")||(key == "bbox") || (key == "bmedian")) continue;
         if ((key == "pos") || (key == "loc") || (key == "velocity")) continue;
-        if ((key == "face") || (key == "contains")) continue;
+        if ((key == "orientation") || (key == "contains")) continue;
         set(key, I->second);
     }
 }
@@ -180,11 +180,9 @@ void Entity::getLocation(const Object::MapType & entmap, const edict_t & eobject
         if (I != entmap.end()) {
             location.velocity = Vector3D(I->second.AsList());
         }
-        I = entmap.find("face");
+        I = entmap.find("orientation");
         if (I != entmap.end()) {
-            location.face = Vector3D(I->second.AsList());
-        } else if (!location.face) {
-            location.face = Vector3D(1, 0, 0);
+            location.orientation = Quaternion(I->second.AsList());
         }
         I = entmap.find("bbox");
         if (I != entmap.end()) {

@@ -172,7 +172,21 @@ int main(int argc, char ** argv)
     // Initialise the persistance subsystem. If we have been built with
     // database support, this will open the various databases used to
     // store server data.
-    Persistance::init();
+    bool dbInit = Persistance::init();
+    if (!dbInit) {
+        if (daemon_flag) {
+            syslog(LOG_ERR, "Critical error opening databases. Init failed.");
+        } else {
+            std::cerr << "FATAL: Unable to open the account and world databases"
+                      << std::endl
+                      << "Please ensure that the database in:" << std::endl
+                      << "  "
+                      << Persistance::instance()->getFilename() << std::endl
+                      << "can be created or accessed by cyphesis."
+                      << std::endl << std::flush;
+        }
+        return 0;
+    }
 
     // If the restricted flag is set in the config file, then we
     // don't allow connecting users to create accounts. Accounts must

@@ -6,6 +6,7 @@
 #define MODULES_LOCATION_H
 
 #include <physics/BBox.h>
+#include <physics/Quaternion.h>
 
 class Entity;
 
@@ -14,11 +15,9 @@ class Location {
     Entity * ref;
     Vector3D coords;   // Coords relative to ref entity
     Vector3D velocity; // Veclociy vector, relative to ref entity.
-    Vector3D face;     // Bad way of representing direction entity faces.
+    Quaternion orientation;
+
     BBox bBox;
-    //Vector3D bbox;     // Sizes here are distance from median to edge.
-    //Vector3D bmedian;  // If this is not set, then bbox is centered around bbox
-                       // which is equivalient to the SW corner is at coords.
     bool solid;
 
     Location() : ref(NULL), solid(true) { }
@@ -26,9 +25,6 @@ class Location {
             ref(rf), coords(crds), solid(true) { }
     Location(Entity * rf, const Vector3D& crds, const Vector3D& vel) :
             ref(rf), coords(crds), velocity(vel), solid(true) { }
-    Location(Entity * rf, const Vector3D& crds, const Vector3D& vel,
-                                                    const Vector3D& fce) :
-            ref(rf), coords(crds), velocity(vel), face(fce), solid(true) { }
 
     operator bool() const {
         return (ref!=NULL && coords);

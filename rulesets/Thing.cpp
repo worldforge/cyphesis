@@ -223,9 +223,9 @@ oplist Thing::MoveOperation(const Move & op)
         if (I != ent.end()) {
             location.velocity = Vector3D(I->second.AsList());
         }
-        I = ent.find("face");
+        I = ent.find("orientation");
         if (I != ent.end()) {
-            location.face = Vector3D(I->second.AsList());
+            location.orientation = Quaternion(I->second.AsList());
         }
 
         RootOperation * s = new Sight(Sight::Instantiate());

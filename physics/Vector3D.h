@@ -167,7 +167,7 @@ class Vector3D {
 
     const Vector3D cross(const Vector3D & v) const {
         //"Cross product of a vector";
-        return Vector3D(y*v.z - z*v.x, z*v.x - x*v.z, x*v.y - y*v.z);
+        return Vector3D(y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x);
     }
 
     void rotatex(double angle) {

@@ -8,6 +8,7 @@
 class Character;
 
 #include <physics/Vector3D.h>
+#include <physics/Quaternion.h>
 
 class Movement {
   protected:
@@ -16,7 +17,7 @@ class Movement {
     Vector3D m_targetPos;
     Vector3D m_updatedPos;
     Vector3D m_velocity;
-    Vector3D m_face;
+    Quaternion m_orientation;
     int m_serialno;
     Vector3D m_collPos;
     Entity * m_collEntity;

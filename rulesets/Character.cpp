@@ -377,7 +377,8 @@ oplist Character::mindMoveOperation(const Move & op)
     } else {
         debug( std::cout << "Parent not set" << std::endl << std::flush;);
     }
-    Vector3D location_coords, location_vel, location_face;
+    Vector3D location_coords, location_vel;
+    Quaternion location_orientation;
     try {
         I = arg1.find("pos");
         if (I != arg1.end()) {
@@ -389,9 +390,9 @@ oplist Character::mindMoveOperation(const Move & op)
             location_vel = Vector3D(I->second.AsList());
         }
 
-        I = arg1.find("face");
+        I = arg1.find("orientation");
         if (I != arg1.end()) {
-            location_face = Vector3D(I->second.AsList());
+            location_orientation = Quaternion(I->second.AsList());
         }
     }
     catch (Atlas::Message::WrongTypeException) {
@@ -428,8 +429,10 @@ oplist Character::mindMoveOperation(const Move & op)
                 vel_mag = consts::base_velocity;
             }
         }
-        if (location_face) {
-            location.face = location_face;
+        // FIXME We should not be modifying this entity, until the Move
+        // operation has been redispatched and handled in Thing::moveOperation
+        if (location_orientation) {
+            location.orientation = location_orientation;
         }
 
         Vector3D direction;
@@ -438,26 +441,29 @@ oplist Character::mindMoveOperation(const Move & op)
         }
         if (!location_coords) {
             if (!location_vel || (location_vel==Vector3D(0,0,0))) {
-                debug( std::cout << "\tUsing face for direction" << std::endl
-                                 << std::flush;);
-                direction=location.face;
+                debug( std::cout << "\tUsing orientation for direction"
+                                 << std::endl << std::flush;);
+                // FIXME No way to set direction from orientation yet
+                // This is only required when no info is given about
+	        // where to move
+                // direction = location.orientation;
             } else {
                 debug( std::cout << "\tUsing velocity for direction"
                                  << std::endl << std::flush;);
-                direction=location_vel;
+                direction = location_vel;
             }
         } else {
             debug( std::cout << "\tUsing destination for direction"
                              << std::endl << std::flush;);
-            direction=location_coords-location.coords;
+            direction = location_coords - location.coords;
         }
         if (direction) {
-            direction=direction.unitVector();
+            direction = direction.unitVector();
             debug( std::cout << "Direction: " << direction << std::endl
                              << std::flush;);
-        }
-        if (!location_face) {
-            location.face = direction;
+            if (!location_orientation) {
+                location.orientation = Quaternion(Vector3D(1,0,0), direction);
+            }
         }
         Location ret_location;
         Move * moveOp = movement.genMoveOperation(&ret_location);

@@ -27,19 +27,10 @@ void Location::addToObject(Object::MapType & omap) const
     if (velocity) {
         omap["velocity"] = velocity.asObject();
     }
-    if (face) {
-        omap["face"] = face.asObject();
+    if (orientation) {
+        omap["orientation"] = orientation.asObject();
     }
-#if 0
-    if (bbox) {
-        omap["bbox"] = bbox.asObject();
-    }
-    if (bmedian) {
-        omap["bmedian"] = bmedian.asObject();
-    }
-#else
     if (bBox) {
         omap["bbox"] = bBox.asList();
     }
-#endif
 }
