@@ -1,28 +1,63 @@
 <refentry id="cyphesis">
 
-<refmeta>
-<refentrytitle>cyphesis</refentrytitle>
-<manvolnum>1</manvolnum>
-</refmeta>
+ <refmeta>
+  <refentrytitle>cyphesis</refentrytitle>
+  <manvolnum>1</manvolnum>
+ </refmeta>
 
-<refnamediv>
-<refname>cyphesis</refname>
-<refpurpose>cyphesis game server process</refpurpose>
-</refnamediv>
+ <refnamediv>
+  <refname>cyphesis</refname>
+  <refpurpose>cyphesis game server process</refpurpose>
+ </refnamediv>
 
-<refsynopsisdiv>
-<cmdsynopsis>
-<command>/usr/bin/cyphesis</command>
-<arg choice="opt" rep="repeat">--section:option=value</arg>
-</cmdsynopsis>
-</refsynopsisdiv>
+ <refsynopsisdiv>
+  <cmdsynopsis>
+   <command>/usr/bin/cyphesis</command>
+   <arg choice="opt" rep="repeat">--section:option=value</arg>
+  </cmdsynopsis>
+ </refsynopsisdiv>
 
-<refsect1><title>Description</title>
-<para>
+ <refsect1><title>Description</title>
+  <para>
 The cyphesis program implements the core world server for WorldForge.
-</para>
-<para></para>
-</refsect1>
-<refsect1><title>Options</title>
-<para>
+  </para>
+  <para></para>
+ </refsect1>
+ <refsect1><title>Options</title>
+  <para>
+Configuration options are divided up into named sections, which need to
+be specified when modifying or overriding the options. In a config file
+the name of a section is specified in square brackets at the beginning
+of the section. On the command line the section is given at the
+beginning of the option specification, as shown in the synopsis above.
+  </para>
+  <refsect2><title>Server Options</title>
+   <para>
+The following options are present in the cyphesis section of the config
+file, and overriden by specifying the cyphesis section name on the
+command line.
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><fieldsynopsis>
+       <varname>ruleset</varname>
+       <initializer>="mason"</initializer>
+      </fieldsynopsis>
+     </term>
+     <listitem>
+      <para>
+Ruleset.
+      </para>
+      <para>
+Get a type description from the server, and display its contents.
+The type information is typically either an entity class, or an operation
+definition.
+      </para>
+     </listitem>
+    </varlistentry>
+
+   </variablelist>
+
+  </refsect2>
+ </refsect1>
 </refentry>
