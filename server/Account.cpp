@@ -77,15 +77,15 @@ Entity * Account::addCharacter(const std::string & typestr,
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
     Entity * chr = world.addObject(typestr, ent);
     debug(std::cout << "Added" << std::endl << std::flush;);
-    if (!chr->location.isValid()) {
+    if (!chr->m_location.isValid()) {
         debug(std::cout << "Setting location" << std::endl << std::flush;);
-        chr->location.m_loc = &world.gameWorld;
-        chr->location.m_pos = Vector3D(0, 0, 0);
+        chr->m_location.m_loc = &world.gameWorld;
+        chr->m_location.m_pos = Vector3D(0, 0, 0);
     }
-    debug(std::cout << "Location set to: " << chr->location << std::endl << std::flush;);
+    debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
     Character * pchar = dynamic_cast<Character *>(chr);
     if (pchar != 0) {
-        pchar->externalMind = new ExternalMind(*connection, pchar->getId(), pchar->getName());
+        pchar->m_externalMind = new ExternalMind(*connection, pchar->getId(), pchar->getName());
         // Only genuinely playable characters should go in here. Otherwise
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.

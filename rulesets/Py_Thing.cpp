@@ -93,13 +93,13 @@ static PyObject * Thing_getattr(ThingObject *self, char *name)
     // }
     if (strcmp(name, "location") == 0) {
         LocationObject * loc = newLocationObject(NULL);
-        loc->location = &self->m_thing->location;
+        loc->location = &self->m_thing->m_location;
         loc->own = 0;
         return (PyObject *)loc;
     }
     if (strcmp(name, "world") == 0) {
         WorldObject * world = newWorldObject(NULL);
-        world->world = self->m_thing->world;
+        world->world = self->m_thing->m_world;
         return (PyObject *)world;
     }
     if (self->Thing_attr != NULL) {

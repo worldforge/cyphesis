@@ -14,9 +14,9 @@
 
 Food::Food(const std::string & id) : Thing (id)
 {
-    attributes["cooked"] = 0;
-    attributes["burn_speed"] = 0.1;
-    mass = 1;
+    m_attributes["cooked"] = 0;
+    m_attributes["burn_speed"] = 0.1;
+    m_mass = 1;
 
     subscribe("eat", OP_EAT);
 }
@@ -28,7 +28,7 @@ Food::~Food()
 OpVector Food::EatOperation(const Eat & op)
 {
     OpVector res;
-    if (script->Operation("eat", op, res) != 0) {
+    if (m_script->Operation("eat", op, res) != 0) {
         return res;
     }
     Element::MapType self_ent;
@@ -42,7 +42,7 @@ OpVector Food::EatOperation(const Eat & op)
     const std::string & to = op.GetFrom();
     Element::MapType nour_ent;
     nour_ent["id"] = to;
-    nour_ent["mass"] = mass;
+    nour_ent["mass"] = m_mass;
     Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
     n->SetArgs(Element::ListType(1,nour_ent));
@@ -56,15 +56,15 @@ OpVector Food::EatOperation(const Eat & op)
 OpVector Food::BurnOperation(const Burn & op)
 {
     OpVector res;
-    if (script->Operation("burn", op, res) != 0) {
+    if (m_script->Operation("burn", op, res) != 0) {
         return res;
     }
     double cooked = 0;
     if (op.GetArgs().empty() || !op.GetArgs().front().IsMap()) {
        return error(op, "Fire op has no argument", getId());
     }
-    Element::MapType::const_iterator I = attributes.find("cooked");
-    if ((I != attributes.end()) && I->second.IsNum()) {
+    Element::MapType::const_iterator I = m_attributes.find("cooked");
+    if ((I != m_attributes.end()) && I->second.IsNum()) {
         cooked = I->second.AsNum();
     }
     const Element::MapType & fire_ent = op.GetArgs().front().AsMap();
@@ -73,9 +73,9 @@ OpVector Food::BurnOperation(const Burn & op)
     // Currently this cooks pretty quick, and at the same speed for
     // everything. No mechanism for this yet.
     double fire_size = fire_ent.find("status")->second.AsNum();
-    self_ent["cooked"] = cooked + (fire_size/mass);
+    self_ent["cooked"] = cooked + (fire_size/m_mass);
     if (cooked > 1.0) {
-        self_ent["status"] = status - (attributes["burn_speed"].AsNum()) * fire_size;
+        self_ent["status"] = m_status - (m_attributes["burn_speed"].AsNum()) * fire_size;
     }
 
     Set * s = new Set(Set::Instantiate());

@@ -15,6 +15,26 @@ class BaseWorld;
 class MemMap;
 class Script;
 
+// Work in progress, this will be a way of inferring type relationships,
+// and will replace the simple string type currently used.
+
+class EntityType {
+  protected:
+    std::string m_typeName;
+    EntityType * const m_parent;
+  public:
+    explicit EntityType(const std::string & n,
+                        EntityType * const parent = 0) : m_typeName(n),
+                                                         m_parent(parent) {
+
+    }
+
+    bool isA(const EntityType & other) {
+        // FIXME
+        return false;
+    }
+};
+
 // This is the base class from which all in-game objects inherit.
 // This class should not be instantiated directly.
 // This class provides all the static atributes which are common to most
@@ -36,53 +56,53 @@ class Entity : public BaseEntity {
     static std::set<std::string> m_immutable;
     static const std::set<std::string> & immutables();
   protected:
-    Script * script;
-    Atlas::Message::Object::MapType attributes;
-    int seq;                    // Sequence number
-    double status;              // Health/damage coeficient
-    std::string type;           // Easy access to primary parent
-    std::string name;           // Entities name
-    double mass;                // Mass in kg
-    bool perceptive;            // Is this perceptive
+    Script * m_script;
+    Atlas::Message::Object::MapType m_attributes;
+    int m_seq;                  // Sequence number
+    double m_status;            // Health/damage coeficient
+    std::string m_type;         // Easy access to primary parent
+    std::string m_name;         // Entities name
+    double m_mass;              // Mass in kg
+    bool m_perceptive;          // Is this perceptive
   public:
-    BaseWorld * world;          // Exists in this world.
-    Location location;          // Full details of location inc. ref pos and vel
-    EntitySet contains;         // List of entities which use this as ref
-    unsigned int update_flags;
+    BaseWorld * m_world;        // Exists in this world.
+    Location m_location;        // Full details of location
+    EntitySet m_contains;       // List of entities which use this as ref
+    unsigned int m_update_flags;
 
     // Entity();
     explicit Entity(const std::string & id);
     virtual ~Entity();
 
-    const int getUpdateFlags() const { return update_flags; }
-    const int getSeq() const { return seq; }
-    const double getStatus() const { return status; }
-    const std::string & getName() const { return name; }
-    const std::string & getType() const { return type; }
-    const double getMass() const { return mass; }
+    const int getUpdateFlags() const { return m_update_flags; }
+    const int getSeq() const { return m_seq; }
+    const double getStatus() const { return m_status; }
+    const std::string & getName() const { return m_name; }
+    const std::string & getType() const { return m_type; }
+    const double getMass() const { return m_mass; }
 
-    const bool isPerceptive() const { return perceptive; }
+    const bool isPerceptive() const { return m_perceptive; }
 
-    void clearUpdateFlags() { update_flags = 0; }
+    void clearUpdateFlags() { m_update_flags = 0; }
 
     void setStatus(const double s) {
-        status = s;
+        m_status = s;
     }
 
     void setName(const std::string & n) {
-        name = n;
+        m_name = n;
     }
 
     void setType(const std::string & t) {
-        type = t;
+        m_type = t;
     }
 
     void setMass(const double w) {
-        mass = w;
+        m_mass = w;
     }
 
     const Atlas::Message::Object::MapType & getAttributes() const {
-        return attributes;
+        return m_attributes;
     }
 
     virtual bool get(const std::string &, Atlas::Message::Object &) const;

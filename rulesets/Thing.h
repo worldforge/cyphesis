@@ -23,7 +23,7 @@ class Thing : public Entity {
     // that serialno is sorted. This allows client serialnos to get
     // in, so that client gets correct usefull refnos back
     OpVector sendWorld(RootOperation * op) const {
-        return world->message(*op, this);
+        return m_world->message(*op, this);
     }
 
     virtual OpVector SetupOperation(const Setup & op);

@@ -18,33 +18,33 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
     bool empty = c.empty();
     if (t.getUpdateFlags() & a_loc) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "loc = '" << t.location.m_loc->getId() << "'";
+        q << "loc = '" << t.m_location.m_loc->getId() << "'";
     }
     if (t.getUpdateFlags() & a_pos) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "px = " << t.location.m_pos.X()
-          << ", py = " << t.location.m_pos.Y()
-          << ", pz = " << t.location.m_pos.Z();
+        q << "px = " << t.m_location.m_pos.X()
+          << ", py = " << t.m_location.m_pos.Y()
+          << ", pz = " << t.m_location.m_pos.Z();
     }
     if (t.getUpdateFlags() & a_orient) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "ox = " << t.location.m_orientation.X()
-          << ", oy = " << t.location.m_orientation.Y()
-          << ", oz = " << t.location.m_orientation.Z()
-          << ", ow = " << t.location.m_orientation.W();
+        q << "ox = " << t.m_location.m_orientation.X()
+          << ", oy = " << t.m_location.m_orientation.Y()
+          << ", oz = " << t.m_location.m_orientation.Z()
+          << ", ow = " << t.m_location.m_orientation.W();
     }
     if (t.getUpdateFlags() & a_bbox) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "bnx = " << t.location.m_bBox.nearPoint().X()
-          << ", bny = " << t.location.m_bBox.nearPoint().Y()
-          << ", bnz = " << t.location.m_bBox.nearPoint().Z()
-          << ", bfx = " << t.location.m_bBox.farPoint().X()
-          << ", bfy = " << t.location.m_bBox.farPoint().Y()
-          << ", bfz = " << t.location.m_bBox.farPoint().Z();
+        q << "bnx = " << t.m_location.m_bBox.nearPoint().X()
+          << ", bny = " << t.m_location.m_bBox.nearPoint().Y()
+          << ", bnz = " << t.m_location.m_bBox.nearPoint().Z()
+          << ", bfx = " << t.m_location.m_bBox.farPoint().X()
+          << ", bfy = " << t.m_location.m_bBox.farPoint().Y()
+          << ", bfz = " << t.m_location.m_bBox.farPoint().Z();
     }
     if (t.getUpdateFlags() & a_cont) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "cont = " << t.contains.size();
+        q << "cont = " << t.m_contains.size();
     }
     if (t.getUpdateFlags() & a_status) {
         if (!empty) { q << ", "; } else { empty = false; }
@@ -117,21 +117,21 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
     std::stringstream q;
     q << sq << m_class << sq << cs
       << sq << t.getType() << sq << cs
-      << sq << t.location.m_loc->getId() << sq << cs
-      << t.contains.size() << cs
-      << t.location.m_pos.X() << cs
-      << t.location.m_pos.Y() << cs
-      << t.location.m_pos.Z() << cs
-      << t.location.m_orientation.X() << cs
-      << t.location.m_orientation.Y() << cs
-      << t.location.m_orientation.Z() << cs
-      << t.location.m_orientation.W() << cs
-      << t.location.m_bBox.nearPoint().X() << cs
-      << t.location.m_bBox.nearPoint().Y() << cs
-      << t.location.m_bBox.nearPoint().Z() << cs
-      << t.location.m_bBox.farPoint().X() << cs
-      << t.location.m_bBox.farPoint().Y() << cs
-      << t.location.m_bBox.farPoint().Z() << cs
+      << sq << t.m_location.m_loc->getId() << sq << cs
+      << t.m_contains.size() << cs
+      << t.m_location.m_pos.X() << cs
+      << t.m_location.m_pos.Y() << cs
+      << t.m_location.m_pos.Z() << cs
+      << t.m_location.m_orientation.X() << cs
+      << t.m_location.m_orientation.Y() << cs
+      << t.m_location.m_orientation.Z() << cs
+      << t.m_location.m_orientation.W() << cs
+      << t.m_location.m_bBox.nearPoint().X() << cs
+      << t.m_location.m_bBox.nearPoint().Y() << cs
+      << t.m_location.m_bBox.nearPoint().Z() << cs
+      << t.m_location.m_bBox.farPoint().X() << cs
+      << t.m_location.m_bBox.farPoint().Y() << cs
+      << t.m_location.m_bBox.farPoint().Z() << cs
       << t.getStatus() << cs
       << sq << t.getName() << sq << cs
       << t.getMass() << cs

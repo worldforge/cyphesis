@@ -1,3 +1,13 @@
+2003-05-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Restoration.cpp: Send restored entities a setup op, so the
+	  AI gets initialised as if the entity had just been created.
+
+	* Clean up member variable names.
+
+	* rulesets/mason/mind/SkelMind.py: Get skeleton to recognise
+	  settlers.
+
 2003-05-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp, rulesets/World.h: Rework terrain attribute

@@ -5,15 +5,17 @@
 #ifndef RULESETS_THING_FACTORY_H
 #define RULESETS_THING_FACTORY_H
 
+#error This file has been removed from the build
+
 #include <Atlas/Message/Object.h>
 
 class Thing;
 
 class FactoryBase {
   public:
-    std::string script;
-    std::string language;
-    Atlas::Message::Object::MapType attributes;
+    std::string m_script;
+    std::string m_language;
+    Atlas::Message::Object::MapType m_attributes;
 
     virtual ~FactoryBase() { }
 

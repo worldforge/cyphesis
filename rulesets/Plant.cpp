@@ -14,10 +14,11 @@
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
 
-Plant::Plant(const std::string & id) : Thing(id), fruits(0), radius(1), fruitName("seed")
+Plant::Plant(const std::string & id) : Thing(id), m_fruits(0), m_radius(1),
+                                                  m_fruitName("seed")
 {
     // Default to a 1m cube
-    location.m_bBox = BBox(Vector3D(-0.5, -0.5, 0), Vector3D(0.5, 0.5, 1));
+    m_location.m_bBox = BBox(Vector3D(-0.5, -0.5, 0), Vector3D(0.5, 0.5, 1));
 
     subscribe("tick", OP_TICK);
 }
@@ -29,19 +30,19 @@ Plant::~Plant()
 bool Plant::get(const std::string & aname, Element & attr) const
 {
     if (aname == "fruits") {
-        attr = fruits;
+        attr = m_fruits;
         return true;
     } else if (aname == "radius") {
-        attr = radius;
+        attr = m_radius;
         return true;
     } else if (aname == "fruitName") {
-        attr = fruitName;
+        attr = m_fruitName;
         return true;
     } else if (aname == "fruitChance") {
-        attr = fruitChance;
+        attr = m_fruitChance;
         return true;
     } else if (aname == "sizeAdult") {
-        attr = sizeAdult;
+        attr = m_sizeAdult;
         return true;
     }
     return Thing::get(aname, attr);
@@ -50,16 +51,16 @@ bool Plant::get(const std::string & aname, Element & attr) const
 void Plant::set(const std::string & aname, const Element & attr)
 {
     if ((aname == "fruits") && attr.IsInt()) {
-        fruits = attr.AsInt();
-        update_flags |= a_fruit;
+        m_fruits = attr.AsInt();
+        m_update_flags |= a_fruit;
     } else if ((aname == "radius") && attr.IsInt()) {
-        radius = attr.AsInt();
+        m_radius = attr.AsInt();
     } else if ((aname == "fruitName") && attr.IsString()) {
-        fruitName = attr.AsString();
+        m_fruitName = attr.AsString();
     } else if ((aname == "fruitChance") && attr.IsInt()) {
-        fruitChance = attr.AsInt();
+        m_fruitChance = attr.AsInt();
     } else if ((aname == "sizeAdult") && attr.IsNum()) {
-        sizeAdult = attr.AsNum();
+        m_sizeAdult = attr.AsNum();
     } else {
         Thing::set(aname, attr);
     }
@@ -67,17 +68,17 @@ void Plant::set(const std::string & aname, const Element & attr)
 
 int Plant::dropFruit(OpVector & res)
 {
-    if (fruits < 1) { return 0; }
-    int drop = std::min(fruits, randint(minuDrop, maxuDrop));
-    fruits = fruits - drop;
-    double height = location.m_bBox.farPoint().Z(); 
+    if (m_fruits < 1) { return 0; }
+    int drop = std::min(m_fruits, randint(m_minuDrop, m_maxuDrop));
+    m_fruits = m_fruits - drop;
+    double height = m_location.m_bBox.farPoint().Z(); 
     for(int i = 0; i < drop; i++) {
-        double rx = location.m_pos.X()+uniform(height*radius, -height*radius);
-        double ry = location.m_pos.X()+uniform(height*radius, -height*radius);
+        double rx = m_location.m_pos.X()+uniform(height*m_radius, -height*m_radius);
+        double ry = m_location.m_pos.X()+uniform(height*m_radius, -height*m_radius);
         Element::MapType fmap;
-        fmap["name"] = fruitName;
-        fmap["parents"] = Element::ListType(1,fruitName);
-        Location floc(location.m_loc, Vector3D(rx, ry, 0));
+        fmap["name"] = m_fruitName;
+        fmap["parents"] = Element::ListType(1,m_fruitName);
+        Location floc(m_location.m_loc, Vector3D(rx, ry, 0));
         floc.addToObject(fmap);
         RootOperation * create = new Create(Create::Instantiate());
         create->SetArgs(Element::ListType(1, fmap));
@@ -89,15 +90,15 @@ int Plant::dropFruit(OpVector & res)
 OpVector Plant::TickOperation(const Tick & op)
 {
     OpVector res;
-    script->Operation("tick", op, res);
+    m_script->Operation("tick", op, res);
     RootOperation * tickOp = new Tick(Tick::Instantiate());
     tickOp->SetTo(getId());
-    tickOp->SetFutureSeconds(consts::basic_tick * speed);
+    tickOp->SetFutureSeconds(consts::basic_tick * m_speed);
     res.push_back(tickOp);
     int dropped = dropFruit(res);
-    if (location.m_bBox.farPoint().Z() > sizeAdult) {
-        if (randint(1, fruitChance) == 1) {
-            fruits++;
+    if (m_location.m_bBox.farPoint().Z() > m_sizeAdult) {
+        if (randint(1, m_fruitChance) == 1) {
+            m_fruits++;
             dropped--;
         }
     }
@@ -105,7 +106,7 @@ OpVector Plant::TickOperation(const Tick & op)
         RootOperation * set = new Set(Set::Instantiate());
         Element::MapType pmap;
         pmap["id"] = getId();
-        pmap["fruits"] = fruits;
+        pmap["fruits"] = m_fruits;
         set->SetArgs(Element::ListType(1,pmap));
         res.push_back(set);
     }

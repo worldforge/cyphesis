@@ -100,10 +100,10 @@ void World::addToObject(Element::MapType & omap) const
 OpVector World::LookOperation(const Look & op)
 {
     // Let the worldrouter know we have been looked at.
-    world->LookOperation(op);
+    m_world->LookOperation(op);
 
     debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
-    const EntityDict & eobjects = world->getObjects();
+    const EntityDict & eobjects = m_world->getObjects();
     const std::string & from = op.GetFrom();
     EntityDict::const_iterator J = eobjects.find(from);
     if (J == eobjects.end()) {
@@ -131,9 +131,9 @@ OpVector World::LookOperation(const Look & op)
     Entity * opFrom = J->second;
     const Vector3D & fromLoc = opFrom->getXyz();
     Element::ListType & contlist = (omap["contains"] = Element(Element::ListType())).AsList();
-    EntitySet::const_iterator I = contains.begin();
-    for(; I != contains.end(); I++) {
-        if ((*I)->location.inRange(fromLoc, consts::sight_range)) {
+    EntitySet::const_iterator I = m_contains.begin();
+    for(; I != m_contains.end(); I++) {
+        if ((*I)->m_location.inRange(fromLoc, consts::sight_range)) {
             contlist.push_back(Element((*I)->getId()));
         }
     }
@@ -168,7 +168,7 @@ OpVector World::SetOperation(const Set & op)
 {
     // This is the same as Thing::Operation(Set), except world does not
     // get deleted if its status goes below 0.
-    seq++;
+    m_seq++;
     const Element::ListType & args = op.GetArgs();
     if (args.empty()) {
        return OpVector();
@@ -181,7 +181,7 @@ OpVector World::SetOperation(const Set & op)
         }
         RootOperation * s = new Sight(Sight::Instantiate());
         s->SetArgs(Element::ListType(1,op.AsObject()));
-        if (update_flags != 0) {
+        if (m_update_flags != 0) {
             updated.emit();
         }
         return OpVector(1,s);

@@ -84,7 +84,7 @@ void Restoration::restore(const std::string & id,
                             << std::flush;);
             DatabaseResult::const_iterator J = res.begin();
             ent = I->second(id, J);
-            ent->location.m_loc = loc;
+            ent->m_location.m_loc = loc;
             server.world.addObject(ent, false);
         }
     }
@@ -180,8 +180,8 @@ void Restoration::restoreChildren(Entity * loc)
                 continue;
             }
             Entity * ent = restorer(id, L);
-            ent->location.m_loc = loc;
-            server.world.addObject(ent, false);
+            ent->m_location.m_loc = loc;
+            server.world.addObject(ent, true);
             const char * c = L.column("cont");
             if (c != 0) {
                 if (*c != '0') {

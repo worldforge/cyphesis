@@ -12,10 +12,10 @@
 
 class BaseMind : public Entity {
   protected:
-    MemMap map;
-    bool isAwake;
-    WorldTime time;
-    int world;
+    MemMap m_map;
+    bool m_isAwake;
+    WorldTime m_time;
+    int m_world;
   protected:
     OpNoDict opSightLookup;
     OpNoDict opSoundLookup;
@@ -31,11 +31,11 @@ class BaseMind : public Entity {
     BaseMind(const std::string &, const std::string &);
     virtual ~BaseMind();
 
-    MemMap * getMap() { return &map; }
-    WorldTime * getTime() { return &time; }
+    MemMap * getMap() { return &m_map; }
+    WorldTime * getTime() { return &m_time; }
 
-    void sleep() { isAwake = false; }
-    void awake() { isAwake = true; }
+    void sleep() { m_isAwake = false; }
+    void awake() { m_isAwake = true; }
 
     void scriptSubscribe(const std::string & op);
 

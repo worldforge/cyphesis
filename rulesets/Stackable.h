@@ -15,7 +15,7 @@
 
 class Stackable : public Thing {
   protected:
-    int num; // Number of fruits on the plant
+    int m_num; // Number of items
 
   public:
 

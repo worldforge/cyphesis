@@ -40,7 +40,7 @@ WorldRouter::WorldRouter() : BaseWorld(consts::rootWorldId,
     initTime = time(NULL) - timeoffset;
     updateTime();
     // gameWorld.setId(getId());
-    gameWorld.world = this;
+    gameWorld.m_world = this;
     eobjects[getId()] = &gameWorld;
     perceptives.insert(&gameWorld);
     objectList.insert(&gameWorld);
@@ -132,23 +132,23 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
                     << std::flush;);
     eobjects[obj->getId()] = obj;
     objectList.insert(obj);
-    if (!obj->location.isValid()) {
+    if (!obj->m_location.isValid()) {
         debug(std::cout << "set loc " << &gameWorld  << std::endl
                         << std::flush;);
-        obj->location.m_loc = &gameWorld;
-        obj->location.m_pos = Vector3D(0,0,0);
-        debug(std::cout << "loc set with loc " << obj->location.m_loc->getId()
+        obj->m_location.m_loc = &gameWorld;
+        obj->m_location.m_pos = Vector3D(0,0,0);
+        debug(std::cout << "loc set with loc " << obj->m_location.m_loc->getId()
                         << std::endl << std::flush;);
     }
-    bool cont_change = obj->location.m_loc->contains.empty();
-    obj->location.m_loc->contains.insert(obj);
+    bool cont_change = obj->m_location.m_loc->m_contains.empty();
+    obj->m_location.m_loc->m_contains.insert(obj);
     if (cont_change) {
-        obj->location.m_loc->update_flags |= a_cont;
-        obj->location.m_loc->updated.emit();
+        obj->m_location.m_loc->m_update_flags |= a_cont;
+        obj->m_location.m_loc->updated.emit();
     }
-    debug(std::cout << "Entity loc " << obj->location << std::endl
+    debug(std::cout << "Entity loc " << obj->m_location << std::endl
                     << std::flush;);
-    obj->world = this;
+    obj->m_world = this;
     if (consts::enable_omnipresence &&
         (obj->getAttributes().find("omnipresent") !=
          obj->getAttributes().end())) {
@@ -288,7 +288,7 @@ OpVector WorldRouter::operation(const RootOperation & op)
             }
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
-                if ((!J->second->location.inRange((*I)->location,
+                if ((!J->second->m_location.inRange((*I)->m_location,
                                                        consts::sight_range))) {
                     debug(std::cout << "Op from " <<from<< " cannot be seen by "
                                   << (*I)->getId() << std::endl << std::flush;);

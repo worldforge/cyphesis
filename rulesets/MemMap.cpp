@@ -55,7 +55,7 @@ Entity * MemMap::add(const Element::MapType & entmap)
     if ((I != entmap.end()) && I->second.IsString()) {
         getAdd(I->second.AsString());
     }
-    thing->getLocation(entmap, things);
+    thing->getLocation(entmap, m_things);
     addContents(entmap);
     return addObject(thing);
 }
@@ -72,8 +72,8 @@ Entity * MemMap::update(const Element::MapType & entmap)
         return NULL;
     }
     debug( std::cout << " updating " << id << std::endl << std::flush;);
-    EntityDict::const_iterator J = things.find(id);
-    if (J == things.end()) {
+    EntityDict::const_iterator J = m_things.find(id);
+    if (J == m_things.end()) {
         return add(entmap);
     }
     debug( std::cout << " " << id << " has already been spotted" << std::endl << std::flush;);
@@ -92,11 +92,11 @@ Entity * MemMap::update(const Element::MapType & entmap)
     // should not affect its type, contain or id, and location and
     // stamp should be updated with accurate information
     thing->merge(entmap);
-    thing->getLocation(entmap,things);
+    thing->getLocation(entmap,m_things);
     addContents(entmap);
     std::vector<std::string>::const_iterator K;
-    for(K = updateHooks.begin(); K != updateHooks.end(); K++) {
-        script->hook(*K, thing);
+    for(K = m_updateHooks.begin(); K != m_updateHooks.end(); K++) {
+        m_script->hook(*K, thing);
     }
     return thing;
 }
@@ -105,7 +105,7 @@ EntityVector MemMap::findByType(const std::string & what)
 {
     EntityVector res;
     EntityDict::const_iterator I;
-    for(I = things.begin(); I != things.end(); I++) {
+    for(I = m_things.begin(); I != m_things.end(); I++) {
         Entity * item = I->second;
         debug( std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
         if (item->getType() == what) {
@@ -119,8 +119,8 @@ EntityVector MemMap::findByLocation(const Location & loc, double radius)
 {
     EntityVector res;
     EntityDict::const_iterator I;
-    for(I = things.begin(); I != things.end(); I++) {
-        const Location & oloc = I->second->location;
+    for(I = m_things.begin(); I != m_things.end(); I++) {
+        const Location & oloc = I->second->m_location;
         if (!loc.isValid() || !oloc.isValid()) {
             continue;
         }
@@ -135,8 +135,8 @@ EntityVector MemMap::findByLocation(const Location & loc, double radius)
 const Element MemMap::asObject()
 {
     Element::MapType omap;
-    EntityDict::const_iterator I = things.begin();
-    for(;I != things.end(); I++) {
+    EntityDict::const_iterator I = m_things.begin();
+    for(;I != m_things.end(); I++) {
         I->second->addToObject((omap[I->first] = Element(Element::MapType())).AsMap());
     }
     return Element(omap);
@@ -144,8 +144,8 @@ const Element MemMap::asObject()
 
 void MemMap::flushMap()
 {
-    EntityDict::const_iterator I = things.begin();
-    for (; I != things.end(); I++) {
+    EntityDict::const_iterator I = m_things.begin();
+    for (; I != m_things.end(); I++) {
         delete I->second;
     }
 }

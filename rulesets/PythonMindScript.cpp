@@ -39,8 +39,8 @@ bool PythonMindScript::Operation(const std::string & op_type,
     ConstOperationObject * py_op = newAtlasConstRootOperation(NULL);
     py_op->operation = &op;
     py_op->own = 0;
-    py_op->from = mind.map.getAdd(op.GetFrom());
-    py_op->to = mind.map.getAdd(op.GetTo());
+    py_op->from = mind.m_map.getAdd(op.GetFrom());
+    py_op->to = mind.m_map.getAdd(op.GetTo());
     PyObject * ret;
     if (sub_op == NULL) {
         ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
@@ -49,8 +49,8 @@ bool PythonMindScript::Operation(const std::string & op_type,
         OperationObject * py_sub_op = newAtlasRootOperation(NULL);
         py_sub_op->operation = sub_op;
         py_sub_op->own = 0;
-        py_sub_op->from = mind.map.getAdd(sub_op->GetFrom());
-        py_sub_op->to = mind.map.getAdd(sub_op->GetTo());
+        py_sub_op->from = mind.m_map.getAdd(sub_op->GetFrom());
+        py_sub_op->to = mind.m_map.getAdd(sub_op->GetTo());
         ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(OO)", py_op, py_sub_op);
         Py_DECREF(py_sub_op);

@@ -13,15 +13,15 @@
 
 class Plant : public Thing {
   protected:
-    int fruits; // Number of fruits on the plant
-    int radius; // Proportion of height as radius
-    int fruitChance; // chance of growing fruit
-    double sizeAdult; // chance of growing fruit
-    std::string fruitName;
+    int m_fruits; // Number of fruits on the plant
+    int m_radius; // Proportion of height as radius
+    int m_fruitChance; // chance of growing fruit
+    double m_sizeAdult; // chance of growing fruit
+    std::string m_fruitName;
 
-    static const int speed = 20; // Number of basic_ticks per tick
-    static const int minuDrop = 0; // min fruit dropped
-    static const int maxuDrop = 2; // max fruit dropped
+    static const int m_speed = 20; // Number of basic_ticks per tick
+    static const int m_minuDrop = 0; // min fruit dropped
+    static const int m_maxuDrop = 2; // max fruit dropped
 
     int dropFruit(OpVector & res);
   public:

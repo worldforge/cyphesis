@@ -24,12 +24,12 @@ inline Entity * MemMap::addObject(Entity * object)
 {
     debug(std::cout << "MemMap::addObject " << object << " " << object->getId()
                     << std::endl << std::flush;);
-    things[object->getId()] = object;
+    m_things[object->getId()] = object;
 
     debug( std::cout << this << std::endl << std::flush;);
     std::vector<std::string>::const_iterator I;
-    for(I = addHooks.begin(); I != addHooks.end(); I++) {
-        script->hook(*I, object);
+    for(I = m_addHooks.begin(); I != m_addHooks.end(); I++) {
+        m_script->hook(*I, object);
     }
     return object;
 }
@@ -37,14 +37,14 @@ inline Entity * MemMap::addObject(Entity * object)
 inline RootOperation * MemMap::lookId()
 {
     debug( std::cout << "MemMap::lookId" << std::endl << std::flush;);
-    if (!additionsById.empty()) {
-        const std::string & id = additionsById.front();
+    if (!m_additionsById.empty()) {
+        const std::string & id = m_additionsById.front();
         Look * l = new Look(Look::Instantiate());
         Atlas::Message::Object::MapType m;
         m["id"] = Atlas::Message::Object(id);
         l->SetArgs(Atlas::Message::Object::ListType(1, m));
         l->SetTo(id);
-        additionsById.pop_front();
+        m_additionsById.pop_front();
         return l;
     }
     return NULL;
@@ -53,7 +53,7 @@ inline RootOperation * MemMap::lookId()
 inline Entity * MemMap::addId(const std::string & id)
 {
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
-    additionsById.push_back(id);
+    m_additionsById.push_back(id);
     Atlas::Message::Object::MapType m;
     m["id"] = Atlas::Message::Object(id);
     return add(m);
@@ -61,13 +61,13 @@ inline Entity * MemMap::addId(const std::string & id)
 
 inline void MemMap::del(const std::string & id)
 {
-    EntityDict::iterator I = things.find(id);
-    if (I != things.end()) {
+    EntityDict::iterator I = m_things.find(id);
+    if (I != m_things.end()) {
         Entity * obj = I->second;
-        things.erase(I);
+        m_things.erase(I);
         std::vector<std::string>::const_iterator J;
-        for(J = deleteHooks.begin(); J != deleteHooks.end(); J++) {
-            script->hook(*J, obj);
+        for(J = m_deleteHooks.begin(); J != m_deleteHooks.end(); J++) {
+            m_script->hook(*J, obj);
         }
         delete obj;
     }
@@ -77,8 +77,8 @@ inline Entity * MemMap::get(const std::string & id)
 {
     debug( std::cout << "MemMap::get" << std::endl << std::flush;);
     if (id.empty()) { return NULL; }
-    EntityDict::const_iterator I = things.find(id);
-    if (I != things.end()) {
+    EntityDict::const_iterator I = m_things.find(id);
+    if (I != m_things.end()) {
         return I->second;
     }
     return NULL;
@@ -88,8 +88,8 @@ inline Entity * MemMap::getAdd(const std::string & id)
 {
     debug( std::cout << "MemMap::getAdd" << std::endl << std::flush;);
     if (id.empty()) { return NULL; }
-    EntityDict::const_iterator I = things.find(id);
-    if (I != things.end()) {
+    EntityDict::const_iterator I = m_things.find(id);
+    if (I != m_things.end()) {
         return I->second;
     }
     return addId(id);

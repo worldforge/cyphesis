@@ -12,7 +12,7 @@ static const bool debug_flag = true;
 Line::Line(const std::string & id) : Thing(id)
 {
     // Default to a 0.1m cube
-    location.m_bBox = BBox(Vector3D(0.1, 0.1, 0.1));
+    m_location.m_bBox = BBox(Vector3D(0.1, 0.1, 0.1));
 }
 
 Line::~Line()
@@ -43,13 +43,13 @@ void Line::set(const std::string & aname, const Element & attr)
                      << std::flush;);
     if ((aname == "start_intersections") && attr.IsList()) {
         idListFromAtlas(attr.AsList(), startIntersections);
-        update_flags |= a_line;
+        m_update_flags |= a_line;
     } else if ((aname == "end_intersections") && attr.IsList()) {
         idListFromAtlas(attr.AsList(), endIntersections);
-        update_flags |= a_line;
+        m_update_flags |= a_line;
     } else if ((aname == "coords") && attr.IsList()) {
         coordListFromAtlas(attr.AsList(), coords);
-        update_flags |= a_line;
+        m_update_flags |= a_line;
     } else {
         Thing::set(aname, attr);
     }

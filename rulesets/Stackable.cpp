@@ -13,7 +13,7 @@
 #include <Atlas/Objects/Operation/Divide.h>
 #include <Atlas/Objects/Operation/Delete.h>
 
-Stackable::Stackable(const std::string & id) : Thing(id), num(1)
+Stackable::Stackable(const std::string & id) : Thing(id), m_num(1)
 {
     subscribe("combine", OP_COMBINE);
     subscribe("divide", OP_DIVIDE);
@@ -26,7 +26,7 @@ Stackable::~Stackable()
 bool Stackable::get(const std::string & aname, Element & attr) const
 {
     if (aname == "num") {
-        attr = num;
+        attr = m_num;
         return true;
     }
     return Thing::get(aname, attr);
@@ -35,7 +35,7 @@ bool Stackable::get(const std::string & aname, Element & attr) const
 void Stackable::set(const std::string & aname, const Element & attr)
 {
     if ((aname == "num") && attr.IsInt()) {
-        num = attr.AsInt();
+        m_num = attr.AsInt();
     } else {
         Thing::set(aname, attr);
     }
@@ -43,8 +43,8 @@ void Stackable::set(const std::string & aname, const Element & attr)
 
 void Stackable::addToObject(Element::MapType & omap) const
 {
-    if (num != 1) {
-        omap["num"] = Element(num);
+    if (m_num != 1) {
+        omap["num"] = m_num;
     }
     Entity::addToObject(omap);
 }
@@ -52,19 +52,19 @@ void Stackable::addToObject(Element::MapType & omap) const
 OpVector Stackable::CombineOperation(const Combine & op)
 {
     OpVector res;
-    if (script->Operation("combine", op, res) != 0) {
+    if (m_script->Operation("combine", op, res) != 0) {
         return res;
     }
     const Element::ListType & args = op.GetArgs();
     for(Element::ListType::const_iterator I = args.begin(); I!= args.end(); I++) {
         const std::string & id = I->AsMap().find("id")->second.AsString();
         if (id == getId()) { continue; }
-        Entity * ent = world->getObject(id);
+        Entity * ent = m_world->getObject(id);
         if (ent == NULL) { continue; }
         Stackable * obj = dynamic_cast<Stackable *>(ent);
         if (obj == NULL) { continue; }
-        if (obj->type != type) { continue; }
-        num = num + obj->num;
+        if (obj->m_type != m_type) { continue; }
+        m_num = m_num + obj->m_num;
 
         Delete * d = new Delete(Delete::Instantiate());
         Element::MapType dent;
@@ -81,7 +81,7 @@ OpVector Stackable::CombineOperation(const Combine & op)
 OpVector Stackable::DivideOperation(const Divide & op)
 {
     OpVector res;
-    if (script->Operation("divide", op, res) != 0) {
+    if (m_script->Operation("divide", op, res) != 0) {
         return res;
     }
     const Element::ListType & args = op.GetArgs();
@@ -92,10 +92,10 @@ OpVector Stackable::DivideOperation(const Divide & op)
         if (J != ent.end()) {
             if (J->second.IsInt()) { new_num = J->second.AsInt(); }
         }
-        if (num <= new_num) { continue; }
+        if (m_num <= new_num) { continue; }
         
         Element::MapType new_ent;
-        Element::ListType parents(1,type);
+        Element::ListType parents(1,m_type);
         new_ent["parents"] = parents;
         new_ent["num"] = new_num;
         Create * c = new Create( Create::Instantiate());

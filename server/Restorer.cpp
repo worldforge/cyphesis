@@ -40,9 +40,9 @@ Persistor<World> Restorer<World>::m_persist(true);
 
 void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
 {
-    restoreFloat(dr.column("drunkness"), drunkness);
-    restoreString(dr.column("sex"), sex);
-    restoreFloat(dr.column("food"), food);
+    restoreFloat(dr.column("drunkness"), m_drunkness);
+    restoreString(dr.column("sex"), m_sex);
+    restoreFloat(dr.column("food"), m_food);
 }
 
 void Restorer<Character>::populate(DatabaseResult::const_iterator & dr)

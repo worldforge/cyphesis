@@ -22,7 +22,7 @@ const Vector3D Location::getXyz(Entity * ent) const
     } else if (m_loc == NULL) {
         return Vector3D(0,0,0);
     } else {
-        return Vector3D(m_pos) += m_loc->location.getXyz(ent);
+        return Vector3D(m_pos) += m_loc->m_location.getXyz(ent);
     }
 }
 
@@ -54,7 +54,7 @@ bool Location::distanceLeft(const Location & other, Vector3D & c) const {
     } else if (m_loc == NULL) {
         return false;
     } else {
-        bool ret = m_loc->location.distanceLeft(other,c);
+        bool ret = m_loc->m_location.distanceLeft(other,c);
         if (ret) {
             c -= m_pos;
         }
@@ -64,7 +64,7 @@ bool Location::distanceLeft(const Location & other, Vector3D & c) const {
 
 bool Location::distanceRight(const Location & other, Vector3D & c) const {
     // In an intact system, other->m_loc should never be NULL or invalid
-    if (distanceLeft(other,c) || distanceRight(other.m_loc->location,c)) {
+    if (distanceLeft(other,c) || distanceRight(other.m_loc->m_location,c)) {
         c += other.m_pos;
         return true;
     }

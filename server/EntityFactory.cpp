@@ -71,12 +71,13 @@ Entity * EntityFactory::newEntity(const std::string & id,
     if (I != factories.end()) {
         FactoryBase * factory = I->second;
         thing = factory->newPersistantThing(id, &pc);
-        attributes = factory->attributes;
+        // FIXME Avoid this copy
+        attributes = factory->m_attributes;
         // Sort out python object
-        if ((factory->language == "python") && (!factory->script.empty())) {
+        if ((factory->m_language == "python") && (!factory->m_script.empty())) {
             debug(std::cout << "Class " << type << " has a python class"
                             << std::endl << std::flush;);
-            Create_PyThing(thing, factory->script, type);
+            Create_PyThing(thing, factory->m_script, type);
         }
     } else {
         // This should be tolerated less
@@ -102,10 +103,10 @@ Entity * EntityFactory::newEntity(const std::string & id,
     thing->merge(attributes);
     // Get location from entity, if it is present
     if (thing->getLocation(attributes, m_world.getObjects())) {
-        thing->location.m_loc = &m_world.gameWorld;
+        thing->m_location.m_loc = &m_world.gameWorld;
     }
-    if (!thing->location.m_pos.isValid()) {
-        thing->location.m_pos = Vector3D(0,0,0);
+    if (!thing->m_location.m_pos.isValid()) {
+        thing->m_location.m_pos = Vector3D(0,0,0);
     }
     if (pc != 0) {
         pc->persist();
@@ -144,10 +145,10 @@ void EntityFactory::installBaseClasses()
             const Element::MapType & script = J->second.AsMap();
             J = script.find("name");
             if ((J != script.end()) && (J->second.IsString())) {
-                f->script = J->second.AsString();
+                f->m_script = J->second.AsString();
                 J = script.find("language");
                 if ((J != script.end()) && (J->second.IsString())) {
-                    f->language = J->second.AsString();
+                    f->m_language = J->second.AsString();
                 }
             }
         }
@@ -167,7 +168,7 @@ void EntityFactory::installBaseClasses()
         }
         J = classDesc.find("attributes");
         if ((J != classDesc.end()) && (J->second.IsMap())) {
-            f->attributes = J->second.AsMap();
+            f->m_attributes = J->second.AsMap();
         }
         J = classDesc.find("playable");
         if ((J != classDesc.end()) && (J->second.IsInt())) {
@@ -175,7 +176,7 @@ void EntityFactory::installBaseClasses()
         }
         installFactory(parent, type, f);
         debug(std::cout << "INSTALLING " << type << ":" << parent
-                        << "{" << f->script << "." << f->language << "}"
+                        << "{" << f->m_script << "." << f->m_language << "}"
                         << std::endl << std::flush;);
     }
 }

@@ -33,9 +33,9 @@ class PersistorConnection : public PersistorBase {
 
 class FactoryBase {
   public:
-    std::string script;
-    std::string language;
-    Atlas::Message::Object::MapType attributes;
+    std::string m_script;
+    std::string m_language;
+    Atlas::Message::Object::MapType m_attributes;
 
     virtual ~FactoryBase() { }
 

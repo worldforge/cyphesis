@@ -60,7 +60,7 @@ OpVector Thing::SetupOperation(const Setup & op)
     sargs.push_back(c.AsObject());
 
     OpVector sres;
-    if (script->Operation("setup", op, sres) != 0) {
+    if (m_script->Operation("setup", op, sres) != 0) {
         sres.push_back(sight);
         return sres;
     }
@@ -80,7 +80,7 @@ OpVector Thing::SetupOperation(const Setup & op)
 OpVector Thing::ActionOperation(const Action & op)
 {
     OpVector res;
-    if (script->Operation("action", op, res) != 0) {
+    if (m_script->Operation("action", op, res) != 0) {
         return res;
     }
     RootOperation * s = new Sight(Sight::Instantiate());
@@ -91,7 +91,7 @@ OpVector Thing::ActionOperation(const Action & op)
 OpVector Thing::CreateOperation(const Create & op)
 {
     OpVector res;
-    if (script->Operation("create", op, res) != 0) {
+    if (m_script->Operation("create", op, res) != 0) {
         return res;
     }
     const Element::ListType & args = op.GetArgs();
@@ -108,16 +108,16 @@ OpVector Thing::CreateOperation(const Create & op)
         if (parents.empty()) {
             return error(op, "Entity to be create has empty type list", getId());
         }
-        if ((ent.find("loc") == ent.end()) && (location.m_loc != 0)) {
-            ent["loc"] = location.m_loc->getId();
+        if ((ent.find("loc") == ent.end()) && (m_location.m_loc != 0)) {
+            ent["loc"] = m_location.m_loc->getId();
             if (ent.find("pos") == ent.end()) {
-                ent["pos"] = location.m_pos.asObject();
+                ent["pos"] = m_location.m_pos.asObject();
             }
         }
         const std::string & type = parents.front().AsString();
         debug( std::cout << getId() << " creating " << type;);
 
-        Entity * obj = world->addObject(type,ent);
+        Entity * obj = m_world->addObject(type,ent);
 
         Create c(op);
         Element::ListType & args = c.GetArgs();
@@ -139,7 +139,7 @@ OpVector Thing::CreateOperation(const Create & op)
 OpVector Thing::DeleteOperation(const Delete & op)
 {
     OpVector res;
-    if (script->Operation("delete", op, res) != 0) {
+    if (m_script->Operation("delete", op, res) != 0) {
         return res;
     }
     // The actual destruction and removal of this entity will be handled
@@ -152,14 +152,14 @@ OpVector Thing::DeleteOperation(const Delete & op)
 OpVector Thing::BurnOperation(const Burn & op)
 {
     OpVector res;
-    if (script->Operation("burn", op, res) != 0) {
+    if (m_script->Operation("burn", op, res) != 0) {
         return res;
     }
     if (op.GetArgs().empty() || !op.GetArgs().front().IsMap()) {
         return error(op, "Fire op has no argument", getId());
     }
-    Element::MapType::const_iterator I = attributes.find("burn_speed");
-    if ((I == attributes.end()) || !I->second.IsNum()) {
+    Element::MapType::const_iterator I = m_attributes.find("burn_speed");
+    if ((I == m_attributes.end()) || !I->second.IsNum()) {
         return res;
     }
     double bspeed = I->second.AsNum();
@@ -177,7 +177,7 @@ OpVector Thing::BurnOperation(const Burn & op)
     sargs.push_back(Element::MapType());
     Element::MapType & self_ent = sargs.back().AsMap();
     self_ent["id"] = getId();
-    self_ent["status"] = status - (consumed / mass);
+    self_ent["status"] = m_status - (consumed / m_mass);
 
     Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
@@ -192,9 +192,9 @@ OpVector Thing::BurnOperation(const Burn & op)
 OpVector Thing::MoveOperation(const Move & op)
 {
     debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
-    seq++;
+    m_seq++;
     OpVector res;
-    if (script->Operation("move", op, res) != 0) {
+    if (m_script->Operation("move", op, res) != 0) {
         return res;
     }
     const Element::ListType & args = op.GetArgs();
@@ -203,15 +203,15 @@ OpVector Thing::MoveOperation(const Move & op)
         return OpVector();
     }
     try {
-        Vector3D oldpos = location.m_pos;
+        Vector3D oldpos = m_location.m_pos;
         const Element::MapType & ent = args.front().AsMap();
         Element::MapType::const_iterator I = ent.find("loc");
         if ((I == ent.end()) || !I->second.IsString()) {
             return error(op, "Move op has no loc", getId());
         }
         const std::string & ref = I->second.AsString();
-        EntityDict::const_iterator J = world->getObjects().find(ref);
-        if (J == world->getObjects().end()) {
+        EntityDict::const_iterator J = m_world->getObjects().find(ref);
+        if (J == m_world->getObjects().end()) {
             return error(op, "Move op loc invalid", getId());
         }
         debug(std::cout << "{" << ref << "}" << std::endl << std::flush;);
@@ -227,36 +227,36 @@ OpVector Thing::MoveOperation(const Move & op)
         // Up until this point nothing should have changed, but the changes
         // have all now been checked for validity.
     
-        if (location.m_loc != newref) {
+        if (m_location.m_loc != newref) {
         // Update loc
-            location.m_loc->contains.erase(this);
-            if (location.m_loc->contains.empty()) {
-                location.m_loc->update_flags |= a_cont;
-                location.m_loc->updated.emit();
+            m_location.m_loc->m_contains.erase(this);
+            if (m_location.m_loc->m_contains.empty()) {
+                m_location.m_loc->m_update_flags |= a_cont;
+                m_location.m_loc->updated.emit();
             }
-            bool was_empty = newref->contains.empty();
-            newref->contains.insert(this);
+            bool was_empty = newref->m_contains.empty();
+            newref->m_contains.insert(this);
             if (was_empty) {
-                newref->update_flags |= a_cont;
+                newref->m_update_flags |= a_cont;
                 newref->updated.emit();
             }
-            location.m_loc = newref;
-            update_flags |= a_loc;
+            m_location.m_loc = newref;
+            m_update_flags |= a_loc;
         }
 
         // Update pos
-        location.m_pos = Vector3D(I->second.AsList());
-        update_flags |= a_pos;
+        m_location.m_pos = Vector3D(I->second.AsList());
+        m_update_flags |= a_pos;
         I = ent.find("velocity");
         if (I != ent.end()) {
         // Update velocity
-            location.m_velocity = Vector3D(I->second.AsList());
+            m_location.m_velocity = Vector3D(I->second.AsList());
         }
         I = ent.find("orientation");
         if (I != ent.end()) {
         // Update orientation
-            location.m_orientation = Quaternion(I->second.AsList());
-            update_flags |= a_orient;
+            m_location.m_orientation = Quaternion(I->second.AsList());
+            m_update_flags |= a_orient;
         }
 
         RootOperation * s = new Sight(Sight::Instantiate());
@@ -270,16 +270,16 @@ OpVector Thing::MoveOperation(const Move & op)
         // sight of the other because of this movement
         if (consts::enable_ranges && isPerceptive()) {
             debug(std::cout << "testing range" << std::endl;);
-            EntitySet::const_iterator I = location.m_loc->contains.begin();
+            EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
             Element::ListType appear, disappear;
             Element::MapType this_ent;
             this_ent["id"] = getId();
-            this_ent["stamp"] = (double)seq;
+            this_ent["stamp"] = (double)m_seq;
             Element::ListType this_as_args(1,this_ent);
-            for(;I != location.m_loc->contains.end(); I++) {
-                const bool wasInRange = (*I)->location.inRange(oldpos,
+            for(;I != m_location.m_loc->m_contains.end(); I++) {
+                const bool wasInRange = (*I)->m_location.inRange(oldpos,
                                                           consts::sight_range);
-                const bool isInRange = (*I)->location.inRange(location.m_pos,
+                const bool isInRange = (*I)->m_location.inRange(m_location.m_pos,
                                                           consts::sight_range);
                 // Build appear and disappear lists, and send operations
                 // Also so operations to (dis)appearing perceptive
@@ -344,9 +344,9 @@ OpVector Thing::MoveOperation(const Move & op)
 
 OpVector Thing::SetOperation(const Set & op)
 {
-    seq++;
+    m_seq++;
     OpVector res;
-    if (script->Operation("set", op, res) != 0) {
+    if (m_script->Operation("set", op, res) != 0) {
         return res;
     }
     const Element::ListType & args = op.GetArgs();
@@ -362,7 +362,7 @@ OpVector Thing::SetOperation(const Set & op)
         RootOperation * s = new Sight(Sight::Instantiate());
         s->SetArgs(Element::ListType(1,op.AsObject()));
         OpVector res2(1,s);
-        if (status < 0) {
+        if (m_status < 0) {
             RootOperation * d = new Delete(Delete::Instantiate());
             Element::ListType & dargs = d->GetArgs();
             dargs.push_back(Element::MapType());
@@ -371,7 +371,7 @@ OpVector Thing::SetOperation(const Set & op)
             d->SetTo(getId());
             res2.push_back(d);
         }
-        if (update_flags != 0) {
+        if (m_update_flags != 0) {
             updated.emit();
         }
         return res2;

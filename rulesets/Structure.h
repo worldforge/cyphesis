@@ -14,7 +14,7 @@
 class Structure : public Thing {
   public:
     explicit Structure(const std::string & id) : Thing(id) {
-        location.m_solid = false;
+        m_location.m_solid = false;
     }
 };
 

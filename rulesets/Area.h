@@ -14,7 +14,7 @@
 
 class Area : public Thing {
   protected:
-    IdList segments;
+    IdList m_segments;
 
   public:
 

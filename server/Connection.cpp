@@ -109,9 +109,9 @@ void Connection::destroy()
         }
         Character * character = dynamic_cast<Character *>(I->second);
         if (character != NULL) {
-            if (character->externalMind != NULL) {
-                delete character->externalMind;
-                character->externalMind = NULL;
+            if (character->m_externalMind != NULL) {
+                delete character->m_externalMind;
+                character->m_externalMind = NULL;
             }
         }
     }
@@ -159,8 +159,8 @@ OpVector Connection::operation(const RootOperation & op)
         }
         BaseEntity * ent = I->second;
         Character * character = dynamic_cast<Character *>(ent);
-        if ((character != NULL) && (character->externalMind == NULL)) {
-            character->externalMind = new ExternalMind(*this,
+        if ((character != NULL) && (character->m_externalMind == NULL)) {
+            character->m_externalMind = new ExternalMind(*this,
                        character->getId(), character->getName());
             debug(std::cout << "Re-connecting existing character to new connection" << std::endl << std::flush;);
             Info * info = new Info(Info::Instantiate());

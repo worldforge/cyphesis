@@ -12,12 +12,12 @@ class BaseMind;
 
 class Character : public Thing {
   protected:
-    Movement & movement;
-    double drunkness;
-    std::string sex;
-    double food;
-    double maxMass;
-    bool isAlive;
+    Movement & m_movement;
+    double m_drunkness;
+    std::string m_sex;
+    double m_food;
+    double m_maxMass;
+    bool m_isAlive;
 
     static const double energyConsumption = 0.001;
     static const double foodConsumption = 0.1;
@@ -41,15 +41,15 @@ class Character : public Thing {
         opW2mLookup[op] = no;
     }
   public:
-    BaseMind * mind;
-    BaseMind * externalMind;
+    BaseMind * m_mind;
+    BaseMind * m_externalMind;
 
     explicit Character(const std::string & id);
     virtual ~Character();
 
-    const double getDrunkness() const { return drunkness; }
-    const std::string & getSex() const { return sex; }
-    const double getFood() const { return food; }
+    const double getDrunkness() const { return m_drunkness; }
+    const std::string & getSex() const { return m_sex; }
+    const double getFood() const { return m_food; }
 
     virtual bool get(const std::string &, Atlas::Message::Object &) const;
     virtual void set(const std::string &, const Atlas::Message::Object &);

@@ -45,19 +45,19 @@ OpVector Character::metabolise(double ammount)
     // We should probably call this whenever the entity performs a movement.
     Element::MapType ent;
     ent["id"] = getId();
-    if ((status > (1.5 + energyLoss)) && (mass < maxMass)) {
-        status = status - energyLoss;
-        ent["mass"] = mass + weightGain;
+    if ((m_status > (1.5 + energyLoss)) && (m_mass < m_maxMass)) {
+        m_status = m_status - energyLoss;
+        ent["mass"] = m_mass + weightGain;
     }
     double energyUsed = energyConsumption * ammount;
-    if ((status <= energyUsed) && (mass > weightConsumption)) {
-        ent["status"] = status - energyUsed + energyGain;
-        ent["mass"] = mass - weightConsumption;
+    if ((m_status <= energyUsed) && (m_mass > weightConsumption)) {
+        ent["status"] = m_status - energyUsed + energyGain;
+        ent["mass"] = m_mass - weightConsumption;
     } else {
-        ent["status"] = status - energyUsed;
+        ent["status"] = m_status - energyUsed;
     }
-    if (drunkness > 0) {
-        ent["drunkness"] = drunkness - 0.1;
+    if (m_drunkness > 0) {
+        ent["drunkness"] = m_drunkness - 0.1;
     }
 
     Set * s = new Set(Set::Instantiate());
@@ -67,14 +67,16 @@ OpVector Character::metabolise(double ammount)
     return OpVector(1,s);
 }
 
-Character::Character(const std::string & id) : Thing(id), movement(*new Pedestrian(*this)),
-                                               drunkness(0.0), sex("female"), food(0),
-                                               maxMass(100), isAlive(true),
-                                               mind(NULL), externalMind(NULL)
+Character::Character(const std::string & id) : Thing(id),
+                                              m_movement(*new Pedestrian(*this)),
+                                              m_drunkness(0.0), m_sex("female"),
+                                              m_food(0), m_maxMass(100),
+                                              m_isAlive(true), m_mind(NULL),
+                                              m_externalMind(NULL)
 {
-    mass = 60;
-    location.m_bBox = BBox(Vector3D(-0.25, -0.25, 0), Vector3D(0.25, 0.25, 2));
-    attributes["mode"] = "birth";
+    m_mass = 60;
+    m_location.m_bBox = BBox(Vector3D(-0.25, -0.25, 0), Vector3D(0.25, 0.25, 2));
+    m_attributes["mode"] = "birth";
 
     subscribe("imaginary", OP_IMAGINARY);
     subscribe("tick", OP_TICK);
@@ -111,22 +113,22 @@ Character::Character(const std::string & id) : Thing(id), movement(*new Pedestri
 
 Character::~Character()
 {
-    delete &movement;
-    if (mind != NULL) {
-        delete mind;
+    delete &m_movement;
+    if (m_mind != NULL) {
+        delete m_mind;
     }
-    if (externalMind != NULL) {
-        delete externalMind;
+    if (m_externalMind != NULL) {
+        delete m_externalMind;
     }
 }
 
 bool Character::get(const std::string & aname, Element & attr) const
 {
     if (aname == "drunkness") {
-        attr = drunkness;
+        attr = m_drunkness;
         return true;
     } else if (aname == "sex") {
-        attr = sex;
+        attr = m_sex;
         return true;
     }
     return Thing::get(aname, attr);
@@ -135,11 +137,11 @@ bool Character::get(const std::string & aname, Element & attr) const
 void Character::set(const std::string & aname, const Element & attr)
 {
     if ((aname == "drunkness") && attr.IsFloat()) {
-        drunkness = attr.AsFloat();
-        update_flags |= a_drunk;
+        m_drunkness = attr.AsFloat();
+        m_update_flags |= a_drunk;
     } else if ((aname == "sex") && attr.IsString()) {
-        sex = attr.AsString();
-        update_flags |= a_sex;
+        m_sex = attr.AsString();
+        m_update_flags |= a_sex;
     } else {
         Thing::set(aname, attr);
     }
@@ -147,7 +149,7 @@ void Character::set(const std::string & aname, const Element & attr)
 
 void Character::addToObject(Element::MapType & omap) const
 {
-    omap["sex"] = sex;
+    omap["sex"] = m_sex;
     Entity::addToObject(omap);
 }
 
@@ -164,7 +166,7 @@ OpVector Character::SetupOperation(const Setup & op)
     OpVector res;
     debug( std::cout << "CHaracter::Operation(setup)" << std::endl
                      << std::flush;);
-    if (script->Operation("setup", op, res) != 0) {
+    if (m_script->Operation("setup", op, res) != 0) {
         return res;
     }
     if (op.HasAttr("sub_to")) {
@@ -172,14 +174,14 @@ OpVector Character::SetupOperation(const Setup & op)
         return res;
     }
 
-    //mind = new BaseMind(getId(), name);
+    //mind = new BaseMind(getId(), m_name);
     //std::string mind_class("NPCMind"), mind_package("mind.NPCMind");
-    //if (global_conf->findItem("mind", type)) {
-        //mind_package = global_conf->getItem("mind", type);
-        //mind_class = type + "Mind";
+    //if (global_conf->findItem("mind", m_type)) {
+        //mind_package = global_conf->getItem("mind", m_type);
+        //mind_class = m_type + "Mind";
     //}
     //Create_PyMind(mind, mind_package, mind_class);
-    mind = MindFactory::instance()->newMind(getId(), name, type);
+    m_mind = MindFactory::instance()->newMind(getId(), m_name, m_type);
 
     OpVector res2(2);
     Setup * s = new Setup(op);
@@ -187,11 +189,11 @@ OpVector Character::SetupOperation(const Setup & op)
     s->SetAttr("sub_to", "mind");
     res2[0] = s;
     Look * l = new Look(Look::Instantiate());
-    l->SetTo(world->getId());
+    l->SetTo(m_world->getId());
     res2[1] = l;
-    if (location.m_loc != &world->gameWorld) {
+    if (m_location.m_loc != &m_world->gameWorld) {
         l = new Look(Look::Instantiate());
-        l->SetTo(location.m_loc->getId());
+        l->SetTo(m_location.m_loc->getId());
         res2.push_back(l);
     }
     l = new Look(Look::Instantiate());
@@ -217,24 +219,24 @@ OpVector Character::TickOperation(const Tick & op)
         const Element::MapType & arg1 = args.front().AsMap();
         Element::MapType::const_iterator I = arg1.find("serialno");
         if ((I != arg1.end()) && (I->second.IsInt())) {
-            if (I->second.AsInt() < movement.m_serialno) {
+            if (I->second.AsInt() < m_movement.m_serialno) {
                 debug(std::cout << "Old tick" << std::endl << std::flush;);
                 return OpVector();
             }
         }
         Location ret_loc;
-        Move * moveOp = movement.genMoveOperation(&ret_loc);
+        Move * moveOp = m_movement.genMoveOperation(&ret_loc);
         if (moveOp) {
-            if (!movement.moving()) {
+            if (!m_movement.moving()) {
                 return OpVector (1,moveOp);
             }
             OpVector res(2);
             Element::MapType entmap;
             entmap["name"] = "move";
-            entmap["serialno"] = movement.m_serialno;
+            entmap["serialno"] = m_movement.m_serialno;
             Tick * tickOp = new Tick(Tick::Instantiate());
             tickOp->SetTo(getId());
-            tickOp->SetFutureSeconds(movement.getTickAddition(ret_loc.m_pos));
+            tickOp->SetFutureSeconds(m_movement.getTickAddition(ret_loc.m_pos));
             tickOp->SetArgs(Element::ListType(1,entmap));
             res[0] = tickOp;
             res[1] = moveOp;
@@ -242,18 +244,18 @@ OpVector Character::TickOperation(const Tick & op)
         }
     } else {
         OpVector res;
-        script->Operation("tick", op, res);
+        m_script->Operation("tick", op, res);
 
         // DIGEST
-        if ((food >= foodConsumption) && (status < 2)) {
+        if ((m_food >= foodConsumption) && (m_status < 2)) {
             // It is important that the metabolise bit is done next, as this
             // handles the status change
-            status = status + foodConsumption;
-            food = food - foodConsumption;
+            m_status = m_status + foodConsumption;
+            m_food = m_food - foodConsumption;
 
             Element::MapType food_ent;
             food_ent["id"] = getId();
-            food_ent["food"] = food;
+            food_ent["food"] = m_food;
             Set s = Set::Instantiate();
             s.SetTo(getId());
             s.SetArgs(Element::ListType(1,food_ent));
@@ -293,7 +295,7 @@ OpVector Character::EatOperation(const Eat & op)
     // This is identical to Foof::Operation(Eat &)
     // Perhaps animal should inherit from Food?
     OpVector res;
-    if (script->Operation("eat", op, res) != 0) {
+    if (m_script->Operation("eat", op, res) != 0) {
         return res;
     }
     Element::MapType self_ent;
@@ -307,7 +309,7 @@ OpVector Character::EatOperation(const Eat & op)
     const std::string & to = op.GetFrom();
     Element::MapType nour_ent;
     nour_ent["id"] = to;
-    nour_ent["mass"] = mass;
+    nour_ent["mass"] = m_mass;
     Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
     n->SetArgs(Element::ListType(1,nour_ent));
@@ -329,14 +331,14 @@ OpVector Character::NourishOperation(const Nourish & op)
     const Element::MapType & nent = op.GetArgs().front().AsMap();
     Element::MapType::const_iterator I = nent.find("mass");
     if ((I == nent.end()) || !I->second.IsNum()) { return OpVector(); }
-    food = food + I->second.AsNum();
+    m_food = m_food + I->second.AsNum();
 
     Element::MapType food_ent;
     food_ent["id"] = getId();
-    food_ent["food"] = food;
+    food_ent["food"] = m_food;
     if (((I = nent.find("alcohol")) != nent.end()) && I->second.IsNum()) {
-        drunkness += I->second.AsNum() / mass;
-        food_ent["drunkness"] = drunkness;
+        m_drunkness += I->second.AsNum() / m_mass;
+        food_ent["drunkness"] = m_drunkness;
     }
     Set s = Set::Instantiate();
     s.SetArgs(Element::ListType(1,food_ent));
@@ -394,8 +396,8 @@ OpVector Character::mindMoveOperation(const Move & op)
         log(ERROR, "mindMoveOperation: Args has got no id");
     }
     const std::string & oname = I->second.AsString();
-    EntityDict::const_iterator J = world->getObjects().find(oname);
-    if (J == world->getObjects().end()) {
+    EntityDict::const_iterator J = m_world->getObjects().find(oname);
+    if (J == m_world->getObjects().end()) {
         log(ERROR, "mindMoveOperation: This move op is for a phoney id");
         return OpVector();
     }
@@ -403,7 +405,7 @@ OpVector Character::mindMoveOperation(const Move & op)
     Entity * obj = J->second;
     if (obj != this) {
         debug( std::cout << "Moving something else. " << oname << std::endl << std::flush;);
-        if ((obj->getMass() < 0) || (obj->getMass() > mass)) {
+        if ((obj->getMass() < 0) || (obj->getMass() > m_mass)) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             delete newop;
             return OpVector();
@@ -452,12 +454,12 @@ OpVector Character::mindMoveOperation(const Move & op)
     } else {
         location_coords +=
             (Vector3D(((double)rand())/RAND_MAX, ((double)rand())/RAND_MAX, 0)
-				*= (drunkness * 10));
+                                *= (m_drunkness * 10));
     }
     // Print out a bunch of debug info
-    debug( std::cout << ":" << location_ref << ":" << location.m_loc->getId()
+    debug( std::cout << ":" << location_ref << ":" << m_location.m_loc->getId()
                      << ":" << std::endl << std::flush;);
-    if (((location_ref == location.m_loc->getId()) || (location_ref.empty())) &&
+    if (((location_ref == m_location.m_loc->getId()) || (location_ref.empty())) &&
         (newop->GetFutureSeconds() >= 0)) {
         // Movement within current ref. Work out the speed and stuff and
         // use movement object to track movement.
@@ -479,7 +481,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         // If the position is given, and it is about right, don't bother to 
         // use it.
         if (location_coords.isValid() &&
-            (location_coords.relativeDistance(location.m_pos) < 0.01)) {
+            (location_coords.relativeDistance(m_location.m_pos) < 0.01)) {
             location_coords = Vector3D();
         }
         if (!location_coords.isValid()) {
@@ -497,7 +499,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         } else {
             debug( std::cout << "\tUsing destination for direction"
                              << std::endl << std::flush;);
-            direction = Vector3D(location_coords) -= location.m_pos;
+            direction = Vector3D(location_coords) -= m_location.m_pos;
         }
         if (direction.isValid()) {
             direction.unit();
@@ -513,9 +515,9 @@ OpVector Character::mindMoveOperation(const Move & op)
             }
         }
         Location ret_location;
-        Move * moveOp = movement.genMoveOperation(&ret_location);
-        const Location & current_location = (NULL!=moveOp) ? ret_location : location;
-        movement.reset();
+        Move * moveOp = m_movement.genMoveOperation(&ret_location);
+        const Location & current_location = (NULL!=moveOp) ? ret_location : m_location;
+        m_movement.reset();
         if ((vel_mag==0) || !direction.isValid()) {
             debug( std::cout << "\tMovement stopped" << std::endl
                              << std::flush;);
@@ -531,8 +533,8 @@ OpVector Character::mindMoveOperation(const Move & op)
                 moveOp->SetArgs(args);
             } else {
                 debug( std::cout << "Turn!" << std::endl << std::flush;);
-                movement.m_orientation = location_orientation;
-                moveOp = movement.genFaceOperation();
+                m_movement.m_orientation = location_orientation;
+                moveOp = m_movement.genFaceOperation();
             }
             delete newop;
             if (NULL != moveOp) {
@@ -542,7 +544,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         }
         Tick * tickOp = new Tick(Tick::Instantiate());
         Element::MapType ent;
-        ent["serialno"] = movement.m_serialno;
+        ent["serialno"] = m_movement.m_serialno;
         ent["name"] = "move";
         Element::ListType args(1,ent);
         tickOp->SetArgs(args);
@@ -552,13 +554,13 @@ OpVector Character::mindMoveOperation(const Move & op)
         debug( if (location_coords.isValid()) { std::cout<<"\tUsing target"
                                                << std::endl
                                                << std::flush; } );
-        movement.m_targetPos = location_coords;
-        movement.m_velocity = direction;
-        movement.m_velocity *= vel_mag;
-        movement.m_orientation = location_orientation;
+        m_movement.m_targetPos = location_coords;
+        m_movement.m_velocity = direction;
+        m_movement.m_velocity *= vel_mag;
+        m_movement.m_orientation = location_orientation;
         debug( std::cout << "Velocity " << vel_mag << std::endl << std::flush;);
-        Move * moveOp2 = movement.genMoveOperation(NULL,current_location);
-        tickOp->SetFutureSeconds(movement.getTickAddition(location.m_pos));
+        Move * moveOp2 = m_movement.genMoveOperation(NULL,current_location);
+        tickOp->SetFutureSeconds(m_movement.getTickAddition(m_location.m_pos));
         debug( std::cout << "Next tick " << tickOp->GetFutureSeconds()
                          << std::endl << std::flush;);
         debug( std::cout << "moveOp = " << moveOp << ", moveOp2 = "
@@ -682,12 +684,12 @@ OpVector Character::mindLookOperation(const Look & op)
 {
     debug(std::cout << "Got look up from mind from [" << op.GetFrom()
                << "] to [" << op.GetTo() << "]" << std::endl << std::flush;);
-    perceptive = true;
+    m_perceptive = true;
     Look * l = new Look(op);
     if (op.GetTo().empty()) {
         const Element::ListType & args = op.GetArgs();
         if (args.empty()) {
-            l->SetTo(world->getId());
+            l->SetTo(m_world->getId());
         } else {
             if (args.front().IsMap()) {
                 const Element::MapType & amap = args.front().AsMap();
@@ -727,7 +729,7 @@ OpVector Character::mindTouchOperation(const Touch & op)
     const Element::ListType & args = op.GetArgs();
     if ((op.GetTo().empty()) || (!args.empty())) {
         if (args.empty()) {
-            t->SetTo(world->getId());
+            t->SetTo(m_world->getId());
         } else {
             if (args.front().IsMap()) {
                 const Element::MapType & amap = args.front().AsMap();
@@ -877,7 +879,7 @@ bool Character::w2mNourishOperation(const Nourish & op)
 
 bool Character::w2mAppearanceOperation(const Appearance & op)
 {
-    if (drunkness > 1.0) {
+    if (m_drunkness > 1.0) {
         return false;
     }
     return true;
@@ -885,7 +887,7 @@ bool Character::w2mAppearanceOperation(const Appearance & op)
 
 bool Character::w2mDisappearanceOperation(const Disappearance & op)
 {
-    if (drunkness > 1.0) {
+    if (m_drunkness > 1.0) {
         return false;
     }
     return true;
@@ -919,7 +921,7 @@ bool Character::w2mTickOperation(const Tick & op)
 
 bool Character::w2mSightOperation(const Sight & op)
 {
-    if (drunkness > 1.0) {
+    if (m_drunkness > 1.0) {
         return false;
     }
     return true;
@@ -927,7 +929,7 @@ bool Character::w2mSightOperation(const Sight & op)
 
 bool Character::w2mSoundOperation(const Sound & op)
 {
-    if (drunkness > 1.0) {
+    if (m_drunkness > 1.0) {
         return false;
     }
     return true;
@@ -935,7 +937,7 @@ bool Character::w2mSoundOperation(const Sound & op)
 
 bool Character::w2mTouchOperation(const Touch & op)
 {
-    if (drunkness > 1.0) {
+    if (m_drunkness > 1.0) {
         return false;
     }
     return true;
@@ -945,9 +947,9 @@ OpVector Character::sendMind(const RootOperation & op)
 {
     debug( std::cout << "Character::sendMind" << std::endl << std::flush;);
 
-    if (0 != externalMind) {
-        if (0 != mind) {
-            OpVector res = mind->message(op);
+    if (0 != m_externalMind) {
+        if (0 != m_mind) {
+            OpVector res = m_mind->message(op);
             // Discard all the local results
             OpVector::const_iterator J = res.begin(); 
             for(; J != res.end(); J++) {
@@ -958,12 +960,12 @@ OpVector Character::sendMind(const RootOperation & op)
                          << std::flush;);
         debug(std::cout << "Using ops from external mind"
                         << std::endl << std::flush;);
-        return externalMind->message(op);
+        return m_externalMind->message(op);
     } else {
         debug(std::cout << "Using ops from local mind"
                         << std::endl << std::flush;);
-        if (0 != mind) {
-            return mind->message(op);
+        if (0 != m_mind) {
+            return m_mind->message(op);
         }
     }
 
@@ -979,7 +981,7 @@ OpVector Character::mind2body(const RootOperation & op)
 {
     debug( std::cout << "Character::mind2body" << std::endl << std::flush;);
 
-    if (drunkness > 1.0) {
+    if (m_drunkness > 1.0) {
         return OpVector();
     }
     OpNo otype = opEnumerate(op, opMindLookup);
@@ -1012,7 +1014,7 @@ OpVector Character::operation(const RootOperation & op)
     debug( std::cout << "Character::operation" << std::endl << std::flush;);
     OpVector result = world2body(op);
     // set refno on result?
-    if (!isAlive) {
+    if (!m_isAlive) {
         return result;
     }
     if (world2mind(op)) {
@@ -1039,7 +1041,7 @@ OpVector Character::externalOperation(const RootOperation & op)
         if (I == res.begin()) {
             (*I)->SetSerialno(op.GetSerialno());
         } else {
-            world->setSerialnoOp(**I);
+            m_world->setSerialnoOp(**I);
         }
         sendWorld(*I);
         // Don't delete br as it has gone into worlds queue

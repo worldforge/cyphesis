@@ -13,7 +13,7 @@ class SkeletonMind(BaseMind):
         if other.id==self.id: return
         #target=op[0].location.copy()
         if other.location.parent.id!=self.location.parent.id: return
-        if hasattr(other, "type") and other.type[0] not in ['pig', 'farmer', 'guard']: return
+        if hasattr(other, "type") and other.type[0] not in ['pig', 'farmer', 'guard', 'settler']: return
         destination=other.location.coordinates
         distance=destination.distance(self.location.coordinates)
         if distance<1: return

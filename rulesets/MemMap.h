@@ -27,21 +27,21 @@ class MemMap {
   private:
     friend class BaseMind;
 
-    EntityDict things;
-    std::list<std::string> additionsById;
-    std::vector<std::string> addHooks;
-    std::vector<std::string> updateHooks;
-    std::vector<std::string> deleteHooks;
-    Script *& script;
+    EntityDict m_things;
+    std::list<std::string> m_additionsById;
+    std::vector<std::string> m_addHooks;
+    std::vector<std::string> m_updateHooks;
+    std::vector<std::string> m_deleteHooks;
+    Script *& m_script;
 
     inline Entity * addObject(Entity * object);
     inline void addContents(const Atlas::Message::Object::MapType & entmap);
     inline Entity * addId(const std::string & id);
   public:
-    explicit MemMap(Script *& s) : script(s)  { }
+    explicit MemMap(Script *& s) : m_script(s)  { }
 
     bool find(const std::string & id) {
-        return (things.find(id) != things.end());
+        return (m_things.find(id) != m_things.end());
     }
 
     inline Atlas::Objects::Operation::RootOperation * lookId();
@@ -55,9 +55,9 @@ class MemMap {
     const Atlas::Message::Object asObject();
     void flushMap();
 
-    std::vector<std::string> & getAddHooks() { return addHooks; }
-    std::vector<std::string> & getUpdateHooks() { return updateHooks; }
-    std::vector<std::string> & getDeleteHooks() { return deleteHooks; }
+    std::vector<std::string> & getAddHooks() { return m_addHooks; }
+    std::vector<std::string> & getUpdateHooks() { return m_updateHooks; }
+    std::vector<std::string> & getDeleteHooks() { return m_deleteHooks; }
 };
 
 #endif // RULESETS_MEM_MAP_H

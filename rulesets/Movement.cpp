@@ -26,10 +26,10 @@ Movement::~Movement()
 {
 }
 
-bool Movement::updateNeeded(const Location & location) const
+bool Movement::updateNeeded(const Location & m_location) const
 {
     return((m_velocity != Vector3D(0,0,0)) ||
-           (location.m_velocity != Vector3D(0,0,0)));
+           (m_location.m_velocity != Vector3D(0,0,0)));
 }
 
 void Movement::checkCollisions(const Location & loc)
@@ -43,10 +43,10 @@ void Movement::checkCollisions(const Location & loc)
                      << " against "; );
     m_collEntity = NULL;
     // Check against everything within the current container
-    for(I = loc.m_loc->contains.begin(); I != loc.m_loc->contains.end(); I++) {
+    for(I = loc.m_loc->m_contains.begin(); I != loc.m_loc->m_contains.end(); I++) {
         // Don't check for collisions with ourselves
         if ((*I) == &m_body) { continue; }
-        const Location & oloc = (*I)->location;
+        const Location & oloc = (*I)->m_location;
         if (!oloc.m_bBox.isValid()) { continue; }
         int axis;
         double t = loc.timeToHit(oloc, axis);
@@ -64,7 +64,7 @@ void Movement::checkCollisions(const Location & loc)
         // Check whethe we are moving out of parents bounding box
         // If ref has no bounding box, or itself has no ref, then we can't
         // Move out of it.
-        const Location & oloc = loc.m_loc->location;
+        const Location & oloc = loc.m_loc->m_location;
         if (!oloc.m_bBox.isValid() || (oloc.m_loc == NULL)) {
             return;
         }
@@ -77,18 +77,18 @@ void Movement::checkCollisions(const Location & loc)
                         << collTime << std::endl << std::flush;);
         m_collEntity = oloc.m_loc;
         m_collRefChange = true;
-    } else if (!m_collEntity->location.m_solid) {
+    } else if (!m_collEntity->m_location.m_solid) {
         debug(std::cout << "Collision with non-solid object" << std::endl
                         << std::flush;);
         // Non solid container - check for collision with its contents.
-        const Location & lc2 = m_collEntity->location;
+        const Location & lc2 = m_collEntity->m_location;
         Location rloc(loc);
         rloc.m_loc = m_collEntity;
         rloc.m_pos = Vector3D(loc.m_pos) -= lc2.m_pos;
         double coll2Time = consts::basic_tick;
         // rloc is coords of character with ref to m_collEntity
-        for(I = m_collEntity->contains.begin(); I != m_collEntity->contains.end(); I++) {
-            const Location & oloc = (*I)->location;
+        for(I = m_collEntity->m_contains.begin(); I != m_collEntity->m_contains.end(); I++) {
+            const Location & oloc = (*I)->m_location;
             if (!oloc.m_bBox.isValid()) { continue; }
             int axis;
             double t = rloc.timeToHit(oloc, axis);
@@ -128,7 +128,7 @@ void Movement::reset()
     m_targetPos = Vector3D();
     m_updatedPos = Vector3D();
     m_velocity = Vector3D(0,0,0);
-    m_lastMovementTime = m_body.world->getTime();
+    m_lastMovementTime = m_body.m_world->getTime();
 }
 
 bool Movement::moving() const

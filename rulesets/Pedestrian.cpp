@@ -50,14 +50,14 @@ double Pedestrian::getTickAddition(const Vector3D & coordinates) const
 Move * Pedestrian::genFaceOperation()
 {
     if (m_orientation.isValid() &&
-        (m_orientation != m_body.location.m_orientation)) {
+        (m_orientation != m_body.m_location.m_orientation)) {
         debug( std::cout << "Turning" << std::endl << std::flush;);
         Move * moveOp = new Move(Move::Instantiate());
         moveOp->SetTo(m_body.getId());
         Element::MapType entmap;
         entmap["id"] = m_body.getId();
-        entmap["loc"] = m_body.location.m_loc->getId();
-        entmap["pos"] = m_body.location.m_pos.asObject();
+        entmap["loc"] = m_body.m_location.m_loc->getId();
+        entmap["pos"] = m_body.m_location.m_pos.asObject();
         entmap["orientation"] = m_orientation.asObject();
         Element::ListType args(1,entmap);
         moveOp->SetArgs(args);
@@ -68,7 +68,7 @@ Move * Pedestrian::genFaceOperation()
 
 Move * Pedestrian::genMoveOperation(Location * rloc)
 {
-    return genMoveOperation(rloc, m_body.location);
+    return genMoveOperation(rloc, m_body.m_location);
 }
 
 Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
@@ -85,7 +85,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     << std::flush;);
 
     // Sort out time difference, and set updated time
-    const double & current_time = m_body.world->getTime();
+    const double & current_time = m_body.m_world->getTime();
     double time_diff = current_time - m_lastMovementTime;
     debug( std::cout << "time_diff:" << time_diff << std::endl << std::flush;);
     m_lastMovementTime = current_time;
@@ -154,19 +154,19 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
             if (m_collRefChange) {
                 debug(std::cout << "CONTACT " << m_collEntity->getId()
                                 << std::endl << std::flush;);
-                if (m_collEntity == new_loc.m_loc->location.m_loc) {
+                if (m_collEntity == new_loc.m_loc->m_location.m_loc) {
                     debug(std::cout << "OUT" << target
-                                    << new_loc.m_loc->location.m_pos
+                                    << new_loc.m_loc->m_location.m_pos
                                     << std::endl << std::flush;);
-                    new_coords += new_loc.m_loc->location.m_pos;
+                    new_coords += new_loc.m_loc->m_location.m_pos;
                     if (m_targetPos.isValid()) {
-                        m_targetPos += new_loc.m_loc->location.m_pos;
+                        m_targetPos += new_loc.m_loc->m_location.m_pos;
                     }
-                } else if (m_collEntity->location.m_loc == new_loc.m_loc) {
+                } else if (m_collEntity->m_location.m_loc == new_loc.m_loc) {
                     debug(std::cout << "IN" << std::endl << std::flush;);
-                    new_coords -= m_collEntity->location.m_pos;
+                    new_coords -= m_collEntity->m_location.m_pos;
                     if (m_targetPos.isValid()) {
-                        m_targetPos -= m_collEntity->location.m_pos;
+                        m_targetPos -= m_collEntity->m_location.m_pos;
                     }
                 } else {
                     std::string msg = std::string("BAD COLLISION: ")

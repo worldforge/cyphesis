@@ -9,7 +9,7 @@
 Area::Area(const std::string & id) : Thing(id)
 {
     // Default to a 0.1m cube
-    location.m_bBox = BBox(Vector3D(0.1, 0.1, 0.1));
+    m_location.m_bBox = BBox(Vector3D(0.1, 0.1, 0.1));
 }
 
 Area::~Area()
@@ -20,7 +20,7 @@ bool Area::get(const std::string & aname, Element & attr) const
 {
     if (aname == "segments") {
         attr = Element::ListType();
-        idListAsObject(segments, attr.AsList());
+        idListAsObject(m_segments, attr.AsList());
         return true;
     }
     return Thing::get(aname, attr);
@@ -29,8 +29,8 @@ bool Area::get(const std::string & aname, Element & attr) const
 void Area::set(const std::string & aname, const Element & attr)
 {
     if ((aname == "segments") && attr.IsList()) {
-        idListFromAtlas(attr.AsList(), segments);
-        update_flags |= a_area;
+        idListFromAtlas(attr.AsList(), m_segments);
+        m_update_flags |= a_area;
     } else {
         Thing::set(aname, attr);
     }
@@ -40,5 +40,5 @@ void Area::addToObject(Element::MapType & omap) const
 {
     Element::ListType & si =
         (omap["segments"] = Element::ListType()).AsList();
-    idListAsObject(segments, si);
+    idListAsObject(m_segments, si);
 }
