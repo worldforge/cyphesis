@@ -15,7 +15,7 @@ Admin * load_admin_account()
     // Eventually this should actually load the account. For now it just
     // creates it.
     Admin * adm = new Admin(NULL, "admin", "test");
-    ofstream adm_file("common/admin.xml", ios::out, 0600);
+    ofstream adm_file("/tmp/admin.xml", ios::out, 0600);
     adm_file << "<atlas>" << endl << "<map>" << endl;
     adm_file << "    <string name=\"password\">" << adm->password << "</string>" << endl;
     adm_file << "    <string name=\"id\">" << adm->fullid << "</string>" << endl;
