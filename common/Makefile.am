@@ -7,7 +7,7 @@ INCLUDES = -DSHAREDIR=\"@datadir@\" -DETCDIR=\"@sysconfdir@\"
 libcommon_a_SOURCES = const.cpp const.h \
 		log.cpp log.h \
 		config.h debug.h random.h \
-		types.h op_switch.h \
+		types.h type_utils.h op_switch.h \
 		operations.cpp operations.h \
 		globals.cpp globals.h \
 		Database.cpp Database.h \
