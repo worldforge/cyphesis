@@ -1,3 +1,11 @@
+2001-12-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Quaternion.cpp, physics/Quaternion.h: Corrected bugs
+	  in the constructor which takes 2 vectors, and moved it out
+	  of the header file. This appears to work now that the args
+	  have been swapped round. See comments in Quaternion.cpp for
+	  details.
+
 2001-12-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/database.h: Add function to query database path for

@@ -21,40 +21,7 @@ class Quaternion {
         z = l[2].AsNum();
         w = l[3].AsNum();
     }
-    Quaternion(const Vector3D & from, const Vector3D & to) : _set(true) {
-        double cosT = from.dot(to);
-        if (cosT > 0.99999f) {
-            x = y = z = 0.0;
-            w = 1.0;
-
-            return;
-        } else if (cosT < -0.99999f) {
-            Vector3D t(0.0, from.X(), -from.Y());
-
-            if (t.mag() < 1e-6) {
-                t = Vector3D(-from.Z(), 0.0, from.X());
-            }
-
-            t = t.unitVector();
-
-            x = t.X();
-            y = t.Y();
-            z = t.Z();
-            w = 0.0;
-
-            return;
-        }
-        Vector3D t = from.cross(to);
-
-        t = t.unitVector();
-
-        double ss = std::sqrt(0.5 * (1.0 * cosT));
-
-        x = t.X() * ss;
-        y = t.Y() * ss;
-        z = t.Z() * ss;
-        w = std::sqrt(0.5 * (1.0 + cosT));
-    }
+    Quaternion(const Vector3D & to, const Vector3D & from);
 
     double X() const { return x; }
     double Y() const { return y; }
