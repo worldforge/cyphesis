@@ -12,6 +12,7 @@ systemtest
 utilitytest
 emergencetest
 collisiontest
+transformtest
 Entitytest
 Areatest
 Foodtest
