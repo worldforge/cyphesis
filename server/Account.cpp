@@ -149,3 +149,7 @@ oplist Account::TalkOperation(const Talk & op)
     s.SetTo(op.GetTo());
     return connection->server.lobby.operation(s);
 }
+
+oplist Account::LookOperation(const Look & op)
+{
+}

@@ -31,6 +31,7 @@ class Account : public OOGThing {
     virtual oplist CreateOperation(const Create & op);
     virtual oplist ImaginaryOperation(const Imaginary & op);
     virtual oplist TalkOperation(const Talk & op);
+    virtual oplist LookOperation(const Look & op);
 };
 
 #endif // ACCOUNT_H
