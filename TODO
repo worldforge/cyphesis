@@ -12,6 +12,10 @@ Must fix for Mason 0.0.2
   Perhaps look at the way idle handles internal and network traffic. It
   is possible that network traffic should be given a higher priority.
 
+  Generalise the way CommClinet objects work so there is a generic
+  interface, and object of different types can work, including
+  different listeners.
+
 General TODO
 
   Implement base class for CommClient and other connections which listen/talk
@@ -76,11 +80,6 @@ General TODO
   Once the subscription mechanism works, transfer its setup into the factories,
   and use it to inform the clients what op types are meaningful for object
   types.
-
-  The world.is_object_delete() implementation cannot work in C++,
-  as deleted objects do not hang around to be checked. Basically the
-  deleted flag is pointless and it will go as soon as I have verified
-  that it is never false in the only place it is really used.
 
   Its probably a good idea to make sure Location has an operator== and
   operator!= to make sure operator bool is not stuffing it up.

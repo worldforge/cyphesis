@@ -109,7 +109,7 @@ void EntityFactory::flushFactories()
 
 void EntityFactory::installBaseClasses()
 {
-    global_conf->sigv.connect(SigC::slot(this, &EntityFactory::installClass));
+    global_conf->sigv.connect(SigC::slot(*this, &EntityFactory::installClass));
 }
 
 void EntityFactory::installFactory(const std::string & parent,

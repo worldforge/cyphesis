@@ -18,7 +18,7 @@ class FactoryBase;
 
 typedef std::map<std::string, FactoryBase *> FactoryDict;
 
-class EntityFactory : public SigC::Object {
+class EntityFactory {
     EntityFactory();
     static EntityFactory * m_instance;
 

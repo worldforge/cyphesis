@@ -31,7 +31,7 @@ class Connection : public OOGThing {
 
     void addObject(BaseEntity * obj) {
         objects[obj->getId()] = obj;
-        SigC::Connection * con = new SigC::Connection(obj->destroyed.connect(SigC::bind<const std::string&>(slot(this, &Connection::removeObject), obj->getId())));
+        SigC::Connection * con = new SigC::Connection(obj->destroyed.connect(SigC::bind<const std::string&>(slot(*this, &Connection::removeObject), obj->getId())));
         destroyedConnections[obj->getId()] = con;
     }
 

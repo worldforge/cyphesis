@@ -74,7 +74,7 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.
         charactersDict[chr->getId()] = chr;
-        SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<const std::string&>(slot(this, &Account::characterDestroyed), chr->getId())));
+        SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<const std::string&>(slot(*this, &Account::characterDestroyed), chr->getId())));
         destroyedConnections[chr->getId()] = con;
         connection->addObject(chr);
     }
