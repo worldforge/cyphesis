@@ -1,5 +1,14 @@
 2000-11-29  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Added in debug function for python code.
+
+	* Fixed coersion of non-oplist types for addition.
+
+	* Implemented getting attributes from Message::Object maps
+	  from python.
+
+2000-11-29  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Added support for decoding Sound operations in BaseMind.
 
 	* Added Talk operation throughout operation handling code.

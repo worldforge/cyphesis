@@ -198,6 +198,7 @@ class NPCMind(BaseMind):
             say=talk_entity
             if hasattr(say,"say"): say=say.say
         log.debug(3,"talk: "+str(operation_method))
+        print res, operation_method, talk_entity
         res = res + operation_method(original_op,say)
         return res
     ########## Other operations

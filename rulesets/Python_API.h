@@ -78,6 +78,10 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
+} FunctionObject;
+
+typedef struct {
+    PyObject_HEAD
     PyObject	* Optime_attr;	/* Attributes dictionary */
     RootOperation	* operation;
 } OptimeObject;

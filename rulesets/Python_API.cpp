@@ -10,6 +10,37 @@
 #include <server/WorldTime.h>
 #include <common/const.h>
 
+static void Function_dealloc(FunctionObject * self)
+{
+    PyMem_DEL(self);
+}
+
+static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * foo)
+{
+    printf("LOG.DEBUG\n");
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+PyTypeObject log_debug_type = {
+	PyObject_HEAD_INIT(&PyType_Type)
+	0,
+	"Function",
+	sizeof(FunctionObject),
+	0,
+	/* methods */
+	(destructor)Function_dealloc,
+	0,		/* tp_print */
+	0,		/* tp_getattr */
+	0,		/* tp_setattr */
+	0,		/* tp_compare */
+	0,		/* tp_repr */
+	0,		/* tp_as_number */
+	0,		/* tp_as_sequence */
+	0,		/* tp_as_mapping */
+	0,		/* tp_hash */
+	log_debug,	/* tp_call */
+};
 
 void Create_PyThing(Thing * thing, const string & package, const string & type)
 {
@@ -270,9 +301,11 @@ void init_python_api()
 	printf("Created common thing\n");
 	PyObject * _const = PyModule_New("const");
 	PyObject * log = PyModule_New("log");
+        PyObject * debug = (PyObject *)PyObject_NEW(FunctionObject, &log_debug_type);
 	dict = PyModule_GetDict(common);
 	PyDict_SetItemString(dict, "const", _const);
 	PyDict_SetItemString(dict, "log", log);
+	PyObject_SetAttrString(log, "debug", debug);
 	//PyDict_SetItemString(dict, "misc", misc);
 	PyObject_SetAttrString(_const, "server_python", PyInt_FromLong(0));
 	PyObject_SetAttrString(_const, "debug_level",

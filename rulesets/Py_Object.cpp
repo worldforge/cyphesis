@@ -33,6 +33,17 @@ static void Object_dealloc(AtlasObject *self)
 
 static PyObject * Object_getattr(AtlasObject *self, char *name)
 {
+    if (self->m_obj == NULL) {
+        PyErr_SetString(PyExc_TypeError,"invalid object");
+        return NULL;
+    }
+    if (self->m_obj->IsMap()) {
+        printf("Getting attribute %s from Atlas Map Object\n", name);
+        Object::MapType & omap = self->m_obj->AsMap();
+        if (omap.find(name) != omap.end()) {
+            return Object_asPyObject(omap[name]);
+        }
+    }
     return Py_FindMethod(Object_methods, (PyObject *)self, name);
 }
 
@@ -44,7 +55,7 @@ static int Object_setattr( AtlasObject *self, char *name, PyObject *v)
 PyTypeObject Object_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,				/*ob_size*/
-	"Object",			/*tp_name*/
+	"AtlasObject",			/*tp_name*/
 	sizeof(AtlasObject),		/*tp_basicsize*/
 	0,				/*tp_itemsize*/
 	/* methods */

@@ -24,11 +24,20 @@ PyObject * Oplist_getattr(OplistObject *self, char *name)
 
 PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
 {
+    printf("Adding to an oplist\n");
     if (self->ops == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid oplist");
         return NULL;
     }
+    if (other == Py_None) {
+        printf("Adding None to an oplist\n");
+        OplistObject * res = newOplistObject(NULL);
+        res->ops = new oplist();
+        *res->ops = *self->ops;
+        return (PyObject*)res;
+    }
     if ((PyTypeObject*)PyObject_Type(other) == & Oplist_Type) {
+        printf("Adding oplist to an oplist\n");
         OplistObject * opl = (OplistObject*)other;
         OplistObject * res = newOplistObject(NULL);
         res->ops = new oplist();
@@ -40,6 +49,7 @@ PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         return (PyObject*)res;
     }
     if ((PyTypeObject*)PyObject_Type(other) == & RootOperation_Type) {
+        printf("Adding operation to an oplist\n");
         RootOperationObject * op = (RootOperationObject*)other;
         if (op->operation == NULL) {
             PyErr_SetString(PyExc_TypeError, "invalid operation");
@@ -53,7 +63,17 @@ PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
         res->ops->push_back(op->operation);
         return (PyObject*)res;
     }
+    printf("Failed to find out how to add it\n");
     return NULL;
+}
+
+static int Oplist_num_coerce(PyObject ** self, PyObject ** other)
+{
+    //if (*other == Py_None) {
+        Py_INCREF(*self);
+        return(0);
+    //}
+    //return -1;
 }
 
 static PyNumberMethods Oplist_as_number = {
@@ -74,7 +94,7 @@ static PyNumberMethods Oplist_as_number = {
 	0,
 	0,
 	0,
-	0,
+	Oplist_num_coerce,
 	0,
 	0,
 	0,
