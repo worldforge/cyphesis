@@ -47,9 +47,7 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     std::fstream m_file;
     RuleBase & m_db;
     Atlas::Codecs::XML m_codec;
-    Object::MapType m_world;
     int m_count;
-    bool m_worldMerge;
 
     virtual void ObjectArrived(const Object & obj) {
         const Object::MapType & omap = obj.AsMap();

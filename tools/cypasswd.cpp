@@ -2,19 +2,19 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <common/accountbase.h>
 #include <common/globals.h>
 
 #include <string>
 #include <iostream>
 
-#include "config.h"
-
-#include <signal.h>
-#include <unistd.h>
-
 #ifdef HAVE_TERMIOS_H
 #include <termios.h>
+#include <unistd.h>
 #endif
 
 // This is the currently very basic password management tool, which can
@@ -36,7 +36,6 @@ void usage(char * n)
     // Don't call this once the database is open. It doesn't return so the
     // database will not be closed.
     std::cout << "usage: " << n << " -[asd] account" << std::endl << std::flush;
-    exit(0);
 }
 
 int main(int argc, char ** argv)
@@ -63,27 +62,17 @@ int main(int argc, char ** argv)
                 action = DEL;
             } else {
                 usage(argv[0]);
+                return 1;
             }
             acname = argv[2];
         } else {
             usage(argv[0]);
+            return 1;
         }
     } else {
         usage(argv[0]);
+        return 1;
     }
-
-    // Once the database is open, we must not get signals as that will
-    // cause the program to exit without cleaning up the database.
-    signal(SIGINT, SIG_IGN);
-    
-    //Db db(NULL, DB_CXX_NO_EXCEPTIONS);
-
-    //if (db.open("/var/forge/cyphesis/db","account",DB_BTREE,DB_CREATE,0600)) {
-        //std::cerr << "Failed to open password database" << endl << flush;
-    //}
-    
-    //Dbt key((void*)"admin", 6);
-    //Dbt data;
 
     AccountBase * db = AccountBase::instance(true);
 
@@ -124,9 +113,9 @@ int main(int argc, char ** argv)
 #endif
     
     std::string password, password2;
-    std::cout << "New " << acname << " password:" << std::flush;
+    std::cout << "New " << acname << " password: " << std::flush;
     std::cin >> password;
-    std::cout << std::endl << "Retype " << acname << " password:" << std::flush;
+    std::cout << std::endl << "Retype " << acname << " password: " << std::flush;
     std::cin >> password2;
     std::cout << std::endl << std::flush;
     
