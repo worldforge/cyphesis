@@ -4,35 +4,20 @@
 
 #include "ObserverClient.h"
 
-#include <varconf/Config.h>
-
 #include <rulesets/Python_API.h>
 
 #include <common/globals.h>
 
 int main(int argc, char ** argv)
 {
-    global_conf = varconf::Config::inst();
-
     if (loadConfig(argc, argv)) {
         // Fatal error loading config file
         return 1;
     }
 
-    std::string ruleset;
-    while (global_conf->findItem("cyphesis", "ruleset")) {
-        ruleset = global_conf->getItem("cyphesis", "ruleset");
-        global_conf->erase("cyphesis", "ruleset");
-        std::cout << "Reading in " << ruleset << std::endl << std::flush;
-        global_conf->readFromFile(share_directory + "/cyphesis/" + ruleset + ".vconf");
-        rulesets.push_back(ruleset);
-    };
-
     init_python_api();
 
     try {
-        // if init.display:;
-            // print "Use --nodisplay to hide 'text graphics'";
         ObserverClient & observer = *new ObserverClient();
         if (!observer.setup()) {
             return 1;

@@ -6,13 +6,12 @@
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Entity/GameEntity.h>
 
-#include <varconf/Config.h>
-
 #include "EntityFactory.h"
 #include "Persistance.h"
 
 #include <rulesets/Thing.h>
 #include <rulesets/Python_API.h>
+#include <rulesets/MindFactory.h>
 #include <rulesets/ThingFactory.h>
 #include <rulesets/Character.h>
 #include <rulesets/Creator.h>
@@ -67,13 +66,13 @@ Thing * EntityFactory::newThing(const std::string & type,
         attributes = factory->attributes;
         // Sort out python object
         if ((factory->language == "python") && (factory->script.size() != 0)) {
-            std::cout << "Class " << type << " has a python class"
-                      << std::endl << std::flush;
+            debug(std::cout << "Class " << type << " has a python class"
+                            << std::endl << std::flush;);
             Create_PyThing(thing, factory->script, type);
         }
     } else {
-        std::cerr << "ERROR: Could not find a factory for " << type
-                  << std::endl << std::flush;
+        debug(std::cerr << "ERROR: Could not find a factory for " << type
+                        << std::endl << std::flush;);
     }
     if (thing == NULL) {
         thing = new Thing();
@@ -89,10 +88,10 @@ Thing * EntityFactory::newThing(const std::string & type,
     } else {
         debug( std::cout << "Got no name" << std::endl << std::flush;);
     }
+    // merge attributes from the creation op over default attributes.
     for (K = entmap.begin(); K != entmap.end(); K++) {
         attributes[K->first] = K->second;
     }
-#warning merge in default attributes from factory into entmap first.
     thing->merge(attributes);
     // Get location from entity, if it is present
     thing->getLocation(attributes, world);
@@ -111,11 +110,11 @@ void EntityFactory::installBaseClasses()
 {
     MObject::MapType ruleTable;
     Persistance * p = Persistance::instance();
-    Inheritance & i = Inheritance::instance();
     p->getRules(ruleTable);
 
     MObject::MapType::const_iterator I = ruleTable.begin();
     for(; I != ruleTable.end(); ++I) {
+        const std::string & type = I->first;
         const MObject::MapType & classDesc = I->second.AsMap();
         MObject::MapType::const_iterator J = classDesc.find("parent");
         if ((J == classDesc.end()) || (!J->second.IsString())) { continue; }
@@ -133,12 +132,28 @@ void EntityFactory::installBaseClasses()
                 }
             }
         }
+        J = classDesc.find("mind");
+        if ((J != classDesc.end()) && (J->second.IsMap())) {
+            const MObject::MapType & script = J->second.AsMap();
+            J = script.find("name");
+            if ((J != script.end()) && (J->second.IsString())) {
+                const std::string mindType = J->second.AsString();
+                // language is unused. might need it one day
+                // J = script.find("language");
+                // if ((J != script.end()) && (J->second.IsString())) {
+                    // const std::string mindLang = J->second.AsString();
+                // }
+                MindFactory::instance()->addMindType(type, mindType);
+            }
+        }
         J = classDesc.find("attributes");
         if ((J != classDesc.end()) && (J->second.IsMap())) {
             f->attributes = J->second.AsMap();
         }
-        installFactory(parent, I->first, f);
-        std::cout << "INSTALLING " << I->first << ":" << parent << "{" << f->script << "." << f->language << "}" << std::endl << std::flush;
+        installFactory(parent, type, f);
+        debug(std::cout << "INSTALLING " << type << ":" << parent
+                        << "{" << f->script << "." << f->language << "}"
+                        << std::endl << std::flush;);
     }
 }
 
@@ -157,20 +172,6 @@ void EntityFactory::installFactory(const std::string & parent,
     r->SetParents(MObject::ListType(1, parent));
     i.addChild(r);
 
-}
-
-void EntityFactory::installClass(const std::string &parent,
-                                 const std::string &className)
-{
-    if ((parent == "cyphesis") || (parent == "mind")) { return; }
-    debug(std::cout << parent << ":" << className << std::endl << std::flush;);
-
-    Inheritance & i = Inheritance::instance();
-    
-    Root * r = new GameEntity();
-    r->SetId(className);
-    r->SetParents(MObject::ListType(1,parent));
-    i.addChild(r);
 }
 
 FactoryBase * EntityFactory::getFactory(const std::string & parent)

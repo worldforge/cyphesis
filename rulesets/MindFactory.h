@@ -2,22 +2,21 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef RULESETS_ENTITY_FACTORY_H
-#define RULESETS_ENTITY_FACTORY_H
-
-#include <varconf/Config.h>
+#ifndef RULESETS_MIND_FACTORY_H
+#define RULESETS_MIND_FACTORY_H
 
 #include <string>
-
-#include <common/globals.h>
+#include <map>
 
 class BaseMind;
-class Routing;
 
 class MindFactory {
+  public:
+    typedef std::map<std::string, std::string> mindmap_t;
   private:
     MindFactory();
     static MindFactory * m_instance;
+    mindmap_t m_mindTypes;
 
   public:
     static MindFactory * instance() {
@@ -26,10 +25,12 @@ class MindFactory {
         }
         return m_instance;
     }
-    void readRuleset(const std::string & file);
     BaseMind * newMind(const std::string &, const std::string &,
-                       const std::string &, const Atlas::Message::Object &,
-                       Routing *);
+                       const std::string &);
+
+    void addMindType(const std::string & type, const std::string & mind) {
+        m_mindTypes[type] = mind;
+    }
 };
 
-#endif // RULESETS_ENTITY_FACTORY_H
+#endif // RULESETS_MIND_FACTORY_H

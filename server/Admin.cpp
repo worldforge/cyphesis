@@ -5,8 +5,6 @@
 #include <Atlas/Objects/Operation/Info.h>
 #include <Atlas/Objects/Operation/Logout.h>
 
-#include <varconf/Config.h>
-
 #include <common/Load.h>
 #include <common/Save.h>
 
@@ -241,13 +239,14 @@ oplist Admin::SetOperation(const Set & op)
                 return error(op, "Unknown command");
             }
         } else if (objtype == "class") {
+#warning Install a new type from the client
             const std::string & parent = emap.find("parents")->second.AsList().front().AsString();
             std::string script;
             Object::MapType::const_iterator I = emap.find("script");
             if ((I != emap.end()) && I->second.IsString()) {
                 script = I->second.AsString();
             }
-            global_conf->setItem(parent, id, varconf::Variable(script));
+            // global_conf->setItem(parent, id, varconf::Variable(script));
         }
     }
     catch (...) {

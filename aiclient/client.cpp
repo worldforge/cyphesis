@@ -46,7 +46,6 @@ char * getHome()
 
 int main(int argc, char ** argv)
 {
-    global_conf = varconf::Config::inst();
     std::string server = "localhost";
 
     if (install_directory=="NONE") {

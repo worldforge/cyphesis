@@ -138,6 +138,10 @@
       <string name="name">world.objects.animals.Pig</string>
       <string name="language">python</string>
     </map>
+    <map name="mind">
+      <string name="name">mind.PigMind</string>
+      <string name="language">python</string>
+    </map>
   </map>
 
   <map name="deer">
@@ -158,6 +162,10 @@
     </map>
     <map name="script">
       <string name="name">world.objects.animals.Wolf</string>
+      <string name="language">python</string>
+    </map>
+    <map name="mind">
+      <string name="name">mind.WolfMind</string>
       <string name="language">python</string>
     </map>
   </map>
@@ -190,6 +198,10 @@
     </map>
     <map name="script">
       <string name="name">world.objects.undead.Skeleton</string>
+      <string name="language">python</string>
+    </map>
+    <map name="mind">
+      <string name="name">mind.SkelMind</string>
       <string name="language">python</string>
     </map>
   </map>

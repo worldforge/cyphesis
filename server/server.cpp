@@ -99,16 +99,10 @@ int main(int argc, char ** argv)
 {
     mtrace();
     interactive_signals();
-    // Initialise the varconf system, and get a pointer to the config database
-    global_conf = varconf::Config::inst();
 
     if (loadConfig(argc, argv)) {
         // Fatal error loading config file
         return 1;
-    }
-
-    if (global_conf->findItem("cyphesis", "daemon")) {
-        daemon_flag = global_conf->getItem("cyphesis","daemon");
     }
 
     if (daemon_flag) {
@@ -139,14 +133,6 @@ int main(int argc, char ** argv)
     }
 
     EntityFactory::instance()->installBaseClasses();
-
-    // Load up the rulesets. Rulesets are hierarchical, and are read in until
-    // a file is read in that does not specify its parent ruleset.
-    std::string ruleset = "cyphesis";
-    while (global_conf->findItem(ruleset, "ruleset")) {
-        ruleset = global_conf->getItem(ruleset, "ruleset");
-        rulesets.push_back(ruleset);
-    };
 
     // If the restricted flag is set in the config file, then we
     // don't allow connecting users to create accounts. Accounts must

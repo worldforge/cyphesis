@@ -22,18 +22,12 @@
 #include <common/Eat.h>
 #include <common/Nourish.h>
 
-#include <varconf/Config.h>
-
-extern "C" {
-    #include <stdlib.h>
-}
-
 #include "Character.h"
 #include "Pedestrian.h"
 
+#include "MindFactory.h"
 #include "BaseMind.h"
 #include "Script.h"
-#include "Python_API.h" // FIXME This must go
 #include "World.h"
 
 #include <common/BaseWorld.h>
@@ -145,13 +139,14 @@ oplist Character::SetupOperation(const Setup & op)
         return res;
     }
 
-    mind = new BaseMind(getId(), name);
-    std::string mind_class("NPCMind"), mind_package("mind.NPCMind");
-    if (global_conf->findItem("mind", type)) {
-        mind_package = global_conf->getItem("mind", type);
-        mind_class = type + "Mind";
-    }
-    Create_PyMind(mind, mind_package, mind_class);
+    //mind = new BaseMind(getId(), name);
+    //std::string mind_class("NPCMind"), mind_package("mind.NPCMind");
+    //if (global_conf->findItem("mind", type)) {
+        //mind_package = global_conf->getItem("mind", type);
+        //mind_class = type + "Mind";
+    //}
+    //Create_PyMind(mind, mind_package, mind_class);
+    mind = MindFactory::instance()->newMind(getId(), name, type);
 
     oplist res2(2);
     Setup * s = new Setup(op);

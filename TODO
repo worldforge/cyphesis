@@ -1,3 +1,5 @@
+  Implement installation of a new type by admin account.
+
   Entity classes need to be added by world builders. They also need to be
   persisted, so it seems as though they need to installed in a database,
   and for this database to be loaded just before the world state. This implies

@@ -1,5 +1,29 @@
 2002-01-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/server.cpp, client/client.cpp, common/globals.cpp:
+	  Move loading of ruleset list from config file into the
+	  generic loadConfig function.
+
+	* server/EntityFactory.cpp, server/EntityFactory.h:
+	  Add support for reading mind data from rules database. Remove
+	  old code for installing classes from varconf. Clean up debugging
+	  output.
+
+	* server/Admin.cpp: Remove setting of varconf class when new
+	  type is installed from client.
+
+	* rulesets/MindFactory.h, rulesets/MindFactory.h: Get MindFactory
+	  working, and set it up so EntityFactory installs info here
+	  as it reads the rules from the database.
+
+	* rulesets/Character.cpp: Use MindFactory to create minds.
+
+	* common/Database.cpp: Clean up some obsolete comments.
+
+	* aiclient/client.cpp: Get rid of invalid setup of varconf.
+
+2002-01-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp, common/Database.h,
 	  server/Persistance.cpp, server/Persistance.h:
 	  Add a new table to store rulesets, so they can be persisted, and

@@ -57,5 +57,17 @@ bool loadConfig(int argc, char ** argv)
     }
     global_conf->getCmdline(argc, argv);
 
+    if (global_conf->findItem("cyphesis", "daemon")) {
+        daemon_flag = global_conf->getItem("cyphesis","daemon");
+    }
+
+    // Load up the rulesets. Rulesets are hierarchical, and are read in until
+    // one is read in that does not specify its parent ruleset.
+    std::string ruleset = "cyphesis";
+    while (global_conf->findItem(ruleset, "ruleset")) {
+        ruleset = global_conf->getItem(ruleset, "ruleset");
+        rulesets.push_back(ruleset);
+    };
+
     return false;
 }

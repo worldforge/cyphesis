@@ -11,9 +11,6 @@
 #include <Atlas/Message/Encoder.h>
 #include <Atlas/Codecs/XML.h>
 
-// It seems that GNU libstdc++ does not yet include sstream.h
-// Included is a version written explicitly for gcc, which will be used
-// if the header is not present.
 #include <common/stringstream.h>
 #include <common/debug.h>
 #include <common/globals.h>
