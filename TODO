@@ -3,11 +3,7 @@ Make the butcher more helpful to n00bs.
 Implement a Tool base class which eliminates the need for tool scripts - 
 handles the necessary op conversions driven by data.
 
-Simplify tree scripts - most of them look obsolete. Get rid of undead bone
-scripts. They do nothing. "tree" probably does not need a script, as it
-should be abstract.
-
-Also make sure stamp is updated in MemMap and checked, and implement Unseen.
+Make sure stamp is updated in MemMap and checked, and implement Unseen.
 
 Implement trivial combat, and code up a bunny bashing quests for the hard
 of thinking.
