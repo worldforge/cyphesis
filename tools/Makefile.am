@@ -26,4 +26,4 @@ cyctrl_SOURCES = cyctrl.cpp
 
 cyconfig_SOURCES = cyconfig.cpp
 
-EXTRA_DIST = sstream.cc
+EXTRA_DIST = sstream.cc cyphesis-setup
