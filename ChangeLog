@@ -1,5 +1,10 @@
 2004-06-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.h, common/const.cpp: Decrease sight range setting,
+	  and increase minimum box size.
+
+2004-06-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/const.h, common/const.cpp: Increase sight range setting.
 
 2004-06-21  Al Riddoch  <alriddoch@zepler.org>

@@ -30,14 +30,14 @@ namespace consts {
   static const float sight_range = 26.0;
   static const float square_sight_range = (sight_range * sight_range);
   // sin() of minimum angle subtended by visible object
-  static const float sight_factor = 0.03;
+  static const float sight_factor = 0.06;
   static const float square_sight_factor = (sight_factor * sight_factor);
   // Range of broadcast sound ops
   static const float hearing_range = 13.0;
   // Can things be omnipresent
   static const bool enable_omnipresence = false;
   // What is the minimum size of an object when calculating visibility
-  static const float minSqrBoxSize = 0.01f;
+  static const float minSqrBoxSize = 0.1f;
   // Should everything be persistent
   static const bool enable_persistence = false;
 

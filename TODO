@@ -1,3 +1,5 @@
+Make cyclient more robust about receiving random ops.
+
 Implement spawn points in the EntityFactory.
 
 Verify that the persistant code does not insert entities into the world with
