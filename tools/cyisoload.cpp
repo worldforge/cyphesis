@@ -4,16 +4,16 @@
 
 #error This file has been removed from the build
 
+#include "common/Database.h"
+#include "common/stringstream.h"
+
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <common/Database.h>
+#include <coal/isoloader.h>
 
 #include <string>
 #include <fstream>
-#include <common/stringstream.h>
-
-#include <coal/isoloader.h>
 
 class WorldBase : public Database {
   protected:

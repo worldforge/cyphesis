@@ -23,19 +23,19 @@
 #include "Thing.h"
 #include "BaseMind.h"
 
-#include <common/globals.h>
-#include <common/const.h>
-#include <common/debug.h>
-#include <common/log.h>
+#include "common/globals.h"
+#include "common/const.h"
+#include "common/debug.h"
+#include "common/log.h"
 
-#include <common/Tick.h>
-#include <common/Burn.h>
-#include <common/Chop.h>
-#include <common/Cut.h>
-#include <common/Setup.h>
-#include <common/Eat.h>
-#include <common/Nourish.h>
-#include <common/Generic.h>
+#include "common/Tick.h"
+#include "common/Burn.h"
+#include "common/Chop.h"
+#include "common/Cut.h"
+#include "common/Setup.h"
+#include "common/Eat.h"
+#include "common/Nourish.h"
+#include "common/Generic.h"
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Look.h>

@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#include <common/Database.h>
-#include <common/globals.h>
+#include "common/Database.h"
+#include "common/globals.h"
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>

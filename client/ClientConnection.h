@@ -5,7 +5,7 @@
 #ifndef CLIENT_CONNECTION_H
 #define CLIENT_CONNECTION_H
 
-#include <common/operations.h>
+#include "common/operations.h"
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codec.h>

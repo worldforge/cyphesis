@@ -8,7 +8,7 @@
 
 ExternalMind::ExternalMind(Connection & connection, const std::string & id,
                            const std::string & name) :
-		BaseMind(id, name), connection(connection)
+                BaseMind(id, name), connection(connection)
 {
 }
 

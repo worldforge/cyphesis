@@ -9,15 +9,16 @@
 #include "EntityFactory.h"
 #include "Persistance.h"
 #include "Restoration.h"
+#include "WorldRouter.h"
 
-#include <rulesets/Python_API.h>
-#include <rulesets/MindFactory.h>
+#include "rulesets/Python_API.h"
+#include "rulesets/MindFactory.h"
 
-#include <common/log.h>
-#include <common/debug.h>
-#include <common/globals.h>
-#include <common/inheritance.h>
-#include <common/system.h>
+#include "common/log.h"
+#include "common/debug.h"
+#include "common/globals.h"
+#include "common/inheritance.h"
+#include "common/system.h"
 
 #include <varconf/Config.h>
 
@@ -96,7 +97,9 @@ int main(int argc, char ** argv)
     // world object pair (World + WorldRouter), and initialise the admin
     // account. The primary ruleset name is passed in so it
     // can be stored and queried by clients.
-    ServerRouting server(rulesets.front(), serverName);
+    WorldRouter world;
+
+    ServerRouting server(world, rulesets.front(), serverName);
 
     CommServer commServer(server);
 

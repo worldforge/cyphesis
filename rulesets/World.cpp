@@ -4,7 +4,7 @@
 
 #include "World.h"
 
-#include <common/log.h>
+#include "common/log.h"
 
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>

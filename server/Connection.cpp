@@ -5,7 +5,6 @@
 #include "Connection.h"
 
 #include "ServerRouting.h"
-#include "WorldRouter.h"
 #include "Lobby.h"
 #include "CommClient.h"
 #include "CommServer.h"
@@ -13,12 +12,13 @@
 #include "ExternalMind.h"
 #include "Persistance.h"
 
-#include <rulesets/Character.h>
+#include "rulesets/Character.h"
 
-#include <common/log.h>
-#include <common/debug.h>
-#include <common/globals.h>
-#include <common/inheritance.h>
+#include "common/log.h"
+#include "common/debug.h"
+#include "common/globals.h"
+#include "common/inheritance.h"
+#include "common/BaseWorld.h"
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Login.h>

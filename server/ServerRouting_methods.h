@@ -6,7 +6,7 @@
 #define SERVER_SERVER_ROUTING_METHODS_H
 
 #include "ServerRouting.h"
-#include "WorldRouter.h"
+#include "common/BaseWorld.h"
 
 #if !defined(__GNUC__) || __GNUC__ > 2 || (__GNUC__ > 1 && __GNUC_MINOR__ > 95)
 

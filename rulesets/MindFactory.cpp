@@ -6,7 +6,7 @@
 #include "BaseMind.h"
 #include "Python_API.h"
 
-#include <common/debug.h>
+#include "common/debug.h"
 
 static const bool debug_flag = false;
 

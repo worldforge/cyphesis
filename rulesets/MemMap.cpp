@@ -7,8 +7,9 @@
 #include "MemMap_methods.h"
 #include "Script.h"
 
-#include <modules/Location.h>
-#include <common/debug.h>
+#include "modules/Location.h"
+
+#include "common/debug.h"
 
 #include <Atlas/Objects/Operation/Look.h>
 

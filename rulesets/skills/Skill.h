@@ -5,9 +5,9 @@
 #ifndef SKILLS_SKILL_H
 #define SKILLS_SKILL_H
 
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include "common/types.h"
 
-#include <common/types.h>
+#include <Atlas/Objects/Operation/RootOperation.h>
 
 class Entity;
 

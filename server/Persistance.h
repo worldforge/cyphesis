@@ -5,7 +5,7 @@
 #ifndef SERVER_PERSISTANCE_H
 #define SERVER_PERSISTANCE_H
 
-#include <common/types.h>
+#include "common/types.h"
 
 #include <Atlas/Message/Object.h>
 

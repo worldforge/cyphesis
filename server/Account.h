@@ -5,7 +5,7 @@
 #ifndef SERVER_ACCOUNT_H
 #define SERVER_ACCOUNT_H
 
-#include <common/OOGThing.h>
+#include "common/OOGThing.h"
 
 class Connection;
 

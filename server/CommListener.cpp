@@ -7,7 +7,7 @@
 #include "CommClient.h"
 #include "CommServer.h"
 
-#include <common/debug.h>
+#include "common/debug.h"
 
 #include <iostream>
 

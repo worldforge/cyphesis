@@ -5,8 +5,8 @@
 #ifndef SERVER_PERSISTOR_IMPL_H
 #define SERVER_PERSISTOR_IMPL_H
 
-#include <common/Database.h>
-#include <common/stringstream.h>
+#include "common/Database.h"
+#include "common/stringstream.h"
 
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>

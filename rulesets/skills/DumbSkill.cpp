@@ -2,8 +2,9 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include "common/operations.h"
+
 #include <Atlas/Objects/Operation/Sight.h>
-#include <common/operations.h>
 
 #include "DumbSkill.h"
 

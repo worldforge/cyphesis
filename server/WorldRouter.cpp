@@ -7,17 +7,17 @@
 #include "ServerRouting.h"
 #include "EntityFactory.h"
 
-#include <rulesets/World.h>
+#include "rulesets/World.h"
 
-#include <common/log.h>
-#include <common/debug.h>
-#include <common/const.h>
-#include <common/globals.h>
-#include <common/stringstream.h>
-#include <common/globals.h>
-#include <common/Database.h>
+#include "common/log.h"
+#include "common/debug.h"
+#include "common/const.h"
+#include "common/globals.h"
+#include "common/stringstream.h"
+#include "common/globals.h"
+#include "common/Database.h"
 
-#include <common/Setup.h>
+#include "common/Setup.h"
 
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
@@ -33,9 +33,9 @@ inline void WorldRouter::updateTime()
 }
 
 
-WorldRouter::WorldRouter(ServerRouting & sr) : BaseWorld(consts::rootWorldId,
+WorldRouter::WorldRouter() : BaseWorld(consts::rootWorldId,
                                                          *new World(consts::rootWorldId)),
-                                               nextId(0), server(sr)
+                                               nextId(0)
 {
     // setId(consts::rootWorldId);
     initTime = time(NULL) - timeoffset;
@@ -99,13 +99,13 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
 inline void WorldRouter::setSerialno(OpVector & ops)
 {
     for (OpVector::const_iterator I = ops.begin(); I != ops.end(); ++I) {
-       (*I)->SetSerialno(server.getSerialNo());
+       (*I)->SetSerialno(getSerialNo());
     }
 }
 
 inline void WorldRouter::setSerialnoOp(RootOperation & op)
 {
-    op.SetSerialno(server.getSerialNo());
+    op.SetSerialno(getSerialNo());
 }
 
 inline const std::string WorldRouter::getNewId(const std::string & name)
@@ -159,7 +159,7 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
         Setup * s = new Setup(Setup::Instantiate());
         s->SetTo(obj->getId());
         s->SetFutureSeconds(-0.1);
-        s->SetSerialno(server.getSerialNo());
+        s->SetSerialno(getSerialNo());
         addOperationToQueue(*s, this);
     }
     return (obj);
@@ -232,9 +232,9 @@ inline void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
     }
 }
 
-OpVector WorldRouter::operation(const RootOperation * op_ptr)
+OpVector WorldRouter::operation(const RootOperation & op)
 {
-    const RootOperation & op = *op_ptr;
+    // const RootOperation & op = *op_ptr;
     std::string to = op.GetTo();
     debug(std::cout << "WorldRouter::operation {"
                     << op.GetParents().front().AsString() << ":"
@@ -304,11 +304,6 @@ OpVector WorldRouter::operation(const RootOperation * op_ptr)
     return OpVector();
 }
 
-OpVector WorldRouter::operation(const RootOperation & op)
-{
-    return operation(&op);
-}
-
 OpVector WorldRouter::LookOperation(const Look & op)
 {
     debug(std::cout << "WorldRouter::Operation(Look)" << std::endl << std::flush;);
@@ -356,7 +351,7 @@ int WorldRouter::idle()
     RootOperation * op;
     while ((op = getOperationFromQueue()) != NULL) {
         try {
-            operation(op);
+            operation(*op);
         }
         catch (...) {
             std::string msg = std::string("Exception caught in world.idle()")

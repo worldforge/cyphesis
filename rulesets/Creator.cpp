@@ -6,8 +6,8 @@
 
 #include "BaseMind.h"
 
-#include <common/debug.h>
-#include <common/const.h>
+#include "common/debug.h"
+#include "common/const.h"
 
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Delete.h>

@@ -4,9 +4,9 @@
 
 #include "ObserverClient.h"
 
-#include <rulesets/Python_API.h>
+#include "rulesets/Python_API.h"
 
-#include <common/globals.h>
+#include "common/globals.h"
 
 #include <varconf/Config.h>
 

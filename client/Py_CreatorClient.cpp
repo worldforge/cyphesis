@@ -6,15 +6,15 @@
 
 #include "CreatorClient.h"
 
-#include <rulesets/Py_Operation.h>
-#include <rulesets/Py_WorldTime.h>
-#include <rulesets/Py_Vector3D.h>
-#include <rulesets/Py_Location.h>
-#include <rulesets/Py_Object.h>
-#include <rulesets/Py_Thing.h>
-#include <rulesets/Py_Map.h>
+#include "rulesets/Py_Operation.h"
+#include "rulesets/Py_WorldTime.h"
+#include "rulesets/Py_Vector3D.h"
+#include "rulesets/Py_Location.h"
+#include "rulesets/Py_Object.h"
+#include "rulesets/Py_Thing.h"
+#include "rulesets/Py_Map.h"
 
-#include <common/debug.h>
+#include "common/debug.h"
 
 static const bool debug_flag = true;
 

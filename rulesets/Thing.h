@@ -7,7 +7,7 @@
 
 #include "Entity.h"
 
-#include <common/BaseWorld.h>
+#include "common/BaseWorld.h"
 
 // This is the base class from which all physical or tangiable in-game objects
 // inherit. It can be used itself to represent any in-game object for which

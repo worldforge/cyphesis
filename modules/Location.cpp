@@ -2,7 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <rulesets/Entity.h>
+#include "rulesets/Entity.h"
 
 using Atlas::Message::Object;
 

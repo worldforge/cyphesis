@@ -5,7 +5,7 @@
 #ifndef SERVER_EXTERNAL_MIND_H
 #define SERVER_EXTERNAL_MIND_H
 
-#include <rulesets/BaseMind.h>
+#include "rulesets/BaseMind.h"
 
 class Connection;
 

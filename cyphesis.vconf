@@ -42,5 +42,8 @@ package="define_world"
 # Script function
 function="default"
 
+[slave]
+# 
+
 [mason]
 ruleset="basic"

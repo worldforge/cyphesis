@@ -4,7 +4,7 @@
 
 #include "Area.h"
 
-#include <common/type_utils.h>
+#include "common/type_utils.h"
 
 Area::Area(const std::string & id) : Thing(id)
 {

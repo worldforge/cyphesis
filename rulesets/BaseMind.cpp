@@ -6,15 +6,15 @@
 
 #include "MemMap_methods.h"
 
-#include <common/utility.h>
-#include <common/debug.h>
-#include <common/op_switch.h>
-#include <common/inheritance.h>
+#include "common/utility.h"
+#include "common/debug.h"
+#include "common/op_switch.h"
+#include "common/inheritance.h"
 
-#include <common/Chop.h>
-#include <common/Cut.h>
-#include <common/Eat.h>
-#include <common/Burn.h>
+#include "common/Chop.h"
+#include "common/Cut.h"
+#include "common/Eat.h"
+#include "common/Burn.h"
 
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Sight.h>

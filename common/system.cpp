@@ -8,9 +8,9 @@
 
 #include "system.h"
 
-#include <common/log.h>
-#include <common/debug.h>
-#include <common/globals.h>
+#include "log.h"
+#include "debug.h"
+#include "globals.h"
 
 extern "C" {
     #include <sys/utsname.h>

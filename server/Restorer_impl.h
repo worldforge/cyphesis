@@ -9,8 +9,8 @@
 
 #include "Persistor.h"
 
-#include <common/Database.h>
-#include <common/stringstream.h>
+#include "common/Database.h"
+#include "common/stringstream.h"
 
 template <class T>
 void Restorer<T>::restoreMap(const char * c, Atlas::Message::Object::MapType & ent)

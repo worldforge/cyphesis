@@ -12,8 +12,8 @@
 #include "BaseMind.h"
 #include "MemMap_methods.h"
 
-#include <common/log.h>
-#include <common/debug.h>
+#include "common/log.h"
+#include "common/debug.h"
 
 PythonMindScript::PythonMindScript(PyObject * o, BaseMind & m) :
     PythonScript(o, m), mind(m)

@@ -4,9 +4,9 @@
 
 #include "Player.h"
 
-#include <Atlas/Objects/Operation/Create.h>
+#include "common/types.h"
 
-#include <common/types.h>
+#include <Atlas/Objects/Operation/Create.h>
 
 std::set<std::string> Player::playableTypes;
 

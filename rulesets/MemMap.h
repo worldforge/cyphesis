@@ -5,7 +5,7 @@
 #ifndef RULESETS_MEM_MAP_H
 #define RULESETS_MEM_MAP_H
 
-#include <common/types.h>
+#include "common/types.h"
 
 #include <string>
 #include <list>

@@ -8,7 +8,7 @@
 #include "Py_Object.h"
 #include "Py_Thing.h"
 
-#include <common/utility.h>
+#include "common/utility.h"
 
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::RootOperation;

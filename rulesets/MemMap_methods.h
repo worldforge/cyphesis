@@ -10,9 +10,9 @@
 #include "Entity.h"
 #include "Script.h"
 
-#include <modules/Location.h>
+#include "modules/Location.h"
 
-#include <common/debug.h>
+#include "common/debug.h"
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Operation/Login.h>

@@ -4,7 +4,7 @@
 
 #include "Py_WorldTime.h"
 
-#include <modules/WorldTime.h>
+#include "modules/WorldTime.h"
 
 static PyObject *WorldTime_seconds(WorldTimeObject *self, PyObject *args, PyObject *kwds)
 {

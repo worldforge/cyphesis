@@ -7,11 +7,11 @@
 #include "Admin.h"
 #include "Player.h"
 
-#include <rulesets/Entity.h>
+#include "rulesets/Entity.h"
 
-#include <common/log.h>
-#include <common/const.h>
-#include <common/Database.h>
+#include "common/log.h"
+#include "common/const.h"
+#include "common/Database.h"
 
 Persistance * Persistance::m_instance = NULL;
 

@@ -7,10 +7,10 @@
 #include "Connection.h"
 #include "ServerRouting.h"
 
-#include <common/log.h>
-#include <common/debug.h>
-#include <common/utility.h>
-#include <common/stringstream.h>
+#include "common/log.h"
+#include "common/debug.h"
+#include "common/utility.h"
+#include "common/stringstream.h"
 
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>

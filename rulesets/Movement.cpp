@@ -6,10 +6,10 @@
 
 #include "Character.h"
 
-#include <common/const.h>
-#include <common/debug.h>
+#include "common/const.h"
+#include "common/debug.h"
 
-#include <common/Tick.h>
+#include "common/Tick.h"
 
 #include <Atlas/Objects/Operation/Move.h>
 

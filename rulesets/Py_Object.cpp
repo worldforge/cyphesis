@@ -7,7 +7,7 @@
 #include "Py_Oplist.h"
 #include "Py_Location.h"
 
-#include <modules/Location.h>
+#include "modules/Location.h"
 /*
  * Beginning of Object methods section.
  */

@@ -5,7 +5,7 @@
 #ifndef RULESETS_SCRIPT_H
 #define RULESETS_SCRIPT_H
 
-#include <common/types.h>
+#include "common/types.h"
 
 #include <Atlas/Objects/Operation/RootOperation.h>
 

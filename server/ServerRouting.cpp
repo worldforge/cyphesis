@@ -3,19 +3,20 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "ServerRouting.h"
-#include "WorldRouter.h"
 #include "Lobby.h"
 
-#include <common/debug.h>
-#include <common/const.h>
+#include "common/debug.h"
+#include "common/const.h"
+#include "common/BaseWorld.h"
 
 #include <iostream>
 
 static bool debug_flag = false;
 
-ServerRouting::ServerRouting(const std::string & ruleset, const std::string & name) :
+ServerRouting::ServerRouting(BaseWorld & wrld,
+                             const std::string & ruleset, const std::string & name) :
         OOGThing(name), svrRuleset(ruleset), svrName(name), numClients(0),
-        world(*new WorldRouter(*this)), lobby(*new Lobby("lobby", *this))
+        world(wrld), lobby(*new Lobby("lobby", *this))
 {
 }
 
@@ -27,7 +28,6 @@ ServerRouting::~ServerRouting()
                         << std::flush;);
         delete I->second;
     }
-    delete &world;
     delete &lobby;
 }
 

@@ -5,7 +5,7 @@
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
 
-#include <common/types.h>
+#include "common/types.h"
 
 #include <sigc++/object.h>
 

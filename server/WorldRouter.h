@@ -5,8 +5,9 @@
 #ifndef SERVER_WORLD_ROUTER_H
 #define SERVER_WORLD_ROUTER_H
 
-#include <common/BaseWorld.h>
-#include <common/globals.h>
+#include "common/BaseWorld.h"
+#include "common/globals.h"
+#include "common/serialno.h"
 
 extern "C" {
     #include <sys/time.h>
@@ -14,7 +15,6 @@ extern "C" {
 }
 
 class WorldRouter;
-class ServerRouting;
 class Entity;
 class World;
 
@@ -27,17 +27,18 @@ class WorldRouter : public BaseWorld {
     EntitySet omnipresentList;
     int nextId;
 
+    int getSerialNo() {
+        return opSerialNo();
+    }
+
     void addOperationToQueue(RootOperation & op, const BaseEntity *);
     RootOperation * getOperationFromQueue();
     const EntitySet & broadcastList(const RootOperation & op) const;
-    OpVector operation(const RootOperation * op);
     inline void updateTime();
     const std::string getNewId(const std::string & name);
     void deliverTo(const RootOperation & op, Entity * e);
   public:
-    ServerRouting & server;
-
-    explicit WorldRouter(ServerRouting & server);
+    explicit WorldRouter();
     virtual ~WorldRouter();
 
     int idle();
@@ -48,10 +49,6 @@ class WorldRouter : public BaseWorld {
     void delObject(Entity * obj);
     void setSerialno(OpVector &);
     void setSerialnoOp(RootOperation &);
-
-    const double upTime() const {
-        return realTime - timeoffset;
-    }
 
     virtual OpVector message(RootOperation & op, const Entity * obj);
     virtual OpVector message(const RootOperation & op);

@@ -5,19 +5,19 @@
 #include "Persistor.h"
 #include "Persistor_impl.h"
 
-#include <common/Database.h>
+#include "rulesets/Entity.h"
+#include "rulesets/Thing.h"
+#include "rulesets/Line.h"
+#include "rulesets/Area.h"
+#include "rulesets/Character.h"
+#include "rulesets/Creator.h"
+#include "rulesets/Food.h"
+#include "rulesets/Plant.h"
+#include "rulesets/Stackable.h"
+#include "rulesets/Structure.h"
+#include "rulesets/World.h"
 
-#include <rulesets/Entity.h>
-#include <rulesets/Thing.h>
-#include <rulesets/Line.h>
-#include <rulesets/Area.h>
-#include <rulesets/Character.h>
-#include <rulesets/Creator.h>
-#include <rulesets/Food.h>
-#include <rulesets/Plant.h>
-#include <rulesets/Stackable.h>
-#include <rulesets/Structure.h>
-#include <rulesets/World.h>
+#include "common/Database.h"
 
 template class Persistor<Entity>;
 template class Persistor<Thing>;

@@ -9,23 +9,23 @@
 #include "Persistor.h"
 #include "Player.h"
 
-#include <rulesets/Thing.h>
-#include <rulesets/MindFactory.h>
-#include <rulesets/Character.h>
-#include <rulesets/Creator.h>
-#include <rulesets/Plant.h>
-#include <rulesets/Food.h>
-#include <rulesets/Stackable.h>
-#include <rulesets/Structure.h>
-#include <rulesets/Line.h>
-#include <rulesets/Area.h>
-#include <rulesets/World.h>
+#include "rulesets/Thing.h"
+#include "rulesets/MindFactory.h"
+#include "rulesets/Character.h"
+#include "rulesets/Creator.h"
+#include "rulesets/Plant.h"
+#include "rulesets/Food.h"
+#include "rulesets/Stackable.h"
+#include "rulesets/Structure.h"
+#include "rulesets/Line.h"
+#include "rulesets/Area.h"
+#include "rulesets/World.h"
 
-#include <rulesets/Python_API.h>
+#include "rulesets/Python_API.h"
 
-#include <common/debug.h>
-#include <common/globals.h>
-#include <common/inheritance.h>
+#include "common/debug.h"
+#include "common/globals.h"
+#include "common/inheritance.h"
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Operation/Login.h>

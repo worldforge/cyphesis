@@ -9,8 +9,8 @@
 #include "ServerRouting_methods.h"
 #include "protocol_instructions.h"
 
-#include <common/log.h>
-#include <common/debug.h>
+#include "common/log.h"
+#include "common/debug.h"
 
 #include <iostream>
 

@@ -9,9 +9,9 @@
 
 #include "Thing.h"
 
-#include <common/BaseWorld.h>
-#include <common/log.h>
-#include <common/debug.h>
+#include "common/BaseWorld.h"
+#include "common/log.h"
+#include "common/debug.h"
 
 static const bool debug_flag = false;
 

@@ -6,9 +6,9 @@
 #include "config.h"
 #endif
 
-#include <common/accountbase.h>
-#include <common/const.h>
-#include <common/globals.h>
+#include "common/accountbase.h"
+#include "common/const.h"
+#include "common/globals.h"
 
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>

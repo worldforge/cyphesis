@@ -7,9 +7,9 @@
 
 #include "attributes.h"
 
-#include <modules/Location.h>
+#include "modules/Location.h"
 
-#include <common/BaseEntity.h>
+#include "common/BaseEntity.h"
 
 class BaseWorld;
 class MemMap;

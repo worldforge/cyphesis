@@ -7,10 +7,10 @@
 
 #include "Account.h"
 
-#include <common/OOGThing.h>
-#include <common/serialno.h>
+#include "common/OOGThing.h"
+#include "common/serialno.h"
 
-class WorldRouter;
+class BaseWorld;
 class Lobby;
 
 class ServerRouting : public OOGThing {
@@ -21,10 +21,12 @@ class ServerRouting : public OOGThing {
     const std::string svrName;
     int numClients;
   public:
-    WorldRouter & world;
+    BaseWorld & world;
     Lobby & lobby;
 
-    ServerRouting(const std::string & ruleset, const std::string & name);
+    ServerRouting(BaseWorld & wrld,
+                  const std::string & ruleset,
+                  const std::string & name);
     ~ServerRouting();
 
     int idle();
@@ -67,7 +69,7 @@ class ServerRouting : public OOGThing {
     void incClients() { ++numClients; }
     void decClients() { --numClients; }
 
-    WorldRouter & getWorld() { return world; }
+    BaseWorld & getWorld() { return world; }
 
     const std::string & getName() const { return svrName; }
 

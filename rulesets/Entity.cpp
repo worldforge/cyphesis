@@ -5,17 +5,17 @@
 #include "Entity.h"
 #include "Script.h"
 
-#include <common/log.h>
-#include <common/debug.h>
-#include <common/inheritance.h>
+#include "common/log.h"
+#include "common/debug.h"
+#include "common/inheritance.h"
 
-#include <common/Setup.h>
-#include <common/Tick.h>
-#include <common/Chop.h>
-#include <common/Cut.h>
-#include <common/Eat.h>
-#include <common/Nourish.h>
-#include <common/Burn.h>
+#include "common/Setup.h"
+#include "common/Tick.h"
+#include "common/Chop.h"
+#include "common/Cut.h"
+#include "common/Eat.h"
+#include "common/Nourish.h"
+#include "common/Burn.h"
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sight.h>

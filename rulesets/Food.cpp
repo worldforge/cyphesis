@@ -5,9 +5,9 @@
 #include "Food.h"
 #include "Script.h"
 
-#include <common/Eat.h>
-#include <common/Burn.h>
-#include <common/Nourish.h>
+#include "common/Eat.h"
+#include "common/Burn.h"
+#include "common/Nourish.h"
 
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Set.h>

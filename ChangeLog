@@ -1,3 +1,10 @@
+2003-03-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* Use " instead of < when including application headers.
+
+	* Re-work the interface between server and worldrouter objects
+	  so that the are less tied together, and more flexible.
+
 2003-03-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Admin.cpp, server/CommClient.h, server/ServerRouting.h:

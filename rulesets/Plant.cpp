@@ -6,10 +6,10 @@
 
 #include "Script.h"
 
-#include <common/const.h>
-#include <common/random.h>
+#include "common/const.h"
+#include "common/random.h"
 
-#include <common/Tick.h>
+#include "common/Tick.h"
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>

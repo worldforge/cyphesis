@@ -7,6 +7,8 @@
 
 #include "OOGThing.h"
 
+#include "globals.h"
+
 class Entity;
 
 class BaseWorld : public OOGThing {
@@ -41,6 +43,12 @@ class BaseWorld : public OOGThing {
         return realTime;
     }
 
+    const double upTime() const {
+        return realTime - timeoffset;
+    }
+
+    virtual int idle() = 0;
+    virtual Entity * addObject(Entity * obj, bool setup = true) = 0;
     virtual Entity * addObject(const std::string &,
                                const Atlas::Message::Object::MapType &,
                                const std::string & id = std::string()) = 0;

@@ -5,8 +5,10 @@
 
 #include "ClientConnection.h"
 
-#include <common/debug.h>
-#include <common/globals.h>
+#include "rulesets/MindFactory.h"
+
+#include "common/debug.h"
+#include "common/globals.h"
 
 #include <Atlas/Codec.h>
 #include <Atlas/Message/Object.h>
@@ -42,8 +44,6 @@ char * getHome()
     }
     return NULL;
 }
-
-#include <rulesets/MindFactory.h>
 
 int main(int argc, char ** argv)
 {

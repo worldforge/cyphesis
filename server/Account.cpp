@@ -5,17 +5,17 @@
 #include "Account.h"
 
 #include "Connection_methods.h"
-#include "WorldRouter.h"
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "ExternalMind.h"
 #include "Persistance.h"
 
-#include <rulesets/Character.h>
+#include "rulesets/Character.h"
 
-#include <common/log.h>
-#include <common/debug.h>
-#include <common/Database.h>
+#include "common/log.h"
+#include "common/debug.h"
+#include "common/Database.h"
+#include "common/BaseWorld.h"
 
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Sight.h>
@@ -73,7 +73,7 @@ void Account::addCharacter(Entity * chr)
 Entity * Account::addCharacter(const std::string & typestr,
                                const Fragment::MapType & ent)
 {
-    WorldRouter & world = connection->server.world;
+    BaseWorld & world = connection->server.world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
     Entity * chr = world.addObject(typestr, ent);
     debug(std::cout << "Added" << std::endl << std::flush;);

@@ -10,18 +10,18 @@
 #include "Script.h"
 #include "World.h"
 
-#include <common/BaseWorld.h>
-#include <common/op_switch.h>
-#include <common/const.h>
-#include <common/debug.h>
-#include <common/globals.h>
-#include <common/log.h>
+#include "common/BaseWorld.h"
+#include "common/op_switch.h"
+#include "common/const.h"
+#include "common/debug.h"
+#include "common/globals.h"
+#include "common/log.h"
 
-#include <common/Setup.h>
-#include <common/Tick.h>
-#include <common/Cut.h>
-#include <common/Eat.h>
-#include <common/Nourish.h>
+#include "common/Setup.h"
+#include "common/Tick.h"
+#include "common/Cut.h"
+#include "common/Eat.h"
+#include "common/Nourish.h"
 
 #include <Atlas/Objects/Operation/Action.h>
 #include <Atlas/Objects/Operation/Sound.h>

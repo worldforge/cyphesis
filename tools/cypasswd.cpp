@@ -6,8 +6,8 @@
 #include "config.h"
 #endif
 
-#include <common/accountbase.h>
-#include <common/globals.h>
+#include "common/accountbase.h"
+#include "common/globals.h"
 
 #include <string>
 #include <iostream>

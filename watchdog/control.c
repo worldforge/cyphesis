@@ -7,7 +7,7 @@
 #include <signal.h>
 #include <errno.h>
 
-#include <common/config.h>
+#include "common/config.h"
 
 #error This file has been removed from the build
 

@@ -5,11 +5,11 @@
 #include "CreatorClient.h"
 #include "Py_CreatorClient.h"
 
+#include "common/debug.h"
+
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Set.h>
-
-#include <common/debug.h>
 
 static const bool debug_flag = true;
 

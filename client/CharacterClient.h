@@ -5,7 +5,7 @@
 #ifndef CHARACTER_CLIENT_H
 #define CHARACTER_CLIENT_H
 
-#include <rulesets/BaseMind.h>
+#include "rulesets/BaseMind.h"
 
 class ClientConnection;
 
