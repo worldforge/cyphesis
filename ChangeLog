@@ -1,3 +1,9 @@
+2004-03-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.cpp: Make sight range bigger.
+
+	* rulessets/Area.cpp: Make area bboxes non-solid.
+
 2004-03-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp: Add a FIXME for a very old obsolete test.
