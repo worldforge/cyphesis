@@ -51,6 +51,7 @@ typedef std::pair<int, string> thing_t;
 
 #define BASE_THING	0
 #define BASE_CHARACTER	1
+#define BASE_CREATOR	2
 
 class ThingFactory {
     map<string,thing_t> thing_map;

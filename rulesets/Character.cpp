@@ -500,6 +500,7 @@ oplist Character::Mind_Operation(const Set & op)
 oplist Character::Mind_Operation(const Create & op)
 {
     // We need to call, THE THING FACTORY!
+    cout << "Character::Mind_Operation(Create)" << endl << flush;
     oplist res;
     return(res);
 }
@@ -633,7 +634,7 @@ oplist Character::W2m_Operation(const Touch & op)
     return(res);
 }
 
-oplist Character::send_mind(RootOperation & msg)
+oplist Character::send_mind(const RootOperation & msg)
 {
     cout << "Character::send_mind" << endl << flush;
     oplist res;

@@ -286,6 +286,9 @@ class BaseEntity {
     virtual oplist Operation(const Save & obj) { oplist res; return(res); }
     virtual oplist Operation(const Setup & obj) { oplist res; return(res); }
     virtual oplist Operation(const RootOperation & obj) { oplist res; return(res); }
+    void set_refno_op(RootOperation * op, const RootOperation & ref_op);
+    void set_refno(oplist ret, const RootOperation & ref_op);
+
     bad_type find_operation(bad_type op_id, char * prefix,bad_type undefined_operation);
     bad_type setup_operation(bad_type op);
     bad_type look_operation(bad_type op);

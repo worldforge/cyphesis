@@ -11,7 +11,6 @@
 #include <Atlas/Objects/Operation/Look.h>
 
 #include "Thing.h"
-#include "Character.h"
 
 #include <server/WorldRouter.h>
 
@@ -92,6 +91,7 @@ oplist Thing::Operation(const Setup & op)
         return(res);
     }
     RootOperation * tick = new Tick;
+    *tick = Tick::Instantiate();
     tick->SetTo(fullid);
     return(oplist(1,tick));
 }
@@ -136,6 +136,7 @@ oplist Thing::Operation(const Create & op)
         list<Message::Object> args2(1,obj->asObject());
         c->SetArgs(args2);
         RootOperation * s = new Sight();
+        *s = Sight::Instantiate();
         list<Message::Object> args3(1,c->AsObject());
         s->SetArgs(args3);
         res.push_back(s);
@@ -154,10 +155,11 @@ oplist Thing::Operation(const Delete & op)
         return(res);
     }
     world->del_object(this);
-    RootOperation * sight = new Sight;
+    RootOperation * s = new Sight;
+    *s = Sight::Instantiate();
     Message::Object::ListType args(1,op.AsObject());
-    sight->SetArgs(args);
-    return(oplist(1,sight));
+    s->SetArgs(args);
+    return(oplist(1,s));
 }
 
 oplist Thing::Operation(const Move & op)
@@ -378,6 +380,9 @@ oplist Thing::Operation(const Look & op)
 }
 
 
+#include "Character.h"
+#include "Creator.h"
+
 
 ThingFactory thing_factory;
 
@@ -388,6 +393,7 @@ ThingFactory::ThingFactory()
     thing_map["farmer"] = thing_t(BASE_CHARACTER, "characters.farmer");
     thing_map["guard"] = thing_t(BASE_CHARACTER, "");
     thing_map["butcher"] = thing_t(BASE_CHARACTER, "");
+    thing_map["creator"] = thing_t(BASE_CREATOR, "");
 }
 
 Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)
@@ -405,6 +411,9 @@ Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)
     Thing * thing;
     const string & py_class = t_type.second;
     switch (t_type.first) {
+        case BASE_CREATOR:
+            thing = new Creator();
+            break;
         case BASE_CHARACTER:
             thing = new Character();
             break;

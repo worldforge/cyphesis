@@ -1,4 +1,13 @@
-2000-11-08  Al Riddoch  <ajr@ecs.soton.ac.uk>
+2000-11-10  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Added more refno capabilities
+
+	* Fixed some operation instantiation bugs
+
+	* Added full support for creator entity. Admin client can now populate
+	  the world with items and NPCs.
+
+2000-11-09  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Removed two conflicting "WorldRouter * world" members from
 	  class hierarchy.

@@ -237,6 +237,20 @@ oplist BaseEntity::Operation(const Look & op)
     
 }
 
+inline void BaseEntity::set_refno_op(RootOperation * op, const RootOperation &ref_op)
+{
+    op->SetRefno(ref_op.GetSerialno());
+}
+
+void BaseEntity::set_refno(oplist ret, const RootOperation & ref_op)
+{
+    while (ret.size() != 0) {
+        RootOperation * br = ret.front();
+        set_refno_op(br, ref_op);
+        ret.pop_front();
+    }
+}
+
 op_no_t BaseEntity::op_enumerate(const RootOperation * op)
 {
     const Message::Object & parents = op->GetAttr("parents");

@@ -80,7 +80,7 @@ class Character : public Thing {
     virtual oplist W2m_Operation(const Setup & op);
     virtual oplist W2m_Operation(const Error & op);
     virtual oplist W2m_Operation(const RootOperation & op) { oplist res; return(res); }
-    virtual oplist send_mind(RootOperation & msg);
+    virtual oplist send_mind(const RootOperation & msg);
     virtual oplist mind2body(const RootOperation & op);
     virtual oplist world2body(const RootOperation & op);
     virtual oplist world2mind(const RootOperation & op);
