@@ -36,6 +36,8 @@ class editor:
         raise AttributeError,name
     def make(self, name, **kw):
         kw['name']=name
+        if not kw.has_key('type'):
+            kw['type']=name
         ent=apply(Entity,(),kw)
         #ent=Entity(kw)
 ##         if hasattr(ent,"copy"):

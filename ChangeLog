@@ -1,5 +1,10 @@
 2004-11-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/editor.py: Improve the define_world API by making
+	  the type argument optional.
+
+2004-11-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/NPCMind.py: Use primary type as key in
 	  mind.things when name is not useful.
 
