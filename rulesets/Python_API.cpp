@@ -826,10 +826,9 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             } else {
                 Element val_obj = PyObject_asMessageElement(val);
                 if (val_obj.getType() == Element::TYPE_NONE) {
-                    fprintf(stderr, "Could not handle %s value in Entity()", key);
-                    PyErr_SetString(PyExc_TypeError, "Argument type error to Entity()");
                     Py_DECREF(keys);
                     Py_DECREF(vals);
+                    PyErr_SetString(PyExc_TypeError, "Arg has no type.");
                     return NULL;
                 }
                 omap[key] = val_obj;
@@ -864,7 +863,7 @@ static inline void addToArgs(ListType & args, PyObject * ent)
     if (PyMessageElement_Check(ent)) {
         PyMessageElement * obj = (PyMessageElement*)ent;
         if (obj->m_obj == NULL) {
-            fprintf(stderr, "Invalid object in Operation arguments\n");
+            log(ERROR, "Operation() Null element object added to new operation arguments.");
             return;
         }
         Element o(*obj->m_obj);
@@ -882,12 +881,12 @@ static inline void addToArgs(ListType & args, PyObject * ent)
     } else if (PyOperation_Check(ent)) {
         PyOperation * op = (PyOperation*)ent;
         if (op->operation == NULL) {
-            fprintf(stderr, "Invalid operation in Operation arguments\n");
+            log(ERROR, "Operation() Null operation object added to new operation arguments.");
             return;
         }
         args.push_back(op->operation->asObject());
     } else {
-        fprintf(stderr, "Non-entity passed as arg to Operation()\n");
+        log(ERROR, "Operation() Unknown object added to operation arguments.");
     }
 }
 
@@ -950,20 +949,20 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     op->own = 1;
     if (PyMapping_HasKeyString(kwds, "to")) {
         PyObject * to = PyMapping_GetItemString(kwds, "to");
-        PyObject * to_id;
+        PyObject * to_id = 0;
         if (PyString_Check(to)) {
             to_id = to;
         } else if ((to_id = PyObject_GetAttrString(to, "id")) == NULL) {
-            fprintf(stderr, "To was not really an entity, as it had no id\n");
             Py_DECREF(to);
+            PyErr_SetString(PyExc_TypeError, "to is not a string and has no id");
             return NULL;
         } else {
             // to_id == to.getattr("id") and to is finished with
             Py_DECREF(to);
         }
         if (!PyString_Check(to_id)) {
-            fprintf(stderr, "To id is not a string\n");
             Py_DECREF(to_id);
+            PyErr_SetString(PyExc_TypeError, "id of to is not a string");
             return NULL;
         }
         op->operation->setTo(PyString_AsString(to_id));
@@ -971,19 +970,19 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     }
     if (PyMapping_HasKeyString(kwds, "from_")) {
         PyObject * from = PyMapping_GetItemString(kwds, "from_");
-        PyObject * from_id;
+        PyObject * from_id = 0;
         if (PyString_Check(from)) {
             from_id = from;
         } else if ((from_id = PyObject_GetAttrString(from, "id")) == NULL) {
-            fprintf(stderr, "From was not really an entity, as it had no id\n");
             Py_DECREF(from);
+            PyErr_SetString(PyExc_TypeError, "from is not a string and has no id");
             return NULL;
         } else {
             Py_DECREF(from);
         }
         if (!PyString_Check(from_id)) {
-            fprintf(stderr, "From id is not a string\n");
             Py_DECREF(from_id);
+            PyErr_SetString(PyExc_TypeError, "id of from is not a string");
             return NULL;
         }
         op->operation->setFrom(PyString_AsString(from_id));
@@ -1153,46 +1152,46 @@ void init_python_api()
     Py_DECREF(sys_module);
 
     if (Py_InitModule("atlas", atlas_methods) == NULL) {
-        log(CRITICAL, "Python init failed to Create atlas module\n");
+        log(CRITICAL, "Python init failed to create atlas module\n");
         return;
     }
 
     if (Py_InitModule("Vector3D", vector3d_methods) == NULL) {
-        log(CRITICAL, "Python init failed to Create Vector3D module\n");
+        log(CRITICAL, "Python init failed to create Vector3D module\n");
         return;
     }
 
     if (Py_InitModule("Point3D", point3d_methods) == NULL) {
-        log(CRITICAL, "Python init failed to Create Vector3D module\n");
+        log(CRITICAL, "Python init failed to create Vector3D module\n");
         return;
     }
 
     if (Py_InitModule("Quaternion", quaternion_methods) == NULL) {
-        log(CRITICAL, "Python init failed to Create Quaternion module\n");
+        log(CRITICAL, "Python init failed to create Quaternion module\n");
         return;
     }
 
     if (Py_InitModule("misc", misc_methods) == NULL) {
-        log(CRITICAL, "Python init failed to Create misc module\n");
+        log(CRITICAL, "Python init failed to create misc module\n");
         return;
     }
 
     PyObject * common = Py_InitModule("common", common_methods);
     if (common == NULL) {
-        log(CRITICAL, "Python init failed to Create common module\n");
+        log(CRITICAL, "Python init failed to create common module\n");
         return;
     }
 
     PyObject * common_dict = PyModule_GetDict(common);
 
     /// Create the common.log module
-    PyObject * log = PyModule_New("log");
-    PyDict_SetItemString(common_dict, "log", log);
+    PyObject * log_mod = PyModule_New("log");
+    PyDict_SetItemString(common_dict, "log", log_mod);
 
     PyObject * debug = (PyObject*)PyObject_NEW(FunctionObject, &log_debug_type);
-    PyObject_SetAttrString(log, "debug", debug);
+    PyObject_SetAttrString(log_mod, "debug", debug);
     Py_DECREF(debug);
-    Py_DECREF(log);
+    Py_DECREF(log_mod);
 
     PyObject * o;
 
@@ -1245,7 +1244,7 @@ void init_python_api()
 
     PyObject * server;
     if ((server = Py_InitModule("server", server_methods)) == NULL) {
-        fprintf(stderr, "Failed to Create server module\n");
+        log(CRITICAL, "Python init failed to create server module\n");
         return;
     }
     PyObject * server_dict = PyModule_GetDict(server);

@@ -11,6 +11,8 @@
 
 #include "Entity.h"
 
+#include "common/log.h"
+
 static PyObject * Location_copy(PyLocation *self)
 {
 #ifndef NDEBUG
@@ -115,13 +117,13 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
     if (PyVector3D_Check(v)) {
         PyVector3D * vec = (PyVector3D *)v;
         if (!vec->coords.isValid()) {
-            fprintf(stderr, "This vector is not set\n");
+            log(ERROR, "Location.setattr() vector is not set.");
         }
         vector = vec->coords;
     } else if (PyPoint3D_Check(v)) {
         PyPoint3D * p = (PyPoint3D *)v;
         if (!p->coords.isValid()) {
-            fprintf(stderr, "This point is not set\n");
+            log(ERROR, "Location.setattr() point is not set.");
         }
         vector = Vector3D(p->coords.x(), p->coords.y(), p->coords.z());
     } else if (PyTuple_Check(v) && (PyTuple_Size(v) == 3)) {

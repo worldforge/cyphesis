@@ -5,6 +5,8 @@
 #include "Py_BBox.h"
 #include "Py_Vector3D.h"
 
+#include "common/log.h"
+
 static PyMethodDef BBox_methods[] = {
     {NULL, NULL}  // sentinel
 };
@@ -40,9 +42,9 @@ static int BBox_setattr(PyBBox *self, char *name, PyObject *v)
     }
     PyVector3D * vec = (PyVector3D *)v;
     if (!vec->coords.isValid()) {
-        fprintf(stderr, "This vector is not valid\n");
+        log(ERROR, "BBox.setattr() vector is not set.");
     }
-    Vector3D vector = vec->coords;
+    const Vector3D & vector = vec->coords;
     if (strcmp(name, "near_point") == 0) {
         (WFMath::Point<3>&)self->box.lowCorner() = WFMath::Point<3>(vector.x(),
                                                                     vector.y(),
