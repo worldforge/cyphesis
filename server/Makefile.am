@@ -11,7 +11,8 @@ cyphesis_SOURCES = \
 		WorldRouter.cpp WorldRouter.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
-		CommClient.h CommServer.h \
+		CommServer.cpp CommServer.h \
+		CommClient.cpp CommClient.h \
 		protocol_instructions.h \
 		server.cpp server.h
 

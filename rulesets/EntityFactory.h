@@ -5,8 +5,9 @@
 #ifndef RULESETS_ENTITY_FACTORY_H
 #define RULESETS_ENTITY_FACTORY_H
 
-#include <string>
-#include <map>
+#include <Atlas/Message/Object.h>
+
+#include <common/types.h>
 
 class Thing;
 class FactoryBase;

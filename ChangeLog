@@ -1,5 +1,16 @@
 2001-09-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/server.cpp: Moved CommServer and CommClient into their own
+	  files. Cleaned up debugging output.
+
+	* rulesets/EntityFactory.h, server/CommServer.h: Fixed headers so
+	  the required ones are included.
+
+	* server/Persistance.cpp: Re-wrote shutdown method so it deletes
+	  the class instance.
+
+2001-09-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* BUGS: Note that C++ version of client currently does not work.
 
 	* TODO: Update on important issues which allow easy DOS attacks.

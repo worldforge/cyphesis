@@ -63,11 +63,14 @@ bool Persistance::init()
 
 void Persistance::shutdown()
 {
-    Persistance * p = instance();
+    Persistance * p = (Persistance *)m_instance;
+    if (p == NULL) { return; }
     p->shutdownAccount();
     p->shutdownWorld();
     p->shutdownMind();
     p->shutdownServer();
+    delete p;
+    m_instance = NULL;
 }
 
 Account * Persistance::loadAdminAccount()

@@ -7,6 +7,9 @@
 
 #include <common/const.h>
 
+#include <map>
+#include <string>
+
 extern "C" {
     #include <netinet/in.h>
 }
