@@ -40,8 +40,8 @@ class EntityFactory {
             delete m_instance;
         }
     }
-    Entity * newEntity(const std::string &,
-                      const Atlas::Message::Object::MapType &);
+    Entity * newEntity(const std::string &, const std::string &,
+                       const Atlas::Message::Object::MapType &);
     void flushFactories();
 
     void installFactory(const std::string &, const std::string &, FactoryBase*);

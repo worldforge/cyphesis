@@ -1,5 +1,13 @@
 2002-12-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Shuffle the way id is generated, so
+	  its available for persistance.
+
+	* server/EntityFactory.h, server/EntityFactory.cpp: Pass id
+	  into entityfactory so it can be passed to database.
+
+2002-12-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/server.cpp, server/WorldRouter.cpp,
 	  server/EntityFactory.h, server/EntityFactory.cpp:
 	  Change the way the EnitityFactory is created so it has a

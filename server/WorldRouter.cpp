@@ -110,7 +110,11 @@ inline void WorldRouter::setSerialnoOp(RootOperation & op)
 inline const std::string WorldRouter::getNewId(const std::string & name)
 {
     std::stringstream buf;
+#ifdef DEBUG
     buf << name << "_" << ++nextId;
+#else
+    buf << ++nextId;
+#endif
     std::string full_id = buf.str();
     size_t index;
     while ((index = full_id.find(' ', 0)) != std::string::npos) {
@@ -123,9 +127,6 @@ Entity * WorldRouter::addObject(Entity * obj)
 {
     debug(std::cout << "WorldRouter::addObject(Entity *)" << std::endl
                     << std::flush;);
-    if (obj->getId().empty()) {
-        obj->setId(getNewId(obj->getName()));
-    }
     eobjects[obj->getId()] = obj;
     objectList.insert(obj);
     if (!obj->location.isValid()) {
@@ -155,13 +156,17 @@ Entity * WorldRouter::addObject(Entity * obj)
 
 Entity * WorldRouter::addObject(const std::string & typestr,
                                 const Fragment::MapType & ent,
-                                const std::string & id)
+                                const std::string & cid)
 {
     debug(std::cout << "WorldRouter::addObject(std::string, ent)" << std::endl
                     << std::flush;);
-    Entity * obj;
-    obj = EntityFactory::instance()->newEntity(typestr, ent);
-    obj->setId(id);
+    std::string id;
+    if (cid.empty()) {
+        id = getNewId(typestr);
+    } else {
+        id = cid;
+    }
+    Entity * obj = EntityFactory::instance()->newEntity(id, typestr, ent);
     return addObject(obj);
 }
 

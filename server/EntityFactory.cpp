@@ -58,7 +58,8 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w)
                    new PersistantThingFactory<Structure>());
 }
 
-Entity * EntityFactory::newEntity(const std::string & type,
+Entity * EntityFactory::newEntity(const std::string & id,
+                                  const std::string & type,
                                   const Fragment::MapType & entmap)
 {
     // FIXME Re-write to use persistant stuff
@@ -88,6 +89,7 @@ Entity * EntityFactory::newEntity(const std::string & type,
     }
     debug( std::cout << "[" << type << " " << thing->getName() << "]"
                      << std::endl << std::flush;);
+    thing->setId(id);
     thing->setType(type);
     // merge attributes from the creation op over default attributes.
     // FIXME Is it practical to avoid this merge copy by calling merge twice?
@@ -98,7 +100,12 @@ Entity * EntityFactory::newEntity(const std::string & type,
     }
     thing->merge(attributes);
     // Get location from entity, if it is present
-    thing->getLocation(attributes, m_world.getObjects());
+    if (thing->getLocation(attributes, m_world.getObjects())) {
+        thing->location.ref = &m_world.gameWorld;
+    }
+    if (!thing->location.coords.isValid()) {
+        thing->location.coords = Vector3D(0,0,0);
+    }
     if (pc != 0) {
         pc->persist();
     }
