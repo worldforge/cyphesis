@@ -1,7 +1,7 @@
 [cyphesis]
 
 # Default ruleset config file and script directory
-ruleset="acorn"
+ruleset="mason"
 # Name to identify this server, please customise and include
 # servername="Acorn server"
 # TCP port to listen on

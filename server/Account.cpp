@@ -121,7 +121,8 @@ oplist Account::CreateOperation(const Create & op)
         return error;
     }
     const std::string & typestr = I->second.AsList().front().AsString();
-    debug(cout << "Account creating a " << typestr << " object" << endl << flush;);
+    debug( std::cout << "Account creating a " << typestr << " object"
+                     << std::endl << std::flush; );
 
     BaseEntity * obj = addCharacter(typestr, ent);
     //log.inform("Player "+Account::id+" adds character "+`obj`,op);
@@ -152,16 +153,18 @@ oplist Account::ImaginaryOperation(const Imaginary & op)
 oplist Account::TalkOperation(const Talk & op)
 {
     const Object::ListType & args = op.GetArgs();
+    Sound s(Sound::Instantiate());
+    s.SetArgs(Object::ListType(1,op.AsObject()));
+    s.SetFrom(getId());
     if ((args.size() > 0) && (args.front().IsMap())) {
         const Object::MapType & arg = args.front().AsMap();
         Object::MapType::const_iterator I = arg.find("loc");
         if (I != arg.end()) {
-            Sound s(Sound::Instantiate());
-            s.SetArgs(Object::ListType(1,op.AsObject()));
             s.SetTo(I->second.AsString());
-            s.SetFrom(getId());
-            return connection->server.lobby.operation(s);
+        } else {
+            s.SetTo(op.GetTo());
         }
+        return connection->server.lobby.operation(s);
     }
     return oplist();
 }

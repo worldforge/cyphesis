@@ -18,8 +18,6 @@ oplist Lobby::operation(const RootOperation & op)
         for (; I != accounts.end(); ++I) {
             Connection * c = I->second->connection;
             if (c != NULL) {
-                std::cout << "Sending to " << I->first << " in lobby"
-                          << std::endl << std::flush;
                 newop.SetTo(I->first);
                 c->send(&newop);
             }

@@ -43,10 +43,12 @@ dist-hook:
 	tar cf - `find basic -name \*.py` | (cd $(distdir); tar xf -)
 	tar cf - `find acorn -name \*.py` | (cd $(distdir); tar xf -)
 	tar cf - `find werewolf -name \*.py` | (cd $(distdir); tar xf -)
+	tar cf - `find mason -name \*.py` | (cd $(distdir); tar xf -)
 
 install-data-local:
 	mkdirhier $(datadir)/cyphesis/rulesets
 	tar cf - `find basic -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
 	tar cf - `find acorn -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
 	tar cf - `find werewolf -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
+	tar cf - `find mason -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
 	cat basic/hooks/ruleset_import_hooks.py | sed 's%PREFIX%$(datadir)/cyphesis%' > $(DESTDIR)$(datadir)/cyphesis/rulesets/basic/hooks/ruleset_import_hooks.py

@@ -77,9 +77,23 @@ class Vector3D {
         return Vector3D(x+other.x, y+other.y, z+other.z);
     }
 
+    Vector3D & operator+=(const Vector3D & other) {
+        x += other.x;
+        y += other.y;
+        z += other.z;
+        return *this;
+    }
+
     const Vector3D operator+(double other) const {
         // Increaese size (in all direction for boxes)
         return Vector3D(x+other, y+other, z+other);
+    }
+
+    Vector3D & operator+=(double other) {
+        x += other;
+        y += other;
+        z += other;
+        return *this;
     }
 
     const Vector3D operator-(const Vector3D & other) const {
@@ -87,14 +101,47 @@ class Vector3D {
         return Vector3D(x-other.x, y-other.y, z-other.z);
     }
 
+    Vector3D & operator-=(const Vector3D & other) {
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
+        return *this;
+    }
+
+    const Vector3D operator-(double other) const {
+        // Decrease size (in all direction for boxes)
+        return Vector3D(x-other, y-other, z-other);
+    }
+
+    Vector3D & operator-=(double other) {
+        x -= other;
+        y -= other;
+        z -= other;
+        return *this;
+    }
+
     const Vector3D operator*(double other) const {
         // Multiply vector by number
         return Vector3D(x*other,y*other,z*other);
     }
 
+    Vector3D & operator*=(double other) {
+        x *= other;
+        y *= other;
+        z *= other;
+        return *this;
+    }
+
     const Vector3D operator/(double other) const {
         // Divide vector by number
         return Vector3D(x/other,y/other,z/other);
+    }
+
+    Vector3D & operator/=(double other) {
+        x /= other;
+        y /= other;
+        z /= other;
+        return *this;
     }
 
     operator bool() const {

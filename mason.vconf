@@ -1,0 +1,11 @@
+[cyphesis]
+ruleset		= "acorn"
+inittime	= 9600
+
+[thing]
+area		= ""
+stall		= ""
+house		= ""
+
+[character]
+villager	= "world.objects.characters.Villager"

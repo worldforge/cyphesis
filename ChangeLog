@@ -1,8 +1,20 @@
+2001-11-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Lobby.cpp: Removed debugging output.
+
+	* server/Account.cpp: Added handling of private chat.
+
+	* physics/Vector3D.h: Added more operators for efficient arithmetic
+	  with vectors.
+
+	* Added basis for mason ruleset.
+
 Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Updated configure.in to work with automake 2.5 (out here on
 	  the edge, the blood is flowing thick and fast).
-    * Certain distributions do not have libTermcap, and instead
+
+	* Certain distributions do not have libTermcap, and instead
 	  combine that functionality into NCurses; configure now
 	  checks for this. This should behave correctly on both
 	  RedHat and SuSE, particularly.
