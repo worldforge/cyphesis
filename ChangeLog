@@ -1,3 +1,10 @@
+2003-04-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cyphesis-setup: Add #!/bin/sh to be sure it gets treated
+	  as a script.
+
+	* Add configure checks for Python 2.3, and update varconf checks.
+
 2003-04-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/system.cpp: Clear the string portably.
