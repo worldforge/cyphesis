@@ -53,7 +53,9 @@ bool CommListener::setup(int port)
         struct sockaddr_in6 sin;
         sin.sin6_family = AF_INET6;
         sin.sin6_port = htons(port);
+        sin.sin6_flowinfo = 0;
         sin.sin6_addr = in6addr_any;
+        sin.sin6_scope_id = 0;
         if (::bind(listenFd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
             log(WARNING, "Could not bind 6 socket");
             perror("bind");
