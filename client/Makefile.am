@@ -3,6 +3,7 @@ atlas:
 
 dist-hook: atlas
 	tar cf - `find . -name \*.py` | (cd $(distdir); tar xf -)
+	cp acorn acorn_text $(distdir)/client/
 
 
 install-data-local: atlas
