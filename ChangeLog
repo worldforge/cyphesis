@@ -1,5 +1,11 @@
 2003-10-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/Collision.h, physics/Collision.cpp: Fix mesh collision
+	  functions. Modify return status of vertex/plane collision
+	  return value so its more useful.
+
+2003-10-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Collision.cpp: Fix vertex/plane collision prediction
 	  function.
 

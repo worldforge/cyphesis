@@ -7,14 +7,14 @@
 #include "Collision.h"
 
 
-bool predictCollision(const Vector3D & p,     // Position of point
+bool getCollisionTime(const Vector3D & p,     // Position of point
                       const Vector3D & u,     // Velocity of point
                       // double point_time,   // Time since position set
                       const Vector3D & l,     // Position on plane
                       const Vector3D & n,     // Plane normal
                       const Vector3D & v,     // Velocity of plane
                       // double plane_time,   // Time since position set
-                      double & time,            // Collision time return
+                      double & time,          // Collision time return
                       Vector3D & normal)      // Collision normal return
 //
 //
@@ -50,8 +50,8 @@ bool predictCollision(const Vector3D & p,     // Position of point
 // ( p.x * n.x - l.x * n.x + p.y * n.y - l.y * n.y + p.z * n.z - l.z * n.z ) /
 // ( v.x * n.x + v.y * n.y + v.z * n.z - u.x * n.x - u.y * n.y - u.z * n.z )
 //
-// return value should indicate whether we are infront of or behind the
-// plane. There is math in common, but I'm not sure how much it will help
+// return value should indicate whether the point was infront of the plane
+// before the collision.
 //
 {
     time = (  p.x() * n.x() - l.x() * n.x()
@@ -60,11 +60,14 @@ bool predictCollision(const Vector3D & p,     // Position of point
            (  v.x() * n.x() + v.y() * n.y()
             + v.z() * n.z() - u.x() * n.x()
             - u.y() * n.y() - u.z() * n.z() );
-    return (Dot(p - l, n) > 0.);
+    bool now_infront = (Dot(p - l, n) > 0.);
+    bool collided = (time < 0.);
+    return ((now_infront && !collided) || (!now_infront && collided));
 }
 
+// Returns true if first_collision has been updated
 static
-void predictEntryExit(const CoordList & c,          // Vertices of this mesh
+bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
                       const Vector3D & u,           // Velocity of this mesh
                       const CoordList & o,          // Vertices of other mesh
                       const NormalSet & n,          // Normals of other mesh
@@ -73,14 +76,8 @@ void predictEntryExit(const CoordList & c,          // Vertices of this mesh
                       Vector3D & normal)            // Returned collision normal
 {
     // Check l vertices against o surfaces
-    // FIXME AJR 2003-10-17
-    // I think I have these the wrong way around. Need to check a vertex
-    // against all the surfaces - not the other way around
-    // Also there are two issues, not one. Vertex collision is detected
-    // by the last plane a vertex moves behind. Object collision is
-    // detected by the first vertex to collide with the other object.
-    // Trickier than I thought.
     Vector3D entry_normal;
+    bool ret = false;
     CoordList::const_iterator I = c.begin();
     NormalSet::const_iterator J = n.begin();
     for (; I != c.end(); ++I) { // Iterate over vertices
@@ -88,39 +85,27 @@ void predictEntryExit(const CoordList & c,          // Vertices of this mesh
         for (; J != n.end(); ++J) { // Iterate over surfaces
             const Vector3D & s_pos = o[J->first];
             const Vector3D & s_norm = J->second;
-            if (predictCollision(*I, u, s_pos, s_norm, v, time, entry_normal)) {
-                // We are in front of the plane, so time is time to hit
-                if (time > 0) {
-                    if (time > last_vertex_entry) {
-                        last_vertex_entry = time;
-                    }
-                // or time since we exited
-                } else {
-                    // Irrelevant case I think
-                    if (time < first_vertex_exit) {
-                        first_vertex_exit = time;
-                    }
+            if (getCollisionTime(*I, u, s_pos, s_norm, v, time, entry_normal)) {
+                // We are colliding from infront
+                if (time > last_vertex_entry) {
+                    last_vertex_entry = time;
                 }
             } else {
-                // We are behind the plane, so time is time to exit
-                if (time > 0) {
-                    if (time < first_vertex_exit) {
-                        first_vertex_exit = time;
-                    }
-                // or time since we hit
-                } else {
-                    // Irrelevant case I think
-                    if (time > last_vertex_entry) {
-                        last_vertex_entry = time;
-                    }
+                // We are colliding fron behind
+                if (time < first_vertex_exit) {
+                    first_vertex_exit = time;
                 }
             }
         }
         if ((last_vertex_entry < first_vertex_exit) &&
             (last_vertex_entry < first_collision)) {
             first_collision = last_vertex_entry;
+            ret = true;
+            // FIXME Normal! Need to get it from above
+            // Also tricker because normal is 
         }
     }
+    return ret;
 }
 
 bool predictCollision(const CoordList & l,    // Vertices of this mesh
@@ -130,12 +115,14 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
                       const NormalSet & on,   // Normals of other mesh
                       const Vector3D & v,     // Velocity of other mesh
                       double & time,          // Returned time to collision
-                      Vector3D & n)      // Returned collision normal
+                      Vector3D & n)           // Returned collision normal
 {
-    double first_collision = 100;
-    predictEntryExit(l, u, o, on, v, first_collision, n);
-    predictEntryExit(o, v, l, ln, u, first_collision, n);
-    return (first_collision < 100);
+    bool lo = predictEntryExit(l, u, o, on, v, time, n);
+    bool ol = predictEntryExit(o, v, l, ln, u, time, n);
+    if (ol) {
+        n = -n;
+    }
+    return (lo || ol);
 }
 
 //
@@ -162,10 +149,10 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
 //         \|/
 
 
-bool predictCollision(const Location & l,
-                      const Location & o,
-                      double & time,
-                      Vector3D & normal)
+bool predictCollision(const Location & l,  // This location
+                      const Location & o,  // Other location
+                      double & time,       // Returned time to collision
+                      Vector3D & normal)   // Returned normal acting on l
 {
     const WFMath::Point<3> & ln = l.m_bBox.lowCorner();
     const WFMath::Point<3> & lf = l.m_bBox.highCorner();

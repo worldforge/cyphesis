@@ -14,8 +14,8 @@ class Location;
 typedef std::multimap<int, WFMath::Vector<3> > NormalSet;
 
 // Predict collision between a point and a plane.
-// Returns whether the point is already behind the plane
-bool predictCollision(const Vector3D & p,     // Position of point
+// Returns true if p is infront of plane before collision
+bool getCollisionTime(const Vector3D & p,     // Position of point
                       const Vector3D & u,     // Velocity of point
                       // double point_time,   // Time since position set
                       const Vector3D & l,     // Position on plane
