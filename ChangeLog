@@ -1,3 +1,16 @@
+2001-11-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* Cleaned up auto* build files. Added more updated info to README.
+
+	* modules/Location.cpp: Removed redundant includes.
+
+	* rulesets/mason/define_world.py: Drop in copy of Acorn world.
+
+	* server/WorldRouter.cpp: Removed double delete of gameWorld.
+
+	* server/server.cpp: Modified comments about segfault in Python
+	  shutdown, as this has now been eliminated.
+
 2001-11-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/inheritance.h, server/Connection.cpp: Simplify behavoir when

@@ -284,8 +284,11 @@ int main(int argc, char ** argv)
     EntityFactory::instance()->flushFactories();
     EntityFactory::del();
 
-    // This sometimes causes a segfault, so important things like the
-    // persistance need to come first
+    // Shutdown the python interpretter. This frees lots of memory, and if
+    // the malloc heap is in any way corrupt, a segfault is likely to
+    // occur at this point. Previous occassions where pointers have been
+    // deleted twice elsewhere in the code, have resulted in a segfault
+    // at this point. AlRiddoch 10th November 2001
     shutdown_python_api();
 
     delete global_conf;

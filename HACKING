@@ -16,9 +16,9 @@ Use of templates is not encouraged.
 REFERENCES
 
 References should be used instead of pointers wherever it is possible.
-If necessary the design of the code should reflect this preference.
-If a pointer is to be used which will be initialised to a value, will
-never change and can never be NULL, then that pointer should be a reference.
+If necessary the design of the code should reflect this preference.  If a
+pointer is to be used which will be initialised to a value, will never
+change and can never be NULL, then that pointer should be a reference.
 
 RETURN VALUES
 

@@ -42,7 +42,6 @@ AC_PROG_CXX
 
 CXXFLAGS='-Wall -g'
 
-AC_PREFIX_DEFAULT("/usr/local")
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
 dnl Test for WorldForge Atlas Libraries
@@ -50,18 +49,29 @@ dnl Test for WorldForge Atlas Libraries
 AC_LANG_CPLUSPLUS
 AC_REQUIRE_CPP
 
+dnl a general directory where worldforge related libs have been installed
+dnl
+AC_ARG_WITH(worldforge,
+    [ --with-worldforge=DIR directory where worldforge libs are installed ],
+    [
+        worldforgedir=$withval
+        CPPFLAGS="$CPPFLAGS -I${worldforgedir}/include"
+        LIBS="$LIBS -L${worldforgedir}/lib"
+    ]
+)
+
 dnl allow the user to provide the directory where python is installed in
 dnl
 AC_CACHE_CHECK(for location of python, python_prefix,
 [
-	python_prefix=/usr
-	AC_ARG_WITH(python,
-	[ --with-python=DIR          directory python is installed in [default=/usr]],
-	[
-		if test $withval != yes; then
-			python_prefix=$withval
-		fi
-	])
+    python_prefix=/usr
+    AC_ARG_WITH(python,
+    [ --with-python=DIR directory python is installed in [default=/usr]],
+    [
+        if test $withval != yes; then
+            python_prefix=$withval
+        fi
+    ])
 ])
 
 dnl then check for the header file Python.h and set
@@ -72,28 +82,33 @@ dnl if found define HAVE_PYTHON_H
 dnl
 
 AC_CHECK_HEADER(python2.1/Python.h,
-	[ python_include_path=-I${python_prefix}/include/python2.1
-	  python_version=python2.1
-	  AC_DEFINE(HAVE_PYTHON_H)
+    [
+        python_include_path=-I${python_prefix}/include/python2.1
+        python_version=python2.1
+        AC_DEFINE(HAVE_PYTHON_H)
+    ],[
+        AC_CHECK_HEADER(python2.0/Python.h,
+        [
+            python_include_path=-I${python_prefix}/include/python2.0
+            python_version=python2.0
+            AC_DEFINE(HAVE_PYTHON_H)
         ],[
-	AC_CHECK_HEADER(python2.0/Python.h,
-		[ python_include_path=-I${python_prefix}/include/python2.0
-		  python_version=python2.0
-		  AC_DEFINE(HAVE_PYTHON_H)
-                ],[
-		AC_CHECK_HEADER(python1.6/Python.h, 
-			[ python_include_path=-I${python_prefix}/include/python1.6
-			  python_version=python1.6
-			  AC_DEFINE(HAVE_PYTHON_H)
-                        ],[
-			AC_CHECK_HEADER(python1.5/Python.h, 
-				[ python_include_path=-I${python_prefix}/include/python1.5
-				  python_version=python1.5
-				  AC_DEFINE(HAVE_PYTHON_H)
-				])
-			])
-		])
-	])
+            AC_CHECK_HEADER(python1.6/Python.h, 
+            [
+                python_include_path=-I${python_prefix}/include/python1.6
+                python_version=python1.6
+                AC_DEFINE(HAVE_PYTHON_H)
+            ],[
+                AC_CHECK_HEADER(python1.5/Python.h, 
+                [
+                    python_include_path=-I${python_prefix}/include/python1.5
+                    python_version=python1.5
+                    AC_DEFINE(HAVE_PYTHON_H)
+                ])
+            ])
+        ])
+    ]
+)
 
 PYTHON_INCLUDES=${python_include_path}
 CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
@@ -106,12 +121,12 @@ AC_CHECK_LIB(dl,dlopen)
 AC_CHECK_LIB(pthread,pthread_create)
 
 AC_CHECK_LIB(${python_version}, 
-	Py_Initialize,
-	[python_libs="-L${python_lib_path} -l${python_version} -lutil"	  
-	AC_DEFINE(HAVE_PYTHON_LIB)
-	],
-	,
-	[-L${python_lib_path} -lutil]
+    Py_Initialize,
+    [
+        python_libs="-L${python_lib_path} -l${python_version} -lutil"	  
+        AC_DEFINE(HAVE_PYTHON_LIB)
+    ],,
+    [-L${python_lib_path} -lutil]
 )
 
 PYTHON_LIBS=${python_libs}
@@ -126,18 +141,19 @@ LIBS="$LIBS $ATLAS_LIBS"
 
 AC_CHECK_HEADERS(db3/db_cxx.h, ,
 [
-	AC_CHECK_HEADERS(db_cxx.h, ,
-	[
-		AC_MSG_ERROR(Couldn't find working Berkely DB v3 headers.)
-	])
+    AC_CHECK_HEADERS(db_cxx.h, ,
+    [
+        AC_MSG_ERROR(Couldn't find working Berkely DB v3 headers.)
+    ])
 ])
 
 dnl AC_CHECK_LIB(sigc,main)
-AM_PATH_SIGC(1.0.2,[
-	CPPFLAGS="$CPPFLAGS $SIGC_CFLAGS"
-	LIBS="$LIBS $SIGC_LIBS"
-	],
-	AC_MSG_ERROR(Couldn't find libsigc++ config [or config failed])
+AM_PATH_SIGC(1.0.2,
+    [
+        CPPFLAGS="$CPPFLAGS $SIGC_CFLAGS"
+        LIBS="$LIBS $SIGC_LIBS"
+    ],
+    AC_MSG_ERROR(Couldn't find libsigc++ config [or config failed])
 )
 
 AC_CHECK_LIB(varconf,main)
@@ -147,24 +163,24 @@ AC_CHECK_LIB(db3_cxx,main)
 AC_CHECK_LIB(skstream,main)
 
 AC_CHECK_LIB(termcap,tgetent, 
-	[LIBS="$LIBS -ltermcap"],
-	AC_CHECK_LIB(ncurses, tgetent, 
-		[LIBS="$LIBS -lncurses"],
-		AC_MSG_ERROR([Couldn't find tgetent in termcap or ncurses libraries!])
-	)
+    [LIBS="$LIBS -ltermcap"],
+    AC_CHECK_LIB(ncurses, tgetent, 
+        [LIBS="$LIBS -lncurses"],
+        AC_MSG_ERROR([Couldn't find tgetent in termcap or ncurses libraries!])
+    )
 )
 
 AC_CHECK_LIB(readline,readline)
 
 dnl Generate files
 AC_OUTPUT([
-	cyphesis.spec
-	Makefile
-	physics/Makefile
-	common/Makefile
-	modules/Makefile
-	rulesets/Makefile
-	server/Makefile
-	client/Makefile
-	tools/Makefile
+    cyphesis.spec
+    Makefile
+    physics/Makefile
+    common/Makefile
+    modules/Makefile
+    rulesets/Makefile
+    server/Makefile
+    client/Makefile
+    tools/Makefile
 ])

@@ -39,7 +39,6 @@ WorldRouter::WorldRouter(ServerRouting & srvr) : BaseWorld(*new World()),
 
 WorldRouter::~WorldRouter()
 {
-    delete &gameWorld;
     opqueue::const_iterator I = operationQueue.begin();
     for (; I != operationQueue.end(); I++) {
         delete *I;

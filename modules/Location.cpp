@@ -2,17 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Operation/Login.h>
-
-#include <Atlas/Message/Object.h>
-
-#include <physics/Vector3D.h>
-
-#include <streambuf.h> // Simplest source of NULL
-
-#include "Location.h"
-
 #include <rulesets/Entity.h>
 
 using Atlas::Message::Object;

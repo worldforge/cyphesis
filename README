@@ -1,34 +1,38 @@
-Welcome to cyphesis, at the time of writing the only fully armed and 
+Welcome to cyphesis, at the time of writing the only fully armed and
 operational WorldForge server. Cyphesis is being developed as a small
-scale or personal server for WorldForge games, and is currently being
-used to develop bleeding edge techniques and technologies for the WorldForge
+scale or personal server for WorldForge games, and is currently being used
+to develop bleeding edge techniques and technologies for the WorldForge
 project. Code from cyphesis will also be used to control NPCs in future
 servers such as STAGE using AI techniques.
 
 Installation:
 
 cyphesis is built using autoconf. Please see the file INSTALL for details.
+It requires Python, Berkeley db3 which are include with most Linux
+distributions, and Atlas-C++, varconf and skstream which are provided
+by the WorldForge project. GNU readline is required by some of the
+included tools.
 
 Copyright:
 
 The server code in C++ is distributed under the GNU General Public License.
-See the file COPYING for details. The script files included with
-this distribution are also distributed under the GNU General Public License.
-Note that this copyright does not cover user scripts that use server services
-but do not use code from the scripts provided. Using such scripts is
-considered ordinary use of the server, and does not fall under the heading
-of derived work.
+See the file COPYING for details. The script files included with this
+distribution are also distributed under the GNU General Public License.
+Note that this copyright does not cover user scripts that use server
+services but do not use code from the scripts provided. Using such
+scripts is considered ordinary use of the server, and does not fall under
+the heading of derived work.
 
 Usage and configuration:
 
 The main server binary is called cyphesis. Its command line arguments
-and configuration are managed by varconf, which means options are set
-in config files and on the command line. The main configuration
-file is called cyphesis.vconf, and server settings are stored in
-the [cyphesis] section. Settings in this config file can be overriden
-in on the command line, and once overriden they will be stored permanently
-in .cyphesis.vconf in the users home directory. In order to drop
-back to the default settings, remove this file.
+and configuration are managed by varconf, which means options are
+set in config files and on the command line. The main configuration
+file is called cyphesis.vconf, and server settings are stored in the
+[cyphesis] section. Settings in this config file can be overriden in on
+the command line, and once overriden they will be stored permanently in
+.cyphesis.vconf in the users home directory. In order to drop back to
+the default settings, remove this file.
 
 As an example, the ruleset to be used is set in cyphesis.vconf as follows:
 
@@ -42,3 +46,14 @@ option:
 For more details of vconf usage see the Varconf documentation. For full
 details on configuring cyphesis, see the configuration docementation.
 
+The ruleset specified indicates the entity types available, and the set
+of scripts that will be used for these entities, and the initialisation
+script used to populate the server.
+
+The server is populated using the client program, cyclient.
+
+The default ruleset for this version is mason, but the acorn ruleset is
+provided, including the files required to be loaded into the world database.
+To switch to the acorn ruleset, follow the instructions above, after
+loading the agrilan*.xml files into the world database using the cydload
+command.
