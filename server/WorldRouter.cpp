@@ -29,7 +29,7 @@ inline void WorldRouter::updateTime()
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    double tmp_time = (double)(tv.tv_sec - m_initTime) + (double)tv.tv_usec/1000000;
+    double tmp_time = (double)(tv.tv_sec + timeoffset - m_initTime) + (double)tv.tv_usec/1000000;
     m_realTime = tmp_time;
 }
 
@@ -38,7 +38,7 @@ WorldRouter::WorldRouter() : BaseWorld(consts::rootWorldId,
                                        *new World(consts::rootWorldId))
 {
     // setId(consts::rootWorldId);
-    m_initTime = time(NULL) - timeoffset;
+    m_initTime = time(NULL);
     updateTime();
     // m_gameWorld.setId(getId());
     m_gameWorld.m_world = this;

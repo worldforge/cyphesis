@@ -47,11 +47,11 @@ class DateTime {
     int month() const { return m_month; }
     int year() const { return m_year; }
 
-    unsigned int spm() { return m_spm; }
-    unsigned int mph() { return m_mph; }
-    unsigned int hpd() { return m_hpd; }
-    unsigned int dpm() { return m_dpm; }
-    unsigned int mpy() { return m_mpy; }
+    static unsigned int spm() { return m_spm; }
+    static unsigned int mph() { return m_mph; }
+    static unsigned int hpd() { return m_hpd; }
+    static unsigned int dpm() { return m_dpm; }
+    static unsigned int mpy() { return m_mpy; }
 
     bool operator==( const DateTime & ) const;
 };

@@ -1,5 +1,15 @@
 2004-06-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* Fix bounding boxes for fir and oak scaling.
+
+	* common/globals.cpp: Default to starting at dawn.
+
+	* modules/DateTime.h: Make accessors to static vars static.
+
+	* server/WorldRouter.cpp: Handle time offest more sanely.
+
+2004-06-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* Fix up bounding boxes for pig and chicken.
 
 	* server/CommListener.cpp: Set linger option to prevent sockets

@@ -5,6 +5,8 @@
 #include "globals.h"
 #include "log.h"
 
+#include "modules/DateTime.h"
+
 #include <varconf/Config.h>
 
 varconf::Config * global_conf = NULL;
@@ -15,7 +17,7 @@ std::vector<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;
 bool restricted_flag = false;
-int timeoffset = 0;
+int timeoffset = DateTime::spm() * DateTime::mph() * 6; // Dawn
 int port_num = 6767;
 
 bool loadConfig(int argc, char ** argv, bool server)

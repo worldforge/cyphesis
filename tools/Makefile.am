@@ -4,7 +4,8 @@ INCLUDES = -I$(top_srcdir)
 
 cycmd_SOURCES = cycmd.cpp
 
-cycmd_LDADD = $(top_builddir)/common/operations.o \
+cycmd_LDADD = $(top_builddir)/modules/DateTime.o \
+              $(top_builddir)/common/operations.o \
               $(top_builddir)/common/globals.o \
               $(top_builddir)/common/log.o \
               $(top_builddir)/common/utility.o \
@@ -16,13 +17,15 @@ cyconvertrules_SOURCES = cyconvertrules.cpp
 
 cyloadrules_SOURCES = cyloadrules.cpp
 
-cyloadrules_LDADD = $(top_builddir)/common/Database.o \
+cyloadrules_LDADD = $(top_builddir)/modules/DateTime.o \
+                    $(top_builddir)/common/Database.o \
                     $(top_builddir)/common/globals.o \
                     $(top_builddir)/common/log.o
 
 cypasswd_SOURCES = cypasswd.cpp
 
-cypasswd_LDADD = $(top_builddir)/common/Database.o \
+cypasswd_LDADD = $(top_builddir)/modules/DateTime.o \
+                 $(top_builddir)/common/Database.o \
                  $(top_builddir)/common/accountbase.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/log.o \
