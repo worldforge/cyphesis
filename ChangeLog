@@ -1,3 +1,9 @@
+2002-05-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.cpp: Fix slight inefficiency in processing ops.
+
+	* server/Account.cpp: Make sure accounts have names.
+
 2002-05-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/BaseMind.cpp: Fix NPC behavoir by ensuring that tick

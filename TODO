@@ -1,3 +1,14 @@
+Must fix for Mason 0.0.2
+
+  Stop broadcasting passwords around the place. Probably best done by sorting
+  out the account table properlly.
+
+  Lets get rid of this nonsense about ids having too much meaning.
+
+General TODO
+
+  Implement piles.
+
   For entities which have a bbox, which other entities do not collide
   with, such as geo entities, provide a virtual methods which allows the
   collission code to check whether entities within this bbox should

@@ -85,7 +85,7 @@ OpVector Connection::operation(const RootOperation & op)
     const std::string & from = op.GetFrom();
     if (from.empty()) {
         debug(std::cout << "deliver locally as normal" << std::endl << std::flush;);
-        return BaseEntity::operation(op);
+        return callOperation(op);
     } else {
         debug(std::cout << "Must send on to account" << std::endl << std::flush;);
         debug(std::cout << "[" << from << "]" << std::endl << std::flush;);
