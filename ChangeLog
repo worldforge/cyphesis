@@ -1,5 +1,9 @@
 2004-10-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* Increment version to 0.3.5.
+
+2004-10-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/werewolf/world/objects/tools/Gallows.py,
 	  rulesets/basic/world/objects/tools/Bow.py,
 	  rulesets/basic/world/objects/plants/Tree.py,
