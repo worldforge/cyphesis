@@ -1,5 +1,14 @@
 2005-04-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h: Add a pointer to a Motion object to entities.
+
+	* rulesets/Thing.cpp: Add notes about Motion implementation.
+	  Clean up some variable names.
+
+	* common/Database.cpp: Fix some lingering missuse of the varconf API.
+
+2005-04-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Motion.h: New base class for handling motion.
 
 2005-04-03  Al Riddoch  <alriddoch@zepler.org>

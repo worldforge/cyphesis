@@ -86,7 +86,7 @@ int Database::initConnection(bool createDatabase)
 
     std::string dbname = "cyphesis";
     if (global_conf->findItem("cyphesis", "dbname")) {
-        dbname = std::string(global_conf->getItem("cyphesis", "dbname"));
+        dbname = global_conf->getItem("cyphesis", "dbname").as_string();
     }
     conninfos << "dbname=" << dbname << " ";
 
@@ -100,7 +100,7 @@ int Database::initConnection(bool createDatabase)
     }
 
     if (global_conf->findItem("cyphesis", "dbpasswd")) {
-        conninfos << "password=" << std::string(global_conf->getItem("cyphesis", "dbpasswd")) << " ";
+        conninfos << "password=" << global_conf->getItem("cyphesis", "dbpasswd").as_string() << " ";
     }
 
     const std::string cinfo = conninfos.str();

@@ -209,15 +209,15 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         error(op, "Move op has no loc", res, getId());
         return;
     }
-    const std::string & ref = I->second.asString();
-    EntityDict::const_iterator J = m_world->getEntities().find(ref);
+    const std::string & new_loc_id = I->second.asString();
+    EntityDict::const_iterator J = m_world->getEntities().find(new_loc_id);
     if (J == m_world->getEntities().end()) {
         error(op, "Move op loc invalid", res, getId());
         return;
     }
-    debug(std::cout << "{" << ref << "}" << std::endl << std::flush;);
-    Entity * newref = J->second;
-    if (newref == this) {
+    debug(std::cout << "{" << new_loc_id << "}" << std::endl << std::flush;);
+    Entity * new_loc = J->second;
+    if (new_loc == this) {
         error(op, "Attempt by entity to move into itself", res, getId());
         return;
     }
@@ -230,21 +230,21 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // Up until this point nothing should have changed, but the changes
     // have all now been checked for validity.
 
-    if (m_location.m_loc != newref) {
+    if (m_location.m_loc != new_loc) {
         // Update loc
         m_location.m_loc->m_contains.erase(this);
         if (m_location.m_loc->m_contains.empty()) {
             m_location.m_loc->m_update_flags |= a_cont;
             m_location.m_loc->updated.emit();
         }
-        bool was_empty = newref->m_contains.empty();
-        newref->m_contains.insert(this);
+        bool was_empty = new_loc->m_contains.empty();
+        new_loc->m_contains.insert(this);
         if (was_empty) {
-            newref->m_update_flags |= a_cont;
-            newref->updated.emit();
+            new_loc->m_update_flags |= a_cont;
+            new_loc->updated.emit();
         }
         m_location.m_loc->decRef();
-        m_location.m_loc = newref;
+        m_location.m_loc = new_loc;
         m_location.m_loc->incRef();
         m_update_flags |= a_loc;
     }
@@ -278,6 +278,14 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         set(I->first, I->second);
     }
 
+    // At this point the Location data for this entity has been updated.
+
+    // Take into account terrain following etc.
+    // Take into account mode also.
+    // m_motion->adjustNewPostion();
+
+
+
     Operation m(op);
     m_location.addToMessage(m.getArgs().front().asMap());
 
@@ -288,6 +296,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     if (m_location.m_velocity.isValid() &&
         m_location.m_velocity.sqrMag() > WFMATH_EPSILON) {
+        // m_motion->genUpdateOperation(); ??
         Operation * u = new Update();
         u->setFutureSeconds(consts::basic_tick);
         u->setTo(getId());

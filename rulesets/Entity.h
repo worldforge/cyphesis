@@ -34,6 +34,7 @@ class EntityType {
     }
 };
 
+class Motion;
 class Script;
 class PropertyBase;
 
@@ -61,6 +62,8 @@ class Entity : public BaseEntity {
   protected:
     /// Script associated with this entity
     Script * m_script;
+    /// Motion behavoir of this entity
+    Motion * m_motion;
     /// Map of non-hardcoded attributes
     Atlas::Message::MapType m_attributes;
     /// Map of properties
