@@ -228,7 +228,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // have all now been checked for validity.
 
     if (m_location.m_loc != newref) {
-    // Update loc
+        // Update loc
         m_location.m_loc->m_contains.erase(this);
         if (m_location.m_loc->m_contains.empty()) {
             m_location.m_loc->m_update_flags |= a_cont;
@@ -240,7 +240,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             newref->m_update_flags |= a_cont;
             newref->updated.emit();
         }
+        m_location.m_loc->decRef();
         m_location.m_loc = newref;
+        m_location.m_loc->incRef();
         m_update_flags |= a_loc;
     }
 

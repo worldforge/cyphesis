@@ -210,6 +210,7 @@ Entity * WorldRouter::addObject(Entity * ent, bool setup)
                                                 ent->m_location.m_pos);
     bool cont_change = ent->m_location.m_loc->m_contains.empty();
     ent->m_location.m_loc->m_contains.insert(ent);
+    ent->m_location.m_loc->incRef();
     if (cont_change) {
         ent->m_location.m_loc->m_update_flags |= a_cont;
         ent->m_location.m_loc->updated.emit();

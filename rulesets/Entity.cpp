@@ -165,6 +165,7 @@ void Entity::destroy()
         // FIXME take account of orientation
         // FIXME velocity and orientation  need to be adjusted
         obj->m_location.m_loc = m_location.m_loc;
+        m_location.m_loc->incRef();
         if (m_location.m_orientation.isValid()) {
             obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.m_pos, m_location.m_orientation);
             obj->m_location.m_velocity.rotate(m_location.m_orientation);
@@ -176,6 +177,9 @@ void Entity::destroy()
         refContains.insert(obj);
     }
     refContains.erase(this);
+    // FIXME This needs to be removed if we want to this reference to
+    // remain after this entity has been destroyed, but not deleted.
+    m_location.m_loc->decRef();
     if (m_location.m_loc->m_contains.empty()) {
         m_location.m_loc->m_update_flags |= a_cont;
         m_location.m_loc->updated.emit();

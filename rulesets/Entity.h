@@ -102,6 +102,10 @@ class Entity : public BaseEntity {
         }
     }
 
+    int checkRef() const {
+        return m_refCount;
+    }
+
     /// \brief Send an operation to the world for dispatch.
     ///
     /// sendWorld() bipasses serialno assignment, so you must ensure

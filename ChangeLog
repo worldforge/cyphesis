@@ -1,5 +1,11 @@
 2004-01-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp, rulesets/Entity.h, rulesets/Thing.cpp,
+	  server/WorldRouter.cpp: Increment reference count on parent
+	  entity when a child has a reference to it.
+
+2004-01-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Re-write broadcast code to remove the
 	  need for looking up by ID, and instead use the reference
 	  to the sending entity which is now available.
