@@ -75,7 +75,8 @@ Character::Character(const std::string & id) : Character_parent(id),
                                               m_externalMind(NULL)
 {
     m_mass = 60;
-    m_location.m_bBox = BBox(Vector3D(-0.25, -0.25, 0), Vector3D(0.25, 0.25, 2));
+    m_location.m_bBox = BBox(WFMath::Point<3>(-0.25, -0.25, 0),
+                             WFMath::Point<3>(0.25, 0.25, 2));
     m_attributes["mode"] = "birth";
 
     subscribe("imaginary", OP_IMAGINARY);
@@ -454,7 +455,7 @@ OpVector Character::mindMoveOperation(const Move & op)
     } else {
         location_coords +=
             (Vector3D(((double)rand())/RAND_MAX, ((double)rand())/RAND_MAX, 0)
-                                *= (m_drunkness * 10));
+                                * (m_drunkness * 10));
     }
     // Print out a bunch of debug info
     debug( std::cout << ":" << location_ref << ":" << m_location.m_loc->getId()
@@ -481,11 +482,11 @@ OpVector Character::mindMoveOperation(const Move & op)
         // If the position is given, and it is about right, don't bother to 
         // use it.
         if (location_coords.isValid() &&
-            (location_coords.relativeDistance(m_location.m_pos) < 0.01)) {
+            (squareDistance(location_coords, m_location.m_pos) < 0.01)) {
             location_coords = Vector3D();
         }
         if (!location_coords.isValid()) {
-            if (!location_vel.isValid() || location_vel.isZero()) {
+            if (!location_vel.isValid() || isZero(location_vel)) {
                 debug( std::cout << "\tUsing orientation for direction"
                                  << std::endl << std::flush;);
                 // If velocity is not given, and target is not given,
@@ -499,19 +500,19 @@ OpVector Character::mindMoveOperation(const Move & op)
         } else {
             debug( std::cout << "\tUsing destination for direction"
                              << std::endl << std::flush;);
-            direction = Vector3D(location_coords) -= m_location.m_pos;
+            direction = Vector3D(location_coords) - m_location.m_pos;
         }
         if (direction.isValid()) {
-            direction.unit();
+            direction.normalize();
             debug( std::cout << "Direction: " << direction << std::endl
                              << std::flush;);
             if (!location_orientation.isValid()) {
                 // This is a character walking, so it should stap upright
                 Vector3D uprightDirection = direction;
-                uprightDirection[Vector3D::cZ] = 0;
-                uprightDirection.unit();
-                location_orientation = Quaternion(Vector3D(1,0,0),
-                                                  uprightDirection);
+                uprightDirection[cZ] = 0;
+                uprightDirection.normalize();
+                location_orientation = quaternionFromTo(Vector3D(1,0,0),
+                                                        uprightDirection);
             }
         }
         Location ret_location;
@@ -525,10 +526,10 @@ OpVector Character::mindMoveOperation(const Move & op)
                 debug( std::cout << "Stop!" << std::endl << std::flush;);
                 Element::ListType & args = moveOp->GetArgs();
                 Element::MapType & ent = args.front().AsMap();
-                ent["velocity"] = Vector3D(0,0,0).asObject();
+                ent["velocity"] = Vector3D(0,0,0).toAtlas();
                 ent["mode"] = "standing";
                 if (location_orientation.isValid()) {
-                    ent["orientation"] = location_orientation.asObject();
+                    ent["orientation"] = location_orientation.toAtlas();
                 }
                 moveOp->SetArgs(args);
             } else {

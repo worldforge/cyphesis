@@ -12,7 +12,8 @@ static const bool debug_flag = true;
 Line::Line(const std::string & id) : Line_parent(id)
 {
     // Default to a 0.1m cube
-    m_location.m_bBox = BBox(Vector3D(0.1, 0.1, 0.1));
+    m_location.m_bBox = BBox(WFMath::Point<3>(0.f, 0.f, 0.f),
+                             WFMath::Point<3>(0.1f, 0.1f, 0.1f));
 }
 
 Line::~Line()
@@ -31,7 +32,7 @@ bool Line::get(const std::string & aname, Element & attr) const
         return true;
     } else if (aname == "coords") {
         attr = Element::ListType();
-        coordListAsObject(coords, attr.AsList());
+        objectListAsMessage(coords, attr.AsList());
         return true;
     }
     return Line_parent::get(aname, attr);
@@ -48,7 +49,7 @@ void Line::set(const std::string & aname, const Element & attr)
         idListFromAtlas(attr.AsList(), endIntersections);
         m_update_flags |= a_line;
     } else if ((aname == "coords") && attr.IsList()) {
-        coordListFromAtlas(attr.AsList(), coords);
+        objectListFromMessage<Vector3D, CoordList>(attr.AsList(), coords);
         m_update_flags |= a_line;
     } else {
         Line_parent::set(aname, attr);
@@ -64,6 +65,6 @@ void Line::addToObject(Element::MapType & omap) const
         (omap["end_intersections"] = Element::ListType()).AsList();
     idListAsObject(endIntersections, ei);
     Element::ListType & c = (omap["coords"] = Element::ListType()).AsList();
-    coordListAsObject(coords, c);
+    objectListAsMessage(coords, c);
     Line_parent::addToObject(omap);
 }

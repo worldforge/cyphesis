@@ -5,9 +5,12 @@
 #ifndef PHYSICS_BBOX_H
 #define PHYSICS_BBOX_H
 
-#include "Vector3D.h"
+#include <wfmath/axisbox.h>
 
-class BBox {
+typedef WFMath::AxisBox<3> BBox;
+
+#if 0
+class BBox : public WFMath::AxisBox<3> {
     Vector3D u;
     Vector3D v;
   public:
@@ -103,6 +106,41 @@ class BBox {
 inline std::ostream & operator<<(std::ostream& s, const BBox & b)
 {
     return s << "{" << b.u << b.v << "}";
+}
+#endif // 0
+
+#include <physics/Vector3D.h>
+
+// Is point other inside this box, when this box is increased in each direction
+inline bool boxContains(const BBox & box, const Vector3D & other, double increase)
+{
+    return ((other.x() > (box.lowCorner().x() - increase)) &&
+            (other.x() < (box.highCorner().x() + increase)) &&
+            (other.y() > (box.lowCorner().y() - increase)) &&
+            (other.y() < (box.highCorner().y() + increase)) &&
+            (other.z() > (box.lowCorner().z() - increase)) &&
+            (other.z() < (box.highCorner().z() + increase)));
+}
+
+/// Do this two boxes intersect
+inline bool hit(const BBox & box, const BBox & other) {
+    return hit(box.lowCorner(), box.highCorner(),
+               other.lowCorner(), other.highCorner());
+}
+
+/// When will box, moving with velocity vel hit box o, and on what axis
+inline double timeToHit(const BBox & box, const Vector3D & vel,
+                 const BBox & o, int & axis) 
+{
+    return timeToHit(box.lowCorner(), box.highCorner(), vel,
+                     o.lowCorner(), o.highCorner(), axis);
+}
+
+/// When will box, moving with velocity vel leave box o
+inline double timeToExit(const BBox & box, const Vector3D & vel, const BBox & o)
+{
+    return timeToExit(box.lowCorner(), box.highCorner(), vel,
+                      o.lowCorner(), o.highCorner());
 }
 
 #endif // PHYSICS_BBOX_H

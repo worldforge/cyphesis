@@ -7,6 +7,8 @@
 
 #include "Vector3D.h"
 
+#if 0
 const int Vector3D::cX;
 const int Vector3D::cY;
 const int Vector3D::cZ;
+#endif // 0

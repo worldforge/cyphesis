@@ -27,23 +27,25 @@ inline void idListFromAtlas(const Atlas::Message::Object::ListType & l,
 }
 
 // This could probably be made into a template, as it will work
-// on any type which implements asObject()
-inline void coordListAsObject(const CoordList & l,
-                              Atlas::Message::Object::ListType & ol)
+// on any type which implements asMessage()
+template<typename List_T>
+void objectListAsMessage(const List_T & l,
+                         Atlas::Message::Object::ListType & ol)
 {
     ol.clear();
-    for(CoordList::const_iterator I = l.begin(); I != l.end(); I++) {
-        ol.push_back(I->asObject());
+    for(typename List_T::const_iterator I = l.begin(); I != l.end(); ++I) {
+        ol.push_back(I->toAtlas());
     }
 }
 
-inline void coordListFromAtlas(const Atlas::Message::Object::ListType & l,
-                               CoordList & ol)
+template<typename T, typename List_T>
+inline void objectListFromMessage(const Atlas::Message::Object::ListType & l,
+                                  List_T & ol)
 {
     ol.clear();
     Atlas::Message::Object::ListType::const_iterator I = l.begin();
     for (; I != l.end(); ++I) {
-        ol.push_back(Vector3D(I->AsList()));
+        ol.push_back(T(I->AsList()));
     }
 }
 

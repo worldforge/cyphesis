@@ -9,7 +9,8 @@
 Area::Area(const std::string & id) : Area_parent(id)
 {
     // Default to a 0.1m cube
-    m_location.m_bBox = BBox(Vector3D(0.1, 0.1, 0.1));
+    m_location.m_bBox = BBox(WFMath::Point<3>(0.f, 0.f, 0.f),
+                             WFMath::Point<3>(0.1f, 0.1f, 0.1f));
 }
 
 Area::~Area()

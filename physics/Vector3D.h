@@ -5,6 +5,8 @@
 #ifndef PHYSICS_VECTOR_3D_H
 #define PHYSICS_VECTOR_3D_H
 
+#include <wfmath/vector.h>
+
 #include <Atlas/Message/Object.h>
 
 #include <cmath>
@@ -37,11 +39,21 @@ static inline double min(range r) {
     return std::min(r.first, r.second);
 }
 
-class Vector3D {
+typedef WFMath::Vector<3> Vector3D;
+
+typedef std::vector<Vector3D> CoordList;
+
+/// Used to indicate which axis
+static const int cX = 0;
+static const int cY = 1;
+static const int cZ = 2;
+
+#if 0
+class Vector3D : public WFMath::Vector<3> {
     double x,y,z;
     bool _set;
   public:
-    static const int cX = 0;	// Used to indicate which axis
+    static const int cX = 0;    // Used to indicate which axis
     static const int cY = 1;
     static const int cZ = 2;
 
@@ -144,7 +156,7 @@ class Vector3D {
     }
 
     double & operator[](int index) {
-	switch(index) {
+        switch(index) {
             case cX:
                 return x;
             case cY:
@@ -154,7 +166,7 @@ class Vector3D {
             default:
                 //Throw an exception here maybe
                 return z;
-	}
+        }
     }
 
     void set() {
@@ -215,8 +227,8 @@ class Vector3D {
 
     const Vector3D unitVector() const {
         //"return the unit vector of a vector";
-	// This is could throw a wobbly
-	return Vector3D(*this)/=(mag());
+        // This is could throw a wobbly
+        return Vector3D(*this)/=(mag());
     }
 
     const Vector3D unitVectorTo(const Vector3D & v) const {
@@ -234,35 +246,35 @@ class Vector3D {
     double relativeDistance(const Vector3D & v) const {
         // Find relative distance, to be used when the result is only
         // going to be compared with other distances
-        return ((x - v.x)*(x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z));
+        return ((x() - v.x())*(x() - v.x()) + (y() - v.y())*(y() - v.y()) + (z() - v.z())*(z() - v.z()));
     }
 
     bool in(double size) const {
         // Is this vector less than size in every direction
-        return ((x < size) && (y < size) && (z < size));
+        return ((x() < size) && (y() < size) && (z() < size));
     }
 
     bool in(const Vector3D & n, const Vector3D & f) const {
         // Is this vector inside a box defined by near point n and point f
-        return ((x < f.x) && (x > n.x) &&
-                (y < f.y) && (y > n.y) &&
-                (z < f.z) && (z > n.z));
+        return ((x() < f.x()) && (x() > n.x()) &&
+                (y() < f.y()) && (y() > n.y()) &&
+                (z() < f.z()) && (z() > n.z()));
     }
 
     bool in(const Vector3D & p, const double size) const {
         // Is this vector inside a box defined by center point, size in all
         // directions
-        return ((x < (p.x + size)) && (x > (p.x - size)) &&
-                (y < (p.y + size)) && (y > (p.y - size)) &&
-                (z < (p.z + size)) && (z > (p.z - size)));
+        return ((x() < (p.x() + size)) && (x() > (p.x() - size)) &&
+                (y() < (p.y() + size)) && (y() > (p.y() - size)) &&
+                (z() < (p.z() + size)) && (z() > (p.z() - size)));
     }
 
     bool hit(const Vector3D& f, const Vector3D& on, const Vector3D& of) const {
         // Is a box defined by this vector, and f in collision with a box
         // defined by on and of.
-        return ((x > on.x) && (x < of.x) || (f.x > on.x) && (f.x < of.x) &&
-                (y > on.y) && (y < of.y) || (f.y > on.y) && (f.y < of.y) &&
-                (z > on.z) && (z < of.z) || (f.z > on.z) && (f.z < of.z));
+        return ((x() > on.x()) && (x() < of.x()) || (f.x() > on.x()) && (f.x() < of.x()) &&
+                (y() > on.y()) && (y() < of.y()) || (f.y() > on.y()) && (f.y() < of.y()) &&
+                (z() > on.z()) && (z() < of.z()) || (f.z() > on.z()) && (f.z() < of.z()));
     }
 
     double timeToHit(const Vector3D& f, const Vector3D &v,
@@ -273,9 +285,9 @@ class Vector3D {
         // If this function returns a -ve value, it is possible they are
         // currently in a collided state, or they may never collide.
         // Calculate range of times each intersect
-        range xt = ::timeToHit(x, f.x, v.x, on.x, of.x);
-        range yt = ::timeToHit(y, f.y, v.y, on.y, of.y);
-        range zt = ::timeToHit(z, f.z, v.z, on.z, of.z);
+        range xt = ::timeToHit(x(), f.x(), v.x(), on.x(), of.x());
+        range yt = ::timeToHit(y(), f.y(), v.y(), on.y(), of.y());
+        range zt = ::timeToHit(z(), f.z(), v.z(), on.z(), of.z());
         // Find the time that the last coordinate starts intersect
         double start = std::max(min(xt), std::max(min(yt),min(zt)));
         // Find the time that the first coordinate stops intersect
@@ -288,9 +300,9 @@ class Vector3D {
 
     double timeToExit(const Vector3D& f, const Vector3D &v,
                       const Vector3D& on, const Vector3D& of) const {
-        range xt = ::timeToHit(x, f.x, v.x, on.x, of.x);
-        range yt = ::timeToHit(y, f.y, v.y, on.y, of.y);
-        range zt = ::timeToHit(z, f.z, v.z, on.z, of.z);
+        range xt = ::timeToHit(x(), f.x(), v.x(), on.x(), of.x());
+        range yt = ::timeToHit(y(), f.y(), v.y(), on.y(), of.y());
+        range zt = ::timeToHit(z(), f.z(), v.z(), on.z(), of.z());
         double leave = std::min(max(xt), std::min(max(yt),max(zt)));
         double enter = std::max(min(xt), std::max(min(yt),min(zt)));
         // This check is required to make sure we don't accidentally
@@ -337,6 +349,95 @@ inline const Vector3D operator-(const Vector3D & lhs, const Vector3D & rhs) {
 
 inline std::ostream & operator<<(std::ostream& s, const Vector3D& v) {
     return s << "[" << v.x << "," << v.y << "," << v.z << "]";
+}
+
+#endif // 0
+
+/// Find relative distance, to be used when the result is only
+/// going to be compared with other distances
+inline double squareDistance(const Vector3D & u, const Vector3D & v)
+{
+    return ((u.x() - v.x())*(u.x() - v.x()) + (u.y() - v.y())*(u.y() - v.y()) + (u.z() - v.z())*(u.z() - v.z()));
+}
+
+/// Find the distance between two vectors
+inline double distance(const Vector3D & u, const Vector3D & v)
+{
+    return sqrt(squareDistance(u, v));
+}
+
+/// Is vector u less than size in every direction
+inline bool in(const Vector3D & u, double size) 
+{
+    return ((u.x() < size) && (u.y() < size) && (u.z() < size));
+}
+
+// Is vector u inside a box defined by center point p, size in all directions
+inline bool in(const Vector3D & u, const Vector3D & p, const double size)
+{
+    return ((u.x() < (p.x() + size)) && (u.x() > (p.x() - size)) &&
+            (u.y() < (p.y() + size)) && (u.y() > (p.y() - size)) &&
+            (u.z() < (p.z() + size)) && (u.z() > (p.z() - size)));
+}
+
+// Is a box defined by n, and f in collision with a box defined by on and of.
+template<class P>
+inline bool hit(const P& n, const P& f,
+         const P& on, const P& of)
+{
+    return ((n.x() > on.x()) && (n.x() < of.x()) ||
+            (f.x() > on.x()) && (f.x() < of.x()) &&
+            (n.y() > on.y()) && (n.y() < of.y()) ||
+            (f.y() > on.y()) && (f.y() < of.y()) &&
+            (n.z() > on.z()) && (n.z() < of.z()) ||
+            (f.z() > on.z()) && (f.z() < of.z()));
+}
+
+/** When is a box defined by n and f, travelling with velocity
+    v going to hit box defined by on and of.
+    If this function returns a -ve value, it is possible they are
+    currently in a collided state, or they may never collide.
+    Calculate range of times each intersect
+ */
+template<class P>
+inline double timeToHit(const P & n, const P & f, const Vector3D &v,
+                 const P & on, const P & of, int & axis)
+{
+    range xt = ::timeToHit(n.x(), f.x(), v.x(), on.x(), of.x());
+    range yt = ::timeToHit(n.y(), f.y(), v.y(), on.y(), of.y());
+    range zt = ::timeToHit(n.z(), f.z(), v.z(), on.z(), of.z());
+    // Find the time that the last coordinate starts intersect
+    double start = std::max(min(xt), std::max(min(yt),min(zt)));
+    // Find the time that the first coordinate stops intersect
+    double end   = std::min(max(xt), std::min(max(yt),max(zt)));
+    // If the start is before the end, then there is a collision
+    if (end < start) { return -1; }
+    axis = ((start == min(xt)) ? cX : ((start == min(yt)) ? cY : cZ));
+    return start;
+}
+
+template<class P>
+inline double timeToExit(const P & n, const P & f, const Vector3D &v,
+                  const P & on, const P & of)
+{
+    range xt = ::timeToHit(n.x(), f.x(), v.x(), on.x(), of.x());
+    range yt = ::timeToHit(n.y(), f.y(), v.y(), on.y(), of.y());
+    range zt = ::timeToHit(n.z(), f.z(), v.z(), on.z(), of.z());
+    double leave = std::min(max(xt), std::min(max(yt),max(zt)));
+    double enter = std::max(min(xt), std::max(min(yt),min(zt)));
+    // This check is required to make sure we don't accidentally
+    // get stuck in an entity outside its bbox.
+    if (enter > 0) {
+        // debug(std::cout<<"We are "<<enter<<" outside our containers bbox"
+                       // << std::endl << std::flush;);
+        return -1;
+    }
+    return leave;
+}
+
+inline bool isZero(const Vector3D & u)
+{
+    return (u.isValid() && (u.x() == 0) && (u.y() == 0) && (u.z() == 0));
 }
 
 

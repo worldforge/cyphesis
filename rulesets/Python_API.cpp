@@ -435,7 +435,7 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
                         return NULL;
                     }
                 }
-                val.set();
+                val.setValid();
                 break;
             case 3:
                 for(int i = 0; i < 3; i++) {
@@ -449,7 +449,7 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
                         return NULL;
                     }
                 }
-                val.set();
+                val.setValid();
                 break;
             default:
                 PyErr_SetString(PyExc_TypeError, "Vector3D must take list of floats, or ints, 3 ints or 3 floats");
@@ -483,15 +483,17 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
                 for(int i = 0; i < 4; i++) {
                     PyObject * item = PyList_GetItem(clist, i);
                     if (PyInt_Check(item)) {
-                        val[i] = (double)PyInt_AsLong(item);
+#warning FIXME Need to be able to modify quaternion
+                        // val[i] = (double)PyInt_AsLong(item);
                     } else if (PyFloat_Check(item)) {
-                        val[i] = PyFloat_AsDouble(item);
+                        // val[i] = PyFloat_AsDouble(item);
                     } else {
                         PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
                         return NULL;
                     }
                 }
-                val.set();
+#warning FIXME Need to be able to modify quaternion
+                // val.setValid();
                 break;
             case 2:
                 {
@@ -503,22 +505,24 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
                 }
                 Vector3DObject * from = (Vector3DObject *)v1;
                 Vector3DObject * to = (Vector3DObject *)v2;
-                val = Quaternion(from->coords, to->coords);
+                val = quaternionFromTo(from->coords, to->coords);
                 }
                 break;
             case 4:
                 for(int i = 0; i < 4; i++) {
                     PyObject * item = PyTuple_GetItem(args, i);
                     if (PyInt_Check(item)) {
-                        val[i] = (double)PyInt_AsLong(item);
+#warning FIXME Need to be able to modify quaternion
+                        // val[i] = (double)PyInt_AsLong(item);
                     } else if (PyFloat_Check(item)) {
-                        val[i] = PyFloat_AsDouble(item);
+                        // val[i] = PyFloat_AsDouble(item);
                     } else {
                         PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
                         return NULL;
                     }
                 }
-                val.set();
+#warning FIXME Need to be able to modify quaternion
+                // val.setValid();
                 break;
             default:
                 PyErr_SetString(PyExc_TypeError, "Quaternion must take list of floats, or ints, 4 ints or 4 floats");

@@ -9,6 +9,7 @@
 // a rotation in the wrong direction. This may be a bug in my apogee
 // code, or it may be this code.
 
+#if 0
 Quaternion::Quaternion(const Vector3D & from, const Vector3D & to) : _set(true)
 {
     double cosT = from.dot(to);
@@ -43,4 +44,34 @@ Quaternion::Quaternion(const Vector3D & from, const Vector3D & to) : _set(true)
     y = t.Y() * ss;
     z = t.Z() * ss;
     w = std::sqrt(0.5 * (1.0 + cosT));
+}
+#endif // 0
+
+const Quaternion quaternionFromTo(const Vector3D & from, const Vector3D & to)
+{
+    double cosT = Dot(from, to);
+    if (cosT > 0.99999f) {
+        return Quaternion(1.f, 0.f, 0.f, 0.f);
+    } else if (cosT < -0.99999f) {
+        Vector3D t(0.0, from.x(), -from.y());
+
+        if (t.sqrMag() < 1e-12) {
+            t = Vector3D(-from.z(), 0.0, from.x());
+        }
+
+        t.normalize();
+
+        return Quaternion(0.f, t.x(), t.y(), t.z());
+    }
+    Vector3D t = Cross(from, to);
+
+    t.normalize();
+
+    double ss = std::sqrt(0.5 * (1.0 - cosT));
+
+    float x = t.x() * ss;
+    float y = t.y() * ss;
+    float z = t.z() * ss;
+    float w = std::sqrt(0.5 * (1.0 + cosT));
+    return Quaternion(w, x, y, z);
 }

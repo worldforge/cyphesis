@@ -18,12 +18,14 @@ static PyObject * BBox_getattr(BBoxObject *self, char *name)
 {
     if (strcmp(name, "near_point") == 0) {
         Vector3DObject * v = newVector3DObject(NULL);
-        v->coords = self->box.nearPoint();
+        const WFMath::Point<3> & lc = self->box.lowCorner();
+        v->coords = Vector3D(lc.x(), lc.y(), lc.z());
         return (PyObject *)v;
     }
     if (strcmp(name, "far_point") == 0) {
         Vector3DObject * v = newVector3DObject(NULL);
-        v->coords = self->box.farPoint();
+        const WFMath::Point<3> & hc = self->box.highCorner();
+        v->coords = Vector3D(hc.x(), hc.y(), hc.z());
         return (PyObject *)v;
     }
 
@@ -41,9 +43,14 @@ static int BBox_setattr(BBoxObject *self, char *name, PyObject *v)
     }
     Vector3D vector = vec->coords;
     if (strcmp(name, "near_point") == 0) {
-        self->box.nearPoint() = vector;
+#warning FIXME Need to be able to modify bbox
+        // self->box.lowCorner() = WFMath::Point<3>(vector.x(),
+                                                 // vector.y(),
+                                                 // vector.z()); 
     } else if (strcmp(name, "far_point") == 0) {
-        self->box.farPoint() = vector;
+        // self->box.highCorner() = WFMath::Point<3>(vector.x(),
+                                                  // vector.y(),
+                                                  // vector.z()); 
     }
 
     return 0;

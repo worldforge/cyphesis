@@ -1,3 +1,6 @@
+Add attribute handler objects, which hold a reference to the attribute value, so
+that the looking up of these attribute can be accelerated by a map.
+
 Sort out persistance when quaternion is not initialised.
 
 World doesn't have its type string set propper like.

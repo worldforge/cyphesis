@@ -1,5 +1,5 @@
 // This file may be redistributed and modified only under the terms of
-// the GNU General Public License (See COPYING for details).
+// the GNU General Public License (See COPyING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef SERVER_PERSISTOR_IMPL_H
@@ -22,25 +22,25 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
     }
     if (t.getUpdateFlags() & a_pos) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "px = " << t.m_location.m_pos.X()
-          << ", py = " << t.m_location.m_pos.Y()
-          << ", pz = " << t.m_location.m_pos.Z();
+        q << "px = " << t.m_location.m_pos.x()
+          << ", py = " << t.m_location.m_pos.y()
+          << ", pz = " << t.m_location.m_pos.z();
     }
     if (t.getUpdateFlags() & a_orient) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "ox = " << t.m_location.m_orientation.X()
-          << ", oy = " << t.m_location.m_orientation.Y()
-          << ", oz = " << t.m_location.m_orientation.Z()
-          << ", ow = " << t.m_location.m_orientation.W();
+        q << "ox = " << t.m_location.m_orientation.vector().x()
+          << ", oy = " << t.m_location.m_orientation.vector().y()
+          << ", oz = " << t.m_location.m_orientation.vector().z()
+          << ", ow = " << t.m_location.m_orientation.scalar();
     }
     if (t.getUpdateFlags() & a_bbox) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "bnx = " << t.m_location.m_bBox.nearPoint().X()
-          << ", bny = " << t.m_location.m_bBox.nearPoint().Y()
-          << ", bnz = " << t.m_location.m_bBox.nearPoint().Z()
-          << ", bfx = " << t.m_location.m_bBox.farPoint().X()
-          << ", bfy = " << t.m_location.m_bBox.farPoint().Y()
-          << ", bfz = " << t.m_location.m_bBox.farPoint().Z();
+        q << "bnx = " << t.m_location.m_bBox.lowCorner().x()
+          << ", bny = " << t.m_location.m_bBox.lowCorner().y()
+          << ", bnz = " << t.m_location.m_bBox.lowCorner().z()
+          << ", bfx = " << t.m_location.m_bBox.highCorner().x()
+          << ", bfy = " << t.m_location.m_bBox.highCorner().y()
+          << ", bfz = " << t.m_location.m_bBox.highCorner().z();
     }
     if (t.getUpdateFlags() & a_cont) {
         if (!empty) { q << ", "; } else { empty = false; }
@@ -119,19 +119,19 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
       << sq << t.getType() << sq << cs
       << sq << t.m_location.m_loc->getId() << sq << cs
       << t.m_contains.size() << cs
-      << t.m_location.m_pos.X() << cs
-      << t.m_location.m_pos.Y() << cs
-      << t.m_location.m_pos.Z() << cs
-      << t.m_location.m_orientation.X() << cs
-      << t.m_location.m_orientation.Y() << cs
-      << t.m_location.m_orientation.Z() << cs
-      << t.m_location.m_orientation.W() << cs
-      << t.m_location.m_bBox.nearPoint().X() << cs
-      << t.m_location.m_bBox.nearPoint().Y() << cs
-      << t.m_location.m_bBox.nearPoint().Z() << cs
-      << t.m_location.m_bBox.farPoint().X() << cs
-      << t.m_location.m_bBox.farPoint().Y() << cs
-      << t.m_location.m_bBox.farPoint().Z() << cs
+      << t.m_location.m_pos.x() << cs
+      << t.m_location.m_pos.y() << cs
+      << t.m_location.m_pos.z() << cs
+      << t.m_location.m_orientation.vector().x() << cs
+      << t.m_location.m_orientation.vector().y() << cs
+      << t.m_location.m_orientation.vector().z() << cs
+      << t.m_location.m_orientation.scalar() << cs
+      << t.m_location.m_bBox.lowCorner().x() << cs
+      << t.m_location.m_bBox.lowCorner().y() << cs
+      << t.m_location.m_bBox.lowCorner().z() << cs
+      << t.m_location.m_bBox.highCorner().x() << cs
+      << t.m_location.m_bBox.highCorner().y() << cs
+      << t.m_location.m_bBox.highCorner().z() << cs
       << t.getStatus() << cs
       << sq << t.getName() << sq << cs
       << t.getMass() << cs

@@ -125,7 +125,7 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
                 return -1;
             }
         }
-        vector.set();
+        vector.setValid();
     } else if (PyList_Check(v) && (PyList_Size(v) == 3)) {
         for(int i = 0; i < 3; i++) {
             PyObject * item = PyList_GetItem(v, i);
@@ -138,7 +138,7 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
                 return -1;
             }
         }
-        vector.set();
+        vector.setValid();
     } else {
         PyErr_SetString(PyExc_TypeError, "arg must be a vector");
         return -1;
@@ -150,7 +150,10 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
         self->location->m_velocity = vector;
     }
     if (strcmp(name, "bbox") == 0) {
-        self->location->m_bBox = BBox(vector);
+        self->location->m_bBox = BBox(WFMath::Point<3>(0.f,0.f,0.f),
+                                      WFMath::Point<3>(vector.x(),
+                                                       vector.y(),
+                                                       vector.z()));
     }
     return 0;
 }

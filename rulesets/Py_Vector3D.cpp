@@ -14,7 +14,7 @@ static PyObject * Vector3D_dot(Vector3DObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "Can only dot with Vector3D");
         return NULL;
     }
-    return PyFloat_FromDouble(self->coords.dot(other->coords));
+    return PyFloat_FromDouble(Dot(self->coords, other->coords));
 }
 
 static PyObject * Vector3D_cross(Vector3DObject * self, PyObject * args)
@@ -31,7 +31,7 @@ static PyObject * Vector3D_cross(Vector3DObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->coords.cross(other->coords);
+    ret->coords = Cross(self->coords, other->coords);
     return (PyObject *)ret;
 }
 
@@ -41,7 +41,7 @@ static PyObject * Vector3D_rotatex(Vector3DObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "d", &angle)) {
         return NULL;
     }
-    self->coords.rotatex(angle);
+    self->coords.rotateX(angle);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -52,7 +52,7 @@ static PyObject * Vector3D_rotatey(Vector3DObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "d", &angle)) {
         return NULL;
     }
-    self->coords.rotatey(angle);
+    self->coords.rotateY(angle);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -63,7 +63,7 @@ static PyObject * Vector3D_rotatez(Vector3DObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "d", &angle)) {
         return NULL;
     }
-    self->coords.rotatez(angle);
+    self->coords.rotateZ(angle);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -78,7 +78,7 @@ static PyObject * Vector3D_angle(Vector3DObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "Can get angle to Vector3D");
         return NULL;
     }
-    return PyFloat_FromDouble(self->coords.angle(other->coords));
+    return PyFloat_FromDouble(Angle(self->coords, other->coords));
 }
 
 static PyObject * Vector3D_mag(Vector3DObject * self, PyObject * args)
@@ -98,7 +98,8 @@ static PyObject * Vector3D_unit_vector(Vector3DObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->coords.unitVector();
+    ret->coords = self->coords;
+    ret->coords.normalize();
     return (PyObject *)ret;
 }
 
@@ -116,7 +117,8 @@ static PyObject *Vector3D_unit_vector_to(Vector3DObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->coords.unitVectorTo(other->coords);
+    ret->coords = (other->coords - self->coords);
+    ret->coords.normalize();
     return (PyObject *)ret;
 }
 
@@ -130,7 +132,7 @@ static PyObject * Vector3D_distance(Vector3DObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "Can get distance to other Vector3D");
         return NULL;
     }
-    return PyFloat_FromDouble(self->coords.distance(other->coords));
+    return PyFloat_FromDouble(distance(self->coords, other->coords));
 }
 
 static PyMethodDef Vector3D_methods[] = {
@@ -158,9 +160,9 @@ static PyObject * Vector3D_getattr(Vector3DObject *self, char *name)
         //PyErr_SetString(PyExc_TypeError, "unset Vector");
         //return NULL;
     //}
-    if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->coords.X()); }
-    if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->coords.Y()); }
-    if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->coords.Z()); }
+    if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->coords.x()); }
+    if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->coords.y()); }
+    if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->coords.z()); }
 
     return Py_FindMethod(Vector3D_methods, (PyObject *)self, name);
 }
@@ -191,7 +193,7 @@ static Vector3DObject*Vector3D_num_add(Vector3DObject*self,Vector3DObject*other)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = Vector3D(self->coords) += other->coords;
+    ret->coords = (self->coords + other->coords);
     return ret;
 }
 
@@ -205,7 +207,7 @@ static Vector3DObject*Vector3D_num_sub(Vector3DObject*self,Vector3DObject*other)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = Vector3D(self->coords) -= other->coords;
+    ret->coords = (self->coords - other->coords);
     return ret;
 }
 
@@ -224,7 +226,7 @@ static Vector3DObject * Vector3D_num_mul(Vector3DObject * self, PyObject * _othe
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = Vector3D(self->coords) *= other;
+    ret->coords = (self->coords * other);
     return ret;
 }
 
@@ -243,7 +245,7 @@ static Vector3DObject * Vector3D_num_div(Vector3DObject * self, PyObject * _othe
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = Vector3D(self->coords) /= other;
+    ret->coords = (self->coords / other);
     return ret;
 }
 

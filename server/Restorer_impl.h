@@ -1,5 +1,5 @@
 // This file may be redistributed and modified only under the terms of
-// the GNU General Public License (See COPYING for details).
+// the GNU General Public License (See COPyING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #ifndef SERVER_RESTORER_IMPL_H
@@ -24,23 +24,26 @@ void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
 {
     restoreString(dr.column("type"), m_type);
     restoreString(dr.column("name"), m_name);
-    restoreFloat(dr.column("px"), m_location.m_pos.X());
-    restoreFloat(dr.column("py"), m_location.m_pos.Y());
-    restoreFloat(dr.column("pz"), m_location.m_pos.Z());
-    m_location.m_pos.set();
-    restoreFloat(dr.column("ox"), m_location.m_orientation.X());
-    restoreFloat(dr.column("oy"), m_location.m_orientation.Y());
-    restoreFloat(dr.column("oz"), m_location.m_orientation.Z());
-    restoreFloat(dr.column("ow"), m_location.m_orientation.W());
-    m_location.m_orientation.set();
-    restoreFloat(dr.column("bnx"), m_location.m_bBox.nearPoint().X());
-    restoreFloat(dr.column("bny"), m_location.m_bBox.nearPoint().Y());
-    restoreFloat(dr.column("bnz"), m_location.m_bBox.nearPoint().Z());
-    m_location.m_bBox.nearPoint().set();
-    restoreFloat(dr.column("bfx"), m_location.m_bBox.farPoint().X());
-    restoreFloat(dr.column("bfy"), m_location.m_bBox.farPoint().Y());
-    restoreFloat(dr.column("bfz"), m_location.m_bBox.farPoint().Z());
-    m_location.m_bBox.farPoint().set();
+    restoreFloat(dr.column("px"), m_location.m_pos.x());
+    restoreFloat(dr.column("py"), m_location.m_pos.y());
+    restoreFloat(dr.column("pz"), m_location.m_pos.z());
+    m_location.m_pos.setValid();
+#warning FIXME Must be able to modify axisbox
+    // restoreFloat(dr.column("ox"), m_location.m_orientation.vector().x());
+    // restoreFloat(dr.column("oy"), m_location.m_orientation.vector().y());
+    // restoreFloat(dr.column("oz"), m_location.m_orientation.vector().z());
+    // restoreFloat(dr.column("ow"), m_location.m_orientation.scalar());
+    // m_location.m_orientation.setValid();
+#warning FIXME Must be able to modify axisbox
+    // restoreFloat(dr.column("bnx"), m_location.m_bBox.lowCorner().x());
+    // restoreFloat(dr.column("bny"), m_location.m_bBox.lowCorner().y());
+    // restoreFloat(dr.column("bnz"), m_location.m_bBox.lowCorner().z());
+    // m_location.m_bBox.lowCorner().setValid();
+#warning FIXME Must be able to modify axisbox
+    // restoreFloat(dr.column("bfx"), m_location.m_bBox.highCorner().x());
+    // restoreFloat(dr.column("bfy"), m_location.m_bBox.highCorner().y());
+    // restoreFloat(dr.column("bfz"), m_location.m_bBox.highCorner().z());
+    // m_location.m_bBox.highCorner().setValid();
     restoreFloat(dr.column("status"), m_status);
     restoreFloat(dr.column("mass"), m_mass);
     restoreInt(dr.column("seq"), m_seq);

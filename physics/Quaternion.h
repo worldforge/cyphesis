@@ -5,9 +5,12 @@
 #ifndef PHYSICS_QUATERNION_H
 #define PHYSICS_QUATERNION_H
 
-#include "Vector3D.h"
+#include <wfmath/quaternion.h>
 
-class Quaternion {
+typedef WFMath::Quaternion Quaternion;
+
+#if 0
+class Quaternion : public WFMath::Quaternion {
     double x, y, z, w;
     bool _set;
   public:
@@ -97,5 +100,10 @@ inline std::ostream & operator<<(std::ostream& s, const Quaternion& q) {
     return s << "[" << q.x << "," << q.y << "," << q.z << "," << q.w << "]";
 }
 
+#endif // 0
+
+#include <physics/Vector3D.h>
+
+const Quaternion quaternionFromTo(const Vector3D & from, const Vector3D & to);
 
 #endif // PHYSICS_QUATERNION_H

@@ -16,6 +16,8 @@
 #include "common/Nourish.h"
 #include "common/Burn.h"
 
+#include <wfmath/atlasconv.h>
+
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
@@ -111,7 +113,7 @@ OpVector Thing::CreateOperation(const Create & op)
         if ((ent.find("loc") == ent.end()) && (m_location.m_loc != 0)) {
             ent["loc"] = m_location.m_loc->getId();
             if (ent.find("pos") == ent.end()) {
-                ent["pos"] = m_location.m_pos.asObject();
+                ent["pos"] = m_location.m_pos.toAtlas();
             }
         }
         const std::string & type = parents.front().AsString();

@@ -13,7 +13,6 @@
 class BaseEntity;
 class Entity;
 class Account;
-class Vector3D;
 
 typedef enum op_no {
 	OP_LOGIN,
@@ -63,8 +62,6 @@ typedef std::list<Account *> AccountList;
 typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
 typedef std::list<Atlas::Objects::Operation::RootOperation *> OpQueue;
 typedef std::map<std::string,OpNo> OpNoDict;
-
-typedef std::vector<Vector3D> CoordList;
 
 typedef Atlas::Message::Object Element;
 

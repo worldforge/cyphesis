@@ -84,7 +84,7 @@ void Movement::checkCollisions(const Location & loc)
         const Location & lc2 = m_collEntity->m_location;
         Location rloc(loc);
         rloc.m_loc = m_collEntity;
-        rloc.m_pos = Vector3D(loc.m_pos) -= lc2.m_pos;
+        rloc.m_pos = loc.m_pos - lc2.m_pos;
         double coll2Time = consts::basic_tick;
         // rloc is coords of character with ref to m_collEntity
         for(I = m_collEntity->m_contains.begin(); I != m_collEntity->m_contains.end(); I++) {
@@ -111,7 +111,7 @@ void Movement::checkCollisions(const Location & loc)
         debug(std::cout << "Setting target loc to " << loc.m_pos << "+"
                         << loc.m_velocity << "*" << collTime;);
         m_collPos = loc.m_pos;
-        m_collPos += Vector3D(loc.m_velocity) *= collTime;
+        m_collPos += (loc.m_velocity * collTime);
     } else {
         m_collEntity = NULL;
         m_collRefChange = false;

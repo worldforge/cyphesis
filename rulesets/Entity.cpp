@@ -17,6 +17,8 @@
 #include "common/Nourish.h"
 #include "common/Burn.h"
 
+#include <wfmath/atlasconv.h>
+
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Set.h>
@@ -78,7 +80,7 @@ bool Entity::get(const std::string & aname, Element & attr) const
         attr = m_mass;
         return true;
     } else if (aname == "bbox") {
-        attr = m_location.m_bBox.asList();
+        attr = m_location.m_bBox.toAtlas();
         return true;
     } else if (aname == "contains") {
         attr = Element::ListType();
@@ -237,7 +239,7 @@ Vector3D Entity::getXyz() const
         return ret;
     }
     if (m_location.m_loc) {
-        return Vector3D(m_location.m_pos) += m_location.m_loc->getXyz();
+        return Vector3D(m_location.m_pos) + m_location.m_loc->getXyz();
     } else {
         return m_location.m_pos;
     }

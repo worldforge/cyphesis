@@ -4,12 +4,14 @@
 
 #include "rulesets/Entity.h"
 
+#include <wfmath/atlasconv.h>
+
 using Atlas::Message::Object;
 
 const Vector3D Location::getXyz() const
 {
     if (m_loc) {
-        return Vector3D(m_pos) += m_loc->getXyz();
+        return Vector3D(m_pos) + m_loc->getXyz();
     } else {
         return Vector3D(0,0,0);
     }
@@ -22,7 +24,7 @@ const Vector3D Location::getXyz(Entity * ent) const
     } else if (m_loc == NULL) {
         return Vector3D(0,0,0);
     } else {
-        return Vector3D(m_pos) += m_loc->m_location.getXyz(ent);
+        return Vector3D(m_pos) + m_loc->m_location.getXyz(ent);
     }
 }
 
@@ -34,16 +36,16 @@ void Location::addToObject(Object::MapType & omap) const
         omap["loc"] = Object("");
     }
     if (m_pos.isValid()) {
-        omap["pos"] = m_pos.asObject();
+        omap["pos"] = m_pos.toAtlas();
     }
     if (m_velocity.isValid()) {
-        omap["velocity"] = m_velocity.asObject();
+        omap["velocity"] = m_velocity.toAtlas();
     }
     if (m_orientation.isValid()) {
-        omap["orientation"] = m_orientation.asObject();
+        omap["orientation"] = m_orientation.toAtlas();
     }
     if (m_bBox.isValid()) {
-        omap["bbox"] = m_bBox.asList();
+        omap["bbox"] = m_bBox.toAtlas();
     }
 }
 

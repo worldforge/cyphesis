@@ -10,17 +10,17 @@ static PyObject * Quaternion_as_list(QuaternionObject * self, PyObject * args)
         return NULL;
     }
     PyObject * r = PyList_New(0);
-    PyObject * i = PyFloat_FromDouble(self->rotation.X());
-    i = PyFloat_FromDouble(self->rotation.X());
+    PyObject * i = PyFloat_FromDouble(self->rotation.vector().x());
+    i = PyFloat_FromDouble(self->rotation.vector().x());
     PyList_Append(r, i);
     Py_DECREF(i);
-    i = PyFloat_FromDouble(self->rotation.Y());
+    i = PyFloat_FromDouble(self->rotation.vector().y());
     PyList_Append(r, i);
     Py_DECREF(i);
-    i = PyFloat_FromDouble(self->rotation.Z());
+    i = PyFloat_FromDouble(self->rotation.vector().z());
     PyList_Append(r, i);
     Py_DECREF(i);
-    i = PyFloat_FromDouble(self->rotation.W());
+    i = PyFloat_FromDouble(self->rotation.scalar());
     PyList_Append(r, i);
     Py_DECREF(i);
     return r;
@@ -38,10 +38,10 @@ static void Quaternion_dealloc(QuaternionObject *self)
 
 static PyObject * Quaternion_getattr(QuaternionObject *self, char *name)
 {
-    if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->rotation.X()); }
-    if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->rotation.Y()); }
-    if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->rotation.Z()); }
-    if (strcmp(name, "w") == 0) { return PyFloat_FromDouble(self->rotation.W()); }
+    if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->rotation.vector().x()); }
+    if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->rotation.vector().y()); }
+    if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->rotation.vector().z()); }
+    if (strcmp(name, "w") == 0) { return PyFloat_FromDouble(self->rotation.scalar()); }
 
     return Py_FindMethod(Quaternion_methods, (PyObject *)self, name);
 }

@@ -19,7 +19,8 @@ Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
                                                          m_fruitName("seed")
 {
     // Default to a 1m cube
-    m_location.m_bBox = BBox(Vector3D(-0.5, -0.5, 0), Vector3D(0.5, 0.5, 1));
+    m_location.m_bBox = BBox(WFMath::Point<3>(-0.5, -0.5, 0),
+                             WFMath::Point<3>(0.5, 0.5, 1));
 
     subscribe("tick", OP_TICK);
 }
@@ -82,10 +83,10 @@ int Plant::dropFruit(OpVector & res)
     if (m_fruits < 1) { return 0; }
     int drop = std::min(m_fruits, randint(m_minuDrop, m_maxuDrop));
     m_fruits = m_fruits - drop;
-    double height = m_location.m_bBox.farPoint().Z(); 
+    double height = m_location.m_bBox.highCorner().z(); 
     for(int i = 0; i < drop; i++) {
-        double rx = m_location.m_pos.X()+uniform(height*m_radius, -height*m_radius);
-        double ry = m_location.m_pos.X()+uniform(height*m_radius, -height*m_radius);
+        double rx = m_location.m_pos.x()+uniform(height*m_radius, -height*m_radius);
+        double ry = m_location.m_pos.x()+uniform(height*m_radius, -height*m_radius);
         Element::MapType fmap;
         fmap["name"] = m_fruitName;
         fmap["parents"] = Element::ListType(1,m_fruitName);
@@ -107,7 +108,7 @@ OpVector Plant::TickOperation(const Tick & op)
     tickOp->SetFutureSeconds(consts::basic_tick * m_speed);
     res.push_back(tickOp);
     int dropped = dropFruit(res);
-    if (m_location.m_bBox.farPoint().Z() > m_sizeAdult) {
+    if (m_location.m_bBox.highCorner().z() > m_sizeAdult) {
         if (randint(1, m_fruitChance) == 1) {
             m_fruits++;
             dropped--;

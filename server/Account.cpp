@@ -100,7 +100,7 @@ Entity * Account::addCharacter(const std::string & typestr,
     // This needs to be done in a generic way
     Element::MapType entmap;
     entmap["parents"] = Element::ListType(1,"coin");
-    entmap["pos"] = Vector3D(0,0,0).asObject();
+    entmap["pos"] = Vector3D(0,0,0).toAtlas();
     entmap["loc"] = chr->getId();
     entmap["name"] = "coin";
     for(int i = 0; i < 10; i++) {

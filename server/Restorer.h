@@ -35,6 +35,10 @@ class Restorer : public T {
         if (c == 0) { return; }
         d = strtod(c, 0);
     }
+    void restoreFloat(const char * c, float & f) {
+        if (c == 0) { return; }
+        f = strtof(c, 0);
+    }
     void restoreString(const char * c, std::string & s) {
         if (c == 0) { return; }
         s = c;
