@@ -1,5 +1,16 @@
 2005-01-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/objects/tools/Cleaver.py,
+	  rulesets/mason/world/objects/animals/Deer.py,
+	  rulesets/basic/world/objects/tools/Axe.py:
+	  Remove obsolete commented out code, and useless constructors
+	  from some scripts.
+
+	* data/mason.xml: Remove obsolete scripts for some entities
+	  which don't do anything.
+
+2005-01-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Remove obsolete scripts for some entities
 	  which don't do anything.
 
