@@ -1,5 +1,9 @@
 2004-01-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* Completely eliminate use of Instantiate() method throughout.
+
+2004-01-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/custom.cpp, common/inheritance.cpp, common/operations.cpp,
 	  server/EntityFactory.cpp: Use new Atlas-C++ Class() method
 	  for class objects.
