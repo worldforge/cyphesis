@@ -29,6 +29,7 @@ cyphesis_SOURCES = \
 		CommLocalClient.cpp CommLocalClient.h \
 		CommRemoteClient.cpp CommRemoteClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
+		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
 		protocol_instructions.h \
 		server.cpp server.h

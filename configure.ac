@@ -38,12 +38,6 @@ AC_ARG_ENABLE(debug,
 
 AC_LANG(C++)
 
-dnl Flags that are required by programs linking against libcyphesis
-SYSTEM_LIBS=
-CYPHESIS_LIBS=-lcyphesis
-CYPHESIS_CFLAGS=
-CYPHESIS_VERSION=$VERSION
-
 AC_CHECK_FUNCS([sigset sigaction])
 
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
@@ -160,31 +154,35 @@ AC_CHECK_LIB(crypto, MD5,
 PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.94 skstream-0.3 >= 0.2.90 varconf-1.0 >= 0.6.2 mercator-0.2,
     [
         CPPFLAGS="$CPPFLAGS $DEPS_CFLAGS"
-        CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $DEPS_CFLAGS"
         LIBS="$LIBS $DEPS_LIBS"
-        SYSTEM_LIBS="$SYSTEM_LIBS $DEPS_LIBS"
     ],
     [
         AC_MSG_ERROR([Cannot find valid versions of required WorldForge libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
+    ])
+
+PKG_CHECK_MODULES(HOWL, howl,
+    [
+        CPPFLAGS="$CPPFLAGS $HOWL_CFLAGS"
+        LIBS="$LIBS $HOWL_LIBS"
+        AC_DEFINE(HAVE_LIBHOWL, 1, [Define to 1 if you have howl libs.])
+    ],
+    [
+        AC_MSG_NOTICE([Howl libraries not found. Ommiting DNS-SD function.])
     ])
 
 AM_PATH_PSQL(7.1.0,
     [
         if test "$PG_CFLAGS" != "-I/usr/include"; then
             CPPFLAGS="$CPPFLAGS $PG_CFLAGS"
-            CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $PG_CFLAGS"
         fi
         if test "$PG_LIBS" != "-L/usr/lib"; then
             LIBS="$LIBS $PG_LIBS"
-            SYSTEM_LIBS="$SYSTEM_LIBS $PG_LIBS"
         fi
     ],
     AC_MSG_ERROR([Cannot find PostgreSQL config or config failed])
 )
 
 AC_CHECK_LIB(pq,PQconnectdb, ,AC_MSG_ERROR([Cannot find PostgreSQL bindings! Have you installed the PostgreSQL development software?]))
-
-SYSTEM_LIBS="$SYSTEM_LIBS -lpq"
 
 READLINE_LIBS=
 
@@ -217,11 +215,7 @@ AC_TRY_COMPILE(
 )
 
 AC_SUBST(VARCONF_LIBS)
-AC_SUBST(SYSTEM_LIBS)
 AC_SUBST(READLINE_LIBS)
-AC_SUBST(CYPHESIS_CFLAGS)
-AC_SUBST(CYPHESIS_LIBS)
-AC_SUBST(CYPHESIS_VERSION)
 
 dnl Generate files
 AC_OUTPUT([

@@ -2,11 +2,16 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "CommServer.h"
 #include "CommListener.h"
 #include "CommUnixListener.h"
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
+#include "CommMDNSPublisher.h"
 #include "ServerRouting.h"
 #include "EntityFactory.h"
 #include "Persistance.h"
@@ -162,6 +167,18 @@ int main(int argc, char ** argv)
             delete cmc;
         }
     }
+
+#if defined(HAVE_LIBHOWL)
+
+    CommMDNSPublisher * cmdns = new CommMDNSPublisher(commServer);
+    if (cmdns->setup() == 0) {
+        commServer.add(cmdns);
+    } else {
+        log(ERROR, "No MDNS Responder for me.");
+        delete cmdns;
+    }
+
+#endif // defined(HAVE_LIBHOWL)
 
     log(INFO, "Running");
 

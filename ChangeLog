@@ -1,3 +1,13 @@
+2004-11-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommMDNSPublisher.cpp, server/CommMDNSPublisher.h: New
+	  class to publish service using zeroconf.
+
+	* server/server.cpp: Use new CommMDNSPublisher class.
+
+	* configure.ac: Detect howl libraries, optionally. Clean up a bunch
+	  of unused variables.
+
 2004-11-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Print a more friendly message including a URL for
