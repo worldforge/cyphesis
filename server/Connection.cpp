@@ -8,6 +8,7 @@
 #include <Atlas/Objects/Operation/Info.h>
 
 #include <rulesets/Character.h>
+#include <rulesets/ExternalMind.h>
 
 #include "Connection.h"
 #include "ServerRouting.h"
@@ -37,7 +38,7 @@ void Connection::destroy()
     fdict_t::const_iterator I;
     for(I = fobjects.begin(); I != fobjects.end(); I++) {
         BaseEntity * ent = I->second;
-        if (ent->in_game = 0) {
+        if (ent->in_game == 0) {
             continue;
         }
         Thing * obj = (Thing*)ent;
@@ -65,7 +66,22 @@ oplist Connection::operation(const RootOperation & op)
         debug_server && cout << "Must send on to account" << endl << flush;
         debug_server && cout << "[" << from << "]" << endl << flush;
         if (fobjects.find(from)!=fobjects.end()) {
-            return fobjects[from]->external_operation(op);
+            BaseEntity * ent = fobjects[from];
+            if ((ent->in_game != 0) && (((Thing *)ent)->is_character != 0) &&
+                (((Character *)ent)->external_mind == NULL)) {
+                Character * pchar = (Character *)ent;
+                pchar->external_mind = new ExternalMind(this, pchar->fullid, pchar ->name);
+                cout << "Re-connecting existing character to new connection" << endl << flush;
+                Info * info = new Info();
+                *info = Info::Instantiate();
+                Message::Object::ListType args(1,pchar->asObject());
+                info->SetArgs(args);
+                info->SetRefno(op.GetSerialno());
+                oplist res = ent->external_operation(op);
+                res.push_front(info);
+                return res;
+            }
+            return ent->external_operation(op);
         } else {
             return error(op, "From is illegal");
         }
@@ -87,6 +103,11 @@ oplist Connection::Operation(const Login & op)
         Player * player = (Player *)server->get_object(account_id);
         if (player && (account_id.size()!=0) && (password==player->password)) {
             add_object(player);
+            fdict_t::const_iterator I;
+            for (I=player->characters_dict.begin();
+                 I!=player->characters_dict.end(); I++) {
+                add_object(I->second);
+            }
             player->connection=this;
             Info * info = new Info();
             *info = Info::Instantiate();

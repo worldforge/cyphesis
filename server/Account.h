@@ -8,6 +8,7 @@ class WorldRouter;
 class Thing;
 
 class Account : public OOG_Thing {
+    friend class Connection;
     fdict_t characters_dict;
     list<string> characters;
     BaseEntity * add_character(const string &, const Message::Object &);
