@@ -1,5 +1,10 @@
 2003-08-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.cpp, common/const.h: Remove the now obsolete
+	  hard coded default admin password.
+
+2003-08-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: Make cycmd a little more flexible about remote
 	  connections and account details, and allow it to attempt commands
 	  without logging in.
