@@ -1050,15 +1050,13 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
 // Interface for tables for sparse sequences or arrays of data. Terrain
 // control points and other spatial data.
 
-static const char * array_axes[] = { "i",
-                                     "j",
-                                     "k" };
+static const char * array_axes[] = { "i", "j", "k", "l", "m" }; 
 
 bool Database::registerArrayTable(const std::string & name,
                                   unsigned int dimension,
                                   const MapType & row)
 {
-    assert(dimension <= 3);
+    assert(dimension <= 5);
 
     if (row.empty()) {
         log(ERROR, "Attempt to create empty array table");
@@ -1080,7 +1078,7 @@ bool Database::registerArrayTable(const std::string & name,
 
         createquery += ", ";
         createquery += array_axes[i];
-        createquery += " integer";
+        createquery += " integer NOT NULL";
     }
 
     for (MapType::const_iterator I = row.begin(); I != row.end(); ++I) {
@@ -1148,9 +1146,46 @@ bool Database::registerArrayTable(const std::string & name,
 bool Database::createArrayRow(const std::string & name,
                               const std::string & id,
                               const std::vector<int> & key,
-                              const Atlas::Message::MapType & data)
+                              const MapType & data)
 {
-    return false;
+    assert(key.size() > 0);
+    assert(key.size() <= 5);
+    assert(!data.empty());
+
+    std::stringstream query;
+    query << "INSERT INTO " << name << " ( id";
+    for (unsigned int i = 0; i < key.size(); ++i) {
+        query << ", " << array_axes[i];
+    }
+    for (MapType::const_iterator I = data.begin(); I != data.end(); ++I) {
+        query << ", " << I->first;
+    }
+    query << " ) VALUES ( " << id;
+    for(std::vector<int>::const_iterator I = key.begin(); I != key.end(); ++I) {
+        query << ", " << *I;
+    }
+    for (MapType::const_iterator I = data.begin(); I != data.end(); ++I) {
+        const Element & e = I->second;
+        switch (e.getType()) {
+          case Element::TYPE_INT:
+            query << ", " << e.asInt();
+            break;
+          case Element::TYPE_FLOAT:
+            query << ", " << e.asFloat();
+            break;
+          case Element::TYPE_STRING:
+            query << ", " << e.asString();
+            break;
+          default:
+            log(ERROR, "Bad type constructing array database row for insert");
+            break;
+        }
+    }
+    query << ");";
+
+    std::string qstr = query.str();
+    std::cout << "QUery: " << qstr << std::endl << std::flush;
+    return scheduleCommand(qstr);
 }
 
 bool Database::updateArrayRow(const std::string & name,

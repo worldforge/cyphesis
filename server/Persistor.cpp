@@ -151,6 +151,13 @@ Persistor<World>::Persistor<World>(bool temp) : m_class("world")
     desc.clear();
     desc["height"] = 0.1f;
     Database::instance()->registerArrayTable("terrain", 2, desc);
+
+    // FIXME This is a test of the insert function
+    std::vector<int> key;
+    key.push_back(1);
+    key.push_back(23);
+    Database::instance()->createArrayRow("terrain", "0", key, desc);
+    
 }
 
 void Persistor<Character>::update(Character * t)

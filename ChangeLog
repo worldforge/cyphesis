@@ -1,5 +1,12 @@
 2004-09-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Implement inserting into array tables.
+	  Modify tables so that key columns are NOT NULL.
+
+	* server/Persistor.cpp: Test creating array rows.
+
+2004-09-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.h, common/Database.cpp: Implement creating tables
 	  for storing array data.
 
