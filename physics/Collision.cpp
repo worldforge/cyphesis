@@ -72,15 +72,17 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
                       double & time,          // Returned time to collision
                       Vector3D & normal)      // Returned collision normal
 {
-    Vector3D foo;
     // Check l vertices against o surfaces
     CoordList::const_iterator I = l.begin();
     NormalSet::const_iterator J = on.begin();
     for (; J != on.end(); ++J) {
-        Vector3D & surface = o[I->first];
+        const Vector3D & surface_pos = o[J->first];
+        const Vector3D & surface_normal = J->second;
         for (; I != l.end(); ++I) {
             double time;
-            collision = predictCollision(*I, u, surface, v, time, normal);
+            bool collision = predictCollision(*I, u,
+                                              surface_pos, surface_normal, v,
+                                              time, normal);
             // FIXME Now what?
         }
     }
@@ -170,5 +172,7 @@ bool predictCollision(const Location & l,
     }
 
     // Predict the collision using the generic mesh function
-    return predictCollision(lbox, lnormals, obox, onormals, time, normal);
+    return predictCollision(lbox, lnormals, l.m_velocity,
+                            obox, onormals, o.m_velocity,
+                            time, normal);
 }
