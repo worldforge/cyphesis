@@ -130,15 +130,19 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
       << t.m_location.m_orientation.vector().x() << cs
       << t.m_location.m_orientation.vector().y() << cs
       << t.m_location.m_orientation.vector().z() << cs
-      << t.m_location.m_orientation.scalar() << cs
-      << (t.m_location.m_bBox.isValid() ? "'t'" : "'f'") << cs
-      << t.m_location.m_bBox.lowCorner().x() << cs
-      << t.m_location.m_bBox.lowCorner().y() << cs
-      << t.m_location.m_bBox.lowCorner().z() << cs
-      << t.m_location.m_bBox.highCorner().x() << cs
-      << t.m_location.m_bBox.highCorner().y() << cs
-      << t.m_location.m_bBox.highCorner().z() << cs
-      << t.getStatus() << cs
+      << t.m_location.m_orientation.scalar() << cs;
+    if (t.m_location.m_bBox.isValid()) {
+        q << "'t', "
+          << t.m_location.m_bBox.lowCorner().x() << cs
+          << t.m_location.m_bBox.lowCorner().y() << cs
+          << t.m_location.m_bBox.lowCorner().z() << cs
+          << t.m_location.m_bBox.highCorner().x() << cs
+          << t.m_location.m_bBox.highCorner().y() << cs
+          << t.m_location.m_bBox.highCorner().z() << cs;
+    } else {
+        q << "'f', 0, 0, 0, 0, 0, 0, ";
+    }
+    q << t.getStatus() << cs
       << sq << t.getName() << sq << cs
       << t.getMass() << cs
       << t.getSeq() << cs;

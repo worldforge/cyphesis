@@ -1,5 +1,11 @@
 2003-07-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Persistor_impl.h: Force zero's when persisting a non
+	  valid bounding box, to ensure nan doesn't get sent to the
+	  database.
+
+2003-07-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Add support for boolean columns.
 
 	* server/Persistor.cpp, server/Persistor_impl.h, server/Restorer.h,
