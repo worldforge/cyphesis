@@ -34,26 +34,4 @@ inline WFMath::CoordType boxSize(const BBox & box)
     return sqrtf(boxSquareSize(box));
 }
 
-/// Do this two boxes intersect
-inline bool hit(const BBox & box, const BBox & other)
-{
-    return hit(box.lowCorner(), box.highCorner(),
-               other.lowCorner(), other.highCorner());
-}
-
-/// When will box, moving with velocity vel hit box o, and on what axis
-inline float timeToHit(const BBox & box, const Vector3D & vel,
-                       const BBox & o, int & axis) 
-{
-    return timeToHit(box.lowCorner(), box.highCorner(), vel,
-                     o.lowCorner(), o.highCorner(), axis);
-}
-
-/// When will box, moving with velocity vel leave box o
-inline float timeToExit(const BBox & box, const Vector3D & vel, const BBox & o)
-{
-    return timeToExit(box.lowCorner(), box.highCorner(), vel,
-                      o.lowCorner(), o.highCorner());
-}
-
 #endif // PHYSICS_BBOX_H
