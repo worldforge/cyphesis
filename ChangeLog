@@ -1,5 +1,10 @@
 2004-11-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Clean up Set code to get rid of
+	  nasty unnecessary exception try / catch block.
+
+2004-11-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Charactertest.cpp, tests/Creatortest.cpp:
 	  Update tests to check for all static attributes.
 

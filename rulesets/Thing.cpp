@@ -355,30 +355,24 @@ void Thing::SetOperation(const Set & op, OpVector & res)
         return;
     }
     const ListType & args = op.getArgs();
-    if (args.empty()) {
+    if (args.empty() || !args.front().isMap()) {
         return;
     }
-    try {
-        const MapType & ent = args.front().asMap();
-        merge(ent);
-        RootOperation * s = new Sight();
-        s->setArgs(ListType(1,op.asObject()));
-        res.push_back(s);
-        if (m_status < 0) {
-            Delete * d = new Delete();
-            ListType & dargs = d->getArgs();
-            dargs.push_back(MapType());
-            // FIXME Is it necessary to include a full description?
-            addToMessage(dargs.front().asMap());
-            d->setTo(getId());
-            res.push_back(d);
-        }
-        if (m_update_flags != 0) {
-            updated.emit();
-        }
+    const MapType & ent = args.front().asMap();
+    merge(ent);
+    RootOperation * s = new Sight();
+    s->setArgs(ListType(1,op.asObject()));
+    res.push_back(s);
+    if (m_status < 0) {
+        Delete * d = new Delete();
+        ListType & dargs = d->getArgs();
+        dargs.push_back(MapType());
+        // FIXME Is it necessary to include a full description?
+        addToMessage(dargs.front().asMap());
+        d->setTo(getId());
+        res.push_back(d);
     }
-    catch (Atlas::Message::WrongTypeException) {
-        log(ERROR, "EXCEPTION: Malformed set operation");
-        error(op, "Malformed set operationn", res, getId());
+    if (m_update_flags != 0) {
+        updated.emit();
     }
 }
