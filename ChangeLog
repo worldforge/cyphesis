@@ -1,5 +1,9 @@
 2003-05-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommClient.h: Switch to using tcp_socket_stream.
+
+2003-05-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommListener.cpp: Ensure that IPv6 bind address is
 	  fully and correctly initialised.
 

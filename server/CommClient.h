@@ -25,7 +25,7 @@ class Connection;
 
 class CommClient : public Atlas::Objects::Decoder, public CommSocket {
   protected:
-    basic_socket_stream clientIos;
+    tcp_socket_stream clientIos;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
     Atlas::Net::StreamAccept * accept;
