@@ -3,7 +3,6 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include <common/BaseEntity.h>
-#include <rulesets/EntityFactory.h>
 
 #include "CommClient.h"
 #include "CreatorClient.h"

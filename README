@@ -8,7 +8,7 @@ servers such as STAGE using AI techniques.
 Installation:
 
 cyphesis is built using autoconf. Please see the file INSTALL for details.
-It requires Python, Berkeley db3 which are include with most Linux
+It requires Python and PostgreSQL which are include with most Linux
 distributions, and Atlas-C++, varconf and skstream which are provided
 by the WorldForge project. GNU readline is required by some of the
 included tools.
@@ -57,3 +57,56 @@ provided, including the files required to be loaded into the world database.
 To switch to the acorn ruleset, follow the instructions above, after
 loading the agrilan*.xml files into the world database using the cydload
 command.
+
+Before you start the server for the first time, you will need to load some
+data into the server. You will first have to load ruleset data, and
+then map data into the database. If this is the first time you have run
+cyphesis since it was switched to use PostgreSQL, you will need to set
+it up so cyphesis has access. In order to use databases, cyphesis needs
+to know the name of an account it can use, and the name of a database
+where it can create its tables. By default it uses the name cyphesis
+for both, and if possible you should create a user called cyphesis
+and a database with the same name belonging to this user. For information
+on how to do this, please see the PostgreSQL documentation provided
+with the version you have installed.
+
+Once cyphesis has access, run cypasswd with no arguments to set the
+admin password to something unique.
+
+A ruleset will need to be loaded into the database before you can do anything
+useful with the server.  Each ruleset optionally depends on another ruleset,
+so in addition to the ruleset you are using you will need to load the
+rulesets on which it depends. A ruleset is distributed with cyphesis
+as an xml. The default is mason.xml, which depends on acorn.xml, which in
+turn depends on basic.xml. These three rulesets can be loaded into the
+database using the cyloadrules command as follows:
+
+cyloadrules basic.xml
+cyloadrules acorn.xml
+cyloadrules mason.xml
+
+You should now load map data into the server using cydbload. The map for early
+mason release is the same as the acorn map, and is stored in agrilan*.xml:
+
+cydbload agrilan.xml
+cydbload agrilan_a1.xml
+cydbload agrilan_a2.xml
+cydbload agrilan_a3.xml
+cydbload agrilan_a4.xml
+
+Once this is done, it is safe to run cyphesis. You will not need to
+do this again. The database store is persistant. If new a ruleset
+or map is provided, it will be necessary to clear the database tables
+before loading them with new data.
+
+Once cyphesis is running, it will contain all the entities in the map,
+but there will be few or no active entities in the world. In order to set
+up a game, you need to run a client to set up the rest. The client
+will use a script included in the current ruleset to define what the
+world should contain. This script is kept together with the entity and
+AI scripts required for the ruleset in a directory under the rulesets
+directory. For example, the mason script is found in
+rulesets/mason/define_world.py. In order to populate the world,
+simply run cyclient once the server is running. You will need to do
+this each time cyphesis is started.
+

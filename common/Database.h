@@ -34,6 +34,7 @@ class Database {
     std::string world_db;
     std::string mind_db;
     std::string server_db;
+    std::string rule_db;
     Decoder m_d;
 
     PgDatabase * m_connection;
@@ -52,6 +53,9 @@ class Database {
                    Atlas::Message::Object::MapType &);
     bool delObject(const std::string &, const std::string & key);
 
+    bool getTable(const std::string & table,
+                  Atlas::Message::Object::MapType &);
+
     void reportError();
   public:
     static Database * instance();
@@ -61,6 +65,8 @@ class Database {
     bool initWorld(bool createTables = false);
     bool initMind(bool createTables = false);
     bool initServer(bool createTables = false);
+    bool initRule(bool createTables = false);
+
     void shutdownConnection();
 
     friend class DatabaseIterator;

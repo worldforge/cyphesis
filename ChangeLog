@@ -1,3 +1,35 @@
+2002-01-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp, common/Database.h,
+	  server/Persistance.cpp, server/Persistance.h:
+	  Add a new table to store rulesets, so they can be persisted, and
+	  edited online.  The new ruleset format integrates information
+	  about the class hierarchy, scripting and default attributes.
+	  Added low level method to fetch an entire database table as an
+	  Atlas map.
+
+	* tools/cyloadrules.cpp: New tool to load rulesets in new xml
+	  format into database table.
+
+	* server/EntityFactory.cpp, server/EntityFactory.h:
+	  New re-written Entity Factory, to support new rules database
+	  table, and better class definition capabilities.
+
+	* rulesets/EntityFactory.cpp, rulesets/EntityFactory.h:
+	  Removed from build.
+
+	* client/CommClient.cpp: Redundant include removed.
+
+	* rulesets/ThingFactory.h: Add storage to factory for script
+	  info and default attributes.
+
+	* server/WorldRouter.cpp: Switch to using new EntityFactory.
+
+	* server/server.cpp: Removed old ruleset loading code, and now
+	  simply load the ruleset names from the config file.
+
+	* tools/cycmd.cpp: Exit correctly if connection fails.
+
 2002-01-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/ClientConnection.h, server/CommClient.h, tools/cycmd.cpp:

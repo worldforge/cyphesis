@@ -16,7 +16,6 @@ extern "C" {
     #include <fcntl.h>
 }
 
-#include <rulesets/EntityFactory.h>
 #include <rulesets/Python_API.h>
 
 #include <common/debug.h>
@@ -26,6 +25,7 @@ extern "C" {
 #include <common/Load.h>
 
 #include "ServerRouting_methods.h"
+#include "EntityFactory.h"
 #include "Persistance.h"
 
 using Atlas::Message::Object;
@@ -107,19 +107,6 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    EntityFactory::instance()->installBaseClasses();
-
-    // Load up the rulesets. Rulesets are hierarchical, and are read in until
-    // a file is read in that does not specify its parent ruleset.
-    std::string ruleset;
-    while (global_conf->findItem("cyphesis", "ruleset")) {
-        ruleset = global_conf->getItem("cyphesis", "ruleset");
-        global_conf->erase("cyphesis", "ruleset");
-        std::cout << "Reading in " << ruleset << std::endl;
-        global_conf->readFromFile(share_directory + "/cyphesis/" + ruleset + ".vconf");
-        rulesets.push_back(ruleset);
-    };
-
     if (global_conf->findItem("cyphesis", "daemon")) {
         daemon_flag = global_conf->getItem("cyphesis","daemon");
     }
@@ -150,6 +137,16 @@ int main(int argc, char ** argv)
         }
         return 0;
     }
+
+    EntityFactory::instance()->installBaseClasses();
+
+    // Load up the rulesets. Rulesets are hierarchical, and are read in until
+    // a file is read in that does not specify its parent ruleset.
+    std::string ruleset = "cyphesis";
+    while (global_conf->findItem(ruleset, "ruleset")) {
+        ruleset = global_conf->getItem(ruleset, "ruleset");
+        rulesets.push_back(ruleset);
+    };
 
     // If the restricted flag is set in the config file, then we
     // don't allow connecting users to create accounts. Accounts must

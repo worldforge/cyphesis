@@ -11,6 +11,10 @@
   Funcoms warning. One question is obviously whether to use a database
   server, or in process database access.
 
+  The postgresql code does not handle primary keys properlly. If an
+  entry is added to the table with an existing ID, the result is that
+  two entries with that ID exist.
+
   Add services features, and test them in equator.
 
   Make sure the tools use another port if one is specified in the config file.

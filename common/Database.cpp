@@ -20,6 +20,8 @@
 
 #include <varconf/Config.h>
 
+using Atlas::Message::Object;
+
 static const bool debug_flag = false;
 
 Database * Database::m_instance = NULL;
@@ -28,6 +30,7 @@ Database::Database() : account_db("account"),
                        world_db("world"),
                        mind_db("mind"),
                        server_db("server"),
+                       rule_db("rules"),
                        m_connection(NULL)
 {
     
@@ -153,6 +156,7 @@ bool Database::initMind(bool createTables)
     }
     return true;
 }
+
 bool Database::initServer(bool createTables)
 {
     int status = 0;
@@ -165,6 +169,31 @@ bool Database::initServer(bool createTables)
             status = m_connection->ExecCommandOk("CREATE TABLE server ( id varchar(80), contents text );");
             if (!status) {
                 std::cerr << "Error creating server table in database"
+                          << std::endl << std::flush;
+                reportError();
+                return false;
+            }
+        } else {
+            std::cerr << "Server table does not exist in database"
+                      << std::endl << std::flush;
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Database::initRule(bool createTables)
+{
+    int status = 0;
+    status = m_connection->ExecTuplesOk("SELECT * FROM rules WHERE id = 'test' AND contents = 'test';");
+    
+    if (!status) {
+        debug(std::cout << "Rule table does not exist"
+                        << std::endl << std::flush;);
+        if (createTables) {
+            status = m_connection->ExecCommandOk("CREATE TABLE rules ( id varchar(80), contents text );");
+            if (!status) {
+                std::cerr << "Error creating rules table in database"
                           << std::endl << std::flush;
                 reportError();
                 return false;
@@ -298,6 +327,39 @@ bool Database::delObject(const std::string & table, const std::string & key)
     }
     return true;
 #endif
+    return true;
+}
+
+bool Database::getTable(const std::string & table, Object::MapType &o)
+{
+    std::string query = std::string("SELECT * FROM ") + table + ";";
+
+    int status = m_connection->ExecTuplesOk(query.c_str());
+
+    if (!status) {
+        debug(std::cout << "Error accessing " << table
+                        << " table" << endl << flush;);
+        reportError();
+        return false;
+    }
+    int results = m_connection->Tuples();
+    if (results < 1) {
+        debug(std::cout << "No entries in " << table
+                        << " table" << std::endl << std::flush;);
+        return false;
+    }
+    Object::MapType t;
+    for(int i = 0; i < results; i++) {
+        const char * key = m_connection->GetValue(i, 0);
+        const char * data = m_connection->GetValue(i, 1);
+        debug(cout << "Got record " << key << " from database, value " << data
+                   << std::endl << std::flush;);
+    
+        if (decodeObject(data, t)) {
+            o[key] = t;
+        }
+        
+    }
     return true;
 }
 

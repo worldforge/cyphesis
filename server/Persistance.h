@@ -34,6 +34,10 @@ class Persistance : public Database {
 
     bool getMind(const std::string &, Atlas::Message::Object::MapType &);
     void putMind(const std::string &, const Atlas::Message::Object::MapType &);
+
+    bool getRules(Atlas::Message::Object::MapType & m) {
+        return getTable(rule_db, m);
+    }
 };
 
 #endif // SERVER_PERSISTANCE_H

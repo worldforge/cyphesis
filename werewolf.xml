@@ -1,0 +1,43 @@
+<atlas>
+<map>
+  <map name="gallows">
+    <string name="parent">thing</string>
+    <map name="attributes">
+    </map>
+    <map name="script">
+      <string name="name">world.objects.tools.Gallows</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="villager">
+    <string name="parent">character</string>
+    <map name="attributes">
+    </map>
+    <map name="script">
+      <string name="name">world.objects.characters.Villager</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="mayor">
+    <string name="parent">character</string>
+    <map name="attributes">
+    </map>
+    <map name="script">
+      <string name="name">world.objects.characters.Mayor</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="hangman">
+    <string name="parent">character</string>
+    <map name="attributes">
+    </map>
+    <map name="script">
+      <string name="name">world.objects.characters.Hangman</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+</map>
+</atlas>

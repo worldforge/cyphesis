@@ -53,7 +53,8 @@ bool Persistance::init()
     bool j = p->initWorld(true);
     bool k = p->initMind(true);
     bool l = p->initServer(true);
-    return (i && j && k && l);
+    bool m = p->initRule(true);
+    return (i && j && k && l && m);
 }
 
 void Persistance::shutdown()

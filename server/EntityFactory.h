@@ -5,8 +5,6 @@
 #ifndef RULESETS_ENTITY_FACTORY_H
 #define RULESETS_ENTITY_FACTORY_H
 
-#error This file has been removed from the build
-
 namespace Atlas { namespace Message {
   class Object;
 } }
@@ -43,6 +41,7 @@ class EntityFactory : public SigC::Object {
     void installBaseClasses();
     void installFactory(const std::string &, const std::string &, FactoryBase*);
     void installClass(const std::string &, const std::string&);
+    FactoryBase * getFactory(const std::string &);
 };
 
 #endif // ENTITY_FACTORY_H

@@ -9,9 +9,9 @@
 
 #include "WorldRouter.h"
 #include "ServerRouting.h"
+#include "EntityFactory.h"
 
 #include <rulesets/World.h>
-#include <rulesets/EntityFactory.h>
 #include <common/debug.h>
 #include <common/const.h>
 #include <common/globals.h>

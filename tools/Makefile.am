@@ -1,4 +1,4 @@
-bin_PROGRAMS = cypasswd cycmd cydbload cywatchdog cyctrl
+bin_PROGRAMS = cypasswd cycmd cydbload cyloadrules cywatchdog cyctrl
 
 INCLUDES = -DBINDIR=\"@bindir@\" -DVARDIR=\"@localstatedir@\"
 
@@ -28,6 +28,10 @@ cycmd_LDADD = ../common/Database.o ../common/operations.o ../common/globals.o
 cydbload_SOURCES = cydbload.cpp
 
 cydbload_LDADD = ../common/Database.o ../common/globals.o
+
+cyloadrules_SOURCES = cyloadrules.cpp
+
+cyloadrules_LDADD = ../common/Database.o ../common/globals.o
 
 cywatchdog_SOURCES = cywatchdog.cpp
 

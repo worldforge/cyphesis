@@ -5,10 +5,18 @@
 #ifndef RULESETS_THING_FACTORY_H
 #define RULESETS_THING_FACTORY_H
 
+#include <Atlas/Message/Object.h>
+
 class Thing;
 
 class FactoryBase {
   public:
+    std::string script;
+    std::string language;
+    Atlas::Message::Object::MapType attributes;
+
+    virtual ~FactoryBase() { }
+
     virtual Thing * newThing() = 0;
 };
 

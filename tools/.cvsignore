@@ -6,5 +6,6 @@ cycmd
 cyctrl
 cydbload
 cyisoload
+cyloadrules
 cypasswd
 cywatchdog
