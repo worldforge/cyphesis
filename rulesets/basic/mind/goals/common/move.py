@@ -22,27 +22,44 @@ class move_me(Goal):
         self.location=location
         self.speed=speed
         self.vars=["location", "speed"]
-    def am_I_at_loc(self, me):
-        if not self.location: return 1
-        #CHEAT!: kludge!
+    def get_location_instance(self, me):
         location_=self.location
-        if type(location_)==LambdaType: location_=location_(me)
-        #mind uses sometimes strings known only to him/her
+        if type(location_)==LambdaType:
+            #print "Lambda location"
+            location_=location_(me)
         if type(location_)==StringType:
+            #print "String location"
             location_=me.get_knowledge("location",location_)
         if not location_:
+            #print "Unknown location"
+            return None
+        return location_
+    def am_I_at_loc(self, me):
+        location=self.get_location_instance(me)
+        if not location:
+            #print "No location"
+            return 1
+        # FIXME Use distance_to
+        if me.location.parent.id!=location.parent.id: return 0
+        if me.location.coordinates.distance(location.coordinates)<1.5:
+            #print "We are there"
+            return 1
+        else:
+            #print "We are not there"
             return 0
-        self.location=location_
-        if me.location.parent.id!=location_.parent.id: return 0
-        return me.location.coordinates.distance(location_.coordinates)<1.5
     def move_to_loc(self, me):
-        if type(self.location)!=InstanceType:
+        #print "Moving to location"
+        location=self.get_location_instance(me)
+        if not location:
+            #print "but can't - not location"
             return
-        location_=self.location.copy()
-        location_.velocity=me.location.coordinates.unit_vector_to_another_vector(location_.coordinates)*self.speed
-        location_.rotation=location_.velocity.unit_vector()
-        if location_.velocity==me.location.velocity: return
-        return Operation("move", Entity(me.id, location=location_))
+        target=location.copy()
+        # FIXME Use distance_to
+        target.velocity=distance_to(me.location, location).unit_vector()*self.speed
+        if me.location.velocity.is_valid() and me.location.velocity.dot(target.velocity) > 0.8:
+            #print "Already on the way"
+            return
+        return Operation("move", Entity(me.id, location=target))
 
 ############################ MOVE ME AREA ####################################
 
@@ -56,23 +73,38 @@ class move_me_area(Goal):
         self.square_range=range*range
         self.arrived=0
         self.vars=["location","range","arrived"]
+    def get_location_instance(self, me):
+        # FIXME Duplicate of method from move_me() goal
+        location_=self.location
+        if type(location_)==LambdaType:
+            #print "Lambda location"
+            location_=location_(me)
+        if type(location_)==StringType:
+            #print "String location"
+            location_=me.get_knowledge("location",location_)
+        if not location_:
+            #print "Unknown location"
+            return None
+        return location_
     def am_I_in_area(self, me):
-        if not self.location:
-            return 1
-        #CHEAT!: kludge!
-        if type(self.location)==LambdaType:
-            self.location=self.location(me)
-        #mind uses sometimes strings known only to him/her
-        if type(self.location)==StringType:
-            self.location=me.get_knowledge("location",self.location)
-            if not self.location:
-                return 0
+        location=self.get_location_instance(me)
+        if not location:
+            #print "No location"
+            return 0
         if self.arrived:
-            square_dist=distance_to(me.location, self.location)
-            if square_dist > self.square_range: self.arrived=0
-            return square_dist < self.square_range
+            #print "Already arrived at location"
+            square_dist=distance_to(me.location, location).square_mag()
+            if square_dist > self.square_range:
+                self.arrived=0
+                #print "Moved away"
+                return 0
+            else:
+                #print "Still here", square_dist, self.square_range
+                return 1
+        #print "I am not there"
         return 0
     def latch_loc(self, me):
+        #print "Latching at location"
         self.arrived=1
 
 ############################ MOVE THING ####################################

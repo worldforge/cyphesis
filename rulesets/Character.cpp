@@ -359,7 +359,7 @@ void Character::WieldOperation(const Wield & op, OpVector & res)
         return;
     }
     m_rightHandWield = item->getId();
-    std::cout << "Wielding " << m_rightHandWield << std::endl << std::flush;
+    debug(std::cout << "Wielding " << m_rightHandWield << std::endl << std::flush;);
 }
 
 void Character::mindLoginOperation(const Login & op, OpVector & res)
@@ -387,7 +387,7 @@ void Character::mindSetupOperation(const Setup & op, OpVector & res)
 
 void Character::mindUseOperation(const Use & op, OpVector & res)
 {
-    std::cout << "Got Use op from mind" << std::endl << std::flush;
+    debug(std::cout << "Got Use op from mind" << std::endl << std::flush;);
 
     std::string toolId = m_rightHandWield;
 
@@ -416,8 +416,8 @@ void Character::mindUseOperation(const Use & op, OpVector & res)
         ListType::const_iterator Jend = toolOpList.end();
         if ((J != Jend) && ((*J).isString())) {
             op_type = (*J).asString();
-            std::cout << "default tool op is " << op_type << std::endl
-                                                          << std::flush;
+            debug(std::cout << "default tool op is " << op_type << std::endl
+                                                                << std::flush;);
         }
         for (; J != Jend; ++J) {
             if (!(*J).isString()) {
@@ -455,11 +455,11 @@ void Character::mindUseOperation(const Use & op, OpVector & res)
                 return;
             }
             op_type = arg_op_parent.asString();
-            std::cout << "Got op type " << op_type << " from arg"
-                      << std::endl << std::flush;
+            debug(std::cout << "Got op type " << op_type << " from arg"
+                            << std::endl << std::flush;);
             if (toolOps.find(op_type) == toolOps.end()) {
-                std::cout << "Use op is not permitted by tool"
-                          << std::endl << std::flush;
+                error(op, "Use op is not permitted by tool", res, getId());
+                return;
             }
             // Check against valid ops
 
@@ -482,8 +482,8 @@ void Character::mindUseOperation(const Use & op, OpVector & res)
                     return;
                 }
                 target = K->second.asString();
-                std::cout << "Got target " << target << " from op arg"
-                          << std::endl << std::flush;
+                debug(std::cout << "Got target " << target << " from op arg"
+                                << std::endl << std::flush;);
             }
         } else if (argtype == "obj") {
             K = amap.find("id");
@@ -492,8 +492,8 @@ void Character::mindUseOperation(const Use & op, OpVector & res)
                 return;
             }
             target = K->second.asString();
-            std::cout << "Got target " << target << " from arg"
-                      << std::endl << std::flush;
+            debug(std::cout << "Got target " << target << " from arg"
+                            << std::endl << std::flush;);
         } else {
             error(op, "Use arg has unknown objtype", res, getId());
             return;
@@ -507,7 +507,7 @@ void Character::mindUseOperation(const Use & op, OpVector & res)
 
     RootOperation * rop = Inheritance::instance().newOperation(op_type);
     if (target.empty()) {
-        std::cout << "No target" << std::endl << std::flush;
+        debug(std::cout << "No target" << std::endl << std::flush;);
     } else {
         ListType & rop_args = rop->getArgs();
         rop_args.push_back(MapType());
@@ -521,7 +521,7 @@ void Character::mindUseOperation(const Use & op, OpVector & res)
 
 void Character::mindWieldOperation(const Wield & op, OpVector & res)
 {
-    std::cout << "Got Wield op from mind" << std::endl << std::flush;
+    debug(std::cout << "Got Wield op from mind" << std::endl << std::flush;);
     Wield *s = new Wield(op);
     s->setTo(getId());
     res.push_back(s);

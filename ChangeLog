@@ -1,5 +1,19 @@
 2004-11-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp, rulesets/Plant.cpp: Encapsulate the
+	  debugging output relating to tool use into the debug macro, so it
+	  is no longer printed.
+
+	* rulesets/basic/mind/goals/common/move.py: Re-write a couple
+	  of movement goals so they work more reliably.
+
+	* rulesets/basic/mind/goals/humanoid/construction.py: Comment out
+	  debugging output.
+
+	* rulesets/mason/define_world.py: More additions to NPC settler test.
+
+2004-11-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/editor.py: Improve the define_world API by making
 	  the type argument optional.
 

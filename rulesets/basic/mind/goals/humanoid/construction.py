@@ -50,7 +50,7 @@ class harvest_resource(Goal):
         self.vars=["what","source","place","tool"]
     def do(self, me):
         if me.things.has_key(self.tool)==0:
-            print "No tool"
+            #print "No tool"
             return
         tool=me.find_thing(self.tool)[0]
         if not self.wield:
@@ -58,7 +58,7 @@ class harvest_resource(Goal):
             # FIXME We need to sort out how to tell what one is wielding
             return Operation("wield", Entity(tool.id))
         if me.things.has_key(self.source)==0:
-            print "No resource source " + self.source
+            #print "No resource source " + self.source
             return
         target=me.find_thing(self.source)[0]
         return Operation("use",Entity(target.id))

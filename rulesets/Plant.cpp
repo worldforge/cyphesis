@@ -78,13 +78,13 @@ int Plant::dropFruit(OpVector & res)
 
 void Plant::ChopOperation(const Chop & op, OpVector & res)
 {
-    std::cout << "Plant got chop op" << std::endl << std::flush;
+    debug(std::cout << "Plant got chop op" << std::endl << std::flush;);
     if (m_script->Operation("tick", op, res)) {
         return;
     }
     Element mode;
     if (get("mode", mode) && mode.isString() && mode.asString() == "felled") {
-        std::cout << "Plant is already down" << std::endl << std::flush;
+        debug(std::cout << "Plant is already down" << std::endl << std::flush;);
         RootOperation * op = new Set;
         ListType & setArgs = op->getArgs();
         setArgs.push_back(MapType());
@@ -95,7 +95,7 @@ void Plant::ChopOperation(const Chop & op, OpVector & res)
         res.push_back(op);
 
         if (m_location.m_bBox.isValid()) {
-            std::cout << "Plant replaced by log" << std::endl << std::flush;
+            debug(std::cout << "Plant replaced by log" << std::endl << std::flush;);
             op = new Create;
             ListType & createArgs = op->getArgs();
             createArgs.push_back(MapType());

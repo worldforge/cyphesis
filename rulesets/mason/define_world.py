@@ -462,8 +462,9 @@ def test_pig(mapeditor):
 def test_settler(mapeditor):
 
     m=editor(mapeditor)
-    settler=m.make('settler',xyz=(3,3,0), sex='male')
+    settler=m.make('settler',xyz=(1,1,0), sex='male')
     axe=m.make('axe',type='axe',xyz=(0,0,0))
     m.own(settler,axe)
-    m.know(settler,[('origin','location',(0,0,0))])
-    m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','origin','axe')"))
+    m.know(settler,[('forest','location',(30,30,0))])
+    m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','forest','axe')"))
+    m.make('oak',xyz=(32,32,0))
