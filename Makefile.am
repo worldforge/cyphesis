@@ -1,5 +1,5 @@
 
-SUBDIRS = physics common modules rulesets server client tools
+SUBDIRS = physics common modules rulesets server client tests tools
 
 bin_SCRIPTS = cyphesis-config
 

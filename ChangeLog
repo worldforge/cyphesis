@@ -1,3 +1,9 @@
+2003-09-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/logtest.cpp, tests/EntityExerciser.h,
+	  tests/BaseEntitytest.cpp: Add some unit tests. Lots more to
+	  come.
+
 2003-09-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/Py_CreatorClient.cpp, client/Py_CreatorClient.h,

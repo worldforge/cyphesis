@@ -239,5 +239,6 @@ AC_OUTPUT([
     rulesets/Makefile
     server/Makefile
     client/Makefile
+    tests/Makefile
     tools/Makefile
 ], [chmod +x cyphesis-config])
