@@ -123,7 +123,7 @@ bool Database::initRule(bool createTables)
         debug(std::cout << "Rule table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(80) PRIMARY KEY, ruleset varchar(32), contents text );");
+            status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(80) PRIMARY KEY, ruleset varchar(32), contents text ) WITHOUT OIDS;");
             if (!status) {
                 reportError();
                 return false;
@@ -466,9 +466,9 @@ bool Database::registerRelation(std::string & tablename,
     createquery += " (id));";
 #else
     if ((kind == OneToOne) || (kind == OneToMany)) {
-        createquery += " (id), target integer UNIQUE);";
+        createquery += " (id), target integer UNIQUE) WITHOUT OIDS;";
     } else {
-        createquery += " (id), target integer);";
+        createquery += " (id), target integer) WITHOUT OIDS;";
     }
 #endif
 
@@ -490,8 +490,8 @@ bool Database::registerRelation(std::string & tablename,
         return true;
     }
 
-    std::cout << "CREATE QUERY: " << createquery
-                    << std::endl << std::flush;
+    debug(std::cout << "CREATE QUERY: " << createquery
+                    << std::endl << std::flush;);
     if (!runCommandQuery(createquery)) {
         return false;
     }
@@ -633,7 +633,7 @@ bool Database::registerSimpleTable(const std::string & name,
         return true;
     }
 
-    createquery += ");";
+    createquery += ") WITHOUT OIDS;";
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
     bool ret = runCommandQuery(createquery);
@@ -868,12 +868,13 @@ bool Database::registerEntityTable(const std::string & classname,
     }
     // create table
     createquery += ")";
-    if (!parent.empty()) {
+    if (parent.empty()) {
+        createquery += " WITHOUT OIDS;";
+    } else {
         createquery += " INHERITS (";
         createquery += parent;
-        createquery += "_ent)";
+        createquery += "_ent);";
     }
-    createquery += ";";
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
 

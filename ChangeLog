@@ -1,3 +1,8 @@
+2004-07-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Try out creating database tables without an
+	  OID column.
+
 2004-07-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.h, common/Database.cpp: Modify relation code
