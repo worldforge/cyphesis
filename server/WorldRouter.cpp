@@ -10,19 +10,12 @@
 #include "WorldRouter.h"
 #include "ServerRouting.h"
 
-#include <rulesets/Entity.h>
 #include <rulesets/World.h>
 #include <rulesets/EntityFactory.h>
 #include <common/debug.h>
 #include <common/const.h>
 #include <common/globals.h>
 #include <common/stringstream.h>
-
-#include <strstream>
-
-extern "C" {
-    #include <stdio.h>
-}
 
 using Atlas::Message::Object;
 
@@ -117,6 +110,8 @@ Entity * WorldRouter::addObject(Entity * obj)
         debug(std::cout << "loc is world" << std::endl << std::flush;);
         gameWorld.contains.push_back(obj);
         gameWorld.contains.unique();
+        // FIXME Check here and in Thing/Entity::CreateOperation() and
+        // sort out a clean way to ensure contains is correct
     }
     debug(std::cout << "Entity loc " << obj->location << std::endl
                     << std::flush;);

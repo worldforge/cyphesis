@@ -6,8 +6,6 @@
 #include <Atlas/Objects/Operation/Divide.h>
 #include <Atlas/Objects/Operation/Delete.h>
 
-#include <common/const.h>
-
 // A stackable object, ie one which can represent multiple object of the
 // same type. Used for things like coins.
 

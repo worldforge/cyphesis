@@ -45,6 +45,8 @@ oplist Thing::SetupOperation(const Setup & op)
     RootOperation * sight = new Sight(Sight::Instantiate());
     Create c(Create::Instantiate());
     c.SetArgs(Object::ListType(1,asObject()));
+    c.SetTo(getId());
+    c.SetFrom(getId());
     sight->SetArgs(Object::ListType(1, c.AsObject()));
 
     oplist sres;

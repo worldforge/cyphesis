@@ -2,8 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/RootOperation.h>
-
 #include "OOGThing.h"
 
 OOGThing::~OOGThing()

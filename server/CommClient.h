@@ -10,8 +10,6 @@
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Codec.h>
 
-#include <common/const.h>
-
 class CommServer;
 class Connection;
 

@@ -9,8 +9,6 @@ class Admin;
 class Account;
 class Entity;
 
-#include <Atlas/Message/Object.h>
-
 #include <common/database.h>
 
 class Persistance : public Database {

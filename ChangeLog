@@ -1,3 +1,19 @@
+2001-10-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseWorld.cpp, common/OOGThing.cpp, rulesets/Entity.cpp,
+	  rulesets/EntityFactory.cpp, rulesets/MindFactory.cpp,
+	  rulesets/Stackable.cpp, server/Account.cpp, server/Admin.cpp,
+	  server/CommClient.h, server/CommServer.cpp, server/CommServer.h,
+	  server/Connection.cpp, server/ExternalMind.cpp,
+	  server/Persistance.cpp, server/Persistance.h,
+	  server/ServerRouting.cpp, server/WorldRouter.cpp,
+	  server/server.cpp: Removed unused includes and code. Added some
+	  FIXMEs.
+
+	* rulesets/Thing.cpp: Added TO and FROM to faked Sight(Create()) ops.
+
+	* server/OOG_Thing.cpp, server/OOG_Thing.h: Marked files as removed.
+
 2001-10-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cyisoload.cpp: Removed unused iso map loader tool, and

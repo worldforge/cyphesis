@@ -7,11 +7,9 @@
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Info.h>
 
-#include <common/log.h>
 #include <common/debug.h>
 
 #include <rulesets/Character.h>
-#include <rulesets/World.h>
 
 #include "Account.h"
 #include "Connection_methods.h"
@@ -23,7 +21,6 @@
 static const bool debug_flag = false;
 
 using Atlas::Message::Object;
-using Atlas::Objects::Operation::Info;
 
 Account::Account(Connection * conn, const std::string & username,
                  const std::string& passwd)

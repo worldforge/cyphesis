@@ -4,11 +4,6 @@
 
 #include <fstream.h>
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/Operation/Login.h>
-#include <Atlas/Codecs/XML.h>
-
 #include <server/Admin.h>
 #include <server/Player.h>
 #include <rulesets/Entity.h>

@@ -2,7 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Get.h>
 #include <Atlas/Objects/Operation/Info.h>
@@ -13,10 +12,8 @@
 #include <server/Persistance.h>
 
 #include "Admin.h"
-#include "Connection.h"
 #include "ServerRouting.h"
 #include "WorldRouter.h"
-#include <common/globals.h>
 #include <rulesets/Character.h>
 #include <rulesets/BaseMind.h>
 

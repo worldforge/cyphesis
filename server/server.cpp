@@ -20,7 +20,6 @@ extern "C" {
 
 #include <rulesets/EntityFactory.h>
 
-#include <common/const.h>
 #include <common/log.h>
 #include <common/debug.h>
 #include <common/globals.h>

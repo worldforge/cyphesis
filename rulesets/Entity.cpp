@@ -25,7 +25,6 @@
 #include "Entity.h"
 #include "Script.h"
 
-#include <common/const.h>
 #include <common/debug.h>
 
 static const bool debug_flag = false;
@@ -110,6 +109,7 @@ void Entity::destroy()
         if (!obj->deleted) {
             obj->location.ref = location.ref;
             obj->location.coords = location.coords + obj->location.coords;
+            // FIXME Add to contains of location.ref ?
         }
     }
     if (location) {

@@ -8,7 +8,6 @@
 #include "MindFactory.h"
 #include "Python_API.h"
 
-#include <common/const.h>
 #include <common/debug.h>
 
 #include "BaseMind.h"

@@ -18,7 +18,6 @@
 #include "Stackable.h"
 #include "Structure.h"
 
-#include <common/const.h>
 #include <common/debug.h>
 #include <common/globals.h>
 

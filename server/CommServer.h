@@ -5,16 +5,12 @@
 #ifndef SERVER_COMM_SERVER_H
 #define SERVER_COMM_SERVER_H
 
-#include <common/const.h>
-
 #include <map>
 #include <string>
 
 extern "C" {
     #include <netinet/in.h>
 }
-
-#include "protocol_instructions.h"
 
 class CommClient;
 class ServerRouting;

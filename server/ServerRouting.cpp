@@ -2,14 +2,12 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-
 #include "ServerRouting_methods.h"
+#include "Persistance.h"
 #include "CommServer.h"
 #include "Account.h"
 #include "Lobby.h"
 
-#include "Persistance.h"
 #include <common/debug.h>
 
 static bool debug_flag = false;

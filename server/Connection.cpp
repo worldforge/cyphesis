@@ -26,7 +26,6 @@
 static const bool debug_flag = false;
 
 using Atlas::Message::Object;
-using Atlas::Objects::Operation::Info;
 
 Connection::Connection(CommClient & client) : commClient(client),
                        server(commClient.commServer.server)

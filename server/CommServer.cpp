@@ -2,8 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-
 #include "CommClient.h"
 #include "CommServer.h"
 
@@ -18,6 +16,7 @@ extern "C" {
 #include <common/debug.h>
 
 #include "ServerRouting_methods.h"
+#include "protocol_instructions.h"
 
 using Atlas::Message::Object;
 
