@@ -1,8 +1,14 @@
+Re-write appear/disappear code so we use real square distance instead
+of boxes, and use some kind of function involving objects size 
+to judge how visible it is. ie. get rid of fixed sight range.
+
+Re-work distance measuring functions to ensure orientation is taken
+into account.
+
 Clean the database. Use VACUUM once an hour, and probably VACUUM ANALYSE
 and VACUUM FULL each once per day. REINDEX may also be required.
 
-Sort out socket address re-use, and work out what the hell James was doing
-with that socket option in Indri.
+Sort out socket address re-use, and lingering.
 
 Move big functions out of physics headers into .cpp files
 
@@ -40,8 +46,9 @@ Replace PyExc_TypeError with the correct exception in most cases.
 
 Use PyInstance_New to create an instance given a class.
 
-Use PyModule_AddObject(), PyModule_AddIntConstant(), and PyModule_AddStringConstant()
-when setting up the python consts module. (new in version 2).
+Use PyModule_AddObject(), PyModule_AddIntConstant(), and
+PyModule_AddStringConstant() when setting up the python consts module.
+(new in version 2).
 
 Look at re-writing python API code to work with python GC
 
@@ -51,13 +58,14 @@ Look at making sure .pyc and .pyo files are included in the distribution.
 Check if "common" module reference in init_python_api() should be decrefed,
 and also any others.
 
-Still plenty of python object leaks. Need to carefully see if references are being
-handled right in the mind code.
+Still plenty of python object leaks. Need to carefully see if references are
+being handled right in the mind code.
 
 Sort persisting world so things like its orientation are initialised correctly.
 Either valid or invalid.
 
-CreateOperation and DeleteOperation behavoir probably should be moved from Thing to
+CreateOperation and DeleteOperation behavoir probably should be moved from
+Thing to
 entity as they should work on entities.
 
 Add attribute handler objects, which hold a reference to the attribute value, so
