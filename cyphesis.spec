@@ -6,7 +6,7 @@ Version: 0.0.11
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://ftp.worldforge.org/pub/WorldForge/cyphesis/source/cyphesis-0.0.11.tar.gz
+Source: ftp://ftp.worldforge.org/pub/WorldForge/cyphesis/source/cyphesis-0.0.11.tar.gz
 BuildRoot: /var/tmp/%{name}-buildroot
 
 %description
