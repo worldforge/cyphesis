@@ -1,2 +1,3 @@
-Profiling shows that python code accounts for 62% of CPU time used.
+2005-01-18  Al Riddoch  <alriddoch@zepler.org>
 
+        * Version 0.3.8 released.

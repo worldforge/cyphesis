@@ -1,6 +1,9 @@
 INCLUDES = -I$(top_srcdir)
 
 bin_PROGRAMS = cycmd cyconfig cyconvertrules cyloadrules cypasswd
+noinst_SCRIPTS = cyphesis.sh
+
+EXTRA_DIST = cyphesis.sh
 
 if LINK_STATIC
 

@@ -12,7 +12,7 @@ URL: http://www.worldforge.org/dev/eng/servers/cyphesis
 Packager: Al Riddoch <alriddoch@zepler.org>
 Vendor: WorldForge
 Distribution: Mason
-Source0: %{name}-%{version}.tar.gz
+Source0: %{name}-%{version}.tar.bz2
 Source1: cyphesis.init
 Source2: cyclient.init
 Source3: cyphesis.sysconfig
