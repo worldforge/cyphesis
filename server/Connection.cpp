@@ -83,9 +83,9 @@ Connection::~Connection()
     }
 }
 
-void Connection::send(const Operation & msg) const
+void Connection::send(const Operation & op) const
 {
-    m_commClient.send(msg);
+    m_commClient.send(op);
 }
 
 Account * Connection::addPlayer(const std::string& username,
@@ -122,7 +122,8 @@ void Connection::removeObject(const std::string & id)
     }
 }
 
-void Connection::objectDeleted(std::string id) {
+void Connection::objectDeleted(std::string id)
+{
     removeObject(id);
 }
 

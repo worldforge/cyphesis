@@ -26,8 +26,20 @@ class Connection : public OOGThing {
 
     BaseDict m_objects;
     CommClient & m_commClient;
-    bool m_obsolete;
+
+    /// \brief Signal connections connected to the destroyed signal of
+    /// entities associated with this object. As the entities get deleted
+    /// it is necessary to disconnect the signals.
     ConMap m_destroyedConnections;
+
+    /// \brief Flag to indicate if this connection has already been
+    /// disconnected from the entities associated with it.
+    ///
+    /// This ensures that entities that get destroyed are removed as
+    /// they are destroyed, but when this connection is destroyed,
+    /// it can destroy certain types of entity connected to itself,
+    /// without them trying to remove themselves from the connection.
+    bool m_obsolete;
 
     Account * addPlayer(const std::string &, const std::string &);
   protected:
@@ -46,7 +58,7 @@ class Connection : public OOGThing {
 
     void destroy();
     void disconnect();
-    void send(const Operation & msg) const;
+    void send(const Operation & op) const;
 
     virtual void operation(const Operation &, OpVector &);
 

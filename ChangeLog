@@ -1,5 +1,14 @@
 2004-12-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/CharacterClient.cpp, client/CharacterClient.h: Eliminate
+	  redundant findRefno methods.
+
+	* server/Connection.cpp, server/Connection.h,
+	  server/Connection_methods.h, ./rulesets/Creator.h:
+	  Don't call function args confusing names.
+
+2004-12-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Creatortest.cpp, tests/Worldtest.cpp: Fix up the tests.
 
 2004-12-08  Al Riddoch  <alriddoch@zepler.org>

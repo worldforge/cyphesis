@@ -13,23 +13,18 @@ class CharacterClient : public BaseMind {
   protected:
     ClientConnection & m_connection;
 
-    bool findRefnoOp(const Atlas::Objects::Operation::RootOperation &,
-                     long refno);
-    bool findRefno(const Atlas::Objects::Operation::RootOperation &,
-                   long refno);
-    int sendAndWaitReply(Atlas::Objects::Operation::RootOperation &,
-                         OpVector &);
+    int sendAndWaitReply(Operation &, OpVector &);
   public:
     CharacterClient(const std::string&, const std::string&, ClientConnection&);
 
-    virtual void sightImaginaryOperation(const Atlas::Objects::Operation::RootOperation &,
-                                         Atlas::Objects::Operation::RootOperation &,
+    virtual void sightImaginaryOperation(const Operation &,
+                                         Operation &,
                                          OpVector &);
-    virtual void soundTalkOperation(const Atlas::Objects::Operation::RootOperation &,
-                                    Atlas::Objects::Operation::RootOperation &,
+    virtual void soundTalkOperation(const Operation &,
+                                    Operation &,
                                     OpVector &);
 
-    void send(Atlas::Objects::Operation::RootOperation & op);
+    void send(Operation & op);
 };
 
 #endif // CHARACTER_CLIENT_H

@@ -19,42 +19,29 @@ CharacterClient::CharacterClient(const std::string & id,
 {
 }
 
-void CharacterClient::sightImaginaryOperation(const Atlas::Objects::Operation::RootOperation &,
-                                              Atlas::Objects::Operation::RootOperation &, OpVector &)
+void CharacterClient::sightImaginaryOperation(const Operation &,
+                                              Operation &, OpVector &)
 {
 }
 
-void CharacterClient::soundTalkOperation(const Atlas::Objects::Operation::RootOperation & ,
-                                         Atlas::Objects::Operation::RootOperation &, OpVector &)
+void CharacterClient::soundTalkOperation(const Operation & ,
+                                         Operation &, OpVector &)
 {
 }
 
-void CharacterClient::send(Atlas::Objects::Operation::RootOperation & op)
+void CharacterClient::send(Operation & op)
 {
     op.setFrom(getId());
     m_connection.send(op);
 }
 
-inline bool CharacterClient::findRefnoOp(const Atlas::Objects::Operation::RootOperation & op, long refno)
-{
-    if (refno == op.getRefno()) {
-        return true;
-    }
-    return false;
-}
-
-inline bool CharacterClient::findRefno(const Atlas::Objects::Operation::RootOperation & msg, long refno)
-{
-    return findRefnoOp(msg,refno);
-}
-
-int CharacterClient::sendAndWaitReply(Atlas::Objects::Operation::RootOperation & op, OpVector & res)
+int CharacterClient::sendAndWaitReply(Operation & op, OpVector & res)
 {
     send(op);
     long no = op.getSerialno();
     while (true) {
         if (m_connection.pending()) {
-            Atlas::Objects::Operation::RootOperation * input = CharacterClient::m_connection.pop();
+            Operation * input = CharacterClient::m_connection.pop();
             if (input != NULL) {
                 // What the hell is this!
                 OpVector result;
@@ -65,7 +52,7 @@ int CharacterClient::sendAndWaitReply(Atlas::Objects::Operation::RootOperation &
                     send(*(*I));
                 }
     
-                if (findRefno(*input,no)) {
+                if (input->getRefno() == no) {
                     res.push_back(input);
                     return 0;
                 }

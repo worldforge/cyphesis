@@ -2,7 +2,9 @@ We could move the loop into ServerRouting, rather than CommServer.
 Rename CommServer::idle to CommServer::poll or something like that.
 Perhaps we don't even need idle any more. Idle objects would then
 be owned by ServerRouting rather than CommServer. CommServer would
-then be almost fully generalised.
+then be almost fully generalised. In order to lose the reference to
+ServerRouting in CommServer, the listeners would have to have this reference
+instead - move the specialisation into the listeners.
 
 Does sightFooOperation etc. in BaseMind.h have to be virtual? I think not.
 
