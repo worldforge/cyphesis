@@ -99,6 +99,7 @@ void CommServer::loop()
                    debug(std::cout << "Removing client due to failed negotiation or timeout" << std::endl << std::flush;);
                    obsoleteConnections.insert(client);
                }
+               client->dispatch();
            } else {
                // It is not clear why but on some implementation/circumstances
                // client->eof() is true, and sometimes it isn't.

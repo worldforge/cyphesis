@@ -21,23 +21,15 @@
 
 static const bool debug_flag = false;
 
-class ClientTimeOutException : public std::runtime_error {
-  public:
-    ClientTimeOutException() : std::runtime_error("Client write timeout") { }
-    virtual ~ClientTimeOutException() throw() { }
-};
-
 CommClient::CommClient(CommServer & svr, int fd, Connection & c) :
             CommSocket(svr),
             clientIos(fd),
             codec(NULL), encoder(NULL),
-            connection(c),
-            reading(false)
+            connection(c)
 {
     clientIos.setTimeout(0,1000);
     commServer.server.incClients();
 }
-
 
 CommClient::~CommClient()
 {
@@ -104,11 +96,29 @@ bool CommClient::negotiate()
 void CommClient::message(const RootOperation & op)
 {
     OpVector reply = connection.message(op);
-    for(OpVector::const_iterator I = reply.begin(); I != reply.end(); I++) {
+    for(OpVector::const_iterator I = reply.begin(); I != reply.end(); ++I) {
         debug(std::cout << "sending reply" << std::endl << std::flush;);
         send(**I);
         delete *I;
     }
+}
+
+template <class OpType>
+void CommClient::queue(const OpType & op)
+{
+    OpType * nop = new OpType(op);
+    opQueue.push_back(nop);
+}
+
+void CommClient::dispatch()
+{
+    DispatchQueue::const_iterator I = opQueue.begin();
+    for(; I != opQueue.end(); ++I) {
+        debug(std::cout << "dispatching op" << std::endl << std::flush;);
+        message(**I);
+        delete *I;
+    }
+    opQueue.clear();
 }
 
 void CommClient::unknownobjectArrived(const Atlas::Message::Element& o)
@@ -117,7 +127,7 @@ void CommClient::unknownobjectArrived(const Atlas::Message::Element& o)
     RootOperation r;
     bool isOp = utility::Object_asOperation(o.asMap(), r);
     if (isOp) {
-        message(r);
+        queue(r);
     }
     if (debug_flag) {
         std::cout << "An unknown has arrived." << std::endl << std::flush;
@@ -134,80 +144,71 @@ void CommClient::unknownobjectArrived(const Atlas::Message::Element& o)
 void CommClient::objectArrived(const Login & op)
 {
     debug(std::cout << "A login operation thingy here!" << std::endl << std::flush;);
-    message(op);
+    queue(op);
 }
 
 void CommClient::objectArrived(const Logout & op)
 {
     debug(std::cout << "A logout operation thingy here!" << std::endl << std::flush;);
-    message(op);
+    queue(op);
 }
 
 void CommClient::objectArrived(const Create & op)
 {
     debug(std::cout << "A create operation thingy here!" << std::endl << std::flush;);
-    message(op);
+    queue(op);
 }
 
 void CommClient::objectArrived(const Imaginary & op)
 {
     debug(std::cout << "A imaginary operation thingy here!" << std::endl << std::flush;);
-    message(op);
+    queue(op);
 }
 
 void CommClient::objectArrived(const Move & op)
 {
     debug(std::cout << "A move operation thingy here!" << std::endl << std::flush;);
-    message(op);
+    queue(op);
 }
 
 void CommClient::objectArrived(const Set & op)
 {
     debug(std::cout << "A set operation thingy here!" << std::endl << std::flush;);
-    message(op);
+    queue(op);
 }
 
 void CommClient::objectArrived(const Touch & op)
 {
     debug(std::cout << "A touch operation thingy here!" << std::endl << std::flush;);
-    message(op);
+    queue(op);
 }
 
 void CommClient::objectArrived(const Look & op)
 {
     debug(std::cout << "A look operation thingy here!" << std::endl << std::flush;);
-    message(op);
+    queue(op);
 }
 
 void CommClient::objectArrived(const Talk & op)
 {
     debug(std::cout << "A talk operation thingy here!" << std::endl << std::flush;);
-    message(op);
+    queue(op);
 }
 
 void CommClient::objectArrived(const Get & op)
 {
     debug(std::cout << "A get operation thingy here!" << std::endl << std::flush;);
-    message(op);
+    queue(op);
 }
 
 bool CommClient::read() {
     if (codec != NULL) {
-        reading = true;
-        try {
-            codec->poll();
-        }
-        catch (ClientTimeOutException) {
-            reading = false;
-            return true;
-        }
-        reading = false;
+        codec->poll();
         return false;
     } else {
         return negotiate();
     }
 }
-
 
 void CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
 {
@@ -227,13 +228,8 @@ void CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
         // This timeout should only occur if the client was really not
         // ready
         if (clientIos.timeout()) {
-            if (reading) {
-                debug(std::cerr << "READ TIMEOUT" << std::endl << std::flush;);
-                throw ClientTimeOutException();
-            } else {
-                debug(std::cerr << "TIMEOUT" << std::endl << std::flush;);
-                clientIos.close();
-            }
+            debug(std::cerr << "TIMEOUT" << std::endl << std::flush;);
+            clientIos.close();
         }
     }
 }

@@ -26,6 +26,7 @@ class CommListener : public CommSocket {
     bool eof();
     bool isOpen() const;
     bool read();
+    void dispatch();
 };
 
 #endif // SERVER_COMM_LISTENER_H

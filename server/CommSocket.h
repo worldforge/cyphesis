@@ -20,6 +20,7 @@ class CommSocket {
     virtual bool isOpen() const = 0;
 
     virtual bool read() = 0;
+    virtual void dispatch() = 0;
 };
 
 #endif // SERVER_COMM_SOCKET_H

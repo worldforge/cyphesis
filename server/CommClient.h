@@ -11,6 +11,8 @@
 
 #include <skstream/skstream.h>
 
+#include <deque>
+
 namespace Atlas {
   template <class Stream> class Codec;
   namespace Objects {
@@ -24,15 +26,20 @@ namespace Atlas {
 class Connection;
 
 class CommClient : public Atlas::Objects::Decoder, public CommSocket {
+  public:
+    typedef std::deque<const Atlas::Objects::Operation::RootOperation *> DispatchQueue;
   protected:
     tcp_socket_stream clientIos;
+    DispatchQueue opQueue;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
     Atlas::Net::StreamAccept * accept;
     Connection & connection;
-    bool reading;
 
     bool negotiate();
+
+    template <class OpType>
+    void queue(const OpType &);
 
     virtual void unknownobjectArrived(const Atlas::Message::Element&);
     virtual void objectArrived(const Atlas::Objects::Operation::Login & op);
@@ -61,6 +68,7 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
     void send(const Atlas::Objects::Operation::RootOperation &);
     void message(const Atlas::Objects::Operation::RootOperation &);
     void setup();
+    void dispatch();
 };
 
 #endif // SERVER_COMM_CLIENT_H

@@ -43,6 +43,10 @@ bool CommListener::read()
     return false;
 }
 
+void CommListener::dispatch()
+{
+}
+
 bool CommListener::setup(int port)
 {
     m_listener.open(port);

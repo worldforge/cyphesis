@@ -27,6 +27,7 @@ class CommUnixListener : public CommSocket {
     bool eof();
     bool isOpen() const;
     bool read();
+    void dispatch();
 };
 
 #endif // SERVER_COMM_UNIX_LISTENER_H

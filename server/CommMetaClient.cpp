@@ -61,6 +61,10 @@ bool CommMetaClient::read()
     return false;
 }
 
+void CommMetaClient::dispatch()
+{
+}
+
 bool CommMetaClient::setup(const std::string & mserver)
 {
     // Establish socket for communication with the metaserver

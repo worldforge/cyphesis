@@ -1,11 +1,11 @@
+Long term, try and sort out the way object factories, scripts, and atlas
+inheritance are handled, so they are a bit more coherant.
+
 Re-work Decoder on client connections so operation dispatch is not done from
 with the poll() call. Instead, the decoder should just que ops, and they
 should be read off and dispatched from elsewhere.
 
 Make sure plant base class is working.
-
-Fix up inheritance so classes in the mason ruleset don't inherit directly
-from their C++ base class.
 
 Think about how to install classes over the wire. Perhaps adding
 a bind() operation, which binds a specific script or C++ class to

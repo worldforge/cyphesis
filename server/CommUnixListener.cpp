@@ -44,6 +44,10 @@ bool CommUnixListener::read()
     return false;
 }
 
+void CommUnixListener::dispatch()
+{
+}
+
 #define UNIX_PATH_MAX 108
 
 bool CommUnixListener::setup()
