@@ -620,7 +620,22 @@ bool Database::createEntityRow(const std::string & classname,
     query += ");";
     std::cout << "QUERY: " << query << std::endl << std::flush;
     // FIXME Actually run the query against the db
-    return true;
+    int status = PQsendQuery(m_connection, query.c_str());
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return false;
+    }
+    if (!commandOk()) {
+        log(ERROR, "Error creating entity row.");
+        reportError();
+        debug(std::cout << "Row create didn't work"
+                        << std::endl << std::flush;);
+    } else {
+        debug(std::cout << "Query worked" << std::endl << std::flush;);
+        return true;
+    }
+    return false;
 }
 
 bool Database::updateEntityRow(const std::string & classname,
@@ -642,7 +657,22 @@ bool Database::updateEntityRow(const std::string & classname,
     query += "';";
     std::cout << "QUERY: " << query << std::endl << std::flush;
     // FIXME Actually run the query against the db
-    return true;
+    int status = PQsendQuery(m_connection, query.c_str());
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return false;
+    }
+    if (!commandOk()) {
+        log(ERROR, "Error updating entity row.");
+        reportError();
+        debug(std::cout << "Row update didn't work"
+                        << std::endl << std::flush;);
+    } else {
+        debug(std::cout << "Query worked" << std::endl << std::flush;);
+        return true;
+    }
+    return false;
 }
 
 bool Database::removeEntityRow(const std::string & classname,
@@ -661,5 +691,20 @@ bool Database::removeEntityRow(const std::string & classname,
     query += "';";
     std::cout << "QUERY: " << query << std::endl << std::flush;
     // FIXME Actually run the query against the db
-    return true;
+    int status = PQsendQuery(m_connection, query.c_str());
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return false;
+    }
+    if (!commandOk()) {
+        log(ERROR, "Error removing entity row.");
+        reportError();
+        debug(std::cout << "Row remove didn't work"
+                        << std::endl << std::flush;);
+    } else {
+        debug(std::cout << "Query worked" << std::endl << std::flush;);
+        return true;
+    }
+    return false;
 }

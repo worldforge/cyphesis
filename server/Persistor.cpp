@@ -21,6 +21,8 @@
 Persistor<Entity>::Persistor() : m_class("entity")
 {
     Atlas::Message::Object::MapType desc;
+    desc["class"] = "                                                                                ";
+    desc["type"] = "                                                                                ";
     desc["loc"] = "                                                                                ";
     desc["px"] = 1.0;
     desc["py"] = 1.0;

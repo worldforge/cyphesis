@@ -54,10 +54,12 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
         if (!empty) { q << ", "; } else { empty = false; }
         q << "mass = " << t.getMass();
     }
-
-    if (!empty) {
+    if (t.getUpdateFlags() & a_mass) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "seq = " << t.getSeq();
+        q << "mass = " << t.getMass();
+    }
+    if (!empty) {
+        q << ", seq = " << t.getSeq();
         c += q.str();
     }
 }
@@ -69,7 +71,7 @@ void Persistor<T>::uCharacter(Character & t, std::string & c)
     bool empty = c.empty();
     if (t.getUpdateFlags() & a_drunk) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "drunk = " << t.getDrunkness();
+        q << "drunkness = " << t.getDrunkness();
     }
     if (t.getUpdateFlags() & a_sex) {
         if (!empty) { q << ", "; } else { empty = false; }
@@ -104,10 +106,12 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
     if (!c.empty()) {
         c += cs;
     }
-    c += "loc, px, py, pz, ox, oy, oz, ow, bnx, bny, bnz, bfx, bfx, bfz, status, name, mass, seq";
+    c += "class, type, loc, px, py, pz, ox, oy, oz, ow, bnx, bny, bnz, bfx, bfy, bfz, status, name, mass, seq";
 
     std::stringstream q;
-    q << sq << t.location.ref->getId() << sq << cs
+    q << sq << m_class << sq << cs
+      << sq << t.getType() << sq << cs
+      << sq << t.location.ref->getId() << sq << cs
       << t.location.coords.X() << cs
       << t.location.coords.Y() << cs
       << t.location.coords.Z() << cs
@@ -140,7 +144,7 @@ void Persistor<T>::cCharacter(Character & t, std::string & c, std::string & v)
     if (!c.empty()) {
         c += cs;
     }
-    c += "drunk, sex, food";
+    c += "drunkness, sex, food";
 
     std::stringstream q;
     q << t.getDrunkness() << cs

@@ -1,3 +1,12 @@
+2002-12-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Add in code to send the entity requests
+	  to the database.
+
+	* server/Persistor.cpp, server/Persistor_impl.h: Add type and
+	  class columns, correct the name of the drunkness column,
+	  and remove a bad test from the update query generator.
+
 2002-12-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp, common/Database.h: Handle the way SQL INSERT
