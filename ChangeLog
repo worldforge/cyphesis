@@ -1,5 +1,11 @@
 2004-10-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.h, server/Admin.cpp, server/Admin.h,
+	  server/Player.cpp, server/Player.h: Use int for returning
+	  error status from characterError().
+
+2004-10-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_BBox.cpp, rulesets/Py_Location.cpp,
 	  rulesets/Python_API.cpp: Eliminate some raw stderr output,
 	  and replace with python errors, and calls to the log subsystem.

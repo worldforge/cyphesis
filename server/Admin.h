@@ -13,8 +13,8 @@ class Persistance;
 
 class Admin : public Account {
   protected:
-    virtual bool characterError(const Create &,
-                                const MapType &, OpVector &) const;
+    virtual int characterError(const Create &,
+                               const MapType &, OpVector &) const;
     void opDispatched(RootOperation * op);
 
     SigC::Connection m_monitorConnection;

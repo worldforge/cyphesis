@@ -56,7 +56,7 @@ void Admin::opDispatched(RootOperation * op)
     }
 }
 
-bool Admin::characterError(const Create & op,
+int Admin::characterError(const Create & op,
                            const MapType & ent, OpVector & res) const
 {
     MapType::const_iterator I = ent.find("parents");

@@ -27,8 +27,8 @@ class Account : public OOGThing {
     Entity * addNewCharacter(const std::string &, const MapType &);
     void characterDestroyed(std::string);
 
-    virtual bool characterError(const Create &,
-                                const MapType &, OpVector &) const = 0;
+    virtual int characterError(const Create &,
+                               const MapType &, OpVector &) const = 0;
 
   public:
     Connection * m_connection;
