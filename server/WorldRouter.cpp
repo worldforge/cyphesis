@@ -80,8 +80,19 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
     debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
     RootOperation * op = *I;
     operationQueue.pop_front();
-    op->SetSerialno(server.getSerialNo());
     return op;
+}
+
+inline void WorldRouter::setSerialno(OpVector & ops)
+{
+    for (OpVector::iterator I = ops.begin(); I != ops.end(); ++I) {
+       (*I)->SetSerialno(server.getSerialNo());
+    }
+}
+
+inline void WorldRouter::setSerialnoOp(RootOperation & op)
+{
+    op.SetSerialno(server.getSerialNo());
 }
 
 inline std::string WorldRouter::getNewId(const std::string & name)
@@ -123,6 +134,7 @@ Entity * WorldRouter::addObject(Entity * obj)
     Setup * s = new Setup(Setup::Instantiate());
     s->SetTo(obj->getId());
     s->SetFutureSeconds(-0.1);
+    s->SetSerialno(server.getSerialNo());
     addOperationToQueue(*s, this);
     return (obj);
 }
@@ -173,10 +185,12 @@ inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) con
 
 inline void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
 {
-        OpVector res = e->operation(op);
-        for(OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
-            message(**I, e);
-        }
+    OpVector res = e->operation(op);
+    setRefno(res, op);
+    for(OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
+        setSerialnoOp(**I);
+        message(**I, e);
+    }
 }
 
 OpVector WorldRouter::operation(const RootOperation * op_ptr)

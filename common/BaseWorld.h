@@ -34,7 +34,7 @@ class BaseWorld : public OOGThing {
     virtual Entity * addObject(const std::string &,
                                const Atlas::Message::Object::MapType &,
                                const std::string & id = std::string()) = 0;
-    // void delObject(Entity * obj);
+    virtual void setSerialnoOp(RootOperation &) = 0;
 
     Entity * getObject(const std::string & fid) {
         return eobjects[fid];

@@ -69,7 +69,7 @@ OpVector Character::metabolise(double ammount)
     return OpVector(1,s);
 }
 
-Character::Character() : movement(*new Pedestrian(*this)), autom(false),
+Character::Character() : movement(*new Pedestrian(*this)),
                          drunkness(0.0), sex("female"), food(0),
                          maxMass(100), isAlive(true),
                          mind(NULL), externalMind(NULL)
@@ -943,34 +943,26 @@ OpVector Character::sendMind(const RootOperation & op)
     if (mind == NULL) {
         return OpVector();
     }
-    OpVector local_res = mind->message(op);
-    OpVector external_res;
+    OpVector res = mind->message(op);
 
     if (NULL != externalMind) {
         debug( std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
-        external_res = externalMind->message(op);
-    } else {
-        if (!autom) {
-            debug( std::cout << "Turning automatic on for " << getId()
-                             << std::endl << std::flush;);
-            autom = true;
+        // Discard all the local results
+        OpVector::const_iterator J = res.begin(); 
+        for(; J != res.end(); J++) {
+            delete *J;
         }
+        res = externalMind->message(op);
     }
-    debug(std::cout << "Using " << local_res.size() << " ops from "
-               << (autom ? "local mind" : "external mind")
-               << std::endl << std::flush;);
 
-    // This is the list that is to be passed back to the world
-    const OpVector & res = autom ? local_res : external_res;
-    // This list of ops is to be discarded
-    const OpVector & dump_res = autom ? external_res : local_res ;
-    for(OpVector::const_iterator J = dump_res.begin(); J != dump_res.end(); J++) {
-        delete *J;
-    }
     // At this point there is a bunch of conversion stuff that I don't
     // understand
     
+    debug(std::cout << "Using " << res.size() << " ops from "
+                    << ((NULL == externalMind) ? "local mind" : "external mind")
+                    << std::endl << std::flush;);
+
     return res;
 }
 
@@ -1036,10 +1028,16 @@ OpVector Character::operation(const RootOperation & op)
 OpVector Character::externalOperation(const RootOperation & op)
 {
     debug( std::cout << "Character::externalOperation" << std::endl << std::flush;);
-    OpVector body_res = mind2body(op);
-    // set refno on body_res?
+    OpVector res = mind2body(op);
     
-    for(OpVector::const_iterator I = body_res.begin(); I != body_res.end(); I++) {
+    // We require that the first op is the direct consequence of the minds
+    // op, so it gets the same serialno
+    OpVector::const_iterator I = res.begin();
+    (*I)->SetSerialno(op.GetSerialno());
+    sendWorld(*I);
+    I++;
+    for(; I != res.end(); I++) {
+        world->setSerialnoOp(**I);
         sendWorld(*I);
         // Don't delete br as it has gone into worlds queue
         // World will deal with it.

@@ -27,15 +27,6 @@ class Connection : public OOGThing {
         return obj;
     }
 
-    BaseEntity * getObject(const std::string & fid) const {
-        BaseDict::const_iterator I = objects.find(fid);
-        if (I == objects.end()) {
-            return NULL;
-        } else {
-            return I->second;
-        }
-    }
-
     void destroy();
     inline void send(const RootOperation * msg) const;
 

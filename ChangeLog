@@ -1,3 +1,29 @@
+2002-05-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp, server/Connection.cpp: Switched to using
+	  USERNAME of accounts rather that ID for login and account creation.
+	  Toughened up the connection code, so invalid login/create ops
+	  are handled.
+
+	* server/Connection.h: Removed unused getObject method.
+
+	* rulesets/Character.cpp, rulesets/Character.h: Get rid of
+	  inefficiency handling ops from internal and external mind. Fix
+	  leak of some ops.
+
+	* common/BaseWorld.h, server/WorldRouter.cpp, server/WorldRouter.h:
+	  Add method for getting a new serialno.
+
+	* rulesets/Thing.cpp, rulesets/Thing.h, server/WorldRouter.cpp:
+	  Set refno on ops as they come back from entities. Set serialnos
+	  on same ops at the same time, but do not set serialnos
+	  on ops that come in from elsewhere, as those are now handled at
+	  source.
+
+	* rulesets/Creator.cpp, rulesets/Character.cpp:
+	  Ensure that ops from external client preserve their serialno,
+	  and assign new serialnos to other ops created at the same time.
+
 2002-05-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Connection.cpp: Fix slight inefficiency in processing ops.

@@ -13,7 +13,6 @@ class BaseMind;
 class Character : public Thing {
   protected:
     Movement & movement;
-    bool autom;
     double drunkness;
     std::string sex;
     double food;

@@ -50,6 +50,8 @@ class WorldRouter : public BaseWorld {
                        const Atlas::Message::Object::MapType &,
                        const std::string & id = std::string());
     void delObject(Entity * obj);
+    void setSerialno(OpVector &);
+    void setSerialnoOp(RootOperation &);
 
     const double upTime() const {
         return realTime - timeoffset;

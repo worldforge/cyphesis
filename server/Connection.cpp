@@ -117,105 +117,148 @@ OpVector Connection::LoginOperation(const Login & op)
 {
 
     debug(std::cout << "Got login op" << std::endl << std::flush;);
-    const Object & account = op.GetArgs().front();
-
-    if (account.IsMap()) {
-        const std::string account_id = account.AsMap().find("id")->second.AsString();
-        const std::string password = account.AsMap().find("password")->second.AsString();
-
-        BaseEntity * ent = server.getObject(account_id);
-        Account * player;
-        if (ent == NULL) {
-            player = Persistance::instance()->getAccount(account_id);
-            if (player != NULL) {
-                player->world=&server.getWorld();
-                server.addObject(player);
-            }
-        } else {
-            // This should be done here because if it is NULL, login
-            // should be rejected regardless of anything else
-            player = dynamic_cast<Account *>(ent);
-        }
-        if (player && !account_id.empty() && (password==player->password)) {
-            if (player->connection) {
-                return error(op, "This account is already logged in");
-            }
-            addObject(player);
-            EntityDict::const_iterator I;
-            for (I=player->charactersDict.begin();
-                 I!=player->charactersDict.end(); I++) {
-                addObject(I->second);
-            }
-            player->connection=this;
-            server.lobby.addObject(player);
-            Info * info = new Info(Info::Instantiate());
-            info->SetArgs(Object::ListType(1,player->asObject()));
-            info->SetRefno(op.GetSerialno());
-            info->SetSerialno(server.getSerialNo());
-            debug(std::cout << "Good login" << std::endl << std::flush;);
-            return OpVector(1,info);
+    if (!op.GetArgs().front().IsMap()) {
+        return error(op, "Login is malformed");
+    }
+    // Account should be the first argument of the op
+    const Object::MapType & account = op.GetArgs().front().AsMap();
+    // Check for username, and if its not there, then check for
+    // id in case we are dealing with an old client.
+    Object::MapType::const_iterator I = account.find("username");
+    if ((I == account.end()) || !I->second.IsString()) {
+        std::cerr << "WARNING: Got Login with no useraname."
+                  << "Checking for old style Login"
+                  << std::endl << std::flush;
+        I = account.find("id");
+        if ((I == account.end()) || !I->second.IsString()) {
+            return error(op, "Login is invalid");
         }
     }
-    return error(op, "Login is invalid");
+    const std::string & username = I->second.AsString();
+    I = account.find("password");
+    if ((I == account.end()) || !I->second.IsString()) {
+        return error(op, "Login is invalid");
+    }
+    const std::string & passwd = account.find("password")->second.AsString();
+    // We now have username and password, so can check whether we know this
+    // account, either from existing account ....
+    BaseEntity * ent = server.getObject(username);
+    Account * player;
+    // or if not, from the database
+    if (ent == NULL) {
+        player = Persistance::instance()->getAccount(username);
+        if (player != NULL) {
+            player->world=&server.getWorld();
+            server.addObject(player);
+        }
+    } else {
+        player = dynamic_cast<Account *>(ent);
+    }
+    if ((player == NULL) || username.empty() || (passwd != player->password)) {
+        return error(op, "Login is invalid");
+    }
+    // Account appears to be who they say they are
+    if (player->connection) {
+        // Internals don't allow player to log in more than once.
+        return error(op, "This account is already logged in");
+    }
+    // Connect everything up
+    addObject(player);
+    EntityDict::const_iterator J = player->charactersDict.begin();
+    for (; J != player->charactersDict.end(); J++) {
+        addObject(J->second);
+    }
+    player->connection=this;
+    server.lobby.addObject(player);
+    // Let the client know they have logged in
+    Info * info = new Info(Info::Instantiate());
+    info->SetArgs(Object::ListType(1,player->asObject()));
+    info->SetRefno(op.GetSerialno());
+    info->SetSerialno(server.getSerialNo());
+    debug(std::cout << "Good login" << std::endl << std::flush;);
+    return OpVector(1,info);
 }
 
 OpVector Connection::CreateOperation(const Create & op)
 {
     debug(std::cout << "Got create op" << std::endl << std::flush;);
-    const Object & account = op.GetArgs().front();
+    if (!op.GetArgs().front().IsMap()) {
+        return error(op, "Create is malformed");
+    }
+    const Object::MapType & account = op.GetArgs().front().AsMap();
 
     if (Persistance::restricted) {
         return error(op, "Account creation on this server is restricted");
     }
-
-    if (account.IsMap()) {
-        const std::string & account_id = account.AsMap().find("id")->second.AsString();
-        const std::string & password = account.AsMap().find("password")->second.AsString();
-
-        if ((NULL==server.getObject(account_id)) && 
-            (!Persistance::instance()->findAccount(account_id)) &&
-            (!account_id.empty()) && (!password.empty())) {
-            Account * player = addPlayer(account_id, password);
-            Persistance::instance()->putAccount(*player);
-            Info * info = new Info(Info::Instantiate());
-            info->SetArgs(Object::ListType(1,player->asObject()));
-            info->SetRefno(op.GetSerialno());
-            info->SetSerialno(server.getSerialNo());
-            debug(std::cout << "Good create" << std::endl << std::flush;);
-            return OpVector(1,info);
+    Object::MapType::const_iterator I = account.find("username");
+    if ((I == account.end()) || !I->second.IsString()) {
+        std::cerr << "WARNING: Got Create for account with no useraname."
+                  << "Checking for old style Create."
+                  << std::endl << std::flush;
+        I = account.find("id");
+        if ((I == account.end()) || !I->second.IsString()) {
+            return error(op, "Account creation is invalid");
         }
     }
-    return error(op, "Account creation is invalid");
 
+    const std::string & username = I->second.AsString();
+    I = account.find("password");
+    if ((I == account.end()) || !I->second.IsString()) {
+        return error(op, "Account creation is invalid");
+    }
+    const std::string & password = I->second.AsString();
+
+    if ((NULL != server.getObject(username)) ||
+        (Persistance::instance()->findAccount(username)) ||
+        (username.empty()) && (!password.empty())) {
+        // Account exists, or creation data is duff
+        return error(op, "Account creation is invalid");
+    }
+    Account * player = addPlayer(username, password);
+    Persistance::instance()->putAccount(*player);
+    Info * info = new Info(Info::Instantiate());
+    info->SetArgs(Object::ListType(1,player->asObject()));
+    info->SetRefno(op.GetSerialno());
+    info->SetSerialno(server.getSerialNo());
+    debug(std::cout << "Good create" << std::endl << std::flush;);
+    return OpVector(1,info);
 }
 
 OpVector Connection::LogoutOperation(const Logout & op)
 {
-    const Object & account = op.GetArgs().front();
-    
-    if (account.IsMap()) {
-        Object::MapType::const_iterator I = account.AsMap().find("id");
-        if ((I == account.AsMap().end()) || (!I->second.IsString())) {
-            return error(op, "No account id given");
-        }
-        const std::string & account_id = I->second.AsString();
-        I = account.AsMap().find("password");
-        if ((I == account.AsMap().end()) || (!I->second.IsString())) {
-            return error(op, "No account password given");
-        }
-        const std::string & password = I->second.AsString();
-        BaseEntity * ent = server.getObject(account_id);
-        if (ent == NULL) {
-            return error(op, "Logout failed");
-        }
-        Account * player = dynamic_cast<Account*>(ent);
-        if ((!player) || (password != player->password)) {
-            return error(op, "Logout failed");
-        }
-        Logout l = op;
-        l.SetFrom(player->getId());
-        operation(l);
+    if (!op.GetArgs().front().IsMap()) {
+        return error(op, "Create is malformed");
     }
+    const Object::MapType & account = op.GetArgs().front().AsMap();
+    
+    Object::MapType::const_iterator I = account.find("username");
+    if ((I == account.end()) || !I->second.IsString()) {
+        std::cerr << "WARNING: Got Logout with no useraname."
+                  << "Checking for old style Create."
+                  << std::endl << std::flush;
+        I = account.find("id");
+        if ((I == account.end()) || !I->second.IsString()) {
+            return error(op, "Logout is invalid");
+        }
+    }
+    const std::string & username = I->second.AsString();
+    I = account.find("password");
+    if ((I == account.end()) || (!I->second.IsString())) {
+        return error(op, "No account password given");
+    }
+    const std::string & password = I->second.AsString();
+    BaseEntity * ent = server.getObject(username);
+    if (ent == NULL) {
+        return error(op, "Logout failed");
+    }
+    Account * player = dynamic_cast<Account*>(ent);
+    if ((!player) || (password != player->password)) {
+        return error(op, "Logout failed");
+    }
+    Logout l = op;
+    l.SetFrom(player->getId());
+    operation(l);
+
     return OpVector();
 }
 

@@ -19,6 +19,9 @@ class Thing : public Entity {
     Thing();
     virtual ~Thing();
 
+    // sendWorld bipasses serialno assignment, so you must ensure
+    // that serialno is sorted. This allows client serialnos to get
+    // in, so that client gets correct usefull refnos back
     OpVector sendWorld(RootOperation * op) const {
         return world->message(*op, this);
     }

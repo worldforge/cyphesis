@@ -71,17 +71,13 @@ OpVector Creator::externalOperation(const RootOperation & op)
                      << std::flush;);
     if (op.GetTo().empty()) {
         debug( std::cout << "Creator handling op normally" << std::endl << std::flush;);
-        OpVector lres = mind2body(op);
-        for(OpVector::const_iterator I = lres.begin(); I != lres.end(); I++) {
-            sendWorld(*I);
-            // Don't delete lres as it has gone into worlds queue
-            // World will deal with it.
-        }
+        Character::externalOperation(op);
     } else if (op.GetTo()==getId()) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         OpVector lres = callOperation(op);
         setRefno(lres, op);
         for(OpVector::const_iterator I = lres.begin(); I != lres.end(); I++) {
+            world->setSerialnoOp(**I);
             sendWorld(*I);
             // Don't delete lres as it has gone into worlds queue
             // World will deal with it.
