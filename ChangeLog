@@ -1,5 +1,12 @@
 2003-08-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/ObserverClient.cpp: Remove obsolete database include.
+
+	* tools/cycmd.cpp: Modify cycmd so it now uses a unix socket connection
+	  for local server by default.
+
+2003-08-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/const.cpp, common/const.h: Add a const for the default
 	  admin password hash, with a view to removing the plain text
 	  default admin password.

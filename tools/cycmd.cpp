@@ -6,7 +6,6 @@
 #include "config.h"
 #endif
 
-#include "common/accountbase.h"
 #include "common/const.h"
 #include "common/globals.h"
 
@@ -23,7 +22,7 @@
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Talk.h>
 
-#include <skstream/skstream.h>
+#include <skstream/skstream_unix.h>
 
 #include <sigc++/object_slot.h>
 #if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
@@ -65,6 +64,7 @@ static void help()
     std::cout << std::endl << std::flush;
 }
 
+template <class Stream>
 class Interactive : public Atlas::Objects::Decoder, public SigC::Object
 {
   private:
@@ -72,7 +72,7 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     int cli_fd;
     Atlas::Objects::Encoder * encoder;
     Atlas::Codec<std::iostream> * codec;
-    tcp_socket_stream ios;
+    Stream ios;
     std::string password;
     std::string username;
     std::string accountId;
@@ -92,6 +92,7 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     void objectArrived(const Atlas::Objects::Operation::Sight&);
     void objectArrived(const Atlas::Objects::Operation::Sound&);
 
+    bool negotiate();
   public:
     Interactive() : error_flag(false), reply_flag(false), encoder(NULL),
                        codec(NULL), state(INIT), exit(false) { }
@@ -116,7 +117,8 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     static void gotCommand(char *);
 };
 
-void Interactive::output(const Atlas::Message::Element & item, bool recurse)
+template <class Stream>
+void Interactive<Stream>::output(const Atlas::Message::Element & item, bool recurse)
 {
     std::cout << " ";
     switch (item.getType()) {
@@ -160,7 +162,8 @@ void Interactive::output(const Atlas::Message::Element & item, bool recurse)
     }
 }
 
-void Interactive::objectArrived(const Atlas::Objects::Operation::Appearance& o)
+template <class Stream>
+void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Appearance& o)
 {
     if (o.getArgs().empty()) {
         return;
@@ -190,7 +193,8 @@ void Interactive::objectArrived(const Atlas::Objects::Operation::Appearance& o)
     std::cout << std::flush;
 }
 
-void Interactive::objectArrived(const Atlas::Objects::Operation::Disappearance& o)
+template <class Stream>
+void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Disappearance& o)
 {
     if (o.getArgs().empty()) {
         return;
@@ -220,7 +224,8 @@ void Interactive::objectArrived(const Atlas::Objects::Operation::Disappearance& 
     std::cout << std::flush;
 }
 
-void Interactive::objectArrived(const Atlas::Objects::Operation::Info& o)
+template <class Stream>
+void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& o)
 {
     reply_flag = true;
     if (o.getArgs().empty()) {
@@ -251,7 +256,8 @@ void Interactive::objectArrived(const Atlas::Objects::Operation::Info& o)
     }
 }
 
-void Interactive::objectArrived(const Atlas::Objects::Operation::Error& o)
+template <class Stream>
+void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Error& o)
 {
     reply_flag = true;
     error_flag = true;
@@ -266,7 +272,8 @@ void Interactive::objectArrived(const Atlas::Objects::Operation::Error& o)
     std::cout << ")" << std::endl << std::flush;
 }
 
-void Interactive::objectArrived(const Atlas::Objects::Operation::Sight& o)
+template <class Stream>
+void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sight& o)
 {
     reply_flag = true;
     std::cout << "Sight(" << std::endl;
@@ -281,7 +288,8 @@ void Interactive::objectArrived(const Atlas::Objects::Operation::Sight& o)
     std::cout << ")" << std::endl << std::flush;
 }
 
-void Interactive::objectArrived(const Atlas::Objects::Operation::Sound& o)
+template <class Stream>
+void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sound& o)
 {
     reply_flag = true;
     const Atlas::Message::Element::MapType & arg = o.getArgs().front().asMap();
@@ -311,12 +319,14 @@ void Interactive::objectArrived(const Atlas::Objects::Operation::Sound& o)
 
 SigC::Signal1<void, char *> CmdLine;
 
-void Interactive::gotCommand(char * cmd)
+template <class Stream>
+void Interactive<Stream>::gotCommand(char * cmd)
 {
     CmdLine.emit(cmd);
 }
 
-void Interactive::runCommand(char * cmd)
+template <class Stream>
+void Interactive<Stream>::runCommand(char * cmd)
 {
     if (cmd == NULL) {
         exit = true;
@@ -342,10 +352,11 @@ void Interactive::runCommand(char * cmd)
     exec(cmd, arg);
 }
 
-void Interactive::loop()
+template <class Stream>
+void Interactive<Stream>::loop()
 {
-    rl_callback_handler_install("cyphesis> ", &Interactive::gotCommand);
-    SigC::Connection c = CmdLine.connect(SigC::slot(*this, &Interactive::runCommand));
+    rl_callback_handler_install("cyphesis> ", &Interactive<Stream>::gotCommand);
+    SigC::Connection c = CmdLine.connect(SigC::slot(*this, &Interactive<Stream>::runCommand));
     while (!exit) {
         poll();
     };
@@ -353,7 +364,8 @@ void Interactive::loop()
     rl_callback_handler_remove();
 }
 
-void Interactive::poll()
+template <class Stream>
+void Interactive<Stream>::poll()
 // poll the codec if select says there is something there.
 {
     fd_set infds;
@@ -386,7 +398,8 @@ void Interactive::poll()
     }
 }
 
-void Interactive::getLogin()
+template <class Stream>
+void Interactive<Stream>::getLogin()
 {
     // This needs to be re-written to hide input, so the password can be
     // secret
@@ -396,7 +409,7 @@ void Interactive::getLogin()
     std::cin >> password;
 }
 
-bool Interactive::connect(const std::string & host)
+bool Interactive<tcp_socket_stream>::connect(const std::string & host)
 {
     std::cout << "Connecting... " << std::flush;
     ios.open(host, port_num);
@@ -407,6 +420,26 @@ bool Interactive::connect(const std::string & host)
     std::cout << "done." << std::endl << std::flush;
     cli_fd = ios.getSocket();
 
+    return negotiate();
+}
+
+bool Interactive<unix_socket_stream>::connect(const std::string & filename)
+{
+    std::cout << "Connecting... " << std::flush;
+    ios.open(filename);
+    if (!ios.is_open()) {
+        std::cout << "failed." << std::endl << std::flush;
+        return false;
+    }
+    std::cout << "done." << std::endl << std::flush;
+    cli_fd = ios.getSocket();
+
+    return negotiate();
+}
+
+template <class Stream>
+bool Interactive<Stream>::negotiate()
+{
     // Do client negotiation with the server
     Atlas::Net::StreamConnect conn("cycmd", ios, this);
 
@@ -436,7 +469,8 @@ bool Interactive::connect(const std::string & host)
 
 }
 
-bool Interactive::login()
+template <class Stream>
+bool Interactive<Stream>::login()
 {
     Atlas::Objects::Entity::Account account = Atlas::Objects::Entity::Account::Instantiate();
     Atlas::Objects::Operation::Login l = Atlas::Objects::Operation::Login::Instantiate();
@@ -464,7 +498,8 @@ bool Interactive::login()
     return false;
 }
 
-void Interactive::exec(const std::string & cmd, const std::string & arg)
+template <class Stream>
+void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
 {
     bool reply_expected = true;
     reply_flag = false;
@@ -553,7 +588,7 @@ int main(int argc, char ** argv)
 
     bool interactive = true;
     std::string cmd;
-    char * server = "localhost";
+    char * server = 0;
     if (argc > 1) {
         if (argc == 3) {
             cmd = argv[2];
@@ -564,33 +599,44 @@ int main(int argc, char ** argv)
         }
         server = argv[1];
     }
-    Interactive bridge;
+
+    if (server == 0) {
+        std::string localSocket = var_directory + "/cyphesis.sock";
+
+        std::cerr << "Attempting local connection" << std::endl << std::flush;
+        Interactive<unix_socket_stream> bridge;
+        if (bridge.connect(localSocket)) {
+            bridge.setUsername("admin");
+
+            std::cout << "Logging in... " << std::flush;
+            if (!bridge.login()) {
+                std::cout << "failed." << std::endl << std::flush;
+                bridge.getLogin();
+
+                std::cout << "Logging in... " << std::flush;
+                if (!bridge.login()) {
+                    std::cout << "failed." << std::endl << std::flush;
+                    return 1;
+                }
+            }
+            std::cout << "done." << std::endl << std::flush;
+            if (!interactive) {
+                bridge.exec(cmd, "");
+                return 0;
+            } else {
+                bridge.loop();
+            }
+            return 0;
+        }
+    }
+    
+    std::cerr << "Attempting tcp connection" << std::endl << std::flush;
+
+    Interactive<tcp_socket_stream> bridge;
     if (!bridge.connect(server)) {
         return 1;
     }
-    Atlas::Message::Element::MapType adminAccount;
-    if (strcmp(server, "localhost") == 0) {
-        bridge.setUsername("admin");
-        if (!AccountBase::instance()->getAccount("admin", adminAccount)) {
-            std::cerr << "WARNING: Unable to read admin account from database"
-                      << std::endl << "Using default"
-                      << std::endl << std::flush;
-            bridge.setPassword(consts::defaultAdminPassword);
-        } else {
-            Atlas::Message::Element::MapType::const_iterator I = adminAccount.find("password");
-            if (I == adminAccount.end()) {
-                std::cerr << "WARNING: Admin account has no password"
-                          << std::endl << "Using default"
-                          << std::endl << std::flush;
-                bridge.setPassword(consts::defaultAdminPassword);
-            } else {
-                bridge.setPassword(I->second.asString());
-            }
-        }
-        AccountBase::del();
-    } else {
-        bridge.getLogin();
-    }
+    bridge.getLogin();
     std::cout << "Logging in... " << std::flush;
     if (!bridge.login()) {
         std::cout << "failed." << std::endl << std::flush;
