@@ -2,6 +2,10 @@
 // the GNU Lesser General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Decoder.h>
@@ -20,8 +24,14 @@
 
 #include <cstdio>
 
+#ifndef READLINE_CXX_SANE   // defined in config.h
+extern "C" {
+#endif
 #include <readline/readline.h>
 #include <readline/history.h>
+#ifndef READLINE_CXX_SANE
+}
+#endif
 
 using Atlas::Message::Object;
 using Atlas::Objects::Operation::Get;

@@ -9,4 +9,6 @@
 
 #undef HAVE_PYTHON_LIB
 
+#undef READLINE_CXX_SANE
+
 #endif

@@ -81,7 +81,13 @@ dnl
 dnl if found define HAVE_PYTHON_H
 dnl
 
-AC_CHECK_HEADER(python2.1/Python.h,
+AC_CHECK_HEADER(python2.2/Python.h,
+    [
+	python_include_path=-I${python_prefix}/include/python2.2
+	python_version=python2.2
+	AC_DEFINE(HAVE_PYTHON_H)
+    ],
+  [AC_CHECK_HEADER(python2.1/Python.h,
     [
         python_include_path=-I${python_prefix}/include/python2.1
         python_version=python2.1
@@ -108,7 +114,9 @@ AC_CHECK_HEADER(python2.1/Python.h,
             ])
         ])
     ]
+  )]
 )
+
 
 PYTHON_INCLUDES=${python_include_path}
 CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
@@ -164,12 +172,12 @@ AM_PATH_PSQL(7.1.0,
     AC_MSG_ERROR(Couldn't find PostgreSQL config [or config failed])
 )
 
-AC_CHECK_LIB(varconf,main)
+AC_CHECK_LIB(varconf,main, , AC_MSG_ERROR(Could not find varconf library!))
 dnl AC_CHECK_LIB(db,db_create)
 dnl AC_CHECK_LIB(db_cxx,main)
 dnl AC_CHECK_LIB(db3_cxx,main)
-AC_CHECK_LIB(pq++,main)
-AC_CHECK_LIB(skstream,main)
+AC_CHECK_LIB(pq++,main, ,AC_MSG_ERROR(Couldn't find postgres C++ bindings! [Did you compile it with --enable-CXX ?]))
+AC_CHECK_LIB(skstream,main, ,AC_MSG_ERROR(Couldn't find skstream library!))
 
 AC_CHECK_LIB(termcap,tgetent, 
     [LIBS="$LIBS -ltermcap"],
@@ -181,6 +189,8 @@ AC_CHECK_LIB(termcap,tgetent,
 
 AC_CHECK_HEADERS(termios.h unistd.h signal.h)
 AC_CHECK_LIB(readline,readline)
+AC_TRY_COMPILE([#include <readline/readline.h>], readline("test > "), AC_DEFINE(READLINE_CXX_SANE),
+  AC_MSG_WARN(Readline weakness detected) )
 
 dnl Generate files
 AC_OUTPUT([
