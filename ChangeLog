@@ -1,5 +1,9 @@
 2002-05-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/MemMap.h: C++ compliance fix.
+
+2002-05-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/CommClient.cpp, client/ClientConnection.cpp, tools/cycmd.cpp:
 	  Ensure clients use username in login ops.
 

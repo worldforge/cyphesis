@@ -40,7 +40,7 @@ class MemMap {
   public:
     explicit MemMap(Script *& s) : script(s)  { }
 
-    bool find(const::string & id) {
+    bool find(const std::string & id) {
         return (things.find(id) != things.end());
     }
 
