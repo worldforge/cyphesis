@@ -230,6 +230,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">sty</string>
     <list name="parents">

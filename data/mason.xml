@@ -445,6 +445,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">house3</string>
     <list name="parents">
