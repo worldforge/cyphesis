@@ -344,6 +344,11 @@ OpVector Character::mindLoginOperation(const Login & op)
     return OpVector();
 }
 
+OpVector Character::mindLogoutOperation(const Logout & op)
+{
+    return OpVector();
+}
+
 OpVector Character::mindActionOperation(const Action & op)
 {
     Action *a = new Action(op);
@@ -783,6 +788,11 @@ bool Character::w2mActionOperation(const Action & op)
 }
 
 bool Character::w2mLoginOperation(const Login & op)
+{
+    return false;
+}
+
+bool Character::w2mLogoutOperation(const Logout & op)
 {
     return false;
 }

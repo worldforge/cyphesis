@@ -1,3 +1,21 @@
+2002-07-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.cpp, common/const.h: Make consts modifiable in
+	  the debug build.
+
+	* common/op_switch.h, rulesets/Character.cpp, rulesets/Character.h:
+	  Fix missing logout op in op switchers.
+
+	* server/Account.cpp, server/Connection.cpp: Handle logouts
+	  a bit differently, and return the info response process
+	  expects.
+
+	* server/CommClient.cpp: Set connection id to client ip and port.
+
+	* server/CommServer.cpp: Tighten up the way eof is handled.
+
+	* server/ServerRouting.cpp: Set lobby id.
+
 2002-07-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Connection.cpp: Clarified errors on malformed logins.

@@ -93,7 +93,7 @@ OpVector Account::LogoutOperation(const Logout & op)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
     Info info = Info(Info::Instantiate());
-    info.SetArgs(Object::ListType(1,asObject()));
+    info.SetArgs(Object::ListType(1,op.AsObject()));
     info.SetRefno(op.GetSerialno());
     info.SetSerialno(connection->server.getSerialNo());
     info.SetFrom(getId());

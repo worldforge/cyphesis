@@ -64,6 +64,7 @@ class Character : public Thing {
     virtual OpVector NourishOperation(const Nourish & op);
 
     OpVector mindLoginOperation(const Login & op);
+    OpVector mindLogoutOperation(const Logout & op);
     OpVector mindCreateOperation(const Create & op);
     OpVector mindActionOperation(const Action & op);
     OpVector mindChopOperation(const Chop & op);
@@ -94,6 +95,7 @@ class Character : public Thing {
     OpVector mindOtherOperation(const RootOperation & op);
 
     bool w2mLoginOperation(const Login & op);
+    bool w2mLogoutOperation(const Logout & op);
     bool w2mActionOperation(const Action & op);
     bool w2mChopOperation(const Chop & op);
     bool w2mCombineOperation(const Combine & op);

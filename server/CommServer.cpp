@@ -205,7 +205,7 @@ void CommServer::loop()
            continue;
        }
        if (FD_ISSET(client->getFd(), &sock_fds)) {
-           if (client->peek() != -1) {
+           if (client->peek() > -1) {
                if (client->read()) {
                    debug(std::cout << "Removing client due to failed negotiation" << std::endl << std::flush;);
                    obsoleteConnections.insert(client);
@@ -214,7 +214,7 @@ void CommServer::loop()
                obsoleteConnections.insert(client);
            } else {
                // It is not clear why this happens.
-               debug(std::cout << "WARNING: client read failed, but eof() is not set" << std::endl << std::flush;);
+               log(WARNING, "Client peek failed, but eof() is not set");
                obsoleteConnections.insert(client);
            }
        }

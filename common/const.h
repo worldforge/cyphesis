@@ -6,23 +6,53 @@
 #define COMMON_CONST_H
 
 namespace consts {
+
+#ifdef NDEBUG
+  // Should python code emit thinking ops
   const int debug_thinking = 0;
+  // Debug level for python code
   const int debug_level = 0;
 
+  // Scale factor for time. The may become non-constant
   const double time_multiplier = 1.0;
   // In Real time how many seconds between ticks;
-  const double basic_tick = time_multiplier*3.0;
+  const double basic_tick = time_multiplier * 3.0;
+  // Highest possible person velocity
   const double base_velocity_coefficient = 5.0;
   const double base_velocity = base_velocity_coefficient/time_multiplier;
+  // Square versions of above, to avoid square roots in calculations
   const double square_basic_tick = basic_tick * basic_tick;
   const double square_base_velocity = base_velocity * base_velocity;
 
-  const double sight_range = 26.0;
-  const double hearing_range = 13.0;
+  // Are ranges for broadcast enabled.
   const bool enable_ranges = true;
+  // Range of broadcast sight ops
+  const double sight_range = 26.0;
+  // Range of broadcast sound ops
+  const double hearing_range = 13.0;
 
+  // FIXME
+  // Admin password used by admin account
   const char * const defaultAdminPassword = "zjvspoehrgopes";
 
+#else // NDEBUG
+
+// When we are doing a debug build, the constants are not constant
+
+  extern int debug_thinking;
+  extern int debug_level;
+  extern double time_multiplier;
+  extern double basic_tick;
+  extern double base_velocity_coefficient;
+  extern double base_velocity;
+  extern double square_basic_tick;
+  extern double square_base_velocity;
+  extern double sight_range;
+  extern double hearing_range;
+  extern bool enable_ranges;
+  extern const char * defaultAdminPassword;
+
 }
+#endif // NDEBUG
 
 #endif // COMMON_CONST_H

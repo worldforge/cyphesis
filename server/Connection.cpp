@@ -228,6 +228,16 @@ OpVector Connection::CreateOperation(const Create & op)
 
 OpVector Connection::LogoutOperation(const Logout & op)
 {
+    if (op.GetArgs().empty()) {
+        // Logging self out
+        Info info = Info(Info::Instantiate());
+        info.SetArgs(Object::ListType(1,op.AsObject()));
+        info.SetRefno(op.GetSerialno());
+        info.SetSerialno(server.getSerialNo());
+        send(info);
+        destroy();
+        return OpVector();
+    }
     if (!op.GetArgs().front().IsMap()) {
         return error(op, "Create is malformed");
     }
@@ -235,7 +245,7 @@ OpVector Connection::LogoutOperation(const Logout & op)
     
     Object::MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.IsString()) {
-        log(WARNING, "Got Logout with no username. Checking for old style Create.");
+        log(WARNING, "Got Logout with no username. Checking for old style Logout.");
         I = account.find("id");
         if ((I == account.end()) || !I->second.IsString()) {
             return error(op, "Logout is invalid");

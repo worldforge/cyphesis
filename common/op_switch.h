@@ -10,6 +10,9 @@
         case OP_LOGIN: \
             return _prefix ## LoginOperation((const Login &)_op); \
             break; \
+        case OP_LOGOUT: \
+            return _prefix ## LogoutOperation((const Logout &)_op); \
+            break; \
         case OP_ACTION: \
             return _prefix ## ActionOperation((const Action &)_op); \
             break; \

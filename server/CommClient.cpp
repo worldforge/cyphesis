@@ -9,12 +9,13 @@
 #include <common/log.h>
 #include <common/debug.h>
 #include <common/utility.h>
+#include <common/stringstream.h>
 
 #include <iostream>
 
 using Atlas::Message::Object;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 CommClient::CommClient(CommServer & svr, int fd, int port) :
             commServer(svr),
@@ -22,7 +23,17 @@ CommClient::CommClient(CommServer & svr, int fd, int port) :
             codec(NULL), encoder(NULL),
             connection(*new Connection(*this))
 {
-    clientIos.setTimeout(0,1);
+    char ipno[255];
+    sockaddr_in client = clientIos.getOutpeer();
+    std::stringstream connectionId;
+    if (!inet_ntop(AF_INET, &client.sin_addr, ipno, 255)) {
+        connectionId << "UNKNOWN";
+    } else {
+        connectionId << ipno;
+    }
+    connectionId << ":" << client.sin_port;
+    connection.setId(connectionId.str());
+    clientIos.setTimeout(0,1000);
 }
 
 
