@@ -2,6 +2,7 @@
 Makefile
 Makefile.in
 aclocal.m4
+autom4te-*.cache
 config.cache
 config.guess
 config.h
@@ -11,8 +12,9 @@ config.status
 config.sub
 configure
 cyphesis-config
+cyphesis-*.tar.gz
 cyphesis.spec
-cy*_mal_*
+depcomp
 gmon.out
 install-sh
 libtool
@@ -21,3 +23,4 @@ missing
 mkinstalldirs
 stamp-h
 stamp-h.in
+stamp-h1
