@@ -14,7 +14,9 @@
 
 #include <iostream>
 
-#include <openssl/md5.h>
+#if CYPHESIS_MD5_PASSWORDS
+#  include <openssl/md5.h>
+#endif
 
 extern "C" {
     #include <sys/utsname.h>
@@ -205,7 +207,7 @@ static const char hex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
 
 void encrypt_password(const std::string & pwd, std::string & hash)
 {
-#ifdef CYPHESIS_MD5_PASSWORDS
+#if CYPHESIS_MD5_PASSWORDS
     unsigned char buf[MD5_DIGEST_LENGTH + 1];
     MD5((const unsigned char *)pwd.c_str(), pwd.size(), buf);
     buf[16] = '\0';
@@ -215,7 +217,8 @@ void encrypt_password(const std::string & pwd, std::string & hash)
         hash.push_back(hex_table[(buf[i] & 0xf0) >> 4]);
     }
     return;
-#endif
+#else
     hash = pwd;
     return;
+#endif
 }
