@@ -1,5 +1,12 @@
 2003-10-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Rename some variable in mindMoveOp()
+	  to more accuratly reflect their meaning. Move direction
+	  calculation code so it is now based on updated position, not
+	  old position.
+
+2003-10-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Movement.h, rulesets/Pedestrian.h: Update movement
 	  interface to reflect the different jobs done by genMoveOperation().
 

@@ -415,32 +415,32 @@ OpVector Character::mindMoveOperation(const Move & op)
         newop->setTo(oname);
         return OpVector(1,newop);
     }
-    std::string location_ref;
+    std::string new_ref;
     I = arg1.find("loc");
     if ((I != arg1.end()) && (I->second.isString())) {
-        location_ref = I->second.asString();
+        new_ref = I->second.asString();
     } else {
         debug( std::cout << "Parent not set" << std::endl << std::flush;);
     }
-    Vector3D location_coords, location_vel;
-    Quaternion location_orientation;
+    Vector3D new_coords, new_vel;
+    Quaternion new_orientation;
     try {
         I = arg1.find("pos");
         if (I != arg1.end()) {
-            location_coords.fromAtlas(I->second.asList());
-            debug( std::cout << "pos set to " << location_coords << std::endl << std::flush;);
+            new_coords.fromAtlas(I->second.asList());
+            debug( std::cout << "pos set to " << new_coords << std::endl << std::flush;);
         }
 
         I = arg1.find("velocity");
         if (I != arg1.end()) {
-            location_vel.fromAtlas(I->second.asList());
-            debug( std::cout << "vel set to " << location_vel << std::endl << std::flush;);
+            new_vel.fromAtlas(I->second.asList());
+            debug( std::cout << "vel set to " << new_vel << std::endl << std::flush;);
         }
 
         I = arg1.find("orientation");
         if (I != arg1.end()) {
-            location_orientation.fromAtlas(I->second.asList());
-            debug( std::cout << "ori set to " << location_orientation << std::endl << std::flush;);
+            new_orientation.fromAtlas(I->second.asList());
+            debug( std::cout << "ori set to " << new_orientation << std::endl << std::flush;);
         }
     }
     catch (Atlas::Message::WrongTypeException) {
@@ -448,22 +448,22 @@ OpVector Character::mindMoveOperation(const Move & op)
     }
 
     double futureSeconds = op.getFutureSeconds();
-    if (!location_coords.isValid()) {
+    if (!new_coords.isValid()) {
         if (futureSeconds < 0.) {
             futureSeconds = 0.;
         }
     } else {
-        location_coords +=
+        new_coords +=
             (Vector3D(((double)rand())/RAND_MAX, ((double)rand())/RAND_MAX, 0)
                                 * (m_drunkness * 10));
     }
-    debug( std::cout << ":" << location_ref << ":" << m_location.m_loc->getId()
+    debug( std::cout << ":" << new_ref << ":" << m_location.m_loc->getId()
                      << ":" << std::endl << std::flush;);
     // At the moment we can't deal if the movement changes ref, or occurs
     // in the past, so we just let it by unchanged.
     if ((futureSeconds < 0.) ||
-        ((location_ref != m_location.m_loc->getId()) &&
-         (!location_ref.empty())) ) {
+        ((new_ref != m_location.m_loc->getId()) &&
+         (!new_ref.empty())) ) {
         Move * newop = new Move(op);
         newop->setTo(getId());
         newop->setFutureSeconds(futureSeconds);
@@ -473,27 +473,35 @@ OpVector Character::mindMoveOperation(const Move & op)
     // use movement object to track movement.
     //
     double vel_mag;
-    if (!location_vel.isValid()) {
+    if (!new_vel.isValid()) {
         debug( std::cout << "\tVelocity default" << std::endl<<std::flush;);
         vel_mag = consts::base_velocity;
     } else {
-        debug( std::cout << "\tVelocity: " << location_vel
+        debug( std::cout << "\tVelocity: " << new_vel
                          << std::endl << std::flush;);
-        vel_mag = location_vel.mag();
+        vel_mag = new_vel.mag();
         if (vel_mag > consts::base_velocity) {
             vel_mag = consts::base_velocity;
         }
     }
 
-    Vector3D direction;
     // If the position is given, and it is about right, don't bother to 
-    // use it.
-    if (location_coords.isValid() &&
-        (squareDistance(location_coords, m_location.m_pos) < 0.01)) {
-        location_coords = Vector3D();
+    // use it. FIXME This breaks the idea that if position is given
+    // it is destination
+    if (new_coords.isValid() &&
+        (squareDistance(new_coords, m_location.m_pos) < 0.01)) {
+        new_coords = Vector3D();
     }
-    if (!location_coords.isValid()) {
-        if (!location_vel.isValid() || isZero(location_vel)) {
+
+    Location ret_location;
+    Move * moveOp = m_movement.genMoveUpdate(&ret_location);
+    const Location & current_location = (NULL != moveOp) ? ret_location
+                                                         : m_location;
+    m_movement.reset();
+
+    Vector3D direction;
+    if (!new_coords.isValid()) {
+        if (!new_vel.isValid() || isZero(new_vel)) {
             debug( std::cout << "\tUsing orientation for direction"
                              << std::endl << std::flush;);
             // If velocity is not given, and target is not given,
@@ -502,32 +510,29 @@ OpVector Character::mindMoveOperation(const Move & op)
         } else {
             debug( std::cout << "\tUsing velocity for direction"
                              << std::endl << std::flush;);
-            direction = location_vel;
+            direction = new_vel;
         }
     } else {
         debug( std::cout << "\tUsing destination for direction"
                          << std::endl << std::flush;);
-        direction = Vector3D(location_coords) - m_location.m_pos;
+        direction = Vector3D(new_coords) - current_location.m_pos;
     }
     if (direction.isValid()) {
         direction.normalize();
         debug( std::cout << "Direction: " << direction << std::endl
                          << std::flush;);
-        if (!location_orientation.isValid()) {
+        if (!new_orientation.isValid()) {
             // This is a character walking, so it should stap upright
             Vector3D uprightDirection = direction;
             uprightDirection[cZ] = 0;
             uprightDirection.normalize();
-            location_orientation = quaternionFromTo(Vector3D(1,0,0),
+            new_orientation = quaternionFromTo(Vector3D(1,0,0),
                                                     uprightDirection);
-            debug( std::cout << "Orientation: " << location_orientation
+            debug( std::cout << "Orientation: " << new_orientation
                              << std::endl << std::flush;);
         }
     }
-    Location ret_location;
-    Move * moveOp = m_movement.genMoveUpdate(&ret_location);
-    const Location & current_location = (NULL!=moveOp) ? ret_location : m_location;
-    m_movement.reset();
+
     if ((vel_mag == 0) || !direction.isValid()) {
         debug( std::cout << "\tMovement stopped" << std::endl
                          << std::flush;);
@@ -537,12 +542,12 @@ OpVector Character::mindMoveOperation(const Move & op)
             Element::MapType & ent = args.front().asMap();
             ent["velocity"] = Vector3D(0,0,0).toAtlas();
             ent["mode"] = "standing";
-            if (location_orientation.isValid()) {
-                ent["orientation"] = location_orientation.toAtlas();
+            if (new_orientation.isValid()) {
+                ent["orientation"] = new_orientation.toAtlas();
             }
         } else {
             debug( std::cout << "Turn!" << std::endl << std::flush;);
-            m_movement.m_orientation = location_orientation;
+            m_movement.m_orientation = new_orientation;
             moveOp = m_movement.genFaceOperation();
         }
         if (NULL != moveOp) {
@@ -558,18 +563,18 @@ OpVector Character::mindMoveOperation(const Move & op)
     Element::MapType ent;
     ent["serialno"] = m_movement.m_serialno;
     ent["name"] = "move";
-    Element::ListType new_args(1,ent);
-    tickOp->setArgs(new_args);
+    Element::ListType tick_args(1,ent);
+    tickOp->setArgs(tick_args);
     tickOp->setTo(getId());
     // Need to add the arguments to this op before we return it
     // direction is already a unit vector
-    debug( if (location_coords.isValid()) { std::cout<<"\tUsing target"
+    debug( if (new_coords.isValid()) { std::cout<<"\tUsing target"
                                            << std::endl
                                            << std::flush; } );
-    m_movement.m_targetPos = location_coords;
+    m_movement.m_targetPos = new_coords;
     m_movement.m_velocity = direction;
     m_movement.m_velocity *= vel_mag;
-    m_movement.m_orientation = location_orientation;
+    m_movement.m_orientation = new_orientation;
     debug( std::cout << "Velocity " << vel_mag << std::endl << std::flush;);
     moveOp = m_movement.genMoveOperation(NULL, current_location);
     tickOp->setFutureSeconds(m_movement.getTickAddition(m_location.m_pos));
