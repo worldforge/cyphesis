@@ -6,6 +6,8 @@
 
 #include <common/Database.h>
 
+#include <iostream>
+
 Restoration::Restoration(ServerRouting & svr) : server(svr),
                                                 database(*Database::instance())
 {
