@@ -64,6 +64,9 @@ oplist Character::metabolise(double ammount = 1)
     } else {
         ent["status"] = status - energyUsed;
     }
+    if (drunkness > 0) {
+        ent["drunkness"] = drunkness - 0.1;
+    }
 
     Set * s = new Set(Set::Instantiate());
     s->SetTo(fullid);

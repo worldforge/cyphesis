@@ -84,7 +84,7 @@ Account * Persistance::loadAdminAccount()
     Persistance * p = instance();
     Account * adm = p->getAccount("admin");
     if (adm == NULL) {
-        adm = new Admin(NULL, "admin", "test");
+        adm = new Admin(NULL, "admin", "zjvspoehrgopes");
         p->putAccount(*adm);
     }
     saveAdminAccount(*adm);

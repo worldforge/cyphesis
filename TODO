@@ -22,9 +22,9 @@ Definitly for Acorn 0.4:
 
   Do collision boxes for ting_sign_cam_grey_light (stone circle)
 
-  Insist that Karsten fix the mouse pointer hot spot problem.
-
   Add in some actual deer (herds?)
+
+  Fix problem with collision detection and destination based movement.
 
 Provisional for Acorn 0.4:
 

@@ -22,6 +22,9 @@ swineherd	= ""
 warrior		= ""
 watermage	= ""
 creator		= ""
+maid_brown	= ""
+maid_blond	= ""
+maid_red	= ""
 
 [plant]
 tree		= "world.objects.plants.Tree"

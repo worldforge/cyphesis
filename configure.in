@@ -38,7 +38,7 @@ dnl Test for C++ compiler
 
 AC_PROG_CXX
 
-CXXFLAGS='-Wall -Winline -ggdb3 -pg'
+CXXFLAGS='-Wall -Winline -g'
 
 AC_PREFIX_DEFAULT("/usr/local")
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])

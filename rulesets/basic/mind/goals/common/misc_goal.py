@@ -445,17 +445,13 @@ class trade(Goal):
 
 class market(Goal):
     def is_it(self,me):
-        print self.shop, "?"
         if me.things.has_key(self.shop)==0: return 0
         shop=me.find_thing(self.shop)[0]
-        print "checking ", self.shop
         return shop.mode==self.state
     def set_it(self,me):
-        print self.shop, "??"
         if me.things.has_key(self.shop)==0: return
         shop=me.find_thing(self.shop)[0]
-        print self.state,"ing ", self.shop
-        return Operation("set", Entity(shop.id, mode=state),to=me)
+        return Operation("set", Entity(shop.id, mode=self.state),to=me)
 
 class run_shop(market):
     def __init__(self, shop, updown, time):
@@ -463,7 +459,6 @@ class run_shop(market):
                       self.is_it,
                       [spot_something(shop),
                        self.set_it],time)
-        print "Init run_shop", shop, " ", updown
         self.shop=shop
         self.state=updown
         self.vars=["shop"]

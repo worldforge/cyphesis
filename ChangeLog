@@ -1,3 +1,23 @@
+2001-07-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Characters now sober up over time.
+
+	* client/define_world.py: Add in market traders to run all the
+	  stalls in the market.
+
+	* common/persistance.cpp: Set default admin password to something
+	  a bit more difficult to guess.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py:
+	  Fixed run_shop() goal, so NPCs now open and close their market
+	  stall.
+
+	* agrilan*.xml: These really are the final versions for Acorn 0.4
+
+2001-06-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* agrilan*.xml: Final versions for Acorn 0.4
+
 2001-06-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Lobby.h, server/Lobby.cpp, server/Account.cpp: Added code

@@ -1,0 +1,26 @@
+Cyphesis-C++ development is currently being done on a semi-closed basis.
+I do not currently consider that the code is ready for contributions
+as the design has not quite stabilised. Anyone is encourage however to
+contribute scripts to implement new game features. If your game features
+require modification of the C++ core, please contact me on irc, or using
+the email address given in the AUTHORS file.
+
+Al Riddoch <alriddoch@zepler.org>, Saturday May 12th, 2001
+
+The following guidelines should be observer when coding cyphesis-C++.
+
+TEMPLATES
+
+Use of templates is not encouraged.
+
+REFERENCES
+
+References should be used instead of pointers whereever it is possible.
+If necessary the design of the code should reflect this preference.
+If a pointer is to be used which will be initialised to a value, will
+never change and can never be NULL, then that pointer should be a reference.
+
+RETURN VALUES
+
+Integer return values should not be used explicitly when only success or
+failure is being returned. Use bool in these cases.

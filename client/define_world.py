@@ -177,6 +177,23 @@ def default(mapeditor):
 
 #   villagers
 
+    # Some generic market traders, to operate the market stalls
+    stall_list = ['mstall_bakery_2_se', 'mstall_beer_1_se',
+                  'mstall_blacksmith_1_sw', 'mstall_blue_1_us',
+                  'mstall_books_2_sw', 'mstall_cheese_2_se',
+                  'mstall_fish_1_se', 'mstall_freshmeat_1_se',
+                  'mstall_fruits_2_se', 'mstall_healer_1_sw',
+                  'mstall_household_1_sw', 'mstall_jewels_1_sw',
+                  'mstall_magic_items_1_sw', 'mstall_milk_2_se',
+                  'mstall_seamstress_1_sw', 'mstall_vegetables_1_se',
+                  'mstall_wine_1_se']
+    trader_list = ['seller', 'maid_brown', 'maid_blond', 'maid_red']
+    for stall in stall_list:
+        trader=m.make('trader',type=trader_list[randint(0,3)],
+                 xyz=butcher_stall_xyz,age=probability.fertility_age)
+        m.learn(trader,(il.market,"run_shop(stall,'open','dawn')"))
+        m.learn(trader,(il.market,"run_shop(stall,'closed','evening')"))
+
     #m.make('bstall',type='bstall',xyz=(-41,-5,village_height))
 
     home1_xyz=(90,-90,village_height)
