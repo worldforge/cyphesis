@@ -25,7 +25,7 @@ class Stackable : public Thing {
     virtual const Atlas::Message::Object & operator[](const string & aname);
     virtual void set(const string & aname, const Atlas::Message::Object & attr);
 
-    virtual void addToObject(Atlas::Message::Object *) const;
+    virtual void addToObject(Atlas::Message::Object &) const;
     virtual oplist Operation(const Combine & op);
     virtual oplist Operation(const Divide & op);
 };

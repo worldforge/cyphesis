@@ -54,8 +54,7 @@ oplist Admin::Operation(const Save & op)
     Object::MapType report;
     report["message"] = "Objects saved to database";
     report["object_count"] = count;
-    Info * info = new Info();
-    *info = Info::Instantiate();
+    Info * info = new Info(Info::Instantiate());
     Object::ListType args(1,report);
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());
@@ -86,8 +85,7 @@ oplist Admin::Operation(const Load & op)
     Object::MapType report;
     report["message"] = "Objects loaded from database";
     report["object_count"] = count;
-    Info * info = new Info();
-    *info = Info::Instantiate();
+    Info * info = new Info(Info::Instantiate());
     Object::ListType args(1,report);
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());
@@ -118,8 +116,7 @@ oplist Admin::Operation(const Get & op)
                 if (I == world->server.idDict.end()) {
                     return error(op, "query id not found");
                 }
-                Info * info = new Info();
-                *info = Info::Instantiate();
+                Info * info = new Info(Info::Instantiate());
                 Object::ListType args(1,I->second->asObject());
                 info->SetArgs(args);
                 info->SetRefno(op.GetSerialno());
@@ -151,8 +148,7 @@ oplist Admin::Operation(const Set & op)
                 exit_flag = true;
                 Object::MapType report;
                 report["message"] = "Shutdown initiated";
-                Info * info = new Info();
-                *info = Info::Instantiate();
+                Info * info = new Info(Info::Instantiate());
                 Object::ListType args(1,report);
                 info->SetArgs(args);
                 info->SetRefno(op.GetSerialno());

@@ -38,7 +38,7 @@ BaseMind::BaseMind(const string & id, const string & body_name) : map(script)
     //map=MemMap();
     fullid = id;
     name = body_name;
-    map.addToObject(this);
+    map.addObject(this);
     //BaseMind::time=WorldTime();
     //if (const.debug_level>=1) {
         //BaseMind::log_fp=open("mind_"+BaseMind::id+".log","w");
@@ -329,13 +329,13 @@ oplist BaseMind::operation(const RootOperation & op)
 
 oplist BaseMind::callSightOperation(const Sight& op, RootOperation& sub_op) {
     map.getAdd(sub_op.GetFrom());
-    op_no_t op_no = opEnumerate(&sub_op);
+    op_no_t op_no = opEnumerate(sub_op);
     SUB_OP_SWITCH(op, op_no, sight, sub_op)
 }
 
 oplist BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op) {
     map.getAdd(sub_op.GetFrom());
-    op_no_t op_no = opEnumerate(&sub_op);
+    op_no_t op_no = opEnumerate(sub_op);
     SUB_OP_SWITCH(op, op_no, sound, sub_op)
 }
 

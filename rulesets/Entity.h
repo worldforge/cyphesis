@@ -35,7 +35,7 @@ class Entity : public BaseEntity {
     void merge(const Atlas::Message::Object::MapType &);
     void getLocation(Atlas::Message::Object::MapType &, dict_t &);
 
-    virtual void addToObject(Object * obj) const;
+    virtual void addToObject(Atlas::Message::Object & obj) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
     virtual oplist Operation(const Chop & op);

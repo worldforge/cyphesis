@@ -26,6 +26,7 @@ class CommServer {
     void idle();
 
     static const int metaserverPort = 8453;
+    time_t metaserverTime;
     struct sockaddr_in meta_sa;
     int metaFd;
   public:

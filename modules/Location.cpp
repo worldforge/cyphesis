@@ -25,9 +25,9 @@ Vector3D Location::getXyz() const {
     }
 }
 
-void Location::addToObject(Object * obj) const
+void Location::addToObject(Object & obj) const
 {
-    Object::MapType & omap = obj->AsMap();
+    Object::MapType & omap = obj.AsMap();
     if (ref!=NULL) {
         omap["loc"] = Object(ref->fullid);
     } else {

@@ -23,6 +23,8 @@ Definitly for Acorn 0.4:
 
   Move virtual destructors and other functions into .cpp files.
 
+  Get rid of deleted attribute.
+
 Provisional for Acorn 0.4:
 
   Implement accelerated Atlas Objects API. MAYBE: POSTPONED FROM 0.3

@@ -27,9 +27,9 @@ ServerRouting::~ServerRouting()
 {
 }
 
-void ServerRouting::addToObject(Object * obj) const
+void ServerRouting::addToObject(Object & obj) const
 {
-    Object::MapType & omap = obj->AsMap();
+    Object::MapType & omap = obj.AsMap();
     omap["server"] = "cyphesis";
     omap["ruleset"] = svrName;
     Object::ListType plist(1, "server");

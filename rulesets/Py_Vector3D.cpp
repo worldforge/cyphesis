@@ -103,7 +103,7 @@ static PyObject * Vector3D_unit_vector(Vector3DObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->coords.unit_vector();
+    ret->coords = self->coords.unitVector();
     return (PyObject *)ret;
 }
 
@@ -121,7 +121,7 @@ static PyObject *Vector3D_unit_vector_to(Vector3DObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->coords.unit_vector_to_another_vector(other->coords);
+    ret->coords = self->coords.unitVectorTo(other->coords);
     return (PyObject *)ret;
 }
 

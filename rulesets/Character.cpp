@@ -59,7 +59,7 @@ using Atlas::Message::Object;
 
 static const bool debug_flag = false;
 
-inline oplist Character::metabolise(double ammount = 1)
+oplist Character::metabolise(double ammount = 1)
 {
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
@@ -77,8 +77,7 @@ inline oplist Character::metabolise(double ammount = 1)
         ent["status"] = status - energyUsed;
     }
 
-    Set * s = new Set();
-    *s = Set::Instantiate();
+    Set * s = new Set(Set::Instantiate());
     s->SetTo(fullid);
     s->SetArgs(Object::ListType(1,ent));
 
@@ -126,9 +125,9 @@ void Character::set(const string & aname, const Object & attr)
     }
 }
 
-void Character::addToObject(Object * obj) const
+void Character::addToObject(Object & obj) const
 {
-    Object::MapType & omap = obj->AsMap();
+    Object::MapType & omap = obj.AsMap();
     omap["weight"] = Object(weight);
     omap["sex"] = Object(sex);
     Thing::addToObject(obj);
@@ -160,22 +159,18 @@ oplist Character::Operation(const Setup & op)
     // THis is so not the right thing to do
     s->SetAttr("sub_to", Object("mind"));
     res2[0] = s;
-    Look * l = new Look();
-    *l = Look::Instantiate();
+    Look * l = new Look(Look::Instantiate());
     l->SetTo(world->fullid);
     res2[1] = l;
     if (location.ref != world) {
-        l = new Look();
-        *l = Look::Instantiate();
+        l = new Look(Look::Instantiate());
         l->SetTo(location.ref->fullid);
         res2.push_back(l);
     }
-    l = new Look();
-    *l = Look::Instantiate();
+    l = new Look(Look::Instantiate());
     l->SetTo(fullid);
     res2.push_back(l);
-    RootOperation * tick = new Tick;
-    *tick = Tick::Instantiate();
+    RootOperation * tick = new Tick(Tick::Instantiate());
     tick->SetTo(fullid);
     res2.push_back(tick);
     return(res2);
@@ -207,8 +202,7 @@ oplist Character::Operation(const Tick & op)
             entmap["name"]=Object("move");
             entmap["serialno"]=Object(movement.serialno);
             Object ent(entmap);
-            RootOperation * tickOp = new Tick();
-            *tickOp = Tick::Instantiate();
+            RootOperation * tickOp = new Tick(Tick::Instantiate());
             tickOp->SetTo(fullid);
             tickOp->SetFutureSeconds(movement.getTickAddition(ret_loc.coords));
             tickOp->SetArgs(Object::ListType(1,ent));
@@ -234,8 +228,7 @@ oplist Character::Operation(const Tick & op)
             s.SetTo(fullid);
             s.SetArgs(Object::ListType(1,food_ent));
 
-            Sight * si = new Sight();
-            *si = Sight::Instantiate();
+            Sight * si = new Sight(Sight::Instantiate());
             si->SetTo(fullid);
             si->SetArgs(Object::ListType(1,s.AsObject()));
             res.push_back(si);
@@ -248,8 +241,7 @@ oplist Character::Operation(const Tick & op)
         }
         
         // TICK
-        RootOperation * tickOp = new Tick();
-        *tickOp = Tick::Instantiate();
+        RootOperation * tickOp = new Tick(Tick::Instantiate());
         tickOp->SetTo(fullid);
         tickOp->SetFutureSeconds(consts::basic_tick * 30);
         res.push_back(tickOp);
@@ -261,8 +253,7 @@ oplist Character::Operation(const Tick & op)
 oplist Character::Operation(const Talk & op)
 {
     debug( cout << "Character::OPeration(Talk)" << endl << flush;);
-    Sound * s = new Sound();
-    *s = Sound::Instantiate();
+    Sound * s = new Sound(Sound::Instantiate());
     Object::ListType args(1,op.AsObject());
     s->SetArgs(args);
     return oplist(1,s);
@@ -280,8 +271,7 @@ oplist Character::Operation(const Eat & op)
     self_ent["id"] = fullid;
     self_ent["status"] = -1;
 
-    Set * s = new Set();
-    *s = Set::Instantiate();
+    Set * s = new Set(Set::Instantiate());
     s->SetTo(fullid);
     s->SetArgs(Object::ListType(1,self_ent));
 
@@ -289,8 +279,7 @@ oplist Character::Operation(const Eat & op)
     Object::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["weight"] = weight;
-    Nourish * n = new Nourish();
-    *n = Nourish::Instantiate();
+    Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
     n->SetArgs(Object::ListType(1,nour_ent));
 
@@ -311,8 +300,7 @@ oplist Character::Operation(const Nourish & op)
     Set s = Set::Instantiate();
     s.SetArgs(Object::ListType(1,food_ent));
 
-    Sight * si = new Sight();
-    *si = Sight::Instantiate();
+    Sight * si = new Sight(Sight::Instantiate());
     si->SetTo(fullid);
     si->SetArgs(Object::ListType(1,s.AsObject()));
     return oplist(1,si);
@@ -493,7 +481,7 @@ oplist Character::mindOperation(const Move & op)
         if (!direction) {
             debug( cout << "No direction" << endl << flush;);
         } else {
-            direction=direction.unit_vector();
+            direction=direction.unitVector();
             debug( cout << "Direction: " << direction << endl << flush;);
         }
         if (!location_face) {
@@ -529,8 +517,7 @@ oplist Character::mindOperation(const Move & op)
             }
             return oplist();
         }
-        RootOperation * tickOp = new Tick;
-        *tickOp = Tick::Instantiate();
+        RootOperation * tickOp = new Tick(Tick::Instantiate());
         Object::MapType ent;
         ent["serialno"] = Object(movement.serialno);
         ent["name"] = Object("move");
@@ -894,7 +881,7 @@ oplist Character::mind2body(const RootOperation & op)
     if (drunkness > 1.0) {
         return oplist();
     }
-    op_no_t otype = opEnumerate(&newop);
+    op_no_t otype = opEnumerate(newop);
     OP_SWITCH(newop, otype, mind)
 }
 
@@ -907,7 +894,7 @@ oplist Character::world2body(const RootOperation & op)
 oplist Character::world2mind(const RootOperation & op)
 {
     debug( cout << "Character::world2mind" << endl << flush;);
-    op_no_t otype = opEnumerate(&op);
+    op_no_t otype = opEnumerate(op);
     OP_SWITCH(op, otype, w2m)
 }
 

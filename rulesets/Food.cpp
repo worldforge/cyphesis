@@ -31,8 +31,7 @@ oplist Food::Operation(const Eat & op)
     self_ent["id"] = fullid;
     self_ent["status"] = -1;
 
-    Set * s = new Set();
-    *s = Set::Instantiate();
+    Set * s = new Set(Set::Instantiate());
     s->SetTo(fullid);
     s->SetArgs(Object::ListType(1,self_ent));
 
@@ -40,8 +39,7 @@ oplist Food::Operation(const Eat & op)
     Object::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["weight"] = weight;
-    Nourish * n = new Nourish();
-    *n = Nourish::Instantiate();
+    Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
     n->SetArgs(Object::ListType(1,nour_ent));
 
@@ -57,7 +55,7 @@ oplist Food::Operation(const Fire & op)
     if (script->Operation("fire", op, res) != 0) {
         return(res);
     }
-    double cooked;
+    double cooked = 0;
     if (attributes.find("cooked") == attributes.end()) {
         cooked = attributes["cooked"].AsNum();
     }
@@ -72,8 +70,7 @@ oplist Food::Operation(const Fire & op)
         self_ent["status"] = status - (attributes["burn_speed"].AsNum()) * fire_size;
     }
 
-    Set * s = new Set();
-    *s = Set::Instantiate();
+    Set * s = new Set(Set::Instantiate());
     s->SetTo(fullid);
     s->SetArgs(Object::ListType(1,self_ent));
 

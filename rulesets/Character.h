@@ -47,7 +47,7 @@ class Character : public Thing {
     virtual const Atlas::Message::Object & operator[](const string & aname);
     virtual void set(const string & aname, const Atlas::Message::Object & attr);
 
-    virtual void addToObject(Atlas::Message::Object *) const;
+    virtual void addToObject(Atlas::Message::Object &) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
     virtual oplist Operation(const Talk & op);

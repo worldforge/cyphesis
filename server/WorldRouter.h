@@ -14,7 +14,6 @@ class ServerRouting;
 class Thing;
 
 #include "Routing.h"
-#include "WorldTime.h"
 
 typedef std::list<RootOperation *> opqueue;
 

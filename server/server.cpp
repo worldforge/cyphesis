@@ -195,8 +195,10 @@ void CommClient::ObjectArrived(const Get & op)
 bool CommServer::useMetaserver = true;
 
 CommServer::CommServer(const string & ident) :
-              identity(ident), server(*new ServerRouting(*this, ident)) { }
-
+              metaserverTime(-1),
+              identity(ident), server(*new ServerRouting(*this, ident))
+{
+}
 
 int CommServer::setup(int port)
 {
@@ -272,11 +274,10 @@ int CommServer::accept()
 
 inline void CommServer::idle()
 {
-    static time_t ltime = -1;
     time_t ctime = time(NULL);
-    if ((ctime > (ltime + 5 * 60)) && useMetaserver) {
+    if ((ctime > (metaserverTime + 5 * 60)) && useMetaserver) {
         cout << "Sending keepalive" << endl << flush;
-        ltime = ctime;
+        metaserverTime = ctime;
         metaserverKeepalive();
     }
     server.idle();
@@ -350,8 +351,7 @@ inline void CommServer::removeClient(CommClient * client, char * error_msg)
     err["message"] = Object(error_msg);
     Object::ListType eargs(1,Object(err));
 
-    Error * e = new Error();
-    *e = Error::Instantiate();
+    Error * e = new Error(Error::Instantiate());
 
     e->SetArgs(eargs);
 

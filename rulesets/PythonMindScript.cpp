@@ -10,10 +10,9 @@
 
 #include "Entity.h"
 #include "BaseMind.h"
+#include "MemMap_methods.h"
 
 using Atlas::Objects::Operation::RootOperation;
-
-static const bool debug_flag = false;
 
 PythonMindScript::PythonMindScript(PyObject * o, BaseMind & m) :
     PythonScript(o, m), mind(m)

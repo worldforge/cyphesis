@@ -10,7 +10,7 @@
 
 
 //timedata time2type(const string & t) {
-    //return time_info[t][1];
+    //return timeInfo[t][1];
 //}
 
 
@@ -28,6 +28,36 @@ inline const string & seconds2string(double seconds) {
     // return str(date_time);
 }
 
+void WorldTime::initTimeInfo() {
+    timeInfo["always"] = period(crange(1,13), "seasonal");
+    timeInfo["spring"] = period(crange(3,5), "seasonal");
+    timeInfo["summer"] = period(range(6,8), "seasonal");
+    timeInfo["autumn"] = period(range(9,11), "seasonal");
+    range winter = crange(1,2);
+    winter.push_back(12);
+    timeInfo["winter"] = period(winter, "seasonal");
+    timeInfo["morning"] = period(range(1,8), "daily");
+    timeInfo["midday"] = period(range(1,12), "daily");
+    timeInfo["evening"] = period(range(1,20), "daily");
+    range night = crange(0,7);
+    night.push_front(23); night.push_front(22); night.push_front(21);
+    timeInfo["night"] = period(night,"daily");
+    timeInfo["now"] = period(crange(0,23), "daily");
+    std::list<string> seasons(1, "summer");
+    seasons.push_back("autumn");
+    seasons.push_back("winter");
+    seasons.push_back("spring");
+    std::list<string>::const_iterator I;
+    for(I = seasons.begin(); I != seasons.end(); I++) {
+        range::const_iterator J;
+        range & months = timeInfo[*I].first;
+        for(J = months.begin(); J != months.end(); J++) {
+            monthToSeason[*J] = *I;
+        }
+    }
+}
+
+
 //WorldTime::WorldTime(char * date_time="1-1-1 0:0:0")
 //{
     //// time=DateTime(date_time);
@@ -40,45 +70,3 @@ const string & WorldTime::operator[](const string & name)
     //}
     return "what";
 }
-
-#if 0
-void WorldTime::__call__()
-{
-    return WorldTime::time;
-}
-
-double WorldTime::time()
-{
-    return time.seconds();
-}
-
-char * WorldTime::asString()
-{
-    return WorldTime::time.asString();
-}
-
-bool WorldTime::__cmp__(const WorldTime & other)
-{
-    if (time2type(other)=='seasonal') {
-        if (WorldTime::time.month in time_info[other][0]) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
-    if (time2type(other)=='daily') {
-        if (WorldTime::time.hour in time_info[other][0]) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
-    return 1;
-}
-
-dobule WorldTime::seconds()
-{
-    return WorldTime::time.seconds();
-}
-
-#endif

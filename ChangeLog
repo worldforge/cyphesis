@@ -1,3 +1,21 @@
+2001-04-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.*: Changed addToObject to take reference
+	  instead of pointer.
+
+	* physics/Vector3D.h: Re-ordered functions to allow correct inlining.
+	  Changed member names to correct convention.
+
+	* rulesets/MemMap.cpp,rulesets/MemMap_methods.h: Re-ordered function
+	  to allow inlining, and moved non-inlinable functions into .cpp file.
+
+	* Changed new operation initialisation to be done at construction
+	  time instead of imediatly after construction for performance
+	  reasons.
+
+	* server/WorldTime.*: Modified member names for convention, and
+	  moved non-inlineable function to .cpp file.
+
 2001-04-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/WorldInfo.*: Removed WorldInfo class, a hangup from

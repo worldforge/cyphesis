@@ -52,7 +52,7 @@ oplist Creator::sendMind(const RootOperation & msg)
 oplist Creator::operation(const RootOperation & op)
 {
     debug( cout << "Creator::operation" << endl << flush;);
-    op_no_t op_no = opEnumerate(&op);
+    op_no_t op_no = opEnumerate(op);
     if (op_no == OP_LOOK) {
         return ((BaseEntity *)this)->Operation((Look &)op);
     }

@@ -88,8 +88,7 @@ oplist Connection::operation(const RootOperation & op)
                 Character * pchar = (Character *)ent;
                 pchar->externalMind = new ExternalMind(*this, pchar->fullid, pchar ->name);
                 cout << "Re-connecting existing character to new connection" << endl << flush;
-                Info * info = new Info();
-                *info = Info::Instantiate();
+                Info * info = new Info(Info::Instantiate());
                 Object::ListType args(1,pchar->asObject());
                 info->SetArgs(args);
                 info->SetRefno(op.GetSerialno());
@@ -131,8 +130,7 @@ oplist Connection::Operation(const Login & op)
                 addObject(I->second);
             }
             player->connection=this;
-            Info * info = new Info();
-            *info = Info::Instantiate();
+            Info * info = new Info(Info::Instantiate());
             Object::ListType args(1,player->asObject());
             info->SetArgs(args);
             info->SetRefno(op.GetSerialno());
@@ -161,8 +159,7 @@ oplist Connection::Operation(const Create & op)
             (account_id.size() != 0) && (password.size() != 0)) {
             Account * player = addPlayer(account_id, password);
             Persistance::instance()->putAccount(player);
-            Info * info = new Info();
-            *info = Info::Instantiate();
+            Info * info = new Info(Info::Instantiate());
             Object::ListType args(1,player->asObject());
             info->SetArgs(args);
             info->SetRefno(op.GetSerialno());
@@ -195,8 +192,7 @@ oplist Connection::Operation(const Logout & op)
 oplist Connection::Operation(const Get & op)
 {
     cout << "Got get" << endl << flush;
-    Info * info = new Info();
-    *info = Info::Instantiate(); 
+    Info * info = new Info(Info::Instantiate());
     Object::ListType args(1,server.asObject());
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());

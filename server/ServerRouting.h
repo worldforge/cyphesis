@@ -24,7 +24,7 @@ class ServerRouting : public Routing {
     int idle();
     BaseEntity * addObject(BaseEntity * obj);
 
-    virtual void addToObject(Atlas::Message::Object *) const;
+    virtual void addToObject(Atlas::Message::Object &) const;
 };
 
 #endif /* SERVER_ROUTING_H */

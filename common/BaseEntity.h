@@ -32,7 +32,7 @@ class BaseEntity {
     virtual void destroy();
 
     Atlas::Message::Object asObject() const;
-    virtual void addToObject(Atlas::Message::Object *) const;
+    virtual void addToObject(Atlas::Message::Object &) const;
 
     virtual oplist externalMessage(const RootOperation & op);
     virtual oplist message(const RootOperation & op);
@@ -68,7 +68,7 @@ class BaseEntity {
     virtual oplist Operation(const RootOperation & op);
 
     void setRefno(oplist & ret, const RootOperation & ref_op) const;
-    op_no_t opEnumerate(const RootOperation * op) const;
+    op_no_t opEnumerate(const RootOperation & op) const;
     oplist callOperation(const RootOperation & op);
     oplist error(const RootOperation & op, const char * errstring) const;
 

@@ -65,8 +65,7 @@ BaseEntity * Account::addCharacter(const string & typestr, const Object & ent)
     Object::ListType cargs(1,chr->asObject());
     c.SetArgs(cargs);
 
-    Sight * s = new Sight;
-    *s = Sight::Instantiate();
+    Sight * s = new Sight(Sight::Instantiate());
     
     Object::ListType sargs(1,c.AsObject());
     s->SetArgs(sargs);
@@ -83,9 +82,9 @@ oplist Account::Operation(const Logout & op)
     return oplist();
 }
 
-void Account::addToObject(Object * obj) const
+void Account::addToObject(Object & obj) const
 {
-    Object::MapType & omap = obj->AsMap();
+    Object::MapType & omap = obj.AsMap();
     omap["id"] = Object(fullid);
     if (password.size() != 0) {
         omap["password"] = Object(password);
@@ -125,8 +124,7 @@ oplist Account::Operation(const Create & op)
 
     BaseEntity * obj = addCharacter(typestr, ent);
     //log.inform("Player "+Account::id+" adds character "+`obj`,op);
-    Info * info = new Info();
-    *info = Info::Instantiate();
+    Info * info = new Info(Info::Instantiate());
     Object::ListType args(1,obj->asObject());
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());

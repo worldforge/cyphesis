@@ -40,9 +40,9 @@ void Stackable::set(const string & aname, const Object & attr)
     }
 }
 
-void Stackable::addToObject(Object * obj) const
+void Stackable::addToObject(Object & obj) const
 {
-    Object::MapType & omap = obj->AsMap();
+    Object::MapType & omap = obj.AsMap();
     if (num != 1) {
         omap["num"] = Object(num);
     }
@@ -64,8 +64,7 @@ oplist Stackable::Operation(const Combine & op)
         if (obj->type != type) { continue; }
         num = num + obj->num;
 
-        Delete * d = new Delete();
-        *d = Delete::Instantiate();
+        Delete * d = new Delete(Delete::Instantiate());
         Object::MapType dent;
         dent["id"] = id;
         d->SetTo(id);
@@ -95,8 +94,7 @@ oplist Stackable::Operation(const Divide & op)
         Object::ListType parents(1,type);
         new_ent["parents"] = parents;
         new_ent["num"] = new_num;
-        Create * c = new Create();
-        *c = Create::Instantiate();
+        Create * c = new Create( Create::Instantiate());
         c->SetArgs(Object::ListType(1,new_ent));
         c->SetTo(fullid);
         res.push_back(c);

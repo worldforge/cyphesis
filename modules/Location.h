@@ -35,7 +35,7 @@ public:
 
     Vector3D getXyz() const;
 
-    void addToObject(Atlas::Message::Object * obj) const;
+    void addToObject(Atlas::Message::Object & obj) const;
 
     bool inRange(const Location & loc, const double distance) const {
         if (!bbox) {

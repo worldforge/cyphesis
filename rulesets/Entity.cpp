@@ -88,9 +88,9 @@ MemMap * Entity::getMap() {
     return NULL;
 }
 
-void Entity::addToObject(Object * obj) const
+void Entity::addToObject(Object & obj) const
 {
-    Object::MapType & omap = obj->AsMap();
+    Object::MapType & omap = obj.AsMap();
     omap["name"] = Object(name);
     omap["type"] = Object(type);
     omap["parents"] = Object(Object::ListType(1,Object(type)));

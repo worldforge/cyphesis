@@ -16,10 +16,10 @@ using Atlas::Objects::Operation::Look;
 
 static const bool debug_flag = false;
 
-inline Entity * MemMap::addToObject(Entity * object)
+inline Entity * MemMap::addObject(Entity * object)
 {
-    debug( cout << "MemMap::addToObject " << object << " " << object->fullid
-         << endl << flush;);
+    debug(cout << "MemMap::addObject " << object << " " << object->fullid
+               << endl << flush;);
     if (object != NULL) {
         things[object->fullid] = object;
     }
@@ -39,8 +39,7 @@ inline RootOperation * MemMap::lookId()
     if (additionsById.size() != 0) {
         string id = additionsById.front();
         additionsById.pop_front();
-        Look * l = new Look();
-        *l = Look::Instantiate();
+        Look * l = new Look(Look::Instantiate());
         //Object::MapType m;
         //m["id"] = Object(id);
         //l->SetArgs(Object::ListType(1, Object(m)));
@@ -59,36 +58,6 @@ inline Entity * MemMap::addId(const string & id)
     m["id"] = Object(string(id));
     Object obj(m);
     return add(obj);
-}
-
-inline Entity * MemMap::add(const Object & entity)
-{
-    debug( cout << "MemMap::add" << endl << flush;);
-    if (!entity.IsMap()) {
-        return NULL;
-    }
-    Object::MapType entmap = entity.AsMap();
-    if ((entmap.find("id") == entmap.end()) ||
-        (entmap["id"].AsString().size() == 0)) {
-        return NULL;
-    }
-    if (get(entmap["id"].AsString())) {
-        return update(entity);
-    }
-    Entity * thing = new Entity;
-    thing->fullid = entmap["id"].AsString();
-    if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
-        thing->name = entmap["name"].AsString();
-    }
-    if (entmap.find("type") != entmap.end() && entmap["type"].IsString()) {
-        thing->type = entmap["type"].AsString();
-    }
-    thing->merge(entmap);
-    if (entmap.find("loc") != entmap.end()) {
-        getAdd(entmap["loc"].AsString());
-    }
-    thing->getLocation(entmap, things);
-    return addToObject(thing);
 }
 
 inline void MemMap::del(const string & id)
@@ -124,52 +93,4 @@ inline Entity * MemMap::getAdd(const string & id)
         return obj;
     }
     return addId(id);
-}
-
-inline Entity * MemMap::update(const Object & entity)
-{
-    debug( cout << "MemMap::update" << endl << flush;);
-    if (!entity.IsMap()) {
-        return NULL;
-    }
-    Object::MapType entmap = entity.AsMap();
-    if (entmap.find("id") == entmap.end()) {
-        return NULL;
-    }
-    string & id = entmap["id"].AsString();
-    if (id.size() == 0) {
-        return NULL;
-    }
-    debug( cout << " updating " << id << endl << flush;);
-    if (things.find(id) == things.end()) {
-        return add(entity);
-    }
-    debug( cout << " " << id << " has already been spotted" << endl << flush;);
-    Entity * thing = (Entity*)things[id];
-    debug( cout << " got " << thing << endl << flush;);
-    // I am not sure what the deal is with all the "needTrueValue stuff
-    // below yet. FIXME find out exactly what is required.
-    if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
-        thing->name = entmap["name"].AsString();
-    }
-    if (entmap.find("type") != entmap.end() && entmap["type"].IsString()) {
-        thing->type = entmap["type"].AsString();
-    }
-    debug( cout << " got " << thing << endl << flush;);
-    thing->merge(entmap);
-    thing->getLocation(entmap,things);
-    //needTrueValue=["type","contains","instance","id","location","stamp"];
-    //for (/*(key,value) in entity.__dict__.items()*/) {
-        //if (value or not key in needTrueValue) {
-            //setattr(obj,key,value);
-        //}
-    //}
-    list<string>::const_iterator I;
-    for(I = updateHooks.begin(); I != updateHooks.end(); I++) {
-        script->hook(*I, thing);
-    }
-    //for (/*hook in MemMap::update_hooks*/) {
-        //hook(obj);
-    //}
-    return thing;
 }

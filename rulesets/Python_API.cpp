@@ -473,7 +473,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             PyObject * val = PyList_GetItem(vals, i);
             if ((strcmp(key, "location") == 0) && (PyLocation_Check(val))) {
                 LocationObject * loc = (LocationObject*)val;
-                loc->location->addToObject(&obj);
+                loc->location->addToObject(obj);
             } else {
                 Object val_obj = PyObject_asObject(val);
                 if (val_obj.GetType() == Object::TYPE_NONE) {
@@ -556,47 +556,33 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         return NULL;
     }
     if (strcmp(type, "tick") == 0) {
-        op->operation = new Tick;
-        *op->operation = Tick::Instantiate();
+        op->operation = new Tick(Tick::Instantiate());
     } else if (strcmp(type, "sight") == 0) {
-        op->operation = new Sight;
-        *op->operation = Sight::Instantiate();
+        op->operation = new Sight(Sight::Instantiate());
     } else if (strcmp(type, "set") == 0) {
-        op->operation = new Set;
-        *op->operation = Set::Instantiate();
+        op->operation = new Set(Set::Instantiate());
     } else if (strcmp(type, "fire") == 0) {
-        op->operation = new Fire;
-        *op->operation = Fire::Instantiate();
+        op->operation = new Fire(Fire::Instantiate());
     } else if (strcmp(type, "chop") == 0) {
-        op->operation = new Chop;
-        *op->operation = Chop::Instantiate();
+        op->operation = new Chop(Chop::Instantiate());
     } else if (strcmp(type, "cut") == 0) {
-        op->operation = new Cut;
-        *op->operation = Cut::Instantiate();
+        op->operation = new Cut(Cut::Instantiate());
     } else if (strcmp(type, "create") == 0) {
-        op->operation = new Create;
-        *op->operation = Create::Instantiate();
+        op->operation = new Create(Create::Instantiate());
     } else if (strcmp(type, "setup") == 0) {
-        op->operation = new Setup;
-        *op->operation = Setup::Instantiate();
+        op->operation = new Setup(Setup::Instantiate());
     } else if (strcmp(type, "look") == 0) {
-        op->operation = new Look;
-        *op->operation = Look::Instantiate();
+        op->operation = new Look(Look::Instantiate());
     } else if (strcmp(type, "move") == 0) {
-        op->operation = new Move;
-        *op->operation = Move::Instantiate();
+        op->operation = new Move(Move::Instantiate());
     } else if (strcmp(type, "talk") == 0) {
-        op->operation = new Talk;
-        *op->operation = Talk::Instantiate();
+        op->operation = new Talk(Talk::Instantiate());
     } else if (strcmp(type, "touch") == 0) {
-        op->operation = new Touch;
-        *op->operation = Touch::Instantiate();
+        op->operation = new Touch(Touch::Instantiate());
     } else if (strcmp(type, "eat") == 0) {
-        op->operation = new Eat;
-        *op->operation = Eat::Instantiate();
+        op->operation = new Eat(Eat::Instantiate());
     } else if (strcmp(type, "nourish") == 0) {
-        op->operation = new Nourish;
-        *op->operation = Nourish::Instantiate();
+        op->operation = new Nourish(Nourish::Instantiate());
     } else if ((strcmp(type,"thought")==0) || (strcmp(type,"goal_info")==0)) {
         Py_DECREF(op);
         Py_INCREF(Py_None);

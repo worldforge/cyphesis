@@ -26,7 +26,7 @@ class Thing : public Entity {
         return world->message(*op, this);
     }
 
-    virtual void addToObject(Atlas::Message::Object *) const;
+    virtual void addToObject(Atlas::Message::Object &) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Create & op);
     virtual oplist Operation(const Delete & op);

@@ -58,7 +58,7 @@ void Plant::set(const string & aname, const Object & attr)
     }
 }
 
-inline int Plant::dropFruit(oplist & res)
+int Plant::dropFruit(oplist & res)
 {
     if (fruits < 1) { return 0; }
     int drop = min(fruits, randint(minuDrop, maxuDrop));
@@ -72,9 +72,8 @@ inline int Plant::dropFruit(oplist & res)
         fmap["parents"] = Object::ListType(1,fruitName);
         Location floc(location.ref, Vector3D(rx, ry, 0));
         Object fruit(fmap);
-        floc.addToObject(&fruit);
-        RootOperation * create = new Create();
-        *create = Create::Instantiate();
+        floc.addToObject(fruit);
+        RootOperation * create = new Create(Create::Instantiate());
         create->SetArgs(Object::ListType(1, fruit));
         res.push_back(create);
     }
@@ -85,8 +84,7 @@ oplist Plant::Operation(const Tick & op)
 {
     oplist res;
     script->Operation("tick", op, res);
-    RootOperation * tickOp = new Tick();
-    *tickOp = Tick::Instantiate();
+    RootOperation * tickOp = new Tick(Tick::Instantiate());
     tickOp->SetTo(fullid);
     tickOp->SetFutureSeconds(consts::basic_tick * speed);
     res.push_back(tickOp);
@@ -98,8 +96,7 @@ oplist Plant::Operation(const Tick & op)
         }
     }
     if (dropped != 0) {
-        RootOperation * set = new Set();
-        *set = Set::Instantiate();
+        RootOperation * set = new Set(Set::Instantiate());
         Object::MapType pmap;
         pmap["id"] = fullid;
         pmap["fruits"] = fruits;

@@ -46,9 +46,9 @@ Thing::Thing() : perceptive(false)
 
 Thing::~Thing() { }
 
-void Thing::addToObject(Object * obj) const
+void Thing::addToObject(Object & obj) const
 {
-    Object::MapType & omap = obj->AsMap();
+    Object::MapType & omap = obj.AsMap();
     omap["name"] = Object(name);
     omap["type"] = Object(type);
     omap["parents"] = Object(Object::ListType(1,Object(type)));
@@ -63,8 +63,7 @@ oplist Thing::Operation(const Setup & op)
     if (script->Operation("setup", op, res) != 0) {
         return res;
     }
-    RootOperation * tick = new Tick;
-    *tick = Tick::Instantiate();
+    RootOperation * tick = new Tick(Tick::Instantiate());
     tick->SetTo(fullid);
     return oplist(1,tick);
 }
@@ -104,8 +103,7 @@ oplist Thing::Operation(const Create & op)
         Create c(op);
         Object::ListType args2(1,obj->asObject());
         c.SetArgs(args2);
-        RootOperation * s = new Sight();
-        *s = Sight::Instantiate();
+        RootOperation * s = new Sight(Sight::Instantiate());
         Object::ListType args3(1,c.AsObject());
         s->SetArgs(args3);
         return oplist(1,s);
@@ -124,8 +122,7 @@ oplist Thing::Operation(const Delete & op)
         return(res);
     }
     // world->delObject(this);
-    RootOperation * s = new Sight;
-    *s = Sight::Instantiate();
+    RootOperation * s = new Sight(Sight::Instantiate());
     Object::ListType args(1,op.AsObject());
     s->SetArgs(args);
     return oplist(1,s);
@@ -153,13 +150,11 @@ oplist Thing::Operation(const Fire & op)
     nour_ent["id"] = to;
     nour_ent["weight"] = consumed;
 
-    Set * s = new Set();
-    *s = Set::Instantiate();
+    Set * s = new Set(Set::Instantiate());
     s->SetTo(fullid);
     s->SetArgs(Object::ListType(1,self_ent));
 
-    Nourish * n = new Nourish();
-    *n = Nourish::Instantiate();
+    Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
     n->SetArgs(Object::ListType(1,nour_ent));
 
@@ -257,8 +252,7 @@ oplist Thing::Operation(const Move & op)
         } else {
             speed_ratio = location.velocity.mag()/consts::base_velocity;
         }
-        RootOperation * s = new Sight;
-        *s = Sight::Instantiate();
+        RootOperation * s = new Sight(Sight::Instantiate());
         Object::ListType args2(1,op.AsObject());
         s->SetArgs(args2);
         oplist res2(1,s);
@@ -284,8 +278,7 @@ oplist Thing::Operation(const Move & op)
                     if (((Thing*)*I)->perceptive) {
                         // Send operation to the entity in question so it
                         // knows it is losing sight of us.
-                        Disappearance * d = new Disappearance();
-                        *d = Disappearance::Instantiate();
+                        Disappearance * d = new Disappearance(Disappearance::Instantiate());
                         Object::MapType d2ent;
                         d2ent["id"] = fullid;
                         d2ent["seq"] = seq;
@@ -304,8 +297,7 @@ oplist Thing::Operation(const Move & op)
                     if (((Thing*)*I)->perceptive) {
                         // Send operation to the entity in question so it
                         // knows it is gaining sight of us.
-                        Appearance * a = new Appearance();
-                        *a = Appearance::Instantiate();
+                        Appearance * a = new Appearance(Appearance::Instantiate());
                         Object::MapType a2ent;
                         a2ent["id"] = fullid;
                         a2ent["seq"] = seq;
@@ -318,8 +310,7 @@ oplist Thing::Operation(const Move & op)
             if (disappear.size() != 0) {
                 // Send an operation to ourselves with a list of entities
                 // we are losing sight of
-                Appearance * a = new Appearance();
-                *a = Appearance::Instantiate();
+                Appearance * a = new Appearance(Appearance::Instantiate());
                 a->SetArgs(appear);
                 a->SetTo(fullid);
                 res2.push_back(a);
@@ -327,8 +318,7 @@ oplist Thing::Operation(const Move & op)
             if (appear.size() != 0) {
                 // Send an operation to ourselves with a list of entities
                 // we are gaining sight of
-                Disappearance * d = new Disappearance();
-                *d = Disappearance::Instantiate();
+                Disappearance * d = new Disappearance(Disappearance::Instantiate());
                 d->SetArgs(disappear);
                 d->SetTo(fullid);
                 res2.push_back(d);
@@ -369,14 +359,12 @@ oplist Thing::Operation(const Set & op)
                 attributes[I->first] = I->second;
             }
         }
-        RootOperation * s = new Sight();
-        *s = Sight::Instantiate();
+        RootOperation * s = new Sight(Sight::Instantiate());
         Object::ListType args2(1,op.AsObject());
         s->SetArgs(args2);
         oplist res2(1,s);
         if (status < 0) {
-            RootOperation * d = new Delete();
-            *d = Delete::Instantiate();
+            RootOperation * d = new Delete(Delete::Instantiate());
             Object::ListType args3(1,this->asObject());
             d->SetArgs(args3);
             d->SetTo(fullid);

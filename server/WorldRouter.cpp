@@ -115,8 +115,7 @@ Thing * WorldRouter::addObject(Thing * obj)
     if (obj->omnipresent) {
         omnipresentList.push_back(obj);
     }
-    Setup * s = new Setup();
-    *s = Setup::Instantiate();
+    Setup * s = new Setup(Setup::Instantiate());
     s->SetTo(obj->fullid);
     s->SetFutureSeconds(-0.1);
     addOperationToQueue(*s, this);
@@ -178,7 +177,7 @@ oplist WorldRouter::operation(const RootOperation * op)
     const RootOperation & op_ref = *op;
     string to = op_ref.GetTo();
     debug(cout << "WorldRouter::operation {" << to << "}" << endl << flush;);
-    op_no_t op_type = opEnumerate(op);
+    op_no_t op_type = opEnumerate(*op);
 
     debug(cout << 0 << flush;);
     if ((to.size() != 0) && (to!="all")) {
@@ -187,8 +186,8 @@ oplist WorldRouter::operation(const RootOperation * op)
                  << endl << flush;
             return oplist();
         }
-        BaseEntity * toEntity = objects[to];
-        if (toEntity == NULL) {
+        BaseEntity * to_entity = objects[to];
+        if (to_entity == NULL) {
             cerr << "CRITICAL: Op to=\"" << to << "\"" << " is NULL"
                  << endl << flush;
             return oplist();
@@ -198,17 +197,17 @@ oplist WorldRouter::operation(const RootOperation * op)
             if (to == fullid) {
                 res = ((BaseEntity *)this)->Operation((Look &)op_ref);
             } else {
-                res = toEntity->operation(op_ref);
+                res = to_entity->operation(op_ref);
             }
             for(oplist::const_iterator I = res.begin(); I != res.end(); I++) {
-                message(**I, toEntity);
+                message(**I, to_entity);
             }
             if (op_type == OP_DELETE) {
-                delObject(toEntity);
-                toEntity->destroy();
-                toEntity->deleted = true;
-                delete toEntity;
-                toEntity = NULL;
+                delObject(to_entity);
+                to_entity->destroy();
+                to_entity->deleted = true;
+                delete to_entity;
+                to_entity = NULL;
             }
         }
     } else {
@@ -253,8 +252,7 @@ oplist WorldRouter::Operation(const Look & op)
         perceptives.push_back(objects[from]);
         perceptives.unique();
         if (consts::enable_ranges) {
-            Sight * s = new Sight();
-            *s = Sight::Instantiate();
+            Sight * s = new Sight(Sight::Instantiate());
 
             Object::MapType omap;
             omap["id"] = fullid;

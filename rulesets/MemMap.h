@@ -18,7 +18,7 @@ class MemMap {
     std::list<string> additionsById;
     Script *& script;
 
-    Entity * addToObject(Entity * object);
+    Entity * addObject(Entity * object);
   public:
     MemMap(Script *& s) : script(s)  { }
 

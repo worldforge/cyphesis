@@ -143,28 +143,27 @@ class Vector3D {
         y = sin(angle) * x + cos(angle) * y;
     }
 
+    double mag() const {
+        //"Find the magnitude of a vector";
+        return sqrt(x*x + y*y + z*z);
+    }
+
     double angle(const Vector3D & v) const {
         //"Find the angle between two vectors";
         double d = v.x * x + v.y * y + v.z * z;
         return d / (v.mag() * mag());
     }
 
-    double mag() const {
-        //"Find the magnitude of a vector";
-        return sqrt(x*x + y*y + z*z);
-    }
-
-
-    Vector3D unit_vector() const {
+    Vector3D unitVector() const {
         //"return the unit vector of a vector";
 	// This is could throw a wobbly
 	return operator/(mag());
     }
 
-    Vector3D unit_vector_to_another_vector(const Vector3D & v) const {
+    Vector3D unitVectorTo(const Vector3D & v) const {
         // return the unit vector in the direction of another vector;
         Vector3D difference_vector = v - (*this);
-        return difference_vector.unit_vector();
+        return difference_vector.unitVector();
     }
 
     double distance(const Vector3D & v) const {
