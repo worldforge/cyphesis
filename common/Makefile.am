@@ -24,4 +24,4 @@ libcommon_a_SOURCES = const.cpp const.h \
 		BaseWorld.cpp BaseWorld.h \
 		Burn.h Chop.h Cut.h Eat.h \
 		Nourish.h Setup.h Tick.h Generic.h \
-		Use.h Wield.h
+		Unseen.h Use.h Wield.h

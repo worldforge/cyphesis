@@ -4,16 +4,17 @@
 
 #include "inheritance_impl.h"
 
+#include "Burn.h"
 #include "Chop.h"
 #include "Cut.h"
 #include "Eat.h"
-#include "Burn.h"
-#include "Generic.h"
 #include "Nourish.h"
 #include "Setup.h"
 #include "Tick.h"
 #include "Use.h"
 #include "Wield.h"
+
+#include "Generic.h"
 
 #include <Atlas/Objects/Entity/AdminEntity.h>
 

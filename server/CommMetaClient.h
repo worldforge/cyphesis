@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2002 Alistair Riddoch
+// Copyright (C) 2002-2004 Alistair Riddoch
 
 #ifndef SERVER_COMM_META_CLIENT_H
 #define SERVER_COMM_META_CLIENT_H

@@ -28,12 +28,10 @@ cyphesis_SOURCES = \
 		CommListener.cpp CommListener.h \
 		CommPeerListener.cpp CommPeerListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
-		CommSlaveListener.cpp CommSlaveListener.h \
 		CommClient.cpp CommClient.h \
 		CommLocalClient.cpp CommLocalClient.h \
 		CommRemoteClient.cpp CommRemoteClient.h \
 		CommPeer.cpp CommPeer.h \
-		CommSlaveClient.cpp CommSlaveClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
@@ -72,19 +70,13 @@ cyslave_SOURCES = \
 		Master.cpp Master.h \
 		Idle.cpp Idle.h \
 		CommSocket.cpp CommSocket.h \
-		CommPSQLSocket.cpp CommPSQLSocket.h \
-		CommListener.cpp CommListener.h \
-		CommPeerListener.cpp CommPeerListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
 		CommSlaveListener.cpp CommSlaveListener.h \
 		CommClient.cpp CommClient.h \
-		CommLocalClient.cpp CommLocalClient.h \
-		CommRemoteClient.cpp CommRemoteClient.h \
 		CommPeer.cpp CommPeer.h \
 		CommMaster.cpp CommMaster.h \
+		CommLocalClient.cpp CommLocalClient.h \
 		CommSlaveClient.cpp CommSlaveClient.h \
-		CommMetaClient.cpp CommMetaClient.h \
-		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
 		protocol_instructions.h \
 		slave.cpp

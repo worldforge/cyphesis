@@ -1,5 +1,15 @@
 2004-12-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/custom.cpp: Include cleanup.
+
+	* server/CommClient.h, server/CommListener.h, server/CommLocalClient.h,
+	  server/CommMetaClient.h, server/CommPSQLSocket.h,
+	  server/CommRemoteClient.h, server/CommSlaveClient.h,
+	  server/CommSocket.h, server/CommUnixListener.h:
+	  Update copyright dates and class descriptions.
+
+2004-12-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommMaster.cpp, server/CommMaster.h, server/Master.cpp,
 	  server/Master.h: Handlers for a connection to a master server.
 
