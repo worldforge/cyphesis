@@ -1,5 +1,14 @@
 2005-04-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Makefile.am: Update to ensure tests are compatible with
+	  binreloc code.
+
+	* autogen.sh: Disable binreloc when doing development builds.
+
+	* configure.ac, NEWS: Increment version number for upcoming release.
+
+2005-04-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.h: Add a pointer to a Motion object to entities.
 
 	* rulesets/Thing.cpp: Add notes about Motion implementation.

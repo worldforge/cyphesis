@@ -23,6 +23,7 @@ check_PROGRAMS = $(TESTS)
 logtest_SOURCES = logtest.cpp
 logtest_LDADD = $(top_builddir)/modules/DateTime.o \
                 $(top_builddir)/common/log.o \
+                $(top_builddir)/common/prefix.o \
                 $(top_builddir)/common/globals.o
 
 inheritancetest_SOURCES = inheritancetest.cpp
@@ -31,6 +32,7 @@ inheritancetest_LDADD = $(top_builddir)/modules/DateTime.o \
                         $(top_builddir)/common/custom.o \
                         $(top_builddir)/common/operations.o \
                         $(top_builddir)/common/log.o \
+                        $(top_builddir)/common/prefix.o \
                         $(top_builddir)/common/globals.o
 
 Propertytest_SOURCES = Propertytest.cpp
@@ -43,6 +45,7 @@ BaseEntitytest_LDADD = $(top_builddir)/modules/DateTime.o \
                        $(top_builddir)/common/inheritance.o \
                        $(top_builddir)/common/custom.o \
                        $(top_builddir)/common/log.o \
+                       $(top_builddir)/common/prefix.o \
                        $(top_builddir)/common/globals.o \
                        $(top_builddir)/common/serialno.o
 
@@ -54,6 +57,7 @@ OOGThingtest_LDADD = $(top_builddir)/modules/DateTime.o \
                      $(top_builddir)/common/custom.o \
                      $(top_builddir)/common/operations.o \
                      $(top_builddir)/common/log.o \
+                     $(top_builddir)/common/prefix.o \
                      $(top_builddir)/common/globals.o \
                      $(top_builddir)/common/serialno.o
 
@@ -61,6 +65,7 @@ systemtest_SOURCES = systemtest.cpp
 systemtest_LDADD = $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/common/system.o \
                    $(top_builddir)/common/log.o \
+                   $(top_builddir)/common/prefix.o \
                    $(top_builddir)/common/globals.o
 
 utilitytest_SOURCES = utilitytest.cpp
@@ -82,6 +87,7 @@ collisiontest_LDADD = $(top_builddir)/physics/Collision.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/const.o \
+                      $(top_builddir)/common/prefix.o \
                       $(top_builddir)/common/globals.o
 
 emergencetest_SOURCES = emergencetest.cpp
@@ -91,6 +97,7 @@ emergencetest_LDADD = $(top_builddir)/physics/Collision.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/const.o \
+                      $(top_builddir)/common/prefix.o \
                       $(top_builddir)/common/globals.o
 
 transformtest_SOURCES = transformtest.cpp
@@ -106,6 +113,7 @@ distancetest_LDADD = $(top_builddir)/rulesets/Entity.o \
                      $(top_builddir)/common/operations.o \
                      $(top_builddir)/common/serialno.o \
                      $(top_builddir)/common/log.o \
+                     $(top_builddir)/common/prefix.o \
                      $(top_builddir)/common/globals.o \
                      $(top_builddir)/common/Property.o \
                      $(top_builddir)/common/BaseEntity.o
@@ -121,6 +129,7 @@ Locationtest_LDADD = $(top_builddir)/modules/Location.o \
                      $(top_builddir)/common/inheritance.o \
                      $(top_builddir)/common/BaseEntity.o \
                      $(top_builddir)/common/log.o \
+                     $(top_builddir)/common/prefix.o \
                      $(top_builddir)/common/globals.o \
                      $(top_builddir)/common/serialno.o \
                      $(top_builddir)/common/custom.o \
@@ -143,6 +152,7 @@ Entitytest_LDADD = $(top_builddir)/modules/Location.o \
                    $(top_builddir)/common/Property.o \
                    $(top_builddir)/common/BaseEntity.o \
                    $(top_builddir)/common/log.o \
+                   $(top_builddir)/common/prefix.o \
                    $(top_builddir)/common/globals.o \
                    $(top_builddir)/common/serialno.o \
                    $(top_builddir)/common/custom.o \
@@ -162,6 +172,7 @@ Areatest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
                  $(top_builddir)/common/log.o \
+                 $(top_builddir)/common/prefix.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/serialno.o \
                  $(top_builddir)/common/custom.o \
@@ -182,6 +193,7 @@ Foodtest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
                  $(top_builddir)/common/log.o \
+                 $(top_builddir)/common/prefix.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/serialno.o \
                  $(top_builddir)/common/custom.o \
@@ -203,6 +215,7 @@ Linetest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
                  $(top_builddir)/common/log.o \
+                 $(top_builddir)/common/prefix.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/serialno.o \
                  $(top_builddir)/common/custom.o \
@@ -223,6 +236,7 @@ Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/common/Property.o \
                   $(top_builddir)/common/BaseEntity.o \
                   $(top_builddir)/common/log.o \
+                  $(top_builddir)/common/prefix.o \
                   $(top_builddir)/common/globals.o \
                   $(top_builddir)/common/serialno.o \
                   $(top_builddir)/common/custom.o \
@@ -243,6 +257,7 @@ Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/common/Property.o \
                       $(top_builddir)/common/BaseEntity.o \
                       $(top_builddir)/common/log.o \
+                      $(top_builddir)/common/prefix.o \
                       $(top_builddir)/common/globals.o \
                       $(top_builddir)/common/serialno.o \
                       $(top_builddir)/common/custom.o \
@@ -263,6 +278,7 @@ Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/common/Property.o \
                       $(top_builddir)/common/BaseEntity.o \
                       $(top_builddir)/common/log.o \
+                      $(top_builddir)/common/prefix.o \
                       $(top_builddir)/common/globals.o \
                       $(top_builddir)/common/serialno.o \
                       $(top_builddir)/common/custom.o \
@@ -282,6 +298,7 @@ Thingtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/common/Property.o \
                   $(top_builddir)/common/BaseEntity.o \
                   $(top_builddir)/common/log.o \
+                  $(top_builddir)/common/prefix.o \
                   $(top_builddir)/common/globals.o \
                   $(top_builddir)/common/serialno.o \
                   $(top_builddir)/common/custom.o \
@@ -303,6 +320,7 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/common/Property.o \
                   $(top_builddir)/common/BaseEntity.o \
                   $(top_builddir)/common/log.o \
+                  $(top_builddir)/common/prefix.o \
                   $(top_builddir)/common/globals.o \
                   $(top_builddir)/common/serialno.o \
                   $(top_builddir)/common/custom.o \
@@ -322,6 +340,7 @@ Charactertest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                       $(top_builddir)/common/Property.o \
                       $(top_builddir)/common/BaseEntity.o \
                       $(top_builddir)/common/log.o \
+                      $(top_builddir)/common/prefix.o \
                       $(top_builddir)/common/globals.o \
                       $(top_builddir)/common/serialno.o \
                       $(top_builddir)/common/custom.o \
@@ -343,6 +362,7 @@ Creatortest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                     $(top_builddir)/common/Property.o \
                     $(top_builddir)/common/BaseEntity.o \
                     $(top_builddir)/common/log.o \
+                    $(top_builddir)/common/prefix.o \
                     $(top_builddir)/common/globals.o \
                     $(top_builddir)/common/serialno.o \
                     $(top_builddir)/common/custom.o \
@@ -367,6 +387,7 @@ Tasktest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
                  $(top_builddir)/common/log.o \
+                 $(top_builddir)/common/prefix.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/serialno.o \
                  $(top_builddir)/common/custom.o \

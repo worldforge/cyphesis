@@ -41,7 +41,7 @@ echo autoconf...
 autoconf
 
 if test "x$NOCONFIGURE" = "x" ; then
-    CONFIGUREFLAGS="--prefix=/opt/worldforge --enable-debug=yes $@"
+    CONFIGUREFLAGS="--prefix=/opt/worldforge --enable-debug=yes --enable-binreloc=no $@"
     echo Running: configure $CONFIGUREFLAGS
     ./configure $CONFIGUREFLAGS
 fi

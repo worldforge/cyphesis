@@ -1,6 +1,6 @@
 dnl Initialise autoconf
 
-AC_INIT(cyphesis, 0.3.8)
+AC_INIT(cyphesis, 0.3.9)
 AC_CONFIG_SRCDIR([server/server.cpp])
 
 dnl Detect the canonical host and target environment
