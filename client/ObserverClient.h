@@ -5,7 +5,7 @@
 #ifndef CLIENT_OBSERVER_CLIENT_H
 #define CLIENT_OBSERVER_CLIENT_H
 
-#include "CommClient.h"
+#include "BaseClient.h"
 #include "ClientConnection.h"
 
 class ObserverClient : public BaseClient {

@@ -1,3 +1,10 @@
+2004-09-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/BaseClient.cpp, client/BaseClient.h: Rename files for
+	  already renamed CommClient class, to avoid name conflict.
+
+	* client/ObserverClient.h: Update for new header name.
+
 2004-09-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp, common/terrain_utils.cpp: Disable debugging

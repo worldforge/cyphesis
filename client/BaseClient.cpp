@@ -2,7 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include "CommClient.h"
+#include "BaseClient.h"
 
 #include "CreatorClient.h"
 
