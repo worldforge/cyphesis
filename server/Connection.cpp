@@ -372,7 +372,10 @@ OpVector Connection::GetOperation(const Get & op)
         debug(std::cout << "Get got for " << id << std::endl << std::flush;);
         Atlas::Objects::Root * o = Inheritance::instance().get(id);
         if (o == NULL) {
-            return error(op, "Unknown type definition requested");
+            std::string msg("Unknown type definition for \"");
+            msg += id;
+            msg += "\" requested";
+            return error(op, msg.c_str());
         }
         info = new Info(Info::Instantiate());
         Element::ListType & iargs = info->getArgs();

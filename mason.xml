@@ -377,5 +377,11 @@
     <map name="attributes">
     </map>
   </map>
+
+  <map name="boat">
+    <string name="parent">thing</string>
+    <map name="attributes">
+    </map>
+  </map>
 </map>
 </atlas>

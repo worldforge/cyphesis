@@ -1,5 +1,16 @@
 2004-01-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Connection.cpp, server/Admin.cpp: Improve some important
+	  error messages to include more context.
+
+	* rulesets/World.cpp: Tweak default landscape so it has some
+	  water for testing boats.
+
+	* Add boat type to ruleset, and an instance to the define_world
+	  script.
+
+2004-01-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Fix logic error in direction
 	  processing code.
 

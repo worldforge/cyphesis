@@ -117,7 +117,10 @@ OpVector Admin::GetOperation(const Get & op)
             K->second->addToObject(info_args.front().asMap());
         } else {
             delete info;
-            return error(op, "Get id not found");
+            std::string msg("Unknown object id \"");
+            msg += id;
+            msg += "\" requested";
+            return error(op, msg.c_str());
         }
     } else if ((objtype == "class") ||
                (objtype == "meta") ||
@@ -125,13 +128,21 @@ OpVector Admin::GetOperation(const Get & op)
         Atlas::Objects::Root * o = Inheritance::instance().get(id);
         if (o == NULL) {
             delete info;
-            return error(op, "Unknown type definition requested");
+            std::string msg("Unknown type definition for \"");
+            msg += id;
+            msg += "\" requested";
+            return error(op, msg.c_str());
         }
         Element::ListType & iargs = info->getArgs();
         iargs.push_back(o->asObject());
     } else {
         delete info;
-        return error(op, "Unknow object type requested");
+        std::string msg("Unknown object type \"");
+        msg += objtype;
+        msg += "\" requested for \"";
+        msg += id;
+        msg += "\"";
+        return error(op, msg.c_str());
     }
     info->setRefno(op.getSerialno());
     info->setSerialno(m_connection->m_server.getSerialNo());
