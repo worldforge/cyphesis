@@ -31,7 +31,7 @@ Mason game. Use this package if you intend to run an Mason server.
 [BuildPrepare]
 export CC=gcc
 export CXX=g++
-prepareBuild --enable-static
+prepareBuild --enable-static-link
 
 [BuildUnprepare]
 unprepareBuild
@@ -42,6 +42,7 @@ echo '*' | import
 [Prepare]
 # Dependency checking
 # require @whatever.you/need 1.0
+require @python.org/python @PYTHON_VERSION@
 
 [Install]
 # Put your installation script here

@@ -91,39 +91,40 @@ dnl
 AC_CHECK_HEADER(python2.4/Python.h,
 [
     python_include_path=-I${python_prefix}/include/python2.4
-    python_version=python2.4
+    python_version=2.4
 ],[
     AC_CHECK_HEADER(python2.3/Python.h,
     [
         python_include_path=-I${python_prefix}/include/python2.3
-        python_version=python2.3
+        python_version=2.3
     ],[
         AC_CHECK_HEADER(python2.2/Python.h,
         [
             python_include_path=-I${python_prefix}/include/python2.2
-            python_version=python2.2
+            python_version=2.2
         ],[
             AC_MSG_WARN([Cannot find Python 2.2 or later. Checking for older versions which may not support cyphesis fully.])
             AC_CHECK_HEADER(python2.1/Python.h,
             [
                 python_include_path=-I${python_prefix}/include/python2.1
-                python_version=python2.1
+                python_version=2.1
             ],[
                 AC_CHECK_HEADER(python2.0/Python.h,
                 [
                     python_include_path=-I${python_prefix}/include/python2.0
-                    python_version=python2.0
+                    python_version=2.0
                 ],AC_MSG_ERROR([Cannot find python headers. Please install Python. If Python is installed somewhere other than in /usr the please use the --with-python=DIR option to point to the prefix where Python is installed.]))
             ])
         ])
     ])
 ])
 
+PYTHON_VERSION=${python_version}
 PYTHON_INCLUDES=${python_include_path}
 CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
 
 dnl build the library path from the found version
-python_lib_path=${python_prefix}/lib/${python_version}/config
+python_lib_path=${python_prefix}/lib/python${python_version}/config
 
 PYTHON_UTIL_LIBS=
 
@@ -151,10 +152,10 @@ AC_CHECK_FUNC(pthread_mutex_trylock, ,
     ])
 ])
 
-AC_CHECK_LIB(${python_version}, 
+AC_CHECK_LIB(python${python_version}, 
     Py_Initialize,
     [
-        python_libs="-L${python_lib_path} -l${python_version}"
+        python_libs="-L${python_lib_path} -lpython${python_version}"
     ],AC_MSG_ERROR([Cannot find python libraries. Do you have python development installed?]),
     [-L${python_lib_path} ${PYTHON_UTIL_LIBS}]
 )
@@ -169,6 +170,12 @@ AC_CHECK_LIB(crypto, MD5,
     [
         AC_MSG_ERROR([Cannot find a way of encrypting passwords. Please install the openssl development libraries.])
     ])
+
+dnl PKG_CHECK_MODULES(MONO, mono,
+dnl     [
+dnl         CPPFLAGS="$CPPFLAGS $MONO_CFLAGS"
+dnl         COMMON_LIBS="$COMMON_LIBS $MONO_LIBS"
+dnl     ])
 
 PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.94 skstream-0.3 >= 0.3.3 varconf-1.0 >= 0.6.2 mercator-0.2,
     [
@@ -242,6 +249,7 @@ AC_TRY_COMPILE(
 AC_SUBST(VARCONF_LIBS)
 AC_SUBST(READLINE_LIBS)
 AC_SUBST(COMMON_LIBS)
+AC_SUBST(PYTHON_VERSION)
 AC_SUBST(PYTHON_LIBS)
 AC_SUBST(PYTHON_UTIL_LIBS)
 AC_SUBST(PGSQL_LIBS)
