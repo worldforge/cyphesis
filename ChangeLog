@@ -1,3 +1,8 @@
+2003-10-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/collisiontest.cpp: Add mesh collision function test,
+	  and find that it doesn't work.
+
 2003-10-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* physics/Collision.h, physics/Collision.cpp: Fix mesh collision
