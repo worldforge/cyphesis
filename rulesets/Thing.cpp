@@ -27,7 +27,7 @@ Thing::Thing() : script_object(NULL), status(1), is_character(0), type("thing")
     attributes["age"] = 0;
     attributes["mode"] = Message::Object("birth");
     attributes["weight"] = (double)-1;
-    attributes["description"] = Message::Object("Some Thing");
+    // attributes["description"] = Message::Object("Some Thing");
 }
 
 int Thing::script_Operation(const string & op_type, const RootOperation & op,

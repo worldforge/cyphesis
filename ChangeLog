@@ -1,5 +1,9 @@
 2001-01-23  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* rulesets/Thing.cpp: Removed default description.
+
+2001-01-23  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* configure.in: Re-ordered lib checks so that python gets libdl
 	  and pthread.
 
