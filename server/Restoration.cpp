@@ -52,12 +52,14 @@ void Restoration::restore(const std::string & id,
         return;
     }
     if (res.empty()) {
+        res.clear();
         log(ERROR, "Missing id in database");
         debug(std::cout << "DEBUG: ERROR: No " << id << " in database"
                         << std::endl << std::flush;);
         return;
     }
     if (res.size() > 1) {
+        res.clear();
         log(ERROR, "Duplicate id in database");
         debug(std::cout << "DEBUG: ERROR: " << res.size() << " of " << id
                         << " in database" << std::endl << std::flush;);
@@ -88,6 +90,7 @@ void Restoration::restore(const std::string & id,
             server.m_world.addObject(ent, false);
         }
     }
+    res.clear();
     DatabaseResult res2 = database.selectClassByLoc(id);
     if (res2.error()) {
         debug(std::cout << "DEBUG: Problem getting " << id
@@ -96,6 +99,7 @@ void Restoration::restore(const std::string & id,
         return;
     }
     if (res2.empty()) {
+        res2.clear();
         debug(std::cout << "DEBUG: No " << id << " children in database"
                         << std::endl << std::flush;);
         return;
@@ -116,6 +120,7 @@ void Restoration::restore(const std::string & id,
         restore(child_id, child_class, ent);
 
     }
+    res2.clear();
 }
 
 void Restoration::restoreChildren(Entity * loc)
@@ -129,6 +134,7 @@ void Restoration::restoreChildren(Entity * loc)
         return;
     }
     if (res.empty()) {
+        res.clear();
         debug(std::cout << "DEBUG: No " << parent << " children in database"
                         << std::endl << std::flush;);
         return;
@@ -151,6 +157,7 @@ void Restoration::restoreChildren(Entity * loc)
                         << " with class " << child_class
                         << std::endl << std::flush;);
     }
+    res.clear();
     std::list<Entity *> children;
     std::set<std::string>::const_iterator J = classes.begin();
     for(; J != classes.end(); ++J) {
@@ -169,6 +176,7 @@ void Restoration::restoreChildren(Entity * loc)
             return;
         }
         if (res.empty()) {
+            res.clear();
             debug(std::cout << "DEBUG: No " << parent << " children in database"
                             << std::endl << std::flush;);
             continue;
@@ -189,7 +197,7 @@ void Restoration::restoreChildren(Entity * loc)
                 }
             }
         }
-
+        res.clear();
     }
     std::list<Entity *>::const_iterator L = children.begin();
     for(; L != children.end(); ++L) {
@@ -207,6 +215,7 @@ void Restoration::read()
         return;
     }
     if (res.empty()) {
+        res.clear();
         debug(std::cout << "DEBUG: No world in database"
                         << std::endl << std::flush;);
         database.clearTable("entity_ent");
@@ -215,6 +224,7 @@ void Restoration::read()
         return;
     }
     if (res.size() > 1) {
+        res.clear();
         debug(std::cout << "DEBUG: More than one root entity in database"
                         << std::endl << std::flush;);
         database.clearTable("entity_ent");
@@ -223,6 +233,7 @@ void Restoration::read()
     std::string rootId = res.field("id");
     std::string rootClass = res.field("class");
     if (rootId.empty() || rootClass.empty()) {
+        res.clear();
         debug(std::cout << "DEBUG: Stuff empty" << std::endl << std::flush;);
         return;
     }
@@ -235,6 +246,7 @@ void Restoration::read()
     DatabaseResult::const_iterator I = res.begin();
     Restorer<World> & world = (Restorer<World> &)server.m_world.m_gameWorld;
     world.populate(I);
+    res.clear();
     restoreChildren(&server.m_world.m_gameWorld);
 #endif
 }

@@ -88,6 +88,7 @@ bool CommMetaClient::setup(const std::string & mserver)
 
     metaFd = ::socket(ans->ai_family, ans->ai_socktype, ans->ai_protocol);
     if (metaFd < 0) {
+        ::freeaddrinfo(ans);
         log(WARNING, "Could not get metaserver socket. Disabling metaserver");
         perror("socket");
         return false;

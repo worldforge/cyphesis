@@ -1,5 +1,13 @@
 2003-07-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Persistance.cpp, server/Restoration.cpp: Use DatabaseResult
+	  clear() method to free result objects.
+
+	* server/CommMetaClient.cpp: Free address info in the event of a socket
+	  failure.
+
+2003-07-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.h, server/Account.cpp, server/Account.h,
 	  server/Admin.h, server/Connection.cpp, server/Player.h,
 	  server/WorldRouter.cpp: Change the form of the getEntityId()

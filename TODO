@@ -1,3 +1,9 @@
+Check if "common" module reference in init_python_api() should be decrefed,
+and also any others.
+
+Still plenty of python object leaks. Need to carefully see if references are being
+handled right in the mind code.
+
 Test and commit memory leak database fixes, and backport them to the stable
 version.
 
