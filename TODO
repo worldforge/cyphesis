@@ -1,3 +1,5 @@
+Sort out trees thrashing database.
+
 Make sure that terrain modified points does not contain any points still
 listed as created points.
 

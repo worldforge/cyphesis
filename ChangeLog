@@ -1,5 +1,10 @@
 2004-09-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Fix some typos that messed up
+	  terrain, and put a mercenary in the wrong place.
+
+2004-09-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp: Replace check for NULL factory pointer
 	  in installFactory() with an assert, as NULL should never occur.
 

@@ -266,7 +266,7 @@ def default(mapeditor):
     # Warriors - the more adventurous types
 
     warriors=[]
-    warrior=m.make('Vonaa Barile',type='mercenary',xyz=(uniform(12,20),uniform(812,20),settlement_height),sex='female',orientation=directions[randint(0,7)])
+    warrior=m.make('Vonaa Barile',type='mercenary',xyz=(uniform(12,20),uniform(12,20),settlement_height),sex='female',orientation=directions[randint(0,7)])
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     warriors.append(warrior)
@@ -379,7 +379,7 @@ def modify_terrain(mapeditor):
     points = { }
     for i in range(-5, 6):
         for j in range(-5, 6):
-            if i==5 or i==5:
+            if i==5 or j==5:
                 points['%ix%i'%(i,j)] = [i, j, uniform(100, 150)]
             elif i==-5 or j == -5:
                 points['%ix%i'%(i,j)] = [i, j, uniform(-30, -10)]
