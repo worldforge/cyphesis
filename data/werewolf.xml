@@ -1,0 +1,62 @@
+<atlas>
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>0.4</float>
+          <float>0.4</float>
+          <float>4</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">gallows</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.tools.Gallows</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">hangman</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.characters.Hangman</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">mayor</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.characters.Mayor</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">villager</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.characters.Villager</string>
+    </map>
+  </map>
+
+</atlas>

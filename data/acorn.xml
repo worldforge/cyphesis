@@ -1,0 +1,1282 @@
+<atlas>
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">0.05</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">acorn</string>
+    <list name="parents">
+      <string>food</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.seeds.Acorn</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="alcahol">
+        <float name="default">0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.2</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">apple</string>
+    <list name="parents">
+      <string>food</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.seeds.Apple</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.4</float>
+          <float>-0.4</float>
+          <float>0</float>
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">appletree</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.AppleTree</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">arm</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.undead.Arm</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">cleaver</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.tools.Cleaver</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">20</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">crab</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.animals.Crab</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">100</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">deer</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.animals.Deer</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>15.5</float>
+          <float>15.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">farmhouse_deco_1</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.FarmHouse1</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-4</float>
+          <float>-3</float>
+          <float>0</float>
+          <float>10</float>
+          <float>7</float>
+          <float>10</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">farmhouse_deco_2</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.FarmHouse2</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>1</float>
+          <float>-1</float>
+          <float>0</float>
+          <float>11</float>
+          <float>13</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">farmhouse_deco_3</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.FarmHouse3</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>0.5</float>
+          <float>0</float>
+          <float>9.5</float>
+          <float>8.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">house_deco_1</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.House1</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>2</float>
+          <float>-2</float>
+          <float>0</float>
+          <float>10</float>
+          <float>14</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">house_deco_2</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.House2</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>7.5</float>
+          <float>7.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">house_deco_3</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.House3</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>7.5</float>
+          <float>7.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">house_deco_4</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.House4</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>0.5</float>
+          <float>0.5</float>
+          <float>0</float>
+          <float>11.5</float>
+          <float>11.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">house_deco_5</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.House5</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">lych</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.undead.Lych</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>2</float>
+          <float>-2</float>
+          <float>0</float>
+          <float>10</float>
+          <float>14</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mansion_grey_deco_1_sw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Mansion</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>2.5</float>
+          <float>1.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_bakery_2_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>2.5</float>
+          <float>1.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_beer_1_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>1.5</float>
+          <float>2.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_blacksmith_1_sw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-1</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>2</float>
+          <float>1.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_blue_1_us</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>1.5</float>
+          <float>2.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_books_2_sw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>2.5</float>
+          <float>1.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_cheese_2_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>2.5</float>
+          <float>1.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_fish_1_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>2.5</float>
+          <float>1.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_freshmeat_1_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>2.5</float>
+          <float>1.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_fruits_2_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>1.5</float>
+          <float>2.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_healer_1_sw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>1.5</float>
+          <float>2.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_household_1_sw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>1.5</float>
+          <float>2.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_jewels_1_sw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>1.5</float>
+          <float>2.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_magic_items_1_sw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>2.5</float>
+          <float>1.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_milk_2_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>1.5</float>
+          <float>2.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_seamstress_1_sw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>2.5</float>
+          <float>1.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_vegetables_1_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>2.5</float>
+          <float>1.5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mstall_wine_1_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Stall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>1</float>
+          <float>1</float>
+          <float>6</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">oak</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.Oak</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">pelvis</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.undead.Pelvis</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">pig</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.animals.Pig</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">ribcage</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.undead.Ribcage</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>0</float>
+          <float>0</float>
+          <float>15.5</float>
+          <float>8</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">ruin_deco_1_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name"></string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">0.05</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">seed</string>
+    <list name="parents">
+      <string>food</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.seeds.Seed</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>7.5</float>
+          <float>7.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">shack_deco_1</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Shack</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">shin</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.undead.Shin</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>1.5</float>
+          <float>-1.5</float>
+          <float>0</float>
+          <float>11.5</float>
+          <float>14.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">shop_farmstand_deco_agril_1_sesw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.FarmStand</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>10.5</float>
+          <float>13.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">shop_fishshop_deco_agril_1_sesw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.FishShop</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>0.5</float>
+          <float>-1.5</float>
+          <float>0</float>
+          <float>11.5</float>
+          <float>12.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">shop_itemshop_deco_agril_1_sesw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.ItemShop</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>9.5</float>
+          <float>9.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">shop_metalshop_deco_agril_1_sesw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.MetalShop</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>0.5</float>
+          <float>0</float>
+          <float>9.5</float>
+          <float>8.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">shop_vacant_deco_1_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.VacantShop1e</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>8.5</float>
+          <float>11.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">shop_vacant_deco_1_sw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.VacantShop1w</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>0.5</float>
+          <float>0</float>
+          <float>9.5</float>
+          <float>8.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">shop_vacant_deco_2_se</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.VacantShop2</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">skeleton</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.undead.Skeleton</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">skull</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.undead.Skull</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">squirrel</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.animals.Squirrel</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>4.5</float>
+          <float>4.5</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">tent_1_brown_s</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name"></string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">thigh</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.undead.Thigh</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>1</float>
+          <float>1</float>
+          <float>6</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="height">
+        <float name="default">10</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">tree</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.Tree</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">weather</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.Weather</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">20</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">wolf</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.animals.Wolf</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-1</float>
+          <float>1</float>
+          <float>0</float>
+          <float>13</float>
+          <float>17</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">yetown_inn_deco_agril_1_sw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Inn1</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>2</float>
+          <float>-2</float>
+          <float>0</float>
+          <float>14</float>
+          <float>14</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">yetown_inn_deco_agril_2_sw</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.Inn2</string>
+    </map>
+  </map>
+
+</atlas>

@@ -30,7 +30,6 @@ Database::Database() : m_rule_db("rules"),
                        m_queryInProgress(false),
                        m_connection(NULL)
 {
-    
 }
 
 bool Database::tuplesOk()
@@ -55,6 +54,8 @@ bool Database::commandOk()
     while ((res = PQgetResult(m_connection)) != NULL) {
         if (PQresultStatus(res) == PGRES_COMMAND_OK) {
             status = true;
+        } else {
+            reportError();
         }
         PQclear(res);
     };
@@ -117,12 +118,12 @@ bool Database::initRule(bool createTables)
         reportError();
         return false;
     }
-    
+
     if (!tuplesOk()) {
         debug(std::cout << "Rule table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(80) PRIMARY KEY, contents text );");
+            status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(80) PRIMARY KEY, ruleset varchar(32), contents text );");
             if (!status) {
                 reportError();
                 return false;
@@ -176,7 +177,7 @@ bool Database::decodeObject(const std::string & data,
         log(WARNING, "Database entry does not appear to be decodable");
         return false;
     }
-    
+
     o = m_d.get();
     return true;
 }
@@ -243,7 +244,8 @@ bool Database::getObject(const std::string & table, const std::string & key,
 
 bool Database::putObject(const std::string & table,
                          const std::string & key,
-                         const Atlas::Message::Element::MapType & o)
+                         const Atlas::Message::Element::MapType & o,
+                         const StringVector & c)
 {
     debug(std::cout << "Database::putObject() " << table << "." << key
                     << std::endl << std::flush;);
@@ -258,7 +260,14 @@ bool Database::putObject(const std::string & table,
 
     debug(std::cout << "Encoded to: " << str.str().c_str() << " "
                << str.str().size() << std::endl << std::flush;);
-    std::string query = std::string("INSERT INTO ") + table + " VALUES ('" + key + "', '" + str.str() + "');";
+    std::string query = std::string("INSERT INTO ") + table + " VALUES ('" + key;
+    for (StringVector::const_iterator I = c.begin(); I != c.end(); ++I) {
+        query += "', '";
+        query += *I;
+    }
+    query += "', '";
+    query += str.str();
+    query +=  "');";
     return scheduleCommand(query);
 }
 
@@ -328,18 +337,25 @@ bool Database::getTable(const std::string & table, Element::MapType &o)
         }
         return false;
     }
-    // const char * data = PQgetvalue(res, 0, 1);
+    int id_column = PQfnumber(res, "id"),
+        contents_column = PQfnumber(res, "contents");
+
+    if (id_column == -1 || contents_column == -1) {
+        log(ERROR, "Could not find 'id' and 'contents' columns in database result");
+        return false;
+    }
+
     Element::MapType t;
     for(int i = 0; i < results; i++) {
-        const char * key = PQgetvalue(res, i, 0);
-        const char * data = PQgetvalue(res, i, 1);
+        const char * key = PQgetvalue(res, i, id_column);
+        const char * data = PQgetvalue(res, i, contents_column);
         debug(std::cout << "Got record " << key << " from database, value "
                    << data << std::endl << std::flush;);
-    
+
         if (decodeObject(data, t)) {
             o[key] = t;
         }
-        
+
     }
     PQclear(res);
 

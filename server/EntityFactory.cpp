@@ -67,11 +67,10 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
 
 Entity * EntityFactory::newEntity(const std::string & id,
                                   const std::string & type,
-                                  const Element::MapType & entmap)
+                                  const Element::MapType & attributes)
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
     Entity * thing = 0;
-    Element::MapType attributes;
     FactoryDict::const_iterator I = m_factories.find(type);
     PersistorBase * pc = 0;
     if (I == m_factories.end()) {
@@ -83,32 +82,28 @@ Entity * EntityFactory::newEntity(const std::string & id,
     } else {
         thing = factory->newThing(id);
     }
-    // FIXME Avoid this copy
-    attributes = factory->m_attributes;
+    debug( std::cout << "[" << type << " " << thing->getName() << "]"
+                     << std::endl << std::flush;);
+    thing->setType(type);
     // Sort out python object
     if ((factory->m_language == "python") && (!factory->m_script.empty())) {
         debug(std::cout << "Class " << type << " has a python class"
                         << std::endl << std::flush;);
         Create_PyEntity(thing, factory->m_script, type);
     }
-    debug( std::cout << "[" << type << " " << thing->getName() << "]"
-                     << std::endl << std::flush;);
-    thing->setType(type);
-    // merge attributes from the creation op over default attributes.
-    // FIXME Is it practical to avoid this merge copy by calling merge twice?
-    // Might cause a problem with getLocation
-    // How about we restrict getLocation to just loc, pos and vel, and
-    // then dictate that the rule may not provide defaults for these?
-    Element::MapType::const_iterator K = entmap.begin();
-    for (; K != entmap.end(); K++) {
-        attributes[K->first] = K->second;
-    }
+
+    // Read the defaults
+    thing->merge(factory->m_attributes);
+    // And then override with the values provided for this entity.
     thing->merge(attributes);
     // Get location from entity, if it is present
+    // The default attributes cannot contain info on location
     if (thing->getLocation(attributes, m_world.getObjects())) {
+        // If no info was provided, put the entity in the game world
         thing->m_location.m_loc = &m_world.m_gameWorld;
     }
     if (!thing->m_location.m_pos.isValid()) {
+        // If no position coords were provided, put it somewhere near origin
         thing->m_location.m_pos = Vector3D(uniform(-8,8), uniform(-8,8), 0);
     }
     if (pc != 0) {
@@ -132,14 +127,34 @@ void EntityFactory::flushFactories()
 void EntityFactory::installRule(const std::string & className,
                                 const Element::MapType & classDesc)
 {
-    Element::MapType::const_iterator J = classDesc.find("parent");
-    if ((J == classDesc.end()) || (!J->second.isString())) {
+    Element::MapType::const_iterator J = classDesc.find("parents");
+    if (J == classDesc.end()) {
         std::string msg = std::string("Rule \"") + className 
-                          + "\" has no parent. Skipping.";
-        log(WARNING, msg.c_str());
+                          + "\" has no parents. Skipping.";
+        log(ERROR, msg.c_str());
         return;
     }
-    const std::string & parent = J->second.asString();
+    if (!J->second.isList()) {
+        std::string msg = std::string("Rule \"") + className 
+                          + "\" has malformed parents. Skipping.";
+        log(ERROR, msg.c_str());
+        return;
+    }
+    const Element::ListType & parents = J->second.asList();
+    if (parents.empty()) {
+        std::string msg = std::string("Rule \"") + className 
+                          + "\" has empty parents. Skipping.";
+        log(ERROR, msg.c_str());
+        return;
+    }
+    const Element & p1 = parents.front();
+    if (!p1.isString() || p1.asString().empty()) {
+        std::string msg = std::string("Rule \"") + className 
+                          + "\" has malformed first parent. Skipping.";
+        log(ERROR, msg.c_str());
+        return;
+    }
+    const std::string & parent = p1.asString();
     // Get the new factory for this rule
     FactoryBase * f = getNewFactory(parent);
     if (f == 0) {
@@ -185,7 +200,19 @@ void EntityFactory::installRule(const std::string & className,
     // Store the default attribute for entities create by this rule.
     J = classDesc.find("attributes");
     if ((J != classDesc.end()) && (J->second.isMap())) {
-        f->m_attributes = J->second.asMap();
+        const Element::MapType & attrs = J->second.asMap();
+        Element::MapType::const_iterator K = attrs.begin();
+        for (; K != attrs.end(); ++K) {
+            if (!K->second.isMap()) {
+                log(ERROR, "Attribute description in rule is not a map.");
+                continue;
+            }
+            const Element::MapType & attr = K->second.asMap();
+            Element::MapType::const_iterator L = attr.find("default");
+            if (L != attr.end()) {
+                f->m_attributes[K->first] = L->second;
+            }
+        }
     }
     // Check whether it should be available to players.
     J = classDesc.find("playable");

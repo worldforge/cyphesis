@@ -1,3 +1,9 @@
+Consider forcing dispatch of reply to delete op before deleting that entity.
+Might mean recursing slightly.
+
+So, we have skill, which is a way of mapping tool use into actions.
+How about tasks, which are a way of giving persistence and state to actions?
+
 Sort out deer animations.
 
 Add grasing.

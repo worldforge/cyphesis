@@ -1,0 +1,315 @@
+<atlas>
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">archer</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">arrow</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">axe</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.tools.Axe</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">bow</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.tools.Bow</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">butcher</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">coin</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.tools.Coin</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">druid</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">farmer</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">fire</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.elements.Fire</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">guard</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">ham</string>
+    <list name="parents">
+      <string>food</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">house</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.House</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">khatinid</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">lumber</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.materials.Lumber</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">maid_blond</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">maid_brown</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">maid_red</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">merchant</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">seed</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.Seed</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">seller</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">stonehouse</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.StoneHouse</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>5</float>
+          <float>5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">sty</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">swineherd</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">sword</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.tools.Sword</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">tent</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">tree</string>
+    <list name="parents">
+      <string>plant</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.Tree</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">vodka</string>
+    <list name="parents">
+      <string>food</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.food.Vodka</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">warrior</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">watermage</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+</atlas>

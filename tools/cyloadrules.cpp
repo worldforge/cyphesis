@@ -19,6 +19,7 @@ class RuleBase {
 
     Database & m_connection;
     static RuleBase * m_instance;
+    std::string m_rulesetName;
   public:
     ~RuleBase() {
         m_connection.shutdownConnection();
@@ -39,12 +40,17 @@ class RuleBase {
     }
 
     void storeInRules(const Element::MapType & o, const std::string & key) {
-        m_connection.putObject(m_connection.rule(), key, o);
-        m_connection.clearPendingQuery();
+        m_connection.putObject(m_connection.rule(), key, o, StringVector(1, m_rulesetName));
+        if (!m_connection.clearPendingQuery()) {
+            std::cerr << "Failed" << std::endl << std::flush;
+        }
     }
     bool clearRules() {
         return (m_connection.clearTable(m_connection.rule()) &&
                 m_connection.clearPendingQuery());
+    }
+    void setRuleset(const std::string & n) {
+        m_rulesetName = n;
     }
 };
 
@@ -58,11 +64,17 @@ class FileDecoder : public Atlas::Message::DecoderBase {
 
     virtual void objectArrived(const Element & obj) {
         const Element::MapType & omap = obj.asMap();
-        Element::MapType::const_iterator I;
-        for (I = omap.begin(); I != omap.end(); ++I) {
-            m_count++;
-            m_db.storeInRules(I->second.asMap(), I->first);
+        Element::MapType::const_iterator I = omap.find("id");
+        if (I == omap.end()) {
+            std::cerr << "Found rule with no id" << std::endl << std::flush;
+            return;
         }
+        if (!I->second.isString()) {
+            std::cerr << "Found rule with non string id" << std::endl << std::flush;
+            return;
+        }
+        m_count++;
+        m_db.storeInRules(obj.asMap(), I->second.asString());
     }
   public:
     FileDecoder(const std::string & filename, RuleBase & db) :
@@ -89,16 +101,11 @@ class FileDecoder : public Atlas::Message::DecoderBase {
 
 static void usage(char * prgname)
 {
-    std::cerr << "usage: " << prgname << " <atlas map file>" << std::endl << std::flush;
+    std::cerr << "usage: " << prgname << " [<rulesetname> <atlas map file>]" << std::endl << std::flush;
 }
 
 int main(int argc, char ** argv)
 {
-    if (argc > 2) {
-        usage(argv[0]);
-        return 1;
-    }
-
     int cargc = 0;
     char * cargv[0];
 
@@ -115,16 +122,17 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    if (argc == 2) {
-        FileDecoder f(argv[1], *db);
+    if (argc == 3) {
+        FileDecoder f(argv[2], *db);
         if (!f.isOpen()) {
-            std::cerr << "ERROR: Unable to open file " << argv[1]
+            std::cerr << "ERROR: Unable to open file " << argv[2]
                       << std::endl << std::flush;
             return 1;
         }
+        db->setRuleset(argv[1]);
         f.read();
         f.report();
-    } else {
+    } else if (argc == 1) {
         db->clearRules();
         std::vector<std::string>::const_iterator I = rulesets.begin();
         for (; I != rulesets.end(); ++I) {
@@ -135,9 +143,13 @@ int main(int argc, char ** argv)
                           << std::endl << std::flush;
                 return 1;
             }
+            db->setRuleset(*I);
             f.read();
             f.report();
         }
+    } else {
+        usage(argv[0]);
+        return 1;
     }
 
     delete db;

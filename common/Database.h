@@ -30,6 +30,7 @@ class Decoder : public Atlas::Message::DecoderBase {
 class DatabaseResult;
 
 typedef std::map<std::string, std::string> TableDict;
+typedef std::vector<std::string> StringVector;
 typedef std::set<std::string> TableSet;
 typedef std::pair<std::string, ExecStatusType> DatabaseQuery;
 typedef std::deque<DatabaseQuery> QueryQue;
@@ -74,7 +75,8 @@ class Database {
                       std::string &);
     bool putObject(const std::string & table,
                    const std::string &,
-                   const Atlas::Message::Element::MapType &);
+                   const Atlas::Message::Element::MapType &,
+                   const StringVector & = StringVector());
     bool getObject(const std::string & table,
                    const std::string & key,
                    Atlas::Message::Element::MapType &);

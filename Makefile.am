@@ -5,7 +5,7 @@ docdir = $(datadir)/doc/cyphesis-$(VERSION)
 dist_doc_DATA = README COPYING AUTHORS THANKS NEWS
 
 confdir = $(sysconfdir)/cyphesis
-dist_conf_DATA = cyphesis.vconf basic.xml acorn.xml mason.xml werewolf.xml
+dist_conf_DATA = cyphesis.vconf data/basic.xml data/acorn.xml data/mason.xml data/werewolf.xml
 
 rulesetdir = $(datadir)/cyphesis/rulesets
 

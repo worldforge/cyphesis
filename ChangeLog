@@ -1,3 +1,20 @@
+2004-07-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp, common/Database.h: Add capability to specify
+	  extra columns in generic Atlas database tables. Query the results
+	  columns more robustly. Add a ruleset name column to the rules
+	  table.
+
+	* server/EntityFactory.cpp: Re-write rule loader to handle new
+	  format rules. Tighten up strictness of rule data. It is no
+	  longer possible to specify defaults for location in the rule.
+
+	* tools/cyconvertrules.cpp: Ensure that the playable flag is
+	  copied across when converting rules.
+
+	* tools/cyloadrules.cpp: Adapt to load the new format rules,
+	  including handling the ruleset name column.
+
 2004-07-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CommClient.cpp, rulesets/MemMap.cpp, server/CommServer.cpp,

@@ -134,6 +134,19 @@ void FileConverter::objectArrived(const Element & obj)
             newObject["script"] = J->second;
         }
 
+        // The playable attribute of the rule is converted unchanged
+        // Perhaps this should in time become an internal attribute?
+        J = ent.find("playable");
+        if (J != ent.end()) {
+            if (!J->second.isInt()) {
+                std::cerr << "Rule \"" << I->first
+                          << "\" has playable which are not an int."
+                          << std::endl << std::flush;
+                continue;
+            }
+            newObject["playable"] = J->second;
+        }
+
         // Output the newly converted rule, and continue.
         std::cout << "  <map>" << std::endl;
         output(newObject);
