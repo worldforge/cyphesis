@@ -1,3 +1,7 @@
+2004-01-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* Add rule for forest entity.
+
 2004-01-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Connection.cpp: Clarify error messages and debug output.
