@@ -136,17 +136,17 @@ static PyObject * Vector3D_distance(Vector3DObject * self, PyObject * args)
 }
 
 static PyMethodDef Vector3D_methods[] = {
-    {"dot",		(PyCFunction)Vector3D_dot,	METH_VARARGS},
-    {"cross",		(PyCFunction)Vector3D_cross,	METH_VARARGS},
-    {"rotatex",		(PyCFunction)Vector3D_rotatex,	METH_VARARGS},
-    {"rotatey",		(PyCFunction)Vector3D_rotatey,	METH_VARARGS},
-    {"rotatez",		(PyCFunction)Vector3D_rotatez,	METH_VARARGS},
-    {"angle",		(PyCFunction)Vector3D_angle,	METH_VARARGS},
-    {"mag",		(PyCFunction)Vector3D_mag,	METH_VARARGS},
-    {"unit_vector",	(PyCFunction)Vector3D_unit_vector,	METH_VARARGS},
-    {"unit_vector_to_another_vector",	(PyCFunction)Vector3D_unit_vector_to,	METH_VARARGS},
-    {"distance",	(PyCFunction)Vector3D_distance,	METH_VARARGS},
-    {NULL,		NULL}           /* sentinel */
+    {"dot",             (PyCFunction)Vector3D_dot,      METH_VARARGS},
+    {"cross",           (PyCFunction)Vector3D_cross,    METH_VARARGS},
+    {"rotatex",         (PyCFunction)Vector3D_rotatex,  METH_VARARGS},
+    {"rotatey",         (PyCFunction)Vector3D_rotatey,  METH_VARARGS},
+    {"rotatez",         (PyCFunction)Vector3D_rotatez,  METH_VARARGS},
+    {"angle",           (PyCFunction)Vector3D_angle,    METH_VARARGS},
+    {"mag",             (PyCFunction)Vector3D_mag,      METH_VARARGS},
+    {"unit_vector",     (PyCFunction)Vector3D_unit_vector,      METH_VARARGS},
+    {"unit_vector_to_another_vector",   (PyCFunction)Vector3D_unit_vector_to,   METH_VARARGS},
+    {"distance",        (PyCFunction)Vector3D_distance, METH_VARARGS},
+    {NULL,              NULL}           /* sentinel */
 };
 
 static void Vector3D_dealloc(Vector3DObject *self)
@@ -257,56 +257,57 @@ static int Vector3D_num_coerce(PyObject ** self, PyObject ** other)
 }
 
 static PyNumberMethods Vector3D_num = {
-        (binaryfunc)Vector3D_num_add,	/* nb_add */
-        (binaryfunc)Vector3D_num_sub,	/* nb_subtract */
-        (binaryfunc)Vector3D_num_mul,	/* nb_multiply */
-        (binaryfunc)Vector3D_num_div,	/* nb_divide */
-        0,				/* nb_remainder */
-        0,				/* nb_divmod */
-        0,				/* nb_power */
-        0,				/* nb_negative */
-        0,				/* nb_positive */
-        0,				/* nb_absolute */
-        0,				/* nb_nonzero */
-        0,				/* nb_invert */
-        0,				/* nb_lshift */
-        0,				/* nb_rshift */
-        0,				/* nb_and */
-        0,				/* nb_xor */
-        0,				/* nb_or */
-        Vector3D_num_coerce,		/* nb_coerce */
-        0,				/* nb_int */
-        0,				/* nb_long */
-        0,				/* nb_float */
-        0,				/* nb_oct */
-        0				/* nb_hex */
+        (binaryfunc)Vector3D_num_add,   /* nb_add */
+        (binaryfunc)Vector3D_num_sub,   /* nb_subtract */
+        (binaryfunc)Vector3D_num_mul,   /* nb_multiply */
+        (binaryfunc)Vector3D_num_div,   /* nb_divide */
+        0,                              /* nb_remainder */
+        0,                              /* nb_divmod */
+        0,                              /* nb_power */
+        0,                              /* nb_negative */
+        0,                              /* nb_positive */
+        0,                              /* nb_absolute */
+        0,                              /* nb_nonzero */
+        0,                              /* nb_invert */
+        0,                              /* nb_lshift */
+        0,                              /* nb_rshift */
+        0,                              /* nb_and */
+        0,                              /* nb_xor */
+        0,                              /* nb_or */
+        Vector3D_num_coerce,            /* nb_coerce */
+        0,                              /* nb_int */
+        0,                              /* nb_long */
+        0,                              /* nb_float */
+        0,                              /* nb_oct */
+        0                               /* nb_hex */
 };
 
 PyTypeObject Vector3D_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,				/*ob_size*/
-	"Vector3D",			/*tp_name*/
-	sizeof(Vector3DObject),		/*tp_basicsize*/
-	0,				/*tp_itemsize*/
-	/* methods */
-	(destructor)Vector3D_dealloc,	/*tp_dealloc*/
-	0,				/*tp_print*/
-	(getattrfunc)Vector3D_getattr,	/*tp_getattr*/
-	(setattrfunc)Vector3D_setattr,	/*tp_setattr*/
-	(cmpfunc)Vector3D_compare,	/*tp_compare*/
-	0,				/*tp_repr*/
-	&Vector3D_num,			/*tp_as_number*/
-	0,				/*tp_as_sequence*/
-	0,				/*tp_as_mapping*/
-	0,				/*tp_hash*/
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "Vector3D",                     /*tp_name*/
+        sizeof(Vector3DObject),         /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        (destructor)Vector3D_dealloc,   /*tp_dealloc*/
+        0,                              /*tp_print*/
+        (getattrfunc)Vector3D_getattr,  /*tp_getattr*/
+        (setattrfunc)Vector3D_setattr,  /*tp_setattr*/
+        (cmpfunc)Vector3D_compare,      /*tp_compare*/
+        0,                              /*tp_repr*/
+        &Vector3D_num,                  /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
 };
 
 Vector3DObject * newVector3DObject(PyObject *arg)
 {
-	Vector3DObject * self;
-	self = PyObject_NEW(Vector3DObject, &Vector3D_Type);
-	if (self == NULL) {
-		return NULL;
-	}
-	return self;
+        Vector3DObject * self;
+        self = PyObject_NEW(Vector3DObject, &Vector3D_Type);
+        if (self == NULL) {
+                return NULL;
+        }
+        new (&(self->coords)) Vector3D();
+        return self;
 }

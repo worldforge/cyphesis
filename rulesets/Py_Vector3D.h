@@ -11,7 +11,7 @@
 
 typedef struct {
     PyObject_HEAD
-    Vector3D	coords;
+    Vector3D coords;
 } Vector3DObject;
 
 extern PyTypeObject Vector3D_Type;
