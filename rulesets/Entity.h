@@ -13,7 +13,7 @@ class MemMap;
 class Script;
 
 // This is the base class from which all in-game objects inherit.
-// This class should not be instantiiated directly.
+// This class should not be instantiated directly.
 // This class provides all the static atributes which are common to most
 // in game objects, the dynamic attributes map, and a means to access both
 // transparantly without needing to know which are which.
