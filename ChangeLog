@@ -1,3 +1,14 @@
+2003-04-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* Switch to requiring pkg-config versions of libs, and make
+	  postgres check more verbose.
+
+	* Disable metaserver by default. This is a devel server.
+
+	* rulesets/World.cpp, rulesets/World.h: Add terrain using
+	  Mercator to the world entity, including the required attribute
+	  handlers.
+
 2003-03-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CommClient.cpp, client/CreatorClient.cpp,

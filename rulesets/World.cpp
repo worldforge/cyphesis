@@ -8,6 +8,8 @@
 #include "common/const.h"
 #include "common/debug.h"
 
+#include <Mercator/Terrain.h>
+
 #include <Atlas/Objects/Operation/Error.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
@@ -15,13 +17,84 @@
 
 static const bool debug_flag = false;
 
-World::World(const std::string & id) : Thing(id)
+World::World(const std::string & id) : Thing(id), m_terrain(*new Mercator::Terrain())
 {
     subscribe("set", OP_SET);
+
+    // FIXME Just for testin
+    m_terrain.setBasePoint(0, 0, 24.8);
+    m_terrain.setBasePoint(1, 0, 27.1);
+    m_terrain.setBasePoint(0, 1, 20.2);
+    m_terrain.setBasePoint(1, 1, 28.7);
 }
 
 World::~World()
 {
+}
+
+const Element World::get(const std::string & aname) const
+{
+    if (aname == "terrain") {
+        Element e = Element::ListType();
+        Element::ListType & terrain = e.AsList();
+        const Mercator::Terrain::Pointstore & points = m_terrain.getPoints();
+        Mercator::Terrain::Pointstore::const_iterator I = points.begin();
+        for(; I != points.end(); ++I) {
+            const Mercator::Terrain::Pointcolumn & pointcol = I->second;
+            Mercator::Terrain::Pointcolumn::const_iterator J = pointcol.begin();
+            for (; J != pointcol.end(); ++J) {
+                terrain.push_back(Element::ListType(3));
+                Element::ListType & point = terrain.back().AsList();
+                point[0] = (Element::FloatType)(I->first * 64);
+                point[1] = (Element::FloatType)(J->first * 64);
+                point[2] = (Element::FloatType)(J->second);
+            }
+        }
+        return e;
+    }
+    return Entity::get(aname);
+}
+
+void World::set(const std::string & aname, const Element & attr)
+{
+    if ((aname == "terrain") && attr.IsList()) {
+        const Element::ListType & points = attr.AsList();
+        Element::ListType::const_iterator I = points.begin();
+        for(; I != points.end(); ++I) {
+            if (!I->IsList()) {
+                continue;
+            }
+            const Element::ListType & point = I->AsList();
+            if (point.size() != 3) {
+                continue;
+            }
+            int x = (int)floor(point[0].AsNum() / m_terrain.getRes());
+            int y = (int)floor(point[1].AsNum() / m_terrain.getRes());
+            m_terrain.setBasePoint(x, y, point[2].AsNum());
+        }
+    } else {
+        Entity::set(aname, attr);
+    }
+}
+
+void World::addToObject(Element::MapType & omap) const
+{
+    omap["terrain"] = Element::ListType();
+    Element::ListType & terrain = omap["terrain"].AsList();
+    const Mercator::Terrain::Pointstore & points = m_terrain.getPoints();
+    Mercator::Terrain::Pointstore::const_iterator I = points.begin();
+    for(; I != points.end(); ++I) {
+        const Mercator::Terrain::Pointcolumn & pointcol = I->second;
+        Mercator::Terrain::Pointcolumn::const_iterator J = pointcol.begin();
+        for (; J != pointcol.end(); ++J) {
+            terrain.push_back(Element::ListType(3));
+            Element::ListType & point = terrain.back().AsList();
+            point[0] = (Element::FloatType)(I->first * 64);
+            point[1] = (Element::FloatType)(J->first * 64);
+            point[2] = (Element::FloatType)(J->second);
+        }
+    }
+    Entity::addToObject(omap);
 }
 
 OpVector World::LookOperation(const Look & op)

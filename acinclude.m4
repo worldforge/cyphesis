@@ -127,7 +127,7 @@ int main (int argc, char *argv[])
      fi
   fi
   if test "x$no_psql" = x ; then
-     AC_MSG_RESULT(yes)
+     AC_MSG_RESULT($psql_major_version.$psql_minor_version.$psql_micro_version)
      ifelse([$2], , :, [$2])     
   else
      AC_MSG_RESULT(no)
