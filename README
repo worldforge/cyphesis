@@ -25,6 +25,35 @@ services but do not use code from the scripts provided. Using such
 scripts is considered ordinary use of the server, and does not fall under
 the heading of derived work.
 
+Under the terms of the GNU General Public License version 2, you are
+entitled to modify the software, and are required to make the source code
+to those changes available if you redistribute the modified version.
+Specifically, you are not required to make the source code available if the
+modified version is not redistributed. As the author of the cyphesis-C++
+core, I believe in your freedom to do what you want with the software, and I
+do not believe I have any right to force you to publish any changes if
+you do not wish to redistribute the modified program. There has been some
+discusion within the Free Software movement about this issue, which some
+see as a hole in the GPL, and it is possible that a future version of the
+GNU General Public License will forbid using a modified version of a GPL
+licensed program to run a service unless the changes to the source code
+are made available. The licensing of this program permits redistribution
+under the terms of the GNU General Public License version 2 or at the
+licensees option, a later version, so it is possible that a version of
+this program may be released that is under the terms of a license which
+requires the source code changes to be published for a modified version
+being used to run an online service. As the current author and owner of
+the source code to this program, I have never intended that this restriction
+be placed on the software, and do not support its enforcement. The scripts
+provided with this software should be considered a separate work, as they
+were not written by me. Nothing in this paragraph should be considered to
+be a legal statement of any kind. It is simply a clarification of my
+opinion on some of the terms of the GNU General Public License. If anything
+in the above paragraph is unclear, please feel free to contact me to discuss
+it.
+
+  Al Riddoch <alriddoch@zepler.org> 22nd Febuary 2002
+
 Usage and configuration:
 
 The main server binary is called cyphesis. Its command line arguments
