@@ -1,4 +1,12 @@
-Modify the logging code so that it mangles output a bit less.
+Fix up inheritance so classes in the mason ruleset don't inherit directly
+from their C++ base class.
+
+Think about how to install classes over the wire. Perhaps adding
+a bind() operation, which binds a specific script or C++ class to
+an entity class? This means that the entity class definition itself
+is clean of server internals, so can be done in a non server specific way.
+
+Modify the logging code so that it mangles script output a bit less.
 
 Fix up the pedantic checks in the python code to return AssertionError,
 and only be compiled in when DEBUG is enabled, like those in
