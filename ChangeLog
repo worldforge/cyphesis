@@ -1,5 +1,16 @@
 2004-07-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/MemMap.cpp: Very carefully ensure that the garbage
+	  collection iterator is not reset to the beginning too often
+	  so that we cover the whole mind.
+
+	* rulesets/MemEntity.h: Only report time skew if the time passed
+	  is non-zero.
+
+	* rulesets/BaseMind.cpp: Some useful debugging output.
+
+2004-07-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/PythonMindScript.cpp: Go back to using getAdd.
 
 	* rulesets/MemEntity.h: Tweak check for backwards time so we

@@ -60,6 +60,9 @@ BaseMind::BaseMind(const std::string & id, const std::string & body_name)
 BaseMind::~BaseMind()
 {
     m_map.m_entities.erase(getId());
+    debug(std::cout << getId() << ":" << getType() << " flushing mind with "
+                    << m_map.getEntities().size() << " entities in it"
+                    << std::endl << std::flush;);
     m_map.flush();
 }
 

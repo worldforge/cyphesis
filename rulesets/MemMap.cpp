@@ -24,8 +24,12 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
 
     debug(std::cout << "MemMap::addEntity " << entity << " " << entity->getId()
                     << std::endl << std::flush;);
+    std::string next;
+    if (m_checkIterator != m_entities.end()) {
+        next = m_checkIterator->first;
+    }
     m_entities[entity->getId()] = entity;
-    m_checkIterator = m_entities.begin();
+    m_checkIterator = m_entities.find(next);
 
     debug( std::cout << this << std::endl << std::flush;);
     std::vector<std::string>::const_iterator I;
@@ -132,8 +136,12 @@ void MemMap::del(const std::string & id)
     if (I != m_entities.end()) {
         MemEntity * obj = I->second;
         assert(obj != 0);
+        std::string next;
+        if (m_checkIterator != m_entities.end()) {
+            next = m_checkIterator->first;
+        }
         m_entities.erase(I);
-        m_checkIterator = m_entities.begin();
+        m_checkIterator = m_entities.find(next);
         std::vector<std::string>::const_iterator J;
         for(J = m_deleteHooks.begin(); J != m_deleteHooks.end(); J++) {
             m_script->hook(*J, obj);
@@ -284,10 +292,14 @@ void MemMap::check()
         if (!me->isVisible() && (me->lastSeen() < 0.1) && (me->m_contains.empty())) {
             debug(std::cout << me->getId() << "|" << me->getType()
                       << " is a waste of space" << std::endl << std::flush;);
-            // MemEntityDict::const_iterator J = m_checkIterator;
-            // const std::string & next = (++J)->first;
+            MemEntityDict::const_iterator J = m_checkIterator;
+            std::string next;
+            if (++J != m_entities.end()) {
+                next = J->first;
+            }
             m_entities.erase(m_checkIterator);
-            m_checkIterator = m_entities.begin();
+            // m_checkIterator = m_entities.begin();
+            m_checkIterator = m_entities.find(next);
             delete me;
         } else {
             debug(std::cout << me->getId() << "|" << me->getType() << "|"
