@@ -1,5 +1,10 @@
 2004-01-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/panlingua/interlinguish.py:
+	  Slight tweak to regular expressions for simple sentences.
+
+2004-01-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Vector3D.cpp: Add print handler for Vector3D, which
 	  doesn't seem to work yet.
 

@@ -140,21 +140,21 @@ def verb_subject_predicate_object(verb,subject,predicate,object):
             (a1,a2,a3,a4))
 
 # <verb> [ the | a ] <subject> [ is | has ] <object>
-vso_pattern=re.compile(r"(\w+)\s+(the\s+)?(a\s+)?((\w+)|(\(.+?\)))\s+(is\s+)?(has\s+)?(.*)")
+vso_pattern=re.compile(r"(\w+)\s+(the\s+)?(a\s+)?((\w+)|(\(.+?\)))\s+(the\s+)?(is\s+)?(has\s+)?(.*)")
 # <verb> [ the | a ] <subject> [ is | has ] <predicate> [ of ] <object>
-vspo_pattern=re.compile(r"(\w+)\s+(the\s+)?(a\s+)?((\w+)|(\(.+?\)))\s+(is\s+)?(has\s+)?(\w+)\s+(of\s+)?(.*)")
+vspo_pattern=re.compile(r"(\w+)\s+(the\s+)?(a\s+)?((\w+)|(\(.+?\)))\s+(the\s+)?(is\s+)?(has\s+)?(\w+)\s+(of\s+)?(.*)")
 def match_verb_subject_object_string(say):
     m=vso_pattern.match(say)
     if m:
         verb=m.group(1)
         if vso_dict.has_key(verb):
-            subject,object=m.group(4),m.group(9)
+            subject,object=m.group(4),m.group(10)
             return verb_subject_object(verb,subject,object)
     m=vspo_pattern.match(say)
     if m:
         verb=m.group(1)
         if vspo_dict.has_key(verb):
-            subject,predicate,object=m.group(4),m.group(9),m.group(11)
+            subject,predicate,object=m.group(4),m.group(10),m.group(12)
             return verb_subject_predicate_object(verb,subject,predicate,object)
     return None
 
