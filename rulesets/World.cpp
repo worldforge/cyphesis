@@ -45,15 +45,16 @@ void World::getTerrain(Element::MapType & t) const
 
 void World::setTerrain(const Element::MapType & t)
 {
+    debug(std::cout << "World::setTerrain()" << std::endl << std::flush;);
     Element::MapType::const_iterator I = t.find("points");
-    if ((I != t.end()) && (I->second.isList())) {
-        const Element::ListType & points = I->second.asList();
-        Element::ListType::const_iterator I = points.begin();
+    if ((I != t.end()) && (I->second.isMap())) {
+        const Element::MapType & points = I->second.asMap();
+        Element::MapType::const_iterator I = points.begin();
         for(; I != points.end(); ++I) {
-            if (!I->isList()) {
+            if (!I->second.isList()) {
                 continue;
             }
-            const Element::ListType & point = I->asList();
+            const Element::ListType & point = I->second.asList();
             if (point.size() != 3) {
                 continue;
             }
@@ -62,6 +63,8 @@ void World::setTerrain(const Element::MapType & t)
             int x = (int)point[0].asNum();
             int y = (int)point[1].asNum();
             m_terrain.setBasePoint(x, y, point[2].asNum());
+            // FIXME Add support for roughness and falloff, as done
+            // by damien in equator and FIXMEd out by me
         }
     }
 }

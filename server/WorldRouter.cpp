@@ -259,7 +259,7 @@ OpVector WorldRouter::operation(const RootOperation & op)
                 deliverTo(newop, *I);
             }
         } else {
-            // This check is here because some bugs used to exist that
+            // FIXME This check is here because some bugs used to exist that
             // added NULL entries into the world dict. These should no
             // longer be present, so this check can be removed
             // after some testing. 2002-05-18

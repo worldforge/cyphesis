@@ -1,5 +1,12 @@
 2004-03-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Add a FIXME for a very old obsolete test.
+
+	* rulesets/World.cpp: Update setTerrain so it too accepts the
+	  data in new format.
+
+2004-03-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Collision.cpp: Sort out a weird floating pointe problem
 	  with emergence test. Now works. Remove debug output.
 
