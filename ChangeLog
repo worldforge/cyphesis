@@ -1,3 +1,10 @@
+2002-06-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommServer.h, server/CommClient.h, server/CommServer.cpp,
+	  server/CommClient.cpp: Re-factor the way client connections are
+	  handled, so closed and blocked connections are disposed of more
+	  cleanly.
+
 2002-06-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CreatorClient.cpp, client/CreatorClient.h,

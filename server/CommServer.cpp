@@ -51,9 +51,9 @@ CommServer::CommServer(const std::string & ruleset, const std::string & ident) :
 
 CommServer::~CommServer()
 {
-    client_map_t::const_iterator I = clients.begin();
+    client_set_t::const_iterator I = clients.begin();
     for(; I != clients.end(); I++) {
-        delete I->second;
+        delete *I;
     }
     delete &server;
 }
@@ -138,7 +138,7 @@ bool CommServer::accept()
     newcli->setup();
 
     // Add this new client to the list.
-    clients.insert(std::pair<int, CommClient *>(asockfd, newcli));
+    clients.insert(newcli);
 
     return true;
 }
@@ -166,12 +166,10 @@ void CommServer::loop()
     // call.
     fd_set sock_fds;
     int highest;
-    int client_fd;
-    CommClient * client;
     struct timeval tv;
 
-    tv.tv_sec=0;
-    tv.tv_usec=100000;
+    tv.tv_sec = 0;
+    tv.tv_usec = 100000;
 
     FD_ZERO(&sock_fds);
 
@@ -182,12 +180,14 @@ void CommServer::loop()
     } else {
         highest = serverFd;
     }
-    client_map_t::const_iterator I;
+
+    client_set_t::const_iterator I;
     for(I = clients.begin(); I != clients.end(); I++) {
-       client_fd = I->first;
+       if (!(*I)->isOpen()) { continue; }
+       int client_fd = (*I)->getFd();
        FD_SET(client_fd, &sock_fds);
        if (client_fd > highest) {
-           highest=client_fd;
+           highest = client_fd;
        }
     }
     highest++;
@@ -197,25 +197,25 @@ void CommServer::loop()
         return;
     }
     
+    std::set<CommClient *> obsoleteConnections;
     for(I = clients.begin(); I != clients.end(); I++) {
-       client_fd = I->first;
-       if (FD_ISSET(client_fd, &sock_fds)) {
-           client = I->second;
+       CommClient * client = *I;
+       if (!client->isOpen()) {
+           obsoleteConnections.insert(client);
+           continue;
+       }
+       if (FD_ISSET(client->getFd(), &sock_fds)) {
            if (client->peek() != -1) {
                if (client->read()) {
                    debug(std::cout << "Removing client due to failed negotiation" << std::endl << std::flush;);
-                   removeClient(client);
-                   break;
+                   obsoleteConnections.insert(client);
                }
            } else if (client->eof()) {
-               removeClient(client);
-               break;
+               obsoleteConnections.insert(client);
            } else {
                // It is not clear why this happens.
                debug(std::cout << "WARNING: client read failed, but eof() is not set" << std::endl << std::flush;);
-                          
-               removeClient(client);
-               break;
+               obsoleteConnections.insert(client);
            }
        }
     }
@@ -226,6 +226,11 @@ void CommServer::loop()
     if (useMetaserver && FD_ISSET(metaFd, &sock_fds)) {
         debug(std::cout << "selected on metaserver" << std::endl << std::flush;);
         metaserverReply();
+    }
+    std::set<CommClient *>::const_iterator J = obsoleteConnections.begin();
+    for(; J != obsoleteConnections.end(); ++J) {
+        std::cerr << "Removing obsolete client" << std::endl << std::flush;
+        removeClient(*J);
     }
     // Once we have done all socket related stuff, proceed with processing
     // the world.
@@ -242,10 +247,10 @@ inline void CommServer::removeClient(CommClient * client, char * error_msg)
 
     e.SetArgs(eargs);
 
-    if (client->online()) {
+    if (client->online() && client->isOpen()) {
         client->send(&e);
     }
-    clients.erase(client->getFd());
+    clients.erase(client);
     delete client;
 }
 

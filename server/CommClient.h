@@ -25,7 +25,6 @@ class CommClient : Atlas::Objects::Decoder {
     CommServer & commServer;
 
   private:
-    int clientFd;
     basic_socket_stream clientIos;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
@@ -59,7 +58,7 @@ class CommClient : Atlas::Objects::Decoder {
     }
 
     void send(const Atlas::Objects::Operation::RootOperation * op) {
-        if (op) {
+        if (op && isOpen()) {
             //    std::fstream file(1);
             //    Atlas::Codecs::XML c(file, (Atlas::Bridge*)this);
             //    Atlas::Objects::Encoder enc(&c);
@@ -68,12 +67,16 @@ class CommClient : Atlas::Objects::Decoder {
 
             encoder->StreamMessage(op);
             clientIos << std::flush;
+            if (clientIos.timeout()) {
+                clientIos.close();
+            }
         }
     }
 
     int peek() { return clientIos.peek(); }
     int eof() { return clientIos.eof(); }
-    int getFd() { return clientFd; }
+    int getFd() { return clientIos.getSocket(); }
+    bool isOpen() { return clientIos.is_open(); }
     bool online() { return (encoder != NULL); }
 
     void message(const Atlas::Objects::Operation::RootOperation &);

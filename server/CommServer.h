@@ -5,7 +5,7 @@
 #ifndef SERVER_COMM_SERVER_H
 #define SERVER_COMM_SERVER_H
 
-#include <map>
+#include <set>
 #include <string>
 
 extern "C" {
@@ -15,13 +15,13 @@ extern "C" {
 class CommClient;
 class ServerRouting;
 
-typedef std::map<int, CommClient *> client_map_t;
+typedef std::set<CommClient *> client_set_t;
 
 class CommServer {
   private:
     int serverFd;
     int serverPort;
-    client_map_t clients;
+    client_set_t clients;
     time_t metaserverTime;
     struct sockaddr_in meta_sa;
     int metaFd;

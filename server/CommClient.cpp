@@ -18,10 +18,11 @@ static const bool debug_flag = false;
 
 CommClient::CommClient(CommServer & svr, int fd, int port) :
             commServer(svr),
-            clientFd(fd), clientIos(fd),
+            clientIos(fd),
             codec(NULL), encoder(NULL),
             connection(*new Connection(*this))
 {
+    clientIos.setTimeout(0,1);
 }
 
 
@@ -35,7 +36,7 @@ CommClient::~CommClient()
     if (codec != NULL) {
         delete codec;
     }
-    close(clientFd);
+    clientIos.close();
 }
 
 void CommClient::setup()
