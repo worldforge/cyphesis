@@ -275,7 +275,7 @@ oplist Thing::MoveOperation(const Move & op)
                     }
                 }
             }
-            if (disappear.size() != 0) {
+            if (appear.size() != 0) {
                 // Send an operation to ourselves with a list of entities
                 // we are losing sight of
                 Appearance * a = new Appearance(Appearance::Instantiate());
@@ -283,7 +283,7 @@ oplist Thing::MoveOperation(const Move & op)
                 a->SetTo(fullid);
                 res2.push_back(a);
             }
-            if (appear.size() != 0) {
+            if (disappear.size() != 0) {
                 // Send an operation to ourselves with a list of entities
                 // we are gaining sight of
                 Disappearance * d = new Disappearance(Disappearance::Instantiate());

@@ -8,7 +8,12 @@
 #include <Atlas/Codecs/XML.h>
 
 #include <common/config.h>
+
+#ifdef HAVE_DB3_DB_CXX_H
 #include <db3/db_cxx.h>
+#else
+#include <db_cxx.h>
+#endif
 
 #include <string>
 

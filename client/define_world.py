@@ -37,18 +37,22 @@ knowledge=[('axe','smithy'),
            ('tavern',tavern_xyz),
            ('market',market_xyz)]
 mprices=[('pig','5')]
+m2prices=[('pig','4')]
 bprices=[('ham','2')]
 bknowledge=[('market',butcher_stall_xyz)]
 mknowledge=[('market',pig_stall_xyz)]
 sknowledge=[('forest',(-30,-116,village_height)),
             ('stash',(-98,-97,village_height))]
+village=[('inn', inn_xyz),
+         ('butcher', butcher_stall_xyz),
+         ('pig', pig_stall_xyz)]
 gknowledge=[('m1',(-17, -1,    village_height)),
             ('m2',(-29, -1,    village_height)),
             ('m3',(-29, -7.5,  village_height)),
             ('m4',(-38, -10,   village_height)),
             ('m5',(-43, -15,   village_height)),
             ('m6',(-43, -14.5, village_height))]
-wknowledge=[('w1',(90,-90,village_height)),
+wolf_knowledge=[('w1',(90,-90,village_height)),
             ('w2',(110,-90,village_height)),
             ('w3',(110,90,village_height)),
             ('w4',(90,90,village_height))]
@@ -71,7 +75,6 @@ wolf_goals=[(il.forage,"forage(self, 'ham')"),
 
 crab_goals=[(il.avoid,"avoid('wolf',10.0)"),
             (il.hunt,"predate_small(self,'pig',30.0,10.0)")]
-
 
 #observer calls this
 def default(mapeditor):
@@ -138,7 +141,7 @@ def default(mapeditor):
 
     wolf = m.make('wolf', type='wolf', xyz=(90,-90,village_height))
     m.learn(wolf,wolf_goals)
-    m.know(wolf,wknowledge)
+    m.know(wolf,wolf_knowledge)
     m.tell_importance(wolf,il.forage,'>',il.hunt)
     m.tell_importance(wolf,il.forage,'>',il.patrol)
     m.tell_importance(wolf,il.hunt,'>',il.patrol)
@@ -161,7 +164,7 @@ def default(mapeditor):
 
     butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
                  xyz=butcher_stall_xyz,age=probability.fertility_age,sex='male')
-    m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'cut', 'ham', 'market')"))
+    m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'cut', 'ham', 'market','day')"))
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
     m.know(butcher,bknowledge)
     m.price(butcher,bprices)
@@ -178,44 +181,56 @@ def default(mapeditor):
     home2_xyz=(80,80,village_height)
     merchant=m.make('Dyfed Searae',type='merchant',desc='the pig merchant',
                    xyz=pig_stall_xyz,age=probability.fertility_age,sex='male')
+    merchant2=m.make('Dylan Searae',type='merchant',desc='the pig merchant',
+                   xyz=pig_stall_xyz,age=probability.fertility_age,sex='male')
+    merchants=[merchant, merchant2]
     sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[2.5,2.5,3])
-    m.know(merchant,mknowledge)
+    m.know(merchants,mknowledge)
+    m.know(merchants,village)
     m.price(merchant,mprices)
+    m.price(merchant2,m2prices)
     m.own(merchant,sty)
     m.learn(merchant,(il.keep,"keep('pig', 'sty')"))
-    m.learn(merchant,(il.sell,"sell_trade('pig', 'market')"))
+    m.learn(merchant, (il.sell,"sell_trade('pig', 'market', 'morning')"))
+    m.learn(merchant2,(il.sell,"sell_trade('pig', 'market', 'afternoon')"))
+    m.learn(merchants,(il.lunch,"imaginary('have lunch', 'midday', 'inn')"))
+    m.learn(merchants,(il.sup,"imaginary('have a drink', 'evening', 'inn')"))
     piglets=[]
     for i in range(0, 6):
         piglets.append(m.make('pig',type='pig',xyz=(uniform(0,4),uniform(0,4),village_height),parent=sty.id))
     m.learn(piglets,pig_goals)
-    m.own(merchant,piglets)
+    m.own(merchants,piglets)
 
     # Warriors - the more adventurous types
 
+    warriors=[]
     warrior=m.make('Tom Harrowe', type='guard',xyz=inn_xyz,sex='male')
-    m.learn(warrior,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
+    warriors.append(warrior)
 
     warrior=m.make('Mae Dollor', type='guard',xyz=inn_xyz,sex='female')
-    m.learn(warrior,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
+    warriors.append(warrior)
 
     warrior=m.make('Covan Dubneal',type='guard',xyz=inn_xyz,sex='male')
-    m.learn(warrior,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
+    warriors.append(warrior)
 
     warrior=m.make('Roal Guddon', type='guard',xyz=inn_xyz,sex='male')
-    m.learn(warrior,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
+    warriors.append(warrior)
 
-    #warrior=m.make('Vonaa Barile',type='archer',xyz=inn_xyz,sex='female')
-    #m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
-    #bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
-    #m.own(warrior,bow)
+    m.learn(warriors,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
+
+    warrior=m.make('Vonaa Barile',type='archer',xyz=inn_xyz,sex='female')
+    m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
+    bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
+    m.own(warrior,bow)
+    warriors.append(warrior)
 
     warrior=m.make('Lile Birloc', type='archer',xyz=(-2,-2,village_height),sex='female')
     m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
@@ -224,6 +239,11 @@ def default(mapeditor):
     for i in range(0, 6):
         arrow=m.make('arrow',type='arrow',xyz=(0,0,0), parent=warrior.id)
         m.own(warrior,arrow)
+    warriors.append(warrior)
+
+    # Warriors enjoy their food and drink
+    m.learn(warriors,(il.lunch,"imaginary('have lunch', 'midday', 'inn')"))
+    m.learn(warriors,(il.sup,"imaginary('have a drink', 'evening', 'inn')"))
 
     m.make('deer',type='deer',xyz=(2,2,village_height))
 

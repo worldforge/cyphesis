@@ -18,6 +18,7 @@
 #include <rulesets/EntityFactory.h>
 #include <common/debug.h>
 #include <common/const.h>
+#include <common/globals.h>
 
 #include <strstream>
 
@@ -34,7 +35,7 @@ WorldRouter::WorldRouter(ServerRouting & srvr) : server(srvr),
                                                  nextId(0)
 {
     fullid = "world_0";
-    initTime = time(NULL);
+    initTime = time(NULL) - timeoffset;
     updateTime();
     gameWorld.fullid = fullid;
     gameWorld.world=this;

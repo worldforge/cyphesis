@@ -7,8 +7,13 @@
 
 #include "config.h"
 
-#ifdef HAVE_LIBDB_CXX
+#ifdef CYPHESIS_USE_DB3
+
+#ifdef HAVE_DB3_DB_CXX_H
 #include <db3/db_cxx.h>
+#else
+#include <db_cxx.h>
+#endif
 
 #include <Atlas/Message/DecoderBase.h>
 
@@ -77,7 +82,7 @@ class DatabaseIterator {
     bool del();
 };
 
-#else
+#else // CYPHESIS_USE_DB3
 
 #error Cannot build without db3 currently
 
@@ -90,6 +95,6 @@ class Database {
     static Database * instance();
 };
 
-#endif // HAVE_LIBDB_CXX
+#endif // CYPHESIS_USE_DB3
 
 #endif // DATABSE_H

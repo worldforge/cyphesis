@@ -9,3 +9,4 @@ varconf::Config * global_conf = NULL;
 std::string install_directory(INSTALLDIR);
 std::list<std::string> rulesets;
 bool exit_flag;
+int timeoffset = 0;

@@ -1,3 +1,30 @@
+2001-05-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.in, common/config.h, common/database.h, tools/cypasswd.cpp:
+	  Added config check that looks for DB3's db_cxx.h on default
+	  include path if it cannot be found in db3/. This fixes building
+	  on Debian.
+
+	* server/server.cpp, server/WorldRouter.cpp, acorn.vconf,
+	  globals.h, globals.cpp: Added inittime config option used to
+	  influence the game time used at server startup.
+
+	* server/WorldTime.cpp: Added in new time of day descriptions for
+	  more flexible goals.
+
+	* server/ServerRouting.cpp: Removed output used to debug memory
+	  cleanup code.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Added time
+	  parameters to trading goals.
+
+	* rulesets/Thing.cpp: Fixed appearance/disappearance operations
+	  which were not getting sent most of the time.
+
+	* client/define_world.py: Added in more NPC and modified behavoir.
+	  Everyone now goes to the inn for lunch and in the evening, and
+	  market traders only work during the day.
+
 2001-05-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/server.cpp, server/CommClient.h, server/Account.h,

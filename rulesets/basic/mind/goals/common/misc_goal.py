@@ -334,11 +334,12 @@ class defend(Goal):
 ############################ BUY SOMETHING (AS TRADER) ########################
 
 class buy_trade(get_thing):
-    def __init__(self, what, where):
+    def __init__(self, what, where, when=None):
         Goal.__init__(self, "buy from the public",
                       self.do_I_have_it,
                       [move_me(where),
-                       self.announce_trade])
+                       self.announce_trade],
+                      when)
         self.what=what
         self.ticks=0
         self.vars=["what"]
@@ -353,11 +354,12 @@ class buy_trade(get_thing):
 ############################ SELL SOMETHING (AS TRADER) ########################
 
 class sell_trade(Goal):
-    def __init__(self, what, where):
+    def __init__(self, what, where, when=None):
         Goal.__init__(self, "Sell to the public",
                       self.dont_I_have_it,
                       [move_me(where),
-                       self.announce_trade])
+                       self.announce_trade],
+                      when)
         self.what=what
         self.ticks=0
         self.vars=["what"]
@@ -379,15 +381,16 @@ class sell_trade(Goal):
                 ret = ret + Operation("action", Entity(me.id, action="wave"), to=me)
         return ret
 
-############################ TRADE (BUY SOMETHING, USE TOOL, SELL PRODUCT) ####
+################ TRADE (BUY SOMETHING, USE TOOL, SELL PRODUCT) ################
 
 class trade(Goal):
-    def __init__(self, me, wbuy, tool, op, wsell, where):
+    def __init__(self, me, wbuy, tool, op, wsell, where, when=None):
         Goal.__init__(self, "trade at a market",
                       false,
                       [acquire_thing(me,tool),
                        buy_trade(wbuy, where),
-                       self.process])
+                       self.process],
+                      when)
         self.wbuy=wbuy
         self.tool=tool
         self.op=op

@@ -12,6 +12,9 @@
 #include "Lobby.h"
 
 #include <common/persistance.h>
+#include <common/debug.h>
+
+static bool debug_flag = false;
 
 using Atlas::Message::Object;
 
@@ -32,7 +35,7 @@ ServerRouting::~ServerRouting()
     idDict.erase(world.fullid);
     dict_t::const_iterator I = idDict.begin();
     for(; I != idDict.end(); I++) {
-        cout << "Del " << I->second->fullid << endl << flush;
+        debug(cout << "Del " << I->second->fullid << endl << flush;);
         delete I->second;
     }
     delete &world;

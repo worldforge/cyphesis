@@ -141,6 +141,14 @@ AC_CACHE_VAL(cyphesis_cv_python_headers,
 	])
 ])
 
+AC_CHECK_HEADERS(db3/db_cxx.h, ,
+[
+	AC_CHECK_HEADERS(db_cxx.h, ,
+	[
+		AC_MSG_ERROR(Couldn't find working Berkely DB v3 headers.)
+	])
+])
+
 AC_CHECK_LIB(dl,dlopen)
 AC_CHECK_LIB(pthread,pthread_create)
 AC_CHECK_LIB(sigc,main)

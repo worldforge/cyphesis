@@ -36,12 +36,15 @@ void WorldTime::initTimeInfo() {
     range winter = crange(1,2);
     winter.push_back(12);
     timeInfo["winter"] = period(winter, "seasonal");
-    timeInfo["morning"] = period(range(1,8), "daily");
+    timeInfo["dawn"] = period(range(1,8), "daily");
     timeInfo["midday"] = period(range(1,12), "daily");
     timeInfo["evening"] = period(range(1,20), "daily");
     range night = crange(0,7);
     night.push_front(23); night.push_front(22); night.push_front(21);
     timeInfo["night"] = period(night,"daily");
+    timeInfo["day"] = period(crange(9,18), "daily");
+    timeInfo["morning"] = period(crange(9,11), "daily");
+    timeInfo["afternoon"] = period(crange(13,18), "daily");
     timeInfo["now"] = period(crange(0,23), "daily");
     std::list<string> seasons(1, "summer");
     seasons.push_back("autumn");

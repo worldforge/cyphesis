@@ -525,9 +525,12 @@ int main(int argc, char ** argv)
     // Read the metaserver usage flag from config file.
     bool use_metaserver = true;
     if (global_conf->findItem("cyphesis", "usemetaserver")) {
-        use_metaserver=global_conf->getItem("cyphesis","usemetaserver");
+        use_metaserver = global_conf->getItem("cyphesis","usemetaserver");
     }
 
+    if (global_conf->findItem("cyphesis", "inittime")) {
+        timeoffset = global_conf->getItem("cyphesis","inittime");
+    }
     // Start up the python subsystem. FIXME This needs to sorted into a
     // a way of handling script subsystems more generically.
     init_python_api();
