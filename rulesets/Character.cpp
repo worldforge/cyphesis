@@ -39,7 +39,7 @@
 
 using Atlas::Message::Object;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 OpVector Character::metabolise(double ammount)
 {

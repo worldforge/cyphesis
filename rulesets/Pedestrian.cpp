@@ -14,7 +14,7 @@
 
 using Atlas::Message::Object;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 Pedestrian::Pedestrian(Character & body) : Movement(body)
 {
