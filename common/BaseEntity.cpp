@@ -20,7 +20,7 @@
 
 static const bool debug_flag = false;
 
-BaseEntity::BaseEntity() : deleted(false), in_game(false),
+BaseEntity::BaseEntity() : seq(0), deleted(false), in_game(false),
                            omnipresent(false), world(NULL) {
 }
 
@@ -74,6 +74,7 @@ void BaseEntity::addObject(Object * obj) const
     if (fullid.size() != 0) {
         omap["id"] = fullid;
     }
+    omap["seq"] = seq;
     Object::ListType contlist;
     list_t::const_iterator I;
     for(I = contains.begin(); I != contains.end(); I++) {

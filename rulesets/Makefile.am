@@ -1,15 +1,23 @@
+SUBDIRS = astronomy
+
 noinst_LIBRARIES = librulesets.a
 
 librulesets_a_SOURCES = Thing.cpp Thing.h \
 			EntityFactory.cpp EntityFactory.h \
-			ThingFactory.cpp ThingFactory.h \
-			CharacterFactory.cpp CharacterFactory.h \
-			CreatorFactory.cpp CreatorFactory.h \
-			BaseMind.cpp BaseMind.h \
-			MemMap.cpp MemMap.h MemMap_methods.h \
 			ExternalMind.cpp ExternalMind.h \
 			Character.cpp Character.h \
 			Creator.cpp Creator.h \
+			Plant.cpp Plant.h \
+			Food.cpp Food.h \
+			Stackable.cpp Stackable.h \
+			ThingFactory.cpp ThingFactory.h \
+			CharacterFactory.cpp CharacterFactory.h \
+			CreatorFactory.cpp CreatorFactory.h \
+			PlantFactory.cpp PlantFactory.h \
+			FoodFactory.cpp FoodFactory.h \
+			StackFactory.cpp StackFactory.h \
+			BaseMind.cpp BaseMind.h \
+			MemMap.cpp MemMap.h MemMap_methods.h \
 			Py_Object.cpp Py_Object.h \
 			Py_Operation.cpp Py_Operation.h \
 			Py_Oplist.cpp Py_Oplist.h \

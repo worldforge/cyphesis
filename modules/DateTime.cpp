@@ -6,6 +6,12 @@
 
 // date_pat=re.compile("^|[-:]|\s+");
 
+unsigned int DateTime::m_spm = 60; // seconds per minute
+unsigned int DateTime::m_mph = 60; // minutes per hour
+unsigned int DateTime::m_hpd = 24; // hours per day
+unsigned int DateTime::m_dpm = 28; // days per month
+unsigned int DateTime::m_mpy = 12; // months per year
+
 DateTime::DateTime(char * date_time)
 {
 	// extract numbers from string
@@ -14,17 +20,22 @@ DateTime::DateTime(char * date_time)
          //map(float,date_pat.split(date_time));
 }
 
-double DateTime::seconds()
+DateTime::DateTime(int yr, int mn, int da, int hr, int mt, int sc) :
+  m_second(sc), m_minute(mt), m_hour(hr), m_day(da), m_month(mn), m_year(yr)
 {
-    return DateTime::second+
-           minute*60.0+
-           hour*3600.0+
-           (day-1)*86400.0+
-           (month-1)*2592000.0+
-           year*31104000.0;
 }
 
-char * DateTime::asString()
+double DateTime::seconds()
+{
+    return m_second+
+           m_minute*m_spm+
+           m_hour*m_spm*m_mph+
+           (m_day-1)*m_spm*m_mph*m_hpd+
+           (m_month-1)*m_spm*m_mph*m_hpd*m_dpm+
+           m_year*m_spm*m_mph*m_hpd*m_dpm*m_mpy;
+}
+
+string DateTime::asString()
 {
     //Convert date into string
     //return "%04i-%02i-%02i %02i:%02i:%04.1f" %

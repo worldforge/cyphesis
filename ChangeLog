@@ -1,3 +1,46 @@
+2001-03-05  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Added Fire operation handling to Thing class, so that any entity
+	  with a burn_speed attribute will burn.
+
+	* Added Food C++ base class, which implements cooking.
+
+	* Altered the semantics of the Eat/Fire/Nourish operations so
+	  multiple arguments are no longer required. from is used to
+	  determine the other entity involved.
+
+	* Added the beginnings of an astronomy system, but not yet used
+	  anywhere.
+
+	* Added appearance handling to BaseMind and Memory.
+
+	* Added sequence no to all entities, which is incremented each time
+	  a move or set operation is received. sequence no "seq" is included
+	  in args of Appearance operations.
+
+	* Moved functionality from Animal python base class into Character
+	  C++ base class. This much improves the performance of modelling
+	  animals, and means that player characters, and NPCs get hungry and
+	  need to eat. Reduced the speed at which animals consume energy
+	  so they don't starve quite as quickly.
+
+	* Added collision prediction functions that handle both entities
+	  having velocity.
+
+	* Added combine functionality to Stackable. Divide comes next.
+
+2001-03-01  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* rulesets/Py_Location.cpp: Added bbox and bmedian attributes of
+	  location object to python wrappers.
+
+	* rulesets/Character.cpp: Added initialisation of bounding box
+	  median for characters.
+
+	* modules/DateTime.*: Added configurability to date so that
+	  each period of time has definable number of divisions. Default
+	  is as per real world calendar restricted to 30 day months.
+
 2001-02-27  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* server/CommServer.h, server/server.cpp: Added metaserver code

@@ -41,7 +41,6 @@ Thing::Thing() : script_object(NULL), perceptive(false), status(1),
     in_game = true;
     name = string("Foo");
     attributes["mode"] = Message::Object("birth");
-    attributes["weight"] = (double)-1;
 }
 
 int Thing::script_Operation(const string & op_type, const RootOperation & op,
@@ -171,37 +170,29 @@ void Thing::getLocation(Message::Object::MapType & entmap, fdict_t & fobjects)
         debug( cout << "Thing::getLocation, getting it" << endl << flush;);
         try {
             const string & ref_id = entmap["loc"].AsString();
-            BaseEntity * ref_obj;
             if (fobjects.find(ref_id) == fobjects.end()) {
                 debug( cout << "ERROR: Can't get ref from objects dictionary" << endl << flush;);
                 return;
             }
                 
-            ref_obj = fobjects[ref_id];
-            Vector3D pos(0, 0, 0);
-            Vector3D velocity(0, 0, 0);
-            Vector3D face(1, 0, 0);
+            location.ref = fobjects[ref_id];
             if (entmap.find("pos") != entmap.end()) {
-                pos = Vector3D(entmap["pos"].AsList());
-            } else if (location) {
-                pos = location.coords;
+                location.coords = Vector3D(entmap["pos"].AsList());
             }
             if (entmap.find("velocity") != entmap.end()) {
-                velocity = Vector3D(entmap["velocity"].AsList());
-            } else if (location) {
-                velocity = location.velocity;
+                location.velocity = Vector3D(entmap["velocity"].AsList());
             }
             if (entmap.find("face") != entmap.end()) {
-                face = Vector3D(entmap["face"].AsList());
-            } else if (location) {
-                face = location.face;
+                location.face = Vector3D(entmap["face"].AsList());
+            } else if (!location.face) {
+                location.face = Vector3D(1, 0, 0);
             }
-            //Location thing_loc(ref_obj, pos, velocity, face);
-            //location = thing_loc;
-            location.ref = ref_obj;
-            location.coords = pos;
-            location.velocity = velocity;
-            location.face = face;
+            if (entmap.find("bbox") != entmap.end()) {
+                location.bbox = Vector3D(entmap["bbox"].AsList());
+            }
+            if (entmap.find("bmedian") != entmap.end()) {
+                location.bmedian = Vector3D(entmap["bmedian"].AsList());
+            }
         }
         catch (Message::WrongTypeException) {
             cerr << "ERROR: Create operation has bad location" << endl << flush;
@@ -315,13 +306,45 @@ oplist Thing::Operation(const Eat & op)
 oplist Thing::Operation(const Fire & op)
 {
     oplist res;
-    script_Operation("fire", op, res);
-    return res;
+    if (script_Operation("fire", op, res) != 0) {
+        return(res);
+    }
+    if (attributes.find("burn_speed") == attributes.end()) {
+        return res;
+    }
+    const Object & bs = attributes["burn_speed"];
+    if (!bs.IsNum()) { return res; }
+    Object::MapType fire_ent = op.GetArgs().front().AsMap();
+    double consumed = bs.AsNum() * fire_ent["status"].AsNum();
+    Object::MapType self_ent;
+    self_ent["id"] = fullid;
+    self_ent["status"] = status - (consumed / weight);
+
+    const string & to = fire_ent["id"].AsString();
+    Object::MapType nour_ent;
+    nour_ent["id"] = to;
+    nour_ent["weight"] = consumed;
+
+    Set * s = new Set();
+    *s = Set::Instantiate();
+    s->SetTo(fullid);
+    s->SetArgs(Object::ListType(1,self_ent));
+
+    Nourish * n = new Nourish();
+    *n = Nourish::Instantiate();
+    n->SetTo(to);
+    n->SetArgs(Object::ListType(1,nour_ent));
+
+    oplist res2(2);
+    res2[0] = s;
+    res2[1] = n;
+    return res2;
 }
 
 oplist Thing::Operation(const Move & op)
 {
     debug( cout << "Thing::move_operation" << endl << flush;);
+    seq++;
     oplist res;
     if (script_Operation("move", op, res) != 0) {
         return(res);
@@ -418,12 +441,14 @@ oplist Thing::Operation(const Move & op)
               if (wasInRange && !isInRange) {
                   Object::MapType dent;
                   dent["id"] = (*I)->fullid;
+                  dent["seq"] = (*I)->seq;
                   disappear.push_back(dent);
                   debug(cout << fullid << ": losing site of " <<(*I)->fullid << endl;);
               }
               if (!wasInRange && isInRange) {
                   Object::MapType aent;
                   aent["id"] = (*I)->fullid;
+                  aent["seq"] = (*I)->seq;
                   appear.push_back(aent);
                   debug(cout << fullid << ": gaining site of " <<(*I)->fullid << endl;);
               }
@@ -461,6 +486,7 @@ oplist Thing::Operation(const Nourish & op)
 
 oplist Thing::Operation(const Set & op)
 {
+    seq++;
     oplist res;
     if (script_Operation("set", op, res) != 0) {
         return(res);

@@ -154,7 +154,7 @@ def default(mapeditor):
 
 #   farmers
 
-    sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0)
+    sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[2.5,2.5,1])
     m.make('bstall',type='bstall',xyz=(-41,-5,village_height))
 
     home1_xyz=(90,-90,village_height)

@@ -54,6 +54,10 @@ public:
         if (!other.bbox) { return -1; }
         const Vector3D & m = bmedian ? bmedian : bbox ? bbox : Vector3D(0,0,0);
         const Vector3D & om = other.bmedian ? other.bmedian : other.bbox;
+        if (other.velocity) {
+            return coords.hitTime(m, bbox, velocity, other.velocity,
+                                  other.coords + om, other.bbox);
+        }
         return coords.hitTime(m, bbox, velocity, other.coords + om, other.bbox);
     }
 

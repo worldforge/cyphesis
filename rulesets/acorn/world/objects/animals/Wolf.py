@@ -3,10 +3,10 @@
 
 from atlas import *
 
-from world.objects.animals.Animal import Animal
+from world.objects.Thing import Thing
 from misc import set_kw
 
-class Wolf(Animal):
+class Wolf(Thing):
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
         set_kw(self,kw,"weight",20.0)

@@ -21,6 +21,10 @@ static inline range hitTime(double s, double r, double u, double p, double q) {
     return range((r - s + p + q)/u, (r - s - p - q)/u);
 }
 
+static inline range hitTime(double s, double r, double u, double v, double p, double q) {
+    return range((r - s + p + q)/(u - v), (r - s - p - q)/(u - v));
+}
+
 static inline double max(range r) {
     return max(r.first, r.second);
 }
@@ -39,9 +43,9 @@ class Vector3D {
     Vector3D(double x, double y, double z) : x(x), y(y), z(z), _set(true) { }
     Vector3D(const Object::ListType & vector) {
         Object::ListType::const_iterator I = vector.begin();
-        x = I->AsFloat(); I++;
-        y = I->AsFloat(); I++;
-        z = I->AsFloat();
+        x = I->AsNum(); I++;
+        y = I->AsNum(); I++;
+        z = I->AsNum();
     }
 
     double X() const { return x; }
@@ -180,7 +184,7 @@ class Vector3D {
     }
 
     double hitTime(const Vector3D & m, const Vector3D & s, const Vector3D & v,
-                const Vector3D & om, const Vector3D & os) const {
+                   const Vector3D & om, const Vector3D & os) const {
         // When is box defined by this vector, with median offset m of size s
         // velocity v, colliding with other box of median om of size s.
         // If this function returns a -ve value, it is possible they are
@@ -192,6 +196,24 @@ class Vector3D {
         range xt = ::hitTime(x+m.x, om.x, v.x, s.x, os.x);
         range yt = ::hitTime(y+m.y, om.y, v.y, s.y, os.y);
         range zt = ::hitTime(z+m.z, om.z, v.z, s.z, os.z);
+        // Find the time that the last coordinate starts intersect
+        double start = max(min(xt), max(min(yt),min(zt)));
+        // Find the time that the first coordinate stops intersect
+        double end   = min(max(xt), min(max(yt),max(zt)));
+        // If the start is before the end, then there is a collision
+        if (end < start) { return -1; }
+        return start;
+    }
+
+    double hitTime(const Vector3D & m, const Vector3D & s,
+                   const Vector3D & v, const Vector3D & ov,
+                   const Vector3D & om, const Vector3D & os) const {
+        // This is the same as the above function but it accepts an
+        // additional arguemnt, the velocity of the other entity
+        // Calculate range of times each intersect
+        range xt = ::hitTime(x+m.x, om.x, v.x, ov.x, s.x, os.x);
+        range yt = ::hitTime(y+m.y, om.y, v.y, ov.y, s.y, os.y);
+        range zt = ::hitTime(z+m.z, om.z, v.z, ov.z, s.z, os.z);
         // Find the time that the last coordinate starts intersect
         double start = max(min(xt), max(min(yt),min(zt)));
         // Find the time that the first coordinate stops intersect

@@ -16,9 +16,11 @@ typedef enum op_no {
 	OP_LOGIN,
 	OP_LOGOUT,
 	OP_CHOP,
+	OP_COMBINE,
 	OP_CREATE,
 	OP_CUT,
 	OP_DELETE,
+	OP_DIVIDE,
 	OP_EAT,
 	OP_ERROR,
 	OP_FIRE,
@@ -48,6 +50,9 @@ typedef enum op_no {
         case OP_CHOP: \
             return _prefix ## Operation((const Chop &)_op); \
             break; \
+        case OP_COMBINE: \
+            return _prefix ## Operation((const Combine &)_op); \
+            break; \
         case OP_CREATE: \
             return _prefix ## Operation((const Create &)_op); \
             break; \
@@ -56,6 +61,9 @@ typedef enum op_no {
             break; \
         case OP_DELETE: \
             return _prefix ## Operation((const Delete &)_op); \
+            break; \
+        case OP_DIVIDE: \
+            return _prefix ## Operation((const Divide &)_op); \
             break; \
         case OP_EAT: \
             return _prefix ## Operation((const Eat &)_op); \
@@ -125,6 +133,9 @@ typedef enum op_no {
         case OP_CHOP: \
             return _prefix ## Operation(_op, (Chop &)_sub_op); \
             break; \
+        case OP_COMBINE: \
+            return _prefix ## Operation(_op, (Combine &)_sub_op); \
+            break; \
         case OP_CREATE: \
             return _prefix ## Operation(_op, (Create &)_sub_op); \
             break; \
@@ -133,6 +144,9 @@ typedef enum op_no {
             break; \
         case OP_DELETE: \
             return _prefix ## Operation(_op, (Delete &)_sub_op); \
+            break; \
+        case OP_DIVIDE: \
+            return _prefix ## Operation(_op, (Divide &)_sub_op); \
             break; \
         case OP_EAT: \
             return _prefix ## Operation(_op, (Eat &)_sub_op); \
@@ -171,8 +185,10 @@ namespace Atlas {
     namespace Objects {
         namespace Operation {
             class Logout;
+            class Combine;
             class Create;
             class Delete;
+            class Divide;
             class Move;
             class Set;
             class Get;
@@ -207,14 +223,15 @@ typedef std::list<BaseEntity *> list_t;
 
 class BaseEntity {
   public:
-    string fullid;
-    string name;
-    Location location;
-    list_t contains;
-    bool deleted;
-    bool in_game;
-    bool omnipresent;
-    WorldRouter * world;
+    int seq;			// Sequence number
+    string fullid;		// String id
+    string name;		// Name
+    Location location;		// Full details of location inc. ref pos and vel
+    list_t contains;		// List of entities which use this as ref
+    bool deleted;		// true if deleted
+    bool in_game;		// true if in game object
+    bool omnipresent;		// true if omnipresent in game.
+    WorldRouter * world;	// Exists in this world.
 
     BaseEntity();
     virtual ~BaseEntity() { }
@@ -233,9 +250,11 @@ class BaseEntity {
     virtual oplist Operation(const Login & op) { oplist res; return(res); }
     virtual oplist Operation(const Logout & op) { oplist res; return(res); }
     virtual oplist Operation(const Chop & op) { oplist res; return(res); }
+    virtual oplist Operation(const Combine & op) { oplist res; return(res); }
     virtual oplist Operation(const Create & op) { oplist res; return(res); }
     virtual oplist Operation(const Cut & op) { oplist res; return(res); }
     virtual oplist Operation(const Delete & op) { oplist res; return(res); }
+    virtual oplist Operation(const Divide & op) { oplist res; return(res); }
     virtual oplist Operation(const Eat & op) { oplist res; return(res); }
     virtual oplist Operation(const Fire & op) { oplist res; return(res); }
     virtual oplist Operation(const Get & op) { oplist res; return(res); }
@@ -276,9 +295,11 @@ class BaseEntity {
         const string & parent = parents.begin()->AsString();
         if ("login" == parent)  { return(OP_LOGIN); }
         if ("chop" == parent)  { return(OP_CHOP); }
+        if ("combine" == parent)  { return(OP_COMBINE); }
         if ("create" == parent)  { return(OP_CREATE); }
         if ("cut" == parent)  { return(OP_CUT); }
         if ("delete" == parent)  { return(OP_DELETE); }
+        if ("divide" == parent)  { return(OP_DIVIDE); }
         if ("eat" == parent)  { return(OP_EAT); }
         if ("fire" == parent)  { return(OP_FIRE); }
         if ("get" == parent)  { return(OP_GET); }

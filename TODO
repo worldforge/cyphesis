@@ -1,20 +1,43 @@
 Definitly for Acorn 0.4:
 
   Implement ranges.
-    Fully implement propper range checking for broadcast operations, instead
-    if the primitive implementation currently in place.
-    Add handling of Appearance operations to BaseMind.
+  Fully implement propper range checking for broadcast operations, instead
+  if the primitive implementation currently in place.
+  Add handling of Appearance operations to BaseMind.
 
   Implement loading the same map as the client.
 
-  Try out optimisations such as -funroll_loops -fstrict_aliasing -ffast_math
-  -mx86. Consider a custom python interpreter build.
+  Sort out setting of bounding boxes on objects, particularly objects
+  of similar type with varying shape such as buildings.
+
+  Sort out collision detection wrt moving alongside an object in close
+  proximity, and add CD for two moving objects.
+
+  Sort out collision prediction between two moving entities. Current problem
+  is that it is not possible to tell when movement started, and thus get
+  correct starting position for the movement.
+
+  Add cookable food. (STARTED)
+
+  Use drunkness.
+
+  Use combine operation to deal with making more than one object into one.
+
+  Fully implement stackable objects.
 
 Provisional for Acorn 0.4:
 
   Implement accelerated Atlas Objects API. MAYBE: POSTPONE!
 
+  Implement stackable objects.
+
 Required for werewolf:
 
   Implement calendric time using WorldTime and DateTime classes, so nighttime
   and moons are properlly handled.
+
+Possible ideas:
+
+  Try out optimisations such as -funroll_loops -fstrict_aliasing -ffast_math
+  -mx86. Consider a custom python interpreter build.
+

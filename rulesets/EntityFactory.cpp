@@ -13,6 +13,9 @@
 #include "ThingFactory.h"
 #include "CharacterFactory.h"
 #include "CreatorFactory.h"
+#include "PlantFactory.h"
+#include "FoodFactory.h"
+#include "StackFactory.h"
 
 #include <server/WorldRouter.h>
 
@@ -35,6 +38,9 @@ EntityFactory::EntityFactory()
     factories["thing"] = ThingFactory::instance();
     factories["character"] = CharacterFactory::instance();
     factories["creator"] = CreatorFactory::instance();
+    factories["plant"] = PlantFactory::instance();
+    factories["food"] = FoodFactory::instance();
+    factories["stackable"] = StackFactory::instance();
 }
 
 void EntityFactory::readRuleset(const string & setname)

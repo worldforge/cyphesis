@@ -1,0 +1,28 @@
+This describes the system for modelling astronomical/astrological bodies
+in a way that can be represented in the client.
+
+Positions of bodies are represented on the inside of a sphere which is
+an easy naive approach which does work for most cases. Two values are
+used to represent the initial position of the bodies in the same way as
+lattitude and longitude are used to represent terestrial position.
+
+Various types of body rotate within the scope of this sphere, currently
+with a fixed period. Assumptions are made on the reference for this
+period based on the type of astronomical body. Suns are assumed to
+have a period based on one year, moons are based on one month. The entire
+sphere is modelled as rotating around the world with a period of one
+day. The length of these time periods is defined by the WorldTime class
+which is fully customisable.
+
+HOW DO WE DEAL WITH THE FACT THAT DAYS DONT REALLY LINE UP?
+The number of days in a year is 1 - (number of rotations of world in year),
+because of the nature of the rotation round the sun.
+
+HOW DO WE DEAL WITH MULTIPLE MOONS HAVING DIFFERENT PERIODS? MOONS THAT DON'T
+FIT INTO A YEAR MAKE THINGS TRICKY.
+The days per year should be defined as rotation of world round system
+centre point, and the months per year must be defined in terms of
+a nominated primary Moon.
+
+The earth's solar system has anticlockwise rotation, by convention. If it
+is viewed is being the other way up

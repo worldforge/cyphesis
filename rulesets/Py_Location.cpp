@@ -74,6 +74,16 @@ static PyObject * Location_getattr(LocationObject *self, char *name)
         v->coords = self->location->face;
         return (PyObject *)v;
     }
+    if (strcmp(name, "bbox") == 0) {
+        Vector3DObject * v = newVector3DObject(NULL);
+        v->coords = self->location->bbox;
+        return (PyObject *)v;
+    }
+    if (strcmp(name, "bmedian") == 0) {
+        Vector3DObject * v = newVector3DObject(NULL);
+        v->coords = self->location->bmedian;
+        return (PyObject *)v;
+    }
     return Py_FindMethod(Location_methods, (PyObject *)self, name);
 }
 
@@ -112,6 +122,12 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
     }
     if (strcmp(name, "rotation") == 0) {
         self->location->face = vec->coords;
+    }
+    if (strcmp(name, "bbox") == 0) {
+        self->location->bbox = vec->coords;
+    }
+    if (strcmp(name, "bmedian") == 0) {
+        self->location->bmedian = vec->coords;
     }
     return(0);
 }

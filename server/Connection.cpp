@@ -49,7 +49,7 @@ void Connection::destroy()
     fdict_t::const_iterator I;
     for(I = fobjects.begin(); I != fobjects.end(); I++) {
         BaseEntity * ent = I->second;
-        if (ent->in_game == 0) {
+        if (ent->in_game == false) {
             continue;
         }
         Thing * obj = (Thing*)ent;
@@ -76,7 +76,7 @@ oplist Connection::operation(const RootOperation & op)
         debug(cout << "[" << from << "]" << endl << flush;);
         if (fobjects.find(from)!=fobjects.end()) {
             BaseEntity * ent = fobjects[from];
-            if ((ent->in_game != 0) && (((Thing *)ent)->is_character != 0) &&
+            if ((ent->in_game != false)&&(((Thing *)ent)->is_character != 0) &&
                 (((Character *)ent)->external_mind == NULL)) {
                 Character * pchar = (Character *)ent;
                 pchar->external_mind = new ExternalMind(this, pchar->fullid, pchar ->name);

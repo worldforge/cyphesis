@@ -5,6 +5,8 @@
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Delete.h>
+#include <Atlas/Objects/Operation/Divide.h>
+#include <Atlas/Objects/Operation/Combine.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>

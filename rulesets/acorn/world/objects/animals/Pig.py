@@ -2,14 +2,14 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 from atlas import *
 
-from world.objects.animals.Animal import Animal
+from world.objects.Thing import Thing
 from misc import set_kw
 from whrandom import *
 from Vector3D import Vector3D
 
 import atlas
 
-class Pig(Animal):
+class Pig(Thing):
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
         set_kw(self,kw,"weight",5.0)

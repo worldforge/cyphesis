@@ -2,9 +2,12 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 from atlas import *
 
-from world.objects.animals.Animal import Animal
+from world.objects.Thing import Thing
 
 import atlas
 
-class Squirrel(Animal):
-    pass
+class Squirrel(Thing):
+    def __init__(self, cppthing, **kw):
+        self.base_init(cppthing, kw)
+        set_kw(self,kw,"weight",1.0)
+        self.maxweight=2.0

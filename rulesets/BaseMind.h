@@ -41,6 +41,8 @@ class BaseMind : public Thing {
 
     virtual oplist Operation(const Sight & op);
     virtual oplist Operation(const Sound & op);
+    virtual oplist Operation(const Appearance & op);
+    virtual oplist Operation(const Disappearance & op);
     //RootOperation * get_op_name_and_sub(RootOperation & op, string & name);
     //virtual int call_triggers(RootOperation & op);
     //virtual oplist message(const RootOperation & op);

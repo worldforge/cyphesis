@@ -8,11 +8,15 @@
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Sound.h>
+#include <Atlas/Objects/Operation/Combine.h>
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Delete.h>
+#include <Atlas/Objects/Operation/Divide.h>
 #include <Atlas/Objects/Operation/Move.h>
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Touch.h>
+#include <Atlas/Objects/Operation/Appearance.h>
+#include <Atlas/Objects/Operation/Disappearance.h>
 
 #include <common/Chop.h>
 #include <common/Cut.h>
@@ -337,6 +341,26 @@ oplist BaseMind::Operation(const Sight & op)
     }
     delete op2;
     return(res);
+}
+
+oplist BaseMind::Operation(const Appearance & op)
+{
+    oplist(res);
+    script_Operation("appearance", op, res);
+    Object::ListType args = op.GetArgs();
+    Object::ListType::iterator I;
+    for(I = args.begin(); I != args.end(); I++) {
+        map.get_add(I->AsMap()["id"].AsString());
+    }
+    return res;
+}
+
+oplist BaseMind::Operation(const Disappearance & op)
+{
+    oplist(res);
+    script_Operation("disappearance", op, res);
+    // Not quite sure what to do to the map here, but should do something.
+    return res;
 }
 
 #if 0

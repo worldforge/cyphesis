@@ -158,6 +158,7 @@ AC_OUTPUT([
 	common/Makefile
 	modules/Makefile
 	rulesets/Makefile
+	rulesets/astronomy/Makefile
 	server/Makefile
 	client/Makefile
 	watchdog/Makefile

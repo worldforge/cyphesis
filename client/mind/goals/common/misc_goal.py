@@ -216,8 +216,7 @@ class feed(Goal):
         if me.things.has_key(self.what)==0: return
         food=me.find_thing(self.what)[0]
         ent=Entity(food.id)
-        ent1=Entity(me.id)
-        return Operation("eat",ent,ent1,to=food,from_=me)
+        return Operation("eat",ent,to=food)
     def am_i_full(self,me):
         if hasattr(me,"food") and hasattr(me,"weight"):
             if me.food > (self.full * me.weight):

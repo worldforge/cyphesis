@@ -59,9 +59,7 @@ class Animal(Thing):
         res.append(Operation("set", ent, to = self))
         return res
     def nourish_operation(self, op):
-        weight=1
-        if len(op) > 1:
-            weight=op[1].weight
+        weight=op[0].weight
         self.food = self.food + weight
         #ent = Entity(self.id)
         #ent.status = self.status + energyGain
@@ -71,10 +69,7 @@ class Animal(Thing):
     def eat_operation(self, op):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)
-        #to_ = self.world.get_object(op[1].id)
-        #if not to_:
-            #return self.error(op,"To is undefined object")
-        to_ = op[1].id
-        ent.weight=self.weight
-        res = res + Operation("nourish",op[1],ent,to=to_,from_=self)
+        to_ = op.from_
+        nour=Entity(to_,weight=self.weight)
+        res = res + Operation("nourish",nour,to=to_)
         return res

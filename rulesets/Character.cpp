@@ -5,11 +5,13 @@
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Combine.h>
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sound.h>
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Delete.h>
+#include <Atlas/Objects/Operation/Divide.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Talk.h>
@@ -54,6 +56,8 @@ using Atlas::Message::Object;
 
 static const bool debug_flag = false;
 
+//-------------------------------MovementInfo-------------------------------
+
 MovementInfo::MovementInfo(Character * body) : body(body)
 {
     serialno=-1;
@@ -81,21 +85,21 @@ void MovementInfo::check_collisions(const Location & loc)
     // the next tick in consts::basic_tick seconds
     double collTime = consts::basic_tick + 1;
     list_t::const_iterator I;
-    cout << "checking " << body->fullid << loc.coords << loc.velocity << " against ";
+    // cout << "checking " << body->fullid << loc.coords << loc.velocity << " against ";
     for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
         if ((*I) == loc.ref) { continue; }
         const Location & oloc = (*I)->location;
         if (!oloc.bbox) { continue; }
         double t = loc.hitTime(oloc);
         if (t < 0) { continue; }
-        cout << (*I)->fullid << oloc.coords << oloc.velocity;
-        cout << "[" << t << "]";
+        // cout << (*I)->fullid << oloc.coords << oloc.velocity;
+        // cout << "[" << t << "]";
         collTime = min(collTime, t);
     }
-    cout << endl << flush;
+    // cout << endl << flush;
     if (collTime > consts::basic_tick) { return; }
     // Collision!
-    cout << "COLLISION" << endl << flush;
+    // cout << "COLLISION" << endl << flush;
     if (collTime < get_tick_addition(loc.coords)) {
         target_location = loc.coords + loc.velocity * collTime;
     }
@@ -240,13 +244,42 @@ double MovementInfo::get_tick_addition(const Vector3D & coordinates) const
     return consts::basic_tick;
 }
 
-Character::Character() : movement(this), autom(0),
-                         mind(NULL), external_mind(NULL), player(NULL),
-                         drunkness(0.0), sex("female")
+//-------------------------------Character----------------------------------
+
+inline oplist Character::metabolise(double ammount = 1)
+{
+    // Currently handles energy
+    // We should probably call this whenever the entity performs a movement.
+    Object::MapType ent;
+    ent["id"] = fullid;
+    if ((status > (1.5 + energyLoss)) && (weight < maxweight)) {
+        status = status - energyLoss;
+        ent["weight"] = weight + weightGain;
+    }
+    double energyUsed = energyConsumption * ammount;
+    if ((status <= energyUsed) && (weight > weightConsumption)) {
+        ent["status"] = status - energyUsed + energyGain;
+        ent["weight"] = weight - weightConsumption;
+    } else {
+        ent["status"] = status - energyUsed;
+    }
+
+    Set * s = new Set();
+    *s = Set::Instantiate();
+    s->SetTo(fullid);
+    s->SetArgs(Object::ListType(1,ent));
+
+    return oplist(1,s);
+}
+
+Character::Character() : movement(this), autom(0), mind(NULL),
+                         external_mind(NULL), player(NULL), drunkness(0.0),
+                         sex("female"), food(0), maxweight(100)
 {
     is_character = true;
     weight = 60;
     location.bbox = Vector3D(0.25, 0.25, 1);
+    location.bmedian = Vector3D(0, 0, 1);
 }
 
 Character::~Character()
@@ -304,8 +337,8 @@ oplist Character::Operation(const Setup & op)
 
     mind = new BaseMind(fullid, name);
     string mind_class("NPCMind"), mind_package("mind.NPCMind");
-    if (global_conf->findItem("minds", type)) {
-        mind_package = global_conf->getItem("minds", type);
+    if (global_conf->findItem("mind", type)) {
+        mind_package = global_conf->getItem("mind", type);
         mind_class = type + "Mind";
     }
     Create_PyThing(mind, mind_package, mind_class);
@@ -342,18 +375,14 @@ oplist Character::Operation(const Tick & op)
         debug( cout << "Has sub_to" << endl << flush;);
         return oplist();
     }
-#ifdef DEBUG_MOVEMENT
-        cout << "================================" << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+    debug(cout << "================================" << endl << flush;);
     const Message::Object::ListType & args = op.GetArgs();
     if ((0 != args.size()) && (args.front().IsMap())) {
         Message::Object::MapType arg1 = args.front().AsMap();
         if ((arg1.find("serialno") != arg1.end()) &&
            (arg1["serialno"].IsInt())) {
             if (arg1["serialno"].AsInt() < movement.serialno) {
-#ifdef DEBUG_MOVEMENT
-                    cout << "Old tick" << endl << flush;
-#endif /* DEBUG_MOVEMENT */
+                debug(cout << "Old tick" << endl << flush;);
                 return oplist();
             }
         }
@@ -376,12 +405,40 @@ oplist Character::Operation(const Tick & op)
         }
     } else {
         oplist res;
-        // Could implement quite a lot of Animal.py here.
         script_Operation("tick", op, res);
+
+        // DIGEST
+        if ((food >= foodConsumption) && (status < 2)) {
+            // It is important that the metabolise bit is done next, as this
+            // handles the status change
+            status = status + foodConsumption;
+            food = food - foodConsumption;
+
+            Object::MapType food_ent;
+            food_ent["id"] = fullid;
+            food_ent["food"] = food;
+            Set s = Set::Instantiate();
+            s.SetTo(fullid);
+            s.SetArgs(Object::ListType(1,food_ent));
+
+            Sight * si = new Sight();
+            *si = Sight::Instantiate();
+            si->SetTo(fullid);
+            si->SetArgs(Object::ListType(1,s.AsObject()));
+            res.push_back(si);
+        }
+
+        // METABOLISE
+        oplist mres = metabolise();
+        for(oplist::const_iterator I = mres.begin(); I != mres.end(); I++) {
+            res.push_back(*I);
+        }
+        
+        // TICK
         RootOperation * tickOp = new Tick();
         *tickOp = Tick::Instantiate();
         tickOp->SetTo(fullid);
-        tickOp->SetFutureSeconds(consts::basic_tick);
+        tickOp->SetFutureSeconds(consts::basic_tick * 30);
         res.push_back(tickOp);
         return res;
     }
@@ -396,6 +453,56 @@ oplist Character::Operation(const Talk & op)
     Message::Object::ListType args(1,op.AsObject());
     s->SetArgs(args);
     return oplist(1,s);
+}
+
+oplist Character::Operation(const Eat & op)
+{
+    // This is identical to Foof::Operation(Eat &)
+    // Perhaps animal should inherit from Food?
+    oplist res;
+    if (script_Operation("eat", op, res) != 0) {
+        return(res);
+    }
+    Object::MapType self_ent;
+    self_ent["id"] = fullid;
+    self_ent["status"] = -1;
+
+    Set * s = new Set();
+    *s = Set::Instantiate();
+    s->SetTo(fullid);
+    s->SetArgs(Object::ListType(1,self_ent));
+
+    const string & to = op.GetFrom();
+    Object::MapType nour_ent;
+    nour_ent["id"] = to;
+    nour_ent["weight"] = weight;
+    Nourish * n = new Nourish();
+    *n = Nourish::Instantiate();
+    n->SetTo(to);
+    n->SetArgs(Object::ListType(1,nour_ent));
+
+    oplist res2;
+    res2[0] = s;
+    res2[1] = n;
+    return res2;
+}
+
+oplist Character::Operation(const Nourish & op)
+{
+    Object::MapType nent = op.GetArgs().front().AsMap();
+    food = food + nent["weight"].AsNum();
+
+    Object::MapType food_ent;
+    food_ent["id"] = fullid;
+    food_ent["food"] = food;
+    Set s = Set::Instantiate();
+    s.SetArgs(Object::ListType(1,food_ent));
+
+    Sight * si = new Sight();
+    *si = Sight::Instantiate();
+    si->SetTo(fullid);
+    si->SetArgs(Object::ListType(1,s.AsObject()));
+    return oplist(1,si);
 }
 
 oplist Character::Mind_Operation(const Setup & op)

@@ -2,14 +2,11 @@
 thing		= ""
 house		= "world.objects.buildings.House"
 stonehouse	= "world.objects.building.StoneHouse"
-vodka		= "world.objects.food.Vodka"
-ham		= "world.objects.food.Ham"
 axe		= "world.objects.tools.Axe"
 sword		= "world.objects.tools.Sword"
 coin		= "world.objects.tools.Coin"
 lumber		= "world.objects.materials.Lumber"
 fire		= "world.objects.elements.Fire"
-tree		= "world.objects.plants.Tree"
 seed		= "world.objects.plants.Seed"
 
 [character]
@@ -18,4 +15,13 @@ guard		= ""
 butcher		= ""
 merchant	= ""
 creator		= ""
+
+[plant]
+tree		= "world.objects.plants.Tree"
+
+[animal]
 animal		= "world.objects.animals.Animal"
+
+[food]
+ham		= ""
+vodka		= "world.objects.food.Vodka"

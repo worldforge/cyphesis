@@ -42,12 +42,23 @@ class Character : public Thing {
     MovementInfo movement;
     friend class MovementInfo;
     int autom;
+
+    static const double energyConsumption = 0.001;
+    static const double foodConsumption = 0.1;
+    static const double weightConsumption = 1.0;
+    static const double energyGain = 0.5;
+    static const double energyLoss = 0.1;
+    static const double weightGain = 0.5;
+
+    oplist metabolise(double ammount = 1); 
   public:
     BaseMind * mind;
     ExternalMind * external_mind;
     Account * player;
     double drunkness;
     string sex;
+    double food;
+    double maxweight;
 
     Character();
     virtual ~Character();
@@ -59,6 +70,8 @@ class Character : public Thing {
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
     virtual oplist Operation(const Talk & op);
+    virtual oplist Operation(const Eat & op);
+    virtual oplist Operation(const Nourish & op);
     virtual oplist Mind_Operation(const Login & op) { oplist res; return(res); }
     virtual oplist Mind_Operation(const Create & op);
     virtual oplist Mind_Operation(const Cut & op);

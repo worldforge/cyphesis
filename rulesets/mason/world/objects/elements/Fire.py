@@ -46,9 +46,7 @@ class Fire(Thing):
         return Message(opFire,Operation("sight",opFire,to='all'),opTick,opSet)
     def nourish_operation(self, op):
         #Increase fire
-        inc=0.1
-        if len(op) > 1:
-            inc=op[1].weight
+        inc=op[0].weight
         self.status=self.status+inc
         #No need to send a set. The next tick will deal with that.
     def move_operation(self, op): pass
