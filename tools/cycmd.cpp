@@ -49,13 +49,14 @@ using Atlas::Objects::Operation::Talk;
 static void help()
 {
     std::cout << "Cyphesis commands:" << std::endl << std::endl;
+    std::cout << "    get	Examine a class on the server" << std::endl;
     std::cout << "    stat	Return current server status" << std::endl;
     std::cout << "    look	Return current server lobby" << std::endl;
     std::cout << "    logout	Log user out of server" << std::endl;
     std::cout << "    load	Load world state from database status" << std::endl;
+    std::cout << "    query	Examine an object on the server" << std::endl;
     std::cout << "    save	Save world state to database status" << std::endl;
-    std::cout << "    shutdown	Initiate server shutdown" << std::endl<< std::endl;
-    std::cout << "Other commands will be passed on to the server using a set operation" << std::endl << std::flush;
+    std::cout << std::endl << std::flush;
 }
 
 class Interactive : public Atlas::Objects::Decoder
@@ -405,30 +406,29 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         Get g = Get::Instantiate();
 
         Object::MapType cmap;
-        cmap["id"] = "server";
-        cmap["cmd"] = cmd;
         cmap["objtype"] = "object";
         if (!arg.empty()) {
-            cmap["arg"] = arg;
+            cmap["id"] = arg;
+        }
+        g.SetArgs(Object::ListType(1,cmap));
+        g.SetFrom(accountId);
+
+        encoder->StreamMessage(&g);
+    } else if (cmd == "get") {
+        Get g = Get::Instantiate();
+
+        Object::MapType cmap;
+        cmap["objtype"] = "class";
+        if (!arg.empty()) {
+            cmap["id"] = arg;
         }
         g.SetArgs(Object::ListType(1,cmap));
         g.SetFrom(accountId);
 
         encoder->StreamMessage(&g);
     } else {
-        Set s = Set::Instantiate();
-
-        Object::MapType cmap;
-        cmap["id"] = "server";
-        cmap["cmd"] = cmd;
-        cmap["objtype"] = "object";
-        if (!arg.empty()) {
-            cmap["arg"] = arg;
-        }
-        s.SetArgs(Object::ListType(1,cmap));
-        s.SetFrom(accountId);
-
-        encoder->StreamMessage(&s);
+	reply_expected = false;
+	std::cout << cmd << ": Command not know" << std::endl << std::flush;
     }
 
     ios << std::flush;

@@ -329,6 +329,9 @@ OpVector Connection::GetOperation(const Get & op)
         info->SetSerialno(server.getSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
+	if (!args.front().IsMap()) {
+	    return error(op, "Get op arg is not a map");
+	}
         Fragment::MapType::const_iterator I = args.front().AsMap().find("id");
         if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
             return error(op, "Type definition requested with no id");

@@ -6,6 +6,8 @@
 
 #include <Atlas/Objects/Operation/Create.h>
 
+#include <common/types.h>
+
 std::set<std::string> Player::playableTypes;
 
 Player::Player(Connection * conn, const std::string& username,
@@ -44,7 +46,15 @@ OpVector Player::characterError(const Create& op,const Fragment::MapType& ent) c
     }
 #endif
 
-    const std::string& type = ent.find("parents")->second.AsList().front().AsString(); 
+    I = ent.find("parents");
+    if ((I == ent.end()) || !I->second.IsList()) {
+	return error(op, "You cannot create a character with no type.");
+    }
+    const Fragment::ListType & parents = I->second.AsList();
+    if (parents.empty() || !parents.front().IsString()) {
+	return error(op, "You cannot create a character with non-string type.");
+    }
+    const std::string& type = parents.front().AsString(); 
     if (Player::playableTypes.find(type) == Player::playableTypes.end()) {
         return error(op, "You cannot create a character of this type.");
     }

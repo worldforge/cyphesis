@@ -1,3 +1,12 @@
+2002-11-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp, server/Admin.cpp: Clean up admin interface so its
+	  a bit more Atlas compliant.
+
+	* server/Connection.cpp, server/Player.cpp: Improve some checking.
+
+	* server/EntityFactory.cpp: Remove dead commented out code.
+
 2002-10-31  Al Riddoch  <alriddoch@zepler.org>
 
 	* cyphesis.init: Add code to load rules and map into the database

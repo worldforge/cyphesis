@@ -13,6 +13,7 @@
 #include <rulesets/BaseMind.h>
 
 #include <common/debug.h>
+#include <common/inheritance.h>
 
 #include <common/Load.h>
 #include <common/Save.h>
@@ -45,7 +46,7 @@ OpVector Admin::LogoutOperation(const Logout & op)
 {
     const Fragment::ListType & args = op.GetArgs();
     
-    if (args.empty()) {
+    if (args.empty() || !args.front().IsMap()) {
         return Account::LogoutOperation(op);
     } else {
         Fragment::MapType::const_iterator I = args.front().AsMap().find("id");
@@ -124,7 +125,7 @@ void Admin::load(Persistance * p, const std::string & id, int & count)
     Fragment::MapType::const_iterator I;
     I = entity.find("parents");
     std::string type("thing");
-    if ((I != entity.end()) && I->second.IsList()) {
+    if ((I != entity.end()) && I->second.IsList() && !I->second.AsList().empty()) {
         type = I->second.AsList().front().AsString();
     }
     if (id != "world_0") {
@@ -189,88 +190,100 @@ OpVector Admin::LoadOperation(const Load & op)
 
 OpVector Admin::GetOperation(const Get & op)
 {
-    const Fragment & ent = op.GetArgs().front();
-    try {
-        const Fragment::MapType & emap = ent.AsMap();
-        const std::string & id = emap.find("id")->second.AsString();
-        if (id == "server") {
-            const std::string & cmd = emap.find("cmd")->second.AsString();
-            Fragment arg;
-            Fragment::MapType::const_iterator I = emap.find("arg");
-            if (I != emap.end()) {
-                arg = I->second;
-            }
-            if (cmd == "query") {
-                if (!arg.IsString()) {
-                    return error(op, "query with no id given");
-                }
-                const std::string & ent_id = arg.AsString();
-                if (ent_id.empty()) {
-                    return error(op, "query id invalid");
-                }
-                const BaseDict & OOGDict = world->server.getObjects();
-                BaseDict::const_iterator I = OOGDict.find(ent_id);
-                const EntityDict & worldDict = world->getObjects();
-                EntityDict::const_iterator J = worldDict.find(ent_id);
+    const Fragment::ListType & args = op.GetArgs();
+    if (args.empty()) {
+	return error(op, "Get has no args.");
+    }
+    const Fragment & ent = args.front();
+    if (!ent.IsMap()) {
+	return error(op, "Get arg is not a map.");
+    }
+    const Fragment::MapType & emap = ent.AsMap();
+    Fragment::MapType::const_iterator I = emap.find("objtype");
+    if (I == emap.end() || !I->second.IsString()) {
+	return error(op, "Get arg has no objtype.");
+    }
+    const std::string & objtype = I->second.AsString();
+    I = emap.find("id");
+    if (I == emap.end() || !I->second.IsString()) {
+	return error(op, "Get arg has no id.");
+    }
+    const std::string & id = I->second.AsString();
+    if (id.empty()) {
+        return error(op, "query id invalid");
+    }
+    Info * info = new Info(Info::Instantiate());
+    if (objtype == "object") {
+        const BaseDict & OOGDict = world->server.getObjects();
+        BaseDict::const_iterator J = OOGDict.find(id);
+        const EntityDict & worldDict = world->getObjects();
+        EntityDict::const_iterator K = worldDict.find(id);
 
-                if ((I == OOGDict.end()) && (J == worldDict.end())) {
-                    return error(op, "query id not found");
-                }
-
-                Info * info = new Info(Info::Instantiate());
-                if (I != OOGDict.end()) {
-                    info->SetArgs(Fragment::ListType(1,I->second->asObject()));
-                } else {
-                    info->SetArgs(Fragment::ListType(1,J->second->asObject()));
-                }
-                info->SetRefno(op.GetSerialno());
-                info->SetSerialno(connection->server.getSerialNo());
-                return OpVector(1,info);
-            } else {
-                return error(op, "Unknown command");
-            }
+        if (J != OOGDict.end()) {
+            info->SetArgs(Fragment::ListType(1,J->second->asObject()));
+        } else if (K != worldDict.end()) {
+            info->SetArgs(Fragment::ListType(1,K->second->asObject()));
+        } else {
+            delete info;
+            return error(op, "Get id not found");
         }
+    } else if ((objtype == "class") ||
+               (objtype == "meta") ||
+               (objtype == "op_definition")) {
+        Atlas::Objects::Root * o = Inheritance::instance().get(id);
+        if (o == NULL) {
+            delete info;
+            return error(op, "Unknown type definition requested");
+        }
+        info->SetArgs(Fragment::ListType(1,o->AsObject()));
+    } else {
+	delete info;
+	return error(op, "Unknow object type requested");
     }
-    catch (...) {
-        return error(op, "Invalid get");
-    }
-    return OpVector();
+    info->SetRefno(op.GetSerialno());
+    info->SetSerialno(connection->server.getSerialNo());
+    return OpVector(1,info);
 }
 
 OpVector Admin::SetOperation(const Set & op)
 {
-    const Fragment & ent = op.GetArgs().front();
-    try {
-        const Fragment::MapType & emap = ent.AsMap();
-        const std::string & id = emap.find("id")->second.AsString();
-        const std::string & objtype = emap.find("objtype")->second.AsString();
-        if (id == "server") {
-            const std::string & cmd = emap.find("cmd")->second.AsString();
-            if (cmd == "shutdown") {
-                exit_flag = true;
-                Fragment::MapType report;
-                report["message"] = "Shutdown initiated";
-                Info * info = new Info(Info::Instantiate());
-                Fragment::ListType args(1,report);
-                info->SetArgs(args);
-                info->SetRefno(op.GetSerialno());
-                info->SetSerialno(connection->server.getSerialNo());
-                return OpVector(1,info);
-            } else {
-                return error(op, "Unknown command");
-            }
-        } else if (objtype == "class") {
-            // Install a new type from the client
-            // const std::string & parent = emap.find("parents")->second.AsList().front().AsString();
-            // std::string script;
-            // Fragment::MapType::const_iterator I = emap.find("script");
-            // if ((I != emap.end()) && I->second.IsString()) {
-                // script = I->second.AsString();
-            // }
-        }
+    const Fragment::ListType & args = op.GetArgs();
+    if (args.empty()) {
+	return error(op, "Set has no args.");
     }
-    catch (...) {
-        return error(op, "Invalid set");
+    const Fragment & ent = args.front();
+    if (!ent.IsMap()) {
+	return error(op, "Set arg is not a map.");
+    }
+    const Fragment::MapType & emap = ent.AsMap();
+    Fragment::MapType::const_iterator I = emap.find("objtype");
+    if (I == emap.end() || !I->second.IsString()) {
+	return error(op, "Set arg has no objtype.");
+    }
+    const std::string & objtype = I->second.AsString();
+    I = emap.find("id");
+    if (I == emap.end() || !I->second.IsString()) {
+	return error(op, "Set arg has no id.");
+    }
+    const std::string & id = I->second.AsString();
+
+    if (objtype == "object") {
+        // Manipulate attributes of existing objects.
+    } else if (objtype == "class") {
+        // Install a new type from the client
+        // It is possible this should actually be a create op that does
+        // this. If so, set could perhaps be used to change things
+        // in existing classes.
+        // const std::string & parent = emap.find("parents")->second.AsList().front().AsString();
+        // std::string script;
+        // Fragment::MapType::const_iterator I = emap.find("script");
+        // if ((I != emap.end()) && I->second.IsString()) {
+        // script = I->second.AsString();
+        // }
+    } else if (objtype == "op_definition") {
+        // Install a new op type? Perhaps again this should be a create.
+    } else {
+	return error(op, "Unknow object type set");
     }
     return OpVector();
 }

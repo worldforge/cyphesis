@@ -186,14 +186,4 @@ FactoryBase * EntityFactory::getFactory(const std::string & parent)
         return new ThingFactory<Thing>();
     }
     return I->second->dupFactory();
-#if 0
-    if (parent == "thing") { return new ThingFactory<Thing>(); }
-    if (parent == "character") { return new ThingFactory<Character>(); }
-    if (parent == "creator") { return new ThingFactory<Creator>(); }
-    if (parent == "plant") { return new ThingFactory<Plant>(); }
-    if (parent == "food") { return new ThingFactory<Food>(); }
-    if (parent == "stackable") { return new ThingFactory<Stackable>(); }
-    if (parent == "structure") { return new ThingFactory<Structure>(); }
-    return new ThingFactory<Thing>();
-#endif
 }
