@@ -182,7 +182,6 @@ bool predictCollision(const Location & l,  // This location
                       double & time,       // Returned time to collision
                       Vector3D & normal)   // Returned normal acting on l
 {
-    // FIXME Handle non-valid velocity
     // FIXME Handle entities which have no box - just one vertex I think
     // FIXME THe mesh conversion process below should probably be eliminated
     // by generating the data when bBox or orienation are changed.

@@ -1,7 +1,3 @@
-Definitly still some collision bugs in there. In a cluttered space, character
-does not seem to be able to move at all, even though there is clearly
-sufficient space.
-
 Looks like zero collision time results in move then stop being sent
 almost immediatly. Check for it, and send nothing.
 

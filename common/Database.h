@@ -51,6 +51,8 @@ class Database {
   public:
     typedef enum { OneToMany, ManyToMany, ManyToOne, OneToOne } RelationType;
 
+    PGconn * getConnection() const { return m_connection; }
+
     const std::string & rule() const { return m_rule_db; }
 
     bool decodeObject(const std::string & data,

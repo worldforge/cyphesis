@@ -22,6 +22,7 @@ cyphesis_SOURCES = \
 		TrustedConnection.cpp TrustedConnection.h \
 		CommSocket.cpp CommSocket.h \
 		CommIdleSocket.cpp CommIdleSocket.h \
+		CommPSQLSocket.cpp CommPSQLSocket.h \
 		CommListener.cpp CommListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
 		CommClient.cpp CommClient.h \
@@ -55,6 +56,7 @@ cyslave_SOURCES = \
 		TrustedConnection.cpp TrustedConnection.h \
 		CommSocket.cpp CommSocket.h \
 		CommIdleSocket.cpp CommIdleSocket.h \
+		CommPSQLSocket.cpp CommPSQLSocket.h \
 		CommListener.cpp CommListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
 		CommClient.cpp CommClient.h \
