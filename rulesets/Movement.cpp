@@ -18,7 +18,8 @@ static const bool debug_flag = false;
 
 Movement::Movement(Thing & body) : m_body(body), m_lastMovementTime(-1),
                                    m_velocity(0,0,0), m_serialno(0),
-                                   m_collRef(NULL), m_collAxis(-1)
+                                   m_collEntity(NULL), m_collRefChange(false),
+                                   m_collAxis(-1)
 {
 }
 
@@ -38,7 +39,7 @@ void Movement::checkCollisions(const Location & loc)
     double collTime = consts::basic_tick + 1;
     elist_t::const_iterator I;
     // cout << "checking " << body->fullid << loc.coords << loc.velocity << " against ";
-    Entity * collEntity = NULL;
+    m_collEntity = NULL;
     for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
         // if ((*I) == loc.ref) { continue; }
         if ((*I) == &m_body) { continue; }
@@ -50,7 +51,7 @@ void Movement::checkCollisions(const Location & loc)
         // cout << (*I)->fullid << oloc.coords << oloc.velocity;
         // cout << "[" << t << "]";
         if (t < collTime) {
-            collEntity = *I;
+            m_collEntity = *I;
             m_collAxis = axis;
         }
         collTime = min(collTime, t);
@@ -69,27 +70,30 @@ void Movement::checkCollisions(const Location & loc)
         collTime = min(collTime, t);
         if (collTime > consts::basic_tick) { return; }
         debug(cout << "Collision with parent bounding box" << endl << flush;);
-        m_collRef = oloc.ref;
-    } else if (!collEntity->location.solid) {
+        m_collEntity = oloc.ref;
+        m_collRefChange = true;
+    } else if (!m_collEntity->location.solid) {
         debug(cout << "Collision with non-solid object" << endl << flush;);
         // Non solid container - check for collision with its contents.
-        const Location & lc2 = collEntity->location;
+        const Location & lc2 = m_collEntity->location;
         Location rloc(loc);
-        rloc.ref = collEntity; rloc.coords = loc.coords - lc2.coords;
+        rloc.ref = m_collEntity; rloc.coords = loc.coords - lc2.coords;
         double coll2Time = consts::basic_tick + 1;
-        // rloc is coords of character ref collEntity
-        for(I = lc2.ref->contains.begin(); I != lc2.ref->contains.end(); I++) {
+        // rloc is coords of character with ref to m_collEntity
+        for(I = m_collEntity->contains.begin(); I != m_collEntity->contains.end(); I++) {
             const Location & oloc = (*I)->location;
             if (!oloc.bbox) { continue; }
-            double t = rloc.hitTime(oloc, m_collAxis);
+            int axis;
+            double t = rloc.hitTime(oloc, axis);
             if (t < 0) { continue; }
             coll2Time = min(coll2Time, t);
         }
         if (coll2Time > collTime) {
-            debug(cout << "passing into it" << endl << flush;);
+            debug(cout << "passing into it " << collTime << ":"
+                       << coll2Time << endl << flush;);
             // We are entering collEntity.
             // Set collRef ????????????????
-            m_collRef = collEntity;
+            m_collRefChange = true;
             // if (coll2Time > consts::basic_tick) { return; }
         }
     }
@@ -99,14 +103,16 @@ void Movement::checkCollisions(const Location & loc)
                    << loc.velocity << "*" << collTime;);
         m_collPos = loc.coords + loc.velocity * collTime;
     } else {
-        m_collRef = NULL;
+        m_collEntity = NULL;
+        m_collRefChange = false;
     }
 }
 
 void Movement::reset()
 {
     ++m_serialno;
-    m_collRef = NULL;
+    m_collEntity = NULL;
+    m_collRefChange = false;
     m_collPos = Vector3D();
     m_collAxis = -1;
     m_targetPos=Vector3D();

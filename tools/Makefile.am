@@ -1,6 +1,6 @@
 bin_PROGRAMS = cypasswd cycmd cydbload cyisoload
 
-cypasswd_SOURCES = cypasswd.cpp
+cypasswd_SOURCES = cypasswd.cpp sstream.h iotraits.h
 
 cypasswd_LDADD = 
 
@@ -12,6 +12,8 @@ cydbload_SOURCES = cydbload.cpp
 
 cydbload_LDADD = ../common/database.o
 
-cyisoload_SOURCES = cyisoload.cpp
+cyisoload_SOURCES = cyisoload.cpp sstream.h iotraits.h
 
 cyisoload_LDADD = ../common/database.o
+
+EXTRA_DIST = sstream.cc

@@ -16,7 +16,7 @@ class Character : public Thing {
     Movement & movement;
     bool autom;
     double drunkness;
-    string sex;
+    std::string sex;
     double food;
     double maxWeight;
     bool isAlive;
@@ -38,8 +38,8 @@ class Character : public Thing {
     Character();
     virtual ~Character();
 
-    virtual const Atlas::Message::Object & operator[](const string & aname);
-    virtual void set(const string & aname, const Atlas::Message::Object & attr);
+    virtual const Atlas::Message::Object& operator[](const std::string & aname);
+    virtual void set(const std::string & aname, const Atlas::Message::Object & attr);
 
     virtual void addToObject(Atlas::Message::Object &) const;
 

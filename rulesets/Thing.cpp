@@ -36,14 +36,8 @@ Thing::~Thing() { }
 
 oplist Thing::SetupOperation(const Setup & op)
 {
-    oplist res;
-    if (script->Operation("setup", op, res) != 0) {
-        return res;
-    }
-    oplist r(2);
-    RootOperation * tick = new Tick(Tick::Instantiate());
-    tick->SetTo(fullid);
-    r[0] = tick;
+    oplist res(1);
+
     // This is a bit of a hack that I am not entirely happy with.
     // We broadcast a sight of create of ourselves so that everything
     // nearby can see us. This is to get round the fact that the sight
@@ -53,8 +47,17 @@ oplist Thing::SetupOperation(const Setup & op)
     Create c(Create::Instantiate());
     c.SetArgs(Object::ListType(1,asObject()));
     sight->SetArgs(Object::ListType(1, c.AsObject()));
-    r[1] = sight;
-    return r;
+    res[0] = sight;
+
+    if (script->Operation("setup", op, res) != 0) {
+        return res;
+    }
+
+    RootOperation * tick = new Tick(Tick::Instantiate());
+    tick->SetTo(fullid);
+    res.push_back(tick);
+
+    return res;
 }
 
 oplist Thing::ActionOperation(const Action & op)

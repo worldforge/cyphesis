@@ -19,7 +19,7 @@ usage(char ** argv)
 
 typedef enum ctask {CY_START, CY_STOP, CY_KILL, CY_RESTART, CY_REINIT } ctask_t;
 
-char * inst_dir = INSTALLDIR;
+char * inst_dir = SHAREDIR;
 char * pid_filename = "/var/tmp/cyphesisd.pid";
 
 void daemon_kill(int pid, int signo)

@@ -2,18 +2,10 @@ Definitly for Acorn 0.4:
 
   Use drunkness.
 
-  Ensure that database creation is handled cleanly, including making the
-  directories at install time, and putting it into the same hierarchy
-  as the rest of the files.
-
   Initialise people so they are not facing east. Islam has not been invented
   yet, and statistically some of the people must be of some other religion.
 
-  Trim down the bounding boxes on trees so they are sensible size.
-
   Implement a time mechanism. This would probably best be a person.
-
-  Client should not assume that mode is birth when entity appearance received.
 
   Fix lych behavoir and get it moving around.
 
@@ -21,7 +13,7 @@ Definitly for Acorn 0.4:
 
   Add some sitting NPCs. Use mode="sitt" for sitting NPCs.
 
-  Return error if attempting to login to account that is already logged in.
+  Add sending of touch op on collision.
 
 Provisional for Acorn 0.4:
 

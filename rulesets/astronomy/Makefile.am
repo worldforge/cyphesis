@@ -1,4 +1,4 @@
 noinst_LIBRARIES = libastronomy.a
 
 libastronomy_a_SOURCES = Test.cpp \
-			Body.h Planet.h World.h Moon.h
+			Body.h Planet.h World.h Moon.h Astronomy.h Sun.h

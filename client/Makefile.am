@@ -2,13 +2,13 @@ atlas:
 	(cd ../../../protocols; tar cf - atlas/libatlas/libAtlasPy/*.py) | tar xf -
 
 dist-hook: atlas
-	tar cf - `find . -name \*.py` | (cd $(distdir); tar xf -)
-	cp acorn acorn_graphic $(distdir)/
+	tar cf - `find . -name \*.py` | (cd $(DESTDIR)$(distdir); tar xf -)
+	cp acorn acorn_graphic $(DESTDIR)$(distdir)/
 
 
 install-data-local: atlas
-	mkdirhier $(datadir)/cyphesis/client
-	tar cf - `find . -name \*.py` | (cd $(datadir)/cyphesis/client; tar xf -)
-	cat acorn | sed 's%PREFIX%$(datadir)\/cyphesis%' > $(bindir)/acorn
-	cat acorn_graphic | sed 's%PREFIX%$(datadir)\/cyphesis%' > $(bindir)/acorn_graphic
-	chmod 755 $(bindir)/acorn $(bindir)/acorn_graphic
+	mkdirhier $(DESTDIR)$(datadir)/cyphesis/client
+	tar cf - `find . -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/client; tar xf -)
+	cat acorn | sed 's%PREFIX%$(datadir)\/cyphesis%' > $(DESTDIR)$(bindir)/acorn
+	cat acorn_graphic | sed 's%PREFIX%$(datadir)\/cyphesis%' > $(DESTDIR)$(bindir)/acorn_graphic
+	chmod 755 $(DESTDIR)$(bindir)/acorn $(DESTDIR)$(bindir)/acorn_graphic

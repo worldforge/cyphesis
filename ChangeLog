@@ -1,3 +1,28 @@
+2001-06-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* Fixed up build files to install in a conformant way.
+
+	* acorn.vconf: Added in new building classes which set up
+	  wall objects for collision purposes. Building now seem to
+	  work.
+
+	* common/database.cpp, common/database.h, common/globals.cpp,
+	  common/globals.h, rulesets/Python_API.cpp, server/server.cpp,
+	  watchdog/control.c, watchdog/watchdog.c: Implemented
+	  correct way of getting installation directories from
+	  autoconf.
+
+	* rulesets/Movement.h, rulesets/Movement.cpp, rulesets/Pedestrian.h,
+	  rulesets/Pedestrian.cpp: Fixed collisions with the solid
+	  wall of a structure.
+
+	* rulesets/Thing.cpp: Modified setup operation so that a sight
+	  of create operation is always generated even if setup is
+	  overloaded.
+
+	* Many fixes from Anders Petersson to get the build working under
+	  debian.
+
 2001-06-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/define_world.py: Removed heap of coins from startup.

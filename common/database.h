@@ -40,12 +40,10 @@ class Database {
     Db world_db;
     Db mind_db;
     Db server_db;
+    string db_file;
     Decoder m_d;
 
-    Database() : account_db(NULL, DB_CXX_NO_EXCEPTIONS),
-                   world_db(NULL, DB_CXX_NO_EXCEPTIONS),
-                    mind_db(NULL, DB_CXX_NO_EXCEPTIONS),
-                  server_db(NULL, DB_CXX_NO_EXCEPTIONS) { }
+    Database();
 
     bool decodeObject(Dbt & data, Atlas::Message::Object &);
     bool putObject(Db &, const Atlas::Message::Object &, const char * key);

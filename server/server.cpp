@@ -470,11 +470,6 @@ int main(int argc, char ** argv)
     // Initialise the varconf system, and get a pointer to the config database
     global_conf = varconf::Config::inst();
 
-    // Default installation directory
-    if (install_directory=="NONE") {
-        install_directory = "/usr/local";
-    }
-
     // Initialise the persistance subsystem. If we have been built with
     // database support, this will open the various databases used to
     // store server data.
@@ -492,14 +487,14 @@ int main(int argc, char ** argv)
     // chosen is fixed.
     global_conf->getCmdline(argc, argv);
     if (global_conf->findItem("cyphesis", "directory")) {
-        install_directory = global_conf->getItem("cyphesis", "directory");
+        share_directory = global_conf->getItem("cyphesis", "directory");
         if (home != NULL) {
             global_conf->writeToFile(string(home) + "/.cyphesis.vconf");
         }
     }
     // Load up the rest of the system config file, and then ensure that
     // settings are overridden in the users config file, and the command line
-    global_conf->readFromFile(install_directory + "/share/cyphesis/cyphesis.vconf");
+    global_conf->readFromFile(share_directory + "/cyphesis/cyphesis.vconf");
     if ((home = getenv("HOME")) != NULL) {
         global_conf->readFromFile(string(home) + "/.cyphesis.vconf");
     }
@@ -511,7 +506,7 @@ int main(int argc, char ** argv)
         ruleset = global_conf->getItem("cyphesis", "ruleset");
         global_conf->erase("cyphesis", "ruleset");
         cout << "Reading in " << ruleset << endl << flush;
-        EntityFactory::instance()->readRuleset(install_directory + "/share/cyphesis/" + ruleset);
+        EntityFactory::instance()->readRuleset(share_directory + "/cyphesis/" + ruleset);
         rulesets.push_back(ruleset);
     };
     // If the restricted flag is set in the config file, then we

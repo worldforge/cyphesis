@@ -41,7 +41,6 @@ AC_PROG_CXX
 CXXFLAGS='-Wall -Winline -ggdb3 -pg'
 
 AC_PREFIX_DEFAULT("/usr/local")
-AC_DEFINE_UNQUOTED(INSTALLDIR,"$prefix")
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
 dnl Test for WorldForge Atlas Libraries

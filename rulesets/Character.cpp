@@ -288,11 +288,17 @@ oplist Character::EatOperation(const Eat & op)
 oplist Character::NourishOperation(const Nourish & op)
 {
     const Object::MapType & nent = op.GetArgs().front().AsMap();
-    food = food + nent.find("weight")->second.AsNum();
+    Object::MapType::const_iterator I = nent.find("weight");
+    if (I == nent.end()) { return oplist(); }
+    food = food + I->second.AsNum();
 
     Object::MapType food_ent;
     food_ent["id"] = fullid;
     food_ent["food"] = food;
+    if ((I = nent.find("alcahol")) != nent.end()) {
+        drunkness += I->second.AsNum() / weight;
+        food_ent["drunkness"] = drunkness;
+    }
     Set s = Set::Instantiate();
     s.SetArgs(Object::ListType(1,food_ent));
 

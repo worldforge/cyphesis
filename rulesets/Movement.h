@@ -19,7 +19,8 @@ class Movement {
     Vector3D m_face;
     int m_serialno;
     Vector3D m_collPos;
-    Entity * m_collRef;
+    Entity * m_collEntity;
+    bool m_collRefChange;
     int m_collAxis;
 
     bool updateNeeded(const Location & location) const;

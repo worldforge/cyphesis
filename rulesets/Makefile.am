@@ -18,6 +18,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Plant.cpp Plant.h \
 			     Food.cpp Food.h \
 			     Stackable.cpp Stackable.h \
+			     Structure.h \
 			     Movement.cpp Movement.h \
 			     Pedestrian.cpp Pedestrian.h \
 			     ThingFactory.cpp ThingFactory.h \
@@ -45,6 +46,6 @@ dist-hook:
 
 install-data-local:
 	mkdirhier $(datadir)/cyphesis/rulesets
-	tar cf - `find basic -name \*.py` | (cd $(datadir)/cyphesis/rulesets; tar xf -)
-	tar cf - `find acorn -name \*.py` | (cd $(datadir)/cyphesis/rulesets; tar xf -)
-	cat basic/hooks/ruleset_import_hooks.py | sed 's%PREFIX%$(datadir)/cyphesis%' > $(datadir)/cyphesis/rulesets/basic/hooks/ruleset_import_hooks.py
+	tar cf - `find basic -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
+	tar cf - `find acorn -name \*.py` | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
+	cat basic/hooks/ruleset_import_hooks.py | sed 's%PREFIX%$(datadir)/cyphesis%' > $(DESTDIR)$(datadir)/cyphesis/rulesets/basic/hooks/ruleset_import_hooks.py

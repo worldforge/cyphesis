@@ -777,7 +777,7 @@ void init_python_api()
     string pypath("");
     list<string>::const_iterator I;
     for(I = rulesets.begin(); I != rulesets.end(); I++) {
-        pypath = pypath + install_directory + "/share/cyphesis/rulesets/" +
+        pypath = pypath + share_directory + "/cyphesis/rulesets/" +
                  *I + ":";
     }
     setenv("PYTHONPATH", pypath.c_str(), 1);

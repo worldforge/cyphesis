@@ -6,12 +6,13 @@ cyphesis_SOURCES = \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
 		Routing.cpp Routing.h \
-		ServerRouting.cpp ServerRouting.h \
+		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
 		WorldRouter.cpp WorldRouter.h \
 		Lobby.cpp Lobby.h \
 		WorldTime.cpp WorldTime.h \
-		Connection.cpp Connection.h \
+		Connection.cpp Connection.h Connection_methods.h \
 		CommClient.h  CommServer.h \
+		protocol_instructions.h \
 		server.cpp server.h
 
 if BUILD_STATIC

@@ -1,1 +1,2 @@
+#!/bin/sh
 cd PREFIX/client && ./GnomeGMClient.py --ruleset=acorn

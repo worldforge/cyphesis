@@ -14,7 +14,7 @@
 
 /* #define _NO_DAEMON */
 
-char * inst_dir = INSTALLDIR;
+char * inst_dir = SHAREDIR;
 
 typedef enum server_state {
 	SVR_PRE,		/* Server not started yet	*/
