@@ -1,3 +1,8 @@
+2004-06-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* Make sure ruleset script files are correctly handled by
+	  a build run from outside the source directory.
+
 2004-06-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.h, common/BaseEntity.cpp, client/CommClient.cpp:
