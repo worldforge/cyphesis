@@ -40,9 +40,11 @@ class RuleBase {
 
     void storeInRules(const Element::MapType & o, const std::string & key) {
         m_connection.putObject(m_connection.rule(), key, o);
+        m_connection.clearPendingQuery();
     }
     bool clearRules() {
-        return m_connection.clearTable(m_connection.rule());
+        return (m_connection.clearTable(m_connection.rule()) &&
+                m_connection.clearPendingQuery());
     }
 };
 

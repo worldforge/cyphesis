@@ -1,3 +1,8 @@
+2003-11-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cyloadrules.cpp: Ensure that tools still work with modified
+	  non-blocking database API.
+
 2003-10-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/const.h, common/const.cpp: Add constant for square
