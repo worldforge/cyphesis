@@ -1,0 +1,26 @@
+Left from Acorn 0.4:
+
+  Implement a time mechanism. This would probably best be a person.
+  I think the conn (who seems to be some kind of leader) should do it.
+
+  Pigs seem to be gaining weight irespective of whether they eat.
+  Cannot re-produce this at the moment.
+
+  Add some sitting NPCs. Use mode="sitt" for sitting NPCs.
+
+  Fix sound effects in sprites.xml.
+
+  Implement archer sitting and yawning.
+
+  Sort out a decent working Inn. Inn keeper lady is documented.
+
+  Do collision boxes for furniture.
+
+  Do collision boxes for ting_sign_cam_grey_light (stone circle)
+
+  Add in some actual deer (herds?)
+
+  Fix problem with collision detection and destination based movement.
+
+  Use select to ensure that write to connections is non-blocking.
+
