@@ -1,5 +1,9 @@
 2004-07-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Worldtest.cpp: Update test for new world base class.
+
+2004-07-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/BaseMind.cpp, rulesets/MemMap.cpp, rulesets/MemMap.h,
 	  rulesets/Py_Map.cpp: Modify python API so it passes in time
 	  to map.update and map.get. Use time elapsed to decide if something
