@@ -1,3 +1,5 @@
+Make the butcher more helpful to n00bs.
+
 Implement a Tool base class which eliminates the need for tool scripts - 
 handles the necessary op conversions driven by data.
 
