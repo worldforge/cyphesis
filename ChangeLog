@@ -1,3 +1,7 @@
+2004-01-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.cpp: Clarify error messages and debug output.
+
 2004-01-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* Fix postgreSQL autoconf macro so it handles version numbers with

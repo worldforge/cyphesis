@@ -149,15 +149,16 @@ OpVector Connection::operation(const RootOperation & op)
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
     const std::string & from = op.getFrom();
     if (from.empty()) {
-        debug(std::cout << "deliver locally as normal" << std::endl << std::flush;);
+        debug(std::cout << "deliver locally" << std::endl << std::flush;);
         return callOperation(op);
     } else {
-        debug(std::cout << "Must send on to account" << std::endl << std::flush;);
-        debug(std::cout << "[" << from << "]" << std::endl << std::flush;);
+        debug(std::cout << "send on to " << from << std::endl << std::flush;);
         BaseDict::const_iterator I = m_objects.find(from);
         if (I == m_objects.end()) {
-            std::cout << "Illegal from \"" << from << "\" in " << op.getParents().front().asString() << " op from client" << std::endl << std::flush;
-            std::string err = "From [";
+            std::cerr << "Illegal from \"" << from << "\" in "
+                      << op.getParents().front().asString() << " op from client"
+                      << std::endl << std::flush;
+            std::string err = "Client op from [";
             err += from;
             err += "] is illegal";
             return error(op, err.c_str());
@@ -167,7 +168,8 @@ OpVector Connection::operation(const RootOperation & op)
         if ((character != NULL) && (character->m_externalMind == NULL)) {
             character->m_externalMind = new ExternalMind(*this,
                        character->getId(), character->getName());
-            debug(std::cout << "Re-connecting existing character to new connection" << std::endl << std::flush;);
+            debug(std::cout << "Subscribing existing character" << std::endl
+                            << std::flush;);
             Info * info = new Info(Info::Instantiate());
             Element::ListType & info_args = info->getArgs();
             info_args.push_back(Element::MapType());
@@ -199,7 +201,7 @@ OpVector Connection::LoginOperation(const Login & op)
     // id in case we are dealing with an old client.
     Element::MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.isString()) {
-        log(WARNING, "Got Login with no username. Checking for old style Login");
+        log(WARNING, "Got Login with no username. Checking for old Login");
         I = account.find("id");
         if ((I == account.end()) || !I->second.isString()) {
             return error(op, "No username provided for Login");
@@ -214,11 +216,13 @@ OpVector Connection::LoginOperation(const Login & op)
     Account * player = m_server.getAccountByName(username);
     // or if not, from the database
     if (player == 0) {
-        debug(std::cout << "No " << username << " account in server. Checking in database." << std::endl << std::flush;);
+        debug(std::cout << "No account called " << username
+                        << " in server. Checking in database."
+                        << std::endl << std::flush;);
         player = Persistance::instance()->getAccount(username);
         if (player != 0) {
             Persistance::instance()->registerCharacters(*player,
-                                                     m_server.m_world.getObjects());
+                                               m_server.m_world.getObjects());
             m_server.addAccount(player);
         }
     }
