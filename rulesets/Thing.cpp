@@ -257,8 +257,11 @@ OpVector Thing::MoveOperation(const Move & op)
         m_update_flags |= a_orient;
     }
 
+    Move m(op);
+    m_location.addToObject(m.getArgs().front().asMap());
+
     RootOperation * s = new Sight();
-    s->setArgs(Element::ListType(1,op.asObject()));
+    s->setArgs(Element::ListType(1,m.asObject()));
     OpVector res2(1,s);
     // I think it might be wise to send a set indicating we have changed
     // modes, but this would probably be wasteful

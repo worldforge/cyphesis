@@ -1,5 +1,10 @@
 2004-06-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Fix move op sight propagation so that
+	  the corrected height is sent.
+
+2004-06-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* Fix bounding box for boat.
 
 2004-06-24  Al Riddoch  <alriddoch@zepler.org>
