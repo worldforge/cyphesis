@@ -46,6 +46,7 @@ class EntityFactory {
             delete m_instance;
         }
     }
+    void initWorld();
     Entity * newEntity(const std::string &, const std::string &,
                        const MapType &);
     void flushFactories();

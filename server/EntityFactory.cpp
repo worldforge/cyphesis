@@ -43,11 +43,7 @@ EntityFactory * EntityFactory::m_instance = NULL;
 EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
              m_eft(new PersistantThingFactory<Entity>())
 {
-    // This class can only have one instance, so a Factory is not installed
-    PersistantThingFactory<World> * wft = new PersistantThingFactory<World>();
-    installFactory("game_entity", "world", wft);
-    wft->m_p.persist((World &)m_world.m_gameWorld);
-
+    installFactory("game_entity", "world", new PersistantThingFactory<World>());
     PersistantThingFactory<Thing> * tft = new PersistantThingFactory<Thing>();
     installFactory("game_entity", "thing", tft);
     installFactory("thing", "feature", tft->duplicateFactory());
@@ -63,6 +59,21 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
                    new PersistantThingFactory<Stackable>());
     installFactory("thing", "structure",
                    new PersistantThingFactory<Structure>());
+}
+
+void EntityFactory::initWorld()
+{
+    FactoryDict::const_iterator I = m_factories.find("world");
+    if (I == m_factories.end()) {
+        log(CRITICAL, "No world factory");
+        return;
+    }
+    PersistantThingFactory<World> * wft = dynamic_cast<PersistantThingFactory<World> *>(I->second);
+    if (wft == 0) {
+        log(CRITICAL, "Its not a world factory");
+        return;
+    }
+    wft->m_p.persist((World&)m_world.m_gameWorld);
 }
 
 Entity * EntityFactory::newEntity(const std::string & id,
@@ -264,6 +275,7 @@ void EntityFactory::installFactory(const std::string & parent,
                                    const std::string & className,
                                    FactoryBase * factory)
 {
+    // FIXME Why check for NULL? Wouldn't it be a bug?
     if (factory != NULL) {
         m_factories[className] = factory;
     }

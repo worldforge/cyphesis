@@ -13,6 +13,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		accountbase.cpp accountbase.h \
 		FormattedXMLWriter.cpp FormattedXMLWriter.h \
 		utility.cpp utility.h \
+		terrain_utils.cpp terrain_utils.h \
 		system.cpp system.h \
 		serialno.cpp serialno.h refno.h \
 		inheritance.cpp inheritance.h \

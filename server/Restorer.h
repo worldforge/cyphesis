@@ -36,24 +36,6 @@ class Restorer : public T {
         }
     }
 
-    void restoreInt(const char * c, int & i) {
-        if (c == 0) { return; }
-        i = strtol(c, 0, 10);
-    }
-    void restoreFloat(const char * c, double & d) {
-        if (c == 0) { return; }
-        d = strtod(c, 0);
-    }
-    void restoreFloat(const char * c, float & f) {
-        if (c == 0) { return; }
-        f = strtof(c, 0);
-    }
-    void restoreString(const char * c, std::string & s) {
-        if (c == 0) { return; }
-        s = c;
-    }
-    void restoreMap(const char * c, Atlas::Message::MapType &);
-
     void rEntity(DatabaseResult::const_iterator & dr);
     void rCharacter(DatabaseResult::const_iterator & dr);
     void rPlant(DatabaseResult::const_iterator & dr);

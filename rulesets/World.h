@@ -13,19 +13,30 @@ namespace Mercator {
 
 typedef Thing World_parent;
 
+typedef std::map<int, std::set<int> > PointSet;
+
 /// This is the in-game entity class used to represent the world.
 ///
 /// I added this because I was not happy with the way the old object model
 /// used an out of game object of type WorldRouter to represent the world.
 class World : public World_parent {
   protected:
+    /// Terrain manager for the world.
     Mercator::Terrain & m_terrain;
+    /// Set of terrain points which have been changed.
+    PointSet m_modifiedTerrain;
+    /// Set of terrain points which have been added.
+    PointSet m_createdTerrain;
 
     void getTerrain(MapType &) const;
     void setTerrain(const MapType &);
   public:
     explicit World(const std::string & id);
     virtual ~World();
+
+    const Mercator::Terrain & terrain() {
+        return m_terrain;
+    }
 
     float getHeight(float x, float y);
 

@@ -116,7 +116,10 @@ int main(int argc, char ** argv)
     log(INFO, _("Restoring world from database..."));
 
     Restoration restore(server);
-    restore.read();
+    if (restore.read() == 1) {
+        std::cout << "Bootstrapping world" << std::endl << std::flush;
+        EntityFactory::instance()->initWorld();
+    }
 
     log(INFO, _(" world restored"));
 

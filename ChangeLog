@@ -1,3 +1,32 @@
+2004-09-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp, common/Database.h: Fix queries on ID relation
+	  tables. Add methods to result functions for decoding the contents
+	  of fields more directly. Implement selecting from array tables.
+
+	* common/terrain_utils.cpp, common/terrain_utils.h: New functions
+	  for handling terrain in array database tables.
+
+	* rulesets/World.cpp, rulesets/World.h: Add functionality to track
+	  changes to the terrain for persistence purposes.
+
+	* server/EntityFactory.cpp, server/EntityFactory.h, server/server.cpp:
+	  Modify the way world entity persistence is bootstrapped to be
+	  more consistent.
+
+	* server/Persistor.cpp: Provide specialisations to handle world so
+	  that terrain is persisted. Implement storing terrain at entity
+	  creation.
+
+	* server/Restoration.cpp, server/Restoration.h: Remove obsolete
+	  restoration code. Return a status more accuratly representing
+	  when restoration fails because of error, or if there is nothing
+	  to restore.
+
+	* server/Restorer.cpp, server/Restorer.h, server/Restorer_impl.h:
+	  Convert to using methods for restoring data in the Database class.
+	  Implement restoring terrain from the database.
+
 2004-09-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Implement inserting into array tables.

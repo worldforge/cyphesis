@@ -18,6 +18,7 @@
 #include "rulesets/World.h"
 
 #include "common/Database.h"
+#include "common/terrain_utils.h"
 
 template class Persistor<Entity>;
 template class Persistor<Thing>;
@@ -151,13 +152,6 @@ Persistor<World>::Persistor<World>(bool temp) : m_class("world")
     desc.clear();
     desc["height"] = 0.1f;
     Database::instance()->registerArrayTable("terrain", 2, desc);
-
-    // FIXME This is a test of the insert function
-    std::vector<int> key;
-    key.push_back(1);
-    key.push_back(23);
-    Database::instance()->createArrayRow("terrain", "0", key, desc);
-    
 }
 
 void Persistor<Character>::update(Character * t)
@@ -172,11 +166,7 @@ void Persistor<Character>::update(Character * t)
 void Persistor<Creator>::update(Creator * t)
 {
     // Creator entities are not persisted
-    // std::string columns;
-    // uCharacter(*t, columns);
-    // uEntity(*t, columns);
-    // Database::instance()->updateEntityRow(m_class, t->getId(), columns);
-    // t->clearUpdateFlags();
+    // Is this really needed? Probably not, as its never called.
 }
 
 void Persistor<Line>::update(Line * t)
@@ -204,6 +194,17 @@ void Persistor<Plant>::update(Plant * t)
     uEntity(*t, columns);
     Database::instance()->updateEntityRow(m_class, t->getId(), columns);
     t->clearUpdateFlags();
+}
+
+void Persistor<World>::update(World * t)
+{
+    std::string columns;
+    uEntity(*t, columns);
+    Database::instance()->updateEntityRow(m_class, t->getId(), columns);
+    t->clearUpdateFlags();
+
+    // Update modified terrain points.
+    // Create new terrain points.
 }
 
 void Persistor<Character>::hookup(Character & t)
@@ -249,9 +250,67 @@ void Persistor<World>::hookup(World & t)
     // it to a remove function.
 }
 
+void Persistor<World>::cEntity(Entity & t, std::string & c, std::string & v)
+{
+    const char * cs = ", ";
+    const char * sq = "'";
+    if (!c.empty()) {
+        c += cs;
+    }
+    c += "class, type, cont, px, py, pz, ox, oy, oz, ow, hasBox, bnx, bny, bnz, bfx, bfy, bfz, status, name, mass, seq, attributes";
+
+    std::stringstream q;
+    q << sq << m_class << sq << cs
+      << sq << t.getType() << sq << cs
+      << t.m_contains.size() << cs
+      << t.m_location.m_pos.x() << cs
+      << t.m_location.m_pos.y() << cs
+      << t.m_location.m_pos.z() << cs;
+    if (t.m_location.m_orientation.isValid()) {
+        q << t.m_location.m_orientation.vector().x() << cs
+          << t.m_location.m_orientation.vector().y() << cs
+          << t.m_location.m_orientation.vector().z() << cs
+          << t.m_location.m_orientation.scalar() << cs;
+    } else {
+        q << "0, 0, 0, 1, ";
+    }
+    if (t.m_location.m_bBox.isValid()) {
+        q << "'t', "
+          << t.m_location.m_bBox.lowCorner().x() << cs
+          << t.m_location.m_bBox.lowCorner().y() << cs
+          << t.m_location.m_bBox.lowCorner().z() << cs
+          << t.m_location.m_bBox.highCorner().x() << cs
+          << t.m_location.m_bBox.highCorner().y() << cs
+          << t.m_location.m_bBox.highCorner().z() << cs;
+    } else {
+        q << "'f', 0, 0, 0, 0, 0, 0, ";
+    }
+    q << t.getStatus() << cs
+      << sq << t.getName() << sq << cs
+      << t.getMass() << cs
+      << t.getSeq() << cs;
+
+    if (t.getAttributes().empty()) {
+        q << "''";
+    } else {
+        std::string aString;
+        Database::instance()->encodeObject(t.getAttributes(), aString);
+        q << "'" << aString << "'";
+    }
+
+    if (!v.empty()) {
+        v += cs;
+    }
+    v += q.str();
+}
+
 void Persistor<World>::persist(World & t)
 {
     hookup(t);
-    // We do not create the row in the database. This is handled in a slightly
-    // special way.
+    std::string columns;
+    std::string values;
+    cEntity(t, columns, values);
+    Database::instance()->createEntityRow(m_class, t.getId(), columns, values);
+
+    storeTerrain(t.getId(), t.terrain());
 }

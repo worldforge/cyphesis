@@ -580,7 +580,7 @@ bool Database::removeRelationRow(const std::string & name,
 {
     std::string query = "DELETE FROM ";
     query += name;
-    query += " WHERE id=";
+    query += " WHERE source = ";
     query += id;
     query += ";";
 
@@ -593,9 +593,7 @@ bool Database::removeRelationRowByOther(const std::string & name,
 {
     std::string query = "DELETE FROM ";
     query += name;
-    query += " WHERE ";
-    query += name;
-    query += "=";
+    query += " WHERE target = ";
     query += other;
     query += ";";
 
@@ -1069,7 +1067,9 @@ bool Database::registerArrayTable(const std::string & name,
     query += " WHERE id = 0";
 
     createquery += name;
-    createquery += " (id integer UNIQUE PRIMARY KEY";
+    // FIXME This is a foreign key to an inherited table.
+    // Implement referential integrity once PostgreSQL works.
+    createquery += " (id integer";
 
     for (unsigned int i = 0; i < dimension; ++i) {
         query += " AND ";
@@ -1143,6 +1143,20 @@ bool Database::registerArrayTable(const std::string & name,
     return ret;
 }
 
+const DatabaseResult Database::selectArrayRows(const std::string & name,
+                                               const std::string & id)
+{
+    std::string query("SELECT * FROM ");
+    query += name;
+    query += " WHERE id = ";
+    query += id;
+    query += ";";
+
+    std::cout << "TERRAIN QUERY: " << query << std::endl << std::flush;
+
+    return runSimpleSelectQuery(query);
+}
+
 bool Database::createArrayRow(const std::string & name,
                               const std::string & id,
                               const std::vector<int> & key,
@@ -1193,6 +1207,7 @@ bool Database::updateArrayRow(const std::string & name,
                               const std::vector<int> & key,
                               const Atlas::Message::MapType & data)
 {
+    /// Not sure we need this one yet, so lets no bother for now ;)
     return false;
 }
 
@@ -1200,6 +1215,7 @@ bool Database::removeArrayRow(const std::string & name,
                               const std::string & id,
                               const std::vector<int> & key)
 {
+    /// Not sure we need this one yet, so lets no bother for now ;)
     return false;
 }
 
@@ -1222,6 +1238,7 @@ void Database::queryResult(ExecStatusType status)
         q.second = PGRES_EMPTY_QUERY;
     } else {
         log(ERROR, "Database error from async query");
+        std::cout << "Query error in : " << q.first << std::endl << std::flush;
         reportError();
         q.second = PGRES_EMPTY_QUERY;
     }
@@ -1349,4 +1366,59 @@ const char * DatabaseResult::const_iterator::column(const char * column) const
         return "";
     }
     return PQgetvalue(m_dr.m_res, m_row, col_num);
+}
+
+void DatabaseResult::const_iterator::readColumn(const char * column,
+                                                int & val) const
+{
+    int col_num = PQfnumber(m_dr.m_res, column);
+    if (col_num == -1) {
+        return;
+    }
+    const char * v = PQgetvalue(m_dr.m_res, m_row, col_num);
+    val = strtol(v, 0, 10);
+}
+
+void DatabaseResult::const_iterator::readColumn(const char * column,
+                                                float & val) const
+{
+    int col_num = PQfnumber(m_dr.m_res, column);
+    if (col_num == -1) {
+        return;
+    }
+    const char * v = PQgetvalue(m_dr.m_res, m_row, col_num);
+    val = strtof(v, 0);
+}
+
+void DatabaseResult::const_iterator::readColumn(const char * column,
+                                                double & val) const
+{
+    int col_num = PQfnumber(m_dr.m_res, column);
+    if (col_num == -1) {
+        return;
+    }
+    const char * v = PQgetvalue(m_dr.m_res, m_row, col_num);
+    val = strtod(v, 0);
+}
+
+void DatabaseResult::const_iterator::readColumn(const char * column,
+                                                std::string & val) const
+{
+    int col_num = PQfnumber(m_dr.m_res, column);
+    if (col_num == -1) {
+        return;
+    }
+    const char * v = PQgetvalue(m_dr.m_res, m_row, col_num);
+    val = v;
+}
+
+void DatabaseResult::const_iterator::readColumn(const char * column,
+                                                MapType & val) const
+{
+    int col_num = PQfnumber(m_dr.m_res, column);
+    if (col_num == -1) {
+        return;
+    }
+    const char * v = PQgetvalue(m_dr.m_res, m_row, col_num);
+    Database::instance()->decodeObject(v, val);
 }

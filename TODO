@@ -1,3 +1,16 @@
+Make sure that terrain modified points does not contain any points still
+listed as created points.
+
+Consider moving destroy() functionality of Connection into the destructor,
+thus allowing Connection to be accessed via its BaseEntity interface
+in CommClient. Potentially allows more flexibility in use of
+various server classes.
+
+Make Connection::verifyCredentials() protected.
+
+Move the functions for reading values from database columns to being
+methods of the DatabaseResult::iterator.
+
 Track down anywhere where a normal mind is setting TO on IG operations sent
 to body.
 

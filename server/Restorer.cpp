@@ -14,6 +14,8 @@
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
 
+#include "common/terrain_utils.h"
+
 template class Restorer<Entity>;
 template class Restorer<Thing>;
 template class Restorer<Character>;
@@ -40,9 +42,9 @@ template <> Persistor<World> Restorer<World>::m_persist(true);
 
 void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
 {
-    restoreFloat(dr.column("drunkness"), m_drunkness);
-    restoreString(dr.column("sex"), m_sex);
-    restoreFloat(dr.column("food"), m_food);
+    dr.readColumn("drunkness", m_drunkness);
+    dr.readColumn("sex", m_sex);
+    dr.readColumn("food", m_food);
 }
 
 void Restorer<Character>::populate(DatabaseResult::const_iterator & dr)
@@ -53,14 +55,22 @@ void Restorer<Character>::populate(DatabaseResult::const_iterator & dr)
 
 void Restorer<Plant>::rPlant(DatabaseResult::const_iterator & dr)
 {
-    restoreInt(dr.column("fruits"), m_fruits);
-    restoreFloat(dr.column("sizeAdult"), m_sizeAdult);
-    restoreInt(dr.column("fruitChance"), m_fruitChance);
-    restoreString(dr.column("fruitName"), m_fruitName);
+    dr.readColumn("fruits", m_fruits);
+    dr.readColumn("sizeAdult", m_sizeAdult);
+    dr.readColumn("fruitChance", m_fruitChance);
+    dr.readColumn("fruitName", m_fruitName);
 }
 
 void Restorer<Plant>::populate(DatabaseResult::const_iterator & dr)
 {
     rEntity(dr);
     rPlant(dr);
+}
+
+void Restorer<World>::populate(DatabaseResult::const_iterator & dr)
+{
+    rEntity(dr);
+
+    // Restore the terrain
+    loadTerrain(getId(), m_terrain);
 }

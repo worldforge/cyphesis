@@ -28,7 +28,7 @@ class Restoration {
 
     explicit Restoration(ServerRouting & svr);
 
-    void read();
+    int read();
 };
 
 #endif // SERVER_RESTORATION_H

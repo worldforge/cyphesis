@@ -166,6 +166,8 @@ class Database {
     bool registerArrayTable(const std::string & name,
                             unsigned int dimension,
                             const Atlas::Message::MapType & row_data);
+    const DatabaseResult selectArrayRows(const std::string & name,
+                                         const std::string & id);
     bool createArrayRow(const std::string & name,
                         const std::string & id,
                         const std::vector<int> & key,
@@ -249,6 +251,12 @@ class DatabaseResult {
             return PQgetvalue(m_dr.m_res, m_row, column);
         }
         const char * column(const char *) const;
+
+        void readColumn(const char *, int &) const;
+        void readColumn(const char *, float &) const;
+        void readColumn(const char *, double &) const;
+        void readColumn(const char *, std::string &) const;
+        void readColumn(const char *, Atlas::Message::MapType &) const;
 
         friend class DatabaseResult;
     };

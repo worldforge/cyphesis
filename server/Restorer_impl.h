@@ -17,43 +17,36 @@
 #include <wfmath/quaternion.h>
 
 template <class T>
-void Restorer<T>::restoreMap(const char * c, Atlas::Message::MapType & ent)
-{
-    if (c == 0) { return; }
-    Database::instance()->decodeObject(c, ent);
-}
-
-template <class T>
 void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
 {
-    restoreString(dr.column("type"), this->m_type);
-    restoreString(dr.column("name"), this->m_name);
-    restoreFloat(dr.column("px"), this->m_location.m_pos.x());
-    restoreFloat(dr.column("py"), this->m_location.m_pos.y());
-    restoreFloat(dr.column("pz"), this->m_location.m_pos.z());
+    dr.readColumn("type", this->m_type);
+    dr.readColumn("name", this->m_name);
+    dr.readColumn("px", this->m_location.m_pos.x());
+    dr.readColumn("py", this->m_location.m_pos.y());
+    dr.readColumn("pz", this->m_location.m_pos.z());
     this->m_location.m_pos.setValid();
     WFMath::CoordType x, y, z, w;
-    restoreFloat(dr.column("ox"), x);
-    restoreFloat(dr.column("oy"), y);
-    restoreFloat(dr.column("oz"), z);
-    restoreFloat(dr.column("ow"), w);
+    dr.readColumn("ox", x);
+    dr.readColumn("oy", y);
+    dr.readColumn("oz", z);
+    dr.readColumn("ow", w);
     this->m_location.m_orientation = WFMath::Quaternion(w, x, y, z);
     if (checkBool(dr.column("hasBox"))) {
         WFMath::Point<3> & lc = (WFMath::Point<3>&)this->m_location.m_bBox.lowCorner();
-        restoreFloat(dr.column("bnx"), lc.x());
-        restoreFloat(dr.column("bny"), lc.y());
-        restoreFloat(dr.column("bnz"), lc.z());
+        dr.readColumn("bnx", lc.x());
+        dr.readColumn("bny", lc.y());
+        dr.readColumn("bnz", lc.z());
         lc.setValid();
         WFMath::Point<3> & hc = (WFMath::Point<3>&)this->m_location.m_bBox.highCorner();
-        restoreFloat(dr.column("bfx"), hc.x());
-        restoreFloat(dr.column("bfy"), hc.y());
-        restoreFloat(dr.column("bfz"), hc.z());
+        dr.readColumn("bfx", hc.x());
+        dr.readColumn("bfy", hc.y());
+        dr.readColumn("bfz", hc.z());
         hc.setValid();
     }
-    restoreFloat(dr.column("status"), this->m_status);
-    restoreFloat(dr.column("mass"), this->m_mass);
-    restoreInt(dr.column("seq"), this->m_seq);
-    restoreMap(dr.column("attributes"), this->m_attributes);
+    dr.readColumn("status", this->m_status);
+    dr.readColumn("mass", this->m_mass);
+    dr.readColumn("seq", this->m_seq);
+    dr.readColumn("attributes", this->m_attributes);
 }
 
 template <class T>

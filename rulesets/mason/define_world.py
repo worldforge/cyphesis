@@ -370,3 +370,11 @@ def test_forest(mapeditor):
         for j in range(0, i[1]):
             m.make(i[0],type=i[0],xyz=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)])
 
+def modify_terrain(mapeditor):
+#   general things
+
+    m=editor(mapeditor)
+
+    world=m.look()
+    m.set(world.id, terrain={'points' : {'0x0' : [0, 0, 12.8]  } })
+

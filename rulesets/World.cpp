@@ -25,20 +25,22 @@ static const bool debug_flag = false;
 
 using Atlas::Message::FloatType;
 
+typedef Mercator::Terrain::Pointstore Pointstore;
+typedef Mercator::Terrain::Pointcolumn Pointcolumn;
+
 void World::getTerrain(MapType & t) const
 {
     MapType & terrain = (t["points"] = MapType()).asMap();
 
-    const Mercator::Terrain::Pointstore & points = m_terrain.getPoints();
-    Mercator::Terrain::Pointstore::const_iterator I = points.begin();
+    const Pointstore & points = m_terrain.getPoints();
+    Pointstore::const_iterator I = points.begin();
     for(; I != points.end(); ++I) {
-        const Mercator::Terrain::Pointcolumn & pointcol = I->second;
-        Mercator::Terrain::Pointcolumn::const_iterator J = pointcol.begin();
+        const Pointcolumn & pointcol = I->second;
+        Pointcolumn::const_iterator J = pointcol.begin();
         for (; J != pointcol.end(); ++J) {
             std::stringstream key;
             key << I->first << "x" << J->first;
-            ListType & point =
-                    (terrain[key.str()] = ListType(3)).asList();
+            ListType & point = (terrain[key.str()] = ListType(3)).asList();
             point[0] = (FloatType)(I->first);
             point[1] = (FloatType)(J->first);
             point[2] = (FloatType)(J->second.height());
@@ -49,6 +51,9 @@ void World::getTerrain(MapType & t) const
 void World::setTerrain(const MapType & t)
 {
     debug(std::cout << "World::setTerrain()" << std::endl << std::flush;);
+
+    const Pointstore & basePoints = m_terrain.getPoints();
+
     MapType::const_iterator I = t.find("points");
     if ((I != t.end()) && (I->second.isMap())) {
         const MapType & points = I->second.asMap();
@@ -61,13 +66,33 @@ void World::setTerrain(const MapType & t)
             if (point.size() != 3) {
                 continue;
             }
-            // int x = (int)floor(point[0].asNum() / m_terrain.getRes());
-            // int y = (int)floor(point[1].asNum() / m_terrain.getRes());
+
             int x = (int)point[0].asNum();
             int y = (int)point[1].asNum();
+
+            Pointstore::const_iterator J = basePoints.find(x);
+            if ((J == basePoints.end()) ||
+                (J->second.find(y) == J->second.end())) {
+                // Newly added point.
+                m_createdTerrain[x].insert(y);
+                std::cout << "New point" << std::endl << std::flush;
+            } else {
+                // Modified point
+                PointSet::const_iterator K = m_createdTerrain.find(x);
+                if ((K == m_createdTerrain.end()) ||
+                    (K->second.find(y) == K->second.end())) {
+                    // Already in database
+                    m_modifiedTerrain[x].insert(y);
+                    std::cout << "Changed point" << std::endl << std::flush;
+                }
+                // else do nothing, as its currently waiting to be added.
+            }
+            
             m_terrain.setBasePoint(x, y, point[2].asNum());
             // FIXME Add support for roughness and falloff, as done
             // by damien in equator and FIXMEd out by me
+
+            
         }
     }
 }
@@ -76,6 +101,9 @@ World::World(const std::string & id) : World_parent(id),
                                        m_terrain(*new Mercator::Terrain())
 {
     subscribe("set", OP_SET);
+
+#if 0 
+    // FIXME Just for testin
 
     WFMath::MTRand rng;
 
@@ -98,7 +126,6 @@ World::World(const std::string & id) : World_parent(id),
         }
     }
     
-    // FIXME Just for testin
     m_terrain.setBasePoint(-1, -1, -16.8);
     m_terrain.setBasePoint(0, -1, -3.8);
     m_terrain.setBasePoint(-1, 0, -2.8);
@@ -108,6 +135,7 @@ World::World(const std::string & id) : World_parent(id),
     m_terrain.setBasePoint(1, 0, 23.1);
     m_terrain.setBasePoint(0, 1, 14.2);
     m_terrain.setBasePoint(1, 1, 19.7);
+#endif
 }
 
 World::~World()
