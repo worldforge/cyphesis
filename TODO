@@ -1,4 +1,5 @@
-Fix Set ops from Admin so they behave the same for the non-admin case
+Move spawn randomisation into the ENtity factory, where it belongs, and
+get rid of that pointless test in WorldRouter.
 
 Sort out SO_REUSEADDR You FUCKTARD!
 
