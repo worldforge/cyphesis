@@ -335,11 +335,78 @@ static PyObject * Operation_seq_item(RootOperationObject * self, int item)
     return NULL;
 }
 
+PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
+{
+    if (self->operation == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid operation");
+    }
+    if ((PyTypeObject*)PyObject_Type(other) == & Oplist_Type) {
+        OplistObject * opl = (OplistObject*)other;
+        if (opl->ops == NULL) {
+            PyErr_SetString(PyExc_TypeError, "invalid oplist");
+            return NULL;
+        }
+        OplistObject * res = newOplistObject(NULL);
+        res->ops = new oplist();
+        if (res == NULL) {
+            return NULL;
+        }
+        *res->ops = *opl->ops;
+        res->ops->push_back(self->operation);
+        return (PyObject*)res;
+    }
+    if ((PyTypeObject*)PyObject_Type(other) == & RootOperation_Type) {
+        RootOperationObject * op = (RootOperationObject*)other;
+        if (op->operation == NULL) {
+            PyErr_SetString(PyExc_TypeError, "invalid operation");
+        }
+        OplistObject * res = newOplistObject(NULL);
+        res->ops = new oplist();
+        if (res == NULL) {
+            return NULL;
+        }
+        res->ops->push_back(op->operation);
+        res->ops->push_back(self->operation);
+        return (PyObject*)res;
+    }
+    return NULL;
+}
+
+/*
+ * Operation numerical methods structure.
+ */
+
+static PyNumberMethods Operation_num = {
+	(binaryfunc)Operation_num_add,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0
+};
+
 /*
  * Operation sequence methods structure.
  */
 
-PySequenceMethods Operation_seq = {
+static PySequenceMethods Operation_seq = {
     (inquiry)Operation_seq_length,	/* sq_length */
     NULL,				/*  sq_concat */
     NULL,				/* sq_repeat */

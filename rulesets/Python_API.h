@@ -19,6 +19,8 @@ class Thing;
 class MemMap;
 class Location;
 
+typedef std::list<RootOperation *> oplist;
+
 #include <physics/Vector3D.h>
 
 typedef struct {
@@ -57,6 +59,12 @@ typedef struct {
     _name	* operation; \
 } _name ## Object;
 
+typedef struct {
+    PyObject_HEAD
+    PyObject	* Oplist_attr;	/* Attributes dictionary */
+    oplist	* ops;
+} OplistObject;
+
 #define ATLAS_OPERATION_METHODS(_name) \
 PyMethodDef _name ## _methods[] = { \
     {"SetSerialno",	(PyCFunction)Operation_SetSerialno,	METH_VARARGS}, \
@@ -92,7 +100,7 @@ PyTypeObject _name ## _Type = { \
 	(setattrfunc)Operation_setattr,		/*tp_setattr*/ \
 	0,					/*tp_compare*/ \
 	0,					/*tp_repr*/ \
-	0,					/*tp_as_number*/ \
+	&Operation_num,				/*tp_as_number*/ \
 	&Operation_seq,				/*tp_as_sequence*/ \
 	0,					/*tp_as_mapping*/ \
 	0,					/*tp_hash*/ \
@@ -106,6 +114,7 @@ ATLAS_OPERATION(RootOperation)
 #include "Py_Location.h"
 #include "Py_Vector3D.h"
 #include "Py_Operation.h"
+#include "Py_Oplist.h"
 
 void Create_PyThing(Thing * thing, const string & package, const string & type);
 

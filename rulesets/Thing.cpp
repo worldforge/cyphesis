@@ -55,6 +55,26 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
         if (ret != NULL) {
             cout << "Called python method " << op_name << " for object "
                  << fullid << endl << flush;
+            if ((PyTypeObject*)PyObject_Type(ret) == &RootOperation_Type) {
+                RootOperationObject * op = (RootOperationObject*)ret;
+                if (op->operation != NULL) {
+                    ret_list.push_back(op->operation);
+                } else {
+                    cout << "Method returned invalid operation"
+                         << endl << flush;
+                }
+            } else if ((PyTypeObject*)PyObject_Type(ret) == &Oplist_Type) {
+                OplistObject * op = (OplistObject*)ret;
+                if (op->ops != NULL) {
+                    ret_list = *op->ops;
+                } else {
+                    cout << "Method returned invalid oplist"
+                         << endl << flush;
+                }
+            } else {
+                cout << "Method returned invalid object" << endl << flush;
+            }
+            
             // Get oplist from ret and
             return(1);
         } else {
