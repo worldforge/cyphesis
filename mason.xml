@@ -57,7 +57,7 @@
   </map>
 
   <map name="birch">
-    <string name="parent">tree</string>
+    <string name="parent">thing</string>
     <map name="attributes">
       <float name="height">10</float>
       <list name="bbox">
@@ -71,7 +71,7 @@
   </map>
 
   <map name="poplar">
-    <string name="parent">tree</string>
+    <string name="parent">thing</string>
     <map name="attributes">
       <float name="height">10</float>
       <list name="bbox">

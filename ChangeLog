@@ -1,3 +1,8 @@
+2002-06-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/define_world.py: Start re-work of NPC initialisation
+	  for mason.
+
 2002-06-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/const.h: Increase the sight range.

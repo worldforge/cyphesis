@@ -68,6 +68,9 @@ class Tree(Thing):
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
         
+        # The default height
+        set_kw(self,kw,"height",10)
+
         # Just a name for the client #
         set_kw(self,kw,"sizename",size_to_name(self.height))
         

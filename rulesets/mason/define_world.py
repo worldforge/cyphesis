@@ -20,18 +20,17 @@ import time
 
 #'Breakfast' goal is type of 'eating'.
 
-village_height=0
+# Heights are all 0 for now, as uclient doesn't differentiate
+# Once clients and servers can handle terrain properlly, then we
+# can start thinking in more ernest about heights
+settlement_height=0
 forest_height=0
-smithy_xyz=(-5,-30,village_height)
-forest_xyz=(-20,-60,village_height)
-tavern_xyz=(40,-00,village_height)
-market_xyz=(-44,-10,village_height)
-pig_stall_xyz=(-27,1,village_height)
-pig_sty_xyz=(-26,2,village_height)
-butcher_stall_xyz=(-41.5,-6.3,village_height)
-tree_xyz=(-35,-25,village_height)
-inn_xyz=(12,-20,village_height)
 
+hall_xyz=(5,3,village_height)
+forest_xyz=(-20,-60,village_height)
+
+pig_sty_xyz=(-2,2,village_height)
+butcher_stall_xyz=(-41.5,-6.3,village_height)
 
 knowledge=[('axe','smithy'),
            ('smithy',smithy_xyz),
@@ -39,7 +38,6 @@ knowledge=[('axe','smithy'),
            ('tavern',tavern_xyz),
            ('market',market_xyz)]
 mprices=[('pig','5')]
-m2prices=[('pig','4')]
 bprices=[('ham','2')]
 bknowledge=[('market',butcher_stall_xyz)]
 mknowledge=[('market',pig_stall_xyz)]
@@ -85,7 +83,9 @@ wolf_goals=[(il.forage,"forage(self, 'ham')"),
 crab_goals=[(il.avoid,"avoid('wolf',10.0)"),
             (il.hunt,"predate_small(self,'pig',30.0,10.0)")]
 
-lych_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"),
+lych_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage',
+                                                       'arm', 'pelvis',
+                                                       'thigh', 'shin'])"),
             (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
 
 #observer calls this
@@ -96,10 +96,10 @@ def default(mapeditor):
 
 # a wall around the world
 
-    m.make('wall',type='wall',xyz=(-151,-101,village_height),bbox=[2,204,5])
-    m.make('wall',type='wall',xyz=(-151,-101,village_height),bbox=[304,2,5])
-    m.make('wall',type='wall',xyz=(-151,100,village_height),bbox=[304,2,5])
-    m.make('wall',type='wall',xyz=(100,-101,village_height),bbox=[2,204,5])
+    m.make('boundary',type='boundary',xyz=(-201,-201,village_height),bbox=[2,404,50])
+    m.make('boundary',type='boundary',xyz=(-201,-201,village_height),bbox=[404,2,50])
+    m.make('boundary',type='boundary',xyz=(-201, 200,village_height),bbox=[304,2,50])
+    m.make('boundary',type='boundary',xyz=( 200,-201,village_height),bbox=[2,204,50])
 
 # a camp near the origin
 
@@ -109,40 +109,29 @@ def default(mapeditor):
     #m.make('lumber',type='lumber',xyz=(-1,3,village_height))
     #m.make('lumber',type='lumber',xyz=(-1,2.5,village_height))
 
-    cfire=m.make('campfire',type='campfire',xyz=(35,54,village_height))
+    hall=m.make('hall',type='hall',xyz=hall_xyz)
+
+    # Fire in the centre of the hall
+    cfire=m.make('campfire',type='campfire',xyz=(6,6,village_height),
+                                            parent=hall.id)
     m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
 
-    cfire=m.make('campfire',type='campfire',xyz=(42,51,village_height))
+    cfire=m.make('campfire',type='campfire',xyz=(3,9,village_height))
     m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
 
-    cfire=m.make('campfire',type='campfire',xyz=(43,39,village_height))
+    cfire=m.make('campfire',type='campfire',xyz=(11,1,village_height))
     m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
-
-    m.make('sign_market_w',type='sign_market_w',xyz=(-8.7,-21.2,village_height))
 
     for i in range(0, 20):
-        m.make('lumber',type='lumber',xyz=(uniform(-100,0),uniform(-100,-80),village_height))
-
-#   general
-    m.make('oak',type='oak',xyz=(-70,-86,village_height), bbox=[1,1,6])
-    m.make('oak',type='oak',xyz=(-6,-77,village_height), bbox=[1,1,6])
-    m.make('oak',type='oak',xyz=(-24,-90,village_height), bbox=[1,1,6])
-    m.make('oak',type='oak',xyz=(-49,-90,village_height), bbox=[1,1,6])
-    m.make('oak',type='oak',xyz=(-86,-81,village_height), bbox=[1,1,6])
-    m.make('oak',type='oak',xyz=(-12,-98,village_height), bbox=[1,1,6])
-    m.make('oak',type='oak',xyz=(-35,-73,village_height), bbox=[1,1,6])
-    m.make('oak',type='oak',xyz=(-83,-66,village_height), bbox=[1,1,6])
-    m.make('oak',type='oak',xyz=(-87,-34,village_height), bbox=[1,1,6])
-    m.make('oak',type='oak',xyz=(-98,-28,village_height), bbox=[1,1,6])
-    m.make('oak',type='oak',xyz=(-75,31,village_height), bbox=[1,1,6])
+        m.make('lumber',type='lumber',xyz=(uniform(-200,0),uniform(-200,0),village_height))
 
     m.make('weather',type='weather',desc='object that describes the weather',
            xyz=(0,1,0), rain=0.0)
 
 #   bones all over the place
     for i in range(0, 10):
-        xpos = uniform(-150,100)
-        ypos = uniform(-100,100)
+        xpos = uniform(-200,200)
+        ypos = uniform(-200,200)
         m.make('skull', type='skull', xyz=(xpos+uniform(-2,2),ypos+uniform(-2,2),village_height))
         m.make('pelvis', type='pelvis', xyz=(xpos+uniform(-2,2),ypos+uniform(-2,2),village_height))
         m.make('arm', type='arm', xyz=(xpos+uniform(-2,2),ypos+uniform(-2,2),village_height))
@@ -157,7 +146,7 @@ def default(mapeditor):
     m.tell_importance(lych,il.assemble,'>',il.patrol)
 
 #   animals
-    piglet = m.make('pig', type='pig', xyz=(-31,-16,village_height))
+    piglet = m.make('pig', type='pig', xyz=(-3,-1,village_height))
     m.learn(piglet,pig_goals)
 
     wolf = m.make('wolf', type='wolf', xyz=(90,-90,village_height))
@@ -178,34 +167,6 @@ def default(mapeditor):
     #m.learn(squirrel,(il.transport,"transport_something(self,'acorn','forest','stash')"))
 
 #   villagers
-
-    # Some generic market traders, to operate the market stalls
-    stall_list = ['mstall_bakery_2_se', 'mstall_beer_1_se',
-                  'mstall_blacksmith_1_sw', 'mstall_blue_1_us',
-                  'mstall_books_2_sw', 'mstall_cheese_2_se',
-                  'mstall_fish_1_se', 'mstall_freshmeat_1_se',
-                  'mstall_fruits_2_se', 'mstall_healer_1_sw',
-                  'mstall_household_1_sw', 'mstall_jewels_1_sw',
-                  'mstall_magic_items_1_sw', 'mstall_milk_2_se',
-                  'mstall_seamstress_1_sw', 'mstall_vegetables_1_se',
-                  'mstall_wine_1_se']
-    directions=[Quaternion(Vector3D([1,0,0]),Vector3D([0,1,0])).as_list(),
-                Quaternion(Vector3D([1,0,0]),Vector3D([1,0,0])).as_list(),
-                Quaternion(Vector3D([1,0,0]),Vector3D([0,-1,0])).as_list(),
-                Quaternion(Vector3D([1,0,0]),Vector3D([-1,0,0])).as_list(),
-                Quaternion(Vector3D([1,0,0]),Vector3D([0.7,0.7,0])).as_list(),
-                Quaternion(Vector3D([1,0,0]),Vector3D([0.7,-0.7,0])).as_list(),
-                Quaternion(Vector3D([1,0,0]),Vector3D([-0.7,-0.7,0])).as_list(),
-                Quaternion(Vector3D([1,0,0]),Vector3D([-0.7,0.7,0])).as_list()]
-    trader_list = ['merchant', 'maid_brown', 'maid_blond', 'maid_red']
-    for stall in stall_list:
-        trader=m.make('trader',type=trader_list[randint(0,3)],
-                 xyz=(uniform(-36,-56),uniform(-7,-17),village_height),
-                 age=probability.fertility_age,orientation=directions[randint(0,7)])
-        m.learn(trader,(il.market,"run_shop('"+stall+"','open','dawn')"))
-        m.learn(trader,(il.market,"run_shop('"+stall+"','closed','evening')"))
-
-    #m.make('bstall',type='bstall',xyz=(-41,-5,village_height))
 
     home1_xyz=(90,-90,village_height)
 
@@ -229,7 +190,8 @@ def default(mapeditor):
 
     home2_xyz=(80,80,village_height)
     merchant=m.make('Dyfed Searae',type='merchant',desc='the pig merchant',
-         xyz=pig_stall_xyz,age=probability.fertility_age,sex='male',orientation=Quaternion(Vector3D([1,0,0]),Vector3D([-1,0,0])).as_list())
+                    xyz=pig_stall_xyz,age=probability.fertility_age,
+                    sex='male',orientation=Quaternion(Vector3D([1,0,0]),Vector3D([-1,0,0])).as_list())
     merchant2=m.make('Dylan Searae',type='merchant',desc='the pig merchant',
          xyz=(-28,2,village_height),age=probability.fertility_age,sex='male',orientation=Quaternion(Vector3D([1,0,0]),Vector3D([0,-1,0])).as_list())
     merchants=[merchant, merchant2]
