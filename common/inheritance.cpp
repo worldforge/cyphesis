@@ -43,6 +43,12 @@ void Inheritance::flush()
         delete I->second;
     }
     atlasObjects.clear();
+    OpFactoryDict::const_iterator J = opFactories.begin();
+    OpFactoryDict::const_iterator Jend = opFactories.end();
+    for (; J != Jend; ++J) {
+        delete J->second;
+    }
+    opFactories.clear();
 }
 
 Inheritance & Inheritance::instance()

@@ -15,6 +15,14 @@ void PersistorConnection<T>::persist()
 }
 
 template <class T>
+PersistantThingFactory<T>::~PersistantThingFactory()
+{
+    if (m_master) {
+        delete &m_p;
+    }
+}
+
+template <class T>
 T * PersistantThingFactory<T>::newThing(const std::string & id)
 {
     return new T(id);

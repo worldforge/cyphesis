@@ -1,5 +1,17 @@
 2004-11-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/PersistantThingFactory_impl.h, server/PersistantThingFactory.h:
+	  Add a flag indicating whether a thing factory owns its persistor
+	  object, so that the destructor knows whether to delete it.
+	  Leak now fixed.
+
+	* server/EntityFactory.cpp: Clear the entity factories dictionary.
+
+	* common/inheritance.cpp: Fix leak of operation factories by flushing
+	  and clearing the factory dictionary.
+
+2004-11-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.cpp: Fix leak of Property objects.
 
 2004-11-24  Al Riddoch  <alriddoch@zepler.org>

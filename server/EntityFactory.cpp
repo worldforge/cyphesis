@@ -133,6 +133,7 @@ void EntityFactory::flushFactories()
     }
     delete m_eft;
     m_eft = NULL;
+    m_factories.clear();
 }
 
 void EntityFactory::installRule(const std::string & className,

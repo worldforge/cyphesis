@@ -51,13 +51,17 @@ template <class T>
 class PersistantThingFactory : public FactoryBase {
   public:
     Persistor<T> & m_p;
+    const bool m_master;
 
-    PersistantThingFactory() : m_p(* new Persistor<T>()) { }
-    PersistantThingFactory(PersistantThingFactory<T> & p) : m_p(p.m_p) { }
+    PersistantThingFactory() : m_p(* new Persistor<T>()), m_master(true) { }
+    PersistantThingFactory(PersistantThingFactory<T> & p) : m_p(p.m_p),
+                                                            m_master(false) { }
 
-    T * newThing(const std::string & id);
-    T * newPersistantThing(const std::string & id, PersistorBase ** p);
-    FactoryBase * duplicateFactory();
+    virtual ~PersistantThingFactory();
+ 
+    virtual T * newThing(const std::string & id);
+    virtual T * newPersistantThing(const std::string & id, PersistorBase ** p);
+    virtual FactoryBase * duplicateFactory();
 };
 
 #endif // SERVER_THING_FACTORY_H
