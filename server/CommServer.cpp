@@ -229,7 +229,6 @@ void CommServer::loop()
     }
     std::set<CommClient *>::const_iterator J = obsoleteConnections.begin();
     for(; J != obsoleteConnections.end(); ++J) {
-        std::cerr << "Removing obsolete client" << std::endl << std::flush;
         removeClient(*J);
     }
     // Once we have done all socket related stuff, proceed with processing
