@@ -32,6 +32,9 @@ class Plant : public Plant_parent {
     virtual ~Plant();
 
     const int getFruits() const { return m_fruits; }
+    const std::string & getFruitName() const { return m_fruitName; }
+    const int getFruitChance() const { return m_fruitChance; }
+    const double getSizeAdult() const { return m_sizeAdult; }
 
     virtual bool get(const std::string &, Atlas::Message::Element &) const;
     virtual void set(const std::string &, const Atlas::Message::Element &);

@@ -76,6 +76,9 @@ pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
 deer_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
             (il.herd,"herd()")]
 
+chicken_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
+               (il.herd,"herd()")]
+
 wolf_goals=[(il.forage,"forage(self, 'ham')"),
             (il.hunt,"predate(self,'pig',30.0)"),
             (il.hunt,"predate(self,'crab',20.0)"),

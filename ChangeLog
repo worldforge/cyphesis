@@ -1,3 +1,13 @@
+2004-04-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Restorer.h, server/Restorer.cpp, server/Persistor_impl.h,
+	  server/Persistor.cpp, rulesets/Plant.h: Implement plant
+	  attribute persistance.
+
+	* rulesets/Plant.cpp: Fix a few plant typos.
+
+	* Add chicken goals.
+
 2004-04-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* Fix some tree related rules

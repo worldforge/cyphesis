@@ -110,6 +110,9 @@ Persistor<Plant>::Persistor<Plant>(bool temp) : m_class("plant")
     Atlas::Message::Element::MapType desc;
     // FIXME Sort out attributes
     desc["fruits"] = 1;
+    desc["fruitName"] = "                                                                                ";
+    desc["fruitChance"] = 1;
+    desc["sizeAdult"] = 1.0;
     Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 

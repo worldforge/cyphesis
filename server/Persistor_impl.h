@@ -115,6 +115,9 @@ void Persistor<T>::uPlant(Plant & t, std::string & c)
     if (t.getUpdateFlags() & a_fruit) {
         if (!empty) { q << ", "; } else { empty = false; }
         q << "fruits = " << t.getFruits();
+        q << ", fruitName = '" << t.getFruitName() << "'";
+        q << ", fruitChance = " << t.getFruitChance();
+        q << ", sizeAdult = " << t.getSizeAdult();
     }
     if (!empty) {
         c += q.str();
@@ -202,13 +205,17 @@ template <class T>
 void Persistor<T>::cPlant(Plant & p, std::string & c, std::string & v)
 {
     const char * cs = ", ";
+    const char * sq = "'";
     if (!c.empty()) {
         c += cs;
     }
-    c += "fruits";
+    c += "fruits, fruitName, fruitChance, sizeAdult";
 
     std::stringstream q;
-    q << p.getFruits();
+    q << p.getFruits() << cs
+      << sq << p.getFruitName() << sq << cs
+      << p.getFruitChance() << cs
+      << p.getSizeAdult();
 
     if (!v.empty()) {
         v += cs;

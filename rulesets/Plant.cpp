@@ -30,8 +30,6 @@ Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
 
     subscribe("tick", OP_TICK);
     subscribe("touch", OP_TOUCH);
-
-    std::cout << "New plant" << std::endl << std::flush;
 }
 
 Plant::~Plant()
@@ -98,7 +96,7 @@ int Plant::dropFruit(OpVector & res)
     for(int i = 0; i < drop; i++) {
         float rx = m_location.m_pos.x() + uniform( height * m_radius,
                                                   -height * m_radius);
-        float ry = m_location.m_pos.x() + uniform( height * m_radius,
+        float ry = m_location.m_pos.y() + uniform( height * m_radius,
                                                   -height * m_radius);
         Element::MapType fmap;
         fmap["name"] = m_fruitName;
@@ -149,10 +147,14 @@ OpVector Plant::TouchOperation(const Touch & op)
 {
     debug(std::cout << "Plant::Touch(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);
+    debug(std::cout << "Plant has " << m_fruits << " fruits right now"
+                    << std::endl << std::flush;);
     OpVector res;
-    if (m_script->Operation("tick", op, res)) {
+    if (m_script->Operation("touch", op, res)) {
         return res;
     }
+    debug(std::cout << "Checking for drop"
+                    << std::endl << std::flush;);
 
     int dropped = dropFruit(res);
     if (dropped != 0) {

@@ -50,3 +50,17 @@ void Restorer<Character>::populate(DatabaseResult::const_iterator & dr)
     rEntity(dr);
     rCharacter(dr);
 }
+
+void Restorer<Plant>::rPlant(DatabaseResult::const_iterator & dr)
+{
+    restoreInt(dr.column("fruits"), m_fruits);
+    restoreFloat(dr.column("sizeAdult"), m_sizeAdult);
+    restoreInt(dr.column("fruitChance"), m_fruitChance);
+    restoreString(dr.column("fruitName"), m_fruitName);
+}
+
+void Restorer<Plant>::populate(DatabaseResult::const_iterator & dr)
+{
+    rEntity(dr);
+    rPlant(dr);
+}

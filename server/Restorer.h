@@ -56,6 +56,7 @@ class Restorer : public T {
 
     void rEntity(DatabaseResult::const_iterator & dr);
     void rCharacter(DatabaseResult::const_iterator & dr);
+    void rPlant(DatabaseResult::const_iterator & dr);
   public:
     static Persistor<T> m_persist;
 
