@@ -11,34 +11,34 @@
 
 class CreatorClient;
 
-class CommClient : public BaseEntity {
+class CommClient {
   protected:
-    ClientConnection connection;
-    CreatorClient * character;
-    MapType player;
-    std::string playerName;
-    std::string playerId;
+    ClientConnection m_connection;
+    CreatorClient * m_character;
+    MapType m_player;
+    std::string m_playerName;
+    std::string m_playerId;
 
   public:
     CommClient();
+    virtual ~CommClient();
 
-    MapType createPlayer(const std::string & name,
-                                                 const std::string & pword);
+    MapType createPlayer(const std::string & name, const std::string & pword);
     CreatorClient * createCharacter(const std::string & name);
     void handleNet();
     
     virtual void idle() = 0;
 
     bool connectLocal(const std::string & socket = "") {
-        return connection.connectLocal(socket);
+        return m_connection.connectLocal(socket);
     }
 
     bool connect(const std::string & server = "localhost") {
-        return connection.connect(server);
+        return m_connection.connect(server);
     }
 
     void send(RootOperation & op) {
-        connection.send(op);
+        m_connection.send(op);
     }
 
     void run(const bool loop = true) {

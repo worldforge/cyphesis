@@ -17,14 +17,18 @@ static const bool debug_flag = false;
 // This is a template which requires debug flag to be declared.
 #include "rulesets/Entity_getLocation.h"
 
-CommClient::CommClient() : BaseEntity("")
+CommClient::CommClient()
+{
+}
+
+CommClient::~CommClient()
 {
 }
 
 MapType CommClient::createPlayer(const std::string & name,
-                                           const std::string & password)
+                                 const std::string & password)
 {
-    playerName = name;
+    m_playerName = name;
     MapType player_ent;
     player_ent["username"] = name;
     player_ent["password"] = password;
@@ -37,25 +41,25 @@ MapType CommClient::createPlayer(const std::string & name,
     loginAccountOp.setArgs(ListType(1,player_ent));
     send(loginAccountOp);
 
-    if (connection.wait()) {
+    if (m_connection.wait()) {
         Create createAccountOp;
         createAccountOp.setArgs(ListType(1,player_ent));
         send(createAccountOp);
-        if (connection.wait()) {
+        if (m_connection.wait()) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
                       << std::flush;
             return MapType();
         }
     }
 
-    const MapType & ent = connection.getReply();
+    const MapType & ent = m_connection.getReply();
 
     MapType::const_iterator I = ent.find("id");
     if (I == ent.end() || !I->second.isString()) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
                   << std::flush;
     } else {
-        playerId = I->second.asString();
+        m_playerId = I->second.asString();
     }
     //if (ent.find("characters") != ent.end()) {
     //}
@@ -66,26 +70,26 @@ MapType CommClient::createPlayer(const std::string & name,
 CreatorClient * CommClient::createCharacter(const std::string & type)
 {
     MapType character;
-    character["name"] = playerName;
+    character["name"] = m_playerName;
     character["parents"] = ListType(1,type);
 
     Create createOp;
-    createOp.setFrom(playerId);
+    createOp.setFrom(m_playerId);
     createOp.setArgs(ListType(1,character));
     send(createOp);
 
-    if (connection.wait()) {
+    if (m_connection.wait()) {
         std::cerr << "ERROR: Failed to create character type: "
                   << type << std::endl << std::flush;
         return NULL;
     }
-    const MapType & body = connection.getReply();
+    const MapType & body = m_connection.getReply();
 
     const std::string & id = body.find("id")->second.asString();
 
     EntityDict tmp;
 
-    CreatorClient * obj = new CreatorClient(id, type, connection);
+    CreatorClient * obj = new CreatorClient(id, type, m_connection);
     obj->merge(body);
     obj->getLocation(body, tmp);
     // obj = EntityFactory::instance()->newThing(type, body, tmp);
@@ -103,9 +107,9 @@ CreatorClient * CommClient::createCharacter(const std::string & type)
 void CommClient::handleNet()
 {
     RootOperation * input;
-    while ((input = connection.pop()) != NULL) {
+    while ((input = m_connection.pop()) != NULL) {
         OpVector res;
-        character->operation(*input, res);
+        m_character->operation(*input, res);
         for (OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
             send(*(*I));
         }

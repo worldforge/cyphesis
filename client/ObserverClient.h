@@ -11,6 +11,8 @@
 class ObserverClient : public CommClient {
   public:
     ObserverClient();
+    virtual ~ObserverClient();
+
     bool setup(const std::string & account, const std::string & password);
     void load(const std::string & package, const std::string & function);
     void idle();

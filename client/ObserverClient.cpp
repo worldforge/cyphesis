@@ -16,6 +16,10 @@ ObserverClient::ObserverClient()
 {
 }
 
+ObserverClient::~ObserverClient()
+{
+}
+
 bool ObserverClient::setup(const std::string & account,
                            const std::string & password)
 {
@@ -36,12 +40,12 @@ bool ObserverClient::setup(const std::string & account,
                   << std::endl << std::flush;
     }
 
-    player = createPlayer(account, password);
-    if (player.empty()) {
+    m_player = createPlayer(account, password);
+    if (m_player.empty()) {
         return false;
     }
-    character = createCharacter("creator");
-    if (character == NULL) {
+    m_character = createCharacter("creator");
+    if (m_character == NULL) {
         return false;
     }
     return true;
@@ -50,8 +54,8 @@ bool ObserverClient::setup(const std::string & account,
 void ObserverClient::load(const std::string & package,
                           const std::string & function)
 {
-    //DefineWorld::define(character);
-    character->runScript(package, function);
+    //DefineWorld::define(m_character);
+    m_character->runScript(package, function);
 }
 
 void ObserverClient::idle()
@@ -63,7 +67,7 @@ void ObserverClient::idle()
     if (not ObserverClient::display) {
         return;
     }
-    ObserverClient::map=ObserverClient::character.map;
+    ObserverClient::map=ObserverClient::m_character.map;
     wait=0.0;
     xmin=-300.0;
     xmax=-xmin;
@@ -96,7 +100,7 @@ void ObserverClient::idle()
             print "CHEAT!: somewhere is entity without type!:",t;
         }
     }
-    ObserverClient::time=str(ObserverClient::character.time);
+    ObserverClient::time=str(ObserverClient::m_character.time);
     status_str=ObserverClient::time+" Count of minds: "+`len(mind_list)`;
     print chr(27)+"[H",status_str+" "*(sizex-len(status_str)-1);
     for (/*t in house_list*/) {

@@ -1,5 +1,12 @@
 2004-09-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/CommClient.h, client/CommClient.cpp, client/ObserverClient.h,
+	  client/ObserverClient.cpp: Prefix members with m_, and remove
+	  pointless inheritance from BaseEntity. Add virtual destructors
+	  as we no longer inherit virtual destructors from BaseEntity.
+
+2004-09-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Correct some comments.
 
 2004-09-04  Al Riddoch  <alriddoch@zepler.org>
