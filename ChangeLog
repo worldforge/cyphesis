@@ -1,3 +1,9 @@
+2002-05-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Quaternion.cpp, physics/Quaternion.h: Revert hack to
+	  quaternion sign convention, now that this has been resolved
+	  by Ron in wfmath.
+
 2002-05-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Pedestrian.cpp: Fixed collision resolution so it

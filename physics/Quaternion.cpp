@@ -9,7 +9,7 @@
 // a rotation in the wrong direction. This may be a bug in my apogee
 // code, or it may be this code.
 
-Quaternion::Quaternion(const Vector3D & to, const Vector3D & from) : _set(true)
+Quaternion::Quaternion(const Vector3D & from, const Vector3D & to) : _set(true)
 {
     double cosT = from.dot(to);
     if (cosT > 0.99999f) {

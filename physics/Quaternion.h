@@ -26,7 +26,7 @@ class Quaternion {
         z = l[2].AsNum();
         w = l[3].AsNum();
     }
-    Quaternion(const Vector3D & to, const Vector3D & from);
+    Quaternion(const Vector3D & from, const Vector3D & to);
 
     double X() const { return x; }
     double Y() const { return y; }
