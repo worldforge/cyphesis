@@ -23,6 +23,11 @@ Admin::Admin(Connection * conn, const std::string& username,
              const std::string& passwd) : Account(conn, username, passwd)
 {
     type = "admin";
+
+    subscribe("load", OP_LOAD);
+    subscribe("save", OP_SAVE);
+    subscribe("get", OP_GET);
+    subscribe("set", OP_SET);
 }
 
 Admin::~Admin()

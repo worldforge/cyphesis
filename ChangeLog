@@ -1,3 +1,88 @@
+2002-03-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Eliminate unnecessary call to opEnumerate()
+	  and enhance debugging output.
+
+	* server/Player.cpp: Correct the use of string.compare() in older
+	  versions of libstdc++.
+
+	* common/types.h: Added enumeration for other operations, not
+	  handled by the core, but considered valid. Added new type
+	  for storing mapping between operation parents and their
+	  enumerated type.
+
+	* common/op_switch.h: Separate handling of operations known to
+	  be invalid from operations which are valid, but not explicitly
+	  added to the core.
+
+	* common/inheritance.h, common/inheritance.cpp, common/custom.cpp:
+	  Provide global operation mapping where enumeration of operations
+	  can be looked up. Install all types handled by the core, and
+	  types known to be used in scripts.
+
+	* common/BaseEntity.h, common/BaseEntity.cpp: Add object specific
+	  operation mapping where operation types each object is subscribed
+	  to can be enumerated, and others are rejected. Add mechanism
+	  so that objects can add to the mapping, this subscribing to
+	  operations. This makes enumerating operations much cheaper, and
+	  eliminates the overhead of handling ops an object has no interest
+	  in.
+
+	* rulesets/Thing.h, rulesets/Thing.cpp: Add mechanism so scripts
+	  can subscribe to operations.
+
+	* rulesets/Character.h, rulesets/Character.cpp:
+	  Add subscription mechanism for ops going to and from
+	  the mind.
+
+	* rulesets/BaseMind.h, rulesets/BaseMind.cpp:
+	  Add subscription mechanism for sight and sound perception
+	  operations sub operations, and provide an interface to it
+	  for scripts.
+
+	* server/Connection.cpp, server/Admin.cpp, server/Account.cpp,
+	  rulesets/World.cpp, rulesets/World.h, rulesets/Thing.cpp,
+	  rulesets/Stackable.cpp, rulesets/Plant.cpp, rulesets/Food.cpp,
+	  rulesets/Character.cpp, rulesets/BaseMind.cpp:
+	  Add subscriptions to operations for all core base classes.
+
+	* rulesets/Python_API.cpp: When script is created, go through
+	  methods, and subscribe to the operations which are handled by
+	  them.
+
+	* rulesets/Character.cpp: When calculating orientation of a walking
+	  character, assume it is standing upright.
+
+	* physics/Vector3D.h: Add versions of mag() and distance() which
+	  omit the square root calculations, so that when their values
+	  are only used for comparison, the expensive square root
+	  calculations can be ommited. Add new version of collision
+	  and range checking functions which provide the optimal
+	  interface to the application. Add versions of methods which
+	  modify this rather than creating a new operation to eliminate
+	  wasted copies.
+
+	* physics/Quaternion.cpp: Make use of faster interface provided
+	  by Vector3D.
+
+	* physics/BBox.h: Add new version of collision checking function
+	  which provides optimal interface to the application.
+
+	* modules/Location.h, modules/Location.cpp: Add new functions
+	  to optimally calculate the distance between any two entities.
+
+	* modules/Location.h: Re-write collision and range functions to
+	  make much more optimal use of Vector3D, BBox and distance
+	  functionality.
+
+	* rulesets/Py_Vector3D.cpp, rulesets/Pedestrian.cpp,
+	  rulesets/Movement.cpp, rulesets/Entity.cpp, rulesets/Character.cpp:
+	  Eliminate implicit copies from vector arithmetic.
+
+	* rulesets/Pedestrian.cpp, rulesets/MemMap.cpp, common/const.h:
+	  Re-write code which uses magnitude of vectors to use the square
+	  of the magnitude instead, as it is much cheaper to calculate.
+
 2002-03-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Location.cpp: Re-wrote commented out orientation

@@ -7,6 +7,15 @@
 
 #include "World.h"
 
+World::World()
+{
+    subscribe("set", OP_SET);
+}
+
+World::~World()
+{
+}
+
 OpVector World::LookOperation(const Look & op)
 {
     return world->lookOperation(op);

@@ -23,14 +23,30 @@ void installCustomOperations()
     Inheritance & i = Inheritance::instance();
 
     i.addChild(new Chop());
+    i.opInstall("chop", OP_CHOP);
     i.addChild(new Cut());
+    i.opInstall("cut", OP_CUT);
     i.addChild(new Eat());
+    i.opInstall("eat", OP_EAT);
     i.addChild(new Fire());
+    i.opInstall("fire", OP_FIRE);
     i.addChild(new Load());
+    i.opInstall("load", OP_LOAD);
     i.addChild(new Nourish());
+    i.opInstall("nourish", OP_NOURISH);
     i.addChild(new Save());
+    i.opInstall("save", OP_SAVE);
     i.addChild(new Setup());
+    i.opInstall("setup", OP_SETUP);
     i.addChild(new Tick());
+    i.opInstall("tick", OP_TICK);
+
+
+    // Custom ops used in scripts which do not need direct support in the
+    // core
+
+    i.opInstall("shoot", OP_OTHER);
+    i.opInstall("extinguish", OP_OTHER);
 }
 
 using Atlas::Objects::Root;

@@ -14,6 +14,8 @@ namespace consts {
   const double basic_tick = time_multiplier*3.0;
   const double base_velocity_coefficient = 5.0;
   const double base_velocity = base_velocity_coefficient/time_multiplier;
+  const double square_basic_tick = basic_tick * basic_tick;
+  const double square_base_velocity = base_velocity * base_velocity;
 
   const double sight_range = 13.0;
   const double hearing_range = 13.0;

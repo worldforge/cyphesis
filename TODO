@@ -1,3 +1,16 @@
+  Why don't the pigs eat?
+
+  Looking at contains attribute currently only applies sight ranges in
+  world entity. Need to apply sight ranges in all entities.
+
+  Find out why pure orientation changes don't get echoed by the server.
+
+  Add custom ops into the global opEnumerator as OP_OTHER or something.
+
+  Once the subscription mechanism works, transfer its setup into the factories,
+  and use it to inform the clients what op types are meaningful for object
+  types.
+
   The world.is_object_delete() implementation cannot work in C++,
   as deleted objects do not hang around to be checked. Basically the
   deleted flag is pointless and it will go as soon as I have verified

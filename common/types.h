@@ -46,6 +46,7 @@ typedef enum op_no {
 	OP_SETUP,
 	OP_APPEARANCE,
 	OP_DISAPPEARANCE,
+	OP_OTHER,
 	OP_INVALID
 } OpNo;
 
@@ -64,6 +65,7 @@ typedef std::list<Account *> AccountList;
 
 typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
 typedef std::list<Atlas::Objects::Operation::RootOperation *> OpQueue;
+typedef std::map<std::string,OpNo> OpNoDict;
 
 typedef std::vector<Vector3D> CoordList;
 

@@ -23,6 +23,7 @@
 
 #include <common/const.h>
 #include <common/debug.h>
+#include <common/inheritance.h>
 
 static const bool debug_flag = false;
 
@@ -30,9 +31,29 @@ using Atlas::Message::Object;
 
 Thing::Thing()
 {
+    subscribe("setup", OP_SETUP);
+    subscribe("action", OP_ACTION);
+    subscribe("create", OP_CREATE);
+    subscribe("delete", OP_DELETE);
+    subscribe("fire", OP_FIRE);
+    subscribe("move", OP_MOVE);
+    subscribe("set", OP_SET);
+    subscribe("look", OP_LOOK);
 }
 
 Thing::~Thing() { }
+
+void Thing::scriptSubscribe(const std::string & op)
+{
+    OpNo n = Inheritance::instance().opEnumerate(op);
+    if (n != OP_INVALID) {
+        debug(std::cout << "SCRIPT requesting subscription to " << op
+                        << std::endl << std::flush;);
+        subscribe(op, n);
+    } else {
+        std::cout << "SCRIPT requesting subscription to " << op << " but inheritance could not give me a reference" << std::endl << std::flush;
+    }
+}
 
 OpVector Thing::SetupOperation(const Setup & op)
 {

@@ -91,6 +91,9 @@
         case OP_ERROR: \
             return _prefix ## ErrorOperation((const Error &)_op); \
             break; \
+        case OP_INVALID: \
+            return OpVector(); \
+            break; \
         default: \
             return _prefix ## OtherOperation((const RootOperation &)_op); \
             break; \
@@ -142,6 +145,9 @@
             break; \
         case OP_TOUCH: \
             return _prefix ## TouchOperation(_op, (Touch &)_sub_op); \
+            break; \
+        case OP_INVALID: \
+            return OpVector(); \
             break; \
         default: \
             std::cout << "nothing doing here {" << _op.GetParents().front().AsString() << "_" << _sub_op.GetParents().front().AsString() << "}" << std::endl; \

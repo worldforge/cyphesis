@@ -191,7 +191,7 @@ static Vector3DObject*Vector3D_num_add(Vector3DObject*self,Vector3DObject*other)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->coords + other->coords;
+    ret->coords = Vector3D(self->coords) += other->coords;
     return ret;
 }
 
@@ -205,7 +205,7 @@ static Vector3DObject*Vector3D_num_sub(Vector3DObject*self,Vector3DObject*other)
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->coords - other->coords;
+    ret->coords = Vector3D(self->coords) -= other->coords;
     return ret;
 }
 
@@ -224,7 +224,7 @@ static Vector3DObject * Vector3D_num_mul(Vector3DObject * self, PyObject * _othe
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->coords * other;
+    ret->coords = Vector3D(self->coords) *= other;
     return ret;
 }
 
@@ -243,7 +243,7 @@ static Vector3DObject * Vector3D_num_div(Vector3DObject * self, PyObject * _othe
     if (ret == NULL) {
         return NULL;
     }
-    ret->coords = self->coords / other;
+    ret->coords = Vector3D(self->coords) /= other;
     return ret;
 }
 

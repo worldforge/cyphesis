@@ -24,7 +24,7 @@ OpVector Player::characterError(const Create& op,const Object::MapType& ent) con
     }
 
 #if defined(__GNUC__) && __GNUC__ < 3
-    if (!I->second.AsString().compare("admin",0,5)) {
+    if (!I->second.AsString().substr(0,5).compare("admin")) {
         return error(op, "Object to be created cannot start with admin");
     }
 #else

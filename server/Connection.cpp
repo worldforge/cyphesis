@@ -30,6 +30,10 @@ using Atlas::Message::Object;
 Connection::Connection(CommClient & client) : commClient(client),
                        server(commClient.commServer.server)
 {
+    subscribe("login", OP_LOGIN);
+    subscribe("logout", OP_LOGOUT);
+    subscribe("create", OP_CREATE);
+    subscribe("get", OP_GET);
 }
 
 Connection::~Connection()

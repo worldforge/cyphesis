@@ -20,6 +20,7 @@ using Atlas::Message::Object;
 
 BaseEntity::BaseEntity()
 {
+    subscribe("look", OP_LOOK);
 }
 
 BaseEntity::~BaseEntity()
@@ -77,35 +78,35 @@ OpVector BaseEntity::externalOperation(const RootOperation & op)
     return operation(op);
 }
 
-OpVector BaseEntity::LoginOperation(const Login & op) { OpVector res; return res; }
-OpVector BaseEntity::LogoutOperation(const Logout & op) { OpVector res; return res; }
-OpVector BaseEntity::ActionOperation(const Action & op) { OpVector res; return res; }
-OpVector BaseEntity::ChopOperation(const Chop & op) { OpVector res; return res; }
-OpVector BaseEntity::CombineOperation(const Combine & op) { OpVector res; return res; }
-OpVector BaseEntity::CreateOperation(const Create & op) { OpVector res; return res; }
-OpVector BaseEntity::CutOperation(const Cut & op) { OpVector res; return res; }
-OpVector BaseEntity::DeleteOperation(const Delete & op) { OpVector res; return res; }
-OpVector BaseEntity::DivideOperation(const Divide & op) { OpVector res; return res; }
-OpVector BaseEntity::EatOperation(const Eat & op) { OpVector res; return res; }
-OpVector BaseEntity::FireOperation(const Fire & op) { OpVector res; return res; }
-OpVector BaseEntity::GetOperation(const Get & op) { OpVector res; return res; }
-OpVector BaseEntity::ImaginaryOperation(const Imaginary & op) { OpVector res; return res; }
-OpVector BaseEntity::InfoOperation(const Info & op) { OpVector res; return res; }
-OpVector BaseEntity::MoveOperation(const Move & op) { OpVector res; return res; }
-OpVector BaseEntity::NourishOperation(const Nourish & op) { OpVector res; return res; }
-OpVector BaseEntity::SetOperation(const Set & op) { OpVector res; return res; }
-OpVector BaseEntity::SightOperation(const Sight & op) { OpVector res; return res; }
-OpVector BaseEntity::SoundOperation(const Sound & op) { OpVector res; return res; }
-OpVector BaseEntity::TalkOperation(const Talk & op) { OpVector res; return res; }
-OpVector BaseEntity::TouchOperation(const Touch & op) { OpVector res; return res; }
-OpVector BaseEntity::TickOperation(const Tick & op) { OpVector res; return res; }
-OpVector BaseEntity::LoadOperation(const Load & op) { OpVector res; return res; }
-OpVector BaseEntity::SaveOperation(const Save & op) { OpVector res; return res; }
-OpVector BaseEntity::SetupOperation(const Setup & op) { OpVector res; return res; }
-OpVector BaseEntity::AppearanceOperation(const Appearance & op) { OpVector res; return res; }
-OpVector BaseEntity::DisappearanceOperation(const Disappearance & op) { OpVector res; return res; }
-OpVector BaseEntity::OtherOperation(const RootOperation & op) { OpVector res; return res; }
-OpVector BaseEntity::ErrorOperation(const RootOperation & op) { OpVector res; return res; }
+OpVector BaseEntity::LoginOperation(const Login & op) { return OpVector(); }
+OpVector BaseEntity::LogoutOperation(const Logout & op) { return OpVector(); }
+OpVector BaseEntity::ActionOperation(const Action & op) { return OpVector(); }
+OpVector BaseEntity::ChopOperation(const Chop & op) { return OpVector(); }
+OpVector BaseEntity::CombineOperation(const Combine & op) { return OpVector(); }
+OpVector BaseEntity::CreateOperation(const Create & op) { return OpVector(); }
+OpVector BaseEntity::CutOperation(const Cut & op) { return OpVector(); }
+OpVector BaseEntity::DeleteOperation(const Delete & op) { return OpVector(); }
+OpVector BaseEntity::DivideOperation(const Divide & op) { return OpVector(); }
+OpVector BaseEntity::EatOperation(const Eat & op) { return OpVector(); }
+OpVector BaseEntity::FireOperation(const Fire & op) { return OpVector(); }
+OpVector BaseEntity::GetOperation(const Get & op) { return OpVector(); }
+OpVector BaseEntity::ImaginaryOperation(const Imaginary & op) { return OpVector(); }
+OpVector BaseEntity::InfoOperation(const Info & op) { return OpVector(); }
+OpVector BaseEntity::MoveOperation(const Move & op) { return OpVector(); }
+OpVector BaseEntity::NourishOperation(const Nourish & op) { return OpVector(); }
+OpVector BaseEntity::SetOperation(const Set & op) { return OpVector(); }
+OpVector BaseEntity::SightOperation(const Sight & op) { return OpVector(); }
+OpVector BaseEntity::SoundOperation(const Sound & op) { return OpVector(); }
+OpVector BaseEntity::TalkOperation(const Talk & op) { return OpVector(); }
+OpVector BaseEntity::TouchOperation(const Touch & op) { return OpVector(); }
+OpVector BaseEntity::TickOperation(const Tick & op) { return OpVector(); }
+OpVector BaseEntity::LoadOperation(const Load & op) { return OpVector(); }
+OpVector BaseEntity::SaveOperation(const Save & op) { return OpVector(); }
+OpVector BaseEntity::SetupOperation(const Setup & op) { return OpVector(); }
+OpVector BaseEntity::AppearanceOperation(const Appearance & op) { return OpVector(); }
+OpVector BaseEntity::DisappearanceOperation(const Disappearance & op) { return OpVector(); }
+OpVector BaseEntity::OtherOperation(const RootOperation & op) { return OpVector(); }
+OpVector BaseEntity::ErrorOperation(const RootOperation & op) { return OpVector(); }
 
 void BaseEntity::setRefno(const OpVector& ret, const RootOperation & ref_op) const
 {
@@ -124,35 +125,34 @@ OpNo BaseEntity::opEnumerate(const RootOperation & op) const
         std::cerr << "This op has invalid parent.\n" << std::endl << std::flush;
     }
     const std::string & parent = parents.begin()->AsString();
-    if ("tick" == parent)  { return OP_TICK; }
-    if ("move" == parent)  { return OP_MOVE; }
-    if ("sight" == parent)  { return OP_SIGHT; }
-    if ("appearance" == parent)  { return OP_APPEARANCE; }
-    if ("disappearance" == parent)  { return OP_DISAPPEARANCE; }
-    if ("look" == parent)  { return OP_LOOK; }
-    if ("create" == parent)  { return OP_CREATE; }
-    if ("action" == parent)  { return OP_ACTION; }
-    if ("delete" == parent)  { return OP_DELETE; }
-    if ("eat" == parent)  { return OP_EAT; }
-    if ("fire" == parent)  { return OP_FIRE; }
-    if ("get" == parent)  { return OP_GET; }
-    if ("imaginary" == parent)  { return OP_IMAGINARY; }
-    if ("nourish" == parent)  { return OP_NOURISH; }
-    if ("set" == parent)  { return OP_SET; }
-    if ("sound" == parent)  { return OP_SOUND; }
-    if ("talk" == parent)  { return OP_TALK; }
-    if ("touch" == parent)  { return OP_TOUCH; }
-    if ("divide" == parent)  { return OP_DIVIDE; }
-    if ("combine" == parent)  { return OP_COMBINE; }
-    if ("cut" == parent)  { return OP_CUT; }
-    if ("chop" == parent)  { return OP_CHOP; }
-    if ("setup" == parent)  { return OP_SETUP; }
-    if ("error" == parent)  { return OP_ERROR; }
-    if ("info" == parent)  { return OP_INFO; }
-    if ("login" == parent)  { return OP_LOGIN; }
-    if ("load" == parent)  { return OP_LOAD; }
-    if ("save" == parent)  { return OP_SAVE; }
-    return (OP_INVALID);
+    OpNoDict::const_iterator I = opLookup.find(parent);
+    if (I != opLookup.end()) {
+        return I->second;
+    } else {
+        debug(std::cout << getId() << " is rejecting op of type " << parent
+                        << std::endl << std::flush;);
+        return OP_INVALID;
+    }
+}
+
+OpNo BaseEntity::opEnumerate(const RootOperation& op, const OpNoDict& d) const
+{
+    const Atlas::Message::Object::ListType & parents = op.GetParents();
+    if (parents.size() != 1) {
+        std::cerr << "This is a weird operation." << std::endl << std::flush;
+    }
+    if (!parents.begin()->IsString()) {
+        std::cerr << "This op has invalid parent.\n" << std::endl << std::flush;
+    }
+    const std::string & parent = parents.begin()->AsString();
+    OpNoDict::const_iterator I = d.find(parent);
+    if (I != d.end()) {
+        return I->second;
+    } else {
+        debug(std::cout << getId() << " is rejecting 2ry op of type " << parent
+                        << std::endl << std::flush;);
+        return OP_INVALID;
+    }
 }
 
 OpVector BaseEntity::callOperation(const RootOperation & op)

@@ -23,6 +23,8 @@ class Thing : public Entity {
         return world->message(*op, this);
     }
 
+    void scriptSubscribe(const std::string &);
+
     virtual OpVector SetupOperation(const Setup & op);
     virtual OpVector ActionOperation(const Action & op);
     virtual OpVector CreateOperation(const Create & op);

@@ -11,6 +11,9 @@
 class Entity;
 
 class Location {
+  protected:
+    bool distanceLeft(const Location & other, Vector3D & c) const;
+    bool distanceRight(const Location & other, Vector3D & c) const;
   public:
     Entity * ref;
     Vector3D coords;   // Coords relative to ref entity
@@ -30,15 +33,28 @@ class Location {
         return (ref!=NULL && coords);
     }
 
-    Vector3D getXyz() const;
+    const Vector3D getXyz() const;
+    const Vector3D getXyz(Entity *) const;
 
     void addToObject(Atlas::Message::Object::MapType & ent) const;
 
-    bool inRange(const Location & loc, const double distance) const {
+    const Vector3D distanceTo(const Location & other) const {
+        Vector3D dist(0,0,0);
+        if (distanceRight(other, dist)) {
+           dist.set();
+        } else {
+           std::cerr << "DISTANCETO returned false" << std::endl << std::flush;
+           return Vector3D();
+        }
+        return dist;
+    }
+
+    bool inRange(const Location & other, const double range) const {
         if (!bBox) {
             //return loc.getXyz().inBox(getXyz(), Vector3D(distance));
 
-            return loc.getXyz().in(getXyz() - distance, getXyz() + distance);
+            // return other.getXyz().in(getXyz(), range);
+            return distanceTo(other).in(range);
         } else {
             // const Vector3D & median = bmedian ? bmedian : bbox;
             // return loc.getXyz().inBox(getXyz() + median, bbox + distance);
@@ -47,16 +63,16 @@ class Location {
             //return loc.getXyz().inBox(bBox.nearPoint() + xyz,
                                       //bBox.farPoint() + xyz);
 
-            return bBox.grow(distance).contains(loc.getXyz() - getXyz());
+            return bBox.contains(distanceTo(other), range);
         }
     }
 
-    bool inRange(const Vector3D & pos, const double distance) const {
+    bool inRange(const Vector3D & pos, const double range) const {
         if (!coords) { return false; }
         if (!bBox) {
             // return pos.inBox(coords, Vector3D(distance));
 
-            return pos.in(coords - distance, coords + distance);
+            return pos.in(coords, range);
         } else {
             // const Vector3D & median = bmedian ? bmedian : bbox;
             // return pos.inBox(coords + median, bbox + distance);
@@ -64,7 +80,9 @@ class Location {
             //return pos.inBox(coords + bBox.nearPoint(),
                              //coords + bBox.farPoint());
 
-            return bBox.grow(distance).contains(pos - coords);
+            Vector3D rpos = pos;
+            rpos -= coords;
+            return bBox.contains(rpos, range);
         }
     }
 
@@ -73,25 +91,33 @@ class Location {
         // const Vector3D & m = bmedian ? bmedian : bbox;
         // const Vector3D & om = other.bmedian ? other.bmedian : other.bbox;
         // return coords.hitBox(m, bbox, other.coords + om, other.bbox);
-        return (bBox + coords).hit(o.bBox + o.coords);
+        BBox us(bBox), them(o.bBox);
+        us += coords;
+        them += o.coords;
+        return us.hit(them);
     }
 
     double timeToHit(const Location & o, int & axis) const {
         if (!o.bBox) { return -1; }
-        if (o.velocity && (o.velocity.mag() > 0.01)) {
+        if (o.velocity && (o.velocity.relMag() > 0.0001)) {
             // We don't currently have a viable way of making this work
             // so I am just saying that two moving entities cannot collide
             // Short term this should not be a problem
-           return -1;
+            return -1;
         }
-        return (bBox + coords).timeToHit(velocity, o.bBox + o.coords, axis);
+        BBox us(bBox), them(o.bBox);
+        us += coords;
+        them += o.coords;
+        return us.timeToHit(velocity, them, axis);
     }
 
     double timeToExit(const Location & o) const {
         if (!o.bBox) { return -1; }
         // It is assumed that o is the location of our current parent entity
         // so o.bBox has the same terms of reference as we do.
-        return (bBox + coords).timeToExit(velocity, o.bBox);
+        BBox us(bBox);
+        us += coords;
+        return us.timeToExit(velocity, o.bBox);
     }
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);

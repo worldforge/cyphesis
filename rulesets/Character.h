@@ -30,6 +30,17 @@ class Character : public Thing {
     OpVector metabolise(double ammount = 1); 
 
     friend class Movement;
+  protected:
+    OpNoDict opMindLookup;
+    OpNoDict opW2mLookup;
+
+    void mindSubscribe(const std::string& op, OpNo no) {
+        opMindLookup[op] = no;
+    }
+
+    void w2mSubscribe(const std::string& op, OpNo no) {
+        opW2mLookup[op] = no;
+    }
   public:
     BaseMind * mind;
     BaseMind * externalMind;

@@ -134,7 +134,7 @@ EntityVector MemMap::findByLocation(const Location & loc, double radius)
             continue;
         }
         if ((oloc.ref->getId() == loc.ref->getId()) &&
-            (loc.coords.distance(oloc.coords) < radius)) {
+            (loc.coords.relativeDistance(oloc.coords) < (radius * radius))) {
             res.push_back(I->second);
         }
     }

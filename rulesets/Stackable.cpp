@@ -16,6 +16,8 @@ using Atlas::Message::Object;
 
 Stackable::Stackable() : num(1)
 {
+    subscribe("combine", OP_COMBINE);
+    subscribe("divide", OP_DIVIDE);
 }
 
 Stackable::~Stackable()

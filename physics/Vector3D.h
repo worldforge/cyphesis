@@ -214,16 +214,24 @@ class Vector3D {
         return d / (v.mag() * mag());
     }
 
+    Vector3D & unit() {
+        // Make this a unit vector
+        double m = mag();
+        x/=m; y/=m; z/=m;
+        return *this;
+    }
+
     const Vector3D unitVector() const {
         //"return the unit vector of a vector";
 	// This is could throw a wobbly
-	return operator/(mag());
+	return Vector3D(*this)/=(mag());
     }
 
     const Vector3D unitVectorTo(const Vector3D & v) const {
         // return the unit vector in the direction of another vector;
-        Vector3D difference_vector = v - (*this);
-        return difference_vector.unitVector();
+        Vector3D difference_vector(v);
+        difference_vector -= *this;
+        return difference_vector.unit();
     }
 
     double distance(const Vector3D & v) const {
@@ -231,11 +239,30 @@ class Vector3D {
         return sqrt((x - v.x)*(x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z));
     }
 
+    double relativeDistance(const Vector3D & v) const {
+        // Find relative distance, to be used when the result is only
+        // going to be compared with other distances
+        return ((x - v.x)*(x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z));
+    }
+
+    bool in(double size) const {
+        // Is this vector less than size in every direction
+        return ((x < size) && (y < size) && (z < size));
+    }
+
     bool in(const Vector3D & n, const Vector3D & f) const {
         // Is this vector inside a box defined by near point n and point f
         return ((x < f.x) && (x > n.x) &&
-                (x < f.x) && (x > n.x) &&
-                (x < f.x) && (x > n.x));
+                (y < f.y) && (y > n.y) &&
+                (z < f.z) && (z > n.z));
+    }
+
+    bool in(const Vector3D & p, const double size) const {
+        // Is this vector inside a box defined by center point, size in all
+        // directions
+        return ((x < (p.x + size)) && (x > (p.x - size)) &&
+                (y < (p.y + size)) && (y > (p.y - size)) &&
+                (z < (p.z + size)) && (z > (p.z - size)));
     }
 
     bool hit(const Vector3D& f, const Vector3D& on, const Vector3D& of) const {

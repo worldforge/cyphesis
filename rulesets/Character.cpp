@@ -77,6 +77,38 @@ Character::Character() : movement(*new Pedestrian(*this)), autom(false),
     weight = 60;
     location.bBox = BBox(Vector3D(-0.25, -0.25, 0), Vector3D(0.25, 0.25, 2));
     attributes["mode"] = Object("birth");
+
+    subscribe("imaginary", OP_IMAGINARY);
+    subscribe("tick", OP_TICK);
+    subscribe("talk", OP_TALK);
+    subscribe("eat", OP_EAT);
+    subscribe("nourish", OP_NOURISH);
+
+    // subscribe to ops from the mind
+    mindSubscribe("action", OP_ACTION);
+    mindSubscribe("setup", OP_SETUP);
+    mindSubscribe("tick", OP_TICK);
+    mindSubscribe("move", OP_MOVE);
+    mindSubscribe("set", OP_SET);
+    mindSubscribe("create", OP_CREATE);
+    mindSubscribe("delete", OP_DELETE);
+    mindSubscribe("imaginary", OP_IMAGINARY);
+    mindSubscribe("talk", OP_TALK);
+    mindSubscribe("look", OP_LOOK);
+    mindSubscribe("cut", OP_CUT);
+    mindSubscribe("eat", OP_EAT);
+    mindSubscribe("touch", OP_TOUCH);
+    mindSubscribe("shoot", OP_OTHER);
+
+    // subscribe to ops for the mind
+    w2mSubscribe("appearance", OP_APPEARANCE);
+    w2mSubscribe("disappearance", OP_DISAPPEARANCE);
+    w2mSubscribe("error", OP_ERROR);
+    w2mSubscribe("setup", OP_SETUP);
+    w2mSubscribe("tick", OP_TICK);
+    w2mSubscribe("sight", OP_SIGHT);
+    w2mSubscribe("sound", OP_SOUND);
+    w2mSubscribe("touch", OP_TOUCH);
 }
 
 Character::~Character()
@@ -399,9 +431,9 @@ OpVector Character::mindMoveOperation(const Move & op)
             newop->SetFutureSeconds(0);
         }
     } else {
-        location_coords = location_coords +
+        location_coords +=
             (Vector3D(((double)rand())/RAND_MAX, ((double)rand())/RAND_MAX, 0)
-				* (drunkness * 10));
+				*= (drunkness * 10));
     }
     // Print out a bunch of debug info
     debug( std::cout << ":" << location_ref << ":" << location.ref->getId()
@@ -449,14 +481,19 @@ OpVector Character::mindMoveOperation(const Move & op)
         } else {
             debug( std::cout << "\tUsing destination for direction"
                              << std::endl << std::flush;);
-            direction = location_coords - location.coords;
+            direction = Vector3D(location_coords) -= location.coords;
         }
         if (direction) {
-            direction = direction.unitVector();
+            // This is a character walking, so it should stap upright
+            direction.unit();
+            Vector3D uprightDirection = direction;
+            uprightDirection[Vector3D::cZ] = 0;
+            uprightDirection.unit();
             debug( std::cout << "Direction: " << direction << std::endl
                              << std::flush;);
             if (!location_orientation) {
-                location.orientation = Quaternion(Vector3D(1,0,0), direction);
+                location.orientation = Quaternion(Vector3D(1,0,0),
+                                                  uprightDirection);
             }
         }
         Location ret_location;
@@ -494,7 +531,8 @@ OpVector Character::mindMoveOperation(const Move & op)
                                                << std::endl
                                                << std::flush; } );
         movement.m_targetPos = location_coords;
-        movement.m_velocity = direction * vel_mag;
+        movement.m_velocity = direction;
+        movement.m_velocity *= vel_mag;
         debug( std::cout << "Velocity " << vel_mag << std::endl << std::flush;);
         Move * moveOp2 = movement.genMoveOperation(NULL,current_location);
         tickOp->SetFutureSeconds(movement.getTickAddition(location.coords));
@@ -938,7 +976,7 @@ OpVector Character::mind2body(const RootOperation & op)
     if (drunkness > 1.0) {
         return OpVector();
     }
-    OpNo otype = opEnumerate(newop);
+    OpNo otype = opEnumerate(newop, opMindLookup);
     OP_SWITCH(newop, otype, mind)
 }
 
@@ -951,7 +989,7 @@ OpVector Character::world2body(const RootOperation & op)
 OpVector Character::world2mind(const RootOperation & op)
 {
     debug( std::cout << "Character::world2mind" << std::endl << std::flush;);
-    OpNo otype = opEnumerate(op);
+    OpNo otype = opEnumerate(op, opW2mLookup);
     OP_SWITCH(op, otype, w2m)
 }
 

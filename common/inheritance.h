@@ -6,6 +6,7 @@
 #define COMMON_INHERITANCE_H
 
 #include "operations.h"
+#include "types.h"
 
 #include <iostream>
 
@@ -24,6 +25,7 @@ class InheritanceException {
 class Inheritance {
   protected:
     std::map<std::string, Atlas::Objects::Root *> atlasObjects;
+    OpNoDict opLookup;
 
     static Inheritance * m_instance;
 
@@ -52,6 +54,33 @@ class Inheritance {
             m_instance->flush();
             delete m_instance;
         }
+    }
+
+    void opInstall(const std::string & op, OpNo no) {
+        opLookup[op] = no;
+    }
+
+    OpNo opEnumerate(const std::string & parent) const {
+        OpNoDict::const_iterator I = opLookup.find(parent);
+        if (I != opLookup.end()) {
+            return I->second;
+        } else {
+            return OP_INVALID;
+        }
+    }
+
+    OpNo opEnumerate(const RootOperation & op) const {
+        const Atlas::Message::Object::ListType & parents = op.GetParents();
+        if (parents.size() != 1) {
+            std::cerr << "This is a weird operation."
+                      << std::endl << std::flush;
+        }
+        if (!parents.begin()->IsString()) {
+            std::cerr << "This op has invalid parent.\n"
+                      << std::endl << std::flush;
+        }
+        const std::string & parent = parents.begin()->AsString();
+        return opEnumerate(parent);
     }
 
     Atlas::Objects::Root * get(const std::string & parent) {

@@ -28,6 +28,12 @@ Account::Account(Connection * conn, const std::string & username,
                    type("account")
 {
     setId(username);
+
+    subscribe("logout", OP_LOGOUT);
+    subscribe("create", OP_CREATE);
+    subscribe("imaginary", OP_IMAGINARY);
+    subscribe("talk", OP_TALK);
+    subscribe("look", OP_LOOK);
 }
 
 Account::~Account()

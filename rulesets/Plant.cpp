@@ -20,6 +20,8 @@ Plant::Plant() : fruits(0), radius(1), fruitName("seed")
     // Default to a 1m cube
     std::cout << "CREATING PLANT" << std::endl << std::flush;
     location.bBox = BBox(Vector3D(-0.5, -0.5, 0), Vector3D(0.5, 0.5, 1));
+
+    subscribe("tick", OP_TICK);
 }
 
 Plant::~Plant()

@@ -34,6 +34,7 @@
 
 #include <common/globals.h>
 #include <common/const.h>
+#include <common/debug.h>
 
 #include <common/Tick.h>
 #include <common/Fire.h>
@@ -43,6 +44,8 @@
 #include <common/Eat.h>
 #include <common/Nourish.h>
 #include <common/Generic.h>
+
+static const bool debug_flag = false;
 
 typedef struct {
     PyObject_HEAD
@@ -245,6 +248,42 @@ static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyClass)
     return pyob;
 }
 
+template<class T>
+void Subscribe_Script(T * thing, PyObject * pyclass, const std::string& package)
+{
+    PyObject * dmap = PyObject_GetAttrString(pyclass, "__dict__");
+    if (dmap == NULL) {
+        std::cerr << "Python class for " << package << " has no __dict__"
+                  << std::endl << std::flush;
+        return;
+    }
+    if (!PyDict_Check(dmap)) {
+        std::cerr << "Python class for " << package << " is malformed"
+                  << std::endl << std::flush;
+        return;
+    }
+    PyObject * keys = PyDict_Keys(dmap);
+    if (keys == NULL) {
+        std::cerr << "Error getting attribute list of Python class for "
+                  << package << std::endl << std::flush;
+        return;
+    }
+    for(int i = 0; i < PyList_Size(keys); i++) {
+        std::string method(PyString_AsString(PyList_GetItem(keys, i)));
+        std::string::size_type l = method.find("_operation", 0, 10);
+        if (l == std::string::npos) {
+            debug(std::cout << method << " is not a method" << std::endl
+                            << std::flush;);
+        } else {
+            std::string op_name = method.substr(0,l);
+            debug(std::cout << method << " is a method, it contains _op.. at "
+                            << l << " so we can register for "
+                            << method.substr(0,l) << std::endl << std::flush;);
+            thing->scriptSubscribe(op_name);
+        }
+    }
+}
+
 void Create_PyThing(Thing * thing, const std::string & package,
                                    const std::string & _type)
 {
@@ -252,6 +291,7 @@ void Create_PyThing(Thing * thing, const std::string & package,
     if (c == NULL) { return; }
     ThingObject * pyThing = newThingObject(NULL);
     pyThing->m_thing = thing;
+    Subscribe_Script(thing, c, package);
     PyObject * o = Create_PyScript((PyObject *)pyThing, c);
     if (o != NULL) {
         thing->setScript(new PythonThingScript(o, *thing));
@@ -265,6 +305,7 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
     if (c == NULL) { return; }
     MindObject * pyMind = newMindObject(NULL);
     pyMind->m_mind = mind;
+    Subscribe_Script(mind, c, package);
     PyObject * o = Create_PyScript((PyObject *)pyMind, c);
 
     if (o != NULL) {

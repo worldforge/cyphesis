@@ -20,11 +20,11 @@ Quaternion::Quaternion(const Vector3D & to, const Vector3D & from) : _set(true)
     } else if (cosT < -0.99999f) {
         Vector3D t(0.0, from.X(), -from.Y());
 
-        if (t.mag() < 1e-6) {
+        if (t.relMag() < 1e-12) {
             t = Vector3D(-from.Z(), 0.0, from.X());
         }
 
-        t = t.unitVector();
+        t.unit();
 
         x = t.X();
         y = t.Y();
@@ -35,7 +35,7 @@ Quaternion::Quaternion(const Vector3D & to, const Vector3D & from) : _set(true)
     }
     Vector3D t = from.cross(to);
 
-    t = t.unitVector();
+    t.unit();
 
     double ss = std::sqrt(0.5 * (1.0 - cosT));
 

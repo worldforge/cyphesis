@@ -177,9 +177,10 @@ OpVector WorldRouter::operation(const RootOperation * op)
 {
     const RootOperation & op_ref = *op;
     std::string to = op_ref.GetTo();
-    debug(std::cout << "WorldRouter::operation {" << to << "}" << std::endl
+    debug(std::cout << "WorldRouter::operation {"
+                    << op_ref.GetParents().front().AsString() << ":"
+                    << to << "}" << std::endl
                     << std::flush;);
-    OpNo op_type = opEnumerate(*op);
 
     if (!to.empty() && (to != "all")) {
         EntityDict::const_iterator I = eobjects.find(to);
@@ -198,7 +199,8 @@ OpVector WorldRouter::operation(const RootOperation * op)
         for(OpVector::const_iterator I = res.begin(); I != res.end(); I++) {
             message(**I, to_entity);
         }
-        if ((op_type == OP_DELETE) && (to_entity != &gameWorld)) {
+        if ((op_ref.GetParents().front().AsString() == "delete") &&
+            (to_entity != &gameWorld)) {
             delObject(to_entity);
             to_entity->destroy();
             delete to_entity;

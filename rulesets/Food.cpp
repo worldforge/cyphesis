@@ -17,6 +17,8 @@ Food::Food()
     attributes["cooked"] = 0;
     attributes["burn_speed"] = 0.1;
     weight = 1;
+
+    subscribe("eat", OP_EAT);
 }
 
 Food::~Food()

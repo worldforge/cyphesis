@@ -22,6 +22,12 @@ class BaseEntity {
     // Private and un-implemented, to make sure slicing is impossible
     BaseEntity(const BaseEntity &);
     const BaseEntity & operator=(const BaseEntity &);
+  protected:
+    OpNoDict opLookup;
+
+    void subscribe(const std::string& op, OpNo no) {
+        opLookup[op] = no;
+    }
   public:
     BaseEntity();
     virtual ~BaseEntity();
@@ -75,6 +81,8 @@ class BaseEntity {
 
     void setRefno(const OpVector & ret, const RootOperation & ref_op) const;
     OpNo opEnumerate(const RootOperation & op) const;
+    OpNo opEnumerate(const RootOperation & op, const OpNoDict & d) const;
+    void subscribe(const std::string & op);
     OpVector callOperation(const RootOperation & op);
     OpVector error(const RootOperation & op, const char * errstring) const;
 

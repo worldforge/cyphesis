@@ -6,11 +6,11 @@ EXTRA_DIST = cyphesis.vconf basic.xml acorn.xml mason.xml werewolf.xml \
     TODO.acorn acinclude.m4 autogen.sh
 
 install-data-local:
-	mkdirhier $(DESTDIR)$(datadir)/cyphesis/rulesets
+	mkdir -p $(DESTDIR)$(datadir)/cyphesis/rulesets
 	cp -f cyphesis.vconf $(DESTDIR)$(datadir)/cyphesis
 	cp -f *.xml $(DESTDIR)$(datadir)/cyphesis
-	mkdirhier $(DESTDIR)$(localstatedir)/cyphesis
-	mkdirhier $(DESTDIR)$(datadir)/doc/cyphesis-$(VERSION)
+	mkdir -p $(DESTDIR)$(localstatedir)/cyphesis
+	mkdir -p $(DESTDIR)$(datadir)/doc/cyphesis-$(VERSION)
 	$(INSTALL_DATA) README $(DESTDIR)$(datadir)/doc/cyphesis-$(VERSION)
 	$(INSTALL_DATA) COPYING $(DESTDIR)$(datadir)/doc/cyphesis-$(VERSION)
 	$(INSTALL_DATA) AUTHORS $(DESTDIR)$(datadir)/doc/cyphesis-$(VERSION)

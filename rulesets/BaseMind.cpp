@@ -27,6 +27,7 @@
 #include <common/utility.h>
 #include <common/debug.h>
 #include <common/op_switch.h>
+#include <common/inheritance.h>
 
 #include "BaseMind.h"
 #include "MemMap_methods.h"
@@ -43,12 +44,77 @@ BaseMind::BaseMind(const std::string & id, const std::string & body_name)
     name = body_name;
     map.addObject(this);
     //BaseMind::time=WorldTime();
+
+    subscribe("sight", OP_SIGHT);
+    subscribe("sound", OP_SOUND);
+    subscribe("save", OP_SAVE);
+    subscribe("load", OP_LOAD);
+    subscribe("appearance", OP_APPEARANCE);
+    subscribe("disappearance", OP_DISAPPEARANCE);
+
+    sightSubscribe("create", OP_CREATE);
+    sightSubscribe("delete", OP_DELETE);
+    sightSubscribe("set", OP_SET);
+    sightSubscribe("move", OP_MOVE);
+
+    soundSubscribe("talk", OP_TALK);
 }
 
 BaseMind::~BaseMind()
 {
     map.things.erase(getId());
     map.flushMap();
+}
+
+void BaseMind::scriptSubscribe(const std::string & op)
+{
+    std::string::size_type l = op.find("_");
+    if (l == std::string::npos) {
+        OpNo n = Inheritance::instance().opEnumerate(op);
+        if (n != OP_INVALID) {
+            debug(std::cout << "MINDSCRIPT requesting subscription to " << op
+                            << std::endl << std::flush;);
+            subscribe(op, n);
+        } else {
+            debug(std::cout << "MINDSCRIPT requesting subscription to " << op
+                            << " but inheritance could not give me a reference"
+                            << std::endl << std::flush;);
+        }
+        return;
+    }
+    // This only works cos sight and sound are the same length
+    std::string subop = op.substr(6, std::string::npos);
+    OpNo subno = Inheritance::instance().opEnumerate(subop);
+    if (subno == OP_INVALID) {
+        debug(std::cerr << "Mind script requested subscription to " << op
+                        << " operations, of which the argument is " << subop
+                        << " but I can't work out what it wants."
+                        << std::endl << std::flush;);
+        return;
+    }
+#if defined(__GNUC__) && __GNUC__ < 3
+    if (!op.substr(0,6).compare("sight_")) {
+#else
+    if (!op.compare(0,6,"sight_")) {
+#endif
+        debug(std::cout << "MINDSCRIPT requesting subscription to sight of "
+                        << subop << " ops" << std::endl << std::flush;);
+        sightSubscribe(subop, subno);
+#if defined(__GNUC__) && __GNUC__ < 3
+    } else if (!op.substr(0,6).compare("sound_")) {
+#else
+    } else if (!op.compare(0,6,"sound_")) {
+#endif
+        debug(std::cout << "MINDSCRIPT requesting subscription to sound of "
+                        << subop << " ops" << std::endl << std::flush;);
+        soundSubscribe(subop, subno);
+    } else {
+        std::cerr << "Mind script requested subscription to " << op
+                  << " operations, of which the argument is " << subop
+                  << " but op arguments for that kind of op are not yet"
+                  << " supported by the mind scriptig interface"
+                  << std::endl << std::flush;
+    }
 }
 
 OpVector BaseMind::sightLoginOperation(const Sight & op, Login & sub_op)
@@ -478,13 +544,23 @@ OpVector BaseMind::operation(const RootOperation & op)
 
 OpVector BaseMind::callSightOperation(const Sight& op, RootOperation& sub_op) {
     map.getAdd(sub_op.GetFrom());
-    OpNo op_no = opEnumerate(sub_op);
+    OpNo op_no = opEnumerate(sub_op, opSightLookup);
+    if (debug_flag && (op_no == OP_INVALID)) {
+        std::cout << getId() << " could not deliver sight of "
+                  << sub_op.GetParents().front().AsString()
+                  << std::endl << std::flush;
+    }
     SUB_OP_SWITCH(op, op_no, sight, sub_op)
 }
 
 OpVector BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op) {
     map.getAdd(sub_op.GetFrom());
-    OpNo op_no = opEnumerate(sub_op);
+    OpNo op_no = opEnumerate(sub_op, opSoundLookup);
+    if (debug_flag && (op_no == OP_INVALID)) {
+        std::cout << getId() << " could not deliver sound of "
+                  << sub_op.GetParents().front().AsString()
+                  << std::endl << std::flush;
+    }
     SUB_OP_SWITCH(op, op_no, sound, sub_op)
 }
 

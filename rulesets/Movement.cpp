@@ -82,7 +82,7 @@ void Movement::checkCollisions(const Location & loc)
         // Non solid container - check for collision with its contents.
         const Location & lc2 = m_collEntity->location;
         Location rloc(loc);
-        rloc.ref = m_collEntity; rloc.coords = loc.coords - lc2.coords;
+        rloc.ref = m_collEntity; rloc.coords = Vector3D(loc.coords) -= lc2.coords;
         double coll2Time = consts::basic_tick + 1;
         // rloc is coords of character with ref to m_collEntity
         for(I = m_collEntity->contains.begin(); I != m_collEntity->contains.end(); I++) {
@@ -106,7 +106,8 @@ void Movement::checkCollisions(const Location & loc)
     if (collTime < getTickAddition(loc.coords)) {
         debug(std::cout << "Setting target loc to " << loc.coords << "+"
                    << loc.velocity << "*" << collTime;);
-        m_collPos = loc.coords + loc.velocity * collTime;
+        m_collPos = loc.coords;
+        m_collPos += Vector3D(loc.velocity) *= collTime;
     } else {
         m_collEntity = NULL;
         m_collRefChange = false;

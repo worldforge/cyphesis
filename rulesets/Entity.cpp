@@ -203,7 +203,7 @@ Vector3D Entity::getXyz() const
         return ret;
     }
     if (location.ref) {
-        return location.coords+location.ref->getXyz();
+        return Vector3D(location.coords) += location.ref->getXyz();
     } else {
         return location.coords;
     }

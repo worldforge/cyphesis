@@ -16,6 +16,17 @@ class BaseMind : public Entity {
     bool isAwake;
     WorldTime time;
     int world;
+  protected:
+    OpNoDict opSightLookup;
+    OpNoDict opSoundLookup;
+
+    void sightSubscribe(const std::string& op, OpNo no) {
+        opSightLookup[op] = no;
+    }
+
+    void soundSubscribe(const std::string& op, OpNo no) {
+        opSoundLookup[op] = no;
+    }
   public:
     BaseMind(const std::string &, const std::string &);
     virtual ~BaseMind();
@@ -25,6 +36,8 @@ class BaseMind : public Entity {
 
     void sleep() { isAwake = false; }
     void awake() { isAwake = true; }
+
+    void scriptSubscribe(const std::string & op);
 
     virtual OpVector sightLoginOperation(const Sight & op, Login & sub_op);
     virtual OpVector sightActionOperation(const Sight & op, Action & sub_op);

@@ -52,9 +52,18 @@ class BBox {
     }
 
     bool contains(const Vector3D & o) const {
+        // Is point o inside this box
         return ((o.X() > u.X()) && (o.X() < v.X()) &&
                 (o.Y() > u.Y()) && (o.Y() < v.Y()) &&
                 (o.Z() > u.Z()) && (o.Z() < v.Z()));
+    }
+
+    bool contains(const Vector3D & o, double increase) const {
+        // Is point o inside this box, when this box is increased in each
+        // direction
+        return ((o.X() > (u.X() - increase)) && (o.X() < (v.X() + increase)) &&
+                (o.Y() > (u.Y() - increase)) && (o.Y() < (v.Y() + increase)) &&
+                (o.Z() > (u.Z() - increase)) && (o.Z() < (v.Z() + increase)));
     }
 
     const BBox grow(double o) const {

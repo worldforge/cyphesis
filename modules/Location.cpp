@@ -6,11 +6,23 @@
 
 using Atlas::Message::Object;
 
-Vector3D Location::getXyz() const {
-    if (ref && coords) {
-        return coords + ref->getXyz();
+const Vector3D Location::getXyz() const
+{
+    if (ref) {
+        return Vector3D(coords) += ref->getXyz();
     } else {
         return Vector3D(0,0,0);
+    }
+}
+
+const Vector3D Location::getXyz(Entity * ent) const
+{
+    if (ref == ent) {
+        return Vector3D(coords);
+    } else if (ref == NULL) {
+        return Vector3D(0,0,0);
+    } else {
+        return Vector3D(coords) += ref->location.getXyz(ent);
     }
 }
 
@@ -33,4 +45,29 @@ void Location::addToObject(Object::MapType & omap) const
     if (bBox) {
         omap["bbox"] = bBox.asList();
     }
+}
+
+// FIXME This double recursive pair of function is unverified
+bool Location::distanceLeft(const Location & other, Vector3D & c) const {
+    if (ref == other.ref) {
+        c -= coords;
+        return true;
+    } else if (ref == NULL) {
+        return false;
+    } else {
+        bool ret = ref->location.distanceLeft(other,c);
+        if (ret) {
+            c -= coords;
+        }
+        return ret;
+    }
+}
+
+bool Location::distanceRight(const Location & other, Vector3D & c) const {
+    // In an intact system, other->ref should never be NULL or invalid
+    if (distanceLeft(other,c) || distanceRight(other.ref->location,c)) {
+        c += other.coords;
+        return true;
+    }
+    return false;
 }

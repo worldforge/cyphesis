@@ -13,6 +13,9 @@
 
 class World : public Thing {
   public:
+    World();
+    virtual ~World();
+
     virtual OpVector LookOperation(const Look & op);
     virtual OpVector FireOperation(const Fire & op);
     virtual OpVector DeleteOperation(const Delete & op);
