@@ -1,5 +1,15 @@
 2003-08-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cypasswd.cpp: Remove an obsolete comment.
+
+	* common/Database.h, common/Database.cpp: Add the method required
+	  to update a row of a simle database table.
+
+	* common/accountbase.h, common/accountbase.cpp: Re-implement
+	  accountbase to use the new style accounts table.
+
+2003-08-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommIdleSocket.h, server/CommIdleSocket.cpp,
 	  server/CommListener.h, server/CommListener.cpp:
 	  Fix virtual destructors.

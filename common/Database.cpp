@@ -663,6 +663,21 @@ bool Database::createSimpleRow(const std::string & name,
     return runCommandQuery(query);
 }
 
+bool Database::updateSimpleRow(const std::string & name,
+                               const std::string & id,
+                               const std::string & columns)
+{
+   std::string query = "UPDATE ";
+   query += name;
+   query += " SET ";
+   query += columns;
+   query += " WHERE id='";
+   query += id;
+   query += "';";
+
+   return runCommandQuery(query);
+}
+
 bool Database::registerEntityIdGenerator()
 {
     int status = PQsendQuery(m_connection, "SELECT * FROM entity_ent_id_seq;");

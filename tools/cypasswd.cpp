@@ -33,8 +33,6 @@ using Atlas::Message::Element;
 
 void usage(char * n)
 {
-    // Don't call this once the database is open. It doesn't return so the
-    // database will not be closed.
     std::cout << "usage: " << n << " -[asd] account" << std::endl << std::flush;
 }
 

@@ -6,11 +6,11 @@ INCLUDES = -I$(top_srcdir) -DBINDIR=\"@bindir@\" -DVARDIR=\"@localstatedir@\"
 
 cypasswd_SOURCES = cypasswd.cpp sstream.h iotraits.h
 
-cypasswd_LDADD = ../common/Database.o ../common/accountbase.o ../common/globals.o ../common/log.o
+cypasswd_LDADD = ../common/Database.o ../common/accountbase.o ../common/globals.o ../common/log.o ../common/system.o
 
 cycmd_SOURCES = cycmd.cpp
 
-cycmd_LDADD = ../common/Database.o ../common/accountbase.o ../common/operations.o ../common/globals.o ../common/log.o ../common/const.o $(READLINE_LIBS)
+cycmd_LDADD = ../common/operations.o ../common/globals.o ../common/const.o $(READLINE_LIBS)
 
 # cydbload_SOURCES = cydbload.cpp
 
