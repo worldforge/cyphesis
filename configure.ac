@@ -9,7 +9,7 @@ AC_CANONICAL_SYSTEM
 
 dnl Initialise automake
 
-VERSION=0.3.2
+VERSION=0.3.3
 
 AM_INIT_AUTOMAKE(cyphesis, $VERSION)
 AM_CONFIG_HEADER(config.h)
@@ -160,7 +160,7 @@ AC_CHECK_LIB(crypto, MD5,
         AC_MSG_ERROR([Cannot find a way of encrypting passwords. Please install the openssl development libraries.])
     ])
 
-PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.93 skstream-0.3 >= 0.2.90 varconf-1.0 >= 0.6.0 mercator-0.2,
+PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.94 skstream-0.3 >= 0.2.90 varconf-1.0 >= 0.6.0 mercator-0.2,
     [
         CPPFLAGS="$CPPFLAGS $DEPS_CFLAGS"
         CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $DEPS_CFLAGS"
