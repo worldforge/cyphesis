@@ -1,3 +1,26 @@
+2001-03-28  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* tools/cyisoload.cpp: Added tool which loads an iso format map into
+	  the server database.
+
+	* configure.in: Added check for coal (0.2) which is used in map
+	  loader tool.
+
+	* common/database.cc: Modified database initialisation functions
+	  so that whether or not the database should be created can be
+	  specified. Added separate function for decoding a database
+	  object into an Atlas::Message::Object. Fix to the way objects
+	  are added to the database which solves some corruption problems.
+
+	* common/database.*: Added database iterator class that can be
+	  used to iterate over the database.
+
+	* server/Admin.cpp: Added handler for admin load command, which
+	  loads world state from database.
+
+	* server/WorldRouter.*: Tweak to allow objects added to world
+	  to have pre-defined id.
+
 2001-03-26  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* common/persistance.*: Re-designed persistance code is it uses

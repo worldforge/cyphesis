@@ -60,7 +60,7 @@ void Persistance::save_admin_account(Account * adm)
 bool Persistance::init()
 {
     Persistance * p = instance();
-    bool i = p->initAccount();
+    bool i = p->initAccount(true);
     bool j = p->initWorld();
     return (i && j);
 }

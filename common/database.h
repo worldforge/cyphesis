@@ -26,6 +26,8 @@ class Decoder : public Atlas::Message::DecoderBase {
     const Atlas::Message::Object & get() { m_check = false; return m_obj; }
 };
 
+class DatabaseIterator;
+
 class Database {
   protected:
     static Database * m_instance;
@@ -37,15 +39,32 @@ class Database {
     Database() : account_db(NULL, DB_CXX_NO_EXCEPTIONS),
                  world_db(NULL, DB_CXX_NO_EXCEPTIONS) { }
 
+    bool decodeObject(Dbt & data, Atlas::Message::Object &);
     bool putObject(Db &, const Atlas::Message::Object &, const char * key);
     bool getObject(Db &, const char * key, Atlas::Message::Object &);
   public:
     static Database * instance();
 
-    bool initAccount();
+    bool initAccount(bool create = false);
     bool initWorld(bool create = false);
     void shutdownAccount();
     void shutdownWorld();
+
+    Db & getWorld() { return world_db; }
+
+    friend DatabaseIterator;
+};
+
+class DatabaseIterator {
+  protected:
+    Dbc * m_cursor;
+    Db & m_db;
+
+  public:
+    DatabaseIterator(Db & db ) : m_db(db) {
+        db.cursor(NULL, &m_cursor, 0);
+    }
+    bool get(Atlas::Message::Object & o);
 };
 
 #else

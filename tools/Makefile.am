@@ -1,4 +1,4 @@
-bin_PROGRAMS = cypasswd cycmd cydbload
+bin_PROGRAMS = cypasswd cycmd cydbload cyisoload
 
 cypasswd_SOURCES = cypasswd.cpp
 
@@ -11,3 +11,7 @@ cycmd_LIBS = -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlasNet -lAtlasObjects -lAt
 cydbload_SOURCES = cydbload.cpp
 
 cydbload_LDADD = ../common/database.o
+
+cyisoload_SOURCES = cyisoload.cpp
+
+cyisoload_LDADD = ../common/database.o

@@ -98,7 +98,11 @@ inline std::string WorldRouter::get_id(std::string & name)
 Thing * WorldRouter::add_object(Thing * obj)
 {
     debug(cout << "WorldRouter::add_object(Thing *)" << endl << flush;);
-    obj->fullid=get_id(obj->name);
+    if (obj->fullid.size() == 0) {
+        obj->fullid=get_id(obj->name);
+    } else {
+        cout << "Adding object with known id" << endl << flush;
+    }
     server->id_dict[obj->fullid]=fobjects[obj->fullid]=obj;
     objects_list.push_back(obj);
     if (!obj->location) {
@@ -107,11 +111,6 @@ Thing * WorldRouter::add_object(Thing * obj)
         obj->location.coords=Vector3D(0,0,0);
         debug(cout << "loc set with ref " << obj->location.ref->fullid << endl << flush;);
     }
-    // Redundant
-    //if (NULL == obj->location.ref) {
-        //debug(cout << "set ref" << endl << flush;);
-        //obj->location.ref=this;
-    //}
     if (obj->location.ref==this) {
         debug(cout << "loc is world" << endl << flush;);
         contains.push_back(obj);
@@ -129,11 +128,13 @@ Thing * WorldRouter::add_object(Thing * obj)
     return (obj);
 }
 
-Thing * WorldRouter::add_object(const string & typestr, const Object & ent)
+Thing * WorldRouter::add_object(const string & typestr, const Object & ent,
+                                const string & id)
 {
     debug(cout << "WorldRouter::add_object(string, ent)" << endl << flush;);
     Thing * obj;
     obj = EntityFactory::instance()->newThing(typestr, ent, this);
+    obj->fullid = id;
     return add_object(obj);
 }
 

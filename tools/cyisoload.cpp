@@ -14,6 +14,8 @@
 #include <string>
 #include <fstream>
 
+#include <coal/isoloader.h>
+
 #ifdef HAVE_LIBDB_CXX
 
 class WorldBase : public Database {
@@ -33,30 +35,31 @@ class WorldBase : public Database {
     }
 };
 
-class FileDecoder : public Atlas::Message::DecoderBase {
+class TemplatesLoader : public Atlas::Message::DecoderBase {
     ifstream m_file;
-    WorldBase * m_db;
+    Atlas::Message::Object::MapType m_db;
     Atlas::Codecs::XML m_codec;
     int m_count;
 
-    virtual void ObjectArrived(const Atlas::Message::Object& obj) {
+    virtual void ObjectArrived(const Atlas::Message::Object& o) {
+        Atlas::Message::Object obj(o);
         if (!obj.IsMap()) {
             cerr << "ERROR: Non map object in file" << endl << flush;
             return;
         }
-        Atlas::Message::Object::MapType omap = obj.AsMap();
-        if (omap.find("id") == omap.end()) {
-            cerr << "WARNING: Object in file has no id. Not stored."
-                 << endl << flush;
+        Atlas::Message::Object::MapType & omap = obj.AsMap();
+        if (omap.find("graphic") == omap.end()) {
+            cerr<<"WARNING: Template Object in file has no graphic. Not stored."
+                << endl << flush;
             return;
         }
         m_count++;
-        const string & id = omap["id"].AsString();
-        m_db->storeInWorld(obj, id.c_str());
+        const string & id = omap["graphic"].AsString();
+        m_db[id] = obj;
     }
   public:
-    FileDecoder(const string & filename, WorldBase * db) :
-                m_file(filename.c_str()), m_db(db),
+    TemplatesLoader(const string & filename) :
+                m_file(filename.c_str()),
                 m_codec((iostream&)m_file, this), m_count(0) {
     }
 
@@ -67,19 +70,51 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     }
 
     void report() {
-        std::cout << m_count << " objects stored in world database."
+        std::cout << m_count << " template objects loaded."
                   << endl << flush;
+    }
+
+    const Atlas::Message::Object & get(const string & graphic) {
+        return m_db[graphic];
     }
 };
 
+void usage(char * progname)
+{
+    cout << "usage: " << progname << "filename" << endl << flush;
+    return;
+}
+
 int main(int argc, char ** argv)
 {
+    if (argc != 2) {
+        usage(argv[0]);
+        return 1;
+    }
+
     WorldBase * db = WorldBase::instance();
     db->initWorld(true);
 
-    FileDecoder f("foo", db);
+    TemplatesLoader f("templates.xml");
     f.read();
     f.report();
+
+    CoalDatabase map_database;
+    CoalIsoLoader loader (map_database);
+    if (!loader.LoadMap(argv[1])) {
+        cout << "Map load failed." << endl << flush;
+    } else {
+        int count = map_database.GetObjectCount();
+        for(int i = 0; i < count; i++) {
+            CoalObject * object = (CoalObject*)map_database.GetObject (i);
+            if (object != NULL) {
+                const string & graphic = object->graphic->filename;
+                // Get basename, lookup custumise and load into database
+                cout << graphic;
+            }
+        }
+    }
+    
     db->shutdownWorld();
     delete db;
 }

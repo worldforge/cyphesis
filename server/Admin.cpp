@@ -8,6 +8,8 @@
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Info.h>
 
+#include <common/persistance.h>
+
 #include "Admin.h"
 #include "Connection.h"
 #include "ServerRouting.h"
@@ -49,6 +51,29 @@ oplist Admin::Operation(const Set & op)
                 info->SetArgs(args);
                 info->SetRefno(op.GetSerialno());
                 return oplist(1,info);
+            } else if (cmd == "load") {
+                int count = 0;
+                Persistance * p = Persistance::instance();
+                DatabaseIterator dbi(p->getWorld());
+                Object ent;
+                while (dbi.get(ent)) {
+                    Object::MapType m = ent.AsMap();
+                    bool p = (m.find("parents") != m.end());
+                    const string & type = p ? m["parents"].AsList().front().AsString()
+                                            : "thing";
+                    if (m.find("id") != m.end()) {
+                        const string & id = m["id"].AsString();
+                        world->add_object(type, ent, id);
+                    }
+                }
+                Object::MapType report;
+                report["message"] = "Objects loaded from database";
+                report["object_count"] = count;
+                Info * info = new Info();
+                *info = Info::Instantiate();
+                Object::ListType args(1,report);
+                info->SetArgs(args);
+                info->SetRefno(op.GetSerialno());
             } else {
                 return error(op, "Unknown command");
             }

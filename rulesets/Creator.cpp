@@ -75,8 +75,9 @@ oplist Creator::external_operation(const RootOperation & op)
         }
     } else {
         RootOperation * new_op = new RootOperation(op);
-        new_op->SetFrom("cheat"); //make it appear like it came from character itself;
-        Creator::send_world(new_op);
+        //make it appear like it came from character itself;
+        new_op->SetFrom("cheat");
+        send_world(new_op);
     }
     return oplist();
 }
