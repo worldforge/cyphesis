@@ -58,7 +58,7 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
         // Only genuinely playable characters should go in here. Otherwise
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.
-        charactersDict[chr->getId()]=chr;
+        charactersDict[chr->getId()] = chr;
         connection->addObject(chr);
     }
 

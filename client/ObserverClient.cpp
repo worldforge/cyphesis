@@ -102,7 +102,7 @@ void ObserverClient::idle()
     print chr(27)+"[H",status_str+" "*(sizex-len(status_str)-1);
     for (/*t in house_list*/) {
         (x,y,z)=t.get_xyz();
-        screen[scx(x)][scy(y)]=t.name[0];
+        screen[scx(x)][scy(y)] = t.name[0];
     }
     yind=1;
     goal_txt={};

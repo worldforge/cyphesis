@@ -242,9 +242,6 @@ inline void CommServer::removeClient(CommClient * client, char * error_msg)
 
     e.SetArgs(eargs);
 
-    // Need to deal with cleanly sending the error op, without hanging
-    // if the client has already gone. FIXME
-    
     if (client->online()) {
         client->send(&e);
     }

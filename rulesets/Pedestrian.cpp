@@ -190,7 +190,8 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                         m_collEntity = NULL;
                         m_velocity.unit();
                         m_velocity *= sqrt(vel_square_mag);
-                        // FIXME Restore velocity magnitude, and flag as diverted.
+                        // FIXME flag as diverted, so destination based
+                        // movement doesn't get screwed up
                     } else {
                         reset();
                         entmap["mode"] = Object("standing");

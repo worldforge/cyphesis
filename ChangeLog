@@ -1,3 +1,53 @@
+2002-05-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/ObserverClient.cpp, server/Account.cpp, server/Connection.h,
+	  server/Routing.h: Formatting cleanup
+
+	* client/Py_CreatorClient.cpp, rulesets/Area.cpp, rulesets/Area.h,
+	  rulesets/Character.cpp, rulesets/Character.h, rulesets/Entity.cpp,
+	  rulesets/Entity.h, rulesets/Line.cpp, rulesets/Line.h,
+	  rulesets/Plant.cpp, rulesets/Plant.h, rulesets/Py_Mind.cpp,
+	  rulesets/Py_Thing.cpp, rulesets/Stackable.cpp, rulesets/Stackable.h:
+	  Replace operator[] with get() method for querying attributes.
+	  Make this get() method const, and re-write the internals so
+	  that it more cleanly handles attributes.
+
+	* common/BaseWorld.h: Re-write world.getObject() so that it
+	  no longer uses std::map::operator[], as the old method was
+	  inserting NULLs into the world dictionary when non-existant
+	  entities were queried.
+
+	* rulesets/Character.cpp: Clean up outstanding issues when movement
+	  position is supplied, and is very close to being correct, and
+	  clarify comments about movement when neither destination nor
+	  source are provided.
+
+	* rulesets/Character.cpp: Modify mind2body interface so that setting
+	  the TO of ops is done in the individual handlers, and copying
+	  the operation globally is avoided.
+
+	* rulesets/MemMap_methods.h: Remove dodgy debug code.
+
+	* rulesets/Pedestrian.cpp: Clarify movement fixme.
+
+	* rulesets/Py_Operation.cpp: Clarify operation time handler fixme.
+
+	* rulesets/Stackable.cpp: Clarify fixme's in combine and divide
+	  handlers.
+
+	* server/CommServer.cpp: Remove redundant fixme.
+
+	* server/Connection.cpp, server/ServerRouting.cpp,
+	  server/ServerRouting.h, server/ServerRouting_methods.h,
+	  server/server.cpp:
+	  Move inline ServerRouting::getObject into class header.
+
+	* server/WorldRouter.cpp, server/WorldRouter.h:
+	  Clean up  includes, and move updateTime into the main body of the
+	  file. Clean up code formatting when handling maps and dictionaries.
+	  Clarify error output and comments about NULL objects in the world
+	  dictionary.
+
 2002-05-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Operation.cpp, rulesets/Py_Operation.h: Add a variant

@@ -27,9 +27,13 @@ class ServerRouting : public OOGThing {
     ~ServerRouting();
 
     inline int idle();
-    inline BaseEntity * addObject(BaseEntity * obj);
 
-    inline int getSerialNo() {
+    BaseEntity * addObject(BaseEntity * obj) {
+        objects[obj->getId()] = obj;
+        return obj;
+    }
+
+    int getSerialNo() {
         return opSerialNo();
     }
 

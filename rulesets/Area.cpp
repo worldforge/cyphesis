@@ -18,12 +18,12 @@ Area::~Area()
 {
 }
 
-const Object & Area::operator[](const std::string & aname)
+const Object Area::get(const std::string & aname) const
 {
     if (aname == "segments") {
-        attributes[aname] = idListAsObject(segments);
+        return idListAsObject(segments);
     }
-    return Thing::operator[](aname);
+    return Thing::get(aname);
 }
 
 void Area::set(const std::string & aname, const Object & attr)

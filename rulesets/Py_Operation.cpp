@@ -554,7 +554,8 @@ static inline PyObject * handleTime(OperationObject * self)
 
 static inline PyObject * handleTime(ConstOperationObject * self)
 {
-    // FIXME - implement const time objects.
+    // If it becomes necessary for python scripts to query the time
+    // of ops, this can be adapted to provide them with that information
     PyErr_SetString(PyExc_TypeError, "cannot get time on const ops");
     return NULL;
 }

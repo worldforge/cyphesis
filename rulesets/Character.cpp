@@ -122,14 +122,14 @@ Character::~Character()
     }
 }
 
-const Object & Character::operator[](const std::string & aname)
+const Object Character::get(const std::string & aname) const
 {
     if (aname == "drunkness") {
-        attributes[aname] = Object(drunkness);
+        return Object(drunkness);
     } else if (aname == "sex") {
-        attributes[aname] = Object(sex);
+        return Object(sex);
     }
-    return Thing::operator[](aname);
+    return Thing::get(aname);
 }
 
 void Character::set(const std::string & aname, const Object & attr)
@@ -228,8 +228,8 @@ OpVector Character::TickOperation(const Tick & op)
             }
             OpVector res(2);
             Object::MapType entmap;
-            entmap["name"]=Object("move");
-            entmap["serialno"]=Object(movement.m_serialno);
+            entmap["name"] = Object("move");
+            entmap["serialno"] = Object(movement.m_serialno);
             Tick * tickOp = new Tick(Tick::Instantiate());
             tickOp->SetTo(getId());
             tickOp->SetFutureSeconds(movement.getTickAddition(ret_loc.coords));
@@ -397,6 +397,8 @@ OpVector Character::mindMoveOperation(const Move & op)
         }
         newop->SetTo(oname);
         return OpVector(1,newop);
+    } else {
+        newop->SetTo(getId());
     }
     std::string location_ref;
     I = arg1.find("loc");
@@ -462,20 +464,19 @@ OpVector Character::mindMoveOperation(const Move & op)
         }
 
         Vector3D direction;
-        // FIXME Make this test allow for a small difference
-        if (location_coords == location.coords) {
+        // If the position is given, and it is about right, don't bother to 
+        // use it.
+        if (location_coords.isValid() &&
+            (location_coords.relativeDistance(location.coords) < 0.01)) {
             location_coords = Vector3D();
         }
         if (!location_coords.isValid()) {
             if (!location_vel.isValid() || location_vel.isZero()) {
                 debug( std::cout << "\tUsing orientation for direction"
                                  << std::endl << std::flush;);
-                // FIXME No way to set direction from orientation yet
-                // This is only required when no info is given about
-	        // where to move
-                // direction = location.orientation;
-                // But if velocity is not given, and target is not given,
-                // then surely we are not moving at all?
+                // If velocity is not given, and target is not given,
+                // then we are not moving at all, so direction must
+                // remain invalid.
             } else {
                 debug( std::cout << "\tUsing velocity for direction"
                                  << std::endl << std::flush;);
@@ -573,19 +574,21 @@ OpVector Character::mindMoveOperation(const Move & op)
 
 OpVector Character::mindSetOperation(const Set & op)
 {
-    Set * s = new Set(op);
     const Object::ListType & args = op.GetArgs();
     if (args.front().IsMap()) {
+        Set * s = new Set(op);
         const Object::MapType & amap = args.front().AsMap();
         Object::MapType::const_iterator I = amap.find("id");
         if (I != amap.end() && I->second.IsString()) {
             const std::string & opid = I->second.AsString();
-            if (opid != getId()) {
-                s->SetTo(opid);
+            s->SetTo(opid);
+        } else {
+            if (op.GetTo().empty()) {
+                s->SetTo(getId());
             }
         }
     }
-    return OpVector(1,s);
+    return OpVector();
 }
 
 OpVector Character::mindSightOperation(const Sight & op)
@@ -611,12 +614,14 @@ OpVector Character::mindCombineOperation(const Combine & op)
 OpVector Character::mindCreateOperation(const Create & op)
 {
     Create * c = new Create(op);
+    c->SetTo(getId());
     return OpVector(1,c);
 }
 
 OpVector Character::mindDeleteOperation(const Delete & op)
 {
     Delete * d = new Delete(op);
+    d->SetTo(getId());
     return OpVector(1,d);
 }
 
@@ -638,6 +643,7 @@ OpVector Character::mindGetOperation(const Get & op)
 OpVector Character::mindImaginaryOperation(const Imaginary & op)
 {
     Imaginary * i = new Imaginary(op);
+    i->SetTo(getId());
     return OpVector(1,i);
 }
 
@@ -656,6 +662,7 @@ OpVector Character::mindTalkOperation(const Talk & op)
     debug( std::cout << "Character::mindOPeration(Talk)"
                      << std::endl << std::flush;);
     Talk * t = new Talk(op);
+    t->SetTo(getId());
     return OpVector(1,t);
 }
 
@@ -696,12 +703,18 @@ OpVector Character::mindSaveOperation(const Save & op)
 OpVector Character::mindCutOperation(const Cut & op)
 {
     Cut * c = new Cut(op);
+    if (op.GetTo().empty()) {
+        c->SetTo(getId());
+    }
     return OpVector(1,c);
 }
 
 OpVector Character::mindEatOperation(const Eat & op)
 {
     Eat * e = new Eat(op);
+    if (op.GetTo().empty()) {
+        e->SetTo(getId());
+    }
     return OpVector(1,e);
 }
 
@@ -759,6 +772,9 @@ OpVector Character::mindErrorOperation(const Error & op)
 OpVector Character::mindOtherOperation(const RootOperation & op)
 {
     RootOperation * e = new RootOperation(op);
+    if (op.GetTo().empty()) {
+        e->SetTo(getId());
+    }
     return OpVector(1,e);
 }
 
@@ -960,19 +976,12 @@ OpVector Character::sendMind(const RootOperation & op)
 OpVector Character::mind2body(const RootOperation & op)
 {
     debug( std::cout << "Character::mind2body" << std::endl << std::flush;);
-    // FIXME I am utterly and totally and unhappy with this gratuitious
-    // copy and modification of this operation
-    RootOperation newop(op);
 
-    if ((newop.GetTo().empty()) &&
-        (op.GetParents().front().AsString() != "look")) {
-       newop.SetTo(getId());
-    }
     if (drunkness > 1.0) {
         return OpVector();
     }
-    OpNo otype = opEnumerate(newop, opMindLookup);
-    OP_SWITCH(newop, otype, mind)
+    OpNo otype = opEnumerate(op, opMindLookup);
+    OP_SWITCH(op, otype, mind)
     return OpVector();
 }
 

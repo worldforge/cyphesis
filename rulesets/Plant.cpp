@@ -2,16 +2,16 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Set.h>
-
-#include <common/Tick.h>
-
 #include "Plant.h"
 #include "Script.h"
 
+#include <common/Tick.h>
+
 #include <common/const.h>
 #include <common/random.h>
+
+#include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Set.h>
 
 using Atlas::Message::Object;
 
@@ -28,20 +28,20 @@ Plant::~Plant()
 {
 }
 
-const Object & Plant::operator[](const std::string & aname)
+const Object Plant::get(const std::string & aname) const
 {
     if (aname == "fruits") {
-        attributes[aname] = Object(fruits);
+        return Object(fruits);
     } else if (aname == "radius") {
-        attributes[aname] = Object(radius);
+        return Object(radius);
     } else if (aname == "fruitName") {
-        attributes[aname] = Object(fruitName);
+        return Object(fruitName);
     } else if (aname == "fruitChance") {
-        attributes[aname] = Object(fruitChance);
+        return Object(fruitChance);
     } else if (aname == "sizeAdult") {
-        attributes[aname] = Object(sizeAdult);
+        return Object(sizeAdult);
     }
-    return Thing::operator[](aname);
+    return Thing::get(aname);
 }
 
 void Plant::set(const std::string & aname, const Object & attr)

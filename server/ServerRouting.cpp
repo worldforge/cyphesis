@@ -6,7 +6,8 @@
 #include "config.h"
 #endif
 
-#include "ServerRouting_methods.h"
+#include "ServerRouting.h"
+#include "WorldRouter.h"
 #include "Persistance.h"
 #include "CommServer.h"
 #include "Account.h"

@@ -22,7 +22,7 @@ class Stackable : public Thing {
     Stackable();
     virtual ~Stackable();
 
-    virtual const Atlas::Message::Object & operator[](const std::string & aname);
+    virtual const Atlas::Message::Object get(const std::string &) const;
     virtual void set(const std::string & aname, const Atlas::Message::Object & attr);
 
     virtual void addToObject(Atlas::Message::Object::MapType &) const;

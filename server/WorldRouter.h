@@ -29,15 +29,8 @@ class WorldRouter : public BaseWorld {
     RootOperation * getOperationFromQueue();
     const EntitySet & broadcastList(const RootOperation & op) const;
     OpVector operation(const RootOperation * op);
-
-    void updateTime() {
-        struct timeval tv;
-        gettimeofday(&tv, NULL);
-        double tmp_time = (double)(tv.tv_sec - initTime) + (double)tv.tv_usec/1000000;
-        realTime = tmp_time;
-    }
-
-    std::string getNewId(const std::string & name);
+    inline void updateTime();
+    const std::string getNewId(const std::string & name);
     void deliverTo(const RootOperation & op, Entity * e);
   public:
     ServerRouting & server;

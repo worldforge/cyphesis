@@ -152,7 +152,7 @@ static PyObject * CreatorClient_getattr(CreatorClientObject *self, char *name)
     }
     Entity * thing = self->m_mind;
     std::string attr(name);
-    PyObject * ret = Object_asPyObject((*thing)[attr]);
+    PyObject * ret = Object_asPyObject(thing->get(attr));
     if (ret == NULL) {
         return Py_FindMethod(CreatorClient_methods, (PyObject *)self, name);
     }

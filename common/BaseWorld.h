@@ -25,7 +25,12 @@ class BaseWorld : public OOGThing {
     virtual ~BaseWorld();
 
     Entity * getObject(const std::string & fid) {
-        return eobjects[fid];
+        EntityDict::const_iterator I = eobjects.find(fid);
+        if (I != eobjects.end()) {
+            return I->second;
+        } else {
+            return NULL;
+        }
     }
 
     const EntityDict & getObjects() const {

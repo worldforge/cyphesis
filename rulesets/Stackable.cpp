@@ -24,12 +24,12 @@ Stackable::~Stackable()
 {
 }
 
-const Object & Stackable::operator[](const std::string & aname)
+const Object Stackable::get(const std::string & aname) const
 {
     if (aname == "num") {
-        attributes[aname] = Object(num);
+        return Object(num);
     }
-    return Thing::operator[](aname);
+    return Thing::get(aname);
 }
 
 void Stackable::set(const std::string & aname, const Object & attr)
@@ -74,7 +74,8 @@ OpVector Stackable::CombineOperation(const Combine & op)
         res.push_back(d);
     }
     return res;
-    // FIXME DO we need to send a sight?
+    // Currently does not send sight ops, as the Sight ops for this type of
+    // thing have not been discussed
 }
 
 OpVector Stackable::DivideOperation(const Divide & op)
@@ -103,5 +104,6 @@ OpVector Stackable::DivideOperation(const Divide & op)
         res.push_back(c);
     }
     return res;
-    // FIXME DO we need to send a sight?
+    // Currently does not send sight ops, as the Sight ops for this type of
+    // thing have not been discussed
 }

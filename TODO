@@ -7,10 +7,10 @@ Must fix for Mason 0.0.2
 
   Fix movement BUGS, and other BUGS
 
-  Sort out IG refno/serialno stuff.
+  Test well the mind2body op filter, now that the copy has been eliminated.
 
-  Make server keep internal build date.
-     __DATE__ <<" - "<<__TIME__ << endl
+  Perhaps look at the way idle handles internal and network traffic. It
+  is possible that network traffic should be given a higher priority.
 
 General TODO
 

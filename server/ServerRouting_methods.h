@@ -12,10 +12,4 @@ inline int ServerRouting::idle() {
     return world.idle();
 }
 
-inline BaseEntity * ServerRouting::addObject(BaseEntity * obj) {
-    objects[obj->getId()] = obj;
-    return obj;
-}
-
-
 #endif // SERVER_SERVER_ROUTING_METHODS_H

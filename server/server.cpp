@@ -10,10 +10,12 @@
 
 extern "C" {
     #include <sys/utsname.h>
+    #include <sys/types.h>
     #include <mcheck.h>
     #include <signal.h>
     #include <syslog.h>
     #include <fcntl.h>
+    #include <unistd.h>
 }
 
 #include <rulesets/Python_API.h>
@@ -25,7 +27,7 @@ extern "C" {
 
 #include <common/Load.h>
 
-#include "ServerRouting_methods.h"
+#include "ServerRouting.h"
 #include "EntityFactory.h"
 #include "Persistance.h"
 

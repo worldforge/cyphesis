@@ -18,7 +18,7 @@ class Routing : public OOGThing {
     virtual ~Routing();
 
     BaseEntity * addObject(BaseEntity * obj) {
-        objects[obj->getId()]=obj;
+        objects[obj->getId()] = obj;
         return obj;
     }
 

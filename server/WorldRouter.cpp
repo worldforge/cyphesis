@@ -2,24 +2,36 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Sight.h>
-
-#include <common/Setup.h>
-
 #include "WorldRouter.h"
 #include "ServerRouting.h"
 #include "EntityFactory.h"
 
 #include <rulesets/World.h>
+
+#include <common/Setup.h>
+
 #include <common/debug.h>
 #include <common/const.h>
 #include <common/globals.h>
 #include <common/stringstream.h>
 
+#include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Sight.h>
+
+#include <common/BaseWorld.h>
+#include <common/globals.h>
+
 using Atlas::Message::Object;
 
 static const bool debug_flag = false;
+
+inline void WorldRouter::updateTime() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    double tmp_time = (double)(tv.tv_sec - initTime) + (double)tv.tv_usec/1000000;
+    realTime = tmp_time;
+}
+
 
 WorldRouter::WorldRouter(ServerRouting & srvr) : BaseWorld(*new World()),
                                                  nextId(0),
@@ -29,8 +41,8 @@ WorldRouter::WorldRouter(ServerRouting & srvr) : BaseWorld(*new World()),
     initTime = time(NULL) - timeoffset;
     updateTime();
     gameWorld.setId(getId());
-    gameWorld.world=this;
-    eobjects[getId()]=&gameWorld;
+    gameWorld.world = this;
+    eobjects[getId()] = &gameWorld;
     perceptives.insert(&gameWorld);
     objectList.insert(&gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
@@ -95,7 +107,7 @@ inline void WorldRouter::setSerialnoOp(RootOperation & op)
     op.SetSerialno(server.getSerialNo());
 }
 
-inline std::string WorldRouter::getNewId(const std::string & name)
+inline const std::string WorldRouter::getNewId(const std::string & name)
 {
     std::stringstream buf;
     buf << name << "_" << ++nextId;
@@ -114,20 +126,20 @@ Entity * WorldRouter::addObject(Entity * obj)
     if (obj->getId().empty()) {
         obj->setId(getNewId(obj->getName()));
     }
-    eobjects[obj->getId()]=obj;
+    eobjects[obj->getId()] = obj;
     objectList.insert(obj);
     if (!obj->location.isValid()) {
         debug(std::cout << "set loc " << &gameWorld  << std::endl
                         << std::flush;);
-        obj->location.ref=&gameWorld;
-        obj->location.coords=Vector3D(0,0,0);
+        obj->location.ref = &gameWorld;
+        obj->location.coords = Vector3D(0,0,0);
         debug(std::cout << "loc set with ref " << obj->location.ref->getId()
                         << std::endl << std::flush;);
     }
     obj->location.ref->contains.insert(obj);
     debug(std::cout << "Entity loc " << obj->location << std::endl
                     << std::flush;);
-    obj->world=this;
+    obj->world = this;
     if (obj->isOmnipresent()) {
         omnipresentList.insert(obj);
     }
@@ -210,8 +222,12 @@ OpVector WorldRouter::operation(const RootOperation * op_ptr)
             return OpVector();
         }
         Entity * to_entity = I->second;
+        // This check is here because some bugs used to exist that
+        // added NULL entries into the world dict. These should no
+        // longer be present, so this check can be removed
+        // after some testing. 2002-05-18
         if (to_entity == NULL) {
-            std::cerr << "CRITICAL: Op to=\"" << to << "\"" << " is NULL"
+            std::cerr << "CRITICAL: Op to=" << to << " is NULL"
                       << std::endl << std::flush;
             return OpVector();
         }
@@ -234,13 +250,14 @@ OpVector WorldRouter::operation(const RootOperation * op_ptr)
                 deliverTo(newop, *I);
             }
         } else {
-            // FIXME This is temporary until we find out how NULL pointers
-            // get in there
+            // This check is here because some bugs used to exist that
+            // added NULL entries into the world dict. These should no
+            // longer be present, so this check can be removed
+            // after some testing. 2002-05-18
             if (J->second == NULL) {
-                std::cerr << "ERROR: " << from
-                          << " has a NULL pointer in world dictionary. "
-                          << std::endl << "We will probably crash now."
+                std::cerr << "CRITICAL: Op from=" << from << " is NULL"
                           << std::endl << std::flush;
+                return OpVector();
             }
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {

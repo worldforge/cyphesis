@@ -24,7 +24,7 @@ class Connection : public OOGThing {
     virtual ~Connection();
 
     BaseEntity * addObject(BaseEntity * obj) {
-        objects[obj->getId()]=obj;
+        objects[obj->getId()] = obj;
         return obj;
     }
 

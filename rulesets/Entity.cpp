@@ -60,31 +60,32 @@ Entity::~Entity()
     }
 }
 
-const Object & Entity::operator[](const std::string & aname)
+const Object Entity::get(const std::string & aname) const
 {
     if (aname == "status") {
-        attributes[aname] = Object(status);
+        return Object(status);
     } else if (aname == "id") {
-        attributes[aname] = Object(getId());
+        return Object(getId());
     } else if (aname == "name") {
-        attributes[aname] = Object(name);
+        return Object(name);
     } else if (aname == "mass") {
-        attributes[aname] = Object(mass);
+        return Object(mass);
     } else if (aname == "bbox") {
-        attributes[aname] = location.bBox.asList();
+        return location.bBox.asList();
     } else if (aname == "contains") {
         Object::ListType contlist;
         for(EntitySet::const_iterator I=contains.begin();I!=contains.end();I++){
             contlist.push_back(*I);
         }
-        attributes[aname] = Object(contlist);
+        return Object(contlist);
     } else {
-        Object::MapType::iterator I = attributes.find(aname);
-        if (I == attributes.end()) {
-            attributes[aname] = Object();
+        Object::MapType::const_iterator I = attributes.find(aname);
+        if (I != attributes.end()) {
+            return I->second;
+        } else {
+            return Object();
         }
     }
-    return attributes[aname];
 }
 
 void Entity::set(const std::string & aname, const Object & attr)

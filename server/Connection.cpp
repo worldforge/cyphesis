@@ -15,7 +15,7 @@
 #include <common/inheritance.h>
 
 #include "Connection.h"
-#include "ServerRouting_methods.h"
+#include "ServerRouting.h"
 #include "Lobby.h"
 #include "CommClient.h"
 #include "CommServer.h"

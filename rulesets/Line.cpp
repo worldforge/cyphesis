@@ -21,16 +21,16 @@ Line::~Line()
 {
 }
 
-const Object & Line::operator[](const std::string & aname)
+const Object Line::get(const std::string & aname) const
 {
     if (aname == "start_intersections") {
-        attributes[aname] = idListAsObject(startIntersections);
+        return idListAsObject(startIntersections);
     } else if (aname == "end_intersections") {
-        attributes[aname] = idListAsObject(endIntersections);
+        return idListAsObject(endIntersections);
     } else if (aname == "coords") {
-        attributes[aname] = coordListAsObject(coords);
+        return coordListAsObject(coords);
     }
-    return Thing::operator[](aname);
+    return Thing::get(aname);
 }
 
 void Line::set(const std::string & aname, const Object & attr)

@@ -25,7 +25,6 @@ inline Entity * MemMap::addObject(Entity * object)
                     << std::endl << std::flush;);
     things[object->getId()] = object;
 
-    debug( std::cout << things[object->getId()] << std::endl << std::flush;);
     debug( std::cout << this << std::endl << std::flush;);
     std::vector<std::string>::const_iterator I;
     for(I = addHooks.begin(); I != addHooks.end(); I++) {
