@@ -13,7 +13,8 @@ class WorldRouter;
 class Account : public OOGThing {
     friend class Connection;
     edict_t charactersDict;
-    BaseEntity * addCharacter(const std::string &, const Atlas::Message::Object &);
+    BaseEntity * addCharacter(const std::string &,
+                              const Atlas::Message::Object::MapType &);
   protected:
     virtual oplist characterError(const Create &, const Atlas::Message::Object::MapType &) const = 0;
 

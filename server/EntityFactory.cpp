@@ -48,19 +48,13 @@ EntityFactory::EntityFactory()
 }
 
 Thing * EntityFactory::newThing(const std::string & type,
-                                const MObject & ent,
+                                const MObject::MapType & entmap,
                                 const edict_t & world)
 {
-    if (!ent.IsMap()) {
-         debug( std::cout << "Entity is not a map" << std::endl << std::flush;);
-    }
     Thing * thing = NULL;
     MObject::MapType attributes;
-    std::string py_package;
     fdict_t::iterator I = factories.find(type);
-    if (type.size() == 0) {
-        thing = new Thing();
-    } else if (I != factories.end()) {
+    if (I != factories.end()) {
         FactoryBase * factory = I->second;
         thing = factory->newThing();
         attributes = factory->attributes;
@@ -71,16 +65,18 @@ Thing * EntityFactory::newThing(const std::string & type,
             Create_PyThing(thing, factory->script, type);
         }
     } else {
-        debug(std::cerr << "ERROR: Could not find a factory for " << type
-                        << std::endl << std::flush;);
-    }
-    if (thing == NULL) {
+        if (type.size() == 0) {
+            std::cerr << "NOTICE: Empty string type passed to EntityFactory::newThing" << std::endl << std::flush;
+        } else {
+            installFactory("thing", type, new ThingFactory<Thing>());
+            std::cerr << "NOTICE: Installing patch-in factory for " << type
+                      << std::endl << std::flush;
+        }
         thing = new Thing();
     }
     debug( std::cout << "[" << type << " " << thing->getName() << "]"
                      << std::endl << std::flush;);
     thing->setType(type);
-    const MObject::MapType & entmap = ent.AsMap();
     // I am pretty sure this name handling is redundant
     MObject::MapType::const_iterator K = entmap.find("name");
     if ((K != entmap.end()) && K->second.IsString()) {

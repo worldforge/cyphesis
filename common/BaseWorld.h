@@ -32,7 +32,7 @@ class BaseWorld : public OOGThing {
 
     virtual Entity * addObject(Entity * obj) = 0;
     virtual Entity * addObject(const std::string &,
-                               const Atlas::Message::Object &,
+                               const Atlas::Message::Object::MapType &,
                                const std::string & id = std::string()) = 0;
     // void delObject(Entity * obj);
 

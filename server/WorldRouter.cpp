@@ -125,7 +125,8 @@ Entity * WorldRouter::addObject(Entity * obj)
     return (obj);
 }
 
-Entity * WorldRouter::addObject(const std::string & typestr, const Object & ent,
+Entity * WorldRouter::addObject(const std::string & typestr,
+                                const Object::MapType & ent,
                                 const std::string & id)
 {
     debug(std::cout << "WorldRouter::addObject(std::string, ent)" << std::endl

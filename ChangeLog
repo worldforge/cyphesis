@@ -1,3 +1,13 @@
+2002-02-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.h, server/WorldRouter.cpp, server/EntityFactory.h,
+	  server/Account.h, server/Account.cpp, common/BaseWorld.h:
+	  Clean up interface so that entities are passed around more simply.
+
+	* server/EntityFactory.cpp:
+	  Get rid of redundant code, and ensure that all classes, even
+	  undefined ones, have a type info node.
+
 2002-02-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseWorld.h:

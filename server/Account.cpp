@@ -34,7 +34,8 @@ Account::~Account()
 {
 }
 
-BaseEntity * Account::addCharacter(const std::string & typestr, const Object & ent)
+BaseEntity * Account::addCharacter(const std::string & typestr,
+                                   const Object::MapType & ent)
 {
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
     Entity * chr = world->addObject(typestr, ent);
@@ -124,7 +125,7 @@ oplist Account::CreateOperation(const Create & op)
     debug( std::cout << "Account creating a " << typestr << " object"
                      << std::endl << std::flush; );
 
-    BaseEntity * obj = addCharacter(typestr, ent);
+    BaseEntity * obj = addCharacter(typestr, entmap);
     //log.inform("Player "+Account::id+" adds character "+`obj`,op);
     Info * info = new Info(Info::Instantiate());
     info->SetArgs(Object::ListType(1,obj->asObject()));

@@ -1,3 +1,6 @@
+  Fix the database so it handles updating entities. Need to actually lookup
+  how this is done. Need to lock account row if its being updated.
+
   Implement installation of a new type by admin account.
 
   Entity classes need to be added by world builders. They also need to be
