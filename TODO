@@ -1,3 +1,8 @@
+Fix usage of map.get in BaseMind and NPCMind
+
+Make ExternalMind inherit from something higher that BaseMind. It has so
+few features.
+
 Get rid of fallback stringstream implementation.
 
 It may be possible to get rid of getXyz() (crappy absolute position)
