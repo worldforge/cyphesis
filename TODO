@@ -1,4 +1,5 @@
-Move ops without an ID in the argument are a problem for clients.
+If the character moves an entity into another similar entity, then
+we should create a Pile. This can be detected in mindMoveOp().
 
 Currently no mechanism to inform client/mind that the ID they just
 specified is gone. Need to think of something, and make sure mind
