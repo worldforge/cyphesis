@@ -166,6 +166,8 @@ bool predictCollision(const Location & l,  // This location
                       double & time,       // Returned time to collision
                       Vector3D & normal)   // Returned normal acting on l
 {
+    // FIXME Handle non-valid velocity
+    // FIXME Handle entities which have no box - just one vertex I think
     const WFMath::Point<3> & ln = l.m_bBox.lowCorner();
     const WFMath::Point<3> & lf = l.m_bBox.highCorner();
     const WFMath::Point<3> & on = o.m_bBox.lowCorner();
@@ -181,7 +183,7 @@ bool predictCollision(const Location & l,  // This location
     lbox[4] = WFMath::Vector<3>(ln.x(), ln.y(), lf.z());
     lbox[5] = WFMath::Vector<3>(lf.x(), ln.y(), lf.z());
     lbox[6] = WFMath::Vector<3>(lf.x(), lf.y(), lf.z());
-    lbox[7] = WFMath::Vector<3>(lf.x(), ln.y(), lf.z());
+    lbox[7] = WFMath::Vector<3>(ln.x(), lf.y(), lf.z());
 
     obox[0] = WFMath::Vector<3>(on.x(), on.y(), on.z());
     obox[1] = WFMath::Vector<3>(of.x(), on.y(), on.z());
@@ -190,13 +192,7 @@ bool predictCollision(const Location & l,  // This location
     obox[4] = WFMath::Vector<3>(on.x(), on.y(), of.z());
     obox[5] = WFMath::Vector<3>(of.x(), on.y(), of.z());
     obox[6] = WFMath::Vector<3>(of.x(), of.y(), of.z());
-    obox[7] = WFMath::Vector<3>(of.x(), on.y(), of.z());
-
-    // Orient the box corners
-    for(int i = 0; i < 8; ++i) {
-        lbox[i].rotate(l.m_orientation);
-        obox[i].rotate(o.m_orientation);
-    }
+    obox[7] = WFMath::Vector<3>(on.x(), of.y(), of.z());
 
     // Set up a set of surface normals, each with an assoicated corner
     NormalSet lnormals;
@@ -208,15 +204,33 @@ bool predictCollision(const Location & l,  // This location
     lnormals.insert(std::make_pair(6, Vector3D( 0.,  1.,  0.))); // North face
     lnormals.insert(std::make_pair(4, Vector3D( 0.,  0.,  1.))); // Top face
 
-    NormalSet onormals;
+    NormalSet onormals(lnormals);
 
-    // Orient the surface normals
-    for(NormalSet::iterator I = lnormals.begin(); I != lnormals.end(); ++I) {
-        I->second.rotate(l.m_orientation);
+    // Orient the surface normals and box corners
+    if (l.m_orientation.isValid()) {
+        NormalSet::iterator I = lnormals.begin();
+        for(; I != lnormals.end(); ++I) {
+            I->second.rotate(l.m_orientation);
+        }
+        for(int i = 0; i < 8; ++i) {
+            lbox[i].rotate(l.m_orientation);
+        }
     }
 
-    for(NormalSet::iterator I = onormals.begin(); I != onormals.end(); ++I) {
-        I->second.rotate(o.m_orientation);
+    if (o.m_orientation.isValid()) {
+        NormalSet::iterator I = onormals.begin();
+        for(; I != onormals.end(); ++I) {
+            I->second.rotate(o.m_orientation);
+        }
+        for(int i = 0; i < 8; ++i) {
+            obox[i].rotate(o.m_orientation);
+        }
+    }
+
+    // Translate the box corners
+    for(int i = 0; i < 8; ++i) {
+        lbox[i] += l.m_pos;
+        obox[i] += o.m_pos;
     }
 
     // Predict the collision using the generic mesh function

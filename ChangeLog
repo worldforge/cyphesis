@@ -1,5 +1,13 @@
 2003-10-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/collisiontest.cpp: Add Location collision function test.
+
+	* physics/Collision.cpp: Fix box transformation and displacement
+	  code. Handle locations which don't have an orientation. Test
+	  now works.
+
+2003-10-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Collision.cpp: Small fix to mesh collision function,
 	  and add controlled debugging output.
 

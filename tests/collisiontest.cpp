@@ -4,10 +4,13 @@
 
 #include "physics/Collision.h"
 
+#include "modules/Location.h"
+
 #include <cassert>
 
 int main()
 {
+    int ret = 0;
     {
         const Vector3D position(-1.2, 1, 0);
         const Vector3D velocity(1.1, 0.9, 0);
@@ -66,8 +69,32 @@ int main()
                       << " seconds" << std::endl << std::flush;
         } else {
             std::cout << "No mesh collision" << std::endl << std::flush;
+            ret = 1;
         }
     }
 
-    return 0;
+    {
+        Location a(0, Vector3D(0,0,0), Vector3D(0.1,0,0));
+        a.m_bBox = BBox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1,1,1));
+        a.m_orientation = Quaternion(Vector3D(1,1,1), 45);
+
+        Location b(0, Vector3D(5,0,0), Vector3D(-0.1,0,0));
+        b.m_bBox = BBox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1,1,1));
+        b.m_orientation = Quaternion(Vector3D(1,1,1), 20);
+
+        double time = 100;
+        Vector3D normal;
+
+        bool collided = predictCollision(a, b, time, normal);
+
+        if (collided) {
+            std::cout << "Location collision predicted after " << time
+                      << " seconds" << std::endl << std::flush;
+        } else {
+            std::cout << "No location collision" << std::endl << std::flush;
+            ret = 1;
+        }
+    }
+
+    return ret;
 }
