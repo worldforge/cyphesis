@@ -16,13 +16,21 @@ class CommServer;
 #include "ServerRouting.h"
 #include "Connection.h"
 
+class sockbuf : public filebuf {
+  public:
+    sockbuf() { }
+    sockbuf(int fd) : filebuf(fd) { }
+    virtual streampos sys_seek(streamoff, _seek_dir) { cout << "WOOHOO"; return streampos(); }
+};
+
 using namespace Atlas;
 
 class CommClient : Objects::Decoder {
     int client_fd;
     bad_type layer;
     ofstream log_file;
-    fstream client_ios;
+    sockbuf client_buf;
+    iostream client_ios;
     Codec<iostream> * codec;
     Objects::Encoder * encoder;
     Connection * client;
@@ -40,7 +48,7 @@ class CommClient : Objects::Decoder {
     CommServer * server;
 
     CommClient(CommServer * svr, int fd, int port) :
-		client_fd(fd), client_ios(fd), server(svr) {
+		client_fd(fd), client_buf(fd), client_ios(&client_buf), server(svr) {
         if (consts::debug_level>=1) {
             char * log_name = "log.log";
             //const char * log_name = port+".log";
