@@ -11,7 +11,9 @@
 int main()
 {
     int debug_thinking = consts::debug_thinking;
+    assert(debug_thinking == 0 || debug_thinking == 1);
     int debug_level = consts::debug_level;
+    assert(debug_level == 0 || debug_level == 1);
 
     float time_multiplier = consts::time_multiplier;
     assert(time_multiplier > 0);
@@ -39,8 +41,11 @@ int main()
     assert(minSqrBoxSize > 0);
     
     bool enable_ranges = consts::enable_ranges;
+    assert(enable_ranges == false || enable_ranges == true);
     bool enable_omnipresence = consts::enable_omnipresence;
+    assert(enable_omnipresence == false || enable_omnipresence == true);
     bool enable_persistence = consts::enable_persistence;
+    assert(enable_persistence == false || enable_persistence == true);
 
     const char * defaultAdminPasswordHash = consts::defaultAdminPasswordHash;
     assert(defaultAdminPasswordHash != 0);

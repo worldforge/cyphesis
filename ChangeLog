@@ -1,3 +1,8 @@
+2004-01-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/consttest.cpp: Check the values of all config variables,
+	  to get rid of some annoying warnings.
+
 2004-01-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* cyclient.init, cyphesis.init: Fix some stupid bugs in the init
