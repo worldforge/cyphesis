@@ -230,6 +230,7 @@ static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyclass)
         }
     }
     Py_DECREF(pyclass);
+    Py_DECREF(pyThing);
     return pyob;
 }
 

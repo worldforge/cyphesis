@@ -1,5 +1,9 @@
 2001-10-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Fixed another leak in the python code.
+
+2001-10-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp, rulesets/PythonMindScript.cpp,
 	  rulesets/Py_Oplist.cpp, rulesets/Py_Operation.cpp,
 	  rulesets/Py_Map.cpp: Fixed some points in the code where Python
