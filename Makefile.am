@@ -12,6 +12,9 @@ conf_DATA = cyphesis.vconf basic.xml acorn.xml mason.xml werewolf.xml moraf.xml 
 
 rulesetdir = $(datadir)/cyphesis/rulesets
 
+socketdir = $(localstatedir)
+socket_DATA =
+
 EXTRA_DIST = cyphesis.vconf basic.xml acorn.xml mason.xml werewolf.xml \
              cyphesis-config.in cyphesis.spec.in TODO.mason acinclude.m4 \
              autogen.sh cyphesis.init cyphesis.sysconfig \
