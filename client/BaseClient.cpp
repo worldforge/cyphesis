@@ -9,6 +9,9 @@
 #include "common/debug.h"
 #include "common/BaseEntity.h"
 
+#include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Login.h>
+
 static const bool debug_flag = false;
 
 CommClient::CommClient()

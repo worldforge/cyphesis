@@ -12,6 +12,16 @@
 #include "common/utility.h"
 #include "common/stringstream.h"
 
+#include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Logout.h>
+#include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Imaginary.h>
+#include <Atlas/Objects/Operation/Move.h>
+#include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation/Touch.h>
+#include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Talk.h>
+#include <Atlas/Objects/Operation/Get.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Codec.h>

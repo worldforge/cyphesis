@@ -19,9 +19,14 @@
 #include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Logout.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Imaginary.h>
 #include <Atlas/Objects/Operation/Info.h>
+#include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Talk.h>
+#include <Atlas/Objects/Operation/Sound.h>
 
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>

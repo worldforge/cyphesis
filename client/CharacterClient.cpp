@@ -8,6 +8,8 @@
 
 #include "common/debug.h"
 
+#include <Atlas/Objects/Operation/RootOperation.h>
+
 static const bool debug_flag = false;
 
 CharacterClient::CharacterClient(const std::string & id,

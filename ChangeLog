@@ -1,5 +1,13 @@
 2004-01-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/CharacterClient.cpp, client/ClientConnection.cpp,
+	  client/CommClient.cpp, server/Account.cpp,
+	  server/CommClient.cpp, server/Connection.cpp,
+	  tools/cycmd.cpp: Update required headers, now that they
+	  are not all pulled in by Atlas/Objects/Decoder.h.
+
+2004-01-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* Completely eliminate use of Instantiate() method throughout.
 
 2004-01-22  Al Riddoch  <alriddoch@zepler.org>

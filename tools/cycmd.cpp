@@ -21,6 +21,8 @@
 #include <Atlas/Objects/Operation/Get.h>
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Talk.h>
+#include <Atlas/Objects/Operation/Error.h>
+#include <Atlas/Objects/Operation/Sound.h>
 
 #include <skstream/skstream_unix.h>
 
