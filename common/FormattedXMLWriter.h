@@ -12,28 +12,30 @@
 class FormattedXMLWriter {
   private:
     /// Output file
-    std::iostream & m_stream;
+    std::ostream & m_stream;
+
     /// Counter to keep track of indenting the output
     int m_indent;
 
-    /// Return a character string corresponding to this atlas element type
+    /// Return a character string corresponding to this atlas element type.
     const char * typeToStr(Atlas::Message::Element::Type t) const;
 
-    /// Write the contents of this element recursively to the stream
+    /// Write the contents of this element recursively to the stream.
     void outputValue(const Atlas::Message::Element &);
 
-    /// Write the contents of this atlas list recursively to the stream
+    /// Write the contents of this atlas list recursively to the stream.
     void outputList(const Atlas::Message::Element::ListType &);
 
-    /// Write the contents of this atlas map recursively to the stream
+    /// Write the contents of this atlas map recursively to the stream.
     void outputMap(const Atlas::Message::Element::MapType &);
   public:
-    FormattedXMLWriter(std::iostream & stream);
+    /// Construct a writer object to write to the given ostream.
+    explicit FormattedXMLWriter(std::ostream & stream);
 
-    /// Write the atlas header to the stream
+    /// Write the atlas header to the stream.
     void openOutput();
 
-    /// Write the atlas tail to the stream
+    /// Write the atlas tail to the stream.
     void closeOutput();
 
     /// Write the contents of this top level object to the stream

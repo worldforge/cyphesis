@@ -1,5 +1,13 @@
 2004-07-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp, server/CommClient.cpp:
+	  Clean up some error output, making sure it goes to the right place.
+
+	* common/FormattedXMLWriter.cpp, common/FormattedXMLWriter.h:
+	  Use ostream as we are only writing, not reading. Improve comments.
+
+2004-07-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/BaseMind.cpp: Remove some debug output.
 
 	* Increment version to 0.3.2.

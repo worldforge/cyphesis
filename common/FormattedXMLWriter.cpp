@@ -8,19 +8,17 @@ using Atlas::Message::Element;
 typedef Element::MapType MapType;
 typedef Element::ListType ListType;
 
-FormattedXMLWriter::FormattedXMLWriter(std::iostream & stream) :
+FormattedXMLWriter::FormattedXMLWriter(std::ostream & stream) :
                                        m_stream(stream), m_indent(0)
 {
 }
 
-/// Write the atlas header to the stream
 void FormattedXMLWriter::openOutput()
 {
     m_stream << "<atlas>" << std::endl;
     m_indent += 2;
 }
 
-/// Write the atlas tail to the stream
 void FormattedXMLWriter::closeOutput()
 {
     m_indent -= 2;

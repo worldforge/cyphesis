@@ -313,8 +313,8 @@ void WorldRouter::operation(const RootOperation & op)
             }
         }
         if ((J == m_eobjects.end()) || (!consts::enable_ranges)) {
-            log(WARNING, "WorldRouter::operation op with missing from");
-            std::cout << op.getParents().front().asString() << " op from "
+            log(ERROR, "WorldRouter::operation broadcasting op with missing from");
+            std::cerr << op.getParents().front().asString() << " op from "
                       << from << std::endl << std::flush;
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
@@ -380,7 +380,11 @@ bool WorldRouter::idle()
         }
         delete op;
     }
-    return (op_count == 10);
+    // If we have processed the maximum number for this call, return true
+    // to tell the server not to sleep when polling clients. This ensures
+    // that we keep processing ops at a the maximum rate without leaving
+    // clients unattended.
+    return (op_count >= 10);
 }
 
 Entity * WorldRouter::findByName(const std::string & name)

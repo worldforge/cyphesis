@@ -140,12 +140,12 @@ void CommClient::unknownObjectArrived(const Atlas::Message::Element& o)
         queue(r);
     }
     if (debug_flag) {
-        std::cout << "An unknown has arrived." << std::endl << std::flush;
+        log(ERROR, "An unknown object has arrived from a client.");
         Atlas::Message::Element::MapType::const_iterator I;
         for(I = o.asMap().begin(); I != o.asMap().end(); I++) {
-            std::cout << I->first << std::endl << std::flush;
+            std::cerr << I->first << std::endl << std::flush;
             if (I->second.isString()) {
-                std::cout << I->second.asString() << std::endl << std::flush;
+                std::cerr << I->second.asString() << std::endl << std::flush;
             }
         }
     }
