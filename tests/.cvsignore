@@ -13,6 +13,7 @@ utilitytest
 emergencetest
 collisiontest
 transformtest
+distancetest
 Entitytest
 Areatest
 Foodtest

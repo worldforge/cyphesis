@@ -215,8 +215,8 @@ void World::LookOperation(const Look & op, OpVector & res)
     EntitySet::const_iterator I = m_contains.begin();
     for(; I != m_contains.end(); I++) {
         float fromSquSize = boxSquareSize((*I)->m_location.m_bBox);
-        Point3D d((*I)->m_location.relativePosition(lookFrom->m_location));
-        float view_factor = fromSquSize / sqrMag(d);
+        float dist = squareDistance((*I)->m_location, lookFrom->m_location);
+        float view_factor = fromSquSize / dist;
         if (view_factor > consts::square_sight_factor) {
             contlist.push_back((*I)->getId());
         }
