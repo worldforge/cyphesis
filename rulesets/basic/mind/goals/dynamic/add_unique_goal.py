@@ -18,6 +18,8 @@ class add_unique_goal(DynamicGoal):
            first let see if we already have added this goal
            then we generate and add goal if it doesn't exist
            and finally we execute goal"""
+        if not self.check_event(me, original_op, op):
+            return
         goal = self.find_goal(me, self.goal_class)
         if not goal:
             goal = self.make_goal_instance(me, self.goal_class, original_op, op)
@@ -35,6 +37,9 @@ class add_unique_goal(DynamicGoal):
     def make_goal_instance(self, me, goal_class, original_op, op):
         #override this!
         return goal_class(me, original_op, op)
+    def check_event(self, me, original_op, op):
+        """override this to check to see whether we really want to add a goal"""
+        return true
 
 class add_unique_goal_by_perception(add_unique_goal):
     def make_goal_instance(self, me, goal_class, original_op, op):

@@ -349,21 +349,26 @@ static PyObject * Operation_seq_item(OperationObject * self, int item)
     Object::ListType::const_iterator I = args_list.begin();
     int i;
     for(i = 0; i < item && I != args_list.end(); i++, I++);
-    if ((I != args_list.end()) && (I->IsMap())) {
-        const Object::MapType & obj = I->AsMap();
-        RootOperation op;
-        bool isOp = utility::Object_asOperation(obj, op);
-        if (isOp) {
-            OperationObject * ret_op = newAtlasRootOperation(NULL);
-            ret_op->operation = new RootOperation(op);
-            ret_op->own = 1;
-            return (PyObject *)ret_op;
-        }
-        AtlasObject * ret = newAtlasObject(NULL);
-        ret->m_obj = new Object(obj);
-        return (PyObject *)ret;
+    if (I == args_list.end()) {
+        PyErr_SetString(PyExc_TypeError,"Not enought op arguments");
+        return 0;
     }
-    return NULL;
+    if (!I->IsMap()) {
+        PyErr_SetString(PyExc_TypeError,"op argument is not a map");
+        return 0;
+    }
+    const Object::MapType & obj = I->AsMap();
+    RootOperation op;
+    bool isOp = utility::Object_asOperation(obj, op);
+    if (isOp) {
+        OperationObject * ret_op = newAtlasRootOperation(NULL);
+        ret_op->operation = new RootOperation(op);
+        ret_op->own = 1;
+        return (PyObject *)ret_op;
+    }
+    AtlasObject * ret = newAtlasObject(NULL);
+    ret->m_obj = new Object(obj);
+    return (PyObject *)ret;
 }
 
 static PyObject * Operation_num_add(OperationObject *self, PyObject *other)

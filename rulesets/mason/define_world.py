@@ -73,6 +73,9 @@ pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.forage,"forage(self, 'apple')"),
            (il.herd,"herd()")]
 
+deer_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
+            (il.herd,"herd()")]
+
 wolf_goals=[(il.forage,"forage(self, 'ham')"),
             (il.hunt,"predate(self,'pig',30.0)"),
             (il.hunt,"predate(self,'crab',20.0)"),
@@ -198,17 +201,17 @@ def default(mapeditor):
     merchant=m.make('Dyfed Searae',type='merchant',desc='the pig merchant',
                     xyz=pig_sty_xyz,age=probability.fertility_age,
                     sex='male',orientation=Quaternion(Vector3D([1,0,0]),Vector3D([-1,0,0])).as_list())
-    merchant2=m.make('Dylan Searae',type='merchant',desc='the pig merchant',
-         xyz=(-28,2,settlement_height),age=probability.fertility_age,sex='male',orientation=Quaternion(Vector3D([1,0,0]),Vector3D([0,-1,0])).as_list())
     sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[5,5,3])
     m.know(merchant,mknowledge)
     m.know(merchant,village)
     m.price(merchant,mprices)
     m.own(merchant,sty)
-    m.learn(merchant,(il.keep,"keep('pig', 'sty')"))
+    m.learn(merchant,(il.keep,"keep_livestock('pig', 'sty', 'sowee')"))
     m.learn(merchant, (il.sell,"sell_trade('pig', 'market', 'morning')"))
+    m.learn(merchant, (il.sell,"sell_trade('pig', 'market', 'afternoon')"))
     m.learn(merchant,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
     m.learn(merchant,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
+    m.learn(merchant,(il.welcome,"welcome('Welcome to this our settlement','settler')"))
     piglets=[]
     for i in range(0, 6):
         piglets.append(m.make('pig',type='pig',xyz=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
@@ -218,35 +221,13 @@ def default(mapeditor):
     # Warriors - the more adventurous types
 
     warriors=[]
-    warrior=m.make('Tom Harrowe', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),settlement_height),sex='male',orientation=directions[randint(0,7)])
-    sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
-    m.own(warrior,sword)
-    warriors.append(warrior)
-
-    warrior=m.make('Mae Dollor', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),settlement_height),sex='female',orientation=directions[randint(0,7)])
-    sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
-    m.own(warrior,sword)
-    warriors.append(warrior)
-
-    warrior=m.make('Covan Dubneal',type='guard',xyz=(uniform(-1,14),uniform(-18,-27),settlement_height),sex='male',orientation=directions[randint(0,7)])
-    sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
-    m.own(warrior,sword)
-    warriors.append(warrior)
-
-    warrior=m.make('Roal Guddon', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),settlement_height),sex='male',orientation=directions[randint(0,7)])
-    sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
-    m.own(warrior,sword)
-    warriors.append(warrior)
-
-    m.learn(warriors,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
-
-    warrior=m.make('Vonaa Barile',type='archer',xyz=(uniform(-1,14),uniform(-18,-27),settlement_height),sex='female',orientation=directions[randint(0,7)])
+    warrior=m.make('Vonaa Barile',type='settler',xyz=(uniform(-1,14),uniform(-18,-27),settlement_height),sex='female',orientation=directions[randint(0,7)])
     m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     warriors.append(warrior)
 
-    warrior=m.make('Lile Birloc', type='archer',xyz=(-2,-2,settlement_height),sex='female',orientation=directions[randint(0,7)])
+    warrior=m.make('Lile Birloc', type='settler',xyz=(-2,-2,settlement_height),sex='female',orientation=directions[randint(0,7)])
     m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
@@ -262,7 +243,16 @@ def default(mapeditor):
     m.learn(warriors,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
     m.learn(warriors,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
 
-    m.make('deer',type='deer',xyz=(2,2,settlement_height))
+    deers=[]
+    xbase = uniform(-180,180)
+    ybase = uniform(-180,180)
+    for i in range(0, 10):
+        xpos = xbase + uniform(-20,20)
+        ypos = ybase + uniform(-20,20)
+        d=m.make('deer', type='deer', xyz=(xpos, ypos, settlement_height))
+        deers.append(d)
+    m.learn(deers,deer_goals)
+    
 
     # I am not sure if we need a guard
     #m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))

@@ -1,3 +1,6 @@
+If a character sets its velocity to 0 when its position is outside its
+parents bbox, then the collision code does not detect that it is outside.
+
 Destination based movement: Change in direction is wrong when specifying
 a new destination for a walking character. Still have problem if destination
 is specified inside a box. Jump to it after a period of time, whereas

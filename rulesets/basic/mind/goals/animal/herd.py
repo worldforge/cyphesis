@@ -2,6 +2,7 @@
 #Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
+from types import *
 from common import const
 
 if const.server_python:
@@ -12,10 +13,12 @@ else:
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 class herd(DynamicGoal):
-    def __init__(self, desc="move in herds with other animals like me"):
+    def __init__(self, members=[] desc="move in herds with other animals like me"):
         DynamicGoal.__init__(self,
                              trigger="sight_move",
                              desc=desc)
+        for m in members:
+            self.herd_members[m] = 51
         self.herd_members={}
     def event(self, me, original_op, op):
         ent=op[0]

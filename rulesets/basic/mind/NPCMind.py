@@ -221,7 +221,7 @@ class NPCMind(BaseMind):
         for goal in self.trigger_goals.get(event_name,[]):
             reply = reply + goal.event(self, op, say)
         return reply
-    def call_triggers(self, op):
+    def call_triggers_operation(self, op):
         event_name, sub_op = self.get_op_name_and_sub(op)
         reply = Message()
         for goal in self.trigger_goals.get(event_name,[]):

@@ -1,3 +1,16 @@
+2002-09-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* Added various nifty bits of mason behavoir.
+
+	* rulesets/Py_Operation.cpp: Always return an error, if the script
+	  does something invalid with the python API.
+
+	* rulesets/BaseMind.cpp: Implement operation triggers in
+	  the mind scripts.
+
+	* Document some bugs, bring TODO up to date, and bump up version
+	  to 0.1.92.
+
 2002-08-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/globals.cpp: Only persist this sessions command line

@@ -517,7 +517,11 @@ OpVector BaseMind::operation(const RootOperation & op)
     for(OpVector::const_iterator I = res2.begin(); I != res2.end(); I++) {
         res.push_back(*I);
     }
-    //res = call_triggers(op);
+    res2.clear();
+    script->Operation("call_triggers", op, res2);
+    for(OpVector::const_iterator I = res2.begin(); I != res2.end(); I++) {
+        res.push_back(*I);
+    }
     return res;
 }
 
