@@ -67,9 +67,15 @@ void CommServer::loop()
        }
     }
     highest++;
-    int rval = select(highest, &sock_fds, NULL, NULL, &tv);
+    int rval = ::select(highest, &sock_fds, NULL, NULL, &tv);
 
     if (rval < 0) {
+        perror("select");
+        log(ERROR, "Error caused by select() in main loop");
+        return;
+    }
+
+    if (rval == 0) {
         return;
     }
     
