@@ -182,6 +182,7 @@ OpVector Account::ImaginaryOperation(const Imaginary & op)
         s.SetArgs(Fragment::ListType(1,op.AsObject()));
         s.SetFrom(getId());
         s.SetSerialno(connection->server.getSerialNo());
+        setRefnoOp(&s, op);
         const Fragment::MapType & arg = args.front().AsMap();
         Fragment::MapType::const_iterator I = arg.find("loc");
         if (I != arg.end()) {
@@ -202,6 +203,7 @@ OpVector Account::TalkOperation(const Talk & op)
         s.SetArgs(Fragment::ListType(1,op.AsObject()));
         s.SetFrom(getId());
         s.SetSerialno(connection->server.getSerialNo());
+        setRefnoOp(&s, op);
         const Fragment::MapType & arg = args.front().AsMap();
         Fragment::MapType::const_iterator I = arg.find("loc");
         if (I != arg.end()) {
@@ -222,6 +224,7 @@ OpVector Account::LookOperation(const Look & op)
         s->SetTo(getId());
         s->SetArgs(Fragment::ListType(1,connection->server.lobby.asObject()));
         s->SetSerialno(connection->server.getSerialNo());
+        setRefnoOp(s, op);
         return OpVector(1,s);
     }
     Fragment::MapType::const_iterator I = args.front().AsMap().find("id");
@@ -235,6 +238,7 @@ OpVector Account::LookOperation(const Look & op)
         s->SetTo(getId());
         s->SetArgs(Fragment::ListType(1,J->second->asObject()));
         s->SetSerialno(connection->server.getSerialNo());
+        setRefnoOp(s, op);
         return OpVector(1,s);
     }
     const AccountDict & accounts = connection->server.lobby.getAccounts();
@@ -244,6 +248,7 @@ OpVector Account::LookOperation(const Look & op)
         s->SetTo(getId());
         s->SetArgs(Fragment::ListType(1,K->second->asObject()));
         s->SetSerialno(connection->server.getSerialNo());
+        setRefnoOp(s, op);
         return OpVector(1,s);
     }
     return error(op, "Unknown look target");
