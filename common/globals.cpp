@@ -2,6 +2,11 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000-2004 Alistair Riddoch
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "prefix.h"
 #include "globals.h"
 #include "log.h"
 
@@ -12,9 +17,9 @@
 #include <cassert>
 
 varconf::Config * global_conf = NULL;
-std::string share_directory(SHAREDIR);
-std::string etc_directory(ETCDIR);
-std::string var_directory(VARDIR);
+std::string share_directory(DATADIR);
+std::string etc_directory(SYSCONFDIR);
+std::string var_directory(LOCALSTATEDIR);
 std::string client_socket_name("cyphesis.sock");
 std::string slave_socket_name("cyslave.sock");
 std::vector<std::string> rulesets;

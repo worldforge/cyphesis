@@ -1,9 +1,9 @@
 noinst_LIBRARIES = libcommon.a libtools.a
 
-INCLUDES = -I$(top_srcdir) -DSHAREDIR=\"@datadir@\" -DETCDIR=\"@sysconfdir@\" \
-           -DVARDIR=\"@localstatedir@\"
+INCLUDES = -I$(top_srcdir)
 
 libcommon_a_SOURCES = const.cpp const.h \
+		      prefix.c prefix.h \
 		      id.cpp id.h \
 		      log.cpp log.h \
 		      debug.h random.h nls.h \

@@ -1,5 +1,11 @@
 2005-03-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* acinclude.m4, configure.ac, common/prefix.c, common/prefix.h,
+	  common/Makefile.am, common/globals.cpp, tools/Makefile.am:
+	  Use BinReloc to make cyphesis relocatable on Linux.
+
+2005-03-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: More experimenting with new movement code.
 
 	* rulesets/mason/define_world.py: Fix a bug in the marshall's

@@ -12,6 +12,8 @@ dnl Initialise automake
 AM_INIT_AUTOMAKE([dist-bzip2 check-news])
 AM_CONFIG_HEADER(config.h)
 
+AM_BINRELOC
+
 dnl Need libtool
 
 AC_DISABLE_STATIC
