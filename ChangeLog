@@ -1,3 +1,8 @@
+2002-12-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp, common/Database.h: Backport switch to C PostgreSQL
+	  API from devel code for PostgreSQL 7.3 compatability.
+
 2002-12-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Fix very long standing moving bug, which sometimes
