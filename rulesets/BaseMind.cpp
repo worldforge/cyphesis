@@ -34,7 +34,7 @@
 static const bool debug_flag = false;
 
 BaseMind::BaseMind(const std::string & id, const std::string & body_name)
-                               : Entity(id), m_map(m_script), m_isAwake(true)
+                               : MemEntity(id), m_map(m_script), m_isAwake(true)
 {
     // setId(id);
     m_name = body_name;

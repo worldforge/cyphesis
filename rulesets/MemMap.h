@@ -11,36 +11,36 @@
 #include <list>
 
 namespace Atlas {
-  namespace Message {
-    class Object;
-  }
   namespace Objects { namespace Operation {
     class RootOperation;
   } }
 }
 
-class Entity;
+class MemEntity;
 class Script;
 class Location;
+
+typedef std::vector<MemEntity *> MemEntityVector;
+typedef std::map<std::string, MemEntity *> MemEntityDict;
 
 class MemMap {
   private:
     friend class BaseMind;
 
-    EntityDict m_entities;
+    MemEntityDict m_entities;
     std::list<std::string> m_additionsById;
     std::vector<std::string> m_addHooks;
     std::vector<std::string> m_updateHooks;
     std::vector<std::string> m_deleteHooks;
     Script *& m_script;
 
-    Entity * addEntity(Entity *);
-    void readEntity(Entity *, const Atlas::Message::Element::MapType &);
-    void updateEntity(Entity *, const Atlas::Message::Element::MapType &);
-    Entity * newEntity(const std::string &,
+    MemEntity * addEntity(MemEntity *);
+    void readEntity(MemEntity *, const Atlas::Message::Element::MapType &);
+    void updateEntity(MemEntity *, const Atlas::Message::Element::MapType &);
+    MemEntity * newEntity(const std::string &,
                        const Atlas::Message::Element::MapType &);
     void addContents(const Atlas::Message::Element::MapType &);
-    Entity * addId(const std::string & id);
+    MemEntity * addId(const std::string & id);
   public:
     explicit MemMap(Script *& s) : m_script(s)  { }
 
@@ -50,12 +50,12 @@ class MemMap {
 
     Atlas::Objects::Operation::RootOperation * lookId();
     void del(const std::string & id);
-    Entity * get(const std::string & id);
-    Entity * getAdd(const std::string & id);
-    Entity * updateAdd(const Atlas::Message::Element::MapType &);
+    MemEntity * get(const std::string & id);
+    MemEntity * getAdd(const std::string & id);
+    MemEntity * updateAdd(const Atlas::Message::Element::MapType &);
 
-    EntityVector findByType(const std::string & what);
-    EntityVector findByLocation(const Location & where, double radius);
+    MemEntityVector findByType(const std::string & what);
+    MemEntityVector findByLocation(const Location & where, double radius);
 
     const Atlas::Message::Element asObject();
     void flush();

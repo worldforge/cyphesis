@@ -8,6 +8,7 @@
 #include "Py_Operation.h"
 #include "Py_Object.h"
 
+#include "MemEntity.h"
 #include "MemMap.h"
 
 static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
@@ -29,13 +30,13 @@ static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
     }
     PyLocation * where = (PyLocation *)where_obj;
     PyEntity * thing;
-    EntityVector res = self->m_map->findByLocation(*where->location,
+    MemEntityVector res = self->m_map->findByLocation(*where->location,
                                                           radius);
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
         return NULL;
     } 
-    EntityVector::const_iterator I;
+    MemEntityVector::const_iterator I;
     int i = 0;
     for(I = res.begin(); I != res.end(); I++, i++) {
         thing = newPyEntity();
@@ -62,12 +63,12 @@ static PyObject * Map_find_by_type(PyMap * self, PyObject * args)
         return NULL;
     }
     PyEntity * thing;
-    EntityVector res = self->m_map->findByType(std::string(what));
+    MemEntityVector res = self->m_map->findByType(std::string(what));
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
         return NULL;
     } 
-    EntityVector::const_iterator I;
+    MemEntityVector::const_iterator I;
     int i = 0;
     for(I = res.begin(); I != res.end(); I++, i++) {
         thing = newPyEntity();
@@ -119,7 +120,7 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an Object");
         return NULL;
     }
-    Entity * ret = self->m_map->updateAdd(obj->m_obj->asMap());
+    MemEntity * ret = self->m_map->updateAdd(obj->m_obj->asMap());
     PyEntity * thing = newPyEntity();
     thing->m_entity = ret;
     return (PyObject *)thing;
@@ -155,7 +156,7 @@ static PyObject * Map_get(PyMap * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s", &id)) {
         return NULL;
     }
-    Entity * ret = self->m_map->get(id);
+    MemEntity * ret = self->m_map->get(id);
     if (ret == NULL) {
         Py_INCREF(Py_None);
         return Py_None;
@@ -177,7 +178,7 @@ static PyObject * Map_get_add(PyMap * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s", &id)) {
         return NULL;
     }
-    Entity * ret = self->m_map->getAdd(id);
+    MemEntity * ret = self->m_map->getAdd(id);
     PyEntity * thing = newPyEntity();
     thing->m_entity = ret;
     return (PyObject *)thing;

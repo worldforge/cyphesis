@@ -21,6 +21,8 @@
 #include "rulesets/Area.h"
 #include "rulesets/World.h"
 
+#include "rulesets/Entity_getLocation.h"
+
 #include "rulesets/Python_API.h"
 
 #include "common/debug.h"

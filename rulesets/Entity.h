@@ -109,8 +109,11 @@ class Entity : public BaseEntity {
 
     void setScript(Script * scrpt);
     void merge(const Atlas::Message::Element::MapType &);
+
+    template <class EntityType>
     bool getLocation(const Atlas::Message::Element::MapType &,
-                     const EntityDict &);
+                     const std::map<std::string, EntityType *> &);
+
     Vector3D getXyz() const;
     void destroy();
     void scriptSubscribe(const std::string &);

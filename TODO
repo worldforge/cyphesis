@@ -1,3 +1,8 @@
+Invesitage interaction between mind/body WRT type. We shouldn't ever use
+the type string in Atlas.
+
+Get rif of Entity::m_name, and other related pointless static attrs.
+
 Fix Entity::addToObject to be more efficient with contlist
 
 Make the server easier to kill.

@@ -6,6 +6,8 @@
 
 #include "CreatorClient.h"
 
+#include "rulesets/Entity_getLocation.h"
+
 #include "common/debug.h"
 #include "common/BaseEntity.h"
 

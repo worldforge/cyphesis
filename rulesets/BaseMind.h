@@ -5,12 +5,12 @@
 #ifndef RULESETS_BASE_MIND_H
 #define RULESETS_BASE_MIND_H
 
-#include "Entity.h"
+#include "MemEntity.h"
 #include "MemMap.h"
 
 #include "modules/WorldTime.h"
 
-class BaseMind : public Entity {
+class BaseMind : public MemEntity {
   protected:
     MemMap m_map;
     bool m_isAwake;
@@ -56,8 +56,6 @@ class BaseMind : public Entity {
     virtual OpVector sightTouchOperation(const Sight & op, Touch & sub_op);
     virtual OpVector sightOtherOperation(const Sight & op,RootOperation & sub_op);
 
-    //virtual OpVector soundTalkOperation(const Sound & op, Talk & sub_op);
-    //virtual OpVector soundOtherOperation(const Sound & op,RootOperation & sub_op);
     virtual OpVector soundLoginOperation(const Sound & op, Login & sub_op);
     virtual OpVector soundActionOperation(const Sound & op, Action & sub_op);
     virtual OpVector soundChopOperation(const Sound & op, Chop & sub_op);

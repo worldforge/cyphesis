@@ -190,8 +190,9 @@ void Entity::merge(const Element::MapType & ent)
     }
 }
 
+template <class EntityType>
 bool Entity::getLocation(const Element::MapType & entmap,
-                         const EntityDict & eobjects)
+                         const std::map<std::string, EntityType *> & eobjects)
 {
     debug( std::cout << "Entity::getLocation" << std::endl << std::flush;);
     Element::MapType::const_iterator I = entmap.find("loc");
