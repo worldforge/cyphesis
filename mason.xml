@@ -104,6 +104,7 @@
     <string name="parent">tree</string>
     <map name="attributes">
       <float name="height">8</float>
+      <float name="mass">150</float>
       <list name="bbox">
         <float>-0.25</float><float>-0.25</float><float>0</float>
         <float>0.25</float><float>0.25</float><float>7</float>

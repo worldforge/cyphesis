@@ -279,6 +279,31 @@ class forage(feed):
         self.full=0.2
         self.vars=["what","range"]
  
+############################ BROWSE (FOR FOOD) ################################
+
+class browse(feed):
+    def __init__(self, me, what, min_status):
+        Goal.__init__(self, "browse for food by name",
+                      self.am_i_full,
+		      [spot_something(what, range=20, condition=(lambda o,s=min_status:hasattr(o,"status") and o.status > s)),
+                       move_me_to_it(what),
+                       self.eat])
+        self.what=what
+        self.range=20
+        self.full=0.2
+        self.min_status=min_status
+        self.vars=["what", "range", "min_status"]
+
+
+    def eat(self,me):
+        if me.things.has_key(self.what)==0: return
+        food=me.find_thing(self.what)[0]
+        if food.status < self.min_status:
+            me.remove_thing(food)
+        ent=Entity(food.id)
+        return Operation("eat",ent,to=food)
+
+
 ############################ PREDATOR (HUNT SOMETHING, THEN EAT IT) ###########
 
 class predate(feed):

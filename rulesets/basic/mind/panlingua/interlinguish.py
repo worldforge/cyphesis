@@ -28,6 +28,7 @@ add_word('than','#than_prep0')
 add_word('add_extinguish_fire','#add_extinguish_fire_sentence0') #CHEAT!
 add_word('wander','#wander_verb1')
 add_word('forage','#forage_verb1')
+add_word('browse','#browse_verb1')
 add_word('avoid','#avoid_verb1')
 add_word('flock','#flock_verb1')
 add_word('hunt','#hunt_verb1')

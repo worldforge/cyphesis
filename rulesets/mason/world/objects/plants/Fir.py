@@ -1,4 +1,13 @@
-
+from atlas import *
 from world.objects.plants.Tree import Tree
 
-class Fir(Tree): pass
+import atlas
+
+class Fir(Tree):
+    def eat_operation(self, op):
+        ent = Entity(self.id, status = self.status - 0.001)
+        res = Operation("set", ent, to=self)
+        to_ = op.from_
+        nour= Entity(to_.id, mass= 0.002)
+        res = res + Operation("nourish", nour, to=to_)
+        return res

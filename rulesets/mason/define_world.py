@@ -77,6 +77,7 @@ pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
 deer_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
             (il.forage,"forage(self, 'apple')"),
             (il.forage,"forage(self, 'mushroom')"),
+            (il.browse,"browse(self, 'fir', 0.8)"),
             (il.flock,"flock()")]
 
 chicken_goals=[(il.avoid,"avoid(['settler','orc','wolf'],10.0)"),
@@ -348,3 +349,16 @@ def test_know(mapeditor):
     m=editor(mapeditor)
     wolf = m.make('wolf', type='wolf', xyz=(90,-90,settlement_height))
     m.know(wolf,wolf_knowledge)
+
+def test_browse(mapeditor):
+#   test if browsing works
+    
+    m=editor(mapeditor)
+    deer = m.make('deer', type='deer', xyz=(5, 0, settlement_height))
+    fir = m.make('fir', type='fir', xyz=(10, 0, settlement_height))
+    m.learn(deer, (il.browse,"browse(self, 'fir', 0.8)"))
+    m.make('fir',type='fir',xyz=(-10,-0,settlement_height))
+    m.make('fir',type='fir',xyz=(-0,-10,settlement_height))
+    m.make('fir',type='fir',xyz=(0,10,settlement_height))
+    m.make('fir',type='fir',xyz=(10,0,settlement_height))
+    

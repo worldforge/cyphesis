@@ -1,3 +1,16 @@
+2004-07-05  Kai Blin  <blin@gmx.net>
+
+	* mason.xml: Made the fir weight 150 kg
+	* rulesets/basic/mind/goals/common/misc_goal.py: added browse()
+	  goal
+	* rulesets/basic/mind/panlingua/interlinguish.py: added
+	  browse_word so we can learn the goal browse
+	* rulesets/mason/define_world.py: added a test_browse function
+	  that tests deer browsing on trees. Also added a browse() entry
+	  into the deer's goal list.
+	* rulesets/mason/world/objects/plants/Fir.py: made the fir react
+	  on the eat_operation
+	
 2004-07-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Plant.cpp: Slow down the rate of recovery for damaged
