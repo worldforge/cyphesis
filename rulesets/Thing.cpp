@@ -75,6 +75,16 @@ oplist Thing::send_world(RootOperation * msg)
     return world->message(*msg, this);
 }
 
+void Thing::merge(const Message::Object::MapType & entmap)
+{
+    Message::Object::MapType::const_iterator I;
+    for (I=entmap.begin(); I!=entmap.end(); I++) {
+        const string & key = I->first;
+        if ((key == "name") || (key == "id") || (key == "parents")) continue;
+        attributes[key] = I->second;
+    }
+}
+
 oplist Thing::Operation(const Setup & op)
 {
     oplist res;
@@ -375,7 +385,7 @@ ThingFactory::ThingFactory()
 {
     thing_map["thing"] = thing_t(BASE_THING, "");
     thing_map["house"] = thing_t(BASE_THING, "");
-    thing_map["farmer"] = thing_t(BASE_CHARACTER, "farmer");
+    thing_map["farmer"] = thing_t(BASE_CHARACTER, "characters.farmer");
     thing_map["guard"] = thing_t(BASE_CHARACTER, "");
     thing_map["butcher"] = thing_t(BASE_CHARACTER, "");
 }
@@ -416,7 +426,7 @@ Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)
             cout << "Cld no find class in module " << py_class << endl << flush;
             goto py_fail;
         } else {
-            cout << "Got python class " << type << " in" << py_class << endl << flush;
+            cout << "Got python class " << type << " in " << py_class << endl << flush;
         }
         if (PyCallable_Check(my_class) == 0) {
             cout << "It does not seem to be a class at all" << endl << flush;
@@ -432,6 +442,7 @@ py_fail:
     } else {
         cout << "Got no name" << endl << flush;
     }
+    thing->merge(entmap);
     thing->type = type;
     return(thing);
 }

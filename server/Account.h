@@ -13,14 +13,14 @@ class Thing;
 
 class Account : public OOG_Thing {
   public:
-    WorldRouter * world;
     Connection * connection;
     fdict_t characters;
     string password;
+    string type;
 
     Account() { }
-    Account(Connection * conn, string & username, string & passwd) :
-        connection(conn), password(passwd) {
+    Account(Connection * conn, const string & username, const string & passwd) :
+        connection(conn), password(passwd), type("account") {
         fullid = username;
     }
     virtual ~Account() { }

@@ -48,6 +48,7 @@ string WorldRouter::get_id(string & name)
 
 Thing * WorldRouter::add_object(Thing * obj)
 {
+    cout << "WorldRouter::add_object(Thing *)" << endl << flush;
     obj->fullid=get_id(obj->name);
     server->id_dict[obj->fullid]=fobjects[obj->fullid]=obj;
     if (!obj->location) {
@@ -80,11 +81,12 @@ Thing * WorldRouter::add_object(Thing * obj)
     return (obj);
 }
 
-Thing * WorldRouter::add_object(const string & type,
+Thing * WorldRouter::add_object(const string & typestr,
                                      const Message::Object & ent)
 {
+    cout << "WorldRouter::add_object(string, ent)" << endl << flush;
     Thing * obj;
-    obj = thing_factory.new_thing(type, ent);
+    obj = thing_factory.new_thing(typestr, ent);
     return add_object(obj);
 }
 

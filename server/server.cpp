@@ -310,8 +310,12 @@ int main(int argc, char ** argv) {
         log::inform_fp.open("cyphesis_server.log",ios::out);
         log::debug_fp.open("cyphesis_server_debug.log",ios::out);
     }
+    char * cwd;
+    if ((cwd = getcwd(NULL, 0)) != NULL) {
+        setenv("PYTHONPATH", cwd, 1);
+    }
     Py_Initialize();
-    cout << Py_GetPath();
+    cout << Py_GetPath() << endl << flush;
     if (consts::debug_thinking>=1) {
         char * log_name="thinking.log";
         cout << "consts::debug_thinking>=1:, logging to" << log_name << endl;

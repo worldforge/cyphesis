@@ -4,6 +4,8 @@
 
 #include "ServerRouting.h"
 
+#include <common/persistance.h>
+
 
 ServerRouting::ServerRouting(CommServer * server, char * name) : svr_name(name)
 {
@@ -12,9 +14,9 @@ ServerRouting::ServerRouting(CommServer * server, char * name) : svr_name(name)
     comm_server=server ; //communication server;
     id_dict[fullid] = this;
     world=new WorldRouter(this); //game world;
-    //obj=add_object(persistence.load_admin_account());
-    //obj.server=self;
-    //obj.world=ServerRouting::world;
+    BaseEntity * obj=add_object(Persistance::load_admin_account());
+    //obj->server=this;
+    obj->world=world;
 }
 
 BaseEntity * ServerRouting::add_object(BaseEntity * obj) {

@@ -31,8 +31,10 @@ class Thing : public BaseEntity {
         return(obj == NULL ? -1 : 0);
     }
 
-    virtual void addObject(Message::Object *);
     oplist send_world(RootOperation * msg);
+    void merge(const Message::Object::MapType &);
+
+    virtual void addObject(Message::Object *);
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
     virtual oplist Operation(const Create & op);

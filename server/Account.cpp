@@ -30,6 +30,7 @@ void Account::addObject(Message::Object * obj)
     if (password.size() != 0) {
         omap["password"] = Message::Object(password);
     }
+    omap["parents"] = Message::Object(Message::Object::ListType(1,Message::Object(type)));
     BaseEntity::addObject(obj);
 }
 
@@ -42,9 +43,9 @@ oplist Account::Operation(const Create & op)
     }
     Message::Object::MapType entmap = ent.AsMap();
     if ((entmap.find("parents")==entmap.end()) ||
-        !entmap["parents"].IsList() ||
+        !(entmap["parents"].IsList()) ||
         (entmap["parents"].AsList().size()==0) ||
-        !entmap["parents"].AsList().front().IsString() ) {
+        !(entmap["parents"].AsList().front().IsString()) ) {
         return(error(op, "Character has no type"));
     }
     
@@ -52,24 +53,26 @@ oplist Account::Operation(const Create & op)
     if (error.size() != 0) {
         return(error);
     }
-    const string & type = entmap["parents"].AsList().front().AsString();
+    const string & typestr = entmap["parents"].AsList().front().AsString();
+    cout << "Account creating a " << typestr << " object" << endl << flush;
 
-    BaseEntity * obj = add_character(type, ent);
+    BaseEntity * obj = add_character(typestr, ent);
     //log.inform("Player "+Account::id+" adds character "+`obj`,op);
     Info * info = new Info();
     *info = Info::Instantiate();
     Message::Object::ListType args(1,obj->asObject());
     info->SetArgs(args);
+    info->SetRefno(op.GetSerialno());
 
     oplist res;
     res.push_back(info);
     return(res);
 }
 
-BaseEntity * Account::add_character(const string & type, const Message::Object & ent)
+BaseEntity * Account::add_character(const string & typestr, const Message::Object & ent)
 {
     cout << "Account::Add_character" << endl << flush;
-    Thing * chr = world->add_object(type, ent);
+    Thing * chr = world->add_object(typestr, ent);
     cout << "Added" << endl << flush;
     if (!chr->location) {
         cout << "Setting location" << endl << flush;

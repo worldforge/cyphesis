@@ -14,10 +14,13 @@
 Location::Location() : parent(NULL) { }
 
 Location::Location(BaseEntity * parnt, Vector3D crds) :
-        parent(parnt), coords(crds) { }
+        parent(parnt), coords(crds), face(1, 0, 0) { }
 
 Location::Location(BaseEntity * parnt, Vector3D crds, Vector3D vel) :
-        parent(parnt), coords(crds), velocity(vel) { }
+        parent(parnt), coords(crds), velocity(vel), face(1, 0, 0) { }
+
+Location::Location(BaseEntity * parnt, Vector3D crds, Vector3D vel, Vector3D fce) :
+        parent(parnt), coords(crds), velocity(vel), face(fce) { }
 
 bool Location::operator!() const
 {
@@ -50,6 +53,7 @@ void Location::addObject(Object * obj)
     }
     omap["pos"] = coords.asObject();
     omap["velocity"] = velocity.asObject();
+    omap["face"] = face.asObject();
 #else
     Object::MapType lmap;
     if (parent!=NULL) {

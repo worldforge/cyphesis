@@ -17,6 +17,10 @@ typedef int bad_type; // Remove this to get unset type reporting
 
 class Admin : public Account {
   public:
+    Admin(Connection * conn, const string & username, const string & passwd) :
+        Account(conn, username, passwd) {
+        type = "admin";
+    }
     virtual ~Admin() { }
 
     virtual oplist Operation(const Load & op);

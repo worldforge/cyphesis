@@ -12,10 +12,12 @@ public:
     BaseEntity * parent;
     Vector3D coords;
     Vector3D velocity;
+    Vector3D face;
 
     Location();
     Location(BaseEntity * parent, Vector3D coords);
     Location(BaseEntity * parent, Vector3D coords, Vector3D velocity);
+    Location(BaseEntity * parent, Vector3D coords, Vector3D velocity, Vector3D face);
 
     bool operator!() const;
     //void operator=(const Location&);

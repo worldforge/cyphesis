@@ -378,10 +378,14 @@ oplist BaseEntity::error(const RootOperation & op, const char * string)
     Error * e = new Error();
     *e = Error::Instantiate();
 
-    list<Message::Object> args(1,Message::Object(string));
+    list<Message::Object> args;
+    Message::Object::MapType errmsg;
+    errmsg["message"] = Message::Object(string);
+    args.push_back(Message::Object(errmsg));
     args.push_back(op.AsObject());
 
     e->SetArgs(args);
+    e->SetRefno(op.GetSerialno());
 
     return(oplist(1,e));
 }

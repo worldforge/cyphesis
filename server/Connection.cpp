@@ -69,11 +69,11 @@ oplist Connection::operation(const RootOperation & op)
     return(res);
 }
 
-oplist Connection::Operation(const Login & obj)
+oplist Connection::Operation(const Login & op)
 {
 
     cout << "Got login op" << endl << flush;
-    const Message::Object & account = obj.GetArgs().front();
+    const Message::Object & account = op.GetArgs().front();
 
     if (account.IsMap()) {
         string account_id = account.AsMap().find("id")->second.AsString();
@@ -87,17 +87,18 @@ oplist Connection::Operation(const Login & obj)
             *info = Info::Instantiate();
             Message::Object::ListType args(1,player->asObject());
             info->SetArgs(args);
+            info->SetRefno(op.GetSerialno());
             cout << "Good login" << endl << flush;
             return(oplist(1,info));
         }
     }
-    return(error(obj, "Login is invalid"));
+    return(error(op, "Login is invalid"));
 }
 
-oplist Connection::Operation(const Create & obj)
+oplist Connection::Operation(const Create & op)
 {
     cout << "Got create op" << endl << flush;
-    const Message::Object & account = obj.GetArgs().front();
+    const Message::Object & account = op.GetArgs().front();
 
     if (account.IsMap()) {
         string account_id = account.AsMap().find("id")->second.AsString();
@@ -110,11 +111,12 @@ oplist Connection::Operation(const Create & obj)
             *info = Info::Instantiate();
             Message::Object::ListType args(1,player->asObject());
             info->SetArgs(args);
+            info->SetRefno(op.GetSerialno());
             cout << "Good create" << endl << flush;
             return(oplist(1,info));
         }
     }
-    return(error(obj, "Account creation is invalid"));
+    return(error(op, "Account creation is invalid"));
 
 }
 

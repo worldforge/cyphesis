@@ -9,8 +9,10 @@ typedef int bad_type; // Remove this to get unset type reporting
 
 class Player : public Account {
   public:
-    Player(Connection * conn, string & username, string & passwd) :
-        Account(conn, username, passwd) { }
+    Player(Connection * conn, const string & username, const string & passwd) :
+        Account(conn, username, passwd) {
+        type = "player";
+    }
     virtual ~Player() { }
 
   protected:

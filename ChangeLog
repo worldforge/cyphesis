@@ -1,5 +1,24 @@
 2000-11-08  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Removed two conflicting "WorldRouter * world" members from
+	  class hierarchy.
+
+	* Added setting of refno to operations, so client can tell
+	  what they apply to.
+
+	* Sorted out initialisation of python path.
+
+	* Added loading of admin account, allowing admin client to communicate.
+
+	* Made sure all attributes of created objects are set, so that
+	  character gender works.
+
+	* Added face attribute to Thing, to indicate what direction it faces!
+
+	* Modified error operation so it complies with traditional format
+
+2000-11-08  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Added enough python interface to load a simple module, get the
 	  class from it, instantiate that class, and call operation methods
 	  from it. Still to be implented is the Atlas-C++ API for embedded
