@@ -13,6 +13,6 @@ OOGThing::~OOGThing()
 }
 
 oplist OOGThing::Operation(const RootOperation & op) {
-    return(error(op, "Unknown operation"));
+    return error(op, "Unknown operation");
 }
 

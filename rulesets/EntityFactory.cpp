@@ -90,5 +90,5 @@ Thing * EntityFactory::newThing(const string & type,const Object & ent, WorldRou
     thing->merge(entmap);
     // Get location from entity, if it is present
     thing->getLocation(entmap, svr->eobjects);
-    return(thing);
+    return thing;
 }

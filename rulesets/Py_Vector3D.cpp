@@ -172,7 +172,7 @@ static PyObject * Vector3D_getattr(Vector3DObject *self, char *name)
 
 static int Vector3D_setattr(Vector3DObject *self, char *name, PyObject *v)
 {
-    return(0);
+    return 0;
 }
 
 static int Vector3D_compare(Vector3DObject * self, Vector3DObject * other)

@@ -74,15 +74,15 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
 {
     std::list<RootOperation *>::iterator I = operationQueue.begin();
     if (I == operationQueue.end()) {
-        return(NULL);
+        return NULL;
     }
     if ((*I)->GetSeconds() > realTime) {
-        return(NULL);
+        return NULL;
     }
     debug(cout << "pulled op off queue" << endl << flush;);
     RootOperation * op = (*I);
     operationQueue.pop_front();
-    return(op);
+    return op;
 }
 
 inline std::string WorldRouter::getId(std::string & name)
@@ -96,7 +96,7 @@ inline std::string WorldRouter::getId(std::string & name)
     while ((index = full_id.find(' ', 0)) != std::string::npos) {
         full_id[index] = '_';
     }
-    return(full_id);
+    return full_id;
 }
 
 Thing * WorldRouter::addObject(Thing * obj)
@@ -158,8 +158,6 @@ void WorldRouter::delObject(Entity * obj)
 oplist WorldRouter::message(const RootOperation & op)
 {
     debug(cout << "FATAL: Wrong type of WorldRouter message function called" << endl << flush;);
-    // You may eventually want to remove this as it causes a deliberate segfault
-    //return(*(RootOperation **)NULL);
     return oplist();
 }
 
@@ -243,7 +241,7 @@ oplist WorldRouter::operation(const RootOperation * op)
 
 oplist WorldRouter::operation(const RootOperation & op)
 {
-    return(operation(&op));
+    return operation(&op);
 }
 
 oplist WorldRouter::lookOperation(const Look & op)
@@ -253,7 +251,6 @@ oplist WorldRouter::lookOperation(const Look & op)
     edict_t::const_iterator J = eobjects.find(from);
     if (J == eobjects.end()) {
         debug(cout << "FATAL: Op has invalid from" << endl << flush;);
-        //return(*(RootOperation **)NULL);
     } else {
         debug(cout << "Adding [" << from << "] to perceptives" << endl << flush;);
         perceptives.push_back(J->second);
@@ -279,10 +276,10 @@ oplist WorldRouter::lookOperation(const Look & op)
             Object::ListType args(1,Object(omap));
             s->SetArgs(args);
             s->SetTo(op.GetFrom());
-            return(oplist(1,s));
+            return oplist(1,s);
         }
     }
-    return(BaseEntity::Operation(op));
+    return BaseEntity::Operation(op);
 }
 
 int WorldRouter::idle()
@@ -303,7 +300,7 @@ int WorldRouter::idle()
         delete op;
     }
     if (op==NULL) {
-        return(0);
+        return 0;
     }
-    return(1);
+    return 1;
 }

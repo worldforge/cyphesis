@@ -429,7 +429,7 @@ static int Operation_num_coerce(PyObject ** self, PyObject ** other)
     //if (*other == Py_None) {
         Py_INCREF(*self);
         Py_INCREF(*other);
-        return(0);
+        return 0;
     //}
     //return -1;
 }
@@ -639,7 +639,7 @@ RootOperationObject * newAtlasRootOperation(PyObject *arg)
 	RootOperationObject * self;
 	self = PyObject_NEW(RootOperationObject, &RootOperation_Type);
 	if (self == NULL) {
-		return(NULL);
+		return NULL;
 	}
 	self->Operation_attr = NULL;
 	self->operation = NULL;

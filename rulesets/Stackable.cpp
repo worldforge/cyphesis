@@ -57,7 +57,7 @@ oplist Stackable::Operation(const Combine & op)
 {
     oplist res;
     if (script->Operation("combine", op, res) != 0) {
-        return(res);
+        return res;
     }
     const Object::ListType & args = op.GetArgs();
     for(Object::ListType::const_iterator I= args.begin(); I!= args.end(); I++) {
@@ -82,7 +82,7 @@ oplist Stackable::Operation(const Divide & op)
 {
     oplist res;
     if (script->Operation("divide", op, res) != 0) {
-        return(res);
+        return res;
     }
     const Object::ListType & args = op.GetArgs();
     for(Object::ListType::const_iterator I= args.begin(); I!= args.end(); I++) {

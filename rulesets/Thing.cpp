@@ -60,7 +60,7 @@ oplist Thing::Operation(const Create & op)
 {
     oplist res;
     if (script->Operation("create", op, res) != 0) {
-        return(res);
+        return res;
     }
     const Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
@@ -99,7 +99,7 @@ oplist Thing::Operation(const Create & op)
     }
     catch (Atlas::Message::WrongTypeException) {
         cerr << "EXCEPTION: Malformed object to be created\n";
-        return(error(op, "Malformed object to be created\n"));
+        return error(op, "Malformed object to be created\n");
     }
     return oplist();
 }
@@ -108,7 +108,7 @@ oplist Thing::Operation(const Delete & op)
 {
     oplist res;
     if (script->Operation("delete", op, res) != 0) {
-        return(res);
+        return res;
     }
     // world->delObject(this);
     RootOperation * s = new Sight(Sight::Instantiate());
@@ -121,7 +121,7 @@ oplist Thing::Operation(const Fire & op)
 {
     oplist res;
     if (script->Operation("fire", op, res) != 0) {
-        return(res);
+        return res;
     }
     Object::MapType::iterator I = attributes.find("burn_speed");
     if (I == attributes.end()) {
@@ -160,7 +160,7 @@ oplist Thing::Operation(const Move & op)
     seq++;
     oplist res;
     if (script->Operation("move", op, res) != 0) {
-        return(res);
+        return res;
     }
     const Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
@@ -172,19 +172,18 @@ oplist Thing::Operation(const Move & op)
         const Object::MapType & ent = args.front().AsMap();
         const string & oname = ent.find("id")->second.AsString();
         debug( cout << "In " << fullid << " got moveop for " << oname << endl << flush;);
-        cout << "In " << fullid << " got moveop for " << oname << endl << flush;
         Object::MapType::const_iterator I = ent.find("loc");
         if (I == ent.end()) {
             debug( cout << "ERROR: move op arg has no ref" << endl << flush;);
-            return(error(op, "Move location has no ref"));
+            return error(op, "Move location has no ref");
         }
         const string & ref = I->second.AsString();
         edict_t::iterator J = world->eobjects.find(ref);
         if (J == world->eobjects.end()) {
             debug( cout << "ERROR: move op arg ref is invalid" << endl << flush;);
-            return(error(op, "Move location ref invalid"));
+            return error(op, "Move location ref invalid");
         }
-        cout << "{" << ref << "}" << endl << flush;
+        debug(cout << "{" << ref << "}" << endl << flush;);
         Entity * newref = J->second;
         if (newref == this) {
             debug( cout << "ERROR: move op arg ref is same as entity" << endl << flush;);
@@ -198,7 +197,7 @@ oplist Thing::Operation(const Move & op)
         }
         I = ent.find("pos");
         if (I == ent.end()) {
-            return(error(op, "Move location has no position"));
+            return error(op, "Move location has no position");
         }
 
         location.coords = Vector3D(I->second.AsList());
@@ -207,12 +206,6 @@ oplist Thing::Operation(const Move & op)
             location.velocity = Vector3D(I->second.AsList());
         }
 
-        double speed_ratio;
-        if (!(location.velocity)) {
-            speed_ratio = 0.0;
-        } else {
-            speed_ratio = location.velocity.mag()/consts::base_velocity;
-        }
         RootOperation * s = new Sight(Sight::Instantiate());
         Object::ListType args2(1,op.AsObject());
         s->SetArgs(args2);
@@ -223,48 +216,43 @@ oplist Thing::Operation(const Move & op)
             debug(cout << "testing range" << endl;);
             elist_t::const_iterator I = location.ref->contains.begin();
             Object::ListType appear, disappear;
+            Object::MapType this_ent;
+            this_ent["id"] = fullid;
+            this_ent["seq"] = seq;
             for(;I != location.ref->contains.end(); I++) {
                 const bool wasInRange = (*I)->location.inRange(oldpos, consts::sight_range);
                 const bool isInRange = (*I)->location.inRange(location.coords, consts::sight_range);
                 // Build appear and disappear lists, and send operations
                 // Also so operations to (dis)appearing perceptive
                 // entities saying that we are (dis)appearing
-                if (wasInRange && !isInRange) {
-                    // We are losing sight of this object
-                    Object::MapType dent;
-                    dent["id"] = (*I)->fullid;
-                    dent["seq"] = (*I)->seq;
-                    disappear.push_back(dent);
-                    debug(cout << fullid << ": losing site of " <<(*I)->fullid << endl;);
-                    if (((Thing*)*I)->perceptive) {
-                        // Send operation to the entity in question so it
-                        // knows it is losing sight of us.
-                        Disappearance * d = new Disappearance(Disappearance::Instantiate());
-                        Object::MapType d2ent;
-                        d2ent["id"] = fullid;
-                        d2ent["seq"] = seq;
-                        d->SetArgs(Object::ListType(1,d2ent));
-                        d->SetTo((*I)->fullid);
-                        res2.push_back(d);
-                    }
-                }
-                if (!wasInRange && isInRange) {
-                    // We are gaining sight of this object
-                    Object::MapType aent;
-                    aent["id"] = (*I)->fullid;
-                    aent["seq"] = (*I)->seq;
-                    appear.push_back(aent);
-                    debug(cout << fullid << ": gaining site of " <<(*I)->fullid << endl;);
-                    if (((Thing*)*I)->perceptive) {
-                        // Send operation to the entity in question so it
-                        // knows it is gaining sight of us.
-                        Appearance * a = new Appearance(Appearance::Instantiate());
-                        Object::MapType a2ent;
-                        a2ent["id"] = fullid;
-                        a2ent["seq"] = seq;
-                        a->SetArgs(Object::ListType(1,a2ent));
-                        a->SetTo((*I)->fullid);
-                        res2.push_back(a);
+                if (wasInRange ^ isInRange) {
+                    Object::MapType that_ent;
+                    that_ent["id"] = (*I)->fullid;
+                    that_ent["seq"] = (*I)->seq;
+                    if (wasInRange) {
+                        // We are losing sight of that object
+                        disappear.push_back(that_ent);
+                        debug(cout << fullid << ": losing site of " <<(*I)->fullid << endl;);
+                        if (((Thing*)*I)->perceptive) {
+                            // Send operation to the entity in question so it
+                            // knows it is losing sight of us.
+                            Disappearance * d = new Disappearance(Disappearance::Instantiate());
+                            d->SetArgs(Object::ListType(1,this_ent));
+                            d->SetTo((*I)->fullid);
+                            res2.push_back(d);
+                        }
+                    } else /*if (isInRange)*/ {
+                        // We are gaining sight of that object
+                        appear.push_back(that_ent);
+                        debug(cout << fullid << ": gaining site of " <<(*I)->fullid << endl;);
+                        if (((Thing*)*I)->perceptive) {
+                            // Send operation to the entity in question so it
+                            // knows it is gaining sight of us.
+                            Appearance * a = new Appearance(Appearance::Instantiate());
+                            a->SetArgs(Object::ListType(1,this_ent));
+                            a->SetTo((*I)->fullid);
+                            res2.push_back(a);
+                        }
                     }
                 }
             }
@@ -289,7 +277,7 @@ oplist Thing::Operation(const Move & op)
     }
     catch (Atlas::Message::WrongTypeException) {
         cerr << "EXCEPTION: Malformed object to be moved\n";
-        return(error(op, "Malformed object to be moved\n"));
+        return error(op, "Malformed object to be moved\n");
     }
     return oplist();
 }
@@ -299,7 +287,7 @@ oplist Thing::Operation(const Set & op)
     seq++;
     oplist res;
     if (script->Operation("set", op, res) != 0) {
-        return(res);
+        return res;
     }
     const Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
@@ -326,7 +314,7 @@ oplist Thing::Operation(const Set & op)
     }
     catch (Atlas::Message::WrongTypeException) {
         cerr << "EXCEPTION: Malformed set operation\n";
-        return(error(op, "Malformed set operation\n"));
+        return error(op, "Malformed set operation\n");
     }
     return oplist();
 }
@@ -335,7 +323,7 @@ oplist Thing::Operation(const Look & op)
 {
     oplist res;
     if (script->Operation("look", op, res) != 0) {
-        return(res);
+        return res;
     }
-    return(BaseEntity::Operation(op));
+    return BaseEntity::Operation(op);
 }

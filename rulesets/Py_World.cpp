@@ -75,7 +75,7 @@ static PyObject * World_getattr(WorldObject *self, char *name)
 
 static int World_setattr(WorldObject *self, char *name, PyObject *v)
 {
-    return(0);
+    return 0;
 }
 
 PyTypeObject World_Type = {

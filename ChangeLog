@@ -1,4 +1,16 @@
-2001-04-14  Al Riddoch  <alriddoch@zepler.org>
+2001-04-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* Changed many return statements to match convention.
+
+	* rulesets/Thing.cpp: Tweaked ranges code in movement to cut
+	  down CPU time used.
+
+	* common/BaseEntity.cpp: Re-ordered opEnumerate so that most
+	  frequently used ops are detected soonest.
+
+	* modules/WorldTime.h/.cpp: Moved WorldTime to modules directory.
+
+2001-04-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* Substantial re-work of object model. Moved many attributes out
 	  of BaseEntity class. Changed WoldRouter so it now handles

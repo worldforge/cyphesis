@@ -121,9 +121,9 @@ void ClientConnection::ObjectArrived(const Disappearance&)
 int ClientConnection::read() {
     if (*ios) {
         codec->Poll();
-        return(0);
+        return 0;
     } else {
-        return(-1);
+        return -1;
     }
 }
 

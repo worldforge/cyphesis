@@ -67,7 +67,7 @@ const Object & Entity::operator[](const string & aname)
             attributes[aname] = Object();
         }
     }
-    return(attributes[aname]);
+    return attributes[aname];
 }
 
 void Entity::set(const string & aname, const Object & attr)
@@ -87,7 +87,7 @@ void Entity::set(const string & aname, const Object & attr)
 
 int Entity::setScript(Script * scrpt) {
     script = scrpt;
-    return(scrpt == NULL ? -1 : 0);
+    return (scrpt == NULL ? -1 : 0);
 }
 
 MemMap * Entity::getMap() {
@@ -281,21 +281,21 @@ oplist Entity::Operation(const Sight & op)
 {
     oplist res;
     script->Operation("sight", op, res);
-    return(res);
+    return res;
 }
 
 oplist Entity::Operation(const Sound & op)
 {
     oplist res;
     script->Operation("sound", op, res);
-    return(res);
+    return res;
 }
 
 oplist Entity::Operation(const Touch & op)
 {
     oplist res;
     script->Operation("touch", op, res);
-    return(res);
+    return res;
 }
 
 oplist Entity::Operation(const Look & op)
@@ -309,12 +309,12 @@ oplist Entity::Operation(const Appearance & op)
 {
     oplist res;
     script->Operation("appearance", op, res);
-    return(res);
+    return res;
 }
 
 oplist Entity::Operation(const Disappearance & op)
 {
     oplist res;
     script->Operation("disappearance", op, res);
-    return(res);
+    return res;
 }

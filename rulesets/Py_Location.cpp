@@ -104,7 +104,7 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
             return -1;
         }
         self->location->ref = thing->m_thing;
-        return(0);
+        return 0;
     }
     if (!PyVector3D_Check(v)) {
         PyErr_SetString(PyExc_TypeError, "arg must be a vector");
@@ -129,7 +129,7 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
     if (strcmp(name, "bmedian") == 0) {
         self->location->bmedian = vec->coords;
     }
-    return(0);
+    return 0;
 }
 
 PyTypeObject Location_Type = {

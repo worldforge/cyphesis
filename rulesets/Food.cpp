@@ -29,7 +29,7 @@ oplist Food::Operation(const Eat & op)
 {
     oplist res;
     if (script->Operation("eat", op, res) != 0) {
-        return(res);
+        return res;
     }
     Object::MapType self_ent;
     self_ent["id"] = fullid;
@@ -47,7 +47,7 @@ oplist Food::Operation(const Eat & op)
     n->SetTo(to);
     n->SetArgs(Object::ListType(1,nour_ent));
 
-    oplist res2;
+    oplist res2(2);
     res2[0] = s;
     res2[1] = n;
     return res2;
@@ -57,7 +57,7 @@ oplist Food::Operation(const Fire & op)
 {
     oplist res;
     if (script->Operation("fire", op, res) != 0) {
-        return(res);
+        return res;
     }
     double cooked = 0;
     Object::MapType::iterator I = attributes.find("cooked");

@@ -74,7 +74,7 @@ BaseEntity * Account::addCharacter(const string & typestr, const Object & ent)
 
     world->message(*s, chr);
 
-    return(chr);
+    return chr;
 }
 
 oplist Account::Operation(const Logout & op)
@@ -107,19 +107,19 @@ oplist Account::Operation(const Create & op)
     debug(cout << "Account::Operation(create)" << endl << flush;);
     const Object & ent = op.GetArgs().front();
     if (!ent.IsMap()) {
-        return(error(op, "Invalid character"));
+        return error(op, "Invalid character");
     }
     const Object::MapType & entmap = ent.AsMap();
     Object::MapType::const_iterator I = entmap.find("parents");
     if ((I == entmap.end()) || !(I->second.IsList()) ||
         (I->second.AsList().size()==0) ||
         !(I->second.AsList().front().IsString()) ) {
-        return(error(op, "Character has no type"));
+        return error(op, "Character has no type");
     }
     
     oplist error = characterError(op, entmap);
     if (error.size() != 0) {
-        return(error);
+        return error;
     }
     const string & typestr = I->second.AsList().front().AsString();
     debug(cout << "Account creating a " << typestr << " object" << endl << flush;);

@@ -42,7 +42,7 @@ Object BaseEntity::asObject() const
     map["objtype"] = "object";
     Object obj(map);
     addToObject(obj);
-    return(obj);
+    return obj;
 }
 
 
@@ -100,32 +100,32 @@ oplist BaseEntity::externalOperation(const RootOperation & op)
     return operation(op);
 }
 
-oplist BaseEntity::Operation(const Login & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Logout & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Chop & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Combine & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Create & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Cut & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Delete & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Divide & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Eat & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Fire & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Get & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Info & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Move & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Nourish & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Set & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Sight & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Sound & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Talk & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Touch & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Tick & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Load & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Save & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Setup & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Appearance & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const Disappearance & op) { oplist res; return(res); }
-oplist BaseEntity::Operation(const RootOperation & op) { oplist res; return(res); }
+oplist BaseEntity::Operation(const Login & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Logout & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Chop & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Combine & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Create & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Cut & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Delete & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Divide & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Eat & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Fire & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Get & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Info & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Move & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Nourish & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Set & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Sight & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Sound & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Talk & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Touch & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Tick & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Load & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Save & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Setup & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Appearance & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Disappearance & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const RootOperation & op) { oplist res; return res; }
 
 void BaseEntity::setRefno(const oplist& ret, const RootOperation & ref_op) const
 {
@@ -144,32 +144,32 @@ op_no_t BaseEntity::opEnumerate(const RootOperation & op) const
         cerr << "This op has invalid parent.\n" << endl << flush;
     }
     const string & parent = parents.begin()->AsString();
-    if ("login" == parent)  { return(OP_LOGIN); }
-    if ("chop" == parent)  { return(OP_CHOP); }
-    if ("combine" == parent)  { return(OP_COMBINE); }
-    if ("create" == parent)  { return(OP_CREATE); }
-    if ("cut" == parent)  { return(OP_CUT); }
-    if ("delete" == parent)  { return(OP_DELETE); }
-    if ("divide" == parent)  { return(OP_DIVIDE); }
-    if ("eat" == parent)  { return(OP_EAT); }
-    if ("fire" == parent)  { return(OP_FIRE); }
-    if ("get" == parent)  { return(OP_GET); }
-    if ("info" == parent)  { return(OP_INFO); }
-    if ("move" == parent)  { return(OP_MOVE); }
-    if ("nourish" == parent)  { return(OP_NOURISH); }
-    if ("set" == parent)  { return(OP_SET); }
-    if ("sight" == parent)  { return(OP_SIGHT); }
-    if ("sound" == parent)  { return(OP_SOUND); }
-    if ("talk" == parent)  { return(OP_TALK); }
-    if ("touch" == parent)  { return(OP_TOUCH); }
-    if ("tick" == parent)  { return(OP_TICK); }
-    if ("look" == parent)  { return(OP_LOOK); }
-    if ("load" == parent)  { return(OP_LOAD); }
-    if ("save" == parent)  { return(OP_SAVE); }
-    if ("setup" == parent)  { return(OP_SETUP); }
-    if ("appearance" == parent)  { return(OP_APPEARANCE); }
-    if ("disappearance" == parent)  { return(OP_DISAPPEARANCE); }
-    if ("error" == parent)  { return(OP_ERROR); }
+    if ("tick" == parent)  { return OP_TICK; }
+    if ("move" == parent)  { return OP_MOVE; }
+    if ("sight" == parent)  { return OP_SIGHT; }
+    if ("appearance" == parent)  { return OP_APPEARANCE; }
+    if ("disappearance" == parent)  { return OP_DISAPPEARANCE; }
+    if ("look" == parent)  { return OP_LOOK; }
+    if ("create" == parent)  { return OP_CREATE; }
+    if ("delete" == parent)  { return OP_DELETE; }
+    if ("eat" == parent)  { return OP_EAT; }
+    if ("fire" == parent)  { return OP_FIRE; }
+    if ("get" == parent)  { return OP_GET; }
+    if ("nourish" == parent)  { return OP_NOURISH; }
+    if ("set" == parent)  { return OP_SET; }
+    if ("sound" == parent)  { return OP_SOUND; }
+    if ("talk" == parent)  { return OP_TALK; }
+    if ("touch" == parent)  { return OP_TOUCH; }
+    if ("divide" == parent)  { return OP_DIVIDE; }
+    if ("combine" == parent)  { return OP_COMBINE; }
+    if ("cut" == parent)  { return OP_CUT; }
+    if ("chop" == parent)  { return OP_CHOP; }
+    if ("setup" == parent)  { return OP_SETUP; }
+    if ("error" == parent)  { return OP_ERROR; }
+    if ("info" == parent)  { return OP_INFO; }
+    if ("login" == parent)  { return OP_LOGIN; }
+    if ("load" == parent)  { return OP_LOAD; }
+    if ("save" == parent)  { return OP_SAVE; }
     return (OP_INVALID);
 }
 

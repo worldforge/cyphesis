@@ -300,7 +300,7 @@ static PyObject * Map_getattr(MapObject *self, char *name)
 
 static int Map_setattr(MapObject *self, char *name, PyObject *v)
 {
-    return(0);
+    return 0;
 }
 
 PyTypeObject Map_Type = {

@@ -94,7 +94,7 @@ int CommClient::setup()
 
     if (accept.GetState() == Atlas::Net::StreamAccept::FAILED) {
         cerr << "Failed to negotiate" << endl;
-        return(0);
+        return 0;
     }
     // Negotiation was successful
 
@@ -107,7 +107,7 @@ int CommClient::setup()
 
     codec->StreamBegin();
 
-    return(1);
+    return 1;
 }
 
 void CommClient::message(const RootOperation & op)
@@ -207,7 +207,7 @@ int CommServer::setup(int port)
     serverPort = port;
     serverFd = socket(PF_INET, SOCK_STREAM, 0);
     if (serverFd < 0) {
-        return(-1);
+        return -1;
     }
     int flag=1;
     setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
@@ -216,7 +216,7 @@ int CommServer::setup(int port)
     sin.sin_addr.s_addr = 0L;
     if (bind(serverFd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
         close(serverFd);
-        return(-1);
+        return -1;
     }
     listen(serverFd, 5);
     // server=new ServerRouting(this,identity);
@@ -262,14 +262,14 @@ int CommServer::accept()
     int asockfd = ::accept(serverFd, (struct sockaddr *)&sin, &addr_len);
 
     if (asockfd < 0) {
-        return(-1);
+        return -1;
     }
     debug(cout << "Accepted" << endl << flush;);
     CommClient * newcli = new CommClient(*this, asockfd, sin.sin_port);
     if (newcli->setup()) {
         clients.insert(std::pair<int, CommClient *>(asockfd, newcli));
     }
-    return(0);
+    return 0;
 }
 
 inline void CommServer::idle()

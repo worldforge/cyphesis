@@ -46,7 +46,7 @@ inline RootOperation * MemMap::lookId()
         l->SetTo(id);
         return l;
     }
-    return(NULL);
+    return NULL;
 }
 
 inline Entity * MemMap::addId(const string & id)
@@ -81,7 +81,7 @@ inline Entity * MemMap::get(const string & id)
     if (things.find(id) != things.end()) {
         return (Entity*)things[id];
     }
-    return(NULL);
+    return NULL;
 }
 
 inline Entity * MemMap::getAdd(const string & id)

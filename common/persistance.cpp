@@ -138,7 +138,7 @@ Account * Persistance::load_admin_account()
     // creates it.
     Account * adm = new Admin(NULL, "admin", "test");
     save_admin_account(adm);
-    return(adm);
+    return adm;
 }
 
 bool Persistance::findAccount(const std::string &) { return false; }

@@ -147,12 +147,12 @@ static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
     //string attr(name);
     //if (v == NULL) {
         //thing->attributes.erase(attr);
-        //return(0);
+        //return 0;
     //}
     Object obj = PyObject_asObject(v);
     if (!obj.IsNone() && !obj.IsMap() && !obj.IsList()) {
         thing->set(name, obj);
-        return(0);
+        return 0;
     }
     // If we get here, then the attribute is not Atlas compatable, so we
     // need to store it in a python dictionary

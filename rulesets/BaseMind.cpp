@@ -35,17 +35,10 @@
 
 BaseMind::BaseMind(const string & id, const string & body_name) : map(script)
 {
-    //map=MemMap();
     fullid = id;
     name = body_name;
     map.addObject(this);
     //BaseMind::time=WorldTime();
-    //if (const.debug_level>=1) {
-        //BaseMind::log_fp=open("mind_"+BaseMind::id+".log","w");
-    //}
-    //else {
-        //BaseMind::log_fp=NULL;
-    //}
 }
 
 BaseMind::~BaseMind()
@@ -60,28 +53,28 @@ oplist BaseMind::sightOperation(const Sight & op, Login & sub_op)
 {
     oplist res;
     if (script->Operation("sight_login", op, res, &sub_op) != 0) {
-        return(res);
+        return res;
     }
-    return(res);
+    return res;
 }
 
 oplist BaseMind::sightOperation(const Sight & op, Chop & sub_op)
 {
     oplist res;
     script->Operation("sight_chop", op, res, &sub_op);
-    return(res);
+    return res;
 }
 
 oplist BaseMind::sightOperation(const Sight & op, Create & sub_op)
 {
     oplist res;
     if (script->Operation("sight_create", op, res, &sub_op) != 0) {
-        return(res);
+        return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
         debug( cout << " no args!" << endl << flush;);
-        return(res);
+        return res;
     }
     Object obj = args.front();
     Root * arg = utility::Object_asRoot(obj);
@@ -89,14 +82,14 @@ oplist BaseMind::sightOperation(const Sight & op, Create & sub_op)
         map.add(arg->AsObject());
     }
     delete arg;
-    return(res);
+    return res;
 }
 
 oplist BaseMind::sightOperation(const Sight & op, Cut & sub_op)
 {
     oplist res;
     script->Operation("sight_cut", op, res, &sub_op);
-    return(res);
+    return res;
 }
 
 oplist BaseMind::sightOperation(const Sight & op, Delete & sub_op)
@@ -104,12 +97,12 @@ oplist BaseMind::sightOperation(const Sight & op, Delete & sub_op)
     debug( cout << "Sight Delete operation" << endl << flush;);
     oplist res;
     if (script->Operation("sight_delete", op, res, &sub_op) != 0) {
-        return(res);
+        return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
         debug( cout << " no args!" << endl << flush;);
-        return(res);
+        return res;
     }
     Object obj = args.front();
     if (obj.IsString()) {
@@ -121,21 +114,21 @@ oplist BaseMind::sightOperation(const Sight & op, Delete & sub_op)
         }
         delete arg;
     }
-    return(res);
+    return res;
 }
 
 oplist BaseMind::sightOperation(const Sight & op, Eat & sub_op)
 {
     oplist res;
     script->Operation("sight_eat", op, res, &sub_op);
-    return(res);
+    return res;
 }
 
 oplist BaseMind::sightOperation(const Sight & op, Fire & sub_op)
 {
     oplist res;
     script->Operation("sight_fire", op, res, &sub_op);
-    return(res);
+    return res;
 }
 
 oplist BaseMind::sightOperation(const Sight & op, Move & sub_op)
@@ -143,12 +136,12 @@ oplist BaseMind::sightOperation(const Sight & op, Move & sub_op)
     debug( cout << "BaseMind::sightOperation(Sight, Move)" << endl << flush;);
     oplist res;
     if (script->Operation("sight_move", op, res, &sub_op) != 0) {
-        return(res);
+        return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
         debug( cout << " no args!" << endl << flush;);
-        return(res);
+        return res;
     }
     const Object & obj = args.front();
     Root * arg = utility::Object_asRoot(obj);
@@ -156,19 +149,19 @@ oplist BaseMind::sightOperation(const Sight & op, Move & sub_op)
         map.update(obj);
     }
     delete arg;
-    return(res);
+    return res;
 }
 
 oplist BaseMind::sightOperation(const Sight & op, Set & sub_op)
 {
     oplist res;
     if (script->Operation("sight_set", op, res, &sub_op) != 0) {
-        return(res);
+        return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
         debug( cout << " no args!" << endl << flush;);
-        return(res);
+        return res;
     }
     const Object & obj = args.front();
     Root * arg = utility::Object_asRoot(obj);
@@ -176,14 +169,14 @@ oplist BaseMind::sightOperation(const Sight & op, Set & sub_op)
         map.update(obj);
     }
     delete arg;
-    return(res);
+    return res;
 }
 
 oplist BaseMind::sightOperation(const Sight & op, Touch & sub_op)
 {
     oplist res;
     script->Operation("sight_touch", op, res, &sub_op);
-    return(res);
+    return res;
 }
 
 oplist BaseMind::sightOperation(const Sight & op, RootOperation & sub_op)
@@ -191,7 +184,7 @@ oplist BaseMind::sightOperation(const Sight & op, RootOperation & sub_op)
     debug( cout << "BaseMind::sightOperation(Sight, RootOperation)" << endl << flush;);
     oplist res;
     script->Operation("sight_undefined", op, res, &sub_op);
-    return(res);
+    return res;
 }
 
 oplist BaseMind::soundOperation(const Sound & op, Talk & sub_op)
@@ -199,7 +192,7 @@ oplist BaseMind::soundOperation(const Sound & op, Talk & sub_op)
     debug( cout << "BaseMind::soundOperation(Sound, Talk)" << endl << flush;);
     oplist res;
     script->Operation("sound_talk", op, res, &sub_op);
-    return(res);
+    return res;
 }
 
 oplist BaseMind::soundOperation(const Sound & op, RootOperation & sub_op)
@@ -207,7 +200,7 @@ oplist BaseMind::soundOperation(const Sound & op, RootOperation & sub_op)
     debug( cout << "BaseMind::soundOperation(Sound, RootOperation)" << endl << flush;);
     oplist res;
     script->Operation("sound_undefined", op, res, &sub_op);
-    return(res);
+    return res;
 }
 
 oplist BaseMind::Operation(const Sound & op)
@@ -215,12 +208,12 @@ oplist BaseMind::Operation(const Sound & op)
     // Deliver argument to sound things
     oplist res;
     if (script->Operation("sound", op, res) != 0) {
-        return(res);
+        return res;
     }
     const Object::ListType & args = op.GetArgs();
     if (args.size() == 0) {
         debug( cout << " no args!" << endl << flush;);
-        return(res);
+        return res;
     }
     Object obj = args.front();
     Root * op2 = utility::Object_asRoot(obj);
@@ -229,22 +222,22 @@ oplist BaseMind::Operation(const Sound & op)
         res = callSoundOperation(op, *(RootOperation *)op2);
     }
     delete op2;
-    return(res);
+    return res;
 }
 
 oplist BaseMind::Operation(const Sight & op)
 {
     debug( cout << "BaseMind::Operation(Sight)" << endl << flush;);
     // Deliver argument to sight things
-    oplist(res);
+    oplist res;
     if (script->Operation("sight", op, res) != 0) {
         debug( cout << " its in the script" << endl << flush;);
-        return(res);
+        return res;
     }
     const Object::ListType & args = op.GetArgs();
     if (args.size() == 0) {
         debug( cout << " no args!" << endl << flush;);
-        return(res);
+        return res;
     }
     Object obj = args.front();
     Root * op2 = utility::Object_asRoot(obj);
@@ -259,7 +252,7 @@ oplist BaseMind::Operation(const Sight & op)
         map.add(obj);
     }
     delete op2;
-    return(res);
+    return res;
 }
 
 oplist BaseMind::Operation(const Appearance & op)
@@ -296,7 +289,7 @@ RootOperation * BaseMind::get_op_name_and_sub(RootOperation & op, string & name)
 
 int BaseMind::call_triggers(RootOperation & op)
 {
-    return(0);
+    return 0;
 }
 #endif
 
@@ -324,7 +317,7 @@ oplist BaseMind::operation(const RootOperation & op)
         res.push_back(*I);
     }
     //res = call_triggers(op);
-    return(res);
+    return res;
 }
 
 oplist BaseMind::callSightOperation(const Sight& op, RootOperation& sub_op) {

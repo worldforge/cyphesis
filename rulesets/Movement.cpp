@@ -37,7 +37,7 @@ Movement::~Movement()
 
 bool Movement::updateNeeded(const Location & location) const
 {
-    return((velocity!=Vector3D(0,0,0))||(location.velocity!=Vector3D(0,0,0)));
+    return ((velocity!=Vector3D(0,0,0))||(location.velocity!=Vector3D(0,0,0)));
 }
 
 void Movement::checkCollisions(const Location & loc)

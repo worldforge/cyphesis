@@ -30,7 +30,7 @@ public:
             ref(rf), coords(crds), velocity(vel), face(fce), solid(true) { }
 
     operator bool() const {
-        return(ref!=NULL && coords);
+        return (ref!=NULL && coords);
     }
 
     Vector3D getXyz() const;

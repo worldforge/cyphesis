@@ -138,7 +138,7 @@ int CyphesisClient::connect()
 
   cli_fd = socket(PF_INET, SOCK_STREAM, 0);
   if (cli_fd < 0) {
-    return(1);
+    return 1;
   }
   sin.sin_family = AF_INET;
   sin.sin_port = htons(6767);
@@ -149,7 +149,7 @@ int CyphesisClient::connect()
 
   if (::connect(cli_fd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
     close(cli_fd);
-    return(-1);
+    return -1;
   }
   cout << "Connected to cyphesis" << endl << flush;
   // Connect to the server
@@ -183,7 +183,7 @@ int CyphesisClient::connect()
   encoder = new Objects::Encoder(codec);
 
   codec->streamBegin();
-  return(0);
+  return 0;
 
 }
 

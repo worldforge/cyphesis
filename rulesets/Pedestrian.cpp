@@ -65,12 +65,12 @@ Move * Pedestrian::genFaceOperation(const Location & loc)
         moveOp->SetArgs(args);
         return moveOp;
     }
-    return(NULL);
+    return NULL;
 }
 
 Move * Pedestrian::genMoveOperation(Location * rloc)
 {
-    return(genMoveOperation(rloc, body.location));
+    return genMoveOperation(rloc, body.location);
 }
 
 Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
@@ -130,7 +130,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
             if (NULL != rloc) {
                 *rloc = new_loc;
             }
-            return(moveOp);
+            return moveOp;
         }
 
         // Update location
@@ -187,7 +187,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
         if (NULL != rloc) {
             *rloc = new_loc;
         }
-        return(moveOp);
+        return moveOp;
     }
-    return(NULL);
+    return NULL;
 }

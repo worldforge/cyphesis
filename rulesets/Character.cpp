@@ -174,7 +174,7 @@ oplist Character::Operation(const Setup & op)
     RootOperation * tick = new Tick(Tick::Instantiate());
     tick->SetTo(fullid);
     res2.push_back(tick);
-    return(res2);
+    return res2;
 }
 
 oplist Character::Operation(const Tick & op)
@@ -266,7 +266,7 @@ oplist Character::Operation(const Eat & op)
     // Perhaps animal should inherit from Food?
     oplist res;
     if (script->Operation("eat", op, res) != 0) {
-        return(res);
+        return res;
     }
     Object::MapType self_ent;
     self_ent["id"] = fullid;
@@ -504,7 +504,7 @@ oplist Character::mindOperation(const Move & op)
         res[0] = moveOp;
         res[1] = tickOp;
         delete newop;
-        return(res);
+        return res;
     }
     return oplist(1,newop);
 }
@@ -799,9 +799,7 @@ oplist Character::sendMind(const RootOperation & op)
     if (NULL != externalMind) {
         debug( cout << "Sending to external mind" << endl << flush;);
         external_res = externalMind->message(op);
-        // If there is some kinf of error in the connection, we turn autom on
     } else {
-        //return(*(RootOperation **)NULL);
         if (!autom) {
             debug( cout << "Turning automatic on for " << fullid << endl << flush;);
             autom = true;
@@ -818,7 +816,7 @@ oplist Character::sendMind(const RootOperation & op)
     // At this point there is a bunch of conversion stuff that I don't
     // understand
     
-    return(res);
+    return res;
 }
 
 oplist Character::mind2body(const RootOperation & op)

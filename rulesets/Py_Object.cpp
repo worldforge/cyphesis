@@ -150,7 +150,7 @@ static PyObject * MapType_asPyObject(const Object::MapType & map)
         item->m_obj = new Object(I->second);
         PyDict_SetItemString(args_pydict,(char *)key.c_str(),(PyObject *)item);
     }
-    return(args_pydict);
+    return args_pydict;
 }
 
 static PyObject * ListType_asPyObject(const Object::ListType & list)
@@ -168,7 +168,7 @@ static PyObject * ListType_asPyObject(const Object::ListType & list)
         item->m_obj = new Object(*I);
         PyList_SetItem(args_pylist, j, (PyObject *)item);
     }
-    return(args_pylist);
+    return args_pylist;
 }
 
 PyObject * Object_asPyObject(const Object & obj)
@@ -193,7 +193,7 @@ PyObject * Object_asPyObject(const Object & obj)
         default:
             break;
     }
-    return(ret);
+    return ret;
 }
 
 static Object::ListType PyListObject_asListType(PyObject * list)
@@ -211,7 +211,7 @@ static Object::ListType PyListObject_asListType(PyObject * list)
             }
         }
     }
-    return(argslist);
+    return argslist;
 }
 
 static Object::MapType PyDictObject_asMapType(PyObject * dict)
@@ -231,25 +231,25 @@ static Object::MapType PyDictObject_asMapType(PyObject * dict)
         argsmap[PyString_AsString(key)] = *(item->m_obj);
     }
     Py_DECREF(list);
-    return(argsmap);
+    return argsmap;
 }
 
 Object PyObject_asObject(PyObject * o)
 {
     if (PyInt_Check(o)) {
-        return(Object((int)PyInt_AsLong(o)));
+        return Object((int)PyInt_AsLong(o));
     }
     if (PyFloat_Check(o)) {
-        return(Object(PyFloat_AsDouble(o)));
+        return Object(PyFloat_AsDouble(o));
     }
     if (PyString_Check(o)) {
-        return(Object(PyString_AsString(o)));
+        return Object(PyString_AsString(o));
     }
     if (PyList_Check(o)) {
-        return(Object(PyListObject_asListType(o)));
+        return Object(PyListObject_asListType(o));
     }
     if (PyDict_Check(o)) {
-        return(Object(PyDictObject_asMapType(o)));
+        return Object(PyDictObject_asMapType(o));
     }
     if (PyTuple_Check(o)) {
         Object::ListType list;

@@ -55,7 +55,7 @@ Account * Connection::addPlayer(const string& username, const string& password)
     player->connection=this;
     player->world=&server.getWorld();
     server.addObject(player);
-    return(player);
+    return player;
 }
 
 void Connection::destroy()
@@ -144,7 +144,7 @@ oplist Connection::Operation(const Login & op)
             info->SetArgs(args);
             info->SetRefno(op.GetSerialno());
             debug(cout << "Good login" << endl << flush;);
-            return(oplist(1,info));
+            return oplist(1,info);
         }
     }
     return error(op, "Login is invalid");
@@ -173,7 +173,7 @@ oplist Connection::Operation(const Create & op)
             info->SetArgs(args);
             info->SetRefno(op.GetSerialno());
             debug(cout << "Good create" << endl << flush;);
-            return(oplist(1,info));
+            return oplist(1,info);
         }
     }
     return error(op, "Account creation is invalid");

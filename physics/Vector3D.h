@@ -97,20 +97,20 @@ class Vector3D {
     }
 
     operator bool() const {
-        return(_set);
+        return _set;
     }
 
     double & operator[](int index) {
 	switch(index) {
             case cX:
-                return(x);
+                return x;
             case cY:
-                return(y);
+                return y;
             case cZ:
-                return(z);
+                return z;
             default:
                 //Throw an exception here maybe
-                return(z);
+                return z;
 	}
     }
 
@@ -255,7 +255,7 @@ class Vector3D {
         coords.push_back(Object(x));
         coords.push_back(Object(y));
         coords.push_back(Object(z));
-        return(Object(coords));
+        return Object(coords);
     }
 
 
