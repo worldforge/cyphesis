@@ -22,6 +22,7 @@ class Thing : public Entity {
     }
 
     virtual oplist Operation(const Setup & op);
+    virtual oplist Operation(const Action & op);
     virtual oplist Operation(const Create & op);
     virtual oplist Operation(const Delete & op);
     virtual oplist Operation(const Fire & op);

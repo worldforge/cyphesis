@@ -18,6 +18,7 @@ class BaseMind : public Entity {
     virtual MemMap * getMap();
 
     virtual oplist sightOperation(const Sight & op, Login & sub_op);
+    virtual oplist sightOperation(const Sight & op, Action & sub_op);
     virtual oplist sightOperation(const Sight & op, Chop & sub_op);
     virtual oplist sightOperation(const Sight & op, Create & sub_op);
     virtual oplist sightOperation(const Sight & op, Cut & sub_op);

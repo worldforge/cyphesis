@@ -56,6 +56,19 @@ oplist Thing::Operation(const Setup & op)
     return oplist(1,tick);
 }
 
+oplist Thing::Operation(const Action & op)
+{
+    seq++;
+    oplist res;
+    if (script->Operation("action", op, res) != 0) {
+        return res;
+    }
+    RootOperation * s = new Sight(Sight::Instantiate());
+    Object::ListType args(1,op.AsObject());
+    s->SetArgs(args);
+    return oplist(1,s);
+}
+
 oplist Thing::Operation(const Create & op)
 {
     oplist res;

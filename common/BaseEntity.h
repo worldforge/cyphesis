@@ -33,6 +33,7 @@ class BaseEntity {
 
     virtual oplist Operation(const Login & op);
     virtual oplist Operation(const Logout & op);
+    virtual oplist Operation(const Action & op);
     virtual oplist Operation(const Chop & op);
     virtual oplist Operation(const Combine & op);
     virtual oplist Operation(const Create & op);

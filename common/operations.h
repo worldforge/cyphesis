@@ -12,6 +12,7 @@ namespace Atlas {
         namespace Operation {
             class Login;
             class Logout;
+            class Action;
             class Combine;
             class Create;
             class Delete;
@@ -46,6 +47,7 @@ using Atlas::Objects::Operation::RootOperation;
 
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
+using Atlas::Objects::Operation::Action;
 using Atlas::Objects::Operation::Combine;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Delete;

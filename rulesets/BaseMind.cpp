@@ -60,6 +60,13 @@ oplist BaseMind::sightOperation(const Sight & op, Login & sub_op)
     return res;
 }
 
+oplist BaseMind::sightOperation(const Sight & op, Action & sub_op)
+{
+    oplist res;
+    script->Operation("sight_action", op, res, &sub_op);
+    return res;
+}
+
 oplist BaseMind::sightOperation(const Sight & op, Chop & sub_op)
 {
     oplist res;

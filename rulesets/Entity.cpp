@@ -216,6 +216,13 @@ oplist Entity::Operation(const Tick & op)
     return res;
 }
 
+oplist Entity::Operation(const Action & op)
+{
+    oplist res;
+    script->Operation("action", op, res);
+    return res;
+}
+
 oplist Entity::Operation(const Chop & op)
 {
     oplist res;

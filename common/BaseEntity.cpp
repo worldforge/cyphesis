@@ -102,6 +102,7 @@ oplist BaseEntity::externalOperation(const RootOperation & op)
 
 oplist BaseEntity::Operation(const Login & op) { oplist res; return res; }
 oplist BaseEntity::Operation(const Logout & op) { oplist res; return res; }
+oplist BaseEntity::Operation(const Action & op) { oplist res; return res; }
 oplist BaseEntity::Operation(const Chop & op) { oplist res; return res; }
 oplist BaseEntity::Operation(const Combine & op) { oplist res; return res; }
 oplist BaseEntity::Operation(const Create & op) { oplist res; return res; }
@@ -151,6 +152,7 @@ op_no_t BaseEntity::opEnumerate(const RootOperation & op) const
     if ("disappearance" == parent)  { return OP_DISAPPEARANCE; }
     if ("look" == parent)  { return OP_LOOK; }
     if ("create" == parent)  { return OP_CREATE; }
+    if ("action" == parent)  { return OP_ACTION; }
     if ("delete" == parent)  { return OP_DELETE; }
     if ("eat" == parent)  { return OP_EAT; }
     if ("fire" == parent)  { return OP_FIRE; }

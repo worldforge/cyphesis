@@ -44,6 +44,7 @@ class Entity : public BaseEntity {
     virtual void addToObject(Atlas::Message::Object & obj) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
+    virtual oplist Operation(const Action & op);
     virtual oplist Operation(const Chop & op);
     virtual oplist Operation(const Create & op);
     virtual oplist Operation(const Cut & op);

@@ -10,6 +10,9 @@
         case OP_LOGIN: \
             return _prefix ## Operation((const Login &)_op); \
             break; \
+        case OP_ACTION: \
+            return _prefix ## Operation((const Action &)_op); \
+            break; \
         case OP_CHOP: \
             return _prefix ## Operation((const Chop &)_op); \
             break; \
@@ -95,6 +98,9 @@
     switch (_sub_op_no) { \
         case OP_LOGIN: \
             return _prefix ## Operation(_op, (Login &)_sub_op); \
+            break; \
+        case OP_ACTION: \
+            return _prefix ## Operation(_op, (Action &)_sub_op); \
             break; \
         case OP_CHOP: \
             return _prefix ## Operation(_op, (Chop &)_sub_op); \

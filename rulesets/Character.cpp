@@ -5,6 +5,7 @@
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Action.h>
 #include <Atlas/Objects/Operation/Combine.h>
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sound.h>
@@ -309,6 +310,12 @@ oplist Character::Operation(const Nourish & op)
 oplist Character::mindOperation(const Login & op)
 {
     return oplist();
+}
+
+oplist Character::mindOperation(const Action & op)
+{
+    Action *a = new Action(op);
+    return oplist(1,a);
 }
 
 oplist Character::mindOperation(const Setup & op)
@@ -656,6 +663,11 @@ oplist Character::mindOperation(const Error & op)
 }
 
 oplist Character::mindOperation(const RootOperation & op)
+{
+    return oplist();
+}
+
+oplist Character::w2mOperation(const Action & op)
 {
     return oplist();
 }

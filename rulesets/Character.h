@@ -48,6 +48,7 @@ class Character : public Thing {
     virtual oplist Operation(const Nourish & op);
     virtual oplist mindOperation(const Login & op);
     virtual oplist mindOperation(const Create & op);
+    virtual oplist mindOperation(const Action & op);
     virtual oplist mindOperation(const Cut & op);
     virtual oplist mindOperation(const Delete & op);
     virtual oplist mindOperation(const Eat & op);
@@ -67,6 +68,7 @@ class Character : public Thing {
     virtual oplist mindOperation(const Error & op);
     virtual oplist mindOperation(const RootOperation & op);
     virtual oplist w2mOperation(const Login & op);
+    virtual oplist w2mOperation(const Action & op);
     virtual oplist w2mOperation(const Chop & op);
     virtual oplist w2mOperation(const Create & op);
     virtual oplist w2mOperation(const Cut & op);

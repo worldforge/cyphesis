@@ -16,6 +16,7 @@ class Entity;
 typedef enum op_no {
 	OP_LOGIN,
 	OP_LOGOUT,
+	OP_ACTION,
 	OP_CHOP,
 	OP_COMBINE,
 	OP_CREATE,
