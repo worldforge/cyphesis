@@ -31,9 +31,19 @@ int main(int argc, char ** argv)
         function = global_conf->getItem("client", "function");
     }
 
+    std::string account = "admin";
+    if (global_conf->findItem("client", "account")) {
+        account = global_conf->getItem("client", "account");
+    }
+
+    std::string password;
+    if (global_conf->findItem("client", "password")) {
+        password = global_conf->getItem("client", "password");
+    }
+
     try {
         ObserverClient & observer = *new ObserverClient();
-        if (!observer.setup()) {
+        if (!observer.setup(account, password)) {
             return 1;
         }
         observer.load(package, function);

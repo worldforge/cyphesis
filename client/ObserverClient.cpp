@@ -17,31 +17,27 @@ ObserverClient::ObserverClient()
 {
 }
 
-bool ObserverClient::setup()
+bool ObserverClient::setup(const std::string & account,
+                           const std::string & password)
 {
-    if (!connectLocal()) {
+    bool localConnection = false;;
+
+    if (connectLocal()) {
+        localConnection = true;
+    } else {
         if (!connect()) {
             return false;
         }
     }
 
-    Element::MapType adminAccount;
-    std::string password = consts::defaultAdminPassword;
-    if (!AccountBase::instance()->getAccount("admin", adminAccount)) {
-        std::cerr << "WARNING: Unable to read admin account from database"
-                  << std::endl << "Using default"
+    if (!localConnection && password.empty()) {
+        std::cerr << "WARNING: Made non secure connection to the server"
+                  << std::endl
+                  << "WARNING: Server may not accept our login with no password"
                   << std::endl << std::flush;
-    } else {
-        Element::MapType::const_iterator I = adminAccount.find("password");
-        if (I == adminAccount.end()) {
-            std::cerr << "WARNING: Admin account from database has no password"
-                      << std::endl << std::flush;
-        } else {
-            password = I->second.asString();
-        }
     }
-    AccountBase::del();
-    player = createPlayer("admin",password);
+
+    player = createPlayer(account, password);
     if (player.empty()) {
         return false;
     }

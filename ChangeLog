@@ -1,3 +1,23 @@
+2003-08-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.cpp, common/const.h: Add a const for the default
+	  admin password hash, with a view to removing the plain text
+	  default admin password.
+
+	* server/Persistance.cpp: Ensure that the database contains an
+	  admin account on startup.
+
+	* common/Database.cpp: Move the call to register the ID generating
+	  sequence out of the code for creating IG entity tables, as it is
+	  also required by OOG entities, in particular the admin account
+	  bootstrap.
+
+	* client/ObserverClient.cpp, client/ObserverClient.h,
+	  client/client.cpp: Modify client so that it no longer attempts to
+	  get account details from the database, or from a hard coded default.
+	  It will now attempt a trusted login, or rely on password provided
+	  by config option.
+
 2003-08-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* Add a define which indicates if we are building against

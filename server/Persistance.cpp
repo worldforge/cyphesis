@@ -35,12 +35,27 @@ bool Persistance::init()
     }
     bool i = p->m_connection.initRule(true);
 
+    if (!p->m_connection.registerEntityIdGenerator()) {
+        log(ERROR, "Faled to register Id generator in database.");
+    }
+
     Element::MapType tableDesc;
     tableDesc["username"] = "                                                                                ";
     tableDesc["password"] = "                                                                                ";
     tableDesc["type"] = "          ";
     bool j = p->m_connection.registerSimpleTable("accounts", tableDesc);
     bool k = p->m_connection.registerRelation("character");
+
+    if (!p->findAccount("admin")) {
+        std::cout << "BOOTSTRAP ADMIN ACCOUNT" << std::endl << std::flush;
+        std::string adminAccountId;
+        p->m_connection.getEntityId(adminAccountId);
+        
+        Admin dummyAdminAccount(0, "admin", consts::defaultAdminPasswordHash,
+                                adminAccountId);
+        
+        p->putAccount(dummyAdminAccount);
+    }
 
     return (i && j && k);
 }

@@ -740,10 +740,6 @@ bool Database::registerEntityTable(const std::string & classname,
         debug(std::cerr << "Table for class " << classname
                         << " cannot be root." << std::endl << std::flush;);
         return false;
-    } else {
-        if (!registerEntityIdGenerator()) {
-            log(ERROR, "Faled to register Id generator in database.");
-        }
     }
     // At this point we know the table request make sense.
     entityTables[classname] = parent;
