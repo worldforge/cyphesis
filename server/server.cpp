@@ -301,6 +301,7 @@ void CommServer::remove_client(CommClient * client, char * error_msg)
         client->send(e);
         clients.erase(client->get_fd());
     }
+    delete client;
 }
 
 void CommServer::idle() {
@@ -324,14 +325,14 @@ int main(int argc, char ** argv)
     if (consts::debug_level>=1) {
         cout << "consts::debug_level>=1, logging to cyphesis_server*.log files" << endl << flush;
 	//ofstream log_stream("cyphesis_server.log",ios::out);
-        log::inform_fp.open("cyphesis_server.log",ios::out);
-        log::debug_fp.open("cyphesis_server_debug.log",ios::out);
+        common::log::inform_fp.open("cyphesis_server.log",ios::out);
+        common::log::debug_fp.open("cyphesis_server_debug.log",ios::out);
     }
     cout << Py_GetPath() << endl << flush;
     if (consts::debug_thinking>=1) {
         char * log_name="thinking.log";
         cout << "consts::debug_thinking>=1:, logging to" << log_name << endl;
-        log::thinking_fp.open(log_name,ios::out);
+        common::log::thinking_fp.open(log_name,ios::out);
     }
     CommServer s;
     if (s.setup(6767)) {

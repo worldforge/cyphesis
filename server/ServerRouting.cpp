@@ -14,7 +14,7 @@ ServerRouting::ServerRouting(CommServer * server, char * name) : svr_name(name)
     comm_server=server ; //communication server;
     id_dict[fullid] = this;
     world=new WorldRouter(this); //game world;
-    BaseEntity * obj=add_object(Persistance::load_admin_account());
+    BaseEntity * obj=add_object((BaseEntity*)Persistance::load_admin_account());
     //obj->server=this;
     obj->world=world;
 }

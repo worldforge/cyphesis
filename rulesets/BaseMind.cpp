@@ -55,6 +55,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Create & sub_op)
     if (arg->GetObjtype() == "object") {
         map.add(arg->AsObject());
     }
+    delete arg;
     return(res);
 }
 

@@ -3,6 +3,11 @@
 
 #include <Atlas/Message/Object.h>
 
+#include <math.h>
+
+using std::cos;
+using std::sin;
+
 using Atlas::Message::Object;
 
 class Vector3D {

@@ -35,6 +35,10 @@ PyObject * Thing_getattr(ThingObject *self, char *name)
         cout << "Thing_getattr(name)" << endl << flush;
         return PyString_FromString(self->m_thing->name.c_str());
     }
+    if (strcmp(name, "status") == 0) {
+        cout << "Thing_getattr(status)" << endl << flush;
+        return PyFloat_FromDouble(self->m_thing->status);
+    }
     if (strcmp(name, "map") == 0) {
         cout << "Thing_getattr(map)" << endl << flush;
         MapObject * map = newMapObject(NULL);
@@ -81,6 +85,17 @@ int Thing_setattr(ThingObject *self, char *name, PyObject *v)
         if (self->Thing_attr == NULL) {
             return -1;
         }
+    }
+    if (strcmp(name, "status") == 0) {
+        if (PyInt_Check(v)) {
+            self->m_thing->status = (double)PyInt_AsLong(v);
+        } else if (PyFloat_Check(v)) {
+            self->m_thing->status = PyFloat_AsDouble(v);
+        } else {
+            PyErr_SetString(PyExc_TypeError, "status must be numeric type");
+            return -1;
+        }
+        return 0;
     }
     if (strcmp(name, "map") == 0) {
         return -1;

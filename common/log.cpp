@@ -5,6 +5,7 @@ extern "C" {
 #include "log.h"
 #include "const.h"
 
+namespace common {
 namespace log {
 
 ofstream inform_fp;
@@ -52,4 +53,5 @@ void thinking(char * msg)
     }
 }
 
+}
 }

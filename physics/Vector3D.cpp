@@ -137,8 +137,7 @@ double Vector3D::distance(Vector3D v) const
 //}
 
 
-using namespace Atlas;
-using namespace Message;
+using Atlas::Message::Object;
 
 Object Vector3D::asObject() const
 {

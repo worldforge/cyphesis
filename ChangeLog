@@ -1,3 +1,17 @@
+2000-12-05  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Added new common namespace to prevent collision with math function
+	  log.
+
+	* Added in lots of deletes to sort memory leaks.
+
+	* More python tweaks.
+
+	* Implemented status attributes of thing.
+
+	* Re-wrote some code which needlessly creates objects in the
+	  free store.
+
 2000-12-04  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Started working on sorting out memory leaks.

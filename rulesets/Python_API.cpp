@@ -150,17 +150,36 @@ static PyObject * is_location(PyObject * self, PyObject * args)
 
 static PyObject * location_new(PyObject * self, PyObject * args)
 {
-	LocationObject *o;
-	// We need to deal with actual args here
-	if (!PyArg_ParseTuple(args, "")) {
-		return NULL;
-	}
-	o = newLocationObject(args);
-	if ( o == NULL ) {
-		return NULL;
-	}
-	o->location = new Location;
-	return (PyObject *)o;
+    LocationObject *o;
+    // We need to deal with actual args here
+    PyObject * parentO, * coordsO;
+    if (PyArg_ParseTuple(args, "OO", &parentO, &coordsO)) {
+        if (((PyTypeObject *)PyObject_Type(parentO) != &Thing_Type) ||
+            ((PyTypeObject *)PyObject_Type(coordsO) != &Vector3D_Type)) {
+            PyErr_SetString(PyExc_TypeError, "Args parent, coord required");
+            return NULL;
+        }
+        ThingObject * parent = (ThingObject*)parentO;
+        Vector3DObject * coords = (Vector3DObject*)coordsO;
+        if (parent->m_thing == NULL) {
+            PyErr_SetString(PyExc_TypeError, "Parent is invalid");
+            return NULL;
+        }
+        o = newLocationObject(NULL);
+        if ( o == NULL ) {
+            return NULL;
+        }
+        o->location = new Location(parent->m_thing, coords->coords);
+    } else if (PyArg_ParseTuple(args, "")) {
+        o = newLocationObject(NULL);
+        if ( o == NULL ) {
+            return NULL;
+        }
+        o->location = new Location;
+    } else {
+        return NULL;
+    }
+    return (PyObject *)o;
 }
 
 static PyObject * vector3d_new(PyObject * self, PyObject * args)

@@ -1,6 +1,12 @@
+#ifndef PERSISTANCE_H
+#define PERSISTANCE_H
+
+class Admin;
+
 namespace Persistance {
 
-
-BaseEntity * load_admin_account();
+  Admin * load_admin_account();
 
 }
+
+#endif /* PERSISTANCE_H */

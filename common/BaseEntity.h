@@ -301,7 +301,7 @@ class BaseEntity {
     bad_type message(bad_type msg, bad_type op_method);
     bad_type external_message(bad_type msg);
 
-    virtual Message::Object & asObject();
+    virtual Message::Object asObject();
     virtual void addObject(Message::Object *);
     virtual oplist external_message(const RootOperation & msg);
     virtual oplist message(const RootOperation & msg);

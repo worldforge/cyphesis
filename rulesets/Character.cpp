@@ -34,6 +34,8 @@ extern "C" {
 #include <common/WorldInfo.h>
 #include <common/const.h>
 
+using Atlas::Message::Object;
+
 static int debug_movement=1;
 
 MovementInfo::MovementInfo(Character * body) : body(body)
@@ -61,13 +63,15 @@ Move * MovementInfo::gen_face_operation(Location & loc)
     if (face != loc.face) {
         face = loc.face;
         cout << "Turning" << endl << flush;
-        Message::Object * ent = new Message::Object(Message::Object::MapType());
         Move * moveOp = new Move;
         *moveOp = Move::Instantiate();
         moveOp->SetTo(body->fullid);
-        ent->AsMap()["id"] = body->fullid;
-        loc.addObject(ent);
-        Message::Object::ListType args(1,*ent);
+        Object::MapType _map;
+        Object ent(_map);
+        Object::MapType & entmap = ent.AsMap();
+        entmap["id"] = body->fullid;
+        loc.addObject(&ent);
+        Object::ListType args(1,ent);
         moveOp->SetArgs(args);
         return moveOp;
     }
@@ -91,12 +95,14 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
         debug_movement && cout << "time_diff:" << time_diff << endl << flush;
         last_movement_time=current_time;
         Location new_loc=loc;
-        Message::Object * ent = new Message::Object(Message::Object::MapType());
+        Object::MapType _map;
+        Object ent(_map);
+        Object::MapType & entmap = ent.AsMap();
         new_loc.velocity=velocity;
         Move * moveOp = new Move;
         *moveOp = Move::Instantiate();
         moveOp->SetTo(body->fullid);
-        ent->AsMap()["id"] = body->fullid;
+        entmap["id"] = body->fullid;
         double vel_mag = velocity.mag();
         double speed_ratio;
         if (vel_mag == 0.0) {
@@ -116,11 +122,11 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
 
         face = loc.face;
 
-        ent->AsMap()["mode"] = Message::Object(mode);
+        entmap["mode"] = Object(mode);
         if (!velocity) {
             debug_movement && cout << "only velocity changed." << endl << flush;
-            new_loc.addObject(ent);
-            Message::Object::ListType args(1,*ent);
+            new_loc.addObject(&ent);
+            Object::ListType args(1,ent);
             moveOp->SetArgs(args);
             if (NULL != rloc) {
                 *rloc = new_loc;
@@ -142,8 +148,8 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
         }
         new_loc.coords=new_coords;
         debug_movement && cout << "new coordinates: " << new_coords << endl << flush;
-        new_loc.addObject(ent);
-        Message::Object::ListType args2(1,*ent);
+        new_loc.addObject(&ent);
+        Message::Object::ListType args2(1,ent);
         moveOp->SetArgs(args2);
         if (NULL != rloc) {
             *rloc = new_loc;
@@ -174,6 +180,16 @@ Character::Character() : movement(this), sex("female"), autom(0),
 {
     attributes["weight"] = 60.0;
     is_character = 1;
+}
+
+Character::~Character()
+{
+    if (mind != NULL) {
+        delete mind;
+    }
+    if (external_mind != NULL) {
+        delete external_mind;
+    }
 }
 
 oplist Character::Operation(const Setup & op)
@@ -781,8 +797,10 @@ oplist Character::operation(const RootOperation & op)
             // Need to be very careful about what this actually does
             external_message(*mr2);
             mind2_res.pop_front();
+            delete mr2;
         }
         mind_res.pop_front();
+        delete mr;
     }
     return result;
 }
@@ -796,6 +814,8 @@ oplist Character::external_operation(const RootOperation & op)
         RootOperation * br = body_res.front();
         send_world(br);
         body_res.pop_front();
+        // Don't delete br as it has gone into worlds queue
+        // World will deal with it.
     }
     oplist res;
     return(res);

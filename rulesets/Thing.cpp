@@ -229,12 +229,12 @@ oplist Thing::Operation(const Create & op)
             //obj->location.parent->contains.append(obj);
         //}
         //log.debug(3,"Created: "+str(obj)+" now: "+str(Thing::world.objects));
-        Create * c = new Create(op);
+        Create c(op);
         list<Message::Object> args2(1,obj->asObject());
-        c->SetArgs(args2);
+        c.SetArgs(args2);
         RootOperation * s = new Sight();
         *s = Sight::Instantiate();
-        list<Message::Object> args3(1,c->AsObject());
+        list<Message::Object> args3(1,c.AsObject());
         s->SetArgs(args3);
         res.push_back(s);
     }

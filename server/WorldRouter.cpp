@@ -48,7 +48,7 @@ string WorldRouter::get_id(string & name)
     while ((index = full_id.find(' ', 0)) != string::npos) {
         full_id[index] = '_';
     }
-    //if (next_id > 20) {
+    //if (next_id > 100) {
         //exit(0);
     //}
 #if 0

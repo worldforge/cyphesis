@@ -5,7 +5,7 @@
 from atlas import *
 
 from world.objects.Thing import Thing
-from common import set_kw
+from misc import set_kw
 
 class Sword(Thing):
     """This is base class for swords, this one just ordinary sword"""

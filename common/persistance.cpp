@@ -10,7 +10,7 @@
 
 namespace Persistance {
 
-BaseEntity * load_admin_account()
+Admin * load_admin_account()
 {
     // Eventually this should actually load the account. For now it just
     // creates it.

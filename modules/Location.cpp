@@ -28,8 +28,7 @@ Location::operator bool() const
     return(parent!=NULL && coords);
 }
 
-using namespace Atlas;
-using namespace Message;
+using Atlas::Message::Object;
 
 void Location::addObject(Object * obj)
 {

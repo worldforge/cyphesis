@@ -113,13 +113,13 @@ Vector3D BaseEntity::get_xyz()
     }
 }
 
-Message::Object & BaseEntity::asObject()
+Message::Object BaseEntity::asObject()
 {
     debug_ops && cout << "BaseEntity::asObject" << endl << flush;
     Message::Object::MapType map;
-    Message::Object * obj = new Message::Object(map);
-    addObject(obj);
-    return(*obj);
+    Message::Object obj(map);
+    addObject(&obj);
+    return(obj);
 }
 
 

@@ -1,7 +1,7 @@
 bin_PROGRAMS = cyphesis
 
 INCLUDES = -I..
-LIBS = -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lpython1.5 -ldl -lpthread -lvarconf # -lefence
+LIBS = -lAtlas -lAtlasNet -lAtlasCodecs -lAtlasMessage -lAtlasObjects -lAtlasObjectsOperation -lAtlasObjectsEntity -lpython1.5 -ldl -lm -lpthread -lvarconf # -lefence
 
 cyphesis_SOURCES = \
 		OOG_Thing.cpp OOG_Thing.h \

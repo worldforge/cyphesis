@@ -44,7 +44,7 @@ class Character : public Thing {
     double drunkness;
 
     Character();
-    virtual ~Character() { }
+    virtual ~Character();
 
 
     virtual oplist Operation(const Setup & op);
