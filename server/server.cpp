@@ -129,7 +129,7 @@ int main(int argc, char ** argv)
 
     Restoration restore(server);
     if (restore.read() == 1) {
-        std::cout << "Bootstrapping world" << std::endl << std::flush;
+        debug(std::cout << "Bootstrapping world" << std::endl << std::flush;);
         EntityFactory::instance()->initWorld();
     }
 
