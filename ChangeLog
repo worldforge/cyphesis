@@ -1,5 +1,13 @@
 2003-09-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/EntityExerciser.h: Make entity reference protected for use
+	  by other exercisers.
+
+	* tests/IGEntityExerciser.h, tests/Entitytest.cpp: Implement
+	  and use the attribute testing code.
+
+2003-09-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.cpp: Add in the unimplemented subscribe
 	  method.
 

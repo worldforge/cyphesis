@@ -11,7 +11,7 @@
 
 template <class EntityType>
 class EntityExerciser {
-  private:
+  protected:
     EntityType & m_ent;
   public:
     explicit EntityExerciser(EntityType & e) : m_ent(e) { }

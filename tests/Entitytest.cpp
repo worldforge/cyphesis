@@ -49,5 +49,42 @@ int main()
 
     ee.runOperations();
 
+    std::set<std::string> attrNames;
+    attrNames.insert("status");
+    attrNames.insert("id");
+    attrNames.insert("name");
+    attrNames.insert("mass");
+    attrNames.insert("bbox");
+    attrNames.insert("contains");
+
+    assert(ee.checkAttributes(attrNames));
+
+    attrNames.insert("test_int");
+    attrNames.insert("test_float");
+    attrNames.insert("test_list_string");
+    attrNames.insert("test_list_int");
+    attrNames.insert("test_list_float");
+    attrNames.insert("test_map_string");
+    attrNames.insert("test_map_int");
+    attrNames.insert("test_map_float");
+
+    assert(!ee.checkAttributes(attrNames));
+
+    e.set("test_int", 1);
+    e.set("test_float", 1.f);
+    e.set("test_list_string", "test_value");
+    e.set("test_list_int", Element::ListType(1, 1));
+    e.set("test_list_float", Element::ListType(1, 1.f));
+    e.set("test_map_string", Element::ListType(1, "test_value"));
+    Element::MapType test_map;
+    test_map["test_key"] = 1;
+    e.set("test_map_int", test_map);
+    test_map["test_key"] = 1.f;
+    e.set("test_map_float", test_map);
+    test_map["test_key"] = "test_value";
+    e.set("test_map_string", test_map);
+    
+    assert(ee.checkAttributes(attrNames));
+
     return 0;
 }
