@@ -7,10 +7,6 @@
 
 static PyObject * Vector3D_dot(Vector3DObject * self, PyObject * args)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     Vector3DObject * other;
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
@@ -24,10 +20,6 @@ static PyObject * Vector3D_dot(Vector3DObject * self, PyObject * args)
 
 static PyObject * Vector3D_cross(Vector3DObject * self, PyObject * args)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     Vector3DObject * other;
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
@@ -46,10 +38,6 @@ static PyObject * Vector3D_cross(Vector3DObject * self, PyObject * args)
 
 static PyObject * Vector3D_rotatex(Vector3DObject * self, PyObject * args)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     double angle;
     if (!PyArg_ParseTuple(args, "d", &angle)) {
         return NULL;
@@ -61,10 +49,6 @@ static PyObject * Vector3D_rotatex(Vector3DObject * self, PyObject * args)
 
 static PyObject * Vector3D_rotatey(Vector3DObject * self, PyObject * args)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     double angle;
     if (!PyArg_ParseTuple(args, "d", &angle)) {
         return NULL;
@@ -76,10 +60,6 @@ static PyObject * Vector3D_rotatey(Vector3DObject * self, PyObject * args)
 
 static PyObject * Vector3D_rotatez(Vector3DObject * self, PyObject * args)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     double angle;
     if (!PyArg_ParseTuple(args, "d", &angle)) {
         return NULL;
@@ -91,10 +71,6 @@ static PyObject * Vector3D_rotatez(Vector3DObject * self, PyObject * args)
 
 static PyObject * Vector3D_angle(Vector3DObject * self, PyObject * args)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     Vector3DObject * other;
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
@@ -120,10 +96,6 @@ static PyObject * Vector3D_mag(Vector3DObject * self, PyObject * args)
 
 static PyObject * Vector3D_unit_vector(Vector3DObject * self, PyObject * args)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     if (!PyArg_ParseTuple(args, "")) {
         return NULL;
     }
@@ -137,10 +109,6 @@ static PyObject * Vector3D_unit_vector(Vector3DObject * self, PyObject * args)
 
 static PyObject *Vector3D_unit_vector_to(Vector3DObject * self, PyObject * args)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     Vector3DObject * other;
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
@@ -159,10 +127,6 @@ static PyObject *Vector3D_unit_vector_to(Vector3DObject * self, PyObject * args)
 
 static PyObject * Vector3D_distance(Vector3DObject * self, PyObject * args)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     Vector3DObject * other;
     if (!PyArg_ParseTuple(args, "O", &other)) {
         return NULL;
@@ -214,10 +178,6 @@ int Vector3D_setattr(Vector3DObject *self, char *name, PyObject *v)
 
 static int Vector3D_compare(Vector3DObject * self, Vector3DObject * other)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return -1;
-    }
     if ((PyTypeObject*)PyObject_Type((PyObject*)other) != &Vector3D_Type) {
         return -1;
     }
@@ -229,10 +189,6 @@ static int Vector3D_compare(Vector3DObject * self, Vector3DObject * other)
 
 static Vector3DObject*Vector3D_num_add(Vector3DObject*self,Vector3DObject*other)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     if ((PyTypeObject*)PyObject_Type((PyObject*)other) != &Vector3D_Type) {
         PyErr_SetString(PyExc_TypeError, "Can only add Vector3D to Vector3D");
         return NULL;
@@ -247,10 +203,6 @@ static Vector3DObject*Vector3D_num_add(Vector3DObject*self,Vector3DObject*other)
 
 static Vector3DObject*Vector3D_num_sub(Vector3DObject*self,Vector3DObject*other)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     if ((PyTypeObject*)PyObject_Type((PyObject*)other) != &Vector3D_Type) {
         PyErr_SetString(PyExc_TypeError, "Can only sub Vector3D from Vector3D");
         return NULL;
@@ -265,10 +217,6 @@ static Vector3DObject*Vector3D_num_sub(Vector3DObject*self,Vector3DObject*other)
 
 Vector3DObject * Vector3D_num_mul(Vector3DObject * self, PyObject * _other)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     double other;
     if (PyInt_Check(_other)) {
         other = PyInt_AsLong(_other);
@@ -288,10 +236,6 @@ Vector3DObject * Vector3D_num_mul(Vector3DObject * self, PyObject * _other)
 
 Vector3DObject * Vector3D_num_div(Vector3DObject * self, PyObject * _other)
 {
-    if ((PyTypeObject*)PyObject_Type((PyObject*)self) != &Vector3D_Type) {
-        PyErr_SetString(PyExc_TypeError, "THis is not a vector3D object");
-        return NULL;
-    }
     double other;
     if (PyInt_Check(_other)) {
         other = PyInt_AsLong(_other);

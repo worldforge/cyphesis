@@ -1,5 +1,9 @@
 2000-12-16  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Removed unecessary type checks
+
+2000-12-16  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Modifed initialisation of Vector3D from python to be less error
 	  prone, and more complete.
 
