@@ -1,5 +1,10 @@
 2004-12-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* cyphesis.spec.in: Fix error caused by non-escaped brackets
+	  in shell line.
+
+2004-12-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* cyphesis.spec.in: Add Vendor and Distribution tags to stop
 	  checkers from whining.
 

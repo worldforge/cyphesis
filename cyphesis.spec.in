@@ -74,7 +74,7 @@ if [ -d /etc/sysconfig ]
 then
         install -d $RPM_BUILD_ROOT/etc/sysconfig
         install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/cyphesis
-        echo %config(noreplace) /etc/sysconfig/cyphesis >> service.lst
+        echo %config\(noreplace\) /etc/sysconfig/cyphesis >> service.lst
 fi
 
 %pre
