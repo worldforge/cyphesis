@@ -1,3 +1,27 @@
+2004-06-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Python_API.cpp: Clean up use of standard error to go
+	  via the log subsystem.
+
+	* rulesets/basic/editor.py, rulesets/basic/mind/NPCMind.py,
+	  rulesets/basic/mind/panlingua/interlinguish.py,
+	  rulesets/mason/define_world.py:
+	  Expand handling of the verb "know" so that knowledge
+	  is a triple, including predicate, so that know can be used
+	  to inform a character of any knowledge. Generalise the client
+	  code, and tweak the client data to include the right information.
+
+	* mason.xml: Add new rule for mercenaries.
+
+	* rulesets/basic/mind/goals/humanoid/transaction.py: Add new
+	  dynamic goal for NPCs offering their services for hire.
+
+	* rulesets/basic/mind/panlingua/interlinguish.py:
+	  Add new words related to hirable NPCs
+
+	* rulesets/mason/define_world.py: Start programming up warriors
+	  to be hirable.
+
 2004-06-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py, rulesets/World.cpp,

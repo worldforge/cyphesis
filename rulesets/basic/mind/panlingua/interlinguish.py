@@ -44,7 +44,9 @@ add_word('pig','#pig_noun1')
 add_word('lumber','#lumber_noun1')
 add_word('ham','#ham_noun1')
 add_word('coin','#coin_noun1')
+add_word('services','#services_noun1')
 add_word('buy','#buy_verb1')
+add_word('hire','#hire_verb1')
 add_word('trade','#trade_verb1')
 add_word('keep','#keep_verb1')
 add_word('sell','#sell_verb1')
@@ -104,9 +106,18 @@ def add_vso_word(words,index):
     vso_dict[words]=(words,index)
 
 add_vso_word('own','#own_verb1')
-add_vso_word('know','#know_verb1')
 add_vso_word('learn','#learn_verb1')
 add_vso_word('price','#price_verb1')
+
+#>This is for verbs like the above which require a predicate
+# know pig price 5
+
+vspo_dict={}
+def add_vspo_word(words,index):
+    add_word(words,index)
+    vspo_dict[words]=(words,index)
+
+add_vspo_word('know','#know_verb1')
 
 def verb_subject_object(verb,subject,object):
     """this function is partially cheat and not real translation"""
@@ -116,14 +127,33 @@ def verb_subject_object(verb,subject,object):
     return (verb+" "+subject+" "+object,
             (a1,a2,a3))
 
+def verb_subject_predicate_object(verb,subject,predicate,object):
+    """this function is partially cheat and not real translation"""
+    a1=p.atom(verb,1,(word2node[verb][1],"present tense"),(None,"declarative verb"))
+    a2=p.atom(subject,2,("#subject","default"),(a1,"subject"),"up")
+    a3=p.atom(predicate,2,("#predicate","default"),(a1,"predicate"),"up")
+    a4=p.atom(object,3,("#object","default"),(a2,"object"),"left")
+    return (verb+" "+subject+" "+predicate+" "+object,
+            (a1,a2,a3,a4))
+
 vso_pattern=re.compile(r"(\w+)\s+((\w+)|(\(.+?\)))\s+(.*)")
+vspo_pattern=re.compile(r"(\w+)\s+((\w+)|(\(.+?\)))\s+(\w+)\s+(.*)")
 def match_verb_subject_object_string(say):
     m=vso_pattern.match(say)
-    if not m: return None
-    verb,subject,object=m.group(1),m.group(2),m.group(5)
-    if not vso_dict.has_key(verb):
-        return None
-    return verb_subject_object(verb,subject,object)
+    if m:
+        verb=m.group(1)
+        if vso_dict.has_key(verb):
+            print "vso"
+            subject,object=m.group(2),m.group(5)
+            return verb_subject_object(verb,subject,object)
+    m=vspo_pattern.match(say)
+    if m:
+        verb=m.group(1)
+        if vspo_dict.has_key(verb):
+            print "vspo"
+            subject,predicate,object=m.group(2),m.group(5),m.group(6)
+            return verb_subject_predicate_object(verb,subject,predicate,object)
+    return None
 
 
 sell_pattern=re.compile(r"sell (an? )?(.*)")
@@ -149,6 +179,21 @@ def match_buy(say):
     m=buy_pattern.match(say)
     if not m: return
     verb="buy"
+    verb_id=word2node.get(verb)
+    if not verb_id: return
+    object=m.group(2)
+    object_id=word2node.get(object)
+    if not object_id: return
+    a1=p.atom(verb,1,(verb_id[1],"default"),(None,"verb"))
+    a2=p.atom(object,2,(object_id[1],"default"),(a1,"object"),"up")
+    return (say,(a1,a2))
+
+hire_pattern=re.compile(r"hire (\w+ )?(.*)")
+def match_hire(say):
+    if say and say[-1]=='.': say=say[:-1]
+    m=hire_pattern.match(say)
+    if not m: return
+    verb="hire"
     verb_id=word2node.get(verb)
     if not verb_id: return
     object=m.group(2)
@@ -187,6 +232,7 @@ def match_desire(say):
     object_sentence=match_buy(object)
     if not object_sentence: object_sentence=match_sell(object)
     if not object_sentence: object_sentence=match_vote(object)
+    if not object_sentence: object_sentence=match_hire(object)
     if not object_sentence: return
     a1=p.atom(verb,1,(verb_id[1],"default"),(None,"verb"))
     a2=p.atom(subject,2,(subject_id[1],"default"),(a1,"subject"),"up")

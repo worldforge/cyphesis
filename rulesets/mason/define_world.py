@@ -32,34 +32,34 @@ forest_xyz=(-20,-60,settlement_height)
 pig_sty_xyz=(-2,2,settlement_height)
 butcher_stall_xyz=(-41.5,-6.3,settlement_height)
 
-knowledge=[('axe','smithy'),
-           ('forest',forest_xyz),
-           ('hall',hall_xyz)]
-mprices=[('pig','5')]
-bprices=[('ham','2')]
-bknowledge=[('market',butcher_stall_xyz)]
-mknowledge=[('market',pig_sty_xyz)]
-sknowledge=[('forest',(-30,-116,settlement_height)),
-            ('stash',(-98,-97,settlement_height))]
-village=[('hall', hall_xyz),
-         ('butcher', butcher_stall_xyz),
-         ('pig', pig_sty_xyz)]
-gknowledge=[('m1',(-17, -1,    settlement_height)),
-            ('m2',(-29, -1,    settlement_height)),
-            ('m3',(-29, -7.5,  settlement_height)),
-            ('m4',(-38, -10,   settlement_height)),
-            ('m5',(-43, -15,   settlement_height)),
-            ('m6',(-43, -14.5, settlement_height))]
+knowledge=[('axe','place','smithy'),
+           ('forest','location',forest_xyz),
+           ('hall','location',hall_xyz)]
+mprices=[('pig','price','5')]
+bprices=[('ham','price','2')]
+bknowledge=[('market','location',butcher_stall_xyz)]
+mknowledge=[('market','location',pig_sty_xyz)]
+sknowledge=[('forest','location',(-30,-116,settlement_height)),
+            ('stash','location',(-98,-97,settlement_height))]
+village=[('hall','location', hall_xyz),
+         ('butcher','location', butcher_stall_xyz),
+         ('pig','location', pig_sty_xyz)]
+gknowledge=[('m1','location',(-17, -1,    settlement_height)),
+            ('m2','location',(-29, -1,    settlement_height)),
+            ('m3','location',(-29, -7.5,  settlement_height)),
+            ('m4','location',(-38, -10,   settlement_height)),
+            ('m5','location',(-43, -15,   settlement_height)),
+            ('m6','location',(-43, -14.5, settlement_height))]
 
-wolf_knowledge=[('w1',(90,-90,settlement_height)),
-                ('w2',(110,-90,settlement_height)),
-                ('w3',(110,90,settlement_height)),
-                ('w4',(90,90,settlement_height))]
+wolf_knowledge=[('w1','location',(90,-90,settlement_height)),
+                ('w2','location',(110,-90,settlement_height)),
+                ('w3','location',(110,90,settlement_height)),
+                ('w4','location',(90,90,settlement_height))]
 
-lych_knowledge=[('w1',(0,-96,settlement_height)),
-                ('w2',(-70,-70,settlement_height)),
-                ('w3',(-100,70,settlement_height)),
-                ('w4',(-147,-90,settlement_height))]
+lych_knowledge=[('w1','location',(0,-96,settlement_height)),
+                ('w2','location',(-70,-70,settlement_height)),
+                ('w3','location',(-100,70,settlement_height)),
+                ('w4','location',(-147,-90,settlement_height))]
 
 wander=(il.wander,"wander()")
 forage=(il.forage,"forage()")
@@ -219,7 +219,7 @@ def default(mapeditor):
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','open','dawn')"))
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','closed','evening')"))
     m.know(butcher,bknowledge)
-    m.price(butcher,bprices)
+    m.know(butcher,bprices)
     cleaver=m.make('cleaver', type='cleaver', desc='cleaver for cutting meat',
                    place='market', xyz=(-41,-5,settlement_height))
     m.own(butcher,cleaver)
@@ -237,11 +237,11 @@ def default(mapeditor):
     sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[5,5,3])
     m.know(merchant,mknowledge)
     m.know(merchant,village)
-    m.price(merchant,mprices)
+    m.know(merchant,mprices)
     m.own(merchant,sty)
     m.learn(merchant,(il.keep,"keep_livestock('pig', 'sty', 'sowee')"))
-    m.learn(merchant, (il.sell,"sell_trade('pig', 'market', 'morning')"))
-    m.learn(merchant, (il.sell,"sell_trade('pig', 'market', 'afternoon')"))
+    m.learn(merchant,(il.sell,"sell_trade('pig', 'market', 'morning')"))
+    m.learn(merchant,(il.sell,"sell_trade('pig', 'market', 'afternoon')"))
     m.learn(merchant,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
     m.learn(merchant,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
     m.learn(merchant,(il.welcome,"welcome('Welcome to this our settlement','settler')"))
@@ -255,14 +255,12 @@ def default(mapeditor):
     # Warriors - the more adventurous types
 
     warriors=[]
-    warrior=m.make('Vonaa Barile',type='settler',xyz=(uniform(-1,14),uniform(-18,-27),settlement_height),sex='female',orientation=directions[randint(0,7)])
-    m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
+    warrior=m.make('Vonaa Barile',type='mercenary',xyz=(uniform(8,14),uniform(88,14),settlement_height),sex='female',orientation=directions[randint(0,7)])
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     warriors.append(warrior)
 
-    warrior=m.make('Lile Birloc', type='settler',xyz=(-2,-2,settlement_height),sex='female',orientation=directions[randint(0,7)])
-    m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
+    warrior=m.make('Lile Birloc', type='mercenary',xyz=(uniform(15,20),uniform(15,20),settlement_height),sex='female',orientation=directions[randint(0,7)])
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     for i in range(0, 6):
@@ -274,6 +272,9 @@ def default(mapeditor):
     m.know(warriors,village)
 
     # Warriors enjoy their food and drink
+    m.price(warriors, [('services','5')])
+    m.learn(warriors,(il.help,"add_help(['The forest is a dangerous place.','If you need some help protecting your pigs,','I can help you out for a day or so.','I will need some gold for food and equipment.','For 5 coins I can work for you until sundown.','After sundown you should make sure your pigs are safe,','and get indoors yourself.','If you want to hire my services,','let me know by saying you would like to hire me.'])"))
+    m.learn(warriors,(il.hire,"hire_trade()"))
     m.learn(warriors,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
     m.learn(warriors,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
 
@@ -330,3 +331,11 @@ def add_village(mapeditor):
     m.make('house3',type='house3',xyz=(142,142,22),orientation=directions[6])
     m.make('house3',type='house3',xyz=(150,142,22),orientation=directions[2])
     m.make('house3',type='house3',xyz=(158,142,22),orientation=directions[5])
+
+def test_know(mapeditor):
+#   general things
+
+    m=editor(mapeditor)
+    wolf = m.make('wolf', type='wolf', xyz=(90,-90,settlement_height))
+    m.know(wolf,wolf_knowledge)
+    m.know(wolf,bprices)

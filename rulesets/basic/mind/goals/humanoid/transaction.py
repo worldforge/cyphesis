@@ -13,6 +13,14 @@ from mind.goals.dynamic.add_unique_goal import add_unique_goal_by_perception
                                                #trigger="sound_talk",
                                                #desc=desc)
 
+class hire_trade(DynamicGoal):
+    def __init__(self, desc="be available for hire"):
+        DynamicGoal.__init__(self,
+                             trigger="interlinguish_desire_verb3_hire_verb1",
+                             desc=desc)
+    def event(self, me, op, say):
+        print "To got hired"
+
 class buy_livestock(DynamicGoal):
     def __init__(self, what, cost, desc="buy livestock by the kg"):
         DynamicGoal.__init__(self,

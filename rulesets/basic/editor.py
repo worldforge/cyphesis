@@ -50,7 +50,7 @@ class editor:
     def look_for(self, **kw):
         ent=apply(Entity,(),kw)
         return self.m.look_for(ent)
-    def _say(self,target,verb,subject,object):
+    def _say(self,target,verb,subject,object,predicate=None):
 ##         es=Entity(verb=verb,subject=subject,object=object)
 ##         self.m.send(Operation("talk",es,from_=self.m,to=target))
         if type(subject)==InstanceType: subject=subject.id
@@ -61,12 +61,18 @@ class editor:
         elif type(object)==TupleType: object=`object`
         elif type(object)==StringType: pass
         else: object=object.id
-        string,interlinguish=il.verb_subject_object(verb,subject,object)
+        if predicate:
+            string,interlinguish=il.verb_subject_predicate_object(verb,subject,predicate,object)
+        else:
+            string,interlinguish=il.verb_subject_object(verb,subject,object)
         self._tell(target,string,interlinguish)
     def _own(self,target,object):
         self._say(target,'own',target,object)
     def _know(self,target,know):
-        self._say(target,'know',know[0],know[1])
+        if len(know)==2:
+            self._say(target,'know',know[0],know[1],predicate='location')
+        else:
+            self._say(target,'know',know[0],know[2],predicate=know[1])
     def _price(self,target,price):
         self._say(target,'price',price[0],price[1])
     def _learn(self,target,goal):

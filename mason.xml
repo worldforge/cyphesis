@@ -377,6 +377,12 @@
     </map>
   </map>
 
+  <map name="mercenary">
+    <string name="parent">character</string>
+    <map name="attributes">
+    </map>
+  </map>
+
   <map name="orc">
     <string name="parent">character</string>
     <map name="attributes">

@@ -155,16 +155,17 @@ class NPCMind(BaseMind):
         if not self.admin_sound(op):
             return self.interlinguish_warning(op,say,"You are not admin")
         subject=say[1].word
-        object=say[2].word
-##         print "know:",subject,object
+        predicate=say[2].word
+        object=say[3].word
+##        print "know:",subject,predicate,object
         if object[0]=='(':
             #CHEAT!: remove eval
             xyz=list(eval(object))
             loc=self.location.copy()
             loc.coordinates=Vector3D(xyz)
-            self.add_knowledge("location",subject,loc)
+            self.add_knowledge(predicate,subject,loc)
         else:
-            self.add_knowledge("place",subject,object)
+            self.add_knowledge(predicate,subject,object)
     def interlinguish_price_verb1_operation(self, op, say):
         if not self.admin_sound(op):
             return self.interlinguish_warning(op,say,"You are not admin")

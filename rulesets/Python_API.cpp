@@ -1091,28 +1091,28 @@ void init_python_api()
     Py_DECREF(sys_module);
 
     if (Py_InitModule("atlas", atlas_methods) == NULL) {
-        fprintf(stderr, "Failed to Create atlas module\n");
+        log(CRITICAL, "Python init failed to Create atlas module\n");
         return;
     }
 
     if (Py_InitModule("Vector3D", vector3d_methods) == NULL) {
-        fprintf(stderr, "Failed to Create Vector3D module\n");
+        log(CRITICAL, "Python init failed to Create Vector3D module\n");
         return;
     }
 
     if (Py_InitModule("Quaternion", quaternion_methods) == NULL) {
-        fprintf(stderr, "Failed to Create Quaternion module\n");
+        log(CRITICAL, "Python init failed to Create Quaternion module\n");
         return;
     }
 
     if (Py_InitModule("misc", misc_methods) == NULL) {
-        fprintf(stderr, "Failed to Create misc module\n");
+        log(CRITICAL, "Python init failed to Create misc module\n");
         return;
     }
 
     PyObject * common = Py_InitModule("common", common_methods);
     if (common == NULL) {
-        fprintf(stderr, "Failed to Create common module\n");
+        log(CRITICAL, "Python init failed to Create common module\n");
         return;
     }
 
