@@ -1,3 +1,26 @@
+2004-10-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* modules/Location.cpp, modules/Location.h: Add new function for
+	  usefully calculating the distance vector of another entity.
+
+	* tests/distancetest.cpp: Update test to check new distance
+	  function.
+
+	* rulesets/Python_API.cpp: Make the new distance vector function
+	  available to python rather than the relative postion function.
+
+	* rulesets/basic/mind/Knowledge.py, rulesets/basic/mind/NPCMind.py:
+	  Ensure that Knowledge really does handle arbitrary triples.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Add new version
+	  of transaction goal for transactions for hirelings.
+
+	* rulesets/basic/mind/goals/humanoid/transaction.py: Complete
+	  the implementation of the trigger goal for hirelings.
+
+	* rulesets/mason/define_world.py: Move the mercenaries closer to
+	  origin for debugging.
+
 2004-10-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/ClientConnection.cpp, common/globals.cpp, common/globals.h,

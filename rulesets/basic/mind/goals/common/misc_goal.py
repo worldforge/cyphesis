@@ -584,8 +584,10 @@ class transaction(Goal):
         self.cost=int(cost)
         self.payed=0
         self.vars=["what", "who", "cost", "payed"]
+    def check_availability(self,me):
+        return me.things.has_key(self.what)==0
     def transaction_inactive(self,me):
-        if me.things.has_key(self.what)==0:
+        if self.check_availability(me):
             return 0
         if len(me.money_transfers)==0:
             return 1
@@ -610,5 +612,22 @@ class transaction(Goal):
         me.remove_thing(thing)
         res.append(Operation("move",Entity(thing.id, location=Location(self.who,Vector3D(0,0,0))),to=thing))
         res.append(Operation("talk",Entity(say="Thankyou for your custom.")))
+        self.irrelevant=1
+        return res
+
+class hireling_transaction(transaction):
+    def check_availability(self,me):
+        return me.get_knowledge('employer', me) != None
+    def transact(self, me):
+        employer = me.get_knowledge('employer', me)
+        if employer:
+            print 'Already employed by ' + employer
+            return Operation("talk",Entity(say="Sorry, I am currently working for someone else."))
+        if self.payed < self.cost:
+            return Operation("talk",Entity(say=self.who.name+" you owe me "+str(self.cost-self.payed)+" coins."))
+        res=Message()
+        me.add_knowledge('employer', me.id, self.who.id)
+        # FIXME add the new goal
+        res.append(Operation("talk",Entity(say="I will help you out until sundown today.")))
         self.irrelevant=1
         return res

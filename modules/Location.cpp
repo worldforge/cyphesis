@@ -97,11 +97,23 @@ static bool distanceToAncestor(const Location & self,
     return false;
 }
 
+const Vector3D distanceTo(const Location & self, const Location & other)
+{
+    static Point3D origin(0,0,0);
+    Point3D pos;
+    distanceToAncestor(self, other, pos);
+    Vector3D dist = pos - origin;
+    if (self.m_orientation.isValid()) {
+        dist.rotate(self.m_orientation);
+    }
+    return dist;
+}
+
 const Point3D relativePos(const Location & self, const Location & other)
 {
-    Point3D dist;
-    distanceToAncestor(self, other, dist);
-    return dist;
+    Point3D pos;
+    distanceToAncestor(self, other, pos);
+    return pos;
 }
 
 const float squareDistance(const Location & self, const Location & other)

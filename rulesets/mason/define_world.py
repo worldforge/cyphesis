@@ -293,12 +293,12 @@ def default(mapeditor):
     # Warriors - the more adventurous types
 
     warriors=[]
-    warrior=m.make('Vonaa Barile',type='mercenary',xyz=(uniform(12,20),uniform(12,20),settlement_height),sex='female',orientation=directions[randint(0,7)])
+    warrior=m.make('Vonaa Barile',type='mercenary',xyz=(uniform(-2,2),uniform(-2,2),settlement_height),sex='female',orientation=directions[randint(0,7)])
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     warriors.append(warrior)
 
-    warrior=m.make('Lile Birloc', type='mercenary',xyz=(uniform(15,20),uniform(15,20),settlement_height),sex='female',orientation=directions[randint(0,7)])
+    warrior=m.make('Lile Birloc', type='mercenary',xyz=(uniform(-2,2),uniform(-2,2),settlement_height),sex='female',orientation=directions[randint(0,7)])
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     for i in range(0, 6):

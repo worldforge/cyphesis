@@ -244,6 +244,8 @@ class NPCMind(BaseMind):
     def get_knowledge(self, what, key):
         """get certain knowledge value
            what: what kind of knowledge (see Knowledge.py for list)"""
+        if not hasattr(self.knowledge, what):
+            return None
         d=getattr(self.knowledge,what)
         return d.get(key)
     def add_knowledge(self,what,key,value):

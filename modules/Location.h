@@ -49,6 +49,8 @@ class Location {
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };
 
+const Vector3D distanceTo(const Location & self, const Location & other);
+
 const Point3D relativePos(const Location & self, const Location & other);
 
 const float squareDistance(const Location & self, const Location & other);

@@ -6,14 +6,14 @@
 
 #include "modules/Location.h"
 
-// Distance to self: (0,0,0)
-// Distance ent -> tlve: (-1,-1,0)
-// Distance tlve -> ent: (1,1,0)
-// Distance ent1 -> ent2: (2,0,0)
-// Distance ent3 -> ent4: (4,0,0)
-// Distance ent3 -> ent4: (-1.36914e-07,-4,0)
-// Distance ent3 -> ent4: (-2,-4,0)
-// Distance ent3 -> ent4: (-4,-2,0)
+// RelPos to self: (0,0,0)
+// RelPos ent -> tlve: (-1,-1,0)
+// RelPos tlve -> ent: (1,1,0)
+// RelPos ent1 -> ent2: (2,0,0)
+// RelPos ent3 -> ent4: (4,0,0)
+// RelPos ent3 -> ent4: (-1.36914e-07,-4,0)
+// RelPos ent3 -> ent4: (-2,-4,0)
+// RelPos ent3 -> ent4: (-4,-2,0)
 
 int main()
 {
@@ -28,16 +28,16 @@ int main()
 
         Point3D relPos = relativePos(ent.m_location, ent.m_location);
 
-        std::cout << "Distance to self: " << relPos << std::endl << std::flush;
+        std::cout << "RelPos to self: " << relPos << std::endl << std::flush;
 
         relPos = relativePos(ent.m_location, tlve.m_location);
 
-        std::cout << "Distance ent -> tlve: " << relPos
+        std::cout << "RelPos ent -> tlve: " << relPos
                   << std::endl << std::flush;
 
         relPos = relativePos(tlve.m_location, ent.m_location);
 
-        std::cout << "Distance tlve -> ent: " << relPos
+        std::cout << "RelPos tlve -> ent: " << relPos
                   << std::endl << std::flush;
     }
 
@@ -54,7 +54,7 @@ int main()
 
         Point3D relPos = relativePos(ent1.m_location, ent2.m_location);
 
-        std::cout << "Distance ent1 -> ent2: " << relPos
+        std::cout << "RelPos ent1 -> ent2: " << relPos
                   << std::endl << std::flush;
     }
 
@@ -79,7 +79,7 @@ int main()
 
         Point3D relPos = relativePos(ent3.m_location, ent4.m_location);
 
-        std::cout << "Distance ent3 -> ent4: " << relPos
+        std::cout << "RelPos ent3 -> ent4: " << relPos
                   << std::endl << std::flush;
     }
 
@@ -104,7 +104,7 @@ int main()
 
         Point3D relPos = relativePos(ent3.m_location, ent4.m_location);
 
-        std::cout << "Distance ent3 -> ent4: " << relPos
+        std::cout << "RelPos ent3 -> ent4: " << relPos
                   << std::endl << std::flush;
     }
 
@@ -129,7 +129,7 @@ int main()
 
         Point3D relPos = relativePos(ent3.m_location, ent4.m_location);
 
-        std::cout << "Distance ent3 -> ent4: " << relPos
+        std::cout << "RelPos ent3 -> ent4: " << relPos
                   << std::endl << std::flush;
     }
 
@@ -153,8 +153,10 @@ int main()
         ent4.m_location.m_orientation = WFMath::Quaternion().identity();
 
         Point3D relPos = relativePos(ent3.m_location, ent4.m_location);
+        Vector3D distance = distanceTo(ent3.m_location, ent4.m_location);
 
-        std::cout << "Distance ent3 -> ent4: " << relPos
+        std::cout << "RelPos ent3 -> ent4: " << relPos
+                  << " Distance ent3 -> ent4: " << distance
                   << std::endl << std::flush;
     }
 

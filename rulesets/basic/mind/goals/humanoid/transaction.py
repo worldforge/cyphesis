@@ -1,6 +1,8 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
+import mind.goals
+import mind.goals.common
 from mind.goals.common.common import *
 from mind.goals.common.move import move_me
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
@@ -20,6 +22,14 @@ class hire_trade(DynamicGoal):
                              desc=desc)
     def event(self, me, op, say):
         print "To got hired"
+        price = me.get_knowledge('price', 'services')
+        if not price:
+            print "No price"
+            return
+        print "I go for " + str(price) + " coins"
+        goal = mind.goals.common.misc_goal.hireling_transaction('services', op.from_, price)
+        me.goals.insert(0,goal)
+        return Operation("talk", Entity(say=op.from_.name+" one day will be "+str(price)+" coins"))
 
 class buy_livestock(DynamicGoal):
     def __init__(self, what, cost, desc="buy livestock by the kg"):
