@@ -181,6 +181,9 @@ OpVector Connection::LoginOperation(const Login & op)
         }
     }
     const std::string & username = I->second.AsString();
+    if (username.empty()) {
+	return error(op, "Empty username provided for Login");
+    }
     I = account.find("password");
     if ((I == account.end()) || !I->second.IsString()) {
         return error(op, "No password provided for Login");
@@ -200,7 +203,7 @@ OpVector Connection::LoginOperation(const Login & op)
     } else {
         player = dynamic_cast<Account *>(ent);
     }
-    if ((player == NULL) || username.empty() || (passwd != player->password)) {
+    if ((player == NULL) || (passwd != player->password)) {
         return error(op, "Login is invalid");
     }
     // Account appears to be who they say they are
@@ -257,7 +260,7 @@ OpVector Connection::CreateOperation(const Create & op)
 
     if ((NULL != server.getObject(username)) ||
         (Persistance::instance()->findAccount(username)) ||
-        (username.empty()) && (!password.empty())) {
+        (username.empty()) || (password.empty())) {
         // Account exists, or creation data is duff
         return error(op, "Account creation is invalid");
     }
