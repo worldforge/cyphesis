@@ -7,12 +7,16 @@
 
 #include "Account.h"
 
+#include <sigc++/connection.h>
+
 class Persistance;
 
 class Admin : public Account {
   protected:
     virtual OpVector characterError(const Create &, const Atlas::Message::Element::MapType &) const;
-    void load(Persistance *, const std::string &, int &);
+    void opDispatched(RootOperation * op);
+
+    SigC::Connection m_monitorConnection;
   public:
     Admin(Connection * conn, const std::string & username,
                              const std::string & passwd,
@@ -25,6 +29,7 @@ class Admin : public Account {
     virtual OpVector GetOperation(const Get & op);
     virtual OpVector SetOperation(const Set & op);
     virtual OpVector CreateOperation(const Create & op);
+    virtual OpVector OtherOperation(const RootOperation & op);
 };
 
 #endif // SERVER_ADMIN_H

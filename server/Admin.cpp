@@ -19,6 +19,8 @@
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Create.h>
 
+#include <sigc++/object_slot.h>
+
 static const bool debug_flag = true;
 
 Admin::Admin(Connection * conn, const std::string& username,
@@ -27,6 +29,7 @@ Admin::Admin(Connection * conn, const std::string& username,
 {
     subscribe("get", OP_GET);
     subscribe("set", OP_SET);
+    subscribe("monitor", OP_MONITOR);
 }
 
 Admin::~Admin()
@@ -36,6 +39,15 @@ Admin::~Admin()
 const char * Admin::getType() const
 {
     return "admin";
+}
+
+void Admin::opDispatched(RootOperation * op)
+{
+    std::cout << "Monitor" << std::endl << std::flush;
+    if (m_connection != 0) {
+        std::cout << "Sending monitor op to client" << std::endl << std::flush;
+        m_connection->send(*op);
+    }
 }
 
 OpVector Admin::characterError(const Create & op,
@@ -211,6 +223,33 @@ OpVector Admin::CreateOperation(const Create & op)
     return Account::CreateOperation(op);
 }
 
+OpVector Admin::OtherOperation(const RootOperation & op)
+{
+    std::cout << "OtherOp" << std::endl << std::flush;
+    const std::string & op_type = op.getParents().front().asString();
+    if (op_type == "monitor") {
+        std::cout << "OtherOp.monitor" << std::endl << std::flush;
+        if (!op.getArgs().empty()) {
+            std::cout << "OtherOp.monitor subbing" << std::endl << std::flush;
+            if (m_connection != 0) {
+                std::cout << "OtherOp.monitor cnnectd" << std::endl << std::flush;
+                if (!m_monitorConnection.connected()) {
+                    m_monitorConnection = m_connection->m_server.m_world.Dispatching.connect(SigC::slot(*this, &Admin::opDispatched));
+                } else {
+                    std::cout << "Already connected" << std::endl << std::flush;
+                }
+            }
+        } else {
+            std::cout << "OtherOp.monitor unsubbing" << std::endl << std::flush;
+            if (m_monitorConnection.connected()) {
+                m_monitorConnection.disconnect();
+            } else {
+                std::cout << "Already disconnected" << std::endl << std::flush;
+            }
+        }
+    }
+    return OpVector();
+}
 // There used to be a code operation handler here. It may become desirable in
 // the future for the admin account to be able to send script fragments.
 // Think about implementing this.

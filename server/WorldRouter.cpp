@@ -304,6 +304,7 @@ int WorldRouter::idle()
     updateTime();
     RootOperation * op;
     while ((op = getOperationFromQueue()) != NULL) {
+        Dispatching.emit(op);
         try {
             operation(*op);
         }

@@ -1,3 +1,21 @@
+2004-04-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp: Add new command to enable and disable server
+	  monitoring.
+
+	* server/WorldRouter.cpp, common/BaseWorld.h: Add facility to
+	  notify using a SigC signal each type an op is dispatched.
+
+	* server/CommClient.h, server/CommClient.cpp: Fix typo in
+	  overridden method which meant it didn't work.
+
+	* server/Admin.h, server/Admin.cpp: Add handler for Monitor operation
+	  which turns on and off sending all IG ops to the admin client.
+
+	* rulesets/Python_API.cpp, common/types.h, common/Generic.h,
+	  common/BaseEntity.h: Fix Generic op so it can be used, and
+	  clean up its use. Add an enumeration for monitor ops.
+
 2004-04-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* Add some chickens.

@@ -1,4 +1,6 @@
-Debug why me.location.parent is None in mind code.
+Add Restore op if required which does the same as Setup, but for restore.
+
+Make sure we don't schedule database maintenence if its already doing it.
 
 Add a search function to cycmd to search for entities by type or name.
 

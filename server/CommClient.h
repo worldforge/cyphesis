@@ -41,7 +41,7 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
     template <class OpType>
     void queue(const OpType &);
 
-    virtual void unknownobjectArrived(const Atlas::Message::Element&);
+    virtual void unknownObjectArrived(const Atlas::Message::Element&);
     virtual void objectArrived(const Atlas::Objects::Operation::Login & op);
     virtual void objectArrived(const Atlas::Objects::Operation::Logout & op);
     virtual void objectArrived(const Atlas::Objects::Operation::Create & op);

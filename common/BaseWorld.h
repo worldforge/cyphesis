@@ -9,6 +9,8 @@
 
 #include "globals.h"
 
+#include <sigc++/signal.h>
+
 class Entity;
 
 class BaseWorld : public OOGThing {
@@ -55,6 +57,8 @@ class BaseWorld : public OOGThing {
     virtual OpVector message(RootOperation & op, const Entity * obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;
+
+    SigC::Signal1<void, RootOperation *> Dispatching;
 };
 
 #endif // COMMON_BASE_WORLD_H

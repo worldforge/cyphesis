@@ -31,6 +31,7 @@ typedef enum op_no {
 	OP_BURN,
 	OP_IMAGINARY,
 	OP_INFO,
+	OP_MONITOR,
 	OP_MOVE,
 	OP_NOURISH,
 	OP_SET,

@@ -24,6 +24,8 @@
 #include <Atlas/Objects/Operation/Error.h>
 #include <Atlas/Objects/Operation/Sound.h>
 
+#include "common/Generic.h"
+
 #include <skstream/skstream_unix.h>
 
 #include <sigc++/object_slot.h>
@@ -48,6 +50,7 @@ extern "C" {
 using Atlas::Message::Element;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
+using Atlas::Objects::Operation::Generic;
 using Atlas::Objects::Operation::Get;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Look;
@@ -556,6 +559,21 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         g.setFrom(accountId);
 
         encoder->streamMessage(&g);
+    } else if (cmd == "monitor") {
+        reply_expected = false;
+        Generic m("monitor");
+
+        m.getArgs().push_back(Atlas::Message::Element::MapType());
+        m.setFrom(accountId);
+
+        encoder->streamMessage(&m);
+    } else if (cmd == "unmonitor") {
+        reply_expected = false;
+        Generic m("monitor");
+
+        m.setFrom(accountId);
+
+        encoder->streamMessage(&m);
     } else {
         reply_expected = false;
         std::cout << cmd << ": Command not know" << std::endl << std::flush;

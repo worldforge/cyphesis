@@ -14,9 +14,8 @@
 namespace Atlas { namespace Objects { namespace Operation {
 
 class Generic : public RootOperation {
-  private:
-    explicit Generic(const std::string & p);
   public:
+    explicit Generic(const std::string & p);
     virtual ~Generic();
     static Generic Class(const std::string & p);
 };

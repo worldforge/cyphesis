@@ -131,7 +131,7 @@ void CommClient::dispatch()
     opQueue.clear();
 }
 
-void CommClient::unknownobjectArrived(const Atlas::Message::Element& o)
+void CommClient::unknownObjectArrived(const Atlas::Message::Element& o)
 {
     debug(std::cout << "An unknown has arrived." << std::endl << std::flush;);
     RootOperation r;
