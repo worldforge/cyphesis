@@ -14,6 +14,15 @@ Must fix for Mason 0.0.2
 
 General TODO
 
+  Implement base class for CommClient and other connections which listen/talk
+  on a socket, such as the database connection, so we can have non blocking
+  db access.
+
+  Implement jump operation, which specifies target, and comes back with,
+  a sight of a jump which has the starting velocity, and finish position.
+  If the client sends only velocity, then something else happens. Add
+  a method to Pedestrian to handle it.
+
   Implement ontology querying for AI code.
 
   Add Feel as the counterpoint to Touch, as Sight is to Look.

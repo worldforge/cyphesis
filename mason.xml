@@ -1,5 +1,287 @@
 <atlas>
 <map>
+  <map name="cleaver">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="weight">1.5</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.tools.Cleaver</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="tree">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="height">10</float>
+      <list name="bbox">
+        <float>1</float><float>1</float><float>6</float>
+      </list>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.plants.Tree</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="oak">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <list name="bbox">
+        <float>1</float><float>1</float><float>6</float>
+      </list>
+      <string name="fruitname">acorn</string>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.plants.Oak</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="appletree">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <list name="bbox">
+        <float>-0.4</float><float>-0.4</float><float>0</float>
+        <float>-0.1</float><float>-0.1</float><float>5</float>
+      </list>
+      <string name="fruitname">apple</string>
+      <int name="fruitchance">15</int>
+      <int name="init_fruits">3</int>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.plants.AppleTree</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="birch">
+    <string name="parent">tree</string>
+    <map name="attributes">
+      <float name="height">10</float>
+      <list name="bbox">
+        <float>1</float><float>1</float><float>6</float>
+      </list>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.plants.Tree</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="poplar">
+    <string name="parent">tree</string>
+    <map name="attributes">
+      <float name="height">10</float>
+      <list name="bbox">
+        <float>1</float><float>1</float><float>6</float>
+      </list>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.plants.Tree</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="skull">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="weight">1</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.undead.Skull</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="ribcage">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="weight">1</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.undead.Ribcage</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="arm">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="weight">1</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.undead.Arm</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="pelvis">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="weight">1</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.undead.Pelvis</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="thigh">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="weight">1</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.undead.Thigh</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="shin">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <float name="weight">1</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.undead.Shin</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="weather">
+    <string name="parent">thing</string>
+    <map name="attributes">
+    </map>
+    <map name="script">
+      <string name="name">world.objects.Weather</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="pig">
+    <string name="parent">character</string>
+    <map name="attributes">
+      <float name="weight">5</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.animals.Pig</string>
+      <string name="language">python</string>
+    </map>
+    <map name="mind">
+      <string name="name">mind.PigMind</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="deer">
+    <string name="parent">character</string>
+    <map name="attributes">
+      <float name="weight">100</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.animals.Deer</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="wolf">
+    <string name="parent">character</string>
+    <map name="attributes">
+      <float name="weight">20</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.animals.Wolf</string>
+      <string name="language">python</string>
+    </map>
+    <map name="mind">
+      <string name="name">mind.WolfMind</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="crab">
+    <string name="parent">character</string>
+    <map name="attributes">
+      <float name="weight">20</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.animals.Crab</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="squirrel">
+    <string name="parent">character</string>
+    <map name="attributes">
+      <float name="weight">1</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.animals.Squirrel</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="skeleton">
+    <string name="parent">character</string>
+    <map name="attributes">
+    </map>
+    <map name="script">
+      <string name="name">world.objects.undead.Skeleton</string>
+      <string name="language">python</string>
+    </map>
+    <map name="mind">
+      <string name="name">mind.SkelMind</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="lych">
+    <string name="parent">character</string>
+    <map name="attributes">
+    </map>
+    <map name="script">
+      <string name="name">world.objects.undead.Lych</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="seed">
+    <string name="parent">food</string>
+    <map name="attributes">
+      <float name="weight">0.05</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.plants.seeds.Seed</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="acorn">
+    <string name="parent">food</string>
+    <map name="attributes">
+      <float name="weight">0.05</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.plants.seeds.Acorn</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+  <map name="apple">
+    <string name="parent">food</string>
+    <map name="attributes">
+      <float name="weight">0.2</float>
+      <float name="alcahol">0</float>
+    </map>
+    <map name="script">
+      <string name="name">world.objects.plants.seeds.Apple</string>
+      <string name="language">python</string>
+    </map>
+  </map>
+
+
   <map name="stall">
     <string name="parent">thing</string>
     <map name="attributes">

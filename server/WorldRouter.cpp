@@ -191,6 +191,11 @@ inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) con
         if ((parent == "sight") || (parent == "sound")) {
             return perceptives;
         }
+        std::cerr << "WARNING: Broadcasting " << parent << " op from "
+                  << op.GetFrom() << std::endl << std::flush;
+    } else {
+        std::cerr << "ERROR: Broadcasting op with no parent from "
+                  << op.GetFrom() << std::endl << std::flush;
     }
     return objectList;
 }

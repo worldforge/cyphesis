@@ -30,7 +30,4 @@ dbname = "cyphesis"
 # dbpasswd = ""
 
 [mason]
-ruleset="acorn"
-
-[acorn]
 ruleset="basic"

@@ -1,3 +1,21 @@
+2002-06-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.h: Increase the sight range.
+
+	* server/WorldRouter.cpp: Put in some warnings, as I want to
+	  know when ops are getting broadcast.
+
+	* server/server.cpp: Ensure stdout is not used when in daemon mode.
+
+	* tools/cydbload.cpp: Rename the daftly named class WorldBase
+	  to WorldAccessor.
+
+	* mason.xml, cyphesis.vconf: Stop using the Acorn ruleset in Mason,
+	  as it contains strange stuff, and remove the playable farmer
+	  class from basic. Now games themselves define the only
+	  playable types, and mason contains its own copies of classes
+	  it has in common with acorn.
+
 2002-05-21  Michael Koch <konqueror@gmx.de>
 
 	* configure.in: added --enable-debug

@@ -142,7 +142,7 @@ int main(int argc, char ** argv)
     // be created manually by the server administrator.
     if (global_conf->findItem("cyphesis", "restricted")) {
         Persistance::restricted=global_conf->getItem("cyphesis","restricted");
-        if (Persistance::restricted) {
+        if (Persistance::restricted  && !daemon_flag) {
             std::cout << "Running in restricted mode" << std::endl;
         }
     }
@@ -181,7 +181,12 @@ int main(int argc, char ** argv)
     CommServer s(rulesets.front(), serverName);
     s.useMetaserver = use_metaserver;
     if (!s.setup(port_num)) {
-        std::cerr << "Could not create listen socket." << std::endl << std::flush;
+        if (daemon_flag) {
+            syslog(LOG_ERR, "Could not create listen socket. Init failed.");
+        } else {
+            std::cerr << "Could not create listen socket."
+                      << std::endl << std::flush;
+        }
         return 1;
     }
 
@@ -190,7 +195,9 @@ int main(int argc, char ** argv)
         l.SetFrom("admin");
         BaseEntity * admin = s.server.getObject("admin");
         if (admin == NULL) {
-            std::cout << "CRITICAL: Admin account not found." << std::endl;
+            if (!daemon_flag) {
+                std::cout << "CRITICAL: Admin account not found." << std::endl;
+            }
         } else {
             if (!daemon_flag) {
                 std::cout << "Loading world from database..." << std::flush;
@@ -237,7 +244,8 @@ int main(int argc, char ** argv)
 
     s.metaserverTerminate();
 
-    } // close scope of CommServer
+    } // close scope of CommServer, which cause the destruction of the
+      // server and world objects, and the entire world contents
 
     Persistance::shutdown();
 

@@ -17,7 +17,7 @@ namespace consts {
   const double square_basic_tick = basic_tick * basic_tick;
   const double square_base_velocity = base_velocity * base_velocity;
 
-  const double sight_range = 13.0;
+  const double sight_range = 26.0;
   const double hearing_range = 13.0;
   const bool enable_ranges = true;
 
