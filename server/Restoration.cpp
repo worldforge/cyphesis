@@ -57,7 +57,7 @@ void Restoration::restore(const std::string & id,
     }
     if (res.size() > 1) {
         log(ERROR, "Duplicate id in database");
-        debug(std::cout << "DEBUG: ERROR: More than one " << id
+        debug(std::cout << "DEBUG: ERROR: " << res.size() << " of " << id
                         << " in database" << std::endl << std::flush;);
         return;
     }

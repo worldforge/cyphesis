@@ -16,7 +16,7 @@ class Area;
 class Plant;
 
 template <class T>
-class Persistor : public SigC::Object {
+class Persistor : virtual public SigC::Object {
   private:
     const std::string m_class;
 

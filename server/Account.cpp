@@ -27,12 +27,10 @@
 static const bool debug_flag = false;
 
 Account::Account(Connection * conn, const std::string & uname,
-                 const std::string& passwd)
-                 : OOGThing(Database::instance()->getEntityId()),
+                 const std::string& passwd, const std::string & id)
+                 : OOGThing(id.empty() ? Database::instance()->getEntityId() : id),
                    connection(conn), username(uname), password(passwd)
 {
-    // setId(username);
-
     subscribe("logout", OP_LOGOUT);
     subscribe("create", OP_CREATE);
     subscribe("imaginary", OP_IMAGINARY);

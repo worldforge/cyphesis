@@ -22,8 +22,7 @@ static const bool debug_flag = false;
 
 Database * Database::m_instance = NULL;
 
-Database::Database() : account_db("account"),
-                       rule_db("rules"),
+Database::Database() : rule_db("rules"),
                        m_connection(NULL)
 {
     
@@ -89,39 +88,6 @@ bool Database::initConnection(bool createDatabase)
         return false;
     }
 
-    return true;
-}
-
-bool Database::initAccount(bool createTables)
-{
-    int status = 0;
-    status = PQsendQuery(m_connection, "SELECT * FROM account WHERE id = 'admin';");
-    if (!status) {
-        reportError();
-        return false;
-    }
-
-    if (!tuplesOk()) {
-        debug(std::cout << "Account table does not exist"
-                        << std::endl << std::flush;);
-        reportError();
-        if (createTables) {
-            debug(std::cout << "Account table does not exist"
-                            << std::endl << std::flush;);
-            status = PQsendQuery(m_connection, "CREATE TABLE account ( id varchar(80)  PRIMARY KEY, contents text );");
-            if (!status) {
-                reportError();
-                return false;
-            }
-            if (!commandOk()) {
-                log(ERROR, "Error creating account table in database");
-                return false;
-            }
-        } else {
-            log(ERROR, "Account table does not exist in database");
-            return false;
-        }
-    }
     return true;
 }
 
@@ -218,7 +184,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
     }
     const char * data = PQgetvalue(res, 0, 1);
     debug(std::cout << "Got record " << key << " from database, value " << data
-               << std::endl << std::flush;);
+                    << std::endl << std::flush;);
 
     bool ret = decodeObject(data, o);
 
@@ -377,6 +343,224 @@ void Database::reportError()
     log(ERROR, msg.c_str());
 }
 
+const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
+{
+    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    int status = PQsendQuery(m_connection, query.c_str());
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return DatabaseResult(0);
+    }
+    debug(std::cout << "done" << std::endl << std::flush;);
+    PGresult * res;
+    if ((res = PQgetResult(m_connection)) == NULL) {
+        log(ERROR, "Error selecting.");
+        reportError();
+        debug(std::cout << "Row query didn't work"
+                        << std::endl << std::flush;);
+        return DatabaseResult(0);
+    }
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        log(ERROR, "Error selecting row.");
+        std::cout << "QUERY: " << query << std::endl << std::flush;
+        reportError();
+        res = 0;
+    }
+    while (PQgetResult(m_connection) != NULL) {
+        log(ERROR, "Extra database result to simple query.");
+    };
+    return DatabaseResult(res);
+}
+
+bool Database::runCommandQuery(const std::string & query)
+{
+    int status = PQsendQuery(m_connection, query.c_str());
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return false;
+    }
+    if (!commandOk()) {
+        log(ERROR, "Error running command query row.");
+        log(NOTICE, query.c_str());
+        reportError();
+        debug(std::cout << "Row query didn't work"
+                        << std::endl << std::flush;);
+    } else {
+        debug(std::cout << "Query worked" << std::endl << std::flush;);
+        return true;
+    }
+    return false;
+}
+
+bool Database::registerRelation(const std::string & name)
+{
+    std::string query = "SELECT * FROM ";
+    query += name;
+    query += " WHERE id = 0 AND ";
+    query += name;
+    query += " = 0;";
+    std::string createquery = "CREATE TABLE ";
+    createquery += name;
+    createquery += " (id integer UNIQUE PRIMARY KEY, ";
+    createquery += name;
+    createquery += " integer);";
+
+    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    int status = PQsendQuery(m_connection, query.c_str());
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return false;
+    }
+    if (!tuplesOk()) {
+        debug(reportError(););
+        debug(std::cout << "Table does not yet exist"
+                        << std::endl << std::flush;);
+    } else {
+        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        return true;
+    }
+
+    debug(std::cout << "CREATE QUERY: " << createquery
+                    << std::endl << std::flush;);
+    return runCommandQuery(createquery);
+}
+
+const DatabaseResult Database::selectRelation(const std::string & id,
+                                              const std::string & name)
+{
+    std::string query = "SELECT ";
+    query += name;
+    query += " FROM ";
+    query += name;
+    query += " WHERE id = ";
+    query += id;
+    query += ";";
+
+    debug(std::cout << "Selecting on id = " << id << " ... " << std::flush;);
+
+    return runSimpleSelectQuery(query);
+}
+
+bool Database::registerSimpleTable(const std::string & name,
+                                   const Atlas::Message::Object::MapType & row)
+{
+    if (row.empty()) {
+        log(ERROR, "Attempt to create empty database table");
+    }
+    // Check whether the table exists
+    std::string query = "SELECT * FROM ";
+    std::string createquery = "CREATE TABLE ";
+    query += name;
+    createquery += name;
+    query += " WHERE id = 0";
+    createquery += " (id integer UNIQUE PRIMARY KEY";
+    Atlas::Message::Object::MapType::const_iterator I = row.begin();
+    for(; I != row.end(); ++I) {
+        query += " AND ";
+        createquery += ", ";
+        const std::string & column = I->first;
+        query += column;
+        createquery += column;
+        const Atlas::Message::Object & type = I->second;
+        if (type.IsString()) {
+            query += " LIKE 'foo'";
+            int size = type.AsString().size();
+            if (size == 0) {
+                createquery += " text";
+            } else {
+                char buf[32];
+                snprintf(buf, 32, "%d", size);
+                createquery += " varchar(";
+                createquery += buf;
+                createquery += ")";
+            }
+        } else if (type.IsInt()) {
+            query += " = 1";
+            createquery += " integer";
+        } else if (type.IsFloat()) {
+            query += " = 1.0";
+            createquery += " float";
+        } else {
+            log(ERROR, "Illegal column type in database entity row");
+        }
+    }
+    query += ";";
+
+    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    int status = PQsendQuery(m_connection, query.c_str());
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return false;
+    }
+    if (!tuplesOk()) {
+        debug(reportError(););
+        debug(std::cout << "Table does not yet exist"
+                        << std::endl << std::flush;);
+    } else {
+        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        return true;
+    }
+
+    createquery += ");";
+    debug(std::cout << "CREATE QUERY: " << createquery
+                    << std::endl << std::flush;);
+    return runCommandQuery(createquery);
+}
+
+const DatabaseResult Database::selectSimpleRow(const std::string & id,
+                                               const std::string & name)
+{
+    std::string query = "SELECT * FROM ";
+    query += name;
+    query += " WHERE id = ";
+    query += id;
+    query += ";";
+
+    debug(std::cout << "Selecting on id = " << id << " ... " << std::flush;);
+
+    return runSimpleSelectQuery(query);
+}
+
+const DatabaseResult Database::selectSimpleRowBy(const std::string & name,
+                                                 const std::string & column,
+                                                 const std::string & value)
+{
+    std::string query = "SELECT * FROM ";
+    query += name;
+    query += " WHERE ";
+    query += column;
+    query += " = ";
+    query += value;
+    query += ";";
+
+    debug(std::cout << "Selecting on " << column << " = " << value
+                    << " ... " << std::flush;);
+
+    return runSimpleSelectQuery(query);
+}
+
+bool Database::createSimpleRow(const std::string & name,
+                               const std::string & id,
+                               const std::string & columns,
+                               const std::string & values)
+{
+    std::string query = "INSERT INTO ";
+    query += name;
+    query += " ( id, ";
+    query += columns;
+    query += " ) VALUES ( ";
+    query += id;
+    query += ", ";
+    query += values;
+    query += ");";
+
+    return runCommandQuery(query);
+}
+
 bool Database::registerEntityIdGenerator()
 {
     int status = PQsendQuery(m_connection, "SELECT * FROM entity_ent_id_seq;");
@@ -393,22 +577,7 @@ bool Database::registerEntityIdGenerator()
         debug(std::cout << "Sequence exists" << std::endl << std::flush;);
         return true;
     }
-    status = PQsendQuery(m_connection, "CREATE SEQUENCE entity_ent_id_seq;");
-    if (!status) {
-        log(ERROR, "Database query error.");
-        reportError();
-        return false;
-    }
-    if (!commandOk()) {
-        debug(reportError(););
-        debug(std::cout << "Sequence creation failed"
-                        << std::endl << std::flush;);
-        return false;
-    } else {
-        debug(std::cout << "Sequence created" << std::endl << std::flush;);
-        return true;
-    }
-
+    return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq;");
 }
 
 std::string Database::getEntityId()
@@ -545,22 +714,8 @@ bool Database::registerEntityTable(const std::string & classname,
     createquery += ";";
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
-    status = PQsendQuery(m_connection, createquery.c_str());
-    if (!status) {
-        log(ERROR, "Database query error.");
-        reportError();
-        return false;
-    }
-    if (!commandOk()) {
-        log(ERROR, "Error creating database table.");
-        reportError();
-        debug(std::cout << "Table create didn't work"
-                        << std::endl << std::flush;);
-    } else {
-        debug(std::cout << "Table created" << std::endl << std::flush;);
-        return true;
-    }
-    return true;
+
+    return runCommandQuery(query);
 }
 
 bool Database::createEntityRow(const std::string & classname,
@@ -577,29 +732,14 @@ bool Database::createEntityRow(const std::string & classname,
     query += classname;
     query += "_ent ( id, ";
     query += columns;
-    query += " ) VALUES ( '";
+    query += " ) VALUES ( ";
     query += id;
-    query += "', ";
+    query += ", ";
     query += values;
     query += ");";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
 
-    int status = PQsendQuery(m_connection, query.c_str());
-    if (!status) {
-        log(ERROR, "Database query error.");
-        reportError();
-        return false;
-    }
-    if (!commandOk()) {
-        log(ERROR, "Error creating entity row.");
-        reportError();
-        debug(std::cout << "Row create didn't work"
-                        << std::endl << std::flush;);
-    } else {
-        debug(std::cout << "Query worked" << std::endl << std::flush;);
-        return true;
-    }
-    return false;
+    return runCommandQuery(query);
 }
 
 bool Database::updateEntityRow(const std::string & classname,
@@ -624,23 +764,7 @@ bool Database::updateEntityRow(const std::string & classname,
     query += "';";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
 
-    int status = PQsendQuery(m_connection, query.c_str());
-    if (!status) {
-        log(ERROR, "Database query error.");
-        reportError();
-        return false;
-    }
-    if (!commandOk()) {
-        log(ERROR, "Error updating entity row.");
-        std::cout << "QUERY: " << query << std::endl << std::flush;
-        reportError();
-        debug(std::cout << "Row update didn't work"
-                        << std::endl << std::flush;);
-    } else {
-        debug(std::cout << "Query worked" << std::endl << std::flush;);
-        return true;
-    }
-    return false;
+    return runCommandQuery(query);
 }
 
 bool Database::removeEntityRow(const std::string & classname,
@@ -658,22 +782,7 @@ bool Database::removeEntityRow(const std::string & classname,
     query += "';";
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
 
-    int status = PQsendQuery(m_connection, query.c_str());
-    if (!status) {
-        log(ERROR, "Database query error.");
-        reportError();
-        return false;
-    }
-    if (!commandOk()) {
-        log(ERROR, "Error removing entity row.");
-        reportError();
-        debug(std::cout << "Row remove didn't work"
-                        << std::endl << std::flush;);
-    } else {
-        debug(std::cout << "Query worked" << std::endl << std::flush;);
-        return true;
-    }
-    return false;
+    return runCommandQuery(query);
 }
 
 const DatabaseResult Database::selectEntityRow(const std::string & id,
@@ -690,66 +799,28 @@ const DatabaseResult Database::selectEntityRow(const std::string & id,
     query += "_ent WHERE id='";
     query += id;
     query += "';";
-    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
-    debug(std::cout << "Selecting on id = " << id << " ... " << std::flush;);
-    int status = PQsendQuery(m_connection, query.c_str());
-    if (!status) {
-        log(ERROR, "Database query error.");
-        reportError();
-        return DatabaseResult(0);
-    }
-    debug(std::cout << "done" << std::endl << std::flush;);
 
-    PGresult * res;
-    if ((res = PQgetResult(m_connection)) == NULL) {
-        log(ERROR, "Error updating entity row.");
-        reportError();
-        debug(std::cout << "Row query didn't work"
-                        << std::endl << std::flush;);
-        return DatabaseResult(0);
-    }
-    while (PQgetResult(m_connection) != NULL) {
-        log(ERROR, "Extra database result to simple query.");
-    };
-    return DatabaseResult(res);
+    debug(std::cout << "Selecting on id = " << id << " ... " << std::flush;);
+
+    return runSimpleSelectQuery(query);
 }
 
 const DatabaseResult Database::selectOnlyByLoc(const std::string & loc,
                                                const std::string & classname)
 {
+    TableDict::const_iterator I = entityTables.find(classname);
+    if (I == entityTables.end()) {
+        log(ERROR, "Attempt to select from entity table not registered.");
+        return DatabaseResult(0);
+    }
+
     std::string query = "SELECT * FROM ONLY ";
     query += classname;
     query += "_ent WHERE loc=";
     query += loc;
     query += ";";
-    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
-    int status = PQsendQuery(m_connection, query.c_str());
-    if (!status) {
-        log(ERROR, "Database query error.");
-        reportError();
-        return DatabaseResult(0);
-    }
 
-    PGresult * res;
-    if ((res = PQgetResult(m_connection)) == 0) {
-        log(ERROR, "Error selecting entity row.");
-        reportError();
-        std::cout << "QUERY: " << query << std::endl << std::flush;
-        debug(std::cout << "Row query didn't work"
-                        << std::endl << std::flush;);
-        return DatabaseResult(0);
-    }
-    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-        log(ERROR, "Error selecting entity row.");
-        reportError();
-        std::cout << "QUERY: " << query << std::endl << std::flush;
-        res = 0;
-    }
-
-    while (PQgetResult(m_connection) != 0) {
-        log(ERROR, "Extra database result to simple query.");
-    };
-    return DatabaseResult(res);
+    return runSimpleSelectQuery(query);
 }
 
 const DatabaseResult Database::selectClassByLoc(const std::string & loc)
@@ -763,36 +834,9 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
         query += ";";
     }
 
-    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     debug(std::cout << "Selecting on loc = " << loc << " ... " << std::flush;);
-    int status = PQsendQuery(m_connection, query.c_str());
-    if (!status) {
-        log(ERROR, "Database query error.");
-        reportError();
-        return DatabaseResult(0);
-    }
-    debug(std::cout << "done" << std::endl << std::flush;);
 
-    PGresult * res;
-    if ((res = PQgetResult(m_connection)) == 0) {
-        log(ERROR, "Error selecting entity row.");
-        reportError();
-        std::cout << "QUERY: " << query << std::endl << std::flush;
-        debug(std::cout << "Row query didn't work"
-                        << std::endl << std::flush;);
-        return DatabaseResult(0);
-    }
-    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-        log(ERROR, "Error selecting entity row.");
-        reportError();
-        std::cout << "QUERY: " << query << std::endl << std::flush;
-        res = 0;
-    }
-
-    while (PQgetResult(m_connection) != 0) {
-        log(ERROR, "Extra database result to simple query.");
-    };
-    return DatabaseResult(res);
+    return runSimpleSelectQuery(query);
 }
 
 const char * DatabaseResult::field(const char * column, int row) const

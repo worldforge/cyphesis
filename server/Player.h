@@ -12,7 +12,9 @@ class Player : public Account {
     virtual OpVector characterError(const Create & op,
                             const Atlas::Message::Object::MapType & ent) const;
   public:
-    Player(Connection * conn, const std::string & username, const std::string & passwd);
+    Player(Connection * conn, const std::string & username,
+                              const std::string & passwd,
+                              const std::string & id = "");
     virtual ~Player();
 
     virtual const char * getType() const;

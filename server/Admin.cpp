@@ -23,7 +23,8 @@
 static const bool debug_flag = true;
 
 Admin::Admin(Connection * conn, const std::string& username,
-             const std::string& passwd) : Account(conn, username, passwd)
+             const std::string& passwd, const std::string & id) :
+             Account(conn, username, passwd, id)
 {
     subscribe("get", OP_GET);
     subscribe("set", OP_SET);

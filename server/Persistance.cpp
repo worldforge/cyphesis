@@ -36,10 +36,16 @@ bool Persistance::init()
     if (!p->m_connection.initConnection(false)) {
         return false;
     }
-    bool i = p->m_connection.initAccount(true);
-    bool j = p->m_connection.initRule(true);
+    bool i = p->m_connection.initRule(true);
 
-    return (i && j);
+    Fragment::MapType tableDesc;
+    tableDesc["username"] = "                                                                                ";
+    tableDesc["password"] = "                                                                                ";
+    tableDesc["type"] = "          ";
+    bool j = p->m_connection.registerSimpleTable("accounts", tableDesc);
+    bool k = p->m_connection.registerRelation("character");
+
+    return (i && j && k);
 }
 
 void Persistance::shutdown()
@@ -65,40 +71,70 @@ Account * Persistance::loadAdminAccount()
 
 bool Persistance::findAccount(const std::string & name)
 {
-    Fragment::MapType account;
-    return m_connection.getObject(m_connection.account(), name, account);
+    DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", name);
+    if (dr.error()) {
+        log(ERROR, "Failure while find account.");
+        return false;
+    }
+    if (dr.empty()) {
+        return false;
+    }
+    if (dr.size() > 1) {
+        log(ERROR, "Duplicate username in accounts database.");
+    }
+    return true;
 }
 
 Account * Persistance::getAccount(const std::string & name)
 {
-    Fragment::MapType account;
-    if (!m_connection.getObject(m_connection.account(), name, account)) {
-        return NULL;
+    std::string namestr = "'" + name + "'";
+    DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", namestr);
+    if (dr.error()) {
+        log(ERROR, "Failure while find account.");
+        return 0;
     }
-    Fragment::MapType::const_iterator I = account.find("id"),
-                                    J = account.find("password");
-    if ((I == account.end()) || (J == account.end())){
-        std::string msg  = std::string("Database account entry ") + name
-                         + " is missing fields.";
-        log(ERROR, msg.c_str());
-        return NULL;
+    if (dr.empty()) {
+        return 0;
     }
-    const Fragment & acn = I->second, & acp = J->second;
-    if (!acn.IsString() || !acp.IsString()) {
-        std::string msg = std::string("Database account entry ") + name
-                        + " is corrupt.";
-        log(ERROR, msg.c_str());
-        return NULL;
+    if (dr.size() > 1) {
+        log(ERROR, "Duplicate username in accounts database.");
     }
-    if (acn.AsString() == "admin") {
-        return new Admin(NULL, acn.AsString(), acp.AsString());
+    const char * c = dr.field("id");
+    if (c == 0) {
+        log(ERROR, "Unable to find id field in accounts database.");
+        return 0;
     }
-    return new Player(NULL, acn.AsString(), acp.AsString());
+    std::string id = c;
+    c = dr.field("password");
+    if (c == 0) {
+        log(ERROR, "Unable to find password field in accounts database.");
+        return 0;
+    }
+    std::string passwd = c;
+    c = dr.field("type");
+    if (c == 0) {
+        log(ERROR, "Unable to find type field in accounts database.");
+        return 0;
+    }
+    std::string type = c;
+    if (type == "admin") {
+        return new Admin(0, name, passwd, id);
+    } else {
+        return new Player(0, name, passwd, id);
+    }
 }
 
 void Persistance::putAccount(const Account & ac)
 {
-    m_connection.putObject(m_connection.account(), ac.getId(), ac.asObject().AsMap());
+    std::string columns = "username, type, password";
+    std::string values = "'";
+    values += ac.username;
+    values += "', '";
+    values += ac.getType();
+    values += "', '";
+    values += ac.password;
+    values += "'";
+    m_connection.createSimpleRow("accounts", ac.getId(), columns, values);
 }
 
 bool Persistance::getRules(Fragment::MapType & m)

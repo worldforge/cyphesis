@@ -33,7 +33,6 @@ class Database {
   private:
     static Database * m_instance;
 
-    std::string account_db;
     std::string rule_db;
 
     TableDict entityTables;
@@ -50,7 +49,6 @@ class Database {
     bool commandOk();
 
   public:
-    const std::string & account() const { return account_db; }
     const std::string & rule() const { return rule_db; }
 
     bool decodeObject(const std::string & data,
@@ -74,12 +72,31 @@ class Database {
     static Database * instance();
 
     bool initConnection(bool createDatabase = false);
-    bool initAccount(bool createTables = false);
     bool initRule(bool createTables = false);
 
     void shutdownConnection();
 
+    const DatabaseResult runSimpleSelectQuery(const std::string & query);
+    bool runCommandQuery(const std::string & query);
+
     bool registerRelation(const std::string & name);
+    const DatabaseResult selectRelation(const std::string & id,
+                                        const std::string & name);
+    bool createRelationRow(const std::string & name,
+                           const std::string & id,
+                           const std::string & other);
+
+    bool registerSimpleTable(const std::string & name,
+                             const Atlas::Message::Object::MapType & row);
+    const DatabaseResult selectSimpleRow(const std::string & name,
+                                         const std::string & id);
+    const DatabaseResult selectSimpleRowBy(const std::string & name,
+                                           const std::string & column,
+                                           const std::string & value);
+    bool createSimpleRow(const std::string & name,
+                         const std::string & id,
+                         const std::string & columns,
+                         const std::string & values);
 
     bool registerEntityIdGenerator();
     std::string getEntityId();

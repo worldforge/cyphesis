@@ -1,4 +1,30 @@
-2002-01-02  Al Riddoch  <alriddoch@zepler.org>
+2003-01-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.h, server/Persistor.h: Make inheritance of
+	  SigC::Object virtual, although multiple inheritance is not planned.
+
+	* common/Database.cpp, common/Database.h: Remove legacy account
+	  table, and add support for generic non-inherited tables for OOG
+	  data.
+
+	* common/Database.cpp, common/Database.h: Add general methods for
+	  running queries and reporting errors, and cut down duplicated
+	  code elsewhere by using them.
+
+	* common/accountbase.cpp, common/accountbase.h: Remove code
+	  that used old account table, and replace with stubs. New
+	  account yet to be written.
+
+	* server/Account.cpp, server/Account.h, server/Admin.cpp,
+	  server/Admin.h, server/Player.cpp, server/Player.h:
+	  Allow an id to be specified when creating an account.
+
+	* server/Persistance.cpp: Re-write account persistance methods
+	  to use new table.
+
+	* server/Restoration.cpp: Clarify debug output.
+
+2003-01-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.h: Declaration for register relations.
 
@@ -13,7 +39,7 @@
 	  server/CommServer.h, server/server.cpp:
 	  Eliminate storing server name string twice.
 
-2002-01-01  Al Riddoch  <alriddoch@zepler.org>
+2003-01-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CreatorClient.cpp: Make reporting a little more verbose
 	  now that ids are opaque.

@@ -5,3 +5,26 @@
 #include "accountbase.h"
 
 AccountBase * AccountBase::m_instance = NULL;
+
+bool AccountBase::putAccount(const Atlas::Message::Object::MapType & o,
+                             const std::string & account)
+{
+    return false;
+}
+
+bool AccountBase::modAccount(const Atlas::Message::Object::MapType & o,
+                             const std::string & account)
+{
+    return false;
+}
+
+bool AccountBase::delAccount(const std::string & account)
+{
+    return false;
+}
+
+bool AccountBase::getAccount(const std::string & account,
+                             Atlas::Message::Object::MapType & o)
+{
+    return false;
+}

@@ -20,7 +20,6 @@ class AccountBase {
         if (m_instance == NULL) {
             m_instance = new AccountBase();
             m_instance->m_connection.initConnection(create);
-            m_instance->m_connection.initAccount(create);
         }
         return m_instance;
     }
@@ -34,20 +33,12 @@ class AccountBase {
     }
 
     bool putAccount(const Atlas::Message::Object::MapType & o,
-                    const std::string & account) {
-        return m_connection.putObject(m_connection.account(), account, o);
-    }
+                    const std::string & account);
     bool modAccount(const Atlas::Message::Object::MapType & o,
-                    const std::string & account) {
-        return m_connection.updateObject(m_connection.account(), account, o);
-    }
-    bool delAccount(const std::string & account) {
-        return m_connection.delObject(m_connection.account(), account);
-    }
+                    const std::string & account);
+    bool delAccount(const std::string & account);
     bool getAccount(const std::string & account,
-                    Atlas::Message::Object::MapType & o) {
-        return m_connection.getObject(m_connection.account(), account, o);
-    }
+                    Atlas::Message::Object::MapType & o);
 
 };
 

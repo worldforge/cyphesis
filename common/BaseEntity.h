@@ -23,7 +23,7 @@
 // It has an id which is typically used to store it in a map or
 // dictionary as they are called elsewhere in this code.
 
-class BaseEntity : public SigC::Object {
+class BaseEntity : virtual public SigC::Object {
   private:
     const std::string m_id;		// String id
 

@@ -11,7 +11,8 @@
 std::set<std::string> Player::playableTypes;
 
 Player::Player(Connection * conn, const std::string& username,
-               const std::string& passwd) : Account(conn, username, passwd)
+               const std::string& passwd, const std::string & id) :
+               Account(conn, username, passwd, id)
 {
 }
 
