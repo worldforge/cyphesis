@@ -39,7 +39,7 @@ mprices=[('pig','price','5')]
 bprices=[('ham','price','2')]
 bknowledge=[('market','location',butcher_stall_xyz)]
 mknowledge=[('market','location',pig_sty_xyz)]
-sknowledge=[('forest','location',(-30,-116,settlement_height)),
+sknowledge=[('forest','location',forest_xyz),
             ('stash','location',(-98,-97,settlement_height))]
 village=[('hall','location', hall_xyz),
          ('butcher','location', butcher_stall_xyz),
@@ -83,11 +83,13 @@ chicken_goals=[(il.avoid,"avoid(['settler','orc','wolf'],10.0)"),
                (il.flock,"flock()")]
 
 squirrel_goals=[(il.avoid,"avoid(['wolf','crab'],10.0)"),
-                (il.forage,"forage(self, 'acorn')")]
+                (il.forage,"forage(self, 'acorn')"),
+		(il.forage,"forage(self, 'pinekernel')")]
 
 wolf_goals=[(il.forage,"forage(self, 'ham')"),
             (il.hunt,"predate(self,'pig',30.0)"),
             (il.hunt,"predate(self,'crab',20.0)"),
+	    (il.hunt,"predate(self,'squirrel',10.0"),
             (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
 
 crab_goals=[(il.avoid,"avoid('wolf',10.0)"),
@@ -209,10 +211,10 @@ def default(mapeditor):
 
     skeleton = m.make('skeleton', type='skeleton', xyz=(-38,-25,settlement_height))
 
-    #squirrel = m.make('squirrel', type='squirrel', desc='test squirrel',
-                    #xyz=(-32,-115,settlement_height))
-    #m.know(squirrel,sknowledge)
-    #m.learn(squirrel,(il.transport,"transport_something(self,'acorn','forest','stash')"))
+    squirrel = m.make('squirrel', type='squirrel', desc='test squirrel',
+                    xyz=(-32,-15,settlement_height))
+    m.know(squirrel,sknowledge)
+    m.learn(squirrel,squirrel_knowledge)
 
 #   villagers
     #directions = [[0,1,0],[1,0,0],[0,-1,0],[-1,0,0],
@@ -346,4 +348,3 @@ def test_know(mapeditor):
     m=editor(mapeditor)
     wolf = m.make('wolf', type='wolf', xyz=(90,-90,settlement_height))
     m.know(wolf,wolf_knowledge)
-    m.know(wolf,bprices)
