@@ -330,7 +330,13 @@ oplist Character::Mind_Operation(const Move & op)
         debug_movement && cout << "Moving something else. " << oname << endl << flush;
         try {
             double weight = attributes["weight"].AsFloat();
-            double oweight = (*obj)["weight"].AsFloat();
+            Object & ow = (*obj)["weight"];
+            double oweight;
+            if (ow.IsInt()) {
+                oweight = double(ow.AsInt());
+            } else {
+                oweight = ow.AsFloat();
+            }
             if ((oweight < 0) || (oweight > weight)) {
                 debug_movement && cout << "We can't move this. Just too heavy" << endl << flush;
                 delete newop;
