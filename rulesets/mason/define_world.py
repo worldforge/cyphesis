@@ -90,6 +90,12 @@ lych_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm'
 directions = [[0,0,0.707,0.707],[0,0,0,1],[0,0,-0.707,0.707],[0,0,1,0],
               [0,0,0.387,0.921],[0,0,-0.387,0.921],[0,0,-0.921,0.387],[0,0,0.921,0.387]]
 
+forests = [
+           ('oak', 50, 50, 200, 50, 200),
+           ('fir', 100,  450,  550, -550, -550),
+           ('fir', 100, -550, -550,  450,  550)
+          ]
+
 #observer calls this
 def default(mapeditor):
 #   general things
@@ -109,7 +115,7 @@ def default(mapeditor):
     m.make('willow',type='willow',xyz=(-10,-0,settlement_height))
     m.make('hickory',type='hickory',xyz=(-0,-10,settlement_height))
 
-    m.make('sherwood',type='forest',xyz=(-50, 10,settlement_height),bbox=[40,40,40])
+    # m.make('sherwood',type='forest',xyz=(-50, 10,settlement_height),bbox=[40,40,40])
 
     m.make('jetty',type='jetty',xyz=(-22,-48,0))
     m.make('boat',type='boat',xyz=(-22,-56,0),mode="floating")

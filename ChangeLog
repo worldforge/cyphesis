@@ -1,5 +1,9 @@
 2004-04-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* Add lists of forest areas for automatic forect population.
+
+2004-04-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* Fix types for boat and jetty.
 
 	* rulesets/World.cpp: New random terrain for Ludex demo.
