@@ -20,6 +20,7 @@ static const bool debug_flag = false;
 Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
                                                          m_radius(1),
                                                          m_fruitChance(2),
+                                                         m_sizeAdult(4),
                                                          m_fruitName("seed")
 {
     // Default to a 1m cube
@@ -121,7 +122,8 @@ OpVector Plant::TickOperation(const Tick & op)
     tickOp->setFutureSeconds(consts::basic_tick * m_speed);
     res.push_back(tickOp);
     int dropped = dropFruit(res);
-    if (m_location.m_bBox.highCorner().z() > m_sizeAdult) {
+    if (m_location.m_bBox.isValid() && 
+        (m_location.m_bBox.highCorner().z() > m_sizeAdult)) {
         if (randint(1, m_fruitChance) == 1) {
             m_fruits++;
             dropped--;

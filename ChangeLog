@@ -1,5 +1,13 @@
 2003-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/EntityExerciser.h: Delete all returned operations when
+	  testing.
+
+	* rulesets/Plant.cpp: Check if bbox is valid before testing its
+	  height. Initialise the height at which plants produces fruit.
+
+2003-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/EntityExerciser.h, tests/utilitytest.cpp: Get rid of
 	  some warnings.
 
