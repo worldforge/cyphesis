@@ -1,4 +1,9 @@
-2004-10-26  Al Riddoch  <alriddoch@zepler.org>
+2004-10-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/inheritance_impl.h: Oops, missing factory template
+	  specialisation.
+
+2004-10-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Generic.h: Add required RootOperation include.
 
