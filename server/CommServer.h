@@ -19,7 +19,7 @@ class CommServer {
     comm_set_t m_sockets;
     commi_set_t m_idleSockets;
 
-    void idle();
+    bool idle();
 
     // Private and unimplemented.
     CommServer(const CommServer &);

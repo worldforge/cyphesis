@@ -1,5 +1,14 @@
 2004-05-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseWorld.h, server/CommServer.cpp, server/CommServer.h,
+	  server/ServerRouting.cpp, server/ServerRouting.h,
+	  server/ServerRouting_methods.h, server/WorldRouter.cpp,
+	  server/WorldRouter.h: Modify idle to return if there are ops due
+	  so that select can be called with zero timeout. Server now processes
+	  op as quickly as possible and hopefully is still responsive.
+
+2004-05-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/CommClient.cpp, rulesets/Entity.cpp, rulesets/Entity.h,
 	  rulesets/Entity_getLocation.h, server/EntityFactory.cpp:
 	  Make Entity::getLocation a template, so it works with maps on

@@ -29,7 +29,7 @@ class ServerRouting : public OOGThing {
                   const std::string & name);
     ~ServerRouting();
 
-    void idle();
+    bool idle();
 
     void addObject(BaseEntity * obj) {
         m_objects[obj->getId()] = obj;

@@ -299,7 +299,7 @@ OpVector WorldRouter::LookOperation(const Look & op)
     return OpVector();
 }
 
-void WorldRouter::idle()
+bool WorldRouter::idle()
 {
     updateTime();
     unsigned int op_count = 0;
@@ -319,6 +319,7 @@ void WorldRouter::idle()
         }
         delete op;
     }
+    return (op_count == 10);
 }
 
 Entity * WorldRouter::findByName(const std::string & name)

@@ -49,7 +49,7 @@ class BaseWorld : public OOGThing {
         return m_realTime - timeoffset;
     }
 
-    virtual void idle() = 0;
+    virtual bool idle() = 0;
     virtual Entity * addObject(Entity * obj, bool setup = true) = 0;
     virtual Entity * addNewObject(const std::string &,
                                   const Atlas::Message::Element::MapType &) = 0;

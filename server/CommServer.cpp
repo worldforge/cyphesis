@@ -28,7 +28,7 @@ CommServer::~CommServer()
     }
 }
 
-inline void CommServer::idle()
+inline bool CommServer::idle()
 {
     // Update the time, and get the core server object to process
     // stuff.
@@ -39,7 +39,7 @@ inline void CommServer::idle()
     }
     // server.idle() is inlined, and simply calls the world idle method,
     // which is not directly accessible from here.
-    server.idle();
+    return server.idle();
 }
 
 void CommServer::loop()
@@ -48,12 +48,14 @@ void CommServer::loop()
     // Classic select code for checking incoming data or client connections.
     // It may be beneficial to re-write this code to use the poll(2) system
     // call.
+    bool busy = idle();
+
     fd_set sock_fds;
     int highest = 0;
     struct timeval tv;
 
     tv.tv_sec = 0;
-    tv.tv_usec = 100000;
+    tv.tv_usec = (busy ? 0 : 100000);
 
     FD_ZERO(&sock_fds);
 
@@ -82,7 +84,6 @@ void CommServer::loop()
     }
 
     if ((rval == 0) && !pendingConnections) {
-        idle();
         return;
     }
     
@@ -112,9 +113,6 @@ void CommServer::loop()
     for(; J != obsoleteConnections.end(); ++J) {
         removeSocket(*J);
     }
-    // Once we have done all socket related stuff, proceed with processing
-    // the world.
-    idle();
 }
 
 inline void CommServer::removeSocket(CommSocket * client, char * error_msg)
