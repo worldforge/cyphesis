@@ -59,7 +59,9 @@ void Thing::addObject(Message::Object * obj)
 {
     Message::Object::MapType & omap = obj->AsMap();
     omap["name"] = Message::Object(name);
+    omap["parents"] = Message::Object(Message::Object::ListType(1,Message::Object(type)));
     omap.insert(attributes.begin(), attributes.end());
+    location.addObject(obj);
     BaseEntity::addObject(obj);
 }
 
@@ -298,5 +300,6 @@ Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)
     } else {
         cout << "Got no name" << endl << flush;
     }
+    thing->type = type;
     return(thing);
 }

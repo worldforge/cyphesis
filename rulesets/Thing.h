@@ -18,6 +18,7 @@ class Thing : public BaseEntity {
     Message::Object::MapType attributes;
   public:
     double status;
+    string type;
     int is_character;
 
     Thing();

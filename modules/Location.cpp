@@ -42,6 +42,7 @@ using namespace Message;
 void Location::addObject(Object * obj)
 {
     Object::MapType & omap = obj->AsMap();
+#if 0
     if (parent!=NULL) {
         omap["loc"] = Object(parent->fullid);
     } else {
@@ -49,4 +50,14 @@ void Location::addObject(Object * obj)
     }
     omap["pos"] = coords.asObject();
     omap["velocity"] = velocity.asObject();
+#else
+    Object::MapType lmap;
+    if (parent!=NULL) {
+        lmap["ref"] = Object(parent->fullid);
+    } else {
+        lmap["ref"] = Object("");
+    }
+    lmap["coords"] = coords.asObject();
+    omap["loc"] = Object(lmap);
+#endif
 }

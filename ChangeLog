@@ -1,5 +1,12 @@
 2000-11-02  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Fixed some attributes of in-game object
+
+	* Added temporary support for old style Atlas location so we still
+	  work with uclient.
+
+2000-11-02  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Fixed it so that server does not exit if client negotiation fails.
 
 	* Cleaned up detection of disconnected client
