@@ -19,6 +19,8 @@ class CommListener : public CommSocket {
 
     int accept();
 
+    virtual void create(int fd, const char * address);
+
   public:
     explicit CommListener(CommServer & svr);
     virtual ~CommListener();

@@ -131,10 +131,6 @@ void Connection::objectDeleted(std::string id)
     removeObject(id);
 }
 
-void Connection::destroy()
-{
-}
-
 void Connection::disconnect()
 {
     m_commClient.disconnect();

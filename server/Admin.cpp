@@ -7,6 +7,8 @@
 #include "ServerRouting.h"
 #include "Connection.h"
 #include "EntityFactory.h"
+#include "CommPeer.h"
+#include "CommServer.h"
 
 #include "rulesets/Character.h"
 
@@ -35,6 +37,7 @@ Admin::Admin(Connection * conn, const std::string& username,
     subscribe("get", OP_GET);
     subscribe("set", OP_SET);
     subscribe("monitor", OP_MONITOR);
+    subscribe("connect", OP_CONNECT);
 }
 
 Admin::~Admin()
@@ -295,20 +298,65 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
 void Admin::OtherOperation(const Operation & op, OpVector & res)
 {
     const std::string & op_type = op.getParents().front().asString();
-    if (op_type == "monitor") {
-        if (!op.getArgs().empty()) {
-            if (m_connection != 0) {
-                if (!m_monitorConnection.connected()) {
-                    m_monitorConnection = m_connection->m_server.m_world.Dispatching.connect(SigC::slot(*this, &Admin::opDispatched));
-                }
+    if (op_type == "connect") {
+        return customConnectOperation(op, res);
+    } else if (op_type == "monitor") {
+        return customMonitorOperation(op, res);
+    }
+}
+
+void Admin::customConnectOperation(const Operation & op, OpVector & res)
+{
+    const ListType & args = op.getArgs();
+    if (args.empty()) {
+        error(op, "No argument to connect op", res, getId());
+        return;
+    }
+    if (!args.front().isMap()) {
+        error(op, "Non map argument to connect op", res, getId());
+        return;
+    }
+    const MapType & arg = args.front().asMap();
+    MapType::const_iterator I = arg.find("hostname");
+    if (I == arg.end()) {
+        error(op, "Argument to connect op has no hostname", res, getId());
+        return;
+    }
+    if (!I->second.isString()) {
+        error(op, "Argument to connect op has non string hostname", res, getId());
+        return;
+    }
+    const std::string & hostname = I->second.asString();
+    if (m_connection == 0) {
+        log(ERROR, "Attempt to make peer connection from unconnected account");
+    }
+    CommPeer * cp = new CommPeer(m_connection->m_commClient.m_commServer,
+                                 hostname);
+    std::cout << "Connecting to " << hostname << std::endl << std::flush;
+    if (cp->connect(hostname) != 0) {
+        error(op, "Connection failed", res, getId());
+        return;
+    }
+    log(INFO, "Connection succeeded");
+    m_connection->m_commClient.m_commServer.addSocket(cp);
+    // Fix it up
+}
+
+void Admin::customMonitorOperation(const Operation & op, OpVector & res)
+{
+    if (!op.getArgs().empty()) {
+        if (m_connection != 0) {
+            if (!m_monitorConnection.connected()) {
+                m_monitorConnection = m_connection->m_server.m_world.Dispatching.connect(SigC::slot(*this, &Admin::opDispatched));
             }
-        } else {
-            if (m_monitorConnection.connected()) {
-                m_monitorConnection.disconnect();
-            }
+        }
+    } else {
+        if (m_monitorConnection.connected()) {
+            m_monitorConnection.disconnect();
         }
     }
 }
+
 // There used to be a code operation handler here. It may become desirable in
 // the future for the admin account to be able to send script fragments.
 // Think about implementing this.

@@ -8,6 +8,7 @@
 
 #include "CommServer.h"
 #include "CommListener.h"
+#include "CommPeerListener.h"
 #include "CommUnixListener.h"
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
@@ -137,20 +138,28 @@ int main(int argc, char ** argv)
 
     CommListener * listener = new CommListener(commServer);
     if (listener->setup(client_port_num) != 0) {
-        log(ERROR, "Could not create listen socket. Init failed.");
+        log(ERROR, "Could not create client listen socket. Init failed.");
         return EXIT_SOCKET_ERROR;
     }
     commServer.addSocket(listener);
 
-    CommUnixListener * llistener = new CommUnixListener(commServer);
-    if (llistener->setup(socket_name) != 0) {
+    CommPeerListener * peerListener = new CommPeerListener(commServer);
+    if (peerListener->setup(peer_port_num) != 0) {
+        log(ERROR, "Could not create peer listen socket.");
+        delete peerListener;
+    } else {
+        commServer.addSocket(peerListener);
+    }
+
+    CommUnixListener * localListener = new CommUnixListener(commServer);
+    if (localListener->setup(socket_name) != 0) {
         std::stringstream str;
         str << "Could not create local listen socket with address \"";
-        str << llistener->getPath() << "\".";
+        str << localListener->getPath() << "\".";
         log(ERROR, str.str().c_str());
-        delete llistener;
+        delete localListener;
     } else {
-        commServer.addSocket(llistener);
+        commServer.addSocket(localListener);
     }
 
     CommPSQLSocket * dbsocket = new CommPSQLSocket(commServer,

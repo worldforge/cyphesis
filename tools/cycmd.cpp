@@ -72,6 +72,7 @@ using Atlas::Objects::Operation::Talk;
 static void help()
 {
     std::cout << "Cyphesis commands:" << std::endl << std::endl;
+    std::cout << "    connect   Connect server to a peer" << std::endl;
     std::cout << "    get       Examine a class on the server" << std::endl;
     std::cout << "    help      Display this help" << std::endl;
     std::cout << "    install   Install a new type" << std::endl;
@@ -701,6 +702,16 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         gettimeofday(&tv, NULL);
         int monitor_time = tv.tv_sec - monitor_start_time;
         std::cout << monitor_op_count << " operations monitored in " << monitor_time << " seconds = " << monitor_op_count / monitor_time << " operations per second" << std::endl << std::flush;
+    } else if (cmd == "connect") {
+        reply_expected = false;
+        Generic m("connect");
+
+        MapType cmap;
+        cmap["hostname"] = arg;
+        m.setArgs(ListType(1,cmap));
+        m.setFrom(accountId);
+
+        encoder->streamMessage(&m);
     } else {
         reply_expected = false;
         std::cout << cmd << ": Command not known" << std::endl << std::flush;

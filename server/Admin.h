@@ -32,6 +32,9 @@ class Admin : public Account {
     virtual void SetOperation(const Operation &, OpVector &);
     virtual void CreateOperation(const Operation &, OpVector &);
     virtual void OtherOperation(const Operation &, OpVector &);
+
+    void customConnectOperation(const Operation &, OpVector &);
+    void customMonitorOperation(const Operation &, OpVector &);
 };
 
 #endif // SERVER_ADMIN_H

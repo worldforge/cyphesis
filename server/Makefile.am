@@ -20,14 +20,17 @@ cyphesis_SOURCES = \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
+		Peer.cpp Peer.h \
 		Idle.cpp Idle.h \
 		CommSocket.cpp CommSocket.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
 		CommListener.cpp CommListener.h \
+		CommPeerListener.cpp CommPeerListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
 		CommClient.cpp CommClient.h \
 		CommLocalClient.cpp CommLocalClient.h \
 		CommRemoteClient.cpp CommRemoteClient.h \
+		CommPeer.cpp CommPeer.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \

@@ -1,3 +1,39 @@
+2004-12-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommListener.cpp, server/CommListener.h: Add a virtual
+	  create method, so it can be overriden to make different kinds
+	  of listener.
+
+	* server/Peer.cpp, server/Peer.h: New class representing connections
+	  to peer servers.
+
+	* server/CommPeer.cpp, server/CommPeer.h: New socket class handling
+	  sockets used to connect to peer servers.
+
+	* server/CommPeerListener.cpp, server/CommPeerListener.h: New
+	  listener using new virtual interface in CommListener to accept
+	  peer connections.
+
+	* server/CommClient.cpp, server/CommClient.h: Add a new constructor
+	  for creating Atlas socket objects which are not yet open. Makes
+	  this class suitable for establishing as well as accepting
+	  connections. Take out call to Connection::destroy.
+
+	* server/CommRemoteClient.h: Fix error in header guards.
+
+	* server/Connection.cpp, server/Connection.h: Remove
+	  obsolete destroy() method. Make CommClient member public.
+
+	* server/server.cpp: Add new listener for peer connections.
+
+	* common/types.h: Add enumeration for new connect operation.
+
+	* server/Admin.cpp, server/Admin.h: Add new handler for connect
+	  operations, used by admin client to build peer connections.
+
+	* tools/cycmd.cpp: Add new command "connect" for sending
+	  connect ops to server.
+
 2004-12-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/ClientConnection.cpp, common/globals.cpp, common/globals.h,

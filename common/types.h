@@ -26,6 +26,7 @@ typedef enum op_no {
 	OP_ACTION,
 	OP_CHOP,
 	OP_COMBINE,
+	OP_CONNECT,
 	OP_CREATE,
 	OP_CUT,
 	OP_DELETE,

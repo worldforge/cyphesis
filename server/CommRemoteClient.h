@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef SERVER_COMM_LOCAL_CLIENT_H
-#define SERVER_COMM_LOCAL_CLIENT_H
+#ifndef SERVER_COMM_REMOTE_CLIENT_H
+#define SERVER_COMM_REMOTE_CLIENT_H
 
 #include "CommClient.h"
 
@@ -15,4 +15,4 @@ class CommRemoteClient : public CommClient {
 
 };
 
-#endif // SERVER_COMM_LOCAL_CLIENT_H
+#endif // SERVER_COMM_REMOTE_CLIENT_H

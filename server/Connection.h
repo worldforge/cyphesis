@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2004 Alistair Riddoch
 
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
@@ -25,7 +25,6 @@ class Connection : public OOGThing {
     typedef std::map<std::string, SigC::Connection *> ConMap;
 
     BaseDict m_objects;
-    CommClient & m_commClient;
 
     /// \brief Signal connections connected to the destroyed signal of
     /// entities associated with this object. As the entities get deleted
@@ -46,17 +45,16 @@ class Connection : public OOGThing {
     virtual bool verifyCredentials(const Account &,
                                    const Atlas::Message::MapType &) const;
   public:
+    CommClient & m_commClient;
     ServerRouting & m_server;
 
-    Connection(const std::string & id, CommClient & client,
-               ServerRouting & svr);
+    Connection(const std::string & id, CommClient &, ServerRouting & svr);
     virtual ~Connection();
 
     void addObject(BaseEntity * obj);
     void removeObject(const std::string & id);
     void objectDeleted(std::string id);
 
-    void destroy();
     void disconnect();
     void send(const Operation & op) const;
 

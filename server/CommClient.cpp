@@ -4,7 +4,6 @@
 
 #include "CommClient.h"
 #include "CommServer.h"
-#include "Connection.h"
 #include "ServerRouting.h"
 
 #include "common/log.h"
@@ -33,7 +32,7 @@ using Atlas::Message::MapType;
 
 static const bool debug_flag = false;
 
-CommClient::CommClient(CommServer & svr, int fd, Connection & c) :
+CommClient::CommClient(CommServer & svr, int fd, BaseEntity & c) :
             CommSocket(svr),
             m_clientIos(fd),
             m_codec(NULL), m_encoder(NULL),
@@ -42,9 +41,16 @@ CommClient::CommClient(CommServer & svr, int fd, Connection & c) :
     m_clientIos.setTimeout(0,1000);
 }
 
+CommClient::CommClient(CommServer & svr, BaseEntity & c) :
+            CommSocket(svr),
+            m_codec(NULL), m_encoder(NULL),
+            m_connection(c)
+{
+    m_clientIos.setTimeout(0,1000);
+}
+
 CommClient::~CommClient()
 {
-    m_connection.destroy();
     delete &m_connection;
     if (m_accept != NULL) {
         delete m_accept;

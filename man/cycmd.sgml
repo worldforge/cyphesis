@@ -105,6 +105,22 @@ Specifies the filename to use to listen for local trusted client connections.
   <variablelist>
    <varlistentry>
     <term><cmdsynopsis>
+      <command>connect</command>
+      <arg choice="req">hostname</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Connect the server to a peer.
+     </para>
+     <para>
+Try and establish a connection to a peer server.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
       <command>get</command>
       <arg choice="req">typename</arg>
      </cmdsynopsis>

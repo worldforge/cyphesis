@@ -23,7 +23,7 @@ namespace Atlas {
   }
 }
 
-class Connection;
+class BaseEntity;
 
 /// \brief Base class for Atlas clients connected to the server.
 ///
@@ -44,7 +44,7 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
     /// \brief Atlas negotiator for handling codec negotiation.
     Atlas::Net::StreamAccept * m_accept;
     /// \brief Server side object for handling connection level operations.
-    Connection & m_connection;
+    BaseEntity & m_connection;
 
     /// \brief Handle socket data related to codec negotiation.
     int negotiate();
@@ -70,7 +70,8 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
     virtual void objectArrived(const Atlas::Objects::Operation::Get & op);
 
   public:
-    CommClient(CommServer &, int fd, Connection &);
+    CommClient(CommServer &, int fd, BaseEntity &);
+    CommClient(CommServer &, BaseEntity &);
     virtual ~CommClient();
 
     void disconnect() { m_clientIos.shutdown(); }

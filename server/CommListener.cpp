@@ -109,12 +109,18 @@ int CommListener::accept()
         address = "unknown";
     }
     
-    CommRemoteClient * newcli = new CommRemoteClient(m_commServer, asockfd, address);
+    create(asockfd, address);
+    return 0;
+}
+
+void CommListener::create(int asockfd, const char * address)
+{
+    CommRemoteClient * newcli = new CommRemoteClient(m_commServer, asockfd,
+                                                     address);
 
     newcli->setup();
 
     // Add this new client to the list.
     m_commServer.addSocket(newcli);
 
-    return 0;
 }
