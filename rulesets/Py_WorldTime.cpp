@@ -50,6 +50,9 @@ static PyMethodDef WorldTime_methods[] = {
 
 static void WorldTime_dealloc(WorldTimeObject *self)
 {
+    if ((self->own) && (self->time != NULL)) {
+        delete self->time;
+    }
     PyMem_DEL(self);
 }
 
@@ -107,5 +110,6 @@ WorldTimeObject * newWorldTimeObject(PyObject *arg)
 	if (self == NULL) {
 		return NULL;
 	}
+        self->own = false;
 	return self;
 }

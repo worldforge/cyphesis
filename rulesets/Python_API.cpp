@@ -191,9 +191,10 @@ static PyObject * Get_PyClass(const string & package, const string & _type)
 {
     string type = _type;
     type[0] = toupper(type[0]);
-    PyObject * mod_dict;
     PyObject * package_name = PyString_FromString((char *)package.c_str());
-    if ((mod_dict = PyImport_Import(package_name))==NULL) {
+    PyObject * mod_dict = PyImport_Import(package_name);
+    Py_DECREF(package_name);
+    if (mod_dict == NULL) {
         cerr << "Cld no find python module " << package << endl << flush;
             PyErr_Print();
         return NULL;
@@ -208,12 +209,10 @@ static PyObject * Get_PyClass(const string & package, const string & _type)
     }
     if (PyCallable_Check(my_class) == 0) {
         cerr << "It does not seem to be a class at all" << endl << flush;
+        Py_DECREF(my_class);
         return NULL;
     }
     return my_class;
-    // ThingObject * pyThing = newThingObject(NULL);
-    // pyThing->m_thing = thing;
-    // PyObject * pyob;
 }
 
 static PyObject * Create_PyScript(PyObject * pyThing, PyObject * pyclass)
@@ -407,6 +406,7 @@ static PyObject * worldtime_new(PyObject * self, PyObject * args)
 		return NULL;
 	}
 	o->time = new WorldTime(seconds);
+        o->own = true;
 	return (PyObject *)o;
 }
 
@@ -540,7 +540,6 @@ static PyObject * cppthing_new(PyObject * self, PyObject * args)
 	if ( o == NULL ) {
 		return NULL;
 	}
-	//o->m_thing = new Thing;
 	return (PyObject *)o;
 }
 

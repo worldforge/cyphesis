@@ -32,6 +32,7 @@ extern "C" {
 
 // iosockinet - the iostream-based socket class
 // Atlas negotiation
+#include <Atlas/Codec.h>
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Encoder.h>

@@ -36,7 +36,6 @@ Thing::~Thing() { }
 
 oplist Thing::SetupOperation(const Setup & op)
 {
-    oplist res(1);
 
     // This is a bit of a hack that I am not entirely happy with.
     // We broadcast a sight of create of ourselves so that everything
@@ -47,15 +46,21 @@ oplist Thing::SetupOperation(const Setup & op)
     Create c(Create::Instantiate());
     c.SetArgs(Object::ListType(1,asObject()));
     sight->SetArgs(Object::ListType(1, c.AsObject()));
-    res[0] = sight;
 
-    if (script->Operation("setup", op, res) != 0) {
-        return res;
+    oplist sres;
+    if (script->Operation("setup", op, sres) != 0) {
+        sres.push_back(sight);
+        return sres;
     }
+
+    oplist res(2);
+
+    res[0] = sight;
 
     RootOperation * tick = new Tick(Tick::Instantiate());
     tick->SetTo(fullid);
-    res.push_back(tick);
+
+    res[1] = tick;
 
     return res;
 }

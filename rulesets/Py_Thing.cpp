@@ -76,7 +76,9 @@ static PyObject * Thing_getattr(ThingObject *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        PyList_Append(list, PyString_FromString(self->m_thing->type.c_str()));
+        PyObject * ent = PyString_FromString(self->m_thing->type.c_str());
+        PyList_Append(list, ent);
+        Py_DECREF(ent);
         return list;
     }
     // if (strcmp(name, "map") == 0) {

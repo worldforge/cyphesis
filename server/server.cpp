@@ -579,7 +579,10 @@ int main(int argc, char ** argv)
             cout << "CRITICAL: Admin account not found." << endl << flush;
         } else {
             cout << "Loading world state from database..." << flush;
-            admin->LoadOperation(l);
+            oplist res = admin->LoadOperation(l);
+            // Delete the resulting op
+            oplist::iterator I = res.begin();
+            for(;I != res.end(); I++) { delete *I; }
             cout << " done" << endl << flush;
         }
         // FIXME ? How to send this to admin account ?

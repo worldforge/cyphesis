@@ -16,6 +16,7 @@
 #include <common/debug.h>
 #include <common/const.h>
 #include <common/globals.h>
+#include <common/stringstream.h>
 
 #include <strstream>
 
@@ -84,11 +85,9 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
 
 inline std::string WorldRouter::getId(std::string & name)
 {
-    std::string full_id;
-
-    std::strstream buf;
+    std::stringstream buf;
     buf << name << "_" << ++nextId;
-    full_id = std::string(buf.str(), buf.pcount());
+    std::string full_id = buf.str();
     size_t index;
     while ((index = full_id.find(' ', 0)) != std::string::npos) {
         full_id[index] = '_';

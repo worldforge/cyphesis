@@ -59,6 +59,7 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     WorldTime	* time;
+    bool	own;
 } WorldTimeObject;
 
 typedef struct {
@@ -68,7 +69,6 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
-    PyObject		* Operation_attr;
     RootOperation	* operation;
     int			own;
     Entity		* from;

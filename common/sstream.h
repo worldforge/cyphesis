@@ -27,7 +27,7 @@
 #include <string>
 #include <streambuf.h>
 #include <iostream.h>
-#include <iotraits.h>
+#include "iotraits.h"
 #include <algorithm>
 
 //------------------------------------------------------------------------------
@@ -205,7 +205,7 @@ typedef basic_stringstream<char, string_char_traits<char>, alloc> stringstream;
 //------------------------------------------------------------------------------
 
 #if !defined(SSTREAM_CC)
-#  include <sstream.cc>
+#  include "sstream.cc"
 #endif
 
 #endif /* SSTREAM_H */

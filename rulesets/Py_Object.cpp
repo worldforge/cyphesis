@@ -148,7 +148,9 @@ static PyObject * MapType_asPyObject(const Object::MapType & map)
             return NULL;
         }
         item->m_obj = new Object(I->second);
+        // PyDict_SetItem() does not eat the reference passed to it
         PyDict_SetItemString(args_pydict,(char *)key.c_str(),(PyObject *)item);
+        Py_DECREF(item);
     }
     return args_pydict;
 }
@@ -166,6 +168,7 @@ static PyObject * ListType_asPyObject(const Object::ListType & list)
             return NULL;
         }
         item->m_obj = new Object(*I);
+        // PyList_SetItem() eats the reference passed to it
         PyList_SetItem(args_pylist, j, (PyObject *)item);
     }
     return args_pylist;
