@@ -2,6 +2,7 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 #Al Riddoch - Added transport_something() goal
 
+from physics import *
 from mind.goals.common.common import *
 from mind.goals.common.move import *
 from whrandom import *
@@ -177,7 +178,7 @@ class spot_something(Goal):
         nearest=None
         nearsqrdist=self.range*self.range
         for thing in thing_all:
-            sqr_dist = distance_to(me.location, thing.location).square_mag()
+            sqr_dist = square_distance(me.location, thing.location)
             # FIXME We need a more sophisticated check for parent. Perhaps just
             # check its not in a persons inventory? Requires the ability to
             # do decent type checks
@@ -352,7 +353,7 @@ class hunt(Goal):
     def none_in_range(self, me):
         thing_all=me.map.find_by_type(self.what)
         for thing in thing_all:
-            if distance_to(me.location, thing.location).square_mag() < self.square_range():
+            if square_distance(me.location, thing.location) < self.square_range:
                 return 0
         return 1
     def fight(self, me):
@@ -384,11 +385,12 @@ class defend(Goal):
         self.with=with
         self.what=what
         self.range=range
+        self.square_range=range*range
         self.vars=["with", "what", "range"]
     def none_in_range(self, me):
         thing_all=me.map.find_by_type(self.what)
         for thing in thing_all:
-            if distance_to(me.location, thing.location).square_mag() < self.square_range():
+            if square_distance(me.location, thing.location) < self.square_range:
                 return 0
         return 1
     def fight(self, me):

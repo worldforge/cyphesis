@@ -14,7 +14,6 @@ else:
     from server import WorldTime
     BaseMind = Thing
 
-from mind.MemMap import MemMap
 from mind.Memory import Memory
 from mind.Knowledge import Knowledge
 from mind.panlingua import interlinguish,ontology

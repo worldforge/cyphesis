@@ -113,7 +113,7 @@ static void python_log(LogLevel lvl, const char * msg)
     }
 }
 
-static PyObject * PyLogger_write(PyObject * self, PyObject * args)
+static PyObject * PyOutLogger_write(PyObject * self, PyObject * args)
 {
     char * mesg;
     if (!PyArg_ParseTuple(args, "s", &mesg)) {
@@ -126,7 +126,7 @@ static PyObject * PyLogger_write(PyObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * PyErrorLogger_write(PyObject * self, PyObject * args)
+static PyObject * PyErrLogger_write(PyObject * self, PyObject * args)
 {
     char * mesg;
     if (!PyArg_ParseTuple(args, "s", &mesg)) {
@@ -139,14 +139,14 @@ static PyObject * PyErrorLogger_write(PyObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyMethodDef PyLogger_methods[] = {
-    {"write",     PyLogger_write,       METH_VARARGS},
-    {NULL,        NULL}
+static PyMethodDef PyOutLogger_methods[] = {
+    {"write",       PyOutLogger_write,          METH_VARARGS},
+    {NULL,          NULL}                       /* Sentinel */
 };
 
-static PyMethodDef PyErrorLogger_methods[] = {
-    {"write",     PyErrorLogger_write,       METH_VARARGS},
-    {NULL,        NULL}
+static PyMethodDef PyErrLogger_methods[] = {
+    {"write",       PyErrLogger_write,          METH_VARARGS},
+    {NULL,          NULL}                       /* Sentinel */
 };
 
 static void PyLogger_dealloc(PyObject * self)
@@ -154,26 +154,26 @@ static void PyLogger_dealloc(PyObject * self)
     PyMem_DEL(self);
 }
 
-static PyObject * PyLogger_getattr(PyObject * self, char *name)
+static PyObject * PyOutLogger_getattr(PyObject * self, char *name)
 {
-    return Py_FindMethod(PyLogger_methods, self, name);
+    return Py_FindMethod(PyOutLogger_methods, self, name);
 }
 
-static PyObject * PyErrorLogger_getattr(PyObject * self, char *name)
+static PyObject * PyErrLogger_getattr(PyObject * self, char *name)
 {
-    return Py_FindMethod(PyErrorLogger_methods, self, name);
+    return Py_FindMethod(PyErrLogger_methods, self, name);
 }
 
-PyTypeObject PyLogger_Type = {
+PyTypeObject PyOutLogger_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                   // ob_size
-        "Logger",            // tp_name
+        "OutLogger",         // tp_name
         sizeof(PyLogger),    // tp_basicsize
         0,                   // tp_itemsize
         //  methods 
         PyLogger_dealloc,    // tp_dealloc
         0,                   // tp_print
-        PyLogger_getattr,    // tp_getattr
+        PyOutLogger_getattr, // tp_getattr
         0,                   // tp_setattr
         0,                   // tp_compare
         0,                   // tp_repr
@@ -183,16 +183,16 @@ PyTypeObject PyLogger_Type = {
         0,                   // tp_hash
 };
 
-PyTypeObject PyErrorLogger_Type = {
+PyTypeObject PyErrLogger_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                   // ob_size
-        "ErrorLogger",            // tp_name
+        "ErrLogger",         // tp_name
         sizeof(PyLogger),    // tp_basicsize
         0,                   // tp_itemsize
         //  methods 
         PyLogger_dealloc,    // tp_dealloc
         0,                   // tp_print
-        PyErrorLogger_getattr,    // tp_getattr
+        PyErrLogger_getattr, // tp_getattr
         0,                   // tp_setattr
         0,                   // tp_compare
         0,                   // tp_repr
@@ -464,26 +464,6 @@ static PyObject * is_location(PyObject * self, PyObject * args)
     return Py_False;
 }
 
-static PyObject * distance_to(PyObject * self, PyObject * args)
-{
-    PyObject * near, * other;
-    if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
-        return NULL;
-    }
-    if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
-        PyErr_SetString(PyExc_TypeError, "Arg Location required");
-        return NULL;
-    }
-    PyLocation * sloc = (PyLocation *)near,
-               * oloc = (PyLocation *)other;
-    PyVector3D * ret = newPyVector3D();
-    if (ret == NULL) {
-        return NULL;
-    }
-    ret->coords = distanceTo(*sloc->location, *oloc->location);
-    return (PyObject *)ret;
-}
-
 static PyObject * location_new(PyObject * self, PyObject * args)
 {
     PyLocation *o;
@@ -557,6 +537,53 @@ static PyObject * location_new(PyObject * self, PyObject * args)
         o->location = new Location(ref_ent, coords->coords);
     }
     return (PyObject *)o;
+}
+
+static PyObject * distance_to(PyObject * self, PyObject * args)
+{
+    PyObject * near, * other;
+    if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
+        return NULL;
+    }
+    if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
+        PyErr_SetString(PyExc_TypeError, "Arg Location required");
+        return NULL;
+    }
+    PyLocation * sloc = (PyLocation *)near,
+               * oloc = (PyLocation *)other;
+#ifndef NDEBUG
+    if (sloc->location == NULL || oloc == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "Null location pointer");
+        return NULL;
+    }
+#endif // NDEBUG
+    PyVector3D * ret = newPyVector3D();
+    if (ret == NULL) {
+        return NULL;
+    }
+    ret->coords = distanceTo(*sloc->location, *oloc->location);
+    return (PyObject *)ret;
+}
+
+static PyObject * square_distance(PyObject * self, PyObject * args)
+{
+    PyObject * near, * other;
+    if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
+        return NULL;
+    }
+    if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
+        PyErr_SetString(PyExc_TypeError, "Arg Location required");
+        return NULL;
+    }
+    PyLocation * sloc = (PyLocation *)near,
+               * oloc = (PyLocation *)other;
+#ifndef NDEBUG
+    if (sloc->location == NULL || oloc == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "Null location pointer");
+        return NULL;
+    }
+#endif // NDEBUG
+    return PyFloat_FromDouble(squareDistance(*sloc->location, *oloc->location));
 }
 
 static PyObject * vector3d_new(PyObject * self, PyObject * args)
@@ -799,16 +826,6 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
         return (PyObject *)o;
 }
 
-static PyObject * object_new(PyObject * self)
-{
-        PyMessageElement * o = newPyMessageElement();
-        if (o == NULL) {
-                return NULL;
-        }
-        o->m_obj = new Element(MapType());
-        return (PyObject *)o;
-}
-
 static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
     PyMessageElement *o;
@@ -863,15 +880,6 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     }
     o->m_obj = new Element(omap);
     return (PyObject *)o;
-}
-
-static PyObject * cppthing_new(PyObject * self)
-{
-        PyEntity * o = newPyEntity();
-        if ( o == NULL ) {
-                return NULL;
-        }
-        return (PyObject *)o;
 }
 
 static inline void addToArgs(ListType & args, PyObject * ent)
@@ -1080,46 +1088,48 @@ list_contains_it:
 }
 
 static PyMethodDef atlas_methods[] = {
-    /* {"system",       spam_system, METH_VARARGS}, */
     {"Operation",  (PyCFunction)operation_new,  METH_VARARGS|METH_KEYWORDS},
     {"isLocation", is_location,                 METH_VARARGS},
-    {"distance_to",distance_to,                 METH_VARARGS},
     {"Location",   location_new,                METH_VARARGS},
-    {"Object",     (PyCFunction)object_new,     METH_NOARGS},
     {"Entity",     (PyCFunction)entity_new,     METH_VARARGS|METH_KEYWORDS},
     {"Message",    oplist_new,                  METH_VARARGS},
-    {"cppEntity",  (PyCFunction)cppthing_new,   METH_NOARGS},
-    {NULL,              NULL}                           /* Sentinel */
+    {NULL,          NULL}                       /* Sentinel */
+};
+
+static PyMethodDef physics_methods[] = {
+    {"distance_to",distance_to,                 METH_VARARGS},
+    {"square_distance",square_distance,         METH_VARARGS},
+    {NULL,          NULL}                       /* Sentinel */
 };
 
 static PyMethodDef vector3d_methods[] = {
-        {"Vector3D",    vector3d_new,   METH_VARARGS},
-        {NULL,          NULL}                           /* Sentinel */
+    {"Vector3D",    vector3d_new,               METH_VARARGS},
+    {NULL,          NULL}                       /* Sentinel */
 };
 
 static PyMethodDef point3d_methods[] = {
-        {"Point3D",    point3d_new,   METH_VARARGS},
-        {NULL,          NULL}                           /* Sentinel */
+    {"Point3D",    point3d_new,                 METH_VARARGS},
+    {NULL,          NULL}                       /* Sentinel */
 };
 
 static PyMethodDef quaternion_methods[] = {
-        {"Quaternion",  quaternion_new, METH_VARARGS},
-        {NULL,          NULL}                           /* Sentinel */
+    {"Quaternion",  quaternion_new,             METH_VARARGS},
+    {NULL,          NULL}                       /* Sentinel */
 };
 
 static PyMethodDef server_methods[] = {
-        {"WorldTime",   worldtime_new,  METH_VARARGS},
-        {NULL,          NULL}                           /* Sentinel */
+    {"WorldTime",   worldtime_new,              METH_VARARGS},
+    {NULL,          NULL}                       /* Sentinel */
 };
 
 static PyMethodDef common_methods[] = {
-        //{"null",      null_new,       METH_VARARGS},
-        {NULL,          NULL}                           /* Sentinel */
+    //{"null",      null_new,                   METH_VARARGS},
+    {NULL,          NULL}                       /* Sentinel */
 };
 
 static PyMethodDef misc_methods[] = {
-        {"set_kw",      set_kw,         METH_VARARGS},
-        {NULL,          NULL}                           /* Sentinel */
+    {"set_kw",      set_kw,                     METH_VARARGS},
+    {NULL,          NULL}                       /* Sentinel */
 };
 
 void init_python_api()
@@ -1146,13 +1156,13 @@ void init_python_api()
         return;
     }
 
-    PyObject * logger = (PyObject*)PyObject_NEW(PyLogger, &PyLogger_Type);
-    PyObject_SetAttrString(sys_module, "stdout", logger);
-    Py_DECREF(logger);
-    PyObject * errorLogger = (PyObject*)PyObject_NEW(PyLogger,
-                                                     &PyErrorLogger_Type);
-    PyObject_SetAttrString(sys_module, "stderr", errorLogger);
-    Py_DECREF(errorLogger);
+    PyObject * outLogger = (PyObject*)PyObject_NEW(PyLogger, &PyOutLogger_Type);
+    PyObject_SetAttrString(sys_module, "stdout", outLogger);
+    Py_DECREF(outLogger);
+
+    PyObject * errLogger = (PyObject*)PyObject_NEW(PyLogger, &PyErrLogger_Type);
+    PyObject_SetAttrString(sys_module, "stderr", errLogger);
+    Py_DECREF(errLogger);
 
     PyObject * sys_path = PyObject_GetAttrString(sys_module, "path");
     if (sys_path != 0) {
@@ -1174,6 +1184,11 @@ void init_python_api()
 
     if (Py_InitModule("atlas", atlas_methods) == NULL) {
         log(CRITICAL, "Python init failed to create atlas module\n");
+        return;
+    }
+
+    if (Py_InitModule("physics", physics_methods) == NULL) {
+        log(CRITICAL, "Python init failed to create physics module\n");
         return;
     }
 

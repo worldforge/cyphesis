@@ -2,6 +2,7 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 from common import const
+from physics import *
 
 if const.server_python:
     from world.physics.Vector3D import Vector3D
@@ -39,9 +40,7 @@ class move_me(Goal):
         if not location:
             #print "No location"
             return 1
-        # FIXME Use distance_to
-        if me.location.parent.id!=location.parent.id: return 0
-        if me.location.coordinates.distance(location.coordinates)<1.5:
+        if square_distance(me.location, location) < 2.25: # 1.5 * 1.5
             #print "We are there"
             return 1
         else:
@@ -53,8 +52,9 @@ class move_me(Goal):
         if not location:
             #print "but can't - not location"
             return
+        # FIXME Destination based movement - currently won't work if
+        # a LOC change is required.
         target=location.copy()
-        # FIXME Use distance_to
         target.velocity=distance_to(me.location, location).unit_vector()*self.speed
         if me.location.velocity.is_valid() and me.location.velocity.dot(target.velocity) > 0.8:
             #print "Already on the way"
@@ -93,7 +93,7 @@ class move_me_area(Goal):
             return 0
         if self.arrived:
             #print "Already arrived at location"
-            square_dist=distance_to(me.location, location).square_mag()
+            square_dist=square_distance(me.location, location)
             if square_dist > self.square_range:
                 self.arrived=0
                 #print "Moved away"
@@ -306,7 +306,7 @@ class hunt_for(pursuit):
     def in_range(self,me):
         if me.things.has_key(self.what)==0: return
         thing=me.find_thing(self.what)[0]
-        square_dist = distance_to(me.location, thing.location).square_mag()
+        square_dist = square_distance(me.location, thing.location)
         return square_dist < self.square_proximity
 
 ################################ HUNT ################################
@@ -356,10 +356,11 @@ class accompany(Goal):
         who=me.map.get(self.who)
         dist=distance_to(me.location, who.location)
         target = Location(me.location.parent)
-        if dist.square_mag() > 64:
+        square_dist=dist.square_mag()
+        if square_dist > 64:
             #print "We must be far far away - run"
             target.velocity = dist.unit_vector() * 3
-        elif dist.square_mag() > 25:
+        elif square_dist > 25:
             #print "We must be far away - walk"
             target.velocity = dist.unit_vector()
         else:

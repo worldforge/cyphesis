@@ -1,6 +1,7 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2004 Al Riddoch (See the file COPYING for details).
 
+from physics import *
 from mind.goals.common.misc_goal import *
 from mind.goals.common.move import *
 
@@ -21,8 +22,7 @@ class gather(Goal):
         nearest=None
         what_all=me.map.find_by_type(self.what)
         for thing in what_all:
-            distance=distance_to(me.location, thing.location)
-            square_dist=distance.square_mag()
+            square_dist=square_distance(me.location, thing.location)
             if square_dist<square_nearest_dist and thing.location.parent!=me:
                 nearest=thing
                 square_nearest_dist=square_dist
