@@ -133,13 +133,14 @@ python_lib_path=${python_prefix}/lib/${python_version}/config
 
 AC_CHECK_LIB(dl,dlopen)
 AC_CHECK_LIB(pthread,pthread_create)
+AC_CHECK_LIB(util,openpty)
 
 AC_CHECK_LIB(${python_version}, 
     Py_Initialize,
     [
-        python_libs="-L${python_lib_path} -l${python_version} -lutil"	  
+        python_libs="-L${python_lib_path} -l${python_version}"
     ],AC_MSG_ERROR([Couldn't find python libraries. Do you have python development installed]),
-    [-L${python_lib_path} -lutil]
+    [-L${python_lib_path}]
 )
 
 PYTHON_LIBS=${python_libs}

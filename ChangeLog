@@ -1,5 +1,9 @@
 2002-10-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* Build file fixes.
+
+2002-10-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/system.h, common/system.cpp, server/server.cpp: Moved all
 	  the system dependant signal handling and background handling
 	  code into system module, and implemented propper handling of
