@@ -119,11 +119,10 @@ void Character::set(const string & aname, const Object & attr)
     }
 }
 
-void Character::addToObject(Object & obj) const
+void Character::addToObject(Object::MapType & omap) const
 {
-    Object::MapType & omap = obj.AsMap();
     omap["sex"] = Object(sex);
-    Thing::addToObject(obj);
+    Entity::addToObject(omap);
 }
 
 oplist Character::ImaginaryOperation(const Imaginary & op)

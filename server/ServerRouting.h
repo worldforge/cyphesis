@@ -14,6 +14,7 @@ class CommServer;
 class ServerRouting : public Routing {
   private:
     CommServer & commServer;
+    const string svrRuleset;
     const string svrName;
   public:
     dict_t idDict;
@@ -22,7 +23,7 @@ class ServerRouting : public Routing {
   public:
     Lobby & lobby;
 
-    ServerRouting(CommServer & server, const string & name);
+    ServerRouting(CommServer & server, const string & ruleset, const string & name);
     ~ServerRouting();
 
     inline int idle();
@@ -30,7 +31,7 @@ class ServerRouting : public Routing {
 
     WorldRouter & getWorld() { return world; }
 
-    virtual void addToObject(Atlas::Message::Object &) const;
+    virtual void addToObject(Atlas::Message::Object::MapType &) const;
 };
 
 #endif // SERVER_ROUTING_H

@@ -34,7 +34,7 @@ class CommServer {
     const string identity;
     ServerRouting & server;
 
-    CommServer(const string & ident);
+    CommServer(const string & ruleset, const string & ident);
     ~CommServer();
 
     bool setup(int port);

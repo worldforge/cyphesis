@@ -33,11 +33,10 @@ oplist Lobby::operation(const RootOperation & op)
     return oplist();
 }
 
-void Lobby::addToObject(Object & obj) const
+void Lobby::addToObject(Object::MapType & omap) const
 {
-    Object::MapType & omap = obj.AsMap();
     omap["name"] = "lobby";
-    Object::ListType plist(1, "lobby");
+    Object::ListType plist(1, "room");
     omap["parents"] = plist;
     Object::ListType player_list;
     adict_t::const_iterator I = accounts.begin();

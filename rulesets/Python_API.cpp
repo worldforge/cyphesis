@@ -485,9 +485,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     if (!PyArg_ParseTuple(args, "|s", &id)) {
             return NULL;
     }
-    Object::MapType _omap;
-    Object obj(_omap);
-    Object::MapType & omap = obj.AsMap();
+    Object::MapType omap;
     if (id != NULL) {
         omap["id"] = string(id);
     }
@@ -504,7 +502,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             PyObject * val = PyList_GetItem(vals, i);
             if ((strcmp(key, "location") == 0) && (PyLocation_Check(val))) {
                 LocationObject * loc = (LocationObject*)val;
-                loc->location->addToObject(obj);
+                loc->location->addToObject(omap);
             } else {
                 Object val_obj = PyObject_asObject(val);
                 if (val_obj.GetType() == Object::TYPE_NONE) {
@@ -525,7 +523,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     if ( o == NULL ) {
         return NULL;
     }
-    o->m_obj = new Object(obj);
+    o->m_obj = new Object(omap);
     return (PyObject *)o;
 }
 

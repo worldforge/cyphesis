@@ -30,20 +30,17 @@ void BaseEntity::destroy()
 Object BaseEntity::asObject() const
 {
     debug( cout << "BaseEntity::asObject" << endl << flush;);
-    Object::MapType _m;
-    Object obj(_m);
-    Object::MapType & omap = obj.AsMap();
+    Object::MapType omap;
     omap["objtype"] = "object";
-    addToObject(obj);
-    return obj;
+    addToObject(omap);
+    return Object(omap);
 }
 
 
-void BaseEntity::addToObject(Object & obj) const
+void BaseEntity::addToObject(Object::MapType & omap) const
 {
     debug( cout << "BaseEntity::addToObject" << endl << flush;);
-    Object::MapType & omap = obj.AsMap();
-    if (fullid.size() != 0) {
+    if (!fullid.empty()) {
         omap["id"] = fullid;
     }
 }

@@ -26,7 +26,7 @@ class BaseEntity {
     virtual void destroy();
 
     Atlas::Message::Object asObject() const;
-    virtual void addToObject(Atlas::Message::Object &) const;
+    virtual void addToObject(Atlas::Message::Object::MapType &) const;
 
     virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);

@@ -288,9 +288,8 @@ Object PyObject_asObject(PyObject * o)
     if (PyLocation_Check(o)) {
         LocationObject * loc = (LocationObject *)o;
         Object::MapType _map;
-        Object ent(_map);
-        loc->location->addToObject(ent);
-        return ent;
+        loc->location->addToObject(_map);
+        return Object(_map);
     }
     return Object();
 }

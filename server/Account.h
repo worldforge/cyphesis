@@ -26,7 +26,7 @@ class Account : public OOGThing {
     Account(Connection * conn, const string & username, const string & passwd);
     virtual ~Account();
 
-    virtual void addToObject(Atlas::Message::Object &) const;
+    virtual void addToObject(Atlas::Message::Object::MapType &) const;
     virtual oplist LogoutOperation(const Logout & op);
     virtual oplist CreateOperation(const Create & op);
     virtual oplist ImaginaryOperation(const Imaginary & op);

@@ -20,7 +20,7 @@ class Lobby : public OOGThing {
 
     virtual oplist operation(const RootOperation & op);
 
-    virtual void addToObject(Atlas::Message::Object &) const;
+    virtual void addToObject(Atlas::Message::Object::MapType &) const;
 };
 
 #endif // LOBBY_H

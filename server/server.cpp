@@ -207,9 +207,9 @@ void CommClient::ObjectArrived(const Get & op)
     message(op);
 }
 
-CommServer::CommServer(const string & ident) :
+CommServer::CommServer(const string & ruleset, const string & ident) :
               metaserverTime(-1), useMetaserver(true),
-              identity(ident), server(*new ServerRouting(*this, ident))
+              identity(ident), server(*new ServerRouting(*this, ruleset, ident))
 {
 }
 
@@ -466,6 +466,17 @@ void CommServer::metaserverTerminate()
     sendto(metaFd,mesg,packet_size, 0, (sockaddr *)&meta_sa, sizeof(meta_sa));
 }
 
+#include <sys/utsname.h>
+
+const std::string get_hostname()
+{
+    struct utsname host_ident;
+    if (uname(&host_ident) != 0) {
+        return "UNKNOWN";
+    }
+    return string(host_ident.nodename);
+}
+
 #include <rulesets/EntityFactory.h>
 
 int main(int argc, char ** argv)
@@ -551,6 +562,14 @@ int main(int argc, char ** argv)
         load_database = global_conf->getItem("cyphesis","loadonstartup");
     }
 
+    std::string serverName;
+    if (global_conf->findItem("cyphesis", "servername")) {
+        serverName = global_conf->getItem("cyphesis","servername");
+    } else {
+        serverName = get_hostname();
+    }
+    
+
     // Start up the python subsystem. FIXME This needs to sorted into a
     // a way of handling script subsystems more generically.
     init_python_api();
@@ -572,7 +591,7 @@ int main(int argc, char ** argv)
     // world object pair (World + WorldRouter), and initialise the admin
     // account. The primary ruleset name is passed in so it
     // can be stored and queried by clients.
-    CommServer s(rulesets.front());
+    CommServer s(rulesets.front(), serverName);
     s.useMetaserver = use_metaserver;
     // Get the port tcp port from the config file, and set up the listen socket
     int port_num = 6767;

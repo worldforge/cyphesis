@@ -73,10 +73,9 @@ int Plant::dropFruit(oplist & res)
         fmap["name"] = fruitName;
         fmap["parents"] = Object::ListType(1,fruitName);
         Location floc(location.ref, Vector3D(rx, ry, 0));
-        Object fruit(fmap);
-        floc.addToObject(fruit);
+        floc.addToObject(fmap);
         RootOperation * create = new Create(Create::Instantiate());
-        create->SetArgs(Object::ListType(1, fruit));
+        create->SetArgs(Object::ListType(1, fmap));
         res.push_back(create);
     }
     return drop;

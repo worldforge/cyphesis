@@ -1,3 +1,24 @@
+2001-07-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/server.cpp, server/ServerRouting.h, server/ServerRouting.cpp,
+	  server/CommServer.h: Added support for server "name" which
+	  defaults to the hostname of the server machine, but is
+	  customisable in the config. This can be used in preference to
+	  IP address when doing lookups with the metaserver.
+
+	* server/Lobby.h, server/ServerRouting.h, server/Account.h,
+	  server/Account.cpp, rulesets/Stackable.h, rulesets/Stackable.cpp,
+	  rulesets/Python_API.cpp, rulesets/Py_Object.cpp, rulesets/Plant.cpp,
+	  rulesets/Pedestrian.cpp, rulesets/Entity.h, rulesets/Entity.cpp,
+	  rulesets/Character.h, rulesets/Character.cpp, common/BaseEntity.h,
+	  common/BaseEntity.cpp: Modied asObect() and addToObject()
+	  methods to make them more efficient.
+
+	* modules/Location.h, modules/Location.cpp: Removed old obsolete
+	  Message::Object based addToObject() method.
+
+	* rulesets/Thing.cpp: Optimised apperance/disappearance code.
+
 2001-07-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/server.cpp: Cleaned up loading of config files, so that

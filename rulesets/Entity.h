@@ -52,7 +52,7 @@ class Entity : public BaseEntity {
     void getLocation(const Atlas::Message::Object::MapType &, edict_t &);
     Vector3D getXyz() const;
 
-    virtual void addToObject(Atlas::Message::Object & obj) const;
+    virtual void addToObject(Atlas::Message::Object::MapType & obj) const;
     virtual oplist SetupOperation(const Setup & op);
     virtual oplist TickOperation(const Tick & op);
     virtual oplist ActionOperation(const Action & op);

@@ -116,9 +116,8 @@ void Entity::destroy()
     }
 }
 
-void Entity::addToObject(Object & obj) const
+void Entity::addToObject(Object::MapType & omap) const
 {
-    Object::MapType & omap = obj.AsMap();
     // We need to have a list of keys to pull from attributes.
     Object::MapType::const_iterator I = attributes.begin();
     for (; I != attributes.end(); I++) {
@@ -132,7 +131,7 @@ void Entity::addToObject(Object & obj) const
     omap["status"] = status;
     omap["stamp"] = (double)seq;
     omap["parents"] = Object(Object::ListType(1,Object(type)));
-    location.addToObject(obj);
+    location.addToObject(omap);
     Object::ListType contlist;
     for(elist_t::const_iterator I = contains.begin(); I!=contains.end(); I++) {
         contlist.push_back(Object((*I)->fullid));
@@ -140,7 +139,7 @@ void Entity::addToObject(Object & obj) const
     if (contlist.size() != 0) {
         omap["contains"] = Object(contlist);
     }
-    BaseEntity::addToObject(obj);
+    BaseEntity::addToObject(omap);
 }
 
 void Entity::merge(const Object::MapType & entmap)

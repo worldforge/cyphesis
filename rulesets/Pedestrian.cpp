@@ -47,12 +47,10 @@ Move * Pedestrian::genFaceOperation(const Location & loc)
         debug( cout << "Turning" << endl << flush;);
         Move * moveOp = new Move(Move::Instantiate());
         moveOp->SetTo(m_body.fullid);
-        Object::MapType _map;
-        Object ent(_map);
-        Object::MapType & entmap = ent.AsMap();
+        Object::MapType entmap;
         entmap["id"] = m_body.fullid;
-        loc.addToObject(ent);
-        Object::ListType args(1,ent);
+        loc.addToObject(entmap);
+        Object::ListType args(1,entmap);
         moveOp->SetArgs(args);
         return moveOp;
     }
@@ -91,9 +89,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     moveOp->SetTo(m_body.fullid);
 
     // Set up argument for operation
-    Object::MapType _map;
-    Object ent(_map);
-    Object::MapType & entmap = ent.AsMap();
+    Object::MapType entmap;
     entmap["id"] = m_body.fullid;
 
     // Walk out what the mode of the character should be.
@@ -118,8 +114,8 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     // If velocity is not set, return this simple operation.
     if (!m_velocity) {
         debug( cout << "only velocity changed." << endl << flush;);
-        new_loc.addToObject(ent);
-        Object::ListType args(1,ent);
+        new_loc.addToObject(entmap);
+        Object::ListType args(1,entmap);
         moveOp->SetArgs(args);
         if (NULL != rloc) {
         *rloc = new_loc;
@@ -183,8 +179,8 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     checkCollisions(new_loc);
 
     debug( cout << "new coordinates: " << new_coords << endl << flush;);
-    new_loc.addToObject(ent);
-    Object::ListType args2(1,ent);
+    new_loc.addToObject(entmap);
+    Object::ListType args2(1,entmap);
     moveOp->SetArgs(args2);
     if (NULL != rloc) {
         *rloc = new_loc;

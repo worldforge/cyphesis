@@ -16,9 +16,10 @@ static bool debug_flag = false;
 
 using Atlas::Message::Object;
 
-ServerRouting::ServerRouting(CommServer & server, const string & name) :
-        commServer(server), svrName(name), world(*new WorldRouter(*this)),
-        lobby(*new Lobby())
+ServerRouting::ServerRouting(CommServer & server, const string & ruleset,
+                             const string & name) :
+        commServer(server), svrRuleset(ruleset), svrName(name),
+        world(*new WorldRouter(*this)), lobby(*new Lobby())
 {
     fullid = name;
     idDict[fullid] = this;
@@ -40,11 +41,11 @@ ServerRouting::~ServerRouting()
     delete &lobby;
 }
 
-void ServerRouting::addToObject(Object & obj) const
+void ServerRouting::addToObject(Object::MapType & omap) const
 {
-    Object::MapType & omap = obj.AsMap();
     omap["server"] = "cyphesis";
-    omap["ruleset"] = svrName;
+    omap["ruleset"] = svrRuleset;
+    omap["name"] = svrName;
     Object::ListType plist(1, "server");
     omap["parents"] = plist;
     omap["clients"] = commServer.numClients();

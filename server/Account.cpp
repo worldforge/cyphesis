@@ -85,9 +85,8 @@ oplist Account::LogoutOperation(const Logout & op)
     return oplist();
 }
 
-void Account::addToObject(Object & obj) const
+void Account::addToObject(Object::MapType & omap) const
 {
-    Object::MapType & omap = obj.AsMap();
     omap["id"] = Object(fullid);
     if (password.size() != 0) {
         omap["password"] = Object(password);
@@ -159,7 +158,7 @@ oplist Account::LookOperation(const Look & op)
         //s->SetArgs(Object::ListType(1,connection->server.lobby.asObject()));
         //return oplist(1,s);
     //}
-    edict_t::const_iterator I = charactersDict.find(op.GetTo());
+    edict_t::const_iterator I = charactersDict.find(to);
     if (I != charactersDict.end()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(fullid);

@@ -238,6 +238,7 @@ oplist Thing::MoveOperation(const Move & op)
             Object::MapType this_ent;
             this_ent["id"] = fullid;
             this_ent["stamp"] = (double)seq;
+            Object::ListType this_as_args(1,this_ent);
             for(;I != location.ref->contains.end(); I++) {
                 const bool wasInRange = (*I)->location.inRange(oldpos, consts::sight_range);
                 const bool isInRange = (*I)->location.inRange(location.coords, consts::sight_range);
@@ -256,7 +257,7 @@ oplist Thing::MoveOperation(const Move & op)
                             // Send operation to the entity in question so it
                             // knows it is losing sight of us.
                             Disappearance * d = new Disappearance(Disappearance::Instantiate());
-                            d->SetArgs(Object::ListType(1,this_ent));
+                            d->SetArgs(this_as_args);
                             d->SetTo((*I)->fullid);
                             res2.push_back(d);
                         }
@@ -268,7 +269,7 @@ oplist Thing::MoveOperation(const Move & op)
                             // Send operation to the entity in question so it
                             // knows it is gaining sight of us.
                             Appearance * a = new Appearance(Appearance::Instantiate());
-                            a->SetArgs(Object::ListType(1,this_ent));
+                            a->SetArgs(this_as_args);
                             a->SetTo((*I)->fullid);
                             res2.push_back(a);
                         }

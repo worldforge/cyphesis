@@ -41,13 +41,12 @@ void Stackable::set(const string & aname, const Object & attr)
     }
 }
 
-void Stackable::addToObject(Object & obj) const
+void Stackable::addToObject(Object::MapType & omap) const
 {
-    Object::MapType & omap = obj.AsMap();
     if (num != 1) {
         omap["num"] = Object(num);
     }
-    Thing::addToObject(obj);
+    Entity::addToObject(omap);
 }
 
 oplist Stackable::CombineOperation(const Combine & op)

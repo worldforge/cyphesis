@@ -2,6 +2,8 @@
 
 # Default ruleset config file and script directory
 ruleset="acorn"
+# Name to identify this server, please customise and include
+# servername="Acorn server"
 # TCP port to listen on
 tcpport=6767
 # Resticted mode prevents creation of user accounts
