@@ -1,3 +1,6 @@
+It looks as though WorldRouter does not handle removing a deleted entity
+from its parents contains. I don't know how this can have been missed.
+
 Add a destroyed flag to Entity, and keep note of when we broadcast from
 a destroyed entity. Make sure that the parent of a destroyed entity is still
 available.
