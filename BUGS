@@ -9,12 +9,3 @@ If a character dies, it does not get removed from its accounts dictionary,
 so its bad mkay.
 
 Are touches getting broadcast?
-
-BUG When a character gets deleted that an account is not currently in
-direct control of, but that account owns, and has a pointer to it in
-its connection object (ie currently connected account), it does not get
-removed from that connection object. This is a more general problem,
-in that we are storing pointers to entities in several places. And not
-clearing them when they no longer exist. Might be able to fix with SigC
-signals, which were in the longterm anyway. Made BaseEntity inherit, so
-we can use throughout.
