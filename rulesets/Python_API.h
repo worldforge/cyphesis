@@ -57,6 +57,8 @@ typedef struct {
     PyObject_HEAD \
     PyObject	* Operation_attr; \
     _name	* operation; \
+    Thing	* from; \
+    Thing	* to; \
 } _name ## Object;
 
 typedef struct {

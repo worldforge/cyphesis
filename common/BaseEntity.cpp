@@ -12,7 +12,7 @@
 
 #include "BaseEntity.h"
 
-static int debug_ops = 1;
+static int debug_ops = 0;
 
 #if 0
 bad_type get_dict_func(bad_type dict, bad_type func_str, bad_type func_undefined)

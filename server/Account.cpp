@@ -15,7 +15,7 @@
 #include "Connection.h"
 #include "WorldRouter.h"
 
-static int debug_server = 1;
+static int debug_server = 0;
 
 oplist Account::Operation(const Logout & op)
 {

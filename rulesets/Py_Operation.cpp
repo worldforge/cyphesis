@@ -443,12 +443,70 @@ static void Operation_dealloc(RootOperationObject *self)
 
 static PyObject * Operation_getattr(RootOperationObject * self, char * name)
 {
-	return Py_FindMethod(RootOperation_methods, (PyObject *)self, name);
+    cout << "Operation_getattr" << endl << flush;
+    if (self->operation == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid operation");
+        return NULL;
+    }
+    if (strcmp(name, "from_") == 0) {
+        cout << "Operation_getattr(from)" << endl << flush;
+        if (self->from != NULL) {
+            ThingObject * thing_obj = newThingObject(NULL);
+            if (thing_obj == NULL) {
+                return NULL;
+            }
+            thing_obj->m_thing = self->from;
+            return (PyObject *)thing_obj;
+        }
+    } else if (strcmp(name, "to") == 0) {
+        if (self->to != NULL) {
+            ThingObject * thing_obj = newThingObject(NULL);
+            if (thing_obj == NULL) {
+                return NULL;
+            }
+            thing_obj->m_thing = self->to;
+            return (PyObject *)thing_obj;
+        }
+    }
+    return Py_FindMethod(RootOperation_methods, (PyObject *)self, name);
 }
 
 static int Operation_setattr(RootOperationObject *self, char *name, PyObject *v)
 {
-	return 0;
+    cout << "Operation_setattr" << endl << flush;
+    if (self->operation == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid operation");
+        return -1;
+    }
+    if (strcmp(name, "from_") == 0) {
+        cout << "Operation_setattr(from)" << endl << flush;
+        PyObject * thing_id = PyObject_GetAttrString(v, "id");
+        if ((thing_id == NULL) || (!PyString_Check(thing_id))) {
+            PyErr_SetString(PyExc_TypeError, "invalid from");
+            return -1;
+        }
+        if (((PyTypeObject*)PyObject_Type(v) == &Thing_Type) &&
+            (((ThingObject *)v)->m_thing != NULL)) {
+            self->from = ((ThingObject *)v)->m_thing;
+        }
+        self->operation->SetFrom(PyString_AsString(thing_id));
+        return 0;
+    }
+    if (strcmp(name, "to") == 0) {
+        cout << "Operation_setattr(to)" << endl << flush;
+        PyObject * thing_id = PyObject_GetAttrString(v, "id");
+        if ((thing_id == NULL) || (!PyString_Check(thing_id))) {
+            PyErr_SetString(PyExc_TypeError, "invalid to");
+            return -1;
+        }
+        if (((PyTypeObject*)PyObject_Type(v) == &Thing_Type) &&
+            (((ThingObject *)v)->m_thing != NULL)) {
+            self->to = ((ThingObject *)v)->m_thing;
+        }
+        self->operation->SetTo(PyString_AsString(thing_id));
+        return 0;
+    }
+    return 0;
 }
 
 ATLAS_OPERATION_TYPE(RootOperation)
@@ -465,5 +523,7 @@ RootOperationObject * newAtlasRootOperation(PyObject *arg)
 		return(NULL);
 	}
 	self->Operation_attr = NULL;
+	self->from = NULL;
+	self->to = NULL;
 	return self;
 }

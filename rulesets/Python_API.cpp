@@ -143,6 +143,12 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     return (PyObject *)op;
 }
 
+static PyObject * set_kw(PyObject * self, PyObject * args)
+{
+    // Takes self, kw, name, default=None
+    return NULL;
+}
+
 static PyMethodDef atlas_methods[] = {
     /* {"system",	spam_system, METH_VARARGS}, */
     {"Operation",  (PyCFunction)operation_new,	METH_VARARGS|METH_KEYWORDS},
@@ -167,19 +173,32 @@ static PyMethodDef common_methods[] = {
 	{NULL,		NULL}				/* Sentinel */
 };
 
+static PyMethodDef misc_methods[] = {
+	{"set_kw",	set_kw,		METH_VARARGS},
+	{NULL,		NULL}				/* Sentinel */
+};
+
 void init_python_api()
 {
 	char * cwd;
 
 	if ((cwd = getcwd(NULL, 0)) != NULL) {
-                size_t len = strlen(cwd) + 12;
+                size_t len = strlen(cwd) * 2 + 60;
                 char * pypath = (char *)malloc(len);
                 strcpy(pypath, cwd);
                 strcat(pypath, "/rulesets/basic");
+                // This should eventually pull in a ruleset name from
+                // the commandline args.
+                // basic ruleset should always be left on the end
+                // strcat(pypath, cwd);
+                // strcat(pypath, "/rulesets/acorn");
 		setenv("PYTHONPATH", pypath, 1);
 	}
 
 	Py_Initialize();
+
+        PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
+        PyRun_SimpleString("ruleset_import_hooks.install(['basic','acorn'])\n");
 
 	if (Py_InitModule("atlas", atlas_methods) == NULL) {
 		printf("Failed to Create atlas thing\n");
@@ -193,6 +212,12 @@ void init_python_api()
 	}
 	printf("Created Vector3D thing\n");
 
+        PyObject * misc;
+        if ((misc = Py_InitModule("misc", misc_methods)) == NULL) {
+		printf("Failed to Create misc thing\n");
+		return;
+	}
+
 	PyObject * common;
 	PyObject * dict;
 	if ((common = Py_InitModule("common", common_methods)) == NULL) {
@@ -205,6 +230,7 @@ void init_python_api()
 	dict = PyModule_GetDict(common);
 	PyDict_SetItemString(dict, "const", _const);
 	PyDict_SetItemString(dict, "log", log);
+	//PyDict_SetItemString(dict, "misc", misc);
 	PyObject_SetAttrString(_const, "server_python", PyInt_FromLong(0));
 	PyObject_SetAttrString(_const, "debug_level",
 			PyInt_FromLong(consts::debug_level));

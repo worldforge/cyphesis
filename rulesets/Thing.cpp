@@ -42,6 +42,8 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
         }
         RootOperationObject * py_op = newAtlasRootOperation(NULL);
         py_op->operation = new RootOperation(op);
+        py_op->from = map.get_add(op.GetFrom());
+        py_op->to = map.get_add(op.GetTo());
         PyObject * ret;
         if (sub_op == NULL) {
             ret = PyObject_CallMethod(script_object, (char *)(op_name.c_str()),
@@ -49,6 +51,8 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
         } else {
             RootOperationObject * py_sub_op = newAtlasRootOperation(NULL);
             py_sub_op->operation = sub_op;
+            py_sub_op->from = map.get_add(sub_op->GetFrom());
+            py_sub_op->to = map.get_add(sub_op->GetTo());
             ret = PyObject_CallMethod(script_object, (char *)(op_name.c_str()),
                                              "(OO)", py_op, py_sub_op);
         }

@@ -34,7 +34,7 @@ extern "C" {
 #include <common/WorldInfo.h>
 #include <common/const.h>
 
-static int debug_movement=1;
+static int debug_movement=0;
 
 MovementInfo::MovementInfo(Character * body) : body(body)
 {
