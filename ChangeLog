@@ -1,3 +1,7 @@
+2001-10-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp, server/Lobby.cpp: Fixed OOG chat semantics.
+
 2001-10-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: Fixed another leak in the python code.
