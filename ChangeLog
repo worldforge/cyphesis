@@ -1,5 +1,9 @@
 2003-09-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/inheritancetest.cpp: New unit test for inheritance code.
+
+2003-09-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/logtest.cpp, tests/EntityExerciser.h,
 	  tests/BaseEntitytest.cpp: Add some unit tests. Lots more to
 	  come.
