@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#error This file has been removed from the build
+
 #ifndef RULESETS_EXTERNAL_MIND_H
 #define RULESETS_EXTERNAL_MIND_H
 

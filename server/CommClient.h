@@ -7,6 +7,7 @@
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/Encoder.h>
+#include <Atlas/Net/Stream.h>
 #include <Atlas/Codec.h>
 
 #include <common/const.h>
@@ -25,8 +26,10 @@ class CommClient : Atlas::Objects::Decoder {
     socket_stream clientIos;
     Atlas::Codec<std::iostream> * codec;
     Atlas::Objects::Encoder * encoder;
+    Atlas::Net::StreamAccept * accept;
     Connection & connection;
 
+    bool negotiate();
   protected:
     virtual void UnknownObjectArrived(const Atlas::Message::Object&);
     virtual void ObjectArrived(const Atlas::Objects::Operation::Login & op);
@@ -43,8 +46,13 @@ class CommClient : Atlas::Objects::Decoder {
     CommClient(CommServer & svr, int fd, int port);
     virtual ~CommClient();
 
-    void read() {
-        codec->Poll();
+    bool read() {
+        if (codec != NULL) {
+            codec->Poll();
+            return false;
+        } else {
+            return negotiate();
+        }
     }
 
     void send(const Atlas::Objects::Operation::RootOperation * op) {
@@ -57,9 +65,10 @@ class CommClient : Atlas::Objects::Decoder {
     int peek() { return clientIos.peek(); }
     int eof() { return clientIos.eof(); }
     int getFd() { return clientFd; }
+    bool online() { return (encoder != NULL); }
 
     void message(const Atlas::Objects::Operation::RootOperation &);
-    bool setup();
+    void setup();
 };
 
 #endif // SERVER_COMM_CLIENT_H

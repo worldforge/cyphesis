@@ -2,8 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include <Atlas/Net/Stream.h>
-
 #include "CommClient.h"
 #include "CommServer.h"
 
@@ -41,27 +39,36 @@ CommClient::~CommClient()
     close(clientFd);
 }
 
-bool CommClient::setup()
+void CommClient::setup()
 {
     // Create the server side negotiator
-    Atlas::Net::StreamAccept accept("cyphesis " + commServer.identity, clientIos, this);
+    accept =  new Atlas::Net::StreamAccept("cyphesis " + commServer.identity, clientIos, this);
 
+    accept->Poll(false);
+
+    clientIos << flush;
+}
+
+bool CommClient::negotiate()
+{
     debug(cout << "Negotiating... " << flush;);
-    // Keep polling until negotiation is complete
-    while (accept.GetState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
-        accept.Poll();
+    // Poll and check if negotiation is complete
+    accept->Poll();
+
+    if (accept->GetState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
+        return false;
     }
     debug(cout << "done" << endl;);
 
     // Check if negotiation failed
-    if (accept.GetState() == Atlas::Net::StreamAccept::FAILED) {
+    if (accept->GetState() == Atlas::Net::StreamAccept::FAILED) {
         cerr << "Failed to negotiate" << endl;
-        return false;
+        return true;
     }
     // Negotiation was successful
 
     // Get the codec that negotiation established
-    codec = accept.GetCodec();
+    codec = accept->GetCodec();
 
     // Create a new encoder to send high level objects to the codec
     encoder = new Atlas::Objects::Encoder(codec);
@@ -69,7 +76,11 @@ bool CommClient::setup()
     // This should always be sent at the beginning of a session
     codec->StreamBegin();
 
-    return true;
+    // Acceptor is now finished with
+    delete accept;
+    accept = NULL;
+
+    return false;
 }
 
 void CommClient::message(const RootOperation & op)

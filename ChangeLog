@@ -1,5 +1,14 @@
 2001-09-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommClient.cpp, server/CommClient.h, server/CommServer.cpp:
+	  Re-organised negotiation code so it is non-blocking. Server is now
+	  a bit less easy to attack.
+
+	* Marked files that are no longer part of the build with #error so
+	  they never get built by accident.
+
+2001-09-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/server.cpp: Moved CommServer and CommClient into their own
 	  files. Cleaned up debugging output.
 

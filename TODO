@@ -26,8 +26,6 @@ Definitly for Acorn 0.4:
 
   Fix problem with collision detection and destination based movement.
 
-  Make negotiation non-blocking.
-
   Use select to ensure that write to connections is non-blocking.
 
 Provisional for Acorn 0.4:

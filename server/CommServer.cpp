@@ -134,13 +134,12 @@ bool CommServer::accept()
     }
     debug(cout << "Accepted" << endl << flush;);
     CommClient * newcli = new CommClient(*this, asockfd, sin.sin_port);
-    // Handle negotiation and if successful, add this new client to
-    // the list.
-    if (newcli->setup()) {
-        clients.insert(std::pair<int, CommClient *>(asockfd, newcli));
-    } else {
-        delete newcli;
-    }
+
+    newcli->setup();
+
+    // Add this new client to the list.
+    clients.insert(std::pair<int, CommClient *>(asockfd, newcli));
+
     return true;
 }
 
@@ -203,7 +202,11 @@ void CommServer::loop()
        if (FD_ISSET(client_fd, &sock_fds)) {
            client = I->second;
            if (client->peek() != -1) {
-               client->read();
+               if (client->read()) {
+                   debug(cout << "Removing client due to failed negotiation" << endl << flush;);
+                   removeClient(client);
+                   break;
+               }
            } else if (client->eof()) {
                removeClient(client);
                break;
@@ -233,18 +236,19 @@ inline void CommServer::removeClient(CommClient * client, char * error_msg)
     err["message"] = Object(error_msg);
     Object::ListType eargs(1,Object(err));
 
-    Error * e = new Error(Error::Instantiate());
+    Error e(Error::Instantiate());
 
-    e->SetArgs(eargs);
+    e.SetArgs(eargs);
 
     // Need to deal with cleanly sending the error op, without hanging
     // if the client has already gone. FIXME
     
     if (client) {
-        client->send(e);
+        if (client->online()) {
+            client->send(&e);
+        }
         clients.erase(client->getFd());
     }
-    delete e;
     delete client;
 }
 
