@@ -9,7 +9,9 @@ class Admin;
 class Account;
 
 #ifdef HAVE_LIBDB_CXX
-#include <db_cxx.h>
+#include <db3/db_cxx.h>
+
+#include <Atlas/Message/DecoderBase.h>
 
 class Decoder : public Atlas::Message::DecoderBase {
     virtual void ObjectArrived(const Atlas::Message::Object& obj) { }
@@ -26,11 +28,12 @@ class Persistance {
     Db world_db;
     Decoder m_d;
 
-    void putObject(Db &, Atlas::Message::Object &, char * key);
+    bool putObject(Db &, const Atlas::Message::Object &, const char * key);
+    Atlas::Message::Object getObject(Db &, const char * key);
 #endif
   public:
-    static Admin * load_admin_account();
-    static void save_admin_account(Admin *);
+    static Account * load_admin_account();
+    static void save_admin_account(Account *);
     static Persistance * instance();
     static bool init();
 

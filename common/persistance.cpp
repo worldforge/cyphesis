@@ -3,10 +3,12 @@
 // Copyright (C) 2000 Alistair Riddoch
 
 #include <fstream.h>
+#include <strstream>
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Codecs/XML.h>
 
 #include <server/Admin.h>
 
@@ -45,37 +47,40 @@ bool Persistance::init()
     return ((i == 0) && (j == 0));
 }
 
-Admin * Persistance::load_admin_account()
+Account * Persistance::load_admin_account()
 {
-    Admin * adm;
-    if ((adm = getAccount("admin")) == NULL) {
+    Persistance * p = instance();
+    Account * adm;
+    if ((adm = p->getAccount("admin")) == NULL) {
         adm = new Admin(NULL, "admin", "test");
         save_admin_account(adm);
     }
-    
+    return adm;
 }
 
-void Persistance::save_admin_account(Admin * adm)
+void Persistance::save_admin_account(Account * adm)
 {
-    putAccount(adm);
+    Persistance * p = instance();
+    p->putAccount(adm);
 }
 
 Account * Persistance::getAccount(const std::string & name)
 {
+    return NULL;
 }
 
 void Persistance::putAccount(const Account * ac)
 {
-    putObject(account_db, ac.asObject() ,ac->fullid.c_str()
+    putObject(account_db, ac->asObject(), ac->fullid.c_str());
 }
 
-Object * Persistance::getObject(Db & db, char * key)
+Atlas::Message::Object Persistance::getObject(Db & db, const char * key)
 {
     // FIXME
-    return NULL;
+    return Atlas::Message::Object();
 }
 
-bool Persistance::putObject(Db & db, Object & o, char * key)
+bool Persistance::putObject(Db & db, const Atlas::Message::Object & o, const char * keystr)
 {
     std::strstream str;
 
@@ -86,10 +91,10 @@ bool Persistance::putObject(Db & db, Object & o, char * key)
 
     Dbt key, data;
 
-    key.set_data(key);
-    key.set_size(strlen(key) + 1);
+    key.set_data((void*)keystr);
+    key.set_size(strlen(keystr) + 1);
 
-    data.set_data(str.str());
+    data.set_data((void*)str.str());
     data.set_size(str.pcount() + 1);
 
     int err;
@@ -104,16 +109,16 @@ bool Persistance::putObject(Db & db, Object & o, char * key)
 
 Persistance::Persistance() { }
 
-Admin * Persistance::load_admin_account()
+Account * Persistance::load_admin_account()
 {
     // Eventually this should actually load the account. For now it just
     // creates it.
-    Admin * adm = new Admin(NULL, "admin", "test");
+    Account * adm = new Admin(NULL, "admin", "test");
     save_admin_account(adm);
     return(adm);
 }
 
-void Persistance::save_admin_account(Admin * adm)
+void Persistance::save_admin_account(Account * adm)
 {
     std::ofstream adm_file("/tmp/admin.xml", ios::out, 0600);
     adm_file << "<atlas>" << endl << "<map>" << endl;

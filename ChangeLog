@@ -1,5 +1,9 @@
 2001-03-14  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* common/persistance.*: More progress on database persistance code.
+
+2001-03-14  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* *: Removed use of "using namespace ..." throughout.
 
 	* modules/Location.h: Fixed error in inRange() and finally got rid
