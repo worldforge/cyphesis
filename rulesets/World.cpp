@@ -78,6 +78,7 @@ World::World(const std::string & id) : World_parent(id),
 
 World::~World()
 {
+    delete &m_terrain;
 }
 
 bool World::get(const std::string & aname, Element & attr) const

@@ -289,6 +289,7 @@ void Subscribe_Script(T * entity, PyObject * pyclass,
             entity->scriptSubscribe(op_name);
         }
     }
+    Py_DECREF(keys);
 }
 
 void Create_PyEntity(Entity * entity, const std::string & package,
