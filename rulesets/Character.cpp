@@ -181,13 +181,6 @@ OpVector Character::SetupOperation(const Setup & op)
         return res;
     }
 
-    //mind = new BaseMind(getId(), m_name);
-    //std::string mind_class("NPCMind"), mind_package("mind.NPCMind");
-    //if (global_conf->findItem("mind", m_type)) {
-        //mind_package = global_conf->getItem("mind", m_type);
-        //mind_class = m_type + "Mind";
-    //}
-    //Create_PyMind(mind, mind_package, mind_class);
     m_mind = MindFactory::instance()->newMind(getId(), m_name, m_type);
 
     OpVector res2(2);

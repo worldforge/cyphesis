@@ -1,3 +1,7 @@
+2004-07-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Remove some obsolete commented out code.
+
 2004-07-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* Release 0.3.1.
