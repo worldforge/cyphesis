@@ -496,7 +496,9 @@ int main(int argc, char ** argv)
             cerr << "         : Continuing..." << endl;
         }
     }
+    cout << "Performing clean shutdown..." << endl << flush;
     Persistance::shutdown();
     s.metaserver_terminate();
+    cout << "Clean shutdown complete." << endl << flush;
     return 0;
 }

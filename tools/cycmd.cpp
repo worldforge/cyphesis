@@ -24,12 +24,13 @@ extern "C" {
 
 #include <fstream>
 
+using Atlas::Message::Object;
+
 class Interactive : public Atlas::Objects::Decoder
 {
   private:
-    bool erflag;
+    bool error_flag, reply_flag;
     int cli_fd;
-    int reply_flag;
     Atlas::Objects::Encoder * encoder;
     Atlas::Codec<iostream> * codec;
     fstream * ios;
@@ -41,21 +42,46 @@ class Interactive : public Atlas::Objects::Decoder
     };
     int state;
   protected:
-    //void UnknownObjectArrived(const Atlas::Message::Object&);
-    //void ObjectArrived(const Atlas::Objects::Operation::Info&);
-    //void ObjectArrived(const Atlas::Objects::Operation::Error&);
+    //void UnknownObjectArrived(const Object&);
+    void ObjectArrived(const Atlas::Objects::Operation::Info&);
+    void ObjectArrived(const Atlas::Objects::Operation::Error&);
 
   public:
-    Interactive() : erflag(false), reply_flag(0), encoder(NULL),
+    Interactive() : error_flag(false), reply_flag(false), encoder(NULL),
                        codec(NULL), state(INIT) { }
 
     void send(const Atlas::Objects::Operation::RootOperation &);
     bool connect(const string & host);
-    void login();
+    bool login();
     void exec(const string & cmd, const string & arg);
     void loop();
     //void prompt();
 };
+
+void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
+{
+    reply_flag = true;
+    cout << "An info operation arrived." << endl << flush;
+    if (state == INIT) {
+        state = LOGGED_IN;
+    } else if (state == LOGGED_IN) {
+        // Display results of command
+    }
+}
+
+void Interactive::ObjectArrived(const Atlas::Objects::Operation::Error& o)
+{
+    reply_flag = true;
+    error_flag = true;
+    cout << "Error from server:" << endl << flush;
+    Object::ListType args = o.GetArgs();
+    Object & arg = args.front();
+    if (arg.IsString()) {
+        cout << arg.AsString() << endl << flush;
+    } else if (arg.IsMap()) {
+        cout << arg.AsMap()["message"].AsString();
+    }
+}
 
 #if 0
 void Interactive::prompt()
@@ -143,10 +169,11 @@ bool Interactive::connect(const string & host)
     cout << "Connecting to cyphesis.." << endl << flush;
 
     if (::connect(cli_fd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+        cout << "Connection failed." << endl << flush;
         close(cli_fd);
         return false;
     }
-    cout << "Connected to cyphesis" << endl << flush;
+    cout << "Connected to cyphesis." << endl << flush;
     // Connect to the server
     ios = new fstream(cli_fd);
 
@@ -158,11 +185,11 @@ bool Interactive::connect(const string & host)
         // conn.Poll() does all the negotiation
         conn.Poll();
     }
-    cout << "done" << endl;
+    cout << "done." << endl;
 
     // Check whether negotiation was successful
     if (conn.GetState() == Atlas::Negotiate<iostream>::FAILED) {
-        cerr << "Failed to negotiate" << endl;
+        cerr << "Failed to negotiate." << endl;
         return false;
     }
     // Negotiation was successful
@@ -179,35 +206,55 @@ bool Interactive::connect(const string & host)
 
 }
 
-void Interactive::login()
+bool Interactive::login()
 {
-   Atlas::Objects::Entity::Account account = Atlas::Objects::Entity::Account::Instantiate();
-   Atlas::Objects::Operation::Login l = Atlas::Objects::Operation::Login::Instantiate();
-   erflag = 0;
-   reply_flag = 0;
+    Atlas::Objects::Entity::Account account = Atlas::Objects::Entity::Account::Instantiate();
+    Atlas::Objects::Operation::Login l = Atlas::Objects::Operation::Login::Instantiate();
+    error_flag = false;
+    reply_flag = false;
+ 
+    account.SetAttr("id", string("admin"));
+    account.SetAttr("password", string("pilchard"));
+ 
+    Object::ListType args(1,account.AsObject());
+ 
+    l.SetArgs(args);
+ 
+    encoder->StreamMessage(&l);
+ 
+    while (!reply_flag) {
+       codec->Poll();
+    }
 
-   account.SetAttr("id", string("al"));
-   account.SetAttr("password", string("ping"));
-
-   Atlas::Message::Object::ListType args(1,account.AsObject());
-
-   l.SetArgs(args);
-
-   encoder->StreamMessage(&l);
-
-   while (!reply_flag) {
-      codec->Poll();
-   }
-   if (!erflag) {
-      cout << "login was a success" << endl << flush;
-      return;
-   }
-   cout << "login failed" << endl << flush;
-
+    if (!error_flag) {
+       cout << "login was a success" << endl << flush;
+       return false;
+    }
+    cout << "login failed" << endl << flush;
+    return true;
 }
 
 void Interactive::exec(const string & cmd, const string & arg)
 {
+    bool reply_expected = false;
+
+    Atlas::Objects::Operation::Set s = Atlas::Objects::Operation::Set::Instantiate();
+
+    Object::MapType cmap;
+    cmap["id"] = "server";
+    cmap["cmd"] = cmd;
+    if (arg.size() != 0) {
+        cmap["arg"] = arg;
+    }
+    s.SetArgs(Object::ListType(1,cmap));
+    s.SetFrom("admin");
+
+    encoder->StreamMessage(&s);
+
+    if (!reply_expected) { return; }
+    while (!reply_flag) {
+       codec->Poll();
+    }
 }
 
 void usage(char * prg)

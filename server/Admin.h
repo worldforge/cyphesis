@@ -21,6 +21,7 @@ class Admin : public Account {
 
     virtual oplist Operation(const Load & op);
     virtual oplist Operation(const Save & op);
+    virtual oplist Operation(const Set & op);
 };
 
 #endif /* ADMIN_H */

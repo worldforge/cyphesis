@@ -1,5 +1,20 @@
 2001-03-16  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* tools/cycmd.cpp: Added functionality to allow commands to be
+	  sent to the admin account on the server.
+
+	* server/WorldRouter.cpp: Removed mechanism for shutting down server
+	  after a fixed run period.
+
+	* server/Admin.*: Added reception of Set operation by admin account
+`	  which contain commands from an admin client. Implemented shutdown
+	  command, which sets a flag indicating server shutdown should start.
+
+	* server/server.cpp: Added output indicating that shutdown is taking
+	  place, to make it clear that it is not a crash.
+
+2001-03-16  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* watchdog/*.c: Corrected C++ style comments in c code.
 
 	* */*: Fixed mistake in copyright statement.

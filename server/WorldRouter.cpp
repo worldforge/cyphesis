@@ -12,7 +12,6 @@
 
 #include "WorldRouter.h"
 #include "ServerRouting.h"
-#include "server.h"
 
 #include <rulesets/Thing.h>
 #include <rulesets/EntityFactory.h>
@@ -26,7 +25,6 @@ extern "C" {
 using Atlas::Message::Object;
 
 static const bool debug_flag = false;
-static const int halt_time = 60 * 8;
 
 WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr), next_id(0)
 {
@@ -55,10 +53,6 @@ inline void WorldRouter::add_operation_to_queue(RootOperation & op,
     }
     update_time();
     double t = world_info::time;
-    if (t > halt_time) {
-        cout << "Exiting for memory leak and profiler report" << endl << flush;
-        exit_flag = true;
-    }
     t = t + op.GetFutureSeconds();
     op.SetSeconds(t);
     op.SetFutureSeconds(0.0);
