@@ -18,11 +18,10 @@ int main()
         const Vector3D normal(-1, 1, 0);
         const Vector3D plane_velocity(-1, 0, 0);
         double time = -1;
-        Vector3D collision_normal;
 
         bool infront = getCollisionTime(position, velocity,
                                         plane, normal, plane_velocity,
-                                        time, collision_normal);
+                                        time);
 
         std::cout << "Vertex collision predicted after " << time
                   << " seconds, from "

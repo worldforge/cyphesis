@@ -1,5 +1,10 @@
 2003-10-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/collisiontest.cpp: Fix collisiontest to work with modified
+	  vertex/plane function interface.
+
+2003-10-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Collision.h, physics/Collision.cpp: Fix vertex/plane
 	  collision function by removing returned normal, because it is
 	  always the plane normal. Implement returning collision
