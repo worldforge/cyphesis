@@ -7,7 +7,7 @@
 
 #include "Thing.h"
 #include "EntityFactory.h"
-#include "ThingShape.h"
+// #include "ThingShape.h"
 #include "Python_API.h"
 
 #include "ThingFactory.h"
@@ -29,7 +29,7 @@ static const bool debug_flag = false;
 
 using Atlas::Message::Object;
 
-map<string, ThingShape *> * ThingShape::dict = NULL;
+// map<string, ThingShape *> * ThingShape::dict = NULL;
 
 EntityFactory * EntityFactory::m_instance = NULL;
 

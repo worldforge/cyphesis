@@ -1,6 +1,11 @@
 2001-03-09  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
-	* Fixed Stackable code so it now compiles.
+	* src/rulesets/EntityFactory.cpp: Removed ThingShape.h
+	  which was unused, and thus removed dependancy on SOLID.
+
+2001-03-09  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* src/Stackable.cpp: Fixed Stackable code so it now compiles.
 
 2001-03-05  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
