@@ -148,6 +148,7 @@ class NPCMind(BaseMind):
             #CHEAT!: remove eval
             xyz=list(eval(object))
             loc=self.location.copy()
+            print xyz
             loc.coordinates=Vector3D(xyz)
             self.add_knowledge("location",subject,loc)
         else:

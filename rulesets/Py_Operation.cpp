@@ -5,6 +5,12 @@
 
 #include "Python_API.h"
 
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/Entity/RootEntity.h>
+#include <Atlas/Objects/Operation/RootOperation.h>
+
+#include <common/utility.h>
+
 /*
  * Beginning of Operation section.
  *
@@ -302,6 +308,19 @@ static PyObject * Operation_GetArgs(RootOperationObject * self, PyObject * args)
     return args_pylist;
 }
 
+static PyObject* Operation_get_name(RootOperationObject * self, PyObject * args)
+{
+    if (self->operation == NULL) {
+        PyErr_SetString(PyExc_TypeError,"invalid operation");
+        return NULL;
+    }
+    if (!PyArg_ParseTuple(args, "")) {
+        PyErr_SetString(PyExc_TypeError,"too many args");
+        return NULL;
+    }
+    return PyString_FromString("op");
+}
+
 /*
  * Operation sequence methods.
  */
@@ -328,6 +347,12 @@ static PyObject * Operation_seq_item(RootOperationObject * self, int item)
     for(i = 0; i < item && I != args_list.end(); i++, I++);
     if (I != args_list.end()) {
         Object * obj = new Object(*I);
+        Root * op = utility::Object_asRoot(*obj);
+        if ((op != NULL) && (op->GetObjtype() == "op")) {
+            RootOperationObject * ret_op = newAtlasRootOperation(NULL);
+            ret_op->operation = (RootOperation *)op;
+            return (PyObject *)ret_op;
+        }
         AtlasObject * ret = newAtlasObject(NULL);
         ret->m_obj = obj;
         return (PyObject *)ret;
@@ -457,6 +482,12 @@ static PyObject * Operation_getattr(RootOperationObject * self, char * name)
             }
             thing_obj->m_thing = self->from;
             return (PyObject *)thing_obj;
+        } else {
+            AtlasObject * obj = newAtlasObject(NULL);
+            Object::MapType omap;
+            omap["id"] = Object(self->operation->GetFrom());
+            obj->m_obj = new Object(omap);
+            return (PyObject *)obj;
         }
     } else if (strcmp(name, "to") == 0) {
         if (self->to != NULL) {
@@ -466,6 +497,12 @@ static PyObject * Operation_getattr(RootOperationObject * self, char * name)
             }
             thing_obj->m_thing = self->to;
             return (PyObject *)thing_obj;
+        } else {
+            AtlasObject * obj = newAtlasObject(NULL);
+            Object::MapType omap;
+            omap["id"] = Object(self->operation->GetTo());
+            obj->m_obj = new Object(omap);
+            return (PyObject *)obj;
         }
     } else if (strcmp(name, "time") == 0) {
         OptimeObject * time_obj = newOptimeObject(NULL);
@@ -474,6 +511,13 @@ static PyObject * Operation_getattr(RootOperationObject * self, char * name)
         }
         time_obj->operation = self->operation;
         return (PyObject *)time_obj;
+    } else if (strcmp(name, "id") == 0) {
+        Object::ListType & parents = self->operation->GetParents();
+        if ((parents.size() < 1) || (!parents.front().IsString())) {
+            PyErr_SetString(PyExc_TypeError, "Operation has no parents");
+            return NULL;
+        }
+        return PyString_FromString(parents.front().AsString().c_str());
     }
     return Py_FindMethod(RootOperation_methods, (PyObject *)self, name);
 }

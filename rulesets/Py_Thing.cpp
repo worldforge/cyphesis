@@ -31,6 +31,10 @@ PyObject * Thing_getattr(ThingObject *self, char *name)
         cout << "Thing_getattr(id)" << endl << flush;
         return PyString_FromString(self->m_thing->fullid.c_str());
     }
+    if (strcmp(name, "name") == 0) {
+        cout << "Thing_getattr(name)" << endl << flush;
+        return PyString_FromString(self->m_thing->name.c_str());
+    }
     if (strcmp(name, "map") == 0) {
         cout << "Thing_getattr(map)" << endl << flush;
         MapObject * map = newMapObject(NULL);

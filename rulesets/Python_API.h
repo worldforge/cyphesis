@@ -104,6 +104,7 @@ PyMethodDef _name ## _methods[] = { \
     {"GetFutureSeconds",(PyCFunction)Operation_GetFutureSeconds,METH_VARARGS}, \
     {"GetTimeString",	(PyCFunction)Operation_GetTimeString,	METH_VARARGS}, \
     {"GetArgs",		(PyCFunction)Operation_GetArgs,		METH_VARARGS}, \
+    {"get_name",	(PyCFunction)Operation_get_name,	METH_VARARGS}, \
 {NULL,		NULL} \
 };
 

@@ -216,9 +216,58 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     return (PyObject *)op;
 }
 
-static PyObject * set_kw(PyObject * self, PyObject * args)
+static PyObject * set_kw(PyObject * meth_self, PyObject * args)
 {
     // Takes self, kw, name, default=None
+    PyObject * self;
+    PyObject * kw;
+    char * name;
+    PyObject * def = NULL;
+
+    if (!PyArg_ParseTuple(args, "OOs|O", &self, &kw, &name, &def)) {
+        return NULL;
+    }
+
+    PyObject * attr = PyObject_GetAttrString(self, "attributes");
+    if (attr == NULL) {
+        PyErr_SetString(PyExc_TypeError, "SET_KW: No attributes list");
+        return NULL;
+    }
+    int i = PyList_Size(attr);
+    char * entry;
+    PyObject * item;
+    for(i= 0; i < PyList_Size(attr); i++) {
+        item = PyList_GetItem(attr, i);
+        if (!PyString_Check(item)) {
+            continue;
+        }
+        entry = PyString_AsString(item);
+        if (strcmp(entry, name) == 0) {
+            goto list_contains_it;
+        }
+        // Should I free entry at this point?
+    }
+    PyList_Append(attr, PyString_FromString(name));
+list_contains_it:
+    if (!PyDict_Check(kw)) {
+        PyErr_SetString(PyExc_TypeError, "SET_KW: kw not a dict");
+        return NULL;
+    }
+    PyObject * value = NULL;
+    if ((value = PyDict_GetItemString(kw, name)) == NULL) {
+        PyObject * copy = PyDict_GetItemString(kw, "copy");
+        if ((copy != NULL) && (PyObject_HasAttrString(copy, name))) {
+            value = PyObject_GetAttrString(copy, name);
+        } else {
+            value = def;
+        }
+    }
+    if (value == NULL) {
+        value = Py_None;
+        Py_INCREF(Py_None);
+    }
+    PyObject_SetAttrString(self, name, value);
+    
     return NULL;
 }
 

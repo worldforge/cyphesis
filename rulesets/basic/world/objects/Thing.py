@@ -4,10 +4,28 @@
 from atlas import *
 from misc import set_kw
 
+def get_dict_func(self, dict, func_str, func_undefined):
+    """get method by name from dictionary
+       if that fails, get it by looking for it by name from instance
+       if it succeeds, update dictionary and return it
+       if that fails too, update dictionary to point to default handler and
+       return default handler
+       """
+    try:
+        return dict[func_str]
+    except KeyError:
+        try:
+            func=dict[func_str]=getattr(self,func_str)
+        except AttributeError:
+            func=dict[func_str]=func_undefined
+        return func
+
 class Thing:
     def __init__(self, cppthing, **kw):
         print "Thing.__init__"
 	self.cinit(cppthing)
+        self.attributes=[]
+        self.op_dict={}
     def base_init(self, cppthing, kw):
 	self.cinit(cppthing)
         try:
@@ -31,3 +49,19 @@ class Thing:
     def __setattr__(self, name, value):
         print "__setattr__",name
         return setattr(self.cppthing, name, value)
+    def find_operation(self, op_id, prefix="",undefined_operation=None):
+        """find right operation to invoke"""
+        if not undefined_operation: undefined_operation=self.undefined_operation
+        return get_dict_func(self,self.op_dict,
+                             prefix+op_id+"_operation",undefined_operation)
+    def undefined_operation(self, op):
+        """this operation is used when no other matching operation is found"""
+        pass
+    def get_op_name_and_sub(self, op):
+        event_name = op.id
+        sub_op = op
+        while len(sub_op) and sub_op[0].get_name()=="op":
+            sub_op = sub_op[0]
+            event_name = event_name + "_" + sub_op.id
+        return event_name, sub_op
+

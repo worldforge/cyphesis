@@ -11,8 +11,24 @@
 
 #include "Python_API.h"
 
+PyObject * Location_copy(LocationObject *self, PyObject *args)
+{
+    cout << "Location_copy" << endl << flush;
+    if (self->location == NULL) {
+        PyErr_SetString(PyExc_TypeError, "invalid location");
+        return NULL;
+    }
+    if (!PyArg_ParseTuple(args, "")) {
+        PyErr_SetString(PyExc_TypeError, "location.copy() has no args");
+        return NULL;
+    }
+    LocationObject * ret = newLocationObject(NULL);
+    ret->location = new Location(*self->location);
+    return (PyObject *)ret;
+}
+
 PyMethodDef Location_methods[] = {
-    /* {"update",		(PyCFunction)Location_update,	METH_VARARGS}, */
+    {"copy",		(PyCFunction)Location_copy,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };
 

@@ -1,3 +1,21 @@
+2000-11-30  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Added more required functionality to base python Thing class
+	  so that operation manipulations can now work.
+
+	* Implemented getting of object name to python/C API, and added
+	  methods for differentiating between op and object.
+
+	* Implemented on-the-fly de-coding of operations, from operation
+	  arguuments in python/C API. This will be obsolete once Atlas-C++
+	  does full decode later.
+
+	* Implemented get and setattr for Message Object from
+	  python. Attributes are stored both in Object, and in supplementary
+	  python dictionary for non Atlas compatable attributes.
+
+	* Implemented copy() method for Python/C Location class.
+
 2000-11-29  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Added in debug function for python code.

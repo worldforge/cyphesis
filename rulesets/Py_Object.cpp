@@ -9,12 +9,25 @@
  * Beginning of Object methods section.
  */
 
+static PyObject* Object_get_name(AtlasObject * self, PyObject * args)
+{
+    if (self->m_obj == NULL) {
+        PyErr_SetString(PyExc_TypeError,"invalid atlas object");
+        return NULL;
+    }
+    if (!PyArg_ParseTuple(args, "")) {
+        PyErr_SetString(PyExc_TypeError,"too many args");
+        return NULL;
+    }
+    return PyString_FromString("obj");
+}
+
 /*
  * Object methods structure.
  */
 
 PyMethodDef Object_methods[] = {
-	/* {"demo",        (PyCFunction)Xxo_demo,  1}, */
+	{"get_name",    (PyCFunction)Object_get_name,  1},
 	{NULL,          NULL}           /* sentinel */
 };
 
@@ -38,10 +51,17 @@ static PyObject * Object_getattr(AtlasObject *self, char *name)
         return NULL;
     }
     if (self->m_obj->IsMap()) {
-        printf("Getting attribute %s from Atlas Map Object\n", name);
         Object::MapType & omap = self->m_obj->AsMap();
         if (omap.find(name) != omap.end()) {
+            printf("Getting attribute %s from Atlas Map Object\n", name);
             return Object_asPyObject(omap[name]);
+        }
+    }
+    if (self->Object_attr != NULL) {
+        PyObject *v = PyDict_GetItemString(self->Object_attr, name);
+        if (v != NULL) {
+            Py_INCREF(v);
+            return v;
         }
     }
     return Py_FindMethod(Object_methods, (PyObject *)self, name);
@@ -49,7 +69,26 @@ static PyObject * Object_getattr(AtlasObject *self, char *name)
 
 static int Object_setattr( AtlasObject *self, char *name, PyObject *v)
 {
-    return 0;
+    if (self->m_obj == NULL) {
+        PyErr_SetString(PyExc_TypeError,"invalid object");
+        return -1;
+    }
+    if (self->m_obj->IsMap()) {
+        Object::MapType & omap = self->m_obj->AsMap();
+        Object v_obj = PyObject_asObject(v);
+        if (v_obj.GetType() != Object::TYPE_NONE) {
+            printf("Setting attribute %s in Atlas Map Object\n", name);
+            omap[name] = v_obj;
+            return 0;
+        }
+    }
+    if (self->Object_attr == NULL) {
+        self->Object_attr = PyDict_New();
+        if (self->Object_attr == NULL) {
+            return -1;
+        }
+    }
+    return PyDict_SetItemString(self->Object_attr, name, v);
 }
 
 PyTypeObject Object_Type = {
