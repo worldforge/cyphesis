@@ -94,10 +94,10 @@ def default(mapeditor):
 
 # a wall around the world
 
-    m.make('wall',type='wall',xyz=(-151,-101,village_height),bbox=[1,102,2.5])
-    m.make('wall',type='wall',xyz=(-151,-101,village_height),bbox=[152,1,2.5])
-    m.make('wall',type='wall',xyz=(-151,100,village_height),bbox=[152,1,2.5])
-    m.make('wall',type='wall',xyz=(100,-101,village_height),bbox=[1,102,2.5])
+    m.make('wall',type='wall',xyz=(-151,-101,village_height),bbox=[2,204,5])
+    m.make('wall',type='wall',xyz=(-151,-101,village_height),bbox=[304,2,5])
+    m.make('wall',type='wall',xyz=(-151,100,village_height),bbox=[304,2,5])
+    m.make('wall',type='wall',xyz=(100,-101,village_height),bbox=[2,204,5])
 
 # a camp near the origin
 
@@ -122,17 +122,17 @@ def default(mapeditor):
         m.make('lumber',type='lumber',xyz=(uniform(-100,0),uniform(-100,-80),village_height))
 
 #   general
-    m.make('oak',type='oak',xyz=(-70,-86,village_height), bbox=[0.5,0.5,3])
-    m.make('oak',type='oak',xyz=(-6,-77,village_height), bbox=[0.5,0.5,3])
-    m.make('oak',type='oak',xyz=(-24,-90,village_height), bbox=[0.5,0.5,3])
-    m.make('oak',type='oak',xyz=(-49,-90,village_height), bbox=[0.5,0.5,3])
-    m.make('oak',type='oak',xyz=(-86,-81,village_height), bbox=[0.5,0.5,3])
-    m.make('oak',type='oak',xyz=(-12,-98,village_height), bbox=[0.5,0.5,3])
-    m.make('oak',type='oak',xyz=(-35,-73,village_height), bbox=[0.5,0.5,3])
-    m.make('oak',type='oak',xyz=(-83,-66,village_height), bbox=[0.5,0.5,3])
-    m.make('oak',type='oak',xyz=(-87,-34,village_height), bbox=[0.5,0.5,3])
-    m.make('oak',type='oak',xyz=(-98,-28,village_height), bbox=[0.5,0.5,3])
-    m.make('oak',type='oak',xyz=(-75,31,village_height), bbox=[0.5,0.5,3])
+    m.make('oak',type='oak',xyz=(-70,-86,village_height), bbox=[1,1,6])
+    m.make('oak',type='oak',xyz=(-6,-77,village_height), bbox=[1,1,6])
+    m.make('oak',type='oak',xyz=(-24,-90,village_height), bbox=[1,1,6])
+    m.make('oak',type='oak',xyz=(-49,-90,village_height), bbox=[1,1,6])
+    m.make('oak',type='oak',xyz=(-86,-81,village_height), bbox=[1,1,6])
+    m.make('oak',type='oak',xyz=(-12,-98,village_height), bbox=[1,1,6])
+    m.make('oak',type='oak',xyz=(-35,-73,village_height), bbox=[1,1,6])
+    m.make('oak',type='oak',xyz=(-83,-66,village_height), bbox=[1,1,6])
+    m.make('oak',type='oak',xyz=(-87,-34,village_height), bbox=[1,1,6])
+    m.make('oak',type='oak',xyz=(-98,-28,village_height), bbox=[1,1,6])
+    m.make('oak',type='oak',xyz=(-75,31,village_height), bbox=[1,1,6])
 
     m.make('weather',type='weather',desc='object that describes the weather',
            xyz=(0,1,0), rain=0.0)
@@ -225,7 +225,7 @@ def default(mapeditor):
     merchant2=m.make('Dylan Searae',type='merchant',desc='the pig merchant',
          xyz=(-28,2,village_height),age=probability.fertility_age,sex='male',face=[0,-1,0])
     merchants=[merchant, merchant2]
-    sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[2.5,2.5,3])
+    sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[5,5,3])
     m.know(merchants,mknowledge)
     m.know(merchants,village)
     m.price(merchant,mprices)

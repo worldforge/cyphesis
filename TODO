@@ -1,3 +1,6 @@
+  Make sure the tools use another port if one is specified in the config file.
+  Probably involves generalising the config mechanism.
+
   Current watchdog keeps server running. Should a future version ensure
   that the server is working?
 

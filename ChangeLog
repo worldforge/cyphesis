@@ -1,3 +1,8 @@
+2001-12-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* Fixed build files for debian, and converted bbox in define_world.py
+	  to new format.
+
 2001-12-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/database.h, common/database.cpp: Cleaned up header so
