@@ -1,3 +1,34 @@
+2001-08-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/CharacterClient.cpp: Removed commented out code.
+
+	* client/CreatorClient.cpp: Fixed processing the response
+	  to a create operation, and cleaned up debugging output.
+
+	* client/ObjserverClient.cpp, client/ObserverClient.h,
+	  client/client.cpp: Added setup method, which which handles
+	  connecting, negotiation, logging in and creating character.
+
+	* client/Py_CreatorClient.cpp: Added check if make() failed.
+
+	* rulesets/Python_API.cpp: Fixed setting the import hooks
+	  list properlly to include the ruleset list in use, instead
+	  of hardcoding it.
+
+	* rulesets/acorn/define_world.py: Copied define_world.py script
+	  from client directory for Acorn.
+
+	* rulesets/basic/editor.py: Modified to be used from C++ core.
+
+	* rulesets/basic/mind/goals/__init__.py,
+	  rulesets/basic/mind/goals/humanoid/werewolf.py:
+	  Added in goals file to contain goals related to werewolf.
+
+	* rulesets/basic/mind/panlingua/interlinguish.py:
+	  Added in vote and execute verbs for werewolf.
+
+	* rulesets/werewolf: Added in new ruleset for werewolf.
+
 2001-08-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cycmd.cpp: Ensure that login op is flushed after it is sent.

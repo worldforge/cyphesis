@@ -1,4 +1,3 @@
-// Remove this to get unset type reporting
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
@@ -11,7 +10,6 @@ class CreatorClient;
 
 class CommClient : public BaseEntity {
   protected:
-    // bad_type time;
     ClientConnection connection;
     CreatorClient * character;
     Atlas::Message::Object::MapType player;

@@ -17,21 +17,13 @@ oplist CharacterClient::sightImaginaryOperation(const Sight &, Imaginary &)
     return oplist();
 }
 
-#if 0
-oplist CharacterClient::sight_extinguish_operation(self, op): pass;
-oplist telepathy_operation(self, op): ;
-    goal_info=op[0];
-    char=goal_info.from_;
-    char.goal=goal_info[0].description;
-    print char,char.goal;
-#endif
-
 oplist CharacterClient::soundTalkOperation(const Sound & op, Talk & subop)
 {
     return oplist();
 }
 
 #if 0
+//FIXME Dunno what all this trigger lark is about.
 bad_type CharacterClient::add_trigger(bad_type event_name, bad_type func) {
     dictlist.add_value(CharacterClient::event_triggers,event_name, func);
 }

@@ -10,6 +10,7 @@ from mind.goals.common.misc_goal import *
 from mind.goals.humanoid.fire import *
 from mind.goals.humanoid.build_home import *
 from mind.goals.humanoid.transaction import *
+from mind.goals.humanoid.werewolf import *
 
 # Only animals use these goals
 from mind.goals.animal.herd import *

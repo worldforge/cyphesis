@@ -61,6 +61,10 @@ static PyObject * CreatorClient_make(CreatorClientObject * self, PyObject * args
         return NULL;
     }
     Entity * retval = self->m_mind->make(*entity->m_obj);
+    if (retval == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Entity creation failed");
+        return NULL;
+    }
     ThingObject * ret = newThingObject(NULL);
     ret->m_thing = retval;
     return (PyObject *)ret;

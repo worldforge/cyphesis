@@ -783,17 +783,23 @@ static PyMethodDef misc_methods[] = {
 void init_python_api()
 {
     std::string pypath("");
+    std::string importCmd("ruleset_import_hooks.install([");
     std::list<std::string>::const_iterator I;
     for(I = rulesets.begin(); I != rulesets.end(); I++) {
-        pypath = pypath + share_directory + "/cyphesis/rulesets/" +
-                 *I + ":";
+        pypath = pypath + share_directory + "/cyphesis/rulesets/" + *I + ":";
+        if (I != rulesets.begin()) {
+            importCmd = importCmd + ",";
+        }
+        importCmd = importCmd + "\"" + *I + "\"";
     }
+    importCmd = importCmd + "])\n";
+
     setenv("PYTHONPATH", pypath.c_str(), 1);
 
     Py_Initialize();
 
     PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
-    PyRun_SimpleString("ruleset_import_hooks.install([\"acorn\",\"basic\"])\n");
+    PyRun_SimpleString((char *)importCmd.c_str());
 
     if (Py_InitModule("atlas", atlas_methods) == NULL) {
         fprintf(stderr, "Failed to Create atlas module\n");

@@ -1,0 +1,11 @@
+[cyphesis]
+ruleset		= "acorn"
+inittime	= 9600
+
+[thing]
+gallows		= "world.objects.tools.Gallows"
+
+[character]
+villager	= "world.objects.characters.Villager"
+mayor		= "world.objects.characters.Mayor"
+hangman		= "world.objects.characters.Hangman"

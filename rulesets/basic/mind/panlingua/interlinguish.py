@@ -48,6 +48,8 @@ add_word('sell','#sell_verb1')
 add_word('patrol','#patrol_verb1')
 add_word('defend','#defend_verb1')
 add_word('herd','#herd_verb1')
+add_word('vote','#vote_verb1')
+add_word('execute','#execute_verb1')
 
 #CHEAT!: temporary thing
 add_word('build home','#build_home_verb0')
@@ -153,6 +155,21 @@ def match_buy(say):
     a2=p.atom(object,2,(object_id[1],"default"),(a1,"object"),"up")
     return (say,(a1,a2))
 
+vote_pattern=re.compile(r"vote for (.*)")
+def match_vote(say):
+    if say and say[-1]=='.': say=say[:-1]
+    m=vote_pattern.match(say)
+    if not m: return
+    verb="vote"
+    verb_id=word2node.get(verb)
+    if not verb_id: return
+    object=m.group(2)
+    object_id=word2node.get(object)
+    if not object_id: return
+    a1=p.atom(verb,1,(verb_id[1],"default"),(None,"verb"))
+    a2=p.atom(object,2,(object_id[1],"default"),(a1,"object"),"up")
+    return (say,(a1,a2))
+
 desire_pattern=re.compile("(.*) would like to (.*)")
 def match_desire(say):
     m=desire_pattern.match(say)
@@ -166,6 +183,7 @@ def match_desire(say):
     object=m.group(2)
     object_sentence=match_buy(object)
     if not object_sentence: object_sentence=match_sell(object)
+    if not object_sentence: object_sentence=match_vote(object)
     if not object_sentence: return
     a1=p.atom(verb,1,(verb_id[1],"default"),(None,"verb"))
     a2=p.atom(subject,2,(subject_id[1],"default"),(a1,"subject"),"up")

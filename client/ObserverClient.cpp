@@ -11,48 +11,49 @@
 
 using Atlas::Message::Object;
 
-// bad_type sc(bad_type x,bad_type min,bad_type max,bad_type s) {
-//     res=int(s/(max-min)*(x-min));
-//     if (res<0) {
-//         res=0;
-//     }
-//     if (res>=s) {
-//         res=s-1;
-//     }
-//     return res;
-// }
-
-    //def scx(x, min=xmin, max=xmax, s=sizex): return sc(x,min,max,s);
-    //def scy(y, min=ymin, max=ymax, s=sizey): return sc(-y,min,max,s);
-
 ObserverClient::ObserverClient()
 {
-    connect();
+}
+
+bool ObserverClient::setup()
+{
+    if (!connect()) {
+        return false;
+    }
 
     Object::MapType adminAccount;
     if (!AccountBase::instance()->getAccount("admin", adminAccount)) {
         std::cerr << "Unable to read admin account from database"
                   << std::endl << std::flush;
-        return;
+        return false;
     }
     Object::MapType::const_iterator I = adminAccount.find("password");
     if (I == adminAccount.end()) {
         std::cerr << "Unable to read admin account from database"
                   << std::endl << std::flush;
-        return;
+        return false;
     }
     const std::string & password = I->second.AsString();
     player = createPlayer("admin",password);
+    if (player.empty()) {
+        return false;
+    }
     character = createCharacter("creator");
+    if (character == NULL) {
+        return false;
+    }
+    return true;
 }
 
-void ObserverClient::loadDefault() {
+void ObserverClient::loadDefault()
+{
     DefineWorld::define(character);
 }
 
 void ObserverClient::idle()
 {
     usleep(100);
+    // This is where we will put diagnostics, and maybe in future the AI code.
 #if 0
     // time.sleep(0.1);
     if (not ObserverClient::display) {

@@ -23,36 +23,54 @@ Entity * CreatorClient::make(const Object & entity)
     op.SetArgs(Object::ListType(1,entity));
     op.SetFrom(fullid);
     oplist result = sendAndWaitReply(op);
+    // FIXME I am pretty sure this is in practice a redundant check.
     if (result.empty()) {
         std::cerr << "No reply to make" << std::endl << std::flush;
         return NULL;
     }
     RootOperation * res = result.front();
+    // FIXME This is probably a redundant check
     if (res == NULL) {
-        std::cerr << "No reply to make" << std::endl << std::flush;
+        std::cerr << "NULL reply to make" << std::endl << std::flush;
         return NULL;
     }
-    try {
     const std::string & resparents = res->GetParents().front().AsString();
     if (resparents != "sight") {
         std::cerr << "Reply to make isn't sight" << std::endl << std::flush;
         return NULL;
     }
-    const std::string & resargp = res->GetArgs().front().AsMap().find("parents")->second.AsList().front().AsString();
-    if (resargp != "create") {
-        std::cerr << "Reply to make isn't sight of create" << std::endl << std::flush;
+    if (res->GetArgs().empty()) {
+        std::cerr << "Reply to make has no args" << std::endl << std::flush;
         return NULL;
     }
-    cout << 4 << endl << flush;
-    const std::string & created_id = res->GetArgs().front().AsMap().find("args")->second.AsList().front().AsMap().find("id")->second.AsString();
-    cout << 5 << endl << flush;
-    const Object & created = res->GetArgs().front().AsMap().find("args")->second.AsList().front();
-    cout << 6 << endl << flush;
+    const Object::MapType & arg = res->GetArgs().front().AsMap();
+    Object::MapType::const_iterator I = arg.find("parents");
+    if ((I == arg.end()) || !I->second.IsList() || I->second.AsList().empty()) {
+        std::cerr << "Arg of reply to make has no parents"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    const std::string & resargp = I->second.AsList().front().AsString();
+    if (resargp != "create") {
+        std::cerr << "Reply to make isn't sight of create"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    I = arg.find("args");
+    if ((I == arg.end()) || !I->second.IsList() || I->second.AsList().empty()) {
+        std::cerr << "Arg of reply to make has no args"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    const Object::MapType & created = I->second.AsList().front().AsMap();
+    I = created.find("id");
+    if ((I == created.end()) || !I->second.IsString()) {
+        std::cerr << "Created entity has no id"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    const std::string & created_id = I->second.AsString();
+    std::cout << "Created: " << created_id << std::endl << std::flush;
     Entity * obj = map.add(created);
-    std::cout << "returning from make" << std::endl << std::flush;
     return obj;
-    }
-    catch (...) {
-        std::cerr << "EXCEPTION: While makeing" << std::endl << std::flush;
-    }
 }

@@ -1,6 +1,9 @@
-typedef int bad_type; // Remove this to get unset type reporting
+// This file may be redistributed and modified only under the terms of
+// the GNU General Public License (See COPYING for details).
+// Copyright (C) 2000,2001 Alistair Riddoch
 
-bad_type sc(bad_type x,bad_type min,bad_type max,bad_type s);
+#ifndef CLIENT_OBSERVER_CLIENT_H
+#define CLIENT_OBSERVER_CLIENT_H
 
 #include "CommClient.h"
 #include "ClientConnection.h"
@@ -8,7 +11,9 @@ bad_type sc(bad_type x,bad_type min,bad_type max,bad_type s);
 class ObserverClient : public CommClient {
   public:
     ObserverClient();
+    bool setup();
     void loadDefault();
     void idle();
 };
 
+#endif // CLIENT_OBSERVER_CLIENT_H

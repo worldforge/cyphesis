@@ -46,8 +46,12 @@ class editor:
 ##         self.m.send(Operation("talk",es,from_=self.m,to=target))
         if type(subject)==InstanceType: subject=subject.id
         elif type(subject)==TupleType: subject=`subject`
+        elif type(subject)==StringType: pass
+        else: subject=subject.id
         if type(object)==InstanceType: object=object.id
         elif type(object)==TupleType: object=`object`
+        elif type(object)==StringType: pass
+        else: object=object.id
         string,interlinguish=il.verb_subject_object(verb,subject,object)
         self._tell(target,string,interlinguish)
     def _own(self,target,object):
