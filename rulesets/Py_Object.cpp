@@ -170,7 +170,7 @@ PyObject * Object_asPyObject(Object & obj)
     PyObject * ret = NULL;
     switch (obj.GetType()) {
         case Object::TYPE_INT:
-            ret = PyLong_FromLong(obj.AsInt());
+            ret = PyInt_FromLong(obj.AsInt());
             break;
         case Object::TYPE_FLOAT:
             ret = PyFloat_FromDouble(obj.AsFloat());
@@ -226,7 +226,7 @@ Object::MapType PyDictObject_asMapType(PyObject * dict)
 Object PyObject_asObject(PyObject * o)
 {
     if (PyInt_Check(o)) {
-        return(Object((int)PyLong_AsLong(o)));
+        return(Object((int)PyInt_AsLong(o)));
     }
     if (PyFloat_Check(o)) {
         return(Object(PyFloat_AsDouble(o)));

@@ -47,6 +47,12 @@ PyObject * Thing_getattr(ThingObject *self, char *name)
         loc->location = &self->m_thing->location;
         return (PyObject *)loc;
     }
+    if (strcmp(name, "world") == 0) {
+        cout << "Thing_getattr(world)" << endl << flush;
+        WorldObject * world = newWorldObject(NULL);
+        world->world = self->m_thing->world;
+        return (PyObject *)world;
+    }
     if (self->Thing_attr != NULL) {
         PyObject *v = PyDict_GetItemString(self->Thing_attr, name);
         if (v != NULL) {

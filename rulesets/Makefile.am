@@ -17,5 +17,6 @@ librulesets_a_SOURCES = Thing.cpp Thing.h \
 			Py_Map.cpp Py_Map.h \
 			Py_Vector3D.cpp Py_Vector3D.h \
 			Py_WorldTime.cpp Py_WorldTime.h \
+			Py_World.cpp Py_World.h \
 			Py_Location.cpp Py_Location.h \
 			Python_API.cpp Python_API.h

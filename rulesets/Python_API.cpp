@@ -357,11 +357,30 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     if (PyMapping_HasKeyString(kwds, "to")) {
         to = PyMapping_GetItemString(kwds, "to");
         printf("Operation creation sets to\n");
-        // FIXME I think I need to actually do something with said value now
+        PyObject * to_id;
+        if ((to_id = PyObject_GetAttrString(to, "id")) == NULL) {
+            fprintf(stderr, "To was not really an entity, as it had no id\n");
+            return NULL;
+        }
+        if (!PyString_Check(to_id)) {
+            fprintf(stderr, "To id is not a string\n");
+            return NULL;
+        }
+        op->operation->SetTo(PyString_AsString(to_id));
     }
     if (PyMapping_HasKeyString(kwds, "from_")) {
         from = PyMapping_GetItemString(kwds, "from_");
         printf("Operation creation sets from\n");
+        PyObject * from_id;
+        if ((from_id = PyObject_GetAttrString(from, "id")) == NULL) {
+            fprintf(stderr, "From was not really an entity, as it had no id\n");
+            return NULL;
+        }
+        if (!PyString_Check(from_id)) {
+            fprintf(stderr, "From id is not a string\n");
+            return NULL;
+        }
+        op->operation->SetFrom(PyString_AsString(from_id));
         // FIXME I think I need to actually do something with said value now
     }
     return (PyObject *)op;
@@ -378,7 +397,7 @@ static PyObject * set_kw(PyObject * meth_self, PyObject * args)
     if (!PyArg_ParseTuple(args, "OOs|O", &self, &kw, &name, &def)) {
         return NULL;
     }
-
+    printf("SET_KW: %s: Got args\n", name);
     PyObject * attr = PyObject_GetAttrString(self, "attributes");
     if (attr == NULL) {
         PyErr_SetString(PyExc_TypeError, "SET_KW: No attributes list");
@@ -399,6 +418,7 @@ static PyObject * set_kw(PyObject * meth_self, PyObject * args)
         // Should I free entry at this point?
     }
     {
+      printf("SET_KW: Adding it to attributes\n");
       PyObject * namestr = PyString_FromString(name);
       PyList_Append(attr, namestr);
       Py_DECREF(namestr);
@@ -413,8 +433,10 @@ list_contains_it:
         PyObject * copy = PyDict_GetItemString(kw, "copy");
         if ((copy != NULL) && (PyObject_HasAttrString(copy, name))) {
             value = PyObject_GetAttrString(copy, name);
+            printf("SET_KW: Getting it from \"copy\"\n");
         } else {
             value = def;
+            printf("SET_KW: Setting to default\n");
         }
     }
     if (value == NULL) {
@@ -423,7 +445,8 @@ list_contains_it:
     }
     PyObject_SetAttrString(self, name, value);
     
-    return NULL;
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 
 static PyMethodDef atlas_methods[] = {

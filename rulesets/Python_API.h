@@ -21,6 +21,7 @@ class Thing;
 class MemMap;
 class Location;
 class WorldTime;
+class WorldRouter;
 
 typedef std::list<RootOperation *> oplist;
 
@@ -61,6 +62,12 @@ typedef struct {
     PyObject	* WorldTime_attr;	/* Attributes dictionary */
     WorldTime	* time;
 } WorldTimeObject;
+
+typedef struct {
+    PyObject_HEAD
+    PyObject	* World_attr;	/* Attributes dictionary */
+    WorldRouter	* world;
+} WorldObject;
 
 #define ATLAS_OPERATION(_name) typedef struct { \
     PyObject_HEAD \
@@ -136,6 +143,7 @@ ATLAS_OPERATION(RootOperation)
 #include "Py_Location.h"
 #include "Py_Vector3D.h"
 #include "Py_WorldTime.h"
+#include "Py_World.h"
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
 #include "Py_Optime.h"

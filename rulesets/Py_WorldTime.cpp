@@ -3,10 +3,26 @@
 
 #include <Python.h>
 
+#include <server/WorldTime.h>
+
 #include "Python_API.h"
 
+static PyObject *WorldTime_seconds(WorldTimeObject *self, PyObject *args, PyObject *kwds)
+{
+    if (self->time == NULL) {
+        PyErr_SetString(PyExc_TypeError,"invalid world object");
+        return NULL;
+    }
+    if (!PyArg_ParseTuple(args, "")) {
+        PyErr_SetString(PyExc_TypeError,"too many args");
+        return NULL;
+    }
+    return PyFloat_FromDouble(self->time->seconds());
+}
+
+
 PyMethodDef WorldTime_methods[] = {
-    //{"update",		(PyCFunction)WorldTime_update,	METH_VARARGS},
+    {"seconds",		(PyCFunction)WorldTime_seconds,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };
 

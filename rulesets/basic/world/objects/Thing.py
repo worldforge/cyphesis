@@ -45,10 +45,11 @@ class Thing:
         print "Stored reference to C++ object"
         print cppthing
     def __getattr__(self, name):
-        print "__getattr__",name
-        return getattr(self.cppthing, name)
+        value = getattr(self.cppthing, name)
+        print "__getattr__",name,value
+        return value
     def __setattr__(self, name, value):
-        print "__setattr__",name
+        print "__setattr__",name,value
         return setattr(self.cppthing, name, value)
     def find_operation(self, op_id, prefix="",undefined_operation=None):
         """find right operation to invoke"""
