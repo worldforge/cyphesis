@@ -9,6 +9,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/random.h"
+#include "common/Property.h"
 
 #include "common/Tick.h"
 
@@ -29,59 +30,16 @@ Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
 
     subscribe("tick", OP_TICK);
     subscribe("touch", OP_TOUCH);
+
+    m_properties["fruits"] = new Property<int>(m_fruits, a_fruit);
+    m_properties["radius"] = new Property<int>(m_radius, a_fruit);
+    m_properties["fruitName"] = new Property<std::string>(m_fruitName, a_fruit);
+    m_properties["fruitChance"] = new Property<int>(m_fruitChance, a_fruit);
+    m_properties["sizeAdult"] = new Property<double>(m_sizeAdult, a_fruit);
 }
 
 Plant::~Plant()
 {
-}
-
-bool Plant::get(const std::string & aname, Element & attr) const
-{
-    if (aname == "fruits") {
-        attr = m_fruits;
-        return true;
-    } else if (aname == "radius") {
-        attr = m_radius;
-        return true;
-    } else if (aname == "fruitName") {
-        attr = m_fruitName;
-        return true;
-    } else if (aname == "fruitChance") {
-        attr = m_fruitChance;
-        return true;
-    } else if (aname == "sizeAdult") {
-        attr = m_sizeAdult;
-        return true;
-    }
-    return Plant_parent::get(aname, attr);
-}
-
-void Plant::set(const std::string & aname, const Element & attr)
-{
-    if ((aname == "fruits") && attr.isInt()) {
-        m_fruits = attr.asInt();
-        m_update_flags |= a_fruit;
-    } else if ((aname == "radius") && attr.isInt()) {
-        m_radius = attr.asInt();
-    } else if ((aname == "fruitName") && attr.isString()) {
-        m_fruitName = attr.asString();
-    } else if ((aname == "fruitChance") && attr.isInt()) {
-        m_fruitChance = attr.asInt();
-    } else if ((aname == "sizeAdult") && attr.isNum()) {
-        m_sizeAdult = attr.asNum();
-    } else {
-        Plant_parent::set(aname, attr);
-    }
-}
-
-void Plant::addToMessage(MapType & omap) const
-{
-    omap["fruits"] = m_fruits;
-    omap["radius"] = m_radius;
-    omap["fruitName"] = m_fruitName;
-    omap["fruitChance"] = m_fruitChance;
-    omap["sizeAdult"] = m_sizeAdult;
-    Plant_parent::addToMessage(omap);
 }
 
 int Plant::dropFruit(OpVector & res)

@@ -40,10 +40,6 @@ class Plant : public Plant_parent {
     const int getFruitChance() const { return m_fruitChance; }
     const double getSizeAdult() const { return m_sizeAdult; }
 
-    virtual bool get(const std::string &, Element &) const;
-    virtual void set(const std::string &, const Element &);
-    virtual void addToMessage(MapType & obj) const;
-
     virtual void TickOperation(const Tick &, OpVector &);
     virtual void TouchOperation(const Touch &, OpVector &);
 };

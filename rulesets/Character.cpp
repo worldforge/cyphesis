@@ -16,6 +16,7 @@
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/log.h"
+#include "common/Property.h"
 
 #include "common/Setup.h"
 #include "common/Tick.h"
@@ -116,6 +117,9 @@ Character::Character(const std::string & id) : Character_parent(id),
     w2mSubscribe("sight", OP_SIGHT);
     w2mSubscribe("sound", OP_SOUND);
     w2mSubscribe("touch", OP_TOUCH);
+
+    m_properties["drunkness"] = new Property<double>(m_drunkness, a_drunk);
+    m_properties["sex"] = new Property<std::string>(m_sex, a_sex);
 }
 
 Character::~Character()
@@ -127,37 +131,6 @@ Character::~Character()
     if (m_externalMind != NULL) {
         delete m_externalMind;
     }
-}
-
-bool Character::get(const std::string & aname, Element & attr) const
-{
-    if (aname == "drunkness") {
-        attr = m_drunkness;
-        return true;
-    } else if (aname == "sex") {
-        attr = m_sex;
-        return true;
-    }
-    return Character_parent::get(aname, attr);
-}
-
-void Character::set(const std::string & aname, const Element & attr)
-{
-    if ((aname == "drunkness") && attr.isFloat()) {
-        m_drunkness = attr.asFloat();
-        m_update_flags |= a_drunk;
-    } else if ((aname == "sex") && attr.isString()) {
-        m_sex = attr.asString();
-        m_update_flags |= a_sex;
-    } else {
-        Character_parent::set(aname, attr);
-    }
-}
-
-void Character::addToMessage(MapType & omap) const
-{
-    omap["sex"] = m_sex;
-    Character_parent::addToMessage(omap);
 }
 
 void Character::ImaginaryOperation(const Imaginary & op, OpVector & res)

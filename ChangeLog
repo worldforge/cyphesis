@@ -1,5 +1,23 @@
 2004-11-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp, rulesets/Entity.h: Make get(), set(), and
+	  addToMessage() non-virtual, and convert them to using new property
+	  mechanism. Add the necessary properties in the constructor.
+
+	* rulesets/Area.cpp, rulesets/Area.h, rulesets/Character.cpp,
+	  rulesets/Character.h, rulesets/Line.cpp, rulesets/Line.h,
+	  rulesets/Plant.cpp, rulesets/Plant.h, rulesets/Stackable.cpp,
+	  rulesets/Stackable.h, rulesets/World.cpp, rulesets/World.h:
+	  Remove virtual get() set() and addToMessage() methods. These
+	  are now entirely in Entity.
+
+	* rulesets/World.cpp, rulesets/World.h: Remove some functions
+	  for handling terrain data now handled by properties.
+	  Clean up Set code to get rid of nasty unnecessary exception
+	  try / catch block.
+
+2004-11-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Clean up Set code to get rid of
 	  nasty unnecessary exception try / catch block.
 

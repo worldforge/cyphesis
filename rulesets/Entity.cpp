@@ -9,6 +9,7 @@
 #include "common/debug.h"
 #include "common/types.h"
 #include "common/inheritance.h"
+#include "common/Property.h"
 
 #include "common/Setup.h"
 #include "common/Tick.h"
@@ -57,6 +58,12 @@ Entity::Entity(const std::string & id) : BaseEntity(id),
                                          m_mass(-1), m_perceptive(false),
                                          m_world(NULL), m_update_flags(0)
 {
+    m_properties["status"] = new Property<double>(m_status, a_status);
+    m_properties["id"] = new ImmutableProperty<std::string>(getId());
+    m_properties["name"] = new Property<std::string>(m_name, a_name);
+    m_properties["mass"] = new Property<double>(m_mass, a_mass);
+    m_properties["bbox"] = new Property<BBox>(m_location.m_bBox, a_bbox);
+    m_properties["contains"] = new ImmutableProperty<EntitySet>(m_contains);
 }
 
 Entity::~Entity()
@@ -68,61 +75,48 @@ Entity::~Entity()
 
 bool Entity::get(const std::string & aname, Element & attr) const
 {
-    if (aname == "status") {
-        attr = m_status;
+    PropertyDict::const_iterator I = m_properties.find(aname);
+    if (I != m_properties.end()) {
+        I->second->get(attr);
         return true;
-    } else if (aname == "id") {
-        attr = getId();
-        return true;
-    } else if (aname == "name") {
-        attr = m_name;
-        return true;
-    } else if (aname == "mass") {
-        attr = m_mass;
-        return true;
-    } else if (aname == "bbox") {
-        attr = m_location.m_bBox.toAtlas();
-        return true;
-    } else if (aname == "contains") {
-        attr = ListType();
-        ListType & contlist = attr.asList();
-        for(EntitySet::const_iterator I = m_contains.begin();
-            I != m_contains.end(); I++) {
-            contlist.push_back(*I);
-        }
-        return true;
-    } else {
-        MapType::const_iterator I = m_attributes.find(aname);
-        if (I != m_attributes.end()) {
-            attr = I->second;
-            return true;
-        } else {
-            return false;
-        }
     }
+    MapType::const_iterator J = m_attributes.find(aname);
+    if (J != m_attributes.end()) {
+        attr = J->second;
+        return true;
+    }
+    return false;
 }
 
 void Entity::set(const std::string & aname, const Element & attr)
 {
-    if ((aname == "status") && attr.isNum()) {
-        m_status = attr.asNum();
-        m_update_flags |= a_status;
-    } else if (aname == "id") {
+    PropertyDict::const_iterator I = m_properties.find(aname);
+    if (I != m_properties.end()) {
+        I->second->set(attr);
+        m_update_flags != I->second->flags();
         return;
-    } else if ((aname == "name") && attr.isString()) {
-        m_name = attr.asString();
-        m_update_flags |= a_name;
-    } else if ((aname == "mass") && attr.isNum()) {
-        m_mass = attr.asNum();
-        m_update_flags |= a_mass;
-    } else if ((aname == "bbox") && attr.isList() &&
-               (attr.asList().size() > 2)) {
-        m_update_flags |= a_bbox;
-        m_location.m_bBox.fromAtlas(attr.asList());
-    } else {
-        m_update_flags |= a_attr;
-        m_attributes[aname] = attr;
     }
+    m_attributes[aname] = attr;
+    m_update_flags |= a_attr;
+}
+
+void Entity::addToMessage(MapType & omap) const
+{
+    // We need to have a list of keys to pull from attributes.
+    MapType::const_iterator I = m_attributes.begin();
+    MapType::const_iterator Iend = m_attributes.end();
+    for (; I != m_attributes.end(); ++I) {
+        omap[I->first] = I->second;
+    }
+    PropertyDict::const_iterator J = m_properties.begin();
+    PropertyDict::const_iterator Jend = m_properties.end();
+    for (; J != Jend; ++J) {
+        J->second->add(J->first, omap);
+    }
+    omap["stamp"] = (double)m_seq;
+    omap["parents"] = ListType(1, m_type);
+    m_location.addToMessage(omap);
+    omap["objtype"] = "obj";
 }
 
 void Entity::setScript(Script * scrpt)
@@ -159,32 +153,6 @@ void Entity::destroy()
         m_location.m_loc->updated.emit();
     }
     destroyed.emit();
-}
-
-void Entity::addToMessage(MapType & omap) const
-{
-    // We need to have a list of keys to pull from attributes.
-    MapType::const_iterator I = m_attributes.begin();
-    for (; I != m_attributes.end(); I++) {
-        omap[I->first] = I->second;
-    }
-    if (!m_name.empty()) {
-        omap["name"] = m_name;
-    }
-    omap["type"] = m_type;
-    omap["mass"] = m_mass;
-    omap["status"] = m_status;
-    omap["stamp"] = (double)m_seq;
-    omap["parents"] = ListType(1, m_type);
-    m_location.addToMessage(omap);
-    if (!m_contains.empty()) {
-        ListType & contlist = (omap["contains"] = ListType()).asList();
-        EntitySet::const_iterator J = m_contains.begin();
-        for(; J != m_contains.end(); J++) {
-            contlist.push_back((*J)->getId());
-        }
-    }
-    BaseEntity::addToMessage(omap);
 }
 
 void Entity::merge(const MapType & ent)

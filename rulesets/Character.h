@@ -67,11 +67,6 @@ class Character : public Character_parent {
     const std::string & getSex() const { return m_sex; }
     const double getFood() const { return m_food; }
 
-    virtual bool get(const std::string &, Element &) const;
-    virtual void set(const std::string &, const Element &);
-
-    virtual void addToMessage(MapType &) const;
-
     virtual void operation(const RootOperation & op, OpVector &);
     virtual void externalOperation(const RootOperation & op);
 

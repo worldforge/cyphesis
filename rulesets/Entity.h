@@ -14,8 +14,6 @@
 
 #include <iostream>
 
-class Script;
-
 // Work in progress, this will be a way of inferring type relationships,
 // and will replace the simple string type currently used.
 
@@ -36,6 +34,11 @@ class EntityType {
     }
 };
 
+class Script;
+class PropertyBase;
+
+typedef std::map<std::string, PropertyBase *> PropertyDict;
+
 /// \brief This is the base class from which all in-game objects inherit.
 ///
 /// This class should not normally be instantiated directly.
@@ -55,6 +58,8 @@ class Entity : public BaseEntity {
   protected:
     Script * m_script;
     MapType m_attributes;
+    PropertyDict m_properties;
+
     int m_seq;                  // Sequence number
     double m_status;            // Health/damage coeficient
     std::string m_type;         // Easy access to primary parent
@@ -114,8 +119,9 @@ class Entity : public BaseEntity {
         return m_location.getXyz();
     }
 
-    virtual bool get(const std::string &, Element &) const;
-    virtual void set(const std::string &, const Element &);
+    bool get(const std::string &, Element &) const;
+    void set(const std::string &, const Element &);
+    void addToMessage(MapType & obj) const;
 
     void setScript(Script * scrpt);
     void merge(const MapType &);
@@ -126,8 +132,6 @@ class Entity : public BaseEntity {
 
     void destroy();
     void scriptSubscribe(const std::string &);
-
-    virtual void addToMessage(MapType & obj) const;
 
     virtual void externalOperation(const RootOperation & op);
 

@@ -16,19 +16,14 @@ typedef Thing Line_parent;
 /// implemented.
 class Line : public Line_parent {
   protected:
-    IdList startIntersections;
-    IdList endIntersections;
-    CoordList coords;
+    IdList m_startIntersections;
+    IdList m_endIntersections;
+    CoordList m_coords;
 
   public:
 
     explicit Line(const std::string & id);
     virtual ~Line();
-
-    virtual bool get(const std::string &, Element &) const;
-    virtual void set(const std::string &, const Element &);
-
-    virtual void addToMessage(MapType & obj) const;
 };
 
 #endif // RULESETS_LINE_H

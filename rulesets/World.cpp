@@ -4,6 +4,8 @@
 
 #include "World.h"
 
+#include "TerrainProperty.h"
+
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
@@ -25,115 +27,13 @@ static const bool debug_flag = false;
 
 using Atlas::Message::FloatType;
 
-typedef Mercator::Terrain::Pointstore Pointstore;
-typedef Mercator::Terrain::Pointcolumn Pointcolumn;
-
-void World::getTerrain(MapType & t) const
-{
-    MapType & terrain = (t["points"] = MapType()).asMap();
-
-    const Pointstore & points = m_terrain.getPoints();
-    Pointstore::const_iterator I = points.begin();
-    for(; I != points.end(); ++I) {
-        const Pointcolumn & pointcol = I->second;
-        Pointcolumn::const_iterator J = pointcol.begin();
-        for (; J != pointcol.end(); ++J) {
-            std::stringstream key;
-            key << I->first << "x" << J->first;
-            ListType & point = (terrain[key.str()] = ListType(3)).asList();
-            point[0] = (FloatType)(I->first);
-            point[1] = (FloatType)(J->first);
-            point[2] = (FloatType)(J->second.height());
-        }
-    }
-}
-
-void World::setTerrain(const MapType & t)
-{
-    debug(std::cout << "World::setTerrain()" << std::endl << std::flush;);
-
-    const Pointstore & basePoints = m_terrain.getPoints();
-
-    MapType::const_iterator I = t.find("points");
-    if ((I != t.end()) && (I->second.isMap())) {
-        const MapType & points = I->second.asMap();
-        MapType::const_iterator I = points.begin();
-        for(; I != points.end(); ++I) {
-            if (!I->second.isList()) {
-                continue;
-            }
-            const ListType & point = I->second.asList();
-            if (point.size() != 3) {
-                continue;
-            }
-
-            int x = (int)point[0].asNum();
-            int y = (int)point[1].asNum();
-
-            Pointstore::const_iterator J = basePoints.find(x);
-            if ((J == basePoints.end()) ||
-                (J->second.find(y) == J->second.end())) {
-                // Newly added point.
-                m_createdTerrain[x].insert(y);
-            } else {
-                // Modified point
-                PointSet::const_iterator K = m_createdTerrain.find(x);
-                if ((K == m_createdTerrain.end()) ||
-                    (K->second.find(y) == K->second.end())) {
-                    // Already in database
-                    m_modifiedTerrain[x].insert(y);
-                }
-                // else do nothing, as its currently waiting to be added.
-            }
-            
-            m_terrain.setBasePoint(x, y, point[2].asNum());
-            // FIXME Add support for roughness and falloff, as done
-            // by damien in equator and FIXMEd out by me
-
-            
-        }
-    }
-}
-
 World::World(const std::string & id) : World_parent(id),
                                        m_terrain(*new Mercator::Terrain())
 {
     subscribe("set", OP_SET);
 
-#if 0 
-    // FIXME Just for testin
-
-    WFMath::MTRand rng;
-
-    for (int i = -5; i < 6; ++i) {
-        for (int j = -5; j < 6; ++j) {
-            if (i == 5 || j == 5) {
-                m_terrain.setBasePoint(i, j, 100 + rng() * 50);
-            } else if (i == -5 || j == -5) {
-                m_terrain.setBasePoint(i, j, -10 - rng() * 20);
-            } else if ((i == 2 || i == 3) && (j == 2 || j == 3)) {
-                m_terrain.setBasePoint(i, j, 20 + rng() * 5);
-            } else if (i == 4 || j == 4) {
-                m_terrain.setBasePoint(i, j, 30 + rng() * 50);
-            } else if (i == -4 || j == -4) {
-                m_terrain.setBasePoint(i, j, -2 + rng() * 5);
-            } else {
-                float mult = abs(i) + abs(j);
-                m_terrain.setBasePoint(i, j, 1 + rng() * mult * 8);
-            }
-        }
-    }
-    
-    m_terrain.setBasePoint(-1, -1, -16.8);
-    m_terrain.setBasePoint(0, -1, -3.8);
-    m_terrain.setBasePoint(-1, 0, -2.8);
-    m_terrain.setBasePoint(-1, 1, 12.8);
-    m_terrain.setBasePoint(1, -1, 15.8);
-    m_terrain.setBasePoint(0, 0, 12.8);
-    m_terrain.setBasePoint(1, 0, 23.1);
-    m_terrain.setBasePoint(0, 1, 14.2);
-    m_terrain.setBasePoint(1, 1, 19.7);
-#endif
+    m_properties["terrain"] = new TerrainProperty(m_terrain, m_modifiedTerrain,
+                                                  m_modifiedTerrain, a_terrain);
 }
 
 World::~World()
@@ -148,32 +48,6 @@ float World::getHeight(float x, float y)
         s->populate();
     }
     return m_terrain.get(x, y);
-}
-
-bool World::get(const std::string & aname, Element & attr) const
-{
-    if (aname == "terrain") {
-        attr = MapType();
-        getTerrain(attr.asMap());
-        return true;
-    }
-    return World_parent::get(aname, attr);
-}
-
-void World::set(const std::string & aname, const Element & attr)
-{
-    if ((aname == "terrain") && attr.isMap()) {
-        m_update_flags |= a_terrain;
-        setTerrain(attr.asMap());
-    } else {
-        World_parent::set(aname, attr);
-    }
-}
-
-void World::addToMessage(MapType & omap) const
-{
-    getTerrain((omap["terrain"] = MapType()).asMap());
-    World_parent::addToMessage(omap);
 }
 
 void World::LookOperation(const Look & op, OpVector & res)
@@ -207,7 +81,11 @@ void World::LookOperation(const Look & op, OpVector & res)
     omap["parents"] = ListType(1, "world");
     omap["objtype"] = "obj";
     // FIXME integrate setting terrain with setting contains.
-    getTerrain((omap["terrain"] = MapType()).asMap());
+
+    TerrainProperty tp(m_terrain, m_modifiedTerrain,
+                       m_createdTerrain, a_terrain);
+    tp.add("terrain", omap);
+
     Entity * lookFrom = J->second;
     ListType & contlist = (omap["contains"] = ListType()).asList();
     EntitySet::const_iterator I = m_contains.begin();
@@ -249,25 +127,16 @@ void World::SetOperation(const Set & op, OpVector & res)
     // get deleted if its status goes below 0.
     m_seq++;
     const ListType & args = op.getArgs();
-    if (args.empty()) {
+    if (args.empty() || !args.front().isMap()) {
        return;
     }
-    try {
-        const MapType & ent = args.front().asMap();
-        MapType::const_iterator I;
-        for (I = ent.begin(); I != ent.end(); I++) {
-            set(I->first, I->second);
-        }
-        RootOperation * s = new Sight();
-        s->setArgs(ListType(1,op.asObject()));
-        if (m_update_flags != 0) {
-            updated.emit();
-        }
-        res.push_back(s);
-    }
-    catch (Atlas::Message::WrongTypeException) {
-        log(ERROR, "EXCEPTION: Malformed set operation");
-        error(op, "Malformed set operation", res, getId());
-        return;
+    const MapType & ent = args.front().asMap();
+    merge(ent);
+    RootOperation * s = new Sight();
+    s->setArgs(ListType(1,op.asObject()));
+    res.push_back(s);
+
+    if (m_update_flags != 0) {
+        updated.emit();
     }
 }

@@ -9,6 +9,8 @@
 
 #include "Script.h"
 
+#include "common/Property.h"
+
 #include <Atlas/Objects/Operation/Combine.h>
 #include <Atlas/Objects/Operation/Divide.h>
 #include <Atlas/Objects/Operation/Delete.h>
@@ -18,36 +20,12 @@ Stackable::Stackable(const std::string & id) : Stackable_parent(id),
 {
     subscribe("combine", OP_COMBINE);
     subscribe("divide", OP_DIVIDE);
+
+    m_properties["num"] = new Property<int>(m_num, 0);
 }
 
 Stackable::~Stackable()
 {
-}
-
-bool Stackable::get(const std::string & aname, Element & attr) const
-{
-    if (aname == "num") {
-        attr = m_num;
-        return true;
-    }
-    return Stackable_parent::get(aname, attr);
-}
-
-void Stackable::set(const std::string & aname, const Element & attr)
-{
-    if ((aname == "num") && attr.isInt()) {
-        m_num = attr.asInt();
-    } else {
-        Stackable_parent::set(aname, attr);
-    }
-}
-
-void Stackable::addToMessage(MapType & omap) const
-{
-    if (m_num != 1) {
-        omap["num"] = m_num;
-    }
-    Stackable_parent::addToMessage(omap);
 }
 
 void Stackable::CombineOperation(const Combine & op, OpVector & res)

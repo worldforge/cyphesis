@@ -26,11 +26,6 @@ class Stackable : public Stackable_parent {
     explicit Stackable(const std::string & id);
     virtual ~Stackable();
 
-    virtual bool get(const std::string &, Element &) const;
-    virtual void set(const std::string &, const Element &);
-
-    virtual void addToMessage(MapType &) const;
-
     virtual void CombineOperation(const Combine &, OpVector &);
     virtual void DivideOperation(const Divide &, OpVector &);
 };

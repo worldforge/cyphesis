@@ -22,10 +22,6 @@ class Area : public Area_parent {
 
     explicit Area(const std::string & id);
     virtual ~Area();
-
-    virtual bool get(const std::string &, Element &) const;
-    virtual void set(const std::string &, const Element &);
-    virtual void addToMessage(MapType & obj) const;
 };
 
 #endif // RULESETS_AREA_H

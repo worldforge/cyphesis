@@ -28,8 +28,6 @@ class World : public World_parent {
     /// Set of terrain points which have been added.
     PointSet m_createdTerrain;
 
-    void getTerrain(MapType &) const;
-    void setTerrain(const MapType &);
   public:
     explicit World(const std::string & id);
     virtual ~World();
@@ -52,11 +50,6 @@ class World : public World_parent {
     }
 
     float getHeight(float x, float y);
-
-    virtual bool get(const std::string &, Element &) const;
-    virtual void set(const std::string &, const Element &);
-
-    virtual void addToMessage(MapType &) const;
 
     virtual void LookOperation(const Look & op, OpVector &);
     virtual void BurnOperation(const Burn & op, OpVector &);
