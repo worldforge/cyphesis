@@ -21,7 +21,7 @@ class TrustedConnection : public Connection {
                       ServerRouting & svr);
 
     virtual bool verifyCredentials(const Account &,
-                              const Atlas::Message::Object::MapType &) const;
+                              const Atlas::Message::Element::MapType &) const;
 };
 
 #endif // SERVER_TRUSTED_CONNECTION_H

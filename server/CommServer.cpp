@@ -57,9 +57,13 @@ void CommServer::loop()
 
     FD_ZERO(&sock_fds);
 
+    bool pendingConnections = false;
     comm_set_t::const_iterator I = m_sockets.begin();
     for(; I != m_sockets.end(); I++) {
-       if (!(*I)->isOpen()) { continue; }
+       if (!(*I)->isOpen()) {
+           pendingConnections = true;
+           continue;
+       }
        int client_fd = (*I)->getFd();
        FD_SET(client_fd, &sock_fds);
        if (client_fd > highest) {
@@ -77,7 +81,7 @@ void CommServer::loop()
         return;
     }
 
-    if (rval == 0) {
+    if ((rval == 0) && !pendingConnections) {
         idle();
         return;
     }
@@ -115,13 +119,13 @@ void CommServer::loop()
 inline void CommServer::removeSocket(CommSocket * client, char * error_msg)
 {
     // FIXME This code needs to be moved into CommClient
-    // Atlas::Message::Object::MapType err;
+    // Atlas::Message::Element::MapType err;
     // err["message"] = error_msg;
-    // Atlas::Message::Object::ListType eargs(1,err);
+    // Atlas::Message::Element::ListType eargs(1,err);
 
     // Error e(Error::Instantiate());
 
-    // e.SetArgs(eargs);
+    // e.setArgs(eargs);
 
     // if (client->online() && client->isOpen()) {
         // client->send(e);

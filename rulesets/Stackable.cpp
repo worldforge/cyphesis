@@ -35,8 +35,8 @@ bool Stackable::get(const std::string & aname, Element & attr) const
 
 void Stackable::set(const std::string & aname, const Element & attr)
 {
-    if ((aname == "num") && attr.IsInt()) {
-        m_num = attr.AsInt();
+    if ((aname == "num") && attr.isInt()) {
+        m_num = attr.asInt();
     } else {
         Stackable_parent::set(aname, attr);
     }
@@ -56,9 +56,9 @@ OpVector Stackable::CombineOperation(const Combine & op)
     if (m_script->Operation("combine", op, res) != 0) {
         return res;
     }
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
     for(Element::ListType::const_iterator I = args.begin(); I!= args.end(); I++) {
-        const std::string & id = I->AsMap().find("id")->second.AsString();
+        const std::string & id = I->asMap().find("id")->second.asString();
         if (id == getId()) { continue; }
         Entity * ent = m_world->getObject(id);
         if (ent == NULL) { continue; }
@@ -70,8 +70,8 @@ OpVector Stackable::CombineOperation(const Combine & op)
         Delete * d = new Delete(Delete::Instantiate());
         Element::MapType dent;
         dent["id"] = id;
-        d->SetTo(id);
-        d->SetArgs(Element::ListType(1,dent));
+        d->setTo(id);
+        d->setArgs(Element::ListType(1,dent));
         res.push_back(d);
     }
     return res;
@@ -85,13 +85,13 @@ OpVector Stackable::DivideOperation(const Divide & op)
     if (m_script->Operation("divide", op, res) != 0) {
         return res;
     }
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
     for(Element::ListType::const_iterator I = args.begin(); I!=args.end(); I++) {
-        const Element::MapType & ent = I->AsMap();
+        const Element::MapType & ent = I->asMap();
         int new_num = 1;
         Element::MapType::const_iterator J = ent.find("num");
         if (J != ent.end()) {
-            if (J->second.IsInt()) { new_num = J->second.AsInt(); }
+            if (J->second.isInt()) { new_num = J->second.asInt(); }
         }
         if (m_num <= new_num) { continue; }
         
@@ -100,8 +100,8 @@ OpVector Stackable::DivideOperation(const Divide & op)
         new_ent["parents"] = parents;
         new_ent["num"] = new_num;
         Create * c = new Create( Create::Instantiate());
-        c->SetArgs(Element::ListType(1,new_ent));
-        c->SetTo(getId());
+        c->setArgs(Element::ListType(1,new_ent));
+        c->setTo(getId());
         res.push_back(c);
     }
     return res;

@@ -53,13 +53,13 @@ OpVector Thing::SetupOperation(const Setup & op)
     // been elsewhere on the map.
     RootOperation * sight = new Sight(Sight::Instantiate());
     Create c(Create::Instantiate());
-    Element::ListType & args = c.GetArgs();
+    Element::ListType & args = c.getArgs();
     args.push_back(Element::MapType());
-    addToObject(args.front().AsMap());
-    c.SetTo(getId());
-    c.SetFrom(getId());
-    Element::ListType & sargs = sight->GetArgs();
-    sargs.push_back(c.AsObject());
+    addToObject(args.front().asMap());
+    c.setTo(getId());
+    c.setFrom(getId());
+    Element::ListType & sargs = sight->getArgs();
+    sargs.push_back(c.asObject());
 
     OpVector sres;
     if (m_script->Operation("setup", op, sres) != 0) {
@@ -72,7 +72,7 @@ OpVector Thing::SetupOperation(const Setup & op)
     res[0] = sight;
 
     RootOperation * tick = new Tick(Tick::Instantiate());
-    tick->SetTo(getId());
+    tick->setTo(getId());
 
     res[1] = tick;
 
@@ -86,7 +86,7 @@ OpVector Thing::ActionOperation(const Action & op)
         return res;
     }
     RootOperation * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Element::ListType(1,op.AsObject()));
+    s->setArgs(Element::ListType(1,op.asObject()));
     return OpVector(1,s);
 }
 
@@ -96,17 +96,17 @@ OpVector Thing::CreateOperation(const Create & op)
     if (m_script->Operation("create", op, res) != 0) {
         return res;
     }
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
     if (args.empty()) {
        return OpVector();
     }
     try {
-        Element::MapType ent = args.front().AsMap();
+        Element::MapType ent = args.front().asMap();
         Element::MapType::const_iterator I = ent.find("parents");
-        if ((I == ent.end()) || !I->second.IsList()) {
+        if ((I == ent.end()) || !I->second.isList()) {
             return error(op, "Entity to be created has no type", getId());
         }
-        const Element::ListType & parents = I->second.AsList();
+        const Element::ListType & parents = I->second.asList();
         if (parents.empty()) {
             return error(op, "Entity to be create has empty type list", getId());
         }
@@ -116,19 +116,19 @@ OpVector Thing::CreateOperation(const Create & op)
                 ent["pos"] = m_location.m_pos.toAtlas();
             }
         }
-        const std::string & type = parents.front().AsString();
+        const std::string & type = parents.front().asString();
         debug( std::cout << getId() << " creating " << type;);
 
         Entity * obj = m_world->addObject(type,ent);
 
         Create c(op);
-        Element::ListType & args = c.GetArgs();
+        Element::ListType & args = c.getArgs();
         args.push_back(Element::MapType());
-        obj->addToObject(args.front().AsMap());
+        obj->addToObject(args.front().asMap());
         RootOperation * s = new Sight(Sight::Instantiate());
-        s->SetArgs(Element::ListType(1,c.AsObject()));
+        s->setArgs(Element::ListType(1,c.asObject()));
         // This should no longer be required as it is now handled centrally
-        // s->SetRefno(op.GetSerialno());
+        // s->setRefno(op.getSerialno());
         return OpVector(1,s);
     }
     catch (Atlas::Message::WrongTypeException) {
@@ -147,7 +147,7 @@ OpVector Thing::DeleteOperation(const Delete & op)
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
     RootOperation * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Element::ListType(1,op.AsObject()));
+    s->setArgs(Element::ListType(1,op.asObject()));
     return OpVector(1,s);
 }
 
@@ -157,33 +157,33 @@ OpVector Thing::BurnOperation(const Burn & op)
     if (m_script->Operation("burn", op, res) != 0) {
         return res;
     }
-    if (op.GetArgs().empty() || !op.GetArgs().front().IsMap()) {
+    if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
         return error(op, "Fire op has no argument", getId());
     }
     Element::MapType::const_iterator I = m_attributes.find("burn_speed");
-    if ((I == m_attributes.end()) || !I->second.IsNum()) {
+    if ((I == m_attributes.end()) || !I->second.isNum()) {
         return res;
     }
-    double bspeed = I->second.AsNum();
-    const Element::MapType & fire_ent = op.GetArgs().front().AsMap();
-    double consumed = bspeed * fire_ent.find("status")->second.AsNum();
+    double bspeed = I->second.asNum();
+    const Element::MapType & fire_ent = op.getArgs().front().asMap();
+    double consumed = bspeed * fire_ent.find("status")->second.asNum();
 
-    const std::string & to = fire_ent.find("id")->second.AsString();
+    const std::string & to = fire_ent.find("id")->second.asString();
     Element::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["mass"] = consumed;
 
     Set * s = new Set(Set::Instantiate());
-    s->SetTo(getId());
-    Element::ListType & sargs = s->GetArgs();
+    s->setTo(getId());
+    Element::ListType & sargs = s->getArgs();
     sargs.push_back(Element::MapType());
-    Element::MapType & self_ent = sargs.back().AsMap();
+    Element::MapType & self_ent = sargs.back().asMap();
     self_ent["id"] = getId();
     self_ent["status"] = m_status - (consumed / m_mass);
 
     Nourish * n = new Nourish(Nourish::Instantiate());
-    n->SetTo(to);
-    n->SetArgs(Element::ListType(1,nour_ent));
+    n->setTo(to);
+    n->setArgs(Element::ListType(1,nour_ent));
 
     OpVector res2(2);
     res2[0] = s;
@@ -199,19 +199,19 @@ OpVector Thing::MoveOperation(const Move & op)
     if (m_script->Operation("move", op, res) != 0) {
         return res;
     }
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
     if (args.empty()) {
         debug( std::cout << "ERROR: move op has no argument" << std::endl << std::flush;);
         return OpVector();
     }
     try {
         Vector3D oldpos = m_location.m_pos;
-        const Element::MapType & ent = args.front().AsMap();
+        const Element::MapType & ent = args.front().asMap();
         Element::MapType::const_iterator I = ent.find("loc");
-        if ((I == ent.end()) || !I->second.IsString()) {
+        if ((I == ent.end()) || !I->second.isString()) {
             return error(op, "Move op has no loc", getId());
         }
-        const std::string & ref = I->second.AsString();
+        const std::string & ref = I->second.asString();
         EntityDict::const_iterator J = m_world->getObjects().find(ref);
         if (J == m_world->getObjects().end()) {
             return error(op, "Move op loc invalid", getId());
@@ -222,7 +222,7 @@ OpVector Thing::MoveOperation(const Move & op)
             return error(op, "Attempt by entity to move into itself", getId());
         }
         I = ent.find("pos");
-        if ((I == ent.end()) || !I->second.IsList()) {
+        if ((I == ent.end()) || !I->second.isList()) {
             return error(op, "Move op has no pos", getId());
         }
 
@@ -247,22 +247,22 @@ OpVector Thing::MoveOperation(const Move & op)
         }
 
         // Update pos
-        m_location.m_pos = Vector3D(I->second.AsList());
+        m_location.m_pos = Vector3D(I->second.asList());
         m_update_flags |= a_pos;
         I = ent.find("velocity");
         if (I != ent.end()) {
         // Update velocity
-            m_location.m_velocity = Vector3D(I->second.AsList());
+            m_location.m_velocity = Vector3D(I->second.asList());
         }
         I = ent.find("orientation");
         if (I != ent.end()) {
         // Update orientation
-            m_location.m_orientation = Quaternion(I->second.AsList());
+            m_location.m_orientation = Quaternion(I->second.asList());
             m_update_flags |= a_orient;
         }
 
         RootOperation * s = new Sight(Sight::Instantiate());
-        s->SetArgs(Element::ListType(1,op.AsObject()));
+        s->setArgs(Element::ListType(1,op.asObject()));
         OpVector res2(1,s);
         // I think it might be wise to send a set indicating we have changed
         // modes, but this would probably be wasteful
@@ -298,8 +298,8 @@ OpVector Thing::MoveOperation(const Move & op)
                             // Send operation to the entity in question so it
                             // knows it is losing sight of us.
                             Disappearance * d = new Disappearance(Disappearance::Instantiate());
-                            d->SetArgs(this_as_args);
-                            d->SetTo((*I)->getId());
+                            d->setArgs(this_as_args);
+                            d->setTo((*I)->getId());
                             res2.push_back(d);
                         }
                     } else /*if (isInRange)*/ {
@@ -310,8 +310,8 @@ OpVector Thing::MoveOperation(const Move & op)
                             // Send operation to the entity in question so it
                             // knows it is gaining sight of us.
                             Appearance * a = new Appearance(Appearance::Instantiate());
-                            a->SetArgs(this_as_args);
-                            a->SetTo((*I)->getId());
+                            a->setArgs(this_as_args);
+                            a->setTo((*I)->getId());
                             res2.push_back(a);
                         }
                     }
@@ -321,16 +321,16 @@ OpVector Thing::MoveOperation(const Move & op)
                 // Send an operation to ourselves with a list of entities
                 // we are losing sight of
                 Appearance * a = new Appearance(Appearance::Instantiate());
-                a->SetArgs(appear);
-                a->SetTo(getId());
+                a->setArgs(appear);
+                a->setTo(getId());
                 res2.push_back(a);
             }
             if (!disappear.empty()) {
                 // Send an operation to ourselves with a list of entities
                 // we are gaining sight of
                 Disappearance * d = new Disappearance(Disappearance::Instantiate());
-                d->SetArgs(disappear);
-                d->SetTo(getId());
+                d->setArgs(disappear);
+                d->setTo(getId());
                 res2.push_back(d);
             }
         }
@@ -351,26 +351,26 @@ OpVector Thing::SetOperation(const Set & op)
     if (m_script->Operation("set", op, res) != 0) {
         return res;
     }
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
     if (args.empty()) {
        return OpVector();
     }
     try {
-        const Element::MapType & ent = args.front().AsMap();
+        const Element::MapType & ent = args.front().asMap();
         Element::MapType::const_iterator I;
         for (I = ent.begin(); I != ent.end(); I++) {
             set(I->first, I->second);
         }
         RootOperation * s = new Sight(Sight::Instantiate());
-        s->SetArgs(Element::ListType(1,op.AsObject()));
+        s->setArgs(Element::ListType(1,op.asObject()));
         OpVector res2(1,s);
         if (m_status < 0) {
             RootOperation * d = new Delete(Delete::Instantiate());
-            Element::ListType & dargs = d->GetArgs();
+            Element::ListType & dargs = d->getArgs();
             dargs.push_back(Element::MapType());
             // FIXME Is it necessary to include a full description?
-            addToObject(dargs.front().AsMap());
-            d->SetTo(getId());
+            addToObject(dargs.front().asMap());
+            d->setTo(getId());
             res2.push_back(d);
         }
         if (m_update_flags != 0) {

@@ -20,8 +20,8 @@ Chop::~Chop() { }
 
 Chop Chop::Instantiate() {
     Chop value;
-    value.SetParents(Message::Object::ListType(1,std::string("chop")));
-    value.SetObjtype(std::string("op"));
+    value.setParents(Message::Element::ListType(1,std::string("chop")));
+    value.setObjtype(std::string("op"));
     return value;
 }
 
@@ -32,8 +32,8 @@ Cut::~Cut() { }
 
 Cut Cut::Instantiate() {
     Cut value;
-    value.SetParents(Message::Object::ListType(1,std::string("cut")));
-    value.SetObjtype(std::string("op"));
+    value.setParents(Message::Element::ListType(1,std::string("cut")));
+    value.setObjtype(std::string("op"));
     return value;
 }
 
@@ -44,8 +44,8 @@ Eat::~Eat() { }
 
 Eat Eat::Instantiate() {
     Eat value;
-    value.SetParents(Message::Object::ListType(1,std::string("eat")));
-    value.SetObjtype(std::string("op"));
+    value.setParents(Message::Element::ListType(1,std::string("eat")));
+    value.setObjtype(std::string("op"));
     return value;
 }
 
@@ -56,8 +56,8 @@ Burn::~Burn() { }
 
 Burn Burn::Instantiate() {
     Burn value;
-    value.SetParents(Message::Object::ListType(1, "burn"));
-    value.SetObjtype(std::string("op"));
+    value.setParents(Message::Element::ListType(1, "burn"));
+    value.setObjtype(std::string("op"));
     return value;
 }
 
@@ -68,8 +68,8 @@ Generic::~Generic() { }
 
 Generic Generic::Instantiate(const std::string & p) {
     Generic value(p);
-    value.SetParents(Message::Object::ListType(1,p));
-    value.SetObjtype(std::string("op"));
+    value.setParents(Message::Element::ListType(1,p));
+    value.setObjtype(std::string("op"));
     return value;
 }
 
@@ -80,8 +80,8 @@ Nourish::~Nourish() { }
 
 Nourish Nourish::Instantiate() {
     Nourish value;
-    value.SetParents(Message::Object::ListType(1, std::string("nourish")));
-    value.SetObjtype(std::string("op"));
+    value.setParents(Message::Element::ListType(1, std::string("nourish")));
+    value.setObjtype(std::string("op"));
     return value;
 }
 
@@ -92,8 +92,8 @@ Setup::~Setup() { }
 
 Setup Setup::Instantiate() {
     Setup value;
-    value.SetParents(Message::Object::ListType(1, "setup"));
-    value.SetObjtype(std::string("op"));
+    value.setParents(Message::Element::ListType(1, "setup"));
+    value.setObjtype(std::string("op"));
     return value;
 }
 
@@ -104,8 +104,8 @@ Tick::~Tick() { }
 
 Tick Tick::Instantiate() {
     Tick value;
-    value.SetParents(Message::Object::ListType(1,"tick"));
-    value.SetObjtype(std::string("op"));
+    value.setParents(Message::Element::ListType(1,"tick"));
+    value.setObjtype(std::string("op"));
     return value;
 }
 

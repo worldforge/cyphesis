@@ -6,7 +6,7 @@
 
 #include "debug.h"
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 
 static const bool debug_flag = false;
 

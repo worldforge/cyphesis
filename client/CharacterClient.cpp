@@ -50,13 +50,13 @@ bad_type CharacterClient::set_from(bad_type msg) {
 
 void CharacterClient::send(RootOperation & op)
 {
-    op.SetFrom(getId());
+    op.setFrom(getId());
     connection.send(op);
 }
 
 inline bool CharacterClient::findRefnoOp(const RootOperation & op, long refno)
 {
-    if (refno == op.GetRefno()) {
+    if (refno == op.getRefno()) {
         return true;
     }
     return false;
@@ -70,7 +70,7 @@ inline bool CharacterClient::findRefno(const RootOperation & msg, long refno)
 OpVector CharacterClient::sendAndWaitReply(RootOperation & op)
 {
     send(op);
-    long no = op.GetSerialno();
+    long no = op.getSerialno();
     while (true) {
         if (connection.pending()) {
             RootOperation * input=CharacterClient::connection.pop();

@@ -14,7 +14,7 @@
 
 #include "common/debug.h"
 
-#include <Atlas/Message/Object.h>
+#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Look.h>
 
@@ -40,10 +40,10 @@ inline RootOperation * MemMap::lookId()
     if (!m_additionsById.empty()) {
         const std::string & id = m_additionsById.front();
         Look * l = new Look(Look::Instantiate());
-        Atlas::Message::Object::MapType m;
-        m["id"] = Atlas::Message::Object(id);
-        l->SetArgs(Atlas::Message::Object::ListType(1, m));
-        l->SetTo(id);
+        Atlas::Message::Element::MapType m;
+        m["id"] = Atlas::Message::Element(id);
+        l->setArgs(Atlas::Message::Element::ListType(1, m));
+        l->setTo(id);
         m_additionsById.pop_front();
         return l;
     }
@@ -54,8 +54,8 @@ inline Entity * MemMap::addId(const std::string & id)
 {
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     m_additionsById.push_back(id);
-    Atlas::Message::Object::MapType m;
-    m["id"] = Atlas::Message::Object(id);
+    Atlas::Message::Element::MapType m;
+    m["id"] = Atlas::Message::Element(id);
     return add(m);
 }
 

@@ -25,7 +25,7 @@ static PyObject * Mind_as_entity(MindObject * self, PyObject * args)
         return NULL;
     }
     ret->m_obj = new Element(Element::MapType());
-    self->m_mind->addToObject(ret->m_obj->AsMap());
+    self->m_mind->addToObject(ret->m_obj->asMap());
     return (PyObject *)ret;
 }
 
@@ -152,7 +152,7 @@ static int Mind_setattr(MindObject *self, char *name, PyObject *v)
         //return 0;
     //}
     Element obj = PyObject_asObject(v);
-    if (!obj.IsNone() && !obj.IsMap() && !obj.IsList()) {
+    if (!obj.isNone() && !obj.isMap() && !obj.isList()) {
         thing->set(name, obj);
         return 0;
     }

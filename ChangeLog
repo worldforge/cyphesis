@@ -1,3 +1,15 @@
+2003-08-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Lobby.cpp: Add some debugging messages.
+
+	* server/CommServer.cpp: Tweak select loop so that closed connections
+	  are cleaned up as soon as they are detected.
+
+	* rulesets/World.cpp: Make demo terrain a bit more mountainous.
+
+	* Convert entire codebase over to using Atlas-C++ 0.4.90, as
+	  start of transition to 0.6 API.
+
 2003-07-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/type_utils.h, server/Account.cpp: Use wfmath

@@ -44,7 +44,7 @@ extern "C" {
 #include <iostream>
 #include <cstdio>
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Get;
@@ -82,15 +82,15 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     } state;
     bool exit;
 
-    void output(const Atlas::Message::Object & item, bool recurse = true);
+    void output(const Atlas::Message::Element & item, bool recurse = true);
   protected:
-    //void UnknownObjectArrived(const Object&);
-    void ObjectArrived(const Atlas::Objects::Operation::Appearance&);
-    void ObjectArrived(const Atlas::Objects::Operation::Disappearance&);
-    void ObjectArrived(const Atlas::Objects::Operation::Info&);
-    void ObjectArrived(const Atlas::Objects::Operation::Error&);
-    void ObjectArrived(const Atlas::Objects::Operation::Sight&);
-    void ObjectArrived(const Atlas::Objects::Operation::Sound&);
+    //void unknownobjectArrived(const Object&);
+    void objectArrived(const Atlas::Objects::Operation::Appearance&);
+    void objectArrived(const Atlas::Objects::Operation::Disappearance&);
+    void objectArrived(const Atlas::Objects::Operation::Info&);
+    void objectArrived(const Atlas::Objects::Operation::Error&);
+    void objectArrived(const Atlas::Objects::Operation::Sight&);
+    void objectArrived(const Atlas::Objects::Operation::Sound&);
 
   public:
     Interactive() : error_flag(false), reply_flag(false), encoder(NULL),
@@ -116,24 +116,24 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     static void gotCommand(char *);
 };
 
-void Interactive::output(const Atlas::Message::Object & item, bool recurse)
+void Interactive::output(const Atlas::Message::Element & item, bool recurse)
 {
     std::cout << " ";
-    switch (item.GetType()) {
-        case Atlas::Message::Object::TYPE_INT:
-            std::cout << item.AsInt();
+    switch (item.getType()) {
+        case Atlas::Message::Element::TYPE_INT:
+            std::cout << item.asInt();
             break;
-        case Atlas::Message::Object::TYPE_FLOAT:
-            std::cout << item.AsFloat();
+        case Atlas::Message::Element::TYPE_FLOAT:
+            std::cout << item.asFloat();
             break;
-        case Atlas::Message::Object::TYPE_STRING:
-            std::cout << item.AsString();
+        case Atlas::Message::Element::TYPE_STRING:
+            std::cout << item.asString();
             break;
-        case Atlas::Message::Object::TYPE_LIST:
+        case Atlas::Message::Element::TYPE_LIST:
             if (recurse) {
-                Atlas::Message::Object::ListType::const_iterator I = item.AsList().begin();
+                Atlas::Message::Element::ListType::const_iterator I = item.asList().begin();
                 std::cout << "[ ";
-                for(; I != item.AsList().end(); ++I) {
+                for(; I != item.asList().end(); ++I) {
                     output(*I, true);
                 }
                 std::cout << " ]";
@@ -141,11 +141,11 @@ void Interactive::output(const Atlas::Message::Object & item, bool recurse)
                 std::cout << "(list)";
             }
             break;
-        case Atlas::Message::Object::TYPE_MAP:
+        case Atlas::Message::Element::TYPE_MAP:
             if (recurse) {
-                Atlas::Message::Object::MapType::const_iterator I = item.AsMap().begin();
+                Atlas::Message::Element::MapType::const_iterator I = item.asMap().begin();
                 std::cout << "{ ";
-                for(; I != item.AsMap().end(); ++I) {
+                for(; I != item.asMap().end(); ++I) {
                     std::cout << I->first << ": ";
                     output(I->second, true);
                 }
@@ -160,29 +160,29 @@ void Interactive::output(const Atlas::Message::Object & item, bool recurse)
     }
 }
 
-void Interactive::ObjectArrived(const Atlas::Objects::Operation::Appearance& o)
+void Interactive::objectArrived(const Atlas::Objects::Operation::Appearance& o)
 {
-    if (o.GetArgs().empty()) {
+    if (o.getArgs().empty()) {
         return;
     }
-    const Atlas::Message::Object::MapType & ent = o.GetArgs().front().AsMap();
-    Atlas::Message::Object::MapType::const_iterator I = ent.find("id");
-    if (!I->second.IsString()) {
+    const Atlas::Message::Element::MapType & ent = o.getArgs().front().asMap();
+    Atlas::Message::Element::MapType::const_iterator I = ent.find("id");
+    if (!I->second.isString()) {
         std::cerr << "Got Appearance of non-string ID" << std::endl << std::flush;
         return;
     }
-    const std::string & id = I->second.AsString();
+    const std::string & id = I->second.asString();
     std::cout << "Appearance(id: " << id << ")";
     I = ent.find("loc");
     if (I == ent.end()) {
         std::cout << std::endl << std::flush;
         return;
     }
-    if (!I->second.IsString()) {
+    if (!I->second.isString()) {
         std::cerr << " with non-string LOC" << std::endl << std::flush;
         return;
     }
-    const std::string & loc = I->second.AsString();
+    const std::string & loc = I->second.asString();
     std::cout << " in " << loc << std::endl;
     if (loc == "lobby") {
         std::cout << id << " has logged in." << std::endl;
@@ -190,29 +190,29 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Appearance& o)
     std::cout << std::flush;
 }
 
-void Interactive::ObjectArrived(const Atlas::Objects::Operation::Disappearance& o)
+void Interactive::objectArrived(const Atlas::Objects::Operation::Disappearance& o)
 {
-    if (o.GetArgs().empty()) {
+    if (o.getArgs().empty()) {
         return;
     }
-    const Atlas::Message::Object::MapType & ent = o.GetArgs().front().AsMap();
-    Atlas::Message::Object::MapType::const_iterator I = ent.find("id");
-    if (!I->second.IsString()) {
+    const Atlas::Message::Element::MapType & ent = o.getArgs().front().asMap();
+    Atlas::Message::Element::MapType::const_iterator I = ent.find("id");
+    if (!I->second.isString()) {
         std::cerr << "Got Disappearance of non-string ID" << std::endl << std::flush;
         return;
     }
-    const std::string & id = I->second.AsString();
+    const std::string & id = I->second.asString();
     std::cout << "Disappearance(id: " << id << ")";
     I = ent.find("loc");
     if (I == ent.end()) {
         std::cout << std::endl << std::flush;
         return;
     }
-    if (!I->second.IsString()) {
+    if (!I->second.isString()) {
         std::cerr << " with non-string LOC" << std::endl << std::flush;
         return;
     }
-    const std::string & loc = I->second.AsString();
+    const std::string & loc = I->second.asString();
     std::cout << " in " << loc << std::endl;
     if (loc == "lobby") {
         std::cout << id << " has logged out." << std::endl;
@@ -220,28 +220,28 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Disappearance& 
     std::cout << std::flush;
 }
 
-void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
+void Interactive::objectArrived(const Atlas::Objects::Operation::Info& o)
 {
     reply_flag = true;
-    if (o.GetArgs().empty()) {
+    if (o.getArgs().empty()) {
         return;
     }
-    const Atlas::Message::Object::MapType & ent = o.GetArgs().front().AsMap();
-    Atlas::Message::Object::MapType::const_iterator I;
+    const Atlas::Message::Element::MapType & ent = o.getArgs().front().asMap();
+    Atlas::Message::Element::MapType::const_iterator I;
     if (state == INIT) {
         I = ent.find("id");
-        if (I == ent.end() || !I->second.IsString()) {
+        if (I == ent.end() || !I->second.isString()) {
             std::cerr << "ERROR: Response to login does not contain account id"
                       << std::endl << std::flush;
             
         } else {
             state = LOGGED_IN;
-            accountId = I->second.AsString();
+            accountId = I->second.asString();
         }
     } else if (state == LOGGED_IN) {
         std::cout << "Info(" << std::endl;
         for (I = ent.begin(); I != ent.end(); I++) {
-            const Atlas::Message::Object & item = I->second;
+            const Atlas::Message::Element & item = I->second;
             std::cout << "     " << I->first << ": ";
             output(item);
             std::cout << std::endl;
@@ -251,29 +251,29 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
     }
 }
 
-void Interactive::ObjectArrived(const Atlas::Objects::Operation::Error& o)
+void Interactive::objectArrived(const Atlas::Objects::Operation::Error& o)
 {
     reply_flag = true;
     error_flag = true;
     std::cout << "Error(";
-    const Atlas::Message::Object::ListType & args = o.GetArgs();
-    const Atlas::Message::Object & arg = args.front();
-    if (arg.IsString()) {
-        std::cout << arg.AsString();
-    } else if (arg.IsMap()) {
-        std::cout << arg.AsMap().find("message")->second.AsString();
+    const Atlas::Message::Element::ListType & args = o.getArgs();
+    const Atlas::Message::Element & arg = args.front();
+    if (arg.isString()) {
+        std::cout << arg.asString();
+    } else if (arg.isMap()) {
+        std::cout << arg.asMap().find("message")->second.asString();
     }
     std::cout << ")" << std::endl << std::flush;
 }
 
-void Interactive::ObjectArrived(const Atlas::Objects::Operation::Sight& o)
+void Interactive::objectArrived(const Atlas::Objects::Operation::Sight& o)
 {
     reply_flag = true;
     std::cout << "Sight(" << std::endl;
-    const Atlas::Message::Object::MapType & ent = o.GetArgs().front().AsMap();
-    Atlas::Message::Object::MapType::const_iterator I;
+    const Atlas::Message::Element::MapType & ent = o.getArgs().front().asMap();
+    Atlas::Message::Element::MapType::const_iterator I;
     for (I = ent.begin(); I != ent.end(); I++) {
-        const Atlas::Message::Object & item = I->second;
+        const Atlas::Message::Element & item = I->second;
         std::cout << "      " << I->first << ":";
         output(item);
         std::cout << std::endl;
@@ -281,30 +281,30 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Sight& o)
     std::cout << ")" << std::endl << std::flush;
 }
 
-void Interactive::ObjectArrived(const Atlas::Objects::Operation::Sound& o)
+void Interactive::objectArrived(const Atlas::Objects::Operation::Sound& o)
 {
     reply_flag = true;
-    const Atlas::Message::Object::MapType & arg = o.GetArgs().front().AsMap();
-    Atlas::Message::Object::MapType::const_iterator I = arg.find("from");
-    if (I == arg.end() || !I->second.IsString()) {
+    const Atlas::Message::Element::MapType & arg = o.getArgs().front().asMap();
+    Atlas::Message::Element::MapType::const_iterator I = arg.find("from");
+    if (I == arg.end() || !I->second.isString()) {
         std::cout << "Sound arg has no from" << std::endl << std::flush;
         return;
     }
-    const std::string & from = I->second.AsString();
+    const std::string & from = I->second.asString();
     I = arg.find("args");
-    if (I == arg.end() || !I->second.IsList()
-                       || I->second.AsList().empty()
-                       || !I->second.AsList().front().IsMap()) {
+    if (I == arg.end() || !I->second.isList()
+                       || I->second.asList().empty()
+                       || !I->second.asList().front().isMap()) {
         std::cout << "Sound arg has no args" << std::endl << std::flush;
         return;
     }
-    const Atlas::Message::Object::MapType & ent = I->second.AsList().front().AsMap();
+    const Atlas::Message::Element::MapType & ent = I->second.asList().front().asMap();
     I = ent.find("say");
-    if (I == ent.end() || !I->second.IsString()) {
+    if (I == ent.end() || !I->second.isString()) {
         std::cout << "Sound arg arg has no say" << std::endl << std::flush;
         return;
     }
-    const std::string & say = I->second.AsString();
+    const std::string & say = I->second.asString();
     std::cout << "[" << from << "] " << say
               << std::endl << std::flush;
 }
@@ -354,7 +354,7 @@ void Interactive::loop()
 }
 
 void Interactive::poll()
-// Poll the codec if select says there is something there.
+// poll the codec if select says there is something there.
 {
     fd_set infds;
     struct timeval tv;
@@ -376,7 +376,7 @@ void Interactive::poll()
                 exit = true;
             } else {
                 std::cout << std::endl;
-                codec->Poll();
+                codec->poll();
                 rl_forced_update_display();
             }
         }
@@ -411,27 +411,27 @@ bool Interactive::connect(const std::string & host)
     Atlas::Net::StreamConnect conn("cycmd", ios, this);
 
     std::cout << "Negotiating... " << std::flush;
-    while (conn.GetState() == Atlas::Negotiate<std::iostream>::IN_PROGRESS) {
-        // conn.Poll() does all the negotiation
-        conn.Poll();
+    while (conn.getState() == Atlas::Negotiate<std::iostream>::IN_PROGRESS) {
+        // conn.poll() does all the negotiation
+        conn.poll();
     }
     std::cout << "done." << std::endl << std::flush;
 
     // Check whether negotiation was successful
-    if (conn.GetState() == Atlas::Negotiate<std::iostream>::FAILED) {
+    if (conn.getState() == Atlas::Negotiate<std::iostream>::FAILED) {
         std::cerr << "Failed to negotiate." << std::endl;
         return false;
     }
     // Negotiation was successful
 
     // Get the codec that negotiation established
-    codec = conn.GetCodec();
+    codec = conn.getCodec();
 
     // Create the encoder
     encoder = new Atlas::Objects::Encoder(codec);
 
     // Send whatever codec specific data marks the beginning of a stream
-    codec->StreamBegin();
+    codec->streamBegin();
     return true;
 
 }
@@ -443,19 +443,19 @@ bool Interactive::login()
     error_flag = false;
     reply_flag = false;
  
-    account.SetAttr("username", username);
-    account.SetAttr("password", password);
+    account.setAttr("username", username);
+    account.setAttr("password", password);
  
-    Atlas::Message::Object::ListType args(1,account.AsObject());
+    Atlas::Message::Element::ListType args(1,account.asObject());
  
-    l.SetArgs(args);
+    l.setArgs(args);
  
-    encoder->StreamMessage(&l);
+    encoder->streamMessage(&l);
 
     ios << std::flush;
  
     while (!reply_flag) {
-       codec->Poll();
+       codec->poll();
     }
 
     if (!error_flag) {
@@ -472,55 +472,55 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
     if (cmd == "stat") {
         Get g = Get::Instantiate();
-        encoder->StreamMessage(&g);
+        encoder->streamMessage(&g);
     } else if (cmd == "look") {
         Look l = Look::Instantiate();
-        l.SetFrom(accountId);
-        encoder->StreamMessage(&l);
+        l.setFrom(accountId);
+        encoder->streamMessage(&l);
     } else if (cmd == "logout") {
         Logout l = Logout::Instantiate();
-        l.SetFrom(accountId);
+        l.setFrom(accountId);
         if (!arg.empty()) {
-            Atlas::Message::Object::MapType lmap;
+            Atlas::Message::Element::MapType lmap;
             lmap["id"] = arg;
-            l.SetArgs(Atlas::Message::Object::ListType(1,lmap));
+            l.setArgs(Atlas::Message::Element::ListType(1,lmap));
             reply_expected = false;
         }
-        encoder->StreamMessage(&l);
+        encoder->streamMessage(&l);
     } else if (cmd == "say") {
         Talk t = Talk::Instantiate();
-        Atlas::Message::Object::MapType ent;
+        Atlas::Message::Element::MapType ent;
         ent["say"] = arg;
-        t.SetArgs(Atlas::Message::Object::ListType(1,ent));
-        t.SetFrom(accountId);
-        encoder->StreamMessage(&t);
+        t.setArgs(Atlas::Message::Element::ListType(1,ent));
+        t.setFrom(accountId);
+        encoder->streamMessage(&t);
     } else if ((cmd == "help") || (cmd == "?")) {
         reply_expected = false;
         help();
     } else if (cmd == "query") {
         Get g = Get::Instantiate();
 
-        Atlas::Message::Object::MapType cmap;
+        Atlas::Message::Element::MapType cmap;
         cmap["objtype"] = "object";
         if (!arg.empty()) {
             cmap["id"] = arg;
         }
-        g.SetArgs(Atlas::Message::Object::ListType(1,cmap));
-        g.SetFrom(accountId);
+        g.setArgs(Atlas::Message::Element::ListType(1,cmap));
+        g.setFrom(accountId);
 
-        encoder->StreamMessage(&g);
+        encoder->streamMessage(&g);
     } else if (cmd == "get") {
         Get g = Get::Instantiate();
 
-        Atlas::Message::Object::MapType cmap;
+        Atlas::Message::Element::MapType cmap;
         cmap["objtype"] = "class";
         if (!arg.empty()) {
             cmap["id"] = arg;
         }
-        g.SetArgs(Atlas::Message::Object::ListType(1,cmap));
-        g.SetFrom(accountId);
+        g.setArgs(Atlas::Message::Element::ListType(1,cmap));
+        g.setFrom(accountId);
 
-        encoder->StreamMessage(&g);
+        encoder->streamMessage(&g);
     } else {
         reply_expected = false;
         std::cout << cmd << ": Command not know" << std::endl << std::flush;
@@ -532,7 +532,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
     // Wait for reply
     // FIXME Only wait a reasonable ammount of time
     while (!reply_flag) {
-       codec->Poll();
+       codec->poll();
     }
 }
 
@@ -568,7 +568,7 @@ int main(int argc, char ** argv)
     if (!bridge.connect(server)) {
         return 1;
     }
-    Atlas::Message::Object::MapType adminAccount;
+    Atlas::Message::Element::MapType adminAccount;
     if (strcmp(server, "localhost") == 0) {
         bridge.setUsername("admin");
         if (!AccountBase::instance()->getAccount("admin", adminAccount)) {
@@ -577,14 +577,14 @@ int main(int argc, char ** argv)
                       << std::endl << std::flush;
             bridge.setPassword(consts::defaultAdminPassword);
         } else {
-            Atlas::Message::Object::MapType::const_iterator I = adminAccount.find("password");
+            Atlas::Message::Element::MapType::const_iterator I = adminAccount.find("password");
             if (I == adminAccount.end()) {
                 std::cerr << "WARNING: Admin account has no password"
                           << std::endl << "Using default"
                           << std::endl << std::flush;
                 bridge.setPassword(consts::defaultAdminPassword);
             } else {
-                bridge.setPassword(I->second.AsString());
+                bridge.setPassword(I->second.asString());
             }
         }
         AccountBase::del();

@@ -37,7 +37,7 @@ bool ObserverClient::setup()
             std::cerr << "WARNING: Admin account from database has no password"
                       << std::endl << std::flush;
         } else {
-            password = I->second.AsString();
+            password = I->second.asString();
         }
     }
     AccountBase::del();

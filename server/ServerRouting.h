@@ -73,7 +73,7 @@ class ServerRouting : public OOGThing {
 
     const std::string & getName() const { return m_svrName; }
 
-    virtual void addToObject(Atlas::Message::Object::MapType &) const;
+    virtual void addToObject(Atlas::Message::Element::MapType &) const;
 };
 
 #endif // SERVER_SERVER_ROUTING_H

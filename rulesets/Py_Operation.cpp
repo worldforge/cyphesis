@@ -10,7 +10,7 @@
 
 #include "common/utility.h"
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 using Atlas::Objects::Operation::RootOperation;
 
 /*
@@ -25,7 +25,7 @@ using Atlas::Objects::Operation::RootOperation;
  * Beginning of Operation methods section.
  */
 
-static PyObject * Operation_SetSerialno(OperationObject * self, PyObject * args)
+static PyObject * Operation_setSerialno(OperationObject * self, PyObject * args)
 {
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError,"invalid operation");
@@ -37,13 +37,13 @@ static PyObject * Operation_SetSerialno(OperationObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"serialno not an integer");
         return NULL;
     }
-    self->operation->SetSerialno(serialno);
+    self->operation->setSerialno(serialno);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_SetRefno(OperationObject * self, PyObject * args)
+static PyObject * Operation_setRefno(OperationObject * self, PyObject * args)
 {
     // Takes integer, returns none
     if (self->operation == NULL) {
@@ -55,13 +55,13 @@ static PyObject * Operation_SetRefno(OperationObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"refno not an integer");
         return NULL;
     }
-    self->operation->SetRefno(refno);
+    self->operation->setRefno(refno);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_SetFrom(OperationObject * self, PyObject * args)
+static PyObject * Operation_setFrom(OperationObject * self, PyObject * args)
 {
     // Takes string, returns none
     if (self->operation == NULL) {
@@ -73,13 +73,13 @@ static PyObject * Operation_SetFrom(OperationObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"from not a string");
         return NULL;
     }
-    self->operation->SetFrom(from);
+    self->operation->setFrom(from);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_SetTo(OperationObject * self, PyObject * args)
+static PyObject * Operation_setTo(OperationObject * self, PyObject * args)
 {
     // Takes string, returns none
     if (self->operation == NULL) {
@@ -91,13 +91,13 @@ static PyObject * Operation_SetTo(OperationObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"to not a string");
         return NULL;
     }
-    self->operation->SetTo(to);
+    self->operation->setTo(to);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_SetSeconds(OperationObject * self, PyObject * args)
+static PyObject * Operation_setSeconds(OperationObject * self, PyObject * args)
 {
     // Takes float, returns none
     if (self->operation == NULL) {
@@ -109,13 +109,13 @@ static PyObject * Operation_SetSeconds(OperationObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"seconds not a float");
         return NULL;
     }
-    self->operation->SetSeconds(seconds);
+    self->operation->setSeconds(seconds);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_SetFutureSeconds(OperationObject * self, PyObject * args)
+static PyObject * Operation_setFutureSeconds(OperationObject * self, PyObject * args)
 {
     // Takes float, returns none
     if (self->operation == NULL) {
@@ -127,13 +127,13 @@ static PyObject * Operation_SetFutureSeconds(OperationObject * self, PyObject * 
         PyErr_SetString(PyExc_TypeError,"futureseconds not a float");
         return NULL;
     }
-    self->operation->SetFutureSeconds(futureseconds);
+    self->operation->setFutureSeconds(futureseconds);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_SetTimeString(OperationObject * self, PyObject * args)
+static PyObject * Operation_setTimeString(OperationObject * self, PyObject * args)
 {
     // Takes string, returns none
     if (self->operation == NULL) {
@@ -145,13 +145,13 @@ static PyObject * Operation_SetTimeString(OperationObject * self, PyObject * arg
         PyErr_SetString(PyExc_TypeError,"timestring not a string");
         return NULL;
     }
-    self->operation->SetTimeString(timestring);
+    self->operation->setTimeString(timestring);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_SetArgs(OperationObject * self, PyObject * args)
+static PyObject * Operation_setArgs(OperationObject * self, PyObject * args)
 {
     // Takes List, returns none
     if (self->operation == NULL) {
@@ -167,25 +167,25 @@ static PyObject * Operation_SetArgs(OperationObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"args not a list");
         return NULL;
     }
-    Object::ListType argslist;
+    Element::ListType argslist;
     for(int i = 0; i < PyList_Size(args_object); i++) {
         PyObject * item = PyList_GetItem(args_object, i);
         if (PyAtlasObject_Check(item)) {
             argslist.push_back(*((AtlasObject*)item)->m_obj);
         } else if (PyOperation_Check(item)) {
-            argslist.push_back(((OperationObject*)item)->operation->AsObject());
+            argslist.push_back(((OperationObject*)item)->operation->asObject());
         } else {
             PyErr_SetString(PyExc_TypeError,"args contains non Atlas Object");
             return NULL;
         }
     }
-    self->operation->SetArgs(argslist);
+    self->operation->setArgs(argslist);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_GetSerialno(OperationObject * self, PyObject * args)
+static PyObject * Operation_getSerialno(OperationObject * self, PyObject * args)
 {
     // Returns int
     if (self->operation == NULL) {
@@ -196,10 +196,10 @@ static PyObject * Operation_GetSerialno(OperationObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
-    return PyInt_FromLong(self->operation->GetSerialno());
+    return PyInt_FromLong(self->operation->getSerialno());
 }
 
-static PyObject * Operation_GetRefno(OperationObject * self, PyObject * args)
+static PyObject * Operation_getRefno(OperationObject * self, PyObject * args)
 {
     // Returns int
     if (self->operation == NULL) {
@@ -210,10 +210,10 @@ static PyObject * Operation_GetRefno(OperationObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
-    return PyInt_FromLong(self->operation->GetRefno());
+    return PyInt_FromLong(self->operation->getRefno());
 }
 
-static PyObject * Operation_GetFrom(OperationObject * self, PyObject * args)
+static PyObject * Operation_getFrom(OperationObject * self, PyObject * args)
 {
     // Returns string
     if (self->operation == NULL) {
@@ -224,10 +224,10 @@ static PyObject * Operation_GetFrom(OperationObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
-    return PyString_FromString(self->operation->GetFrom().c_str());
+    return PyString_FromString(self->operation->getFrom().c_str());
 }
 
-static PyObject * Operation_GetTo(OperationObject * self, PyObject * args)
+static PyObject * Operation_getTo(OperationObject * self, PyObject * args)
 {
     // Returns string
     if (self->operation == NULL) {
@@ -238,10 +238,10 @@ static PyObject * Operation_GetTo(OperationObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
-    return PyString_FromString(self->operation->GetTo().c_str());
+    return PyString_FromString(self->operation->getTo().c_str());
 }
 
-static PyObject * Operation_GetSeconds(OperationObject * self, PyObject * args)
+static PyObject * Operation_getSeconds(OperationObject * self, PyObject * args)
 {
     // Returns float
     if (self->operation == NULL) {
@@ -252,10 +252,10 @@ static PyObject * Operation_GetSeconds(OperationObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
-    return PyFloat_FromDouble(self->operation->GetSeconds());
+    return PyFloat_FromDouble(self->operation->getSeconds());
 }
 
-static PyObject * Operation_GetFutureSeconds(OperationObject * self, PyObject * args)
+static PyObject * Operation_getFutureSeconds(OperationObject * self, PyObject * args)
 {
     // Returns float
     if (self->operation == NULL) {
@@ -266,10 +266,10 @@ static PyObject * Operation_GetFutureSeconds(OperationObject * self, PyObject * 
         PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
-    return PyFloat_FromDouble(self->operation->GetFutureSeconds());
+    return PyFloat_FromDouble(self->operation->getFutureSeconds());
 }
 
-static PyObject * Operation_GetTimeString(OperationObject * self, PyObject * args)
+static PyObject * Operation_getTimeString(OperationObject * self, PyObject * args)
 {
     // Returns string
     if (self->operation == NULL) {
@@ -280,10 +280,10 @@ static PyObject * Operation_GetTimeString(OperationObject * self, PyObject * arg
         PyErr_SetString(PyExc_TypeError,"too many args");
         return NULL;
     }
-    return PyString_FromString(self->operation->GetTimeString().c_str());
+    return PyString_FromString(self->operation->getTimeString().c_str());
 }
 
-static PyObject * Operation_GetArgs(OperationObject * self, PyObject * args)
+static PyObject * Operation_getArgs(OperationObject * self, PyObject * args)
 {
     // Returns list
     if (self->operation == NULL) {
@@ -295,9 +295,9 @@ static PyObject * Operation_GetArgs(OperationObject * self, PyObject * args)
         return NULL;
     }
     // Here we go:- 
-    Object::ListType & args_list = self->operation->GetArgs();
+    Element::ListType & args_list = self->operation->getArgs();
     PyObject * args_pylist = PyList_New(args_list.size());
-    Object::ListType::const_iterator I;
+    Element::ListType::const_iterator I;
     int j = 0;
     AtlasObject * item;
     for(I = args_list.begin();I != args_list.end(); I++, j++) {
@@ -307,7 +307,7 @@ static PyObject * Operation_GetArgs(OperationObject * self, PyObject * args)
             Py_DECREF(args_pylist);
             return NULL;
         }
-        item->m_obj = new Object(*I);
+        item->m_obj = new Element(*I);
         PyList_SetItem(args_pylist, j, (PyObject *)item);
     }
     return args_pylist;
@@ -336,7 +336,7 @@ static int Operation_seq_length(OperationObject * self)
         PyErr_SetString(PyExc_TypeError,"invalid operation");
         return 0;
     }
-    return self->operation->GetArgs().size();
+    return self->operation->getArgs().size();
 } 
 
 static PyObject * Operation_seq_item(OperationObject * self, int item)
@@ -345,19 +345,19 @@ static PyObject * Operation_seq_item(OperationObject * self, int item)
         PyErr_SetString(PyExc_TypeError,"invalid operation");
         return 0;
     }
-    Object::ListType & args_list = self->operation->GetArgs();
-    Object::ListType::const_iterator I = args_list.begin();
+    Element::ListType & args_list = self->operation->getArgs();
+    Element::ListType::const_iterator I = args_list.begin();
     int i;
     for(i = 0; i < item && I != args_list.end(); i++, I++);
     if (I == args_list.end()) {
         PyErr_SetString(PyExc_TypeError,"Not enought op arguments");
         return 0;
     }
-    if (!I->IsMap()) {
+    if (!I->isMap()) {
         PyErr_SetString(PyExc_TypeError,"op argument is not a map");
         return 0;
     }
-    const Object::MapType & obj = I->AsMap();
+    const Element::MapType & obj = I->asMap();
     RootOperation op;
     bool isOp = utility::Object_asOperation(obj, op);
     if (isOp) {
@@ -367,7 +367,7 @@ static PyObject * Operation_seq_item(OperationObject * self, int item)
         return (PyObject *)ret_op;
     }
     AtlasObject * ret = newAtlasObject(NULL);
-    ret->m_obj = new Object(obj);
+    ret->m_obj = new Element(obj);
     return (PyObject *)ret;
 }
 
@@ -491,35 +491,35 @@ static PySequenceMethods Operation_seq = {
  */
 
 PyMethodDef RootOperation_methods[] = {
-    {"SetSerialno",     (PyCFunction)Operation_SetSerialno,     METH_VARARGS},
-    {"SetRefno",        (PyCFunction)Operation_SetRefno,        METH_VARARGS},
-    {"SetFrom",         (PyCFunction)Operation_SetFrom,         METH_VARARGS},
-    {"SetTo",           (PyCFunction)Operation_SetTo,           METH_VARARGS},
-    {"SetSeconds",      (PyCFunction)Operation_SetSeconds,      METH_VARARGS},
-    {"SetFutureSeconds",(PyCFunction)Operation_SetFutureSeconds,METH_VARARGS},
-    {"SetTimeString",   (PyCFunction)Operation_SetTimeString,   METH_VARARGS},
-    {"SetArgs",         (PyCFunction)Operation_SetArgs,         METH_VARARGS},
-    {"GetSerialno",     (PyCFunction)Operation_GetSerialno,     METH_VARARGS},
-    {"GetRefno",        (PyCFunction)Operation_GetRefno,        METH_VARARGS},
-    {"GetFrom",         (PyCFunction)Operation_GetFrom,         METH_VARARGS},
-    {"GetTo",           (PyCFunction)Operation_GetTo,           METH_VARARGS},
-    {"GetSeconds",      (PyCFunction)Operation_GetSeconds,      METH_VARARGS},
-    {"GetFutureSeconds",(PyCFunction)Operation_GetFutureSeconds,METH_VARARGS},
-    {"GetTimeString",   (PyCFunction)Operation_GetTimeString,   METH_VARARGS},
-    {"GetArgs",         (PyCFunction)Operation_GetArgs,         METH_VARARGS},
+    {"setSerialno",     (PyCFunction)Operation_setSerialno,     METH_VARARGS},
+    {"setRefno",        (PyCFunction)Operation_setRefno,        METH_VARARGS},
+    {"setFrom",         (PyCFunction)Operation_setFrom,         METH_VARARGS},
+    {"setTo",           (PyCFunction)Operation_setTo,           METH_VARARGS},
+    {"setSeconds",      (PyCFunction)Operation_setSeconds,      METH_VARARGS},
+    {"setFutureSeconds",(PyCFunction)Operation_setFutureSeconds,METH_VARARGS},
+    {"setTimeString",   (PyCFunction)Operation_setTimeString,   METH_VARARGS},
+    {"setArgs",         (PyCFunction)Operation_setArgs,         METH_VARARGS},
+    {"getSerialno",     (PyCFunction)Operation_getSerialno,     METH_VARARGS},
+    {"getRefno",        (PyCFunction)Operation_getRefno,        METH_VARARGS},
+    {"getFrom",         (PyCFunction)Operation_getFrom,         METH_VARARGS},
+    {"getTo",           (PyCFunction)Operation_getTo,           METH_VARARGS},
+    {"getSeconds",      (PyCFunction)Operation_getSeconds,      METH_VARARGS},
+    {"getFutureSeconds",(PyCFunction)Operation_getFutureSeconds,METH_VARARGS},
+    {"getTimeString",   (PyCFunction)Operation_getTimeString,   METH_VARARGS},
+    {"getArgs",         (PyCFunction)Operation_getArgs,         METH_VARARGS},
     {"get_name",        (PyCFunction)Operation_get_name,        METH_VARARGS},
     {NULL,          NULL}
 };
 
 PyMethodDef ConstRootOperation_methods[] = {
-    {"GetSerialno",     (PyCFunction)Operation_GetSerialno,     METH_VARARGS},
-    {"GetRefno",        (PyCFunction)Operation_GetRefno,        METH_VARARGS},
-    {"GetFrom",         (PyCFunction)Operation_GetFrom,         METH_VARARGS},
-    {"GetTo",           (PyCFunction)Operation_GetTo,           METH_VARARGS},
-    {"GetSeconds",      (PyCFunction)Operation_GetSeconds,      METH_VARARGS},
-    {"GetFutureSeconds",(PyCFunction)Operation_GetFutureSeconds,METH_VARARGS},
-    {"GetTimeString",   (PyCFunction)Operation_GetTimeString,   METH_VARARGS},
-    {"GetArgs",         (PyCFunction)Operation_GetArgs,         METH_VARARGS},
+    {"getSerialno",     (PyCFunction)Operation_getSerialno,     METH_VARARGS},
+    {"getRefno",        (PyCFunction)Operation_getRefno,        METH_VARARGS},
+    {"getFrom",         (PyCFunction)Operation_getFrom,         METH_VARARGS},
+    {"getTo",           (PyCFunction)Operation_getTo,           METH_VARARGS},
+    {"getSeconds",      (PyCFunction)Operation_getSeconds,      METH_VARARGS},
+    {"getFutureSeconds",(PyCFunction)Operation_getFutureSeconds,METH_VARARGS},
+    {"getTimeString",   (PyCFunction)Operation_getTimeString,   METH_VARARGS},
+    {"getArgs",         (PyCFunction)Operation_getArgs,         METH_VARARGS},
     {"get_name",        (PyCFunction)Operation_get_name,        METH_VARARGS},
     {NULL,          NULL}
 };
@@ -583,9 +583,9 @@ static PyObject * getattr(T * self, char * name)
             return (PyObject *)thing_obj;
         } else {
             AtlasObject * obj = newAtlasObject(NULL);
-            Object::MapType omap;
-            omap["id"] = Object(self->operation->GetFrom());
-            obj->m_obj = new Object(omap);
+            Element::MapType omap;
+            omap["id"] = Element(self->operation->getFrom());
+            obj->m_obj = new Element(omap);
             return (PyObject *)obj;
         }
     } else if (strcmp(name, "to") == 0) {
@@ -598,20 +598,20 @@ static PyObject * getattr(T * self, char * name)
             return (PyObject *)thing_obj;
         } else {
             AtlasObject * obj = newAtlasObject(NULL);
-            Object::MapType omap;
-            omap["id"] = Object(self->operation->GetTo());
-            obj->m_obj = new Object(omap);
+            Element::MapType omap;
+            omap["id"] = Element(self->operation->getTo());
+            obj->m_obj = new Element(omap);
             return (PyObject *)obj;
         }
     } else if (strcmp(name, "time") == 0) {
         return handleTime(self);
     } else if (strcmp(name, "id") == 0) {
-        const Object::ListType & parents = self->operation->GetParents();
-        if ((parents.empty()) || (!parents.front().IsString())) {
+        const Element::ListType & parents = self->operation->getParents();
+        if ((parents.empty()) || (!parents.front().isString())) {
             PyErr_SetString(PyExc_TypeError, "Operation has no parents");
             return NULL;
         }
-        return PyString_FromString(parents.front().AsString().c_str());
+        return PyString_FromString(parents.front().asString().c_str());
     }
     return findMethod(self, name);
 }
@@ -646,7 +646,7 @@ static int Operation_setattr(OperationObject *self, char *name, PyObject *v)
             (((EntityObject *)v)->m_entity != NULL)) {
             self->from = ((EntityObject *)v)->m_entity;
         }
-        self->operation->SetFrom(PyString_AsString(thing_id));
+        self->operation->setFrom(PyString_AsString(thing_id));
         Py_DECREF(thing_id);
         return 0;
     }
@@ -663,7 +663,7 @@ static int Operation_setattr(OperationObject *self, char *name, PyObject *v)
             (((EntityObject *)v)->m_entity != NULL)) {
             self->to = ((EntityObject *)v)->m_entity;
         }
-        self->operation->SetTo(PyString_AsString(thing_id));
+        self->operation->setTo(PyString_AsString(thing_id));
         Py_DECREF(thing_id);
         return 0;
     }

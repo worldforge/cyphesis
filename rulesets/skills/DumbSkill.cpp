@@ -8,11 +8,11 @@
 
 #include "DumbSkill.h"
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 
 oplist DumbSkill::action(const std::string & skill, const RootOperation & op)
 {
     RootOperation * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Object::ListType(1,op.AsObject()));
+    s->setArgs(Element::ListType(1,op.asObject()));
     return oplist(1,s);
 }

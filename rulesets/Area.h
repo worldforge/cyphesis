@@ -23,9 +23,9 @@ class Area : public Area_parent {
     Area(const std::string & id);
     virtual ~Area();
 
-    virtual bool get(const std::string &, Atlas::Message::Object &) const;
-    virtual void set(const std::string &, const Atlas::Message::Object &);
-    virtual void addToObject(Atlas::Message::Object::MapType & obj) const;
+    virtual bool get(const std::string &, Atlas::Message::Element &) const;
+    virtual void set(const std::string &, const Atlas::Message::Element &);
+    virtual void addToObject(Atlas::Message::Element::MapType & obj) const;
 };
 
 #endif // RULESETS_AREA_H

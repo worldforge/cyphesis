@@ -6,7 +6,7 @@
 
 #include <wfmath/atlasconv.h>
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 
 const Vector3D Location::getXyz() const
 {
@@ -28,12 +28,12 @@ const Vector3D Location::getXyz(Entity * ent) const
     }
 }
 
-void Location::addToObject(Object::MapType & omap) const
+void Location::addToObject(Element::MapType & omap) const
 {
     if (m_loc!=NULL) {
-        omap["loc"] = Object(m_loc->getId());
+        omap["loc"] = Element(m_loc->getId());
     } else {
-        omap["loc"] = Object("");
+        omap["loc"] = Element("");
     }
     if (m_pos.isValid()) {
         omap["pos"] = m_pos.toAtlas();

@@ -15,14 +15,14 @@ class CommClient : public BaseEntity {
   protected:
     ClientConnection connection;
     CreatorClient * character;
-    Atlas::Message::Object::MapType player;
+    Atlas::Message::Element::MapType player;
     std::string playerName;
     std::string playerId;
 
   public:
     CommClient();
 
-    Atlas::Message::Object::MapType createPlayer(const std::string & name,
+    Atlas::Message::Element::MapType createPlayer(const std::string & name,
                                                  const std::string & pword);
     CreatorClient * createCharacter(const std::string & name);
     void handleNet();

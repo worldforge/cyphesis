@@ -140,7 +140,7 @@ AC_CHECK_LIB(${python_version},
 PYTHON_LIBS=${python_libs}
 LIBS="$LIBS $PYTHON_LIBS"
 
-PKG_CHECK_MODULES(DEPS, atlascpp-0.4 >= 0.4.4 skstream-0.3 >= 0.2.90 varconf-1.0 >= 0.6.0 mercator-0.2,
+PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.90 skstream-0.3 >= 0.2.90 varconf-1.0 >= 0.6.0 mercator-0.2,
     [
         CPPFLAGS="$CPPFLAGS $DEPS_CFLAGS"
         CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $DEPS_CFLAGS"

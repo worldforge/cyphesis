@@ -35,7 +35,7 @@ extern "C" {
 
 static bool debug_flag = true;
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 
 ClientConnection::ClientConnection() :
     client_fd(-1), client_buf(NULL), ios(NULL), encoder(NULL)
@@ -51,7 +51,7 @@ ClientConnection::~ClientConnection()
 
 void ClientConnection::operation(const RootOperation & op)
 {
-    const std::string & from = op.GetFrom();
+    const std::string & from = op.getFrom();
     if (from.empty()) {
         cerr << "ERROR: Operation with no destination" << endl << flush;
         return;
@@ -64,28 +64,28 @@ void ClientConnection::operation(const RootOperation & op)
     oplist res = I->second->message(op);
     oplist::const_iterator J = res.begin();
     for(J = res.begin(); J != res.end(); ++J) {
-        (*J)->SetFrom(I->first);
+        (*J)->setFrom(I->first);
         send(*(*J));
     }
 }
 
-void ClientConnection::ObjectArrived(const Error&)
+void ClientConnection::objectArrived(const Error&)
 {
     cout << "ERROR" << endl << flush;
     reply_flag = true;
     error_flag = true;
 }
 
-void ClientConnection::ObjectArrived(const Info & op)
+void ClientConnection::objectArrived(const Info & op)
 {
     cout << "INFO" << endl << flush;
-    const std::string & from = op.GetFrom();
+    const std::string & from = op.getFrom();
     if (from.empty()) {
         reply_flag = true;
         error_flag = false;
         try {
-            Object ac = op.GetArgs().front();
-            const std::string & acid = ac.AsMap()["id"].AsString();
+            Object ac = op.getArgs().front();
+            const std::string & acid = ac.asMap()["id"].asString();
             objects[acid] = new ClientAccount(acid, *this);
         }
         catch (...) {
@@ -96,30 +96,30 @@ void ClientConnection::ObjectArrived(const Info & op)
     }
 }
 
-void ClientConnection::ObjectArrived(const Sight&)
+void ClientConnection::objectArrived(const Sight&)
 {
 }
 
-void ClientConnection::ObjectArrived(const Sound&)
+void ClientConnection::objectArrived(const Sound&)
 {
 }
 
-void ClientConnection::ObjectArrived(const Touch&)
+void ClientConnection::objectArrived(const Touch&)
 {
 }
 
-void ClientConnection::ObjectArrived(const Appearance&)
+void ClientConnection::objectArrived(const Appearance&)
 {
 }
 
-void ClientConnection::ObjectArrived(const Disappearance&)
+void ClientConnection::objectArrived(const Disappearance&)
 {
 }
 
 
 int ClientConnection::read() {
     if (*ios) {
-        codec->Poll();
+        codec->poll();
         return 0;
     } else {
         return -1;
@@ -164,7 +164,7 @@ bool ClientConnection::connect(const std::string & server)
 
     cout << "Negotiating... " << flush;
     while (conn.GetState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
-      conn.Poll();
+      conn.poll();
     }
     cout << "done" << endl;
   
@@ -177,7 +177,7 @@ bool ClientConnection::connect(const std::string & server)
 
     encoder = new Atlas::Objects::Encoder(codec);
 
-    codec->StreamBegin();
+    codec->streamBegin();
 
     return true;
 }
@@ -186,13 +186,13 @@ bool ClientConnection::login(const std::string & account,
                              const std::string & password)
 {
     Atlas::Objects::Operation::Login l = Atlas::Objects::Operation::Login::Instantiate();
-    Object::MapType acmap;
+    Element::MapType acmap;
     acmap["id"] = account;
     acmap["password"] = password;
 
     acName = account;
 
-    l.SetArgs(Object::ListType(1,Object(acmap)));
+    l.setArgs(Element::ListType(1,Object(acmap)));
 
     reply_flag = false;
     error_flag = false;
@@ -205,13 +205,13 @@ bool ClientConnection::wait()
 // Return whether or not an error occured
 {
    while (!reply_flag) {
-      codec->Poll();
+      codec->poll();
    }
    return error_flag;
 }
 
 void ClientConnection::send(const Atlas::Objects::Root & obj) {
-    encoder->StreamMessage(&obj);
+    encoder->streamMessage(&obj);
     *ios << flush;
 }
 

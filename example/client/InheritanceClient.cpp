@@ -44,7 +44,7 @@ using Atlas::Objects::Operation::Get;
 
 using Atlas::Net::StreamConnect;
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 
 int main(int argc, char ** argv)
 {
@@ -59,16 +59,16 @@ int main(int argc, char ** argv)
 
 void InheritanceClient::send(RootOperation * op)
 {
-    encoder->StreamMessage(op);
+    encoder->streamMessage(op);
     ios << flush;
 }
 
 void InheritanceClient::get(const std::string & id)
 {
     Get g(Get::Instantiate());
-    Object::MapType ent;
+    Element::MapType ent;
     ent["id"] = id;
-    g.SetArgs(Object::ListType(1,ent));
+    g.setArgs(Element::ListType(1,ent));
     send(&g);
     cout << "sent get for " << id << endl << flush;
 }
@@ -97,9 +97,9 @@ int InheritanceClient::connect()
   StreamConnect conn("cyphesis_client", ios, this);
 
   cout << "Negotiating... " << flush;
-  // conn.Poll() does all the negotiation
+  // conn.poll() does all the negotiation
   while (conn.GetState() == StreamConnect::IN_PROGRESS) {
-    conn.Poll();
+    conn.poll();
   }
   cout << "done" << endl;
 
@@ -117,7 +117,7 @@ int InheritanceClient::connect()
 
   encoder = new Atlas::Objects::Encoder(codec);
 
-  codec->StreamBegin();
+  codec->streamBegin();
   return 0;
 
 }
@@ -143,7 +143,7 @@ void InheritanceClient::loop()
                   cout << "Server disconnected" << endl << flush;
                   exit(1);
               }
-              codec->Poll();
+              codec->poll();
           }
       }
    }
@@ -160,17 +160,17 @@ int WINAPI WinMain(
 }
 #endif
 
-void InheritanceClient::UnknownObjectArrived(const Object & o)
+void InheritanceClient::UnknownobjectArrived(const Object & o)
 {
     cout << "An unknown has arrived." << endl << flush;
 #if 0 
-    if (o.IsMap()) {
-        for(Message::Object::MapType::const_iterator I = o.AsMap().begin();
-		I != o.AsMap().end();
+    if (o.isMap()) {
+        for(Message::Element::MapType::const_iterator I = o.asMap().begin();
+		I != o.asMap().end();
 		I++) {
 		cout << I->first << endl << flush;
-                if (I->second.IsString()) {
-		    cout << I->second.AsString() << endl << flush;
+                if (I->second.isString()) {
+		    cout << I->second.asString() << endl << flush;
                 }
 	}
     } else {
@@ -179,32 +179,32 @@ void InheritanceClient::UnknownObjectArrived(const Object & o)
 #endif
 }
 
-void InheritanceClient::ObjectArrived(const Info& o)
+void InheritanceClient::objectArrived(const Info& o)
 {
     cout << "An info operation arrived." << endl << flush;
-    const Object::ListType & args = o.GetArgs();
+    const Element::ListType & args = o.getArgs();
     if (!args.empty()) {
-        const Object::MapType & definition = args.front().AsMap();
-        Object::MapType::const_iterator I = definition.find("id");
+        const Element::MapType & definition = args.front().asMap();
+        Element::MapType::const_iterator I = definition.find("id");
         if (I == definition.end()) {
             std::cout << "response has no id" << std::endl << std::flush;
             return;
         }
-        const std::string & id = I->second.AsString();
+        const std::string & id = I->second.asString();
         I = definition.find("children");
         if (I == definition.end()) {
             std::cout << "response has no children" << std::endl << std::flush;
             return;
         }
-        const Object::ListType & children = I->second.AsList();
+        const Element::ListType & children = I->second.asList();
         if (children.empty()) {
             std::cout << id << " has no children" << std::endl << std::flush;
             return;
         }
         std::cout << id << " has children [";
-        Object::ListType::const_iterator J = children.begin();
+        Element::ListType::const_iterator J = children.begin();
         for (; J != children.end(); ++J) {
-            const std::string & child = J->AsString();
+            const std::string & child = J->asString();
             std::cout << child << " ";
             get(child);
         }
@@ -212,8 +212,8 @@ void InheritanceClient::ObjectArrived(const Info& o)
     }
 }
 
-void InheritanceClient::ObjectArrived(const Error& o)
+void InheritanceClient::objectArrived(const Error& o)
 {
     cout << "An error operation arrived." << endl << flush;
-    const Object::ListType & args = o.GetArgs();
+    const Element::ListType & args = o.getArgs();
 }

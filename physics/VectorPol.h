@@ -26,7 +26,7 @@ class VectorPol {
     VectorPol(double latt, double lng, double dist) : m_latt(latt), m_long(lng),
               m_dist(dist) { }
     
-    void addToObject(Atlas::Message::Object::MapType & map)
+    void addToObject(Atlas::Message::Element::MapType & map)
     {
         map["ergoe"] = "placeholder code";
     }

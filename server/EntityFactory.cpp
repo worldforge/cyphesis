@@ -27,7 +27,7 @@
 #include "common/globals.h"
 #include "common/inheritance.h"
 
-#include <Atlas/Message/Object.h>
+#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Entity/GameEntity.h>
 
@@ -136,43 +136,43 @@ void EntityFactory::installBaseClasses()
     Element::MapType::const_iterator I = ruleTable.begin();
     for(; I != ruleTable.end(); ++I) {
         const std::string & type = I->first;
-        const Element::MapType & classDesc = I->second.AsMap();
+        const Element::MapType & classDesc = I->second.asMap();
         Element::MapType::const_iterator J = classDesc.find("parent");
-        if ((J == classDesc.end()) || (!J->second.IsString())) { continue; }
-        const std::string & parent = J->second.AsString();
+        if ((J == classDesc.end()) || (!J->second.isString())) { continue; }
+        const std::string & parent = J->second.asString();
         FactoryBase * f = getFactory(parent);
         J = classDesc.find("script");
-        if ((J != classDesc.end()) && (J->second.IsMap())) {
-            const Element::MapType & script = J->second.AsMap();
+        if ((J != classDesc.end()) && (J->second.isMap())) {
+            const Element::MapType & script = J->second.asMap();
             J = script.find("name");
-            if ((J != script.end()) && (J->second.IsString())) {
-                f->m_script = J->second.AsString();
+            if ((J != script.end()) && (J->second.isString())) {
+                f->m_script = J->second.asString();
                 J = script.find("language");
-                if ((J != script.end()) && (J->second.IsString())) {
-                    f->m_language = J->second.AsString();
+                if ((J != script.end()) && (J->second.isString())) {
+                    f->m_language = J->second.asString();
                 }
             }
         }
         J = classDesc.find("mind");
-        if ((J != classDesc.end()) && (J->second.IsMap())) {
-            const Element::MapType & script = J->second.AsMap();
+        if ((J != classDesc.end()) && (J->second.isMap())) {
+            const Element::MapType & script = J->second.asMap();
             J = script.find("name");
-            if ((J != script.end()) && (J->second.IsString())) {
-                const std::string mindType = J->second.AsString();
+            if ((J != script.end()) && (J->second.isString())) {
+                const std::string mindType = J->second.asString();
                 // language is unused. might need it one day
                 // J = script.find("language");
-                // if ((J != script.end()) && (J->second.IsString())) {
-                    // const std::string mindLang = J->second.AsString();
+                // if ((J != script.end()) && (J->second.isString())) {
+                    // const std::string mindLang = J->second.asString();
                 // }
                 MindFactory::instance()->addMindType(type, mindType);
             }
         }
         J = classDesc.find("attributes");
-        if ((J != classDesc.end()) && (J->second.IsMap())) {
-            f->m_attributes = J->second.AsMap();
+        if ((J != classDesc.end()) && (J->second.isMap())) {
+            f->m_attributes = J->second.asMap();
         }
         J = classDesc.find("playable");
-        if ((J != classDesc.end()) && (J->second.IsInt())) {
+        if ((J != classDesc.end()) && (J->second.isInt())) {
             Player::playableTypes.insert(type);
         }
         installFactory(parent, type, f);
@@ -193,8 +193,8 @@ void EntityFactory::installFactory(const std::string & parent,
     Inheritance & i = Inheritance::instance();
 
     Atlas::Objects::Root * r = new Atlas::Objects::Entity::GameEntity();
-    r->SetId(className);
-    r->SetParents(Element::ListType(1, parent));
+    r->setId(className);
+    r->setParents(Element::ListType(1, parent));
     i.addChild(r);
 
 }

@@ -68,26 +68,26 @@ WorldRouter::~WorldRouter()
 inline void WorldRouter::addOperationToQueue(RootOperation & op,
                          const BaseEntity * obj)
 {
-    if (op.GetFrom() == "cheat") {
-        op.SetFrom(op.GetTo());
+    if (op.getFrom() == "cheat") {
+        op.setFrom(op.getTo());
     } else {
-        op.SetFrom(obj->getId());
+        op.setFrom(obj->getId());
     }
     updateTime();
     double t = m_realTime;
-    t = t + op.GetFutureSeconds();
-    op.SetSeconds(t);
-    op.SetFutureSeconds(0.0);
+    t = t + op.getFutureSeconds();
+    op.setSeconds(t);
+    op.setFutureSeconds(0.0);
     OpQueue::iterator I;
     for(I = m_operationQueue.begin();
-        (I != m_operationQueue.end()) && ((*I)->GetSeconds() <= t) ; I++);
+        (I != m_operationQueue.end()) && ((*I)->getSeconds() <= t) ; I++);
     m_operationQueue.insert(I, &op);
 }
 
 inline RootOperation * WorldRouter::getOperationFromQueue()
 {
     std::list<RootOperation *>::const_iterator I = m_operationQueue.begin();
-    if ((I == m_operationQueue.end()) || ((*I)->GetSeconds() > m_realTime)) {
+    if ((I == m_operationQueue.end()) || ((*I)->getSeconds() > m_realTime)) {
         return NULL;
     }
     debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
@@ -99,13 +99,13 @@ inline RootOperation * WorldRouter::getOperationFromQueue()
 inline void WorldRouter::setSerialno(OpVector & ops)
 {
     for (OpVector::const_iterator I = ops.begin(); I != ops.end(); ++I) {
-       (*I)->SetSerialno(getSerialNo());
+       (*I)->setSerialno(getSerialNo());
     }
 }
 
 inline void WorldRouter::setSerialnoOp(RootOperation & op)
 {
-    op.SetSerialno(getSerialNo());
+    op.setSerialno(getSerialNo());
 }
 
 Entity * WorldRouter::addObject(Entity * obj, bool setup)
@@ -138,9 +138,9 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
     }
     if (setup) {
         Setup * s = new Setup(Setup::Instantiate());
-        s->SetTo(obj->getId());
-        s->SetFutureSeconds(-0.1);
-        s->SetSerialno(getSerialNo());
+        s->setTo(obj->getId());
+        s->setFutureSeconds(-0.1);
+        s->setSerialno(getSerialNo());
         addOperationToQueue(*s, this);
     }
     return (obj);
@@ -181,18 +181,18 @@ OpVector WorldRouter::message(RootOperation & op, const Entity * obj)
 
 inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) const
 {
-    const Element::ListType & parents = op.GetParents();
-    if (!parents.empty() && (parents.front().IsString())) {
-        const std::string & parent = parents.front().AsString();
+    const Element::ListType & parents = op.getParents();
+    if (!parents.empty() && (parents.front().isString())) {
+        const std::string & parent = parents.front().asString();
         if ((parent == "sight") || (parent == "sound")) {
             return m_perceptives;
         }
         std::string msg = std::string("Broadcasting ") + parent + " op from "
-                                                       + op.GetFrom();
+                                                       + op.getFrom();
         log(WARNING, msg.c_str());
     } else {
         std::string msg = std::string("Broadcasting op with no parent from ")
-                                                       + op.GetFrom();
+                                                       + op.getFrom();
         log(ERROR, msg.c_str());
     }
     return m_objectList;
@@ -211,9 +211,9 @@ inline void WorldRouter::deliverTo(const RootOperation & op, Entity * e)
 OpVector WorldRouter::operation(const RootOperation & op)
 {
     // const RootOperation & op = *op_ptr;
-    std::string to = op.GetTo();
+    std::string to = op.getTo();
     debug(std::cout << "WorldRouter::operation {"
-                    << op.GetParents().front().AsString() << ":"
+                    << op.getParents().front().asString() << ":"
                     << to << "}" << std::endl
                     << std::flush;);
 
@@ -235,7 +235,7 @@ OpVector WorldRouter::operation(const RootOperation & op)
             return OpVector();
         }
         deliverTo(op, to_entity);
-        if ((op.GetParents().front().AsString() == "delete") &&
+        if ((op.getParents().front().asString() == "delete") &&
             (to_entity != &m_gameWorld)) {
             delObject(to_entity);
             to_entity->destroy();
@@ -244,12 +244,12 @@ OpVector WorldRouter::operation(const RootOperation & op)
     } else {
         RootOperation newop = op;
         const EntitySet & broadcast = broadcastList(op);
-        const std::string & from = newop.GetFrom();
+        const std::string & from = newop.getFrom();
         EntityDict::const_iterator J = m_eobjects.find(from);
         if (from.empty() || (J == m_eobjects.end()) || (!consts::enable_ranges)) {
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
-                newop.SetTo((*I)->getId());
+                newop.setTo((*I)->getId());
                 deliverTo(newop, *I);
             }
         } else {
@@ -271,7 +271,7 @@ OpVector WorldRouter::operation(const RootOperation & op)
                                   << (*I)->getId() << std::endl << std::flush;);
                     continue;
                 }
-                newop.SetTo((*I)->getId());
+                newop.setTo((*I)->getId());
                 deliverTo(newop, *I);
             }
         }
@@ -283,7 +283,7 @@ OpVector WorldRouter::operation(const RootOperation & op)
 OpVector WorldRouter::LookOperation(const Look & op)
 {
     debug(std::cout << "WorldRouter::Operation(Look)" << std::endl << std::flush;);
-    const std::string & from = op.GetFrom();
+    const std::string & from = op.getFrom();
     EntityDict::const_iterator J = m_eobjects.find(from);
     if (J != m_eobjects.end()) {
         m_perceptives.insert(J->second);
@@ -303,9 +303,9 @@ int WorldRouter::idle()
         catch (...) {
             std::string msg = std::string("Exception caught in world.idle()")
                             + " thrown while processing "
-                            + op->GetParents().front().AsString()
-                            + " operation sent to " + op->GetTo()
-                            + " from " + op->GetFrom() + ".";
+                            + op->getParents().front().asString()
+                            + " operation sent to " + op->getTo()
+                            + " from " + op->getFrom() + ".";
             log(ERROR, msg.c_str());
         }
         delete op;

@@ -18,10 +18,10 @@ class BBox {
     BBox() { }
     explicit BBox(const Vector3D & f) : u(0,0,0), v(f) { }
     BBox(const Vector3D & n, const Vector3D & f) : u(n), v(f) { }
-    explicit BBox(const Atlas::Message::Object::ListType & l) {
+    explicit BBox(const Atlas::Message::Element::ListType & l) {
         if (l.size() == 6) {
             u = Vector3D(l);
-            v = Vector3D(l[3].AsNum(), l[4].AsNum(), l[5].AsNum());
+            v = Vector3D(l[3].asNum(), l[4].AsNum(), l[5].AsNum());
         } else {
             u = Vector3D(0,0,0);
             v = Vector3D(l);
@@ -88,15 +88,15 @@ class BBox {
         return u.timeToExit(v, vel, o.u, o.v);
     }
 
-    const Atlas::Message::Object::ListType asList() const {
+    const Atlas::Message::Element::ListType asList() const {
         if (!u.isZero()) {
-            Atlas::Message::Object::ListType box = u.asList();
+            Atlas::Message::Element::ListType box = u.asList();
             box.push_back(v.X());
             box.push_back(v.Y());
             box.push_back(v.Z());
             return box;
         } else {
-            Atlas::Message::Object::ListType box = v.asList();
+            Atlas::Message::Element::ListType box = v.asList();
             return v.asList();
         }
     }

@@ -31,9 +31,9 @@ class Plant : public Plant_parent {
     explicit Plant(const std::string & id);
     virtual ~Plant();
 
-    virtual bool get(const std::string &, Atlas::Message::Object &) const;
-    virtual void set(const std::string &, const Atlas::Message::Object &);
-    virtual void addToObject(Atlas::Message::Object::MapType & obj) const;
+    virtual bool get(const std::string &, Atlas::Message::Element &) const;
+    virtual void set(const std::string &, const Atlas::Message::Element &);
+    virtual void addToObject(Atlas::Message::Element::MapType & obj) const;
 
     virtual OpVector TickOperation(const Tick & op);
 };

@@ -46,7 +46,7 @@ class BaseEntity : virtual public SigC::Object {
         return m_id;
     }
 
-    virtual void addToObject(Atlas::Message::Object::MapType &) const;
+    virtual void addToObject(Atlas::Message::Element::MapType &) const;
 
     virtual OpVector message(const RootOperation & op);
     virtual OpVector operation(const RootOperation & op);
@@ -91,7 +91,7 @@ class BaseEntity : virtual public SigC::Object {
                    const std::string & to = "") const;
 
     void setRefnoOp(RootOperation * op, const RootOperation & ref_op) const {
-        op->SetRefno(ref_op.GetSerialno());
+        op->setRefno(ref_op.getSerialno());
     }
 
     SigC::Signal0<void> destroyed;

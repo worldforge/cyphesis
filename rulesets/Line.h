@@ -25,10 +25,10 @@ class Line : public Line_parent {
     explicit Line(const std::string & id);
     virtual ~Line();
 
-    virtual bool get(const std::string &, Atlas::Message::Object &) const;
-    virtual void set(const std::string &, const Atlas::Message::Object &);
+    virtual bool get(const std::string &, Atlas::Message::Element &) const;
+    virtual void set(const std::string &, const Atlas::Message::Element &);
 
-    virtual void addToObject(Atlas::Message::Object::MapType & obj) const;
+    virtual void addToObject(Atlas::Message::Element::MapType & obj) const;
 };
 
 #endif // RULESETS_LINE_H

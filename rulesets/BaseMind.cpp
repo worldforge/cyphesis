@@ -159,12 +159,12 @@ OpVector BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
     if (m_script->Operation("sight_create", op, res, &sub_op) != 0) {
         return res;
     }
-    const Element::ListType & args = sub_op.GetArgs();
-    if (args.empty() || !args.front().IsMap()) {
+    const Element::ListType & args = sub_op.getArgs();
+    if (args.empty() || !args.front().isMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Element::MapType & obj = args.front().AsMap();
+    const Element::MapType & obj = args.front().asMap();
     m_map.add(obj);
     return res;
 }
@@ -183,15 +183,15 @@ OpVector BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op)
     if (m_script->Operation("sight_delete", op, res, &sub_op) != 0) {
         return res;
     }
-    const Element::ListType & args = sub_op.GetArgs();
-    if (args.empty() || !args.front().IsMap()) {
+    const Element::ListType & args = sub_op.getArgs();
+    if (args.empty() || !args.front().isMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Element::MapType & obj = args.front().AsMap();
+    const Element::MapType & obj = args.front().asMap();
     Element::MapType::const_iterator I = obj.find("id");
-    if ((I != obj.end()) && (I->second.IsString())) {
-        m_map.del(I->second.AsString());
+    if ((I != obj.end()) && (I->second.isString())) {
+        m_map.del(I->second.asString());
     } else {
         debug(std::cout << "args has no string id" << std::endl << std::flush;);
     }
@@ -226,12 +226,12 @@ OpVector BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
     if (m_script->Operation("sight_move", op, res, &sub_op) != 0) {
         return res;
     }
-    const Element::ListType & args = sub_op.GetArgs();
-    if (args.empty() || !args.front().IsMap()) {
+    const Element::ListType & args = sub_op.getArgs();
+    if (args.empty() || !args.front().isMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Element::MapType & obj = args.front().AsMap();
+    const Element::MapType & obj = args.front().asMap();
     m_map.update(obj);
     return res;
 }
@@ -242,12 +242,12 @@ OpVector BaseMind::sightSetOperation(const Sight & op, Set & sub_op)
     if (m_script->Operation("sight_set", op, res, &sub_op) != 0) {
         return res;
     }
-    const Element::ListType & args = sub_op.GetArgs();
-    if (args.empty() || !args.front().IsMap()) {
+    const Element::ListType & args = sub_op.getArgs();
+    if (args.empty() || !args.front().isMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Element::MapType & obj = args.front().AsMap();
+    const Element::MapType & obj = args.front().asMap();
     m_map.update(obj);
     return res;
 }
@@ -390,12 +390,12 @@ OpVector BaseMind::SoundOperation(const Sound & op)
     if (m_script->Operation("sound", op, res) != 0) {
         return res;
     }
-    const Element::ListType & args = op.GetArgs();
-    if (args.empty() || !args.front().IsMap()) {
+    const Element::ListType & args = op.getArgs();
+    if (args.empty() || !args.front().isMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Element::MapType & obj = args.front().AsMap();
+    const Element::MapType & obj = args.front().asMap();
     RootOperation op2;
     bool isOp = utility::Object_asOperation(obj, op2);
     if (isOp) {
@@ -415,18 +415,18 @@ OpVector BaseMind::SightOperation(const Sight & op)
         debug( std::cout << " its in the script" << std::endl << std::flush;);
         return res;
     }
-    const Element::ListType & args = op.GetArgs();
-    if (args.empty() || !args.front().IsMap()) {
+    const Element::ListType & args = op.getArgs();
+    if (args.empty() || !args.front().isMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Element::MapType & obj = args.front().AsMap();
+    const Element::MapType & obj = args.front().asMap();
     RootOperation op2;
     bool isOp = utility::Object_asOperation(obj, op2);
     if (isOp) {
         debug( std::cout << " args is an op!" << std::endl << std::flush;);
         res = callSightOperation(op, op2);
-    } else /* if (op2->GetObjtype() == "object") */ {
+    } else /* if (op2->getObjtype() == "object") */ {
         debug( std::cout << " arg is an entity!" << std::endl << std::flush;);
         m_map.add(obj);
     }
@@ -438,10 +438,10 @@ OpVector BaseMind::AppearanceOperation(const Appearance & op)
     if (!m_isAwake) { return OpVector(); }
     OpVector res;
     m_script->Operation("appearance", op, res);
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
     Element::ListType::const_iterator I;
     for(I = args.begin(); I != args.end(); I++) {
-        m_map.getAdd(I->AsMap().find("id")->second.AsString());
+        m_map.getAdd(I->asMap().find("id")->second.asString());
     }
     return res;
 }
@@ -464,8 +464,8 @@ OpVector BaseMind::operation(const RootOperation & op)
     //   If so create look operations to those ids
     //   Set the minds time and date 
     OpVector res;
-    m_time.update(op.GetSeconds());
-    m_map.getAdd(op.GetFrom());
+    m_time.update(op.getSeconds());
+    m_map.getAdd(op.getFrom());
     RootOperation * look;
     while ((look = m_map.lookId()) != NULL) {
         res.push_back(look);
@@ -483,11 +483,11 @@ OpVector BaseMind::operation(const RootOperation & op)
 }
 
 OpVector BaseMind::callSightOperation(const Sight& op, RootOperation& sub_op) {
-    m_map.getAdd(sub_op.GetFrom());
+    m_map.getAdd(sub_op.getFrom());
     OpNo op_no = opEnumerate(sub_op, opSightLookup);
     if (debug_flag && (op_no == OP_INVALID)) {
         std::cout << getId() << " could not deliver sight of "
-                  << sub_op.GetParents().front().AsString()
+                  << sub_op.getParents().front().asString()
                   << std::endl << std::flush;
     }
     SUB_OP_SWITCH(op, op_no, sight, sub_op)
@@ -495,11 +495,11 @@ OpVector BaseMind::callSightOperation(const Sight& op, RootOperation& sub_op) {
 }
 
 OpVector BaseMind::callSoundOperation(const Sound& op, RootOperation& sub_op) {
-    m_map.getAdd(sub_op.GetFrom());
+    m_map.getAdd(sub_op.getFrom());
     OpNo op_no = opEnumerate(sub_op, opSoundLookup);
     if (debug_flag && (op_no == OP_INVALID)) {
         std::cout << getId() << " could not deliver sound of "
-                  << sub_op.GetParents().front().AsString()
+                  << sub_op.getParents().front().asString()
                   << std::endl << std::flush;
     }
     SUB_OP_SWITCH(op, op_no, sound, sub_op)

@@ -36,16 +36,16 @@ OpVector Food::EatOperation(const Eat & op)
     self_ent["status"] = -1;
 
     Set * s = new Set(Set::Instantiate());
-    s->SetTo(getId());
-    s->SetArgs(Element::ListType(1,self_ent));
+    s->setTo(getId());
+    s->setArgs(Element::ListType(1,self_ent));
 
-    const std::string & to = op.GetFrom();
+    const std::string & to = op.getFrom();
     Element::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["mass"] = m_mass;
     Nourish * n = new Nourish(Nourish::Instantiate());
-    n->SetTo(to);
-    n->SetArgs(Element::ListType(1,nour_ent));
+    n->setTo(to);
+    n->setArgs(Element::ListType(1,nour_ent));
 
     OpVector res2(2);
     res2[0] = s;
@@ -60,27 +60,27 @@ OpVector Food::BurnOperation(const Burn & op)
         return res;
     }
     double cooked = 0;
-    if (op.GetArgs().empty() || !op.GetArgs().front().IsMap()) {
+    if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
        return error(op, "Fire op has no argument", getId());
     }
     Element::MapType::const_iterator I = m_attributes.find("cooked");
-    if ((I != m_attributes.end()) && I->second.IsNum()) {
-        cooked = I->second.AsNum();
+    if ((I != m_attributes.end()) && I->second.isNum()) {
+        cooked = I->second.asNum();
     }
-    const Element::MapType & fire_ent = op.GetArgs().front().AsMap();
+    const Element::MapType & fire_ent = op.getArgs().front().asMap();
     Element::MapType self_ent;
     self_ent["id"] = getId();
     // Currently this cooks pretty quick, and at the same speed for
     // everything. No mechanism for this yet.
-    double fire_size = fire_ent.find("status")->second.AsNum();
+    double fire_size = fire_ent.find("status")->second.asNum();
     self_ent["cooked"] = cooked + (fire_size/m_mass);
     if (cooked > 1.0) {
-        self_ent["status"] = m_status - (m_attributes["burn_speed"].AsNum()) * fire_size;
+        self_ent["status"] = m_status - (m_attributes["burn_speed"].asNum()) * fire_size;
     }
 
     Set * s = new Set(Set::Instantiate());
-    s->SetTo(getId());
-    s->SetArgs(Element::ListType(1,self_ent));
+    s->setTo(getId());
+    s->setArgs(Element::ListType(1,self_ent));
 
     return OpVector(1,s);
 }

@@ -52,17 +52,17 @@ bool Plant::get(const std::string & aname, Element & attr) const
 
 void Plant::set(const std::string & aname, const Element & attr)
 {
-    if ((aname == "fruits") && attr.IsInt()) {
-        m_fruits = attr.AsInt();
+    if ((aname == "fruits") && attr.isInt()) {
+        m_fruits = attr.asInt();
         m_update_flags |= a_fruit;
-    } else if ((aname == "radius") && attr.IsInt()) {
-        m_radius = attr.AsInt();
-    } else if ((aname == "fruitName") && attr.IsString()) {
-        m_fruitName = attr.AsString();
-    } else if ((aname == "fruitChance") && attr.IsInt()) {
-        m_fruitChance = attr.AsInt();
-    } else if ((aname == "sizeAdult") && attr.IsNum()) {
-        m_sizeAdult = attr.AsNum();
+    } else if ((aname == "radius") && attr.isInt()) {
+        m_radius = attr.asInt();
+    } else if ((aname == "fruitName") && attr.isString()) {
+        m_fruitName = attr.asString();
+    } else if ((aname == "fruitChance") && attr.isInt()) {
+        m_fruitChance = attr.asInt();
+    } else if ((aname == "sizeAdult") && attr.isNum()) {
+        m_sizeAdult = attr.asNum();
     } else {
         Plant_parent::set(aname, attr);
     }
@@ -93,7 +93,7 @@ int Plant::dropFruit(OpVector & res)
         Location floc(m_location.m_loc, Vector3D(rx, ry, 0));
         floc.addToObject(fmap);
         RootOperation * create = new Create(Create::Instantiate());
-        create->SetArgs(Element::ListType(1, fmap));
+        create->setArgs(Element::ListType(1, fmap));
         res.push_back(create);
     }
     return drop;
@@ -104,8 +104,8 @@ OpVector Plant::TickOperation(const Tick & op)
     OpVector res;
     m_script->Operation("tick", op, res);
     RootOperation * tickOp = new Tick(Tick::Instantiate());
-    tickOp->SetTo(getId());
-    tickOp->SetFutureSeconds(consts::basic_tick * m_speed);
+    tickOp->setTo(getId());
+    tickOp->setFutureSeconds(consts::basic_tick * m_speed);
     res.push_back(tickOp);
     int dropped = dropFruit(res);
     if (m_location.m_bBox.highCorner().z() > m_sizeAdult) {
@@ -119,7 +119,7 @@ OpVector Plant::TickOperation(const Tick & op)
         Element::MapType pmap;
         pmap["id"] = getId();
         pmap["fruits"] = m_fruits;
-        set->SetArgs(Element::ListType(1,pmap));
+        set->setArgs(Element::ListType(1,pmap));
         res.push_back(set);
     }
     return res;

@@ -16,16 +16,16 @@
 void MemMap::addContents(const Element::MapType & entmap)
 {
     Element::MapType::const_iterator I = entmap.find("contains");
-    if ((I == entmap.end()) || (!I->second.IsList())) {
+    if ((I == entmap.end()) || (!I->second.isList())) {
         return;
     }
-    const Element::ListType & contlist = I->second.AsList();
+    const Element::ListType & contlist = I->second.asList();
     Element::ListType::const_iterator J = contlist.begin();
     for(;J != contlist.end(); J++) {
-        if (!J->IsString()) {
+        if (!J->isString()) {
             continue;
         }
-        getAdd(J->AsString());
+        getAdd(J->asString());
     }
 }
 
@@ -33,27 +33,27 @@ Entity * MemMap::add(const Element::MapType & entmap)
 {
     debug( std::cout << "MemMap::add" << std::endl << std::flush;);
     Element::MapType::const_iterator I = entmap.find("id");
-    if ((I == entmap.end()) || (I->second.AsString().empty())) {
+    if ((I == entmap.end()) || (I->second.asString().empty())) {
         return NULL;
     }
-    const std::string & id = I->second.AsString();
+    const std::string & id = I->second.asString();
     if (find(id)) {
         return update(entmap);
     }
     Entity * entity = new Entity(id);
     // entity->setId(id);
     I = entmap.find("name");
-    if ((I != entmap.end()) && I->second.IsString()) {
-        entity->setName(I->second.AsString());
+    if ((I != entmap.end()) && I->second.isString()) {
+        entity->setName(I->second.asString());
     }
     I = entmap.find("type");
-    if ((I != entmap.end()) && I->second.IsString()) {
-        entity->setType(I->second.AsString());
+    if ((I != entmap.end()) && I->second.isString()) {
+        entity->setType(I->second.asString());
     }
     entity->merge(entmap);
     I = entmap.find("loc");
-    if ((I != entmap.end()) && I->second.IsString()) {
-        getAdd(I->second.AsString());
+    if ((I != entmap.end()) && I->second.isString()) {
+        getAdd(I->second.asString());
     }
     entity->getLocation(entmap, m_entities);
     addContents(entmap);
@@ -64,10 +64,10 @@ Entity * MemMap::update(const Element::MapType & entmap)
 {
     debug( std::cout << "MemMap::update" << std::endl << std::flush;);
     Element::MapType::const_iterator I = entmap.find("id");
-    if ((I == entmap.end()) || !I->second.IsString()) {
+    if ((I == entmap.end()) || !I->second.isString()) {
         return NULL;
     }
-    const std::string & id = I->second.AsString();
+    const std::string & id = I->second.asString();
     if (id.empty()) {
         return NULL;
     }
@@ -80,12 +80,12 @@ Entity * MemMap::update(const Element::MapType & entmap)
     Entity * entity = J->second;
     debug( std::cout << " got " << entity << std::endl << std::flush;);
     I = entmap.find("name");
-    if (I != entmap.end() && I->second.IsString()) {
-        entity->setName(I->second.AsString());
+    if (I != entmap.end() && I->second.isString()) {
+        entity->setName(I->second.asString());
     }
     I = entmap.find("type");
-    if (I != entmap.end() && I->second.IsString()) {
-        entity->setType(I->second.AsString());
+    if (I != entmap.end() && I->second.isString()) {
+        entity->setType(I->second.asString());
     }
     debug( std::cout << " got " << entity << std::endl << std::flush;);
     // It is important that the entity is not mutated here. Ie, an update
@@ -137,7 +137,7 @@ const Element MemMap::asObject()
     Element::MapType omap;
     EntityDict::const_iterator I = m_entities.begin();
     for(;I != m_entities.end(); I++) {
-        I->second->addToObject((omap[I->first] = Element(Element::MapType())).AsMap());
+        I->second->addToObject((omap[I->first] = Element(Element::MapType())).asMap());
     }
     return Element(omap);
 }

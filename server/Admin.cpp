@@ -42,11 +42,11 @@ OpVector Admin::characterError(const Create & op,
                                const Element::MapType & ent) const
 {
     Element::MapType::const_iterator I = ent.find("parents");
-    if ((I == ent.end()) || !I->second.IsList()) {
+    if ((I == ent.end()) || !I->second.isList()) {
         return error(op, "You cannot create a character with no type.");
     }
-    const Element::ListType & parents = I->second.AsList();
-    if (parents.empty() || !parents.front().IsString()) {
+    const Element::ListType & parents = I->second.asList();
+    if (parents.empty() || !parents.front().isString()) {
         return error(op, "You cannot create a character with non-string type.");
     }
     return OpVector();
@@ -54,19 +54,19 @@ OpVector Admin::characterError(const Create & op,
 
 OpVector Admin::LogoutOperation(const Logout & op)
 {
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
     
-    if (args.empty() || !args.front().IsMap()) {
+    if (args.empty() || !args.front().isMap()) {
         return Account::LogoutOperation(op);
     } else {
-        Element::MapType::const_iterator I = args.front().AsMap().find("id");
-        if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
+        Element::MapType::const_iterator I = args.front().asMap().find("id");
+        if ((I == args.front().asMap().end()) || (!I->second.isString())) {
             return error(op, "No account id given");
         }
         if (m_connection == NULL) {
             return error(op, "Disconnected admin account handling explicit logout");
         }
-        const std::string & account_id = I->second.AsString();
+        const std::string & account_id = I->second.asString();
         if (account_id == getId()) {
            return Account::LogoutOperation(op);
         }
@@ -80,25 +80,25 @@ OpVector Admin::LogoutOperation(const Logout & op)
 
 OpVector Admin::GetOperation(const Get & op)
 {
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
     if (args.empty()) {
         return error(op, "Get has no args.");
     }
     const Element & ent = args.front();
-    if (!ent.IsMap()) {
+    if (!ent.isMap()) {
         return error(op, "Get arg is not a map.");
     }
-    const Element::MapType & emap = ent.AsMap();
+    const Element::MapType & emap = ent.asMap();
     Element::MapType::const_iterator I = emap.find("objtype");
-    if (I == emap.end() || !I->second.IsString()) {
+    if (I == emap.end() || !I->second.isString()) {
         return error(op, "Get arg has no objtype.");
     }
-    const std::string & objtype = I->second.AsString();
+    const std::string & objtype = I->second.asString();
     I = emap.find("id");
-    if (I == emap.end() || !I->second.IsString()) {
+    if (I == emap.end() || !I->second.isString()) {
         return error(op, "Get arg has no id.");
     }
-    const std::string & id = I->second.AsString();
+    const std::string & id = I->second.asString();
     if (id.empty()) {
         return error(op, "query id invalid");
     }
@@ -109,12 +109,12 @@ OpVector Admin::GetOperation(const Get & op)
         const EntityDict & worldDict = m_connection->m_server.m_world.getObjects();
         EntityDict::const_iterator K = worldDict.find(id);
 
-        Element::ListType & info_args = info->GetArgs();
+        Element::ListType & info_args = info->getArgs();
         info_args.push_back(Element::MapType());
         if (J != OOGDict.end()) {
-            J->second->addToObject(info_args.front().AsMap());
+            J->second->addToObject(info_args.front().asMap());
         } else if (K != worldDict.end()) {
-            K->second->addToObject(info_args.front().AsMap());
+            K->second->addToObject(info_args.front().asMap());
         } else {
             delete info;
             return error(op, "Get id not found");
@@ -127,38 +127,38 @@ OpVector Admin::GetOperation(const Get & op)
             delete info;
             return error(op, "Unknown type definition requested");
         }
-        Element::ListType & iargs = info->GetArgs();
-        iargs.push_back(o->AsObject());
+        Element::ListType & iargs = info->getArgs();
+        iargs.push_back(o->asObject());
     } else {
         delete info;
         return error(op, "Unknow object type requested");
     }
-    info->SetRefno(op.GetSerialno());
-    info->SetSerialno(m_connection->m_server.getSerialNo());
+    info->setRefno(op.getSerialno());
+    info->setSerialno(m_connection->m_server.getSerialNo());
     return OpVector(1,info);
 }
 
 OpVector Admin::SetOperation(const Set & op)
 {
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
     if (args.empty()) {
         return error(op, "Set has no args.");
     }
     const Element & ent = args.front();
-    if (!ent.IsMap()) {
+    if (!ent.isMap()) {
         return error(op, "Set arg is not a map.");
     }
-    const Element::MapType & emap = ent.AsMap();
+    const Element::MapType & emap = ent.asMap();
     Element::MapType::const_iterator I = emap.find("objtype");
-    if (I == emap.end() || !I->second.IsString()) {
+    if (I == emap.end() || !I->second.isString()) {
         return error(op, "Set arg has no objtype.");
     }
-    const std::string & objtype = I->second.AsString();
+    const std::string & objtype = I->second.asString();
     I = emap.find("id");
-    if (I == emap.end() || !I->second.IsString()) {
+    if (I == emap.end() || !I->second.isString()) {
         return error(op, "Set arg has no id.");
     }
-    const std::string & id = I->second.AsString();
+    const std::string & id = I->second.asString();
 
     if (objtype == "object") {
         // Manipulate attributes of existing objects.
@@ -167,11 +167,11 @@ OpVector Admin::SetOperation(const Set & op)
         // It is possible this should actually be a create op that does
         // this. If so, set could perhaps be used to change things
         // in existing classes.
-        // const std::string & parent = emap.find("parents")->second.AsList().front().AsString();
+        // const std::string & parent = emap.find("parents")->second.asList().front().asString();
         // std::string script;
         // Element::MapType::const_iterator I = emap.find("script");
-        // if ((I != emap.end()) && I->second.IsString()) {
-        // script = I->second.AsString();
+        // if ((I != emap.end()) && I->second.isString()) {
+        // script = I->second.asString();
         // }
     } else if (objtype == "op_definition") {
         // Install a new op type? Perhaps again this should be a create.
@@ -183,16 +183,16 @@ OpVector Admin::SetOperation(const Set & op)
 
 OpVector Admin::CreateOperation(const Create & op)
 {
-    const Element::ListType & args = op.GetArgs();
-    if ((args.empty()) || (!args.front().IsMap())) {
+    const Element::ListType & args = op.getArgs();
+    if ((args.empty()) || (!args.front().isMap())) {
         return OpVector();
     }
 
-    const Element::MapType & entmap = args.front().AsMap();
+    const Element::MapType & entmap = args.front().asMap();
     Element::MapType::const_iterator I = entmap.find("parents");
-    if ((I == entmap.end()) || !(I->second.IsList()) ||
-        (I->second.AsList().empty()) ||
-        !(I->second.AsList().front().IsString()) ) {
+    if ((I == entmap.end()) || !(I->second.isList()) ||
+        (I->second.asList().empty()) ||
+        !(I->second.asList().front().isString()) ) {
         return error(op, "Character has no type");
     }
 

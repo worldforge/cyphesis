@@ -131,10 +131,10 @@ bool Connection::verifyCredentials(const Account & account,
                                    const Element::MapType & creds) const
 {
     Element::MapType::const_iterator I = creds.find("password");
-    if ((I == creds.end()) || !I->second.IsString()) {
+    if ((I == creds.end()) || !I->second.isString()) {
         return false;
     }
-    const std::string & passwd = I->second.AsString();
+    const std::string & passwd = I->second.asString();
 
     std::string hash;
     encrypt_password(passwd, hash);
@@ -147,7 +147,7 @@ bool Connection::verifyCredentials(const Account & account,
 OpVector Connection::operation(const RootOperation & op)
 {
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
-    const std::string & from = op.GetFrom();
+    const std::string & from = op.getFrom();
     if (from.empty()) {
         debug(std::cout << "deliver locally as normal" << std::endl << std::flush;);
         return callOperation(op);
@@ -156,7 +156,7 @@ OpVector Connection::operation(const RootOperation & op)
         debug(std::cout << "[" << from << "]" << std::endl << std::flush;);
         BaseDict::const_iterator I = m_objects.find(from);
         if (I == m_objects.end()) {
-            std::cout << "Illegal from \"" << from << "\" in " << op.GetParents().front().AsString() << " op from client" << std::endl << std::flush;
+            std::cout << "Illegal from \"" << from << "\" in " << op.getParents().front().asString() << " op from client" << std::endl << std::flush;
             std::string err = "From [";
             err += from;
             err += "] is illegal";
@@ -169,11 +169,11 @@ OpVector Connection::operation(const RootOperation & op)
                        character->getId(), character->getName());
             debug(std::cout << "Re-connecting existing character to new connection" << std::endl << std::flush;);
             Info * info = new Info(Info::Instantiate());
-            Element::ListType & info_args = info->GetArgs();
+            Element::ListType & info_args = info->getArgs();
             info_args.push_back(Element::MapType());
-            character->addToObject(info_args.front().AsMap());
-            info->SetRefno(op.GetSerialno());
-            info->SetSerialno(m_server.getSerialNo());
+            character->addToObject(info_args.front().asMap());
+            info->setRefno(op.getSerialno());
+            info->setSerialno(m_server.getSerialNo());
             OpVector res = ent->externalOperation(op);
             res.insert(res.begin(), info);
             return res;
@@ -187,25 +187,25 @@ OpVector Connection::LoginOperation(const Login & op)
 {
 
     debug(std::cout << "Got login op" << std::endl << std::flush;);
-    if (op.GetArgs().empty()) {
+    if (op.getArgs().empty()) {
         return error(op, "Login has no argument");
     }
-    if (!op.GetArgs().front().IsMap()) {
+    if (!op.getArgs().front().isMap()) {
         return error(op, "Login arg is malformed");
     }
     // Account should be the first argument of the op
-    const Element::MapType & account = op.GetArgs().front().AsMap();
+    const Element::MapType & account = op.getArgs().front().asMap();
     // Check for username, and if its not there, then check for
     // id in case we are dealing with an old client.
     Element::MapType::const_iterator I = account.find("username");
-    if ((I == account.end()) || !I->second.IsString()) {
+    if ((I == account.end()) || !I->second.isString()) {
         log(WARNING, "Got Login with no username. Checking for old style Login");
         I = account.find("id");
-        if ((I == account.end()) || !I->second.IsString()) {
+        if ((I == account.end()) || !I->second.isString()) {
             return error(op, "No username provided for Login");
         }
     }
-    const std::string & username = I->second.AsString();
+    const std::string & username = I->second.asString();
     if (username.empty()) {
         return error(op, "Empty username provided for Login");
     }
@@ -240,11 +240,11 @@ OpVector Connection::LoginOperation(const Login & op)
     m_server.m_lobby.addObject(player);
     // Let the client know they have logged in
     Info * info = new Info(Info::Instantiate());
-    Element::ListType & info_args = info->GetArgs();
+    Element::ListType & info_args = info->getArgs();
     info_args.push_back(Element::MapType());
-    player->addToObject(info_args.front().AsMap());
-    info->SetRefno(op.GetSerialno());
-    info->SetSerialno(m_server.getSerialNo());
+    player->addToObject(info_args.front().asMap());
+    info->setRefno(op.getSerialno());
+    info->setSerialno(m_server.getSerialNo());
     debug(std::cout << "Good login" << std::endl << std::flush;);
     return OpVector(1,info);
 }
@@ -255,32 +255,32 @@ OpVector Connection::CreateOperation(const Create & op)
     if (!m_objects.empty()) {
         return error(op, "Already logged in");
     }
-    if (op.GetArgs().empty()) {
+    if (op.getArgs().empty()) {
         return error(op, "Create has no argument");
     }
-    if (!op.GetArgs().front().IsMap()) {
+    if (!op.getArgs().front().isMap()) {
         return error(op, "Create is malformed");
     }
-    const Element::MapType & account = op.GetArgs().front().AsMap();
+    const Element::MapType & account = op.getArgs().front().asMap();
 
     if (restricted_flag) {
         return error(op, "Account creation on this server is restricted");
     }
     Element::MapType::const_iterator I = account.find("username");
-    if ((I == account.end()) || !I->second.IsString()) {
+    if ((I == account.end()) || !I->second.isString()) {
         log(WARNING, "Got Create for account with no username. Checking for old style Create.");
         I = account.find("id");
-        if ((I == account.end()) || !I->second.IsString()) {
+        if ((I == account.end()) || !I->second.isString()) {
             return error(op, "Account creation with no username");
         }
     }
 
-    const std::string & username = I->second.AsString();
+    const std::string & username = I->second.asString();
     I = account.find("password");
-    if ((I == account.end()) || !I->second.IsString()) {
+    if ((I == account.end()) || !I->second.isString()) {
         return error(op, "Account creation with no password");
     }
-    const std::string & password = I->second.AsString();
+    const std::string & password = I->second.asString();
 
     if ((0 != m_server.getAccountByName(username)) ||
         (Persistance::instance()->findAccount(username)) ||
@@ -291,53 +291,53 @@ OpVector Connection::CreateOperation(const Create & op)
     Account * player = addPlayer(username, password);
     Persistance::instance()->putAccount(*player);
     Info * info = new Info(Info::Instantiate());
-    Element::ListType & info_args = info->GetArgs();
+    Element::ListType & info_args = info->getArgs();
     info_args.push_back(Element::MapType());
-    player->addToObject(info_args.front().AsMap());
-    info->SetRefno(op.GetSerialno());
-    info->SetSerialno(m_server.getSerialNo());
+    player->addToObject(info_args.front().asMap());
+    info->setRefno(op.getSerialno());
+    info->setSerialno(m_server.getSerialNo());
     debug(std::cout << "Good create" << std::endl << std::flush;);
     return OpVector(1,info);
 }
 
 OpVector Connection::LogoutOperation(const Logout & op)
 {
-    if (op.GetArgs().empty()) {
+    if (op.getArgs().empty()) {
         // Logging self out
         Info info = Info(Info::Instantiate());
-        Element::ListType & args = info.GetArgs();
-        args.push_back(op.AsObject());
-        info.SetRefno(op.GetSerialno());
-        info.SetSerialno(m_server.getSerialNo());
+        Element::ListType & args = info.getArgs();
+        args.push_back(op.asObject());
+        info.setRefno(op.getSerialno());
+        info.setSerialno(m_server.getSerialNo());
         send(info);
         close();
         return OpVector();
     }
-    if (!op.GetArgs().front().IsMap()) {
+    if (!op.getArgs().front().isMap()) {
         return error(op, "Create arg is not a map");
     }
-    const Element::MapType & account = op.GetArgs().front().AsMap();
+    const Element::MapType & account = op.getArgs().front().asMap();
     
     Element::MapType::const_iterator I = account.find("username");
-    if ((I == account.end()) || !I->second.IsString()) {
+    if ((I == account.end()) || !I->second.isString()) {
         log(WARNING, "Got Logout with no username. Checking for old style Logout.");
         I = account.find("id");
-        if ((I == account.end()) || !I->second.IsString()) {
+        if ((I == account.end()) || !I->second.isString()) {
             return error(op, "Logout is invalid");
         }
     }
-    const std::string & username = I->second.AsString();
+    const std::string & username = I->second.asString();
     I = account.find("password");
-    if ((I == account.end()) || (!I->second.IsString())) {
+    if ((I == account.end()) || (!I->second.isString())) {
         return error(op, "No account password given");
     }
-    const std::string & password = I->second.AsString();
+    const std::string & password = I->second.asString();
     Account * player = m_server.getAccountByName(username);
     if ((!player) || (password != player->m_password)) {
         return error(op, "Logout failed");
     }
     Logout l = op;
-    l.SetFrom(player->getId());
+    l.setFrom(player->getId());
     operation(l);
 
     return OpVector();
@@ -345,36 +345,36 @@ OpVector Connection::LogoutOperation(const Logout & op)
 
 OpVector Connection::GetOperation(const Get & op)
 {
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
 
     Info * info;
     if (args.empty()) {
         info = new Info(Info::Instantiate());
-        Element::ListType & info_args = info->GetArgs();
+        Element::ListType & info_args = info->getArgs();
         info_args.push_back(Element::MapType());
-        m_server.addToObject(info_args.front().AsMap());
-        info->SetRefno(op.GetSerialno());
-        info->SetSerialno(m_server.getSerialNo());
+        m_server.addToObject(info_args.front().asMap());
+        info->setRefno(op.getSerialno());
+        info->setSerialno(m_server.getSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
-        if (!args.front().IsMap()) {
+        if (!args.front().isMap()) {
             return error(op, "Get op arg is not a map");
         }
-        Element::MapType::const_iterator I = args.front().AsMap().find("id");
-        if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
+        Element::MapType::const_iterator I = args.front().asMap().find("id");
+        if ((I == args.front().asMap().end()) || (!I->second.isString())) {
             return error(op, "Type definition requested with no id");
         }
-        const std::string & id = I->second.AsString();
+        const std::string & id = I->second.asString();
         debug(std::cout << "Get got for " << id << std::endl << std::flush;);
         Atlas::Objects::Root * o = Inheritance::instance().get(id);
         if (o == NULL) {
             return error(op, "Unknown type definition requested");
         }
         info = new Info(Info::Instantiate());
-        Element::ListType & iargs = info->GetArgs();
-        iargs.push_back(o->AsObject());
-        info->SetRefno(op.GetSerialno());
-        info->SetSerialno(m_server.getSerialNo());
+        Element::ListType & iargs = info->getArgs();
+        iargs.push_back(o->asObject());
+        info->setRefno(op.getSerialno());
+        info->setSerialno(m_server.getSerialNo());
     }
     
     return OpVector(1,info);

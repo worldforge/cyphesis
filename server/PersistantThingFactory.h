@@ -5,7 +5,7 @@
 #ifndef SERVER_THING_FACTORY_H
 #define SERVER_THING_FACTORY_H
 
-#include <Atlas/Message/Object.h>
+#include <Atlas/Message/Element.h>
 
 class Entity;
 
@@ -35,7 +35,7 @@ class FactoryBase {
   public:
     std::string m_script;
     std::string m_language;
-    Atlas::Message::Object::MapType m_attributes;
+    Atlas::Message::Element::MapType m_attributes;
 
     virtual ~FactoryBase() { }
 

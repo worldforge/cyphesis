@@ -34,10 +34,10 @@ class Body {
         return VectorPol(ret_latt, ret_long, ret_dist);
     }
 
-    virtual Atlas::Message::Object asObject()
+    virtual Atlas::Message::Element asObject()
     {
-        Atlas::Message::Object::MapType bmap;
-        return Atlas::Message::Object(bmap);
+        Atlas::Message::Element::MapType bmap;
+        return Atlas::Message::Element(bmap);
     }
 };
 

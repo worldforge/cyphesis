@@ -22,14 +22,14 @@ CreatorClient::CreatorClient(const std::string & id, const std::string & name,
 
 Entity * CreatorClient::make(const Element & entity)
 {
-    if (!entity.IsMap()) {
+    if (!entity.isMap()) {
         std::cerr << "make: entity is not map" << std::endl << std::flush;
         return NULL;
     }
     Create op(Create::Instantiate());
-    op.SetArgs(Element::ListType(1,entity));
-    op.SetFrom(getId());
-    op.SetTo(getId());
+    op.setArgs(Element::ListType(1,entity));
+    op.setFrom(getId());
+    op.setTo(getId());
     OpVector result = sendAndWaitReply(op);
     if (result.empty()) {
         std::cerr << "No reply to make" << std::endl << std::flush;
@@ -40,54 +40,54 @@ Entity * CreatorClient::make(const Element & entity)
         std::cerr << "NULL reply to make" << std::endl << std::flush;
         return NULL;
     }
-    const std::string & resparents = res->GetParents().front().AsString();
+    const std::string & resparents = res->getParents().front().asString();
     if (resparents != "sight") {
         std::cerr << "Reply to make isn't sight" << std::endl << std::flush;
         return NULL;
     }
-    if (res->GetArgs().empty()) {
+    if (res->getArgs().empty()) {
         std::cerr << "Reply to make has no args" << std::endl << std::flush;
         return NULL;
     }
-    if (!res->GetArgs().front().IsMap()) {
+    if (!res->getArgs().front().isMap()) {
         std::cerr << "Reply to make has malformed args" << std::endl << std::flush;
         return NULL;
     }
-    const Element::MapType & arg = res->GetArgs().front().AsMap();
+    const Element::MapType & arg = res->getArgs().front().asMap();
     Element::MapType::const_iterator I = arg.find("parents");
-    if ((I == arg.end()) || !I->second.IsList() || I->second.AsList().empty()) {
+    if ((I == arg.end()) || !I->second.isList() || I->second.asList().empty()) {
         std::cerr << "Arg of reply to make has no parents"
                   << std::endl << std::flush;
         return NULL;
     }
-    const std::string & resargp = I->second.AsList().front().AsString();
+    const std::string & resargp = I->second.asList().front().asString();
     if (resargp != "create") {
         std::cerr << "Reply to make isn't sight of create"
                   << std::endl << std::flush;
         return NULL;
     }
     I = arg.find("args");
-    if ((I == arg.end()) || !I->second.IsList() || I->second.AsList().empty()) {
+    if ((I == arg.end()) || !I->second.isList() || I->second.asList().empty()) {
         std::cerr << "Arg of reply to make has no args"
                   << std::endl << std::flush;
         return NULL;
     }
-    const Element::MapType & created = I->second.AsList().front().AsMap();
+    const Element::MapType & created = I->second.asList().front().asMap();
     I = created.find("id");
-    if ((I == created.end()) || !I->second.IsString()) {
+    if ((I == created.end()) || !I->second.isString()) {
         std::cerr << "Created entity has no id"
                   << std::endl << std::flush;
         return NULL;
     }
-    const std::string & created_id = I->second.AsString();
+    const std::string & created_id = I->second.asString();
     I = created.find("parents");
-    if ((I == created.end()) || !I->second.IsList() ||
-        I->second.AsList().empty() || !I->second.AsList().front().IsString()) {
+    if ((I == created.end()) || !I->second.isList() ||
+        I->second.asList().empty() || !I->second.asList().front().isString()) {
         std::cerr << "Created entity " << created_id << " has no type"
                   << std::endl << std::flush;
         return NULL;
     }
-    const std::string & created_type = I->second.AsList().front().AsString();
+    const std::string & created_type = I->second.asList().front().asString();
     std::cout << "Created: " << created_type << "(" << created_id << ")"
               << std::endl << std::flush;
     Entity * obj = m_map.add(created);
@@ -97,14 +97,14 @@ Entity * CreatorClient::make(const Element & entity)
 
 void CreatorClient::sendSet(const std::string & id, const Element & entity)
 {
-    if (!entity.IsMap()) {
+    if (!entity.isMap()) {
         std::cerr << "set: " << id << " entity is not map" << std::endl << std::flush;
         return;
     }
     Set op(Set::Instantiate());
-    op.SetArgs(Element::ListType(1,entity));
-    op.SetFrom(getId());
-    op.SetTo(id);
+    op.setArgs(Element::ListType(1,entity));
+    op.setFrom(getId());
+    op.setTo(id);
     send(op);
 }
 
@@ -114,17 +114,17 @@ Entity * CreatorClient::look(const std::string & id)
     if (!id.empty()) {
         Element::MapType ent;
         ent["id"] = id;
-        op.SetArgs(Element::ListType(1,ent));
+        op.setArgs(Element::ListType(1,ent));
     }
-    op.SetFrom(getId());
+    op.setFrom(getId());
     return sendLook(op);
 }
 
 Entity * CreatorClient::lookFor(const Element & ent)
 {
     Look op(Look::Instantiate());
-    op.SetArgs(Element::ListType(1,ent));
-    op.SetFrom(getId());
+    op.setArgs(Element::ListType(1,ent));
+    op.setFrom(getId());
     return sendLook(op);
 }
 
@@ -140,27 +140,27 @@ Entity * CreatorClient::sendLook(RootOperation & op)
         std::cerr << "NULL reply to look" << std::endl << std::flush;
         return NULL;
     }
-    const std::string & resparents = res->GetParents().front().AsString();
+    const std::string & resparents = res->getParents().front().asString();
     if (resparents != "sight") {
         std::cerr << "Reply to look isn't sight" << std::endl << std::flush;
         return NULL;
     }
-    if (res->GetArgs().empty()) {
+    if (res->getArgs().empty()) {
         std::cerr << "Reply to look has no args" << std::endl << std::flush;
         return NULL;
     }
-    if (!res->GetArgs().front().IsMap()) {
+    if (!res->getArgs().front().isMap()) {
         std::cerr << "Reply to look has malformed args" << std::endl << std::flush;
         return NULL;
     }
-    const Element::MapType & seen = res->GetArgs().front().AsMap();
+    const Element::MapType & seen = res->getArgs().front().asMap();
     Element::MapType::const_iterator I = seen.find("id");
-    if ((I == seen.end()) || !I->second.IsString()) {
+    if ((I == seen.end()) || !I->second.isString()) {
         std::cerr << "Looked at entity has no id"
                   << std::endl << std::flush;
         return NULL;
     }
-    const std::string & created_id = I->second.AsString();
+    const std::string & created_id = I->second.asString();
     std::cout << "Seen: " << created_id << std::endl << std::flush;
     Entity * obj = m_map.add(seen);
     return obj;

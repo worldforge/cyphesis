@@ -46,7 +46,7 @@ class EntityFactory {
         }
     }
     Entity * newEntity(const std::string &, const std::string &,
-                       const Atlas::Message::Object::MapType &);
+                       const Atlas::Message::Element::MapType &);
     void flushFactories();
 
     void installFactory(const std::string &, const std::string &, FactoryBase*);

@@ -11,7 +11,7 @@ class Persistance;
 
 class Admin : public Account {
   protected:
-    virtual OpVector characterError(const Create &, const Atlas::Message::Object::MapType &) const;
+    virtual OpVector characterError(const Create &, const Atlas::Message::Element::MapType &) const;
     void load(Persistance *, const std::string &, int &);
   public:
     Admin(Connection * conn, const std::string & username,

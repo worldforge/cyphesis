@@ -39,12 +39,12 @@ using namespace Objects;
 class SightDecoder : public Objects::Decoder
 {
 protected:
-   void UnknownObjectArrived(const Atlas::Message::Object&);
-   void ObjectArrived(const Operation::Create&);
-   void ObjectArrived(const Operation::Move&);
-   void ObjectArrived(const Operation::Set&);
+   void UnknownobjectArrived(const Atlas::Message::Element&);
+   void objectArrived(const Operation::Create&);
+   void objectArrived(const Operation::Move&);
+   void objectArrived(const Operation::Set&);
 public:
-   void processSight(const Atlas::Message::Object&);
+   void processSight(const Atlas::Message::Element&);
 };
 
 class CyphesisClient : public Objects::Decoder
@@ -66,11 +66,11 @@ private:
    int state;
    SightDecoder sdecode;
 protected:
-   //void ObjectArrived(const Atlas::Message::Object&);
-   void UnknownObjectArrived(const Atlas::Message::Object&);
-   void ObjectArrived(const Operation::Info&);
-   void ObjectArrived(const Operation::Error&);
-   void ObjectArrived(const Operation::Sight&);
+   //void objectArrived(const Atlas::Message::Element&);
+   void UnknownobjectArrived(const Atlas::Message::Element&);
+   void objectArrived(const Operation::Info&);
+   void objectArrived(const Operation::Error&);
+   void objectArrived(const Operation::Sight&);
 public:
    CyphesisClient() : erflag(0), reply_flag(0), encoder(NULL), codec(NULL), state(INIT) { }
      

@@ -7,8 +7,6 @@
 
 #include "Database.h"
 
-#include <Atlas/Message/Object.h>
-
 class AccountBase {
   protected:
     AccountBase() : m_connection(*Database::instance()) { }
@@ -32,13 +30,13 @@ class AccountBase {
         }
     }
 
-    bool putAccount(const Atlas::Message::Object::MapType & o,
+    bool putAccount(const Atlas::Message::Element::MapType & o,
                     const std::string & account);
-    bool modAccount(const Atlas::Message::Object::MapType & o,
+    bool modAccount(const Atlas::Message::Element::MapType & o,
                     const std::string & account);
     bool delAccount(const std::string & account);
     bool getAccount(const std::string & account,
-                    Atlas::Message::Object::MapType & o);
+                    Atlas::Message::Element::MapType & o);
 
 };
 

@@ -16,7 +16,7 @@
 
 #include <iostream>
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 
 typedef Atlas::Codecs::XML Serialiser;
 
@@ -140,7 +140,7 @@ Database * Database::instance()
 }
 
 bool Database::decodeObject(const std::string & data,
-                            Atlas::Message::Object::MapType &o)
+                            Atlas::Message::Element::MapType &o)
 {
     if (data.empty()) {
         return true;
@@ -154,7 +154,7 @@ bool Database::decodeObject(const std::string & data,
     // Clear the decoder
     m_d.get();
 
-    codec.Poll();
+    codec.poll();
 
     if (!m_d.check()) {
         log(WARNING, "Database entry does not appear to be decodable");
@@ -165,7 +165,7 @@ bool Database::decodeObject(const std::string & data,
     return true;
 }
 
-bool Database::encodeObject(const Atlas::Message::Object::MapType & o,
+bool Database::encodeObject(const Atlas::Message::Element::MapType & o,
                             std::string & data)
 {
     std::stringstream str;
@@ -173,16 +173,16 @@ bool Database::encodeObject(const Atlas::Message::Object::MapType & o,
     Serialiser codec(str, &m_d);
     Atlas::Message::Encoder enc(&codec);
 
-    codec.StreamBegin();
-    enc.StreamMessage(o);
-    codec.StreamEnd();
+    codec.streamBegin();
+    enc.streamMessage(o);
+    codec.streamEnd();
 
     data = str.str();
     return true;
 }
 
 bool Database::getObject(const std::string & table, const std::string & key,
-                         Atlas::Message::Object::MapType & o)
+                         Atlas::Message::Element::MapType & o)
 {
     debug(std::cout << "Database::getObject() " << table << "." << key
                     << std::endl << std::flush;);
@@ -226,7 +226,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
 
 bool Database::putObject(const std::string & table,
                          const std::string & key,
-                         const Atlas::Message::Object::MapType & o)
+                         const Atlas::Message::Element::MapType & o)
 {
     debug(std::cout << "Database::putObject() " << table << "." << key
                     << std::endl << std::flush;);
@@ -235,9 +235,9 @@ bool Database::putObject(const std::string & table,
     Serialiser codec(str, &m_d);
     Atlas::Message::Encoder enc(&codec);
 
-    codec.StreamBegin();
-    enc.StreamMessage(o);
-    codec.StreamEnd();
+    codec.streamBegin();
+    enc.streamMessage(o);
+    codec.streamEnd();
 
     debug(std::cout << "Encoded to: " << str.str().c_str() << " "
                << str.str().size() << std::endl << std::flush;);
@@ -257,7 +257,7 @@ bool Database::putObject(const std::string & table,
 
 bool Database::updateObject(const std::string & table,
                             const std::string & key,
-                            const Atlas::Message::Object::MapType & o)
+                            const Atlas::Message::Element::MapType & o)
 {
     debug(std::cout << "Database::updateObject() " << table << "." << key
                     << std::endl << std::flush;);
@@ -266,9 +266,9 @@ bool Database::updateObject(const std::string & table,
     Serialiser codec(str, &m_d);
     Atlas::Message::Encoder enc(&codec);
 
-    codec.StreamBegin();
-    enc.StreamMessage(o);
-    codec.StreamEnd();
+    codec.streamBegin();
+    enc.streamMessage(o);
+    codec.streamEnd();
 
     std::string query = std::string("UPDATE ") + table + " SET contents = '" +
                         str.str() + "' WHERE id='" + key + "';";
@@ -303,7 +303,7 @@ bool Database::delObject(const std::string & table, const std::string & key)
     return true;
 }
 
-bool Database::getTable(const std::string & table, Object::MapType &o)
+bool Database::getTable(const std::string & table, Element::MapType &o)
 {
     std::string query = std::string("SELECT * FROM ") + table + ";";
 
@@ -331,7 +331,7 @@ bool Database::getTable(const std::string & table, Object::MapType &o)
         return false;
     }
     // const char * data = PQgetvalue(res, 0, 1);
-    Object::MapType t;
+    Element::MapType t;
     for(int i = 0; i < results; i++) {
         const char * key = PQgetvalue(res, i, 0);
         const char * data = PQgetvalue(res, i, 1);
@@ -547,7 +547,7 @@ bool Database::removeRelationRowByOther(const std::string & name,
 }
 
 bool Database::registerSimpleTable(const std::string & name,
-                                   const Atlas::Message::Object::MapType & row)
+                                   const Atlas::Message::Element::MapType & row)
 {
     if (row.empty()) {
         log(ERROR, "Attempt to create empty database table");
@@ -559,17 +559,17 @@ bool Database::registerSimpleTable(const std::string & name,
     createquery += name;
     query += " WHERE id = 0";
     createquery += " (id integer UNIQUE PRIMARY KEY";
-    Atlas::Message::Object::MapType::const_iterator I = row.begin();
+    Atlas::Message::Element::MapType::const_iterator I = row.begin();
     for(; I != row.end(); ++I) {
         query += " AND ";
         createquery += ", ";
         const std::string & column = I->first;
         query += column;
         createquery += column;
-        const Atlas::Message::Object & type = I->second;
-        if (type.IsString()) {
+        const Atlas::Message::Element & type = I->second;
+        if (type.isString()) {
             query += " LIKE 'foo'";
-            int size = type.AsString().size();
+            int size = type.asString().size();
             if (size == 0) {
                 createquery += " text";
             } else {
@@ -579,10 +579,10 @@ bool Database::registerSimpleTable(const std::string & name,
                 createquery += buf;
                 createquery += ")";
             }
-        } else if (type.IsInt()) {
+        } else if (type.isInt()) {
             query += " = 1";
             createquery += " integer";
-        } else if (type.IsFloat()) {
+        } else if (type.isFloat()) {
             query += " = 1.0";
             createquery += " float";
         } else {
@@ -708,7 +708,7 @@ bool Database::getEntityId(std::string & id)
 }
 
 bool Database::registerEntityTable(const std::string & classname,
-                                   const Atlas::Message::Object::MapType & row,
+                                   const Atlas::Message::Element::MapType & row,
                                    const std::string & parent)
 // TODO
 // row probably needs to be richer to provide a more detailed, and possibly
@@ -760,7 +760,7 @@ bool Database::registerEntityTable(const std::string & classname,
     if (parent.empty()) {
         createquery += "id integer UNIQUE PRIMARY KEY, ";
     }
-    Atlas::Message::Object::MapType::const_iterator I = row.begin();
+    Atlas::Message::Element::MapType::const_iterator I = row.begin();
     for(; I != row.end(); ++I) {
         if (I != row.begin()) {
             query += " AND ";
@@ -769,10 +769,10 @@ bool Database::registerEntityTable(const std::string & classname,
         const std::string & column = I->first;
         query += column;
         createquery += column;
-        const Atlas::Message::Object & type = I->second;
-        if (type.IsString()) {
+        const Atlas::Message::Element & type = I->second;
+        if (type.isString()) {
             query += " LIKE 'foo'";
-            int size = type.AsString().size();
+            int size = type.asString().size();
             if (size == 0) {
                 createquery += " text";
             } else {
@@ -782,15 +782,15 @@ bool Database::registerEntityTable(const std::string & classname,
                 createquery += buf;
                 createquery += ")";
             }
-        } else if (type.IsInt()) {
-            if (type.AsInt() == 0xb001) {
+        } else if (type.isInt()) {
+            if (type.asInt() == 0xb001) {
                 query += " = 't'";
                 createquery += " boolean";
             } else {
                 query += " = 1";
                 createquery += " integer";
             }
-        } else if (type.IsFloat()) {
+        } else if (type.isFloat()) {
             query += " = 1.0";
             createquery += " float";
         } else {

@@ -7,7 +7,7 @@
 
 #include "common/types.h"
 
-#include <Atlas/Message/Object.h>
+#include <Atlas/Message/Element.h>
 
 #include <string>
 
@@ -32,7 +32,7 @@ class Persistance {
     void addCharacter(const Account &, const Entity &);
     void delCharacter(const std::string &);
     
-    bool getRules(Atlas::Message::Object::MapType & m);
+    bool getRules(Atlas::Message::Element::MapType & m);
     bool clearRules();
 };
 

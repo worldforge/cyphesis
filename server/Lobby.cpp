@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include <common/debug.h>
+
 #include "Lobby.h"
 
 #include "Connection_methods.h"
@@ -10,21 +12,26 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
+static const bool debug_flag = false;
+
 Lobby::Lobby(const std::string & id, ServerRouting & s) : OOGThing(id), m_server(s)
 {
 }
 
 void Lobby::addObject(Account * ac)
 {
+    debug(std::cout << "Lobby::addObject(" << ac->getId() << ")"
+                    << std::endl << std::flush;);
+
     Appearance a(Appearance::Instantiate());
-    Element::ListType & args = a.GetArgs();
+    Element::ListType & args = a.getArgs();
     args.push_back(Element::MapType());
-    Element::MapType & us = args.back().AsMap();
+    Element::MapType & us = args.back().asMap();
     us["id"] = ac->getId();
     us["loc"] = "lobby";
-    a.SetFrom(ac->getId());
-    a.SetTo("lobby");
-    a.SetSerialno(m_server.getSerialNo());
+    a.setFrom(ac->getId());
+    a.setTo("lobby");
+    a.setSerialno(m_server.getSerialNo());
     operation(a);
 
     m_accounts[ac->getId()] = ac;
@@ -32,15 +39,18 @@ void Lobby::addObject(Account * ac)
 
 void Lobby::delObject(Account * a)
 {
+    debug(std::cout << "Lobby::delObject(" << a->getId() << ")"
+                    << std::endl << std::flush;);
+                    
     Disappearance d(Disappearance::Instantiate());
-    Element::ListType & args = d.GetArgs();
+    Element::ListType & args = d.getArgs();
     args.push_back(Element::MapType());
-    Element::MapType & us = args.back().AsMap();
+    Element::MapType & us = args.back().asMap();
     us["id"] = a->getId();
     us["loc"] = "lobby";
-    d.SetFrom(a->getId());
-    d.SetTo("lobby");
-    d.SetSerialno(m_server.getSerialNo());
+    d.setFrom(a->getId());
+    d.setTo("lobby");
+    d.setSerialno(m_server.getSerialNo());
     operation(d);
 
     m_accounts.erase(a->getId());
@@ -49,14 +59,17 @@ void Lobby::delObject(Account * a)
 
 OpVector Lobby::operation(const RootOperation & op)
 {
-    const std::string & to = op.GetTo();
+    debug(std::cout << "Lobby::operation(" << op.getParents().front().asString()
+                                           << std::endl << std::flush; );
+    const std::string & to = op.getTo();
     if (to.empty() || to == "lobby") {
         AccountDict::const_iterator I = m_accounts.begin();
         RootOperation newop(op);
         for (; I != m_accounts.end(); ++I) {
             Connection * c = I->second->m_connection;
             if (c != NULL) {
-                newop.SetTo(I->first);
+                newop.setTo(I->first);
+                debug(std::cout << "Lobby sending " << newop.getParents().front().asString() << " operation to " << I->first << std::endl << std::flush; );
                 c->send(newop);
             }
         }

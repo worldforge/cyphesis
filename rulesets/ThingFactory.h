@@ -7,7 +7,7 @@
 
 #error This file has been removed from the build
 
-#include <Atlas/Message/Object.h>
+#include <Atlas/Message/Element.h>
 
 class Thing;
 
@@ -15,7 +15,7 @@ class FactoryBase {
   public:
     std::string m_script;
     std::string m_language;
-    Atlas::Message::Object::MapType m_attributes;
+    Atlas::Message::Element::MapType m_attributes;
 
     virtual ~FactoryBase() { }
 

@@ -45,19 +45,19 @@ void installCustomOperations()
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::AdminEntity;
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 
 void installCustomEntities()
 {
     Inheritance & i = Inheritance::instance();
 
     Root * r = new AdminEntity();
-    r->SetId("room");
-    r->SetParents(Object::ListType(1,"admin_entity"));
+    r->setId("room");
+    r->setParents(Element::ListType(1,"admin_entity"));
     i.addChild(r);
 
     r = new AdminEntity();
-    r->SetId("lobby");
-    r->SetParents(Object::ListType(1,"room"));
+    r->setId("lobby");
+    r->setParents(Element::ListType(1,"room"));
     i.addChild(r);
 }

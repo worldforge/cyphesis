@@ -21,16 +21,16 @@ class World : public World_parent {
   protected:
     Mercator::Terrain & m_terrain;
 
-    void getTerrain(Atlas::Message::Object::MapType &) const;
-    void setTerrain(const Atlas::Message::Object::MapType &);
+    void getTerrain(Atlas::Message::Element::MapType &) const;
+    void setTerrain(const Atlas::Message::Element::MapType &);
   public:
     explicit World(const std::string & id);
     virtual ~World();
 
-    virtual bool get(const std::string &, Atlas::Message::Object &) const;
-    virtual void set(const std::string &, const Atlas::Message::Object &);
+    virtual bool get(const std::string &, Atlas::Message::Element &) const;
+    virtual void set(const std::string &, const Atlas::Message::Element &);
 
-    virtual void addToObject(Atlas::Message::Object::MapType &) const;
+    virtual void addToObject(Atlas::Message::Element::MapType &) const;
 
     virtual OpVector LookOperation(const Look & op);
     virtual OpVector BurnOperation(const Burn & op);

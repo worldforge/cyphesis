@@ -25,7 +25,7 @@
 // TODO: Make sure the rest of the Object is preserved, rather than just
 //       blatting it with a new Object.
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 
 #define ADD 0
 #define SET 1
@@ -76,7 +76,7 @@ int main(int argc, char ** argv)
 
     AccountBase * db = AccountBase::instance(true);
 
-    Object::MapType data;
+    Element::MapType data;
 
     bool res = db->getAccount("admin", data);
 
@@ -86,7 +86,7 @@ int main(int argc, char ** argv)
         action = ADD;
     }
     if (action != ADD) {
-        Object::MapType o;
+        Element::MapType o;
         res = db->getAccount(acname, o);
         if (!res) {
             std::cout<<"Account "<<acname<<" does not yet exist"<<std::endl<<std::flush;
@@ -124,7 +124,7 @@ int main(int argc, char ** argv)
 #endif
     
     if (password == password2) {
-        Object::MapType amap;
+        Element::MapType amap;
         amap["id"] = acname;
         amap["password"] = password;
 

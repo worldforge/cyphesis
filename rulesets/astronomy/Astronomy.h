@@ -29,9 +29,9 @@ class Astronomy {
   public:
     Astronomy() : world(34, 35) { }
 
-    Atlas::Message::Object asObject(const Vector3D & from)
+    Atlas::Message::Element asObject(const Vector3D & from)
     {
-        Atlas::Message::Object::MapType amap;
+        Atlas::Message::Element::MapType amap;
         amap["longitude"] = (from.Y() / world_maxy) * 90;
     }
 };

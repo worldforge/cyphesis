@@ -23,7 +23,7 @@ static PyObject * Entity_as_entity(EntityObject * self, PyObject * args)
         return NULL;
     }
     ret->m_obj = new Element(Element::MapType());
-    self->m_entity->addToObject(ret->m_obj->AsMap());
+    self->m_entity->addToObject(ret->m_obj->asMap());
     return (PyObject *)ret;
 }
 
@@ -155,7 +155,7 @@ static int Entity_setattr(EntityObject *self, char *name, PyObject *v)
         //return 0;
     //}
     Element obj = PyObject_asObject(v);
-    if (!obj.IsNone() && !obj.IsMap() && !obj.IsList()) {
+    if (!obj.isNone() && !obj.isMap() && !obj.isList()) {
         entity->set(name, obj);
         return 0;
     }

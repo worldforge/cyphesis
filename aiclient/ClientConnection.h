@@ -44,13 +44,13 @@ class ClientConnection : public Atlas::Objects::Decoder {
 
     void operation(const Atlas::Objects::Operation::RootOperation&);
 
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Error&);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Info&);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Sight&);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Sound&);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Touch&);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Appearance&);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Disappearance&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Error&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Info&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Sight&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Sound&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Touch&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Appearance&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Disappearance&);
 
   public:
     ClientConnection();

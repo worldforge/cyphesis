@@ -63,6 +63,4 @@ typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
 typedef std::list<Atlas::Objects::Operation::RootOperation *> OpQueue;
 typedef std::map<std::string,OpNo> OpNoDict;
 
-typedef Atlas::Message::Object Element;
-
 #endif // TYPES_H

@@ -11,16 +11,16 @@
 
 class Decoder : public Atlas::Message::DecoderBase {
   private:
-    virtual void ObjectArrived(const Atlas::Message::Object& obj) {
+    virtual void objectArrived(const Atlas::Message::Element& obj) {
         m_check = true;
-        m_obj = obj.AsMap();
+        m_obj = obj.asMap();
     }
     bool m_check;
-    Atlas::Message::Object::MapType m_obj;
+    Atlas::Message::Element::MapType m_obj;
   public:
     Decoder() : m_check (false) { }
     bool check() const { return m_check; }
-    const Atlas::Message::Object::MapType & get() {
+    const Atlas::Message::Element::MapType & get() {
         m_check = false; return m_obj;
     }
 };
@@ -54,21 +54,21 @@ class Database {
     const std::string & rule() const { return m_rule_db; }
 
     bool decodeObject(const std::string & data,
-                      Atlas::Message::Object::MapType &);
-    bool encodeObject(const Atlas::Message::Object::MapType &,
+                      Atlas::Message::Element::MapType &);
+    bool encodeObject(const Atlas::Message::Element::MapType &,
                       std::string &);
     bool putObject(const std::string & table,
                    const std::string &,
-                   const Atlas::Message::Object::MapType &);
+                   const Atlas::Message::Element::MapType &);
     bool getObject(const std::string & table,
                    const std::string & key,
-                   Atlas::Message::Object::MapType &);
+                   Atlas::Message::Element::MapType &);
     bool updateObject(const std::string & table,
                       const std::string & key,
-                      const Atlas::Message::Object::MapType&);
+                      const Atlas::Message::Element::MapType&);
     bool delObject(const std::string &, const std::string & key);
     bool getTable(const std::string & table,
-                  Atlas::Message::Object::MapType &);
+                  Atlas::Message::Element::MapType &);
     bool clearTable(const std::string & table);
 
     void reportError();
@@ -96,7 +96,7 @@ class Database {
                                   const std::string & other);
 
     bool registerSimpleTable(const std::string & name,
-                             const Atlas::Message::Object::MapType & row);
+                             const Atlas::Message::Element::MapType & row);
     const DatabaseResult selectSimpleRow(const std::string & name,
                                          const std::string & id);
     const DatabaseResult selectSimpleRowBy(const std::string & name,
@@ -111,7 +111,7 @@ class Database {
     bool getEntityId(std::string & id);
 
     bool registerEntityTable(const std::string & classname,
-                             const Atlas::Message::Object::MapType & row,
+                             const Atlas::Message::Element::MapType & row,
                              const std::string & parent = "");
     bool createEntityRow(const std::string & classname,
                          const std::string & id,

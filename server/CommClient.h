@@ -34,17 +34,17 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
 
     bool negotiate();
 
-    virtual void UnknownObjectArrived(const Atlas::Message::Object&);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Login & op);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Logout & op);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Create & op);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Imaginary & op);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Move & op);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Set & op);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Touch & op);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Look & op);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Talk & op);
-    virtual void ObjectArrived(const Atlas::Objects::Operation::Get & op);
+    virtual void unknownobjectArrived(const Atlas::Message::Element&);
+    virtual void objectArrived(const Atlas::Objects::Operation::Login & op);
+    virtual void objectArrived(const Atlas::Objects::Operation::Logout & op);
+    virtual void objectArrived(const Atlas::Objects::Operation::Create & op);
+    virtual void objectArrived(const Atlas::Objects::Operation::Imaginary & op);
+    virtual void objectArrived(const Atlas::Objects::Operation::Move & op);
+    virtual void objectArrived(const Atlas::Objects::Operation::Set & op);
+    virtual void objectArrived(const Atlas::Objects::Operation::Touch & op);
+    virtual void objectArrived(const Atlas::Objects::Operation::Look & op);
+    virtual void objectArrived(const Atlas::Objects::Operation::Talk & op);
+    virtual void objectArrived(const Atlas::Objects::Operation::Get & op);
 
   public:
     CommClient(CommServer &, int fd, Connection &);

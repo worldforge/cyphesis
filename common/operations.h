@@ -47,6 +47,8 @@ namespace Atlas {
     }
 }
 
+using Atlas::Message::Element;
+
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Operation::Generic;
 

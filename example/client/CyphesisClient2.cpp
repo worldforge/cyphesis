@@ -162,7 +162,7 @@ int CyphesisClient::connect()
   Net::StreamConnect conn("cyphesis_client", *ios, this);
 
   cout << "Negotiating... " << flush;
-  // conn.Poll() does all the negotiation
+  // conn.poll() does all the negotiation
   while (conn.getState() == Negotiate<iostream>::IN_PROGRESS) {
     conn.poll();
   }
@@ -277,7 +277,7 @@ int WINAPI WinMain(
 #endif
 
 #ifdef DEBUG_DECODER
-void CyphesisClient::objectArrived(const Message::Object& o)
+void CyphesisClient::objectArrived(const Message::Element& o)
 {
     cout << "An object has arrived." << endl << flush;
 
@@ -287,14 +287,14 @@ void CyphesisClient::objectArrived(const Message::Object& o)
     } else {
         cout << "I do know what to" << endl << flush;
     }
-    const std::map<std::string, Message::Object> & omap = o.asMap();
+    const std::map<std::string, Message::Element> & omap = o.asMap();
 
-    for (Message::Object::MapType::const_iterator I = omap.begin();
+    for (Message::Element::MapType::const_iterator I = omap.begin();
             I != o.asMap().end(); I++) {
-        cout << I->first << " : " << (I->second.IsString() ? I->second.AsString() : std::string("NOT A STRING")) << endl << flush;
+        cout << I->first << " : " << (I->second.isString() ? I->second.asString() : std::string("NOT A STRING")) << endl << flush;
         if (I->second.isList()) {
-            const Message::Object::ListType & alist = I->second.asList();
-            for(Message::Object::ListType::const_iterator J = alist.begin(); J != alist.end(); J++) {
+            const Message::Element::ListType & alist = I->second.asList();
+            for(Message::Element::ListType::const_iterator J = alist.begin(); J != alist.end(); J++) {
                 cout << "-> " << (J->isString() ? J->asString() : std::string("NOT A STRING")) << endl << flush;
             }
         }
@@ -303,17 +303,17 @@ void CyphesisClient::objectArrived(const Message::Object& o)
 }
 #else
 
-void CyphesisClient::unknownObjectArrived(const Message::Object& o)
+void CyphesisClient::unknownobjectArrived(const Message::Element& o)
 {
 #if 0 
     cout << "An unknown has arrived." << endl << flush;
     if (o.isMap()) {
-        for(Message::Object::MapType::const_iterator I = o.AsMap().begin();
-		I != o.AsMap().end();
+        for(Message::Element::MapType::const_iterator I = o.asMap().begin();
+		I != o.asMap().end();
 		I++) {
 		cout << I->first << endl << flush;
-                if (I->second.IsString()) {
-		    cout << I->second.AsString() << endl << flush;
+                if (I->second.isString()) {
+		    cout << I->second.asString() << endl << flush;
                 }
 	}
     } else {
@@ -336,12 +336,12 @@ void CyphesisClient::objectArrived(const Operation::Info& o)
     }
     if (state == INIT) {
 #if 0
-        const Message::Object & account = args.AsList().front();
+        const Message::Element & account = args.asList().front();
         Objects::Entity::AccountInstance obj;
-        for (Message::Object::MapType::const_iterator I = account.AsMap().begin();
-            I != account.AsMap().end(); I++)
-            obj->SetAttr(I->first, I->second);
-        account_id = obj->GetAttr("id").AsString();
+        for (Message::Element::MapType::const_iterator I = account.asMap().begin();
+            I != account.asMap().end(); I++)
+            obj->setAttr(I->first, I->second);
+        account_id = obj->getAttr("id").asString();
 #endif
         account_id = args[0]->getId();
         state = LOGGED_IN;
@@ -363,8 +363,8 @@ void CyphesisClient::objectArrived(const Operation::Error& o)
     }
     const Root arg = o->getArgs()[0];
 #if 0
-    if (arg.IsString()) {
-        cout << arg.AsString() << endl << flush;
+    if (arg.isString()) {
+        cout << arg.asString() << endl << flush;
     } else {
 	cout << arg.GetType() << endl << flush;
     }
@@ -393,7 +393,7 @@ void SightDecoder::processSight(const Root& o)
     dispatchObject(o);
 }
 
-void SightDecoder::unknownObjectArrived(const Root& o)
+void SightDecoder::unknownobjectArrived(const Root& o)
 {
     cout << "An sight of an unknown operation arrived: ";
     if(o->getParents().empty()) cout << "No parents." << endl << flush;

@@ -21,7 +21,7 @@ bool Area::get(const std::string & aname, Element & attr) const
 {
     if (aname == "segments") {
         attr = Element::ListType();
-        idListAsObject(m_segments, attr.AsList());
+        idListasObject(m_segments, attr.asList());
         return true;
     }
     return Area_parent::get(aname, attr);
@@ -29,8 +29,8 @@ bool Area::get(const std::string & aname, Element & attr) const
 
 void Area::set(const std::string & aname, const Element & attr)
 {
-    if ((aname == "segments") && attr.IsList()) {
-        idListFromAtlas(attr.AsList(), m_segments);
+    if ((aname == "segments") && attr.isList()) {
+        idListFromAtlas(attr.asList(), m_segments);
         m_update_flags |= a_area;
     } else {
         Area_parent::set(aname, attr);
@@ -40,7 +40,7 @@ void Area::set(const std::string & aname, const Element & attr)
 void Area::addToObject(Element::MapType & omap) const
 {
     Element::ListType & si =
-        (omap["segments"] = Element::ListType()).AsList();
-    idListAsObject(m_segments, si);
+        (omap["segments"] = Element::ListType()).asList();
+    idListasObject(m_segments, si);
     Area_parent::addToObject(omap);
 }

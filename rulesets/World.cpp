@@ -19,7 +19,7 @@ static const bool debug_flag = false;
 
 void World::getTerrain(Element::MapType & t) const
 {
-    Element::ListType & terrain = (t["points"] = Element::ListType()).AsList();
+    Element::ListType & terrain = (t["points"] = Element::ListType()).asList();
 
     const Mercator::Terrain::Pointstore & points = m_terrain.getPoints();
     Mercator::Terrain::Pointstore::const_iterator I = points.begin();
@@ -28,7 +28,7 @@ void World::getTerrain(Element::MapType & t) const
         Mercator::Terrain::Pointcolumn::const_iterator J = pointcol.begin();
         for (; J != pointcol.end(); ++J) {
             terrain.push_back(Element::ListType(3));
-            Element::ListType & point = terrain.back().AsList();
+            Element::ListType & point = terrain.back().asList();
             point[0] = (Element::FloatType)(I->first/* * 64*/);
             point[1] = (Element::FloatType)(J->first/* * 64*/);
             point[2] = (Element::FloatType)(J->second.height());
@@ -39,22 +39,22 @@ void World::getTerrain(Element::MapType & t) const
 void World::setTerrain(const Element::MapType & t)
 {
     Element::MapType::const_iterator I = t.find("points");
-    if ((I != t.end()) && (I->second.IsList())) {
-        const Element::ListType & points = I->second.AsList();
+    if ((I != t.end()) && (I->second.isList())) {
+        const Element::ListType & points = I->second.asList();
         Element::ListType::const_iterator I = points.begin();
         for(; I != points.end(); ++I) {
-            if (!I->IsList()) {
+            if (!I->isList()) {
                 continue;
             }
-            const Element::ListType & point = I->AsList();
+            const Element::ListType & point = I->asList();
             if (point.size() != 3) {
                 continue;
             }
-            // int x = (int)floor(point[0].AsNum() / m_terrain.getRes());
-            // int y = (int)floor(point[1].AsNum() / m_terrain.getRes());
-            int x = (int)point[0].AsNum();
-            int y = (int)point[1].AsNum();
-            m_terrain.setBasePoint(x, y, point[2].AsNum());
+            // int x = (int)floor(point[0].asNum() / m_terrain.getRes());
+            // int y = (int)floor(point[1].asNum() / m_terrain.getRes());
+            int x = (int)point[0].asNum();
+            int y = (int)point[1].asNum();
+            m_terrain.setBasePoint(x, y, point[2].asNum());
         }
     }
 }
@@ -70,10 +70,10 @@ World::World(const std::string & id) : World_parent(id),
     m_terrain.setBasePoint(-1, 0, -6.8);
     m_terrain.setBasePoint(-1, 1, -4.8);
     m_terrain.setBasePoint(1, -1, -5.8);
-    m_terrain.setBasePoint(0, 0, 2.8);
-    m_terrain.setBasePoint(1, 0, 7.1);
-    m_terrain.setBasePoint(0, 1, 0.2);
-    m_terrain.setBasePoint(1, 1, 14.7);
+    m_terrain.setBasePoint(0, 0, 12.8);
+    m_terrain.setBasePoint(1, 0, 23.1);
+    m_terrain.setBasePoint(0, 1, 4.2);
+    m_terrain.setBasePoint(1, 1, 44.7);
 }
 
 World::~World()
@@ -85,7 +85,7 @@ bool World::get(const std::string & aname, Element & attr) const
 {
     if (aname == "terrain") {
         attr = Element::MapType();
-        getTerrain(attr.AsMap());
+        getTerrain(attr.asMap());
         return true;
     }
     return World_parent::get(aname, attr);
@@ -93,8 +93,8 @@ bool World::get(const std::string & aname, Element & attr) const
 
 void World::set(const std::string & aname, const Element & attr)
 {
-    if ((aname == "terrain") && attr.IsMap()) {
-        setTerrain(attr.AsMap());
+    if ((aname == "terrain") && attr.isMap()) {
+        setTerrain(attr.asMap());
     } else {
         World_parent::set(aname, attr);
     }
@@ -102,7 +102,7 @@ void World::set(const std::string & aname, const Element & attr)
 
 void World::addToObject(Element::MapType & omap) const
 {
-    getTerrain((omap["terrain"] = Element::MapType()).AsMap());
+    getTerrain((omap["terrain"] = Element::MapType()).asMap());
     World_parent::addToObject(omap);
 }
 
@@ -113,7 +113,7 @@ OpVector World::LookOperation(const Look & op)
 
     debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
     const EntityDict & eobjects = m_world->getObjects();
-    const std::string & from = op.GetFrom();
+    const std::string & from = op.getFrom();
     EntityDict::const_iterator J = eobjects.find(from);
     if (J == eobjects.end()) {
         debug(std::cout << "FATAL: Op has invalid from" << std::endl
@@ -128,18 +128,18 @@ OpVector World::LookOperation(const Look & op)
 
     Sight * s = new Sight(Sight::Instantiate());
 
-    Element::ListType & sargs = s->GetArgs();
+    Element::ListType & sargs = s->getArgs();
     sargs.push_back(Element::MapType());
-    Element::MapType & omap = sargs.front().AsMap();
+    Element::MapType & omap = sargs.front().asMap();
 
     omap["id"] = getId();
     omap["parents"] = Element::ListType(1, "world");
     omap["objtype"] = "object";
     // FIXME integrate setting terrain with setting contains.
-    getTerrain((omap["terrain"] = Element::MapType()).AsMap());
+    getTerrain((omap["terrain"] = Element::MapType()).asMap());
     Entity * opFrom = J->second;
     const Vector3D & fromLoc = opFrom->getXyz();
-    Element::ListType & contlist = (omap["contains"] = Element(Element::ListType())).AsList();
+    Element::ListType & contlist = (omap["contains"] = Element(Element::ListType())).asList();
     EntitySet::const_iterator I = m_contains.begin();
     for(; I != m_contains.end(); I++) {
         if ((*I)->m_location.inRange(fromLoc, consts::sight_range)) {
@@ -151,7 +151,7 @@ OpVector World::LookOperation(const Look & op)
         omap.erase("contains");
     }
 
-    s->SetTo(op.GetFrom());
+    s->setTo(op.getFrom());
     return OpVector(1,s);
 }
 
@@ -178,18 +178,18 @@ OpVector World::SetOperation(const Set & op)
     // This is the same as Thing::Operation(Set), except world does not
     // get deleted if its status goes below 0.
     m_seq++;
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
     if (args.empty()) {
        return OpVector();
     }
     try {
-        const Element::MapType & ent = args.front().AsMap();
+        const Element::MapType & ent = args.front().asMap();
         Element::MapType::const_iterator I;
         for (I = ent.begin(); I != ent.end(); I++) {
             set(I->first, I->second);
         }
         RootOperation * s = new Sight(Sight::Instantiate());
-        s->SetArgs(Element::ListType(1,op.AsObject()));
+        s->setArgs(Element::ListType(1,op.asObject()));
         if (m_update_flags != 0) {
             updated.emit();
         }

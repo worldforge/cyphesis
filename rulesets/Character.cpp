@@ -63,8 +63,8 @@ OpVector Character::metabolise(double ammount)
     }
 
     Set * s = new Set(Set::Instantiate());
-    s->SetTo(getId());
-    s->SetArgs(Element::ListType(1,ent));
+    s->setTo(getId());
+    s->setArgs(Element::ListType(1,ent));
 
     return OpVector(1,s);
 }
@@ -139,11 +139,11 @@ bool Character::get(const std::string & aname, Element & attr) const
 
 void Character::set(const std::string & aname, const Element & attr)
 {
-    if ((aname == "drunkness") && attr.IsFloat()) {
-        m_drunkness = attr.AsFloat();
+    if ((aname == "drunkness") && attr.isFloat()) {
+        m_drunkness = attr.asFloat();
         m_update_flags |= a_drunk;
-    } else if ((aname == "sex") && attr.IsString()) {
-        m_sex = attr.AsString();
+    } else if ((aname == "sex") && attr.isString()) {
+        m_sex = attr.asString();
         m_update_flags |= a_sex;
     } else {
         Character_parent::set(aname, attr);
@@ -159,7 +159,7 @@ void Character::addToObject(Element::MapType & omap) const
 OpVector Character::ImaginaryOperation(const Imaginary & op)
 {
     Sight * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Element::ListType(1,op.AsObject()));
+    s->setArgs(Element::ListType(1,op.asObject()));
     return OpVector(1,s);
 }
 
@@ -172,7 +172,7 @@ OpVector Character::SetupOperation(const Setup & op)
     if (m_script->Operation("setup", op, res) != 0) {
         return res;
     }
-    if (op.HasAttr("sub_to")) {
+    if (op.hasAttr("sub_to")) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
         return res;
     }
@@ -189,40 +189,40 @@ OpVector Character::SetupOperation(const Setup & op)
     OpVector res2(2);
     Setup * s = new Setup(op);
     // THis is so not the right thing to do
-    s->SetAttr("sub_to", "mind");
+    s->setAttr("sub_to", "mind");
     res2[0] = s;
     Look * l = new Look(Look::Instantiate());
-    l->SetTo(m_world->getId());
+    l->setTo(m_world->getId());
     res2[1] = l;
     if (m_location.m_loc != &m_world->m_gameWorld) {
         l = new Look(Look::Instantiate());
-        l->SetTo(m_location.m_loc->getId());
+        l->setTo(m_location.m_loc->getId());
         res2.push_back(l);
     }
     l = new Look(Look::Instantiate());
-    l->SetTo(getId());
+    l->setTo(getId());
     res2.push_back(l);
     Tick * tick = new Tick(Tick::Instantiate());
-    tick->SetTo(getId());
+    tick->setTo(getId());
     res2.push_back(tick);
     return res2;
 }
 
 OpVector Character::TickOperation(const Tick & op)
 {
-    if (op.HasAttr("sub_to")) {
+    if (op.hasAttr("sub_to")) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
         return OpVector();
     }
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
-    const Element::ListType & args = op.GetArgs();
-    if ((!args.empty()) && (args.front().IsMap())) {
+    const Element::ListType & args = op.getArgs();
+    if ((!args.empty()) && (args.front().isMap())) {
         // Deal with movement.
-        const Element::MapType & arg1 = args.front().AsMap();
+        const Element::MapType & arg1 = args.front().asMap();
         Element::MapType::const_iterator I = arg1.find("serialno");
-        if ((I != arg1.end()) && (I->second.IsInt())) {
-            if (I->second.AsInt() < m_movement.m_serialno) {
+        if ((I != arg1.end()) && (I->second.isInt())) {
+            if (I->second.asInt() < m_movement.m_serialno) {
                 debug(std::cout << "Old tick" << std::endl << std::flush;);
                 return OpVector();
             }
@@ -238,9 +238,9 @@ OpVector Character::TickOperation(const Tick & op)
             entmap["name"] = "move";
             entmap["serialno"] = m_movement.m_serialno;
             Tick * tickOp = new Tick(Tick::Instantiate());
-            tickOp->SetTo(getId());
-            tickOp->SetFutureSeconds(m_movement.getTickAddition(ret_loc.m_pos));
-            tickOp->SetArgs(Element::ListType(1,entmap));
+            tickOp->setTo(getId());
+            tickOp->setFutureSeconds(m_movement.getTickAddition(ret_loc.m_pos));
+            tickOp->setArgs(Element::ListType(1,entmap));
             res[0] = tickOp;
             res[1] = moveOp;
             return res;
@@ -260,12 +260,12 @@ OpVector Character::TickOperation(const Tick & op)
             food_ent["id"] = getId();
             food_ent["food"] = m_food;
             Set s = Set::Instantiate();
-            s.SetTo(getId());
-            s.SetArgs(Element::ListType(1,food_ent));
+            s.setTo(getId());
+            s.setArgs(Element::ListType(1,food_ent));
 
             Sight * si = new Sight(Sight::Instantiate());
-            si->SetTo(getId());
-            si->SetArgs(Element::ListType(1,s.AsObject()));
+            si->setTo(getId());
+            si->setArgs(Element::ListType(1,s.asObject()));
             res.push_back(si);
         }
 
@@ -277,8 +277,8 @@ OpVector Character::TickOperation(const Tick & op)
         
         // TICK
         Tick * tickOp = new Tick(Tick::Instantiate());
-        tickOp->SetTo(getId());
-        tickOp->SetFutureSeconds(consts::basic_tick * 30);
+        tickOp->setTo(getId());
+        tickOp->setFutureSeconds(consts::basic_tick * 30);
         res.push_back(tickOp);
         return res;
     }
@@ -289,7 +289,7 @@ OpVector Character::TalkOperation(const Talk & op)
 {
     debug( std::cout << "Character::OPeration(Talk)" << std::endl<<std::flush;);
     Sound * s = new Sound(Sound::Instantiate());
-    s->SetArgs(Element::ListType(1,op.AsObject()));
+    s->setArgs(Element::ListType(1,op.asObject()));
     return OpVector(1,s);
 }
 
@@ -306,16 +306,16 @@ OpVector Character::EatOperation(const Eat & op)
     self_ent["status"] = -1;
 
     Set * s = new Set(Set::Instantiate());
-    s->SetTo(getId());
-    s->SetArgs(Element::ListType(1,self_ent));
+    s->setTo(getId());
+    s->setArgs(Element::ListType(1,self_ent));
 
-    const std::string & to = op.GetFrom();
+    const std::string & to = op.getFrom();
     Element::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["mass"] = m_mass;
     Nourish * n = new Nourish(Nourish::Instantiate());
-    n->SetTo(to);
-    n->SetArgs(Element::ListType(1,nour_ent));
+    n->setTo(to);
+    n->setArgs(Element::ListType(1,nour_ent));
 
     OpVector res2(2);
     res2[0] = s;
@@ -325,30 +325,30 @@ OpVector Character::EatOperation(const Eat & op)
 
 OpVector Character::NourishOperation(const Nourish & op)
 {
-    if (op.GetArgs().empty()) {
+    if (op.getArgs().empty()) {
         return error(op, "Nourish has no argument", getId());
     }
-    if (!op.GetArgs().front().IsMap()) {
+    if (!op.getArgs().front().isMap()) {
         return error(op, "Nourish arg is malformed", getId());
     }
-    const Element::MapType & nent = op.GetArgs().front().AsMap();
+    const Element::MapType & nent = op.getArgs().front().asMap();
     Element::MapType::const_iterator I = nent.find("mass");
-    if ((I == nent.end()) || !I->second.IsNum()) { return OpVector(); }
-    m_food = m_food + I->second.AsNum();
+    if ((I == nent.end()) || !I->second.isNum()) { return OpVector(); }
+    m_food = m_food + I->second.asNum();
 
     Element::MapType food_ent;
     food_ent["id"] = getId();
     food_ent["food"] = m_food;
-    if (((I = nent.find("alcohol")) != nent.end()) && I->second.IsNum()) {
-        m_drunkness += I->second.AsNum() / m_mass;
+    if (((I = nent.find("alcohol")) != nent.end()) && I->second.isNum()) {
+        m_drunkness += I->second.asNum() / m_mass;
         food_ent["drunkness"] = m_drunkness;
     }
     Set s = Set::Instantiate();
-    s.SetArgs(Element::ListType(1,food_ent));
+    s.setArgs(Element::ListType(1,food_ent));
 
     Sight * si = new Sight(Sight::Instantiate());
-    si->SetTo(getId());
-    si->SetArgs(Element::ListType(1,s.AsObject()));
+    si->setTo(getId());
+    si->setArgs(Element::ListType(1,s.asObject()));
     return OpVector(1,si);
 }
 
@@ -365,40 +365,40 @@ OpVector Character::mindLogoutOperation(const Logout & op)
 OpVector Character::mindActionOperation(const Action & op)
 {
     Action *a = new Action(op);
-    a->SetTo(getId());
+    a->setTo(getId());
     return OpVector(1,a);
 }
 
 OpVector Character::mindSetupOperation(const Setup & op)
 {
     Setup *s = new Setup(op);
-    s->SetTo(getId());
-    s->SetAttr("sub_to", "mind");
+    s->setTo(getId());
+    s->setAttr("sub_to", "mind");
     return OpVector(1,s);
 }
 
 OpVector Character::mindTickOperation(const Tick & op)
 {
     Tick *t = new Tick(op);
-    t->SetTo(getId());
-    t->SetAttr("sub_to", "mind");
+    t->setTo(getId());
+    t->setAttr("sub_to", "mind");
     return OpVector(1,t);
 }
 
 OpVector Character::mindMoveOperation(const Move & op)
 {
     debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
-    const Element::ListType & args = op.GetArgs();
-    if ((args.empty()) || (!args.front().IsMap())) {
+    const Element::ListType & args = op.getArgs();
+    if ((args.empty()) || (!args.front().isMap())) {
         log(ERROR, "mindMoveOperation: move op has no argument");
         return OpVector();
     }
-    const Element::MapType & arg1 = args.front().AsMap();
+    const Element::MapType & arg1 = args.front().asMap();
     Element::MapType::const_iterator I = arg1.find("id");
-    if ((I == arg1.end()) || !I->second.IsString()) {
+    if ((I == arg1.end()) || !I->second.isString()) {
         log(ERROR, "mindMoveOperation: Args has got no id");
     }
-    const std::string & oname = I->second.AsString();
+    const std::string & oname = I->second.asString();
     EntityDict::const_iterator J = m_world->getObjects().find(oname);
     if (J == m_world->getObjects().end()) {
         log(ERROR, "mindMoveOperation: This move op is for a phoney id");
@@ -413,15 +413,15 @@ OpVector Character::mindMoveOperation(const Move & op)
             delete newop;
             return OpVector();
         }
-        newop->SetTo(oname);
+        newop->setTo(oname);
         return OpVector(1,newop);
     } else {
-        newop->SetTo(getId());
+        newop->setTo(getId());
     }
     std::string location_ref;
     I = arg1.find("loc");
-    if ((I != arg1.end()) && (I->second.IsString())) {
-        location_ref = I->second.AsString();
+    if ((I != arg1.end()) && (I->second.isString())) {
+        location_ref = I->second.asString();
     } else {
         debug( std::cout << "Parent not set" << std::endl << std::flush;);
     }
@@ -430,19 +430,19 @@ OpVector Character::mindMoveOperation(const Move & op)
     try {
         I = arg1.find("pos");
         if (I != arg1.end()) {
-            location_coords = Vector3D(I->second.AsList());
+            location_coords = Vector3D(I->second.asList());
             debug( std::cout << "pos set to " << location_coords << std::endl << std::flush;);
         }
 
         I = arg1.find("velocity");
         if (I != arg1.end()) {
-            location_vel = Vector3D(I->second.AsList());
+            location_vel = Vector3D(I->second.asList());
             debug( std::cout << "vel set to " << location_vel << std::endl << std::flush;);
         }
 
         I = arg1.find("orientation");
         if (I != arg1.end()) {
-            location_orientation = Quaternion(I->second.AsList());
+            location_orientation = Quaternion(I->second.asList());
             debug( std::cout << "ori set to " << location_orientation << std::endl << std::flush;);
         }
     }
@@ -451,8 +451,8 @@ OpVector Character::mindMoveOperation(const Move & op)
     }
 
     if (!location_coords.isValid()) {
-        if (op.GetFutureSeconds() < 0) {
-            newop->SetFutureSeconds(0);
+        if (op.getFutureSeconds() < 0) {
+            newop->setFutureSeconds(0);
         }
     } else {
         location_coords +=
@@ -463,7 +463,7 @@ OpVector Character::mindMoveOperation(const Move & op)
     debug( std::cout << ":" << location_ref << ":" << m_location.m_loc->getId()
                      << ":" << std::endl << std::flush;);
     if (((location_ref == m_location.m_loc->getId()) || (location_ref.empty())) &&
-        (newop->GetFutureSeconds() >= 0)) {
+        (newop->getFutureSeconds() >= 0)) {
         // Movement within current ref. Work out the speed and stuff and
         // use movement object to track movement.
         //
@@ -528,14 +528,14 @@ OpVector Character::mindMoveOperation(const Move & op)
                              << std::flush;);
             if (NULL != moveOp) {
                 debug( std::cout << "Stop!" << std::endl << std::flush;);
-                Element::ListType & args = moveOp->GetArgs();
-                Element::MapType & ent = args.front().AsMap();
+                Element::ListType & args = moveOp->getArgs();
+                Element::MapType & ent = args.front().asMap();
                 ent["velocity"] = Vector3D(0,0,0).toAtlas();
                 ent["mode"] = "standing";
                 if (location_orientation.isValid()) {
                     ent["orientation"] = location_orientation.toAtlas();
                 }
-                moveOp->SetArgs(args);
+                moveOp->setArgs(args);
             } else {
                 debug( std::cout << "Turn!" << std::endl << std::flush;);
                 m_movement.m_orientation = location_orientation;
@@ -552,8 +552,8 @@ OpVector Character::mindMoveOperation(const Move & op)
         ent["serialno"] = m_movement.m_serialno;
         ent["name"] = "move";
         Element::ListType args(1,ent);
-        tickOp->SetArgs(args);
-        tickOp->SetTo(getId());
+        tickOp->setArgs(args);
+        tickOp->setTo(getId());
         // Need to add the arguments to this op before we return it
         // direction is already a unit vector
         debug( if (location_coords.isValid()) { std::cout<<"\tUsing target"
@@ -565,8 +565,8 @@ OpVector Character::mindMoveOperation(const Move & op)
         m_movement.m_orientation = location_orientation;
         debug( std::cout << "Velocity " << vel_mag << std::endl << std::flush;);
         Move * moveOp2 = m_movement.genMoveOperation(NULL,current_location);
-        tickOp->SetFutureSeconds(m_movement.getTickAddition(m_location.m_pos));
-        debug( std::cout << "Next tick " << tickOp->GetFutureSeconds()
+        tickOp->setFutureSeconds(m_movement.getTickAddition(m_location.m_pos));
+        debug( std::cout << "Next tick " << tickOp->getFutureSeconds()
                          << std::endl << std::flush;);
         debug( std::cout << "moveOp = " << moveOp << ", moveOp2 = "
                          << moveOp2 << std::endl << std::flush; );
@@ -592,17 +592,17 @@ OpVector Character::mindMoveOperation(const Move & op)
 
 OpVector Character::mindSetOperation(const Set & op)
 {
-    const Element::ListType & args = op.GetArgs();
-    if (args.front().IsMap()) {
+    const Element::ListType & args = op.getArgs();
+    if (args.front().isMap()) {
         Set * s = new Set(op);
-        const Element::MapType & amap = args.front().AsMap();
+        const Element::MapType & amap = args.front().asMap();
         Element::MapType::const_iterator I = amap.find("id");
-        if (I != amap.end() && I->second.IsString()) {
-            const std::string & opid = I->second.AsString();
-            s->SetTo(opid);
+        if (I != amap.end() && I->second.isString()) {
+            const std::string & opid = I->second.asString();
+            s->setTo(opid);
         } else {
-            if (op.GetTo().empty()) {
-                s->SetTo(getId());
+            if (op.getTo().empty()) {
+                s->setTo(getId());
             }
         }
         return OpVector(1,s);
@@ -633,14 +633,14 @@ OpVector Character::mindCombineOperation(const Combine & op)
 OpVector Character::mindCreateOperation(const Create & op)
 {
     Create * c = new Create(op);
-    c->SetTo(getId());
+    c->setTo(getId());
     return OpVector(1,c);
 }
 
 OpVector Character::mindDeleteOperation(const Delete & op)
 {
     Delete * d = new Delete(op);
-    d->SetTo(getId());
+    d->setTo(getId());
     return OpVector(1,d);
 }
 
@@ -662,7 +662,7 @@ OpVector Character::mindGetOperation(const Get & op)
 OpVector Character::mindImaginaryOperation(const Imaginary & op)
 {
     Imaginary * i = new Imaginary(op);
-    i->SetTo(getId());
+    i->setTo(getId());
     return OpVector(1,i);
 }
 
@@ -681,39 +681,39 @@ OpVector Character::mindTalkOperation(const Talk & op)
     debug( std::cout << "Character::mindOPeration(Talk)"
                      << std::endl << std::flush;);
     Talk * t = new Talk(op);
-    t->SetTo(getId());
+    t->setTo(getId());
     return OpVector(1,t);
 }
 
 OpVector Character::mindLookOperation(const Look & op)
 {
-    debug(std::cout << "Got look up from mind from [" << op.GetFrom()
-               << "] to [" << op.GetTo() << "]" << std::endl << std::flush;);
+    debug(std::cout << "Got look up from mind from [" << op.getFrom()
+               << "] to [" << op.getTo() << "]" << std::endl << std::flush;);
     m_perceptive = true;
     Look * l = new Look(op);
-    if (op.GetTo().empty()) {
-        const Element::ListType & args = op.GetArgs();
+    if (op.getTo().empty()) {
+        const Element::ListType & args = op.getArgs();
         if (args.empty()) {
-            l->SetTo(m_world->getId());
+            l->setTo(m_world->getId());
         } else {
-            if (args.front().IsMap()) {
-                const Element::MapType & amap = args.front().AsMap();
+            if (args.front().isMap()) {
+                const Element::MapType & amap = args.front().asMap();
                 Element::MapType::const_iterator I = amap.find("id");
-                if (I != amap.end() && I->second.IsString()) {
-                    l->SetTo(I->second.AsString());
+                if (I != amap.end() && I->second.isString()) {
+                    l->setTo(I->second.asString());
                 }
             }
         }
     }
-    debug( std::cout <<"    now to ["<<l->GetTo()<<"]"<<std::endl<<std::flush;);
+    debug( std::cout <<"    now to ["<<l->getTo()<<"]"<<std::endl<<std::flush;);
     return OpVector(1,l);
 }
 
 OpVector Character::mindCutOperation(const Cut & op)
 {
     Cut * c = new Cut(op);
-    if (op.GetTo().empty()) {
-        c->SetTo(getId());
+    if (op.getTo().empty()) {
+        c->setTo(getId());
     }
     return OpVector(1,c);
 }
@@ -721,8 +721,8 @@ OpVector Character::mindCutOperation(const Cut & op)
 OpVector Character::mindEatOperation(const Eat & op)
 {
     Eat * e = new Eat(op);
-    if (op.GetTo().empty()) {
-        e->SetTo(getId());
+    if (op.getTo().empty()) {
+        e->setTo(getId());
     }
     return OpVector(1,e);
 }
@@ -731,19 +731,19 @@ OpVector Character::mindTouchOperation(const Touch & op)
 {
     Touch * t = new Touch(op);
     // Work out what is being touched.
-    const Element::ListType & args = op.GetArgs();
-    if ((op.GetTo().empty()) || (!args.empty())) {
+    const Element::ListType & args = op.getArgs();
+    if ((op.getTo().empty()) || (!args.empty())) {
         if (args.empty()) {
-            t->SetTo(m_world->getId());
+            t->setTo(m_world->getId());
         } else {
-            if (args.front().IsMap()) {
-                const Element::MapType & amap = args.front().AsMap();
+            if (args.front().isMap()) {
+                const Element::MapType & amap = args.front().asMap();
                 Element::MapType::const_iterator I = amap.find("id");
-                if (I != amap.end() && I->second.IsString()) {
-                    t->SetTo(I->second.AsString());
+                if (I != amap.end() && I->second.isString()) {
+                    t->setTo(I->second.asString());
                 }
-            } else if (args.front().IsString()) {
-                t->SetTo(args.front().AsString());
+            } else if (args.front().isString()) {
+                t->setTo(args.front().asString());
             }
         }
     }
@@ -752,12 +752,12 @@ OpVector Character::mindTouchOperation(const Touch & op)
     res[0] = t;
     // Send action "touch"
     Action * a = new Action(Action::Instantiate());
-    a->SetTo(getId());
+    a->setTo(getId());
     Element::MapType amap;
     amap["id"] = getId();
     amap["action"] = "touch";
     Element::ListType setArgs(1,amap);
-    a->SetArgs(setArgs);
+    a->setArgs(setArgs);
     res[1] = a;
     return res;
 }
@@ -781,8 +781,8 @@ OpVector Character::mindErrorOperation(const Error & op)
 OpVector Character::mindOtherOperation(const RootOperation & op)
 {
     RootOperation * e = new RootOperation(op);
-    if (op.GetTo().empty()) {
-        e->SetTo(getId());
+    if (op.getTo().empty()) {
+        e->setTo(getId());
     }
     return OpVector(1,e);
 }
@@ -910,7 +910,7 @@ bool Character::w2mOtherOperation(const RootOperation & op)
 
 bool Character::w2mSetupOperation(const Setup & op)
 {
-    if (op.HasAttr("sub_to")) {
+    if (op.hasAttr("sub_to")) {
         return true;
     }
     return false;
@@ -918,7 +918,7 @@ bool Character::w2mSetupOperation(const Setup & op)
 
 bool Character::w2mTickOperation(const Tick & op)
 {
-    if (op.HasAttr("sub_to")) {
+    if (op.hasAttr("sub_to")) {
         return true;
     }
     return false;
@@ -1044,7 +1044,7 @@ OpVector Character::externalOperation(const RootOperation & op)
     OpVector::const_iterator I = res.begin();
     for(; I != res.end(); I++) {
         if (I == res.begin()) {
-            (*I)->SetSerialno(op.GetSerialno());
+            (*I)->setSerialno(op.getSerialno());
         } else {
             m_world->setSerialnoOp(**I);
         }

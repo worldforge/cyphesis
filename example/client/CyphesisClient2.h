@@ -56,7 +56,7 @@ using namespace Objects;
 class SightDecoder : public Atlas::Objects::ObjectsDecoder
 {
 protected:
-   void unknownObjectArrived(const Root&);
+   void unknownobjectArrived(const Root&);
    void objectArrived(const Operation::Create&);
    void objectArrived(const Operation::Move&);
    void objectArrived(const Operation::Set&);
@@ -88,8 +88,8 @@ private:
    int state;
    SightDecoder sdecode;
 protected:
-   //void objectArrived(const Atlas::Message::Object&);
-   void unknownObjectArrived(const Atlas::Message::Object&);
+   //void objectArrived(const Atlas::Message::Element&);
+   void unknownobjectArrived(const Atlas::Message::Element&);
    void objectArrived(const Operation::Info&);
    void objectArrived(const Operation::Error&);
    void objectArrived(const Operation::Sight&);

@@ -10,7 +10,7 @@
 class Player : public Account {
   protected:
     virtual OpVector characterError(const Create & op,
-                            const Atlas::Message::Object::MapType & ent) const;
+                            const Atlas::Message::Element::MapType & ent) const;
   public:
     Player(Connection * conn, const std::string & username,
                               const std::string & passwd,
@@ -19,7 +19,7 @@ class Player : public Account {
 
     virtual const char * getType() const;
 
-    virtual void addToObject(Atlas::Message::Object::MapType &) const;
+    virtual void addToObject(Atlas::Message::Element::MapType &) const;
 
     static std::set<std::string> playableTypes;
 };

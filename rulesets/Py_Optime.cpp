@@ -35,7 +35,7 @@ static int Optime_setattr(OptimeObject *self, char *name, PyObject *v)
             PyErr_SetString(PyExc_TypeError, "setting time to non number");
             return -1;
         }
-        self->operation->SetFutureSeconds(fsecs);
+        self->operation->setFutureSeconds(fsecs);
         return 0;
     }
     return -1;

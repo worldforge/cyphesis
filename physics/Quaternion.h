@@ -22,12 +22,12 @@ class Quaternion : public WFMath::Quaternion {
     Quaternion() : x(0), y(0), z(0), w(1), _set(false) { }
     Quaternion(double x, double y, double z, double w) : x(x), y(y), z(z), w(w),
                                                          _set(true) { }
-    explicit Quaternion(const Atlas::Message::Object::ListType &l) : _set(true)
+    explicit Quaternion(const Atlas::Message::Element::ListType &l) : _set(true)
     {
-        x = l[0].AsNum();
-        y = l[1].AsNum();
-        z = l[2].AsNum();
-        w = l[3].AsNum();
+        x = l[0].asNum();
+        y = l[1].asNum();
+        z = l[2].asNum();
+        w = l[3].asNum();
     }
     Quaternion(const Vector3D & from, const Vector3D & to);
 
@@ -75,21 +75,21 @@ class Quaternion : public WFMath::Quaternion {
         return _set;
     }
 
-    const Atlas::Message::Object asObject() const {
-        Atlas::Message::Object::ListType quat;
-        quat.push_back(Atlas::Message::Object(x));
-        quat.push_back(Atlas::Message::Object(y));
-        quat.push_back(Atlas::Message::Object(z));
-        quat.push_back(Atlas::Message::Object(w));
-        return Atlas::Message::Object(quat);
+    const Atlas::Message::Element asObject() const {
+        Atlas::Message::Element::ListType quat;
+        quat.push_back(Atlas::Message::Element(x));
+        quat.push_back(Atlas::Message::Element(y));
+        quat.push_back(Atlas::Message::Element(z));
+        quat.push_back(Atlas::Message::Element(w));
+        return Atlas::Message::Element(quat);
     }
 
-    const Atlas::Message::Object::ListType asList() const {
-        Atlas::Message::Object::ListType quat;
-        quat.push_back(Atlas::Message::Object(x));
-        quat.push_back(Atlas::Message::Object(y));
-        quat.push_back(Atlas::Message::Object(z));
-        quat.push_back(Atlas::Message::Object(w));
+    const Atlas::Message::Element::ListType asList() const {
+        Atlas::Message::Element::ListType quat;
+        quat.push_back(Atlas::Message::Element(x));
+        quat.push_back(Atlas::Message::Element(y));
+        quat.push_back(Atlas::Message::Element(z));
+        quat.push_back(Atlas::Message::Element(w));
         return quat;
     }
 

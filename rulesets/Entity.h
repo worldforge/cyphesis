@@ -57,7 +57,7 @@ class Entity : public BaseEntity {
     static const std::set<std::string> & immutables();
   protected:
     Script * m_script;
-    Atlas::Message::Object::MapType m_attributes;
+    Atlas::Message::Element::MapType m_attributes;
     int m_seq;                  // Sequence number
     double m_status;            // Health/damage coeficient
     std::string m_type;         // Easy access to primary parent
@@ -101,22 +101,22 @@ class Entity : public BaseEntity {
         m_mass = w;
     }
 
-    const Atlas::Message::Object::MapType & getAttributes() const {
+    const Atlas::Message::Element::MapType & getAttributes() const {
         return m_attributes;
     }
 
-    virtual bool get(const std::string &, Atlas::Message::Object &) const;
-    virtual void set(const std::string &, const Atlas::Message::Object &);
+    virtual bool get(const std::string &, Atlas::Message::Element &) const;
+    virtual void set(const std::string &, const Atlas::Message::Element &);
 
     void setScript(Script * scrpt);
-    void merge(const Atlas::Message::Object::MapType &);
-    bool getLocation(const Atlas::Message::Object::MapType &,
+    void merge(const Atlas::Message::Element::MapType &);
+    bool getLocation(const Atlas::Message::Element::MapType &,
                      const EntityDict &);
     Vector3D getXyz() const;
     void destroy();
     void scriptSubscribe(const std::string &);
 
-    virtual void addToObject(Atlas::Message::Object::MapType & obj) const;
+    virtual void addToObject(Atlas::Message::Element::MapType & obj) const;
     virtual OpVector SetupOperation(const Setup & op);
     virtual OpVector TickOperation(const Tick & op);
     virtual OpVector ActionOperation(const Action & op);

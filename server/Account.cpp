@@ -106,20 +106,20 @@ Entity * Account::addCharacter(const std::string & typestr,
     entmap["name"] = "coin";
     for(int i = 0; i < 10; i++) {
         Create * c = new Create(Create::Instantiate());
-        Element::ListType & args = c->GetArgs();
+        Element::ListType & args = c->getArgs();
         args.push_back(entmap);
-        c->SetTo(chr->getId());
+        c->setTo(chr->getId());
         world.message(*c, chr);
     }
 
     Create c = Create::Instantiate();
-    Element::ListType & cargs = c.GetArgs();
+    Element::ListType & cargs = c.getArgs();
     cargs.push_back(Element::MapType());
-    chr->addToObject(cargs.front().AsMap());
+    chr->addToObject(cargs.front().asMap());
 
     Sight * s = new Sight(Sight::Instantiate());
-    Element::ListType & args = s->GetArgs();
-    args.push_back(c.AsObject());
+    Element::ListType & args = s->getArgs();
+    args.push_back(c.asObject());
 
     world.message(*s, chr);
 
@@ -130,12 +130,12 @@ OpVector Account::LogoutOperation(const Logout & op)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
     Info info = Info(Info::Instantiate());
-    Element::ListType & args = info.GetArgs();
-    args.push_back(op.AsObject());
-    info.SetRefno(op.GetSerialno());
-    info.SetSerialno(m_connection->m_server.getSerialNo());
-    info.SetFrom(getId());
-    info.SetTo(getId());
+    Element::ListType & args = info.getArgs();
+    args.push_back(op.asObject());
+    info.setRefno(op.getSerialno());
+    info.setSerialno(m_connection->m_server.getSerialNo());
+    info.setFrom(getId());
+    info.setTo(getId());
     m_connection->send(info);
     m_connection->close();
     
@@ -170,12 +170,12 @@ void Account::addToObject(Element::MapType & omap) const
 OpVector Account::CreateOperation(const Create & op)
 {
     debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
-    const Element::ListType & args = op.GetArgs();
-    if ((args.empty()) || (!args.front().IsMap())) {
+    const Element::ListType & args = op.getArgs();
+    if ((args.empty()) || (!args.front().isMap())) {
         return OpVector();
     }
 
-    const Element::MapType & entmap = args.front().AsMap();
+    const Element::MapType & entmap = args.front().asMap();
 
     OpVector er = characterError(op, entmap);
     if (!er.empty()) {
@@ -183,100 +183,100 @@ OpVector Account::CreateOperation(const Create & op)
     }
 
     Element::MapType::const_iterator I = entmap.find("parents");
-    if ((I == entmap.end()) || !(I->second.IsList()) ||
-        (I->second.AsList().empty()) ||
-        !(I->second.AsList().front().IsString()) ) {
+    if ((I == entmap.end()) || !(I->second.isList()) ||
+        (I->second.asList().empty()) ||
+        !(I->second.asList().front().isString()) ) {
         return error(op, "Character has no type");
     }
     
-    const std::string & typestr = I->second.AsList().front().AsString();
+    const std::string & typestr = I->second.asList().front().asString();
     debug( std::cout << "Account creating a " << typestr << " object"
                      << std::endl << std::flush; );
 
     BaseEntity * obj = addCharacter(typestr, entmap);
 
     Info * info = new Info(Info::Instantiate());
-    Element::ListType & info_args = info->GetArgs();
+    Element::ListType & info_args = info->getArgs();
     info_args.push_back(Element::MapType());
-    obj->addToObject(info_args.front().AsMap());
-    info->SetRefno(op.GetSerialno());
-    info->SetSerialno(m_connection->m_server.getSerialNo());
+    obj->addToObject(info_args.front().asMap());
+    info->setRefno(op.getSerialno());
+    info->setSerialno(m_connection->m_server.getSerialNo());
 
     return OpVector(1,info);
 }
 
 OpVector Account::ImaginaryOperation(const Imaginary & op)
 {
-    const Element::ListType & args = op.GetArgs();
-    if ((args.empty()) || (!args.front().IsMap())) {
+    const Element::ListType & args = op.getArgs();
+    if ((args.empty()) || (!args.front().isMap())) {
         return OpVector();
     }
 
     Sight s(Sight::Instantiate());
-    Element::ListType & sargs = s.GetArgs();
-    sargs.push_back(op.AsObject());
-    s.SetFrom(getId());
-    s.SetSerialno(m_connection->m_server.getSerialNo());
+    Element::ListType & sargs = s.getArgs();
+    sargs.push_back(op.asObject());
+    s.setFrom(getId());
+    s.setSerialno(m_connection->m_server.getSerialNo());
     setRefnoOp(&s, op);
-    const Element::MapType & arg = args.front().AsMap();
+    const Element::MapType & arg = args.front().asMap();
     Element::MapType::const_iterator I = arg.find("loc");
     if (I != arg.end()) {
-        s.SetTo(I->second.AsString());
+        s.setTo(I->second.asString());
     } else {
-        s.SetTo(op.GetTo());
+        s.setTo(op.getTo());
     }
     return m_connection->m_server.m_lobby.operation(s);
 }
 
 OpVector Account::TalkOperation(const Talk & op)
 {
-    const Element::ListType & args = op.GetArgs();
-    if ((args.empty()) || (!args.front().IsMap())) {
+    const Element::ListType & args = op.getArgs();
+    if ((args.empty()) || (!args.front().isMap())) {
         return OpVector();
     }
 
     Sound s(Sound::Instantiate());
-    Element::ListType & sargs = s.GetArgs();
-    sargs.push_back(op.AsObject());
-    s.SetFrom(getId());
-    s.SetSerialno(m_connection->m_server.getSerialNo());
+    Element::ListType & sargs = s.getArgs();
+    sargs.push_back(op.asObject());
+    s.setFrom(getId());
+    s.setSerialno(m_connection->m_server.getSerialNo());
     setRefnoOp(&s, op);
-    const Element::MapType & arg = args.front().AsMap();
+    const Element::MapType & arg = args.front().asMap();
     Element::MapType::const_iterator I = arg.find("loc");
     if (I != arg.end()) {
-        s.SetTo(I->second.AsString());
+        s.setTo(I->second.asString());
     } else {
-        s.SetTo(op.GetTo());
+        s.setTo(op.getTo());
     }
     return m_connection->m_server.m_lobby.operation(s);
 }
 
 OpVector Account::LookOperation(const Look & op)
 {
-    const Element::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.getArgs();
     if (args.empty()) {
         Sight * s = new Sight(Sight::Instantiate());
-        s->SetTo(getId());
-        Element::ListType & s_args = s->GetArgs();
+        s->setTo(getId());
+        Element::ListType & s_args = s->getArgs();
         s_args.push_back(Element::MapType());
-        m_connection->m_server.m_lobby.addToObject(s_args.front().AsMap());
-        s->SetSerialno(m_connection->m_server.getSerialNo());
+        m_connection->m_server.m_lobby.addToObject(s_args.front().asMap());
+        s->setSerialno(m_connection->m_server.getSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
     }
-    Element::MapType::const_iterator I = args.front().AsMap().find("id");
-    if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
+    Element::MapType::const_iterator I = args.front().asMap().find("id");
+    if ((I == args.front().asMap().end()) || (!I->second.isString())) {
         return error(op, "No target for look");
     }
-    const std::string & to = I->second.AsString();
+    const std::string & to = I->second.asString();
     EntityDict::const_iterator J = m_charactersDict.find(to);
     if (J != m_charactersDict.end()) {
         Sight * s = new Sight(Sight::Instantiate());
-        s->SetTo(getId());
-        Element::ListType & s_args = s->GetArgs();
+        s->setTo(getId());
+        Element::ListType & s_args = s->getArgs();
         s_args.push_back(Element::MapType());
-        J->second->addToObject(s_args.front().AsMap());
-        s->SetSerialno(m_connection->m_server.getSerialNo());
+        J->second->addToObject(s_args.front().asMap());
+        s->setSerialno(m_connection->m_server.getSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
     }
@@ -284,11 +284,11 @@ OpVector Account::LookOperation(const Look & op)
     AccountDict::const_iterator K = accounts.find(to);
     if (K != accounts.end()) {
         Sight * s = new Sight(Sight::Instantiate());
-        s->SetTo(getId());
-        Element::ListType & s_args = s->GetArgs();
+        s->setTo(getId());
+        Element::ListType & s_args = s->getArgs();
         s_args.push_back(Element::MapType());
-        K->second->addToObject(s_args.front().AsMap());
-        s->SetSerialno(m_connection->m_server.getSerialNo());
+        K->second->addToObject(s_args.front().asMap());
+        s->setSerialno(m_connection->m_server.getSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
     }

@@ -31,9 +31,9 @@ class InheritanceClient : public Atlas::Objects::Decoder
     client_socket_stream ios;
 
   protected:
-    void UnknownObjectArrived(const Atlas::Message::Object&);
-    void ObjectArrived(const Atlas::Objects::Operation::Info&);
-    void ObjectArrived(const Atlas::Objects::Operation::Error&);
+    void UnknownobjectArrived(const Atlas::Message::Element&);
+    void objectArrived(const Atlas::Objects::Operation::Info&);
+    void objectArrived(const Atlas::Objects::Operation::Error&);
   public:
     InheritanceClient() : encoder(NULL), codec(NULL) { }
      

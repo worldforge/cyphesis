@@ -7,26 +7,26 @@
 #include <Atlas/Objects/Entity/RootEntity.h>
 #include <Atlas/Objects/Operation/RootOperation.h>
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::RootOperation;
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 
 namespace utility {
 
-Root * Object_asRoot(const Atlas::Message::Object & o)
+Root * Object_asRoot(const Atlas::Message::Element & o)
 {
     Root * obj;
 
-    if (!o.IsMap()) return NULL;
-    Object::MapType::const_iterator I = o.AsMap().find("objtype");
-    if ((I != o.AsMap().end()) &&
-        (I->second.IsString())) {
-        if (I->second.AsString() == "object") {
+    if (!o.isMap()) return NULL;
+    Element::MapType::const_iterator I = o.asMap().find("objtype");
+    if ((I != o.asMap().end()) &&
+        (I->second.isString())) {
+        if (I->second.asString() == "object") {
     	    obj = new RootEntity;
-        } else if (I->second.AsString() == "op") {
+        } else if (I->second.asString() == "op") {
     	    obj = new RootOperation;
         } else {
             obj = new Root;
@@ -34,23 +34,23 @@ Root * Object_asRoot(const Atlas::Message::Object & o)
     } else {
         obj = new Root;
     }
-    for (Object::MapType::const_iterator I = o.AsMap().begin();
-            I != o.AsMap().end(); I++) {
-        obj->SetAttr(I->first, I->second);
+    for (Element::MapType::const_iterator I = o.asMap().begin();
+            I != o.asMap().end(); I++) {
+        obj->setAttr(I->first, I->second);
     }
     return obj;
 }
 
-bool Object_asOperation(const Atlas::Message::Object::MapType & ent,
+bool Object_asOperation(const Atlas::Message::Element::MapType & ent,
                         Atlas::Objects::Operation::RootOperation & op)
 {
-    Object::MapType::const_iterator I = ent.find("objtype");
-    if ((I == ent.end()) || (!I->second.IsString()) ||
-        (I->second.AsString() != "op")) {
+    Element::MapType::const_iterator I = ent.find("objtype");
+    if ((I == ent.end()) || (!I->second.isString()) ||
+        (I->second.asString() != "op")) {
         return false;
     }
     for (I = ent.begin(); I != ent.end(); ++I) {
-        op.SetAttr(I->first, I->second);
+        op.setAttr(I->first, I->second);
     }
     return true;
 }

@@ -62,7 +62,7 @@ void CommClient::setup()
     // Create the server side negotiator
     accept =  new Atlas::Net::StreamAccept("cyphesis " + commServer.server.getName(), clientIos, this);
 
-    accept->Poll(false);
+    accept->poll(false);
 
     clientIos << std::flush;
 }
@@ -70,29 +70,29 @@ void CommClient::setup()
 bool CommClient::negotiate()
 {
     debug(std::cout << "Negotiating... " << std::flush;);
-    // Poll and check if negotiation is complete
-    accept->Poll();
+    // poll and check if negotiation is complete
+    accept->poll();
 
-    if (accept->GetState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
+    if (accept->getState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
         return false;
     }
     debug(std::cout << "done" << std::endl;);
 
     // Check if negotiation failed
-    if (accept->GetState() == Atlas::Net::StreamAccept::FAILED) {
+    if (accept->getState() == Atlas::Net::StreamAccept::FAILED) {
         log(NOTICE, "Failed to negotiate");
         return true;
     }
     // Negotiation was successful
 
     // Get the codec that negotiation established
-    codec = accept->GetCodec();
+    codec = accept->getCodec();
 
     // Create a new encoder to send high level objects to the codec
     encoder = new Atlas::Objects::Encoder(codec);
 
     // This should always be sent at the beginning of a session
-    codec->StreamBegin();
+    codec->streamBegin();
 
     // Acceptor is now finished with
     delete accept;
@@ -111,81 +111,81 @@ void CommClient::message(const RootOperation & op)
     }
 }
 
-void CommClient::UnknownObjectArrived(const Atlas::Message::Object& o)
+void CommClient::unknownobjectArrived(const Atlas::Message::Element& o)
 {
     debug(std::cout << "An unknown has arrived." << std::endl << std::flush;);
     RootOperation r;
-    bool isOp = utility::Object_asOperation(o.AsMap(), r);
+    bool isOp = utility::Object_asOperation(o.asMap(), r);
     if (isOp) {
         message(r);
     }
     if (debug_flag) {
         std::cout << "An unknown has arrived." << std::endl << std::flush;
-        Atlas::Message::Object::MapType::const_iterator I;
-        for(I = o.AsMap().begin(); I != o.AsMap().end(); I++) {
+        Atlas::Message::Element::MapType::const_iterator I;
+        for(I = o.asMap().begin(); I != o.asMap().end(); I++) {
             std::cout << I->first << std::endl << std::flush;
-            if (I->second.IsString()) {
-                std::cout << I->second.AsString() << std::endl << std::flush;
+            if (I->second.isString()) {
+                std::cout << I->second.asString() << std::endl << std::flush;
             }
         }
     }
 }
 
-void CommClient::ObjectArrived(const Login & op)
+void CommClient::objectArrived(const Login & op)
 {
     debug(std::cout << "A login operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Logout & op)
+void CommClient::objectArrived(const Logout & op)
 {
     debug(std::cout << "A logout operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Create & op)
+void CommClient::objectArrived(const Create & op)
 {
     debug(std::cout << "A create operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Imaginary & op)
+void CommClient::objectArrived(const Imaginary & op)
 {
     debug(std::cout << "A imaginary operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Move & op)
+void CommClient::objectArrived(const Move & op)
 {
     debug(std::cout << "A move operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Set & op)
+void CommClient::objectArrived(const Set & op)
 {
     debug(std::cout << "A set operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Touch & op)
+void CommClient::objectArrived(const Touch & op)
 {
     debug(std::cout << "A touch operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Look & op)
+void CommClient::objectArrived(const Look & op)
 {
     debug(std::cout << "A look operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Talk & op)
+void CommClient::objectArrived(const Talk & op)
 {
     debug(std::cout << "A talk operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
-void CommClient::ObjectArrived(const Get & op)
+void CommClient::objectArrived(const Get & op)
 {
     debug(std::cout << "A get operation thingy here!" << std::endl << std::flush;);
     message(op);
@@ -195,7 +195,7 @@ bool CommClient::read() {
     if (codec != NULL) {
         reading = true;
         try {
-            codec->Poll();
+            codec->poll();
         }
         catch (ClientTimeOutException) {
             reading = false;
@@ -212,7 +212,7 @@ bool CommClient::read() {
 void CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
 {
     if (isOpen()) {
-        encoder->StreamMessage(&op);
+        encoder->streamMessage(&op);
         struct timeval tv = {0, 0};
         fd_set sfds;
         int cfd = clientIos.getSocket();

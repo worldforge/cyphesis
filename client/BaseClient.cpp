@@ -28,12 +28,12 @@ Element::MapType CommClient::createPlayer(const std::string & name,
                << std::endl << std::flush;);
     
     Login loginAccountOp(Login::Instantiate());
-    loginAccountOp.SetArgs(Element::ListType(1,player_ent));
+    loginAccountOp.setArgs(Element::ListType(1,player_ent));
     send(loginAccountOp);
 
     if (connection.wait()) {
         Create createAccountOp(Create::Instantiate());
-        createAccountOp.SetArgs(Element::ListType(1,player_ent));
+        createAccountOp.setArgs(Element::ListType(1,player_ent));
         send(createAccountOp);
         if (connection.wait()) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
@@ -45,11 +45,11 @@ Element::MapType CommClient::createPlayer(const std::string & name,
     const Element::MapType & ent = connection.getReply();
 
     Element::MapType::const_iterator I = ent.find("id");
-    if (I == ent.end() || !I->second.IsString()) {
+    if (I == ent.end() || !I->second.isString()) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
                   << std::flush;
     } else {
-        playerId = I->second.AsString();
+        playerId = I->second.asString();
     }
     //if (ent.find("characters") != ent.end()) {
     //}
@@ -64,8 +64,8 @@ CreatorClient * CommClient::createCharacter(const std::string & type)
     character["parents"] = Element::ListType(1,type);
 
     Create createOp=Create::Instantiate();
-    createOp.SetFrom(playerId);
-    createOp.SetArgs(Element::ListType(1,character));
+    createOp.setFrom(playerId);
+    createOp.setArgs(Element::ListType(1,character));
     send(createOp);
 
     if (connection.wait()) {
@@ -75,7 +75,7 @@ CreatorClient * CommClient::createCharacter(const std::string & type)
     }
     const Element::MapType & body = connection.getReply();
 
-    const std::string & id = body.find("id")->second.AsString();
+    const std::string & id = body.find("id")->second.asString();
 
     EntityDict tmp;
 

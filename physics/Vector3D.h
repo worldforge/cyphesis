@@ -7,7 +7,7 @@
 
 #include <wfmath/vector.h>
 
-#include <Atlas/Message/Object.h>
+#include <Atlas/Message/Element.h>
 
 #include <cmath>
 #include <algorithm>
@@ -58,11 +58,11 @@ class Vector3D {
     Vector3D() : _x(0), _y(0), _z(0), _set(false) { }
     explicit Vector3D(double size) : _x(size), _y(size), _z(size), _set(true) { }
     Vector3D(double x, double y, double z) : _x(x), _y(y), _z(z), _set(true) { }
-    explicit Vector3D(const Atlas::Message::Object::ListType&vector):_set(true){
-        Atlas::Message::Object::ListType::const_iterator I = vector.begin();
-        _x = I->AsNum();
-        _y = (++I)->AsNum();
-        _z = (++I)->AsNum();
+    explicit Vector3D(const Atlas::Message::Element::ListType&vector):_set(true){
+        Atlas::Message::Element::ListType::const_iterator I = vector.begin();
+        _x = I->asNum();
+        _y = (++I)->asNum();
+        _z = (++I)->asNum();
     }
 
     double & x() { return _x; }
@@ -231,19 +231,19 @@ class Vector3D {
         return Vector3D(*this)/=(mag());
     }
 
-    const Atlas::Message::Object toAtlas() const {
-        Atlas::Message::Object::ListType coords;
-        coords.push_back(Atlas::Message::Object(_x));
-        coords.push_back(Atlas::Message::Object(_y));
-        coords.push_back(Atlas::Message::Object(_z));
-        return Atlas::Message::Object(coords);
+    const Atlas::Message::Element toAtlas() const {
+        Atlas::Message::Element::ListType coords;
+        coords.push_back(Atlas::Message::Element(_x));
+        coords.push_back(Atlas::Message::Element(_y));
+        coords.push_back(Atlas::Message::Element(_z));
+        return Atlas::Message::Element(coords);
     }
 
-    const Atlas::Message::Object::ListType asList() const {
-        Atlas::Message::Object::ListType coords;
-        coords.push_back(Atlas::Message::Object(_x));
-        coords.push_back(Atlas::Message::Object(_y));
-        coords.push_back(Atlas::Message::Object(_z));
+    const Atlas::Message::Element::ListType asList() const {
+        Atlas::Message::Element::ListType coords;
+        coords.push_back(Atlas::Message::Element(_x));
+        coords.push_back(Atlas::Message::Element(_y));
+        coords.push_back(Atlas::Message::Element(_z));
         return coords;
     }
 

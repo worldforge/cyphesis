@@ -17,11 +17,11 @@ class Account : public OOGThing {
     ConMap m_destroyedConnections;
 
     Entity * addCharacter(const std::string &,
-                          const Atlas::Message::Object::MapType &);
+                          const Atlas::Message::Element::MapType &);
   protected:
     void characterDestroyed(std::string);
 
-    virtual OpVector characterError(const Create &, const Atlas::Message::Object::MapType &) const = 0;
+    virtual OpVector characterError(const Create &, const Atlas::Message::Element::MapType &) const = 0;
 
   public:
     Connection * m_connection;
@@ -35,7 +35,7 @@ class Account : public OOGThing {
 
     virtual const char * getType() const;
 
-    virtual void addToObject(Atlas::Message::Object::MapType &) const;
+    virtual void addToObject(Atlas::Message::Element::MapType &) const;
     virtual OpVector LogoutOperation(const Logout & op);
     virtual OpVector CreateOperation(const Create & op);
     virtual OpVector ImaginaryOperation(const Imaginary & op);

@@ -643,7 +643,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
                 omap["parents"] = Element::ListType(1,std::string(PyString_AsString(val)));
             } else {
                 Element val_obj = PyObject_asObject(val);
-                if (val_obj.GetType() == Element::TYPE_NONE) {
+                if (val_obj.getType() == Element::TYPE_NONE) {
                     fprintf(stderr, "Could not handle %s value in Entity()", key);
                     PyErr_SetString(PyExc_TypeError, "Argument type error to Entity()");
                     Py_DECREF(keys);
@@ -691,8 +691,8 @@ static inline void addToArgs(Element::ListType & args, PyObject * ent)
             return;
         }
         Element o(*obj->m_obj);
-        if (o.IsMap() && (obj->Object_attr != NULL)) {
-            Element::MapType & ent = o.AsMap();
+        if (o.isMap() && (obj->Object_attr != NULL)) {
+            Element::MapType & ent = o.asMap();
             Element::MapType ent2 = PyDictObject_asMapType(obj->Object_attr);
             Element::MapType::const_iterator I = ent2.begin();
             for(; I != ent2.end(); I++) {
@@ -708,7 +708,7 @@ static inline void addToArgs(Element::ListType & args, PyObject * ent)
             fprintf(stderr, "Invalid operation in Operation arguments\n");
             return;
         }
-        args.push_back(op->operation->AsObject());
+        args.push_back(op->operation->asObject());
     } else {
         fprintf(stderr, "Non-entity passed as arg to Operation()\n");
     }
@@ -794,7 +794,7 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
             Py_DECREF(to_id);
             return NULL;
         }
-        op->operation->SetTo(PyString_AsString(to_id));
+        op->operation->setTo(PyString_AsString(to_id));
         Py_DECREF(to_id);
     }
     if (PyMapping_HasKeyString(kwds, "from_")) {
@@ -814,14 +814,14 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
             Py_DECREF(from_id);
             return NULL;
         }
-        op->operation->SetFrom(PyString_AsString(from_id));
+        op->operation->setFrom(PyString_AsString(from_id));
         Py_DECREF(from_id);
     }
     Element::ListType args_list;
     addToArgs(args_list, arg1);
     addToArgs(args_list, arg2);
     addToArgs(args_list, arg3);
-    op->operation->SetArgs(args_list);
+    op->operation->setArgs(args_list);
     return (PyObject *)op;
 }
 

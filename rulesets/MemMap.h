@@ -35,7 +35,7 @@ class MemMap {
     Script *& m_script;
 
     inline Entity * addObject(Entity * object);
-    inline void addContents(const Atlas::Message::Object::MapType & entmap);
+    inline void addContents(const Atlas::Message::Element::MapType & entmap);
     inline Entity * addId(const std::string & id);
   public:
     explicit MemMap(Script *& s) : m_script(s)  { }
@@ -45,14 +45,14 @@ class MemMap {
     }
 
     inline Atlas::Objects::Operation::RootOperation * lookId();
-    Entity * add(const Atlas::Message::Object::MapType & entity);
+    Entity * add(const Atlas::Message::Element::MapType & entity);
     inline void del(const std::string & id);
     inline Entity * get(const std::string & id);
     inline Entity * getAdd(const std::string & id);
-    Entity * update(const Atlas::Message::Object::MapType & entity);
+    Entity * update(const Atlas::Message::Element::MapType & entity);
     EntityVector findByType(const std::string & what);
     EntityVector findByLocation(const Location & where, double radius);
-    const Atlas::Message::Object asObject();
+    const Atlas::Message::Element asObject();
     void flushMap();
 
     std::vector<std::string> & getAddHooks() { return m_addHooks; }

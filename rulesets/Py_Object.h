@@ -5,14 +5,14 @@
 #ifndef RULESETS_PY_OBJECT_H
 #define RULESETS_PY_OBJECT_H
 
-#include <Atlas/Message/Object.h>
+#include <Atlas/Message/Element.h>
 
 #include <Python.h>
 
 typedef struct {
     PyObject_HEAD
     PyObject			* Object_attr;	// Attributes dictionary
-    Atlas::Message::Object	* m_obj;
+    Atlas::Message::Element	* m_obj;
 } AtlasObject;
 
 extern PyTypeObject Object_Type;
@@ -29,11 +29,11 @@ AtlasObject * newAtlasObject(PyObject *arg);
 // Utility functions to munge between Object related types and python types
 //
 
-// PyObject * MapType_asPyObject(const Object::MapType & map);
-// PyObject * ListType_asPyObject(const Object::ListType & list);
-PyObject * Object_asPyObject(const Atlas::Message::Object & obj);
-Atlas::Message::Object::ListType PyListObject_asListType(PyObject * list);
-Atlas::Message::Object::MapType PyDictObject_asMapType(PyObject * dict);
-Atlas::Message::Object PyObject_asObject(PyObject * o);
+// PyObject * MapType_asPyObject(const Element::MapType & map);
+// PyObject * ListType_asPyObject(const Element::ListType & list);
+PyObject * Object_asPyObject(const Atlas::Message::Element & obj);
+Atlas::Message::Element::ListType PyListObject_asListType(PyObject * list);
+Atlas::Message::Element::MapType PyDictObject_asMapType(PyObject * dict);
+Atlas::Message::Element PyObject_asObject(PyObject * o);
 
 #endif // RULESETS_PY_OBJECT_H

@@ -71,14 +71,14 @@ class Inheritance {
     }
 
     OpNo opEnumerate(const RootOperation & op) const {
-        const Atlas::Message::Object::ListType & parents = op.GetParents();
+        const Atlas::Message::Element::ListType & parents = op.getParents();
         if (parents.size() != 1) {
             log(ERROR, "op with no parents");
         }
-        if (!parents.begin()->IsString()) {
+        if (!parents.begin()->isString()) {
             log(ERROR, "op with non-string parent");
         }
-        const std::string & parent = parents.begin()->AsString();
+        const std::string & parent = parents.begin()->asString();
         return opEnumerate(parent);
     }
 
@@ -91,8 +91,8 @@ class Inheritance {
     }
 
     bool addChild(Atlas::Objects::Root * obj) {
-        const std::string & child = obj->GetId();
-        const std::string & parent = obj->GetParents().front().AsString();
+        const std::string & child = obj->getId();
+        const std::string & parent = obj->getParents().front().asString();
         if (atlasObjects.find(child) != atlasObjects.end()) {
             std::string msg = std::string("Installing type ") + child 
                             + "(" + parent + ") which was already installed";
@@ -104,12 +104,12 @@ class Inheritance {
         if (I == atlasObjects.end()) {
             throw InheritanceException(parent);
         }
-        Atlas::Message::Object::ListType children(1, child);
-        if (I->second->HasAttr("children")) {
-            children = I->second->GetAttr("children").AsList();
+        Atlas::Message::Element::ListType children(1, child);
+        if (I->second->hasAttr("children")) {
+            children = I->second->getAttr("children").asList();
             children.push_back(child);
         }
-        I->second->SetAttr("children", Atlas::Message::Object(children));
+        I->second->setAttr("children", Atlas::Message::Element(children));
         atlasObjects[child] = obj;
         return false;
     }

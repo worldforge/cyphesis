@@ -11,7 +11,7 @@
 #include <string>
 #include <fstream>
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 
 class RuleBase {
   protected:
@@ -33,7 +33,7 @@ class RuleBase {
         return m_instance;
     }
 
-    void storeInRules(const Object::MapType & o, const std::string & key) {
+    void storeInRules(const Element::MapType & o, const std::string & key) {
         m_connection.putObject(m_connection.rule(), key, o);
     }
     bool clearRules() {
@@ -49,12 +49,12 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     Atlas::Codecs::XML m_codec;
     int m_count;
 
-    virtual void ObjectArrived(const Object & obj) {
-        const Object::MapType & omap = obj.AsMap();
-        Object::MapType::const_iterator I;
+    virtual void objectArrived(const Element & obj) {
+        const Element::MapType & omap = obj.asMap();
+        Element::MapType::const_iterator I;
         for (I = omap.begin(); I != omap.end(); ++I) {
             m_count++;
-            m_db.storeInRules(I->second.AsMap(), I->first);
+            m_db.storeInRules(I->second.asMap(), I->first);
         }
     }
   public:
@@ -66,7 +66,7 @@ class FileDecoder : public Atlas::Message::DecoderBase {
 
     void read() {
         while (!m_file.eof()) {
-            m_codec.Poll();
+            m_codec.poll();
         }
     }
 

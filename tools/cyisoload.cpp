@@ -27,31 +27,31 @@ class WorldBase : public Database {
         return (WorldBase *)m_instance;
     }
 
-    void storeInWorld(const Atlas::Message::Object::MapType & o, const char * key) {
+    void storeInWorld(const Atlas::Message::Element::MapType & o, const char * key) {
         putObject(world_db, o, key);
     }
 };
 
 class TemplatesLoader : public Atlas::Message::DecoderBase {
     ifstream m_file;
-    Atlas::Message::Object::MapType m_db;
+    Atlas::Message::Element::MapType m_db;
     Atlas::Codecs::XML m_codec;
     int m_count;
 
-    virtual void ObjectArrived(const Atlas::Message::Object& o) {
-        Atlas::Message::Object obj(o);
-        if (!obj.IsMap()) {
+    virtual void objectArrived(const Atlas::Message::Element& o) {
+        Atlas::Message::Element obj(o);
+        if (!obj.isMap()) {
             cerr << "ERROR: Non map object in file" << endl << flush;
             return;
         }
-        Atlas::Message::Object::MapType & omap = obj.AsMap();
+        Atlas::Message::Element::MapType & omap = obj.asMap();
         if (omap.find("graphic") == omap.end()) {
             cerr<<"WARNING: Template Object in file has no graphic. Not stored."
                 << endl << flush;
             return;
         }
         m_count++;
-        const std::string & id = omap["graphic"].AsString();
+        const std::string & id = omap["graphic"].asString();
         m_db[id] = obj;
     }
   public:
@@ -62,7 +62,7 @@ class TemplatesLoader : public Atlas::Message::DecoderBase {
 
     void read() {
         while (!m_file.eof()) {
-            m_codec.Poll();
+            m_codec.poll();
         }
     }
 
@@ -71,11 +71,11 @@ class TemplatesLoader : public Atlas::Message::DecoderBase {
                   << endl << flush;
     }
 
-    Atlas::Message::Object::MapType & db() {
+    Atlas::Message::Element::MapType & db() {
         return m_db;
     }
 
-    const Atlas::Message::Object & get(const std::string & graphic) {
+    const Atlas::Message::Element & get(const std::string & graphic) {
         return m_db[graphic];
     }
 };
@@ -115,17 +115,17 @@ int main(int argc, char ** argv)
                 size_t b = graphic.rfind('/') + 1;
                 size_t e = graphic.rfind('.');
                 std::string key(graphic, b, e - b);
-                Atlas::Message::Object::MapType & tdb = f.db();
-                Atlas::Message::Object::MapType::iterator t = tdb.find(key);
+                Atlas::Message::Element::MapType & tdb = f.db();
+                Atlas::Message::Element::MapType::iterator t = tdb.find(key);
                 if (t != tdb.end()) {
-                    Atlas::Message::Object o = t->second;
-                    Atlas::Message::Object::MapType & omap = o.AsMap();
+                    Atlas::Message::Element o = t->second;
+                    Atlas::Message::Element::MapType & omap = o.asMap();
                     omap.erase("graphic");
                     stringstream id;
-                    id << omap["name"].AsString() << "_" << ++id_no << "_m";
+                    id << omap["name"].asString() << "_" << ++id_no << "_m";
                     omap["id"] = id.str();
                     omap["loc"] = "world_0";
-                    Atlas::Message::Object::ListType c(3);
+                    Atlas::Message::Element::ListType c(3);
                     c[0] = object->anchor.GetX();
                     c[1] = object->anchor.GetY();
                     c[2] = object->anchor.GetZ();

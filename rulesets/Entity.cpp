@@ -7,6 +7,7 @@
 
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/types.h"
 #include "common/inheritance.h"
 
 #include "common/Setup.h"
@@ -84,7 +85,7 @@ bool Entity::get(const std::string & aname, Element & attr) const
         return true;
     } else if (aname == "contains") {
         attr = Element::ListType();
-        Element::ListType & contlist = attr.AsList();
+        Element::ListType & contlist = attr.asList();
         for(EntitySet::const_iterator I = m_contains.begin();
             I != m_contains.end(); I++) {
             contlist.push_back(*I);
@@ -103,21 +104,21 @@ bool Entity::get(const std::string & aname, Element & attr) const
 
 void Entity::set(const std::string & aname, const Element & attr)
 {
-    if ((aname == "status") && attr.IsNum()) {
-        m_status = attr.AsNum();
+    if ((aname == "status") && attr.isNum()) {
+        m_status = attr.asNum();
         m_update_flags |= a_status;
     } else if (aname == "id") {
         return;
-    } else if ((aname == "name") && attr.IsString()) {
-        m_name = attr.AsString();
+    } else if ((aname == "name") && attr.isString()) {
+        m_name = attr.asString();
         m_update_flags |= a_name;
-    } else if ((aname == "mass") && attr.IsNum()) {
-        m_mass = attr.AsNum();
+    } else if ((aname == "mass") && attr.isNum()) {
+        m_mass = attr.asNum();
         m_update_flags |= a_mass;
-    } else if ((aname == "bbox") && attr.IsList() &&
-               (attr.AsList().size() > 2)) {
+    } else if ((aname == "bbox") && attr.isList() &&
+               (attr.asList().size() > 2)) {
         m_update_flags |= a_bbox;
-        m_location.m_bBox = BBox(attr.AsList());
+        m_location.m_bBox = BBox(attr.asList());
     } else {
         m_update_flags |= a_attr;
         m_attributes[aname] = attr;
@@ -194,12 +195,12 @@ bool Entity::getLocation(const Element::MapType & entmap,
 {
     debug( std::cout << "Entity::getLocation" << std::endl << std::flush;);
     Element::MapType::const_iterator I = entmap.find("loc");
-    if ((I == entmap.end()) || !I->second.IsString()) {
+    if ((I == entmap.end()) || !I->second.isString()) {
         debug( std::cout << getId() << ".. has no loc" << std::endl << std::flush;);
         return true;
     }
     try {
-        const std::string & ref_id = I->second.AsString();
+        const std::string & ref_id = I->second.asString();
         EntityDict::const_iterator J = eobjects.find(ref_id);
         if (J == eobjects.end()) {
             debug( std::cout << "ERROR: Can't get ref from objects dictionary" << std::endl << std::flush;);
@@ -209,19 +210,19 @@ bool Entity::getLocation(const Element::MapType & entmap,
         m_location.m_loc = J->second;
         I = entmap.find("pos");
         if (I != entmap.end()) {
-            m_location.m_pos = Vector3D(I->second.AsList());
+            m_location.m_pos = Vector3D(I->second.asList());
         }
         I = entmap.find("velocity");
         if (I != entmap.end()) {
-            m_location.m_velocity = Vector3D(I->second.AsList());
+            m_location.m_velocity = Vector3D(I->second.asList());
         }
         I = entmap.find("orientation");
         if (I != entmap.end()) {
-            m_location.m_orientation = Quaternion(I->second.AsList());
+            m_location.m_orientation = Quaternion(I->second.asList());
         }
         I = entmap.find("bbox");
         if (I != entmap.end()) {
-            m_location.m_bBox = BBox(I->second.AsList());
+            m_location.m_bBox = BBox(I->second.asList());
         }
     }
     catch (Atlas::Message::WrongTypeException) {
@@ -379,11 +380,11 @@ OpVector Entity::LookOperation(const Look & op)
     }
 
     Sight * s = new Sight( Sight::Instantiate());
-    Element::ListType & args = s->GetArgs();
+    Element::ListType & args = s->getArgs();
     args.push_back(Element::MapType());
-    Element::MapType & amap = args.front().AsMap();
+    Element::MapType & amap = args.front().asMap();
     addToObject(amap);
-    s->SetTo(op.GetFrom());
+    s->setTo(op.getFrom());
 
     return OpVector(1,s);
 }
@@ -404,7 +405,7 @@ OpVector Entity::DisappearanceOperation(const Disappearance & op)
 
 OpVector Entity::OtherOperation(const RootOperation & op)
 {
-    const std::string & op_type = op.GetParents().front().AsString();
+    const std::string & op_type = op.getParents().front().asString();
     OpVector res;
     debug(std::cout << "Entity " << getId() << " got custom " << op_type << " op"
                << std::endl << std::flush;);

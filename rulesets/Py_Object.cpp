@@ -12,6 +12,8 @@
  * Beginning of Object methods section.
  */
 
+using Atlas::Message::Element;
+
 static PyObject* Object_get_name(AtlasObject * self, PyObject * args)
 {
     if (self->m_obj == NULL) {
@@ -53,8 +55,8 @@ static PyObject * Object_getattr(AtlasObject *self, char *name)
         PyErr_SetString(PyExc_TypeError,"invalid object");
         return NULL;
     }
-    if (self->m_obj->IsMap()) {
-        const Element::MapType & omap = self->m_obj->AsMap();
+    if (self->m_obj->isMap()) {
+        const Element::MapType & omap = self->m_obj->asMap();
         Element::MapType::const_iterator I = omap.find(name);
         if (I != omap.end()) {
             return Object_asPyObject(I->second);
@@ -76,12 +78,12 @@ static int Object_setattr( AtlasObject *self, char *name, PyObject *v)
         PyErr_SetString(PyExc_TypeError,"invalid object");
         return -1;
     }
-    if (self->m_obj->IsMap()) {
-        Element::MapType & omap = self->m_obj->AsMap();
+    if (self->m_obj->isMap()) {
+        Element::MapType & omap = self->m_obj->asMap();
         Element v_obj = PyObject_asObject(v);
-        if ((v_obj.GetType() != Element::TYPE_NONE) &&
-            (v_obj.GetType() != Element::TYPE_MAP) &&
-            (v_obj.GetType() != Element::TYPE_LIST)) {
+        if ((v_obj.getType() != Element::TYPE_NONE) &&
+            (v_obj.getType() != Element::TYPE_MAP) &&
+            (v_obj.getType() != Element::TYPE_LIST)) {
             omap[name] = v_obj;
             return 0;
         }
@@ -175,21 +177,21 @@ static PyObject * ListType_asPyObject(const Element::ListType & list)
 PyObject * Object_asPyObject(const Element & obj)
 {
     PyObject * ret = NULL;
-    switch (obj.GetType()) {
+    switch (obj.getType()) {
         case Element::TYPE_INT:
-            ret = PyInt_FromLong(obj.AsInt());
+            ret = PyInt_FromLong(obj.asInt());
             break;
         case Element::TYPE_FLOAT:
-            ret = PyFloat_FromDouble(obj.AsFloat());
+            ret = PyFloat_FromDouble(obj.asFloat());
             break;
         case Element::TYPE_STRING:
-            ret = PyString_FromString(obj.AsString().c_str());
+            ret = PyString_FromString(obj.asString().c_str());
             break;
         case Element::TYPE_MAP:
-            ret = MapType_asPyObject(obj.AsMap());
+            ret = MapType_asPyObject(obj.asMap());
             break;
         case Element::TYPE_LIST:
-            ret = ListType_asPyObject(obj.AsList());
+            ret = ListType_asPyObject(obj.asList());
             break;
         default:
             break;
@@ -207,7 +209,7 @@ Element::ListType PyListObject_asListType(PyObject * list)
             argslist.push_back(*(item->m_obj));
         } else {
             Element o = PyObject_asObject((PyObject*)item);
-            if (o.GetType() != Element::TYPE_NONE) {
+            if (o.getType() != Element::TYPE_NONE) {
                 argslist.push_back(o);
             }
         }
@@ -228,7 +230,7 @@ Element::MapType PyDictObject_asMapType(PyObject * dict)
             argsmap[PyString_AsString(key)] = *(item->m_obj);
         } else {
             Element o = PyObject_asObject((PyObject*)item);
-            if (o.GetType() != Element::TYPE_NONE) {
+            if (o.getType() != Element::TYPE_NONE) {
                 argsmap[PyString_AsString(key)] = o;
             }
         }
@@ -260,7 +262,7 @@ Element PyObject_asObject(PyObject * o)
         int i, size = PyTuple_Size(o);
         for(i = 0; i < size; i++) {
             Element item = PyObject_asObject(PyTuple_GetItem(o, i));
-            if (item.GetType() != Element::TYPE_NONE) {
+            if (item.getType() != Element::TYPE_NONE) {
                 list.push_back(item);
             }
         }
@@ -272,17 +274,17 @@ Element PyObject_asObject(PyObject * o)
     }
     if (PyOperation_Check(o)) {
         OperationObject * op = (OperationObject *)o;
-        return op->operation->AsObject();
+        return op->operation->asObject();
     }
     if (PyOplist_Check(o)) {
         OplistObject * opl = (OplistObject *)o;
         Element::ListType _list;
         Element msg(_list);
-        Element::ListType & entlist = msg.AsList();
+        Element::ListType & entlist = msg.asList();
         const OpVector & ops = *opl->ops;
         OpVector::const_iterator I;
         for(I = ops.begin(); I != ops.end(); I++) {
-            entlist.push_back((*I)->AsObject());
+            entlist.push_back((*I)->asObject());
         }
         return msg;
     }

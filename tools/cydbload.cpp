@@ -10,7 +10,7 @@
 
 #include <fstream>
 
-using Atlas::Message::Object;
+using Atlas::Message::Element;
 
 class WorldAccessor {
   protected:
@@ -32,15 +32,15 @@ class WorldAccessor {
         return m_instance;
     }
 
-    void storeInWorld(const Object::MapType & o, const std::string & key) {
+    void storeInWorld(const Element::MapType & o, const std::string & key) {
         m_connection.putObject(m_connection.world(), key, o);
     }
 
-    void updateInWorld(const Object::MapType & o, const std::string & key) {
+    void updateInWorld(const Element::MapType & o, const std::string & key) {
         m_connection.updateObject(m_connection.world(), key, o);
     }
 
-    bool getWorld(Object::MapType & o) {
+    bool getWorld(Element::MapType & o) {
         return m_connection.getObject(m_connection.world(), "world_0", o);
     }
 };
@@ -51,27 +51,27 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     std::fstream m_file;
     WorldAccessor & m_db;
     Atlas::Codecs::XML m_codec;
-    Object::MapType m_world;
+    Element::MapType m_world;
     int m_count;
     bool m_worldMerge;
 
-    virtual void ObjectArrived(const Object & obj) {
-        const Object::MapType & omap = obj.AsMap();
-        Object::MapType::const_iterator I;
+    virtual void objectArrived(const Object & obj) {
+        const Element::MapType & omap = obj.asMap();
+        Element::MapType::const_iterator I;
         if ((I = omap.find("id")) == omap.end()) {
             std::cerr << "WARNING: Object in file has no id. Not stored."
                       << std::endl << std::flush;
             return;
         }
         m_count++;
-        const std::string & id = I->second.AsString();
+        const std::string & id = I->second.asString();
         if (m_worldMerge && (id == "world_0")) {
             std::cout << "Merging into existing world object" << std::endl << std::flush;
             if (((I = omap.find("contains")) != omap.end()) &&
-                (I->second.IsList())) {
-                const Object::ListType & contlist = I->second.AsList();
-                Object::ListType & worldlist = m_world.find("contains")->second.AsList();
-                Object::ListType::const_iterator J = contlist.begin();
+                (I->second.isList())) {
+                const Element::ListType & contlist = I->second.asList();
+                Element::ListType & worldlist = m_world.find("contains")->second.asList();
+                Element::ListType::const_iterator J = contlist.begin();
                 for (;J != contlist.end(); ++J) {
                     worldlist.push_back(*J);
                 }
@@ -89,7 +89,7 @@ class FileDecoder : public Atlas::Message::DecoderBase {
                 m_codec(m_file, this), m_count(0)
     {
         m_worldMerge = db.getWorld(m_world);
-        if (m_worldMerge && !m_world.find("contains")->second.IsList()) {
+        if (m_worldMerge && !m_world.find("contains")->second.isList()) {
             std::cout << "WARNING: Current database world object has no contains list, so so it is being replaced" << std::endl << std::flush;
             m_worldMerge = false;
             
@@ -98,7 +98,7 @@ class FileDecoder : public Atlas::Message::DecoderBase {
 
     void read() {
         while (!m_file.eof()) {
-            m_codec.Poll();
+            m_codec.poll();
         }
     }
 

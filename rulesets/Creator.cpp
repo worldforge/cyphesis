@@ -38,7 +38,7 @@ OpVector Creator::sendMind(const RootOperation & msg)
         debug( std::cout << "NOTICE: Creator self destruct"
                          << std::endl << std::flush;);
         Delete * d = new Delete(Delete::Instantiate());
-        d->SetTo(getId());
+        d->setTo(getId());
         return OpVector(1,d);
     }
 }
@@ -52,7 +52,7 @@ OpVector Creator::operation(const RootOperation & op)
     }
     if (op_no == OP_SETUP) {
         Look look = Look::Instantiate();
-        look.SetFrom(getId());
+        look.setFrom(getId());
         return m_world->LookOperation(look);
     }
     return sendMind(op);
@@ -65,10 +65,10 @@ OpVector Creator::externalOperation(const RootOperation & op)
     // we handle it like a normal character.
     debug( std::cout << "Creator::externalOperation" << std::endl
                      << std::flush;);
-    if (op.GetTo().empty()) {
+    if (op.getTo().empty()) {
         debug( std::cout << "Creator handling op normally" << std::endl << std::flush;);
         Creator_parent::externalOperation(op);
-    } else if (op.GetTo()==getId()) {
+    } else if (op.getTo()==getId()) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         OpVector lres = callOperation(op);
         setRefno(lres, op);
@@ -81,7 +81,7 @@ OpVector Creator::externalOperation(const RootOperation & op)
     } else {
         RootOperation * new_op = new RootOperation(op);
         //make it appear like it came from character itself;
-        new_op->SetFrom("cheat");
+        new_op->setFrom("cheat");
         sendWorld(new_op);
     }
     return OpVector();
@@ -89,34 +89,34 @@ OpVector Creator::externalOperation(const RootOperation & op)
 
 OpVector Creator::mindLookOperation(const Look & op)
 {
-    debug(std::cout << "Got look up from prived mind from [" << op.GetFrom()
-               << "] to [" << op.GetTo() << "]" << std::endl << std::flush;);
+    debug(std::cout << "Got look up from prived mind from [" << op.getFrom()
+               << "] to [" << op.getTo() << "]" << std::endl << std::flush;);
     m_perceptive = true;
     Look * l = new Look(op);
-    if (op.GetTo().empty()) {
-        const Element::ListType & args = op.GetArgs();
+    if (op.getTo().empty()) {
+        const Element::ListType & args = op.getArgs();
         if (args.empty()) {
-            l->SetTo(m_world->getId());
+            l->setTo(m_world->getId());
         } else {
-            if (args.front().IsMap()) {
-                const Element::MapType & amap = args.front().AsMap();
+            if (args.front().isMap()) {
+                const Element::MapType & amap = args.front().asMap();
                 Element::MapType::const_iterator I = amap.find("id");
-                if (I != amap.end() && I->second.IsString()) {
-                    l->SetTo(I->second.AsString());
+                if (I != amap.end() && I->second.isString()) {
+                    l->setTo(I->second.asString());
                 } else if ((I = amap.find("name")) != amap.end()) {
-                    if (I->second.IsString() && !I->second.AsString().empty()) {
-                        Entity * e = m_world->findByName(I->second.AsString());
+                    if (I->second.isString() && !I->second.asString().empty()) {
+                        Entity * e = m_world->findByName(I->second.asString());
                         if (e != NULL) {
-                            l->SetTo(e->getId());
+                            l->setTo(e->getId());
                         }
                     }
                 } else if ((I = amap.find("parents")) != amap.end()) {
-                    if (I->second.IsList() && !I->second.AsList().empty()) {
-                        const Element & p = I->second.AsList().front();
-                        if (p.IsString()) {
-                            Entity * e = m_world->findByType(p.AsString());
+                    if (I->second.isList() && !I->second.asList().empty()) {
+                        const Element & p = I->second.asList().front();
+                        if (p.isString()) {
+                            Entity * e = m_world->findByType(p.asString());
                             if (e != NULL) {
-                                l->SetTo(e->getId());
+                                l->setTo(e->getId());
                             }
                         }
                     }
@@ -124,6 +124,6 @@ OpVector Creator::mindLookOperation(const Look & op)
             }
         }
     }
-    debug( std::cout <<"    now to ["<<l->GetTo()<<"]"<<std::endl<<std::flush;);
+    debug( std::cout <<"    now to ["<<l->getTo()<<"]"<<std::endl<<std::flush;);
     return OpVector(1,l);
 }
