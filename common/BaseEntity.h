@@ -18,6 +18,10 @@
 class BaseEntity {
   private:
     std::string m_id;		// String id
+
+    // Private and un-implemented, to make sure slicing is impossible
+    BaseEntity(const BaseEntity &);
+    const BaseEntity & operator=(const BaseEntity &);
   protected:
     bool game;		// true if in game object
   public:

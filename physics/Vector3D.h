@@ -254,14 +254,18 @@ class Vector3D {
 
     double timeToExit(const Vector3D& f, const Vector3D &v,
                       const Vector3D& on, const Vector3D& of) const {
-        range xt = ::timeToExit(x, f.x, v.x, on.x, of.x);
-        range yt = ::timeToExit(y, f.y, v.y, on.y, of.y);
-        range zt = ::timeToExit(z, f.z, v.z, on.z, of.z);
+        range xt = ::timeToHit(x, f.x, v.x, on.x, of.x);
+        range yt = ::timeToHit(y, f.y, v.y, on.y, of.y);
+        range zt = ::timeToHit(z, f.z, v.z, on.z, of.z);
         double leave = std::min(max(xt), std::min(max(yt),max(zt)));
         double enter = std::max(min(xt), std::max(min(yt),min(zt)));
         // This check is required to make sure we don't accidentally
         // get stuck in an entity outside its bbox.
-        if (enter > 0) { return -1; }
+        if (enter > 0) {
+            std::cout << "We are " << enter << " outside our containers bbox"
+                      << std::endl << std::flush;
+            return -1;
+        }
         return leave;
     }
 

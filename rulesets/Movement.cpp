@@ -38,7 +38,9 @@ void Movement::checkCollisions(const Location & loc)
     // the next tick in consts::basic_tick seconds
     double collTime = consts::basic_tick + 1;
     elist_t::const_iterator I;
-    debug( std::cout << "checking " << m_body.getId() << loc.coords << loc.velocity << " against "; );
+    debug( std::cout << "checking " << m_body.getId() << loc.coords
+                     << loc.velocity << " in " << loc.ref->getId()
+                     << " against "; );
     m_collEntity = NULL;
     for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
         // if ((*I) == loc.ref) { continue; }
@@ -66,11 +68,12 @@ void Movement::checkCollisions(const Location & loc)
             return;
         }
         double t = loc.timeToExit(oloc);
+        if (t == 0) { return; }
         if (t < 0) { t=0; }
         collTime = std::min(collTime, t);
         if (collTime > consts::basic_tick) { return; }
-        debug(std::cout << "Collision with parent bounding box" << std::endl
-                        << std::flush;);
+        debug(std::cout << "Collision with parent bounding box in "
+                        << collTime << std::endl << std::flush;);
         m_collEntity = oloc.ref;
         m_collRefChange = true;
     } else if (!m_collEntity->location.solid) {
@@ -92,7 +95,7 @@ void Movement::checkCollisions(const Location & loc)
         }
         if (coll2Time > collTime) {
             debug(std::cout << "passing into it " << collTime << ":"
-                       << coll2Time << std::endl << std::flush;);
+                            << coll2Time << std::endl << std::flush;);
             // We are entering collEntity.
             // Set collRef ????????????????
             m_collRefChange = true;

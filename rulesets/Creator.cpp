@@ -50,14 +50,34 @@ oplist Creator::operation(const RootOperation & op)
 
 oplist Creator::externalOperation(const RootOperation & op)
 {
+    // FIXME Here we have a problem. For ops like move with velocity, and
+    // Look, it is necessary for the operation to be hindled by
+    // Character::mind2body(). So, how do we handle the difference between
+    // ops that must be processed this way, and ones that admin wants to
+    // send directly to its avatar. I think we should say that if TO is
+    // specified, the op should go directly to the entity concerned
+    // including this entity, but if not then it should go via the
+    // mind2body interface. This means that some clients will need
+    // modification. There are few places in Eris where this is a
+    // problem.
     debug( std::cout << "Creator::externalOperation" << std::endl
                      << std::flush;);
-    if ((op.GetTo()==getId()) || (op.GetTo()=="")) {
+    if (op.GetTo()=="") {
+        debug( std::cout << "Creator handling op normally" << std::endl << std::flush;);
+        oplist lres = mind2body(op);
+        for(oplist::const_iterator I = lres.begin(); I != lres.end(); I++) {
+            sendWorld(*I);
+            // Don't delete lres as it has gone into worlds queue
+            // World will deal with it.
+        }
+    } else if (op.GetTo()==getId()) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         oplist lres = callOperation(op);
         setRefno(lres, op);
         for(oplist::const_iterator I = lres.begin(); I != lres.end(); I++) {
             sendWorld(*I);
+            // Don't delete lres as it has gone into worlds queue
+            // World will deal with it.
         }
     } else {
         RootOperation * new_op = new RootOperation(op);

@@ -152,14 +152,19 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                                     << new_loc.ref->location.coords
                                     << std::endl << std::flush;);
                     new_coords = target + new_loc.ref->location.coords;
+                    if (m_targetPos) {
+                        m_targetPos += new_loc.ref->location.coords;
+                    }
                 } else {
                     debug(std::cout << "IN" << std::endl << std::flush;);
                     new_coords = target - m_collEntity->location.coords;
+                    if (m_targetPos) {
+                        m_targetPos -= m_collEntity->location.coords;
+                    }
                 }
                 new_loc.ref = m_collEntity;
                 m_collEntity = NULL;
                 m_collRefChange = false;
-                // Transform m_targetPos to new ref?
                 m_collPos = Vector3D();
             } else {
                 if (m_collPos) {

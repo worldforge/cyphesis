@@ -1,3 +1,23 @@
+2002-02-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.h:
+	  Private un-implemented copy constructor and assignment operator,
+	  so slicing won't occur.
+
+	* physics/Vector3D.h:
+	  Switched collision detection with parent so only the case where
+	  the subject is completely clear of the object is checked for.
+
+	* rulesets/Creator.cpp:
+	  Implemented differentiation between priveleged in-game ops, and
+	  normal in-game ops.
+
+	* rulesets/Movement.cpp:
+	  Increased verbosity of debugging output.
+
+	* rulesets/Pedestrian.cpp:
+	  Correctly implemented target based movement with changing containers.
+
 2002-01-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/ClientConnection.cpp, client/CommClient.h,
