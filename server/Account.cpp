@@ -54,6 +54,19 @@ BaseEntity * Account::addCharacter(const string & typestr, const Object & ent)
     charactersDict[chr->fullid]=chr;
     connection->addObject(chr);
 
+    // Hack in default objects
+    // This needs to be done in a generic way
+    Object::MapType entmap;
+    entmap["parents"] = Object::ListType(1,"coin");
+    entmap["pos"] = Vector3D(0,0,0).asObject();
+    entmap["loc"] = chr->fullid;
+    for(int i=0; i < 10; i++) {
+        Create * c = new Create(Create::Instantiate());
+        c->SetArgs(Object::ListType(1,entmap));
+        c->SetTo(chr->fullid);
+        world->message(*c, chr);
+    }
+
     Create c = Create::Instantiate();
     c.SetArgs(Object::ListType(1,chr->asObject()));
 

@@ -73,9 +73,9 @@ class Interactive : public Atlas::Objects::Decoder
                        codec(NULL), state(INIT) { }
 
     void send(const Atlas::Objects::Operation::RootOperation &);
-    bool connect(const string & host);
+    bool connect(const std::string & host);
     bool login();
-    void exec(const string & cmd, const string & arg);
+    void exec(const std::string & cmd, const std::string & arg);
     void loop();
     void getpassword();
     void prompt();
@@ -84,7 +84,7 @@ class Interactive : public Atlas::Objects::Decoder
 void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
 {
     reply_flag = true;
-    cout << "An info operation arrived." << endl << flush;
+    std::cout << "An info operation arrived." << endl << flush;
     if (state == INIT) {
         state = LOGGED_IN;
     } else if (state == LOGGED_IN) {
@@ -94,22 +94,22 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
             const Object & item = I->second;
             switch (item.GetType()) {
                 case Object::TYPE_INT:
-                    cout << "    " << I->first << ": " << item.AsInt() << endl;
+                    std::cout << "    " << I->first << ": " << item.AsInt() << endl;
                     break;
                 case Object::TYPE_FLOAT:
-                    cout << "    " << I->first <<": " << item.AsFloat() << endl;
+                    std::cout << "    " << I->first <<": " << item.AsFloat() << endl;
                     break;
                 case Object::TYPE_STRING:
-                    cout << "    " << I->first <<": "<< item.AsString() << endl;
+                    std::cout << "    " << I->first <<": "<< item.AsString() << endl;
                     break;
                 case Object::TYPE_LIST:
-                    cout << "    " << I->first << ": (list)" << endl;
+                    std::cout << "    " << I->first << ": (list)" << endl;
                     break;
                 case Object::TYPE_MAP:
-                    cout << "    " << I->first << ": (map)" << endl;
+                    std::cout << "    " << I->first << ": (map)" << endl;
                     break;
                 default:
-                    cout << "    " << I->first << ": (???)" << endl;
+                    std::cout << "    " << I->first << ": (???)" << endl;
                     break;
             }
                 
@@ -122,13 +122,13 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Error& o)
 {
     reply_flag = true;
     error_flag = true;
-    cout << "Error from server:" << endl << flush;
+    std::cout << "Error from server:" << endl << flush;
     const Object::ListType & args = o.GetArgs();
     const Object & arg = args.front();
     if (arg.IsString()) {
-        cout << arg.AsString() << endl << flush;
+        std::cout << arg.AsString() << endl << flush;
     } else if (arg.IsMap()) {
-        cout << arg.AsMap().find("message")->second.AsString() << endl << flush;
+        std::cout << arg.AsMap().find("message")->second.AsString() << endl << flush;
     }
 }
 
@@ -182,7 +182,7 @@ void Interactive::loop()
     if (retval) {
         if (FD_ISSET(cli_fd, &infds)) {
             if (ios->peek() == -1) {
-                cout << "Server disconnected" << endl << flush;
+                std::cout << "Server disconnected" << endl << flush;
                 exit(1);
             }
             codec->Poll();
@@ -192,11 +192,13 @@ void Interactive::loop()
 
 void Interactive::getpassword()
 {
+    // This needs to be re-written to hide input, so the password can be
+    // secret
     std::cout << "Password: " << std::flush;
     std::cin >> password;
 }
 
-bool Interactive::connect(const string & host)
+bool Interactive::connect(const std::string & host)
 // This deals with icky low-level socket rubbish. All this should be rubbed
 // and replaced with propper use of an iostream based socket library
 {
@@ -217,26 +219,26 @@ bool Interactive::connect(const string & host)
     sin.sin_family = AF_INET;
     sin.sin_port = htons(6767);
 
-    cout << "Connecting to cyphesis.." << endl << flush;
+    std::cout << "Connecting to cyphesis.." << endl << flush;
 
     if (::connect(cli_fd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
-        cout << "Connection failed." << endl << flush;
+        std::cout << "Connection failed." << endl << flush;
         close(cli_fd);
         return false;
     }
-    cout << "Connected to cyphesis." << endl << flush;
+    std::cout << "Connected to cyphesis." << endl << flush;
     // Connect to the server
     ios = new fstream(cli_fd);
 
     // Do client negotiation with the server
     Atlas::Net::StreamConnect conn("cycmd", *ios, this);
 
-    cout << "Negotiating... " << flush;
+    std::cout << "Negotiating... " << flush;
     while (conn.GetState() == Atlas::Negotiate<iostream>::IN_PROGRESS) {
         // conn.Poll() does all the negotiation
         conn.Poll();
     }
-    cout << "done." << endl;
+    std::cout << "done." << endl;
 
     // Check whether negotiation was successful
     if (conn.GetState() == Atlas::Negotiate<iostream>::FAILED) {
@@ -264,7 +266,7 @@ bool Interactive::login()
     error_flag = false;
     reply_flag = false;
  
-    account.SetAttr("id", string("admin"));
+    account.SetAttr("id", std::string("admin"));
     account.SetAttr("password", password);
  
     Object::ListType args(1,account.AsObject());
@@ -278,14 +280,14 @@ bool Interactive::login()
     }
 
     if (!error_flag) {
-       cout << "login was a success" << endl << flush;
+       std::cout << "login was a success" << endl << flush;
        return true;
     }
-    cout << "login failed" << endl << flush;
+    std::cout << "login failed" << endl << flush;
     return false;
 }
 
-void Interactive::exec(const string & cmd, const string & arg)
+void Interactive::exec(const std::string & cmd, const std::string & arg)
 {
     bool reply_expected = true;
     reply_flag = false;
@@ -343,22 +345,23 @@ void Interactive::exec(const string & cmd, const string & arg)
 
 static void usage(char * prg)
 {
-    std::cout << "usage: " << prg << " cmd [ server ]" << endl << flush;
-    exit(0);
+    std::cout << "usage: " << prg << " [ server [ cmd ] ]" << endl << flush;
 }
 
 int main(int argc, char ** argv)
 {
-    bool interactive = false;
-    string cmd;
+    bool interactive = true;
+    std::string cmd;
     char * server = "localhost";
-    if (argc != 1) {
-        if (argc != 2) {
-            server = argv[2];
+    if (argc > 1) {
+        if (argc == 3) {
+            cmd = argv[2];
+            interactive = false;
+        } else if (argc > 3) {
+            usage(argv[0]);
+            return 1;
         }
-        cmd = argv[1];
-    } else {
-        interactive = true;
+        server = argv[1];
     }
     Interactive bridge;
     if (!bridge.connect(server)) {

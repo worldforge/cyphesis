@@ -1,3 +1,29 @@
+2001-06-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp: Code cleanup and rationalisation. The
+	  arguments now make more sense, the usage info is correct,
+	  and works, and the code should be more portable.
+
+	* server/server.cpp, rulesets/Pedestrian.cpp: Shifted output over
+	  to debug only.
+
+	* server/Account.cpp: Added in a hack which gives characters
+	  some money on startup.
+
+	* modules/DateTime.cpp: Hardcoded Acorn 1:3 time.
+
+	* common/const.h: Increased sight range to be closer to the client
+	  view size.
+
+	* client/world/objects/Thing.py: Tweak so that server side money
+	  creation does not crash client.
+
+	* client/define_world.py: Move warriors to be spead around the
+	  inn courtyard.
+
+	* cyphesis.vconf: Enable metaserver by default, and automatic
+	  loading of world state from db at startup.
+
 2001-06-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.h, server/WorldRouter.cpp, rulesets/Thing.cpp,

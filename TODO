@@ -6,6 +6,32 @@ Definitly for Acorn 0.4:
   directories at install time, and putting it into the same hierarchy
   as the rest of the files.
 
+  Initialise people so they are not facing east. Islam has not been invented
+  yet, and statistically some of the people must be of some other religion.
+
+  Trim down the bounding boxes on trees so they are sensible size.
+
+  Implement a time mechanism. This would probably best be a person.
+
+  Fix bounding boxes on oak trees. They currently don't have one.
+
+  Client should not assume that mode is birth when entity appearance received.
+
+  Fix lych behavoir and get it moving around.
+
+  Sort out the problem that items traders can't see are not understood.
+  Need to get BaseMind's map to descend the tree.
+
+  Pigs seem to be gaining weight irespective of whether they eat.
+
+  Add some sitting NPCs.
+
+  Test daylight code.
+
+  Align all the bounding boxes with the buildings.
+
+  Use mode="sitt" for sitting NPCs.
+
 Provisional for Acorn 0.4:
 
 Provisional for Acorn 0.5:

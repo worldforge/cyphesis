@@ -20,8 +20,8 @@ namespace consts {
   const int day_in_seconds = 3600*24;
 
 
-  const double sight_range = 10.0;
-  const double hearing_range = 10.0;
+  const double sight_range = 13.0;
+  const double hearing_range = 13.0;
   const double collision_range = 1.0;
   const bool enable_ranges = true;
 

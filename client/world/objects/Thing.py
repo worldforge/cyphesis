@@ -39,6 +39,7 @@ class Thing(BaseEntity):
     def create_operation(self, op):
         """create object by type name and given attributes
            return sight of creation"""
+        return
         ent=op[0]
         if len(ent.type)!=1:
             return self.error(op,"Type field should contain exactly one type")
@@ -57,7 +58,7 @@ class Thing(BaseEntity):
         #grep location= and location.parent=
         if not obj in obj.location.parent.contains:
             obj.location.parent.contains.append(obj)
-        log.debug(3,"Created: "+str(obj)+" now: "+str(self.world.objects))
+        #log.debug(3,"Created: "+str(obj)+" now: "+str(self.world.objects))
         op[0]=obj.as_entity()
         return Operation("sight",op)
     def delete_operation(self, op):

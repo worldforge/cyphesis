@@ -141,12 +141,12 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                 debug( cout << "target achieved";);
                 new_coords = target;
                 if (m_collRef != NULL) {
-                    cout << "CONTACT " << m_collRef->fullid << endl << flush;
+                    debug(cout << "CONTACT " << m_collRef->fullid << endl << flush;);
                     if (m_collRef == new_loc.ref->location.ref) {
-                        cout << "OUT" << target << new_loc.ref->location.coords << endl << flush;
+                        debug(cout << "OUT" << target << new_loc.ref->location.coords << endl << flush;);
                         new_coords=target + new_loc.ref->location.coords;
                     } else {
-                        cout << "IN" << endl << flush;
+                        debug(cout << "IN" << endl << flush;);
                         new_coords = target - m_collRef->location.coords;
                     }
                     new_loc.ref = m_collRef;

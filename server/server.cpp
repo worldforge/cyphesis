@@ -257,7 +257,7 @@ bool CommServer::setup(int port)
     if (global_conf->findItem("cyphesis", "metaserver")) {
         mserver = global_conf->getItem("cyphesis", "metaserver");
     }
-    cout << "Connecting to metaserver..." << endl << flush;
+    debug(cout << "Connecting to metaserver..." << endl << flush;);
     struct hostent * ms_addr = gethostbyname(mserver.c_str());
     if (ms_addr == NULL) {
         cerr << "metaserver lookup failed. Disabling metaserver." <<endl<<flush;
@@ -311,7 +311,7 @@ inline void CommServer::idle()
     // stuff.
     time_t ctime = time(NULL);
     if ((ctime > (metaserverTime + 5 * 60)) && useMetaserver) {
-        cout << "Sending keepalive" << endl << flush;
+        debug(cout << "Sending keepalive" << endl << flush;);
         metaserverTime = ctime;
         metaserverKeepalive();
     }
@@ -443,7 +443,7 @@ void CommServer::metaserverReply()
     if(command == HANDSHAKE)
     {
         mesg_ptr = unpack_uint32(&handshake, mesg_ptr);
-        cout << "Server contacted successfully." << endl << flush;
+        debug(cout << "Server contacted successfully." << endl << flush;);
 
         packet_size = 0;
         mesg_ptr = pack_uint32(SERVERSHAKE, mesg, &packet_size);
@@ -583,7 +583,7 @@ int main(int argc, char ** argv)
         if (admin == NULL) {
             cout << "CRITICAL: Admin account not found." << endl << flush;
         } else {
-            cout << "Loading world stat from database..." << flush;
+            cout << "Loading world state from database..." << flush;
             admin->LoadOperation(l);
             cout << " done" << endl << flush;
         }

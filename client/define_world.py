@@ -120,7 +120,7 @@ def default(mapeditor):
     m.make('weather',type='weather',desc='object that describes the weather',
            xyz=(0,1,0), rain=0.0)
 
-#   animals
+#   bones all over the place
     for i in range(0, 2):
         m.make('skull', type='skull', xyz=(uniform(-100,100),uniform(-100,100),village_height))
         m.make('pelvis', type='pelvis', xyz=(uniform(-100,100),uniform(-100,100),village_height))
@@ -129,13 +129,15 @@ def default(mapeditor):
         m.make('shin', type='shin', xyz=(uniform(-100,100),uniform(-100,100),village_height))
         m.make('ribcage', type='ribcage', xyz=(uniform(-100,100),uniform(-100,100),village_height))
 
+#   some coins near the start for people who are penniless
     for i in range(0, 30):
         m.make('coin',type='coin',xyz=(uniform(-6,-2),uniform(-2,2),village_height))
 
-
-
+#   the lych, who makes bones into skeletons
     lych=m.make('lych', type='lych', xyz=(2, 3, village_height))
     m.learn(lych,(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"))
+
+#   animals
     piglet = m.make('pig', type='pig', xyz=(-31,-16,village_height))
     m.learn(piglet,pig_goals)
 
@@ -156,7 +158,7 @@ def default(mapeditor):
     #m.know(squirrel,sknowledge)
     #m.learn(squirrel,(il.transport,"transport_something(self,'acorn','forest','stash')"))
 
-#   farmers
+#   villagers
 
     m.make('bstall',type='bstall',xyz=(-41,-5,village_height))
 
@@ -204,29 +206,29 @@ def default(mapeditor):
     # Warriors - the more adventurous types
 
     warriors=[]
-    warrior=m.make('Tom Harrowe', type='guard',xyz=inn_xyz,sex='male')
+    warrior=m.make('Tom Harrowe', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male')
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
-    warrior=m.make('Mae Dollor', type='guard',xyz=inn_xyz,sex='female')
+    warrior=m.make('Mae Dollor', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='female')
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
-    warrior=m.make('Covan Dubneal',type='guard',xyz=inn_xyz,sex='male')
+    warrior=m.make('Covan Dubneal',type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male')
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
-    warrior=m.make('Roal Guddon', type='guard',xyz=inn_xyz,sex='male')
+    warrior=m.make('Roal Guddon', type='guard',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='male')
     sword=m.make('sword',type='sword',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,sword)
     warriors.append(warrior)
 
     m.learn(warriors,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
 
-    warrior=m.make('Vonaa Barile',type='archer',xyz=inn_xyz,sex='female')
+    warrior=m.make('Vonaa Barile',type='archer',xyz=(uniform(-1,14),uniform(-18,-27),village_height),sex='female')
     m.learn(warrior,(il.hunt,"hunt(self, 'bow', 'deer', 10)"))
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
@@ -241,6 +243,9 @@ def default(mapeditor):
         m.own(warrior,arrow)
     warriors.append(warrior)
 
+    # Warriors all know where stuff is in the village
+    m.know(warriors,village)
+
     # Warriors enjoy their food and drink
     m.learn(warriors,(il.lunch,"imaginary('have lunch', 'midday', 'inn')"))
     m.learn(warriors,(il.sup,"imaginary('have a drink', 'evening', 'inn')"))
@@ -248,7 +253,6 @@ def default(mapeditor):
     m.make('deer',type='deer',xyz=(2,2,village_height))
 
     # I am not sure if we need a guard
-    #m.know(guard,gknowledge)
     #m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))
     #m.tell_importance(guard,il.defend,'>',il.patrol)
 
