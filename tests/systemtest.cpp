@@ -5,6 +5,8 @@
 #include "common/globals.h"
 #include "common/system.h"
 
+#include <cassert>
+
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>

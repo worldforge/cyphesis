@@ -6,6 +6,8 @@
 
 #include <Atlas/Objects/Root.h>
 
+#include <cassert>
+
 using Atlas::Objects::Root;
 
 void descendTree(Root * type, Inheritance & i, int & count)

@@ -1,5 +1,13 @@
 2003-09-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/OOGThingtest.cpp, tests/systemtest.cpp,
+	  tests/inheritancetest.cpp: Include <cassert> as required.
+
+	* tests/utilitytest.cpp: Test for Element to Objects conversion
+	  functions.
+
+2003-09-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/systemtest.cpp: Test for signal handling, daemon
 	  related, and password encryption code.
 

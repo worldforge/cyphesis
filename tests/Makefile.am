@@ -1,4 +1,5 @@
-TESTS = logtest BaseEntitytest inheritancetest OOGThingtest systemtest
+TESTS = logtest BaseEntitytest inheritancetest OOGThingtest \
+        systemtest utilitytest
 
 check_PROGRAMS = $(TESTS)
 
@@ -21,4 +22,7 @@ OOGThingtest_LDADD = ../common/OOGThing.o ../common/BaseEntity.o \
 
 systemtest_SOURCES = systemtest.cpp
 systemtest_LDADD = ../common/system.o ../common/log.o ../common/globals.o
+
+utilitytest_SOURCES = utilitytest.cpp
+utilitytest_LDADD = ../common/utility.o
 
