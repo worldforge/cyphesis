@@ -55,6 +55,8 @@ class Entity : public BaseEntity {
   private:
     static std::set<std::string> m_immutable;
     static const std::set<std::string> & immutables();
+
+    int m_refCount;
   protected:
     /// Script associated with this entity
     Script * m_script;
@@ -87,6 +89,18 @@ class Entity : public BaseEntity {
 
     explicit Entity(const std::string & id);
     virtual ~Entity();
+
+    void incRef() {
+        ++m_refCount;
+    }
+
+    void decRef() {
+        if (m_refCount <= 0) {
+            delete this;
+        } else {
+            --m_refCount;
+        }
+    }
 
     /// \brief Send an operation to the world for dispatch.
     ///

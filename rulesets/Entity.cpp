@@ -36,7 +36,7 @@ const std::set<std::string> & Entity::immutables()
     return m_immutable;
 }
 
-Entity::Entity(const std::string & id) : BaseEntity(id),
+Entity::Entity(const std::string & id) : BaseEntity(id), m_refCount(0),
                                          m_script(new Script), m_seq(0),
                                          m_status(1), m_type("entity"),
                                          m_mass(-1), m_perceptive(false),

@@ -1,5 +1,11 @@
 2004-01-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h, rulesets/Entity.cpp, server/WorldRouter.cpp:
+	  Add basic reference counting to Entity, and use it for deleting
+	  objects from world.
+
+2004-01-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommMetaClient.cpp: Add warning to help debug problems
 	  communicating with the metaserver.
 

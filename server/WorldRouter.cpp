@@ -80,7 +80,8 @@ WorldRouter::~WorldRouter()
     m_eobjects.erase(m_gameWorld.getId());
     EntityDict::const_iterator Jend = m_eobjects.end();
     for (EntityDict::const_iterator J = m_eobjects.begin(); J != Jend; ++J) {
-        delete J->second;
+        // delete J->second;
+        J->second->decRef();
     }
     // This should be deleted here rather than in the base class because
     // we created it, and BaseWorld should not even know what it is.
