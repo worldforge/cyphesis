@@ -1,3 +1,9 @@
+2002-06-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/acorn/world/objects/plants/seeds/Apple.py,
+	  rulesets/mason/world/objects/plants/seeds/Apple.py,
+	  rulesets/Character.cpp: Fix spelling of alcohol.
+
 2002-06-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.in: Bug fixes and tidying up.

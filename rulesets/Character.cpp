@@ -326,7 +326,7 @@ OpVector Character::NourishOperation(const Nourish & op)
     Object::MapType food_ent;
     food_ent["id"] = getId();
     food_ent["food"] = food;
-    if (((I = nent.find("alcahol")) != nent.end()) && I->second.IsNum()) {
+    if (((I = nent.find("alcohol")) != nent.end()) && I->second.IsNum()) {
         drunkness += I->second.AsNum() / mass;
         food_ent["drunkness"] = drunkness;
     }
