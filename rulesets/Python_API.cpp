@@ -1016,7 +1016,7 @@ void init_python_api()
     PyDict_SetItemString(dict, "dictlist", dictlist);
     Py_DECREF(dictlist);
 
-    std::cout << Py_GetPath() << std::endl << std::flush;
+    // std::cout << Py_GetPath() << std::endl << std::flush;
 }
 
 void shutdown_python_api()

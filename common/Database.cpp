@@ -59,8 +59,7 @@ bool Database::initConnection(bool createDatabase)
     strcpy(conninfo, cinfo.c_str());
 
     if (createDatabase) {
-        std::cerr << "Attempting unsupported database creation operation"
-                  << std::endl << std::flush;
+        // Currently not able to create the database
     }
 
     m_connection = new PgDatabase(conninfo);
@@ -69,8 +68,6 @@ bool Database::initConnection(bool createDatabase)
     if (m_connection->Status() != CONNECTION_OK) {
         std::cerr << "Database connection failed" << std::endl << std::flush;
         return false;
-    } else {
-        std::cerr << "Database connection okay" << std::endl << std::flush;
     }
 
     return true;

@@ -106,6 +106,10 @@ class FileDecoder : public Atlas::Message::DecoderBase {
         std::cout << m_count << " objects stored in world database."
                   << std::endl << std::flush;
     }
+
+    bool isOpen() {
+        return m_file.is_open();
+    }
 };
 
 static void usage(char * prgname)
@@ -132,6 +136,11 @@ int main(int argc, char ** argv)
     WorldAccessor & db = *WorldAccessor::instance();
 
     FileDecoder f(argv[1], db);
+    if (!f.isOpen()) {
+        std::cerr << "ERROR: Unable to open file " << argv[1]
+                  << std::endl << std::flush;
+        return 1;
+    }
     f.read();
     f.report();
     delete &db;

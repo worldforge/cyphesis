@@ -1,3 +1,11 @@
+2002-06-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp, rulesets/Python_API.cpp: Remove some
+	  debugging output.
+
+	* tools/cydbload.cpp, tools/cyloadrules.cpp: Check atlas files
+	  exists.
+
 2002-06-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommClient.cpp: Fix leak if connection is deleted before
