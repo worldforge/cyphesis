@@ -16,7 +16,7 @@ class TestWorld : public BaseWorld {
   public:
     explicit TestWorld(Entity & gw) : BaseWorld(gw) { }
 
-    virtual bool idle() { return false; }
+    virtual bool idle(int, int) { return false; }
     virtual Entity * addObject(Entity * obj, bool setup = true) { return 0; }
     virtual Entity * addNewObject(const std::string &, const MapType &) {
         return 0;
