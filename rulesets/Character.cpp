@@ -16,6 +16,7 @@
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/log.h"
+#include "common/inheritance.h"
 #include "common/Property.h"
 
 #include "common/Setup.h"
@@ -89,6 +90,7 @@ Character::Character(const std::string & id) : Character_parent(id),
     subscribe("talk", OP_TALK);
     subscribe("eat", OP_EAT);
     subscribe("nourish", OP_NOURISH);
+    subscribe("wield", OP_WIELD);
 
     // subscribe to ops from the mind
     mindSubscribe("action", OP_ACTION);
@@ -326,6 +328,40 @@ void Character::NourishOperation(const Nourish & op, OpVector & res)
     res.push_back(si);
 }
 
+void Character::WieldOperation(const Wield & op, OpVector & res)
+{
+    if (op.getArgs().empty()) {
+        // FIXME Wield nothing perhaps?
+        error(op, "Wield has no argument", res, getId());
+        return;
+    }
+    if (!op.getArgs().front().isMap()) {
+        error(op, "Wield arg is malformed", res, getId());
+        return;
+    }
+    const MapType & went = op.getArgs().front().asMap();
+    MapType::const_iterator I = went.find("id");
+    if ((I == went.end()) || !I->second.isString()) {
+        error(op, "Wield arg has no id", res, getId());
+        return;
+    }
+    const std::string & id = I->second.asString();
+    EntityDict::const_iterator J = m_world->getObjects().find(id);
+    if (J == m_world->getObjects().end()) {
+        error(op, "Wield arg does not exist", res, getId());
+        return;
+    }
+    Entity * item = J->second;
+    assert(item != 0);
+    EntitySet::const_iterator K = m_contains.find(item);
+    if (K == m_contains.end()) {
+        error(op, "Wield arg is not in inventory", res, getId());
+        return;
+    }
+    m_rightHandWield = item->getId();
+    std::cout << "Wielding " << m_rightHandWield << std::endl << std::flush;
+}
+
 void Character::mindLoginOperation(const Login & op, OpVector & res)
 {
 }
@@ -352,10 +388,135 @@ void Character::mindSetupOperation(const Setup & op, OpVector & res)
 void Character::mindUseOperation(const Use & op, OpVector & res)
 {
     std::cout << "Got Use op from mind" << std::endl << std::flush;
-    // Use *s = new Use(op);
-    // s->setTo(getId());
-    // res.push_back(s);
-    
+
+    std::string toolId = m_rightHandWield;
+
+    // FIXME Get a tool id from the op attributes?
+
+    EntityDict::const_iterator I = m_world->getObjects().find(toolId);
+    if (I == m_world->getObjects().end()) {
+        error(op, "Use tool does not exist.", res, getId());
+        return;
+    }
+
+    Entity * tool = I->second;
+    assert(tool != 0);
+
+    Element toolOpAttr;
+    std::set<std::string> toolOps;
+    std::string op_type;
+
+    if (tool->get("operations", toolOpAttr)) {
+        if (!toolOpAttr.isList()) {
+            log(ERROR, "Use tool has non list operations list");
+            return;
+        }
+        const ListType & toolOpList = toolOpAttr.asList();
+        ListType::const_iterator J = toolOpList.begin();
+        ListType::const_iterator Jend = toolOpList.end();
+        if ((J != Jend) && ((*J).isString())) {
+            op_type = (*J).asString();
+            std::cout << "default tool op is " << op_type << std::endl
+                                                          << std::flush;
+        }
+        for (; J != Jend; ++J) {
+            if (!(*J).isString()) {
+                log(ERROR, "Use tool has non string in operations list");
+            }
+            toolOps.insert((*J).asString());
+        }
+    }
+
+    std::string target;
+    const ListType & args = op.getArgs();
+    if (!args.empty()) {
+        const Element & arg = args.front();
+        if (!arg.isMap()) {
+            error(op, "Use arg is not a map", res, getId());
+            return;
+        }
+        const MapType & amap = arg.asMap();
+        MapType::const_iterator K = amap.find("objtype");
+        if (K == amap.end() || !K->second.isString()) {
+            error(op, "Use arg has no objtype", res, getId());
+            return;
+        }
+        const std::string & argtype = K->second.asString();
+        if (argtype == "op") {
+            K = amap.find("parents");
+            if (K == amap.end() || (!K->second.isList()) ||
+                (K->second.asList().empty())) {
+                error(op, "Use arg op has malformed parents", res, getId());
+                return;
+            }
+            const Element & arg_op_parent = K->second.asList().front();
+            if (!arg_op_parent.isString()) {
+                error(op, "Use arg op has non string parent", res, getId());
+                return;
+            }
+            op_type = arg_op_parent.asString();
+            std::cout << "Got op type " << op_type << " from arg"
+                      << std::endl << std::flush;
+            if (toolOps.find(op_type) == toolOps.end()) {
+                std::cout << "Use op is not permitted by tool"
+                          << std::endl << std::flush;
+            }
+            // Check against valid ops
+
+            K = amap.find("args");
+            if (K == amap.end() || (!K->second.isList())) {
+                error(op, "Use arg op has malformed args", res, getId());
+                return;
+            }
+            if (!K->second.asList().empty()) {
+                const Element & arg_op_arg = K->second.asList().front();
+                if (!arg_op_arg.isMap()) {
+                    error(op, "Use arg op has map arg", res, getId());
+                    return;
+                }
+                const MapType & arg_op_amap = arg_op_arg.asMap();
+                
+                K = arg_op_amap.find("id");
+                if (K == arg_op_amap.end() || (!K->second.isString())) {
+                    error(op, "Use arg entity has no id", res, getId());
+                    return;
+                }
+                target = K->second.asString();
+                std::cout << "Got target " << target << " from op arg"
+                          << std::endl << std::flush;
+            }
+        } else if (argtype == "obj") {
+            K = amap.find("id");
+            if (K == amap.end() || (!K->second.isString())) {
+                error(op, "Use arg entity has no id", res, getId());
+                return;
+            }
+            target = K->second.asString();
+            std::cout << "Got target " << target << " from arg"
+                      << std::endl << std::flush;
+        } else {
+            error(op, "Use arg has unknown objtype", res, getId());
+            return;
+        }
+    }
+
+    if (op_type.empty()) {
+        error(op, "Use unable to determine target", res, getId());
+        return;
+    }
+
+    RootOperation * rop = Inheritance::instance().newOperation(op_type);
+    if (target.empty()) {
+        std::cout << "No target" << std::endl << std::flush;
+    } else {
+        ListType & rop_args = rop->getArgs();
+        rop_args.push_back(MapType());
+        MapType & rop_arg = rop_args.back().asMap();
+        rop_arg["id"] = target;
+    }
+
+    rop->setTo(toolId);
+    res.push_back(rop);
 }
 
 void Character::mindWieldOperation(const Wield & op, OpVector & res)

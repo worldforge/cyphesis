@@ -266,6 +266,12 @@
         <float name="default">1.5</float>
         <string name="visibility">public</string>
       </map>
+      <map name="operations">
+        <list name="default">
+          <string>cut</string>
+        </list>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">cleaver</string>
     <list name="parents">

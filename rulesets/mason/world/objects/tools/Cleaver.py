@@ -11,9 +11,11 @@ class Cleaver(Thing):
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
         set_kw(self,kw,"mass",1.5)
+        print "New cleaver"
     def cut_operation(self, op):
         #to_ = self.world.get_object(op[1].id)
-        to_ = op[1].id
+        print "chop with cleaver"
+        to_ = op[0].id
         if not to_:
             return self.error(op,"To is undefined object")
-        return Message(Operation("chop",op[1],Entity(op.from_.id),to=to_))
+        return Message(Operation("chop",op[0],Entity(op.from_.id),to=to_))

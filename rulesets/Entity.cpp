@@ -73,6 +73,20 @@ Entity::~Entity()
     }
 }
 
+bool Entity::has(const std::string & aname) const
+{
+    PropertyDict::const_iterator I = m_properties.find(aname);
+    if (I != m_properties.end()) {
+        return true;
+    }
+    MapType::const_iterator J = m_attributes.find(aname);
+    if (J != m_attributes.end()) {
+        return true;
+    }
+    return false;
+    
+}
+
 bool Entity::get(const std::string & aname, Element & attr) const
 {
     PropertyDict::const_iterator I = m_properties.find(aname);

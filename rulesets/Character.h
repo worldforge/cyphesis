@@ -76,6 +76,7 @@ class Character : public Character_parent {
     virtual void TalkOperation(const Talk & op, OpVector &);
     virtual void EatOperation(const Eat & op, OpVector &);
     virtual void NourishOperation(const Nourish & op, OpVector &);
+    virtual void WieldOperation(const Wield & op, OpVector &);
 
     virtual void mindLoginOperation(const Login &, OpVector &);
     virtual void mindLogoutOperation(const Logout &, OpVector &);

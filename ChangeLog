@@ -1,5 +1,21 @@
 2004-11-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp, rulesets/Entity.h: Add has() method
+	  to query if an entity has an attribute with a given name.
+
+	* rulesets/Character.cpp, rulesets/Character.h: Implement tool
+	  wield and use operations.
+
+	* data/mason.xml: Add operations list to the cleaver.
+
+	* rulesets/mason/world/objects/tools/Cleaver.py: Simplify the chop
+	  operation the cleaver expects to get from its user.
+
+	* tools/cyloadrules.cpp: Remove some commented out cruft and
+	  debugging output.
+
+2004-11-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/inheritance_impl.h, common/inheritance.h,
 	  common/inheritance.cpp: Add a new method for copying new
 	  operation into an existing operation object, for scenarios

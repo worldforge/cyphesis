@@ -119,6 +119,7 @@ class Entity : public BaseEntity {
         return m_location.getXyz();
     }
 
+    bool has(const std::string &) const;
     bool get(const std::string &, Element &) const;
     void set(const std::string &, const Element &);
     void addToMessage(MapType & obj) const;

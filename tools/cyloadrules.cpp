@@ -112,15 +112,11 @@ static void usage(char * prgname)
 int main(int argc, char ** argv)
 {
     int optind;
-    // int cargc = 0;
-    // char * cargv[0];
 
     if ((optind = loadConfig(argc, argv)) < 0) {
         // Fatal error loading config file
         return 1;
     }
-
-    std::cout << "O: " << optind << "," << argc << std::endl << std::flush;
 
     RuleBase * db = RuleBase::instance();
 
