@@ -17,11 +17,11 @@ class Location {
   private:
     bool m_solid;
   protected:
-    bool distanceLeft(const Location & other, Vector3D & c) const;
-    bool distanceRight(const Location & other, Vector3D & c) const;
+    bool distanceLeft(const Location & other, Point3D & c) const;
+    bool distanceRight(const Location & other, Point3D & c) const;
   public:
     Entity * m_loc;
-    Vector3D m_pos;   // Coords relative to m_loc entity
+    Point3D m_pos;   // Coords relative to m_loc entity
     Vector3D m_velocity; // Veclociy vector, relative to m_loc entity.
     Quaternion m_orientation;
 
@@ -29,8 +29,8 @@ class Location {
 
     Location();
     explicit Location(Entity * rf);
-    explicit Location(Entity * rf, const Vector3D& crds);
-    explicit Location(Entity * rf, const Vector3D& crds, const Vector3D& vel);
+    explicit Location(Entity * rf, const Point3D & crds);
+    explicit Location(Entity * rf, const Point3D & crds, const Vector3D & vel);
 
     bool isValid() const {
         return ((m_loc != NULL) && m_pos.isValid());
@@ -44,17 +44,17 @@ class Location {
         m_solid = s;
     }
 
-    const Vector3D getXyz() const;
-    const Vector3D getXyz(Entity *) const;
+    const Point3D getXyz() const;
+    const Point3D getXyz(Entity *) const;
 
     void addToMessage(Atlas::Message::MapType & ent) const;
 
-    const Vector3D distanceTo(const Location & other) const {
-        Vector3D dist(0,0,0);
+    const Point3D relativePosition(const Location & other) const {
+        Point3D dist(0,0,0);
         if (distanceRight(other, dist)) {
            dist.setValid();
         } else {
-           return Vector3D();
+           return Point3D();
         }
         return dist;
     }

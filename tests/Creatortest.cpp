@@ -23,7 +23,7 @@ class TestWorld : public BaseWorld {
     virtual void message(RootOperation & op, const Entity * obj) { }
     virtual Entity * findByName(const std::string & name) { return 0; }
     virtual Entity * findByType(const std::string & type) { return 0; }
-    virtual float constrainHeight(Entity*, const Vector3D&) { return 0.f; }
+    virtual float constrainHeight(Entity*, const Point3D&) { return 0.f; }
     virtual void addPerceptive(const std::string &) { }
 };
 

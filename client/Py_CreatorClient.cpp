@@ -8,7 +8,7 @@
 
 #include "rulesets/Py_Operation.h"
 #include "rulesets/Py_WorldTime.h"
-#include "rulesets/Py_Vector3D.h"
+#include "rulesets/Py_Point3D.h"
 #include "rulesets/Py_Location.h"
 #include "rulesets/Py_Object.h"
 #include "rulesets/Py_Thing.h"
@@ -49,7 +49,7 @@ static PyObject * CreatorClient_get_xyz(PyCreatorClient * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "")) {
         return NULL;
     }
-    PyVector3D * ret = newPyVector3D();
+    PyPoint3D * ret = newPyPoint3D();
     if (ret == NULL) {
         return NULL;
     }

@@ -17,33 +17,23 @@ Location::Location(Entity * rf) :
 {
 }
 
-Location::Location(Entity * rf, const Vector3D& crds) :
+Location::Location(Entity * rf, const Point3D & crds) :
             m_solid(true), m_loc(rf), m_pos(crds)
 {
 }
 
-Location::Location(Entity * rf, const Vector3D& crds, const Vector3D& vel) :
+Location::Location(Entity * rf, const Point3D& crds, const Vector3D& vel) :
             m_solid(true), m_loc(rf), m_pos(crds), m_velocity(vel)
 {
 }
 
-const Vector3D Location::getXyz() const
+const Point3D Location::getXyz() const
 {
-    if (m_loc) {
-        return Vector3D(m_pos) + m_loc->m_location.getXyz();
+    if (m_loc != 0) {
+        return m_pos.toParentCoords(m_loc->m_location.getXyz(),
+                                    m_loc->m_location.m_orientation);
     } else {
-        return Vector3D(0,0,0);
-    }
-}
-
-const Vector3D Location::getXyz(Entity * ent) const
-{
-    if (m_loc == ent) {
-        return Vector3D(m_pos);
-    } else if (m_loc == NULL) {
-        return Vector3D(0,0,0);
-    } else {
-        return Vector3D(m_pos) + m_loc->m_location.getXyz(ent);
+        return Point3D(0,0,0);
     }
 }
 
@@ -68,27 +58,27 @@ void Location::addToMessage(MapType & omap) const
     }
 }
 
-bool Location::distanceLeft(const Location & other, Vector3D & c) const
+bool Location::distanceLeft(const Location & other, Point3D & c) const
 {
     if (m_loc == other.m_loc) {
-        c -= m_pos;
+        c = c.toLocalCoords(m_pos, m_orientation);
         return true;
     } else if (m_loc == NULL) {
         return false;
     } else {
         bool ret = m_loc->m_location.distanceLeft(other,c);
         if (ret) {
-            c -= m_pos;
+            c = c.toLocalCoords(m_pos, m_orientation);
         }
         return ret;
     }
 }
 
-bool Location::distanceRight(const Location & other, Vector3D & c) const
+bool Location::distanceRight(const Location & other, Point3D & c) const
 {
     // In an intact system, other->m_loc should never be NULL or invalid
     if (distanceLeft(other,c) || distanceRight(other.m_loc->m_location,c)) {
-        c += other.m_pos;
+        c = other.m_pos.toParentCoords(c, m_orientation);
         return true;
     }
     return false;

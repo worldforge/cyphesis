@@ -101,7 +101,7 @@ int Plant::dropFruit(OpVector & res)
         MapType fmap;
         fmap["name"] = m_fruitName;
         fmap["parents"] = ListType(1,m_fruitName);
-        Location floc(m_location.m_loc, Vector3D(rx, ry, 0));
+        Location floc(m_location.m_loc, Point3D(rx, ry, 0));
         floc.addToMessage(fmap);
         RootOperation * create = new Create();
         create->setTo(getId());

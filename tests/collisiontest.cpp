@@ -14,9 +14,9 @@ int main()
 {
     int ret = 0;
     {
-        const Vector3D position(-1.2, 1, 0);
+        const Point3D position(-1.2, 1, 0);
         const Vector3D velocity(1.1, 0.9, 0);
-        const Vector3D plane(1, 1, 0);
+        const Point3D plane(1, 1, 0);
         const Vector3D normal(-1, 1, 0);
         const Vector3D plane_velocity(-1, 0, 0);
         float time = -1;
@@ -36,10 +36,10 @@ int main()
         NormalSet meshan;
         Vector3D meshav = Vector3D(0.1, 1, 0);
 
-        mesha.push_back(Vector3D(0,0,0));
-        mesha.push_back(Vector3D(1,0,0));
-        mesha.push_back(Vector3D(0,1,0));
-        mesha.push_back(Vector3D(0,0,1));
+        mesha.push_back(Point3D(0,0,0));
+        mesha.push_back(Point3D(1,0,0));
+        mesha.push_back(Point3D(0,1,0));
+        mesha.push_back(Point3D(0,0,1));
         meshan.insert(std::make_pair(0, Vector3D(0, 0, -1)));
         meshan.insert(std::make_pair(1, Vector3D(0, -1, 0)));
         meshan.insert(std::make_pair(2, Vector3D(-1, 0, 0)));
@@ -48,10 +48,10 @@ int main()
         CoordList meshb;
         NormalSet meshbn;
 
-        meshb.push_back(Vector3D(5,-1,-1));
-        meshb.push_back(Vector3D(7,-1,-1));
-        meshb.push_back(Vector3D(5,2,-1));
-        meshb.push_back(Vector3D(5,-1,2));
+        meshb.push_back(Point3D(5,-1,-1));
+        meshb.push_back(Point3D(7,-1,-1));
+        meshb.push_back(Point3D(5,2,-1));
+        meshb.push_back(Point3D(5,-1,2));
         meshbn.insert(std::make_pair(0, Vector3D(0, 0, -1)));
         meshbn.insert(std::make_pair(1, Vector3D(0, -1, 0)));
         meshbn.insert(std::make_pair(2, Vector3D(-1, 0, 0)));
@@ -75,11 +75,11 @@ int main()
     }
 
     {
-        Location a(0, Vector3D(0,0,0), Vector3D(0.1,0,0));
+        Location a(0, Point3D(0,0,0), Vector3D(0.1,0,0));
         a.m_bBox = BBox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1,1,1));
         a.m_orientation = Quaternion(Vector3D(1,1,1), 45);
 
-        Location b(0, Vector3D(5,0,0), Vector3D(-0.1,0,0));
+        Location b(0, Point3D(5,0,0), Vector3D(-0.1,0,0));
         b.m_bBox = BBox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1,1,1));
         b.m_orientation = Quaternion(Vector3D(1,1,1), 20);
 

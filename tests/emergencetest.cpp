@@ -14,7 +14,7 @@ int main()
 {
     int ret = 0;
     {
-        CoordList coords(1, Vector3D(0, 0, 0));
+        CoordList coords(1, Point3D(0, 0, 0));
         Vector3D velocity(1, 0, 0);
         BBox container(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1,1,1));
         float time = 0;
@@ -45,11 +45,11 @@ int main()
     {
         float time = 0;
 
-        Location a(0, Vector3D(0,0,0), Vector3D(-1,1,1));
+        Location a(0, Point3D(0,0,0), Vector3D(-1,1,1));
         a.m_bBox = BBox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1,1,1));
         a.m_orientation = Quaternion(Vector3D(1,1,1), 45);
 
-        Location b(0, Vector3D(5,0,0));
+        Location b(0, Point3D(5,0,0));
         b.m_bBox = BBox(WFMath::Point<3>(-5, -5, -5), WFMath::Point<3>(5,5,5));
 
         predictEmergence(a, b, time);

@@ -27,7 +27,7 @@ int main()
     }
 
     {
-        Vector3D testPos;
+        Point3D testPos;
         Location testloc(0, testPos);
 
         assert(!testPos.isValid());
@@ -39,7 +39,7 @@ int main()
     }
 
     {
-        Vector3D testPos(0,0,0);
+        Point3D testPos(0,0,0);
         Location testloc(0, testPos);
 
         assert(testPos.isValid());
@@ -51,7 +51,7 @@ int main()
     }
 
     {
-        Vector3D testPos(0,0,0);
+        Point3D testPos(0,0,0);
         Vector3D testVel;
         Location testloc(0, testPos, testVel);
 
@@ -65,7 +65,7 @@ int main()
     }
 
     {
-        Vector3D testPos(0,0,0);
+        Point3D testPos(0,0,0);
         Vector3D testVel(0,0,0);
         Location testloc(0, testPos, testVel);
 

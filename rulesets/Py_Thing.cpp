@@ -5,6 +5,7 @@
 #include "Py_Thing.h"
 #include "Py_Object.h"
 #include "Py_Vector3D.h"
+#include "Py_Point3D.h"
 #include "Py_Location.h"
 #include "Py_World.h"
 #include "Entity.h"
@@ -34,7 +35,7 @@ static PyObject * Entity_get_xyz(PyEntity * self)
         return NULL;
     }
 #endif // NDEBUG
-    PyVector3D * ret = newPyVector3D();
+    PyPoint3D * ret = newPyPoint3D();
     if (ret == NULL) {
         return NULL;
     }

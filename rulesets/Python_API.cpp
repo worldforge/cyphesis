@@ -10,6 +10,7 @@
 #include "Py_Map.h"
 #include "Py_Location.h"
 #include "Py_Vector3D.h"
+#include "Py_Point3D.h"
 #include "Py_Quaternion.h"
 #include "Py_WorldTime.h"
 #include "Py_World.h"
@@ -467,7 +468,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
                 return NULL;
             }
         }
-        if ((coordsO != NULL) && (!PyVector3D_Check(coordsO))) {
+        if ((coordsO != NULL) && (!PyPoint3D_Check(coordsO))) {
             PyErr_SetString(PyExc_TypeError, "Arg coords required");
             if (decrefO) { Py_DECREF(refO); }
             return NULL;
@@ -506,7 +507,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
         }
     }
     if (decrefO) { Py_DECREF(refO); }
-    PyVector3D * coords = (PyVector3D*)coordsO;
+    PyPoint3D * coords = (PyPoint3D*)coordsO;
     o = newPyLocation();
     if ( o == NULL ) {
         return NULL;
@@ -569,6 +570,62 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
         }
             
         o = newPyVector3D();
+        if ( o == NULL ) {
+                return NULL;
+        }
+        o->coords = val;
+        return (PyObject *)o;
+}
+
+static PyObject * point3d_new(PyObject * self, PyObject * args)
+{
+        PyPoint3D *o;
+        Point3D val;
+        // We need to deal with actual args here
+        PyObject * clist;
+        switch (PyTuple_Size(args)) {
+            case 0:
+                break;
+            case 1:
+                clist = PyTuple_GetItem(args, 0);
+                if ((!PyList_Check(clist)) || (PyList_Size(clist) != 3)) {
+                    PyErr_SetString(PyExc_TypeError, "Point3D() from single value must a list 3 long");
+                    return NULL;
+                }
+                for(int i = 0; i < 3; i++) {
+                    PyObject * item = PyList_GetItem(clist, i);
+                    if (PyInt_Check(item)) {
+                        val[i] = (float)PyInt_AsLong(item);
+                    } else if (PyFloat_Check(item)) {
+                        val[i] = PyFloat_AsDouble(item);
+                    } else {
+                        PyErr_SetString(PyExc_TypeError, "Point3D() must take list of floats, or ints");
+                        return NULL;
+                    }
+                }
+                val.setValid();
+                break;
+            case 3:
+                for(int i = 0; i < 3; i++) {
+                    PyObject * item = PyTuple_GetItem(args, i);
+                    if (PyInt_Check(item)) {
+                        val[i] = (float)PyInt_AsLong(item);
+                    } else if (PyFloat_Check(item)) {
+                        val[i] = PyFloat_AsDouble(item);
+                    } else {
+                        PyErr_SetString(PyExc_TypeError, "Point3D() must take list of floats, or ints");
+                        return NULL;
+                    }
+                }
+                val.setValid();
+                break;
+            default:
+                PyErr_SetString(PyExc_TypeError, "Point3D must take list of floats, or ints, 3 ints or 3 floats");
+                return NULL;
+                break;
+        }
+            
+        o = newPyPoint3D();
         if ( o == NULL ) {
                 return NULL;
         }
@@ -1001,6 +1058,11 @@ static PyMethodDef vector3d_methods[] = {
         {NULL,          NULL}                           /* Sentinel */
 };
 
+static PyMethodDef point3d_methods[] = {
+        {"Point3D",    point3d_new,   METH_VARARGS},
+        {NULL,          NULL}                           /* Sentinel */
+};
+
 static PyMethodDef quaternion_methods[] = {
         {"Quaternion",  quaternion_new, METH_VARARGS},
         {NULL,          NULL}                           /* Sentinel */
@@ -1075,6 +1137,11 @@ void init_python_api()
     }
 
     if (Py_InitModule("Vector3D", vector3d_methods) == NULL) {
+        log(CRITICAL, "Python init failed to Create Vector3D module\n");
+        return;
+    }
+
+    if (Py_InitModule("Point3D", point3d_methods) == NULL) {
         log(CRITICAL, "Python init failed to Create Vector3D module\n");
         return;
     }

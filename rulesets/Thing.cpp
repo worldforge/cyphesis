@@ -190,7 +190,7 @@ void Thing::MoveOperation(const Move & op, OpVector & res)
         error(op, "Move has no argument", res, getId());
         return;
     }
-    Vector3D oldpos = m_location.m_pos;
+    Point3D oldpos = m_location.m_pos;
     const MapType & ent = args.front().asMap();
     MapType::const_iterator I = ent.find("loc");
     if ((I == ent.end()) || !I->second.isString()) {

@@ -1,3 +1,38 @@
+2004-09-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Vector3D.h, physics/Vector3D.cpp, modules/Location.h,
+	  modules/Location.cpp: Convert to using WFMath::Point instead of
+	  WFMath::Vector for position.
+
+	* physics/Collision.h, physics/Collision.cpp: Update collision code
+	  to use new pos type.
+
+	* rulesets/Py_Point3D.h, rulesets/Py_Point3D.cpp: New python
+	  wrappers for WFMath::Point.
+
+	* rulesets/Py_Location.cpp, rulesets/Py_Vector3D.cpp,
+	  rulesets/Python_API.cpp:
+	  Update python wrappers to take into account new pos type.
+	  Ensure that only apropriate functionality is available for
+	  point and vector.
+
+	* rulesets/Character.cpp, rulesets/Entity.cpp, rulesets/Entity.h,
+	  rulesets/Line.cpp, rulesets/Movement.cpp, rulesets/Movement.h,
+	  rulesets/Pedestrian.cpp, rulesets/Pedestrian.h,
+	  rulesets/Plant.cpp, rulesets/Thing.cpp, rulesets/World.cpp,
+	  server/EntityFactory.cpp, server/WorldRouter.cpp,
+	  server/WorldRouter.h: Update the rest of the code for new pos
+	  type, converting all places where entity parenting is changed
+	  to use WFMath toParentCoords() and toLocalCoords() methods,
+	  so that orientation is handled correctly.
+
+	* tests/transformtest.cpp: New test to ensure that toParentCoords()
+	  and toLocalCoords() perform as expected.
+
+	* tests/Creatortest.cpp, tests/Locationtest.cpp, tests/Worldtest.cpp,
+	  tests/collisiontest.cpp, tests/emergencetest.cpp:
+	  Update the rest of the tests.
+
 2004-09-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Fix some typos that messed up

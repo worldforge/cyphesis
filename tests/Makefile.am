@@ -1,7 +1,7 @@
 COMMON_TESTS = logtest inheritancetest BaseEntitytest OOGThingtest \
                systemtest utilitytest
 
-PHYSICS_TESTS = collisiontest emergencetest
+PHYSICS_TESTS = transformtest collisiontest emergencetest
 
 MODULE_TESTS = Locationtest WorldTimetest
 
@@ -64,12 +64,19 @@ utilitytest_LDADD = $(top_builddir)/common/utility.o
 
 collisiontest_SOURCES = collisiontest.cpp
 collisiontest_LDADD = $(top_builddir)/physics/Collision.o \
-                      $(top_builddir)/modules/Location.o
+                      $(top_builddir)/modules/Location.o \
+                      $(top_builddir)/modules/DateTime.o \
+                      $(top_builddir)/common/log.o \
+                      $(top_builddir)/common/globals.o
 
 emergencetest_SOURCES = emergencetest.cpp
 emergencetest_LDADD = $(top_builddir)/physics/Collision.o \
-                      $(top_builddir)/modules/Location.o
+                      $(top_builddir)/modules/Location.o \
+                      $(top_builddir)/modules/DateTime.o \
+                      $(top_builddir)/common/log.o \
+                      $(top_builddir)/common/globals.o
 
+transformtest_SOURCES = transformtest.cpp
 
 # MODULE_TESTS
 

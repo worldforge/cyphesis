@@ -120,7 +120,7 @@ class Entity : public BaseEntity {
     bool getLocation(const MapType &,
                      const std::map<std::string, EntityType *> &);
 
-    Vector3D getXyz() const;
+    Point3D getXyz() const;
     void destroy();
     void scriptSubscribe(const std::string &);
 

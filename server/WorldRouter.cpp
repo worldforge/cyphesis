@@ -147,7 +147,7 @@ inline void WorldRouter::setSerialnoOp(RootOperation & op)
 /// This function recurses through the parents until it finds
 /// A parent which defines the height.
 /// @return the modified Z coord of the position.
-float WorldRouter::constrainHeight(Entity * parent, const Vector3D & pos)
+float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos)
 {
     assert(parent != 0);
     World * wrld = dynamic_cast<World*>(parent);
@@ -157,20 +157,18 @@ float WorldRouter::constrainHeight(Entity * parent, const Vector3D & pos)
                         << std::endl << std::flush;);
         return h;
     } else {
+        assert(parent->m_location.m_loc != 0);
         // FIXME take account of orientation
-        const Vector3D & ppos = parent->m_location.m_pos;
+        const Point3D & ppos = parent->m_location.m_pos;
         debug(std::cout << "parent " << parent->getId() << " of type "
                         << parent->getType() << " pos " << ppos.z()
                         << " my pos " << pos.z()
                         << std::endl << std::flush;);
         float h;
-        if (parent->m_location.m_loc != 0) {
-            h = constrainHeight(parent->m_location.m_loc, pos + ppos) - ppos.z();
-            debug(std::cout << "Valid parent";);
-        } else {
-            h = constrainHeight(parent->m_location.m_loc, pos);
-            debug(std::cout << "Invalid parent";);
-        }
+        h = constrainHeight(parent->m_location.m_loc,
+                            pos.toParentCoords(parent->m_location.m_pos,
+                                               parent->m_location.m_orientation)
+                           ) - ppos.z();
         debug(std::cout << "Correcting height from " << pos.z() << " to " << h
                         << std::endl << std::flush;);
         return h;
@@ -198,7 +196,7 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
         debug(std::cout << "set loc " << &m_gameWorld  << std::endl
                         << std::flush;);
         obj->m_location.m_loc = &m_gameWorld;
-        obj->m_location.m_pos = Vector3D(uniform(-8,8), uniform(-8,8), 0);
+        obj->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
         debug(std::cout << "loc set with loc " << obj->m_location.m_loc->getId()
                         << std::endl << std::flush;);
     }
@@ -421,8 +419,8 @@ void WorldRouter::operation(const RootOperation & op)
             EntitySet::const_iterator I;
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 // Calculate square distance to target
-                Vector3D d(fromEnt->m_location.distanceTo((*I)->m_location));
-                float view_factor = fromSquSize / d.sqrMag();
+                Point3D d(fromEnt->m_location.relativePosition((*I)->m_location));
+                float view_factor = fromSquSize / sqrMag(d);
 #if 0
                 if (view_factor > consts::square_sight_factor) {
                     std::cout << "Distance from " << fromEnt->getType() << " to "

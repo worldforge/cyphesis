@@ -6,6 +6,7 @@
 #include "Py_Map.h"
 #include "Py_Object.h"
 #include "Py_Vector3D.h"
+#include "Py_Point3D.h"
 #include "Py_Location.h"
 #include "Py_World.h"
 #include "Py_WorldTime.h"
@@ -37,7 +38,7 @@ static PyObject * Mind_get_xyz(PyMind * self)
         return NULL;
     }
 #endif // NDEBUG
-    PyVector3D * ret = newPyVector3D();
+    PyPoint3D * ret = newPyPoint3D();
     if (ret == NULL) {
         return NULL;
     }

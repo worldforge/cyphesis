@@ -20,14 +20,14 @@ typedef std::multimap<int, WFMath::Vector<3> > NormalSet;
 /// \brief Predict collision between a point and a plane.
 ///
 /// @return true if p is infront of plane before collision
-bool getCollisionTime(const Vector3D & p,     // Position of point
+bool getCollisionTime(const Point3D & p,      // Position of point
                       const Vector3D & u,     // Velocity of point
-                      // float point_time,   // Time since position set
-                      const Vector3D & l,     // Position on plane
+                      // float point_time,    // Time since position set
+                      const Point3D & l,      // Position on plane
                       const Vector3D & n,     // Plane normal
                       const Vector3D & v,     // Velocity of plane
-                      // float plane_time,   // Time since position set
-                      float & time);         // Returned collision time
+                      // float plane_time,    // Time since position set
+                      float & time);          // Returned collision time
 
 /// \brief Predict collision between two sets of meshes, defined by vertices
 /// and surface normals.
@@ -55,14 +55,14 @@ bool predictCollision(const Location & l,     // Location data of this object
 /// \brief Predict collision between a point and a plane.
 ///
 /// @return true if p is behind plane before collision
-bool getEmergenceTime(const Vector3D & p,     // Position of point
+bool getEmergenceTime(const Point3D & p,      // Position of point
                       const Vector3D & u,     // Velocity of point
-                      // float point_time,   // Time since position set
-                      const Vector3D & l,     // Position on plane
+                      // float point_time,    // Time since position set
+                      const Point3D & l,      // Position on plane
                       const Vector3D & n,     // Plane normal
                       const Vector3D & v,     // Velocity of plane
-                      // float plane_time,   // Time since position set
-                      float & time);         // Returned collision time
+                      // float plane_time,    // Time since position set
+                      float & time);          // Returned collision time
 
 /// \brief Predict emergence of one mesh from inside another, the two meshes
 /// defined by vertices and surface normals.

@@ -116,19 +116,6 @@ static PyObject *Vector3D_unit_vector_to(PyVector3D * self, PyObject * args)
     return (PyObject *)ret;
 }
 
-static PyObject * Vector3D_distance(PyVector3D * self, PyObject * args)
-{
-    PyVector3D * other;
-    if (!PyArg_ParseTuple(args, "O", &other)) {
-        return NULL;
-    }
-    if (!PyVector3D_Check(other)) {
-        PyErr_SetString(PyExc_TypeError, "Can get distance to other Vector3D");
-        return NULL;
-    }
-    return PyFloat_FromDouble(distance(self->coords, other->coords));
-}
-
 static PyMethodDef Vector3D_methods[] = {
     {"dot",             (PyCFunction)Vector3D_dot,      METH_VARARGS},
     {"cross",           (PyCFunction)Vector3D_cross,    METH_VARARGS},
@@ -139,7 +126,6 @@ static PyMethodDef Vector3D_methods[] = {
     {"mag",             (PyCFunction)Vector3D_mag,      METH_NOARGS},
     {"unit_vector",     (PyCFunction)Vector3D_unit_vector,      METH_NOARGS},
     {"unit_vector_to_another_vector",   (PyCFunction)Vector3D_unit_vector_to,   METH_VARARGS},
-    {"distance",        (PyCFunction)Vector3D_distance, METH_VARARGS},
     {NULL,              NULL}           /* sentinel */
 };
 

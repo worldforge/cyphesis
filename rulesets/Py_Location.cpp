@@ -5,6 +5,7 @@
 #include "Py_Location.h"
 #include "Py_Thing.h"
 #include "Py_Vector3D.h"
+#include "Py_Point3D.h"
 #include "Py_Quaternion.h"
 #include "Py_BBox.h"
 
@@ -55,7 +56,7 @@ static PyObject * Location_getattr(PyLocation *self, char *name)
         return (PyObject *)thing;
     }
     if (strcmp(name, "coordinates") == 0) {
-        PyVector3D * v = newPyVector3D();
+        PyPoint3D * v = newPyPoint3D();
         v->coords = self->location->m_pos;
         return (PyObject *)v;
     }
@@ -117,6 +118,12 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
             fprintf(stderr, "This vector is not set\n");
         }
         vector = vec->coords;
+    } else if (PyPoint3D_Check(v)) {
+        PyPoint3D * p = (PyPoint3D *)v;
+        if (!p->coords.isValid()) {
+            fprintf(stderr, "This vector is not set\n");
+        }
+        vector = Vector3D(p->coords.x(), p->coords.y(), p->coords.z());
     } else if (PyTuple_Check(v) && (PyTuple_Size(v) == 3)) {
         for(int i = 0; i < 3; i++) {
             PyObject * item = PyTuple_GetItem(v, i);
@@ -148,7 +155,7 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
         return -1;
     }
     if (strcmp(name, "coordinates") == 0) {
-        self->location->m_pos = vector;
+        self->location->m_pos = Point3D(vector.x(), vector.y(), vector.z());
     }
     if (strcmp(name, "velocity") == 0) {
         self->location->m_velocity = vector;

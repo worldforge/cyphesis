@@ -20,12 +20,12 @@ class Movement {
   protected:
     Entity & m_body;
     double m_lastMovementTime;
-    Vector3D m_targetPos;
-    Vector3D m_updatedPos;
+    Point3D m_targetPos;
+    Point3D m_updatedPos;
     Vector3D m_velocity;
     Quaternion m_orientation;
     int m_serialno;
-    Vector3D m_collPos;
+    Point3D m_collPos;
     Entity * m_collEntity;
     bool m_collRefChange;
     Vector3D m_collNormal;
@@ -42,7 +42,7 @@ class Movement {
     void reset();
     bool moving() const;
 
-    virtual double getTickAddition(const Vector3D & coordinates) const = 0;
+    virtual double getTickAddition(const Point3D & coordinates) const = 0;
     virtual Atlas::Objects::Operation::Move * genFaceOperation() = 0;
     virtual Atlas::Objects::Operation::Move * genMoveUpdate(Location *) = 0;
     virtual Atlas::Objects::Operation::Move * genMoveOperation(Location *,

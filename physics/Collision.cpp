@@ -7,6 +7,7 @@
 #include "modules/Location.h"
 
 #include "common/debug.h"
+#include "common/log.h"
 
 #include <iostream>
 
@@ -14,14 +15,14 @@ static const bool debug_flag = false;
 
 ////////////////////////// COLLISION //////////////////////////
 
-bool getCollisionTime(const Vector3D & p,     // Position of point
+bool getCollisionTime(const Point3D & p,      // Position of point
                       const Vector3D & u,     // Velocity of point
-                      // float point_time,   // Time since position set
-                      const Vector3D & l,     // Position on plane
+                      // float point_time,    // Time since position set
+                      const Point3D & l,      // Position on plane
                       const Vector3D & n,     // Plane normal
                       const Vector3D & v,     // Velocity of plane
-                      // float plane_time,   // Time since position set
-                      float & time)          // Collision time return
+                      // float plane_time,    // Time since position set
+                      float & time)           // Collision time return
 //
 //
 //                            |     \ n
@@ -94,7 +95,7 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
         float last_vertex_entry = -100, first_vertex_exit = 100, time;
         NormalSet::const_iterator J = n.begin();
         for (; J != n.end(); ++J) { // Iterate over surfaces
-            const Vector3D & s_pos = o[J->first];
+            const Point3D & s_pos = o[J->first];
             const Vector3D & s_norm = J->second;
             debug(std::cout << "Testing vertex " << *I << " to surface "
                             << s_pos << ": " << s_norm;);
@@ -210,23 +211,23 @@ bool predictCollision(const Location & l,  // This location
     // Create a set of vertices representing the box corners
     CoordList lbox(8), obox(8);
 
-    lbox[0] = WFMath::Vector<3>(ln.x(), ln.y(), ln.z());
-    lbox[1] = WFMath::Vector<3>(lf.x(), ln.y(), ln.z());
-    lbox[2] = WFMath::Vector<3>(lf.x(), lf.y(), ln.z());
-    lbox[3] = WFMath::Vector<3>(ln.x(), lf.y(), ln.z());
-    lbox[4] = WFMath::Vector<3>(ln.x(), ln.y(), lf.z());
-    lbox[5] = WFMath::Vector<3>(lf.x(), ln.y(), lf.z());
-    lbox[6] = WFMath::Vector<3>(lf.x(), lf.y(), lf.z());
-    lbox[7] = WFMath::Vector<3>(ln.x(), lf.y(), lf.z());
+    lbox[0] = WFMath::Point<3>(ln.x(), ln.y(), ln.z());
+    lbox[1] = WFMath::Point<3>(lf.x(), ln.y(), ln.z());
+    lbox[2] = WFMath::Point<3>(lf.x(), lf.y(), ln.z());
+    lbox[3] = WFMath::Point<3>(ln.x(), lf.y(), ln.z());
+    lbox[4] = WFMath::Point<3>(ln.x(), ln.y(), lf.z());
+    lbox[5] = WFMath::Point<3>(lf.x(), ln.y(), lf.z());
+    lbox[6] = WFMath::Point<3>(lf.x(), lf.y(), lf.z());
+    lbox[7] = WFMath::Point<3>(ln.x(), lf.y(), lf.z());
 
-    obox[0] = WFMath::Vector<3>(on.x(), on.y(), on.z());
-    obox[1] = WFMath::Vector<3>(of.x(), on.y(), on.z());
-    obox[2] = WFMath::Vector<3>(of.x(), of.y(), on.z());
-    obox[3] = WFMath::Vector<3>(on.x(), of.y(), on.z());
-    obox[4] = WFMath::Vector<3>(on.x(), on.y(), of.z());
-    obox[5] = WFMath::Vector<3>(of.x(), on.y(), of.z());
-    obox[6] = WFMath::Vector<3>(of.x(), of.y(), of.z());
-    obox[7] = WFMath::Vector<3>(on.x(), of.y(), of.z());
+    obox[0] = WFMath::Point<3>(on.x(), on.y(), on.z());
+    obox[1] = WFMath::Point<3>(of.x(), on.y(), on.z());
+    obox[2] = WFMath::Point<3>(of.x(), of.y(), on.z());
+    obox[3] = WFMath::Point<3>(on.x(), of.y(), on.z());
+    obox[4] = WFMath::Point<3>(on.x(), on.y(), of.z());
+    obox[5] = WFMath::Point<3>(of.x(), on.y(), of.z());
+    obox[6] = WFMath::Point<3>(of.x(), of.y(), of.z());
+    obox[7] = WFMath::Point<3>(on.x(), of.y(), of.z());
 
     // Set up a set of surface normals, each with an assoicated corner
     NormalSet lnormals;
@@ -247,8 +248,10 @@ bool predictCollision(const Location & l,  // This location
             I->second.rotate(l.m_orientation);
         }
         for(int i = 0; i < 8; ++i) {
-            lbox[i].rotate(l.m_orientation);
+            lbox[i] = lbox[i].toParentCoords(l.m_pos, l.m_orientation);
         }
+    } else {
+        log(WARNING, "predictCollision(): This has non-valid orientation.");
     }
 
     if (o.m_orientation.isValid()) {
@@ -257,15 +260,20 @@ bool predictCollision(const Location & l,  // This location
             I->second.rotate(o.m_orientation);
         }
         for(int i = 0; i < 8; ++i) {
-            obox[i].rotate(o.m_orientation);
+            obox[i] = obox[i].toParentCoords(o.m_pos, o.m_orientation);
         }
+    } else {
+        log(WARNING, "predictCollision(): Other has non-valid orientation.");
     }
 
+#if 0
+    // This must be done whether orientation is valid or not
     // Translate the box corners
     for(int i = 0; i < 8; ++i) {
         lbox[i] += l.m_pos;
         obox[i] += o.m_pos;
     }
+#endif
 
     assert(l.m_velocity.isValid());
     Vector3D notMoving(0., 0., 0.);
@@ -283,10 +291,10 @@ bool predictCollision(const Location & l,  // This location
 
 ////////////////////////// EMERGENCE //////////////////////////
 
-bool getEmergenceTime(const Vector3D & p,    // Position of point
+bool getEmergenceTime(const Point3D & p,     // Position of point
                       const Vector3D & u,    // Velocity of point
                       // float point_time,   // Time since position set
-                      const Vector3D & l,    // Position on plane
+                      const Point3D & l,     // Position on plane
                       const Vector3D & n,    // Plane normal
                       const Vector3D & v,    // Velocity of plane
                       // float plane_time,   // Time since position set
@@ -358,26 +366,30 @@ bool predictEmergence(const Location & l,  // This location
 
     CoordList lbox(8);
 
-    lbox[0] = WFMath::Vector<3>(ln.x(), ln.y(), ln.z());
-    lbox[1] = WFMath::Vector<3>(lf.x(), ln.y(), ln.z());
-    lbox[2] = WFMath::Vector<3>(lf.x(), lf.y(), ln.z());
-    lbox[3] = WFMath::Vector<3>(ln.x(), lf.y(), ln.z());
-    lbox[4] = WFMath::Vector<3>(ln.x(), ln.y(), lf.z());
-    lbox[5] = WFMath::Vector<3>(lf.x(), ln.y(), lf.z());
-    lbox[6] = WFMath::Vector<3>(lf.x(), lf.y(), lf.z());
-    lbox[7] = WFMath::Vector<3>(ln.x(), lf.y(), lf.z());
+    lbox[0] = WFMath::Point<3>(ln.x(), ln.y(), ln.z());
+    lbox[1] = WFMath::Point<3>(lf.x(), ln.y(), ln.z());
+    lbox[2] = WFMath::Point<3>(lf.x(), lf.y(), ln.z());
+    lbox[3] = WFMath::Point<3>(ln.x(), lf.y(), ln.z());
+    lbox[4] = WFMath::Point<3>(ln.x(), ln.y(), lf.z());
+    lbox[5] = WFMath::Point<3>(lf.x(), ln.y(), lf.z());
+    lbox[6] = WFMath::Point<3>(lf.x(), lf.y(), lf.z());
+    lbox[7] = WFMath::Point<3>(ln.x(), lf.y(), lf.z());
 
     // Orient the box corners
     if (l.m_orientation.isValid()) {
         for(int i = 0; i < 8; ++i) {
-            lbox[i].rotate(l.m_orientation);
+            lbox[i] = lbox[i].toParentCoords(l.m_pos, l.m_orientation);
         }
+    } else {
+        log(WARNING, "predictEmergence(): Entity has non-valid orientation.");
     }
 
+#if 0
     // Translate the box corners
     for(int i = 0; i < 8; ++i) {
         lbox[i] += l.m_pos;
     }
+#endif
 
     assert(l.m_velocity.isValid());
 

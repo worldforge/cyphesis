@@ -438,7 +438,8 @@ void Character::mindMoveOperation(const Move & op, OpVector & res)
     } else {
         debug( std::cout << "Parent not set" << std::endl << std::flush;);
     }
-    Vector3D new_coords, new_vel;
+    Point3D new_coords;
+    Vector3D new_vel;
     Quaternion new_orientation;
     try {
         I = arg1.find("pos");
@@ -532,7 +533,7 @@ void Character::mindMoveOperation(const Move & op, OpVector & res)
     } else {
         debug( std::cout << "\tUsing destination for direction"
                          << std::endl << std::flush;);
-        direction = Vector3D(new_coords) - current_location.m_pos;
+        direction = new_coords - current_location.m_pos;
     }
     if (direction.isValid() && !(direction.mag() > 0)) {
         direction.setValid(false);

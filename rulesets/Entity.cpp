@@ -142,7 +142,7 @@ void Entity::destroy()
         Entity * obj = *I;
         // FIXME take account of orientation
         obj->m_location.m_loc = m_location.m_loc;
-        obj->m_location.m_pos += m_location.m_pos;
+        obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.m_pos, m_location.m_orientation);
         refContains.insert(obj);
     }
     refContains.erase(this);
@@ -189,17 +189,9 @@ void Entity::merge(const MapType & ent)
     }
 }
 
-Vector3D Entity::getXyz() const
+Point3D Entity::getXyz() const
 {
-    if (!m_location.isValid()) {
-        static Vector3D ret(0.0,0.0,0.0);
-        return ret;
-    }
-    if (m_location.m_loc) {
-        return Vector3D(m_location.m_pos) + m_location.m_loc->getXyz();
-    } else {
-        return m_location.m_pos;
-    }
+    return m_location.getXyz();
 }
 
 void Entity::scriptSubscribe(const std::string & op)

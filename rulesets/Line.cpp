@@ -49,7 +49,7 @@ void Line::set(const std::string & aname, const Element & attr)
         idListFromAtlas(attr.asList(), endIntersections);
         m_update_flags |= a_line;
     } else if ((aname == "coords") && attr.isList()) {
-        objectListFromMessage<Vector3D, CoordList>(attr.asList(), coords);
+        objectListFromMessage<Point3D, CoordList>(attr.asList(), coords);
         m_update_flags |= a_line;
     } else {
         Line_parent::set(aname, attr);

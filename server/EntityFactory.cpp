@@ -115,7 +115,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
     }
     if (!thing->m_location.m_pos.isValid()) {
         // If no position coords were provided, put it somewhere near origin
-        thing->m_location.m_pos = Vector3D(uniform(-8,8), uniform(-8,8), 0);
+        thing->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
     }
     if (pc != 0) {
         pc->persist();

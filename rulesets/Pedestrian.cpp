@@ -27,14 +27,14 @@ Pedestrian::~Pedestrian()
 {
 }
 
-double Pedestrian::getTickAddition(const Vector3D & coordinates) const
+double Pedestrian::getTickAddition(const Point3D & coordinates) const
 {
     // This may seem a little weird. Everything is handled in squares to
     // reduce the number of square roots that have to be calculated. In
     // this case only one is required.
     double basic_square_distance = m_velocity.sqrMag()
                                    * consts::square_basic_tick;
-    const Vector3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
+    const Point3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
     if (target.isValid()) {
         double square_distance = squareDistance(coordinates, target);
         debug( std::cout << "basic_distance: " << basic_square_distance
@@ -133,12 +133,12 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     }
 
     // Update location
-    Vector3D new_coords = m_updatedPos.isValid() ? m_updatedPos : loc.m_pos;
+    Point3D new_coords = m_updatedPos.isValid() ? m_updatedPos : loc.m_pos;
     new_coords += (m_velocity * time_diff);
-    const Vector3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
+    const Point3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
     bool stopped = false;
     if (target.isValid()) {
-        Vector3D new_coords2 = new_coords;
+        Point3D new_coords2 = new_coords;
         new_coords2 += (m_velocity * (consts::basic_tick / 10.0));
         // The values returned by squareDistance are squares, so
         // cannot be used except for comparison
@@ -157,16 +157,18 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                                     << new_loc.m_loc->m_location.m_pos
                                     << std::endl << std::flush;);
                     // FIXME take account of orientation
-                    new_coords += new_loc.m_loc->m_location.m_pos;
+                    new_coords = new_coords.toParentCoords(loc.m_loc->m_location.m_pos, loc.m_loc->m_location.m_orientation);
+                    // FIXME velocity take account of orientation
                     if (m_targetPos.isValid()) {
-                        m_targetPos += new_loc.m_loc->m_location.m_pos;
+                        m_targetPos = m_targetPos.toParentCoords(loc.m_loc->m_location.m_pos, loc.m_loc->m_location.m_orientation);
                     }
                 } else if (m_collEntity->m_location.m_loc == new_loc.m_loc) {
                     debug(std::cout << "IN" << std::endl << std::flush;);
                     // FIXME take account of orientation
-                    new_coords -= m_collEntity->m_location.m_pos;
+                    new_coords = new_coords.toLocalCoords(m_collEntity->m_location.m_pos, m_collEntity->m_location.m_orientation);
+                    // FIXME velocity take account of orientation
                     if (m_targetPos.isValid()) {
-                        m_targetPos -= m_collEntity->m_location.m_pos;
+                        m_targetPos = m_targetPos.toLocalCoords(m_collEntity->m_location.m_pos, m_collEntity->m_location.m_orientation);
                     }
                 } else {
                     std::string msg = std::string("BAD COLLISION: ")
@@ -178,14 +180,14 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                 new_loc.m_loc = m_collEntity;
                 m_collEntity = NULL;
                 m_collRefChange = false;
-                m_collPos = Vector3D();
+                m_collPos = Point3D();
             } else {
                 if (m_collPos.isValid()) {
                     // Generate touch ops
                     // This code relies on m_collNormal being a unit vector
                     m_velocity -= m_collNormal * Dot(m_collNormal, m_velocity);
                     if ((m_velocity.mag() / consts::base_velocity) > 0.05) {
-                        m_collPos = Vector3D();
+                        m_collPos = Point3D();
                         m_collEntity = NULL;
                         m_velocity.normalize();
                         m_velocity *= sqrt(vel_square_mag);

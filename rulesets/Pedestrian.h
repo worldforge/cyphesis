@@ -7,8 +7,6 @@
 
 #include "Movement.h"
 
-#include <physics/Vector3D.h>
-
 class Entity;
 
 class Pedestrian : public Movement {
@@ -17,7 +15,7 @@ class Pedestrian : public Movement {
     explicit Pedestrian(Entity & body);
     virtual ~Pedestrian();
 
-    double getTickAddition(const Vector3D & coordinates) const;
+    double getTickAddition(const Point3D & coordinates) const;
     Atlas::Objects::Operation::Move * genFaceOperation();
     Atlas::Objects::Operation::Move * genMoveUpdate(Location *);
     Atlas::Objects::Operation::Move * genMoveOperation(Location *,
