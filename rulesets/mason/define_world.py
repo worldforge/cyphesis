@@ -109,9 +109,12 @@ def default(mapeditor):
     m.make('willow',type='willow',xyz=(-10,-0,settlement_height))
     m.make('hickory',type='hickory',xyz=(-0,-10,settlement_height))
 
+    m.make('sherwood',type='forest',xyz=(-50, 10,settlement_height),bbox=[40,40,40])
+
     m.make('jetty',type='thing',xyz=(-22,-48,0),bbox=[-5, -5, -2, 5, 5, 2])
     m.make('boat',type='boat',xyz=(-22,-56,0),bbox=[-5, -2, -1, 5, 2, 1])
 
+def dontrunme():
 # a camp near the origin
 
     #cfire=m.make('campfire',type='campfire',xyz=(0,4,settlement_height))

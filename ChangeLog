@@ -1,3 +1,8 @@
+2004-01-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/define_world.py: Add a test forest object, called
+	  Sherwood.
+
 2004-01-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Connection.cpp, server/Admin.cpp: Improve some important
