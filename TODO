@@ -1,3 +1,6 @@
+  Investigate why attempt to make admin entities move around doesn't work
+  right now.
+
   Ensure that maxmass set in python has some effect in C++, and investigate
   other related attributes.
 

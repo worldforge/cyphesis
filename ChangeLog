@@ -1,3 +1,8 @@
+2002-05-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp: Fix atlas object output, so list and map contents
+	  are shown.
+
 2002-05-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cydbload.cpp, tools/cyisoload.cpp, tools/cyloadrules.cpp:

@@ -64,6 +64,8 @@ class Interactive : public Atlas::Objects::Decoder
        LOGGED_IN
     };
     int state;
+
+    void output(const Atlas::Message::Object & item, bool recurse = true);
   protected:
     //void UnknownObjectArrived(const Object&);
     void ObjectArrived(const Atlas::Objects::Operation::Info&);
@@ -86,6 +88,46 @@ class Interactive : public Atlas::Objects::Decoder
     }
 };
 
+void Interactive::output(const Atlas::Message::Object & item, bool recurse)
+{
+    std::cout << " ";
+    switch (item.GetType()) {
+        case Object::TYPE_INT:
+            std::cout << item.AsInt();
+            break;
+        case Object::TYPE_FLOAT:
+            std::cout << item.AsFloat();
+            break;
+        case Object::TYPE_STRING:
+            std::cout << item.AsString();
+            break;
+        case Object::TYPE_LIST:
+            if (recurse) {
+                Object::ListType::const_iterator I = item.AsList().begin();
+                for(; I != item.AsList().end(); ++I) {
+                    output(*I, false);
+                }
+            } else {
+                std::cout << "(list)";
+            }
+            break;
+        case Object::TYPE_MAP:
+            if (recurse) {
+                Object::MapType::const_iterator I = item.AsMap().begin();
+                for(; I != item.AsMap().end(); ++I) {
+                    std::cout << I->first << ": ";
+                    output(I->second, false);
+                }
+            } else {
+                std::cout << "(map)";
+            }
+            break;
+        default:
+            std::cout << "(\?\?\?)";
+            break;
+    }
+}
+
 void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
 {
     reply_flag = true;
@@ -97,27 +139,9 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
         Object::MapType::const_iterator I;
         for (I = ent.begin(); I != ent.end(); I++) {
             const Object & item = I->second;
-            switch (item.GetType()) {
-                case Object::TYPE_INT:
-                    std::cout << "    " << I->first << ": " << item.AsInt() << std::endl;
-                    break;
-                case Object::TYPE_FLOAT:
-                    std::cout << "    " << I->first <<": " << item.AsFloat() << std::endl;
-                    break;
-                case Object::TYPE_STRING:
-                    std::cout << "    " << I->first <<": "<< item.AsString() << std::endl;
-                    break;
-                case Object::TYPE_LIST:
-                    std::cout << "    " << I->first << ": (list)" << std::endl;
-                    break;
-                case Object::TYPE_MAP:
-                    std::cout << "    " << I->first << ": (map)" << std::endl;
-                    break;
-                default:
-                    std::cout << "    " << I->first << ": (\?\?\?)" << std::endl;
-                    break;
-            }
-                
+            std::cout << "    " << I->first << ":";
+            output(item);
+            std::cout << std::endl << std::flush;
         }
         // Display results of command
     }
