@@ -1,5 +1,10 @@
 2002-12-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Make sure each factory is unique
+	  so that they can be deleted.
+
+2002-12-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Fix error creating tables.
 
 2002-12-11  Al Riddoch  <alriddoch@zepler.org>

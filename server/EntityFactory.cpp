@@ -43,7 +43,7 @@ EntityFactory::EntityFactory()
     PersistantThingFactory<Entity> * eft = new PersistantThingFactory<Entity>();
     PersistantThingFactory<Thing> * tft = new PersistantThingFactory<Thing>();
     installFactory("game_entity", "thing", tft);
-    installFactory("thing", "feature", tft);
+    installFactory("thing", "feature", tft->duplicateFactory());
     installFactory("feature", "line", new PersistantThingFactory<Line>());
     installFactory("feature", "area", new PersistantThingFactory<Area>());
     installFactory("thing", "character",
