@@ -1,3 +1,8 @@
+2004-11-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: Tighten up check on Move ops, and improve
+	  efficiency by removing temporaries.
+
 2004-11-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/world/objects/tools/Axe.py,

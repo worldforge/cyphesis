@@ -190,10 +190,15 @@ void Thing::MoveOperation(const Move & op, OpVector & res)
         error(op, "Move has no argument", res, getId());
         return;
     }
-    Point3D oldpos = m_location.m_pos;
     const MapType & ent = args.front().asMap();
-    MapType::const_iterator I = ent.find("loc");
-    if ((I == ent.end()) || !I->second.isString()) {
+    MapType::const_iterator I = ent.find("id");
+    MapType::const_iterator Iend = ent.end();
+    if ((I == Iend) || !I->second.isString()) {
+        error(op, "Move op has no id in argument", res, getId());
+        return;
+    }
+    I = ent.find("loc");
+    if ((I == Iend) || !I->second.isString()) {
         error(op, "Move op has no loc", res, getId());
         return;
     }
@@ -210,7 +215,7 @@ void Thing::MoveOperation(const Move & op, OpVector & res)
         return;
     }
     I = ent.find("pos");
-    if ((I == ent.end()) || !I->second.isList()) {
+    if ((I == Iend) || !I->second.isList()) {
         error(op, "Move op has no pos", res, getId());
         return;
     }
@@ -235,6 +240,8 @@ void Thing::MoveOperation(const Move & op, OpVector & res)
         m_update_flags |= a_loc;
     }
 
+    Point3D oldpos = m_location.m_pos;
+
     // Update pos
     m_location.m_pos.fromAtlas(I->second.asList());
     // FIXME Quick height hack
@@ -242,13 +249,13 @@ void Thing::MoveOperation(const Move & op, OpVector & res)
                                                     m_location.m_pos);
     m_update_flags |= a_pos;
     I = ent.find("velocity");
-    if (I != ent.end()) {
+    if (I != Iend) {
         // Update velocity
         m_location.m_velocity.fromAtlas(I->second.asList());
         // Velocity is not persistent so has no flag
     }
     I = ent.find("orientation");
-    if (I != ent.end()) {
+    if (I != Iend) {
         // Update orientation
         m_location.m_orientation.fromAtlas(I->second.asList());
         m_update_flags |= a_orient;
