@@ -1,3 +1,5 @@
+Debug collision with sty.
+
 Make cyphesis less reluctant to shutdown. Check for exit_flag in more
 places.
 
