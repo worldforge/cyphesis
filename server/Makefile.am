@@ -1,3 +1,5 @@
+INCLUDES = -I$(top_srcdir)
+
 bin_PROGRAMS = cyphesis
 
 cyphesis_SOURCES = \

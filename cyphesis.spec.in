@@ -154,6 +154,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root)
 %{prefix}/lib/libcyphesis.so
+%{prefix}/lib/libcyphesis.la
 %{prefix}/lib/libcyphesis.a
 %{prefix}/include/cyphesis
 

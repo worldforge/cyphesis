@@ -1,3 +1,7 @@
+2003-06-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* Update Makefile.ams so that distcheck works.
+
 2003-06-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Connection.cpp, rulesets/Entity.cpp: Add the assert header
