@@ -33,12 +33,8 @@ class BBox {
         return ((u==other.u) && (v==other.v));
     }
 
-    bool operator !() const {
-        return !v;
-    }
-
-    operator bool() const {
-        return v;
+    bool isValid() const {
+        return v.isValid();
     }
 
     const BBox operator+(const Vector3D & other) const {
@@ -89,7 +85,7 @@ class BBox {
     }
 
     const Object::ListType asList() const {
-        if (u != Vector3D(0,0,0)) {
+        if (!u.isZero()) {
             Object::ListType box = u.asList();
             box.push_back(v.X());
             box.push_back(v.Y());

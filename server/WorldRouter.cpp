@@ -105,7 +105,7 @@ Entity * WorldRouter::addObject(Entity * obj)
     }
     eobjects[obj->getId()]=obj;
     objectList.insert(obj);
-    if (!obj->location) {
+    if (!obj->location.isValid()) {
         debug(std::cout << "set loc " << &gameWorld  << std::endl
                         << std::flush;);
         obj->location.ref=&gameWorld;

@@ -429,7 +429,7 @@ OpVector Character::mindMoveOperation(const Move & op)
                   << std::endl << std::flush;
     }
 
-    if (!location_coords) {
+    if (!location_coords.isValid()) {
         if (op.GetFutureSeconds() < 0) {
             newop->SetFutureSeconds(0);
         }
@@ -447,7 +447,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         // use movement object to track movement.
         //
         double vel_mag;
-        if (!location_vel) {
+        if (!location_vel.isValid()) {
             debug( std::cout << "\tVelocity default" << std::endl<<std::flush;);
             vel_mag = consts::base_velocity;
         } else {
@@ -464,8 +464,8 @@ OpVector Character::mindMoveOperation(const Move & op)
         if (location_coords == location.coords) {
             location_coords = Vector3D();
         }
-        if (!location_coords) {
-            if (!location_vel || (location_vel==Vector3D(0,0,0))) {
+        if (!location_coords.isValid()) {
+            if (!location_vel.isValid() || location_vel.isZero()) {
                 debug( std::cout << "\tUsing orientation for direction"
                                  << std::endl << std::flush;);
                 // FIXME No way to set direction from orientation yet
@@ -484,7 +484,7 @@ OpVector Character::mindMoveOperation(const Move & op)
                              << std::endl << std::flush;);
             direction = Vector3D(location_coords) -= location.coords;
         }
-        if (direction) {
+        if (direction.isValid()) {
             direction.unit();
             debug( std::cout << "Direction: " << direction << std::endl
                              << std::flush;);
@@ -501,7 +501,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         Move * moveOp = movement.genMoveOperation(&ret_location);
         const Location & current_location = (NULL!=moveOp) ? ret_location : location;
         movement.reset();
-        if ((vel_mag==0) || !direction) {
+        if ((vel_mag==0) || !direction.isValid()) {
             debug( std::cout << "\tMovement stopped" << std::endl
                              << std::flush;);
             if (NULL != moveOp) {
@@ -534,7 +534,7 @@ OpVector Character::mindMoveOperation(const Move & op)
         tickOp->SetTo(getId());
         // Need to add the arguments to this op before we return it
         // direction is already a unit vector
-        debug( if (location_coords) { std::cout<<"\tUsing target"
+        debug( if (location_coords.isValid()) { std::cout<<"\tUsing target"
                                                << std::endl
                                                << std::flush; } );
         movement.m_targetPos = location_coords;

@@ -47,7 +47,7 @@ void Movement::checkCollisions(const Location & loc)
         // Don't check for collisions with ourselves
         if ((*I) == &m_body) { continue; }
         const Location & oloc = (*I)->location;
-        if (!oloc.bBox) { continue; }
+        if (!oloc.bBox.isValid()) { continue; }
         int axis;
         double t = loc.timeToHit(oloc, axis);
         if (t < 0) { continue; }
@@ -65,7 +65,7 @@ void Movement::checkCollisions(const Location & loc)
         // If ref has no bounding box, or itself has no ref, then we can't
         // Move out of it.
         const Location & oloc = loc.ref->location;
-        if (!oloc.bBox || (oloc.ref == NULL)) {
+        if (!oloc.bBox.isValid() || (oloc.ref == NULL)) {
             return;
         }
         double t = loc.timeToExit(oloc);
@@ -89,7 +89,7 @@ void Movement::checkCollisions(const Location & loc)
         // rloc is coords of character with ref to m_collEntity
         for(I = m_collEntity->contains.begin(); I != m_collEntity->contains.end(); I++) {
             const Location & oloc = (*I)->location;
-            if (!oloc.bBox) { continue; }
+            if (!oloc.bBox.isValid()) { continue; }
             int axis;
             double t = rloc.timeToHit(oloc, axis);
             if (t < 0) { continue; }

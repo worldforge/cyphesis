@@ -143,7 +143,7 @@ class Vector3D {
         return *this;
     }
 
-    operator bool() const {
+    bool isValid() const {
         return _set;
     }
 

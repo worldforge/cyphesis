@@ -46,7 +46,7 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
     Entity * chr = world->addObject(typestr, ent);
     debug(std::cout << "Added" << std::endl << std::flush;);
-    if (!chr->location) {
+    if (!chr->location.isValid()) {
         debug(std::cout << "Setting location" << std::endl << std::flush;);
         chr->location.ref = &world->gameWorld;
         chr->location.coords = Vector3D(0, 0, 0);

@@ -29,8 +29,8 @@ class Location {
     Location(Entity * rf, const Vector3D& crds, const Vector3D& vel) :
             ref(rf), coords(crds), velocity(vel), solid(true) { }
 
-    operator bool() const {
-        return (ref!=NULL && coords);
+    bool isValid() const {
+        return ((ref != NULL) && coords.isValid());
     }
 
     const Vector3D getXyz() const;
@@ -50,7 +50,7 @@ class Location {
     }
 
     bool inRange(const Location & other, const double range) const {
-        if (!bBox) {
+        if (!bBox.isValid()) {
             //return loc.getXyz().inBox(getXyz(), Vector3D(distance));
 
             // return other.getXyz().in(getXyz(), range);
@@ -68,8 +68,8 @@ class Location {
     }
 
     bool inRange(const Vector3D & pos, const double range) const {
-        if (!coords) { return false; }
-        if (!bBox) {
+        if (!coords.isValid()) { return false; }
+        if (!bBox.isValid()) {
             // return pos.inBox(coords, Vector3D(distance));
 
             return pos.in(coords, range);
@@ -87,7 +87,7 @@ class Location {
     }
 
     bool hit(const Location & o) const {
-        if (!(bBox && o.bBox)) { return false; }
+        if (!(bBox.isValid() && o.bBox.isValid())) { return false; }
         // const Vector3D & m = bmedian ? bmedian : bbox;
         // const Vector3D & om = other.bmedian ? other.bmedian : other.bbox;
         // return coords.hitBox(m, bbox, other.coords + om, other.bbox);
@@ -98,8 +98,8 @@ class Location {
     }
 
     double timeToHit(const Location & o, int & axis) const {
-        if (!o.bBox) { return -1; }
-        if (o.velocity && (o.velocity.relMag() > 0.0001)) {
+        if (!o.bBox.isValid()) { return -1; }
+        if (o.velocity.isValid() && (o.velocity.relMag() > 0.0001)) {
             // We don't currently have a viable way of making this work
             // so I am just saying that two moving entities cannot collide
             // Short term this should not be a problem
@@ -112,7 +112,7 @@ class Location {
     }
 
     double timeToExit(const Location & o) const {
-        if (!o.bBox) { return -1; }
+        if (!o.bBox.isValid()) { return -1; }
         // It is assumed that o is the location of our current parent entity
         // so o.bBox has the same terms of reference as we do.
         BBox us(bBox);

@@ -212,7 +212,7 @@ void Entity::getLocation(const Object::MapType & entmap,
 Vector3D Entity::getXyz() const
 {
     //Location l=location;
-    if (!location) {
+    if (!location.isValid()) {
         static Vector3D ret(0.0,0.0,0.0);
         return ret;
     }

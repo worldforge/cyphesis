@@ -127,7 +127,7 @@ EntityVector MemMap::findByLocation(const Location & loc, double radius)
     EntityDict::const_iterator I;
     for(I = things.begin(); I != things.end(); I++) {
         const Location & oloc = I->second->location;
-        if (!loc || !oloc) {
+        if (!loc.isValid() || !oloc.isValid()) {
             continue;
         }
         if ((oloc.ref->getId() == loc.ref->getId()) &&

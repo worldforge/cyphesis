@@ -33,16 +33,16 @@ void Location::addToObject(Object::MapType & omap) const
     } else {
         omap["loc"] = Object("");
     }
-    if (coords) {
+    if (coords.isValid()) {
         omap["pos"] = coords.asObject();
     }
-    if (velocity) {
+    if (velocity.isValid()) {
         omap["velocity"] = velocity.asObject();
     }
     if (orientation.isValid()) {
         omap["orientation"] = orientation.asObject();
     }
-    if (bBox) {
+    if (bBox.isValid()) {
         omap["bbox"] = bBox.asList();
     }
 }

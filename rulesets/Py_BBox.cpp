@@ -36,8 +36,8 @@ static int BBox_setattr(BBoxObject *self, char *name, PyObject *v)
         PyErr_SetString(PyExc_TypeError, "BBox setattr must take tuple of floats, or ints");
     }
     Vector3DObject * vec = (Vector3DObject *)v;
-    if (!vec->coords) {
-        fprintf(stderr, "This vector is not set\n");
+    if (!vec->coords.isValid()) {
+        fprintf(stderr, "This vector is not valid\n");
     }
     Vector3D vector = vec->coords;
     if (strcmp(name, "near_point") == 0) {

@@ -1,5 +1,16 @@
 2002-05-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.cpp, modules/Location.h, physics/BBox.h,
+	  physics/Vector3D.h, rulesets/Character.cpp, rulesets/Entity.cpp,
+	  rulesets/MemMap.cpp, rulesets/Movement.cpp, rulesets/Pedestrian.cpp,
+	  rulesets/Py_BBox.cpp, rulesets/Py_Location.cpp,
+	  server/Account.cpp, server/WorldRouter.cpp:
+	  Get rid of operator bool() in vector and related classes,
+	  so that errors are less likely to emerge in code. Make use
+	  of Vector3D::isZero() where apropriate.
+
+2002-05-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Quaternion.h: Added required comparison operators, and
 	  get rid of operator bool, to ensure that no implicit conversion
 	  happens where it shouldn't. Add operator required for debugging

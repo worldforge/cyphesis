@@ -31,8 +31,8 @@ double Pedestrian::getTickAddition(const Vector3D & coordinates) const
     // this case only one is required.
     double basic_square_distance = m_velocity.relMag()
                                    * consts::square_basic_tick;
-    const Vector3D & target = m_collPos ? m_collPos : m_targetPos;
-    if (target) {
+    const Vector3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
+    if (target.isValid()) {
         double square_distance = coordinates.relativeDistance(target);
         debug( std::cout << "basic_distance: " << basic_square_distance
                          << std::endl << std::flush;);
@@ -123,7 +123,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     entmap["mode"] = Object(mode);
 
     // If velocity is not set, return this simple operation.
-    if (!m_velocity) {
+    if (!m_velocity.isValid()) {
         debug( std::cout << "only velocity changed." << std::endl
                          << std::flush;);
         new_loc.addToObject(entmap);
@@ -136,10 +136,10 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     }
 
     // Update location
-    Vector3D new_coords = m_updatedPos ? m_updatedPos : loc.coords;
+    Vector3D new_coords = m_updatedPos.isValid() ? m_updatedPos : loc.coords;
     new_coords += Vector3D(m_velocity) *= time_diff;
-    const Vector3D & target = m_collPos ? m_collPos : m_targetPos;
-    if (target) {
+    const Vector3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
+    if (target.isValid()) {
         Vector3D new_coords2 = new_coords;
         new_coords2 += Vector3D(m_velocity) *= (consts::basic_tick / 10.0);
         // The values returned by relativeDistance are squares, so
@@ -159,13 +159,13 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                                     << new_loc.ref->location.coords
                                     << std::endl << std::flush;);
                     new_coords += new_loc.ref->location.coords;
-                    if (m_targetPos) {
+                    if (m_targetPos.isValid()) {
                         m_targetPos += new_loc.ref->location.coords;
                     }
                 } else if (m_collEntity->location.ref == new_loc.ref) {
                     debug(std::cout << "IN" << std::endl << std::flush;);
                     new_coords -= m_collEntity->location.coords;
-                    if (m_targetPos) {
+                    if (m_targetPos.isValid()) {
                         m_targetPos -= m_collEntity->location.coords;
                     }
                 } else {
@@ -179,7 +179,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                 m_collRefChange = false;
                 m_collPos = Vector3D();
             } else {
-                if (m_collPos) {
+                if (m_collPos.isValid()) {
                     // Generate touch ops
                     m_velocity[m_collAxis] = 0;
                     m_collPos = Vector3D();

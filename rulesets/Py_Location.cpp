@@ -109,7 +109,7 @@ static int Location_setattr(LocationObject *self, char *name, PyObject *v)
     Vector3D vector;
     if (PyVector3D_Check(v)) {
         Vector3DObject * vec = (Vector3DObject *)v;
-        if (!vec->coords) {
+        if (!vec->coords.isValid()) {
             fprintf(stderr, "This vector is not set\n");
         }
         vector = vec->coords;
