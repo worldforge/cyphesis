@@ -51,11 +51,14 @@ bool CommPSQLSocket::read()
         m_db.reportError();
     }
 
-    if (PQisBusy(con) == 1) {
-        return false;
-    }
-
-    // Lets get some results, using PQgetResult(con);
+    PGresult * res;
+    while ((PQisBusy(con) == 0) && ((res = PQgetResult(m_connection)) != 0)) {
+        // FIXME
+        // Get and check result against current query using 
+        // PQresultStatus(res), PQclear(res). If NULL is read, then
+        // we need to signal that the next query can be sent, so the while
+        // logic needs to be fixed.
+    };
 
     return false;
 }
@@ -65,8 +68,10 @@ void CommPSQLSocket::dispatch()
     PGconn * con = m_db.getConnection();
     assert(con != 0);
 
-    // Here we are permited to write
-    // Perhaps PQflush(con); ?
+    // FIXME
+    // Here we are permited to write the next query, if there is one,
+    // and read() allows us to do this.
+    // Perhaps PQflush(con); ? Must be called after writing a non-blocking query
 }
 
 void CommPSQLSocket::idle(time_t t)

@@ -1,5 +1,10 @@
 2003-10-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommPSQLSocket.cpp: Add some query processing code, and
+	  comments about code to be written.
+
+2003-10-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommPSQLSocket.h, server/CommPSQLSocket.cpp,
 	  common/Database.h: Work in progress on Comm object to handle
 	  non-blocking database communication.
