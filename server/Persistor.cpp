@@ -3,21 +3,22 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "Persistor.h"
+#include "Persistor_impl.h"
 
 #include <common/Database.h>
 
-class Entity;
-class Thing;
-class Line;
-class Area;
-class Character;
-class Creator;
-class Food;
-class Plant;
-class Stackable;
-class Structure;
+#include <rulesets/Entity.h>
+#include <rulesets/Thing.h>
+#include <rulesets/Line.h>
+#include <rulesets/Area.h>
+#include <rulesets/Character.h>
+#include <rulesets/Creator.h>
+#include <rulesets/Food.h>
+#include <rulesets/Plant.h>
+#include <rulesets/Stackable.h>
+#include <rulesets/Structure.h>
 
-Persistor<Entity>::Persistor<Entity>() : m_class("entity")
+Persistor<Entity>::Persistor() : m_class("entity")
 {
     Atlas::Message::Object::MapType desc;
     desc["name"] = "                                                                                ";

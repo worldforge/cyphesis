@@ -169,21 +169,21 @@ void Entity::merge(const Fragment::MapType & ent)
     }
 }
 
-void Entity::getLocation(const Fragment::MapType & entmap,
+bool Entity::getLocation(const Fragment::MapType & entmap,
                          const EntityDict & eobjects)
 {
     debug( std::cout << "Thing::getLocation" << std::endl << std::flush;);
     Fragment::MapType::const_iterator I = entmap.find("loc");
     if ((I == entmap.end()) || !I->second.IsString()) {
         debug( std::cout << getId() << ".. has no loc" << std::endl << std::flush;);
-        return;
+        return true;
     }
     try {
         const std::string & ref_id = I->second.AsString();
         EntityDict::const_iterator J = eobjects.find(ref_id);
         if (J == eobjects.end()) {
             debug( std::cout << "ERROR: Can't get ref from objects dictionary" << std::endl << std::flush;);
-            return;
+            return true;
         }
             
         location.ref = J->second;
@@ -206,7 +206,9 @@ void Entity::getLocation(const Fragment::MapType & entmap,
     }
     catch (Atlas::Message::WrongTypeException) {
         log(ERROR, "getLocation: Bad location data");
+        return true;
     }
+    return false;
 }
 
 Vector3D Entity::getXyz() const

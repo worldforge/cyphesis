@@ -45,6 +45,7 @@ WorldRouter::WorldRouter(ServerRouting & srvr) : BaseWorld(*new World()),
     perceptives.insert(&gameWorld);
     objectList.insert(&gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
+    EntityFactory::init(*this);
 }
 
 WorldRouter::~WorldRouter()
@@ -140,7 +141,8 @@ Entity * WorldRouter::addObject(Entity * obj)
                     << std::flush;);
     obj->world = this;
     if (consts::enable_omnipresence &&
-        (obj->getAttributes().find("omnipresent") != obj->getAttributes().end())) {
+        (obj->getAttributes().find("omnipresent") !=
+         obj->getAttributes().end())) {
         omnipresentList.insert(obj);
     }
     Setup * s = new Setup(Setup::Instantiate());
@@ -158,7 +160,7 @@ Entity * WorldRouter::addObject(const std::string & typestr,
     debug(std::cout << "WorldRouter::addObject(std::string, ent)" << std::endl
                     << std::flush;);
     Entity * obj;
-    obj = EntityFactory::instance()->newEntity(typestr, ent, eobjects);
+    obj = EntityFactory::instance()->newEntity(typestr, ent);
     obj->setId(id);
     return addObject(obj);
 }

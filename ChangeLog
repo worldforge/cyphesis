@@ -1,3 +1,20 @@
+2002-12-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/server.cpp, server/WorldRouter.cpp,
+	  server/EntityFactory.h, server/EntityFactory.cpp:
+	  Change the way the EnitityFactory is created so it has a
+	  reference to the world.
+
+	* rulesets/Entity.h, rulesets/Entity.cpp: getLocation returns
+	  whether an error occured setting location data.
+
+	* common/Database.h, common/Database.cpp: Add stub functions
+	  for generating queries to new format entity tables.
+
+	* server/Persistor_impl.h, server/Persistor.h,
+	  server/Persistor.cpp: Add hooks for syncing update to
+	  database using new database functions.
+
 2002-12-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.cpp: Make sure each factory is unique

@@ -18,7 +18,7 @@
 
 using Atlas::Message::Object;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 Database * Database::m_instance = NULL;
 
@@ -595,5 +595,66 @@ bool Database::registerEntityTable(const std::string & classname,
         debug(std::cout << "Table created" << std::endl << std::flush;);
         return true;
     }
+    return true;
+}
+
+bool Database::createEntityRow(const std::string & classname,
+                               const std::string & id,
+                               const std::string & columns)
+{
+    TableDict::const_iterator I = entityTables.find(classname);
+    if (I == entityTables.end()) {
+        log(ERROR, "Attempt to access entity table not registered.");
+        return false;
+    }
+    std::string table = classname + "_ent";
+    std::string query = "INSERT INTO ";
+    query += table;
+    query += " VALUES ('";
+    query += columns;
+    query += "');";
+    std::cout << "QUERY: " << query << std::endl << std::flush;
+    // FIXME Actually run the query against the db
+    return true;
+}
+
+bool Database::updateEntityRow(const std::string & classname,
+                               const std::string & id,
+                               const std::string & columns)
+{
+    TableDict::const_iterator I = entityTables.find(classname);
+    if (I == entityTables.end()) {
+        log(ERROR, "Attempt to access entity table not registered.");
+        return false;
+    }
+    std::string table = classname + "_ent";
+    std::string query = "UPDATE ";
+    query += table;
+    query += " SET ";
+    query += columns;
+    query += " WHERE id='";
+    query += id;
+    query += "';";
+    std::cout << "QUERY: " << query << std::endl << std::flush;
+    // FIXME Actually run the query against the db
+    return true;
+}
+
+bool Database::removeEntityRow(const std::string & classname,
+                               const std::string & id)
+{
+    TableDict::const_iterator I = entityTables.find(classname);
+    if (I == entityTables.end()) {
+        log(ERROR, "Attempt to access entity table not registered.");
+        return false;
+    }
+    std::string table = classname + "_ent";
+    std::string query = "DELETE FROM ";
+    query += table;
+    query += " WHERE id='";
+    query += id;
+    query += "';";
+    std::cout << "QUERY: " << query << std::endl << std::flush;
+    // FIXME Actually run the query against the db
     return true;
 }

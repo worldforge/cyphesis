@@ -52,8 +52,6 @@ int main(int argc, char ** argv)
         return EXIT_DATABASE_ERROR;
     }
 
-    EntityFactory::instance()->installBaseClasses();
-
     // If the restricted flag is set in the config file, then we
     // don't allow connecting users to create accounts. Accounts must
     // be created manually by the server administrator.

@@ -34,7 +34,7 @@ static const bool debug_flag = false;
 
 EntityFactory * EntityFactory::m_instance = NULL;
 
-EntityFactory::EntityFactory()
+EntityFactory::EntityFactory(BaseWorld & w) : m_world(w)
 {
     // This class can only have one instance, so a Factory is not installed
     // FIXME Add a factory in here so we have persist the world properlly
@@ -59,8 +59,7 @@ EntityFactory::EntityFactory()
 }
 
 Entity * EntityFactory::newEntity(const std::string & type,
-                                  const Fragment::MapType & entmap,
-                                  const EntityDict & world)
+                                  const Fragment::MapType & entmap)
 {
     // FIXME Re-write to use persistant stuff
     Entity * thing = 0;
@@ -99,7 +98,7 @@ Entity * EntityFactory::newEntity(const std::string & type,
     }
     thing->merge(attributes);
     // Get location from entity, if it is present
-    thing->getLocation(attributes, world);
+    thing->getLocation(attributes, m_world.getObjects());
     if (pc != 0) {
         pc->persist();
     }

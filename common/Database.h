@@ -25,6 +25,8 @@ class Decoder : public Atlas::Message::DecoderBase {
     }
 };
 
+typedef std::map<std::string, std::string> TableDict;
+
 class Database {
   private:
     static Database * m_instance;
@@ -35,7 +37,7 @@ class Database {
     std::string server_db;
     std::string rule_db;
 
-    std::map<std::string, std::string> entityTables;
+    TableDict entityTables;
 
     Decoder m_d;
 
@@ -85,8 +87,16 @@ class Database {
     void shutdownConnection();
 
     bool registerEntityTable(const std::string & classname,
-	                     const Atlas::Message::Object::MapType & row,
-			     const std::string & parent = "");
+                             const Atlas::Message::Object::MapType & row,
+                             const std::string & parent = "");
+    bool createEntityRow(const std::string & classname,
+                         const std::string & id,
+                         const std::string & columns);
+    bool updateEntityRow(const std::string & classname,
+                         const std::string & id,
+                         const std::string & columns);
+    bool removeEntityRow(const std::string & classname,
+                         const std::string & id);
 
 };
 

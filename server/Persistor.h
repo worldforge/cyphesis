@@ -5,10 +5,12 @@
 #ifndef SERVER_PERSISTOR_H
 #define SERVER_PERSISTOR_H
 
+#include <sigc++/object.h>
+
 #include <string>
 
 template <class T>
-class Persistor {
+class Persistor : public SigC::Object {
   private:
     std::string m_class;
   public:
@@ -16,6 +18,8 @@ class Persistor {
     Persistor();
 
     void persist(T &);
+    void update(T &);
+    void remove(T &);
 };
 
 #endif // SERVER_PERSISTOR_H

@@ -15,19 +15,24 @@ namespace Atlas { namespace Message {
 
 class Thing;
 class FactoryBase;
+class BaseWorld;
 
 typedef std::map<std::string, FactoryBase *> FactoryDict;
 
 class EntityFactory {
-    EntityFactory();
+    EntityFactory(BaseWorld & w);
     static EntityFactory * m_instance;
 
     FactoryDict factories;
+    BaseWorld & m_world;
+
+    void installBaseClasses();
   public:
+    static void init(BaseWorld & w) {
+        m_instance = new EntityFactory(w);
+        m_instance->installBaseClasses();
+    }
     static EntityFactory * instance() {
-        if (m_instance == NULL) {
-            m_instance = new EntityFactory();
-        }
         return m_instance;
     }
     static void del() {
@@ -36,11 +41,9 @@ class EntityFactory {
         }
     }
     Entity * newEntity(const std::string &,
-                      const Atlas::Message::Object::MapType &,
-                      const EntityDict &);
+                      const Atlas::Message::Object::MapType &);
     void flushFactories();
 
-    void installBaseClasses();
     void installFactory(const std::string &, const std::string &, FactoryBase*);
     void installClass(const std::string &, const std::string&);
     FactoryBase * getFactory(const std::string &);

@@ -39,16 +39,16 @@ class Entity : public BaseEntity {
     unsigned int update_flags;
     Script * script;
     Atlas::Message::Object::MapType attributes;
-    int seq;			// Sequence number
-    double status;		// Health/damage coeficient
-    std::string type;		// Easy access to primary parent
-    std::string name;		// Entities name
-    double mass;		// Mass in kg
-    bool perceptive;		// Is this perceptive
+    int seq;                    // Sequence number
+    double status;              // Health/damage coeficient
+    std::string type;           // Easy access to primary parent
+    std::string name;           // Entities name
+    double mass;                // Mass in kg
+    bool perceptive;            // Is this perceptive
   public:
-    BaseWorld * world;		// Exists in this world.
-    Location location;		// Full details of location inc. ref pos and vel
-    EntitySet contains;		// List of entities which use this as ref
+    BaseWorld * world;          // Exists in this world.
+    Location location;          // Full details of location inc. ref pos and vel
+    EntitySet contains;         // List of entities which use this as ref
 
     Entity();
     virtual ~Entity();
@@ -78,15 +78,16 @@ class Entity : public BaseEntity {
     }
 
     const Atlas::Message::Object::MapType & getAttributes() const {
-	return attributes;
+        return attributes;
     }
 
     virtual const Atlas::Message::Object get(const std::string &) const;
-    virtual void set(const std::string & aname, const Atlas::Message::Object & attr);
+    virtual void set(const std::string & aname,
+                     const Atlas::Message::Object & attr);
 
     void setScript(Script * scrpt);
     void merge(const Atlas::Message::Object::MapType &);
-    void getLocation(const Atlas::Message::Object::MapType &,
+    bool getLocation(const Atlas::Message::Object::MapType &,
                      const EntityDict &);
     Vector3D getXyz() const;
     void destroy();
