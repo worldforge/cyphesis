@@ -1,3 +1,7 @@
+2002-05-21  Michael Koch <konqueror@gmx.de>
+
+	* configure.in: added --enable-debug
+
 2002-05-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/ServerRouting.cpp, server/ServerRouting.h,
