@@ -28,6 +28,7 @@ namespace consts {
   static const bool enable_ranges = true;
   // Range of broadcast sight ops
   static const float sight_range = 26.0;
+  static const float square_sight_range = (sight_range * sight_range);
   // Range of broadcast sound ops
   static const float hearing_range = 13.0;
   // Can things be omnipresent
@@ -48,6 +49,7 @@ namespace consts {
   extern float square_basic_tick;
   extern float square_base_velocity;
   extern float sight_range;
+  extern float square_sight_range;
   extern float hearing_range;
   extern bool enable_ranges;
   extern bool enable_omnipresence;

@@ -6,3 +6,9 @@
 // so if you are comparing vector magnitudes, always use relMag().
 
 #include "Vector3D.h"
+
+float squareDistance(const Vector3D & u, const Vector3D & v)
+{
+    return ((u.x() - v.x())*(u.x() - v.x()) + (u.y() - v.y())*(u.y() - v.y()) + (u.z() - v.z())*(u.z() - v.z()));
+}
+

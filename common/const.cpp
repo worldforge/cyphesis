@@ -45,6 +45,7 @@ namespace consts {
   bool enable_ranges = true;
   // Range of broadcast sight ops
   float sight_range = 26.0;
+  float square_sight_range = (sight_range * sight_range);
   // Range of broadcast sound ops
   float hearing_range = 13.0;
   // Can things be omnipresent

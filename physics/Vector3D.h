@@ -47,10 +47,7 @@ typedef WFMath::Vector<3> Vector3D;
 
 /// Find relative distance, to be used when the result is only
 /// going to be compared with other distances
-inline float squareDistance(const Vector3D & u, const Vector3D & v)
-{
-    return ((u.x() - v.x())*(u.x() - v.x()) + (u.y() - v.y())*(u.y() - v.y()) + (u.z() - v.z())*(u.z() - v.z()));
-}
+float squareDistance(const Vector3D & u, const Vector3D & v);
 
 /// Find the distance between two vectors
 inline float distance(const Vector3D & u, const Vector3D & v)
