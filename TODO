@@ -1,3 +1,5 @@
+Make sure plant base class is working.
+
 Fix up inheritance so classes in the mason ruleset don't inherit directly
 from their C++ base class.
 

@@ -120,7 +120,86 @@ void EntityFactory::flushFactories()
     m_eft = NULL;
 }
 
-void EntityFactory::installBaseClasses()
+void EntityFactory::installRule(const std::string & className,
+                                const Element::MapType & classDesc)
+{
+    Element::MapType::const_iterator J = classDesc.find("parent");
+    if ((J == classDesc.end()) || (!J->second.isString())) {
+        std::string msg = std::string("Rule \"") + className 
+                          + "\" has no parent. Skipping.";
+        log(WARNING, msg.c_str());
+        return;
+    }
+    const std::string & parent = J->second.asString();
+    // Get the new factory for this rule
+    FactoryBase * f = getNewFactory(parent);
+    if (f == 0) {
+        debug(std::cout << "Rule \"" << className
+                        << "\" has non existant parent \"" << parent
+                        << "\". Waiting." << std::endl << std::flush;);
+        m_waitingRules[parent] = std::pair<std::string, Element::MapType>(className, classDesc);
+        return;
+    }
+
+    // Establish whether this rule has an associated script, and
+    // if so, use it.
+    J = classDesc.find("script");
+    if ((J != classDesc.end()) && (J->second.isMap())) {
+        const Element::MapType & script = J->second.asMap();
+        J = script.find("name");
+        if ((J != script.end()) && (J->second.isString())) {
+            f->m_script = J->second.asString();
+            J = script.find("language");
+            if ((J != script.end()) && (J->second.isString())) {
+                f->m_language = J->second.asString();
+            }
+        }
+    }
+
+    // Establish whether this rule has an associated mind rule,
+    // and handle it.
+    J = classDesc.find("mind");
+    if ((J != classDesc.end()) && (J->second.isMap())) {
+        const Element::MapType & script = J->second.asMap();
+        J = script.find("name");
+        if ((J != script.end()) && (J->second.isString())) {
+            const std::string mindType = J->second.asString();
+            // language is unused. might need it one day
+            // J = script.find("language");
+            // if ((J != script.end()) && (J->second.isString())) {
+                // const std::string & mindLang = J->second.asString();
+            // }
+            MindFactory::instance()->addMindType(className, mindType);
+        }
+    }
+
+    // Store the default attribute for entities create by this rule.
+    J = classDesc.find("attributes");
+    if ((J != classDesc.end()) && (J->second.isMap())) {
+        f->m_attributes = J->second.asMap();
+    }
+    // Check whether it should be available to players.
+    J = classDesc.find("playable");
+    if ((J != classDesc.end()) && (J->second.isInt())) {
+        Player::playableTypes.insert(className);
+    }
+    debug(std::cout << "INSTALLING " << className << ":" << parent
+                    << "{" << f->m_script << "." << f->m_language << "}"
+                    << std::endl << std::flush;);
+    // Install the factory in place.
+    installFactory(parent, className, f);
+    RuleWaitList::iterator I = m_waitingRules.find(className);
+    if (I != m_waitingRules.end()) {
+        const std::string & wClassName = I->second.first;
+        const Element::MapType & wClassDesc = I->second.second;
+        debug(std::cout << "WAITING rule " << wClassName
+                        << " now ready" << std::endl << std::flush;);
+        installRule(wClassName, wClassDesc);
+        m_waitingRules.erase(I);
+    }
+}
+
+void EntityFactory::installRules()
 {
     Element::MapType ruleTable;
     Persistance * p = Persistance::instance();
@@ -130,71 +209,18 @@ void EntityFactory::installBaseClasses()
     for(; I != ruleTable.end(); ++I) {
         const std::string & className = I->first;
         const Element::MapType & classDesc = I->second.asMap();
-        Element::MapType::const_iterator J = classDesc.find("parent");
-        if ((J == classDesc.end()) || (!J->second.isString())) {
-            std::string msg = std::string("Rule \"") + className 
-                              + "\" has no parent. Skipping.";
-            log(ERROR, msg.c_str());
-            continue;
-        }
-        const std::string & parent = J->second.asString();
-        // Get the new factory for this rule
-        FactoryBase * f = getNewFactory(parent);
-        if (f == 0) {
-            std::string msg = std::string("Rule \"") + className 
-                              + "\" has non existant parent \"" + parent
-                              + "\". Skipping.";
-            log(ERROR, msg.c_str());
-            continue;
-        }
-
-        // Establish whether this rule has an associated script, and
-        // if so, use it.
-        J = classDesc.find("script");
-        if ((J != classDesc.end()) && (J->second.isMap())) {
-            const Element::MapType & script = J->second.asMap();
-            J = script.find("name");
-            if ((J != script.end()) && (J->second.isString())) {
-                f->m_script = J->second.asString();
-                J = script.find("language");
-                if ((J != script.end()) && (J->second.isString())) {
-                    f->m_language = J->second.asString();
-                }
-            }
-        }
-
-        // Establish whether this rule has an associated mind rule,
-        // and handle it.
-        J = classDesc.find("mind");
-        if ((J != classDesc.end()) && (J->second.isMap())) {
-            const Element::MapType & script = J->second.asMap();
-            J = script.find("name");
-            if ((J != script.end()) && (J->second.isString())) {
-                const std::string mindType = J->second.asString();
-                // language is unused. might need it one day
-                // J = script.find("language");
-                // if ((J != script.end()) && (J->second.isString())) {
-                    // const std::string & mindLang = J->second.asString();
-                // }
-                MindFactory::instance()->addMindType(className, mindType);
-            }
-        }
-
-        // Store the default attribute for entities create by this rule.
-        J = classDesc.find("attributes");
-        if ((J != classDesc.end()) && (J->second.isMap())) {
-            f->m_attributes = J->second.asMap();
-        }
-        // Check whether it should be available to players.
-        J = classDesc.find("playable");
-        if ((J != classDesc.end()) && (J->second.isInt())) {
-            Player::playableTypes.insert(className);
-        }
-        debug(std::cout << "INSTALLING " << className << ":" << parent
-                        << "{" << f->m_script << "." << f->m_language << "}"
-                        << std::endl << std::flush;);
-        // Install the factory in place.
-        installFactory(parent, className, f);
+        installRule(className, classDesc);
+    }
+    // Report on the non-cleared rules.
+    // Perhaps we can keep them too?
+    // m_waitingRules.clear();
+    RuleWaitList::const_iterator J = m_waitingRules.begin();
+    for(; J != m_waitingRules.end(); ++J) {
+        const std::string & wParentName = J->first;
+        std::string msg = std::string("Rule \"") + J->first
+                          + "\" with parent \"" + wParentName
+                          + "\" is an orphan.";
+        log(ERROR, msg.c_str());
     }
 }
 
@@ -219,9 +245,6 @@ FactoryBase * EntityFactory::getNewFactory(const std::string & parent)
 {
     FactoryDict::const_iterator I = m_factories.find(parent);
     if (I == m_factories.end()) {
-        std::string msg = std::string("Failed to find factory for ") + parent
-                     + " while installing a new type which inherits from it.";
-        log(ERROR, msg.c_str());
         return 0;
     }
     return I->second->duplicateFactory();

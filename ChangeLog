@@ -1,5 +1,12 @@
 2003-09-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.h, server/EntityFactory.cpp: Add
+	  a wait queue for rules whose parent is not yet installed,
+	  so installing rules in any order can be handled, and
+	  there is no problem with rules inheriting from each other.
+
+2003-09-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp: Be much stricter about missing types,
 	  and missing parents of types. Refuse to add types or instances
 	  which have non-existant parents.

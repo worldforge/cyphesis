@@ -11,10 +11,6 @@
 
 #include <sigc++/object.h>
 
-namespace Atlas { namespace Message {
-  class Object;
-} }
-
 class Entity;
 class FactoryBase;
 class BaseWorld;
@@ -26,18 +22,22 @@ typedef std::map<std::string, FactoryBase *> FactoryDict;
 
 class EntityFactory {
   private:
+    typedef std::map<std::string, std::pair<std::string, Atlas::Message::Element::MapType> > RuleWaitList;
     explicit EntityFactory(BaseWorld & w);
     static EntityFactory * m_instance;
 
     FactoryDict m_factories;
     BaseWorld & m_world;
+    RuleWaitList m_waitingRules;
     PersistantThingFactory<Entity> * m_eft;
 
-    void installBaseClasses();
+    void installRule(const std::string &,
+                     const Atlas::Message::Element::MapType&);
+    void installRules();
   public:
     static void init(BaseWorld & w) {
         m_instance = new EntityFactory(w);
-        m_instance->installBaseClasses();
+        m_instance->installRules();
     }
     static EntityFactory * instance() {
         return m_instance;

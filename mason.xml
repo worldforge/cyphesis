@@ -12,7 +12,7 @@
   </map>
 
   <map name="tree">
-    <string name="parent">thing</string>
+    <string name="parent">plant</string>
     <map name="attributes">
       <float name="height">6</float>
       <list name="bbox">
@@ -40,7 +40,7 @@
   </map>
 
   <map name="appletree">
-    <string name="parent">thing</string>
+    <string name="parent">tree</string>
     <map name="attributes">
       <list name="bbox">
         <float>-0.4</float><float>-0.4</float><float>0</float>
@@ -57,7 +57,7 @@
   </map>
 
   <map name="birch">
-    <string name="parent">thing</string>
+    <string name="parent">tree</string>
     <map name="attributes">
       <float name="height">6</float>
       <list name="bbox">
@@ -71,7 +71,7 @@
   </map>
 
   <map name="poplar">
-    <string name="parent">thing</string>
+    <string name="parent">tree</string>
     <map name="attributes">
       <float name="height">6</float>
       <list name="bbox">
@@ -85,7 +85,7 @@
   </map>
 
   <map name="willow">
-    <string name="parent">thing</string>
+    <string name="parent">tree</string>
     <map name="attributes">
       <float name="height">6</float>
       <list name="bbox">
@@ -99,7 +99,7 @@
   </map>
 
   <map name="fir">
-    <string name="parent">thing</string>
+    <string name="parent">tree</string>
     <map name="attributes">
       <float name="height">8</float>
       <list name="bbox">
@@ -113,7 +113,7 @@
   </map>
 
   <map name="hickory">
-    <string name="parent">thing</string>
+    <string name="parent">tree</string>
     <map name="attributes">
       <float name="height">6</float>
       <list name="bbox">
@@ -301,7 +301,7 @@
   </map>
 
   <map name="acorn">
-    <string name="parent">food</string>
+    <string name="parent">seed</string>
     <map name="attributes">
       <float name="mass">0.05</float>
     </map>
@@ -312,7 +312,7 @@
   </map>
 
   <map name="apple">
-    <string name="parent">food</string>
+    <string name="parent">seed</string>
     <map name="attributes">
       <float name="mass">0.2</float>
       <float name="alcahol">0</float>
