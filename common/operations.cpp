@@ -61,7 +61,7 @@ Burn Burn::Instantiate() {
     return value;
 }
 
-Generic::Generic(const std::string & p) : RootOperation(p, "root_operation") {
+Generic::Generic(const std::string & p) : RootOperation(p.c_str(), "root_operation") {
 }
 
 Generic::~Generic() { }

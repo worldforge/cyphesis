@@ -234,7 +234,7 @@ void EntityFactory::installFactory(const std::string & parent,
 
     Inheritance & i = Inheritance::instance();
 
-    Atlas::Objects::Root * r = new Atlas::Objects::Entity::GameEntity();
+    Atlas::Objects::Root * r = new Atlas::Objects::Entity::GameEntity(Atlas::Objects::Entity::GameEntity::Class());
     r->setId(className);
     r->setParents(Element::ListType(1, parent));
     i.addChild(r);

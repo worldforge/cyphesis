@@ -50,12 +50,12 @@ void installCustomEntities()
 {
     Inheritance & i = Inheritance::instance();
 
-    Root * r = new AdminEntity();
+    Root * r = new AdminEntity(AdminEntity::Class());
     r->setId("room");
     r->setParents(Element::ListType(1,"admin_entity"));
     i.addChild(r);
 
-    r = new AdminEntity();
+    r = new AdminEntity(AdminEntity::Class());
     r->setId("lobby");
     r->setParents(Element::ListType(1,"room"));
     i.addChild(r);
