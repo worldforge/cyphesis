@@ -8,7 +8,6 @@
 #include "Connection.h"
 
 #include "CommClient.h"
-#include "CommServer.h"
 
 inline void Connection::send(const RootOperation & msg) const
 {

@@ -58,9 +58,9 @@ int main(int argc, char ** argv)
     // don't allow connecting users to create accounts. Accounts must
     // be created manually by the server administrator.
     if (global_conf->findItem("cyphesis", "restricted")) {
-        Persistance::restricted = global_conf->getItem("cyphesis","restricted");
-        if (Persistance::restricted) {
-            log(INFO, "Running in restricted mode");
+        restricted_flag = global_conf->getItem("cyphesis","restricted");
+        if (restricted_flag) {
+            log(INFO, "Setting restricted mode.");
         }
     }
 

@@ -26,8 +26,6 @@ class Persistance {
     static bool init();
     static void shutdown();
 
-    static bool restricted;
-
     bool findAccount(const std::string &);
     Account * getAccount(const std::string &);
     void putAccount(const Account &);

@@ -7,15 +7,10 @@
 #include "Admin.h"
 #include "Player.h"
 
-#include <rulesets/Entity.h>
-
 #include <common/log.h>
 #include <common/const.h>
 #include <common/Database.h>
 
-#include <fstream>
-
-bool Persistance::restricted = false;
 Persistance * Persistance::m_instance = NULL;
 
 Persistance::Persistance() : m_connection(*Database::instance())
@@ -146,4 +141,3 @@ bool Persistance::clearRules()
 {
     return m_connection.clearTable(m_connection.rule());
 }
-

@@ -4,13 +4,11 @@
 
 #include "Admin.h"
 
-#include "Persistance.h"
 #include "ServerRouting.h"
 #include "WorldRouter.h"
 #include "Connection.h"
 
 #include <rulesets/Character.h>
-#include <rulesets/BaseMind.h>
 
 #include <common/const.h>
 #include <common/debug.h>
@@ -170,5 +168,5 @@ OpVector Admin::SetOperation(const Set & op)
 }
 
 // There used to be a code operation handler here. It may become desirable in
-// the future for the admind account to be able to send script fragments.
+// the future for the admin account to be able to send script fragments.
 // Think about implementing this.

@@ -1,3 +1,16 @@
+2003-01-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/globals.cpp, common/globals.h, server/Connection.cpp,
+	  server/Persistance.cpp, server/Persistance.h, server/ServerRouting.cpp,
+	  server/server.cpp: Move restricted flag out of persistance into
+	  globals.
+
+	* server/Account.h, server/Admin.cpp, server/Connection_methods.h,
+	  server/WorldRouter.cpp: Remove unnecessary includes.
+
+	* server/ServerRouting.cpp: No longer necessary to load the admin
+	  account at startup. Can be loaded on demand.
+
 2003-01-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.h, server/Persistor.h: Make inheritance of

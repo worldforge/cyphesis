@@ -12,6 +12,7 @@ std::string etc_directory = ETCDIR;
 std::vector<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;
+bool restricted_flag = false;
 int timeoffset = 0;
 int port_num = 6767;
 

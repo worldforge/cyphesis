@@ -233,7 +233,7 @@ OpVector Connection::CreateOperation(const Create & op)
     }
     const Fragment::MapType & account = op.GetArgs().front().AsMap();
 
-    if (Persistance::restricted) {
+    if (restricted_flag) {
         return error(op, "Account creation on this server is restricted");
     }
     Fragment::MapType::const_iterator I = account.find("username");

@@ -18,6 +18,7 @@ extern std::string etc_directory;
 extern std::vector<std::string> rulesets;
 extern bool exit_flag;
 extern bool daemon_flag;
+extern bool restricted_flag;
 extern int timeoffset;
 extern int port_num;
 

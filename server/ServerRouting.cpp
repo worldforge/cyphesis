@@ -4,9 +4,6 @@
 
 #include "ServerRouting.h"
 #include "WorldRouter.h"
-#include "Persistance.h"
-#include "CommServer.h"
-#include "Account.h"
 #include "Lobby.h"
 
 #include <common/debug.h>
@@ -20,10 +17,6 @@ ServerRouting::ServerRouting(const std::string & ruleset, const std::string & na
         OOGThing(name), svrRuleset(ruleset), svrName(name), numClients(0),
         world(*new WorldRouter(*this)), lobby(*new Lobby("lobby", *this))
 {
-    // setId(name);
-    // lobby.setId("lobby");
-    Account * adm = Persistance::loadAdminAccount();
-    addAccount(adm);
 }
 
 ServerRouting::~ServerRouting()
@@ -48,7 +41,7 @@ void ServerRouting::addToObject(Fragment::MapType & omap) const
     omap["uptime"] = world.upTime();
     omap["builddate"] = std::string(consts::buildTime)+", "+std::string(consts::buildDate);
     omap["version"] = std::string(consts::version);
-    if (Persistance::restricted) {
+    if (restricted_flag) {
         omap["restricted"] = "true";
     }
     

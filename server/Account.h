@@ -8,7 +8,6 @@
 #include <common/OOGThing.h>
 
 class Connection;
-class WorldRouter;
 
 class Account : public OOGThing {
   private:

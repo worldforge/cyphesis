@@ -14,7 +14,6 @@
 #include <common/const.h>
 #include <common/globals.h>
 #include <common/stringstream.h>
-#include <common/BaseWorld.h>
 #include <common/globals.h>
 #include <common/Database.h>
 
