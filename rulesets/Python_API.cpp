@@ -5,6 +5,7 @@
 
 #include "Python_API.h"
 #include "Thing.h"
+#include <modules/Location.h>
 
 
 void Create_PyThing(Thing * thing, const string & package, const string & type)
@@ -39,6 +40,35 @@ void Create_PyThing(Thing * thing, const string & package, const string & type)
             PyErr_Print();
         }
     }
+}
+
+static PyObject * location_new(PyObject * self, PyObject * args)
+{
+	LocationObject *o;
+	// We need to deal with actual args here
+	if (!PyArg_ParseTuple(args, "")) {
+		return NULL;
+	}
+	o = newLocationObject(args);
+	if ( o == NULL ) {
+		return NULL;
+	}
+	o->location = new Location;
+	return (PyObject *)o;
+}
+
+static PyObject * vector3d_new(PyObject * self, PyObject * args)
+{
+	Vector3DObject *o;
+	// We need to deal with actual args here
+	if (!PyArg_ParseTuple(args, "")) {
+		return NULL;
+	}
+	o = newVector3DObject(args);
+	if ( o == NULL ) {
+		return NULL;
+	}
+	return (PyObject *)o;
 }
 
 static PyObject * object_new(PyObject * self, PyObject * args)
@@ -90,8 +120,24 @@ static PyObject * operation_new(PyObject * self, PyObject * args)
 static PyMethodDef atlas_methods[] = {
 	/* {"system",	spam_system, METH_VARARGS}, */
 	{"Operation",	operation_new,	METH_VARARGS},
+	{"Location",	location_new,	METH_VARARGS},
 	{"Object",	object_new,	METH_VARARGS},
 	{"cppThing",	cppthing_new,	METH_VARARGS},
+	{NULL,		NULL}				/* Sentinel */
+};
+
+static PyMethodDef Vector3D_methods[] = {
+	{"Vector3D",	vector3d_new,	METH_VARARGS},
+	{NULL,		NULL}				/* Sentinel */
+};
+
+static PyMethodDef server_methods[] = {
+	//{"null",	null_new,	METH_VARARGS},
+	{NULL,		NULL}				/* Sentinel */
+};
+
+static PyMethodDef common_methods[] = {
+	//{"null",	null_new,	METH_VARARGS},
 	{NULL,		NULL}				/* Sentinel */
 };
 
@@ -110,8 +156,40 @@ void init_python_api()
 	Py_Initialize();
 
 	if (Py_InitModule("atlas", atlas_methods) == NULL) {
-		printf("Failed to Create cyphesis thing\n");
-	} else {
-		printf("Created cyphesis thing\n");
+		printf("Failed to Create atlas thing\n");
+		return;
+	}
+	printf("Created atlas thing\n");
+
+	if (Py_InitModule("Vector3D", Vector3D_methods) == NULL) {
+		printf("Failed to Create Vector3D thing\n");
+		return;
+	}
+	printf("Created Vector3D thing\n");
+
+	PyObject * common;
+	PyObject * dict;
+	if ((common = Py_InitModule("common", common_methods)) == NULL) {
+		printf("Failed to Create common thing\n");
+		return;
+	}
+	printf("Created common thing\n");
+	PyObject * _const = PyModule_New("const");
+	PyObject * log = PyModule_New("log");
+	dict = PyModule_GetDict(common);
+	PyDict_SetItemString(dict, "const", _const);
+	PyDict_SetItemString(dict, "log", log);
+	PyObject_SetAttrString(_const, "server_python", PyInt_FromLong(0));
+
+	PyObject * server;
+	if ((server = Py_InitModule("server", server_methods)) == NULL) {
+		printf("Failed to Create server thing\n");
+		return;
+	}
+	dict = PyModule_GetDict(server);
+	PyObject * dictlist = PyModule_New("dictlist");
+	PyDict_SetItemString(dict, "dictlist", dictlist);
+	if (PyExc_IOError != NULL) {
+		printf("Got PyExc_IOError\n");
 	}
 }

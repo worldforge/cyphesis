@@ -148,7 +148,7 @@ oplist Character::Operation(const Setup & op)
     }
 
     mind = new BaseMind();
-    Create_PyThing(mind, "mind.BaseMind", "BaseMind");
+    Create_PyThing(mind, "mind.NPCMind", "NPCMind");
 
     Setup * s = new Setup(op);
     // THis is so not the right thing to do

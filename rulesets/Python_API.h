@@ -17,6 +17,9 @@ using Atlas::Objects::Operation::RootOperation;
 
 class Thing;
 class MemMap;
+class Location;
+
+#include <physics/Vector3D.h>
 
 typedef struct {
     PyObject_HEAD
@@ -35,6 +38,18 @@ typedef struct {
     PyObject	* Map_attr;	/* Attributes dictionary */
     MemMap	* m_map;
 } MapObject;
+
+typedef struct {
+    PyObject_HEAD
+    PyObject	* Location_attr;	/* Attributes dictionary */
+    Location	* location;
+} LocationObject;
+
+typedef struct {
+    PyObject_HEAD
+    PyObject	* Vector3D_attr;	/* Attributes dictionary */
+    Vector3D	coords;
+} Vector3DObject;
 
 #define ATLAS_OPERATION(_name) typedef struct { \
     PyObject_HEAD \
@@ -88,6 +103,8 @@ ATLAS_OPERATION(RootOperation)
 #include "Py_Object.h"
 #include "Py_Thing.h"
 #include "Py_Map.h"
+#include "Py_Location.h"
+#include "Py_Vector3D.h"
 #include "Py_Operation.h"
 
 void Create_PyThing(Thing * thing, const string & package, const string & type);

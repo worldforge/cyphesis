@@ -16,3 +16,5 @@ cyphesis_SOURCES = \
 		server.cpp server.h
 
 cyphesis_LDADD = ../modules/libmodules.a ../physics/libphysics.a ../rulesets/librulesets.a ../common/libcommon.a
+
+cyphesis_LDFLAGS = -Xlinker -export-dynamic

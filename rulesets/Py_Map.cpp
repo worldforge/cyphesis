@@ -170,7 +170,7 @@ int Map_setattr(MapObject *self, char *name, PyObject *v)
 PyTypeObject Map_Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,				/*ob_size*/
-	"cppMap",			/*tp_name*/
+	"Map",				/*tp_name*/
 	sizeof(MapObject),		/*tp_basicsize*/
 	0,				/*tp_itemsize*/
 	/* methods */
