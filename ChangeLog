@@ -1,3 +1,20 @@
+2002-03-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/globals.cpp, common/globals.h, rulesets/Python_API.cpp,
+	  tools/cyloadrules.cpp: Make rulesets list a vector for
+	  efficiency.
+
+	* common/utility.cpp, common/utility.h: New function to create
+	  an operation from a message Object.
+
+	* rulesets/BaseMind.cpp, rulesets/MemMap.cpp, rulesets/MemMap.h,
+	  rulesets/MemMap_methods.h, rulesets/Py_Map.cpp: Clean up
+	  mind/memory interface, eliminating copies, unecessary allocations,
+	  and passing more apropriate types around.
+
+	* server/CommClient.cpp, rulesets/Py_Operation.cpp: Make use of
+	  operation converter where it is apropriate.
+
 2002-03-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/inheritance.h: Cleaner handling of erroneous type

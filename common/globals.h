@@ -6,7 +6,7 @@
 #define COMMON_GLOBALS_H
 
 #include <string>
-#include <list>
+#include <vector>
 
 namespace varconf {
   class Config;
@@ -14,7 +14,7 @@ namespace varconf {
 
 extern varconf::Config * global_conf;
 extern std::string share_directory;
-extern std::list<std::string> rulesets;
+extern std::vector<std::string> rulesets;
 extern bool exit_flag;
 extern bool daemon_flag;
 extern int timeoffset;

@@ -59,15 +59,14 @@ inline Entity * MemMap::addId(const std::string & id)
     additionsById.push_back(id);
     Object::MapType m;
     m["id"] = Object(std::string(id));
-    Object obj(m);
-    return add(obj);
+    return add(m);
 }
 
 inline void MemMap::del(const std::string & id)
 {
     if (id.empty()) { return; }
     if (things.find(id) != things.end()) {
-        Entity * obj = (Entity*)things[id];
+        Entity * obj = things[id];
         things.erase(id);
         std::vector<std::string>::const_iterator I;
         for(I = deleteHooks.begin(); I != deleteHooks.end(); I++) {
@@ -81,8 +80,9 @@ inline Entity * MemMap::get(const std::string & id)
 {
     debug( std::cout << "MemMap::get" << std::endl << std::flush;);
     if (id.empty()) { return NULL; }
-    if (things.find(id) != things.end()) {
-        return (Entity*)things[id];
+    edict_t::const_iterator I = things.find(id);
+    if (I != things.end()) {
+        return I->second;
     }
     return NULL;
 }
@@ -91,9 +91,9 @@ inline Entity * MemMap::getAdd(const std::string & id)
 {
     debug( std::cout << "MemMap::getAdd" << std::endl << std::flush;);
     if (id.empty()) { return NULL; }
-    Entity * obj = MemMap::get(id);
-    if (obj != NULL) {
-        return obj;
+    edict_t::const_iterator I = things.find(id);
+    if (I != things.end()) {
+        return I->second;
     }
     return addId(id);
 }

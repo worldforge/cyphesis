@@ -136,7 +136,7 @@ static PyObject * Map_add(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an Object");
         return NULL;
     }
-    Entity * ret = self->m_map->add(*(obj->m_obj));
+    Entity * ret = self->m_map->add(obj->m_obj->AsMap());
     ThingObject * thing = newThingObject(NULL);
     thing->m_thing = ret;
     return (PyObject *)thing;
@@ -208,7 +208,7 @@ static PyObject * Map_update(MapObject * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an Object");
         return NULL;
     }
-    Entity * ret = self->m_map->update(*(obj->m_obj));
+    Entity * ret = self->m_map->update(obj->m_obj->AsMap());
     ThingObject * thing = newThingObject(NULL);
     thing->m_thing = ret;
     return (PyObject *)thing;

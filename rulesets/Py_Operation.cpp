@@ -348,20 +348,18 @@ static PyObject * Operation_seq_item(OperationObject * self, int item)
     Object::ListType::iterator I = args_list.begin();
     int i;
     for(i = 0; i < item && I != args_list.end(); i++, I++);
-    if (I != args_list.end()) {
-        Object * obj = new Object(*I);
-        Root * op = utility::Object_asRoot(*obj);
-        if ((op != NULL) && (op->GetObjtype() == "op")) {
+    if ((I != args_list.end()) && (I->IsMap())) {
+        const Object::MapType & obj = I->AsMap();
+        RootOperation op;
+        bool isOp = utility::Object_asOperation(obj, op);
+        if (isOp) {
             OperationObject * ret_op = newAtlasRootOperation(NULL);
-            ret_op->operation = (RootOperation *)op;
+            ret_op->operation = new RootOperation(op);
             ret_op->own = 1;
-            delete obj;
             return (PyObject *)ret_op;
-        } else if (op != NULL) {
-            delete op;
         }
         AtlasObject * ret = newAtlasObject(NULL);
-        ret->m_obj = obj;
+        ret->m_obj = new Object(obj);
         return (PyObject *)ret;
     }
     return NULL;

@@ -8,6 +8,8 @@
 namespace utility {
 
   Atlas::Objects::Root * Object_asRoot(const Atlas::Message::Object &);
+  bool Object_asOperation(const Atlas::Message::Object::MapType &,
+                          Atlas::Objects::Operation::RootOperation &);
 
 }
 

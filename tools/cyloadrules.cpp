@@ -110,7 +110,7 @@ int main(int argc, char ** argv)
         f.report();
     } else {
         db.clearRules();
-        std::list<std::string>::reverse_iterator I = rulesets.rbegin();
+        std::vector<std::string>::reverse_iterator I = rulesets.rbegin();
         for (; I != rulesets.rend(); ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
             FileDecoder f(share_directory + "/cyphesis/" + *I + ".xml", db);

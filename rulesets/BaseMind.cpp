@@ -100,16 +100,12 @@ oplist BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
         return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
-    if (args.empty()) {
+    if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    Object obj = args.front();
-    Root * arg = utility::Object_asRoot(obj);
-    if (arg->GetObjtype() != "op") {
-        map.add(arg->AsObject());
-    }
-    delete arg;
+    const Object::MapType & obj = args.front().AsMap();
+    map.add(obj);
     return res;
 }
 
@@ -128,19 +124,16 @@ oplist BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op)
         return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
-    if (args.empty()) {
+    if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    Object obj = args.front();
-    if (obj.IsString()) {
-        map.del(obj.AsString());
+    const Object::MapType & obj = args.front().AsMap();
+    Object::MapType::const_iterator I = obj.find("id");
+    if ((I != obj.end()) && (I->second.IsString())) {
+        map.del(I->second.AsString());
     } else {
-        Root * arg = utility::Object_asRoot(obj);
-        if (arg->GetObjtype() != "op") {
-            map.del(arg->GetId());
-        }
-        delete arg;
+        debug(std::cout << "args has no string id" << std::endl << std::flush;);
     }
     return res;
 }
@@ -174,16 +167,12 @@ oplist BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
         return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
-    if (args.empty()) {
+    if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Object & obj = args.front();
-    Root * arg = utility::Object_asRoot(obj);
-    if (arg->GetObjtype() != "op") {
-        map.update(obj);
-    }
-    delete arg;
+    const Object::MapType & obj = args.front().AsMap();
+    map.update(obj);
     return res;
 }
 
@@ -194,16 +183,12 @@ oplist BaseMind::sightSetOperation(const Sight & op, Set & sub_op)
         return res;
     }
     const Object::ListType & args = sub_op.GetArgs();
-    if (args.empty()) {
+    if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Object & obj = args.front();
-    Root * arg = utility::Object_asRoot(obj);
-    if (arg->GetObjtype() != "op") {
-        map.update(obj);
-    }
-    delete arg;
+    const Object::MapType & obj = args.front().AsMap();
+    map.update(obj);
     return res;
 }
 
@@ -346,17 +331,17 @@ oplist BaseMind::SoundOperation(const Sound & op)
         return res;
     }
     const Object::ListType & args = op.GetArgs();
-    if (args.empty()) {
+    if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    Object obj = args.front();
-    Root * op2 = utility::Object_asRoot(obj);
-    if (op2->GetObjtype() == "op") {
+    const Object::MapType & obj = args.front().AsMap();
+    RootOperation op2;
+    bool isOp = utility::Object_asOperation(obj, op2);
+    if (isOp) {
         debug( std::cout << " args is an op!" << std::endl << std::flush;);
-        res = callSoundOperation(op, *(RootOperation *)op2);
+        res = callSoundOperation(op, op2);
     }
-    delete op2;
     return res;
 }
 
@@ -371,15 +356,16 @@ oplist BaseMind::SightOperation(const Sight & op)
         return res;
     }
     const Object::ListType & args = op.GetArgs();
-    if (args.empty()) {
+    if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    Object obj = args.front();
-    Root * op2 = utility::Object_asRoot(obj);
-    if (op2->GetObjtype() == "op") {
+    const Object::MapType & obj = args.front().AsMap();
+    RootOperation op2;
+    bool isOp = utility::Object_asOperation(obj, op2);
+    if (isOp) {
         debug( std::cout << " args is an op!" << std::endl << std::flush;);
-        res = callSightOperation(op, *(RootOperation *)op2);
+        res = callSightOperation(op, op2);
         //std::string & op2type = op2->GetParents().front().AsString();
         //std::string subop = "sight_" + op2type;
         //script->Operation(subop, op, res, (RootOperation *)op2);
@@ -387,7 +373,6 @@ oplist BaseMind::SightOperation(const Sight & op)
         debug( std::cout << " arg is an entity!" << std::endl << std::flush;);
         map.add(obj);
     }
-    delete op2;
     return res;
 }
 
@@ -441,7 +426,7 @@ oplist BaseMind::LoadOperation(const Load & op)
             const Object::MapType & memmap = I->second.AsMap();
             Object::MapType::const_iterator J = memmap.begin();
             for(; J != memmap.end(); J++) {
-                map.add(J->second);
+                map.add(J->second.AsMap());
             }
         }
     }

@@ -8,7 +8,7 @@
 
 varconf::Config * global_conf = NULL;
 std::string share_directory = SHAREDIR;
-std::list<std::string> rulesets;
+std::vector<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;
 int timeoffset = 0;

@@ -96,23 +96,19 @@ void CommClient::message(const RootOperation & op)
 void CommClient::UnknownObjectArrived(const Object& o)
 {
     debug(std::cout << "An unknown has arrived." << std::endl << std::flush;);
-    RootOperation * r = (RootOperation*)utility::Object_asRoot(o);
-    if (r != NULL) {
-        message(*r);
+    RootOperation r;
+    bool isOp = utility::Object_asOperation(o.AsMap(), r);
+    if (isOp) {
+        message(r);
     }
     if (debug_flag) {
-        debug(std::cout << "An unknown has arrived." << std::endl << std::flush;);
-        if (o.IsMap()) {
-            for(Object::MapType::const_iterator I = o.AsMap().begin();
-		    I != o.AsMap().end();
-		    I++) {
-		    debug(std::cout << I->first << std::endl << std::flush;);
-                    if (I->second.IsString()) {
-		        debug(std::cout << I->second.AsString() << std::endl << std::flush;);
-                    }
-	    }
-        } else {
-            debug(std::cout << "Its not a map." << std::endl << std::flush;);
+        std::cout << "An unknown has arrived." << std::endl << std::flush;
+        Object::MapType::const_iterator I;
+        for(I = o.AsMap().begin(); I != o.AsMap().end(); I++) {
+            std::cout << I->first << std::endl << std::flush;
+            if (I->second.IsString()) {
+                std::cout << I->second.AsString() << std::endl << std::flush;
+            }
         }
     }
 }

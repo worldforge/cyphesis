@@ -12,6 +12,8 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::RootOperation;
 
+using Atlas::Message::Object;
+
 namespace utility {
 
 Root * Object_asRoot(const Atlas::Message::Object & o)
@@ -37,6 +39,20 @@ Root * Object_asRoot(const Atlas::Message::Object & o)
         obj->SetAttr(I->first, I->second);
     }
     return obj;
+}
+
+bool Object_asOperation(const Atlas::Message::Object::MapType & ent,
+                        Atlas::Objects::Operation::RootOperation & op)
+{
+    Object::MapType::const_iterator I = ent.find("objtype");
+    if ((I == ent.end()) || (!I->second.IsString()) ||
+        (I->second.AsString() != "op")) {
+        return false;
+    }
+    for (I = ent.begin(); I != ent.end(); ++I) {
+        op.SetAttr(I->first, I->second);
+    }
+    return true;
 }
 
 } // namespace utility

@@ -30,20 +30,16 @@ void MemMap::addContents(const Object::MapType & entmap)
     }
 }
 
-Entity * MemMap::add(const Object & entity)
+Entity * MemMap::add(const Object::MapType & entmap)
 {
     debug( std::cout << "MemMap::add" << std::endl << std::flush;);
-    if (!entity.IsMap()) {
-        return NULL;
-    }
-    const Object::MapType & entmap = entity.AsMap();
     Object::MapType::const_iterator I = entmap.find("id");
     if ((I == entmap.end()) || (I->second.AsString().empty())) {
         return NULL;
     }
     const std::string & id = I->second.AsString();
     if (get(id)) {
-        return update(entity);
+        return update(entmap);
     }
     Entity * thing = new Entity;
     thing->setId(id);
@@ -65,13 +61,9 @@ Entity * MemMap::add(const Object & entity)
     return addObject(thing);
 }
 
-Entity * MemMap::update(const Object & entity)
+Entity * MemMap::update(const Object::MapType & entmap)
 {
     debug( std::cout << "MemMap::update" << std::endl << std::flush;);
-    if (!entity.IsMap()) {
-        return NULL;
-    }
-    const Object::MapType & entmap = entity.AsMap();
     Object::MapType::const_iterator I = entmap.find("id");
     if ((I == entmap.end()) || !I->second.IsString()) {
         return NULL;
@@ -83,7 +75,7 @@ Entity * MemMap::update(const Object & entity)
     debug( std::cout << " updating " << id << std::endl << std::flush;);
     edict_t::iterator J = things.find(id);
     if (J == things.end()) {
-        return add(entity);
+        return add(entmap);
     }
     debug( std::cout << " " << id << " has already been spotted" << std::endl << std::flush;);
     Entity * thing = J->second;

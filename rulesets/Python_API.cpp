@@ -873,7 +873,7 @@ void init_python_api()
 {
     std::string pypath("");
     std::string importCmd("ruleset_import_hooks.install([");
-    std::list<std::string>::const_iterator I;
+    std::vector<std::string>::const_iterator I;
     for(I = rulesets.begin(); I != rulesets.end(); I++) {
         pypath = pypath + share_directory + "/cyphesis/rulesets/" + *I + ":";
         if (I != rulesets.begin()) {
