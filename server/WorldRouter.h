@@ -20,6 +20,7 @@ class WorldRouter : public BaseWorld {
   private:
     OpQueue operationQueue;
     time_t initTime;
+    EntitySet objectList;
     EntitySet perceptives;
     EntitySet omnipresentList;
     int nextId;
@@ -61,7 +62,7 @@ class WorldRouter : public BaseWorld {
     virtual OpVector message(const RootOperation & op);
     virtual OpVector operation(const RootOperation & op);
 
-    virtual OpVector lookOperation(const Look & op);
+    virtual OpVector LookOperation(const Look & op);
 
 };
 

@@ -264,7 +264,7 @@ OpVector WorldRouter::operation(const RootOperation & op)
     return operation(&op);
 }
 
-OpVector WorldRouter::lookOperation(const Look & op)
+OpVector WorldRouter::LookOperation(const Look & op)
 {
     debug(std::cout << "WorldRouter::Operation(Look)" << std::endl << std::flush;);
     const std::string & from = op.GetFrom();

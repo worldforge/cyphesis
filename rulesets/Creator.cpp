@@ -50,7 +50,7 @@ OpVector Creator::operation(const RootOperation & op)
     if (op_no == OP_SETUP) {
         Look look = Look::Instantiate();
         look.SetFrom(getId());
-        return world->lookOperation(look);
+        return world->LookOperation(look);
     }
     return sendMind(op);
 }
@@ -58,7 +58,7 @@ OpVector Creator::operation(const RootOperation & op)
 OpVector Creator::externalOperation(const RootOperation & op)
 {
     // FIXME Here we have a problem. For ops like move with velocity, and
-    // Look, it is necessary for the operation to be hindled by
+    // Look, it is necessary for the operation to be handled by
     // Character::mind2body(). So, how do we handle the difference between
     // ops that must be processed this way, and ones that admin wants to
     // send directly to its avatar. I think we should say that if TO is

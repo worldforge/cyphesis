@@ -123,10 +123,10 @@ class Character : public Thing {
     virtual OpVector w2mErrorOperation(const Error & op);
     virtual OpVector w2mOtherOperation(const RootOperation & op);
 
-    virtual OpVector sendMind(const RootOperation & op);
-    virtual OpVector mind2body(const RootOperation & op);
-    virtual OpVector world2body(const RootOperation & op);
-    virtual OpVector world2mind(const RootOperation & op);
+    OpVector sendMind(const RootOperation & op);
+    OpVector mind2body(const RootOperation & op);
+    OpVector world2body(const RootOperation & op);
+    OpVector world2mind(const RootOperation & op);
 };
 
 #endif // RULESETS_CHARACTER_H

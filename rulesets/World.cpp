@@ -18,7 +18,7 @@ World::~World()
 
 OpVector World::LookOperation(const Look & op)
 {
-    return world->lookOperation(op);
+    return world->LookOperation(op);
 }
 
 OpVector World::FireOperation(const Fire & op)

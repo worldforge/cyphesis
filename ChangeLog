@@ -1,3 +1,24 @@
+2002-05-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.h, server/WorldRouter.cpp, common/BaseWorld.h,
+	  rulesets/Creator.cpp, rulesets/World.cpp: Removed unused and
+	  unnecessary code from BaseWorld class, and move some stuff into
+	  the WorldRouter where it belongs.
+
+	* rulesets/Character.cpp: Fixed a bug in the way ops from the
+	  mind are handled which caused a segfault.
+
+	* rulesets/Character.h, rulesets/Creator.h: Made some functions
+	  which are never overridden non-virtual for speed.
+
+	* rulesets/MemMap.cpp, rulesets/MemMap.h, rulesets/MemMap_methods.h:
+	  Cleaned up the memmap code to get rid of inefficiency, and badly
+	  written code.
+
+	* rulesets/Movement.cpp: Code formatting cleanup.
+
+	* server/Routing.h: Remove old commented out code.
+
 2002-05-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Account.cpp, server/Connection.cpp: Switched to using

@@ -14,7 +14,7 @@ class Creator : public Character {
     virtual OpVector operation(const RootOperation & op);
     virtual OpVector externalOperation(const RootOperation & op);
 
-    virtual OpVector sendMind(const RootOperation & msg);
+    OpVector sendMind(const RootOperation & msg);
 };
 
 #endif // RULESETS_CREATOR_H

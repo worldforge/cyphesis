@@ -36,11 +36,15 @@ class MemMap {
 
     inline Entity * addObject(Entity * object);
     inline void addContents(const Atlas::Message::Object::MapType & entmap);
+    inline Entity * addId(const std::string & id);
   public:
     explicit MemMap(Script *& s) : script(s)  { }
 
+    bool find(const::string & id) {
+        return (things.find(id) != things.end());
+    }
+
     inline Atlas::Objects::Operation::RootOperation * lookId();
-    inline Entity * addId(const std::string & id);
     Entity * add(const Atlas::Message::Object::MapType & entity);
     inline void del(const std::string & id);
     inline Entity * get(const std::string & id);

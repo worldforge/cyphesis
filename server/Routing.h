@@ -22,22 +22,6 @@ class Routing : public OOGThing {
         return obj;
     }
 
-#if 0
-    void delObject(BaseEntity * obj) {
-        objects.erase(obj->getId());
-        delete obj;
-    }
-
-    BaseEntity * findObject(const std::string & fid) const {
-        BaseDict::const_iterator I = objects.find(fid);
-        if (I == objects.end()) {
-            return NULL;
-        } else {
-            return I->second;
-        }
-    }
-#endif
-
     BaseEntity * getObject(const std::string & fid) const {
         BaseDict::const_iterator I = objects.find(fid);
         if (I == objects.end()) {

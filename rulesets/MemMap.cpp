@@ -38,7 +38,7 @@ Entity * MemMap::add(const Object::MapType & entmap)
         return NULL;
     }
     const std::string & id = I->second.AsString();
-    if (get(id)) {
+    if (find(id)) {
         return update(entmap);
     }
     Entity * thing = new Entity;

@@ -23,9 +23,7 @@ inline Entity * MemMap::addObject(Entity * object)
 {
     debug(std::cout << "MemMap::addObject " << object << " " << object->getId()
                     << std::endl << std::flush;);
-    if (object != NULL) {
-        things[object->getId()] = object;
-    }
+    things[object->getId()] = object;
 
     debug( std::cout << things[object->getId()] << std::endl << std::flush;);
     debug( std::cout << this << std::endl << std::flush;);
@@ -40,13 +38,13 @@ inline RootOperation * MemMap::lookId()
 {
     debug( std::cout << "MemMap::lookId" << std::endl << std::flush;);
     if (!additionsById.empty()) {
-        std::string id = additionsById.front();
-        additionsById.pop_front();
+        const std::string & id = additionsById.front();
         Look * l = new Look(Look::Instantiate());
-        //Object::MapType m;
-        //m["id"] = Object(id);
-        //l->SetArgs(Object::ListType(1, Object(m)));
+        Object::MapType m;
+        m["id"] = Object(id);
+        l->SetArgs(Object::ListType(1, Object(m)));
         l->SetTo(id);
+        additionsById.pop_front();
         return l;
     }
     return NULL;
@@ -54,20 +52,19 @@ inline RootOperation * MemMap::lookId()
 
 inline Entity * MemMap::addId(const std::string & id)
 {
-    if (id.empty()) { return NULL; }
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     additionsById.push_back(id);
     Object::MapType m;
-    m["id"] = Object(std::string(id));
+    m["id"] = Object(id);
     return add(m);
 }
 
 inline void MemMap::del(const std::string & id)
 {
-    if (id.empty()) { return; }
-    if (things.find(id) != things.end()) {
-        Entity * obj = things[id];
-        things.erase(id);
+    EntityDict::iterator I = things.find(id);
+    if (I != things.end()) {
+        Entity * obj = I->second;
+        things.erase(I);
         std::vector<std::string>::const_iterator I;
         for(I = deleteHooks.begin(); I != deleteHooks.end(); I++) {
             script->hook(*I, obj);

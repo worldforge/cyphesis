@@ -1009,8 +1009,9 @@ OpVector Character::operation(const RootOperation & op)
     if (!isAlive) {
         return result;
     }
+    // FIXME Currently the world2mind phase does a copy of the whole op
+    // but this is not necessary, as the op is not modified.
     OpVector mres = world2mind(op);
-    // set refno on mres?
     for(OpVector::const_iterator I = mres.begin(); I != mres.end(); I++) {
         //RootOperation * mr = mind_res.front();
         OpVector mres2 = sendMind(**I);
@@ -1033,11 +1034,12 @@ OpVector Character::externalOperation(const RootOperation & op)
     // We require that the first op is the direct consequence of the minds
     // op, so it gets the same serialno
     OpVector::const_iterator I = res.begin();
-    (*I)->SetSerialno(op.GetSerialno());
-    sendWorld(*I);
-    I++;
     for(; I != res.end(); I++) {
-        world->setSerialnoOp(**I);
+        if (I == res.begin()) {
+            (*I)->SetSerialno(op.GetSerialno());
+        } else {
+            world->setSerialnoOp(**I);
+        }
         sendWorld(*I);
         // Don't delete br as it has gone into worlds queue
         // World will deal with it.

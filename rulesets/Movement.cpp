@@ -109,7 +109,7 @@ void Movement::checkCollisions(const Location & loc)
     debug( std::cout << "COLLISION" << std::endl << std::flush; );
     if (collTime < getTickAddition(loc.coords)) {
         debug(std::cout << "Setting target loc to " << loc.coords << "+"
-                   << loc.velocity << "*" << collTime;);
+                        << loc.velocity << "*" << collTime;);
         m_collPos = loc.coords;
         m_collPos += Vector3D(loc.velocity) *= collTime;
     } else {
@@ -125,14 +125,14 @@ void Movement::reset()
     m_collRefChange = false;
     m_collPos = Vector3D();
     m_collAxis = -1;
-    m_targetPos=Vector3D();
-    m_updatedPos=Vector3D();
-    m_velocity=Vector3D(0,0,0);
-    m_lastMovementTime=m_body.world->getTime();
+    m_targetPos = Vector3D();
+    m_updatedPos = Vector3D();
+    m_velocity = Vector3D(0,0,0);
+    m_lastMovementTime = m_body.world->getTime();
 }
 
 bool Movement::moving() const
 {
-    return (m_velocity!=Vector3D(0,0,0));
+    return (m_velocity != Vector3D(0,0,0));
 }
 
