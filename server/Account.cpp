@@ -28,6 +28,7 @@
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Talk.h>
 #include <Atlas/Objects/Operation/Sound.h>
+#include <Atlas/Objects/Operation/Set.h>
 
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
@@ -49,6 +50,7 @@ Account::Account(Connection * conn, const std::string & uname,
     subscribe("imaginary", OP_IMAGINARY);
     subscribe("talk", OP_TALK);
     subscribe("look", OP_LOOK);
+    subscribe("set", OP_SET);
 }
 
 Account::~Account()
@@ -225,6 +227,69 @@ OpVector Account::CreateOperation(const Create & op)
     info->setSerialno(m_connection->m_server.getSerialNo());
 
     return OpVector(1,info);
+}
+
+OpVector Account::SetOperation(const Set & op)
+{
+    std::cout << "Account::Operation(set)" << std::endl << std::flush;
+    const Element::ListType & args = op.getArgs();
+    if ((args.empty()) || (!args.front().isMap())) {
+        return OpVector();
+    }
+
+    const Element::MapType & entmap = args.front().asMap();
+
+    Element::MapType::const_iterator I = entmap.find("id");
+    if (I == entmap.end() || !(I->second.isString())) {
+        return error(op, "Set character has no ID");
+    }
+
+    const std::string & id = I->second.asString();
+    EntityDict::const_iterator J = m_charactersDict.find(id);
+    if (J == m_charactersDict.end()) {
+        return error(op, "Set character for unknown character");
+    }
+
+    Entity * e = J->second;
+    I = entmap.find("guise");
+    Element::MapType newArg;
+    if (I != entmap.end()) {
+        std::cout << "Got attempt to change characters guise"
+                  << std::endl << std::flush;
+        // Apply change to character in-game
+        newArg["guise"] = I->second;
+    }
+    I = entmap.find("height");
+    if (I != entmap.end() && (I->second.isNum())) {
+        std::cout << "Got attempt to change characters height"
+                  << std::endl << std::flush;
+        BBox & bbox = e->m_location.m_bBox;
+        if (bbox.isValid()) {
+            float old_height = bbox.highCorner().z() - bbox.lowCorner().z();
+            float scale = I->second.asNum() / old_height;
+            BBox newBox(WFMath::Point<3>(bbox.lowCorner().x() * scale,
+                                         bbox.lowCorner().y() * scale,
+                                         bbox.lowCorner().z() * scale),
+                        WFMath::Point<3>(bbox.highCorner().x() * scale,
+                                         bbox.highCorner().y() * scale,
+                                         bbox.highCorner().z() * scale));
+            newArg["bbox"] = newBox.toAtlas();
+        } else {
+            std::cout << "Got attempt to change characters height with no bbox"
+                      << std::endl << std::flush;
+        }
+    }
+    if (!newArg.empty()) {
+        std::cout << "Passing character mods in-game"
+                  << std::endl << std::flush;
+        Set * s = new Set;
+        s->setTo(id);
+        newArg["id"] = id;
+        Element::ListType & sarg = s->getArgs();
+        sarg.push_back(newArg);
+        m_connection->m_server.m_world.message(*s, e);
+    }
+    return OpVector();
 }
 
 OpVector Account::ImaginaryOperation(const Imaginary & op)

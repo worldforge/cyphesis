@@ -38,6 +38,7 @@ class Account : public OOGThing {
     virtual void addToObject(Atlas::Message::Element::MapType &) const;
     virtual OpVector LogoutOperation(const Logout & op);
     virtual OpVector CreateOperation(const Create & op);
+    virtual OpVector SetOperation(const Set & op);
     virtual OpVector ImaginaryOperation(const Imaginary & op);
     virtual OpVector TalkOperation(const Talk & op);
     virtual OpVector LookOperation(const Look & op);
