@@ -1,6 +1,6 @@
 dnl Initialise autoconf
 
-AC_INIT()
+AC_INIT(cyphesis, 0.3.7)
 AC_CONFIG_SRCDIR([server/server.cpp])
 
 dnl Detect the canonical host and target environment
@@ -9,9 +9,7 @@ AC_CANONICAL_SYSTEM
 
 dnl Initialise automake
 
-VERSION=0.3.7
-
-AM_INIT_AUTOMAKE(cyphesis, $VERSION)
+AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
 
 dnl Need libtool
