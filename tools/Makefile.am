@@ -16,6 +16,7 @@ cycmd_SOURCES = cycmd.cpp
 
 cycmd_LDADD = $(top_builddir)/common/operations.o \
               $(top_builddir)/common/globals.o \
+              $(top_builddir)/common/utility.o \
               $(top_builddir)/common/const.o $(READLINE_LIBS)
 
 # cydbload_SOURCES = cydbload.cpp

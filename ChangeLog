@@ -1,3 +1,11 @@
+2004-04-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp: Handle all ops from server, including unknowns.
+	  Log them to screen including type, to and from.
+
+	* server/Admin.cpp: Ensure we distconnect from World.Dispatch
+	  from signal once admin has logged out, or if account is destroyed.
+
 2004-04-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cycmd.cpp: Add new command to enable and disable server

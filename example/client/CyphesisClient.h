@@ -54,8 +54,8 @@ private:
    int cli_fd;
    int reply_flag;
    Encoder * encoder;
-   Codec<iostream> * codec;
-   fstream * ios;
+   Codec<std::iostream> * codec;
+   std::fstream * ios;
    std::string account_id;
    std::string character_id;
    enum {

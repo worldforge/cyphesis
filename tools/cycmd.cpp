@@ -15,7 +15,16 @@
 #include <Atlas/Codec.h>
 #include <Atlas/Objects/Entity/Account.h>
 #include <Atlas/Objects/Operation/Appearance.h>
+#include <Atlas/Objects/Operation/Combine.h>
+#include <Atlas/Objects/Operation/Delete.h>
+#include <Atlas/Objects/Operation/Feel.h>
+#include <Atlas/Objects/Operation/Imaginary.h>
+#include <Atlas/Objects/Operation/Listen.h>
+#include <Atlas/Objects/Operation/Move.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
+#include <Atlas/Objects/Operation/Smell.h>
+#include <Atlas/Objects/Operation/Touch.h>
+#include <Atlas/Objects/Operation/Divide.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Logout.h>
 #include <Atlas/Objects/Operation/Get.h>
@@ -24,6 +33,7 @@
 #include <Atlas/Objects/Operation/Error.h>
 #include <Atlas/Objects/Operation/Sound.h>
 
+#include "common/utility.h"
 #include "common/Generic.h"
 
 #include <skstream/skstream_unix.h>
@@ -84,8 +94,31 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     bool exit;
 
     void output(const Atlas::Message::Element & item, bool recurse = true);
+    void logOp(const Atlas::Objects::Operation::RootOperation &);
   protected:
-    //void unknownobjectArrived(const Object&);
+    void objectArrived(const Atlas::Objects::Operation::Action& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Combine& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Communicate& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Create& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Delete& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Divide& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Feel& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Get& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Imaginary& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Listen& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Login& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Logout& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Look& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Move& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Perceive& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Perception& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::RootOperation& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Set& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Smell& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Talk& op) { logOp(op); }
+    void objectArrived(const Atlas::Objects::Operation::Touch& op) { logOp(op); }
+
+    void unknownObjectArrived(const Element &);
     void objectArrived(const Atlas::Objects::Operation::Appearance&);
     void objectArrived(const Atlas::Objects::Operation::Disappearance&);
     void objectArrived(const Atlas::Objects::Operation::Info&);
@@ -164,6 +197,13 @@ void Interactive<Stream>::output(const Atlas::Message::Element & item, bool recu
 }
 
 template <class Stream>
+void Interactive<Stream>::logOp(const Atlas::Objects::Operation::RootOperation & op)
+{
+    std::cout << op.getParents().front().asString() << "(from=\"" << op.getFrom()
+              << "\",to=\"" << op.getTo() << "\")" << std::endl << std::flush;
+}
+
+template <class Stream>
 void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Appearance& o)
 {
     if (o.getArgs().empty()) {
@@ -192,6 +232,17 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Appeara
         std::cout << id << " has logged in." << std::endl;
     }
     std::cout << std::flush;
+}
+
+template <class Stream>
+void Interactive<Stream>::unknownObjectArrived(const Element & e)
+{
+    std::cout << "Unknown object arrived" << std::endl << std::flush;
+    RootOperation r;
+    bool isOp = utility::Object_asOperation(e.asMap(), r);
+    if (isOp) {
+        logOp(r);
+    }
 }
 
 template <class Stream>

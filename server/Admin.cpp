@@ -34,6 +34,9 @@ Admin::Admin(Connection * conn, const std::string& username,
 
 Admin::~Admin()
 {
+    if (m_monitorConnection.connected()) {
+        m_monitorConnection.disconnect();
+    }
 }
 
 const char * Admin::getType() const
@@ -47,6 +50,11 @@ void Admin::opDispatched(RootOperation * op)
     if (m_connection != 0) {
         std::cout << "Sending monitor op to client" << std::endl << std::flush;
         m_connection->send(*op);
+    } else {
+        std::cout << "OtherOp.monitor auto unsubbing" << std::endl << std::flush;
+        if (m_monitorConnection.connected()) {
+            m_monitorConnection.disconnect();
+        }
     }
 }
 

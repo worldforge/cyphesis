@@ -19,7 +19,7 @@ email           : aloril@iki.fi
  */
 
 //#include <stdiostream.h>
-#include <fstream.h>
+#include <fstream>
 
 extern "C" {
     #include <stdio.h>
@@ -303,7 +303,7 @@ void CyphesisClient::objectArrived(const Message::Element& o)
 }
 #else
 
-void CyphesisClient::unknownobjectArrived(const Message::Element& o)
+void CyphesisClient::unknownObjectArrived(const Message::Element& o)
 {
 #if 0 
     cout << "An unknown has arrived." << endl << flush;
@@ -393,7 +393,7 @@ void SightDecoder::processSight(const Root& o)
     dispatchObject(o);
 }
 
-void SightDecoder::unknownobjectArrived(const Root& o)
+void SightDecoder::unknownObjectArrived(const Root& o)
 {
     cout << "An sight of an unknown operation arrived: ";
     if(o->getParents().empty()) cout << "No parents." << endl << flush;

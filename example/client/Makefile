@@ -1,4 +1,4 @@
-ATLAS_INCLUDES=-I/usr/local/include 
+ATLAS_INCLUDES=-I/usr/local/include/Atlas-C++-0.5
 ATLAS_INCLUDES2=-I/opt/atlas-install/include 
 INCLUDE = -I. -I/usr/include/python1.5 $(ATLAS_INCLUDES)
 INCLUDE2 = -I. -I/usr/include/python1.5 $(ATLAS_INCLUDES2)

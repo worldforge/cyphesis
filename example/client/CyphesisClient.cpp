@@ -18,7 +18,7 @@ email           : aloril@iki.fi
  */
 
 //#include <stdiostream.h>
-#include <fstream.h>
+#include <fstream>
 
 extern "C" {
     #include <stdio.h>
@@ -290,7 +290,7 @@ void CyphesisClient::objectArrived(const Message::Element& o)
 }
 #else
 
-void CyphesisClient::UnknownobjectArrived(const Message::Element& o)
+void CyphesisClient::unknownObjectArrived(const Message::Element& o)
 {
 #if 0 
     cout << "An unknown has arrived." << endl << flush;
