@@ -40,6 +40,7 @@ MovementInfo::MovementInfo(Character * body) : body(body)
 {
     serialno=-1;
     reset();
+    debug_movement && cout << "MOVEMENTINFO: " << last_movement_time <<  endl << flush;
 }
 
 void MovementInfo::reset()
@@ -336,6 +337,7 @@ oplist Character::Mind_Operation(const Move & op)
                 vector.pop_front();
                 double z = vector.front().AsFloat();
                 location_coords = Vector3D(x, y, z);
+                cout << "Got new format coords: " << location_coords << endl << flush;
             }
             catch (Message::WrongTypeException) {
                 cout << "EXCEPTION: Malformed pos move operation" << endl << flush;
@@ -354,6 +356,7 @@ oplist Character::Mind_Operation(const Move & op)
                 vector.pop_front();
                 double z = vector.front().AsFloat();
                 location_vel = Vector3D(x, y, z);
+                cout << "Got new format velocity: " << location_vel << endl << flush;
             }
             catch (Message::WrongTypeException) {
                 cout << "EXCEPTION: Malformed vel move operation" << endl << flush;
@@ -393,14 +396,17 @@ oplist Character::Mind_Operation(const Move & op)
             }
         }
         Vector3D direction;
+        if (location_coords == location.coords) {
+            location_coords = Vector3D();
+        }
         if (!location_coords) {
 #ifdef DEBUG_MOVEMENT
-                cout << "\tUsing velocity for direction" << endl << flush;
+            cout << "\tUsing velocity for direction" << endl << flush;
 #endif /* DEBUG_MOVEMENT */
             direction=location_vel;
         } else {
 #ifdef DEBUG_MOVEMENT
-                cout << "\tDestination coordinates given" << endl << flush;
+            cout << "\tUsing destination coords for direction" << endl << flush;
 #endif /* DEBUG_MOVEMENT */
             direction=location_coords-location.coords;
         }
@@ -428,8 +434,8 @@ oplist Character::Mind_Operation(const Move & op)
                 velocity.push_back(Message::Object(0.0));
                 velocity.push_back(Message::Object(0.0));
                 ent["vel"]=Message::Object(velocity);
+                res.push_back(moveOp);
             }
-            res.push_back(moveOp);
             return(res);
         }
         RootOperation * tickOp = new Tick;
@@ -446,7 +452,7 @@ oplist Character::Mind_Operation(const Move & op)
 #ifdef DEBUG_MOVEMENT
                 cout << "\tNo target location" << endl << flush;
 #endif /* DEBUG_MOVEMENT */
-            movement.target_location = Vector3D(0,0,0);
+            movement.target_location = Vector3D();
         } else {
 #ifdef DEBUG_MOVEMENT
                 cout << "\tUsing target location" << endl << flush;
