@@ -1,3 +1,7 @@
+2005-01-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/mason.xml: Remove redundant script from oak.
+
 2005-01-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Remove scripts from a number of classes which are

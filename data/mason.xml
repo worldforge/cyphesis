@@ -584,10 +584,6 @@
     <list name="parents">
       <string>tree</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.plants.Oak</string>
-    </map>
   </map>
 
   <map>
