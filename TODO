@@ -1,9 +1,6 @@
 Mind state is still utterly unpersisted, so creatures are waking up brain dead -
 mind does not even get kick started with a setup op.
 
-Account persistance is probably next problem.
-Two tables - account table and account-character relation.
-
 Putting an index on entity_ent.loc massively improves database loading
 performance. Need to assess impact on runtime performance. Should definitly
 consider putting this index in place permanently. Why is it that on some cases
@@ -19,15 +16,6 @@ the mechanism for sending queries to the database asynchronously has
 been done. It is probably acceptible to only accept queries that do not
 return any tuples, and then the asyncronous recieve mechanism doesn't need
 to worry about who wants the tuples.
-
-Need to make two important optimisations. Get rid of the select when the entity
-has no children, and make only select once per table when getting children of a
-given entity. This is a fairly major reworking, but selects are too expensive
-to make one per entity.
-
-Just realised that in my almost mindnumbingly incredible stupdidity I am making
-no attempt at all to continue persistance of restored entities, and I have not
-noticed because until now they did not move.
 
 Write a base class for plant which has a standard forumala for managing the
 growth of plants - the fundamental messure of which is mass, then another
