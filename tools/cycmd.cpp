@@ -21,6 +21,7 @@
 #include <Atlas/Objects/Operation/Logout.h>
 #include <Atlas/Objects/Operation/Get.h>
 #include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Talk.h>
 
 #include <skstream/skstream.h>
 
@@ -43,6 +44,7 @@ using Atlas::Objects::Operation::Load;
 using Atlas::Objects::Operation::Save;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Logout;
+using Atlas::Objects::Operation::Talk;
 
 static void help()
 {
@@ -78,6 +80,7 @@ class Interactive : public Atlas::Objects::Decoder
     void ObjectArrived(const Atlas::Objects::Operation::Info&);
     void ObjectArrived(const Atlas::Objects::Operation::Error&);
     void ObjectArrived(const Atlas::Objects::Operation::Sight&);
+    void ObjectArrived(const Atlas::Objects::Operation::Sound&);
 
   public:
     Interactive() : error_flag(false), reply_flag(false), encoder(NULL),
@@ -192,6 +195,35 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Sight& o)
         output(item);
         std::cout << std::endl << std::flush;
     }
+}
+
+void Interactive::ObjectArrived(const Atlas::Objects::Operation::Sound& o)
+{
+    reply_flag = true;
+    std::cout << "An sound operation arrived." << std::endl << std::flush;
+    const Object::MapType & arg = o.GetArgs().front().AsMap();
+    Object::MapType::const_iterator I = arg.find("from");
+    if (I == arg.end() || !I->second.IsString()) {
+        std::cout << "Sound arg has no from" << std::endl << std::flush;
+        return;
+    }
+    const std::string & from = I->second.AsString();
+    I = arg.find("args");
+    if (I == arg.end() || !I->second.IsList()
+                       || I->second.AsList().empty()
+                       || !I->second.AsList().front().IsMap()) {
+        std::cout << "Sound arg has no args" << std::endl << std::flush;
+        return;
+    }
+    const Object::MapType & ent = I->second.AsList().front().AsMap();
+    I = ent.find("say");
+    if (I == ent.end() || !I->second.IsString()) {
+        std::cout << "Sound arg arg has no say" << std::endl << std::flush;
+        return;
+    }
+    const std::string & say = I->second.AsString();
+    std::cout << from << ": " << say
+              << std::endl << std::flush;
 }
 
 void Interactive::prompt()
@@ -359,6 +391,13 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         Save s = Save::Instantiate();
         s.SetFrom(accountId);
         encoder->StreamMessage(&s);
+    } else if (cmd == "say") {
+        Talk t = Talk::Instantiate();
+        Object::MapType ent;
+        ent["say"] = arg;
+        t.SetArgs(Object::ListType(1,ent));
+        t.SetFrom(accountId);
+        encoder->StreamMessage(&t);
     } else if (cmd == "help") {
         reply_expected = false;
         help();

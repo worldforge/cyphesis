@@ -1,3 +1,5 @@
+cycmd does not handle traffic asynchronously.
+
 If a character sets its velocity to 0 when its position is outside its
 parents bbox, then the collision code does not detect that it is outside.
 
