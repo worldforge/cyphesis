@@ -31,7 +31,7 @@ void World::getTerrain(Element::MapType & t) const
             Element::ListType & point = terrain.back().AsList();
             point[0] = (Element::FloatType)(I->first/* * 64*/);
             point[1] = (Element::FloatType)(J->first/* * 64*/);
-            point[2] = (Element::FloatType)(J->second);
+            point[2] = (Element::FloatType)(J->second.height());
         }
     }
 }
