@@ -160,7 +160,7 @@ OpVector World::LookOperation(const Look & op)
     const std::string & from = op.getFrom();
     EntityDict::const_iterator J = eobjects.find(from);
     if (J == eobjects.end()) {
-        debug(std::cout << "FATAL: Op has invalid from" << std::endl
+        debug(std::cout << "ERROR: Op has invalid from" << std::endl
                         << std::flush;);
         return World_parent::LookOperation(op);
     }
@@ -182,14 +182,14 @@ OpVector World::LookOperation(const Look & op)
     // FIXME integrate setting terrain with setting contains.
     getTerrain((omap["terrain"] = MapType()).asMap());
     Entity * lookFrom = J->second;
-    ListType & contlist = (omap["contains"] = Element(ListType())).asList();
+    ListType & contlist = (omap["contains"] = ListType()).asList();
     EntitySet::const_iterator I = m_contains.begin();
     for(; I != m_contains.end(); I++) {
         float fromSquSize = boxSquareSize((*I)->m_location.m_bBox);
         Vector3D d((*I)->m_location.distanceTo(lookFrom->m_location));
         float view_factor = fromSquSize / d.sqrMag();
         if (view_factor > consts::square_sight_factor) {
-            contlist.push_back(Element((*I)->getId()));
+            contlist.push_back((*I)->getId());
         }
     }
     if (contlist.empty()) {

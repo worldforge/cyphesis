@@ -170,13 +170,12 @@ void Entity::addToObject(MapType & omap) const
     omap["stamp"] = (double)m_seq;
     omap["parents"] = ListType(1, m_type);
     m_location.addToObject(omap);
-    ListType contlist;
-    EntitySet::const_iterator J = m_contains.begin();
-    for(; J != m_contains.end(); J++) {
-        contlist.push_back((*J)->getId());
-    }
-    if (!contlist.empty()) {
-        omap["contains"] = contlist;
+    if (!m_contains.empty()) {
+        ListType & contlist = (omap["contains"] = ListType()).asList();
+        EntitySet::const_iterator J = m_contains.begin();
+        for(; J != m_contains.end(); J++) {
+            contlist.push_back((*J)->getId());
+        }
     }
     BaseEntity::addToObject(omap);
 }

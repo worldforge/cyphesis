@@ -1,5 +1,13 @@
 2004-08-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp: Correct a debug message, and clean up some
+	  code.
+
+	* rulesets/Entity.cpp: Re-write handling for contains attribute
+	  to be more efficient in addToObject().
+
+2004-08-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Areatest.cpp, tests/Entitytest.cpp, tests/Foodtest.cpp,
 	  tests/Linetest.cpp, tests/Planttest.cpp, tests/Stackabletest.cpp,
 	  tests/Structuretest.cpp, tests/Thingtest.cpp, tests/Worldtest.cpp,
