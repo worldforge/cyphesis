@@ -223,7 +223,7 @@ bool ClientConnection::connect(const std::string & server)
 {
     debug(std::cout << "Connecting to " << server << std::endl << std::flush;);
 
-    ios.open(server.c_str(), port_num);
+    ios.open(server, port_num);
     if (!ios.is_open()) {
         std::cerr << "ERROR: Could not connect to " << server << "."
                   << std::endl << std::flush;

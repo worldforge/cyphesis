@@ -204,7 +204,7 @@ void Interactive::getPassword()
 
 bool Interactive::connect(const std::string & host)
 {
-    ios.open(host.c_str(), port_num);
+    ios.open(host, port_num);
     if (!ios.is_open()) {
         std::cout << "Connection failed." << std::endl << std::flush;
         return false;

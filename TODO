@@ -1,5 +1,9 @@
+  fire is being installed as a type of operation, and as an entity class.
+
+  Lookup whether c_str() returns a pointer which must be deleted.
+
   Fix the database so it handles updating entities. Need to actually lookup
-  how this is done. Need to lock account row if its being updated.
+  how this is done. Need to lock row if its being updated.
 
   Implement installation of a new type by admin account.
 
@@ -16,19 +20,10 @@
   Funcoms warning. One question is obviously whether to use a database
   server, or in process database access.
 
-  The postgresql code does not handle primary keys properlly. If an
-  entry is added to the table with an existing ID, the result is that
-  two entries with that ID exist.
-
   Add services features, and test them in equator.
-
-  Make sure the tools use another port if one is specified in the config file.
-  Probably involves generalising the config mechanism.
 
   Current watchdog keeps server running. Should a future version ensure
   that the server is working?
-
-  Implement propper multi-process access to database
 
   Add support for maps list attribute on world_0. Good idea?
 

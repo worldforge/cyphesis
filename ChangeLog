@@ -1,3 +1,18 @@
+2002-03-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp, client/ClientConnection.cpp:
+	  Removed c_str() where not required.
+
+	* server/CommServer.cpp: Cleaned up removal of dead connections.
+
+	* server/server.cpp, server/Persistance.cpp: Get rid of leaks
+	  of factory and database connection objects.
+
+	* common/inheritance.h: Detect and flag errors introduced into
+	  type tree.
+
+	* rulesets/MindFactory.h: Add method to shutdown factory.
+
 2002-03-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp, common/Database.h, common/accountbase.h,

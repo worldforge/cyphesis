@@ -245,12 +245,10 @@ inline void CommServer::removeClient(CommClient * client, char * error_msg)
     // Need to deal with cleanly sending the error op, without hanging
     // if the client has already gone. FIXME
     
-    if (client) {
-        if (client->online()) {
-            client->send(&e);
-        }
-        clients.erase(client->getFd());
+    if (client->online()) {
+        client->send(&e);
     }
+    clients.erase(client->getFd());
     delete client;
 }
 

@@ -25,6 +25,11 @@ class MindFactory {
         }
         return m_instance;
     }
+    static void del() {
+        if (m_instance != NULL) {
+            delete m_instance;
+        }
+    }
     BaseMind * newMind(const std::string &, const std::string &,
                        const std::string &);
 

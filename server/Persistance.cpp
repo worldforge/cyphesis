@@ -68,6 +68,7 @@ void Persistance::shutdown()
     Persistance * p = (Persistance *)m_instance;
     if (p == NULL) { return; }
     p->m_connection.shutdownConnection();
+    delete &p->m_connection;
     delete p;
     m_instance = NULL;
 }

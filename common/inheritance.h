@@ -63,6 +63,11 @@ class Inheritance {
     void addChild(Atlas::Objects::Root * obj) {
         const std::string & child = obj->GetId();
         const std::string & parent = obj->GetParents().front().AsString();
+        if (atlasObjects.find(child) != atlasObjects.end()) {
+            std::cerr << "ERROR: Installing type " << child << "(" << parent
+                      << ") which was already installed" << std::endl
+                      << std::flush;
+        }
         std::map<std::string, Atlas::Objects::Root *>::iterator I = atlasObjects.find(parent);
         if (I == atlasObjects.end()) {
             throw InheritanceException(parent);

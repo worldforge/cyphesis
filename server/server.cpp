@@ -17,6 +17,7 @@ extern "C" {
 }
 
 #include <rulesets/Python_API.h>
+#include <rulesets/MindFactory.h>
 
 #include <common/debug.h>
 #include <common/globals.h>
@@ -242,6 +243,7 @@ int main(int argc, char ** argv)
 
     EntityFactory::instance()->flushFactories();
     EntityFactory::del();
+    MindFactory::del();
 
     Inheritance::clear();
 
