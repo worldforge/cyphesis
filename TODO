@@ -1,7 +1,5 @@
-Move spawn randomisation into the ENtity factory, where it belongs, and
-get rid of that pointless test in WorldRouter.
-
-Sort out SO_REUSEADDR You FUCKTARD!
+Verify that the persistant code does not insert entities into the world with
+invalid location data. It shouldn't.
 
 Fix movement bug with destination based movement after collision. Ammend
 find target to be derived from velocity.

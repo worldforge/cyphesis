@@ -29,6 +29,7 @@
 #include "common/globals.h"
 #include "common/const.h"
 #include "common/inheritance.h"
+#include "common/random.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Operation/Login.h>
@@ -107,7 +108,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
         thing->m_location.m_loc = &m_world.m_gameWorld;
     }
     if (!thing->m_location.m_pos.isValid()) {
-        thing->m_location.m_pos = Vector3D(0,0,0);
+        thing->m_location.m_pos = Vector3D(uniform(-8,8), uniform(-8,8), 0);
     }
     if (pc != 0) {
         pc->persist();

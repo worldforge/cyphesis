@@ -153,7 +153,10 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
                     << std::flush;);
     m_eobjects[obj->getId()] = obj;
     m_objectList.insert(obj);
+    assert(obj->m_location.isValid());
+
     if (!obj->m_location.isValid()) {
+        log(ERROR, "Entity added to world with invalid location!");
         debug(std::cout << "set loc " << &m_gameWorld  << std::endl
                         << std::flush;);
         obj->m_location.m_loc = &m_gameWorld;

@@ -1,5 +1,13 @@
 2004-06-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Change check in new Entity code to ensure
+	  that entities already have valid location at this point.
+
+	* server/EntityFactory.cpp: Implement randomized starting position
+	  in entity factory.
+
+2004-06-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Worldtest.cpp: Handle new pure virtual methods in world
 	  base class.
 
