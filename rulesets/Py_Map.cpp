@@ -11,6 +11,7 @@
 
 #include "Python_API.h"
 #include "MemMap.h"
+#include "MemMap_methods.h"
 
 static PyObject * Map_find_by_location(MapObject * self, PyObject * args)
 {

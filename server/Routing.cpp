@@ -4,8 +4,7 @@
 
 #include "Routing.h"
 
-
-Routing::Routing() : next_id(0) { }
+#if 0
 
 BaseEntity * Routing::add_object(BaseEntity * obj)
 {
@@ -20,11 +19,6 @@ void Routing::del_object(BaseEntity * obj)
     delete obj;
 }
 
-//BaseEntity * Routing::get_object(cid_t id)
-//{
-    //return Routing::objects[id];
-//}
-
 BaseEntity * Routing::get_object(const string & fid)
 {
     return Routing::fobjects[fid];
@@ -35,8 +29,4 @@ BaseEntity * Routing::find_object(const string & fid)
     return Routing::fobjects[fid];
 }
 
-
-//BaseEntity * Routing::find_object(cid_t id)
-//{
-    //return Routing::objects[id];
-//}
+#endif

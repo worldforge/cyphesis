@@ -1,5 +1,8 @@
 #include <Atlas/Message/Object.h>
+#include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/Encoder.h>
+#include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/Operation/Login.h>
 
 #include "ExternalMind.h"

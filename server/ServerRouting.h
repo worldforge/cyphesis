@@ -7,10 +7,7 @@ class ServerRouting;
 class CommServer;
 
 #include "WorldRouter.h"
-//#include "server.h"
 #include "Routing.h"
-
-typedef int bad_type; // Remove this to get unset type reporting
 
 class ServerRouting : public Routing {
     CommServer * comm_server;
@@ -20,13 +17,17 @@ class ServerRouting : public Routing {
     fdict_t id_dict;
 
     ServerRouting(CommServer * server, char * name);
-    virtual ~ServerRouting() { }
+    ~ServerRouting() { }
 
-    virtual BaseEntity * add_object(BaseEntity * obj);
-    void save(char * filename);
-    void load(char * filename);
-    int idle();
+    int idle() {
+        return world->idle();
+    }
     
+    BaseEntity * add_object(BaseEntity * obj) {
+        obj = Routing::add_object(obj);
+        id_dict[obj->fullid] = obj;
+        return obj;
+    }
 };
 
 #endif /* SERVER_ROUTING_H */

@@ -24,27 +24,18 @@ extern "C" {
 #include <common/log.h>
 
 #include "server.h"
+#include "CommClient.h"
+#include "CommServer.h"
 
 int profile_flag=0;
 static int debug_server = 0;
 
 using namespace Atlas;
 
-void CommClient::send(const Objects::Operation::RootOperation * op)
-{
-    if (op) {
-        encoder->StreamMessage(op);
-        client_ios << flush;
-    }
-}
-
-int CommClient::read()
-{
-    if (client_ios) {
-        codec->Poll();
-        return(0);
-    } else {
-        return(-1);
+CommClient::~CommClient() {
+    if (connection != NULL) {
+        connection->destroy();
+        delete connection;
     }
 }
 
@@ -173,16 +164,6 @@ int CommServer::setup(int port)
     return(0);
 }
 
-inline int CommClient::peek()
-{
-    return client_ios.peek();
-}
-
-inline int CommClient::eof()
-{
-    return client_ios.eof();
-}
-
 int CommServer::accept() {
     struct sockaddr_in sin;
     unsigned int addr_len = sizeof(sin);
@@ -203,6 +184,10 @@ int CommServer::accept() {
         clients.insert(std::pair<int, CommClient *>(asockfd, newcli));
     }
     return(0);
+}
+
+inline void CommServer::idle() {
+    server->idle();
 }
 
 void CommServer::loop() {
@@ -256,12 +241,7 @@ void CommServer::loop() {
     idle();
 }
 
-void CommServer::remove_client(CommClient * client)
-{
-    remove_client(client,"You caused exception. Connection closed");
-}
-
-void CommServer::remove_client(CommClient * client, char * error_msg)
+inline void CommServer::remove_client(CommClient * client, char * error_msg)
 {
     Message::Object::MapType err;
     err["message"] = Message::Object(error_msg);
@@ -283,10 +263,10 @@ void CommServer::remove_client(CommClient * client, char * error_msg)
     delete client;
 }
 
-void CommServer::idle() {
-    server->idle();
+void CommServer::remove_client(CommClient * client)
+{
+    remove_client(client,"You caused exception. Connection closed");
 }
-
 
 varconf::Config * global_conf = varconf::Config::inst();
 

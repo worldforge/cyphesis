@@ -1,8 +1,6 @@
 #ifndef OOG_THING_H
 #define OOG_THING_H
 
-typedef int bad_type; // Remove this to get unset type reporting
-
 #include <common/BaseEntity.h>
 
 class OOG_Thing : public BaseEntity {

@@ -11,6 +11,7 @@ using Atlas::Objects::Operation::Look;
 static int debug_map = 0;
 
 
+#if 0
 Thing * MemMap::add_object(Thing * object)
 {
     debug_map && cout << "MemMap::add_object " << object << " " << object->fullid
@@ -162,6 +163,8 @@ Thing * MemMap::update(const Object & entity)
     //}
     return thing;
 }
+
+#endif
 
 list<Thing *> MemMap::find_by_type(const string & what)
 {

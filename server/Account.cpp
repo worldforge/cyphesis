@@ -1,5 +1,8 @@
 #include <Atlas/Message/Object.h>
+#include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/Decoder.h>
+#include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Sight.h>
 #include <Atlas/Objects/Operation/Create.h>
@@ -17,6 +20,41 @@
 
 static int debug_server = 0;
 
+inline BaseEntity * Account::add_character(const string & typestr, const Message::Object & ent)
+{
+    debug_server && cout << "Account::Add_character" << endl << flush;
+    Thing * chr = world->add_object(typestr, ent);
+    debug_server && cout << "Added" << endl << flush;
+    if (!chr->location) {
+        debug_server && cout << "Setting location" << endl << flush;
+        chr->location = Location(world, Vector3D(0,0,0));
+    }
+    debug_server && cout << "Location set to: " << chr->location << endl << flush;
+    if (chr->is_character != 0) {
+        Character * pchar = (Character *)chr;
+        pchar->player = this;
+        pchar->external_mind = new ExternalMind(connection, pchar->fullid, pchar->name);
+    }
+    characters_dict[chr->fullid]=chr;
+    characters.push_back(chr->fullid);
+    connection->add_object(chr);
+
+    Create c = Create::Instantiate();
+
+    list<Message::Object> cargs(1,chr->asObject());
+    c.SetArgs(cargs);
+
+    Sight * s = new Sight;
+    *s = Sight::Instantiate();
+    
+    list<Message::Object> sargs(1,c.AsObject());
+    s->SetArgs(sargs);
+
+    world->message(*s, chr);
+
+    return(chr);
+}
+
 oplist Account::Operation(const Logout & op)
 {
     debug_server && cout << "Account logout: " << name << endl;
@@ -32,6 +70,12 @@ void Account::addObject(Message::Object * obj)
         omap["password"] = Message::Object(password);
     }
     omap["parents"] = Message::Object(Message::Object::ListType(1,Message::Object(type)));
+    Object::ListType charlist;
+    list<string>::const_iterator I;
+    for(I = characters.begin(); I != characters.end(); I++) {
+        charlist.push_back(Object(*I));
+    }
+    omap["characters"] = Object(charlist);
     BaseEntity::addObject(obj);
 }
 
@@ -68,39 +112,4 @@ oplist Account::Operation(const Create & op)
     oplist res;
     res.push_back(info);
     return(res);
-}
-
-BaseEntity * Account::add_character(const string & typestr, const Message::Object & ent)
-{
-    debug_server && cout << "Account::Add_character" << endl << flush;
-    Thing * chr = world->add_object(typestr, ent);
-    debug_server && cout << "Added" << endl << flush;
-    if (!chr->location) {
-        debug_server && cout << "Setting location" << endl << flush;
-        chr->location = Location(world, Vector3D(0,0,0));
-    }
-    debug_server && cout << "Location set to: " << chr->location << endl << flush;
-    if (chr->is_character != 0) {
-        Character * pchar = (Character *)chr;
-        pchar->player = this;
-        pchar->external_mind = new ExternalMind(connection, pchar->fullid, pchar->name);
-    }
-    //Account::characters_dict[char.id]=char;
-    //Account::characters.append(char.id);
-    connection->add_object(chr);
-
-    Create c = Create::Instantiate();
-
-    list<Message::Object> cargs(1,chr->asObject());
-    c.SetArgs(cargs);
-
-    Sight * s = new Sight;
-    *s = Sight::Instantiate();
-    
-    list<Message::Object> sargs(1,c.AsObject());
-    s->SetArgs(sargs);
-
-    world->message(*s, chr);
-
-    return(chr);
 }

@@ -13,6 +13,7 @@
 #include <common/utility.h>
 
 #include "BaseMind.h"
+#include "MemMap_methods.h"
 
 static bool debug_basemind = 0;
 

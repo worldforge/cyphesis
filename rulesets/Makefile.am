@@ -5,7 +5,7 @@ INCLUDES = -I..
 librulesets_a_SOURCES = Thing.cpp Thing.h \
 			ThingFactory.cpp ThingFactory.h \
 			BaseMind.cpp BaseMind.h \
-			MemMap.cpp MemMap.h \
+			MemMap.cpp MemMap.h MemMap_methods.h \
 			ExternalMind.cpp ExternalMind.h \
 			Character.cpp Character.h \
 			Creator.cpp Creator.h \

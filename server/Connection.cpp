@@ -10,6 +10,8 @@
 #include <rulesets/Character.h>
 
 #include "Connection.h"
+#include "ServerRouting.h"
+#include "CommClient.h"
 #include "Player.h"
 
 #include "server.h"
@@ -19,10 +21,14 @@ static int debug_server = 0;
 using namespace Atlas;
 using namespace Objects;
 
-Connection::Connection(CommClient * client) :
-	comm_client(client)
+inline Account * Connection::add_player(string & username, string & password)
 {
-    server=comm_client->server->server;
+    Player * player=new Player(this, username, password);
+    add_object(player);
+    player->connection=this;
+    player->world=server->world;
+    server->add_object(player);
+    return(player);
 }
 
 void Connection::destroy()
@@ -46,21 +52,6 @@ void Connection::destroy()
     }
     comm_client = NULL;
     BaseEntity::destroy();
-}
-
-void Connection::disconnect()
-{
-    //cout << "Connection died for " << str(Connection::objects) << endl;
-    debug_server && cout << "Connection died " << endl;
-    destroy();
-    //raise ConnectionError,"connection died";
-}
-
-void Connection::send(const RootOperation * msg)
-{
-    if (comm_client != NULL) {
-        comm_client->send(msg);
-    }
 }
 
 oplist Connection::operation(const RootOperation & op)
@@ -151,14 +142,4 @@ oplist Connection::Operation(const Logout & obj)
     }
     oplist res;
     return(res);
-}
-
-Account * Connection::add_player(string & username, string & password)
-{
-    Player * player=new Player(this, username, password);
-    add_object(player);
-    player->connection=this;
-    player->world=server->world;
-    server->add_object(player);
-    return(player);
 }

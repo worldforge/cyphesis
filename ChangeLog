@@ -1,5 +1,15 @@
 2000-12-11  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Massive code cleaning efforts, removing dead code, trimming reviewing
+	  and shifting code around to optimise it.
+
+	* Heavy use of inlining to improve code performance.
+
+	* Added global exception handler to catch exceptions while processing
+	  operations.
+
+2000-12-11  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Removed lots of extraneous debugging output, and turned the rest
 	  off using debug flags.
 

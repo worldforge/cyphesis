@@ -11,6 +11,7 @@
 #include <Atlas/Objects/Operation/Look.h>
 
 #include "Thing.h"
+#include "MemMap_methods.h"
 #include "Python_API.h"
 
 #include <server/WorldRouter.h>

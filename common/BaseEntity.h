@@ -109,20 +109,9 @@ typedef enum op_no {
             break; \
     }
 
-typedef int bad_type; // Remove this to get unset type reporting
-
-#define None 0 // Remove this to deal with un-initialied vars
-
-//typedef int cid_t;
-
-//typedef std::map<cid_t, BaseEntity *> dict_t;
-//typedef std::pair<cid_t, BaseEntity *> idpair_t;
-
 typedef std::map<string, BaseEntity *> fdict_t;
 typedef std::list<BaseEntity *> flist_t;
 typedef std::pair<string, BaseEntity *> fidpair_t;
-
-#define NO_ID 0
 
 typedef int Entity;
 
@@ -257,6 +246,25 @@ class Cut : public RootOperation {
     }
 };
 
+class Fire : public RootOperation {
+  public:
+    Fire() : RootOperation() {
+        SetId(string("fire"));
+        Message::Object::ListType parents;
+        parents.push_back(string("root_operation"));
+        SetParents(parents);
+    }
+    virtual ~Fire() { }
+    static Fire Instantiate() {
+        Fire value;
+        Message::Object::ListType parents;
+        parents.push_back(string("fire"));
+        value.SetParents(parents);
+        value.SetObjtype(string("op"));
+        return value;
+    }
+};
+
 } } }
 
 using namespace Atlas;
@@ -265,15 +273,7 @@ using namespace Operation;
 
 typedef std::list<RootOperation *> oplist;
 
-//typedef Atlas::Objects::Operation::RootOperation Atlas::Objects::Operation::RootOperation;
-//typedef Atlas::Objects::Operation::Login Atlas::Objects::Operation::Login;
-//typedef Atlas::Objects::Operation::Create Create_op_t;
-
 typedef std::list<BaseEntity *> list_t;
-
-typedef bad_type(WorldRouter::*method_t)(const RootOperation &, BaseEntity *);
-
-bad_type get_dict_func(bad_type dict, bad_type func_str, bad_type func_undefined);
 
 class BaseEntity {
   public:
