@@ -1,7 +1,5 @@
 noinst_LIBRARIES = libcommon.a
 
-# lib_LTLIBRARIES = libcyphesis.la
-
 INCLUDES = -I$(top_srcdir) -DSHAREDIR=\"@datadir@\" -DETCDIR=\"@sysconfdir@\" \
            -DVARDIR=\"@localstatedir@\"
 
@@ -25,14 +23,5 @@ libcommon_a_SOURCES = const.cpp const.h \
 		Nourish.h Setup.h Tick.h Generic.h \
 		stringstream.h \
 		sstream.h iotraits.h
-
-# libcyphesis_la_SOURCES = Database.cpp Database.h \
-			 # stringstream.h debug.h \
-			 # globals.cpp globals.h \
-			 # log.cpp log.h \
-			 # accountbase.h
-
-# libcyphesisincludedir = $(includedir)/cyphesis
-# libcyphesisinclude_HEADERS = accountbase.h Database.h globals.h
 
 EXTRA_DIST = sstream.cc

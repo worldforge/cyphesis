@@ -1,5 +1,10 @@
 2004-05-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* Clean up building an externally available from code in the
+	  common directory.
+
+2004-05-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/MemMap.h, rulesets/MemMap.cpp: Clear up some terminology
 	  in variable and function names and comments.
 
