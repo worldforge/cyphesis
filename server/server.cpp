@@ -136,14 +136,14 @@ int main(int argc, char ** argv)
     log(INFO, _(" world restored"));
 
     CommListener * listener = new CommListener(commServer);
-    if (listener->setup(port_num) != 0) {
+    if (listener->setup(client_port_num) != 0) {
         log(ERROR, "Could not create listen socket. Init failed.");
         return EXIT_SOCKET_ERROR;
     }
     commServer.addSocket(listener);
 
     CommUnixListener * llistener = new CommUnixListener(commServer);
-    if (llistener->setup() != 0) {
+    if (llistener->setup(socket_name) != 0) {
         std::stringstream str;
         str << "Could not create local listen socket with address \"";
         str << llistener->getPath() << "\".";

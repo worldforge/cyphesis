@@ -21,7 +21,9 @@ bool exit_flag = false;
 bool daemon_flag = false;
 bool restricted_flag = false;
 int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
-int port_num = 6767;
+int client_port_num = 6767;
+int slave_port_num = 6768;
+int peer_port_num = 6769;
 
 int loadConfig(int argc, char ** argv, bool server)
 {
@@ -79,7 +81,7 @@ int loadConfig(int argc, char ** argv, bool server)
     }
 
     if (global_conf->findItem("cyphesis", "tcpport")) {
-        port_num = global_conf->getItem("cyphesis","tcpport");
+        client_port_num = global_conf->getItem("cyphesis","tcpport");
     }
 
     if (global_conf->findItem("cyphesis", "unixport")) {

@@ -56,8 +56,9 @@ int CommMDNSPublisher::setup()
     }
 
     if (sw_discovery_publish(m_session, 0, "WorldForge Server",
-                             "_worldforge._tcp.", NULL, NULL, port_num, NULL,
-                             0, reply_callback, this, &m_oid) != SW_OKAY) {
+                             "_worldforge._tcp.", NULL, NULL,
+                             client_port_num, NULL, 0,
+                             reply_callback, this, &m_oid) != SW_OKAY) {
         log(WARNING, "Unable to publish our presence using MDNS");
         return -1;
     }

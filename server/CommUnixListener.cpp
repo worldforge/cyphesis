@@ -63,9 +63,9 @@ void CommUnixListener::dispatch()
 /// unix socket path, and tries again. This method is deliberatly called
 /// _after_ attempting to open the TCP listen socket, so that this
 /// will never be called in an instance of cyphesis already exists.
-int CommUnixListener::setup()
+int CommUnixListener::setup(const std::string & name)
 {
-    m_path = var_directory + "/tmp/" + socket_name;
+    m_path = var_directory + "/tmp/" + name;
 
     m_unixListener.open(m_path);
     m_bound = m_unixListener.is_open();

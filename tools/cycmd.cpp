@@ -513,7 +513,7 @@ void Interactive<Stream>::getLogin()
 int Interactive<tcp_socket_stream>::connect(const std::string & host)
 {
     std::cout << "Connecting... " << std::flush;
-    ios.open(host, port_num);
+    ios.open(host, client_port_num);
     if (!ios.is_open()) {
         std::cout << "failed." << std::endl << std::flush;
         return -1;

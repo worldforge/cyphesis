@@ -30,7 +30,7 @@ class CommUnixListener : public CommSocket {
     /// Accessor for the filesystem path of the socket.
     const std::string & getPath() const { return m_path; }
 
-    int setup();
+    int setup(const std::string & name);
 
     int getFd() const;
     bool isOpen() const;

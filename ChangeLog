@@ -1,3 +1,13 @@
+2004-12-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/ClientConnection.cpp, common/globals.cpp, common/globals.h,
+	  server/CommMDNSPublisher.cpp, server/server.cpp, server/slave.cpp,
+	  tools/cycmd.cpp: Add new port number settings for things like
+	  peer connections, and listen sockets for an AI slave.
+
+	* server/CommUnixListener.cpp, server/CommUnixListener.h:
+	  Parameterise socket name for listen socket.
+
 2004-12-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommClient.cpp, server/Connection.cpp: Move counting

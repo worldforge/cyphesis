@@ -22,7 +22,9 @@ extern bool exit_flag;
 extern bool daemon_flag;
 extern bool restricted_flag;
 extern int timeoffset;
-extern int port_num;
+extern int client_port_num;
+extern int slave_port_num;
+extern int peer_port_num;
 
 int loadConfig(int argc, char ** argv, bool server = false);
 

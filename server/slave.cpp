@@ -117,7 +117,7 @@ int main(int argc, char ** argv)
     log(INFO, " world restored");
 
     CommListener * listener = new CommListener(commServer);
-    if (!listener->setup(port_num)) {
+    if (!listener->setup(slave_port_num)) {
         log(ERROR, "Could not create listen socket. Init failed.");
         return EXIT_SOCKET_ERROR;
     }
