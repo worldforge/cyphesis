@@ -43,6 +43,7 @@ class CommClient : Objects::Decoder {
     virtual void ObjectArrived(const Objects::Operation::Set & obj);
     virtual void ObjectArrived(const Objects::Operation::Touch & obj);
     virtual void ObjectArrived(const Objects::Operation::Look & obj);
+    virtual void ObjectArrived(const Objects::Operation::Talk & obj);
 
   public:
     CommServer * server;

@@ -10,6 +10,7 @@ if const.server_python:
 else:
     from Vector3D import Vector3D
     from world.objects.Thing import Thing
+    from server import WorldTime
     BaseMind = Thing
 
 from mind.MemMap import MemMap
@@ -40,6 +41,7 @@ class NPCMind(BaseMind):
         #???self.debug=debug(self.name+".mind.log")
         self.tick_count=0
         self.message_queue=None
+        self.time=WorldTime(31104000.0)
         #This is going to be really tricky
         #self.map.add_hooks.append(self.add_map)
         #self.map.update_hooks.append(self.update_map)

@@ -20,6 +20,7 @@ using Atlas::Objects::Operation::RootOperation;
 class Thing;
 class MemMap;
 class Location;
+class WorldTime;
 
 typedef std::list<RootOperation *> oplist;
 
@@ -54,6 +55,12 @@ typedef struct {
     PyObject	* Vector3D_attr;	/* Attributes dictionary */
     Vector3D	coords;
 } Vector3DObject;
+
+typedef struct {
+    PyObject_HEAD
+    PyObject	* WorldTime_attr;	/* Attributes dictionary */
+    WorldTime	* time;
+} WorldTimeObject;
 
 #define ATLAS_OPERATION(_name) typedef struct { \
     PyObject_HEAD \
@@ -123,6 +130,7 @@ ATLAS_OPERATION(RootOperation)
 #include "Py_Map.h"
 #include "Py_Location.h"
 #include "Py_Vector3D.h"
+#include "Py_WorldTime.h"
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
 #include "Py_Optime.h"

@@ -138,70 +138,33 @@ oplist BaseMind::Sight_Operation(const Sight & op, RootOperation & sub_op)
     return(res);
 }
 
-
-
-#if 0
-bad_type BaseMind::sight_create_operation(bad_type original_op, bad_type op)
+oplist BaseMind::Sound_Operation(const Sound & op, Talk & sub_op)
 {
-    BaseMind::map.add(op[0]);
-    log.debug(3,str(op[0])+"\nsight_create_operation: "+str(BaseMind::map.things));
-}
-
-bad_type BaseMind::sight_delete_operation(bad_type original_op, bad_type op)
-{
-    id=op[0];
-    if (type(id)!=StringType) {
-        id=id.id;
+    cout << "BaseMind::Sound_Operation(Sound, Talk)" << endl << flush;
+    oplist res;
+    if (script_Operation("sound_talk", op, res, &sub_op) != 0) {
+        return(res);
     }
-    BaseMind::map.delete(id);
-    log.debug(3,"sight_delete_operation: "+str(id));
+    return(res);
 }
 
-bad_type BaseMind::sight_set_operation(bad_type original_op, bad_type op)
+oplist BaseMind::Sound_Operation(const Sound & op, RootOperation & sub_op)
 {
-    BaseMind::map.update(op[0]);
-    log.debug(3,"sight_set_operation: "+str(BaseMind::map.get(op[0].id)));
-}
-
-bad_type BaseMind::sight_move_operation(bad_type original_op, bad_type op)
-{
-    BaseMind::map.update(op[0]);
-    log.debug(3,"sight_move_operation: "+str(op[0].location));
-}
-
-bad_type BaseMind::sight_undefined_operation(bad_type original_op, bad_type op)
-{
-    pass;
-}
-
-
-bad_type BaseMind::sight_operation(bad_type op)
-{
-    op2=op[0];
-    if (op2.get_name()=="ent") {
-        BaseMind::map.add(op2);
-        return None;
+    cout << "BaseMind::Sound_Operation(Sound, RootOperation)" << endl << flush;
+    oplist res;
+    if (script_Operation("sound_undefined", op, res, &sub_op) != 0) {
+        return(res);
     }
-    operation_method=BaseMind::find_operation(op2.id,"sight_",;
-                                         BaseMind::sight_undefined_operation);
-    log.debug(3,"sight: "+str(operation_method));
-    return operation_method(op,op2);
+    return(res);
 }
 
-bad_type BaseMind::sound_undefined_operation(bad_type original_op, bad_type op)
+oplist BaseMind::call_sound_operation(const Sound & op, RootOperation & sub_op)
 {
-    pass;
+    oplist res;
+    op_no_t op_no = op_enumerate(&sub_op);
+    SUB_OP_SWITCH(op, op_no, res, Sound_, sub_op)
+    return(res);
 }
-
-bad_type BaseMind::sound_operation(bad_type op)
-{
-    op2=op[0];
-    operation_method=BaseMind::find_operation(op2.id,"sound_",;
-                                         BaseMind::sound_undefined_operation);
-    log.debug(3,"sound: "+str(operation_method));
-    return operation_method(op,op2);
-}
-#endif
 
 oplist BaseMind::Operation(const Sound & op)
 {
@@ -209,6 +172,17 @@ oplist BaseMind::Operation(const Sound & op)
     oplist res;
     if (script_Operation("sound", op, res) != 0) {
         return(res);
+    }
+    const Object::ListType & args = op.GetArgs();
+    if (args.size() == 0) {
+        cout << " no args!" << endl << flush;
+        return(res);
+    }
+    Object obj = args.front();
+    Root * op2 = utility::Object_asRoot(obj);
+    if (op2->GetObjtype() == "op") {
+        cout << " args is an op!" << endl << flush;
+        res = call_sound_operation(op, *(RootOperation *)op2);
     }
     return(res);
 }
@@ -239,7 +213,7 @@ oplist BaseMind::Operation(const Sight & op)
     Root * op2 = utility::Object_asRoot(obj);
     if (op2->GetObjtype() == "op") {
         cout << " args is an op!" << endl << flush;
-        call_sight_operation(op, *(RootOperation *)op2);
+        res = call_sight_operation(op, *(RootOperation *)op2);
         //string & op2type = op2->GetParents().front().AsString();
         //string subop = "sight_" + op2type;
         //script_Operation(subop, op, res, (RootOperation *)op2);

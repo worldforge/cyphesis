@@ -15,6 +15,7 @@ typedef enum op_no {
 	OP_SIGHT,
 	OP_SOUND,
 	OP_TOUCH,
+	OP_TALK,
 	OP_TICK,
 	OP_LOOK,
 	OP_LOAD,
@@ -46,6 +47,9 @@ typedef enum op_no {
             break; \
         case OP_SOUND: \
             _result = _prefix ## Operation((const Sound &)_op); \
+            break; \
+        case OP_TALK: \
+            _result = _prefix ## Operation((const Talk &)_op); \
             break; \
         case OP_TOUCH: \
             _result = _prefix ## Operation((const Touch &)_op); \
@@ -90,6 +94,9 @@ typedef enum op_no {
             break; \
         case OP_SET: \
             _result = _prefix ## Operation(_op, (Set &)_sub_op); \
+            break; \
+        case OP_TALK: \
+            _result = _prefix ## Operation(_op, (Talk &)_sub_op); \
             break; \
         case OP_TOUCH: \
             _result = _prefix ## Operation(_op, (Touch &)_sub_op); \
@@ -306,6 +313,7 @@ class BaseEntity {
     virtual oplist Operation(const Set & obj) { oplist res; return(res); }
     virtual oplist Operation(const Sight & obj) { oplist res; return(res); }
     virtual oplist Operation(const Sound & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Talk & obj) { oplist res; return(res); }
     virtual oplist Operation(const Touch & obj) { oplist res; return(res); }
     virtual oplist Operation(const Tick & obj) { oplist res; return(res); }
     virtual oplist Operation(const Look & obj);

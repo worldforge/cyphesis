@@ -34,7 +34,7 @@ extern "C" {
 #include <common/WorldInfo.h>
 #include <common/const.h>
 
-static int debug_movement=0;
+static int debug_movement=1;
 
 MovementInfo::MovementInfo(Character * body) : body(body)
 {
@@ -243,6 +243,7 @@ oplist Character::Operation(const Tick & op)
 
 oplist Character::Operation(const Talk & op)
 {
+    cout << "Character::OPeration(Talk)" << endl << flush;
     Sound * s = new Sound();
     *s = Sound::Instantiate();
     Message::Object::ListType args(1,op.AsObject());
@@ -571,6 +572,7 @@ oplist Character::Mind_Operation(const Delete & op)
 
 oplist Character::Mind_Operation(const Talk & op)
 {
+    cout << "Character::Mind_OPeration(Talk)" << endl << flush;
     Talk * t = new Talk(op);
     return(oplist(1,t));
 }

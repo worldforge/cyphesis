@@ -7,6 +7,7 @@
 #include "Thing.h"
 
 #include <modules/Location.h>
+#include <server/WorldTime.h>
 #include <common/const.h>
 
 
@@ -70,6 +71,38 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
 	if ( o == NULL ) {
 		return NULL;
 	}
+	return (PyObject *)o;
+}
+
+static PyObject * worldtime_new(PyObject * self, PyObject * args)
+{
+	WorldTimeObject *o;
+        	
+        int seconds;
+	if (!PyArg_ParseTuple(args, "i", &seconds)) {
+                printf("AWWWWWWOOOOOGA");
+		return NULL;
+	}
+	o = newWorldTimeObject(args);
+	if ( o == NULL ) {
+		return NULL;
+	}
+	o->time = new WorldTime(seconds);
+	return (PyObject *)o;
+}
+
+static PyObject * oplist_new(PyObject * self, PyObject * args)
+{
+	OplistObject *o;
+	
+	if (!PyArg_ParseTuple(args, "")) {
+		return NULL;
+	}
+	o = newOplistObject(args);
+	if ( o == NULL ) {
+		return NULL;
+	}
+	o->ops = new oplist();
 	return (PyObject *)o;
 }
 
@@ -163,6 +196,7 @@ static PyMethodDef atlas_methods[] = {
     {"Operation",  (PyCFunction)operation_new,	METH_VARARGS|METH_KEYWORDS},
     {"Location",   location_new,		METH_VARARGS},
     {"Object",     object_new,			METH_VARARGS},
+    {"Message",    oplist_new,			METH_VARARGS},
     {"cppThing",   cppthing_new,		METH_VARARGS},
     {NULL,		NULL}				/* Sentinel */
 };
@@ -173,7 +207,7 @@ static PyMethodDef Vector3D_methods[] = {
 };
 
 static PyMethodDef server_methods[] = {
-	//{"null",	null_new,	METH_VARARGS},
+	{"WorldTime",	worldtime_new,	METH_VARARGS},
 	{NULL,		NULL}				/* Sentinel */
 };
 
@@ -206,8 +240,8 @@ void init_python_api()
 
 	Py_Initialize();
 
-        PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
-        PyRun_SimpleString("ruleset_import_hooks.install(['basic','acorn'])\n");
+        //PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
+        //PyRun_SimpleString("ruleset_import_hooks.install(['basic','acorn'])\n");
 
 	if (Py_InitModule("atlas", atlas_methods) == NULL) {
 		printf("Failed to Create atlas thing\n");

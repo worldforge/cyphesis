@@ -38,6 +38,7 @@ bad_type seconds2string(bad_type seconds) {
     return str(date_time);
 }
 
+#if 0
 WorldTime::WorldTime(char * date_time="1-1-1 0:0:0")
 {
     time=DateTime(date_time);
@@ -93,3 +94,5 @@ dobule WorldTime::seconds()
 {
     return WorldTime::time.seconds();
 }
+
+#endif

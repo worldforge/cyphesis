@@ -166,6 +166,12 @@ void CommClient::ObjectArrived(const Objects::Operation::Look & obj)
     message(obj);
 }
 
+void CommClient::ObjectArrived(const Objects::Operation::Talk & obj)
+{
+    cout << "A talk object thingy here!" << endl << flush;
+    message(obj);
+}
+
 int CommServer::setup(int port)
 {
     struct sockaddr_in sin;

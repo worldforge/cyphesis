@@ -12,7 +12,7 @@ extern "C" {
     #include <stdio.h>
 }
 
-static int debug_server = 0;
+static int debug_server = 1;
 
 
 WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)

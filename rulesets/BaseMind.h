@@ -22,7 +22,11 @@ class BaseMind : public Thing {
     virtual oplist Sight_Operation(const Sight & op, Touch & sub_op);
     virtual oplist Sight_Operation(const Sight & op, RootOperation & sub_op);
 
+    virtual oplist Sound_Operation(const Sound & op, Talk & sub_op);
+    virtual oplist Sound_Operation(const Sound & op, RootOperation & sub_op);
+
     oplist call_sight_operation(const Sight & op, RootOperation & sub_op);
+    oplist call_sound_operation(const Sound & op, RootOperation & sub_op);
     virtual oplist Operation(const Sight & op);
     virtual oplist Operation(const Sound & op);
     //RootOperation * get_op_name_and_sub(RootOperation & op, string & name);

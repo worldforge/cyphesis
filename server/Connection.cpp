@@ -12,7 +12,7 @@
 
 #include "server.h"
 
-static int debug_server = 0;
+static int debug_server = 1;
 
 using namespace Atlas;
 using namespace Objects;
