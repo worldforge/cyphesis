@@ -75,7 +75,6 @@ void World::setTerrain(const MapType & t)
                 (J->second.find(y) == J->second.end())) {
                 // Newly added point.
                 m_createdTerrain[x].insert(y);
-                std::cout << "New point" << std::endl << std::flush;
             } else {
                 // Modified point
                 PointSet::const_iterator K = m_createdTerrain.find(x);
@@ -83,7 +82,6 @@ void World::setTerrain(const MapType & t)
                     (K->second.find(y) == K->second.end())) {
                     // Already in database
                     m_modifiedTerrain[x].insert(y);
-                    std::cout << "Changed point" << std::endl << std::flush;
                 }
                 // else do nothing, as its currently waiting to be added.
             }

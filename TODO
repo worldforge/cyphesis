@@ -1,3 +1,5 @@
+Create multi-column unique index on terrain and other array tables.
+
 Transforming with an invalid quaternion creates an invalid vector or point.
 We must not do it.
 
