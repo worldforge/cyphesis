@@ -1,10 +1,10 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2003 Alistair Riddoch
 
-#include "EntityExerciser.h"
+#include "IGEntityExerciser.h"
 
-#include "common/OOGThing.h"
+#include "rulesets/Entity.h"
 
 #include "common/Chop.h"
 #include "common/Cut.h"
@@ -35,16 +35,11 @@
 
 #include <cassert>
 
-class OOGThingTest : public OOGThing {
-  public:
-    OOGThingTest() : OOGThing("testId") { }
-};
-
 int main()
 {
-    OOGThingTest be;
+    Entity e("testId");
 
-    EntityExerciser<OOGThing> ee(be);
+    IGEntityExerciser<Entity> ee(e);
 
     ee.runOperations();
 

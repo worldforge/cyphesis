@@ -8,6 +8,7 @@
 #include "debug.h"
 #include "op_switch.h"
 #include "serialno.h"
+#include "inheritance.h"
 
 #include <Atlas/Objects/Operation/Error.h>
 
@@ -136,6 +137,14 @@ OpNo BaseEntity::opEnumerate(const RootOperation& op, const OpNoDict& d) const
         debug(std::cout << getId() << " is rejecting 2ry op of type " << parent
                         << std::endl << std::flush;);
         return OP_INVALID;
+    }
+}
+
+void BaseEntity::subscribe(const std::string & op)
+{
+    OpNo opNo = Inheritance::instance().opEnumerate(op);
+    if (opNo != OP_INVALID) {
+        subscribe(op, opNo);
     }
 }
 

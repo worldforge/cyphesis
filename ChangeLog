@@ -1,5 +1,19 @@
 2003-09-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.cpp: Add in the unimplemented subscribe
+	  method.
+
+	* tests/EntityExerciser.h: Add new functionality to properlly
+	  exercise the dispatch/subscription mechansim.
+
+	* tests/BaseEntitytest.cpp, tests/OOGThingtest.cpp: Update tests
+	  to use new EntityExerciser functionality.
+
+	* tests/IGEntityExerciser.h, tests/Entitytest.cpp: New test for
+	  testing the IG Entity base class.
+
+2003-09-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Locationtest.cpp: Quick simple test for Location.
 
 2003-09-09  Al Riddoch  <alriddoch@zepler.org>

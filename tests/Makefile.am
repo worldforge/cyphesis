@@ -1,9 +1,11 @@
-COMMON_TESTS = logtest BaseEntitytest inheritancetest OOGThingtest \
+COMMON_TESTS = logtest inheritancetest BaseEntitytest OOGThingtest \
                systemtest utilitytest
 
 MODULE_TESTS = Locationtest
 
-TESTS = $(COMMON_TESTS) $(MODULE_TESTS)
+RULESETS_TESTS = Entitytest
+
+TESTS = $(COMMON_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS)
 
 check_PROGRAMS = $(TESTS)
 
@@ -12,17 +14,19 @@ check_PROGRAMS = $(TESTS)
 logtest_SOURCES = logtest.cpp
 logtest_LDADD = ../common/log.o ../common/globals.o
 
-BaseEntitytest_SOURCES = BaseEntitytest.cpp EntityExerciser.h
-BaseEntitytest_LDADD = ../common/BaseEntity.o ../common/operations.o \
-                       ../common/log.o ../common/globals.o ../common/serialno.o
-
 inheritancetest_SOURCES = inheritancetest.cpp
 inheritancetest_LDADD = ../common/inheritance.o ../common/custom.o \
                         ../common/operations.o ../common/log.o \
                         ../common/globals.o
 
+BaseEntitytest_SOURCES = BaseEntitytest.cpp EntityExerciser.h
+BaseEntitytest_LDADD = ../common/BaseEntity.o ../common/operations.o \
+                       ../common/inheritance.o ../common/custom.o \
+                       ../common/log.o ../common/globals.o ../common/serialno.o
+
 OOGThingtest_SOURCES = OOGThingtest.cpp EntityExerciser.h
 OOGThingtest_LDADD = ../common/OOGThing.o ../common/BaseEntity.o \
+                     ../common/inheritance.o ../common/custom.o \
                      ../common/operations.o ../common/log.o \
                      ../common/globals.o ../common/serialno.o
 
@@ -40,4 +44,13 @@ Locationtest_LDADD = ../modules/Location.o ../rulesets/Entity.o \
                      ../common/BaseEntity.o ../common/log.o \
                      ../common/globals.o ../common/serialno.o \
                      ../common/custom.o ../common/operations.o
+
+# RULESETS_TESTS
+
+Entitytest_SOURCES = Entitytest.cpp
+Entitytest_LDADD = ../modules/Location.o ../rulesets/Entity.o \
+                   ../rulesets/Script.o ../common/inheritance.o \
+                   ../common/BaseEntity.o ../common/log.o \
+                   ../common/globals.o ../common/serialno.o \
+                   ../common/custom.o ../common/operations.o
 

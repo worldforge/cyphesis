@@ -6,6 +6,7 @@
 #define TESTS_ENTITY_EXERCISER_H
 
 #include "common/operations.h"
+#include "common/inheritance.h"
 #include "common/types.h"
 
 template <class EntityType>
@@ -22,8 +23,56 @@ class EntityExerciser {
         OpVector ov4 = m_ent.externalOperation(op);
     }
 
+    virtual void subscribeOp(const std::string & op) {
+        m_ent.subscribe(op);
+    }
+    
+    virtual void subscribeOperations(const std::set<std::string> & ops) {
+        Inheritance & i = Inheritance::instance();
+        std::set<std::string>::const_iterator I = ops.begin();
+        for(; I != ops.end(); ++I) {
+            OpNo opNo = i.opEnumerate(*I);
+            assert(opNo != OP_INVALID);
+            subscribeOp(*I);
+        }
+    }
+
+    void addAllOperations(std::set<std::string> & ops);
+
     void runOperations();
 };
+
+template <class EntityType>
+inline void EntityExerciser<EntityType>::addAllOperations(std::set<std::string> & ops)
+{
+    ops.insert("login");
+    ops.insert("logout");
+    ops.insert("action");
+    ops.insert("chop");
+    ops.insert("combine");
+    ops.insert("create");
+    ops.insert("cut");
+    ops.insert("delete");
+    ops.insert("divide");
+    ops.insert("eat");
+    ops.insert("burn");
+    ops.insert("get");
+    ops.insert("imaginary");
+    ops.insert("info");
+    ops.insert("move");
+    ops.insert("nourish");
+    ops.insert("set");
+    ops.insert("sight");
+    ops.insert("sound");
+    ops.insert("talk");
+    ops.insert("touch");
+    ops.insert("tick");
+    ops.insert("look");
+    ops.insert("setup");
+    ops.insert("appearance");
+    ops.insert("disappearance");
+    ops.insert("error");
+}
 
 template <class EntityType>
 inline void EntityExerciser<EntityType>::runOperations()
@@ -169,5 +218,7 @@ inline void EntityExerciser<EntityType>::runOperations()
         OpVector ov = m_ent.OtherOperation(op);
     }
 }
+
+
 
 #endif // TESTS_ENTITY_EXERCISER_H
