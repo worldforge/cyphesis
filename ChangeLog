@@ -1,5 +1,10 @@
 2004-11-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* Purge a bunch of very historic python files from the client
+	  directory.
+
+2004-11-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/MemMap.cpp: Add checks so that only visible entities
 	  in the memory map are returned by the find function.
 
