@@ -1,3 +1,12 @@
+2003-04-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cyphesis-setup: Add #!/bin/sh to be sure it gets treated
+	  as a script.
+
+	* Add configure checks for Python 2.3, and update varconf checks.
+
+	* Version 0.2.1 release.
+
 2003-02-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* Use PKG_CONFIG_CHECKS to get latest versions of libs.

@@ -1,6 +1,6 @@
 Cyphesis-C++ development is currently being done on a semi-closed basis.
 I do not currently consider that the code is ready for contributions
-as the design has not quite stabilised. Anyone is encourage however to
+as the design has not quite stabilised. Anyone is encouraged however to
 contribute scripts to implement new game features. If your game features
 require modification of the C++ core, please contact me on irc, or using
 the email address given in the AUTHORS file.
