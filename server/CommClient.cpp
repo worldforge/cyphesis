@@ -40,7 +40,7 @@ CommClient::CommClient(CommServer & svr, int fd, BaseEntity & c) :
 {
     m_clientIos.setTimeout(0,1000);
 
-    m_negotiate =  new Atlas::Net::StreamAccept("cyphesis " + m_commServer.m_server.getName(), m_clientIos, this);
+    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + m_commServer.m_server.getName(), m_clientIos, this);
 }
 
 CommClient::CommClient(CommServer & svr, BaseEntity & c) :
@@ -50,7 +50,7 @@ CommClient::CommClient(CommServer & svr, BaseEntity & c) :
 {
     m_clientIos.setTimeout(0,1000);
 
-    m_negotiate =  new Atlas::Net::StreamConnect("cyphesis " + m_commServer.m_server.getName(), m_clientIos, this);
+    m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + m_commServer.m_server.getName(), m_clientIos, this);
 }
 
 CommClient::~CommClient()

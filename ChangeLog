@@ -1,5 +1,9 @@
 2004-12-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommClient.cpp: Clean up formatting.
+
+2004-12-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Vector3D.cpp: Allow setting of Vector3D attributes
 	  x y and z.
 
