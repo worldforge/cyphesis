@@ -42,15 +42,14 @@ bool PythonThingScript::Operation(const std::string & op_type,
                          << "." << op_name << std::endl << std::flush;);
         return false;
     }
-    OperationObject * py_op = newAtlasRootOperation(NULL);
-    py_op->operation = new RootOperation(op);
+    ConstOperationObject * py_op = newAtlasConstRootOperation(NULL);
+    py_op->operation = &op;
     py_op->own = 0;
     py_op->from = thing.world->getObject(op.GetFrom());
     py_op->to = thing.world->getObject(op.GetTo());
     PyObject * ret;
     ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(O)", py_op);
-    delete py_op->operation;
     Py_DECREF(py_op);
     if (ret != NULL) {
         debug( std::cout << "Called python method " << op_name

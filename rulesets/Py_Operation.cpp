@@ -505,6 +505,19 @@ PyMethodDef RootOperation_methods[] = {
     {NULL,          NULL}
 };
 
+PyMethodDef ConstRootOperation_methods[] = {
+    {"GetSerialno",     (PyCFunction)Operation_GetSerialno,     METH_VARARGS},
+    {"GetRefno",        (PyCFunction)Operation_GetRefno,        METH_VARARGS},
+    {"GetFrom",         (PyCFunction)Operation_GetFrom,         METH_VARARGS},
+    {"GetTo",           (PyCFunction)Operation_GetTo,           METH_VARARGS},
+    {"GetSeconds",      (PyCFunction)Operation_GetSeconds,      METH_VARARGS},
+    {"GetFutureSeconds",(PyCFunction)Operation_GetFutureSeconds,METH_VARARGS},
+    {"GetTimeString",   (PyCFunction)Operation_GetTimeString,   METH_VARARGS},
+    {"GetArgs",         (PyCFunction)Operation_GetArgs,         METH_VARARGS},
+    {"get_name",        (PyCFunction)Operation_get_name,        METH_VARARGS},
+    {NULL,          NULL}
+};
+
 
 /*
  * Beginning of Operation standard methods section.
@@ -519,7 +532,35 @@ static void Operation_dealloc(OperationObject *self)
 	PyMem_DEL(self);
 }
 
-static PyObject * Operation_getattr(OperationObject * self, char * name)
+static inline PyObject * findMethod(OperationObject * self, char * name)
+{
+    return Py_FindMethod(RootOperation_methods, (PyObject *)self, name);
+}
+
+static inline PyObject * findMethod(ConstOperationObject * self, char * name)
+{
+    return Py_FindMethod(ConstRootOperation_methods, (PyObject *)self, name);
+}
+
+static inline PyObject * handleTime(OperationObject * self)
+{
+    OptimeObject * time_obj = newOptimeObject(NULL);
+    if (time_obj == NULL) {
+        return NULL;
+    }
+    time_obj->operation = self->operation;
+    return (PyObject *)time_obj;
+}
+
+static inline PyObject * handleTime(ConstOperationObject * self)
+{
+    // FIXME - implement const time objects.
+    PyErr_SetString(PyExc_TypeError, "cannot get time on const ops");
+    return NULL;
+}
+
+template <typename T>
+static PyObject * getattr(T * self, char * name)
 {
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid operation");
@@ -556,22 +597,28 @@ static PyObject * Operation_getattr(OperationObject * self, char * name)
             return (PyObject *)obj;
         }
     } else if (strcmp(name, "time") == 0) {
-        OptimeObject * time_obj = newOptimeObject(NULL);
-        if (time_obj == NULL) {
-            return NULL;
-        }
-        time_obj->operation = self->operation;
-        return (PyObject *)time_obj;
+        return handleTime(self);
     } else if (strcmp(name, "id") == 0) {
-        Object::ListType & parents = self->operation->GetParents();
+        const Object::ListType & parents = self->operation->GetParents();
         if ((parents.empty()) || (!parents.front().IsString())) {
             PyErr_SetString(PyExc_TypeError, "Operation has no parents");
             return NULL;
         }
         return PyString_FromString(parents.front().AsString().c_str());
     }
-    return Py_FindMethod(RootOperation_methods, (PyObject *)self, name);
+    return findMethod(self, name);
 }
+
+static PyObject * Operation_getattr(OperationObject * self, char * name)
+{
+    return getattr(self, name);
+}
+
+static PyObject * ConstOperation_getattr(ConstOperationObject * self, char * name)
+{
+    return getattr(self, name);
+}
+
 
 static int Operation_setattr(OperationObject *self, char *name, PyObject *v)
 {
@@ -625,8 +672,27 @@ PyTypeObject Operation_Type = {
         //  methods 
         (destructor)Operation_dealloc,          // tp_dealloc
         0,                                      // tp_print
-        (getattrfunc)Operation_getattr,         // tp_getattr
+        (getattrfunc)Operation_getattr,  // tp_getattr
         (setattrfunc)Operation_setattr,         // tp_setattr
+        0,                                      // tp_compare
+        0,                                      // tp_repr
+        &Operation_num,                         // tp_as_number
+        &Operation_seq,                         // tp_as_sequence
+        0,                                      // tp_as_mapping
+        0,                                      // tp_hash
+};
+
+PyTypeObject ConstOperation_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                                      // ob_size
+        "Operation",                            // tp_name
+        sizeof(ConstOperationObject),           // tp_basicsize
+        0,                                      // tp_itemsize
+        //  methods 
+        (destructor)Operation_dealloc,          // tp_dealloc
+        0,                                      // tp_print
+        (getattrfunc)ConstOperation_getattr,    // tp_getattr
+        0,                                      // tp_setattr
         0,                                      // tp_compare
         0,                                      // tp_repr
         &Operation_num,                         // tp_as_number
@@ -643,6 +709,20 @@ OperationObject * newAtlasRootOperation(PyObject *arg)
 {
 	OperationObject * self;
 	self = PyObject_NEW(OperationObject, &Operation_Type);
+	if (self == NULL) {
+		return NULL;
+	}
+	self->operation = NULL;
+	self->from = NULL;
+	self->to = NULL;
+	self->own = 0;
+	return self;
+}
+
+ConstOperationObject * newAtlasConstRootOperation(PyObject *arg)
+{
+	ConstOperationObject * self;
+	self = PyObject_NEW(ConstOperationObject, &ConstOperation_Type);
 	if (self == NULL) {
 		return NULL;
 	}

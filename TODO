@@ -5,11 +5,16 @@ Must fix for Mason 0.0.2
 
   Lets get rid of this nonsense about ids having too much meaning.
 
-  Fix movement BUGS
+  Fix movement BUGS, and other BUGS
 
   Sort out IG refno/serialno stuff.
 
+  Make server keep internal build date.
+     __DATE__ <<" - "<<__TIME__ << endl
+
 General TODO
+
+  Implement ontology querying for AI code.
 
   Add Feel as the counterpoint to Touch, as Sight is to Look.
 

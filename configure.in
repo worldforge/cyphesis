@@ -22,7 +22,10 @@ AM_CONDITIONAL(BUILD_STATIC, test x$ac_build_static_binary = xyes)
 
 dnl Initialise automake
 
-VERSION=0.1.1
+dnl The date should be updated for each commit. Public servers running 
+dnl modified code should put something else on the end of the version.
+dnl Release version will not have a trailing date at all.
+VERSION=0.1.1.2002-05-17
 
 AM_INIT_AUTOMAKE(cyphesis, $VERSION)
 

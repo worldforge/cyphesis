@@ -1,3 +1,15 @@
+2002-05-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Operation.cpp, rulesets/Py_Operation.h: Add a variant
+	  of the python Operation wrapper which handles const operations.
+
+	* rulesets/PythonMindScript.cpp, rulesets/PythonThingScript.cpp:
+	  Pass const versions of operations to the python scripts, rather
+	  than having to copy them.
+
+	* server/ServerRouting.cpp: Add build date, time and version to
+	  server info.
+
 2002-05-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/MemMap.h: C++ compliance fix.

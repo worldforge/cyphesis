@@ -22,10 +22,21 @@ typedef struct {
     Entity					* to;
 } OperationObject;
 
+typedef struct {
+    PyObject_HEAD
+    const Atlas::Objects::Operation::RootOperation	* operation;
+    int							own;
+    Entity						* from;
+    Entity						* to;
+} ConstOperationObject;
+
 extern PyTypeObject Operation_Type;
+extern PyTypeObject ConstOperation_Type;
 
 #define PyOperation_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&Operation_Type)
+#define PyConstOperation_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&ConstOperation_Type)
 
 OperationObject * newAtlasRootOperation(PyObject *arg);
+ConstOperationObject * newAtlasConstRootOperation(PyObject *arg);
 
 #endif // RULESETS_PY_OPERATION_H

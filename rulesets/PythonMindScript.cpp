@@ -37,8 +37,8 @@ bool PythonMindScript::Operation(const std::string & op_type,
                          << std::flush;);
         return false;
     }
-    OperationObject * py_op = newAtlasRootOperation(NULL);
-    py_op->operation = new RootOperation(op);
+    ConstOperationObject * py_op = newAtlasConstRootOperation(NULL);
+    py_op->operation = &op;
     py_op->own = 0;
     py_op->from = mind.map.getAdd(op.GetFrom());
     py_op->to = mind.map.getAdd(op.GetTo());
@@ -56,7 +56,6 @@ bool PythonMindScript::Operation(const std::string & op_type,
                                          "(OO)", py_op, py_sub_op);
         Py_DECREF(py_sub_op);
     }
-    delete py_op->operation;
     Py_DECREF(py_op);
     if (ret != NULL) {
         debug( std::cout << "Called python method " << op_name << std::endl

@@ -2,6 +2,10 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "ServerRouting_methods.h"
 #include "Persistance.h"
 #include "CommServer.h"
@@ -48,6 +52,8 @@ void ServerRouting::addToObject(Object::MapType & omap) const
     omap["parents"] = plist;
     omap["clients"] = commServer.numClients();
     omap["uptime"] = world.upTime();
+    omap["builddate"] = std::string(__TIME__) + ", " + std::string(__DATE__);
+    omap["version"] = std::string(VERSION);
     if (Persistance::restricted) {
         omap["restricted"] = "true";
     }
