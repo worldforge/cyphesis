@@ -1,5 +1,18 @@
 2002-08-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* Added pkgconfig and sigc++ autotools macros into acinclude.m4
+	  as only one or the other should be required, not both.
+
+	* server/Connection.h, server/Connection.cpp: Move large methods
+	  into .cpp file to avoid bloat. Add in non ref method
+	  for removing deleted objects, as references are a problem.
+
+	* Account.h, Account.cpp: characterDestroyed method now
+	  takes value rather than reference because of sigc++. Add
+	  necessary headers.
+
+2002-08-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* Modifify configure tests to detect sigc++ 1.2.
 
 	* common/BaseEntity.h, server/Connection.h: Fix sigc++ headers

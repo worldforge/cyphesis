@@ -20,6 +20,9 @@
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Info.h>
 
+#include <sigc++/bind.h>
+#include <sigc++/object_slot.h>
+
 static const bool debug_flag = false;
 
 Account::Account(Connection * conn, const std::string & username,
@@ -45,7 +48,7 @@ Account::~Account()
     }
 }
 
-void Account::characterDestroyed(const std::string & id)
+void Account::characterDestroyed(std::string id)
 {
     charactersDict.erase(id);
     ConMap::iterator I = destroyedConnections.find(id);
@@ -74,7 +77,7 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.
         charactersDict[chr->getId()] = chr;
-        SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<const std::string&>(slot(*this, &Account::characterDestroyed), chr->getId())));
+        SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<std::string>(slot(*this, &Account::characterDestroyed), chr->getId())));
         destroyedConnections[chr->getId()] = con;
         connection->addObject(chr);
     }

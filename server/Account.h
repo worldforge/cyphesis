@@ -21,7 +21,7 @@ class Account : public OOGThing {
     BaseEntity * addCharacter(const std::string &,
                               const Atlas::Message::Object::MapType &);
   protected:
-    void characterDestroyed(const std::string &);
+    void characterDestroyed(std::string);
 
     virtual OpVector characterError(const Create &, const Atlas::Message::Object::MapType &) const = 0;
 

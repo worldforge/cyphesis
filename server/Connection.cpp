@@ -26,6 +26,9 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
+#include <sigc++/bind.h>
+#include <sigc++/object_slot.h>
+
 static const bool debug_flag = false;
 
 Connection::Connection(CommClient & client) : commClient(client),
@@ -57,6 +60,29 @@ Account * Connection::addPlayer(const std::string& username,
     server.addObject(player);
     server.lobby.addObject(player);
     return player;
+}
+
+void Connection::addObject(BaseEntity * obj)
+{
+    objects[obj->getId()] = obj;
+    SigC::Connection * con = new SigC::Connection(obj->destroyed.connect(SigC::bind<std::string>(SigC::slot(*this, &Connection::objectDeleted), obj->getId())));
+    destroyedConnections[obj->getId()] = con;
+}
+
+void Connection::removeObject(const std::string & id)
+{
+    if (!obsolete) {
+        objects.erase(id);
+        ConMap::iterator I = destroyedConnections.find(id);
+        if (I != destroyedConnections.end()) {
+            delete I->second;
+            destroyedConnections.erase(I);
+        }
+    }
+}
+
+void Connection::objectDeleted(std::string id) {
+    removeObject(id);
 }
 
 void Connection::destroy()
