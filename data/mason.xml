@@ -84,10 +84,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.undead.Arm</string>
-    </map>
   </map>
 
   <map>
@@ -622,10 +618,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.undead.Pelvis</string>
-    </map>
   </map>
 
   <map>
@@ -696,10 +688,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.undead.Ribcage</string>
-    </map>
   </map>
 
   <map>
@@ -740,10 +728,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.undead.Shin</string>
-    </map>
   </map>
 
   <map>
@@ -774,10 +758,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.undead.Skull</string>
-    </map>
   </map>
 
   <map>
@@ -824,10 +804,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.undead.Thigh</string>
-    </map>
   </map>
 
   <map>

@@ -1,5 +1,10 @@
 2005-01-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Remove obsolete scripts for some entities
+	  which don't do anything.
+
+2005-01-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* Version 0.3.8 released.
 
 2004-01-23  Al Riddoch  <alriddoch@zepler.org>
