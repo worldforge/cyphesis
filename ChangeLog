@@ -1,5 +1,10 @@
 2004-01-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Makefile.am, tests/Creatortest.cpp, tests/Worldtest.cpp:
+	  Fix up the tests.
+
+2004-01-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Switch to less deprecated usage of init macros.
 
 2004-01-17  Al Riddoch  <alriddoch@zepler.org>
