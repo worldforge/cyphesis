@@ -1,3 +1,8 @@
+2003-06-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.cpp, rulesets/Entity.cpp: Add the assert header
+	  where required.
+
 2003-05-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* physics/Quaternion.h: Intialise quaternion to unit length, in

@@ -29,6 +29,8 @@
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
 
+#include <cassert>
+
 static const bool debug_flag = false;
 
 Connection::Connection(const std::string & id, CommClient & client,
