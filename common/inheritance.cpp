@@ -2,7 +2,9 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include "inheritance.h"
+#include "inheritance_impl.h"
+
+#include "Generic.h"
 
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Combine.h>
@@ -119,6 +121,15 @@ int Inheritance::addChild(Atlas::Objects::Root * obj)
     return 0;
 }
 
+Atlas::Objects::Operation::RootOperation * Inheritance::newOperation(const std::string & op_type)
+{
+    std::map<std::string, OpFactoryBase *>::const_iterator I = opFactories.find(op_type);
+    if (I == opFactories.end()) {
+        return NULL;
+    }
+    return I->second->newOperation();
+}
+
 using Atlas::Objects::Operation::Perception;
 using Atlas::Objects::Operation::Communicate;
 using Atlas::Objects::Operation::Perceive;
@@ -132,58 +143,71 @@ using Atlas::Objects::Entity::AdminEntity;
 using Atlas::Objects::Entity::Game;
 using Atlas::Objects::Entity::GameEntity;
 
+OpFactoryBase::~OpFactoryBase()
+{
+}
+
+GenericOpFactory::GenericOpFactory(const std::string &opType) : m_opType(opType)
+{
+}
+
+Atlas::Objects::Operation::RootOperation * GenericOpFactory::newOperation()
+{
+    return new Generic(m_opType);
+}
+
 void installStandardObjects()
 {
     Inheritance & i = Inheritance::instance();
 
     i.addChild(new RootOperation(RootOperation::Class()));
     i.addChild(new Action(Action::Class()));
-    i.opInstall("action", OP_ACTION);
+    i.opInstall("action", OP_ACTION, new OpFactory<Action>);
     i.addChild(new Create(Create::Class()));
-    i.opInstall("create", OP_CREATE);
+    i.opInstall("create", OP_CREATE, new OpFactory<Create>);
     i.addChild(new Delete(Delete::Class()));
-    i.opInstall("delete", OP_DELETE);
+    i.opInstall("delete", OP_DELETE, new OpFactory<Delete>);
     i.addChild(new Info(Info::Class()));
-    i.opInstall("info", OP_INFO);
+    i.opInstall("info", OP_INFO, new OpFactory<Info>);
     i.addChild(new Set(Set::Class()));
-    i.opInstall("set", OP_SET);
+    i.opInstall("set", OP_SET, new OpFactory<Set>);
     i.addChild(new Get(Get::Class()));
-    i.opInstall("get", OP_GET);
+    i.opInstall("get", OP_GET, new OpFactory<Get>);
     i.addChild(new Perception(Perception::Class()));
     i.addChild(new Error(Error::Class()));
-    i.opInstall("error", OP_ERROR);
+    i.opInstall("error", OP_ERROR, new OpFactory<Error>);
     i.addChild(new Combine(Combine::Class()));
-    i.opInstall("combine", OP_COMBINE);
+    i.opInstall("combine", OP_COMBINE, new OpFactory<Combine>);
     i.addChild(new Divide(Divide::Class()));
-    i.opInstall("divide", OP_DIVIDE);
+    i.opInstall("divide", OP_DIVIDE, new OpFactory<Divide>);
     i.addChild(new Communicate(Communicate::Class()));
     i.addChild(new Move(Move::Class()));
-    i.opInstall("move", OP_MOVE);
+    i.opInstall("move", OP_MOVE, new OpFactory<Move>);
     i.addChild(new Perceive(Perceive::Class()));
     i.addChild(new Login(Login::Class()));
-    i.opInstall("login", OP_LOGIN);
+    i.opInstall("login", OP_LOGIN, new OpFactory<Login>);
     i.addChild(new Logout(Logout::Class()));
-    i.opInstall("logout", OP_LOGOUT);
+    i.opInstall("logout", OP_LOGOUT, new OpFactory<Logout>);
     i.addChild(new Sight(Sight::Class()));
-    i.opInstall("sight", OP_SIGHT);
+    i.opInstall("sight", OP_SIGHT, new OpFactory<Sight>);
     i.addChild(new Sound(Sound::Class()));
-    i.opInstall("sound", OP_SOUND);
+    i.opInstall("sound", OP_SOUND, new OpFactory<Sound>);
     i.addChild(new Smell(Smell::Class()));
     i.addChild(new Feel(Feel::Class()));
     i.addChild(new Imaginary(Imaginary::Class()));
-    i.opInstall("imaginary", OP_IMAGINARY);
+    i.opInstall("imaginary", OP_IMAGINARY, new OpFactory<Imaginary>);
     i.addChild(new Talk(Talk::Class()));
-    i.opInstall("talk", OP_TALK);
+    i.opInstall("talk", OP_TALK, new OpFactory<Talk>);
     i.addChild(new Look(Look::Class()));
-    i.opInstall("look", OP_LOOK);
+    i.opInstall("look", OP_LOOK, new OpFactory<Look>);
     i.addChild(new Listen(Listen::Class()));
     i.addChild(new Sniff(Sniff::Class()));
     i.addChild(new Touch(Touch::Class()));
-    i.opInstall("touch", OP_TOUCH);
+    i.opInstall("touch", OP_TOUCH, new OpFactory<Touch>);
     i.addChild(new Appearance(Appearance::Class()));
-    i.opInstall("appearance", OP_APPEARANCE);
+    i.opInstall("appearance", OP_APPEARANCE, new OpFactory<Appearance>);
     i.addChild(new Disappearance(Disappearance::Class()));
-    i.opInstall("disappearance", OP_DISAPPEARANCE);
+    i.opInstall("disappearance", OP_DISAPPEARANCE, new OpFactory<Disappearance>);
 
     i.addChild(new RootEntity(RootEntity::Class()));
     i.addChild(new AdminEntity(AdminEntity::Class()));

@@ -1,5 +1,16 @@
 2004-10-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Generic.h: Add required RootOperation include.
+
+	* common/inheritance.h, common/inheritance.cpp, common/custom.cpp:
+	  Add operation factory to the inheritance class, and to all
+	  the calls which install new ops.
+
+	* tests/inheritancetest.cpp: Add new test for the op factory
+	  capability of inheritance.
+
+2004-10-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py: Clarify logic
 	  in get_knowledge().
 

@@ -67,6 +67,36 @@ int main()
     assert(i.opEnumerate("error") == OP_ERROR);
     assert(i.opEnumerate("squigglymuff") == OP_INVALID);
 
+    assert(i.newOperation("login") != 0);
+    assert(i.newOperation("logout") != 0);
+    assert(i.newOperation("action") != 0);
+    assert(i.newOperation("chop") != 0);
+    assert(i.newOperation("combine") != 0);
+    assert(i.newOperation("create") != 0);
+    assert(i.newOperation("cut") != 0);
+    assert(i.newOperation("delete") != 0);
+    assert(i.newOperation("divide") != 0);
+    assert(i.newOperation("eat") != 0);
+    assert(i.newOperation("burn") != 0);
+    assert(i.newOperation("get") != 0);
+    assert(i.newOperation("imaginary") != 0);
+    assert(i.newOperation("info") != 0);
+    assert(i.newOperation("move") != 0);
+    assert(i.newOperation("nourish") != 0);
+    assert(i.newOperation("set") != 0);
+    assert(i.newOperation("sight") != 0);
+    assert(i.newOperation("sound") != 0);
+    assert(i.newOperation("talk") != 0);
+    assert(i.newOperation("touch") != 0);
+    assert(i.newOperation("tick") != 0);
+    assert(i.newOperation("look") != 0);
+    assert(i.newOperation("setup") != 0);
+    assert(i.newOperation("appearance") != 0);
+    assert(i.newOperation("disappearance") != 0);
+    assert(i.newOperation("error") != 0);
+
+    assert(i.newOperation("squigglymuff") == 0);
+
     Root * rt = i.get("root");
 
     // Make sure the type tree is coherent, and contains a decent

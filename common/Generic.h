@@ -5,6 +5,8 @@
 #ifndef COMMON_GENERIC_H
 #define COMMON_GENERIC_H
 
+#include <Atlas/Objects/Operation/RootOperation.h>
+
 // This operation cannot be instantiated directly, it can only be given
 // a parent string in order to create an operation instance with
 // parents that none of the hardcoded types support. Operations of

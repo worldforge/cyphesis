@@ -2,7 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#include "inheritance.h"
+#include "inheritance_impl.h"
 #include "operations.h"
 
 #include "Chop.h"
@@ -23,29 +23,29 @@ void installCustomOperations()
     Inheritance & i = Inheritance::instance();
 
     i.addChild(new Chop(Chop::Class()));
-    i.opInstall("chop", OP_CHOP);
+    i.opInstall("chop", OP_CHOP, new OpFactory<Chop>);
     i.addChild(new Cut(Cut::Class()));
-    i.opInstall("cut", OP_CUT);
+    i.opInstall("cut", OP_CUT, new OpFactory<Cut>);
     i.addChild(new Eat(Eat::Class()));
-    i.opInstall("eat", OP_EAT);
+    i.opInstall("eat", OP_EAT, new OpFactory<Eat>);
     i.addChild(new Burn(Burn::Class()));
-    i.opInstall("burn", OP_BURN);
+    i.opInstall("burn", OP_BURN, new OpFactory<Burn>);
     i.addChild(new Nourish(Nourish::Class()));
-    i.opInstall("nourish", OP_NOURISH);
+    i.opInstall("nourish", OP_NOURISH, new OpFactory<Nourish>);
     i.addChild(new Setup(Setup::Class()));
-    i.opInstall("setup", OP_SETUP);
+    i.opInstall("setup", OP_SETUP, new OpFactory<Setup>);
     i.addChild(new Tick(Tick::Class()));
-    i.opInstall("tick", OP_TICK);
+    i.opInstall("tick", OP_TICK, new OpFactory<Tick>);
     i.addChild(new Use(Use::Class()));
-    i.opInstall("use", OP_USE);
+    i.opInstall("use", OP_USE, new OpFactory<Use>);
     i.addChild(new Wield(Wield::Class()));
-    i.opInstall("wield", OP_WIELD);
+    i.opInstall("wield", OP_WIELD, new OpFactory<Wield>);
 
     // Custom ops used in scripts which do not need direct support in the
     // core
 
-    i.opInstall("shoot", OP_OTHER);
-    i.opInstall("extinguish", OP_OTHER);
+    i.opInstall("shoot", OP_OTHER, new GenericOpFactory("shoot"));
+    i.opInstall("extinguish", OP_OTHER, new GenericOpFactory("extinguish"));
 }
 
 using Atlas::Objects::Root;
