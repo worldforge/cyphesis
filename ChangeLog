@@ -1,5 +1,17 @@
 2004-07-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.h, common/BaseEntity.cpp, common/refno.h,
+	  server/Account.cpp, rulesets/Creator.cpp, server/WorldRouter.cpp:
+	  Move refno functions which don't need to be methods into
+	  their own header.
+
+	* common/BaseWorld.h, common/BaseWorld.cpp, rulesets/Character.cpp,
+	  rulesets/Creator.cpp, server/WorldRouter.cpp, server/WorldRouter.h:
+	  Make BaseWorld no longer inherit from anything, as we were not
+	  using this inheritance at all.
+
+2004-07-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Get rid of leak from handling delete op
 	  reply. Eliminate unnecessary copy reading TO of all ops.
 

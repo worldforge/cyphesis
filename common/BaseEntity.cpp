@@ -16,11 +16,6 @@
 
 static const bool debug_flag = false;
 
-static inline void setRefnoOp(RootOperation * op, const RootOperation & ref_op)
-{
-    op->setRefno(ref_op.getSerialno());
-}
-
 BaseEntity::BaseEntity(const std::string & id) : m_id(id)
 {
     subscribe("look", OP_LOOK);
@@ -207,13 +202,6 @@ OpVector BaseEntity::OtherOperation(const RootOperation & op)
 OpVector BaseEntity::ErrorOperation(const RootOperation & op)
 {
     return OpVector();
-}
-
-void BaseEntity::setRefno(const OpVector& ret, const RootOperation & ref_op) const
-{
-    for(OpVector::const_iterator I = ret.begin(); I != ret.end(); I++) {
-        setRefnoOp(*I, ref_op);
-    }
 }
 
 OpNo BaseEntity::opEnumerate(const RootOperation & op) const

@@ -17,6 +17,7 @@
 #include "common/globals.h"
 #include "common/Database.h"
 #include "common/random.h"
+#include "common/refno.h"
 
 #include "common/Setup.h"
 
@@ -34,8 +35,7 @@ inline void WorldRouter::updateTime()
 }
 
 
-WorldRouter::WorldRouter() : BaseWorld(consts::rootWorldId,
-                                       *new World(consts::rootWorldId))
+WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId))
 {
     // setId(consts::rootWorldId);
     m_initTime = time(NULL);
@@ -43,7 +43,7 @@ WorldRouter::WorldRouter() : BaseWorld(consts::rootWorldId,
     // m_gameWorld.setId(getId());
     m_gameWorld.m_world = this;
     m_gameWorld.setType("world");
-    m_eobjects[getId()] = &m_gameWorld;
+    m_eobjects[m_gameWorld.getId()] = &m_gameWorld;
     m_perceptives.insert(&m_gameWorld);
     m_objectList.insert(&m_gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
@@ -75,7 +75,7 @@ WorldRouter::~WorldRouter()
 }
 
 inline void WorldRouter::addOperationToQueue(RootOperation & op,
-                         const BaseEntity * obj)
+                         const Entity * obj)
 {
     if (op.getFrom() == "cheat") {
         op.setFrom(op.getTo());
@@ -185,7 +185,7 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
         s->setTo(obj->getId());
         s->setFutureSeconds(-0.1);
         s->setSerialno(getSerialNo());
-        addOperationToQueue(*s, this);
+        addOperationToQueue(*s, &m_gameWorld);
     }
     return (obj);
 }
@@ -368,7 +368,7 @@ OpVector WorldRouter::operation(const RootOperation & op)
     return OpVector();
 }
 
-OpVector WorldRouter::LookOperation(const Look & op)
+void WorldRouter::LookOperation(const Look & op)
 {
     debug(std::cout << "WorldRouter::Operation(Look)" << std::endl << std::flush;);
     const std::string & from = op.getFrom();
@@ -376,8 +376,6 @@ OpVector WorldRouter::LookOperation(const Look & op)
     if (J != m_eobjects.end()) {
         m_perceptives.insert(J->second);
     }
-
-    return OpVector();
 }
 
 bool WorldRouter::idle()

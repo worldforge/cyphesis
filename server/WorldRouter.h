@@ -30,7 +30,7 @@ class WorldRouter : public BaseWorld {
         return opSerialNo();
     }
 
-    void addOperationToQueue(RootOperation & op, const BaseEntity *);
+    void addOperationToQueue(RootOperation & op, const Entity *);
     RootOperation * getOperationFromQueue();
     const EntitySet & broadcastList(const RootOperation & op) const;
     inline void updateTime();
@@ -52,7 +52,7 @@ class WorldRouter : public BaseWorld {
     virtual OpVector message(const RootOperation & op);
     virtual OpVector operation(const RootOperation & op);
 
-    virtual OpVector LookOperation(const Look & op);
+    virtual void LookOperation(const Look & op);
 
     virtual Entity * findByName(const std::string & name);
     virtual Entity * findByType(const std::string & type);

@@ -1,3 +1,5 @@
+Try out dynamic cast rather than string test to identify ops in WorldRouter.
+
 It would probably be easier to move extraction of parents from a new entity
 to world.addNewObject() to avoid duplication.
 

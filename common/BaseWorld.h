@@ -5,18 +5,21 @@
 #ifndef COMMON_BASE_WORLD_H
 #define COMMON_BASE_WORLD_H
 
-#include "OOGThing.h"
-
 #include "globals.h"
+#include "types.h"
 
 #include "physics/Vector3D.h"
+
+#include <Atlas/Message/Element.h>
 
 #include <sigc++/signal.h>
 
 class Entity;
 
-class BaseWorld : public OOGThing {
+class BaseWorld {
   private:
+    const std::string m_id;
+
     // Private and un-implemented to prevent slicing
     BaseWorld(const BaseWorld &);
     const BaseWorld & operator=(const BaseWorld &);
@@ -27,7 +30,7 @@ class BaseWorld : public OOGThing {
   public:
     Entity & m_gameWorld;
 
-    explicit BaseWorld(const std::string &, Entity &);
+    explicit BaseWorld(Entity &);
     virtual ~BaseWorld();
 
     Entity * getObject(const std::string & fid) {
@@ -60,6 +63,7 @@ class BaseWorld : public OOGThing {
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;
     virtual float constrainHeight(Entity *, const Vector3D &) = 0;
+    virtual void LookOperation(const Look & op) = 0;
 
 
     SigC::Signal1<void, RootOperation *> Dispatching;

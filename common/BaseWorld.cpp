@@ -6,7 +6,7 @@
 
 #include "debug.h"
 
-BaseWorld::BaseWorld(const std::string & id, Entity & gw) : OOGThing(id), m_gameWorld(gw)
+BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
 {
 }
 

@@ -14,6 +14,7 @@
 
 #include "common/const.h"
 #include "common/log.h"
+#include "common/refno.h"
 #include "common/debug.h"
 #include "common/BaseWorld.h"
 
@@ -34,11 +35,6 @@
 #include <sigc++/object_slot.h>
 
 static const bool debug_flag = false;
-
-static inline void setRefnoOp(RootOperation * op, const RootOperation & ref_op)
-{
-    op->setRefno(ref_op.getSerialno());
-}
 
 Account::Account(Connection * conn, const std::string & uname,
                  const std::string& passwd, const std::string & id)

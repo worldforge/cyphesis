@@ -82,7 +82,6 @@ class BaseEntity : virtual public SigC::Object {
     virtual OpVector OtherOperation(const RootOperation & op);
     virtual OpVector ErrorOperation(const RootOperation & op);
 
-    void setRefno(const OpVector & ret, const RootOperation & ref_op) const;
     OpNo opEnumerate(const RootOperation & op) const;
     OpNo opEnumerate(const RootOperation & op, const OpNoDict & d) const;
     void subscribe(const std::string & op);

@@ -729,7 +729,7 @@ OpVector Character::mindLookOperation(const Look & op)
     if (op.getTo().empty()) {
         const Element::ListType & args = op.getArgs();
         if (args.empty()) {
-            l->setTo(m_world->getId());
+            l->setTo(m_world->m_gameWorld.getId());
         } else {
             if (args.front().isMap()) {
                 const Element::MapType & amap = args.front().asMap();
@@ -769,7 +769,7 @@ OpVector Character::mindTouchOperation(const Touch & op)
     const Element::ListType & args = op.getArgs();
     if (op.getTo().empty()) {
         if (args.empty()) {
-            t->setTo(m_world->getId());
+            t->setTo(m_world->m_gameWorld.getId());
         } else {
             if (args.front().isMap()) {
                 const Element::MapType & amap = args.front().asMap();
