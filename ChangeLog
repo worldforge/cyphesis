@@ -1,3 +1,9 @@
+2004-11-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/world/objects/tools/Axe.py,
+	  rulesets/Plant.cpp: Make trees rotate 90 degress when they are
+	  chopped, simulating being cut down.
+
 2004-11-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommMDNSPublisher.cpp: Add some commented debug output.

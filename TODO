@@ -1,3 +1,5 @@
+Move ops without an ID in the argument are a problem for clients.
+
 Currently no mechanism to inform client/mind that the ID they just
 specified is gone. Need to think of something, and make sure mind
 deals correctly.

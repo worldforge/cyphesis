@@ -15,4 +15,4 @@ class Axe(Thing):
         #if not to_:
             #return self.error(op,"To is undefined object")
         to_ = op[0].id
-        return Message(Operation("set",ent,to=self),Operation("chop",op[1],to=to_))
+        return Message(Operation("set",ent,to=self),Operation("chop",op[0],to=to_))

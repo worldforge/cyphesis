@@ -12,10 +12,14 @@
 #include "common/Property.h"
 
 #include "common/Tick.h"
+#include "common/Chop.h"
+
+#include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Touch.h>
+#include <Atlas/Objects/Operation/Move.h>
 
 static const bool debug_flag = false;
 
@@ -73,6 +77,25 @@ int Plant::dropFruit(OpVector & res)
 void Plant::ChopOperation(const Chop & op, OpVector & res)
 {
     std::cout << "Plant got chop op" << std::endl << std::flush;
+    if (m_script->Operation("tick", op, res)) {
+        return;
+    }
+    RootOperation * move = new Move;
+    ListType & moveArgs = move->getArgs();
+    moveArgs.push_back(MapType());
+    MapType & moveArg = moveArgs.back().asMap();
+    moveArg["loc"] = m_location.m_loc->getId();
+    Vector3D axis(uniform(-1, 1), uniform(-1, 1), 0);
+    axis.normalize();
+    // FIXME Make tree fall away from axe, by using cross product of
+    // distance to axe, and vertical axis as axis of rotation
+    Quaternion orient(m_location.m_orientation);
+    orient.rotation(axis, M_PI/2);
+    moveArg["orientation"] = orient.toAtlas();
+    moveArg["pos"] = m_location.m_pos.toAtlas();
+    moveArg["id"] = getId();
+    move->setTo(getId());
+    res.push_back(move);
 }
 
 void Plant::TickOperation(const Tick & op, OpVector & res)
@@ -82,7 +105,7 @@ void Plant::TickOperation(const Tick & op, OpVector & res)
     if (m_script->Operation("tick", op, res)) {
         return;
     }
-    RootOperation * tickOp = new Tick();
+    RootOperation * tickOp = new Tick;
     tickOp->setTo(getId());
     tickOp->setFutureSeconds(consts::basic_tick * m_speed);
     res.push_back(tickOp);
