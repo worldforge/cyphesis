@@ -7,7 +7,9 @@
 
 #include <Atlas/Message/DecoderBase.h>
 
-#include <db3/db_cxx.h>
+class Db;
+class Dbc;
+class Dbt;
 
 class Decoder : public Atlas::Message::DecoderBase {
   private:
@@ -31,10 +33,10 @@ class Database {
   protected:
     static Database * m_instance;
 
-    Db account_db;
-    Db world_db;
-    Db mind_db;
-    Db server_db;
+    Db & account_db;
+    Db & world_db;
+    Db & mind_db;
+    Db & server_db;
     std::string db_file;
     Decoder m_d;
 
@@ -68,9 +70,8 @@ class DatabaseIterator {
     Db & m_db;
 
   public:
-    DatabaseIterator(Db & db ) : m_db(db) {
-        db.cursor(NULL, &m_cursor, 0);
-    }
+    DatabaseIterator(Db & db );
+
     bool get(Atlas::Message::Object::MapType & o);
     bool del();
 };

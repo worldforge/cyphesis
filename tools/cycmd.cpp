@@ -17,6 +17,8 @@
 
 #include <skstream.h>
 
+#include <cstdio>
+
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -100,7 +102,7 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
                     std::cout << "    " << I->first << ": (map)" << std::endl;
                     break;
                 default:
-                    std::cout << "    " << I->first << ": (???)" << std::endl;
+                    std::cout << "    " << I->first << ": (\?\?\?)" << std::endl;
                     break;
             }
                 

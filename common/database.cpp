@@ -4,6 +4,16 @@
 
 #include "database.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef HAVE_DB3_DB_CXX_H
+#include <db3/db_cxx.h>
+#else
+#include <db_cxx.h>
+#endif
+
 #include <Atlas/Message/Encoder.h>
 #include <Atlas/Codecs/XML.h>
 
@@ -20,10 +30,10 @@ static const bool debug_flag = false;
 
 Database * Database::m_instance = NULL;
 
-Database::Database() : account_db(NULL, DB_CXX_NO_EXCEPTIONS),
-                         world_db(NULL, DB_CXX_NO_EXCEPTIONS),
-                          mind_db(NULL, DB_CXX_NO_EXCEPTIONS),
-                        server_db(NULL, DB_CXX_NO_EXCEPTIONS)
+Database::Database() : account_db(*new Db(NULL, DB_CXX_NO_EXCEPTIONS)),
+                         world_db(*new Db(NULL, DB_CXX_NO_EXCEPTIONS)),
+                          mind_db(*new Db(NULL, DB_CXX_NO_EXCEPTIONS)),
+                        server_db(*new Db(NULL, DB_CXX_NO_EXCEPTIONS))
 {
     db_file = std::string(VARDIR) + "/cyphesis/db";
 }
@@ -184,6 +194,11 @@ bool Database::delObject(Db & db, const char * keystr)
         return false;
     }
     return true;
+}
+
+DatabaseIterator::DatabaseIterator(Db & db ) : m_db(db)
+{
+    db.cursor(NULL, &m_cursor, 0);
 }
 
 bool DatabaseIterator::get(Atlas::Message::Object::MapType & o)
