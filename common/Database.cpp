@@ -46,11 +46,9 @@ bool Database::initConnection(bool createDatabase)
     }
     conninfos << "dbname=" << dbname << " ";
 
-    std::string dbuser = "cyphesis";
     if (global_conf->findItem("cyphesis", "dbuser")) {
-        dbuser = std::string(global_conf->getItem("cyphesis", "dbuser"));
+        conninfos << "user=" << std::string(global_conf->getItem("cyphesis", "dbuser")) << " ";
     }
-    conninfos << "user=" << dbuser << " ";
 
     if (global_conf->findItem("cyphesis", "dbpasswd")) {
         conninfos << "password=" << std::string(global_conf->getItem("cyphesis", "dbpasswd")) << " ";

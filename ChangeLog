@@ -1,5 +1,10 @@
 2002-04-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Get rid of default db username, so that
+	  the current unix username is used instead.
+
+2002-04-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Persistance.h, server/Persistance.cpp:
 	  Removed legacy code for passing admin account data to the
 	  python client.

@@ -25,7 +25,7 @@ loadonstartup="true"
 # Name of the database in the rdbms
 dbname = "cyphesis"
 # Name of the database user in the rdbms
-dbuser = "cyphesis"
+# dbuser = "cyphesis"
 # Password used to access the rdbms, if required
 # dbpasswd = ""
 
