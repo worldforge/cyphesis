@@ -1,3 +1,9 @@
+2003-08-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommListener.h, server/CommListener.cpp:
+	  Convert listener class to use the skstream listener
+	  code.
+
 2003-08-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Fix up help for python prefix option.

@@ -20,7 +20,7 @@ static const bool debug_flag = false;
 
 int CommListener::getFd() const
 {
-    return listenFd;
+    return m_listener.getSocket();
 }
 
 bool CommListener::eof()
@@ -40,52 +40,7 @@ bool CommListener::read()
 
 bool CommListener::setup(int port)
 {
-    // Nasty low level socket code to set up listen socket. This should be
-    // replaced with a socket class library.
-    listenPort = port;
-    listenFd = ::socket(PF_INET6, SOCK_STREAM, 0);
-    if (listenFd < 0) {
-        log(WARNING, "Could not open 6 socket");
-        perror("socket");
-    } else {
-        int flag = 1;
-        ::setsockopt(listenFd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
-        struct sockaddr_in6 sin;
-        sin.sin6_family = AF_INET6;
-        sin.sin6_port = htons(port);
-        sin.sin6_flowinfo = 0;
-        sin.sin6_addr = in6addr_any;
-        sin.sin6_scope_id = 0;
-        if (::bind(listenFd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
-            log(WARNING, "Could not bind 6 socket");
-            perror("bind");
-            ::close(listenFd);
-        } else {
-            log(NOTICE, "Listening on 6 socket");
-            ::listen(listenFd, 5);
-            return true;
-        }
-    }
-
-    listenPort = port;
-    listenFd = ::socket(PF_INET, SOCK_STREAM, 0);
-    if (listenFd < 0) {
-        perror("socket");
-        return false;
-    }
-    int flag = 1;
-    ::setsockopt(listenFd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
-    struct sockaddr_in sin;
-    sin.sin_family = AF_INET;
-    sin.sin_port = htons(port);
-    sin.sin_addr.s_addr = 0L;
-    if (::bind(listenFd, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
-        perror("bind");
-        ::close(listenFd);
-        return false;
-    }
-    ::listen(listenFd, 5);
-    return true;
+    m_listener.open(port);
 }
 
 bool CommListener::accept()
@@ -96,7 +51,8 @@ bool CommListener::accept()
     unsigned int addr_len = sizeof(sst);
 
     debug(std::cout << "Accepting.." << std::endl << std::flush;);
-    int asockfd = ::accept(listenFd, (struct sockaddr *)&sst, &addr_len);
+    int asockfd = ::accept(m_listener.getSocket(),
+                           (struct sockaddr *)&sst, &addr_len);
 
     if (asockfd < 0) {
         return false;

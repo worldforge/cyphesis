@@ -8,10 +8,11 @@
 
 #include "CommSocket.h"
 
+#include <skstream/skserver.h>
+
 class CommListener : public CommSocket {
   private:
-    int listenFd;
-    int listenPort;
+    tcp_socket_server m_listener;
 
     bool accept();
 
