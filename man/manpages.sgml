@@ -1,0 +1,11 @@
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DocBook V4.2//EN" [
+<!ENTITY refcyphesis SYSTEM "cyphesis.sgml">
+<!ENTITY refcycmd SYSTEM "cycmd.sgml">
+]>
+<reference>
+<title>cyphesis</title>
+
+&refcyphesis;
+&refcycmd;
+
+</reference>

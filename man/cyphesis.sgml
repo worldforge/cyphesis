@@ -1,0 +1,28 @@
+<refentry id="cyphesis">
+
+<refmeta>
+<refentrytitle>cyphesis</refentrytitle>
+<manvolnum>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname>cyphesis</refname>
+<refpurpose>cyphesis game server process</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis>
+<command>/usr/bin/cyphesis</command>
+<arg choice="opt" rep="repeat">--section:option=value</arg>
+</cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+<para>
+The cyphesis program implements the core world server for WorldForge.
+</para>
+<para></para>
+</refsect1>
+<refsect1><title>Options</title>
+<para>
+</refentry>

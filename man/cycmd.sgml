@@ -1,0 +1,264 @@
+<refentry id="cycmd">
+
+ <refmeta>
+  <refentrytitle>cycmd</refentrytitle>
+  <manvolnum>1</manvolnum>
+ </refmeta>
+
+ <refnamediv>
+  <refname>cycmd</refname>
+  <refpurpose>cycmd game server process</refpurpose>
+ </refnamediv>
+
+ <refsynopsisdiv>
+  <cmdsynopsis>
+   <command>cycmd</command>
+   <arg choice="opt">command<arg choice="opt">server</arg></arg>
+  </cmdsynopsis>
+ </refsynopsisdiv>
+
+ <refsect1><title>Description</title>
+  <para>
+The cycmd program a commandline interface to a cyphesis server.
+  </para>
+  <para></para>
+ </refsect1>
+
+ <refsect1><title>Commands</title>
+  <variablelist>
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>get</command>
+      <arg choice="req">typename</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Examine a type on the server.
+     </para>
+     <para>
+Get a type description from the server, and display its contents.
+The type information is typically either an entity class, or an operation
+definition.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>help</command>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Display online help.
+     </para>
+     <para>
+Lists all the commands available, with a short description of what each one
+does.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>install</command>
+      <arg choice="req">type_id</arg>
+      <arg choice="req">parent_id</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Install a new type in the server.
+     </para>
+     <para>
+
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>look</command>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Return a view of the current server lobby.
+     </para>
+     <para>
+Look at the current server lobby, where all users currently logged in
+are represented. The view is returned and displayed.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>logout</command>
+      <arg choice="opt">account</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Examine a type on the server.
+     </para>
+     <para>
+Get a type description from the server, and display its contents.
+The type information is typically either an entity class, or an operation
+definition.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>monitor</command>
+      <arg choice="req">typename</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Enable server monitoring.
+     </para>
+     <para>
+Direct the server to report all in-game operations to the client. A digest
+of each operation is displayed, including the type, which entity the operation
+is from and which entity the operation is to.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>query</command>
+      <arg choice="req">typename</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Examine an in-game entity.
+     </para>
+     <para>
+Get an in-game entity description from the server, and display its contents.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>stat</command>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Examine the current server status.
+     </para>
+     <para>
+Get a description of the current server status, and display its contents.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>unmonitor</command>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Disable server monitoring.
+     </para>
+     <para>
+Direct the server to stop reporting all in-game operations to the client.
+     </para>
+    </listitem>
+   </varlistentry>
+
+  </variablelist>
+ </refsect1>
+ <refsect1><title>Examples</title>
+  <para>
+The first example shows getting the current server status and checking
+the lobby to see if any users are logged in.
+  </para>
+  <programlisting>
+cyphesis> stat
+Info(
+     builddate:  11:32:45, Sep 27 2004
+     clients:  1
+     name:  calcitration.ecs.soton.ac.uk
+     objtype:  obj
+     parents:  [  server ]
+     ruleset:  mason
+     server:  cyphesis
+     uptime:  1728.2
+     version:  0.3.2
+)
+cyphesis> look
+Sight(
+      id: lobby
+      name: lobby
+      objtype: obj
+      parents: [  room ]
+      people: [  1 ]
+      rooms: [  ]
+)
+cyphesis> 
+  </programlisting>
+  <para>
+The first entity returned shows various information about the server,
+including when it was built, the number of connected client, the
+current ruleset, and the server uptime. The second entity representing
+the lobby shows that only one user is current logged in, and no chat
+rooms have been created.
+  </para>
+  <para>The second example shows how to install a new type.</para>
+  <programlisting>
+cyphesis> get thing
+Info(
+     children:  [  feature character plant food stackable structure arm arrow axe barrel block_house board boat boundary bow campfire cleaver coin fire gallows house lumber pelvis ribcage shin skull stall sword thigh tower twobyfour wall weather ]
+     contains:  [  ]
+     id:  thing
+     loc:  
+     name:  
+     objtype:  class
+     parents:  [  game_entity ]
+     pos:  [  0 0 0 ]
+     stamp_contains:  0
+     velocity:  [  0 0 0 ]
+)
+cyphesis> install box thing
+cyphesis> 
+  </programlisting>
+  <para>
+The third example shows server monitoring being enable, followed by information
+of a series of in-game operations. The flow of messages in while monitoring the
+server can be large. In order to supress the flow, the
+<command>unmonitor</command> command must be used.
+  </para>
+  <programlisting>
+cyphesis> monitor 
+cyphesis> 
+tick(from="900006",to="900006")
+tick(from="900007",to="900007")
+cyphesis> 
+tick(from="900008",to="900008")
+cyphesis> 
+tick(from="899982",to="899982")
+cyphesis> 
+tick(from="899356",to="899356")
+cyphesis> 
+tick(from="899357",to="899357")
+cyphesis> 
+tick(from="899358",to="899358")
+cyphesis> 
+tick(from="899359",to="899359")
+cyphesis> 
+tick(from="899360",to="899360")
+cyphesis> 
+tick(from="899361",to="899361")
+cyphesis> 
+  </programlisting>
+ </refsect1>
+</refentry>
