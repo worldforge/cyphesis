@@ -10,6 +10,8 @@
 
 static const bool debug_flag = false;
 
+////////////////////////// COLLISION //////////////////////////
+
 bool getCollisionTime(const Vector3D & p,     // Position of point
                       const Vector3D & u,     // Velocity of point
                       // float point_time,   // Time since position set
@@ -267,4 +269,38 @@ bool predictCollision(const Location & l,  // This location
     return predictCollision(lbox, lnormals, l.m_velocity,
                             obox, onormals, o_velocity,
                             time, normal);
+}
+
+////////////////////////// EMERGENCE //////////////////////////
+
+bool getEmergenceTime(const Vector3D & p,    // Position of point
+                      const Vector3D & u,    // Velocity of point
+                      // float point_time,   // Time since position set
+                      const Vector3D & l,    // Position on plane
+                      const Vector3D & n,    // Plane normal
+                      const Vector3D & v,    // Velocity of plane
+                      // float plane_time,   // Time since position set
+                      float & time)          // Emergence time return
+{
+    return false;
+}
+
+bool predictEmergence(const CoordList & l,    // Vertices of this mesh
+                      const NormalSet & ln,   // Normals of this mesh
+                      const Vector3D & u,     // Velocity of this mesh
+                      const CoordList & o,    // Vertices of other mesh
+                      const NormalSet & on,   // Normals of other mesh
+                      const Vector3D & v,     // Velocity of other mesh
+                      float & time,           // Returned time to collision
+                      Vector3D & n)           // Returned collision normal
+{
+    return false;
+}
+
+bool predictEmergence(const Location & l,  // This location
+                      const Location & o,  // Other location
+                      float & time,        // Returned time to collision
+                      Vector3D & normal)   // Returned normal acting on l
+{
+    return false;
 }

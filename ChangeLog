@@ -1,5 +1,10 @@
 2003-11-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/Collision.h, physics/Collision.cpp: Add stubs for
+	  functions to detect emergence from within an containing entity.
+
+2003-11-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Improve debugging output.
 
 2003-11-24  Al Riddoch  <alriddoch@zepler.org>
