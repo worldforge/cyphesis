@@ -29,8 +29,8 @@ are building PostgreSQL from source, please check the PostgreSQL documentation
 for information on how to enable building the C++ libraries. GNU readline is
 required by some of the included tools.
 
-If built from source the software and data must be installed using "make install"
-before it can be run.
+If built from source the software and data must be installed using
+"make install" before it can be run.
 
 3 - Standard Setup
 ------------------
