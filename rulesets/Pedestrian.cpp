@@ -47,16 +47,18 @@ double Pedestrian::getTickAddition(const Vector3D & coordinates) const
     return consts::basic_tick;
 }
 
-Move * Pedestrian::genFaceOperation(const Location & loc)
+Move * Pedestrian::genFaceOperation()
 {
-    if (m_orientation != loc.orientation) {
-        m_orientation = loc.orientation;
+    if (m_orientation.isValid() &&
+        (m_orientation != m_body.location.orientation)) {
         debug( std::cout << "Turning" << std::endl << std::flush;);
         Move * moveOp = new Move(Move::Instantiate());
         moveOp->SetTo(m_body.getId());
         Object::MapType entmap;
         entmap["id"] = m_body.getId();
-        loc.addToObject(entmap);
+        entmap["loc"] = m_body.location.ref->getId();
+        entmap["pos"] = m_body.location.coords.asObject();
+        entmap["orientation"] = m_orientation.asObject();
         Object::ListType args(1,entmap);
         moveOp->SetArgs(args);
         return moveOp;
@@ -88,10 +90,9 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     debug( std::cout << "time_diff:" << time_diff << std::endl << std::flush;);
     m_lastMovementTime = current_time;
 
-    m_orientation = loc.orientation;
-    
     Location new_loc(loc);
     new_loc.velocity = m_velocity;
+    new_loc.orientation = m_orientation;
 
     // Create move operation
     Move * moveOp = new Move(Move::Instantiate());

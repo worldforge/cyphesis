@@ -1,5 +1,24 @@
 2002-05-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/Quaternion.h: Added required comparison operators, and
+	  get rid of operator bool, to ensure that no implicit conversion
+	  happens where it shouldn't. Add operator required for debugging
+	  Quaternion.
+
+	* modules/Location.cpp: Use new isValid() method instead of
+	  relying on operator bool.
+
+	* rulesets/Movement.h, rulesets/Pedestrian.cpp, rulesets/Pedestrian.h:
+	  Fix up interface for genFaceOperation() so it works the right
+	  way round, and orientation is not actually set until the Move
+	  op is genuinly dispatched.
+
+	* rulesets/Character.cpp: Add clearer debugging output.
+	  Fix up handling orientation in move ops from mind, and generate
+	  the move ops for simple change in orientation correctly.
+
+2002-05-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Quaternion.cpp, physics/Quaternion.h: Revert hack to
 	  quaternion sign convention, now that this has been resolved
 	  by Ron in wfmath.

@@ -39,7 +39,7 @@ void Location::addToObject(Object::MapType & omap) const
     if (velocity) {
         omap["velocity"] = velocity.asObject();
     }
-    if (orientation) {
+    if (orientation.isValid()) {
         omap["orientation"] = orientation.asObject();
     }
     if (bBox) {

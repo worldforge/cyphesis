@@ -49,11 +49,21 @@ class Quaternion {
         }
     }
 
+    bool operator==(const Quaternion & other) const {
+        //"Check if two vector are equal";
+        return ((x==other.x) && (y==other.y) && (z==other.z) && (w==other.w));
+    }
+
+    bool operator!=(const Quaternion & other) const {
+        //"Check if two vector are equal";
+        return ((x!=other.x) || (y!=other.y) || (z!=other.z) || (w!=other.w));
+    }
+
     void set() {
         _set = true;
     }
 
-    operator bool() const {
+    bool isValid() const {
         return _set;
     }
 
@@ -74,6 +84,13 @@ class Quaternion {
         quat.push_back(Object(w));
         return quat;
     }
+
+    friend std::ostream & operator<<(std::ostream& s, const Quaternion& q);
 };
+
+inline std::ostream & operator<<(std::ostream& s, const Quaternion& q) {
+    return s << "[" << q.x << "," << q.y << "," << q.z << "," << q.w << "]";
+}
+
 
 #endif // PHYSICS_QUATERNION_H

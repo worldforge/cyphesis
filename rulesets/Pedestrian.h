@@ -18,7 +18,7 @@ class Pedestrian : public Movement {
     virtual ~Pedestrian();
 
     double getTickAddition(const Vector3D & coordinates) const;
-    Move * genFaceOperation(const Location &);
+    Move * genFaceOperation();
     Move * genMoveOperation(Location *,const Location &);
     Move * genMoveOperation(Location *);
 };
