@@ -1,3 +1,8 @@
+2002-01-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/CreatorClient.cpp: Make reporting a little more verbose
+	  now that ids are opaque.
+
 2002-12-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Don't make update requests if no columns

@@ -80,7 +80,16 @@ Entity * CreatorClient::make(const Fragment & entity)
         return NULL;
     }
     const std::string & created_id = I->second.AsString();
-    std::cout << "Created: " << created_id << std::endl << std::flush;
+    I = created.find("parents");
+    if ((I == created.end()) || !I->second.IsList() ||
+        I->second.AsList().empty() || !I->second.AsList().front().IsString()) {
+        std::cerr << "Created entity " << created_id << " has no type"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    const std::string & created_type = I->second.AsList().front().AsString();
+    std::cout << "Created: " << created_type << "(" << created_id << ")"
+              << std::endl << std::flush;
     Entity * obj = map.add(created);
     return obj;
 }
