@@ -1,5 +1,17 @@
 2004-05-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/MemMap.h, rulesets/MemMap.cpp: Merge add() and update()
+	  into a single method, as they are identical in function. Add comments
+	  documenting each method.
+
+	* rulesets/Py_Map.cpp: Use the same function for add() and update()
+	  bindings, but maintain two methods in python for compatability.
+
+	* rulesets/BaseMind.cpp, client/CreatorClient.cpp: Update calls
+	  to MemMap API.
+
+2004-05-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/MemMap.cpp, rulesets/MemMap.h: More cleanup of AI
 	  memory code.
 

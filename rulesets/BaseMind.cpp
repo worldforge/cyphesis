@@ -59,7 +59,7 @@ BaseMind::BaseMind(const std::string & id, const std::string & body_name)
 BaseMind::~BaseMind()
 {
     m_map.m_entities.erase(getId());
-    m_map.flushMap();
+    m_map.flush();
 }
 
 void BaseMind::scriptSubscribe(const std::string & op)
@@ -167,7 +167,7 @@ OpVector BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
         return res;
     }
     const Element::MapType & obj = args.front().asMap();
-    m_map.add(obj);
+    m_map.updateAdd(obj);
     return res;
 }
 
@@ -234,7 +234,7 @@ OpVector BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
         return res;
     }
     const Element::MapType & obj = args.front().asMap();
-    m_map.update(obj);
+    m_map.updateAdd(obj);
     return res;
 }
 
@@ -250,7 +250,7 @@ OpVector BaseMind::sightSetOperation(const Sight & op, Set & sub_op)
         return res;
     }
     const Element::MapType & obj = args.front().asMap();
-    m_map.update(obj);
+    m_map.updateAdd(obj);
     return res;
 }
 
@@ -430,7 +430,7 @@ OpVector BaseMind::SightOperation(const Sight & op)
         res = callSightOperation(op, op2);
     } else /* if (op2->getObjtype() == "object") */ {
         debug( std::cout << " arg is an entity!" << std::endl << std::flush;);
-        m_map.add(obj);
+        m_map.updateAdd(obj);
     }
     return res;
 }

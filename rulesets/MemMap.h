@@ -51,16 +51,16 @@ class MemMap {
     }
 
     Atlas::Objects::Operation::RootOperation * lookId();
-    Entity * add(const Atlas::Message::Element::MapType & entity);
     void del(const std::string & id);
     Entity * get(const std::string & id);
     Entity * getAdd(const std::string & id);
-    Entity * update(const Atlas::Message::Element::MapType & entity);
+    Entity * updateAdd(const Atlas::Message::Element::MapType & entity);
 
     EntityVector findByType(const std::string & what);
     EntityVector findByLocation(const Location & where, double radius);
+
     const Atlas::Message::Element asObject();
-    void flushMap();
+    void flush();
 
     std::vector<std::string> & getAddHooks() { return m_addHooks; }
     std::vector<std::string> & getUpdateHooks() { return m_updateHooks; }

@@ -1,3 +1,5 @@
+Enforce well-formed args and parents on IG ops centrally.
+
 MemMap::add and MemMap::update are the same, identical. Eliminate this
 sameness
 

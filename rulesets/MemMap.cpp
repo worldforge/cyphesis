@@ -33,6 +33,7 @@ Entity * MemMap::addObject(Entity * object)
 }
 
 void MemMap::readObject(Entity * object, const Element::MapType & entmap)
+// Read the contents of an Atlas message into an object
 {
     Element::MapType::const_iterator I = entmap.find("name");
     if (I != entmap.end() && I->second.isString()) {
@@ -52,6 +53,7 @@ void MemMap::readObject(Entity * object, const Element::MapType & entmap)
 }
 
 void MemMap::updateObject(Entity * object, const Element::MapType & entmap)
+// Update contents of object an Atlas message.
 {
     assert(object != 0);
 
@@ -67,6 +69,7 @@ void MemMap::updateObject(Entity * object, const Element::MapType & entmap)
 
 Entity * MemMap::newObject(const std::string & id,
                            const Element::MapType & entmap)
+// Create a new object from an Atlas message.
 {
     assert(!id.empty());
     assert(m_entities.find(id) == m_entities.end());
@@ -79,6 +82,7 @@ Entity * MemMap::newObject(const std::string & id,
 }
 
 RootOperation * MemMap::lookId()
+// Generate a look operation to look at an entity we are interested in
 {
     debug( std::cout << "MemMap::lookId" << std::endl << std::flush;);
     if (!m_additionsById.empty()) {
@@ -95,6 +99,7 @@ RootOperation * MemMap::lookId()
 }
 
 Entity * MemMap::addId(const std::string & id)
+// Queue the ID of an object we are interested in
 {
     assert(!id.empty());
     assert(m_entities.find(id) == m_entities.end());
@@ -106,6 +111,7 @@ Entity * MemMap::addId(const std::string & id)
 }
 
 void MemMap::del(const std::string & id)
+// Delete an object from memory
 {
     EntityDict::iterator I = m_entities.find(id);
     if (I != m_entities.end()) {
@@ -121,6 +127,7 @@ void MemMap::del(const std::string & id)
 }
 
 Entity * MemMap::get(const std::string & id)
+// Get an object from memory
 {
     debug( std::cout << "MemMap::get" << std::endl << std::flush;);
     if (id.empty()) {
@@ -137,6 +144,7 @@ Entity * MemMap::get(const std::string & id)
 }
 
 Entity * MemMap::getAdd(const std::string & id)
+// Get an object from memory, or add it if we haven't seen it yet
 {
     debug( std::cout << "MemMap::getAdd(" << id << ")" << std::endl << std::flush;);
     if (id.empty()) {
@@ -152,6 +160,7 @@ Entity * MemMap::getAdd(const std::string & id)
 }
 
 void MemMap::addContents(const Element::MapType & entmap)
+// Iterate over the contains attribute of a message, looking at all the contents
 {
     Element::MapType::const_iterator I = entmap.find("contains");
     if (I == entmap.end()) {
@@ -172,33 +181,8 @@ void MemMap::addContents(const Element::MapType & entmap)
     }
 }
 
-Entity * MemMap::add(const Element::MapType & entmap)
-{
-    debug( std::cout << "MemMap::add" << std::endl << std::flush;);
-    Element::MapType::const_iterator I = entmap.find("id");
-    if (I == entmap.end()) {
-        log(ERROR, "MemMap::add, Missing id in added entity");
-        return NULL;
-    }
-    if (!I->second.isString()) {
-        log(ERROR, "MemMap::add, Malformed non-string id in added entity");
-        return NULL;
-    }
-    const std::string & id = I->second.asString();
-    if (id.empty()) {
-        log(ERROR, "MemMap::add, Empty id in added entity");
-        return NULL;
-    }
-    EntityDict::const_iterator J = m_entities.find(id);
-    if (J == m_entities.end()) {
-        return newObject(id, entmap);
-    }
-    Entity * object = J->second;
-    updateObject(object, entmap);
-    return object;
-}
-
-Entity * MemMap::update(const Element::MapType & entmap)
+Entity * MemMap::updateAdd(const Element::MapType & entmap)
+// Update an object in our memory, from an Atlas message
 {
     debug( std::cout << "MemMap::update" << std::endl << std::flush;);
     Element::MapType::const_iterator I = entmap.find("id");
@@ -225,6 +209,7 @@ Entity * MemMap::update(const Element::MapType & entmap)
 }
 
 EntityVector MemMap::findByType(const std::string & what)
+// Find an object in our memory of a certain type
 {
     EntityVector res;
     EntityDict::const_iterator I;
@@ -239,6 +224,7 @@ EntityVector MemMap::findByType(const std::string & what)
 }
 
 EntityVector MemMap::findByLocation(const Location & loc, double radius)
+// Find an object in our memory in a certain place
 {
     EntityVector res;
     EntityDict::const_iterator I;
@@ -265,7 +251,7 @@ const Element MemMap::asObject()
     return Element(omap);
 }
 
-void MemMap::flushMap()
+void MemMap::flush()
 {
     EntityDict::const_iterator I = m_entities.begin();
     for (; I != m_entities.end(); I++) {

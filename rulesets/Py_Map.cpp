@@ -81,30 +81,6 @@ static PyObject * Map_find_by_type(PyMap * self, PyObject * args)
     return list;
 }
 
-#if 0
-static PyObject * Map_add_object(PyMap * self, PyObject * args)
-{
-#ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.add_object");
-        return NULL;
-    }
-#endif // NDEBUG
-    PyEntity * thing;
-    if (!PyArg_ParseTuple(args, "O", &thing)) {
-        return NULL;
-    }
-    if (!PyEntity_Check(thing)) {
-        PyErr_SetString(PyExc_TypeError,"arg not a Entity");
-        return NULL;
-    }
-    Entity * ret = self->m_map->addObject(thing->m_entity);
-    thing = newPyEntity();
-    thing->m_entity = ret;
-    return (PyObject *)thing;
-}
-#endif
-
 static PyObject * Map_look_id(PyMap * self, PyObject * args)
 {
 #ifndef NDEBUG
@@ -127,11 +103,11 @@ static PyObject * Map_look_id(PyMap * self, PyObject * args)
     return (PyObject *)py_op;
 }
 
-static PyObject * Map_add(PyMap * self, PyObject * args)
+static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
 {
 #ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.add");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.updateAdd");
         return NULL;
     }
 #endif // NDEBUG
@@ -143,7 +119,7 @@ static PyObject * Map_add(PyMap * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an Object");
         return NULL;
     }
-    Entity * ret = self->m_map->add(obj->m_obj->asMap());
+    Entity * ret = self->m_map->updateAdd(obj->m_obj->asMap());
     PyEntity * thing = newPyEntity();
     thing->m_entity = ret;
     return (PyObject *)thing;
@@ -207,28 +183,6 @@ static PyObject * Map_get_add(PyMap * self, PyObject * args)
     return (PyObject *)thing;
 }
 
-static PyObject * Map_update(PyMap * self, PyObject * args)
-{
-#ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.update");
-        return NULL;
-    }
-#endif // NDEBUG
-    PyMessageElement * obj;
-    if (!PyArg_ParseTuple(args, "O", &obj)) {
-        return NULL;
-    }
-    if (!PyMessageElement_Check(obj)) {
-        PyErr_SetString(PyExc_TypeError,"arg is not an Object");
-        return NULL;
-    }
-    Entity * ret = self->m_map->update(obj->m_obj->asMap());
-    PyEntity * thing = newPyEntity();
-    thing->m_entity = ret;
-    return (PyObject *)thing;
-}
-
 static PyObject * Map_add_hooks_append(PyMap * self, PyObject * args)
 {
 #ifndef NDEBUG
@@ -286,13 +240,12 @@ static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * args)
 static PyMethodDef Map_methods[] = {
     {"find_by_location",(PyCFunction)Map_find_by_location,	METH_VARARGS},
     {"find_by_type",	(PyCFunction)Map_find_by_type,	METH_VARARGS},
-    //{"add_object",	(PyCFunction)Map_add_object,	METH_VARARGS},
     {"look_id",		(PyCFunction)Map_look_id,	METH_VARARGS},
-    {"add",		(PyCFunction)Map_add,		METH_VARARGS},
+    {"add",		(PyCFunction)Map_updateAdd,	METH_VARARGS},
     {"delete",		(PyCFunction)Map_delete,	METH_VARARGS},
     {"get",		(PyCFunction)Map_get,		METH_VARARGS},
     {"get_add",		(PyCFunction)Map_get_add,	METH_VARARGS},
-    {"update",		(PyCFunction)Map_update,	METH_VARARGS},
+    {"update",		(PyCFunction)Map_updateAdd,	METH_VARARGS},
     {"add_hooks_append",(PyCFunction)Map_add_hooks_append,	METH_VARARGS},
     {"update_hooks_append",	(PyCFunction)Map_update_hooks_append,	METH_VARARGS},
     {"delete_hooks_append",	(PyCFunction)Map_delete_hooks_append,	METH_VARARGS},
