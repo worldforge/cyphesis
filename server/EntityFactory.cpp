@@ -64,6 +64,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
                                   const std::string & type,
                                   const Element::MapType & entmap)
 {
+    debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
     Entity * thing = 0;
     Element::MapType attributes;
     FactoryDict::const_iterator I = m_factories.find(type);

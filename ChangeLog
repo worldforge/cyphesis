@@ -1,5 +1,10 @@
 2003-07-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Add debugging output required to monitor
+	  use of entity factory.
+
+2003-07-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Persistor_impl.h: Force zero's when persisting a non
 	  valid bounding box, to ensure nan doesn't get sent to the
 	  database.
