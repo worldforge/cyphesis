@@ -121,7 +121,7 @@ Nourish Nourish::Class()
     return value;
 }
 
-Setup::Setup() : RootOperation("setup", "root_operation")
+Setup::Setup() : RootOperation("", "setup")
 {
 }
 
@@ -135,7 +135,7 @@ Setup::~Setup()
 
 Setup Setup::Class()
 {
-    Setup value;
+    Setup value("setup", "root_operation");
     value.setObjtype(std::string("op_definition"));
     return value;
 }

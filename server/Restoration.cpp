@@ -41,6 +41,7 @@ Restoration::Restoration(ServerRouting & svr) : server(svr),
     m_restorers["stackable"] = &Restorer<Stackable>::restore;
 }
 
+#if 0
 void Restoration::restore(const std::string & id,
                           const std::string & classn,
                           Entity * loc)
@@ -122,6 +123,7 @@ void Restoration::restore(const std::string & id,
     }
     res2.clear();
 }
+#endif
 
 void Restoration::restoreChildren(Entity * loc)
 {
