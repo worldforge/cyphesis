@@ -275,10 +275,9 @@ void EntityFactory::installFactory(const std::string & parent,
                                    const std::string & className,
                                    FactoryBase * factory)
 {
-    // FIXME Why check for NULL? Wouldn't it be a bug?
-    if (factory != NULL) {
-        m_factories[className] = factory;
-    }
+    assert(factory != 0);
+
+    m_factories[className] = factory;
 
     Inheritance & i = Inheritance::instance();
 
@@ -286,7 +285,6 @@ void EntityFactory::installFactory(const std::string & parent,
     r->setId(className);
     r->setParents(ListType(1, parent));
     i.addChild(r);
-
 }
 
 FactoryBase * EntityFactory::getNewFactory(const std::string & parent)
