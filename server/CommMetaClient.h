@@ -10,12 +10,13 @@
 #include <string>
 
 extern "C" {
-    #include <netinet/in.h>
+    #include <sys/socket.h>
 }
 
 class CommMetaClient : public CommIdleSocket {
   private:
-    struct sockaddr_in meta_sa;
+    struct sockaddr_storage meta_sa;
+    socklen_t meta_sa_len;
     int metaFd;
     time_t lastTime;
 

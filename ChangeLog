@@ -1,3 +1,8 @@
+2003-04-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommMetaClient.h, server/CommMetaClient.cpp: Make metaserver
+	  code IPv6 compatable.
+
 2003-04-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommServer.h: Prevent copying of CommServer.

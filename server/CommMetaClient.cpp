@@ -70,23 +70,32 @@ bool CommMetaClient::setup(const std::string & mserver)
 {
     // Establish socket for communication with the metaserver
     memset(&meta_sa, 0, sizeof(meta_sa));
-    meta_sa.sin_family = AF_INET;
-    meta_sa.sin_port = htons(metaserverPort);
 
-    debug(std::cout << "Connecting to metaserver..." << std::endl << std::flush;);
-    struct hostent * ms_addr = ::gethostbyname(mserver.c_str());
-    if (ms_addr == NULL) {
+    debug(std::cout << "Connecting to metaserver..."
+                    << std::endl << std::flush;);
+    struct addrinfo req, *ans;
+
+    req.ai_flags = 0;
+    req.ai_family = PF_UNSPEC;
+    req.ai_socktype = SOCK_DGRAM;
+    req.ai_protocol = 0;
+
+    int ret = ::getaddrinfo(mserver.c_str(), NULL, &req, &ans);
+    if (ret != 0) {
         log(WARNING, "metaserver lookup failed. Disabling metaserver");
         return false;
     }
-    memcpy(&meta_sa.sin_addr, ms_addr->h_addr_list[0], ms_addr->h_length);
-    
-    metaFd = ::socket(AF_INET, SOCK_DGRAM, 0);
+
+    metaFd = ::socket(ans->ai_family, ans->ai_socktype, ans->ai_protocol);
     if (metaFd < 0) {
-        log(WARNING, "Could not connect to metaserver. Disabling metaserver");
+        log(WARNING, "Could not get metaserver socket. Disabling metaserver");
         perror("socket");
         return false;
     }
+    memcpy(&meta_sa, ans->ai_addr, ans->ai_addrlen);
+    meta_sa_len = ans->ai_addrlen;
+    ((sockaddr_in *)&meta_sa)->sin_port = htons(metaserverPort);
+    ::freeaddrinfo(ans);
 
     return true;
 
@@ -100,19 +109,19 @@ void CommMetaClient::metaserverKeepalive()
     unsigned int packet_size = 0;
 
     pack_uint32(SKEEP_ALIVE, mesg, &packet_size);
-    sendto(metaFd,mesg,packet_size,0, (sockaddr *)&meta_sa, sizeof(meta_sa));
+    sendto(metaFd,mesg,packet_size,0, (sockaddr *)&meta_sa,  meta_sa_len);
 }
 
 void CommMetaClient::metaserverReply()
 {
-    char                mesg[MAXLINE];
-    char               *mesg_ptr;
-    uint32_t            handshake = 0, command = 0;
-    struct sockaddr     addr;
-    socklen_t           addrlen = sizeof(addr);
-    unsigned int        packet_size;
+    char mesg[MAXLINE];
+    char *mesg_ptr;
+    uint32_t handshake = 0, command = 0;
+    struct sockaddr_storage addr;
+    socklen_t addrlen = sizeof(addr);
+    unsigned int packet_size;
 
-    if (recvfrom(metaFd, mesg, MAXLINE, 0, &addr, &addrlen) < 0) {
+    if (recvfrom(metaFd, mesg, MAXLINE, 0, (sockaddr*)&addr, &addrlen) < 0) {
         log(WARNING, "WARNING: No reply from metaserver");
         return;
     }
@@ -128,7 +137,7 @@ void CommMetaClient::metaserverReply()
         mesg_ptr = pack_uint32(SERVERSHAKE, mesg, &packet_size);
         mesg_ptr = pack_uint32(handshake, mesg_ptr, &packet_size);
 
-        sendto(metaFd,mesg,packet_size,0,(sockaddr*)&meta_sa,sizeof(meta_sa));
+        sendto(metaFd,mesg,packet_size,0,(sockaddr*)&meta_sa, meta_sa_len);
     }
 
 }
@@ -139,7 +148,7 @@ void CommMetaClient::metaserverTerminate()
     unsigned int packet_size = 0;
 
     pack_uint32(TERMINATE, mesg, &packet_size);
-    sendto(metaFd,mesg,packet_size, 0, (sockaddr *)&meta_sa, sizeof(meta_sa));
+    sendto(metaFd,mesg,packet_size, 0, (sockaddr *)&meta_sa,  meta_sa_len);
 }
 
 void CommMetaClient::idle(time_t t)
