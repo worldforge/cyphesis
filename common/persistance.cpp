@@ -12,6 +12,7 @@
 
 #include <server/Admin.h>
 #include <server/Player.h>
+#include <rulesets/Entity.h>
 
 #include <common/config.h>
 
@@ -38,12 +39,12 @@ Persistance * Persistance::instance()
     return (Persistance *)m_instance;
 }
 
-void Persistance::save_admin_account(Account * adm)
+void Persistance::save_admin_account(Account & adm)
 {
     std::ofstream adm_file("/tmp/admin.xml", ios::out, 0600);
     adm_file << "<atlas>" << endl << "<map>" << endl;
-    adm_file << "    <string name=\"password\">" << adm->password << "</string>" << endl;
-    adm_file << "    <string name=\"id\">" << adm->fullid << "</string>" << endl;
+    adm_file << "    <string name=\"password\">" << adm.password << "</string>" << endl;
+    adm_file << "    <string name=\"id\">" << adm.fullid << "</string>" << endl;
     adm_file << "    <list name=\"parents\">" << endl;
     adm_file << "    <string>admin</string>" << endl;
     adm_file << "    </list>" << endl;
@@ -63,7 +64,7 @@ bool Persistance::init()
 {
     Persistance * p = instance();
     bool i = p->initAccount(true);
-    bool j = p->initWorld();
+    bool j = p->initWorld(true);
     return (i && j);
 }
 
@@ -77,12 +78,12 @@ void Persistance::shutdown()
 Account * Persistance::load_admin_account()
 {
     Persistance * p = instance();
-    Account * adm;
-    if ((adm = p->getAccount("admin")) == NULL) {
+    Account * adm = p->getAccount("admin");
+    if (adm == NULL) {
         adm = new Admin(NULL, "admin", "test");
-        p->putAccount(adm);
+        p->putAccount(*adm);
     }
-    save_admin_account(adm);
+    save_admin_account(*adm);
     return adm;
 }
 
@@ -118,14 +119,19 @@ Account * Persistance::getAccount(const std::string & name)
     return new Player(NULL, acn.AsString(), acp.AsString());
 }
 
-void Persistance::putAccount(const Account * ac)
+void Persistance::putAccount(const Account & ac)
 {
-    putObject(account_db, ac->asObject(), ac->fullid.c_str());
+    putObject(account_db, ac.asObject(), ac.fullid.c_str());
 }
 
-void Persistance::putEntity(const BaseEntity * be)
+bool Persistance::getEntity(const string & id, Object & entity)
 {
-    putObject(world_db, be->asObject(), be->fullid.c_str());
+    return getObject(world_db, id.c_str(), entity);
+}
+
+void Persistance::putEntity(const Entity & be)
+{
+    putObject(world_db, be.asObject(), be.fullid.c_str());
 }
 
 #else // HAVE_LIBDB_CXX

@@ -115,10 +115,12 @@ void Entity::destroy()
 void Entity::addToObject(Object & obj) const
 {
     Object::MapType & omap = obj.AsMap();
-    omap["name"] = Object(name);
-    omap["type"] = Object(type);
-    omap["parents"] = Object(Object::ListType(1,Object(type)));
     // We need to have a list of keys to pull from attributes.
+    omap["name"] = name;
+    omap["type"] = type;
+    omap["weight"] = weight;
+    omap["status"] = status;
+    omap["parents"] = Object(Object::ListType(1,Object(type)));
     location.addToObject(obj);
     Object::ListType contlist;
     elist_t::const_iterator I;

@@ -1,3 +1,13 @@
+2001-04-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/persistance.cpp, server/Admin.cpp: Modified database loading
+	  of world entities so that it is done hierarchically starting
+	  with the top level container.
+
+	* rulesets/Entity.cpp, rulesets/Character.cpp: Added some needed
+	  attributes to those added to Atlas Objects when converting in
+	  game entities.
+
 2001-04-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* Changed many return statements to match convention.

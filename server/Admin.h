@@ -7,9 +7,12 @@
 
 #include "Account.h"
 
+class Persistance;
+
 class Admin : public Account {
   protected:
     virtual oplist characterError(const Create &, const Atlas::Message::Object::MapType &) const;
+    void load(Persistance *, const string &, int &);
   public:
     Admin(Connection * conn, const string & username, const string & passwd);
     virtual ~Admin();

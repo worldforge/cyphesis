@@ -38,6 +38,10 @@ Possible ideas:
 
   Persistance system is naive right now. It does not take account of that
   fact that characters need minds, and it stores the world object.
+  Persitance is now sorted so it loads the world hierarchicly, but
+  it still does not handle minds and things. Problems with current
+  code include velocity being stored, and bounding boxes not being
+  recovered.
 
   Get system working as an AI client to another server. This would also
   be a good time to get cyphesis working as a mindless server, without

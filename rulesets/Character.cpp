@@ -129,7 +129,6 @@ void Character::set(const string & aname, const Object & attr)
 void Character::addToObject(Object & obj) const
 {
     Object::MapType & omap = obj.AsMap();
-    omap["weight"] = Object(weight);
     omap["sex"] = Object(sex);
     Thing::addToObject(obj);
 }

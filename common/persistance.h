@@ -7,7 +7,9 @@
 
 class Admin;
 class Account;
-class BaseEntity;
+class Entity;
+
+namespace Atlas { namespace Message { class Object; } }
 
 #include "database.h"
 
@@ -17,7 +19,7 @@ class Persistance : public Database {
 
   public:
     static Account * load_admin_account();
-    static void save_admin_account(Account *);
+    static void save_admin_account(Account &);
     static Persistance * instance();
     static bool init();
     static void shutdown();
@@ -26,11 +28,11 @@ class Persistance : public Database {
 
     bool findAccount(const std::string &);
     Account * getAccount(const std::string &);
-    void putAccount(const Account *);
+    void putAccount(const Account &);
     
     //bool findEntity(const std::string &);
-    //Entity * getEntity(const std::string &);
-    void putEntity(const BaseEntity *);
+    bool getEntity(const std::string &, Atlas::Message::Object &);
+    void putEntity(const Entity &);
 };
 
 #endif // PERSISTANCE_H

@@ -49,7 +49,7 @@ oplist Admin::Operation(const Save & op)
     }
     int count = 0;
     for(I = world->eobjects.begin(); I != world->eobjects.end(); I++) {
-        p->putEntity(I->second);
+        p->putEntity(*I->second);
         ++count;
     }
     Object::MapType report;
@@ -62,10 +62,43 @@ oplist Admin::Operation(const Save & op)
     return oplist(1,info);
 }
 
+void Admin::load(Persistance * p, const string & id, int & count)
+{
+    Object entity;
+    if (!p->getEntity(id, entity)) {
+        return;
+    }
+    if (!entity.IsMap()) {
+        return;
+    }
+    Object::MapType & emap = entity.AsMap();
+    Object::MapType::iterator I;
+    I = emap.find("type");
+    string type("thing");
+    if ((I != emap.end()) && I->second.IsString()) {
+        type = I->second.AsString();
+    }
+    if (id != "world_0") {
+        world->addObject(type, entity, id);
+        count++;
+    }
+    I = emap.find("contains");
+    if ((I != emap.end()) && I->second.IsList()) {
+        Object::ListType & contains = I->second.AsList();
+        Object::ListType::iterator J = contains.begin();
+        for(;J != contains.end(); ++J) {
+            if (J->IsString()) {
+                load(p, J->AsString(), count);
+            }
+        }
+    }
+}
+
 oplist Admin::Operation(const Load & op)
 {
     int count = 0;
     Persistance * p = Persistance::instance();
+#if 0
     DatabaseIterator dbi(p->getWorld());
     Object ent;
     while (dbi.get(ent)) {
@@ -73,7 +106,7 @@ oplist Admin::Operation(const Load & op)
         Object::MapType::const_iterator I = m.find("parents");
         const string & type = (I != m.end()) ? I->second.AsList().front().AsString() : "thing";
         I = m.find("id");
-        if (I != m.end()) {
+        if ((I != m.end()) && (I->second.IsString())) {
             const string & id = I->second.AsString();
             if (id == "world_0") {
                 // Ignore the world entry. No info required at the moment.
@@ -83,6 +116,9 @@ oplist Admin::Operation(const Load & op)
             }
         }
     }
+#else
+    load(p, "world_0", count);
+#endif
     Object::MapType report;
     report["message"] = "Objects loaded from database";
     report["object_count"] = count;

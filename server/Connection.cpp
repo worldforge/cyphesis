@@ -167,7 +167,7 @@ oplist Connection::Operation(const Create & op)
             (!Persistance::instance()->findAccount(account_id)) &&
             (account_id.size() != 0) && (password.size() != 0)) {
             Account * player = addPlayer(account_id, password);
-            Persistance::instance()->putAccount(player);
+            Persistance::instance()->putAccount(*player);
             Info * info = new Info(Info::Instantiate());
             Object::ListType args(1,player->asObject());
             info->SetArgs(args);
