@@ -99,7 +99,7 @@ void Movement::checkCollisions(const Location & loc)
         }
         // There is a small possibility that if
         // coll2Time == collTime == basic_tick, we will miss a collision
-        if (coll2Time > collTime) {
+        if ((coll2Time - collTime) > (consts::basic_tick / 10)) {
             debug(std::cout << "passing into it " << collTime << ":"
                             << coll2Time << std::endl << std::flush;);
             // We are entering collEntity.
@@ -130,3 +130,9 @@ void Movement::reset()
     m_velocity=Vector3D(0,0,0);
     m_lastMovementTime=m_body.world->getTime();
 }
+
+bool Movement::moving() const
+{
+    return (m_velocity!=Vector3D(0,0,0));
+}
+

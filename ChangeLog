@@ -1,3 +1,13 @@
+2002-05-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp, rulesets/Movement.cpp, rulesets/Movement.h:
+	  Tweaked movement code to cut down on redundant ticks when movement
+	  has reached destination. Fixed bug where character jumped if it
+	  walked into a building.
+
+	* rulesets/Pedestrian.cpp: Modified collision resolution so that
+	  movement does not slow down if it is deflected.
+
 2002-05-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* modules/Location.cpp, modules/Location.h, physics/BBox.h,

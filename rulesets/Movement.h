@@ -33,6 +33,7 @@ class Movement {
     virtual ~Movement();
 
     void reset();
+    bool moving() const;
 
     virtual double getTickAddition(const Vector3D & coordinates) const = 0;
     virtual Move * genFaceOperation() = 0;

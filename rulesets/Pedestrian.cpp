@@ -14,7 +14,7 @@
 
 using Atlas::Message::Object;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 Pedestrian::Pedestrian(Character & body) : Movement(body)
 {
@@ -182,11 +182,15 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                 if (m_collPos.isValid()) {
                     // Generate touch ops
                     m_velocity[m_collAxis] = 0;
-                    m_collPos = Vector3D();
                     if ((m_velocity.mag() / consts::base_velocity) > 0.05) {
                         // Wrong: orientation should not be affected by a
                         // collision
                         // new_loc.orientation = Quaternion(Vector3D(1,0,0), m_velocity.unitVector());
+                        m_collPos = Vector3D();
+                        m_collEntity = NULL;
+                        m_velocity.unit();
+                        m_velocity *= sqrt(vel_square_mag);
+                        // FIXME Restore velocity magnitude, and flag as diverted.
                     } else {
                         reset();
                         entmap["mode"] = Object("standing");

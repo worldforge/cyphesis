@@ -39,7 +39,7 @@
 
 using Atlas::Message::Object;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 OpVector Character::metabolise(double ammount)
 {
@@ -223,15 +223,17 @@ OpVector Character::TickOperation(const Tick & op)
         Location ret_loc;
         Move * moveOp = movement.genMoveOperation(&ret_loc);
         if (moveOp) {
+            if (!movement.moving()) {
+                return OpVector (1,moveOp);
+            }
             OpVector res(2);
             Object::MapType entmap;
             entmap["name"]=Object("move");
             entmap["serialno"]=Object(movement.m_serialno);
-            Object ent(entmap);
             Tick * tickOp = new Tick(Tick::Instantiate());
             tickOp->SetTo(getId());
             tickOp->SetFutureSeconds(movement.getTickAddition(ret_loc.coords));
-            tickOp->SetArgs(Object::ListType(1,ent));
+            tickOp->SetArgs(Object::ListType(1,entmap));
             res[0] = tickOp;
             res[1] = moveOp;
             return res;
