@@ -1,7 +1,3 @@
-Don't add services when we are upgrading.
-
-Fix user cyphesis disappear wiht rpm upgrade
-
 Currently no mechanism to inform client/mind that the ID they just
 specified is gone. Need to think of something, and make sure mind
 deals correctly.
@@ -12,7 +8,8 @@ Property::add() is quite often just:
     get(ent[s]);
 Should this be the default in the base class?
 
-Sort out the issue of un-initialised POS, ORIENTATION and BBOX.
+Sort out the issue of un-initialised POS, ORIENTATION and BBOX in the
+database.
 
 MemEntity needs some kind of reference flag/count if a python object
 is holding a reference.
