@@ -46,6 +46,8 @@ BaseMind::BaseMind(const string & id, const string & body_name) : map(script),
 
 BaseMind::~BaseMind()
 {
+    map.things.erase(fullid);
+    map.flushMap();
 }
 
 MemMap * BaseMind::getMap() {

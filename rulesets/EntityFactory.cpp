@@ -92,3 +92,11 @@ Thing * EntityFactory::newThing(const string & type,const Object & ent, WorldRou
     thing->getLocation(entmap, svr->eobjects);
     return thing;
 }
+
+void EntityFactory::flushFactories()
+{
+    fdict_t::const_iterator I = factories.begin();
+    for (; I != factories.end(); I++) {
+        delete I->second;
+    }
+}

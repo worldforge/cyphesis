@@ -28,6 +28,7 @@ class EntityFactory {
     }
     void readRuleset(const string & file);
     Thing * newThing(const string &, const Atlas::Message::Object &, WorldRouter *);
+    void flushFactories();
 };
 
 #endif // ENTITY_FACTORY_H

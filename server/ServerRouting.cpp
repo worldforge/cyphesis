@@ -26,6 +26,14 @@ ServerRouting::ServerRouting(CommServer & server, const string & name) :
 
 ServerRouting::~ServerRouting()
 {
+    idDict.erase(fullid);
+    idDict.erase(world.fullid);
+    dict_t::const_iterator I = idDict.begin();
+    for(; I != idDict.end(); I++) {
+        cout << "Del " << I->second->fullid << endl << flush;
+        delete I->second;
+    }
+    delete &world;
 }
 
 void ServerRouting::addToObject(Object & obj) const

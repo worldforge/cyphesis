@@ -1,3 +1,34 @@
+2001-05-23  Al Riddoch  <alriddoch@zepler.org>
+
+	The memory leak crackdown
+
+	* rulesets/BaseMind.cpp, rulesets/MemMap.h, rulesets/MemMap.cpp:
+	  Add code to flush a characters memory as its mind is
+	  deleted.
+
+	* rulsets/Character.cpp: Delete movement class associated with
+	  character when character is deleted.
+
+	* rulesets/EntityFactory.h, rulesets/EntityFactory.cpp: Delete
+	  all the entity factories when the server shuts down.
+
+	* rulesets/PythonScript.cpp: Decrease reference of and thereby
+	  delete the python script at delete time.
+
+	* server/ServerRouting.cpp: Delete all the objects in idDict,
+	  which should include all in game objects, and all explicitly
+	  out of game objects, like accounts.
+
+	* server/WorldRouter.cpp: Delete all pending operations, gameWorld
+	  object. Ensure that an object is deleted from ServerRouting's
+	  idDict when it is deleted from the world.
+
+	* server/CommServer.h, server/server.cpp: Added CommServer destructor
+	  which deletes all client objects and the server object.
+
+	* server/server.cpp: Delete the database persistant object and the
+	  entity factory at shutdown.
+
 2001-05-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/define_world.py: Added archers who can hunt deer.

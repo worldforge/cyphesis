@@ -202,6 +202,15 @@ CommServer::CommServer(const string & ident) :
 {
 }
 
+CommServer::~CommServer()
+{
+    client_map_t::const_iterator I = clients.begin();
+    for(; I != clients.end(); I++) {
+        delete I->second;
+    }
+    delete &server;
+}
+
 bool CommServer::setup(int port)
 {
     // Nasty low level socket code to set up listen socket. This should be
@@ -570,7 +579,13 @@ int main(int argc, char ** argv)
     // It is assumed that any preparation for the shutdown that is required
     // by the game has been done before exit flag was set.
     cout << "Performing clean shutdown..." << endl << flush;
+
     Persistance::shutdown();
+    delete Persistance::instance();
+
+    EntityFactory::instance()->flushFactories();
+    delete EntityFactory::instance();
+
     s.metaserverTerminate();
     cout << "Clean shutdown complete." << endl << flush;
     return 0;

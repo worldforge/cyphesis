@@ -142,3 +142,11 @@ const Object MemMap::asObject()
     }
     return Object(omap);
 }
+
+void MemMap::flushMap()
+{
+    edict_t::const_iterator I = things.begin();
+    for (; I != things.end(); I++) {
+        delete I->second;
+    }
+}

@@ -11,4 +11,5 @@ PythonScript::PythonScript(PyObject * o, Entity & t) :
 
 PythonScript::~PythonScript()
 {
+    Py_DECREF(scriptObject);
 }

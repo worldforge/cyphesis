@@ -47,6 +47,11 @@ WorldRouter::WorldRouter(ServerRouting & srvr) : server(srvr),
 
 WorldRouter::~WorldRouter()
 {
+    delete &gameWorld;
+    opqueue::const_iterator I = operationQueue.begin();
+    for (; I != operationQueue.end(); I++) {
+        delete *I;
+    }
 }
 
 inline void WorldRouter::addOperationToQueue(RootOperation & op,
@@ -145,6 +150,7 @@ void WorldRouter::delObject(Entity * obj)
     perceptives.remove(obj);
     objectList.remove(obj);
     eobjects.erase(obj->fullid);
+    server.idDict.erase(obj->fullid);
 }
 
 oplist WorldRouter::message(const RootOperation & op)

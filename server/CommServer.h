@@ -35,6 +35,7 @@ class CommServer {
     ServerRouting & server;
 
     CommServer(const string & ident);
+    ~CommServer();
 
     bool setup(int port);
     void loop();

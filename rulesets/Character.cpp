@@ -101,6 +101,7 @@ Character::Character() : movement(*new Pedestrian(*this)), autom(false),
 
 Character::~Character()
 {
+    delete &movement;
     if (mind != NULL) {
         delete mind;
     }

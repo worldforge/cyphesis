@@ -33,6 +33,8 @@ class MemMap {
     elist_t findByLocation(const Location & where, double radius);
     const Atlas::Message::Object asObject();
 
+    void flushMap();
+
     std::list<std::string> addHooks;
     std::list<std::string> updateHooks;
     std::list<std::string> deleteHooks;
