@@ -3,6 +3,7 @@ CyphesisClient.cpp
 ------------------
 begin           : 1999.12.18
 copyright       : (C) 1999 by Aloril
+                  2000 by Alistair Riddoch and Aloril
 email           : aloril@iki.fi
 */
 
@@ -31,12 +32,11 @@ extern "C" {
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Encoder.h>
-#include <Atlas/Objects/Entity/Entity.h>
-#include <Atlas/Objects/Operation/Operation.h>
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Operation.h>
+#include "Atlas/Objects/loadDefaults.h"
 // The DebugBridge
 #include "CyphesisClient2.h"
-
 
 #ifdef _WIN32
 #define sleep(x) Sleep(x*1000)
@@ -55,13 +55,21 @@ using namespace std;
 
 int main(int argc, char ** argv)
 {
+  try {
+    loadDefaults("../../../../protocols/atlas/spec/atlas.xml");
+  } catch(DefaultLoadingException e) {
+    cout << "DefaultLoadingException: "
+         << e.msg << endl;
+    return 1;
+  }
+
   CyphesisClient bridge;
   if (bridge.connect() != 0) {
     cout << "Failed to connect" << endl;
     exit(1);
   }
   bridge.login();
-  bridge.create_char();
+  bridge.createChar();
   bridge.look();
   bridge.move();
   bridge.loop();
@@ -69,32 +77,27 @@ int main(int argc, char ** argv)
 
 void CyphesisClient::send(Objects::Operation::RootOperation & op)
 {
-    encoder->StreamMessage((Root&)op);
+    encoder->streamMessage((Root&)op);
     *ios << flush;
 }
 
 void CyphesisClient::login()
 {
-   Objects::Entity::AccountInstance account;
-   Objects::Operation::LoginInstance l;
+   Objects::Entity::Account account;
+   Objects::Operation::Login l;
    erflag = 0;
    reply_flag = 0;
 
-   account->SetId(string("al"));
-   account->SetAttr("password", string("ping"));
+   account->setId("al");
+   account->setAttr("password", string("ping"));
 
-   //list<Message::Object> args(1,account->AsObject());
-
-   //l->SetArgsAsList(args);
-   vector<Root> login_args(1);
-   login_args[0] = (Root&)account;
-   l->SetArgs(login_args);
+   l->setArgs1((Root&)account);
 
 
-   encoder->StreamMessage((Root&)l);
-
+   send((Operation::RootOperation&)l);
+   
    while (!reply_flag) {
-      codec->Poll();
+      codec->poll();
    }
    if (!erflag) {
       cout << "login was a success" << endl << flush;
@@ -102,16 +105,16 @@ void CyphesisClient::login()
    }
    cout << "login failed" << endl << flush;
 
-   Objects::Operation::CreateInstance c;
+   Objects::Operation::Create c;
    erflag = 0;
    reply_flag = 0;
 
-   c->SetArgs(login_args);
+   c->setArgs1((Root&)account);
 
-   encoder->StreamMessage((Root&)c);
+   send((Operation::RootOperation&)c);
 
    while (!reply_flag) {
-      codec->Poll();
+      codec->poll();
    }
    if (!erflag) {
       cout << "create account was a success" << endl << flush;
@@ -122,6 +125,11 @@ void CyphesisClient::login()
 int CyphesisClient::connect()
 {
 
+#if USE_SOCKET_PP
+  ios = new iosockinet(sockbuf::sock_stream);
+  cout << "Connecting..." << flush;
+  (*ios)->connect("127.0.0.1", 6767);
+#else
   struct sockaddr_in sin;
 
   cli_fd = socket(PF_INET, SOCK_STREAM, 0);
@@ -130,6 +138,7 @@ int CyphesisClient::connect()
   }
   sin.sin_family = AF_INET;
   sin.sin_port = htons(6767);
+  //sin.sin_port = htons(1111);
   sin.sin_addr.s_addr = htonl(0x7f000001);
 
   cout << "Connecting to cyphesis.." << endl << flush;
@@ -140,56 +149,57 @@ int CyphesisClient::connect()
   }
   cout << "Connected to cyphesis" << endl << flush;
   // Connect to the server
-  ios = new fstream(cli_fd);
+  //ios = new fstream(cli_fd);
+  sockbuf client_buf(cli_fd);
+  ios = new iostream(&client_buf);
+#endif
 
   // Do client negotiation with the server
   Net::StreamConnect conn("cyphesis_client", *ios, this);
 
   cout << "Negotiating... " << flush;
   // conn.Poll() does all the negotiation
-  while (conn.GetState() == Negotiate<iostream>::IN_PROGRESS) {
-    conn.Poll();
+  while (conn.getState() == Negotiate<iostream>::IN_PROGRESS) {
+    conn.poll();
   }
   cout << "done" << endl;
 
   // Check whether negotiation was successful
-  if (conn.GetState() == Negotiate<iostream>::FAILED) {
+  if (conn.getState() == Negotiate<iostream>::FAILED) {
       cerr << "Failed to negotiate" << endl;
       exit(2);
   }
   // Negotiation was successful
 
   // Get the codec that negotiation established
-  codec = conn.GetCodec();
+  codec = conn.getCodec();
 
   // This should always be sent at the beginning of a session
 
   encoder = new Objects::Encoder(codec);
 
-  codec->StreamBegin();
+  codec->streamBegin();
   return(0);
 
 }
 
-void CyphesisClient::create_char()
+void CyphesisClient::createChar()
 {
-   Objects::Entity::PlayerInstance character;
-   Objects::Operation::CreateInstance c;
+   Objects::Entity::Player character;
+   Objects::Operation::Create c;
    erflag = 0;
    reply_flag = 0;
 
-   list<Message::Object> parlist(1,string("farmer"));
-   character->SetAttr("parents", Message::Object(parlist));
-   character->SetAttr("name", string("Al Riddoch"));
+   list<string> parlist(1, string("farmer"));
+   character->setParents(parlist);
+   character->setName("Al Riddoch");
 
-   list<Message::Object> args(1,character->AsObject());
-
-   c->SetAttr("args", Message::Object(args));
-   c->SetAttr("from", account_id);
+   c->setArgs1((Root&)character);
+   c->setFrom(account_id);
    
-   encoder->StreamMessage((Root&)c);
+   send((Operation::RootOperation&)c);
    while (!reply_flag) {
-      codec->Poll();
+      codec->poll();
    }
    if (!erflag) {
        cout << "Created character: " << character_id << " :using account: " << account_id << " :" << endl << flush;
@@ -198,35 +208,32 @@ void CyphesisClient::create_char()
 
 void CyphesisClient::look()
 {
-   Objects::Operation::LookInstance l;
-   l->SetAttr("from", character_id);
+   Objects::Operation::Look l;
+   l->setFrom(character_id);
 
-   encoder->StreamMessage((Root&)l);
-   *ios << flush;
+   send((Operation::RootOperation&)l);
 }
 
 void CyphesisClient::move()
 {
-    Message::Object::MapType ent;
-    ent["id"] = character_id;
-    Message::Object::ListType coords;
-    coords.push_back(100.0);
-    coords.push_back(100.0);
-    coords.push_back(0.0);
-    ent["pos"] = coords;
-    ent["loc"] = string("world_0");
-    Objects::Operation::MoveInstance m;
-    m->SetAttr("from", character_id);
+    Objects::Entity::GameEntity ent;
+    ent->setId(character_id);
+    ent->modifyPos()[0] = 100.0;
+    ent->modifyPos()[1] = 100.0;
+    ent->modifyPos()[2] = 0.0;
+    ent->setLoc("world_0");
+    Objects::Operation::Move m;
+    m->setFrom(character_id);
 
-    m->SetArgsAsList(Message::Object::ListType(1,ent));
+    m->setArgs1((Root&)ent);
 
-    encoder->StreamMessage((Root&)m);
-    *ios << flush;
+    send((Operation::RootOperation&)m);
 }
 
 void CyphesisClient::loop()
 {
    while (1) {
+#if !USE_SOCKET_PP
       fd_set infds;
       struct timeval tv;
 
@@ -245,9 +252,12 @@ void CyphesisClient::loop()
                   cout << "Server disconnected" << endl << flush;
                   exit(1);
               }
-              codec->Poll();
+#endif
+              codec->poll();
+#if !USE_SOCKET_PP
           }
       }
+#endif
    }
 }
 
@@ -263,25 +273,25 @@ int WINAPI WinMain(
 #endif
 
 #ifdef DEBUG_DECODER
-void CyphesisClient::ObjectArrived(const Message::Object& o)
+void CyphesisClient::objectArrived(const Message::Object& o)
 {
     cout << "An object has arrived." << endl << flush;
 
-    if (!o.IsMap()) {
+    if (!o.isMap()) {
         cout << "I don't know what to do with it" << endl << flush;
         return;
     } else {
         cout << "I do know what to" << endl << flush;
     }
-    const std::map<std::string, Message::Object> & omap = o.AsMap();
+    const std::map<std::string, Message::Object> & omap = o.asMap();
 
     for (Message::Object::MapType::const_iterator I = omap.begin();
-            I != o.AsMap().end(); I++) {
+            I != o.asMap().end(); I++) {
         cout << I->first << " : " << (I->second.IsString() ? I->second.AsString() : string("NOT A STRING")) << endl << flush;
-        if (I->second.IsList()) {
-            const Message::Object::ListType & alist = I->second.AsList();
+        if (I->second.isList()) {
+            const Message::Object::ListType & alist = I->second.asList();
             for(Message::Object::ListType::const_iterator J = alist.begin(); J != alist.end(); J++) {
-                cout << "-> " << (J->IsString() ? J->AsString() : string("NOT A STRING")) << endl << flush;
+                cout << "-> " << (J->isString() ? J->asString() : string("NOT A STRING")) << endl << flush;
             }
         }
     }
@@ -289,11 +299,11 @@ void CyphesisClient::ObjectArrived(const Message::Object& o)
 }
 #else
 
-void CyphesisClient::UnknownObjectArrived(const Message::Object& o)
+void CyphesisClient::unknownObjectArrived(const Message::Object& o)
 {
 #if 0 
     cout << "An unknown has arrived." << endl << flush;
-    if (o.IsMap()) {
+    if (o.isMap()) {
         for(Message::Object::MapType::const_iterator I = o.AsMap().begin();
 		I != o.AsMap().end();
 		I++) {
@@ -308,81 +318,95 @@ void CyphesisClient::UnknownObjectArrived(const Message::Object& o)
 #endif
 }
 
-void CyphesisClient::ObjectArrived(const Operation::Info& o)
+void CyphesisClient::objectArrived(const Operation::Info& o)
 {
     reply_flag = 1;
     cout << "An info operation arrived." << endl << flush;
-    const Message::Object & args = o->GetAttr("args");
-    if (!args.IsList()) {
-       cout << "args not list" << endl << flush;
+    const vector<Root>& args = o->getArgs();
+    if (args.empty()) {
+       cout << "args is empty list" << endl << flush;
+       return;
     }
     if (state == CREATED_CHAR) {
         return;
     }
     if (state == INIT) {
+#if 0
         const Message::Object & account = args.AsList().front();
         Objects::Entity::AccountInstance obj;
         for (Message::Object::MapType::const_iterator I = account.AsMap().begin();
             I != account.AsMap().end(); I++)
             obj->SetAttr(I->first, I->second);
         account_id = obj->GetAttr("id").AsString();
+#endif
+        account_id = args[0]->getId();
         state = LOGGED_IN;
     } else if (state == LOGGED_IN) {
-        Message::Object::MapType character = args.AsList().front().AsMap();
-        character_id = character["id"].AsString();
+        character_id = args[0]->getId();
         cout << "got char [" << character_id << "]" << endl << flush;
         state = CREATED_CHAR;
     }
 }
 
-void CyphesisClient::ObjectArrived(const Operation::Error& o)
+void CyphesisClient::objectArrived(const Operation::Error& o)
 {
     reply_flag = 1;
     erflag = 1;
     cout << "An error operation arrived." << endl << flush;
-    Message::Object::ListType args = o->GetArgsAsList();
-    Message::Object & arg = args.front();
+    if (o->getArgs().empty()) {
+       cout << "args is empty list" << endl << flush;
+       return;
+    }
+    const Root arg = o->getArgs()[0];
+#if 0
     if (arg.IsString()) {
         cout << arg.AsString() << endl << flush;
     } else {
 	cout << arg.GetType() << endl << flush;
-    } 
+    }
+#endif
+    if(arg->getParents().empty()) {
+        cout << "no parents" << endl << flush;
+    } else {
+        cout << arg->getParents().front() << endl << flush;
+    }
 }
 
-void CyphesisClient::ObjectArrived(const Operation::Sight& o)
+void CyphesisClient::objectArrived(const Operation::Sight& o)
 {
     cout << "An sight operation arrived." << endl << flush;
-    const Message::Object & args = o->GetAttr("args");
-    if (!args.IsList()) {
-       cout << "args not list" << endl << flush;
+    const vector<Root>& args = o->getArgs();
+    if (args.empty()) {
+       cout << "args is empty list" << endl << flush;
     }
-    const Message::Object & objseen = args.AsList().front();
-    sdecode.processSight(objseen);
+    sdecode.processSight(args[0]);
 }
 #endif
 
 
-void SightDecoder::processSight(const Message::Object& o)
+void SightDecoder::processSight(const Root& o)
 {
-    Objects::Decoder::ObjectArrived(o);
+    dispatchObject(o);
 }
 
-void SightDecoder::UnknownObjectArrived(const Message::Object& o)
+void SightDecoder::unknownObjectArrived(const Root& o)
 {
-    cout << "An sight of an unknown operation arrived." << endl << flush;
+    cout << "An sight of an unknown operation arrived: ";
+    if(o->getParents().empty()) cout << "No parents." << endl << flush;
+    else cout << "parents[0] = " << o->getParents().front() << endl << flush;
 }
 
-void SightDecoder::ObjectArrived(const Operation::Create& o)
+void SightDecoder::objectArrived(const Operation::Create& o)
 {
     cout << "An sight of an create operation arrived." << endl << flush;
 }
 
-void SightDecoder::ObjectArrived(const Operation::Move& o)
+void SightDecoder::objectArrived(const Operation::Move& o)
 {
     cout << "An sight of an move operation arrived." << endl << flush;
 }
 
-void SightDecoder::ObjectArrived(const Operation::Set& o)
+void SightDecoder::objectArrived(const Operation::Set& o)
 {
     cout << "An sight of an set operation arrived." << endl << flush;
 }
