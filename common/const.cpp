@@ -2,8 +2,8 @@
 
 namespace consts {
 
-  int debug_level = 1;
-  int debug_thinking = 1;
+  int debug_level = 0;
+  int debug_thinking = 0;
 
   double fzero = 1e-13; //float zero;
 

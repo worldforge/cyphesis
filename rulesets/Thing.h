@@ -26,6 +26,11 @@ class Thing : public BaseEntity {
 
     Message::Object & operator[](const string &);
 
+    int set_object(PyObject * obj) {
+        script_object = obj;
+        return(obj == NULL ? -1 : 0);
+    }
+
     virtual void addObject(Message::Object *);
     oplist send_world(RootOperation * msg);
     virtual oplist Operation(const Setup & op);

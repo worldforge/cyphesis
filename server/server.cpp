@@ -8,6 +8,8 @@
 #include <iostream.h>
 #include <fstream.h>
 
+#include <Python.h>
+
 
 extern "C" {
     #include <stdio.h>
@@ -183,7 +185,6 @@ int CommServer::setup(int port)
         return(-1);
     }
     listen(server_fd, 5);
-    cout << "Listening... " << flush;
     server=new ServerRouting(this,"server");
     return(0);
 }
@@ -309,6 +310,8 @@ int main(int argc, char ** argv) {
         log::inform_fp.open("cyphesis_server.log",ios::out);
         log::debug_fp.open("cyphesis_server_debug.log",ios::out);
     }
+    Py_Initialize();
+    cout << Py_GetPath();
     if (consts::debug_thinking>=1) {
         char * log_name="thinking.log";
         cout << "consts::debug_thinking>=1:, logging to" << log_name << endl;
@@ -316,7 +319,7 @@ int main(int argc, char ** argv) {
     }
     CommServer s;
     if (s.setup(6767)) {
-        cout << "BOOM" << endl << flush;
+        cout << "Could not create listen socket." << endl << flush;
         exit(1);
     }
     if (profile_flag) {

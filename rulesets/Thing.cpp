@@ -31,6 +31,7 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
                      oplist & ret_list)
 {
     if (script_object != NULL) {
+        cout << "Got script object for " << fullid << endl << flush;
         string op_name = op_type+"_operation";
         // Construct apropriate python object thingies from op
         PyObject * ret = PyObject_CallMethod(script_object,
@@ -41,11 +42,12 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
                  << fullid << endl << flush;
             // Get oplist from ret and
             return(1);
+        } else {
+            cout << "No method to be found for " << fullid << endl << flush;
         }
     } else {
         cout << "No script object asociated" << endl << flush;
     }
-    cout << "No method to be found for " << fullid << endl << flush;
     return(0);
 }
 
@@ -373,7 +375,7 @@ ThingFactory::ThingFactory()
 {
     thing_map["thing"] = thing_t(BASE_THING, "");
     thing_map["house"] = thing_t(BASE_THING, "");
-    thing_map["farmer"] = thing_t(BASE_CHARACTER, "");
+    thing_map["farmer"] = thing_t(BASE_CHARACTER, "farmer");
     thing_map["guard"] = thing_t(BASE_CHARACTER, "");
     thing_map["butcher"] = thing_t(BASE_CHARACTER, "");
 }
@@ -391,6 +393,7 @@ Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)
         t_type = thing_map[type];
     }
     Thing * thing;
+    const string & py_class = t_type.second;
     switch (t_type.first) {
         case BASE_CHARACTER:
             thing = new Character();
@@ -400,6 +403,30 @@ Thing * ThingFactory::new_thing(const string & type,const Message::Object & ent)
             thing = new Thing();
     }
     // Sort out python object here FIXME.
+    if (py_class.size() != 0) {
+        PyObject * mod_dict;
+        if ((mod_dict = PyImport_ImportModule((char *)py_class.c_str()))==NULL) {
+            cout << "Cld no find python module " << py_class << endl << flush;
+            goto py_fail;
+        } else {
+            cout << "Got python module " << py_class << endl << flush;
+        }
+        PyObject * my_class = PyObject_GetAttrString(mod_dict, (char *)type.c_str());
+        if (my_class == NULL) {
+            cout << "Cld no find class in module " << py_class << endl << flush;
+            goto py_fail;
+        } else {
+            cout << "Got python class " << type << " in" << py_class << endl << flush;
+        }
+        if (PyCallable_Check(my_class) == 0) {
+            cout << "It does not seem to be a class at all" << endl << flush;
+            goto py_fail;
+        }
+        if (thing->set_object(PyEval_CallFunction(my_class,"()")) == -1) {
+            cout << "Could not get python obj" << endl << flush;
+        }
+    }
+py_fail:
     if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
         thing->name = entmap["name"].AsString();
     } else {
