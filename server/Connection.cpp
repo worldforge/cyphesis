@@ -64,7 +64,7 @@ Account * Connection::addPlayer(const std::string& username,
 
 void Connection::destroy()
 {
-    debug(cout << "destroy called";);
+    debug(std::cout << "destroy called";);
     dict_t::const_iterator I;
     for(I = objects.begin(); I != objects.end(); I++) {
         BaseEntity * ent = I->second;
@@ -95,14 +95,14 @@ void Connection::destroy()
 
 oplist Connection::operation(const RootOperation & op)
 {
-    debug(cout << "Connection::operation" << endl << flush;);
+    debug(std::cout << "Connection::operation" << std::endl << std::flush;);
     const std::string & from = op.GetFrom();
     if (0==from.size()) {
-        debug(cout << "deliver locally as normal" << endl << flush;);
+        debug(std::cout << "deliver locally as normal" << std::endl << std::flush;);
         return BaseEntity::operation(op);
     } else {
-        debug(cout << "Must send on to account" << endl << flush;);
-        debug(cout << "[" << from << "]" << endl << flush;);
+        debug(std::cout << "Must send on to account" << std::endl << std::flush;);
+        debug(std::cout << "[" << from << "]" << std::endl << std::flush;);
         dict_t::const_iterator I = objects.find(from);
         if (I != objects.end()) {
             BaseEntity * ent = I->second;
@@ -110,7 +110,7 @@ oplist Connection::operation(const RootOperation & op)
                 (((Character *)ent)->externalMind == NULL)) {
                 Character * pchar = (Character *)ent;
                 pchar->externalMind = new ExternalMind(*this, pchar->getId(), pchar->getName());
-                debug(cout << "Re-connecting existing character to new connection" << endl << flush;);
+                debug(std::cout << "Re-connecting existing character to new connection" << std::endl << std::flush;);
                 Info * info = new Info(Info::Instantiate());
                 info->SetArgs(Object::ListType(1,pchar->asObject()));
                 info->SetRefno(op.GetSerialno());
@@ -121,7 +121,7 @@ oplist Connection::operation(const RootOperation & op)
             }
             return ent->externalOperation(op);
         } else {
-            cout << from;
+            std::cout << from;
             return error(op, "From is illegal");
         }
     }
@@ -131,7 +131,7 @@ oplist Connection::operation(const RootOperation & op)
 oplist Connection::LoginOperation(const Login & op)
 {
 
-    debug(cout << "Got login op" << endl << flush;);
+    debug(std::cout << "Got login op" << std::endl << std::flush;);
     const Object & account = op.GetArgs().front();
 
     if (account.IsMap()) {
@@ -168,7 +168,7 @@ oplist Connection::LoginOperation(const Login & op)
             info->SetArgs(Object::ListType(1,player->asObject()));
             info->SetRefno(op.GetSerialno());
             info->SetSerialno(server.getSerialNo());
-            debug(cout << "Good login" << endl << flush;);
+            debug(std::cout << "Good login" << std::endl << std::flush;);
             return oplist(1,info);
         }
     }
@@ -177,7 +177,7 @@ oplist Connection::LoginOperation(const Login & op)
 
 oplist Connection::CreateOperation(const Create & op)
 {
-    debug(cout << "Got create op" << endl << flush;);
+    debug(std::cout << "Got create op" << std::endl << std::flush;);
     const Object & account = op.GetArgs().front();
 
     if (Persistance::restricted) {
@@ -197,7 +197,7 @@ oplist Connection::CreateOperation(const Create & op)
             info->SetArgs(Object::ListType(1,player->asObject()));
             info->SetRefno(op.GetSerialno());
             info->SetSerialno(server.getSerialNo());
-            debug(cout << "Good create" << endl << flush;);
+            debug(std::cout << "Good create" << std::endl << std::flush;);
             return oplist(1,info);
         }
     }
@@ -241,7 +241,7 @@ oplist Connection::GetOperation(const Get & op)
         info->SetArgs(Object::ListType(1,server.asObject()));
         info->SetRefno(op.GetSerialno());
         info->SetSerialno(server.getSerialNo());
-        debug(cout << "Replying to empty get" << endl << flush;);
+        debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
         Object::MapType::const_iterator I = args.front().AsMap().find("id");
         if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {

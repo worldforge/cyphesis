@@ -6,6 +6,7 @@
 #define COMMON_DATE_TIME_H
 
 #include <string>
+#include <iostream>
 
 class DateTime {
   protected:

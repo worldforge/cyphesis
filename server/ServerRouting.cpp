@@ -10,6 +10,8 @@
 
 #include <common/debug.h>
 
+#include <iostream>
+
 static bool debug_flag = false;
 
 using Atlas::Message::Object;
@@ -32,7 +34,8 @@ ServerRouting::~ServerRouting()
     idDict.erase(world.getId());
     dict_t::const_iterator I = idDict.begin();
     for(; I != idDict.end(); I++) {
-        debug(cout << "Del " << I->second->getId() << endl << flush;);
+        debug(std::cout << "Del " << I->second->getId() << std::endl
+                        << std::flush;);
         delete I->second;
     }
     delete &world;

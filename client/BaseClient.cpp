@@ -28,8 +28,8 @@ CommClient::createPlayer(const std::string & name,
     player_ent["password"] = password;
     player_ent["parents"] = Object::ListType(1, "player");
     
-    debug(cout << "Loggin " << name << " in with " << password << " as password"
-               << endl << flush;);
+    debug(std::cout << "Loggin " << name << " in with " << password << " as password"
+               << std::endl << std::flush;);
     
     Login loginAccountOp(Login::Instantiate());
     loginAccountOp.SetArgs(Object::ListType(1,player_ent));

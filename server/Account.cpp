@@ -36,15 +36,15 @@ Account::~Account()
 
 BaseEntity * Account::addCharacter(const std::string & typestr, const Object & ent)
 {
-    debug(cout << "Account::Add_character" << endl << flush;);
+    debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
     Entity * chr = world->addObject(typestr, ent);
-    debug(cout << "Added" << endl << flush;);
+    debug(std::cout << "Added" << std::endl << std::flush;);
     if (!chr->location) {
-        debug(cout << "Setting location" << endl << flush;);
+        debug(std::cout << "Setting location" << std::endl << std::flush;);
         chr->location.ref = &world->gameWorld;
         chr->location.coords = Vector3D(0, 0, 0);
     }
-    debug(cout << "Location set to: " << chr->location << endl << flush;);
+    debug(std::cout << "Location set to: " << chr->location << std::endl << std::flush;);
     if (chr->isCharacter()) {
         Character * pchar = (Character *)chr;
         pchar->externalMind = new ExternalMind(*connection, pchar->getId(), pchar->getName());
@@ -79,7 +79,7 @@ BaseEntity * Account::addCharacter(const std::string & typestr, const Object & e
 
 oplist Account::LogoutOperation(const Logout & op)
 {
-    debug(cout << "Account logout: " << getId() << endl;);
+    debug(std::cout << "Account logout: " << getId() << std::endl;);
     connection->destroy();
     return oplist();
 }
@@ -103,7 +103,7 @@ void Account::addToObject(Object::MapType & omap) const
 
 oplist Account::CreateOperation(const Create & op)
 {
-    debug(cout << "Account::Operation(create)" << endl << flush;);
+    debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
     const Object & ent = op.GetArgs().front();
     if (!ent.IsMap()) {
         return error(op, "Invalid character");

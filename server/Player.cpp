@@ -23,9 +23,15 @@ oplist Player::characterError(const Create& op,const Object::MapType& ent) const
         return error(op, "Object to be created has no name");
     }
 
+#if defined(__GNUC__) && __GNUC__ < 3
     if (!I->second.AsString().compare("admin",0,5)) {
         return error(op, "Object to be created cannot start with admin");
     }
+#else
+    if (!I->second.AsString().compare(0,5,"admin")) {
+        return error(op, "Object to be created cannot start with admin");
+    }
+#endif
 
     const std::string& type= ent.find("parents")->second.AsList().front().AsString(); 
     if ((type!="character") && (type!="archer") && (type!="druid") &&

@@ -32,7 +32,7 @@ void usage(char * n)
 {
     // Don't call this once the database is open. It doesn't return so the
     // database will not be closed.
-    std::cout << "usage: " << n << " -[asd] account" << endl << flush;
+    std::cout << "usage: " << n << " -[asd] account" << std::endl << std::flush;
     exit(0);
 }
 
@@ -89,7 +89,7 @@ int main(int argc, char ** argv)
     bool res = db->getAccount("admin", data);
 
     if (!res) {
-        std::cout << "Admin account does not yet exist" << endl << flush;
+        std::cout << "Admin account does not yet exist" << std::endl << std::flush;
         acname = "admin";
         action = ADD;
     }
@@ -97,7 +97,7 @@ int main(int argc, char ** argv)
         Object::MapType o;
         res = db->getAccount(acname, o);
         if (!res) {
-            std::cout<<"Account "<<acname<<" does not yet exist"<<endl<<flush;
+            std::cout<<"Account "<<acname<<" does not yet exist"<<std::endl<<std::flush;
             AccountBase::del();
             return 0;
         }
@@ -105,15 +105,15 @@ int main(int argc, char ** argv)
     if (action == DEL) {
         db->delAccount(acname);
         if (res) {
-            cout << "Account " << acname << " removed." << endl << flush;
+            std::cout << "Account " << acname << " removed." << std::endl << std::flush;
         }
         AccountBase::del();
         return 0;
     }
     std::string password, password2;
-    std::cout << "New " << acname << " password:" << flush;
+    std::cout << "New " << acname << " password:" << std::flush;
     std::cin >> password;
-    std::cout << "Retype " << acname << " password:" << flush;
+    std::cout << "Retype " << acname << " password:" << std::flush;
     std::cin >> password2;
     if (password == password2) {
         Object::MapType amap;
@@ -122,11 +122,11 @@ int main(int argc, char ** argv)
 
         res = db->putAccount(amap, acname);
         if (res) {
-            std::cout << "Password changed." << endl << std::flush;
+            std::cout << "Password changed." << std::endl << std::flush;
         }
     } else {
         std::cout << "Passwords did not match. Account database unchanged."
-                  << endl << std::flush;
+                  << std::endl << std::flush;
     }
     AccountBase::del();
 }

@@ -71,8 +71,8 @@ class ClientConnection : public Atlas::Objects::Decoder {
 
     int read();
     bool connect(const std::string &);
-    bool login(const std::string &, const string &);
-    bool create(const std::string &, const string &);
+    bool login(const std::string &, const std::string &);
+    bool create(const std::string &, const std::string &);
     bool wait();
     void send(Atlas::Objects::Operation::RootOperation & op);
 

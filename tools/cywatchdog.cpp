@@ -81,7 +81,7 @@ void client_signal(int signo)
 {
 #ifdef _NO_DAEMON
     printf("Killing client %d with %d\n", server.s_cpid, signo);
-    fflush(stdout);
+    fstd::flush(stdout);
 #endif
     kill(server.s_cpid, signo);
 }
@@ -97,7 +97,7 @@ void server_signal(int signo)
         case SVR_OBSOLETE:
         case SVR_TERM:
 #ifdef _NO_DAEMON
-            printf("Killing server %d with %d\n", server.s_pid, signo); fflush(stdout);
+            printf("Killing server %d with %d\n", server.s_pid, signo); fstd::flush(stdout);
 #endif
             kill(server.s_pid, signo);
         default:
@@ -211,7 +211,7 @@ int main(int argc, char ** argv)
     openlog("WorldForge Cyphesis Watchdog", LOG_PID, LOG_DAEMON);
     syslog(LOG_INFO, "Server monitor started");
     std::ofstream pid_file((var_dir + "/cyphesis/watchdog.pid").c_str());
-    pid_file << getpid() << flush;
+    pid_file << getpid() << std::flush;
     pid_file.close();
     if (false) {
         syslog(LOG_ERR, "Failed to write pid file: %s. control program won't work", strerror(errno));

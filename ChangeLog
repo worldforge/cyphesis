@@ -1,3 +1,7 @@
+2002-01-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* C++ compliance fixes for gcc 3.
+
 2002-01-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* modules/DateTime.cpp, modules/DateTime.h,

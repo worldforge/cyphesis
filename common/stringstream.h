@@ -1,5 +1,5 @@
-//#ifdef HAVE_SSTREAM
-//#include <sstream>
-//#else
+#if defined(__GNUC__) && __GNUC__ < 3
 #include "sstream.h"
-//#endif
+#else
+#include <sstream>
+#endif

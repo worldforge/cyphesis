@@ -27,13 +27,13 @@ Persistance * Persistance::instance()
 void Persistance::saveAdminAccount(Account & adm)
 {
     std::ofstream adm_file("/tmp/admin.xml", std::ios::out);
-    adm_file << "<atlas>" << endl << "<map>" << endl;
-    adm_file << "    <string name=\"password\">" << adm.password << "</string>" << endl;
-    adm_file << "    <string name=\"id\">" << adm.getId() << "</string>" << endl;
-    adm_file << "    <list name=\"parents\">" << endl;
-    adm_file << "    <string>admin</string>" << endl;
-    adm_file << "    </list>" << endl;
-    adm_file << "</map>" << endl << "</atlas>" << endl << flush;
+    adm_file << "<atlas>" << std::endl << "<map>" << std::endl;
+    adm_file << "    <string name=\"password\">" << adm.password << "</string>" << std::endl;
+    adm_file << "    <string name=\"id\">" << adm.getId() << "</string>" << std::endl;
+    adm_file << "    <list name=\"parents\">" << std::endl;
+    adm_file << "    <string>admin</string>" << std::endl;
+    adm_file << "    </list>" << std::endl;
+    adm_file << "</map>" << std::endl << "</atlas>" << std::endl << std::flush;
     adm_file.close();
 }
 
@@ -92,14 +92,14 @@ Account * Persistance::getAccount(const std::string & name)
     Object::MapType::const_iterator I = account.find("id"),
                                     J = account.find("password");
     if ((I == account.end()) || (J == account.end())){
-        cerr << "WARNING: Database account entry " << name
-             << " is missing essential fields." << endl << flush;
+        std::cerr << "WARNING: Database account entry " << name
+             << " is missing essential fields." << std::endl << std::flush;
         return NULL;
     }
     const Object & acn = I->second, & acp = J->second;
     if (!acn.IsString() || !acp.IsString()) {
-        cerr << "WARNING: Database account entry " << name << " is corrupt."
-             << endl << flush;
+        std::cerr << "WARNING: Database account entry " << name << " is corrupt."
+             << std::endl << std::flush;
         return NULL;
     }
     if (acn.AsString() == "admin") {

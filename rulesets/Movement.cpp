@@ -38,7 +38,7 @@ void Movement::checkCollisions(const Location & loc)
     // the next tick in consts::basic_tick seconds
     double collTime = consts::basic_tick + 1;
     elist_t::const_iterator I;
-    debug( cout << "checking " << m_body.getId() << loc.coords << loc.velocity << " against "; );
+    debug( std::cout << "checking " << m_body.getId() << loc.coords << loc.velocity << " against "; );
     m_collEntity = NULL;
     for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
         // if ((*I) == loc.ref) { continue; }
@@ -48,15 +48,15 @@ void Movement::checkCollisions(const Location & loc)
         int axis;
         double t = loc.timeToHit(oloc, axis);
         if (t < 0) { continue; }
-        debug( cout << (*I)->getId() << oloc.coords << oloc.velocity; );
-        debug( cout << "[" << t << "]"; );
+        debug( std::cout << (*I)->getId() << oloc.coords << oloc.velocity; );
+        debug( std::cout << "[" << t << "]"; );
         if (t < collTime) {
             m_collEntity = *I;
             m_collAxis = axis;
         }
         collTime = std::min(collTime, t);
     }
-    debug( cout << endl << flush; );
+    debug( std::cout << std::endl << std::flush; );
     if (collTime > consts::basic_tick) {
         // Check whethe we are moving out of parents bounding box
         // If ref has no bounding box, or itself has no ref, then we can't
@@ -99,7 +99,7 @@ void Movement::checkCollisions(const Location & loc)
             // if (coll2Time > consts::basic_tick) { return; }
         }
     }
-    debug( cout << "COLLISION" << std::endl << std::flush; );
+    debug( std::cout << "COLLISION" << std::endl << std::flush; );
     if (collTime < getTickAddition(loc.coords)) {
         debug(std::cout << "Setting target loc to " << loc.coords << "+"
                    << loc.velocity << "*" << collTime;);

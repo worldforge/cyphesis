@@ -96,10 +96,10 @@ bool CommServer::setup(int port)
     if (global_conf->findItem("cyphesis", "metaserver")) {
         mserver = global_conf->getItem("cyphesis", "metaserver");
     }
-    debug(cout << "Connecting to metaserver..." << endl << flush;);
+    debug(std::cout << "Connecting to metaserver..." << std::endl << std::flush;);
     struct hostent * ms_addr = gethostbyname(mserver.c_str());
     if (ms_addr == NULL) {
-        cerr << "metaserver lookup failed. Disabling metaserver." <<endl<<flush;
+        std::cerr << "metaserver lookup failed. Disabling metaserver." <<std::endl<<std::flush;
         useMetaserver = false;
         return true;
     }
@@ -107,7 +107,7 @@ bool CommServer::setup(int port)
     
     metaFd = socket(AF_INET, SOCK_DGRAM, 0);
     if (metaFd < 0) {
-        cerr << "WARNING: Could not create metaserver connection" <<endl<<flush;
+        std::cerr << "WARNING: Could not create metaserver connection" <<std::endl<<std::flush;
         useMetaserver = false;
         perror("socket");
     }
@@ -126,13 +126,13 @@ bool CommServer::accept()
     sin.sin_port = htons(serverPort);
     sin.sin_addr.s_addr = 0L;
 
-    debug(cout << "Accepting.." << endl << flush;);
+    debug(std::cout << "Accepting.." << std::endl << std::flush;);
     int asockfd = ::accept(serverFd, (struct sockaddr *)&sin, &addr_len);
 
     if (asockfd < 0) {
         return false;
     }
-    debug(cout << "Accepted" << endl << flush;);
+    debug(std::cout << "Accepted" << std::endl << std::flush;);
     CommClient * newcli = new CommClient(*this, asockfd, sin.sin_port);
 
     newcli->setup();
@@ -149,7 +149,7 @@ inline void CommServer::idle()
     // stuff.
     time_t ctime = time(NULL);
     if ((ctime > (metaserverTime + 5 * 60)) && useMetaserver) {
-        debug(cout << "Sending keepalive" << endl << flush;);
+        debug(std::cout << "Sending keepalive" << std::endl << std::flush;);
         metaserverTime = ctime;
         metaserverKeepalive();
     }
@@ -178,7 +178,7 @@ void CommServer::loop()
     FD_SET(serverFd, &sock_fds);
     if (useMetaserver) {
         FD_SET(metaFd, &sock_fds);
-        highest = max(serverFd, metaFd);
+        highest = std::max(serverFd, metaFd);
     } else {
         highest = serverFd;
     }
@@ -203,7 +203,7 @@ void CommServer::loop()
            client = I->second;
            if (client->peek() != -1) {
                if (client->read()) {
-                   debug(cout << "Removing client due to failed negotiation" << endl << flush;);
+                   debug(std::cout << "Removing client due to failed negotiation" << std::endl << std::flush;);
                    removeClient(client);
                    break;
                }
@@ -220,11 +220,11 @@ void CommServer::loop()
        }
     }
     if (FD_ISSET(serverFd, &sock_fds)) {
-        debug(cout << "selected on server" << endl << flush;);
+        debug(std::cout << "selected on server" << std::endl << std::flush;);
         accept();
     }
     if (useMetaserver && FD_ISSET(metaFd, &sock_fds)) {
-        debug(cout << "selected on metaserver" << endl << flush;);
+        debug(std::cout << "selected on metaserver" << std::endl << std::flush;);
         metaserverReply();
     }
     // Once we have done all socket related stuff, proceed with processing
@@ -280,7 +280,7 @@ void CommServer::metaserverReply()
     unsigned int        packet_size;
 
     if (recvfrom(metaFd, mesg, MAXLINE, 0, &addr, &addrlen) < 0) {
-        cerr << "WARNING: No reply from metaserver" << endl << flush;
+        std::cerr << "WARNING: No reply from metaserver" << std::endl << std::flush;
         return;
     }
     mesg_ptr = unpack_uint32(&command, mesg);
@@ -288,7 +288,7 @@ void CommServer::metaserverReply()
     if(command == HANDSHAKE)
     {
         mesg_ptr = unpack_uint32(&handshake, mesg_ptr);
-        debug(cout << "Server contacted successfully." << endl << flush;);
+        debug(std::cout << "Server contacted successfully." << std::endl << std::flush;);
 
         packet_size = 0;
         mesg_ptr = pack_uint32(SERVERSHAKE, mesg, &packet_size);

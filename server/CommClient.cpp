@@ -40,29 +40,29 @@ CommClient::~CommClient()
 
 void CommClient::setup()
 {
-    debug( cout << "Negotiating started" << endl << flush; );
+    debug( std::cout << "Negotiating started" << std::endl << std::flush; );
     // Create the server side negotiator
     accept =  new Atlas::Net::StreamAccept("cyphesis " + commServer.identity, clientIos, this);
 
     accept->Poll(false);
 
-    clientIos << flush;
+    clientIos << std::flush;
 }
 
 bool CommClient::negotiate()
 {
-    debug(cout << "Negotiating... " << flush;);
+    debug(std::cout << "Negotiating... " << std::flush;);
     // Poll and check if negotiation is complete
     accept->Poll();
 
     if (accept->GetState() == Atlas::Net::StreamAccept::IN_PROGRESS) {
         return false;
     }
-    debug(cout << "done" << endl;);
+    debug(std::cout << "done" << std::endl;);
 
     // Check if negotiation failed
     if (accept->GetState() == Atlas::Net::StreamAccept::FAILED) {
-        cerr << "Failed to negotiate" << endl;
+        std::cerr << "Failed to negotiate" << std::endl;
         return true;
     }
     // Negotiation was successful
@@ -87,7 +87,7 @@ void CommClient::message(const RootOperation & op)
 {
     oplist reply = connection.message(op);
     for(oplist::const_iterator I = reply.begin(); I != reply.end(); I++) {
-        debug(cout << "sending reply" << endl << flush;);
+        debug(std::cout << "sending reply" << std::endl << std::flush;);
         send(*I);
         delete *I;
     }
@@ -95,78 +95,78 @@ void CommClient::message(const RootOperation & op)
 
 void CommClient::UnknownObjectArrived(const Object& o)
 {
-    debug(cout << "An unknown has arrived." << endl << flush;);
+    debug(std::cout << "An unknown has arrived." << std::endl << std::flush;);
     RootOperation * r = (RootOperation*)utility::Object_asRoot(o);
     if (r != NULL) {
         message(*r);
     }
     if (debug_flag) {
-        debug(cout << "An unknown has arrived." << endl << flush;);
+        debug(std::cout << "An unknown has arrived." << std::endl << std::flush;);
         if (o.IsMap()) {
             for(Object::MapType::const_iterator I = o.AsMap().begin();
 		    I != o.AsMap().end();
 		    I++) {
-		    debug(cout << I->first << endl << flush;);
+		    debug(std::cout << I->first << std::endl << std::flush;);
                     if (I->second.IsString()) {
-		        debug(cout << I->second.AsString() << endl << flush;);
+		        debug(std::cout << I->second.AsString() << std::endl << std::flush;);
                     }
 	    }
         } else {
-            debug(cout << "Its not a map." << endl << flush;);
+            debug(std::cout << "Its not a map." << std::endl << std::flush;);
         }
     }
 }
 
 void CommClient::ObjectArrived(const Login & op)
 {
-    debug(cout << "A login operation thingy here!" << endl << flush;);
+    debug(std::cout << "A login operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Create & op)
 {
-    debug(cout << "A create operation thingy here!" << endl << flush;);
+    debug(std::cout << "A create operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Imaginary & op)
 {
-    debug(cout << "A imaginary operation thingy here!" << endl << flush;);
+    debug(std::cout << "A imaginary operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Move & op)
 {
-    debug(cout << "A move operation thingy here!" << endl << flush;);
+    debug(std::cout << "A move operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Set & op)
 {
-    debug(cout << "A set operation thingy here!" << endl << flush;);
+    debug(std::cout << "A set operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Touch & op)
 {
-    debug(cout << "A touch operation thingy here!" << endl << flush;);
+    debug(std::cout << "A touch operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Look & op)
 {
-    debug(cout << "A look operation thingy here!" << endl << flush;);
+    debug(std::cout << "A look operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Talk & op)
 {
-    debug(cout << "A talk operation thingy here!" << endl << flush;);
+    debug(std::cout << "A talk operation thingy here!" << std::endl << std::flush;);
     message(op);
 }
 
 void CommClient::ObjectArrived(const Get & op)
 {
-    debug(cout << "A get operation thingy here!" << endl << flush;);
+    debug(std::cout << "A get operation thingy here!" << std::endl << std::flush;);
     message(op);
 }

@@ -201,7 +201,7 @@ int main(int argc, char ** argv)
         port_num=global_conf->getItem("cyphesis","tcpport");
     }
     if (!s.setup(port_num)) {
-        cerr << "Could not create listen socket." << std::endl << std::flush;
+        std::cerr << "Could not create listen socket." << std::endl << std::flush;
         return 1;
     }
 

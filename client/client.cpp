@@ -23,7 +23,7 @@ int main(int argc, char ** argv)
     while (global_conf->findItem("cyphesis", "ruleset")) {
         ruleset = global_conf->getItem("cyphesis", "ruleset");
         global_conf->erase("cyphesis", "ruleset");
-        cout << "Reading in " << ruleset << endl << flush;
+        std::cout << "Reading in " << ruleset << std::endl << std::flush;
         global_conf->readFromFile(share_directory + "/cyphesis/" + ruleset + ".vconf");
         rulesets.push_back(ruleset);
     };

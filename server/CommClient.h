@@ -67,7 +67,7 @@ class CommClient : Atlas::Objects::Decoder {
             //    std::cout << std::endl << flush;
 
             encoder->StreamMessage(op);
-            clientIos << flush;
+            clientIos << std::flush;
         }
     }
 

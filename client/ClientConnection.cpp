@@ -34,12 +34,12 @@ void ClientConnection::operation(const RootOperation & op)
 #if 0
     const std::string & from = op.GetFrom();
     if (from.empty()) {
-        cerr << "ERROR: Operation with no destination" << endl << flush;
+        std::cerr << "ERROR: Operation with no destination" << std::endl << std::flush;
         return;
     }
     dict_t::iterator I = objects.find(from);
     if (I == objects.end()) {
-        cerr << "ERROR: Operation with invalid destination" << endl << flush;
+        std::cerr << "ERROR: Operation with invalid destination" << std::endl << std::flush;
         return;
     }
     oplist res = I->second->message(op);
@@ -53,14 +53,14 @@ void ClientConnection::operation(const RootOperation & op)
 
 void ClientConnection::ObjectArrived(const Error&op)
 {
-    debug(cout << "ERROR" << endl << flush;);
+    debug(std::cout << "ERROR" << std::endl << std::flush;);
     push(op);
     error_flag = true;
 }
 
 void ClientConnection::ObjectArrived(const Info & op)
 {
-    debug(cout << "INFO" << endl << flush;);
+    debug(std::cout << "INFO" << std::endl << std::flush;);
     const std::string & from = op.GetFrom();
     if (from.empty()) {
         reply_flag = true;
@@ -72,7 +72,7 @@ void ClientConnection::ObjectArrived(const Info & op)
             // objects[acid] = new ClientAccount(acid, *this);
         }
         catch (...) {
-            cerr << "WARNING: Malformed account from server" << endl << flush;
+            std::cerr << "WARNING: Malformed account from server" << std::endl << std::flush;
         }
     } else {
         operation(op);
@@ -220,7 +220,7 @@ int ClientConnection::read() {
 
 bool ClientConnection::connect(const std::string & server)
 {
-    debug(cout << "Connecting to " << server << endl << flush;);
+    debug(std::cout << "Connecting to " << server << std::endl << std::flush;);
 
     ios.open(server.c_str(), 6767);
     if (!ios.is_open()) {
@@ -232,14 +232,14 @@ bool ClientConnection::connect(const std::string & server)
 
     Atlas::Net::StreamConnect conn("cyphesis_aiclient", ios, this);
 
-    debug(cout << "Negotiating... " << flush;);
+    debug(std::cout << "Negotiating... " << std::flush;);
     while (conn.GetState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
       conn.Poll();
     }
-    debug(cout << "done" << endl;);
+    debug(std::cout << "done" << std::endl;);
   
     if (conn.GetState() == Atlas::Net::StreamConnect::FAILED) {
-        cerr << "Failed to negotiate" << endl;
+        std::cerr << "Failed to negotiate" << std::endl;
         return false;
     }
 
@@ -298,16 +298,14 @@ bool ClientConnection::wait()
 
 void ClientConnection::send(Atlas::Objects::Operation::RootOperation & op)
 {
-    debug(std::fstream f(1);
-          Atlas::Codecs::XML c(f, (Atlas::Bridge*)this);
+    debug(Atlas::Codecs::XML c((std::iostream&)std::cout, (Atlas::Bridge*)this);
           Atlas::Objects::Encoder enc(&c);
           enc.StreamMessage(&op);
-          std::cout << std::endl << flush;);
-    
+          std::cout << std::endl << std::flush;);
 
     op.SetSerialno(++serialNo);
     encoder->StreamMessage(&op);
-    ios << flush;
+    ios << std::flush;
 }
 
 void ClientConnection::poll()

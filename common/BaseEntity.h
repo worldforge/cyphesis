@@ -30,7 +30,7 @@ class BaseEntity {
         return m_id;
     }
 
-    void setId(const string & i) {
+    void setId(const std::string & i) {
         m_id = i;
     }
 

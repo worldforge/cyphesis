@@ -81,12 +81,12 @@ oplist Admin::SaveOperation(const Save & op)
         p->putEntity(*I->second);
         ++count;
         if (I->second->isCharacter()) {
-            cout << "Dumping character to database" << endl << flush;
+            std::cout << "Dumping character to database" << std::endl << std::flush;
             Character * c = (Character *)I->second;
             if (c->mind == NULL) { continue; }
             oplist res = c->mind->SaveOperation(op);
             if ((res.size() != 0) && (res.front()->GetArgs().size() != 0)) {
-                cout << "Dumping mind to database" << endl << flush;
+                std::cout << "Dumping mind to database" << std::endl << std::flush;
                 Object::MapType & mindmap = res.front()->GetArgs().front().AsMap();
                 p->putMind(c->getId(), mindmap);
                 ++mind_count;

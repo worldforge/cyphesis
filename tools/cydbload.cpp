@@ -49,13 +49,13 @@ class FileDecoder : public Atlas::Message::DecoderBase {
         Object::MapType::const_iterator I;
         if ((I = omap.find("id")) == omap.end()) {
             std::cerr << "WARNING: Object in file has no id. Not stored."
-                      << endl << flush;
+                      << std::endl << std::flush;
             return;
         }
         m_count++;
         const std::string & id = I->second.AsString();
         if (m_worldMerge && (id == "world_0")) {
-            std::cout << "Merging into existing world object" << endl << flush;
+            std::cout << "Merging into existing world object" << std::endl << std::flush;
             if (((I = omap.find("contains")) != omap.end()) &&
                 (I->second.IsList())) {
                 const Object::ListType & contlist = I->second.AsList();
@@ -66,7 +66,7 @@ class FileDecoder : public Atlas::Message::DecoderBase {
                 }
                 m_db->storeInWorld(m_world, id.c_str());
             } else {
-                std::cout << "WARNING: New world object has no contains list, so no ids are being merged" << endl << flush;
+                std::cout << "WARNING: New world object has no contains list, so no ids are being merged" << std::endl << std::flush;
             }
         } else {
             m_db->storeInWorld(omap, id.c_str());
@@ -75,11 +75,11 @@ class FileDecoder : public Atlas::Message::DecoderBase {
   public:
     FileDecoder(const std::string & filename, WorldBase * db) :
                 m_file(filename.c_str()), m_db(db),
-                m_codec((iostream&)m_file, this), m_count(0)
+                m_codec((std::iostream&)m_file, this), m_count(0)
     {
         m_worldMerge = db->getWorld(m_world);
         if (m_worldMerge && !m_world.find("contains")->second.IsList()) {
-            std::cout << "WARNING: Current database world object has no contains list, so so it is being replaced" << endl << flush;
+            std::cout << "WARNING: Current database world object has no contains list, so so it is being replaced" << std::endl << std::flush;
             m_worldMerge = false;
             
         }
@@ -93,13 +93,13 @@ class FileDecoder : public Atlas::Message::DecoderBase {
 
     void report() {
         std::cout << m_count << " objects stored in world database."
-                  << endl << flush;
+                  << std::endl << std::flush;
     }
 };
 
 static void usage(char * prgname)
 {
-    std::cout << "usage: " << prgname << " <atlas map file>" << endl << flush;
+    std::cout << "usage: " << prgname << " <atlas map file>" << std::endl << std::flush;
     return;
 }
 
