@@ -1,3 +1,6 @@
+Implement trivial combat, and code up a bunny bashing quests for the hard
+of thinking.
+
 Task needs a name, and an accessor for it, so it can be used as a private
 Property.
 
