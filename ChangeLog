@@ -1,3 +1,10 @@
+2004-03-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Collision.h, physics/Collision.cpp: Work on code predicting
+	  when entity leaves parent.
+
+	* tests/emergencetest.cpp: Add test for emergence code.
+
 2004-03-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Fix bootstrap bug by ensuring that all pending

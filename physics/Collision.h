@@ -7,6 +7,8 @@
 
 #include "physics/Vector3D.h"
 
+#include <wfmath/axisbox.h>
+
 #include <map>
 
 class Location;
@@ -61,20 +63,17 @@ bool getEmergenceTime(const Vector3D & p,     // Position of point
 // Predict collision between two sets of meshes, defined by vertices
 // and surface normals
 // Returns whether the collision will occur
-bool predictEmergence(const CoordList & l,    // Vertices of this mesh
-                      const NormalSet & ln,   // Normals of this mesh
-                      const Vector3D & u,     // Velocity of this mesh
-                      const CoordList & o,    // Vertices of other mesh
-                      const NormalSet & on,   // Normals of other mesh
-                      const Vector3D & v,     // Velocity of other mesh
-                      float & time,           // Returned time to collision
-                      Vector3D & normal);     // Returned collision normal
+bool predictEmergence(const CoordList & l,      // Vertices of this mesh
+                      const Vector3D & u,       // Velocity of this mesh
+                      const WFMath::AxisBox<3>&,// Bounding box of container
+                      float & time);            // Returned time to collision
+// FIXME Maybe another function like the above is required to handle if the
+// container is more complex and has a set of faces?
 
 // Predict when entity emerges from inside other entity
 // Returns whether the emergence will occur
 bool predictEmergence(const Location & l,     // Location data of this object
-                      const Location & o,     // Location data of other object
-                      float & time,          // Returned time to collision
-                      Vector3D & normal);     // Returned collision normal
+                      const Location & o,     // Location data of container
+                      float & time);          // Returned time to collision
 
 #endif // PHYSICS_COLLISION_H

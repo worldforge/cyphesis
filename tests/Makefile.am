@@ -1,7 +1,7 @@
 COMMON_TESTS = logtest inheritancetest BaseEntitytest OOGThingtest \
                systemtest utilitytest
 
-PHYSICS_TESTS = collisiontest
+PHYSICS_TESTS = collisiontest emergencetest
 
 MODULE_TESTS = Locationtest
 
@@ -43,6 +43,9 @@ utilitytest_LDADD = ../common/utility.o
 
 collisiontest_SOURCES = collisiontest.cpp
 collisiontest_LDADD = ../physics/Collision.o
+
+emergencetest_SOURCES = emergencetest.cpp
+emergencetest_LDADD = ../physics/Collision.o
 
 
 # MODULE_TESTS

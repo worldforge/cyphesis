@@ -293,22 +293,56 @@ bool getEmergenceTime(const Vector3D & p,    // Position of point
     return !getCollisionTime(p, u, l, n, v, time);
 }
 
-bool predictEmergence(const CoordList & l,    // Vertices of this mesh
-                      const NormalSet & ln,   // Normals of this mesh
-                      const Vector3D & u,     // Velocity of this mesh
-                      const CoordList & o,    // Vertices of other mesh
-                      const NormalSet & on,   // Normals of other mesh
-                      const Vector3D & v,     // Velocity of other mesh
-                      float & time,           // Returned time to collision
-                      Vector3D & n)           // Returned collision normal
+static float min(float a, float b, float c)
 {
-    return false;
+    if (a < b) {
+        if (a < c) {
+            return a;
+        } else {
+            return c;
+        }
+    } else if (b < c) {
+        return b;
+    } else {
+        return c;
+    }
+}
+
+bool predictEmergence(const CoordList & l,         // Vertices of this mesh
+                      const Vector3D & u,          // Velocity of this mesh
+                      const WFMath::AxisBox<3> & o,// Bounding box of container
+                      float & time)                // Returned time to emergence
+{
+    const WFMath::Point<3> & on = o.lowCorner();
+    const WFMath::Point<3> & of = o.highCorner();
+    float mintime = 4;
+    bool flag = false;
+
+    for(CoordList::const_iterator I = l.begin(); I != l.end(); ++I) {
+        float xtime = (u.x() > 0) ? ((of.x() - I->x()) / u.x())
+                                  : ((on.x() - I->x()) / u.x());
+        float ytime = (u.y() > 0) ? ((of.y() - I->y()) / u.y())
+                                  : ((on.y() - I->y()) / u.y());
+        float ztime = (u.z() > 0) ? ((of.z() - I->z()) / u.z())
+                                  : ((on.z() - I->z()) / u.z());
+        float ctime = min(xtime, ytime, ztime);
+        std::cout << xtime << ":" << ytime << ":" << ztime << ":" << ctime
+                  << std::endl << std::flush;
+        if (ctime < mintime) {
+            mintime = ctime;
+        }
+        if (ctime > time) {
+            time = ctime;
+            flag = true;
+        }
+    }
+
+    return flag;
 }
 
 bool predictEmergence(const Location & l,  // This location
                       const Location & o,  // Other location
-                      float & time,        // Returned time to collision
-                      Vector3D & normal)   // Returned normal acting on l
+                      float & time)        // Returned time to collision
 {
     // We are predicting emergence of l from its parent o
     // Orientation of o is irrelevant, as children and their relative
@@ -317,5 +351,34 @@ bool predictEmergence(const Location & l,  // This location
     // we could drop the Location, and take the bbox instead.
     // So all we need to do is get oriented points for l, and check
     // when they will first leave the axis aligned bounding values
-    return false;
+    const WFMath::Point<3> & ln = l.m_bBox.lowCorner();
+    const WFMath::Point<3> & lf = l.m_bBox.highCorner();
+
+    CoordList lbox(8);
+
+    lbox[0] = WFMath::Vector<3>(ln.x(), ln.y(), ln.z());
+    lbox[1] = WFMath::Vector<3>(lf.x(), ln.y(), ln.z());
+    lbox[2] = WFMath::Vector<3>(lf.x(), lf.y(), ln.z());
+    lbox[3] = WFMath::Vector<3>(ln.x(), lf.y(), ln.z());
+    lbox[4] = WFMath::Vector<3>(ln.x(), ln.y(), lf.z());
+    lbox[5] = WFMath::Vector<3>(lf.x(), ln.y(), lf.z());
+    lbox[6] = WFMath::Vector<3>(lf.x(), lf.y(), lf.z());
+    lbox[7] = WFMath::Vector<3>(ln.x(), lf.y(), lf.z());
+
+    // Orient the box corners
+    if (l.m_orientation.isValid()) {
+        for(int i = 0; i < 8; ++i) {
+            lbox[i].rotate(l.m_orientation);
+        }
+    }
+
+    // Translate the box corners
+    for(int i = 0; i < 8; ++i) {
+        lbox[i] += l.m_pos;
+    }
+
+    assert(l.m_velocity.isValid());
+
+    // We are now ready to carry out the next step
+    return predictEmergence(lbox, l.m_velocity, o.m_bBox, time);
 }
