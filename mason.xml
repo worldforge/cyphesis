@@ -378,9 +378,23 @@
     </map>
   </map>
 
+  <map name="jetty">
+    <string name="parent">thing</string>
+    <map name="attributes">
+      <list name="bbox">
+        <float>-5</float><float>-5</float><float>-2</float>
+        <float>5</float><float>5</float><float>2</float>
+      </list>
+    </map>
+  </map>
+
   <map name="boat">
     <string name="parent">thing</string>
     <map name="attributes">
+      <list name="bbox">
+        <float>-5</float><float>-2</float><float>-1</float>
+        <float>5</float><float>2</float><float>1</float>
+      </list>
     </map>
   </map>
 </map>

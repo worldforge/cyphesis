@@ -101,20 +101,20 @@ def default(mapeditor):
 
 # a wall around the world
 
-    m.make('boundary',type='boundary',xyz=(-201,-201,settlement_height),bbox=[2,404,50])
-    m.make('boundary',type='boundary',xyz=(-201,-201,settlement_height),bbox=[404,2,50])
-    m.make('boundary',type='boundary',xyz=(-201, 200,settlement_height),bbox=[404,2,50])
-    m.make('boundary',type='boundary',xyz=( 200,-201,settlement_height),bbox=[2,404,50])
+    m.make('boundary',type='boundary',xyz=(-257,-257,settlement_height),bbox=[2,514,256])
+    m.make('boundary',type='boundary',xyz=(-257,-257,settlement_height),bbox=[514,2,256])
+    m.make('boundary',type='boundary',xyz=(-257, 256,settlement_height),bbox=[514,2,256])
+    m.make('boundary',type='boundary',xyz=( 256,-257,settlement_height),bbox=[2,514,256])
 
     m.make('willow',type='willow',xyz=(-10,-0,settlement_height))
     m.make('hickory',type='hickory',xyz=(-0,-10,settlement_height))
 
     m.make('sherwood',type='forest',xyz=(-50, 10,settlement_height),bbox=[40,40,40])
 
-    m.make('jetty',type='thing',xyz=(-22,-48,0),bbox=[-5, -5, -2, 5, 5, 2])
-    m.make('boat',type='boat',xyz=(-22,-56,0),bbox=[-5, -2, -1, 5, 2, 1])
+    m.make('jetty',type='jetty',xyz=(-22,-48,0))
+    m.make('boat',type='boat',xyz=(-22,-56,0),mode="floating")
 
-def dontrunme():
+#def dontrunme():
 # a camp near the origin
 
     #cfire=m.make('campfire',type='campfire',xyz=(0,4,settlement_height))
@@ -123,12 +123,12 @@ def dontrunme():
     #m.make('lumber',type='lumber',xyz=(-1,3,settlement_height))
     #m.make('lumber',type='lumber',xyz=(-1,2.5,settlement_height))
 
-    hall=m.make('hall',type='hall',xyz=hall_xyz)
+    # hall=m.make('hall',type='hall',xyz=hall_xyz)
 
     # Fire in the centre of the hall
-    cfire=m.make('campfire',type='campfire',xyz=(6,6,settlement_height),
-                                            parent=hall.id)
-    m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
+    # cfire=m.make('campfire',type='campfire',xyz=(6,6,settlement_height),
+                                            # parent=hall.id)
+    # m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
 
     cfire=m.make('campfire',type='campfire',xyz=(3,9,settlement_height))
     m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)

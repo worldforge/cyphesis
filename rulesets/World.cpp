@@ -79,9 +79,12 @@ World::World(const std::string & id) : World_parent(id),
     for (int i = -5; i < 6; ++i) {
         for (int j = -5; j < 6; ++j) {
             if (i == -5 || i == 5 || j == -5 || j == 5) {
-                m_terrain.setBasePoint(i, j, -10);
+                m_terrain.setBasePoint(i, j, 100 + rng() * 50);
+            } else if (i == -4 || i == 4 || j == -4 || j == 4) {
+                m_terrain.setBasePoint(i, j, 30 + rng() * 50);
             } else {
-                m_terrain.setBasePoint(i, j, 1 + rng() * 10);
+                float mult = abs(i) + abs(j);
+                m_terrain.setBasePoint(i, j, 1 + rng() * mult * 8);
             }
         }
     }
@@ -90,12 +93,12 @@ World::World(const std::string & id) : World_parent(id),
     m_terrain.setBasePoint(-1, -1, -16.8);
     m_terrain.setBasePoint(0, -1, -3.8);
     m_terrain.setBasePoint(-1, 0, -2.8);
-    m_terrain.setBasePoint(-1, 1, 14.8);
+    m_terrain.setBasePoint(-1, 1, 12.8);
     m_terrain.setBasePoint(1, -1, 15.8);
     m_terrain.setBasePoint(0, 0, 12.8);
     m_terrain.setBasePoint(1, 0, 23.1);
     m_terrain.setBasePoint(0, 1, 14.2);
-    m_terrain.setBasePoint(1, 1, 44.7);
+    m_terrain.setBasePoint(1, 1, 19.7);
 }
 
 World::~World()

@@ -1,5 +1,14 @@
 2004-04-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* Fix types for boat and jetty.
+
+	* rulesets/World.cpp: New random terrain for Ludex demo.
+
+	* Define new boandary objects, and start work on major map
+	  improvements.
+
+2004-04-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Add comments on new Python type API.
 
 2004-03-20  Al Riddoch  <alriddoch@zepler.org>
