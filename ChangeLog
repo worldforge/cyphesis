@@ -1,5 +1,9 @@
 2004-12-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* Release version 0.3.7.
+
+2004-12-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/mind/PigMind.py: Fix bug with pigs not responding
 	  to touch because of missing import.
 
