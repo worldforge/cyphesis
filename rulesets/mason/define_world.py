@@ -90,12 +90,14 @@ crab_goals=[(il.avoid,"avoid('wolf',10.0)"),
 lych_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"),
             (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
 
+
+# N, E, S, W, NE, SE, SW, NW in order
 directions = [[0,0,0.707,0.707],[0,0,0,1],[0,0,-0.707,0.707],[0,0,1,0],
               [0,0,0.387,0.921],[0,0,-0.387,0.921],[0,0,-0.921,0.387],[0,0,0.921,0.387]]
 
 forests = [
-           ('oak', 20, 20, 200, -100, 200, 20),
-           ('oak', 20, -100, 20, 20, 200, 20),
+           ('oak', 20, 20, 200, -100, 100, 20),
+           ('oak', 20, -100, 100, 20, 200, 20),
            ('fir', 200,  200,  300, -300, 300, 50),
            ('fir', 200, -300, 300,  200,  300, 50)
           ]
@@ -311,3 +313,20 @@ def add_memtest(mapeditor):
 
     m.make('settler',type='settler',xyz=(0,5,5))
     m.make('oak',type='oak',xyz=(5,0,5))
+
+def add_village(mapeditor):
+#   general things
+
+    m=editor(mapeditor)
+
+    m.make('tower',type='tower',xyz=(210,210,5))
+    m.make('gallows',type='gallows',xyz=(185,195,5))
+
+    m.make('house3',type='house3',xyz=(158,150,22),orientation=directions[1])
+    m.make('house3',type='house3',xyz=(158,158,22),orientation=directions[4])
+    m.make('house3',type='house3',xyz=(150,158,22),orientation=directions[0])
+    m.make('house3',type='house3',xyz=(142,158,22),orientation=directions[7])
+    m.make('house3',type='house3',xyz=(142,150,22),orientation=directions[3])
+    m.make('house3',type='house3',xyz=(142,142,22),orientation=directions[6])
+    m.make('house3',type='house3',xyz=(150,142,22),orientation=directions[2])
+    m.make('house3',type='house3',xyz=(158,142,22),orientation=directions[5])

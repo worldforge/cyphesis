@@ -82,6 +82,8 @@ World::World(const std::string & id) : World_parent(id),
                 m_terrain.setBasePoint(i, j, 100 + rng() * 50);
             } else if (i == -5 || j == -5) {
                 m_terrain.setBasePoint(i, j, -10 - rng() * 20);
+            } else if ((i == 2 || i == 3) && (j == 2 || j == 3)) {
+                m_terrain.setBasePoint(i, j, 20 + rng() * 5);
             } else if (i == 4 || j == 4) {
                 m_terrain.setBasePoint(i, j, 30 + rng() * 50);
             } else if (i == -4 || j == -4) {

@@ -1,3 +1,8 @@
+2004-06-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/define_world.py, rulesets/World.cpp,
+	  mason.xml: New map work.
+
 2004-06-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp, common/globals.cpp, rulesets/Area.cpp,
