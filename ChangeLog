@@ -1,3 +1,8 @@
+2004-07-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Get rid of leak from handling delete op
+	  reply. Eliminate unnecessary copy reading TO of all ops.
+
 2004-07-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/BaseMind.cpp: Make sure we don't delete ourself from

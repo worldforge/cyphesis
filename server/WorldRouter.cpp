@@ -229,7 +229,7 @@ OpVector WorldRouter::message(RootOperation & op, const Entity * obj)
     return OpVector();
 }
 
-inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) const
+const EntitySet & WorldRouter::broadcastList(const RootOperation & op) const
 {
     const Element::ListType & parents = op.getParents();
     if (!parents.empty() && (parents.front().isString())) {
@@ -279,6 +279,7 @@ void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
                       << std::endl << std::flush;
             newOp.setFrom(e->getId());
             operation(newOp);
+            delete &newOp;
         }
     }
     if (e == &m_gameWorld) {
@@ -293,7 +294,7 @@ void WorldRouter::deliverDeleteTo(const RootOperation & op, Entity * e)
 OpVector WorldRouter::operation(const RootOperation & op)
 {
     // const RootOperation & op = *op_ptr;
-    std::string to = op.getTo();
+    const std::string & to = op.getTo();
     debug(std::cout << "WorldRouter::operation {"
                     << op.getParents().front().asString() << ":"
                     << op.getFrom() << ":" << to << "}" << std::endl
