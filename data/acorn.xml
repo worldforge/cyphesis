@@ -18,7 +18,7 @@
 
   <map>
     <map name="attributes">
-      <map name="alcahol">
+      <map name="alcohol">
         <float name="default">0</float>
         <string name="visibility">public</string>
       </map>
