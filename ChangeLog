@@ -1,3 +1,7 @@
+2001-07-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Fixed setting parents on world entity.
+
 2001-07-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Account.cpp: Fixed setting name of characters startup coin

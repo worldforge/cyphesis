@@ -255,6 +255,7 @@ oplist WorldRouter::lookOperation(const Look & op)
 
             Object::MapType omap;
             omap["id"] = fullid;
+            omap["parents"] = Object::ListType(1, "world");
             Entity * opFrom = J->second;
             const Vector3D & fromLoc = opFrom->getXyz();
             Object::ListType contlist;
