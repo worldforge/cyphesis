@@ -188,7 +188,7 @@ OpVector Connection::LoginOperation(const Login & op)
     const std::string & passwd = account.find("password")->second.AsString();
     // We now have username and password, so can check whether we know this
     // account, either from existing account ....
-    Account * player = server.getAccount(username);
+    Account * player = server.getAccountByName(username);
     // or if not, from the database
     if (player == 0) {
         debug(std::cout << "No " << username << " account in server. Checking in database." << std::endl << std::flush;);
@@ -252,7 +252,7 @@ OpVector Connection::CreateOperation(const Create & op)
     }
     const std::string & password = I->second.AsString();
 
-    if ((0 != server.getAccount(username)) ||
+    if ((0 != server.getAccountByName(username)) ||
         (Persistance::instance()->findAccount(username)) ||
         (username.empty()) || (password.empty())) {
         // Account exists, or creation data is duff
@@ -299,7 +299,7 @@ OpVector Connection::LogoutOperation(const Logout & op)
         return error(op, "No account password given");
     }
     const std::string & password = I->second.AsString();
-    Account * player = server.getAccount(username);
+    Account * player = server.getAccountByName(username);
     if ((!player) || (password != player->password)) {
         return error(op, "Logout failed");
     }

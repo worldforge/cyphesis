@@ -20,8 +20,8 @@ libcommon_a_SOURCES = const.cpp const.h \
 		BaseEntity.cpp BaseEntity.h \
 		OOGThing.cpp OOGThing.h \
 		BaseWorld.cpp BaseWorld.h \
-		Burn.h Chop.h Cut.h Eat.h Fire.h Load.h \
-		Nourish.h Save.h Setup.h Tick.h Generic.h \
+		Burn.h Chop.h Cut.h Eat.h \
+		Nourish.h Setup.h Tick.h Generic.h \
 		stringstream.h \
 		sstream.h iotraits.h
 

@@ -53,17 +53,6 @@ void Persistance::shutdown()
     m_instance = NULL;
 }
 
-Account * Persistance::loadAdminAccount()
-{
-    Persistance * p = instance();
-    Account * adm = p->getAccount("admin");
-    if (adm == NULL) {
-        adm = new Admin(NULL, "admin", consts::defaultAdminPassword);
-        p->putAccount(*adm);
-    }
-    return adm;
-}
-
 bool Persistance::findAccount(const std::string & name)
 {
     DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", name);

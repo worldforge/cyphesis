@@ -56,7 +56,7 @@ class ServerRouting : public OOGThing {
         }
     }
 
-    Account * getAccount(const std::string & username) const {
+    Account * getAccountByName(const std::string & username) const {
         AccountDict::const_iterator I = accounts.find(username);
         if (I == accounts.end()) {
             return 0;
