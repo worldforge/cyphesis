@@ -1,3 +1,9 @@
+2004-04-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.cpp, common/const.h, server/EntityFactory.cpp,
+	  server/Restoration.cpp: Add flag to disable saving of state
+	  to the database.
+
 2004-04-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cycmd.cpp: Handle all ops from server, including unknowns.

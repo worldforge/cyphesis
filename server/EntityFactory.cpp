@@ -25,6 +25,7 @@
 
 #include "common/debug.h"
 #include "common/globals.h"
+#include "common/const.h"
 #include "common/inheritance.h"
 
 #include <Atlas/Message/Element.h>
@@ -73,7 +74,11 @@ Entity * EntityFactory::newEntity(const std::string & id,
         return 0;
     }
     FactoryBase * factory = I->second;
-    thing = factory->newPersistantThing(id, &pc);
+    if (consts::enable_persistence) {
+        thing = factory->newPersistantThing(id, &pc);
+    } else {
+        thing = factory->newThing(id);
+    }
     // FIXME Avoid this copy
     attributes = factory->m_attributes;
     // Sort out python object

@@ -35,6 +35,8 @@ namespace consts {
   static const bool enable_omnipresence = false;
   // What is the minimum size of an object when calculating visibility
   static const float minSqrBoxSize = 0.1f;
+  // Should everything be persistent
+  static const bool enable_persistence = false;
 
 #else // NDEBUG
 
@@ -54,6 +56,7 @@ namespace consts {
   extern bool enable_ranges;
   extern bool enable_omnipresence;
   extern float minSqrBoxSize;
+  extern bool enable_persistence;
 
 #endif // NDEBUG
 

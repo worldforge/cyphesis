@@ -52,6 +52,8 @@ namespace consts {
   bool enable_omnipresence = false;
   // What is the minimum size of an object when calculating visibility
   float minSqrBoxSize = 0.1f;
+  // Should everything be persistent
+  bool enable_persistence = false;
 
 #endif
 

@@ -221,8 +221,10 @@ void Restoration::read()
         debug(std::cout << "DEBUG: No world in database"
                         << std::endl << std::flush;);
         database.clearTable("entity_ent");
-        database.createEntityRow("world", consts::rootWorldId, "class",
-                                                               "'world'");
+        if (consts::enable_persistence) {
+            database.createEntityRow("world", consts::rootWorldId, "class",
+                                                                   "'world'");
+        }
         return;
     }
     if (res.size() > 1) {
