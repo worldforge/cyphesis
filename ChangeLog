@@ -1,3 +1,10 @@
+2002-12-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.cpp: Remove redundant includes
+
+	* tools/cycmd.cpp: Re-factor code to work non-blocking, allow
+	  non-admin logins, and generally be more useful.
+
 2002-12-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Fix very long standing moving bug, which

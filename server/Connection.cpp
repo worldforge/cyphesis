@@ -23,8 +23,6 @@
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Info.h>
 #include <Atlas/Objects/Operation/Get.h>
-#include <Atlas/Objects/Operation/Appearance.h>
-#include <Atlas/Objects/Operation/Disappearance.h>
 
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
