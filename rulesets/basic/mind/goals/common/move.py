@@ -7,6 +7,7 @@ if const.server_python:
     from world.physics.Vector3D import Vector3D
 else:
     from Vector3D import Vector3D
+    from Point3D import Point3D
 
 from mind.goals.common.common import *
 from whrandom import *
@@ -88,7 +89,7 @@ class move_it(Goal):
         if type(self.location)==StringType: 
             self.location=me.get_knowledge("location",self.location)
         if not isLocation(self.location):
-            self.location=Location(self.location,Vector3D(0.0,0.0,0.0))
+            self.location=Location(self.location,Point3D(0.0,0.0,0.0))
         if type(self.what)==StringType:
             if me.things.has_key(self.what)==0: return 1
             what=me.things[self.what][0]
@@ -101,7 +102,7 @@ class move_it(Goal):
         if type(self.location)==StringType: 
             self.location=me.get_knowledge("location",self.location)
         elif not isLocation(self.location):
-            self.location=Location(self.location,Vector3D(0.0,0.0,0.0))
+            self.location=Location(self.location,Point3D(0.0,0.0,0.0))
         if type(self.what)==StringType:
             if me.things.has_key(self.what)==0:
                 return
@@ -194,7 +195,7 @@ class wander(Goal):
     def do_wandering(self, me):
         #copied from build_home.find_place, but changed max amount to -5,5
         loc = me.location.copy()
-        loc.coordinates=Vector3D(map(lambda c:c+uniform(-5,5),
+        loc.coordinates=Point3D(map(lambda c:c+uniform(-5,5),
                                      loc.coordinates))
         ent=Entity(me,location=loc)
         return Operation("move",ent)

@@ -1,5 +1,10 @@
 2004-09-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/move.py: Update to use new Point3D
+	  type for pos.
+
+2004-09-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Pedestrian.cpp: Make sure not to transform things
 	  with an invalid quaternion.
 
