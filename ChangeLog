@@ -1,3 +1,8 @@
+2001-02-18  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Commiting tweak to guards patrol route which was included in
+	  Acorn 0.3.
+
 2001-02-17  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Implemented beginnings of ranges code:

@@ -46,7 +46,7 @@ gknowledge=[('m1',(-17, -1,    village_height)),
             ('m3',(-29, -7.5,  village_height)),
             ('m4',(-38, -10,   village_height)),
             ('m5',(-43, -15,   village_height)),
-            ('m8',(-43, -14.5, village_height))]
+            ('m6',(-43, -14.5, village_height))]
 wknowledge=[('w1',(90,-90,village_height)),
             ('w2',(110,-90,village_height)),
             ('w3',(110,90,village_height)),
@@ -125,8 +125,8 @@ def default(mapeditor):
         m.make('shin', type='shin', xyz=(uniform(-100,100),uniform(-100,100),village_height))
         m.make('ribcage', type='ribcage', xyz=(uniform(-100,100),uniform(-100,100),village_height))
 
-    for i in range(0, 10):
-        m.make('coin',type='coin',xyz=(uniform(-2,2),uniform(-2,2),village_height))
+    for i in range(0, 30):
+        m.make('coin',type='coin',xyz=(uniform(-6,-2),uniform(-2,2),village_height))
 
 
 
@@ -193,7 +193,7 @@ def default(mapeditor):
                 xyz=pig_stall_xyz,age=probability.fertility_age,sex='female')
     m.know(guard,gknowledge)
     m.learn(guard,(il.defend,"defend(self, 'sword', 'skeleton', 10)"))
-    m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8'])"))
+    m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))
     m.tell_importance(guard,il.defend,'>',il.patrol)
 
     sword=m.make('sword', type='sword', xyz=(-35,-8,village_height))
