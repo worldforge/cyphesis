@@ -22,7 +22,7 @@ AM_CONDITIONAL(BUILD_STATIC, test x$ac_build_static_binary = xyes)
 
 dnl Initialise automake
 
-AM_INIT_AUTOMAKE(cyphesis, 0.0.13)
+AM_INIT_AUTOMAKE(cyphesis, 0.0.14)
 
 dnl check if user wishes maintainer-mode ("--enable-maintainer-mode = yes")
 AM_MAINTAINER_MODE

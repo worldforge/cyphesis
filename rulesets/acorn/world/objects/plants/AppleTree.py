@@ -5,14 +5,10 @@ from atlas import *
 
 from world.objects.plants.Tree import Tree
 from misc import set_kw
-from whrandom import *
-
-
-debug_oak = 0
 
 """
-This is a special tree which is the actual tree from which acorns will
-fall. This include special rules for dropping fruits (acorns).
+This is a special tree which is the actual tree from which apples will
+fall. This include special rules for dropping fruits (apples).
 """
 
 class Appletree(Tree):
@@ -25,5 +21,9 @@ class Appletree(Tree):
         fcount = self.fruits
         result = self.drop_fruit()
         if fcount != self.fruits:
-            result = result + Operation("set",Entity(self.id,fruits=self.fruits),to=self)
+            if fcount == 0:
+               newmode = "normal"
+            else:
+               newmode = "fruit"
+            result = result + Operation("set",Entity(self.id,fruits=self.fruits,mode=newmode),to=self)
         return result

@@ -4,7 +4,7 @@ INCLUDES = -DVARDIR=\"@localstatedir@\" -DSHAREDIR=\"@datadir@\"
 
 libcommon_a_SOURCES = const.cpp const.h \
 		log.cpp log.h \
-		config.h debug.h \
+		config.h debug.h random.h \
 		types.h operations.h op_switch.h \
 		globals.cpp globals.h \
 		database.cpp database.h \

@@ -1,3 +1,13 @@
+2001-06-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/acorn/world/objects/plants/Tree.py,
+	  rulesets/acorn/world/objects/plants/Oak.py,
+	  rulesets/acorn/world/objects/plants/AppleTree.py:
+	  Modified tree code so mode is set to fruit if they are carrying
+	  any fruit.
+
+	 * Added xml entity maps for agrilan.
+
 2001-06-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cydbload.cpp: Modified database loader so it can

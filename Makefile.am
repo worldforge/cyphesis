@@ -1,7 +1,8 @@
 
 SUBDIRS = physics common modules rulesets server client watchdog tools
 
-EXTRA_DIST = cyphesis.vconf basic.vconf acorn.vconf cyphesis.spec
+EXTRA_DIST = cyphesis.vconf basic.vconf acorn.vconf cyphesis.spec \
+    agrilan_a1.xml agrilan_a2.xml agrilan_a3.xml agrilan.xml
 
 install-data-local:
 	mkdirhier $(DESTDIR)$(datadir)/cyphesis/rulesets

@@ -23,5 +23,9 @@ class Oak(Tree):
         fcount = self.fruits
         result = self.drop_fruit()
         if fcount != self.fruits:
-            result = result + Operation("set",Entity(self.id,fruits=self.fruits),to=self)
+            if fcount == 0:
+               newmode = "normal"
+            else:
+               newmode = "fruit"
+            result = result + Operation("set",Entity(self.id,fruits=self.fruits,mode=newmode),to=self)
         return result

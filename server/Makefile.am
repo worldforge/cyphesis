@@ -17,7 +17,7 @@ cyphesis_SOURCES = \
 
 if BUILD_STATIC
 
-cyphesis_LDADD = ../rulesets/librulesetbase.a ../rulesets/librulesetentity.a ../rulesets/librulesetmind.a ../rulesets/libscriptpython.a ../modules/libmodules.a ../common/libcommon.a ../physics/libphysics.a /usr/local/lib/libAtlasObjects.a /usr/local/lib/libAtlasObjectsOperation.a /usr/local/lib/libAtlasObjectsEntity.a /usr/local/lib/libAtlasNet.a /usr/local/lib/libAtlas.a /usr/local/lib/libAtlasCodecs.a /usr/local/lib/libAtlasMessage.a /usr/local/lib/libAtlas.a /usr/lib/libdb_cxx-3.1.a /usr/lib/libdb-3.1.a /usr/local/lib/libvarconf.a /usr/local/lib/libsigc.a /usr/lib/python1.5/config/libpython1.5.a /usr/lib/libdl.a /usr/lib/libpthread.a /usr/lib/libstdc++-3-libc6.2-2-2.10.0.a -lc -lm /usr/lib/gcc-lib/i386-redhat-linux/2.96/libgcc.a
+cyphesis_LDADD = ../rulesets/librulesetbase.a ../rulesets/librulesetentity.a ../rulesets/librulesetmind.a ../rulesets/libscriptpython.a ../modules/libmodules.a ../common/libcommon.a ../physics/libphysics.a /usr/local/lib/libAtlasObjects.a /usr/local/lib/libAtlasObjectsOperation.a /usr/local/lib/libAtlasObjectsEntity.a /usr/local/lib/libAtlasNet.a /usr/local/lib/libAtlas.a /usr/local/lib/libAtlasCodecs.a /usr/local/lib/libAtlasMessage.a /usr/local/lib/libAtlas.a /usr/lib/libdb_cxx-3.1.a /usr/lib/libdb-3.1.a /usr/local/lib/libvarconf.a /usr/lib/libsigc.a /usr/lib/python1.5/config/libpython1.5.a /usr/lib/libdl.a /usr/lib/libpthread.a /usr/lib/libstdc++-3-libc6.2-2-2.10.0.a -lc -lm /usr/lib/gcc-lib/i386-redhat-linux/2.96/libgcc.a
 
 LIBS = # -lpython1.5 -ldl -lm -lpthread
 

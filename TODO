@@ -1,7 +1,5 @@
 Definitly for Acorn 0.4:
 
-  Use drunkness.
-
   Initialise people so they are not facing east. Islam has not been invented
   yet, and statistically some of the people must be of some other religion.
 
@@ -22,6 +20,8 @@ Definitly for Acorn 0.4:
   Implement archer sitting and yawning.
 
   Implement market stall setup and take down.
+
+  Cut down the rate at which apples are dropped to reduce lag.
 
 Provisional for Acorn 0.4:
 

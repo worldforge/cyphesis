@@ -84,11 +84,11 @@ def default(mapeditor):
 
 # a camp near the origin
 
-    cfire=m.make('campfire',type='campfire',xyz=(0,4,village_height))
-    m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
-    m.make('tent',type='tent',xyz=(-1,8,village_height),bbox=[2.5,2.5,3])
-    m.make('lumber',type='lumber',xyz=(-1,3,village_height))
-    m.make('lumber',type='lumber',xyz=(-1,2.5,village_height))
+    #cfire=m.make('campfire',type='campfire',xyz=(0,4,village_height))
+    #m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
+    #m.make('tent',type='tent',xyz=(-1,8,village_height),bbox=[2.5,2.5,3])
+    #m.make('lumber',type='lumber',xyz=(-1,3,village_height))
+    #m.make('lumber',type='lumber',xyz=(-1,2.5,village_height))
 
     cfire=m.make('campfire',type='campfire',xyz=(35,54,village_height))
     m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
