@@ -20,3 +20,8 @@ librulesets_a_SOURCES = Thing.cpp Thing.h \
 			Py_World.cpp Py_World.h \
 			Py_Location.cpp Py_Location.h \
 			Python_API.cpp Python_API.h
+
+install-data-local:
+	mkdirhier $(datadir)/cyphesis/rulesets
+	tar cf - `find basic -name \*.py` | (cd $(datadir)/cyphesis/rulesets; tar xf -)
+	tar cf - `find acorn -name \*.py` | (cd $(datadir)/cyphesis/rulesets; tar xf -)

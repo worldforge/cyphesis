@@ -1,4 +1,8 @@
-2000-12-11  Al Riddoch  <ajr@ecs.soton.ac.uk>
+2000-12-12  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Started work on auto* files to make cyphesis install correctly.
+
+2000-12-12  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Massive code cleaning efforts, removing dead code, trimming reviewing
 	  and shifting code around to optimise it.
