@@ -6,8 +6,65 @@
 
 #include "Collision.h"
 
+
+bool predictCollision(const Vector3D & p,     // Position of point
+                      const Vector3D & u,     // Velocity of point
+                      // double point_time,   // Time since position set
+                      const Vector3D & l,     // Position on plane
+                      const Vector3D & n,     // Plane normal
+                      const Vector3D & v,     // Velocity of plane
+                      // double plane_time,   // Time since position set
+                      double & time,            // Collision time return
+                      Vector3D & normal)      // Collision normal return
 //
-// This is the vertex layout used by the 2 3Dbox functions.
+//
+//                            |     \ n
+//                   p ___ u  |  v __\ l
+//                     \      |      /
+//                      \     |     /
+//                       \    |    /
+//                        \   |   /
+//                         \  |  /
+//                          \ | /
+//  _________________________\|/___________________________
+//
+//  The time when point hits plane is as follows:
+//
+//  ( (p + u * t) - (l + v * t) ) . n = 0
+//
+//  dot product ( . ) is x*x + y*y + z*z
+//
+//  (p.x + u.x * t - l.x - v.x * t) * n.x +
+//  (p.y + u.y * t - l.y - v.y * t) * n.y +
+//  (p.z + u.z * t - l.z - v.z * t) * n.z = 0
+//
+//  p.x * n.x + u.x * n.x * t - l.x * n.x - v.x * n.x * t +
+//  p.y * n.y + u.y * n.y * t - l.y * n.y - v.y * n.y * t +
+//  p.z * n.z + u.z * n.z * t - l.z * n.z - v.z * n.z * t = 0
+//
+//
+// ( v.x * n.x + v.y * n.y + v.z * n.z - u.x * n.x - u.y * n.y - u.z * n.z ) * t
+// = ( p.x * n.x - l.x * n.x + p.y * n.y - l.y * n.y + p.z * n.z - l.z * n.z )
+//
+// t =
+// ( p.x * n.x - l.x * n.x + p.y * n.y - l.y * n.y + p.z * n.z - l.z * n.z ) /
+// ( v.x * n.x + v.y * n.y + v.z * n.z - u.x * n.x - u.y * n.y - u.z * n.z )
+//
+// return value should indicate whether we are infront of or behind the 
+// plane. There is math in common, but I'm not sure how much it will help
+//
+{
+    time = (  p.x() * n.x() - l.x() * n.x()
+            + p.y() * n.y() - l.y() * n.y()
+            + p.z() * n.z() - l.z() * n.z() ) /
+           (  v.x() * n.x() + v.y() * n.y()
+            + v.z() * n.z() - u.x() * n.x()
+            - u.y() * n.y() - u.z() * n.z() );
+    return (Dot(p - l, n) > 0.);
+}
+
+//
+// This is the vertex layout used by the 3Dbox functions.
 //
 //
 //                                   6
@@ -30,10 +87,10 @@
 //
 
 
-bool timeToHit(const Location & l,
-               const Location & o,
-               double & time,
-               Vector3D & normal)
+bool predictCollision(const Location & l,
+                      const Location & o,
+                      double & time,
+                      Vector3D & normal)
 {
     const WFMath::Point<3> & ln = l.m_bBox.lowCorner();
     const WFMath::Point<3> & lf = l.m_bBox.highCorner();
@@ -66,4 +123,5 @@ bool timeToHit(const Location & l,
     }
 
     // FIXME Lots more to write yet
+    return false;
 }

@@ -74,16 +74,3 @@ bool Location::distanceRight(const Location & other, Vector3D & c) const
     }
     return false;
 }
-
-// Anonymous namespace for development work on code for handling oriented
-// box collision prediction.
-
-namespace {
-
-   double timeToHit(const Location & l,
-                    const Location & o,
-                    Vector3D & normal)
-   {
-   }
-
-} // namespace

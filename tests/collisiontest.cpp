@@ -2,7 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2003 Alistair Riddoch
 
-#include "physics/Vector3D.h"
+#include "physics/Collision.h"
 
 #include <cassert>
 
@@ -16,9 +16,9 @@ int main()
     double time = -1;
     Vector3D collision_normal;
 
-    bool infront = timeToHit(position, velocity,
-                             plane, normal, plane_velocity,
-                             time, collision_normal);
+    bool infront = predictCollision(position, velocity,
+                                    plane, normal, plane_velocity,
+                                    time, collision_normal);
 
     std::cout << "Collision predicted after " << time << " seconds, currently "
               << (infront ? "infront of" : "behind")

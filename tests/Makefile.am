@@ -42,7 +42,7 @@ utilitytest_LDADD = ../common/utility.o
 # PHYSICS_TESTS
 
 collisiontest_SOURCES = collisiontest.cpp
-collisiontest_LDADD = ../common/utility.o
+collisiontest_LDADD = ../physics/Collision.o
 
 
 # MODULE_TESTS
