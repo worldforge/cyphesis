@@ -32,11 +32,9 @@ static const bool debug_flag = false;
 ///
 /// Reads the system time, and applies the necessary offsets to calculate
 /// the in-game time. This is the stored, and can be accessed using getTime().
-void WorldRouter::updateTime()
+void WorldRouter::updateTime(int sec, int usec)
 {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    double tmp_time = (double)(tv.tv_sec + timeoffset - m_initTime) + (double)tv.tv_usec/1000000;
+    double tmp_time = (double)(sec + timeoffset - m_initTime) + (double)usec/1000000;
     m_realTime = tmp_time;
 }
 
@@ -48,10 +46,10 @@ void WorldRouter::updateTime()
 /// but I am not clear why. Need to look into why.
 WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId))
 {
-    // setId(consts::rootWorldId);
-    m_initTime = time(NULL);
-    updateTime();
-    // m_gameWorld.setId(getId());
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    m_initTime = tv.tv_sec;
+    updateTime(tv.tv_sec, tv.tv_usec);
     m_gameWorld.m_world = this;
     m_gameWorld.setType("world");
     m_eobjects[m_gameWorld.getId()] = &m_gameWorld;
@@ -97,17 +95,14 @@ WorldRouter::~WorldRouter()
 /// the entity that is responsible for adding the operation to the
 /// queue, unless it is set to "cheat". This is used to spook
 /// operations when they come from an admin.
-void WorldRouter::addOperationToQueue(Operation & op,
-                         const Entity * obj)
+void WorldRouter::addOperationToQueue(Operation & op, const Entity * obj)
 {
     if (op.getFrom() == "cheat") {
         op.setFrom(op.getTo());
     } else {
         op.setFrom(obj->getId());
     }
-    updateTime();
-    double t = m_realTime;
-    t = t + op.getFutureSeconds();
+    double t = m_realTime + op.getFutureSeconds();
     op.setSeconds(t);
     op.setFutureSeconds(0.0);
     OpQueue::iterator I = m_operationQueue.begin();
@@ -467,9 +462,9 @@ void WorldRouter::addPerceptive(const std::string & id)
 /// will call this function again as soon as possible rather than sleeping.
 /// This ensures that the maximum possible number of operations are dispatched
 /// without becoming unresponsive to client communications traffic.
-bool WorldRouter::idle()
+bool WorldRouter::idle(int sec, int usec)
 {
-    updateTime();
+    updateTime(sec, usec);
     unsigned int op_count = 0;
     Operation * op;
     while ((++op_count < 10) && ((op = getOperationFromQueue()) != NULL)) {

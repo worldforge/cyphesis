@@ -39,8 +39,6 @@ class ServerRouting : public OOGThing {
                   const std::string & name);
     ~ServerRouting();
 
-    bool idle();
-
     /// Add an OOG object to the server.
     void addObject(BaseEntity * obj) {
         m_objects[obj->getId()] = obj;

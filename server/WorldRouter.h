@@ -40,14 +40,14 @@ class WorldRouter : public BaseWorld {
     void addOperationToQueue(Operation &, const Entity *);
     Operation * getOperationFromQueue();
     const EntitySet & broadcastList(const Operation &) const;
-    void updateTime();
+    void updateTime(int sec, int usec);
     void deliverTo(const Operation &, Entity *);
     void deliverDeleteTo(const Operation &, Entity *);
   public:
     explicit WorldRouter();
     virtual ~WorldRouter();
 
-    bool idle();
+    bool idle(int, int);
     Entity * addObject(Entity * obj, bool setup = true);
     Entity * addNewObject(const std::string &, const Atlas::Message::MapType &);
     void delObject(Entity * obj);

@@ -5,10 +5,10 @@
 #ifndef SERVER_SERVER_ROUTING_METHODS_H
 #define SERVER_SERVER_ROUTING_METHODS_H
 
+#error This file has been removed from the build.
+
 #include "ServerRouting.h"
 #include "common/BaseWorld.h"
-
-#if !defined(__GNUC__) || __GNUC__ > 2 || (__GNUC__ > 1 && __GNUC_MINOR__ > 95)
 
 /// \brief Called whenever the comms system is idle.
 ///
@@ -17,7 +17,5 @@
 inline bool ServerRouting::idle() {
     return m_world.idle();
 }
-
-#endif // defined(__GNUC__) .....
 
 #endif // SERVER_SERVER_ROUTING_METHODS_H

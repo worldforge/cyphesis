@@ -59,7 +59,7 @@ class BaseWorld {
         return m_realTime - timeoffset;
     }
 
-    virtual bool idle() = 0;
+    virtual bool idle(int, int) = 0;
     virtual Entity * addObject(Entity * obj, bool setup = true) = 0;
     virtual Entity * addNewObject(const std::string &,
                                   const Atlas::Message::MapType &) = 0;

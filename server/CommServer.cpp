@@ -10,7 +10,8 @@
 
 #include "CommClient.h"
 #include "CommMetaClient.h"
-#include "ServerRouting_methods.h"
+#include "ServerRouting.h"
+#include "WorldRouter.h"
 #include "protocol_instructions.h"
 
 #include "common/log.h"
@@ -67,15 +68,18 @@ bool CommServer::idle()
     // FIXME These idle methods are now getting called way too often
     // if the core server is busy. Cut it back a bit. Probably can avoid
     // calling them at all if we are busy.
-    time_t ctime = time(NULL);
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+
     IdleSet::const_iterator I = m_idlers.begin();
     IdleSet::const_iterator Iend = m_idlers.end();
     for (; I != Iend; ++I) {
-        (*I)->idle(ctime);
+        (*I)->idle(tv.tv_sec);
     }
+
     // server.idle() is inlined, and simply calls the world idle method,
     // which is not directly accessible from here.
-    return m_server.idle();
+    return m_server.m_world.idle(tv.tv_sec, tv.tv_usec);
 }
 
 /// \brief Main program loop called repeatedly.
@@ -94,7 +98,6 @@ void CommServer::loop()
     bool busy = idle();
 
 #ifdef HAVE_EPOLL_CREATE
-#warning No epoll implementation yet
     static struct epoll_event events[16];
 
     int rval = ::epoll_wait(m_epollFd, events, 16, (busy ? 0 : 100));

@@ -60,11 +60,3 @@ void ServerRouting::addToMessage(MapType & omap) const
     
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }
-
-#if defined(__GNUC__) && __GNUC__ < 3 && __GNUC_MINOR__ < 96
-
-bool ServerRouting::idle() {
-    return world.idle();
-}
-
-#endif // defined(__GNUC__) && __GNUC_MINOR__ <= 96

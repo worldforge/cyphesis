@@ -1,3 +1,11 @@
+2004-12-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseWorld.h, server/CommServer.cpp, server/ServerRouting.cpp,
+	  server/ServerRouting.h, server/ServerRouting_methods.h,
+	  server/WorldRouter.cpp, server/WorldRouter.h: Clean up the way the
+	  idle functions work, reducing the number of calls to time related
+	  system calls.
+
 2004-12-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp, rulesets/Pedestrian.cpp,

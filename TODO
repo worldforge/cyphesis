@@ -1,3 +1,9 @@
+We could move the loop into ServerRouting, rather than CommServer.
+Rename CommServer::idle to CommServer::poll or something like that.
+Perhaps we don't even need idle any more. Idle objects would then
+be owned by ServerRouting rather than CommServer. CommServer would
+then be almost fully generalised.
+
 Does sightFooOperation etc. in BaseMind.h have to be virtual? I think not.
 
 CONTAINS could be some kind of spatial set of buckets for efficiency
@@ -13,10 +19,6 @@ dictionary, but it does have the methods as attributes.
 
 Make sure that goals involving movement don't issue a move op unless its
 necessary. ie check to see if we are already moving in the right direction.
-
-Add coarse collision checking to collision detection, to avoid the expensive
-collision checking. Is the max radius and speed such that the two can
-possibly collide.
 
 Fix Movement/Pedestrian to handle destination based movement where LOC
 changes. Just use distanceTo as the velocity vector.
