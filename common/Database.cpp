@@ -519,7 +519,7 @@ bool Database::registerEntityTable(const std::string & classname,
     }
     createquery += "(";
     if (parent.empty()) {
-        createquery += "id varchar(80), tablename varchar(20), ";
+        createquery += "id varchar(80) UNIQUE PRIMARY KEY, ";
     }
     Atlas::Message::Object::MapType::const_iterator I = row.begin();
     for(; I != row.end(); ++I) {

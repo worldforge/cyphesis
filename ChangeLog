@@ -1,5 +1,10 @@
 2002-12-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Make id column of entity tables a unique
+	  primary key.
+
+2002-12-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp, server/Persistor.cpp, server/Persistor_impl.h:
 	  Clean up debugging output.
 
