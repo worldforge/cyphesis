@@ -1,3 +1,7 @@
+If client specifies pure vertical movement for its own avatar, the resulting
+direction vector is zero once the vertical component has been negated,
+meaning that the code that handles it can abort().
+
 Client no longer seems to be able to populate world.
 
 Persistence and other words with the same root are incorrectly spelt
