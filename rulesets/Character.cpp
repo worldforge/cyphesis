@@ -56,6 +56,24 @@ bool MovementInfo::update_needed(const Location & location)
     return((velocity!=Vector3D(0,0,0))||(location.velocity!=Vector3D(0,0,0)));
 }
 
+Move * MovementInfo::gen_face_operation(Location & loc)
+{
+    if (face != loc.face) {
+        face = loc.face;
+        cout << "Turning" << endl << flush;
+        Message::Object * ent = new Message::Object(Message::Object::MapType());
+        Move * moveOp = new Move;
+        *moveOp = Move::Instantiate();
+        moveOp->SetTo(body->fullid);
+        ent->AsMap()["id"] = body->fullid;
+        loc.addObject(ent);
+        Message::Object::ListType args(1,*ent);
+        moveOp->SetArgs(args);
+        return moveOp;
+    }
+    return(NULL);
+}
+
 Move * MovementInfo::gen_move_operation(Location * rloc)
 {
     return(gen_move_operation(rloc, body->location));
@@ -79,7 +97,26 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
         *moveOp = Move::Instantiate();
         moveOp->SetTo(body->fullid);
         ent->AsMap()["id"] = body->fullid;
-        ent->AsMap()["mode"] = body->attributes["mode"];
+        double vel_mag = velocity.mag();
+        double speed_ratio;
+        if (vel_mag == 0.0) {
+            speed_ratio = 0.0;
+        } else {
+            speed_ratio = vel_mag/consts::base_velocity;
+        }
+        string mode;
+        if (speed_ratio > 0.5) {
+            mode = string("running");
+        } else if (speed_ratio > 0.05) {
+            mode = string("walking");
+        } else {
+            mode = string("standing");
+        }
+        debug_movement && cout << "Mode set to " << mode << endl << flush;
+
+        face = loc.face;
+
+        ent->AsMap()["mode"] = Message::Object(mode);
         if (!velocity) {
             debug_movement && cout << "only velocity changed." << endl << flush;
             new_loc.addObject(ent);
@@ -399,22 +436,6 @@ oplist Character::Mind_Operation(const Move & op)
         if (!(!location_face)) {
             location.face = location_face;
         }
-        double speed_ratio;
-        if (vel_mag == 0.0) {
-            speed_ratio = 0.0;
-        } else {
-            speed_ratio = location_vel.mag()/consts::base_velocity;
-        }
-        string mode;
-        if (speed_ratio > 0.5) {
-            mode = string("running");
-        } else if (speed_ratio > 0.0) {
-            mode = string("walking");
-        } else {
-            mode = string("standing");
-        }
-        attributes["mode"] = Message::Object(mode);
-        debug_movement && cout << "Mode set to " << mode << endl << flush;
 
         Vector3D direction;
         if (location_coords == location.coords) {
@@ -423,7 +444,7 @@ oplist Character::Mind_Operation(const Move & op)
         if (!location_coords) {
             if (!location_vel || (location_vel==Vector3D(0,0,0))) {
                 debug_movement && cout << "\tUsing face for direction" << endl << flush;
-                direction=location_face;
+                direction=location.face;
             } else {
                 debug_movement && cout << "\tUsing velocity for direction" << endl << flush;
                 direction=location_vel;
@@ -438,7 +459,9 @@ oplist Character::Mind_Operation(const Move & op)
             direction=direction.unit_vector();
             cout << "Direction: " << direction << endl << flush;
         }
-        
+        if (!location_face) {
+            location.face = direction;
+        }
         Location ret_location;
         Location current_location;
         RootOperation * moveOp = movement.gen_move_operation(&ret_location);
@@ -458,8 +481,14 @@ oplist Character::Mind_Operation(const Move & op)
                 velocity.push_back(Message::Object(0.0));
                 velocity.push_back(Message::Object(0.0));
                 ent["velocity"]=Message::Object(velocity);
+                ent["mode"]=Message::Object("standing");
                 moveOp->SetArgs(args);
                 res.push_back(moveOp);
+            } else {
+                moveOp = movement.gen_face_operation(location);
+                if (NULL != moveOp) {
+                    res.push_back(moveOp);
+                }
             }
             return(res);
         }

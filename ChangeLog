@@ -1,5 +1,12 @@
 2000-11-22  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Moved character mode calculation into MovementInfo class.
+
+	* Added new MovementInfo method which creates a movement op to
+	  change the rotation of a character when no other update is needed.
+
+2000-11-22  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Filled out Location python interface so it is now fully functional.
 
 	* Inlined Vector3D class for performance.

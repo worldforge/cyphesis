@@ -18,6 +18,7 @@ class MovementInfo {
   public:
     Vector3D target_location;
     Vector3D velocity;
+    Vector3D face;
     int serialno;
 
     MovementInfo(Character * body);
@@ -25,6 +26,7 @@ class MovementInfo {
     bool update_needed(const Location & location);
     double get_tick_addition(const Vector3D & coordinates);
     void reset();
+    Move * gen_face_operation(Location &);
     Move * gen_move_operation(Location *,Location &);
     Move * gen_move_operation(Location *);
 };
