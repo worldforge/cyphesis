@@ -39,7 +39,7 @@ class add_unique_goal(DynamicGoal):
         return goal_class(me, original_op, op)
     def check_event(self, me, original_op, op):
         """override this to check to see whether we really want to add a goal"""
-        return true
+        return 1
 
 class add_unique_goal_by_perception(add_unique_goal):
     def make_goal_instance(self, me, goal_class, original_op, op):

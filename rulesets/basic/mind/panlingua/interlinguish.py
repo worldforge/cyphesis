@@ -14,6 +14,7 @@ def add_word(words,index):
     word2node[words]=(words,index)
     globals()[name]=(words,index)
 
+add_word('help','#help_verb1')
 add_word('welcome','#welcome_verb1')
 add_word('breakfast','#breakfast_verb1')
 add_word('lunch','#lunch_verb1')

@@ -18,6 +18,12 @@ Must fix for Mason 0.0.2
 
 General TODO
 
+  Calculating absolute entity position has now ignored orientation for
+  too long. This needs to be fixed after this next release of mason,
+  or we are screwed. This would probably be best achieved simultaneously
+  with the generalisation and virtualisation of the collision code,
+  and a switch to using wfmath.
+
   Generalise and virtualise the collision code. Handle at very least obboxes
 
   Implement base class for CommClient and other connections which listen/talk
