@@ -5,9 +5,19 @@
 #ifndef RULESETS_PY_OPLIST_H
 #define RULESETS_PY_OPLIST_H
 
-#include "common/types.h"
-
 #include <Python.h>
+
+#include <vector>
+
+namespace Atlas {
+  namespace Objects {
+    namespace Operation {
+      class RootOperation;
+    }
+  }
+}
+
+typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
 
 typedef struct {
     PyObject_HEAD

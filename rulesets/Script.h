@@ -5,9 +5,18 @@
 #ifndef RULESETS_SCRIPT_H
 #define RULESETS_SCRIPT_H
 
-#include "common/types.h"
-
 #include <string>
+#include <vector>
+
+namespace Atlas {
+  namespace Objects {
+    namespace Operation {
+      class RootOperation;
+    }
+  }
+}
+
+typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
 
 class Entity;
 

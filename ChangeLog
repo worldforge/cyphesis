@@ -1,5 +1,15 @@
 2004-12-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/inheritance.cpp, common/inheritance.h, common/refno.h,
+	  common/type_utils.h, rulesets/Entity.cpp, rulesets/LineProperty.cpp,
+	  rulesets/MemMap.h, rulesets/Py_Oplist.h, rulesets/Script.h,
+	  server/Account.cpp, server/Admin.cpp, server/EntityFactory.h,
+	  server/Persistance.h, server/Player.cpp, server/WorldRouter.cpp,
+	  tests/EntityExerciser.h, tests/type_utilstest.cpp:
+	  Clean up some more redundant includes.
+
+2004-12-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, rulesets/Creator.cpp, rulesets/Entity.cpp,
 	  rulesets/Food.cpp, rulesets/Plant.cpp, rulesets/Thing.cpp,
 	  rulesets/World.cpp: Remove some redundant includes.

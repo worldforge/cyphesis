@@ -5,11 +5,9 @@
 #ifndef COMMON_TYPE_UTILS_H
 #define COMMON_TYPE_UTILS_H
 
-#include "types.h"
-
 #include <Atlas/Message/Element.h>
 
-#include <wfmath/atlasconv.h>
+typedef std::vector<std::string> IdList;
 
 inline void idListasObject(const IdList & l, Atlas::Message::ListType & ol)
 {

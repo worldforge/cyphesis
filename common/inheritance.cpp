@@ -4,6 +4,8 @@
 
 #include "inheritance_impl.h"
 
+#include "log.h"
+
 #include "Generic.h"
 
 #include <Atlas/Objects/Operation/Appearance.h>

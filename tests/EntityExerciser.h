@@ -6,7 +6,6 @@
 #define TESTS_ENTITY_EXERCISER_H
 
 #include "common/inheritance.h"
-#include "common/types.h"
 
 #include <cassert>
 

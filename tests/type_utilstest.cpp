@@ -3,7 +3,6 @@
 // Copyright (C) 2004 Alistair Riddoch
 
 #include "common/type_utils.h"
-#include "common/types.h"
 
 #include "physics/Vector3D.h"
 

@@ -5,14 +5,15 @@
 #ifndef SERVER_PERSISTANCE_H
 #define SERVER_PERSISTANCE_H
 
-#include "common/types.h"
-
 #include <Atlas/Message/Element.h>
 
 #include <string>
 
+class Entity;
 class Account;
 class Database;
+
+typedef std::map<std::string, Entity *> EntityDict;
 
 class Persistance {
   private:

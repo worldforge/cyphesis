@@ -5,12 +5,15 @@
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H
 
-#include "log.h"
 #include "types.h"
 
-#include <Atlas/Objects/Root.h>
-
 #include <iostream>
+
+namespace Atlas {
+  namespace Objects {
+    class Root;
+  }
+}
 
 void installStandardObjects();
 void installCustomOperations();

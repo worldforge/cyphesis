@@ -19,9 +19,6 @@
 
 #include "common/Setup.h"
 
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Sight.h>
-
 #include <sstream>
 
 using Atlas::Message::MapType;

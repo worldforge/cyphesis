@@ -7,11 +7,8 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/types.h"
 #include "common/inheritance.h"
 #include "common/Property.h"
-
-#include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Operation/Sight.h>
 

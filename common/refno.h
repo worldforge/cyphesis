@@ -5,9 +5,9 @@
 #ifndef COMMON_REFNO_H
 #define COMMON_REFNO_H
 
-#include "types.h"
-
 #include <Atlas/Objects/Operation/RootOperation.h>
+
+typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
 
 static inline void setRefnoOp(RootOperation * op, const RootOperation & ref_op)
 {

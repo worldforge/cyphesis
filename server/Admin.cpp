@@ -10,6 +10,7 @@
 
 #include "rulesets/Character.h"
 
+#include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/inheritance.h"

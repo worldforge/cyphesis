@@ -4,10 +4,6 @@
 
 #include "Player.h"
 
-#include "common/types.h"
-
-#include <Atlas/Objects/Operation/Create.h>
-
 std::set<std::string> Player::playableTypes;
 
 using Atlas::Message::Element;
