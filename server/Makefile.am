@@ -33,7 +33,14 @@ cyphesis_SOURCES = \
 		protocol_instructions.h \
 		server.cpp server.h
 
-cyphesis_LDADD = ../rulesets/libscriptpython.a ../rulesets/librulesetbase.a ../rulesets/librulesetmind.a ../rulesets/librulesetentity.a ../rulesets/librulesetbase.a ../modules/libmodules.a ../common/libcommon.a ../physics/libphysics.a
+cyphesis_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
+                 $(top_builddir)/rulesets/librulesetbase.a \
+                 $(top_builddir)/rulesets/librulesetmind.a \
+                 $(top_builddir)/rulesets/librulesetentity.a \
+                 $(top_builddir)/rulesets/librulesetbase.a \
+                 $(top_builddir)/modules/libmodules.a \
+                 $(top_builddir)/common/libcommon.a \
+                 $(top_builddir)/physics/libphysics.a
 
 cyphesis_LDFLAGS = -export-dynamic
 
@@ -67,6 +74,13 @@ cyslave_SOURCES = \
 		protocol_instructions.h \
 		slave.cpp
 
-cyslave_LDADD = ../rulesets/libscriptpython.a ../rulesets/librulesetbase.a ../rulesets/librulesetmind.a ../rulesets/librulesetentity.a ../rulesets/librulesetbase.a ../modules/libmodules.a ../common/libcommon.a ../physics/libphysics.a
+cyslave_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
+                $(top_builddir)/rulesets/librulesetbase.a \
+                $(top_builddir)/rulesets/librulesetmind.a \
+                $(top_builddir)/rulesets/librulesetentity.a \
+                $(top_builddir)/rulesets/librulesetbase.a \
+                $(top_builddir)/modules/libmodules.a \
+                $(top_builddir)/common/libcommon.a \
+                $(top_builddir)/physics/libphysics.a
 
 cyslave_LDFLAGS = -export-dynamic

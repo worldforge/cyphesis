@@ -13,4 +13,12 @@ cyclient_SOURCES = \
 
 cyclient_LDFLAGS = -export-dynamic
 
-cyclient_LDADD = ../rulesets/librulesetbase.a ../rulesets/librulesetentity.a ../rulesets/librulesetmind.a ../rulesets/libscriptpython.a ../rulesets/librulesetentity.a ../rulesets/librulesetbase.a ../modules/libmodules.a ../common/libcommon.a ../physics/libphysics.a
+cyclient_LDADD = $(top_builddir)/rulesets/librulesetbase.a \
+                 $(top_builddir)/rulesets/librulesetentity.a \
+                 $(top_builddir)/rulesets/librulesetmind.a \
+                 $(top_builddir)/rulesets/libscriptpython.a \
+                 $(top_builddir)/rulesets/librulesetentity.a \
+                 $(top_builddir)/rulesets/librulesetbase.a \
+                 $(top_builddir)/modules/libmodules.a \
+                 $(top_builddir)/common/libcommon.a \
+                 $(top_builddir)/physics/libphysics.a
