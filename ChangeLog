@@ -1,3 +1,8 @@
+2003-01-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* mason.xml, rulesets/mason/world/objects/plants/Fir.py: Add new
+	  fir tree rule.
+
 2003-01-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* mason.xml, rulesets/mason/world/objects/outdoor/Campfire.py:
