@@ -24,6 +24,8 @@ class Location {
     bool solid;
 
     Location() : ref(NULL), solid(true) { }
+    Location(Entity * rf) :
+            ref(rf), solid(true) { }
     Location(Entity * rf, const Vector3D& crds) :
             ref(rf), coords(crds), solid(true) { }
     Location(Entity * rf, const Vector3D& crds, const Vector3D& vel) :

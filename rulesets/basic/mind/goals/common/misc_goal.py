@@ -489,12 +489,13 @@ class keep(Goal):
         thing_all=me.find_thing(self.what)
         where=me.find_thing(self.where)[0]
         to_location=Location(where,Vector3D(0,0,0))
+        minx=where.location.bbox.near_point.x
+        miny=where.location.bbox.near_point.y
+        maxx=where.location.bbox.far_point.x
+        maxy=where.location.bbox.far_point.y
         for thing in thing_all:
             if thing.location.parent.id!=where.id and thing.location.parent.id!=me.id:
-                if hasattr(where, "length") and hasattr(where, "width"):
-                    thingloc=Location(where,Vector3D(uniform(0,where.width),uniform(0,where.length),0))
-                else:
-                    thingloc=to_location
+                thingloc=Location(where,Vector3D(uniform(minx,maxx),uniform(miny,maxy),0))
                 result.append(Operation("move",Entity(thing.id, location=thingloc)))
         return result
 

@@ -26,8 +26,8 @@ class BBox {
 
     const Vector3D & nearPoint() const { return u; }
     Vector3D & nearPoint() { return u; }
-    const Vector3D & farPoint() const { return u; }
-    Vector3D & farPoint() { return u; }
+    const Vector3D & farPoint() const { return v; }
+    Vector3D & farPoint() { return v; }
 
     bool operator ==(const BBox & other) const {
         return ((u==other.u) && (v==other.v));

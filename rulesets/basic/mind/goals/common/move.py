@@ -29,11 +29,15 @@ class move_me(Goal):
         #mind uses sometimes strings known only to him/her
         if type(location_)==StringType:
             location_=me.get_knowledge("location",location_)
+        if not location_:
+            return false
         self.location=location_
         if me.location.parent.id!=location_.parent.id: return 0
         return me.location.coordinates.distance(location_.coordinates)<1.5
     def move_to_loc(self, me):
         location_=self.location.copy()
+        if type(location_)!=InstanceType:
+            return
         location_.velocity=me.location.coordinates.unit_vector_to_another_vector(location_.coordinates)*self.speed
         location_.rotation=location_.velocity.unit_vector()
         if location_.velocity==me.location.velocity: return

@@ -388,7 +388,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
             return NULL;
         }
         if (coords == NULL) {
-            o->location = new Location(ref_ent, Vector3D());
+            o->location = new Location(ref_ent);
         } else {
             o->location = new Location(ref_ent, coords->coords);
         }

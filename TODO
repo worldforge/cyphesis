@@ -18,6 +18,8 @@ Must fix for Mason 0.0.2
 
 General TODO
 
+  Generalise and virtualise the collision code. Handle at very least obboxes
+
   Implement base class for CommClient and other connections which listen/talk
   on a socket, such as the database connection, so we can have non blocking
   db access.

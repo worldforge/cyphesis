@@ -1,3 +1,13 @@
+2002-09-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/BBox.h: Fixed farPoint() so it now does return the far
+	  point, rather than the near point.
+
+	* modules/Location.h, rulesets/Python_API.cpp: Handle NULL parent
+	  in location.
+
+	* NPC script bug fixes.
+
 2002-09-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/PythonMindScript.cpp: Increase verbosity of reported
