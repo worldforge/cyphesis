@@ -2,6 +2,13 @@
 
 	* Fix up bounding boxes for pig and chicken.
 
+	* server/CommListener.cpp: Set linger option to prevent sockets
+	  clagging up on shutdown.
+
+2004-06-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* Fix up bounding boxes for pig and chicken.
+
 2004-06-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/const.h, common/const.cpp: Decrease sight range setting,

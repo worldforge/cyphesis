@@ -207,8 +207,8 @@
     <map name="attributes">
       <float name="mass">5</float>
       <list name="bbox">
-        <float>-1.5</float><float>-0.5</float><float>0</float>
-        <float>2.25</float><float>0.5</float><float>2</float>
+        <float>-0.375</float><float>-0.125</float><float>0</float>
+        <float>0.5625</float><float>0.125</float><float>0.5</float>
       </list>
     </map>
     <map name="script">
