@@ -32,7 +32,7 @@ class World : public World_parent {
     virtual bool get(const std::string &, Element &) const;
     virtual void set(const std::string &, const Element &);
 
-    virtual void addToObject(MapType &) const;
+    virtual void addToMessage(MapType &) const;
 
     virtual OpVector LookOperation(const Look & op);
     virtual OpVector BurnOperation(const Burn & op);

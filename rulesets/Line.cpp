@@ -56,7 +56,7 @@ void Line::set(const std::string & aname, const Element & attr)
     }
 }
 
-void Line::addToObject(MapType & omap) const
+void Line::addToMessage(MapType & omap) const
 {
     ListType & si = (omap["start_intersections"] = ListType()).asList();
     idListasObject(startIntersections, si);
@@ -64,5 +64,5 @@ void Line::addToObject(MapType & omap) const
     idListasObject(endIntersections, ei);
     ListType & c = (omap["coords"] = ListType()).asList();
     objectListAsMessage(coords, c);
-    Line_parent::addToObject(omap);
+    Line_parent::addToMessage(omap);
 }

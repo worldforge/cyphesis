@@ -120,7 +120,7 @@ class Entity : public BaseEntity {
     void destroy();
     void scriptSubscribe(const std::string &);
 
-    virtual void addToObject(MapType & obj) const;
+    virtual void addToMessage(MapType & obj) const;
     virtual OpVector SetupOperation(const Setup & op);
     virtual OpVector TickOperation(const Tick & op);
     virtual OpVector ActionOperation(const Action & op);

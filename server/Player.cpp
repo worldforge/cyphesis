@@ -23,15 +23,14 @@ const char * Player::getType() const
     return "player";
 }
 
-void Player::addToObject(MapType & omap) const
+void Player::addToMessage(MapType & omap) const
 {
-    Account::addToObject(omap);
-    ListType typeList;
+    Account::addToMessage(omap);
+    ListType & typeList = (omap["character_types"] = ListType()).asList();
     std::set<std::string>::const_iterator I = Player::playableTypes.begin();
     for(;I != Player::playableTypes.end(); ++I) {
         typeList.push_back(Element(*I));
     }
-    omap["character_types"] = typeList;
 }
 
 OpVector Player::characterError(const Create & op, const MapType & ent) const

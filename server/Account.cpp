@@ -127,7 +127,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     Create c;
     ListType & cargs = c.getArgs();
     cargs.push_back(MapType());
-    chr->addToObject(cargs.front().asMap());
+    chr->addToMessage(cargs.front().asMap());
 
     Sight * s = new Sight;
     ListType & args = s->getArgs();
@@ -159,10 +159,8 @@ const char * Account::getType() const
     return "account";
 }
 
-void Account::addToObject(MapType & omap) const
+void Account::addToMessage(MapType & omap) const
 {
-    omap["objtype"] = "obj";
-    omap["id"] = getId();
     omap["username"] = m_username;
     omap["name"] = m_username;
     if (!m_password.empty()) {
@@ -175,8 +173,7 @@ void Account::addToObject(MapType & omap) const
         charlist.push_back(I->first);
     }
     omap["characters"] = charlist;
-    // No need to call BaseEntity::addToObject, as none of the default
-    // attributes (location, contains etc.) are relevant to accounts
+    BaseEntity::addToMessage(omap);
 }
 
 OpVector Account::CreateOperation(const Create & op)
@@ -214,7 +211,7 @@ OpVector Account::CreateOperation(const Create & op)
     Info * info = new Info;
     ListType & info_args = info->getArgs();
     info_args.push_back(MapType());
-    obj->addToObject(info_args.front().asMap());
+    obj->addToMessage(info_args.front().asMap());
     info->setRefno(op.getSerialno());
     info->setSerialno(m_connection->m_server.newSerialNo());
 
@@ -335,7 +332,7 @@ OpVector Account::LookOperation(const Look & op)
         s->setTo(getId());
         ListType & s_args = s->getArgs();
         s_args.push_back(MapType());
-        m_connection->m_server.m_lobby.addToObject(s_args.front().asMap());
+        m_connection->m_server.m_lobby.addToMessage(s_args.front().asMap());
         s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
@@ -351,7 +348,7 @@ OpVector Account::LookOperation(const Look & op)
         s->setTo(getId());
         ListType & s_args = s->getArgs();
         s_args.push_back(MapType());
-        J->second->addToObject(s_args.front().asMap());
+        J->second->addToMessage(s_args.front().asMap());
         s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
@@ -363,7 +360,7 @@ OpVector Account::LookOperation(const Look & op)
         s->setTo(getId());
         ListType & s_args = s->getArgs();
         s_args.push_back(MapType());
-        K->second->addToObject(s_args.front().asMap());
+        K->second->addToMessage(s_args.front().asMap());
         s->setSerialno(m_connection->m_server.newSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);

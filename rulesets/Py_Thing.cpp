@@ -22,7 +22,7 @@ static PyObject * Entity_as_entity(PyEntity * self)
         return NULL;
     }
     ret->m_obj = new Element(MapType());
-    self->m_entity->addToObject(ret->m_obj->asMap());
+    self->m_entity->addToMessage(ret->m_obj->asMap());
     return (PyObject *)ret;
 }
 

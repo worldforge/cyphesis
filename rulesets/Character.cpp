@@ -154,10 +154,10 @@ void Character::set(const std::string & aname, const Element & attr)
     }
 }
 
-void Character::addToObject(MapType & omap) const
+void Character::addToMessage(MapType & omap) const
 {
     omap["sex"] = m_sex;
-    Character_parent::addToObject(omap);
+    Character_parent::addToMessage(omap);
 }
 
 OpVector Character::ImaginaryOperation(const Imaginary & op)

@@ -110,7 +110,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     if (!m_velocity.isValid()) {
         debug( std::cout << "only velocity changed." << std::endl
                          << std::flush;);
-        new_loc.addToObject(entmap);
+        new_loc.addToMessage(entmap);
         ListType args(1,entmap);
         moveOp->setArgs(args);
         if (NULL != rloc) {
@@ -215,7 +215,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
 
     debug( std::cout << "new coordinates: " << new_coords << std::endl
                      << std::flush;);
-    new_loc.addToObject(entmap);
+    new_loc.addToMessage(entmap);
     ListType args2(1,entmap);
     moveOp->setArgs(args2);
     if (NULL != rloc) {

@@ -25,7 +25,7 @@ static PyObject * Mind_as_entity(PyMind * self)
         return NULL;
     }
     ret->m_obj = new Element(MapType());
-    self->m_mind->addToObject(ret->m_obj->asMap());
+    self->m_mind->addToMessage(ret->m_obj->asMap());
     return (PyObject *)ret;
 }
 

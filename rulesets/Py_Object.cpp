@@ -294,7 +294,7 @@ Element PyObject_asMessageElement(PyObject * o)
     if (PyLocation_Check(o)) {
         PyLocation * loc = (PyLocation *)o;
         MapType _map;
-        loc->location->addToObject(_map);
+        loc->location->addToMessage(_map);
         return Element(_map);
     }
     return Element();

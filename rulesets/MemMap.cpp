@@ -296,7 +296,7 @@ const Element MemMap::asObject()
     MapType omap;
     MemEntityDict::const_iterator I = m_entities.begin();
     for(;I != m_entities.end(); I++) {
-        I->second->addToObject((omap[I->first] = MapType()).asMap());
+        I->second->addToMessage((omap[I->first] = MapType()).asMap());
     }
     return Element(omap);
 }

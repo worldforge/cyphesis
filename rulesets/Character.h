@@ -56,7 +56,7 @@ class Character : public Character_parent {
     virtual bool get(const std::string &, Element &) const;
     virtual void set(const std::string &, const Element &);
 
-    virtual void addToObject(MapType &) const;
+    virtual void addToMessage(MapType &) const;
 
     virtual OpVector operation(const RootOperation & op);
     virtual OpVector externalMessage(const RootOperation & op);

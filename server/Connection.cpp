@@ -173,7 +173,7 @@ OpVector Connection::operation(const RootOperation & op)
             Info * info = new Info;
             ListType & info_args = info->getArgs();
             info_args.push_back(MapType());
-            character->addToObject(info_args.front().asMap());
+            character->addToMessage(info_args.front().asMap());
             info->setRefno(op.getSerialno());
             info->setSerialno(m_server.newSerialNo());
             OpVector res = ent->externalOperation(op);
@@ -246,7 +246,7 @@ OpVector Connection::LoginOperation(const Login & op)
     Info * info = new Info;
     ListType & info_args = info->getArgs();
     info_args.push_back(MapType());
-    player->addToObject(info_args.front().asMap());
+    player->addToMessage(info_args.front().asMap());
     info->setRefno(op.getSerialno());
     info->setSerialno(m_server.newSerialNo());
     debug(std::cout << "Good login" << std::endl << std::flush;);
@@ -297,7 +297,7 @@ OpVector Connection::CreateOperation(const Create & op)
     Info * info = new Info;
     ListType & info_args = info->getArgs();
     info_args.push_back(MapType());
-    player->addToObject(info_args.front().asMap());
+    player->addToMessage(info_args.front().asMap());
     info->setRefno(op.getSerialno());
     info->setSerialno(m_server.newSerialNo());
     debug(std::cout << "Good create" << std::endl << std::flush;);
@@ -356,7 +356,7 @@ OpVector Connection::GetOperation(const Get & op)
         info = new Info;
         ListType & info_args = info->getArgs();
         info_args.push_back(MapType());
-        m_server.addToObject(info_args.front().asMap());
+        m_server.addToMessage(info_args.front().asMap());
         info->setRefno(op.getSerialno());
         info->setSerialno(m_server.newSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);

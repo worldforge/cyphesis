@@ -737,7 +737,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             PyObject * val = PyList_GetItem(vals, i);
             if ((strcmp(key, "location") == 0) && (PyLocation_Check(val))) {
                 PyLocation * loc = (PyLocation*)val;
-                loc->location->addToObject(omap);
+                loc->location->addToMessage(omap);
             } else if (strcmp(key, "xyz") == 0) {
                 omap["pos"] = PyObject_asMessageElement(val);
             } else if ((strcmp(key, "parent") == 0) && (PyString_Check(val))) {

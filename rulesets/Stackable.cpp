@@ -42,12 +42,12 @@ void Stackable::set(const std::string & aname, const Element & attr)
     }
 }
 
-void Stackable::addToObject(MapType & omap) const
+void Stackable::addToMessage(MapType & omap) const
 {
     if (m_num != 1) {
         omap["num"] = m_num;
     }
-    Stackable_parent::addToObject(omap);
+    Stackable_parent::addToMessage(omap);
 }
 
 OpVector Stackable::CombineOperation(const Combine & op)

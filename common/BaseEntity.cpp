@@ -25,9 +25,9 @@ BaseEntity::~BaseEntity()
 {
 }
 
-void BaseEntity::addToObject(MapType & omap) const
+void BaseEntity::addToMessage(MapType & omap) const
 {
-    debug( std::cout << "BaseEntity::addToObject" << std::endl << std::flush;);
+    debug( std::cout << "BaseEntity::addToMessage" << std::endl << std::flush;);
     omap["objtype"] = "obj";
     omap["id"] = getId();
 }

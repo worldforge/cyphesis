@@ -38,7 +38,7 @@ class Plant : public Plant_parent {
 
     virtual bool get(const std::string &, Element &) const;
     virtual void set(const std::string &, const Element &);
-    virtual void addToObject(MapType & obj) const;
+    virtual void addToMessage(MapType & obj) const;
 
     virtual OpVector TickOperation(const Tick & op);
     virtual OpVector TouchOperation(const Touch & op);

@@ -154,7 +154,7 @@ void Entity::destroy()
     destroyed.emit();
 }
 
-void Entity::addToObject(MapType & omap) const
+void Entity::addToMessage(MapType & omap) const
 {
     // We need to have a list of keys to pull from attributes.
     MapType::const_iterator I = m_attributes.begin();
@@ -169,7 +169,7 @@ void Entity::addToObject(MapType & omap) const
     omap["status"] = m_status;
     omap["stamp"] = (double)m_seq;
     omap["parents"] = ListType(1, m_type);
-    m_location.addToObject(omap);
+    m_location.addToMessage(omap);
     if (!m_contains.empty()) {
         ListType & contlist = (omap["contains"] = ListType()).asList();
         EntitySet::const_iterator J = m_contains.begin();
@@ -177,7 +177,7 @@ void Entity::addToObject(MapType & omap) const
             contlist.push_back((*J)->getId());
         }
     }
-    BaseEntity::addToObject(omap);
+    BaseEntity::addToMessage(omap);
 }
 
 void Entity::merge(const MapType & ent)
@@ -341,7 +341,7 @@ OpVector Entity::LookOperation(const Look & op)
     ListType & args = s->getArgs();
     args.push_back(MapType());
     MapType & amap = args.front().asMap();
-    addToObject(amap);
+    addToMessage(amap);
     s->setTo(op.getFrom());
 
     return OpVector(1,s);

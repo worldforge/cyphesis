@@ -47,7 +47,7 @@ const Vector3D Location::getXyz(Entity * ent) const
     }
 }
 
-void Location::addToObject(MapType & omap) const
+void Location::addToMessage(MapType & omap) const
 {
     if (m_loc!=NULL) {
         omap["loc"] = m_loc->getId();

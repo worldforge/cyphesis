@@ -118,7 +118,7 @@ OpVector Thing::CreateOperation(const Create & op)
         Create c(op);
         ListType & args = c.getArgs();
         args.push_back(MapType());
-        obj->addToObject(args.front().asMap());
+        obj->addToMessage(args.front().asMap());
         RootOperation * s = new Sight();
         s->setArgs(ListType(1,c.asObject()));
         // This should no longer be required as it is now handled centrally
@@ -258,7 +258,7 @@ OpVector Thing::MoveOperation(const Move & op)
     }
 
     Move m(op);
-    m_location.addToObject(m.getArgs().front().asMap());
+    m_location.addToMessage(m.getArgs().front().asMap());
 
     RootOperation * s = new Sight();
     s->setArgs(ListType(1,m.asObject()));
@@ -372,7 +372,7 @@ OpVector Thing::SetOperation(const Set & op)
             ListType & dargs = d->getArgs();
             dargs.push_back(MapType());
             // FIXME Is it necessary to include a full description?
-            addToObject(dargs.front().asMap());
+            addToMessage(dargs.front().asMap());
             d->setTo(getId());
             res2.push_back(d);
         }

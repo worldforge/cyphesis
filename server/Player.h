@@ -19,7 +19,7 @@ class Player : public Account {
 
     virtual const char * getType() const;
 
-    virtual void addToObject(MapType &) const;
+    virtual void addToMessage(MapType &) const;
 
     static std::set<std::string> playableTypes;
 };

@@ -25,7 +25,7 @@ class Area : public Area_parent {
 
     virtual bool get(const std::string &, Element &) const;
     virtual void set(const std::string &, const Element &);
-    virtual void addToObject(MapType & obj) const;
+    virtual void addToMessage(MapType & obj) const;
 };
 
 #endif // RULESETS_AREA_H

@@ -74,14 +74,14 @@ void Plant::set(const std::string & aname, const Element & attr)
     }
 }
 
-void Plant::addToObject(MapType & omap) const
+void Plant::addToMessage(MapType & omap) const
 {
     omap["fruits"] = m_fruits;
     omap["radius"] = m_radius;
     omap["fruitName"] = m_fruitName;
     omap["fruitChance"] = m_fruitChance;
     omap["sizeAdult"] = m_sizeAdult;
-    Plant_parent::addToObject(omap);
+    Plant_parent::addToMessage(omap);
 }
 
 int Plant::dropFruit(OpVector & res)
@@ -102,7 +102,7 @@ int Plant::dropFruit(OpVector & res)
         fmap["name"] = m_fruitName;
         fmap["parents"] = ListType(1,m_fruitName);
         Location floc(m_location.m_loc, Vector3D(rx, ry, 0));
-        floc.addToObject(fmap);
+        floc.addToMessage(fmap);
         RootOperation * create = new Create();
         create->setTo(getId());
         create->setArgs(ListType(1, fmap));

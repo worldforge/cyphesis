@@ -103,7 +103,7 @@ class ServerRouting : public OOGThing {
     const std::string & getName() const { return m_svrName; }
 
     /// Copy the attribute values of this object into an Atlas message.
-    virtual void addToObject(MapType &) const;
+    virtual void addToMessage(MapType &) const;
 };
 
 #endif // SERVER_SERVER_ROUTING_H

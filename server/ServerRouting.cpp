@@ -40,7 +40,7 @@ ServerRouting::~ServerRouting()
 }
 
 /// Copies a representation of the server into an Atlas message.
-void ServerRouting::addToObject(MapType & omap) const
+void ServerRouting::addToMessage(MapType & omap) const
 {
     omap["objtype"] = "obj";
     omap["server"] = "cyphesis";

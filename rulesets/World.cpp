@@ -143,10 +143,10 @@ void World::set(const std::string & aname, const Element & attr)
     }
 }
 
-void World::addToObject(MapType & omap) const
+void World::addToMessage(MapType & omap) const
 {
     getTerrain((omap["terrain"] = MapType()).asMap());
-    World_parent::addToObject(omap);
+    World_parent::addToMessage(omap);
 }
 
 OpVector World::LookOperation(const Look & op)

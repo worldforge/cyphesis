@@ -33,7 +33,7 @@ class Account : public OOGThing {
 
     virtual const char * getType() const;
 
-    virtual void addToObject(MapType &) const;
+    virtual void addToMessage(MapType &) const;
     virtual OpVector LogoutOperation(const Logout & op);
     virtual OpVector CreateOperation(const Create & op);
     virtual OpVector SetOperation(const Set & op);

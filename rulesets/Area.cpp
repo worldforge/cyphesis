@@ -43,10 +43,10 @@ void Area::set(const std::string & aname, const Element & attr)
     }
 }
 
-void Area::addToObject(MapType & omap) const
+void Area::addToMessage(MapType & omap) const
 {
     ListType & si =
         (omap["segments"] = ListType()).asList();
     idListasObject(m_segments, si);
-    Area_parent::addToObject(omap);
+    Area_parent::addToMessage(omap);
 }

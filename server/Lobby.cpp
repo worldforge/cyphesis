@@ -87,10 +87,8 @@ OpVector Lobby::operation(const RootOperation & op)
     return OpVector();
 }
 
-void Lobby::addToObject(MapType & omap) const
+void Lobby::addToMessage(MapType & omap) const
 {
-    omap["objtype"] = "object";
-    omap["id"] = "lobby";
     omap["name"] = "lobby";
     ListType plist(1, "room");
     omap["parents"] = plist;
@@ -101,4 +99,5 @@ void Lobby::addToObject(MapType & omap) const
     }
     omap["people"] = player_list;
     omap["rooms"] = ListType();
+    BaseEntity::addToMessage(omap);
 }

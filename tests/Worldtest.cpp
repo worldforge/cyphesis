@@ -90,7 +90,7 @@ int main()
     MapType entityAsAtlas;
 
     // Dump a representation of the entity into an Atlas Message
-    e.addToObject(entityAsAtlas);
+    e.addToMessage(entityAsAtlas);
 
     // Make sure we got at least some of it
     assert(entityAsAtlas.size() > 14);

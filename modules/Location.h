@@ -47,7 +47,7 @@ class Location {
     const Vector3D getXyz() const;
     const Vector3D getXyz(Entity *) const;
 
-    void addToObject(Atlas::Message::MapType & ent) const;
+    void addToMessage(Atlas::Message::MapType & ent) const;
 
     const Vector3D distanceTo(const Location & other) const {
         Vector3D dist(0,0,0);

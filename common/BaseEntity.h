@@ -42,7 +42,7 @@ class BaseEntity : virtual public SigC::Object {
         return m_id;
     }
 
-    virtual void addToObject(MapType &) const;
+    virtual void addToMessage(MapType &) const;
 
     virtual OpVector message(const RootOperation & op);
     virtual OpVector operation(const RootOperation & op);

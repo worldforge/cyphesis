@@ -130,9 +130,9 @@ OpVector Admin::GetOperation(const Get & op)
         ListType & info_args = info->getArgs();
         info_args.push_back(MapType());
         if (J != OOGDict.end()) {
-            J->second->addToObject(info_args.front().asMap());
+            J->second->addToMessage(info_args.front().asMap());
         } else if (K != worldDict.end()) {
-            K->second->addToObject(info_args.front().asMap());
+            K->second->addToMessage(info_args.front().asMap());
         } else {
             delete info;
             std::string msg("Unknown object id \"");

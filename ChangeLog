@@ -1,3 +1,28 @@
+2004-08-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/Py_CreatorClient.cpp, common/BaseEntity.cpp,
+	  common/BaseEntity.h, modules/Location.cpp, modules/Location.h,
+	  rulesets/Area.cpp, rulesets/Area.h, rulesets/Character.cpp,
+	  rulesets/Character.h, rulesets/Entity.cpp, rulesets/Entity.h,
+	  rulesets/Line.cpp, rulesets/Line.h, rulesets/MemMap.cpp,
+	  rulesets/Pedestrian.cpp, rulesets/Plant.cpp, rulesets/Plant.h,
+	  rulesets/Py_Mind.cpp, rulesets/Py_Object.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/Python_API.cpp, rulesets/Stackable.cpp,
+	  rulesets/Stackable.h, rulesets/Thing.cpp, rulesets/World.cpp,
+	  rulesets/World.h, server/Account.cpp, server/Account.h,
+	  server/Admin.cpp, server/Connection.cpp, server/Lobby.cpp,
+	  server/Lobby.h, server/Player.cpp, server/Player.h,
+	  server/ServerRouting.cpp, server/ServerRouting.h,
+	  tests/Areatest.cpp, tests/Entitytest.cpp, tests/Foodtest.cpp,
+	  tests/Linetest.cpp, tests/Planttest.cpp, tests/Stackabletest.cpp,
+	  tests/Structuretest.cpp, tests/Thingtest.cpp, tests/Worldtest.cpp:
+	  Replace addToObject() with addToMessage() throughout.
+
+	* server/Account.cpp, server/Lobby.cpp: Use BaseEntity::addToMessage().
+
+	* server/Player.cpp: Make adding character types attribute to Message
+	  more efficient.
+
 2004-08-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp: Correct a debug message, and clean up some

@@ -34,7 +34,7 @@ static PyObject * CreatorClient_as_entity(PyCreatorClient * self, PyObject * arg
         return NULL;
     }
     ret->m_obj = new Element(MapType());
-    self->m_mind->addToObject(ret->m_obj->asMap());
+    self->m_mind->addToMessage(ret->m_obj->asMap());
     return (PyObject *)ret;
 }
 
