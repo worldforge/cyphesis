@@ -18,7 +18,7 @@ extern "C" {
     #include <stdlib.h>
 }
 
-#define DEBUG_MOVEMENT
+// #define DEBUG_MOVEMENT
 
 
 #include "Character.h"
@@ -36,7 +36,8 @@ extern "C" {
 
 using Atlas::Message::Object;
 
-static int debug_movement=1;
+static int debug_movement=0;
+static int debug_character=0;
 
 MovementInfo::MovementInfo(Character * body) : body(body)
 {
@@ -49,7 +50,8 @@ void MovementInfo::reset()
 {
     serialno = serialno+1;
     target_location=Vector3D();
-    velocity=Vector3D();
+    updated_location=Vector3D();
+    velocity=Vector3D(0,0,0);
     last_movement_time=world_info::time;
 }
 
@@ -62,7 +64,7 @@ Move * MovementInfo::gen_face_operation(Location & loc)
 {
     if (face != loc.face) {
         face = loc.face;
-        cout << "Turning" << endl << flush;
+        debug_movement && cout << "Turning" << endl << flush;
         Move * moveOp = new Move;
         *moveOp = Move::Instantiate();
         moveOp->SetTo(body->fullid);
@@ -133,7 +135,12 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
             }
             return(moveOp);
         }
-        Vector3D new_coords=loc.coords+(velocity*time_diff);
+        Vector3D new_coords;
+        if (updated_location) {
+            new_coords=updated_location+(velocity*time_diff);
+        } else {
+            new_coords=loc.coords+(velocity*time_diff);
+        }
         if (target_location) {
             Vector3D new_coords2 = new_coords+velocity/consts::basic_tick/10.0;
             double dist=target_location.distance(new_coords);
@@ -143,10 +150,12 @@ Move * MovementInfo::gen_move_operation(Location * rloc, Location & loc)
                 debug_movement && cout << "target achieved";
                 new_coords=target_location;
                 reset();
+                entmap["mode"] = Object("standing");
                 new_loc.velocity=velocity;
             }
         }
-        new_loc.coords=new_coords;
+        new_loc.coords = new_coords;
+        updated_location = new_coords;
         debug_movement && cout << "new coordinates: " << new_coords << endl << flush;
         new_loc.addObject(&ent);
         Message::Object::ListType args2(1,ent);
@@ -174,11 +183,12 @@ double MovementInfo::get_tick_addition(const Vector3D & coordinates)
     return consts::basic_tick;
 }
 
-Character::Character() : movement(this), sex("female"), autom(0),
+Character::Character() : movement(this), autom(0),
                          mind(NULL), external_mind(NULL), player(NULL),
                          drunkness(0.0)
 {
     attributes["weight"] = 60.0;
+    attributes["sex"] = Object("female");
     is_character = 1;
 }
 
@@ -194,11 +204,11 @@ Character::~Character()
 
 oplist Character::Operation(const Setup & op)
 {
-    cout << "Character::tick" << endl << flush;
+    debug_character && cout << "Character::tick" << endl << flush;
     oplist res;
-    cout << "CHaracter::Operation(setup)" << endl << flush;
+    debug_character && cout << "CHaracter::Operation(setup)" << endl << flush;
     if (op.HasAttr("sub_to")) {
-        cout << "Has sub_to" << endl << flush;
+        debug_character && cout << "Has sub_to" << endl << flush;
         return(res);
     }
 
@@ -224,7 +234,7 @@ oplist Character::Operation(const Tick & op)
 {
     oplist res;
     if (op.HasAttr("sub_to")) {
-        cout << "Has sub_to" << endl << flush;
+        debug_character && cout << "Has sub_to" << endl << flush;
         return(res);
     }
 #ifdef DEBUG_MOVEMENT
@@ -263,7 +273,7 @@ oplist Character::Operation(const Tick & op)
 
 oplist Character::Operation(const Talk & op)
 {
-    cout << "Character::OPeration(Talk)" << endl << flush;
+    debug_character && cout << "Character::OPeration(Talk)" << endl << flush;
     Sound * s = new Sound();
     *s = Sound::Instantiate();
     Message::Object::ListType args(1,op.AsObject());
@@ -289,30 +299,30 @@ oplist Character::Mind_Operation(const Tick & op)
 
 oplist Character::Mind_Operation(const Move & op)
 {
-    cout << "Character::mind_move_op" << endl << flush;
+    debug_movement && cout << "Character::mind_move_op" << endl << flush;
     oplist res;
     Move * newop = new Move(op);
     const Message::Object::ListType & args = op.GetArgs();
     if ((0 == args.size()) || (!args.front().IsMap())) {
-        cout << "move op has no argument" << endl << flush;
+        debug_movement && cout << "move op has no argument" << endl << flush;
     }
     Message::Object::MapType arg1 = args.front().AsMap();
     if ((arg1.find("id") == arg1.end()) || !arg1["id"].IsString()) {
-        cout << "Its got no id" << endl << flush;
+        debug_movement && cout << "Its got no id" << endl << flush;
     }
     string & oname = arg1["id"].AsString();
     if (world->fobjects.find(oname) == world->fobjects.end()) {
-        cout << "This move op is for a phoney object" << endl << flush;
+        debug_movement && cout << "This move op is for a phoney object" << endl << flush;
         delete newop;
         return res;
     }
     Thing * obj = (Thing *)world->fobjects[oname];
     if (obj != this) {
-        cout << "Moving something else. " << oname << endl << flush;
+        debug_movement && cout << "Moving something else. " << oname << endl << flush;
         double weight = attributes["weight"].AsFloat();
         double oweight = (*obj)["weight"].AsFloat();
         if ((oweight < 0) || (oweight > weight)) {
-            cout << "We can't move this. Just too heavy" << endl << flush;
+            debug_movement && cout << "We can't move this. Just too heavy" << endl << flush;
             delete newop;
             return(res);
         }
@@ -327,7 +337,7 @@ oplist Character::Mind_Operation(const Move & op)
     if ((arg1.find("loc") != arg1.end()) && (arg1["loc"].IsMap())) {
         Message::Object::MapType & lmap = arg1["loc"].AsMap();
         location_parent = lmap["ref"].AsString();
-        cout << "Got old parent format" << endl << flush;
+        debug_movement && cout << "Got old parent format" << endl << flush;
         if ((lmap.find("coords") != lmap.end()) && (lmap["coords"].IsList())) {
             Message::Object::ListType vector = lmap["coords"].AsList();
             if (vector.size()==3) {
@@ -338,10 +348,10 @@ oplist Character::Mind_Operation(const Move & op)
                     vector.pop_front();
                     double z = vector.front().AsFloat();
                     location_coords = Vector3D(x, y, z);
-                    cout << "Got old coords format: " << location_coords << endl << flush;
+                    debug_movement && cout << "Got old coords format: " << location_coords << endl << flush;
                 }
                 catch (Message::WrongTypeException) {
-                    cout << "EXCEPTION: Malformed coords move operation" << endl << flush;
+                    cerr << "EXCEPTION: Malformed coords move operation" << endl << flush;
                     delete newop;
                     return(error("Malformed coords move operation"));
                 }
@@ -357,10 +367,10 @@ oplist Character::Mind_Operation(const Move & op)
                     vector.pop_front();
                     double z = vector.front().AsFloat();
                     location_vel = Vector3D(x, y, z);
-                    cout << "Got old velocity format: " << location_vel << endl << flush;
+                    debug_movement && cout << "Got old velocity format: " << location_vel << endl << flush;
                 }
                 catch (Message::WrongTypeException) {
-                    cout << "EXCEPTION: Malformed velocity move operation" << endl << flush;
+                    cerr << "EXCEPTION: Malformed velocity move operation" << endl << flush;
                     delete newop;
                     return(error("Malformed velocity move operation"));
                 }
@@ -368,13 +378,13 @@ oplist Character::Mind_Operation(const Move & op)
         }
 
     } else {
-        cout << "Location not set" << endl << flush;
+        debug_movement && cout << "Location not set" << endl << flush;
     }
 #else
     if ((arg1.find("loc") != arg1.end()) && (arg1["loc"].IsString())) {
         location_parent = arg1["loc"].AsString();
     } else {
-        cout << "Parent not set" << endl << flush;
+        debug_movement && cout << "Parent not set" << endl << flush;
     }
     Vector3D location_coords;
     if ((arg1.find("pos") != arg1.end()) && (arg1["pos"].IsList())) {
@@ -387,10 +397,10 @@ oplist Character::Mind_Operation(const Move & op)
                 vector.pop_front();
                 double z = vector.front().AsFloat();
                 location_coords = Vector3D(x, y, z);
-                cout << "Got new format coords: " << location_coords << endl << flush;
+                debug_movement && cout << "Got new format coords: " << location_coords << endl << flush;
             }
             catch (Message::WrongTypeException) {
-                cout << "EXCEPTION: Malformed pos move operation" << endl << flush;
+                cerr << "EXCEPTION: Malformed pos move operation" << endl << flush;
             }
         }
     }
@@ -406,10 +416,10 @@ oplist Character::Mind_Operation(const Move & op)
                 vector.pop_front();
                 double z = vector.front().AsFloat();
                 location_vel = Vector3D(x, y, z);
-                cout << "Got new format velocity: " << location_vel << endl << flush;
+                debug_movement && cout << "Got new format velocity: " << location_vel << endl << flush;
             }
             catch (Message::WrongTypeException) {
-                cout << "EXCEPTION: Malformed vel move operation" << endl << flush;
+                cerr << "EXCEPTION: Malformed vel move operation" << endl << flush;
             }
         }
     }
@@ -424,10 +434,10 @@ oplist Character::Mind_Operation(const Move & op)
                 vector.pop_front();
                 double z = vector.front().AsFloat();
                 location_face = Vector3D(x, y, z);
-                cout << "Got new format face: " << location_face << endl << flush;
+                debug_movement && cout << "Got new format face: " << location_face << endl << flush;
             }
             catch (Message::WrongTypeException) {
-                cout << "EXCEPTION: Malformed face move operation" << endl << flush;
+                cerr << "EXCEPTION: Malformed face move operation" << endl << flush;
             }
         }
     }
@@ -443,7 +453,7 @@ oplist Character::Mind_Operation(const Move & op)
     }
     double vel_mag;
     // Print out a bunch of debug info
-    cout << ":" << location_parent << ":" << world->fullid << ":" << location.parent->fullid << ":" << endl << flush;
+    debug_movement && cout << ":" << location_parent << ":" << world->fullid << ":" << location.parent->fullid << ":" << endl << flush;
     if ( (location_parent==world->fullid) &&
          (location_parent==location.parent->fullid) &&
          (newop->GetFutureSeconds() >= 0) ) {
@@ -481,10 +491,10 @@ oplist Character::Mind_Operation(const Move & op)
             direction=location_coords-location.coords;
         }
         if (!direction) {
-            cout << "No direction" << endl << flush;
+            debug_movement && cout << "No direction" << endl << flush;
         } else {
             direction=direction.unit_vector();
-            cout << "Direction: " << direction << endl << flush;
+            debug_movement && cout << "Direction: " << direction << endl << flush;
         }
         if (!location_face) {
             location.face = direction;
@@ -577,7 +587,7 @@ oplist Character::Mind_Operation(const Set & op)
 oplist Character::Mind_Operation(const Create & op)
 {
     // We need to call, THE THING FACTORY!
-    cout << "Character::Mind_Operation(Create)" << endl << flush;
+    debug_character && cout << "Character::Mind_Operation(Create)" << endl << flush;
     oplist res;
     return(res);
 }
@@ -601,7 +611,7 @@ oplist Character::Mind_Operation(const Delete & op)
 
 oplist Character::Mind_Operation(const Talk & op)
 {
-    cout << "Character::Mind_OPeration(Talk)" << endl << flush;
+    debug_character && cout << "Character::Mind_OPeration(Talk)" << endl << flush;
     Talk * t = new Talk(op);
     return(oplist(1,t));
 }
@@ -715,7 +725,7 @@ oplist Character::W2m_Operation(const Touch & op)
 
 oplist Character::send_mind(const RootOperation & msg)
 {
-    cout << "Character::send_mind" << endl << flush;
+    debug_character && cout << "Character::send_mind" << endl << flush;
     oplist res;
     if (mind == NULL) {
         return(res);
@@ -725,13 +735,13 @@ oplist Character::send_mind(const RootOperation & msg)
     local_res = mind->message(msg);
 
     if ((NULL != external_mind) && (NULL != external_mind->connection)) {
-        cout << "Sending to external mind" << endl << flush;
+        debug_character && cout << "Sending to external mind" << endl << flush;
         external_res = external_mind->message(msg);
         // If there is some kinf of error in the connection, we turn autom on
     } else {
         //return(*(RootOperation **)NULL);
         if (autom == 0) {
-            cout << "Turning automatic on for " << fullid << endl << flush;
+            debug_character && cout << "Turning automatic on for " << fullid << endl << flush;
             autom = 1;
             if (external_mind != NULL) {
                 delete external_mind;
@@ -740,12 +750,12 @@ oplist Character::send_mind(const RootOperation & msg)
         }
     }
     if (autom) {
-        cout << "Using " << local_res.size() << " ops from local mind"
+        debug_character && cout << "Using " << local_res.size() << " ops from local mind"
              << endl << flush;
         res = local_res;
     } else {
         res = external_res;
-        cout << "Using " << local_res.size() << " ops from external mind"
+        debug_character && cout << "Using " << local_res.size() << " ops from external mind"
              << endl << flush;
     }
     // At this point there is a bunch of conversion stuff that I don't
@@ -756,7 +766,7 @@ oplist Character::send_mind(const RootOperation & msg)
 
 oplist Character::mind2body(const RootOperation & op)
 {
-    cout << "Character::mind2body" << endl << flush;
+    debug_character && cout << "Character::mind2body" << endl << flush;
     RootOperation newop(op);
     oplist res;
 
@@ -776,7 +786,7 @@ oplist Character::mind2body(const RootOperation & op)
 
 oplist Character::world2body(const RootOperation & op)
 {
-    cout << "Character::world2body" << endl << flush;
+    debug_character && cout << "Character::world2body" << endl << flush;
     oplist res = call_operation(op);
     // Set refno?
     // do debugging?
@@ -786,7 +796,7 @@ oplist Character::world2body(const RootOperation & op)
 
 oplist Character::world2mind(const RootOperation & op)
 {
-    cout << "Character::world2mind" << endl << flush;
+    debug_character && cout << "Character::world2mind" << endl << flush;
     op_no_t otype = op_enumerate(&op);
     oplist res;
     OP_SWITCH(op, otype, res, W2m_)
@@ -798,13 +808,13 @@ oplist Character::world2mind(const RootOperation & op)
 
 oplist Character::external_message(const RootOperation & op)
 {
-    cout << "Character::external_message" << endl << flush;
+    debug_character && cout << "Character::external_message" << endl << flush;
     return external_operation(op);
 }
 
 oplist Character::operation(const RootOperation & op)
 {
-    cout << "Character::operation" << endl << flush;
+    debug_character && cout << "Character::operation" << endl << flush;
     oplist result = world2body(op);
     oplist mind_res = world2mind(op);
     while (mind_res.size() != 0) {
@@ -825,7 +835,7 @@ oplist Character::operation(const RootOperation & op)
 
 oplist Character::external_operation(const RootOperation & op)
 {
-    cout << "Character::external_operation" << endl << flush;
+    debug_character && cout << "Character::external_operation" << endl << flush;
     oplist body_res = mind2body(op);
     
     while (body_res.size() != 0) {

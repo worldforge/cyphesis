@@ -1,3 +1,22 @@
+2000-12-11  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Removed lots of extraneous debugging output, and turned the rest
+	  off using debug flags.
+
+	* Added halt_time, which is number of seconds server should run before
+	  it exits.
+
+	* Cleaned a bunch if the remaining memory leaks.
+
+	* Cleaned up the way time is handled.
+
+	* More tweaks to Python code and API to get Acorn working.
+
+	* Inlined some methods into the class definitions, for performance.
+
+	* Updated movement code to sort out setting mode properlly, and
+	  deal with stuttering NPC movement.
+
 2000-12-08  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Major attack on the more fiddly memory leaks. The only noticable

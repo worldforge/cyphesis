@@ -23,7 +23,7 @@ def get_dict_func(self, dict, func_str, func_undefined):
 
 class Thing:
     def __init__(self, cppthing, **kw):
-        print "Thing.__init__"
+        #print "Thing.__init__"
 	self.cinit(cppthing)
         self.attributes=[]
         self.op_dict={}
@@ -40,16 +40,15 @@ class Thing:
         else:
             del self.base
     def cinit(self, cppthing):
-        print "initialising with python Thing constructor"
         self.__dict__['cppthing'] = cppthing
-        print "Stored reference to C++ object"
-        print cppthing
+        #print "Stored reference to C++ object"
+        #print cppthing
     def __getattr__(self, name):
         value = getattr(self.cppthing, name)
-        print "__getattr__",name,value
+        #print "__getattr__",name,value
         return value
     def __setattr__(self, name, value):
-        print "__setattr__",name,value
+        #print "__setattr__",name,value
         return setattr(self.cppthing, name, value)
     def find_operation(self, op_id, prefix="",undefined_operation=None):
         """find right operation to invoke"""

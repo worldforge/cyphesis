@@ -54,7 +54,6 @@ static PyObject * Object_getattr(AtlasObject *self, char *name)
     if (self->m_obj->IsMap()) {
         Object::MapType & omap = self->m_obj->AsMap();
         if (omap.find(name) != omap.end()) {
-            printf("Getting attribute %s from Atlas Map Object\n", name);
             return Object_asPyObject(omap[name]);
         }
     }
@@ -219,10 +218,12 @@ Object::MapType PyDictObject_asMapType(PyObject * dict)
         item = (AtlasObject *)PyDict_GetItem(dict, key);
         if ((PyTypeObject*)PyObject_Type((PyObject *)item) != &Object_Type) {
             PyErr_SetString(PyExc_TypeError,"dict contains non Atlas Object");
+            Py_DECREF(list);
             return Object::MapType();
         }
         argsmap[PyString_AsString(key)] = *(item->m_obj);
     }
+    Py_DECREF(list);
     return(argsmap);
 }
 
@@ -281,6 +282,5 @@ Object PyObject_asObject(PyObject * o)
         loc->location->addObject(&ent);
         return ent;
     }
-    printf("PyObject cannot be cast into Object\n");
     return Object();
 }

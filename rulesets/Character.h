@@ -13,14 +13,15 @@ class Location;
 
 class MovementInfo {
     Character * body;
+    friend class Character;
     double last_movement_time;
-
-  public:
     Vector3D target_location;
+    Vector3D updated_location;
     Vector3D velocity;
     Vector3D face;
     int serialno;
 
+  public:
     MovementInfo(Character * body);
 
     bool update_needed(const Location & location);
@@ -35,7 +36,6 @@ class Character : public Thing {
   protected:
     MovementInfo movement;
     friend class MovementInfo;
-    string sex;
     int autom;
   public:
     BaseMind * mind;

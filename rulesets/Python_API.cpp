@@ -17,7 +17,6 @@ static void Function_dealloc(FunctionObject * self)
 
 static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * kwds)
 {
-    printf("LOG.DEBUG\n");
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -76,6 +75,8 @@ static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObje
             }
         }
     }
+    Py_DECREF(keys);
+    Py_DECREF(values);
     return PyInt_FromLong(flag);
 }
 
@@ -111,7 +112,6 @@ static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject 
     }
     PyObject * list = PyDict_GetItemString(dict, key);
     if (list != NULL) {
-        printf("DICTLIST: Existing list\n");
         if (!PyList_Check(list)) {
             PyErr_SetString(PyExc_TypeError, "Dict does not contain a list");
             return NULL;
@@ -124,7 +124,6 @@ static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject 
         }
         PyList_Append(list, item);
     } else {
-        printf("DICTLIST: New list\n");
         list = PyList_New(0);
         //Py_INCREF(item);
         PyList_Append(list, item);
@@ -165,20 +164,16 @@ void Create_PyThing(Thing * thing, const string & package, const string & _type)
         cerr << "Cld no find python module " << package << endl << flush;
             PyErr_Print();
         return;
-    } else {
-        cout << "Got python module " << package << endl << flush;
     }
     PyObject * my_class = PyObject_GetAttrString(mod_dict, (char *)type.c_str());
     if (my_class == NULL) {
         cerr << "Cld not find class " << type << " in module " << package
              << endl << flush;
-            PyErr_Print();
+        PyErr_Print();
         return;
-    } else {
-        cout << "Got python class " << type << " in " << package << endl << flush;
     }
     if (PyCallable_Check(my_class) == 0) {
-            cout << "It does not seem to be a class at all" << endl << flush;
+        cerr << "It does not seem to be a class at all" << endl << flush;
         return;
     }
     ThingObject * pyThing = newThingObject(NULL);
@@ -187,7 +182,7 @@ void Create_PyThing(Thing * thing, const string & package, const string & _type)
         if (PyErr_Occurred() == NULL) {
             cerr << "Could not get python obj" << endl << flush;
         } else {
-            cout << "Reporting python error for " << type << endl << flush;
+            cerr << "Reporting python error for " << type << endl << flush;
             PyErr_Print();
         }
     }
@@ -213,8 +208,8 @@ static PyObject * location_new(PyObject * self, PyObject * args)
 {
     LocationObject *o;
     // We need to deal with actual args here
-    PyObject * parentO, * coordsO;
-    if (PyArg_ParseTuple(args, "OO", &parentO, &coordsO)) {
+    PyObject * parentO, * coordsO = NULL;
+    if (PyArg_ParseTuple(args, "O|O", &parentO, &coordsO)) {
         if ((PyTypeObject *)PyObject_Type(parentO) != &Thing_Type) {
             if (PyObject_HasAttrString(parentO, "cppthing")) {
                 parentO = PyObject_GetAttrString(parentO, "cppthing");
@@ -224,7 +219,8 @@ static PyObject * location_new(PyObject * self, PyObject * args)
                 return NULL;
             }
         }
-        if ((PyTypeObject *)PyObject_Type(coordsO) != &Vector3D_Type) {
+        if ((coordsO != NULL) &&
+            ((PyTypeObject *)PyObject_Type(coordsO) != &Vector3D_Type)) {
             PyErr_SetString(PyExc_TypeError, "Arg coords required");
             return NULL;
         }
@@ -238,7 +234,11 @@ static PyObject * location_new(PyObject * self, PyObject * args)
         if ( o == NULL ) {
             return NULL;
         }
-        o->location = new Location(parent->m_thing, coords->coords);
+        if (coords == NULL) {
+            o->location = new Location(parent->m_thing, Vector3D());
+        } else {
+            o->location = new Location(parent->m_thing, coords->coords);
+        }
         o->own = 1;
     } else if (PyArg_ParseTuple(args, "")) {
         o = newLocationObject(NULL);
@@ -316,6 +316,7 @@ inline void addToOplist(PyObject * op, OplistObject * o)
     if (op != NULL) {
        if ((PyTypeObject *)PyObject_Type(op) == &RootOperation_Type) {
            o->ops->push_back( ((RootOperationObject*)op)->operation );
+           ((RootOperationObject*)op)->own = 0;
        } else if (op != Py_None) {
            PyErr_SetString(PyExc_TypeError, "Argument must be an op");
            return;
@@ -379,7 +380,6 @@ static PyObject * object_new(PyObject * self, PyObject * args)
 
 static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
-        printf("Entity()\n");
 	AtlasObject *o;
         char * id = NULL;
 	
@@ -399,26 +399,27 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             return NULL;
         }
         int i, size=PyList_Size(keys); 
-        printf("Ent(): kw size = %d\n", size);
         for(i = 0; i < size; i++) {
             char * key = PyString_AsString(PyList_GetItem(keys, i));
             PyObject * val = PyList_GetItem(vals, i);
             if ((strcmp(key, "location") == 0) &&
                 ((PyTypeObject *)PyObject_Type(val) == &Location_Type)) {
-                printf("ENTITY: Setting location\n");
                 LocationObject * loc = (LocationObject*)val;
-                cout << *loc->location << endl << flush;
                 loc->location->addObject(&obj);
             } else {
                 Object val_obj = PyObject_asObject(val);
                 if (val_obj.GetType() == Object::TYPE_NONE) {
                     fprintf(stderr, "Could not handle %s value in Entity()", key);
                     PyErr_SetString(PyExc_TypeError, "Argument type error to Entity()");
+                    Py_DECREF(keys);
+                    Py_DECREF(vals);
                     return NULL;
                 }
                 omap[key] = val_obj;
             }
         }
+        Py_DECREF(keys);
+        Py_DECREF(vals);
         
 	o = newAtlasObject(args);
 	if ( o == NULL ) {
@@ -462,7 +463,6 @@ inline void addToArgs(Object::ListType & args, PyObject * ent)
 
 static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
-    printf("New Operation\n");
     RootOperationObject * op;
 
     char * type;
@@ -472,11 +472,9 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     PyObject * arg2 = NULL;
     PyObject * arg3 = NULL;
 
-    printf("New Operation: parsing args\n");
     if (!PyArg_ParseTuple(args, "s|OOO", &type, &arg1, &arg2, &arg3)) {
         return NULL;
     }
-    printf("New Operation: creating operation\n");
     op = newAtlasRootOperation(args);
     if (op == NULL) {
         return NULL;
@@ -509,7 +507,6 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     op->own = 1;
     if (PyMapping_HasKeyString(kwds, "to")) {
         to = PyMapping_GetItemString(kwds, "to");
-        printf("Operation creation sets to\n");
         PyObject * to_id;
         if ((to_id = PyObject_GetAttrString(to, "id")) == NULL) {
             fprintf(stderr, "To was not really an entity, as it had no id\n");
@@ -523,7 +520,6 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     }
     if (PyMapping_HasKeyString(kwds, "from_")) {
         from = PyMapping_GetItemString(kwds, "from_");
-        printf("Operation creation sets from\n");
         PyObject * from_id;
         if ((from_id = PyObject_GetAttrString(from, "id")) == NULL) {
             fprintf(stderr, "From was not really an entity, as it had no id\n");
@@ -555,7 +551,6 @@ static PyObject * set_kw(PyObject * meth_self, PyObject * args)
     if (!PyArg_ParseTuple(args, "OOs|O", &self, &kw, &name, &def)) {
         return NULL;
     }
-    printf("SET_KW: %s: Got args\n", name);
     PyObject * attr = PyObject_GetAttrString(self, "attributes");
     if (attr == NULL) {
         PyErr_SetString(PyExc_TypeError, "SET_KW: No attributes list");
@@ -576,7 +571,6 @@ static PyObject * set_kw(PyObject * meth_self, PyObject * args)
         // Should I free entry at this point?
     }
     {
-      printf("SET_KW: Adding it to attributes\n");
       PyObject * namestr = PyString_FromString(name);
       PyList_Append(attr, namestr);
       Py_DECREF(namestr);
@@ -591,10 +585,8 @@ list_contains_it:
         PyObject * copy = PyDict_GetItemString(kw, "copy");
         if ((copy != NULL) && (PyObject_HasAttrString(copy, name))) {
             value = PyObject_GetAttrString(copy, name);
-            printf("SET_KW: Getting it from \"copy\"\n");
         } else {
             value = def;
-            printf("SET_KW: Setting to default\n");
         }
     }
     if (value == NULL) {
@@ -662,25 +654,25 @@ void init_python_api()
         PyRun_SimpleString("ruleset_import_hooks.install(['acorn','basic'])\n");
 
 	if (Py_InitModule("atlas", atlas_methods) == NULL) {
-		printf("Failed to Create atlas thing\n");
+		fprintf(stderr, "Failed to Create atlas module\n");
 		return;
 	}
 
 	if (Py_InitModule("Vector3D", Vector3D_methods) == NULL) {
-		printf("Failed to Create Vector3D thing\n");
+		fprintf(stderr, "Failed to Create Vector3D module\n");
 		return;
 	}
 
         PyObject * misc;
         if ((misc = Py_InitModule("misc", misc_methods)) == NULL) {
-		printf("Failed to Create misc thing\n");
+		fprintf(stderr, "Failed to Create misc module\n");
 		return;
 	}
 
 	PyObject * common;
 	PyObject * dict;
 	if ((common = Py_InitModule("common", common_methods)) == NULL) {
-		printf("Failed to Create common thing\n");
+		fprintf(stderr, "Failed to Create common module\n");
 		return;
 	}
 	PyObject * _const = PyModule_New("const");
@@ -720,7 +712,7 @@ void init_python_api()
 
 	PyObject * server;
 	if ((server = Py_InitModule("server", server_methods)) == NULL) {
-		printf("Failed to Create server thing\n");
+		fprintf(stderr, "Failed to Create server thing\n");
 		return;
 	}
 	dict = PyModule_GetDict(server);

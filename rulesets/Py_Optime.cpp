@@ -23,7 +23,6 @@ static PyObject * Optime_getattr(OptimeObject *self, char *name)
 
 static int Optime_setattr(OptimeObject *self, char *name, PyObject *v)
 {
-    cout << "Optime_setattr" << endl << flush;
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid operation time");
         return -1;
@@ -34,7 +33,6 @@ static int Optime_setattr(OptimeObject *self, char *name, PyObject *v)
             return -1;
         }
         double fsecs = PyFloat_AsDouble(v);
-        cout << "Setting operation future seconds to " << fsecs <<endl<<flush;
         self->operation->SetFutureSeconds(fsecs);
         return 0;
     }

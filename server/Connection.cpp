@@ -14,7 +14,7 @@
 
 #include "server.h"
 
-static int debug_server = 1;
+static int debug_server = 0;
 
 using namespace Atlas;
 using namespace Objects;

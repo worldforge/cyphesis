@@ -12,6 +12,8 @@
 #include "Character.h"
 #include "Creator.h"
 
+static int debug_thingf = 0;
+
 using Atlas::Message::Object;
 
 void init_python_api();
@@ -31,7 +33,7 @@ void ThingFactory::readRuleset(const string & setname)
 Thing * ThingFactory::newThing(const string & type,const Object & ent, Routing * svr)
 {
     if (!ent.IsMap()) {
-         cout << "Entity is not a map" << endl << flush;
+         debug_thingf && cout << "Entity is not a map" << endl << flush;
     }
     Object::MapType entmap = ent.AsMap();
     Thing * thing;
@@ -49,7 +51,7 @@ Thing * ThingFactory::newThing(const string & type,const Object & ent, Routing *
     } else {
         thing = new Thing();
     }
-    cout << "[" << type << " " << thing->name << "]" << endl << flush;
+    debug_thingf && cout << "[" << type << " " << thing->name << "]" << endl << flush;
     thing->type = type;
     // Sort out python object
     if (py_package.size() != 0) {
@@ -58,7 +60,7 @@ Thing * ThingFactory::newThing(const string & type,const Object & ent, Routing *
     if (entmap.find("name") != entmap.end() && entmap["name"].IsString()) {
         thing->name = entmap["name"].AsString();
     } else {
-        cout << "Got no name" << endl << flush;
+        debug_thingf && cout << "Got no name" << endl << flush;
     }
     thing->merge(entmap);
     // Get location from entity, if it is present

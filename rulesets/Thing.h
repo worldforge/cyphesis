@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include <common/BaseEntity.h>
+#include <server/WorldRouter.h>
 
 #include "Python_API.h"
 #include "MemMap.h"
@@ -30,14 +31,22 @@ class Thing : public BaseEntity {
     Thing();
     virtual ~Thing() { }
 
-    Message::Object & operator[](const string &);
+    Message::Object & operator[](const string &) {
+        if (attributes.find(name) == attributes.end()) {
+            attributes[name]=Message::Object();
+        }
+        return(attributes[name]);
+    }
 
     int set_object(PyObject * obj) {
         script_object = obj;
         return(obj == NULL ? -1 : 0);
     }
 
-    oplist send_world(RootOperation * msg);
+    oplist send_world(RootOperation * msg) {
+        return world->message(*msg, this);
+    }
+
     void merge(const Message::Object::MapType &);
     void getLocation(Message::Object::MapType &, fdict_t &);
 

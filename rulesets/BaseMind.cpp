@@ -14,6 +14,7 @@
 
 #include "BaseMind.h"
 
+static bool debug_basemind = 0;
 
 BaseMind::BaseMind(string & id, string & body_name)
 {
@@ -47,7 +48,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Create & sub_op)
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        cout << " no args!" << endl << flush;
+        debug_basemind && cout << " no args!" << endl << flush;
         return(res);
     }
     Object obj = args.front();
@@ -67,7 +68,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Delete & sub_op)
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        cout << " no args!" << endl << flush;
+        debug_basemind && cout << " no args!" << endl << flush;
         return(res);
     }
     Object obj = args.front();
@@ -85,14 +86,14 @@ oplist BaseMind::Sight_Operation(const Sight & op, Delete & sub_op)
 
 oplist BaseMind::Sight_Operation(const Sight & op, Move & sub_op)
 {
-    cout << "BaseMind::Sight_Operation(Sight, Move)" << endl << flush;
+    debug_basemind && cout << "BaseMind::Sight_Operation(Sight, Move)" << endl << flush;
     oplist res;
     if (script_Operation("sight_move", op, res, &sub_op) != 0) {
         return(res);
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        cout << " no args!" << endl << flush;
+        debug_basemind && cout << " no args!" << endl << flush;
         return(res);
     }
     Object obj = args.front();
@@ -112,7 +113,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Set & sub_op)
     }
     const Object::ListType & args = sub_op.GetArgs();
     if (args.size() == 0) {
-        cout << " no args!" << endl << flush;
+        debug_basemind && cout << " no args!" << endl << flush;
         return(res);
     }
     Object obj = args.front();
@@ -135,7 +136,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Touch & sub_op)
 
 oplist BaseMind::Sight_Operation(const Sight & op, RootOperation & sub_op)
 {
-    cout << "BaseMind::Sight_Operation(Sight, RootOperation)" << endl << flush;
+    debug_basemind && cout << "BaseMind::Sight_Operation(Sight, RootOperation)" << endl << flush;
     oplist res;
     if (script_Operation("sight_undefined", op, res, &sub_op) != 0) {
         return(res);
@@ -145,7 +146,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, RootOperation & sub_op)
 
 oplist BaseMind::Sound_Operation(const Sound & op, Talk & sub_op)
 {
-    cout << "BaseMind::Sound_Operation(Sound, Talk)" << endl << flush;
+    debug_basemind && cout << "BaseMind::Sound_Operation(Sound, Talk)" << endl << flush;
     oplist res;
     if (script_Operation("sound_talk", op, res, &sub_op) != 0) {
         return(res);
@@ -155,7 +156,7 @@ oplist BaseMind::Sound_Operation(const Sound & op, Talk & sub_op)
 
 oplist BaseMind::Sound_Operation(const Sound & op, RootOperation & sub_op)
 {
-    cout << "BaseMind::Sound_Operation(Sound, RootOperation)" << endl << flush;
+    debug_basemind && cout << "BaseMind::Sound_Operation(Sound, RootOperation)" << endl << flush;
     oplist res;
     if (script_Operation("sound_undefined", op, res, &sub_op) != 0) {
         return(res);
@@ -180,13 +181,13 @@ oplist BaseMind::Operation(const Sound & op)
     }
     const Object::ListType & args = op.GetArgs();
     if (args.size() == 0) {
-        cout << " no args!" << endl << flush;
+        debug_basemind && cout << " no args!" << endl << flush;
         return(res);
     }
     Object obj = args.front();
     Root * op2 = utility::Object_asRoot(obj);
     if (op2->GetObjtype() == "op") {
-        cout << " args is an op!" << endl << flush;
+        debug_basemind && cout << " args is an op!" << endl << flush;
         res = call_sound_operation(op, *(RootOperation *)op2);
     }
     delete op2;
@@ -203,28 +204,28 @@ oplist BaseMind::call_sight_operation(const Sight & op, RootOperation & sub_op)
 
 oplist BaseMind::Operation(const Sight & op)
 {
-    cout << "BaseMind::Operation(Sight)" << endl << flush;
+    debug_basemind && cout << "BaseMind::Operation(Sight)" << endl << flush;
     // Deliver argument to Sight_ things
     oplist(res);
     if (script_Operation("sight", op, res) != 0) {
-        cout << " its in the script" << endl << flush;
+        debug_basemind && cout << " its in the script" << endl << flush;
         return(res);
     }
     const Object::ListType & args = op.GetArgs();
     if (args.size() == 0) {
-        cout << " no args!" << endl << flush;
+        debug_basemind && cout << " no args!" << endl << flush;
         return(res);
     }
     Object obj = args.front();
     Root * op2 = utility::Object_asRoot(obj);
     if (op2->GetObjtype() == "op") {
-        cout << " args is an op!" << endl << flush;
+        debug_basemind && cout << " args is an op!" << endl << flush;
         res = call_sight_operation(op, *(RootOperation *)op2);
         //string & op2type = op2->GetParents().front().AsString();
         //string subop = "sight_" + op2type;
         //script_Operation(subop, op, res, (RootOperation *)op2);
     } else /* if (op2->GetObjtype() == "object") */ {
-        cout << " arg is an entity!" << endl << flush;
+        debug_basemind && cout << " arg is an entity!" << endl << flush;
         map.add(obj);
     }
     delete op2;
@@ -258,7 +259,13 @@ oplist BaseMind::operation(RootOperation & op)
     //   If so create look operations to those ids
     //   Set the minds time and date 
     oplist res;
-    res = call_operation(op);
+    RootOperation * look;
+    while ((look = map.look_id()) != NULL) {
+        look->SetFrom(fullid);
+        res.push_back(look);
+    }
+    oplist res2 = call_operation(op);
+    res.merge(res2);
     //res = call_triggers(op);
     return(res);
 }

@@ -336,7 +336,6 @@ static int Operation_seq_length(RootOperationObject * self)
 
 static PyObject * Operation_seq_item(RootOperationObject * self, int item)
 {
-    printf("Operation_seq_item\n");
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError,"invalid operation");
         return 0;
@@ -366,21 +365,17 @@ static PyObject * Operation_seq_item(RootOperationObject * self, int item)
 
 PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
 {
-    printf("Adding to an operation\n");
     fflush(stdout);
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid operation");
-        printf("1\n");
         fflush(stdout);
         return NULL;
     }
     if (other == Py_None) {
-        printf("Adding None to an operation\n");
         OplistObject * res = newOplistObject(NULL);
         res->ops = new oplist();
         res->ops->push_back(self->operation);
         self->own = 0;
-        printf("2\n");
         fflush(stdout);
         return (PyObject*)res;
     }
@@ -398,7 +393,6 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
         res->ops->merge(*opl->ops);
         res->ops->push_back(self->operation);
         self->own = 0;
-        printf("3\n");
         fflush(stdout);
         return (PyObject*)res;
     }
@@ -416,11 +410,9 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
         op->own = 0;
         res->ops->push_back(self->operation);
         self->own = 0;
-        printf("4\n");
         fflush(stdout);
         return (PyObject*)res;
     }
-    printf("5\n");
     fflush(stdout);
     return NULL;
 }
@@ -515,13 +507,11 @@ static void Operation_dealloc(RootOperationObject *self)
 
 static PyObject * Operation_getattr(RootOperationObject * self, char * name)
 {
-    cout << "Operation_getattr" << endl << flush;
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid operation");
         return NULL;
     }
     if (strcmp(name, "from_") == 0) {
-        cout << "Operation_getattr(from)" << endl << flush;
         if (self->from != NULL) {
             ThingObject * thing_obj = newThingObject(NULL);
             if (thing_obj == NULL) {
@@ -571,13 +561,11 @@ static PyObject * Operation_getattr(RootOperationObject * self, char * name)
 
 static int Operation_setattr(RootOperationObject *self, char *name, PyObject *v)
 {
-    cout << "Operation_setattr" << endl << flush;
     if (self->operation == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid operation");
         return -1;
     }
     if (strcmp(name, "from_") == 0) {
-        cout << "Operation_setattr(from)" << endl << flush;
         PyObject * thing_id = PyObject_GetAttrString(v, "id");
         if ((thing_id == NULL) || (!PyString_Check(thing_id))) {
             PyErr_SetString(PyExc_TypeError, "invalid from");
@@ -591,7 +579,6 @@ static int Operation_setattr(RootOperationObject *self, char *name, PyObject *v)
         return 0;
     }
     if (strcmp(name, "to") == 0) {
-        cout << "Operation_setattr(to)" << endl << flush;
         PyObject * thing_id = PyObject_GetAttrString(v, "id");
         if ((thing_id == NULL) || (!PyString_Check(thing_id))) {
             PyErr_SetString(PyExc_TypeError, "invalid to");

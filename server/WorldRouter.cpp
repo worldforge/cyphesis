@@ -15,13 +15,14 @@ extern "C" {
 
 using Atlas::Message::Object;
 
-static int debug_server = 1;
+static int debug_server = 0;
 static int halt_time;
 
 
 WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
 {
     fullid = "world_0";
+    init_time = time(NULL);
     update_time();
     server->id_dict[fullid]=this;
     fobjects[fullid]=this;
@@ -31,7 +32,7 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
     illegal_thing->fullid = "illegal";
     illegal_thing->name = "illegal";
     illegal_thing->deleted = 1;
-    halt_time = time(NULL) + 300;
+    halt_time = 6000;
     //WorldTime tmp_date("612-1-1 08:57:00");
     //This structure is used to tell libatlas about stuff
     //world_info.time.s=tmp_date.seconds();
@@ -257,10 +258,11 @@ void WorldRouter::add_operation_to_queue(RootOperation & op, BaseEntity * obj)
     } else {
         op.SetFrom(obj->fullid);
     }
-    double t = double(time(NULL));
-    //if (t > halt_time) {
-        //exit(0);
-    //}
+    update_time();
+    double t = world_info::time;
+    if (t > halt_time) {
+        exit(0);
+    }
     t = t + op.GetFutureSeconds();
     op.SetSeconds(t);
     op.SetFutureSeconds(0.0);
@@ -423,7 +425,8 @@ bad_type WorldRouter::load(bad_type filename)
 void WorldRouter::update_time()
 {
     // This is still lots simpler than the version in cyphesis-py
-    world_info::time = time(NULL);
+    time_t tmp_time = time(NULL) - init_time;
+    world_info::time = double(tmp_time);
     real_time = world_info::time;
 }
 

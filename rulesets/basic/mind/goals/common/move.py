@@ -35,6 +35,7 @@ class move_me(Goal):
     def move_to_loc(self, me):
         location_=self.location.copy()
         location_.velocity=me.location.coordinates.unit_vector_to_another_vector(location_.coordinates)*self.speed
+        if location_.velocity==me.location.velocity: return
         return Operation("move", Entity(me.id, location=location_))
 
 ############################ MOVE ME AREA ####################################
@@ -223,14 +224,14 @@ class pursuit(Goal):
         lst_of_what = me.mem.recall_place(me.location,self.range,self.what)
         if lst_of_what==[]: return
         me_xyz = me.get_xyz()
-        other_xyz = lst_of_what[0][1].get_xyz()
-        if me_xyz == other_xyz: return Message()
+        other_xyz = lst_of_what[0].get_xyz()
+        if me_xyz == other_xyz: return
         dist_vect = me_xyz.unit_vector_to_another_vector(other_xyz)
         multiply = const.base_velocity * self.direction
         loc = Location(me.location.parent)
         loc.coordinates =  me_xyz + (dist_vect * multiply)
         #print me,multiply,dist,loc.coordinates.distance(other_xyz)
-        ent=Entity(me,location=loc)
+        ent=Entity(me.id,location=loc)
         return Operation("move",ent)
 
 ############################ AVOID ####################################

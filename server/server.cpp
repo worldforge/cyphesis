@@ -26,6 +26,7 @@ extern "C" {
 #include "server.h"
 
 int profile_flag=0;
+static int debug_server = 0;
 
 using namespace Atlas;
 
@@ -51,11 +52,11 @@ int CommClient::setup()
 {
     Atlas::Net::StreamAccept accept("cyphesis", client_ios, this);
 
-    cout << "Negotiating... " << flush;
+    debug_server && cout << "Negotiating... " << flush;
     while (accept.GetState() == Negotiate<iostream>::IN_PROGRESS) {
         accept.Poll();
     }
-    cout << "done" << endl;
+    debug_server && cout << "done" << endl;
 
     if (accept.GetState() == Negotiate<iostream>::FAILED) {
         cerr << "Failed to negotiate" << endl;
@@ -81,7 +82,7 @@ void CommClient::message(const Objects::Operation::RootOperation & obj)
     oplist reply = connection->message(obj);
     while (reply.size() != 0) {
         Objects::Operation::RootOperation * rep_op = reply.front();
-        cout << "sending reply" << endl << flush;
+        debug_server && cout << "sending reply" << endl << flush;
         send(rep_op);
         delete rep_op;
         reply.pop_front();
@@ -91,61 +92,61 @@ void CommClient::message(const Objects::Operation::RootOperation & obj)
 void CommClient::UnknownObjectArrived(const Atlas::Message::Object& o)
 {
 #if 0
-    cout << "An unknown has arrived." << endl << flush;
+    debug_server && cout << "An unknown has arrived." << endl << flush;
     if (o.IsMap()) {
         for(Message::Object::MapType::const_iterator I = o.AsMap().begin();
 		I != o.AsMap().end();
 		I++) {
-		cout << I->first << endl << flush;
+		debug_server && cout << I->first << endl << flush;
                 if (I->second.IsString()) {
-		    cout << I->second.AsString() << endl << flush;
+		    debug_server && cout << I->second.AsString() << endl << flush;
                 }
 	}
     } else {
-        cout << "Its not a map." << endl << flush;
+        debug_server && cout << "Its not a map." << endl << flush;
     }
 #endif
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Login & obj)
 {
-    cout << "A login object thingy here!" << endl << flush;
+    debug_server && cout << "A login object thingy here!" << endl << flush;
     message(obj);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Create & obj)
 {
-    cout << "A create object thingy here!" << endl << flush;
+    debug_server && cout << "A create object thingy here!" << endl << flush;
     message(obj);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Move & obj)
 {
-    cout << "A move object thingy here!" << endl << flush;
+    debug_server && cout << "A move object thingy here!" << endl << flush;
     message(obj);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Set & obj)
 {
-    cout << "A set object thingy here!" << endl << flush;
+    debug_server && cout << "A set object thingy here!" << endl << flush;
     message(obj);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Touch & obj)
 {
-    cout << "A touch object thingy here!" << endl << flush;
+    debug_server && cout << "A touch object thingy here!" << endl << flush;
     message(obj);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Look & obj)
 {
-    cout << "A look object thingy here!" << endl << flush;
+    debug_server && cout << "A look object thingy here!" << endl << flush;
     message(obj);
 }
 
 void CommClient::ObjectArrived(const Objects::Operation::Talk & obj)
 {
-    cout << "A talk object thingy here!" << endl << flush;
+    debug_server && cout << "A talk object thingy here!" << endl << flush;
     message(obj);
 }
 
@@ -190,13 +191,13 @@ int CommServer::accept() {
     sin.sin_port = htons(server_port);
     sin.sin_addr.s_addr = 0L;
 
-    cout << "Accepting.." << endl << flush;
+    debug_server && cout << "Accepting.." << endl << flush;
     int asockfd = ::accept(server_fd, (struct sockaddr *)&sin, &addr_len);
 
     if (asockfd < 0) {
         return(-1);
     }
-    cout << "Accepted" << endl << flush;
+    debug_server && cout << "Accepted" << endl << flush;
     CommClient * newcli = new CommClient(this, asockfd, sin.sin_port);
     if (newcli->setup()) {
         clients.insert(std::pair<int, CommClient *>(asockfd, newcli));
@@ -240,16 +241,16 @@ void CommServer::loop() {
                client->read();
            } else if (client->eof()) {
                remove_client(client);
-               cout << "Client disconnected. Handle it here" << endl << flush;
+               debug_server && cout << "Client disconnected. Handle it here" << endl << flush;
                break;
            } else {
-               cout << "FATAL THIS SHOULD NEVER HAPPEN" << endl << flush;
+               cerr << "FATAL THIS SHOULD NEVER HAPPEN" << endl << flush;
                abort();
            }
        }
     }
     if (FD_ISSET(server_fd, &sock_fds)) {
-        cout << "selected on server" << endl << flush;
+        debug_server && cout << "selected on server" << endl << flush;
         accept();
     }
     idle();
@@ -297,7 +298,7 @@ int main(int argc, char ** argv)
     global_conf->readFromFile("cyphesis.vconf");
     global_conf->getCmdline(argc, argv);
     const string & ruleset = global_conf->getItem("cyphesis", "ruleset");
-    cout << "Using ruleset: " << ruleset << endl << flush;
+    debug_server && cout << "Using ruleset: " << ruleset << endl << flush;
     thing_factory.readRuleset(ruleset);
 
     if (consts::debug_level>=1) {
@@ -314,7 +315,7 @@ int main(int argc, char ** argv)
     }
     CommServer s;
     if (s.setup(6767)) {
-        cout << "Could not create listen socket." << endl << flush;
+        cerr << "Could not create listen socket." << endl << flush;
         exit(1);
     }
     if (profile_flag) {

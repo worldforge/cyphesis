@@ -11,23 +11,6 @@
 
 #include <common/BaseEntity.h>
 
-Location::Location() : parent(NULL) { }
-
-Location::Location(BaseEntity * parnt, Vector3D crds) :
-        parent(parnt), coords(crds), face(1, 0, 0) { }
-
-Location::Location(BaseEntity * parnt, Vector3D crds, Vector3D vel) :
-        parent(parnt), coords(crds), velocity(vel), face(1, 0, 0) { }
-
-Location::Location(BaseEntity * parnt, Vector3D crds, Vector3D vel, Vector3D fce) :
-        parent(parnt), coords(crds), velocity(vel), face(fce) { }
-
-Location::operator bool() const
-{
-    cout << "operator bool" << (parent!=NULL && coords) << endl << flush;
-    return(parent!=NULL && coords);
-}
-
 using Atlas::Message::Object;
 
 void Location::addObject(Object * obj)
@@ -40,8 +23,12 @@ void Location::addObject(Object * obj)
         omap["loc"] = Object("");
     }
     omap["pos"] = coords.asObject();
-    omap["velocity"] = velocity.asObject();
-    omap["face"] = face.asObject();
+    if (velocity) {
+        omap["velocity"] = velocity.asObject();
+    }
+    if (face) {
+        omap["face"] = face.asObject();
+    }
 #else
     Object::MapType lmap;
     if (parent!=NULL) {

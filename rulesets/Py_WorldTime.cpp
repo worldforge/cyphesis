@@ -39,7 +39,6 @@ static PyObject * WorldTime_getattr(WorldTimeObject *self, char *name)
 
 static int WorldTime_setattr(WorldTimeObject *self, char *name, PyObject *v)
 {
-    cout << "WorldTime_setattr" << endl << flush;
     if (self->time == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid worldtime");
         return -1;
@@ -70,15 +69,11 @@ PyTypeObject WorldTime_Type = {
 
 WorldTimeObject * newWorldTimeObject(PyObject *arg)
 {
-	printf("WorldTime new\n");
 	WorldTimeObject * self;
-	printf("WorldTime new1\n");
 	self = PyObject_NEW(WorldTimeObject, &WorldTime_Type);
-	printf("WorldTime new2\n");
 	if (self == NULL) {
 		return NULL;
 	}
-	printf("WorldTime new3\n");
 	self->WorldTime_attr = NULL;
 	return self;
 }

@@ -87,7 +87,7 @@ class NPCMind(BaseMind):
     def sight_move_operation(self, original_op, op):
         """change position in out local map"""
         obj=self.map.update(op[0])
-        if obj.location.parent==self:
+        if obj.location.parent.id==self.id:
             self.add_thing(obj)
             if obj.type[0]=="coin":
                 self.money_transfers.append([op.from_.id, 1])
@@ -176,7 +176,7 @@ class NPCMind(BaseMind):
 ##         print "object found:",object
 ##         if subject.id==self.id:
 ##             foo
-        if subject==self:
+        if subject.id==self.id:
             self.add_thing(object)
     def interlinguish_undefined_operation(self, op, say):
         #CHEAT!: any way to handle these?

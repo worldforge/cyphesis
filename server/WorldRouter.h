@@ -26,6 +26,7 @@ class WorldRouter : public Routing {
     double real_time;
     oplist operation_queue;
     list_t objects_list;
+    time_t init_time;
 
   public:
     //dict_t objects;

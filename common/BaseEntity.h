@@ -1,6 +1,8 @@
 #ifndef BASE_ENTITY_H
 #define BASE_ENTITY_H
 
+#include <Atlas/Objects/Operation/Error.h>
+
 #include <list>
 
 #include <modules/Location.h>
@@ -310,14 +312,70 @@ class BaseEntity {
     virtual oplist Operation(const Save & obj) { oplist res; return(res); }
     virtual oplist Operation(const Setup & obj) { oplist res; return(res); }
     virtual oplist Operation(const RootOperation & obj) { oplist res; return(res); }
-    void set_refno_op(RootOperation * op, const RootOperation & ref_op);
-    void set_refno(oplist ret, const RootOperation & ref_op);
-
-    op_no_t op_enumerate(const RootOperation * op);
-    oplist call_operation(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
     virtual oplist external_operation(const RootOperation & op);
-    oplist error(const RootOperation & op, const char * string);
+
+    void set_refno_op(RootOperation * op, const RootOperation & ref_op) {
+        op->SetRefno(ref_op.GetSerialno());
+    }
+
+    void set_refno(oplist ret, const RootOperation & ref_op) {
+        while (ret.size() != 0) {
+            RootOperation * br = ret.front();
+            set_refno_op(br, ref_op);
+            ret.pop_front();
+        }
+    }
+
+    op_no_t op_enumerate(const RootOperation * op) {
+        const Object::ListType & parents = op->GetParents();
+        if (parents.size() != 1) {
+            cerr << "This is a weird operation." << endl << flush;
+        }
+        if (!parents.begin()->IsString()) {
+            cerr << "This op has invalid parent.\n" << endl << flush;
+        }
+        string parent(parents.begin()->AsString());
+        if ("login" == parent) return(OP_LOGIN);
+        if ("create" == parent) return(OP_CREATE);
+        if ("delete" == parent) return(OP_DELETE);
+        if ("move" == parent) return(OP_MOVE);
+        if ("set" == parent) return(OP_SET);
+        if ("sight" == parent) return(OP_SIGHT);
+        if ("sound" == parent) return(OP_SOUND);
+        if ("talk" == parent) return(OP_TALK);
+        if ("touch" == parent) return(OP_TOUCH);
+        if ("tick" == parent) return(OP_TICK);
+        if ("look" == parent) return(OP_LOOK);
+        if ("load" == parent) return(OP_LOAD);
+        if ("save" == parent) return(OP_SAVE);
+        if ("setup" == parent) return(OP_SETUP);
+        if ("error" == parent) return(OP_ERROR);
+        return (OP_INVALID);
+    }
+
+    oplist call_operation(const RootOperation & op) {
+        oplist res;
+        op_no_t op_no = op_enumerate(&op);
+        OP_SWITCH(op, op_no, res,)
+        return(res);
+    }
+
+    oplist error(const RootOperation & op, const char * string) {
+        Error * e = new Error();
+        *e = Error::Instantiate();
+
+        list<Object> args;
+        Object::MapType errmsg;
+        errmsg["message"] = Object(string);
+        args.push_back(Object(errmsg));
+        args.push_back(op.AsObject());
+
+        e->SetArgs(args);
+        e->SetRefno(op.GetSerialno());
+
+        return(oplist(1,e));
+    }
 };
 
 inline ostream & operator<<(ostream& s, Location& v)

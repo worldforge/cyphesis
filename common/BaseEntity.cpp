@@ -12,7 +12,7 @@
 
 #include "BaseEntity.h"
 
-static int debug_ops = 1;
+static int debug_ops = 0;
 
 BaseEntity::BaseEntity() : stamp(0.0), deleted(0), in_game(0),
                            omnipresent(0), world(NULL) {
@@ -100,6 +100,18 @@ oplist BaseEntity::Operation(const Look & op)
     
 }
 
+oplist BaseEntity::operation(const RootOperation & op)
+{
+    debug_ops && cout << "BaseEntity::operation" << endl << flush;
+    return call_operation(op);
+}
+
+oplist BaseEntity::external_operation(const RootOperation & op)
+{
+    return operation(op);
+}
+
+#if 0
 inline void BaseEntity::set_refno_op(RootOperation * op, const RootOperation &ref_op)
 {
     op->SetRefno(ref_op.GetSerialno());
@@ -185,17 +197,6 @@ oplist BaseEntity::call_operation(const RootOperation & op)
     return(res);
 }
 
-oplist BaseEntity::operation(const RootOperation & op)
-{
-    debug_ops && cout << "BaseEntity::operation" << endl << flush;
-    return call_operation(op);
-}
-
-oplist BaseEntity::external_operation(const RootOperation & op)
-{
-    return operation(op);
-}
-
 oplist BaseEntity::error(const RootOperation & op, const char * string)
 {
     Error * e = new Error();
@@ -212,3 +213,4 @@ oplist BaseEntity::error(const RootOperation & op, const char * string)
 
     return(oplist(1,e));
 }
+#endif

@@ -8,7 +8,6 @@
 
 static PyObject * Thing_as_entity(ThingObject * self, PyObject * args)
 {
-    printf("Thing_as_entity\n");
     if (self->m_thing == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid thing");
         return NULL;
@@ -58,38 +57,39 @@ static void Thing_dealloc(ThingObject *self)
 
 PyObject * Thing_getattr(ThingObject *self, char *name)
 {
-    cout << "Thing_getattr" << endl << flush;
     if (self->m_thing == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid thing");
         return NULL;
     }
     if (strcmp(name, "id") == 0) {
-        cout << "Thing_getattr(id)" << endl << flush;
         return PyString_FromString(self->m_thing->fullid.c_str());
     }
     if (strcmp(name, "name") == 0) {
-        cout << "Thing_getattr(name)" << endl << flush;
         return PyString_FromString(self->m_thing->name.c_str());
     }
+    if (strcmp(name, "type") == 0) {
+        PyObject * list = PyList_New(0);
+        if (list == NULL) {
+            return NULL;
+        }
+        PyList_Append(list, PyString_FromString(self->m_thing->type.c_str()));
+        return list;
+    }
     if (strcmp(name, "status") == 0) {
-        cout << "Thing_getattr(status)" << endl << flush;
         return PyFloat_FromDouble(self->m_thing->status);
     }
     if (strcmp(name, "map") == 0) {
-        cout << "Thing_getattr(map)" << endl << flush;
         MapObject * map = newMapObject(NULL);
         map->m_map = &self->m_thing->map;
         return (PyObject *)map;
     }
     if (strcmp(name, "location") == 0) {
-        cout << "Thing_getattr(location)" << endl << flush;
         LocationObject * loc = newLocationObject(NULL);
         loc->location = &self->m_thing->location;
         loc->own = 0;
         return (PyObject *)loc;
     }
     if (strcmp(name, "world") == 0) {
-        cout << "Thing_getattr(world)" << endl << flush;
         WorldObject * world = newWorldObject(NULL);
         world->world = self->m_thing->world;
         return (PyObject *)world;
@@ -104,16 +104,13 @@ PyObject * Thing_getattr(ThingObject *self, char *name)
     Thing * thing = self->m_thing;
     string attr(name);
     if (thing->attributes.find(attr) != thing->attributes.end()) {
-        cout << name << " is in the attributes list" << endl << flush;
         return Object_asPyObject(thing->attributes[attr]);
     }
-    cout << "Just doing the method lookup" << endl << flush;
     return Py_FindMethod(Thing_methods, (PyObject *)self, name);
 }
 
 int Thing_setattr(ThingObject *self, char *name, PyObject *v)
 {
-    cout << "Thing_setattr" << endl << flush;
     if (self->m_thing == NULL) {
         return -1;
     }
