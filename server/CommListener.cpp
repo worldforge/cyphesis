@@ -107,7 +107,7 @@ int CommListener::accept()
     }
     if (address == 0) {
         log(WARNING, "Unable to determine remote address for connection");
-        perror("inet_ntop");
+        logSysError(WARNING);
         address = "unknown";
     }
     

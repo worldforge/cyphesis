@@ -1,3 +1,11 @@
+2004-12-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/log.cpp, common/log.h: Add a new logging function to log
+	  errors from libc.
+
+	* server/CommListener.cpp, server/CommServer.cpp: Use new function
+	  rather than perror for logging libc errors.
+
 2004-12-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/IGEntityExerciser.h: Add missing Atlas include.

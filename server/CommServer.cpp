@@ -154,8 +154,8 @@ void CommServer::loop()
 
     if (rval < 0) {
         if (errno != EINTR) {
-            perror("select");
             log(ERROR, "Error caused by select() in main loop");
+            logSysError(ERROR);
         }
         return;
     }
@@ -207,7 +207,7 @@ void CommServer::addSocket(CommSocket * cs)
     int ret = ::epoll_ctl(m_epollFd, EPOLL_CTL_ADD, cs->getFd(), &ee);
     if (ret != 0) {
         log(ERROR, "Error calling epoll_ctl to add socket");
-        perror("epoll_ctl");
+        logSysError(ERROR);
     }
 #endif // HAVE_EPOLL_CREATE
     m_sockets.insert(cs);
@@ -225,7 +225,7 @@ void CommServer::removeSocket(CommSocket * cs)
     int ret = ::epoll_ctl(m_epollFd, EPOLL_CTL_DEL, cs->getFd(), &ee);
     if (ret != 0) {
         log(ERROR, "Error calling epoll_ctl to remove socket");
-        perror("epoll_ctl");
+        logSysError(ERROR);
     }
 #endif // HAVE_EPOLL_CREATE
     m_sockets.erase(cs);

@@ -10,5 +10,6 @@ typedef enum log_level { INFO, SCRIPT, NOTICE,
 
 void initLogger();
 void log(LogLevel, const char * msg);
+void logSysError(LogLevel);
 
 #endif // COMMON_LOG_H

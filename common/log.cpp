@@ -76,3 +76,13 @@ void log(LogLevel lvl, const char * msg)
         std::cerr << type << ": " << msg << std::endl << std::flush;
     }
 }
+
+void logSysError(LogLevel lvl)
+{
+    char * err = strerror(errno);
+    if (err != NULL) {
+        log(lvl, err);
+    } else {
+        log(ERROR, "Error getting error message from system.");
+    }
+}
