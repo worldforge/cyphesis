@@ -430,19 +430,19 @@ OpVector Character::mindMoveOperation(const Move & op)
     try {
         I = arg1.find("pos");
         if (I != arg1.end()) {
-            location_coords = Vector3D(I->second.asList());
+            location_coords.fromAtlas(I->second.asList());
             debug( std::cout << "pos set to " << location_coords << std::endl << std::flush;);
         }
 
         I = arg1.find("velocity");
         if (I != arg1.end()) {
-            location_vel = Vector3D(I->second.asList());
+            location_vel.fromAtlas(I->second.asList());
             debug( std::cout << "vel set to " << location_vel << std::endl << std::flush;);
         }
 
         I = arg1.find("orientation");
         if (I != arg1.end()) {
-            location_orientation = Quaternion(I->second.asList());
+            location_orientation.fromAtlas(I->second.asList());
             debug( std::cout << "ori set to " << location_orientation << std::endl << std::flush;);
         }
     }

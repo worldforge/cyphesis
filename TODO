@@ -1,3 +1,7 @@
+Modify Movement and Pedestrian classes so they handle restricting an
+entity to their parents constraints. In the case of Pedestrian, this
+means walking on the ground.
+
 Re-write appear/disappear code so we use real square distance instead
 of boxes, and use some kind of function involving objects size 
 to judge how visible it is. ie. get rid of fixed sight range.

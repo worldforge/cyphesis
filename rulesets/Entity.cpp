@@ -118,7 +118,7 @@ void Entity::set(const std::string & aname, const Element & attr)
     } else if ((aname == "bbox") && attr.isList() &&
                (attr.asList().size() > 2)) {
         m_update_flags |= a_bbox;
-        m_location.m_bBox = BBox(attr.asList());
+        m_location.m_bBox.fromAtlas(attr.asList());
     } else {
         m_update_flags |= a_attr;
         m_attributes[aname] = attr;
@@ -210,19 +210,19 @@ bool Entity::getLocation(const Element::MapType & entmap,
         m_location.m_loc = J->second;
         I = entmap.find("pos");
         if (I != entmap.end()) {
-            m_location.m_pos = Vector3D(I->second.asList());
+            m_location.m_pos.fromAtlas(I->second.asList());
         }
         I = entmap.find("velocity");
         if (I != entmap.end()) {
-            m_location.m_velocity = Vector3D(I->second.asList());
+            m_location.m_velocity.fromAtlas(I->second.asList());
         }
         I = entmap.find("orientation");
         if (I != entmap.end()) {
-            m_location.m_orientation = Quaternion(I->second.asList());
+            m_location.m_orientation.fromAtlas(I->second.asList());
         }
         I = entmap.find("bbox");
         if (I != entmap.end()) {
-            m_location.m_bBox = BBox(I->second.asList());
+            m_location.m_bBox.fromAtlas(I->second.asList());
         }
     }
     catch (Atlas::Message::WrongTypeException) {

@@ -251,17 +251,18 @@ OpVector Thing::MoveOperation(const Move & op)
         }
 
         // Update pos
-        m_location.m_pos = Vector3D(I->second.asList());
+        m_location.m_pos.fromAtlas(I->second.asList());
         m_update_flags |= a_pos;
         I = ent.find("velocity");
         if (I != ent.end()) {
-        // Update velocity
-            m_location.m_velocity = Vector3D(I->second.asList());
+            // Update velocity
+            m_location.m_velocity.fromAtlas(I->second.asList());
+            // Velocity is not persistent so has no flag
         }
         I = ent.find("orientation");
         if (I != ent.end()) {
-        // Update orientation
-            m_location.m_orientation = Quaternion(I->second.asList());
+            // Update orientation
+            m_location.m_orientation.fromAtlas(I->second.asList());
             m_update_flags |= a_orient;
         }
 
