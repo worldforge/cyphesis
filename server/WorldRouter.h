@@ -25,6 +25,7 @@ class WorldRouter : public Routing {
     Thing * illegal_thing;
     double real_time;
     oplist operation_queue;
+    list_t objects_list;
 
   public:
     //dict_t objects;
@@ -45,6 +46,7 @@ class WorldRouter : public Routing {
     virtual oplist message(RootOperation & msg, BaseEntity * obj);
     virtual oplist message(const RootOperation & msg);
     BaseEntity * get_operation_place(const RootOperation & op);
+    list_t & broadcastList(const RootOperation & op);
     virtual oplist operation(const RootOperation * op);
     virtual oplist operation(const RootOperation & op);
     virtual oplist Operation(const Look & op);

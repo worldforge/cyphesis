@@ -313,6 +313,23 @@ static PyObject * cppthing_new(PyObject * self, PyObject * args)
 	return (PyObject *)o;
 }
 
+inline void addToArgs(Object::ListType & args, PyObject * ent)
+{
+    if (ent == NULL) {
+        return;
+    }
+    if ((PyTypeObject*)PyObject_Type(ent) == &Object_Type) {
+        AtlasObject * obj = (AtlasObject*)ent;
+        if (obj->m_obj == NULL) {
+            fprintf(stderr, "Invalid object in Operation arguments\n");
+            return;
+        }
+        args.push_back(*obj->m_obj);
+    } else {
+        fprintf(stderr, "Non-entity passed as arg to Operation()\n");
+    }
+}
+
 static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
     printf("New Operation\n");
@@ -350,9 +367,6 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     } else {
         fprintf(stderr, "ERROR: PYTHON CREATING AN UNHANDLED %s OPERATION\n", type);
         *op->operation = RootOperation::Instantiate();
-        // FIXME, just to test
-        Py_INCREF(Py_None);
-        return Py_None;
     }
     if (PyMapping_HasKeyString(kwds, "to")) {
         to = PyMapping_GetItemString(kwds, "to");
@@ -383,6 +397,11 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         op->operation->SetFrom(PyString_AsString(from_id));
         // FIXME I think I need to actually do something with said value now
     }
+    Object::ListType args_list;
+    addToArgs(args_list, arg1);
+    addToArgs(args_list, arg2);
+    addToArgs(args_list, arg3);
+    op->operation->SetArgs(args_list);
     return (PyObject *)op;
 }
 

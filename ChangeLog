@@ -1,11 +1,28 @@
 2000-12-03  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
+	* Corrected broadcasting of non-perception operations to
+	  non-perceptive entities.
+
+	* Sorted out removing spaces from id strings.
+
+	* Implemented Entity arguments to Operaiton creation in python.
+
+2000-12-03  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Debugged set_kw() and confirmed that it does work.
+
+	* Added python API support for self.world.
+
+2000-12-03  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
 	* Added support for varconf config files.
 
 	* Used config file to list enitity types and their python class files.
 
 	* Cleaned up reference counting in Python API related C++ code.
 	  References should all now be handled correctly.
+
+	* Added support for adding None to Operation and Oplist.
 
 2000-11-30  Al Riddoch  <ajr@ecs.soton.ac.uk>
 

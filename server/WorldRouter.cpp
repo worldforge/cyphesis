@@ -40,6 +40,15 @@ WorldRouter::WorldRouter(ServerRouting * srvr) : server(srvr)
 string WorldRouter::get_id(string & name)
 {
     string full_id;
+
+    char buf[32];
+    sprintf(buf, "%d", ++next_id);
+    full_id = name + string("_") + string(buf);
+    size_t index;
+    while ((index = full_id.find(' ', 0)) != string::npos) {
+        full_id[index] = '_';
+    }
+#if 0
     char * buf = (char *)malloc(strlen(name.c_str()) + 32);
     next_id++;
     if (buf) {
@@ -48,6 +57,7 @@ string WorldRouter::get_id(string & name)
     } else {
         debug_server && cout << "BARRRRF" << endl << flush;
     }
+#endif
     return(full_id);
 }
 
@@ -56,6 +66,7 @@ Thing * WorldRouter::add_object(Thing * obj)
     debug_server && cout << "WorldRouter::add_object(Thing *)" << endl << flush;
     obj->fullid=get_id(obj->name);
     server->id_dict[obj->fullid]=fobjects[obj->fullid]=obj;
+    objects_list.push_back(obj);
     if (!obj->location) {
         debug_server && cout << "set loc " << this  << endl << flush;
         obj->location=Location(this, Vector3D(0,0,0));
@@ -100,6 +111,7 @@ void WorldRouter::del_object(BaseEntity * obj)
     omnipresent_list.remove(obj);
     perceptives.remove(obj);
 
+    objects_list.remove(obj);
     fobjects[obj->fullid] = illegal_thing;
 }
 
@@ -146,6 +158,18 @@ BaseEntity * WorldRouter::get_operation_place(const RootOperation & op)
     return NULL;
 }
 
+list_t & WorldRouter::broadcastList(const RootOperation & op)
+{
+    const Object::ListType & parents = op.GetParents();
+    if ((parents.size() > 0) && (parents.front().IsString())) {
+        const string & parent = parents.front().AsString();
+        if ((parent == "sight") || (parent == "sound")) {
+            return perceptives;
+        }
+    }
+    return objects_list;
+}
+
 oplist WorldRouter::operation(const RootOperation * op)
 {
     oplist res;
@@ -183,8 +207,9 @@ oplist WorldRouter::operation(const RootOperation * op)
     } else {
         debug_server && cout << 4 << flush;
         RootOperation newop = op_ref;
+        list_t & broadcast = broadcastList(op_ref);
         std::list<BaseEntity *>::iterator I;
-        for(I = perceptives.begin(); I != perceptives.end(); I++) {
+        for(I = broadcast.begin(); I != broadcast.end(); I++) {
             newop.SetTo((*I)->fullid);
             operation(&newop);
         }
