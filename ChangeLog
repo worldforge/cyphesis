@@ -1,3 +1,7 @@
+2004-02-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* Clean up Makefile.ams a bit.
+
 2004-02-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* physics/Collision.cpp: Improve comments, and describe exit prediction
