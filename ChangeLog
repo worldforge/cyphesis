@@ -1,5 +1,14 @@
 2004-03-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/Collision.cpp: Sort out a weird floating pointe problem
+	  with emergence test. Now works. Remove debug output.
+
+	* tests/emergencetest.cpp: Implement a suitable minimal set of tests.
+
+	* rulesets/Movement.cpp: Switch to using the new code.
+
+2004-03-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Collision.h, physics/Collision.cpp: Work on code predicting
 	  when entity leaves parent.
 

@@ -319,15 +319,15 @@ bool predictEmergence(const CoordList & l,         // Vertices of this mesh
     bool flag = false;
 
     for(CoordList::const_iterator I = l.begin(); I != l.end(); ++I) {
-        float xtime = (u.x() > 0) ? ((of.x() - I->x()) / u.x())
-                                  : ((on.x() - I->x()) / u.x());
-        float ytime = (u.y() > 0) ? ((of.y() - I->y()) / u.y())
-                                  : ((on.y() - I->y()) / u.y());
-        float ztime = (u.z() > 0) ? ((of.z() - I->z()) / u.z())
-                                  : ((on.z() - I->z()) / u.z());
+        float xtime = (u.x() >= 0.f) ? ((of.x() - I->x()) / u.x())
+                                   : ((on.x() - I->x()) / u.x());
+        float ytime = (u.y() >= 0.f) ? ((of.y() - I->y()) / u.y())
+                                   : ((on.y() - I->y()) / u.y());
+        float ztime = (u.z() >= 0.f) ? ((of.z() - I->z()) / u.z())
+                                   : ((on.z() - I->z()) / u.z());
         float ctime = min(xtime, ytime, ztime);
-        std::cout << xtime << ":" << ytime << ":" << ztime << ":" << ctime
-                  << std::endl << std::flush;
+        debug(std::cout << xtime << ":" << ytime << ":" << ztime << ":" << ctime
+                        << std::endl << std::flush;);
         if (ctime < mintime) {
             mintime = ctime;
         }

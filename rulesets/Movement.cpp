@@ -73,9 +73,11 @@ void Movement::checkCollisions(const Location & loc)
         if (!oloc.m_bBox.isValid() || (oloc.m_loc == NULL)) {
             return;
         }
-        float t = loc.timeToExit(oloc);
-        if (t == 0) { return; }
-        if (t < 0) { t = 0; }
+        // float t = loc.timeToExit(oloc);
+        float t = 0;
+        predictEmergence(loc, oloc, t);
+        // if (t == 0) { return; }
+        // if (t < 0) { t = 0; }
         if (t > consts::basic_tick) { return; }
         collTime = t;
         debug(std::cout << "Collision with parent bounding box in "
