@@ -14,6 +14,8 @@
 class Entity;
 
 class Location {
+  private:
+    bool m_solid;
   protected:
     bool distanceLeft(const Location & other, Vector3D & c) const;
     bool distanceRight(const Location & other, Vector3D & c) const;
@@ -24,18 +26,22 @@ class Location {
     Quaternion m_orientation;
 
     BBox m_bBox;
-    bool m_solid;
 
-    Location() : m_loc(NULL), m_solid(true) { }
-    Location(Entity * rf) :
-            m_loc(rf), m_solid(true) { }
-    Location(Entity * rf, const Vector3D& crds) :
-            m_loc(rf), m_pos(crds), m_solid(true) { }
-    Location(Entity * rf, const Vector3D& crds, const Vector3D& vel) :
-            m_loc(rf), m_pos(crds), m_velocity(vel), m_solid(true) { }
+    Location();
+    explicit Location(Entity * rf);
+    explicit Location(Entity * rf, const Vector3D& crds);
+    explicit Location(Entity * rf, const Vector3D& crds, const Vector3D& vel);
 
     bool isValid() const {
         return ((m_loc != NULL) && m_pos.isValid());
+    }
+
+    bool isSolid() const {
+        return m_solid;
+    }
+
+    void setSolid(bool s = true) {
+        m_solid = s;
     }
 
     const Vector3D getXyz() const;

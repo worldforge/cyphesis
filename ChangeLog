@@ -1,5 +1,15 @@
 2004-06-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.h, modules/Location.cpp: Clean up constructors
+	  and interface to check whether bbox is solid.
+
+	* rulesets/Area.cpp, rulesets/Movement.cpp, rulesets/Structure.h,
+	  rulesets/Structure.cpp: Update to modified Location API.
+
+	* rulesets/World.cpp: Fix misuse of implicit construction.
+
+2004-06-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cyconvertrules.cpp: Fully implement rule conversion
 	  to new format, including formatted output.
 

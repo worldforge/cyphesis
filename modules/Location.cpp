@@ -8,6 +8,25 @@
 
 using Atlas::Message::Element;
 
+Location::Location() : m_solid(true), m_loc(NULL)
+{
+}
+
+Location::Location(Entity * rf) :
+            m_solid(true), m_loc(rf)
+{
+}
+
+Location::Location(Entity * rf, const Vector3D& crds) :
+            m_solid(true), m_loc(rf), m_pos(crds)
+{
+}
+
+Location::Location(Entity * rf, const Vector3D& crds, const Vector3D& vel) :
+            m_solid(true), m_loc(rf), m_pos(crds), m_velocity(vel)
+{
+}
+
 const Vector3D Location::getXyz() const
 {
     if (m_loc) {

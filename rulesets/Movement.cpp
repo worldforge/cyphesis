@@ -84,7 +84,7 @@ void Movement::checkCollisions(const Location & loc)
                         << collTime << std::endl << std::flush;);
         m_collEntity = oloc.m_loc;
         m_collRefChange = true;
-    } else if (!m_collEntity->m_location.m_solid) {
+    } else if (!m_collEntity->m_location.isSolid()) {
         debug(std::cout << "Collision with non-solid object" << std::endl
                         << std::flush;);
         // Non solid container - check for collision with its contents.

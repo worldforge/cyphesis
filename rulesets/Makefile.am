@@ -22,7 +22,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Plant.cpp Plant.h \
 			     Food.cpp Food.h \
 			     Stackable.cpp Stackable.h \
-			     Structure.h \
+			     Structure.cpp Structure.h \
 			     Line.cpp Line.h \
 			     Area.cpp Area.h \
 			     Movement.cpp Movement.h \
