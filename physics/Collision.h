@@ -48,7 +48,7 @@ bool predictCollision(const Location & l,     // Location data of this object
 ////////////////////////// EMERGENCE ////////////////////////// 
 
 // Predict collision between a point and a plane.
-// Returns true if p is infront of plane before collision
+// Returns true if p is behind plane before collision
 bool getEmergenceTime(const Vector3D & p,     // Position of point
                       const Vector3D & u,     // Velocity of point
                       // float point_time,   // Time since position set

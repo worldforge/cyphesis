@@ -1,3 +1,8 @@
+2003-12-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Collision.cpp, physics/Collision.h: Update some comments,
+	  and implement getEmergenceTime.
+
 2003-12-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommPSQLSocket.h: Change database vacuum intervals to

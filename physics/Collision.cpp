@@ -183,6 +183,8 @@ bool predictCollision(const Location & l,  // This location
                       const Location & o,  // Other location
                       float & time,       // Returned time to collision
                       Vector3D & normal)   // Returned normal acting on l
+// Predict collision between 2 entity locations
+// Returns whether the collision will occur
 {
     // FIXME Handle entities which have no box - just one vertex I think
     // FIXME THe mesh conversion process below should probably be eliminated
@@ -282,7 +284,7 @@ bool getEmergenceTime(const Vector3D & p,    // Position of point
                       // float plane_time,   // Time since position set
                       float & time)          // Emergence time return
 {
-    return false;
+    return !getCollisionTime(p, u, l, n, v, time);
 }
 
 bool predictEmergence(const CoordList & l,    // Vertices of this mesh
