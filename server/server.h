@@ -55,6 +55,7 @@ class CommClient : Objects::Decoder {
     //void destroy();
     void setup();
     int peek();
+    int get_fd() { return client_fd; }
 };
 
 // BaseServer is an libatlaspy class

@@ -248,7 +248,7 @@ void CommServer::loop() {
            if (client->peek() == -1) {
                remove_client(client);
                cout << "Client disconnected. Handle it here" << endl << flush;
-               exit(1);
+               break;
            } else {
                client->read();
            }
@@ -261,29 +261,29 @@ void CommServer::loop() {
     idle();
 }
 
-void CommServer::remove_client(CommClient * client) {
+void CommServer::remove_client(CommClient * client)
+{
     remove_client(client,"You caused exception. Connection closed");
 }
 
-void CommServer::remove_client(CommClient * client, char * error_msg) {
-    /* 
-    err=Entity(message=error_msg);
+void CommServer::remove_client(CommClient * client, char * error_msg)
+{
+    Message::Object::MapType err;
+    err["message"] = Message::Object(error_msg);
+    Message::Object::ListType eargs(1,Message::Object(err));
+
+    Error * e = new Error();
+    *e = Error::Instantiate();
+
+    e->SetArgs(eargs);
+
+    // Need to deal with cleanly sending the error op, without hanging
+    // if the client has already gone. FIXME
+    
     if (client) {
-        try {
-            client.send(Operation("error",err));
-            client.client.comm_client.layer.socket.close();
-        }
-        catch (socket.error) {
-            pass;
-        }
-        try {
-            self.clients.remove(client);
-        }
-        catch (ValueError) {
-            pass;
-        }
+        client->send(e);
+        clients.erase(client->get_fd());
     }
-    */
 }
 
 void CommServer::idle() {

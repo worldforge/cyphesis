@@ -59,6 +59,7 @@ void Thing::addObject(Message::Object * obj)
 {
     Message::Object::MapType & omap = obj->AsMap();
     omap["name"] = Message::Object(name);
+    omap.insert(attributes.begin(), attributes.end());
     BaseEntity::addObject(obj);
 }
 

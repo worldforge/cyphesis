@@ -3,12 +3,6 @@
 
 #include <Python.h>
 
-typedef int bad_type; // Remove this to get unset type reporting
-
-typedef std::map<string, Atlas::Message::Object> a_map_t;
-
-#define None 0 // Remove this to deal with un-initialied vars
-
 #include <string.h>
 
 #include <common/BaseEntity.h>
@@ -21,7 +15,7 @@ class Thing : public BaseEntity {
 
     int script_Operation(const string &, const RootOperation &, oplist &);
 
-    a_map_t attributes;
+    Message::Object::MapType attributes;
   public:
     double status;
     int is_character;
