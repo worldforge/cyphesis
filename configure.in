@@ -32,10 +32,10 @@ AC_ARG_ENABLE(debug,
         if test "$enableval" = "yes"; then
             CXXFLAGS="$CXXFLAGS -Wall -DDEBUG"
         else
-            CXXFLAGS="$CXXFALGS -Wall -DNDEBUG"
+            CXXFLAGS="$CXXFLAGS -Wall -DNDEBUG"
         fi
     ],[
-        CXXFLAGS="$CXXFALGS -Wall -DNDEBUG"
+        CXXFLAGS="$CXXFLAGS -Wall -DNDEBUG"
     ]
 )
 
@@ -84,38 +84,38 @@ dnl
 
 AC_CHECK_HEADER(python2.2/Python.h,
     [
-	python_include_path=-I${python_prefix}/include/python2.2
-	python_version=python2.2
-	AC_DEFINE(HAVE_PYTHON_H)
-    ],
-  [AC_CHECK_HEADER(python2.1/Python.h,
-    [
-        python_include_path=-I${python_prefix}/include/python2.1
-        python_version=python2.1
+        python_include_path=-I${python_prefix}/include/python2.2
+        python_version=python2.2
         AC_DEFINE(HAVE_PYTHON_H)
     ],[
-        AC_CHECK_HEADER(python2.0/Python.h,
+        AC_CHECK_HEADER(python2.1/Python.h,
         [
-            python_include_path=-I${python_prefix}/include/python2.0
-            python_version=python2.0
+            python_include_path=-I${python_prefix}/include/python2.1
+            python_version=python2.1
             AC_DEFINE(HAVE_PYTHON_H)
         ],[
-            AC_CHECK_HEADER(python1.6/Python.h, 
+            AC_CHECK_HEADER(python2.0/Python.h,
             [
-                python_include_path=-I${python_prefix}/include/python1.6
-                python_version=python1.6
+                python_include_path=-I${python_prefix}/include/python2.0
+                python_version=python2.0
                 AC_DEFINE(HAVE_PYTHON_H)
             ],[
-                AC_CHECK_HEADER(python1.5/Python.h, 
+                AC_CHECK_HEADER(python1.6/Python.h, 
                 [
-                    python_include_path=-I${python_prefix}/include/python1.5
-                    python_version=python1.5
+                    python_include_path=-I${python_prefix}/include/python1.6
+                    python_version=python1.6
                     AC_DEFINE(HAVE_PYTHON_H)
+                ],[
+                    AC_CHECK_HEADER(python1.5/Python.h, 
+                    [
+                        python_include_path=-I${python_prefix}/include/python1.5
+                        python_version=python1.5
+                        AC_DEFINE(HAVE_PYTHON_H)
+                    ])
                 ])
             ])
         ])
     ]
-  )]
 )
 
 

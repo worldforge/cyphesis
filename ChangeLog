@@ -1,5 +1,14 @@
 2002-06-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.in: Bug fixes and tidying up.
+
+	* rulesets/mason/define_world.py: Remove acorn stuff, and get it
+	  running.
+
+	* cyphesis.spec.in: Fix library dependancies.
+
+2002-06-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/Makefile.am, server/Makefile.am, client/Makefile.am,
 	  autogen.sh, configure.in: Removed some overcomplicated and
 	  unrealistic build options. Sort out all the library checking
