@@ -31,22 +31,6 @@ Persistance * Persistance::instance()
     return m_instance;
 }
 
-void Persistance::saveAdminAccount(Account & adm)
-{
-    std::ofstream adm_file("/tmp/admin.xml", std::ios::out);
-    adm_file << "<atlas>" << std::endl << "<map>" << std::endl;
-    adm_file << "    <string name=\"password\">" << adm.password << "</string>" << std::endl;
-    adm_file << "    <string name=\"id\">" << adm.getId() << "</string>" << std::endl;
-    adm_file << "    <list name=\"parents\">" << std::endl;
-    adm_file << "    <string>admin</string>" << std::endl;
-    adm_file << "    </list>" << std::endl;
-    adm_file << "</map>" << std::endl << "</atlas>" << std::endl << std::flush;
-    adm_file.close();
-}
-
-// This is the version of the persistance code which is enabled if 
-// there is db support.
-
 bool Persistance::init()
 {
     Persistance * p = instance();
@@ -79,7 +63,6 @@ Account * Persistance::loadAdminAccount()
         adm = new Admin(NULL, "admin", consts::defaultAdminPassword);
         p->putAccount(*adm);
     }
-    saveAdminAccount(*adm);
     return adm;
 }
 

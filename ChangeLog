@@ -1,3 +1,9 @@
+2002-04-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Persistance.h, server/Persistance.cpp:
+	  Removed legacy code for passing admin account data to the
+	  python client.
+
 2002-04-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Connection.cpp: Correctly handle connections on account

@@ -22,7 +22,6 @@ class Persistance {
     static Persistance * m_instance;
   public:
     static Account * loadAdminAccount();
-    static void saveAdminAccount(Account &);
     static Persistance * instance();
     static bool init();
     static void shutdown();
