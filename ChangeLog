@@ -1,3 +1,22 @@
+2004-12-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Property.h, rulesets/Thing.cpp: Clean up some comments.
+
+	* rulesets/EntityProperties.cpp: Remove specialisation of
+	  ImmutableProperty::set for EntitySet, as its the same as the
+	  default.
+
+	* rulesets/Script.h: Update the copyright date, and clean up some
+	  comments.
+
+	* rulesets/Container.cpp, rulesets/Container.h,
+	  tests/Containertest.cpp: New virtualised classes for handling
+	  entity containership, with API that mimics STL set. To be used to
+	  allow entities to handle containership differently.
+
+	* rulesets/EntityProperties.cpp: Add specialisation of
+	  ImmutableProperty for Container class.
+
 2004-12-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Vector3D.cpp: Fix Vector3D.setattr so it correctly

@@ -4,6 +4,8 @@
 
 #include "Entity.h"
 
+#include "Container.h"
+
 #include "common/Property_impl.h"
 #include "common/type_utils.h"
 
@@ -15,6 +17,7 @@ template class Property<BBox>;
 template class Property<IdList>;
 
 template class ImmutableProperty<EntitySet>;
+template class ImmutableProperty<Container>;
 
 void Property<BBox>::get(Atlas::Message::Element & e)
 {
@@ -65,15 +68,28 @@ void ImmutableProperty<EntitySet>::get(Atlas::Message::Element & e)
     }
 }
 
-void ImmutableProperty<EntitySet>::set(const Atlas::Message::Element & e)
-{
-    return;
-}
-
 void ImmutableProperty<EntitySet>::add(const std::string & s,
                                        Atlas::Message::MapType & ent)
 {
     if (!m_data.empty()) {
         get(ent[s]);
     }
+}
+
+void ImmutableProperty<Container>::get(Atlas::Message::Element & e)
+{
+    // FIXME Not sure if this is best. Why did we bother to virtualise
+    // addToMessage() if we have to do this here?
+    e = Atlas::Message::ListType();
+    Atlas::Message::ListType & contlist = e.asList();
+    Container::const_iterator Iend = m_data.end();
+    for (Container::const_iterator I = m_data.begin(); I != Iend; ++I) {
+        contlist.push_back((*I)->getId());
+    }
+}
+
+void ImmutableProperty<Container>::add(const std::string & s,
+                                       Atlas::Message::MapType & ent)
+{
+    m_data.addToMessage(s, ent);
 }

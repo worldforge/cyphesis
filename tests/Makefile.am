@@ -7,7 +7,7 @@ MODULE_TESTS = Locationtest WorldTimetest
 
 RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
                  Stackabletest Structuretest Thingtest Worldtest \
-                 Charactertest Creatortest
+                 Charactertest Creatortest Containertest
 
 INCLUDES = -I$(top_srcdir)
 
@@ -344,3 +344,6 @@ Creatortest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                     $(top_builddir)/common/utility.o \
                     $(top_builddir)/common/const.o
 Creatortest_LDFLAGS = -export-dynamic
+
+Containertest_SOURCES = Containertest.cpp
+Containertest_LDADD = $(top_builddir)/rulesets/Container.o

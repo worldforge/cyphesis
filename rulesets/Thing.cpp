@@ -32,6 +32,7 @@ using Atlas::Objects::Operation::Disappearance;
 
 static const bool debug_flag = false;
 
+/// \brief Constructor for physical or tangiable entities.
 Thing::Thing(const std::string & id) : Entity(id)
 {
     subscribe("setup", OP_SETUP);

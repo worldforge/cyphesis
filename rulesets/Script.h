@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2001 Alistair Riddoch
+// Copyright (C) 2001-2004 Alistair Riddoch
 
 #ifndef RULESETS_SCRIPT_H
 #define RULESETS_SCRIPT_H
@@ -20,6 +20,10 @@ typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
 
 class Entity;
 
+/// \brief Base class for script objects attached to entities.
+///
+/// This base class allows scripts to override operation handlers, and
+/// handlers for hooks.
 class Script {
   public:
     Script();

@@ -7,6 +7,7 @@
 
 #include <Atlas/Message/Element.h>
 
+/// \brief Interface for Entity properties
 class PropertyBase {
   protected:
     const unsigned int m_flags;
@@ -16,11 +17,15 @@ class PropertyBase {
 
     unsigned int flags() const { return m_flags; }
 
+    /// \brief Copy the value of the property into an Atlas Message
     virtual void get(Atlas::Message::Element &) = 0;
+    /// \brief Read the value of the property from an Atlas Message
     virtual void set(const Atlas::Message::Element &) = 0;
+    /// \brief Add the value as an attribute to an Atlas map
     virtual void add(const std::string &, Atlas::Message::MapType & map);
 };
 
+/// \brief Entity property template for properties with single data values
 template <typename T>
 class Property : public PropertyBase {
   protected:
@@ -33,6 +38,11 @@ class Property : public PropertyBase {
     virtual void add(const std::string &, Atlas::Message::MapType & map);
 };
 
+/// \brief Entity property template for properties with single data values
+/// that cannot be modified directly.
+///
+/// Properties like CONTAINS, LOC and POS are accessed this way, as they
+/// are only ever modified as a result of a move operation.
 template <typename T>
 class ImmutableProperty : public PropertyBase {
   protected:
