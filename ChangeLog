@@ -1,3 +1,8 @@
+2004-01-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* Fix postgreSQL autoconf macro so it handles version numbers with
+	  non-numeric suffixes.
+
 2003-12-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* physics/Collision.cpp, physics/Collision.h: Update some comments,
