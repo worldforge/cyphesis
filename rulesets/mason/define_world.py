@@ -118,7 +118,34 @@ def default(mapeditor):
     m=editor(mapeditor)
 
     world=m.look()
-    m.set(world.id, name="moraf")
+
+    points = { }
+    for i in range(-5, 6):
+        for j in range(-5, 6):
+            if i==5 or j==5:
+                points['%ix%i'%(i,j)] = [i, j, uniform(100, 150)]
+            elif i==-5 or j == -5:
+                points['%ix%i'%(i,j)] = [i, j, uniform(-30, -10)]
+            elif (i==2 or i==3) and (j==2 or j==3):
+                points['%ix%i'%(i,j)] = [i, j, uniform(20, 25)]
+            elif i==4 or j==4:
+                points['%ix%i'%(i,j)] = [i, j, uniform(30, 80)]
+            elif i==-4 or j==-4:
+                points['%ix%i'%(i,j)] = [i, j, uniform(-2, 5)]
+            else:
+                points['%ix%i'%(i,j)] = [i, j, 1+uniform(0, 8)*(abs(i)+abs(j))]
+
+    points['-1x-1'] = [-1, -1, -16.8]
+    points['0x-1'] = [0, -1, -3.8]
+    points['-1x0'] = [-1, 0, -2.8]
+    points['-1x1'] = [-1, 1, 12.8]
+    points['1x-1'] = [1, -1, 15.8]
+    points['0x0'] = [0, 0, 12.8]
+    points['1x0'] = [1, 0, 23.1]
+    points['0x1'] = [0, 1, 14.2]
+    points['1x1'] = [1, 1, 19.7]
+
+    m.set(world.id, terrain={'points' : points}, name="moraf")
 
 # a wall around the world
 

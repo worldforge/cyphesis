@@ -1,5 +1,14 @@
 2004-09-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Add terrain init to default 
+	  world init function.
+
+	* Update rpm spec removing the acorn dependency from mason.
+
+	* Release version 0.3.4.
+
+2004-09-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* Fix the manpage rules to work with make dist.
 
 	* Update rpm specs dependencies, and add man pages.

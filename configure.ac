@@ -9,7 +9,7 @@ AC_CANONICAL_SYSTEM
 
 dnl Initialise automake
 
-VERSION=0.3.3
+VERSION=0.3.4
 
 AM_INIT_AUTOMAKE(cyphesis, $VERSION)
 AM_CONFIG_HEADER(config.h)

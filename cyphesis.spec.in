@@ -47,7 +47,7 @@ Acorn is deprecated. See README for details.
 %package mason
 Summary: Game data for running the Mason game in cyphesis
 Group: Amusements/Games
-Requires: %{name} = %{version} %{name}-acorn
+Requires: %{name} = %{version}
 
 %description mason
 This is the rules data, scripts and map data required for the Mason
