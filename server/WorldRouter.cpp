@@ -53,17 +53,15 @@ WorldRouter::~WorldRouter()
 {
     OpQueue::const_iterator I = m_operationQueue.begin();
     { 
-        std::stringstream s;
-        s << "Flushing op queue with " << m_operationQueue.size() << " ops";
-        log(NOTICE, s.str().c_str());
+        debug(std::cout << "Flushing op queue with " << m_operationQueue.size()
+                        << " ops" << std::endl << std::flush;);
     }
     for (; I != m_operationQueue.end(); I++) {
         delete *I;
     }
     { 
-        std::stringstream s;
-        s << "Flushing world with " << m_eobjects.size() << " entities";
-        log(NOTICE, s.str().c_str());
+        debug(std::cout << "Flushing world with " << m_eobjects.size()
+                        << " entities" << std::endl << std::flush;);
     }
     m_eobjects.erase(m_gameWorld.getId());
     EntityDict::const_iterator J = m_eobjects.begin();

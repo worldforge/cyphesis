@@ -253,9 +253,8 @@ const Element MemMap::asObject()
 
 void MemMap::flush()
 {
-    std::stringstream s;
-    s << "Flushing memory with " << m_entities.size() << " memories";
-    log(NOTICE, s.str().c_str());
+    debug(std::cout << "Flushing memory with " << m_entities.size()
+                    << " memories" << std::endl << std::flush;);
     MemEntityDict::const_iterator I = m_entities.begin();
     for (; I != m_entities.end(); I++) {
         delete I->second;

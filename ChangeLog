@@ -1,3 +1,8 @@
+2004-05-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp, rulesets/MemMap.cpp, server/server.cpp:
+	  Relegate some diagnostic output on shutdown to debug output.
+
 2004-05-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Account.cpp, server/Account.h: Added new code to allow
