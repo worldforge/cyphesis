@@ -21,36 +21,36 @@ CommClient::CommClient() : BaseEntity("")
 {
 }
 
-Element::MapType CommClient::createPlayer(const std::string & name,
+MapType CommClient::createPlayer(const std::string & name,
                                            const std::string & password)
 {
     playerName = name;
-    Element::MapType player_ent;
+    MapType player_ent;
     player_ent["username"] = name;
     player_ent["password"] = password;
-    player_ent["parents"] = Element::ListType(1, "player");
+    player_ent["parents"] = ListType(1, "player");
     
     debug(std::cout << "Loggin " << name << " in with " << password << " as password"
                << std::endl << std::flush;);
     
     Login loginAccountOp;
-    loginAccountOp.setArgs(Element::ListType(1,player_ent));
+    loginAccountOp.setArgs(ListType(1,player_ent));
     send(loginAccountOp);
 
     if (connection.wait()) {
         Create createAccountOp;
-        createAccountOp.setArgs(Element::ListType(1,player_ent));
+        createAccountOp.setArgs(ListType(1,player_ent));
         send(createAccountOp);
         if (connection.wait()) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
                       << std::flush;
-            return Element::MapType();
+            return MapType();
         }
     }
 
-    const Element::MapType & ent = connection.getReply();
+    const MapType & ent = connection.getReply();
 
-    Element::MapType::const_iterator I = ent.find("id");
+    MapType::const_iterator I = ent.find("id");
     if (I == ent.end() || !I->second.isString()) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
                   << std::flush;
@@ -65,13 +65,13 @@ Element::MapType CommClient::createPlayer(const std::string & name,
 
 CreatorClient * CommClient::createCharacter(const std::string & type)
 {
-    Element::MapType character;
+    MapType character;
     character["name"] = playerName;
-    character["parents"] = Element::ListType(1,type);
+    character["parents"] = ListType(1,type);
 
     Create createOp;
     createOp.setFrom(playerId);
-    createOp.setArgs(Element::ListType(1,character));
+    createOp.setArgs(ListType(1,character));
     send(createOp);
 
     if (connection.wait()) {
@@ -79,7 +79,7 @@ CreatorClient * CommClient::createCharacter(const std::string & type)
                   << type << std::endl << std::flush;
         return NULL;
     }
-    const Element::MapType & body = connection.getReply();
+    const MapType & body = connection.getReply();
 
     const std::string & id = body.find("id")->second.asString();
 

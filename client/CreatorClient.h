@@ -11,14 +11,14 @@ class Entity;
 
 class CreatorClient : public CharacterClient {
   private:
-    Entity * sendLook(Atlas::Objects::Operation::RootOperation & op);
+    Entity * sendLook(RootOperation & op);
   public:
     CreatorClient(const std::string&, const std::string&, ClientConnection&);
 
-    Entity * make(const Atlas::Message::Element &);
-    void sendSet(const std::string &, const Atlas::Message::Element &);
+    Entity * make(const Element &);
+    void sendSet(const std::string &, const Element &);
     Entity * look(const std::string &);
-    Entity * lookFor(const Atlas::Message::Element &);
+    Entity * lookFor(const Element &);
     bool runScript(const std::string & package, const std::string & function);
 };
 

@@ -27,7 +27,7 @@ Entity * CreatorClient::make(const Element & entity)
         return NULL;
     }
     Create op;
-    op.setArgs(Element::ListType(1,entity));
+    op.setArgs(ListType(1,entity));
     op.setFrom(getId());
     op.setTo(getId());
     OpVector result = sendAndWaitReply(op);
@@ -53,8 +53,8 @@ Entity * CreatorClient::make(const Element & entity)
         std::cerr << "Reply to make has malformed args" << std::endl << std::flush;
         return NULL;
     }
-    const Element::MapType & arg = res->getArgs().front().asMap();
-    Element::MapType::const_iterator I = arg.find("parents");
+    const MapType & arg = res->getArgs().front().asMap();
+    MapType::const_iterator I = arg.find("parents");
     if ((I == arg.end()) || !I->second.isList() || I->second.asList().empty()) {
         std::cerr << "Arg of reply to make has no parents"
                   << std::endl << std::flush;
@@ -72,7 +72,7 @@ Entity * CreatorClient::make(const Element & entity)
                   << std::endl << std::flush;
         return NULL;
     }
-    const Element::MapType & created = I->second.asList().front().asMap();
+    const MapType & created = I->second.asList().front().asMap();
     I = created.find("id");
     if ((I == created.end()) || !I->second.isString()) {
         std::cerr << "Created entity has no id"
@@ -102,7 +102,7 @@ void CreatorClient::sendSet(const std::string & id, const Element & entity)
         return;
     }
     Set op;
-    op.setArgs(Element::ListType(1,entity));
+    op.setArgs(ListType(1,entity));
     op.setFrom(getId());
     op.setTo(id);
     send(op);
@@ -112,9 +112,9 @@ Entity * CreatorClient::look(const std::string & id)
 {
     Look op;
     if (!id.empty()) {
-        Element::MapType ent;
+        MapType ent;
         ent["id"] = id;
-        op.setArgs(Element::ListType(1,ent));
+        op.setArgs(ListType(1,ent));
     }
     op.setFrom(getId());
     return sendLook(op);
@@ -123,7 +123,7 @@ Entity * CreatorClient::look(const std::string & id)
 Entity * CreatorClient::lookFor(const Element & ent)
 {
     Look op;
-    op.setArgs(Element::ListType(1,ent));
+    op.setArgs(ListType(1,ent));
     op.setFrom(getId());
     return sendLook(op);
 }
@@ -153,8 +153,8 @@ Entity * CreatorClient::sendLook(RootOperation & op)
         std::cerr << "Reply to look has malformed args" << std::endl << std::flush;
         return NULL;
     }
-    const Element::MapType & seen = res->getArgs().front().asMap();
-    Element::MapType::const_iterator I = seen.find("id");
+    const MapType & seen = res->getArgs().front().asMap();
+    MapType::const_iterator I = seen.find("id");
     if ((I == seen.end()) || !I->second.isString()) {
         std::cerr << "Looked at entity has no id"
                   << std::endl << std::flush;

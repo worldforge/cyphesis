@@ -1,4 +1,12 @@
-2004-08-07  Al Riddoch  <alriddoch@zepler.org>
+2004-08-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/ClientConnection.cpp, client/ClientConnection.h,
+	  client/CommClient.cpp, client/CommClient.h,
+	  client/CreatorClient.cpp, client/CreatorClient.h,
+	  client/Py_CreatorClient.cpp: Convert code to using Atlas Message
+	  typedefs as found in Atlas-C++ 0.6 to aid conversion later.
+
+2004-08-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.cpp, common/BaseEntity.h, common/BaseWorld.h,
 	  common/Database.cpp, common/Database.h, common/FormattedXMLWriter.cpp,

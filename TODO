@@ -1,3 +1,5 @@
+Rename client/CommClient.h. Without namespacing its dangerous.
+
 Sort out the way CONTAINS is done in Entity::addToObject and elsewhere,
 so that the delayed check, and deep copy is avoided. Test contains before
 doing it, and get a reference to the list inside the Element. World
