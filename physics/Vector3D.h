@@ -39,111 +39,109 @@ static inline double min(range r) {
     return std::min(r.first, r.second);
 }
 
-typedef WFMath::Vector<3> Vector3D;
-
-typedef std::vector<Vector3D> CoordList;
-
 /// Used to indicate which axis
 static const int cX = 0;
 static const int cY = 1;
 static const int cZ = 2;
 
-#if 0
-class Vector3D : public WFMath::Vector<3> {
-    double x,y,z;
+#if 1
+typedef WFMath::Vector<3> Vector3D;
+#else
+class Vector3D {
+    double _x, _y, _z;
     bool _set;
   public:
     static const int cX = 0;    // Used to indicate which axis
     static const int cY = 1;
     static const int cZ = 2;
 
-    Vector3D() : x(0), y(0), z(0), _set(false) { }
-    explicit Vector3D(double size) : x(size), y(size), z(size), _set(true) { }
-    Vector3D(double x, double y, double z) : x(x), y(y), z(z), _set(true) { }
+    Vector3D() : _x(0), _y(0), _z(0), _set(false) { }
+    explicit Vector3D(double size) : _x(size), _y(size), _z(size), _set(true) { }
+    Vector3D(double x, double y, double z) : _x(x), _y(y), _z(z), _set(true) { }
     explicit Vector3D(const Atlas::Message::Object::ListType&vector):_set(true){
         Atlas::Message::Object::ListType::const_iterator I = vector.begin();
-        x = I->AsNum();
-        y = (++I)->AsNum();
-        z = (++I)->AsNum();
+        _x = I->AsNum();
+        _y = (++I)->AsNum();
+        _z = (++I)->AsNum();
     }
 
-    double & X() { return x; }
-    double & Y() { return y; }
-    double & Z() { return z; }
+    double & x() { return _x; }
+    double & y() { return _y; }
+    double & z() { return _z; }
 
-    double X() const { return x; }
-    double Y() const { return y; }
-    double Z() const { return z; }
+    double x() const { return _x; }
+    double y() const { return _y; }
+    double z() const { return _z; }
 
     bool operator==(const Vector3D & other) const {
         //"Check if two vector are equal";
-        return ((x==other.x) && (y==other.y) && (z==other.z));
+        return ((_x==other._x) && (_y==other._y) && (_z==other._z));
     }
 
     bool operator!=(const Vector3D & other) const {
         //"Check if two vector are equal";
-        return ((x!=other.x) || (y!=other.y) || (z!=other.z));
+        return ((_x!=other._x) || (_y!=other._y) || (_z!=other._z));
     }
 
     Vector3D & operator+=(const Vector3D & other) {
-        x += other.x;
-        y += other.y;
-        z += other.z;
+        _x += other._x;
+        _y += other._y;
+        _z += other._z;
         return *this;
     }
 
     const Vector3D operator+(double other) const {
         // Increaese size (in all direction for boxes)
-        return Vector3D(x+other, y+other, z+other);
+        return Vector3D(_x + other, _y + other, _z + other);
     }
 
     Vector3D & operator+=(double other) {
-        x += other;
-        y += other;
-        z += other;
+        _x += other;
+        _y += other;
+        _z += other;
         return *this;
     }
 
     Vector3D & operator-=(const Vector3D & other) {
-        x -= other.x;
-        y -= other.y;
-        z -= other.z;
+        _x -= other._x;
+        _y -= other._y;
+        _z -= other._z;
         return *this;
     }
 
     const Vector3D operator-(double other) const {
         // Decrease size (in all direction for boxes)
-        return Vector3D(x-other, y-other, z-other);
+        return Vector3D(_x - other, _y - other, _z - other);
     }
 
     Vector3D & operator-=(double other) {
-        x -= other;
-        y -= other;
-        z -= other;
+        _x -= other;
+        _y -= other;
+        _z -= other;
         return *this;
     }
 
     const Vector3D operator*(double other) const {
         // Multiply vector by number
-        return Vector3D(x*other,y*other,z*other);
+        return Vector3D(_x * other, _y * other, _z * other);
     }
 
     Vector3D & operator*=(double other) {
-        x *= other;
-        y *= other;
-        z *= other;
+        _x *= other;
+        _y *= other;
+        _z *= other;
         return *this;
     }
 
     const Vector3D operator/(double other) const {
         // Divide vector by number
-        return Vector3D(x/other,y/other,z/other);
+        return Vector3D(_x / other, _y / other, _z / other);
     }
 
     Vector3D & operator/=(double other) {
-        x /= other;
-        y /= other;
-        z /= other;
+        _x /= other;
+        _y /= other;
+        _z /= other;
         return *this;
     }
 
@@ -152,20 +150,20 @@ class Vector3D : public WFMath::Vector<3> {
     }
 
     bool isZero() const {
-        return (_set && (x == 0) && (y == 0) && (z == 0));
+        return (_set && (_x == 0) && (_y == 0) && (_z == 0));
     }
 
     double & operator[](int index) {
         switch(index) {
             case cX:
-                return x;
+                return _x;
             case cY:
-                return y;
+                return _y;
             case cZ:
-                return z;
+                return _z;
             default:
                 //Throw an exception here maybe
-                return z;
+                return _z;
         }
     }
 
@@ -175,53 +173,55 @@ class Vector3D : public WFMath::Vector<3> {
 
     double dot(const Vector3D & v) const {
         //"Dot product of a vector";
-        return x * v.x + y * v.y + z * v.z;
+        return _x * v._x + _y * v._y + _z * v._z;
     }
 
     const Vector3D cross(const Vector3D & v) const {
         //"Cross product of a vector";
-        return Vector3D(y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x);
+        return Vector3D(_y * v._z - _z * v._y,
+                        _z * v._x - _x * v._z,
+                        _x * v._y - _y * v._x);
     }
 
-    void rotatex(double angle) {
+    void rotateX(double angle) {
         //"Rotate a vector around x axis by angle in radians" ;
-        z = cos(angle) * z + sin(angle) * x;
-        x = sin(angle) * z + cos(angle) * x;
+        _z = cos(angle) * _z + sin(angle) * _x;
+        _x = sin(angle) * _z + cos(angle) * _x;
     }
 
-    void rotatey(double angle) {
+    void rotateY(double angle) {
         //"Rotate a vector around y axis by angle in radians"        ;
-        y = cos(angle) * y + sin(angle) * z;
-        z = sin(angle) * y + cos(angle) * z;
+        _y = cos(angle) * _y + sin(angle) * _z;
+        _z = sin(angle) * _y + cos(angle) * _z;
     }
 
-    void rotatez(double angle) {
+    void rotateZ(double angle) {
         //"Rotate a vector around z axis by angle in radians" ;
-        x = cos(angle) * x + sin(angle) * y;
-        y = sin(angle) * x + cos(angle) * y;
+        _x = cos(angle) * _x + sin(angle) * _y;
+        _y = sin(angle) * _x + cos(angle) * _y;
     }
 
     double mag() const {
         //"Find the magnitude of a vector";
-        return sqrt(x*x + y*y + z*z);
+        return sqrt(_x * _x + _y * _y + _z * _z);
     }
 
-    double relMag() const {
+    double sqrMag() const {
         //"Find relative magnitude. This value is cheaper to calculate
         // than the real magnitude, so should be used for comparison.
-        return (x*x + y*y + z*z);
+        return (_x * _x + _y * _y + _z * _z);
     }
 
     double angle(const Vector3D & v) const {
         //"Find the angle between two vectors";
-        double d = v.x * x + v.y * y + v.z * z;
+        double d = v._x * _x + v._y * _y + v._z * _z;
         return d / (v.mag() * mag());
     }
 
-    Vector3D & unit() {
+    Vector3D & normalize() {
         // Make this a unit vector
         double m = mag();
-        x/=m; y/=m; z/=m;
+        _x /= m; _y /= m; _z /= m;
         return *this;
     }
 
@@ -231,103 +231,19 @@ class Vector3D : public WFMath::Vector<3> {
         return Vector3D(*this)/=(mag());
     }
 
-    const Vector3D unitVectorTo(const Vector3D & v) const {
-        // return the unit vector in the direction of another vector;
-        Vector3D difference_vector(v);
-        difference_vector -= *this;
-        return difference_vector.unit();
-    }
-
-    double distance(const Vector3D & v) const {
-        //"Find the distance between two vectors";
-        return sqrt((x - v.x)*(x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z));
-    }
-
-    double relativeDistance(const Vector3D & v) const {
-        // Find relative distance, to be used when the result is only
-        // going to be compared with other distances
-        return ((x() - v.x())*(x() - v.x()) + (y() - v.y())*(y() - v.y()) + (z() - v.z())*(z() - v.z()));
-    }
-
-    bool in(double size) const {
-        // Is this vector less than size in every direction
-        return ((x() < size) && (y() < size) && (z() < size));
-    }
-
-    bool in(const Vector3D & n, const Vector3D & f) const {
-        // Is this vector inside a box defined by near point n and point f
-        return ((x() < f.x()) && (x() > n.x()) &&
-                (y() < f.y()) && (y() > n.y()) &&
-                (z() < f.z()) && (z() > n.z()));
-    }
-
-    bool in(const Vector3D & p, const double size) const {
-        // Is this vector inside a box defined by center point, size in all
-        // directions
-        return ((x() < (p.x() + size)) && (x() > (p.x() - size)) &&
-                (y() < (p.y() + size)) && (y() > (p.y() - size)) &&
-                (z() < (p.z() + size)) && (z() > (p.z() - size)));
-    }
-
-    bool hit(const Vector3D& f, const Vector3D& on, const Vector3D& of) const {
-        // Is a box defined by this vector, and f in collision with a box
-        // defined by on and of.
-        return ((x() > on.x()) && (x() < of.x()) || (f.x() > on.x()) && (f.x() < of.x()) &&
-                (y() > on.y()) && (y() < of.y()) || (f.y() > on.y()) && (f.y() < of.y()) &&
-                (z() > on.z()) && (z() < of.z()) || (f.z() > on.z()) && (f.z() < of.z()));
-    }
-
-    double timeToHit(const Vector3D& f, const Vector3D &v,
-                     const Vector3D& on, const Vector3D& of,
-                     int & axis) const {
-        // When is a box defined by this vector and f, travelling with velocity
-        // v going to hit box defined by on and of.
-        // If this function returns a -ve value, it is possible they are
-        // currently in a collided state, or they may never collide.
-        // Calculate range of times each intersect
-        range xt = ::timeToHit(x(), f.x(), v.x(), on.x(), of.x());
-        range yt = ::timeToHit(y(), f.y(), v.y(), on.y(), of.y());
-        range zt = ::timeToHit(z(), f.z(), v.z(), on.z(), of.z());
-        // Find the time that the last coordinate starts intersect
-        double start = std::max(min(xt), std::max(min(yt),min(zt)));
-        // Find the time that the first coordinate stops intersect
-        double end   = std::min(max(xt), std::min(max(yt),max(zt)));
-        // If the start is before the end, then there is a collision
-        if (end < start) { return -1; }
-        axis = ((start == min(xt)) ? cX : ((start == min(yt)) ? cY : cZ));
-        return start;
-    }
-
-    double timeToExit(const Vector3D& f, const Vector3D &v,
-                      const Vector3D& on, const Vector3D& of) const {
-        range xt = ::timeToHit(x(), f.x(), v.x(), on.x(), of.x());
-        range yt = ::timeToHit(y(), f.y(), v.y(), on.y(), of.y());
-        range zt = ::timeToHit(z(), f.z(), v.z(), on.z(), of.z());
-        double leave = std::min(max(xt), std::min(max(yt),max(zt)));
-        double enter = std::max(min(xt), std::max(min(yt),min(zt)));
-        // This check is required to make sure we don't accidentally
-        // get stuck in an entity outside its bbox.
-        if (enter > 0) {
-            // debug(std::cout<<"We are "<<enter<<" outside our containers bbox"
-                           // << std::endl << std::flush;);
-            return -1;
-        }
-        return leave;
-    }
-
-    const Atlas::Message::Object asObject() const {
+    const Atlas::Message::Object toAtlas() const {
         Atlas::Message::Object::ListType coords;
-        coords.push_back(Atlas::Message::Object(x));
-        coords.push_back(Atlas::Message::Object(y));
-        coords.push_back(Atlas::Message::Object(z));
+        coords.push_back(Atlas::Message::Object(_x));
+        coords.push_back(Atlas::Message::Object(_y));
+        coords.push_back(Atlas::Message::Object(_z));
         return Atlas::Message::Object(coords);
     }
 
     const Atlas::Message::Object::ListType asList() const {
         Atlas::Message::Object::ListType coords;
-        coords.push_back(Atlas::Message::Object(x));
-        coords.push_back(Atlas::Message::Object(y));
-        coords.push_back(Atlas::Message::Object(z));
+        coords.push_back(Atlas::Message::Object(_x));
+        coords.push_back(Atlas::Message::Object(_y));
+        coords.push_back(Atlas::Message::Object(_z));
         return coords;
     }
 
@@ -338,20 +254,33 @@ class Vector3D : public WFMath::Vector<3> {
 
 inline const Vector3D operator+(const Vector3D & lhs, const Vector3D & rhs) {
     // Add two vectors
-    return Vector3D(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
+    return Vector3D(lhs._x + rhs._x, lhs._y + rhs._y, lhs._z + rhs._z);
 }
 
 inline const Vector3D operator-(const Vector3D & lhs, const Vector3D & rhs) {
     // Subtract two vectors
-    return Vector3D(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
+    return Vector3D(lhs._x - rhs._x, lhs._y - rhs._y, lhs._z - rhs._z);
 }
-
 
 inline std::ostream & operator<<(std::ostream& s, const Vector3D& v) {
-    return s << "[" << v.x << "," << v.y << "," << v.z << "]";
+    return s << "[" << v._x << "," << v._y << "," << v._z << "]";
 }
 
-#endif // 0
+inline double Dot(const Vector3D & u, const Vector3D & v)
+{
+    //"Dot product of a vector";
+    return u.x() * v.x() + u.y() * v.y() + u.z() * v.z();
+}
+
+inline const Vector3D Cross(const Vector3D & u, const Vector3D & v)
+{
+    //"Cross product of a vector";
+    return Vector3D(u.y() * v.z() - u.z() * v.y(),
+                    u.z() * v.x() - u.x() * v.z(),
+                    u.x() * v.y() - u.y() * v.x());
+}
+
+#endif // USE_WFMATH
 
 /// Find relative distance, to be used when the result is only
 /// going to be compared with other distances
@@ -440,5 +369,6 @@ inline bool isZero(const Vector3D & u)
     return (u.isValid() && (u.x() == 0) && (u.y() == 0) && (u.z() == 0));
 }
 
+typedef std::vector<Vector3D> CoordList;
 
 #endif // PHYSICS_VECTOR_3D_H

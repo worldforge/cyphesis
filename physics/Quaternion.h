@@ -104,6 +104,7 @@ inline std::ostream & operator<<(std::ostream& s, const Quaternion& q) {
 
 #include <physics/Vector3D.h>
 
-const Quaternion quaternionFromTo(const Vector3D & from, const Vector3D & to);
+template<class V>
+const Quaternion quaternionFromTo(const V & from, const V & to);
 
 #endif // PHYSICS_QUATERNION_H

@@ -7,10 +7,11 @@
 
 #include <wfmath/axisbox.h>
 
+#if 1
 typedef WFMath::AxisBox<3> BBox;
-
-#if 0
-class BBox : public WFMath::AxisBox<3> {
+#else
+class BBox {
+  private:
     Vector3D u;
     Vector3D v;
   public:
@@ -27,10 +28,10 @@ class BBox : public WFMath::AxisBox<3> {
         }
     }
 
-    const Vector3D & nearPoint() const { return u; }
-    Vector3D & nearPoint() { return u; }
-    const Vector3D & farPoint() const { return v; }
-    Vector3D & farPoint() { return v; }
+    const Vector3D & lowCorner() const { return u; }
+    Vector3D & lowCorner() { return u; }
+    const Vector3D & highCorner() const { return v; }
+    Vector3D & highCorner() { return v; }
 
     bool operator ==(const BBox & other) const {
         return ((u==other.u) && (v==other.v));

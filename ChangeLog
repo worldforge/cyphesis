@@ -1,5 +1,10 @@
 2003-07-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/BBox.h, physics/Quaternion.cpp, physics/Quaternion.h,
+	  physics/Vector3D.h: Some cleanups.
+
+2003-07-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/BBox.cpp: New file to check BBox.h.
 
 2003-07-18  Al Riddoch  <alriddoch@zepler.org>

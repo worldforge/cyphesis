@@ -47,23 +47,24 @@ Quaternion::Quaternion(const Vector3D & from, const Vector3D & to) : _set(true)
 }
 #endif // 0
 
-const Quaternion quaternionFromTo(const Vector3D & from, const Vector3D & to)
+template<class V>
+const Quaternion quaternionFromTo(const V & from, const V & to)
 {
     double cosT = Dot(from, to);
     if (cosT > 0.99999f) {
         return Quaternion(1.f, 0.f, 0.f, 0.f);
     } else if (cosT < -0.99999f) {
-        Vector3D t(0.0, from.x(), -from.y());
+        V t(0.0, from.x(), -from.y());
 
         if (t.sqrMag() < 1e-12) {
-            t = Vector3D(-from.z(), 0.0, from.x());
+            t = V(-from.z(), 0.0, from.x());
         }
 
         t.normalize();
 
         return Quaternion(0.f, t.x(), t.y(), t.z());
     }
-    Vector3D t = Cross(from, to);
+    V t = Cross(from, to);
 
     t.normalize();
 
@@ -75,3 +76,6 @@ const Quaternion quaternionFromTo(const Vector3D & from, const Vector3D & to)
     float w = std::sqrt(0.5 * (1.0 + cosT));
     return Quaternion(w, x, y, z);
 }
+
+template
+const Quaternion quaternionFromTo<Vector3D>(const Vector3D &, const Vector3D&);
