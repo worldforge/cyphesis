@@ -1,3 +1,10 @@
+2003-05-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp: Provide full details of entity attributes.
+
+	* rulesets/World.cpp: Provide terrain basepoints by x,y index rather
+	  than x,y position, as it makes more sense.
+
 2003-05-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Movement.cpp, rulesets/Movement.h,

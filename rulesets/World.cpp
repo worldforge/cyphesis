@@ -29,8 +29,8 @@ void World::getTerrain(Element::MapType & t) const
         for (; J != pointcol.end(); ++J) {
             terrain.push_back(Element::ListType(3));
             Element::ListType & point = terrain.back().AsList();
-            point[0] = (Element::FloatType)(I->first * 64);
-            point[1] = (Element::FloatType)(J->first * 64);
+            point[0] = (Element::FloatType)(I->first/* * 64*/);
+            point[1] = (Element::FloatType)(J->first/* * 64*/);
             point[2] = (Element::FloatType)(J->second);
         }
     }
@@ -50,14 +50,17 @@ void World::setTerrain(const Element::MapType & t)
             if (point.size() != 3) {
                 continue;
             }
-            int x = (int)floor(point[0].AsNum() / m_terrain.getRes());
-            int y = (int)floor(point[1].AsNum() / m_terrain.getRes());
+            // int x = (int)floor(point[0].AsNum() / m_terrain.getRes());
+            // int y = (int)floor(point[1].AsNum() / m_terrain.getRes());
+            int x = (int)point[0].AsNum();
+            int y = (int)point[1].AsNum();
             m_terrain.setBasePoint(x, y, point[2].AsNum());
         }
     }
 }
 
-World::World(const std::string & id) : World_parent(id), m_terrain(*new Mercator::Terrain())
+World::World(const std::string & id) : World_parent(id),
+                                       m_terrain(*new Mercator::Terrain())
 {
     subscribe("set", OP_SET);
 

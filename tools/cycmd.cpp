@@ -132,9 +132,11 @@ void Interactive::output(const Atlas::Message::Object & item, bool recurse)
         case Atlas::Message::Object::TYPE_LIST:
             if (recurse) {
                 Atlas::Message::Object::ListType::const_iterator I = item.AsList().begin();
+                std::cout << "[ ";
                 for(; I != item.AsList().end(); ++I) {
-                    output(*I, false);
+                    output(*I, true);
                 }
+                std::cout << " ]";
             } else {
                 std::cout << "(list)";
             }
@@ -142,10 +144,12 @@ void Interactive::output(const Atlas::Message::Object & item, bool recurse)
         case Atlas::Message::Object::TYPE_MAP:
             if (recurse) {
                 Atlas::Message::Object::MapType::const_iterator I = item.AsMap().begin();
+                std::cout << "{ ";
                 for(; I != item.AsMap().end(); ++I) {
                     std::cout << I->first << ": ";
-                    output(I->second, false);
+                    output(I->second, true);
                 }
+                std::cout << " }";
             } else {
                 std::cout << "(map)";
             }
