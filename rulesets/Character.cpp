@@ -362,8 +362,8 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & id = I->second.asString();
-    EntityDict::const_iterator J = m_world->getObjects().find(id);
-    if (J == m_world->getObjects().end()) {
+    EntityDict::const_iterator J = m_world->getEntities().find(id);
+    if (J == m_world->getEntities().end()) {
         error(op, "Wield arg does not exist", res, getId());
         return;
     }
@@ -409,8 +409,8 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 
     // FIXME Get a tool id from the op attributes?
 
-    EntityDict::const_iterator I = m_world->getObjects().find(toolId);
-    if (I == m_world->getObjects().end()) {
+    EntityDict::const_iterator I = m_world->getEntities().find(toolId);
+    if (I == m_world->getEntities().end()) {
         error(op, "Use tool does not exist.", res, getId());
         return;
     }
@@ -570,8 +570,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         log(ERROR, "mindMoveOperation: Args has got no id");
     }
     const std::string & oname = I->second.asString();
-    EntityDict::const_iterator J = m_world->getObjects().find(oname);
-    if (J == m_world->getObjects().end()) {
+    EntityDict::const_iterator J = m_world->getEntities().find(oname);
+    if (J == m_world->getEntities().end()) {
         log(ERROR, "mindMoveOperation: This move op is for a phoney id");
         return;
     }

@@ -141,7 +141,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
     if ((objtype == "object") || (objtype == "obj")) {
         const BaseDict & OOGDict = m_connection->m_server.getObjects();
         BaseDict::const_iterator J = OOGDict.find(id);
-        const EntityDict & worldDict = m_connection->m_server.m_world.getObjects();
+        const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
         EntityDict::const_iterator K = worldDict.find(id);
 
         ListType & info_args = info->getArgs();

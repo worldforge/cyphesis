@@ -113,7 +113,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
     thing->merge(attributes);
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
-    if (thing->getLocation(attributes, m_world.getObjects())) {
+    if (thing->getLocation(attributes, m_world.getEntities())) {
         // If no info was provided, put the entity in the game world
         thing->m_location.m_loc = &m_world.m_gameWorld;
     }

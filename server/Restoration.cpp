@@ -107,7 +107,7 @@ void Restoration::restoreChildren(Entity * loc)
             }
             Entity * ent = restorer(id, L);
             ent->m_location.m_loc = loc;
-            server.m_world.addObject(ent, true);
+            server.m_world.addEntity(ent, true);
             const char * c = L.column("cont");
             if (c != 0) {
                 if (*c != '0') {

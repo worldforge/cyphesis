@@ -91,7 +91,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 {
     BaseWorld & world = m_connection->m_server.m_world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
-    Entity * chr = world.addNewObject(typestr, ent);
+    Entity * chr = world.addNewEntity(typestr, ent);
     if (chr == 0) {
         return 0;
     }

@@ -1,3 +1,20 @@
+2004-01-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseWorld.h, rulesets/Character.cpp, rulesets/Py_World.cpp,
+	  rulesets/PythonThingScript.cpp, rulesets/Stackable.cpp,
+	  rulesets/Thing.cpp, rulesets/World.cpp, server/Account.cpp,
+	  server/Admin.cpp, server/Connection.cpp, server/EntityFactory.cpp,
+	  server/Restoration.cpp, server/WorldRouter.cpp, server/WorldRouter.h:
+	  Rename some functions in the World interface so they make more
+	  sense.
+
+	* rulesets/Entity.cpp, rulesets/Entity.h: Add destroyed flag to
+	  Entity so we can tell if its no longer in the world.
+
+	* server/WorldRouter.cpp: Cut down the special case handling of
+	  delete ops as we can now broadcast ops from entities that
+	  have been removed from the world.
+
 2004-01-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.cpp: Call decRef() on parent from the destructor

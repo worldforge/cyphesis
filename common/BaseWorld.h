@@ -38,16 +38,16 @@ class BaseWorld {
 
     virtual ~BaseWorld();
 
-    Entity * getObject(const std::string & fid) const {
+    Entity * getEntity(const std::string & fid) const {
         EntityDict::const_iterator I = m_eobjects.find(fid);
         if (I != m_eobjects.end()) {
             return I->second;
         } else {
-            return NULL;
+            return 0;
         }
     }
 
-    const EntityDict & getObjects() const {
+    const EntityDict & getEntities() const {
         return m_eobjects;
     }
 
@@ -60,8 +60,8 @@ class BaseWorld {
     }
 
     virtual bool idle(int, int) = 0;
-    virtual Entity * addObject(Entity * obj, bool setup = true) = 0;
-    virtual Entity * addNewObject(const std::string &,
+    virtual Entity * addEntity(Entity * obj, bool setup = true) = 0;
+    virtual Entity * addNewEntity(const std::string &,
                                   const Atlas::Message::MapType &) = 0;
     virtual void message(Operation &, Entity & obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;

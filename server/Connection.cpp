@@ -250,7 +250,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
         player = Persistance::instance()->getAccount(username);
         if (player != 0) {
             Persistance::instance()->registerCharacters(*player,
-                                               m_server.m_world.getObjects());
+                                               m_server.m_world.getEntities());
             m_server.addAccount(player);
         }
     }

@@ -36,7 +36,8 @@ const std::set<std::string> & Entity::immutables()
     return m_immutable;
 }
 
-Entity::Entity(const std::string & id) : BaseEntity(id), m_refCount(0),
+Entity::Entity(const std::string & id) : BaseEntity(id),
+                                         m_refCount(0), m_destroyed(false),
                                          m_script(new Script), m_seq(0),
                                          m_status(1), m_type("entity"),
                                          m_mass(-1), m_perceptive(false),
@@ -189,6 +190,7 @@ void Entity::destroy()
         m_location.m_loc->m_update_flags |= a_cont;
         m_location.m_loc->updated.emit();
     }
+    m_destroyed = true;
     destroyed.emit();
 }
 

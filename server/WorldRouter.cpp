@@ -189,9 +189,9 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos)
 /// entity into the loc/contains tree maintained by the Entity
 /// class. Handle omnipresent entities, and sending a Setup op
 /// to the entity.
-Entity * WorldRouter::addObject(Entity * ent, bool setup)
+Entity * WorldRouter::addEntity(Entity * ent, bool setup)
 {
-    debug(std::cout << "WorldRouter::addObject(Entity *)" << std::endl
+    debug(std::cout << "WorldRouter::addEntity(Entity *)" << std::endl
                     << std::flush;);
     m_eobjects[ent->getId()] = ent;
     m_objectList.insert(ent);
@@ -236,12 +236,12 @@ Entity * WorldRouter::addObject(Entity * ent, bool setup)
 /// \brief Create a new entity and add to the world.
 ///
 /// Construct a new entity using the entity description provided,
-/// and pass it to addObject().
+/// and pass it to addEntity().
 /// @return a pointer to the new entity.
-Entity * WorldRouter::addNewObject(const std::string & typestr,
+Entity * WorldRouter::addNewEntity(const std::string & typestr,
                                    const MapType & attrs)
 {
-    debug(std::cout << "WorldRouter::addNewObject(\"" << typestr << "\", attrs)"
+    debug(std::cout << "WorldRouter::addNewEntity(\"" << typestr << "\", attrs)"
                     << std::endl << std::flush;);
     std::string id;
     if (consts::enable_database) {
@@ -257,7 +257,7 @@ Entity * WorldRouter::addNewObject(const std::string & typestr,
         log(ERROR, msg.c_str());
         return 0;
     }
-    return addObject(ent);
+    return addEntity(ent);
 }
 
 /// \brief Remove an entity from the world.
@@ -266,7 +266,7 @@ Entity * WorldRouter::addNewObject(const std::string & typestr,
 /// The entity is not deleted, nor any attend made to handle
 /// the loc/contains. It would probably be a good idea to move
 /// some of this handling to this function.
-void WorldRouter::delObject(Entity * ent)
+void WorldRouter::delEntity(Entity * ent)
 {
     if (consts::enable_omnipresence) {
         m_omnipresentList.erase(ent);
@@ -342,33 +342,12 @@ void WorldRouter::deliverTo(const Operation & op, Entity & ent)
 /// if it is anothe Delete op.
 void WorldRouter::deliverDeleteTo(const Operation & op, Entity & ent)
 {
-    OpVector res;
-    ent.operation(op, res);
-    setRefno(res, op);
-    OpVector::const_iterator Iend = res.end();
-    for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-        Operation & newOp = **I;
-        newOp.setSerialno(newSerialNo());
-        if (newOp.getParents().front().asString() == "delete") {
-            // If this is a Delete, queue as normal to avoid a recursive loop
-            debug(std::cerr << "Handling Delete response to Delete"
-                            << std::endl << std::flush;);
-            log(WARNING, "Response to Delete op is another Delete.");
-            message(newOp, ent);
-        } else {
-            // Other ops we dispatch immediatly before deleting the source
-            debug(std::cerr << "Handling normal response to Delete"
-                            << std::endl << std::flush;);
-            newOp.setFrom(ent.getId());
-            operation(newOp, ent);
-            delete &newOp;
-        }
-    }
+    deliverTo(op, ent);
     if (&ent == &m_gameWorld) {
         log(WARNING, "Attempt to delete game world");
         return;
     }
-    delObject(&ent);
+    delEntity(&ent);
     ent.destroy();
     ent.decRef();
 }
@@ -408,6 +387,9 @@ void WorldRouter::operation(Operation & op, Entity & from)
         // Where broadcasts go depends on type of op
         const EntitySet & broadcast = broadcastList(op);
         assert(op.getFrom() == from.getId());
+        if (from.isDestroyed()) {
+            log(WARNING, "Broadcasting op from deleted entity.");
+        }
         if (!consts::enable_ranges) {
             EntitySet::const_iterator I = broadcast.begin();
             EntitySet::const_iterator Iend = broadcast.end();

@@ -58,7 +58,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
     m_world->addPerceptive(op.getFrom());
 
     debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
-    const EntityDict & eobjects = m_world->getObjects();
+    const EntityDict & eobjects = m_world->getEntities();
     const std::string & from = op.getFrom();
     EntityDict::const_iterator J = eobjects.find(from);
     if (J == eobjects.end()) {

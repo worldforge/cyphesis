@@ -39,7 +39,7 @@ static PyObject * World_get_object(PyWorld *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &id)) {
         return NULL;
     }
-    Entity * ent = self->world->getObject(id);
+    Entity * ent = self->world->getEntity(id);
     if (ent == NULL) {
         Py_INCREF(Py_None);
         return Py_None;

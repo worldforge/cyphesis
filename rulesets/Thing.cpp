@@ -107,7 +107,7 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
         const std::string & type = parents.front().asString();
         debug( std::cout << getId() << " creating " << type;);
 
-        Entity * obj = m_world->addNewObject(type,ent);
+        Entity * obj = m_world->addNewEntity(type,ent);
 
         if (obj == 0) {
             error(op, "Create op failed.", res, op.getFrom());
@@ -207,8 +207,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & ref = I->second.asString();
-    EntityDict::const_iterator J = m_world->getObjects().find(ref);
-    if (J == m_world->getObjects().end()) {
+    EntityDict::const_iterator J = m_world->getEntities().find(ref);
+    if (J == m_world->getEntities().end()) {
         error(op, "Move op loc invalid", res, getId());
         return;
     }

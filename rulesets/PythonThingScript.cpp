@@ -46,8 +46,8 @@ bool PythonEntityScript::Operation(const std::string & op_type,
     PyConstOperation * py_op = newPyConstOperation();
     py_op->operation = &op;
     py_op->own = 0;
-    py_op->from = m_entity.m_world->getObject(op.getFrom());
-    py_op->to = m_entity.m_world->getObject(op.getTo());
+    py_op->from = m_entity.m_world->getEntity(op.getFrom());
+    py_op->to = m_entity.m_world->getEntity(op.getTo());
     PyObject * ret;
     ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(O)", py_op);

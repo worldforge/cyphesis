@@ -43,7 +43,7 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
     for (ListType::const_iterator I = args.begin(); I != Iend; ++I) {
         const std::string & id = I->asMap().find("id")->second.asString();
         if (id == getId()) { continue; }
-        Entity * ent = m_world->getObject(id);
+        Entity * ent = m_world->getEntity(id);
         if (ent == NULL) { continue; }
         Stackable * obj = dynamic_cast<Stackable *>(ent);
         if (obj == NULL) { continue; }

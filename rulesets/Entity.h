@@ -57,6 +57,7 @@ class Entity : public BaseEntity {
     static const std::set<std::string> & immutables();
 
     int m_refCount;
+    bool m_destroyed;
   protected:
     /// Script associated with this entity
     Script * m_script;
@@ -104,6 +105,10 @@ class Entity : public BaseEntity {
 
     int checkRef() const {
         return m_refCount;
+    }
+
+    bool isDestroyed() const {
+        return m_destroyed;
     }
 
     /// \brief Send an operation to the world for dispatch.
