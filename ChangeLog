@@ -1,5 +1,10 @@
 2004-10-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp: Change default startup TOD to 9am so that
+	  its more light.
+
+2004-10-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/inheritance_impl.h: Oops, missing factory template
 	  specialisation.
 

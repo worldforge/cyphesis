@@ -20,7 +20,7 @@ std::vector<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;
 bool restricted_flag = false;
-int timeoffset = DateTime::spm() * DateTime::mph() * 6; // Dawn
+int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
 int port_num = 6767;
 
 int loadConfig(int argc, char ** argv, bool server)
