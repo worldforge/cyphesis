@@ -4,3 +4,8 @@ BaseEntitytest
 Makefile
 Makefile.in
 logtest
+Locationtest
+OOGThingtest
+inheritancetest
+systemtest
+utilitytest

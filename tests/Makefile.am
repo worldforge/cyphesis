@@ -1,7 +1,13 @@
-TESTS = logtest BaseEntitytest inheritancetest OOGThingtest \
-        systemtest utilitytest
+COMMON_TESTS = logtest BaseEntitytest inheritancetest OOGThingtest \
+               systemtest utilitytest
+
+MODULE_TESTS = Locationtest
+
+TESTS = $(COMMON_TESTS) $(MODULE_TESTS)
 
 check_PROGRAMS = $(TESTS)
+
+# COMMON_TESTS
 
 logtest_SOURCES = logtest.cpp
 logtest_LDADD = ../common/log.o ../common/globals.o
@@ -25,4 +31,13 @@ systemtest_LDADD = ../common/system.o ../common/log.o ../common/globals.o
 
 utilitytest_SOURCES = utilitytest.cpp
 utilitytest_LDADD = ../common/utility.o
+
+# MODULE_TESTS
+
+Locationtest_SOURCES = Locationtest.cpp
+Locationtest_LDADD = ../modules/Location.o ../rulesets/Entity.o \
+                     ../rulesets/Script.o ../common/inheritance.o \
+                     ../common/BaseEntity.o ../common/log.o \
+                     ../common/globals.o ../common/serialno.o \
+                     ../common/custom.o ../common/operations.o
 
