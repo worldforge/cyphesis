@@ -1,3 +1,7 @@
+2001-01-14  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Added client python code to RPM spec.
+
 2001-01-13  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Copied client code across from cyphesis, and created infrastructure

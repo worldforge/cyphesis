@@ -2,7 +2,7 @@
 
 Summary: A simple personal server for the WorldForge project
 Name: cyphesis
-Version: 0.0.2
+Version: 0.0.11
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
@@ -40,9 +40,26 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %{prefix}/bin/cyphesis
+%{prefix}/bin/acorn
+%{prefix}/bin/acorn_text
 %{prefix}/share/cyphesis/basic.vconf
 %{prefix}/share/cyphesis/acorn.vconf
 %{prefix}/share/cyphesis/cyphesis.vconf
+%{prefix}/share/cyphesis/client/atlas/libatlas/libAtlasPy/*.py
+%{prefix}/share/cyphesis/client/*.py
+%{prefix}/share/cyphesis/client/common/*.py
+%{prefix}/share/cyphesis/client/mind/goals/animal/*.py
+%{prefix}/share/cyphesis/client/mind/goals/*.py
+%{prefix}/share/cyphesis/client/mind/goals/common/*.py
+%{prefix}/share/cyphesis/client/mind/goals/dynamic/*.py
+%{prefix}/share/cyphesis/client/mind/goals/humanoid/*.py
+%{prefix}/share/cyphesis/client/mind/*.py
+%{prefix}/share/cyphesis/client/mind/panlingua/*.py
+%{prefix}/share/cyphesis/client/server/*.py
+%{prefix}/share/cyphesis/client/tools/*.py
+%{prefix}/share/cyphesis/client/world/objects/Thing.py
+%{prefix}/share/cyphesis/client/world/*.py
+%{prefix}/share/cyphesis/client/world/physics/*.py
 %{prefix}/share/cyphesis/rulesets/acorn/*.py
 %{prefix}/share/cyphesis/rulesets/acorn/mind/*.py
 %{prefix}/share/cyphesis/rulesets/acorn/world/*.py

@@ -5,7 +5,7 @@ AM_CONFIG_HEADER(config.h)
 
 dnl Initialise automake
 
-AM_INIT_AUTOMAKE(cyphesis, 0.0.2)
+AM_INIT_AUTOMAKE(cyphesis, 0.0.11)
 AC_ARG_PROGRAM
 
 dnl Need libtool
