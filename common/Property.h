@@ -18,7 +18,7 @@ class PropertyBase {
 
     virtual void get(Atlas::Message::Element &) = 0;
     virtual void set(const Atlas::Message::Element &) = 0;
-    virtual void add(const std::string &, Atlas::Message::MapType & map) = 0;
+    virtual void add(const std::string &, Atlas::Message::MapType & map);
 };
 
 template <typename T>

@@ -28,7 +28,6 @@ class TerrainProperty : public PropertyBase {
 
     virtual void get(Atlas::Message::Element &);
     virtual void set(const Atlas::Message::Element &);
-    virtual void add(const std::string &, Atlas::Message::MapType & map);
 };
 
 #endif // RULESETS_TERRAIN_PROPERTY_H

@@ -28,7 +28,7 @@ void Property<T>::set(const Atlas::Message::Element & e)
 template <typename T>
 void Property<T>::add(const std::string & s, Atlas::Message::MapType & ent)
 {
-    ent[s] = m_data;
+    get(ent[s]);
 }
 
 template <typename T>
@@ -52,7 +52,7 @@ template <typename T>
 void ImmutableProperty<T>::add(const std::string & s,
                                Atlas::Message::MapType & ent)
 {
-    ent[s] = m_data;
+    get(ent[s]);
 }
 
 #endif // COMMON_PROPERTY_IMPL_H

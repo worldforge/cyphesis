@@ -117,9 +117,8 @@ void Entity::set(const std::string & aname, const Element & attr)
 void Entity::addToMessage(MapType & omap) const
 {
     // We need to have a list of keys to pull from attributes.
-    MapType::const_iterator I = m_attributes.begin();
     MapType::const_iterator Iend = m_attributes.end();
-    for (; I != m_attributes.end(); ++I) {
+    for (MapType::const_iterator I = m_attributes.begin(); I != Iend; ++I) {
         omap[I->first] = I->second;
     }
     PropertyDict::const_iterator J = m_properties.begin();

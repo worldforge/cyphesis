@@ -20,6 +20,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
+void PropertyBase::add(const std::string & s, Atlas::Message::MapType & ent)
+{
+    get(ent[s]);
+}
+
 void Property<int>::set(const Atlas::Message::Element & e)
 {
     if (e.isInt()) {

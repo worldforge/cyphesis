@@ -106,9 +106,4 @@ void TerrainProperty::set(const Element & ent)
         }
     }
 }
-
-void TerrainProperty::add(const std::string & s, MapType & ent)
-{
-    get(ent[s]);
-}
 #endif

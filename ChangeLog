@@ -1,5 +1,18 @@
 2004-11-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Property.cpp, common/Property.h, common/Property_impl.h:
+	  Add a default add() method to the Property base class, as its
+	  often the same in derived classes.
+
+	* rulesets/TerrainProperty.cpp, rulesets/TerrainProperty.h:
+	  Remove add() method, as its now covered by the default in
+	  the base class.
+
+	* rulesets/Entity.cpp: Fix for loop not to create temporary for
+	  end() on every iteration.
+
+2004-11-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Property.h: Remove obsolete FIXME comment.
 
 2004-11-04  Al Riddoch  <alriddoch@zepler.org>
