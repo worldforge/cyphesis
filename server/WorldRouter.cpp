@@ -220,7 +220,7 @@ OpVector WorldRouter::operation(const RootOperation & op)
     std::string to = op.getTo();
     debug(std::cout << "WorldRouter::operation {"
                     << op.getParents().front().asString() << ":"
-                    << to << "}" << std::endl
+                    << op.getFrom() << ":" << to << "}" << std::endl
                     << std::flush;);
 
     if (!to.empty() && (to != "all")) {
@@ -273,8 +273,9 @@ OpVector WorldRouter::operation(const RootOperation & op)
             for(I = broadcast.begin(); I != broadcast.end(); I++) {
                 if ((!J->second->m_location.inRange((*I)->m_location,
                                                        consts::sight_range))) {
-                    debug(std::cout << "Op from " <<from<< " cannot be seen by "
-                                  << (*I)->getId() << std::endl << std::flush;);
+                    debug(std::cout << "Op from " << from
+                                    << " cannot be seen by " << (*I)->getId()
+                                    << std::endl << std::flush;);
                     continue;
                 }
                 newop.setTo((*I)->getId());

@@ -1,3 +1,7 @@
+2003-11-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Improve debugging output.
+
 2003-11-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Fix logic when charging mind touch op
