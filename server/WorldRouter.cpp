@@ -16,6 +16,7 @@
 #include "common/stringstream.h"
 #include "common/globals.h"
 #include "common/Database.h"
+#include "common/random.h"
 
 #include "common/Setup.h"
 
@@ -156,7 +157,7 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
         debug(std::cout << "set loc " << &m_gameWorld  << std::endl
                         << std::flush;);
         obj->m_location.m_loc = &m_gameWorld;
-        obj->m_location.m_pos = Vector3D(0,0,0);
+        obj->m_location.m_pos = Vector3D(uniform(-8,8), uniform(-8,8), 0);
         debug(std::cout << "loc set with loc " << obj->m_location.m_loc->getId()
                         << std::endl << std::flush;);
     }

@@ -89,8 +89,8 @@ OpVector CharacterClient::sendAndWaitReply(RootOperation & op)
                 }
                 delete input;
             }
-        } else {
-            connection.wait();
+        } else if (connection.wait()) {
+            return OpVector();
         }
     }
 }

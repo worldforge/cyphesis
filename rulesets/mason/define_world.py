@@ -29,7 +29,7 @@ forest_height=0
 hall_xyz=(5,3,settlement_height)
 forest_xyz=(-20,-60,settlement_height)
 
-pig_sty_xyz=(-2,2,settlement_height)
+pig_sty_xyz=(8,8,settlement_height)
 butcher_stall_xyz=(-41.5,-6.3,settlement_height)
 
 knowledge=[('axe','place','smithy'),
@@ -120,10 +120,12 @@ def default(mapeditor):
 
     m.make('fir',type='fir',xyz=(-10,-0,settlement_height))
     m.make('fir',type='fir',xyz=(-0,-10,settlement_height))
+    m.make('fir',type='fir',xyz=(0,10,settlement_height))
+    m.make('fir',type='fir',xyz=(10,0,settlement_height))
 
     chickens=[]
-    xbase = uniform(0,20)
-    ybase = uniform(0,20)
+    xbase = uniform(12,20)
+    ybase = uniform(12,20)
     for i in range(0, 10):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
@@ -163,7 +165,7 @@ def default(mapeditor):
 
     for i in forests:
         for j in range(0, i[1]):
-            m.make(i[0],type=i[0],xyz=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]))
+            m.make(i[0],type=i[0],xyz=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)])
 
     m.make('weather',type='weather',desc='object that describes the weather',
            xyz=(0,1,0), rain=0.0)
@@ -255,7 +257,7 @@ def default(mapeditor):
     # Warriors - the more adventurous types
 
     warriors=[]
-    warrior=m.make('Vonaa Barile',type='mercenary',xyz=(uniform(8,14),uniform(88,14),settlement_height),sex='female',orientation=directions[randint(0,7)])
+    warrior=m.make('Vonaa Barile',type='mercenary',xyz=(uniform(12,20),uniform(812,20),settlement_height),sex='female',orientation=directions[randint(0,7)])
     bow=m.make('bow',type='bow',xyz=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     warriors.append(warrior)

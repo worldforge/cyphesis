@@ -116,7 +116,7 @@ World::~World()
 float World::getHeight(float x, float y)
 {
     Mercator::Segment * s = m_terrain.getSegment(x, y);
-    if (!s->isValid()) {
+    if (s != 0 && !s->isValid()) {
         s->populate();
     }
     return m_terrain.get(x, y);

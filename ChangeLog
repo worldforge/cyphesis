@@ -1,3 +1,18 @@
+2004-06-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Slightly randomize starting position
+	  of characters to avoid getting stuck.
+
+	* rulesets/mason/define_world.py: Move the world contents around a bit
+	  to make room for larger spawn area.
+
+	* rulesets/World.cpp: Make sure we don't degfault if we get a height
+	  outside current area of terrain.
+
+	* client/ClientConnection.cpp, client/CharacterClient.cpp:
+	  Set an error condition if the server disconnects unexpectedly,
+	  and thus return an error to the script causing an exit.
+
 2004-06-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp, rulesets/World.h: Add accessor to get height
