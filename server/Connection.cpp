@@ -41,8 +41,8 @@ using Atlas::Objects::Operation::Info;
 static const bool debug_flag = false;
 
 Connection::Connection(const std::string & id, CommClient & client,
-                       ServerRouting & svr) : OOGThing(id), m_commClient(client),
-                       m_obsolete(false), m_server(svr)
+                       ServerRouting & svr) : OOGThing(id),
+                       m_commClient(client), m_obsolete(false), m_server(svr)
 {
     subscribe("login", OP_LOGIN);
     subscribe("logout", OP_LOGOUT);
@@ -84,7 +84,7 @@ Connection::~Connection()
         }
     }
 
-    m_server.incClients();
+    m_server.decClients();
 }
 
 void Connection::send(const Operation & op) const
