@@ -1,3 +1,5 @@
+Convert python code that uses get_xyz() to use distance_to instead.
+
 If the character moves an entity into another similar entity, then
 we should create a Pile. This can be detected in mindMoveOp().
 
