@@ -15,7 +15,7 @@ class keep_livestock(keep):
         thing_all=me.find_thing(self.what)
         for thing in thing_all:
             if thing.location.velocity.is_valid() and thing.location.velocity.square_mag() > 0.1:
-                return Operation("talk", Entity(say=self.call), to=me)
+                return Operation("talk", Entity(say=self.call))
         return keep.keep_it(self,me)
 
 class welcome(DynamicGoal):
@@ -30,7 +30,7 @@ class welcome(DynamicGoal):
         if original_op.from_==self:
             self.add_thing(obj)
         if obj.type[0]==self.player:
-            return Operation("talk", Entity(say=self.message), to=me)
+            return Operation("talk", Entity(say=self.message))
 
 class help(Goal):
     def __init__(self, messages):

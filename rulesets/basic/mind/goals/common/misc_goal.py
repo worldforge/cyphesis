@@ -221,7 +221,7 @@ class sit_down(Goal):
     def am_i_sat(self,me):
         return me.mode=="sitting"
     def sit(self,me):
-        return Operation("set", Entity(me.id, mode="sitting"),to=me)
+        return Operation("set", Entity(me.id, mode="sitting"))
 
 ############################ FEED (FOR FOOD) ##################################
 
@@ -411,7 +411,7 @@ class buy_trade(get_thing):
         if self.ticks==5:
             self.ticks=0
             es=Entity(say="Sell your " + self.what + " here!")
-            return Operation("talk",es,from_=me,to=me)
+            return Operation("talk",es)
 
 ############################ SELL SOMETHING (AS TRADER) ########################
 
@@ -436,11 +436,11 @@ class sell_trade(Goal):
         if self.ticks==5:
             self.ticks=0
             es=Entity(say="Get your " + self.what + " here!")
-            ret = ret + Operation("talk",es,from_=me,to=me)
-            ret = ret + Operation("action", Entity(me.id, action="shout"), to=me)
+            ret = ret + Operation("talk",es)
+            ret = ret + Operation("action", Entity(me.id, action="shout"))
         else:
             if randint(0,4)==1:
-                ret = ret + Operation("action", Entity(me.id, action="wave"), to=me)
+                ret = ret + Operation("action", Entity(me.id, action="wave"))
         return ret
 
 ################ TRADE (BUY SOMETHING, USE TOOL, SELL PRODUCT) ################
@@ -478,7 +478,7 @@ class market(Goal):
     def set_it(self,me):
         if me.things.has_key(self.shop)==0: return
         shop=me.find_thing(self.shop)[0]
-        return Operation("set", Entity(shop.id, mode=self.state),to=me)
+        return Operation("set", Entity(shop.id, mode=self.state))
 
 class run_shop(market):
     def __init__(self, shop, updown, time):
@@ -555,7 +555,7 @@ class keep_on_me(Goal):
 
 class assemble(Goal):
     def __init__(self, me, what, fromwhat):
-	sgoals=[]
+        sgoals=[]
         for item in fromwhat:
             sgoals.append(spot_something(item))
             sgoals.append(move_it(item, me.location, 1))
@@ -566,14 +566,14 @@ class assemble(Goal):
         self.fromwhat=fromwhat
         self.vars=["what","fromwhat"]
     def build(self, me):
-	retops=Message()
+        retops=Message()
         for item in self.fromwhat:
             if me.things.has_key(item)==0: return
         for item in self.fromwhat:
             cmpnt=me.find_thing(item)[0]
-            retops = retops + Operation("set", Entity(cmpnt.id,status=-1), to=cmpnt)
-        retops = retops + Operation("create", Entity(name=self.what,parents=[self.what], location=me.location.copy()), to=me)
-        retops = retops + Operation("action", Entity(me.id, action="conjure"), to=me)
+            retops = retops + Operation("set", Entity(cmpnt.id,status=-1))
+        retops = retops + Operation("create", Entity(name=self.what,parents=[self.what], location=me.location.copy()))
+        retops = retops + Operation("action", Entity(me.id, action="conjure"))
         return retops
 
 ######################## TRANSACTION (Sell thing) #######################

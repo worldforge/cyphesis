@@ -1,5 +1,15 @@
 2004-11-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Add notes, and a check to ensure that
+	  ops from the mind don't have TO set.
+
+	* rulesets/basic/mind/NPCMind.py,
+	  rulesets/basic/mind/goals/common/misc_goal.py,
+	  rulesets/basic/mind/goals/humanoid/mason.py: Don't set TO or FROM
+	  on goals from the mind.
+
+2004-11-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Plant.h, rulesets/Plant.cpp: Add handler for chop so
 	  we can chop down vegetation.
 

@@ -865,6 +865,8 @@ void Character::mindCutOperation(const Cut & op, OpVector & res)
 void Character::mindEatOperation(const Eat & op, OpVector & res)
 {
     Eat * e = new Eat(op);
+    // FIXME Need to get what food to eat from the arg, and sort out goals
+    // so they don't set TO
     if (op.getTo().empty()) {
         e->setTo(getId());
     }
@@ -1125,6 +1127,9 @@ void Character::mind2body(const RootOperation & op, OpVector & res)
 
     if (m_drunkness > 1.0) {
         return;
+    }
+    if (!op.getTo().empty()) {
+        log(WARNING, "Operation from mind with TO set");
     }
     OpNo otype = opEnumerate(op, opMindLookup);
     OP_SWITCH(op, otype, res, mind)
