@@ -1,0 +1,41 @@
+{
+   PythonObjectFreeC
+   Memcheck:Cond
+   fun:PyObject_Free
+}
+{
+   PythonObjectFreeV4
+   Memcheck:Value4
+   fun:PyObject_Free
+}
+{
+   PythonObjectFreeA4
+   Memcheck:Addr4
+   fun:PyObject_Free
+}
+{
+   PyObjectReallocA4
+   Memcheck:Addr4
+   fun:PyObject_Realloc
+}
+{
+   PyObjectReallocC
+   Memcheck:Cond
+   fun:PyObject_Realloc
+}
+{
+   PyObjectReallocV4
+   Memcheck:Value4
+   fun:PyObject_Realloc
+}
+{
+   LibCResolveP
+   Memcheck:Param
+   socketcall.connect(serv_addr..sin6_scope_id)
+   fun:__connect_internal
+   fun:__libc_res_nsend
+   fun:__GI___libc_res_nquery
+   fun:__libc_res_nquerydomain
+}
+
+
