@@ -7,12 +7,15 @@
 #include "Script.h"
 
 #include "common/const.h"
+#include "common/debug.h"
 #include "common/random.h"
 
 #include "common/Tick.h"
 
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Set.h>
+
+static const bool debug_flag = false;
 
 Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
                                                          m_radius(1),
@@ -83,6 +86,8 @@ int Plant::dropFruit(OpVector & res)
     if (m_fruits < 1) { return 0; }
     int drop = std::min(m_fruits, randint(m_minuDrop, m_maxuDrop));
     m_fruits = m_fruits - drop;
+    debug(std::cout << "Dropping " << drop << " fruits from "
+                    << m_type << " plant." << std::endl << std::flush;);
     double height = m_location.m_bBox.highCorner().z(); 
     for(int i = 0; i < drop; i++) {
         double rx = m_location.m_pos.x()+uniform(height*m_radius, -height*m_radius);
@@ -93,6 +98,7 @@ int Plant::dropFruit(OpVector & res)
         Location floc(m_location.m_loc, Vector3D(rx, ry, 0));
         floc.addToObject(fmap);
         RootOperation * create = new Create(Create::Instantiate());
+        create->setTo(getId());
         create->setArgs(Element::ListType(1, fmap));
         res.push_back(create);
     }
@@ -119,6 +125,7 @@ OpVector Plant::TickOperation(const Tick & op)
         Element::MapType pmap;
         pmap["id"] = getId();
         pmap["fruits"] = m_fruits;
+        set->setTo(getId());
         set->setArgs(Element::ListType(1,pmap));
         res.push_back(set);
     }

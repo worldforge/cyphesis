@@ -78,7 +78,7 @@ class Tree(Thing):
         set_kw(self,kw,"fruits",init_fruits)
 
 	# The type of fruit #
-        set_kw(self,kw,"fruitname","Seed")
+        set_kw(self,kw,"fruitname","seed")
 
         # Chance of fruit #
         set_kw(self,kw,"fruitchance",fruitchance)

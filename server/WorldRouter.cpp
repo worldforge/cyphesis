@@ -155,6 +155,9 @@ Entity * WorldRouter::addNewObject(const std::string & typestr,
     Database::instance()->getEntityId(id);
     Entity * obj = EntityFactory::instance()->newEntity(id, typestr, ent);
     if (obj == 0) {
+        std::string msg = std::string("Attempt to create an entity of type \"")
+                          + typestr + "\" but type is unknown";
+        log(ERROR, msg.c_str());
         return 0;
     }
     return addObject(obj);

@@ -137,7 +137,7 @@ void EntityFactory::installRule(const std::string & className,
         debug(std::cout << "Rule \"" << className
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
-        m_waitingRules[parent] = std::pair<std::string, Element::MapType>(className, classDesc);
+        m_waitingRules.insert(make_pair(parent, make_pair(className, classDesc)));
         return;
     }
 
@@ -188,15 +188,15 @@ void EntityFactory::installRule(const std::string & className,
                     << std::endl << std::flush;);
     // Install the factory in place.
     installFactory(parent, className, f);
-    RuleWaitList::iterator I = m_waitingRules.find(className);
-    if (I != m_waitingRules.end()) {
+    RuleWaitList::iterator I = m_waitingRules.lower_bound(className);
+    for (; I != m_waitingRules.upper_bound(className); ++I) {
         const std::string & wClassName = I->second.first;
         const Element::MapType & wClassDesc = I->second.second;
         debug(std::cout << "WAITING rule " << wClassName
                         << " now ready" << std::endl << std::flush;);
         installRule(wClassName, wClassDesc);
-        m_waitingRules.erase(I);
     }
+    m_waitingRules.erase(className);
 }
 
 void EntityFactory::installRules()

@@ -22,7 +22,7 @@ typedef std::map<std::string, FactoryBase *> FactoryDict;
 
 class EntityFactory {
   private:
-    typedef std::map<std::string, std::pair<std::string, Atlas::Message::Element::MapType> > RuleWaitList;
+    typedef std::multimap<std::string, std::pair<std::string, Atlas::Message::Element::MapType> > RuleWaitList;
     explicit EntityFactory(BaseWorld & w);
     static EntityFactory * m_instance;
 

@@ -1,5 +1,17 @@
 2003-09-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Worldtest.cpp: Update test to take account of changes
+	  in the BaseWorld interface.
+
+	* server/WorldRouter.cpp: Report an error if an entity creation
+	  attempt of unknown type is attempted.
+
+	* server/EntityFactory.h, server/EntityFactory.cpp: Modify
+	  unbound rule queue so it handles multiple rules depending
+	  on a single parent.
+
+2003-09-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.h, server/EntityFactory.cpp: Add
 	  a wait queue for rules whose parent is not yet installed,
 	  so installing rules in any order can be handled, and

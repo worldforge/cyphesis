@@ -122,7 +122,7 @@ OpVector Thing::CreateOperation(const Create & op)
         Entity * obj = m_world->addNewObject(type,ent);
 
         if (obj == 0) {
-            return error(op, "Create op failed.");
+            return error(op, "Create op failed.", op.getFrom());
         }
 
         Create c(op);

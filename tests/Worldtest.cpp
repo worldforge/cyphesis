@@ -15,8 +15,10 @@ class TestWorld : public BaseWorld {
 
     virtual int idle() { return 0; }
     virtual Entity * addObject(Entity * obj, bool setup = true) { return 0; }
-    virtual Entity * addObject(const std::string &,
-                               const Atlas::Message::Element::MapType &) { return 0; }
+    virtual Entity * addNewObject(const std::string &,
+                                  const Atlas::Message::Element::MapType &) {
+        return 0;
+    }
     virtual void setSerialnoOp(RootOperation &) { }
     virtual OpVector message(RootOperation & op, const Entity * obj) { return OpVector(); }
     virtual Entity * findByName(const std::string & name) { return 0; }
