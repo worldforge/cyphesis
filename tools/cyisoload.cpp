@@ -10,7 +10,7 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <common/database.h>
+#include <common/Database.h>
 
 #include <string>
 #include <fstream>

@@ -4,9 +4,58 @@
 
 #include "globals.h"
 
+#include <varconf/Config.h>
+
 varconf::Config * global_conf = NULL;
 std::string share_directory = SHAREDIR;
 std::list<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;
 int timeoffset = 0;
+
+bool loadConfig(int argc, char ** argv)
+{
+    global_conf = varconf::Config::inst();
+
+    // See if the user has set the install directory on the command line
+    char * home;
+    bool home_dir_config = false;
+    if ((home = getenv("HOME")) != NULL) {
+        home_dir_config = global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
+    }
+    // Check the command line options, and if the installation directory
+    // has been overriden, either on the command line or in the users
+    // config file, store this value in the users home directory.
+    // The effect of this code is that an installation directory, once
+    // chosen is fixed.
+    global_conf->getCmdline(argc, argv);
+    if (global_conf->findItem("cyphesis", "directory")) {
+        share_directory = global_conf->getItem("cyphesis", "directory");
+        if (home != NULL) {
+            global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf");
+        }
+    }
+    // Load up the rest of the system config file, and then ensure that
+    // settings are overridden in the users config file, and the command line
+    bool main_config = global_conf->readFromFile(share_directory +
+                                                 "/cyphesis/cyphesis.vconf");
+    if (!main_config) {
+        std::cerr << "FATAL: Unable to read main config file "
+                  << share_directory << "/cyphesis/cyphesis.vconf."
+                  << std::endl;
+        if (home_dir_config) {
+            std::cerr << "Try removing .cyphesis.vconf from your home directory as it may specify an invalid installation directory, and then restart cyphesis."
+                      << std::endl << std::flush;
+        } else {
+            std::cerr << "Please ensure that cyphesis has been installed correctly."
+                      << std::endl << std::flush;
+        }
+        return true;
+    }
+    if (home_dir_config) {
+        global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
+    }
+    global_conf->getCmdline(argc, argv);
+
+    return false;
+}

@@ -1,3 +1,16 @@
+  Entity classes need to be added by world builders. They also need to be
+  persisted, so it seems as though they need to installed in a database,
+  and for this database to be loaded just before the world state. This implies
+  that majority of config on startup needs to be loaded from some kind of
+  writable config store, rather than read only system files. Does this mean
+  that predefined rulesets should only be loaded when explicitly commanded,
+  or perhaps even externally to the core server?
+  This also asks the question whether the current db code is up to scratch.
+  Need to look into SQL for the database now. It is going to be a relation
+  object database hybrid, using current tech to serialise objects, despite
+  Funcoms warning. One question is obviously whether to use a database
+  server, or in process database access.
+
   Add services features, and test them in equator.
 
   Make sure the tools use another port if one is specified in the config file.
@@ -8,7 +21,7 @@
 
   Implement propper multi-process access to database
 
-  Add support for maps list attribute on world_0
+  Add support for maps list attribute on world_0. Good idea?
 
   Implement accelerated Atlas Objects API. MAYBE:
     POSTPONED FROM 0.3

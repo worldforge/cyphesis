@@ -6,7 +6,7 @@
 
 #include <varconf/Config.h>
 
-#include <iostream.h>
+#include <iostream>
 
 extern "C" {
     #include <sys/utsname.h>
@@ -102,45 +102,10 @@ int main(int argc, char ** argv)
     // Initialise the varconf system, and get a pointer to the config database
     global_conf = varconf::Config::inst();
 
-    // See if the user has set the install directory on the command line
-    char * home;
-    bool home_dir_config = false;
-    if ((home = getenv("HOME")) != NULL) {
-        home_dir_config = global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
-    }
-    // Check the command line options, and if the installation directory
-    // has been overriden, either on the command line or in the users
-    // config file, store this value in the users home directory.
-    // The effect of this code is that an installation directory, once
-    // chosen is fixed.
-    global_conf->getCmdline(argc, argv);
-    if (global_conf->findItem("cyphesis", "directory")) {
-        share_directory = global_conf->getItem("cyphesis", "directory");
-        if (home != NULL) {
-            global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf");
-        }
-    }
-    // Load up the rest of the system config file, and then ensure that
-    // settings are overridden in the users config file, and the command line
-    bool main_config = global_conf->readFromFile(share_directory +
-                                                 "/cyphesis/cyphesis.vconf");
-    if (!main_config) {
-        std::cerr << "FATAL: Unable to read main config file "
-                  << share_directory << "/cyphesis/cyphesis.vconf."
-                  << std::endl;
-        if (home_dir_config) {
-            std::cerr << "Try removing .cyphesis.vconf from your home directory as it may specify an invalid installation directory, and then restart cyphesis."
-                      << std::endl << std::flush;
-        } else {
-            std::cerr << "Please ensure that cyphesis has been installed correctly."
-                      << std::endl << std::flush;
-        }
+    if (loadConfig(argc, argv)) {
+        // Fatal error loading config file
         return 1;
     }
-    if (home_dir_config) {
-        global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
-    }
-    global_conf->getCmdline(argc, argv);
 
     EntityFactory::instance()->installBaseClasses();
 
@@ -179,9 +144,7 @@ int main(int argc, char ** argv)
         } else {
             std::cerr << "FATAL: Unable to open the account and world databases"
                       << std::endl
-                      << "Please ensure that the database in:" << std::endl
-                      << "  "
-                      << Persistance::instance()->getFilename() << std::endl
+                      << "Please ensure that the database tables "
                       << "can be created or accessed by cyphesis."
                       << std::endl << std::flush;
         }

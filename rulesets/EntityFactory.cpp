@@ -6,6 +6,8 @@
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Entity/GameEntity.h>
 
+#include <varconf/Config.h>
+
 #include "Thing.h"
 #include "EntityFactory.h"
 // #include "ThingShape.h"

@@ -8,7 +8,9 @@
 #include <string>
 #include <list>
 
-#include <varconf/Config.h>
+namespace varconf {
+  class Config;
+}
 
 extern varconf::Config * global_conf;
 extern std::string share_directory;
@@ -16,5 +18,7 @@ extern std::list<std::string> rulesets;
 extern bool exit_flag;
 extern bool daemon_flag;
 extern int timeoffset;
+
+extern bool loadConfig(int argc, char ** argv);
 
 #endif // COMMON_GLOBALS_H

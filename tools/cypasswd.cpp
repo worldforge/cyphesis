@@ -8,6 +8,7 @@
 #include <Atlas/Codecs/XML.h>
 
 #include <common/accountbase.h>
+#include <common/globals.h>
 
 #include <string>
 
@@ -37,6 +38,11 @@ void usage(char * n)
 
 int main(int argc, char ** argv)
 {
+    if (loadConfig(argc, argv)) {
+        // Fatal error loading config file
+        return 1;
+    }
+
     std::string acname;
     int action;
 

@@ -46,6 +46,9 @@ void Persistance::saveAdminAccount(Account & adm)
 bool Persistance::init()
 {
     Persistance * p = instance();
+    if (!p->initConnection(false)) {
+        return false;
+    }
     bool i = p->initAccount(true);
     bool j = p->initWorld(true);
     bool k = p->initMind(true);
@@ -57,10 +60,7 @@ void Persistance::shutdown()
 {
     Persistance * p = (Persistance *)m_instance;
     if (p == NULL) { return; }
-    p->shutdownAccount();
-    p->shutdownWorld();
-    p->shutdownMind();
-    p->shutdownServer();
+    p->shutdownConnection();
     delete p;
     m_instance = NULL;
 }
@@ -110,7 +110,7 @@ Account * Persistance::getAccount(const std::string & name)
 
 void Persistance::putAccount(const Account & ac)
 {
-    putObject(account_db, ac.asObject().AsMap(), ac.getId().c_str());
+    putObject(account_db, ac.getId().c_str(), ac.asObject().AsMap());
 }
 
 bool Persistance::getEntity(const std::string & id, Object::MapType & entity)
@@ -120,7 +120,7 @@ bool Persistance::getEntity(const std::string & id, Object::MapType & entity)
 
 void Persistance::putEntity(const Entity & be)
 {
-    putObject(world_db, be.asObject().AsMap(), be.getId().c_str());
+    putObject(world_db, be.getId().c_str(), be.asObject().AsMap());
 }
 
 bool Persistance::getMind(const std::string & id, Object::MapType & entity)
@@ -130,5 +130,5 @@ bool Persistance::getMind(const std::string & id, Object::MapType & entity)
 
 void Persistance::putMind(const std::string & id, const Object::MapType & be)
 {
-    putObject(mind_db, be, id.c_str());
+    putObject(mind_db, id.c_str(), be);
 }

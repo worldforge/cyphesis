@@ -5,6 +5,8 @@
 #include "CommClient.h"
 #include "CommServer.h"
 
+#include <varconf/Config.h>
+
 #include <iostream>
 
 extern "C" {

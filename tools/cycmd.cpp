@@ -14,6 +14,7 @@
 #include <common/Save.h>
 #include <common/accountbase.h>
 #include <common/const.h>
+#include <common/globals.h>
 
 #include <skstream.h>
 
@@ -286,6 +287,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         Object::MapType cmap;
         cmap["id"] = "server";
         cmap["cmd"] = cmd;
+        cmap["objtype"] = "object";
         if (arg.size() != 0) {
             cmap["arg"] = arg;
         }
@@ -299,6 +301,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         Object::MapType cmap;
         cmap["id"] = "server";
         cmap["cmd"] = cmd;
+        cmap["objtype"] = "object";
         if (arg.size() != 0) {
             cmap["arg"] = arg;
         }
@@ -323,6 +326,14 @@ static void usage(char * prg)
 
 int main(int argc, char ** argv)
 {
+    int cargc = 0;
+    char * cargv[0];
+
+    if (loadConfig(cargc, cargv)) {
+        // Fatal error loading config file
+        return 1;
+    }
+
     bool interactive = true;
     std::string cmd;
     char * server = "localhost";

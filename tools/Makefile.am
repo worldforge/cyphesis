@@ -17,21 +17,19 @@ endif
 
 cypasswd_SOURCES = cypasswd.cpp sstream.h iotraits.h
 
-cypasswd_LDADD = ../common/database.o
+cypasswd_LDADD = ../common/Database.o ../common/globals.o
 
 cycmd_SOURCES = cycmd.cpp
 
 cycmd_LIBS = -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlasNet -lAtlasObjects -lAtlasObjectsEntity -lAtlasObjectsOperation
 
-cycmd_LDADD = ../common/database.o ../common/operations.o
+cycmd_LDADD = ../common/Database.o ../common/operations.o ../common/globals.o
 
 cydbload_SOURCES = cydbload.cpp
 
-cydbload_LDADD = ../common/database.o
+cydbload_LDADD = ../common/Database.o ../common/globals.o
 
 cywatchdog_SOURCES = cywatchdog.cpp
-
-cywatchdog_LDADD = ../common/database.o
 
 cyctrl_SOURCES = cyctrl.cpp
 

@@ -10,7 +10,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		types.h op_switch.h \
 		operations.cpp operations.h \
 		globals.cpp globals.h \
-		database.cpp database.h \
+		Database.cpp Database.h \
 		accountbase.h \
 		utility.cpp utility.h \
 		serialno.cpp serialno.h \
@@ -24,11 +24,11 @@ libcommon_a_SOURCES = const.cpp const.h \
 		stringstream.h \
 		sstream.h iotraits.h
 
-libcyphesis_la_SOURCES = database.cpp database.h \
+libcyphesis_la_SOURCES = Database.cpp Database.h \
 			 stringstream.h debug.h \
 			 accountbase.h
 
 libcyphesisincludedir = $(includedir)/cyphesis
-libcyphesisinclude_HEADERS = accountbase.h database.h
+libcyphesisinclude_HEADERS = accountbase.h Database.h
 
 EXTRA_DIST = sstream.cc

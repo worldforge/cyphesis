@@ -9,7 +9,7 @@ class Admin;
 class Account;
 class Entity;
 
-#include <common/database.h>
+#include <common/Database.h>
 
 class Persistance : public Database {
   protected:

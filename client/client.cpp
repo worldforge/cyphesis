@@ -4,6 +4,8 @@
 
 #include "ObserverClient.h"
 
+#include <varconf/Config.h>
+
 #include <rulesets/Python_API.h>
 
 #include <common/globals.h>
@@ -12,39 +14,10 @@ int main(int argc, char ** argv)
 {
     global_conf = varconf::Config::inst();
 
-    char * home;
-    bool home_dir_config = false;
-    if ((home = getenv("HOME")) != NULL) {
-        home_dir_config = global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
-    }
-
-    global_conf->getCmdline(argc, argv);
-    if (global_conf->findItem("cyphesis", "directory")) {
-        share_directory = global_conf->getItem("cyphesis", "directory");
-        if (home != NULL) {
-            global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf");
-        }
-    }
-
-    bool main_config = global_conf->readFromFile(share_directory +
-                                                 "/cyphesis/cyphesis.vconf");
-    if (!main_config) {
-        std::cerr << "FATAL: Unable to read main config file "
-                  << share_directory << "/cyphesis/cyphesis.vconf."
-                  << std::endl << std::flush;
-        if (home_dir_config) {
-            std::cerr << "Try removing .cyphesis.vconf from your home directory as it may specify an invalid installation directory, and then restart cyphesis."
-                      << std::endl << std::flush;
-        } else {
-            std::cerr << "Please ensure that cyphesis has been installed correctly."
-                      << std::endl << std::flush;
-        }
+    if (loadConfig(argc, argv)) {
+        // Fatal error loading config file
         return 1;
     }
-    if (home_dir_config) {
-        global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
-    }
-    global_conf->getCmdline(argc, argv);
 
     std::string ruleset;
     while (global_conf->findItem("cyphesis", "ruleset")) {

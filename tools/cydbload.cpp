@@ -8,7 +8,8 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <common/database.h>
+#include <common/Database.h>
+#include <common/globals.h>
 
 #include <string>
 #include <fstream>
@@ -28,7 +29,7 @@ class WorldBase : public Database {
     }
 
     void storeInWorld(const Object::MapType & o, const char * key) {
-        putObject(world_db, o, key);
+        putObject(world_db, key, o);
     }
     bool getWorld(Object::MapType & o) {
         return getObject(world_db, "world_0", o);
@@ -109,12 +110,21 @@ int main(int argc, char ** argv)
         return 1;
     }
 
+    int cargc = 0;
+    char * cargv[0];
+
+    if (loadConfig(cargc, cargv)) {
+        // Fatal error loading config file
+        return 1;
+    }
+
     WorldBase * db = WorldBase::instance();
+    db->initConnection(true);
     db->initWorld(true);
 
     FileDecoder f(argv[1], db);
     f.read();
     f.report();
-    db->shutdownWorld();
+    db->shutdownConnection();
     delete db;
 }

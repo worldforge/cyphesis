@@ -7,7 +7,7 @@
 
 #include <Atlas/Message/Object.h>
 
-#include <common/database.h>
+#include <common/Database.h>
 
 using Atlas::Message::Object;
 
@@ -19,6 +19,7 @@ class AccountBase : public Database {
     static AccountBase * instance(bool create = false) {
         if (m_instance == NULL) {
             m_instance = new AccountBase();
+            m_instance->initConnection(create);
             m_instance->initAccount(create);
         }
         return (AccountBase *)m_instance;
@@ -26,14 +27,14 @@ class AccountBase : public Database {
 
     static void del() {
         if (m_instance != NULL) {
-            m_instance->shutdownAccount();
+            m_instance->shutdownConnection();
             delete m_instance;
             m_instance = NULL;
         }
     }
 
     bool putAccount(const Object::MapType & o, const std::string & account) {
-        return putObject(account_db, o, account.c_str());
+        return putObject(account_db, account.c_str(), o);
     }
     bool delAccount(const std::string & account) {
         return delObject(account_db, account.c_str());

@@ -1,3 +1,28 @@
+2002-01-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/client.cpp, server/server.cpp, common/globals.cpp,
+	  common/globals.h, tools/cycmd.cpp, tools/cydbload.cpp,
+	  tools/cypasswd.cpp: Move code for handling loading of config
+	  from the command line, user config and global config, into
+	  globals.cpp, and make use of it in all tools.
+
+	* tools/cycmd.cpp: Fix objtype on server set commands.
+
+	* common/Database.cpp, common/Database.h: Implemented new database
+	  interface to PostgreSQL to replace inadequate db3 code.
+
+	* common/database.cpp, common/database.h: Old code removed from the
+	  build.
+
+	* common/accountbase.h, server/Admin.cpp, server/Persistance.cpp,
+	  server/server.cpp, tools/cydbload.cpp: Fixed for minor changes
+	  in the low level database API.
+
+	* common/globals.h, common/globals.cpp, rulesets/EntityFactory.cpp,
+	  server/Admin.cpp, server/CommServer.cpp, 
+	  Remove varconf header from globals.h, and put in .cpp files
+	  where it belongs.
+
 2001-12-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* physics/Quaternion.cpp, physics/Quaternion.h: Corrected bugs

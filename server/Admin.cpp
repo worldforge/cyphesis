@@ -5,6 +5,8 @@
 #include <Atlas/Objects/Operation/Info.h>
 #include <Atlas/Objects/Operation/Logout.h>
 
+#include <varconf/Config.h>
+
 #include <common/Load.h>
 #include <common/Save.h>
 
@@ -64,14 +66,15 @@ oplist Admin::SaveOperation(const Save & op)
     edict_t::const_iterator I;
     Persistance * p = Persistance::instance();
     Object::MapType ent;
-    DatabaseIterator dbi(p->getWorldDb());
-    while (dbi.get(ent)) {
-        dbi.del();
-    }
-    DatabaseIterator dbj(p->getMindDb());
-    while (dbj.get(ent)) {
-        dbj.del();
-    }
+    // Clear the world database
+    //DatabaseIterator dbi(p->getWorldDb());
+    //while (dbi.get(ent)) {
+        //dbi.del();
+    //}
+    //DatabaseIterator dbj(p->getMindDb());
+    //while (dbj.get(ent)) {
+        //dbj.del();
+    //}
     int count = 0;
     int mind_count = 0;
     for(I = world->getObjects().begin(); I != world->getObjects().end(); I++) {
@@ -140,24 +143,24 @@ oplist Admin::LoadOperation(const Load & op)
     load(p, "world_0", count);
 
     // Load the mind states
-    DatabaseIterator dbi(p->getMindDb());
-    Object::MapType ent;
-    while (dbi.get(ent)) {
-        Object::MapType::const_iterator I = ent.find("id");
-        if ((I != ent.end()) && (I->second.IsString())) {
-            const std::string & id = I->second.AsString();
-            Entity * ent = world->getObject(id);
-            if ((ent == NULL) || (!ent->isCharacter())) {
-                continue;
-            }
-            Character * c = (Character *)ent;
-            if (c->mind == NULL) { continue; }
-            Load l(op);
-            l.SetArgs(Object::ListType(1,ent));
-            c->mind->LoadOperation(l);
-            ++mind_count;
-        }
-    }
+    //DatabaseIterator dbi(p->getMindDb());
+    //Object::MapType ent;
+    //while (dbi.get(ent)) {
+        //Object::MapType::const_iterator I = ent.find("id");
+        //if ((I != ent.end()) && (I->second.IsString())) {
+            //const std::string & id = I->second.AsString();
+            //Entity * ent = world->getObject(id);
+            //if ((ent == NULL) || (!ent->isCharacter())) {
+                //continue;
+            //}
+            //Character * c = (Character *)ent;
+            //if (c->mind == NULL) { continue; }
+            //Load l(op);
+            //l.SetArgs(Object::ListType(1,ent));
+            //c->mind->LoadOperation(l);
+            //++mind_count;
+        //}
+    //}
     if (connection != NULL) {
         Object::MapType report;
         report["message"] = "Objects loaded from database";

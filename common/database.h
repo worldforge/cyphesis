@@ -5,6 +5,8 @@
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H
 
+#error This file has been removed from the build
+
 #include <Atlas/Message/DecoderBase.h>
 
 class Db;
