@@ -2,16 +2,12 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Message/Encoder.h>
-#include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 
 #include <common/Database.h>
 #include <common/globals.h>
 
-#include <string>
 #include <fstream>
 
 using Atlas::Message::Object;
@@ -52,7 +48,7 @@ class WorldBase {
 WorldBase * WorldBase::m_instance = NULL;
 
 class FileDecoder : public Atlas::Message::DecoderBase {
-    std::ifstream m_file;
+    std::fstream m_file;
     WorldBase & m_db;
     Atlas::Codecs::XML m_codec;
     Object::MapType m_world;
@@ -89,8 +85,8 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     }
   public:
     FileDecoder(const std::string & filename, WorldBase & db) :
-                m_file(filename.c_str()), m_db(db),
-                m_codec((std::iostream&)m_file, this), m_count(0)
+                m_file(filename.c_str(), std::ios::in), m_db(db),
+                m_codec(m_file, this), m_count(0)
     {
         m_worldMerge = db.getWorld(m_world);
         if (m_worldMerge && !m_world.find("contains")->second.IsList()) {

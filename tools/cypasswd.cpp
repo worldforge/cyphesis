@@ -2,11 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Message/Encoder.h>
-#include <Atlas/Objects/Decoder.h>
-#include <Atlas/Codecs/XML.h>
-
 #include <common/accountbase.h>
 #include <common/globals.h>
 
@@ -26,7 +21,7 @@
 // database. This is the only way to create accounts on a server in
 // restricted mode.
 
-// TODO: Make sure the rest of the Object is preserver, rather than just
+// TODO: Make sure the rest of the Object is preserved, rather than just
 //       blatting it with a new Object.
 
 using Atlas::Message::Object;

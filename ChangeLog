@@ -1,3 +1,9 @@
+2002-05-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cydbload.cpp, tools/cyisoload.cpp, tools/cyloadrules.cpp:
+	  Clean up unused headers, and incorrect use of fstream in
+	  some tools.
+
 2002-04-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Get rid of default db username, so that

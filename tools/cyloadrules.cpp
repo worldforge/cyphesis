@@ -2,9 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#include <Atlas/Message/Object.h>
-#include <Atlas/Message/Encoder.h>
-#include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 
@@ -47,7 +44,7 @@ class RuleBase {
 RuleBase * RuleBase::m_instance = NULL;
 
 class FileDecoder : public Atlas::Message::DecoderBase {
-    std::ifstream m_file;
+    std::fstream m_file;
     RuleBase & m_db;
     Atlas::Codecs::XML m_codec;
     Object::MapType m_world;
@@ -64,8 +61,8 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     }
   public:
     FileDecoder(const std::string & filename, RuleBase & db) :
-                m_file(filename.c_str()), m_db(db),
-                m_codec((std::iostream&)m_file, this), m_count(0)
+                m_file(filename.c_str(), std::ios::in), m_db(db),
+                m_codec(m_file, this), m_count(0)
     {
     }
 
