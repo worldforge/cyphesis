@@ -1,7 +1,7 @@
 [cyphesis]
 ruleset="basic"
 
-[things]
+[thing]
 cleaver		= "world.objects.tools.Cleaver"
 tree		= "world.objects.plants.Tree"
 oak		= "world.objects.plants.Oak"
@@ -15,7 +15,7 @@ thigh		= "world.objects.undead.Thigh"
 shin		= "world.objects.undead.Shin"
 weather		= "world.objects.Weather"
 
-[characters]
+[character]
 pig		= "world.objects.animals.Pig"
 wolf		= "world.objects.animals.Wolf"
 crab		= "world.objects.animals.Crab"

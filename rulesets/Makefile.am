@@ -1,7 +1,10 @@
 noinst_LIBRARIES = librulesets.a
 
 librulesets_a_SOURCES = Thing.cpp Thing.h \
+			EntityFactory.cpp EntityFactory.h \
 			ThingFactory.cpp ThingFactory.h \
+			CharacterFactory.cpp CharacterFactory.h \
+			CreatorFactory.cpp CreatorFactory.h \
 			BaseMind.cpp BaseMind.h \
 			MemMap.cpp MemMap.h MemMap_methods.h \
 			ExternalMind.cpp ExternalMind.h \

@@ -1,4 +1,4 @@
-[things]
+[thing]
 thing		= ""
 house		= "world.objects.buildings.House"
 stonehouse	= "world.objects.building.StoneHouse"
@@ -12,7 +12,7 @@ fire		= "world.objects.elements.Fire"
 tree		= "world.objects.plants.Tree"
 seed		= "world.objects.plants.Seed"
 
-[characters]
+[character]
 farmer		= ""
 guard		= ""
 butcher		= ""

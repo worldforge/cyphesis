@@ -5,25 +5,20 @@
 #ifndef THING_FACTORY_H
 #define THING_FACTORY_H
 
-#include <Python.h>
-
-#include <varconf/Config.h>
-
-#include <string.h>
-
-#include <common/BaseEntity.h>
-
-#include "Python_API.h"
-
-extern varconf::Config * global_conf;
+#include "Thing.h"
 
 class ThingFactory {
-  public:
+  protected:
     ThingFactory() { }
-    void readRuleset(const string & file);
-    Thing * newThing(const string &, const Message::Object &, Routing *);
+    static ThingFactory * m_instance;
+  public:
+    static ThingFactory * instance() {
+        if (m_instance == NULL) {
+            m_instance = new ThingFactory();
+        }
+        return m_instance;
+    }
+    virtual Thing * newThing();
 };
-
-extern ThingFactory thing_factory;
 
 #endif /* THING_FACTORY_H */

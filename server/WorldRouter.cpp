@@ -14,7 +14,7 @@
 #include "ServerRouting.h"
 
 #include <rulesets/Thing.h>
-#include <rulesets/ThingFactory.h>
+#include <rulesets/EntityFactory.h>
 #include <common/debug.h>
 #include <common/const.h>
 
@@ -136,7 +136,7 @@ Thing * WorldRouter::add_object(const string & typestr, const Object & ent)
 {
     debug(cout << "WorldRouter::add_object(string, ent)" << endl << flush;);
     Thing * obj;
-    obj = thing_factory.newThing(typestr, ent, this);
+    obj = EntityFactory::instance()->newThing(typestr, ent, this);
     return add_object(obj);
 }
 

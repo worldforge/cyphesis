@@ -294,7 +294,7 @@ varconf::Config * global_conf = varconf::Config::inst();
 
 list<string> rulesets;
 
-#include <rulesets/ThingFactory.h>
+#include <rulesets/EntityFactory.h>
 
 int main(int argc, char ** argv)
 {
@@ -324,7 +324,7 @@ int main(int argc, char ** argv)
         ruleset = global_conf->getItem("cyphesis", "ruleset");
         global_conf->erase("cyphesis", "ruleset");
         cout << "Reading in " << ruleset << endl << flush;
-        thing_factory.readRuleset(install_directory + "/share/cyphesis/" + ruleset);
+        EntityFactory::instance()->readRuleset(install_directory + "/share/cyphesis/" + ruleset);
         rulesets.push_back(ruleset);
     };
     

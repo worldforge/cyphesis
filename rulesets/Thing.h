@@ -72,22 +72,4 @@ class Thing : public BaseEntity {
     virtual oplist Operation(const Disappearance & op);
 };
 
-#if 0
-typedef std::pair<int, string> thing_t;
-
-#define BASE_THING	0
-#define BASE_CHARACTER	1
-#define BASE_CREATOR	2
-
-class ThingFactory {
-    map<string,thing_t> thing_map;
-  public:
-    ThingFactory();
-    Thing * new_thing(const string &, const Message::Object &, Routing *);
-};
-
-extern ThingFactory thing_factory;
-
-#endif /* 0 */
-
 #endif /* THING_H */

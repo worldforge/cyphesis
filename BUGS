@@ -1,0 +1,9 @@
+Some NPCs do not seem able to determine correctly the attributes of
+entities. This is a particular problem if the entity was created before the
+NPC. Something about the whole lookid thing is still not working. It seems
+that some attributes make it, and some don't. name in particular seems to
+not work.
+
+  Think of a way to correctly handle the fact that world is top level container.
+  Should it list itself as loc, or not?
+

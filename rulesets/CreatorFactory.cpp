@@ -6,12 +6,12 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
 
-#include "Thing.h"
-#include "ThingFactory.h"
+#include "Creator.h"
+#include "CreatorFactory.h"
 
-ThingFactory * ThingFactory::m_instance = NULL;
+CreatorFactory * CreatorFactory::m_instance = NULL;
 
-Thing * ThingFactory::newThing()
+Creator * CreatorFactory::newThing()
 {
-    return new Thing();
+    return new Creator();
 }
