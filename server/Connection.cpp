@@ -119,6 +119,20 @@ void Connection::close()
     commClient.close();
 }
 
+bool Connection::verifyCredentials(const Account & account,
+                                   const Fragment::MapType & creds) const
+{
+    Fragment::MapType::const_iterator I = creds.find("password");
+    if ((I == creds.end()) || !I->second.IsString()) {
+        return false;
+    }
+    const std::string & passwd = I->second.AsString();
+    if (passwd != account.password) {
+        return false;
+    }
+    return true;
+}
+
 OpVector Connection::operation(const RootOperation & op)
 {
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
@@ -182,12 +196,7 @@ OpVector Connection::LoginOperation(const Login & op)
     if (username.empty()) {
         return error(op, "Empty username provided for Login");
     }
-    I = account.find("password");
-    if ((I == account.end()) || !I->second.IsString()) {
-        return error(op, "No password provided for Login");
-    }
-    const std::string & passwd = account.find("password")->second.AsString();
-    // We now have username and password, so can check whether we know this
+    // We now have username, so can check whether we know this
     // account, either from existing account ....
     Account * player = server.getAccountByName(username);
     // or if not, from the database
@@ -200,7 +209,7 @@ OpVector Connection::LoginOperation(const Login & op)
             server.addAccount(player);
         }
     }
-    if ((player == 0) || (passwd != player->password)) {
+    if ((player == 0) || !verifyCredentials(*player, account)) {
         return error(op, "Login is invalid");
     }
     // Account appears to be who they say they are

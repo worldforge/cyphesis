@@ -1,3 +1,8 @@
+2003-03-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.h, server/Connection.cpp: Add virtual method
+	  to verify account credentials.
+
 2003-03-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/globals.cpp, common/globals.h: Add global variable for

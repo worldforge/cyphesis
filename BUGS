@@ -1,7 +1,3 @@
-Failed negotiation causes a crash.
-
-Failure to open unix listen socket causes tight loop.
-
 Persistence and other words with the same root are incorrectly spelt
 Persistance throughout.
 
