@@ -1,5 +1,11 @@
 2003-10-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Re-work mind movement processing code,
+	  eliminating some nasty corner cases, and making the whole
+	  lot more readable.
+
+2003-10-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, rulesets/Entity.cpp, rulesets/Thing.cpp:
 	  Avoid explicit constructor + copy constructor when assigning
 	  vector classes from Atlas.

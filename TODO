@@ -1,3 +1,6 @@
+Looks like zero collision time results in move then stop being sent
+almost immediatly. Check for it, and send nothing.
+
 Modify Movement and Pedestrian classes so they handle restricting an
 entity to their parents constraints. In the case of Pedestrian, this
 means walking on the ground.
