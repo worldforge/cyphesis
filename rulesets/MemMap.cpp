@@ -13,14 +13,14 @@
 
 #include <Atlas/Objects/Operation/Look.h>
 
-void MemMap::addContents(const Fragment::MapType & entmap)
+void MemMap::addContents(const Element::MapType & entmap)
 {
-    Fragment::MapType::const_iterator I = entmap.find("contains");
+    Element::MapType::const_iterator I = entmap.find("contains");
     if ((I == entmap.end()) || (!I->second.IsList())) {
         return;
     }
-    const Fragment::ListType & contlist = I->second.AsList();
-    Fragment::ListType::const_iterator J = contlist.begin();
+    const Element::ListType & contlist = I->second.AsList();
+    Element::ListType::const_iterator J = contlist.begin();
     for(;J != contlist.end(); J++) {
         if (!J->IsString()) {
             continue;
@@ -29,10 +29,10 @@ void MemMap::addContents(const Fragment::MapType & entmap)
     }
 }
 
-Entity * MemMap::add(const Fragment::MapType & entmap)
+Entity * MemMap::add(const Element::MapType & entmap)
 {
     debug( std::cout << "MemMap::add" << std::endl << std::flush;);
-    Fragment::MapType::const_iterator I = entmap.find("id");
+    Element::MapType::const_iterator I = entmap.find("id");
     if ((I == entmap.end()) || (I->second.AsString().empty())) {
         return NULL;
     }
@@ -60,10 +60,10 @@ Entity * MemMap::add(const Fragment::MapType & entmap)
     return addObject(thing);
 }
 
-Entity * MemMap::update(const Fragment::MapType & entmap)
+Entity * MemMap::update(const Element::MapType & entmap)
 {
     debug( std::cout << "MemMap::update" << std::endl << std::flush;);
-    Fragment::MapType::const_iterator I = entmap.find("id");
+    Element::MapType::const_iterator I = entmap.find("id");
     if ((I == entmap.end()) || !I->second.IsString()) {
         return NULL;
     }
@@ -132,14 +132,14 @@ EntityVector MemMap::findByLocation(const Location & loc, double radius)
     return res;
 }
 
-const Fragment MemMap::asObject()
+const Element MemMap::asObject()
 {
-    Fragment::MapType omap;
+    Element::MapType omap;
     EntityDict::const_iterator I = things.begin();
     for(;I != things.end(); I++) {
-        I->second->addToObject((omap[I->first] = Fragment(Fragment::MapType())).AsMap());
+        I->second->addToObject((omap[I->first] = Element(Element::MapType())).AsMap());
     }
-    return Fragment(omap);
+    return Element(omap);
 }
 
 void MemMap::flushMap()

@@ -165,7 +165,7 @@ Entity * WorldRouter::addObject(Entity * obj, bool setup)
 }
 
 Entity * WorldRouter::addObject(const std::string & typestr,
-                                const Fragment::MapType & ent,
+                                const Element::MapType & ent,
                                 const std::string & cid)
 {
     debug(std::cout << "WorldRouter::addObject(std::string, ent)" << std::endl
@@ -204,7 +204,7 @@ OpVector WorldRouter::message(RootOperation & op, const Entity * obj)
 
 inline const EntitySet& WorldRouter::broadcastList(const RootOperation & op) const
 {
-    const Fragment::ListType & parents = op.GetParents();
+    const Element::ListType & parents = op.GetParents();
     if (!parents.empty() && (parents.front().IsString())) {
         const std::string & parent = parents.front().AsString();
         if ((parent == "sight") || (parent == "sound")) {

@@ -159,12 +159,12 @@ OpVector BaseMind::sightCreateOperation(const Sight & op, Create & sub_op)
     if (script->Operation("sight_create", op, res, &sub_op) != 0) {
         return res;
     }
-    const Fragment::ListType & args = sub_op.GetArgs();
+    const Element::ListType & args = sub_op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Fragment::MapType & obj = args.front().AsMap();
+    const Element::MapType & obj = args.front().AsMap();
     map.add(obj);
     return res;
 }
@@ -183,13 +183,13 @@ OpVector BaseMind::sightDeleteOperation(const Sight & op, Delete & sub_op)
     if (script->Operation("sight_delete", op, res, &sub_op) != 0) {
         return res;
     }
-    const Fragment::ListType & args = sub_op.GetArgs();
+    const Element::ListType & args = sub_op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Fragment::MapType & obj = args.front().AsMap();
-    Fragment::MapType::const_iterator I = obj.find("id");
+    const Element::MapType & obj = args.front().AsMap();
+    Element::MapType::const_iterator I = obj.find("id");
     if ((I != obj.end()) && (I->second.IsString())) {
         map.del(I->second.AsString());
     } else {
@@ -226,12 +226,12 @@ OpVector BaseMind::sightMoveOperation(const Sight & op, Move & sub_op)
     if (script->Operation("sight_move", op, res, &sub_op) != 0) {
         return res;
     }
-    const Fragment::ListType & args = sub_op.GetArgs();
+    const Element::ListType & args = sub_op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Fragment::MapType & obj = args.front().AsMap();
+    const Element::MapType & obj = args.front().AsMap();
     map.update(obj);
     return res;
 }
@@ -242,12 +242,12 @@ OpVector BaseMind::sightSetOperation(const Sight & op, Set & sub_op)
     if (script->Operation("sight_set", op, res, &sub_op) != 0) {
         return res;
     }
-    const Fragment::ListType & args = sub_op.GetArgs();
+    const Element::ListType & args = sub_op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Fragment::MapType & obj = args.front().AsMap();
+    const Element::MapType & obj = args.front().AsMap();
     map.update(obj);
     return res;
 }
@@ -390,12 +390,12 @@ OpVector BaseMind::SoundOperation(const Sound & op)
     if (script->Operation("sound", op, res) != 0) {
         return res;
     }
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Fragment::MapType & obj = args.front().AsMap();
+    const Element::MapType & obj = args.front().AsMap();
     RootOperation op2;
     bool isOp = utility::Object_asOperation(obj, op2);
     if (isOp) {
@@ -415,12 +415,12 @@ OpVector BaseMind::SightOperation(const Sight & op)
         debug( std::cout << " its in the script" << std::endl << std::flush;);
         return res;
     }
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if (args.empty() || !args.front().IsMap()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return res;
     }
-    const Fragment::MapType & obj = args.front().AsMap();
+    const Element::MapType & obj = args.front().AsMap();
     RootOperation op2;
     bool isOp = utility::Object_asOperation(obj, op2);
     if (isOp) {
@@ -438,8 +438,8 @@ OpVector BaseMind::AppearanceOperation(const Appearance & op)
     if (!isAwake) { return OpVector(); }
     OpVector res;
     script->Operation("appearance", op, res);
-    const Fragment::ListType & args = op.GetArgs();
-    Fragment::ListType::const_iterator I;
+    const Element::ListType & args = op.GetArgs();
+    Element::ListType::const_iterator I;
     for(I = args.begin(); I != args.end(); I++) {
         map.getAdd(I->AsMap().find("id")->second.AsString());
     }

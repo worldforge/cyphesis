@@ -20,14 +20,14 @@ CreatorClient::CreatorClient(const std::string & id, const std::string & name,
 {
 }
 
-Entity * CreatorClient::make(const Fragment & entity)
+Entity * CreatorClient::make(const Element & entity)
 {
     if (!entity.IsMap()) {
         std::cerr << "make: entity is not map" << std::endl << std::flush;
         return NULL;
     }
     Create op(Create::Instantiate());
-    op.SetArgs(Fragment::ListType(1,entity));
+    op.SetArgs(Element::ListType(1,entity));
     op.SetFrom(getId());
     op.SetTo(getId());
     OpVector result = sendAndWaitReply(op);
@@ -53,8 +53,8 @@ Entity * CreatorClient::make(const Fragment & entity)
         std::cerr << "Reply to make has malformed args" << std::endl << std::flush;
         return NULL;
     }
-    const Fragment::MapType & arg = res->GetArgs().front().AsMap();
-    Fragment::MapType::const_iterator I = arg.find("parents");
+    const Element::MapType & arg = res->GetArgs().front().AsMap();
+    Element::MapType::const_iterator I = arg.find("parents");
     if ((I == arg.end()) || !I->second.IsList() || I->second.AsList().empty()) {
         std::cerr << "Arg of reply to make has no parents"
                   << std::endl << std::flush;
@@ -72,7 +72,7 @@ Entity * CreatorClient::make(const Fragment & entity)
                   << std::endl << std::flush;
         return NULL;
     }
-    const Fragment::MapType & created = I->second.AsList().front().AsMap();
+    const Element::MapType & created = I->second.AsList().front().AsMap();
     I = created.find("id");
     if ((I == created.end()) || !I->second.IsString()) {
         std::cerr << "Created entity has no id"
@@ -95,14 +95,14 @@ Entity * CreatorClient::make(const Fragment & entity)
 }
 
 
-void CreatorClient::sendSet(const std::string & id, const Fragment & entity)
+void CreatorClient::sendSet(const std::string & id, const Element & entity)
 {
     if (!entity.IsMap()) {
         std::cerr << "set: " << id << " entity is not map" << std::endl << std::flush;
         return;
     }
     Set op(Set::Instantiate());
-    op.SetArgs(Fragment::ListType(1,entity));
+    op.SetArgs(Element::ListType(1,entity));
     op.SetFrom(getId());
     op.SetTo(id);
     send(op);
@@ -112,18 +112,18 @@ Entity * CreatorClient::look(const std::string & id)
 {
     Look op(Look::Instantiate());
     if (!id.empty()) {
-        Fragment::MapType ent;
+        Element::MapType ent;
         ent["id"] = id;
-        op.SetArgs(Fragment::ListType(1,ent));
+        op.SetArgs(Element::ListType(1,ent));
     }
     op.SetFrom(getId());
     return sendLook(op);
 }
 
-Entity * CreatorClient::lookFor(const Fragment & ent)
+Entity * CreatorClient::lookFor(const Element & ent)
 {
     Look op(Look::Instantiate());
-    op.SetArgs(Fragment::ListType(1,ent));
+    op.SetArgs(Element::ListType(1,ent));
     op.SetFrom(getId());
     return sendLook(op);
 }
@@ -153,8 +153,8 @@ Entity * CreatorClient::sendLook(RootOperation & op)
         std::cerr << "Reply to look has malformed args" << std::endl << std::flush;
         return NULL;
     }
-    const Fragment::MapType & seen = res->GetArgs().front().AsMap();
-    Fragment::MapType::const_iterator I = seen.find("id");
+    const Element::MapType & seen = res->GetArgs().front().AsMap();
+    Element::MapType::const_iterator I = seen.find("id");
     if ((I == seen.end()) || !I->second.IsString()) {
         std::cerr << "Looked at entity has no id"
                   << std::endl << std::flush;

@@ -22,7 +22,7 @@ static PyObject * Thing_as_entity(ThingObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->m_obj = new Fragment(Fragment::MapType());
+    ret->m_obj = new Element(Element::MapType());
     self->m_thing->addToObject(ret->m_obj->AsMap());
     return (PyObject *)ret;
 }
@@ -151,7 +151,7 @@ static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
         //thing->attributes.erase(attr);
         //return 0;
     //}
-    Fragment obj = PyObject_asObject(v);
+    Element obj = PyObject_asObject(v);
     if (!obj.IsNone() && !obj.IsMap() && !obj.IsList()) {
         thing->set(name, obj);
         return 0;

@@ -123,9 +123,9 @@ void Connection::close()
 }
 
 bool Connection::verifyCredentials(const Account & account,
-                                   const Fragment::MapType & creds) const
+                                   const Element::MapType & creds) const
 {
-    Fragment::MapType::const_iterator I = creds.find("password");
+    Element::MapType::const_iterator I = creds.find("password");
     if ((I == creds.end()) || !I->second.IsString()) {
         return false;
     }
@@ -164,8 +164,8 @@ OpVector Connection::operation(const RootOperation & op)
                        character->getId(), character->getName());
             debug(std::cout << "Re-connecting existing character to new connection" << std::endl << std::flush;);
             Info * info = new Info(Info::Instantiate());
-            Fragment::ListType & info_args = info->GetArgs();
-            info_args.push_back(Fragment::MapType());
+            Element::ListType & info_args = info->GetArgs();
+            info_args.push_back(Element::MapType());
             character->addToObject(info_args.front().AsMap());
             info->SetRefno(op.GetSerialno());
             info->SetSerialno(server.getSerialNo());
@@ -189,10 +189,10 @@ OpVector Connection::LoginOperation(const Login & op)
         return error(op, "Login arg is malformed");
     }
     // Account should be the first argument of the op
-    const Fragment::MapType & account = op.GetArgs().front().AsMap();
+    const Element::MapType & account = op.GetArgs().front().AsMap();
     // Check for username, and if its not there, then check for
     // id in case we are dealing with an old client.
-    Fragment::MapType::const_iterator I = account.find("username");
+    Element::MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.IsString()) {
         log(WARNING, "Got Login with no username. Checking for old style Login");
         I = account.find("id");
@@ -235,8 +235,8 @@ OpVector Connection::LoginOperation(const Login & op)
     server.lobby.addObject(player);
     // Let the client know they have logged in
     Info * info = new Info(Info::Instantiate());
-    Fragment::ListType & info_args = info->GetArgs();
-    info_args.push_back(Fragment::MapType());
+    Element::ListType & info_args = info->GetArgs();
+    info_args.push_back(Element::MapType());
     player->addToObject(info_args.front().AsMap());
     info->SetRefno(op.GetSerialno());
     info->SetSerialno(server.getSerialNo());
@@ -253,12 +253,12 @@ OpVector Connection::CreateOperation(const Create & op)
     if (!op.GetArgs().front().IsMap()) {
         return error(op, "Create is malformed");
     }
-    const Fragment::MapType & account = op.GetArgs().front().AsMap();
+    const Element::MapType & account = op.GetArgs().front().AsMap();
 
     if (restricted_flag) {
         return error(op, "Account creation on this server is restricted");
     }
-    Fragment::MapType::const_iterator I = account.find("username");
+    Element::MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.IsString()) {
         log(WARNING, "Got Create for account with no username. Checking for old style Create.");
         I = account.find("id");
@@ -283,8 +283,8 @@ OpVector Connection::CreateOperation(const Create & op)
     Account * player = addPlayer(username, password);
     Persistance::instance()->putAccount(*player);
     Info * info = new Info(Info::Instantiate());
-    Fragment::ListType & info_args = info->GetArgs();
-    info_args.push_back(Fragment::MapType());
+    Element::ListType & info_args = info->GetArgs();
+    info_args.push_back(Element::MapType());
     player->addToObject(info_args.front().AsMap());
     info->SetRefno(op.GetSerialno());
     info->SetSerialno(server.getSerialNo());
@@ -297,7 +297,7 @@ OpVector Connection::LogoutOperation(const Logout & op)
     if (op.GetArgs().empty()) {
         // Logging self out
         Info info = Info(Info::Instantiate());
-        info.SetArgs(Fragment::ListType(1,op.AsObject()));
+        info.SetArgs(Element::ListType(1,op.AsObject()));
         info.SetRefno(op.GetSerialno());
         info.SetSerialno(server.getSerialNo());
         send(info);
@@ -307,9 +307,9 @@ OpVector Connection::LogoutOperation(const Logout & op)
     if (!op.GetArgs().front().IsMap()) {
         return error(op, "Create arg is not a map");
     }
-    const Fragment::MapType & account = op.GetArgs().front().AsMap();
+    const Element::MapType & account = op.GetArgs().front().AsMap();
     
-    Fragment::MapType::const_iterator I = account.find("username");
+    Element::MapType::const_iterator I = account.find("username");
     if ((I == account.end()) || !I->second.IsString()) {
         log(WARNING, "Got Logout with no username. Checking for old style Logout.");
         I = account.find("id");
@@ -336,13 +336,13 @@ OpVector Connection::LogoutOperation(const Logout & op)
 
 OpVector Connection::GetOperation(const Get & op)
 {
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
 
     Info * info;
     if (args.empty()) {
         info = new Info(Info::Instantiate());
-        Fragment::ListType & info_args = info->GetArgs();
-        info_args.push_back(Fragment::MapType());
+        Element::ListType & info_args = info->GetArgs();
+        info_args.push_back(Element::MapType());
         server.addToObject(info_args.front().AsMap());
         info->SetRefno(op.GetSerialno());
         info->SetSerialno(server.getSerialNo());
@@ -351,7 +351,7 @@ OpVector Connection::GetOperation(const Get & op)
         if (!args.front().IsMap()) {
             return error(op, "Get op arg is not a map");
         }
-        Fragment::MapType::const_iterator I = args.front().AsMap().find("id");
+        Element::MapType::const_iterator I = args.front().AsMap().find("id");
         if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
             return error(op, "Type definition requested with no id");
         }
@@ -362,7 +362,7 @@ OpVector Connection::GetOperation(const Get & op)
             return error(op, "Unknown type definition requested");
         }
         info = new Info(Info::Instantiate());
-        info->SetArgs(Fragment::ListType(1,o->AsObject()));
+        info->SetArgs(Element::ListType(1,o->AsObject()));
         info->SetRefno(op.GetSerialno());
         info->SetSerialno(server.getSerialNo());
     }

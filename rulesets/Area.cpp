@@ -16,7 +16,7 @@ Area::~Area()
 {
 }
 
-const Fragment Area::get(const std::string & aname) const
+const Element Area::get(const std::string & aname) const
 {
     if (aname == "segments") {
         return idListAsObject(segments);
@@ -24,7 +24,7 @@ const Fragment Area::get(const std::string & aname) const
     return Thing::get(aname);
 }
 
-void Area::set(const std::string & aname, const Fragment & attr)
+void Area::set(const std::string & aname, const Element & attr)
 {
     if ((aname == "segments") && attr.IsList()) {
         segments = idListFromAtlas(attr);
@@ -34,7 +34,7 @@ void Area::set(const std::string & aname, const Fragment & attr)
     }
 }
 
-void Area::addToObject(Fragment::MapType & omap) const
+void Area::addToObject(Element::MapType & omap) const
 {
     omap["segments"] = idListAsObject(segments);
 }

@@ -54,8 +54,8 @@ static PyObject * Object_getattr(AtlasObject *self, char *name)
         return NULL;
     }
     if (self->m_obj->IsMap()) {
-        const Fragment::MapType & omap = self->m_obj->AsMap();
-        Fragment::MapType::const_iterator I = omap.find(name);
+        const Element::MapType & omap = self->m_obj->AsMap();
+        Element::MapType::const_iterator I = omap.find(name);
         if (I != omap.end()) {
             return Object_asPyObject(I->second);
         }
@@ -77,11 +77,11 @@ static int Object_setattr( AtlasObject *self, char *name, PyObject *v)
         return -1;
     }
     if (self->m_obj->IsMap()) {
-        Fragment::MapType & omap = self->m_obj->AsMap();
-        Fragment v_obj = PyObject_asObject(v);
-        if ((v_obj.GetType() != Fragment::TYPE_NONE) &&
-            (v_obj.GetType() != Fragment::TYPE_MAP) &&
-            (v_obj.GetType() != Fragment::TYPE_LIST)) {
+        Element::MapType & omap = self->m_obj->AsMap();
+        Element v_obj = PyObject_asObject(v);
+        if ((v_obj.GetType() != Element::TYPE_NONE) &&
+            (v_obj.GetType() != Element::TYPE_MAP) &&
+            (v_obj.GetType() != Element::TYPE_LIST)) {
             omap[name] = v_obj;
             return 0;
         }
@@ -133,10 +133,10 @@ AtlasObject * newAtlasObject(PyObject *arg)
  * Utility functions to munge between Object related types and python types
  */
 
-static PyObject * MapType_asPyObject(const Fragment::MapType & map)
+static PyObject * MapType_asPyObject(const Element::MapType & map)
 {
     PyObject * args_pydict = PyDict_New();
-    Fragment::MapType::const_iterator I;
+    Element::MapType::const_iterator I;
     AtlasObject * item;
     for(I = map.begin(); I != map.end(); I++) {
         const std::string & key = I->first;
@@ -145,7 +145,7 @@ static PyObject * MapType_asPyObject(const Fragment::MapType & map)
             PyErr_SetString(PyExc_TypeError,"error creating map");
             return NULL;
         }
-        item->m_obj = new Fragment(I->second);
+        item->m_obj = new Element(I->second);
         // PyDict_SetItem() does not eat the reference passed to it
         PyDict_SetItemString(args_pydict,(char *)key.c_str(),(PyObject *)item);
         Py_DECREF(item);
@@ -153,10 +153,10 @@ static PyObject * MapType_asPyObject(const Fragment::MapType & map)
     return args_pydict;
 }
 
-static PyObject * ListType_asPyObject(const Fragment::ListType & list)
+static PyObject * ListType_asPyObject(const Element::ListType & list)
 {
     PyObject * args_pylist = PyList_New(list.size());
-    Fragment::ListType::const_iterator I;
+    Element::ListType::const_iterator I;
     int j = 0;
     AtlasObject * item;
     for(I = list.begin(); I != list.end(); I++, j++) {
@@ -165,30 +165,30 @@ static PyObject * ListType_asPyObject(const Fragment::ListType & list)
             PyErr_SetString(PyExc_TypeError,"error creating list");
             return NULL;
         }
-        item->m_obj = new Fragment(*I);
+        item->m_obj = new Element(*I);
         // PyList_SetItem() eats the reference passed to it
         PyList_SetItem(args_pylist, j, (PyObject *)item);
     }
     return args_pylist;
 }
 
-PyObject * Object_asPyObject(const Fragment & obj)
+PyObject * Object_asPyObject(const Element & obj)
 {
     PyObject * ret = NULL;
     switch (obj.GetType()) {
-        case Fragment::TYPE_INT:
+        case Element::TYPE_INT:
             ret = PyInt_FromLong(obj.AsInt());
             break;
-        case Fragment::TYPE_FLOAT:
+        case Element::TYPE_FLOAT:
             ret = PyFloat_FromDouble(obj.AsFloat());
             break;
-        case Fragment::TYPE_STRING:
+        case Element::TYPE_STRING:
             ret = PyString_FromString(obj.AsString().c_str());
             break;
-        case Fragment::TYPE_MAP:
+        case Element::TYPE_MAP:
             ret = MapType_asPyObject(obj.AsMap());
             break;
-        case Fragment::TYPE_LIST:
+        case Element::TYPE_LIST:
             ret = ListType_asPyObject(obj.AsList());
             break;
         default:
@@ -197,17 +197,17 @@ PyObject * Object_asPyObject(const Fragment & obj)
     return ret;
 }
 
-Fragment::ListType PyListObject_asListType(PyObject * list)
+Element::ListType PyListObject_asListType(PyObject * list)
 {
-    Fragment::ListType argslist;
+    Element::ListType argslist;
     AtlasObject * item;
     for(int i = 0; i < PyList_Size(list); i++) {
         item = (AtlasObject *)PyList_GetItem(list, i);
         if (PyAtlasObject_Check(item)) {
             argslist.push_back(*(item->m_obj));
         } else {
-            Fragment o = PyObject_asObject((PyObject*)item);
-            if (o.GetType() != Fragment::TYPE_NONE) {
+            Element o = PyObject_asObject((PyObject*)item);
+            if (o.GetType() != Element::TYPE_NONE) {
                 argslist.push_back(o);
             }
         }
@@ -215,9 +215,9 @@ Fragment::ListType PyListObject_asListType(PyObject * list)
     return argslist;
 }
 
-Fragment::MapType PyDictObject_asMapType(PyObject * dict)
+Element::MapType PyDictObject_asMapType(PyObject * dict)
 {
-    Fragment::MapType argsmap;
+    Element::MapType argsmap;
     AtlasObject * item;
     PyObject * keys = PyDict_Keys(dict);
     PyObject * vals = PyDict_Values(dict);
@@ -227,8 +227,8 @@ Fragment::MapType PyDictObject_asMapType(PyObject * dict)
         if (PyAtlasObject_Check(item)) {
             argsmap[PyString_AsString(key)] = *(item->m_obj);
         } else {
-            Fragment o = PyObject_asObject((PyObject*)item);
-            if (o.GetType() != Fragment::TYPE_NONE) {
+            Element o = PyObject_asObject((PyObject*)item);
+            if (o.GetType() != Element::TYPE_NONE) {
                 argsmap[PyString_AsString(key)] = o;
             }
         }
@@ -238,33 +238,33 @@ Fragment::MapType PyDictObject_asMapType(PyObject * dict)
     return argsmap;
 }
 
-Fragment PyObject_asObject(PyObject * o)
+Element PyObject_asObject(PyObject * o)
 {
     if (PyInt_Check(o)) {
-        return Fragment((int)PyInt_AsLong(o));
+        return Element((int)PyInt_AsLong(o));
     }
     if (PyFloat_Check(o)) {
-        return Fragment(PyFloat_AsDouble(o));
+        return Element(PyFloat_AsDouble(o));
     }
     if (PyString_Check(o)) {
-        return Fragment(PyString_AsString(o));
+        return Element(PyString_AsString(o));
     }
     if (PyList_Check(o)) {
-        return Fragment(PyListObject_asListType(o));
+        return Element(PyListObject_asListType(o));
     }
     if (PyDict_Check(o)) {
-        return Fragment(PyDictObject_asMapType(o));
+        return Element(PyDictObject_asMapType(o));
     }
     if (PyTuple_Check(o)) {
-        Fragment::ListType list;
+        Element::ListType list;
         int i, size = PyTuple_Size(o);
         for(i = 0; i < size; i++) {
-            Fragment item = PyObject_asObject(PyTuple_GetItem(o, i));
-            if (item.GetType() != Fragment::TYPE_NONE) {
+            Element item = PyObject_asObject(PyTuple_GetItem(o, i));
+            if (item.GetType() != Element::TYPE_NONE) {
                 list.push_back(item);
             }
         }
-        return Fragment(list);
+        return Element(list);
     }
     if (PyAtlasObject_Check(o)) {
         AtlasObject * obj = (AtlasObject *)o;
@@ -276,9 +276,9 @@ Fragment PyObject_asObject(PyObject * o)
     }
     if (PyOplist_Check(o)) {
         OplistObject * opl = (OplistObject *)o;
-        Fragment::ListType _list;
-        Fragment msg(_list);
-        Fragment::ListType & entlist = msg.AsList();
+        Element::ListType _list;
+        Element msg(_list);
+        Element::ListType & entlist = msg.AsList();
         const OpVector & ops = *opl->ops;
         OpVector::const_iterator I;
         for(I = ops.begin(); I != ops.end(); I++) {
@@ -288,9 +288,9 @@ Fragment PyObject_asObject(PyObject * o)
     }
     if (PyLocation_Check(o)) {
         LocationObject * loc = (LocationObject *)o;
-        Fragment::MapType _map;
+        Element::MapType _map;
         loc->location->addToObject(_map);
-        return Fragment(_map);
+        return Element(_map);
     }
-    return Fragment();
+    return Element();
 }

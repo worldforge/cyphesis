@@ -39,13 +39,13 @@ const char * Admin::getType() const
 }
 
 OpVector Admin::characterError(const Create & op,
-                               const Fragment::MapType & ent) const
+                               const Element::MapType & ent) const
 {
-    Fragment::MapType::const_iterator I = ent.find("parents");
+    Element::MapType::const_iterator I = ent.find("parents");
     if ((I == ent.end()) || !I->second.IsList()) {
         return error(op, "You cannot create a character with no type.");
     }
-    const Fragment::ListType & parents = I->second.AsList();
+    const Element::ListType & parents = I->second.AsList();
     if (parents.empty() || !parents.front().IsString()) {
         return error(op, "You cannot create a character with non-string type.");
     }
@@ -54,12 +54,12 @@ OpVector Admin::characterError(const Create & op,
 
 OpVector Admin::LogoutOperation(const Logout & op)
 {
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     
     if (args.empty() || !args.front().IsMap()) {
         return Account::LogoutOperation(op);
     } else {
-        Fragment::MapType::const_iterator I = args.front().AsMap().find("id");
+        Element::MapType::const_iterator I = args.front().AsMap().find("id");
         if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
             return error(op, "No account id given");
         }
@@ -80,16 +80,16 @@ OpVector Admin::LogoutOperation(const Logout & op)
 
 OpVector Admin::GetOperation(const Get & op)
 {
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if (args.empty()) {
         return error(op, "Get has no args.");
     }
-    const Fragment & ent = args.front();
+    const Element & ent = args.front();
     if (!ent.IsMap()) {
         return error(op, "Get arg is not a map.");
     }
-    const Fragment::MapType & emap = ent.AsMap();
-    Fragment::MapType::const_iterator I = emap.find("objtype");
+    const Element::MapType & emap = ent.AsMap();
+    Element::MapType::const_iterator I = emap.find("objtype");
     if (I == emap.end() || !I->second.IsString()) {
         return error(op, "Get arg has no objtype.");
     }
@@ -109,8 +109,8 @@ OpVector Admin::GetOperation(const Get & op)
         const EntityDict & worldDict = connection->server.world.getObjects();
         EntityDict::const_iterator K = worldDict.find(id);
 
-        Fragment::ListType & info_args = info->GetArgs();
-        info_args.push_back(Fragment::MapType());
+        Element::ListType & info_args = info->GetArgs();
+        info_args.push_back(Element::MapType());
         if (J != OOGDict.end()) {
             J->second->addToObject(info_args.front().AsMap());
         } else if (K != worldDict.end()) {
@@ -127,7 +127,7 @@ OpVector Admin::GetOperation(const Get & op)
             delete info;
             return error(op, "Unknown type definition requested");
         }
-        info->SetArgs(Fragment::ListType(1,o->AsObject()));
+        info->SetArgs(Element::ListType(1,o->AsObject()));
     } else {
         delete info;
         return error(op, "Unknow object type requested");
@@ -139,16 +139,16 @@ OpVector Admin::GetOperation(const Get & op)
 
 OpVector Admin::SetOperation(const Set & op)
 {
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if (args.empty()) {
         return error(op, "Set has no args.");
     }
-    const Fragment & ent = args.front();
+    const Element & ent = args.front();
     if (!ent.IsMap()) {
         return error(op, "Set arg is not a map.");
     }
-    const Fragment::MapType & emap = ent.AsMap();
-    Fragment::MapType::const_iterator I = emap.find("objtype");
+    const Element::MapType & emap = ent.AsMap();
+    Element::MapType::const_iterator I = emap.find("objtype");
     if (I == emap.end() || !I->second.IsString()) {
         return error(op, "Set arg has no objtype.");
     }
@@ -168,7 +168,7 @@ OpVector Admin::SetOperation(const Set & op)
         // in existing classes.
         // const std::string & parent = emap.find("parents")->second.AsList().front().AsString();
         // std::string script;
-        // Fragment::MapType::const_iterator I = emap.find("script");
+        // Element::MapType::const_iterator I = emap.find("script");
         // if ((I != emap.end()) && I->second.IsString()) {
         // script = I->second.AsString();
         // }
@@ -182,13 +182,13 @@ OpVector Admin::SetOperation(const Set & op)
 
 OpVector Admin::CreateOperation(const Create & op)
 {
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if ((args.empty()) || (!args.front().IsMap())) {
         return OpVector();
     }
 
-    const Fragment::MapType & entmap = args.front().AsMap();
-    Fragment::MapType::const_iterator I = entmap.find("parents");
+    const Element::MapType & entmap = args.front().AsMap();
+    Element::MapType::const_iterator I = entmap.find("parents");
     if ((I == entmap.end()) || !(I->second.IsList()) ||
         (I->second.AsList().empty()) ||
         !(I->second.AsList().front().IsString()) ) {

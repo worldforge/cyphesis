@@ -31,13 +31,13 @@ ServerRouting::~ServerRouting()
     delete &lobby;
 }
 
-void ServerRouting::addToObject(Fragment::MapType & omap) const
+void ServerRouting::addToObject(Element::MapType & omap) const
 {
     omap["objtype"] = "object";
     omap["server"] = "cyphesis";
     omap["ruleset"] = svrRuleset;
     omap["name"] = svrName;
-    omap["parents"] = Fragment::ListType(1, "server");
+    omap["parents"] = Element::ListType(1, "server");
     omap["clients"] = numClients;
     omap["uptime"] = world.upTime();
     omap["builddate"] = std::string(consts::buildTime)+", "+std::string(consts::buildDate);

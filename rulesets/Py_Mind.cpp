@@ -24,7 +24,7 @@ static PyObject * Mind_as_entity(MindObject * self, PyObject * args)
     if (ret == NULL) {
         return NULL;
     }
-    ret->m_obj = new Fragment(Fragment::MapType());
+    ret->m_obj = new Element(Element::MapType());
     self->m_mind->addToObject(ret->m_obj->AsMap());
     return (PyObject *)ret;
 }
@@ -148,7 +148,7 @@ static int Mind_setattr(MindObject *self, char *name, PyObject *v)
         //thing->attributes.erase(attr);
         //return 0;
     //}
-    Fragment obj = PyObject_asObject(v);
+    Element obj = PyObject_asObject(v);
     if (!obj.IsNone() && !obj.IsMap() && !obj.IsList()) {
         thing->set(name, obj);
         return 0;

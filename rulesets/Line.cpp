@@ -19,7 +19,7 @@ Line::~Line()
 {
 }
 
-const Fragment Line::get(const std::string & aname) const
+const Element Line::get(const std::string & aname) const
 {
     if (aname == "start_intersections") {
         return idListAsObject(startIntersections);
@@ -31,7 +31,7 @@ const Fragment Line::get(const std::string & aname) const
     return Thing::get(aname);
 }
 
-void Line::set(const std::string & aname, const Fragment & attr)
+void Line::set(const std::string & aname, const Element & attr)
 {
     debug( std::cout << "Setting " << aname << " in line" << std::endl
                      << std::flush;);
@@ -49,7 +49,7 @@ void Line::set(const std::string & aname, const Fragment & attr)
     }
 }
 
-void Line::addToObject(Fragment::MapType & omap) const
+void Line::addToObject(Element::MapType & omap) const
 {
     omap["start_intersections"] = idListAsObject(startIntersections);
     omap["end_intersections"] = idListAsObject(endIntersections);

@@ -54,12 +54,12 @@ Move * Pedestrian::genFaceOperation()
         debug( std::cout << "Turning" << std::endl << std::flush;);
         Move * moveOp = new Move(Move::Instantiate());
         moveOp->SetTo(m_body.getId());
-        Fragment::MapType entmap;
+        Element::MapType entmap;
         entmap["id"] = m_body.getId();
         entmap["loc"] = m_body.location.m_loc->getId();
         entmap["pos"] = m_body.location.m_pos.asObject();
         entmap["orientation"] = m_orientation.asObject();
-        Fragment::ListType args(1,entmap);
+        Element::ListType args(1,entmap);
         moveOp->SetArgs(args);
         return moveOp;
     }
@@ -99,7 +99,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     moveOp->SetTo(m_body.getId());
 
     // Set up argument for operation
-    Fragment::MapType entmap;
+    Element::MapType entmap;
     entmap["id"] = m_body.getId();
 
     // Walk out what the mode of the character should be.
@@ -127,7 +127,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
         debug( std::cout << "only velocity changed." << std::endl
                          << std::flush;);
         new_loc.addToObject(entmap);
-        Fragment::ListType args(1,entmap);
+        Element::ListType args(1,entmap);
         moveOp->SetArgs(args);
         if (NULL != rloc) {
         *rloc = new_loc;
@@ -214,7 +214,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     debug( std::cout << "new coordinates: " << new_coords << std::endl
                      << std::flush;);
     new_loc.addToObject(entmap);
-    Fragment::ListType args2(1,entmap);
+    Element::ListType args2(1,entmap);
     moveOp->SetArgs(args2);
     if (NULL != rloc) {
         *rloc = new_loc;

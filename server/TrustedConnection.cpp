@@ -10,7 +10,7 @@ TrustedConnection::TrustedConnection(const std::string & id, CommClient & client
 }
 
 bool TrustedConnection::verifyCredentials(const Account &,
-                                          const Fragment::MapType &) const
+                                          const Element::MapType &) const
 {
     return true;
 }

@@ -35,7 +35,7 @@ bool Persistance::init()
     }
     bool i = p->m_connection.initRule(true);
 
-    Fragment::MapType tableDesc;
+    Element::MapType tableDesc;
     tableDesc["username"] = "                                                                                ";
     tableDesc["password"] = "                                                                                ";
     tableDesc["type"] = "          ";
@@ -158,7 +158,7 @@ void Persistance::delCharacter(const std::string & id)
     m_connection.removeRelationRowByOther("character", id);
 }
 
-bool Persistance::getRules(Fragment::MapType & m)
+bool Persistance::getRules(Element::MapType & m)
 {
     return m_connection.getTable(m_connection.rule(), m);
 }

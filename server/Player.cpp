@@ -23,21 +23,21 @@ const char * Player::getType() const
     return "player";
 }
 
-void Player::addToObject(Fragment::MapType & omap) const
+void Player::addToObject(Element::MapType & omap) const
 {
     Account::addToObject(omap);
-    Fragment::ListType typeList;
+    Element::ListType typeList;
     std::set<std::string>::const_iterator I = Player::playableTypes.begin();
     for(;I != Player::playableTypes.end(); ++I) {
-        typeList.push_back(Fragment(*I));
+        typeList.push_back(Element(*I));
     }
     omap["character_types"] = typeList;
 }
 
 OpVector Player::characterError(const Create & op,
-                                const Fragment::MapType & ent) const
+                                const Element::MapType & ent) const
 {
-    Fragment::MapType::const_iterator I = ent.find("name");
+    Element::MapType::const_iterator I = ent.find("name");
     if ((I == ent.end()) || !I->second.IsString()) {
         return error(op, "Entity to be created has no name");
     }
@@ -56,7 +56,7 @@ OpVector Player::characterError(const Create & op,
     if ((I == ent.end()) || !I->second.IsList()) {
         return error(op, "You cannot create a character with no type.");
     }
-    const Fragment::ListType & parents = I->second.AsList();
+    const Element::ListType & parents = I->second.AsList();
     if (parents.empty() || !parents.front().IsString()) {
         return error(op, "You cannot create a character with non-string type.");
     }

@@ -62,10 +62,10 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
 
 Entity * EntityFactory::newEntity(const std::string & id,
                                   const std::string & type,
-                                  const Fragment::MapType & entmap)
+                                  const Element::MapType & entmap)
 {
     Entity * thing = 0;
-    Fragment::MapType attributes;
+    Element::MapType attributes;
     FactoryDict::const_iterator I = factories.find(type);
     PersistorBase * pc = 0;
     if (I != factories.end()) {
@@ -95,7 +95,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
     // merge attributes from the creation op over default attributes.
     // FIXME Is it practical to avoid this merge copy by calling merge twice?
     // Might cause a problem with getLocation
-    Fragment::MapType::const_iterator K = entmap.begin();
+    Element::MapType::const_iterator K = entmap.begin();
     for (; K != entmap.end(); K++) {
         attributes[K->first] = K->second;
     }
@@ -127,21 +127,21 @@ void EntityFactory::flushFactories()
 
 void EntityFactory::installBaseClasses()
 {
-    Fragment::MapType ruleTable;
+    Element::MapType ruleTable;
     Persistance * p = Persistance::instance();
     p->getRules(ruleTable);
 
-    Fragment::MapType::const_iterator I = ruleTable.begin();
+    Element::MapType::const_iterator I = ruleTable.begin();
     for(; I != ruleTable.end(); ++I) {
         const std::string & type = I->first;
-        const Fragment::MapType & classDesc = I->second.AsMap();
-        Fragment::MapType::const_iterator J = classDesc.find("parent");
+        const Element::MapType & classDesc = I->second.AsMap();
+        Element::MapType::const_iterator J = classDesc.find("parent");
         if ((J == classDesc.end()) || (!J->second.IsString())) { continue; }
         const std::string & parent = J->second.AsString();
         FactoryBase * f = getFactory(parent);
         J = classDesc.find("script");
         if ((J != classDesc.end()) && (J->second.IsMap())) {
-            const Fragment::MapType & script = J->second.AsMap();
+            const Element::MapType & script = J->second.AsMap();
             J = script.find("name");
             if ((J != script.end()) && (J->second.IsString())) {
                 f->script = J->second.AsString();
@@ -153,7 +153,7 @@ void EntityFactory::installBaseClasses()
         }
         J = classDesc.find("mind");
         if ((J != classDesc.end()) && (J->second.IsMap())) {
-            const Fragment::MapType & script = J->second.AsMap();
+            const Element::MapType & script = J->second.AsMap();
             J = script.find("name");
             if ((J != script.end()) && (J->second.IsString())) {
                 const std::string mindType = J->second.AsString();
@@ -192,7 +192,7 @@ void EntityFactory::installFactory(const std::string & parent,
 
     Atlas::Objects::Root * r = new Atlas::Objects::Entity::GameEntity();
     r->SetId(className);
-    r->SetParents(Fragment::ListType(1, parent));
+    r->SetParents(Element::ListType(1, parent));
     i.addChild(r);
 
 }

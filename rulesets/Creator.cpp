@@ -94,13 +94,13 @@ OpVector Creator::mindLookOperation(const Look & op)
     perceptive = true;
     Look * l = new Look(op);
     if (op.GetTo().empty()) {
-        const Fragment::ListType & args = op.GetArgs();
+        const Element::ListType & args = op.GetArgs();
         if (args.empty()) {
             l->SetTo(world->getId());
         } else {
             if (args.front().IsMap()) {
-                const Fragment::MapType & amap = args.front().AsMap();
-                Fragment::MapType::const_iterator I = amap.find("id");
+                const Element::MapType & amap = args.front().AsMap();
+                Element::MapType::const_iterator I = amap.find("id");
                 if (I != amap.end() && I->second.IsString()) {
                     l->SetTo(I->second.AsString());
                 } else if ((I = amap.find("name")) != amap.end()) {
@@ -112,7 +112,7 @@ OpVector Creator::mindLookOperation(const Look & op)
                     }
                 } else if ((I = amap.find("parents")) != amap.end()) {
                     if (I->second.IsList() && !I->second.AsList().empty()) {
-                        const Fragment & p = I->second.AsList().front();
+                        const Element & p = I->second.AsList().front();
                         if (p.IsString()) {
                             Entity * e = world->findByType(p.AsString());
                             if (e != NULL) {

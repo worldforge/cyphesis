@@ -51,12 +51,12 @@ OpVector Thing::SetupOperation(const Setup & op)
     // been elsewhere on the map.
     RootOperation * sight = new Sight(Sight::Instantiate());
     Create c(Create::Instantiate());
-    Fragment::ListType & args = c.GetArgs();
+    Element::ListType & args = c.GetArgs();
     args.push_back(Element::MapType());
     addToObject(args.front().AsMap());
     c.SetTo(getId());
     c.SetFrom(getId());
-    sight->SetArgs(Fragment::ListType(1, c.AsObject()));
+    sight->SetArgs(Element::ListType(1, c.AsObject()));
 
     OpVector sres;
     if (script->Operation("setup", op, sres) != 0) {
@@ -83,7 +83,7 @@ OpVector Thing::ActionOperation(const Action & op)
         return res;
     }
     RootOperation * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Fragment::ListType(1,op.AsObject()));
+    s->SetArgs(Element::ListType(1,op.AsObject()));
     return OpVector(1,s);
 }
 
@@ -93,17 +93,17 @@ OpVector Thing::CreateOperation(const Create & op)
     if (script->Operation("create", op, res) != 0) {
         return res;
     }
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if (args.empty()) {
        return OpVector();
     }
     try {
-        Fragment::MapType ent = args.front().AsMap();
-        Fragment::MapType::const_iterator I = ent.find("parents");
+        Element::MapType ent = args.front().AsMap();
+        Element::MapType::const_iterator I = ent.find("parents");
         if ((I == ent.end()) || !I->second.IsList()) {
             return error(op, "Entity to be created has no type", getId());
         }
-        const Fragment::ListType & parents = I->second.AsList();
+        const Element::ListType & parents = I->second.AsList();
         if (parents.empty()) {
             return error(op, "Entity to be create has empty type list", getId());
         }
@@ -119,11 +119,11 @@ OpVector Thing::CreateOperation(const Create & op)
         Entity * obj = world->addObject(type,ent);
 
         Create c(op);
-        Fragment::ListType & args = c.GetArgs();
-        args.push_back(Fragment::MapType());
+        Element::ListType & args = c.GetArgs();
+        args.push_back(Element::MapType());
         obj->addToObject(args.front().AsMap());
         RootOperation * s = new Sight(Sight::Instantiate());
-        s->SetArgs(Fragment::ListType(1,c.AsObject()));
+        s->SetArgs(Element::ListType(1,c.AsObject()));
         // This should no longer be required as it is now handled centrally
         // s->SetRefno(op.GetSerialno());
         return OpVector(1,s);
@@ -144,7 +144,7 @@ OpVector Thing::DeleteOperation(const Delete & op)
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
     RootOperation * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Fragment::ListType(1,op.AsObject()));
+    s->SetArgs(Element::ListType(1,op.AsObject()));
     return OpVector(1,s);
 }
 
@@ -157,29 +157,29 @@ OpVector Thing::BurnOperation(const Burn & op)
     if (op.GetArgs().empty() || !op.GetArgs().front().IsMap()) {
         return error(op, "Fire op has no argument", getId());
     }
-    Fragment::MapType::const_iterator I = attributes.find("burn_speed");
+    Element::MapType::const_iterator I = attributes.find("burn_speed");
     if ((I == attributes.end()) || !I->second.IsNum()) {
         return res;
     }
     double bspeed = I->second.AsNum();
-    const Fragment::MapType & fire_ent = op.GetArgs().front().AsMap();
+    const Element::MapType & fire_ent = op.GetArgs().front().AsMap();
     double consumed = bspeed * fire_ent.find("status")->second.AsNum();
-    Fragment::MapType self_ent;
+    Element::MapType self_ent;
     self_ent["id"] = getId();
     self_ent["status"] = status - (consumed / mass);
 
     const std::string & to = fire_ent.find("id")->second.AsString();
-    Fragment::MapType nour_ent;
+    Element::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["mass"] = consumed;
 
     Set * s = new Set(Set::Instantiate());
     s->SetTo(getId());
-    s->SetArgs(Fragment::ListType(1,self_ent));
+    s->SetArgs(Element::ListType(1,self_ent));
 
     Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
-    n->SetArgs(Fragment::ListType(1,nour_ent));
+    n->SetArgs(Element::ListType(1,nour_ent));
 
     OpVector res2(2);
     res2[0] = s;
@@ -195,15 +195,15 @@ OpVector Thing::MoveOperation(const Move & op)
     if (script->Operation("move", op, res) != 0) {
         return res;
     }
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if (args.empty()) {
         debug( std::cout << "ERROR: move op has no argument" << std::endl << std::flush;);
         return OpVector();
     }
     try {
         Vector3D oldpos = location.m_pos;
-        const Fragment::MapType & ent = args.front().AsMap();
-        Fragment::MapType::const_iterator I = ent.find("loc");
+        const Element::MapType & ent = args.front().AsMap();
+        Element::MapType::const_iterator I = ent.find("loc");
         if ((I == ent.end()) || !I->second.IsString()) {
             return error(op, "Move op has no loc", getId());
         }
@@ -258,7 +258,7 @@ OpVector Thing::MoveOperation(const Move & op)
         }
 
         RootOperation * s = new Sight(Sight::Instantiate());
-        s->SetArgs(Fragment::ListType(1,op.AsObject()));
+        s->SetArgs(Element::ListType(1,op.AsObject()));
         OpVector res2(1,s);
         // I think it might be wise to send a set indicating we have changed
         // modes, but this would probably be wasteful
@@ -269,11 +269,11 @@ OpVector Thing::MoveOperation(const Move & op)
         if (consts::enable_ranges && isPerceptive()) {
             debug(std::cout << "testing range" << std::endl;);
             EntitySet::const_iterator I = location.m_loc->contains.begin();
-            Fragment::ListType appear, disappear;
-            Fragment::MapType this_ent;
+            Element::ListType appear, disappear;
+            Element::MapType this_ent;
             this_ent["id"] = getId();
             this_ent["stamp"] = (double)seq;
-            Fragment::ListType this_as_args(1,this_ent);
+            Element::ListType this_as_args(1,this_ent);
             for(;I != location.m_loc->contains.end(); I++) {
                 const bool wasInRange = (*I)->location.inRange(oldpos,
                                                           consts::sight_range);
@@ -283,7 +283,7 @@ OpVector Thing::MoveOperation(const Move & op)
                 // Also so operations to (dis)appearing perceptive
                 // entities saying that we are (dis)appearing
                 if (wasInRange ^ isInRange) {
-                    Fragment::MapType that_ent;
+                    Element::MapType that_ent;
                     that_ent["id"] = (*I)->getId();
                     that_ent["stamp"] = (double)(*I)->getSeq();
                     if (wasInRange) {
@@ -347,23 +347,23 @@ OpVector Thing::SetOperation(const Set & op)
     if (script->Operation("set", op, res) != 0) {
         return res;
     }
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if (args.empty()) {
        return OpVector();
     }
     try {
-        const Fragment::MapType & ent = args.front().AsMap();
-        Fragment::MapType::const_iterator I;
+        const Element::MapType & ent = args.front().AsMap();
+        Element::MapType::const_iterator I;
         for (I = ent.begin(); I != ent.end(); I++) {
             set(I->first, I->second);
         }
         RootOperation * s = new Sight(Sight::Instantiate());
-        s->SetArgs(Fragment::ListType(1,op.AsObject()));
+        s->SetArgs(Element::ListType(1,op.AsObject()));
         OpVector res2(1,s);
         if (status < 0) {
             RootOperation * d = new Delete(Delete::Instantiate());
-            Fragment::ListType & dargs = d->GetArgs();
-            dargs.push_back(Fragment::MapType());
+            Element::ListType & dargs = d->GetArgs();
+            dargs.push_back(Element::MapType());
             // FIXME Is it necessary to include a full description?
             addToObject(dargs.front().AsMap());
             d->SetTo(getId());

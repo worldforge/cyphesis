@@ -94,18 +94,18 @@ OpVector World::SetOperation(const Set & op)
     // This is the same as Thing::Operation(Set), except world does not
     // get deleted if its status goes below 0.
     seq++;
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if (args.empty()) {
        return OpVector();
     }
     try {
-        const Fragment::MapType & ent = args.front().AsMap();
-        Fragment::MapType::const_iterator I;
+        const Element::MapType & ent = args.front().AsMap();
+        Element::MapType::const_iterator I;
         for (I = ent.begin(); I != ent.end(); I++) {
             set(I->first, I->second);
         }
         RootOperation * s = new Sight(Sight::Instantiate());
-        s->SetArgs(Fragment::ListType(1,op.AsObject()));
+        s->SetArgs(Element::ListType(1,op.AsObject()));
         if (update_flags != 0) {
             updated.emit();
         }

@@ -60,36 +60,36 @@ Entity::~Entity()
     }
 }
 
-const Fragment Entity::get(const std::string & aname) const
+const Element Entity::get(const std::string & aname) const
 {
     if (aname == "status") {
-        return Fragment(status);
+        return Element(status);
     } else if (aname == "id") {
-        return Fragment(getId());
+        return Element(getId());
     } else if (aname == "name") {
-        return Fragment(name);
+        return Element(name);
     } else if (aname == "mass") {
-        return Fragment(mass);
+        return Element(mass);
     } else if (aname == "bbox") {
         return location.m_bBox.asList();
     } else if (aname == "contains") {
-        Fragment::ListType contlist;
+        Element::ListType contlist;
         for(EntitySet::const_iterator I = contains.begin();
             I != contains.end(); I++) {
             contlist.push_back(*I);
         }
-        return Fragment(contlist);
+        return Element(contlist);
     } else {
-        Fragment::MapType::const_iterator I = attributes.find(aname);
+        Element::MapType::const_iterator I = attributes.find(aname);
         if (I != attributes.end()) {
             return I->second;
         } else {
-            return Fragment();
+            return Element();
         }
     }
 }
 
-void Entity::set(const std::string & aname, const Fragment & attr)
+void Entity::set(const std::string & aname, const Element & attr)
 {
     if ((aname == "status") && attr.IsNum()) {
         status = attr.AsNum();
@@ -139,10 +139,10 @@ void Entity::destroy()
     destroyed.emit();
 }
 
-void Entity::addToObject(Fragment::MapType & omap) const
+void Entity::addToObject(Element::MapType & omap) const
 {
     // We need to have a list of keys to pull from attributes.
-    Fragment::MapType::const_iterator I = attributes.begin();
+    Element::MapType::const_iterator I = attributes.begin();
     for (; I != attributes.end(); I++) {
         omap[I->first] = I->second;
     }
@@ -153,33 +153,33 @@ void Entity::addToObject(Fragment::MapType & omap) const
     omap["mass"] = mass;
     omap["status"] = status;
     omap["stamp"] = (double)seq;
-    omap["parents"] = Fragment(Fragment::ListType(1,Fragment(type)));
+    omap["parents"] = Element(Element::ListType(1,Element(type)));
     location.addToObject(omap);
-    Fragment::ListType contlist;
+    Element::ListType contlist;
     for(EntitySet::const_iterator I = contains.begin(); I!=contains.end(); I++){
-        contlist.push_back(Fragment((*I)->getId()));
+        contlist.push_back(Element((*I)->getId()));
     }
     if (!contlist.empty()) {
-        omap["contains"] = Fragment(contlist);
+        omap["contains"] = Element(contlist);
     }
     BaseEntity::addToObject(omap);
 }
 
-void Entity::merge(const Fragment::MapType & ent)
+void Entity::merge(const Element::MapType & ent)
 {
     const std::set<std::string> & imm = immutables();
-    for(Fragment::MapType::const_iterator I = ent.begin(); I != ent.end(); I++){
+    for(Element::MapType::const_iterator I = ent.begin(); I != ent.end(); I++){
         const std::string & key = I->first;
         if (imm.find(key) != imm.end()) continue;
         set(key, I->second);
     }
 }
 
-bool Entity::getLocation(const Fragment::MapType & entmap,
+bool Entity::getLocation(const Element::MapType & entmap,
                          const EntityDict & eobjects)
 {
     debug( std::cout << "Thing::getLocation" << std::endl << std::flush;);
-    Fragment::MapType::const_iterator I = entmap.find("loc");
+    Element::MapType::const_iterator I = entmap.find("loc");
     if ((I == entmap.end()) || !I->second.IsString()) {
         debug( std::cout << getId() << ".. has no loc" << std::endl << std::flush;);
         return true;
@@ -365,9 +365,9 @@ OpVector Entity::LookOperation(const Look & op)
     }
 
     Sight * s = new Sight( Sight::Instantiate());
-    Fragment::ListType & args = s->GetArgs();
-    args.push_back(Fragment::MapType());
-    Fragment::MapType & amap = args.front().AsMap();
+    Element::ListType & args = s->GetArgs();
+    args.push_back(Element::MapType());
+    Element::MapType & amap = args.front().AsMap();
     addToObject(amap);
     s->SetTo(op.GetFrom());
 

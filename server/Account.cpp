@@ -71,7 +71,7 @@ void Account::addCharacter(Entity * chr)
 }
 
 Entity * Account::addCharacter(const std::string & typestr,
-                               const Fragment::MapType & ent)
+                               const Element::MapType & ent)
 {
     BaseWorld & world = connection->server.world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
@@ -98,25 +98,25 @@ Entity * Account::addCharacter(const std::string & typestr,
 
     // Hack in default objects
     // This needs to be done in a generic way
-    Fragment::MapType entmap;
-    entmap["parents"] = Fragment::ListType(1,"coin");
+    Element::MapType entmap;
+    entmap["parents"] = Element::ListType(1,"coin");
     entmap["pos"] = Vector3D(0,0,0).asObject();
     entmap["loc"] = chr->getId();
     entmap["name"] = "coin";
     for(int i = 0; i < 10; i++) {
         Create * c = new Create(Create::Instantiate());
-        c->SetArgs(Fragment::ListType(1,entmap));
+        c->SetArgs(Element::ListType(1,entmap));
         c->SetTo(chr->getId());
         world.message(*c, chr);
     }
 
     Create c = Create::Instantiate();
-    Fragment::ListType & cargs = c.GetArgs();
-    cargs.push_back(Fragment::MapType());
+    Element::ListType & cargs = c.GetArgs();
+    cargs.push_back(Element::MapType());
     chr->addToObject(cargs.front().AsMap());
 
     Sight * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Fragment::ListType(1,c.AsObject()));
+    s->SetArgs(Element::ListType(1,c.AsObject()));
 
     world.message(*s, chr);
 
@@ -127,7 +127,7 @@ OpVector Account::LogoutOperation(const Logout & op)
 {
     debug(std::cout << "Account logout: " << getId() << std::endl;);
     Info info = Info(Info::Instantiate());
-    info.SetArgs(Fragment::ListType(1,op.AsObject()));
+    info.SetArgs(Element::ListType(1,op.AsObject()));
     info.SetRefno(op.GetSerialno());
     info.SetSerialno(connection->server.getSerialNo());
     info.SetFrom(getId());
@@ -143,7 +143,7 @@ const char * Account::getType() const
     return "account";
 }
 
-void Account::addToObject(Fragment::MapType & omap) const
+void Account::addToObject(Element::MapType & omap) const
 {
     omap["objtype"] = "object";
     omap["id"] = getId();
@@ -152,8 +152,8 @@ void Account::addToObject(Fragment::MapType & omap) const
     if (!password.empty()) {
         omap["password"] = password;
     }
-    omap["parents"] = Fragment::ListType(1,getType());
-    Fragment::ListType charlist;
+    omap["parents"] = Element::ListType(1,getType());
+    Element::ListType charlist;
     EntityDict::const_iterator I;
     for(I = charactersDict.begin(); I != charactersDict.end(); I++) {
         charlist.push_back(I->first);
@@ -166,19 +166,19 @@ void Account::addToObject(Fragment::MapType & omap) const
 OpVector Account::CreateOperation(const Create & op)
 {
     debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if ((args.empty()) || (!args.front().IsMap())) {
         return OpVector();
     }
 
-    const Fragment::MapType & entmap = args.front().AsMap();
+    const Element::MapType & entmap = args.front().AsMap();
 
     OpVector er = characterError(op, entmap);
     if (!er.empty()) {
         return er;
     }
 
-    Fragment::MapType::const_iterator I = entmap.find("parents");
+    Element::MapType::const_iterator I = entmap.find("parents");
     if ((I == entmap.end()) || !(I->second.IsList()) ||
         (I->second.AsList().empty()) ||
         !(I->second.AsList().front().IsString()) ) {
@@ -192,8 +192,8 @@ OpVector Account::CreateOperation(const Create & op)
     BaseEntity * obj = addCharacter(typestr, entmap);
 
     Info * info = new Info(Info::Instantiate());
-    Fragment::ListType & info_args = info->GetArgs();
-    info_args.push_back(Fragment::MapType());
+    Element::ListType & info_args = info->GetArgs();
+    info_args.push_back(Element::MapType());
     obj->addToObject(info_args.front().AsMap());
     info->SetRefno(op.GetSerialno());
     info->SetSerialno(connection->server.getSerialNo());
@@ -203,18 +203,18 @@ OpVector Account::CreateOperation(const Create & op)
 
 OpVector Account::ImaginaryOperation(const Imaginary & op)
 {
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if ((args.empty()) || (!args.front().IsMap())) {
         return OpVector();
     }
 
     Sight s(Sight::Instantiate());
-    s.SetArgs(Fragment::ListType(1,op.AsObject()));
+    s.SetArgs(Element::ListType(1,op.AsObject()));
     s.SetFrom(getId());
     s.SetSerialno(connection->server.getSerialNo());
     setRefnoOp(&s, op);
-    const Fragment::MapType & arg = args.front().AsMap();
-    Fragment::MapType::const_iterator I = arg.find("loc");
+    const Element::MapType & arg = args.front().AsMap();
+    Element::MapType::const_iterator I = arg.find("loc");
     if (I != arg.end()) {
         s.SetTo(I->second.AsString());
     } else {
@@ -225,18 +225,18 @@ OpVector Account::ImaginaryOperation(const Imaginary & op)
 
 OpVector Account::TalkOperation(const Talk & op)
 {
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if ((args.empty()) || (!args.front().IsMap())) {
         return OpVector();
     }
 
     Sound s(Sound::Instantiate());
-    s.SetArgs(Fragment::ListType(1,op.AsObject()));
+    s.SetArgs(Element::ListType(1,op.AsObject()));
     s.SetFrom(getId());
     s.SetSerialno(connection->server.getSerialNo());
     setRefnoOp(&s, op);
-    const Fragment::MapType & arg = args.front().AsMap();
-    Fragment::MapType::const_iterator I = arg.find("loc");
+    const Element::MapType & arg = args.front().AsMap();
+    Element::MapType::const_iterator I = arg.find("loc");
     if (I != arg.end()) {
         s.SetTo(I->second.AsString());
     } else {
@@ -247,18 +247,18 @@ OpVector Account::TalkOperation(const Talk & op)
 
 OpVector Account::LookOperation(const Look & op)
 {
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if (args.empty()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
-        Fragment::ListType & s_args = s->GetArgs();
-        s_args.push_back(Fragment::MapType());
+        Element::ListType & s_args = s->GetArgs();
+        s_args.push_back(Element::MapType());
         connection->server.lobby.addToObject(s_args.front().AsMap());
         s->SetSerialno(connection->server.getSerialNo());
         setRefnoOp(s, op);
         return OpVector(1,s);
     }
-    Fragment::MapType::const_iterator I = args.front().AsMap().find("id");
+    Element::MapType::const_iterator I = args.front().AsMap().find("id");
     if ((I == args.front().AsMap().end()) || (!I->second.IsString())) {
         return error(op, "No target for look");
     }
@@ -267,8 +267,8 @@ OpVector Account::LookOperation(const Look & op)
     if (J != charactersDict.end()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
-        Fragment::ListType & s_args = s->GetArgs();
-        s_args.push_back(Fragment::MapType());
+        Element::ListType & s_args = s->GetArgs();
+        s_args.push_back(Element::MapType());
         J->second->addToObject(s_args.front().AsMap());
         s->SetSerialno(connection->server.getSerialNo());
         setRefnoOp(s, op);
@@ -279,8 +279,8 @@ OpVector Account::LookOperation(const Look & op)
     if (K != accounts.end()) {
         Sight * s = new Sight(Sight::Instantiate());
         s->SetTo(getId());
-        Fragment::ListType & s_args = s->GetArgs();
-        s_args.push_back(Fragment::MapType());
+        Element::ListType & s_args = s->GetArgs();
+        s_args.push_back(Element::MapType());
         K->second->addToObject(s_args.front().AsMap());
         s->SetSerialno(connection->server.getSerialNo());
         setRefnoOp(s, op);

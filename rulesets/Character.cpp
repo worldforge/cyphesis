@@ -43,7 +43,7 @@ OpVector Character::metabolise(double ammount)
 {
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
-    Fragment::MapType ent;
+    Element::MapType ent;
     ent["id"] = getId();
     if ((status > (1.5 + energyLoss)) && (mass < maxMass)) {
         status = status - energyLoss;
@@ -62,7 +62,7 @@ OpVector Character::metabolise(double ammount)
 
     Set * s = new Set(Set::Instantiate());
     s->SetTo(getId());
-    s->SetArgs(Fragment::ListType(1,ent));
+    s->SetArgs(Element::ListType(1,ent));
 
     return OpVector(1,s);
 }
@@ -120,7 +120,7 @@ Character::~Character()
     }
 }
 
-const Fragment Character::get(const std::string & aname) const
+const Element Character::get(const std::string & aname) const
 {
     if (aname == "drunkness") {
         return drunkness;
@@ -130,7 +130,7 @@ const Fragment Character::get(const std::string & aname) const
     return Thing::get(aname);
 }
 
-void Character::set(const std::string & aname, const Fragment & attr)
+void Character::set(const std::string & aname, const Element & attr)
 {
     if ((aname == "drunkness") && attr.IsFloat()) {
         drunkness = attr.AsFloat();
@@ -143,7 +143,7 @@ void Character::set(const std::string & aname, const Fragment & attr)
     }
 }
 
-void Character::addToObject(Fragment::MapType & omap) const
+void Character::addToObject(Element::MapType & omap) const
 {
     omap["sex"] = sex;
     Entity::addToObject(omap);
@@ -152,7 +152,7 @@ void Character::addToObject(Fragment::MapType & omap) const
 OpVector Character::ImaginaryOperation(const Imaginary & op)
 {
     Sight * s = new Sight(Sight::Instantiate());
-    s->SetArgs(Fragment::ListType(1,op.AsObject()));
+    s->SetArgs(Element::ListType(1,op.AsObject()));
     return OpVector(1,s);
 }
 
@@ -209,11 +209,11 @@ OpVector Character::TickOperation(const Tick & op)
     }
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if ((!args.empty()) && (args.front().IsMap())) {
         // Deal with movement.
-        const Fragment::MapType & arg1 = args.front().AsMap();
-        Fragment::MapType::const_iterator I = arg1.find("serialno");
+        const Element::MapType & arg1 = args.front().AsMap();
+        Element::MapType::const_iterator I = arg1.find("serialno");
         if ((I != arg1.end()) && (I->second.IsInt())) {
             if (I->second.AsInt() < movement.m_serialno) {
                 debug(std::cout << "Old tick" << std::endl << std::flush;);
@@ -227,13 +227,13 @@ OpVector Character::TickOperation(const Tick & op)
                 return OpVector (1,moveOp);
             }
             OpVector res(2);
-            Fragment::MapType entmap;
+            Element::MapType entmap;
             entmap["name"] = "move";
             entmap["serialno"] = movement.m_serialno;
             Tick * tickOp = new Tick(Tick::Instantiate());
             tickOp->SetTo(getId());
             tickOp->SetFutureSeconds(movement.getTickAddition(ret_loc.m_pos));
-            tickOp->SetArgs(Fragment::ListType(1,entmap));
+            tickOp->SetArgs(Element::ListType(1,entmap));
             res[0] = tickOp;
             res[1] = moveOp;
             return res;
@@ -249,16 +249,16 @@ OpVector Character::TickOperation(const Tick & op)
             status = status + foodConsumption;
             food = food - foodConsumption;
 
-            Fragment::MapType food_ent;
+            Element::MapType food_ent;
             food_ent["id"] = getId();
             food_ent["food"] = food;
             Set s = Set::Instantiate();
             s.SetTo(getId());
-            s.SetArgs(Fragment::ListType(1,food_ent));
+            s.SetArgs(Element::ListType(1,food_ent));
 
             Sight * si = new Sight(Sight::Instantiate());
             si->SetTo(getId());
-            si->SetArgs(Fragment::ListType(1,s.AsObject()));
+            si->SetArgs(Element::ListType(1,s.AsObject()));
             res.push_back(si);
         }
 
@@ -282,7 +282,7 @@ OpVector Character::TalkOperation(const Talk & op)
 {
     debug( std::cout << "Character::OPeration(Talk)" << std::endl<<std::flush;);
     Sound * s = new Sound(Sound::Instantiate());
-    s->SetArgs(Fragment::ListType(1,op.AsObject()));
+    s->SetArgs(Element::ListType(1,op.AsObject()));
     return OpVector(1,s);
 }
 
@@ -294,21 +294,21 @@ OpVector Character::EatOperation(const Eat & op)
     if (script->Operation("eat", op, res) != 0) {
         return res;
     }
-    Fragment::MapType self_ent;
+    Element::MapType self_ent;
     self_ent["id"] = getId();
     self_ent["status"] = -1;
 
     Set * s = new Set(Set::Instantiate());
     s->SetTo(getId());
-    s->SetArgs(Fragment::ListType(1,self_ent));
+    s->SetArgs(Element::ListType(1,self_ent));
 
     const std::string & to = op.GetFrom();
-    Fragment::MapType nour_ent;
+    Element::MapType nour_ent;
     nour_ent["id"] = to;
     nour_ent["mass"] = mass;
     Nourish * n = new Nourish(Nourish::Instantiate());
     n->SetTo(to);
-    n->SetArgs(Fragment::ListType(1,nour_ent));
+    n->SetArgs(Element::ListType(1,nour_ent));
 
     OpVector res2(2);
     res2[0] = s;
@@ -324,12 +324,12 @@ OpVector Character::NourishOperation(const Nourish & op)
     if (!op.GetArgs().front().IsMap()) {
         return error(op, "Nourish arg is malformed", getId());
     }
-    const Fragment::MapType & nent = op.GetArgs().front().AsMap();
-    Fragment::MapType::const_iterator I = nent.find("mass");
+    const Element::MapType & nent = op.GetArgs().front().AsMap();
+    Element::MapType::const_iterator I = nent.find("mass");
     if ((I == nent.end()) || !I->second.IsNum()) { return OpVector(); }
     food = food + I->second.AsNum();
 
-    Fragment::MapType food_ent;
+    Element::MapType food_ent;
     food_ent["id"] = getId();
     food_ent["food"] = food;
     if (((I = nent.find("alcohol")) != nent.end()) && I->second.IsNum()) {
@@ -337,11 +337,11 @@ OpVector Character::NourishOperation(const Nourish & op)
         food_ent["drunkness"] = drunkness;
     }
     Set s = Set::Instantiate();
-    s.SetArgs(Fragment::ListType(1,food_ent));
+    s.SetArgs(Element::ListType(1,food_ent));
 
     Sight * si = new Sight(Sight::Instantiate());
     si->SetTo(getId());
-    si->SetArgs(Fragment::ListType(1,s.AsObject()));
+    si->SetArgs(Element::ListType(1,s.AsObject()));
     return OpVector(1,si);
 }
 
@@ -381,13 +381,13 @@ OpVector Character::mindTickOperation(const Tick & op)
 OpVector Character::mindMoveOperation(const Move & op)
 {
     debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if ((args.empty()) || (!args.front().IsMap())) {
         log(ERROR, "mindMoveOperation: move op has no argument");
         return OpVector();
     }
-    const Fragment::MapType & arg1 = args.front().AsMap();
-    Fragment::MapType::const_iterator I = arg1.find("id");
+    const Element::MapType & arg1 = args.front().AsMap();
+    Element::MapType::const_iterator I = arg1.find("id");
     if ((I == arg1.end()) || !I->second.IsString()) {
         log(ERROR, "mindMoveOperation: Args has got no id");
     }
@@ -519,8 +519,8 @@ OpVector Character::mindMoveOperation(const Move & op)
                              << std::flush;);
             if (NULL != moveOp) {
                 debug( std::cout << "Stop!" << std::endl << std::flush;);
-                Fragment::ListType & args = moveOp->GetArgs();
-                Fragment::MapType & ent = args.front().AsMap();
+                Element::ListType & args = moveOp->GetArgs();
+                Element::MapType & ent = args.front().AsMap();
                 ent["velocity"] = Vector3D(0,0,0).asObject();
                 ent["mode"] = "standing";
                 if (location_orientation.isValid()) {
@@ -539,10 +539,10 @@ OpVector Character::mindMoveOperation(const Move & op)
             return OpVector();
         }
         Tick * tickOp = new Tick(Tick::Instantiate());
-        Fragment::MapType ent;
+        Element::MapType ent;
         ent["serialno"] = movement.m_serialno;
         ent["name"] = "move";
-        Fragment::ListType args(1,ent);
+        Element::ListType args(1,ent);
         tickOp->SetArgs(args);
         tickOp->SetTo(getId());
         // Need to add the arguments to this op before we return it
@@ -583,11 +583,11 @@ OpVector Character::mindMoveOperation(const Move & op)
 
 OpVector Character::mindSetOperation(const Set & op)
 {
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if (args.front().IsMap()) {
         Set * s = new Set(op);
-        const Fragment::MapType & amap = args.front().AsMap();
-        Fragment::MapType::const_iterator I = amap.find("id");
+        const Element::MapType & amap = args.front().AsMap();
+        Element::MapType::const_iterator I = amap.find("id");
         if (I != amap.end() && I->second.IsString()) {
             const std::string & opid = I->second.AsString();
             s->SetTo(opid);
@@ -683,13 +683,13 @@ OpVector Character::mindLookOperation(const Look & op)
     perceptive = true;
     Look * l = new Look(op);
     if (op.GetTo().empty()) {
-        const Fragment::ListType & args = op.GetArgs();
+        const Element::ListType & args = op.GetArgs();
         if (args.empty()) {
             l->SetTo(world->getId());
         } else {
             if (args.front().IsMap()) {
-                const Fragment::MapType & amap = args.front().AsMap();
-                Fragment::MapType::const_iterator I = amap.find("id");
+                const Element::MapType & amap = args.front().AsMap();
+                Element::MapType::const_iterator I = amap.find("id");
                 if (I != amap.end() && I->second.IsString()) {
                     l->SetTo(I->second.AsString());
                 }
@@ -722,14 +722,14 @@ OpVector Character::mindTouchOperation(const Touch & op)
 {
     Touch * t = new Touch(op);
     // Work out what is being touched.
-    const Fragment::ListType & args = op.GetArgs();
+    const Element::ListType & args = op.GetArgs();
     if ((op.GetTo().empty()) || (!args.empty())) {
         if (args.empty()) {
             t->SetTo(world->getId());
         } else {
             if (args.front().IsMap()) {
-                const Fragment::MapType & amap = args.front().AsMap();
-                Fragment::MapType::const_iterator I = amap.find("id");
+                const Element::MapType & amap = args.front().AsMap();
+                Element::MapType::const_iterator I = amap.find("id");
                 if (I != amap.end() && I->second.IsString()) {
                     t->SetTo(I->second.AsString());
                 }
@@ -744,10 +744,10 @@ OpVector Character::mindTouchOperation(const Touch & op)
     // Send action "touch"
     Action * a = new Action(Action::Instantiate());
     a->SetTo(getId());
-    Fragment::MapType amap;
+    Element::MapType amap;
     amap["id"] = getId();
     amap["action"] = "touch";
-    Fragment::ListType setArgs(1,amap);
+    Element::ListType setArgs(1,amap);
     a->SetArgs(setArgs);
     res[1] = a;
     return res;

@@ -26,7 +26,7 @@ Plant::~Plant()
 {
 }
 
-const Fragment Plant::get(const std::string & aname) const
+const Element Plant::get(const std::string & aname) const
 {
     if (aname == "fruits") {
         return fruits;
@@ -42,7 +42,7 @@ const Fragment Plant::get(const std::string & aname) const
     return Thing::get(aname);
 }
 
-void Plant::set(const std::string & aname, const Fragment & attr)
+void Plant::set(const std::string & aname, const Element & attr)
 {
     if ((aname == "fruits") && attr.IsInt()) {
         fruits = attr.AsInt();
@@ -69,13 +69,13 @@ int Plant::dropFruit(OpVector & res)
     for(int i = 0; i < drop; i++) {
         double rx = location.m_pos.X()+uniform(height*radius, -height*radius);
         double ry = location.m_pos.X()+uniform(height*radius, -height*radius);
-        Fragment::MapType fmap;
+        Element::MapType fmap;
         fmap["name"] = fruitName;
-        fmap["parents"] = Fragment::ListType(1,fruitName);
+        fmap["parents"] = Element::ListType(1,fruitName);
         Location floc(location.m_loc, Vector3D(rx, ry, 0));
         floc.addToObject(fmap);
         RootOperation * create = new Create(Create::Instantiate());
-        create->SetArgs(Fragment::ListType(1, fmap));
+        create->SetArgs(Element::ListType(1, fmap));
         res.push_back(create);
     }
     return drop;
@@ -98,10 +98,10 @@ OpVector Plant::TickOperation(const Tick & op)
     }
     if (dropped != 0) {
         RootOperation * set = new Set(Set::Instantiate());
-        Fragment::MapType pmap;
+        Element::MapType pmap;
         pmap["id"] = getId();
         pmap["fruits"] = fruits;
-        set->SetArgs(Fragment::ListType(1,pmap));
+        set->SetArgs(Element::ListType(1,pmap));
         res.push_back(set);
     }
     return res;

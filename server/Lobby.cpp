@@ -17,10 +17,10 @@ Lobby::Lobby(const std::string & id, ServerRouting & s) : OOGThing(id), server(s
 void Lobby::addObject(Account * ac)
 {
     Appearance a(Appearance::Instantiate());
-    Fragment::MapType us;
+    Element::MapType us;
     us["id"] = ac->getId();
     us["loc"] = "lobby";
-    a.SetArgs(Fragment::ListType(1,us));
+    a.SetArgs(Element::ListType(1,us));
     a.SetFrom(ac->getId());
     a.SetTo("lobby");
     a.SetSerialno(server.getSerialNo());
@@ -32,10 +32,10 @@ void Lobby::addObject(Account * ac)
 void Lobby::delObject(Account * a)
 {
     Disappearance d(Disappearance::Instantiate());
-    Fragment::MapType us;
+    Element::MapType us;
     us["id"] = a->getId();
     us["loc"] = "lobby";
-    d.SetArgs(Fragment::ListType(1,us));
+    d.SetArgs(Element::ListType(1,us));
     d.SetFrom(a->getId());
     d.SetTo("lobby");
     d.SetSerialno(server.getSerialNo());
@@ -72,18 +72,18 @@ OpVector Lobby::operation(const RootOperation & op)
     return OpVector();
 }
 
-void Lobby::addToObject(Fragment::MapType & omap) const
+void Lobby::addToObject(Element::MapType & omap) const
 {
     omap["objtype"] = "object";
     omap["id"] = "lobby";
     omap["name"] = "lobby";
-    Fragment::ListType plist(1, "room");
+    Element::ListType plist(1, "room");
     omap["parents"] = plist;
-    Fragment::ListType player_list;
+    Element::ListType player_list;
     AccountDict::const_iterator I = accounts.begin();
     for(; I != accounts.end(); I++) {
         player_list.push_back(I->first);
     }
     omap["people"] = player_list;
-    omap["rooms"] = Fragment::ListType();
+    omap["rooms"] = Element::ListType();
 }
