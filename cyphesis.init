@@ -1,0 +1,100 @@
+#!/bin/sh
+#
+# cyphesis          This shell script takes care of starting and stopping
+#                   the cyphesis service.
+#
+# chkconfig: - 90 10
+# description: Cyphesis is a server for WorldForge online games.
+# probe: ???
+
+# Source cyphesis service configuration
+if [ -f /etc/sysconfig/cyphesis ] ; then
+        . /etc/sysconfig/cyphesis
+else
+        CYPHESISUSER=cyphesis
+        CYPHESISDBASE=cyphesis
+fi
+
+POSTGRESUSER=postgres
+
+start() {
+        # Start the daemon.
+
+        # Make sure postgres superuser exists
+        if ! su $POSTGRESUSER -c true ; then
+            echo
+            echo $"Could not check for running PostgreSQL database."
+            exit 1
+        fi
+
+        # Make sure postgres is running
+        if ! su $POSTGRESUSER -c "psql -c \"\" template1" ; then
+            echo $"PostgreSQL server is not running."
+            exit 1
+        fi
+
+        # Make sure the user we are going to run as exists
+        if ! su $CYPHESISUSER -c true ; then
+            echo $"Cannot find user $CYPHESISUSER to run cyphesis service."
+            exit 1
+        fi
+
+        # Make sure the user has a postgres account
+        if ! su $CYPHESISUSER -c "psql -c \"\" template1" ; then
+            echo -n $"Creating PostgreSQL account: "
+            su postgres -c "createuser $CYPHESISUSER"
+        fi
+
+        # Make sure the database exists
+        if ! su $CYPHESISUSER -c "psql -c \"\" cyphesis" ; then
+            # Create the database
+            echo -n $"Creating PostgreSQL database: "
+            su $CYPHESISUSER -c "createdb $CYPHESISDBASE"
+        fi
+
+        echo -n $"Starting cyphesis: "
+
+        # Run the server, in self daemonising mode
+        su $CYPHESISUSER /usr/bin/cyphesis --cyphesis:daemon=true --cyphesis:dbname=cyphesis > /dev/null 1>&1
+        RETVAL=$?
+        if [ $ret -eq 0 ]; then
+            echo_success
+            touch /var/lock/subsys/cyphesis
+        else
+            echo_failure
+        fi
+        return $RETVAL
+}
+
+stop() {
+        # Stop server
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart|reload)
+        stop
+        start
+        RETVAL=$?
+        ;;
+  condrestart)
+        if [ -f /var/lock/subsys/cyphesis ]; then
+            stop
+            start
+            RETVAL=$?
+        fi
+        ;;
+  status)
+        status cyphesis
+        RETVAL=$?
+        ;;
+  *)
+        echo $"Usage: $0 (start|stop|restart|condrestart|status)"
+        exit 1
+esac
+
+exit $RETVAL

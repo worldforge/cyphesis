@@ -1,3 +1,10 @@
+2002-10-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cyphesis-setup: Clean up syntax.
+
+	* cyphesis.init, cyphesis.sysconfig, cyphesis.spec.in:
+	  Init script and sysconfig for rpm and other packaging.
+
 2002-10-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* Clean up README.

@@ -41,7 +41,7 @@ fi
 # that we are given one. This path is used to work out the locations of
 # other files.
 if test `expr substr $CYPHESIS_BINDIR 1 1` != "/"; then
-    echo FIX Unable to work out path of installation: echo $CYPHESIS_BINDIR
+    echo Unable to work out path of installation: echo $CYPHESIS_BINDIR
     echo "Please give the absolute path of bin directory where cyphesis is installed."
     read -e -p "> " CYPHESIS_BINDIR
     if test `expr substr $CYPHESIS_BINDIR 1 1` != "/"; then
@@ -75,9 +75,7 @@ if test `expr substr $CYPHESIS_PREFIX 1 1` != "/"; then
     exit 1
 fi
 
-if test -d $CYPHESIS_PREFIX; then
-    true
-else
+if ! test -d $CYPHESIS_PREFIX; then
     echo ERROR: $0: Error occured detecting installation.
     echo Installation directory $CYPHESIS_PREFIX was detected but does not exist.
     exit 1
@@ -93,23 +91,17 @@ CYPHESIS_DATA_DIR=$CYPHESIS_COMPILED_DATA_DIR
 
 # Check whether we have the location of the config and data files, and if
 # necessary make a last ditch attempt to get the info from the user.
-if test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
-    true
-else
+if ! test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
     CYPHESIS_CONF_DIR=$CYPHESIS_PREFIX/etc
     CYPHESIS_DATA_DIR=$CYPHESIS_PREFIX/share
-    if test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
-        true
-    else
+    if ! test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
         echo "Please give the absolute path of etc directory where cyphesis config is installed."
         read -e -p "> " CYPHESIS_CONF_DIR
         if test -f $CYPHESIS_CONF_DIR/cyphesis/cyphesis.vconf; then
             echo ERROR: $0: Unable to find config files for cyphesis in $CYPHESIS_CONF_DIR.
         fi
     fi
-    if test -f $CYPHESIS_DATA_DIR/cyphesis/rulesets/basic/hooks/ruleset_import_hooks.py; then
-        true
-    else
+    if ! test -f $CYPHESIS_DATA_DIR/cyphesis/rulesets/basic/hooks/ruleset_import_hooks.py; then
         echo "Please give the absolute path of share directory where cyphesis data is installed."
         read -e -p "> " CYPHESIS_DATA_DIR
         if test -f $CYPHESIS_DATA_DIR/cyphesis/rulesets/basic/hooks/ruleset_import_hooks.py; then
@@ -300,9 +292,7 @@ echo Cleared.
 # the same as the one compiled into the binary, put a config
 # override in out home directory using the cyconfig command.
 if test $CYPHESIS_COMPILED_CONF_DIR != $CYPHESIS_CONF_DIR; then
-    if su - $CYPHESIS_USER -c "$CYPHESIS_BINDIR/cyconfig --cyphesis:directory=$CYPHESIS_DATA_DIR --cyphesis:confdir=$CYPHESIS_CONF_DIR"; then
-        true
-    else
+    if ! su - $CYPHESIS_USER -c "$CYPHESIS_BINDIR/cyconfig --cyphesis:directory=$CYPHESIS_DATA_DIR --cyphesis:confdir=$CYPHESIS_CONF_DIR"; then
         echo ERROR: $0: Failed to configure cyphesis config and data directories.
     fi
 fi

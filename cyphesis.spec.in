@@ -7,7 +7,9 @@ Version: @VERSION@
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: cyphesis-@VERSION@.tar.gz
+Source0: cyphesis-@VERSION@.tar.gz
+Source1: cyphesis.init
+Source2: cyphesis.sysconfig
 Requires: Atlas-C++ >= 0.4.4 varconf skstream > 0.2 readline postgresql-libs >= 7.1 python >= 1.5.2 libstdc++ >= 2.95.2
 BuildRoot: /var/tmp/%{name}-buildroot
 BuildRequires: Atlas-C++-devel >= 0.4.4 varconf-devel skstream-devel > 0.2 readline-devel postgresql-devel >= 7.1 python-devel >= 1.5.2 libstdc++-devel
@@ -19,6 +21,16 @@ use/move/make things and have simple discussion. They can deduce
 simple things (like where I can get these things and where I should
 be). They have simple memory and use it too. They can have goals (like
 build home for me or go to dinner).
+
+%package service
+Summary: Files for running cyphesis as a unix service
+Group: System Environment/Daemons
+PreReq: initscripts /usr/sbin/useradd /sbin/chkconfig
+Requires: %{name} = %{version} postgresql-server >= 7.1
+
+%description service
+Cyphesis is a very simple world simulator. This package allows it to be run
+as a service controlled by init.
 
 %package libs
 Summary: Libraries for using cyphesis databases
@@ -83,6 +95,40 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 make prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} install
+if [ -d /etc/rc.d/init.d ]
+then
+	install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
+	install -m 755 ${SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/cyphesis
+        echo /etc/rc.d/init.d/cyphesis >> service.lst
+fi
+if [ -d /etc/sysconfig ]
+then
+	install -d $RPM_BUILD_ROOT/etc/sysconfig
+	install -m 644 $(SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/cyphesis
+        echo /etc/sysconfig/cyphesis >> service.lst
+fi
+
+%pre server
+useradd -M -n -r -s /bin/bash -c "Cyphesis user" cyphesis >/dev/null 2>&1 || :
+
+%post service
+chkconfig --add cyphesis
+
+%preun service
+if [ $1 = 0 ] ; then
+        chkconfig --del cyphesis
+fi
+
+%postun service
+if [ $1 -ge 1 ]; then
+  /sbin/service cyphesis condrestart >/dev/null 2>&1
+fi
+if [ $1 = 0 ] ; then
+        userdel cyphesis >/dev/null 2>&1 || :
+fi
+
+%post libs -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -94,6 +140,8 @@ rm -rf $RPM_BUILD_ROOT
 %config %{sysconfdir}/cyphesis/basic.xml
 %config %{sysconfdir}/cyphesis/cyphesis.vconf
 %doc README COPYING AUTHORS THANKS NEWS
+
+%files service -f service.lst
 
 %files libs
 %{prefix}/lib/libcyphesis.so.0.0.0
