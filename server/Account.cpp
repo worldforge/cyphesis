@@ -14,7 +14,7 @@
 
 #include "common/const.h"
 #include "common/log.h"
-#include "common/refno.h"
+#include "common/serialno.h"
 #include "common/debug.h"
 #include "common/BaseWorld.h"
 
@@ -126,7 +126,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         ListType & args = c->getArgs();
         args.push_back(entmap);
         c->setTo(chr->getId());
-        world.setSerialnoOp(*c);
+        c->setSerialno(newSerialNo());
         world.message(*c, chr);
     }
 
@@ -140,7 +140,7 @@ void Account::LogoutOperation(const Operation & op, OpVector &)
     ListType & args = info.getArgs();
     args.push_back(op.asObject());
     info.setRefno(op.getSerialno());
-    info.setSerialno(m_connection->m_server.newSerialNo());
+    info.setSerialno(newSerialNo());
     info.setFrom(getId());
     info.setTo(getId());
     m_connection->send(info);
@@ -208,7 +208,7 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     info_args.push_back(MapType());
     obj->addToMessage(info_args.front().asMap());
     info->setRefno(op.getSerialno());
-    info->setSerialno(m_connection->m_server.newSerialNo());
+    info->setSerialno(newSerialNo());
 
     res.push_back(info);
 }
@@ -285,8 +285,8 @@ void Account::ImaginaryOperation(const Operation & op, OpVector & res)
     ListType & sargs = s.getArgs();
     sargs.push_back(op.asObject());
     s.setFrom(getId());
-    s.setSerialno(m_connection->m_server.newSerialNo());
-    setRefnoOp(&s, op);
+    s.setSerialno(newSerialNo());
+    s.setRefno(op.getSerialno());
     const MapType & arg = args.front().asMap();
     MapType::const_iterator I = arg.find("loc");
     if (I != arg.end()) {
@@ -308,8 +308,8 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
     ListType & sargs = s.getArgs();
     sargs.push_back(op.asObject());
     s.setFrom(getId());
-    s.setSerialno(m_connection->m_server.newSerialNo());
-    setRefnoOp(&s, op);
+    s.setSerialno(newSerialNo());
+    s.setRefno(op.getSerialno());
     const MapType & arg = args.front().asMap();
     MapType::const_iterator I = arg.find("loc");
     if (I != arg.end()) {
@@ -329,8 +329,8 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         ListType & s_args = s->getArgs();
         s_args.push_back(MapType());
         m_connection->m_server.m_lobby.addToMessage(s_args.front().asMap());
-        s->setSerialno(m_connection->m_server.newSerialNo());
-        setRefnoOp(s, op);
+        s->setSerialno(newSerialNo());
+        s->setRefno(op.getSerialno());
         res.push_back(s);
         return;
     }
@@ -347,8 +347,8 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         ListType & s_args = s->getArgs();
         s_args.push_back(MapType());
         J->second->addToMessage(s_args.front().asMap());
-        s->setSerialno(m_connection->m_server.newSerialNo());
-        setRefnoOp(s, op);
+        s->setSerialno(newSerialNo());
+        s->setRefno(op.getSerialno());
         res.push_back(s);
         return;
     }
@@ -360,8 +360,8 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         ListType & s_args = s->getArgs();
         s_args.push_back(MapType());
         K->second->addToMessage(s_args.front().asMap());
-        s->setSerialno(m_connection->m_server.newSerialNo());
-        setRefnoOp(s, op);
+        s->setSerialno(newSerialNo());
+        s->setRefno(op.getSerialno());
         res.push_back(s);
         return;
     }

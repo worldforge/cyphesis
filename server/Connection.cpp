@@ -17,6 +17,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"
+#include "common/serialno.h"
 #include "common/inheritance.h"
 #include "common/system.h"
 #include "common/BaseWorld.h"
@@ -189,7 +190,7 @@ void Connection::operation(const Operation & op, OpVector & res)
             info_args.push_back(MapType());
             character->addToMessage(info_args.back().asMap());
             info->setRefno(op.getSerialno());
-            info->setSerialno(m_server.newSerialNo());
+            info->setSerialno(newSerialNo());
 
             res.push_back(info);
             character->externalOperation(op);
@@ -270,7 +271,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     info_args.push_back(MapType());
     player->addToMessage(info_args.front().asMap());
     info->setRefno(op.getSerialno());
-    info->setSerialno(m_server.newSerialNo());
+    info->setSerialno(newSerialNo());
     debug(std::cout << "Good login" << std::endl << std::flush;);
     res.push_back(info);
 }
@@ -328,7 +329,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     info_args.push_back(MapType());
     player->addToMessage(info_args.front().asMap());
     info->setRefno(op.getSerialno());
-    info->setSerialno(m_server.newSerialNo());
+    info->setSerialno(newSerialNo());
     debug(std::cout << "Good create" << std::endl << std::flush;);
     res.push_back(info);
 }
@@ -341,7 +342,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         ListType & args = info.getArgs();
         args.push_back(op.asObject());
         info.setRefno(op.getSerialno());
-        info.setSerialno(m_server.newSerialNo());
+        info.setSerialno(newSerialNo());
         send(info);
         disconnect();
         return;
@@ -398,7 +399,7 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
         info_args.push_back(MapType());
         m_server.addToMessage(info_args.front().asMap());
         info->setRefno(op.getSerialno());
-        info->setSerialno(m_server.newSerialNo());
+        info->setSerialno(newSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
         MapType::const_iterator I = args.front().asMap().find("id");
@@ -420,7 +421,7 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
         ListType & iargs = info->getArgs();
         iargs.push_back(o->asObject());
         info->setRefno(op.getSerialno());
-        info->setSerialno(m_server.newSerialNo());
+        info->setSerialno(newSerialNo());
     }
     
     res.push_back(info);

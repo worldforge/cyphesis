@@ -18,6 +18,7 @@
 #include "common/log.h"
 #include "common/inheritance.h"
 #include "common/Property.h"
+#include "common/serialno.h"
 
 #include "common/Tick.h"
 #include "common/Nourish.h"
@@ -1161,7 +1162,7 @@ void Character::operation(const Operation & op, OpVector & res)
         for (OpVector::const_iterator I = mres.begin(); I != Iend; ++I) {
             //Operation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
-            m_world->setSerialnoOp(**I);
+            (*I)->setSerialno(newSerialNo());
             externalOperation(**I);
             delete *I;
         }
@@ -1184,7 +1185,7 @@ void Character::externalOperation(const Operation & op)
         if (I == mres.begin()) {
             (*I)->setSerialno(op.getSerialno());
         } else {
-            m_world->setSerialnoOp(**I);
+            (*I)->setSerialno(newSerialNo());
         }
         sendWorld(*I);
         // Don't delete br as it has gone into World's queue

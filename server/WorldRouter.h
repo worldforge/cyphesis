@@ -6,7 +6,6 @@
 #define SERVER_WORLD_ROUTER_H
 
 #include "common/BaseWorld.h"
-#include "common/serialno.h"
 
 #include <list>
 
@@ -38,11 +37,6 @@ class WorldRouter : public BaseWorld {
     /// List of omnipresent entities. Obsolete.
     EntitySet m_omnipresentList;
 
-    /// Generate a new operation serial number.
-    int newSerialNo() {
-        return opSerialNo();
-    }
-
     void addOperationToQueue(Operation &, const Entity *);
     Operation * getOperationFromQueue();
     const EntitySet & broadcastList(const Operation &) const;
@@ -57,7 +51,6 @@ class WorldRouter : public BaseWorld {
     Entity * addObject(Entity * obj, bool setup = true);
     Entity * addNewObject(const std::string &, const Atlas::Message::MapType &);
     void delObject(Entity * obj);
-    void setSerialnoOp(Operation &);
 
     void operation(Operation &);
 

@@ -9,16 +9,11 @@
 
 typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
 
-static inline void setRefnoOp(Operation * op, const Operation & ref_op)
-{
-    op->setRefno(ref_op.getSerialno());
-}
-
 static inline void setRefno(const OpVector& ret, const Operation & ref_op)
 {
     OpVector::const_iterator Iend = ret.end();
     for(OpVector::const_iterator I = ret.begin(); I != Iend; ++I) {
-        setRefnoOp(*I, ref_op);
+        (*I)->setRefno(ref_op.getSerialno());
     }
 }
 

@@ -16,6 +16,7 @@
 #include "common/Database.h"
 #include "common/random.h"
 #include "common/refno.h"
+#include "common/serialno.h"
 
 #include "common/Setup.h"
 
@@ -130,15 +131,6 @@ Operation * WorldRouter::getOperationFromQueue()
     Operation * op = *I;
     m_operationQueue.pop_front();
     return op;
-}
-
-/// \brief Give an operation a new serial number.
-///
-/// Call newSerialNo() to get a new serial number,
-/// and assign it to the operation provided.
-inline void WorldRouter::setSerialnoOp(Operation & op)
-{
-    op.setSerialno(newSerialNo());
 }
 
 /// \brief Provide an adjusted heigh for the given entity.
@@ -324,7 +316,7 @@ void WorldRouter::deliverTo(const Operation & op, Entity * e)
     setRefno(res, op);
     OpVector::const_iterator Iend = res.end();
     for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-        setSerialnoOp(**I);
+        (*I)->setSerialno(newSerialNo());
         message(**I, e);
     }
 }
@@ -343,7 +335,7 @@ void WorldRouter::deliverDeleteTo(const Operation & op, Entity * e)
     OpVector::const_iterator Iend = res.end();
     for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
         Operation & newOp = **I;
-        setSerialnoOp(newOp);
+        newOp.setSerialno(newSerialNo());
         if (newOp.getParents().front().asString() == "delete") {
             // If this is a delete, queue as normal to avoid a recursive loop
             debug(std::cerr << "Handling delete response to delete"

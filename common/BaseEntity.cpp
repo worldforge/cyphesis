@@ -354,7 +354,7 @@ void BaseEntity::error(const Operation& op, const char* errstring,
     args.push_back(op.asObject());
 
     e->setRefno(op.getSerialno());
-    e->setSerialno(opSerialNo());
+    e->setSerialno(newSerialNo());
     e->setTo(to);
 
     res.push_back(e);

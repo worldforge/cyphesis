@@ -9,6 +9,7 @@
 #include "common/debug.h"
 #include "common/refno.h"
 #include "common/const.h"
+#include "common/serialno.h"
 
 #include <Atlas/Objects/Operation/Delete.h>
 
@@ -109,7 +110,7 @@ void Creator::externalOperation(const Operation & op)
         setRefno(lres, op);
         OpVector::const_iterator Iend = lres.end();
         for (OpVector::const_iterator I = lres.begin(); I != Iend; ++I) {
-            m_world->setSerialnoOp(**I);
+            (*I)->setSerialno(newSerialNo());
             sendWorld(*I);
             // Don't delete lres as it has gone into World's queue
             // World will deal with it.

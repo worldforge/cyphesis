@@ -13,6 +13,7 @@
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
+#include "common/serialno.h"
 #include "common/inheritance.h"
 #include "common/BaseWorld.h"
 
@@ -180,7 +181,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         return;
     }
     info->setRefno(op.getSerialno());
-    info->setSerialno(m_connection->m_server.newSerialNo());
+    info->setSerialno(newSerialNo());
     res.push_back(info);
 }
 

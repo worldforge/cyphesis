@@ -16,6 +16,11 @@
 
 class Entity;
 
+/// \brief Base class for game world object.
+///
+/// This base class provides the common features required by cyphesis
+/// for the object which encapsulates the game world. Other classes
+/// inherit from this provide the core game world system.
 class BaseWorld {
   private:
     const std::string m_id;
@@ -58,7 +63,6 @@ class BaseWorld {
     virtual Entity * addObject(Entity * obj, bool setup = true) = 0;
     virtual Entity * addNewObject(const std::string &,
                                   const Atlas::Message::MapType &) = 0;
-    virtual void setSerialnoOp(Operation &) = 0;
     virtual void message(Operation &, const Entity * obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;

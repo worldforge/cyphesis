@@ -1,5 +1,16 @@
 2004-12-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.cpp, common/BaseWorld.h, common/refno.h,
+	  common/serialno.h, rulesets/Character.cpp, rulesets/Creator.cpp,
+	  rulesets/World.h, server/Account.cpp, server/Admin.cpp,
+	  server/Connection.cpp, server/Lobby.cpp, server/ServerRouting.h,
+	  server/WorldRouter.cpp, server/WorldRouter.h, tests/Creatortest.cpp,
+	  tests/Worldtest.cpp: Simplify the way operation refnos and serialnos
+	  are handled, getting rid of some unnecessary virtual methods and
+	  functions.
+
+2004-12-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/BaseClient.cpp, client/BaseClient.h, client/CreatorClient.cpp,
 	  client/CreatorClient.h, common/BaseEntity.cpp, common/BaseEntity.h,
 	  common/BaseWorld.h, common/OOGThing.cpp, common/OOGThing.h,

@@ -32,18 +32,22 @@ class World : public World_parent {
     explicit World(const std::string & id);
     virtual ~World();
 
+    /// \brief Accessor for terrain manager
     const Mercator::Terrain & terrain() {
         return m_terrain;
     }
 
+    /// \brief Accessor for set of terrain points which have been changed
     const PointSet & modifiedTerrain() {
         return m_modifiedTerrain;
     }
 
+    /// \brief Accessor for set of terrain points which have been added
     const PointSet & createdTerrain() {
         return m_createdTerrain;
     }
 
+    /// \brief Clear the sets used to track terrain modifications
     void clearTerrainFlags() {
         m_modifiedTerrain.clear();
         m_createdTerrain.clear();

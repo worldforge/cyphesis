@@ -8,6 +8,7 @@
 #include "ServerRouting.h"
 
 #include "common/debug.h"
+#include "common/serialno.h"
 
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
@@ -38,7 +39,7 @@ void Lobby::addObject(Account * ac)
     us["loc"] = "lobby";
     a.setFrom(ac->getId());
     a.setTo("lobby");
-    a.setSerialno(m_server.newSerialNo());
+    a.setSerialno(newSerialNo());
 
     OpVector res;
     operation(a, res);
@@ -60,7 +61,7 @@ void Lobby::delObject(Account * a)
     us["loc"] = "lobby";
     d.setFrom(a->getId());
     d.setTo("lobby");
-    d.setSerialno(m_server.newSerialNo());
+    d.setSerialno(newSerialNo());
 
     OpVector res;
     operation(d, res);

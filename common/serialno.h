@@ -7,7 +7,7 @@
 
 extern int opSerialCount;
 
-inline int opSerialNo()
+inline int newSerialNo()
 {
     return ++opSerialCount;
 }

@@ -8,7 +8,6 @@
 #include "Account.h"
 
 #include "common/OOGThing.h"
-#include "common/serialno.h"
 
 class BaseWorld;
 class Lobby;
@@ -51,11 +50,6 @@ class ServerRouting : public OOGThing {
     void addAccount(Account * a) {
         m_accounts[a->m_username] = a;
         addObject(a);
-    }
-
-    /// Generate a new operation serial number.
-    int newSerialNo() {
-        return opSerialNo();
     }
 
     /// Accessor for OOG objects map.
