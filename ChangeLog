@@ -1,3 +1,12 @@
+Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
+
+	* Updated configure.in to work with automake 2.5 (out here on
+	  the edge, the blood is flowing thick and fast).
+    * Certain distributions do not have libTermcap, and instead
+	  combine that functionality into NCurses; configure now
+	  checks for this. This should behave correctly on both
+	  RedHat and SuSE, particularly.
+
 2001-10-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.h, server/Connection.h, rulesets/Pedestrian.h,

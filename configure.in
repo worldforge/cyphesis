@@ -105,10 +105,14 @@ python_lib_path=${python_prefix}/lib/${python_version}/config
 AC_CHECK_LIB(dl,dlopen)
 AC_CHECK_LIB(pthread,pthread_create)
 
-AC_CHECK_LIB(${python_version}, Py_Initialize,
-	[ python_libs="-L${python_lib_path} -l${python_version} -lutil"	  
-	  AC_DEFINE(HAVE_PYTHON_LIB)
-	],[ ],-L${python_lib_path} -lutil)
+AC_CHECK_LIB(${python_version}, 
+	Py_Initialize,
+	[python_libs="-L${python_lib_path} -l${python_version} -lutil"	  
+	AC_DEFINE(HAVE_PYTHON_LIB)
+	],
+	,
+	[-L${python_lib_path} -lutil]
+)
 
 PYTHON_LIBS=${python_libs}
 LIBS="$LIBS $PYTHON_LIBS"
@@ -141,7 +145,15 @@ AC_CHECK_LIB(db,db_create)
 AC_CHECK_LIB(db_cxx,main)
 AC_CHECK_LIB(db3_cxx,main)
 AC_CHECK_LIB(skstream,main)
-AC_CHECK_LIB(termcap,tgetent)
+
+AC_CHECK_LIB(termcap,tgetent, 
+	[LIBS="$LIBS -ltermcap"],
+	AC_CHECK_LIB(ncurses, tgetent, 
+		[LIBS="$LIBS -lncurses"],
+		AC_MSG_ERROR([Couldn't find tgetent in termcap or ncurses libraries!])
+	)
+)
+
 AC_CHECK_LIB(readline,readline)
 
 dnl Generate files
