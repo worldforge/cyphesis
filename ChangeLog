@@ -1,3 +1,7 @@
+2004-05-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/World.cpp: Removed unused variables.
+
 2004-05-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Convert movement appearance and disappearance
