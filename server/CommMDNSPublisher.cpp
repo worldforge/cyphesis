@@ -25,7 +25,15 @@ static sw_result reply_callback(sw_discovery,
                                 sw_discovery_publish_status status,
                                 sw_opaque)
 {
-    fprintf(stderr, "STATUS: %x\n", status);
+    if (status == SW_DISCOVERY_PUBLISH_STARTED) {
+    } else if (status == SW_DISCOVERY_PUBLISH_STOPPED) {
+    } else if (status == SW_DISCOVERY_PUBLISH_NAME_COLLISION) {
+        log(WARNING, "Name collision publishing using MDNS");
+    } else if (status == SW_DISCOVERY_PUBLISH_INVALID) {
+        log(WARNING, "Invalid error publishing using MDNS");
+    } else {
+        log(ERROR, "Unknown error code using MDNS");
+    }
     return SW_OKAY;
 }
 
@@ -45,16 +53,12 @@ int CommMDNSPublisher::setup()
         return -1;
     }
 
-    fprintf(stderr, "Session %x found\n", m_session);
-
-    log(INFO, "Created MDNS publisher session");
     if (sw_discovery_publish(m_session, 0, "WorldForge Server",
-                             "worldforge._tcp.", NULL, NULL, port_num, NULL,
+                             "_worldforge._tcp.", NULL, NULL, port_num, NULL,
                              0, reply_callback, this, &m_oid) != SW_OKAY) {
-        log(WARNING, "Unable to publish our presence");
+        log(WARNING, "Unable to publish our presence using MDNS");
         return -1;
     }
-    log(INFO, "Published service information");
     return 0;
 }
 
@@ -79,10 +83,13 @@ int CommMDNSPublisher::read()
 {
     assert(m_session != 0);
 
-    fprintf(stderr, "Session is %x\n", m_session);
-
     // FIXME Check return value
-    sw_discovery_read_socket(m_session);
+    if (sw_discovery_read_socket(m_session) != SW_OKAY) {
+        log(WARNING, "Error publishing our presence using MDNS. Disabled.");
+        sw_discovery_fina(m_session);
+        m_session = 0;
+        return -1;
+    }
 
     return 0;
 }

@@ -1,3 +1,9 @@
+2004-11-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommMDNSPublisher.cpp: Fix segfault problems by using an
+	  RFC compliant service type. Fill out the error handling and
+	  reporting and clean out the debug output.
+
 2004-11-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommMDNSPublisher.cpp, server/CommMDNSPublisher.h: New
