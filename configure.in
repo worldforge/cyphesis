@@ -104,7 +104,7 @@ AC_CHECK_LIB(dl,dlopen)
 AC_CHECK_LIB(pthread,pthread_create)
 
 AC_CHECK_LIB(${python_version}, Py_Initialize,
-	[ python_libs="-L${python_lib_path} -lpython1.5 -lutil"	  
+	[ python_libs="-L${python_lib_path} -l${python_version} -lutil"	  
 	  AC_DEFINE(HAVE_PYTHON_LIB)
 	],[ ],-L${python_lib_path} -lutil)
 

@@ -1,3 +1,4 @@
+// This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
@@ -36,6 +37,7 @@ using Atlas::Message::Object;
 static const bool debug_flag = false;
 
 void init_python_api();
+void shutdown_python_api();
 
 const std::string get_hostname()
 {
@@ -279,6 +281,8 @@ int main(int argc, char ** argv)
     if (!daemon_flag) {
         std::cout << "Performing clean shutdown..." << std::endl << std::flush;
     }
+
+    shutdown_python_api();
 
     Persistance::shutdown();
 

@@ -793,48 +793,60 @@ void init_python_api()
         return;
     }
 
-    PyObject * misc;
-    if ((misc = Py_InitModule("misc", misc_methods)) == NULL) {
+    if (Py_InitModule("misc", misc_methods) == NULL) {
         fprintf(stderr, "Failed to Create misc module\n");
         return;
     }
 
     PyObject * common;
-    PyObject * dict;
     if ((common = Py_InitModule("common", common_methods)) == NULL) {
         fprintf(stderr, "Failed to Create common module\n");
         return;
     }
     PyObject * _const = PyModule_New("const");
     PyObject * log = PyModule_New("log");
-    dict = PyModule_GetDict(common);
+    PyObject * dict = PyModule_GetDict(common);
     PyDict_SetItemString(dict, "const", _const);
     PyDict_SetItemString(dict, "log", log);
     PyObject * debug = (PyObject *)PyObject_NEW(FunctionObject, &log_debug_type);
     PyObject_SetAttrString(log, "debug", debug);
-    //PyDict_SetItemString(dict, "misc", misc);
-    PyObject_SetAttrString(_const, "server_python", PyInt_FromLong(0));
-    PyObject_SetAttrString(_const, "debug_level",
-            PyInt_FromLong(consts::debug_level));
-    PyObject_SetAttrString(_const, "debug_thinking",
-            PyInt_FromLong(consts::debug_thinking));
+    Py_DECREF(debug);
+    Py_DECREF(log);
+    PyObject * o;
+    o = PyInt_FromLong(0);
+    PyObject_SetAttrString(_const, "server_python", o);
+    Py_DECREF(o);
+    o = PyInt_FromLong(consts::debug_level);
+    PyObject_SetAttrString(_const, "debug_level", o);
+    Py_DECREF(o);
+    o = PyInt_FromLong(consts::debug_thinking);
+    PyObject_SetAttrString(_const, "debug_thinking", o);
+    Py_DECREF(o);
 
-    PyObject_SetAttrString(_const, "time_multiplier",
-            PyFloat_FromDouble(consts::time_multiplier));
-    PyObject_SetAttrString(_const, "base_velocity_coefficient",
-            PyFloat_FromDouble(consts::base_velocity_coefficient));
-    PyObject_SetAttrString(_const, "base_velocity",
-            PyFloat_FromDouble(consts::base_velocity));
+    o = PyFloat_FromDouble(consts::time_multiplier);
+    PyObject_SetAttrString(_const, "time_multiplier", o);
+    Py_DECREF(o);
+    o = PyFloat_FromDouble(consts::base_velocity_coefficient);
+    PyObject_SetAttrString(_const, "base_velocity_coefficient", o);
+    Py_DECREF(o);
+    o = PyFloat_FromDouble(consts::base_velocity);
+    PyObject_SetAttrString(_const, "base_velocity", o);
+    Py_DECREF(o);
 
-    PyObject_SetAttrString(_const, "basic_tick",
-            PyFloat_FromDouble(consts::basic_tick));
+    o = PyFloat_FromDouble(consts::basic_tick);
+    PyObject_SetAttrString(_const, "basic_tick", o);
+    Py_DECREF(o);
 
-    PyObject_SetAttrString(_const, "sight_range",
-            PyFloat_FromDouble(consts::sight_range));
-    PyObject_SetAttrString(_const, "hearing_range",
-            PyFloat_FromDouble(consts::hearing_range));
-    PyObject_SetAttrString(_const, "enable_ranges",
-            PyInt_FromLong(consts::enable_ranges));
+    o = PyFloat_FromDouble(consts::sight_range);
+    PyObject_SetAttrString(_const, "sight_range", o);
+    Py_DECREF(o);
+    o = PyFloat_FromDouble(consts::hearing_range);
+    PyObject_SetAttrString(_const, "hearing_range", o);
+    Py_DECREF(o);
+    o = PyInt_FromLong(consts::enable_ranges);
+    PyObject_SetAttrString(_const, "enable_ranges", o);
+    Py_DECREF(o);
+    Py_DECREF(_const);
 
     PyObject * server;
     if ((server = Py_InitModule("server", server_methods)) == NULL) {
@@ -845,7 +857,16 @@ void init_python_api()
     PyObject * dictlist = PyModule_New("dictlist");
     PyObject * add_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_add_value_type);
     PyObject_SetAttrString(dictlist, "add_value", add_value);
+    Py_DECREF(add_value);
     PyObject * remove_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_remove_value_type);
     PyObject_SetAttrString(dictlist, "remove_value", remove_value);
+    Py_DECREF(remove_value);
     PyDict_SetItemString(dict, "dictlist", dictlist);
+    Py_DECREF(dictlist);
+}
+
+void shutdown_python_api()
+{
+    
+    Py_Finalize();
 }

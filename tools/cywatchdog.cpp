@@ -212,7 +212,7 @@ int main(int argc, char ** argv)
 #endif
     openlog("WorldForge Cyphesis Watchdog", LOG_PID, LOG_DAEMON);
     syslog(LOG_INFO, "Server monitor started");
-    std::ofstream pid_file((var_dir + "/watchdog.pid").c_str());
+    std::ofstream pid_file((var_dir + "/cyphesis/watchdog.pid").c_str());
     pid_file << getpid() << flush;
     pid_file.close();
     if (false) {
