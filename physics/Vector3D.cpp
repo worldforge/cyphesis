@@ -5,3 +5,7 @@
 #include <Atlas/Message/Object.h>
 
 #include "Vector3D.h"
+
+const int Vector3D::cX;
+const int Vector3D::cY;
+const int Vector3D::cZ;

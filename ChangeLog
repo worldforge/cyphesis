@@ -1,5 +1,17 @@
 2001-05-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.in: Added termcap to sort out dependency on termcap
+	  by readline on some systems.
+
+	* physics/Vector3D.cpp: Added definition of static consts members.
+	  I really don't understand why these are required, and as far
+	  as I can tell this does not conform to the C++ spec.
+	
+	* server/Makefile.am, aiclient/Makefile.am: Re-ordered linking so
+	  that physics is picked up.
+	
+2001-05-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/server.cpp: Added several options to the config file to
 	  make server operation customisable. Added comments.
 

@@ -150,6 +150,7 @@ AC_CHECK_LIB(db_cxx,main)
 AC_CHECK_HEADERS(sstream.h)
 AC_CHECK_LIB(coal,main)
 AC_CHECK_LIB(coaliso,main)
+AC_CHECK_LIB(termcap,tgetent)
 AC_CHECK_LIB(readline,readline)
 
 AC_CACHE_VAL(cyphesis_cv_python_libraries,
