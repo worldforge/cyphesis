@@ -32,7 +32,10 @@ oplist Player::characterError(const Create& op,const Object::MapType& ent) const
 
     const string& type= ent.find("parents")->second.AsList().front().AsString();
     
-    if ((type!="character") && (type!="farmer") && (type!="smith")) {
+    if ((type!="character") && (type!="archer") && (type!="druid") &&
+        (type!="farmer") && (type!="khatinid") && (type!="guard") &&
+        (type!="butcher") && (type!="merchant") && (type!="seller") &&
+        (type!="swineherd") && (type!="warrior") && (type!="watermage")) {
         return error(op, "Object of that type cannot be created by this account");
     }
     return oplist();

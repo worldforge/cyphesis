@@ -1,3 +1,11 @@
+2001-05-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* Added ruleset entries for characters to match all the recently
+	  added animations.
+
+	* server/Player.cpp: Added checks which allow player to be any of
+	  the currently available characters.
+
 2001-05-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.in: Added termcap to sort out dependency on termcap

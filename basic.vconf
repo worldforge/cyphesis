@@ -8,10 +8,17 @@ fire		= "world.objects.elements.Fire"
 seed		= "world.objects.plants.Seed"
 
 [character]
+archer		= ""
+druid		= ""
 farmer		= ""
+khatinid	= ""
 guard		= ""
 butcher		= ""
 merchant	= ""
+seller		= ""
+swineherd	= ""
+warrior		= ""
+watermage	= ""
 creator		= ""
 
 [plant]
