@@ -1,5 +1,10 @@
 2003-10-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/Collision.cpp: Fix vertex/plane collision prediction
+	  function.
+
+2003-10-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Collision.cpp: Add notes on how collision code has
 	  to be modified.
 
