@@ -1,5 +1,13 @@
 2002-12-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp, server/PersistantThingFactory.cpp,
+	  server/PersistantThingFactory.h, 
+	  server/PersistantThingFactory_impl.h,
+	  server/Persistor.cpp: Cut down template bloat by minimising the
+	  places where template instances are created.
+
+2002-12-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Add in code to send the entity requests
 	  to the database.
 

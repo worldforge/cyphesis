@@ -7,11 +7,9 @@
 #include "PersistantThingFactory.h"
 #include "Persistance.h"
 #include "Persistor.h"
-#include "Persistor_impl.h"
 #include "Player.h"
 
 #include <rulesets/Thing.h>
-#include <rulesets/Python_API.h>
 #include <rulesets/MindFactory.h>
 #include <rulesets/Character.h>
 #include <rulesets/Creator.h>
@@ -21,6 +19,8 @@
 #include <rulesets/Structure.h>
 #include <rulesets/Line.h>
 #include <rulesets/Area.h>
+
+#include <rulesets/Python_API.h>
 
 #include <common/debug.h>
 #include <common/globals.h>

@@ -18,6 +18,17 @@
 #include <rulesets/Stackable.h>
 #include <rulesets/Structure.h>
 
+template class Persistor<Entity>;
+template class Persistor<Thing>;
+template class Persistor<Line>;
+template class Persistor<Area>;
+template class Persistor<Character>;
+template class Persistor<Creator>;
+template class Persistor<Food>;
+template class Persistor<Plant>;
+template class Persistor<Stackable>;
+template class Persistor<Structure>;
+
 Persistor<Entity>::Persistor() : m_class("entity")
 {
     Atlas::Message::Object::MapType desc;

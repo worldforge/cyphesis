@@ -26,10 +26,9 @@ class PersistorConnection : public PersistorBase {
     Persistor<T> & m_p;
   public:
     PersistorConnection(T & t, Persistor<T> & p) : m_t(t), m_p(p) { }
-    ~PersistorConnection() { }
 
     /// Use p to hook up t into the persistance code
-    void persist() { m_p.persist(m_t); }
+    void persist();
 };
 
 class FactoryBase {
@@ -56,17 +55,9 @@ class PersistantThingFactory : public FactoryBase {
     PersistantThingFactory() : m_p(* new Persistor<T>()) { }
     PersistantThingFactory(PersistantThingFactory<T> & p) : m_p(p.m_p) { }
 
-    T * newThing() {
-        return new T();
-    }
-    T * newPersistantThing(PersistorBase ** p) {
-        T * t = new T();
-        *p = new PersistorConnection<T>(*t, m_p);
-        return t;
-    }
-    FactoryBase * duplicateFactory() {
-        return new PersistantThingFactory<T>(*this);
-    }
+    T * newThing();
+    T * newPersistantThing(PersistorBase ** p);
+    FactoryBase * duplicateFactory();
 };
 
 #endif // RULESETS_THING_FACTORY_H
