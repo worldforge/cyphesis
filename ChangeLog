@@ -1,3 +1,24 @@
+2004-09-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Implement function for modifying array rows.
+
+	* common/const.cpp: Enable persistence for testing.
+
+	* common/terrain_utils.cpp: Implement function for updating terrain
+	  in database after a change.
+
+	* rulesets/World.cpp, rulesets/attributes.h: Add an update flag for
+	  terrain, and use it to indicate to the Persistor.
+
+	* rulesets/World.h: Add accessors for variables which track modified
+	  terrain, and a function to clear them.
+
+	* server/Persistor.cpp: Implement call to function to update terrain
+	  in database.
+
+	* server/Restoration.cpp: Ensure that if world entity is already
+	  in database, it gets hooked up appropriatly.
+
 2004-09-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp, common/Database.h: Fix queries on ID relation

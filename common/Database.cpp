@@ -1207,8 +1207,43 @@ bool Database::updateArrayRow(const std::string & name,
                               const std::vector<int> & key,
                               const Atlas::Message::MapType & data)
 {
-    /// Not sure we need this one yet, so lets no bother for now ;)
-    return false;
+    assert(key.size() > 0);
+    assert(key.size() <= 5);
+    assert(!data.empty());
+
+    std::stringstream query;
+
+    query << "UPDATE " << name << " SET ";
+    for (MapType::const_iterator I = data.begin(); I != data.end(); ++I) {
+        if (I != data.begin()) {
+            query << ", ";
+        }
+        query << I->first << " = ";
+        const Element & e = I->second;
+        switch (e.getType()) {
+          case Element::TYPE_INT:
+            query << e.asInt();
+            break;
+          case Element::TYPE_FLOAT:
+            query << e.asFloat();
+            break;
+          case Element::TYPE_STRING:
+            query << "'" << e.asString() << "'";
+            break;
+          default:
+            log(ERROR, "Bad type constructing array database row for update");
+            break;
+        }
+    }
+    query << " WHERE id='" << id << "'";
+    for (unsigned int i = 0; i < key.size(); ++i) {
+        query << " AND " << array_axes[i] << " = " << key[i];
+    }
+    query << ";";
+    
+    std::string qstr = query.str();
+    std::cout << "QUery: " << qstr << std::endl << std::flush;
+    return scheduleCommand(qstr);
 }
 
 bool Database::removeArrayRow(const std::string & name,

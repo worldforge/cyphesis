@@ -60,3 +60,49 @@ void loadTerrain(const std::string & id, Mercator::Terrain & terrain)
         terrain.setBasePoint(x, y, h);
     }
 }
+
+void updateStoredTerrain(const std::string & id,
+                         const Mercator::Terrain & terrain,
+                         const PointSet & modified,
+                         const PointSet & created)
+{
+    Mercator::BasePoint bp;
+    std::cout << "Update Stored Terrain" << std::endl << std::flush;
+
+    PointSet::const_iterator I = modified.begin();
+    for (; I != modified.end(); ++I) {
+        std::set<int>::const_iterator J = I->second.begin();
+        for (; J != I->second.end(); ++J) {
+            std::cout << "Modified " << I->first << *J << std::endl << std::flush;
+            std::vector<int> coords(2);
+
+            coords[0] = I->first;
+            coords[1] = *J;
+
+            Atlas::Message::MapType heightPoint;
+            assert(terrain.getBasePoint(I->first, *J, bp));
+            heightPoint["height"] = bp.height();
+
+            Database::instance()->updateArrayRow("terrain", id, coords,
+                                                 heightPoint);
+        }
+    }
+
+    for (I = created.begin(); I != created.end(); ++I) {
+        std::set<int>::const_iterator J = I->second.begin();
+        for (; J != I->second.end(); ++J) {
+            std::cout << "Created " << I->first << "," << *J << std::endl << std::flush;
+            std::vector<int> coords(2);
+
+            coords[0] = I->first;
+            coords[1] = *J;
+
+            Atlas::Message::MapType heightPoint;
+            assert(terrain.getBasePoint(I->first, *J, bp));
+            heightPoint["height"] = bp.height();
+
+            Database::instance()->createArrayRow("terrain", id, coords,
+                                                 heightPoint);
+        }
+    }
+}

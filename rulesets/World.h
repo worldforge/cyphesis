@@ -38,6 +38,19 @@ class World : public World_parent {
         return m_terrain;
     }
 
+    const PointSet & modifiedTerrain() {
+        return m_modifiedTerrain;
+    }
+
+    const PointSet & createdTerrain() {
+        return m_createdTerrain;
+    }
+
+    void clearTerrainFlags() {
+        m_modifiedTerrain.clear();
+        m_createdTerrain.clear();
+    }
+
     float getHeight(float x, float y);
 
     virtual bool get(const std::string &, Element &) const;

@@ -165,6 +165,7 @@ bool World::get(const std::string & aname, Element & attr) const
 void World::set(const std::string & aname, const Element & attr)
 {
     if ((aname == "terrain") && attr.isMap()) {
+        m_update_flags |= a_terrain;
         setTerrain(attr.asMap());
     } else {
         World_parent::set(aname, attr);

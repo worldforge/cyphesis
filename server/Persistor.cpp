@@ -201,10 +201,16 @@ void Persistor<World>::update(World * t)
     std::string columns;
     uEntity(*t, columns);
     Database::instance()->updateEntityRow(m_class, t->getId(), columns);
-    t->clearUpdateFlags();
 
-    // Update modified terrain points.
-    // Create new terrain points.
+    std::cout << "Persistor<World>::update()" << std::endl << std::flush;
+
+    if (t->getUpdateFlags() & a_terrain) {
+        updateStoredTerrain(t->getId(), t->terrain(), t->modifiedTerrain(),
+                                                      t->createdTerrain());
+        t->clearTerrainFlags();
+    }
+
+    t->clearUpdateFlags();
 }
 
 void Persistor<Character>::hookup(Character & t)

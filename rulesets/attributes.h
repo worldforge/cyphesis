@@ -22,8 +22,9 @@ static const uint32_t a_loc	= 1 << 0,	// Entity
                       a_food	= 1 << 12,	// Character
                       a_line	= 1 << 13,	// Line
                       a_area	= 1 << 14,	// Area
-                      a_fruit	= 1 << 15;	// Plant
+                      a_fruit	= 1 << 15,	// Plant
+                      a_terrain	= 1 << 16;	// World
 
-static const int attr_count = 15;
+static const int attr_count = 16;
 
 #endif // RULESETS_ATTRIBUTES_H

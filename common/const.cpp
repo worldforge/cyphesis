@@ -56,7 +56,7 @@ namespace consts {
   // What is the minimum size of an object when calculating visibility
   float minSqrBoxSize = 0.1f;
   // Should everything be persistent
-  bool enable_persistence = false;
+  bool enable_persistence = true;
 
 #endif
 

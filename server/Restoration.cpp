@@ -164,6 +164,9 @@ int Restoration::read()
     DatabaseResult::const_iterator I = res.begin();
     Restorer<World> & world = (Restorer<World> &)server.m_world.m_gameWorld;
     world.populate(I);
+    if (consts::enable_persistence) {
+        Restorer<World>::m_persist.hookup(world);
+    }
     res.clear();
     restoreChildren(&server.m_world.m_gameWorld);
     return 0;

@@ -23,11 +23,8 @@ techniques.
 
 cyphesis is built using autoconf. Please see the file INSTALL for details.  It
 requires Python and PostgreSQL which are include with most Linux distributions,
-and Atlas-C++, varconf and skstream2 which are provided by the WorldForge
-project. PostgreSQL must have been built with the C++ libraries enabled. If you
-are building PostgreSQL from source, please check the PostgreSQL documentation
-for information on how to enable building the C++ libraries. GNU readline is
-required by some of the included tools.
+and Atlas-C++, varconf, Mercator, wfmath and skstream2 which are provided by
+the WorldForge project. GNU readline is required by some of the included tools.
 
 If built from source the software and data must be installed using
 "make install" before it can be run.
@@ -37,7 +34,7 @@ If built from source the software and data must be installed using
 
 If the software has been installed from source, binary package or rpm then it
 requires some post-installation configuration before it will run correctly. If
-you plan to run a server using the SYSV init service provided by the
+you plan to run a server using the System V init service provided by the
 cyphesis-service rpm then the rpm installation and service startup will ensure
 that this configuration is handled for you.
 
@@ -63,8 +60,8 @@ details of the manual setup process
 -----------------------------
 
 Each time the server is run it needs to be populated with game data before it
-does anything useful. If you are running the server using the SYSV init service
-then this is handled for you by the cyclient service.
+does anything useful. If you are running the server using the System V init
+service then this is handled for you by the cyclient service.
 
 Start the server with the cyphesis command. It will output some startup
 messages and then run in the foreground. In another terminal you should then run
@@ -174,48 +171,42 @@ in addition to the ruleset you are using you will need to load the rulesets on
 which it depends. A ruleset is distributed with cyphesis as an atlas xml file.
 The default is mason.xml, which depends on acorn.xml, which in turn depends on
 basic.xml.  These three rulesets can be loaded into the database using the
-cyloadrules command, with no arguments. This automatically loads the rulesets
-in order into the database, first ensuring that the rules table is empty.
+cyloadrules command, with no arguments as follows:
+
+    $ cyloadrules
+    Reading rules from mason
+    49 classes stored in rule database.
+    Reading rules from basic
+    29 classes stored in rule database.
+    $
+
+This automatically loads the rulesets in order into the database, first
+ensuring that the rules table is empty.
 
 cyloadrules can also be used to load individual rulesets into the database as
 follows:
 
-    cyloadrules basic.xml
-    cyloadrules acorn.xml
-    cyloadrules mason.xml
+    $ cyloadrules mason.xml
+    49 classes stored in rule database.
+    $ cyloadrules basic.xml
+    29 classes stored in rule database.
+    $
+
 
 You will only need to do this if you are developing new rulesets, or
 customising existing ones.
 
-You should now load map data into the server using cydbload. The map for Mason
-is called moraf.
+The database store is persistent. If new a ruleset is provided, it will be
+necessary to clear the database tables before loading them with new data.
 
-    cydbload moraf.xml
-
-The map for the Acorn ruleset is stored in agrilan*.xml. The Acorn map is much
-more detailed than the Mason map, but we no longer have access to the artwork
-for this map.
-
-    cydbload agrilan.xml
-    cydbload agrilan_a1.xml
-    cydbload agrilan_a2.xml
-    cydbload agrilan_a3.xml
-    cydbload agrilan_a4.xml
-
-Once these tasks are done, it is safe to run cyphesis. You will not need to do
-them again. The database store is persistent. If new a ruleset or map is
-provided, it will be necessary to clear the database tables before loading them
-with new data.
-
-Once cyphesis is running, it will contain all the entities in the map, but
-there will be few or no active entities in the world. In order to set up a
-game, you need to run a client to set up the rest. The client will use a script
-included in the current ruleset to define what the world should contain. This
-script is kept together with the entity and AI scripts required for the ruleset
-in a directory under the rulesets directory. For example, the Mason script is
-found in rulesets/mason/define_world.py. In order to populate the world, simply
-run cyclient once the server is running. You will need to do this each time
-cyphesis is started.
+Once cyphesis is running, it will need to be populated with a map. In order to
+set up a game, you need to run a client to set up the map. The client will use
+a script included in the current ruleset to define what the world should
+contain. This script is kept together with the entity and AI scripts required
+for the ruleset in a directory under the rulesets directory. For example, the
+Mason script is found in rulesets/mason/define_world.py. In order to populate
+the world, simply run cyclient once the server is running. You will need to do
+this each time cyphesis is started.
 
 6 - Copyright notes
 -------------------
