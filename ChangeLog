@@ -1,5 +1,13 @@
 2004-11-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/humanoid/construction.py: New currently
+	  non-functional goals for construction related tasks.
+
+	* rulesets/mason/define_world.py: Add new test for construction
+	  goals.
+
+2004-11-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/Location.h, modules/Location.cpp, rulesets/Entity.h:
 	  Finally remove the getXyz() implementation, this getting
 	  rid of absolute coords entirely.

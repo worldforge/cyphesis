@@ -459,3 +459,11 @@ def test_pig(mapeditor):
     piglet = m.make('pig', type='pig', xyz=(-3,-1,settlement_height))
     m.learn(piglet,pig_goals)
 
+def test_settler(mapeditor):
+
+    m=editor(mapeditor)
+    settler=m.make('A Settler',type='settler', xyz=(3,3,0), sex='male')
+    axe=m.make('axe',type='axe',xyz=(0,0,0))
+    m.own(settler,axe)
+    m.know(settler,[('market','location',butcher_stall_xyz)])
+    m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','origin','axe')"))

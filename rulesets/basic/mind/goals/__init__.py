@@ -12,7 +12,7 @@ from mind.goals.humanoid.build_home import *
 from mind.goals.humanoid.transaction import *
 from mind.goals.humanoid.mason import *
 from mind.goals.humanoid.werewolf import *
-#from mind.goals.humanoid.construction import *
+from mind.goals.humanoid.construction import *
 
 # Only animals use these goals
 from mind.goals.animal.herd import *
