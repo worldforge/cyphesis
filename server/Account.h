@@ -16,8 +16,8 @@ class Account : public OOGThing {
     EntityDict charactersDict;
     ConMap destroyedConnections;
 
-    BaseEntity * addCharacter(const std::string &,
-                              const Atlas::Message::Object::MapType &);
+    Entity * addCharacter(const std::string &,
+                          const Atlas::Message::Object::MapType &);
   protected:
     void characterDestroyed(std::string);
 
@@ -42,7 +42,9 @@ class Account : public OOGThing {
     virtual OpVector TalkOperation(const Talk & op);
     virtual OpVector LookOperation(const Look & op);
 
-    const EntityDict & getCharacters() {
+    void addCharacter(Entity *);
+
+    const EntityDict & getCharacters() const {
         return charactersDict;
     }
 };

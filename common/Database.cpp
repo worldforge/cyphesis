@@ -394,7 +394,7 @@ bool Database::runCommandQuery(const std::string & query)
     return false;
 }
 
-bool Database::registerRelation(const std::string & name)
+bool Database::registerRelation(const std::string & name, RelationType kind)
 {
     std::string query = "SELECT * FROM ";
     query += name;
@@ -403,9 +403,19 @@ bool Database::registerRelation(const std::string & name)
     query += " = 0;";
     std::string createquery = "CREATE TABLE ";
     createquery += name;
-    createquery += " (id integer UNIQUE PRIMARY KEY, ";
+    if ((kind == ManyToOne) || (kind == OneToOne)) {
+        createquery += " (id integer PRIMARY KEY, ";
+    } else {
+        createquery += " (id integer, ";
+    }
     createquery += name;
-    createquery += " integer);";
+    createquery += " integer";
+    if ((kind == OneToOne) || (kind == OneToMany)) {
+        createquery += " UNIQUE);";
+    } else {
+        createquery += ");";
+    }
+
 
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     int status = PQsendQuery(m_connection, query.c_str());
@@ -425,11 +435,23 @@ bool Database::registerRelation(const std::string & name)
 
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
-    return runCommandQuery(createquery);
+    if (!runCommandQuery(createquery)) {
+        return false;
+    }
+    if ((kind == ManyToOne) || (kind == OneToOne)) {
+        return true;
+    } else {
+        std::string indexQuery = "CREATE INDEX ";
+        indexQuery += name;
+        indexQuery += "_id_idx ON ";
+        indexQuery += name;
+        indexQuery += " (id);";
+        return runCommandQuery(indexQuery);
+    }
 }
 
-const DatabaseResult Database::selectRelation(const std::string & id,
-                                              const std::string & name)
+const DatabaseResult Database::selectRelation(const std::string & name,
+                                              const std::string & id)
 {
     std::string query = "SELECT ";
     query += name;
@@ -442,6 +464,23 @@ const DatabaseResult Database::selectRelation(const std::string & id,
     debug(std::cout << "Selecting on id = " << id << " ... " << std::flush;);
 
     return runSimpleSelectQuery(query);
+}
+
+bool Database::createRelationRow(const std::string & name,
+                                 const std::string & id,
+                                 const std::string & other)
+{
+    std::string query = "INSERT INTO ";
+    query += name;
+    query += " (id, ";
+    query += name;
+    query += ") VALUES (";
+    query += id;
+    query += ", ";
+    query += other;
+    query += ");";
+
+    return runCommandQuery(query);
 }
 
 bool Database::registerSimpleTable(const std::string & name,

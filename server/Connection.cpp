@@ -5,6 +5,7 @@
 #include "Connection.h"
 
 #include "ServerRouting.h"
+#include "WorldRouter.h"
 #include "Lobby.h"
 #include "CommClient.h"
 #include "CommServer.h"
@@ -194,6 +195,8 @@ OpVector Connection::LoginOperation(const Login & op)
         debug(std::cout << "No " << username << " account in server. Checking in database." << std::endl << std::flush;);
         player = Persistance::instance()->getAccount(username);
         if (player != 0) {
+            Persistance::instance()->registerCharacters(*player,
+                                                     server.world.getObjects());
             server.addAccount(player);
         }
     }

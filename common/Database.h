@@ -49,6 +49,8 @@ class Database {
     bool commandOk();
 
   public:
+    typedef enum { OneToMany, ManyToMany, ManyToOne, OneToOne } RelationType;
+
     const std::string & rule() const { return rule_db; }
 
     bool decodeObject(const std::string & data,
@@ -79,9 +81,10 @@ class Database {
     const DatabaseResult runSimpleSelectQuery(const std::string & query);
     bool runCommandQuery(const std::string & query);
 
-    bool registerRelation(const std::string & name);
-    const DatabaseResult selectRelation(const std::string & id,
-                                        const std::string & name);
+    bool registerRelation(const std::string & name,
+                          RelationType kind = OneToMany);
+    const DatabaseResult selectRelation(const std::string & name,
+                                        const std::string & id);
     bool createRelationRow(const std::string & name,
                            const std::string & id,
                            const std::string & other);
@@ -143,7 +146,13 @@ class DatabaseResult {
         int m_row;
         
         const_iterator(const DatabaseResult & dr, int r = 0) : m_dr(dr),
-                                                               m_row(r) { }
+                                                               m_row(r) {
+            if (m_row != -1) {
+                if (m_row >= m_dr.size()) {
+                    m_row = -1;
+                }
+            }
+        }
       public:
         const_iterator(const const_iterator & ci) : m_dr(ci.m_dr),
                                                     m_row(ci.m_row) { }

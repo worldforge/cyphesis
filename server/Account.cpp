@@ -9,6 +9,7 @@
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "ExternalMind.h"
+#include "Persistance.h"
 
 #include <rulesets/Character.h>
 
@@ -55,10 +56,22 @@ void Account::characterDestroyed(std::string id)
         delete I->second;
         destroyedConnections.erase(I);
     }
+    // FIXME Let Persistance know about this old character
 }
 
-BaseEntity * Account::addCharacter(const std::string & typestr,
-                                   const Fragment::MapType & ent)
+void Account::addCharacter(Entity * chr)
+{
+    Character * pchar = dynamic_cast<Character *>(chr);
+    if (pchar == 0) {
+        return;
+    }
+    charactersDict[chr->getId()] = chr;
+    SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<std::string>(slot(*this, &Account::characterDestroyed), chr->getId())));
+    destroyedConnections[chr->getId()] = con;
+}
+
+Entity * Account::addCharacter(const std::string & typestr,
+                               const Fragment::MapType & ent)
 {
     WorldRouter & world = connection->server.world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
@@ -71,7 +84,7 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
     }
     debug(std::cout << "Location set to: " << chr->location << std::endl << std::flush;);
     Character * pchar = dynamic_cast<Character *>(chr);
-    if (pchar != NULL) {
+    if (pchar != 0) {
         pchar->externalMind = new ExternalMind(*connection, pchar->getId(), pchar->getName());
         // Only genuinely playable characters should go in here. Otherwise
         // if a normal entity gets into the account, and connection, it
@@ -80,6 +93,7 @@ BaseEntity * Account::addCharacter(const std::string & typestr,
         SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<std::string>(slot(*this, &Account::characterDestroyed), chr->getId())));
         destroyedConnections[chr->getId()] = con;
         connection->addObject(chr);
+        Persistance::instance()->addCharacter(*this, *chr);
     }
 
     // Hack in default objects

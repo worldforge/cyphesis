@@ -7,6 +7,8 @@
 #include "Admin.h"
 #include "Player.h"
 
+#include <rulesets/Entity.h>
+
 #include <common/log.h>
 #include <common/const.h>
 #include <common/Database.h>
@@ -55,7 +57,8 @@ void Persistance::shutdown()
 
 bool Persistance::findAccount(const std::string & name)
 {
-    DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", name);
+    std::string namestr = "'" + name + "'";
+    DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", namestr);
     if (dr.error()) {
         log(ERROR, "Failure while find account.");
         return false;
@@ -119,6 +122,35 @@ void Persistance::putAccount(const Account & ac)
     values += ac.password;
     values += "'";
     m_connection.createSimpleRow("accounts", ac.getId(), columns, values);
+}
+
+void Persistance::registerCharacters(Account & ac,
+                                     const EntityDict & worldObjects)
+{
+    DatabaseResult dr = m_connection.selectRelation("character", ac.getId());
+    if (dr.error()) {
+        log(ERROR, "Failure while find account.");
+    }
+    DatabaseResult::const_iterator I = dr.begin();
+    for(; I != dr.end(); ++I) {
+        const char * c = I.column(0);
+        if (c == 0) {
+            log(ERROR, "No data in relation when examing characters");
+            continue;
+        }
+        std::string id(c);
+        EntityDict::const_iterator J = worldObjects.find(id);
+        if (J == worldObjects.end()) {
+            log(WARNING, "Persistance: Got account id from database which does not exist in world");
+            continue;
+        }
+        ac.addCharacter(J->second);
+    }
+}
+
+void Persistance::addCharacter(const Account & ac, const Entity & e)
+{
+    m_connection.createRelationRow("character", ac.getId(), e.getId());
 }
 
 bool Persistance::getRules(Fragment::MapType & m)

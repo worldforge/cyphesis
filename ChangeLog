@@ -1,5 +1,25 @@
 2003-01-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/Database.h: Modify relation
+	  table create query to allow different types of relation,
+	  with constraints to be added. Implement function to
+	  add rows to a relation. Modify result iterator constrcter
+	  so it returns end() if the result is empty.
+
+	* server/Persistance.cpp, server/Persistance.h: New methods
+	  to handle populating a newly restored account object
+	  with characters, and syncing newly created characters to
+	  the relation that links them with their account.
+
+	* server/Account.cpp, server/Account.h: New method to
+	  add existing characters to this account. Inform persistance
+	  system when we get a newly created character.
+
+	* server/Connection.cpp: Ask persistance system to populate
+	  newly restored account with its characters.
+
+2003-01-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp, server/ServerRouting.h:
 	  Rename function for querying account by its name.
 
