@@ -1,3 +1,8 @@
+2004-10-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Vector3D.cpp: Change isValid() to work with older
+	  versions of python with bool support in the API.
+
 2004-10-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp: Add a note to check the code.

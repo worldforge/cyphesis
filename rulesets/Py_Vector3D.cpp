@@ -93,7 +93,9 @@ static PyObject * Vector3D_mag(PyVector3D * self)
 
 static PyObject * Vector3D_is_valid(PyVector3D * self)
 {
-    return PyBool_FromLong(self->coords.isValid());
+    PyObject * ret = self->coords.isValid() ? Py_True : Py_False;
+    Py_INCREF(ret);
+    return ret;
 }
 
 static PyObject * Vector3D_unit_vector(PyVector3D * self)
