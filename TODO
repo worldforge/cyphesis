@@ -1,4 +1,4 @@
-Use "REFERENCES orders ON DELETE CASCADE" SQL to make sure character table
+Use "REFERENCES foo ON DELETE CASCADE" SQL to make sure character table
 relations are removed when a character is deleted, or an account is deleted.
 
 Consider forcing dispatch of reply to delete op before deleting that entity.

@@ -1,3 +1,9 @@
+2004-07-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Clean up a special case for TO="all" on
+	  ops, which we now disallow. Remove a verbose tests for NULL
+	  pointers in the world dictionary and replace with a simple assert.
+
 2004-07-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/FormattedXMLWriter.cpp common/FormattedXMLWriter.h:

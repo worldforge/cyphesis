@@ -268,23 +268,17 @@ OpVector WorldRouter::operation(const RootOperation & op)
                     << op.getFrom() << ":" << to << "}" << std::endl
                     << std::flush;);
 
-    if (!to.empty() && (to != "all")) {
+    if (!to.empty()) {
         EntityDict::const_iterator I = m_eobjects.find(to);
         if (I == m_eobjects.end()) {
             debug(std::cerr << "WARNING: Op to=\"" << to << "\""
                             << " does not exist" << std::endl << std::flush;);
             return OpVector();
         }
+
         Entity * to_entity = I->second;
-        // This check is here because some bugs used to exist that
-        // added NULL entries into the world dict. These should no
-        // longer be present, so this check can be removed
-        // after some testing. 2002-05-18
-        if (to_entity == NULL) {
-            std::string msg = std::string("CRITICAL: Op to=") + to + " is NULL";
-            log(CRITICAL, msg.c_str());
-            return OpVector();
-        }
+        assert(to_entity != 0);
+
         deliverTo(op, to_entity);
         if ((op.getParents().front().asString() == "delete") &&
             (to_entity != &m_gameWorld)) {
