@@ -140,6 +140,7 @@ oplist Account::ImaginaryOperation(const Imaginary & op)
     Sight s(Sight::Instantiate());
     s.SetArgs(Object::ListType(1,op.AsObject()));
     s.SetTo(op.GetTo());
+    s.SetFrom(getId());
     return connection->server.lobby.operation(s);
 }
 
@@ -148,6 +149,7 @@ oplist Account::TalkOperation(const Talk & op)
     Sound s(Sound::Instantiate());
     s.SetArgs(Object::ListType(1,op.AsObject()));
     s.SetTo(op.GetTo());
+    s.SetFrom(getId());
     return connection->server.lobby.operation(s);
 }
 

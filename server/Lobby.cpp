@@ -12,14 +12,16 @@ using Atlas::Message::Object;
 oplist Lobby::operation(const RootOperation & op)
 {
     const std::string & to = op.GetTo();
-    if (to.empty() || to == "all") {
+    if (to.empty() || to == "lobby") {
         adict_t::const_iterator I = accounts.begin();
+        RootOperation newop(op);
         for (; I != accounts.end(); ++I) {
             Connection * c = I->second->connection;
             if (c != NULL) {
                 std::cout << "Sending to " << I->first << " in lobby"
                           << std::endl << std::flush;
-                c->send(&op);
+                newop.SetTo(I->first);
+                c->send(&newop);
             }
         }
     } else {
