@@ -2,11 +2,25 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "const.h"
 
-#ifndef NDEBUG
-
 namespace consts {
+
+  // FIXME
+  // Admin password used by admin account
+  const char * defaultAdminPassword = "zjvspoehrgopes";
+  // Version of the software we are running
+  const char * version = VERSION;
+  // Time this server was built
+  const char * buildTime = __TIME__;
+  const char * buildDate = __DATE__;
+
+
+#ifndef NDEBUG
 
   // Should python code emit thinking ops
   int debug_thinking = 0;
@@ -31,11 +45,6 @@ namespace consts {
   // Range of broadcast sound ops
   double hearing_range = 13.0;
 
-  // FIXME
-  // Admin password used by admin account
-  const char * defaultAdminPassword = "zjvspoehrgopes";
+#endif
 
 }
-
-
-#endif

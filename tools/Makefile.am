@@ -8,9 +8,7 @@ cypasswd_LDADD = ../common/Database.o ../common/accountbase.o ../common/globals.
 
 cycmd_SOURCES = cycmd.cpp
 
-cycmd_LIBS = -lAtlas -lAtlasCodecs -lAtlasMessage -lAtlasNet -lAtlasObjects -lAtlasObjectsEntity -lAtlasObjectsOperation
-
-cycmd_LDADD = ../common/Database.o ../common/accountbase.o ../common/operations.o ../common/globals.o ../common/log.o ../common/const.o
+cycmd_LDADD = ../common/Database.o ../common/accountbase.o ../common/operations.o ../common/globals.o ../common/log.o ../common/const.o $(READLINE_LIBS)
 
 cydbload_SOURCES = cydbload.cpp
 

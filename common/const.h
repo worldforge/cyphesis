@@ -31,10 +31,6 @@ namespace consts {
   // Range of broadcast sound ops
   const double hearing_range = 13.0;
 
-  // FIXME
-  // Admin password used by admin account
-  const char * const defaultAdminPassword = "zjvspoehrgopes";
-
 #else // NDEBUG
 
 // When we are doing a debug build, the constants are not constant
@@ -50,9 +46,17 @@ namespace consts {
   extern double sight_range;
   extern double hearing_range;
   extern bool enable_ranges;
-  extern const char * defaultAdminPassword;
 
 #endif // NDEBUG
+
+  // Admin password used by admin account
+  extern const char * defaultAdminPassword;
+  // Version of the software we are running
+  extern const char * version;
+  // Time this server was built
+  extern const char * buildTime;
+  extern const char * buildDate;
+
 }
 
 #endif // COMMON_CONST_H

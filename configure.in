@@ -39,6 +39,13 @@ AC_ARG_ENABLE(debug,
     ]
 )
 
+dnl Flags that are required by programs linking against libcyphesis
+SYSTEM_LIBS=
+CYPHESIS_LIBS=-lcyphesis
+CYPHESIS_CFLAGS=
+CYPHESIS_VERSION=$VERSION
+
+
 dnl FIXME This will break if $datadir != $prefix/share
 RULESET_DIR="$prefix/share/cyphesis"
 AC_SUBST(RULESET_DIR)
@@ -86,38 +93,32 @@ AC_CHECK_HEADER(python2.2/Python.h,
     [
         python_include_path=-I${python_prefix}/include/python2.2
         python_version=python2.2
-        AC_DEFINE(HAVE_PYTHON_H)
     ],[
         AC_CHECK_HEADER(python2.1/Python.h,
         [
             python_include_path=-I${python_prefix}/include/python2.1
             python_version=python2.1
-            AC_DEFINE(HAVE_PYTHON_H)
         ],[
             AC_CHECK_HEADER(python2.0/Python.h,
             [
                 python_include_path=-I${python_prefix}/include/python2.0
                 python_version=python2.0
-                AC_DEFINE(HAVE_PYTHON_H)
             ],[
                 AC_CHECK_HEADER(python1.6/Python.h, 
                 [
                     python_include_path=-I${python_prefix}/include/python1.6
                     python_version=python1.6
-                    AC_DEFINE(HAVE_PYTHON_H)
                 ],[
                     AC_CHECK_HEADER(python1.5/Python.h, 
                     [
                         python_include_path=-I${python_prefix}/include/python1.5
                         python_version=python1.5
-                        AC_DEFINE(HAVE_PYTHON_H)
                     ])
                 ])
             ])
         ])
     ]
 )
-
 
 PYTHON_INCLUDES=${python_include_path}
 CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
@@ -132,8 +133,7 @@ AC_CHECK_LIB(${python_version},
     Py_Initialize,
     [
         python_libs="-L${python_lib_path} -l${python_version} -lutil"	  
-        AC_DEFINE(HAVE_PYTHON_LIB)
-    ],,
+    ],AC_MSG_ERROR([Couldn't find python libraries. Do you have python development installed]),
     [-L${python_lib_path} -lutil]
 )
 
@@ -144,15 +144,19 @@ ATLAS_VERSION=0.4.3
 AM_PATH_ATLAS($ATLAS_VERSION)
 if test "$ATLAS_CFLAGS" != "-I/usr/include"; then
     CPPFLAGS="$CPPFLAGS $ATLAS_CFLAGS"
+    CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $ATLAS_CFLAGS"
 fi
 LIBS="$LIBS $ATLAS_LIBS"
+SYSTEM_LIBS="$SYSTEM_LIBS $ATLAS_LIBS"
 
 VARCONF_VERSION=0.5.0
 AM_PATH_VARCONF($VARCONF_VERSION)
 if test "$VARCONF_CFLAGS" != "-I/usr/include"; then
     CPPFLAGS="$CPPFLAGS $VARCONF_CFLAGS"
+    CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $VARCONF_CFLAGS"
 fi
 LIBS="$LIBS $VARCONF_LIBS"
+SYSTEM_LIBS="$SYSTEM_LIBS $VARCONF_LIBS"
 
 SKSTREAM_VERSION=0.2.0
 AM_PATH_SKSTREAM($SKSTREAM_VERSION)
@@ -163,13 +167,17 @@ LIBS="$LIBS $SKSTREAM_LIBS"
 
 PKG_CHECK_MODULES(SIGC, sigc++-1.2 >= 1.1.11,
     [
-        CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
-        LDFLAGS="$LDFLAGS $SIGC_LIBS"
+        CPPFLAGS="$CPPFLAGS $SIGC_CFLAGS"
+        CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $SIGC_CFLAGS"
+        LIBS="$LIBS $SIGC_LIBS"
+        SYSTEM_LIBS="$SYSTEM_LIBS $SIGC_LIBS"
     ],
     [
         AM_PATH_SIGC(1.0.3,[
-                CXXFLAGS="$CXXFLAGS $SIGC_CFLAGS"
-                LDFLAGS="$LDFLAGS $SIGC_LIBS"
+                CPPFLAGS="$CPPFLAGS $SIGC_CFLAGS"
+                CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $SIGC_CFLAGS"
+                LIBS="$LIBS $SIGC_LIBS"
+                SYSTEM_LIBS="$SYSTEM_LIBS $SIGC_LIBS"
                 ],
 		AC_MSG_ERROR([Couldn't find sigc++ library!])
         )
@@ -179,9 +187,11 @@ AM_PATH_PSQL(7.1.0,
     [
         if test "$PG_CFLAGS" != "-I/usr/include"; then
             CPPFLAGS="$CPPFLAGS $PG_CFLAGS"
+            CYPHESIS_CFLAGS="$CYPHESIS_CFLAGS $PG_CFLAGS"
         fi
         if test "$PG_LIBS" != "-L/usr/lib"; then
             LIBS="$LIBS $PG_LIBS"
+            SYSTEM_LIBS="$SYSTEM_LIBS $PG_LIBS"
         fi
     ],
     AC_MSG_ERROR(Couldn't find PostgreSQL config [or config failed])
@@ -190,10 +200,14 @@ AM_PATH_PSQL(7.1.0,
 AC_CHECK_LIB(pq,main, ,AC_MSG_ERROR(Couldn't find PostgreSQL C bindings! [Did you compile PostgreSQL with --enable-CXX ?]))
 AC_CHECK_LIB(pq++,main, ,AC_MSG_ERROR(Couldn't find PostgreSQL C++ bindings! [Did you compile PostgreSQL with --enable-CXX ?]))
 
+SYSTEM_LIBS="$SYSTEM_LIBS -lpq -lpq++"
+
+READLINE_LIBS=
+
 AC_CHECK_LIB(termcap,tgetent, 
-    [LIBS="$LIBS -ltermcap"],
+    [READLINE_LIBS="$READLINE_LIBS -ltermcap"],
     AC_CHECK_LIB(ncurses, tgetent, 
-        [LIBS="$LIBS -lncurses"],
+        [READLINE_LIBS="$READLINE_LIBS -lncurses"],
         AC_MSG_ERROR([Couldn't find tgetent in termcap or ncurses libraries!])
     )
 )
@@ -201,18 +215,35 @@ AC_CHECK_LIB(termcap,tgetent,
 AC_CHECK_HEADERS(termios.h unistd.h signal.h)
 AC_CHECK_LIB(readline,readline,
     [
-        LIBS="$LIBS -lreadline"
+        READLINE_LIBS="$READLINE_LIBS -lreadline"
     ],
     [
         AC_MSG_ERROR([Couldn'y find readline!])
-    ])
+    ],[ $READLINE_LIBS ]
+)
     
-AC_TRY_COMPILE([#include <readline/readline.h>], readline("test > "), AC_DEFINE(READLINE_CXX_SANE),
-  AC_MSG_WARN(Readline C++ workaround enabled) )
+AC_TRY_COMPILE(
+  [
+    #include <stdio.h>
+    #include <readline/readline.h>
+  ],
+    readline("test > "), 
+    AC_DEFINE(READLINE_CXX_SANE, 1, [Define if readline headers are C++ aware]),
+    AC_MSG_WARN(Readline C++ workaround enabled)
+)
+
+
+AC_SUBST(VARCONF_LIBS)
+AC_SUBST(SYSTEM_LIBS)
+AC_SUBST(READLINE_LIBS)
+AC_SUBST(CYPHESIS_CFLAGS)
+AC_SUBST(CYPHESIS_LIBS)
+AC_SUBST(CYPHESIS_VERSION)
 
 dnl Generate files
 AC_OUTPUT([
     cyphesis.spec
+    cyphesis-config
     Makefile
     physics/Makefile
     common/Makefile
@@ -222,4 +253,4 @@ AC_OUTPUT([
     client/Makefile
     tools/Makefile
     rulesets/basic/hooks/ruleset_import_hooks.py
-])
+], [chmod +x cyphesis-config])

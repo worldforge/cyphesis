@@ -2,10 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "ServerRouting.h"
 #include "WorldRouter.h"
 #include "Persistance.h"
@@ -14,6 +10,7 @@
 #include "Lobby.h"
 
 #include <common/debug.h>
+#include <common/const.h>
 
 #include <iostream>
 
@@ -48,12 +45,11 @@ void ServerRouting::addToObject(Fragment::MapType & omap) const
     omap["server"] = "cyphesis";
     omap["ruleset"] = svrRuleset;
     omap["name"] = svrName;
-    Fragment::ListType plist(1, "server");
-    omap["parents"] = plist;
+    omap["parents"] = Fragment::ListType(1, "server");
     omap["clients"] = commServer.numClients();
     omap["uptime"] = world.upTime();
-    omap["builddate"] = std::string(__TIME__) + ", " + std::string(__DATE__);
-    omap["version"] = std::string(VERSION);
+    omap["builddate"] = std::string(consts::buildTime)+", "+std::string(consts::buildDate);
+    omap["version"] = std::string(consts::version);
     if (Persistance::restricted) {
         omap["restricted"] = "true";
     }
