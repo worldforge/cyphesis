@@ -1,3 +1,10 @@
+2004-12-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/define_world.py,
+	  rulesets/basic/mind/goals/humanoid/mason.py: Add suggested responses
+	  to talk messages from NPCs. Helps the client make it easy
+	  for the user to respond.
+
 2004-12-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/custom.cpp: Include cleanup.

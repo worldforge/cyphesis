@@ -290,7 +290,7 @@ def default(mapeditor):
     m.learn(merchant,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
     m.learn(merchant,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
     m.learn(merchant,(il.welcome,"welcome('Welcome to this our settlement','settler')"))
-    m.learn(merchant,(il.help,"add_help(['Thankyou for joining our remote settlement.','Our first task is to build some shelter, but while we are doing that we still need food.','You can help us out by raising pigs for slaughter.','If you want to buy a piglet to raise, let me know by saying you would like to buy one.','Pigs love to eat acorns from under the oak trees that are abundant in this area.'])"))
+    m.learn(merchant,(il.help,"add_help(['Thankyou for joining our remote settlement.','Our first task is to build some shelter, but while we are doing that we still need food.','You can help us out by raising pigs for slaughter.','If you want to buy a piglet to raise, let me know by saying you would like to buy one.','Pigs love to eat acorns from under the oak trees that are abundant in this area.'],['I would like to buy a pig'])"))
     piglets=[]
     for i in range(0, 6):
         piglets.append(m.make('pig',type='pig',xyz=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
