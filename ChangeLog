@@ -1,5 +1,12 @@
 2004-11-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Thing.cpp, rulesets/Py_Mind.cpp,
+	  client/Py_CreatorClient.cpp: Remove get_xyz() from the API
+	  available to Python. Its never necessary to deal in absolute
+	  coordinates.
+
+2004-11-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/acorn/mind/PigMind.py,
 	  rulesets/basic/mind/goals/common/misc_goal.py,
 	  rulesets/basic/mind/goals/common/move.py,

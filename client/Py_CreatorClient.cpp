@@ -38,25 +38,6 @@ static PyObject * CreatorClient_as_entity(PyCreatorClient * self, PyObject * arg
     return (PyObject *)ret;
 }
 
-static PyObject * CreatorClient_get_xyz(PyCreatorClient * self, PyObject * args)
-{
-#ifndef NDEBUG
-    if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL CreatorClient in CreatorClient.get_xyz");
-        return NULL;
-    }
-#endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
-    PyPoint3D * ret = newPyPoint3D();
-    if (ret == NULL) {
-        return NULL;
-    }
-    ret->coords = self->m_mind->getXyz();
-    return (PyObject *)ret;
-}
-
 static PyObject * CreatorClient_make(PyCreatorClient * self, PyObject * args)
 {
 #ifndef NDEBUG
@@ -175,13 +156,12 @@ static PyObject * CreatorClient_send(PyCreatorClient * self, PyObject * args)
 }
 
 static PyMethodDef CreatorClient_methods[] = {
-	{"get_xyz",        (PyCFunction)CreatorClient_get_xyz, 1},
-	{"as_entity",      (PyCFunction)CreatorClient_as_entity, 1},
-	{"make",           (PyCFunction)CreatorClient_make, 1},
-	{"set",            (PyCFunction)CreatorClient_set, 1},
-	{"look",           (PyCFunction)CreatorClient_look, 1},
-	{"look_for",       (PyCFunction)CreatorClient_look_for, 1},
-	{"send",           (PyCFunction)CreatorClient_send, 1},
+	{"as_entity",      (PyCFunction)CreatorClient_as_entity, METH_NOARGS},
+	{"make",           (PyCFunction)CreatorClient_make, METH_VARARGS},
+	{"set",            (PyCFunction)CreatorClient_set, METH_VARARGS},
+	{"look",           (PyCFunction)CreatorClient_look, METH_VARARGS},
+	{"look_for",       (PyCFunction)CreatorClient_look_for, METH_VARARGS},
+	{"send",           (PyCFunction)CreatorClient_send, METH_VARARGS},
 	{NULL,          NULL}           /* sentinel */
 };
 

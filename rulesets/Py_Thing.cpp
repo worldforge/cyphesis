@@ -27,25 +27,7 @@ static PyObject * Entity_as_entity(PyEntity * self)
     return (PyObject *)ret;
 }
 
-static PyObject * Entity_get_xyz(PyEntity * self)
-{
-#ifndef NDEBUG
-    if (self->m_entity == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "invalid entity get_xyz");
-        return NULL;
-    }
-#endif // NDEBUG
-    PyPoint3D * ret = newPyPoint3D();
-    if (ret == NULL) {
-        return NULL;
-    }
-    ret->coords = self->m_entity->getXyz();
-    assert(ret->coords.isValid());
-    return (PyObject *)ret;
-}
-
 static PyMethodDef Entity_methods[] = {
-        {"get_xyz",        (PyCFunction)Entity_get_xyz,  METH_NOARGS},
         {"as_entity",        (PyCFunction)Entity_as_entity,  METH_NOARGS},
         {NULL,          NULL}           /* sentinel */
 };

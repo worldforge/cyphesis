@@ -30,25 +30,7 @@ static PyObject * Mind_as_entity(PyMind * self)
     return (PyObject *)ret;
 }
 
-static PyObject * Mind_get_xyz(PyMind * self)
-{
-#ifndef NDEBUG
-    if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "invalid mind get_xyz");
-        return NULL;
-    }
-#endif // NDEBUG
-    PyPoint3D * ret = newPyPoint3D();
-    if (ret == NULL) {
-        return NULL;
-    }
-    ret->coords = self->m_mind->getXyz();
-    assert(ret->coords.isValid());
-    return (PyObject *)ret;
-}
-
 static PyMethodDef Mind_methods[] = {
-        {"get_xyz",        (PyCFunction)Mind_get_xyz,  METH_NOARGS},
         {"as_entity",        (PyCFunction)Mind_as_entity,  METH_NOARGS},
         {NULL,          NULL}           /* sentinel */
 };
