@@ -30,11 +30,12 @@ Entity * CreatorClient::make(const Element & entity)
     op.setArgs(ListType(1,entity));
     op.setFrom(getId());
     op.setTo(getId());
-    OpVector result = sendAndWaitReply(op);
-    if (result.empty()) {
+    OpVector result;
+    if (sendAndWaitReply(op, result) != 0) {
         std::cerr << "No reply to make" << std::endl << std::flush;
         return NULL;
     }
+    assert(!result.empty());
     RootOperation * res = result.front();
     if (res == NULL) {
         std::cerr << "NULL reply to make" << std::endl << std::flush;
@@ -130,11 +131,12 @@ Entity * CreatorClient::lookFor(const Element & ent)
 
 Entity * CreatorClient::sendLook(RootOperation & op)
 {
-    OpVector result = sendAndWaitReply(op);
-    if (result.empty()) {
+    OpVector result;
+    if (sendAndWaitReply(op, result) != 0) {
         std::cerr << "No reply to look" << std::endl << std::flush;
         return NULL;
     }
+    assert(!result.empty());
     RootOperation * res = result.front();
     if (res == NULL) {
         std::cerr << "NULL reply to look" << std::endl << std::flush;
@@ -166,8 +168,8 @@ Entity * CreatorClient::sendLook(RootOperation & op)
     return obj;
 }
 
-bool CreatorClient::runScript(const std::string & package,
-                              const std::string & function)
+int CreatorClient::runScript(const std::string & package,
+                             const std::string & function)
 {
     return runClientScript(this, package, function);
 }

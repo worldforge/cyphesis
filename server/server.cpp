@@ -124,14 +124,14 @@ int main(int argc, char ** argv)
     log(INFO, _(" world restored"));
 
     CommListener * listener = new CommListener(commServer);
-    if (!listener->setup(port_num)) {
+    if (listener->setup(port_num) != 0) {
         log(ERROR, "Could not create listen socket. Init failed.");
         return EXIT_SOCKET_ERROR;
     }
     commServer.add(listener);
 
     CommUnixListener * llistener = new CommUnixListener(commServer);
-    if (!llistener->setup()) {
+    if (llistener->setup() != 0) {
         std::stringstream str;
         str << "Could not create local listen socket with address \"";
         str << llistener->getPath() << "\".";
@@ -148,7 +148,7 @@ int main(int argc, char ** argv)
 
     if (useMetaserver) {
         CommMetaClient * cmc = new CommMetaClient(commServer);
-        if (cmc->setup(mserver)) {
+        if (cmc->setup(mserver) == 0) {
             commServer.add(cmc);
             commServer.addIdle(cmc);
         } else {

@@ -41,11 +41,11 @@ MapType BaseClient::createPlayer(const std::string & name,
     loginAccountOp.setArgs(ListType(1,player_ent));
     send(loginAccountOp);
 
-    if (m_connection.wait()) {
+    if (m_connection.wait() != 0) {
         Create createAccountOp;
         createAccountOp.setArgs(ListType(1,player_ent));
         send(createAccountOp);
-        if (m_connection.wait()) {
+        if (m_connection.wait() != 0) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
                       << std::flush;
             return MapType();
@@ -78,7 +78,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
     createOp.setArgs(ListType(1,character));
     send(createOp);
 
-    if (m_connection.wait()) {
+    if (m_connection.wait() != 0) {
         std::cerr << "ERROR: Failed to create character type: "
                   << type << std::endl << std::flush;
         return NULL;

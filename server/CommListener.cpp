@@ -55,7 +55,7 @@ void CommListener::dispatch()
 }
 
 /// \brief Create and bind the listen socket.
-bool CommListener::setup(int port)
+int CommListener::setup(int port)
 {
     m_listener.open(port);
     if (m_listener.is_open()) {
@@ -69,9 +69,9 @@ bool CommListener::setup(int port)
 
         int flag = 1;
         ::setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
-        return true;
+        return 0;
     } else {
-        return false;
+        return 1;
     }
 }
 

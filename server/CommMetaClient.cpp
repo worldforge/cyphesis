@@ -76,10 +76,11 @@ void CommMetaClient::dispatch()
 /// \brief Set the target address if the communication socket.
 ///
 /// @param mserver String address of the metaserver,
-bool CommMetaClient::setup(const std::string & mserver)
+int CommMetaClient::setup(const std::string & mserver)
 {
     // Establish socket for communication with the metaserver
-    return m_clientIos.setTarget(mserver, m_metaserverPort);
+    bool success = m_clientIos.setTarget(mserver, m_metaserverPort);
+    return success ? 0 : -1;
 }
 
 static const int MAXLINE = 4096;

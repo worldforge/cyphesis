@@ -20,35 +20,35 @@ ObserverClient::~ObserverClient()
 {
 }
 
-bool ObserverClient::setup(const std::string & account,
-                           const std::string & password)
+int ObserverClient::setup(const std::string & account,
+                          const std::string & password)
 {
     bool localConnection = false;;
 
-    if (connectLocal()) {
+    if (connectLocal() == 0) {
         localConnection = true;
     } else {
-        if (!connect()) {
-            return false;
+        if (connect() != 0) {
+            return -1;
         }
-    }
 
-    if (!localConnection && password.empty()) {
-        std::cerr << "WARNING: Made non secure connection to the server"
-                  << std::endl
-                  << "WARNING: Server may not accept our login with no password"
-                  << std::endl << std::flush;
+        if (password.empty()) {
+            std::cerr << "WARNING: Made non secure connection to the server."
+                      << std::endl
+                      << "WARNING: Attempting to login with no password."
+                      << std::endl << std::flush;
+        }
     }
 
     m_player = createPlayer(account, password);
     if (m_player.empty()) {
-        return false;
+        return -1;
     }
     m_character = createCharacter("creator");
     if (m_character == NULL) {
-        return false;
+        return -1;
     }
-    return true;
+    return 0;
 }
 
 void ObserverClient::load(const std::string & package,

@@ -36,7 +36,7 @@ class ClientConnection : public Atlas::Objects::Decoder {
 
     void operation(const RootOperation&);
 
-    bool negotiate();
+    int negotiate();
 
     virtual void objectArrived(const Error&);
     virtual void objectArrived(const Info&);
@@ -73,11 +73,11 @@ class ClientConnection : public Atlas::Objects::Decoder {
     ~ClientConnection();
 
     int read();
-    bool connectLocal(const std::string &);
-    bool connect(const std::string &);
-    bool login(const std::string &, const std::string &);
-    bool create(const std::string &, const std::string &);
-    bool wait();
+    int connectLocal(const std::string &);
+    int connect(const std::string &);
+    void login(const std::string &, const std::string &);
+    void create(const std::string &, const std::string &);
+    int wait();
     void send(RootOperation & op);
 
     int peek() {
@@ -93,7 +93,6 @@ class ClientConnection : public Atlas::Objects::Decoder {
         return reply;
     }
 
-    int setup();
     void poll(int timeOut = 0);
     RootOperation * pop();
     bool pending();

@@ -29,11 +29,11 @@ class BaseClient {
     
     virtual void idle() = 0;
 
-    bool connectLocal(const std::string & socket = "") {
+    int connectLocal(const std::string & socket = "") {
         return m_connection.connectLocal(socket);
     }
 
-    bool connect(const std::string & server = "localhost") {
+    int connect(const std::string & server = "localhost") {
         return m_connection.connect(server);
     }
 

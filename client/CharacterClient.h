@@ -15,7 +15,7 @@ class CharacterClient : public BaseMind {
 
     bool findRefnoOp(const RootOperation & op, long refno);
     bool findRefno(const RootOperation & op, long refno);
-    OpVector sendAndWaitReply(RootOperation & op);
+    int sendAndWaitReply(RootOperation & op, OpVector &);
   public:
     CharacterClient(const std::string&, const std::string&, ClientConnection&);
 

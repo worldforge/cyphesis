@@ -23,7 +23,7 @@ class CommListener : public CommSocket {
     explicit CommListener(CommServer & svr);
     virtual ~CommListener();
 
-    bool setup(int port);
+    int setup(int port);
 
     int getFd() const;
     bool isOpen() const;

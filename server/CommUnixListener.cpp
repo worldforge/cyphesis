@@ -58,14 +58,14 @@ void CommUnixListener::dispatch()
 #define UNIX_PATH_MAX 108
 
 /// \brief Create and bind the listen socket.
-bool CommUnixListener::setup()
+int CommUnixListener::setup()
 {
     m_path = var_directory + "/tmp/cyphesis.sock";
 
     m_unixListener.open(m_path);
 
     m_bound = m_unixListener.is_open();
-    return m_bound;
+    return m_bound ? 0 : 1;
 }
 
 /// \brief Accept a new connect to the listen socket.

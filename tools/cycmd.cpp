@@ -131,15 +131,15 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     void objectArrived(const Atlas::Objects::Operation::Sight&);
     void objectArrived(const Atlas::Objects::Operation::Sound&);
 
-    bool negotiate();
+    int negotiate();
   public:
     Interactive() : error_flag(false), reply_flag(false), login_flag(false),
                     encoder(NULL), codec(NULL), exit(false),
                     monitor_op_count(0), monitor_start_time(0) { }
 
     void send(const Atlas::Objects::Operation::RootOperation &);
-    bool connect(const std::string & host);
-    bool login();
+    int connect(const std::string & host);
+    int login();
     void exec(const std::string & cmd, const std::string & arg);
     void loop();
     void poll();
@@ -498,13 +498,13 @@ void Interactive<Stream>::getLogin()
     std::cin >> password;
 }
 
-bool Interactive<tcp_socket_stream>::connect(const std::string & host)
+int Interactive<tcp_socket_stream>::connect(const std::string & host)
 {
     std::cout << "Connecting... " << std::flush;
     ios.open(host, port_num);
     if (!ios.is_open()) {
         std::cout << "failed." << std::endl << std::flush;
-        return false;
+        return -1;
     }
     std::cout << "done." << std::endl << std::flush;
     cli_fd = ios.getSocket();
@@ -512,13 +512,13 @@ bool Interactive<tcp_socket_stream>::connect(const std::string & host)
     return negotiate();
 }
 
-bool Interactive<unix_socket_stream>::connect(const std::string & filename)
+int Interactive<unix_socket_stream>::connect(const std::string & filename)
 {
     std::cout << "Connecting... " << std::flush;
     ios.open(filename);
     if (!ios.is_open()) {
         std::cout << "failed." << std::endl << std::flush;
-        return false;
+        return -1;
     }
     std::cout << "done." << std::endl << std::flush;
     cli_fd = ios.getSocket();
@@ -527,7 +527,7 @@ bool Interactive<unix_socket_stream>::connect(const std::string & filename)
 }
 
 template <class Stream>
-bool Interactive<Stream>::negotiate()
+int Interactive<Stream>::negotiate()
 {
     // Do client negotiation with the server
     Atlas::Net::StreamConnect conn("cycmd", ios, this);
@@ -542,7 +542,7 @@ bool Interactive<Stream>::negotiate()
     // Check whether negotiation was successful
     if (conn.getState() == Atlas::Negotiate<std::iostream>::FAILED) {
         std::cerr << "Failed to negotiate." << std::endl;
-        return false;
+        return -1;
     }
     // Negotiation was successful
 
@@ -554,12 +554,12 @@ bool Interactive<Stream>::negotiate()
 
     // Send whatever codec specific data marks the beginning of a stream
     codec->streamBegin();
-    return true;
+    return 0;
 
 }
 
 template <class Stream>
-bool Interactive<Stream>::login()
+int Interactive<Stream>::login()
 {
     Atlas::Objects::Entity::Account account;
     Atlas::Objects::Operation::Login l;
@@ -585,9 +585,9 @@ bool Interactive<Stream>::login()
     login_flag = false;
 
     if (!error_flag) {
-       return true;
+       return 0;
     }
-    return false;
+    return -1;
 }
 
 template <class Stream>
@@ -738,11 +738,11 @@ int main(int argc, char ** argv)
 
         std::cerr << "Attempting local connection" << std::endl << std::flush;
         Interactive<unix_socket_stream> bridge;
-        if (bridge.connect(localSocket)) {
+        if (bridge.connect(localSocket) == 0) {
             bridge.setUsername("admin");
 
             std::cout << "Logging in... " << std::flush;
-            if (!bridge.login()) {
+            if (bridge.login() != 0) {
                 std::cout << "failed." << std::endl << std::flush;
                 bridge.getLogin();
 
@@ -780,7 +780,7 @@ int main(int argc, char ** argv)
         hostname = server;
     }
 
-    if (!bridge.connect(hostname)) {
+    if (bridge.connect(hostname) != 0) {
         return 1;
     }
     if (!interactive) {
@@ -791,7 +791,7 @@ int main(int argc, char ** argv)
     } else {
         bridge.getLogin();
         std::cout << "Logging in... " << std::flush;
-        if (!bridge.login()) {
+        if (bridge.login() != 0) {
             std::cout << "failed." << std::endl << std::flush;
             return 1;
         }

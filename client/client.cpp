@@ -43,7 +43,7 @@ int main(int argc, char ** argv)
 
     try {
         ObserverClient & observer = *new ObserverClient();
-        if (!observer.setup(account, password)) {
+        if (observer.setup(account, password) != 0) {
             return 1;
         }
         observer.load(package, function);

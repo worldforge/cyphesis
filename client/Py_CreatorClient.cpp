@@ -332,7 +332,8 @@ PyCreatorClient * newPyCreatorClient()
     return self;
 }
 
-bool runClientScript(CreatorClient * c, const std::string & package, const std::string & func)
+int runClientScript(CreatorClient * c, const std::string & package,
+                                       const std::string & func)
 {
     PyObject * package_name = PyString_FromString(package.c_str());
     PyObject * mod_dict = PyImport_Import(package_name);
@@ -341,7 +342,7 @@ bool runClientScript(CreatorClient * c, const std::string & package, const std::
         std::cerr << "Cld not find python module " << package
                   << std::endl << std::flush;
         PyErr_Print();
-        return false;
+        return -1;
     }
     PyObject * function = PyObject_GetAttrString(mod_dict,
                                                  (char *)func.c_str());
@@ -350,13 +351,13 @@ bool runClientScript(CreatorClient * c, const std::string & package, const std::
         std::cerr << "Could not find " << func << " function" << std::endl
                   << std::flush;
         PyErr_Print();
-        return false;
+        return -1;
     }
     if (PyCallable_Check(function) == 0) {
         std::cerr << "It does not seem to be a function at all" << std::endl
                   << std::flush;
         Py_DECREF(function);
-        return false;
+        return -1;
     }
     PyCreatorClient * editor = newPyCreatorClient();
     editor->m_mind = c;
@@ -371,6 +372,6 @@ bool runClientScript(CreatorClient * c, const std::string & package, const std::
         }
     }
     Py_DECREF(function);
-    return true;
+    return 0;
 
 }

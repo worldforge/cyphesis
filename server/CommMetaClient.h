@@ -31,7 +31,7 @@ class CommMetaClient : public CommIdleSocket {
     void metaserverReply();
     void metaserverTerminate();
 
-    bool setup(const std::string &);
+    int setup(const std::string &);
 
     int getFd() const;
     bool isOpen() const;

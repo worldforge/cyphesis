@@ -19,7 +19,7 @@ class CreatorClient : public CharacterClient {
     void sendSet(const std::string &, const Element &);
     Entity * look(const std::string &);
     Entity * lookFor(const Element &);
-    bool runScript(const std::string & package, const std::string & function);
+    int runScript(const std::string & package, const std::string & function);
 };
 
 #endif // CREATOR_CLIENT_H

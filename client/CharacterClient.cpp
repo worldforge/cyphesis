@@ -47,29 +47,30 @@ inline bool CharacterClient::findRefno(const RootOperation & msg, long refno)
     return findRefnoOp(msg,refno);
 }
 
-OpVector CharacterClient::sendAndWaitReply(RootOperation & op)
+int CharacterClient::sendAndWaitReply(RootOperation & op, OpVector & res)
 {
     send(op);
     long no = op.getSerialno();
     while (true) {
         if (m_connection.pending()) {
-            RootOperation * input=CharacterClient::m_connection.pop();
+            RootOperation * input = CharacterClient::m_connection.pop();
             if (input != NULL) {
                 // What the hell is this!
                 OpVector result;
                 operation(*input, result);
                 OpVector::const_iterator I;
-                for (I=result.begin();I!=result.end();I++) {
+                for (I = result.begin(); I != result.end(); I++) {
                     send(*(*I));
                 }
     
                 if (findRefno(*input,no)) {
-                    return OpVector(1,input);
+                    res.push_back(input);
+                    return 0;
                 }
                 delete input;
             }
-        } else if (m_connection.wait()) {
-            return OpVector();
+        } else if (m_connection.wait() != 0) {
+            return -1;
         }
     }
 }

@@ -241,7 +241,7 @@ int ClientConnection::read() {
 
 #define UNIX_PATH_MAX 108
 
-bool ClientConnection::connectLocal(const std::string & sockname)
+int ClientConnection::connectLocal(const std::string & sockname)
 {
     debug(std::cout << "Attempting local connect." << std::endl << std::flush;);
     std::string socket;
@@ -261,28 +261,27 @@ bool ClientConnection::connectLocal(const std::string & sockname)
 
     if (0 != ::connect(fd, (struct sockaddr *)&sun, sizeof(sun))) {
         debug(std::cout << "Local connect refused" << std::endl << std::flush;);
-        return false;
+        return -1;
     }
 
     ios.setSocket(fd);
     if (!ios.is_open()) {
         std::cerr << "ERROR: For some reason " << sockname << " not open."
                   << std::endl << std::flush;
-        return false;
+        return -1;
     }
 
     client_fd = ios.getSocket();
 
-    bool ret = negotiate();
+    int ret = negotiate();
 
-    if (ret == false) {
+    if (ret == -1) {
         ios.close();
-        // ::close(fd);
     }
     return ret;
 }
 
-bool ClientConnection::connect(const std::string & server)
+int ClientConnection::connect(const std::string & server)
 {
     debug(std::cout << "Connecting to " << server << std::endl << std::flush;);
 
@@ -290,7 +289,7 @@ bool ClientConnection::connect(const std::string & server)
     if (!ios.is_open()) {
         std::cerr << "ERROR: Could not connect to " << server << "."
                   << std::endl << std::flush;
-        return false;
+        return -1;
     }
 
     client_fd = ios.getSocket();
@@ -298,7 +297,7 @@ bool ClientConnection::connect(const std::string & server)
     return negotiate();
 }
 
-bool ClientConnection::negotiate()
+int ClientConnection::negotiate()
 {
     Atlas::Net::StreamConnect conn("cyphesis_aiclient", ios, this);
 
@@ -310,7 +309,7 @@ bool ClientConnection::negotiate()
   
     if (conn.getState() == Atlas::Net::StreamConnect::FAILED) {
         std::cerr << "Failed to negotiate" << std::endl;
-        return false;
+        return -1;
     }
 
     codec = conn.getCodec();
@@ -319,10 +318,10 @@ bool ClientConnection::negotiate()
 
     codec->streamBegin();
 
-    return true;
+    return 0;
 }
 
-bool ClientConnection::login(const std::string & account,
+void ClientConnection::login(const std::string & account,
                              const std::string & password)
 {
     Login l;
@@ -335,10 +334,9 @@ bool ClientConnection::login(const std::string & account,
     reply_flag = false;
     error_flag = false;
     send(l);
-    return true;
 }
 
-bool ClientConnection::create(const std::string & account,
+void ClientConnection::create(const std::string & account,
                               const std::string & password)
 {
     Create c;
@@ -351,10 +349,9 @@ bool ClientConnection::create(const std::string & account,
     reply_flag = false;
     error_flag = false;
     send(c);
-    return true;
 }
 
-bool ClientConnection::wait()
+int ClientConnection::wait()
 // Waits for response from server. Used when we are expecting a login response
 // Return whether or not an error occured
 {
@@ -363,7 +360,7 @@ bool ClientConnection::wait()
    while (!reply_flag) {
       poll(1);
    }
-   return error_flag;
+   return error_flag ? -1 : 0;
 }
 
 void ClientConnection::send(RootOperation & op)
