@@ -89,5 +89,6 @@ void CommClient::handle_net()
         for (oplist::const_iterator I=result.begin(); I != result.end(); I++) {
             send(*(*I));
         }
+        delete input;
     }
 }

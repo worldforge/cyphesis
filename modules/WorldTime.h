@@ -8,6 +8,7 @@
 #include <modules/DateTime.h>
 
 #include <list>
+#include <map>
 
 // timedata time2type(const std::string & t);
 

@@ -1,3 +1,13 @@
+2001-08-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* module/DataTime.h: Added includes so header is independant.
+
+	* client/CommClient.cpp: Fixed leak of operations.
+
+	* client/CharacterClient.h, client/CharacterClient.cpp,
+	  client/CreatorClient.h, client/CreatorClient.cpp:
+	  Added in mind classes for handling creator on client side.
+
 2001-08-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/client.cpp,
