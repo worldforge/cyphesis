@@ -66,7 +66,7 @@ bool CommMetaClient::setup(const std::string & mserver)
     // Establish socket for communication with the metaserver
     memset(&meta_sa, 0, sizeof(meta_sa));
     meta_sa.sin_family = AF_INET;
-    meta_sa.sin_port = ::htons(metaserverPort);
+    meta_sa.sin_port = htons(metaserverPort);
 
     debug(std::cout << "Connecting to metaserver..." << std::endl << std::flush;);
     struct hostent * ms_addr = ::gethostbyname(mserver.c_str());
@@ -87,7 +87,7 @@ bool CommMetaClient::setup(const std::string & mserver)
 
 }
 
-#define MAXLINE 4096
+static const int MAXLINE = 4096;
 
 void CommMetaClient::metaserverKeepalive()
 {
@@ -116,7 +116,8 @@ void CommMetaClient::metaserverReply()
     if(command == HANDSHAKE)
     {
         mesg_ptr = unpack_uint32(&handshake, mesg_ptr);
-        debug(std::cout << "MetaServer contacted successfully." << std::endl << std::flush;);
+        debug(std::cout << "MetaServer contacted successfully."
+                        << std::endl << std::flush;);
 
         packet_size = 0;
         mesg_ptr = pack_uint32(SERVERSHAKE, mesg, &packet_size);

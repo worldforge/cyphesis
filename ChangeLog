@@ -1,5 +1,9 @@
 2002-11-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommMetaClient.cpp: Compliance fix. htons is not a function.
+
+2002-11-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* Increment to devel version 0.3, and start breaking things.
 
 	* server/CommClient.cpp, server/CommClient.h, server/CommServer.cpp,
