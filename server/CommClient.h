@@ -64,8 +64,9 @@ class CommClient : Atlas::Objects::Decoder {
             encoder->StreamMessage(&op);
             clientIos << std::flush;
             if (clientIos.timeout()) {
-                std::cerr << "TIMOUT" << std::endl << std::flush;
-                clientIos.close();
+                // FIXME DO we need to disconnect here?
+                // Should we keep track of errant clients?
+                // clientIos.close();
             }
         }
     }

@@ -1,3 +1,8 @@
+2002-08-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommClient.h: Don't disconnect connections when writing
+	  times out.
+
 2002-08-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* Added pkgconfig and sigc++ autotools macros into acinclude.m4
