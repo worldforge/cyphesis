@@ -1,5 +1,9 @@
 2004-11-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Add the NPC settler to the world.
+
+2004-11-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* README: Updated to latest contents of README.sgml
 
 	* cyphesis.spec.in, rulesets/Makefile.am: Remove the acorn and

@@ -248,6 +248,13 @@ def default(mapeditor):
     #directions = [[0,1,0],[1,0,0],[0,-1,0],[-1,0,0],
                   #[0.7,0.7,0],[0.7,-0.7,0],[-0.7,-0.7,0],[-0.7,0.7,0]]
 
+    # An NPC settler
+    settler=m.make('settler',xyz=(1,1,0), sex='male')
+    axe=m.make('axe',type='axe',xyz=(0,0,0),parent=settler.id)
+    m.own(settler,axe)
+    m.know(settler,[('forest','location',(30,30,0))])
+    m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','forest','axe')"))
+
     home1_xyz=(90,-90,settlement_height)
 
     butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
@@ -463,7 +470,7 @@ def test_settler(mapeditor):
 
     m=editor(mapeditor)
     settler=m.make('settler',xyz=(1,1,0), sex='male')
-    axe=m.make('axe',type='axe',xyz=(0,0,0))
+    axe=m.make('axe',type='axe',xyz=(0,0,0),parent=settler.id)
     m.own(settler,axe)
     m.know(settler,[('forest','location',(30,30,0))])
     m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','forest','axe')"))
