@@ -10,6 +10,14 @@
 #include "Persistor.h"
 
 #include <common/Database.h>
+#include <common/stringstream.h>
+
+template <class T>
+void Restorer<T>::restoreMap(const char * c, Atlas::Message::Object::MapType & ent)
+{
+    if (c == 0) { return; }
+    Database::instance()->decodeObject(c, ent);
+}
 
 template <class T>
 void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
@@ -36,6 +44,7 @@ void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
     restoreFloat(dr.column("status"), status);
     restoreFloat(dr.column("mass"), mass);
     restoreInt(dr.column("seq"), seq);
+    restoreMap(dr.column("attributes"), attributes);
 }
 
 template <class T>

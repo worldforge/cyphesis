@@ -1,4 +1,5 @@
-cycmd does not handle traffic asynchronously.
+Persistence and other words with the same root are incorrectly spelt
+Persistance throughout.
 
 If a character sets its velocity to 0 when its position is outside its
 parents bbox, then the collision code does not detect that it is outside.
@@ -9,8 +10,5 @@ is specified inside a box. Jump to it after a period of time, whereas
 we should stay outside.
 
 Plant C++ base class is totally screwed.
-
-If a character dies, it does not get removed from its accounts dictionary,
-so its bad mkay.
 
 Are touches getting broadcast?

@@ -1,10 +1,14 @@
+Two important persistence issues; make sure the attributes of world are being
+handled correctly, and persist the "attributes" member of entity.
+
 Mind state is still utterly unpersisted, so creatures are waking up brain dead -
 mind does not even get kick started with a setup op.
 
 Putting an index on entity_ent.loc massively improves database loading
 performance. Need to assess impact on runtime performance. Should definitly
 consider putting this index in place permanently. Why is it that on some cases
-this does not help?
+this does not help? Indexes are not good for lots of instances of a small set of
+values.
 
 When deleting an entity, need to deal with reparenting its children in the
 database.

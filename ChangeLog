@@ -1,3 +1,11 @@
+2003-01-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Restorer.h, server/Restorer_impl.h: Add method to allow
+	  decoding of a complete atlas map from a database record.
+
+	* common/Database.cpp: Ensure failure is only returned if string
+	  is not empty.
+
 2003-01-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp, common/Database.h: Add method to generalise

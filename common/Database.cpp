@@ -140,6 +140,10 @@ Database * Database::instance()
 bool Database::decodeObject(const std::string & data,
                             Atlas::Message::Object::MapType &o)
 {
+    if (data.empty()) {
+        return true;
+    }
+
     std::stringstream str(data, std::ios::in);
 
     Serialiser codec(str, &m_d);
