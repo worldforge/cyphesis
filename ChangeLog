@@ -1,5 +1,18 @@
 2004-11-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommServer.h: Add a method to remove CommIdleSocket
+	  objects.
+
+	* server/CommIdleSocket.cpp: Automatically remove this object
+	  from the server when its destroyed.
+
+	* server/CommPSQLSocket.cpp: Return an error if we get an error
+	  reading from the RDBMS socket. This seems to indicate that the
+	  connection is lost. Losing connection to database should not now
+	  cause this code to segfault.
+
+2004-11-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/server.cpp: Remove some debug output.
 
 2004-11-16  Al Riddoch  <alriddoch@zepler.org>

@@ -49,10 +49,17 @@ class CommServer {
 
     /// \brief Add a new CommIdleSocket object to the manager.
     ///
-    /// There is current no mechanism for removing things from the
-    /// idle set. If one is needed in future, it must be implemented.
+    /// CommIdleSocket objects are removed automatically from the
+    /// destructor.
     void addIdle(CommIdleSocket * cs) {
         m_idleSockets.insert(cs);
+    }
+
+    /// \brief Remove a CommIdleSocket object from the manager.
+    ///
+    /// Called from the CommIdleSocket destructor.
+    void removeIdle(CommIdleSocket * cs) {
+        m_idleSockets.erase(cs);
     }
 };
 

@@ -66,7 +66,9 @@ int CommPSQLSocket::read()
     if (PQconsumeInput(con) == 0) {
         log(ERROR, "Error reading from database connection.");
         m_db.reportError();
-        // FIXME Should we return an error?
+        
+        log(ERROR, "Connection to RDBMS lost.");
+        return 1;
     }
 
     PGresult * res;
