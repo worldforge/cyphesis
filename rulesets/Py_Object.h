@@ -23,10 +23,10 @@ AtlasObject * newAtlasObject(PyObject *arg);
  * Utility functions to munge between Object related types and python types
  */
 
-PyObject * MapType_asPyObject(Object::MapType & map);
-PyObject * ListType_asPyObject(Object::ListType & list);
-PyObject * Object_asPyObject(Object & obj);
-Object::ListType PyListObject_asListType(PyObject * list);
-Object::MapType PyDictObject_asMapType(PyObject * dict);
+// PyObject * MapType_asPyObject(const Object::MapType & map);
+// PyObject * ListType_asPyObject(const Object::ListType & list);
+PyObject * Object_asPyObject(const Object & obj);
+// Object::ListType PyListObject_asListType(PyObject * list);
+// Object::MapType PyDictObject_asMapType(PyObject * dict);
 Object PyObject_asObject(PyObject * o);
 

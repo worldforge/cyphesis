@@ -89,12 +89,10 @@ int CommClient::setup()
 void CommClient::message(const Objects::Operation::RootOperation & op)
 {
     oplist reply = connection->message(op);
-    while (reply.size() != 0) {
-        Objects::Operation::RootOperation * rep_op = reply.front();
+    for(oplist::const_iterator I = reply.begin(); I != reply.end(); I++) {
         debug(cout << "sending reply" << endl << flush;);
-        send(rep_op);
-        delete rep_op;
-        reply.pop_front();
+        send(*I);
+        delete *I;
     }
 }
 

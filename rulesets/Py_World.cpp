@@ -57,7 +57,7 @@ static PyObject * World_is_object_deleted(WorldObject *self, PyObject *args, PyO
     return PyInt_FromLong(self->world->is_object_deleted(o->m_thing));
 }
 
-PyMethodDef World_methods[] = {
+static PyMethodDef World_methods[] = {
     {"get_time",	(PyCFunction)World_get_time,	METH_VARARGS},
     {"is_object_deleted",	(PyCFunction)World_is_object_deleted,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
@@ -68,12 +68,12 @@ static void World_dealloc(WorldObject *self)
     PyMem_DEL(self);
 }
 
-PyObject * World_getattr(WorldObject *self, char *name)
+static PyObject * World_getattr(WorldObject *self, char *name)
 {
     return Py_FindMethod(World_methods, (PyObject *)self, name);
 }
 
-int World_setattr(WorldObject *self, char *name, PyObject *v)
+static int World_setattr(WorldObject *self, char *name, PyObject *v)
 {
     return(0);
 }

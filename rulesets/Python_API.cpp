@@ -18,6 +18,14 @@
 #include <server/server.h>
 #include <common/const.h>
 
+#include <common/Tick.h>
+#include <common/Fire.h>
+#include <common/Chop.h>
+#include <common/Cut.h>
+#include <common/Setup.h>
+#include <common/Eat.h>
+#include <common/Nourish.h>
+
 static void Function_dealloc(FunctionObject * self)
 {
     PyMem_DEL(self);
@@ -350,7 +358,7 @@ static PyObject * worldtime_new(PyObject * self, PyObject * args)
 	return (PyObject *)o;
 }
 
-inline void addToOplist(RootOperationObject * op, OplistObject * o)
+static inline void addToOplist(RootOperationObject * op, OplistObject * o)
 {
     if (op != NULL) {
        if (PyOperation_Check(op)) {
@@ -690,7 +698,7 @@ static PyMethodDef atlas_methods[] = {
     {NULL,		NULL}				/* Sentinel */
 };
 
-static PyMethodDef Vector3D_methods[] = {
+static PyMethodDef vector3d_methods[] = {
 	{"Vector3D",	vector3d_new,	METH_VARARGS},
 	{NULL,		NULL}				/* Sentinel */
 };
@@ -730,7 +738,7 @@ void init_python_api()
         return;
     }
 
-    if (Py_InitModule("Vector3D", Vector3D_methods) == NULL) {
+    if (Py_InitModule("Vector3D", vector3d_methods) == NULL) {
         fprintf(stderr, "Failed to Create Vector3D module\n");
         return;
     }

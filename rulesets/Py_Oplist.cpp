@@ -31,7 +31,7 @@ static PyObject* Oplist_append(OplistObject * self, PyObject * args)
 }
 
 
-PyMethodDef Oplist_methods[] = {
+static PyMethodDef Oplist_methods[] = {
     {"append",		(PyCFunction)Oplist_append,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };
@@ -44,13 +44,13 @@ static void Oplist_dealloc(OplistObject *self)
     PyMem_DEL(self);
 }
 
-PyObject * Oplist_getattr(OplistObject *self, char *name)
+static PyObject * Oplist_getattr(OplistObject *self, char *name)
 {
     return Py_FindMethod(Oplist_methods, (PyObject *)self, name);
 }
 
 
-PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
+static PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
 {
     if (self->ops == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid oplist");
@@ -63,12 +63,15 @@ PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
     if (PyOplist_Check(other)) {
         OplistObject * opl = (OplistObject*)other;
         OplistObject * res = newOplistObject(NULL);
-        res->ops = new oplist();
+        res->ops = new oplist(*self->ops);
         if (res == NULL) {
             return NULL;
         }
-        res->ops->merge(*self->ops);
-        res->ops->merge(*opl->ops);
+        // res->ops->merge(*self->ops);
+        for(oplist::const_iterator I=opl->ops->begin();I!=opl->ops->end();I++) {
+            res->ops->push_back(*I);
+        }
+        //res->ops->merge(*opl->ops);
         return (PyObject*)res;
     }
     if (PyOperation_Check(other)) {
@@ -77,11 +80,11 @@ PyObject * Oplist_num_add(OplistObject *self, PyObject *other)
             PyErr_SetString(PyExc_TypeError, "invalid operation");
         }
         OplistObject * res = newOplistObject(NULL);
-        res->ops = new oplist();
+        res->ops = new oplist(*self->ops);
         if (res == NULL) {
             return NULL;
         }
-        res->ops->merge(*self->ops);
+        // res->ops->merge(*self->ops);
         res->ops->push_back(op->operation);
         op->own = 0;
         return (PyObject*)res;

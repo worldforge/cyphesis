@@ -14,6 +14,11 @@
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Touch.h>
 
+#include <common/Chop.h>
+#include <common/Cut.h>
+#include <common/Eat.h>
+#include <common/Fire.h>
+
 #include <common/utility.h>
 #include <common/debug.h>
 
@@ -236,9 +241,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, Set & sub_op)
 oplist BaseMind::Sight_Operation(const Sight & op, Touch & sub_op)
 {
     oplist res;
-    if (script_Operation("sight_touch", op, res, &sub_op) != 0) {
-        return(res);
-    }
+    script_Operation("sight_touch", op, res, &sub_op);
     return(res);
 }
 
@@ -246,9 +249,7 @@ oplist BaseMind::Sight_Operation(const Sight & op, RootOperation & sub_op)
 {
     debug( cout << "BaseMind::Sight_Operation(Sight, RootOperation)" << endl << flush;);
     oplist res;
-    if (script_Operation("sight_undefined", op, res, &sub_op) != 0) {
-        return(res);
-    }
+    script_Operation("sight_undefined", op, res, &sub_op);
     return(res);
 }
 
@@ -256,9 +257,7 @@ oplist BaseMind::Sound_Operation(const Sound & op, Talk & sub_op)
 {
     debug( cout << "BaseMind::Sound_Operation(Sound, Talk)" << endl << flush;);
     oplist res;
-    if (script_Operation("sound_talk", op, res, &sub_op) != 0) {
-        return(res);
-    }
+    script_Operation("sound_talk", op, res, &sub_op);
     return(res);
 }
 
@@ -266,20 +265,18 @@ oplist BaseMind::Sound_Operation(const Sound & op, RootOperation & sub_op)
 {
     debug( cout << "BaseMind::Sound_Operation(Sound, RootOperation)" << endl << flush;);
     oplist res;
-    if (script_Operation("sound_undefined", op, res, &sub_op) != 0) {
-        return(res);
-    }
+    script_Operation("sound_undefined", op, res, &sub_op);
     return(res);
 }
 
+#if 0
 oplist BaseMind::call_sound_operation(const Sound & op, RootOperation & sub_op)
 {
-    oplist res;
     map.get_add(sub_op.GetFrom());
     op_no_t op_no = op_enumerate(&sub_op);
-    SUB_OP_SWITCH(op, op_no, res, Sound_, sub_op)
-    return(res);
+    SUB_OP_SWITCH(op, op_no, Sound_, sub_op)
 }
+#endif
 
 oplist BaseMind::Operation(const Sound & op)
 {
@@ -303,14 +300,14 @@ oplist BaseMind::Operation(const Sound & op)
     return(res);
 }
 
+#if 0
 oplist BaseMind::call_sight_operation(const Sight & op, RootOperation & sub_op)
 {
-    oplist res;
     map.get_add(sub_op.GetFrom());
     op_no_t op_no = op_enumerate(&sub_op);
-    SUB_OP_SWITCH(op, op_no, res, Sight_, sub_op)
-    return(res);
+    SUB_OP_SWITCH(op, op_no, Sight_, sub_op)
 }
+#endif
 
 oplist BaseMind::Operation(const Sight & op)
 {
@@ -380,7 +377,9 @@ oplist BaseMind::operation(const RootOperation & op)
         res.push_back(look);
     }
     oplist res2 = call_operation(op);
-    res.merge(res2);
+    for(oplist::const_iterator I = res2.begin(); I != res2.end(); I++) {
+        res.push_back(*I);
+    }
     //res = call_triggers(op);
     return(res);
 }

@@ -44,7 +44,7 @@ static PyObject * Thing_get_xyz(ThingObject * self, PyObject * args)
     return (PyObject *)ret;
 }
 
-PyMethodDef Thing_methods[] = {
+static PyMethodDef Thing_methods[] = {
 	{"get_xyz",        (PyCFunction)Thing_get_xyz,  1},
 	{"as_entity",        (PyCFunction)Thing_as_entity,  1},
 	{NULL,          NULL}           /* sentinel */
@@ -59,17 +59,17 @@ static void Thing_dealloc(ThingObject *self)
     PyMem_DEL(self);
 }
 
-PyObject * Thing_getattr(ThingObject *self, char *name)
+static PyObject * Thing_getattr(ThingObject *self, char *name)
 {
+    // Fairly major re-write of this to use operator[] of Thing base class
     if (self->m_thing == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid thing");
         return NULL;
     }
-    if (strcmp(name, "id") == 0) {
-        return PyString_FromString(self->m_thing->fullid.c_str());
-    }
-    if (strcmp(name, "name") == 0) {
-        return PyString_FromString(self->m_thing->name.c_str());
+    // If operation search gets to here, it goes no further
+    if (strstr(name, "_operation") != NULL) {
+        PyErr_SetString(PyExc_AttributeError, name);
+        return NULL;
     }
     if (strcmp(name, "type") == 0) {
         PyObject * list = PyList_New(0);
@@ -78,9 +78,6 @@ PyObject * Thing_getattr(ThingObject *self, char *name)
         }
         PyList_Append(list, PyString_FromString(self->m_thing->type.c_str()));
         return list;
-    }
-    if (strcmp(name, "status") == 0) {
-        return PyFloat_FromDouble(self->m_thing->status);
     }
     if (strcmp(name, "map") == 0) {
         MemMap * tMap = self->m_thing->getMap();
@@ -112,13 +109,14 @@ PyObject * Thing_getattr(ThingObject *self, char *name)
     }
     Thing * thing = self->m_thing;
     string attr(name);
-    if (thing->attributes.find(attr) != thing->attributes.end()) {
-        return Object_asPyObject(thing->attributes[attr]);
+    PyObject * ret = Object_asPyObject((*thing)[attr]);
+    if (ret == NULL) {
+        return Py_FindMethod(Thing_methods, (PyObject *)self, name);
     }
-    return Py_FindMethod(Thing_methods, (PyObject *)self, name);
+    return ret;
 }
 
-int Thing_setattr(ThingObject *self, char *name, PyObject *v)
+static int Thing_setattr(ThingObject *self, char *name, PyObject *v)
 {
     if (self->m_thing == NULL) {
         return -1;
@@ -130,6 +128,8 @@ int Thing_setattr(ThingObject *self, char *name, PyObject *v)
         }
     }
     if (strcmp(name, "status") == 0) {
+        // This needs to be here until we can sort the difference
+        // between floats and ints in python.
         if (PyInt_Check(v)) {
             self->m_thing->status = (double)PyInt_AsLong(v);
         } else if (PyFloat_Check(v)) {
@@ -144,14 +144,14 @@ int Thing_setattr(ThingObject *self, char *name, PyObject *v)
         return -1;
     }
     Thing * thing = self->m_thing;
-    string attr(name);
-    if (v == NULL) {
-        thing->attributes.erase(attr);
-        return(0);
-    }
+    //string attr(name);
+    //if (v == NULL) {
+        //thing->attributes.erase(attr);
+        //return(0);
+    //}
     Object obj = PyObject_asObject(v);
     if (!obj.IsNone() && !obj.IsMap() && !obj.IsList()) {
-        thing->attributes[name] = obj;
+        thing->set(name, obj);
         return(0);
     }
     // If we get here, then the attribute is not Atlas compatable, so we
@@ -159,7 +159,7 @@ int Thing_setattr(ThingObject *self, char *name, PyObject *v)
     return PyDict_SetItemString(self->Thing_attr, name, v);
 }
 
-int Thing_compare(ThingObject *self, ThingObject *other)
+static int Thing_compare(ThingObject *self, ThingObject *other)
 {
     if ((self->m_thing == NULL) || (other->m_thing == NULL)) {
         return -1;

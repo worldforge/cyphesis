@@ -15,7 +15,7 @@
 
 #include "Python_API.h"
 
-PyObject * Location_copy(LocationObject *self, PyObject *args)
+static PyObject * Location_copy(LocationObject *self, PyObject *args)
 {
     if (self->location == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid location");
@@ -31,7 +31,7 @@ PyObject * Location_copy(LocationObject *self, PyObject *args)
     return (PyObject *)ret;
 }
 
-PyMethodDef Location_methods[] = {
+static PyMethodDef Location_methods[] = {
     {"copy",		(PyCFunction)Location_copy,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };
@@ -44,7 +44,7 @@ static void Location_dealloc(LocationObject *self)
     PyMem_DEL(self);
 }
 
-PyObject * Location_getattr(LocationObject *self, char *name)
+static PyObject * Location_getattr(LocationObject *self, char *name)
 {
     if (self->location == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid location");
@@ -77,7 +77,7 @@ PyObject * Location_getattr(LocationObject *self, char *name)
     return Py_FindMethod(Location_methods, (PyObject *)self, name);
 }
 
-int Location_setattr(LocationObject *self, char *name, PyObject *v)
+static int Location_setattr(LocationObject *self, char *name, PyObject *v)
 {
     if (self->location == NULL) {
         PyErr_SetString(PyExc_TypeError, "invalid location");

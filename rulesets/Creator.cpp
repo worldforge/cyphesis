@@ -4,8 +4,18 @@
 
 #include <Atlas/Message/Object.h>
 #include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/Operation/Delete.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation/Sight.h>
+#include <Atlas/Objects/Operation/Sound.h>
+#include <Atlas/Objects/Operation/Touch.h>
+
+#include <common/Chop.h>
+#include <common/Cut.h>
+#include <common/Eat.h>
+#include <common/Fire.h>
+#include <common/Chop.h>
 
 #include <server/WorldRouter.h>
 #include <common/debug.h>
@@ -21,6 +31,7 @@ Creator::Creator()
     debug( cout << "Creator::Creator" << endl << flush;);
     is_character = true;
     omnipresent = true;
+    location.bbox = Vector3D();
 }
 
 oplist Creator::send_mind(const RootOperation & msg)
@@ -28,13 +39,12 @@ oplist Creator::send_mind(const RootOperation & msg)
     debug( cout << "Creator::send_mind" << endl << flush;);
     // Simpified version of character method send_mind() because local mind
     // of creator is irrelevant
-    oplist res;
     if ((NULL != external_mind) && (NULL != external_mind->connection)) {
         debug( cout << "Sending to external mind" << endl << flush;);
-        res = external_mind->message(msg);
+        return external_mind->message(msg);
         // If there is some kinf of error in the connection, we turn autom on
     }
-    return(res);
+    return oplist();
 }
 
 oplist Creator::operation(const RootOperation & op)
@@ -55,19 +65,16 @@ oplist Creator::operation(const RootOperation & op)
 oplist Creator::external_operation(const RootOperation & op)
 {
     debug( cout << "Creator::external_operation" << endl << flush;);
-    oplist res;
     if ((op.GetTo()==fullid) || (op.GetTo()=="")) {
-        oplist local_res = call_operation(op);
-        set_refno(local_res, op);
-        while (local_res.size() != 0) {
-            RootOperation * br = local_res.front();
-            send_world(br);
-            local_res.pop_front();
+        oplist lres = call_operation(op);
+        set_refno(lres, op);
+        for(oplist::const_iterator I = lres.begin(); I != lres.end(); I++) {
+            send_world(*I);
         }
     } else {
         RootOperation * new_op = new RootOperation(op);
         new_op->SetFrom("cheat"); //make it appear like it came from character itself;
         Creator::send_world(new_op);
     }
-    return(res);
+    return oplist();
 }

@@ -269,7 +269,7 @@ static PyObject * Map_delete_hooks_append(MapObject * self, PyObject * args)
     return Py_None;
 }
 
-PyMethodDef Map_methods[] = {
+static PyMethodDef Map_methods[] = {
     {"find_by_location",(PyCFunction)Map_find_by_location,	METH_VARARGS},
     {"find_by_type",	(PyCFunction)Map_find_by_type,	METH_VARARGS},
     //{"add_object",	(PyCFunction)Map_add_object,	METH_VARARGS},
@@ -293,12 +293,12 @@ static void Map_dealloc(MapObject *self)
     PyMem_DEL(self);
 }
 
-PyObject * Map_getattr(MapObject *self, char *name)
+static PyObject * Map_getattr(MapObject *self, char *name)
 {
     return Py_FindMethod(Map_methods, (PyObject *)self, name);
 }
 
-int Map_setattr(MapObject *self, char *name, PyObject *v)
+static int Map_setattr(MapObject *self, char *name, PyObject *v)
 {
     return(0);
 }

@@ -11,15 +11,13 @@
 oplist Admin::Operation(const Save & op)
 {
     // Obviously does nothing yet. A persistance system needs to be implemented
-    oplist res;
-    return(res);
+    return oplist();
 }
 
 oplist Admin::Operation(const Load & op)
 {
     // Obviously does nothing yet. A persistance system needs to be implemented
-    oplist res;
-    return(res);
+    return oplist();
 }
 
 // There used to be a code operation handler here. It may become desirable in

@@ -18,9 +18,11 @@ class Thing;
 
 #include <common/WorldInfo.h>
 
+typedef std::list<RootOperation *> opqueue;
+
 class WorldRouter : public Routing {
     double real_time;
-    oplist operation_queue;
+    opqueue operation_queue;
     list_t objects_list;
     time_t init_time;
 

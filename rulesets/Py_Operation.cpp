@@ -367,7 +367,7 @@ static PyObject * Operation_seq_item(RootOperationObject * self, int item)
     return NULL;
 }
 
-PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
+static PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
 {
     fflush(stdout);
     if (self->operation == NULL) {
@@ -393,8 +393,7 @@ PyObject * Operation_num_add(RootOperationObject *self, PyObject *other)
         if (res == NULL) {
             return NULL;
         }
-        res->ops = new oplist();
-        res->ops->merge(*opl->ops);
+        res->ops = new oplist(*opl->ops);
         res->ops->push_back(self->operation);
         self->own = 0;
         fflush(stdout);

@@ -8,11 +8,26 @@
 #include <Atlas/Message/Object.h>
 
 #include <math.h>
+#include <algo.h>
 
 using std::cos;
 using std::sin;
 
+typedef std::pair<double, double> range;
+
 using Atlas::Message::Object;
+
+static inline range hitTime(double s, double r, double u, double p, double q) {
+    return range((r - s + p + q)/u, (r - s - p - q)/u);
+}
+
+static inline double max(range r) {
+    return max(r.first, r.second);
+}
+
+static inline double min(range r) {
+    return min(r.first, r.second);
+}
 
 class Vector3D {
     double x,y,z;
@@ -20,6 +35,7 @@ class Vector3D {
   public:
 
     Vector3D() : x(0), y(0), z(0), _set(false) { }
+    Vector3D(double size) : x(size), y(size), z(size), _set(true) { }
     Vector3D(double x, double y, double z) : x(x), y(y), z(z), _set(true) { }
     Vector3D(const Object::ListType & vector) {
         Object::ListType::const_iterator I = vector.begin();
@@ -40,6 +56,11 @@ class Vector3D {
     Vector3D operator+(const Vector3D & other) const {
         // Add two vectors
         return Vector3D(x+other.x, y+other.y, z+other.z);
+    }
+
+    Vector3D operator+(double other) const {
+        // Increaese size (in all direction for boxes)
+        return Vector3D(x+other, y+other, z+other);
     }
 
     Vector3D operator-(const Vector3D & other) const {
@@ -134,6 +155,50 @@ class Vector3D {
     double distance(const Vector3D & v) const {
         //"Find the distance between two vectors";
         return sqrt((x - v.x)*(x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z));
+    }
+
+    bool inBox(const Vector3D & median, const Vector3D & size) const {
+        // Is this vector inside a box of size centered around median
+        return ((x < (median.x + size.x)) &&
+                (x > (median.x - size.x)) &&
+                (y < (median.y + size.y)) &&
+                (y > (median.y - size.y)) &&
+                (z < (median.z + size.z)) &&
+                (z > (median.z - size.z)));
+    }
+
+    bool hitBox(const Vector3D & m, const Vector3D & s,
+                const Vector3D & om, const Vector3D & os) const {
+        // Is box defined by this vector, with median offset m of size s
+        // colliding with other box of median om of size s.
+        return (((x+m.x+s.x) < (om.x+s.x) && (x+m.x+s.x) > (om.x-s.x)) ||
+                ((x+m.x-s.x) < (om.x+s.x) && (x+m.x-s.x) > (om.x-s.x)) &&
+                ((y+m.y+s.y) < (om.y+s.y) && (y+m.y+s.y) > (om.y-s.y)) ||
+                ((y+m.y-s.y) < (om.y+s.y) && (y+m.y-s.y) > (om.y-s.y)) &&
+                ((z+m.z+s.z) < (om.z+s.z) && (z+m.z+s.z) > (om.z-s.z)) ||
+                ((z+m.z-s.z) < (om.z+s.z) && (z+m.z-s.z) > (om.z-s.z)));
+    }
+
+    double hitTime(const Vector3D & m, const Vector3D & s, const Vector3D & v,
+                const Vector3D & om, const Vector3D & os) const {
+        // When is box defined by this vector, with median offset m of size s
+        // velocity v, colliding with other box of median om of size s.
+        // If this function returns a -ve value, it is possible they are
+        // currently in a collided state, or they may never collide.
+        // On a PIII 700 this function can perform approx 1M collision
+        // predictions per second, and approx 3M collision predictions per
+        // second optimised.
+        // Calculate range of times each intersect
+        range xt = ::hitTime(x+m.x, om.x, v.x, s.x, os.x);
+        range yt = ::hitTime(y+m.y, om.y, v.y, s.y, os.y);
+        range zt = ::hitTime(z+m.z, om.z, v.z, s.z, os.z);
+        // Find the time that the last coordinate starts intersect
+        double start = max(min(xt), max(min(yt),min(zt)));
+        // Find the time that the first coordinate stops intersect
+        double end   = min(max(xt), min(max(yt),max(zt)));
+        // If the start is before the end, then there is a collision
+        if (end < start) { return -1; }
+        return start;
     }
 
     Object asObject() const {

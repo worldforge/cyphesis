@@ -9,6 +9,11 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/Operation/Login.h>
 
+#include <common/Chop.h>
+#include <common/Cut.h>
+#include <common/Eat.h>
+#include <common/Fire.h>
+
 #include "ExternalMind.h"
 
 #include <server/Connection.h>
@@ -21,6 +26,5 @@ ExternalMind::ExternalMind(Connection * connection, string & id, string & name):
 oplist ExternalMind::message(const RootOperation & op)
 {
     connection->send(&op);
-    oplist res;
-    return(res);
+    return oplist();
 }

@@ -31,7 +31,7 @@ static PyObject* Object_get_name(AtlasObject * self, PyObject * args)
  * Object methods structure.
  */
 
-PyMethodDef Object_methods[] = {
+static PyMethodDef Object_methods[] = {
 	{"get_name",    (PyCFunction)Object_get_name,  1},
 	{NULL,          NULL}           /* sentinel */
 };
@@ -134,10 +134,10 @@ AtlasObject * newAtlasObject(PyObject *arg)
  * Utility functions to munge between Object related types and python types
  */
 
-PyObject * MapType_asPyObject(Object::MapType & map)
+static PyObject * MapType_asPyObject(const Object::MapType & map)
 {
     PyObject * args_pydict = PyDict_New();
-    Object::MapType::iterator I;
+    Object::MapType::const_iterator I;
     AtlasObject * item;
     for(I=map.begin();I!=map.end();I++) {
         const string & key = I->first;
@@ -152,10 +152,10 @@ PyObject * MapType_asPyObject(Object::MapType & map)
     return(args_pydict);
 }
 
-PyObject * ListType_asPyObject(Object::ListType & list)
+static PyObject * ListType_asPyObject(const Object::ListType & list)
 {
     PyObject * args_pylist = PyList_New(list.size());
-    Object::ListType::iterator I;
+    Object::ListType::const_iterator I;
     int j=0;
     AtlasObject * item;
     for(I=list.begin();I!=list.end();I++,j++) {
@@ -170,7 +170,7 @@ PyObject * ListType_asPyObject(Object::ListType & list)
     return(args_pylist);
 }
 
-PyObject * Object_asPyObject(Object & obj)
+PyObject * Object_asPyObject(const Object & obj)
 {
     PyObject * ret = NULL;
     switch (obj.GetType()) {
@@ -195,7 +195,7 @@ PyObject * Object_asPyObject(Object & obj)
     return(ret);
 }
 
-Object::ListType PyListObject_asListType(PyObject * list)
+static Object::ListType PyListObject_asListType(PyObject * list)
 {
     Object::ListType argslist;
     AtlasObject * item;
@@ -213,7 +213,7 @@ Object::ListType PyListObject_asListType(PyObject * list)
     return(argslist);
 }
 
-Object::MapType PyDictObject_asMapType(PyObject * dict)
+static Object::MapType PyDictObject_asMapType(PyObject * dict)
 {
     Object::MapType argsmap;
     AtlasObject * item;
@@ -274,7 +274,7 @@ Object PyObject_asObject(PyObject * o)
         Object::ListType _list;
         Object msg(_list);
         Object::ListType & entlist = msg.AsList();
-        oplist & ops = *opl->ops;
+        const oplist & ops = *opl->ops;
         oplist::const_iterator I;
         for(I = ops.begin(); I != ops.end(); I++) {
             entlist.push_back((*I)->AsObject());

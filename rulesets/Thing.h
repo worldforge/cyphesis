@@ -30,16 +30,13 @@ class Thing : public BaseEntity {
     double status;
     string type;
     bool is_character;
+    double weight;
 
     Thing();
     virtual ~Thing() { }
 
-    virtual Object & operator[](const string & aname) {
-        if (attributes.find(aname) == attributes.end()) {
-            attributes[aname]=Object();
-        }
-        return(attributes[aname]);
-    }
+    virtual const Object & operator[](const string & aname);
+    virtual void set(const string & aname, const Object & attr);
 
     virtual int set_object(PyObject * obj) {
         script_object = obj;
@@ -73,9 +70,6 @@ class Thing : public BaseEntity {
     virtual oplist Operation(const Look & op);
     virtual oplist Operation(const Appearance & op);
     virtual oplist Operation(const Disappearance & op);
-
-    friend PyObject * Thing_getattr(ThingObject *self, char *name);
-    friend int Thing_setattr(ThingObject *self, char *name, PyObject *v);
 };
 
 #if 0

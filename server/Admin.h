@@ -10,8 +10,7 @@
 class Admin : public Account {
   protected:
     virtual oplist character_error(const Create &, const Message::Object &) const {
-        oplist res;
-        return(res);
+        return oplist();
     }
   public:
     Admin(Connection * conn, const string & username, const string & passwd) :

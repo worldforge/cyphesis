@@ -8,6 +8,8 @@
 #include <Atlas/Objects/Operation/Look.h>
 #include <Atlas/Objects/Operation/Sight.h>
 
+#include <common/Setup.h>
+
 #include "WorldRouter.h"
 #include "ServerRouting.h"
 
@@ -52,14 +54,14 @@ inline void WorldRouter::add_operation_to_queue(RootOperation & op,
     }
     update_time();
     double t = world_info::time;
-    //if (t > halt_time) {
-        //cout << "Exiting for memory leak and profiler report" << endl << flush;
-        //exit(0);
-    //}
+    if (t > halt_time) {
+        cout << "Exiting for memory leak and profiler report" << endl << flush;
+        exit(0);
+    }
     t = t + op.GetFutureSeconds();
     op.SetSeconds(t);
     op.SetFutureSeconds(0.0);
-    std::list<RootOperation *>::iterator I;
+    opqueue::iterator I;
     int i = 0;
     for(I = operation_queue.begin();
         (I != operation_queue.end()) && ((*I)->GetSeconds() <= t) ; I++,i++);
@@ -104,13 +106,15 @@ Thing * WorldRouter::add_object(Thing * obj)
     objects_list.push_back(obj);
     if (!obj->location) {
         debug(cout << "set loc " << this  << endl << flush;);
-        obj->location=Location(this, Vector3D(0,0,0));
+        obj->location.ref=this;
+        obj->location.coords=Vector3D(0,0,0);
         debug(cout << "loc set with ref " << obj->location.ref->fullid << endl << flush;);
     }
-    if (NULL == obj->location.ref) {
-        debug(cout << "set ref" << endl << flush;);
-        obj->location.ref=this;
-    }
+    // Redundant
+    //if (NULL == obj->location.ref) {
+        //debug(cout << "set ref" << endl << flush;);
+        //obj->location.ref=this;
+    //}
     if (obj->location.ref==this) {
         debug(cout << "loc is world" << endl << flush;);
         contains.push_back(obj);
@@ -155,15 +159,13 @@ oplist WorldRouter::message(const RootOperation & op)
     debug(cout << "FATAL: Wrong type of WorldRouter message function called" << endl << flush;);
     // You may eventually want to remove this as it causes a deliberate segfault
     //return(*(RootOperation **)NULL);
-    oplist res;
-    return(res);
+    return oplist();
 }
 
 oplist WorldRouter::message(RootOperation & op, const BaseEntity * obj)
 {
     add_operation_to_queue(op, obj);
-    oplist res;
-    return(res);
+    return oplist();
 }
 
 inline const list_t & WorldRouter::broadcastList(const RootOperation & op) const
@@ -180,7 +182,6 @@ inline const list_t & WorldRouter::broadcastList(const RootOperation & op) const
 
 oplist WorldRouter::operation(const RootOperation * op)
 {
-    oplist res;
     const RootOperation & op_ref = *op;
     string to = op_ref.GetTo();
     debug(cout << "WorldRouter::operation {" << to << "}" << endl << flush;);
@@ -191,24 +192,23 @@ oplist WorldRouter::operation(const RootOperation * op)
         if (fobjects.find(to) == fobjects.end()) {
             cerr << "CRITICAL: Op to=\"" << to << "\"" << " does not exist"
                  << endl << flush;
-            return res;
+            return oplist();
         }
         BaseEntity * toEntity = fobjects[to];
         if (toEntity == NULL) {
             cerr << "CRITICAL: Op to=\"" << to << "\"" << " is NULL"
                  << endl << flush;
-            return res;
+            return oplist();
         }
         if ((to != fullid) || (op_type == OP_LOOK)) {
+            oplist res;
             if (to == fullid) {
                 res = ((BaseEntity *)this)->Operation((Look &)op_ref);
             } else {
                 res = toEntity->operation(op_ref);
             }
-            while (res.size() != 0) {
-                RootOperation * ro = res.front();
-                message(*ro, toEntity);
-                res.pop_front();
+            for(oplist::const_iterator I = res.begin(); I != res.end(); I++) {
+                message(**I, toEntity);
             }
             if (op_type == OP_DELETE) {
                 toEntity->destroy();
@@ -240,8 +240,7 @@ oplist WorldRouter::operation(const RootOperation * op)
         }
     }
                 
-    oplist res2;
-    return(res2);
+    return oplist();
 }
 
 oplist WorldRouter::operation(const RootOperation & op)

@@ -1,21 +1,15 @@
-Must be sorted out immediatly after Acorn 0.3:
-
-  Modify Thing::operator[] so that it handles attributes that are static.
-  Make it virtual, etc. Then clean up get/setattr in Python/C API code.
-
-  Think of a way to correctly handle the fact that world is top level container.
-  Should it list itself as loc, or not?
-
 Definitly for Acorn 0.4:
-
-  Implement accelerated Atlas Objects API. MAYBE
 
   Implement ranges.
     Fully implement propper range checking for broadcast operations, instead
     if the primitive implementation currently in place.
     Add handling of Appearance operations to BaseMind.
 
-  Implement collison detection.
-
   Implement loading the same map as the client.
 
+  Try out optimisations such as -funroll_loops -fstrict_aliasing -ffast_math
+  -mx86. Consider a custom python interpreter build.
+
+Provisional for Acorn 0.4:
+
+  Implement accelerated Atlas Objects API. MAYBE: POSTPONE!

@@ -12,6 +12,11 @@
 #include <Atlas/Objects/Operation/Info.h>
 #include <Atlas/Objects/Operation/Get.h>
 
+#include <common/Chop.h>
+#include <common/Cut.h>
+#include <common/Eat.h>
+#include <common/Fire.h>
+
 #include <rulesets/Character.h>
 #include <rulesets/ExternalMind.h>
 #include <common/debug.h>
@@ -84,7 +89,7 @@ oplist Connection::operation(const RootOperation & op)
                 info->SetArgs(args);
                 info->SetRefno(op.GetSerialno());
                 oplist res = ent->external_operation(op);
-                res.push_front(info);
+                res.insert(res.begin(), info);
                 return res;
             }
             return ent->external_operation(op);
@@ -92,8 +97,7 @@ oplist Connection::operation(const RootOperation & op)
             return error(op, "From is illegal");
         }
     }
-    oplist res;
-    return(res);
+    return oplist();
 }
 
 oplist Connection::Operation(const Login & op)
@@ -124,7 +128,7 @@ oplist Connection::Operation(const Login & op)
             return(oplist(1,info));
         }
     }
-    return(error(op, "Login is invalid"));
+    return error(op, "Login is invalid");
 }
 
 oplist Connection::Operation(const Create & op)
@@ -148,7 +152,7 @@ oplist Connection::Operation(const Create & op)
             return(oplist(1,info));
         }
     }
-    return(error(op, "Account creation is invalid"));
+    return error(op, "Account creation is invalid");
 
 }
 
@@ -167,14 +171,11 @@ oplist Connection::Operation(const Logout & op)
             operation(l);
         }
     }
-    oplist res;
-    return(res);
+    return oplist();
 }
 
 oplist Connection::Operation(const Get & op)
 {
-    oplist res;
-
     cout << "Got get" << endl << flush;
     Info * info = new Info();
     *info = Info::Instantiate(); 
@@ -183,6 +184,5 @@ oplist Connection::Operation(const Get & op)
     info->SetRefno(op.GetSerialno());
     cout << "Replying to get" << endl << flush;
     
-    res.push_back(info);
-    return(res);
+    return oplist(1,info);
 }

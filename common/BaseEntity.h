@@ -8,6 +8,7 @@
 #include <Atlas/Objects/Operation/Error.h>
 
 #include <list>
+#include <vector>
 
 #include <modules/Location.h>
 
@@ -39,121 +40,121 @@ typedef enum op_no {
 	OP_INVALID
 } op_no_t;
 
-#define OP_SWITCH(_op, _op_no, _result, _prefix) \
+#define OP_SWITCH(_op, _op_no, _prefix) \
     switch (_op_no) { \
         case OP_LOGIN: \
-            _result = _prefix ## Operation((const Login &)_op); \
+            return _prefix ## Operation((const Login &)_op); \
             break; \
         case OP_CHOP: \
-            _result = _prefix ## Operation((const Chop &)_op); \
+            return _prefix ## Operation((const Chop &)_op); \
             break; \
         case OP_CREATE: \
-            _result = _prefix ## Operation((const Create &)_op); \
+            return _prefix ## Operation((const Create &)_op); \
             break; \
         case OP_CUT: \
-            _result = _prefix ## Operation((const Cut &)_op); \
+            return _prefix ## Operation((const Cut &)_op); \
             break; \
         case OP_DELETE: \
-            _result = _prefix ## Operation((const Delete &)_op); \
+            return _prefix ## Operation((const Delete &)_op); \
             break; \
         case OP_EAT: \
-            _result = _prefix ## Operation((const Eat &)_op); \
+            return _prefix ## Operation((const Eat &)_op); \
             break; \
         case OP_FIRE: \
-            _result = _prefix ## Operation((const Fire &)_op); \
+            return _prefix ## Operation((const Fire &)_op); \
             break; \
         case OP_MOVE: \
-            _result = _prefix ## Operation((const Move &)_op); \
+            return _prefix ## Operation((const Move &)_op); \
             break; \
         case OP_NOURISH: \
-            _result = _prefix ## Operation((const Nourish &)_op); \
+            return _prefix ## Operation((const Nourish &)_op); \
             break; \
         case OP_SET: \
-            _result = _prefix ## Operation((const Set &)_op); \
+            return _prefix ## Operation((const Set &)_op); \
             break; \
         case OP_GET: \
-            _result = _prefix ## Operation((const Get &)_op); \
+            return _prefix ## Operation((const Get &)_op); \
             break; \
         case OP_SIGHT: \
-            _result = _prefix ## Operation((const Sight &)_op); \
+            return _prefix ## Operation((const Sight &)_op); \
             break; \
         case OP_SOUND: \
-            _result = _prefix ## Operation((const Sound &)_op); \
+            return _prefix ## Operation((const Sound &)_op); \
             break; \
         case OP_TALK: \
-            _result = _prefix ## Operation((const Talk &)_op); \
+            return _prefix ## Operation((const Talk &)_op); \
             break; \
         case OP_TOUCH: \
-            _result = _prefix ## Operation((const Touch &)_op); \
+            return _prefix ## Operation((const Touch &)_op); \
             break; \
         case OP_TICK: \
-            _result = _prefix ## Operation((const Tick &)_op); \
+            return _prefix ## Operation((const Tick &)_op); \
             break; \
         case OP_LOOK: \
-            _result = _prefix ## Operation((const Look &)_op); \
+            return _prefix ## Operation((const Look &)_op); \
             break; \
         case OP_LOAD: \
-            _result = _prefix ## Operation((const Load &)_op); \
+            return _prefix ## Operation((const Load &)_op); \
             break; \
         case OP_SAVE: \
-            _result = _prefix ## Operation((const Save &)_op); \
+            return _prefix ## Operation((const Save &)_op); \
             break; \
         case OP_SETUP: \
-            _result = _prefix ## Operation((const Setup &)_op); \
+            return _prefix ## Operation((const Setup &)_op); \
             break; \
         case OP_APPEARANCE: \
-            _result = _prefix ## Operation((const Appearance &)_op); \
+            return _prefix ## Operation((const Appearance &)_op); \
             break; \
         case OP_DISAPPEARANCE: \
-            _result = _prefix ## Operation((const Disappearance &)_op); \
+            return _prefix ## Operation((const Disappearance &)_op); \
             break; \
         case OP_ERROR: \
-            _result = _prefix ## Operation((const Error &)_op); \
+            return _prefix ## Operation((const Error &)_op); \
             break; \
         default: \
             cout << "nothing doing here {" << _op.GetParents().front().AsString() << "}" << endl; \
-            _result = _prefix ## Operation(_op); \
+            return _prefix ## Operation(_op); \
             break; \
     }
 
-#define SUB_OP_SWITCH(_op, _sub_op_no, _result, _prefix, _sub_op) \
+#define SUB_OP_SWITCH(_op, _sub_op_no, _prefix, _sub_op) \
     switch (_sub_op_no) { \
         case OP_LOGIN: \
-            _result = _prefix ## Operation(_op, (Login &)_sub_op); \
+            return _prefix ## Operation(_op, (Login &)_sub_op); \
             break; \
         case OP_CHOP: \
-            _result = _prefix ## Operation(_op, (Chop &)_sub_op); \
+            return _prefix ## Operation(_op, (Chop &)_sub_op); \
             break; \
         case OP_CREATE: \
-            _result = _prefix ## Operation(_op, (Create &)_sub_op); \
+            return _prefix ## Operation(_op, (Create &)_sub_op); \
             break; \
         case OP_CUT: \
-            _result = _prefix ## Operation(_op, (Cut &)_sub_op); \
+            return _prefix ## Operation(_op, (Cut &)_sub_op); \
             break; \
         case OP_DELETE: \
-            _result = _prefix ## Operation(_op, (Delete &)_sub_op); \
+            return _prefix ## Operation(_op, (Delete &)_sub_op); \
             break; \
         case OP_EAT: \
-            _result = _prefix ## Operation(_op, (Eat &)_sub_op); \
+            return _prefix ## Operation(_op, (Eat &)_sub_op); \
             break; \
         case OP_FIRE: \
-            _result = _prefix ## Operation(_op, (Fire &)_sub_op); \
+            return _prefix ## Operation(_op, (Fire &)_sub_op); \
             break; \
         case OP_MOVE: \
-            _result = _prefix ## Operation(_op, (Move &)_sub_op); \
+            return _prefix ## Operation(_op, (Move &)_sub_op); \
             break; \
         case OP_SET: \
-            _result = _prefix ## Operation(_op, (Set &)_sub_op); \
+            return _prefix ## Operation(_op, (Set &)_sub_op); \
             break; \
         case OP_TALK: \
-            _result = _prefix ## Operation(_op, (Talk &)_sub_op); \
+            return _prefix ## Operation(_op, (Talk &)_sub_op); \
             break; \
         case OP_TOUCH: \
-            _result = _prefix ## Operation(_op, (Touch &)_sub_op); \
+            return _prefix ## Operation(_op, (Touch &)_sub_op); \
             break; \
         default: \
             cout << "nothing doing here {" << _op.GetParents().front().AsString() << "_" << _sub_op.GetParents().front().AsString() << "}" << endl; \
-            _result = _prefix ## Operation(_op, _sub_op); \
+            return _prefix ## Operation(_op, _sub_op); \
             break; \
     }
 
@@ -166,201 +167,41 @@ typedef int Entity;
 class BaseEntity;
 class WorldRouter;
 
-namespace Atlas { namespace Objects { namespace Operation {
-
-class Logout;
-class Create;
-class Delete;
-class Move;
-class Set;
-class Get;
-class Sight;
-class Sound;
-class Touch;
-class Talk;
-class Look;
-class Appearance;
-class Disappearance;
-class Error;
-
-class Load : public RootOperation {
-  public:
-    Load() : RootOperation() {
-        SetId(string("load"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
+namespace Atlas {
+    namespace Objects {
+        namespace Operation {
+            class Logout;
+            class Create;
+            class Delete;
+            class Move;
+            class Set;
+            class Get;
+            class Sight;
+            class Sound;
+            class Touch;
+            class Talk;
+            class Look;
+            class Appearance;
+            class Disappearance;
+            class Error;
+            class Load;
+            class Save;
+            class Setup;
+            class Tick;
+            class Eat;
+            class Nourish;
+            class Cut;
+            class Chop;
+            class Fire;
+        }
     }
-    virtual ~Load() { }
-    static Load Instantiate() {
-        Load value;
-        Message::Object::ListType parents;
-        parents.push_back(string("load"));
-        value.SetParents(parents);
-        value.SetObjtype(string("op"));
-        return value;
-    }
-};
-
-class Save : public RootOperation {
-  public:
-    Save() : RootOperation() {
-        SetId(string("save"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
-    }
-    virtual ~Save() { }
-    static Save Instantiate() {
-        Save value;
-        Message::Object::ListType parents;
-        parents.push_back(string("save"));
-        value.SetParents(parents);
-        value.SetObjtype(string("op"));
-        return value;
-    }
-};
-
-class Setup : public RootOperation {
-  public:
-    Setup() : RootOperation() {
-        SetId(string("setup"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
-    }
-    virtual ~Setup() { }
-    static Setup Instantiate() {
-        Setup value;
-        Message::Object::ListType parents;
-        parents.push_back(string("setup"));
-        value.SetParents(parents);
-        value.SetObjtype(string("op"));
-        return value;
-    }
-};
-
-class Tick : public RootOperation {
-  public:
-    Tick() : RootOperation() {
-        SetId(string("tick"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
-    }
-    virtual ~Tick() { }
-    static Tick Instantiate() {
-        Tick value;
-        Message::Object::ListType parents;
-        parents.push_back(string("tick"));
-        value.SetParents(parents);
-        value.SetObjtype(string("op"));
-        return value;
-    }
-};
-
-class Eat : public RootOperation {
-  public:
-    Eat() : RootOperation() {
-        SetId(string("eat"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
-    }
-    virtual ~Eat() { }
-    static Eat Instantiate() {
-        Eat value;
-        Message::Object::ListType parents;
-        parents.push_back(string("eat"));
-        value.SetParents(parents);
-        value.SetObjtype(string("op"));
-        return value;
-    }
-};
-
-class Nourish : public RootOperation {
-  public:
-    Nourish() : RootOperation() {
-        SetId(string("nourish"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
-    }
-    virtual ~Nourish() { }
-    static Nourish Instantiate() {
-        Nourish value;
-        Message::Object::ListType parents;
-        parents.push_back(string("nourish"));
-        value.SetParents(parents);
-        value.SetObjtype(string("op"));
-        return value;
-    }
-};
-
-class Cut : public RootOperation {
-  public:
-    Cut() : RootOperation() {
-        SetId(string("cut"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
-    }
-    virtual ~Cut() { }
-    static Cut Instantiate() {
-        Cut value;
-        Message::Object::ListType parents;
-        parents.push_back(string("cut"));
-        value.SetParents(parents);
-        value.SetObjtype(string("op"));
-        return value;
-    }
-};
-
-class Chop : public RootOperation {
-  public:
-    Chop() : RootOperation() {
-        SetId(string("chop"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
-    }
-    virtual ~Chop() { }
-    static Chop Instantiate() {
-        Chop value;
-        Message::Object::ListType parents;
-        parents.push_back(string("chop"));
-        value.SetParents(parents);
-        value.SetObjtype(string("op"));
-        return value;
-    }
-};
-
-class Fire : public RootOperation {
-  public:
-    Fire() : RootOperation() {
-        SetId(string("fire"));
-        Message::Object::ListType parents;
-        parents.push_back(string("root_operation"));
-        SetParents(parents);
-    }
-    virtual ~Fire() { }
-    static Fire Instantiate() {
-        Fire value;
-        Message::Object::ListType parents;
-        parents.push_back(string("fire"));
-        value.SetParents(parents);
-        value.SetObjtype(string("op"));
-        return value;
-    }
-};
-
-} } }
+}
 
 using namespace Atlas;
 using namespace Objects;
 using namespace Operation;
 
-typedef std::list<RootOperation *> oplist;
+typedef std::vector<RootOperation *> oplist;
 
 typedef std::list<BaseEntity *> list_t;
 
@@ -418,11 +259,9 @@ class BaseEntity {
         op->SetRefno(ref_op.GetSerialno());
     }
 
-    void set_refno(oplist ret, const RootOperation & ref_op) const {
-        while (ret.size() != 0) {
-            RootOperation * br = ret.front();
-            set_refno_op(br, ref_op);
-            ret.pop_front();
+    void set_refno(oplist & ret, const RootOperation & ref_op) const {
+        for(oplist::const_iterator I = ret.begin(); I != ret.end(); I++) {
+            set_refno_op(*I, ref_op);
         }
     }
 
@@ -462,10 +301,8 @@ class BaseEntity {
     }
 
     oplist call_operation(const RootOperation & op) {
-        oplist res;
         const op_no_t op_no = op_enumerate(&op);
-        OP_SWITCH(op, op_no, res,)
-        return(res);
+        OP_SWITCH(op, op_no,)
     }
 
     oplist error(const RootOperation & op, const char * errstring) const {
@@ -474,7 +311,7 @@ class BaseEntity {
 
         cerr << "ERROR generated by " << fullid << " with message:" << endl;
         cerr << " [" << errstring << "]" << endl << flush;
-        list<Object> args;
+        Object::ListType args;
         Object::MapType errmsg;
         errmsg["message"] = Object(errstring);
         args.push_back(Object(errmsg));
@@ -483,7 +320,7 @@ class BaseEntity {
         e->SetArgs(args);
         e->SetRefno(op.GetSerialno());
 
-        return(oplist(1,e));
+        return oplist(1,e);
     }
 };
 

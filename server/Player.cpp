@@ -26,6 +26,5 @@ oplist Player::character_error(const Create & op, const Message::Object & ent) c
     if ((type!="character") && (type!="farmer") && (type!="smith")) {
         return error(op, "Object of that type cannot be created by this account");
     }
-    oplist res;
-    return(res);
+    return oplist();
 }

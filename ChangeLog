@@ -1,3 +1,33 @@
+2001-02-25  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Changed oplist to use std::vector. Recoded and re-optimised use
+	  of oplist to take advantage of vector's best performance.
+
+	* Modified OP_SWITCH macros to improve speed, and made it inlinable.
+
+	* Cleaned up python interface code to improve compile and link time.
+
+	* Moved custom operation definitions in one header file per class
+	  to improve modularity and compile time.
+
+	* Modified boundingbox handling so it now uses size and median.
+
+	* Added collision check and inbox member function to Vector3D class.
+
+	* Added collision prediction and checking to Location and Vector3D
+	  classes.
+
+	* Added collision prediction into MovementInfo class.
+
+	* Modified Thing::operator[] so that static attributes can be handled
+	  and added Thing::set() which must be used to modify attributes.
+
+	* Added collision resolution so characters can no longer walk through
+	  each other.
+
+	* Moved weight attribute to being static attribute of Thing, so it
+	  can be much more easily handled in movement code.
+
 2001-02-19  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Added handling of Get operation from client before login, to

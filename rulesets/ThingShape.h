@@ -13,8 +13,8 @@
 
 class ThingShape {
   private:
-    shape_t shape;
     Vector3D box;
+    Vector3D median;
     static std::map<string, ThingShape *> * dict;
     
     std::map<string, ThingShape *> & getDict() {
@@ -27,11 +27,12 @@ class ThingShape {
     DtShapeRef solidShape;
     
     ThingShape(const string & type, double x, double y, double z) :
-         shape(SH_C_BOX), box(x, y, z) {
+         box(x, y, z) {
         getDict()[type] = this;
     }
-    ThingShape(const string & type, double rad, double height) :
-         shape(SH_M_CYL), box(rad, rad, height) {
+
+    ThingShape(const string & type, double x, double y, double z, Vector3D med):
+         median(med), box(x, y, z) {
         getDict()[type] = this;
     }
 };

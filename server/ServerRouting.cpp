@@ -27,5 +27,8 @@ void ServerRouting::addObject(Object * obj) const
     Object::MapType & omap = obj->AsMap();
     omap["server"] = "cyphesis";
     omap["ruleset"] = svr_name;
+    Object::ListType plist(1, "server");
+    omap["parents"] = plist;
+    
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }

@@ -27,7 +27,9 @@ class Location;
 class WorldTime;
 class WorldRouter;
 
-typedef std::list<RootOperation *> oplist;
+#include <vector>
+
+typedef std::vector<RootOperation *> oplist;
 
 #include <physics/Vector3D.h>
 

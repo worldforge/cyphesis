@@ -31,8 +31,9 @@ class MovementInfo {
     bool update_needed(const Location & location) const;
     double get_tick_addition(const Vector3D & coordinates) const;
     void reset();
-    Move * gen_face_operation(Location &);
-    Move * gen_move_operation(Location *,Location &);
+    void check_collisions(const Location & loc);
+    Move * gen_face_operation(const Location &);
+    Move * gen_move_operation(Location *,const Location &);
     Move * gen_move_operation(Location *);
 };
 
@@ -46,10 +47,15 @@ class Character : public Thing {
     ExternalMind * external_mind;
     Account * player;
     double drunkness;
+    string sex;
 
     Character();
     virtual ~Character();
 
+    virtual const Object & operator[](const string & aname);
+    virtual void set(const string & aname, const Object & attr);
+
+    virtual void addObject(Message::Object *) const;
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
     virtual oplist Operation(const Talk & op);

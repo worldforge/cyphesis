@@ -16,6 +16,14 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
+#include <common/Setup.h>
+#include <common/Tick.h>
+#include <common/Chop.h>
+#include <common/Cut.h>
+#include <common/Eat.h>
+#include <common/Nourish.h>
+#include <common/Fire.h>
+
 #include "Thing.h"
 #include "MemMap_methods.h"
 #include "Python_API.h"
@@ -28,7 +36,7 @@
 //static const bool debug_flag = false;
 
 Thing::Thing() : script_object(NULL), perceptive(false), status(1),
-                 type("thing"), is_character(false)
+                 type("thing"), is_character(false), weight(-1)
 {
     in_game = true;
     name = string("Foo");
@@ -98,13 +106,48 @@ int Thing::script_Operation(const string & op_type, const RootOperation & op,
     return 0;
 }
 
+const Object & Thing::operator[](const string & aname)
+{
+    if (aname == "status") {
+        attributes[aname] = Object(status);
+    } else if (aname == "id") {
+        attributes[aname] = Object(fullid);
+    } else if (aname == "name") {
+        attributes[aname] = Object(name);
+    } else if (aname == "weight") {
+        attributes[aname] = Object(weight);
+    } else if (aname == "contains") {
+        Object::ListType contlist;
+        for(list_t::const_iterator I=contains.begin();I!=contains.end();I++) {
+            contlist.push_back(*I);
+        }
+        attributes[aname] = Object(contlist);
+    } else if (attributes.find(aname) == attributes.end()) {
+        attributes[aname] = Object();
+    }
+    return(attributes[aname]);
+}
+
+void Thing::set(const string & aname, const Object & attr)
+{
+    if ((aname == "status") && attr.IsFloat()) {
+        status = attr.AsFloat();
+    } else if ((aname == "name") && attr.IsString()) {
+        name = attr.AsString();
+    } else if ((aname == "weight") && attr.IsFloat()) {
+        weight = attr.AsFloat();
+    } else {
+        attributes[aname] = attr;
+    }
+}
+
 void Thing::addObject(Message::Object * obj) const
 {
     Message::Object::MapType & omap = obj->AsMap();
     omap["name"] = Message::Object(name);
     omap["type"] = Message::Object(type);
     omap["parents"] = Message::Object(Message::Object::ListType(1,Message::Object(type)));
-    omap.insert(attributes.begin(), attributes.end());
+    // We need to have a list of keys to pull from attributes.
     location.addObject(obj);
     BaseEntity::addObject(obj);
 }
@@ -153,8 +196,12 @@ void Thing::getLocation(Message::Object::MapType & entmap, fdict_t & fobjects)
             } else if (location) {
                 face = location.face;
             }
-            Location thing_loc(ref_obj, pos, velocity, face);
-            location = thing_loc;
+            //Location thing_loc(ref_obj, pos, velocity, face);
+            //location = thing_loc;
+            location.ref = ref_obj;
+            location.coords = pos;
+            location.velocity = velocity;
+            location.face = face;
         }
         catch (Message::WrongTypeException) {
             cerr << "ERROR: Create operation has bad location" << endl << flush;
@@ -167,19 +214,19 @@ oplist Thing::Operation(const Setup & op)
 {
     oplist res;
     if (script_Operation("setup", op, res) != 0) {
-        return(res);
+        return res;
     }
     RootOperation * tick = new Tick;
     *tick = Tick::Instantiate();
     tick->SetTo(fullid);
-    return(oplist(1,tick));
+    return oplist(1,tick);
 }
 
 oplist Thing::Operation(const Tick & op)
 {
     oplist res;
     script_Operation("tick", op, res);
-    return(res);
+    return res;
 }
 
 oplist Thing::Operation(const Chop & op)
@@ -197,7 +244,7 @@ oplist Thing::Operation(const Create & op)
     }
     const Message::Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
-       return(res);
+       return oplist();
     }
     try {
         Message::Object::MapType ent = args.front().AsMap();
@@ -222,19 +269,19 @@ oplist Thing::Operation(const Create & op)
             obj->location.ref->contains.unique();
         }
         Create c(op);
-        list<Message::Object> args2(1,obj->asObject());
+        Message::Object::ListType args2(1,obj->asObject());
         c.SetArgs(args2);
         RootOperation * s = new Sight();
         *s = Sight::Instantiate();
-        list<Message::Object> args3(1,c.AsObject());
+        Message::Object::ListType args3(1,c.AsObject());
         s->SetArgs(args3);
-        res.push_back(s);
+        return oplist(1,s);
     }
     catch (Message::WrongTypeException) {
         cerr << "EXCEPTION: Malformed object to be created\n";
         return(error(op, "Malformed object to be created\n"));
     }
-    return(res);
+    return oplist();
 }
 
 oplist Thing::Operation(const Cut & op)
@@ -255,7 +302,7 @@ oplist Thing::Operation(const Delete & op)
     *s = Sight::Instantiate();
     Message::Object::ListType args(1,op.AsObject());
     s->SetArgs(args);
-    return(oplist(1,s));
+    return oplist(1,s);
 }
 
 oplist Thing::Operation(const Eat & op)
@@ -282,7 +329,7 @@ oplist Thing::Operation(const Move & op)
     const Message::Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
         debug( cout << "ERROR: move op has no argument" << endl << flush;);
-        return(res);
+        return oplist();
     }
     BaseEntity * newref;
     try {
@@ -312,11 +359,15 @@ oplist Thing::Operation(const Move & op)
         if (vector.size()!=3) {
             return(error(op, "Move location pos is malformed"));
         }
-        double x = vector.front().AsFloat();
-        vector.pop_front();
-        double y = vector.front().AsFloat();
-        vector.pop_front();
-        double z = vector.front().AsFloat();
+        // FIXME
+        //double x = vector.front().AsFloat();
+        //vector.pop_front();
+        //double y = vector.front().AsFloat();
+        //vector.pop_front();
+        //double z = vector.front().AsFloat();
+        double x = vector[0].AsFloat();
+        double y = vector[1].AsFloat();
+        double z = vector[2].AsFloat();
         debug( cout << "POS: " << x << " " << y << " " << z << endl << flush;);
         location.coords = Vector3D(x, y, z);
         if (ent.find("velocity") != ent.end()) {
@@ -326,11 +377,15 @@ oplist Thing::Operation(const Move & op)
                 cerr << "ERROR: Move location velocity is malformed";
                 return(error(op, "Move location velocity is malformed"));
             }
-            x = vector.front().AsFloat();
-            vector.pop_front();
-            y = vector.front().AsFloat();
-            vector.pop_front();
-            z = vector.front().AsFloat();
+            // FIXME
+            //x = vector.front().AsFloat();
+            //vector.pop_front();
+            //y = vector.front().AsFloat();
+            //vector.pop_front();
+            //z = vector.front().AsFloat();
+            x = vector[0].AsFloat();
+            y = vector[1].AsFloat();
+            z = vector[2].AsFloat();
             debug( cout << "VEL: " << x << " " << y << " " << z << endl << flush;);
             location.velocity = Vector3D(x, y, z);
         }
@@ -347,7 +402,7 @@ oplist Thing::Operation(const Move & op)
         *s = Sight::Instantiate();
         Message::Object::ListType args2(1,op.AsObject());
         s->SetArgs(args2);
-        res.push_back(s);
+        oplist res2(1,s);
         // I think it might be wise to send a set indicating we have changed
         // modes, but this would probably be wasteful
         if (consts::enable_ranges && perceptive) {
@@ -378,22 +433,23 @@ oplist Thing::Operation(const Move & op)
                 *a = Appearance::Instantiate();
                 a->SetArgs(appear);
                 a->SetTo(fullid);
-                res.push_back(a);
+                res2.push_back(a);
             }
             if (appear.size() != 0) {
                 Disappearance * d = new Disappearance();
                 *d = Disappearance::Instantiate();
                 d->SetArgs(disappear);
                 d->SetTo(fullid);
-                res.push_back(d);
+                res2.push_back(d);
             }
         }
+        return res2;
     }
     catch (Message::WrongTypeException) {
         cerr << "EXCEPTION: Malformed object to be moved\n";
         return(error(op, "Malformed object to be moved\n"));
     }
-    return(res);
+    return oplist();
 }
 
 oplist Thing::Operation(const Nourish & op)
@@ -411,7 +467,7 @@ oplist Thing::Operation(const Set & op)
     }
     const Message::Object::ListType & args=op.GetArgs();
     if (args.size() == 0) {
-       return(res);
+       return oplist();
     }
     try {
         Message::Object::MapType ent = args.front().AsMap();
@@ -432,21 +488,22 @@ oplist Thing::Operation(const Set & op)
         *s = Sight::Instantiate();
         Message::Object::ListType args2(1,op.AsObject());
         s->SetArgs(args2);
-        res.push_back(s);
+        oplist res2(1,s);
         if (status < 0) {
             RootOperation * d = new Delete();
             *d = Delete::Instantiate();
             Message::Object::ListType args3(1,this->asObject());
             d->SetArgs(args3);
             d->SetTo(fullid);
-            res.push_back(d);
+            res2.push_back(d);
         }
+        return res2;
     }
     catch (Message::WrongTypeException) {
         cerr << "EXCEPTION: Malformed set operation\n";
         return(error(op, "Malformed set operation\n"));
     }
-    return(res);
+    return oplist();
 }
 
 oplist Thing::Operation(const Sight & op)

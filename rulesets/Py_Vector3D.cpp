@@ -138,7 +138,7 @@ static PyObject * Vector3D_distance(Vector3DObject * self, PyObject * args)
     return PyFloat_FromDouble(self->coords.distance(other->coords));
 }
 
-PyMethodDef Vector3D_methods[] = {
+static PyMethodDef Vector3D_methods[] = {
     {"dot",		(PyCFunction)Vector3D_dot,	METH_VARARGS},
     {"cross",		(PyCFunction)Vector3D_cross,	METH_VARARGS},
     {"rotatex",		(PyCFunction)Vector3D_rotatex,	METH_VARARGS},
@@ -157,7 +157,7 @@ static void Vector3D_dealloc(Vector3DObject *self)
     PyMem_DEL(self);
 }
 
-PyObject * Vector3D_getattr(Vector3DObject *self, char *name)
+static PyObject * Vector3D_getattr(Vector3DObject *self, char *name)
 {
     //if (!self->coords) {
         //PyErr_SetString(PyExc_TypeError, "unset Vector");
@@ -170,7 +170,7 @@ PyObject * Vector3D_getattr(Vector3DObject *self, char *name)
     return Py_FindMethod(Vector3D_methods, (PyObject *)self, name);
 }
 
-int Vector3D_setattr(Vector3DObject *self, char *name, PyObject *v)
+static int Vector3D_setattr(Vector3DObject *self, char *name, PyObject *v)
 {
     return(0);
 }
@@ -214,7 +214,7 @@ static Vector3DObject*Vector3D_num_sub(Vector3DObject*self,Vector3DObject*other)
     return ret;
 }
 
-Vector3DObject * Vector3D_num_mul(Vector3DObject * self, PyObject * _other)
+static Vector3DObject * Vector3D_num_mul(Vector3DObject * self, PyObject * _other)
 {
     double other;
     if (PyInt_Check(_other)) {
@@ -233,7 +233,7 @@ Vector3DObject * Vector3D_num_mul(Vector3DObject * self, PyObject * _other)
     return ret;
 }
 
-Vector3DObject * Vector3D_num_div(Vector3DObject * self, PyObject * _other)
+static Vector3DObject * Vector3D_num_div(Vector3DObject * self, PyObject * _other)
 {
     double other;
     if (PyInt_Check(_other)) {
@@ -252,7 +252,7 @@ Vector3DObject * Vector3D_num_div(Vector3DObject * self, PyObject * _other)
     return ret;
 }
 
-int Vector3D_num_coerce(PyObject ** self, PyObject ** other)
+static int Vector3D_num_coerce(PyObject ** self, PyObject ** other)
 {
     Py_INCREF(*self);
     Py_INCREF(*other);

@@ -9,20 +9,15 @@
 
 class BaseEntity;
 
-typedef enum sphape {
-    SH_C_BOX,		// Box with coords at corner
-    SH_M_BOX,		// Box with coords at centre
-    SH_M_CYL		// Cylinder with coords at centre
-} shape_t;
-
 class Location {
 public:
     BaseEntity * ref;
-    Vector3D coords;
-    Vector3D velocity;
-    Vector3D face;
-    Vector3D bbox;
-    shape_t  shape;
+    Vector3D coords;  // Coords relative to ref entity
+    Vector3D velocity;// Veclociy vector, relative to ref entity.
+    Vector3D face;    // Bad way of representing direction entity faces.
+    Vector3D bbox;    // Sizes here are distance from median to edge.
+    Vector3D bmedian; // If this is not set, then bbox is centered around bbox
+                      // which is equivalient to the SW corner is at coords.
 
     Location() : ref(NULL) { }
     Location(BaseEntity * rf, const Vector3D& crds) :
@@ -41,27 +36,25 @@ public:
     bool inRange(const Vector3D & pos, const double distance) const {
         if (!coords) { return false; }
         if (!bbox) {
-            return ((coords.X() < (pos.X() + distance))
-                   && (coords.X() > (pos.X() - distance))
-                   && (coords.Y() < (pos.Y() + distance))
-                   && (coords.Y() > (pos.Y() - distance)));
-        } else if (shape == SH_M_BOX) {
-            // We need a better check in this case. A true AABB interference
-            // detection algorithm is needed, but I am too tired to work
-            // one out
-            return ((coords.X() < (pos.X() + distance))
-                   && (coords.X() > (pos.X() - distance))
-                   && (coords.Y() < (pos.Y() + distance))
-                   && (coords.Y() > (pos.Y() - distance)));
+            pos.inBox(coords, distance);
         } else {
-            // We need a better check in this case. A true AABB interference
-            // detection algorithm is needed, but I am too tired to work
-            // one out
-            return ((coords.X() < (pos.X() + distance))
-                   && (coords.X() > (pos.X() - distance))
-                   && (coords.Y() < (pos.Y() + distance))
-                   && (coords.Y() > (pos.Y() - distance)));
+            const Vector3D & median = bmedian ? bmedian : bbox;
+            return pos.inBox(coords + median, bbox + distance);
         }
+    }
+
+    bool hit(const Location & other) const {
+        if (!(bbox && other.bbox)) { return false; }
+        const Vector3D & m = bmedian ? bmedian : bbox;
+        const Vector3D & om = other.bmedian ? other.bmedian : other.bbox;
+        return coords.hitBox(m, bbox, other.coords + om, other.bbox);
+    }
+
+    double hitTime(const Location & other) const {
+        if (!other.bbox) { return -1; }
+        const Vector3D & m = bmedian ? bmedian : bbox ? bbox : Vector3D(0,0,0);
+        const Vector3D & om = other.bmedian ? other.bmedian : other.bbox;
+        return coords.hitTime(m, bbox, velocity, other.coords + om, other.bbox);
     }
 
     friend ostream & operator<<(ostream& s, Location& v);

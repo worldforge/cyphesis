@@ -26,7 +26,7 @@ static PyObject *WorldTime_seconds(WorldTimeObject *self, PyObject *args, PyObje
 }
 
 
-PyMethodDef WorldTime_methods[] = {
+static PyMethodDef WorldTime_methods[] = {
     {"seconds",		(PyCFunction)WorldTime_seconds,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };

@@ -9,7 +9,7 @@
 
 #include "Python_API.h"
 
-PyMethodDef Optime_methods[] = {
+static PyMethodDef Optime_methods[] = {
     //{"update",		(PyCFunction)Optime_update,	METH_VARARGS},
     {NULL,		NULL}           /* sentinel */
 };

@@ -39,14 +39,24 @@ class BaseMind : public Thing {
     virtual oplist Sound_Operation(const Sound & op, Talk & sub_op);
     virtual oplist Sound_Operation(const Sound & op, RootOperation & sub_op);
 
-    oplist call_sight_operation(const Sight & op, RootOperation & sub_op);
-    oplist call_sound_operation(const Sound & op, RootOperation & sub_op);
     virtual oplist Operation(const Sight & op);
     virtual oplist Operation(const Sound & op);
     //RootOperation * get_op_name_and_sub(RootOperation & op, string & name);
     //virtual int call_triggers(RootOperation & op);
     //virtual oplist message(const RootOperation & op);
     virtual oplist operation(const RootOperation & op);
+
+    oplist call_sight_operation(const Sight & op, RootOperation & sub_op) {
+        map.get_add(sub_op.GetFrom());
+        op_no_t op_no = op_enumerate(&sub_op);
+        SUB_OP_SWITCH(op, op_no, Sight_, sub_op)
+    }
+
+    oplist call_sound_operation(const Sound & op, RootOperation & sub_op) {
+        map.get_add(sub_op.GetFrom());
+        op_no_t op_no = op_enumerate(&sub_op);
+        SUB_OP_SWITCH(op, op_no, Sound_, sub_op)
+    }
 
 };
 

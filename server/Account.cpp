@@ -12,6 +12,10 @@
 #include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Info.h>
 
+#include <common/Chop.h>
+#include <common/Cut.h>
+#include <common/Eat.h>
+#include <common/Fire.h>
 
 #include <common/log.h>
 #include <common/debug.h>
@@ -32,7 +36,8 @@ inline BaseEntity * Account::add_character(const string & typestr, const Message
     debug(cout << "Added" << endl << flush;);
     if (!chr->location) {
         debug(cout << "Setting location" << endl << flush;);
-        chr->location = Location(world, Vector3D(0,0,0));
+        chr->location.ref = world;
+        chr->location.coords = Vector3D(0, 0, 0);
     }
     debug(cout << "Location set to: " << chr->location << endl << flush;);
     if (chr->is_character == true) {
@@ -45,13 +50,13 @@ inline BaseEntity * Account::add_character(const string & typestr, const Message
 
     Create c = Create::Instantiate();
 
-    list<Message::Object> cargs(1,chr->asObject());
+    Message::Object::ListType cargs(1,chr->asObject());
     c.SetArgs(cargs);
 
     Sight * s = new Sight;
     *s = Sight::Instantiate();
     
-    list<Message::Object> sargs(1,c.AsObject());
+    Message::Object::ListType sargs(1,c.AsObject());
     s->SetArgs(sargs);
 
     world->message(*s, chr);
@@ -63,8 +68,7 @@ oplist Account::Operation(const Logout & op)
 {
     debug(cout << "Account logout: " << name << endl;);
     connection->disconnect();
-    oplist res;
-    return(res);
+    return oplist();
 }
 
 void Account::addObject(Message::Object * obj) const
@@ -113,7 +117,5 @@ oplist Account::Operation(const Create & op)
     info->SetArgs(args);
     info->SetRefno(op.GetSerialno());
 
-    oplist res;
-    res.push_back(info);
-    return(res);
+    return oplist(1,info);
 }
