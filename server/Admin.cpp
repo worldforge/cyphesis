@@ -55,7 +55,7 @@ oplist Admin::LogoutOperation(const Logout & op)
         if (!player) {
             return error(op, "Logout failed");
         }
-        player->operation(op);
+        return player->operation(op);
     }
 }
 
@@ -224,11 +224,6 @@ oplist Admin::SetOperation(const Set & op)
         const std::string & objtype = emap.find("objtype")->second.AsString();
         if (id == "server") {
             const std::string & cmd = emap.find("cmd")->second.AsString();
-            Object arg;
-            Object::MapType::const_iterator I = emap.find("arg");
-            if (I != emap.end()) {
-                arg = I->second;
-            }
             if (cmd == "shutdown") {
                 exit_flag = true;
                 Object::MapType report;
@@ -246,7 +241,7 @@ oplist Admin::SetOperation(const Set & op)
             const std::string & parent = emap.find("parents")->second.AsList().front().AsString();
             std::string script;
             Object::MapType::const_iterator I = emap.find("script");
-            if (I != emap.end()) {
+            if ((I != emap.end()) && I->second.IsString()) {
                 script = I->second.AsString();
             }
             global_conf->setItem(parent, id, varconf::Variable(script));

@@ -129,7 +129,7 @@ void EntityFactory::installClass(const std::string &parent,
                                  const std::string &className)
 {
     if ((parent == "cyphesis") || (parent == "mind")) { return; }
-    std::cout << parent << ":" << className << std::endl << std::flush;
+    debug(std::cout << parent << ":" << className << std::endl << std::flush;);
 
     Inheritance & i = Inheritance::instance();
     

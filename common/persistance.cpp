@@ -106,16 +106,17 @@ Account * Persistance::getAccount(const std::string & name)
              << " is missing essential fields." << endl << flush;
         return NULL;
     }
-    const Object & acn = I->second, & acp = J->second;
-    if (!acn.IsString() || !acp.IsString()) {
-        cerr << "WARNING: Database account entry " << name << " is corrupt."
+    if (!I->second.IsString() || !J->second.IsString()) {
+        cerr << "WARNING: Database account entry " << name << " is invalid."
              << endl << flush;
         return NULL;
     }
-    if (acn.AsString() == "admin") {
-        return new Admin(NULL, acn.AsString(), acp.AsString());
+    const std::string & acname = I->second.AsString(),
+                      & acpasswd = J->second.AsString();
+    if (acn == "admin") {
+        return new Admin(NULL, acname, acpasswd);
     }
-    return new Player(NULL, acn.AsString(), acp.AsString());
+    return new Player(NULL, acname.AsString(), acpasswd);
 }
 
 void Persistance::putAccount(const Account & ac)

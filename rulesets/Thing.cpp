@@ -91,7 +91,7 @@ oplist Thing::CreateOperation(const Create & op)
     try {
         Object::MapType ent = args.front().AsMap();
         Object::MapType::const_iterator I = ent.find("parents");
-        if (I == ent.end()) {
+        if ((I == ent.end()) || !I->second.IsList()) {
             return error(op, "Object to be created has no type");
         }
         const Object::ListType & parents = I->second.AsList();
@@ -149,13 +149,12 @@ oplist Thing::FireOperation(const Fire & op)
         return res;
     }
     Object::MapType::iterator I = attributes.find("burn_speed");
-    if (I == attributes.end()) {
+    if ((I == attributes.end()) || !I->second.IsNum() || op.GetArgs().empty()) {
         return res;
     }
-    const Object & bs = I->second;
-    if (!bs.IsNum()) { return res; }
+    double bspeed = I->second.AsNum();
     const Object::MapType & fire_ent = op.GetArgs().front().AsMap();
-    double consumed = bs.AsNum() * fire_ent.find("status")->second.AsNum();
+    double consumed = bspeed * fire_ent.find("status")->second.AsNum();
     Object::MapType self_ent;
     self_ent["id"] = getId();
     self_ent["status"] = status - (consumed / weight);
@@ -196,7 +195,7 @@ oplist Thing::MoveOperation(const Move & op)
         Vector3D oldpos = location.coords;
         const Object::MapType & ent = args.front().AsMap();
         Object::MapType::const_iterator I = ent.find("loc");
-        if (I == ent.end()) {
+        if ((I == ent.end()) || !I->second.IsString()) {
             return error(op, "Move location has no ref");
         }
         const std::string & ref = I->second.AsString();
@@ -215,7 +214,7 @@ oplist Thing::MoveOperation(const Move & op)
             location.ref = newref;
         }
         I = ent.find("pos");
-        if (I == ent.end()) {
+        if ((I == ent.end()) || !I->second.IsList()) {
             return error(op, "Move location has no position");
         }
 

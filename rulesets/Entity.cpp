@@ -159,7 +159,7 @@ void Entity::getLocation(const Object::MapType & entmap, const edict_t & eobject
 {
     debug( std::cout << "Thing::getLocation" << std::endl << std::flush;);
     Object::MapType::const_iterator I = entmap.find("loc");
-    if (I == entmap.end()) {
+    if ((I == entmap.end()) || !I->second.IsString()) {
         debug( std::cout << getId() << ".. has no loc" << std::endl << std::flush;);
         return;
     }
@@ -196,7 +196,7 @@ void Entity::getLocation(const Object::MapType & entmap, const edict_t & eobject
         }
     }
     catch (Atlas::Message::WrongTypeException) {
-        std::cerr << "ERROR: Create operation has bad location" << std::endl << std::flush;
+        std::cerr << "ERROR: Bad location data" << std::endl << std::flush;
     }
 }
 

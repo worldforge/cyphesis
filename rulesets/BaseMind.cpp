@@ -434,13 +434,15 @@ oplist BaseMind::LoadOperation(const Load & op)
 {
     oplist res;
     script->Operation("load", op, res);
-    const Object::MapType & emap = op.GetArgs().front().AsMap();
-    Object::MapType::const_iterator I = emap.find("map");
-    if (I != emap.end()) {
-        const Object::MapType & memmap = I->second.AsMap();
-        Object::MapType::const_iterator J = memmap.begin();
-        for(; J != memmap.end(); J++) {
-            map.add(J->second);
+    if (!op.GetArgs().empty()) {
+        const Object::MapType & emap = op.GetArgs().front().AsMap();
+        Object::MapType::const_iterator I = emap.find("map");
+        if ((I != emap.end()) && I->second.IsMap()) {
+            const Object::MapType & memmap = I->second.AsMap();
+            Object::MapType::const_iterator J = memmap.begin();
+            for(; J != memmap.end(); J++) {
+                map.add(J->second);
+            }
         }
     }
     return oplist();

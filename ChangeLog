@@ -1,5 +1,13 @@
 2001-11-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/persistance.cpp, rulesets/BaseMind.cpp, rulesets/Character.cpp,
+	  rulesets/Entity.cpp, rulesets/EntityFactory.cpp, rulesets/Food.cpp,
+	  rulesets/MemMap.cpp, rulesets/Thing.cpp, server/Admin.cpp:
+	  Improved robustness and readability of code handling Atlas
+	  attributes.
+
+2001-11-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp: Toughened up Logout handling, and made
 	  type info Get handling more robust.
 

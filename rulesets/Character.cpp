@@ -293,13 +293,13 @@ oplist Character::NourishOperation(const Nourish & op)
 {
     const Object::MapType & nent = op.GetArgs().front().AsMap();
     Object::MapType::const_iterator I = nent.find("weight");
-    if (I == nent.end()) { return oplist(); }
+    if ((I == nent.end()) || !I->second.IsNum()) { return oplist(); }
     food = food + I->second.AsNum();
 
     Object::MapType food_ent;
     food_ent["id"] = getId();
     food_ent["food"] = food;
-    if ((I = nent.find("alcahol")) != nent.end()) {
+    if (((I = nent.find("alcahol")) != nent.end()) && I->second.IsNum()) {
         drunkness += I->second.AsNum() / weight;
         food_ent["drunkness"] = drunkness;
     }
@@ -345,18 +345,18 @@ oplist Character::mindMoveOperation(const Move & op)
     debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
     const Object::ListType & args = op.GetArgs();
     if ((0 == args.size()) || (!args.front().IsMap())) {
-        std::cerr << "move op has no argument" << std::endl << std::flush;
+        std::cerr << "mindMoveOperation: move op has no argument" << std::endl << std::flush;
         return oplist();
     }
     const Object::MapType & arg1 = args.front().AsMap();
     Object::MapType::const_iterator I = arg1.find("id");
     if ((I == arg1.end()) || !I->second.IsString()) {
-        std::cerr << "Its got no id" << std::endl << std::flush;
+        std::cerr << "mindMoveOperation: Args has got no id" << std::endl << std::flush;
     }
     const std::string & oname = I->second.AsString();
     edict_t::const_iterator J = world->getObjects().find(oname);
     if (J == world->getObjects().end()) {
-        debug( std::cout << "This move op is for a phoney object" << std::endl << std::flush;);
+        std::cerr << "mindMoveOperation: This move op is for a phoney object" << std::endl << std::flush;
         return oplist();
     }
     Move * newop = new Move(op);
@@ -396,8 +396,8 @@ oplist Character::mindMoveOperation(const Move & op)
         }
     }
     catch (Atlas::Message::WrongTypeException) {
-        std::cerr << "EXCEPTION: Malformed move operation from mind"
-             << std::endl << std::flush;
+        std::cerr << "EXCEPTION: mindMoveOperation: Malformed move operation"
+                  << std::endl << std::flush;
     }
 
     if (!location_coords) {

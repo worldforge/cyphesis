@@ -57,7 +57,7 @@ Entity * MemMap::add(const Object & entity)
     }
     thing->merge(entmap);
     I = entmap.find("loc");
-    if (I != entmap.end()) {
+    if ((I != entmap.end()) && I->second.IsString()) {
         getAdd(I->second.AsString());
     }
     thing->getLocation(entmap, things);
@@ -73,7 +73,7 @@ Entity * MemMap::update(const Object & entity)
     }
     const Object::MapType & entmap = entity.AsMap();
     Object::MapType::const_iterator I = entmap.find("id");
-    if (I == entmap.end()) {
+    if ((I == entmap.end()) || !I->second.IsString()) {
         return NULL;
     }
     const std::string & id = I->second.AsString();

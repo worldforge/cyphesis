@@ -59,7 +59,7 @@ oplist Food::FireOperation(const Fire & op)
     }
     double cooked = 0;
     Object::MapType::iterator I = attributes.find("cooked");
-    if (I != attributes.end()) {
+    if ((I != attributes.end()) && I->second.IsNum()) {
         cooked = I->second.AsNum();
     }
     const Object::MapType & fire_ent = op.GetArgs().front().AsMap();
