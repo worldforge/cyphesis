@@ -5,6 +5,13 @@ thing that is set at construction time, and this immutable.
 Mind state is still utterly unpersisted, so creatures are waking up brain dead -
 mind does not even get kick started with a setup op.
 
+Account persistance is probably next problem.
+Two tables - account table and account-character relation.
+
+Putting an index on entity_ent.loc massively improves database loading
+performance. Need to assess impact on runtime performance. Should definitly
+consider putting this index in place permanently.
+
 Must fix for Mason 0.0.2
 
   Stop broadcasting passwords around the place. Probably best done by sorting
