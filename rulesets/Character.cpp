@@ -41,7 +41,7 @@ using Atlas::Message::Object;
 
 static const bool debug_flag = false;
 
-OpVector Character::metabolise(double ammount = 1)
+OpVector Character::metabolise(double ammount)
 {
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.

@@ -6,7 +6,7 @@
 #include <Atlas/Objects/Operation/Disappearance.h>
 
 #include "Lobby.h"
-#include "Connection.h"
+#include "Connection_methods.h"
 #include "ServerRouting.h"
 
 #include <iostream>

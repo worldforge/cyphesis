@@ -8,6 +8,8 @@
 
 #include <common/globals.h>
 
+#include <iostream>
+
 int main(int argc, char ** argv)
 {
     if (loadConfig(argc, argv)) {

@@ -9,6 +9,7 @@
 #include <common/const.h>
 
 #include <unistd.h>
+#include <iostream>
 
 using Atlas::Message::Object;
 

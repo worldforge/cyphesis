@@ -22,7 +22,7 @@
 
 #include <skstream.h>
 
-#include <cstdio>
+#include <iostream>
 
 #ifndef READLINE_CXX_SANE   // defined in config.h
 extern "C" {

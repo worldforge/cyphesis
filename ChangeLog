@@ -1,5 +1,11 @@
 2002-03-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp, server/Lobby.cpp, server/Connection.cpp,
+	  rulesets/Character.cpp, client/client.cpp,
+	  client/ObserverClient.cpp: ISO C++ compliance fixes.
+
+2002-03-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/ClientConnection.h, client/ClientConnection.cpp:
 	  Added a select() timeout to the connection polling, so the
 	  client thrashes a bit less.
