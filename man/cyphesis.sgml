@@ -19,9 +19,9 @@
 
  <refsect1><title>Description</title>
   <para>
-The cyphesis program implements the core world server for WorldForge.
+The <command>cyphesis</command> program implements the core world server for
+WorldForge.
   </para>
-  <para></para>
  </refsect1>
  <refsect1><title>Options</title>
   <para>
@@ -51,6 +51,27 @@ Ruleset name.
       <para>
 Name of the top level ruleset this server should use.
       </para>
+      <para>
+Rulesets are hierarchical, so it is very probable that the top level ruleset
+will depend on another ruleset. In order to specify the that ruleset
+depends on another ruleset, a section is required in the config file with
+the name of the ruleset, which contains an additional ruleset option.
+On startup the server will look for dependent rulesets until it reaches
+a ruleset which has no dependencies, at which point it is assumed the base
+ruleset has been found.
+      </para>
+      <para>
+For example, the mason ruleset depends on the basic ruleset, but the
+basic ruleset has no dependencies. The required configuration entries for
+this arrangement look like this:
+      </para>
+      <programlisting>
+[cyphesis]
+ruleset="mason"
+[mason]
+ruleset="basic"
+      </programlisting>
+      
      </listitem>
     </varlistentry>
 
@@ -179,22 +200,6 @@ is not yet implemented.
 
     <varlistentry>
      <term><fieldsynopsis>
-       <varname></varname>
-       <initializer>=true</initializer>
-      </fieldsynopsis>
-     </term>
-     <listitem>
-      <para>
-Flag to control use of metaserver.
-      </para>
-      <para>
-If this flag is true the server registers its presence with a metaserver.
-      </para>
-     </listitem>
-    </varlistentry>
-
-    <varlistentry>
-     <term><fieldsynopsis>
        <varname>dbserver</varname>
       </fieldsynopsis>
      </term>
@@ -214,7 +219,7 @@ remote connection even though the connection is to the local machine.
 
     <varlistentry>
      <term><fieldsynopsis>
-       <varname>usemetaserver</varname>
+       <varname>dbname</varname>
        <initializer>="cyphesis"</initializer>
       </fieldsynopsis>
      </term>
@@ -261,47 +266,6 @@ database. PostgreSQL does not usually require a password when connecting
 to a PostgreSQL RDBMS on the same system as the server, when the database
 username to be used is the same as the user running the server. If
 this is the case then the setting must obe omitted from the config file.
-      </para>
-     </listitem>
-    </varlistentry>
-   </variablelist>
-  </refsect2>
-  <refsect2><title>Client Options</title>
-   <para>
-The following options are present in the client section of the config file,
-and overriden by specifying the client section name on the command line.
-   </para>
-   <variablelist>
-
-    <varlistentry>
-     <term><fieldsynopsis>
-       <varname>package</varname>
-       <initializer>="define_world"</initializer>
-      </fieldsynopsis>
-     </term>
-     <listitem>
-      <para>
-Python package which contains the client function.
-      </para>
-      <para>
-This setting provides the name of the Python package which contains the
-function that should run by the client.
-      </para>
-     </listitem>
-    </varlistentry>
-
-    <varlistentry>
-     <term><fieldsynopsis>
-       <varname>function</varname>
-       <initializer>="default"</initializer>
-      </fieldsynopsis>
-     </term>
-     <listitem>
-      <para>
-Python client function.
-      </para>
-      <para>
-This setting provides the Python function which should be run by the client.
       </para>
      </listitem>
     </varlistentry>

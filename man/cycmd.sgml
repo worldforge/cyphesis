@@ -19,9 +19,9 @@
 
  <refsect1><title>Description</title>
   <para>
-The cycmd program a commandline interface to a cyphesis server.
+The <command>cycmd</command> program provides a commandline interface to a
+cyphesis server.
   </para>
-  <para></para>
  </refsect1>
 
  <refsect1><title>Commands</title>
