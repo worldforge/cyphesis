@@ -1,3 +1,7 @@
+2003-09-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* Version 0.2.3 release.
+
 2003-08-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* Remove unused --with-worldforge option from configure,
