@@ -160,22 +160,23 @@ class Database {
     const DatabaseResult selectOnlyByLoc(const std::string & loc,
                                          const std::string & classname);
 
-    // Interface for tables for terrain control points and other spatial data.
+    // Interface for tables for sparse sequences or arrays of data. Terrain
+    // control points and other spatial data.
 
-    bool registerSpatialTable(const std::string & name,
-                              unsigned int dimension,
-                              const Atlas::Message::MapType & row_data);
-    bool createSpatialRow(const std::string & name,
-                          const std::string & id,
-                          const std::vector<int> & key,
-                          const Atlas::Message::MapType & data);
-    bool updateSpatialRow(const std::string & name,
-                          const std::string & id,
-                          const std::vector<int> & key,
-                          const Atlas::Message::MapType & data);
-    bool removeSpatialRow(const std::string & name,
-                          const std::string & id,
-                          const std::vector<int> & key);
+    bool registerArrayTable(const std::string & name,
+                            unsigned int dimension,
+                            const Atlas::Message::MapType & row_data);
+    bool createArrayRow(const std::string & name,
+                        const std::string & id,
+                        const std::vector<int> & key,
+                        const Atlas::Message::MapType & data);
+    bool updateArrayRow(const std::string & name,
+                        const std::string & id,
+                        const std::vector<int> & key,
+                        const Atlas::Message::MapType & data);
+    bool removeArrayRow(const std::string & name,
+                        const std::string & id,
+                        const std::vector<int> & key);
                                    
     // Interface for CommPSQLSocket, so it can give us feedback
     

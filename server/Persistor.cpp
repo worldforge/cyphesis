@@ -147,6 +147,10 @@ Persistor<World>::Persistor<World>(bool temp) : m_class("world")
     MapType desc;
     // FIXME Sort out attributes
     Database::instance()->registerEntityTable(m_class, desc, "entity");
+
+    desc.clear();
+    desc["height"] = 0.1f;
+    Database::instance()->registerArrayTable("terrain", 2, desc);
 }
 
 void Persistor<Character>::update(Character * t)

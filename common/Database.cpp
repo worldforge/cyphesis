@@ -643,7 +643,7 @@ bool Database::registerSimpleTable(const std::string & name,
             query += " = 1.0";
             createquery += " float";
         } else {
-            log(ERROR, "Illegal column type in database entity row");
+            log(ERROR, "Illegal column type in database simple row");
         }
     }
     query += ";";
@@ -1050,32 +1050,120 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
 // Interface for tables for sparse sequences or arrays of data. Terrain
 // control points and other spatial data.
 
-bool Database::registerSpatialTable(const std::string & name,
-                                    unsigned int dimension,
-                                    const Atlas::Message::MapType & row_data)
+static const char * array_axes[] = { "i",
+                                     "j",
+                                     "k" };
+
+bool Database::registerArrayTable(const std::string & name,
+                                  unsigned int dimension,
+                                  const MapType & row)
+{
+    assert(dimension <= 3);
+
+    if (row.empty()) {
+        log(ERROR, "Attempt to create empty array table");
+    }
+
+    std::string query("SELECT * from ");
+    std::string createquery("CREATE TABLE ");
+
+    query += name;
+    query += " WHERE id = 0";
+
+    createquery += name;
+    createquery += " (id integer UNIQUE PRIMARY KEY";
+
+    for (unsigned int i = 0; i < dimension; ++i) {
+        query += " AND ";
+        query += array_axes[i];
+        query += " = 0";
+
+        createquery += ", ";
+        createquery += array_axes[i];
+        createquery += " integer";
+    }
+
+    for (MapType::const_iterator I = row.begin(); I != row.end(); ++I) {
+        const std::string & column = I->first;
+
+        query += " AND ";
+        query += column;
+
+        createquery += ", ";
+        createquery += column;
+
+        const Element & type = I->second;
+
+        if (type.isString()) {
+            query += " LIKE 'foo'";
+            int size = type.asString().size();
+            if (size == 0) {
+                createquery += " text";
+            } else {
+                char buf[32];
+                snprintf(buf, 32, "%d", size);
+                createquery += " varchar(";
+                createquery += buf;
+                createquery += ")";
+            }
+        } else if (type.isInt()) {
+            query += " = 1";
+            createquery += " integer";
+        } else if (type.isFloat()) {
+            query += " = 1.0";
+            createquery += " float";
+        } else {
+            log(ERROR, "Illegal column type in database array row");
+        }
+    }
+    query += ";";
+    std::cout << "QUERY: " << query << std::endl << std::flush;
+    clearPendingQuery();
+    int status = PQsendQuery(m_connection, query.c_str());
+    if (!status) {
+        log(ERROR, "Database query error.");
+        reportError();
+        return false;
+    }
+    if (!tuplesOk()) {
+        debug(reportError(););
+        debug(std::cout << "Table does not yet exist"
+                        << std::endl << std::flush;);
+    } else {
+        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        allTables.insert(name);
+        return true;
+    }
+
+    createquery += ") WITHOUT OIDS;";
+    debug(std::cout << "CREATE QUERY: " << createquery
+                    << std::endl << std::flush;);
+    bool ret = runCommandQuery(createquery);
+    if (ret) {
+        allTables.insert(name);
+    }
+    return ret;
+}
+
+bool Database::createArrayRow(const std::string & name,
+                              const std::string & id,
+                              const std::vector<int> & key,
+                              const Atlas::Message::MapType & data)
 {
     return false;
 }
 
-bool Database::createSpatialRow(const std::string & name,
-                                const std::string & id,
-                                const std::vector<int> & key,
-                                const Atlas::Message::MapType & data)
+bool Database::updateArrayRow(const std::string & name,
+                              const std::string & id,
+                              const std::vector<int> & key,
+                              const Atlas::Message::MapType & data)
 {
     return false;
 }
 
-bool Database::updateSpatialRow(const std::string & name,
-                                const std::string & id,
-                                const std::vector<int> & key,
-                                const Atlas::Message::MapType & data)
-{
-    return false;
-}
-
-bool Database::removeSpatialRow(const std::string & name,
-                                const std::string & id,
-                                const std::vector<int> & key)
+bool Database::removeArrayRow(const std::string & name,
+                              const std::string & id,
+                              const std::vector<int> & key)
 {
     return false;
 }

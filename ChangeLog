@@ -1,3 +1,11 @@
+2004-09-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.h, common/Database.cpp: Implement creating tables
+	  for storing array data.
+
+	* server/Persistor.cpp: Register a 2D array table for storing terrain
+	  height point data.
+
 2004-09-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Add stubs for new methods.
