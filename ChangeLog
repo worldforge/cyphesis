@@ -1,3 +1,7 @@
+2004-12-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Collision.cpp: Remove unused function stub.
+
 2004-12-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/log.cpp: Add errno include required by more recent compilers.

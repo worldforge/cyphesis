@@ -190,12 +190,6 @@ bool predictCollision(const CoordList & l,    // Vertices of this mesh
 //       y\ | /x                     0
 //         \|/
 
-static
-bool roughCheck(const Location & l, const Location & o, float time)
-{
-    // Cheap sphere based collision plausibility test.
-}
-
 bool predictCollision(const Location & l,  // This location
                       const Location & o,  // Other location
                       float & time,       // Returned time to collision
