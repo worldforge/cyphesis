@@ -1,3 +1,17 @@
+2003-09-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* aiclient/ClientAccount.cpp, aiclient/ClientAccount.h,
+	  aiclient/ClientConnection.cpp, aiclient/ClientConnection.h,
+	  aiclient/client.cpp, aiclient/client.h,
+	  client/CharacterClient.cpp, client/CharacterClient.h,
+	  client/ClientConnection.cpp, client/ClientConnection.h,
+	  client/CreatorClient.h, example/client/CyphesisClient.cpp,
+	  example/client/CyphesisClient.h, example/client/CyphesisClient2.cpp,
+	  example/client/CyphesisClient2.h,
+	  example/client/InheritanceClient.cpp,
+	  example/client/InheritanceClient.h, tools/cycmd.cpp,
+	  tools/cyconfig.cpp: Remove stray references to the LGPL.
+
 2003-09-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/Worldtest.cpp: Update test to take account of changes
