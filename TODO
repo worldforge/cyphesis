@@ -1,3 +1,10 @@
+Implement a Tool base class which eliminates the need for tool scripts - 
+handles the necessary op conversions driven by data.
+
+Simplify tree scripts - most of them look obsolete. Get rid of undead bone
+scripts. They do nothing. "tree" probably does not need a script, as it
+should be abstract.
+
 Also make sure stamp is updated in MemMap and checked, and implement Unseen.
 
 Implement trivial combat, and code up a bunny bashing quests for the hard
@@ -98,13 +105,6 @@ Is it necessary to copy new_coords in Pedestrain::genMoveOperation()?
 
 Sort out trees thrashing database. Postpone until we have done something
 about database transactions.
-
-Consider moving destroy() functionality of Connection into the destructor,
-thus allowing Connection to be accessed via its BaseEntity interface
-in CommClient. Potentially allows more flexibility in use of
-various server classes.
-
-Make Connection::verifyCredentials() protected.
 
 Centralise serialno assigment on IG ops, checking for 0 to see if we should?
 
@@ -321,19 +321,10 @@ Modify Movement and Pedestrian classes so they handle restricting an
 entity to their parents constraints. In the case of Pedestrian, this
 means walking on the ground.
 
-Re-write appear/disappear code so we use real square distance instead
-of boxes, and use some kind of function involving objects size 
-to judge how visible it is. ie. get rid of fixed sight range.
-
-Re-work distance measuring functions to ensure orientation is taken
-into account.
-
 Clean the database. Use VACUUM once an hour, and probably VACUUM ANALYSE
 and VACUUM FULL each once per day. REINDEX may also be required.
 
 Sort out socket address re-use, and lingering.
-
-Move big functions out of physics headers into .cpp files
 
 Long term, try and sort out the way object factories, scripts, and atlas
 inheritance are handled, so they are a bit more coherant.
@@ -393,8 +384,6 @@ entity as they should work on entities.
 
 Add attribute handler objects, which hold a reference to the attribute value, so
 that the looking up of these attribute can be accelerated by a map.
-
-Test what happens if we use shutdown instead of close on a socket.
 
 Implement constraints on entities, which have to be checked before movement
 is allowed.
