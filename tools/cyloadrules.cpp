@@ -106,7 +106,7 @@ class FileDecoder : public Atlas::Message::DecoderBase {
 
 static void usage(char * prgname)
 {
-    std::cerr << "usage: " << prgname << " [<rulesetname> <atlas map file>]" << std::endl << std::flush;
+    std::cerr << "usage: " << prgname << " [<rulesetname> <atlas-xml-file>]" << std::endl << std::flush;
 }
 
 int main(int argc, char ** argv)

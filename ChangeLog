@@ -1,5 +1,11 @@
 2004-09-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* Add manual pages to the build.
+
+	* tools/cyloadrules.cpp: Fix usage information to be clearer.
+
+2004-09-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/BaseClient.cpp, client/BaseClient.h: Rename files for
 	  already renamed CommClient class, to avoid name conflict.
 

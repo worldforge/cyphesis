@@ -240,4 +240,5 @@ AC_OUTPUT([
     tools/Makefile
     data/Makefile
     tests/Makefile
+    man/Makefile
 ], [chmod +x cyphesis-config])
