@@ -1,3 +1,7 @@
+2001-06-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/server.cpp: Fixed leak of codec and varconf configuration.
+
 2001-06-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/server.cpp: Handle cleaning up after database load.

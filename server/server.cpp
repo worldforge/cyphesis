@@ -82,6 +82,9 @@ CommClient::~CommClient()
     if (encoder != NULL) {
         delete encoder;
     }
+    if (codec != NULL) {
+        delete codec;
+    }
     close(clientFd);
 }
 
@@ -615,6 +618,8 @@ int main(int argc, char ** argv)
 
     EntityFactory::instance()->flushFactories();
     delete EntityFactory::instance();
+
+    delete global_conf;
 
     s.metaserverTerminate();
     cout << "Clean shutdown complete." << endl << flush;
