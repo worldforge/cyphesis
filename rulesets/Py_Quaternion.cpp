@@ -11,7 +11,6 @@ static PyObject * Quaternion_as_list(QuaternionObject * self, PyObject * args)
     }
     PyObject * r = PyList_New(0);
     PyObject * i = PyFloat_FromDouble(self->rotation.vector().x());
-    i = PyFloat_FromDouble(self->rotation.vector().x());
     PyList_Append(r, i);
     Py_DECREF(i);
     i = PyFloat_FromDouble(self->rotation.vector().y());

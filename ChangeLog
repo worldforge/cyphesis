@@ -1,3 +1,10 @@
+2003-07-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_BBox.cpp, rulesets/Py_Quaternion.cpp,
+	  rulesets/Python_API.cpp, server/Restorer_impl.h:
+	  Add some casts and tweaks so that wrappers and
+	  database code work with wfmath structures.
+
 2003-07-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_BBox.cpp, rulesets/Python_API.cpp, server/Restorer_impl.h:

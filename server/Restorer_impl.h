@@ -12,6 +12,10 @@
 #include "common/Database.h"
 #include "common/stringstream.h"
 
+#include <wfmath/point.h>
+#include <wfmath/vector.h>
+#include <wfmath/quaternion.h>
+
 template <class T>
 void Restorer<T>::restoreMap(const char * c, Atlas::Message::Object::MapType & ent)
 {
@@ -28,22 +32,22 @@ void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
     restoreFloat(dr.column("py"), m_location.m_pos.y());
     restoreFloat(dr.column("pz"), m_location.m_pos.z());
     m_location.m_pos.setValid();
-#warning FIXME Must be able to modify axisbox
-    restoreFloat(dr.column("ox"), m_location.m_orientation.vector().x());
-    restoreFloat(dr.column("oy"), m_location.m_orientation.vector().y());
-    restoreFloat(dr.column("oz"), m_location.m_orientation.vector().z());
-    restoreFloat(dr.column("ow"), m_location.m_orientation.scalar());
-    m_location.m_orientation.setValid();
-#warning FIXME Must be able to modify axisbox
-    restoreFloat(dr.column("bnx"), m_location.m_bBox.lowCorner().x());
-    restoreFloat(dr.column("bny"), m_location.m_bBox.lowCorner().y());
-    restoreFloat(dr.column("bnz"), m_location.m_bBox.lowCorner().z());
-    m_location.m_bBox.lowCorner().setValid();
-#warning FIXME Must be able to modify axisbox
-    restoreFloat(dr.column("bfx"), m_location.m_bBox.highCorner().x());
-    restoreFloat(dr.column("bfy"), m_location.m_bBox.highCorner().y());
-    restoreFloat(dr.column("bfz"), m_location.m_bBox.highCorner().z());
-    m_location.m_bBox.highCorner().setValid();
+    typename WFMath::CoordType x, y, z, w;
+    restoreFloat(dr.column("ox"), x);
+    restoreFloat(dr.column("oy"), y);
+    restoreFloat(dr.column("oz"), z);
+    restoreFloat(dr.column("ow"), w);
+    m_location.m_orientation = WFMath::Quaternion(w, x, y, z);
+    WFMath::Point<3> & lc = (WFMath::Point<3>&)m_location.m_bBox.lowCorner();
+    restoreFloat(dr.column("bnx"), lc.x());
+    restoreFloat(dr.column("bny"), lc.y());
+    restoreFloat(dr.column("bnz"), lc.z());
+    lc.setValid();
+    WFMath::Point<3> & hc = (WFMath::Point<3>&)m_location.m_bBox.highCorner();
+    restoreFloat(dr.column("bfx"), hc.x());
+    restoreFloat(dr.column("bfy"), hc.y());
+    restoreFloat(dr.column("bfz"), hc.z());
+    hc.setValid();
     restoreFloat(dr.column("status"), m_status);
     restoreFloat(dr.column("mass"), m_mass);
     restoreInt(dr.column("seq"), m_seq);

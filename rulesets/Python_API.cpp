@@ -480,28 +480,22 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
                     PyErr_SetString(PyExc_TypeError, "Quaternion() from single value must a list 4 long");
                     return NULL;
                 }
+                {
+                float quaternion[4];
                 for(int i = 0; i < 4; i++) {
                     PyObject * item = PyList_GetItem(clist, i);
                     if (PyInt_Check(item)) {
-#warning FIXME Need to be able to modify quaternion
-                        if (i < 3) {
-                            val.vector()[i] = (WFMath::CoordType)PyInt_AsLong(item);
-                        } else {
-                            val.scalar() = (WFMath::CoordType)PyInt_AsLong(item);
-                        }
+                        quaternion[i] = (WFMath::CoordType)PyInt_AsLong(item);
                     } else if (PyFloat_Check(item)) {
-                        if (i < 3) {
-                            val.vector()[i] = PyFloat_AsDouble(item);
-                        } else {
-                            val.scalar() = PyFloat_AsDouble(item);
-                        }
+                        quaternion[i] = PyFloat_AsDouble(item);
                     } else {
                         PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
                         return NULL;
                     }
                 }
-#warning FIXME Need to be able to modify quaternion
-                val.setValid();
+                val = Quaternion(quaternion[3], quaternion[0],
+                                 quaternion[1], quaternion[2]);
+                }
                 break;
             case 2:
                 {
@@ -517,28 +511,22 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
                 }
                 break;
             case 4:
+                {
+                float quaternion[4];
                 for(int i = 0; i < 4; i++) {
                     PyObject * item = PyTuple_GetItem(args, i);
                     if (PyInt_Check(item)) {
-#warning FIXME Need to be able to modify quaternion
-                        if (i < 3) {
-                            val.vector()[i] = (WFMath::CoordType)PyInt_AsLong(item);
-                        } else {
-                            val.scalar() = (WFMath::CoordType)PyInt_AsLong(item);
-                        }
+                        quaternion[i] = (WFMath::CoordType)PyInt_AsLong(item);
                     } else if (PyFloat_Check(item)) {
-                        if (i < 3) {
-                            val.vector()[i] = PyFloat_AsDouble(item);
-                        } else {
-                            val.scalar() = PyFloat_AsDouble(item);
-                        }
+                        quaternion[i] = PyFloat_AsDouble(item);
                     } else {
                         PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
                         return NULL;
                     }
                 }
-#warning FIXME Need to be able to modify quaternion
-                val.setValid();
+                val = Quaternion(quaternion[3], quaternion[0],
+                                 quaternion[1], quaternion[2]);
+                }
                 break;
             default:
                 PyErr_SetString(PyExc_TypeError, "Quaternion must take list of floats, or ints, 4 ints or 4 floats");
