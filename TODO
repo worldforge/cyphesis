@@ -1,3 +1,9 @@
+Fix unit_vector_to in python interface to make sure it doesn't cause
+a normalise() abort(). Probably re-write to use relativePosition() which
+may need to be fixed to give the right direction. The correct direction
+should be the coordinate space that the observer's position is in. It
+is probably currently returning it in the entities local coords.
+
 Stop creator characters for getting filed into the accounts_entity_ent
 table.
 

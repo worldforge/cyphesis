@@ -143,9 +143,14 @@ void Entity::destroy()
         // FIXME take account of orientation
         // FIXME velocity and orientation  need to be adjusted
         obj->m_location.m_loc = m_location.m_loc;
-        obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.m_pos, m_location.m_orientation);
-        obj->m_location.m_velocity.rotate(m_location.m_orientation);
-        obj->m_location.m_orientation *= m_location.m_orientation;
+        if (m_location.m_orientation.isValid()) {
+            obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.m_pos, m_location.m_orientation);
+            obj->m_location.m_velocity.rotate(m_location.m_orientation);
+            obj->m_location.m_orientation *= m_location.m_orientation;
+        } else {
+            static const Quaternion identity(1, 0, 0, 0);
+            obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.m_pos, identity);
+        }
         refContains.insert(obj);
     }
     refContains.erase(this);

@@ -570,7 +570,7 @@ void Character::mindMoveOperation(const Move & op, OpVector & res)
             }
         } else {
             debug( std::cout << "Turn!" << std::endl << std::flush;);
-            m_movement.m_orientation = new_orientation;
+            m_movement.m_orient = new_orientation;
             moveOp = m_movement.genFaceOperation();
         }
         if (NULL != moveOp) {
@@ -597,7 +597,7 @@ void Character::mindMoveOperation(const Move & op, OpVector & res)
     m_movement.m_targetPos = new_coords;
     m_movement.m_velocity = direction;
     m_movement.m_velocity *= vel_mag;
-    m_movement.m_orientation = new_orientation;
+    m_movement.m_orient = new_orientation;
     debug( std::cout << "Velocity " << vel_mag << std::endl << std::flush;);
     moveOp = m_movement.genMoveOperation(NULL, current_location);
     tickOp->setFutureSeconds(m_movement.getTickAddition(m_location.m_pos));

@@ -69,7 +69,12 @@ static bool distanceFromAncestor(const Location & self,
         return false;
     }
 
-    c = c.toParentCoords(other.m_pos, other.m_orientation);
+    if (other.m_orientation.isValid()) {
+        c = c.toParentCoords(other.m_pos, other.m_orientation);
+    } else {
+        static const Quaternion identity(1, 0, 0, 0);
+        c = c.toParentCoords(other.m_pos, identity);
+    }
 
     return distanceFromAncestor(self, other.m_loc->m_location, c);
 }
@@ -81,7 +86,12 @@ static bool distanceToAncestor(const Location & self,
     if (distanceFromAncestor(self, other, c)) {
         return true;
     } else if (distanceToAncestor(self.m_loc->m_location, other, c)) {
-        c = c.toLocalCoords(self.m_pos, self.m_orientation);
+        if (self.m_orientation.isValid()) {
+            c = c.toLocalCoords(self.m_pos, self.m_orientation);
+        } else {
+            static const Quaternion identity(1, 0, 0, 0);
+            c = c.toLocalCoords(self.m_pos, identity);
+        }
         return true;
     }
     return false;

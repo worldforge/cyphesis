@@ -52,8 +52,7 @@ double Pedestrian::getTickAddition(const Point3D & coordinates) const
 
 Move * Pedestrian::genFaceOperation()
 {
-    if (m_orientation.isValid() &&
-        (m_orientation != m_body.m_location.m_orientation)) {
+    if (m_orient.isValid() && (m_orient != m_body.m_location.m_orientation)) {
         debug( std::cout << "Turning" << std::endl << std::flush;);
         Move * moveOp = new Move();
         moveOp->setTo(m_body.getId());
@@ -61,7 +60,7 @@ Move * Pedestrian::genFaceOperation()
         entmap["id"] = m_body.getId();
         entmap["loc"] = m_body.m_location.m_loc->getId();
         entmap["pos"] = m_body.m_location.m_pos.toAtlas();
-        entmap["orientation"] = m_orientation.toAtlas();
+        entmap["orientation"] = m_orient.toAtlas();
         ListType args(1,entmap);
         moveOp->setArgs(args);
         return moveOp;
@@ -96,7 +95,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
 
     Location new_loc(loc);
     new_loc.m_velocity = m_velocity;
-    new_loc.m_orientation = m_orientation;
+    new_loc.m_orientation = m_orient;
 
     // Create move operation
     Move * moveOp = new Move();
@@ -162,7 +161,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                                                          identity;
                     // FIXME take account of orientation
                     new_coords = new_coords.toParentCoords(loc.m_loc->m_location.m_pos, collOrientation);
-                    m_orientation *= collOrientation;
+                    m_orient *= collOrientation;
                     m_velocity.rotate(collOrientation);
                     // FIXME velocity take account of orientation
                     if (m_targetPos.isValid()) {
@@ -175,7 +174,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                                                          m_collEntity->m_location.m_orientation :
                                                          identity;
                     new_coords = new_coords.toLocalCoords(m_collEntity->m_location.m_pos, collOrientation);
-                    m_orientation /= collOrientation;
+                    m_orient /= collOrientation;
                     m_velocity.rotate(collOrientation.inverse());
                     // FIXME velocity take account of orientation
                     if (m_targetPos.isValid()) {
@@ -190,7 +189,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                 }
                 new_loc.m_loc = m_collEntity;
                 new_loc.m_velocity = m_velocity;
-                new_loc.m_orientation = m_orientation;
+                new_loc.m_orientation = m_orient;
                 m_collEntity = NULL;
                 m_collRefChange = false;
                 m_collPos = Point3D();

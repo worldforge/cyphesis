@@ -23,7 +23,7 @@ class Movement {
     Point3D m_targetPos;
     Point3D m_updatedPos;
     Vector3D m_velocity;
-    Quaternion m_orientation;
+    Quaternion m_orient;
     int m_serialno;
     Point3D m_collPos;
     Entity * m_collEntity;

@@ -91,7 +91,12 @@ void Movement::checkCollisions(const Location & loc)
         const Location & lc2 = m_collEntity->m_location;
         Location rloc(loc);
         rloc.m_loc = m_collEntity;
-        rloc.m_pos = loc.m_pos.toLocalCoords(lc2.m_pos, lc2.m_orientation);
+        if (lc2.m_orientation.isValid()) {
+            rloc.m_pos = loc.m_pos.toLocalCoords(lc2.m_pos, lc2.m_orientation);
+        } else {
+            static const Quaternion identity(1, 0, 0, 0);
+            rloc.m_pos = loc.m_pos.toLocalCoords(lc2.m_pos, identity);
+        }
         float coll2Time = consts::basic_tick;
         // rloc is coords of character with ref to m_collEntity
         I = m_collEntity->m_contains.begin();

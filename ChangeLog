@@ -1,5 +1,12 @@
 2004-10-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.cpp, physics/Collision.cpp, rulesets/Character.cpp,
+	  rulesets/Entity.cpp, rulesets/Movement.cpp, rulesets/Movement.h,
+	  rulesets/Pedestrian.cpp: Make sure orientation is not used if it
+	  is not valid.
+
+2004-10-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/objects/buildings/House3.py: Fix script
 	  to pass Point to Location constructor for pos.
 
