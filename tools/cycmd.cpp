@@ -22,6 +22,7 @@
 
 #include <skstream.h>
 
+#include <stdio.h>
 #include <iostream>
 
 #ifndef READLINE_CXX_SANE   // defined in config.h
