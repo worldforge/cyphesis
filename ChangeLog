@@ -1,3 +1,12 @@
+2003-10-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Vector3D.h: Clean up collision code, and add work in
+	  progress on function to predict collision between point and
+	  plane.
+
+	* modules/Location.cpp: Clean up methods and placeholder for new
+	  oriented box prediction code.
+
 2003-10-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommSocket.h, server/CommUnixListener.cpp,

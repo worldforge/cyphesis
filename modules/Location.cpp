@@ -49,7 +49,8 @@ void Location::addToObject(Element::MapType & omap) const
     }
 }
 
-bool Location::distanceLeft(const Location & other, Vector3D & c) const {
+bool Location::distanceLeft(const Location & other, Vector3D & c) const
+{
     if (m_loc == other.m_loc) {
         c -= m_pos;
         return true;
@@ -64,7 +65,8 @@ bool Location::distanceLeft(const Location & other, Vector3D & c) const {
     }
 }
 
-bool Location::distanceRight(const Location & other, Vector3D & c) const {
+bool Location::distanceRight(const Location & other, Vector3D & c) const
+{
     // In an intact system, other->m_loc should never be NULL or invalid
     if (distanceLeft(other,c) || distanceRight(other.m_loc->m_location,c)) {
         c += other.m_pos;
@@ -72,3 +74,16 @@ bool Location::distanceRight(const Location & other, Vector3D & c) const {
     }
     return false;
 }
+
+// Anonymous namespace for development work on code for handling oriented
+// box collision prediction.
+
+namespace {
+
+   double timeToHit(const Location & l,
+                    const Location & o,
+                    Vector3D & normal)
+   {
+   }
+
+} // namespace
