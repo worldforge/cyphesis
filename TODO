@@ -1,3 +1,11 @@
+  The world.is_object_delete() implementation cannot work in C++,
+  as deleted objects do not hang around to be checked. Basically the
+  deleted flag is pointless and it will go as soon as I have verified
+  that it is never false in the only place it is really used.
+
+  Its probably a good idea to make sure Location has an operator== and
+  operator!= to make sure operator bool is not stuffing it up.
+
   fire is being installed as a type of operation, and as an entity class.
 
   Lookup whether c_str() returns a pointer which must be deleted.

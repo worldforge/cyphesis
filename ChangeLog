@@ -1,5 +1,16 @@
 2002-03-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.cpp, common/BaseEntity.h, rulesets/Entity.h,
+	  server/Connection.cpp: Remove destroy from the base class, and
+	  make it non-virtual, as it is not used this way.
+
+	* rulesets/Entity.cpp: Clean up destroy, ensuring that contains
+	  is managed correctly.
+
+	* server/WorldRouter.cpp: Eliminate duplicate contains management.
+
+2002-03-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Persistance.cpp, server/Connection.cpp, server/Admin.cpp,
 	  server/Account.cpp, rulesets/Thing.h, rulesets/Thing.cpp,
 	  rulesets/Stackable.cpp, rulesets/Py_Location.cpp,

@@ -26,10 +26,6 @@ BaseEntity::~BaseEntity()
 {
 }
 
-void BaseEntity::destroy()
-{
-}
-
 Object BaseEntity::asObject() const
 {
     debug( std::cout << "BaseEntity::asObject" << std::endl << std::flush;);

@@ -142,13 +142,6 @@ Entity * WorldRouter::addObject(const std::string & typestr,
 
 void WorldRouter::delObject(Entity * obj)
 {
-    // Remove object from contains of its real ref?
-    if (obj->location.ref != NULL) {
-        obj->location.ref->contains.erase(obj);
-    }
-    // Remove object from world just to make sure
-    // For the love of god, do we really need to do this?
-    gameWorld.contains.erase(obj);
     omnipresentList.erase(obj);
     perceptives.erase(obj);
     objectList.erase(obj);

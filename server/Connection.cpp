@@ -72,7 +72,6 @@ void Connection::destroy()
             character->externalMind = NULL;
         }
     }
-    BaseEntity::destroy();
 }
 
 OpVector Connection::operation(const RootOperation & op)

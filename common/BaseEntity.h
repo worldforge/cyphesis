@@ -34,8 +34,6 @@ class BaseEntity {
         m_id = i;
     }
 
-    virtual void destroy();
-
     Atlas::Message::Object asObject() const;
     virtual void addToObject(Atlas::Message::Object::MapType &) const;
 

@@ -100,20 +100,21 @@ void Entity::setScript(Script * scrpt)
 
 void Entity::destroy()
 {
+    assert(!deleted);
     if (deleted) {
         return;
     }
+    assert(location.ref != NULL);
+    EntitySet & refContains = location.ref->contains;
     for(EntitySet::const_iterator I=contains.begin(); I != contains.end(); I++){
         Entity * obj = *I;
         if (!obj->deleted) {
             obj->location.ref = location.ref;
-            obj->location.coords = location.coords + obj->location.coords;
-            // FIXME Add to contains of location.ref ?
+            obj->location.coords += location.coords;
+            refContains.insert(obj);
         }
     }
-    if (location) {
-        location.ref->contains.erase(this);
-    }
+    refContains.erase(this);
     deleted = true;
 }
 
