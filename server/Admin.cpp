@@ -8,6 +8,9 @@
 #include <Atlas/Objects/Operation/Set.h>
 #include <Atlas/Objects/Operation/Info.h>
 
+#include <common/Load.h>
+#include <common/Save.h>
+
 #include <common/persistance.h>
 
 #include "Admin.h"
@@ -20,14 +23,59 @@ using Atlas::Objects::Operation::Info;
 
 oplist Admin::Operation(const Save & op)
 {
-    // Obviously does nothing yet. A persistance system needs to be implemented
-    return oplist();
+    fdict_t::const_iterator I;
+    Persistance * p = Persistance::instance();
+    DatabaseIterator dbi(p->getWorld());
+    Object ent;
+    while (dbi.get(ent)) {
+        dbi.del();
+    }
+    int count = 0;
+    for(I = world->fobjects.begin(); I != world->fobjects.end(); I++) {
+        p->putEntity(I->second);
+        ++count;
+    }
+    Object::MapType report;
+    report["message"] = "Objects saved to database";
+    report["object_count"] = count;
+    Info * info = new Info();
+    *info = Info::Instantiate();
+    Object::ListType args(1,report);
+    info->SetArgs(args);
+    info->SetRefno(op.GetSerialno());
+    return oplist(1,info);
 }
 
 oplist Admin::Operation(const Load & op)
 {
-    // Obviously does nothing yet. A persistance system needs to be implemented
-    return oplist();
+    int count = 0;
+    Persistance * p = Persistance::instance();
+    DatabaseIterator dbi(p->getWorld());
+    Object ent;
+    while (dbi.get(ent)) {
+        Object::MapType m = ent.AsMap();
+        bool p = (m.find("parents") != m.end());
+        const string & type = p ? m["parents"].AsList().front().AsString()
+                                : "thing";
+        if (m.find("id") != m.end()) {
+            const string & id = m["id"].AsString();
+            if (id == "world_0") {
+                // Ignore the world entry. No info required at the moment.
+            } else {
+                world->add_object(type, ent, id);
+                ++count;
+            }
+        }
+    }
+    Object::MapType report;
+    report["message"] = "Objects loaded from database";
+    report["object_count"] = count;
+    Info * info = new Info();
+    *info = Info::Instantiate();
+    Object::ListType args(1,report);
+    info->SetArgs(args);
+    info->SetRefno(op.GetSerialno());
+    return oplist(1,info);
 }
 
 oplist Admin::Operation(const Set & op)
@@ -44,32 +92,8 @@ oplist Admin::Operation(const Set & op)
             }
             if (cmd == "shutdown") {
                 exit_flag = true;
-            } else if (cmd == "stat") {
-                Info * info = new Info();
-                *info = Info::Instantiate();
-                Object::ListType args(1,connection->server->asObject());
-                info->SetArgs(args);
-                info->SetRefno(op.GetSerialno());
-                return oplist(1,info);
-            } else if (cmd == "load") {
-                int count = 0;
-                Persistance * p = Persistance::instance();
-                DatabaseIterator dbi(p->getWorld());
-                Object ent;
-                while (dbi.get(ent)) {
-                    Object::MapType m = ent.AsMap();
-                    bool p = (m.find("parents") != m.end());
-                    const string & type = p ? m["parents"].AsList().front().AsString()
-                                            : "thing";
-                    if (m.find("id") != m.end()) {
-                        const string & id = m["id"].AsString();
-                        world->add_object(type, ent, id);
-                        ++count;
-                    }
-                }
                 Object::MapType report;
-                report["message"] = "Objects loaded from database";
-                report["object_count"] = count;
+                report["message"] = "Shutdown initiated";
                 Info * info = new Info();
                 *info = Info::Instantiate();
                 Object::ListType args(1,report);

@@ -5,7 +5,8 @@ Definitly for Acorn 0.4:
   Implement loading the same map as the client.
 
   Sort out collision detection wrt moving alongside an object in close
-  proximity, and add CD for two moving objects.
+  proximity, and add CD for two moving objects. Basically we need sliding.
+  along an object.
 
   Sort out collision prediction between two moving entities. Current problem
   is that it is not possible to tell when movement started, and thus get
@@ -40,3 +41,10 @@ Possible ideas:
   -mx86. Consider a custom python interpreter build.
 
   Add fully featured database persistance.
+
+  Persistance system is naive right now. It does not take account of that
+  fact that characters need minds, and it stores the world object.
+
+  Get system working as an AI client to another server. This would also
+  be a good time to get cyphesis working as a mindless server, without
+  any AI code.

@@ -25,7 +25,6 @@ class Pig(Thing):
             #to_=self.world.get_object(op[1].id)
             to_ = op[1].id
         else:
-            print self.emancipation
             to_=self
         res.append(Operation("create",ham_ent,to=to_))
         return res

@@ -119,6 +119,11 @@ void Persistance::putAccount(const Account * ac)
     putObject(account_db, ac->asObject(), ac->fullid.c_str());
 }
 
+void Persistance::putEntity(const BaseEntity * be)
+{
+    putObject(world_db, be->asObject(), be->fullid.c_str());
+}
+
 #else // HAVE_LIBDB_CXX
 
 Persistance::Persistance() { }
@@ -136,7 +141,9 @@ bool Persistance::findAccount(const std::string &) { return false; }
 
 Account * Persistance::getAccount(const std::string & name) { return NULL; }
 
-void Persistance::putAccount(const Account * ac) { }
+void Persistance::putAccount(const Account *) { }
+
+void Persistance::putEntity(const BaseEntity *) { }
 
 bool Persistance::init() { return true; }
 

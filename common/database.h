@@ -65,6 +65,7 @@ class DatabaseIterator {
         db.cursor(NULL, &m_cursor, 0);
     }
     bool get(Atlas::Message::Object & o);
+    bool del();
 };
 
 #else

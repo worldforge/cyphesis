@@ -32,6 +32,7 @@ extern "C" {
 #include <common/log.h>
 #include <common/debug.h>
 #include <common/persistance.h>
+#include <common/utility.h>
 
 #include <fstream>
 
@@ -122,6 +123,11 @@ void CommClient::message(const RootOperation & op)
 
 void CommClient::UnknownObjectArrived(const Object& o)
 {
+    debug(cout << "An unknown has arrived." << endl << flush;);
+    RootOperation * r = (RootOperation*)utility::Object_asRoot(o);
+    if (r != NULL) {
+        message(*r);
+    }
 #if 0
     debug(cout << "An unknown has arrived." << endl << flush;);
     if (o.IsMap()) {

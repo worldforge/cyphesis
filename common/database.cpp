@@ -155,3 +155,13 @@ bool DatabaseIterator::get(Atlas::Message::Object & o)
     }
     return Database::instance()->decodeObject(data, o);
 }
+
+bool DatabaseIterator::del()
+{
+    int res = m_cursor->del(0);
+    if (res == 0) {
+        return true;
+    }
+    cout << "Error deleting from database" << endl << flush;
+    return false;
+}

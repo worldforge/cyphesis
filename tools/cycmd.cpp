@@ -10,6 +10,10 @@
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Objects/Entity/Account.h>
 #include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Get.h>
+
+#include <common/Load.h>
+#include <common/Save.h>
 
 extern "C" {
     #include <stdio.h>
@@ -30,6 +34,20 @@ extern "C" {
 };
 
 using Atlas::Message::Object;
+using Atlas::Objects::Operation::Get;
+using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Load;
+using Atlas::Objects::Operation::Save;
+
+void help()
+{
+    std::cout << "Cyphesis commands:" << endl << endl;
+    std::cout << "    stat	Return current server status" << endl;
+    std::cout << "    load	Load world state from database status" << endl;
+    std::cout << "    save	Save world state to database status" << endl;
+    std::cout << "    shutdown	Initiate server shutdown" << endl<< endl;
+    std::cout << "Other commands will be passed on to the server using a set operation" << endl << flush;
+}
 
 class Interactive : public Atlas::Objects::Decoder
 {
@@ -76,22 +94,22 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
             const Object & item = I->second;
             switch (item.GetType()) {
                 case Object::TYPE_INT:
-                    cout << I->first << ": " << item.AsInt() << endl;
+                    cout << "    " << I->first << ": " << item.AsInt() << endl;
                     break;
                 case Object::TYPE_FLOAT:
-                    cout << I->first << ": " << item.AsFloat() << endl;
+                    cout << "    " << I->first <<": " << item.AsFloat() << endl;
                     break;
                 case Object::TYPE_STRING:
-                    cout << I->first << ": " << item.AsString() << endl;
+                    cout << "    " << I->first <<": "<< item.AsString() << endl;
                     break;
                 case Object::TYPE_LIST:
-                    cout << I->first << ": (list)" << endl;
+                    cout << "    " << I->first << ": (list)" << endl;
                     break;
                 case Object::TYPE_MAP:
-                    cout << I->first << ": (map)" << endl;
+                    cout << "    " << I->first << ": (map)" << endl;
                     break;
                 default:
-                    cout << I->first << ": (???)" << endl;
+                    cout << "    " << I->first << ": (???)" << endl;
                     break;
             }
                 
@@ -110,7 +128,7 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Error& o)
     if (arg.IsString()) {
         cout << arg.AsString() << endl << flush;
     } else if (arg.IsMap()) {
-        cout << arg.AsMap()["message"].AsString();
+        cout << arg.AsMap()["message"].AsString() << endl << flush;
     }
 }
 
@@ -269,24 +287,38 @@ bool Interactive::login()
 
 void Interactive::exec(const string & cmd, const string & arg)
 {
-    bool reply_expected = false;
+    bool reply_expected = true;
     reply_flag = false;
     error_flag = false;
 
-    Atlas::Objects::Operation::Set s = Atlas::Objects::Operation::Set::Instantiate();
-    if (cmd == "stat") { reply_expected = true; }
-    if (cmd == "load") { reply_expected = true; }
+    if (cmd == "stat") {
+        Get g = Get::Instantiate();
+        encoder->StreamMessage(&g);
+    } else if (cmd == "load") {
+        Load l = Load::Instantiate();
+        l.SetFrom("admin");
+        encoder->StreamMessage(&l);
+    } else if (cmd == "save") {
+        Save s = Save::Instantiate();
+        s.SetFrom("admin");
+        encoder->StreamMessage(&s);
+    } else if (cmd == "help") {
+        reply_expected = false;
+        help();
+    } else {
+        Set s = Set::Instantiate();
 
-    Object::MapType cmap;
-    cmap["id"] = "server";
-    cmap["cmd"] = cmd;
-    if (arg.size() != 0) {
-        cmap["arg"] = arg;
+        Object::MapType cmap;
+        cmap["id"] = "server";
+        cmap["cmd"] = cmd;
+        if (arg.size() != 0) {
+            cmap["arg"] = arg;
+        }
+        s.SetArgs(Object::ListType(1,cmap));
+        s.SetFrom("admin");
+
+        encoder->StreamMessage(&s);
     }
-    s.SetArgs(Object::ListType(1,cmap));
-    s.SetFrom("admin");
-
-    encoder->StreamMessage(&s);
 
     *ios << flush;
 

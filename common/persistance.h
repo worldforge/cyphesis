@@ -7,6 +7,7 @@
 
 class Admin;
 class Account;
+class BaseEntity;
 
 #include "database.h"
 
@@ -26,6 +27,10 @@ class Persistance : public Database {
     bool findAccount(const std::string &);
     Account * getAccount(const std::string &);
     void putAccount(const Account *);
+    
+    //bool findEntity(const std::string &);
+    //Entity * getEntity(const std::string &);
+    void putEntity(const BaseEntity *);
 };
 
 #endif /* PERSISTANCE_H */

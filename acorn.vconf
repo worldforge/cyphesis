@@ -15,6 +15,7 @@ weather		= "world.objects.Weather"
 
 [character]
 pig		= "world.objects.animals.Pig"
+deer		= "world.objects.animals.Deer"
 wolf		= "world.objects.animals.Wolf"
 crab		= "world.objects.animals.Crab"
 squirrel	= "world.objects.animals.Squirrel"

@@ -35,4 +35,4 @@ Root * Object_asRoot(const Atlas::Message::Object & o)
     return obj;
 }
 
-}
+} // namespace utility
