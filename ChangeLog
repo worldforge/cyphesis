@@ -1,5 +1,10 @@
 2001-04-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.in: Added a bit of support for later version of the Python
+	  interpretter to configure script.
+
+2001-04-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/database.*, common/persistance.*: Added new database tables
 	  for mind data, and server data.
 

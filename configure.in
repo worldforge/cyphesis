@@ -78,7 +78,7 @@ AC_CACHE_CHECK(for location of python headers, cyphesis_cv_python,
 [
 	cyphesis_cv_python=/usr/include/python1.5
 	AC_ARG_WITH(python,
-	[  --with-python=DIR          python includes in ].
+	[  --with-python=DIR          python includes in ],
 	[
 		if test $withval != yes; then
 			cyphesis_cv_python=$withval
@@ -91,8 +91,8 @@ CPPFLAGS="$CPPFLAGS -I${cyphesis_cv_python}"
 AC_CACHE_CHECK(for location of python libs, cyphesis_cv_libpython,
 [
 	cyphesis_cv_libpython=/usr/lib/python1.5/config
-	AC_ARG_WITH(python,
-	[  --with-pythonlib=DIR          python includes in ].
+	AC_ARG_WITH(pythonlib,
+	[  --with-pythonlib=DIR          python includes in ],
 	[
 		if test $withval != yes; then
 			cyphesis_cv_libpython=$withval
@@ -143,15 +143,6 @@ AC_CACHE_VAL(cyphesis_cv_python_headers,
 
 AC_CHECK_LIB(dl,dlopen)
 AC_CHECK_LIB(pthread,pthread_create)
-
-AC_CACHE_VAL(cyphesis_cv_python_libraries,
-[
-	AC_CHECK_LIB(python1.5, Py_Initialize, LIBS="$LIBS -lpython1.5",
-	[
-		AC_MSG_ERROR(Couln't find working Python libraries.);
-	])
-])
-
 AC_CHECK_LIB(sigc,main)
 AC_CHECK_LIB(varconf,main)
 AC_CHECK_LIB(db,db_create)
@@ -161,6 +152,20 @@ AC_CHECK_LIB(coal,main)
 AC_CHECK_LIB(coaliso,main)
 AC_CHECK_LIB(readline,readline)
 
+AC_CACHE_VAL(cyphesis_cv_python_libraries,
+[
+	AC_CHECK_LIB(python1.5, Py_Initialize, LIBS="$LIBS -lpython1.5",
+	[
+	 AC_CHECK_LIB(python1.6, Py_Initialize, LIBS="$LIBS -lpython1.6",
+	 [
+	  AC_CHECK_LIB(util, openpty)
+	  AC_CHECK_LIB(python2.0, Py_Initialize, LIBS="$LIBS -lpython2.0",
+	  [
+		  AC_MSG_ERROR(Couln't find working Python libraries.);
+	  ])
+	 ])
+	])
+])
 
 dnl Generate files
 AC_OUTPUT([
