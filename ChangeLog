@@ -1,5 +1,11 @@
 2004-07-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/FormattedXMLWriter.cpp common/FormattedXMLWriter.h:
+	  Utility class to write Atlas to a stream with formatting for
+	  human readability.
+
+2004-07-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp, common/Database.h: Add capability to specify
 	  extra columns in generic Atlas database tables. Query the results
 	  columns more robustly. Add a ruleset name column to the rules

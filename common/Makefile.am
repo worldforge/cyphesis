@@ -11,6 +11,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		globals.cpp globals.h \
 		Database.cpp Database.h \
 		accountbase.cpp accountbase.h \
+		FormattedXMLWriter.cpp FormattedXMLWriter.h \
 		utility.cpp utility.h \
 		system.cpp system.h \
 		serialno.cpp serialno.h \
