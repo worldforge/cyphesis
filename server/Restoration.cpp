@@ -10,10 +10,10 @@ Restoration::Restoration(ServerRouting & svr) : server(svr)
 
 void Restoration::read()
 {
-    getRootFromTable();
-    handleRootAttrs();
-    getListChildren();
-    getChildrenCorrectTable();
-    reconstruct();
-    recurse();
+    // getRootFromTable();
+    // handleRootAttrs();
+    // getListChildren();
+    // getChildrenCorrectTable();
+    // reconstruct();
+    // recurse();
 }

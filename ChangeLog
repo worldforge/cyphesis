@@ -1,3 +1,12 @@
+2002-12-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.h: Add class for handling results from database.
+
+	* server/Restoration.cpp: Comment out pseudo-code.
+
+	* server/Restorer.h: Methods declarations for code to decode database
+	  results.
+
 2002-12-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.h, server/ExternalMind.h,

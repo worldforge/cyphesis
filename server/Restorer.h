@@ -5,6 +5,8 @@
 #ifndef SERVER_RESTORER_H
 #define SERVER_RESTORER_H
 
+#include <string>
+
 class Entity;
 
 // This class should never ever be instantiated, so the constructor is private
@@ -18,7 +20,11 @@ class Entity;
 template <class T>
 class Restorer : public T {
   private:
-    Restorer();
+    Restorer(); // DO NOT IMPLEMENT THIS
+
+    void restoreInt(const char *, int &);
+    void restoreFloat(const char *, double &);
+    void restoreString(const char *, std::string &);
   public:
     void populate(int what_exactly);
     static Entity * restore(int what_exactly);

@@ -101,4 +101,36 @@ class Database {
 
 };
 
+// This class encapsulate a result from the database so we can use it in the
+// upper layers in a database independant way.
+// Perhaps an iterator model might be nice later?
+class DatabaseResult {
+  private:
+    PGresult * m_res;
+  public:
+    DatabaseResult(PGresult * r) : m_res(r) { }
+    DatabaseResult(const DatabaseResult & dr) : m_res(dr.m_res) { }
+
+    DatabaseResult & operator=(const DatabaseResult & other) {
+        m_res = other.m_res;
+        return *this;
+    }
+
+    class const_iterator {
+      private:
+        DatabaseResult & m_dr;
+        
+        const_iterator(DatabaseResult & dr) : m_dr(dr) { }
+      public:
+        const_iterator(const const_iterator & ci) : m_dr(ci.m_dr) { }
+        friend class DatabaseResult;
+    };
+
+    int rows() const { return PQntuples(m_res); }
+    int columns() const { return PQnfields(m_res); }
+
+    const char * field(int row, int column) { return PQgetvalue(m_res, row, column); }
+    const char * field(int row, const std::string & column);
+};
+
 #endif // COMMON_DATABSE_H
