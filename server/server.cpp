@@ -137,6 +137,9 @@ int main(int argc, char ** argv)
         if (cmc->setup(mserver)) {
             commServer.add(cmc);
             commServer.addIdle(cmc);
+        } else {
+            log(ERROR, "Error creating metaserver comm channel.");
+            delete cmc;
         }
     }
 

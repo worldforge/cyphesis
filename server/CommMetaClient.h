@@ -9,15 +9,15 @@
 
 #include <string>
 
-extern "C" {
-    #include <sys/socket.h>
-}
+#include <skstream/skstream.h>
+
+// extern "C" {
+    // #include <sys/socket.h>
+// }
 
 class CommMetaClient : public CommIdleSocket {
   private:
-    struct sockaddr_storage meta_sa;
-    socklen_t meta_sa_len;
-    int metaFd;
+    udp_socket_stream clientIos;
     time_t lastTime;
 
     static const int metaserverPort = 8453;

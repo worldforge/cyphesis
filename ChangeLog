@@ -1,5 +1,13 @@
 2003-08-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/server.cpp: Handle the case correctly if the metaserver
+	  socket setup does not work.
+
+	* server/CommMetaClient.h, server/CommMetaClient.cpp: Re-write
+	  CommMetaClient to use skstreams udp_socket_stream.
+
+2003-08-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommListener.h, server/CommListener.cpp:
 	  Convert listener class to use the skstream listener
 	  code.
