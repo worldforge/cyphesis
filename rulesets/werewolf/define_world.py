@@ -56,3 +56,4 @@ def default(mapeditor):
     hangman=m.make('hangman', type='hangman', xyz=(5, 5, village_height))
     m.learn(hangman,execute)
     m.know(hangman,knowledge)
+    m.own(hangman,gallows)

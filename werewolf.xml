@@ -3,6 +3,9 @@
   <map name="gallows">
     <string name="parent">thing</string>
     <map name="attributes">
+      <list name="bbox">
+        <float>0.4</float><float>0.4</float><float>4</float>
+      </list>
     </map>
     <map name="script">
       <string name="name">world.objects.tools.Gallows</string>

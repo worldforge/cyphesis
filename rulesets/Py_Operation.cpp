@@ -169,13 +169,15 @@ static PyObject * Operation_SetArgs(OperationObject * self, PyObject * args)
     }
     Object::ListType argslist;
     for(int i = 0; i < PyList_Size(args_object); i++) {
-        AtlasObject * item = (AtlasObject *)PyList_GetItem(args_object, i);
-        if (!PyAtlasObject_Check(item)) {
+        PyObject * item = PyList_GetItem(args_object, i);
+        if (PyAtlasObject_Check(item)) {
+            argslist.push_back(*((AtlasObject*)item)->m_obj);
+        } else if (PyOperation_Check(item)) {
+            argslist.push_back(((OperationObject*)item)->operation->AsObject());
+        } else {
             PyErr_SetString(PyExc_TypeError,"args contains non Atlas Object");
             return NULL;
         }
-        
-        argslist.push_back(*(item->m_obj));
     }
     self->operation->SetArgs(argslist);
 
