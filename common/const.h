@@ -39,7 +39,7 @@ namespace consts {
   /// \brief What is the minimum size of an object when calculating visibility
   static const float minSqrBoxSize = 0.1f;
   /// \brief Should we use a database
-  static const bool enable_database = false;
+  static const bool enable_database = true;
   /// \brief Should world state be persistent
   static const bool enable_persistence = false;
 

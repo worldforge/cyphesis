@@ -1,3 +1,8 @@
+2004-01-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.cpp, common/const.h: Re-enable database code by default
+	  as the disable option is now well tested.
+
 2004-01-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Increment version number. Add automake options
