@@ -90,7 +90,6 @@
 
   <map name="farmer">
     <string name="parent">character</string>
-    <int name="playable">1</int>
     <map name="attributes">
     </map>
   </map>
