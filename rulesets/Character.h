@@ -69,8 +69,12 @@ class Character : public Thing {
     virtual oplist Mind_Operation(const Error & op) { oplist res; return(res); }
     virtual oplist Mind_Operation(const RootOperation & op) { oplist res; return(res); }
     virtual oplist W2m_Operation(const Login & op) { oplist res; return(res); }
+    virtual oplist W2m_Operation(const Chop & op) { oplist res; return(res); }
     virtual oplist W2m_Operation(const Create & op) { oplist res; return(res); }
+    virtual oplist W2m_Operation(const Cut & op) { oplist res; return(res); }
     virtual oplist W2m_Operation(const Delete & op) { oplist res; return(res); }
+    virtual oplist W2m_Operation(const Eat & op) { oplist res; return(res); }
+    virtual oplist W2m_Operation(const Fire & op) { oplist res; return(res); }
     virtual oplist W2m_Operation(const Move & op) { oplist res; return(res); }
     virtual oplist W2m_Operation(const Set & op) { oplist res; return(res); }
     virtual oplist W2m_Operation(const Sight & op);

@@ -14,6 +14,8 @@
 #include <Atlas/Objects/Operation/Move.h>
 #include <Atlas/Objects/Operation/Error.h>
 
+#include <varconf/Config.h>
+
 extern "C" {
     #include <stdlib.h>
 }
@@ -202,6 +204,8 @@ Character::~Character()
     }
 }
 
+extern varconf::Config * global_conf;
+
 oplist Character::Operation(const Setup & op)
 {
     debug_character && cout << "Character::tick" << endl << flush;
@@ -213,7 +217,12 @@ oplist Character::Operation(const Setup & op)
     }
 
     mind = new BaseMind(fullid, name);
-    Create_PyThing(mind, "mind.NPCMind", "NPCMind");
+    string mind_class("NPCMind"), mind_package("mind.NPCMind");
+    if (global_conf->findItem("minds", type)) {
+        mind_package = global_conf->getItem("minds", type);
+        mind_class = type + "Mind";
+    }
+    Create_PyThing(mind, mind_package, mind_class);
 
     Setup * s = new Setup(op);
     // THis is so not the right thing to do

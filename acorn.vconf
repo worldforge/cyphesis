@@ -22,3 +22,9 @@ crab		= "world.objects.animals.Crab"
 squirrel	= "world.objects.animals.Squirrel"
 skeleton	= "world.objects.undead.Skeleton"
 lych		= "world.objects.undead.Lych"
+
+[minds]
+pig		= "mind.PigMind"
+wolf		= "mind.WolfMind"
+skeleton	= "mind.SkelMind"
+

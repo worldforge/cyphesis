@@ -1,3 +1,19 @@
+2000-12-14  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* Modifed python interface Operation() function so that it accepts
+	  strings for to and from as well as entities.
+
+	* Adapt python Operation() function so operations can be given as
+	  arguments.
+
+	* Add Eat, Chop, Cut and Fire operations into the main operation
+	  handling functions.
+
+	* Added code so that intelligent entities can use python mind classes
+	  other than NPCMind, and added config section for specifying which.
+
+	* Tweaked python mind code for Pig, Wolf and Skeleton so they work.
+
 2000-12-13  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* Set up rulesets processing so that everything is handled dynamically

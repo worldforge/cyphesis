@@ -143,11 +143,23 @@ op_no_t BaseEntity::op_enumerate(const RootOperation * op)
     if ("login" == parent) {
         return(OP_LOGIN);
     }
+    if ("chop" == parent) {
+        return(OP_CHOP);
+    }
     if ("create" == parent) {
         return(OP_CREATE);
     }
+    if ("cut" == parent) {
+        return(OP_CUT);
+    }
     if ("delete" == parent) {
         return(OP_DELETE);
+    }
+    if ("eat" == parent) {
+        return(OP_EAT);
+    }
+    if ("fire" == parent) {
+        return(OP_FIRE);
     }
     if ("move" == parent) {
         return(OP_MOVE);

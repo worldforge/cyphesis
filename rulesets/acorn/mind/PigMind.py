@@ -1,10 +1,8 @@
 from atlas import *
-from world.physics.Vector3D import Vector3D
+from Vector3D import Vector3D
 from mind.NPCMind import NPCMind
 
 class PigMind(NPCMind):
-    def __init__(self, **kw):
-        self.base_init(kw)
     def touch_operation(self, op):
         source=op.from_.location.coordinates
         destination=Location(self.location.parent)

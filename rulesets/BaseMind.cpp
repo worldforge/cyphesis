@@ -41,6 +41,13 @@ oplist BaseMind::Sight_Operation(const Sight & op, Login & sub_op)
     return(res);
 }
 
+oplist BaseMind::Sight_Operation(const Sight & op, Chop & sub_op)
+{
+    oplist res;
+    script_Operation("sight_chop", op, res, &sub_op);
+    return(res);
+}
+
 oplist BaseMind::Sight_Operation(const Sight & op, Create & sub_op)
 {
     oplist res;
@@ -58,6 +65,13 @@ oplist BaseMind::Sight_Operation(const Sight & op, Create & sub_op)
         map.add(arg->AsObject());
     }
     delete arg;
+    return(res);
+}
+
+oplist BaseMind::Sight_Operation(const Sight & op, Cut & sub_op)
+{
+    oplist res;
+    script_Operation("sight_cut", op, res, &sub_op);
     return(res);
 }
 
@@ -82,6 +96,20 @@ oplist BaseMind::Sight_Operation(const Sight & op, Delete & sub_op)
         }
         delete arg;
     }
+    return(res);
+}
+
+oplist BaseMind::Sight_Operation(const Sight & op, Eat & sub_op)
+{
+    oplist res;
+    script_Operation("sight_eat", op, res, &sub_op);
+    return(res);
+}
+
+oplist BaseMind::Sight_Operation(const Sight & op, Fire & sub_op)
+{
+    oplist res;
+    script_Operation("sight_fire", op, res, &sub_op);
     return(res);
 }
 

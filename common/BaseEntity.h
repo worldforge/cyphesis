@@ -10,8 +10,13 @@
 typedef enum op_no {
 	OP_LOGIN,
 	OP_LOGOUT,
+	OP_CHOP,
 	OP_CREATE,
+	OP_CUT,
 	OP_DELETE,
+	OP_EAT,
+	OP_ERROR,
+	OP_FIRE,
 	OP_MOVE,
 	OP_SET,
 	OP_SIGHT,
@@ -23,7 +28,6 @@ typedef enum op_no {
 	OP_LOAD,
 	OP_SAVE,
 	OP_SETUP,
-	OP_ERROR,
 	OP_INVALID
 } op_no_t;
 
@@ -32,11 +36,23 @@ typedef enum op_no {
         case OP_LOGIN: \
             _result = _prefix ## Operation((const Login &)_op); \
             break; \
+        case OP_CHOP: \
+            _result = _prefix ## Operation((const Chop &)_op); \
+            break; \
         case OP_CREATE: \
             _result = _prefix ## Operation((const Create &)_op); \
             break; \
+        case OP_CUT: \
+            _result = _prefix ## Operation((const Cut &)_op); \
+            break; \
         case OP_DELETE: \
             _result = _prefix ## Operation((const Delete &)_op); \
+            break; \
+        case OP_EAT: \
+            _result = _prefix ## Operation((const Eat &)_op); \
+            break; \
+        case OP_FIRE: \
+            _result = _prefix ## Operation((const Fire &)_op); \
             break; \
         case OP_MOVE: \
             _result = _prefix ## Operation((const Move &)_op); \
@@ -75,7 +91,7 @@ typedef enum op_no {
             _result = _prefix ## Operation((const Error &)_op); \
             break; \
         default: \
-            cout << "nothing doing here" << endl; \
+            cout << "nothing doing here {" << _op.GetParents().front().AsString() << "}" << endl; \
             _result = _prefix ## Operation(_op); \
             break; \
     }
@@ -85,11 +101,23 @@ typedef enum op_no {
         case OP_LOGIN: \
             _result = _prefix ## Operation(_op, (Login &)_sub_op); \
             break; \
+        case OP_CHOP: \
+            _result = _prefix ## Operation(_op, (Chop &)_sub_op); \
+            break; \
         case OP_CREATE: \
             _result = _prefix ## Operation(_op, (Create &)_sub_op); \
             break; \
+        case OP_CUT: \
+            _result = _prefix ## Operation(_op, (Cut &)_sub_op); \
+            break; \
         case OP_DELETE: \
             _result = _prefix ## Operation(_op, (Delete &)_sub_op); \
+            break; \
+        case OP_EAT: \
+            _result = _prefix ## Operation(_op, (Eat &)_sub_op); \
+            break; \
+        case OP_FIRE: \
+            _result = _prefix ## Operation(_op, (Fire &)_sub_op); \
             break; \
         case OP_MOVE: \
             _result = _prefix ## Operation(_op, (Move &)_sub_op); \
@@ -104,7 +132,7 @@ typedef enum op_no {
             _result = _prefix ## Operation(_op, (Touch &)_sub_op); \
             break; \
         default: \
-            cout << "nothing doing here" << endl; \
+            cout << "nothing doing here {" << _op.GetParents().front().AsString() << "_" << _sub_op.GetParents().front().AsString() << "}" << endl; \
             _result = _prefix ## Operation(_op, _sub_op); \
             break; \
     }
@@ -246,6 +274,25 @@ class Cut : public RootOperation {
     }
 };
 
+class Chop : public RootOperation {
+  public:
+    Chop() : RootOperation() {
+        SetId(string("chop"));
+        Message::Object::ListType parents;
+        parents.push_back(string("root_operation"));
+        SetParents(parents);
+    }
+    virtual ~Chop() { }
+    static Chop Instantiate() {
+        Chop value;
+        Message::Object::ListType parents;
+        parents.push_back(string("chop"));
+        value.SetParents(parents);
+        value.SetObjtype(string("op"));
+        return value;
+    }
+};
+
 class Fire : public RootOperation {
   public:
     Fire() : RootOperation() {
@@ -298,8 +345,12 @@ class BaseEntity {
     virtual oplist message(const RootOperation & msg);
     virtual oplist Operation(const Login & obj) { oplist res; return(res); }
     virtual oplist Operation(const Logout & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Chop & obj) { oplist res; return(res); }
     virtual oplist Operation(const Create & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Cut & obj) { oplist res; return(res); }
     virtual oplist Operation(const Delete & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Eat & obj) { oplist res; return(res); }
+    virtual oplist Operation(const Fire & obj) { oplist res; return(res); }
     virtual oplist Operation(const Move & obj) { oplist res; return(res); }
     virtual oplist Operation(const Set & obj) { oplist res; return(res); }
     virtual oplist Operation(const Sight & obj) { oplist res; return(res); }
@@ -336,21 +387,25 @@ class BaseEntity {
             cerr << "This op has invalid parent.\n" << endl << flush;
         }
         string parent(parents.begin()->AsString());
-        if ("login" == parent) return(OP_LOGIN);
-        if ("create" == parent) return(OP_CREATE);
-        if ("delete" == parent) return(OP_DELETE);
-        if ("move" == parent) return(OP_MOVE);
-        if ("set" == parent) return(OP_SET);
-        if ("sight" == parent) return(OP_SIGHT);
-        if ("sound" == parent) return(OP_SOUND);
-        if ("talk" == parent) return(OP_TALK);
-        if ("touch" == parent) return(OP_TOUCH);
-        if ("tick" == parent) return(OP_TICK);
-        if ("look" == parent) return(OP_LOOK);
-        if ("load" == parent) return(OP_LOAD);
-        if ("save" == parent) return(OP_SAVE);
-        if ("setup" == parent) return(OP_SETUP);
-        if ("error" == parent) return(OP_ERROR);
+        if ("login" == parent)  { return(OP_LOGIN); }
+        if ("chop" == parent)  { return(OP_CHOP); }
+        if ("create" == parent)  { return(OP_CREATE); }
+        if ("cut" == parent)  { return(OP_CUT); }
+        if ("delete" == parent)  { return(OP_DELETE); }
+        if ("eat" == parent)  { return(OP_EAT); }
+        if ("fire" == parent)  { return(OP_FIRE); }
+        if ("move" == parent)  { return(OP_MOVE); }
+        if ("set" == parent)  { return(OP_SET); }
+        if ("sight" == parent)  { return(OP_SIGHT); }
+        if ("sound" == parent)  { return(OP_SOUND); }
+        if ("talk" == parent)  { return(OP_TALK); }
+        if ("touch" == parent)  { return(OP_TOUCH); }
+        if ("tick" == parent)  { return(OP_TICK); }
+        if ("look" == parent)  { return(OP_LOOK); }
+        if ("load" == parent)  { return(OP_LOAD); }
+        if ("save" == parent)  { return(OP_SAVE); }
+        if ("setup" == parent)  { return(OP_SETUP); }
+        if ("error" == parent)  { return(OP_ERROR); }
         return (OP_INVALID);
     }
 

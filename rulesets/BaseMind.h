@@ -15,8 +15,12 @@ class BaseMind : public Thing {
     //bad_type sight_undefined_operation(bad_type original_op, bad_type op)
     //bad_type sound_undefined_operation(bad_type original_op, bad_type op)
     virtual oplist Sight_Operation(const Sight & op, Login & sub_op);
+    virtual oplist Sight_Operation(const Sight & op, Chop & sub_op);
     virtual oplist Sight_Operation(const Sight & op, Create & sub_op);
+    virtual oplist Sight_Operation(const Sight & op, Cut & sub_op);
     virtual oplist Sight_Operation(const Sight & op, Delete & sub_op);
+    virtual oplist Sight_Operation(const Sight & op, Eat & sub_op);
+    virtual oplist Sight_Operation(const Sight & op, Fire & sub_op);
     virtual oplist Sight_Operation(const Sight & op, Move & sub_op);
     virtual oplist Sight_Operation(const Sight & op, Set & sub_op);
     virtual oplist Sight_Operation(const Sight & op, Touch & sub_op);

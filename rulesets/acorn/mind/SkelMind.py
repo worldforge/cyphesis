@@ -1,10 +1,12 @@
 from atlas import *
 from whrandom import *
-from mind.BaseMind import BaseMind
+from world.objects.Thing import Thing
 
-class SkelMind(BaseMind):
-    def __init__(self, **kw):
-        self.base_init(kw)
+BaseMind = Thing
+
+class SkeletonMind(BaseMind):
+    def __init__(self, cppthing, **kw):
+        self.base_init(cppthing, kw)
     def sight_move_operation(self, original_op, op):
         self.map.update(op[0])
         if op[0].id==self.id: return

@@ -207,6 +207,13 @@ oplist Thing::Operation(const Tick & op)
     return(res);
 }
 
+oplist Thing::Operation(const Chop & op)
+{
+    oplist res;
+    script_Operation("chop", op, res);
+    return res;
+}
+
 oplist Thing::Operation(const Create & op)
 {
     oplist res;
@@ -255,6 +262,13 @@ oplist Thing::Operation(const Create & op)
     return(res);
 }
 
+oplist Thing::Operation(const Cut & op)
+{
+    oplist res;
+    script_Operation("cut", op, res);
+    return res;
+}
+
 oplist Thing::Operation(const Delete & op)
 {
     oplist res;
@@ -267,6 +281,20 @@ oplist Thing::Operation(const Delete & op)
     Message::Object::ListType args(1,op.AsObject());
     s->SetArgs(args);
     return(oplist(1,s));
+}
+
+oplist Thing::Operation(const Eat & op)
+{
+    oplist res;
+    script_Operation("eat", op, res);
+    return res;
+}
+
+oplist Thing::Operation(const Fire & op)
+{
+    oplist res;
+    script_Operation("fire", op, res);
+    return res;
 }
 
 oplist Thing::Operation(const Move & op)

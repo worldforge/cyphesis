@@ -6,6 +6,8 @@
 #include "Python_API.h"
 #include "Thing.h"
 
+#include <Atlas/Objects/Operation/Sight.h>
+
 #include <modules/Location.h>
 #include <server/WorldTime.h>
 #include <server/server.h>
@@ -471,6 +473,13 @@ inline void addToArgs(Object::ListType & args, PyObject * ent)
             return;
         }
         args.push_back(*obj->m_obj);
+    } else if ((PyTypeObject*)PyObject_Type(ent) == &RootOperation_Type) {
+        RootOperationObject * op = (RootOperationObject*)ent;
+        if (op->operation == NULL) {
+            fprintf(stderr, "Invalid operation in Operation arguments\n");
+            return;
+        }
+        args.push_back(op->operation->AsObject());
     } else {
         fprintf(stderr, "Non-entity passed as arg to Operation()\n");
     }
@@ -497,6 +506,15 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     if (strcmp(type, "tick") == 0) {
         op->operation = new Tick;
         *op->operation = Tick::Instantiate();
+    } else if (strcmp(type, "sight") == 0) {
+        op->operation = new Sight;
+        *op->operation = Sight::Instantiate();
+    } else if (strcmp(type, "set") == 0) {
+        op->operation = new Set;
+        *op->operation = Set::Instantiate();
+    } else if (strcmp(type, "fire") == 0) {
+        op->operation = new Fire;
+        *op->operation = Fire::Instantiate();
     } else if (strcmp(type, "create") == 0) {
         op->operation = new Create;
         *op->operation = Create::Instantiate();
@@ -512,6 +530,10 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     } else if (strcmp(type, "talk") == 0) {
         op->operation = new Talk;
         *op->operation = Talk::Instantiate();
+    } else if ((strcmp(type,"thought")==0) || (strcmp(type,"goal_info")==0)) {
+        Py_DECREF(op);
+        Py_INCREF(Py_None);
+        return Py_None;
     } else {
         fprintf(stderr, "ERROR: PYTHON CREATING AN UNHANDLED %s OPERATION\n", type);
         //*op->operation = RootOperation::Instantiate();
@@ -523,7 +545,9 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     if (PyMapping_HasKeyString(kwds, "to")) {
         to = PyMapping_GetItemString(kwds, "to");
         PyObject * to_id;
-        if ((to_id = PyObject_GetAttrString(to, "id")) == NULL) {
+        if (PyString_Check(to)) {
+            to_id = to;
+        } else if ((to_id = PyObject_GetAttrString(to, "id")) == NULL) {
             fprintf(stderr, "To was not really an entity, as it had no id\n");
             return NULL;
         }
@@ -536,7 +560,9 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     if (PyMapping_HasKeyString(kwds, "from_")) {
         from = PyMapping_GetItemString(kwds, "from_");
         PyObject * from_id;
-        if ((from_id = PyObject_GetAttrString(from, "id")) == NULL) {
+        if (PyString_Check(from)) {
+            from_id = from;
+        } else if ((from_id = PyObject_GetAttrString(from, "id")) == NULL) {
             fprintf(stderr, "From was not really an entity, as it had no id\n");
             return NULL;
         }

@@ -53,8 +53,12 @@ class Thing : public BaseEntity {
     virtual void addObject(Message::Object *);
     virtual oplist Operation(const Setup & op);
     virtual oplist Operation(const Tick & op);
+    virtual oplist Operation(const Chop & op);
     virtual oplist Operation(const Create & op);
+    virtual oplist Operation(const Cut & op);
     virtual oplist Operation(const Delete & op);
+    virtual oplist Operation(const Eat & op);
+    virtual oplist Operation(const Fire & op);
     virtual oplist Operation(const Move & op);
     virtual oplist Operation(const Set & op);
     virtual oplist Operation(const Sight & op);
