@@ -1,3 +1,6 @@
+Sort out socket address re-use, and work out what the hell James was doing
+with that socket option in Indri.
+
 Move big functions out of physics headers into .cpp files
 
 Long term, try and sort out the way object factories, scripts, and atlas
