@@ -13,6 +13,7 @@ extern "C" {
 }
 
 class CommClient;
+class ServerRouting;
 
 typedef std::map<int, CommClient *> client_map_t;
 

@@ -5,6 +5,10 @@
 #ifndef COMM_CLIENT_H
 #define COMM_CLIENT_H
 
+#include <Atlas/Objects/Decoder.h>
+#include <Atlas/Objects/Encoder.h>
+#include <Atlas/Codec.h>
+
 #include <fstream>
 
 #include <common/const.h>

@@ -6,11 +6,15 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation/Login.h>
 #include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation/Info.h>
 
 #include "Admin.h"
+#include "Connection.h"
+#include "ServerRouting.h"
 #include "server.h"
 
 using Atlas::Message::Object;
+using Atlas::Objects::Operation::Info;
 
 oplist Admin::Operation(const Save & op)
 {
@@ -38,6 +42,13 @@ oplist Admin::Operation(const Set & op)
             }
             if (cmd == "shutdown") {
                 exit_flag = true;
+            } else if (cmd == "stat") {
+                Info * info = new Info();
+                *info = Info::Instantiate();
+                Object::ListType args(1,connection->server->asObject());
+                info->SetArgs(args);
+                info->SetRefno(op.GetSerialno());
+                return oplist(1,info);
             } else {
                 return error(op, "Unknown command");
             }

@@ -25,8 +25,15 @@ static inline range hitTime(double s, double r, double u, double v, double p, do
     return range((r - s + p + q)/(u - v), (r - s - p - q)/(u - v));
 }
 
+// This version is for checking the item is totally inside the box
+//static inline range inTime(double s, double r, double u, double p, double q) {
+//    return range((r - q + p - s)/u, (r + q - p - s)/u);
+//}
+
+// This version is for checking the item is totally or partly inside the box
+// It is actually the same as hitTime, but the other way around.
 static inline range inTime(double s, double r, double u, double p, double q) {
-    return range((r - q + p - s)/u, (r + q - p - s)/u);
+    return range((r - q - p - s)/u, (r + q + p - s)/u);
 }
 
 static inline double max(range r) {

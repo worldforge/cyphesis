@@ -7,7 +7,7 @@
 #include <signal.h>
 #include <errno.h>
 
-#include "config.h"
+#include <common/config.h>
 
 usage(char ** argv)
 {

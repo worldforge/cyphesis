@@ -1,3 +1,40 @@
+2001-03-21  Al Riddoch  <ajr@ecs.soton.ac.uk>
+
+	* physics/Vector3D.h: Changed boundary condition of inBox() from
+	  when part of entity leaves box to when the whole entity leaves the
+	  box.
+
+	* basic.vconf: Make tent use the structure base class.
+
+	* client/define_world.py: Add bounding box to tent.
+
+	* tools/cycmd.cpp: Added password entry.
+
+	* server/Admin.cpp: Added "stat" admin command, to get server
+	  details.
+
+	* server/CommClient.h: Fixed include dependencies.
+
+	* common/persistance.cpp: Added findAccount() method for systems
+	  without db3.
+
+	* rulesets/Thing.cpp: Added sending Apperance and Disappearance
+	  operations to static entities when another entity moves out
+	  of sight.
+
+	* rulesets/Character.cpp: Added check to make sure an entity does
+	  not collide with itself.
+
+	* rulesets/Thing.cpp: Added check to make sure entity does not move
+	  inside itself.
+
+	* rulesets/Py_Location.cpp: Modified python location.copy() method
+	  so that only the position and velocity is copied. This should 
+	  bounding boxes getting set on things which should not have them.
+
+	* rulesets/Character.cpp: Added return statement to movement
+	  handling, so move ops without arguments are not handled.
+
 2001-03-20  Al Riddoch  <ajr@ecs.soton.ac.uk>
 
 	* physics/Vector3D.h: Detect leaving time of bounding box, even if

@@ -4,12 +4,14 @@ NPC. Something about the whole lookid thing is still not working. It seems
 that some attributes make it, and some don't. name in particular seems to
 not work.
 
-Think of a way to correctly handle the fact that world is top level container.
-Should it list itself as loc, or not?
-
 Pigs seem to get stuck when they eat an Acorn, probably because they do not
 see it get deleted.
 
 Plant C++ base class is totally screwed.
 
-Some objects seem to have random bounding boxes set.
+Some objects seem to get non solid bounding boxes.
+
+Moving in and out of structures is very buggy. Some objects which are not
+structures seem to be getting non-solid bounding boxes when they
+are not structures. It seems that entities inside a structure all end
+up with being treated as if their bounding boxes were not solid.

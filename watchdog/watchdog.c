@@ -10,7 +10,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-#include "config.h"
+#include <common/config.h>
 
 /* #define _NO_DAEMON */
 
@@ -234,7 +234,8 @@ void signal_alarm(int signo)
 
 int main(int argc, char ** argv)
 {
-	int pid, ret;
+	int pid;
+	sig_t ret;
 	FILE * pid_file;
 #ifndef _NO_DAEMON
 	if (fork()) exit(0);

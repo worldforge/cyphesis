@@ -368,6 +368,11 @@ oplist Thing::Operation(const Move & op)
             return(error(op, "Move location has no ref"));
         }
         string ref=ent["loc"].AsString();
+        if (ref == fullid) {
+            debug( cout << "ERROR: move op arg ref is same as entity" << endl << flush;);
+            debug( cout << "ERROR: attempt by entity to move into itself" << endl << flush;);
+            return error(op, "Attempt by entity to move into itself");
+        }
         if (world->fobjects.find(ref) == world->fobjects.end()) {
             debug( cout << "ERROR: move op arg ref is invalid" << endl << flush;);
             return(error(op, "Move location ref invalid"));
@@ -438,27 +443,55 @@ oplist Thing::Operation(const Move & op)
             list_t::const_iterator I = location.ref->contains.begin();
             Object::ListType appear, disappear;
             for(;I != location.ref->contains.end(); I++) {
-              const bool wasInRange = (*I)->location.inRange(oldpos, consts::sight_range);
-              const bool isInRange = (*I)->location.inRange(location.coords, consts::sight_range);
-              // Build appear and disappear lists, and send operations
-              // Also so operations to (dis)appearing perceptive
-              // entities saying that we are (dis)appearing
-              if (wasInRange && !isInRange) {
-                  Object::MapType dent;
-                  dent["id"] = (*I)->fullid;
-                  dent["seq"] = (*I)->seq;
-                  disappear.push_back(dent);
-                  debug(cout << fullid << ": losing site of " <<(*I)->fullid << endl;);
-              }
-              if (!wasInRange && isInRange) {
-                  Object::MapType aent;
-                  aent["id"] = (*I)->fullid;
-                  aent["seq"] = (*I)->seq;
-                  appear.push_back(aent);
-                  debug(cout << fullid << ": gaining site of " <<(*I)->fullid << endl;);
-              }
+                const bool wasInRange = (*I)->location.inRange(oldpos, consts::sight_range);
+                const bool isInRange = (*I)->location.inRange(location.coords, consts::sight_range);
+                // Build appear and disappear lists, and send operations
+                // Also so operations to (dis)appearing perceptive
+                // entities saying that we are (dis)appearing
+                if (wasInRange && !isInRange) {
+                    // We are losing sight of this object
+                    Object::MapType dent;
+                    dent["id"] = (*I)->fullid;
+                    dent["seq"] = (*I)->seq;
+                    disappear.push_back(dent);
+                    debug(cout << fullid << ": losing site of " <<(*I)->fullid << endl;);
+                    if (((Thing*)*I)->perceptive) {
+                        // Send operation to the entity in question so it
+                        // knows it is losing sight of us.
+                        Disappearance * d = new Disappearance();
+                        *d = Disappearance::Instantiate();
+                        Object::MapType d2ent;
+                        d2ent["id"] = fullid;
+                        d2ent["seq"] = seq;
+                        d->SetArgs(Object::ListType(1,d2ent));
+                        d->SetTo((*I)->fullid);
+                        res2.push_back(d);
+                    }
+                }
+                if (!wasInRange && isInRange) {
+                    // We are gaining sight of this object
+                    Object::MapType aent;
+                    aent["id"] = (*I)->fullid;
+                    aent["seq"] = (*I)->seq;
+                    appear.push_back(aent);
+                    debug(cout << fullid << ": gaining site of " <<(*I)->fullid << endl;);
+                    if (((Thing*)*I)->perceptive) {
+                        // Send operation to the entity in question so it
+                        // knows it is gaining sight of us.
+                        Appearance * a = new Appearance();
+                        *a = Appearance::Instantiate();
+                        Object::MapType a2ent;
+                        a2ent["id"] = fullid;
+                        a2ent["seq"] = seq;
+                        a->SetArgs(Object::ListType(1,a2ent));
+                        a->SetTo((*I)->fullid);
+                        res2.push_back(a);
+                    }
+                }
             }
             if (disappear.size() != 0) {
+                // Send an operation to ourselves with a list of entities
+                // we are losing sight of
                 Appearance * a = new Appearance();
                 *a = Appearance::Instantiate();
                 a->SetArgs(appear);
@@ -466,6 +499,8 @@ oplist Thing::Operation(const Move & op)
                 res2.push_back(a);
             }
             if (appear.size() != 0) {
+                // Send an operation to ourselves with a list of entities
+                // we are gaining sight of
                 Disappearance * d = new Disappearance();
                 *d = Disappearance::Instantiate();
                 d->SetArgs(disappear);

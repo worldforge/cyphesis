@@ -89,7 +89,8 @@ void MovementInfo::check_collisions(const Location & loc)
     // cout << "checking " << body->fullid << loc.coords << loc.velocity << " against ";
     BaseEntity * collEntity = NULL;
     for(I = loc.ref->contains.begin(); I != loc.ref->contains.end(); I++) {
-        if ((*I) == loc.ref) { continue; }
+        // if ((*I) == loc.ref) { continue; }
+        if ((*I) == body) { continue; }
         const Location & oloc = (*I)->location;
         if (!oloc.bbox) { continue; }
         double t = loc.hitTime(oloc);
@@ -132,7 +133,7 @@ void MovementInfo::check_collisions(const Location & loc)
             coll2Time = min(coll2Time, t);
         }
         if (coll2Time > collTime) {
-            cout << "passing through it" << endl << flush;
+            cout << "passing into it" << endl << flush;
             // We are entering collEntity.
             // Set target_ref ????????????????
             target_ref = collEntity;
@@ -190,7 +191,7 @@ Move * MovementInfo::gen_move_operation(Location * rloc, const Location & loc)
 
         face = loc.face;
         
-        Location new_loc=loc;
+        Location new_loc(loc);
         new_loc.velocity=velocity;
 
         // Create move operation
@@ -588,6 +589,7 @@ oplist Character::Mind_Operation(const Move & op)
     const Object::ListType & args = op.GetArgs();
     if ((0 == args.size()) || (!args.front().IsMap())) {
         cerr << "move op has no argument" << endl << flush;
+        return oplist();
     }
     Object::MapType arg1 = args.front().AsMap();
     if ((arg1.find("id") == arg1.end()) || !arg1["id"].IsString()) {
@@ -695,7 +697,7 @@ oplist Character::Mind_Operation(const Move & op)
     double vel_mag;
     // Print out a bunch of debug info
     debug( cout << ":" << location_ref << ":" << world->fullid << ":" << location.ref->fullid << ":" << endl << flush;);
-    if ( (location_ref==world->fullid) &&
+    if ( //(location_ref==world->fullid) &&
          (location_ref==location.ref->fullid) &&
          (newop->GetFutureSeconds() >= 0) ) {
         // Movement within current ref. Work out the speed and stuff and

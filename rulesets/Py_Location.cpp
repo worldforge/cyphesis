@@ -26,7 +26,7 @@ static PyObject * Location_copy(LocationObject *self, PyObject *args)
         return NULL;
     }
     LocationObject * ret = newLocationObject(NULL);
-    ret->location = new Location(*self->location);
+    ret->location = new Location(self->location->ref, self->location->coords, self->location->velocity);
     ret->own = 1;
     return (PyObject *)ret;
 }

@@ -13,7 +13,7 @@
 #include <server/Admin.h>
 #include <server/Player.h>
 
-#include <config.h>
+#include <common/config.h>
 
 #include "persistance.h"
 
@@ -214,6 +214,8 @@ Account * Persistance::load_admin_account()
     save_admin_account(adm);
     return(adm);
 }
+
+bool Persistance::findAccount(const std::string &) { return false; }
 
 Account * Persistance::getAccount(const std::string & name) { return NULL; }
 

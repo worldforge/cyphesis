@@ -8,7 +8,7 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <config.h>
+#include <common/config.h>
 #include <db3/db_cxx.h>
 
 #include <string>

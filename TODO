@@ -23,8 +23,6 @@ Definitly for Acorn 0.4:
     o = new Opertion(Operation::Instantiate());
   cos it is about twice as quick.
 
-  Tidy up the details of moving in and out of other entities, ie. structures.
-
 Provisional for Acorn 0.4:
 
   Implement accelerated Atlas Objects API. MAYBE: POSTPONED FROM 0.3

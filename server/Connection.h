@@ -12,6 +12,7 @@
 class ServerRouting;
 class Account;
 class Player;
+class CommClient;
 
 class Connection : public Routing {
     CommClient * comm_client;

@@ -82,7 +82,7 @@ def default(mapeditor):
 
     cfire=m.make('campfire',type='campfire',xyz=(0,4,village_height))
     m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
-    m.make('tent',type='tent',xyz=(-1,8,village_height))
+    m.make('tent',type='tent',xyz=(-1,8,village_height),bbox=[2.5,2.5,3])
     m.make('lumber',type='lumber',xyz=(-1,3,village_height))
     m.make('lumber',type='lumber',xyz=(-1,2.5,village_height))
 
@@ -154,7 +154,7 @@ def default(mapeditor):
 
 #   farmers
 
-    sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[2.5,2.5,1])
+    sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[2.5,2.5,3])
     m.make('bstall',type='bstall',xyz=(-41,-5,village_height))
 
     home1_xyz=(90,-90,village_height)

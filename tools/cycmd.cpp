@@ -33,9 +33,8 @@ class Interactive : public Atlas::Objects::Decoder
     int cli_fd;
     Atlas::Objects::Encoder * encoder;
     Atlas::Codec<iostream> * codec;
-    fstream * ios;
-    string account_id;
-    string character_id;
+    std::fstream * ios;
+    std::string password;
     enum {
        INIT,
        LOGGED_IN
@@ -55,6 +54,7 @@ class Interactive : public Atlas::Objects::Decoder
     bool login();
     void exec(const string & cmd, const string & arg);
     void loop();
+    void getpassword();
     //void prompt();
 };
 
@@ -65,6 +65,32 @@ void Interactive::ObjectArrived(const Atlas::Objects::Operation::Info& o)
     if (state == INIT) {
         state = LOGGED_IN;
     } else if (state == LOGGED_IN) {
+        const Object::MapType & ent = o.GetArgs().front().AsMap();
+        Object::MapType::const_iterator I;
+        for (I = ent.begin(); I != ent.end(); I++) {
+            const Object & item = I->second;
+            switch (item.GetType()) {
+                case Object::TYPE_INT:
+                    cout << I->first << ": " << item.AsInt() << endl;
+                    break;
+                case Object::TYPE_FLOAT:
+                    cout << I->first << ": " << item.AsFloat() << endl;
+                    break;
+                case Object::TYPE_STRING:
+                    cout << I->first << ": " << item.AsString() << endl;
+                    break;
+                case Object::TYPE_LIST:
+                    cout << I->first << ": (list)" << endl;
+                    break;
+                case Object::TYPE_MAP:
+                    cout << I->first << ": (map)" << endl;
+                    break;
+                default:
+                    cout << I->first << ": (???)" << endl;
+                    break;
+            }
+                
+        }
         // Display results of command
     }
 }
@@ -145,6 +171,12 @@ void Interactive::loop()
     }
 }
 
+void Interactive::getpassword()
+{
+    std::cout << "Password: " << std::flush;
+    std::cin >> password;
+}
+
 bool Interactive::connect(const string & host)
 // This deals with icky low-level socket rubbish. All this should be rubbed
 // and replaced with propper use of an iostream based socket library
@@ -214,7 +246,7 @@ bool Interactive::login()
     reply_flag = false;
  
     account.SetAttr("id", string("admin"));
-    account.SetAttr("password", string("drooogs"));
+    account.SetAttr("password", password);
  
     Object::ListType args(1,account.AsObject());
  
@@ -228,17 +260,20 @@ bool Interactive::login()
 
     if (!error_flag) {
        cout << "login was a success" << endl << flush;
-       return false;
+       return true;
     }
     cout << "login failed" << endl << flush;
-    return true;
+    return false;
 }
 
 void Interactive::exec(const string & cmd, const string & arg)
 {
     bool reply_expected = false;
+    reply_flag = false;
+    error_flag = false;
 
     Atlas::Objects::Operation::Set s = Atlas::Objects::Operation::Set::Instantiate();
+    if (cmd == "stat") { reply_expected = true; }
 
     Object::MapType cmap;
     cmap["id"] = "server";
@@ -285,7 +320,10 @@ int main(int argc, char ** argv)
         if (!bridge.connect(server)) {
             return 0;
         }
-        bridge.login();
+        bridge.getpassword();
+        if (!bridge.login()) {
+            return 0;
+        }
         bridge.loop();
         bridge.exec(cmd, "");
         return 0;
