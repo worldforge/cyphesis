@@ -18,6 +18,8 @@ class Persistance {
   private:
     Persistance();
 
+    std::string m_characterRelation;
+
     static Persistance * m_instance;
   public:
     Database & m_connection;

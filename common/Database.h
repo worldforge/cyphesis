@@ -100,7 +100,9 @@ class Database {
     const DatabaseResult runSimpleSelectQuery(const std::string & query);
     bool runCommandQuery(const std::string & query);
 
-    bool registerRelation(const std::string & name,
+    bool registerRelation(std::string & tablename,
+                          const std::string & sourcetable,
+                          const std::string & targettable,
                           RelationType kind = OneToMany);
     const DatabaseResult selectRelation(const std::string & name,
                                         const std::string & id);

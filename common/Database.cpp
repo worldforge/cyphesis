@@ -436,28 +436,41 @@ bool Database::runCommandQuery(const std::string & query)
     return false;
 }
 
-bool Database::registerRelation(const std::string & name, RelationType kind)
+bool Database::registerRelation(std::string & tablename,
+                                const std::string & sourcetable,
+                                const std::string & targettable,
+                                RelationType kind)
 {
-    std::string query = "SELECT * FROM ";
-    query += name;
-    query += " WHERE id = 0 AND ";
-    query += name;
-    query += " = 0;";
-    std::string createquery = "CREATE TABLE ";
-    createquery += name;
-    if ((kind == ManyToOne) || (kind == OneToOne)) {
-        createquery += " (id integer PRIMARY KEY, ";
-    } else {
-        createquery += " (id integer, ";
-    }
-    createquery += name;
-    createquery += " integer";
-    if ((kind == OneToOne) || (kind == OneToMany)) {
-        createquery += " UNIQUE);";
-    } else {
-        createquery += ");";
-    }
+    tablename = sourcetable + "_" + targettable;
 
+    std::string query = "SELECT * FROM ";
+    query += tablename;
+    query += " WHERE source = 0 AND target = 0;";
+
+    std::string createquery = "CREATE TABLE ";
+    createquery += tablename;
+    if ((kind == OneToOne) || (kind == ManyToOne)) {
+        createquery += " (source integer UNIQUE REFERENCES ";
+    } else {
+        createquery += " (source integer REFERENCES ";
+    }
+    createquery += sourcetable;
+#if 0
+    // FIXME Referential integrity not supported on inherited tables.
+    if ((kind == OneToOne) || (kind == OneToMany)) {
+        createquery += " (id), target integer UNIQUE REFERENCES ";
+    } else {
+        createquery += " (id), target integer REFERENCES ";
+    }
+    createquery += targettable;
+    createquery += " (id));";
+#else
+    if ((kind == OneToOne) || (kind == OneToMany)) {
+        createquery += " (id), target integer UNIQUE);";
+    } else {
+        createquery += " (id), target integer);";
+    }
+#endif
 
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     clearPendingQuery();
@@ -473,36 +486,38 @@ bool Database::registerRelation(const std::string & name, RelationType kind)
                         << std::endl << std::flush;);
     } else {
         debug(std::cout << "Table exists" << std::endl << std::flush;);
-        allTables.insert(name);
+        allTables.insert(tablename);
         return true;
     }
 
-    debug(std::cout << "CREATE QUERY: " << createquery
-                    << std::endl << std::flush;);
+    std::cout << "CREATE QUERY: " << createquery
+                    << std::endl << std::flush;
     if (!runCommandQuery(createquery)) {
         return false;
     }
-    allTables.insert(name);
+    allTables.insert(tablename);
+#if 0
     if ((kind == ManyToOne) || (kind == OneToOne)) {
         return true;
     } else {
         std::string indexQuery = "CREATE INDEX ";
-        indexQuery += name;
-        indexQuery += "_id_idx ON ";
-        indexQuery += name;
-        indexQuery += " (id);";
+        indexQuery += tablename;
+        indexQuery += "_source_idx ON ";
+        indexQuery += tablename;
+        indexQuery += " (source);";
         return runCommandQuery(indexQuery);
     }
+#else
+    return true;
+#endif
 }
 
 const DatabaseResult Database::selectRelation(const std::string & name,
                                               const std::string & id)
 {
-    std::string query = "SELECT ";
+    std::string query = "SELECT target FROM ";
     query += name;
-    query += " FROM ";
-    query += name;
-    query += " WHERE id = ";
+    query += " WHERE source = ";
     query += id;
     query += ";";
 
@@ -517,9 +532,7 @@ bool Database::createRelationRow(const std::string & name,
 {
     std::string query = "INSERT INTO ";
     query += name;
-    query += " (id, ";
-    query += name;
-    query += ") VALUES (";
+    query += " (source, target) VALUES (";
     query += id;
     query += ", ";
     query += other;

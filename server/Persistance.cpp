@@ -47,7 +47,9 @@ bool Persistance::init()
     tableDesc["password"] = "                                                                                ";
     tableDesc["type"] = "          ";
     bool j = p->m_connection.registerSimpleTable("accounts", tableDesc);
-    bool k = p->m_connection.registerRelation("character");
+    bool k = p->m_connection.registerRelation(p->m_characterRelation,
+                                              "accounts",
+                                              "entity_ent");
 
     if (!p->findAccount("admin")) {
         debug(std::cout << "Bootstraping admin account."
@@ -153,7 +155,8 @@ void Persistance::putAccount(const Account & ac)
 void Persistance::registerCharacters(Account & ac,
                                      const EntityDict & worldObjects)
 {
-    DatabaseResult dr = m_connection.selectRelation("character", ac.getId());
+    DatabaseResult dr = m_connection.selectRelation(m_characterRelation,
+                                                    ac.getId());
     if (dr.error()) {
         log(ERROR, "Failure while find account.");
     }
@@ -177,12 +180,12 @@ void Persistance::registerCharacters(Account & ac,
 
 void Persistance::addCharacter(const Account & ac, const Entity & e)
 {
-    m_connection.createRelationRow("character", ac.getId(), e.getId());
+    m_connection.createRelationRow(m_characterRelation, ac.getId(), e.getId());
 }
 
 void Persistance::delCharacter(const std::string & id)
 {
-    m_connection.removeRelationRowByOther("character", id);
+    m_connection.removeRelationRowByOther(m_characterRelation, id);
 }
 
 bool Persistance::getRules(Element::MapType & m)

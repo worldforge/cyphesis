@@ -1,3 +1,5 @@
+Use WITHOUT OIDS on the database tables.
+
 Try out dynamic cast rather than string test to identify ops in WorldRouter.
 
 It would probably be easier to move extraction of parents from a new entity

@@ -1,5 +1,15 @@
 2004-07-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.h, common/Database.cpp: Modify relation code
+	  to allow partial support for foreign key constrains to maintain
+	  referential integrity. Full support will work when (if) primary
+	  keys are inherited.
+
+	* server/Persistance.h, server/Persistance.cpp: Use updated relation
+	  code for the accounts to characters relation.
+
+2004-07-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseWorld.h, rulesets/Creator.cpp, rulesets/Thing.h,
 	  rulesets/World.cpp, server/WorldRouter.cpp, server/WorldRouter.h:
 	  Modify the world interface to get rid of some pointless
