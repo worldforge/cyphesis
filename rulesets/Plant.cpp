@@ -28,6 +28,7 @@ Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
     m_location.m_bBox = BBox(WFMath::Point<3>(-0.5, -0.5, 0),
                              WFMath::Point<3>(0.5, 0.5, 1));
 
+    subscribe("chop", OP_CHOP);
     subscribe("tick", OP_TICK);
     subscribe("touch", OP_TOUCH);
 
@@ -67,6 +68,11 @@ int Plant::dropFruit(OpVector & res)
         res.push_back(create);
     }
     return drop;
+}
+
+void Plant::ChopOperation(const Chop & op, OpVector & res)
+{
+    std::cout << "Plant got chop op" << std::endl << std::flush;
 }
 
 void Plant::TickOperation(const Tick & op, OpVector & res)

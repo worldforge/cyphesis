@@ -52,7 +52,7 @@ class buy_livestock(DynamicGoal):
         res=Message()
         coins = me.find_thing("coin")
         if len(coins) < int(price):
-            print "Coins: " + coins + " Cost: " + self.cost
+            print "Coins: " + len(coins) + " Cost: " + self.cost
             return Operation("talk", Entity(say="I can't afford any "+self.what+"s at the moment."))
         for i in range(0, int(price)):
             coin=coins[0]

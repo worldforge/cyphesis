@@ -816,6 +816,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
         return NULL;
     }
     MapType omap;
+    omap["objtype"] = "obj";
     if (id != NULL) {
         omap["id"] = std::string(id);
     }

@@ -446,7 +446,7 @@ class sell_trade(Goal):
 ################ TRADE (BUY SOMETHING, USE TOOL, SELL PRODUCT) ################
 
 class trade(Goal):
-    def __init__(self, me, wbuy, tool, op, wsell, where, when=None):
+    def __init__(self, me, wbuy, tool, wsell, where, when=None):
         Goal.__init__(self, "trade at a market",
                       false,
                       [acquire_thing(me,tool),
@@ -455,15 +455,18 @@ class trade(Goal):
                       when)
         self.wbuy=wbuy
         self.tool=tool
-        self.op=op
         self.wsell=wsell
-        self.vars=["wbuy","tool","op","wsell"]
+        self.wield=False
+        self.vars=["wbuy","tool","wsell"]
     def process(self,me):
         if me.things.has_key(self.wbuy)==0: return
         if me.things.has_key(self.tool)==0: return
-        thing=me.find_thing(self.wbuy)[0]
         tool=me.find_thing(self.tool)[0]
-        return Operation(self.op,Entity(tool.id),Entity(thing.id),to=tool)
+        if not self.wield:
+            self.wield=True
+            return Operation("wield",Entity(tool.id))
+        thing=me.find_thing(self.wbuy)[0]
+        return Operation("use",Entity(thing.id))
 
 ############################# RUN MARKET STALL ##############################
 

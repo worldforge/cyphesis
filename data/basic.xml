@@ -19,6 +19,16 @@
 
   <map>
     <map name="attributes">
+      <map name="mass">
+        <float name="default">1.5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="operations">
+        <list name="default">
+          <string>cut</string>
+        </list>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">axe</string>
     <list name="parents">
