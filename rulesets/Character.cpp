@@ -664,7 +664,6 @@ oplist Character::Mind_Operation(const Look & op)
     if (op.GetTo().size() == 0) {
         const Message::Object::ListType & args = op.GetArgs();
         if (args.size() == 0) {
-            //l->SetTo("all");
             l->SetTo(world->fullid);
         } else {
             if (args.front().IsMap()) {
@@ -692,20 +691,23 @@ oplist Character::Mind_Operation(const Eat & op)
 
 oplist Character::Mind_Operation(const Touch & op)
 {
-    oplist res;
+    Touch * t = new Touch(op);
     const Message::Object::ListType & args = op.GetArgs();
-    if (args.front().IsMap()) {
-        Message::Object::MapType amap = args.front().AsMap();
-        if (amap.find("id") != amap.end() && amap["id"].IsString()) {
-            string opid = amap["id"].AsString();
-            if (opid != fullid) {
-                Touch * t = new Touch(op);
-                t->SetTo(opid);
-                res.push_back(t);
+    if ((op.GetTo().size() == 0) || (args.size() != 0)) {
+        if (args.size() == 0) {
+            t->SetTo(world->fullid);
+        } else {
+            if (args.front().IsMap()) {
+                Message::Object::MapType amap = args.front().AsMap();
+                if (amap.find("id") != amap.end() && amap["id"].IsString()) {
+                    t->SetTo(amap["id"].AsString());
+                }
+            } else if (args.front().IsString()) {
+                t->SetTo(args.front().AsString());
             }
         }
     }
-    return(res);
+    return(oplist(1,t));
 }
 
 oplist Character::W2m_Operation(const Error & op)

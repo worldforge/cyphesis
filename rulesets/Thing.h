@@ -18,11 +18,9 @@ class Routing;
 class Thing : public BaseEntity {
   protected:
     PyObject * script_object;
-
-    int script_Operation(const string &, const RootOperation &, oplist &, RootOperation * sub_op=NULL);
-
     Message::Object::MapType attributes;
-    MemMap map;
+
+    virtual int script_Operation(const string &, const RootOperation &, oplist &, RootOperation * sub_op=NULL);
   public:
     double status;
     string type;
@@ -38,11 +36,12 @@ class Thing : public BaseEntity {
         return(attributes[aname]);
     }
 
-    int set_object(PyObject * obj) {
-        map.set_object(obj);
+    virtual int set_object(PyObject * obj) {
         script_object = obj;
         return(obj == NULL ? -1 : 0);
     }
+
+    virtual MemMap * getMap() { return NULL; }
 
     oplist send_world(RootOperation * msg) {
         return world->message(*msg, this);

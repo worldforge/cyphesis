@@ -4,7 +4,5 @@
 from atlas import *
 
 from world.objects.food.Food import Food
-from common.misc import set_kw
-
 
 class Ham(Food): pass

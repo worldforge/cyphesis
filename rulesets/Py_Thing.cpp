@@ -79,8 +79,13 @@ PyObject * Thing_getattr(ThingObject *self, char *name)
         return PyFloat_FromDouble(self->m_thing->status);
     }
     if (strcmp(name, "map") == 0) {
+        MemMap * tMap = self->m_thing->getMap();
+        if (tMap == NULL) {
+            PyErr_SetString(PyExc_TypeError, "Body entity has no map");
+            return NULL;
+        }
         MapObject * map = newMapObject(NULL);
-        map->m_map = &self->m_thing->map;
+        map->m_map = tMap;
         return (PyObject *)map;
     }
     if (strcmp(name, "location") == 0) {

@@ -4,9 +4,21 @@
 #include "Thing.h"
 
 class BaseMind : public Thing {
+  protected:
+    virtual int script_Operation(const string &, const RootOperation &, oplist &, RootOperation * sub_op=NULL);
+
+    MemMap map;
   public:
     BaseMind(string &, string &);
     virtual ~BaseMind() { }
+
+    virtual int set_object(PyObject * obj) {
+        map.set_object(obj);
+        script_object = obj;
+        return(obj == NULL ? -1 : 0);
+    }
+
+    virtual MemMap * getMap() { return &map; }
 
     virtual oplist Sight_Operation(const Sight & op, Login & sub_op);
     virtual oplist Sight_Operation(const Sight & op, Chop & sub_op);

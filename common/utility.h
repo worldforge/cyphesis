@@ -8,7 +8,7 @@ using Atlas::Objects::Operation::RootOperation;
 
 namespace utility {
 
-Root * Object_asRoot(Atlas::Message::Object &);
+Root * Object_asRoot(const Atlas::Message::Object &);
 
 }
 
