@@ -8,7 +8,16 @@ list as part of the operation method call. The answer is yes, but the
 further question is whether this will break anything. We can also stop
 calling the script post dispatch, and call it before op dispatch instead,
 giving a single call point, instead of loads of call points all the way
-through the code.
+through the code. Problems:
+  BaseMind: Blocks perception when it is asleep - this would be bipassed.
+            Process Appearance in the C++ code, even if script takes it.
+  Main script subscription process is bipassed, but this may well be ok
+  and mean that we can remove scripts from the subscription mechanism
+  completely.
+  Character: Tick - some types of tick need to be processed in the core,
+             even if others go to the script. Complicated processing.
+             Why no script in nourish?
+  Thing: Broadcasts a sight(create()) op in Setup, before calling script.
 
 Think about how to deal with things that probably don't need persistance.
 Seeds in particular. Flag in the rules?
