@@ -1,3 +1,9 @@
+2003-10-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Collision.cpp: Fix corner case in mesh collision code
+	  so it is no longer possible to creep slowly through a solid
+	  object.
+
 2003-10-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* physics/Collision.cpp: Modify collision behavoir so we only

@@ -80,7 +80,7 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
 {
     // Check l vertices against o surfaces
     Vector3D entry_normal;
-    bool ret = false;
+    bool ret = false, already = false;
     CoordList::const_iterator I = c.begin();
     for (; I != c.end(); ++I) { // Iterate over vertices
         debug(std::cout << "outer loop" << std::endl << std::flush;);
@@ -111,14 +111,24 @@ bool predictEntryExit(const CoordList & c,          // Vertices of this mesh
                         << first_vertex_exit << ":"
                         << first_collision << std::endl << std::flush;);
         if ((last_vertex_entry < first_vertex_exit) &&
-            (last_vertex_entry >= 0.) &&
             (last_vertex_entry < first_collision)) {
-            first_collision = last_vertex_entry;
-            debug(std::cout << "hit" << std::endl << std::flush;);
-            ret = true;
+            if (last_vertex_entry >= 0.) {
+                first_collision = last_vertex_entry;
+                debug(std::cout << "hit" << std::endl << std::flush;);
+                ret = true;
+            } else {
+                // Indicate that one or more vertices is already in collision
+                already = true;
+            }
             // FIXME Normal! Need to get it from above
-            // Also tricker because normal is 
+            // Also tricker because normal is flipped depending on which
+            // is which.
         }
+    }
+    // If one or more vertices are already in collision, and some are yet to
+    // collide, then we consider that the collision is immediate.
+    if (ret && already) {
+        first_collision = 0.f;
     }
     return ret;
 }
@@ -174,11 +184,6 @@ bool predictCollision(const Location & l,  // This location
 {
     // FIXME Handle non-valid velocity
     // FIXME Handle entities which have no box - just one vertex I think
-    // FIXME Problem with entites very slightly itersecting with other
-    // entity, because of rotation etc. Also would get rid of need
-    // for second test when dealing with non-solid entities
-    // SOLUTION: Discard vertices that have already entered, and return
-    // the time of the first vertex to enter after current time.
     // FIXME THe mesh conversion process below should probably be eliminated
     // by generating the data when bBox or orienation are changed.
     // This would also allow us to have other mesh shapes
