@@ -9,7 +9,12 @@
 #include "operations.h"
 
 #include <sigc++/object.h>
+#if SIGC_MAJOR_VERSION == 1 && SIGC_MINOR_VERSION == 0
 #include <sigc++/signal_system.h>
+#else
+#include <sigc++/signal.h>
+#endif
+
 
 // This is the base class from which all other entity like classes inherit,
 // both in game and out of game.

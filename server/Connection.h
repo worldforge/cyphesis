@@ -8,6 +8,7 @@
 #include <common/OOGThing.h>
 
 #include <sigc++/bind.h>
+#include <sigc++/object_slot.h>
 
 class ServerRouting;
 class CommClient;
@@ -31,7 +32,7 @@ class Connection : public OOGThing {
 
     void addObject(BaseEntity * obj) {
         objects[obj->getId()] = obj;
-        SigC::Connection * con = new SigC::Connection(obj->destroyed.connect(SigC::bind<const std::string&>(slot(*this, &Connection::removeObject), obj->getId())));
+        SigC::Connection * con = new SigC::Connection(obj->destroyed.connect(SigC::bind<const std::string &>(SigC::slot(*this, &Connection::removeObject), obj->getId())));
         destroyedConnections[obj->getId()] = con;
     }
 
