@@ -19,6 +19,8 @@
 #include <rulesets/Food.h>
 #include <rulesets/Stackable.h>
 #include <rulesets/Structure.h>
+#include <rulesets/Line.h>
+#include <rulesets/Area.h>
 
 #include <common/debug.h>
 #include <common/globals.h>
@@ -40,6 +42,8 @@ EntityFactory::EntityFactory()
 
     installFactory("game_entity", "thing", new ThingFactory<Thing>());
     installFactory("thing", "feature", new ThingFactory<Thing>());
+    installFactory("feature", "line", new ThingFactory<Line>());
+    installFactory("feature", "area", new ThingFactory<Area>());
     installFactory("thing", "character", new ThingFactory<Character>());
     installFactory("character", "creator", new ThingFactory<Creator>());
     installFactory("thing", "plant", new ThingFactory<Plant>());

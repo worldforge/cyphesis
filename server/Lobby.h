@@ -7,16 +7,18 @@
 
 #include "Account.h"
 
+class ServerRouting;
+
 class Lobby : public OOGThing {
   private:
     adict_t accounts;
+    ServerRouting & server;
   public:
-    inline void addObject(Account * a) {
-        accounts[a->getId()] = a;
-    }
-    inline void delObject(Account * a) {
-        accounts.erase(a->getId());
-    }
+    explicit Lobby(ServerRouting &);
+
+    void addObject(Account * a);
+    void delObject(Account * a);
+
     inline const adict_t & getAccounts() const {
         return accounts;
     }

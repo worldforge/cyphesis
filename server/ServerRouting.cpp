@@ -19,7 +19,7 @@ using Atlas::Message::Object;
 ServerRouting::ServerRouting(CommServer & server, const std::string & ruleset,
                              const std::string & name) :
         commServer(server), svrRuleset(ruleset), svrName(name),
-        world(*new WorldRouter(*this)), lobby(*new Lobby())
+        world(*new WorldRouter(*this)), lobby(*new Lobby(*this))
 {
     setId(name);
     idDict[getId()] = this;

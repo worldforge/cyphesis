@@ -1,5 +1,18 @@
 2002-03-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Line.h, rulesets/Line.cpp, rulesets/Area.h,
+	  rulesets/Area.cpp, server/EntityFactory.cpp: Added stub
+	  base classes for new geometric entities.
+
+	* server/ServerRouting.cpp, server/Lobby.h, server/Lobby.cpp,
+	  server/Connection.cpp: Fleshed out lobby functionality,
+	  so that accounts/connections are no longer responsible
+	  for managing their own appearance and disappearance.
+
+	* server/Account.cpp: Send info of logout.
+
+2002-03-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp, server/WorldRouter.cpp, server/EntityFactory.cpp,
 	  server/Connection.cpp, server/Admin.cpp, server/Account.cpp,
 	  rulesets/World.cpp, rulesets/Thing.cpp, rulesets/Py_Operation.cpp,

@@ -2,12 +2,51 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include <Atlas/Objects/Operation/Appearance.h>
+#include <Atlas/Objects/Operation/Disappearance.h>
+
 #include "Lobby.h"
 #include "Connection.h"
+#include "ServerRouting.h"
 
 #include <iostream>
 
 using Atlas::Message::Object;
+
+Lobby::Lobby(ServerRouting & s) : server(s)
+{
+}
+
+void Lobby::addObject(Account * ac)
+{
+    Appearance a(Appearance::Instantiate());
+    Object::MapType us;
+    us["id"] = ac->getId();
+    us["loc"] = "lobby";
+    a.SetArgs(Object::ListType(1,us));
+    a.SetFrom(ac->getId());
+    a.SetTo("lobby");
+    a.SetSerialno(server.getSerialNo());
+    operation(a);
+
+    accounts[ac->getId()] = ac;
+}
+
+void Lobby::delObject(Account * a)
+{
+    Disappearance d(Disappearance::Instantiate());
+    Object::MapType us;
+    us["id"] = a->getId();
+    us["loc"] = "lobby";
+    d.SetArgs(Object::ListType(1,us));
+    d.SetFrom(a->getId());
+    d.SetTo("lobby");
+    d.SetSerialno(server.getSerialNo());
+    operation(d);
+
+    accounts.erase(a->getId());
+}
+
 
 oplist Lobby::operation(const RootOperation & op)
 {

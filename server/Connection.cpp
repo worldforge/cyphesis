@@ -49,15 +49,6 @@ Account * Connection::addPlayer(const std::string& username,
     player->connection=this;
     player->world=&server.getWorld();
     server.addObject(player);
-    Appearance a(Appearance::Instantiate());
-    Object::MapType us;
-    us["id"] = username;
-    us["loc"] = "lobby";
-    a.SetArgs(Object::ListType(1,us));
-    a.SetFrom(username);
-    a.SetTo("lobby");
-    a.SetSerialno(server.getSerialNo());
-    server.lobby.operation(a);
     server.lobby.addObject(player);
     return player;
 }
@@ -70,15 +61,6 @@ void Connection::destroy()
         BaseEntity * ent = I->second;
         if (!ent->inGame()) {
             server.lobby.delObject((Account *)ent);
-            Disappearance d(Disappearance::Instantiate());
-            Object::MapType us;
-            us["id"] = I->first;
-            us["loc"] = "lobby";
-            d.SetArgs(Object::ListType(1,us));
-            d.SetFrom(I->first);
-            d.SetTo("lobby");
-            d.SetSerialno(server.getSerialNo());
-            server.lobby.operation(d);
             continue;
         }
         Thing * obj = (Thing*)ent;
@@ -154,15 +136,6 @@ oplist Connection::LoginOperation(const Login & op)
                 addObject(I->second);
             }
             player->connection=this;
-            Appearance a(Appearance::Instantiate());
-            Object::MapType us;
-            us["id"] = account_id;
-            us["loc"] = "lobby";
-            a.SetArgs(Object::ListType(1,us));
-            a.SetFrom(account_id);
-            a.SetTo("lobby");
-            a.SetSerialno(server.getSerialNo());
-            server.lobby.operation(a);
             server.lobby.addObject(player);
             Info * info = new Info(Info::Instantiate());
             info->SetArgs(Object::ListType(1,player->asObject()));
