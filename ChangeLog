@@ -1,3 +1,7 @@
+2003-08-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/World.cpp: Add more terrain for testing.
+
 2003-08-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp: Add lots more terrain to stress test clients.

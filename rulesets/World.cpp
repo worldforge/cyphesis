@@ -66,7 +66,11 @@ World::World(const std::string & id) : World_parent(id),
 
     for (int i = -5; i < 6; ++i) {
         for (int j = -5; j < 6; ++j) {
-            m_terrain.setBasePoint(i, j, -10);
+            if (i == -5 || i == 5 || j == -5 || j == 5) {
+                m_terrain.setBasePoint(i, j, -10);
+            } else {
+                m_terrain.setBasePoint(i, j, 3);
+            }
         }
     }
     
