@@ -1,5 +1,10 @@
 2001-10-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cywatchdog.cpp: New watchdog which works with new server
+	  behavoir.
+
+2001-10-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* watchdog/watchdog.c: Deprecated non-working watchdog program.
 
 	* tools/cypasswd.cpp, tools/cycmd.cpp, client/ObserverClient.cpp,
