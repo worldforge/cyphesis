@@ -48,6 +48,15 @@
 
 	* common/const.cpp: Cut down sight range.
 
+2004-04-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/MemMap.cpp: Ensure that updates can modify LOC of entities
+	  in characters memory, or it often doesn't get set at all. Simplify
+	  the process of adding a new id.
+
+	* rulesets/Character.cpp: Don't need to send out nearly as many looks
+	  to bootstrap mind code.
+
 2004-04-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/operations.cpp: Fix typo in Setup ops, which meant that
