@@ -142,7 +142,8 @@ void MemMap::del(const std::string & id)
         }
         m_entities.erase(I);
 
-        // FIXME Can we use Entity::destroy to handle all this reparenting?
+        // Handling re-parenting is done very similarly to Entity::destroy,
+        // but is slightly different as we tolerate LOC being null.
         Entity * mloc = ent->m_location.m_loc;
         if (mloc != 0) {
             // Remove deleted entity from its parents contains

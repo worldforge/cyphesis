@@ -1,5 +1,10 @@
 2004-09-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/MemMap.cpp, rulesets/Py_Map.cpp, server/WorldRouter.h:
+	  Update comments to remove obsolete FIXMEs.
+
+2004-09-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, server/Account.cpp:
 	  Add serialno assignments to character inventory creation ops,
 	  and ops from builtin mind.

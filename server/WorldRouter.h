@@ -28,7 +28,7 @@ class WorldRouter : public BaseWorld {
   private:
     /// An ordered queue of operations yet to be dispatched.
     OpQueue m_operationQueue;
-    /// The IG time when the server was started. FIXME correct?
+    /// The system time when the server was started.
     time_t m_initTime;
     /// List of all IG entities.
     EntitySet m_objectList;

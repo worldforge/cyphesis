@@ -1,3 +1,5 @@
+Centralise serialno assigment on IG ops, checking for 0 to see if we should?
+
 Sort out FIXME in Creator::operation().
 
 Account sends a Sight(Create) IG of the newly created character. Is this
@@ -331,18 +333,10 @@ return any tuples, and then the asyncronous recieve mechanism doesn't need
 to worry about who wants the tuples.
 
 Write a base class for plant which has a standard forumala for managing the
-growth of plants - the fundamental messure of which is mass, then another
+growth of plants - the fundamental measure of which is mass, then another
 formula for calculating the size (height, width) etc from the mass, so the
 shape of the plant as it grows can be customised. This could largely eliminate
 the need to scripts to define plants.
-
-Must fix for Mason 0.0.2
-
-  Stop broadcasting passwords around the place. Probably best done by sorting
-  out the account table properlly.
-
-  Perhaps look at the way idle handles internal and network traffic. It
-  is possible that network traffic should be given a higher priority.
 
 General TODO
 

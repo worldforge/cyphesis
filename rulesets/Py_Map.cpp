@@ -118,9 +118,6 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError,"arg is not an Object");
         return NULL;
     }
-    // FIXME We are passing in 0, which will have no effect, but
-    // we should really pass in the right time. Would need a new arg
-    // to be added.
     MemEntity * ret = self->m_map->updateAdd(obj->m_obj->asMap(), time);
     PyEntity * thing = newPyEntity();
     thing->m_entity = ret;
