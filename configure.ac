@@ -260,7 +260,6 @@ AC_SUBST(STATIC_LIBGCC)
 dnl Generate files
 AC_OUTPUT([
     cyphesis.spec
-    cyphesis-config
     Makefile
     physics/Makefile
     common/Makefile
@@ -273,4 +272,4 @@ AC_OUTPUT([
     tests/Makefile
     man/Makefile
     autopackage/default.apspec
-], [chmod +x cyphesis-config])
+])

@@ -1,6 +1,3 @@
-Replace op.time.sadd with op.future_seconds, and purge OpTime class from the
-codebae.
-
 Clean out Python operation API, as its full of unused and useless functions.
 
 Slave or Peer servers need to negotiate types at startup.
