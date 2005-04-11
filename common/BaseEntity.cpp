@@ -361,9 +361,11 @@ void BaseEntity::error(const Operation& op, const char* errstring,
     errmsg["message"] = errstring;
     args.push_back(op.asObject());
 
-    e->setRefno(op.getSerialno());
+    if (!to.empty()) {
+        e->setRefno(op.getSerialno());
+        e->setTo(to);
+    }
     e->setSerialno(newSerialNo());
-    e->setTo(to);
 
     res.push_back(e);
 }

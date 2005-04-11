@@ -197,7 +197,6 @@ void Connection::operation(const Operation & op, OpVector & res)
             ListType & info_args = info->getArgs();
             info_args.push_back(MapType());
             character->addToMessage(info_args.back().asMap());
-            info->setRefno(op.getSerialno());
             info->setSerialno(newSerialNo());
 
             res.push_back(info);
@@ -278,7 +277,6 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     ListType & info_args = info->getArgs();
     info_args.push_back(MapType());
     player->addToMessage(info_args.front().asMap());
-    info->setRefno(op.getSerialno());
     info->setSerialno(newSerialNo());
     debug(std::cout << "Good login" << std::endl << std::flush;);
     res.push_back(info);
@@ -338,7 +336,6 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     ListType & info_args = info->getArgs();
     info_args.push_back(MapType());
     player->addToMessage(info_args.front().asMap());
-    info->setRefno(op.getSerialno());
     info->setSerialno(newSerialNo());
     debug(std::cout << "Good create" << std::endl << std::flush;);
     res.push_back(info);
@@ -409,7 +406,6 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
         ListType & info_args = info->getArgs();
         info_args.push_back(MapType());
         m_server.addToMessage(info_args.front().asMap());
-        info->setRefno(op.getSerialno());
         info->setSerialno(newSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
@@ -431,7 +427,6 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
         info = new Info;
         ListType & iargs = info->getArgs();
         iargs.push_back(o->asObject());
-        info->setRefno(op.getSerialno());
         info->setSerialno(newSerialNo());
     }
     

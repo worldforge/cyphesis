@@ -15,7 +15,6 @@
 #include "common/globals.h"
 #include "common/Database.h"
 #include "common/random.h"
-#include "common/refno.h"
 #include "common/serialno.h"
 
 #include "common/Setup.h"
@@ -333,9 +332,11 @@ void WorldRouter::deliverTo(const Operation & op, Entity & ent)
 {
     OpVector res;
     ent.operation(op, res);
-    setRefno(res, op);
     OpVector::const_iterator Iend = res.end();
     for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
+        if (op.getFrom() == (*I)->getTo()) {
+            (*I)->setRefno(op.getSerialno());
+        }
         (*I)->setSerialno(newSerialNo());
         message(**I, ent);
     }

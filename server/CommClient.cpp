@@ -119,6 +119,7 @@ void CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
     OpVector::const_iterator Iend = reply.end();
     for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
         debug(std::cout << "sending reply" << std::endl << std::flush;);
+        (*I)->setRefno(op.getSerialno());
         send(**I);
         delete *I;
     }

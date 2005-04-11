@@ -215,7 +215,6 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     ListType & info_args = info->getArgs();
     info_args.push_back(MapType());
     obj->addToMessage(info_args.front().asMap());
-    info->setRefno(op.getSerialno());
     info->setSerialno(newSerialNo());
 
     res.push_back(info);
@@ -295,6 +294,7 @@ void Account::ImaginaryOperation(const Operation & op, OpVector & res)
     sargs.push_back(op.asObject());
     s.setFrom(getId());
     s.setSerialno(newSerialNo());
+    // FIXME Remove this
     s.setRefno(op.getSerialno());
     const MapType & arg = args.front().asMap();
     MapType::const_iterator I = arg.find("loc");
@@ -319,6 +319,7 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
     sargs.push_back(op.asObject());
     s.setFrom(getId());
     s.setSerialno(newSerialNo());
+    // FIXME Remove this
     s.setRefno(op.getSerialno());
     const MapType & arg = args.front().asMap();
     MapType::const_iterator I = arg.find("loc");
@@ -342,7 +343,6 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         s_args.push_back(MapType());
         m_connection->m_server.m_lobby.addToMessage(s_args.front().asMap());
         s->setSerialno(newSerialNo());
-        s->setRefno(op.getSerialno());
         res.push_back(s);
         return;
     }
@@ -360,7 +360,6 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         s_args.push_back(MapType());
         J->second->addToMessage(s_args.front().asMap());
         s->setSerialno(newSerialNo());
-        s->setRefno(op.getSerialno());
         res.push_back(s);
         return;
     }
@@ -373,7 +372,6 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         s_args.push_back(MapType());
         K->second->addToMessage(s_args.front().asMap());
         s->setSerialno(newSerialNo());
-        s->setRefno(op.getSerialno());
         res.push_back(s);
         return;
     }

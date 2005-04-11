@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2004 Alistair Riddoch
 
+#error This file has been removed from the build
+
 #ifndef COMMON_REFNO_H
 #define COMMON_REFNO_H
 

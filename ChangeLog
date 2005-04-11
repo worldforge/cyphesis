@@ -1,3 +1,20 @@
+2005-04-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp, server/Admin.cpp, server/CommClient.cpp,
+	  server/Connection.cpp: Don't set refno on unicast OOG ops,
+	  instead set them at the interface with the client in one
+	  place.
+
+	* server/WorldRouter.cpp: Modify setting refno on IG ops so its
+	  now only set on unicast responses.
+
+	* rulesets/Creator.cpp: Set refno on responses direct ops from creator
+	  clients more manually.
+
+	* common/BaseEntity.cpp: Only set refno on unicast error ops.
+
+	* common/refno.h: Disable as this file is no longer used.
+
 2005-04-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Operation.cpp, rulesets/Py_Optime.cpp,

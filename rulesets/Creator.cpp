@@ -7,7 +7,6 @@
 #include "BaseMind.h"
 
 #include "common/debug.h"
-#include "common/refno.h"
 #include "common/const.h"
 #include "common/serialno.h"
 
@@ -107,10 +106,10 @@ void Creator::externalOperation(const Operation & op)
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         OpVector lres;
         callOperation(op, lres);
-        setRefno(lres, op);
         OpVector::const_iterator Iend = lres.end();
         for (OpVector::const_iterator I = lres.begin(); I != Iend; ++I) {
             (*I)->setSerialno(newSerialNo());
+            (*I)->setRefno(op.getSerialno());
             sendWorld(*I);
             // Don't delete lres as it has gone into World's queue
             // World will deal with it.

@@ -188,7 +188,6 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         error(op, msg.c_str(), res, getId());
         return;
     }
-    info->setRefno(op.getSerialno());
     info->setSerialno(newSerialNo());
     res.push_back(info);
 }
