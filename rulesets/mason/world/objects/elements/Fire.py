@@ -41,7 +41,7 @@ class Fire(Thing):
 
         #and call this method later
         opTick=Operation("tick",to=self)
-        opTick.time.sadd=const.basic_tick*4
+        opTick.setFutureSeconds(const.basic_tick*4)
         return Message(opBurn,Operation("sight",opBurn),opTick,opSet)
     def nourish_operation(self, op):
         #Increase fire

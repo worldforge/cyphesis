@@ -74,7 +74,7 @@ class NPCMind(BaseMind):
         """periodically reasses situation"""
         self.tick_count=self.tick_count+1
         opTick=Operation("tick")
-        opTick.time.sadd=const.basic_tick
+        opTick.setFutureSeconds(const.basic_tick)
         result=self.think()
         if self.message_queue:
             result = self.message_queue + result

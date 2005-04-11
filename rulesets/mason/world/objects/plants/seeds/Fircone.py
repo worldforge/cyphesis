@@ -19,7 +19,7 @@ class Fircone(Seed):
         # Decay a bit, we don't last forever
         # Of course, a real acorn would germinate after a bit
         opTick=Operation("tick",to=self)
-        opTick.time.sadd=1800
+        opTick.setFutureSeconds(1800)
         return opTick
     def tick_operation(self, op):
         ent=Entity(self.id,status=-1)

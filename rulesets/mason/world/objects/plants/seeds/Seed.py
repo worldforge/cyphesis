@@ -18,7 +18,7 @@ Base class from which all fruit/seed entities are derived.
 class Seed(Thing):
     def tick_operation(self, op): pass
 #        opTick=Operation("tick",to=self)
-#        opTick.time.sadd=const.basic_tick*speed
+#        opTick.setFutureSeconds(const.basic_tick*speed)
 #
 #        result = atlas.Message(opTick)
 #

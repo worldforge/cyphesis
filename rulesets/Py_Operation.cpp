@@ -4,7 +4,6 @@
 
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
-#include "Py_Optime.h"
 #include "Py_Object.h"
 #include "Py_Thing.h"
 
@@ -550,24 +549,6 @@ static inline PyObject * findMethod(PyConstOperation * self, char * name)
     return Py_FindMethod(ConstRootOperation_methods, (PyObject *)self, name);
 }
 
-static inline PyObject * handleTime(PyOperation * self)
-{
-    PyOptime * time_obj = newPyOptime();
-    if (time_obj == NULL) {
-        return NULL;
-    }
-    time_obj->operation = self->operation;
-    return (PyObject *)time_obj;
-}
-
-static inline PyObject * handleTime(PyConstOperation * self)
-{
-    // If it becomes necessary for python scripts to query the time
-    // of ops, this can be adapted to provide them with that information
-    PyErr_SetString(PyExc_TypeError, "cannot get time on const ops");
-    return NULL;
-}
-
 template <typename T>
 static PyObject * getattr(T * self, char * name)
 {
@@ -607,8 +588,6 @@ static PyObject * getattr(T * self, char * name)
             obj->m_obj = new Element(omap);
             return (PyObject *)obj;
         }
-    } else if (strcmp(name, "time") == 0) {
-        return handleTime(self);
     } else if (strcmp(name, "id") == 0) {
         const ListType & parents = self->operation->getParents();
         if ((parents.empty()) || (!parents.front().isString())) {

@@ -21,7 +21,7 @@ class Apple(Seed):
     def setup_operation(self, op):
         # Decay a bit, we don't last forever
         opTick=Operation("tick",to=self)
-        opTick.time.sadd=900
+        opTick.setFutureSeconds(900)
         return opTick
     def tick_operation(self, op):
         # After a short while we turn into a rotten apple, which is alcoholic
@@ -31,5 +31,5 @@ class Apple(Seed):
         else:
             self.alcohol = 1
             opTick=Operation("tick",to=self)
-            opTick.time.sadd=900
+            opTick.setFutureSeconds(900)
             return opTick

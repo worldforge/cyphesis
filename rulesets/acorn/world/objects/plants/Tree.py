@@ -90,7 +90,7 @@ class Tree(Thing):
             print `self`,"Got tick operation:"
         #in any case send ourself next tick#
         opTick=Operation("tick",to=self)
-        opTick.time.sadd=const.basic_tick*speed
+        opTick.setFutureSeconds(const.basic_tick*speed)
 
         result = atlas.Message(opTick)
 

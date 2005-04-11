@@ -1,3 +1,30 @@
+2005-04-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Operation.cpp, rulesets/Py_Optime.cpp,
+	  rulesets/Py_Optime.h rulesets/Python_API.cpp:
+	  Remove the Optime class from the API and force scripts to use
+	  setFutureSeconds() to modify operation dispatch time.
+
+	* rulesets/acorn/world/objects/Weather.py,
+	  rulesets/acorn/world/objects/plants/Tree.py,
+	  rulesets/acorn/world/objects/plants/seeds/Acorn.py,
+	  rulesets/acorn/world/objects/plants/seeds/Apple.py,
+	  rulesets/acorn/world/objects/plants/seeds/Seed.py,
+	  rulesets/basic/mind/NPCMind.py,
+	  rulesets/basic/mind/goals/common/move.py,
+	  rulesets/basic/world/objects/animals/Animal.py,
+	  rulesets/basic/world/objects/buildings/House.py,
+	  rulesets/basic/world/objects/elements/Fire.py,
+	  rulesets/basic/world/objects/plants/Tree.py,
+	  rulesets/basic/world/objects/tools/Bow.py,
+	  rulesets/mason/world/objects/Weather.py,
+	  rulesets/mason/world/objects/plants/seeds/Acorn.py,
+	  rulesets/mason/world/objects/plants/seeds/Apple.py,
+	  rulesets/mason/world/objects/plants/seeds/Fircone.py,
+	  rulesets/mason/world/objects/plants/seeds/Seed.py:
+	  Fix up all the python scripts to use setFutureSeconds on
+	  ops instead of time.sadd.
+
 2005-04-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Remove obsolete commented out code.

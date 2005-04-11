@@ -41,7 +41,7 @@ class Animal(Thing):
         self.tickcount=0
 ##         if not res: 
 ##             res = Operation("tick",to=self)
-##             res.time.sadd = const.basic_tick
+##             res.setFutureSeconds(const.basic_tick)
         ent = Entity(self.id)
         if self.food>=foodConsumption and self.status < 2.0:
             self.status = self.status + foodConsumption

@@ -36,7 +36,6 @@ librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    Py_Operation.cpp Py_Operation.h \
 			    Py_Oplist.cpp Py_Oplist.h \
-			    Py_Optime.cpp Py_Optime.h \
 			    Py_Vector3D.cpp Py_Vector3D.h \
 			    Py_Point3D.cpp Py_Point3D.h \
 			    Py_Thing.cpp Py_Thing.h \

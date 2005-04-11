@@ -157,7 +157,7 @@ class move_it(Goal):
         mOp2=Operation("move", Entity(what.id, location=self.location))
         time=((self.location.coordinates-what.location.coordinates).mag() / self.speed)
         self.wait=(time/const.basic_tick)+1
-        mOp2.time.sadd=time
+        mOp2.setFutureSeconds(time)
         return Message(mOp1,mOp2)
 
 ############################ MOVE THING FROM ME ####################################

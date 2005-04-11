@@ -21,7 +21,7 @@ class Seed(Thing):
         set_kw(self,kw,"mass",0.05)
     def tick_operation(self, op): pass
 #        opTick=Operation("tick",to=self)
-#        opTick.time.sadd=const.basic_tick*speed
+#        opTick.setFutureSeconds(const.basic_tick*speed)
 #
 #        result = atlas.Message(opTick)
 #

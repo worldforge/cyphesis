@@ -23,7 +23,7 @@ class Bow(Thing):
         loc2.velocity = Vector3D(0,0,0)
         m1 = Operation("move",Entity(ammo,location=loc1),to=ammo)
         m2 = Operation("move",Entity(ammo,location=loc2),to=ammo)
-        m2.time.sadd=time
+        m2.setFutureSeconds(time)
         t = Operation("set",Entity(to_,status=-1),to=to_)
-        t.time.sadd=time
+        t.setFutureSeconds(time)
         return Message(m1,m2,t)

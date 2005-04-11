@@ -16,7 +16,7 @@ class House(Thing):
            in any case send ourself next tick"""
         #print `self`,"Got tick operation:\n"
         opTick=Operation("tick",to=self)
-        opTick.time.sadd=const.basic_tick
+        opTick.setFutureSeconds(const.basic_tick)
         if probability.does_it_happen(probability.fire_probability):
             fireEntity=Entity(name='fire',type=['fire'],status=0.0,
                               location=Location(self,Point3D(0.0,0.0,0.0)))

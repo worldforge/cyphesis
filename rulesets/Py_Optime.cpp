@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
+#error This file has been removed from the build
+
 #include "Py_Optime.h"
 
 #include <Atlas/Objects/Operation/RootOperation.h>

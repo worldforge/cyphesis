@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
+#error This file has been removed from the build
+
 #ifndef RULESETS_PY_OPTIME_H
 #define RULESETS_PY_OPTIME_H
 

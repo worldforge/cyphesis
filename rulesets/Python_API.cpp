@@ -18,7 +18,6 @@
 #include "Py_World.h"
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
-#include "Py_Optime.h"
 
 #include "PythonThingScript.h"
 #include "PythonMindScript.h"
