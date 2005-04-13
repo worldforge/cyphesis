@@ -1,3 +1,9 @@
+2005-04-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/Formatter.cpp, tools/Formatter.h, tools/cydumprules.cpp:
+	  Start work on a tool to read rules from the cyphesis database
+	  tables, and dump them to files on disk.
+
 2005-04-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Account.cpp, server/Admin.cpp, server/CommClient.cpp,
