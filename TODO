@@ -1,3 +1,5 @@
+Add cydumprules to the man pages.
+
 Clean out Python operation API, as its full of unused and useless functions.
 
 Slave or Peer servers need to negotiate types at startup.
