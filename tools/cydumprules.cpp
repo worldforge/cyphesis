@@ -1,15 +1,20 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2001 Alistair Riddoch
+// Copyright (C) 2005 Alistair Riddoch
+
+#include "Formatter.h"
 
 #include "common/Database.h"
 #include "common/globals.h"
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
+#include <Atlas/Message/Encoder.h>
+#include <Atlas/Message/QueuedDecoder.h>
 
 #include <string>
 #include <fstream>
+#include <sstream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -41,21 +46,17 @@ class RuleReader {
         return m_instance;
     }
 
-    void storeInRules(const MapType & o, const std::string & key) {
-        if (m_connection.hasKey(m_connection.rule(), key)) {
-            return;
+    void readRuleTable(const std::string & ruleset, MapType & o) {
+        std::stringstream query;
+        query << "SELECT * FROM " << m_connection.rule() << " WHERE "
+              << " ruleset = '" << ruleset << "'";
+        DatabaseResult res = m_connection.runSimpleSelectQuery(query.str());
+        DatabaseResult::const_iterator I = res.begin();
+        DatabaseResult::const_iterator Iend = res.end();
+        for (; I != Iend; ++I) {
+            MapType & data = (o[I.column("id")] = MapType()).asMap();
+            m_connection.decodeObject(I.column("contents"), data);
         }
-        m_connection.putObject(m_connection.rule(), key, o, StringVector(1, m_rulesetName));
-        if (!m_connection.clearPendingQuery()) {
-            std::cerr << "Failed" << std::endl << std::flush;
-        }
-    }
-    bool clearRules() {
-        return (m_connection.clearTable(m_connection.rule()) &&
-                m_connection.clearPendingQuery());
-    }
-    void setRuleset(const std::string & n) {
-        m_rulesetName = n;
     }
 };
 
@@ -83,10 +84,44 @@ int main(int argc, char ** argv)
         return 1;
     }
 
+    Atlas::Message::QueuedDecoder decoder;
+
     if (optind == argc) {
         std::vector<std::string>::const_iterator I = rulesets.begin();
         std::vector<std::string>::const_iterator Iend = rulesets.end();
         for (; I != Iend; ++I) {
+            std::cout << "Dumping rules from " << *I << std::endl << std::flush;
+
+            MapType rule_store;
+
+            db->readRuleTable(*I, rule_store);
+
+            std::fstream file;
+            std::string filename = *I + ".xml";
+           
+            file.open(filename.c_str(), std::ios::out);
+            
+            Atlas::Codecs::XML codec(file, &decoder);
+            Formatter formatter(file, codec);
+            Atlas::Message::Encoder encoder(&formatter);
+
+            formatter.streamBegin();
+
+            MapType::const_iterator J = rule_store.begin();
+            MapType::const_iterator Jend = rule_store.end();
+            for (; J != Jend; ++J) {
+                if (!J->second.isMap()) {
+                    std::cerr << "WARNING: Non map rule found in database"
+                              << std::endl << std::flush;
+                    continue;
+                }
+                encoder.streamMessage(J->second.asMap());
+            }
+
+            formatter.streamEnd();
+
+            std::cout << rule_store.size() << " classes stores in " << filename
+                      << std::endl << std::flush;
         }
     } else {
         usage(argv[0]);

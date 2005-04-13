@@ -274,19 +274,6 @@
   <map>
     <map name="attributes">
       <map name="mass">
-        <float name="default">0.2</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">deed</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="mass">
         <float name="default">20</float>
         <string name="visibility">public</string>
       </map>
@@ -298,6 +285,19 @@
     <string name="id">crab</string>
     <list name="parents">
       <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">0.2</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">deed</string>
+    <list name="parents">
+      <string>thing</string>
     </list>
   </map>
 
