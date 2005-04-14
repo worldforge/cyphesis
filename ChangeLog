@@ -1,3 +1,7 @@
+2005-04-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* man/cyphesis-tools.sgml: Documet cydumprules.
+
 2005-04-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Re-order rules to be alphabetical for easier

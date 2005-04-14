@@ -6,7 +6,7 @@
  </refmeta>
 
  <refnamediv>
-  <refname>cyconfig, cyconvertrules, cyloadrules, cypasswd</refname>
+  <refname>cyconfig, cyconvertrules, cydumprules, cyloadrules, cypasswd</refname>
   <refpurpose>cyphesis tools</refpurpose>
  </refnamediv>
 
@@ -18,6 +18,9 @@
   <cmdsynopsis>
    <command>/usr/bin/cyconvertrules</command>
    <arg choice="req">rule_file</arg>
+  </cmdsynopsis>
+  <cmdsynopsis>
+   <command>/usr/bin/cydumprules</command>
   </cmdsynopsis>
   <cmdsynopsis>
    <command>/usr/bin/cyloadrules</command>
@@ -55,6 +58,16 @@ the various options that the server takes, please see
 The <command>cyconvertrules</command> program converts Atlas XML rules files
 from an older historic format into the format used by cyphesis since
 version 0.3.1.
+  </para>
+  <para>
+The <command>cydumprules</command> program dumps rules from the database table
+used by the server into a set of Atlas XML rules files. Note that this does
+not produce a set of files containing the same rules as those that were loaded
+in using <command>cyloadrules</command> because some of the rules in the
+rulesets that were not top level may have been overloaded, and do not exist
+in the database table. Typically this command will be used to get an updated
+copy of the top level ruleset from the server database, and the rest of the
+files will be ignored.
   </para>
   <para>
 The <command>cyloadrules</command> loads Atlas XML rules files into the
