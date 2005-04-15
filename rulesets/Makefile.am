@@ -24,6 +24,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Movement.cpp Movement.h \
 			     Pedestrian.cpp Pedestrian.h \
 			     LineProperty.cpp LineProperty.h \
+			     AreaProperty.cpp AreaProperty.h \
 			     TerrainProperty.cpp TerrainProperty.h \
 			     Task.cpp Task.h \
 			     Fell.cpp Fell.h

@@ -163,7 +163,7 @@ static int Vector3D_print(PyVector3D * self, FILE * fp, int)
 {
     // if (flags & Py_PRINT_RAW) {
     // }
-    fprintf(fp, "(%d, %d, %d)", self->coords.x(), self->coords.y(), self->coords.z());
+    fprintf(fp, "(%lf %lf %lf", self->coords.x(), self->coords.y(), self->coords.z());
     return 0;
 }
 

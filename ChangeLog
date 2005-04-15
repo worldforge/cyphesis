@@ -1,3 +1,11 @@
+2005-04-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Vector3D.cpp: Fix format for outputting Vector3D
+	  using printf.
+
+	* rulesets/AreaProperty.cpp, rulesets/AreaProperty.h: New
+	  Property class for handling Area attributes.
+
 2005-04-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* man/cyphesis-tools.sgml: Documet cydumprules.
