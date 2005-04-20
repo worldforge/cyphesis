@@ -1,3 +1,8 @@
+2005-04-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Motion.cpp, rulesets/Motion.h: Flesh out the API for
+	  handling motion, and set up a cpp file so it gets compiled.
+
 2005-04-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Vector3D.cpp: Fix format for outputting Vector3D

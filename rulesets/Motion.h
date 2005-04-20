@@ -5,6 +5,8 @@
 #ifndef RULESETS_MOTION_H
 #define RULESETS_MOTION_H
 
+#include "common/types.h"
+
 class Entity;
 
 /// \brief Base class for handling Entity movement
@@ -26,7 +28,31 @@ class Motion {
     explicit Motion(Entity & body);
     virtual ~Motion();
 
-    virtual what();
+    /// \brief Constrain current location data.
+    /// 
+    /// Correct the current position and velocity to take account
+    /// of current constraints. For example, if a character is walking, their
+    /// their height will be adjusted to match that of the surface they are
+    /// walking. This is not the same as falling from their true height onto
+    /// a surface - that is a different movement type. This adjustment
+    /// is a normal part of the proces of tracking movement.
+    virtual void adjustPostion();
+
+    /// \brief Generate an update operation.
+    ///
+    /// Generate an Update operation scheduled to occur at an apropriate
+    /// time for this movement. This is typically when an entity gets
+    /// a move operation so it know when to schedule the next movement update.
+    virtual Operation * genUpdateOperation();
+    
+    /// \brief Generate a Move operation.
+    ///
+    /// Generate a Move operation scheduled to occur immediatly. This is
+    /// generally called when an entity gets a Tick operation so it updates
+    /// its location data, and broadcasts that info
+    virtual Operation * genMoveOperation();
+
+    // Collision bullshit?
 };
 
 #endif // RULESETS_MOTION_H
