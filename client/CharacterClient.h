@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#ifndef CHARACTER_CLIENT_H
-#define CHARACTER_CLIENT_H
+#ifndef CLIENT_CHARACTER_CLIENT_H
+#define CLIENT_CHARACTER_CLIENT_H
 
 #include "rulesets/BaseMind.h"
 
@@ -28,4 +28,4 @@ class CharacterClient : public BaseMind {
     void send(Operation & op);
 };
 
-#endif // CHARACTER_CLIENT_H
+#endif // CLIENT_CHARACTER_CLIENT_H

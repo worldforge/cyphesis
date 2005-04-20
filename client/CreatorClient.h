@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#ifndef CREATOR_CLIENT_H
-#define CREATOR_CLIENT_H
+#ifndef CLIENT_CREATOR_CLIENT_H
+#define CLIENT_CREATOR_CLIENT_H
 
 #include "CharacterClient.h"
 
@@ -23,4 +23,4 @@ class CreatorClient : public CharacterClient {
     int runScript(const std::string & package, const std::string & function);
 };
 
-#endif // CREATOR_CLIENT_H
+#endif // CLIENT_CREATOR_CLIENT_H

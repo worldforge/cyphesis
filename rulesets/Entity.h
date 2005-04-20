@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef ENTITY_H
-#define ENTITY_H
+#ifndef RULESETS_ENTITY_H
+#define RULESETS_ENTITY_H
 
 #include "attributes.h"
 
@@ -202,4 +202,4 @@ inline std::ostream & operator<<(std::ostream& s, Location& v)
              << v.m_velocity << "}";
 }
 
-#endif // ENTITY_H
+#endif // RULESETS_ENTITY_H

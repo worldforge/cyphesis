@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-#ifndef MEM_ENTITY_H
-#define MEM_ENTITY_H
+#ifndef RULESETS_MEM_ENTITY_H
+#define RULESETS_MEM_ENTITY_H
 
 #include "rulesets/Entity.h"
 
@@ -40,4 +40,4 @@ class MemEntity : public Entity {
     }
 };
 
-#endif // MEM_ENTITY_H
+#endif // RULESETS_MEM_ENTITY_H

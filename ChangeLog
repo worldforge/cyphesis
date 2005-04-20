@@ -1,3 +1,9 @@
+2005-04-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/CharacterClient.h, client/CreatorClient.h,
+	  common/OOGThing.h, rulesets/Entity.h, rulesets/MemEntity.h:
+	  Fix naming of header guards so they are consistant.
+
 2005-04-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Motion.cpp, rulesets/Motion.h: Flesh out the API for
