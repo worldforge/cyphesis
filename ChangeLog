@@ -1,5 +1,10 @@
 2005-04-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Makefile.am: Fix tests to build now that Motion.o has been
+	  added.
+
+2005-04-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/Location.h, modules/Location.cpp: Start adding the
 	  additional fields required for comeplex movement. Acceleration
 	  and angular velocity added first.

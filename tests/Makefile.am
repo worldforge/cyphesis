@@ -167,6 +167,7 @@ Areatest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/rulesets/Entity.o \
                  $(top_builddir)/rulesets/EntityProperties.o \
                  $(top_builddir)/rulesets/Thing.o \
+                 $(top_builddir)/rulesets/Motion.o \
                  $(top_builddir)/rulesets/Script.o \
                  $(top_builddir)/common/inheritance.o \
                  $(top_builddir)/common/Property.o \
@@ -188,6 +189,7 @@ Foodtest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/rulesets/Entity.o \
                  $(top_builddir)/rulesets/EntityProperties.o \
                  $(top_builddir)/rulesets/Thing.o \
+                 $(top_builddir)/rulesets/Motion.o \
                  $(top_builddir)/rulesets/Script.o \
                  $(top_builddir)/common/inheritance.o \
                  $(top_builddir)/common/Property.o \
@@ -210,6 +212,7 @@ Linetest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/rulesets/Entity.o \
                  $(top_builddir)/rulesets/EntityProperties.o \
                  $(top_builddir)/rulesets/Thing.o \
+                 $(top_builddir)/rulesets/Motion.o \
                  $(top_builddir)/rulesets/Script.o \
                  $(top_builddir)/common/inheritance.o \
                  $(top_builddir)/common/Property.o \
@@ -231,6 +234,7 @@ Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/Thing.o \
+                  $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
                   $(top_builddir)/common/inheritance.o \
                   $(top_builddir)/common/Property.o \
@@ -252,6 +256,7 @@ Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
                       $(top_builddir)/rulesets/Thing.o \
+                      $(top_builddir)/rulesets/Motion.o \
                       $(top_builddir)/rulesets/Script.o \
                       $(top_builddir)/common/inheritance.o \
                       $(top_builddir)/common/Property.o \
@@ -273,6 +278,7 @@ Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
                       $(top_builddir)/rulesets/Thing.o \
+                      $(top_builddir)/rulesets/Motion.o \
                       $(top_builddir)/rulesets/Script.o \
                       $(top_builddir)/common/inheritance.o \
                       $(top_builddir)/common/Property.o \
@@ -293,6 +299,7 @@ Thingtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/Thing.o \
+                  $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
                   $(top_builddir)/common/inheritance.o \
                   $(top_builddir)/common/Property.o \
@@ -315,6 +322,7 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/World.o \
                   $(top_builddir)/rulesets/TerrainProperty.o \
                   $(top_builddir)/rulesets/Thing.o \
+                  $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
                   $(top_builddir)/common/inheritance.o \
                   $(top_builddir)/common/Property.o \
