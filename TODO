@@ -1,3 +1,7 @@
+Fix Creator::LookOperation so that it doesn't return anything if no
+match can be found. Also it should probably not accept ops with TO already
+set.
+
 Add cydumprules to the man pages.
 
 Clean out Python operation API, as its full of unused and useless functions.

@@ -1,5 +1,11 @@
 2005-04-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.h, modules/Location.cpp: Start adding the
+	  additional fields required for comeplex movement. Acceleration
+	  and angular velocity added first.
+
+2005-04-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Motion.h, rulesets/Motion.cpp: Add a little more API,
 	  and provide stubs of existing methods.
 

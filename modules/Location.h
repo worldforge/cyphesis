@@ -20,7 +20,9 @@ class Location {
     Entity * m_loc;
     Point3D m_pos;   // Coords relative to m_loc entity
     Vector3D m_velocity; // Veclociy vector, relative to m_loc entity.
+    Vector3D m_acceleration; // Acceleration vector, relative to m_loc entity.
     Quaternion m_orientation;
+    Vector3D m_angular; // Angular velocity vector.
 
     BBox m_bBox;
 

@@ -40,8 +40,14 @@ void Location::addToMessage(Atlas::Message::MapType & omap) const
     if (m_velocity.isValid()) {
         omap["velocity"] = m_velocity.toAtlas();
     }
+    if (m_acceleration.isValid()) {
+        omap["accel"] = m_acceleration.toAtlas();
+    }
     if (m_orientation.isValid()) {
         omap["orientation"] = m_orientation.toAtlas();
+    }
+    if (m_angular.isValid()) {
+        omap["angular"] = m_angular.toAtlas();
     }
     if (m_bBox.isValid()) {
         omap["bbox"] = m_bBox.toAtlas();
