@@ -3,7 +3,9 @@
 // Copyright (C) 2000-2005 Alistair Riddoch
 
 #include "Thing.h"
+
 #include "Script.h"
+#include "Motion.h"
 
 #include "common/log.h"
 #include "common/const.h"
@@ -46,6 +48,8 @@ Thing::Thing(const std::string & id) : Entity(id)
     subscribe("set", OP_SET);
     subscribe("look", OP_LOOK);
     subscribe("update", OP_UPDATE);
+
+    m_motion = new Motion(*this);
 }
 
 Thing::~Thing() { }
@@ -274,6 +278,12 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     if (I != Iend) {
         // Update the mode
         set(I->first, I->second);
+        // FIXME
+        if (!I->second.isString()) {
+            log(ERROR, "Non string mode set in Thing::MoveOperation");
+        } else {
+            m_motion->setMode(I->second.asString());
+        }
     }
 
     // At this point the Location data for this entity has been updated.

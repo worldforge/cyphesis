@@ -7,6 +7,8 @@
 
 #include "common/types.h"
 
+#include <string>
+
 class Entity;
 
 /// \brief Base class for handling Entity movement
@@ -23,10 +25,22 @@ class Entity;
 class Motion {
   protected:
     Entity & m_entity;
+    std::string m_mode;
 
   public:
     explicit Motion(Entity & body);
     virtual ~Motion();
+
+    const std::string & mode() const {
+        return m_mode;
+    }
+    
+    /// \brief Set the mode the motion is currently in
+    ///
+    /// Configures motion handler to deal with a certain kind of movement.
+    /// Typical examples are things like "walk", "run", "stand", "project",
+    /// "float".
+    virtual void setMode(const std::string & mode);
 
     /// \brief Constrain current location data.
     /// 
