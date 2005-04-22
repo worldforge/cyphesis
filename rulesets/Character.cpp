@@ -535,7 +535,17 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     }
 
     Operation * rop = Inheritance::instance().newOperation(op_type);
-    if (target.empty()) {
+    if (rop == 0) {
+        std::string err("Character::mindUseMethod: Unknown op type \"");
+        err += op_type;
+        err += "\" requested by \"";
+        err += tool->getType();
+        err += "\" tool";
+        log(ERROR, err.c_str());
+        // FIXME Thing hard about how this error is reported. Would the error
+        // make it back to the client if we made an error response?
+        return;
+    } else if (target.empty()) {
         debug(std::cout << "No target" << std::endl << std::flush;);
     } else {
         ListType & rop_args = rop->getArgs();

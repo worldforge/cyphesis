@@ -50,6 +50,7 @@ namespace Atlas {
             class Cut;
             class Chop;
             class Burn;
+            class Delve;
             class Use;
             class Wield;
             class Unseen;

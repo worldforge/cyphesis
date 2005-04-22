@@ -6,6 +6,7 @@
 #include "Cut.h"
 #include "Eat.h"
 #include "Burn.h"
+#include "Delve.h"
 #include "Generic.h"
 #include "Nourish.h"
 #include "Setup.h"
@@ -57,6 +58,27 @@ Cut::~Cut() { }
 Cut Cut::Class()
 {
     Cut value("cut", "action");
+    value.setObjtype(std::string("op_definition"));
+    return value;
+}
+
+/// \brief Constructor for Delve operation instances
+Delve::Delve() : Action("", "delve")
+{
+}
+
+/// \brief Constructor for operation instances that inherit from Delve
+Delve::Delve(const char * id, const char * parent) : Action(id, parent)
+{
+}
+
+/// \brief Destructor for Delve operations
+Delve::~Delve() { }
+
+/// \brief Return an object containing the op_definition for Delve operation
+Delve Delve::Class()
+{
+    Delve value("delve", "action");
     value.setObjtype(std::string("op_definition"));
     return value;
 }

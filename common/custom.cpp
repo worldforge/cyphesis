@@ -7,6 +7,7 @@
 #include "Burn.h"
 #include "Chop.h"
 #include "Cut.h"
+#include "Delve.h"
 #include "Eat.h"
 #include "Nourish.h"
 #include "Setup.h"
@@ -27,6 +28,7 @@ using Atlas::Objects::Operation::Eat;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Cut;
 using Atlas::Objects::Operation::Chop;
+using Atlas::Objects::Operation::Delve;
 using Atlas::Objects::Operation::Burn;
 using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Operation::Wield;
@@ -39,6 +41,8 @@ void installCustomOperations()
     i.opInstall("chop", OP_CHOP, new OpFactory<Chop>);
     i.addChild(new Cut(Cut::Class()));
     i.opInstall("cut", OP_CUT, new OpFactory<Cut>);
+    i.addChild(new Delve(Delve::Class()));
+    i.opInstall("delve", OP_CUT, new OpFactory<Delve>);
     i.addChild(new Eat(Eat::Class()));
     i.opInstall("eat", OP_EAT, new OpFactory<Eat>);
     i.addChild(new Burn(Burn::Class()));

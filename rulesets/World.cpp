@@ -31,6 +31,7 @@ World::World(const std::string & id) : World_parent(id),
                                        m_terrain(*new Mercator::Terrain())
 {
     subscribe("set", OP_SET);
+    subscribe("delve", OP_OTHER);
 
     m_properties["terrain"] = new TerrainProperty(m_terrain, m_modifiedTerrain,
                                                   m_modifiedTerrain, a_terrain);

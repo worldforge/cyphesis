@@ -1,5 +1,21 @@
 2005-04-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/custom.cpp, common/Delve.h,
+	  common/operations.cpp, common/operations.h:
+	  Add new delve operation for digging with a pickaxe.
+
+	* data/basic.xml, rulesets/basic/world/objects/tools/Pickaxe.py:
+	  Add new pickaxe entity which emits a Delve operation when
+	  used.
+
+	* rulesets/Character.cpp: Fix a bug where a segfault occured
+	  if an operation was requested by a tool that was unknown to
+	  to the core server code. Instead an error message is emitted.
+
+	* rulesets/World.cpp: Subscribe world terrain to delve ops.
+
+2005-04-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Makefile.am: Fix tests to build now that Motion.o has been
 	  added.
 
