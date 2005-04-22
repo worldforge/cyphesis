@@ -1,3 +1,6 @@
+Add a reach attribute to tools which tells the client how far the NPC must
+be from the target before they can use it on something.
+
 Fix Creator::LookOperation so that it doesn't return anything if no
 match can be found. Also it should probably not accept ops with TO already
 set.
