@@ -1,3 +1,8 @@
+2005-04-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Motion.cpp: Add return values to stub functions to get
+	  rid of warnings.
+
 2005-04-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/custom.cpp, common/Delve.h,

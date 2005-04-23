@@ -24,8 +24,10 @@ void Motion::adjustPostion()
 
 Operation * Motion::genUpdateOperation()
 {
+    return 0;
 }
 
 Operation * Motion::genMoveOperation()
 {
+    return 0;
 }
