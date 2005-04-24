@@ -1,5 +1,10 @@
 2005-04-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Make sure that an entity cannot be moved
+	  inside itself, even indirectly.
+
+2005-04-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Don't set objtype on entities from python
 	  scripts unless they have parents.
 

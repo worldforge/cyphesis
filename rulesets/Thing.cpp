@@ -219,9 +219,12 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     }
     debug(std::cout << "{" << new_loc_id << "}" << std::endl << std::flush;);
     Entity * new_loc = J->second;
-    if (new_loc == this) {
-        error(op, "Attempt by entity to move into itself", res, getId());
-        return;
+    Entity * test_loc = new_loc;
+    for (; test_loc != 0; test_loc = test_loc->m_location.m_loc) {
+        if (test_loc == this) {
+            error(op, "Attempt by entity to move into itself", res, getId());
+            return;
+        }
     }
     I = ent.find("pos");
     if ((I == Iend) || !I->second.isList()) {
