@@ -61,4 +61,4 @@ class harvest_resource(Goal):
             #print "No resource source " + self.source
             return
         target=me.find_thing(self.source)[0]
-        return Operation("use",Entity(target.id))
+        return Operation("use",Entity(target.id, objtype="obj"))

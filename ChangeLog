@@ -1,5 +1,12 @@
 2005-04-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py,
+	  rulesets/basic/mind/goals/humanoid/construction.py:
+	  Make sure Use arguments explicitly have an objtype in the
+	  argument.
+
+2005-04-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Make sure that an entity cannot be moved
 	  inside itself, even indirectly.
 

@@ -472,7 +472,7 @@ class trade(Goal):
             self.wield=True
             return Operation("wield",Entity(tool.id))
         thing=me.find_thing(self.wbuy)[0]
-        return Operation("use",Entity(thing.id))
+        return Operation("use",Entity(thing.id, objtype="obj"))
 
 ############################# RUN MARKET STALL ##############################
 
