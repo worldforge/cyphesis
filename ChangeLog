@@ -1,3 +1,8 @@
+2005-04-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Python_API.cpp: Don't set objtype on entities from python
+	  scripts unless they have parents.
+
 2005-04-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Motion.cpp: Add return values to stub functions to get

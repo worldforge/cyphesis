@@ -859,7 +859,6 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
         return NULL;
     }
     MapType omap;
-    omap["objtype"] = "obj";
     if (id != NULL) {
         omap["id"] = std::string(id);
     }
@@ -883,6 +882,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
                 omap["loc"] = PyString_AsString(val);
             } else if ((strcmp(key, "type") == 0) && (PyString_Check(val))) {
                 omap["parents"] = ListType(1,std::string(PyString_AsString(val)));
+                omap["objtype"] = "obj";
             } else {
                 Element val_obj = PyObject_asMessageElement(val);
                 if (val_obj.getType() == Element::TYPE_NONE) {
