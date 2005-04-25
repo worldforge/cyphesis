@@ -39,4 +39,5 @@ template class PersistantThingFactory<Area>;
 template class PersistantThingFactory<Plant>;
 template class PersistantThingFactory<Structure>;
 template class PersistantThingFactory<Stackable>;
-template class PersistantThingFactory<World>;
+
+template class ForbiddenThingFactory<World>;

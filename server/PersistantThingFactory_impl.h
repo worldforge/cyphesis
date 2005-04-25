@@ -42,4 +42,27 @@ FactoryBase * PersistantThingFactory<T>::duplicateFactory()
     return new PersistantThingFactory<T>(*this);
 }
 
+template <class T>
+ForbiddenThingFactory<T>::~ForbiddenThingFactory()
+{
+}
+
+template <class T>
+T * ForbiddenThingFactory<T>::newThing(const std::string &)
+{
+    return 0;
+}
+
+template <class T>
+T * ForbiddenThingFactory<T>::newPersistantThing(const std::string &, PersistorBase **)
+{
+    return 0;
+}
+
+template <class T>
+FactoryBase * ForbiddenThingFactory<T>::duplicateFactory()
+{
+    return 0;
+}
+
 #endif // SERVER_PERSISTANT_THING_FACTORY_IMPL_H

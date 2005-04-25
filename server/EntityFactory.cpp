@@ -47,7 +47,7 @@ EntityFactory * EntityFactory::m_instance = NULL;
 EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
              m_eft(new PersistantThingFactory<Entity>())
 {
-    installFactory("game_entity", "world", new PersistantThingFactory<World>());
+    installFactory("game_entity", "world", new ForbiddenThingFactory<World>());
     PersistantThingFactory<Thing> * tft = new PersistantThingFactory<Thing>();
     installFactory("game_entity", "thing", tft);
     installFactory("thing", "feature", tft->duplicateFactory());
@@ -96,6 +96,9 @@ Entity * EntityFactory::newEntity(const std::string & id,
         thing = factory->newPersistantThing(id, &pc);
     } else {
         thing = factory->newThing(id);
+    }
+    if (thing == 0) {
+        return 0;
     }
     debug( std::cout << "[" << type << " " << thing->getName() << "]"
                      << std::endl << std::flush;);

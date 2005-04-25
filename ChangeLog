@@ -1,3 +1,15 @@
+2005-04-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/PersistantThingFactory.h, PersistantThingFactory_impl.h,
+	  server/PersistantThingFactory.cpp: Add ForbiddenThingFactory
+	  for entity classes that need persistence, but can't be instantiated
+	  through the normal channels.
+
+	* server/EntityFactory.cpp: Use ForbiddenThingFactory for World.
+
+	* server/WorldRouter.cpp: Correct error message for entity
+	  creation failure to include "forbidden" as a possible cause.
+
 2005-04-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/goals/common/misc_goal.py,

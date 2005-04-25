@@ -75,4 +75,17 @@ class PersistantThingFactory : public FactoryBase {
     virtual FactoryBase * duplicateFactory();
 };
 
+template <class T>
+class ForbiddenThingFactory : public FactoryBase {
+  public:
+    Persistor<T> & m_p;
+    ForbiddenThingFactory() : m_p(* new Persistor<T>()) { }
+
+    virtual ~ForbiddenThingFactory();
+ 
+    virtual T * newThing(const std::string & id);
+    virtual T * newPersistantThing(const std::string & id, PersistorBase ** p);
+    virtual FactoryBase * duplicateFactory();
+};
+
 #endif // SERVER_THING_FACTORY_H
