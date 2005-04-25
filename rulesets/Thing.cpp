@@ -123,8 +123,9 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
 
         Operation c(op);
         ListType & args = c.getArgs();
-        args.push_back(MapType());
-        obj->addToMessage(args.front().asMap());
+        MapType & arg = args.front().asMap();
+        arg.clear();
+        obj->addToMessage(arg);
         Operation * s = new Sight();
         s->setArgs(ListType(1,c.asObject()));
         res.push_back(s);

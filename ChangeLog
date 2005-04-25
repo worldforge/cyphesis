@@ -1,5 +1,10 @@
 2005-04-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Fix a stray empty argument getting added to 
+	  to Sight(Create) ops.
+
+2005-04-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/PersistantThingFactory.h, PersistantThingFactory_impl.h,
 	  server/PersistantThingFactory.cpp: Add ForbiddenThingFactory
 	  for entity classes that need persistence, but can't be instantiated
