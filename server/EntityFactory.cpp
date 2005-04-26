@@ -72,7 +72,7 @@ void EntityFactory::initWorld()
         log(CRITICAL, "No world factory");
         return;
     }
-    PersistantThingFactory<World> * wft = dynamic_cast<PersistantThingFactory<World> *>(I->second);
+    ForbiddenThingFactory<World> * wft = dynamic_cast<ForbiddenThingFactory<World> *>(I->second);
     if (wft == 0) {
         log(CRITICAL, "Its not a world factory");
         return;

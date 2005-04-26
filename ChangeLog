@@ -1,3 +1,9 @@
+2005-04-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp: Cast the world entity factory to the
+	  right type when using it to persist the world during database
+	  bootstrap.
+
 2005-04-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Fix a stray empty argument getting added to 
