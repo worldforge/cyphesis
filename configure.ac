@@ -2,15 +2,15 @@ dnl Initialise autoconf
 
 AC_INIT(cyphesis, 0.3.9)
 AC_CONFIG_SRCDIR([server/server.cpp])
+AC_CONFIG_HEADERS([config.h])
 
-dnl Detect the canonical host and target environment
+dnl Detect the canonical host environment
 
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_HOST
 
 dnl Initialise automake
 
 AM_INIT_AUTOMAKE([dist-bzip2 check-news])
-AM_CONFIG_HEADER(config.h)
 
 AM_BINRELOC
 
@@ -18,7 +18,6 @@ AM_CONDITIONAL(BIN_RELOC, test x"$br_cv_binreloc" = xyes)
 
 dnl Need libtool
 
-AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 
 COMMON_LIBS=
@@ -258,7 +257,7 @@ AC_SUBST(STATIC_LIBSTDCPP)
 AC_SUBST(STATIC_LIBGCC)
 
 dnl Generate files
-AC_OUTPUT([
+AC_CONFIG_FILES([
     cyphesis.spec
     Makefile
     physics/Makefile
@@ -273,3 +272,4 @@ AC_OUTPUT([
     man/Makefile
     autopackage/default.apspec
 ])
+AC_OUTPUT

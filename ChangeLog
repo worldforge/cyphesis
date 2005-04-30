@@ -1,3 +1,7 @@
+2005-04-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Update autoconf usage.
+
 2005-04-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.cpp: Cast the world entity factory to the
