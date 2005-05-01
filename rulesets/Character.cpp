@@ -366,7 +366,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     const MapType & went = op.getArgs().front().asMap();
     MapType::const_iterator I = went.find("id");
     if ((I == went.end()) || !I->second.isString()) {
-        error(op, "Wield arg has no id", res, getId());
+        error(op, "Wield arg has no ID", res, getId());
         return;
     }
     const std::string & id = I->second.asString();
@@ -456,7 +456,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     // If arg is an operation, this is the operation to be used, and the
     // sub op arg may be an entity specifying target. If op to be used is
     // specified, this is checked against the ops permitted by this tool.
-    std::string target;
+    MapType target;
     const ListType & args = op.getArgs();
     if (!args.empty()) {
         const Element & arg = args.front();
@@ -507,22 +507,44 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
                 
                 K = arg_op_amap.find("id");
                 if (K == arg_op_amap.end() || (!K->second.isString())) {
-                    error(op, "Use arg entity has no id", res, getId());
+                    error(op, "Use arg entity has no ID", res, getId());
                     return;
                 }
-                target = K->second.asString();
-                debug(std::cout << "Got target " << target << " from op arg"
+                target["id"] = K->second.asString();
+                debug(std::cout << "Got target " << target["id"].asString()
+                                << " from op arg"
                                 << std::endl << std::flush;);
+                // FIXME Duplicated code beloabove (see FIXME)
+                K = amap.find("pos");
+                if (K != amap.end()) {
+                    std::cout << "Got a use op with POS" << std::endl << std::flush;
+                    if (!K->second.isList()) {
+                        error(op, "Use arg entity has non-list POS", res, getId());
+                        return;
+                    }
+                    target["pos"] = K->second.asList();
+                }
             }
         } else if (argtype == "obj") {
             K = amap.find("id");
             if (K == amap.end() || (!K->second.isString())) {
-                error(op, "Use arg entity has no id", res, getId());
+                error(op, "Use arg entity has no ID", res, getId());
                 return;
             }
-            target = K->second.asString();
-            debug(std::cout << "Got target " << target << " from arg"
+            target["id"] = K->second.asString();
+            debug(std::cout << "Got target " << target["id"].asString()
+                            << " from arg"
                             << std::endl << std::flush;);
+            // FIXME Duplicated code above (see FIXME)
+            K = amap.find("pos");
+            if (K != amap.end()) {
+                std::cout << "Got a use op with POS" << std::endl << std::flush;
+                if (!K->second.isList()) {
+                    error(op, "Use arg entity has non-list POS", res, getId());
+                    return;
+                }
+                target["pos"] = K->second.asList();
+            }
         } else {
             error(op, "Use arg has unknown objtype", res, getId());
             return;
@@ -549,9 +571,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         debug(std::cout << "No target" << std::endl << std::flush;);
     } else {
         ListType & rop_args = rop->getArgs();
-        rop_args.push_back(MapType());
-        MapType & rop_arg = rop_args.back().asMap();
-        rop_arg["id"] = target;
+        rop_args.push_back(target);
     }
 
     rop->setTo(toolId);
@@ -589,7 +609,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     const MapType & arg1 = args.front().asMap();
     MapType::const_iterator I = arg1.find("id");
     if ((I == arg1.end()) || !I->second.isString()) {
-        log(ERROR, "mindMoveOperation: Args has got no id");
+        log(ERROR, "mindMoveOperation: Args has got no ID");
     }
     const std::string & oname = I->second.asString();
     EntityDict::const_iterator J = m_world->getEntities().find(oname);

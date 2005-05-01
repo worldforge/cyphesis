@@ -56,6 +56,14 @@ static void Point3D_dealloc(PyPoint3D *self)
     PyMem_DEL(self);
 }
 
+static int Point3D_print(PyPoint3D * self, FILE * fp, int)
+{
+    // if (flags & Py_PRINT_RAW) {
+    // }
+    fprintf(fp, "(%lf %lf %lf", self->coords.x(), self->coords.y(), self->coords.z());
+    return 0;
+}
+
 static PyObject * Point3D_getattr(PyPoint3D *self, char *name)
 {
     //if (!self->coords) {
@@ -160,17 +168,17 @@ static PyNumberMethods Point3D_num = {
 PyTypeObject PyPoint3D_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
-        "Point3D",                     /*tp_name*/
-        sizeof(PyPoint3D),         /*tp_basicsize*/
+        "Point3D",                      /*tp_name*/
+        sizeof(PyPoint3D),              /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
-        (destructor)Point3D_dealloc,   /*tp_dealloc*/
-        0,                              /*tp_print*/
-        (getattrfunc)Point3D_getattr,  /*tp_getattr*/
-        (setattrfunc)Point3D_setattr,  /*tp_setattr*/
-        (cmpfunc)Point3D_compare,      /*tp_compare*/
+        (destructor)Point3D_dealloc,    /*tp_dealloc*/
+        (printfunc)Point3D_print,       /*tp_print*/
+        (getattrfunc)Point3D_getattr,   /*tp_getattr*/
+        (setattrfunc)Point3D_setattr,   /*tp_setattr*/
+        (cmpfunc)Point3D_compare,       /*tp_compare*/
         0,                              /*tp_repr*/
-        &Point3D_num,                  /*tp_as_number*/
+        &Point3D_num,                   /*tp_as_number*/
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/
         0,                              /*tp_hash*/

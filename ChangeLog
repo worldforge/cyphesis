@@ -1,3 +1,13 @@
+2005-05-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Include POS from a Use op argument when
+	  building the arg for the resulting op.
+
+	* rulesets/Py_Point3D.cpp: Add a print handler.
+
+	* rulesets/Python_API.cpp: When constructing Point3D or Vector3D
+	  accept an Atlas list as well as a standard python list.
+
 2005-04-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Update autoconf usage.

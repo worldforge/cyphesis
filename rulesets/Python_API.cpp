@@ -631,6 +631,13 @@ static PyObject * vector3d_new(PyObject * self, PyObject * args)
                         val[i] = (float)PyInt_AsLong(item);
                     } else if (PyFloat_Check(item)) {
                         val[i] = PyFloat_AsDouble(item);
+                    } else if (PyMessageElement_Check(item)) {
+                        PyMessageElement * mitem = (PyMessageElement*)item;
+                        if (!mitem->m_obj->isNum()) {
+                            PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
+                            return NULL;
+                        }
+                        val[i] = mitem->m_obj->asNum();
                     } else {
                         PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
                         return NULL;
@@ -687,6 +694,13 @@ static PyObject * point3d_new(PyObject * self, PyObject * args)
                         val[i] = (float)PyInt_AsLong(item);
                     } else if (PyFloat_Check(item)) {
                         val[i] = PyFloat_AsDouble(item);
+                    } else if (PyMessageElement_Check(item)) {
+                        PyMessageElement * mitem = (PyMessageElement*)item;
+                        if (!mitem->m_obj->isNum()) {
+                            PyErr_SetString(PyExc_TypeError, "Point3D() must take list of floats, or ints");
+                            return NULL;
+                        }
+                        val[i] = mitem->m_obj->asNum();
                     } else {
                         PyErr_SetString(PyExc_TypeError, "Point3D() must take list of floats, or ints");
                         return NULL;
