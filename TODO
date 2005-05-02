@@ -1,3 +1,9 @@
+Code up projectile movement as a first test of entity movement.
+
+Sort out so lobby had a real ID.
+
+Code up allowing accounts to create rooms, and guilds.
+
 Optimise down the number of calls to iterator::end in mindUseOperation
 
 Add a reach attribute to tools which tells the client how far the NPC must
