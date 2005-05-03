@@ -1,5 +1,10 @@
 2005-05-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommMDNSPublisher.cpp: Avoid more namespace pollution from
+	  the libhowl headers.
+
+2005-05-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommServer.cpp: Clean up some comments, and use the right
 	  typedef.
 
