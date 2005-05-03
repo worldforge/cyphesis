@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000-2004 Alistair Riddoch
+// Copyright (C) 2000-2005 Alistair Riddoch
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -23,9 +23,8 @@ extern "C" {
     #include <sys/epoll.h>
 #endif // HAVE_EPOLL_CREATE
     #include <sys/time.h>
+    #include <errno.h>
 }
-
-#include <errno.h>
 
 static const bool debug_flag = false;
 
@@ -60,7 +59,7 @@ CommServer::~CommServer()
 /// \brief Idle function called from the main loop.
 ///
 /// Poll all the Idle objects that want to be polled regularly,
-/// the call the core server object idle function.
+/// Call the core server object idle function.
 /// @return true if the core server wants to be called again as soon as
 /// possible.
 bool CommServer::idle()
@@ -79,8 +78,6 @@ bool CommServer::idle()
         (*I)->idle(tv.tv_sec);
     }
 
-    // server.idle() is inlined, and simply calls the world idle method,
-    // which is not directly accessible from here.
     return m_server.m_world.idle(tv.tv_sec, tv.tv_usec);
 }
 
@@ -171,7 +168,7 @@ void CommServer::poll()
     
     // We assume Iend is still valid. m_sockets must not have been modified
     // between Iend's initialisation and here.
-    std::set<CommSocket *> obsoleteConnections;
+    CommSocketSet obsoleteConnections;
     for (CommSocketSet::const_iterator I = m_sockets.begin(); I != Iend; ++I) {
        CommSocket * socket = *I;
        if (!socket->isOpen()) {

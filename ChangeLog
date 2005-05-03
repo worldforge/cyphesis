@@ -1,3 +1,8 @@
+2005-05-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommServer.cpp: Clean up some comments, and use the right
+	  typedef.
+
 2005-05-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Include POS from a Use op argument when
