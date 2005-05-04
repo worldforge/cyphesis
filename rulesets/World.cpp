@@ -52,6 +52,12 @@ float World::getHeight(float x, float y)
     return m_terrain.get(x, y);
 }
 
+void World::delveOperation(const Operation & op, OpVector & res)
+{
+    // FIXME
+    std::cout << "Got delve operation" << std::endl << std::flush;
+}
+
 void World::LookOperation(const Operation & op, OpVector & res)
 {
     // Let the worldrouter know we have been looked at.
@@ -142,3 +148,13 @@ void World::SetOperation(const Operation & op, OpVector & res)
         updated.emit();
     }
 }
+
+void World::OtherOperation(const Operation & op, OpVector & res)
+{
+    const std::string & type = op.getParents().front().asString();
+
+    if (type == "delve") {
+        delveOperation(op, res);
+    }
+}
+

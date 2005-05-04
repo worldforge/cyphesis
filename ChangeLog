@@ -1,3 +1,10 @@
+2005-05-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Add some debug stuff.
+
+	* rulesets/World.cpp, rulesets/World.h: Add handler for delve
+	  operations. Just for testing for now, no functionality.
+
 2005-05-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommMDNSPublisher.cpp: Avoid more namespace pollution from

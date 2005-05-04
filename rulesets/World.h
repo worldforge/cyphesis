@@ -55,11 +55,14 @@ class World : public World_parent {
 
     float getHeight(float x, float y);
 
+    void delveOperation(const Operation &, OpVector &);
+
     virtual void LookOperation(const Operation &, OpVector &);
     virtual void BurnOperation(const Operation &, OpVector &);
     virtual void DeleteOperation(const Operation &, OpVector &);
     virtual void MoveOperation(const Operation &, OpVector &);
     virtual void SetOperation(const Operation &, OpVector &);
+    virtual void OtherOperation(const Operation &, OpVector &);
 };
 
 #endif // RULESETS_WORLD_H

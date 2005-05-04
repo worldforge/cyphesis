@@ -556,6 +556,11 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         return;
     }
 
+    debug(std::cout << "Using tool " << tool->getType() << " on "
+                    << target["id"].asString()
+                    << " with " << op_type << " action."
+                    << std::endl << std::flush;);
+
     Operation * rop = Inheritance::instance().newOperation(op_type);
     if (rop == 0) {
         std::string err("Character::mindUseMethod: Unknown op type \"");
