@@ -24,7 +24,6 @@ class Thing : public Thing_parent {
 
     virtual void SetupOperation(const Operation & op, OpVector &);
     virtual void ActionOperation(const Operation & op, OpVector &);
-    virtual void CreateOperation(const Operation & op, OpVector &);
     virtual void DeleteOperation(const Operation & op, OpVector &);
     virtual void BurnOperation(const Operation & op, OpVector &);
     virtual void MoveOperation(const Operation & op, OpVector &);

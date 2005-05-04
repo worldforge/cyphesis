@@ -3,12 +3,15 @@
 // Copyright (C) 2000,2001 Alistair Riddoch
 
 #include "Entity.h"
+
 #include "Script.h"
 
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/inheritance.h"
 #include "common/Property.h"
+
+#include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Operation/Sight.h>
 
@@ -262,7 +265,55 @@ void Entity::ChopOperation(const Operation & op, OpVector & res)
 
 void Entity::CreateOperation(const Operation & op, OpVector & res)
 {
-    m_script->Operation("create", op, res);
+    if (m_script->Operation("create", op, res) != 0) {
+        return;
+    }
+    const ListType & args = op.getArgs();
+    if (args.empty()) {
+       return;
+    }
+    try {
+        MapType ent = args.front().asMap();
+        MapType::const_iterator I = ent.find("parents");
+        if ((I == ent.end()) || !I->second.isList()) {
+            error(op, "Entity to be created has no type", res, getId());
+            return;
+        }
+        const ListType & parents = I->second.asList();
+        if (parents.empty() || !parents.front().isString()) {
+            error(op, "Entity to be created has invalid type", res, getId());
+            return;
+        }
+        if ((ent.find("loc") == ent.end()) && (m_location.m_loc != 0)) {
+            ent["loc"] = m_location.m_loc->getId();
+            if (ent.find("pos") == ent.end()) {
+                ent["pos"] = m_location.m_pos.toAtlas();
+            }
+        }
+        const std::string & type = parents.front().asString();
+        debug( std::cout << getId() << " creating " << type;);
+
+        Entity * obj = m_world->addNewEntity(type,ent);
+
+        if (obj == 0) {
+            error(op, "Create op failed.", res, op.getFrom());
+            return;
+        }
+
+        Operation c(op);
+        ListType & args = c.getArgs();
+        MapType & arg = args.front().asMap();
+        arg.clear();
+        obj->addToMessage(arg);
+        Operation * s = new Sight();
+        s->setArgs(ListType(1,c.asObject()));
+        res.push_back(s);
+    }
+    catch (Atlas::Message::WrongTypeException&) {
+        log(ERROR, "EXCEPTION: Malformed object to be created");
+        error(op, "Malformed object to be created", res, getId());
+        return;
+    }
 }
 
 void Entity::CutOperation(const Operation & op, OpVector & res)

@@ -1,5 +1,11 @@
 2005-05-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp, rulesets/Thing.cpp, rulesets/Thing.h:
+	  Move standard Create handler into entity so everything can
+	  handle create ops.
+
+2005-05-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Add some debug stuff.
 
 	* rulesets/World.cpp, rulesets/World.h: Add handler for delve
