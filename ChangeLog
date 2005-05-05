@@ -1,3 +1,9 @@
+2005-05-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/World.cpp: Use a TileShader to handle data about the
+	  material the makes up the terrain surface. When a Delve operation
+	  determine what material the world is at that point.
+
 2005-05-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.cpp, rulesets/Thing.cpp, rulesets/Thing.h:
