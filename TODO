@@ -1,3 +1,12 @@
+Add operation Increment which allows deltas to be made to attributes.
+Important for atomicity in delayed events. Propagated as Sight(Set).
+
+Implement gathering earth, sand, snow, rock, grass.
+Grass should dry out.
+Earth and sand should return to the soil.
+Sand can be made into a sandy area using a tamper.
+Digging earth could create a field area.
+
 Code up projectile movement as a first test of entity movement.
 
 Sort out so lobby had a real ID.
