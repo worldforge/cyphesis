@@ -2,8 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000-2005 Alistair Riddoch
 
-#ifndef COMMON_DELVE_H
-#define COMMON_DELVE_H
+#ifndef COMMON_DIG_H
+#define COMMON_DIG_H
 
 #include <Atlas/Objects/Operation/Action.h>
 
@@ -11,15 +11,15 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 /// \brief Operation class to direct the target tool to chop the entity given
 /// in the argument
-class Delve : public Action {
+class Dig : public Action {
   protected:
-    Delve(const char *, const char *);
+    Dig(const char *, const char *);
   public:
-    Delve();
-    virtual ~Delve();
-    static Delve Class();
+    Dig();
+    virtual ~Dig();
+    static Dig Class();
 };
 
 } } }
 
-#endif // COMMON_DELVE_H
+#endif // COMMON_DIG_H

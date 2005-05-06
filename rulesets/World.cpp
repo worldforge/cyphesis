@@ -42,6 +42,8 @@ World::World(const std::string & id) : World_parent(id),
 {
     subscribe("set", OP_SET);
     subscribe("delve", OP_OTHER);
+    subscribe("dig", OP_OTHER);
+    subscribe("mow", OP_OTHER);
 
     m_properties["terrain"] = new TerrainProperty(m_terrain, m_modifiedTerrain,
                                                   m_modifiedTerrain, a_terrain);
@@ -70,44 +72,14 @@ float World::getHeight(float x, float y)
     return m_terrain.get(x, y);
 }
 
-void World::delveOperation(const Operation & op, OpVector & res)
+int World::getSurface(const Point3D & pos, int & material)
 {
-    // FIXME
-    std::cout << "Got delve operation" << std::endl << std::flush;
-
-    if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
-        // FIXME Would it be more useful to send the error back where the
-        // op came from?
-        error(op, "Delve op has no args", res, getId());
-        return;
-    }
-    const MapType & arg = op.getArgs().front().asMap();
-
-    MapType::const_iterator Iend = arg.end();
-    MapType::const_iterator I = arg.find("pos");
-    if (I == Iend) {
-        // FIXME Would it be more useful to send the error back where the
-        // op came from?
-        error(op, "Delve op to world has no POS in args", res, getId());
-        return;
-    }
-    if (!I->second.isList()) {
-        // FIXME Would it be more useful to send the error back where the
-        // op came from?
-        error(op, "Delve op to world has non list POS in args", res, getId());
-        return;
-    }
-    WFMath::Point<3> delve_pos;
-    // FIXME This data is non yet taint checked.
-    delve_pos.fromAtlas(I->second.asList());
-    std::cout << "Got delve on world at " << delve_pos
-              << std::endl << std::flush;
-    float x = delve_pos.x(),
-          y = delve_pos.y();
+    float x = pos.x(),
+          y = pos.y();
     Mercator::Segment * segment = m_terrain.getSegment(x, y);
     if (segment == 0) {
         std::cerr << "No terrain at this point" << std::endl << std::flush;
-        return;
+        return -1;
     }
     if (!segment->isValid()) {
         segment->populate();
@@ -122,13 +94,118 @@ void World::delveOperation(const Operation & op, OpVector & res)
     std::cout << "The segment has " << surfaces.size() << std::endl << std::flush;
     if (surfaces.size() == 0) {
         log(ERROR, "The terrain has no surface data");
-        return;
+        return -1;
     }
     Mercator::Surface & tileSurface = *surfaces.begin()->second;
     if (!tileSurface.isValid()) {
         tileSurface.populate();
     }
-    int material = tileSurface((int)x, (int)y, 0);
+    material = tileSurface((int)x, (int)y, 0);
+    return 0;
+}
+
+void World::delveOperation(const Operation & op, OpVector & res)
+{
+    // FIXME
+    std::cout << "Got delve operation" << std::endl << std::flush;
+
+    if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
+        // This op comes from a tool, so sending error back is kinda pointless
+        error(op, "Delve op has no args", res, getId());
+        return;
+    }
+    const MapType & arg = op.getArgs().front().asMap();
+
+    MapType::const_iterator Iend = arg.end();
+    MapType::const_iterator I = arg.find("pos");
+    if (I == Iend) {
+        // This op comes from a tool, so sending error back is kinda pointless
+        error(op, "Delve op to world has no POS in args", res, getId());
+        return;
+    }
+    if (!I->second.isList()) {
+        // This op comes from a tool, so sending error back is kinda pointless
+        error(op, "Delve op to world has non list POS in args", res, getId());
+        return;
+    }
+    WFMath::Point<3> delve_pos;
+    // FIXME This data is non yet taint checked.
+    delve_pos.fromAtlas(I->second.asList());
+    std::cout << "Got delve on world at " << delve_pos
+              << std::endl << std::flush;
+    int material;
+    if (getSurface(delve_pos, material)) {
+    }
+    std::cout << "The material at this point is " << material
+              << std::endl << std::flush;
+}
+
+void World::digOperation(const Operation & op, OpVector & res)
+{
+    std::cout << "World got dig op" << std::endl << std::flush;
+
+    if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
+        // This op comes from a tool, so sending error back is kinda pointless
+        error(op, "Delve op has no args", res, getId());
+        return;
+    }
+    const MapType & arg = op.getArgs().front().asMap();
+
+    MapType::const_iterator Iend = arg.end();
+    MapType::const_iterator I = arg.find("pos");
+    if (I == Iend) {
+        // This op comes from a tool, so sending error back is kinda pointless
+        error(op, "Delve op to world has no POS in args", res, getId());
+        return;
+    }
+    if (!I->second.isList()) {
+        // This op comes from a tool, so sending error back is kinda pointless
+        error(op, "Delve op to world has non list POS in args", res, getId());
+        return;
+    }
+    WFMath::Point<3> dig_pos;
+    // FIXME This data is non yet taint checked.
+    dig_pos.fromAtlas(I->second.asList());
+    std::cout << "Got dig on world at " << dig_pos
+              << std::endl << std::flush;
+    int material;
+    if (getSurface(dig_pos, material)) {
+    }
+    std::cout << "The material at this point is " << material
+              << std::endl << std::flush;
+}
+
+void World::mowOperation(const Operation & op, OpVector & res)
+{
+    std::cout << "World got mow op" << std::endl << std::flush;
+
+    if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
+        // This op comes from a tool, so sending error back is kinda pointless
+        error(op, "Delve op has no args", res, getId());
+        return;
+    }
+    const MapType & arg = op.getArgs().front().asMap();
+
+    MapType::const_iterator Iend = arg.end();
+    MapType::const_iterator I = arg.find("pos");
+    if (I == Iend) {
+        // This op comes from a tool, so sending error back is kinda pointless
+        error(op, "Delve op to world has no POS in args", res, getId());
+        return;
+    }
+    if (!I->second.isList()) {
+        // This op comes from a tool, so sending error back is kinda pointless
+        error(op, "Delve op to world has non list POS in args", res, getId());
+        return;
+    }
+    WFMath::Point<3> mow_pos;
+    // FIXME This data is non yet taint checked.
+    mow_pos.fromAtlas(I->second.asList());
+    std::cout << "Got mow on world at " << mow_pos
+              << std::endl << std::flush;
+    int material;
+    if (getSurface(mow_pos, material)) {
+    }
     std::cout << "The material at this point is " << material
               << std::endl << std::flush;
 }
@@ -230,6 +307,10 @@ void World::OtherOperation(const Operation & op, OpVector & res)
 
     if (type == "delve") {
         delveOperation(op, res);
+    } else if (type == "dig") {
+        digOperation(op, res);
+    } else if (type == "mow") {
+        mowOperation(op, res);
     }
 }
 

@@ -54,8 +54,11 @@ class World : public World_parent {
     }
 
     float getHeight(float x, float y);
+    int getSurface(const Point3D &,  int &);
 
     void delveOperation(const Operation &, OpVector &);
+    void digOperation(const Operation &, OpVector &);
+    void mowOperation(const Operation &, OpVector &);
 
     virtual void LookOperation(const Operation &, OpVector &);
     virtual void BurnOperation(const Operation &, OpVector &);

@@ -6,6 +6,7 @@ Grass should dry out.
 Earth and sand should return to the soil.
 Sand can be made into a sandy area using a tamper.
 Digging earth could create a field area.
+Might need to notify entities when their parent changes.
 
 Code up projectile movement as a first test of entity movement.
 

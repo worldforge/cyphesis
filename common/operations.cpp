@@ -7,7 +7,9 @@
 #include "Eat.h"
 #include "Burn.h"
 #include "Delve.h"
+#include "Dig.h"
 #include "Generic.h"
+#include "Mow.h"
 #include "Nourish.h"
 #include "Setup.h"
 #include "Tick.h"
@@ -73,12 +75,37 @@ Delve::Delve(const char * id, const char * parent) : Action(id, parent)
 }
 
 /// \brief Destructor for Delve operations
-Delve::~Delve() { }
+Delve::~Delve()
+{
+}
 
 /// \brief Return an object containing the op_definition for Delve operation
 Delve Delve::Class()
 {
     Delve value("delve", "action");
+    value.setObjtype(std::string("op_definition"));
+    return value;
+}
+
+/// \brief Constructor for Dig operation instances
+Dig::Dig() : Action("", "dig")
+{
+}
+
+/// \brief Constructor for operation instances that inherit from Dig
+Dig::Dig(const char * id, const char * parent) : Action(id, parent)
+{
+}
+
+/// \brief Destructor for Dig operations
+Dig::~Dig()
+{
+}
+
+/// \brief Return an object containing the op_definition for Dig operation
+Dig Dig::Class()
+{
+    Dig value("dig", "action");
     value.setObjtype(std::string("op_definition"));
     return value;
 }
@@ -147,8 +174,31 @@ Generic Generic::Class(const std::string & p)
     return value;
 }
 
+/// \brief Constructor for Mow operation instances
+Mow::Mow() : Action("", "mow")
+{
+}
+
+/// \brief Constructor for operation instances that inherit from Mow
+Mow::Mow(const char * id, const char * parent) : Action(id, parent)
+{
+}
+
+/// \brief Destructor for Mow operations
+Mow::~Mow()
+{
+}
+
+/// \brief Return an object containing the op_definition for Mow operation
+Mow Mow::Class()
+{
+    Mow value("mow", "action");
+    value.setObjtype(std::string("op_definition"));
+    return value;
+}
+
 /// \brief Constructor for Nourish operation instances
-Nourish::Nourish() : Action("", "nourish")
+Nourish::Nourish() : Action("", "mow")
 {
 }
 

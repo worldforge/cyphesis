@@ -6,9 +6,9 @@ from atlas import *
 
 from world.objects.Thing import Thing
 
-class Pickaxe(Thing):
-    """This is a pickaxe for heavy digging and quarrying """
+class Shovel(Thing):
+    """This is a shovel for light digging"""
     def cut_operation(self, op):
         ent=Entity(self.id,status=self.status-0.01)
         to_ = op[0].id
-        return Message(Operation("set",ent,to=self),Operation("delve",op[0],to=to_))
+        return Message(Operation("set",ent,to=self),Operation("dig",op[0],to=to_))

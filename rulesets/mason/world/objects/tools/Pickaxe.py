@@ -7,7 +7,7 @@ from atlas import *
 from world.objects.Thing import Thing
 
 class Pickaxe(Thing):
-    """This is a packaxe for heady digging and quarrying """
+    """This is a pickaxe for heavy digging and quarrying """
     def cut_operation(self, op):
         ent=Entity(self.id,status=self.status-0.01)
         to_ = op[0].id
