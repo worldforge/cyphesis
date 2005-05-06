@@ -401,6 +401,10 @@ void Character::mindActionOperation(const Operation & op, OpVector & res)
     res.push_back(a);
 }
 
+void Character::mindAddOperation(const Operation & op, OpVector & res)
+{
+}
+
 void Character::mindSetupOperation(const Operation & op, OpVector & res)
 {
     Operation *s = new Operation(op);

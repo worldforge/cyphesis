@@ -52,35 +52,37 @@ class BaseEntity : virtual public SigC::Object {
 
     virtual void operation(const Operation &, OpVector &);
 
-    virtual void LoginOperation(const Operation &, OpVector &);
-    virtual void LogoutOperation(const Operation &, OpVector &);
     virtual void ActionOperation(const Operation &, OpVector &);
+    virtual void AddOperation(const Operation &, OpVector &);
+    virtual void AppearanceOperation(const Operation &, OpVector &);
+    virtual void BurnOperation(const Operation &, OpVector &);
     virtual void ChopOperation(const Operation &, OpVector &);
     virtual void CombineOperation(const Operation &, OpVector &);
     virtual void CreateOperation(const Operation &, OpVector &);
     virtual void CutOperation(const Operation &, OpVector &);
     virtual void DeleteOperation(const Operation &, OpVector &);
+    virtual void DisappearanceOperation(const Operation &, OpVector &);
     virtual void DivideOperation(const Operation &, OpVector &);
     virtual void EatOperation(const Operation &, OpVector &);
-    virtual void BurnOperation(const Operation &, OpVector &);
     virtual void GetOperation(const Operation &, OpVector &);
     virtual void ImaginaryOperation(const Operation &, OpVector &);
     virtual void InfoOperation(const Operation &, OpVector &);
+    virtual void LoginOperation(const Operation &, OpVector &);
+    virtual void LogoutOperation(const Operation &, OpVector &);
+    virtual void LookOperation(const Operation &, OpVector &);
     virtual void MoveOperation(const Operation &, OpVector &);
     virtual void NourishOperation(const Operation &, OpVector &);
     virtual void SetOperation(const Operation &, OpVector &);
+    virtual void SetupOperation(const Operation &, OpVector &);
     virtual void SightOperation(const Operation &, OpVector &);
     virtual void SoundOperation(const Operation &, OpVector &);
     virtual void TalkOperation(const Operation &, OpVector &);
-    virtual void TouchOperation(const Operation &, OpVector &);
     virtual void TickOperation(const Operation &, OpVector &);
-    virtual void LookOperation(const Operation &, OpVector &);
-    virtual void SetupOperation(const Operation &, OpVector &);
-    virtual void AppearanceOperation(const Operation &, OpVector &);
-    virtual void DisappearanceOperation(const Operation &, OpVector &);
+    virtual void TouchOperation(const Operation &, OpVector &);
     virtual void UpdateOperation(const Operation &, OpVector &);
     virtual void UseOperation(const Operation &, OpVector &);
     virtual void WieldOperation(const Operation &, OpVector &);
+
     virtual void OtherOperation(const Operation &, OpVector &);
     virtual void ErrorOperation(const Operation &, OpVector &);
 

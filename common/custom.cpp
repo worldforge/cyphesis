@@ -4,6 +4,7 @@
 
 #include "inheritance_impl.h"
 
+#include "Add.h"
 #include "Burn.h"
 #include "Chop.h"
 #include "Cut.h"
@@ -24,6 +25,7 @@
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::AdminEntity;
+using Atlas::Objects::Operation::Add;
 using Atlas::Objects::Operation::Burn;
 using Atlas::Objects::Operation::Cut;
 using Atlas::Objects::Operation::Chop;
@@ -41,6 +43,12 @@ void installCustomOperations()
 {
     Inheritance & i = Inheritance::instance();
 
+    i.addChild(new Add(Add::Class()));
+    i.opInstall("add", OP_ADD, new OpFactory<Add>);
+
+    i.addChild(new Burn(Burn::Class()));
+    i.opInstall("burn", OP_BURN, new OpFactory<Burn>);
+
     i.addChild(new Chop(Chop::Class()));
     i.opInstall("chop", OP_CHOP, new OpFactory<Chop>);
 
@@ -55,9 +63,6 @@ void installCustomOperations()
 
     i.addChild(new Eat(Eat::Class()));
     i.opInstall("eat", OP_EAT, new OpFactory<Eat>);
-
-    i.addChild(new Burn(Burn::Class()));
-    i.opInstall("burn", OP_BURN, new OpFactory<Burn>);
 
     i.addChild(new Mow(Mow::Class()));
     i.opInstall("mow", OP_OTHER, new OpFactory<Mow>);

@@ -2,6 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000-2004 Alistair Riddoch
 
+#include "Add.h"
 #include "Chop.h"
 #include "Cut.h"
 #include "Eat.h"
@@ -19,6 +20,29 @@
 #include "Wield.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
+
+/// \brief Constructor for Add operation instances
+Add::Add() : Set("", "add")
+{
+}
+
+/// \brief Constructor for operation instances that inherit from Add
+Add::Add(const char * id, const char * parent) : Set(id, parent)
+{
+}
+
+/// \brief Destructor for Add operations
+Add::~Add()
+{
+}
+
+/// \brief Return an object containing the op_definition for Add operation
+Add Add::Class()
+{
+    Add value("add", "set");
+    value.setObjtype(std::string("op_definition"));
+    return value;
+}
 
 /// \brief Constructor for Chop operation instances
 Chop::Chop() : Action("", "chop")

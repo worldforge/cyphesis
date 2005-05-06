@@ -9,8 +9,8 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-/// \brief Operation class to direct the target tool to chop the entity given
-/// in the argument
+/// \brief Operation class to direct the target tool to mow vegetation from
+/// the entity given in the argument
 class Mow : public Action {
   protected:
     Mow(const char *, const char *);

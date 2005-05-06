@@ -9,8 +9,8 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-/// \brief Operation class to direct the target tool to chop the entity given
-/// in the argument
+/// \brief Operation class to direct the target tool to dig into the entity
+/// given in the argument
 class Dig : public Action {
   protected:
     Dig(const char *, const char *);

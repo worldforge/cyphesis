@@ -70,6 +70,14 @@ void BaseEntity::ActionOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Process a Add operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::AddOperation(const Operation & op, OpVector & res)
+{
+}
+
 /// \brief Process a Chop operation.
 ///
 /// @param op The operation to be processed.

@@ -1,3 +1,14 @@
+2005-05-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Add.h, common/custom.cpp, common/operations.cpp,
+	  common/types.h: Add new Add operation class.
+
+	* common/BaseEntity.h, common/BaseEntity.cpp, common/op_switch.h,
+	  rulesets/Character.cpp, rulesets/Character.h:
+	  Add handling for the Add operation into the core operation set.
+
+	* common/Delve.h, common/Dig.h, common/Mow.h: Fix comments.
+
 2005-05-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Dig.h, common/Mow.h, common/custom.cpp, common/operations.cpp:

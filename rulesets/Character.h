@@ -80,35 +80,37 @@ class Character : public Character_parent {
     virtual void NourishOperation(const Operation & op, OpVector &);
     virtual void WieldOperation(const Operation & op, OpVector &);
 
-    virtual void mindLoginOperation(const Operation &, OpVector &);
-    virtual void mindLogoutOperation(const Operation &, OpVector &);
-    virtual void mindCreateOperation(const Operation &, OpVector &);
     virtual void mindActionOperation(const Operation &, OpVector &);
+    virtual void mindAddOperation(const Operation &, OpVector &);
+    virtual void mindAppearanceOperation(const Operation &, OpVector &);
+    virtual void mindBurnOperation(const Operation &, OpVector &);
     virtual void mindChopOperation(const Operation &, OpVector &);
     virtual void mindCombineOperation(const Operation &, OpVector &);
+    virtual void mindCreateOperation(const Operation &, OpVector &);
     virtual void mindCutOperation(const Operation &, OpVector &);
     virtual void mindDeleteOperation(const Operation &, OpVector &);
+    virtual void mindDisappearanceOperation(const Operation &, OpVector &);
     virtual void mindDivideOperation(const Operation &, OpVector &);
     virtual void mindEatOperation(const Operation &, OpVector &);
-    virtual void mindBurnOperation(const Operation &, OpVector &);
     virtual void mindGetOperation(const Operation &, OpVector &);
     virtual void mindImaginaryOperation(const Operation &, OpVector &);
     virtual void mindInfoOperation(const Operation &, OpVector &);
+    virtual void mindLoginOperation(const Operation &, OpVector &);
+    virtual void mindLogoutOperation(const Operation &, OpVector &);
+    virtual void mindLookOperation(const Operation &, OpVector &);
     virtual void mindMoveOperation(const Operation &, OpVector &);
     virtual void mindNourishOperation(const Operation &, OpVector &);
     virtual void mindSetOperation(const Operation &, OpVector &);
+    virtual void mindSetupOperation(const Operation &, OpVector &);
     virtual void mindSightOperation(const Operation &, OpVector &);
     virtual void mindSoundOperation(const Operation &, OpVector &);
     virtual void mindTalkOperation(const Operation &, OpVector &);
     virtual void mindTickOperation(const Operation &, OpVector &);
     virtual void mindTouchOperation(const Operation &, OpVector &);
-    virtual void mindLookOperation(const Operation &, OpVector &);
-    virtual void mindSetupOperation(const Operation &, OpVector &);
-    virtual void mindAppearanceOperation(const Operation &, OpVector &);
-    virtual void mindDisappearanceOperation(const Operation &, OpVector &);
     virtual void mindUpdateOperation(const Operation &, OpVector &);
     virtual void mindUseOperation(const Operation &, OpVector &);
     virtual void mindWieldOperation(const Operation &, OpVector &);
+
     virtual void mindErrorOperation(const Operation &, OpVector &);
     virtual void mindOtherOperation(const Operation &, OpVector &);
 
