@@ -5,12 +5,12 @@
 #ifndef COMMON_CHOP_H
 #define COMMON_CHOP_H
 
-#include <Atlas/Objects/Operation/Action.h>
+#include "Affect.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
 
 /// \brief Operation class to chop the target entity
-class Chop : public Action {
+class Chop : public Affect {
   protected:
     Chop(const char *, const char *);
   public:

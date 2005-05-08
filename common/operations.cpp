@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000-2004 Alistair Riddoch
+// Copyright (C) 2000-2005 Alistair Riddoch
 
 #include "Add.h"
 #include "Chop.h"
@@ -44,13 +44,36 @@ Add Add::Class()
     return value;
 }
 
+/// \brief Constructor for Add operation instances
+Affect::Affect() : Set("", "affect")
+{
+}
+
+/// \brief Constructor for operation instances that inherit from Affect
+Affect::Affect(const char * id, const char * parent) : Set(id, parent)
+{
+}
+
+/// \brief Destructor for Affect operations
+Affect::~Affect()
+{
+}
+
+/// \brief Return an object containing the op_definition for Affect operation
+Affect Affect::Class()
+{
+    Affect value("affect", "set");
+    value.setObjtype(std::string("op_definition"));
+    return value;
+}
+
 /// \brief Constructor for Chop operation instances
-Chop::Chop() : Action("", "chop")
+Chop::Chop() : Affect("", "chop")
 {
 }
 
 /// \brief Constructor for operation instances that inherit from Chop
-Chop::Chop(const char * id, const char * parent) : Action(id, parent)
+Chop::Chop(const char * id, const char * parent) : Affect(id, parent)
 {
 }
 
@@ -89,12 +112,12 @@ Cut Cut::Class()
 }
 
 /// \brief Constructor for Delve operation instances
-Delve::Delve() : Action("", "delve")
+Delve::Delve() : Affect("", "delve")
 {
 }
 
 /// \brief Constructor for operation instances that inherit from Delve
-Delve::Delve(const char * id, const char * parent) : Action(id, parent)
+Delve::Delve(const char * id, const char * parent) : Affect(id, parent)
 {
 }
 
@@ -112,12 +135,12 @@ Delve Delve::Class()
 }
 
 /// \brief Constructor for Dig operation instances
-Dig::Dig() : Action("", "dig")
+Dig::Dig() : Affect("", "dig")
 {
 }
 
 /// \brief Constructor for operation instances that inherit from Dig
-Dig::Dig(const char * id, const char * parent) : Action(id, parent)
+Dig::Dig(const char * id, const char * parent) : Affect(id, parent)
 {
 }
 
@@ -199,12 +222,12 @@ Generic Generic::Class(const std::string & p)
 }
 
 /// \brief Constructor for Mow operation instances
-Mow::Mow() : Action("", "mow")
+Mow::Mow() : Affect("", "mow")
 {
 }
 
 /// \brief Constructor for operation instances that inherit from Mow
-Mow::Mow(const char * id, const char * parent) : Action(id, parent)
+Mow::Mow(const char * id, const char * parent) : Affect(id, parent)
 {
 }
 

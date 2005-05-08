@@ -5,13 +5,12 @@
 #ifndef COMMON_MOW_H
 #define COMMON_MOW_H
 
-#include <Atlas/Objects/Operation/Action.h>
+#include <Affect.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-/// \brief Operation class to direct the target tool to mow vegetation from
-/// the entity given in the argument
-class Mow : public Action {
+/// \brief Operation class sent by a tool to cut vegetation from target entity.
+class Mow : public Affect {
   protected:
     Mow(const char *, const char *);
   public:

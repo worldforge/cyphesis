@@ -5,13 +5,12 @@
 #ifndef COMMON_DELVE_H
 #define COMMON_DELVE_H
 
-#include <Atlas/Objects/Operation/Action.h>
+#include <Affect.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-/// \brief Operation class to direct the target tool to delve into the entity
-/// given in the argument
-class Delve : public Action {
+/// \brief Operation class sent by a tool to dig deeply into the target entity.
+class Delve : public Affect {
   protected:
     Delve(const char *, const char *);
   public:

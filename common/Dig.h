@@ -5,13 +5,12 @@
 #ifndef COMMON_DIG_H
 #define COMMON_DIG_H
 
-#include <Atlas/Objects/Operation/Action.h>
+#include <Affect.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-/// \brief Operation class to direct the target tool to dig into the entity
-/// given in the argument
-class Dig : public Action {
+/// \brief Operation class sent by a tool to dig into the target entity.
+class Dig : public Affect {
   protected:
     Dig(const char *, const char *);
   public:
