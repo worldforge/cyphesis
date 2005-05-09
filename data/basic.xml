@@ -43,6 +43,30 @@
   <map>
     <map name="attributes">
       <map name="mass">
+        <float name="default">50</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>0.25</float>
+          <float>0.25</float>
+          <float>0.25</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">boulder</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
         <float name="default">1.5</float>
         <string name="visibility">public</string>
       </map>

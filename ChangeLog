@@ -1,5 +1,9 @@
 2005-05-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/basic.xml: Add a new type for boulder.
+
+2005-05-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.cpp, rulesets/Thing.cpp: Move Create op subscription
 	  into Entity, as that is where the method is.
 
