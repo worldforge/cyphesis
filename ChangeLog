@@ -1,3 +1,14 @@
+2005-05-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.cpp, rulesets/Thing.cpp: Move Create op subscription
+	  into Entity, as that is where the method is.
+
+	* rulesets/World.cpp: Create a boulder entity when the pickaxe
+	  is used on rocky terain.
+
+	* client/CharacterClient.cpp: Don't process ops from the server in
+	  the client, as it causes a crash.
+
 2005-05-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Affect.h, common/operations.cpp: New base class for high level

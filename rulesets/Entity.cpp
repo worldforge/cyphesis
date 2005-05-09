@@ -46,6 +46,8 @@ Entity::Entity(const std::string & id) : BaseEntity(id),
                                          m_mass(-1), m_perceptive(false),
                                          m_world(NULL), m_update_flags(0)
 {
+    subscribe("create", OP_CREATE);
+
     m_properties["status"] = new Property<double>(m_status, a_status);
     m_properties["id"] = new ImmutableProperty<std::string>(getId());
     m_properties["name"] = new Property<std::string>(m_name, a_name);

@@ -41,7 +41,6 @@ Thing::Thing(const std::string & id) : Entity(id)
 {
     subscribe("setup", OP_SETUP);
     subscribe("action", OP_ACTION);
-    subscribe("create", OP_CREATE);
     subscribe("delete", OP_DELETE);
     subscribe("burn", OP_BURN);
     subscribe("move", OP_MOVE);

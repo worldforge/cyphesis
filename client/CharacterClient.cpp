@@ -44,6 +44,8 @@ int CharacterClient::sendAndWaitReply(Operation & op, OpVector & res)
             Operation * input = CharacterClient::m_connection.pop();
             if (input != NULL) {
                 // What the hell is this!
+#if 0
+                // Should we really do this here?
                 OpVector result;
                 operation(*input, result);
                 OpVector::const_iterator I = result.begin();
@@ -51,6 +53,7 @@ int CharacterClient::sendAndWaitReply(Operation & op, OpVector & res)
                 for (; I != Iend; ++I) {
                     send(*(*I));
                 }
+#endif
     
                 if (input->getRefno() == no) {
                     res.push_back(input);

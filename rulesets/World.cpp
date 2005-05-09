@@ -21,6 +21,7 @@
 
 #include <wfmath/atlasconv.h>
 
+#include <Atlas/Objects/Operation/Create.h>
 #include <Atlas/Objects/Operation/Sight.h>
 
 #include <sstream>
@@ -32,6 +33,7 @@ static const bool debug_flag = false;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
+using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Sight;
 
 typedef enum { ROCK = 0, SAND = 1, GRASS = 2, MUD = 3, SNOW = 4} Surface;
@@ -128,13 +130,46 @@ void World::delveOperation(const Operation & op, OpVector & res)
         error(op, "Delve op to world has non list POS in args", res, getId());
         return;
     }
+    const ListType & delve_pos_attr = I->second.asList();
     WFMath::Point<3> delve_pos;
     // FIXME This data is non yet taint checked.
-    delve_pos.fromAtlas(I->second.asList());
+    delve_pos.fromAtlas(delve_pos_attr);
     std::cout << "Got delve on world at " << delve_pos
               << std::endl << std::flush;
     int material;
-    if (getSurface(delve_pos, material)) {
+    if (getSurface(delve_pos, material) == 0) {
+        switch (material) {
+          case ROCK:
+            {
+                Operation * c = new Create;
+                ListType & args = c->getArgs();
+                args.push_back(MapType());
+                MapType & carg = args.back().asMap();
+                carg["parents"] = ListType(1, "boulder");
+                carg["loc"] = getId();
+                carg["pos"] = delve_pos_attr;
+                c->setTo(getId());
+                res.push_back(c);
+                std::cout << "Created boulder" << std::endl << std::flush;
+            }
+            break;
+          case SNOW:
+            {
+                Operation * c = new Create;
+                ListType & args = c->getArgs();
+                args.push_back(MapType());
+                MapType & carg = args.back().asMap();
+                carg["parents"] = ListType(1, "ice");
+                carg["loc"] = getId();
+                carg["pos"] = delve_pos_attr;
+                c->setTo(getId());
+                res.push_back(c);
+                std::cout << "Created ice" << std::endl << std::flush;
+            }
+            break;
+          default:
+            break;
+        }
     }
     std::cout << "The material at this point is " << material
               << std::endl << std::flush;
