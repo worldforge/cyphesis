@@ -1,5 +1,12 @@
 2005-05-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Increment version number.
+
+	* common/Makefile.am: Ensure all headers are included in the
+	  distribution.
+
+2005-05-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/basic.xml, rulesets/basic/world/objects/Pile.py: Add a new
 	  experimental type for piles.
 
