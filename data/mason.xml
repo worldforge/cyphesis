@@ -209,6 +209,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.4</float>
+          <float>-0.4</float>
+          <float>0</float>
+          <float>0.4</float>
+          <float>0.4</float>
+          <float>0.4</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">5</float>
         <string name="visibility">public</string>
