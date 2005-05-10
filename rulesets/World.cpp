@@ -80,7 +80,7 @@ int World::getSurface(const Point3D & pos, int & material)
           y = pos.y();
     Mercator::Segment * segment = m_terrain.getSegment(x, y);
     if (segment == 0) {
-        std::cerr << "No terrain at this point" << std::endl << std::flush;
+        debug(std::cerr << "No terrain at this point" << std::endl << std::flush;);
         return -1;
     }
     if (!segment->isValid()) {
@@ -92,8 +92,10 @@ int World::getSurface(const Point3D & pos, int & material)
     WFMath::Vector<3> normal;
     float height = -23;
     segment->getHeightAndNormal(x, y, height, normal);
-    std::cout << "At the point " << x << "," << y << " of the segment the height is " << height << std::endl;
-    std::cout << "The segment has " << surfaces.size() << std::endl << std::flush;
+    debug(std::cout << "At the point " << x << "," << y
+                    << " of the segment the height is " << height << std::endl;
+          std::cout << "The segment has " << surfaces.size()
+                    << std::endl << std::flush;);
     if (surfaces.size() == 0) {
         log(ERROR, "The terrain has no surface data");
         return -1;
@@ -108,9 +110,6 @@ int World::getSurface(const Point3D & pos, int & material)
 
 void World::delveOperation(const Operation & op, OpVector & res)
 {
-    // FIXME
-    std::cout << "Got delve operation" << std::endl << std::flush;
-
     if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
         // This op comes from a tool, so sending error back is kinda pointless
         error(op, "Delve op has no args", res, getId());
@@ -134,14 +133,14 @@ void World::delveOperation(const Operation & op, OpVector & res)
     WFMath::Point<3> delve_pos;
     // FIXME This data is non yet taint checked.
     delve_pos.fromAtlas(delve_pos_attr);
-    std::cout << "Got delve on world at " << delve_pos
-              << std::endl << std::flush;
+    debug(std::cout << "Got delve on world at " << delve_pos
+                    << std::endl << std::flush;);
     int material;
     if (getSurface(delve_pos, material) != 0) {
         return;
     }
-    std::cout << "The material at this point is " << material
-              << std::endl << std::flush;
+    debug(std::cout << "The material at this point is " << material
+                    << std::endl << std::flush;);
     switch (material) {
       case ROCK:
         {
@@ -154,7 +153,6 @@ void World::delveOperation(const Operation & op, OpVector & res)
             carg["pos"] = delve_pos_attr;
             c->setTo(getId());
             res.push_back(c);
-            std::cout << "Created boulder" << std::endl << std::flush;
         }
         break;
       case SNOW:
@@ -168,7 +166,6 @@ void World::delveOperation(const Operation & op, OpVector & res)
             carg["pos"] = delve_pos_attr;
             c->setTo(getId());
             res.push_back(c);
-            std::cout << "Created ice" << std::endl << std::flush;
         }
         break;
       default:
@@ -178,8 +175,6 @@ void World::delveOperation(const Operation & op, OpVector & res)
 
 void World::digOperation(const Operation & op, OpVector & res)
 {
-    std::cout << "World got dig op" << std::endl << std::flush;
-
     if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
         // This op comes from a tool, so sending error back is kinda pointless
         error(op, "Delve op has no args", res, getId());
@@ -203,14 +198,14 @@ void World::digOperation(const Operation & op, OpVector & res)
     WFMath::Point<3> dig_pos;
     // FIXME This data is non yet taint checked.
     dig_pos.fromAtlas(dig_pos_attr);
-    std::cout << "Got dig on world at " << dig_pos
-              << std::endl << std::flush;
+    debug(std::cout << "Got dig on world at " << dig_pos
+                    << std::endl << std::flush;);
     int material;
     if (getSurface(dig_pos, material) != 0) {
         return;
     }
-    std::cout << "The material at this point is " << material
-              << std::endl << std::flush;
+    debug(std::cout << "The material at this point is " << material
+                    << std::endl << std::flush;);
     switch (material) {
       case SAND:
         {
@@ -224,7 +219,6 @@ void World::digOperation(const Operation & op, OpVector & res)
             carg["pos"] = dig_pos_attr;
             c->setTo(getId());
             res.push_back(c);
-            std::cout << "Created pile" << std::endl << std::flush;
         }
         break;
       case GRASS:
@@ -239,7 +233,6 @@ void World::digOperation(const Operation & op, OpVector & res)
             carg["pos"] = dig_pos_attr;
             c->setTo(getId());
             res.push_back(c);
-            std::cout << "Created pile" << std::endl << std::flush;
         }
         break;
       case SILT:
@@ -254,7 +247,6 @@ void World::digOperation(const Operation & op, OpVector & res)
             carg["pos"] = dig_pos_attr;
             c->setTo(getId());
             res.push_back(c);
-            std::cout << "Created pile" << std::endl << std::flush;
         }
         break;
 
@@ -265,8 +257,6 @@ void World::digOperation(const Operation & op, OpVector & res)
 
 void World::mowOperation(const Operation & op, OpVector & res)
 {
-    std::cout << "World got mow op" << std::endl << std::flush;
-
     if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
         // This op comes from a tool, so sending error back is kinda pointless
         error(op, "Delve op has no args", res, getId());
@@ -290,14 +280,14 @@ void World::mowOperation(const Operation & op, OpVector & res)
     WFMath::Point<3> mow_pos;
     // FIXME This data is non yet taint checked.
     mow_pos.fromAtlas(mow_pos_attr);
-    std::cout << "Got mow on world at " << mow_pos
-              << std::endl << std::flush;
+    debug(std::cout << "Got mow on world at " << mow_pos
+                    << std::endl << std::flush;);
     int material;
     if (getSurface(mow_pos, material) != 0) {
         return;
     }
-    std::cout << "The material at this point is " << material
-              << std::endl << std::flush;
+    debug(std::cout << "The material at this point is " << material
+                    << std::endl << std::flush;);
     switch (material) {
       case GRASS:
         {
@@ -310,7 +300,6 @@ void World::mowOperation(const Operation & op, OpVector & res)
             carg["pos"] = mow_pos_attr;
             c->setTo(getId());
             res.push_back(c);
-            std::cout << "Created grass" << std::endl << std::flush;
         }
         break;
       default:

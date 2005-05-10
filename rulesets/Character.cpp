@@ -521,7 +521,8 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
                 // FIXME Duplicated code beloabove (see FIXME)
                 K = amap.find("pos");
                 if (K != amap.end()) {
-                    std::cout << "Got a use op with POS" << std::endl << std::flush;
+                    debug(std::cout << "Got a use op with POS"
+                                    << std::endl << std::flush;);
                     if (!K->second.isList()) {
                         error(op, "Use arg entity has non-list POS", res, getId());
                         return;
@@ -542,7 +543,8 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
             // FIXME Duplicated code above (see FIXME)
             K = amap.find("pos");
             if (K != amap.end()) {
-                std::cout << "Got a use op with POS" << std::endl << std::flush;
+                debug(std::cout << "Got a use op with POS"
+                                << std::endl << std::flush;);
                 if (!K->second.isList()) {
                     error(op, "Use arg entity has non-list POS", res, getId());
                     return;
