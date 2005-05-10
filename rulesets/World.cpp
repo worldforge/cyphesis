@@ -36,7 +36,7 @@ using Atlas::Message::FloatType;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Sight;
 
-typedef enum { ROCK = 0, SAND = 1, GRASS = 2, MUD = 3, SNOW = 4} Surface;
+typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 
 /// \brief Constructor for the World entity
 World::World(const std::string & id) : World_parent(id),
@@ -54,7 +54,7 @@ World::World(const std::string & id) : World_parent(id),
     tileShader->addShader(new Mercator::FillShader(), ROCK);
     tileShader->addShader(new Mercator::BandShader(-2.f, 1.5f), SAND);
     tileShader->addShader(new Mercator::GrassShader(1.f, 80.f, .5f, 1.f),GRASS);
-    tileShader->addShader(new Mercator::DepthShader(0.f, -10.f), MUD);
+    tileShader->addShader(new Mercator::DepthShader(0.f, -10.f), SILT);
     tileShader->addShader(new Mercator::HighShader(110.f), SNOW);
     m_terrain.addShader(tileShader, 0);
 }
@@ -137,42 +137,43 @@ void World::delveOperation(const Operation & op, OpVector & res)
     std::cout << "Got delve on world at " << delve_pos
               << std::endl << std::flush;
     int material;
-    if (getSurface(delve_pos, material) == 0) {
-        switch (material) {
-          case ROCK:
-            {
-                Operation * c = new Create;
-                ListType & args = c->getArgs();
-                args.push_back(MapType());
-                MapType & carg = args.back().asMap();
-                carg["parents"] = ListType(1, "boulder");
-                carg["loc"] = getId();
-                carg["pos"] = delve_pos_attr;
-                c->setTo(getId());
-                res.push_back(c);
-                std::cout << "Created boulder" << std::endl << std::flush;
-            }
-            break;
-          case SNOW:
-            {
-                Operation * c = new Create;
-                ListType & args = c->getArgs();
-                args.push_back(MapType());
-                MapType & carg = args.back().asMap();
-                carg["parents"] = ListType(1, "ice");
-                carg["loc"] = getId();
-                carg["pos"] = delve_pos_attr;
-                c->setTo(getId());
-                res.push_back(c);
-                std::cout << "Created ice" << std::endl << std::flush;
-            }
-            break;
-          default:
-            break;
-        }
+    if (getSurface(delve_pos, material) != 0) {
+        return;
     }
     std::cout << "The material at this point is " << material
               << std::endl << std::flush;
+    switch (material) {
+      case ROCK:
+        {
+            Operation * c = new Create;
+            ListType & args = c->getArgs();
+            args.push_back(MapType());
+            MapType & carg = args.back().asMap();
+            carg["parents"] = ListType(1, "pile");
+            carg["loc"] = getId();
+            carg["pos"] = delve_pos_attr;
+            c->setTo(getId());
+            res.push_back(c);
+            std::cout << "Created boulder" << std::endl << std::flush;
+        }
+        break;
+      case SNOW:
+        {
+            Operation * c = new Create;
+            ListType & args = c->getArgs();
+            args.push_back(MapType());
+            MapType & carg = args.back().asMap();
+            carg["parents"] = ListType(1, "ice");
+            carg["loc"] = getId();
+            carg["pos"] = delve_pos_attr;
+            c->setTo(getId());
+            res.push_back(c);
+            std::cout << "Created ice" << std::endl << std::flush;
+        }
+        break;
+      default:
+        break;
+    }
 }
 
 void World::digOperation(const Operation & op, OpVector & res)
@@ -198,16 +199,68 @@ void World::digOperation(const Operation & op, OpVector & res)
         error(op, "Delve op to world has non list POS in args", res, getId());
         return;
     }
+    const ListType & dig_pos_attr = I->second.asList();
     WFMath::Point<3> dig_pos;
     // FIXME This data is non yet taint checked.
-    dig_pos.fromAtlas(I->second.asList());
+    dig_pos.fromAtlas(dig_pos_attr);
     std::cout << "Got dig on world at " << dig_pos
               << std::endl << std::flush;
     int material;
-    if (getSurface(dig_pos, material)) {
+    if (getSurface(dig_pos, material) != 0) {
+        return;
     }
     std::cout << "The material at this point is " << material
               << std::endl << std::flush;
+    switch (material) {
+      case SAND:
+        {
+            Operation * c = new Create;
+            ListType & args = c->getArgs();
+            args.push_back(MapType());
+            MapType & carg = args.back().asMap();
+            carg["parents"] = ListType(1, "pile");
+            carg["material"] = "sand";
+            carg["loc"] = getId();
+            carg["pos"] = dig_pos_attr;
+            c->setTo(getId());
+            res.push_back(c);
+            std::cout << "Created pile" << std::endl << std::flush;
+        }
+        break;
+      case GRASS:
+        {
+            Operation * c = new Create;
+            ListType & args = c->getArgs();
+            args.push_back(MapType());
+            MapType & carg = args.back().asMap();
+            carg["parents"] = ListType(1, "pile");
+            carg["material"] = "earth";
+            carg["loc"] = getId();
+            carg["pos"] = dig_pos_attr;
+            c->setTo(getId());
+            res.push_back(c);
+            std::cout << "Created pile" << std::endl << std::flush;
+        }
+        break;
+      case SILT:
+        {
+            Operation * c = new Create;
+            ListType & args = c->getArgs();
+            args.push_back(MapType());
+            MapType & carg = args.back().asMap();
+            carg["parents"] = ListType(1, "pile");
+            carg["material"] = "silt";
+            carg["loc"] = getId();
+            carg["pos"] = dig_pos_attr;
+            c->setTo(getId());
+            res.push_back(c);
+            std::cout << "Created pile" << std::endl << std::flush;
+        }
+        break;
+
+      default:
+        break;
+    }
 }
 
 void World::mowOperation(const Operation & op, OpVector & res)
@@ -233,16 +286,36 @@ void World::mowOperation(const Operation & op, OpVector & res)
         error(op, "Delve op to world has non list POS in args", res, getId());
         return;
     }
+    const ListType & mow_pos_attr = I->second.asList();
     WFMath::Point<3> mow_pos;
     // FIXME This data is non yet taint checked.
-    mow_pos.fromAtlas(I->second.asList());
+    mow_pos.fromAtlas(mow_pos_attr);
     std::cout << "Got mow on world at " << mow_pos
               << std::endl << std::flush;
     int material;
-    if (getSurface(mow_pos, material)) {
+    if (getSurface(mow_pos, material) != 0) {
+        return;
     }
     std::cout << "The material at this point is " << material
               << std::endl << std::flush;
+    switch (material) {
+      case GRASS:
+        {
+            Operation * c = new Create;
+            ListType & args = c->getArgs();
+            args.push_back(MapType());
+            MapType & carg = args.back().asMap();
+            carg["parents"] = ListType(1, "grass");
+            carg["loc"] = getId();
+            carg["pos"] = mow_pos_attr;
+            c->setTo(getId());
+            res.push_back(c);
+            std::cout << "Created grass" << std::endl << std::flush;
+        }
+        break;
+      default:
+        break;
+    }
 }
 
 void World::LookOperation(const Operation & op, OpVector & res)
