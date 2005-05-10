@@ -1,3 +1,10 @@
+2005-05-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/basic.xml, rulesets/basic/world/objects/Pile.py: Add a new
+	  experimental type for piles.
+
+	* TODO: Some random crazy shit.
+
 2005-05-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/basic.xml: Add a new type for boulder.

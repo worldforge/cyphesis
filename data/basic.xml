@@ -262,6 +262,38 @@
   <map>
     <map name="attributes">
       <map name="mass">
+        <float name="default">50</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="constituants">
+        <map name="default"></map>
+        <string name="visibility">public</string>
+      </map>
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.25</float>
+          <float>0.5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">pile</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.Pile</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
         <float name="default">5</float>
         <string name="visibility">public</string>
       </map>

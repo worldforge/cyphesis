@@ -1,3 +1,14 @@
+Create harness device which is a number of entities connected by ropes.
+Consists of hook, and a number of ends to be held by people. Each end is
+attached by a rope entity to the thing to be moved. To attach the hook,
+it is wielded and used on the target. Each person the wields and uses
+their ends. When enough people pull, the target moves. Vector of travel
+is the average of the distances to the people pulling.
+
+Add use of pickaxe to split rocks. Initial rock in ground could be huge,
+and require splitting, or heavy equipment to move. Rock can be shaped into
+stone billet for use in building using a chisel.
+
 Add operation Increment which allows deltas to be made to attributes.
 Important for atomicity in delayed events. Propagated as Sight(Set).
 
