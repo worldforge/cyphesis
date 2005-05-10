@@ -1,5 +1,9 @@
 2005-05-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Makefile.am: Add another missing header to the distribution.
+
+2005-05-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/basic.xml, data/mason.xml: Add bounding boxes for fire
 	  and campfire.
 

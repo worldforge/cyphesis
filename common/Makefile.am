@@ -32,8 +32,8 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      OOGThing.cpp OOGThing.h \
 		      BaseWorld.cpp BaseWorld.h \
 		      AtlasFileLoader.cpp AtlasFileLoader.h \
-		      Affect.h Burn.h Chop.h Cut.h Delve.h Dig.h Eat.h Mow.h \
-		      Nourish.h Setup.h Tick.h Generic.h \
+		      Add.h Affect.h Burn.h Chop.h Cut.h Delve.h Dig.h Eat.h \
+		      Mow.h Nourish.h Setup.h Tick.h Generic.h \
 		      Unseen.h Update.h Use.h Wield.h
 
 libtools_a_SOURCES = accountbase.cpp accountbase.h \
