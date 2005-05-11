@@ -1,5 +1,9 @@
 2005-05-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* Version 0.3.10 released.
+
+2005-05-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Makefile.am: Add another missing header to the distribution.
 
 2005-05-10  Al Riddoch  <alriddoch@zepler.org>
