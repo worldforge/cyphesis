@@ -1,3 +1,13 @@
+2005-05-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Python_API.cpp: Re-write the code for extracting operation
+	  subscriptions from python classes so its now more efficient and
+	  picks up methods from base classes.
+
+	* rulesets/basic/mind/BaseMind.py, rulesets/basic/mind/NPCMind.py,
+	  rulesets/basic/world/objects/Thing.py: Rename some methods
+	  which have match the signature of operation handlers.
+
 2005-05-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* Version 0.3.10 released.

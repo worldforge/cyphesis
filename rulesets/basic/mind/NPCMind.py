@@ -139,7 +139,7 @@ class NPCMind(BaseMind):
     def interlinguish_desire_verb3_operation(self, op, say):
         object=say[2:]
         verb=interlinguish.get_verb(object)
-        operation_method=self.find_operation(verb,"interlinguish_desire_verb3_",
+        operation_method=self.find_op_method(verb,"interlinguish_desire_verb3_",
                                              self.interlinguish_undefined_operation)
         res = Message()
         res = res + self.call_interlinguish_triggers(verb, "interlinguish_desire_verb3_", op, object)
@@ -223,7 +223,7 @@ class NPCMind(BaseMind):
         if interlinguish.convert_english_to_interlinguish(self,talk_entity):
             say=talk_entity.interlinguish
             verb=interlinguish.get_verb(say)
-            operation_method=self.find_operation(verb,"interlinguish_",
+            operation_method=self.find_op_method(verb,"interlinguish_",
                                   self.interlinguish_undefined_operation)
             res = res + self.call_interlinguish_triggers(verb, "interlinguish_", original_op,say)
         else:

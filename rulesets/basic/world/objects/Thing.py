@@ -50,12 +50,12 @@ class Thing:
     def __setattr__(self, name, value):
         #print "__setattr__",name,value
         return setattr(self.cppthing, name, value)
-    def find_operation(self, op_id, prefix="",undefined_operation=None):
+    def find_op_method(self, op_id, prefix="",undefined_op_method=None):
         """find right operation to invoke"""
-        if not undefined_operation: undefined_operation=self.undefined_operation
+        if not undefined_op_method: undefined_op_method=self.undefined_op_method
         return get_dict_func(self,self.op_dict,
-                             prefix+op_id+"_operation",undefined_operation)
-    def undefined_operation(self, op):
+                             prefix+op_id+"_operation",undefined_op_method)
+    def undefined_op_method(self, op):
         """this operation is used when no other matching operation is found"""
         pass
     def get_op_name_and_sub(self, op):

@@ -409,6 +409,7 @@ template<class T>
 void Subscribe_Script(T * entity, PyObject * pyclass,
                       const std::string& package)
 {
+#if 0
     PyObject * dmap = PyObject_GetAttrString(pyclass, "__dict__");
     if (dmap == NULL) {
         std::string msg = std::string( "Python class for ") + package
@@ -423,6 +424,9 @@ void Subscribe_Script(T * entity, PyObject * pyclass,
         return;
     }
     PyObject * keys = PyDict_Keys(dmap);
+#else
+    PyObject * keys = PyObject_Dir(pyclass);
+#endif
     if (keys == NULL) {
         std::string msg = std::string("Error getting attribute list of Python class for ") + package;
         log(ERROR, msg.c_str());

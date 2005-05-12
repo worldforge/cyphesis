@@ -48,7 +48,7 @@ class BaseMind(Thing):
         if op2.get_name()=="ent":
             self.map.add(op2)
             return None
-        operation_method=self.find_operation(op2.id,"sight_",
+        operation_method=self.find_op_method(op2.id,"sight_",
                                              self.sight_undefined_operation)
         log.debug(3,"sight: "+str(operation_method))
         return operation_method(op,op2)
@@ -58,7 +58,7 @@ class BaseMind(Thing):
         pass
     def sound_operation(self, op):
         op2=op[0]
-        operation_method=self.find_operation(op2.id,"sound_",
+        operation_method=self.find_op_method(op2.id,"sound_",
                                              self.sound_undefined_operation)
         log.debug(3,"sound: "+str(operation_method))
         return operation_method(op,op2)
