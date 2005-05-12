@@ -1,5 +1,14 @@
 2005-05-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/Formatter.cpp: Change the way lists are formatted to
+	  to be cleaner, and match the way existing rules are stored.
+
+	* data/mason.xml, data/basic.xml: Make sure maps are all in
+	  alphabetical order, so these files are the same as their machine
+	  generated versions.
+
+2005-05-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Re-write the code for extracting operation
 	  subscriptions from python classes so its now more efficient and
 	  picks up methods from base classes.

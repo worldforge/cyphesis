@@ -1,4 +1,5 @@
 <atlas>
+
   <map>
     <map name="attributes">
       <map name="mass">
@@ -50,12 +51,12 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="fruitName">
-        <string name="default">apple</string>
-        <string name="visibility">public</string>
-      </map>
       <map name="fruitChance">
         <int name="default">15</int>
+        <string name="visibility">public</string>
+      </map>
+      <map name="fruitName">
+        <string name="default">apple</string>
         <string name="visibility">public</string>
       </map>
       <map name="fruits">

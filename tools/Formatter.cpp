@@ -49,6 +49,8 @@ void Formatter::mapItem(const std::string & name, const Atlas::Bridge::List&l)
 {
     m_stream << std::string(m_indent, ' ');
     m_bridge.mapItem(name,l);
+    m_indent += m_spacing;
+    m_stream << std::endl;
 }
 
 void Formatter::mapItem(const std::string & name, long l)
@@ -91,26 +93,37 @@ void Formatter::listItem(const Atlas::Bridge::Map&m)
 
 void Formatter::listItem(const Atlas::Bridge::List&l)
 {
+    m_stream << std::string(m_indent, ' ');
     m_bridge.listItem(l);
+    m_indent += m_spacing;
+    m_stream << std::endl;
 }
 
 void Formatter::listItem(long l)
 {
+    m_stream << std::string(m_indent, ' ');
     m_bridge.listItem(l);
+    m_stream << std::endl;
 }
 
 void Formatter::listItem(double d)
 {
+    m_stream << std::string(m_indent, ' ');
     m_bridge.listItem(d);
+    m_stream << std::endl;
 }
 
 void Formatter::listItem(const std::string & s)
 {
+    m_stream << std::string(m_indent, ' ');
     m_bridge.listItem(s);
+    m_stream << std::endl;
 }
 
 void Formatter::listEnd()
 {
+    m_indent -= m_spacing;
+    m_stream << std::string(m_indent, ' ');
     m_bridge.listEnd();
     m_stream << std::endl;
 }

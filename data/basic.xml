@@ -42,10 +42,6 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
-        <float name="default">50</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="bbox">
         <list name="default">
           <float>-0.25</float>
@@ -57,6 +53,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="mass">
+        <float name="default">50</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">boulder</string>
     <list name="parents">
@@ -66,13 +66,13 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
-        <float name="default">1.5</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="ammo">
         <string name="default">arrow</string>
         <string name="visibility">internal</string>
+      </map>
+      <map name="mass">
+        <float name="default">1.5</float>
+        <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">bow</string>
@@ -173,12 +173,12 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
-        <float name="default">5000</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="burn_speed">
         <float name="default">0.2</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">5000</float>
         <string name="visibility">public</string>
       </map>
       <map name="material">
@@ -193,27 +193,6 @@
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.House</string>
-    </map>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="burn_speed">
-        <float name="default">0</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="material">
-        <string name="default">stone</string>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">stonehouse</string>
-    <list name="parents">
-      <string>house</string>
-    </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.buildings.StoneHouse</string>
     </map>
   </map>
 
@@ -272,14 +251,6 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
-        <float name="default">50</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="constituants">
-        <map name="default"></map>
-        <string name="visibility">public</string>
-      </map>
       <map name="bbox">
         <list name="default">
           <float>-0.25</float>
@@ -289,6 +260,15 @@
           <float>0.25</float>
           <float>0.5</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="constituants">
+        <map name="default">
+        </map>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">50</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -345,6 +325,27 @@
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.tools.Shovel</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="material">
+        <string name="default">stone</string>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">stonehouse</string>
+    <list name="parents">
+      <string>house</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.buildings.StoneHouse</string>
     </map>
   </map>
 
