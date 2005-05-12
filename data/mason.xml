@@ -788,6 +788,34 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
+          <float>-1</float>
+          <float>-1.5</float>
+          <float>0</float>
+          <float>1.5</float>
+          <float>1.5</float>
+          <float>1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">10</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">10</float>
+        <string name="visibility">private</string>
+      </map>
+    </map>
+    <string name="id">spider</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
           <float>-0.5</float>
           <float>-0.075</float>
           <float>0</float>
@@ -873,6 +901,37 @@
     <list name="parents">
       <string>plant</string>
     </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>0.3</float>
+          <float>0.1</float>
+          <float>0.1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="operations">
+        <list name="default">
+          <string>sow</string>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">trowel</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.tools.Trowel</string>
+    </map>
   </map>
 
   <map>

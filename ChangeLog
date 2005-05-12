@@ -1,5 +1,14 @@
 2005-05-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/objects/tools/Trowel.py, data/mason.xml:
+	  Add a rule for a trowel for planting seeds. Add a rule for spider
+	  model.
+
+	* common/custom.cpp: Add custom ops for "sow" and "germinate" for
+	  handling seeds.
+
+2005-05-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/Formatter.cpp: Change the way lists are formatted to
 	  to be cleaner, and match the way existing rules are stored.
 
