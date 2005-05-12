@@ -148,7 +148,8 @@ void World::delveOperation(const Operation & op, OpVector & res)
             ListType & args = c->getArgs();
             args.push_back(MapType());
             MapType & carg = args.back().asMap();
-            carg["parents"] = ListType(1, "pile");
+            carg["parents"] = ListType(1, "boulder");
+            carg["name"] ="boulder";
             carg["loc"] = getId();
             carg["pos"] = delve_pos_attr;
             c->setTo(getId());
@@ -162,6 +163,7 @@ void World::delveOperation(const Operation & op, OpVector & res)
             args.push_back(MapType());
             MapType & carg = args.back().asMap();
             carg["parents"] = ListType(1, "ice");
+            carg["name"] ="ice";
             carg["loc"] = getId();
             carg["pos"] = delve_pos_attr;
             c->setTo(getId());
@@ -215,6 +217,7 @@ void World::digOperation(const Operation & op, OpVector & res)
             MapType & carg = args.back().asMap();
             carg["parents"] = ListType(1, "pile");
             carg["material"] = "sand";
+            carg["name"] = "sand";
             carg["loc"] = getId();
             carg["pos"] = dig_pos_attr;
             c->setTo(getId());
@@ -229,6 +232,7 @@ void World::digOperation(const Operation & op, OpVector & res)
             MapType & carg = args.back().asMap();
             carg["parents"] = ListType(1, "pile");
             carg["material"] = "earth";
+            carg["name"] = "earth";
             carg["loc"] = getId();
             carg["pos"] = dig_pos_attr;
             c->setTo(getId());
@@ -243,6 +247,7 @@ void World::digOperation(const Operation & op, OpVector & res)
             MapType & carg = args.back().asMap();
             carg["parents"] = ListType(1, "pile");
             carg["material"] = "silt";
+            carg["name"] = "silt";
             carg["loc"] = getId();
             carg["pos"] = dig_pos_attr;
             c->setTo(getId());
