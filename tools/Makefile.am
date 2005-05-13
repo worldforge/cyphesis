@@ -1,6 +1,7 @@
 INCLUDES = -I$(top_srcdir)
 
-bin_PROGRAMS = cycmd cyconfig cyconvertrules cyloadrules cydumprules cypasswd
+bin_PROGRAMS = cycmd cyconfig cyaddrules cyconvertrules cyloadrules \
+               cydumprules cypasswd
 noinst_SCRIPTS = cyphesis.sh
 
 EXTRA_DIST = cyphesis.sh copy_python.sh
@@ -76,6 +77,14 @@ cyconfig_LDADD = $(TOOL_LIBS)
 
 cyconvertrules_SOURCES = cyconvertrules.cpp
 cyconvertrules_LDADD = $(TOOL_LIBS)
+
+cyaddrules_SOURCES = cyaddrules.cpp AdminClient.cpp AdminClient.h
+
+cyaddrules_LDADD = $(top_builddir)/modules/DateTime.o \
+                   $(top_builddir)/common/operations.o \
+                   $(top_builddir)/common/globals.o \
+                   $(top_builddir)/common/log.o \
+                   $(TOOL_LIBS)
 
 cyloadrules_SOURCES = cyloadrules.cpp
 

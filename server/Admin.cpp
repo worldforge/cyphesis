@@ -206,13 +206,14 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
     }
     const MapType & emap = ent.asMap();
     MapType::const_iterator I = emap.find("objtype");
-    if (I == emap.end() || !I->second.isString()) {
+    MapType::const_iterator Iend = emap.end();
+    if (I == Iend || !I->second.isString()) {
         error(op, "Set arg has no objtype.", res, getId());
         return;
     }
     const std::string & objtype = I->second.asString();
     I = emap.find("id");
-    if (I == emap.end() || !I->second.isString()) {
+    if (I == Iend || !I->second.isString()) {
         error(op, "Set arg has no id.", res, getId());
         return;
     }
@@ -231,7 +232,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         // Quick hack. This should eventually use EntityFactory, but that
         // code needs description in a strange format for now.
         I = emap.find("parents");
-        if (I == emap.end()) {
+        if (I == Iend) {
             error(op, "Attempt to install type with no parents", res, getId());
             return;
         }
@@ -273,6 +274,11 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         debug(std::cout << "Install type \"" << id << "\" with parent \""
                         << parent << "\"" << std::endl << std::flush;);
         EntityFactory::instance()->installFactory(parent, id, f);
+        Info * info = new Info;
+        info->setTo(getId());
+        ListType & info_args = info->getArgs();
+        info_args.push_back(emap);
+        res.push_back(info);
     } else if (objtype == "op_definition") {
         // Install a new op type? Perhaps again this should be a create.
     } else {

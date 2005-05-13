@@ -716,6 +716,41 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>0</float>
+          <float>0.5</float>
+          <float>0.5</float>
+          <float>0.1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="operations">
+        <list name="default">
+          <string>attach</string>
+          <string>pull</string>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">rope</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.tools.Rope</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="mass">
         <float name="default">0.05</float>
         <string name="visibility">public</string>

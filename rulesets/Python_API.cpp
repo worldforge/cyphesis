@@ -450,28 +450,29 @@ void Subscribe_Script(T * entity, PyObject * pyclass,
 }
 
 void Create_PyEntity(Entity * entity, const std::string & package,
-                                    const std::string & _type)
+                                    const std::string & type)
 {
-    PyObject * c = Get_PyClass(package, _type);
-    if (c == NULL) { return; }
+    PyObject * pyClass = Get_PyClass(package, type);
+    if (pyClass == NULL) { return; }
     PyEntity * pyEntity = newPyEntity();
     pyEntity->m_entity = entity;
-    Subscribe_Script(entity, c, package);
-    PyObject * o = Create_PyScript((PyObject *)pyEntity, c);
+    Subscribe_Script(entity, pyClass, package);
+    PyObject * o = Create_PyScript((PyObject *)pyEntity, pyClass);
+
     if (o != NULL) {
         entity->setScript(new PythonEntityScript(o, *entity));
     }
 }
 
 void Create_PyMind(BaseMind * mind, const std::string & package,
-                                    const std::string & _type)
+                                    const std::string & type)
 {
-    PyObject * c = Get_PyClass(package, _type);
-    if (c == NULL) { return; }
+    PyObject * pyClass = Get_PyClass(package, type);
+    if (pyClass == NULL) { return; }
     PyMind * pyMind = newPyMind();
     pyMind->m_mind = mind;
-    Subscribe_Script(mind, c, package);
-    PyObject * o = Create_PyScript((PyObject *)pyMind, c);
+    Subscribe_Script(mind, pyClass, package);
+    PyObject * o = Create_PyScript((PyObject *)pyMind, pyClass);
 
     if (o != NULL) {
         mind->setScript(new PythonMindScript(o, *mind));

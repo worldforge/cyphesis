@@ -1,6 +1,8 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2001-2004 Alistair Riddoch
+// Copyright (C) 2001-2005 Alistair Riddoch
+
+#include "AdminClient.h"
 
 #include "common/Database.h"
 #include "common/globals.h"
@@ -15,57 +17,14 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-class RuleBase {
-  protected:
-    RuleBase() : m_connection(*Database::instance()) { }
-
-    Database & m_connection;
-    static RuleBase * m_instance;
-    std::string m_rulesetName;
-  public:
-    ~RuleBase() {
-        m_connection.shutdownConnection();
-    }
-
-    static RuleBase * instance() {
-        if (m_instance == NULL) {
-            m_instance = new RuleBase();
-            if (m_instance->m_connection.initConnection(true) != 0) {
-                delete m_instance;
-                m_instance = 0;
-            } else if (!m_instance->m_connection.initRule(true)) {
-                delete m_instance;
-                m_instance = 0;
-            }
-        }
-        return m_instance;
-    }
-
-    void storeInRules(const MapType & o, const std::string & key) {
-        if (m_connection.hasKey(m_connection.rule(), key)) {
-            return;
-        }
-        m_connection.putObject(m_connection.rule(), key, o, StringVector(1, m_rulesetName));
-        if (!m_connection.clearPendingQuery()) {
-            std::cerr << "Failed" << std::endl << std::flush;
-        }
-    }
-    bool clearRules() {
-        return (m_connection.clearTable(m_connection.rule()) &&
-                m_connection.clearPendingQuery());
-    }
-    void setRuleset(const std::string & n) {
-        m_rulesetName = n;
-    }
-};
-
-RuleBase * RuleBase::m_instance = NULL;
-
-class FileDecoder : public Atlas::Message::DecoderBase {
+class FileDecoder : public Atlas::Message::DecoderBase
+{
     std::fstream m_file;
-    RuleBase & m_db;
+    std::string m_ruleset;
+    AdminClient & m_client;
     Atlas::Codecs::XML m_codec;
     int m_count;
+    int m_total;
 
     virtual void objectArrived(const Element & obj) {
         const MapType & omap = obj.asMap();
@@ -78,13 +37,18 @@ class FileDecoder : public Atlas::Message::DecoderBase {
             std::cerr << "Found rule with non string id" << std::endl << std::flush;
             return;
         }
-        m_count++;
-        m_db.storeInRules(obj.asMap(), I->second.asString());
+        m_total++;
+        // m_rules[I->second.asString()] = obj.asMap();
+        if (m_client.uploadRule(I->second.asString(), m_ruleset, omap) == 0) {
+            m_count++;
+        }
     }
   public:
-    FileDecoder(const std::string & filename, RuleBase & db) :
-                m_file(filename.c_str(), std::ios::in), m_db(db),
-                m_codec(m_file, this), m_count(0)
+    FileDecoder(const std::string & filename, const std::string & ruleset,
+                AdminClient & client) :
+                m_file(filename.c_str(), std::ios::in),
+                m_ruleset(ruleset), m_client(client),
+                m_codec(m_file, this), m_count(0), m_total(0)
     {
     }
 
@@ -95,7 +59,8 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     }
 
     void report() {
-        std::cout << m_count << " classes stored in rule database."
+        std::cout << m_count << " new classes uploaded out of "
+                  << m_total << " loaded from file."
                   << std::endl << std::flush;
     }
 
@@ -118,38 +83,65 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    RuleBase * db = RuleBase::instance();
+    std::string server;
+    if (global_conf->findItem("client", "serverhost")) {
+        server = global_conf->getItem("client", "serverhost").as_string();
+    }
 
-    if (db == 0) {
-        std::cerr << argv[0] << ": Could not make database connection."
-                  << std::endl << std::flush;
-        return 1;
+    int useslave = 0;
+    if (global_conf->findItem("client", "useslave")) {
+        useslave = global_conf->getItem("client", "useslave");
+    }
+
+    AdminClient bridge;
+
+    if (server.empty()) {
+        std::string localSocket = var_directory + "/tmp/";
+        if (useslave != 0) {
+            localSocket += slave_socket_name;
+        } else {
+            localSocket += client_socket_name;
+        }
+
+        if (bridge.connect_unix(localSocket) == 0) {
+            bridge.setUsername("admin");
+
+            if (bridge.login() != 0) {
+                std::cerr << "Login failed." << std::endl << std::flush;
+                bridge.getLogin();
+
+                if (!bridge.login()) {
+                    std::cerr << "Login failed." << std::endl << std::flush;
+                    return 1;
+                }
+            }
+        } else {
+            // FIXME This won't work.
+            server = "localhost";
+        }
     }
 
     if (optind == (argc - 2)) {
-        FileDecoder f(argv[optind + 1], *db);
+        FileDecoder f(argv[optind + 1], argv[optind], bridge);
         if (!f.isOpen()) {
             std::cerr << "ERROR: Unable to open file " << argv[optind + 1]
                       << std::endl << std::flush;
             return 1;
         }
-        db->setRuleset(argv[optind]);
         f.read();
         f.report();
     } else if (optind == argc) {
-        db->clearRules();
         std::vector<std::string>::const_iterator I = rulesets.begin();
         std::vector<std::string>::const_iterator Iend = rulesets.end();
         for (; I != Iend; ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
             std::string filename = etc_directory + "/cyphesis/" + *I + ".xml";
-            FileDecoder f(filename, *db);
+            FileDecoder f(filename, *I, bridge);
             if (!f.isOpen()) {
                 std::cerr << "ERROR: Unable to open file " << filename
                           << std::endl << std::flush;
                 return 1;
             }
-            db->setRuleset(*I);
             f.read();
             f.report();
         }
@@ -157,6 +149,4 @@ int main(int argc, char ** argv)
         usage(argv[0]);
         return 1;
     }
-
-    delete db;
 }

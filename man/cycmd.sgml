@@ -368,4 +368,11 @@ Report bugs to <email>general@worldforge.org</email>.
 Copyright 2004 Alistair Riddoch.
   </para>
  </refsect1>
+ <refsect1><title>See Also</title>
+  <para>
+<citerefentry><refentrytitle>cyphesis</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
+<citerefentry><refentrytitle>cyclient</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
+<citerefentry><refentrytitle>cyphesis-tools</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+  </para>
+ </refsect1>
 </refentry>

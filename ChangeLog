@@ -1,3 +1,21 @@
+2005-05-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/AdminClient.cpp, tools/AdminClient.h, tools/cyaddrules.cpp:
+	  New tool to load new rules into a running server.
+
+	* data/mason.xml, rulesets/mason/world/objects/tools/Rope.py:
+	  Experimental type for a rope.
+
+	* man/cyclient.sgml, man/cycmd.sgml, man/cyphesis-tools.sgml,
+	  man/cyphesis.sgml: Add SEE ALSO sections to the man pages.
+
+	* rulesets/Python_API.cpp: Clean up variable names.
+
+	* server/Admin.cpp: Send an info response when types are
+	  installed from the client.
+
+	* tools/cyloadrules.cpp: Correct copyright dates.
+
 2005-05-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp: Clear up the types of entities created

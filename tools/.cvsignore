@@ -2,6 +2,7 @@
 .libs
 Makefile
 Makefile.in
+cyaddrules
 cycmd
 cyconfig
 cyconvertrules
