@@ -1,5 +1,12 @@
 2005-05-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_Script_Utils.h, rulesets/Python_API.h,
+	  rulesets/Python_API.cpp, rulesets/MindFactory.cpp,
+	  server/EntityFactory.cpp: Move functions related to creating
+	  script objects into a new header, to avoid namespace pollution.
+
+2005-05-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.h, rulesets/BaseMind.h: Make scriptSubscribe
 	  virtual so it can be overriden in BaseMind.
 

@@ -5,16 +5,6 @@
 #ifndef RULESETS_PYTHON_API_H
 #define RULESETS_PYTHON_API_H
 
-#include <string>
-
-class Entity;
-class BaseMind;
-
-void Create_PyEntity(Entity * entity, const std::string & package,
-                                    const std::string & type);
-void Create_PyMind(BaseMind * mind, const std::string & package,
-                                    const std::string & type);
-
 void init_python_api();
 void shutdown_python_api();
 

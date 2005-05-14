@@ -2,10 +2,12 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include <Python.h>
+
 #include "MindFactory.h"
 
 #include "BaseMind.h"
-#include "Python_API.h"
+#include "Python_Script_Utils.h"
 
 #include "common/debug.h"
 

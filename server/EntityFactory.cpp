@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include <Python.h>
+
 #include "EntityFactory.h"
 
 #include "PersistantThingFactory.h"
@@ -21,7 +23,7 @@
 #include "rulesets/Area.h"
 #include "rulesets/World.h"
 
-#include "rulesets/Python_API.h"
+#include "rulesets/Python_Script_Utils.h"
 
 #include "common/debug.h"
 #include "common/globals.h"
