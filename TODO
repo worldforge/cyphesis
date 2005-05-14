@@ -1,3 +1,13 @@
+Implement subsystems on server object. Allow Admin to fetch the subsystems,
+like "configuration", "policy" etc.
+
+policy should include things like:
+   Account creation on the fly.
+   Number of characters per account.
+   Number of character played at the same time per account.
+   Visibility of player on character and character on player.
+   Character removal from world on logout.
+
 Types loaded from file have to be ordered into a tree before uploading or
 they will fail.
 

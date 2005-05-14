@@ -1,5 +1,16 @@
 2005-05-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Admin.cpp: Check that create ops from admin account
+	  have objtype set, so we can tell what it wants to create.
+
+	* data/mason.xml: Add a globlin type.
+
+	* client/BaseClient.cpp: Set objtype when creating characters.
+
+	* TODO: Some notes.
+
+2005-05-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/AdminClient.cpp, tools/AdminClient.h: Improve the rule upload
 	  code so that rules are held pending until their parents are uploaded,
 	  ensuring that rules in an inheriting ruleset correctly override

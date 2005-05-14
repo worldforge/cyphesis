@@ -438,6 +438,20 @@
 
   <map>
     <map name="attributes">
+      <map name="mass">
+        <float name="default">50</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">goblin</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+
+  <map>
+    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-0.1</float>

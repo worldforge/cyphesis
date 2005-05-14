@@ -296,10 +296,17 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
 
     const MapType & entmap = args.front().asMap();
     MapType::const_iterator I = entmap.find("parents");
-    if ((I == entmap.end()) || !(I->second.isList()) ||
+    MapType::const_iterator Iend = entmap.end();
+    if ((I == Iend) || !(I->second.isList()) ||
         (I->second.asList().empty()) ||
         !(I->second.asList().front().isString()) ) {
-        error(op, "Character has no type", res, getId());
+        error(op, "Object to be created has no type", res, getId());
+        return;
+    }
+
+    I = entmap.find("objtype");
+    if ((I == Iend) || !I->second.isString()) {
+        error(op, "Object to be created has no objtype", res, getId());
         return;
     }
 

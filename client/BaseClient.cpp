@@ -78,6 +78,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
     MapType character;
     character["name"] = m_playerName;
     character["parents"] = ListType(1,type);
+    character["objtype"] = "obj";
 
     Create createOp;
     createOp.setFrom(m_playerId);
