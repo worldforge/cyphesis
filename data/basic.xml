@@ -360,7 +360,7 @@
         <string name="visibility">public</string>
       </map>
       <map name="mass">
-        <float name="default">1</float>
+        <float name="default">200</float>
         <string name="visibility">public</string>
       </map>
     </map>

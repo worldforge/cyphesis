@@ -1,3 +1,8 @@
+2005-05-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/basic.xml: Make the mass of the pig sty large enough it can
+	  no longer be moved around.
+
 2005-05-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_Script_Utils.h, rulesets/Python_API.h,
