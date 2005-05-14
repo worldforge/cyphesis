@@ -1,5 +1,10 @@
 2005-05-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Clean up variable names to make code more
+	  readable.
+
+2005-05-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py: Fix cut_something
 	  goal so it now works with current tool use.
 

@@ -349,43 +349,44 @@ PyTypeObject dictlist_add_value_type = {
 };
 
 static PyObject * Get_PyClass(const std::string & package,
-                              const std::string & _type)
+                              const std::string & type)
 {
-    std::string type = _type;
-    type[0] = toupper(type[0]);
+    std::string classname(type);
+    classname[0] = toupper(classname[0]);
     PyObject * package_name = PyString_FromString((char *)package.c_str());
-    PyObject * mod_dict = PyImport_Import(package_name);
+    PyObject * module = PyImport_Import(package_name);
     Py_DECREF(package_name);
-    if (mod_dict == NULL) {
+    if (module == NULL) {
         std::string msg = std::string("Missing python module ") + package;
         log(ERROR, msg.c_str());
         PyErr_Print();
         return NULL;
     }
-    PyObject * my_class = PyObject_GetAttrString(mod_dict, (char *)type.c_str());
-    Py_DECREF(mod_dict);
-    if (my_class == NULL) {
-        std::string msg = std::string("Missing class ") + package + "." + type;
+    PyObject * pyClass = PyObject_GetAttrString(module, (char *)classname.c_str());
+    Py_DECREF(module);
+    if (pyClass == NULL) {
+        std::string msg = std::string("Could not find python class ")
+                        + package + "." + classname;
         log(ERROR, msg.c_str());
         PyErr_Print();
         return NULL;
     }
-    if (PyCallable_Check(my_class) == 0) {
+    if (PyCallable_Check(pyClass) == 0) {
         std::string msg = std::string("Could not instance python class ")
-                        + package + "." + type;
+                        + package + "." + classname;
         log(ERROR, msg.c_str());
-        Py_DECREF(my_class);
+        Py_DECREF(pyClass);
         return NULL;
     }
 #if 0
     // In later versions of python using PyType_* will become the right thing to do.
-    if (PyType_Check(my_class) == 0) {
+    if (PyType_Check(pyClass) == 0) {
         std::cerr << "PyCallable_Check returned true, but PyType_Check returned false " << package << "." << type << std::endl << std::flush;
     } else {
         std::cerr << "PyType_Check returned true" << std::endl << std::flush;
     }
 #endif
-    return my_class;
+    return pyClass;
 }
 
 static PyObject * Create_PyScript(PyObject * pyEntity, PyObject * pyClass)
@@ -450,7 +451,7 @@ void Subscribe_Script(T * entity, PyObject * pyclass,
 }
 
 void Create_PyEntity(Entity * entity, const std::string & package,
-                                    const std::string & type)
+                                      const std::string & type)
 {
     PyObject * pyClass = Get_PyClass(package, type);
     if (pyClass == NULL) { return; }
