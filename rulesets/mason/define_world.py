@@ -178,7 +178,7 @@ def default(mapeditor):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
         d=m.make('fish', type='fish', xyz=(xpos, ypos, settlement_height))
-        chickens.append(d)
+        fish.append(d)
     
     # m.make('sherwood',type='forest',xyz=(-50, 10,settlement_height),bbox=[40,40,40])
 

@@ -1,5 +1,9 @@
 2005-05-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Fix typo. Thanks erik.
+
+2005-05-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/basic.xml: Make the mass of the pig sty large enough it can
 	  no longer be moved around.
 
