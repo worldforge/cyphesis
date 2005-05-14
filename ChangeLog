@@ -1,5 +1,10 @@
 2005-05-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py: Fix cut_something
+	  goal so it now works with current tool use.
+
+2005-05-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Admin.cpp: Check that create ops from admin account
 	  have objtype set, so we can tell what it wants to create.
 

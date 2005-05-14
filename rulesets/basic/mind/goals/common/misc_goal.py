@@ -149,11 +149,14 @@ class task(Goal):
 
 class cut_something(task):
     def do(self,me):
-        if me.things.has_key(self.tool)==0: return
-        obj=me.find_thing(self.tool)[0]
         if me.things.has_key(self.what)==0: return
+        if me.things.has_key(self.tool)==0: return
+        if not hasattr(self,'wield') or not self.wield:
+            tool=me.find_thing(self.tool)[0]
+            self.wield=True
+            return Operation("wield", Entity(tool.id)
         what=me.find_thing(self.what)[0]
-        return Operation("cut",Entity(obj.id),Entity(what.id),to=obj)
+        return Operation("use",Entity(what.id))
 
 ############################ SPOT SOMETHING GOAL ########################
 
