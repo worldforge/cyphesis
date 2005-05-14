@@ -1,5 +1,20 @@
 2005-05-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* TODO: Note about bug in cyaddrules when adding rules from scratch.
+
+	* client/ObserverClient.cpp, client/ObserverClient.h,
+	  client/client.cpp: Add option to allow cyclient to connect to a
+	  remote server.
+
+	* tools/AdminClient.cpp, tools/AdminClient.h: Add a timeout so
+	  cyaddrules still works against older servers that don't send an
+	  info op when new types are uploaded.
+
+	* tools/cyaddrules.cpp: Add option to allow cyaddrules to connect to
+	  a remote server.
+
+2005-05-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/AdminClient.cpp, tools/AdminClient.h, tools/cyaddrules.cpp:
 	  New tool to load new rules into a running server.
 

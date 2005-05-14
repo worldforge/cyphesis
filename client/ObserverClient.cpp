@@ -28,7 +28,7 @@ int ObserverClient::setup(const std::string & account,
     if (connectLocal() == 0) {
         localConnection = true;
     } else {
-        if (connect() != 0) {
+        if (connect(m_server) != 0) {
             return -1;
         }
 

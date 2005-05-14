@@ -83,6 +83,8 @@ int main(int argc, char ** argv)
         return 1;
     }
 
+    AdminClient bridge;
+
     std::string server;
     if (global_conf->findItem("client", "serverhost")) {
         server = global_conf->getItem("client", "serverhost").as_string();
@@ -93,7 +95,16 @@ int main(int argc, char ** argv)
         useslave = global_conf->getItem("client", "useslave");
     }
 
-    AdminClient bridge;
+    if (global_conf->findItem("client", "account")) {
+        bridge.setUsername(global_conf->getItem("client", "account").as_string());
+    } else {
+        bridge.setUsername("admin");
+    }
+
+
+    if (global_conf->findItem("client", "password")) {
+        bridge.setPassword(global_conf->getItem("client", "password").as_string());
+    }
 
     if (server.empty()) {
         std::string localSocket = var_directory + "/tmp/";
@@ -103,21 +114,26 @@ int main(int argc, char ** argv)
             localSocket += client_socket_name;
         }
 
-        if (bridge.connect_unix(localSocket) == 0) {
-            bridge.setUsername("admin");
+        if (bridge.connect_unix(localSocket) != 0) {
+            std::cerr << "Failed to connect to local server"
+                      << std::endl << std::flush;
+            return 1;
+        }
+    } else {
+        if (bridge.connect(server) != 0) {
+            std::cerr << "Failed to connect to remote server"
+                      << std::endl << std::flush;
+            return 1;
+        }
+    }
 
-            if (bridge.login() != 0) {
-                std::cerr << "Login failed." << std::endl << std::flush;
-                bridge.getLogin();
+    if (bridge.login() != 0) {
+        std::cerr << "Login failed." << std::endl << std::flush;
+        bridge.getLogin();
 
-                if (!bridge.login()) {
-                    std::cerr << "Login failed." << std::endl << std::flush;
-                    return 1;
-                }
-            }
-        } else {
-            // FIXME This won't work.
-            server = "localhost";
+        if (!bridge.login()) {
+            std::cerr << "Login failed." << std::endl << std::flush;
+            return 1;
         }
     }
 

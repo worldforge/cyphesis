@@ -30,6 +30,11 @@ int main(int argc, char ** argv)
 
     assert(optind <= argc);
 
+    std::string server = "localhost";
+    if (global_conf->findItem("client", "serverhost")) {
+        server = global_conf->getItem("client", "serverhost").as_string();
+    }
+
     std::string account = "admin";
     if (global_conf->findItem("client", "account")) {
         account = global_conf->getItem("client", "account").as_string();
@@ -70,6 +75,7 @@ int main(int argc, char ** argv)
 
     try {
         ObserverClient & observer = *new ObserverClient();
+        observer.setServer(server);
         if (observer.setup(account, password) != 0) {
             return 1;
         }

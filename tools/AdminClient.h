@@ -65,6 +65,8 @@ class AdminClient : public Atlas::Objects::Decoder
     void objectArrived(const Atlas::Objects::Operation::Error&);
 
     int negotiate();
+
+    void waitForInfo();
   public:
     AdminClient() : error_flag(false), reply_flag(false), login_flag(false),
                     encoder(0), codec(0), ios(0), exit(false),

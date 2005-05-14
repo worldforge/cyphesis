@@ -1,3 +1,6 @@
+Types loaded from file have to be ordered into a tree before uploading or
+they will fail.
+
 Create harness device which is a number of entities connected by ropes.
 Consists of hook, and a number of ends to be held by people. Each end is
 attached by a rope entity to the thing to be moved. To attach the hook,

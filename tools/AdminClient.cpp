@@ -166,9 +166,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
     (*ios) << std::flush;
 
-    while (!reply_flag) {
-       codec->poll();
-    }
+    waitForInfo();
 
     if (!error_flag) {
         return -1;
@@ -195,9 +193,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
     (*ios) << std::flush;
 
-    while (!reply_flag) {
-       codec->poll();
-    }
+    waitForInfo();
 
     if (error_flag) {
         std::cerr << "Failed to upload new \"" << id << "\" class."
@@ -264,6 +260,13 @@ int AdminClient::negotiate()
 
 }
 
+void AdminClient::waitForInfo()
+{
+    for (int i = 0; i < 10 && !reply_flag; ++i) {
+       poll();
+    }
+}
+
 int AdminClient::login()
 {
     Atlas::Objects::Entity::Account account;
@@ -283,9 +286,7 @@ int AdminClient::login()
 
     (*ios) << std::flush;
  
-    while (!reply_flag) {
-       codec->poll();
-    }
+    waitForInfo();
 
     login_flag = false;
 

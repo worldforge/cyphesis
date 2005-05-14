@@ -14,9 +14,15 @@
 /// In fact the observation code has not yet been implemented, and this
 /// client is mainly used to handle world initialisation.
 class ObserverClient : public BaseClient {
+  protected:
+    std::string m_server;
   public:
     ObserverClient();
     virtual ~ObserverClient();
+
+    void setServer(const std::string & server) {
+        m_server = server;
+    }
 
     int setup(const std::string & account, const std::string & password);
     void load(const std::string & package, const std::string & function);
