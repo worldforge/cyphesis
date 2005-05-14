@@ -22,6 +22,7 @@
 
 #include "common/Tick.h"
 #include "common/Nourish.h"
+#include "common/Unseen.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -43,6 +44,7 @@ using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Action;
+using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Appearance;
 
@@ -622,21 +624,31 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     if ((I == arg1.end()) || !I->second.isString()) {
         log(ERROR, "mindMoveOperation: Args has got no ID");
     }
-    const std::string & oname = I->second.asString();
-    EntityDict::const_iterator J = m_world->getEntities().find(oname);
+    const std::string & other_id = I->second.asString();
+    EntityDict::const_iterator J = m_world->getEntities().find(other_id);
     if (J == m_world->getEntities().end()) {
         log(ERROR, "mindMoveOperation: This move op is for a phoney id");
+        log(NOTICE, "Sending Unseen op back to mind. We should not see this again.");
+        Operation * u = new Unseen;
+
+        ListType & unseen_args = u->getArgs();
+        MapType unseen_arg;
+        unseen_arg["id"] = other_id;
+        unseen_args.push_back(unseen_arg);
+
+        u->setTo(getId());
+        res.push_back(u);
         return;
     }
     Entity * obj = J->second;
     if (obj != this) {
-        debug( std::cout << "Moving something else. " << oname << std::endl << std::flush;);
+        debug( std::cout << "Moving something else. " << other_id << std::endl << std::flush;);
         if ((obj->getMass() < 0) || (obj->getMass() > m_mass)) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
         }
         Operation * newop = new Operation(op);
-        newop->setTo(oname);
+        newop->setTo(other_id);
         res.push_back(newop);
         return;
     }

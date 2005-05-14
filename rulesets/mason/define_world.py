@@ -32,6 +32,8 @@ forest_xyz=(-20,-60,settlement_height)
 pig_sty_xyz=(8,8,settlement_height)
 butcher_stall_xyz=(-41.5,-6.3,settlement_height)
 
+lake_xyz=(-40,-70,0)
+
 knowledge=[('axe','place','smithy'),
            ('forest','location',forest_xyz),
            ('hall','location',hall_xyz)]
@@ -168,6 +170,15 @@ def default(mapeditor):
         d=m.make('chicken', type='chicken', xyz=(xpos, ypos, settlement_height))
         chickens.append(d)
     m.learn(chickens,chicken_goals)
+
+    fish=[]
+    xbase = lake_xyz[0]
+    ybase = lake_xyz[1]
+    for i in range(0, 10):
+        xpos = xbase + uniform(-5,5)
+        ypos = ybase + uniform(-5,5)
+        d=m.make('fish', type='fish', xyz=(xpos, ypos, settlement_height))
+        chickens.append(d)
     
     # m.make('sherwood',type='forest',xyz=(-50, 10,settlement_height),bbox=[40,40,40])
 

@@ -1,5 +1,17 @@
 2005-05-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add a new rule for fish.
+
+	* rulesets/mason/define_world.py: Add a shoal of fish to the lake.
+
+	* common/custom.cpp, rulesets/Character.cpp,
+	  rulesets/basic/mind/NPCMind.py: Use Unseen operation to notify
+	  minds when they attempt to interactive with something that
+	  they can't iteract with, either because its outside their
+	  area of perception, or because its been deleted.
+
+2005-05-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* TODO: Note about bug in cyaddrules when adding rules from scratch.
 
 	* client/ObserverClient.cpp, client/ObserverClient.h,

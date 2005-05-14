@@ -385,6 +385,30 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.4</float>
+          <float>-0.03</float>
+          <float>-0.1</float>
+          <float>0.15</float>
+          <float>0.03</float>
+          <float>0.1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">fish</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
     </map>
     <string name="id">forest</string>
     <list name="parents">

@@ -15,6 +15,7 @@
 #include "Nourish.h"
 #include "Setup.h"
 #include "Tick.h"
+#include "Unseen.h"
 #include "Use.h"
 #include "Wield.h"
 
@@ -36,6 +37,7 @@ using Atlas::Objects::Operation::Mow;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Tick;
+using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Operation::Wield;
 
@@ -75,6 +77,9 @@ void installCustomOperations()
 
     i.addChild(new Tick(Tick::Class()));
     i.opInstall("tick", OP_TICK, new OpFactory<Tick>);
+
+    i.addChild(new Unseen(Unseen::Class()));
+    i.opInstall("unseen", OP_UNSEEN, new OpFactory<Unseen>);
 
     i.addChild(new Use(Use::Class()));
     i.opInstall("use", OP_USE, new OpFactory<Use>);
