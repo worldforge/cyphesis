@@ -1,5 +1,13 @@
 2005-05-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h, rulesets/BaseMind.h: Make scriptSubscribe
+	  virtual so it can be overriden in BaseMind.
+
+	* rulesets/Python_API.cpp: Get rid of template for Subscribe_Script
+	  as its no longer necessary now scriptSubscribe is virtual.
+
+2005-05-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Clean up variable names to make code more
 	  readable.
 

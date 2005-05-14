@@ -389,7 +389,7 @@ static PyObject * Get_PyClass(const std::string & package,
     return pyClass;
 }
 
-static PyObject * Create_PyScript(PyObject * pyEntity, PyObject * pyClass)
+PyObject * Create_PyScript(PyObject * pyEntity, PyObject * pyClass)
 {
     PyObject * pyob = PyEval_CallFunction(pyClass,"(O)", pyEntity);
     
@@ -401,13 +401,11 @@ static PyObject * Create_PyScript(PyObject * pyEntity, PyObject * pyClass)
             PyErr_Print();
         }
     }
-    Py_DECREF(pyClass);
     Py_DECREF(pyEntity);
     return pyob;
 }
 
-template<class T>
-void Subscribe_Script(T * entity, PyObject * pyclass,
+void Subscribe_Script(Entity * entity, PyObject * pyclass,
                       const std::string& package)
 {
 #if 0
@@ -459,6 +457,7 @@ void Create_PyEntity(Entity * entity, const std::string & package,
     pyEntity->m_entity = entity;
     Subscribe_Script(entity, pyClass, package);
     PyObject * o = Create_PyScript((PyObject *)pyEntity, pyClass);
+    Py_DECREF(pyClass);
 
     if (o != NULL) {
         entity->setScript(new PythonEntityScript(o, *entity));
@@ -474,6 +473,7 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
     pyMind->m_mind = mind;
     Subscribe_Script(mind, pyClass, package);
     PyObject * o = Create_PyScript((PyObject *)pyMind, pyClass);
+    Py_DECREF(pyClass);
 
     if (o != NULL) {
         mind->setScript(new PythonMindScript(o, *mind));

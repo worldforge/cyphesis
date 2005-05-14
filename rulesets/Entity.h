@@ -167,7 +167,8 @@ class Entity : public BaseEntity {
                      const std::map<std::string, EntityType *> &);
 
     void destroy();
-    void scriptSubscribe(const std::string &);
+
+    virtual void scriptSubscribe(const std::string &);
 
     virtual void externalOperation(const Operation & op);
 

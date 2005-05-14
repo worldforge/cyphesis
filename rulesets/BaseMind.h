@@ -43,7 +43,7 @@ class BaseMind : public MemEntity {
     void sleep() { m_isAwake = false; }
     void awake() { m_isAwake = true; }
 
-    void scriptSubscribe(const std::string &);
+    virtual void scriptSubscribe(const std::string &);
 
     virtual void sightLoginOperation(const Operation &, Operation &, OpVector &);
     virtual void sightActionOperation(const Operation &, Operation &, OpVector &);
