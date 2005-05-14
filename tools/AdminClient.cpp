@@ -8,6 +8,8 @@
 
 #include "AdminClient.h"
 
+#include "common/debug.h"
+
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -20,6 +22,8 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Talk;
+
+static const bool debug_flag = false;
 
 void AdminClient::output(const Element & item, bool recurse)
 {
@@ -144,8 +148,8 @@ void AdminClient::getLogin()
     std::cin >> password;
 }
 
-int AdminClient::uploadRule(const std::string & id, const std::string & set,
-                             const Atlas::Message::MapType & rule)
+int AdminClient::checkRule(const std::string & id)
+/// @return 0 if a rule exists, 1 if it does not
 {
     error_flag = false;
     reply_flag = false;
@@ -169,6 +173,59 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
     waitForInfo();
 
     if (!error_flag) {
+        return 0;
+    }
+    return 1;
+}
+
+int AdminClient::uploadRule(const std::string & id, const std::string & set,
+                            const MapType & rule)
+{
+    error_flag = false;
+    reply_flag = false;
+    login_flag = false;
+
+    if (checkRule(id) == 0) {
+        return -1;
+    }
+
+    MapType::const_iterator I = rule.find("parents");
+    if (I == rule.end()) {
+        std::cerr << "Rule " << id << " to be uploaded has no parents."
+                  << std::endl << std::flush;
+        return -1;
+    }
+    const Element & pelem = I->second;
+    if (!pelem.isList()) {
+        std::cerr << "Rule " << id << " to be uploaded has non-list parents."
+                  << std::endl << std::flush;
+        return -1;
+    }
+    const ListType & parents = pelem.asList();
+    if (parents.empty() || !parents.front().isString()) {
+        std::cerr << "Rule " << id << " to be uploaded has malformed parents."
+                  << std::endl << std::flush;
+        return -1;
+    }
+    const std::string & parent = parents.front().asString();
+
+    if (checkRule(parent) != 0) {
+        debug(std::cerr << "Rule \"" << id << "\" to be uploaded has parent \""
+                        << parent << "\" which does not exist on server yet."
+                        << std::endl << std::flush;);
+        // FIXME Make sure there is not a rule with the same ID already waiting
+        RuleWaitList::const_iterator J = m_waitingRules.lower_bound(parent);
+        RuleWaitList::const_iterator Jend = m_waitingRules.upper_bound(parent);
+        for (; J != Jend; ++J) {
+            if (id == J->second.first.first) {
+                debug(std::cerr << "Discarding rule with ID \"" << id
+                                << "\" as one is already waiting for upload."
+                                << std::endl << std::flush;);
+                return -1;
+            }
+        }
+        m_waitingRules.insert(make_pair(parent, make_pair(make_pair(id, set), rule))
+);
         return -1;
     }
 
@@ -202,7 +259,25 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
                   << std::endl << std::flush;
         return -1;
     }
-    return 0;
+
+    int count = 1;
+
+    RuleWaitList::const_iterator J = m_waitingRules.lower_bound(id);
+    RuleWaitList::const_iterator Jend = m_waitingRules.upper_bound(id);
+    for (; J != Jend; ++J) {
+        const std::string & waitId = J->second.first.first;
+        const std::string & waitSet = J->second.first.second;
+        const MapType & waitRule = J->second.second;
+        debug(std::cout << "WAITING rule " << waitId
+                        << " now ready" << std::endl << std::flush;);
+        int ret = uploadRule(waitId, waitSet, waitRule);
+        if (ret > 0) {
+            count += ret;
+        }
+    }
+    m_waitingRules.erase(id);
+
+    return count;
 }
 
 int AdminClient::connect(const std::string & host)
@@ -294,4 +369,21 @@ int AdminClient::login()
        return 0;
     }
     return -1;
+}
+
+void AdminClient::report()
+{
+    if (m_waitingRules.empty()) {
+        return;
+    }
+
+    RuleWaitList::const_iterator I = m_waitingRules.begin();
+    RuleWaitList::const_iterator Iend = m_waitingRules.end();
+    for (; I != Iend; ++I) {
+        std::cout << "Rule \"" << I->second.first.first << "\" with parent \""
+                  << I->first << "\" from ruleset \""
+                  << I->second.first.second
+                  << "\" was never uploaded as its parent does not exist in any of the available rulesets."
+                  << std::endl << std::flush;
+    }
 }

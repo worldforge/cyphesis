@@ -42,6 +42,8 @@
 #include <iostream>
 #include <cstdio>
 
+typedef std::multimap<std::string, std::pair<std::pair<std::string, std::string>, Atlas::Message::MapType> > RuleWaitList;
+
 class AdminClient : public Atlas::Objects::Decoder
 {
   private:
@@ -55,8 +57,7 @@ class AdminClient : public Atlas::Objects::Decoder
     std::string accountId;
     std::string m_errorMessage;
     bool exit;
-    int monitor_op_count;
-    int monitor_start_time;
+    RuleWaitList m_waitingRules;
 
     void output(const Atlas::Message::Element & item, bool recurse = true);
   protected:
@@ -67,10 +68,10 @@ class AdminClient : public Atlas::Objects::Decoder
     int negotiate();
 
     void waitForInfo();
+    int checkRule(const std::string & id);
   public:
     AdminClient() : error_flag(false), reply_flag(false), login_flag(false),
-                    encoder(0), codec(0), ios(0), exit(false),
-                    monitor_op_count(0), monitor_start_time(0) { }
+                    encoder(0), codec(0), ios(0), exit(false) { }
     ~AdminClient() {
         if (encoder != 0) {
             delete encoder;
@@ -101,7 +102,7 @@ class AdminClient : public Atlas::Objects::Decoder
         username = uname;
     }
 
-    static void gotCommand(char *);
+    void report();
 };
 
 #endif // TOOLS_ADMIN_CLIENT_H

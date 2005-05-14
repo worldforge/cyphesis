@@ -39,8 +39,9 @@ class FileDecoder : public Atlas::Message::DecoderBase
         }
         m_total++;
         // m_rules[I->second.asString()] = obj.asMap();
-        if (m_client.uploadRule(I->second.asString(), m_ruleset, omap) == 0) {
-            m_count++;
+        int ret = m_client.uploadRule(I->second.asString(), m_ruleset, omap);
+        if (ret > 0) {
+            m_count += ret;
         }
     }
   public:
@@ -165,4 +166,8 @@ int main(int argc, char ** argv)
         usage(argv[0]);
         return 1;
     }
+
+    bridge.report();
+
+    return 0;
 }
