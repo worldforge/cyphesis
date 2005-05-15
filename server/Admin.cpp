@@ -263,22 +263,15 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
             error(op, msg.c_str(), res, getId());
             return;
         }
-        FactoryBase * f = EntityFactory::instance()->getNewFactory(parent);
-        if (f == 0) {
-            std::string msg("Attempt to find factory for parent \"");
-            msg += parent;
-            msg += "\" failed.";
-            error(op, msg.c_str(), res, getId());
-            return;
+        if (EntityFactory::instance()->installRule(id, emap) == 0) {
+            Info * info = new Info;
+            info->setTo(getId());
+            ListType & info_args = info->getArgs();
+            info_args.push_back(emap);
+            res.push_back(info);
+        } else {
+            error(op, "Unknown error installing new type", res, getId());
         }
-        debug(std::cout << "Install type \"" << id << "\" with parent \""
-                        << parent << "\"" << std::endl << std::flush;);
-        EntityFactory::instance()->installFactory(parent, id, f);
-        Info * info = new Info;
-        info->setTo(getId());
-        ListType & info_args = info->getArgs();
-        info_args.push_back(emap);
-        res.push_back(info);
     } else if (objtype == "op_definition") {
         // Install a new op type? Perhaps again this should be a create.
     } else {

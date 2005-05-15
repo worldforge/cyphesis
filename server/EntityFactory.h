@@ -33,9 +33,10 @@ class EntityFactory {
     RuleWaitList m_waitingRules;
     PersistantThingFactory<Entity> * m_eft;
 
-    void installRule(const std::string &, const Atlas::Message::MapType&);
     void getRulesFromFiles(Atlas::Message::MapType&);
     void installRules();
+    void installFactory(const std::string &, const std::string &, FactoryBase*);
+    FactoryBase * getNewFactory(const std::string &);
   public:
     static void init(BaseWorld & w) {
         m_instance = new EntityFactory(w);
@@ -54,9 +55,7 @@ class EntityFactory {
                        const Atlas::Message::MapType &);
     void flushFactories();
 
-    void installFactory(const std::string &, const std::string &, FactoryBase*);
-    void installClass(const std::string &, const std::string&);
-    FactoryBase * getNewFactory(const std::string &);
+    int installRule(const std::string &, const Atlas::Message::MapType&);
 };
 
 #endif // SERVER_ENTITY_FACTORY_H

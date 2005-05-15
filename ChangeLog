@@ -1,5 +1,14 @@
 2005-05-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.h, server/EntityFactory.cpp: Make a bunch
+	  of functions private, as they should not be available elsewhere.
+	  Make installRule() public, and make it return an error status.
+
+	* server/Admin.cpp: Use installRule() to install new rules from the
+	  client, so that the full data is installed.
+
+2005-05-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/objects/tools/Rope.py: Correct the syntax
 	  of stub functions.
 

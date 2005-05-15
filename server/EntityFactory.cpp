@@ -146,8 +146,8 @@ void EntityFactory::flushFactories()
     m_factories.clear();
 }
 
-void EntityFactory::installRule(const std::string & className,
-                                const MapType & classDesc)
+int EntityFactory::installRule(const std::string & className,
+                               const MapType & classDesc)
 {
     MapType::const_iterator J = classDesc.find("parents");
     MapType::const_iterator classDescEnd = classDesc.end();
@@ -155,27 +155,27 @@ void EntityFactory::installRule(const std::string & className,
         std::string msg = std::string("Rule \"") + className 
                           + "\" has no parents. Skipping.";
         log(ERROR, msg.c_str());
-        return;
+        return -1;
     }
     if (!J->second.isList()) {
         std::string msg = std::string("Rule \"") + className 
                           + "\" has malformed parents. Skipping.";
         log(ERROR, msg.c_str());
-        return;
+        return -1;
     }
     const ListType & parents = J->second.asList();
     if (parents.empty()) {
         std::string msg = std::string("Rule \"") + className 
                           + "\" has empty parents. Skipping.";
         log(ERROR, msg.c_str());
-        return;
+        return -1;
     }
     const Element & p1 = parents.front();
     if (!p1.isString() || p1.asString().empty()) {
         std::string msg = std::string("Rule \"") + className 
                           + "\" has malformed first parent. Skipping.";
         log(ERROR, msg.c_str());
-        return;
+        return -1;
     }
     const std::string & parent = p1.asString();
     // Get the new factory for this rule
@@ -185,7 +185,7 @@ void EntityFactory::installRule(const std::string & className,
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
         m_waitingRules.insert(make_pair(parent, make_pair(className, classDesc)));
-        return;
+        return 1;
     }
 
     // Establish whether this rule has an associated script, and
@@ -240,15 +240,20 @@ void EntityFactory::installRule(const std::string & className,
             }
         }
     }
-    // Check whether it should be available to players.
+
+    // Check whether it should be available to players as a playable character.
     J = classDesc.find("playable");
     if ((J != classDescEnd) && (J->second.isInt())) {
         Player::playableTypes.insert(className);
     }
     debug(std::cout << "INSTALLING " << className << ":" << parent
                     << std::endl << std::flush;);
+
     // Install the factory in place.
     installFactory(parent, className, factory);
+
+    // Install any rules that were waiting for this rule before they
+    // could be installed
     RuleWaitList::iterator I = m_waitingRules.lower_bound(className);
     for (; I != m_waitingRules.upper_bound(className); ++I) {
         const std::string & wClassName = I->second.first;
@@ -258,6 +263,7 @@ void EntityFactory::installRule(const std::string & className,
         installRule(wClassName, wClassDesc);
     }
     m_waitingRules.erase(className);
+    return 0;
 }
 
 void EntityFactory::getRulesFromFiles(MapType & rules)

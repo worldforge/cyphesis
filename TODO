@@ -1,3 +1,6 @@
+Memory leak of script factories. Also need to carefully make sure python
+object references aren't leaked.
+
 Implement subsystems on server object. Allow Admin to fetch the subsystems,
 like "configuration", "policy" etc.
 
@@ -8,8 +11,7 @@ policy should include things like:
    Visibility of player on character and character on player.
    Character removal from world on logout.
 
-Types loaded from file have to be ordered into a tree before uploading or
-they will fail.
+Installed types from the client need to be persisted in the database.
 
 Create harness device which is a number of entities connected by ropes.
 Consists of hook, and a number of ends to be held by people. Each end is
