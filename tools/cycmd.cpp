@@ -80,6 +80,7 @@ static void help()
     std::cout << "    logout    Log user out of server" << std::endl;
     std::cout << "    monitor   Enable in-game op monitoring" << std::endl;
     std::cout << "    query     Examine an object on the server" << std::endl;
+    std::cout << "    reload    Reload the script for a type" << std::endl;
     std::cout << "    stat      Return current server status" << std::endl;
     std::cout << "    unmonitor Disable in-game op monitoring" << std::endl;
     std::cout << std::endl << std::flush;
@@ -667,6 +668,21 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         g.setFrom(accountId);
 
         encoder->streamMessage(&g);
+    } else if (cmd == "reload") {
+        if (arg.empty()) {
+            reply_expected = false;
+            std::cout << "reload: Argument required" << std::endl << std::flush;
+        } else {
+            Set s;
+
+            MapType tmap;
+            tmap["objtype"] = "class";
+            tmap["id"] = arg;
+            s.setArgs(ListType(1,tmap));
+            s.setFrom(accountId);
+
+            encoder->streamMessage(&s);
+        }
     } else if (cmd == "get") {
         Get g;
 

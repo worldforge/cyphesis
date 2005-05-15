@@ -1,5 +1,17 @@
 2005-05-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Implement reloading scripts when
+	  a client asks to modify an installed type.
+
+	* server/Admin.cpp: Re-order checks when client asks to modify
+	  an installed type, so the client doesn't have to set the parents.
+
+	* tools/cycmd.cpp: Add a reload command which causes the server
+	  to update an existing type, thus reloading its script if it has
+	  one.
+
+2005-05-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp, server/EntityFactory.h: Add a public
 	  method to allow the attributes of an installed type to be
 	  modified.

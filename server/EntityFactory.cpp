@@ -150,8 +150,8 @@ int EntityFactory::installRule(const std::string & className,
                                const MapType & classDesc)
 {
     MapType::const_iterator J = classDesc.find("parents");
-    MapType::const_iterator classDescEnd = classDesc.end();
-    if (J == classDescEnd) {
+    MapType::const_iterator Jend = classDesc.end();
+    if (J == Jend) {
         std::string msg = std::string("Rule \"") + className 
                           + "\" has no parents. Skipping.";
         log(ERROR, msg.c_str());
@@ -191,7 +191,7 @@ int EntityFactory::installRule(const std::string & className,
     // Establish whether this rule has an associated script, and
     // if so, use it.
     J = classDesc.find("script");
-    if ((J != classDescEnd) && (J->second.isMap())) {
+    if ((J != Jend) && (J->second.isMap())) {
         const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
@@ -209,7 +209,7 @@ int EntityFactory::installRule(const std::string & className,
     // Establish whether this rule has an associated mind rule,
     // and handle it.
     J = classDesc.find("mind");
-    if ((J != classDescEnd) && (J->second.isMap())) {
+    if ((J != Jend) && (J->second.isMap())) {
         const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
@@ -225,7 +225,7 @@ int EntityFactory::installRule(const std::string & className,
 
     // Store the default attribute for entities create by this rule.
     J = classDesc.find("attributes");
-    if ((J != classDescEnd) && (J->second.isMap())) {
+    if ((J != Jend) && (J->second.isMap())) {
         const MapType & attrs = J->second.asMap();
         MapType::const_iterator Kend = attrs.end();
         for (MapType::const_iterator K = attrs.begin(); K != Kend; ++K) {
@@ -243,7 +243,7 @@ int EntityFactory::installRule(const std::string & className,
 
     // Check whether it should be available to players as a playable character.
     J = classDesc.find("playable");
-    if ((J != classDescEnd) && (J->second.isInt())) {
+    if ((J != Jend) && (J->second.isInt())) {
         Player::playableTypes.insert(className);
     }
     debug(std::cout << "INSTALLING " << className << ":" << parent
@@ -269,8 +269,21 @@ int EntityFactory::installRule(const std::string & className,
 int EntityFactory::modifyRule(const std::string & className,
                               const MapType & classDesc)
 {
-    log(ERROR, "Modifying existing rules is not yet supported.");
-    return -1;
+    FactoryDict::const_iterator I = m_factories.find(className);
+    if (I == m_factories.end()) {
+        log(ERROR, "Could not find factory for existing type.");
+        return -1;
+    }
+    FactoryBase * factory = I->second;
+    assert(factory != 0);
+    
+    ScriptFactory * script_factory = factory->m_scriptFactory;
+    if (script_factory != 0) {
+        script_factory->refreshClass();
+    }
+
+    // FIXME Update the other things about this class.
+    return 0;
 }
 
 void EntityFactory::getRulesFromFiles(MapType & rules)

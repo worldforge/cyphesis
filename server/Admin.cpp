@@ -10,7 +10,7 @@
 #include "CommPeer.h"
 #include "CommServer.h"
 
-#include "rulesets/Character.h"
+#include "rulesets/Entity.h"
 
 #include "common/log.h"
 #include "common/const.h"
@@ -230,6 +230,20 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         log(WARNING, "Unable to set attributes of non-character yet");
         // Manipulate attributes of existing objects.
     } else if (objtype == "class") {
+        Atlas::Objects::Root * o = Inheritance::instance().get(id);
+        if (o != 0) {
+            if (EntityFactory::instance()->modifyRule(id, entmap) == 0) {
+                Info * info = new Info;
+                info->setTo(getId());
+                ListType & info_args = info->getArgs();
+                info_args.push_back(entmap);
+                res.push_back(info);
+            } else {
+                error(op, "Unknown error updating type", res, getId());
+            }
+            return;
+        }
+        log(WARNING, "Client using Set to install new type.");
         I = entmap.find("parents");
         if (I == Iend) {
             error(op, "Attempt to install type with no parents", res, getId());
@@ -249,20 +263,6 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
             error(op, "Attempt to install type with parent=\"\"", res, getId());
             return;
         }
-        Atlas::Objects::Root * o = Inheritance::instance().get(id);
-        if (o != 0) {
-            if (EntityFactory::instance()->modifyRule(id, entmap) == 0) {
-                Info * info = new Info;
-                info->setTo(getId());
-                ListType & info_args = info->getArgs();
-                info_args.push_back(entmap);
-                res.push_back(info);
-            } else {
-                error(op, "Unknown error updating new type", res, getId());
-            }
-            return;
-        }
-        log(WARNING, "Client using Set to install new type.");
         o = Inheritance::instance().get(parent);
         if (o == 0) {
             std::string msg("Attempt to install type with non-existant parent \"");
