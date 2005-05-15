@@ -154,7 +154,7 @@ class cut_something(task):
         if not hasattr(self,'wield') or not self.wield:
             tool=me.find_thing(self.tool)[0]
             self.wield=True
-            return Operation("wield", Entity(tool.id)
+            return Operation("wield", Entity(tool.id))
         what=me.find_thing(self.what)[0]
         return Operation("use",Entity(what.id))
 

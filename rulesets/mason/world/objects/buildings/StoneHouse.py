@@ -3,11 +3,11 @@
 
 from atlas import *
 
-from world.object.Thing import Thing
+from world.objects.Thing import Thing
 from common import const
 from world import probability
 from misc import set_kw
-from world.object.buildings.House import House
+from world.objects.buildings.House import House
 
-class StoneHouse(House):
+class Stonehouse(House):
     """This class is a stone house it does not burn"""

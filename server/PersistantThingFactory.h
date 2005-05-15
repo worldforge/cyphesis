@@ -12,6 +12,8 @@ class Entity;
 template <class T>
 class Persistor;
 
+class ScriptFactory;
+
 /// \brief Interface class for connecting a newly created entity to its
 /// persistor
 class PersistorBase {
@@ -41,12 +43,13 @@ class PersistorConnection : public PersistorBase {
 /// optionally with a script. Stores information about default attributes,
 /// script language and class name.
 class FactoryBase {
+  protected:
+    FactoryBase();
   public:
-    std::string m_script;
-    std::string m_language;
+    ScriptFactory * m_scriptFactory;
     Atlas::Message::MapType m_attributes;
 
-    virtual ~FactoryBase() { }
+    virtual ~FactoryBase();
 
     virtual Entity * newThing(const std::string & id) = 0;
     virtual Entity * newPersistantThing(const std::string & id, PersistorBase **) = 0;
@@ -60,14 +63,14 @@ class FactoryBase {
 /// entity class
 template <class T>
 class PersistantThingFactory : public FactoryBase {
+  protected:
+    PersistantThingFactory(PersistantThingFactory<T> & p) : m_p(p.m_p),
+                                                            m_master(false) { }
   public:
     Persistor<T> & m_p;
     const bool m_master;
 
     PersistantThingFactory() : m_p(* new Persistor<T>()), m_master(true) { }
-    PersistantThingFactory(PersistantThingFactory<T> & p) : m_p(p.m_p),
-                                                            m_master(false) { }
-
     virtual ~PersistantThingFactory();
  
     virtual T * newThing(const std::string & id);

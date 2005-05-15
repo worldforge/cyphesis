@@ -1,5 +1,34 @@
 2005-05-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/objects/tools/Rope.py: Correct the syntax
+	  of stub functions.
+
+	* rulesets/basic/world/objects/buildings/StoneHouse.py: Fix the import
+	  statements.
+
+	* rulesets/basic/world/objects/buildings/House.py: Fix import for
+	  physics module.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Fix typo in
+	  cut_something.
+
+	* server/ScriptFactory.cpp, server/ScriptFactory.h: New factory
+	  class for handling python scripts for entities much more
+	  efficiently, and provide a means where they can be re-imorted
+	  at an apropriate time.
+
+	* server/PersistantThingFactory.h, 
+	  server/PersistantThingFactory.cpp: Make PersistantThingFactory
+	  copy constructor protected, to ensure its not used accidentally.
+	  Replace strings for storing python script data with a pointer
+	  to a factory for creating scripts.
+
+	* server/EntityFactory.cpp: Use the new ScriptFactory mechnism
+	  for creating scripts attached to entities. Improve variable
+	  names a little.
+
+2005-05-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/define_world.py: Fix typo. Thanks erik.
 
 2005-05-15  Al Riddoch  <alriddoch@zepler.org>

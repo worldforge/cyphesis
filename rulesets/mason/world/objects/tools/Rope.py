@@ -4,8 +4,8 @@
 from world.objects.Thing import Thing
 
 class Rope(Thing):
-    def attach_operation(self, op):
+    def attach_operation(self, op): pass
         # Set out attribute to be attached to the other thing
-    def pull_operation(self, op):
+    def pull_operation(self, op): pass
         # Move whatever we are attached to.
         # Lift? Drag? Rotate?

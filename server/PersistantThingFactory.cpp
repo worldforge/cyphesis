@@ -17,6 +17,14 @@
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
 
+FactoryBase::FactoryBase() : m_scriptFactory(0)
+{
+}
+
+FactoryBase::~FactoryBase()
+{
+}
+
 template class PersistorConnection<Entity>;
 template class PersistorConnection<Thing>;
 template class PersistorConnection<Character>;

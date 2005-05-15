@@ -7,7 +7,12 @@ from world.objects.Thing import Thing
 from common import log,const
 from world import probability
 from misc import set_kw
-from world.physics.Vector3D import Vector3D
+
+if const.server_python:
+    from world.physics.Vector3D import Vector3D
+else:
+    from Vector3D import Vector3D
+    from Point3D import Point3D
 
 class House(Thing):
     """This base class for houses, building material is wood"""

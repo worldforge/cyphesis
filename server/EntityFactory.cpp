@@ -7,6 +7,7 @@
 #include "EntityFactory.h"
 
 #include "PersistantThingFactory.h"
+#include "ScriptFactory.h"
 #include "Persistance.h"
 #include "Persistor.h"
 #include "Player.h"
@@ -106,10 +107,10 @@ Entity * EntityFactory::newEntity(const std::string & id,
                      << std::endl << std::flush;);
     thing->setType(type);
     // Sort out python object
-    if ((factory->m_language == "python") && (!factory->m_script.empty())) {
+    if (factory->m_scriptFactory != 0) {
         debug(std::cout << "Class " << type << " has a python class"
                         << std::endl << std::flush;);
-        Create_PyEntity(thing, factory->m_script, type);
+        factory->m_scriptFactory->addScript(thing);
     }
 
     // Read the defaults
@@ -178,8 +179,8 @@ void EntityFactory::installRule(const std::string & className,
     }
     const std::string & parent = p1.asString();
     // Get the new factory for this rule
-    FactoryBase * f = getNewFactory(parent);
-    if (f == 0) {
+    FactoryBase * factory = getNewFactory(parent);
+    if (factory == 0) {
         debug(std::cout << "Rule \"" << className
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
@@ -194,10 +195,13 @@ void EntityFactory::installRule(const std::string & className,
         const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
-            f->m_script = J->second.asString();
+            const std::string & scriptName = J->second.asString();
             J = script.find("language");
             if ((J != script.end()) && (J->second.isString())) {
-                f->m_language = J->second.asString();
+                const std::string & scriptLanguage = J->second.asString();
+                if (scriptLanguage == "python") { 
+                    factory->m_scriptFactory = new PythonScriptFactory(scriptName, className);
+                }
             }
         }
     }
@@ -232,7 +236,7 @@ void EntityFactory::installRule(const std::string & className,
             const MapType & attr = K->second.asMap();
             MapType::const_iterator L = attr.find("default");
             if (L != attr.end()) {
-                f->m_attributes[K->first] = L->second;
+                factory->m_attributes[K->first] = L->second;
             }
         }
     }
@@ -242,10 +246,9 @@ void EntityFactory::installRule(const std::string & className,
         Player::playableTypes.insert(className);
     }
     debug(std::cout << "INSTALLING " << className << ":" << parent
-                    << "{" << f->m_script << "." << f->m_language << "}"
                     << std::endl << std::flush;);
     // Install the factory in place.
-    installFactory(parent, className, f);
+    installFactory(parent, className, factory);
     RuleWaitList::iterator I = m_waitingRules.lower_bound(className);
     for (; I != m_waitingRules.upper_bound(className); ++I) {
         const std::string & wClassName = I->second.first;

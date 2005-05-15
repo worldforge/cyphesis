@@ -57,6 +57,7 @@ cyphesis_SOURCES = \
 		Restorer.cpp Restorer_impl.h Restorer.h \
 		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
 		WorldRouter.cpp WorldRouter.h \
+		ScriptFactory.cpp ScriptFactory.h \
 		EntityFactory.cpp EntityFactory.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
@@ -101,6 +102,7 @@ cyslave_SOURCES = \
 		Restorer.cpp Restorer_impl.h Restorer.h \
 		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
 		WorldRouter.cpp WorldRouter.h \
+		ScriptFactory.cpp ScriptFactory.h \
 		EntityFactory.cpp EntityFactory.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
