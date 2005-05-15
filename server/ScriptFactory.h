@@ -20,6 +20,8 @@ class ScriptFactory {
   public:
     virtual ~ScriptFactory();
 
+    const std::string & package() { return m_package; }
+
     virtual int addScript(Entity * entity) = 0;
     virtual int refreshClass() = 0;
 };

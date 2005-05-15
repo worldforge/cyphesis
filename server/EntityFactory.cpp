@@ -146,51 +146,14 @@ void EntityFactory::flushFactories()
     m_factories.clear();
 }
 
-int EntityFactory::installRule(const std::string & className,
-                               const MapType & classDesc)
+void EntityFactory::populateFactory(const std::string & className,
+                                    FactoryBase * factory,
+                                    const MapType & classDesc)
 {
-    MapType::const_iterator J = classDesc.find("parents");
-    MapType::const_iterator Jend = classDesc.end();
-    if (J == Jend) {
-        std::string msg = std::string("Rule \"") + className 
-                          + "\" has no parents. Skipping.";
-        log(ERROR, msg.c_str());
-        return -1;
-    }
-    if (!J->second.isList()) {
-        std::string msg = std::string("Rule \"") + className 
-                          + "\" has malformed parents. Skipping.";
-        log(ERROR, msg.c_str());
-        return -1;
-    }
-    const ListType & parents = J->second.asList();
-    if (parents.empty()) {
-        std::string msg = std::string("Rule \"") + className 
-                          + "\" has empty parents. Skipping.";
-        log(ERROR, msg.c_str());
-        return -1;
-    }
-    const Element & p1 = parents.front();
-    if (!p1.isString() || p1.asString().empty()) {
-        std::string msg = std::string("Rule \"") + className 
-                          + "\" has malformed first parent. Skipping.";
-        log(ERROR, msg.c_str());
-        return -1;
-    }
-    const std::string & parent = p1.asString();
-    // Get the new factory for this rule
-    FactoryBase * factory = getNewFactory(parent);
-    if (factory == 0) {
-        debug(std::cout << "Rule \"" << className
-                        << "\" has non existant parent \"" << parent
-                        << "\". Waiting." << std::endl << std::flush;);
-        m_waitingRules.insert(make_pair(parent, make_pair(className, classDesc)));
-        return 1;
-    }
-
     // Establish whether this rule has an associated script, and
     // if so, use it.
-    J = classDesc.find("script");
+    MapType::const_iterator J = classDesc.find("script");
+    MapType::const_iterator Jend = classDesc.end();
     if ((J != Jend) && (J->second.isMap())) {
         const MapType & script = J->second.asMap();
         J = script.find("name");
@@ -199,8 +162,21 @@ int EntityFactory::installRule(const std::string & className,
             J = script.find("language");
             if ((J != script.end()) && (J->second.isString())) {
                 const std::string & scriptLanguage = J->second.asString();
-                if (scriptLanguage == "python") { 
-                    factory->m_scriptFactory = new PythonScriptFactory(scriptName, className);
+                if (factory->m_scriptFactory != 0) {
+                    std::cout << "Factory exists" << std::endl << std::flush;
+                    if (factory->m_scriptFactory->package() != scriptName) {
+                        std::cout << "The wrong factory"
+                                  << std::endl << std::flush;
+                        delete factory->m_scriptFactory;
+                        factory->m_scriptFactory = 0;
+                    }
+                }
+                if (factory->m_scriptFactory == 0) {
+                    if (scriptLanguage == "python") {
+                        factory->m_scriptFactory = new PythonScriptFactory(scriptName, className);
+                    } else {
+                        log(ERROR, "Unknown script language.");
+                    }
                 }
             }
         }
@@ -246,6 +222,52 @@ int EntityFactory::installRule(const std::string & className,
     if ((J != Jend) && (J->second.isInt())) {
         Player::playableTypes.insert(className);
     }
+}
+
+int EntityFactory::installRule(const std::string & className,
+                               const MapType & classDesc)
+{
+    MapType::const_iterator J = classDesc.find("parents");
+    MapType::const_iterator Jend = classDesc.end();
+    if (J == Jend) {
+        std::string msg = std::string("Rule \"") + className 
+                          + "\" has no parents. Skipping.";
+        log(ERROR, msg.c_str());
+        return -1;
+    }
+    if (!J->second.isList()) {
+        std::string msg = std::string("Rule \"") + className 
+                          + "\" has malformed parents. Skipping.";
+        log(ERROR, msg.c_str());
+        return -1;
+    }
+    const ListType & parents = J->second.asList();
+    if (parents.empty()) {
+        std::string msg = std::string("Rule \"") + className 
+                          + "\" has empty parents. Skipping.";
+        log(ERROR, msg.c_str());
+        return -1;
+    }
+    const Element & p1 = parents.front();
+    if (!p1.isString() || p1.asString().empty()) {
+        std::string msg = std::string("Rule \"") + className 
+                          + "\" has malformed first parent. Skipping.";
+        log(ERROR, msg.c_str());
+        return -1;
+    }
+    const std::string & parent = p1.asString();
+    // Get the new factory for this rule
+    FactoryBase * factory = getNewFactory(parent);
+    if (factory == 0) {
+        debug(std::cout << "Rule \"" << className
+                        << "\" has non existant parent \"" << parent
+                        << "\". Waiting." << std::endl << std::flush;);
+        m_waitingRules.insert(make_pair(parent, make_pair(className, classDesc)));
+        return 1;
+    }
+
+    populateFactory(className, factory, classDesc);
+
     debug(std::cout << "INSTALLING " << className << ":" << parent
                     << std::endl << std::flush;);
 

@@ -1,5 +1,13 @@
 2005-05-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/ScriptFactory.h: Add accessor for script package.
+
+	* server/EntityFactory.cpp, server/EntityFactory.h: Move code that
+	  adds data to a factory into a separate function so it can
+	  potentially be called from elsewhere.
+
+2005-05-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp: Implement reloading scripts when
 	  a client asks to modify an installed type.
 

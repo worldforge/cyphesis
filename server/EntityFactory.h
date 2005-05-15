@@ -36,6 +36,9 @@ class EntityFactory {
     void getRulesFromFiles(Atlas::Message::MapType&);
     void installRules();
     void installFactory(const std::string &, const std::string &, FactoryBase*);
+    void populateFactory(const std::string & className,
+                         FactoryBase * factory,
+                         const Atlas::Message::MapType & classDesc);
     FactoryBase * getNewFactory(const std::string &);
   public:
     static void init(BaseWorld & w) {
