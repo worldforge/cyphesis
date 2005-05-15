@@ -10,18 +10,30 @@
 
 #include "common/debug.h"
 
+#include <Atlas/Net/Stream.h>
+
+#include <Atlas/Objects/Encoder.h>
+
+#include <Atlas/Objects/Entity/Account.h>
+
+#include <Atlas/Objects/Operation/Get.h>
+#include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation/Create.h>
+#include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation/Error.h>
+
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-using Atlas::Objects::Operation::Appearance;
-using Atlas::Objects::Operation::Disappearance;
-using Atlas::Objects::Operation::Generic;
+using Atlas::Objects::Entity::Account;
+
 using Atlas::Objects::Operation::Get;
 using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Look;
-using Atlas::Objects::Operation::Logout;
-using Atlas::Objects::Operation::Talk;
+using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Login;
+using Atlas::Objects::Operation::Info;
+using Atlas::Objects::Operation::Error;
 
 static const bool debug_flag = false;
 
@@ -71,7 +83,7 @@ void AdminClient::output(const Element & item, bool recurse)
     }
 }
 
-void AdminClient::objectArrived(const Atlas::Objects::Operation::Info& o)
+void AdminClient::objectArrived(const Info& o)
 {
     reply_flag = true;
     if (o.getArgs().empty()) {
@@ -91,7 +103,7 @@ void AdminClient::objectArrived(const Atlas::Objects::Operation::Info& o)
     }
 }
 
-void AdminClient::objectArrived(const Atlas::Objects::Operation::Error& o)
+void AdminClient::objectArrived(const Error& o)
 {
     reply_flag = true;
     error_flag = true;
@@ -103,6 +115,26 @@ void AdminClient::objectArrived(const Atlas::Objects::Operation::Error& o)
         m_errorMessage = arg.asMap().find("message")->second.asString();
     }
 }
+
+AdminClient::AdminClient() : error_flag(false), reply_flag(false),
+                             login_flag(false), encoder(0), codec(0),
+                             ios(0), exit(false)
+{
+}
+
+AdminClient::~AdminClient()
+{
+    if (encoder != 0) {
+        delete encoder;
+    }
+    if (codec != 0) {
+        delete codec;
+    }
+    if (ios != 0) {
+        delete ios;
+    }
+}
+
 
 void AdminClient::loop()
 {
@@ -155,7 +187,7 @@ int AdminClient::checkRule(const std::string & id)
     reply_flag = false;
     login_flag = false;
 
-    Atlas::Objects::Operation::Get g;
+    Get g;
 
     ListType & get_args = g.getArgs();
     MapType arg;
@@ -235,7 +267,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
     reply_flag = false;
     login_flag = false;
 
-    Atlas::Objects::Operation::Set s;
+    Create s;
 
     ListType & set_args = s.getArgs();
     MapType new_rule(rule);
@@ -344,8 +376,8 @@ void AdminClient::waitForInfo()
 
 int AdminClient::login()
 {
-    Atlas::Objects::Entity::Account account;
-    Atlas::Objects::Operation::Login l;
+    Account account;
+    Login l;
     error_flag = false;
     reply_flag = false;
     login_flag = true;

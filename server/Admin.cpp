@@ -126,15 +126,16 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         error(op, "Get arg is not a map.", res, getId());
         return;
     }
-    const MapType & emap = ent.asMap();
-    MapType::const_iterator I = emap.find("objtype");
-    if (I == emap.end() || !I->second.isString()) {
+    const MapType & entmap = ent.asMap();
+    MapType::const_iterator I = entmap.find("objtype");
+    MapType::const_iterator Iend = entmap.end();
+    if (I == Iend || !I->second.isString()) {
         error(op, "Get arg has no objtype.", res, getId());
         return;
     }
     const std::string & objtype = I->second.asString();
-    I = emap.find("id");
-    if (I == emap.end() || !I->second.isString()) {
+    I = entmap.find("id");
+    if (I == Iend || !I->second.isString()) {
         error(op, "Get arg has no id.", res, getId());
         return;
     }
@@ -204,15 +205,15 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         error(op, "Set arg is not a map.", res, getId());
         return;
     }
-    const MapType & emap = ent.asMap();
-    MapType::const_iterator I = emap.find("objtype");
-    MapType::const_iterator Iend = emap.end();
+    const MapType & entmap = ent.asMap();
+    MapType::const_iterator I = entmap.find("objtype");
+    MapType::const_iterator Iend = entmap.end();
     if (I == Iend || !I->second.isString()) {
         error(op, "Set arg has no objtype.", res, getId());
         return;
     }
     const std::string & objtype = I->second.asString();
-    I = emap.find("id");
+    I = entmap.find("id");
     if (I == Iend || !I->second.isString()) {
         error(op, "Set arg has no id.", res, getId());
         return;
@@ -229,9 +230,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         log(WARNING, "Unable to set attributes of non-character yet");
         // Manipulate attributes of existing objects.
     } else if (objtype == "class") {
-        // Quick hack. This should eventually use EntityFactory, but that
-        // code needs description in a strange format for now.
-        I = emap.find("parents");
+        I = entmap.find("parents");
         if (I == Iend) {
             error(op, "Attempt to install type with no parents", res, getId());
             return;
@@ -252,9 +251,18 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         }
         Atlas::Objects::Root * o = Inheritance::instance().get(id);
         if (o != 0) {
-            error(op, "Attempt to install type that already exists", res, getId());
+            if (EntityFactory::instance()->modifyRule(id, entmap) == 0) {
+                Info * info = new Info;
+                info->setTo(getId());
+                ListType & info_args = info->getArgs();
+                info_args.push_back(entmap);
+                res.push_back(info);
+            } else {
+                error(op, "Unknown error updating new type", res, getId());
+            }
             return;
         }
+        log(WARNING, "Client using Set to install new type.");
         o = Inheritance::instance().get(parent);
         if (o == 0) {
             std::string msg("Attempt to install type with non-existant parent \"");
@@ -263,11 +271,11 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
             error(op, msg.c_str(), res, getId());
             return;
         }
-        if (EntityFactory::instance()->installRule(id, emap) == 0) {
+        if (EntityFactory::instance()->installRule(id, entmap) == 0) {
             Info * info = new Info;
             info->setTo(getId());
             ListType & info_args = info->getArgs();
-            info_args.push_back(emap);
+            info_args.push_back(entmap);
             res.push_back(info);
         } else {
             error(op, "Unknown error installing new type", res, getId());
@@ -302,8 +310,62 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
         error(op, "Object to be created has no objtype", res, getId());
         return;
     }
+    const std::string & objtype = I->second.asString();
+    if (objtype == "class") {
+        // New entity type
+        I = entmap.find("id");
+        if (I == Iend || !I->second.isString()) {
+            error(op, "Set arg has no id.", res, getId());
+            return;
+        }
+        const std::string & id = I->second.asString();
 
-    Account::CreateOperation(op, res);
+        I = entmap.find("parents");
+        if (I == Iend) {
+            error(op, "Attempt to install type with no parents", res, getId());
+            return;
+        }
+        if (!I->second.isList()) {
+            error(op, "Attempt to install type with non-list parents", res, getId());
+            return;
+        }
+        const ListType & parents = I->second.asList();
+        if (parents.empty() || !parents.front().isString()) {
+            error(op, "Attempt to install type with invalid parent", res, getId());
+            return;
+        }
+        const std::string & parent = parents.front().asString();
+        if (parent.empty()) {
+            error(op, "Attempt to install type with parent=\"\"", res, getId());
+            return;
+        }
+        Atlas::Objects::Root * o = Inheritance::instance().get(id);
+        if (o != 0) {
+            error(op, "Attempt to install type that already exists", res, getId());
+            return;
+        }
+        o = Inheritance::instance().get(parent);
+        if (o == 0) {
+            std::string msg("Attempt to install type with non-existant parent \"");
+            msg += parent;
+            msg += "\"";
+            error(op, msg.c_str(), res, getId());
+            return;
+        }
+        if (EntityFactory::instance()->installRule(id, entmap) == 0) {
+            Info * info = new Info;
+            info->setTo(getId());
+            ListType & info_args = info->getArgs();
+            info_args.push_back(entmap);
+            res.push_back(info);
+        } else {
+            error(op, "Unknown error installing new type", res, getId());
+        }
+    } else if (objtype == "op_definition") {
+        // New operation type
+    } else {
+        Account::CreateOperation(op, res);
+    }
 }
 
 void Admin::OtherOperation(const Operation & op, OpVector & res)

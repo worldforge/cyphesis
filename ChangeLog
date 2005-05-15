@@ -1,5 +1,21 @@
 2005-05-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp, server/EntityFactory.h: Add a public
+	  method to allow the attributes of an installed type to be
+	  modified.
+
+	* server/Admin.cpp: Correctly handle Create ops from client
+	  to install new types from the client rather than Set.
+	  Leave Set available as a legacy feature. Allow Set to be
+	  used to modify the attributes of an existing type.
+
+	* tools/AdminClient.cpp, tools/AdminClient.h: Clean up headers,
+	  move constructor and destructor into the .cpp file,
+	  and make better use of using. Send Create ops instead of Set
+	  ops when installing new types in the server.
+
+2005-05-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.h, server/EntityFactory.cpp: Make a bunch
 	  of functions private, as they should not be available elsewhere.
 	  Make installRule() public, and make it return an error status.

@@ -266,6 +266,13 @@ int EntityFactory::installRule(const std::string & className,
     return 0;
 }
 
+int EntityFactory::modifyRule(const std::string & className,
+                              const MapType & classDesc)
+{
+    log(ERROR, "Modifying existing rules is not yet supported.");
+    return -1;
+}
+
 void EntityFactory::getRulesFromFiles(MapType & rules)
 {
     std::vector<std::string>::const_iterator I = rulesets.begin();

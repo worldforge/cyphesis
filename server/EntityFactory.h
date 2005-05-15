@@ -56,6 +56,7 @@ class EntityFactory {
     void flushFactories();
 
     int installRule(const std::string &, const Atlas::Message::MapType&);
+    int modifyRule(const std::string &, const Atlas::Message::MapType&);
 };
 
 #endif // SERVER_ENTITY_FACTORY_H

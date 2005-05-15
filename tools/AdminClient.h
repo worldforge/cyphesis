@@ -8,39 +8,20 @@
 #include "common/const.h"
 #include "common/globals.h"
 
-#include <Atlas/Objects/Encoder.h>
-#include <Atlas/Net/Stream.h>
-#include <Atlas/Objects/Decoder.h>
-#include <Atlas/Codec.h>
-#include <Atlas/Objects/Entity/Account.h>
-#include <Atlas/Objects/Operation/Appearance.h>
-#include <Atlas/Objects/Operation/Combine.h>
-#include <Atlas/Objects/Operation/Delete.h>
-#include <Atlas/Objects/Operation/Feel.h>
-#include <Atlas/Objects/Operation/Imaginary.h>
-#include <Atlas/Objects/Operation/Listen.h>
-#include <Atlas/Objects/Operation/Move.h>
-#include <Atlas/Objects/Operation/Disappearance.h>
-#include <Atlas/Objects/Operation/Smell.h>
-#include <Atlas/Objects/Operation/Touch.h>
-#include <Atlas/Objects/Operation/Divide.h>
-#include <Atlas/Objects/Operation/Login.h>
-#include <Atlas/Objects/Operation/Logout.h>
-#include <Atlas/Objects/Operation/Get.h>
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Talk.h>
-#include <Atlas/Objects/Operation/Error.h>
-#include <Atlas/Objects/Operation/Sound.h>
-
-#include <varconf/Config.h>
-
 #include "common/utility.h"
 #include "common/Generic.h"
+
+#include <Atlas/Objects/Decoder.h>
+#include <Atlas/Codec.h>
+
+#include <varconf/Config.h>
 
 #include <skstream/skstream_unix.h>
 
 #include <iostream>
 #include <cstdio>
+
+namespace Atlas { namespace Objects { class Encoder; } }
 
 typedef std::multimap<std::string, std::pair<std::pair<std::string, std::string>, Atlas::Message::MapType> > RuleWaitList;
 
@@ -70,19 +51,8 @@ class AdminClient : public Atlas::Objects::Decoder
     void waitForInfo();
     int checkRule(const std::string & id);
   public:
-    AdminClient() : error_flag(false), reply_flag(false), login_flag(false),
-                    encoder(0), codec(0), ios(0), exit(false) { }
-    ~AdminClient() {
-        if (encoder != 0) {
-            delete encoder;
-        }
-        if (codec != 0) {
-            delete codec;
-        }
-        if (ios != 0) {
-            delete ios;
-        }
-    }
+    AdminClient();
+    ~AdminClient();
 
     void send(const Atlas::Objects::Operation::RootOperation &);
     int connect(const std::string & host);
