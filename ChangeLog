@@ -1,5 +1,13 @@
 2005-05-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml, rulesets/mason/world/objects/clothing/Garment.py:
+	  Add experimental garment entity for changing the characters
+	  appearance.
+
+	* common/custom.cpp: Add wear operation for use with garments.
+
+2005-05-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add default guise attribute to settler.
 
 	* tools/cycmd.cpp: Clearly differentiate between strings and numbers

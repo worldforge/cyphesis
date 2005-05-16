@@ -438,6 +438,40 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.5</float>
+          <float>-0</float>
+          <float>0.5</float>
+          <float>0.5</float>
+          <float>0.3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">3</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="operations">
+        <list name="default">
+          <string>wear</string>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">garment</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.clothing.Garment</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="mass">
         <float name="default">50</float>
         <string name="visibility">public</string>
