@@ -217,8 +217,43 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
     reply_flag = false;
     login_flag = false;
 
-    if (checkRule(id) == 0) {
+    if (m_uploadedRules.find(id) != m_uploadedRules.end()) {
         return -1;
+    }
+
+    if (checkRule(id) == 0) {
+        std::cout << "Updating " << id << " on server."
+                  << std::endl << std::flush;
+
+        error_flag = false;
+        reply_flag = false;
+        login_flag = false;
+
+        Set s;
+
+        ListType & set_args = s.getArgs();
+        MapType existing_rule;
+        existing_rule["ruleset"] = set;
+        existing_rule["id"] = id;
+        existing_rule["objtype"] = "class";
+
+        set_args.push_back(existing_rule);
+
+        s.setFrom(accountId);
+
+        encoder->streamMessage(&s);
+
+        (*ios) << std::flush;
+
+        waitForInfo();
+
+        if (error_flag) {
+            return -1;
+        }
+
+        m_uploadedRules.insert(id);
+
+        return 0;
     }
 
     MapType::const_iterator I = rule.find("parents");
@@ -267,18 +302,18 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
     reply_flag = false;
     login_flag = false;
 
-    Create s;
+    Create c;
 
-    ListType & set_args = s.getArgs();
+    ListType & set_args = c.getArgs();
     MapType new_rule(rule);
     new_rule["ruleset"] = set;
     new_rule["objtype"] = "class";
 
     set_args.push_back(new_rule);
 
-    s.setFrom(accountId);
+    c.setFrom(accountId);
 
-    encoder->streamMessage(&s);
+    encoder->streamMessage(&c);
 
     (*ios) << std::flush;
 
@@ -291,6 +326,8 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
                   << std::endl << std::flush;
         return -1;
     }
+
+    m_uploadedRules.insert(id);
 
     int count = 1;
 

@@ -101,7 +101,10 @@ int PythonScriptFactory::refreshClass()
         std::string msg = std::string("Error reloading python module ")
                                      + m_package;
         log(ERROR, msg.c_str());
+        PyErr_Clear();
         return -1;
     }
+    Py_DECREF(m_module);
+    m_module = new_module;
     return getClass();
 }

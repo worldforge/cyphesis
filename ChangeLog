@@ -1,3 +1,17 @@
+2005-05-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp: Implement updating default attributes
+	  and other metadata when types are modified from the client.
+
+	* server/ScriptFactory.cpp: Handle errors that occur when reloading
+	  modules. Store the new module correctly.
+
+	* tools/AdminClient.cpp, tools/AdminClient.h: Change behavoir of
+	  cyaddrules so it updates types that have already been installed.
+	  Requires adding a set op types that have already been uploaded
+	  or updated, to ensure that types in a base ruleset don't override
+	  the one already in the server.
+
 2005-05-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/ScriptFactory.h: Add accessor for script package.

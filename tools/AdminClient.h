@@ -19,6 +19,8 @@
 #include <skstream/skstream_unix.h>
 
 #include <iostream>
+#include <set>
+
 #include <cstdio>
 
 namespace Atlas { namespace Objects { class Encoder; } }
@@ -39,6 +41,7 @@ class AdminClient : public Atlas::Objects::Decoder
     std::string m_errorMessage;
     bool exit;
     RuleWaitList m_waitingRules;
+    std::set<std::string> m_uploadedRules;
 
     void output(const Atlas::Message::Element & item, bool recurse = true);
   protected:

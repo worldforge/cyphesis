@@ -304,7 +304,8 @@ int EntityFactory::modifyRule(const std::string & className,
         script_factory->refreshClass();
     }
 
-    // FIXME Update the other things about this class.
+    populateFactory(className, factory, classDesc);
+
     return 0;
 }
 
