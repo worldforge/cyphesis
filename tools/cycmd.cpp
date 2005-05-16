@@ -181,7 +181,7 @@ void Interactive<Stream>::output(const Element & item, bool recurse)
             std::cout << item.asFloat();
             break;
         case Element::TYPE_STRING:
-            std::cout << item.asString();
+            std::cout << "\"" << item.asString() << "\"";
             break;
         case Element::TYPE_LIST:
             if (recurse) {

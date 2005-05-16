@@ -1,5 +1,12 @@
 2005-05-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add default guise attribute to settler.
+
+	* tools/cycmd.cpp: Clearly differentiate between strings and numbers
+	  when outputting Atlas data.
+
+2005-05-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/Makefile.am: Add prefix.o to cyaddrules so it works in
 	  a binreloc enabled build.
 
