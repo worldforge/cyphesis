@@ -1,5 +1,10 @@
 2005-05-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/Makefile.am: Add prefix.o to cyaddrules so it works in
+	  a binreloc enabled build.
+
+2005-05-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp: Implement updating default attributes
 	  and other metadata when types are modified from the client.
 

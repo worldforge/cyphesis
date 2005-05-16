@@ -83,6 +83,7 @@ cyaddrules_SOURCES = cyaddrules.cpp AdminClient.cpp AdminClient.h
 cyaddrules_LDADD = $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/common/operations.o \
                    $(top_builddir)/common/globals.o \
+                   $(top_builddir)/common/prefix.o \
                    $(top_builddir)/common/log.o \
                    $(TOOL_LIBS)
 
