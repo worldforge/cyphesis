@@ -1,5 +1,17 @@
 2005-05-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Fix leak of Motion object.
+
+	* rulesets/World.cpp, rulesets/World.h: Make tileShader a member
+	  variable, and delete it in the destructor to avoid a leak.
+
+	* server/PersistantThingFactory.cpp: Fix leak of ScriptFactorys.
+
+	* server/PersistantThingFactory_impl.h: Fix leak of Persistor
+	  in ForbiddenThingFactory.
+
+2005-05-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml, rulesets/mason/world/objects/tools/Tinderbox.py:
 	  Tinderbox for starting fires.
 

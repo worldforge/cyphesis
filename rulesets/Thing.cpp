@@ -51,7 +51,11 @@ Thing::Thing(const std::string & id) : Entity(id)
     m_motion = new Motion(*this);
 }
 
-Thing::~Thing() { }
+Thing::~Thing()
+{
+    assert(m_motion != 0);
+    delete m_motion;
+}
 
 void Thing::SetupOperation(const Operation & op, OpVector & res)
 {

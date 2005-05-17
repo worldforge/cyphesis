@@ -9,6 +9,7 @@
 
 namespace Mercator {
     class Terrain;
+    class TileShader;
 }
 
 typedef Thing World_parent;
@@ -23,6 +24,8 @@ class World : public World_parent {
   protected:
     /// Terrain manager for the world.
     Mercator::Terrain & m_terrain;
+    /// Terrain shader tracking surface type.
+    Mercator::TileShader & m_tileShader;
     /// Set of terrain points which have been changed.
     PointSet m_modifiedTerrain;
     /// Set of terrain points which have been added.

@@ -23,6 +23,9 @@ FactoryBase::FactoryBase() : m_scriptFactory(0)
 
 FactoryBase::~FactoryBase()
 {
+    if (m_scriptFactory != 0) {
+        delete m_scriptFactory;
+    }
 }
 
 template class PersistorConnection<Entity>;

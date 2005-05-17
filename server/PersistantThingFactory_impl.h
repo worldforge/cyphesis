@@ -45,6 +45,7 @@ FactoryBase * PersistantThingFactory<T>::duplicateFactory()
 template <class T>
 ForbiddenThingFactory<T>::~ForbiddenThingFactory()
 {
+    delete &m_p;
 }
 
 template <class T>

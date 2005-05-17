@@ -40,7 +40,8 @@ typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 
 /// \brief Constructor for the World entity
 World::World(const std::string & id) : World_parent(id),
-             m_terrain(*new Mercator::Terrain(Mercator::Terrain::SHADED))
+             m_terrain(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
+             m_tileShader(*new Mercator::TileShader)
 {
     subscribe("set", OP_SET);
     subscribe("delve", OP_OTHER);
@@ -50,18 +51,18 @@ World::World(const std::string & id) : World_parent(id),
     m_properties["terrain"] = new TerrainProperty(m_terrain, m_modifiedTerrain,
                                                   m_modifiedTerrain, a_terrain);
 
-    Mercator::TileShader * tileShader = new Mercator::TileShader;
-    tileShader->addShader(new Mercator::FillShader(), ROCK);
-    tileShader->addShader(new Mercator::BandShader(-2.f, 1.5f), SAND);
-    tileShader->addShader(new Mercator::GrassShader(1.f, 80.f, .5f, 1.f),GRASS);
-    tileShader->addShader(new Mercator::DepthShader(0.f, -10.f), SILT);
-    tileShader->addShader(new Mercator::HighShader(110.f), SNOW);
-    m_terrain.addShader(tileShader, 0);
+    m_tileShader.addShader(new Mercator::FillShader(), ROCK);
+    m_tileShader.addShader(new Mercator::BandShader(-2.f, 1.5f), SAND);
+    m_tileShader.addShader(new Mercator::GrassShader(1.f, 80.f, .5f, 1.f), GRASS);
+    m_tileShader.addShader(new Mercator::DepthShader(0.f, -10.f), SILT);
+    m_tileShader.addShader(new Mercator::HighShader(110.f), SNOW);
+    m_terrain.addShader(&m_tileShader, 0);
 }
 
 World::~World()
 {
     delete &m_terrain;
+    delete &m_tileShader;
 }
 
 /// \brief Calculate the terrain height at the given x,y coordinates

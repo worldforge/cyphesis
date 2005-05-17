@@ -1,3 +1,5 @@
+Implement op_definitions in the rules.
+
 Memory leak of script factories. Also need to carefully make sure python
 object references aren't leaked.
 
