@@ -5,8 +5,6 @@ from atlas import *
 
 from world.objects.Thing import Thing
 
-print "Garment loaded"
-
 class Garment(Thing):
     """This is base class for clothing. This mechanism is just a quick hacky
        way to modify the guise attribute."""

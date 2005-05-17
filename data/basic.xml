@@ -3,6 +3,7 @@
     <map name="attributes">
     </map>
     <string name="id">archer</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -12,6 +13,7 @@
     <map name="attributes">
     </map>
     <string name="id">arrow</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -31,6 +33,7 @@
       </map>
     </map>
     <string name="id">axe</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -59,6 +62,7 @@
       </map>
     </map>
     <string name="id">boulder</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -76,6 +80,7 @@
       </map>
     </map>
     <string name="id">bow</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -89,6 +94,7 @@
     <map name="attributes">
     </map>
     <string name="id">butcher</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -106,6 +112,7 @@
       </map>
     </map>
     <string name="id">coin</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -115,6 +122,7 @@
     <map name="attributes">
     </map>
     <string name="id">druid</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -124,6 +132,7 @@
     <map name="attributes">
     </map>
     <string name="id">farmer</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -144,6 +153,7 @@
       </map>
     </map>
     <string name="id">fire</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -157,6 +167,7 @@
     <map name="attributes">
     </map>
     <string name="id">guard</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -166,6 +177,7 @@
     <map name="attributes">
     </map>
     <string name="id">ham</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>food</string>
     </list>
@@ -187,6 +199,7 @@
       </map>
     </map>
     <string name="id">house</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
     </list>
@@ -212,6 +225,7 @@
       </map>
     </map>
     <string name="id">lumber</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -221,6 +235,7 @@
     <map name="attributes">
     </map>
     <string name="id">merchant</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -240,6 +255,7 @@
       </map>
     </map>
     <string name="id">pickaxe</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -273,6 +289,7 @@
       </map>
     </map>
     <string name="id">pile</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -296,6 +313,7 @@
       </map>
     </map>
     <string name="id">scythe</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -319,6 +337,7 @@
       </map>
     </map>
     <string name="id">shovel</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -340,6 +359,7 @@
       </map>
     </map>
     <string name="id">stonehouse</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>house</string>
     </list>
@@ -365,6 +385,7 @@
       </map>
     </map>
     <string name="id">sty</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
     </list>
@@ -374,6 +395,7 @@
     <map name="attributes">
     </map>
     <string name="id">swineherd</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -387,6 +409,7 @@
       </map>
     </map>
     <string name="id">sword</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -400,6 +423,7 @@
     <map name="attributes">
     </map>
     <string name="id">tent</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
     </list>
@@ -409,6 +433,7 @@
     <map name="attributes">
     </map>
     <string name="id">tree</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>plant</string>
     </list>
@@ -422,6 +447,7 @@
     <map name="attributes">
     </map>
     <string name="id">warrior</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>

@@ -19,16 +19,6 @@ void installStandardObjects();
 void installCustomOperations();
 void installCustomEntities();
 
-/// \brief Exception class for exceptions thrown when a child is added to
-/// to Inheritance with a parent that is currently unknown
-class InheritanceException {
-  private:
-    const std::string parent;
-  public:
-    InheritanceException(const std::string & p) : parent(p) { }
-    const std::string & getParent() { return parent; }
-};
-
 /// \brief Base class for factories to create Operation instances
 class OpFactoryBase {
   public:

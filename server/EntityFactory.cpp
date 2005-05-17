@@ -35,6 +35,7 @@
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Entity/GameEntity.h>
+#include <Atlas/Objects/Operation/RootOperation.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -163,10 +164,7 @@ void EntityFactory::populateFactory(const std::string & className,
             if ((J != script.end()) && (J->second.isString())) {
                 const std::string & scriptLanguage = J->second.asString();
                 if (factory->m_scriptFactory != 0) {
-                    std::cout << "Factory exists" << std::endl << std::flush;
                     if (factory->m_scriptFactory->package() != scriptName) {
-                        std::cout << "The wrong factory"
-                                  << std::endl << std::flush;
                         delete factory->m_scriptFactory;
                         factory->m_scriptFactory = 0;
                     }
@@ -224,11 +222,70 @@ void EntityFactory::populateFactory(const std::string & className,
     }
 }
 
+int EntityFactory::installEntityClass(const std::string & className,
+                                      const std::string & parent,
+                                      const MapType & classDesc)
+{
+    // Get the new factory for this rule
+    FactoryBase * factory = getNewFactory(parent);
+    if (factory == 0) {
+        debug(std::cout << "class \"" << className
+                        << "\" has non existant parent \"" << parent
+                        << "\". Waiting." << std::endl << std::flush;);
+        m_waitingRules.insert(make_pair(parent, make_pair(className, classDesc)));
+        return 1;
+    }
+
+    populateFactory(className, factory, classDesc);
+
+    debug(std::cout << "INSTALLING " << className << ":" << parent
+                    << std::endl << std::flush;);
+
+    // Install the factory in place.
+    installFactory(parent, className, factory);
+
+    return 0;
+}
+
+int EntityFactory::installOpDefinition(const std::string & opDefName,
+                                       const std::string & parent,
+                                       const MapType & opDefDesc)
+{
+    Inheritance & i = Inheritance::instance();
+
+    if (i.get(parent) == 0) {
+        debug(std::cout << "op_definition \"" << opDefName
+                        << "\" has non existant parent \"" << parent
+                        << "\". Waiting." << std::endl << std::flush;);
+        return 1;
+    }
+
+    Atlas::Objects::Root * r = new Atlas::Objects::Operation::RootOperation(Atlas::Objects::Operation::RootOperation::Class());
+    r->setId(opDefName);
+    r->setParents(ListType(1, parent));
+
+    if (i.addChild(r) != 0) {
+        return -1;
+    }
+
+    i.opInstall(opDefName, OP_OTHER, new GenericOpFactory(opDefName));
+
+    return 0;
+}
+
 int EntityFactory::installRule(const std::string & className,
                                const MapType & classDesc)
 {
-    MapType::const_iterator J = classDesc.find("parents");
+    MapType::const_iterator J = classDesc.find("objtype");
     MapType::const_iterator Jend = classDesc.end();
+    if (J == Jend || !J->second.isString()) {
+        std::string msg = std::string("Rule \"") + className 
+                          + "\" has no objtype. Skipping.";
+        log(ERROR, msg.c_str());
+        return -1;
+    }
+    const std::string & objtype = J->second.asString();
+    J = classDesc.find("parents");
     if (J == Jend) {
         std::string msg = std::string("Rule \"") + className 
                           + "\" has no parents. Skipping.";
@@ -256,23 +313,23 @@ int EntityFactory::installRule(const std::string & className,
         return -1;
     }
     const std::string & parent = p1.asString();
-    // Get the new factory for this rule
-    FactoryBase * factory = getNewFactory(parent);
-    if (factory == 0) {
-        debug(std::cout << "Rule \"" << className
-                        << "\" has non existant parent \"" << parent
-                        << "\". Waiting." << std::endl << std::flush;);
-        m_waitingRules.insert(make_pair(parent, make_pair(className, classDesc)));
-        return 1;
+    if (objtype == "class") {
+        int ret = installEntityClass(className, parent, classDesc);
+        if (ret != 0) {
+            return ret;
+        }
+    } else if (objtype == "op_definition") {
+        int ret = installOpDefinition(className, parent, classDesc);
+        if (ret != 0) {
+            return ret;
+        }
+    } else {
+        std::string msg = std::string("Rule \"") + className 
+                          + "\" has unknown objtype=\"" + objtype
+                          + "\". Skipping.";
+        log(ERROR, msg.c_str());
+        return -1;
     }
-
-    populateFactory(className, factory, classDesc);
-
-    debug(std::cout << "INSTALLING " << className << ":" << parent
-                    << std::endl << std::flush;);
-
-    // Install the factory in place.
-    installFactory(parent, className, factory);
 
     // Install any rules that were waiting for this rule before they
     // could be installed

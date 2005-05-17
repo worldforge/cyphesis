@@ -1,3 +1,29 @@
+2005-05-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/basic.xml, data/mason.xml: Add objtype to all rules.
+	  Add a rule for ignite operation definition.
+
+	* common/custom.cpp: Remove hardcoded ignite operation definition.
+
+	* server/EntityFactory.cpp, server/EntityFactory.h: Remove some debug
+	  output. Add new code to allow op_definitions to be installed as
+	  rules.
+
+	* common/inheritance.cpp, common/inheritance.h: Return an error code
+	  when a type without parents gets installed, rather than throwing an
+	  exception.
+
+	* tests/inheritancetest.cpp: Fix test so it no longer expects an
+	  exception.
+
+	* rulesets/mason/world/objects/clothing/Garment.py: Remove some
+	  debug output.
+
+	* tools/AdminClient.cpp: Remove hardcoded objtype, depending instead
+	  on objtype from the data file. Fix a bug where the full rule
+	  was not getting uploaded when updating an existing rule.
+	  Improve error reporting when update fails.
+
 2005-05-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Fix leak of Motion object.

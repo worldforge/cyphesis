@@ -145,7 +145,11 @@ int Inheritance::addChild(Atlas::Objects::Root * obj)
     }
     RootDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
-        throw InheritanceException(parent);
+        std::string msg = std::string("Installing type ") + child 
+                        + " which has unknown parent \"" + parent + "\"";
+        log(WARNING, msg.c_str());
+        delete obj;
+        return -1;
     }
     ListType children(1, child);
     if (I->second->hasAttr("children")) {

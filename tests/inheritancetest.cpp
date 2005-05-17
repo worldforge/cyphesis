@@ -109,17 +109,9 @@ int main()
     descendTree(rt, i, count);
     assert(count > 20);
 
-    // Make sure inserting a type with unknown parents fails with
-    // an exception.
-    bool thrown = false;
-    Root r;
-    r.setId("squigglymuff");
-    r.setParents(ListType(1, "ludricous_test_parent"));
-    try {
-       i.addChild(&r);
-    }
-    catch (InheritanceException &ie) {
-        thrown = true;
-    }
-    assert(thrown == true);
+    // Make sure inserting a type with unknown parents fails with non-zero
+    Root * r = new Root;
+    r->setId("squigglymuff");
+    r->setParents(ListType(1, "ludricous_test_parent"));
+    assert(i.addChild(r) != 0);
 }

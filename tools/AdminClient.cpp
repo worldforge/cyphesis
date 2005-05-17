@@ -232,10 +232,8 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
         Set s;
 
         ListType & set_args = s.getArgs();
-        MapType existing_rule;
+        MapType existing_rule(rule);
         existing_rule["ruleset"] = set;
-        existing_rule["id"] = id;
-        existing_rule["objtype"] = "class";
 
         set_args.push_back(existing_rule);
 
@@ -248,6 +246,10 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
         waitForInfo();
 
         if (error_flag) {
+            std::cerr << "Failed to update existing \"" << id << "\" class."
+                      << std::endl;
+            std::cerr << "Error \"" << m_errorMessage << "\"."
+                      << std::endl << std::flush;
             return -1;
         }
 
@@ -307,7 +309,6 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
     ListType & set_args = c.getArgs();
     MapType new_rule(rule);
     new_rule["ruleset"] = set;
-    new_rule["objtype"] = "class";
 
     set_args.push_back(new_rule);
 

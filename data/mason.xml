@@ -8,6 +8,7 @@
       </map>
     </map>
     <string name="id">acorn</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>seed</string>
     </list>
@@ -29,6 +30,7 @@
       </map>
     </map>
     <string name="id">apple</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>seed</string>
     </list>
@@ -65,6 +67,7 @@
       </map>
     </map>
     <string name="id">appletree</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>tree</string>
     </list>
@@ -78,6 +81,7 @@
       </map>
     </map>
     <string name="id">arm</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -102,6 +106,7 @@
       </map>
     </map>
     <string name="id">barrel</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -126,6 +131,7 @@
       </map>
     </map>
     <string name="id">birch</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>tree</string>
     </list>
@@ -146,6 +152,7 @@
       </map>
     </map>
     <string name="id">block_house</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -170,6 +177,7 @@
       </map>
     </map>
     <string name="id">board</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -194,6 +202,7 @@
       </map>
     </map>
     <string name="id">boat</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -203,6 +212,7 @@
     <map name="attributes">
     </map>
     <string name="id">boundary</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -227,6 +237,7 @@
       </map>
     </map>
     <string name="id">campfire</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -255,6 +266,7 @@
       </map>
     </map>
     <string name="id">chicken</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -274,6 +286,7 @@
       </map>
     </map>
     <string name="id">cleaver</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -295,6 +308,7 @@
       </map>
     </map>
     <string name="id">crab</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -308,6 +322,7 @@
       </map>
     </map>
     <string name="id">deed</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -325,6 +340,7 @@
       </map>
     </map>
     <string name="id">deer</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -357,6 +373,7 @@
       </map>
     </map>
     <string name="id">fir</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>tree</string>
     </list>
@@ -374,6 +391,7 @@
       </map>
     </map>
     <string name="id">fircone</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>seed</string>
     </list>
@@ -402,6 +420,7 @@
       </map>
     </map>
     <string name="id">fish</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -411,6 +430,7 @@
     <map name="attributes">
     </map>
     <string name="id">forest</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>area</string>
     </list>
@@ -431,6 +451,7 @@
       </map>
     </map>
     <string name="id">gallows</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -461,6 +482,7 @@
       </map>
     </map>
     <string name="id">garment</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -478,6 +500,7 @@
       </map>
     </map>
     <string name="id">goblin</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -503,6 +526,7 @@
       </map>
     </map>
     <string name="id">grass</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -512,6 +536,7 @@
     <map name="attributes">
     </map>
     <string name="id">hall</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
     </list>
@@ -533,6 +558,7 @@
       </map>
     </map>
     <string name="id">hickory</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>tree</string>
     </list>
@@ -542,6 +568,7 @@
     <map name="attributes">
     </map>
     <string name="id">house</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -566,6 +593,7 @@
       </map>
     </map>
     <string name="id">house3</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
     </list>
@@ -573,6 +601,14 @@
       <string name="language">python</string>
       <string name="name">world.objects.buildings.House3</string>
     </map>
+  </map>
+
+  <map>
+    <string name="id">ignite</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
   </map>
 
   <map>
@@ -590,6 +626,7 @@
       </map>
     </map>
     <string name="id">inn</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
     </list>
@@ -610,6 +647,7 @@
       </map>
     </map>
     <string name="id">jetty</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
     </list>
@@ -619,6 +657,7 @@
     <map name="attributes">
     </map>
     <string name="id">lych</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -628,6 +667,7 @@
     <map name="attributes">
     </map>
     <string name="id">marshall</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -637,6 +677,7 @@
     <map name="attributes">
     </map>
     <string name="id">mercenary</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -661,6 +702,7 @@
       </map>
     </map>
     <string name="id">mushroom</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>food</string>
     </list>
@@ -689,6 +731,7 @@
       </map>
     </map>
     <string name="id">oak</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>tree</string>
     </list>
@@ -698,6 +741,7 @@
     <map name="attributes">
     </map>
     <string name="id">orc</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -711,6 +755,7 @@
       </map>
     </map>
     <string name="id">pelvis</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -743,6 +788,7 @@
       <string name="language">python</string>
       <string name="name">mind.PigMind</string>
     </map>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -768,6 +814,7 @@
       </map>
     </map>
     <string name="id">poplar</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>tree</string>
     </list>
@@ -781,6 +828,7 @@
       </map>
     </map>
     <string name="id">ribcage</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -812,6 +860,7 @@
       </map>
     </map>
     <string name="id">rope</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -829,6 +878,7 @@
       </map>
     </map>
     <string name="id">seed</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>food</string>
     </list>
@@ -856,6 +906,7 @@
       </map>
     </map>
     <string name="id">settler</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -870,6 +921,7 @@
       </map>
     </map>
     <string name="id">shin</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -883,6 +935,7 @@
       <string name="language">python</string>
       <string name="name">mind.SkelMind</string>
     </map>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -900,6 +953,7 @@
       </map>
     </map>
     <string name="id">skull</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -928,6 +982,7 @@
       </map>
     </map>
     <string name="id">spider</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -956,6 +1011,7 @@
       </map>
     </map>
     <string name="id">squirrel</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -965,6 +1021,7 @@
     <map name="attributes">
     </map>
     <string name="id">stall</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -978,6 +1035,7 @@
       </map>
     </map>
     <string name="id">thigh</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -1005,6 +1063,7 @@
       </map>
     </map>
     <string name="id">tinderbox</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -1029,6 +1088,7 @@
       </map>
     </map>
     <string name="id">tower</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -1050,6 +1110,7 @@
       </map>
     </map>
     <string name="id">tree</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>plant</string>
     </list>
@@ -1077,6 +1138,7 @@
       </map>
     </map>
     <string name="id">trowel</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -1105,6 +1167,7 @@
       </map>
     </map>
     <string name="id">twobyfour</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -1112,6 +1175,7 @@
 
   <map>
     <string name="id">wall</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -1121,6 +1185,7 @@
     <map name="attributes">
     </map>
     <string name="id">weather</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -1146,6 +1211,7 @@
       </map>
     </map>
     <string name="id">willow</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>tree</string>
     </list>
@@ -1167,6 +1233,7 @@
       <string name="language">python</string>
       <string name="name">mind.WolfMind</string>
     </map>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>

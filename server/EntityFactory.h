@@ -40,6 +40,10 @@ class EntityFactory {
                          FactoryBase * factory,
                          const Atlas::Message::MapType & classDesc);
     FactoryBase * getNewFactory(const std::string &);
+    int installEntityClass(const std::string &, const std::string &,
+                           const Atlas::Message::MapType&);
+    int installOpDefinition(const std::string &, const std::string &,
+                            const Atlas::Message::MapType&);
   public:
     static void init(BaseWorld & w) {
         m_instance = new EntityFactory(w);
