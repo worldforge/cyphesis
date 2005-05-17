@@ -1,3 +1,10 @@
+2005-05-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/mason.xml, rulesets/mason/world/objects/tools/Tinderbox.py:
+	  Tinderbox for starting fires.
+
+	* common/custom.cpp: Ignite operation for tinderbox.
+
 2005-05-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml, rulesets/mason/world/objects/clothing/Garment.py:

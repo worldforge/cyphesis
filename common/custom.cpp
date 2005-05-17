@@ -95,6 +95,7 @@ void installCustomOperations()
     i.opInstall("sow", OP_OTHER, new GenericOpFactory("sow"));
     i.opInstall("germinate", OP_OTHER, new GenericOpFactory("germinate"));
     i.opInstall("wear", OP_OTHER, new GenericOpFactory("wear"));
+    i.opInstall("ignite", OP_OTHER, new GenericOpFactory("ignite"));
 }
 
 void installCustomEntities()

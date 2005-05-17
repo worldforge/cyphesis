@@ -987,6 +987,37 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
+          <float>0.3</float>
+          <float>0.1</float>
+          <float>0.1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="operations">
+        <list name="default">
+          <string>ignite</string>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">tinderbox</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.tools.Tinderbox</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
           <float>-5</float>
           <float>-5</float>
           <float>-2</float>
