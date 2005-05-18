@@ -1,5 +1,11 @@
 2005-05-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp: Fix copyright date.
+
+	* rulesets/mason/define_world.py: Add an area to the sty.
+
+2005-05-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/basic.xml, data/mason.xml: Add objtype to all rules.
 	  Add a rule for ignite operation definition.
 
