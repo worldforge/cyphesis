@@ -1,5 +1,11 @@
 2005-05-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/PersistantThingFactory.cpp: Include Python.h before
+	  ScriptFactory.h to avoid an annoying warning from the python
+	  headers.
+
+2005-05-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/PersistantThingFactory.cpp: Include ScriptFactory.h to
 	  ensure deleting the script factory works ok.
 

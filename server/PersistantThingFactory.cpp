@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+#include <Python.h>
+
 #include "PersistantThingFactory_impl.h"
 #include "Persistor.h"
 #include "ScriptFactory.h"
