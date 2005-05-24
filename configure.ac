@@ -21,7 +21,13 @@ dnl Need libtool
 AC_PROG_LIBTOOL
 
 COMMON_LIBS=
+TERRAIN_LIBS=
+NETWORK_LIBS=
+MATH_LIBS=
+MDNS_LIBS=
 PGSQL_LIBS=
+
+PYTHON_LINKER_FLAGS=
 
 dnl Test for C++ compiler
 
@@ -151,13 +157,32 @@ AC_CHECK_FUNC(pthread_mutex_trylock, ,
     ])
 ])
 
-AC_CHECK_LIB(python${python_version}, 
-    Py_Initialize,
+if test x"$link_static" = "xfalse"; then
+
+AC_CHECK_LIB(python${python_version}, Py_Initialize,
+[
+    python_libs="-lpython${python_version}"
+    dnl FIXME Make the linker get rid of -export-dynamic
+],
+[
+    AC_CHECK_LIB(python${python_version}, Py_Initialize,
     [
         python_libs="-L${python_lib_path} -lpython${python_version}"
+        PYTHON_LINKER_FLAGS="-export-dynamic"
     ],AC_MSG_ERROR([Cannot find python libraries. Do you have python development installed?]),
-    [-L${python_lib_path} ${PYTHON_UTIL_LIBS}]
-)
+    [-L${python_lib_path} ${PYTHON_UTIL_LIBS}])
+])
+
+else
+
+AC_CHECK_LIB(python${python_version}, Py_Initialize,
+[
+    python_libs="-L${python_lib_path} -lpython${python_version}"
+    PYTHON_LINKER_FLAGS="-export-dynamic"
+],AC_MSG_ERROR([Cannot find python libraries. Do you have python development installed?]),
+[-L${python_lib_path} ${PYTHON_UTIL_LIBS}])
+
+fi
 
 PYTHON_LIBS=${python_libs}
 
@@ -176,7 +201,7 @@ dnl         CPPFLAGS="$CPPFLAGS $MONO_CFLAGS"
 dnl         COMMON_LIBS="$COMMON_LIBS $MONO_LIBS"
 dnl     ])
 
-PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.94 skstream-0.3 >= 0.3.3 varconf-1.0 >= 0.6.2 mercator-0.2,
+PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.94 varconf-1.0 >= 0.6.2,
     [
         CPPFLAGS="$CPPFLAGS $DEPS_CFLAGS"
         COMMON_LIBS="$COMMON_LIBS $DEPS_LIBS"
@@ -185,10 +210,36 @@ PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.94 skstream-0.3 >= 0.3.3 varconf-1.0
         AC_MSG_ERROR([Cannot find valid versions of required WorldForge libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
     ])
 
+PKG_CHECK_MODULES(MERCATOR, mercator-0.2,
+    [
+        CPPFLAGS="$CPPFLAGS $MERCATOR_CFLAGS"
+        TERRAIN_LIBS="$TERRAIN_LIBS $MERCATOR_LIBS"
+    ],
+    [
+        AC_MSG_ERROR([Cannot find valid versions of required WorldForge terrain libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
+    ])
+
+PKG_CHECK_MODULES(SKSTREAM, skstream-0.3 >= 0.3.3,
+    [
+        CPPFLAGS="$CPPFLAGS $SKSTREAM_CFLAGS"
+        NETWORK_LIBS="$NETWORK_LIBS $SKSTREAM_LIBS"
+    ],
+    [
+        AC_MSG_ERROR([Cannot find valid versions of required WorldForge network libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
+    ])
+
+PKG_CHECK_MODULES(WFMATH, wfmath-0.3,
+    [
+        MATH_LIBS="$MATH_LIBS $WFMATH_LIBS"
+    ],
+    [
+        AC_MSG_ERROR([Cannot find valid versions of required WorldForge maths libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
+    ])
+
 PKG_CHECK_MODULES(HOWL, howl,
     [
         CPPFLAGS="$CPPFLAGS $HOWL_CFLAGS"
-        COMMON_LIBS="$COMMON_LIBS $HOWL_LIBS"
+        MDNS_LIBS="$MDNS_LIBS $HOWL_LIBS"
         AC_DEFINE(HAVE_LIBHOWL, 1, [Define to 1 if you have howl libs.])
     ],
     [
@@ -248,6 +299,10 @@ AC_TRY_COMPILE(
 AC_SUBST(VARCONF_LIBS)
 AC_SUBST(READLINE_LIBS)
 AC_SUBST(COMMON_LIBS)
+AC_SUBST(TERRAIN_LIBS)
+AC_SUBST(NETWORK_LIBS)
+AC_SUBST(MATH_LIBS)
+AC_SUBST(MDNS_LIBS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(PYTHON_LIBS)
 AC_SUBST(PYTHON_UTIL_LIBS)
@@ -255,6 +310,8 @@ AC_SUBST(PGSQL_LIBS)
 
 AC_SUBST(STATIC_LIBSTDCPP)
 AC_SUBST(STATIC_LIBGCC)
+
+AC_SUBST(PYTHON_LINKER_FLAGS)
 
 dnl Generate files
 AC_CONFIG_FILES([

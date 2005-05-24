@@ -23,13 +23,13 @@ CLIENT_LIBS = \
     $(STATIC_LIBGCC) \
     -ldl -lc -lm -lpthread -lgcc_s
 
-cyclient_LDFLAGS = -nodefaultlibs -export-dynamic
+cyclient_LDFLAGS = -nodefaultlibs $(PYTHON_LINKER_FLAGS)
 
 else
 
-CLIENT_LIBS = $(COMMON_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS)
+CLIENT_LIBS = $(COMMON_LIBS) $(TERRAIN_LIBS) $(NETWORK_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS)
 
-cyclient_LDFLAGS = -export-dynamic
+cyclient_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 endif
 

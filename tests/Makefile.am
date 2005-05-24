@@ -88,7 +88,8 @@ collisiontest_LDADD = $(top_builddir)/physics/Collision.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/const.o \
                       $(top_builddir)/common/prefix.o \
-                      $(top_builddir)/common/globals.o
+                      $(top_builddir)/common/globals.o \
+                      $(MATH_LIBS)
 
 emergencetest_SOURCES = emergencetest.cpp
 emergencetest_LDADD = $(top_builddir)/physics/Collision.o \
@@ -98,9 +99,11 @@ emergencetest_LDADD = $(top_builddir)/physics/Collision.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/const.o \
                       $(top_builddir)/common/prefix.o \
-                      $(top_builddir)/common/globals.o
+                      $(top_builddir)/common/globals.o \
+                      $(MATH_LIBS)
 
 transformtest_SOURCES = transformtest.cpp
+transformtest_LDADD = $(MATH_LIBS)
 
 distancetest_SOURCES = distancetest.cpp
 distancetest_LDADD = $(top_builddir)/rulesets/Entity.o \
@@ -116,7 +119,8 @@ distancetest_LDADD = $(top_builddir)/rulesets/Entity.o \
                      $(top_builddir)/common/prefix.o \
                      $(top_builddir)/common/globals.o \
                      $(top_builddir)/common/Property.o \
-                     $(top_builddir)/common/BaseEntity.o
+                     $(top_builddir)/common/BaseEntity.o \
+                     $(MATH_LIBS)
 
 # MODULE_TESTS
 
@@ -134,7 +138,8 @@ Locationtest_LDADD = $(top_builddir)/modules/Location.o \
                      $(top_builddir)/common/serialno.o \
                      $(top_builddir)/common/custom.o \
                      $(top_builddir)/common/Property.o \
-                     $(top_builddir)/common/operations.o
+                     $(top_builddir)/common/operations.o \
+                     $(MATH_LIBS)
 
 WorldTimetest_SOURCES = WorldTimetest.cpp
 WorldTimetest_LDADD = $(top_builddir)/modules/WorldTime.o \
@@ -156,7 +161,8 @@ Entitytest_LDADD = $(top_builddir)/modules/Location.o \
                    $(top_builddir)/common/globals.o \
                    $(top_builddir)/common/serialno.o \
                    $(top_builddir)/common/custom.o \
-                   $(top_builddir)/common/operations.o
+                   $(top_builddir)/common/operations.o \
+                   $(MATH_LIBS)
 
 Areatest_SOURCES = Areatest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Areatest_LDADD = $(top_builddir)/modules/Location.o \
@@ -178,7 +184,8 @@ Areatest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/common/serialno.o \
                  $(top_builddir)/common/custom.o \
                  $(top_builddir)/common/operations.o \
-                 $(top_builddir)/common/const.o
+                 $(top_builddir)/common/const.o \
+                 $(MATH_LIBS)
 
 Foodtest_SOURCES = Foodtest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Foodtest_LDADD = $(top_builddir)/modules/Location.o \
@@ -200,7 +207,8 @@ Foodtest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/common/serialno.o \
                  $(top_builddir)/common/custom.o \
                  $(top_builddir)/common/operations.o \
-                 $(top_builddir)/common/const.o
+                 $(top_builddir)/common/const.o \
+                 $(MATH_LIBS)
 
 Linetest_SOURCES = Linetest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Linetest_LDADD = $(top_builddir)/modules/Location.o \
@@ -223,7 +231,8 @@ Linetest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/common/serialno.o \
                  $(top_builddir)/common/custom.o \
                  $(top_builddir)/common/operations.o \
-                 $(top_builddir)/common/const.o
+                 $(top_builddir)/common/const.o \
+                 $(MATH_LIBS)
 
 Planttest_SOURCES = Planttest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Planttest_LDADD = $(top_builddir)/modules/Location.o \
@@ -245,7 +254,8 @@ Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/common/serialno.o \
                   $(top_builddir)/common/custom.o \
                   $(top_builddir)/common/operations.o \
-                  $(top_builddir)/common/const.o
+                  $(top_builddir)/common/const.o \
+                  $(MATH_LIBS)
 
 Stackabletest_SOURCES = Stackabletest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
@@ -267,7 +277,8 @@ Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/common/serialno.o \
                       $(top_builddir)/common/custom.o \
                       $(top_builddir)/common/operations.o \
-                      $(top_builddir)/common/const.o
+                      $(top_builddir)/common/const.o \
+                      $(MATH_LIBS)
 
 Structuretest_SOURCES = Structuretest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Structuretest_LDADD = $(top_builddir)/modules/Location.o \
@@ -289,7 +300,8 @@ Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/common/serialno.o \
                       $(top_builddir)/common/custom.o \
                       $(top_builddir)/common/operations.o \
-                      $(top_builddir)/common/const.o
+                      $(top_builddir)/common/const.o \
+                      $(MATH_LIBS)
 
 Thingtest_SOURCES = Thingtest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Thingtest_LDADD = $(top_builddir)/modules/Location.o \
@@ -310,7 +322,8 @@ Thingtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/common/serialno.o \
                   $(top_builddir)/common/custom.o \
                   $(top_builddir)/common/operations.o \
-                  $(top_builddir)/common/const.o
+                  $(top_builddir)/common/const.o \
+                  $(MATH_LIBS)
 
 Worldtest_SOURCES = Worldtest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Worldtest_LDADD = $(top_builddir)/modules/Location.o \
@@ -335,7 +348,8 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/common/operations.o \
                   $(top_builddir)/common/OOGThing.o \
                   $(top_builddir)/common/BaseWorld.o \
-                  $(top_builddir)/common/const.o
+                  $(top_builddir)/common/const.o \
+                  $(TERRAIN_LIBS)
 
 Charactertest_SOURCES = Charactertest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Charactertest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
@@ -356,7 +370,8 @@ Charactertest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                       $(top_builddir)/common/OOGThing.o \
                       $(top_builddir)/common/BaseWorld.o \
                       $(top_builddir)/common/utility.o \
-                      $(top_builddir)/common/const.o
+                      $(top_builddir)/common/const.o \
+                      $(MATH_LIBS)
 Charactertest_LDFLAGS = -export-dynamic
 
 Creatortest_SOURCES = Creatortest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
@@ -378,7 +393,8 @@ Creatortest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                     $(top_builddir)/common/OOGThing.o \
                     $(top_builddir)/common/BaseWorld.o \
                     $(top_builddir)/common/utility.o \
-                    $(top_builddir)/common/const.o
+                    $(top_builddir)/common/const.o \
+                    $(MATH_LIBS)
 Creatortest_LDFLAGS = -export-dynamic
 
 Containertest_SOURCES = Containertest.cpp
@@ -403,5 +419,6 @@ Tasktest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/common/OOGThing.o \
                  $(top_builddir)/common/BaseWorld.o \
                  $(top_builddir)/common/utility.o \
-                 $(top_builddir)/common/const.o
+                 $(top_builddir)/common/const.o \
+                 $(MATH_LIBS)
 Tasktest_LDFLAGS = -export-dynamic

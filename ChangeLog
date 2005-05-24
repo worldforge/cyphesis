@@ -1,3 +1,13 @@
+2005-05-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac, client/Makefile.am, server/Makefile.am,
+	  tests/Makefile.am, tools/Makefile.am: Separate out WorldForge
+	  libraries into sections so that tools binaries don't get linked to
+	  libs they don't use. This prevents problems when library interface
+	  versions change. Use dynamic python library if available, and remove
+	  -export-dynamic flag from linker when using the dynamic version of
+	  python.
+
 2005-05-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp: Fix copyright date.

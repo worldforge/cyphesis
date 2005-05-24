@@ -9,7 +9,6 @@ EXTRA_DIST = cyphesis.sh copy_python.sh
 if LINK_STATIC
 
 TOOL_LIBS = \
-    /usr/lib/libskstream-0.3.a \
     /usr/lib/libvarconf-1.0.a \
     /usr/lib/libAtlasObjectsOperation-0.5.a \
     /usr/lib/libAtlasObjectsEntity-0.5.a \
@@ -50,6 +49,9 @@ READLINETOOL_LIBS = \
     /usr/lib/libreadline.a \
     /usr/lib/libtermcap.a
 
+NETWORKTOOL_LIBS = \
+    /usr/lib/libskstream-0.3.a
+
 AM_LDFLAGS = -nodefaultlibs
 
 else
@@ -57,6 +59,7 @@ else
 TOOL_LIBS = $(COMMON_LIBS)
 DBTOOL_LIBS = $(COMMON_LIBS) $(PGSQL_LIBS)
 READLINETOOL_LIBS = $(READLINE_LIBS)
+NETWORKTOOL_LIBS = $(NETWORK_LIBS)
 
 endif
 
@@ -70,6 +73,7 @@ cycmd_LDADD = $(top_builddir)/modules/DateTime.o \
               $(top_builddir)/common/utility.o \
               $(top_builddir)/common/const.o \
               $(READLINETOOL_LIBS) \
+              $(NETWORKTOOL_LIBS) \
               $(TOOL_LIBS)
 
 cyconfig_SOURCES = cyconfig.cpp
@@ -85,6 +89,7 @@ cyaddrules_LDADD = $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/common/globals.o \
                    $(top_builddir)/common/prefix.o \
                    $(top_builddir)/common/log.o \
+                   $(NETWORKTOOL_LIBS) \
                    $(TOOL_LIBS)
 
 cyloadrules_SOURCES = cyloadrules.cpp

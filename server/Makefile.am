@@ -34,13 +34,13 @@ SERVER_LIBS = \
     $(STATIC_LIBGCC) \
     -ldl -lc -lm -lpthread -lgcc_s
 
-cyphesis_LDFLAGS = -nodefaultlibs -export-dynamic
+cyphesis_LDFLAGS = -nodefaultlibs $(PYTHON_LINKER_FLAGS)
 
 else
 
-SERVER_LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS)
+SERVER_LIBS = $(COMMON_LIBS) $(TERRAIN_LIBS) $(NETWORK_LIBS) $(MDNS_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS)
 
-cyphesis_LDFLAGS = -export-dynamic
+cyphesis_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 endif
 
@@ -132,4 +132,4 @@ cyslave_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                 $(top_builddir)/common/libcommon.a \
                 $(top_builddir)/physics/libphysics.a
 
-cyslave_LDFLAGS = -export-dynamic
+cyslave_LDFLAGS = $(PYTHON_LINKER_FLAGS)
