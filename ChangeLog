@@ -1,5 +1,10 @@
 2005-05-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/PersistantThingFactory.cpp: Include ScriptFactory.h to
+	  ensure deleting the script factory works ok.
+
+2005-05-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac, client/Makefile.am, server/Makefile.am,
 	  tests/Makefile.am, tools/Makefile.am: Separate out WorldForge
 	  libraries into sections so that tools binaries don't get linked to

@@ -4,6 +4,7 @@
 
 #include "PersistantThingFactory_impl.h"
 #include "Persistor.h"
+#include "ScriptFactory.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Thing.h"
