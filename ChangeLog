@@ -1,5 +1,12 @@
 2005-05-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml, rulesets/mason/world/objects/tools/Bucksaw.py:
+	  New bucksaw for cutting up logs.
+
+	* rulesets/mason/world/objects/tools/Trowel.py: Correct the comments.
+
+2005-05-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/PersistantThingFactory.cpp: Include Python.h before
 	  ScriptFactory.h to avoid an annoying warning from the python
 	  headers.

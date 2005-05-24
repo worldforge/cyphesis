@@ -1,7 +1,4 @@
-Implement op_definitions in the rules.
-
-Memory leak of script factories. Also need to carefully make sure python
-object references aren't leaked.
+Make sure python object references aren't leaked in script factories.
 
 Implement subsystems on server object. Allow Admin to fetch the subsystems,
 like "configuration", "policy" etc.

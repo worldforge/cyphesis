@@ -5,11 +5,11 @@ from atlas import *
 
 from world.objects.Thing import Thing
 
-class Trowel(Thing):
-    """This is tool for planting seeds"""
-    def sow_operation(self, op):
+class Bucksaw(Thing):
+    """This is a large saw for cutting logs"""
+    def cut_operation(self, op):
         #to_ = self.world.get_object(op[1].id)
         to_ = op[0].id
         if not to_:
             return self.error(op,"To is undefined object")
-        return Message(Operation("germinate",op[0],Entity(op.from_.id),to=to_))
+        return Message(Operation("saw",op[0],Entity(op.from_.id),to=to_))
