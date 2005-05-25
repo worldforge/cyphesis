@@ -745,6 +745,46 @@
 
   <map>
     <map name="attributes">
+      <map name="area">
+        <map name="default">
+          <list name="points">
+            <list>
+              <float>-3.5</float>
+              <float>-3.5</float>
+            </list>
+            <list>
+              <float>-5</float>
+              <float>0</float>
+            </list>
+            <list>
+              <float>-3.5</float>
+              <float>3.5</float>
+            </list>
+            <list>
+              <float>0</float>
+              <float>5</float>
+            </list>
+            <list>
+              <float>3.5</float>
+              <float>3.5</float>
+            </list>
+            <list>
+              <float>5</float>
+              <float>0</float>
+            </list>
+            <list>
+              <float>3.5</float>
+              <float>-3.5</float>
+            </list>
+            <list>
+              <float>0</float>
+              <float>-5</float>
+            </list>
+          </list>
+          <int name="layer">6</int>
+        </map>
+        <string name="visibility">public</string>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>-1</float>
@@ -831,6 +871,67 @@
       <string name="language">python</string>
       <string name="name">world.objects.animals.Pig</string>
     </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="area">
+        <map name="default">
+          <list name="points">
+            <list>
+              <float>-3.5</float>
+              <float>-3.5</float>
+            </list>
+            <list>
+              <float>-5</float>
+              <float>0</float>
+            </list>
+            <list>
+              <float>-3.5</float>
+              <float>3.5</float>
+            </list>
+            <list>
+              <float>0</float>
+              <float>5</float>
+            </list>
+            <list>
+              <float>3.5</float>
+              <float>3.5</float>
+            </list>
+            <list>
+              <float>5</float>
+              <float>0</float>
+            </list>
+            <list>
+              <float>3.5</float>
+              <float>-3.5</float>
+            </list>
+            <list>
+              <float>0</float>
+              <float>-5</float>
+            </list>
+          </list>
+          <int name="layer">7</int>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+      <map name="bbox">
+        <list name="default">
+          <float>-1</float>
+          <float>-1</float>
+          <float>0</float>
+          <float>1</float>
+          <float>1</float>
+          <float>6</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">ploughed_field</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
   </map>
 
   <map>

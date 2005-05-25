@@ -1,3 +1,8 @@
+2005-05-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/mason.xml: Add an area of fallen leaves round oak trees, and
+	  add a new type for a ploughed field.
+
 2005-05-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml, rulesets/mason/world/objects/tools/Bucksaw.py:
