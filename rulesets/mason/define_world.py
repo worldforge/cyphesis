@@ -402,6 +402,8 @@ def add_village(mapeditor):
     m.make('house3',type='house3',xyz=(150,142,22),orientation=directions[2])
     m.make('house3',type='house3',xyz=(158,142,22),orientation=directions[5])
 
+    m.make('field',type='ploughed_field',xyz=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 7})
+    m.make('field',type='ploughed_field',xyz=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 7})
 def test_pig(mapeditor):
 #   general things
 
