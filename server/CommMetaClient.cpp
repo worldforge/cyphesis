@@ -55,7 +55,7 @@ int CommMetaClient::getFd() const
 
 bool CommMetaClient::eof()
 {
-    return false;
+    return m_clientIos.peek() == EOF;
 }
 
 bool CommMetaClient::isOpen() const
@@ -111,11 +111,9 @@ void CommMetaClient::metaserverReply()
     uint32_t handshake = 0, command = 0;
     unsigned int packet_size;
 
-    if (m_clientIos.peek() == EOF) {
-        log(ERROR, "EOF on metaserver socket.");
-    }
     if (m_clientIos.readsome(mesg, MAXLINE) < (std::streamsize)sizeof(command)) {
         log(WARNING, "WARNING: Reply from metaserver too short");
+        return;
     }
     mesg_ptr = unpack_uint32(&command, mesg);
 

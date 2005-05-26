@@ -1,5 +1,13 @@
 2005-05-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommMetaClient.cpp: Fix eof() to check for the correct
+	  condition on the socket stream, and ensure that decoding message
+	  from the metaserver is aborted if the message is shorter than
+	  expected. This should fix a tight loop bug which occurs when
+	  there is a problem with metaserver communication.
+
+2005-05-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Send a Sight(Action) op from character when
 	  using a tool so the client know when to run an animation.
 
