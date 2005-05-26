@@ -1,3 +1,7 @@
+Fix tight loop error which occurs when you get EOF on metaserver socket.
+WARNING: WARNING: Reply from metaserver too short
+ERROR: EOF on metaserver socket.
+
 Make sure python object references aren't leaked in script factories.
 
 Implement subsystems on server object. Allow Admin to fetch the subsystems,

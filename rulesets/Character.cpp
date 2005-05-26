@@ -600,6 +600,11 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 
     rop->setTo(toolId);
     res.push_back(rop);
+
+    Operation * sight = new Sight;
+    ListType & sight_args = sight->getArgs();
+    sight_args.push_back(rop->asMap());
+    res.push_back(sight);
 }
 
 void Character::mindUpdateOperation(const Operation & op, OpVector & res)
