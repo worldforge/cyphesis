@@ -97,6 +97,10 @@ void Persistor<T>::uCharacter(Character & t, std::string & c)
         if (!empty) { q << ", "; } else { empty = false; }
         q << "food = " << t.getFood();
     }
+    if (t.getUpdateFlags() & a_rwield) {
+        if (!empty) { q << ", "; } else { empty = false; }
+        q << "right_hand_wield = '" << t.getRightHandWield() << "'";
+    }
     if (!empty) {
         c += q.str();
     }
@@ -193,12 +197,13 @@ void Persistor<T>::cCharacter(Character & t, std::string & c, std::string & v)
     if (!c.empty()) {
         c += cs;
     }
-    c += "drunkness, sex, food";
+    c += "drunkness, sex, food, right_hand_wield";
 
     std::stringstream q;
     q << t.getDrunkness() << cs
       << sq << t.getSex() << sq << cs
-      << t.getFood();
+      << t.getFood() << cs
+      << sq << t.getRightHandWield() << sq;
 
     if (!v.empty()) {
         v += cs;

@@ -135,6 +135,7 @@ Character::Character(const std::string & id) : Character_parent(id),
 
     m_properties["drunkness"] = new Property<double>(m_drunkness, a_drunk);
     m_properties["sex"] = new Property<std::string>(m_sex, a_sex);
+    m_properties["right_hand_wield"] = new Property<std::string>(m_rightHandWield, a_rwield);
 }
 
 Character::~Character()
@@ -384,8 +385,18 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         error(op, "Wield arg is not in inventory", res, getId());
         return;
     }
-    m_rightHandWield = item->getId();
-    debug(std::cout << "Wielding " << m_rightHandWield << std::endl << std::flush;);
+
+    Operation * set = new Set;
+    set->setTo(getId());
+    ListType & set_args = set->getArgs();
+    MapType set_arg;
+    set_arg["id"] = getId();
+    set_arg["right_hand_wield"] = item->getId();
+    set_args.push_back(set_arg);
+    res.push_back(set);
+
+    // m_rightHandWield = item->getId();
+    debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush;);
 }
 
 void Character::mindLoginOperation(const Operation & op, OpVector & res)

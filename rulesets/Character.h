@@ -29,13 +29,13 @@ class Character : public Character_parent {
     Movement & m_movement;
     Task * m_task;
     bool m_isAlive;
-    std::string m_rightHandWield;
 
     // Properties
     double m_drunkness;
     std::string m_sex;
     double m_food;
     double m_maxMass;
+    std::string m_rightHandWield;
 
     static const double energyConsumption;
     static const double foodConsumption;
@@ -68,6 +68,7 @@ class Character : public Character_parent {
     const double getDrunkness() const { return m_drunkness; }
     const std::string & getSex() const { return m_sex; }
     const double getFood() const { return m_food; }
+    const std::string & getRightHandWield() const { return m_rightHandWield; }
 
     virtual void operation(const Operation & op, OpVector &);
     virtual void externalOperation(const Operation & op);

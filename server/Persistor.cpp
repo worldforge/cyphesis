@@ -100,6 +100,7 @@ Persistor<Character>::Persistor(bool temp) : m_class("character")
     desc["sex"] = "        ";
     desc["drunkness"] = 1.0;
     desc["food"] = 1.0;
+    desc["right_hand_wield"] = "        ";
     if (consts::enable_database) {
         Database::instance()->registerEntityTable(m_class, desc, "thing");
     }

@@ -1,3 +1,13 @@
+2005-05-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp, rulesets/Character.h, rulesets/attributes.h,
+	  server/Persistor.cpp, server/Persistor_impl.h, server/Restorer.cpp;
+	  Make right_hand_wield a real Atlas property, and add it to the
+	  database code.
+
+	* rulesets/Character.cpp: When wielding a tool, set right_hand_wield
+	  correctly to notify clients.
+
 2005-05-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Add fields around the village.
