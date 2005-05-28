@@ -1,4 +1,4 @@
-2005-05-27  Al Riddoch  <alriddoch@zepler.org>
+2005-05-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/basic.xml, data/mason.xml, rulesets/mason/define_world.py:
 	  Make sure entities with layers all use a different layer ID.
