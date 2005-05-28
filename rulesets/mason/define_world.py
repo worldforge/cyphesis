@@ -290,7 +290,7 @@ def default(mapeditor):
     merchant=m.make('Dyfed Searae',type='merchant',desc='the pig merchant',
                     xyz=pig_sty_xyz,age=probability.fertility_age,
                     sex='male',orientation=Quaternion(Vector3D([1,0,0]),Vector3D([0,-1,0])).as_list())
-    sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[5,5,3],area={'points' : [ [0,0], [0,5], [5,5], [5,0] ], 'layer' : 5})
+    sty=m.make('sty',type='sty',xyz=pig_sty_xyz)
     m.know(merchant,mknowledge)
     m.know(merchant,village)
     m.know(merchant,mprices)

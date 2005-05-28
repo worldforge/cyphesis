@@ -1,5 +1,11 @@
 2005-05-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/basic.xml, data/mason.xml, rulesets/mason/define_world.py:
+	  Make sure entities with layers all use a different layer ID.
+	  Make sure sty has area and bbox in the default attributes.
+
+2005-05-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommMetaClient.cpp: Fix eof() to check for the correct
 	  condition on the socket stream, and ensure that decoding message
 	  from the metaserver is aborted if the message is shorter than

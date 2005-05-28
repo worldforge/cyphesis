@@ -371,6 +371,29 @@
 
   <map>
     <map name="attributes">
+      <map name="area">
+        <map name="default">
+          <list name="points">
+            <list>
+              <float>0</float>
+              <float>0</float>
+            </list>
+            <list>
+              <float>0</float>
+              <float>5</float>
+            </list>
+            <list>
+              <float>5</float>
+              <float>5</float>
+            </list>
+            <list>
+              <float>5</float>
+              <float>0</float>
+            </list>
+          </list>
+          <int name="layer">7</int>
+        </map>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>5</float>
