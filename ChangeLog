@@ -1,5 +1,12 @@
 2005-06-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Set default mode to swimming on fish.
+
+	* rulesets/Character.cpp: Don't set intial mode of characters to
+	  "birth".
+
+2005-06-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* man/cyphesis-tools.sgml: Add documentation for cyaddrules.
 
 2005-05-28  Al Riddoch  <alriddoch@zepler.org>

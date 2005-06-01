@@ -96,7 +96,6 @@ Character::Character(const std::string & id) : Character_parent(id),
     m_mass = 60;
     m_location.m_bBox = BBox(WFMath::Point<3>(-0.25, -0.25, 0),
                              WFMath::Point<3>(0.25, 0.25, 2));
-    m_attributes["mode"] = "birth";
 
     subscribe("imaginary", OP_IMAGINARY);
     subscribe("tick", OP_TICK);

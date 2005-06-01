@@ -453,6 +453,10 @@
         <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
+      <map name="mode">
+        <string name="default">swimming</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">fish</string>
     <string name="objtype">class</string>
