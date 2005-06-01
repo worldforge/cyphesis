@@ -1,3 +1,7 @@
+2005-06-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* man/cyphesis-tools.sgml: Add documentation for cyaddrules.
+
 2005-05-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/basic.xml, data/mason.xml, rulesets/mason/define_world.py:

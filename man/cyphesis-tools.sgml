@@ -12,6 +12,11 @@
 
  <refsynopsisdiv>
   <cmdsynopsis>
+   <command>/usr/bin/cyaddrules</command>
+   <arg choice="opt" rep="repeat">--section:option=value</arg>
+   <arg choice="opt">rulesetname atlas-xml-file</arg>
+  </cmdsynopsis>
+  <cmdsynopsis>
    <command>/usr/bin/cyconfig</command>
    <arg choice="opt" rep="repeat">--section:option=value</arg>
   </cmdsynopsis>
@@ -45,6 +50,18 @@
 The cyphesis tools manage the data and configuration files used by cyphesis.
   </para>
   <para>
+The <command>cyaddrules</command> uploads Atlas XML rules files into the
+a running server. If rules already exist in the server, then the default
+attributes are updated, and if the rule has a script associated with it,
+then the script is reloaded from file. <command>cyaddrules</command> can
+either upload the file given on the command line, or if none is specified it
+will upload the rule file for the ruleset specified in the server config,
+and any rule files it depends on. <command>cyaddrules</command> is typically
+used to add additional rules during rule development without having to
+restart the server.  Rules can be loaded directly into a running server
+using <command>cyaddrules</command>.
+  </para>
+  <para>
 The <command>cyconfig</command> program provides an easy scriptable way to
 make permanent changes to the server config from the command line.
 It works by writing new config options to <filename>.cyphesis.vconf</filename>
@@ -76,6 +93,8 @@ server at startup, so a server restart is typically required after loading
 rules. <command>cyloadrules</command> can either load the file given on
 the command line, or if none is specified it will load the rule file for
 the ruleset specified in the server config, and any rule files it depends on.
+Rules can be loaded directly into a running server using
+<command>cyaddrules</command>.
   </para>
   <para>
 The <command>cypasswd</command> is used to administrate the accounts table
