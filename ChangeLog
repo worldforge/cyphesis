@@ -1,3 +1,7 @@
+2005-06-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/mason.xml: Add carrot and turnip, and a common parent tuber.
+
 2005-06-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Set default mode to swimming on fish.
