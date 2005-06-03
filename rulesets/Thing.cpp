@@ -23,6 +23,7 @@
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Disappearance.h>
 
+using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Set;
@@ -182,6 +183,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         error(op, "Move op has no pos", res, getId());
         return;
     }
+    const ListType & pos_list = I->second.asList();
 
     // Up until this point nothing should have changed, but the changes
     // have all now been checked for validity.
@@ -205,26 +207,18 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         m_update_flags |= a_loc;
     }
 
-    Point3D oldpos = m_location.m_pos;
+    std::string mode;
 
-    // Update pos
-    m_location.m_pos.fromAtlas(I->second.asList());
-    // FIXME Quick height hack
-    m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
-                                                    m_location.m_pos);
-    m_update_flags |= a_pos;
-    I = ent.find("velocity");
-    if (I != Iend) {
-        // Update velocity
-        m_location.m_velocity.fromAtlas(I->second.asList());
-        // Velocity is not persistent so has no flag
+    if (has("mode")) {
+        Element mode_attr;
+        assert(get("mode", mode_attr));
+        if (mode_attr.isString()) {
+            mode = mode_attr.asString();
+        } else {
+            log(ERROR, "Non string mode on entity in Thing::MoveOperation");
+        }
     }
-    I = ent.find("orientation");
-    if (I != Iend) {
-        // Update orientation
-        m_location.m_orientation.fromAtlas(I->second.asList());
-        m_update_flags |= a_orient;
-    }
+
     // Move ops often include a mode change, so we handle it here, even
     // though it is not a special attribute for efficiency. Otherwise
     // an additional Set op would be required.
@@ -237,7 +231,30 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             log(ERROR, "Non string mode set in Thing::MoveOperation");
         } else {
             m_motion->setMode(I->second.asString());
+            mode = I->second.asString();
         }
+    }
+
+    Point3D oldpos = m_location.m_pos;
+
+    // Update pos
+    m_location.m_pos.fromAtlas(pos_list);
+    // FIXME Quick height hack
+    m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
+                                                    m_location.m_pos,
+                                                    mode);
+    m_update_flags |= a_pos;
+    I = ent.find("velocity");
+    if (I != Iend) {
+        // Update velocity
+        m_location.m_velocity.fromAtlas(I->second.asList());
+        // Velocity is not persistent so has no flag
+    }
+    I = ent.find("orientation");
+    if (I != Iend) {
+        // Update orientation
+        m_location.m_orientation.fromAtlas(I->second.asList());
+        m_update_flags |= a_orient;
     }
 
     // At this point the Location data for this entity has been updated.

@@ -66,7 +66,8 @@ class BaseWorld {
     virtual void message(Operation &, Entity & obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;
-    virtual float constrainHeight(Entity *, const Point3D &) = 0;
+    virtual float constrainHeight(Entity *, const Point3D &,
+                                  const std::string &) = 0;
     virtual void addPerceptive(const std::string & id) = 0;
 
 

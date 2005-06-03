@@ -177,7 +177,8 @@ def default(mapeditor):
     for i in range(0, 10):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
-        d=m.make('fish', type='fish', xyz=(xpos, ypos, settlement_height))
+        zpos = uniform(-4,0)
+        d=m.make('fish', type='fish', xyz=(xpos, ypos, zpos))
         fish.append(d)
     
     # m.make('sherwood',type='forest',xyz=(-50, 10,settlement_height),bbox=[40,40,40])

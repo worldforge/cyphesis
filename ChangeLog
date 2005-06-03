@@ -1,7 +1,20 @@
-2005-06-02 Miguel Guzman 
+2005-06-03  Al Riddoch  <alriddoch@zepler.org>
 
-        * rulesets/mason/define_world_aglanor.py: 
-	added new world definition for mason 0.3
+	* common/BaseWorld.h, server/WorldRouter.cpp, server/WorldRouter.h:
+	  Modify world interface so it takes a string mode when adjusting
+	  the height of entities. Handle floating and swimming entities
+	  accordingly.
+
+	* rulesets/Thing.cpp: Change the order in which mode is checked
+	  so it is available when adjusting height.
+
+	* rulesets/mason/define_world.py: Randomise height of fish, so they
+	  look more like they are swimming.
+
+2005-06-02  Miguel Guzman 
+
+	* rulesets/mason/define_world_aglanor.py: 
+	  added new world definition for mason 0.3
 
 2005-06-02  Al Riddoch  <alriddoch@zepler.org>
 

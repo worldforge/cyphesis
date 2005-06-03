@@ -74,7 +74,7 @@ class WorldRouter : public BaseWorld {
     virtual void message(Operation &, Entity &);
     virtual Entity * findByName(const std::string & name);
     virtual Entity * findByType(const std::string & type);
-    virtual float constrainHeight(Entity *, const Point3D &);
+    virtual float constrainHeight(Entity *, const Point3D &, const std::string &);
 };
 
 #endif // SERVER_WORLD_ROUTER_H

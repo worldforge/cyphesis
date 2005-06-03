@@ -20,7 +20,9 @@
 #include "common/Setup.h"
 
 #include <sstream>
+#include <algorithm>
 
+using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Setup;
@@ -151,12 +153,19 @@ Operation * WorldRouter::getOperationFromQueue()
 /// This function recurses through the parents until it finds
 /// A parent which defines the height.
 /// @return the modified Z coord of the position.
-float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos)
+float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
+                                   const std::string & mode)
 {
     assert(parent != 0);
     World * wrld = dynamic_cast<World*>(parent);
     if (wrld != 0) {
-        float h = wrld->getHeight(pos.x(), pos.y());
+        float h;
+        h = wrld->getHeight(pos.x(), pos.y());
+        if (mode == "floating") {
+            h = 0;
+        } else if (mode == "swimming") {
+            h = std::max(h, std::min(0.f, pos.z()));
+        }
         debug(std::cout << "Fix height " << pos.z() << " to " << h
                         << std::endl << std::flush;);
         return h;
@@ -172,7 +181,8 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos)
         // FIXME Is it safe to use m_orientation without checking it
         h = constrainHeight(parent->m_location.m_loc,
                             pos.toParentCoords(parent->m_location.m_pos,
-                                               parent->m_location.m_orientation)
+                                               parent->m_location.m_orientation),
+                            mode
                            ) - ppos.z();
         debug(std::cout << "Correcting height from " << pos.z() << " to " << h
                         << std::endl << std::flush;);
@@ -205,8 +215,19 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
         debug(std::cout << "loc set with loc " << ent->m_location.m_loc->getId()
                         << std::endl << std::flush;);
     }
+    // FIXME
+    std::string mode;
+    if (ent->has("mode")) {
+        Element mode_attr;
+        assert(ent->get("mode", mode_attr));
+        if (mode_attr.isString()) {
+            mode = mode_attr.asString();
+        } else {
+            log(ERROR, "Non string mode on entity in Thing::MoveOperation");
+        }
+    }
     ent->m_location.m_pos.z() = constrainHeight(ent->m_location.m_loc,
-                                                ent->m_location.m_pos);
+                                                ent->m_location.m_pos, mode);
     bool cont_change = ent->m_location.m_loc->m_contains.empty();
     ent->m_location.m_loc->m_contains.insert(ent);
     ent->m_location.m_loc->incRef();
