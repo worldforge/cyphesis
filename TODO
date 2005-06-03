@@ -1,3 +1,8 @@
+Make an Atlas encoding to describe basic layers.
+
+Implement buying clothes to be worn. Garment base class, use wield operations
+to use.
+
 Implement spawnpoints, and separate mason and werewolf locations.
 
 Make sure python object references aren't leaked in script factories.
