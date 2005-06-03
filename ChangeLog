@@ -1,3 +1,8 @@
+2005-06-02 Miguel Guzman 
+
+        * rulesets/mason/define_world_aglanor.py: 
+	added new world definition for mason 0.3
+
 2005-06-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Add carrot and turnip, and a common parent tuber.
