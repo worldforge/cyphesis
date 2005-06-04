@@ -1,5 +1,10 @@
 2005-06-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Mind.cpp, rulesets/Py_Thing.cpp: Add attribute
+	  handler for "contains".
+
+2005-06-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Creatortest.cpp, tests/Worldtest.cpp:
 	  Fix tests to work with modified World API.
 

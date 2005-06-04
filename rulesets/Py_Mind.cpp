@@ -3,6 +3,7 @@
 // Copyright (C) 2000 Alistair Riddoch
 
 #include "Py_Mind.h"
+#include "Py_Thing.h"
 #include "Py_Map.h"
 #include "Py_Object.h"
 #include "Py_Vector3D.h"
@@ -86,6 +87,25 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
         PyWorldTime * worldtime = newPyWorldTime();
         worldtime->time = self->m_mind->getTime();
         return (PyObject *)worldtime;
+    }
+    if (strcmp(name, "contains") == 0) {
+        PyObject * list = PyList_New(0);
+        if (list == NULL) {
+            return NULL;
+        }
+        EntitySet::const_iterator I = self->m_mind->m_contains.begin();
+        EntitySet::const_iterator Iend = self->m_mind->m_contains.end();
+        for (; I != Iend; ++I) {
+            PyEntity * child = newPyEntity();
+            if (child == NULL) {
+                Py_DECREF(list);
+                return NULL;
+            }
+            // FIXME Do we need to increment the reference count on this?
+            child->m_entity = *I;
+            PyList_Append(list, (PyObject*)child);
+        }
+        return list;
     }
     if (self->Mind_attr != NULL) {
         PyObject *v = PyDict_GetItemString(self->Mind_attr, name);

@@ -89,6 +89,25 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         world->world = self->m_entity->m_world;
         return (PyObject *)world;
     }
+    if (strcmp(name, "contains") == 0) {
+        PyObject * list = PyList_New(0);
+        if (list == NULL) {
+            return NULL;
+        }
+        EntitySet::const_iterator I = self->m_entity->m_contains.begin();
+        EntitySet::const_iterator Iend = self->m_entity->m_contains.end();
+        for (; I != Iend; ++I) {
+            PyEntity * child = newPyEntity();
+            if (child == NULL) {
+                Py_DECREF(list);
+                return NULL;
+            }
+            // FIXME Do we need to increment the reference count on this?
+            child->m_entity = *I;
+            PyList_Append(list, (PyObject*)child);
+        }
+        return list;
+    }
     if (self->Entity_attr != NULL) {
         PyObject *v = PyDict_GetItemString(self->Entity_attr, name);
         if (v != NULL) {

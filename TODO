@@ -1,3 +1,6 @@
+Move Create handler from Entity into Thing, as everything IG inherits from
+Thing.
+
 Make an Atlas encoding to describe basic layers.
 
 Implement buying clothes to be worn. Garment base class, use wield operations
