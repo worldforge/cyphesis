@@ -1,3 +1,8 @@
+2005-06-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/Creatortest.cpp, tests/Worldtest.cpp:
+	  Fix tests to work with modified World API.
+
 2005-06-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseWorld.h, server/WorldRouter.cpp, server/WorldRouter.h:
