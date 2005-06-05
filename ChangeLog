@@ -1,3 +1,9 @@
+2005-06-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/mason.xml: Add mausoleum rule.
+
+	* TODO: Update TODO.
+
 2005-06-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Mind.cpp, rulesets/Py_Thing.cpp: Add attribute

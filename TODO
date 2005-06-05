@@ -1,3 +1,6 @@
+Add swimming to Pedestrian. Try and add floating by default to non aquatic
+creatures.
+
 Move Create handler from Entity into Thing, as everything IG inherits from
 Thing.
 
