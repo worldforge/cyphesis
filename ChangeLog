@@ -1,5 +1,9 @@
 2005-06-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add a horse.
+
+2005-06-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add mausoleum rule.
 
 	* TODO: Update TODO.
