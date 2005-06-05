@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2005 Alistair Riddoch
 
 #include "rulesets/Entity.h"
 
@@ -10,22 +10,23 @@
 
 using Atlas::Message::Element;
 
-Location::Location() : m_solid(true), m_loc(NULL)
+Location::Location() :
+    m_simple(true), m_solid(true), m_loc(0)
 {
 }
 
 Location::Location(Entity * rf) :
-            m_solid(true), m_loc(rf)
+    m_simple(true), m_solid(true), m_loc(rf)
 {
 }
 
 Location::Location(Entity * rf, const Point3D & crds) :
-            m_solid(true), m_loc(rf), m_pos(crds)
+    m_simple(true), m_solid(true), m_loc(rf), m_pos(crds)
 {
 }
 
 Location::Location(Entity * rf, const Point3D& crds, const Vector3D& vel) :
-            m_solid(true), m_loc(rf), m_pos(crds), m_velocity(vel)
+    m_simple(true), m_solid(true), m_loc(rf), m_pos(crds), m_velocity(vel)
 {
 }
 

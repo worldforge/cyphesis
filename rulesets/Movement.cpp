@@ -52,7 +52,7 @@ void Movement::checkCollisions(const Location & loc)
         // Don't check for collisions with ourselves
         if ((*I) == &m_body) { continue; }
         const Location & oloc = (*I)->m_location;
-        if (!oloc.m_bBox.isValid()) { continue; }
+        if (!oloc.m_bBox.isValid() || !oloc.isSolid()) { continue; }
         debug( std::cout << " " << (*I)->getId(); );
         Vector3D normal;
         float t = consts::basic_tick + 1;
@@ -85,7 +85,7 @@ void Movement::checkCollisions(const Location & loc)
                         << collTime << std::endl << std::flush;);
         m_collEntity = oloc.m_loc;
         m_collRefChange = true;
-    } else if (!m_collEntity->m_location.isSolid()) {
+    } else if (!m_collEntity->m_location.isSimple()) {
         debug(std::cout << "Collision with non-solid object" << std::endl
                         << std::flush;);
         // Non solid container - check for collision with its contents.

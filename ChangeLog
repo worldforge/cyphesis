@@ -1,5 +1,20 @@
 2005-06-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.cpp, modules/Location.h: Rejig flags on Location
+	  so that there is one to indicate contents should be checked for
+	  collision, and one to indicate contents is not a collision volume.
+
+	* rulesets/Movement.cpp: Modify collision code to check if an
+	  entity is supposed to be checked for collisions.
+
+	* rulesets/Structure.cpp: Tweak the flag set on structures to
+	  correctly show that their contents should be checked for collision.
+
+	* data/mason.xml: Make ploughed field into an area, and sort
+	  out its bbox to be the right size.
+
+2005-06-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add a horse.
 
 2005-06-05  Al Riddoch  <alriddoch@zepler.org>

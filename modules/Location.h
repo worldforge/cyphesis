@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2005 Alistair Riddoch
 
 #ifndef MODULES_LOCATION_H
 #define MODULES_LOCATION_H
@@ -15,6 +15,7 @@ class Entity;
 
 class Location {
   private:
+    bool m_simple;
     bool m_solid;
   public:
     Entity * m_loc;
@@ -33,6 +34,14 @@ class Location {
 
     bool isValid() const {
         return ((m_loc != NULL) && m_pos.isValid());
+    }
+
+    bool isSimple() const {
+        return m_simple;
+    }
+
+    void setSimple(bool c = true) {
+        m_simple = c;
     }
 
     bool isSolid() const {

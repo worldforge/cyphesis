@@ -6,5 +6,5 @@
 
 Structure::Structure(const std::string & id) : Structure_parent(id)
 {
-    m_location.setSolid(false);
+    m_location.setSimple(false);
 }
