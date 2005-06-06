@@ -1,5 +1,10 @@
 2005-06-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Clean up check for movements that currently
+	  can't be handled.
+
+2005-06-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, rulesets/Movement.cpp, rulesets/Movement.h,
 	  rulesets/Pedestrian.cpp: Rename some variables to make the code
 	  more comprehensible.

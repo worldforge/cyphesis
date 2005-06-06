@@ -716,8 +716,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     // At the moment we can't deal if the movement changes ref, or occurs
     // in the past, so we just let it by unchanged.
     if ((futureSeconds < 0.) ||
-        ((new_loc != m_location.m_loc->getId()) &&
-         (!new_loc.empty())) ) {
+        ((!new_loc.empty()) && (new_loc != m_location.m_loc->getId()))) {
         Operation * newop = new Operation(op);
         newop->setTo(getId());
         newop->setFutureSeconds(futureSeconds);
