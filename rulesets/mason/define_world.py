@@ -203,10 +203,10 @@ def default(mapeditor):
     # m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
 
     cfire=m.make('campfire',type='campfire',xyz=(3,9,settlement_height))
-    m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
+    m.make('fire',type='fire',xyz=(0,0,0),parent=cfire.id)
 
     cfire=m.make('campfire',type='campfire',xyz=(11,1,settlement_height))
-    m.make('fire',type='fire',xyz=(0.7,0.7,0),parent=cfire.id)
+    m.make('fire',type='fire',xyz=(0,0,0),parent=cfire.id)
 
     for i in range(0, 20):
         m.make('lumber',type='lumber',xyz=(uniform(-200,0),uniform(-200,0),settlement_height))

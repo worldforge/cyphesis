@@ -1,3 +1,11 @@
+2005-06-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/mason.xml: Make boat float by default, add bottle and bunny,
+	  fix wolf's bounding box.
+
+	* rulesets/mason/define_world.py: Put fire in the middle of campfire,
+	  not offset.
+
 2005-06-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* modules/Location.cpp, modules/Location.h: Rejig flags on Location

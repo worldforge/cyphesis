@@ -200,6 +200,10 @@
         <float name="default">250</float>
         <string name="visibility">public</string>
       </map>
+      <map name="mode">
+        <string name="default">floating</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">boat</string>
     <string name="objtype">class</string>
@@ -211,7 +215,42 @@
   <map>
     <map name="attributes">
     </map>
+    <string name="id">bottle</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
     <string name="id">boundary</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.2</float>
+          <float>-0.1</float>
+          <float>0</float>
+          <float>0.2</float>
+          <float>0.1</float>
+          <float>0.3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">2</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">bunny</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
@@ -1428,6 +1467,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.6</float>
+          <float>-0.26</float>
+          <float>0</float>
+          <float>1.3</float>
+          <float>0.26</float>
+          <float>1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">20</float>
         <string name="visibility">public</string>
