@@ -60,12 +60,12 @@ Move * Pedestrian::genFaceOperation()
         debug( std::cout << "Turning" << std::endl << std::flush;);
         Move * moveOp = new Move();
         moveOp->setTo(m_body.getId());
-        MapType entmap;
-        entmap["id"] = m_body.getId();
-        entmap["loc"] = m_body.m_location.m_loc->getId();
-        entmap["pos"] = m_body.m_location.m_pos.toAtlas();
-        entmap["orientation"] = m_orient.toAtlas();
-        ListType args(1,entmap);
+        MapType move_arg;
+        move_arg["id"] = m_body.getId();
+        move_arg["loc"] = m_body.m_location.m_loc->getId();
+        move_arg["pos"] = m_body.m_location.m_pos.toAtlas();
+        move_arg["orientation"] = m_orient.toAtlas();
+        ListType args(1,move_arg);
         moveOp->setArgs(args);
         return moveOp;
     }
@@ -97,27 +97,27 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     debug( std::cout << "time_diff:" << time_diff << std::endl << std::flush;);
     m_lastMovementTime = current_time;
 
-    Location new_loc(loc);
-    new_loc.m_velocity = m_velocity;
-    new_loc.m_orientation = m_orient;
+    Location new_location(loc);
+    new_location.m_velocity = m_velocity;
+    new_location.m_orientation = m_orient;
 
     // Create move operation
     Move * moveOp = new Move();
     moveOp->setTo(m_body.getId());
 
     // Set up argument for operation
-    MapType entmap;
-    entmap["id"] = m_body.getId();
+    MapType move_arg;
+    move_arg["id"] = m_body.getId();
 
     // If velocity is not set, return this simple operation.
     if (!m_velocity.isValid()) {
         debug( std::cout << "only velocity changed." << std::endl
                          << std::flush;);
-        new_loc.addToMessage(entmap);
-        ListType args(1,entmap);
+        new_location.addToMessage(move_arg);
+        ListType args(1,move_arg);
         moveOp->setArgs(args);
         if (NULL != rloc) {
-            *rloc = new_loc;
+            *rloc = new_location;
         }
         return moveOp;
     }
@@ -128,11 +128,11 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
     double square_speed_ratio = vel_square_mag / consts::square_base_velocity;
 
     if (square_speed_ratio > 0.25) { // 0.5 ^ 2
-        entmap["mode"] = "running";
+        move_arg["mode"] = "running";
     } else if (square_speed_ratio > 0.0025) { // 0.05 ^ 2
-        entmap["mode"] = "walking";
+        move_arg["mode"] = "walking";
     } else {
-        entmap["mode"] = "standing";
+        move_arg["mode"] = "standing";
     }
 
     // Update location
@@ -152,13 +152,13 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
         if (dist2 > dist) {
             debug( std::cout << "target achieved";);
             new_coords = target;
-            if (m_collRefChange) {
+            if (m_collLocChange) {
                 static const Quaternion identity(Quaternion().identity());
                 debug(std::cout << "CONTACT " << m_collEntity->getId()
                                 << std::endl << std::flush;);
-                if (m_collEntity == new_loc.m_loc->m_location.m_loc) {
+                if (m_collEntity == new_location.m_loc->m_location.m_loc) {
                     debug(std::cout << "OUT" << target
-                                    << new_loc.m_loc->m_location.m_pos
+                                    << new_location.m_loc->m_location.m_pos
                                     << std::endl << std::flush;);
                     const Quaternion & collOrientation = loc.m_loc->m_location.m_orientation.isValid() ?
                                                          loc.m_loc->m_location.m_orientation :
@@ -171,7 +171,7 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                     if (m_targetPos.isValid()) {
                         m_targetPos = m_targetPos.toParentCoords(loc.m_loc->m_location.m_pos, collOrientation);
                     }
-                } else if (m_collEntity->m_location.m_loc == new_loc.m_loc) {
+                } else if (m_collEntity->m_location.m_loc==new_location.m_loc) {
                     debug(std::cout << "IN" << std::endl << std::flush;);
                     // FIXME take account of orientation
                     const Quaternion & collOrientation = m_collEntity->m_location.m_orientation.isValid() ?
@@ -191,11 +191,11 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                                     + ". Making no coord adjustment.";
                     log(ERROR, msg.c_str());
                 }
-                new_loc.m_loc = m_collEntity;
-                new_loc.m_velocity = m_velocity;
-                new_loc.m_orientation = m_orient;
+                new_location.m_loc = m_collEntity;
+                new_location.m_velocity = m_velocity;
+                new_location.m_orientation = m_orient;
                 m_collEntity = NULL;
-                m_collRefChange = false;
+                m_collLocChange = false;
                 m_collPos = Point3D();
             } else {
                 if (m_collPos.isValid()) {
@@ -211,33 +211,33 @@ Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
                         // movement doesn't get screwed up
                     } else {
                         reset();
-                        entmap["mode"] = "standing";
+                        move_arg["mode"] = "standing";
                         stopped = true;
                     }
                 } else {
                     reset();
-                    entmap["mode"] = "standing";
+                    move_arg["mode"] = "standing";
                     stopped = true;
                 }
-                new_loc.m_velocity = m_velocity;
+                new_location.m_velocity = m_velocity;
             }
         }
     }
-    new_loc.m_pos = new_coords;
+    new_location.m_pos = new_coords;
     m_updatedPos = new_coords;
 
     // Check for collisions
     if (!stopped) {
-        checkCollisions(new_loc);
+        checkCollisions(new_location);
     }
 
     debug( std::cout << "new coordinates: " << new_coords << std::endl
                      << std::flush;);
-    new_loc.addToMessage(entmap);
-    ListType args2(1,entmap);
+    new_location.addToMessage(move_arg);
+    ListType args2(1,move_arg);
     moveOp->setArgs(args2);
     if (NULL != rloc) {
-        *rloc = new_loc;
+        *rloc = new_location;
     }
     return moveOp;
 }

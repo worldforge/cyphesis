@@ -31,7 +31,7 @@ class Movement {
     int m_serialno;
     Point3D m_collPos;
     Entity * m_collEntity;
-    bool m_collRefChange;
+    bool m_collLocChange;
     Vector3D m_collNormal;
     int m_collAxis;
 

@@ -667,27 +667,28 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         res.push_back(newop);
         return;
     }
-    std::string new_ref;
+    std::string new_loc;
     I = arg1.find("loc");
     if ((I != arg1.end()) && (I->second.isString())) {
-        new_ref = I->second.asString();
+        new_loc = I->second.asString();
     } else {
         debug( std::cout << "Parent not set" << std::endl << std::flush;);
     }
-    Point3D new_coords;
-    Vector3D new_vel;
+    Point3D new_pos;
+    Vector3D new_velocity;
     Quaternion new_orientation;
     try {
         I = arg1.find("pos");
         if (I != arg1.end()) {
-            new_coords.fromAtlas(I->second.asList());
-            debug( std::cout << "pos set to " << new_coords << std::endl << std::flush;);
+            new_pos.fromAtlas(I->second.asList());
+            debug( std::cout << "pos set to " << new_pos << std::endl << std::flush;);
         }
 
         I = arg1.find("velocity");
         if (I != arg1.end()) {
-            new_vel.fromAtlas(I->second.asList());
-            debug( std::cout << "vel set to " << new_vel << std::endl << std::flush;);
+            new_velocity.fromAtlas(I->second.asList());
+            debug( std::cout << "vel set to " << new_velocity
+                             << std::endl << std::flush;);
         }
 
         I = arg1.find("orientation");
@@ -701,22 +702,22 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     }
 
     double futureSeconds = op.getFutureSeconds();
-    if (!new_coords.isValid()) {
+    if (!new_pos.isValid()) {
         if (futureSeconds < 0.) {
             futureSeconds = 0.;
         }
     } else {
-        new_coords +=
+        new_pos +=
             (Vector3D(((double)rand())/RAND_MAX, ((double)rand())/RAND_MAX, 0)
                                 * (m_drunkness * 10));
     }
-    debug( std::cout << ":" << new_ref << ":" << m_location.m_loc->getId()
+    debug( std::cout << ":" << new_loc << ":" << m_location.m_loc->getId()
                      << ":" << std::endl << std::flush;);
     // At the moment we can't deal if the movement changes ref, or occurs
     // in the past, so we just let it by unchanged.
     if ((futureSeconds < 0.) ||
-        ((new_ref != m_location.m_loc->getId()) &&
-         (!new_ref.empty())) ) {
+        ((new_loc != m_location.m_loc->getId()) &&
+         (!new_loc.empty())) ) {
         Operation * newop = new Operation(op);
         newop->setTo(getId());
         newop->setFutureSeconds(futureSeconds);
@@ -727,13 +728,13 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     // use movement object to track movement.
     //
     double vel_mag;
-    if (!new_vel.isValid()) {
+    if (!new_velocity.isValid()) {
         debug( std::cout << "\tVelocity default" << std::endl<<std::flush;);
         vel_mag = consts::base_velocity;
     } else {
-        debug( std::cout << "\tVelocity: " << new_vel
+        debug( std::cout << "\tVelocity: " << new_velocity
                          << std::endl << std::flush;);
-        vel_mag = new_vel.mag();
+        vel_mag = new_velocity.mag();
         if (vel_mag > consts::base_velocity) {
             vel_mag = consts::base_velocity;
         }
@@ -742,9 +743,9 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     // If the position is given, and it is about right, don't bother to 
     // use it. FIXME This breaks the idea that if position is given
     // it is destination. Removed for now, but may be of future interest
-    // if (new_coords.isValid() &&
-        // (squareDistance(new_coords, m_location.m_pos) < 0.01)) {
-        // new_coords = Vector3D();
+    // if (new_pos.isValid() &&
+        // (squareDistance(new_pos, m_location.m_pos) < 0.01)) {
+        // new_pos = Vector3D();
     // }
 
     Location ret_location;
@@ -754,8 +755,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     m_movement.reset();
 
     Vector3D direction;
-    if (!new_coords.isValid()) {
-        if (!new_vel.isValid() || isZero(new_vel)) {
+    if (!new_pos.isValid()) {
+        if (!new_velocity.isValid() || isZero(new_velocity)) {
             debug( std::cout << "\tUsing orientation for direction"
                              << std::endl << std::flush;);
             // If velocity is not given, and target is not given,
@@ -764,12 +765,12 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         } else {
             debug( std::cout << "\tUsing velocity for direction"
                              << std::endl << std::flush;);
-            direction = new_vel;
+            direction = new_velocity;
         }
     } else {
         debug( std::cout << "\tUsing destination for direction"
                          << std::endl << std::flush;);
-        direction = new_coords - current_location.m_pos;
+        direction = new_pos - current_location.m_pos;
     }
     if (direction.isValid() && !(direction.mag() > 0)) {
         direction.setValid(false);
@@ -827,10 +828,10 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     tickOp->setTo(getId());
     // Need to add the arguments to this op before we return it
     // direction is already a unit vector
-    debug( if (new_coords.isValid()) { std::cout<<"\tUsing target"
+    debug( if (new_pos.isValid()) { std::cout<<"\tUsing target"
                                            << std::endl
                                            << std::flush; } );
-    m_movement.m_targetPos = new_coords;
+    m_movement.m_targetPos = new_pos;
     m_movement.m_velocity = direction;
     m_movement.m_velocity *= vel_mag;
     m_movement.m_orient = new_orientation;

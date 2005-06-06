@@ -1,5 +1,11 @@
 2005-06-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp, rulesets/Movement.cpp, rulesets/Movement.h,
+	  rulesets/Pedestrian.cpp: Rename some variables to make the code
+	  more comprehensible.
+
+2005-06-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Make boat float by default, add bottle and bunny,
 	  fix wolf's bounding box.
 
