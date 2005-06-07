@@ -1,5 +1,14 @@
 2005-06-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Movement.h, rulesets/Pedestrian.h, rulesets/Pedestrian.cpp:
+	  Add a return value to getUpdatedLocation to indicate whether an
+	  update was necessary or not.
+
+	* rulesets/Character.cpp: Add some notes on how this code could be
+	  adapted to Use the new Movement code.
+
+2005-06-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Add some comments on how the movement
 	  code should work.
 

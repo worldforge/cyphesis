@@ -749,6 +749,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         // new_pos = Vector3D();
     // }
 
+    // This will be replaced by a call to getUpdatedLocation, which should
+    // return 1 if no update is required.
     Location ret_location;
     Move * moveOp = m_movement.genMoveUpdate(&ret_location);
     const Location & current_location = (NULL != moveOp) ? ret_location
@@ -798,6 +800,16 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             }
         }
     }
+
+    // In order to determine if a move op is stopping or moving,
+    // we need to see if:
+    //
+    // A) A new velocity has been specified which is non-zero
+    // B) A destination position is specified
+    // C) A new velocity is not specified, and existing velocity
+    //    is non-zero.
+    //
+    // This can be extrapolated from above, and encapsulated in new_velocity
 
     if ((vel_mag == 0) || !direction.isValid()) {
         debug( std::cout << "\tMovement stopped" << std::endl

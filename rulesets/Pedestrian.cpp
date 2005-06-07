@@ -78,22 +78,27 @@ Move * Pedestrian::genFaceOperation()
 /// The does not modify the entity, but determines a new Location based
 /// on the velocity of the entity, time elapsed, whether any collision
 /// occurs, and whether the entity has reached its target.
-void Pedestrian::getUpdatedLocation(Location & return_location)
+/// @return 1 if no update was made, or 0 otherwise
+int Pedestrian::getUpdatedLocation(Location & return_location)
 {
     // FIXME It is possible that m_velocity is irrelevant here. We just
     // don't care what its set to - just the velociy of m_body.
+    // In fact m_velocity is probably not required.
 
     if (!updateNeeded(m_body.m_location)) {
         std::cout << "No update" << std::endl << std::flush;
-        return;
+        return 1;
     }
 
     const double & current_time = m_body.m_world->getTime();
     double time_diff = current_time - m_lastMovementTime;
     debug( std::cout << "time_diff:" << time_diff << std::endl << std::flush;);
     // Don't update time yet, but FIXME it must be done when the operation
-    // is actually generated.
-    // m_lastMovementTime = current_time;
+    // is actually generated. In fact FIXME it should be updated when the
+    // operation is dispatched. It may be a good idea to put a time stamp
+    // in Location, as it will be useful elsewhere, and will eliminate the
+    // race condition.
+    m_lastMovementTime = current_time;
 
     Location new_location(m_body.m_location);
     // m_velocity and m_orient are of no interest yet. They contain old data,
@@ -190,6 +195,46 @@ void Pedestrian::getUpdatedLocation(Location & return_location)
     }
     new_location.m_pos = new_coords;
     m_updatedPos = new_coords;
+
+    return_location = new_location;
+
+    return 0;
+}
+
+Move * Pedestrian::generateMove(const Location & new_location)
+{
+    // Create move operation
+    Move * moveOp = new Move();
+    moveOp->setTo(m_body.getId());
+
+    // Set up argument for operation
+    MapType move_arg;
+    move_arg["id"] = m_body.getId();
+
+    // Walk out what the mode of the character should be.
+    // Performed in squares to save on that critical sqrt() call
+    double vel_square_mag = 0;
+    if (new_location.m_velocity.isValid()) {
+        new_location.m_velocity.sqrMag();
+    }
+    double square_speed_ratio = vel_square_mag / consts::square_base_velocity;
+
+    if (square_speed_ratio > 0.25) { // 0.5 ^ 2
+        move_arg["mode"] = "running";
+    } else if (square_speed_ratio > 0.0025) { // 0.05 ^ 2
+        move_arg["mode"] = "walking";
+    } else {
+        move_arg["mode"] = "standing";
+    }
+
+    if (vel_square_mag > 0) {
+        checkCollisions(new_location);
+    }
+
+    new_location.addToMessage(move_arg);
+    moveOp->setArgs(ListType(1, move_arg));
+
+    return moveOp;
 }
 
 Move * Pedestrian::genMoveUpdate(Location * rloc)
