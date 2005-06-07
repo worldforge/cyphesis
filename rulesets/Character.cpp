@@ -725,7 +725,9 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     }
     // Movement within current ref. Work out the speed and stuff and
     // use movement object to track movement.
-    //
+
+    // FIXME We may not need this here. val_mag is only really needed
+    // to check if we are moving at this stage in the code.
     double vel_mag;
     if (!new_velocity.isValid()) {
         debug( std::cout << "\tVelocity default" << std::endl<<std::flush;);
@@ -751,7 +753,12 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     Move * moveOp = m_movement.genMoveUpdate(&ret_location);
     const Location & current_location = (NULL != moveOp) ? ret_location
                                                          : m_location;
+    // FIXME THis here?
     m_movement.reset();
+
+    // FIXME At this point determine if we are stopped, and if so return
+    // a suitable op. This would obsolete the later code for handling
+    // the stopped case.
 
     Vector3D direction;
     if (!new_pos.isValid()) {

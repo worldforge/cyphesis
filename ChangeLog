@@ -1,5 +1,10 @@
 2005-06-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Add some comments on how the movement
+	  code should work.
+
+2005-06-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* Makefile.am: Fixup permissions on the temp directory used for
 	  unix sockets.
 
