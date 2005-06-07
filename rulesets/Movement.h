@@ -47,6 +47,7 @@ class Movement {
     bool moving() const;
 
     virtual double getTickAddition(const Point3D & coordinates) const = 0;
+    virtual void getUpdatedLocation(Location &) = 0;
     virtual Atlas::Objects::Operation::Move * genFaceOperation() = 0;
     virtual Atlas::Objects::Operation::Move * genMoveUpdate(Location *) = 0;
     virtual Atlas::Objects::Operation::Move * genMoveOperation(Location *,

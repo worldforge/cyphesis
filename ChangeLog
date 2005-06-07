@@ -1,5 +1,11 @@
 2005-06-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Movement.h, rulesets/Pedestrian.h, rulesets/Pedestrian.cpp:
+	  Add a new method to the movement interface which determines the
+	  updated location of an entity when movement needs to be handled.
+
+2005-06-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Clean up check for movements that currently
 	  can't be handled.
 
