@@ -1,3 +1,8 @@
+2005-06-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* Makefile.am: Fixup permissions on the temp directory used for
+	  unix sockets.
+
 2005-06-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Movement.h, rulesets/Pedestrian.h, rulesets/Pedestrian.cpp:
