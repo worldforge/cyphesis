@@ -175,6 +175,26 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
             }
         }
     }
+
+    std::string mode("standing");
+
+    if (m_body.has("mode")) {
+        Element mode_attr;
+        assert(m_body.get("mode", mode_attr));
+        if (mode_attr.isString()) {
+            mode = mode_attr.asString();
+        } else {
+            log(ERROR, "Non string mode on entity in Thing::MoveOperation");
+        }
+    }
+
+    float z = m_body.m_world->constrainHeight(new_location.m_loc, new_coords,
+                                              mode);
+    debug(std::cout << "Height adjustment " << z << " " << new_coords.z()
+                    << std::endl << std::flush;);
+
+    new_coords.z() = z;
+
     new_location.m_pos = new_coords;
     m_updatedPos = new_coords;
 
@@ -201,13 +221,24 @@ Operation * Pedestrian::generateMove(const Location & new_location)
     }
     double square_speed_ratio = vel_square_mag / consts::square_base_velocity;
 
-    if (square_speed_ratio > 0.25) { // 0.5 ^ 2
-        move_arg["mode"] = "running";
-    } else if (square_speed_ratio > 0.0025) { // 0.05 ^ 2
-        move_arg["mode"] = "walking";
-    } else {
-        move_arg["mode"] = "standing";
+    float height = 0;
+    if (m_body.m_location.m_bBox.isValid()) {
+        height = m_body.m_location.m_bBox.highCorner().z() - 
+                 m_body.m_location.m_bBox.lowCorner().z();
     }
+
+    if (new_location.m_pos.z() < (0 - height * 0.75)) {
+        move_arg["mode"] = "swimming";
+    } else {
+        if (square_speed_ratio > 0.25) { // 0.5 ^ 2
+            move_arg["mode"] = "running";
+        } else if (square_speed_ratio > 0.0025) { // 0.05 ^ 2
+            move_arg["mode"] = "walking";
+        } else {
+            move_arg["mode"] = "standing";
+        }
+    }
+    debug(std::cout << move_arg["mode"].asString() << std::endl << std::flush;);
 
     if (vel_square_mag > 0) {
         checkCollisions(new_location);

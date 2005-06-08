@@ -1,5 +1,11 @@
 2005-06-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Pedestrian.cpp: Apply z coord constraints after doing
+	  movement interpolation. If the character is immersed in water
+	  then set the mode to swimming.
+
+2005-06-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Movement.cpp, rulesets/Movement.h,
 	  rulesets/Pedestrian.cpp, rulesets/Pedestrian.h,
 	  rulesets/Character.cpp: Remove the obsoleted movement code.
