@@ -33,7 +33,6 @@ class Movement {
     Entity * m_collEntity;
     bool m_collLocChange;
     Vector3D m_collNormal;
-    int m_collAxis;
 
     bool updateNeeded(const Location & location) const;
     void checkCollisions(const Location & loc);
@@ -46,7 +45,8 @@ class Movement {
     void reset();
     bool moving() const;
 
-    virtual double getTickAddition(const Point3D & coordinates) const = 0;
+    virtual double getTickAddition(const Point3D & coordinates,
+                                   const Vector3D & velocity) const = 0;
     virtual int getUpdatedLocation(Location &) = 0;
     virtual Atlas::Objects::Operation::Move * generateMove(const Location&) = 0;
     virtual Atlas::Objects::Operation::Move * genFaceOperation() = 0;

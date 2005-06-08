@@ -1,3 +1,15 @@
+2005-06-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Movement.h, rulesets/Pedestrian.h, rulesets/Movement.cpp,
+	  rulesets/Pedestrian.cpp: Get rid of m_collAxis as it was unused.
+	  Add velocity to the interface of getTickAddition to avoid using
+	  the redundant m_velocity member of Movement. Fix calculation
+	  of velocity magnitude in new movement code. Correctly set
+	  velocity to zero when movement reaches its target.
+
+	* rulesets/Character.cpp: Add alternative movement processing
+	  code based on the new mathods in Pedestrian.
+
 2005-06-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Movement.h, rulesets/Pedestrian.h, rulesets/Pedestrian.cpp:

@@ -19,8 +19,7 @@ static const bool debug_flag = false;
 
 Movement::Movement(Entity & body) : m_body(body), m_lastMovementTime(-1),
                                     m_velocity(0,0,0), m_serialno(0),
-                                    m_collEntity(NULL), m_collLocChange(false),
-                                    m_collAxis(-1)
+                                    m_collEntity(NULL), m_collLocChange(false)
 {
     // FIXME I think setting velocity to (0,0,0) is a weird way to do it.
 }
@@ -129,7 +128,7 @@ void Movement::checkCollisions(const Location & location)
         }
     }
     debug( std::cout << "COLLISION" << std::endl << std::flush; );
-    if (collTime < getTickAddition(location.m_pos)) {
+    if (collTime < getTickAddition(location.m_pos, location.m_velocity)) {
         debug( std::cout << "Setting target loc to " << location.m_pos << "+"
                          << location.m_velocity << "*" << collTime;);
         m_collPos = location.m_pos;
@@ -146,7 +145,6 @@ void Movement::reset()
     m_collEntity = NULL;
     m_collLocChange = false;
     m_collPos = Point3D();
-    m_collAxis = -1;
     m_targetPos = Point3D();
     m_updatedPos = Point3D();
     m_velocity = Vector3D(0,0,0);

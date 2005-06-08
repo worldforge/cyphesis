@@ -31,12 +31,13 @@ Pedestrian::~Pedestrian()
 {
 }
 
-double Pedestrian::getTickAddition(const Point3D & coordinates) const
+double Pedestrian::getTickAddition(const Point3D & coordinates,
+                                   const Vector3D & velocity) const
 {
     // This may seem a little weird. Everything is handled in squares to
     // reduce the number of square roots that have to be calculated. In
     // this case only one is required.
-    double basic_square_distance = m_velocity.sqrMag()
+    double basic_square_distance = velocity.sqrMag()
                                    * consts::square_basic_tick;
     const Point3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
     if (target.isValid()) {
@@ -86,7 +87,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     // In fact m_velocity is probably not required.
 
     if (!updateNeeded(m_body.m_location)) {
-        std::cout << "No update" << std::endl << std::flush;
+        debug( std::cout << "No update" << std::endl << std::flush;);
         return 1;
     }
 
@@ -113,7 +114,6 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
                                                 : m_body.m_location.m_pos;
     new_coords += (m_body.m_location.m_velocity * time_diff);
     const Point3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
-    bool stopped = false;
     if (target.isValid()) {
         Point3D new_coords2 = new_coords;
         new_coords2 += (m_body.m_location.m_velocity * (consts::basic_tick / 10.0));
@@ -170,10 +170,10 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
                 m_collLocChange = false;
                 m_collPos = Point3D();
             } else {
+                Vector3D & new_velocity = new_location.m_velocity;
                 if (m_collPos.isValid()) {
                     // Generate touch ops
                     // This code relies on m_collNormal being a unit vector
-                    Vector3D & new_velocity = new_location.m_velocity;
                     new_velocity -= m_collNormal * Dot(m_collNormal, new_velocity);
                     if ((new_velocity.mag() / consts::base_velocity) > 0.05) {
                         m_collPos = Point3D();
@@ -184,11 +184,11 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
                         // movement doesn't get screwed up
                     } else {
                         reset();
-                        stopped = true;
+                        new_velocity = Vector3D(0,0,0);
                     }
                 } else {
                     reset();
-                    stopped = true;
+                    new_velocity = Vector3D(0,0,0);
                 }
             }
         }
@@ -215,7 +215,7 @@ Move * Pedestrian::generateMove(const Location & new_location)
     // Performed in squares to save on that critical sqrt() call
     double vel_square_mag = 0;
     if (new_location.m_velocity.isValid()) {
-        new_location.m_velocity.sqrMag();
+        vel_square_mag = new_location.m_velocity.sqrMag();
     }
     double square_speed_ratio = vel_square_mag / consts::square_base_velocity;
 

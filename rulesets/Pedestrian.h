@@ -16,7 +16,8 @@ class Pedestrian : public Movement {
     explicit Pedestrian(Entity & body);
     virtual ~Pedestrian();
 
-    double getTickAddition(const Point3D & coordinates) const;
+    double getTickAddition(const Point3D & coordinates,
+                           const Vector3D & velocity) const;
     int getUpdatedLocation(Location &);
     Atlas::Objects::Operation::Move * generateMove(const Location &);
     Atlas::Objects::Operation::Move * genFaceOperation();
