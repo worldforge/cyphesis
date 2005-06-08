@@ -55,24 +55,6 @@ double Pedestrian::getTickAddition(const Point3D & coordinates,
     return consts::basic_tick;
 }
 
-Move * Pedestrian::genFaceOperation()
-{
-    if (m_orient.isValid() && (m_orient != m_body.m_location.m_orientation)) {
-        debug( std::cout << "Turning" << std::endl << std::flush;);
-        Move * moveOp = new Move();
-        moveOp->setTo(m_body.getId());
-        MapType move_arg;
-        move_arg["id"] = m_body.getId();
-        move_arg["loc"] = m_body.m_location.m_loc->getId();
-        move_arg["pos"] = m_body.m_location.m_pos.toAtlas();
-        move_arg["orientation"] = m_orient.toAtlas();
-        ListType args(1,move_arg);
-        moveOp->setArgs(args);
-        return moveOp;
-    }
-    return NULL;
-}
-
 /// \brief Calculate the updated position of the entity since the last
 /// move operation.
 ///
@@ -201,10 +183,10 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     return 0;
 }
 
-Move * Pedestrian::generateMove(const Location & new_location)
+Operation * Pedestrian::generateMove(const Location & new_location)
 {
     // Create move operation
-    Move * moveOp = new Move();
+    Operation * moveOp = new Move();
     moveOp->setTo(m_body.getId());
 
     // Set up argument for operation
@@ -234,175 +216,5 @@ Move * Pedestrian::generateMove(const Location & new_location)
     new_location.addToMessage(move_arg);
     moveOp->setArgs(ListType(1, move_arg));
 
-    return moveOp;
-}
-
-Move * Pedestrian::genMoveUpdate(Location * rloc)
-{
-    if (!updateNeeded(m_body.m_location)) {
-        debug( std::cout << "No update needed" << std::endl << std::flush; );
-        return NULL;
-    }
-
-    debug(std::cout << "genMoveUpdate: Update needed..." << std::endl
-                    << std::flush;);
-
-    return genMoveOperation(rloc, m_body.m_location);
-}
-
-Move * Pedestrian::genMoveOperation(Location * rloc, const Location & loc)
-{
-    debug(std::cout << "genMoveOperation: Pedestrian(" << m_serialno << ","
-               << m_collPos << "," << m_targetPos << "," << m_velocity << ","
-               << m_lastMovementTime << ")" << std::endl << std::flush;);
-
-    // Sort out time difference, and set updated time
-    const double & current_time = m_body.m_world->getTime();
-    double time_diff = current_time - m_lastMovementTime;
-    debug( std::cout << "time_diff:" << time_diff << std::endl << std::flush;);
-    m_lastMovementTime = current_time;
-
-    Location new_location(loc);
-    new_location.m_velocity = m_velocity;
-    new_location.m_orientation = m_orient;
-
-    // Create move operation
-    Move * moveOp = new Move();
-    moveOp->setTo(m_body.getId());
-
-    // Set up argument for operation
-    MapType move_arg;
-    move_arg["id"] = m_body.getId();
-
-    // If velocity is not set, return this simple operation.
-    if (!m_velocity.isValid()) {
-        debug( std::cout << "only velocity changed." << std::endl
-                         << std::flush;);
-        new_location.addToMessage(move_arg);
-        ListType args(1,move_arg);
-        moveOp->setArgs(args);
-        if (NULL != rloc) {
-            *rloc = new_location;
-        }
-        return moveOp;
-    }
-
-    // Walk out what the mode of the character should be.
-    // Performed in squares to save on that critical sqrt() call
-    double vel_square_mag = m_velocity.sqrMag();
-    double square_speed_ratio = vel_square_mag / consts::square_base_velocity;
-
-    if (square_speed_ratio > 0.25) { // 0.5 ^ 2
-        move_arg["mode"] = "running";
-    } else if (square_speed_ratio > 0.0025) { // 0.05 ^ 2
-        move_arg["mode"] = "walking";
-    } else {
-        move_arg["mode"] = "standing";
-    }
-
-    // Update location
-    Point3D new_coords = m_updatedPos.isValid() ? m_updatedPos : loc.m_pos;
-    new_coords += (m_velocity * time_diff);
-    const Point3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
-    bool stopped = false;
-    if (target.isValid()) {
-        Point3D new_coords2 = new_coords;
-        new_coords2 += (m_velocity * (consts::basic_tick / 10.0));
-        // The values returned by squareDistance are squares, so
-        // cannot be used except for comparison
-        double dist = squareDistance(target, new_coords);
-        double dist2 = squareDistance(target, new_coords2);
-        debug( std::cout << "dist: " << dist << "," << dist2 << std::endl
-                         << std::flush;);
-        if (dist2 > dist) {
-            debug( std::cout << "target achieved";);
-            new_coords = target;
-            if (m_collLocChange) {
-                static const Quaternion identity(Quaternion().identity());
-                debug(std::cout << "CONTACT " << m_collEntity->getId()
-                                << std::endl << std::flush;);
-                if (m_collEntity == new_location.m_loc->m_location.m_loc) {
-                    debug(std::cout << "OUT" << target
-                                    << new_location.m_loc->m_location.m_pos
-                                    << std::endl << std::flush;);
-                    const Quaternion & collOrientation = loc.m_loc->m_location.m_orientation.isValid() ?
-                                                         loc.m_loc->m_location.m_orientation :
-                                                         identity;
-                    // FIXME take account of orientation
-                    new_coords = new_coords.toParentCoords(loc.m_loc->m_location.m_pos, collOrientation);
-                    m_orient *= collOrientation;
-                    m_velocity.rotate(collOrientation);
-                    // FIXME velocity take account of orientation
-                    if (m_targetPos.isValid()) {
-                        m_targetPos = m_targetPos.toParentCoords(loc.m_loc->m_location.m_pos, collOrientation);
-                    }
-                } else if (m_collEntity->m_location.m_loc==new_location.m_loc) {
-                    debug(std::cout << "IN" << std::endl << std::flush;);
-                    // FIXME take account of orientation
-                    const Quaternion & collOrientation = m_collEntity->m_location.m_orientation.isValid() ?
-                                                         m_collEntity->m_location.m_orientation :
-                                                         identity;
-                    new_coords = new_coords.toLocalCoords(m_collEntity->m_location.m_pos, collOrientation);
-                    m_orient /= collOrientation;
-                    m_velocity.rotate(collOrientation.inverse());
-                    // FIXME velocity take account of orientation
-                    if (m_targetPos.isValid()) {
-                        m_targetPos = m_targetPos.toLocalCoords(m_collEntity->m_location.m_pos, collOrientation);
-                    }
-                } else {
-                    std::string msg = std::string("BAD COLLISION: ")
-                                    + m_body.getId() + " with "
-                                    + m_collEntity->getId()
-                                    + ". Making no coord adjustment.";
-                    log(ERROR, msg.c_str());
-                }
-                new_location.m_loc = m_collEntity;
-                new_location.m_velocity = m_velocity;
-                new_location.m_orientation = m_orient;
-                m_collEntity = NULL;
-                m_collLocChange = false;
-                m_collPos = Point3D();
-            } else {
-                if (m_collPos.isValid()) {
-                    // Generate touch ops
-                    // This code relies on m_collNormal being a unit vector
-                    m_velocity -= m_collNormal * Dot(m_collNormal, m_velocity);
-                    if ((m_velocity.mag() / consts::base_velocity) > 0.05) {
-                        m_collPos = Point3D();
-                        m_collEntity = NULL;
-                        m_velocity.normalize();
-                        m_velocity *= sqrt(vel_square_mag);
-                        // FIXME flag as diverted, so destination based
-                        // movement doesn't get screwed up
-                    } else {
-                        reset();
-                        move_arg["mode"] = "standing";
-                        stopped = true;
-                    }
-                } else {
-                    reset();
-                    move_arg["mode"] = "standing";
-                    stopped = true;
-                }
-                new_location.m_velocity = m_velocity;
-            }
-        }
-    }
-    new_location.m_pos = new_coords;
-    m_updatedPos = new_coords;
-
-    // Check for collisions
-    if (!stopped) {
-        checkCollisions(new_location);
-    }
-
-    debug( std::cout << "new coordinates: " << new_coords << std::endl
-                     << std::flush;);
-    new_location.addToMessage(move_arg);
-    ListType args2(1,move_arg);
-    moveOp->setArgs(args2);
-    if (NULL != rloc) {
-        *rloc = new_location;
-    }
     return moveOp;
 }

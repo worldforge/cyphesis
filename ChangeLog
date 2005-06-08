@@ -1,5 +1,13 @@
 2005-06-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Movement.cpp, rulesets/Movement.h,
+	  rulesets/Pedestrian.cpp, rulesets/Pedestrian.h,
+	  rulesets/Character.cpp: Remove the obsoleted movement code.
+	  Eliminate friend relationship with Character, adding necessary
+	  accessors. Remove unused member variables.
+
+2005-06-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Movement.h, rulesets/Pedestrian.h, rulesets/Movement.cpp,
 	  rulesets/Pedestrian.cpp: Get rid of m_collAxis as it was unused.
 	  Add velocity to the interface of getTickAddition to avoid using

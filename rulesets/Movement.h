@@ -5,16 +5,13 @@
 #ifndef RULESETS_MOVEMENT_H
 #define RULESETS_MOVEMENT_H
 
-#include <physics/Vector3D.h>
-#include <physics/Quaternion.h>
+#include "physics/Vector3D.h"
+#include "physics/Quaternion.h"
+
+#include "common/types.h"
 
 class Entity;
-class Character;
 class Location;
-
-namespace Atlas { namespace Objects { namespace Operation {
-  class Move;
-} } }
 
 /// \brief Base class for handling Character movement
 ///
@@ -26,8 +23,6 @@ class Movement {
     double m_lastMovementTime;
     Point3D m_targetPos;
     Point3D m_updatedPos;
-    Vector3D m_velocity;
-    Quaternion m_orient;
     int m_serialno;
     Point3D m_collPos;
     Entity * m_collEntity;
@@ -36,23 +31,24 @@ class Movement {
 
     bool updateNeeded(const Location & location) const;
     void checkCollisions(const Location & loc);
-
-    friend class Character;
   public:
     explicit Movement(Entity & body);
     virtual ~Movement();
 
+    int serialno() const {
+        return m_serialno;
+    }
+
+    void setTarget(const Point3D & target) {
+        m_targetPos = target;
+    }
+
     void reset();
-    bool moving() const;
 
     virtual double getTickAddition(const Point3D & coordinates,
                                    const Vector3D & velocity) const = 0;
     virtual int getUpdatedLocation(Location &) = 0;
-    virtual Atlas::Objects::Operation::Move * generateMove(const Location&) = 0;
-    virtual Atlas::Objects::Operation::Move * genFaceOperation() = 0;
-    virtual Atlas::Objects::Operation::Move * genMoveUpdate(Location *) = 0;
-    virtual Atlas::Objects::Operation::Move * genMoveOperation(Location *,
-                                                        const Location &) = 0;
+    virtual Operation * generateMove(const Location&) = 0;
 };
 
 #endif // RULESETS_MOVEMENT_H
