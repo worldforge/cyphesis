@@ -1,3 +1,10 @@
+Implement swimming, which requires constraining the updated pos in the movement
+code to be sure of getting the right Z. Try and do some direction stuff in
+the sear interface.
+
+Clean up old movement code, get rid of Movement::m_velocity, and perhaps
+m_orient.
+
 When getMoveUpdate is first called in moveMoveOperation, it doesn't really
 want an operation, just an update of the position.
 
