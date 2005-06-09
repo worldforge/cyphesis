@@ -243,6 +243,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
                                                     m_location.m_pos,
                                                     mode);
+    // m_location.update(m_world->getTime());
     m_update_flags |= a_pos;
     I = ent.find("velocity");
     if (I != Iend) {

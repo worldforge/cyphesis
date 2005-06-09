@@ -1,3 +1,11 @@
+2005-06-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* modules/Location.h, rulesets/Pedestrian.cpp, rulesets/Thing.cpp,
+	  server/WorldRouter.cpp: Store the last movement update time
+	  in location, so it can be used for interpolation elsewhere.
+	  Don't yet update it in the main Move code is this causes movement
+	  jitter.
+
 2005-06-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Pedestrian.cpp: Apply z coord constraints after doing

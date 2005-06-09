@@ -17,6 +17,8 @@ class Location {
   private:
     bool m_simple;
     bool m_solid;
+
+    double m_timeStamp;
   public:
     Entity * m_loc;
     Point3D m_pos;   // Coords relative to m_loc entity
@@ -50,6 +52,14 @@ class Location {
 
     void setSolid(bool s = true) {
         m_solid = s;
+    }
+
+    const double & timeStamp() const {
+        return m_timeStamp;
+    }
+
+    void update(const double & time) {
+        m_timeStamp = time;
     }
 
     void addToMessage(Atlas::Message::MapType & ent) const;

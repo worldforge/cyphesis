@@ -215,6 +215,7 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
         debug(std::cout << "loc set with loc " << ent->m_location.m_loc->getId()
                         << std::endl << std::flush;);
     }
+    ent->m_location.update(getTime());
     // FIXME
     std::string mode;
     if (ent->has("mode")) {

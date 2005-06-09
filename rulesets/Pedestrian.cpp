@@ -64,24 +64,20 @@ double Pedestrian::getTickAddition(const Point3D & coordinates,
 /// @return 1 if no update was made, or 0 otherwise
 int Pedestrian::getUpdatedLocation(Location & return_location)
 {
-    // FIXME It is possible that m_velocity is irrelevant here. We just
-    // don't care what its set to - just the velociy of m_body.
-    // In fact m_velocity is probably not required.
-
-    if (!updateNeeded(m_body.m_location)) {
-        debug( std::cout << "No update" << std::endl << std::flush;);
-        return 1;
-    }
-
     const double & current_time = m_body.m_world->getTime();
-    double time_diff = current_time - m_lastMovementTime;
-    debug( std::cout << "time_diff:" << time_diff << std::endl << std::flush;);
+    double time_diff = current_time - m_body.m_location.timeStamp();
+    std::cout << "time_diff:" << time_diff << std::endl << std::flush;
     // Don't update time yet, but FIXME it must be done when the operation
     // is actually generated. In fact FIXME it should be updated when the
     // operation is dispatched. It may be a good idea to put a time stamp
     // in Location, as it will be useful elsewhere, and will eliminate the
     // race condition.
-    m_lastMovementTime = current_time;
+    m_body.m_location.update(current_time);
+
+    if (!updateNeeded(m_body.m_location)) {
+        debug( std::cout << "No update" << std::endl << std::flush;);
+        return 1;
+    }
 
     Location new_location(m_body.m_location);
     // m_velocity and m_orient are of no interest yet. They contain old data,
