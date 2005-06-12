@@ -1,5 +1,10 @@
 2005-06-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: An experimental river is now in
+	  the terrain.
+
+2005-06-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add path rule.
 
 	* rulesets/mason/define_world.py: Some experiments with paths.
