@@ -161,6 +161,9 @@ def default(mapeditor):
     m.make('fir',type='fir',xyz=(0,10,settlement_height))
     m.make('fir',type='fir',xyz=(10,0,settlement_height))
 
+    path_area={'points' : [ [2,0], [22, 40], [132,122], [140,127], [144.5, 146.5], [169, 153], [169,155], [142.5,148.5], [138,129], [130,124], [18,40], [-2,-1] ], 'layer' : 7}
+    m.make('path to village',type='path',xyz=(10, 20,settlement_height), area=path_area,bbox=[169,154,1])
+
     chickens=[]
     xbase = uniform(12,20)
     ybase = uniform(12,20)
@@ -403,8 +406,8 @@ def add_village(mapeditor):
     m.make('house3',type='house3',xyz=(150,142,22),orientation=directions[2])
     m.make('house3',type='house3',xyz=(158,142,22),orientation=directions[5])
 
-    m.make('field',type='ploughed_field',xyz=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 7})
-    m.make('field',type='ploughed_field',xyz=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 7})
+    m.make('field',type='ploughed_field',xyz=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
+    m.make('field',type='ploughed_field',xyz=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
 def test_pig(mapeditor):
 #   general things
 
@@ -500,3 +503,9 @@ def test_settler(mapeditor):
     m.know(settler,[('forest','location',(30,30,0))])
     m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','forest','axe')"))
     m.make('oak',xyz=(32,32,0))
+
+def test_path(mapeditor):
+
+    m=editor(mapeditor)
+    path_area={'points' : [ [2,0], [22, 40], [132,122], [140,127], [144.5, 146.5], [169, 153], [169,155], [142.5,148.5], [138,129], [130,124], [18,40], [-2,-1] ], 'layer' : 7}
+    m.make('path to village',type='path',xyz=(10, 20,settlement_height), area=path_area,bbox=[169,154,1])

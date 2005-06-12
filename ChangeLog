@@ -1,5 +1,12 @@
 2005-06-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add path rule.
+
+	* rulesets/mason/define_world.py: Some experiments with paths.
+	  Correct the layer number of ploughed field.
+
+2005-06-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Pedestrian.cpp: Remove some debug output.
 
 	* server/WorldRouter.cpp: Tweak the order of dispatch.
