@@ -66,7 +66,6 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
 {
     const double & current_time = m_body.m_world->getTime();
     double time_diff = current_time - m_body.m_location.timeStamp();
-    std::cout << "time_diff:" << time_diff << std::endl << std::flush;
     // Don't update time yet, but FIXME it must be done when the operation
     // is actually generated. In fact FIXME it should be updated when the
     // operation is dispatched. It may be a good idea to put a time stamp

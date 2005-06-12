@@ -1,3 +1,20 @@
+2005-06-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Pedestrian.cpp: Remove some debug output.
+
+	* server/WorldRouter.cpp: Tweak the order of dispatch.
+
+	* cyphesis.spec.in: Clean up the dependencies in the spec.
+
+	* configure.ac: Increment version to 0.3.11.
+
+	* NEWS: Update news item.
+
+	* Makefile.am: Fix rule that tweaks temp dir prefix so it works
+	  when destination directory is overriden.
+
+	* Release 0.3.11
+
 2005-06-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* modules/Location.h, rulesets/Pedestrian.cpp, rulesets/Thing.cpp,

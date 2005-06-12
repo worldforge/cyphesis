@@ -475,7 +475,8 @@ bool WorldRouter::idle(int sec, int usec)
             log(ERROR, msg.c_str());
         }
         delete &oqe.op;
-        I = m_operationQueue.erase(I);
+        m_operationQueue.erase(I);
+        I = m_operationQueue.begin();
     }
     // If we have processed the maximum number for this call, return true
     // to tell the server not to sleep when polling clients. This ensures

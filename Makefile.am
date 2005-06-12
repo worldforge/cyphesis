@@ -10,7 +10,7 @@ socketdir = $(localstatedir)/tmp
 socket_DATA =
 
 install-data-hook:
-	chmod 1777 $(socketdir)
+	chmod 1777 $(DESTDIR)$(socketdir)
 
 EXTRA_DIST = cyphesis.spec Doxyfile TODO.mason autogen.sh \
              cyphesis.init cyclient.init cyphesis.sysconfig
