@@ -1,3 +1,11 @@
+2005-06-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Add support for fixed mode.
+
+	* rulesets/mason/define_world.py: Increase terrain area a little, move
+	  boundary into mountains, sea. Move forests around so they are not
+	  in the river.
+
 2005-06-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: An experimental river is now in

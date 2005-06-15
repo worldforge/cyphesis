@@ -107,8 +107,8 @@ directions = [[0,0,0.707,0.707],[0,0,0,1],[0,0,-0.707,0.707],[0,0,1,0],
               [0,0,0.387,0.921],[0,0,-0.387,0.921],[0,0,-0.921,0.387],[0,0,0.921,0.387]]
 
 forests = [
-           ('oak', 20, 20, 200, -100, 100, 20),
-           ('oak', 20, -100, 100, 20, 200, 20),
+           ('oak', 30, 20, 190, -200, 100, 20),
+           ('oak', 20, -200, -100, 0, 190, 20),
            ('fir', 200,  200,  300, -300, 300, 50),
            ('fir', 200, -300, 300,  200,  300, 50)
           ]
@@ -122,18 +122,18 @@ def default(mapeditor):
     world=m.look()
 
     points = { }
-    for i in range(-5, 6):
-        for j in range(-5, 6):
-            if i==5 or j==5:
+    for i in range(-6, 7):
+        for j in range(-6, 7):
+            if i>=5 or j>=5:
                 points['%ix%i'%(i,j)] = [i, j, uniform(100, 150)]
-            elif i==-5 or j == -5:
+            elif i<=-5 or j <= -5:
                 points['%ix%i'%(i,j)] = [i, j, uniform(-30, -10)]
             elif (i==2 or i==3) and (j==2 or j==3):
                 points['%ix%i'%(i,j)] = [i, j, uniform(20, 25)]
             elif i==4 or j==4:
                 points['%ix%i'%(i,j)] = [i, j, uniform(30, 80)]
             elif i==-4 or j==-4:
-                points['%ix%i'%(i,j)] = [i, j, uniform(-2, 5)]
+                points['%ix%i'%(i,j)] = [i, j, uniform(-5, 5)]
             else:
                 points['%ix%i'%(i,j)] = [i, j, 1+uniform(3, 11)*(abs(i)+abs(j))]
 
@@ -161,10 +161,10 @@ def default(mapeditor):
 
 # a wall around the world
 
-    m.make('boundary',type='boundary',xyz=(-257,-257,settlement_height),bbox=[2,514,256])
-    m.make('boundary',type='boundary',xyz=(-257,-257,settlement_height),bbox=[514,2,256])
-    m.make('boundary',type='boundary',xyz=(-257, 256,settlement_height),bbox=[514,2,256])
-    m.make('boundary',type='boundary',xyz=( 256,-257,settlement_height),bbox=[2,514,256])
+    m.make('boundary',type='boundary',xyz=(-321,-321,-20),bbox=[2,642,300],mode="fixed")
+    m.make('boundary',type='boundary',xyz=(-321,-321,-20),bbox=[642,2,300],mode="fixed")
+    m.make('boundary',type='boundary',xyz=(-321, 320,-20),bbox=[642,2,300],mode="fixed")
+    m.make('boundary',type='boundary',xyz=( 320,-321,-20),bbox=[2,642,300],mode="fixed")
 
     m.make('fir',type='fir',xyz=(-10,-0,settlement_height))
     m.make('fir',type='fir',xyz=(-0,-10,settlement_height))
@@ -452,18 +452,18 @@ def modify_terrain(mapeditor):
 
     world=m.look()
     points = { }
-    for i in range(-5, 6):
-        for j in range(-5, 6):
-            if i==5 or j==5:
+    for i in range(-6, 7):
+        for j in range(-6, 7):
+            if i>=5 or j>=5:
                 points['%ix%i'%(i,j)] = [i, j, uniform(100, 150)]
-            elif i==-5 or j == -5:
+            elif i<=-5 or j <= -5:
                 points['%ix%i'%(i,j)] = [i, j, uniform(-30, -10)]
             elif (i==2 or i==3) and (j==2 or j==3):
                 points['%ix%i'%(i,j)] = [i, j, uniform(20, 25)]
             elif i==4 or j==4:
                 points['%ix%i'%(i,j)] = [i, j, uniform(30, 80)]
             elif i==-4 or j==-4:
-                points['%ix%i'%(i,j)] = [i, j, uniform(-2, 5)]
+                points['%ix%i'%(i,j)] = [i, j, uniform(-5, 5)]
             else:
                 points['%ix%i'%(i,j)] = [i, j, 1+uniform(3, 11)*(abs(i)+abs(j))]
 

@@ -161,7 +161,9 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
     if (wrld != 0) {
         float h;
         h = wrld->getHeight(pos.x(), pos.y());
-        if (mode == "floating") {
+        if (mode == "fixed") {
+            h = pos.z();
+        } else if (mode == "floating") {
             h = 0;
         } else if (mode == "swimming") {
             h = std::max(h, std::min(0.f, pos.z()));
