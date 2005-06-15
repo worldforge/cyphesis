@@ -348,6 +348,10 @@ def default(mapeditor):
             plots.append(m.make('deed',xyz=(0,0,0),parent=marshall.id,plot=(i,j)))
     m.own(marshall,plots)
 
+    stall=m.make('Market Stall',type='stall',xyz=(17,26,settlement_height))
+    m.make('wall',type='wall',parent=stall.id,xyz=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
+    m.make('wall',type='wall',parent=stall.id,xyz=(2,0,0),bbox=(0,-1.5,0,1,1.5,2))
+
     # Warriors - the more adventurous types
 
     warriors=[]

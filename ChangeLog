@@ -1,5 +1,12 @@
 2005-06-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Fix stall geometry.
+
+	* rulesets/mason/define_world.py: Add stall, including structural
+	  objects to handle collisions.
+
+2005-06-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/define_world.py: Extend the path so it reaches the
 	  jetty. Add the village to the default world.
 
