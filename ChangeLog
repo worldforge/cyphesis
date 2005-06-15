@@ -1,5 +1,10 @@
 2005-06-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Extend the path so it reaches the
+	  jetty. Add the village to the default world.
+
+2005-06-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Add support for fixed mode.
 
 	* rulesets/mason/define_world.py: Increase terrain area a little, move
