@@ -1200,6 +1200,14 @@
   </map>
 
   <map>
+    <string name="id">sow</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
     <map name="attributes">
       <map name="bbox">
         <list name="default">
