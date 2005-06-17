@@ -796,6 +796,23 @@
     <list name="parents">
       <string>thing</string>
     </list>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-6</float>
+          <float>-6</float>
+          <float>0</float>
+          <float>6</float>
+          <float>6</float>
+          <float>8</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">100000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
   </map>
 
   <map>

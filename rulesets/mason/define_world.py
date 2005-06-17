@@ -548,3 +548,27 @@ def test_path(mapeditor):
     m=editor(mapeditor)
     path_area={'points' : [ [2,0], [22, 40], [132,122], [140,127], [144.5, 146.5], [169, 153], [169,155], [142.5,148.5], [138,129], [130,124], [18,40], [-2,-1] ], 'layer' : 7}
     m.make('path to village',type='path',xyz=(10, 20,settlement_height), area=path_area,bbox=[169,154,1])
+   
+    
+graveyard_height = 0
+
+lych2_knowledge=[('w1','location',(-150,110,graveyard_height)),
+                ('w2','location',(-50,160,graveyard_height)),
+                ('w3','location',(-80,40,graveyard_height)),
+                ('w4','location',(-180,150,graveyard_height))]
+
+   
+def test_graveyard(mapeditor):
+    m = editor(mapeditor)
+    
+    m.make('mausoluem of harrington', type='mausoleum', xyz=(-160, 105, graveyard_height), orientation=directions[0])
+    graveyard_area={'points': [[-10, -8], [8, -7], [7,9], [-8, 8]], 'layer':7 }
+    m.make('graveyard', xyz=(-150, 110, graveyard_height), type='path', area=graveyard_area, bbox=[20, 20, 1])
+    
+    path_area={'points' : [ [2, 0], [20, 20], [45, 60], [65, 70], [83, 40], [106, -15], [105, -12], [82, 36], [66, 67], [44, 57], [18, 16], [0, -4]], 'layer' : 7}
+    m.make('path to graveyard',type='path',xyz=(-150, 110, graveyard_height), area=path_area,bbox=[100,8,1])
+
+    lych=m.make('lych', type='lych', xyz=(-140, 130, graveyard_height))
+    m.learn(lych,lych_goals)
+    m.know(lych,lych2_knowledge)
+    m.tell_importance(lych,il.assemble,'>',il.patrol)
