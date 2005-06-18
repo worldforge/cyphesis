@@ -167,6 +167,13 @@ static int Vector3D_print(PyVector3D * self, FILE * fp, int)
     return 0;
 }
 
+static PyObject* Vector3D_repr(PyVector3D * self)
+{
+	char buf[64];
+	::snprintf(buf, 64, "(%f, %f, %f)", self->coords.x(), self->coords.y(), self->coords.z());
+	return PyString_FromString(buf);
+}
+
 static PyObject * Vector3D_getattr(PyVector3D *self, char *name)
 {
     //if (!self->coords) {
@@ -326,7 +333,7 @@ PyTypeObject PyVector3D_Type = {
         (getattrfunc)Vector3D_getattr,  /*tp_getattr*/
         (setattrfunc)Vector3D_setattr,  /*tp_setattr*/
         (cmpfunc)Vector3D_compare,      /*tp_compare*/
-        0,                              /*tp_repr*/
+        (reprfunc)Vector3D_repr,        /*tp_repr*/
         &Vector3D_num,                  /*tp_as_number*/
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/

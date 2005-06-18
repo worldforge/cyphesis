@@ -1,3 +1,9 @@
+2005-06-18  James Turner  <james@worldforge.org>
+
+	* rulesets/Py_Point3d.cpp, rulesets/Py_Vector3d: add a _repr() function to
+	  the type-object, so using points and vectors in 'print' statements
+	  works as expected.
+
 2005-06-18  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* data/mason.xml: Added three types of grave stones.

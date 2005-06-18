@@ -64,6 +64,13 @@ static int Point3D_print(PyPoint3D * self, FILE * fp, int)
     return 0;
 }
 
+static PyObject* Point3D_repr(PyPoint3D * self)
+{
+	char buf[64];
+	::snprintf(buf, 64, "(%f, %f, %f)", self->coords.x(), self->coords.y(), self->coords.z());
+	return PyString_FromString(buf);
+}
+
 static PyObject * Point3D_getattr(PyPoint3D *self, char *name)
 {
     //if (!self->coords) {
@@ -177,7 +184,7 @@ PyTypeObject PyPoint3D_Type = {
         (getattrfunc)Point3D_getattr,   /*tp_getattr*/
         (setattrfunc)Point3D_setattr,   /*tp_setattr*/
         (cmpfunc)Point3D_compare,       /*tp_compare*/
-        0,                              /*tp_repr*/
+        (reprfunc)Point3D_repr,         /*tp_repr*/
         &Point3D_num,                   /*tp_as_number*/
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/
