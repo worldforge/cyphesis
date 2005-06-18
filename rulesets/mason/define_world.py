@@ -568,6 +568,14 @@ def test_graveyard(mapeditor):
     path_area={'points' : [ [2, 0], [20, 20], [45, 60], [65, 70], [83, 40], [106, -15], [105, -12], [82, 36], [66, 67], [44, 57], [18, 16], [0, -4]], 'layer' : 7}
     m.make('path to graveyard',type='path',xyz=(-150, 110, graveyard_height), area=path_area,bbox=[100,8,1])
 
+    m.make('gravestone1', type='gravestone_rounded', xyz=(-145, 107, graveyard_height), orientation=directions[1])
+    m.make('gravestone2', type='gravestone_simple', xyz=(-147, 104, graveyard_height), orientation=directions[2])
+    m.make('gravestone3', type='gravestone_stylish', xyz=(-148, 109, graveyard_height), orientation=directions[3])
+    m.make('gravestone4', type='gravestone_rounded', xyz=(-150, 117, graveyard_height), orientation=directions[2])
+    m.make('gravestone5', type='gravestone_rounded', xyz=(-143, 111, graveyard_height), orientation=directions[4])
+    m.make('gravestone6', type='gravestone_stylish', xyz=(-149, 110, graveyard_height), orientation=directions[3])
+    m.make('gravestone7', type='gravestone_stylish', xyz=(-147, 116, graveyard_height), orientation=directions[2])
+    
     lych=m.make('lych', type='lych', xyz=(-140, 130, graveyard_height))
     m.learn(lych,lych_goals)
     m.know(lych,lych2_knowledge)

@@ -1,3 +1,9 @@
+2005-06-18  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* data/mason.xml: Added three types of grave stones.
+	
+	* rulesets/mason/define_world.py: In the test_graveyard function, create some grave stones.
+
 2005-06-17  James Turner  <james@worldforge.org>
 
 	* data/mason.xml: Give the mausoleum a more sensible bbox and mass

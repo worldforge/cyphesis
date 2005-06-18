@@ -624,6 +624,81 @@
     </list>
   </map>
 
+   <map>
+    <string name="id">gravestone_rounded</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.1</float>
+          <float>0</float>
+          <float>0.5</float>
+          <float>0.1</float>
+          <float>1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">100</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+  </map>  
+  
+  <map>
+    <string name="id">gravestone_simple</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.1</float>
+          <float>0</float>
+          <float>0.5</float>
+          <float>0.1</float>
+          <float>1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">100</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+  </map>  
+  
+  <map>
+    <string name="id">gravestone_stylish</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>-0.1</float>
+          <float>0</float>
+          <float>0.5</float>
+          <float>0.1</float>
+          <float>1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">100</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+  </map>  
+  
   <map>
     <map name="attributes">
     </map>
