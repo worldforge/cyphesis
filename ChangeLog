@@ -1,3 +1,7 @@
+2005-06-19  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* rulesets/mason/world/objects/outdoor/Gravestone.py: fixed the range of the randint call
+
 2005-06-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Adjust size of collision volumes for
