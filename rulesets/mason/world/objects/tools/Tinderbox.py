@@ -12,4 +12,4 @@ class Tinderbox(Thing):
         to_ = op[0].id
         if not to_:
             return self.error(op,"To is undefined object")
-        return Operation("create",Entity(parents=['fire'],status=0.005, location=Location(self.world.get_object(to_),Point3D(0.0,0.0,0.0))),to=to_)
+        return Operation("create",Entity(parents=['fire'],status=0.05, location=Location(self.world.get_object(to_),Point3D(0.0,0.0,0.0))),to=to_)

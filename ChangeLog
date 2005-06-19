@@ -1,6 +1,24 @@
+2005-06-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/world/objects/tools/Tinderbox.py: Change strength
+	  of initial fire spark to 0.05.
+
+	* common/operations.cpp: Fix nourish op, which got broken when mow
+	  was added.
+
+	* data/basic.xml: Add a default bbox for lumber, giving it a more
+	  apropriate size.
+
+	* rulesets/Py_World.cpp: Add a compare implementation so that
+	` scripts can check entities to see if they are the world.
+
+	* rulesets/basic/world/objects/elements/Fire.py: Tune the
+	  changes which occur in fire as it burns.
+
 2005-06-19  Erik Hjortsberg  <erik@katastrof.nu>
 
-	* rulesets/mason/world/objects/outdoor/Gravestone.py: fixed the range of the randint call
+	* rulesets/mason/world/objects/outdoor/Gravestone.py: fixed the range
+	  of the randint call
 
 2005-06-19  Al Riddoch  <alriddoch@zepler.org>
 

@@ -245,7 +245,7 @@ Mow Mow::Class()
 }
 
 /// \brief Constructor for Nourish operation instances
-Nourish::Nourish() : Action("", "mow")
+Nourish::Nourish() : Action("", "nourish")
 {
 }
 

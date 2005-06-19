@@ -70,6 +70,18 @@ static int World_setattr(PyWorld *self, char *name, PyObject *v)
     return 0;
 }
 
+static int World_compare(PyWorld * self, PyObject * other)
+{
+    if (PyWorld_Check(other)) {
+        PyWorld * other_world = (PyWorld *)other;
+        return (self->world == other_world->world) ? 0 : 1;
+    } else if (PyEntity_Check(other)) {
+        PyEntity * other_entity = (PyEntity *)other;
+        return (&self->world->m_gameWorld == other_entity->m_entity) ? 0 : 1;
+    }
+    return -1;
+}
+
 PyTypeObject PyWorld_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -81,7 +93,7 @@ PyTypeObject PyWorld_Type = {
         0,                              /*tp_print*/
         (getattrfunc)World_getattr,     /*tp_getattr*/
         (setattrfunc)World_setattr,     /*tp_setattr*/
-        0,                              /*tp_compare*/
+        (cmpfunc)World_compare,         /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
         0,                              /*tp_as_sequence*/

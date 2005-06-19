@@ -211,12 +211,23 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>0</float>
+          <float>0.1</float>
+          <float>0.1</float>
+          <float>0.5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">10</float>
         <string name="visibility">public</string>
       </map>
       <map name="burn_speed">
-        <float name="default">0.01</float>
+        <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
       <map name="material">

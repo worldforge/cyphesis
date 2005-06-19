@@ -19,8 +19,8 @@ class Fire(Thing):
         """things to do every tick, see comments"""
         #print `self`,"Got tick operation:\n",op
         #Is fire extinguished?
-        if self.status<0.0:
-            return Operation("delete",Entity(self.id),to=self)
+        # if self.status<0.0:
+            # return Operation("delete",Entity(self.id),to=self)
 
         #Have we burned up our parent container?
         if self.world==self.location.parent:
@@ -30,13 +30,12 @@ class Fire(Thing):
         self_ent=Entity(self.id,status=self.status)
         opBurn=Operation("burn",self_ent,to=self.location.parent)
         if self.status<0.2:
-            self.status=self.status-0.001
+            status=self.status-0.02
         else:
-            if self.status<1.0:
-                self.status=self.status-0.005
-            else:
-                self.status=self.status-0.01
-        self_ent2=Entity(self.id,status=self.status)
+            status=self.status-0.02
+        if status > 1:
+            status=1
+        self_ent2=Entity(self.id,status=status)
         opSet=Operation("set",self_ent2,to=self)
 
         #and call this method later
