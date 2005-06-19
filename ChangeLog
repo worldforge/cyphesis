@@ -1,3 +1,9 @@
+2005-06-19  Erik Hjortsberg  <erik@katastrof.nu>
+
+	* data/mason.xml: Connected gravestones to Gravestone.py script.
+	
+	* rulesets/mason/world/objects/outdoor/Gravestone.py: added response to a dig operation, which will create a random skeleton piece. This will allow the wholesome pastime of grave robbing.
+
 2005-06-18  James Turner  <james@worldforge.org>
 
 	* rulesets/Py_Point3d.cpp, rulesets/Py_Vector3d: add a _repr() function to

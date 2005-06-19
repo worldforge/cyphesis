@@ -630,6 +630,10 @@
     <list name="parents">
       <string>thing</string>
     </list>
+    <map name="script">
+     <string name="language">python</string>
+     <string name="name">world.objects.outdoor.Gravestone</string>
+    </map>
     <map name="attributes">
       <map name="bbox">
         <list name="default">
@@ -655,6 +659,10 @@
     <list name="parents">
       <string>thing</string>
     </list>
+    <map name="script">
+     <string name="language">python</string>
+     <string name="name">world.objects.outdoor.Gravestone</string>
+    </map>
     <map name="attributes">
       <map name="bbox">
         <list name="default">
@@ -680,6 +688,10 @@
     <list name="parents">
       <string>thing</string>
     </list>
+    <map name="script">
+     <string name="language">python</string>
+     <string name="name">world.objects.outdoor.Gravestone</string>
+    </map>
     <map name="attributes">
       <map name="bbox">
         <list name="default">
