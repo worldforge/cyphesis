@@ -30,7 +30,10 @@ hall_xyz=(5,3,settlement_height)
 forest_xyz=(-20,-60,settlement_height)
 
 pig_sty_xyz=(8,8,settlement_height)
-butcher_stall_xyz=(-41.5,-6.3,settlement_height)
+butcher_stall_xyz=(155,140,settlement_height)
+butcher_xyz=(153,142,settlement_height)
+tool_stall_xyz=(150,138,settlement_height)
+tool_merchant_xyz=(150,140,settlement_height)
 
 lake_xyz=(-40,-70,0)
 
@@ -69,6 +72,12 @@ trade=(il.trade,"trade()")
 keep=(il.keep,"keep()")
 sell=(il.sell,"sell_trade()")
 patrol=(il.patrol,"patrol()")
+
+toolprices = [('axe', 'price', '4'), 
+              ('shovel', 'price', '5'),
+              ('tinderbox', 'price', '8')]
+
+toolmerc_knowledge=[('market', 'location', tool_stall_xyz)]
 
 pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.forage,"forage(self, 'acorn')"),
@@ -183,15 +192,18 @@ def default(mapeditor):
     m.make('house3',type='house3',xyz=(142,158,22),orientation=directions[7])
     m.make('house3',type='house3',xyz=(142,150,22),orientation=directions[3])
     m.make('house3',type='house3',xyz=(142,142,22),orientation=directions[6])
-    m.make('house3',type='house3',xyz=(150,142,22),orientation=directions[2])
-    m.make('house3',type='house3',xyz=(158,142,22),orientation=directions[5])
+    m.make('house3',type='house3',xyz=(150,125,22),orientation=directions[2])
+    m.make('house3',type='house3',xyz=(171,142,22),orientation=directions[5])
 
     m.make('field',type='ploughed_field',xyz=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
     m.make('field',type='ploughed_field',xyz=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
 
+    village_square={'points': [[-10, -14], [15, -11], [13,18], [-8, 11]], 'layer':7 }
+    m.make('village_square', xyz=(150, 150, 22), type='path', area=village_square, bbox=[20, 20, 1])
+
     chickens=[]
-    xbase = uniform(12,20)
-    ybase = uniform(12,20)
+    xbase = uniform(140,160)
+    ybase = uniform(130,150)
     for i in range(0, 10):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
@@ -296,24 +308,53 @@ def default(mapeditor):
     m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','forest','axe')"))
 
     home1_xyz=(90,-90,settlement_height)
+    
+    stall=m.make('Market Stall',type='stall',xyz=butcher_stall_xyz, orientation=directions[5])
+    m.make('wall',type='wall',parent=stall.id,xyz=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
+    m.make('wall',type='wall',parent=stall.id,xyz=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
+
 
     butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
-                 xyz=butcher_stall_xyz,age=probability.fertility_age,sex='male')
+                 xyz=butcher_xyz,age=probability.fertility_age,sex='male')
     m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'ham', 'market')"))
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','open','dawn')"))
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','closed','evening')"))
     m.know(butcher,bknowledge)
     m.know(butcher,bprices)
+    
     cleaver=m.make('cleaver', type='cleaver', desc='cleaver for cutting meat',
                    place='market', xyz=(0, 0, 0), parent=butcher.id)
     m.own(butcher,cleaver)
+    m.own(butcher, stall)
+    
     m.learn(butcher,(il.sell,"sell_trade('ham', 'market')"))
     coins=[]
     for i in range(0, 60):
         coins.append(m.make('coin',type='coin',xyz=(0,0,0),parent=butcher.id))
     m.own(butcher,coins)
     
+# 	tool-merchant
+    stall = m.make('Tool Stall', type='stall', xyz=tool_stall_xyz, orientation=directions[2])
+    m.make('wall',type='wall',parent=stall.id,xyz=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
+    m.make('wall',type='wall',parent=stall.id,xyz=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
+
+    tmerchant=m.make('Blackun Decker',type='merchant',desc='the tool merchant',
+                 xyz=tool_merchant_xyz,age=probability.fertility_age,sex='male')
+
+    m.know(tmerchant, toolmerc_knowledge)
+    m.know(tmerchant,toolprices)
+
+    m.own(tmerchant, stall)
+
+    tools=[]
+    tooltypes=['shovel', 'axe', 'tinderbox']
+    
+    for i in range(0, 15):
+        tty = tooltypes[randint(0,2)]
+        tools.append(m.make(tty,type=tty,xyz=(uniform(-0.7, 0.7),uniform(-0.5,0.5),0.6),parent=stall.id,orientation=directions[randint(0,7)]))
+    
+    m.own(tmerchant,tools)
 
     home2_xyz=(80,80,settlement_height)
     merchant=m.make('Dyfed Searae',type='merchant',desc='the pig merchant',
@@ -347,10 +388,6 @@ def default(mapeditor):
         for j in range(-100, 100, 20):
             plots.append(m.make('deed',xyz=(0,0,0),parent=marshall.id,plot=(i,j)))
     m.own(marshall,plots)
-
-    stall=m.make('Market Stall',type='stall',xyz=(17,26,settlement_height))
-    m.make('wall',type='wall',parent=stall.id,xyz=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
-    m.make('wall',type='wall',parent=stall.id,xyz=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
     # Warriors - the more adventurous types
 
@@ -557,12 +594,16 @@ lych2_knowledge=[('w1','location',(-150,110,graveyard_height)),
                 ('w3','location',(-80,40,graveyard_height)),
                 ('w4','location',(-180,150,graveyard_height))]
 
+lych2_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"),
+            (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
    
 def test_graveyard(mapeditor):
     m = editor(mapeditor)
     
     m.make('mausoluem of harrington', type='mausoleum', xyz=(-160, 105, graveyard_height), orientation=directions[0])
-    graveyard_area={'points': [[-10, -8], [8, -7], [7,9], [-8, 8]], 'layer':7 }
+    m.make('steps',type='wall',xyz=(-160,100,graveyard_height),bbox=[4,4,2])
+    
+    graveyard_area={'points': [[-10, -8], [15, -11], [13,23], [-8, 8]], 'layer':7 }
     m.make('graveyard', xyz=(-150, 110, graveyard_height), type='path', area=graveyard_area, bbox=[20, 20, 1])
     
     path_area={'points' : [ [2, 0], [20, 20], [45, 60], [65, 70], [83, 40], [106, -15], [105, -12], [82, 36], [66, 67], [44, 57], [18, 16], [0, -4]], 'layer' : 7}
@@ -577,6 +618,6 @@ def test_graveyard(mapeditor):
     m.make('gravestone7', type='gravestone_stylish', xyz=(-147, 116, graveyard_height), orientation=directions[2])
     
     lych=m.make('lych', type='lych', xyz=(-140, 130, graveyard_height))
-    m.learn(lych,lych_goals)
+    m.learn(lych,lych2_goals)
     m.know(lych,lych2_knowledge)
     m.tell_importance(lych,il.assemble,'>',il.patrol)

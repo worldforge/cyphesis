@@ -1,3 +1,10 @@
+2005-06-19  James Turner  <james@worldforge.org>
+
+	* rulesets/mason/define_world.py: move the chickens to the village, add
+	  a village square area (sand for now), and add two market stalls, for
+	  the butcher and a new tool merchant. Still being debugged, but should
+	  be consistent at this point.
+
 2005-06-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/world/objects/tools/Tinderbox.py: Change strength
