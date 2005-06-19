@@ -1,25 +1,33 @@
+2005-06-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/define_world.py: Adjust size of collision volumes for
+	  market stall.
+
 2005-06-19  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* data/mason.xml: Connected gravestones to Gravestone.py script.
-	
-	* rulesets/mason/world/objects/outdoor/Gravestone.py: added response to a dig operation, which will create a random skeleton piece. This will allow the wholesome pastime of grave robbing.
+
+	* rulesets/mason/world/objects/outdoor/Gravestone.py: added response
+	  to a dig operation, which will create a random skeleton piece. This
+	  will allow the wholesome pastime of grave robbing.
 
 2005-06-18  James Turner  <james@worldforge.org>
 
-	* rulesets/Py_Point3d.cpp, rulesets/Py_Vector3d: add a _repr() function to
-	  the type-object, so using points and vectors in 'print' statements
-	  works as expected.
+	* rulesets/Py_Point3d.cpp, rulesets/Py_Vector3d: add a _repr()
+	  function to the type-object, so using points and vectors in
+	  'print' statements works as expected.
 
 2005-06-18  Erik Hjortsberg  <erik@katastrof.nu>
 
 	* data/mason.xml: Added three types of grave stones.
-	
-	* rulesets/mason/define_world.py: In the test_graveyard function, create some grave stones.
+
+	* rulesets/mason/define_world.py: In the test_graveyard function,
+	  create some grave stones.
 
 2005-06-17  James Turner  <james@worldforge.org>
 
 	* data/mason.xml: Give the mausoleum a more sensible bbox and mass
-	
+
 	* rulesets/mason/define_world.py: add a test_graveyard function,
 	  which adds the mausoleum, a path leading to it, and a lych patrolling
 	  nearby. No gravestones yet, alas.

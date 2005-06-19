@@ -350,7 +350,7 @@ def default(mapeditor):
 
     stall=m.make('Market Stall',type='stall',xyz=(17,26,settlement_height))
     m.make('wall',type='wall',parent=stall.id,xyz=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
-    m.make('wall',type='wall',parent=stall.id,xyz=(2,0,0),bbox=(0,-1.5,0,1,1.5,2))
+    m.make('wall',type='wall',parent=stall.id,xyz=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
     # Warriors - the more adventurous types
 
