@@ -57,6 +57,9 @@ add_word('defend','#defend_verb1')
 add_word('herd','#herd_verb1')
 add_word('vote','#vote_verb1')
 add_word('execute','#execute_verb1')
+add_word('shovel','#shovel_noun1')
+add_word('tinderbox','#tinderbox_noun1')
+add_word('pickaxe','#pickaxe_noun1')
 
 #CHEAT!: temporary thing
 add_word('build home','#build_home_verb0')
