@@ -195,11 +195,11 @@ def default(mapeditor):
     m.make('house3',type='house3',xyz=(150,125,22),orientation=directions[2])
     m.make('house3',type='house3',xyz=(171,142,22),orientation=directions[5])
 
-    m.make('field',type='ploughed_field',xyz=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
-    m.make('field',type='ploughed_field',xyz=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
+    m.make('field',type='ploughed_field',xyz=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8}, bbox=[20,20,0])
+    m.make('field',type='ploughed_field',xyz=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8}, bbox=[20,20,0])
 
     village_square={'points': [[-10, -14], [15, -11], [13,18], [-8, 11]], 'layer':7 }
-    m.make('village_square', xyz=(150, 150, 22), type='path', area=village_square, bbox=[20, 20, 1])
+    m.make('village_square', xyz=(150, 150, 22), type='path', area=village_square, bbox=[-10, -14, 0, 15, 18, 1])
 
     chickens=[]
     xbase = uniform(140,160)
