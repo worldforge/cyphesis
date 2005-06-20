@@ -1,3 +1,5 @@
+Prevent forbidden attribute from leaking through in move ops from client.
+
 Re-code chickens so they flee on contact, rather than on sight.
 Fix lych and skellys.
 
