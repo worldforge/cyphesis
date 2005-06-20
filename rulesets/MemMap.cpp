@@ -57,7 +57,13 @@ void MemMap::readEntity(MemEntity * entity, const MapType & entmap)
     if (I != entmap.end() && I->second.isList()) {
         const ListType & parents = I->second.asList();
         if (!parents.empty() && parents.front().isString()) {
-            entity->setType(parents.front().asString());
+            if (entity->getType() == "entity") {
+                entity->setType(parents.front().asString());
+            } else if (entity->getType() != parents.front().asString()) {
+                debug(std::cout << "Attempting to mutate " << entity->getType()
+                                << " into " << parents.front().asString()
+                                << std::endl << std::flush;);
+            }
         }
     }
     entity->merge(entmap);
