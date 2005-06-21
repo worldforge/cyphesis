@@ -42,6 +42,10 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.025</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>-0.4</float>
@@ -89,6 +93,10 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.25</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>-0.25</float>
@@ -114,6 +122,10 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.05</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>-0.2</float>
@@ -139,6 +151,10 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.2</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>-3.4</float>
@@ -160,6 +176,10 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.6</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>-1</float>
@@ -185,6 +205,10 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.1</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>-3</float>
@@ -404,6 +428,10 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">2</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">0.2</float>
         <string name="visibility">public</string>

@@ -1,5 +1,9 @@
 2005-06-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add some burn speeds.
+
+2005-06-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Increment version number.
 
 	* rulesets/mason/define_world.py: Add bboxes to some areas.
