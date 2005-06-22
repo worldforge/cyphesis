@@ -7,6 +7,7 @@
 #include "Python_API.h"
 #include "Python_Script_Utils.h"
 
+#include "Py_BBox.h"
 #include "Py_Object.h"
 #include "Py_Thing.h"
 #include "Py_Mind.h"
@@ -743,6 +744,78 @@ static PyObject * point3d_new(PyObject * self, PyObject * args)
         return (PyObject *)o;
 }
 
+static PyObject * bbox_new(PyObject * self, PyObject * args)
+{
+    std::vector<float> val;
+
+    PyObject * clist;
+    int tuple_size = PyTuple_Size(args);
+    switch(tuple_size) {
+        case 0:
+            break;
+        case 1:
+            clist = PyTuple_GetItem(args, 0);
+            int clist_size = PyList_Size(clist);
+            if (!PyList_Check(clist) || (clist_size != 3 && clist_size != 6)) {
+                PyErr_SetString(PyExc_TypeError, "BBox() from single value must a list 3 or 6 long");
+                return NULL;
+            }
+            
+            val.resize(clist_size);
+            for(int i = 0; i < clist_size; i++) {
+                PyObject * item = PyList_GetItem(clist, i);
+                if (PyInt_Check(item)) {
+                    val[i] = (float)PyInt_AsLong(item);
+                } else if (PyFloat_Check(item)) {
+                    val[i] = PyFloat_AsDouble(item);
+                } else if (PyMessageElement_Check(item)) {
+                    PyMessageElement * mitem = (PyMessageElement*)item;
+                    if (!mitem->m_obj->isNum()) {
+                        PyErr_SetString(PyExc_TypeError, "BBox() must take list of floats, or ints");
+                        return NULL;
+                    }
+                    val[i] = mitem->m_obj->asNum();
+                } else {
+                    PyErr_SetString(PyExc_TypeError, "BBox() must take list of floats, or ints");
+                    return NULL;
+                }
+            }
+            break;
+        case 3:
+        case 6:
+            val.resize(tuple_size);
+            for(int i = 0; i < tuple_size; i++) {
+                PyObject * item = PyTuple_GetItem(args, i);
+                if (PyInt_Check(item)) {
+                    val[i] = (float)PyInt_AsLong(item);
+                } else if (PyFloat_Check(item)) {
+                    val[i] = PyFloat_AsDouble(item);
+                } else {
+                    PyErr_SetString(PyExc_TypeError, "BBox() must take list of floats, or ints");
+                    return NULL;
+                }
+            }
+            break;
+        default:
+            PyErr_SetString(PyExc_TypeError, "Point3D must take list of floats, or ints, 3 ints or 3 floats");
+            return NULL;
+            break;
+    }
+        
+    PyBBox * o = newPyBBox();
+    if ( o == NULL ) {
+            return NULL;
+    }
+    if (val.size() == 3) {
+        o->box = BBox(WFMath::Point<3>(0.f, 0.f, 0.f),
+                      WFMath::Point<3>(val[0], val[1], val[2]));
+    } else {
+        o->box = BBox(WFMath::Point<3>(val[0], val[1], val[2]),
+                      WFMath::Point<3>(val[3], val[4], val[5]));
+    }
+    return (PyObject *)o;
+}
+
 static PyObject * quaternion_new(PyObject * self, PyObject * args)
 {
         PyQuaternion *o;
@@ -1153,7 +1226,12 @@ static PyMethodDef vector3d_methods[] = {
 };
 
 static PyMethodDef point3d_methods[] = {
-    {"Point3D",    point3d_new,                 METH_VARARGS},
+    {"Point3D",     point3d_new,                 METH_VARARGS},
+    {NULL,          NULL}                       /* Sentinel */
+};
+
+static PyMethodDef bbox_methods[] = {
+    {"BBox",        bbox_new,                 METH_VARARGS},
     {NULL,          NULL}                       /* Sentinel */
 };
 
@@ -1243,7 +1321,12 @@ void init_python_api()
     }
 
     if (Py_InitModule("Point3D", point3d_methods) == NULL) {
-        log(CRITICAL, "Python init failed to create Vector3D module\n");
+        log(CRITICAL, "Python init failed to create Point3D module\n");
+        return;
+    }
+
+    if (Py_InitModule("BBox", bbox_methods) == NULL) {
+        log(CRITICAL, "Python init failed to create BBox module\n");
         return;
     }
 

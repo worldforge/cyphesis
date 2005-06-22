@@ -1,3 +1,18 @@
+2005-06-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Fix a problem where entities contained by
+	  other entities had their height adjusted incorrectly.
+
+	* rulesets/basic/world/objects/elements/Fire.py: Allow fires to be
+	  moved.
+
+	* rulesets/Python_API.cpp: Add constructor for BBox.
+
+	* data/mason.xml: Add a torch. Add burn_speed attributes to a
+	  bunch more entity classes.
+
+	* rulesets/mason/world/objects/tools/Torch.py: Script for torch.
+
 2005-06-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Add some burn speeds.

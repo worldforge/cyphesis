@@ -181,11 +181,13 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
                         << std::endl << std::flush;);
         float h;
         // FIXME Is it safe to use m_orientation without checking it
-        h = constrainHeight(parent->m_location.m_loc,
+        // FIXME Recently swapped argument order as it appears to fix
+        // a bug. Check carefully whether this is doing the right thing.
+        h =  ppos.z() - constrainHeight(parent->m_location.m_loc,
                             pos.toParentCoords(parent->m_location.m_pos,
                                                parent->m_location.m_orientation),
                             mode
-                           ) - ppos.z();
+                           );
         debug(std::cout << "Correcting height from " << pos.z() << " to " << h
                         << std::endl << std::flush;);
         return h;

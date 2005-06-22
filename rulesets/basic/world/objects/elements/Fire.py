@@ -47,4 +47,4 @@ class Fire(Thing):
         inc=op[0].mass
         self.status=self.status+inc
         #No need to send a set. The next tick will deal with that.
-    def move_operation(self, op): pass
+    #def move_operation(self, op): pass

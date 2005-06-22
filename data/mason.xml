@@ -42,10 +42,6 @@
 
   <map>
     <map name="attributes">
-      <map name="burn_speed">
-        <float name="default">0.025</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="bbox">
         <list name="default">
           <float>-0.4</float>
@@ -55,6 +51,10 @@
           <float>-0.1</float>
           <float>5</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="burn_speed">
+        <float name="default">0.025</float>
         <string name="visibility">public</string>
       </map>
       <map name="fruitChance">
@@ -569,6 +569,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="burn_speed">
+        <float name="default">0.25</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">gallows</string>
     <string name="objtype">class</string>
@@ -629,6 +633,10 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.7</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>-0.1</float>
@@ -773,16 +781,6 @@
 
   <map>
     <map name="attributes">
-    </map>
-    <string name="id">house</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-1.5</float>
@@ -808,6 +806,24 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.15</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">house</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>0</float>
@@ -819,8 +835,12 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="burn_speed">
+        <float name="default">0.15</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
-        <float name="default">1</float>
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -856,6 +876,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="burn_speed">
+        <float name="default">0.15</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">10000</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">inn</string>
     <string name="objtype">class</string>
@@ -866,6 +894,10 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.05</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>-5</float>
@@ -875,6 +907,10 @@
           <float>5</float>
           <float>2</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -906,11 +942,6 @@
   </map>
 
   <map>
-    <string name="id">mausoleum</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
     <map name="attributes">
       <map name="bbox">
         <list name="default">
@@ -928,6 +959,11 @@
         <string name="visibility">public</string>
       </map>
     </map>
+    <string name="id">mausoleum</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
   </map>
 
   <map>
@@ -1016,6 +1052,10 @@
           <float>1</float>
           <float>6</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="burn_speed">
+        <float name="default">0.025</float>
         <string name="visibility">public</string>
       </map>
       <map name="fruitName">
@@ -1178,6 +1218,10 @@
           <float>1</float>
           <float>6</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="burn_speed">
+        <float name="default">0.025</float>
         <string name="visibility">public</string>
       </map>
       <map name="height">
@@ -1465,6 +1509,38 @@
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.tools.Tinderbox</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>0.05</float>
+          <float>0.05</float>
+          <float>1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="operations">
+        <list name="default">
+          <string>ignite</string>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">torch</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.tools.Torch</string>
     </map>
   </map>
 
