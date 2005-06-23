@@ -1,5 +1,12 @@
 2005-06-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Fix graveyard bbox.
+	  Tweak lych's patrol path so he doesn't run into gravestones.
+
+	* rulesets/basic/mind/NPCMind.py: WTF!
+
+2005-06-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Move declaration of clist_size so its
 	  initialisation is no longer bipassed by jumps.
 

@@ -589,7 +589,7 @@ def test_path(mapeditor):
     
 graveyard_height = 0
 
-lych2_knowledge=[('w1','location',(-150,110,graveyard_height)),
+lych2_knowledge=[('w1','location',(-140,110,graveyard_height)),
                 ('w2','location',(-50,160,graveyard_height)),
                 ('w3','location',(-80,40,graveyard_height)),
                 ('w4','location',(-180,150,graveyard_height))]
@@ -604,7 +604,7 @@ def test_graveyard(mapeditor):
     m.make('steps',type='wall',xyz=(-160,100,graveyard_height),bbox=[4,4,2])
     
     graveyard_area={'points': [[-10, -8], [15, -11], [13,23], [-8, 8]], 'layer':7 }
-    m.make('graveyard', xyz=(-150, 110, graveyard_height), type='path', area=graveyard_area, bbox=[20, 20, 1])
+    m.make('graveyard', xyz=(-150, 110, graveyard_height), type='path', area=graveyard_area, bbox=[-10, -11,0, 15, 23, 1])
     
     path_area={'points' : [ [2, 0], [20, 20], [45, 60], [65, 70], [83, 40], [106, -15], [105, -12], [82, 36], [66, 67], [44, 57], [18, 16], [0, -4]], 'layer' : 7}
     m.make('path to graveyard',type='path',xyz=(-150, 110, graveyard_height), area=path_area,bbox=[100,8,1])

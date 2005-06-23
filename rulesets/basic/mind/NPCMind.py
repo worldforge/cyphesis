@@ -58,6 +58,7 @@ class NPCMind(BaseMind):
         #print "Map update",obj
         foo_lst = self.things.get('Foo',[])
         for foo in foo_lst[:]: #us copy in loop, because it might get modified
+            print "Oh MY GOD! We have a Foo thing!"
             if foo.id==obj.id:
                 self.remove_thing(foo)
                 self.add_thing(obj)
