@@ -618,6 +618,27 @@ static PyObject * square_distance(PyObject * self, PyObject * args)
     return PyFloat_FromDouble(squareDistance(*sloc->location, *oloc->location));
 }
 
+static PyObject * square_horizontal_distance(PyObject * self, PyObject * args)
+{
+    PyObject * near, * other;
+    if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
+        return NULL;
+    }
+    if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
+        PyErr_SetString(PyExc_TypeError, "Arg Location required");
+        return NULL;
+    }
+    PyLocation * sloc = (PyLocation *)near,
+               * oloc = (PyLocation *)other;
+#ifndef NDEBUG
+    if (sloc->location == NULL || oloc == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "Null location pointer");
+        return NULL;
+    }
+#endif // NDEBUG
+    return PyFloat_FromDouble(squareHorizontalDistance(*sloc->location, *oloc->location));
+}
+
 static PyObject * vector3d_new(PyObject * self, PyObject * args)
 {
         PyVector3D *o;
@@ -1217,6 +1238,8 @@ static PyMethodDef atlas_methods[] = {
 static PyMethodDef physics_methods[] = {
     {"distance_to",distance_to,                 METH_VARARGS},
     {"square_distance",square_distance,         METH_VARARGS},
+    {"square_horizontal_distance",
+      square_horizontal_distance,               METH_VARARGS},
     {NULL,          NULL}                       /* Sentinel */
 };
 

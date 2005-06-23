@@ -36,8 +36,11 @@ class Goal:
         if self.debug:
             log.thinking("GOAL desc: "+self.str)
         res,deb=self.check_goal_rec(me,time,0)
+        if len(deb)!=0:
+            deb=self.info()+"."+deb
+            print deb
         if res!=None:
-            info_ent=Entity(op=res,description=self.info()+"."+deb)
+            info_ent=Entity(op=res,description=deb)
             return res+Operation("goal_info",info_ent)
     def check_goal_rec(self, me, time, depth):
         """check (sub)goal recursively"""
@@ -51,18 +54,18 @@ class Goal:
         for sg in self.subgoals:
             if type(sg)==FunctionType or type(sg)==MethodType:
                 res=sg(me)
-                if res!=None:
-                    deb=sg.__name__+"()"
-                    return res,deb
-                if self.debug:
-                    log.thinking("\t"*depth+"GOAL: function: "+`sg`+" "+`res`)
+                if res==None:
+                    if self.debug:
+                        log.thinking("\t"*depth+"GOAL: function: "+`sg`+" "+`res`)
+                deb=sg.__name__+"()"
+                return res,deb
             else:
                 if self.debug:
                     log.thinking("\t"*depth+"GOAL: bef sg: "+sg.desc)
                 res,deb=sg.check_goal_rec(me,time,depth+1)
                 if self.debug: 
                     log.thinking("\t"*depth+"GOAL: aft sg: "+sg.desc+" "+str(res))
-                if res!=None:
+                if len(deb)>0:
                     deb=sg.info()+"."+deb
                     return res,deb
         return res,deb

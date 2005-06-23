@@ -72,6 +72,8 @@ const Vector3D distanceTo(const Location & self, const Location & other);
 const Point3D relativePos(const Location & self, const Location & other);
 
 const float squareDistance(const Location & self, const Location & other);
+const float squareHorizontalDistance(const Location & self,
+                                     const Location & other);
 
 inline const float distance(const Location & self, const Location & other)
 {

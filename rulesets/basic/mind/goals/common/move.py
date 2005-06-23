@@ -40,7 +40,7 @@ class move_me(Goal):
         if not location:
             #print "No location"
             return 1
-        if square_distance(me.location, location) < 2.25: # 1.5 * 1.5
+        if square_horizontal_distance(me.location, location) < 4: # 1.5 * 1.5
             #print "We are there"
             return 1
         else:
@@ -192,9 +192,11 @@ class move_me_to_it(Goal):
         if type(what)==StringType:
             if me.things.has_key(what)==0: return 0
             what=me.things[what][0]
-        target=what.location.copy()
-        if me.location.parent.id!=target.parent.id: return 0
-        return me.location.coordinates.distance(target.coordinates)<1.5
+        if square_horizontal_distance(me.location, what.location) < 4: # 1.5 * 1.5
+            return 1
+        else:
+            return 0
+        
     def move_me_to_it(self, me):
         what = self.what
         if type(what)==StringType:

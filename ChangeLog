@@ -1,3 +1,20 @@
+2005-06-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* modules/Location.cpp, modules/Location.h, rulesets/Python_API.cpp:
+	  Implement a function for determining the horizontal distance
+	  between two locations neglecting height difference, as for
+	  locations on the terrain it is not relevant.
+
+	* rulesets/basic/mind/goals/common/move.py: Improve the coding of
+	  the move_me_to_it goal, so distance determination is more effective.
+	  Make distance independant of height.
+	  Relax distances at which character is concidered to have arrived at
+	  its destination.
+
+	* rulesets/basic/mind/Goal.py: Modify goal so that it understands
+	  that a subgoal can be unfulfilled, but still not need to take any
+	  action.
+
 2005-06-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp: Fix a problem where entities contained by

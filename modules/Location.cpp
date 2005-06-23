@@ -130,3 +130,12 @@ const float squareDistance(const Location & self, const Location & other)
     distanceToAncestor(self, other, dist);
     return sqrMag(dist);
 }
+
+const float squareHorizontalDistance(const Location & self,
+                                     const Location & other)
+{
+    Point3D dist;
+    distanceToAncestor(self, other, dist);
+    dist.z() = 0.f;
+    return sqrMag(dist);
+}
