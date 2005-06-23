@@ -771,12 +771,13 @@ static PyObject * bbox_new(PyObject * self, PyObject * args)
 
     PyObject * clist;
     int tuple_size = PyTuple_Size(args);
+    int clist_size;
     switch(tuple_size) {
         case 0:
             break;
         case 1:
             clist = PyTuple_GetItem(args, 0);
-            int clist_size = PyList_Size(clist);
+            clist_size = PyList_Size(clist);
             if (!PyList_Check(clist) || (clist_size != 3 && clist_size != 6)) {
                 PyErr_SetString(PyExc_TypeError, "BBox() from single value must a list 3 or 6 long");
                 return NULL;

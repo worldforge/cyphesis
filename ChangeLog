@@ -1,5 +1,10 @@
 2005-06-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Move declaration of clist_size so its
+	  initialisation is no longer bipassed by jumps.
+
+2005-06-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/Location.cpp, modules/Location.h, rulesets/Python_API.cpp:
 	  Implement a function for determining the horizontal distance
 	  between two locations neglecting height difference, as for
