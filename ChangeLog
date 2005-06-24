@@ -1,3 +1,13 @@
+2005-06-24  Kai Blin  <blin@gmx.net>
+
+	* rulesets/mason/define_world.py: Add peck as a goal for the chicken,
+	  and a test_chicken function.
+	
+	* rulesets/basic/mind/panlingua/interlinguish.py: Add peck verb.
+	
+	* rulesets/basic/mind/goals/common/misc_goal.py: Add peck goal.
+	  Chicken will now run around. The actual peck will be added later.
+
 2005-06-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Fix graveyard bbox.

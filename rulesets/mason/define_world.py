@@ -85,14 +85,17 @@ pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.forage,"forage(self, 'mushroom')"),
            (il.herd,"herd()")]
 
-deer_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
+deer_goals=[(il.avoid,"avoid(['settler','orc'],30.0)"),
+            (il.avoid,"avoid(['fire'],10.0)"),
             (il.forage,"forage(self, 'apple')"),
             (il.forage,"forage(self, 'mushroom')"),
             (il.browse,"browse(self, 'fir', 0.8)"),
             (il.flock,"flock()")]
 
-chicken_goals=[(il.avoid,"avoid(['settler','orc','wolf'],10.0)"),
-               (il.flock,"flock()")]
+chicken_goals=[(il.avoid,"avoid(['orc','wolf'],10.0)"),
+               (il.avoid,"avoid(['settler'],1.0)"),
+               (il.flock,"flock()"),
+               (il.peck,"peck()")]
 
 squirrel_goals=[(il.avoid,"avoid(['wolf','crab'],10.0)"),
                 (il.forage,"forage(self, 'acorn')"),
@@ -501,6 +504,7 @@ def test_forest(mapeditor):
         for j in range(0, i[1]):
             m.make(i[0],type=i[0],xyz=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)])
 
+   
 def modify_terrain(mapeditor):
 #   general things
 
@@ -579,6 +583,13 @@ def test_settler(mapeditor):
     m.know(settler,[('forest','location',(30,30,0))])
     m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','forest','axe')"))
     m.make('oak',xyz=(32,32,0))
+
+def test_chicken(mapeditor):
+
+    m=editor(mapeditor)
+
+    chuck = m.make('chicken', type='chicken', xyz=(-3,-1,settlement_height))
+    m.learn(chuck,chicken_goals)
 
 def test_path(mapeditor):
 

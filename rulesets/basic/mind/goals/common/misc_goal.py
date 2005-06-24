@@ -285,8 +285,31 @@ class forage(feed):
         self.range=5
         self.full=0.2
         self.vars=["what","range"]
- 
-############################ BROWSE (FOR FOOD) ################################
+
+############################ PECK ###########################################
+
+class peck(feed):
+    def __init__(self) :
+        Goal.__init__(self, "forage for food by name and eat randomly",
+                      self.am_i_full,
+                      [self.do_peck])
+	self.what="world"
+        self.full=0.2
+        self.vars=["full"]
+
+    def do_peck(self, me):
+        #world = 
+        #ground = world.id 
+        #op = Operation("eat", ground, to=world)
+        target = Location(me.location.parent, me.location.coordinates)
+        target.coordinates = Vector3D(target.coordinates.x + uniform(-5,5), target.coordinates.y+ uniform(-5,5), target.coordinates.z)
+        target.velocity = Vector3D(1,0,0)
+        #op += Operation("move",  Entity(me.id, location=target))
+        return Operation("move",  Entity(me.id, location=target))
+                                      
+
+
+############################ BROWSE (FIND FOOD, EAT SOME, MOVE ON) ###########
 
 class browse(feed):
     def __init__(self, me, what, min_status):
