@@ -302,7 +302,7 @@ class peck(feed):
         #ground = world.id 
         #op = Operation("eat", ground, to=world)
         target = Location(me.location.parent, me.location.coordinates)
-        target.coordinates = Vector3D(target.coordinates.x + uniform(-5,5), target.coordinates.y+ uniform(-5,5), target.coordinates.z)
+        target.coordinates = Vector3D(target.coordinates.x + uniform(-1.5,1.5), target.coordinates.y+ uniform(-1.5,1.5), target.coordinates.z)
         target.velocity = Vector3D(1,0,0)
         #op += Operation("move",  Entity(me.id, location=target))
         return Operation("move",  Entity(me.id, location=target))

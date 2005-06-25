@@ -1,3 +1,8 @@
+2005-06-25  Kai Blin  <blin@gmx.net>
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: reduced the random
+	  offset that makes the chicken change position after pecking
+
 2005-06-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cycmd: New add_agent, find_by_name and find_by_type
