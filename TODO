@@ -1,3 +1,7 @@
+On #python talk to deltab TFK or #pyrex.
+
+When reloading a python module, try to load it even if it didn't load before.
+
 Prevent forbidden attribute from leaking through in move ops from client.
 
 Re-code chickens so they flee on contact, rather than on sight.

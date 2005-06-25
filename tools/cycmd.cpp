@@ -61,6 +61,7 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
 using Atlas::Objects::Operation::Appearance;
+using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Generic;
 using Atlas::Objects::Operation::Get;
@@ -68,6 +69,27 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Talk;
+
+struct command {
+    const char * cmd_string;
+    const char * cmd_description;
+};
+
+struct command commands[] = {
+    { "connect",        "Connect server to a peer", },
+    { "get",            "Examine a class on the server", },
+    { "help",           "Display this help", },
+    { "install",        "Install a new type", },
+    { "look",           "Return the current server lobby", },
+    { "logout",         "Log user out of server", },
+    { "monitor",        "Enable in-game op monitoring", },
+    { "query",          "Examine an object on the server", },
+    { "reload",         "Reload the script for a type", },
+    { "stat",           "Return current server status", },
+    { "unmonitor",      "Disable in-game op monitoring", },
+    { NULL,             "Guard", }
+};
+
 
 static void help()
 {
@@ -98,6 +120,7 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     std::string password;
     std::string username;
     std::string accountId;
+    std::string agentId;
     bool exit;
     int monitor_op_count;
     int monitor_start_time;
@@ -313,13 +336,13 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Disappe
 }
 
 template <class Stream>
-void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& o)
+void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& op)
 {
     reply_flag = true;
-    if (o.getArgs().empty()) {
+    if (op.getArgs().empty()) {
         return;
     }
-    const MapType & ent = o.getArgs().front().asMap();
+    const MapType & ent = op.getArgs().front().asMap();
     MapType::const_iterator Iend = ent.end();
     if (login_flag) {
         MapType::const_iterator I = ent.find("id");
@@ -329,6 +352,16 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& o
             
         } else {
             accountId = I->second.asString();
+        }
+    } else if (!accountId.empty() && agentId.empty()) {
+        std::cout << "Create agent success" << std::endl << std::flush;
+        MapType::const_iterator I = ent.find("id");
+        if (I == Iend || !I->second.isString()) {
+            std::cerr << "ERROR: Response to agent create does not contain agent id"
+                      << std::endl << std::flush;
+            
+        } else {
+            agentId = I->second.asString();
         }
     } else {
         std::cout << "Info(" << std::endl;
@@ -365,7 +398,7 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sight& 
     if (accountId.empty()) {
         return;
     }
-    if (accountId != o.getTo()) {
+    if (accountId != o.getTo() && agentId != o.getTo()) {
         // This is an IG op we are monitoring
         logOp(o);
         return;
@@ -455,10 +488,27 @@ void Interactive<Stream>::runCommand(char * cmd)
     exec(cmd, arg);
 }
 
+int completion_iterator = 0;
+
+char * completion_generator(const char * text, int state)
+{
+    if (state == 0) {
+        completion_iterator = 0;
+    }
+    for (int i = completion_iterator; commands[i].cmd_string != 0; ++i) {
+        if (strncmp(text, commands[i].cmd_string, strlen(text)) == 0) {
+            completion_iterator = i + 1;
+            return strdup(commands[i].cmd_string);
+        }
+    }
+    return 0;
+}
+
 template <class Stream>
 void Interactive<Stream>::loop()
 {
     rl_callback_handler_install("cyphesis> ", &Interactive<Stream>::gotCommand);
+    rl_completion_entry_function = &completion_generator;
     SigC::Connection c = CmdLine.connect(SigC::slot(*this, &Interactive<Stream>::runCommand));
     while (!exit) {
         poll();
@@ -730,6 +780,44 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         m.setFrom(accountId);
 
         encoder->streamMessage(&m);
+    } else if (cmd == "add_agent") {
+        Create c;
+
+        MapType cmap;
+        cmap["parents"] = ListType(1, "creator");
+        cmap["objtype"] = "obj";
+        c.setArgs(ListType(1, cmap));
+        c.setFrom(accountId);
+
+        encoder->streamMessage(&c);
+    } else if (cmd == "find_by_name") {
+        if (agentId.empty()) {
+            std::cout << "Use add_egent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            Look l;
+
+            MapType lmap;
+            lmap["name"] = arg;
+            l.setArgs(ListType(1, lmap));
+            l.setFrom(agentId);
+
+            encoder->streamMessage(&l);
+        }
+    } else if (cmd == "find_by_type") {
+        if (agentId.empty()) {
+            std::cout << "Use add_egent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            Look l;
+
+            MapType lmap;
+            lmap["parents"] = ListType(1, arg);
+            l.setArgs(ListType(1, lmap));
+            l.setFrom(agentId);
+
+            encoder->streamMessage(&l);
+        }
     } else {
         reply_expected = false;
         std::cout << cmd << ": Command not known" << std::endl << std::flush;
