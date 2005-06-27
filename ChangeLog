@@ -1,3 +1,8 @@
+2005-06-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommClient.cpp: Report when a client is disconnected
+	  for blocking a write.
+
 2005-06-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Add type for butcher's house.

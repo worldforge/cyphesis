@@ -266,7 +266,7 @@ void CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
         // This timeout should only occur if the client was really not
         // ready
         if (m_clientIos.timeout()) {
-            debug(std::cerr << "TIMEOUT" << std::endl << std::flush;);
+            log(NOTICE, "Client disconnected because of write timeout.");
             m_clientIos.shutdown();
         }
     }
