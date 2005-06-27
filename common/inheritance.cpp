@@ -170,7 +170,7 @@ RootOperation * Inheritance::newOperation(const std::string & op_type)
     return I->second->newOperation();
 }
 
-int Inheritance::newOperation(const std::string & op_type, RootOperation & ret)
+int Inheritance::newOperation(const std::string & op_type, RootOperation & ret) const
 {
     OpFactoryDict::const_iterator I = opFactories.find(op_type);
     if (I == opFactories.end()) {
@@ -178,6 +178,29 @@ int Inheritance::newOperation(const std::string & op_type, RootOperation & ret)
     }
     I->second->newOperation(ret);
     return 0;
+}
+
+bool Inheritance::isTypeOf(const std::string & instance,
+                           const std::string & type) const
+{
+    if (instance == type) {
+        return true;
+    }
+    RootDict::const_iterator I = atlasObjects.find(instance);
+    RootDict::const_iterator Iend = atlasObjects.end();
+    for (; I != Iend;) {
+        const ListType & parents = I->second->getParents();
+        if (parents.empty()) {
+            break;
+        }
+        const std::string & parent = I->second->getParents().front().asString();
+        if (parent == type) {
+            return true;
+        }
+        I = atlasObjects.find(parent);
+    }
+    return false;
+    // Walk up the tree.
 }
 
 using Atlas::Objects::Operation::Perception;

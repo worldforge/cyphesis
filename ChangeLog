@@ -1,5 +1,13 @@
 2005-06-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/inheritance.h, common/inheritance.cpp: Add isTypeOf()
+	  method to do inheritance queries.
+
+	* tests/inheritancetest.cpp: Add very basic testing of the isTypeOf()
+	  method.
+
+2005-06-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommClient.cpp: Report when a client is disconnected
 	  for blocking a write.
 

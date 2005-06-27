@@ -114,4 +114,8 @@ int main()
     r->setId("squigglymuff");
     r->setParents(ListType(1, "ludricous_test_parent"));
     assert(i.addChild(r) != 0);
+
+    assert(i.isTypeOf("disappearance", "root_operation"));
+    assert(i.isTypeOf("root_operation", "root_operation"));
+    assert(!i.isTypeOf("root_operation", "talk"));
 }

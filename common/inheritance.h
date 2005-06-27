@@ -82,7 +82,8 @@ class Inheritance {
     Atlas::Objects::Root * get(const std::string & parent);
     int addChild(Atlas::Objects::Root * obj);
     Operation * newOperation(const std::string &);
-    int newOperation(const std::string &, Operation &);
+    int newOperation(const std::string &, Operation &) const;
+    bool isTypeOf(const std::string &, const std::string &) const;
 };
 
 #endif // COMMON_INHERITANCE_H
