@@ -63,6 +63,7 @@ class World : public World_parent {
     void digOperation(const Operation &, OpVector &);
     void mowOperation(const Operation &, OpVector &);
 
+    virtual void EatOperation(const Operation &, OpVector &);
     virtual void LookOperation(const Operation &, OpVector &);
     virtual void BurnOperation(const Operation &, OpVector &);
     virtual void DeleteOperation(const Operation &, OpVector &);

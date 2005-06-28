@@ -1,3 +1,8 @@
+2005-06-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/World.cpp, rulesets/World.h: Add an eat operation
+	  handler.
+
 2005-06-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/inheritance.h, common/inheritance.cpp: Add isTypeOf()

@@ -9,6 +9,7 @@
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
+#include "common/inheritance.h"
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
@@ -310,6 +311,22 @@ void World::mowOperation(const Operation & op, OpVector & res)
         break;
       default:
         break;
+    }
+}
+
+void World::EatOperation(const Operation & op, OpVector & res)
+{
+    const std::string & from_id = op.getFrom();
+    EntityDict::const_iterator I = m_world->getEntities().find(from_id);
+    if (I == m_world->getEntities().end()) {
+        log(ERROR, "World got eat op from non-existant entity.");
+        return;
+    }
+    const std::string & from_type = I->second->getType();
+    if (Inheritance::instance().isTypeOf(from_type, "plant")) {
+        log(NOTICE, "Eat coming from a plant.");
+    } else if (Inheritance::instance().isTypeOf(from_type, "character")) {
+        log(NOTICE, "Eat coming from an animal.");
     }
 }
 
