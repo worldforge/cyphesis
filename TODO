@@ -1,3 +1,13 @@
+It should be possible to make trees fall so that they are parallel with
+the terrain, if a mechanism is available to determine normal of the
+supporting surface.
+
+Does it matter if World gets a delete op when status becomes < 0? It
+shouldn't, as the delete op should be ingored, so World does not need
+a Set op implementation.
+
+Sort out a way to move world functionality into a script.
+
 On #python talk to deltab TFK or #pyrex.
 
 When reloading a python module, try to load it even if it didn't load before.
