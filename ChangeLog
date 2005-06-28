@@ -1,5 +1,10 @@
 2005-06-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Make house3 not a structure, to eliminate problems
+	  with race conditions in collision code.
+
+2005-06-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py: Fix indentation
 	  in peck goal which was using tabs.
 
