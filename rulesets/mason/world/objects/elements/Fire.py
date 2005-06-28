@@ -11,7 +11,7 @@ class Fire(Thing):
     #CHEAT! make it more realistic (like spreading to things that burn near)
     def extinguish_operation(self, op):
         """If somebody tries to extinguish us, change status lower"""
-        self.status=self.status-0.1
+        self.status=self.status-0.25
         self_ent=Entity(self.id,status=self.status)
         #print "Extinguish:",self,self.location.parent,self.status,op.from_
         return Operation("set",self_ent,to=self)

@@ -119,12 +119,28 @@
   </map>
 
   <map>
+    <string name="id">disperse</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
     <map name="attributes">
     </map>
     <string name="id">druid</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">extinguish</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
     </list>
   </map>
 
@@ -296,6 +312,12 @@
       </map>
       <map name="mass">
         <float name="default">50</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="operations">
+        <list name="default">
+          <string>disperse</string>
+        </list>
         <string name="visibility">public</string>
       </map>
     </map>
