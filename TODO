@@ -1,3 +1,6 @@
+Fix dodgey collision code which causes structures with complex parts to cause
+tight loop conditions.
+
 It should be possible to make trees fall so that they are parallel with
 the terrain, if a mechanism is available to determine normal of the
 supporting surface.
