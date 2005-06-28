@@ -14,6 +14,7 @@
 #include "common/log.h"
 
 #include "common/Tick.h"
+#include "common/Eat.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -25,6 +26,7 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Eat;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Tick;
@@ -138,6 +140,10 @@ void Plant::ChopOperation(const Operation & op, OpVector & res)
     res.push_back(move);
 }
 
+void Plant::NourishOperation(const Operation & op, OpVector & res)
+{
+}
+
 void Plant::TickOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant::Tick(" << getId() << "," << m_type << ")"
@@ -145,10 +151,19 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     if (m_script->Operation("tick", op, res)) {
         return;
     }
-    Operation * tickOp = new Tick;
-    tickOp->setTo(getId());
-    tickOp->setFutureSeconds(consts::basic_tick * m_speed);
-    res.push_back(tickOp);
+    Operation * tick_op = new Tick;
+    tick_op->setTo(getId());
+    tick_op->setFutureSeconds(consts::basic_tick * m_speed);
+    res.push_back(tick_op);
+
+    // FIXME I don't like having to do this test, as its only required
+    // during the unit tests.
+    if (m_location.m_loc != 0) {
+        Operation * eat_op = new Eat;
+        eat_op->setTo(m_location.m_loc->getId());
+        res.push_back(eat_op);
+    }
+
     int dropped = dropFruit(res);
     if (m_location.m_bBox.isValid() && 
         (m_location.m_bBox.highCorner().z() > m_sizeAdult)) {

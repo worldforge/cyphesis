@@ -44,6 +44,7 @@ World::World(const std::string & id) : World_parent(id),
              m_terrain(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
              m_tileShader(*new Mercator::TileShader)
 {
+    subscribe("eat", OP_EAT);
     subscribe("set", OP_SET);
     subscribe("delve", OP_OTHER);
     subscribe("dig", OP_OTHER);

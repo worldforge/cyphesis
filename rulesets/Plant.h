@@ -41,6 +41,7 @@ class Plant : public Plant_parent {
     const double getSizeAdult() const { return m_sizeAdult; }
 
     virtual void ChopOperation(const Operation &, OpVector &);
+    virtual void NourishOperation(const Operation &, OpVector &);
     virtual void TickOperation(const Operation &, OpVector &);
     virtual void TouchOperation(const Operation &, OpVector &);
 };

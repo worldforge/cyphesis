@@ -1,5 +1,9 @@
 2005-06-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp: Fix subscription to eat ops.
+
+2005-06-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Make house3 not a structure, to eliminate problems
 	  with race conditions in collision code.
 
