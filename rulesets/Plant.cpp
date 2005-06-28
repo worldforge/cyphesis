@@ -45,6 +45,7 @@ Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
     subscribe("chop", OP_CHOP);
     subscribe("tick", OP_TICK);
     subscribe("touch", OP_TOUCH);
+    subscribe("nourish", OP_NOURISH);
 
     m_properties["fruits"] = new Property<int>(m_fruits, a_fruit);
     m_properties["radius"] = new Property<int>(m_radius, a_fruit);

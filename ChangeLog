@@ -2,6 +2,9 @@
 
 	* rulesets/World.cpp: Fix subscription to eat ops.
 
+	* rulesets/Plant.h, rulesets/Plant.cpp: Add stub for handling nourish
+	  ops. Send eat ops to parent entity.
+
 2005-06-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Make house3 not a structure, to eliminate problems
