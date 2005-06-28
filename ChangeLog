@@ -1,5 +1,10 @@
 2005-06-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py: Fix indentation
+	  in peck goal which was using tabs.
+
+2005-06-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: ignite and sow ops now inherit from action.
 
 2005-06-28  Al Riddoch  <alriddoch@zepler.org>

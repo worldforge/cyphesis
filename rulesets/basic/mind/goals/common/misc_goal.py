@@ -293,7 +293,7 @@ class peck(feed):
         Goal.__init__(self, "forage for food by name and eat randomly",
                       self.am_i_full,
                       [self.do_peck])
-	self.what="world"
+        self.what="world"
         self.full=0.2
         self.vars=["full"]
 
