@@ -884,7 +884,7 @@
     <string name="id">ignite</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
-      <string>root_operation</string>
+      <string>action</string>
     </list>
   </map>
 
@@ -1404,7 +1404,7 @@
     <string name="id">sow</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
-      <string>root_operation</string>
+      <string>action</string>
     </list>
   </map>
 

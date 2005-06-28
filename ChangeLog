@@ -1,5 +1,9 @@
 2005-06-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: ignite and sow ops now inherit from action.
+
+2005-06-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/World.cpp, rulesets/World.h: Add an eat operation
 	  handler.
 
