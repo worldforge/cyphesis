@@ -112,7 +112,7 @@ template <class Stream>
 class Interactive : public Atlas::Objects::Decoder, public SigC::Object
 {
   private:
-    bool error_flag, reply_flag, login_flag;
+    bool error_flag, reply_flag, login_flag, avatar_flag;
     int cli_fd;
     Atlas::Objects::Encoder * encoder;
     Atlas::Codec<std::iostream> * codec;
@@ -161,7 +161,7 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     int negotiate();
   public:
     Interactive() : error_flag(false), reply_flag(false), login_flag(false),
-                    encoder(0), codec(0), exit(false),
+                    avatar_flag(false), encoder(0), codec(0), exit(false),
                     monitor_op_count(0), monitor_start_time(0) { }
     ~Interactive() {
         if (encoder != 0) {
@@ -353,7 +353,7 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& o
         } else {
             accountId = I->second.asString();
         }
-    } else if (!accountId.empty() && agentId.empty()) {
+    } else if (avatar_flag) {
         std::cout << "Create agent success" << std::endl << std::flush;
         MapType::const_iterator I = ent.find("id");
         if (I == Iend || !I->second.isString()) {
@@ -362,6 +362,7 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& o
             
         } else {
             agentId = I->second.asString();
+            avatar_flag = true;
         }
     } else {
         std::cout << "Info(" << std::endl;
@@ -788,6 +789,8 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         cmap["objtype"] = "obj";
         c.setArgs(ListType(1, cmap));
         c.setFrom(accountId);
+
+        avatar_flag = true;
 
         encoder->streamMessage(&c);
     } else if (cmd == "find_by_name") {

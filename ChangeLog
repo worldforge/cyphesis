@@ -1,7 +1,13 @@
+2005-06-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp: Fix handling info ops, so they are not
+	  treated as avatar creation responses.
+
 2005-06-28  Hagen Moebius  <hagen.moebius@starschiffchen.de>
 
 	* data/basic.xml: Added operations "disperse" and "extinguish".
 	  Set up "disperse" as the default operation for the pile.
+
 	* rulesets/basic/world/objects/Pile.py: The operation "disperse"
 	  will call the "extinguish" operation on the target. Maybe it is
 	  advisable to add an assertion if the target is indeed a fire.
