@@ -38,7 +38,7 @@ class Goal:
         res,deb=self.check_goal_rec(me,time,0)
         if len(deb)!=0:
             deb=self.info()+"."+deb
-            print deb
+            # print deb
         if res!=None:
             info_ent=Entity(op=res,description=deb)
             return res+Operation("goal_info",info_ent)
