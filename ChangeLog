@@ -1,3 +1,7 @@
+2005-07-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/mason.xml: Set mass on oak trees.
+
 2005-06-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/custom.cpp: Add type for "server" to inheritance mechanism.

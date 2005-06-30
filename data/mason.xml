@@ -1091,6 +1091,10 @@
         <int name="default">20</int>
         <string name="visibility">public</string>
       </map>
+      <map name="mass">
+        <float name="default">5000</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">oak</string>
     <string name="objtype">class</string>
