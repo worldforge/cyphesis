@@ -111,4 +111,9 @@ void installCustomEntities()
     r->setId("lobby");
     r->setParents(ListType(1,"room"));
     i.addChild(r);
+
+    r = new AdminEntity(AdminEntity::Class());
+    r->setId("server");
+    r->setParents(ListType(1,"admin_entity"));
+    i.addChild(r);
 }

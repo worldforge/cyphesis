@@ -1,5 +1,9 @@
 2005-06-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/custom.cpp: Add type for "server" to inheritance mechanism.
+
+2005-06-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py: Remove unnecessary
 	  "me" argument from get_knowledge goal.
 
