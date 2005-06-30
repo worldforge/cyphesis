@@ -1,5 +1,10 @@
 2005-06-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py: Remove unnecessary
+	  "me" argument from get_knowledge goal.
+
+2005-06-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/Goal.py: Remove debugging output.
 
 2005-06-29  Al Riddoch  <alriddoch@zepler.org>

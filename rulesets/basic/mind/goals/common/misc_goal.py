@@ -55,7 +55,7 @@ class imaginary(Goal):
 ####################### GET KNOWLEDEGE ABOUT THING ############################
 
 class get_knowledge(Goal):
-    def __init__(self, me, what):
+    def __init__(self, what):
         Goal.__init__(self,"get knowledge about thing by name",
                       self.do_I_know_about_this,
                       [nyi("Try another task or try asking around!")])
@@ -122,7 +122,7 @@ class acquire_thing(acquire):
     def __init__(self, me, what):
         Goal.__init__(self,"acquire thing by name",
                       self.is_it_in_my_inventory,
-                      [get_knowledge(me,what),
+                      [get_knowledge(what),
                        acquire_known_thing(me,what)])
         self.what=what
         self.vars=["what"]
