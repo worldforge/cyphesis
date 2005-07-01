@@ -1,3 +1,10 @@
+Attribute modifiers should be a new low-level primitive on Entity,
+like property. They should be done before attributes are set from data,
+but after default attributes are set. Scale control variables should
+be assumed to be 1 initially for the purposes of scaling.
+A function like merge should be used to apply scalars. It needs to be
+able to copy the modded data into Atlas for reporting back to the client.
+
 Fix dodgey collision code which causes structures with complex parts to cause
 tight loop conditions.
 
