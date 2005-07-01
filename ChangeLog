@@ -1,5 +1,10 @@
 2005-07-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Plant.cpp: Set the mass of the lumber object created
+	  when a tree is cut down.
+
+2005-07-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add mass and maxmass to all tree types.
 
 2005-07-01  Al Riddoch  <alriddoch@zepler.org>
