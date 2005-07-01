@@ -25,6 +25,8 @@ class Plant : public Plant_parent {
     double m_sizeAdult; // chance of growing fruit
     std::string m_fruitName;
 
+    double m_nourishment;
+
     static const int m_speed = 20; // Number of basic_ticks per tick
     static const int m_minuDrop = 0; // min fruit dropped
     static const int m_maxuDrop = 2; // max fruit dropped

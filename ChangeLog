@@ -1,5 +1,19 @@
 2005-07-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Plant.h, rulesets/Plant.cpp: Add a nourishment property
+	  to track nourishment received from nourish ops. Scale the
+	  height as nourishment increases the plant's mass.
+
+2005-07-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/goals/humanoid/construction.py: Add a new
+	  goal for planting seeds.
+
+	* rulesets/mason/define_world.py: Add a forester NPC that uses
+	  the plant_seeds goal to plant acorns.
+
+2005-07-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Set mass on oak trees.
 
 2005-06-30  Al Riddoch  <alriddoch@zepler.org>

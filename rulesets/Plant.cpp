@@ -36,7 +36,8 @@ static const bool debug_flag = false;
 Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
                                                          m_radius(1),
                                                          m_fruitChance(2),
-                                                         m_sizeAdult(4)
+                                                         m_sizeAdult(4),
+                                                         m_nourishment(0)
 {
     // Default to a 1m cube
     m_location.m_bBox = BBox(WFMath::Point<3>(-0.5, -0.5, 0),
@@ -143,6 +144,22 @@ void Plant::ChopOperation(const Operation & op, OpVector & res)
 
 void Plant::NourishOperation(const Operation & op, OpVector & res)
 {
+    if (op.getArgs().empty()) {
+        error(op, "Nourish has no argument", res, getId());
+        return;
+    }
+    if (!op.getArgs().front().isMap()) {
+        error(op, "Nourish arg is malformed", res, getId());
+        return;
+    }
+    const MapType & nent = op.getArgs().front().asMap();
+    MapType::const_iterator I = nent.find("mass");
+    if ((I == nent.end()) || !I->second.isNum()) {
+        return;
+    }
+    m_nourishment += I->second.asNum();
+    debug(std::cout << "Nourishment: " << m_nourishment
+                    << std::endl << std::flush;);
 }
 
 void Plant::TickOperation(const Operation & op, OpVector & res)
@@ -163,6 +180,39 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         Operation * eat_op = new Eat;
         eat_op->setTo(m_location.m_loc->getId());
         res.push_back(eat_op);
+    }
+
+    Operation * set_op = new Set;
+    set_op->getArgs().push_back(MapType());
+    MapType & set_arg = set_op->getArgs().front().asMap();
+    set_op->setTo(getId());
+    res.push_back(set_op);
+
+    set_arg["id"] = getId();
+
+    double status = m_status;
+    if (m_nourishment <= 0) {
+        status -= 0.1;
+    } else {
+        status += 0.1;
+        if (status > 1.) {
+            status = 1.;
+        }
+        double scale = (m_nourishment + m_mass) / m_mass;
+        double height_scale = pow(scale, 0.33333f);
+        debug(std::cout << "scale " << scale << ", " << height_scale
+                        << std::endl << std::flush;);
+        set_arg["mass"] = m_mass + m_nourishment;
+        const BBox & ob = m_location.m_bBox;
+        BBox new_bbox(Point3D(ob.lowCorner().x() * height_scale,
+                              ob.lowCorner().y() * height_scale,
+                              ob.lowCorner().z() * height_scale),
+                      Point3D(ob.highCorner().x() * height_scale,
+                              ob.highCorner().y() * height_scale,
+                              ob.highCorner().z() * height_scale));
+        debug(std::cout << "Old " << ob
+                        << "New " << new_bbox << std::endl << std::flush;);
+        set_arg["bbox"] = new_bbox.toAtlas();
     }
 
     int dropped = dropFruit(res);
