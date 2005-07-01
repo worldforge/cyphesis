@@ -314,8 +314,8 @@ def default(mapeditor):
     settler=m.make('forester',type='settler',xyz=(0, 12, 0), sex='male')
     trowel=m.make('trowel',xyz=(0,0,0),parent=settler.id)
     m.own(settler, trowel)
-    m.know(settler[('forest','location',(30,30,0))])
-    m.learn(settler,(il,trade,"plant_seeds(self,'acorn','oak','forest','trowel')"))
+    m.know(settler,[('forest','location',(30,30,0))])
+    m.learn(settler,(il.trade,"plant_seeds(self,'acorn','oak','forest','trowel')"))
 
     home1_xyz=(90,-90,settlement_height)
     

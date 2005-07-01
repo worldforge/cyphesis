@@ -1,5 +1,10 @@
 2005-07-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Correct two typos in forester
+	  setup.
+
+2005-07-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/World.cpp: Implement sending nourish ops to plants.
 	  Ammount of nutrition is logarithmically proportional to their
 	  mass which seems to give a nice growth curve for now.
