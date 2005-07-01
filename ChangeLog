@@ -1,5 +1,11 @@
 2005-07-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp: Implement sending nourish ops to plants.
+	  Ammount of nutrition is logarithmically proportional to their
+	  mass which seems to give a nice growth curve for now.
+
+2005-07-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/objects/plants/seeds/Acorn.py:
 	  When an oak is created from seed, make its mass the same as the
 	  acorn's mass, and hack its bbox to the apropriate size.

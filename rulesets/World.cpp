@@ -11,6 +11,8 @@
 #include "common/debug.h"
 #include "common/inheritance.h"
 
+#include "common/Nourish.h"
+
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 #include <Mercator/TileShader.h>
@@ -36,6 +38,7 @@ using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Sight;
+using Atlas::Objects::Operation::Nourish;
 
 typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 
@@ -323,11 +326,34 @@ void World::EatOperation(const Operation & op, OpVector & res)
         log(ERROR, "World got eat op from non-existant entity.");
         return;
     }
-    const std::string & from_type = I->second->getType();
+
+    Entity * from = I->second;
+    assert(from != 0);
+
+    Point3D from_pos = relativePos(m_location, from->m_location);
+    int material;
+    if (getSurface(from_pos, material) != 0) {
+        debug(std::cout << "no surface hit" << std::endl << std::flush;);
+        return;
+    }
+   
+    const std::string & from_type = from->getType();
     if (Inheritance::instance().isTypeOf(from_type, "plant")) {
         log(NOTICE, "Eat coming from a plant.");
+        if (material == GRASS) {
+            debug(std::cout << "From grass" << std::endl << std::flush;);
+            Operation * nourish = new Nourish;
+            nourish->setTo(from_id);
+            MapType nour_ent;
+            nour_ent["mass"] = log(from->getMass() + 1);
+            nourish->setArgs(ListType(1, nour_ent));
+            res.push_back(nourish);
+        }
     } else if (Inheritance::instance().isTypeOf(from_type, "character")) {
         log(NOTICE, "Eat coming from an animal.");
+        if (material == GRASS) {
+            debug(std::cout << "From grass" << std::endl << std::flush;);
+        }
     }
 }
 
