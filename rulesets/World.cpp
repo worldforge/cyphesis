@@ -339,7 +339,6 @@ void World::EatOperation(const Operation & op, OpVector & res)
    
     const std::string & from_type = from->getType();
     if (Inheritance::instance().isTypeOf(from_type, "plant")) {
-        log(NOTICE, "Eat coming from a plant.");
         if (material == GRASS) {
             debug(std::cout << "From grass" << std::endl << std::flush;);
             Operation * nourish = new Nourish;

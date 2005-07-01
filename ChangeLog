@@ -1,5 +1,9 @@
 2005-07-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp: Remove some debug output.
+
+2005-07-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/define_world.py: Correct two typos in forester
 	  setup.
 
