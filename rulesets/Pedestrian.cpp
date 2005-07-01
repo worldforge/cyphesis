@@ -179,7 +179,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
         if (mode_attr.isString()) {
             mode = mode_attr.asString();
         } else {
-            log(ERROR, "Non string mode on entity in Thing::MoveOperation");
+            log(ERROR, "Non string mode on entity in Pedestrain::getUpdatedLocation");
         }
     }
 

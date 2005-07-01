@@ -1,5 +1,10 @@
 2005-07-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Pedestrian.cpp, server/WorldRouter.cpp: Correct error
+	  message about non-string modes.
+
+2005-07-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Add some more debug output for mode
 	  problems. Ensure mode property is set.
 

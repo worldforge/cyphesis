@@ -228,7 +228,7 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
         if (mode_attr.isString()) {
             mode = mode_attr.asString();
         } else {
-            log(ERROR, "Non string mode on entity in Thing::MoveOperation");
+            log(ERROR, "Non string mode on entity in WorldRouter::addEntity");
         }
     }
     ent->m_location.m_pos.z() = constrainHeight(ent->m_location.m_loc,
