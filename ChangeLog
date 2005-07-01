@@ -1,5 +1,11 @@
 2005-07-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/objects/plants/seeds/Acorn.py:
+	  When an oak is created from seed, make its mass the same as the
+	  acorn's mass, and hack its bbox to the apropriate size.
+
+2005-07-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Plant.h, rulesets/Plant.cpp: Add a nourishment property
 	  to track nourishment received from nourish ops. Scale the
 	  height as nourishment increases the plant's mass.
