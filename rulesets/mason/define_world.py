@@ -310,6 +310,13 @@ def default(mapeditor):
     m.know(settler,[('forest','location',(30,30,0))])
     m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','forest','axe')"))
 
+    # An NPC forester
+    settler=m.make('forester',type='settler',xyz=(0, 12, 0), sex='male')
+    trowel=m.make('trowel',xyz=(0,0,0),parent=settler.id)
+    m.own(settler, trowel)
+    m.know(settler[('forest','location',(30,30,0))])
+    m.learn(settler,(il,trade,"plant_seeds(self,'acorn','oak','forest','trowel')"))
+
     home1_xyz=(90,-90,settlement_height)
     
     stall=m.make('Market Stall',type='stall',xyz=butcher_stall_xyz, orientation=directions[5])
@@ -582,6 +589,17 @@ def test_settler(mapeditor):
     m.own(settler,axe)
     m.know(settler,[('forest','location',(30,30,0))])
     m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','forest','axe')"))
+    m.make('oak',xyz=(32,32,0))
+
+def test_forester(mapeditor):
+
+    m=editor(mapeditor)
+    # An NPC forester
+    settler=m.make('forester',type='settler',xyz=(0, 12, 0), sex='male')
+    trowel=m.make('trowel',xyz=(0,0,0),parent=settler.id)
+    m.own(settler, trowel)
+    m.know(settler,[('forest','location',(30,30,0))])
+    m.learn(settler,(il.trade,"plant_seeds(self,'acorn','oak','forest','trowel')"))
     m.make('oak',xyz=(32,32,0))
 
 def test_chicken(mapeditor):

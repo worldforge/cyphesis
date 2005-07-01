@@ -62,3 +62,39 @@ class harvest_resource(Goal):
             return
         target=me.find_thing(self.source)[0]
         return Operation("use",Entity(target.id, objtype="obj"))
+
+class plant_seeds(Goal):
+    def __init__(self, me, what, source, place, tool):
+        Goal.__init__(self, "Plant seed to grow plants",
+                      false,
+                      [acquire_thing(me, tool),
+                       move_me_area(place),
+                       spot_something(source),
+                       move_me_to_it(source),
+                       spot_something(what),
+                       self.do])
+        self.wield=False
+        self.what=what
+        self.source=source
+        self.place=place
+        self.tool=tool
+        self.vars=["what","source","place","tool"]
+    def do(self, me):
+        if me.things.has_key(self.tool)==0:
+            #print "No tool"
+            return
+        tool=me.find_thing(self.tool)[0]
+        if not self.wield:
+            self.wield=True
+            # FIXME We need to sort out how to tell what one is wielding
+            return Operation("wield", Entity(tool.id))
+        if me.things.has_key(self.what)==0:
+            return
+        if me.things.has_key(self.source)!=0:
+            source=me.find_thing(self.source)[0]
+            for target in me.find_thing(self.what):
+                if distance_to(source.location, target.location) > 4:
+                    return Operation("use",Entity(target.id, objtype="obj"))
+        else:
+            target=me.find_thing(self.what)[0]
+            return Operation("use",Entity(target.id, objtype="obj"))
