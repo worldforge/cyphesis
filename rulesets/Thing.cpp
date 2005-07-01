@@ -216,6 +216,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             mode = mode_attr.asString();
         } else {
             log(ERROR, "Non string mode on entity in Thing::MoveOperation");
+            std::cout << "Mode is of type " << mode_attr.getType()
+                      << std::endl << std::flush;
         }
     }
 
@@ -231,6 +233,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             log(ERROR, "Non string mode set in Thing::MoveOperation");
         } else {
             m_motion->setMode(I->second.asString());
+            set("mode", mode);
             mode = I->second.asString();
         }
     }
