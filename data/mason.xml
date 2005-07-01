@@ -69,6 +69,14 @@
         <int name="default">3</int>
         <string name="visibility">public</string>
       </map>
+      <map name="mass">
+        <float name="default">3000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">5000</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">appletree</string>
     <string name="objtype">class</string>
@@ -139,6 +147,14 @@
       </map>
       <map name="height">
         <float name="default">6</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -512,6 +528,10 @@
         <float name="default">150</float>
         <string name="visibility">public</string>
       </map>
+      <map name="maxmass">
+        <float name="default">300</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">fir</string>
     <string name="objtype">class</string>
@@ -794,6 +814,14 @@
       </map>
       <map name="height">
         <float name="default">6</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">3000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">5000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -1095,6 +1123,10 @@
         <float name="default">5000</float>
         <string name="visibility">public</string>
       </map>
+      <map name="maxmass">
+        <float name="default">6000</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">oak</string>
     <string name="objtype">class</string>
@@ -1255,6 +1287,14 @@
       </map>
       <map name="height">
         <float name="default">6</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">5000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">6000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -1729,6 +1769,14 @@
       </map>
       <map name="height">
         <float name="default">6</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">3000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">5000</float>
         <string name="visibility">public</string>
       </map>
     </map>

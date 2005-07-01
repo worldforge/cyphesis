@@ -1,5 +1,9 @@
 2005-07-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add mass and maxmass to all tree types.
+
+2005-07-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Pedestrian.cpp, server/WorldRouter.cpp: Correct error
 	  message about non-string modes.
 

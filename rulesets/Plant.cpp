@@ -111,8 +111,8 @@ void Plant::ChopOperation(const Operation & op, OpVector & res)
             createArgs.push_back(MapType());
             MapType & createArg = createArgs.back().asMap();
             createArg["parents"] = ListType(1,"lumber");
+            createArg["mass"] = getMass();
             m_location.addToMessage(createArg);
-            // createArg["mass"] = FIXE What? Calculate?
             op->setTo(getId());
             res.push_back(op);
         }
