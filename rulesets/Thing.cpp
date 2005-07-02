@@ -226,14 +226,13 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // an additional Set op would be required.
     I = ent.find("mode");
     if (I != Iend) {
-        // Update the mode
-        set(I->first, I->second);
         // FIXME
         if (!I->second.isString()) {
             log(ERROR, "Non string mode set in Thing::MoveOperation");
         } else {
+            // Update the mode
+            set(I->first, I->second);
             m_motion->setMode(I->second.asString());
-            set("mode", mode);
             mode = I->second.asString();
         }
     }

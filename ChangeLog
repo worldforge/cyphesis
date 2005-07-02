@@ -1,3 +1,8 @@
+2005-07-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: Make sure mode is updated correctly in move
+	  ops.
+
 2005-07-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Plant.cpp: Set the mass of the lumber object created
