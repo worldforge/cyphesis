@@ -1,3 +1,10 @@
+2005-07-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/goals/common/move.py: Break down goals for
+	  picking up things into separate goals for picking up
+	  posessions, and focussed items, and similarly for moving toward
+	  items.
+
 2005-07-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/Knowledge.py, rulesets/basic/mind/NPCMind.py:

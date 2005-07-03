@@ -180,7 +180,7 @@ class move_it_outof_me(Goal):
         
 ############################ MOVE ME TO THING ##################################
 
-class move_me_to_it(Goal):
+class move_me_to_possession(Goal):
     def __init__(self, what):
         Goal.__init__(self,"move me to this thing",
                       self.am_i_at_it,
@@ -192,7 +192,7 @@ class move_me_to_it(Goal):
         if type(what)==StringType:
             if me.things.has_key(what)==0: return 0
             what=me.things[what][0]
-        if square_horizontal_distance(me.location, what.location) < 4: # 1.5 * 1.5
+        if square_horizontal_distance(me.location, what.location) < 4: # 2 * 2
             return 1
         else:
             return 0
@@ -208,19 +208,52 @@ class move_me_to_it(Goal):
             target.rotation=target.velocity
             return Operation("move", Entity(me.id, location=target))
 
+class move_me_to_focus(Goal):
+    def __init__(self, what):
+        Goal.__init__(self,"move me to this thing",
+                      self.am_i_at_it,
+                      [self.move_me_to_it])
+        self.what=what
+        self.vars=["what"]
+    def am_i_at_it(self, me):
+        what = self.what
+        if type(what)==StringType:
+            id=me.get_knowledge('focus',what)
+            if id==None: return 0
+            what=me.map.get(id)
+            if what==None: return 0
+        if square_horizontal_distance(me.location, what.location) < 4: # 2 * 2
+            return 1
+        else:
+            return 0
+
+    def move_me_to_it(self, me):
+        what = self.what
+        if type(what)==StringType:
+            id=me.get_knowledge('focus',what)
+            if id==None: return
+            what=me.map.get(id)
+            if what==None: return
+        target=what.location.copy()
+        if target.parent.id==me.location.parent.id:
+            target.velocity=me.location.coordinates.unit_vector_to_another_vector(target.coordinates)
+            target.rotation=target.velocity
+            return Operation("move", Entity(me.id, location=target))
+
 ############################ MOVE THING TO ME ####################################
 
-class move_it_into_me(Goal):
-    def __init__(self, me, what):
+class pick_up_possession(Goal):
+    def __init__(self, what):
         Goal.__init__(self,"move this thing to my inventory (class)",
                       self.is_it_with_me,
-                      [move_me_to_it(what),
-                       move_it(what,me)])
+                      [move_me_to_possession(what),
+                       self.pick_it_up])
         self.what=what
         self.vars=["what"]
     def is_it_with_me(self, me):
         #CHEAT!: cludge
-        if type(self.what)==StringType:
+        what=self.what
+        if type(what)==StringType:
             if me.things.has_key(self.what)==0: return 0
             what=me.things[self.what][0]
         if what.location.parent.id!=me.id:
@@ -228,6 +261,42 @@ class move_it_into_me(Goal):
                 me.remove_thing(what.id)
                 me.map.delete(what.id)
         return what.location.parent.id==me.id
+    def pick_it_up(self, me):
+        what=self.what
+        if type(what)==StringType:
+            if me.things.has_key(self.what)==0: return 0
+            what=me.things[self.what][0]
+        return Operation("move", Entity(id, location=Location(me, Point3D(0,0,0))))
+
+class pick_up_focus(Goal):
+    def __init__(self, what):
+        Goal.__init__(self,"move this thing to my inventory (class)",
+                      self.is_it_with_me,
+                      [move_me_to_focus(what),
+                       self.pick_it_up])
+        self.what=what
+        self.vars=["what"]
+    def is_it_with_me(self, me):
+        #CHEAT!: cludge
+        what=self.what
+        if type(what)==StringType:
+            id=me.get_knowledge('focus',what)
+            if id==None: return 0
+            what=me.map.get(id)
+            if what==None: return 0
+        if what.location.parent.id!=me.id:
+            if what.location.parent.id!=me.location.parent.id:
+                me.remove_knowledge('focus',self.what)
+        return what.location.parent.id==me.id
+    def pick_it_up(self, me):
+        what=self.what
+        if type(what)==StringType:
+            id=me.get_knowledge('focus',what)
+            me.remove_knowledge('focus',what)
+            if id==None: return
+            what=me.map.get(id)
+            if what==None: return
+        return Operation("move", Entity(id, location=Location(me, Point3D(0,0,0))))
 
 ############################ WANDER ####################################
 
