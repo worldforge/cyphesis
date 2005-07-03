@@ -1,5 +1,10 @@
 2005-07-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/Knowledge.py, rulesets/basic/mind/NPCMind.py:
+	  Add new methods to remove knowledge from mind.
+
+2005-07-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Plant.cpp: Remove some debug output.
 
 	* Release 0.3.12

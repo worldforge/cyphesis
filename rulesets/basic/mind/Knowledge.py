@@ -12,6 +12,14 @@ class Knowledge:
             setattr(self, what, {})
         d=getattr(self,what)
         d[key]=value
+    def remove(self, what, key):
+        if not hasattr(self, what):
+            return
+        d=getattr(self,what)
+        if d.has_key(key):
+            del d[key]
+        if len(d)==0:
+            delattr(self,what)
     def __str__(self):
         s="<know: "
         s=s+"place: "+str(self.place)+"\n"

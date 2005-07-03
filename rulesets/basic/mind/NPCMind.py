@@ -289,6 +289,9 @@ class NPCMind(BaseMind):
         if what=="location":
             #and reverse too
             self.reverse_knowledge.add("location",value,key)
+    def remove_knowledge(self,what,key):
+        """remove certain type of knowledge"""
+        self.knowledge.remove(what,key)
     ########## Importance: Knowledge about how things compare in urgency, etc..
     def add_importance(self, sub, cmp, obj):
         """add importance: both a>b and b<a"""
