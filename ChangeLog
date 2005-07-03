@@ -1,5 +1,9 @@
 2005-07-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Plant.cpp: Collapse two set ops into one in plant tick op.
+
+2005-07-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Plant.cpp: Limit tree growth to a maximum mass.
 	  Make sure nourishment gets reset when its used.
 

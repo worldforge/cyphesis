@@ -236,18 +236,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         }
     }
     if ((dropped != 0) || (m_status < 1.)) {
-        Operation * set = new Set();
-        MapType pmap;
-        pmap["id"] = getId();
-        pmap["fruits"] = m_fruits;
-        if (m_status < 1.) {
-            // FIXME Very very fast recovery
-            double newStatus = m_status + 0.0001;
-            pmap["status"] = (newStatus > 1.f) ? 1.f : newStatus;
-        }
-        set->setTo(getId());
-        set->setArgs(ListType(1,pmap));
-        res.push_back(set);
+        set_arg["fruits"] = m_fruits;
     }
 }
 
