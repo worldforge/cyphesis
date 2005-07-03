@@ -1,5 +1,13 @@
 2005-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py: Re-work
+	  spot_something goal to store the entity spotted in Knowledge
+	  rather than it being hacked in as a possession. Re-work many
+	  other goals to work with spot_something, eliminating reference
+	  to mind from constructors where possible.
+
+2005-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/move.py: Break down goals for
 	  picking up things into separate goals for picking up
 	  posessions, and focussed items, and similarly for moving toward

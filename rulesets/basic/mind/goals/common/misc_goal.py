@@ -112,7 +112,7 @@ class acquire_known_thing(acquire):
         Goal.__init__(self,"acquire known thing by name",
                       self.is_it_in_my_inventory,
                       [buy_thing(me,what),
-                       move_it_into_me(me,what)])
+                       pick_up_possession(what)])
         self.what=what
         self.vars=["what"]
 
@@ -170,12 +170,12 @@ class spot_something(Goal):
         self.condition=condition
         self.vars=["what","range"]
     def do_I_have(self, me):
-        if me.things.has_key(self.what)==1:
-            for thing in me.find_thing(self.what):
-                locid = thing.location.parent.id
-                if locid!=me.location.parent.id and locid!=me.id:
-                    me.remove_thing(thing)
-        return me.things.has_key(self.what)==1
+        something=me.get_knowledge('focus', self.what)
+        if something and me.map.get(something)==None:
+            # No longer exists
+            me.remove_knowledge('focus', self.what)
+            something=None
+        return something!=None
     def do(self,me):
         thing_all=me.map.find_by_type(self.what)
         nearest=None
@@ -190,27 +190,33 @@ class spot_something(Goal):
                     nearest = thing
                     nearsqrdist = nearsqrdist
         if nearest:
-            me.add_thing(nearest)
+            me.add_knowledge('focus', self.what, nearest.id)
                       
 ############################ FETCH SOMETHING GOAL ########################
 
-class fetch_something(acquire):
-    def __init__(self, me, what, where):
+class fetch_something(Goal):
+    def __init__(self, what, where):
         Goal.__init__(self, "fetch a thing",
                       self.is_it_in_my_inventory,
                       [move_me_area(where, 20),
                        spot_something(what),
-                       move_it_into_me(me, what)])
+                       pick_up_focus(what)])
         self.what=what
         self.vars=["what"]
+    def is_it_in_my_inventory(self,me):
+        if me.things.has_key(self.what):
+            if me.things[self.what][0].location.parent==me:
+                me.remove_knowledge('focus', self.what)
+                return 1
+        return 0
 
 ############################ MOVE SOMETHING GOAL ########################
 
 class transport_something(Goal):
-    def __init__(self, me, what, src, dest):
+    def __init__(self, what, src, dest):
         Goal.__init__(self,"move thing to place",
                       false,
-                      [fetch_something(me, what, src),
+                      [fetch_something(what, src),
                        move_me(dest),
                        move_it_outof_me(what)])
         self.what=what
@@ -223,7 +229,7 @@ class sit_down(Goal):
         Goal.__init__(self,"sit down",
                       self.am_i_sat,
                       [spot_something(where),
-                       move_me_to_it(where),
+                       move_me_to_focus(where),
                        sit])
     def am_i_sat(self,me):
         return me.mode=="sitting"
@@ -275,11 +281,11 @@ class meal(feed):
 ############################ FORAGE (FOR FOOD) ################################
 
 class forage(feed):
-    def __init__(self, me, what):
+    def __init__(self, what):
         Goal.__init__(self, "forage for food by name",
                       self.am_i_full,
                       [spot_something(what, range=5),
-                       move_it_into_me(me, what),
+                       pick_up_focus(what),
                        self.eat])
         self.what=what
         self.range=5
@@ -316,7 +322,7 @@ class browse(feed):
         Goal.__init__(self, "browse for food by name",
                       self.am_i_full,
 		      [spot_something(what, range=20, condition=(lambda o,s=min_status:hasattr(o,"status") and o.status > s)),
-                       move_me_to_it(what),
+                       move_me_to_focus(what),
                        self.eat])
         self.what=what
         self.range=20
