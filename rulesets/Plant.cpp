@@ -198,11 +198,23 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         if (status > 1.) {
             status = 1.;
         }
-        double scale = (m_nourishment + m_mass) / m_mass;
+        double new_mass = m_mass + m_nourishment;
+        m_nourishment = 0;
+        Element maxmass_attr;
+        if (get("maxmass", maxmass_attr)) {
+            if (maxmass_attr.isNum()) {
+                std::cout << "Limiting mass " << new_mass << " to "
+                          << maxmass_attr.asNum();
+                new_mass = std::min(new_mass, maxmass_attr.asNum());
+                std::cout << " giving " << new_mass
+                          << std::endl << std::flush;
+            }
+        }
+        set_arg["mass"] = new_mass;
+        double scale = new_mass / m_mass;
         double height_scale = pow(scale, 0.33333f);
         debug(std::cout << "scale " << scale << ", " << height_scale
                         << std::endl << std::flush;);
-        set_arg["mass"] = m_mass + m_nourishment;
         const BBox & ob = m_location.m_bBox;
         BBox new_bbox(Point3D(ob.lowCorner().x() * height_scale,
                               ob.lowCorner().y() * height_scale,

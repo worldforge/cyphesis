@@ -1,3 +1,8 @@
+2005-07-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Plant.cpp: Limit tree growth to a maximum mass.
+	  Make sure nourishment gets reset when its used.
+
 2005-07-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Make sure mode is updated correctly in move
