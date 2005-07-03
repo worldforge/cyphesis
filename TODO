@@ -1,3 +1,6 @@
+Sort out issue where carrying a living tree kills people. Caused by
+eat op from tree.
+
 Attribute modifiers should be a new low-level primitive on Entity,
 like property. They should be done before attributes are set from data,
 but after default attributes are set. Scale control variables should
