@@ -203,11 +203,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         Element maxmass_attr;
         if (get("maxmass", maxmass_attr)) {
             if (maxmass_attr.isNum()) {
-                std::cout << "Limiting mass " << new_mass << " to "
-                          << maxmass_attr.asNum();
                 new_mass = std::min(new_mass, maxmass_attr.asNum());
-                std::cout << " giving " << new_mass
-                          << std::endl << std::flush;
             }
         }
         set_arg["mass"] = new_mass;
