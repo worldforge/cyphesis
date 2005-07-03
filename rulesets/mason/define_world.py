@@ -80,15 +80,15 @@ toolprices = [('axe', 'price', '4'),
 toolmerc_knowledge=[('market', 'location', tool_stall_xyz)]
 
 pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
-           (il.forage,"forage(self, 'acorn')"),
-           (il.forage,"forage(self, 'apple')"),
-           (il.forage,"forage(self, 'mushroom')"),
+           (il.forage,"forage('acorn')"),
+           (il.forage,"forage('apple')"),
+           (il.forage,"forage('mushroom')"),
            (il.herd,"herd()")]
 
 deer_goals=[(il.avoid,"avoid(['settler','orc'],30.0)"),
             (il.avoid,"avoid(['fire'],10.0)"),
-            (il.forage,"forage(self, 'apple')"),
-            (il.forage,"forage(self, 'mushroom')"),
+            (il.forage,"forage('apple')"),
+            (il.forage,"forage('mushroom')"),
             (il.browse,"browse(self, 'fir', 0.8)"),
             (il.flock,"flock()")]
 
@@ -98,10 +98,10 @@ chicken_goals=[(il.avoid,"avoid(['orc','wolf'],10.0)"),
                (il.peck,"peck()")]
 
 squirrel_goals=[(il.avoid,"avoid(['wolf','crab'],10.0)"),
-                (il.forage,"forage(self, 'acorn')"),
-                (il.forage,"forage(self, 'pinekernel')")]
+                (il.forage,"forage('acorn')"),
+                (il.forage,"forage('pinekernel')")]
 
-wolf_goals=[(il.forage,"forage(self, 'ham')"),
+wolf_goals=[(il.forage,"forage('ham')"),
             (il.hunt,"predate(self,'pig',30.0)"),
             (il.hunt,"predate(self,'crab',20.0)"),
             (il.hunt,"predate(self,'squirrel',10.0)"),

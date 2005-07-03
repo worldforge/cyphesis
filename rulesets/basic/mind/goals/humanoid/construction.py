@@ -9,11 +9,11 @@ from mind.goals.common.move import *
 # This is designed to be placed early in a complex goal, so it returns
 # as fulfilled when it has nothing to do
 class gather(Goal):
-    def __init__(self, me, what):
+    def __init__(self, what):
         Goal.__init__(self, "gather a thing",
                       self.is_there_none_around,
                       [spot_something(what),
-                       move_it_into_me(me, what)])
+                       pick_up_focus(what)])
         self.what=what
         self.vars=["what"]
     def is_there_none_around(self, me):
@@ -23,7 +23,7 @@ class gather(Goal):
         what_all=me.map.find_by_type(self.what)
         for thing in what_all:
             square_dist=square_distance(me.location, thing.location)
-            if square_dist<square_nearest_dist and thing.location.parent!=me:
+            if square_dist<square_nearest_dist and thing.location.parent.id!=me.id:
                 nearest=thing
                 square_nearest_dist=square_dist
         if nearest:
@@ -38,11 +38,10 @@ class harvest_resource(Goal):
                       false,
                       [acquire_thing(me,tool),
                        move_me_area(place),
-                       gather(me, what),
+                       gather(what),
                        spot_something(source),
-                       move_me_to_it(source),
+                       move_me_to_focus(source),
                        self.do])
-        self.wield=False
         self.what=what
         self.source=source
         self.place=place
@@ -53,15 +52,14 @@ class harvest_resource(Goal):
             #print "No tool"
             return
         tool=me.find_thing(self.tool)[0]
-        if not self.wield:
-            self.wield=True
+        if not hasattr(me, 'right_hand_wield') or me.right_hand_wield!=tool.id:
             # FIXME We need to sort out how to tell what one is wielding
             return Operation("wield", Entity(tool.id))
-        if me.things.has_key(self.source)==0:
+        target=me.get_knowledge('focus', self.source)
+        if target==None:
             #print "No resource source " + self.source
             return
-        target=me.find_thing(self.source)[0]
-        return Operation("use",Entity(target.id, objtype="obj"))
+        return Operation("use",Entity(target, objtype="obj"))
 
 class plant_seeds(Goal):
     def __init__(self, me, what, source, place, tool):
@@ -70,10 +68,9 @@ class plant_seeds(Goal):
                       [acquire_thing(me, tool),
                        move_me_area(place),
                        spot_something(source),
-                       move_me_to_it(source),
+                       move_me_to_focus(source),
                        spot_something(what),
                        self.do])
-        self.wield=False
         self.what=what
         self.source=source
         self.place=place
@@ -84,8 +81,7 @@ class plant_seeds(Goal):
             #print "No tool"
             return
         tool=me.find_thing(self.tool)[0]
-        if not self.wield:
-            self.wield=True
+        if not hasattr(me, 'right_hand_wield') or me.right_hand_wield!=tool.id:
             # FIXME We need to sort out how to tell what one is wielding
             return Operation("wield", Entity(tool.id))
         if me.things.has_key(self.what)==0:

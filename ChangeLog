@@ -1,5 +1,15 @@
 2005-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/humanoid/construction.py: Re-work
+	  goals to use new movement goals, and fix some bugs. Use
+	  right_hand_wield properlly when using tools. Adjust to use
+	  new spot_something goal.
+
+	* rulesets/mason/define_world.py: Fix up world initialisation
+	  to setup forage now the constructor args have changed.
+
+2005-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py: Re-work
 	  spot_something goal to store the entity spotted in Knowledge
 	  rather than it being hacked in as a possession. Re-work many
