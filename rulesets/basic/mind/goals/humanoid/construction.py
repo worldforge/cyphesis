@@ -84,13 +84,17 @@ class plant_seeds(Goal):
         if not hasattr(me, 'right_hand_wield') or me.right_hand_wield!=tool.id:
             # FIXME We need to sort out how to tell what one is wielding
             return Operation("wield", Entity(tool.id))
-        if me.things.has_key(self.what)==0:
+        id=me.get_knowledge('focus',self.what)
+        if id==None:
             return
-        if me.things.has_key(self.source)!=0:
-            source=me.find_thing(self.source)[0]
-            for target in me.find_thing(self.what):
-                if distance_to(source.location, target.location) > 4:
-                    return Operation("use",Entity(target.id, objtype="obj"))
+        what=me.map.get(id)
+        if what==None:
+            return
+        id=me.get_knowledge('focus',self.source)
+        if id!=None or me.map.get(id):
+            source=me.map.get(id)
+            if source!=None:
+                if distance_to(source.location, what.location) > 4:
+                    return Operation("use",Entity(what.id, objtype="obj"))
         else:
-            target=me.find_thing(self.what)[0]
-            return Operation("use",Entity(target.id, objtype="obj"))
+            return Operation("use",Entity(what.id, objtype="obj"))

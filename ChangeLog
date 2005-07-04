@@ -1,5 +1,10 @@
 2005-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/humanoid/construction.py:
+	  Port plant_seeds goal to use new spot_something mechanism.
+
+2005-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/humanoid/construction.py: Re-work
 	  goals to use new movement goals, and fix some bugs. Use
 	  right_hand_wield properlly when using tools. Adjust to use
