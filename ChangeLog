@@ -1,5 +1,11 @@
 2005-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommMDNSPublisher.cpp: Don't finalise MDNS session when an
+	  error is detected, instead finalise in destructor, so the file
+	  descriptor is still handled ok removing from poll set.
+
+2005-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py: More changes
 	  to make goals work with new spot_something.
 

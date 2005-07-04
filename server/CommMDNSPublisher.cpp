@@ -51,6 +51,10 @@ CommMDNSPublisher::CommMDNSPublisher(CommServer & svr) : CommSocket(svr),
 
 CommMDNSPublisher::~CommMDNSPublisher()
 {
+    if (m_session != 0) {
+        sw_discovery_fina(m_session);
+        m_session = 0;
+    }
 }
 
 int CommMDNSPublisher::setup()
@@ -94,8 +98,6 @@ int CommMDNSPublisher::read()
     // FIXME Check return value
     if (sw_discovery_read_socket(m_session) != SW_OKAY) {
         log(WARNING, "Error publishing our presence using MDNS. Disabled.");
-        sw_discovery_fina(m_session);
-        m_session = 0;
         return -1;
     }
 
