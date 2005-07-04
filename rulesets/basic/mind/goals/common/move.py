@@ -378,8 +378,10 @@ class hunt_for(pursuit):
         self.direction = 1
         self.vars=["what","range","direction"]
     def in_range(self,me):
-        if me.things.has_key(self.what)==0: return
-        thing=me.find_thing(self.what)[0]
+        id=me.get_knowledge('focus', self.what)
+        if id==None: return
+        thing=me.map.get(id)
+        if thing==None: return
         square_dist = square_distance(me.location, thing.location)
         return square_dist < self.square_proximity
 

@@ -1,5 +1,13 @@
 2005-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py: More changes
+	  to make goals work with new spot_something.
+
+	* rulesets/basic/mind/goals/common/move.py: Modify hunt pursuit goal
+	  to fit with spot_something.
+
+2005-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/humanoid/construction.py:
 	  Port plant_seeds goal to use new spot_something mechanism.
 

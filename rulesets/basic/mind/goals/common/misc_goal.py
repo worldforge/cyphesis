@@ -136,7 +136,7 @@ class task(Goal):
                       [acquire_thing(me,tool),
                        move_me_area(place),
                        spot_something(what),
-                       move_me(lambda me,what=what:me.things[what][0].location),
+                       move_me_to_focus(what),
                        self.do],
                       time)
         self.tool=tool
@@ -321,7 +321,7 @@ class browse(feed):
     def __init__(self, me, what, min_status):
         Goal.__init__(self, "browse for food by name",
                       self.am_i_full,
-		      [spot_something(what, range=20, condition=(lambda o,s=min_status:hasattr(o,"status") and o.status > s)),
+                      [spot_something(what, range=20, condition=(lambda o,s=min_status:hasattr(o,"status") and o.status > s)),
                        move_me_to_focus(what),
                        self.eat])
         self.what=what
@@ -524,6 +524,7 @@ class run_shop(market):
                       self.is_it,
                       [spot_something(shop),
                        self.set_it],time)
+        # FIXME This probably does not work, but I'll fix it when we need it
         self.shop=shop
         self.state=updown
         self.vars=["shop"]
