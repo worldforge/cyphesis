@@ -5,7 +5,10 @@ from atlas import *
 from world.objects.Thing import Thing
 from common import log,const
 from misc import set_kw
-from whrandom import *
+try:
+  from random import *
+except ImportError:
+  from whrandom import *
 
 class Weather(Thing):
     def __init__(self, cppthing, **kw):

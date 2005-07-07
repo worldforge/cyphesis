@@ -6,7 +6,10 @@ from world.objects.Thing import Thing
 from common import log,const
 from misc import set_kw
 from Vector3D import Vector3D
-from whrandom import *
+try:
+  from random import *
+except ImportError:
+  from whrandom import *
 
 
 """

@@ -1,5 +1,8 @@
 from atlas import *
-from whrandom import *
+try:
+  from random import *
+except ImportError:
+  from whrandom import *
 from world.objects.Thing import Thing
 
 BaseMind = Thing

@@ -5,7 +5,10 @@
 from physics import *
 from mind.goals.common.common import *
 from mind.goals.common.move import *
-from whrandom import *
+try:
+  from random import *
+except ImportError:
+  from whrandom import *
 
 ######################## MAKE LOTS OF SOMETHING ###############################
 

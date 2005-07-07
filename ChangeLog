@@ -1,3 +1,22 @@
+2005-07-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/goals/common/common.py,
+	  rulesets/basic/mind/goals/common/misc_goal.py,
+	  rulesets/basic/mind/goals/common/move.py,
+	  rulesets/basic/mind/goals/humanoid/build_home.py,
+	  rulesets/basic/world/probability.py,
+	  rulesets/basic/world/objects/plants/Tree.py,
+	  rulesets/mason/define_world.py, rulesets/mason/mind/SkelMind.py,
+	  rulesets/mason/world/objects/Weather.py,
+	  rulesets/mason/world/objects/animals/Deer.py,
+	  rulesets/mason/world/objects/animals/Pig.py,
+	  rulesets/mason/world/objects/outdoor/Gravestone.py,
+	  rulesets/mason/world/objects/plants/seeds/Seed.py,
+	  rulesets/mason/world/objects/undead/Skeleton.py,
+	  rulesets/werewolf/define_world.py:
+	  Switch to importing random and fall back to deprecated whrandom
+	  on older python versions.
+
 2005-07-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommMDNSPublisher.cpp: Don't finalise MDNS session when an

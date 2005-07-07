@@ -8,7 +8,6 @@ from atlas import *
 #else:
 from Vector3D import Vector3D
 
-import whrandom
 #from common import const
 from mind.Goal import Goal
 from mind.NPCMind import *

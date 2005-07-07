@@ -4,7 +4,10 @@ from world.objects.Thing import Thing
 from common import log,const
 #from world.objects.plants import prob
 from misc import set_kw
-from whrandom import *
+try:
+  from random import *
+except ImportError:
+  from whrandom import *
 from Vector3D import Vector3D
 
 debug_tree = 0

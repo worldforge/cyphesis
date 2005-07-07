@@ -4,7 +4,10 @@ from atlas import *
 
 from world.objects.Thing import Thing
 from misc import set_kw
-from whrandom import *
+try:
+  from random import *
+except ImportError:
+  from whrandom import *
 from Vector3D import Vector3D
 
 import atlas

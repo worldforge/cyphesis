@@ -11,7 +11,10 @@ else:
     from Point3D import Point3D
 
 from mind.goals.common.common import *
-from whrandom import *
+try:
+  from random import *
+except ImportError:
+  from whrandom import *
 
 ############################ MOVE ME ####################################
 

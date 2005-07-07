@@ -3,6 +3,11 @@
 
 from mind.goals.common.common import *
 
+try:
+  from random import *
+except ImportError:
+  from whrandom import *
+
 ############################ FIND HOME ####################################
 
 def is_suitable_place_for_home(me):
@@ -13,7 +18,7 @@ def is_suitable_place_for_home(me):
 def find_place(me):
     "find place for home: wander randomly"
     loc=me.location.copy()
-    loc.coordinates=Vector3D(map(lambda c:c+whrandom.uniform(-50,50),
+    loc.coordinates=Vector3D(map(lambda c:c+uniform(-50,50),
                                  loc.coordinates))
     ent=Entity(me,location=loc)
     return Operation("move",ent)

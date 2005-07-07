@@ -3,7 +3,10 @@ from atlas import *
 from world.objects.Thing import Thing
 from misc import set_kw
 from common import log,const
-from whrandom import *
+try:
+  from random import *
+except ImportError:
+  from whrandom import *
 
 import atlas
 
