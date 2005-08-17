@@ -1,3 +1,9 @@
+2005-08-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/CustomOp.cpp, common/CustomOp.h, common/CustomOp_impl.h:
+	  Experimental class template for making custom ops a little
+	  easier to handle.
+
 2005-07-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/goals/common/common.py,
