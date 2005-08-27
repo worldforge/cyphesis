@@ -1,5 +1,12 @@
 2005-08-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* scripts/gen_op.py: Script to generate operation class headers.
+
+	* common/Connect.h, common/Monitor.h: New op classes added during
+	  port.
+
+2005-08-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* Finish initial port to Atlas-C++ 0.6 series. Client and tools
 	  binaries now link.
 
