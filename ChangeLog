@@ -1,5 +1,13 @@
 2005-08-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Creatortest.cpp, tests/EntityExerciser.h,
+	  tests/Tasktest.cpp, tests/Worldtest.cpp,
+	  tests/allOperations.h, tests/inheritancetest.cpp,
+	  tests/utilitytest.cpp: Fix up tests to work with new Atlas-C++
+	  version.
+
+2005-08-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* scripts/gen_op.py: Script to generate operation class headers.
 
 	* common/Connect.h, common/Monitor.h: New op classes added during

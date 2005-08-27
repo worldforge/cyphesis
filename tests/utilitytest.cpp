@@ -4,7 +4,7 @@
 
 #include "common/utility.h"
 
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include <Atlas/Objects/RootOperation.h>
 
 #include <cassert>
 
@@ -16,14 +16,9 @@ int main()
     assert(utility::Object_asOperation(map, op) == false);
 
     map["objtype"] = "op";
+    map["parents"] = Atlas::Message::ListType(1, "root_operation");
 
     assert(utility::Object_asOperation(map, op) == true);
-
-    Atlas::Objects::Root * r = utility::Object_asRoot(map);
-
-    assert(r != 0);
-
-    delete r; // Supresses warning about unused variable, and eliminates leak.
 
     return 0;
 }

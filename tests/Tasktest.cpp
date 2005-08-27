@@ -7,7 +7,7 @@
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
 
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include <Atlas/Objects/RootOperation.h>
 
 #include <iostream>
 

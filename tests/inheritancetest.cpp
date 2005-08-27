@@ -4,7 +4,7 @@
 
 #include "common/inheritance.h"
 
-#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/RootOperation.h>
 
 #include <cassert>
 
@@ -13,9 +13,9 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 
-void descendTree(Root * type, Inheritance & i, int & count)
+void descendTree(const Root & type, Inheritance & i, int & count)
 {
-    assert(type != 0);
+    assert(type.isValid());
     ++count;
     if (!type->hasAttr("children")) {
         return;
@@ -32,7 +32,7 @@ void descendTree(Root * type, Inheritance & i, int & count)
         assert(e.isString());
         const std::string & es = e.asString();
         assert(!es.empty());
-        Root * child = i.get(es);
+        const Root & child = i.getClass(es);
         descendTree(child, i, count);
     }
 
@@ -71,37 +71,37 @@ int main()
     assert(i.opEnumerate("error") == OP_ERROR);
     assert(i.opEnumerate("squigglymuff") == OP_INVALID);
 
-    assert(i.newOperation("login") != 0);
-    assert(i.newOperation("logout") != 0);
-    assert(i.newOperation("action") != 0);
-    assert(i.newOperation("chop") != 0);
-    assert(i.newOperation("combine") != 0);
-    assert(i.newOperation("create") != 0);
-    assert(i.newOperation("cut") != 0);
-    assert(i.newOperation("delete") != 0);
-    assert(i.newOperation("divide") != 0);
-    assert(i.newOperation("eat") != 0);
-    assert(i.newOperation("burn") != 0);
-    assert(i.newOperation("get") != 0);
-    assert(i.newOperation("imaginary") != 0);
-    assert(i.newOperation("info") != 0);
-    assert(i.newOperation("move") != 0);
-    assert(i.newOperation("nourish") != 0);
-    assert(i.newOperation("set") != 0);
-    assert(i.newOperation("sight") != 0);
-    assert(i.newOperation("sound") != 0);
-    assert(i.newOperation("talk") != 0);
-    assert(i.newOperation("touch") != 0);
-    assert(i.newOperation("tick") != 0);
-    assert(i.newOperation("look") != 0);
-    assert(i.newOperation("setup") != 0);
-    assert(i.newOperation("appearance") != 0);
-    assert(i.newOperation("disappearance") != 0);
-    assert(i.newOperation("error") != 0);
+    assert(i.newOperation("login").isValid());
+    assert(i.newOperation("logout").isValid());
+    assert(i.newOperation("action").isValid());
+    assert(i.newOperation("chop").isValid());
+    assert(i.newOperation("combine").isValid());
+    assert(i.newOperation("create").isValid());
+    assert(i.newOperation("cut").isValid());
+    assert(i.newOperation("delete").isValid());
+    assert(i.newOperation("divide").isValid());
+    assert(i.newOperation("eat").isValid());
+    assert(i.newOperation("burn").isValid());
+    assert(i.newOperation("get").isValid());
+    assert(i.newOperation("imaginary").isValid());
+    assert(i.newOperation("info").isValid());
+    assert(i.newOperation("move").isValid());
+    assert(i.newOperation("nourish").isValid());
+    assert(i.newOperation("set").isValid());
+    assert(i.newOperation("sight").isValid());
+    assert(i.newOperation("sound").isValid());
+    assert(i.newOperation("talk").isValid());
+    assert(i.newOperation("touch").isValid());
+    assert(i.newOperation("tick").isValid());
+    assert(i.newOperation("look").isValid());
+    assert(i.newOperation("setup").isValid());
+    assert(i.newOperation("appearance").isValid());
+    assert(i.newOperation("disappearance").isValid());
+    assert(i.newOperation("error").isValid());
 
-    assert(i.newOperation("squigglymuff") == 0);
+    assert(!i.newOperation("squigglymuff").isValid());
 
-    Root * rt = i.get("root");
+    const Root & rt = i.getClass("root");
 
     // Make sure the type tree is coherent, and contains a decent
     // number of types.
@@ -110,9 +110,9 @@ int main()
     assert(count > 20);
 
     // Make sure inserting a type with unknown parents fails with non-zero
-    Root * r = new Root;
+    Root r;
     r->setId("squigglymuff");
-    r->setParents(ListType(1, "ludricous_test_parent"));
+    r->setParents(std::list<std::string>(1, "ludricous_test_parent"));
     assert(i.addChild(r) != 0);
 
     assert(i.isTypeOf("disappearance", "root_operation"));

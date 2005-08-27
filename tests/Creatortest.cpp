@@ -19,7 +19,8 @@ class TestWorld : public BaseWorld {
 
     virtual bool idle(int, int) { return false; }
     virtual Entity * addEntity(Entity * obj, bool setup = true) { return 0; }
-    virtual Entity * addNewEntity(const std::string &, const MapType &) {
+    virtual Entity * addNewEntity(const std::string &,
+                                  const Atlas::Objects::Entity::RootEntity &) {
         return 0;
     }
     virtual void message(const Operation & op, Entity & ent) { }
