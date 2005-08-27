@@ -6,6 +6,7 @@
 #define COMMON_DATABSE_H
 
 #include <Atlas/Message/DecoderBase.h>
+#include <Atlas/Message/Element.h>
 
 #include <libpq-fe.h>
 
@@ -14,17 +15,17 @@
 /// \brief Class to handle decoding Atlas encoded database records
 class Decoder : public Atlas::Message::DecoderBase {
   private:
-    virtual void objectArrived(const Atlas::Message::Element& obj) {
+    virtual void messageArrived(const Atlas::Message::MapType & msg) {
         m_check = true;
-        m_obj = obj.asMap();
+        m_msg = msg;
     }
     bool m_check;
-    Atlas::Message::MapType m_obj;
+    Atlas::Message::MapType m_msg;
   public:
     Decoder() : m_check (false) { }
     bool check() const { return m_check; }
     const Atlas::Message::MapType & get() {
-        m_check = false; return m_obj;
+        m_check = false; return m_msg;
     }
 };
 

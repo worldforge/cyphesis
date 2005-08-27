@@ -43,7 +43,7 @@ class Connection : public OOGThing {
     Account * addPlayer(const std::string &, const std::string &);
   protected:
     virtual bool verifyCredentials(const Account &,
-                                   const Atlas::Message::MapType &) const;
+                                   const Atlas::Objects::Root &) const;
   public:
     CommClient & m_commClient;
     ServerRouting & m_server;

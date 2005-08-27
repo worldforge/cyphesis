@@ -9,11 +9,10 @@
 
 #include "common/utility.h"
 
-#include <Atlas/Objects/Operation/RootOperation.h>
-
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
 
 /*
@@ -31,7 +30,7 @@ using Atlas::Objects::Operation::RootOperation;
 static PyObject * Operation_setSerialno(PyOperation * self, PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.setSerialno");
         return NULL;
     }
@@ -51,7 +50,7 @@ static PyObject * Operation_setRefno(PyOperation * self, PyObject * args)
 {
     // Takes integer, returns none
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.setRefno");
         return NULL;
     }
@@ -70,7 +69,7 @@ static PyObject * Operation_setFrom(PyOperation * self, PyObject * args)
 {
     // Takes string, returns none
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.setFrom");
         return NULL;
     }
@@ -89,7 +88,7 @@ static PyObject * Operation_setTo(PyOperation * self, PyObject * args)
 {
     // Takes string, returns none
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.setTo");
         return NULL;
     }
@@ -108,7 +107,7 @@ static PyObject * Operation_setSeconds(PyOperation * self, PyObject * args)
 {
     // Takes float, returns none
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.setSeconds");
         return NULL;
     }
@@ -127,7 +126,7 @@ static PyObject * Operation_setFutureSeconds(PyOperation * self, PyObject * args
 {
     // Takes float, returns none
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.setFutureSeconds");
         return NULL;
     }
@@ -142,34 +141,18 @@ static PyObject * Operation_setFutureSeconds(PyOperation * self, PyObject * args
     return Py_None;
 }
 
-static PyObject * Operation_setTimeString(PyOperation * self, PyObject * args)
-{
-    // Takes string, returns none
-#ifndef NDEBUG
-    if (self->operation == NULL) {
-        PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.setTimeString");
-        return NULL;
-    }
-#endif // NDEBUG
-    char * timestring;
-    if (!PyArg_ParseTuple(args, "s", &timestring)) {
-        return NULL;
-    }
-    self->operation->setTimeString(timestring);
-
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
 static PyObject * Operation_setArgs(PyOperation * self, PyObject * args)
 {
     // Takes List, returns none
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.setArgs");
         return NULL;
     }
 #endif // NDEBUG
+    // FIXME This is a big mess - either get rid of it in entirity, or
+    // make something better.
+
     PyObject * args_object;
     if (!PyArg_ParseTuple(args, "O", &args_object)) {
         return NULL;
@@ -184,13 +167,13 @@ static PyObject * Operation_setArgs(PyOperation * self, PyObject * args)
         if (PyMessageElement_Check(item)) {
             argslist.push_back(*((PyMessageElement*)item)->m_obj);
         } else if (PyOperation_Check(item)) {
-            argslist.push_back(((PyOperation*)item)->operation->asObject());
+            argslist.push_back(((PyOperation*)item)->operation->asMessage());
         } else {
             PyErr_SetString(PyExc_TypeError,"args contains non Atlas Object");
             return NULL;
         }
     }
-    self->operation->setArgs(argslist);
+    self->operation->setArgsAsList(argslist);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -200,7 +183,7 @@ static PyObject * Operation_getSerialno(PyOperation * self)
 {
     // Returns int
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.getSerialno");
         return NULL;
     }
@@ -212,7 +195,7 @@ static PyObject * Operation_getRefno(PyOperation * self)
 {
     // Returns int
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.getRefno");
         return NULL;
     }
@@ -224,7 +207,7 @@ static PyObject * Operation_getFrom(PyOperation * self)
 {
     // Returns string
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.getFrom");
         return NULL;
     }
@@ -236,7 +219,7 @@ static PyObject * Operation_getTo(PyOperation * self)
 {
     // Returns string
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.getTo");
         return NULL;
     }
@@ -248,7 +231,7 @@ static PyObject * Operation_getSeconds(PyOperation * self)
 {
     // Returns float
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.getSeconds");
         return NULL;
     }
@@ -260,7 +243,7 @@ static PyObject * Operation_getFutureSeconds(PyOperation * self)
 {
     // Returns float
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.getFutureSeconds");
         return NULL;
     }
@@ -268,41 +251,37 @@ static PyObject * Operation_getFutureSeconds(PyOperation * self)
     return PyFloat_FromDouble(self->operation->getFutureSeconds());
 }
 
-static PyObject * Operation_getTimeString(PyOperation * self)
-{
-    // Returns string
-#ifndef NDEBUG
-    if (self->operation == NULL) {
-        PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.getTimeString");
-        return NULL;
-    }
-#endif // NDEBUG
-    return PyString_FromString(self->operation->getTimeString().c_str());
-}
-
 static PyObject * Operation_getArgs(PyOperation * self)
 {
     // Returns list
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.getArgs");
         return NULL;
     }
 #endif // NDEBUG
     // Here we go:- 
-    ListType & args_list = self->operation->getArgs();
+
+    // FIXME
+    // Here we need a generic way to make a Root object into a python object,
+    // either by wrapping as a Operation, or as an Entity. New Entity binding
+    // thus required. Once written this code should also be used in
+    // Operation_seq_item(), and the code there is a better starting point.
+
+    const std::vector<Root> & args_list = self->operation->getArgs();
     PyObject * args_pylist = PyList_New(args_list.size());
     int j = 0;
     PyMessageElement * item;
-    ListType::const_iterator Iend = args_list.end();
-    for (ListType::const_iterator I = args_list.begin(); I != Iend; ++I, ++j) {
+    std::vector<Root>::const_iterator Iend = args_list.end();
+    std::vector<Root>::const_iterator I = args_list.begin();
+    for (; I != Iend; ++I, ++j) {
         item = newPyMessageElement();
         if (item == NULL) {
             PyErr_SetString(PyExc_TypeError,"error creating list");
             Py_DECREF(args_pylist);
             return NULL;
         }
-        item->m_obj = new Element(*I);
+        item->m_obj = new Element((*I)->asMessage());
         PyList_SetItem(args_pylist, j, (PyObject *)item);
     }
     return args_pylist;
@@ -311,7 +290,7 @@ static PyObject * Operation_getArgs(PyOperation * self)
 static PyObject* Operation_get_name(PyOperation * self)
 {
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.get_name");
         return NULL;
     }
@@ -326,7 +305,7 @@ static PyObject* Operation_get_name(PyOperation * self)
 static int Operation_seq_length(PyOperation * self)
 {
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.seq_length");
         return 0;
     }
@@ -337,34 +316,29 @@ static int Operation_seq_length(PyOperation * self)
 static PyObject * Operation_seq_item(PyOperation * self, int item)
 {
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.seq_item");
         return 0;
     }
 #endif // NDEBUG
-    ListType & args_list = self->operation->getArgs();
-    ListType::const_iterator I = args_list.begin();
-    ListType::const_iterator Iend = args_list.end();
+    const std::vector<Root> & args_list = self->operation->getArgs();
+    std::vector<Root>::const_iterator I = args_list.begin();
+    std::vector<Root>::const_iterator Iend = args_list.end();
     for(int i = 0; i < item && I != Iend; ++i, ++I);
     if (I == args_list.end()) {
         PyErr_SetString(PyExc_TypeError,"Not enought op arguments");
         return 0;
     }
-    if (!I->isMap()) {
-        PyErr_SetString(PyExc_TypeError,"op argument is not a map");
-        return 0;
-    }
-    const MapType & obj = I->asMap();
-    RootOperation op;
-    bool isOp = utility::Object_asOperation(obj, op);
-    if (isOp) {
+    const Root & arg = *I;
+    RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(arg);
+    if (op.isValid()) {
         PyOperation * ret_op = newPyOperation();
-        ret_op->operation = new RootOperation(op);
+        ret_op->operation = op;
         ret_op->own = 1;
         return (PyObject *)ret_op;
     }
     PyMessageElement * ret = newPyMessageElement();
-    ret->m_obj = new Element(obj);
+    ret->m_obj = new Element(arg->asMessage());
     return (PyObject *)ret;
 }
 
@@ -372,7 +346,7 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
 {
     fflush(stdout);
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError, "NULL Operation in Operation.num_add");
         fflush(stdout);
         return NULL;
@@ -405,7 +379,7 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
     if (PyOperation_Check(other)) {
         PyOperation * op = (PyOperation*)other;
 #ifndef NDEBUG
-        if (op->operation == NULL) {
+        if (!op->operation.isValid()) {
             PyErr_SetString(PyExc_AssertionError, "NULL Operation in other of Operation.num_add");
         }
 #endif // NDEBUG
@@ -498,7 +472,6 @@ PyMethodDef RootOperation_methods[] = {
     {"setTo",           (PyCFunction)Operation_setTo,           METH_VARARGS},
     {"setSeconds",      (PyCFunction)Operation_setSeconds,      METH_VARARGS},
     {"setFutureSeconds",(PyCFunction)Operation_setFutureSeconds,METH_VARARGS},
-    {"setTimeString",   (PyCFunction)Operation_setTimeString,   METH_VARARGS},
     {"setArgs",         (PyCFunction)Operation_setArgs,         METH_VARARGS},
     {"getSerialno",     (PyCFunction)Operation_getSerialno,     METH_NOARGS},
     {"getRefno",        (PyCFunction)Operation_getRefno,        METH_NOARGS},
@@ -506,7 +479,6 @@ PyMethodDef RootOperation_methods[] = {
     {"getTo",           (PyCFunction)Operation_getTo,           METH_NOARGS},
     {"getSeconds",      (PyCFunction)Operation_getSeconds,      METH_NOARGS},
     {"getFutureSeconds",(PyCFunction)Operation_getFutureSeconds,METH_NOARGS},
-    {"getTimeString",   (PyCFunction)Operation_getTimeString,   METH_NOARGS},
     {"getArgs",         (PyCFunction)Operation_getArgs,         METH_NOARGS},
     {"get_name",        (PyCFunction)Operation_get_name,        METH_NOARGS},
     {NULL,          NULL}
@@ -519,7 +491,6 @@ PyMethodDef ConstRootOperation_methods[] = {
     {"getTo",           (PyCFunction)Operation_getTo,           METH_NOARGS},
     {"getSeconds",      (PyCFunction)Operation_getSeconds,      METH_NOARGS},
     {"getFutureSeconds",(PyCFunction)Operation_getFutureSeconds,METH_NOARGS},
-    {"getTimeString",   (PyCFunction)Operation_getTimeString,   METH_NOARGS},
     {"getArgs",         (PyCFunction)Operation_getArgs,         METH_NOARGS},
     {"get_name",        (PyCFunction)Operation_get_name,        METH_NOARGS},
     {NULL,          NULL}
@@ -532,9 +503,9 @@ PyMethodDef ConstRootOperation_methods[] = {
 
 static void Operation_dealloc(PyOperation *self)
 {
-        if ((self->own != 0) && (self->operation != NULL)) {
+        if ((self->own != 0) && (self->operation.isValid())) {
             // Can't delete until I have sorted out bugs with own flag
-            delete self->operation;
+            self->operation.~RootOperation();
         }
         PyMem_DEL(self);
 }
@@ -553,7 +524,7 @@ template <typename T>
 static PyObject * getattr(T * self, char * name)
 {
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError, "NULL Operation in Operation.getattr");
         return NULL;
     }
@@ -589,12 +560,12 @@ static PyObject * getattr(T * self, char * name)
             return (PyObject *)obj;
         }
     } else if (strcmp(name, "id") == 0) {
-        const ListType & parents = self->operation->getParents();
-        if ((parents.empty()) || (!parents.front().isString())) {
+        const std::list<std::string> & parents = self->operation->getParents();
+        if (parents.empty()) {
             PyErr_SetString(PyExc_TypeError, "Operation has no parents");
             return NULL;
         }
-        return PyString_FromString(parents.front().asString().c_str());
+        return PyString_FromString(parents.front().c_str());
     }
     return findMethod(self, name);
 }
@@ -613,7 +584,7 @@ static PyObject * ConstOperation_getattr(PyConstOperation * self, char * name)
 static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
 {
 #ifndef NDEBUG
-    if (self->operation == NULL) {
+    if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError, "NULL Operation in Operation.setattr");
         return -1;
     }
@@ -704,7 +675,7 @@ PyOperation * newPyOperation()
     if (self == NULL) {
         return NULL;
     }
-    self->operation = NULL;
+    new (&(self->operation)) RootOperation(NULL);
     self->from = NULL;
     self->to = NULL;
     self->own = 0;
@@ -718,7 +689,7 @@ PyConstOperation * newPyConstOperation()
     if (self == NULL) {
         return NULL;
     }
-    self->operation = NULL;
+    new (&(self->operation)) RootOperation(NULL);
     self->from = NULL;
     self->to = NULL;
     self->own = 0;

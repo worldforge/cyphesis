@@ -8,17 +8,18 @@
 #include "CommSocket.h"
 
 #include <Atlas/Objects/Decoder.h>
+#include <Atlas/Objects/ObjectsFwd.h>
 
 #include <skstream/skstream.h>
 
 #include <deque>
 
 namespace Atlas {
-  template <class Stream> class Codec;
+  class Codec;
   namespace Objects {
-    class Encoder;
+    class ObjectsEncoder;
   }
-  template <class Stream> class Negotiate;
+  class Negotiate;
 }
 
 class BaseEntity;
@@ -26,21 +27,21 @@ class BaseEntity;
 /// \brief Base class for Atlas clients connected to the server.
 ///
 /// Used by subclasses to handle remote TCP clients and local UNIX clients.
-class CommClient : public Atlas::Objects::Decoder, public CommSocket {
+class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket {
   public:
     /// \brief STL deque of pointers to operation objects.
-    typedef std::deque<const Atlas::Objects::Operation::RootOperation *> DispatchQueue;
+    typedef std::deque<Atlas::Objects::Operation::RootOperation> DispatchQueue;
   protected:
     /// \brief C++ iostream compatible socket object handling the socket IO.
     tcp_socket_stream m_clientIos;
     /// \brief Queue of operations that have been decoded by not dispatched.
     DispatchQueue m_opQueue;
     /// \brief Atlas codec that handles encoding and decoding traffic.
-    Atlas::Codec<std::iostream> * m_codec;
+    Atlas::Codec * m_codec;
     /// \brief high level encoder passes data to the codec for transmission.
-    Atlas::Objects::Encoder * m_encoder;
+    Atlas::Objects::ObjectsEncoder * m_encoder;
     /// \brief Atlas negotiator for handling codec negotiation.
-    Atlas::Negotiate<std::iostream> * m_negotiate;
+    Atlas::Negotiate * m_negotiate;
     /// \brief Server side object for handling connection level operations.
     BaseEntity & m_connection;
 
@@ -55,18 +56,7 @@ class CommClient : public Atlas::Objects::Decoder, public CommSocket {
 
     void operation(const Atlas::Objects::Operation::RootOperation &);
 
-    virtual void unknownObjectArrived(const Atlas::Message::Element&);
-    virtual void objectArrived(const Atlas::Objects::Operation::Login & op);
-    virtual void objectArrived(const Atlas::Objects::Operation::Logout & op);
-    virtual void objectArrived(const Atlas::Objects::Operation::Create & op);
-    virtual void objectArrived(const Atlas::Objects::Operation::Imaginary & op);
-    virtual void objectArrived(const Atlas::Objects::Operation::Move & op);
-    virtual void objectArrived(const Atlas::Objects::Operation::Set & op);
-    virtual void objectArrived(const Atlas::Objects::Operation::Touch & op);
-    virtual void objectArrived(const Atlas::Objects::Operation::Look & op);
-    virtual void objectArrived(const Atlas::Objects::Operation::Talk & op);
-    virtual void objectArrived(const Atlas::Objects::Operation::Get & op);
-
+    virtual void objectArrived(const Atlas::Objects::Root & obj);
   public:
     CommClient(CommServer &, int fd, BaseEntity &);
     CommClient(CommServer &, BaseEntity &);

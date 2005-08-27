@@ -27,50 +27,19 @@
 #include "Entity.h"
 #include "BaseMind.h"
 
+#include "common/inheritance.h"
 #include "common/globals.h"
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/log.h"
 
-#include "common/Tick.h"
-#include "common/Burn.h"
-#include "common/Chop.h"
-#include "common/Cut.h"
-#include "common/Setup.h"
-#include "common/Eat.h"
-#include "common/Nourish.h"
-
-#include "common/Generic.h"
-
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Move.h>
-#include <Atlas/Objects/Operation/Set.h>
-#include <Atlas/Objects/Operation/Sight.h>
-#include <Atlas/Objects/Operation/Talk.h>
-#include <Atlas/Objects/Operation/Touch.h>
-#include <Atlas/Objects/Operation/Info.h>
+#include <Atlas/Objects/Operation.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
-using Atlas::Objects::Operation::Sight;
-using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Burn;
-using Atlas::Objects::Operation::Action;
-using Atlas::Objects::Operation::Chop;
-using Atlas::Objects::Operation::Cut;
-using Atlas::Objects::Operation::Create;
-using Atlas::Objects::Operation::Setup;
-using Atlas::Objects::Operation::Look;
-using Atlas::Objects::Operation::Move;
-using Atlas::Objects::Operation::Talk;
-using Atlas::Objects::Operation::Touch;
-using Atlas::Objects::Operation::Eat;
-using Atlas::Objects::Operation::Nourish;
-using Atlas::Objects::Operation::Info;
-using Atlas::Objects::Operation::Tick;
-using Atlas::Objects::Operation::Generic;
+using Atlas::Objects::Root;
+using Atlas::Objects::Operation::RootOperation;
 
 static const bool debug_flag = false;
 
@@ -1022,7 +991,7 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     return (PyObject *)o;
 }
 
-static inline void addToArgs(ListType & args, PyObject * ent)
+static inline void addToArgs(std::vector<Root> & args, PyObject * ent)
 {
     if (ent == NULL) {
         return;
@@ -1043,15 +1012,17 @@ static inline void addToArgs(ListType & args, PyObject * ent)
                     ent[I->first] = I->second;
                 }
             }
+            args.push_back(Atlas::Objects::Factories::instance()->createObject(o.asMap()));
+        } else {
+            log(ERROR, "Operation() Non-map element object added to new operation arguments."); // FIXME perhaps this should raise a python exception?
         }
-        args.push_back(o);
     } else if (PyOperation_Check(ent)) {
         PyOperation * op = (PyOperation*)ent;
-        if (op->operation == NULL) {
+        if (!op->operation.isValid()) {
             log(ERROR, "Operation() Null operation object added to new operation arguments.");
             return;
         }
-        args.push_back(op->operation->asObject());
+        args.push_back(op->operation);
     } else {
         log(ERROR, "Operation() Unknown object added to operation arguments.");
     }
@@ -1073,45 +1044,18 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     if (op == NULL) {
         return NULL;
     }
-    if (strcmp(type, "tick") == 0) {
-        op->operation = new Tick();
-    } else if (strcmp(type, "sight") == 0) {
-        op->operation = new Sight();
-    } else if (strcmp(type, "set") == 0) {
-        op->operation = new Set();
-    } else if (strcmp(type, "burn") == 0) {
-        op->operation = new Burn();
-    } else if (strcmp(type, "action") == 0) {
-        op->operation = new Action();
-    } else if (strcmp(type, "chop") == 0) {
-        op->operation = new Chop();
-    } else if (strcmp(type, "cut") == 0) {
-        op->operation = new Cut();
-    } else if (strcmp(type, "create") == 0) {
-        op->operation = new Create();
-    } else if (strcmp(type, "setup") == 0) {
-        op->operation = new Setup();
-    } else if (strcmp(type, "look") == 0) {
-        op->operation = new Look();
-    } else if (strcmp(type, "move") == 0) {
-        op->operation = new Move();
-    } else if (strcmp(type, "talk") == 0) {
-        op->operation = new Talk();
-    } else if (strcmp(type, "touch") == 0) {
-        op->operation = new Touch();
-    } else if (strcmp(type, "eat") == 0) {
-        op->operation = new Eat();
-    } else if (strcmp(type, "nourish") == 0) {
-        op->operation = new Nourish();
-    } else if (strcmp(type, "info") == 0) {
-        op->operation = new Info();
-    } else if (strcmp(type, "thought") == 0 ||
-               strcmp(type, "goal_info") == 0) {
+    if (strcmp(type, "thought") == 0 || strcmp(type, "goal_info") == 0) {
         Py_DECREF(op);
         Py_INCREF(Py_None);
         return Py_None;
     } else {
-        op->operation = new Generic(type);
+        Root r = Atlas::Objects::Factories::instance()->createObject(type);
+        op->operation = Atlas::Objects::smart_dynamic_cast<RootOperation>(r);
+        if (!op->operation.isValid()) {
+            Py_DECREF(op);
+            PyErr_SetString(PyExc_TypeError, "Operation() unknown operation type requested");
+            return NULL;
+        }
     }
     op->own = 1;
     if (PyMapping_HasKeyString(kwds, "to")) {
@@ -1155,11 +1099,10 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         op->operation->setFrom(PyString_AsString(from_id));
         Py_DECREF(from_id);
     }
-    ListType args_list;
+    std::vector<Root> & args_list = op->operation->modifyArgs();
     addToArgs(args_list, arg1);
     addToArgs(args_list, arg2);
     addToArgs(args_list, arg3);
-    op->operation->setArgs(args_list);
     return (PyObject *)op;
 }
 

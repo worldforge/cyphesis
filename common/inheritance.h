@@ -7,13 +7,10 @@
 
 #include "types.h"
 
-#include <iostream>
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/SmartPtr.h>
 
-namespace Atlas {
-  namespace Objects {
-    class Root;
-  }
-}
+#include <iostream>
 
 void installStandardObjects();
 void installCustomOperations();
@@ -25,7 +22,7 @@ class OpFactoryBase {
     virtual ~OpFactoryBase();
 
     /// \brief Create a new operation using this factory on the heap
-    virtual Operation * newOperation() = 0;
+    virtual Operation newOperation() = 0;
     /// \brief Create a new operation using this factory
     ///
     /// @param o Operation structure used to store the new operation
@@ -37,7 +34,7 @@ class OpFactoryBase {
 template <class OpClass>
 class OpFactory : public OpFactoryBase {
   public:
-    virtual Operation * newOperation();
+    virtual Operation newOperation();
     virtual void newOperation(Operation &);
 };
 
@@ -49,16 +46,17 @@ class GenericOpFactory : public OpFactoryBase {
   public:
     explicit GenericOpFactory(const std::string & opType);
 
-    virtual Operation * newOperation();
+    virtual Operation newOperation();
     virtual void newOperation(Operation &);
 };
 
 typedef std::map<std::string, OpFactoryBase *> OpFactoryDict;
-typedef std::map<std::string, Atlas::Objects::Root *> RootDict;
+typedef std::map<std::string, Atlas::Objects::Root> RootDict;
 
 /// \brief Class to manage the inheritance tree for in-game entity types
 class Inheritance {
   protected:
+    const Atlas::Objects::Root noClass;
     RootDict atlasObjects;
     OpNoDict opLookup;
     OpFactoryDict opFactories;
@@ -79,11 +77,17 @@ class Inheritance {
 
     OpNo opEnumerate(const std::string & parent) const;
     OpNo opEnumerate(const Operation &) const;
-    Atlas::Objects::Root * get(const std::string & parent);
-    int addChild(Atlas::Objects::Root * obj);
-    Operation * newOperation(const std::string &);
+    const Atlas::Objects::Root & getClass(const std::string & parent);
+    bool hasClass(const std::string & parent);
+    int addChild(const Atlas::Objects::Root & obj);
+    Operation newOperation(const std::string & parent);
     int newOperation(const std::string &, Operation &) const;
     bool isTypeOf(const std::string &, const std::string &) const;
 };
+
+Atlas::Objects::Root atlasOpDefinition(const std::string & name,
+                                       const std::string & parent);
+Atlas::Objects::Root atlasClass(const std::string & name,
+                                const std::string & parent);
 
 #endif // COMMON_INHERITANCE_H

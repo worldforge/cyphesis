@@ -31,6 +31,7 @@ class Lobby : public OOGThing {
     virtual void operation(const Operation &, OpVector &);
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
+    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 };
 
 #endif // SERVER_LOBBY_H

@@ -6,6 +6,7 @@
 #define COMMON_PROPERTY_H
 
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/ObjectsFwd.h>
 
 /// \brief Interface for Entity properties
 class PropertyBase {
@@ -25,6 +26,8 @@ class PropertyBase {
     virtual void set(const Atlas::Message::Element &) = 0;
     /// \brief Add the value as an attribute to an Atlas map
     virtual void add(const std::string &, Atlas::Message::MapType & map);
+    /// \brief Add the value as an attribute to an Atlas entity
+    virtual void add(const std::string &, const Atlas::Objects::Entity::RootEntity &);
 };
 
 /// \brief Entity property template for properties with single data values
@@ -39,6 +42,7 @@ class Property : public PropertyBase {
     virtual void get(Atlas::Message::Element &);
     virtual void set(const Atlas::Message::Element &);
     virtual void add(const std::string &, Atlas::Message::MapType & map);
+    virtual void add(const std::string &, const Atlas::Objects::Entity::RootEntity &);
 };
 
 /// \brief Entity property template for properties with single data values
@@ -57,6 +61,7 @@ class ImmutableProperty : public PropertyBase {
     virtual void get(Atlas::Message::Element &);
     virtual void set(const Atlas::Message::Element &);
     virtual void add(const std::string &, Atlas::Message::MapType & map);
+    virtual void add(const std::string &, const Atlas::Objects::Entity::RootEntity &);
 };
 
 #endif // COMMON_PROPERTY_H

@@ -9,36 +9,41 @@
 
 #include <list>
 
-template<class ParentOpData, const char * ClassName, int ClassNo>
-CustomOpData<ParentOpData, ClassName, ClassNo>::~CustomOpData()
+template<class ParentOpData, class ParentProxy>
+CustomOpData<ParentOpData, ParentProxy>::~CustomOpData()
 {
 }
-// <ParentOpData, ClassName, ClassNo>
+// <ParentOpData, ParentProxy>
 
-template<class ParentOpData, const char * ClassName, int ClassNo>
-CustomOpData<ParentOpData, ClassName, ClassNo> * CustomOpData<ParentOpData, ClassName, ClassNo>::copy() const
+template<class ParentOpData, class ParentProxy>
+CustomOpData<ParentOpData, ParentProxy> * CustomOpData<ParentOpData, ParentProxy>::copy() const
 {
-    CustomOpData<ParentOpData, ClassName, ClassNo> * copied = CustomOpData<ParentOpData, ClassName, ClassNo>::alloc();
+    CustomOpData<ParentOpData, ParentProxy> * copied = CustomOpData<ParentOpData, ParentProxy>::alloc();
     *copied = *this;
     return copied;
 }
 
-template<class ParentOpData, const char * ClassName, int ClassNo>
-bool CustomOpData<ParentOpData, ClassName, ClassNo>::instanceOf(int classNo) const
+template<class ParentOpData, class ParentProxy>
+bool CustomOpData<ParentOpData, ParentProxy>::instanceOf(int classNo) const
 {
-    if(ClassNo == classNo) return true;
+    if(class_no == classNo) return true;
     return ParentOpData::instanceOf(classNo);
 }
 
+// template<class ParentOpData, class ParentProxy>
+// const char * const *CustomOpData<ParentOpData, ParentProxy>::class_name = 0;
+template<class ParentOpData, class ParentProxy>
+int CustomOpData<ParentOpData, ParentProxy>::class_no;
+
 //freelist related methods specific to this class
-template<class ParentOpData, const char * ClassName, int ClassNo>
-CustomOpData<ParentOpData, ClassName, ClassNo> *CustomOpData<ParentOpData, ClassName, ClassNo>::defaults_CustomOpData = 0;
+template<class ParentOpData, class ParentProxy>
+CustomOpData<ParentOpData, ParentProxy> *CustomOpData<ParentOpData, ParentProxy>::defaults_CustomOpData = 0;
 
-template<class ParentOpData, const char * ClassName, int ClassNo>
-CustomOpData<ParentOpData, ClassName, ClassNo> *CustomOpData<ParentOpData, ClassName, ClassNo>::begin_CustomOpData = 0;
+template<class ParentOpData, class ParentProxy>
+CustomOpData<ParentOpData, ParentProxy> *CustomOpData<ParentOpData, ParentProxy>::begin_CustomOpData = 0;
 
-template<class ParentOpData, const char * ClassName, int ClassNo>
-CustomOpData<ParentOpData, ClassName, ClassNo> *CustomOpData<ParentOpData, ClassName, ClassNo>::alloc()
+template<class ParentOpData, class ParentProxy>
+CustomOpData<ParentOpData, ParentProxy> *CustomOpData<ParentOpData, ParentProxy>::alloc()
 {
     if(begin_CustomOpData) {
         CustomOpData *res = begin_CustomOpData;
@@ -48,19 +53,19 @@ CustomOpData<ParentOpData, ClassName, ClassNo> *CustomOpData<ParentOpData, Class
         begin_CustomOpData = (CustomOpData *)begin_CustomOpData->m_next;
         return res;
     }
-    return new CustomOpData<ParentOpData, ClassName, ClassNo>(CustomOpData<ParentOpData, ClassName, ClassNo>::getDefaultObjectInstance());
+    return new CustomOpData<ParentOpData, ParentProxy>(CustomOpData<ParentOpData, ParentProxy>::getDefaultObjectInstance());
 }
 
-template<class ParentOpData, const char * ClassName, int ClassNo>
-void CustomOpData<ParentOpData, ClassName, ClassNo>::free()
+template<class ParentOpData, class ParentProxy>
+void CustomOpData<ParentOpData, ParentProxy>::free()
 {
     this->m_next = begin_CustomOpData;
     begin_CustomOpData = this;
 }
 
 
-template<class ParentOpData, const char * ClassName, int ClassNo>
-CustomOpData<ParentOpData, ClassName, ClassNo> *CustomOpData<ParentOpData, ClassName, ClassNo>::getDefaultObjectInstance()
+template<class ParentOpData, class ParentProxy>
+CustomOpData<ParentOpData, ParentProxy> *CustomOpData<ParentOpData, ParentProxy>::getDefaultObjectInstance()
 {
     if (defaults_CustomOpData == 0) {
         defaults_CustomOpData = new CustomOpData;
@@ -70,15 +75,15 @@ CustomOpData<ParentOpData, ClassName, ClassNo> *CustomOpData<ParentOpData, Class
         defaults_CustomOpData->attr_seconds = 0.0;
         defaults_CustomOpData->attr_future_seconds = 0.0;
         defaults_CustomOpData->attr_stamp = 0.0;
-        defaults_CustomOpData->attr_parents = std::list<std::string>(1, ClassName);
+        defaults_CustomOpData->attr_parents = std::list<std::string>(1, ParentProxy::name());
     }
     return defaults_CustomOpData;
 }
 
-template<class ParentOpData, const char * ClassName, int ClassNo>
-CustomOpData<ParentOpData, ClassName, ClassNo> *CustomOpData<ParentOpData, ClassName, ClassNo>::getDefaultObject()
+template<class ParentOpData, class ParentProxy>
+CustomOpData<ParentOpData, ParentProxy> *CustomOpData<ParentOpData, ParentProxy>::getDefaultObject()
 {
-    return CustomOpData<ParentOpData, ClassName, ClassNo>::getDefaultObjectInstance();
+    return CustomOpData<ParentOpData, ParentProxy>::getDefaultObjectInstance();
 }
 
 #endif // COMMON_CUSTOM_OP_IMPL_H

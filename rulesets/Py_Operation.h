@@ -7,16 +7,18 @@
 
 #include <Python.h>
 
-namespace Atlas { namespace Objects { namespace Operation {
-  class RootOperation;
-} } }
+#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/SmartPtr.h>
 
 class Entity;
+
+// FIXME The own stuff should probably go, once reference counting issues
+// are clear.
 
 /// \brief Wrapper for all Atlas operations in Python
 typedef struct {
     PyObject_HEAD
-    Atlas::Objects::Operation::RootOperation * operation;
+    Atlas::Objects::Operation::RootOperation operation;
     int own;
     Entity * from;
     Entity * to;
@@ -25,7 +27,7 @@ typedef struct {
 /// \brief Wrapper for read only Atlas operations in Python
 typedef struct {
     PyObject_HEAD
-    const Atlas::Objects::Operation::RootOperation * operation;
+    Atlas::Objects::Operation::RootOperation operation;
     int own;
     Entity * from;
     Entity * to;

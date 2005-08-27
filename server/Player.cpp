@@ -4,11 +4,15 @@
 
 #include "Player.h"
 
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/RootEntity.h>
+
 std::set<std::string> Player::playableTypes;
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Entity::RootEntity;
 
 Player::Player(Connection * conn, const std::string& username,
                const std::string& passwd, const std::string & id) :
@@ -34,38 +38,48 @@ void Player::addToMessage(MapType & omap) const
     }
 }
 
-int Player::characterError(const Operation & op,
-                           const MapType & ent, OpVector & res) const
+void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
-    MapType::const_iterator I = ent.find("name");
-    if ((I == ent.end()) || !I->second.isString()) {
+    Account::addToEntity(ent);
+    ListType typeList;
+    std::set<std::string>::const_iterator I = Player::playableTypes.begin();
+    std::set<std::string>::const_iterator Iend = Player::playableTypes.end();
+    for (; I != Iend; ++I) {
+        typeList.push_back(Element(*I));
+    }
+    ent->setAttr("character_types", typeList);
+}
+
+int Player::characterError(const Operation & op,
+                           const RootEntity & ent, OpVector & res) const
+{
+    if (!ent->hasAttrFlag(Atlas::Objects::NAME_FLAG)) {
         error(op, "Entity to be created has no name", res, getId());
         return true;
     }
-
+    const std::string & name = ent->getName();
 #if defined(__GNUC__) && __GNUC__ < 3
-    if (!I->second.asString().substr(0,5).compare("admin")) {
+    if (!name.substr(0,5).compare("admin")) {
         error(op, "Entity to be created cannot start with admin", res, getId());
         return true;
     }
 #else
-    if (!I->second.asString().compare(0,5,"admin")) {
+    if (!name.compare(0,5,"admin")) {
         error(op, "Entity to be created cannot start with admin", res, getId());
         return true;
     }
 #endif
 
-    I = ent.find("parents");
-    if ((I == ent.end()) || !I->second.isList()) {
+    if (!ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
         error(op, "You cannot create a character with no type.", res, getId());
         return true;
     }
-    const ListType & parents = I->second.asList();
-    if (parents.empty() || !parents.front().isString()) {
-        error(op, "You cannot create a character with non-string type.", res, getId());
+    const std::list<std::string> & parents = ent->getParents();
+    if (parents.empty()) {
+        error(op, "You cannot create a character with empty type.", res, getId());
         return true;
     }
-    const std::string& type = parents.front().asString(); 
+    const std::string & type = parents.front(); 
     if (Player::playableTypes.find(type) == Player::playableTypes.end()) {
         error(op, "You cannot create a character of this type.", res, getId());
         return true;

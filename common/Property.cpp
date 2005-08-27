@@ -19,6 +19,14 @@ void PropertyBase::add(const std::string & s, Atlas::Message::MapType & ent)
     get(ent[s]);
 }
 
+void PropertyBase::add(const std::string & s,
+                       const Atlas::Objects::Entity::RootEntity & ent)
+{
+    Atlas::Message::Element val;
+    get(val);
+    ent->setAttr(s, val);
+}
+
 template<>
 void Property<int>::set(const Atlas::Message::Element & e)
 {

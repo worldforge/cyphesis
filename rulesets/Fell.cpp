@@ -8,6 +8,9 @@
 
 #include "common/Tick.h"
 
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/SmartPtr.h>
+
 using Atlas::Objects::Operation::Tick;
 
 /// \brief Constructor for Fell task
@@ -26,7 +29,7 @@ Fell::~Fell()
 // FIXME Should this be what the default implemntation of this method does?
 void Fell::setup(OpVector & res)
 {
-    Tick * t = new Tick();
+    Tick t;
     t->setAttr("sub_to", "task");
     t->setTo(m_character.getId());
 }

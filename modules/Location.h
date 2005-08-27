@@ -10,6 +10,7 @@
 #include <physics/Quaternion.h>
 
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/ObjectsFwd.h>
 
 class Entity;
 
@@ -63,6 +64,8 @@ class Location {
     }
 
     void addToMessage(Atlas::Message::MapType & ent) const;
+    void addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const;
+    const Atlas::Objects::Root asEntity() const;
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };

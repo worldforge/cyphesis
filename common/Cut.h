@@ -1,24 +1,24 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000-2004 Alistair Riddoch
+// Copyright (C) 2005 Alistair Riddoch
 
 #ifndef COMMON_CUT_H
 #define COMMON_CUT_H
 
-#include <Atlas/Objects/Operation/Action.h>
+#include "common/CustomOp.h"
+
+#include <Atlas/Objects/ObjectsFwd.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-/// \brief Operation class to direct the target tool to chop the entity given
-/// in the argument
-class Cut : public Action {
-  protected:
-    Cut(const char *, const char *);
+class CutProxy {
   public:
-    Cut();
-    virtual ~Cut();
-    static Cut Class();
+    static const std::string name() { return "cut"; }
 };
+
+typedef CustomOpData<SetData, CutProxy> CutData;
+
+typedef SmartPtr<CutData> Cut;
 
 } } }
 

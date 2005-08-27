@@ -8,11 +8,7 @@
 #include <string>
 #include <list>
 
-namespace Atlas {
-  namespace Objects { namespace Operation {
-    class RootOperation;
-  } }
-}
+#include <Atlas/Objects/ObjectsFwd.h>
 
 class MemEntity;
 class Script;
@@ -51,7 +47,7 @@ class MemMap {
         return m_entities;
     }
 
-    Atlas::Objects::Operation::RootOperation * lookId();
+    Atlas::Objects::Operation::RootOperation lookId();
     void del(const std::string & id);
     MemEntity * get(const std::string & id) const;
     MemEntity * getAdd(const std::string & id);
@@ -60,7 +56,7 @@ class MemMap {
     MemEntityVector findByType(const std::string & what);
     MemEntityVector findByLocation(const Location & where, double radius);
 
-    const Atlas::Message::Element asObject();
+    const Atlas::Message::Element asMessage();
 
     void check(const double &);
     void flush();

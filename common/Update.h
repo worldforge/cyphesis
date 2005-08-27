@@ -1,26 +1,24 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000-2004 Alistair Riddoch
+// Copyright (C) 2005 Alistair Riddoch
 
 #ifndef COMMON_UPDATE_H
 #define COMMON_UPDATE_H
 
-#include "Tick.h"
+#include "common/CustomOp.h"
+
+#include <Atlas/Objects/ObjectsFwd.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-/// \brief Operation class to update the position of an in-game entity
-///
-/// This replaces Tick for movement updates, and Tick is now only used for
-/// handling minds and other generic regular updates.
-class Update : public Tick {
-  protected:
-    Update(const char *, const char *);
+class UpdateProxy {
   public:
-    Update();
-    virtual ~Update();
-    static Update Class();
+    static const std::string name() { return "update"; }
 };
+
+typedef CustomOpData<SetData, UpdateProxy> UpdateData;
+
+typedef SmartPtr<UpdateData> Update;
 
 } } }
 

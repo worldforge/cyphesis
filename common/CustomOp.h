@@ -7,14 +7,14 @@
 #ifndef COMMON_CUSTOM_OP_H
 #define COMMON_CUSTOM_OP_H
 
-template <class ParentOpData, const char * ClassName, int ClassNo>
+template <class ParentOpData, class ParentProxy>
 class CustomOpData : public ParentOpData
 {
 protected:
     /// Construct a CustomOpData class definition.
     CustomOpData(CustomOpData *defaults = NULL) : ParentOpData((ParentOpData*)defaults)
     {
-        this->m_class_no = ClassNo;
+        this->m_class_no = CustomOpData::class_no;
     }
     /// Default destructor.
     virtual ~CustomOpData();
@@ -28,7 +28,7 @@ public:
 
 
     virtual void iterate(int& current_class, std::string& attr) const
-        {if(current_class == ClassNo) current_class = -1; ParentOpData::iterate(current_class, attr);}
+        {if(current_class == CustomOpData::class_no) current_class = -1; ParentOpData::iterate(current_class, attr);}
 
     //freelist related things
 public:
@@ -46,6 +46,8 @@ public:
     ///
     /// @return a pointer to the default object.
     static CustomOpData *getDefaultObjectInstance();
+
+    static int class_no;
 private:
     static CustomOpData *defaults_CustomOpData;
     static CustomOpData *begin_CustomOpData;

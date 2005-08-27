@@ -48,7 +48,7 @@ class Movement {
     virtual double getTickAddition(const Point3D & coordinates,
                                    const Vector3D & velocity) const = 0;
     virtual int getUpdatedLocation(Location &) = 0;
-    virtual Operation * generateMove(const Location&) = 0;
+    virtual Operation generateMove(const Location&) = 0;
 };
 
 #endif // RULESETS_MOVEMENT_H

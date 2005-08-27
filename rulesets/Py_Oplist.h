@@ -9,15 +9,9 @@
 
 #include <vector>
 
-namespace Atlas {
-  namespace Objects {
-    namespace Operation {
-      class RootOperation;
-    }
-  }
-}
+#include <Atlas/Objects/RootOperation.h>
 
-typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
+typedef std::vector<Atlas::Objects::Operation::RootOperation> OpVector;
 
 /// \brief Wrapper for OpVector in Python
 typedef struct {

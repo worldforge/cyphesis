@@ -18,18 +18,17 @@
 
 #include <wfmath/atlasconv.h>
 
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Set.h>
-#include <Atlas/Objects/Operation/Move.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Message::Element;
-using Atlas::Message::MapType;
-using Atlas::Message::ListType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Eat;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Tick;
+using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
@@ -73,14 +72,14 @@ int Plant::dropFruit(OpVector & res)
                                                   -height * m_radius);
         float ry = m_location.m_pos.y() + uniform( height * m_radius,
                                                   -height * m_radius);
-        MapType fmap;
-        fmap["name"] = m_fruitName;
-        fmap["parents"] = ListType(1,m_fruitName);
+        Anonymous fruit_arg;
+        fruit_arg->setName(m_fruitName);
+        fruit_arg->setParents(std::list<std::string>(1,m_fruitName));
         Location floc(m_location.m_loc, Point3D(rx, ry, 0));
-        floc.addToMessage(fmap);
-        Operation * create = new Create();
+        floc.addToEntity(fruit_arg);
+        Create create;
         create->setTo(getId());
-        create->setArgs(ListType(1, fmap));
+        create->setArgs1(fruit_arg);
         res.push_back(create);
     }
     return drop;
@@ -89,42 +88,38 @@ int Plant::dropFruit(OpVector & res)
 void Plant::ChopOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant got chop op" << std::endl << std::flush;);
-    if (m_script->Operation("tick", op, res)) {
+    if (m_script->Operation("chop", op, res)) {
         return;
     }
     Element mode;
     if (get("mode", mode) && mode.isString() && mode.asString() == "felled") {
         debug(std::cout << "Plant is already down" << std::endl << std::flush;);
-        Operation * op = new Set;
-        ListType & setArgs = op->getArgs();
-        setArgs.push_back(MapType());
-        MapType & setArg = setArgs.back().asMap();
-        setArg["id"] = getId();
-        setArg["status"] = -1;
-        op->setTo(getId());
+        Set set_op;
+        Anonymous set_arg;
+        set_arg->setId(getId());
+        set_arg->setAttr("status", -1);
+        set_op->setArgs1(set_arg);
+        set_op->setTo(getId());
         res.push_back(op);
 
         if (m_location.m_bBox.isValid()) {
             debug(std::cout << "Plant replaced by log" << std::endl << std::flush;);
-            op = new Create;
-            ListType & createArgs = op->getArgs();
-            createArgs.push_back(MapType());
-            MapType & createArg = createArgs.back().asMap();
-            createArg["parents"] = ListType(1,"lumber");
-            createArg["mass"] = getMass();
-            m_location.addToMessage(createArg);
+            Create create_op;
+            Anonymous create_arg;
+            create_arg->setParents(std::list<std::string>(1,"lumber"));
+            create_arg->setAttr("mass", getMass());
+            m_location.addToEntity(create_arg);
+            op->setArgs1(create_arg);
             op->setTo(getId());
             res.push_back(op);
         }
         return;
     }
     // FIXME In the future it will take more than one chop to chop down a tree.
-    Operation * move = new Move;
-    ListType & moveArgs = move->getArgs();
-    moveArgs.push_back(MapType());
-    MapType & moveArg = moveArgs.back().asMap();
+    Move move;
+    Anonymous move_arg;
     if (m_location.m_loc != NULL) {
-        moveArg["loc"] = m_location.m_loc->getId();
+        move_arg->setLoc(m_location.m_loc->getId());
     } else {
         log(ERROR, "Plant generating invalid Move op because LOC is NULL");
     }
@@ -134,30 +129,27 @@ void Plant::ChopOperation(const Operation & op, OpVector & res)
     // distance to axe, and vertical axis as axis of rotation
     Quaternion orient(m_location.m_orientation);
     orient.rotation(axis, M_PI/2);
-    moveArg["orientation"] = orient.toAtlas();
-    moveArg["mode"] = "felled";
-    moveArg["pos"] = m_location.m_pos.toAtlas();
-    moveArg["id"] = getId();
+    move_arg->setAttr("orientation", orient.toAtlas());
+    move_arg->setAttr("mode", "felled");
+    ::addToEntity(m_location.m_pos, move_arg->modifyPos());
+    move_arg->setId(getId());
+    move->setArgs1(move_arg);
     move->setTo(getId());
     res.push_back(move);
 }
 
 void Plant::NourishOperation(const Operation & op, OpVector & res)
 {
-    if (op.getArgs().empty()) {
+    if (op->getArgs().empty()) {
         error(op, "Nourish has no argument", res, getId());
         return;
     }
-    if (!op.getArgs().front().isMap()) {
-        error(op, "Nourish arg is malformed", res, getId());
+    const Root & arg = op->getArgs().front();
+    Element mass;
+    if (arg->getAttr("mass", mass) != 0 || !mass.isNum()) {
         return;
     }
-    const MapType & nent = op.getArgs().front().asMap();
-    MapType::const_iterator I = nent.find("mass");
-    if ((I == nent.end()) || !I->second.isNum()) {
-        return;
-    }
-    m_nourishment += I->second.asNum();
+    m_nourishment += mass.asNum();
     debug(std::cout << "Nourishment: " << m_nourishment
                     << std::endl << std::flush;);
 }
@@ -169,7 +161,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     if (m_script->Operation("tick", op, res)) {
         return;
     }
-    Operation * tick_op = new Tick;
+    Tick tick_op;
     tick_op->setTo(getId());
     tick_op->setFutureSeconds(consts::basic_tick * m_speed);
     res.push_back(tick_op);
@@ -177,18 +169,17 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     // FIXME I don't like having to do this test, as its only required
     // during the unit tests.
     if (m_location.m_loc != 0) {
-        Operation * eat_op = new Eat;
+        Eat eat_op;
         eat_op->setTo(m_location.m_loc->getId());
         res.push_back(eat_op);
     }
 
-    Operation * set_op = new Set;
-    set_op->getArgs().push_back(MapType());
-    MapType & set_arg = set_op->getArgs().front().asMap();
+    Set set_op;
     set_op->setTo(getId());
     res.push_back(set_op);
 
-    set_arg["id"] = getId();
+    Anonymous set_arg;
+    set_arg->setId(getId());
 
     double status = m_status;
     if (m_nourishment <= 0) {
@@ -206,7 +197,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                 new_mass = std::min(new_mass, maxmass_attr.asNum());
             }
         }
-        set_arg["mass"] = new_mass;
+        set_arg->setAttr("mass", new_mass);
         double scale = new_mass / m_mass;
         double height_scale = pow(scale, 0.33333f);
         debug(std::cout << "scale " << scale << ", " << height_scale
@@ -220,7 +211,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                               ob.highCorner().z() * height_scale));
         debug(std::cout << "Old " << ob
                         << "New " << new_bbox << std::endl << std::flush;);
-        set_arg["bbox"] = new_bbox.toAtlas();
+        set_arg->setAttr("bbox", new_bbox.toAtlas());
     }
 
     int dropped = dropFruit(res);
@@ -232,8 +223,9 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         }
     }
     if ((dropped != 0) || (m_status < 1.)) {
-        set_arg["fruits"] = m_fruits;
+        set_arg->setAttr("fruits", m_fruits);
     }
+    set_op->setArgs1(set_arg);
 }
 
 void Plant::TouchOperation(const Operation & op, OpVector & res)
@@ -250,12 +242,12 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
 
     int dropped = dropFruit(res);
     if (dropped != 0) {
-        Operation * set = new Set();
-        MapType pmap;
-        pmap["id"] = getId();
-        pmap["fruits"] = m_fruits;
+        Set set;
+        Anonymous set_arg;
+        set_arg->setId(getId());
+        set_arg->setAttr("fruits", m_fruits);
         set->setTo(getId());
-        set->setArgs(ListType(1,pmap));
+        set->setArgs1(set_arg);
         res.push_back(set);
     }
 }

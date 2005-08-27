@@ -15,9 +15,9 @@ class Persistance;
 class Admin : public Account {
   protected:
     virtual int characterError(const Operation &,
-                               const Atlas::Message::MapType &,
+                               const Atlas::Objects::Entity::RootEntity &,
                                OpVector &) const;
-    void opDispatched(Operation * op);
+    void opDispatched(Operation op);
 
     SigC::Connection m_monitorConnection;
   public:

@@ -5,20 +5,14 @@
 #ifndef COMMON_TYPES_H
 #define COMMON_TYPES_H
 
+#include <Atlas/Objects/ObjectsFwd.h>
+
 #include <set>
 #include <map>
 #include <vector>
 
 class BaseEntity;
 class Entity;
-
-namespace Atlas {
-  namespace Objects {
-    namespace Operation {
-      class RootOperation;
-    }
-  }
-}
 
 typedef enum op_no {
 	OP_ACTION,
@@ -59,15 +53,15 @@ typedef enum op_no {
 	OP_INVALID
 } OpNo;
 
+typedef Atlas::Objects::Operation::RootOperation Operation;
+
 typedef std::map<std::string, BaseEntity *> BaseDict;
 typedef std::vector<std::string> IdList;
 
 typedef std::map<std::string, Entity *> EntityDict;
 typedef std::set<Entity *> EntitySet;
 
-typedef std::vector<Atlas::Objects::Operation::RootOperation *> OpVector;
+typedef std::vector<Operation> OpVector;
 typedef std::map<std::string,OpNo> OpNoDict;
-
-typedef Atlas::Objects::Operation::RootOperation Operation;
 
 #endif // TYPES_H

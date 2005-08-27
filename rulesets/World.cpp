@@ -24,8 +24,8 @@
 
 #include <wfmath/atlasconv.h>
 
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Sight.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <sstream>
 
@@ -36,9 +36,14 @@ static const bool debug_flag = false;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Nourish;
+using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Entity::Anonymous;
+
+using Atlas::Objects::smart_dynamic_cast;
 
 typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 
@@ -116,29 +121,27 @@ int World::getSurface(const Point3D & pos, int & material)
 
 void World::delveOperation(const Operation & op, OpVector & res)
 {
-    if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
+    if (op->getArgs().empty()) {
         // This op comes from a tool, so sending error back is kinda pointless
         error(op, "Delve op has no args", res, getId());
         return;
     }
-    const MapType & arg = op.getArgs().front().asMap();
-
-    MapType::const_iterator Iend = arg.end();
-    MapType::const_iterator I = arg.find("pos");
-    if (I == Iend) {
+    const Root & arg = op->getArgs().front();
+    RootEntity delve_arg = smart_dynamic_cast<RootEntity>(arg);
+    if (!delve_arg.isValid()) {
+        error(op, "Delve op has malformed args", res, getId());
+        return;
+    }
+    if (!delve_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
         // This op comes from a tool, so sending error back is kinda pointless
         error(op, "Delve op to world has no POS in args", res, getId());
         return;
     }
-    if (!I->second.isList()) {
-        // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Delve op to world has non list POS in args", res, getId());
+    WFMath::Point<3> delve_pos;
+    if (fromStdVector(delve_pos, delve_arg->getPos()) != 0) {
+        error(op, "Delve op to world has bad POS in args", res, getId());
         return;
     }
-    const ListType & delve_pos_attr = I->second.asList();
-    WFMath::Point<3> delve_pos;
-    // FIXME This data is non yet taint checked.
-    delve_pos.fromAtlas(delve_pos_attr);
     debug(std::cout << "Got delve on world at " << delve_pos
                     << std::endl << std::flush;);
     int material;
@@ -150,28 +153,26 @@ void World::delveOperation(const Operation & op, OpVector & res)
     switch (material) {
       case ROCK:
         {
-            Operation * c = new Create;
-            ListType & args = c->getArgs();
-            args.push_back(MapType());
-            MapType & carg = args.back().asMap();
-            carg["parents"] = ListType(1, "boulder");
-            carg["name"] ="boulder";
-            carg["loc"] = getId();
-            carg["pos"] = delve_pos_attr;
+            Create c;
+            Anonymous carg;
+            carg->setParents(std::list<std::string>(1, "boulder"));
+            carg->setName("boulder");
+            carg->setLoc(getId());
+            carg->setPos(delve_arg->getPos());
+            c->setArgs1(carg);
             c->setTo(getId());
             res.push_back(c);
         }
         break;
       case SNOW:
         {
-            Operation * c = new Create;
-            ListType & args = c->getArgs();
-            args.push_back(MapType());
-            MapType & carg = args.back().asMap();
-            carg["parents"] = ListType(1, "ice");
-            carg["name"] ="ice";
-            carg["loc"] = getId();
-            carg["pos"] = delve_pos_attr;
+            Create c;
+            Anonymous carg;
+            carg->setParents(std::list<std::string>(1, "ice"));
+            carg->setName("ice");;
+            carg->setLoc(getId());
+            carg->setPos(delve_arg->getPos());
+            c->setArgs1(carg);
             c->setTo(getId());
             res.push_back(c);
         }
@@ -183,29 +184,27 @@ void World::delveOperation(const Operation & op, OpVector & res)
 
 void World::digOperation(const Operation & op, OpVector & res)
 {
-    if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
+    if (op->getArgs().empty()) {
         // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Delve op has no args", res, getId());
+        error(op, "Dig op has no args", res, getId());
         return;
     }
-    const MapType & arg = op.getArgs().front().asMap();
-
-    MapType::const_iterator Iend = arg.end();
-    MapType::const_iterator I = arg.find("pos");
-    if (I == Iend) {
-        // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Delve op to world has no POS in args", res, getId());
+    const Root & arg = op->getArgs().front();
+    RootEntity dig_arg = smart_dynamic_cast<RootEntity>(arg);
+    if (!dig_arg.isValid()) {
+        error(op, "Dig op has malformed args", res, getId());
         return;
     }
-    if (!I->second.isList()) {
+    if (!dig_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
         // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Delve op to world has non list POS in args", res, getId());
+        error(op, "Dig op to world has no POS in args", res, getId());
         return;
     }
-    const ListType & dig_pos_attr = I->second.asList();
     WFMath::Point<3> dig_pos;
-    // FIXME This data is non yet taint checked.
-    dig_pos.fromAtlas(dig_pos_attr);
+    if (fromStdVector(dig_pos, dig_arg->getPos()) != 0) {
+        error(op, "Dig op to world has bad POS in args", res, getId());
+        return;
+    }
     debug(std::cout << "Got dig on world at " << dig_pos
                     << std::endl << std::flush;);
     int material;
@@ -217,45 +216,42 @@ void World::digOperation(const Operation & op, OpVector & res)
     switch (material) {
       case SAND:
         {
-            Operation * c = new Create;
-            ListType & args = c->getArgs();
-            args.push_back(MapType());
-            MapType & carg = args.back().asMap();
-            carg["parents"] = ListType(1, "pile");
-            carg["material"] = "sand";
-            carg["name"] = "sand";
-            carg["loc"] = getId();
-            carg["pos"] = dig_pos_attr;
+            Create c;
+            Anonymous carg;
+            carg->setParents(std::list<std::string>(1, "pile"));
+            carg->setAttr("material", "sand");
+            carg->setName("sand");
+            carg->setLoc(getId());
+            carg->setPos(dig_arg->getPos());
+            c->setArgs1(carg);
             c->setTo(getId());
             res.push_back(c);
         }
         break;
       case GRASS:
         {
-            Operation * c = new Create;
-            ListType & args = c->getArgs();
-            args.push_back(MapType());
-            MapType & carg = args.back().asMap();
-            carg["parents"] = ListType(1, "pile");
-            carg["material"] = "earth";
-            carg["name"] = "earth";
-            carg["loc"] = getId();
-            carg["pos"] = dig_pos_attr;
+            Create c;
+            Anonymous carg;
+            carg->setParents(std::list<std::string>(1, "pile"));
+            carg->setAttr("material", "earth");
+            carg->setName("earth");
+            carg->setLoc(getId());
+            carg->setPos(dig_arg->getPos());
+            c->setArgs1(carg);
             c->setTo(getId());
             res.push_back(c);
         }
         break;
       case SILT:
         {
-            Operation * c = new Create;
-            ListType & args = c->getArgs();
-            args.push_back(MapType());
-            MapType & carg = args.back().asMap();
-            carg["parents"] = ListType(1, "pile");
-            carg["material"] = "silt";
-            carg["name"] = "silt";
-            carg["loc"] = getId();
-            carg["pos"] = dig_pos_attr;
+            Create c;
+            Anonymous carg;
+            carg->setParents(std::list<std::string>(1, "pile"));
+            carg->setAttr("material", "silt");
+            carg->setName("silt");
+            carg->setLoc(getId());
+            carg->setPos(dig_arg->getPos());
+            c->setArgs1(carg);
             c->setTo(getId());
             res.push_back(c);
         }
@@ -268,29 +264,27 @@ void World::digOperation(const Operation & op, OpVector & res)
 
 void World::mowOperation(const Operation & op, OpVector & res)
 {
-    if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
+    if (op->getArgs().empty()) {
         // This op comes from a tool, so sending error back is kinda pointless
         error(op, "Delve op has no args", res, getId());
         return;
     }
-    const MapType & arg = op.getArgs().front().asMap();
-
-    MapType::const_iterator Iend = arg.end();
-    MapType::const_iterator I = arg.find("pos");
-    if (I == Iend) {
-        // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Delve op to world has no POS in args", res, getId());
+    const Root & arg = op->getArgs().front();
+    RootEntity mow_arg = smart_dynamic_cast<RootEntity>(arg);
+    if (!mow_arg.isValid()) {
+        error(op, "Mow op has malformed args", res, getId());
         return;
     }
-    if (!I->second.isList()) {
+    if (!mow_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
         // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Delve op to world has non list POS in args", res, getId());
+        error(op, "Mow op to world has no POS in args", res, getId());
         return;
     }
-    const ListType & mow_pos_attr = I->second.asList();
     WFMath::Point<3> mow_pos;
-    // FIXME This data is non yet taint checked.
-    mow_pos.fromAtlas(mow_pos_attr);
+    if (fromStdVector(mow_pos, mow_arg->getPos()) != 0) {
+        error(op, "Mow op to world has bad POS in args", res, getId());
+        return;
+    }
     debug(std::cout << "Got mow on world at " << mow_pos
                     << std::endl << std::flush;);
     int material;
@@ -302,13 +296,12 @@ void World::mowOperation(const Operation & op, OpVector & res)
     switch (material) {
       case GRASS:
         {
-            Operation * c = new Create;
-            ListType & args = c->getArgs();
-            args.push_back(MapType());
-            MapType & carg = args.back().asMap();
-            carg["parents"] = ListType(1, "grass");
-            carg["loc"] = getId();
-            carg["pos"] = mow_pos_attr;
+            Create c;
+            Anonymous carg;
+            carg->setParents(std::list<std::string>(1, "grass"));
+            carg->setId(getId());
+            carg->setPos(mow_arg->getPos());;
+            c->setArgs1(carg);
             c->setTo(getId());
             res.push_back(c);
         }
@@ -320,7 +313,7 @@ void World::mowOperation(const Operation & op, OpVector & res)
 
 void World::EatOperation(const Operation & op, OpVector & res)
 {
-    const std::string & from_id = op.getFrom();
+    const std::string & from_id = op->getFrom();
     EntityDict::const_iterator I = m_world->getEntities().find(from_id);
     if (I == m_world->getEntities().end()) {
         log(ERROR, "World got eat op from non-existant entity.");
@@ -341,11 +334,11 @@ void World::EatOperation(const Operation & op, OpVector & res)
     if (Inheritance::instance().isTypeOf(from_type, "plant")) {
         if (material == GRASS) {
             debug(std::cout << "From grass" << std::endl << std::flush;);
-            Operation * nourish = new Nourish;
+            Nourish nourish;
             nourish->setTo(from_id);
-            MapType nour_ent;
-            nour_ent["mass"] = log(from->getMass() + 1);
-            nourish->setArgs(ListType(1, nour_ent));
+            Anonymous nour_arg;
+            nour_arg->setAttr("mass", log(from->getMass() + 1));
+            nourish->setArgs1(nour_arg);
             res.push_back(nourish);
         }
     } else if (Inheritance::instance().isTypeOf(from_type, "character")) {
@@ -360,40 +353,40 @@ void World::LookOperation(const Operation & op, OpVector & res)
 {
     // Let the worldrouter know we have been looked at.
     assert(m_world != 0);
-    m_world->addPerceptive(op.getFrom());
+    m_world->addPerceptive(op->getFrom());
 
-    debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
-    const EntityDict & eobjects = m_world->getEntities();
-    const std::string & from = op.getFrom();
-    EntityDict::const_iterator J = eobjects.find(from);
-    if (J == eobjects.end()) {
-        debug(std::cout << "ERROR: Op has invalid from" << std::endl
-                        << std::flush;);
-        return World_parent::LookOperation(op, res);
-    }
     if (!consts::enable_ranges) {
         debug(std::cout << "WARNING: Sight ranges disabled." << std::endl
                         << std::flush;);
         return World_parent::LookOperation(op, res);
     }
 
-    Sight * s = new Sight();
+    debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
+    const EntityDict & eobjects = m_world->getEntities();
+    const std::string & from = op->getFrom();
+    EntityDict::const_iterator J = eobjects.find(from);
+    if (J == eobjects.end()) {
+        debug(std::cout << "ERROR: Op has invalid from" << std::endl
+                        << std::flush;);
+        return World_parent::LookOperation(op, res);
+    }
+    Entity * lookFrom = J->second;
 
-    ListType & sargs = s->getArgs();
-    sargs.push_back(MapType());
-    MapType & omap = sargs.front().asMap();
+    Sight s;
 
-    omap["id"] = getId();
-    omap["parents"] = ListType(1, "world");
-    omap["objtype"] = "obj";
+    Anonymous sarg;
+    s->setArgs1(sarg);
+
+    sarg->setId(getId());
+    sarg->setParents(std::list<std::string>(1, "world"));
+    sarg->setObjtype("obj");
     // FIXME integrate setting terrain with setting contains.
 
     TerrainProperty tp(m_terrain, m_modifiedTerrain,
                        m_createdTerrain, a_terrain);
-    tp.add("terrain", omap);
+    tp.add("terrain", sarg);
 
-    Entity * lookFrom = J->second;
-    ListType & contlist = (omap["contains"] = ListType()).asList();
+    ListType contlist;
     EntitySet::const_iterator Iend = m_contains.end();
     for (EntitySet::const_iterator I = m_contains.begin(); I != Iend; ++I) {
         float fromSquSize = boxSquareSize((*I)->m_location.m_bBox);
@@ -405,10 +398,11 @@ void World::LookOperation(const Operation & op, OpVector & res)
     }
     if (contlist.empty()) {
         debug(std::cout << "WARNING: contains empty." << std::endl << std::flush;);
-        omap.erase("contains");
+    } else {
+        sarg->setAttr("contains", contlist);
     }
 
-    s->setTo(op.getFrom());
+    s->setTo(op->getFrom());
     res.push_back(s);
 }
 
@@ -432,14 +426,15 @@ void World::SetOperation(const Operation & op, OpVector & res)
     // This is the same as Thing::Operation(Set), except world does not
     // get deleted if its status goes below 0.
     m_seq++;
-    const ListType & args = op.getArgs();
-    if (args.empty() || !args.front().isMap()) {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+       error(op, "Set has no argument", res, getId());
        return;
     }
-    const MapType & ent = args.front().asMap();
-    merge(ent);
-    Operation * s = new Sight();
-    s->setArgs(ListType(1,op.asObject()));
+    const Root & ent = args.front();
+    merge(ent->asMessage());
+    Sight s;
+    s->setArgs1(op);
     res.push_back(s);
 
     if (m_update_flags != 0) {
@@ -449,7 +444,7 @@ void World::SetOperation(const Operation & op, OpVector & res)
 
 void World::OtherOperation(const Operation & op, OpVector & res)
 {
-    const std::string & type = op.getParents().front().asString();
+    const std::string & type = op->getParents().front();
 
     if (type == "delve") {
         delveOperation(op, res);

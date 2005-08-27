@@ -76,7 +76,7 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
     if (PyOperation_Check(other)) {
         PyOperation * op = (PyOperation*)other;
 #ifndef NDEBUG
-        if (op->operation == NULL) {
+        if (!op->operation.isValid()) {
             PyErr_SetString(PyExc_AssertionError, "NULL Operation in other of Oplist.num_add");
         }
 #endif // NDEBUG

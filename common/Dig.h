@@ -1,23 +1,24 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000-2005 Alistair Riddoch
+// Copyright (C) 2005 Alistair Riddoch
 
 #ifndef COMMON_DIG_H
 #define COMMON_DIG_H
 
-#include <Affect.h>
+#include "common/CustomOp.h"
+
+#include <Atlas/Objects/ObjectsFwd.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-/// \brief Operation class sent by a tool to dig into the target entity.
-class Dig : public Affect {
-  protected:
-    Dig(const char *, const char *);
+class DigProxy {
   public:
-    Dig();
-    virtual ~Dig();
-    static Dig Class();
+    static const std::string name() { return "dig"; }
 };
+
+typedef CustomOpData<SetData, DigProxy> DigData;
+
+typedef SmartPtr<DigData> Dig;
 
 } } }
 

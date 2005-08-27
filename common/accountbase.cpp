@@ -6,6 +6,8 @@
 
 #include "system.h"
 
+#include <Atlas/Message/Element.h>
+
 int AccountBase::init()
 {
     return m_connection.initConnection(false);

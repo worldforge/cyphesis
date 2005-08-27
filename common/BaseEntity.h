@@ -49,6 +49,7 @@ class BaseEntity : virtual public SigC::Object {
     }
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
+    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 
     virtual void operation(const Operation &, OpVector &);
 

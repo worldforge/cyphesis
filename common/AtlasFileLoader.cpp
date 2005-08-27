@@ -6,35 +6,33 @@
 
 #include "common/log.h"
 
+#include <Atlas/Message/Element.h>
+
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
-void AtlasFileLoader::objectArrived(const Element & obj)
+void AtlasFileLoader::messageArrived(const MapType & msg)
 {
-    if (!obj.isMap()) {
-        log(WARNING, "Non-map object read from file");
-        return;
-    }
-    MapType o = obj.asMap();
+    MapType o = msg;
     MapType::iterator I = o.find("id");
     if (I == o.end()) {
-        log(WARNING, "Object without ID read from file");
+        log(WARNING, "Message without ID read from file");
         return;
     }
     Element & id = I->second;
     if (!id.isString()) {
-        log(WARNING, "Object without non-string ID read from file");
+        log(WARNING, "Message without non-string ID read from file");
         return;
     }
-    std::string objId = id.asString();
+    std::string msg_id = id.asString();
     o.erase(I);
-    m_objects[objId] = o;
+    m_messages[msg_id] = o;
     ++m_count;
 }
 
 AtlasFileLoader::AtlasFileLoader(const std::string & filename,
                                  MapType & m) :
                 m_file(filename.c_str(), std::ios::in),
-                m_codec(m_file, this), m_count(0), m_objects(m)
+                m_codec(m_file, *this), m_count(0), m_messages(m)
 {
 }

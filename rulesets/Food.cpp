@@ -7,13 +7,16 @@
 
 #include "common/Nourish.h"
 
-#include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Nourish;
+using Atlas::Objects::Entity::Anonymous;
 
 Food::Food(const std::string & id) : Food_parent(id)
 {
@@ -33,22 +36,23 @@ void Food::EatOperation(const Operation & op, OpVector & res)
     if (m_script->Operation("eat", op, res) != 0) {
         return;
     }
-    MapType self_ent;
-    self_ent["id"] = getId();
-    self_ent["status"] = -1;
 
-    Set * s = new Set();
+    Anonymous self;
+    self->setId(getId());
+    self->setAttr("status", -1);
+
+    Set s;
     s->setTo(getId());
-    s->setArgs(ListType(1,self_ent));
+    s->setArgs1(self);
 
-    const std::string & to = op.getFrom();
-    MapType nour_ent;
-    nour_ent["id"] = to;
-    nour_ent["mass"] = m_mass;
+    const std::string & to = op->getFrom();
+    Anonymous nour_arg;
+    nour_arg->setId(to);
+    nour_arg->setAttr("mass", m_mass);
 
-    Nourish * n = new Nourish();
+    Nourish n;
     n->setTo(to);
-    n->setArgs(ListType(1,nour_ent));
+    n->setArgs1(nour_arg);
 
     res.push_back(s);
     res.push_back(n);
@@ -59,29 +63,34 @@ void Food::BurnOperation(const Operation & op, OpVector & res)
     if (m_script->Operation("burn", op, res) != 0) {
         return;
     }
-    double cooked = 0;
-    if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
-       error(op, "Fire op has no argument", res, getId());
+    if (op->getArgs().empty()) {
+       error(op, "Burn op has no argument", res, getId());
        return;
     }
-    MapType::const_iterator I = m_attributes.find("cooked");
-    if ((I != m_attributes.end()) && I->second.isNum()) {
-        cooked = I->second.asNum();
+    double cooked = 0;
+    Element cooked_attr;
+    if (get("cooked", cooked_attr) && cooked_attr.isNum()) {
+        cooked = cooked_attr.asNum();
     }
-    const MapType & fire_ent = op.getArgs().front().asMap();
-    MapType self_ent;
-    self_ent["id"] = getId();
+    const Root & arg = op->getArgs().front();
+    Anonymous set_arg;
+    set_arg->setId(getId());
     // Currently this cooks pretty quick, and at the same speed for
     // everything. No mechanism for this yet.
-    double fire_size = fire_ent.find("status")->second.asNum();
-    self_ent["cooked"] = cooked + (fire_size/m_mass);
-    if (cooked > 1.0) {
-        self_ent["status"] = m_status - (m_attributes["burn_speed"].asNum()) * fire_size;
+    Element status_attr;
+    if (arg->getAttr("status", status_attr) != 0 || !status_attr.isNum()) {
+        error(op, "Burn op with no fire status", res, getId());
+    } else {
+        double fire_size = status_attr.asNum();
+        set_arg->setAttr("cooked", cooked + (fire_size/m_mass));
+        if (cooked > 1.0) {
+            set_arg->setAttr("status", m_status - (m_attributes["burn_speed"].asNum()) * fire_size);
+        }
     }
 
-    Set * s = new Set();
+    Set s;
     s->setTo(getId());
-    s->setArgs(ListType(1,self_ent));
+    s->setArgs1(set_arg);
 
     res.push_back(s);
 }

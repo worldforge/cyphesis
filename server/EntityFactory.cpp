@@ -34,8 +34,8 @@
 #include "common/random.h"
 
 #include <Atlas/Message/Element.h>
-#include <Atlas/Objects/Entity/GameEntity.h>
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/RootOperation.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -251,18 +251,18 @@ int EntityFactory::installOpDefinition(const std::string & opDefName,
                                        const std::string & parent,
                                        const MapType & opDefDesc)
 {
+#warning I can't currently think of a way to make this work, so Atlas-C++
+#warning may need to be re-worked a little until there is a way
     Inheritance & i = Inheritance::instance();
 
-    if (i.get(parent) == 0) {
+    if (i.hasClass(parent)) {
         debug(std::cout << "op_definition \"" << opDefName
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
         return 1;
     }
 
-    Atlas::Objects::Root * r = new Atlas::Objects::Operation::RootOperation(Atlas::Objects::Operation::RootOperation::Class());
-    r->setId(opDefName);
-    r->setParents(ListType(1, parent));
+    Atlas::Objects::Root r = atlasOpDefinition(opDefName, parent);
 
     if (i.addChild(r) != 0) {
         return -1;
@@ -429,10 +429,7 @@ void EntityFactory::installFactory(const std::string & parent,
 
     Inheritance & i = Inheritance::instance();
 
-    Atlas::Objects::Root * r = new Atlas::Objects::Entity::GameEntity(Atlas::Objects::Entity::GameEntity::Class());
-    r->setId(className);
-    r->setParents(ListType(1, parent));
-    i.addChild(r);
+    i.addChild(atlasClass(className, parent));
 }
 
 FactoryBase * EntityFactory::getNewFactory(const std::string & parent)

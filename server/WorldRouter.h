@@ -16,22 +16,25 @@ extern "C" {
 
 class Entity;
 
+struct OpQueEntry;
+#if 0
 struct OpQueEntry {
-    Operation & op;
+    const Operation & op;
     Entity & from;
 
-    explicit OpQueEntry(Operation & o, Entity & f);
+    explicit OpQueEntry(const Operation & o, Entity & f);
     OpQueEntry(const OpQueEntry & o);
     ~OpQueEntry();
 
     Operation & operator*() const {
-        return op;
+        return *op.get();
     }
 
-    Operation * operator->() const {
-        return &op;
+    Atlas::Objects::Operation::RootOperationData * operator->() const {
+        return op.get();
     }
 };
+#endif
 
 typedef std::list<OpQueEntry> OpQueue;
 
@@ -54,8 +57,8 @@ class WorldRouter : public BaseWorld {
     /// List of omnipresent entities. Obsolete.
     EntitySet m_omnipresentList;
 
-    void addOperationToQueue(Operation &, Entity &);
-    Operation * getOperationFromQueue();
+    void addOperationToQueue(const Operation &, Entity &);
+    Operation getOperationFromQueue();
     const EntitySet & broadcastList(const Operation &) const;
     void updateTime(int sec, int usec);
     void deliverTo(const Operation &, Entity &);
@@ -66,12 +69,12 @@ class WorldRouter : public BaseWorld {
 
     bool idle(int, int);
     Entity * addEntity(Entity * obj, bool setup = true);
-    Entity * addNewEntity(const std::string &, const Atlas::Message::MapType &);
+    Entity * addNewEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &);
 
-    void operation(Operation &, Entity &);
+    void operation(const Operation &, Entity &);
 
     virtual void addPerceptive(const std::string &);
-    virtual void message(Operation &, Entity &);
+    virtual void message(const Operation &, Entity &);
     virtual Entity * findByName(const std::string & name);
     virtual Entity * findByType(const std::string & type);
     virtual float constrainHeight(Entity *, const Point3D &, const std::string &);

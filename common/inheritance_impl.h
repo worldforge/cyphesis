@@ -7,14 +7,17 @@
 
 #include "inheritance.h"
 
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Operation.h>
+
 template <class OpClass>
-Atlas::Objects::Operation::RootOperation * OpFactory<OpClass>::newOperation()
+Operation OpFactory<OpClass>::newOperation()
 {
-    return new OpClass();
+    return OpClass();
 }
 
 template <class OpClass>
-void OpFactory<OpClass>::newOperation(Atlas::Objects::Operation::RootOperation & op)
+void OpFactory<OpClass>::newOperation(Operation & op)
 {
     op = OpClass();
 }

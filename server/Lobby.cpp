@@ -10,8 +10,8 @@
 #include "common/debug.h"
 #include "common/serialno.h"
 
-#include <Atlas/Objects/Operation/Appearance.h>
-#include <Atlas/Objects/Operation/Disappearance.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <cassert>
 
@@ -19,6 +19,7 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
+using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
@@ -32,14 +33,13 @@ void Lobby::addObject(Account * ac)
                     << std::endl << std::flush;);
 
     Appearance a;
-    ListType & args = a.getArgs();
-    args.push_back(MapType());
-    MapType & us = args.back().asMap();
-    us["id"] = ac->getId();
-    us["loc"] = "lobby";
-    a.setFrom(ac->getId());
-    a.setTo("lobby");
-    a.setSerialno(newSerialNo());
+    Anonymous us;
+    us->setId(ac->getId());
+    us->setLoc("lobby");
+    a->setArgs1(us);
+    a->setFrom(ac->getId());
+    a->setTo("lobby");
+    a->setSerialno(newSerialNo());
 
     OpVector res;
     operation(a, res);
@@ -48,43 +48,42 @@ void Lobby::addObject(Account * ac)
     m_accounts[ac->getId()] = ac;
 }
 
-void Lobby::delObject(Account * a)
+void Lobby::delObject(Account * ac)
 {
-    debug(std::cout << "Lobby::delObject(" << a->getId() << ")"
+    debug(std::cout << "Lobby::delObject(" << ac->getId() << ")"
                     << std::endl << std::flush;);
                     
     Disappearance d;
-    ListType & args = d.getArgs();
-    args.push_back(MapType());
-    MapType & us = args.back().asMap();
-    us["id"] = a->getId();
-    us["loc"] = "lobby";
-    d.setFrom(a->getId());
-    d.setTo("lobby");
-    d.setSerialno(newSerialNo());
+    Anonymous us;
+    us->setId(ac->getId());
+    us->setLoc("lobby");
+    d->setArgs1(us);
+    d->setFrom(ac->getId());
+    d->setTo("lobby");
+    d->setSerialno(newSerialNo());
 
     OpVector res;
     operation(d, res);
     assert(res.empty());
 
-    m_accounts.erase(a->getId());
+    m_accounts.erase(ac->getId());
 }
 
 
 void Lobby::operation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Lobby::operation(" << op.getParents().front().asString()
+    debug(std::cout << "Lobby::operation(" << op->getParents().front()
                                            << std::endl << std::flush; );
-    const std::string & to = op.getTo();
+    const std::string & to = op->getTo();
     if (to.empty() || to == "lobby") {
-        Operation newop(op);
+        Operation newop(op.copy());
         AccountDict::const_iterator I = m_accounts.begin();
         AccountDict::const_iterator Iend = m_accounts.end();
         for (; I != Iend; ++I) {
             Connection * c = I->second->m_connection;
             if (c != 0) {
-                newop.setTo(I->first);
-                debug(std::cout << "Lobby sending " << newop.getParents().front().asString() << " operation to " << I->first << std::endl << std::flush; );
+                newop->setTo(I->first);
+                debug(std::cout << "Lobby sending " << newop->getParents().front() << " operation to " << I->first << std::endl << std::flush; );
                 c->send(newop);
             }
         }
@@ -116,4 +115,19 @@ void Lobby::addToMessage(MapType & omap) const
     omap["people"] = player_list;
     omap["rooms"] = ListType();
     BaseEntity::addToMessage(omap);
+}
+
+void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+    ent->setName("lobby");
+    ListType plist(1, "room");
+    ent->setParents(std::list<std::string>(1,"room"));
+    ListType player_list;
+    AccountDict::const_iterator Iend = m_accounts.end();
+    for (AccountDict::const_iterator I = m_accounts.begin(); I != Iend; ++I) {
+        player_list.push_back(I->first);
+    }
+    ent->setAttr("people", player_list);
+    ent->setAttr("rooms", ListType());
+    BaseEntity::addToEntity(ent);
 }

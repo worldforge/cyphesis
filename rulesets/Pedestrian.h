@@ -19,7 +19,7 @@ class Pedestrian : public Movement {
     double getTickAddition(const Point3D & coordinates,
                            const Vector3D & velocity) const;
     int getUpdatedLocation(Location &);
-    Operation * generateMove(const Location &);
+    Operation generateMove(const Location &);
 };
 
 #endif // RULESETS_PEDESTRIAN_H

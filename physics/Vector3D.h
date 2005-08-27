@@ -19,6 +19,46 @@ static const int cZ = 2;
 typedef WFMath::Point<3> Point3D;
 typedef WFMath::Vector<3> Vector3D;
 
+inline void addToEntity(const Point3D & p, std::vector<double> & vd)
+{
+    vd.resize(3);
+    vd[0] = p[0];
+    vd[1] = p[1];
+    vd[2] = p[2];
+}
+
+inline void addToEntity(const Vector3D & v, std::vector<double> & vd)
+{
+    vd.resize(3);
+    vd[0] = v[0];
+    vd[1] = v[1];
+    vd[2] = v[2];
+}
+
+template <typename FloatT>
+int fromStdVector(Point3D & p, const std::vector<FloatT> & vf)
+{
+    if (vf.size() != 3) {
+        return -1;
+    }
+    p[0] = vf[0];
+    p[1] = vf[1];
+    p[2] = vf[2];
+    return 0;
+}
+
+template <typename FloatT>
+int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
+{
+    if (vf.size() != 3) {
+        return -1;
+    }
+    v[0] = vf[0];
+    v[1] = vf[1];
+    v[2] = vf[2];
+    return 0;
+}
+
 inline float sqrMag(const Point3D & p)
 {
     return p.x() * p.x() + p.y() * p.y() + p.z() * p.z();

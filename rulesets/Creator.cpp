@@ -10,12 +10,13 @@
 #include "common/const.h"
 #include "common/serialno.h"
 
-#include <Atlas/Objects/Operation/Delete.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Message::Element;
-using Atlas::Message::MapType;
-using Atlas::Message::ListType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Delete;
+using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
@@ -41,10 +42,10 @@ void Creator::sendExternalMind(const Operation & op, OpVector & res)
         // there is no purpose to our existance, so we should die.
         debug( std::cout << "NOTICE: Creator self destruct"
                          << std::endl << std::flush;);
-        Delete * d = new Delete();
-        ListType & dargs = d->getArgs();
-        dargs.push_back(MapType());
-        dargs.front().asMap()["id"] = getId();
+        Delete d;
+        Anonymous del_arg;
+        del_arg->setId(getId());
+        d->setArgs1(del_arg);
         d->setTo(getId());
         res.push_back(d);
     }
@@ -98,24 +99,24 @@ void Creator::externalOperation(const Operation & op)
     // we handle it like a normal character.
     debug( std::cout << "Creator::externalOperation" << std::endl
                      << std::flush;);
-    if (op.getTo().empty()) {
+    if (op->getTo().empty()) {
         debug( std::cout << "Creator handling op normally" << std::endl
                          << std::flush;);
         Creator_parent::externalOperation(op);
-    } else if (op.getTo() == getId()) {
+    } else if (op->getTo() == getId()) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         OpVector lres;
         callOperation(op, lres);
         OpVector::const_iterator Iend = lres.end();
         for (OpVector::const_iterator I = lres.begin(); I != Iend; ++I) {
             (*I)->setSerialno(newSerialNo());
-            (*I)->setRefno(op.getSerialno());
+            (*I)->setRefno(op->getSerialno());
             sendWorld(*I);
             // Don't delete lres as it has gone into World's queue
             // World will deal with it.
         }
     } else {
-        Operation * new_op = new Operation(op);
+        Operation new_op(op.copy());
         //make it appear like it came from target itself;
         new_op->setFrom("cheat");
         sendWorld(new_op);
@@ -126,34 +127,28 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
 {
     // This overriden version allows the Creator to search the world for
     // entities by type or by name
-    debug(std::cout << "Got look up from prived mind from [" << op.getFrom()
-               << "] to [" << op.getTo() << "]" << std::endl << std::flush;);
+    debug(std::cout << "Got look up from prived mind from [" << op->getFrom()
+               << "] to [" << op->getTo() << "]" << std::endl << std::flush;);
     m_perceptive = true;
-    Operation * l = new Operation(op);
-    if (op.getTo().empty()) {
-        const ListType & args = op.getArgs();
-        if (args.empty() || !args.front().isMap()) {
+    Operation l(op.copy());
+    if (op->getTo().empty()) {
+        const std::vector<Root> & args = op->getArgs();
+        if (args.empty()) {
             l->setTo(m_world->m_gameWorld.getId());
         } else {
-            const MapType & amap = args.front().asMap();
-            MapType::const_iterator I = amap.find("id");
-            if (I != amap.end() && I->second.isString()) {
-                l->setTo(I->second.asString());
-            } else if ((I = amap.find("name")) != amap.end()) {
-                if (I->second.isString() && !I->second.asString().empty()) {
-                    Entity * e = m_world->findByName(I->second.asString());
+            const Root & arg = args.front();
+            if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+                l->setTo(arg->getId());
+            } else if (arg->hasAttrFlag(Atlas::Objects::NAME_FLAG)) {
+                Entity * e = m_world->findByName(arg->getName());
+                if (e != NULL) {
+                    l->setTo(e->getId());
+                }
+            } else if (arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+                if (!arg->getParents().empty()) {
+                    Entity * e = m_world->findByType(arg->getParents().front());
                     if (e != NULL) {
                         l->setTo(e->getId());
-                    }
-                }
-            } else if ((I = amap.find("parents")) != amap.end()) {
-                if (I->second.isList() && !I->second.asList().empty()) {
-                    const Element & p = I->second.asList().front();
-                    if (p.isString()) {
-                        Entity * e = m_world->findByType(p.asString());
-                        if (e != NULL) {
-                            l->setTo(e->getId());
-                        }
                     }
                 }
             }

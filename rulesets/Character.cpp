@@ -26,17 +26,14 @@
 
 #include <wfmath/atlasconv.h>
 
-#include <Atlas/Objects/Operation/Action.h>
-#include <Atlas/Objects/Operation/Sound.h>
-#include <Atlas/Objects/Operation/Set.h>
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Sight.h>
-#include <Atlas/Objects/Operation/Move.h>
-#include <Atlas/Objects/Operation/Appearance.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
+
+#include <cassert>
 
 using Atlas::Message::Element;
-using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Sound;
@@ -47,6 +44,10 @@ using Atlas::Objects::Operation::Action;
 using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Appearance;
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Entity::RootEntity;
+
+using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
@@ -62,26 +63,26 @@ void Character::metabolise(OpVector & res, double ammount)
 {
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
-    MapType ent;
-    ent["id"] = getId();
+    Anonymous set_arg;
+    set_arg->setId(getId());
     if ((m_status > (1.5 + energyLoss)) && (m_mass < m_maxMass)) {
         m_status = m_status - energyLoss;
-        ent["mass"] = m_mass + weightGain;
+        set_arg->setAttr("mass", m_mass + weightGain);
     }
     double energyUsed = energyConsumption * ammount;
     if ((m_status <= energyUsed) && (m_mass > weightConsumption)) {
-        ent["status"] = m_status - energyUsed + energyGain;
-        ent["mass"] = m_mass - weightConsumption;
+        set_arg->setAttr("status", m_status - energyUsed + energyGain);
+        set_arg->setAttr("mass", m_mass - weightConsumption);
     } else {
-        ent["status"] = m_status - energyUsed;
+        set_arg->setAttr("status", m_status - energyUsed);
     }
     if (m_drunkness > 0) {
-        ent["drunkness"] = m_drunkness - 0.1;
+        set_arg->setAttr("drunkness", m_drunkness - 0.1);
     }
 
-    Set * s = new Set();
+    Set s;
     s->setTo(getId());
-    s->setArgs(ListType(1,ent));
+    s->setArgs1(set_arg);
 
     res.push_back(s);
 }
@@ -150,8 +151,8 @@ Character::~Character()
 
 void Character::ImaginaryOperation(const Operation & op, OpVector & res)
 {
-    Sight * s = new Sight();
-    s->setArgs(ListType(1,op.asObject()));
+    Sight s;
+    s->setArgs1(op);
     res.push_back(s);
 }
 
@@ -160,16 +161,15 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
     debug( std::cout << "CHaracter::Operation(setup)" << std::endl
                      << std::flush;);
 
-    if (op.hasAttr("sub_to")) {
+    if (op->hasAttr("sub_to")) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
         return;
     }
 
-    Appearance * app = new Appearance();
-    ListType & args = app->getArgs();
-    args.push_back(MapType());
-    MapType & arg = args.back().asMap();
-    arg["id"] = getId();
+    Appearance app;
+    Anonymous app_arg;
+    app_arg->setId(getId());
+    app->setArgs1(app_arg);
 
     res.push_back(app);
 
@@ -187,26 +187,26 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
 
         m_mind = MindFactory::instance()->newMind(getId(), m_name, m_type);
 
-        Operation * s = new Operation(op);
+        Operation s(op.copy());
         // THis is so not the right thing to do
         s->setAttr("sub_to", "mind");
         res.push_back(s);
 
-        Look * l = new Look();
+        Look l;
         l->setTo(getId());
         res.push_back(l);
     }
 
-    Tick * tick = new Tick();
+    Tick tick;
     tick->setTo(getId());
     res.push_back(tick);
 }
 
 void Character::TickOperation(const Operation & op, OpVector & res)
 {
-    if (op.hasAttr("sub_to")) {
+    if (op->hasAttr("sub_to")) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
-        Element sub_to = op.getAttr("sub_to");
+        Element sub_to = op->getAttr("sub_to");
         if (!sub_to.isString()) {
             error(op, "Tick op sub_to is not string", res, getId());
             return;
@@ -223,13 +223,13 @@ void Character::TickOperation(const Operation & op, OpVector & res)
     }
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
-    const ListType & args = op.getArgs();
-    if (!args.empty() && args.front().isMap()) {
+    const std::vector<Root> & args = op->getArgs();
+    if (!args.empty()) {
         // Deal with movement.
-        const MapType & arg1 = args.front().asMap();
-        MapType::const_iterator I = arg1.find("serialno");
-        if ((I != arg1.end()) && (I->second.isInt())) {
-            if (I->second.asInt() < m_movement.serialno()) {
+        const Root & arg = args.front();
+        Element serialno;
+        if (arg->getAttr("serialno", serialno) == 0 && (serialno.isInt())) {
+            if (serialno.asInt() < m_movement.serialno()) {
                 debug(std::cout << "Old tick" << std::endl << std::flush;);
                 return;
             }
@@ -239,13 +239,13 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             return;
         }
         res.push_back(m_movement.generateMove(return_location));
-        MapType tick_arg;
-        tick_arg["name"] = "move";
-        tick_arg["serialno"] = m_movement.serialno();
-        Tick * tickOp = new Tick();
+        Anonymous tick_arg;
+        tick_arg->setName("move");
+        tick_arg->setAttr("serialno", m_movement.serialno());
+        Tick tickOp;
         tickOp->setTo(getId());
         tickOp->setFutureSeconds(m_movement.getTickAddition(return_location.m_pos, return_location.m_velocity));
-        tickOp->setArgs(ListType(1,tick_arg));
+        tickOp->setArgs1(tick_arg);
         res.push_back(tickOp);
     } else {
         m_script->Operation("tick", op, res);
@@ -257,16 +257,16 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             m_status = m_status + foodConsumption;
             m_food = m_food - foodConsumption;
 
-            MapType food_ent;
-            food_ent["id"] = getId();
-            food_ent["food"] = m_food;
             Set s;
-            s.setTo(getId());
-            s.setArgs(ListType(1,food_ent));
+            Anonymous food_ent;
+            food_ent->setId(getId());
+            food_ent->setAttr("food", m_food);
+            s->setTo(getId());
+            s->setArgs1(food_ent);
 
-            Sight * si = new Sight();
+            Sight si;
             si->setTo(getId());
-            si->setArgs(ListType(1,s.asObject()));
+            si->setArgs1(s);
             res.push_back(si);
         }
 
@@ -274,7 +274,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
         metabolise(res);
         
         // TICK
-        Tick * tickOp = new Tick();
+        Tick tickOp;
         tickOp->setTo(getId());
         tickOp->setFutureSeconds(consts::basic_tick * 30);
         res.push_back(tickOp);
@@ -284,8 +284,8 @@ void Character::TickOperation(const Operation & op, OpVector & res)
 void Character::TalkOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::OPeration(Talk)" << std::endl<<std::flush;);
-    Sound * s = new Sound();
-    s->setArgs(ListType(1,op.asObject()));
+    Sound s;
+    s->setArgs1(op);
     res.push_back(s);
 }
 
@@ -297,21 +297,21 @@ void Character::EatOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    MapType self_ent;
-    self_ent["id"] = getId();
-    self_ent["status"] = -1;
-
-    Set * s = new Set();
+    Set s;
+    Anonymous self_ent;
+    self_ent->setId(getId());
+    self_ent->setAttr("status", -1);
     s->setTo(getId());
-    s->setArgs(ListType(1,self_ent));
+    s->setArgs1(self_ent);
 
-    const std::string & to = op.getFrom();
-    MapType nour_ent;
-    nour_ent["id"] = to;
-    nour_ent["mass"] = m_mass;
-    Nourish * n = new Nourish();
+    const std::string & to = op->getFrom();
+
+    Nourish n;
+    Anonymous nour_ent;
+    nour_ent->setId(to);
+    nour_ent->setAttr("mass", m_mass);
     n->setTo(to);
-    n->setArgs(ListType(1,nour_ent));
+    n->setArgs1(nour_ent);
 
     res.push_back(s);
     res.push_back(n);
@@ -319,55 +319,48 @@ void Character::EatOperation(const Operation & op, OpVector & res)
 
 void Character::NourishOperation(const Operation & op, OpVector & res)
 {
-    if (op.getArgs().empty()) {
+    if (op->getArgs().empty()) {
         error(op, "Nourish has no argument", res, getId());
         return;
     }
-    if (!op.getArgs().front().isMap()) {
-        error(op, "Nourish arg is malformed", res, getId());
+    const Root & arg = op->getArgs().front();
+    Element mass_attr;
+    if (arg->getAttr("mass", mass_attr) != 0 || !mass_attr.isNum()) {
         return;
     }
-    const MapType & nent = op.getArgs().front().asMap();
-    MapType::const_iterator I = nent.find("mass");
-    if ((I == nent.end()) || !I->second.isNum()) {
-        return;
-    }
-    m_food = m_food + I->second.asNum();
+    m_food = m_food + mass_attr.asNum();
 
-    MapType food_ent;
-    food_ent["id"] = getId();
-    food_ent["food"] = m_food;
-    if (((I = nent.find("alcohol")) != nent.end()) && I->second.isNum()) {
-        m_drunkness += I->second.asNum() / m_mass;
-        food_ent["drunkness"] = m_drunkness;
+    Anonymous food_ent;
+    food_ent->setId(getId());
+    food_ent->setAttr("food", m_food);
+    Element alcohol_attr;
+    if (arg->getAttr("alcohol", alcohol_attr) == 0 && alcohol_attr.isNum()) {
+        m_drunkness += alcohol_attr.asNum() / m_mass;
+        food_ent->setAttr("drunkness", m_drunkness);
     }
+
     Set s;
-    s.setArgs(ListType(1,food_ent));
+    s->setArgs1(food_ent);
 
-    Sight * si = new Sight();
+    Sight si;
     si->setTo(getId());
-    si->setArgs(ListType(1,s.asObject()));
+    si->setArgs1(s);
     res.push_back(si);
 }
 
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
-    if (op.getArgs().empty()) {
+    if (op->getArgs().empty()) {
         // FIXME Wield nothing perhaps?
         error(op, "Wield has no argument", res, getId());
         return;
     }
-    if (!op.getArgs().front().isMap()) {
-        error(op, "Wield arg is malformed", res, getId());
-        return;
-    }
-    const MapType & went = op.getArgs().front().asMap();
-    MapType::const_iterator I = went.find("id");
-    if ((I == went.end()) || !I->second.isString()) {
+    const Root & arg = op->getArgs().front();
+    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         error(op, "Wield arg has no ID", res, getId());
         return;
     }
-    const std::string & id = I->second.asString();
+    const std::string & id = arg->getId();
     EntityDict::const_iterator J = m_world->getEntities().find(id);
     if (J == m_world->getEntities().end()) {
         error(op, "Wield arg does not exist", res, getId());
@@ -381,13 +374,12 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Operation * set = new Set;
+    Set set;
     set->setTo(getId());
-    ListType & set_args = set->getArgs();
-    MapType set_arg;
-    set_arg["id"] = getId();
-    set_arg["right_hand_wield"] = item->getId();
-    set_args.push_back(set_arg);
+    Anonymous set_arg;
+    set_arg->setId(getId());
+    set_arg->setAttr("right_hand_wield", item->getId());
+    set->setArgs1(set_arg);
     res.push_back(set);
 
     // m_rightHandWield = item->getId();
@@ -404,7 +396,7 @@ void Character::mindLogoutOperation(const Operation & op, OpVector & res)
 
 void Character::mindActionOperation(const Operation & op, OpVector & res)
 {
-    Operation *a = new Operation(op);
+    Operation a(op.copy());
     a->setTo(getId());
     res.push_back(a);
 }
@@ -415,7 +407,7 @@ void Character::mindAddOperation(const Operation & op, OpVector & res)
 
 void Character::mindSetupOperation(const Operation & op, OpVector & res)
 {
-    Operation *s = new Operation(op);
+    Operation s(op.copy());
     s->setTo(getId());
     s->setAttr("sub_to", "mind");
     res.push_back(s);
@@ -468,34 +460,20 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     // If arg is an operation, this is the operation to be used, and the
     // sub op arg may be an entity specifying target. If op to be used is
     // specified, this is checked against the ops permitted by this tool.
-    MapType target;
-    const ListType & args = op.getArgs();
+    Anonymous target;
+    const std::vector<Root> & args = op->getArgs();
     if (!args.empty()) {
-        const Element & arg = args.front();
-        if (!arg.isMap()) {
-            error(op, "Use arg is not a map", res, getId());
-            return;
-        }
-        const MapType & amap = arg.asMap();
-        MapType::const_iterator K = amap.find("objtype");
-        if (K == amap.end() || !K->second.isString()) {
-            error(op, "Use arg has no objtype", res, getId());
-            return;
-        }
-        const std::string & argtype = K->second.asString();
+        const Root & arg = args.front();
+        const std::string & argtype = arg->getObjtype();
         if (argtype == "op") {
-            K = amap.find("parents");
-            if (K == amap.end() || (!K->second.isList()) ||
-                (K->second.asList().empty())) {
+            // FIXME Check if it really is a RootOperation. if so we can
+            // do the rest more easily.
+            if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
+                (arg->getParents().empty())) {
                 error(op, "Use arg op has malformed parents", res, getId());
                 return;
             }
-            const Element & arg_op_parent = K->second.asList().front();
-            if (!arg_op_parent.isString()) {
-                error(op, "Use arg op has non string parent", res, getId());
-                return;
-            }
-            op_type = arg_op_parent.asString();
+            op_type = arg->getParents().front();
             debug(std::cout << "Got op type " << op_type << " from arg"
                             << std::endl << std::flush;);
             if (toolOps.find(op_type) == toolOps.end()) {
@@ -503,61 +481,52 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
                 return;
             }
             // Check against valid ops
+            Operation arg_op = smart_dynamic_cast<Operation>(arg);
+            assert(arg_op.isValid());
 
-            K = amap.find("args");
-            if (K == amap.end() || (!K->second.isList())) {
-                error(op, "Use arg op has malformed args", res, getId());
-                return;
-            }
-            if (!K->second.asList().empty()) {
-                const Element & arg_op_arg = K->second.asList().front();
-                if (!arg_op_arg.isMap()) {
-                    error(op, "Use arg op has map arg", res, getId());
-                    return;
-                }
-                const MapType & arg_op_amap = arg_op_arg.asMap();
+            const std::vector<Root> & arg_op_args = arg_op->getArgs();
+            if (!arg_op_args.empty()) {
+                const Root & arg_op_arg = arg_op_args.front();
                 
-                K = arg_op_amap.find("id");
-                if (K == arg_op_amap.end() || (!K->second.isString())) {
+                if (!arg_op_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
                     error(op, "Use arg entity has no ID", res, getId());
                     return;
                 }
-                target["id"] = K->second.asString();
-                debug(std::cout << "Got target " << target["id"].asString()
+                target->setId(arg_op_arg->getId());
+                debug(std::cout << "Got target " << target->getId()
                                 << " from op arg"
                                 << std::endl << std::flush;);
-                // FIXME Duplicated code beloabove (see FIXME)
-                K = amap.find("pos");
-                if (K != amap.end()) {
+                // FIXME Duplicated code below (see FIXME)
+                Element pos_attr;
+                if (arg_op_arg->getAttr("pos", pos_attr) == 0) {
                     debug(std::cout << "Got a use op with POS"
                                     << std::endl << std::flush;);
-                    if (!K->second.isList()) {
+                    if (pos_attr.isList()) {
                         error(op, "Use arg entity has non-list POS", res, getId());
                         return;
                     }
-                    target["pos"] = K->second.asList();
+                    target->setAttr("pos", pos_attr);
                 }
             }
         } else if (argtype == "obj") {
-            K = amap.find("id");
-            if (K == amap.end() || (!K->second.isString())) {
+            if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
                 error(op, "Use arg entity has no ID", res, getId());
                 return;
             }
-            target["id"] = K->second.asString();
-            debug(std::cout << "Got target " << target["id"].asString()
+            target->setId(arg->getId());
+            debug(std::cout << "Got target " << target->getId()
                             << " from arg"
                             << std::endl << std::flush;);
             // FIXME Duplicated code above (see FIXME)
-            K = amap.find("pos");
-            if (K != amap.end()) {
+            Element pos_attr;
+            if (arg->getAttr("pos", pos_attr) == 0) {
                 debug(std::cout << "Got a use op with POS"
                                 << std::endl << std::flush;);
-                if (!K->second.isList()) {
+                if (pos_attr.isList()) {
                     error(op, "Use arg entity has non-list POS", res, getId());
                     return;
                 }
-                target["pos"] = K->second.asList();
+                target->setAttr("pos", pos_attr);
             }
         } else {
             error(op, "Use arg has unknown objtype", res, getId());
@@ -571,12 +540,12 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     }
 
     debug(std::cout << "Using tool " << tool->getType() << " on "
-                    << target["id"].asString()
+                    << target->getId()
                     << " with " << op_type << " action."
                     << std::endl << std::flush;);
 
-    Operation * rop = Inheritance::instance().newOperation(op_type);
-    if (rop == 0) {
+    Operation rop = Inheritance::instance().newOperation(op_type);
+    if (!rop.isValid()) {
         std::string err("Character::mindUseMethod: Unknown op type \"");
         err += op_type;
         err += "\" requested by \"";
@@ -586,19 +555,17 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         // FIXME Thing hard about how this error is reported. Would the error
         // make it back to the client if we made an error response?
         return;
-    } else if (target.empty()) {
+    } else if (target->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         debug(std::cout << "No target" << std::endl << std::flush;);
     } else {
-        ListType & rop_args = rop->getArgs();
-        rop_args.push_back(target);
+        rop->setArgs1(target);
     }
 
     rop->setTo(toolId);
     res.push_back(rop);
 
-    Operation * sight = new Sight;
-    ListType & sight_args = sight->getArgs();
-    sight_args.push_back(rop->asMap());
+    Sight sight;
+    sight->setArgs1(rop);
     res.push_back(sight);
 }
 
@@ -609,14 +576,14 @@ void Character::mindUpdateOperation(const Operation & op, OpVector & res)
 void Character::mindWieldOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Wield op from mind" << std::endl << std::flush;);
-    Operation *w = new Operation(op);
+    Operation w(op.copy());
     w->setTo(getId());
     res.push_back(w);
 }
 
 void Character::mindTickOperation(const Operation & op, OpVector & res)
 {
-    Operation *t = new Operation(op);
+    Operation t(op.copy());
     t->setTo(getId());
     t->setAttr("sub_to", "mind");
     res.push_back(t);
@@ -625,27 +592,28 @@ void Character::mindTickOperation(const Operation & op, OpVector & res)
 void Character::mindMoveOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
-    const ListType & args = op.getArgs();
-    if (args.empty() || !args.front().isMap()) {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
         log(ERROR, "mindMoveOperation: move op has no argument");
         return;
     }
-    const MapType & arg1 = args.front().asMap();
-    MapType::const_iterator I = arg1.find("id");
-    if ((I == arg1.end()) || !I->second.isString()) {
+    const RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
+    assert(arg.isValid());
+    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         log(ERROR, "mindMoveOperation: Args has got no ID");
     }
-    const std::string & other_id = I->second.asString();
+    const std::string & other_id = arg->getId();
+    // FIXME We are looking up the object, but the vast majority of the
+    // time we are moving ourselves. Bypass this lookup if possible.
     EntityDict::const_iterator J = m_world->getEntities().find(other_id);
     if (J == m_world->getEntities().end()) {
         log(ERROR, "mindMoveOperation: This move op is for a phoney id");
         log(NOTICE, "Sending Unseen op back to mind. We should not see this again.");
-        Operation * u = new Unseen;
+        Unseen u;
 
-        ListType & unseen_args = u->getArgs();
-        MapType unseen_arg;
-        unseen_arg["id"] = other_id;
-        unseen_args.push_back(unseen_arg);
+        Anonymous unseen_arg;
+        unseen_arg->setId(other_id);
+        u->setArgs1(unseen_arg);
 
         u->setTo(getId());
         res.push_back(u);
@@ -658,15 +626,14 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
         }
-        Operation * newop = new Operation(op);
+        Operation newop(op.copy());
         newop->setTo(other_id);
         res.push_back(newop);
         return;
     }
     std::string new_loc;
-    I = arg1.find("loc");
-    if ((I != arg1.end()) && (I->second.isString())) {
-        new_loc = I->second.asString();
+    if (arg->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+        new_loc = arg->getLoc();
     } else {
         debug( std::cout << "Parent not set" << std::endl << std::flush;);
     }
@@ -674,22 +641,21 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     Vector3D new_velocity;
     Quaternion new_orientation;
     try {
-        I = arg1.find("pos");
-        if (I != arg1.end()) {
-            new_pos.fromAtlas(I->second.asList());
+        if (arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+            fromStdVector(new_pos, arg->getPos());
             debug( std::cout << "pos set to " << new_pos << std::endl << std::flush;);
         }
 
-        I = arg1.find("velocity");
-        if (I != arg1.end()) {
-            new_velocity.fromAtlas(I->second.asList());
+        Element velocity_attr;
+        if (arg->getAttr("velocity", velocity_attr) == 0) {
+            new_velocity.fromAtlas(velocity_attr);
             debug( std::cout << "vel set to " << new_velocity
                              << std::endl << std::flush;);
         }
 
-        I = arg1.find("orientation");
-        if (I != arg1.end()) {
-            new_orientation.fromAtlas(I->second.asList());
+        Element orientation_attr;
+        if (arg->getAttr("orientation", orientation_attr) == 0) {
+            new_orientation.fromAtlas(orientation_attr);
             debug( std::cout << "ori set to " << new_orientation << std::endl << std::flush;);
         }
     }
@@ -697,7 +663,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         log(ERROR, "EXCEPTION: mindMoveOperation: Malformed move operation");
     }
 
-    double futureSeconds = op.getFutureSeconds();
+    double futureSeconds = op->getFutureSeconds();
     if (!new_pos.isValid()) {
         if (futureSeconds < 0.) {
             futureSeconds = 0.;
@@ -713,7 +679,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     // in the past, so we just let it by unchanged.
     if ((futureSeconds < 0.) ||
         ((!new_loc.empty()) && (new_loc != m_location.m_loc->getId()))) {
-        Operation * newop = new Operation(op);
+        Operation newop(op.copy());
         newop->setTo(getId());
         newop->setFutureSeconds(futureSeconds);
         res.push_back(newop);
@@ -765,12 +731,11 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         vel_mag = consts::base_velocity;
     }
 
-    Operation * tickOp = new Tick();
-    MapType ent;
-    ent["serialno"] = m_movement.serialno();
-    ent["name"] = "move";
-    ListType tick_args(1,ent);
-    tickOp->setArgs(tick_args);
+    Tick tickOp;
+    Anonymous tick_arg;
+    tick_arg->setAttr("serialno", m_movement.serialno());
+    tick_arg->setName("move");
+    tickOp->setArgs1(tick_arg);
     tickOp->setTo(getId());
     // Need to add the arguments to this op before we return it
     // direction is already a unit vector
@@ -792,11 +757,11 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Orientation" << ret_location.m_orientation
                     << std::endl << std::flush;);
 
-    Operation * moveOp = m_movement.generateMove(ret_location);
+    Operation moveOp = m_movement.generateMove(ret_location);
     tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.m_pos,
                                                         ret_location.m_velocity));
 
-    assert(moveOp != NULL);
+    assert(moveOp.isValid());
 
     // return moveOp and tickOp;
     res.push_back(moveOp);
@@ -805,18 +770,16 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
 
 void Character::mindSetOperation(const Operation & op, OpVector & res)
 {
-    const ListType & args = op.getArgs();
-    if (args.empty() || !args.front().isMap()) {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
         return;
     }
-    Operation * s = new Operation(op);
-    const MapType & amap = args.front().asMap();
-    MapType::const_iterator I = amap.find("id");
-    if (I != amap.end() && I->second.isString()) {
-        const std::string & opid = I->second.asString();
-        s->setTo(opid);
+    Operation s(op.copy());
+    const Root & arg = args.front();
+    if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        s->setTo(arg->getId());
     } else {
-        if (op.getTo().empty()) {
+        if (op->getTo().empty()) {
             s->setTo(getId());
         }
     }
@@ -841,14 +804,14 @@ void Character::mindCombineOperation(const Operation & op, OpVector & res)
 
 void Character::mindCreateOperation(const Operation & op, OpVector & res)
 {
-    Operation * c = new Operation(op);
+    Operation c(op.copy());
     c->setTo(getId());
     res.push_back(c);
 }
 
 void Character::mindDeleteOperation(const Operation & op, OpVector & res)
 {
-    Operation * d = new Operation(op);
+    Operation d(op.copy());
     d->setTo(getId());
     res.push_back(d);
 }
@@ -867,7 +830,7 @@ void Character::mindGetOperation(const Operation & op, OpVector & res)
 
 void Character::mindImaginaryOperation(const Operation & op, OpVector & res)
 {
-    Operation * i = new Operation(op);
+    Operation i(op.copy());
     i->setTo(getId());
     res.push_back(i);
 }
@@ -884,26 +847,25 @@ void Character::mindTalkOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mindOPeration(Talk)"
                      << std::endl << std::flush;);
-    Operation * t = new Operation(op);
+    Operation t(op.copy());
     t->setTo(getId());
     res.push_back(t);
 }
 
 void Character::mindLookOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got look up from mind from [" << op.getFrom()
-               << "] to [" << op.getTo() << "]" << std::endl << std::flush;);
+    debug(std::cout << "Got look up from mind from [" << op->getFrom()
+               << "] to [" << op->getTo() << "]" << std::endl << std::flush;);
     m_perceptive = true;
-    Operation * l = new Operation(op);
-    if (op.getTo().empty()) {
-        const ListType & args = op.getArgs();
-        if (args.empty() || !args.front().isMap()) {
+    Operation l(op.copy());
+    if (op->getTo().empty()) {
+        const std::vector<Root> & args = op->getArgs();
+        if (args.empty()) {
             l->setTo(m_world->m_gameWorld.getId());
         } else {
-            const MapType & amap = args.front().asMap();
-            MapType::const_iterator I = amap.find("id");
-            if (I != amap.end() && I->second.isString()) {
-                l->setTo(I->second.asString());
+            const Root & arg = args.front();
+            if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+                l->setTo(arg->getId());
             }
         }
     }
@@ -913,8 +875,8 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
 
 void Character::mindCutOperation(const Operation & op, OpVector & res)
 {
-    Operation * c = new Operation(op);
-    if (op.getTo().empty()) {
+    Operation c(op.copy());
+    if (op->getTo().empty()) {
         c->setTo(getId());
     }
     res.push_back(c);
@@ -922,10 +884,10 @@ void Character::mindCutOperation(const Operation & op, OpVector & res)
 
 void Character::mindEatOperation(const Operation & op, OpVector & res)
 {
-    Operation * e = new Operation(op);
+    Operation e(op.copy());
     // FIXME Need to get what food to eat from the arg, and sort out goals
     // so they don't set TO
-    if (op.getTo().empty()) {
+    if (op->getTo().empty()) {
         e->setTo(getId());
     }
     res.push_back(e);
@@ -933,30 +895,28 @@ void Character::mindEatOperation(const Operation & op, OpVector & res)
 
 void Character::mindTouchOperation(const Operation & op, OpVector & res)
 {
-    Operation * t = new Operation(op);
+    Operation t(op.copy());
     // Work out what is being touched.
-    const ListType & args = op.getArgs();
-    if (op.getTo().empty()) {
-        if (args.empty() || !args.front().isMap()) {
+    if (op->getTo().empty()) {
+        const std::vector<Root> & args = op->getArgs();
+        if (args.empty()) {
             t->setTo(m_world->m_gameWorld.getId());
         } else {
-            const MapType & amap = args.front().asMap();
-            MapType::const_iterator I = amap.find("id");
-            if (I != amap.end() && I->second.isString()) {
-                t->setTo(I->second.asString());
+            const Root & arg = args.front();
+            if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+                t->setTo(arg->getId());
             }
         }
     }
     // Pass the modified touch operation on to target.
     res.push_back(t);
     // Send action "touch"
-    Action * a = new Action();
+    Action a;
     a->setTo(getId());
-    MapType amap;
-    amap["id"] = getId();
-    amap["action"] = "touch";
-    ListType setArgs(1,amap);
-    a->setArgs(setArgs);
+    Anonymous a_arg;
+    a_arg->setId(getId());
+    a_arg->setAttr("action", "touch");
+    a->setArgs1(a_arg);
     res.push_back(a);
 }
 
@@ -975,8 +935,9 @@ void Character::mindErrorOperation(const Operation & op, OpVector & res)
 
 void Character::mindOtherOperation(const Operation & op, OpVector & res)
 {
-    Operation * e = new Operation(op);
-    if (op.getTo().empty()) {
+    // Is this modification, and therefor copy really required? Always?
+    Operation e(op.copy());
+    if (op->getTo().empty()) {
         e->setTo(getId());
     }
     res.push_back(e);
@@ -1105,7 +1066,7 @@ bool Character::w2mOtherOperation(const Operation & op)
 
 bool Character::w2mSetupOperation(const Operation & op)
 {
-    if (op.hasAttr("sub_to")) {
+    if (op->hasAttr("sub_to")) {
         return true;
     }
     return false;
@@ -1123,7 +1084,7 @@ bool Character::w2mWieldOperation(const Operation & op)
 
 bool Character::w2mTickOperation(const Operation & op)
 {
-    if (op.hasAttr("sub_to")) {
+    if (op->hasAttr("sub_to")) {
         return true;
     }
     return false;
@@ -1162,10 +1123,6 @@ void Character::sendMind(const Operation & op, OpVector & res)
             OpVector mindRes;
             m_mind->operation(op, mindRes);
             // Discard all the local results
-            OpVector::const_iterator Jend = mindRes.end(); 
-            for (OpVector::const_iterator J = mindRes.begin(); J != Jend; ++J) {
-                delete *J;
-            }
         }
         debug(std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
@@ -1186,8 +1143,8 @@ void Character::mind2body(const Operation & op, OpVector & res)
     if (m_drunkness > 1.0) {
         return;
     }
-    if (!op.getTo().empty()) {
-        std::cerr << "Operation \"" << op.getParents().front().asString() << "\"from mind with TO set" << std::endl << std::flush;
+    if (!op->getTo().empty()) {
+        std::cerr << "Operation \"" << op->getParents().front() << "\"from mind with TO set" << std::endl << std::flush;
         log(WARNING, "Operation from mind with TO set");
     }
     OpNo otype = opEnumerate(op, opMindLookup);
@@ -1218,8 +1175,7 @@ void Character::operation(const Operation & op, OpVector & res)
             //Operation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
             (*I)->setSerialno(newSerialNo());
-            externalOperation(**I);
-            delete *I;
+            externalOperation(*I);
         }
     }
 }
@@ -1235,10 +1191,11 @@ void Character::externalOperation(const Operation & op)
     // FIXME in Atlas-C++ 0.6 we can do this by relying on being able
     // to query if an object has a certain attribute. A copied op will have
     // it, a new op won't.
+    OpVector::const_iterator Ibegin = mres.begin();
     OpVector::const_iterator Iend = mres.end();
-    for (OpVector::const_iterator I = mres.begin(); I != Iend; ++I) {
-        if (I == mres.begin()) {
-            (*I)->setSerialno(op.getSerialno());
+    for (OpVector::const_iterator I = Ibegin; I != Iend; ++I) {
+        if (I == Ibegin) {
+            (*I)->setSerialno(op->getSerialno());
         } else {
             (*I)->setSerialno(newSerialNo());
         }

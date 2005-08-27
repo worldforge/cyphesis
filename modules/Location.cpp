@@ -8,7 +8,10 @@
 
 #include <wfmath/atlasconv.h>
 
+#include <Atlas/Objects/Anonymous.h>
+
 using Atlas::Message::Element;
+using Atlas::Objects::Entity::Anonymous;
 
 Location::Location() :
     m_simple(true), m_solid(true), m_loc(0)
@@ -53,6 +56,38 @@ void Location::addToMessage(Atlas::Message::MapType & omap) const
     if (m_bBox.isValid()) {
         omap["bbox"] = m_bBox.toAtlas();
     }
+}
+
+void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+    if (m_loc!=NULL) {
+        ent->setLoc(m_loc->getId());
+    }
+    if (m_pos.isValid()) {
+        ::addToEntity(m_pos, ent->modifyPos());
+    }
+    if (m_velocity.isValid()) {
+        ::addToEntity(m_velocity, ent->modifyVelocity());
+    }
+    if (m_acceleration.isValid()) {
+        ent->setAttr("accel", m_acceleration.toAtlas());
+    }
+    if (m_orientation.isValid()) {
+        ent->setAttr("orientation", m_orientation.toAtlas());
+    }
+    if (m_angular.isValid()) {
+        ent->setAttr("angular", m_angular.toAtlas());
+    }
+    if (m_bBox.isValid()) {
+        ent->setAttr("bbox", m_bBox.toAtlas());
+    }
+}
+
+const Atlas::Objects::Root Location::asEntity() const
+{
+    Anonymous ret;
+    addToEntity(ret);
+    return ret;
 }
 
 static bool distanceFromAncestor(const Location & self,

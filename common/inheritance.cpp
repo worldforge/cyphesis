@@ -6,37 +6,15 @@
 
 #include "log.h"
 
-#include "Generic.h"
+#include <Atlas/Objects/Operation.h>
 
-#include <Atlas/Objects/Operation/Appearance.h>
-#include <Atlas/Objects/Operation/Combine.h>
-#include <Atlas/Objects/Operation/Delete.h>
-#include <Atlas/Objects/Operation/Disappearance.h>
-#include <Atlas/Objects/Operation/Divide.h>
-#include <Atlas/Objects/Operation/Error.h>
-#include <Atlas/Objects/Operation/Feel.h>
-#include <Atlas/Objects/Operation/Imaginary.h>
-#include <Atlas/Objects/Operation/Listen.h>
-#include <Atlas/Objects/Operation/Logout.h>
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Move.h>
-#include <Atlas/Objects/Operation/Sound.h>
-#include <Atlas/Objects/Operation/Smell.h>
-#include <Atlas/Objects/Operation/Sniff.h>
-#include <Atlas/Objects/Operation/Talk.h>
-#include <Atlas/Objects/Operation/Touch.h>
-
-#include <Atlas/Objects/Entity/Game.h>
-#include <Atlas/Objects/Entity/Player.h>
-#include <Atlas/Objects/Entity/Admin.h>
-#include <Atlas/Objects/Entity/GameEntity.h>
+#include <Atlas/Objects/Entity.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-using Atlas::Objects::Operation::RootOperation;
-using Atlas::Objects::Operation::Generic;
+using Atlas::Objects::Root;
 
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
@@ -54,25 +32,53 @@ using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Sound;
 using Atlas::Objects::Operation::Touch;
 using Atlas::Objects::Operation::Talk;
+using Atlas::Objects::Operation::Use;
+using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Error;
+using Atlas::Objects::Operation::Use;
+using Atlas::Objects::Operation::Wield;
 
 Inheritance * Inheritance::m_instance = NULL;
 
-Inheritance::Inheritance()
+Root atlasOpDefinition(const std::string & name, const std::string & parent)
 {
-    atlasObjects["root"] = new Atlas::Objects::Root(Atlas::Objects::Root::Class());
+    Atlas::Objects::Entity::Anonymous r;
+
+    r->setParents(std::list<std::string>(1, parent));
+    r->setObjtype("op_definition");
+    r->setId(name);
+
+    return r;
+}
+
+Root atlasClass(const std::string & name, const std::string & parent)
+{
+    Atlas::Objects::Entity::Anonymous r;
+
+    r->setParents(std::list<std::string>(1, parent));
+    r->setObjtype("class");
+    r->setId(name);
+
+    return r;
+}
+
+Inheritance::Inheritance() : noClass(0)
+{
+    Atlas::Objects::Entity::Anonymous root;
+
+    root->setParents(std::list<std::string>(0));
+    root->setId("root");
+
+    atlasObjects["root"] = root;
 }
 
 void Inheritance::flush()
 {
-    RootDict::const_iterator Iend = atlasObjects.end();
-    for (RootDict::const_iterator I = atlasObjects.begin(); I != Iend; ++I) {
-        delete I->second;
-    }
     atlasObjects.clear();
+
     OpFactoryDict::const_iterator J = opFactories.begin();
     OpFactoryDict::const_iterator Jend = opFactories.end();
     for (; J != Jend; ++J) {
@@ -110,45 +116,50 @@ OpNo Inheritance::opEnumerate(const std::string & parent) const
     }
 }
 
-OpNo Inheritance::opEnumerate(const RootOperation & op) const
+OpNo Inheritance::opEnumerate(const Operation & op) const
 {
-    const ListType & parents = op.getParents();
+#warning This should no longer be necessary - just return the Atlas number for the class
+    const std::list<std::string> & parents = op->getParents();
     if (parents.size() != 1) {
         log(ERROR, "op with no parents");
     }
-    if (!parents.begin()->isString()) {
-        log(ERROR, "op with non-string parent");
-    }
-    const std::string & parent = parents.begin()->asString();
+    const std::string & parent = parents.front();
     return opEnumerate(parent);
 }
 
-Atlas::Objects::Root * Inheritance::get(const std::string & parent)
+const Atlas::Objects::Root & Inheritance::getClass(const std::string & parent)
 {
     RootDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
-        return NULL;
+        return noClass;
     }
     return I->second;
 }
 
-int Inheritance::addChild(Atlas::Objects::Root * obj)
+bool Inheritance::hasClass(const std::string & parent)
+{
+    RootDict::const_iterator I = atlasObjects.find(parent);
+    if (I == atlasObjects.end()) {
+        return false;
+    }
+    return true;
+}
+
+int Inheritance::addChild(const Atlas::Objects::Root & obj)
 {
     const std::string & child = obj->getId();
-    const std::string & parent = obj->getParents().front().asString();
+    const std::string & parent = obj->getParents().front();
     if (atlasObjects.find(child) != atlasObjects.end()) {
         std::string msg = std::string("Installing type ") + child 
                         + "(" + parent + ") which was already installed";
-        log(WARNING, msg.c_str());
-        delete obj;
+        log(ERROR, msg.c_str());
         return -1;
     }
     RootDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         std::string msg = std::string("Installing type ") + child 
                         + " which has unknown parent \"" + parent + "\"";
-        log(WARNING, msg.c_str());
-        delete obj;
+        log(ERROR, msg.c_str());
         return -1;
     }
     ListType children(1, child);
@@ -161,7 +172,7 @@ int Inheritance::addChild(Atlas::Objects::Root * obj)
     return 0;
 }
 
-RootOperation * Inheritance::newOperation(const std::string & op_type)
+Operation Inheritance::newOperation(const std::string & op_type)
 {
     OpFactoryDict::const_iterator I = opFactories.find(op_type);
     if (I == opFactories.end()) {
@@ -170,7 +181,7 @@ RootOperation * Inheritance::newOperation(const std::string & op_type)
     return I->second->newOperation();
 }
 
-int Inheritance::newOperation(const std::string & op_type, RootOperation & ret) const
+int Inheritance::newOperation(const std::string & op_type, Operation & ret) const
 {
     OpFactoryDict::const_iterator I = opFactories.find(op_type);
     if (I == opFactories.end()) {
@@ -189,11 +200,11 @@ bool Inheritance::isTypeOf(const std::string & instance,
     RootDict::const_iterator I = atlasObjects.find(instance);
     RootDict::const_iterator Iend = atlasObjects.end();
     for (; I != Iend;) {
-        const ListType & parents = I->second->getParents();
+        const std::list<std::string> & parents = I->second->getParents();
         if (parents.empty()) {
             break;
         }
-        const std::string & parent = I->second->getParents().front().asString();
+        const std::string & parent = I->second->getParents().front();
         if (parent == type) {
             return true;
         }
@@ -203,6 +214,7 @@ bool Inheritance::isTypeOf(const std::string & instance,
     // Walk up the tree.
 }
 
+using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Operation::Perception;
 using Atlas::Objects::Operation::Communicate;
 using Atlas::Objects::Operation::Perceive;
@@ -224,76 +236,84 @@ GenericOpFactory::GenericOpFactory(const std::string &opType) : m_opType(opType)
 {
 }
 
-RootOperation * GenericOpFactory::newOperation()
+Operation GenericOpFactory::newOperation()
 {
-    return new Generic(m_opType);
+    Root obj = Atlas::Objects::Factories::instance()->createObject(m_opType);
+    return Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
 }
 
-void GenericOpFactory::newOperation(RootOperation & ret)
+void GenericOpFactory::newOperation(Operation & ret)
 {
-    ret = Generic(m_opType);
+    Root obj = Atlas::Objects::Factories::instance()->createObject(m_opType);
+    ret = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
 }
 
 void installStandardObjects()
 {
     Inheritance & i = Inheritance::instance();
 
-    i.addChild(new RootOperation(RootOperation::Class()));
-    i.addChild(new Action(Action::Class()));
+    i.addChild(atlasOpDefinition("root_operation", "root"));
+    i.addChild(atlasOpDefinition("action", "root_operation"));
     i.opInstall("action", OP_ACTION, new OpFactory<Action>);
-    i.addChild(new Create(Create::Class()));
+    i.addChild(atlasOpDefinition("create", "action"));
     i.opInstall("create", OP_CREATE, new OpFactory<Create>);
-    i.addChild(new Delete(Delete::Class()));
+    i.addChild(atlasOpDefinition("delete", "action"));
     i.opInstall("delete", OP_DELETE, new OpFactory<Delete>);
-    i.addChild(new Info(Info::Class()));
+    i.addChild(atlasOpDefinition("info", "root_operation"));
     i.opInstall("info", OP_INFO, new OpFactory<Info>);
-    i.addChild(new Set(Set::Class()));
+    i.addChild(atlasOpDefinition("set", "action"));
     i.opInstall("set", OP_SET, new OpFactory<Set>);
-    i.addChild(new Get(Get::Class()));
+    i.addChild(atlasOpDefinition("get", "action"));
     i.opInstall("get", OP_GET, new OpFactory<Get>);
-    i.addChild(new Perception(Perception::Class()));
-    i.addChild(new Error(Error::Class()));
+    i.addChild(atlasOpDefinition("perception", "info"));
+    i.addChild(atlasOpDefinition("error", "info"));
     i.opInstall("error", OP_ERROR, new OpFactory<Error>);
-    i.addChild(new Combine(Combine::Class()));
+    i.addChild(atlasOpDefinition("combine", "create"));
     i.opInstall("combine", OP_COMBINE, new OpFactory<Combine>);
-    i.addChild(new Divide(Divide::Class()));
+    i.addChild(atlasOpDefinition("divide", "create"));
     i.opInstall("divide", OP_DIVIDE, new OpFactory<Divide>);
-    i.addChild(new Communicate(Communicate::Class()));
-    i.addChild(new Move(Move::Class()));
+    i.addChild(atlasOpDefinition("communicate", "create"));
+    i.addChild(atlasOpDefinition("move", "set"));
     i.opInstall("move", OP_MOVE, new OpFactory<Move>);
-    i.addChild(new Perceive(Perceive::Class()));
-    i.addChild(new Login(Login::Class()));
+    i.addChild(atlasOpDefinition("perceive", "get"));
+    i.addChild(atlasOpDefinition("login", "get"));
     i.opInstall("login", OP_LOGIN, new OpFactory<Login>);
-    i.addChild(new Logout(Logout::Class()));
+    i.addChild(atlasOpDefinition("logout", "login"));
     i.opInstall("logout", OP_LOGOUT, new OpFactory<Logout>);
-    i.addChild(new Sight(Sight::Class()));
+    i.addChild(atlasOpDefinition("sight", "perception"));
     i.opInstall("sight", OP_SIGHT, new OpFactory<Sight>);
-    i.addChild(new Sound(Sound::Class()));
+    i.addChild(atlasOpDefinition("sound", "perception"));
     i.opInstall("sound", OP_SOUND, new OpFactory<Sound>);
-    i.addChild(new Smell(Smell::Class()));
-    i.addChild(new Feel(Feel::Class()));
-    i.addChild(new Imaginary(Imaginary::Class()));
+    i.addChild(atlasOpDefinition("smell", "perception"));
+    i.addChild(atlasOpDefinition("feel", "perception"));
+    i.addChild(atlasOpDefinition("imaginary", "action"));
     i.opInstall("imaginary", OP_IMAGINARY, new OpFactory<Imaginary>);
-    i.addChild(new Talk(Talk::Class()));
+    i.addChild(atlasOpDefinition("talk", "communicate"));
     i.opInstall("talk", OP_TALK, new OpFactory<Talk>);
-    i.addChild(new Look(Look::Class()));
+    i.addChild(atlasOpDefinition("look", "perceive"));
     i.opInstall("look", OP_LOOK, new OpFactory<Look>);
-    i.addChild(new Listen(Listen::Class()));
-    i.addChild(new Sniff(Sniff::Class()));
-    i.addChild(new Touch(Touch::Class()));
+    i.addChild(atlasOpDefinition("listen", "perceive"));
+    i.addChild(atlasOpDefinition("sniff", "perceive"));
+    i.addChild(atlasOpDefinition("touch", "perceive"));
     i.opInstall("touch", OP_TOUCH, new OpFactory<Touch>);
-    i.addChild(new Appearance(Appearance::Class()));
+    i.addChild(atlasOpDefinition("appearance", "sight"));
     i.opInstall("appearance", OP_APPEARANCE, new OpFactory<Appearance>);
-    i.addChild(new Disappearance(Disappearance::Class()));
+    i.addChild(atlasOpDefinition("disappearance", "sight"));
     i.opInstall("disappearance", OP_DISAPPEARANCE, new OpFactory<Disappearance>);
+    i.addChild(atlasOpDefinition("use", "foo"));
+    i.opInstall("use", OP_USE, new OpFactory<Use>);
+    i.addChild(atlasOpDefinition("wield", "foo"));
+    i.opInstall("wield", OP_WIELD, new OpFactory<Wield>);
 
-    i.addChild(new RootEntity(RootEntity::Class()));
-    i.addChild(new AdminEntity(AdminEntity::Class()));
-    i.addChild(new Atlas::Objects::Entity::Account(Atlas::Objects::Entity::Account::Class()));
-    i.addChild(new Atlas::Objects::Entity::Player(Atlas::Objects::Entity::Player::Class()));
-    i.addChild(new Atlas::Objects::Entity::Admin(Atlas::Objects::Entity::Admin::Class()));
-    i.addChild(new Game(Game::Class()));
-    i.addChild(new GameEntity(GameEntity::Class()));
+
+
+    i.addChild(atlasClass("root_entity", "root"));
+    i.addChild(atlasClass("admin_entity", "root_entity"));
+    i.addChild(atlasClass("account", "admin_entity"));
+    i.addChild(atlasClass("player", "account"));
+    i.addChild(atlasClass("admin", "account"));
+    i.addChild(atlasClass("game", "admin_entity"));
+    i.addChild(atlasClass("game_entity", "root_entity"));
 
     // And from here on we need to define the hierarchy as found in the C++
     // base classes. Script classes defined in rulsets need to be added

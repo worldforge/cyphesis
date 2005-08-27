@@ -8,7 +8,8 @@
 #include "debug.h"
 #include "globals.h"
 
-#include <Atlas/Message/Encoder.h>
+#include <Atlas/Message/MEncoder.h>
+#include <Atlas/Message/Element.h>
 #include <Atlas/Codecs/XML.h>
 
 #include <varconf/Config.h>
@@ -179,8 +180,8 @@ bool Database::decodeObject(const std::string & data,
 
     std::stringstream str(data, std::ios::in);
 
-    Serialiser codec(str, &m_d);
-    Atlas::Message::Encoder enc(&codec);
+    Serialiser codec(str, m_d);
+    Atlas::Message::Encoder enc(codec);
 
     // Clear the decoder
     m_d.get();
@@ -201,11 +202,11 @@ bool Database::encodeObject(const MapType & o,
 {
     std::stringstream str;
 
-    Serialiser codec(str, &m_d);
-    Atlas::Message::Encoder enc(&codec);
+    Serialiser codec(str, m_d);
+    Atlas::Message::Encoder enc(codec);
 
     codec.streamBegin();
-    enc.streamMessage(o);
+    enc.streamMessageElement(o);
     codec.streamEnd();
 
     data = str.str();
@@ -265,11 +266,11 @@ bool Database::putObject(const std::string & table,
                     << std::endl << std::flush;);
     std::stringstream str;
 
-    Serialiser codec(str, &m_d);
-    Atlas::Message::Encoder enc(&codec);
+    Serialiser codec(str, m_d);
+    Atlas::Message::Encoder enc(codec);
 
     codec.streamBegin();
-    enc.streamMessage(o);
+    enc.streamMessageElement(o);
     codec.streamEnd();
 
     debug(std::cout << "Encoded to: " << str.str().c_str() << " "
@@ -294,11 +295,11 @@ bool Database::updateObject(const std::string & table,
                     << std::endl << std::flush;);
     std::stringstream str;
 
-    Serialiser codec(str, &m_d);
-    Atlas::Message::Encoder enc(&codec);
+    Serialiser codec(str, m_d);
+    Atlas::Message::Encoder enc(codec);
 
     codec.streamBegin();
-    enc.streamMessage(o);
+    enc.streamMessageElement(o);
     codec.streamEnd();
 
     std::string query = std::string("UPDATE ") + table + " SET contents = '" +

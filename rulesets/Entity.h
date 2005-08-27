@@ -119,8 +119,8 @@ class Entity : public BaseEntity {
     /// sendWorld() bipasses serialno assignment, so you must ensure
     /// that serialno is sorted. This allows client serialnos to get
     /// in, so that client gets correct usefull refnos back.
-    void sendWorld(Operation * op) {
-        m_world->message(*op, *this);
+    void sendWorld(const Operation & op) {
+        m_world->message(op, *this);
     }
 
     const int getUpdateFlags() const { return m_update_flags; }
@@ -157,7 +157,9 @@ class Entity : public BaseEntity {
     bool has(const std::string &) const;
     bool get(const std::string &, Atlas::Message::Element &) const;
     void set(const std::string &, const Atlas::Message::Element &);
-    void addToMessage(Atlas::Message::MapType & obj) const;
+
+    virtual void addToMessage(Atlas::Message::MapType &) const;
+    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 
     void setScript(Script * scrpt);
     void merge(const Atlas::Message::MapType &);

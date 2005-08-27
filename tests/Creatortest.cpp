@@ -22,7 +22,7 @@ class TestWorld : public BaseWorld {
     virtual Entity * addNewEntity(const std::string &, const MapType &) {
         return 0;
     }
-    virtual void message(Operation & op, Entity & ent) { }
+    virtual void message(const Operation & op, Entity & ent) { }
     virtual Entity * findByName(const std::string & name) { return 0; }
     virtual Entity * findByType(const std::string & type) { return 0; }
     virtual float constrainHeight(Entity*, const Point3D&,

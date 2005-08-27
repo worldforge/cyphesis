@@ -62,8 +62,8 @@ class BaseWorld {
     virtual bool idle(int, int) = 0;
     virtual Entity * addEntity(Entity * obj, bool setup = true) = 0;
     virtual Entity * addNewEntity(const std::string &,
-                                  const Atlas::Message::MapType &) = 0;
-    virtual void message(Operation &, Entity & obj) = 0;
+                                  const Atlas::Objects::Entity::RootEntity &) = 0;
+    virtual void message(const Operation &, Entity & obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;
     virtual float constrainHeight(Entity *, const Point3D &,
@@ -71,7 +71,7 @@ class BaseWorld {
     virtual void addPerceptive(const std::string & id) = 0;
 
 
-    SigC::Signal1<void, Operation *> Dispatching;
+    SigC::Signal1<void, Operation> Dispatching;
 };
 
 #endif // COMMON_BASE_WORLD_H

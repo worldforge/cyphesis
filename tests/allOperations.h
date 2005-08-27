@@ -12,8 +12,6 @@
 #include "common/Nourish.h"
 #include "common/Setup.h"
 #include "common/Tick.h"
-#include "common/Use.h"
-#include "common/Wield.h"
 
 #include <Atlas/Objects/Operation/Appearance.h>
 #include <Atlas/Objects/Operation/Combine.h>

@@ -24,11 +24,8 @@
 #include "common/system.h"
 #include "common/Database.h"
 
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Login.h>
-#include <Atlas/Objects/Operation/Logout.h>
-#include <Atlas/Objects/Operation/Info.h>
-#include <Atlas/Objects/Operation/Get.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
@@ -38,7 +35,9 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Info;
+using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
@@ -145,13 +144,13 @@ void Connection::disconnect()
 }
 
 bool Connection::verifyCredentials(const Account & account,
-                                   const MapType & creds) const
+                                   const Root & creds) const
 {
-    MapType::const_iterator I = creds.find("password");
-    if ((I == creds.end()) || !I->second.isString()) {
+    Element passwd_attr;
+    if (creds->getAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
         return false;
     }
-    const std::string & passwd = I->second.asString();
+    const std::string & passwd = passwd_attr.asString();
 
     std::string hash;
     encrypt_password(passwd, hash);
@@ -164,7 +163,7 @@ bool Connection::verifyCredentials(const Account & account,
 void Connection::operation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
-    const std::string & from = op.getFrom();
+    const std::string & from = op->getFrom();
     if (from.empty()) {
         debug(std::cout << "deliver locally" << std::endl << std::flush;);
         callOperation(op, res);
@@ -174,7 +173,7 @@ void Connection::operation(const Operation & op, OpVector & res)
         BaseDict::const_iterator I = m_objects.find(from);
         if (I == m_objects.end()) {
             std::string err = "Client \"";
-            err += op.getParents().front().asString();
+            err += op->getParents().front();
             err += "\" op from \"";
             err += from;
             err += "\" is from non existant object.";
@@ -193,10 +192,10 @@ void Connection::operation(const Operation & op, OpVector & res)
                                                          character->getId());
             debug(std::cout << "Subscribing existing character" << std::endl
                             << std::flush;);
-            Info * info = new Info;
-            ListType & info_args = info->getArgs();
-            info_args.push_back(MapType());
-            character->addToMessage(info_args.back().asMap());
+            Info info;
+            Anonymous info_arg;
+            character->addToEntity(info_arg);
+            info->setArgs1(info_arg);
             info->setSerialno(newSerialNo());
 
             res.push_back(info);
@@ -210,34 +209,33 @@ void Connection::operation(const Operation & op, OpVector & res)
 
 void Connection::LoginOperation(const Operation & op, OpVector & res)
 {
-
     debug(std::cout << "Got login op" << std::endl << std::flush;);
-    if (op.getArgs().empty()) {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
         error(op, "Login has no argument", res);
         return;
     }
-    if (!op.getArgs().front().isMap()) {
-        error(op, "Login arg is malformed", res);
-        return;
-    }
     // Account should be the first argument of the op
-    const MapType & account = op.getArgs().front().asMap();
+    const Root & arg = args.front();
     // Check for username, and if its not there, then check for
     // id in case we are dealing with an old client.
-    MapType::const_iterator I = account.find("username");
-    if ((I == account.end()) || !I->second.isString()) {
-        log(WARNING, "Got Login with no username. Checking for old Login");
-        I = account.find("id");
-        if ((I == account.end()) || !I->second.isString()) {
-            error(op, "No username provided for Login", res);
+    Element user_attr;
+    std::string username;
+    if (arg->getAttr("username", user_attr) != 0 || !user_attr.isString()) {
+        log(WARNING, "Got Login for account with no username. Checking for old style Login.");
+        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            error(op, "Got account Login with no username.", res);
             return;
         }
+        username = arg->getId();
+    } else {
+        username = user_attr.asString();
     }
-    const std::string & username = I->second.asString();
     if (username.empty()) {
         error(op, "Empty username provided for Login", res);
         return;
     }
+
     // We now have username, so can check whether we know this
     // account, either from existing account ....
     Account * player = m_server.getAccountByName(username);
@@ -253,7 +251,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
             m_server.addAccount(player);
         }
     }
-    if ((player == 0) || !verifyCredentials(*player, account)) {
+    if ((player == 0) || !verifyCredentials(*player, arg)) {
         error(op, "Login is invalid", res);
         return;
     }
@@ -273,10 +271,10 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     player->m_connection = this;
     m_server.m_lobby.addObject(player);
     // Let the client know they have logged in
-    Info * info = new Info;
-    ListType & info_args = info->getArgs();
-    info_args.push_back(MapType());
-    player->addToMessage(info_args.front().asMap());
+    Info info;
+    Anonymous info_arg;
+    player->addToEntity(info_arg);
+    info->setArgs1(info_arg);
     info->setSerialno(newSerialNo());
     debug(std::cout << "Good login" << std::endl << std::flush;);
     res.push_back(info);
@@ -289,37 +287,37 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         error(op, "Already logged in", res);
         return;
     }
-    if (op.getArgs().empty()) {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
         error(op, "Create has no argument", res);
         return;
     }
-    if (!op.getArgs().front().isMap()) {
-        error(op, "Create is malformed", res);
-        return;
-    }
-    const MapType & account = op.getArgs().front().asMap();
+    const Root & arg = args.front();
 
     if (restricted_flag) {
         error(op, "Account creation on this server is restricted", res);
         return;
     }
-    MapType::const_iterator I = account.find("username");
-    if ((I == account.end()) || !I->second.isString()) {
+
+    Element user_attr;
+    std::string username;
+    if (arg->getAttr("username", user_attr) != 0 || !user_attr.isString()) {
         log(WARNING, "Got Create for account with no username. Checking for old style Create.");
-        I = account.find("id");
-        if ((I == account.end()) || !I->second.isString()) {
-            error(op, "Account creation with no username", res);
+        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            error(op, "Got account Create with no username.", res);
             return;
         }
+        username = arg->getId();
+    } else {
+        username = user_attr.asString();
     }
 
-    const std::string & username = I->second.asString();
-    I = account.find("password");
-    if ((I == account.end()) || !I->second.isString()) {
-        error(op, "Account creation with no password", res);
+    Element passwd_attr;
+    if (arg->getAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
+        error(op, "No account password given", res);
         return;
     }
-    const std::string & password = I->second.asString();
+    const std::string & password = passwd_attr.asString();
 
     if ((0 != m_server.getAccountByName(username)) ||
         (consts::enable_database && Persistance::instance()->findAccount(username)) ||
@@ -332,10 +330,10 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     if (consts::enable_database) {
         Persistance::instance()->putAccount(*player);
     }
-    Info * info = new Info;
-    ListType & info_args = info->getArgs();
-    info_args.push_back(MapType());
-    player->addToMessage(info_args.front().asMap());
+    Info info;
+    Anonymous info_arg;
+    player->addToEntity(info_arg);
+    info->setArgs1(info_arg);
     info->setSerialno(newSerialNo());
     debug(std::cout << "Good create" << std::endl << std::flush;);
     res.push_back(info);
@@ -343,40 +341,33 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
 
 void Connection::LogoutOperation(const Operation & op, OpVector & res)
 {
-    if (op.getArgs().empty()) {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
         // Logging self out
         Info info;
-        ListType & args = info.getArgs();
-        args.push_back(op.asObject());
-        info.setRefno(op.getSerialno());
-        info.setSerialno(newSerialNo());
+        info->setArgs1(op);
+        info->setRefno(op->getSerialno());
+        info->setSerialno(newSerialNo());
         // FIXME Direct call of send. Need local refno handling.
         send(info);
         disconnect();
         return;
     }
-    if (!op.getArgs().front().isMap()) {
-        error(op, "Create arg is not a map", res);
+    const Root & arg = args.front();
+    
+    Element user_attr;
+    if (arg->getAttr("username", user_attr) != 0 || !user_attr.isString()) {
+        error(op, "Got Logout with no username.", res);
         return;
     }
-    const MapType & account = op.getArgs().front().asMap();
-    
-    MapType::const_iterator I = account.find("username");
-    if ((I == account.end()) || !I->second.isString()) {
-        log(WARNING, "Got Logout with no username. Checking for old style Logout.");
-        I = account.find("id");
-        if ((I == account.end()) || !I->second.isString()) {
-            error(op, "Logout is invalid", res);
-            return;
-        }
-    }
-    const std::string & username = I->second.asString();
-    I = account.find("password");
-    if ((I == account.end()) || (!I->second.isString())) {
+    const std::string & username = user_attr.asString();
+
+    Element passwd_attr;
+    if (arg->getAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
         error(op, "No account password given", res);
         return;
     }
-    const std::string & password = I->second.asString();
+    const std::string & password = passwd_attr.asString();
     Account * player = m_server.getAccountByName(username);
     if ((!player) || (password != player->m_password)) {
         error(op, "Logout failed", res);
@@ -386,8 +377,8 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
     // FIXME This won't work. This connection won't have the account ID
     // so won't be able to find it. If it did, then it could just log out
     // the normal way. Pointless.
-    Operation l(op);
-    l.setFrom(player->getId());
+    Operation l(op.copy());
+    l->setFrom(player->getId());
 
     OpVector tres;
     operation(l, tres);
@@ -398,35 +389,32 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
 
 void Connection::GetOperation(const Operation & op, OpVector & res)
 {
-    const ListType & args = op.getArgs();
+    const std::vector<Root> & args = op->getArgs();
 
-    Info * info;
-    if (args.empty() || !args.front().isMap()) {
-        info = new Info;
-        ListType & info_args = info->getArgs();
-        info_args.push_back(MapType());
-        m_server.addToMessage(info_args.front().asMap());
+    Info info;
+    if (args.empty()) {
+        Anonymous info_arg;
+        m_server.addToEntity(info_arg);
+        info->setArgs1(info_arg);
         info->setSerialno(newSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
-        MapType::const_iterator I = args.front().asMap().find("id");
-        if ((I == args.front().asMap().end()) || (!I->second.isString())) {
+        const Root & arg = args.front();
+        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             error(op, "Type definition requested with no id", res);
             return;
         }
-        const std::string & id = I->second.asString();
+        const std::string & id = arg->getId();
         debug(std::cout << "Get got for " << id << std::endl << std::flush;);
-        Atlas::Objects::Root * o = Inheritance::instance().get(id);
-        if (o == NULL) {
+        Atlas::Objects::Root o = Inheritance::instance().getClass(id);
+        if (!o.isValid()) {
             std::string msg("Unknown type definition for \"");
             msg += id;
             msg += "\" requested";
             error(op, msg.c_str(), res);
             return;
         }
-        info = new Info;
-        ListType & iargs = info->getArgs();
-        iargs.push_back(o->asObject());
+        info->setArgs1(o);
         info->setSerialno(newSerialNo());
     }
     

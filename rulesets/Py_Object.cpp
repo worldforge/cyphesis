@@ -9,8 +9,6 @@
 
 #include "modules/Location.h"
 
-#include <Atlas/Objects/Operation/RootOperation.h>
-
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -281,7 +279,7 @@ Element PyObject_asMessageElement(PyObject * o)
     }
     if (PyOperation_Check(o)) {
         PyOperation * op = (PyOperation *)o;
-        return op->operation->asObject();
+        return op->operation->asMessage();
     }
     if (PyOplist_Check(o)) {
         PyOplist * opl = (PyOplist *)o;
@@ -291,7 +289,7 @@ Element PyObject_asMessageElement(PyObject * o)
         const OpVector & ops = *opl->ops;
         OpVector::const_iterator Iend = ops.end();
         for (OpVector::const_iterator I = ops.begin(); I != Iend; ++I) {
-            entlist.push_back((*I)->asObject());
+            entlist.push_back((*I)->asMessage());
         }
         return msg;
     }

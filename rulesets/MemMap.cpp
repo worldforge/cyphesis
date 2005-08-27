@@ -9,7 +9,8 @@
 #include "common/log.h"
 #include "common/debug.h"
 
-#include <Atlas/Objects/Operation/Look.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <sstream>
 
@@ -22,6 +23,7 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Entity::Anonymous;
 
 MemEntity * MemMap::addEntity(MemEntity * entity)
 {
@@ -116,16 +118,16 @@ MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s)
 {
 }
 
-Atlas::Objects::Operation::RootOperation * MemMap::lookId()
+Atlas::Objects::Operation::RootOperation MemMap::lookId()
 // Generate a look operation to look at an entity we are interested in
 {
     debug( std::cout << "MemMap::lookId" << std::endl << std::flush;);
     if (!m_additionsById.empty()) {
         const std::string & id = m_additionsById.front();
-        Look * l = new Look();
-        MapType m;
-        m["id"] = id;
-        l->setArgs(ListType(1, m));
+        Look l;
+        Anonymous m;
+        m->setId(id);
+        l->setArgs1(m);
         m_additionsById.pop_front();
         return l;
     }
@@ -319,7 +321,7 @@ MemEntityVector MemMap::findByLocation(const Location & loc, double radius)
     return res;
 }
 
-const Element MemMap::asObject()
+const Element MemMap::asMessage()
 {
     MapType omap;
     

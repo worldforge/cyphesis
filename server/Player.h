@@ -11,7 +11,7 @@
 class Player : public Account {
   protected:
     virtual int characterError(const Operation &,
-                               const Atlas::Message::MapType &,
+                               const Atlas::Objects::Entity::RootEntity &,
                                OpVector &) const;
   public:
     Player(Connection * conn, const std::string & username,
@@ -22,6 +22,7 @@ class Player : public Account {
     virtual const char * getType() const;
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
+    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 
     static std::set<std::string> playableTypes;
 };

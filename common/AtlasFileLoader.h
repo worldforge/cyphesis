@@ -18,12 +18,12 @@ class AtlasFileLoader : public Atlas::Message::DecoderBase {
     std::fstream m_file;
     /// Atlas codec for decoding input FIXME Make this generic
     Atlas::Codecs::XML m_codec;
-    /// Counter for objects read from input
+    /// Counter for messages read from input
     int m_count;
-    /// Store for the objects loaded
-    Atlas::Message::MapType & m_objects;
+    /// Store for the messages loaded
+    Atlas::Message::MapType & m_messages;
 
-    virtual void objectArrived(const Atlas::Message::Element & obj);
+    virtual void messageArrived(const Atlas::Message::MapType & msg);
   public:
     AtlasFileLoader(const std::string & filename, Atlas::Message::MapType & m);
 

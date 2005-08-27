@@ -4,8 +4,9 @@
 
 #include "utility.h"
 
-#include <Atlas/Objects/Entity/RootEntity.h>
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Operation.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -15,45 +16,11 @@ using Atlas::Objects::Operation::RootOperation;
 
 namespace utility {
 
-Root * Object_asRoot(const Element & o)
-{
-    Root * obj;
-
-    if (!o.isMap()) return NULL;
-    const MapType & omap = o.asMap();
-    MapType::const_iterator I = omap.find("objtype");
-    MapType::const_iterator Iend = omap.end();
-    if ((I != Iend) && (I->second.isString())) {
-        if ((I->second.asString() == "object") ||
-            (I->second.asString() == "obj")) {
-            obj = new RootEntity;
-        } else if (I->second.asString() == "op") {
-            obj = new RootOperation;
-        } else {
-            obj = new Root;
-        }
-    } else {
-        obj = new Root;
-    }
-    for (MapType::const_iterator I = omap.begin(); I != Iend; ++I) {
-        obj->setAttr(I->first, I->second);
-    }
-    return obj;
-}
-
-// FIXME Use factory to create op of the right type.
 bool Object_asOperation(const MapType & ent, RootOperation & op)
 {
-    MapType::const_iterator I = ent.find("objtype");
-    MapType::const_iterator Iend = ent.end();
-    if ((I == Iend) || (!I->second.isString()) ||
-        (I->second.asString() != "op")) {
-        return false;
-    }
-    for (I = ent.begin(); I != Iend; ++I) {
-        op.setAttr(I->first, I->second);
-    }
-    return true;
+    Root r = Atlas::Objects::Factories::instance()->createObject(ent);
+    op = Atlas::Objects::smart_dynamic_cast<RootOperation>(r);
+    return op.isValid();
 }
 
 } // namespace utility

@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2005 Alistair Riddoch
 
 #include "Account.h"
 
@@ -19,11 +19,8 @@
 
 #include <wfmath/atlasconv.h>
 
-#include <Atlas/Objects/Operation/Sight.h>
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Info.h>
-#include <Atlas/Objects/Operation/Sound.h>
-#include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <sigc++/bind.h>
 #include <sigc++/object_slot.h>
@@ -31,11 +28,16 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Sound;
 using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Entity::RootEntity;
+
+using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
@@ -87,7 +89,7 @@ void Account::addCharacter(Entity * chr)
 }
 
 Entity * Account::addNewCharacter(const std::string & typestr,
-                                  const MapType & ent)
+                                  const RootEntity & ent)
 {
     assert(m_connection != 0);
     BaseWorld & world = m_connection->m_server.m_world;
@@ -116,18 +118,19 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 
     // Hack in default objects
     // This needs to be done in a generic way
-    MapType entmap;
-    entmap["parents"] = ListType(1,"coin");
-    entmap["pos"] = Vector3D(0,0,0).toAtlas();
-    entmap["loc"] = chr->getId();
-    entmap["name"] = "coin";
+    Anonymous create_arg;
+    create_arg->setParents(std::list<std::string>(1,"coin"));
+    ::addToEntity(Point3D(0,0,0), create_arg->modifyPos());
+    create_arg->setLoc(chr->getId());
+    create_arg->setName("coin");
+    // FIXME We can probably send the same op 10 times, rather than create 10
+    // FIXME alternatively we can set 10 args on one op
     for(int i = 0; i < 10; i++) {
-        Create * c = new Create;
-        ListType & args = c->getArgs();
-        args.push_back(entmap);
+        Create c;
         c->setTo(chr->getId());
         c->setSerialno(newSerialNo());
-        world.message(*c, *chr);
+        c->setArgs1(create_arg);
+        world.message(c, *chr);
     }
 
     return chr;
@@ -144,12 +147,11 @@ void Account::LogoutOperation(const Operation & op, OpVector &)
     }
 
     Info info;
-    ListType & args = info.getArgs();
-    args.push_back(op.asObject());
-    info.setRefno(op.getSerialno());
-    info.setSerialno(newSerialNo());
-    info.setFrom(getId());
-    info.setTo(getId());
+    info->setArgs1(op);
+    info->setRefno(op->getSerialno());
+    info->setSerialno(newSerialNo());
+    info->setFrom(getId());
+    info->setTo(getId());
     // FIXME Direct send rather than reply - requires local refno handling
     m_connection->send(info);
     m_connection->disconnect();
@@ -178,43 +180,64 @@ void Account::addToMessage(MapType & omap) const
     BaseEntity::addToMessage(omap);
 }
 
+void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+    ent->setAttr("username", m_username);
+    ent->setName(m_username);
+    if (!m_password.empty()) {
+        ent->setAttr("password", m_password);
+    }
+    ent->setParents(std::list<std::string>(1,getType()));
+    ListType charlist;
+    EntityDict::const_iterator I = m_charactersDict.begin();
+    EntityDict::const_iterator Iend = m_charactersDict.end();
+    for (; I != Iend; ++I) {
+        charlist.push_back(I->first);
+    }
+    ent->setAttr("characters", charlist);
+    BaseEntity::addToEntity(ent);
+}
+
 void Account::CreateOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
-    const ListType & args = op.getArgs();
-    if ((args.empty()) || (!args.front().isMap())) {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
         return;
     }
 
-    const MapType & entmap = args.front().asMap();
+    RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
 
-    if (characterError(op, entmap, res)) {
+    if (!arg.isValid()) {
+        error(op, "Character creation arg is malformed", res, getId());
         return;
     }
 
-    MapType::const_iterator I = entmap.find("parents");
-    if ((I == entmap.end()) || !(I->second.isList()) ||
-        (I->second.asList().empty()) ||
-        !(I->second.asList().front().isString()) ) {
+    if (characterError(op, arg, res)) {
+        return;
+    }
+
+    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
+        arg->getParents().empty()) {
         error(op, "Character has no type", res, getId());
         return;
     }
     
-    const std::string & typestr = I->second.asList().front().asString();
+    const std::string & typestr = arg->getParents().front();
     debug( std::cout << "Account creating a " << typestr << " object"
                      << std::endl << std::flush; );
 
-    BaseEntity * obj = addNewCharacter(typestr, entmap);
+    BaseEntity * obj = addNewCharacter(typestr, arg);
 
     if (obj == 0) {
         error(op, "Character creation failed", res, getId());
         return;
     }
 
-    Info * info = new Info;
-    ListType & info_args = info->getArgs();
-    info_args.push_back(MapType());
-    obj->addToMessage(info_args.front().asMap());
+    Info info;
+    Anonymous info_arg;
+    obj->addToEntity(info_arg);
+    info->setArgs1(info_arg);
     info->setSerialno(newSerialNo());
 
     res.push_back(info);
@@ -223,85 +246,85 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
 void Account::SetOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Account::Operation(set)" << std::endl << std::flush;);
-    const ListType & args = op.getArgs();
-    if ((args.empty()) || (!args.front().isMap())) {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
         return;
     }
 
-    const MapType & entmap = args.front().asMap();
+    const Root & arg = args.front();
 
-    MapType::const_iterator I = entmap.find("id");
-    if (I == entmap.end() || !(I->second.isString())) {
+    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         error(op, "Set character has no ID", res, getId());
         return;
     }
 
-    const std::string & id = I->second.asString();
+    const std::string & id = arg->getId();
     EntityDict::const_iterator J = m_charactersDict.find(id);
     if (J == m_charactersDict.end()) {
         return error(op, "Set character for unknown character", res, getId());
     }
 
     Entity * e = J->second;
-    I = entmap.find("guise");
-    MapType newArg;
-    if (I != entmap.end()) {
+    Anonymous new_arg;
+    bool argument_valid = false;
+    Element guise;
+    if (arg->getAttr("guise", guise) == 0) {
         debug(std::cout << "Got attempt to change characters guise"
                         << std::endl << std::flush;);
         // Apply change to character in-game
-        newArg["guise"] = I->second;
+        new_arg->setAttr("guise", guise);
+        argument_valid = true;
     }
-    I = entmap.find("height");
-    if (I != entmap.end() && (I->second.isNum())) {
+    Element height;
+    if (arg->getAttr("height", height) == 0 && (height.isNum())) {
         debug(std::cout << "Got attempt to change characters height"
                         << std::endl << std::flush;);
         BBox & bbox = e->m_location.m_bBox;
         if (bbox.isValid()) {
             float old_height = bbox.highCorner().z() - bbox.lowCorner().z();
-            float scale = I->second.asNum() / old_height;
+            float scale = height.asNum() / old_height;
             BBox newBox(WFMath::Point<3>(bbox.lowCorner().x() * scale,
                                          bbox.lowCorner().y() * scale,
                                          bbox.lowCorner().z() * scale),
                         WFMath::Point<3>(bbox.highCorner().x() * scale,
                                          bbox.highCorner().y() * scale,
                                          bbox.highCorner().z() * scale));
-            newArg["bbox"] = newBox.toAtlas();
+            new_arg->setAttr("bbox", newBox.toAtlas());
+            argument_valid = true;
         }
     }
 
-    if (!newArg.empty()) {
+    if (argument_valid) {
         debug(std::cout << "Passing character mods in-game"
                         << std::endl << std::flush;);
-        Set * s = new Set;
+        Set s;
         s->setTo(id);
-        newArg["id"] = id;
-        ListType & sarg = s->getArgs();
-        sarg.push_back(newArg);
+        new_arg->setId(id);
+        s->setArgs1(new_arg);
         assert(m_connection != 0);
-        m_connection->m_server.m_world.message(*s, *e);
+        m_connection->m_server.m_world.message(s, *e);
     }
 }
 
 void Account::ImaginaryOperation(const Operation & op, OpVector & res)
 {
-    const ListType & args = op.getArgs();
-    if ((args.empty()) || (!args.front().isMap())) {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
         return;
     }
 
     Sight s;
-    ListType & sargs = s.getArgs();
-    sargs.push_back(op.asObject());
-    s.setFrom(getId());
-    s.setSerialno(newSerialNo());
+    s->setArgs1(op);
+    s->setFrom(getId());
+    s->setSerialno(newSerialNo());
     // FIXME Remove this
-    s.setRefno(op.getSerialno());
-    const MapType & arg = args.front().asMap();
-    MapType::const_iterator I = arg.find("loc");
-    if (I != arg.end()) {
-        s.setTo(I->second.asString());
+    s->setRefno(op->getSerialno());
+    RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
+    assert(arg.isValid());
+    if (arg->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+        s->setTo(arg->getLoc());
     } else {
-        s.setTo(op.getTo());
+        s->setTo(op->getTo());
     }
     assert(m_connection != 0);
     m_connection->m_server.m_lobby.operation(s, res);
@@ -309,24 +332,23 @@ void Account::ImaginaryOperation(const Operation & op, OpVector & res)
 
 void Account::TalkOperation(const Operation & op, OpVector & res)
 {
-    const ListType & args = op.getArgs();
-    if ((args.empty()) || (!args.front().isMap())) {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
         return;
     }
 
     Sound s;
-    ListType & sargs = s.getArgs();
-    sargs.push_back(op.asObject());
-    s.setFrom(getId());
-    s.setSerialno(newSerialNo());
-    // FIXME Remove this
-    s.setRefno(op.getSerialno());
-    const MapType & arg = args.front().asMap();
-    MapType::const_iterator I = arg.find("loc");
-    if (I != arg.end()) {
-        s.setTo(I->second.asString());
+    s->setArgs1(op);
+    s->setFrom(getId());
+    s->setSerialno(newSerialNo());
+    // FIXME Remove this - no really
+    s->setRefno(op->getSerialno());
+    RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
+    assert(arg.isValid());
+    if (arg->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+        s->setTo(arg->getLoc());
     } else {
-        s.setTo(op.getTo());
+        s->setTo(op->getTo());
     }
     assert(m_connection != 0);
     m_connection->m_server.m_lobby.operation(s, res);
@@ -335,30 +357,30 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
 void Account::LookOperation(const Operation & op, OpVector & res)
 {
     assert(m_connection != 0);
-    const ListType & args = op.getArgs();
+    const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        Sight * s = new Sight;
+        Sight s;
         s->setTo(getId());
-        ListType & s_args = s->getArgs();
-        s_args.push_back(MapType());
-        m_connection->m_server.m_lobby.addToMessage(s_args.front().asMap());
+        Anonymous sight_arg;
+        m_connection->m_server.m_lobby.addToEntity(sight_arg);
+        s->setArgs1(sight_arg);
         s->setSerialno(newSerialNo());
         res.push_back(s);
         return;
     }
-    MapType::const_iterator I = args.front().asMap().find("id");
-    if ((I == args.front().asMap().end()) || (!I->second.isString())) {
+    const Root & arg = args.front();
+    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         error(op, "No target for look", res, getId());
         return;
     }
-    const std::string & to = I->second.asString();
+    const std::string & to = arg->getId();
     EntityDict::const_iterator J = m_charactersDict.find(to);
     if (J != m_charactersDict.end()) {
-        Sight * s = new Sight;
+        Sight s;
         s->setTo(getId());
-        ListType & s_args = s->getArgs();
-        s_args.push_back(MapType());
-        J->second->addToMessage(s_args.front().asMap());
+        Anonymous sight_arg;
+        J->second->addToEntity(sight_arg);
+        s->setArgs1(sight_arg);
         s->setSerialno(newSerialNo());
         res.push_back(s);
         return;
@@ -366,11 +388,11 @@ void Account::LookOperation(const Operation & op, OpVector & res)
     const AccountDict & accounts = m_connection->m_server.m_lobby.getAccounts();
     AccountDict::const_iterator K = accounts.find(to);
     if (K != accounts.end()) {
-        Sight * s = new Sight;
+        Sight s;
         s->setTo(getId());
-        ListType & s_args = s->getArgs();
-        s_args.push_back(MapType());
-        K->second->addToMessage(s_args.front().asMap());
+        Anonymous sight_arg;
+        K->second->addToEntity(sight_arg);
+        s->setArgs1(sight_arg);
         s->setSerialno(newSerialNo());
         res.push_back(s);
         return;

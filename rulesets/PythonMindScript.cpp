@@ -15,7 +15,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include <Atlas/Objects/RootOperation.h>
 
 static const bool debug_flag = false;
 
@@ -31,7 +31,7 @@ PythonMindScript::~PythonMindScript()
 bool PythonMindScript::Operation(const std::string & op_type,
                                  const Atlas::Objects::Operation::RootOperation & op,
                                  OpVector & ret_list,
-                                 Atlas::Objects::Operation::RootOperation * sub_op)
+                                 Atlas::Objects::Operation::RootOperation * sub_op_ptr)
 {
     std::string op_name = op_type + "_operation";
     debug( std::cout << "Got script object for " << op_name << std::endl
@@ -43,15 +43,16 @@ bool PythonMindScript::Operation(const std::string & op_type,
         return false;
     }
     PyConstOperation * py_op = newPyConstOperation();
-    py_op->operation = &op;
+    py_op->operation = op;
     py_op->own = 0;
-    py_op->from = mind.m_map.getAdd(op.getFrom());
-    py_op->to = mind.m_map.getAdd(op.getTo());
+    py_op->from = mind.m_map.getAdd(op->getFrom());
+    py_op->to = mind.m_map.getAdd(op->getTo());
     PyObject * ret;
-    if (sub_op == NULL) {
+    if (sub_op_ptr == NULL) {
         ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(O)", py_op);
     } else {
+        const Atlas::Objects::Operation::RootOperation & sub_op = *sub_op_ptr;
         PyOperation * py_sub_op = newPyOperation();
         py_sub_op->operation = sub_op;
         py_sub_op->own = 0;
@@ -67,7 +68,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
                          << std::flush;);
         if (PyOperation_Check(ret)) {
             PyOperation * op = (PyOperation*)ret;
-            if (op->operation != NULL) {
+            if (!op->operation.isValid()) {
                 ret_list.push_back(op->operation);
                 op->own = 0;
             } else {

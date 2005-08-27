@@ -5,22 +5,20 @@
 #ifndef COMMON_ADD_H
 #define COMMON_ADD_H
 
-#include <Atlas/Objects/Operation/Set.h>
+#include "common/CustomOp.h"
+
+#include <Atlas/Objects/ObjectsFwd.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-/// \brief Operation class to incrementally modify the attributes of an entity
-///
-/// This operation is important as it avoids the race conditions that are
-/// so common when modifying an attribute using Set.
-class Add : public Set {
-  protected:
-    Add(const char *, const char *);
+class AddProxy {
   public:
-    Add();
-    virtual ~Add();
-    static Add Class();
+    static const std::string name() { return "add"; }
 };
+
+typedef CustomOpData<SetData, AddProxy> AddData;
+
+typedef SmartPtr<AddData> Add;
 
 } } }
 

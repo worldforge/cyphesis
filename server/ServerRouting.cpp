@@ -10,11 +10,14 @@
 #include "common/BaseWorld.h"
 
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/RootEntity.h>
 
 #include <iostream>
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Entity::RootEntity;
 
 static bool debug_flag = false;
 
@@ -56,6 +59,25 @@ void ServerRouting::addToMessage(MapType & omap) const
     omap["version"] = std::string(consts::version);
     if (restricted_flag) {
         omap["restricted"] = "true";
+    }
+    
+    // We could add all sorts of stats here, but I don't know exactly what yet.
+}
+
+/// Copies a representation of the server into an Atlas entity.
+void ServerRouting::addToEntity(const RootEntity & ent) const
+{
+    ent->setObjtype("obj");
+    ent->setAttr("server", "cyphesis");
+    ent->setAttr("ruleset", m_svrRuleset);
+    ent->setName(m_svrName);
+    ent->setParents(std::list<std::string>(1, "server"));
+    ent->setAttr("clients", m_numClients);
+    ent->setAttr("uptime", m_world.upTime());
+    ent->setAttr("builddate", std::string(consts::buildTime)+", "+std::string(consts::buildDate));
+    ent->setAttr("version", std::string(consts::version));
+    if (restricted_flag) {
+        ent->setAttr("restricted", "true");
     }
     
     // We could add all sorts of stats here, but I don't know exactly what yet.

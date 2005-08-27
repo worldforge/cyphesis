@@ -96,6 +96,7 @@ class ServerRouting : public OOGThing {
 
     /// Copy the attribute values of this object into an Atlas message.
     virtual void addToMessage(Atlas::Message::MapType &) const;
+    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 };
 
 #endif // SERVER_SERVER_ROUTING_H
