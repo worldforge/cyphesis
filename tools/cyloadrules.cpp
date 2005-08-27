@@ -5,11 +5,13 @@
 #include "common/Database.h"
 #include "common/globals.h"
 
-#include <Atlas/Objects/Decoder.h>
+#include <Atlas/Message/DecoderBase.h>
+// #include <Atlas/Message/Element.h>
 #include <Atlas/Codecs/XML.h>
 
 #include <string>
 #include <fstream>
+#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -67,8 +69,7 @@ class FileDecoder : public Atlas::Message::DecoderBase {
     Atlas::Codecs::XML m_codec;
     int m_count;
 
-    virtual void objectArrived(const Element & obj) {
-        const MapType & omap = obj.asMap();
+    virtual void messageArrived(const MapType & omap) {
         MapType::const_iterator I = omap.find("id");
         if (I == omap.end()) {
             std::cerr << "Found rule with no id" << std::endl << std::flush;
@@ -79,12 +80,12 @@ class FileDecoder : public Atlas::Message::DecoderBase {
             return;
         }
         m_count++;
-        m_db.storeInRules(obj.asMap(), I->second.asString());
+        m_db.storeInRules(omap, I->second.asString());
     }
   public:
     FileDecoder(const std::string & filename, RuleBase & db) :
                 m_file(filename.c_str(), std::ios::in), m_db(db),
-                m_codec(m_file, this), m_count(0)
+                m_codec(m_file, *this), m_count(0)
     {
     }
 

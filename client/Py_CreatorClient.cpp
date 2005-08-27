@@ -153,7 +153,7 @@ static PyObject * CreatorClient_send(PyCreatorClient * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "Can only send Atlas operation");
         return NULL;
     }
-    self->m_mind->send(*op->operation);
+    self->m_mind->send(op->operation);
     Py_INCREF(Py_None);
     return Py_None;
 }

@@ -2,6 +2,8 @@
 // the GNU Lesser General Public License (See COPYING for details).
 // Copyright (C) 2005 Alistair Riddoch
 
+#error This file has been removed from the build
+
 #include "Formatter.h"
 
 #include <iostream>

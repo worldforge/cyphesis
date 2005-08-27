@@ -13,30 +13,15 @@
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codec.h>
-#include <Atlas/Objects/Entity/Account.h>
-#include <Atlas/Objects/Operation/Appearance.h>
-#include <Atlas/Objects/Operation/Combine.h>
-#include <Atlas/Objects/Operation/Delete.h>
-#include <Atlas/Objects/Operation/Feel.h>
-#include <Atlas/Objects/Operation/Imaginary.h>
-#include <Atlas/Objects/Operation/Listen.h>
-#include <Atlas/Objects/Operation/Move.h>
-#include <Atlas/Objects/Operation/Disappearance.h>
-#include <Atlas/Objects/Operation/Smell.h>
-#include <Atlas/Objects/Operation/Touch.h>
-#include <Atlas/Objects/Operation/Divide.h>
-#include <Atlas/Objects/Operation/Login.h>
-#include <Atlas/Objects/Operation/Logout.h>
-#include <Atlas/Objects/Operation/Get.h>
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Talk.h>
-#include <Atlas/Objects/Operation/Error.h>
-#include <Atlas/Objects/Operation/Sound.h>
+#include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <varconf/Config.h>
 
 #include "common/utility.h"
-#include "common/Generic.h"
+#include "common/Monitor.h"
+#include "common/Connect.h"
 
 #include <skstream/skstream_unix.h>
 
@@ -60,15 +45,25 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
+using Atlas::Objects::Root;
+
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Disappearance;
-using Atlas::Objects::Operation::Generic;
 using Atlas::Objects::Operation::Get;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Talk;
+using Atlas::Objects::Operation::RootOperation;
+using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Entity::Anonymous;
+
+using Atlas::Objects::smart_dynamic_cast;
+
+using Atlas::Objects::Operation::Monitor;
+using Atlas::Objects::Operation::Connect;
 
 struct command {
     const char * cmd_string;
@@ -109,13 +104,13 @@ static void help()
 }
 
 template <class Stream>
-class Interactive : public Atlas::Objects::Decoder, public SigC::Object
+class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
 {
   private:
     bool error_flag, reply_flag, login_flag, avatar_flag;
     int cli_fd;
-    Atlas::Objects::Encoder * encoder;
-    Atlas::Codec<std::iostream> * codec;
+    Atlas::Objects::ObjectsEncoder * encoder;
+    Atlas::Codec * codec;
     Stream ios;
     std::string password;
     std::string username;
@@ -126,37 +121,17 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
     int monitor_start_time;
 
     void output(const Element & item, bool recurse = true);
-    void logOp(const Atlas::Objects::Operation::RootOperation &);
+    void logOp(const RootOperation &);
   protected:
-    void objectArrived(const Atlas::Objects::Operation::Action& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Combine& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Communicate& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Create& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Delete& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Divide& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Feel& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Get& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Imaginary& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Listen& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Login& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Logout& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Look& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Move& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Perceive& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Perception& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::RootOperation& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Set& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Smell& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Talk& op) { logOp(op); }
-    void objectArrived(const Atlas::Objects::Operation::Touch& op) { logOp(op); }
 
-    void unknownObjectArrived(const Element &);
-    void objectArrived(const Atlas::Objects::Operation::Appearance&);
-    void objectArrived(const Atlas::Objects::Operation::Disappearance&);
-    void objectArrived(const Atlas::Objects::Operation::Info&);
-    void objectArrived(const Atlas::Objects::Operation::Error&);
-    void objectArrived(const Atlas::Objects::Operation::Sight&);
-    void objectArrived(const Atlas::Objects::Operation::Sound&);
+    void objectArrived(const Atlas::Objects::Root &);
+
+    void appearanceArrived(const RootOperation &);
+    void disappearanceArrived(const RootOperation &);
+    void infoArrived(const RootOperation &);
+    void errorArrived(const RootOperation &);
+    void sightArrived(const RootOperation &);
+    void soundArrived(const RootOperation &);
 
     int negotiate();
   public:
@@ -172,7 +147,7 @@ class Interactive : public Atlas::Objects::Decoder, public SigC::Object
         }
     }
 
-    void send(const Atlas::Objects::Operation::RootOperation &);
+    void send(const RootOperation &);
     int connect(const std::string & host);
     int login();
     void exec(const std::string & cmd, const std::string & arg);
@@ -240,45 +215,77 @@ void Interactive<Stream>::output(const Element & item, bool recurse)
 }
 
 template <class Stream>
-void Interactive<Stream>::logOp(const Atlas::Objects::Operation::RootOperation & op)
+void Interactive<Stream>::logOp(const RootOperation & op)
 {
     ++monitor_op_count;
-    std::cout << op.getParents().front().asString() << "(from=\"" << op.getFrom()
-              << "\",to=\"" << op.getTo() << "\")" << std::endl << std::flush;
+    std::cout << op->getParents().front() << "(from=\"" << op->getFrom()
+              << "\",to=\"" << op->getTo() << "\")" << std::endl << std::flush;
 }
 
 template <class Stream>
-void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Appearance& o)
+void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
+{
+    RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
+    if (!op.isValid()) {
+        // FIXME report the parents and objtype
+        std::cerr << "Non op object received from client" << std::endl << std::flush;
+    }
+
+    switch (op->getClassNo()) {
+        case Atlas::Objects::Operation::APPEARANCE_NO:
+            appearanceArrived(op);
+            break;
+        case Atlas::Objects::Operation::DISAPPEARANCE_NO:
+            disappearanceArrived(op);
+            break;
+        case Atlas::Objects::Operation::INFO_NO:
+            infoArrived(op);
+            break;
+        case Atlas::Objects::Operation::ERROR_NO:
+            errorArrived(op);
+            break;
+        case Atlas::Objects::Operation::SIGHT_NO:
+            sightArrived(op);
+            break;
+        case Atlas::Objects::Operation::SOUND_NO:
+            soundArrived(op);
+            break;
+        default:
+            logOp(op);
+            break;
+    }
+}
+
+template <class Stream>
+void Interactive<Stream>::appearanceArrived(const RootOperation & op)
 {
     if (accountId.empty()) {
         return;
     }
-    if (accountId != o.getTo()) {
+    if (accountId != op->getTo()) {
         // This is an IG op we are monitoring
-        logOp(o);
+        logOp(op);
         return;
     }
-    if (o.getArgs().empty()) {
+    if (op->getArgs().empty()) {
         return;
     }
-    const MapType & ent = o.getArgs().front().asMap();
-    MapType::const_iterator I = ent.find("id");
-    if (!I->second.isString()) {
+    RootEntity ent = smart_dynamic_cast<RootEntity>(op->getArgs().front());
+    if (!ent.isValid()) {
+        std::cerr << "Got Appearance of non-entity" << std::endl << std::flush;
+        return;
+    }
+    if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "Got Appearance of non-string ID" << std::endl << std::flush;
         return;
     }
-    const std::string & id = I->second.asString();
+    const std::string & id = ent->getId();
     std::cout << "Appearance(id: " << id << ")";
-    I = ent.find("loc");
-    if (I == ent.end()) {
+    if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         std::cout << std::endl << std::flush;
         return;
     }
-    if (!I->second.isString()) {
-        std::cerr << " with non-string LOC" << std::endl << std::flush;
-        return;
-    }
-    const std::string & loc = I->second.asString();
+    const std::string & loc = ent->getLoc();
     std::cout << " in " << loc << std::endl;
     if (loc == "lobby") {
         std::cout << id << " has logged in." << std::endl;
@@ -287,47 +294,35 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Appeara
 }
 
 template <class Stream>
-void Interactive<Stream>::unknownObjectArrived(const Element & e)
-{
-    Atlas::Objects::Operation::RootOperation r;
-    bool isOp = utility::Object_asOperation(e.asMap(), r);
-    if (isOp) {
-        logOp(r);
-    }
-}
-
-template <class Stream>
-void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Disappearance& o)
+void Interactive<Stream>::disappearanceArrived(const RootOperation & op)
 {
     if (accountId.empty()) {
         return;
     }
-    if (accountId != o.getTo()) {
+    if (accountId != op->getTo()) {
         // This is an IG op we are monitoring
-        logOp(o);
+        logOp(op);
         return;
     }
-    if (o.getArgs().empty()) {
+    if (op->getArgs().empty()) {
         return;
     }
-    const MapType & ent = o.getArgs().front().asMap();
-    MapType::const_iterator I = ent.find("id");
-    if (!I->second.isString()) {
+    RootEntity ent = smart_dynamic_cast<RootEntity>(op->getArgs().front());
+    if (!ent.isValid()) {
+        std::cerr << "Got Disappearance of non-entity" << std::endl << std::flush;
+        return;
+    }
+    if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "Got Disappearance of non-string ID" << std::endl << std::flush;
         return;
     }
-    const std::string & id = I->second.asString();
+    const std::string & id = ent->getId();
     std::cout << "Disappearance(id: " << id << ")";
-    I = ent.find("loc");
-    if (I == ent.end()) {
+    if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         std::cout << std::endl << std::flush;
         return;
     }
-    if (!I->second.isString()) {
-        std::cerr << " with non-string LOC" << std::endl << std::flush;
-        return;
-    }
-    const std::string & loc = I->second.asString();
+    const std::string & loc = ent->getLoc();
     std::cout << " in " << loc << std::endl;
     if (loc == "lobby") {
         std::cout << id << " has logged out." << std::endl;
@@ -336,37 +331,36 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Disappe
 }
 
 template <class Stream>
-void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& op)
+void Interactive<Stream>::infoArrived(const RootOperation & op)
 {
     reply_flag = true;
-    if (op.getArgs().empty()) {
+    if (op->getArgs().empty()) {
         return;
     }
-    const MapType & ent = op.getArgs().front().asMap();
-    MapType::const_iterator Iend = ent.end();
+    const Root & ent = op->getArgs().front();
     if (login_flag) {
-        MapType::const_iterator I = ent.find("id");
-        if (I == Iend || !I->second.isString()) {
+        if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             std::cerr << "ERROR: Response to login does not contain account id"
                       << std::endl << std::flush;
             
         } else {
-            accountId = I->second.asString();
+            accountId = ent->getId();
         }
     } else if (avatar_flag) {
         std::cout << "Create agent success" << std::endl << std::flush;
-        MapType::const_iterator I = ent.find("id");
-        if (I == Iend || !I->second.isString()) {
+        if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             std::cerr << "ERROR: Response to agent create does not contain agent id"
                       << std::endl << std::flush;
             
         } else {
-            agentId = I->second.asString();
-            avatar_flag = true;
+            agentId = ent->getId();
+            avatar_flag = false;
         }
     } else {
         std::cout << "Info(" << std::endl;
-        for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
+        MapType entmap = ent->asMessage();
+        MapType::const_iterator Iend = entmap.end();
+        for (MapType::const_iterator I = entmap.begin(); I != Iend; ++I) {
             const Element & item = I->second;
             std::cout << "     " << I->first << ": ";
             output(item);
@@ -378,35 +372,34 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Info& o
 }
 
 template <class Stream>
-void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Error& o)
+void Interactive<Stream>::errorArrived(const RootOperation & op)
 {
     reply_flag = true;
     error_flag = true;
     std::cout << "Error(";
-    const ListType & args = o.getArgs();
-    const Element & arg = args.front();
-    if (arg.isString()) {
-        std::cout << arg.asString();
-    } else if (arg.isMap()) {
-        std::cout << arg.asMap().find("message")->second.asString();
+    const std::vector<Root> & args = op->getArgs();
+    const Root & arg = args.front();
+    Element message_attr;
+    if (arg->getAttr("message", message_attr) == 0 && message_attr.isString()) {
+        std::cout << message_attr.asString();
     }
     std::cout << ")" << std::endl << std::flush;
 }
 
 template <class Stream>
-void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sight& o)
+void Interactive<Stream>::sightArrived(const RootOperation & op)
 {
     if (accountId.empty()) {
         return;
     }
-    if (accountId != o.getTo() && agentId != o.getTo()) {
+    if (accountId != op->getTo() && agentId != op->getTo()) {
         // This is an IG op we are monitoring
-        logOp(o);
+        logOp(op);
         return;
     }
     reply_flag = true;
     std::cout << "Sight(" << std::endl;
-    const MapType & ent = o.getArgs().front().asMap();
+    const MapType & ent = op->getArgs().front()->asMessage();
     MapType::const_iterator Iend = ent.end();
     for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
         const Element & item = I->second;
@@ -418,18 +411,18 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sight& 
 }
 
 template <class Stream>
-void Interactive<Stream>::objectArrived(const Atlas::Objects::Operation::Sound& o)
+void Interactive<Stream>::soundArrived(const RootOperation & op)
 {
     if (accountId.empty()) {
         return;
     }
-    if (accountId != o.getTo()) {
+    if (accountId != op->getTo()) {
         // This is an IG op we are monitoring
-        logOp(o);
+        logOp(op);
         return;
     }
     reply_flag = true;
-    const MapType & arg = o.getArgs().front().asMap();
+    const MapType & arg = op->getArgs().front()->asMessage();
     MapType::const_iterator I = arg.find("from");
     if (I == arg.end() || !I->second.isString()) {
         std::cout << "Sound arg has no from" << std::endl << std::flush;
@@ -597,17 +590,17 @@ template <class Stream>
 int Interactive<Stream>::negotiate()
 {
     // Do client negotiation with the server
-    Atlas::Net::StreamConnect conn("cycmd", ios, this);
+    Atlas::Net::StreamConnect conn("cycmd", ios, *this);
 
     std::cout << "Negotiating... " << std::flush;
-    while (conn.getState() == Atlas::Negotiate<std::iostream>::IN_PROGRESS) {
+    while (conn.getState() == Atlas::Negotiate::IN_PROGRESS) {
         // conn.poll() does all the negotiation
         conn.poll();
     }
     std::cout << "done." << std::endl << std::flush;
 
     // Check whether negotiation was successful
-    if (conn.getState() == Atlas::Negotiate<std::iostream>::FAILED) {
+    if (conn.getState() == Atlas::Negotiate::FAILED) {
         std::cerr << "Failed to negotiate." << std::endl;
         return -1;
     }
@@ -617,7 +610,7 @@ int Interactive<Stream>::negotiate()
     codec = conn.getCodec();
 
     // Create the encoder
-    encoder = new Atlas::Objects::Encoder(codec);
+    encoder = new Atlas::Objects::ObjectsEncoder(*codec);
 
     // Send whatever codec specific data marks the beginning of a stream
     codec->streamBegin();
@@ -629,19 +622,17 @@ template <class Stream>
 int Interactive<Stream>::login()
 {
     Atlas::Objects::Entity::Account account;
-    Atlas::Objects::Operation::Login l;
+    Login l;
     error_flag = false;
     reply_flag = false;
     login_flag = true;
  
-    account.setAttr("username", username);
-    account.setAttr("password", password);
+    account->setAttr("username", username);
+    account->setAttr("password", password);
  
-    ListType args(1,account.asObject());
+    l->setArgs1(account);
  
-    l.setArgs(args);
- 
-    encoder->streamMessage(&l);
+    encoder->streamObjectsMessage(l);
 
     ios << std::flush;
  
@@ -666,7 +657,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
 
     if (cmd == "stat") {
         Get g;
-        encoder->streamMessage(&g);
+        encoder->streamObjectsMessage(g);
     } else if (cmd == "install") {
         size_t space = arg.find(' ');
         if ((space == std::string::npos) || (space >= (arg.size() - 1))) {
@@ -674,51 +665,51 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
                       << std::endl << std::flush;
         } else {
             Set s;
-            s.setFrom(accountId);
-            MapType ent;
-            ent["id"] = std::string(arg, 0, space);
-            ent["objtype"] = "class";
-            ent["parents"] = ListType(1, std::string(arg, space + 1));
-            s.setArgs(ListType(1, ent));
-            encoder->streamMessage(&s);
+            s->setFrom(accountId);
+            Anonymous ent;
+            ent->setId(std::string(arg, 0, space));
+            ent->setObjtype("class");
+            ent->setParents(std::list<std::string>(1, std::string(arg, space + 1)));
+            s->setArgs1(ent);
+            encoder->streamObjectsMessage(s);
         }
         reply_expected = false;
     } else if (cmd == "look") {
         Look l;
-        l.setFrom(accountId);
-        encoder->streamMessage(&l);
+        l->setFrom(accountId);
+        encoder->streamObjectsMessage(l);
     } else if (cmd == "logout") {
         Logout l;
-        l.setFrom(accountId);
+        l->setFrom(accountId);
         if (!arg.empty()) {
-            MapType lmap;
-            lmap["id"] = arg;
-            l.setArgs(ListType(1, lmap));
+            Anonymous lmap;
+            lmap->setId(arg);
+            l->setArgs1(lmap);
             reply_expected = false;
         }
-        encoder->streamMessage(&l);
+        encoder->streamObjectsMessage(l);
     } else if (cmd == "say") {
         Talk t;
-        MapType ent;
-        ent["say"] = arg;
-        t.setArgs(ListType(1,ent));
-        t.setFrom(accountId);
-        encoder->streamMessage(&t);
+        Anonymous ent;
+        ent->setAttr("say", arg);
+        t->setArgs1(ent);
+        t->setFrom(accountId);
+        encoder->streamObjectsMessage(t);
     } else if ((cmd == "help") || (cmd == "?")) {
         reply_expected = false;
         help();
     } else if (cmd == "query") {
         Get g;
 
-        MapType cmap;
-        cmap["objtype"] = "obj";
+        Anonymous cmap;
+        cmap->setObjtype("obj");
         if (!arg.empty()) {
-            cmap["id"] = arg;
+            cmap->setId(arg);
         }
-        g.setArgs(ListType(1,cmap));
-        g.setFrom(accountId);
+        g->setArgs1(cmap);
+        g->setFrom(accountId);
 
-        encoder->streamMessage(&g);
+        encoder->streamObjectsMessage(g);
     } else if (cmd == "reload") {
         if (arg.empty()) {
             reply_expected = false;
@@ -726,34 +717,34 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         } else {
             Set s;
 
-            MapType tmap;
-            tmap["objtype"] = "class";
-            tmap["id"] = arg;
-            s.setArgs(ListType(1,tmap));
-            s.setFrom(accountId);
+            Anonymous tmap;
+            tmap->setObjtype("class");
+            tmap->setId(arg);
+            s->setArgs1(tmap);
+            s->setFrom(accountId);
 
-            encoder->streamMessage(&s);
+            encoder->streamObjectsMessage(s);
         }
     } else if (cmd == "get") {
         Get g;
 
-        MapType cmap;
-        cmap["objtype"] = "class";
+        Anonymous cmap;
+        cmap->setObjtype("class");
         if (!arg.empty()) {
-            cmap["id"] = arg;
+            cmap->setId(arg);
         }
-        g.setArgs(ListType(1,cmap));
-        g.setFrom(accountId);
+        g->setArgs1(cmap);
+        g->setFrom(accountId);
 
-        encoder->streamMessage(&g);
+        encoder->streamObjectsMessage(g);
     } else if (cmd == "monitor") {
         reply_expected = false;
-        Generic m("monitor");
+        Monitor m;
 
-        m.getArgs().push_back(MapType());
-        m.setFrom(accountId);
+        m->setArgs1(Anonymous());
+        m->setFrom(accountId);
 
-        encoder->streamMessage(&m);
+        encoder->streamObjectsMessage(m);
 
         monitor_op_count = 0;
         struct timeval tv;
@@ -761,11 +752,11 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         monitor_start_time = tv.tv_sec;
     } else if (cmd == "unmonitor") {
         reply_expected = false;
-        Generic m("monitor");
+        Monitor m;
 
-        m.setFrom(accountId);
+        m->setFrom(accountId);
 
-        encoder->streamMessage(&m);
+        encoder->streamObjectsMessage(m);
 
         struct timeval tv;
         gettimeofday(&tv, NULL);
@@ -773,26 +764,26 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         std::cout << monitor_op_count << " operations monitored in " << monitor_time << " seconds = " << monitor_op_count / monitor_time << " operations per second" << std::endl << std::flush;
     } else if (cmd == "connect") {
         reply_expected = false;
-        Generic m("connect");
+        Connect m;
 
-        MapType cmap;
-        cmap["hostname"] = arg;
-        m.setArgs(ListType(1,cmap));
-        m.setFrom(accountId);
+        Anonymous cmap;
+        cmap->setAttr("hostname", arg);
+        m->setArgs1(cmap);
+        m->setFrom(accountId);
 
-        encoder->streamMessage(&m);
+        encoder->streamObjectsMessage(m);
     } else if (cmd == "add_agent") {
         Create c;
 
-        MapType cmap;
-        cmap["parents"] = ListType(1, "creator");
-        cmap["objtype"] = "obj";
-        c.setArgs(ListType(1, cmap));
-        c.setFrom(accountId);
+        Anonymous cmap;
+        cmap->setParents(std::list<std::string>(1, "creator"));
+        cmap->setObjtype("obj");
+        c->setArgs1(cmap);
+        c->setFrom(accountId);
 
         avatar_flag = true;
 
-        encoder->streamMessage(&c);
+        encoder->streamObjectsMessage(c);
     } else if (cmd == "find_by_name") {
         if (agentId.empty()) {
             std::cout << "Use add_egent to add an in-game agent first" << std::endl << std::flush;
@@ -800,12 +791,12 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         } else {
             Look l;
 
-            MapType lmap;
-            lmap["name"] = arg;
-            l.setArgs(ListType(1, lmap));
-            l.setFrom(agentId);
+            Anonymous lmap;
+            lmap->setName(arg);
+            l->setArgs1(lmap);
+            l->setFrom(agentId);
 
-            encoder->streamMessage(&l);
+            encoder->streamObjectsMessage(l);
         }
     } else if (cmd == "find_by_type") {
         if (agentId.empty()) {
@@ -814,12 +805,12 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         } else {
             Look l;
 
-            MapType lmap;
-            lmap["parents"] = ListType(1, arg);
-            l.setArgs(ListType(1, lmap));
-            l.setFrom(agentId);
+            Anonymous lmap;
+            lmap->setParents(std::list<std::string>(1, arg));
+            l->setArgs1(lmap);
+            l->setFrom(agentId);
 
-            encoder->streamMessage(&l);
+            encoder->streamObjectsMessage(l);
         }
     } else {
         reply_expected = false;

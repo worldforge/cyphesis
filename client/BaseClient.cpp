@@ -9,14 +9,16 @@
 #include "common/debug.h"
 #include "common/BaseEntity.h"
 
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Login.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::RootOperation;
+using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
@@ -35,21 +37,22 @@ MapType BaseClient::createPlayer(const std::string & name,
                                  const std::string & password)
 {
     m_playerName = name;
-    MapType player_ent;
-    player_ent["username"] = name;
-    player_ent["password"] = password;
-    player_ent["parents"] = ListType(1, "player");
+
+    Anonymous player_ent;
+    player_ent->setAttr("username", name);
+    player_ent->setAttr("password", password);
+    player_ent->setParents(std::list<std::string>(1, "player"));
     
     debug(std::cout << "Loggin " << name << " in with " << password << " as password"
                << std::endl << std::flush;);
     
     Login loginAccountOp;
-    loginAccountOp.setArgs(ListType(1,player_ent));
+    loginAccountOp->setArgs1(player_ent);
     send(loginAccountOp);
 
     if (m_connection.wait() != 0) {
         Create createAccountOp;
-        createAccountOp.setArgs(ListType(1,player_ent));
+        createAccountOp->setArgs1(player_ent);
         send(createAccountOp);
         if (m_connection.wait() != 0) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
@@ -58,31 +61,30 @@ MapType BaseClient::createPlayer(const std::string & name,
         }
     }
 
-    const MapType & ent = m_connection.getReply();
+    const Root & ent = m_connection.getReply();
 
-    MapType::const_iterator I = ent.find("id");
-    if (I == ent.end() || !I->second.isString()) {
+    if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
                   << std::flush;
     } else {
-        m_playerId = I->second.asString();
+        m_playerId = ent->getId();
     }
     //if (ent.find("characters") != ent.end()) {
     //}
 
-    return ent;
+    return ent->asMessage();
 }
 
 CreatorClient * BaseClient::createCharacter(const std::string & type)
 {
-    MapType character;
-    character["name"] = m_playerName;
-    character["parents"] = ListType(1,type);
-    character["objtype"] = "obj";
+    Anonymous character;
+    character->setName(m_playerName);
+    character->setParents(std::list<std::string>(1,type));
+    character->setObjtype("obj");
 
     Create createOp;
-    createOp.setFrom(m_playerId);
-    createOp.setArgs(ListType(1,character));
+    createOp->setFrom(m_playerId);
+    createOp->setArgs1(character);
     send(createOp);
 
     if (m_connection.wait() != 0) {
@@ -90,13 +92,21 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
                   << type << std::endl << std::flush;
         return NULL;
     }
-    const MapType & body = m_connection.getReply();
 
-    const std::string & id = body.find("id")->second.asString();
+    const Root & ent = m_connection.getReply();
+
+    if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        std::cerr << "ERROR: Character created, but has no id" << std::endl
+                  << std::flush;
+        return 0;
+    }
+
+    const std::string & id = ent->getId();
 
     EntityDict tmp;
 
     CreatorClient * obj = new CreatorClient(id, type, m_connection);
+    MapType body = ent->asMessage();
     obj->merge(body);
     obj->getLocation(body, tmp);
     // obj = EntityFactory::instance()->newThing(type, body, tmp);
@@ -113,14 +123,13 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
 
 void BaseClient::handleNet()
 {
-    RootOperation * input;
-    while ((input = m_connection.pop()) != NULL) {
+    RootOperation input;
+    while ((input = m_connection.pop()).isValid()) {
         OpVector res;
-        m_character->operation(*input, res);
+        m_character->operation(input, res);
         OpVector::const_iterator Iend = res.end();
         for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-            send(*(*I));
+            send(*I);
         }
-        delete input;
     }
 }

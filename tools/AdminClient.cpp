@@ -10,24 +10,27 @@
 
 #include "common/debug.h"
 
+#include <Atlas/Codec.h>
 #include <Atlas/Net/Stream.h>
 
 #include <Atlas/Objects/Encoder.h>
+#include <Atlas/Objects/objectFactory.h>
 
-#include <Atlas/Objects/Entity/Account.h>
+#include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Anonymous.h>
 
-#include <Atlas/Objects/Operation/Get.h>
-#include <Atlas/Objects/Operation/Set.h>
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Login.h>
-#include <Atlas/Objects/Operation/Error.h>
+#include <Atlas/Objects/Operation.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-using Atlas::Objects::Entity::Account;
+using Atlas::Objects::Root;
 
+using Atlas::Objects::Entity::Account;
+using Atlas::Objects::Entity::Anonymous;
+
+using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Operation::Get;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Create;
@@ -83,36 +86,55 @@ void AdminClient::output(const Element & item, bool recurse)
     }
 }
 
-void AdminClient::objectArrived(const Info& o)
+void AdminClient::objectArrived(const Root & obj)
 {
-    reply_flag = true;
-    if (o.getArgs().empty()) {
+    RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
+    if (!op.isValid()) {
+        // FIXME report the parents and objtype
+        std::cerr << "ERROR: Non op object received from server"
+                  << std::endl << std::flush;;
         return;
     }
-    const MapType & ent = o.getArgs().front().asMap();
-    MapType::const_iterator Iend = ent.end();
+    debug(std::cout << "A " << op->getParents().front() << " op from client!" << std::endl << std::flush;);
+
+    int class_no = op->getClassNo();
+    if (class_no == Atlas::Objects::Operation::INFO_NO) {
+        infoArrived(op);
+    } else if (class_no == Atlas::Objects::Operation::ERROR_NO) {
+        errorArrived(op);
+    }
+}
+
+void AdminClient::infoArrived(const RootOperation & op)
+{
+    reply_flag = true;
+    if (op->getArgs().empty()) {
+        return;
+    }
+    const Root & ent = op->getArgs().front();
     if (login_flag) {
-        MapType::const_iterator I = ent.find("id");
-        if (I == Iend || !I->second.isString()) {
+        if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             std::cerr << "ERROR: Response to login does not contain account id"
                       << std::endl << std::flush;
             
         } else {
-            accountId = I->second.asString();
+            accountId = ent->getId();
         }
     }
 }
 
-void AdminClient::objectArrived(const Error& o)
+void AdminClient::errorArrived(const RootOperation & op)
 {
     reply_flag = true;
     error_flag = true;
-    const ListType & args = o.getArgs();
-    const Element & arg = args.front();
-    if (arg.isString()) {
-        m_errorMessage = arg.asString();
-    } else if (arg.isMap()) {
-        m_errorMessage = arg.asMap().find("message")->second.asString();
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        return;
+    }
+    const Root & arg = args.front();
+    Element message_attr;
+    if (arg->getAttr("message", message_attr) != 0 && message_attr.isString()) {
+        m_errorMessage = message_attr.String();
     }
 }
 
@@ -189,16 +211,15 @@ int AdminClient::checkRule(const std::string & id)
 
     Get g;
 
-    ListType & get_args = g.getArgs();
-    MapType arg;
-    arg["id"] = id;
-    arg["objtype"] = "class";
+    Anonymous get_arg;
+    get_arg->setId(id);
+    get_arg->setObjtype("class");
 
-    get_args.push_back(arg);
+    g->setArgs1(get_arg);
 
-    g.setFrom(accountId);
+    g->setFrom(accountId);
 
-    encoder->streamMessage(&g);
+    encoder->streamObjectsMessage(g);
 
     (*ios) << std::flush;
 
@@ -231,15 +252,19 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
         Set s;
 
-        ListType & set_args = s.getArgs();
-        MapType existing_rule(rule);
-        existing_rule["ruleset"] = set;
+        Root set_arg = Atlas::Objects::Factories::instance()->createObject(rule);
+        if (!set_arg.isValid()) {
+            std::cerr << "Unknown error converting rule for upload"
+                      << std::endl << std::flush;
+            return -1;
+        }
+        set_arg->setAttr("ruleset", set);
 
-        set_args.push_back(existing_rule);
+        s->setArgs1(set_arg);
 
-        s.setFrom(accountId);
+        s->setFrom(accountId);
 
-        encoder->streamMessage(&s);
+        encoder->streamObjectsMessage(s);
 
         (*ios) << std::flush;
 
@@ -306,15 +331,19 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
     Create c;
 
-    ListType & set_args = c.getArgs();
-    MapType new_rule(rule);
-    new_rule["ruleset"] = set;
+    Root create_arg = Atlas::Objects::Factories::instance()->createObject(rule);
+    if (!create_arg.isValid()) {
+        std::cerr << "Unknown error converting rule for upload"
+                  << std::endl << std::flush;
+        return -1;
+    }
+    create_arg->setAttr("ruleset", set);
 
-    set_args.push_back(new_rule);
+    c->setArgs1(create_arg);
 
-    c.setFrom(accountId);
+    c->setFrom(accountId);
 
-    encoder->streamMessage(&c);
+    encoder->streamObjectsMessage(c);
 
     (*ios) << std::flush;
 
@@ -379,15 +408,15 @@ int AdminClient::connect_unix(const std::string & filename)
 int AdminClient::negotiate()
 {
     // Do client negotiation with the server
-    Atlas::Net::StreamConnect conn("cycmd", *ios, this);
+    Atlas::Net::StreamConnect conn("cycmd", *ios, *this);
 
-    while (conn.getState() == Atlas::Negotiate<std::iostream>::IN_PROGRESS) {
+    while (conn.getState() == Atlas::Negotiate::IN_PROGRESS) {
         // conn.poll() does all the negotiation
         conn.poll();
     }
 
     // Check whether negotiation was successful
-    if (conn.getState() == Atlas::Negotiate<std::iostream>::FAILED) {
+    if (conn.getState() == Atlas::Negotiate::FAILED) {
         std::cerr << "Failed to negotiate." << std::endl;
         return -1;
     }
@@ -397,7 +426,7 @@ int AdminClient::negotiate()
     codec = conn.getCodec();
 
     // Create the encoder
-    encoder = new Atlas::Objects::Encoder(codec);
+    encoder = new Atlas::Objects::ObjectsEncoder(*codec);
 
     // Send whatever codec specific data marks the beginning of a stream
     codec->streamBegin();
@@ -420,14 +449,12 @@ int AdminClient::login()
     reply_flag = false;
     login_flag = true;
  
-    account.setAttr("username", username);
-    account.setAttr("password", password);
+    account->setAttr("username", username);
+    account->setAttr("password", password);
  
-    ListType args(1,account.asObject());
+    l->setArgs1(account);
  
-    l.setArgs(args);
- 
-    encoder->streamMessage(&l);
+    encoder->streamObjectsMessage(l);
 
     (*ios) << std::flush;
  

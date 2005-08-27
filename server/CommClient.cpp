@@ -128,9 +128,10 @@ void CommClient::dispatch()
 void CommClient::objectArrived(const Atlas::Objects::Root & obj)
 {
     Atlas::Objects::Operation::RootOperation op = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(obj);
-    if (!obj.isValid()) {
+    if (!op.isValid()) {
         // FIXME report the parents and objtype
         log(ERROR, "Non op object received from client");
+        return;
     }
     debug(std::cout << "A " << op->getParents().front() << " op from client!" << std::endl << std::flush;);
     m_opQueue.push_back(op);

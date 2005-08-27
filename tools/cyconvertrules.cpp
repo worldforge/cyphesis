@@ -5,10 +5,12 @@
 #include "common/globals.h"
 
 #include <Atlas/Message/DecoderBase.h>
+#include <Atlas/Message/Element.h>
 #include <Atlas/Codecs/XML.h>
 
 #include <string>
 #include <fstream>
+#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -27,11 +29,11 @@ class FileConverter : public Atlas::Message::DecoderBase {
     /// Counter to keep track of indenting the output
     int m_indent;
 
-    virtual void objectArrived(const Element & obj);
+    virtual void messageArrived(const MapType &);
   public:
     FileConverter(const std::string & filename) :
                 m_file(filename.c_str(), std::ios::in),
-                m_codec(m_file, this), m_count(0), m_indent(0)
+                m_codec(m_file, *this), m_count(0), m_indent(0)
     {
     }
 
@@ -75,12 +77,11 @@ class FileConverter : public Atlas::Message::DecoderBase {
     const char * typeToStr(Element::Type t) const;
 };
 
-void FileConverter::objectArrived(const Element & obj)
+void FileConverter::messageArrived(const MapType & omap)
 {
     // We have read a map from the file. Old format rules files contained
     // one map, which contained all the rules as maps within the top
     // level map. Iterate over them, and convert into new format;
-    const MapType & omap = obj.asMap();
     MapType::const_iterator Iend = omap.end();
     for (MapType::const_iterator I = omap.begin(); I != Iend; ++I) {
         MapType newObject;

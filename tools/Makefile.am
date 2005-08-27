@@ -101,7 +101,7 @@ cyloadrules_LDADD = $(top_builddir)/modules/DateTime.o \
                     $(top_builddir)/common/log.o \
                     $(DBTOOL_LIBS)
 
-cydumprules_SOURCES = cydumprules.cpp Formatter.cpp Formatter.h
+cydumprules_SOURCES = cydumprules.cpp
 
 cydumprules_LDADD = $(top_builddir)/modules/DateTime.o \
                     $(top_builddir)/common/Database.o \

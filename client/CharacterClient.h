@@ -14,7 +14,7 @@ class CharacterClient : public BaseMind {
   protected:
     ClientConnection & m_connection;
 
-    int sendAndWaitReply(Operation &, OpVector &);
+    int sendAndWaitReply(const Operation &, OpVector &);
   public:
     CharacterClient(const std::string&, const std::string&, ClientConnection&);
 
@@ -25,7 +25,7 @@ class CharacterClient : public BaseMind {
                                     Operation &,
                                     OpVector &);
 
-    void send(Operation & op);
+    void send(const Operation & op);
 };
 
 #endif // CLIENT_CHARACTER_CLIENT_H

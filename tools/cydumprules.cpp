@@ -2,19 +2,19 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2005 Alistair Riddoch
 
-#include "Formatter.h"
-
 #include "common/Database.h"
 #include "common/globals.h"
 
+#include <Atlas/Formatter.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
-#include <Atlas/Message/Encoder.h>
+#include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
 
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -101,9 +101,9 @@ int main(int argc, char ** argv)
            
             file.open(filename.c_str(), std::ios::out);
             
-            Atlas::Codecs::XML codec(file, &decoder);
-            Formatter formatter(file, codec);
-            Atlas::Message::Encoder encoder(&formatter);
+            Atlas::Codecs::XML codec(file, decoder);
+            Atlas::Formatter formatter(file, codec);
+            Atlas::Message::Encoder encoder(formatter);
 
             formatter.streamBegin();
 
@@ -115,7 +115,7 @@ int main(int argc, char ** argv)
                               << std::endl << std::flush;
                     continue;
                 }
-                encoder.streamMessage(J->second.asMap());
+                encoder.streamMessageElement(J->second.asMap());
             }
 
             formatter.streamEnd();

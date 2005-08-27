@@ -2,6 +2,8 @@
 // the GNU Lesser General Public License (See COPYING for details).
 // Copyright (C) 2004 Alistair Riddoch
 
+#error This file has been removed from the build
+
 #ifndef TOOLS_FORMATTER_H
 #define TOOLS_FORMATTER_H
 

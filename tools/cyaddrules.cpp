@@ -26,8 +26,7 @@ class FileDecoder : public Atlas::Message::DecoderBase
     int m_count;
     int m_total;
 
-    virtual void objectArrived(const Element & obj) {
-        const MapType & omap = obj.asMap();
+    virtual void messageArrived(const MapType & omap) {
         MapType::const_iterator I = omap.find("id");
         if (I == omap.end()) {
             std::cerr << "Found rule with no id" << std::endl << std::flush;
@@ -49,7 +48,7 @@ class FileDecoder : public Atlas::Message::DecoderBase
                 AdminClient & client) :
                 m_file(filename.c_str(), std::ios::in),
                 m_ruleset(ruleset), m_client(client),
-                m_codec(m_file, this), m_count(0), m_total(0)
+                m_codec(m_file, *this), m_count(0), m_total(0)
     {
     }
 

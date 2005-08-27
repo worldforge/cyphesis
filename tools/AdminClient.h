@@ -9,10 +9,8 @@
 #include "common/globals.h"
 
 #include "common/utility.h"
-#include "common/Generic.h"
 
 #include <Atlas/Objects/Decoder.h>
-#include <Atlas/Codec.h>
 
 #include <varconf/Config.h>
 
@@ -23,17 +21,20 @@
 
 #include <cstdio>
 
-namespace Atlas { namespace Objects { class Encoder; } }
+namespace Atlas {
+  class Codec;
+  namespace Objects { class ObjectsEncoder; }
+}
 
 typedef std::multimap<std::string, std::pair<std::pair<std::string, std::string>, Atlas::Message::MapType> > RuleWaitList;
 
-class AdminClient : public Atlas::Objects::Decoder
+class AdminClient : public Atlas::Objects::ObjectsDecoder
 {
   private:
     bool error_flag, reply_flag, login_flag;
     int cli_fd;
-    Atlas::Objects::Encoder * encoder;
-    Atlas::Codec<std::iostream> * codec;
+    Atlas::Objects::ObjectsEncoder * encoder;
+    Atlas::Codec * codec;
     basic_socket_stream * ios;
     std::string password;
     std::string username;
@@ -46,8 +47,10 @@ class AdminClient : public Atlas::Objects::Decoder
     void output(const Atlas::Message::Element & item, bool recurse = true);
   protected:
 
-    void objectArrived(const Atlas::Objects::Operation::Info&);
-    void objectArrived(const Atlas::Objects::Operation::Error&);
+    void objectArrived(const Atlas::Objects::Root &);
+
+    void infoArrived(const Atlas::Objects::Operation::RootOperation &);
+    void errorArrived(const Atlas::Objects::Operation::RootOperation &);
 
     int negotiate();
 

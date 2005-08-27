@@ -8,18 +8,22 @@
 
 #include "common/debug.h"
 
-#include <Atlas/Objects/Operation/Create.h>
-#include <Atlas/Objects/Operation/Look.h>
-#include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 static const bool debug_flag = false;
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::RootOperation;
+using Atlas::Objects::Entity::Anonymous;
+
+using Atlas::Objects::smart_dynamic_cast;
 
 CreatorClient::CreatorClient(const std::string & id, const std::string & name,
                              ClientConnection &c) : CharacterClient(id,name,c)
@@ -33,21 +37,21 @@ Entity * CreatorClient::make(const Atlas::Message::Element & entity)
         return NULL;
     }
     Create op;
-    op.setArgs(ListType(1,entity));
-    op.setFrom(getId());
-    op.setTo(getId());
+    op->setArgsAsList(ListType(1,entity));
+    op->setFrom(getId());
+    op->setTo(getId());
     OpVector result;
     if (sendAndWaitReply(op, result) != 0) {
         std::cerr << "No reply to make" << std::endl << std::flush;
         return NULL;
     }
     assert(!result.empty());
-    Operation * res = result.front();
-    if (res == NULL) {
+    const Operation & res = result.front();
+    if (!res.isValid()) {
         std::cerr << "NULL reply to make" << std::endl << std::flush;
         return NULL;
     }
-    const std::string & resparents = res->getParents().front().asString();
+    const std::string & resparents = res->getParents().front();
     if (resparents != "sight") {
         std::cerr << "Reply to make isn't sight" << std::endl << std::flush;
         return NULL;
@@ -56,48 +60,44 @@ Entity * CreatorClient::make(const Atlas::Message::Element & entity)
         std::cerr << "Reply to make has no args" << std::endl << std::flush;
         return NULL;
     }
-    if (!res->getArgs().front().isMap()) {
-        std::cerr << "Reply to make has malformed args" << std::endl << std::flush;
+    RootOperation arg = smart_dynamic_cast<RootOperation>(res->getArgs().front());
+    if (!arg.isValid()) {
+        std::cerr << "Arg of reply to make is not an operation"
+                  << std::endl << std::flush;
         return NULL;
     }
-    const MapType & arg = res->getArgs().front().asMap();
-    MapType::const_iterator I = arg.find("parents");
-    if ((I == arg.end()) || !I->second.isList() || I->second.asList().empty()) {
+    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) || arg->getParents().empty()) {
         std::cerr << "Arg of reply to make has no parents"
                   << std::endl << std::flush;
         return NULL;
     }
-    const std::string & resargp = I->second.asList().front().asString();
+    const std::string & resargp = arg->getParents().front();
     if (resargp != "create") {
         std::cerr << "Reply to make isn't sight of create"
                   << std::endl << std::flush;
         return NULL;
     }
-    I = arg.find("args");
-    if ((I == arg.end()) || !I->second.isList() || I->second.asList().empty()) {
+    if (arg->getArgs().empty()) {
         std::cerr << "Arg of reply to make has no args"
                   << std::endl << std::flush;
         return NULL;
     }
-    const MapType & created = I->second.asList().front().asMap();
-    I = created.find("id");
-    if ((I == created.end()) || !I->second.isString()) {
+    const Root & created = arg->getArgs().front();
+    if (!created->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "Created entity has no id"
                   << std::endl << std::flush;
         return NULL;
     }
-    const std::string & created_id = I->second.asString();
-    I = created.find("parents");
-    if ((I == created.end()) || !I->second.isList() ||
-        I->second.asList().empty() || !I->second.asList().front().isString()) {
+    const std::string & created_id = created->getId();
+    if (created->getParents().empty()) {
         std::cerr << "Created entity " << created_id << " has no type"
                   << std::endl << std::flush;
         return NULL;
     }
-    const std::string & created_type = I->second.asList().front().asString();
+    const std::string & created_type = created->getParents().front();
     std::cout << "Created: " << created_type << "(" << created_id << ")"
               << std::endl << std::flush;
-    Entity * obj = m_map.updateAdd(created, res->getSeconds());
+    Entity * obj = m_map.updateAdd(created->asMessage(), res->getSeconds());
     return obj;
 }
 
@@ -110,9 +110,9 @@ void CreatorClient::sendSet(const std::string & id,
         return;
     }
     Set op;
-    op.setArgs(ListType(1,entity));
-    op.setFrom(getId());
-    op.setTo(id);
+    op->setArgsAsList(ListType(1,entity));
+    op->setFrom(getId());
+    op->setTo(id);
     send(op);
 }
 
@@ -120,23 +120,23 @@ Entity * CreatorClient::look(const std::string & id)
 {
     Look op;
     if (!id.empty()) {
-        MapType ent;
-        ent["id"] = id;
-        op.setArgs(ListType(1,ent));
+        Anonymous ent;
+        ent->setId(id);
+        op->setArgs1(ent);
     }
-    op.setFrom(getId());
+    op->setFrom(getId());
     return sendLook(op);
 }
 
 Entity * CreatorClient::lookFor(const Atlas::Message::Element & ent)
 {
     Look op;
-    op.setArgs(ListType(1,ent));
-    op.setFrom(getId());
+    op->setArgsAsList(ListType(1,ent));
+    op->setFrom(getId());
     return sendLook(op);
 }
 
-Entity * CreatorClient::sendLook(Operation & op)
+Entity * CreatorClient::sendLook(const Operation & op)
 {
     OpVector result;
     if (sendAndWaitReply(op, result) != 0) {
@@ -144,12 +144,12 @@ Entity * CreatorClient::sendLook(Operation & op)
         return NULL;
     }
     assert(!result.empty());
-    Operation * res = result.front();
-    if (res == NULL) {
+    const Operation & res = result.front();
+    if (!res.isValid()) {
         std::cerr << "NULL reply to look" << std::endl << std::flush;
         return NULL;
     }
-    const std::string & resparents = res->getParents().front().asString();
+    const std::string & resparents = res->getParents().front();
     if (resparents != "sight") {
         std::cerr << "Reply to look isn't sight" << std::endl << std::flush;
         return NULL;
@@ -158,20 +158,15 @@ Entity * CreatorClient::sendLook(Operation & op)
         std::cerr << "Reply to look has no args" << std::endl << std::flush;
         return NULL;
     }
-    if (!res->getArgs().front().isMap()) {
-        std::cerr << "Reply to look has malformed args" << std::endl << std::flush;
-        return NULL;
-    }
-    const MapType & seen = res->getArgs().front().asMap();
-    MapType::const_iterator I = seen.find("id");
-    if ((I == seen.end()) || !I->second.isString()) {
+    const Root & seen = res->getArgs().front();
+    if (!seen->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "Looked at entity has no id"
                   << std::endl << std::flush;
         return NULL;
     }
-    const std::string & created_id = I->second.asString();
+    const std::string & created_id = seen->getId();
     std::cout << "Seen: " << created_id << std::endl << std::flush;
-    Entity * obj = m_map.updateAdd(seen, res->getSeconds());
+    Entity * obj = m_map.updateAdd(seen->asMessage(), res->getSeconds());
     return obj;
 }
 

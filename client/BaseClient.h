@@ -38,7 +38,7 @@ class BaseClient {
         return m_connection.connect(server);
     }
 
-    void send(Atlas::Objects::Operation::RootOperation & op) {
+    void send(const Atlas::Objects::Operation::RootOperation & op) {
         m_connection.send(op);
     }
 

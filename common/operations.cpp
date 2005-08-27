@@ -15,6 +15,8 @@
 #include "Tick.h"
 #include "Unseen.h"
 #include "Update.h"
+#include "Monitor.h"
+#include "Connect.h"
 
 #include "CustomOp_impl.h"
 
@@ -38,6 +40,8 @@ template class CustomOpData<SetData, TickProxy>;
 template class CustomOpData<SetData, UpdateProxy>;
 template class CustomOpData<SetData, NourishProxy>;
 template class CustomOpData<SetData, SetupProxy>;
+template class CustomOpData<SetData, MonitorProxy>;
+template class CustomOpData<SetData, ConnectProxy>;
 
 // template <>
 // const char * const CustomOpData<SetData>::class_name = "add";

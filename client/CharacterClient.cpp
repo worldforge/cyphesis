@@ -8,7 +8,7 @@
 
 #include "common/debug.h"
 
-#include <Atlas/Objects/Operation/RootOperation.h>
+#include <Atlas/Objects/RootOperation.h>
 
 static const bool debug_flag = false;
 
@@ -29,21 +29,21 @@ void CharacterClient::soundTalkOperation(const Operation & ,
 {
 }
 
-void CharacterClient::send(Operation & op)
+void CharacterClient::send(const Operation & op)
 {
-    op.setFrom(getId());
+    op->setFrom(getId());
     m_connection.send(op);
 }
 
-int CharacterClient::sendAndWaitReply(Operation & op, OpVector & res)
+int CharacterClient::sendAndWaitReply(const Operation & op, OpVector & res)
 {
     send(op);
-    long no = op.getSerialno();
+    long no = op->getSerialno();
     while (true) {
         if (m_connection.pending()) {
-            Operation * input = CharacterClient::m_connection.pop();
-            if (input != NULL) {
-                // What the hell is this!
+            Operation input = CharacterClient::m_connection.pop();
+            if (!input.isValid()) {
+                // FIXME What the hell is this!
 #if 0
                 // Should we really do this here?
                 OpVector result;
@@ -59,7 +59,6 @@ int CharacterClient::sendAndWaitReply(Operation & op, OpVector & res)
                     res.push_back(input);
                     return 0;
                 }
-                delete input;
             }
         } else if (m_connection.wait() != 0) {
             return -1;

@@ -1,3 +1,8 @@
+2005-08-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* Finish initial port to Atlas-C++ 0.6 series. Client and tools
+	  binaries now link.
+
 2005-08-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* Port whole code base to Atlas-C++ 0.6 series. Main server binary
