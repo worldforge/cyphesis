@@ -34,7 +34,7 @@ using Atlas::Objects::Entity::RootEntity;
 static const bool debug_flag = false;
 
 struct OpQueEntry {
-    const Operation & op;
+    Operation op;
     Entity & from;
 
     explicit OpQueEntry(const Operation & o, Entity & f);

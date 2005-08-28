@@ -38,11 +38,14 @@ void CharacterClient::send(const Operation & op)
 int CharacterClient::sendAndWaitReply(const Operation & op, OpVector & res)
 {
     send(op);
+    debug(std::cout << "Waiting for reply to " << op->getParents().front()
+                    << std::endl << std::flush;);
     long no = op->getSerialno();
     while (true) {
         if (m_connection.pending()) {
             Operation input = CharacterClient::m_connection.pop();
-            if (!input.isValid()) {
+            assert(input.isValid());
+            if (input.isValid()) {
                 // FIXME What the hell is this!
 #if 0
                 // Should we really do this here?
@@ -56,9 +59,14 @@ int CharacterClient::sendAndWaitReply(const Operation & op, OpVector & res)
 #endif
     
                 if (input->getRefno() == no) {
+                    debug(std::cout << "Got reply" << std::endl << std::flush;);
                     res.push_back(input);
                     return 0;
+                } else {
+                    debug(std::cout << "Not reply" << std::endl << std::flush;);
                 }
+            } else {
+                debug(std::cout << "Not op" << std::endl << std::flush;);
             }
         } else if (m_connection.wait() != 0) {
             return -1;

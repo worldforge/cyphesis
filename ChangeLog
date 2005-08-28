@@ -1,5 +1,14 @@
 2005-08-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/CharacterClient.cpp: Add some debug output, and fix a bug
+	  which ignored all replies to client ops.
+
+	* server/WorldRouter.cpp: Fix a bug in OpQueEntry which stored
+	  a smart pointer reference rather than really storing the
+	  smart pointer.
+
+2005-08-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/TrustedConnection.cpp, server/TrustedConnection.h:
 	  Fix the fingerprint of virtual verifyCredentials() member
 	  function so it correctly overrides the one in Connection.
