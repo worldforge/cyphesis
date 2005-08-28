@@ -326,7 +326,7 @@ static PyObject * Operation_seq_item(PyOperation * self, int item)
     std::vector<Root>::const_iterator Iend = args_list.end();
     for(int i = 0; i < item && I != Iend; ++i, ++I);
     if (I == args_list.end()) {
-        PyErr_SetString(PyExc_TypeError,"Not enought op arguments");
+        PyErr_SetString(PyExc_TypeError,"Operation.[]: Not enought op arguments");
         return 0;
     }
     const Root & arg = *I;

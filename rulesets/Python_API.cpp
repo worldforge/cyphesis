@@ -1003,13 +1003,15 @@ static inline void addToArgs(std::vector<Root> & args, PyObject * ent)
             return;
         }
         Element o(*obj->m_obj);
-        if (o.isMap() && (obj->Object_attr != NULL)) {
-            MapType & ent = o.asMap();
-            MapType ent2 = PyDictObject_asElementMap(obj->Object_attr);
-            MapType::const_iterator Iend = ent2.end();
-            for (MapType::const_iterator I = ent2.begin(); I != Iend; ++I) {
-                if (ent.find(I->first) != ent.end()) {
-                    ent[I->first] = I->second;
+        if (o.isMap()) {
+            if (obj->Object_attr != NULL) {
+                MapType & ent = o.asMap();
+                MapType ent2 = PyDictObject_asElementMap(obj->Object_attr);
+                MapType::const_iterator Iend = ent2.end();
+                for (MapType::const_iterator I = ent2.begin(); I != Iend; ++I) {
+                    if (ent.find(I->first) != ent.end()) {
+                        ent[I->first] = I->second;
+                    }
                 }
             }
             args.push_back(Atlas::Objects::Factories::instance()->createObject(o.asMap()));

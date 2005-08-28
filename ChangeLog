@@ -1,5 +1,14 @@
 2005-08-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/custom.cpp: Install an atlas factory for custom op as a test.
+
+	* rulesets/Py_Operation.cpp: Improve error reporting.
+
+	* rulesets/Python_API.cpp: Fix bug where arguments to ops were
+	  ignored.
+
+2005-08-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: No longer necessary to flush op queue in
 	  destructor. Remove verbose debug output.
 

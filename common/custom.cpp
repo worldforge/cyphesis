@@ -38,6 +38,7 @@ using Atlas::Objects::Operation::Unseen;
 void installCustomOperations()
 {
     Inheritance & i = Inheritance::instance();
+    Atlas::Objects::Factories * atlas_factories = Atlas::Objects::Factories::instance();
 
     i.addChild(atlasOpDefinition("add", "set"));
     i.opInstall("add", OP_ADD, new OpFactory<Add>);
@@ -71,6 +72,7 @@ void installCustomOperations()
 
     i.addChild(atlasOpDefinition("tick", "root_operation"));
     i.opInstall("tick", OP_TICK, new OpFactory<Tick>);
+    atlas_factories->addFactory("tick", &Atlas::Objects::factory<Atlas::Objects::Operation::TickData>);
 
     i.addChild(atlasOpDefinition("unseen", "perception"));
     i.opInstall("unseen", OP_UNSEEN, new OpFactory<Unseen>);
