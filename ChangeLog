@@ -1,5 +1,11 @@
 2005-08-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/TrustedConnection.cpp, server/TrustedConnection.h:
+	  Fix the fingerprint of virtual verifyCredentials() member
+	  function so it correctly overrides the one in Connection.
+
+2005-08-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Creatortest.cpp, tests/EntityExerciser.h,
 	  tests/Tasktest.cpp, tests/Worldtest.cpp,
 	  tests/allOperations.h, tests/inheritancetest.cpp,
