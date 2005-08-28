@@ -105,15 +105,6 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId))
 WorldRouter::~WorldRouter()
 {
     { 
-        debug(std::cout << "Flushing op queue with " << m_operationQueue.size()
-                        << " ops" << std::endl << std::flush;);
-    }
-    // FIXME Should not need to do anything here.
-    OpQueue::const_iterator Iend = m_operationQueue.end();
-    for (OpQueue::const_iterator I = m_operationQueue.begin(); I != Iend; ++I) {
-        // delete &I->op;
-    }
-    { 
         debug(std::cout << "Flushing world with " << m_eobjects.size()
                         << " entities" << std::endl << std::flush;);
     }
@@ -136,7 +127,6 @@ WorldRouter::~WorldRouter()
 /// operations when they come from an admin.
 void WorldRouter::addOperationToQueue(const Operation & op, Entity & ent)
 {
-    std::cout << "Adding " << op->getParents().front() << " op to world queue" << std::endl << std::flush;
     assert(op.isValid());
     if (op->getFrom() == "cheat") {
         op->setFrom(op->getTo());
@@ -146,18 +136,10 @@ void WorldRouter::addOperationToQueue(const Operation & op, Entity & ent)
     double t = m_realTime + op->getFutureSeconds();
     op->setSeconds(t);
     op->setFutureSeconds(0.0);
-    std::cout << "Queue size is " << m_operationQueue.size() << std::endl << std::flush;
-    if (m_operationQueue.size() != 0) {
-        assert(m_operationQueue.front().op.isValid());
-    }
     OpQueue::iterator I = m_operationQueue.begin();
     OpQueue::iterator Iend = m_operationQueue.end();
-    for (; (I != Iend) && ((*I).op->getSeconds() <= t) ; ++I) {
-        std::cout << "Checking entry" << std::endl << std::flush;
-    }
+    for (; (I != Iend) && ((*I).op->getSeconds() <= t) ; ++I);
     m_operationQueue.insert(I, OpQueEntry(op, ent));
-    assert(m_operationQueue.front().op.isValid());
-    std::cout << "Queue size is now " << m_operationQueue.size() << " with " << m_operationQueue.front().op->getParents().front() << " at the top " << m_operationQueue.front().op->getSeconds() << std::endl << std::flush;
 }
 
 /// \brief Get the next due operation from the queue.
@@ -499,7 +481,6 @@ bool WorldRouter::idle(int sec, int usec)
            ((*I)->getSeconds() <= m_realTime)) {
         assert(I != m_operationQueue.end());
         OpQueEntry & oqe = *I;
-        std::cout << "Got " << oqe.op->getParents().front() << " op from queue" << std::endl << std::flush;
         Dispatching.emit(oqe.op);
         try {
             operation(oqe.op, oqe.from);
@@ -512,7 +493,6 @@ bool WorldRouter::idle(int sec, int usec)
                             + " from " + oqe->getFrom() + ".";
             log(ERROR, msg.c_str());
         }
-        // delete &oqe.op;
         m_operationQueue.erase(I);
         I = m_operationQueue.begin();
     }

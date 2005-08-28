@@ -1,5 +1,10 @@
 2005-08-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: No longer necessary to flush op queue in
+	  destructor. Remove verbose debug output.
+
+2005-08-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/CharacterClient.cpp: Add some debug output, and fix a bug
 	  which ignored all replies to client ops.
 
