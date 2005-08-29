@@ -482,7 +482,10 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
             }
             // Check against valid ops
             Operation arg_op = smart_dynamic_cast<Operation>(arg);
-            assert(arg_op.isValid());
+            if (!arg_op.isValid()) {
+                error(op, "Use op arg is a malformed op", res, getId());
+                return;
+            }
 
             const std::vector<Root> & arg_op_args = arg_op->getArgs();
             if (!arg_op_args.empty()) {
@@ -598,9 +601,13 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         return;
     }
     const RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
-    assert(arg.isValid());
+    if (!arg.isValid()) {
+        log(ERROR, "mindMoveOperation: Arg is not an entity");
+        return;
+    }
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "mindMoveOperation: Args has got no ID");
+        log(ERROR, "mindMoveOperation: Arg has no ID");
+        return;
     }
     const std::string & other_id = arg->getId();
     // FIXME We are looking up the object, but the vast majority of the

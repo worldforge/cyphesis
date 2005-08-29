@@ -1,5 +1,13 @@
 2005-08-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.cpp, rulesets/Thing.cpp, rulesets/Character.cpp:
+	  Replace asserts with proper checks that arguments are of the
+	  expected type.
+
+	* common/custom.cpp: Put ignite op installation back in.
+
+2005-08-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py: Don't return
 	  non-existant ops.
 

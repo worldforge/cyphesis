@@ -320,7 +320,12 @@ void Account::ImaginaryOperation(const Operation & op, OpVector & res)
     // FIXME Remove this
     s->setRefno(op->getSerialno());
     RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
-    assert(arg.isValid());
+
+    if (!arg.isValid()) {
+        error(op, "Imaginary arg is malformed", res, getId());
+        return;
+    }
+
     if (arg->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         s->setTo(arg->getLoc());
     } else {
@@ -344,7 +349,12 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
     // FIXME Remove this - no really
     s->setRefno(op->getSerialno());
     RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
-    assert(arg.isValid());
+
+    if (!arg.isValid()) {
+        error(op, "Talk arg is malformed", res, getId());
+        return;
+    }
+
     if (arg->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         s->setTo(arg->getLoc());
     } else {

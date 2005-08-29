@@ -153,10 +153,13 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         return;
     }
     RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
-    // FIXME ent should be an entity, probably anonymous. If so, we can get
-    // direct access to pos, loc and velocity without a copy.
+    if (!ent.isValid()) {
+        error(op, "Move op arg is malformed", res, getId());
+        return;
+    }
     if (getId() != ent->getId()) {
         error(op, "Move op does not have correct id in argument", res, getId());
+        return;
     }
     if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         error(op, "Move op has no loc", res, getId());
