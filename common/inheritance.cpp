@@ -19,6 +19,7 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Action;
+using Atlas::Objects::Operation::Affect;
 using Atlas::Objects::Operation::Combine;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Delete;
@@ -275,6 +276,8 @@ void installStandardObjects()
     i.addChild(atlasOpDefinition("communicate", "create"));
     i.addChild(atlasOpDefinition("move", "set"));
     i.opInstall("move", OP_MOVE, new OpFactory<Move>);
+    i.addChild(atlasOpDefinition("affect", "set"));
+    i.opInstall("affect", OP_MOVE, new OpFactory<Affect>);
     i.addChild(atlasOpDefinition("perceive", "get"));
     i.addChild(atlasOpDefinition("login", "get"));
     i.opInstall("login", OP_LOGIN, new OpFactory<Login>);
@@ -300,9 +303,9 @@ void installStandardObjects()
     i.opInstall("appearance", OP_APPEARANCE, new OpFactory<Appearance>);
     i.addChild(atlasOpDefinition("disappearance", "sight"));
     i.opInstall("disappearance", OP_DISAPPEARANCE, new OpFactory<Disappearance>);
-    i.addChild(atlasOpDefinition("use", "foo"));
+    i.addChild(atlasOpDefinition("use", "action"));
     i.opInstall("use", OP_USE, new OpFactory<Use>);
-    i.addChild(atlasOpDefinition("wield", "foo"));
+    i.addChild(atlasOpDefinition("wield", "set"));
     i.opInstall("wield", OP_WIELD, new OpFactory<Wield>);
 
 

@@ -73,7 +73,7 @@ void Thing::SetupOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Operation tick;
+    Tick tick;
     tick->setTo(getId());
 
     res.push_back(tick);
@@ -84,7 +84,7 @@ void Thing::ActionOperation(const Operation & op, OpVector & res)
     if (m_script->Operation("action", op, res) != 0) {
         return;
     }
-    Operation s;
+    Sight s;
     s->setArgs1(op);
     res.push_back(s);
 }
@@ -96,7 +96,7 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
     }
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
-    Operation s;
+    Sight s;
     s->setArgs1(op);
     res.push_back(s);
 }

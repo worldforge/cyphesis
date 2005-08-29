@@ -1,5 +1,19 @@
 2005-08-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py: Don't return
+	  non-existant ops.
+
+	* rulesets/Thing.cpp: Fix some places where root_operations
+	  were being returned.
+
+	* common/inheritance.cpp: Add "affect" operation base class,
+	  and fix parents on use and wield.
+
+	* common/custom.cpp: Install atlas factories for custom op
+	  types.
+
+2005-08-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.cpp, rulesets/Thing.cpp: Use static LOC and POS
 	  members in RootEntity.
 

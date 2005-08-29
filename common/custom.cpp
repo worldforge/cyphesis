@@ -42,33 +42,43 @@ void installCustomOperations()
 
     i.addChild(atlasOpDefinition("add", "set"));
     i.opInstall("add", OP_ADD, new OpFactory<Add>);
+    atlas_factories->addFactory("add", &Atlas::Objects::factory<Atlas::Objects::Operation::AddData>);
 
     i.addChild(atlasOpDefinition("burn", "action"));
     i.opInstall("burn", OP_BURN, new OpFactory<Burn>);
+    atlas_factories->addFactory("burn", &Atlas::Objects::factory<Atlas::Objects::Operation::BurnData>);
 
     i.addChild(atlasOpDefinition("chop", "affect"));
     i.opInstall("chop", OP_CHOP, new OpFactory<Chop>);
+    atlas_factories->addFactory("chop", &Atlas::Objects::factory<Atlas::Objects::Operation::ChopData>);
 
     i.addChild(atlasOpDefinition("cut", "action"));
     i.opInstall("cut", OP_CUT, new OpFactory<Cut>);
+    atlas_factories->addFactory("cut", &Atlas::Objects::factory<Atlas::Objects::Operation::CutData>);
 
     i.addChild(atlasOpDefinition("delve", "affect"));
     i.opInstall("delve", OP_OTHER, new OpFactory<Delve>);
+    atlas_factories->addFactory("delve", &Atlas::Objects::factory<Atlas::Objects::Operation::DelveData>);
 
     i.addChild(atlasOpDefinition("dig", "affect"));
     i.opInstall("dig", OP_OTHER, new OpFactory<Dig>);
+    atlas_factories->addFactory("dig", &Atlas::Objects::factory<Atlas::Objects::Operation::DigData>);
 
     i.addChild(atlasOpDefinition("eat", "action"));
     i.opInstall("eat", OP_EAT, new OpFactory<Eat>);
+    atlas_factories->addFactory("eat", &Atlas::Objects::factory<Atlas::Objects::Operation::EatData>);
 
     i.addChild(atlasOpDefinition("mow", "affect"));
     i.opInstall("mow", OP_OTHER, new OpFactory<Mow>);
+    atlas_factories->addFactory("mow", &Atlas::Objects::factory<Atlas::Objects::Operation::MowData>);
 
     i.addChild(atlasOpDefinition("nourish", "affect"));
     i.opInstall("nourish", OP_NOURISH, new OpFactory<Nourish>);
+    atlas_factories->addFactory("nourish", &Atlas::Objects::factory<Atlas::Objects::Operation::NourishData>);
 
     i.addChild(atlasOpDefinition("setup", "root_operation"));
     i.opInstall("setup", OP_SETUP, new OpFactory<Setup>);
+    atlas_factories->addFactory("setup", &Atlas::Objects::factory<Atlas::Objects::Operation::SetupData>);
 
     i.addChild(atlasOpDefinition("tick", "root_operation"));
     i.opInstall("tick", OP_TICK, new OpFactory<Tick>);
@@ -76,6 +86,7 @@ void installCustomOperations()
 
     i.addChild(atlasOpDefinition("unseen", "perception"));
     i.opInstall("unseen", OP_UNSEEN, new OpFactory<Unseen>);
+    atlas_factories->addFactory("unseen", &Atlas::Objects::factory<Atlas::Objects::Operation::UnseenData>);
 
     // Custom ops used in scripts which do not need direct support in the
     // core

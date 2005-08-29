@@ -44,7 +44,7 @@ class nyi(Goal):
         self.vars=["desc"]
     def not_yet_implemented(self, me):
         #CHEAT! (make it so that it asks other people for knowledge)
-        return Operation("NYI",Entity(description=self.desc))
+        return
 
 ############################ IMAGINARY TASK ###################################
 
