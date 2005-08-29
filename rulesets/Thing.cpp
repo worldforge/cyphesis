@@ -152,18 +152,17 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         error(op, "Move has no argument", res, getId());
         return;
     }
-    const Root & ent = args.front();
+    RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
     // FIXME ent should be an entity, probably anonymous. If so, we can get
     // direct access to pos, loc and velocity without a copy.
     if (getId() != ent->getId()) {
         error(op, "Move op does not have correct id in argument", res, getId());
     }
-    Element attr_loc;
-    if (ent->getAttr("loc", attr_loc) != 0 || !attr_loc.isString()) {
+    if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         error(op, "Move op has no loc", res, getId());
         return;
     }
-    const std::string & new_loc_id = attr_loc.asString();
+    const std::string & new_loc_id = ent->getLoc();
     EntityDict::const_iterator J = m_world->getEntities().find(new_loc_id);
     if (J == m_world->getEntities().end()) {
         error(op, "Move op loc invalid", res, getId());
@@ -178,12 +177,10 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             return;
         }
     }
-    Element attr_pos;
-    if (ent->getAttr("pos", attr_pos) != 0 || !attr_pos.isList()) {
+    if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
         error(op, "Move op has no pos", res, getId());
         return;
     }
-    const ListType & pos_list = attr_pos.asList();
 
     // Up until this point nothing should have changed, but the changes
     // have all now been checked for validity.
@@ -240,7 +237,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     Point3D oldpos = m_location.m_pos;
 
     // Update pos
-    m_location.m_pos.fromAtlas(pos_list);
+    fromStdVector(m_location.m_pos, ent->getPos());
     // FIXME Quick height hack
     m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
                                                     m_location.m_pos,

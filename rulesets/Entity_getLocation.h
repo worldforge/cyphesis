@@ -30,15 +30,27 @@ bool Entity::getLocation(const Atlas::Message::MapType & entmap,
         m_location.m_loc = J->second;
         I = entmap.find("pos");
         if (I != entmap.end()) {
-            m_location.m_pos.fromAtlas(I->second.asList());
+            if (I->second.isList()) {
+                m_location.m_pos.fromAtlas(I->second.List());
+            } else {
+                log(ERROR, "Malformed POS data");
+            }
         }
         I = entmap.find("velocity");
         if (I != entmap.end()) {
-            m_location.m_velocity.fromAtlas(I->second.asList());
+            if (I->second.isList()) {
+                m_location.m_velocity.fromAtlas(I->second.List());
+            } else {
+                log(ERROR, "Malformed VELOCITY data");
+            }
         }
         I = entmap.find("orientation");
         if (I != entmap.end()) {
-            m_location.m_orientation.fromAtlas(I->second.asList());
+            if (I->second.isList()) {
+                m_location.m_orientation.fromAtlas(I->second.List());
+            } else {
+                log(ERROR, "Malformed ORIENTATION data");
+            }
         }
         // bbox is no longer read here, because it needs to be handled
         // in set(), which means it gets read by merge

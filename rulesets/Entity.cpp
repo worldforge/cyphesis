@@ -314,10 +314,11 @@ void Entity::CreateOperation(const Operation & op, OpVector & res)
             error(op, "Entity to be created has empty parents", res, getId());
             return;
         }
-        if (!ent->hasAttr("loc") && (m_location.m_loc != 0)) {
-            ent->setAttr("loc", m_location.m_loc->getId());
-            if (!ent->hasAttr("pos")) {
-                ent->setAttr("pos", m_location.m_pos.toAtlas());
+        if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) &&
+            (m_location.m_loc != 0)) {
+            ent->setLoc(m_location.m_loc->getId());
+            if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+                ::addToEntity(m_location.m_pos, ent->modifyPos());
             }
         }
         const std::string & type = parents.front();

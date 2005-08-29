@@ -1,3 +1,11 @@
+2005-08-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.cpp, rulesets/Thing.cpp: Use static LOC and POS
+	  members in RootEntity.
+
+	* rulesets/Entity_getLocation.h: Add some slightly more thorough
+	  checking for location data.
+
 2005-08-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/custom.cpp: Install an atlas factory for custom op as a test.
