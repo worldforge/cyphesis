@@ -86,7 +86,7 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
         const Root & arg = *I;
         int new_num = 1;
         Element num_attr;
-        if (arg->getAttr("num", num_attr) != 0 && num_attr.isInt()) {
+        if (arg->copyAttr("num", num_attr) != 0 && num_attr.isInt()) {
             new_num = num_attr.asInt();
         }
         if (m_num <= new_num) { continue; }

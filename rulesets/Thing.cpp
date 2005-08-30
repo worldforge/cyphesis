@@ -223,7 +223,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // though it is not a special attribute for efficiency. Otherwise
     // an additional Set op would be required.
     Element attr_mode;
-    if (ent->getAttr("mode", attr_mode) == 0) {
+    if (ent->copyAttr("mode", attr_mode) == 0) {
         // FIXME
         if (!attr_mode.isString()) {
             log(ERROR, "Non string mode set in Thing::MoveOperation");
@@ -247,14 +247,14 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     m_update_flags |= a_pos;
 
     Element attr_velocity;
-    if (ent->getAttr("velocity", attr_velocity) == 0) {
+    if (ent->copyAttr("velocity", attr_velocity) == 0) {
         // Update velocity
         m_location.m_velocity.fromAtlas(attr_velocity.asList());
         // Velocity is not persistent so has no flag
     }
 
     Element attr_orientation;
-    if (ent->getAttr("orientation", attr_orientation) == 0) {
+    if (ent->copyAttr("orientation", attr_orientation) == 0) {
         // Update orientation
         m_location.m_orientation.fromAtlas(attr_orientation.asList());
         m_update_flags |= a_orient;

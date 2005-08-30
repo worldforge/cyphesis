@@ -133,7 +133,7 @@ void AdminClient::errorArrived(const RootOperation & op)
     }
     const Root & arg = args.front();
     Element message_attr;
-    if (arg->getAttr("message", message_attr) != 0 && message_attr.isString()) {
+    if (arg->copyAttr("message", message_attr) != 0 && message_attr.isString()) {
         m_errorMessage = message_attr.String();
     }
 }

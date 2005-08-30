@@ -71,6 +71,7 @@ Inheritance::Inheritance() : noClass(0)
     Atlas::Objects::Entity::Anonymous root;
 
     root->setParents(std::list<std::string>(0));
+    root->setObjtype("meta");
     root->setId("root");
 
     atlasObjects["root"] = root;

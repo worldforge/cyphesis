@@ -380,7 +380,7 @@ void Interactive<Stream>::errorArrived(const RootOperation & op)
     const std::vector<Root> & args = op->getArgs();
     const Root & arg = args.front();
     Element message_attr;
-    if (arg->getAttr("message", message_attr) == 0 && message_attr.isString()) {
+    if (arg->copyAttr("message", message_attr) == 0 && message_attr.isString()) {
         std::cout << message_attr.asString();
     }
     std::cout << ")" << std::endl << std::flush;

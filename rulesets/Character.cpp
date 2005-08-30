@@ -204,9 +204,9 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
 
 void Character::TickOperation(const Operation & op, OpVector & res)
 {
-    if (op->hasAttr("sub_to")) {
+    Element sub_to;
+    if (op->copyAttr("sub_to", sub_to) == 0) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
-        Element sub_to = op->getAttr("sub_to");
         if (!sub_to.isString()) {
             error(op, "Tick op sub_to is not string", res, getId());
             return;
@@ -228,7 +228,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
         // Deal with movement.
         const Root & arg = args.front();
         Element serialno;
-        if (arg->getAttr("serialno", serialno) == 0 && (serialno.isInt())) {
+        if (arg->copyAttr("serialno", serialno) == 0 && (serialno.isInt())) {
             if (serialno.asInt() < m_movement.serialno()) {
                 debug(std::cout << "Old tick" << std::endl << std::flush;);
                 return;
@@ -325,7 +325,7 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
     }
     const Root & arg = op->getArgs().front();
     Element mass_attr;
-    if (arg->getAttr("mass", mass_attr) != 0 || !mass_attr.isNum()) {
+    if (arg->copyAttr("mass", mass_attr) != 0 || !mass_attr.isNum()) {
         return;
     }
     m_food = m_food + mass_attr.asNum();
@@ -334,7 +334,7 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
     food_ent->setId(getId());
     food_ent->setAttr("food", m_food);
     Element alcohol_attr;
-    if (arg->getAttr("alcohol", alcohol_attr) == 0 && alcohol_attr.isNum()) {
+    if (arg->copyAttr("alcohol", alcohol_attr) == 0 && alcohol_attr.isNum()) {
         m_drunkness += alcohol_attr.asNum() / m_mass;
         food_ent->setAttr("drunkness", m_drunkness);
     }
@@ -502,7 +502,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
                                 << std::endl << std::flush;);
                 // FIXME Duplicated code below (see FIXME)
                 Element pos_attr;
-                if (arg_op_arg->getAttr("pos", pos_attr) == 0) {
+                if (arg_op_arg->copyAttr("pos", pos_attr) == 0) {
                     debug(std::cout << "Got a use op with POS"
                                     << std::endl << std::flush;);
                     if (pos_attr.isList()) {
@@ -523,7 +523,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
                             << std::endl << std::flush;);
             // FIXME Duplicated code above (see FIXME)
             Element pos_attr;
-            if (arg->getAttr("pos", pos_attr) == 0) {
+            if (arg->copyAttr("pos", pos_attr) == 0) {
                 debug(std::cout << "Got a use op with POS"
                                 << std::endl << std::flush;);
                 if (pos_attr.isList()) {
@@ -655,14 +655,14 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         }
 
         Element velocity_attr;
-        if (arg->getAttr("velocity", velocity_attr) == 0) {
+        if (arg->copyAttr("velocity", velocity_attr) == 0) {
             new_velocity.fromAtlas(velocity_attr);
             debug( std::cout << "vel set to " << new_velocity
                              << std::endl << std::flush;);
         }
 
         Element orientation_attr;
-        if (arg->getAttr("orientation", orientation_attr) == 0) {
+        if (arg->copyAttr("orientation", orientation_attr) == 0) {
             new_orientation.fromAtlas(orientation_attr);
             debug( std::cout << "ori set to " << new_orientation << std::endl << std::flush;);
         }

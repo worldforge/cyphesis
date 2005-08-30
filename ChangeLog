@@ -1,3 +1,13 @@
+2005-08-31  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/inheritance.h: Set the correct objtype on the Root meta class.
+
+	* rulesets/Character.cpp, rulesets/Food.cpp, rulesets/Plant.cpp,
+	  rulesets/Stackable.cpp, rulesets/Thing.cpp, server/Account.cpp,
+	  server/Admin.cpp, server/Connection.cpp, tools/AdminClient.cpp,
+	  tools/cycmd.cpp: Switch to renamed copyAttr() method from
+	  Atlas-C++.
+
 2005-08-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/AtlasFileLoader.cpp, common/Database.cpp,

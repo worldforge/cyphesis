@@ -350,7 +350,7 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
     }
     const Root & arg = args.front();
     Element hostname_attr;
-    if (arg->getAttr("hostname", hostname_attr) != 0) {
+    if (arg->copyAttr("hostname", hostname_attr) != 0) {
         error(op, "Argument to connect op has no hostname", res, getId());
         return;
     }

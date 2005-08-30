@@ -78,7 +78,7 @@ void Food::BurnOperation(const Operation & op, OpVector & res)
     // Currently this cooks pretty quick, and at the same speed for
     // everything. No mechanism for this yet.
     Element status_attr;
-    if (arg->getAttr("status", status_attr) != 0 || !status_attr.isNum()) {
+    if (arg->copyAttr("status", status_attr) != 0 || !status_attr.isNum()) {
         error(op, "Burn op with no fire status", res, getId());
     } else {
         double fire_size = status_attr.asNum();

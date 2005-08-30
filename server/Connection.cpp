@@ -147,7 +147,7 @@ bool Connection::verifyCredentials(const Account & account,
                                    const Root & creds) const
 {
     Element passwd_attr;
-    if (creds->getAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
+    if (creds->copyAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
         return false;
     }
     const std::string & passwd = passwd_attr.String();
@@ -221,7 +221,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     // id in case we are dealing with an old client.
     Element user_attr;
     std::string username;
-    if (arg->getAttr("username", user_attr) != 0 || !user_attr.isString()) {
+    if (arg->copyAttr("username", user_attr) != 0 || !user_attr.isString()) {
         log(WARNING, "Got Login for account with no username. Checking for old style Login.");
         if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             error(op, "Got account Login with no username.", res);
@@ -301,7 +301,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
 
     Element user_attr;
     std::string username;
-    if (arg->getAttr("username", user_attr) != 0 || !user_attr.isString()) {
+    if (arg->copyAttr("username", user_attr) != 0 || !user_attr.isString()) {
         log(WARNING, "Got Create for account with no username. Checking for old style Create.");
         if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             error(op, "Got account Create with no username.", res);
@@ -313,7 +313,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     }
 
     Element passwd_attr;
-    if (arg->getAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
+    if (arg->copyAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
         error(op, "No account password given", res);
         return;
     }
@@ -356,14 +356,14 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
     const Root & arg = args.front();
     
     Element user_attr;
-    if (arg->getAttr("username", user_attr) != 0 || !user_attr.isString()) {
+    if (arg->copyAttr("username", user_attr) != 0 || !user_attr.isString()) {
         error(op, "Got Logout with no username.", res);
         return;
     }
     const std::string & username = user_attr.String();
 
     Element passwd_attr;
-    if (arg->getAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
+    if (arg->copyAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
         error(op, "No account password given", res);
         return;
     }

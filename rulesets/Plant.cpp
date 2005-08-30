@@ -146,7 +146,7 @@ void Plant::NourishOperation(const Operation & op, OpVector & res)
     }
     const Root & arg = op->getArgs().front();
     Element mass;
-    if (arg->getAttr("mass", mass) != 0 || !mass.isNum()) {
+    if (arg->copyAttr("mass", mass) != 0 || !mass.isNum()) {
         return;
     }
     m_nourishment += mass.asNum();

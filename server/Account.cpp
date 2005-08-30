@@ -268,7 +268,7 @@ void Account::SetOperation(const Operation & op, OpVector & res)
     Anonymous new_arg;
     bool argument_valid = false;
     Element guise;
-    if (arg->getAttr("guise", guise) == 0) {
+    if (arg->copyAttr("guise", guise) == 0) {
         debug(std::cout << "Got attempt to change characters guise"
                         << std::endl << std::flush;);
         // Apply change to character in-game
@@ -276,7 +276,7 @@ void Account::SetOperation(const Operation & op, OpVector & res)
         argument_valid = true;
     }
     Element height;
-    if (arg->getAttr("height", height) == 0 && (height.isNum())) {
+    if (arg->copyAttr("height", height) == 0 && (height.isNum())) {
         debug(std::cout << "Got attempt to change characters height"
                         << std::endl << std::flush;);
         BBox & bbox = e->m_location.m_bBox;
