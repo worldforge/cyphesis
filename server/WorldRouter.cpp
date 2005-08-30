@@ -240,7 +240,7 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
         Element mode_attr;
         assert(ent->get("mode", mode_attr));
         if (mode_attr.isString()) {
-            mode = mode_attr.asString();
+            mode = mode_attr.String();
         } else {
             log(ERROR, "Non string mode on entity in WorldRouter::addEntity");
         }
@@ -488,7 +488,7 @@ bool WorldRouter::idle(int sec, int usec)
         catch (...) {
             std::string msg = std::string("Exception caught in world.idle()")
                             + " thrown while processing "
-                            // + oqe->getParents().front().asString()
+                            // + oqe->getParents().front()
                             + " operation sent to " + oqe->getTo()
                             + " from " + oqe->getFrom() + ".";
             log(ERROR, msg.c_str());

@@ -19,20 +19,20 @@ bool AccountBase::putAccount(const Atlas::Message::MapType & o)
     if ((I == o.end()) || (!I->second.isString())) {
         return false;
     }
-    const std::string & username = I->second.asString();
+    const std::string & username = I->second.String();
     
     I = o.find("password");
     if ((I == o.end()) || (!I->second.isString())) {
         return false;
     }
-    const std::string & password = I->second.asString();
+    const std::string & password = I->second.String();
     std::string hash;
     encrypt_password(password, hash);
     
     std::string type = "player";
     I = o.find("type");
     if ((I != o.end()) && (I->second.isString())) {
-        type = I->second.asString();
+        type = I->second.String();
     }
     
     std::string columns = "username, type, password";
@@ -59,7 +59,7 @@ bool AccountBase::modAccount(const Atlas::Message::MapType & o,
     if ((I != o.end()) && (I->second.isString())) {
         empty = false;
         columns += "type = '";
-        columns += I->second.asString();
+        columns += I->second.String();
         columns += "'";
     }
 
@@ -67,7 +67,7 @@ bool AccountBase::modAccount(const Atlas::Message::MapType & o,
     if ((I != o.end()) && (I->second.isString())) {
         if (!empty) { columns += ", "; }
         std::string hash;
-        encrypt_password(I->second.asString(), hash);
+        encrypt_password(I->second.String(), hash);
         columns += "password = '";
         columns += hash;
         columns += "'";

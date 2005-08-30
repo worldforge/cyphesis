@@ -63,7 +63,7 @@ template<>
 void Property<std::string>::set(const Atlas::Message::Element & e)
 {
     if (e.isString()) {
-        m_data = e.asString();
+        m_data = e.String();
     }
 }
 

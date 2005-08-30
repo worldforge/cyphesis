@@ -173,19 +173,19 @@ void Interactive<Stream>::output(const Element & item, bool recurse)
     std::cout << " ";
     switch (item.getType()) {
         case Element::TYPE_INT:
-            std::cout << item.asInt();
+            std::cout << item.Int();
             break;
         case Element::TYPE_FLOAT:
-            std::cout << item.asFloat();
+            std::cout << item.Float();
             break;
         case Element::TYPE_STRING:
-            std::cout << "\"" << item.asString() << "\"";
+            std::cout << "\"" << item.String() << "\"";
             break;
         case Element::TYPE_LIST:
             if (recurse) {
                 std::cout << "[ ";
-                ListType::const_iterator I = item.asList().begin();
-                ListType::const_iterator Iend = item.asList().end();
+                ListType::const_iterator I = item.List().begin();
+                ListType::const_iterator Iend = item.List().end();
                 for(; I != Iend; ++I) {
                     output(*I, true);
                 }
@@ -197,8 +197,8 @@ void Interactive<Stream>::output(const Element & item, bool recurse)
         case Element::TYPE_MAP:
             if (recurse) {
                 std::cout << "{ ";
-                MapType::const_iterator I = item.asMap().begin();
-                MapType::const_iterator Iend = item.asMap().end();
+                MapType::const_iterator I = item.Map().begin();
+                MapType::const_iterator Iend = item.Map().end();
                 for(; I != Iend; ++I) {
                     std::cout << I->first << ": ";
                     output(I->second, true);

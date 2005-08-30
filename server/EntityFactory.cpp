@@ -159,10 +159,10 @@ void EntityFactory::populateFactory(const std::string & className,
         const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
-            const std::string & scriptName = J->second.asString();
+            const std::string & scriptName = J->second.String();
             J = script.find("language");
             if ((J != script.end()) && (J->second.isString())) {
-                const std::string & scriptLanguage = J->second.asString();
+                const std::string & scriptLanguage = J->second.String();
                 if (factory->m_scriptFactory != 0) {
                     if (factory->m_scriptFactory->package() != scriptName) {
                         delete factory->m_scriptFactory;
@@ -187,11 +187,11 @@ void EntityFactory::populateFactory(const std::string & className,
         const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
-            const std::string mindType = J->second.asString();
+            const std::string & mindType = J->second.String();
             // language is unused. might need it one day
             // J = script.find("language");
             // if ((J != script.end()) && (J->second.isString())) {
-                // const std::string & mindLang = J->second.asString();
+                // const std::string & mindLang = J->second.String();
             // }
             MindFactory::instance()->addMindType(className, mindType);
         }
@@ -284,7 +284,7 @@ int EntityFactory::installRule(const std::string & className,
         log(ERROR, msg.c_str());
         return -1;
     }
-    const std::string & objtype = J->second.asString();
+    const std::string & objtype = J->second.String();
     J = classDesc.find("parents");
     if (J == Jend) {
         std::string msg = std::string("Rule \"") + className 
@@ -306,13 +306,13 @@ int EntityFactory::installRule(const std::string & className,
         return -1;
     }
     const Element & p1 = parents.front();
-    if (!p1.isString() || p1.asString().empty()) {
+    if (!p1.isString() || p1.String().empty()) {
         std::string msg = std::string("Rule \"") + className 
                           + "\" has malformed first parent. Skipping.";
         log(ERROR, msg.c_str());
         return -1;
     }
-    const std::string & parent = p1.asString();
+    const std::string & parent = p1.String();
     if (objtype == "class") {
         int ret = installEntityClass(className, parent, classDesc);
         if (ret != 0) {

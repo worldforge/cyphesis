@@ -184,19 +184,19 @@ PyObject * MessageElement_asPyObject(const Element & obj)
     PyObject * ret = NULL;
     switch (obj.getType()) {
         case Element::TYPE_INT:
-            ret = PyInt_FromLong(obj.asInt());
+            ret = PyInt_FromLong(obj.Int());
             break;
         case Element::TYPE_FLOAT:
-            ret = PyFloat_FromDouble(obj.asFloat());
+            ret = PyFloat_FromDouble(obj.Float());
             break;
         case Element::TYPE_STRING:
-            ret = PyString_FromString(obj.asString().c_str());
+            ret = PyString_FromString(obj.String().c_str());
             break;
         case Element::TYPE_MAP:
-            ret = MapType_asPyObject(obj.asMap());
+            ret = MapType_asPyObject(obj.Map());
             break;
         case Element::TYPE_LIST:
-            ret = ListType_asPyObject(obj.asList());
+            ret = ListType_asPyObject(obj.List());
             break;
         default:
             break;

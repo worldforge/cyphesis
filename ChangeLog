@@ -1,3 +1,17 @@
+2005-08-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/AtlasFileLoader.cpp, common/Database.cpp,
+	  common/FormattedXMLWriter.cpp, common/Property.cpp,
+	  common/accountbase.cpp, rulesets/Character.cpp,
+	  rulesets/Entity_getLocation.h, rulesets/MemMap.cpp,
+	  rulesets/Pedestrian.cpp, rulesets/Plant.cpp,
+	  rulesets/Py_Object.cpp, rulesets/Thing.cpp,
+	  server/Admin.cpp, server/Connection.cpp, server/EntityFactory.cpp,
+	  server/WorldRouter.cpp, tools/AdminClient.cpp, tools/cycmd.cpp,
+	  tools/cyconvertrules.cpp: After an Element has been checked
+	  with isFoo(), it is more efficient to get its value using Foo()
+	  rather than asFoo() which repeats the check.
+
 2005-08-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Account.cpp, rulesets/Thing.cpp, rulesets/Character.cpp:

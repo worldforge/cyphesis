@@ -203,7 +203,6 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
     }
     const std::string & id = arg->getId();
     // FIXME Use this id to install a type from the client
-    // const std::string & id = I->second.asString();
 
     if ((objtype == "object") || (objtype == "obj")) {
         if (m_charactersDict.find(id) != m_charactersDict.end()) {
@@ -227,6 +226,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         error(op, "Client using Set to install new type", res, getId());
         return;
 #if 0
+        // We no longer accept types installed using Set ops
         I = arg.find("parents");
         if (I == Iend) {
             error(op, "Attempt to install type with no parents", res, getId());

@@ -213,11 +213,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         Element mode_attr;
         assert(get("mode", mode_attr));
         if (mode_attr.isString()) {
-            mode = mode_attr.asString();
+            mode = mode_attr.String();
         } else {
             log(ERROR, "Non string mode on entity in Thing::MoveOperation");
-            std::cout << "Mode is of type " << mode_attr.getType()
-                      << std::endl << std::flush;
         }
     }
 
@@ -232,8 +230,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         } else {
             // Update the mode
             set("mode", attr_mode);
-            m_motion->setMode(attr_mode.asString());
-            mode = attr_mode.asString();
+            m_motion->setMode(attr_mode.String());
+            mode = attr_mode.String();
         }
     }
 

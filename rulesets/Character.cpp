@@ -211,7 +211,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             error(op, "Tick op sub_to is not string", res, getId());
             return;
         }
-        if (sub_to.asString() == "task") {
+        if (sub_to.String() == "task") {
             std::cout << "Task tick" << std::endl << std::flush;
             if (m_task == 0) {
                 log(ERROR, "Got Tick op for task, but task is null");
@@ -444,15 +444,16 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         ListType::const_iterator J = toolOpList.begin();
         ListType::const_iterator Jend = toolOpList.end();
         if ((J != Jend) && ((*J).isString())) {
-            op_type = (*J).asString();
+            op_type = (*J).String();
             debug(std::cout << "default tool op is " << op_type << std::endl
                                                                 << std::flush;);
         }
         for (; J != Jend; ++J) {
             if (!(*J).isString()) {
                 log(ERROR, "Use tool has non string in operations list");
+            } else {
+                toolOps.insert((*J).String());
             }
-            toolOps.insert((*J).asString());
         }
     } // FIXME else return? Not much can happen if toolOps is empty
 

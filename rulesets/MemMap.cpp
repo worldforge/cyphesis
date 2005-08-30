@@ -53,17 +53,17 @@ void MemMap::readEntity(MemEntity * entity, const MapType & entmap)
 {
     MapType::const_iterator I = entmap.find("name");
     if (I != entmap.end() && I->second.isString()) {
-        entity->setName(I->second.asString());
+        entity->setName(I->second.String());
     }
     I = entmap.find("parents");
     if (I != entmap.end() && I->second.isList()) {
         const ListType & parents = I->second.asList();
         if (!parents.empty() && parents.front().isString()) {
             if (entity->getType() == "entity") {
-                entity->setType(parents.front().asString());
-            } else if (entity->getType() != parents.front().asString()) {
+                entity->setType(parents.front().String());
+            } else if (entity->getType() != parents.front().String()) {
                 debug(std::cout << "Attempting to mutate " << entity->getType()
-                                << " into " << parents.front().asString()
+                                << " into " << parents.front().String()
                                 << std::endl << std::flush;);
             }
         }
@@ -71,7 +71,7 @@ void MemMap::readEntity(MemEntity * entity, const MapType & entmap)
     entity->merge(entmap);
     I = entmap.find("loc");
     if ((I != entmap.end()) && I->second.isString()) {
-        getAdd(I->second.asString());
+        getAdd(I->second.String());
     }
     Entity * old_loc = entity->m_location.m_loc;
     entity->getLocation(entmap, m_entities);
@@ -244,7 +244,7 @@ void MemMap::addContents(const MapType & entmap)
             log(ERROR, "MemMap::addContents, malformed non-string in contains");
             continue;
         }
-        getAdd(J->asString());
+        getAdd(J->String());
     }
 }
 
@@ -265,7 +265,7 @@ MemEntity * MemMap::updateAdd(const MapType & entmap, const double & d)
         log(ERROR, "MemMap::update, Malformed non-string id in updated entity");
         return NULL;
     }
-    const std::string & id = I->second.asString();
+    const std::string & id = I->second.String();
     if (id.empty()) {
         log(ERROR, "MemMap::update, Empty id in updated entity");
         return NULL;

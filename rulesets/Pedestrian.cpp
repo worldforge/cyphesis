@@ -179,7 +179,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
         Element mode_attr;
         assert(m_body.get("mode", mode_attr));
         if (mode_attr.isString()) {
-            mode = mode_attr.asString();
+            mode = mode_attr.String();
         } else {
             log(ERROR, "Non string mode on entity in Pedestrain::getUpdatedLocation");
         }

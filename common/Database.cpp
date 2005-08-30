@@ -639,7 +639,7 @@ bool Database::registerSimpleTable(const std::string & name,
         const Element & type = I->second;
         if (type.isString()) {
             query += " LIKE 'foo'";
-            int size = type.asString().size();
+            int size = type.String().size();
             if (size == 0) {
                 createquery += " text";
             } else {
@@ -863,7 +863,7 @@ bool Database::registerEntityTable(const std::string & classname,
         const Element & type = I->second;
         if (type.isString()) {
             query += " LIKE 'foo'";
-            int size = type.asString().size();
+            int size = type.String().size();
             if (size == 0) {
                 createquery += " text";
             } else {
@@ -1113,7 +1113,7 @@ bool Database::registerArrayTable(const std::string & name,
 
         if (type.isString()) {
             query += " LIKE 'foo'";
-            int size = type.asString().size();
+            int size = type.String().size();
             if (size == 0) {
                 createquery += " text";
             } else {
@@ -1211,13 +1211,13 @@ bool Database::createArrayRow(const std::string & name,
         const Element & e = I->second;
         switch (e.getType()) {
           case Element::TYPE_INT:
-            query << ", " << e.asInt();
+            query << ", " << e.Int();
             break;
           case Element::TYPE_FLOAT:
-            query << ", " << e.asFloat();
+            query << ", " << e.Float();
             break;
           case Element::TYPE_STRING:
-            query << ", " << e.asString();
+            query << ", " << e.String();
             break;
           default:
             log(ERROR, "Bad type constructing array database row for insert");
@@ -1252,13 +1252,13 @@ bool Database::updateArrayRow(const std::string & name,
         const Element & e = I->second;
         switch (e.getType()) {
           case Element::TYPE_INT:
-            query << e.asInt();
+            query << e.Int();
             break;
           case Element::TYPE_FLOAT:
-            query << e.asFloat();
+            query << e.Float();
             break;
           case Element::TYPE_STRING:
-            query << "'" << e.asString() << "'";
+            query << "'" << e.String() << "'";
             break;
           default:
             log(ERROR, "Bad type constructing array database row for update");

@@ -193,18 +193,18 @@ void FileConverter::outputValue(const Element & e)
 {
     switch (e.getType()) {
         case Element::TYPE_INT:
-            std::cout << e.asInt();
+            std::cout << e.Int();
             break;
         case Element::TYPE_FLOAT:
-            std::cout << e.asFloat();
+            std::cout << e.Float();
             break;
         case Element::TYPE_STRING:
-            std::cout << e.asString();
+            std::cout << e.String();
             break;
         case Element::TYPE_MAP:
             std::cout << std::endl;
             m_indent += 2;
-            output(e.asMap());
+            output(e.Map());
             m_indent -= 2;
             for(int i = 0; i < m_indent; ++i) {
                 std::cout << " ";
@@ -213,7 +213,7 @@ void FileConverter::outputValue(const Element & e)
         case Element::TYPE_LIST:
             std::cout << std::endl;
             m_indent += 2;
-            output(e.asList());
+            output(e.List());
             m_indent -= 2;
             for(int i = 0; i < m_indent; ++i) {
                 std::cout << " ";

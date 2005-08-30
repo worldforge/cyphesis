@@ -150,7 +150,7 @@ bool Connection::verifyCredentials(const Account & account,
     if (creds->getAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
         return false;
     }
-    const std::string & passwd = passwd_attr.asString();
+    const std::string & passwd = passwd_attr.String();
 
     std::string hash;
     encrypt_password(passwd, hash);
@@ -229,7 +229,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
         }
         username = arg->getId();
     } else {
-        username = user_attr.asString();
+        username = user_attr.String();
     }
     if (username.empty()) {
         error(op, "Empty username provided for Login", res);
@@ -309,7 +309,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         }
         username = arg->getId();
     } else {
-        username = user_attr.asString();
+        username = user_attr.String();
     }
 
     Element passwd_attr;
@@ -317,7 +317,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         error(op, "No account password given", res);
         return;
     }
-    const std::string & password = passwd_attr.asString();
+    const std::string & password = passwd_attr.String();
 
     if ((0 != m_server.getAccountByName(username)) ||
         (consts::enable_database && Persistance::instance()->findAccount(username)) ||
@@ -360,14 +360,14 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         error(op, "Got Logout with no username.", res);
         return;
     }
-    const std::string & username = user_attr.asString();
+    const std::string & username = user_attr.String();
 
     Element passwd_attr;
     if (arg->getAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
         error(op, "No account password given", res);
         return;
     }
-    const std::string & password = passwd_attr.asString();
+    const std::string & password = passwd_attr.String();
     Account * player = m_server.getAccountByName(username);
     if ((!player) || (password != player->m_password)) {
         error(op, "Logout failed", res);

@@ -20,7 +20,7 @@ bool Entity::getLocation(const Atlas::Message::MapType & entmap,
         return true;
     }
     try {
-        const std::string & ref_id = I->second.asString();
+        const std::string & ref_id = I->second.String();
         typename std::map<std::string, EntityType *>::const_iterator J = eobjects.find(ref_id);
         if (J == eobjects.end()) {
             debug( std::cout << "ERROR: Can't get ref from objects dictionary" << std::endl << std::flush;);

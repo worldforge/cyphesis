@@ -24,7 +24,7 @@ void AtlasFileLoader::messageArrived(const MapType & msg)
         log(WARNING, "Message without non-string ID read from file");
         return;
     }
-    std::string msg_id = id.asString();
+    std::string msg_id = id.String();
     o.erase(I);
     m_messages[msg_id] = o;
     ++m_count;

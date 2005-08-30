@@ -92,7 +92,7 @@ void Plant::ChopOperation(const Operation & op, OpVector & res)
         return;
     }
     Element mode;
-    if (get("mode", mode) && mode.isString() && mode.asString() == "felled") {
+    if (get("mode", mode) && mode.isString() && mode.String() == "felled") {
         debug(std::cout << "Plant is already down" << std::endl << std::flush;);
         Set set_op;
         Anonymous set_arg;

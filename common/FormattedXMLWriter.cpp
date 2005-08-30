@@ -57,18 +57,18 @@ void FormattedXMLWriter::outputValue(const Element & e)
 {
     switch (e.getType()) {
         case Element::TYPE_INT:
-            m_stream << e.asInt();
+            m_stream << e.Int();
             break;
         case Element::TYPE_FLOAT:
-            m_stream << e.asFloat();
+            m_stream << e.Float();
             break;
         case Element::TYPE_STRING:
-            m_stream << e.asString();
+            m_stream << e.String();
             break;
         case Element::TYPE_MAP:
             m_stream << std::endl;
             m_indent += 2;
-            outputMap(e.asMap());
+            outputMap(e.Map());
             m_indent -= 2;
             for(int i = 0; i < m_indent; ++i) {
                 m_stream << " ";
@@ -77,7 +77,7 @@ void FormattedXMLWriter::outputValue(const Element & e)
         case Element::TYPE_LIST:
             m_stream << std::endl;
             m_indent += 2;
-            outputList(e.asList());
+            outputList(e.List());
             m_indent -= 2;
             for(int i = 0; i < m_indent; ++i) {
                 m_stream << " ";
