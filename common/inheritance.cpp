@@ -164,12 +164,12 @@ int Inheritance::addChild(const Atlas::Objects::Root & obj)
         log(ERROR, msg.c_str());
         return -1;
     }
-    ListType children(1, child);
-    if (I->second->hasAttr("children")) {
-        children = I->second->getAttr("children").asList();
-        children.push_back(child);
+    Element children(ListType(1, child));
+    if (I->second->copyAttr("children", children) == 0) {
+        assert(children.isList());
+        children.asList().push_back(child);
     }
-    I->second->setAttr("children", Element(children));
+    I->second->setAttr("children", children);
     atlasObjects[child] = obj;
     return 0;
 }

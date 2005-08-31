@@ -1,5 +1,10 @@
 2005-08-31  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/inheritance.cpp: Avoid hasAttr(),getAttr() use by using
+	  copyAttr().
+
+2005-08-31  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/inheritance.h: Set the correct objtype on the Root meta class.
 
 	* rulesets/Character.cpp, rulesets/Food.cpp, rulesets/Plant.cpp,
