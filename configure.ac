@@ -1,6 +1,6 @@
 dnl Initialise autoconf
 
-AC_INIT(cyphesis, 0.3.12, alriddoch@zepler.org)
+AC_INIT(cyphesis, 0.4.0, alriddoch@zepler.org)
 AC_CONFIG_SRCDIR([server/server.cpp])
 AC_CONFIG_HEADERS([config.h])
 
@@ -201,7 +201,7 @@ dnl         CPPFLAGS="$CPPFLAGS $MONO_CFLAGS"
 dnl         COMMON_LIBS="$COMMON_LIBS $MONO_LIBS"
 dnl     ])
 
-PKG_CHECK_MODULES(DEPS, atlascpp-0.6 varconf-1.0 >= 0.6.2,
+PKG_CHECK_MODULES(DEPS, atlascpp-0.5 >= 0.4.94 varconf-1.0 >= 0.6.2,
     [
         CPPFLAGS="$CPPFLAGS $DEPS_CFLAGS"
         COMMON_LIBS="$COMMON_LIBS $DEPS_LIBS"
