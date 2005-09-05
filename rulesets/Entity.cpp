@@ -13,20 +13,14 @@
 
 #include <wfmath/atlasconv.h>
 
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/Operation/Sight.h>
 
 #include <cassert>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
-using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Sight;
-using Atlas::Objects::Entity::RootEntity;
-using Atlas::Objects::Factories;
-
-using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
@@ -154,29 +148,6 @@ void Entity::addToMessage(MapType & omap) const
     omap["objtype"] = "obj";
 }
 
-/// \brief Copy attributes into an Atlas entity
-///
-/// @param ent Atlas entity this entity should be copied into
-void Entity::addToEntity(const RootEntity & ent) const
-{
-    // We need to have a list of keys to pull from attributes.
-    MapType::const_iterator Iend = m_attributes.end();
-    for (MapType::const_iterator I = m_attributes.begin(); I != Iend; ++I) {
-        ent->setAttr(I->first, I->second);
-    }
-    PropertyDict::const_iterator J = m_properties.begin();
-    PropertyDict::const_iterator Jend = m_properties.end();
-    for (; J != Jend; ++J) {
-        Element val;
-        J->second->get(val);
-        ent->setAttr(J->first, val);
-    }
-    ent->setAttr("stamp", (double)m_seq);
-    ent->setParents(std::list<std::string>(1, m_type));
-    m_location.addToEntity(ent);
-    ent->setObjtype("obj");
-}
-
 /// \brief Associate a script with this entity
 ///
 /// The previously associated script is deleted.
@@ -269,7 +240,7 @@ void Entity::externalOperation(const Operation & op)
     operation(op, res);
     OpVector::const_iterator Iend = res.end();
     for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-        (*I)->setRefno(op->getSerialno());
+        (*I)->setRefno(op.getSerialno());
         sendWorld(*I);
     }
 }
@@ -299,46 +270,45 @@ void Entity::CreateOperation(const Operation & op, OpVector & res)
     if (m_script->Operation("create", op, res) != 0) {
         return;
     }
-    const std::vector<Root> & args = op->getArgs();
+    const ListType & args = op.getArgs();
     if (args.empty()) {
        return;
     }
     try {
-        RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
-        if (!ent.isValid()) {
-            error(op, "Entity to be created is malformed", res, getId());
+        MapType ent = args.front().asMap();
+        MapType::const_iterator I = ent.find("parents");
+        if ((I == ent.end()) || !I->second.isList()) {
+            error(op, "Entity to be created has no type", res, getId());
             return;
         }
-        const std::list<std::string> & parents = ent->getParents();
-        if (parents.empty()) {
-            error(op, "Entity to be created has empty parents", res, getId());
+        const ListType & parents = I->second.asList();
+        if (parents.empty() || !parents.front().isString()) {
+            error(op, "Entity to be created has invalid type", res, getId());
             return;
         }
-        if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) &&
-            (m_location.m_loc != 0)) {
-            ent->setLoc(m_location.m_loc->getId());
-            if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-                ::addToEntity(m_location.m_pos, ent->modifyPos());
+        if ((ent.find("loc") == ent.end()) && (m_location.m_loc != 0)) {
+            ent["loc"] = m_location.m_loc->getId();
+            if (ent.find("pos") == ent.end()) {
+                ent["pos"] = m_location.m_pos.toAtlas();
             }
         }
-        const std::string & type = parents.front();
+        const std::string & type = parents.front().asString();
         debug( std::cout << getId() << " creating " << type;);
 
         Entity * obj = m_world->addNewEntity(type,ent);
 
         if (obj == 0) {
-            error(op, "Create op failed.", res, op->getFrom());
+            error(op, "Create op failed.", res, op.getFrom());
             return;
         }
 
-        Operation c(op->copy());
-
-        MapType new_obj;
-        obj->addToMessage(new_obj);
-        c->setArgs1(Factories::instance()->createObject(new_obj));
-
-        Sight s;
-        s->setArgs1(c);
+        Operation c(op);
+        ListType & args = c.getArgs();
+        MapType & arg = args.front().asMap();
+        arg.clear();
+        obj->addToMessage(arg);
+        Operation * s = new Sight();
+        s->setArgs(ListType(1,c.asObject()));
         res.push_back(s);
     }
     catch (Atlas::Message::WrongTypeException&) {
@@ -409,13 +379,12 @@ void Entity::LookOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Sight s;
-
-    MapType new_obj;
-    addToMessage(new_obj);
-    s->setArgs1(Factories::instance()->createObject(new_obj));
-
-    s->setTo(op->getFrom());
+    Sight * s = new Sight( );
+    ListType & args = s->getArgs();
+    args.push_back(MapType());
+    MapType & amap = args.front().asMap();
+    addToMessage(amap);
+    s->setTo(op.getFrom());
 
     res.push_back(s);
 }
@@ -432,7 +401,7 @@ void Entity::DisappearanceOperation(const Operation & op, OpVector & res)
 
 void Entity::OtherOperation(const Operation & op, OpVector & res)
 {
-    const std::string & op_type = op->getParents().front();
+    const std::string & op_type = op.getParents().front().asString();
     debug(std::cout << "Entity " << getId() << " got custom " << op_type
                     << " op" << std::endl << std::flush;);
     m_script->Operation(op_type, op, res);
