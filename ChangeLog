@@ -1,3 +1,8 @@
+2005-09-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_RootEntity.cpp, rulesets/Py_RootEntity.h:
+	  New python wrappers for Atlas-C++ entity classes.
+
 2005-08-31  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/inheritance.cpp: Avoid hasAttr(),getAttr() use by using
