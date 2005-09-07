@@ -17,6 +17,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      id.cpp id.h \
 		      log.cpp log.h \
 		      debug.h random.h nls.h \
+		      compose.h \
 		      types.h type_utils.h op_switch.h \
 		      CustomOp.cpp CustomOp_impl.h CustomOp.h \
 		      operations.cpp operations.h \

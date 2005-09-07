@@ -19,6 +19,7 @@
 #include "common/inheritance.h"
 #include "common/Property.h"
 #include "common/serialno.h"
+#include "common/compose.hpp"
 
 #include "common/Tick.h"
 #include "common/Nourish.h"
@@ -505,8 +506,8 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
                 if (arg_op_arg->copyAttr("pos", pos_attr) == 0) {
                     debug(std::cout << "Got a use op with POS"
                                     << std::endl << std::flush;);
-                    if (pos_attr.isList()) {
-                        error(op, "Use arg entity has non-list POS", res, getId());
+                    if (!pos_attr.isList()) {
+                        error(op, String::compose("Use arg entity has POS of type %1 rather than list", Element::typeName(pos_attr.getType())).c_str(), res, getId());
                         return;
                     }
                     target->setAttr("pos", pos_attr);
@@ -526,8 +527,8 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
             if (arg->copyAttr("pos", pos_attr) == 0) {
                 debug(std::cout << "Got a use op with POS"
                                 << std::endl << std::flush;);
-                if (pos_attr.isList()) {
-                    error(op, "Use arg entity has non-list POS", res, getId());
+                if (!pos_attr.isList()) {
+                    error(op, String::compose("Use arg entity has POS of type %1 rather than list", Element::typeName(pos_attr.getType())).c_str(), res, getId());
                     return;
                 }
                 target->setAttr("pos", pos_attr);

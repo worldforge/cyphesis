@@ -1,5 +1,14 @@
 2005-09-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/compose.hpp: Add Ole Laursen's fine string composition
+	  library for improved messages.
+
+	* rulesets/Character.cpp: Fix inverted check for string pos,
+	  and add a clearer error message when it fails, using
+	  compose.
+
+2005-09-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Operation.cpp: Decref operations correctly when the
 	  Python object wrapping them is deleted.
 
