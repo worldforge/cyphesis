@@ -1,3 +1,14 @@
+2005-09-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Operation.cpp: Decref operations correctly when the
+	  Python object wrapping them is deleted.
+
+	* rulesets/mason/define_world.py: Add a simple single entity
+	  test function.
+
+	* server/WorldRouter.cpp: Make sure orientation is not used
+	  un-initialised when correcting height.
+
 2005-09-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_RootEntity.cpp, rulesets/Py_RootEntity.h:

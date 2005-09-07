@@ -186,6 +186,7 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
                         << std::endl << std::flush;);
         return h;
     } else {
+        static const Quaternion identity(Quaternion().identity());
         assert(parent->m_location.m_loc != 0);
         // FIXME take account of orientation
         const Point3D & ppos = parent->m_location.m_pos;
@@ -194,12 +195,12 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
                         << " my pos " << pos.z()
                         << std::endl << std::flush;);
         float h;
-        // FIXME Is it safe to use m_orientation without checking it
         // FIXME Recently swapped argument order as it appears to fix
         // a bug. Check carefully whether this is doing the right thing.
+        const Quaternion & parent_orientation = parent->m_location.m_orientation.isValid() ? parent->m_location.m_orientation : identity;
         h =  ppos.z() - constrainHeight(parent->m_location.m_loc,
                             pos.toParentCoords(parent->m_location.m_pos,
-                                               parent->m_location.m_orientation),
+                                               parent_orientation),
                             mode
                            );
         debug(std::cout << "Correcting height from " << pos.z() << " to " << h

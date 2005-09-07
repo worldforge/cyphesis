@@ -503,11 +503,8 @@ PyMethodDef ConstRootOperation_methods[] = {
 
 static void Operation_dealloc(PyOperation *self)
 {
-        if ((self->own != 0) && (self->operation.isValid())) {
-            // Can't delete until I have sorted out bugs with own flag
-            self->operation.~RootOperation();
-        }
-        PyMem_DEL(self);
+    self->operation.~RootOperation();
+    PyMem_DEL(self);
 }
 
 static inline PyObject * findMethod(PyOperation * self, char * name)

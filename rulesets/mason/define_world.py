@@ -653,3 +653,10 @@ def test_graveyard(mapeditor):
     m.learn(lych,lych2_goals)
     m.know(lych,lych2_knowledge)
     m.tell_importance(lych,il.assemble,'>',il.patrol)
+
+def test_fire(mapeditor):
+    m = editor(mapeditor)
+
+    cfire=m.make('campfire',type='campfire',xyz=(3,9,settlement_height))
+    # m.make('fire',type='fire',xyz=(0,0,0),parent=cfire.id)
+
