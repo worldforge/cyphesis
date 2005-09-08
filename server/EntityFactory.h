@@ -6,6 +6,7 @@
 #define SERVER_ENTITY_FACTORY_H
 
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/ObjectsFwd.h>
 
 #include <sigc++/object.h>
 
@@ -59,7 +60,7 @@ class EntityFactory {
     }
     void initWorld();
     Entity * newEntity(const std::string &, const std::string &,
-                       const Atlas::Message::MapType &);
+                       const Atlas::Objects::Entity::RootEntity &);
     void flushFactories();
 
     int installRule(const std::string &, const Atlas::Message::MapType&);

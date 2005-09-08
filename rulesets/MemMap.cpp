@@ -23,6 +23,7 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
 MemEntity * MemMap::addEntity(MemEntity * entity)
@@ -48,46 +49,44 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
     return entity;
 }
 
-void MemMap::readEntity(MemEntity * entity, const MapType & entmap)
+void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
 // Read the contents of an Atlas message into an entity
 {
-    MapType::const_iterator I = entmap.find("parents");
-    if (I != entmap.end() && I->second.isList()) {
-        const ListType & parents = I->second.asList();
-        if (!parents.empty() && parents.front().isString()) {
+    if (ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+        const std::list<std::string> & parents = ent->getParents();
+        if (!parents.empty()) {
             if (entity->getType() == "entity") {
-                entity->setType(parents.front().String());
-            } else if (entity->getType() != parents.front().String()) {
+                entity->setType(parents.front());
+            } else if (entity->getType() != parents.front()) {
                 debug(std::cout << "Attempting to mutate " << entity->getType()
-                                << " into " << parents.front().String()
+                                << " into " << parents.front()
                                 << std::endl << std::flush;);
             }
         }
     }
-    entity->merge(entmap);
-    I = entmap.find("loc");
-    if ((I != entmap.end()) && I->second.isString()) {
-        getAdd(I->second.String());
+    entity->merge(ent->asMessage());
+    if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+        getAdd(ent->getLoc());
     }
     Entity * old_loc = entity->m_location.m_loc;
-    entity->getLocation(entmap, m_entities);
+    entity->getLocation(ent, m_entities);
     if (old_loc != entity->m_location.m_loc) {
         if (old_loc != 0) {
             old_loc->m_contains.erase(entity);
         }
         entity->m_location.m_loc->m_contains.insert(entity);
     }
-    addContents(entmap);
+    addContents(ent);
 }
 
-void MemMap::updateEntity(MemEntity * entity, const MapType & entmap)
+void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
 // Update contents of entity an Atlas message.
 {
     assert(entity != 0);
 
     debug( std::cout << " got " << entity << std::endl << std::flush;);
 
-    readEntity(entity, entmap);
+    readEntity(entity, ent);
 
     std::vector<std::string>::const_iterator K = m_updateHooks.begin();
     std::vector<std::string>::const_iterator Kend = m_updateHooks.end();
@@ -96,8 +95,7 @@ void MemMap::updateEntity(MemEntity * entity, const MapType & entmap)
     }
 }
 
-MemEntity * MemMap::newEntity(const std::string & id,
-                              const MapType & entmap)
+MemEntity * MemMap::newEntity(const std::string & id, const RootEntity & ent)
 // Create a new entity from an Atlas message.
 {
     assert(!id.empty());
@@ -105,7 +103,7 @@ MemEntity * MemMap::newEntity(const std::string & id,
 
     MemEntity * entity = new MemEntity(id);
 
-    readEntity(entity, entmap);
+    readEntity(entity, ent);
 
     return addEntity(entity);
 }
@@ -222,29 +220,21 @@ MemEntity * MemMap::getAdd(const std::string & id)
     return addId(id);
 }
 
-void MemMap::addContents(const MapType & entmap)
+void MemMap::addContents(const RootEntity & ent)
 // Iterate over the contains attribute of a message, looking at all the contents
 {
-    MapType::const_iterator I = entmap.find("contains");
-    if (I == entmap.end()) {
+    if (!ent->hasAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG)) {
         return;
     }
-    if (!I->second.isList()) {
-        log(ERROR, "MemMap::addContents, malformed contains is not list");
-        return;
-    }
-    const ListType & contlist = I->second.asList();
-    ListType::const_iterator Jend = contlist.end();
-    for (ListType::const_iterator J = contlist.begin(); J != Jend; ++J) {
-        if (!J->isString()) {
-            log(ERROR, "MemMap::addContents, malformed non-string in contains");
-            continue;
-        }
-        getAdd(J->String());
+    const std::list<std::string> & contlist = ent->getContains();
+    std::list<std::string>::const_iterator Jend = contlist.end();
+    std::list<std::string>::const_iterator J = contlist.begin();
+    for (; J != Jend; ++J) {
+        getAdd(*J);
     }
 }
 
-MemEntity * MemMap::updateAdd(const MapType & entmap, const double & d)
+MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
 // Update an entity in our memory, from an Atlas message
 // The mind code relies on this function never sending a Sight to
 // be sure that seeing something created does not imply that the created
@@ -252,27 +242,22 @@ MemEntity * MemMap::updateAdd(const MapType & entmap, const double & d)
 // creator.
 {
     debug( std::cout << "MemMap::update" << std::endl << std::flush;);
-    MapType::const_iterator I = entmap.find("id");
-    if (I == entmap.end()) {
+    if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         log(ERROR, "MemMap::update, Missing id in updated entity");
         return NULL;
     }
-    if (!I->second.isString()) {
-        log(ERROR, "MemMap::update, Malformed non-string id in updated entity");
-        return NULL;
-    }
-    const std::string & id = I->second.String();
+    const std::string & id = ent->getId();
     if (id.empty()) {
         log(ERROR, "MemMap::update, Empty id in updated entity");
         return NULL;
     }
-    MemEntityDict::const_iterator J = m_entities.find(id);
+    MemEntityDict::const_iterator I = m_entities.find(id);
     MemEntity * entity;
-    if (J == m_entities.end()) {
-        entity = newEntity(id, entmap);
+    if (I == m_entities.end()) {
+        entity = newEntity(id, ent);
     } else {
-        entity = J->second;
-        updateEntity(entity, entmap);
+        entity = I->second;
+        updateEntity(entity, ent);
     }
     entity->update(d);
     return entity;

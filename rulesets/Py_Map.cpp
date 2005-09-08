@@ -6,10 +6,16 @@
 #include "Py_Location.h"
 #include "Py_Thing.h"
 #include "Py_Operation.h"
+#include "Py_RootEntity.h"
 #include "Py_Object.h"
 
 #include "MemEntity.h"
 #include "MemMap.h"
+
+#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/objectFactory.h>
+
+using Atlas::Objects::Entity::RootEntity;
 
 static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
 {
@@ -109,19 +115,33 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    PyMessageElement * obj;
+    PyObject * arg;
     double time;
-    if (!PyArg_ParseTuple(args, "Od", &obj, &time)) {
+    if (!PyArg_ParseTuple(args, "Od", &arg, &time)) {
         return NULL;
     }
-    if (!PyMessageElement_Check(obj)) {
-        PyErr_SetString(PyExc_TypeError,"arg is not an Object");
+    if (PyMessageElement_Check(arg)) {
+        PyMessageElement * me = (PyMessageElement*)arg;
+        Atlas::Objects::Root obj = Atlas::Objects::Factories::instance()->createObject(me->m_obj->asMap());
+        RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(obj);
+        if (!ent.isValid()) {
+            PyErr_SetString(PyExc_TypeError, "arg is a Message that does not represent an entity");
+            return NULL;
+        }
+        MemEntity * ret = self->m_map->updateAdd(ent, time);
+        PyEntity * thing = newPyEntity();
+        thing->m_entity = ret;
+        return (PyObject *)thing;
+    } else if (PyRootEntity_Check(arg)) {
+        PyRootEntity * ent = (PyRootEntity*)arg;
+        MemEntity * ret = self->m_map->updateAdd(ent->entity, time);
+        PyEntity * thing = newPyEntity();
+        thing->m_entity = ret;
+        return (PyObject *)thing;
+    } else {
+        PyErr_SetString(PyExc_TypeError, "arg is not an Atlas Entity or Message");
         return NULL;
     }
-    MemEntity * ret = self->m_map->updateAdd(obj->m_obj->asMap(), time);
-    PyEntity * thing = newPyEntity();
-    thing->m_entity = ret;
-    return (PyObject *)thing;
 }
 
 static PyObject * Map_delete(PyMap * self, PyObject * args)

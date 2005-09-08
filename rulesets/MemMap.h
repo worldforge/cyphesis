@@ -31,10 +31,10 @@ class MemMap {
     Script *& m_script;
 
     MemEntity * addEntity(MemEntity *);
-    void readEntity(MemEntity *, const Atlas::Message::MapType &);
-    void updateEntity(MemEntity *, const Atlas::Message::MapType &);
-    MemEntity * newEntity(const std::string &, const Atlas::Message::MapType &);
-    void addContents(const Atlas::Message::MapType &);
+    void readEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &);
+    void updateEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &);
+    MemEntity * newEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &);
+    void addContents(const Atlas::Objects::Entity::RootEntity &);
     MemEntity * addId(const std::string & id);
   public:
     explicit MemMap(Script *& s);
@@ -51,7 +51,7 @@ class MemMap {
     void del(const std::string & id);
     MemEntity * get(const std::string & id) const;
     MemEntity * getAdd(const std::string & id);
-    MemEntity * updateAdd(const Atlas::Message::MapType &, const double &);
+    MemEntity * updateAdd(const Atlas::Objects::Entity::RootEntity &, const double &);
 
     MemEntityVector findByType(const std::string & what);
     MemEntityVector findByLocation(const Location & where, double radius);

@@ -1,5 +1,17 @@
 2005-09-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp: Update copyright date.
+
+	* rulesets/BaseMind.cpp, rulesets/Entity_getLocation.h,
+	  rulesets/Entity.h, rulesets/MemMap.cpp, rulesets/MemMap.h,
+	  rulesets/Py_Map.cpp, server/EntityFactory.cpp,
+	  server/EntityFactory.h, server/WorldRouter.cpp,
+	  client/BaseClient.cpp, client/CreatorClient.cpp:
+	  Change various methods to pass entity information
+	  around as RootEntity rather than MapType.
+
+2005-09-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/MemMap.cpp: Remove unnecessary copy of name to entity,
 	  as it's handled later in merge().
 

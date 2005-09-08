@@ -165,7 +165,7 @@ class Entity : public BaseEntity {
     void merge(const Atlas::Message::MapType &);
 
     template <class EntityType>
-    bool getLocation(const Atlas::Message::MapType &,
+    bool getLocation(const Atlas::Objects::Entity::RootEntity &,
                      const std::map<std::string, EntityType *> &);
 
     void destroy();

@@ -40,6 +40,7 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Entity::RootEntity;
 
 static const bool debug_flag = false;
 
@@ -86,7 +87,7 @@ void EntityFactory::initWorld()
 
 Entity * EntityFactory::newEntity(const std::string & id,
                                   const std::string & type,
-                                  const MapType & attributes)
+                                  const RootEntity & attributes)
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
     Entity * thing = 0;
@@ -117,7 +118,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
     // Read the defaults
     thing->merge(factory->m_attributes);
     // And then override with the values provided for this entity.
-    thing->merge(attributes);
+    thing->merge(attributes->asMessage());
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
     if (thing->getLocation(attributes, m_world.getEntities())) {

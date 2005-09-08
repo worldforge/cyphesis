@@ -21,6 +21,7 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::RootOperation;
+using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Objects::smart_dynamic_cast;
@@ -82,7 +83,12 @@ Entity * CreatorClient::make(const Atlas::Message::Element & entity)
                   << std::endl << std::flush;
         return NULL;
     }
-    const Root & created = arg->getArgs().front();
+    RootEntity created = smart_dynamic_cast<RootEntity>(arg->getArgs().front());
+    if (!created.isValid()) {
+        std::cerr << "Created argument is not an entity"
+                  << std::endl << std::flush;
+        return NULL;
+    }
     if (!created->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "Created entity has no id"
                   << std::endl << std::flush;
@@ -97,7 +103,7 @@ Entity * CreatorClient::make(const Atlas::Message::Element & entity)
     const std::string & created_type = created->getParents().front();
     std::cout << "Created: " << created_type << "(" << created_id << ")"
               << std::endl << std::flush;
-    Entity * obj = m_map.updateAdd(created->asMessage(), res->getSeconds());
+    Entity * obj = m_map.updateAdd(created, res->getSeconds());
     return obj;
 }
 
@@ -158,15 +164,18 @@ Entity * CreatorClient::sendLook(const Operation & op)
         std::cerr << "Reply to look has no args" << std::endl << std::flush;
         return NULL;
     }
-    const Root & seen = res->getArgs().front();
+    RootEntity seen = smart_dynamic_cast<RootEntity>(res->getArgs().front());
+    if (!seen.isValid()) {
+        std::cerr << "Sight arg is not an entity" << std::endl << std::flush;
+        return NULL;
+    }
     if (!seen->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        std::cerr << "Looked at entity has no id"
-                  << std::endl << std::flush;
+        std::cerr << "Looked at entity has no id" << std::endl << std::flush;
         return NULL;
     }
     const std::string & created_id = seen->getId();
     std::cout << "Seen: " << created_id << std::endl << std::flush;
-    Entity * obj = m_map.updateAdd(seen->asMessage(), res->getSeconds());
+    Entity * obj = m_map.updateAdd(seen, res->getSeconds());
     return obj;
 }
 

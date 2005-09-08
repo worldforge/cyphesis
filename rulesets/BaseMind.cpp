@@ -18,10 +18,14 @@
 #include "common/Burn.h"
 
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/RootEntity.h>
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
+using Atlas::Objects::Entity::RootEntity;
+
+using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
@@ -151,10 +155,14 @@ void BaseMind::sightCreateOperation(const Operation & op, Operation & sub_op, Op
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return;
     }
-    MapType obj = args.front()->asMessage();
+    RootEntity ent(smart_dynamic_cast<RootEntity>(args.front()));
+    if (!ent.isValid()) {
+        log(ERROR, "Got sight(create) of non-entity");
+        return;
+    }
     // This does not send a look, so anything added this way will not
     // get flagged as visible until we get an appearance. This is important.
-    m_map.updateAdd(obj, op->getSeconds());
+    m_map.updateAdd(ent, op->getSeconds());
 }
 
 void BaseMind::sightCutOperation(const Operation & op, Operation & sub_op, OpVector & res)
@@ -208,9 +216,12 @@ void BaseMind::sightMoveOperation(const Operation & op, Operation & sub_op, OpVe
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return;
     }
-    MapType obj = args.front()->asMessage();
-    
-    m_map.updateAdd(obj, op->getSeconds());
+    RootEntity ent(smart_dynamic_cast<RootEntity>(args.front()));
+    if (!ent.isValid()) {
+        log(ERROR, "Got sight(move) of non-entity");
+        return;
+    }
+    m_map.updateAdd(ent, op->getSeconds());
 }
 
 void BaseMind::sightSetOperation(const Operation & op, Operation & sub_op, OpVector & res)
@@ -223,8 +234,12 @@ void BaseMind::sightSetOperation(const Operation & op, Operation & sub_op, OpVec
         debug( std::cout << " no args!" << std::endl << std::flush;);
         return;
     }
-    MapType obj = args.front()->asMessage();
-    m_map.updateAdd(obj, op->getSeconds());
+    RootEntity ent(smart_dynamic_cast<RootEntity>(args.front()));
+    if (!ent.isValid()) {
+        log(ERROR, "Got sight(set) of non-entity");
+        return;
+    }
+    m_map.updateAdd(ent, op->getSeconds());
 }
 
 void BaseMind::sightTouchOperation(const Operation & op, Operation & sub_op, OpVector & res)
@@ -369,8 +384,13 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
         debug( std::cout << " args is an op!" << std::endl << std::flush;);
         callSightOperation(op, op2, res);
     } else /* if (op2->getObjtype() == "object") */ {
+        RootEntity ent(Atlas::Objects::smart_dynamic_cast<RootEntity>(arg));
+        if (!ent.isValid()) {
+            log(ERROR, "Arg of sigh operation is not an op or an entity");
+            return;
+        }
         debug( std::cout << " arg is an entity!" << std::endl << std::flush;);
-        MemEntity * me = m_map.updateAdd(arg->asMessage(), op->getSeconds());
+        MemEntity * me = m_map.updateAdd(ent, op->getSeconds());
         if (me != 0) {
             me->setVisible();
         }

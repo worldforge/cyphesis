@@ -18,7 +18,10 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::RootOperation;
+using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
+
+using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
@@ -93,7 +96,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
         return NULL;
     }
 
-    const Root & ent = m_connection.getReply();
+    RootEntity ent = smart_dynamic_cast<RootEntity>(m_connection.getReply());
 
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Character created, but has no id" << std::endl
@@ -106,9 +109,8 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
     EntityDict tmp;
 
     CreatorClient * obj = new CreatorClient(id, type, m_connection);
-    MapType body = ent->asMessage();
-    obj->merge(body);
-    obj->getLocation(body, tmp);
+    obj->merge(ent->asMessage());
+    obj->getLocation(ent, tmp);
     // obj = EntityFactory::instance()->newThing(type, body, tmp);
     // FIXME Do we need to create a local entity for this as is done in
     // the python version? If so, do we need to keep track of a full world

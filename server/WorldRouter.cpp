@@ -290,7 +290,7 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
         newId(id);
     }
     assert(!id.empty());
-    Entity * ent = EntityFactory::instance()->newEntity(id, typestr, attrs->asMessage());
+    Entity * ent = EntityFactory::instance()->newEntity(id, typestr, attrs);
     if (ent == 0) {
         std::string msg = std::string("Attempt to create an entity of type \"")
                           + typestr + "\" but type is unknown or forbidden";
