@@ -51,11 +51,7 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
 void MemMap::readEntity(MemEntity * entity, const MapType & entmap)
 // Read the contents of an Atlas message into an entity
 {
-    MapType::const_iterator I = entmap.find("name");
-    if (I != entmap.end() && I->second.isString()) {
-        entity->setName(I->second.String());
-    }
-    I = entmap.find("parents");
+    MapType::const_iterator I = entmap.find("parents");
     if (I != entmap.end() && I->second.isList()) {
         const ListType & parents = I->second.asList();
         if (!parents.empty() && parents.front().isString()) {

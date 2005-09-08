@@ -1,3 +1,8 @@
+2005-09-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/MemMap.cpp: Remove unnecessary copy of name to entity,
+	  as it's handled later in merge().
+
 2005-09-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/compose.hpp: Add Ole Laursen's fine string composition
