@@ -20,6 +20,7 @@ CustomOpData<ParentOpData, ParentProxy> * CustomOpData<ParentOpData, ParentProxy
 {
     CustomOpData<ParentOpData, ParentProxy> * copied = CustomOpData<ParentOpData, ParentProxy>::alloc();
     *copied = *this;
+    copied->m_refCount = 0;
     return copied;
 }
 
