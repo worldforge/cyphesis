@@ -331,7 +331,7 @@ void Entity::CreateOperation(const Operation & op, OpVector & res)
             return;
         }
 
-        Operation c(op->copy());
+        Operation c(op.copy());
 
         MapType new_obj;
         obj->addToMessage(new_obj);

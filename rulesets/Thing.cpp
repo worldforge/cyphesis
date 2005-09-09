@@ -268,7 +268,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
 
 
-    Operation m(op->copy());
+    Operation m(op.copy());
     RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
     assert(marg.isValid());
     m_location.addToEntity(marg);

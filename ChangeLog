@@ -1,5 +1,10 @@
 2005-09-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp, rulesets/Thing.cpp: Use copy correctly
+	  when creating copies of operations.
+
+2005-09-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/CustomOp_impl.h: Correctly set the refcount on copied custom
 	  ops.
 
