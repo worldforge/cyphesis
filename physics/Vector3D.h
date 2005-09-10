@@ -44,6 +44,7 @@ int fromStdVector(Point3D & p, const std::vector<FloatT> & vf)
     p[0] = vf[0];
     p[1] = vf[1];
     p[2] = vf[2];
+    p.setValid();
     return 0;
 }
 
@@ -56,6 +57,7 @@ int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
     v[0] = vf[0];
     v[1] = vf[1];
     v[2] = vf[2];
+    v.setValid();
     return 0;
 }
 

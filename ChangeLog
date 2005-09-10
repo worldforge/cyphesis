@@ -1,3 +1,8 @@
+2005-09-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* physics/Vector3D.h: When constructing a vector or point from
+	  a std::vector, set its valid flag.
+
 2005-09-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.cpp, rulesets/Thing.cpp: Use copy correctly
