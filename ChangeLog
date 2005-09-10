@@ -1,5 +1,16 @@
 2005-09-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.cpp, modules/Location.h: Add a new method to
+	  read location data from an Atlas Entity.
+
+	* rulesets/MemMap.cpp, server/EntityFactory.cpp, client/BaseClient.cpp:
+	  Switch to using new function rather than Entity::getLocation.
+
+	* rulesets/Entity.h, rulesets/Entity_getLocation.h: Remove obsolete
+	  getLocation method.
+
+2005-09-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp, rulesets/Character.cpp: Use getVelocity()
 	  on RootEntity, rather than accessing it as a soft attribute.
 

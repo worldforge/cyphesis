@@ -6,7 +6,7 @@ noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
                    libscriptpython.a
 
 librulesetbase_a_SOURCES = Entity.cpp Entity.h \
-			   Entity_getLocation.h attributes.h \
+			   attributes.h \
 			   EntityProperties.cpp \
 			   Container.cpp Container.h \
 			   Script.cpp Script.h 

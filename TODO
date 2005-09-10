@@ -1,3 +1,6 @@
+Avoid lookup in world dict in Location::readFromEntity if the LOC is not
+changed.
+
 Make Connect a standard Atlas op.
 
 Sort out issue where carrying a living tree kills people. Caused by

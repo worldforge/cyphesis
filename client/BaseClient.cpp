@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2005 Alistair Riddoch
 
 #include "BaseClient.h"
 
@@ -24,9 +24,6 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
-
-// This is a template which requires debug flag to be declared.
-#include "rulesets/Entity_getLocation.h"
 
 BaseClient::BaseClient()
 {
@@ -110,7 +107,8 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
 
     CreatorClient * obj = new CreatorClient(id, type, m_connection);
     obj->merge(ent->asMessage());
-    obj->getLocation(ent, tmp);
+    // FIXME Calling readFromEntity may well do nothing useful, as tmp is empty
+    obj->m_location.readFromEntity(ent, tmp);
     // obj = EntityFactory::instance()->newThing(type, body, tmp);
     // FIXME Do we need to create a local entity for this as is done in
     // the python version? If so, do we need to keep track of a full world

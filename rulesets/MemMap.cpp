@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2005 Alistair Riddoch
 
 #include "MemEntity.h"
 #include "MemMap.h"
@@ -15,9 +15,6 @@
 #include <sstream>
 
 static const bool debug_flag = false;
-
-// This is a template which requires debug flag to be declared.
-#include "Entity_getLocation.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -69,7 +66,7 @@ void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
         getAdd(ent->getLoc());
     }
     Entity * old_loc = entity->m_location.m_loc;
-    entity->getLocation(ent, m_entities);
+    entity->m_location.readFromEntity(ent, (EntityDict&)m_entities);
     if (old_loc != entity->m_location.m_loc) {
         if (old_loc != 0) {
             old_loc->m_contains.erase(entity);

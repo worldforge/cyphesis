@@ -5,6 +5,7 @@
 #include "rulesets/Entity.h"
 
 #include "common/log.h"
+#include "common/debug.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -12,6 +13,8 @@
 
 using Atlas::Message::Element;
 using Atlas::Objects::Entity::Anonymous;
+
+static const bool debug_flag = false;
 
 Location::Location() :
     m_simple(true), m_solid(true), m_loc(0)
@@ -81,6 +84,45 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     if (m_bBox.isValid()) {
         ent->setAttr("bbox", m_bBox.toAtlas());
     }
+}
+
+int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent,
+                             const EntityDict & eobjects)
+{
+    debug( std::cout << "Location::readFromEntity" << std::endl << std::flush;);
+    if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+        debug( std::cout << "entity has no loc" << std::endl << std::flush;);
+        return -1;
+    }
+    try {
+        const std::string & ref_id = ent->getLoc();
+        EntityDict::const_iterator J = eobjects.find(ref_id);
+        if (J == eobjects.end()) {
+            debug( std::cout << "ERROR: Can't get ref from objects dictionary" << std::endl << std::flush;);
+            return -1;
+        }
+            
+        m_loc = J->second;
+        if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+            fromStdVector(m_pos, ent->getPos());
+        }
+        if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+            fromStdVector(m_pos, ent->getVelocity());
+        }
+        Atlas::Message::Element orientation;
+        if (ent->copyAttr("orientation", orientation) == 0) {
+            if (orientation.isList()) {
+                m_orientation.fromAtlas(orientation);
+            } else {
+                log(ERROR, "Malformed ORIENTATION data");
+            }
+        }
+    }
+    catch (Atlas::Message::WrongTypeException&) {
+        log(ERROR, "Location::readFromEntity: Bad location data");
+        return -1;
+    }
+    return 0;
 }
 
 const Atlas::Objects::Root Location::asEntity() const

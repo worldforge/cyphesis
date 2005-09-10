@@ -164,10 +164,6 @@ class Entity : public BaseEntity {
     void setScript(Script * scrpt);
     void merge(const Atlas::Message::MapType &);
 
-    template <class EntityType>
-    bool getLocation(const Atlas::Objects::Entity::RootEntity &,
-                     const std::map<std::string, EntityType *> &);
-
     void destroy();
 
     virtual void scriptSubscribe(const std::string &);

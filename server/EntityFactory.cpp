@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2005 Alistair Riddoch
 
 #include <Python.h>
 
@@ -26,6 +26,7 @@
 
 #include "rulesets/Python_Script_Utils.h"
 
+#include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/const.h"
@@ -43,9 +44,6 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Entity::RootEntity;
 
 static const bool debug_flag = false;
-
-// This is a template which requires debug flag to be declared.
-#include "rulesets/Entity_getLocation.h"
 
 EntityFactory * EntityFactory::m_instance = NULL;
 
@@ -121,7 +119,7 @@ Entity * EntityFactory::newEntity(const std::string & id,
     thing->merge(attributes->asMessage());
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
-    if (thing->getLocation(attributes, m_world.getEntities())) {
+    if (thing->m_location.readFromEntity(attributes, m_world.getEntities())) {
         // If no info was provided, put the entity in the game world
         thing->m_location.m_loc = &m_world.m_gameWorld;
     }
