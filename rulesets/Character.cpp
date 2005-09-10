@@ -655,9 +655,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             debug( std::cout << "pos set to " << new_pos << std::endl << std::flush;);
         }
 
-        Element velocity_attr;
-        if (arg->copyAttr("velocity", velocity_attr) == 0) {
-            new_velocity.fromAtlas(velocity_attr);
+        if (arg->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+            fromStdVector(new_velocity, arg->getVelocity());
             debug( std::cout << "vel set to " << new_velocity
                              << std::endl << std::flush;);
         }

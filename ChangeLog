@@ -1,5 +1,10 @@
 2005-09-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp, rulesets/Character.cpp: Use getVelocity()
+	  on RootEntity, rather than accessing it as a soft attribute.
+
+2005-09-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Vector3D.h: When constructing a vector or point from
 	  a std::vector, set its valid flag.
 

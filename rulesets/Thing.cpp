@@ -246,10 +246,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // m_location.update(m_world->getTime());
     m_update_flags |= a_pos;
 
-    Element attr_velocity;
-    if (ent->copyAttr("velocity", attr_velocity) == 0) {
+    if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
         // Update velocity
-        m_location.m_velocity.fromAtlas(attr_velocity.asList());
+        fromStdVector(m_location.m_velocity, ent->getVelocity());
         // Velocity is not persistent so has no flag
     }
 
