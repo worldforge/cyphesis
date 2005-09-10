@@ -3,10 +3,12 @@
 // Copyright (C) 2000 Alistair Riddoch
 
 #include "Py_Operation.h"
+#include "Py_RootEntity.h"
 #include "Py_Oplist.h"
 #include "Py_Object.h"
 #include "Py_Thing.h"
 
+#include "common/log.h"
 #include "common/utility.h"
 
 using Atlas::Message::Element;
@@ -14,6 +16,7 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
+using Atlas::Objects::Entity::RootEntity;
 
 /*
  * Beginning of Operation section.
@@ -334,9 +337,15 @@ static PyObject * Operation_seq_item(PyOperation * self, int item)
     if (op.isValid()) {
         PyOperation * ret_op = newPyOperation();
         ret_op->operation = op;
-        ret_op->own = 1;
         return (PyObject *)ret_op;
     }
+    RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(arg);
+    if (ent.isValid()) {
+        PyRootEntity * ret_ent = newPyRootEntity();
+        ret_ent->entity = ent;
+        return (PyObject *)ret_ent;
+    }
+    log(WARNING, "Non operation or entity being returned as arg of operation");
     PyMessageElement * ret = newPyMessageElement();
     ret->m_obj = new Element(arg->asMessage());
     return (PyObject *)ret;

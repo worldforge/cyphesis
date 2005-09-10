@@ -19,6 +19,7 @@
 #include "Py_WorldTime.h"
 #include "Py_World.h"
 #include "Py_Operation.h"
+#include "Py_RootEntity.h"
 #include "Py_Oplist.h"
 
 #include "PythonThingScript.h"
@@ -991,13 +992,13 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     return (PyObject *)o;
 }
 
-static inline void addToArgs(std::vector<Root> & args, PyObject * ent)
+static inline void addToArgs(std::vector<Root> & args, PyObject * arg)
 {
-    if (ent == NULL) {
+    if (arg == NULL) {
         return;
     }
-    if (PyMessageElement_Check(ent)) {
-        PyMessageElement * obj = (PyMessageElement*)ent;
+    if (PyMessageElement_Check(arg)) {
+        PyMessageElement * obj = (PyMessageElement*)arg;
         if (obj->m_obj == NULL) {
             log(ERROR, "Operation() Null element object added to new operation arguments.");
             return;
@@ -1018,13 +1019,20 @@ static inline void addToArgs(std::vector<Root> & args, PyObject * ent)
         } else {
             log(ERROR, "Operation() Non-map element object added to new operation arguments."); // FIXME perhaps this should raise a python exception?
         }
-    } else if (PyOperation_Check(ent)) {
-        PyOperation * op = (PyOperation*)ent;
+    } else if (PyOperation_Check(arg)) {
+        PyOperation * op = (PyOperation*)arg;
         if (!op->operation.isValid()) {
             log(ERROR, "Operation() Null operation object added to new operation arguments.");
             return;
         }
         args.push_back(op->operation);
+    } else if (PyRootEntity_Check(arg)) {
+        PyRootEntity * ent = (PyRootEntity*)arg;
+        if (!ent->entity.isValid()) {
+            log(ERROR, "Operation() Null operation object added to new operation arguments.");
+            return;
+        }
+        args.push_back(ent->entity);
     } else {
         log(ERROR, "Operation() Unknown object added to operation arguments.");
     }

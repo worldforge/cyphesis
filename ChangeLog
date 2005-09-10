@@ -1,3 +1,15 @@
+2005-09-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Operation.cpp: Return entity arguments as RootEntity
+	  rather than MessageElement.
+
+	* rulesets/Py_RootEntity.cpp: get_name() returns "obj" as it should
+	  rather than "op". Add warnings if unknown attributes are requested
+	  or set.
+
+	* rulesets/Python_API.cpp: Accept RootEntity python wrapped
+	  objects as arguments to operations. 
+
 2005-09-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* modules/Location.cpp, modules/Location.h: Add a new method to

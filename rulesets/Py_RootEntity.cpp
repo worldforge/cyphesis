@@ -3,6 +3,10 @@
 // Copyright (C) 2005 Alistair Riddoch
 
 #include "Py_RootEntity.h"
+#include "Py_Object.h"
+
+#include "common/log.h"
+#include "common/compose.hpp"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -26,7 +30,7 @@ static PyObject* Entity_get_name(PyRootEntity * self)
         return NULL;
     }
 #endif // NDEBUG
-    return PyString_FromString("op");
+    return PyString_FromString("obj");
 }
 
 /*
@@ -80,8 +84,18 @@ static PyObject * getattr(T * self, char * name)
         return PyString_FromString(self->entity->getName().c_str());
     } else if (strcmp(name, "id") == 0) {
         return PyString_FromString(self->entity->getId().c_str());
+    // FIXME This needs to be enabled, but sort out bugs first.
+    // } else {
+        // Element attr;
+        // if (self->entity->copyAttr(name, attr) == 0) {
+            // return MessageElement_asPyObject(attr);
+        // }
     }
-    return findMethod(self, name);
+    PyObject * ret = findMethod(self, name);
+    if (ret == NULL) {
+        log(WARNING, String::compose("Attempting to get %1 attribute on Atlas entity", name).c_str());
+    }
+    return ret;
 }
 
 static PyObject * Entity_getattr(PyRootEntity * self, char * name)
@@ -111,6 +125,7 @@ static int Entity_setattr(PyRootEntity *self, char *name, PyObject *v)
         self->entity->setName(PyString_AsString(v));
         return 0;
     }
+    log(WARNING, String::compose("Attempting to set %1 attribute on Atlas entity", name).c_str());
     return 0;
 }
 
