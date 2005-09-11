@@ -365,7 +365,6 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
         PyOplist * res = newPyOplist();
         res->ops = new OpVector();
         res->ops->push_back(self->operation);
-        self->own = 0;
         fflush(stdout);
         return (PyObject*)res;
     }
@@ -381,7 +380,6 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
         }
         res->ops = new OpVector(*opl->ops);
         res->ops->push_back(self->operation);
-        self->own = 0;
         fflush(stdout);
         return (PyObject*)res;
     }
@@ -398,9 +396,7 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
         }
         res->ops = new OpVector();
         res->ops->push_back(op->operation);
-        op->own = 0;
         res->ops->push_back(self->operation);
-        self->own = 0;
         fflush(stdout);
         return (PyObject*)res;
     }
@@ -536,35 +532,9 @@ static PyObject * getattr(T * self, char * name)
     }
 #endif // NDEBUG
     if (strcmp(name, "from_") == 0) {
-        if (self->from != NULL) {
-            PyEntity * thing_obj = newPyEntity();
-            if (thing_obj == NULL) {
-                return NULL;
-            }
-            thing_obj->m_entity = self->from;
-            return (PyObject *)thing_obj;
-        } else {
-            PyMessageElement * obj = newPyMessageElement();
-            MapType omap;
-            omap["id"] = Element(self->operation->getFrom());
-            obj->m_obj = new Element(omap);
-            return (PyObject *)obj;
-        }
+        return PyString_FromString(self->operation->getFrom().c_str());
     } else if (strcmp(name, "to") == 0) {
-        if (self->to != NULL) {
-            PyEntity * thing_obj = newPyEntity();
-            if (thing_obj == NULL) {
-                return NULL;
-            }
-            thing_obj->m_entity = self->to;
-            return (PyObject *)thing_obj;
-        } else {
-            PyMessageElement * obj = newPyMessageElement();
-            MapType omap;
-            omap["id"] = Element(self->operation->getTo());
-            obj->m_obj = new Element(omap);
-            return (PyObject *)obj;
-        }
+        return PyString_FromString(self->operation->getTo().c_str());
     } else if (strcmp(name, "id") == 0) {
         const std::list<std::string> & parents = self->operation->getParents();
         if (parents.empty()) {
@@ -604,10 +574,6 @@ static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
             }
             return -1;
         }
-        if (((PyTypeObject*)PyObject_Type(v) == &PyEntity_Type) &&
-            (((PyEntity *)v)->m_entity != NULL)) {
-            self->from = ((PyEntity *)v)->m_entity;
-        }
         self->operation->setFrom(PyString_AsString(thing_id));
         Py_DECREF(thing_id);
         return 0;
@@ -620,10 +586,6 @@ static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
                 Py_DECREF(thing_id);
             }
             return -1;
-        }
-        if (((PyTypeObject*)PyObject_Type(v) == &PyEntity_Type) &&
-            (((PyEntity *)v)->m_entity != NULL)) {
-            self->to = ((PyEntity *)v)->m_entity;
         }
         self->operation->setTo(PyString_AsString(thing_id));
         Py_DECREF(thing_id);
@@ -682,9 +644,6 @@ PyOperation * newPyOperation()
         return NULL;
     }
     new (&(self->operation)) RootOperation(NULL);
-    self->from = NULL;
-    self->to = NULL;
-    self->own = 0;
     return self;
 }
 
@@ -696,8 +655,5 @@ PyConstOperation * newPyConstOperation()
         return NULL;
     }
     new (&(self->operation)) RootOperation(NULL);
-    self->from = NULL;
-    self->to = NULL;
-    self->own = 0;
     return self;
 }

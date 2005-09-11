@@ -10,8 +10,9 @@ class Garment(Thing):
        way to modify the guise attribute."""
     def wear_operation(self, op):
         #to_ = self.world.get_object(op[1].id)
-        guise = op.from_.guise
-        # return Operation("set",op[0],Entity(op.from_.id, ),to=to_)
+        wearer = self.world.get_object(op.from_)
+        guise = wearer.guise
+        # return Operation("set",op[0],Entity(op.from_, ),to=to_)
         print type(guise)
         print guise
         print guise['mesh']

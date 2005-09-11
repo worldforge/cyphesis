@@ -640,7 +640,7 @@ class transaction(Goal):
         payed=self.payed
         if payed==-1: payed=0
         for item in me.money_transfers:
-            if item[0]==self.who.id:
+            if item[0]==self.who:
                 payed=payed+int(item[1])
                 me.money_transfers.remove(item)
         if payed != self.payed:
@@ -648,15 +648,16 @@ class transaction(Goal):
             return 0
         return 1
     def transact(self,me):
+        who=me.map.get(self.who)
         if me.things.has_key(self.what)==0:
             self.irrelevant=1
             return Operation("talk",Entity(say="I don't have any "+self.what+" left."))
         if self.payed < self.cost:
-            return Operation("talk",Entity(say=self.who.name+" you owe me "+str(self.cost-self.payed)+" coins."))
+            return Operation("talk",Entity(say=who.name+" you owe me "+str(self.cost-self.payed)+" coins."))
         thing=me.find_thing(self.what)[0]
         res=Message()
         me.remove_thing(thing)
-        res.append(Operation("move",Entity(thing.id, location=Location(self.who,Point3D(0,0,0)))))
+        res.append(Operation("move",Entity(thing.id, location=Location(who,Point3D(0,0,0)))))
         res.append(Operation("talk",Entity(say="Thankyou for your custom.")))
         self.irrelevant=1
         return res

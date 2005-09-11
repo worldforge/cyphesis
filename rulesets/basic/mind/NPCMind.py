@@ -101,7 +101,7 @@ class NPCMind(BaseMind):
     def sight_create_operation(self, original_op, op):
         #BaseMind version overridden!
         obj=self.map.add(op[0], op.getSeconds())
-        if original_op.from_==self:
+        if original_op.from_==self.id:
             self.add_thing(obj)
     def sight_move_operation(self, original_op, op):
         """change position in out local map"""
@@ -109,7 +109,7 @@ class NPCMind(BaseMind):
         if obj.location.parent.id==self.id:
             self.add_thing(obj)
             if obj.type[0]=="coin":
-                self.money_transfers.append([op.from_.id, 1])
+                self.money_transfers.append([op.from_, 1])
                 return Operation("action", Entity(self.id, action="sell"))
     #replaced with dynamically added add_extinguish_fire -goal
     #ie: NPC is first teached that when it sees "sight_burn" it needs to
@@ -126,7 +126,7 @@ class NPCMind(BaseMind):
 ##         log.debug(2,"sight_burn_operation: add goal updating")
     ########## Talk operations
     def admin_sound(self, op):
-        return op[0].from_.id==self.id
+        return op[0].from_==self.id
 
     def interlinguish_warning(self, op, say, msg):
         log.debug(1,str(self.id)+" interlinguish_warning: "+str(msg)+\
@@ -139,8 +139,9 @@ class NPCMind(BaseMind):
             if not price:
                 return
             goal=mind.goals.common.misc_goal.transaction(object, op.from_, price)
+            who=self.map.get(op.from_)
             self.goals.insert(0,goal)
-            return Operation("talk", Entity(say=op.from_.name+" one "+object+" will be "+str(price)+" coins")) + self.face(op.from_)
+            return Operation("talk", Entity(say=who.name+" one "+object+" will be "+str(price)+" coins")) + self.face(who)
     def interlinguish_desire_verb3_operation(self, op, say):
         object=say[2:]
         verb=interlinguish.get_verb(object)
@@ -195,7 +196,7 @@ class NPCMind(BaseMind):
                     k='%f metres %s' % (distmag, vector_to_compass(dist))
             elif k_type!=StringType:
                 k='difficult to explain'
-            return Operation('talk', Entity(say="The "+predicate+" of "+object+" is "+k)) + self.face(op.from_)
+            return Operation('talk', Entity(say="The "+predicate+" of "+object+" is "+k)) + self.face(self.map.get(op.from_))
     def interlinguish_learn_verb1_operation(self, op, say):
         if not self.admin_sound(op):
             return self.interlinguish_warning(op,say,"You are not admin")

@@ -19,7 +19,6 @@ static PyObject* Oplist_append(PyOplist * self, PyObject * args)
     }
     if (PyOperation_Check(op)) {
         self->ops->push_back(op->operation);
-        op->own = 0;
     } else if ((PyObject*)op != Py_None) {
         PyErr_SetString(PyExc_TypeError, "Append must be an op");
         return NULL;
@@ -87,7 +86,6 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
         res->ops = new OpVector(*self->ops);
         // res->ops->merge(*self->ops);
         res->ops->push_back(op->operation);
-        op->own = 0;
         return (PyObject*)res;
     }
     return NULL;

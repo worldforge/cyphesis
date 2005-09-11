@@ -12,4 +12,4 @@ class Trowel(Thing):
         to_ = op[0].id
         if not to_:
             return self.error(op,"To is undefined object")
-        return Message(Operation("germinate",op[0],Entity(op.from_.id),to=to_))
+        return Message(Operation("germinate",op[0],Entity(op.from_),to=to_))

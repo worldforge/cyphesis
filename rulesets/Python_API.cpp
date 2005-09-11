@@ -909,7 +909,6 @@ static inline void addToOplist(PyOperation * op, PyOplist * o)
     if (op != NULL) {
        if (PyOperation_Check(op)) {
            o->ops->push_back(op->operation);
-           op->own = 0;
        } else if ((PyObject*)op != Py_None) {
            PyErr_SetString(PyExc_TypeError, "Argument must be an op");
            return;
@@ -1058,7 +1057,6 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
             return NULL;
         }
     }
-    op->own = 1;
     if (PyMapping_HasKeyString(kwds, "to")) {
         PyObject * to = PyMapping_GetItemString(kwds, "to");
         PyObject * to_id = 0;

@@ -12,25 +12,16 @@
 
 class Entity;
 
-// FIXME The own stuff should probably go, once reference counting issues
-// are clear.
-
 /// \brief Wrapper for all Atlas operations in Python
 typedef struct {
     PyObject_HEAD
     Atlas::Objects::Operation::RootOperation operation;
-    int own;
-    Entity * from;
-    Entity * to;
 } PyOperation;
 
 /// \brief Wrapper for read only Atlas operations in Python
 typedef struct {
     PyObject_HEAD
     Atlas::Objects::Operation::RootOperation operation;
-    int own;
-    Entity * from;
-    Entity * to;
 } PyConstOperation;
 
 extern PyTypeObject PyOperation_Type;

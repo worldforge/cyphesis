@@ -45,9 +45,6 @@ bool PythonEntityScript::Operation(const std::string & op_type,
     }
     PyConstOperation * py_op = newPyConstOperation();
     py_op->operation = op;
-    py_op->own = 0;
-    py_op->from = m_entity.m_world->getEntity(op->getFrom());
-    py_op->to = m_entity.m_world->getEntity(op->getTo());
     PyObject * ret;
     ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(O)", py_op);
@@ -59,7 +56,6 @@ bool PythonEntityScript::Operation(const std::string & op_type,
             PyOperation * op = (PyOperation*)ret;
             if (!op->operation.isValid()) {
                 ret_list.push_back(op->operation);
-                op->own = 0;
             } else {
                 debug( std::cout << "Method returned invalid operation"
                                  << std::endl << std::flush;);

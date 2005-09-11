@@ -15,7 +15,7 @@ class Apple(Seed):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)
         to_ = op.from_
-        nour=Entity(to_.id,mass=self.mass,alcohol=self.alcohol)
+        nour=Entity(to_,mass=self.mass,alcohol=self.alcohol)
         res = res + Operation("nourish",nour,to=to_)
         return res
     def setup_operation(self, op):

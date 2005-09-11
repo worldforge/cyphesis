@@ -30,7 +30,7 @@ class hire_trade(DynamicGoal):
         #print "I go for " + str(price) + " coins"
         goal = mind.goals.common.misc_goal.hireling_transaction('services', op.from_, price)
         me.goals.insert(0,goal)
-        return Operation("talk", Entity(say=op.from_.name+" one day will be "+str(price)+" coins"))
+        return Operation("talk", Entity(say=me.map.get(op.from_).name+" one day will be "+str(price)+" coins"))
 
 class buy_livestock(DynamicGoal):
     def __init__(self, what, cost, desc="buy livestock by the kg"):
@@ -44,7 +44,7 @@ class buy_livestock(DynamicGoal):
         thing=me.map.get(object)
         if thing==None:
             return Operation("talk", Entity(say=who.name+" which "+object+" would you like to sell?"))
-        who=op.from_
+        who=me.map.get(op.from_)
         if not self.what in thing.type: return
         if thing in me.find_thing(self.what): return
         #price=me.get_knowledge("price", thing.type[0])

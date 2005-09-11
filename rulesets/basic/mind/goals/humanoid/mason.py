@@ -27,7 +27,7 @@ class welcome(DynamicGoal):
         self.message=message
     def event(self, me, original_op, op):
         obj = me.map.update(op[0], op.getSeconds())
-        if original_op.from_==self:
+        if original_op.from_==self.id:
             self.add_thing(obj)
         if obj.type[0]==self.player:
             return Operation("talk", Entity(say=self.message))

@@ -103,7 +103,6 @@ static PyObject * Map_look_id(PyMap * self)
     }
     PyOperation * py_op = newPyOperation();
     py_op->operation = op;
-    py_op->own = 1;
     return (PyObject *)py_op;
 }
 

@@ -1,5 +1,29 @@
 2005-09-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Operation.h, rulesets/Py_Operation.cpp: Remove reference
+	  ownership flag, and from and to pointers from the python operation
+	  structure.
+
+	* rulesets/Py_Map.cpp, rulesets/Py_Oplist.cpp,
+	  rulesets/PythonMindScript.cpp, rulesets/PythonThingScript.cpp,
+	  rulesets/Python_API.cpp: Remove all usage of own, from and to.
+
+	* rulesets/basic/mind/NPCMind.py,
+	  rulesets/basic/mind/goals/common/misc_goal.py,
+	  rulesets/basic/mind/goals/humanoid/mason.py,
+	  rulesets/basic/mind/goals/humanoid/transaction.py,
+	  rulesets/mason/world/objects/clothing/Garment.py,
+	  rulesets/mason/world/objects/plants/seeds/Acorn.py,
+	  rulesets/mason/world/objects/plants/seeds/Apple.py,
+	  rulesets/mason/world/objects/plants/seeds/Fircone.py,
+	  rulesets/mason/world/objects/tools/Bucksaw.py,
+	  rulesets/mason/world/objects/tools/Cleaver.py,
+	  rulesets/mason/world/objects/tools/Trowel.py: Modify all scripts
+	  so they expect from and to of ops to be an ID string rather than
+	  an entity.
+
+2005-09-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Modify Python API so Entity() now creates
 	  a RootEntity not a Message Element.
 

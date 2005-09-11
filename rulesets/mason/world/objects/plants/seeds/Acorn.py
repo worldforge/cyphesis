@@ -12,7 +12,7 @@ class Acorn(Seed):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)
         to_ = op.from_
-        nour=Entity(to_.id,mass=self.mass)
+        nour=Entity(to_,mass=self.mass)
         res = res + Operation("nourish",nour,to=to_)
         return res
     def setup_operation(self, op):
