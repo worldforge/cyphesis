@@ -1,5 +1,17 @@
 2005-09-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Object.h, rulesets/Py_Object.cpp: Remove nasty code
+	  used to handle complex attributes to Message Elements. Now should
+	  either be converted or rejected.
+
+	* rulesets/Python_API.cpp: Remove code that merged complex python
+	  attributes to entity arguments.
+
+	* rulesets/Py_Mind.cpp: Add note that as_entity() method should
+	  be removed in the long term.
+
+2005-09-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Object.cpp, rulesets/Py_Object.h: Ensure that
 	  Python to Atlas conversions are aborted if they fail at any
 	  point.

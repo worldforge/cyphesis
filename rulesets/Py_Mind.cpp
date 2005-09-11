@@ -16,6 +16,9 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
+// This method is almost profoundly pointless. Remove it soon, once we
+// sort out something to do with the one placed it is used in the python
+// mind code.
 static PyObject * Mind_as_entity(PyMind * self)
 {
 #ifndef NDEBUG

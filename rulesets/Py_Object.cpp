@@ -9,6 +9,8 @@
 
 #include "modules/Location.h"
 
+#include "common/log.h"
+#include "common/compose.hpp"
 #include "common/debug.h"
 
 #include <iostream>
@@ -52,7 +54,6 @@ static void Object_dealloc(PyMessageElement *self)
     if (self->m_obj != NULL) {
         delete self->m_obj;
     }
-    Py_XDECREF(self->Object_attr);
     PyMem_DEL(self);
 }
 
@@ -71,13 +72,6 @@ static PyObject * Object_getattr(PyMessageElement *self, char *name)
             return MessageElement_asPyObject(I->second);
         }
     }
-    if (self->Object_attr != NULL) {
-        PyObject *v = PyDict_GetItemString(self->Object_attr, name);
-        if (v != NULL) {
-            Py_INCREF(v);
-            return v;
-        }
-    }
     return Py_FindMethod(Object_methods, (PyObject *)self, name);
 }
 
@@ -89,23 +83,20 @@ static int Object_setattr( PyMessageElement *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
+    log(WARNING, String::compose("Setting %1 attribute on an Atlas Message", name).c_str());
     if (self->m_obj->isMap()) {
         MapType & omap = self->m_obj->asMap();
         Element v_obj = PyObject_asMessageElement(v);
-        if ((v_obj.getType() != Element::TYPE_NONE) &&
-            (v_obj.getType() != Element::TYPE_MAP) &&
-            (v_obj.getType() != Element::TYPE_LIST)) {
+        if (v_obj.getType() != Element::TYPE_NONE) {
             omap[name] = v_obj;
             return 0;
-        }
-    }
-    if (self->Object_attr == NULL) {
-        self->Object_attr = PyDict_New();
-        if (self->Object_attr == NULL) {
+        } else {
+            PyErr_SetString(PyExc_TypeError, "object cannot be converted to Atlas data in MessageElement.setattr");
             return -1;
         }
     }
-    return PyDict_SetItemString(self->Object_attr, name, v);
+    PyErr_SetString(PyExc_TypeError, "Cannot set attribute on non-map in MessageElement.setattr");
+    return -1;
 }
 
 PyTypeObject PyMessageElement_Type = {
@@ -138,7 +129,6 @@ PyMessageElement * newPyMessageElement()
     if (self == NULL) {
         return NULL;
     }
-    self->Object_attr = NULL;
     return self;
 }
 

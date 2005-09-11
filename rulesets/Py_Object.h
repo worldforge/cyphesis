@@ -12,7 +12,6 @@
 /// \brief Wrapper for Atlas::Message::Element in Python
 typedef struct {
     PyObject_HEAD
-    PyObject * Object_attr;  // Attributes dictionary
     Atlas::Message::Element * m_obj;
 } PyMessageElement;
 

@@ -1003,22 +1003,8 @@ static inline void addToArgs(std::vector<Root> & args, PyObject * arg)
             log(ERROR, "Operation() Null element object added to new operation arguments.");
             return;
         }
-        Element o(*obj->m_obj);
+        const Element & o = *obj->m_obj;
         if (o.isMap()) {
-            if (obj->Object_attr != NULL) {
-                MapType & ent = o.asMap();
-                Element ent2 = PyDictObject_asElement(obj->Object_attr);
-                if (ent2.isMap()) {
-                    MapType::const_iterator Iend = ent2.Map().end();
-                    for (MapType::const_iterator I = ent2.Map().begin(); I != Iend; ++I) {
-                        if (ent.find(I->first) != ent.end()) {
-                            ent[I->first] = I->second;
-                        }
-                    }
-                } else {
-                    log(ERROR, "Unable to coerce python object into atlas when setting arguments of operation");
-                }
-            }
             args.push_back(Atlas::Objects::Factories::instance()->createObject(o.asMap()));
         } else {
             log(ERROR, "Operation() Non-map element object added to new operation arguments."); // FIXME perhaps this should raise a python exception?

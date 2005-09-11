@@ -1,3 +1,6 @@
+Re-write python code so it no longer expects operation to and from_ to be 
+entities, but expects IDs instead.
+
 Avoid lookup in world dict in Location::readFromEntity if the LOC is not
 changed.
 
