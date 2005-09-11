@@ -67,8 +67,7 @@ class Location {
     void addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const;
     const Atlas::Objects::Root asEntity() const;
 
-    int readFromEntity(const Atlas::Objects::Entity::RootEntity & ent,
-                       const std::map<std::string, Entity *> &);
+    int readFromEntity(const Atlas::Objects::Entity::RootEntity & ent);
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };

@@ -1,5 +1,20 @@
 2005-09-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.h, modules/Location.cpp: Remove handling of
+	  LOC attribute from readFromEntity() as every use of this function
+	  has differen requirements.
+
+	* rulesets/MemMap.cpp: Implement setting LOC so that the minimum
+	  of lookups in the world dictionary are required.
+
+	* server/EntityFactory.cpp: Implement setting LOC in a much simpler
+	  way, as its always uninitialised at this point.
+
+	* client/BaseClient.cpp: Add a note that LOC is currently unhandled,
+	  as there is nothing sane to do with it.
+
+2005-09-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Operation.cpp: Return entity arguments as RootEntity
 	  rather than MessageElement.
 

@@ -119,10 +119,19 @@ Entity * EntityFactory::newEntity(const std::string & id,
     thing->merge(attributes->asMessage());
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
-    if (thing->m_location.readFromEntity(attributes, m_world.getEntities())) {
+    if (attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+        const EntityDict & eobjects = m_world.getEntities();
+        const std::string & loc_id = attributes->getLoc();
+        EntityDict::const_iterator J = eobjects.find(loc_id);
+        if (J != eobjects.end()) {
+            thing->m_location.m_loc = J->second;
+        }
+    }
+    if (thing->m_location.m_loc == 0) {
         // If no info was provided, put the entity in the game world
         thing->m_location.m_loc = &m_world.m_gameWorld;
     }
+    thing->m_location.readFromEntity(attributes);
     if (!thing->m_location.m_pos.isValid()) {
         // If no position coords were provided, put it somewhere near origin
         thing->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);

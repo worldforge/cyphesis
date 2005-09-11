@@ -86,23 +86,10 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     }
 }
 
-int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent,
-                             const EntityDict & eobjects)
+int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
 {
     debug( std::cout << "Location::readFromEntity" << std::endl << std::flush;);
-    if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        debug( std::cout << "entity has no loc" << std::endl << std::flush;);
-        return -1;
-    }
     try {
-        const std::string & ref_id = ent->getLoc();
-        EntityDict::const_iterator J = eobjects.find(ref_id);
-        if (J == eobjects.end()) {
-            debug( std::cout << "ERROR: Can't get ref from objects dictionary" << std::endl << std::flush;);
-            return -1;
-        }
-            
-        m_loc = J->second;
         if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
             fromStdVector(m_pos, ent->getPos());
         }

@@ -63,15 +63,18 @@ void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
     }
     entity->merge(ent->asMessage());
     if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        getAdd(ent->getLoc());
-    }
-    Entity * old_loc = entity->m_location.m_loc;
-    entity->m_location.readFromEntity(ent, (EntityDict&)m_entities);
-    if (old_loc != entity->m_location.m_loc) {
-        if (old_loc != 0) {
-            old_loc->m_contains.erase(entity);
+        Entity * old_loc = entity->m_location.m_loc;
+        const std::string & new_loc_id = ent->getLoc();
+        // Has LOC been changed?
+        if (old_loc == 0 || new_loc_id != old_loc->getId()) {
+            entity->m_location.m_loc = getAdd(new_loc_id);
+            assert(old_loc != entity->m_location.m_loc);
+            if (old_loc != 0) {
+                old_loc->m_contains.erase(entity);
+            }
+            entity->m_location.m_loc->m_contains.insert(entity);
         }
-        entity->m_location.m_loc->m_contains.insert(entity);
+        entity->m_location.readFromEntity(ent);
     }
     addContents(ent);
 }
