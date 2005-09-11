@@ -16,6 +16,7 @@
 #include "common/Database.h"
 #include "common/random.h"
 #include "common/serialno.h"
+#include "common/compose.hpp"
 
 #include "common/Setup.h"
 
@@ -239,11 +240,11 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
     std::string mode;
     if (ent->has("mode")) {
         Element mode_attr;
-        assert(ent->get("mode", mode_attr));
+        ent->get("mode", mode_attr);
         if (mode_attr.isString()) {
             mode = mode_attr.String();
         } else {
-            log(ERROR, "Non string mode on entity in WorldRouter::addEntity");
+            log(ERROR, String::compose("Mode on entity is a %1 in WorldRouter::addEntity", Element::typeName(mode_attr.getType())).c_str());
         }
     }
     ent->m_location.m_pos.z() = constrainHeight(ent->m_location.m_loc,

@@ -1,5 +1,15 @@
 2005-09-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.cpp, common/const.h: Git rid of bizare scheme
+	  where each constant appears twice, debug and non-debug versions.
+
+	* rulesets/Pedestrian.cpp, rulesets/Thing.cpp,
+	  server/WorldRouter.cpp: Fix problem where an essential call
+	  was inside an assert, so did not happen when built in non-debug
+	  mode.
+
+2005-09-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/humanoid/mason.py: Fix self -> me
 	  when checking for mind ID.
 

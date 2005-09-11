@@ -10,6 +10,7 @@
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
+#include "common/compose.hpp"
 
 #include "common/Tick.h"
 #include "common/Nourish.h"
@@ -211,11 +212,11 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     if (has("mode")) {
         Element mode_attr;
-        assert(get("mode", mode_attr));
+        get("mode", mode_attr);
         if (mode_attr.isString()) {
             mode = mode_attr.String();
         } else {
-            log(ERROR, "Non string mode on entity in Thing::MoveOperation");
+            log(ERROR, String::compose("Mode on entity is a %1 in Thing::MoveOperation", Element::typeName(mode_attr.getType())).c_str());
         }
     }
 

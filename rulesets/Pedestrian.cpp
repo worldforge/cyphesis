@@ -9,6 +9,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/log.h"
+#include "common/compose.hpp"
 
 #include "common/Tick.h"
 
@@ -177,11 +178,11 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
 
     if (m_body.has("mode")) {
         Element mode_attr;
-        assert(m_body.get("mode", mode_attr));
+        m_body.get("mode", mode_attr);
         if (mode_attr.isString()) {
             mode = mode_attr.String();
         } else {
-            log(ERROR, "Non string mode on entity in Pedestrain::getUpdatedLocation");
+            log(ERROR, String::compose("Mode on entity is a %1 in Pedestrain::getUpdatedLocation", Element::typeName(mode_attr.getType())).c_str());
         }
     }
 
