@@ -1,3 +1,8 @@
+2005-09-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Increment version in case a bugfix release is
+	  required.
+
 2005-09-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Pedestrian.cpp, rulesets/Thing.cpp,
