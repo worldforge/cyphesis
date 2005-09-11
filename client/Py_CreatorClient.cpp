@@ -7,6 +7,7 @@
 #include "CreatorClient.h"
 
 #include "rulesets/Py_Operation.h"
+#include "rulesets/Py_RootEntity.h"
 #include "rulesets/Py_WorldTime.h"
 #include "rulesets/Py_Point3D.h"
 #include "rulesets/Py_Location.h"
@@ -49,15 +50,15 @@ static PyObject * CreatorClient_make(PyCreatorClient * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    PyMessageElement * entity = NULL;
+    PyRootEntity * entity = NULL;
     if (!PyArg_ParseTuple(args, "O", &entity)) {
         return NULL;
     }
-    if (!PyMessageElement_Check(entity)) {
+    if (!PyRootEntity_Check(entity)) {
         PyErr_SetString(PyExc_TypeError, "Can only make Atlas entity");
         return NULL;
     }
-    Entity * retval = self->m_mind->make(*entity->m_obj);
+    Entity * retval = self->m_mind->make(entity->entity);
     if (retval == NULL) {
         PyErr_SetString(PyExc_RuntimeError, "Entity creation failed");
         return NULL;
@@ -75,16 +76,16 @@ static PyObject * CreatorClient_set(PyCreatorClient * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    PyMessageElement * entity = NULL;
+    PyRootEntity * entity = NULL;
     char * id = NULL;
     if (!PyArg_ParseTuple(args, "sO", &id, &entity)) {
         return NULL;
     }
-    if (!PyMessageElement_Check(entity)) {
+    if (!PyRootEntity_Check(entity)) {
         PyErr_SetString(PyExc_TypeError, "Can only set Atlas entity");
         return NULL;
     }
-    self->m_mind->sendSet(id, *entity->m_obj);
+    self->m_mind->sendSet(id, entity->entity);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -119,15 +120,15 @@ static PyObject * CreatorClient_look_for(PyCreatorClient * self,
         return NULL;
     }
 #endif // NDEBUG
-    PyMessageElement * ent;
+    PyRootEntity * ent;
     if (!PyArg_ParseTuple(args, "O", &ent)) {
         return NULL;
     }
-    if (!PyMessageElement_Check(ent)) {
+    if (!PyRootEntity_Check(ent)) {
         PyErr_SetString(PyExc_TypeError, "Can only look for Atlas description");
         return NULL;
     }
-    Entity * retval = self->m_mind->lookFor(*ent->m_obj);
+    Entity * retval = self->m_mind->lookFor(ent->entity);
     if (retval == NULL) {
         PyErr_SetString(PyExc_RuntimeError, "Entity look_for failed");
         return NULL;

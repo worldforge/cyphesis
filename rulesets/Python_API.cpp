@@ -35,12 +35,14 @@
 #include "common/log.h"
 
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
+using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
@@ -938,15 +940,14 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
 
 static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
-    PyMessageElement *o;
     char * id = NULL;
     
     if (!PyArg_ParseTuple(args, "|s", &id)) {
         return NULL;
     }
-    MapType omap;
+    Anonymous ent;
     if (id != NULL) {
-        omap["id"] = std::string(id);
+        ent->setId(id);
     }
     if ((kwds != NULL) && (PyDict_Check(kwds))) {
         PyObject * keys = PyDict_Keys(kwds);
@@ -961,14 +962,14 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
             PyObject * val = PyList_GetItem(vals, i);
             if ((strcmp(key, "location") == 0) && (PyLocation_Check(val))) {
                 PyLocation * loc = (PyLocation*)val;
-                loc->location->addToMessage(omap);
+                loc->location->addToEntity(ent);
             } else if (strcmp(key, "xyz") == 0) {
-                omap["pos"] = PyObject_asMessageElement(val);
+                ent->setAttr("pos", PyObject_asMessageElement(val));
             } else if ((strcmp(key, "parent") == 0) && (PyString_Check(val))) {
-                omap["loc"] = PyString_AsString(val);
+                ent->setLoc(PyString_AsString(val));
             } else if ((strcmp(key, "type") == 0) && (PyString_Check(val))) {
-                omap["parents"] = ListType(1,std::string(PyString_AsString(val)));
-                omap["objtype"] = "obj";
+                ent->setParents(std::list<std::string>(1, PyString_AsString(val)));
+                ent->setObjtype("obj");
             } else {
                 Element val_obj = PyObject_asMessageElement(val);
                 if (val_obj.getType() == Element::TYPE_NONE) {
@@ -977,18 +978,18 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
                     PyErr_SetString(PyExc_TypeError, "Arg has no type.");
                     return NULL;
                 }
-                omap[key] = val_obj;
+                ent->setAttr(key, val_obj);
             }
         }
         Py_DECREF(keys);
         Py_DECREF(vals);
     }
 
-    o = newPyMessageElement();
+    PyRootEntity * o = newPyRootEntity();
     if ( o == NULL ) {
         return NULL;
     }
-    o->m_obj = new Element(omap);
+    o->entity = ent;
     return (PyObject *)o;
 }
 

@@ -13,9 +13,6 @@
 
 static const bool debug_flag = false;
 
-using Atlas::Message::Element;
-using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Look;
@@ -31,14 +28,10 @@ CreatorClient::CreatorClient(const std::string & id, const std::string & name,
 {
 }
 
-Entity * CreatorClient::make(const Atlas::Message::Element & entity)
+Entity * CreatorClient::make(const RootEntity & entity)
 {
-    if (!entity.isMap()) {
-        std::cerr << "make: entity is not map" << std::endl << std::flush;
-        return NULL;
-    }
     Create op;
-    op->setArgsAsList(ListType(1,entity));
+    op->setArgs1(entity);
     op->setFrom(getId());
     op->setTo(getId());
     OpVector result;
@@ -109,14 +102,10 @@ Entity * CreatorClient::make(const Atlas::Message::Element & entity)
 
 
 void CreatorClient::sendSet(const std::string & id,
-                            const Atlas::Message::Element & entity)
+                            const RootEntity & entity)
 {
-    if (!entity.isMap()) {
-        std::cerr << "set: " << id << " entity is not map" << std::endl << std::flush;
-        return;
-    }
     Set op;
-    op->setArgsAsList(ListType(1,entity));
+    op->setArgs1(entity);
     op->setFrom(getId());
     op->setTo(id);
     send(op);
@@ -134,10 +123,10 @@ Entity * CreatorClient::look(const std::string & id)
     return sendLook(op);
 }
 
-Entity * CreatorClient::lookFor(const Atlas::Message::Element & ent)
+Entity * CreatorClient::lookFor(const RootEntity & ent)
 {
     Look op;
-    op->setArgsAsList(ListType(1,ent));
+    op->setArgs1(ent);
     op->setFrom(getId());
     return sendLook(op);
 }

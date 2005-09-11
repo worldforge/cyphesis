@@ -1,5 +1,14 @@
 2005-09-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Modify Python API so Entity() now creates
+	  a RootEntity not a Message Element.
+
+	* client/Py_CreatorClient.cpp, client/CreatorClient.h,
+	  client/CreatorClient.cpp: Modify CreatorClient and bindings to
+	  take a RootEntity rather than a Message Element.
+
+2005-09-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Object.h, rulesets/Py_Object.cpp: Remove nasty code
 	  used to handle complex attributes to Message Elements. Now should
 	  either be converted or rejected.
