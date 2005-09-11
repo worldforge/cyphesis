@@ -33,8 +33,8 @@ PyMessageElement * newPyMessageElement();
 // PyObject * MapType_asPyObject(const Atlas::Message::MapType & map);
 // PyObject * ListType_asPyObject(const Atlas::Message::ListType & list);
 PyObject * MessageElement_asPyObject(const Atlas::Message::Element & obj);
-Atlas::Message::ListType PyListObject_asElementList(PyObject * list);
-Atlas::Message::MapType PyDictObject_asElementMap(PyObject * dict);
+Atlas::Message::Element PyListObject_asElement(PyObject * list);
+Atlas::Message::Element PyDictObject_asElement(PyObject * dict);
 Atlas::Message::Element PyObject_asMessageElement(PyObject * o);
 
 #endif // RULESETS_PY_OBJECT_H

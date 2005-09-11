@@ -1,5 +1,22 @@
 2005-09-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Object.cpp, rulesets/Py_Object.h: Ensure that
+	  Python to Atlas conversions are aborted if they fail at any
+	  point.
+
+	* rulesets/Py_RootEntity.cpp: Ensure all static functions still have
+	  unique names. Support setting and retrieving soft attributes.
+	  For attribute values which are non-convertible python objects,
+	  store a pointer to the original Python object.
+
+	* rulesets/Python_API.cpp: Adapt setting of operation arguments
+	  modified Python to Atlas conversion functions.
+
+	* rulesets/mason/define_world.py: Add a very basic test for
+	  experimenting with interlinguish.
+
+2005-09-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/Location.h, modules/Location.cpp: Remove handling of
 	  LOC attribute from readFromEntity() as every use of this function
 	  has differen requirements.

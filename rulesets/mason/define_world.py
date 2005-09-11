@@ -660,3 +660,9 @@ def test_fire(mapeditor):
     cfire=m.make('campfire',type='campfire',xyz=(3,9,settlement_height))
     # m.make('fire',type='fire',xyz=(0,0,0),parent=cfire.id)
 
+def test_own(mapeditor):
+
+    m=editor(mapeditor)
+    settler=m.make('settler',xyz=(1,1,0), sex='male')
+    axe=m.make('axe',type='axe',xyz=(0,0,0),parent=settler.id)
+    m.own(settler,axe)

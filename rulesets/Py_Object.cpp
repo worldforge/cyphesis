@@ -9,9 +9,15 @@
 
 #include "modules/Location.h"
 
+#include "common/debug.h"
+
+#include <iostream>
+
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+
+static const bool debug_flag = false;
 
 /*
  * Beginning of Object methods section.
@@ -204,7 +210,7 @@ PyObject * MessageElement_asPyObject(const Element & obj)
     return ret;
 }
 
-ListType PyListObject_asElementList(PyObject * list)
+Element PyListObject_asElement(PyObject * list)
 {
     ListType argslist;
     PyMessageElement * item;
@@ -216,13 +222,16 @@ ListType PyListObject_asElementList(PyObject * list)
             Element o = PyObject_asMessageElement((PyObject*)item);
             if (o.getType() != Element::TYPE_NONE) {
                 argslist.push_back(o);
+            } else {
+                debug( std::cout << "Python to atlas conversion failed on element " << i << " of list" << std::endl << std::flush; );
+                return Element();
             }
         }
     }
     return argslist;
 }
 
-MapType PyDictObject_asElementMap(PyObject * dict)
+Element PyDictObject_asElement(PyObject * dict)
 {
     MapType argsmap;
     PyMessageElement * item;
@@ -237,6 +246,9 @@ MapType PyDictObject_asElementMap(PyObject * dict)
             Element o = PyObject_asMessageElement((PyObject*)item);
             if (o.getType() != Element::TYPE_NONE) {
                 argsmap[PyString_AsString(key)] = o;
+            } else {
+                debug( std::cout << "Python to atlas conversion failed on element " << PyString_AsString(key) << " of map" << std::endl << std::flush; );
+                return Element();
             }
         }
     }
@@ -257,10 +269,10 @@ Element PyObject_asMessageElement(PyObject * o)
         return Element(PyString_AsString(o));
     }
     if (PyList_Check(o)) {
-        return Element(PyListObject_asElementList(o));
+        return PyListObject_asElement(o);
     }
     if (PyDict_Check(o)) {
-        return Element(PyDictObject_asElementMap(o));
+        return PyDictObject_asElement(o);
     }
     if (PyTuple_Check(o)) {
         ListType list;
@@ -269,6 +281,9 @@ Element PyObject_asMessageElement(PyObject * o)
             Element item = PyObject_asMessageElement(PyTuple_GetItem(o, i));
             if (item.getType() != Element::TYPE_NONE) {
                 list.push_back(item);
+            } else {
+                debug( std::cout << "Python to atlas conversion failed on element " << i << " of tuple" << std::endl << std::flush; );
+                return Element();
             }
         }
         return Element(list);

@@ -15,18 +15,18 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
 /*
- * Beginning of Entity section.
+ * Beginning of RootEntity section.
  *
  * This is a python type that wraps up entity objects from
  * Atlas::Objects::Entity namespace.
  *
  */
 
-static PyObject* Entity_get_name(PyRootEntity * self)
+static PyObject* RootEntity_get_name(PyRootEntity * self)
 {
 #ifndef NDEBUG
     if (!self->entity.isValid()) {
-        PyErr_SetString(PyExc_AssertionError,"NULL Entity in Entity.get_name");
+        PyErr_SetString(PyExc_AssertionError,"NULL RootEntity in RootEntity.get_name");
         return NULL;
     }
 #endif // NDEBUG
@@ -34,28 +34,28 @@ static PyObject* Entity_get_name(PyRootEntity * self)
 }
 
 /*
- * Entity methods structure.
+ * RootEntity methods structure.
  *
  * Generated from a macro in case we need one for each type of entity.
  *
  */
 
 PyMethodDef RootEntity_methods[] = {
-    {"get_name",        (PyCFunction)Entity_get_name,        METH_NOARGS},
+    {"get_name",        (PyCFunction)RootEntity_get_name,    METH_NOARGS},
     {NULL,          NULL}
 };
 
 PyMethodDef ConstRootEntity_methods[] = {
-    {"get_name",        (PyCFunction)Entity_get_name,        METH_NOARGS},
+    {"get_name",        (PyCFunction)RootEntity_get_name,    METH_NOARGS},
     {NULL,          NULL}
 };
 
 
 /*
- * Beginning of Entity standard methods section.
+ * Beginning of RootEntity standard methods section.
  */
 
-static void Entity_dealloc(PyRootEntity *self)
+static void RootEntity_dealloc(PyRootEntity *self)
 {
     self->entity.~RootEntity();
     PyMem_DEL(self);
@@ -76,7 +76,7 @@ static PyObject * getattr(T * self, char * name)
 {
 #ifndef NDEBUG
     if (!self->entity.isValid()) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Entity in Entity.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL RootEntity in RootEntity.getattr");
         return NULL;
     }
 #endif // NDEBUG
@@ -85,35 +85,37 @@ static PyObject * getattr(T * self, char * name)
     } else if (strcmp(name, "id") == 0) {
         return PyString_FromString(self->entity->getId().c_str());
     // FIXME This needs to be enabled, but sort out bugs first.
-    // } else {
-        // Element attr;
-        // if (self->entity->copyAttr(name, attr) == 0) {
-            // return MessageElement_asPyObject(attr);
-        // }
+    } else {
+        Element attr;
+        if (self->entity->copyAttr(name, attr) == 0) {
+            if (attr.isPtr()) {
+                PyObject * ret = (PyObject*)attr.Ptr();
+                Py_INCREF(ret);
+                return ret;
+            }
+            return MessageElement_asPyObject(attr);
+        }
     }
     PyObject * ret = findMethod(self, name);
-    if (ret == NULL) {
-        log(WARNING, String::compose("Attempting to get %1 attribute on Atlas entity", name).c_str());
-    }
     return ret;
 }
 
-static PyObject * Entity_getattr(PyRootEntity * self, char * name)
+static PyObject * RootEntity_getattr(PyRootEntity * self, char * name)
 {
     return getattr(self, name);
 }
 
-static PyObject * ConstEntity_getattr(PyConstRootEntity * self, char * name)
+static PyObject * ConstRootEntity_getattr(PyConstRootEntity * self, char * name)
 {
     return getattr(self, name);
 }
 
 
-static int Entity_setattr(PyRootEntity *self, char *name, PyObject *v)
+static int RootEntity_setattr(PyRootEntity *self, char *name, PyObject *v)
 {
 #ifndef NDEBUG
     if (!self->entity.isValid()) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Entity in Entity.setattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL RootEntity in RootEntity.setattr");
         return -1;
     }
 #endif // NDEBUG
@@ -125,8 +127,16 @@ static int Entity_setattr(PyRootEntity *self, char *name, PyObject *v)
         self->entity->setName(PyString_AsString(v));
         return 0;
     }
-    log(WARNING, String::compose("Attempting to set %1 attribute on Atlas entity", name).c_str());
-    return 0;
+    Element atlas_val = PyObject_asMessageElement(v);
+    if (atlas_val.getType() != Element::TYPE_NONE) {
+        self->entity->setAttr(name, atlas_val);
+        return 0;
+    } else {
+        // FIXME We do nothing to ensure that this reference is decremented currently
+        Py_INCREF(v);
+        self->entity->setAttr(name, Element((void*)v));
+        return 0;
+    }
 }
 
 PyTypeObject PyRootEntity_Type = {
@@ -136,10 +146,10 @@ PyTypeObject PyRootEntity_Type = {
         sizeof(PyRootEntity),                   // tp_basicsize
         0,                                      // tp_itemsize
         //  methods 
-        (destructor)Entity_dealloc,             // tp_dealloc
+        (destructor)RootEntity_dealloc,         // tp_dealloc
         0,                                      // tp_print
-        (getattrfunc)Entity_getattr,            // tp_getattr
-        (setattrfunc)Entity_setattr,            // tp_setattr
+        (getattrfunc)RootEntity_getattr,        // tp_getattr
+        (setattrfunc)RootEntity_setattr,        // tp_setattr
         0,                                      // tp_compare
         0,                                      // tp_repr
         0,                                      // tp_as_number
@@ -155,9 +165,9 @@ PyTypeObject PyConstRootEntity_Type = {
         sizeof(PyConstRootEntity),              // tp_basicsize
         0,                                      // tp_itemsize
         //  methods 
-        (destructor)Entity_dealloc,             // tp_dealloc
+        (destructor)RootEntity_dealloc,         // tp_dealloc
         0,                                      // tp_print
-        (getattrfunc)ConstEntity_getattr,       // tp_getattr
+        (getattrfunc)ConstRootEntity_getattr,   // tp_getattr
         0,                                      // tp_setattr
         0,                                      // tp_compare
         0,                                      // tp_repr
@@ -168,7 +178,7 @@ PyTypeObject PyConstRootEntity_Type = {
 };
 
 /*
- * Beginning of Entity creation functions section.
+ * Beginning of RootEntity creation functions section.
  */
 
 PyRootEntity * newPyRootEntity()
