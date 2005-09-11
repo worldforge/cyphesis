@@ -1,5 +1,10 @@
 2005-09-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/humanoid/mason.py: Fix self -> me
+	  when checking for mind ID.
+
+2005-09-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Operation.h, rulesets/Py_Operation.cpp: Remove reference
 	  ownership flag, and from and to pointers from the python operation
 	  structure.
