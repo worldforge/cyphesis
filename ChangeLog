@@ -1,3 +1,10 @@
+2005-09-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Pedestrian.cpp, rulesets/Thing.cpp,
+	  server/WorldRouter.cpp: Fix problem where an essential call
+	  was inside an assert, so did not happen when built in non-debug
+	  mode.
+
 2005-09-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.cpp: Fix != to |= when ORing flags together.

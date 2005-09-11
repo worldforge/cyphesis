@@ -19,9 +19,6 @@
 
 #include "common/Setup.h"
 
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/RootEntity.h>
-
 #include <sstream>
 #include <algorithm>
 
@@ -29,28 +26,10 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Setup;
-using Atlas::Objects::Entity::RootEntity;
 
 static const bool debug_flag = false;
 
-struct OpQueEntry {
-    Operation op;
-    Entity & from;
-
-    explicit OpQueEntry(const Operation & o, Entity & f);
-    OpQueEntry(const OpQueEntry & o);
-    ~OpQueEntry();
-
-    const Operation & operator*() const {
-        return op;
-    }
-
-    Atlas::Objects::Operation::RootOperationData * operator->() const {
-        return op.get();
-    }
-};
-
-inline OpQueEntry::OpQueEntry(const Operation & o, Entity & f) : op(o), from(f)
+inline OpQueEntry::OpQueEntry(Operation & o, Entity & f) : op(o), from(f)
 {
     from.incRef();
 }
@@ -105,6 +84,14 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId))
 WorldRouter::~WorldRouter()
 {
     { 
+        debug(std::cout << "Flushing op queue with " << m_operationQueue.size()
+                        << " ops" << std::endl << std::flush;);
+    }
+    OpQueue::const_iterator Iend = m_operationQueue.end();
+    for (OpQueue::const_iterator I = m_operationQueue.begin(); I != Iend; ++I) {
+        delete &I->op;
+    }
+    { 
         debug(std::cout << "Flushing world with " << m_eobjects.size()
                         << " entities" << std::endl << std::flush;);
     }
@@ -125,20 +112,19 @@ WorldRouter::~WorldRouter()
 /// the entity that is responsible for adding the operation to the
 /// queue, unless it is set to "cheat". This is used to spook
 /// operations when they come from an admin.
-void WorldRouter::addOperationToQueue(const Operation & op, Entity & ent)
+void WorldRouter::addOperationToQueue(Operation & op, Entity & ent)
 {
-    assert(op.isValid());
-    if (op->getFrom() == "cheat") {
-        op->setFrom(op->getTo());
+    if (op.getFrom() == "cheat") {
+        op.setFrom(op.getTo());
     } else {
-        op->setFrom(ent.getId());
+        op.setFrom(ent.getId());
     }
-    double t = m_realTime + op->getFutureSeconds();
-    op->setSeconds(t);
-    op->setFutureSeconds(0.0);
+    double t = m_realTime + op.getFutureSeconds();
+    op.setSeconds(t);
+    op.setFutureSeconds(0.0);
     OpQueue::iterator I = m_operationQueue.begin();
     OpQueue::iterator Iend = m_operationQueue.end();
-    for (; (I != Iend) && ((*I).op->getSeconds() <= t) ; ++I);
+    for (; (I != Iend) && ((*I)->getSeconds() <= t) ; ++I);
     m_operationQueue.insert(I, OpQueEntry(op, ent));
 }
 
@@ -147,14 +133,14 @@ void WorldRouter::addOperationToQueue(const Operation & op, Entity & ent)
 /// If the operation at the end of the queue is now due, return it.
 /// @return a pointer to the operation due for dispatch, or 0 if none
 /// is due.
-Operation WorldRouter::getOperationFromQueue()
+Operation * WorldRouter::getOperationFromQueue()
 {
     OpQueue::const_iterator I = m_operationQueue.begin();
     if ((I == m_operationQueue.end()) || ((*I)->getSeconds() > m_realTime)) {
         return NULL;
     }
     debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
-    const Operation & op = (**I);
+    Operation * op = &(**I);
     m_operationQueue.pop_front();
     return op;
 }
@@ -238,9 +224,9 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
     std::string mode;
     if (ent->has("mode")) {
         Element mode_attr;
-        assert(ent->get("mode", mode_attr));
+        ent->get("mode", mode_attr);
         if (mode_attr.isString()) {
-            mode = mode_attr.String();
+            mode = mode_attr.asString();
         } else {
             log(ERROR, "Non string mode on entity in WorldRouter::addEntity");
         }
@@ -263,11 +249,11 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
         m_omnipresentList.insert(ent);
     }
     if (setup) {
-        Setup s;
+        Setup * s = new Setup;
         s->setTo(ent->getId());
         s->setFutureSeconds(-0.1);
         s->setSerialno(newSerialNo());
-        message(s, m_gameWorld);
+        message(*s, m_gameWorld);
     }
     return ent;
 }
@@ -278,7 +264,7 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
 /// and pass it to addEntity().
 /// @return a pointer to the new entity.
 Entity * WorldRouter::addNewEntity(const std::string & typestr,
-                                   const RootEntity & attrs)
+                                   const MapType & attrs)
 {
     debug(std::cout << "WorldRouter::addNewEntity(\"" << typestr << "\", attrs)"
                     << std::endl << std::flush;);
@@ -289,7 +275,7 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
         newId(id);
     }
     assert(!id.empty());
-    Entity * ent = EntityFactory::instance()->newEntity(id, typestr, attrs->asMessage());
+    Entity * ent = EntityFactory::instance()->newEntity(id, typestr, attrs);
     if (ent == 0) {
         std::string msg = std::string("Attempt to create an entity of type \"")
                           + typestr + "\" but type is unknown or forbidden";
@@ -326,12 +312,12 @@ void WorldRouter::delEntity(Entity * ent)
 ///
 /// Pass an operation to addOperationToQueue()
 /// so it gets added to the queue for dispatch.
-void WorldRouter::message(const Operation & op, Entity & ent)
+void WorldRouter::message(Operation & op, Entity & ent)
 {
     addOperationToQueue(op, ent);
     debug(std::cout << "WorldRouter::message {"
-                    << op->getParents().front() << ":"
-                    << op->getFrom() << ":" << op->getTo() << "}" << std::endl
+                    << op.getParents().front().asString() << ":"
+                    << op.getFrom() << ":" << op.getTo() << "}" << std::endl
                     << std::flush;);
 }
 
@@ -345,20 +331,19 @@ void WorldRouter::message(const Operation & op, Entity & ent)
 /// @return a reference to the list of entities to be used for braodcast.
 const EntitySet & WorldRouter::broadcastList(const Operation & op) const
 {
-    // FIXME Use numeric types
-    const std::list<std::string> & parents = op->getParents();
-    if (!parents.empty()) {
-        const std::string & parent = parents.front();
+    const ListType & parents = op.getParents();
+    if (!parents.empty() && (parents.front().isString())) {
+        const std::string & parent = parents.front().asString();
         if ((parent == "sight") || (parent == "sound") ||
             (parent == "appearance") || (parent == "disappearance")) {
             return m_perceptives;
         }
         std::string msg = std::string("Broadcasting ") + parent + " op from "
-                                                       + op->getFrom();
+                                                       + op.getFrom();
         log(WARNING, msg.c_str());
     } else {
         std::string msg = std::string("Broadcasting op with no parent from ")
-                                                       + op->getFrom();
+                                                       + op.getFrom();
         log(ERROR, msg.c_str());
     }
     return m_objectList;
@@ -375,11 +360,11 @@ void WorldRouter::deliverTo(const Operation & op, Entity & ent)
     ent.operation(op, res);
     OpVector::const_iterator Iend = res.end();
     for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-        if (op->getFrom() == (*I)->getTo()) {
-            (*I)->setRefno(op->getSerialno());
+        if (op.getFrom() == (*I)->getTo()) {
+            (*I)->setRefno(op.getSerialno());
         }
         (*I)->setSerialno(newSerialNo());
-        message(*I, ent);
+        message(**I, ent);
     }
 }
 
@@ -391,12 +376,12 @@ void WorldRouter::deliverTo(const Operation & op, Entity & ent)
 /// sight ranges for perception operations.
 /// @param op operation to be dispatched to the world. This is non-const
 /// so that broadcast ops can have their TO set correctly for each target.
-void WorldRouter::operation(const Operation & op, Entity & from)
+void WorldRouter::operation(Operation & op, Entity & from)
 {
-    const std::string & to = op->getTo();
+    const std::string & to = op.getTo();
     debug(std::cout << "WorldRouter::operation {"
-                    << op->getParents().front() << ":"
-                    << op->getFrom() << ":" << to << "}" << std::endl
+                    << op.getParents().front().asString() << ":"
+                    << op.getFrom() << ":" << to << "}" << std::endl
                     << std::flush;);
 
     if (!to.empty()) {
@@ -411,18 +396,18 @@ void WorldRouter::operation(const Operation & op, Entity & from)
         assert(to_entity != 0);
 
         deliverTo(op, *to_entity);
-        if (op->getParents().front() == "delete") { // FIXME numeric type
+        if (op.getParents().front().asString() == "delete") {
             delEntity(to_entity);
         }
     } else {
         // Where broadcasts go depends on type of op
         const EntitySet & broadcast = broadcastList(op);
-        assert(op->getFrom() == from.getId());
+        assert(op.getFrom() == from.getId());
         if (!consts::enable_ranges) {
             EntitySet::const_iterator I = broadcast.begin();
             EntitySet::const_iterator Iend = broadcast.end();
             for (; I != Iend; ++I) {
-                op->setTo((*I)->getId());
+                op.setTo((*I)->getId());
                 deliverTo(op, **I);
             }
         } else {
@@ -439,7 +424,7 @@ void WorldRouter::operation(const Operation & op, Entity & from)
                                     << std::endl << std::flush;);
                     continue;
                 }
-                op->setTo((*I)->getId());
+                op.setTo((*I)->getId());
                 deliverTo(op, **I);
             }
         }
@@ -481,18 +466,19 @@ bool WorldRouter::idle(int sec, int usec)
            ((*I)->getSeconds() <= m_realTime)) {
         assert(I != m_operationQueue.end());
         OpQueEntry & oqe = *I;
-        Dispatching.emit(oqe.op);
+        Dispatching.emit(&oqe.op);
         try {
             operation(oqe.op, oqe.from);
         }
         catch (...) {
             std::string msg = std::string("Exception caught in world.idle()")
                             + " thrown while processing "
-                            // + oqe->getParents().front()
+                            // + oqe->getParents().front().asString()
                             + " operation sent to " + oqe->getTo()
                             + " from " + oqe->getFrom() + ".";
             log(ERROR, msg.c_str());
         }
+        delete &oqe.op;
         m_operationQueue.erase(I);
         I = m_operationQueue.begin();
     }

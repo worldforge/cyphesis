@@ -17,15 +17,15 @@
 
 #include <wfmath/atlasconv.h>
 
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Anonymous.h>
-
-using Atlas::Objects::smart_dynamic_cast;
+#include <Atlas/Objects/Operation/Sight.h>
+#include <Atlas/Objects/Operation/Set.h>
+#include <Atlas/Objects/Operation/Delete.h>
+#include <Atlas/Objects/Operation/Appearance.h>
+#include <Atlas/Objects/Operation/Disappearance.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
-using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Sight;
@@ -34,8 +34,6 @@ using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
-using Atlas::Objects::Entity::Anonymous;
-using Atlas::Objects::Entity::RootEntity;
 
 static const bool debug_flag = false;
 
@@ -62,10 +60,11 @@ Thing::~Thing()
 
 void Thing::SetupOperation(const Operation & op, OpVector & res)
 {
-    Appearance app;
-    Anonymous arg;
-    arg->setId(getId());
-    app->setArgs1(arg);
+    Appearance * app = new Appearance();
+    ListType & args = app->getArgs();
+    args.push_back(MapType());
+    MapType & arg = args.back().asMap();
+    arg["id"] = getId();
 
     res.push_back(app);
 
@@ -73,7 +72,7 @@ void Thing::SetupOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Tick tick;
+    Operation * tick = new Tick();
     tick->setTo(getId());
 
     res.push_back(tick);
@@ -84,8 +83,8 @@ void Thing::ActionOperation(const Operation & op, OpVector & res)
     if (m_script->Operation("action", op, res) != 0) {
         return;
     }
-    Sight s;
-    s->setArgs1(op);
+    Operation * s = new Sight();
+    s->setArgs(ListType(1,op.asObject()));
     res.push_back(s);
 }
 
@@ -96,8 +95,8 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
     }
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
-    Sight s;
-    s->setArgs1(op);
+    Operation * s = new Sight();
+    s->setArgs(ListType(1,op.asObject()));
     res.push_back(s);
 }
 
@@ -106,7 +105,7 @@ void Thing::BurnOperation(const Operation & op, OpVector & res)
     if (m_script->Operation("burn", op, res) != 0) {
         return;
     }
-    if (op->getArgs().empty()) {
+    if (op.getArgs().empty() || !op.getArgs().front().isMap()) {
         error(op, "Fire op has no argument", res, getId());
         return;
     }
@@ -115,27 +114,27 @@ void Thing::BurnOperation(const Operation & op, OpVector & res)
         return;
     }
     double bspeed = I->second.asNum();
-    const Root & fire_ent = op->getArgs().front();
-    double consumed = bspeed * fire_ent->getAttr("status").asNum();
+    const MapType & fire_ent = op.getArgs().front().asMap();
+    double consumed = bspeed * fire_ent.find("status")->second.asNum();
 
-    const std::string & to = fire_ent->getId();
-    Anonymous nour_ent;
-    nour_ent->setId(to);
-    nour_ent->setAttr("mass", consumed);
+    const std::string & to = fire_ent.find("id")->second.asString();
+    MapType nour_ent;
+    nour_ent["id"] = to;
+    nour_ent["mass"] = consumed;
 
-    Set s;
+    Set * s = new Set();
     s->setTo(getId());
-
-    Anonymous self_ent;
-    self_ent->setId(getId());
-    self_ent->setAttr("status", m_status - (consumed / m_mass));
-    s->setArgs1(self_ent);
+    ListType & sargs = s->getArgs();
+    sargs.push_back(MapType());
+    MapType & self_ent = sargs.back().asMap();
+    self_ent["id"] = getId();
+    self_ent["status"] = m_status - (consumed / m_mass);
 
     res.push_back(s);
 
-    Nourish n;
+    Nourish * n = new Nourish();
     n->setTo(to);
-    n->setArgs1(nour_ent);
+    n->setArgs(ListType(1,nour_ent));
 
     res.push_back(n);
 }
@@ -147,25 +146,24 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     if (m_script->Operation("move", op, res) != 0) {
         return;
     }
-    const std::vector<Root> & args = op->getArgs();
+    const ListType & args = op.getArgs();
     if (args.empty()) {
         error(op, "Move has no argument", res, getId());
         return;
     }
-    RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
-    if (!ent.isValid()) {
-        error(op, "Move op arg is malformed", res, getId());
+    const MapType & ent = args.front().asMap();
+    MapType::const_iterator I = ent.find("id");
+    MapType::const_iterator Iend = ent.end();
+    if ((I == Iend) || !I->second.isString()) {
+        error(op, "Move op has no id in argument", res, getId());
         return;
     }
-    if (getId() != ent->getId()) {
-        error(op, "Move op does not have correct id in argument", res, getId());
-        return;
-    }
-    if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+    I = ent.find("loc");
+    if ((I == Iend) || !I->second.isString()) {
         error(op, "Move op has no loc", res, getId());
         return;
     }
-    const std::string & new_loc_id = ent->getLoc();
+    const std::string & new_loc_id = I->second.asString();
     EntityDict::const_iterator J = m_world->getEntities().find(new_loc_id);
     if (J == m_world->getEntities().end()) {
         error(op, "Move op loc invalid", res, getId());
@@ -180,10 +178,12 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             return;
         }
     }
-    if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+    I = ent.find("pos");
+    if ((I == Iend) || !I->second.isList()) {
         error(op, "Move op has no pos", res, getId());
         return;
     }
+    const ListType & pos_list = I->second.asList();
 
     // Up until this point nothing should have changed, but the changes
     // have all now been checked for validity.
@@ -211,52 +211,52 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     if (has("mode")) {
         Element mode_attr;
-        assert(get("mode", mode_attr));
+        get("mode", mode_attr);
         if (mode_attr.isString()) {
-            mode = mode_attr.String();
+            mode = mode_attr.asString();
         } else {
             log(ERROR, "Non string mode on entity in Thing::MoveOperation");
+            std::cout << "Mode is of type " << mode_attr.getType()
+                      << std::endl << std::flush;
         }
     }
 
     // Move ops often include a mode change, so we handle it here, even
     // though it is not a special attribute for efficiency. Otherwise
     // an additional Set op would be required.
-    Element attr_mode;
-    if (ent->copyAttr("mode", attr_mode) == 0) {
+    I = ent.find("mode");
+    if (I != Iend) {
         // FIXME
-        if (!attr_mode.isString()) {
+        if (!I->second.isString()) {
             log(ERROR, "Non string mode set in Thing::MoveOperation");
         } else {
             // Update the mode
-            set("mode", attr_mode);
-            m_motion->setMode(attr_mode.String());
-            mode = attr_mode.String();
+            set(I->first, I->second);
+            m_motion->setMode(I->second.asString());
+            mode = I->second.asString();
         }
     }
 
     Point3D oldpos = m_location.m_pos;
 
     // Update pos
-    fromStdVector(m_location.m_pos, ent->getPos());
+    m_location.m_pos.fromAtlas(pos_list);
     // FIXME Quick height hack
     m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
                                                     m_location.m_pos,
                                                     mode);
     // m_location.update(m_world->getTime());
     m_update_flags |= a_pos;
-
-    Element attr_velocity;
-    if (ent->copyAttr("velocity", attr_velocity) == 0) {
+    I = ent.find("velocity");
+    if (I != Iend) {
         // Update velocity
-        m_location.m_velocity.fromAtlas(attr_velocity.asList());
+        m_location.m_velocity.fromAtlas(I->second.asList());
         // Velocity is not persistent so has no flag
     }
-
-    Element attr_orientation;
-    if (ent->copyAttr("orientation", attr_orientation) == 0) {
+    I = ent.find("orientation");
+    if (I != Iend) {
         // Update orientation
-        m_location.m_orientation.fromAtlas(attr_orientation.asList());
+        m_location.m_orientation.fromAtlas(I->second.asList());
         m_update_flags |= a_orient;
     }
 
@@ -268,20 +268,18 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
 
 
-    Operation m(op->copy());
-    RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
-    assert(marg.isValid());
-    m_location.addToEntity(marg);
+    Operation m(op);
+    m_location.addToMessage(m.getArgs().front().asMap());
 
-    Sight s;
-    s->setArgs1(m);
+    Operation * s = new Sight();
+    s->setArgs(ListType(1,m.asObject()));
 
     res.push_back(s);
 
     if (m_location.m_velocity.isValid() &&
         m_location.m_velocity.sqrMag() > WFMATH_EPSILON) {
         // m_motion->genUpdateOperation(); ??
-        Update u;
+        Operation * u = new Update();
         u->setFutureSeconds(consts::basic_tick);
         u->setTo(getId());
 
@@ -297,12 +295,11 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     if (consts::enable_ranges && isPerceptive()) {
         debug(std::cout << "testing range" << std::endl;);
         float fromSquSize = boxSquareSize(m_location.m_bBox);
-        std::vector<Root> appear, disappear;
-
-        Anonymous this_ent;
-        this_ent->setId(getId());
-        this_ent->setStamp(m_seq);
-
+        ListType appear, disappear;
+        MapType this_ent;
+        this_ent["id"] = getId();
+        this_ent["stamp"] = (double)m_seq;
+        ListType this_as_args(1,this_ent);
         EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
         EntitySet::const_iterator Iend = m_location.m_loc->m_contains.end();
         for(; I != Iend; ++I) {
@@ -320,8 +317,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
                     if (wasInRange) {
                         // Send operation to the entity in question so it
                         // knows it is losing sight of us.
-                        Disappearance d;
-                        d->setArgs1(this_ent);
+                        Disappearance * d = new Disappearance();
+                        d->setArgs(this_as_args);
                         d->setTo((*I)->getId());
                         res.push_back(d);
                     } else /*if (isInRange)*/ {
@@ -329,8 +326,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
                         // knows it is gaining sight of us.
                         // FIXME We don't need to do this, cos its about
                         // to get our Sight(Move)
-                        Appearance a;
-                        a->setArgs1(this_ent);
+                        Appearance * a = new Appearance();
+                        a->setArgs(this_as_args);
                         a->setTo((*I)->getId());
                         res.push_back(a);
                     }
@@ -340,9 +337,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             bool couldSee = ((oSquSize / oldDist) > consts::square_sight_factor),
                  canSee = ((oSquSize / newDist) > consts::square_sight_factor);
             if (couldSee ^ canSee) {
-                Anonymous that_ent;
-                that_ent->setId((*I)->getId());
-                that_ent->setStamp((*I)->getSeq());
+                MapType that_ent;
+                that_ent["id"] = (*I)->getId();
+                that_ent["stamp"] = (double)(*I)->getSeq();
                 if (couldSee) {
                     // We are losing sight of that object
                     disappear.push_back(that_ent);
@@ -359,7 +356,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         if (!appear.empty()) {
             // Send an operation to ourselves with a list of entities
             // we are losing sight of
-            Appearance a;
+            Appearance * a = new Appearance();
             a->setArgs(appear);
             a->setTo(getId());
             res.push_back(a);
@@ -367,7 +364,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         if (!disappear.empty()) {
             // Send an operation to ourselves with a list of entities
             // we are gaining sight of
-            Disappearance d;
+            Disappearance * d = new Disappearance();
             d->setArgs(disappear);
             d->setTo(getId());
             res.push_back(d);
@@ -382,21 +379,21 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
     if (m_script->Operation("set", op, res) != 0) {
         return;
     }
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        error(op, "Set has no argument", res, getId());
+    const ListType & args = op.getArgs();
+    if (args.empty() || !args.front().isMap()) {
         return;
     }
-    const Root & ent = args.front();
-    merge(ent->asMessage());
-    Sight s;
-    s->setArgs1(op);
+    const MapType & ent = args.front().asMap();
+    merge(ent);
+    Operation * s = new Sight();
+    s->setArgs(ListType(1,op.asObject()));
     res.push_back(s);
     if (m_status < 0) {
-        Delete d;
-        Anonymous darg;
-        darg->setId(getId());
-        d->setArgs1(darg);
+        Delete * d = new Delete();
+        ListType & dargs = d->getArgs();
+        dargs.push_back(MapType());
+        // FIXME Is it necessary to include a full description?
+        addToMessage(dargs.front().asMap());
         d->setTo(getId());
         res.push_back(d);
     }

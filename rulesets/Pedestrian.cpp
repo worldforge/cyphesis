@@ -14,14 +14,12 @@
 
 #include <wfmath/atlasconv.h>
 
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation/Move.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Move;
-using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
@@ -177,9 +175,9 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
 
     if (m_body.has("mode")) {
         Element mode_attr;
-        assert(m_body.get("mode", mode_attr));
+        m_body.get("mode", mode_attr);
         if (mode_attr.isString()) {
-            mode = mode_attr.String();
+            mode = mode_attr.asString();
         } else {
             log(ERROR, "Non string mode on entity in Pedestrain::getUpdatedLocation");
         }
@@ -200,15 +198,15 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     return 0;
 }
 
-Operation Pedestrian::generateMove(const Location & new_location)
+Operation * Pedestrian::generateMove(const Location & new_location)
 {
     // Create move operation
-    Move moveOp;
+    Operation * moveOp = new Move();
     moveOp->setTo(m_body.getId());
 
     // Set up argument for operation
-    Anonymous move_arg;
-    move_arg->setId(m_body.getId());
+    MapType move_arg;
+    move_arg["id"] = m_body.getId();
 
     // Walk out what the mode of the character should be.
     // Performed in squares to save on that critical sqrt() call
@@ -225,24 +223,24 @@ Operation Pedestrian::generateMove(const Location & new_location)
     }
 
     if (new_location.m_pos.z() < (0 - height * 0.75)) {
-        move_arg->setAttr("mode", "swimming");
+        move_arg["mode"] = "swimming";
     } else {
         if (square_speed_ratio > 0.25) { // 0.5 ^ 2
-            move_arg->setAttr("mode", "running");
+            move_arg["mode"] = "running";
         } else if (square_speed_ratio > 0.0025) { // 0.05 ^ 2
-            move_arg->setAttr("mode", "walking");
+            move_arg["mode"] = "walking";
         } else {
-            move_arg->setAttr("mode", "standing");
+            move_arg["mode"] = "standing";
         }
     }
-    debug(std::cout << move_arg->getAttr("mode").asString() << std::endl << std::flush;);
+    debug(std::cout << move_arg["mode"].asString() << std::endl << std::flush;);
 
     if (vel_square_mag > 0) {
         checkCollisions(new_location);
     }
 
-    new_location.addToEntity(move_arg);
-    moveOp->setArgs1(move_arg);
+    new_location.addToMessage(move_arg);
+    moveOp->setArgs(ListType(1, move_arg));
 
     return moveOp;
 }
