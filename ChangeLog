@@ -1,5 +1,11 @@
 2005-09-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/custom.cpp, rulesets/Character.cpp: Ensure all custom op
+	  types are registered with the Atlas factories, and switch
+	  to using it for tool operations.
+
+2005-09-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Add.h, common/Burn.h, common/Chop.h, common/Connect.h,
 	  common/Cut.h, common/Delve.h, common/Dig.h, common/Eat.h,
 	  common/Monitor.h, common/Mow.h, common/Nourish.h, common/Setup.h,

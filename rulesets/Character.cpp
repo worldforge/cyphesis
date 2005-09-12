@@ -549,14 +549,10 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
                     << " with " << op_type << " action."
                     << std::endl << std::flush;);
 
-    Operation rop = Inheritance::instance().newOperation(op_type);
+    Root obj = Atlas::Objects::Factories::instance()->createObject(op_type);
+    Operation rop = smart_dynamic_cast<Operation>(obj);
     if (!rop.isValid()) {
-        std::string err("Character::mindUseMethod: Unknown op type \"");
-        err += op_type;
-        err += "\" requested by \"";
-        err += tool->getType();
-        err += "\" tool";
-        log(ERROR, err.c_str());
+        log(ERROR, String::compose("Character::mindUseMethod: Unknown op type %1 requested by %2 tool", op_type, tool->getType()).c_str());
         // FIXME Thing hard about how this error is reported. Would the error
         // make it back to the client if we made an error response?
         return;

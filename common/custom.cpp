@@ -92,11 +92,23 @@ void installCustomOperations()
     // core
 
     i.opInstall("shoot", OP_OTHER, new GenericOpFactory("shoot"));
+    atlas_factories->addFactory("shoot", &Atlas::Objects::generic_factory);
+
     i.opInstall("extinguish", OP_OTHER, new GenericOpFactory("extinguish"));
+    atlas_factories->addFactory("extinguish", &Atlas::Objects::generic_factory);
+
     i.opInstall("sow", OP_OTHER, new GenericOpFactory("sow"));
+    atlas_factories->addFactory("sow", &Atlas::Objects::generic_factory);
+
     i.opInstall("germinate", OP_OTHER, new GenericOpFactory("germinate"));
+    atlas_factories->addFactory("germinate", &Atlas::Objects::generic_factory);
+
     i.opInstall("wear", OP_OTHER, new GenericOpFactory("wear"));
+    atlas_factories->addFactory("wear", &Atlas::Objects::generic_factory);
+
     i.opInstall("ignite", OP_OTHER, new GenericOpFactory("ignite"));
+    atlas_factories->addFactory("ignite", &Atlas::Objects::generic_factory);
+
 }
 
 void installCustomEntities()
