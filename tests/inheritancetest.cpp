@@ -71,36 +71,6 @@ int main()
     assert(i.opEnumerate("error") == OP_ERROR);
     assert(i.opEnumerate("squigglymuff") == OP_INVALID);
 
-    assert(i.newOperation("login").isValid());
-    assert(i.newOperation("logout").isValid());
-    assert(i.newOperation("action").isValid());
-    assert(i.newOperation("chop").isValid());
-    assert(i.newOperation("combine").isValid());
-    assert(i.newOperation("create").isValid());
-    assert(i.newOperation("cut").isValid());
-    assert(i.newOperation("delete").isValid());
-    assert(i.newOperation("divide").isValid());
-    assert(i.newOperation("eat").isValid());
-    assert(i.newOperation("burn").isValid());
-    assert(i.newOperation("get").isValid());
-    assert(i.newOperation("imaginary").isValid());
-    assert(i.newOperation("info").isValid());
-    assert(i.newOperation("move").isValid());
-    assert(i.newOperation("nourish").isValid());
-    assert(i.newOperation("set").isValid());
-    assert(i.newOperation("sight").isValid());
-    assert(i.newOperation("sound").isValid());
-    assert(i.newOperation("talk").isValid());
-    assert(i.newOperation("touch").isValid());
-    assert(i.newOperation("tick").isValid());
-    assert(i.newOperation("look").isValid());
-    assert(i.newOperation("setup").isValid());
-    assert(i.newOperation("appearance").isValid());
-    assert(i.newOperation("disappearance").isValid());
-    assert(i.newOperation("error").isValid());
-
-    assert(!i.newOperation("squigglymuff").isValid());
-
     const Root & rt = i.getClass("root");
 
     // Make sure the type tree is coherent, and contains a decent

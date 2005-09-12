@@ -43,8 +43,6 @@ class Inheritance {
     const Atlas::Objects::Root & getClass(const std::string & parent);
     bool hasClass(const std::string & parent);
     int addChild(const Atlas::Objects::Root & obj);
-    Operation newOperation(const std::string & parent);
-    int newOperation(const std::string &, Operation &) const;
     bool isTypeOf(const std::string &, const std::string &) const;
 };
 

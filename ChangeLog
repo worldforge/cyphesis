@@ -1,5 +1,11 @@
 2005-09-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/inheritance.h, tests/inheritancetest.cpp: Remove the
+	  newOperation declarations from the header, and removes their
+	  tests.
+
+2005-09-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/inheritance_impl.h, common/inheritance.h,
 	  common/inheritance.cpp, common/custom.cpp: Get rid of the op
 	  factory feature of inheritance, as its not required.
