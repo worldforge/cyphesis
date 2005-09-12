@@ -1,3 +1,18 @@
+2005-09-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Add.h, common/Burn.h, common/Chop.h, common/Connect.h,
+	  common/Cut.h, common/Delve.h, common/Dig.h, common/Eat.h,
+	  common/Monitor.h, common/Mow.h, common/Nourish.h, common/Setup.h,
+	  common/Tick.h, common/Unseen.h, common/Update.h,
+	* common/operations.cpp, scripts/gen_op.py:
+	  Try a new much simpler way of handling custom ops.
+
+	* common/CustomOp.cpp, common/CustomOp.h, common/CustomOp_impl.h:
+	  Remove obsolete old template for custom ops.
+
+	* common/custom.cpp: Install factories in a different way for all
+	  the custom op types.
+
 2005-09-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/const.cpp, common/const.h: Git rid of bizare scheme

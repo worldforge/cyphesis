@@ -5,20 +5,19 @@
 #ifndef COMMON_EAT_H
 #define COMMON_EAT_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class EatProxy {
+extern int EAT_NO;
+
+class Eat : public Generic
+{
   public:
-    static const std::string name() { return "eat"; }
+    Eat() {
+        (*this)->setType("eat", EAT_NO);
+    }
 };
-
-typedef CustomOpData<SetData, EatProxy> EatData;
-
-typedef SmartPtr<EatData> Eat;
 
 } } }
 

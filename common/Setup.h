@@ -5,20 +5,19 @@
 #ifndef COMMON_SETUP_H
 #define COMMON_SETUP_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class SetupProxy {
+extern int SETUP_NO;
+
+class Setup : public Generic
+{
   public:
-    static const std::string name() { return "setup"; }
+    Setup() {
+        (*this)->setType("setup", SETUP_NO);
+    }
 };
-
-typedef CustomOpData<SetData, SetupProxy> SetupData;
-
-typedef SmartPtr<SetupData> Setup;
 
 } } }
 

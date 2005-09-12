@@ -19,23 +19,22 @@ outfile.write("""// This file may be redistributed and modified only under the t
 #ifndef COMMON_%s_H
 #define COMMON_%s_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class %sProxy {
+extern int %s_NO;
+
+class %s : public Generic
+{
   public:
-    static const std::string name() { return "%s"; }
+    %s() {
+        (*this)->setType("%s", %s_NO);
+    }
 };
-
-typedef CustomOpData<SetData, %sProxy> %sData;
-
-typedef SmartPtr<%sData> %s;
 
 } } }
 
 #endif // COMMON_%s_H
-""" % (opnameup, opnameup, opnamecap, opname, opnamecap, opnamecap, opnamecap, opnamecap, opnameup))
+""" % (opnameup, opnameup, opnameup, opnamecap, opnamecap, opname, opnameup, opnameup))
 outfile.close()

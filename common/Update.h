@@ -5,20 +5,19 @@
 #ifndef COMMON_UPDATE_H
 #define COMMON_UPDATE_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class UpdateProxy {
+extern int UPDATE_NO;
+
+class Update : public Generic
+{
   public:
-    static const std::string name() { return "update"; }
+    Update() {
+        (*this)->setType("update", UPDATE_NO);
+    }
 };
-
-typedef CustomOpData<SetData, UpdateProxy> UpdateData;
-
-typedef SmartPtr<UpdateData> Update;
 
 } } }
 

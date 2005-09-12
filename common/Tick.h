@@ -5,20 +5,19 @@
 #ifndef COMMON_TICK_H
 #define COMMON_TICK_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class TickProxy {
+extern int TICK_NO;
+
+class Tick : public Generic
+{
   public:
-    static const std::string name() { return "tick"; }
+    Tick() {
+        (*this)->setType("tick", TICK_NO);
+    }
 };
-
-typedef CustomOpData<SetData, TickProxy> TickData;
-
-typedef SmartPtr<TickData> Tick;
 
 } } }
 

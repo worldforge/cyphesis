@@ -5,20 +5,19 @@
 #ifndef COMMON_UNSEEN_H
 #define COMMON_UNSEEN_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class UnseenProxy {
+extern int UNSEEN_NO;
+
+class Unseen : public Generic
+{
   public:
-    static const std::string name() { return "unseen"; }
+    Unseen() {
+        (*this)->setType("unseen", UNSEEN_NO);
+    }
 };
-
-typedef CustomOpData<SetData, UnseenProxy> UnseenData;
-
-typedef SmartPtr<UnseenData> Unseen;
 
 } } }
 

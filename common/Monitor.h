@@ -5,20 +5,19 @@
 #ifndef COMMON_MONITOR_H
 #define COMMON_MONITOR_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class MonitorProxy {
+extern int MONITOR_NO;
+
+class Monitor : public Generic
+{
   public:
-    static const std::string name() { return "monitor"; }
+    Monitor() {
+        (*this)->setType("monitor", MONITOR_NO);
+    }
 };
-
-typedef CustomOpData<SetData, MonitorProxy> MonitorData;
-
-typedef SmartPtr<MonitorData> Monitor;
 
 } } }
 

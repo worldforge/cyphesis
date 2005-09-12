@@ -5,20 +5,19 @@
 #ifndef COMMON_DELVE_H
 #define COMMON_DELVE_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class DelveProxy {
+extern int DELVE_NO;
+
+class Delve : public Generic
+{
   public:
-    static const std::string name() { return "delve"; }
+    Delve() {
+        (*this)->setType("delve", DELVE_NO);
+    }
 };
-
-typedef CustomOpData<SetData, DelveProxy> DelveData;
-
-typedef SmartPtr<DelveData> Delve;
 
 } } }
 

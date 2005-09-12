@@ -5,20 +5,19 @@
 #ifndef COMMON_NOURISH_H
 #define COMMON_NOURISH_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class NourishProxy {
+extern int NOURISH_NO;
+
+class Nourish : public Generic
+{
   public:
-    static const std::string name() { return "nourish"; }
+    Nourish() {
+        (*this)->setType("nourish", NOURISH_NO);
+    }
 };
-
-typedef CustomOpData<SetData, NourishProxy> NourishData;
-
-typedef SmartPtr<NourishData> Nourish;
 
 } } }
 

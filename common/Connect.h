@@ -5,20 +5,19 @@
 #ifndef COMMON_CONNECT_H
 #define COMMON_CONNECT_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class ConnectProxy {
+extern int CONNECT_NO;
+
+class Connect : public Generic
+{
   public:
-    static const std::string name() { return "connect"; }
+    Connect() {
+        (*this)->setType("connect", CONNECT_NO);
+    }
 };
-
-typedef CustomOpData<SetData, ConnectProxy> ConnectData;
-
-typedef SmartPtr<ConnectData> Connect;
 
 } } }
 

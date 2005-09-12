@@ -42,51 +42,51 @@ void installCustomOperations()
 
     i.addChild(atlasOpDefinition("add", "set"));
     i.opInstall("add", OP_ADD, new OpFactory<Add>);
-    atlas_factories->addFactory("add", &Atlas::Objects::factory<Atlas::Objects::Operation::AddData>);
+    Atlas::Objects::Operation::ADD_NO = atlas_factories->addFactory("add", &Atlas::Objects::generic_factory);
 
     i.addChild(atlasOpDefinition("burn", "action"));
     i.opInstall("burn", OP_BURN, new OpFactory<Burn>);
-    atlas_factories->addFactory("burn", &Atlas::Objects::factory<Atlas::Objects::Operation::BurnData>);
+    Atlas::Objects::Operation::BURN_NO = atlas_factories->addFactory("burn", &Atlas::Objects::generic_factory);
 
     i.addChild(atlasOpDefinition("chop", "affect"));
     i.opInstall("chop", OP_CHOP, new OpFactory<Chop>);
-    atlas_factories->addFactory("chop", &Atlas::Objects::factory<Atlas::Objects::Operation::ChopData>);
+    Atlas::Objects::Operation::CHOP_NO = atlas_factories->addFactory("chop", &Atlas::Objects::generic_factory);
 
     i.addChild(atlasOpDefinition("cut", "action"));
     i.opInstall("cut", OP_CUT, new OpFactory<Cut>);
-    atlas_factories->addFactory("cut", &Atlas::Objects::factory<Atlas::Objects::Operation::CutData>);
+    Atlas::Objects::Operation::CUT_NO = atlas_factories->addFactory("cut", &Atlas::Objects::generic_factory);
 
     i.addChild(atlasOpDefinition("delve", "affect"));
     i.opInstall("delve", OP_OTHER, new OpFactory<Delve>);
-    atlas_factories->addFactory("delve", &Atlas::Objects::factory<Atlas::Objects::Operation::DelveData>);
+    Atlas::Objects::Operation::DELVE_NO = atlas_factories->addFactory("delve", &Atlas::Objects::generic_factory);
 
     i.addChild(atlasOpDefinition("dig", "affect"));
     i.opInstall("dig", OP_OTHER, new OpFactory<Dig>);
-    atlas_factories->addFactory("dig", &Atlas::Objects::factory<Atlas::Objects::Operation::DigData>);
+    Atlas::Objects::Operation::DIG_NO = atlas_factories->addFactory("dig", &Atlas::Objects::generic_factory);
 
     i.addChild(atlasOpDefinition("eat", "action"));
     i.opInstall("eat", OP_EAT, new OpFactory<Eat>);
-    atlas_factories->addFactory("eat", &Atlas::Objects::factory<Atlas::Objects::Operation::EatData>);
+    Atlas::Objects::Operation::EAT_NO = atlas_factories->addFactory("eat", &Atlas::Objects::generic_factory);
 
     i.addChild(atlasOpDefinition("mow", "affect"));
     i.opInstall("mow", OP_OTHER, new OpFactory<Mow>);
-    atlas_factories->addFactory("mow", &Atlas::Objects::factory<Atlas::Objects::Operation::MowData>);
+    Atlas::Objects::Operation::MOW_NO = atlas_factories->addFactory("mow", &Atlas::Objects::generic_factory);
 
     i.addChild(atlasOpDefinition("nourish", "affect"));
     i.opInstall("nourish", OP_NOURISH, new OpFactory<Nourish>);
-    atlas_factories->addFactory("nourish", &Atlas::Objects::factory<Atlas::Objects::Operation::NourishData>);
+    Atlas::Objects::Operation::NOURISH_NO = atlas_factories->addFactory("nourish", &Atlas::Objects::generic_factory);
 
     i.addChild(atlasOpDefinition("setup", "root_operation"));
     i.opInstall("setup", OP_SETUP, new OpFactory<Setup>);
-    atlas_factories->addFactory("setup", &Atlas::Objects::factory<Atlas::Objects::Operation::SetupData>);
+    Atlas::Objects::Operation::SETUP_NO = atlas_factories->addFactory("setup", &Atlas::Objects::generic_factory);
 
     i.addChild(atlasOpDefinition("tick", "root_operation"));
     i.opInstall("tick", OP_TICK, new OpFactory<Tick>);
-    atlas_factories->addFactory("tick", &Atlas::Objects::factory<Atlas::Objects::Operation::TickData>);
+    Atlas::Objects::Operation::TICK_NO = atlas_factories->addFactory("tick", &Atlas::Objects::generic_factory);
 
     i.addChild(atlasOpDefinition("unseen", "perception"));
     i.opInstall("unseen", OP_UNSEEN, new OpFactory<Unseen>);
-    atlas_factories->addFactory("unseen", &Atlas::Objects::factory<Atlas::Objects::Operation::UnseenData>);
+    Atlas::Objects::Operation::UNSEEN_NO = atlas_factories->addFactory("unseen", &Atlas::Objects::generic_factory);
 
     // Custom ops used in scripts which do not need direct support in the
     // core

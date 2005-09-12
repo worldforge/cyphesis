@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2005 Alistair Riddoch
 
+#error This file has been removed from the build
+
 #ifndef COMMON_CUSTOM_OP_IMPL_H
 #define COMMON_CUSTOM_OP_IMPL_H
 

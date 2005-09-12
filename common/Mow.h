@@ -5,20 +5,19 @@
 #ifndef COMMON_MOW_H
 #define COMMON_MOW_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class MowProxy {
+extern int MOW_NO;
+
+class Mow : public Generic
+{
   public:
-    static const std::string name() { return "mow"; }
+    Mow() {
+        (*this)->setType("mow", MOW_NO);
+    }
 };
-
-typedef CustomOpData<SetData, MowProxy> MowData;
-
-typedef SmartPtr<MowData> Mow;
 
 } } }
 

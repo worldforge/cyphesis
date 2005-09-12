@@ -5,20 +5,19 @@
 #ifndef COMMON_DIG_H
 #define COMMON_DIG_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class DigProxy {
+extern int DIG_NO;
+
+class Dig : public Generic
+{
   public:
-    static const std::string name() { return "dig"; }
+    Dig() {
+        (*this)->setType("dig", DIG_NO);
+    }
 };
-
-typedef CustomOpData<SetData, DigProxy> DigData;
-
-typedef SmartPtr<DigData> Dig;
 
 } } }
 

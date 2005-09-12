@@ -5,20 +5,19 @@
 #ifndef COMMON_CUT_H
 #define COMMON_CUT_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class CutProxy {
+extern int CUT_NO;
+
+class Cut : public Generic
+{
   public:
-    static const std::string name() { return "cut"; }
+    Cut() {
+        (*this)->setType("cut", CUT_NO);
+    }
 };
-
-typedef CustomOpData<SetData, CutProxy> CutData;
-
-typedef SmartPtr<CutData> Cut;
 
 } } }
 

@@ -5,20 +5,19 @@
 #ifndef COMMON_BURN_H
 #define COMMON_BURN_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class BurnProxy {
+extern int BURN_NO;
+
+class Burn : public Generic
+{
   public:
-    static const std::string name() { return "burn"; }
+    Burn() {
+        (*this)->setType("burn", BURN_NO);
+    }
 };
-
-typedef CustomOpData<SetData, BurnProxy> BurnData;
-
-typedef SmartPtr<BurnData> Burn;
 
 } } }
 

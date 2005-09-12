@@ -5,20 +5,19 @@
 #ifndef COMMON_CHOP_H
 #define COMMON_CHOP_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class ChopProxy {
+extern int CHOP_NO;
+
+class Chop : public Generic
+{
   public:
-    static const std::string name() { return "chop"; }
+    Chop() {
+        (*this)->setType("chop", CHOP_NO);
+    }
 };
-
-typedef CustomOpData<SetData, ChopProxy> ChopData;
-
-typedef SmartPtr<ChopData> Chop;
 
 } } }
 

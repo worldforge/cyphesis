@@ -5,20 +5,19 @@
 #ifndef COMMON_ADD_H
 #define COMMON_ADD_H
 
-#include "common/CustomOp.h"
-
-#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-class AddProxy {
+extern int ADD_NO;
+
+class Add : public Generic
+{
   public:
-    static const std::string name() { return "add"; }
+    Add() {
+        (*this)->setType("add", ADD_NO);
+    }
 };
-
-typedef CustomOpData<SetData, AddProxy> AddData;
-
-typedef SmartPtr<AddData> Add;
 
 } } }
 
