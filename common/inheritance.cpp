@@ -2,7 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000-2004 Alistair Riddoch
 
-#include "inheritance_impl.h"
+#include "inheritance.h"
 
 #include "log.h"
 
@@ -80,13 +80,6 @@ Inheritance::Inheritance() : noClass(0)
 void Inheritance::flush()
 {
     atlasObjects.clear();
-
-    OpFactoryDict::const_iterator J = opFactories.begin();
-    OpFactoryDict::const_iterator Jend = opFactories.end();
-    for (; J != Jend; ++J) {
-        delete J->second;
-    }
-    opFactories.clear();
 }
 
 Inheritance & Inheritance::instance()
@@ -174,25 +167,6 @@ int Inheritance::addChild(const Atlas::Objects::Root & obj)
     return 0;
 }
 
-Operation Inheritance::newOperation(const std::string & op_type)
-{
-    OpFactoryDict::const_iterator I = opFactories.find(op_type);
-    if (I == opFactories.end()) {
-        return NULL;
-    }
-    return I->second->newOperation();
-}
-
-int Inheritance::newOperation(const std::string & op_type, Operation & ret) const
-{
-    OpFactoryDict::const_iterator I = opFactories.find(op_type);
-    if (I == opFactories.end()) {
-        return -1;
-    }
-    I->second->newOperation(ret);
-    return 0;
-}
-
 bool Inheritance::isTypeOf(const std::string & instance,
                            const std::string & type) const
 {
@@ -230,84 +204,64 @@ using Atlas::Objects::Entity::AdminEntity;
 using Atlas::Objects::Entity::Game;
 using Atlas::Objects::Entity::GameEntity;
 
-OpFactoryBase::~OpFactoryBase()
-{
-}
-
-GenericOpFactory::GenericOpFactory(const std::string &opType) : m_opType(opType)
-{
-}
-
-Operation GenericOpFactory::newOperation()
-{
-    Root obj = Atlas::Objects::Factories::instance()->createObject(m_opType);
-    return Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
-}
-
-void GenericOpFactory::newOperation(Operation & ret)
-{
-    Root obj = Atlas::Objects::Factories::instance()->createObject(m_opType);
-    ret = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
-}
-
 void installStandardObjects()
 {
     Inheritance & i = Inheritance::instance();
 
     i.addChild(atlasOpDefinition("root_operation", "root"));
     i.addChild(atlasOpDefinition("action", "root_operation"));
-    i.opInstall("action", OP_ACTION, new OpFactory<Action>);
+    i.opInstall("action", OP_ACTION);
     i.addChild(atlasOpDefinition("create", "action"));
-    i.opInstall("create", OP_CREATE, new OpFactory<Create>);
+    i.opInstall("create", OP_CREATE);
     i.addChild(atlasOpDefinition("delete", "action"));
-    i.opInstall("delete", OP_DELETE, new OpFactory<Delete>);
+    i.opInstall("delete", OP_DELETE);
     i.addChild(atlasOpDefinition("info", "root_operation"));
-    i.opInstall("info", OP_INFO, new OpFactory<Info>);
+    i.opInstall("info", OP_INFO);
     i.addChild(atlasOpDefinition("set", "action"));
-    i.opInstall("set", OP_SET, new OpFactory<Set>);
+    i.opInstall("set", OP_SET);
     i.addChild(atlasOpDefinition("get", "action"));
-    i.opInstall("get", OP_GET, new OpFactory<Get>);
+    i.opInstall("get", OP_GET);
     i.addChild(atlasOpDefinition("perception", "info"));
     i.addChild(atlasOpDefinition("error", "info"));
-    i.opInstall("error", OP_ERROR, new OpFactory<Error>);
+    i.opInstall("error", OP_ERROR);
     i.addChild(atlasOpDefinition("combine", "create"));
-    i.opInstall("combine", OP_COMBINE, new OpFactory<Combine>);
+    i.opInstall("combine", OP_COMBINE);
     i.addChild(atlasOpDefinition("divide", "create"));
-    i.opInstall("divide", OP_DIVIDE, new OpFactory<Divide>);
+    i.opInstall("divide", OP_DIVIDE);
     i.addChild(atlasOpDefinition("communicate", "create"));
     i.addChild(atlasOpDefinition("move", "set"));
-    i.opInstall("move", OP_MOVE, new OpFactory<Move>);
+    i.opInstall("move", OP_MOVE);
     i.addChild(atlasOpDefinition("affect", "set"));
-    i.opInstall("affect", OP_MOVE, new OpFactory<Affect>);
+    i.opInstall("affect", OP_MOVE);
     i.addChild(atlasOpDefinition("perceive", "get"));
     i.addChild(atlasOpDefinition("login", "get"));
-    i.opInstall("login", OP_LOGIN, new OpFactory<Login>);
+    i.opInstall("login", OP_LOGIN);
     i.addChild(atlasOpDefinition("logout", "login"));
-    i.opInstall("logout", OP_LOGOUT, new OpFactory<Logout>);
+    i.opInstall("logout", OP_LOGOUT);
     i.addChild(atlasOpDefinition("sight", "perception"));
-    i.opInstall("sight", OP_SIGHT, new OpFactory<Sight>);
+    i.opInstall("sight", OP_SIGHT);
     i.addChild(atlasOpDefinition("sound", "perception"));
-    i.opInstall("sound", OP_SOUND, new OpFactory<Sound>);
+    i.opInstall("sound", OP_SOUND);
     i.addChild(atlasOpDefinition("smell", "perception"));
     i.addChild(atlasOpDefinition("feel", "perception"));
     i.addChild(atlasOpDefinition("imaginary", "action"));
-    i.opInstall("imaginary", OP_IMAGINARY, new OpFactory<Imaginary>);
+    i.opInstall("imaginary", OP_IMAGINARY);
     i.addChild(atlasOpDefinition("talk", "communicate"));
-    i.opInstall("talk", OP_TALK, new OpFactory<Talk>);
+    i.opInstall("talk", OP_TALK);
     i.addChild(atlasOpDefinition("look", "perceive"));
-    i.opInstall("look", OP_LOOK, new OpFactory<Look>);
+    i.opInstall("look", OP_LOOK);
     i.addChild(atlasOpDefinition("listen", "perceive"));
     i.addChild(atlasOpDefinition("sniff", "perceive"));
     i.addChild(atlasOpDefinition("touch", "perceive"));
-    i.opInstall("touch", OP_TOUCH, new OpFactory<Touch>);
+    i.opInstall("touch", OP_TOUCH);
     i.addChild(atlasOpDefinition("appearance", "sight"));
-    i.opInstall("appearance", OP_APPEARANCE, new OpFactory<Appearance>);
+    i.opInstall("appearance", OP_APPEARANCE);
     i.addChild(atlasOpDefinition("disappearance", "sight"));
-    i.opInstall("disappearance", OP_DISAPPEARANCE, new OpFactory<Disappearance>);
+    i.opInstall("disappearance", OP_DISAPPEARANCE);
     i.addChild(atlasOpDefinition("use", "action"));
-    i.opInstall("use", OP_USE, new OpFactory<Use>);
+    i.opInstall("use", OP_USE);
     i.addChild(atlasOpDefinition("wield", "set"));
-    i.opInstall("wield", OP_WIELD, new OpFactory<Wield>);
+    i.opInstall("wield", OP_WIELD);
 
 
 

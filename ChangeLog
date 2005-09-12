@@ -1,5 +1,15 @@
 2005-09-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/inheritance_impl.h, common/inheritance.h,
+	  common/inheritance.cpp, common/custom.cpp: Get rid of the op
+	  factory feature of inheritance, as its not required.
+
+	* server/EntityFactory.cpp: Register op types defined in the
+	  data into the Atlas factory rather than the old inheritance
+	  factory mechanism.
+
+2005-09-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/custom.cpp, rulesets/Character.cpp: Ensure all custom op
 	  types are registered with the Atlas factories, and switch
 	  to using it for tool operations.

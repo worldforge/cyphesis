@@ -16,41 +16,6 @@ void installStandardObjects();
 void installCustomOperations();
 void installCustomEntities();
 
-/// \brief Base class for factories to create Operation instances
-class OpFactoryBase {
-  public:
-    virtual ~OpFactoryBase();
-
-    /// \brief Create a new operation using this factory on the heap
-    virtual Operation newOperation() = 0;
-    /// \brief Create a new operation using this factory
-    ///
-    /// @param o Operation structure used to store the new operation
-    virtual void newOperation(Operation & o) = 0;
-};
-
-/// \brief Class template for factories to create Operation instances of
-/// the given Operation class.
-template <class OpClass>
-class OpFactory : public OpFactoryBase {
-  public:
-    virtual Operation newOperation();
-    virtual void newOperation(Operation &);
-};
-
-/// \brief Class for factories to create Operation instance with no hard coded
-/// class using the Generic Operation class.
-class GenericOpFactory : public OpFactoryBase {
-  private:
-    std::string m_opType;
-  public:
-    explicit GenericOpFactory(const std::string & opType);
-
-    virtual Operation newOperation();
-    virtual void newOperation(Operation &);
-};
-
-typedef std::map<std::string, OpFactoryBase *> OpFactoryDict;
 typedef std::map<std::string, Atlas::Objects::Root> RootDict;
 
 /// \brief Class to manage the inheritance tree for in-game entity types
@@ -59,7 +24,6 @@ class Inheritance {
     const Atlas::Objects::Root noClass;
     RootDict atlasObjects;
     OpNoDict opLookup;
-    OpFactoryDict opFactories;
 
     static Inheritance * m_instance;
 
@@ -70,9 +34,8 @@ class Inheritance {
     static Inheritance & instance();
     static void clear();
 
-    void opInstall(const std::string & op, OpNo no, OpFactoryBase * f) {
+    void opInstall(const std::string & op, OpNo no) {
         opLookup[op] = no;
-        opFactories[op] = f;
     }
 
     OpNo opEnumerate(const std::string & parent) const;

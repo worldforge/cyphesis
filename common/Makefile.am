@@ -26,8 +26,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      terrain_utils.cpp terrain_utils.h \
 		      system.cpp system.h \
 		      serialno.cpp serialno.h refno.h \
-		      inheritance.cpp custom.cpp \
-		      inheritance_impl.h inheritance.h \
+		      inheritance.cpp custom.cpp inheritance.h \
 		      Property.cpp Property_impl.h Property.h \
 		      BaseEntity.cpp BaseEntity.h \
 		      OOGThing.cpp OOGThing.h \

@@ -259,8 +259,6 @@ int EntityFactory::installOpDefinition(const std::string & opDefName,
                                        const std::string & parent,
                                        const MapType & opDefDesc)
 {
-#warning I can't currently think of a way to make this work, so Atlas-C++
-#warning may need to be re-worked a little until there is a way
     Inheritance & i = Inheritance::instance();
 
     if (i.hasClass(parent)) {
@@ -276,7 +274,8 @@ int EntityFactory::installOpDefinition(const std::string & opDefName,
         return -1;
     }
 
-    i.opInstall(opDefName, OP_OTHER, new GenericOpFactory(opDefName));
+    i.opInstall(opDefName, OP_OTHER);
+    Atlas::Objects::Factories::instance()->addFactory(opDefName, &Atlas::Objects::generic_factory);
 
     return 0;
 }

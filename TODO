@@ -1,3 +1,5 @@
+Move the bottom section of custom ops into the XML file. Pointless currently.
+
 Re-write python code so it no longer expects operation to and from_ to be 
 entities, but expects IDs instead.
 
