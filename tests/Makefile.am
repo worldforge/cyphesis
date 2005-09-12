@@ -1,5 +1,5 @@
 COMMON_TESTS = logtest inheritancetest Propertytest BaseEntitytest \
-               OOGThingtest systemtest utilitytest type_utilstest \
+               OOGThingtest systemtest type_utilstest \
                consttest randomtest
 
 PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
@@ -67,9 +67,6 @@ systemtest_LDADD = $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/common/log.o \
                    $(top_builddir)/common/prefix.o \
                    $(top_builddir)/common/globals.o
-
-utilitytest_SOURCES = utilitytest.cpp
-utilitytest_LDADD = $(top_builddir)/common/utility.o
 
 type_utilstest_SOURCES = type_utilstest.cpp
 
@@ -369,7 +366,6 @@ Charactertest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                       $(top_builddir)/common/operations.o \
                       $(top_builddir)/common/OOGThing.o \
                       $(top_builddir)/common/BaseWorld.o \
-                      $(top_builddir)/common/utility.o \
                       $(top_builddir)/common/const.o \
                       $(MATH_LIBS)
 Charactertest_LDFLAGS = -export-dynamic
@@ -392,7 +388,6 @@ Creatortest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                     $(top_builddir)/common/operations.o \
                     $(top_builddir)/common/OOGThing.o \
                     $(top_builddir)/common/BaseWorld.o \
-                    $(top_builddir)/common/utility.o \
                     $(top_builddir)/common/const.o \
                     $(MATH_LIBS)
 Creatortest_LDFLAGS = -export-dynamic
@@ -418,7 +413,6 @@ Tasktest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/common/operations.o \
                  $(top_builddir)/common/OOGThing.o \
                  $(top_builddir)/common/BaseWorld.o \
-                 $(top_builddir)/common/utility.o \
                  $(top_builddir)/common/const.o \
                  $(MATH_LIBS)
 Tasktest_LDFLAGS = -export-dynamic

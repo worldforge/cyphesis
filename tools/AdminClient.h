@@ -8,9 +8,8 @@
 #include "common/const.h"
 #include "common/globals.h"
 
-#include "common/utility.h"
-
 #include <Atlas/Objects/Decoder.h>
+#include <Atlas/Objects/ObjectsFwd.h>
 
 #include <varconf/Config.h>
 

@@ -2,13 +2,14 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000-2004 Alistair Riddoch
 
+#error This file has been removed from the build
+
 #include "utility.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
 
-using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;

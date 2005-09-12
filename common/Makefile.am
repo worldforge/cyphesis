@@ -17,12 +17,11 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      id.cpp id.h \
 		      log.cpp log.h \
 		      debug.h random.h nls.h \
-		      compose.h \
+		      compose.hpp \
 		      types.h type_utils.h op_switch.h \
-		      operations.cpp operations.h \
+		      operations.cpp \
 		      globals.cpp globals.h \
 		      Database.cpp Database.h \
-		      utility.cpp utility.h \
 		      terrain_utils.cpp terrain_utils.h \
 		      system.cpp system.h \
 		      serialno.cpp serialno.h refno.h \

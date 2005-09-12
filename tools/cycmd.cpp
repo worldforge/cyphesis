@@ -19,7 +19,6 @@
 
 #include <varconf/Config.h>
 
-#include "common/utility.h"
 #include "common/Monitor.h"
 #include "common/Connect.h"
 

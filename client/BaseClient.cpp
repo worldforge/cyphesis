@@ -13,7 +13,6 @@
 #include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Create;

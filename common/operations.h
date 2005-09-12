@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000-2004 Alistair Riddoch
 
+#error This file has been removed from the build
+
 #ifndef COMMON_OPERATIONS_H
 #define COMMON_OPERATIONS_H
 

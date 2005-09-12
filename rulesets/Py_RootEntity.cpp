@@ -9,8 +9,6 @@
 #include "common/compose.hpp"
 
 using Atlas::Message::Element;
-using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 

@@ -11,7 +11,6 @@
 #include <Atlas/Objects/Entity.h>
 
 using Atlas::Message::Element;
-using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
 using Atlas::Objects::Root;

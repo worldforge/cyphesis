@@ -13,9 +13,7 @@
 #include <string>
 #include <fstream>
 
-using Atlas::Message::Element;
 using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 
 class FileDecoder : public Atlas::Message::DecoderBase
 {

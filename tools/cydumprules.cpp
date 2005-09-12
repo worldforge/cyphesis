@@ -18,7 +18,6 @@
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 
 class RuleReader {
   protected:

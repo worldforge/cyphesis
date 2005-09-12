@@ -13,7 +13,6 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Entity::Anonymous;

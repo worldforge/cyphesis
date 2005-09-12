@@ -6,8 +6,6 @@
 
 #include <Atlas/Objects/Operation/Info.h>
 
-using Atlas::Message::Element;
-
 ClientAccount::ClientAccount(const std::string & name, ClientConnection & con) :
     connection(con)
 {

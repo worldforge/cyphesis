@@ -17,9 +17,6 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
-using Atlas::Message::Element;
-using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Entity::Anonymous;

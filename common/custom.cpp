@@ -19,7 +19,6 @@
 
 #include <Atlas/Objects/Entity.h>
 
-using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::AdminEntity;
 using Atlas::Objects::Operation::Add;

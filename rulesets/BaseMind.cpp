@@ -7,7 +7,6 @@
 #include "Script.h"
 
 #include "common/log.h"
-#include "common/utility.h"
 #include "common/debug.h"
 #include "common/op_switch.h"
 #include "common/inheritance.h"
@@ -20,8 +19,6 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/RootEntity.h>
 
-using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 

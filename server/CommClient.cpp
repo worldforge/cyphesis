@@ -8,7 +8,6 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/utility.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Encoder.h>
@@ -18,8 +17,6 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-
-using Atlas::Message::MapType;
 
 static const bool debug_flag = false;
 

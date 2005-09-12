@@ -27,8 +27,6 @@
 #include <algorithm>
 
 using Atlas::Message::Element;
-using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Entity::RootEntity;
 

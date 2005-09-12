@@ -33,8 +33,6 @@
 #include <cassert>
 
 using Atlas::Message::Element;
-using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Entity::Anonymous;

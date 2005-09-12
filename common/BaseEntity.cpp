@@ -17,7 +17,6 @@
 #include <iostream>
 
 using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Entity::RootEntity;

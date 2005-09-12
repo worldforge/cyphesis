@@ -70,7 +70,6 @@ cycmd_LDADD = $(top_builddir)/modules/DateTime.o \
               $(top_builddir)/common/globals.o \
               $(top_builddir)/common/prefix.o \
               $(top_builddir)/common/log.o \
-              $(top_builddir)/common/utility.o \
               $(top_builddir)/common/const.o \
               $(READLINETOOL_LIBS) \
               $(NETWORKTOOL_LIBS) \

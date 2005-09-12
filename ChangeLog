@@ -1,5 +1,31 @@
 2005-09-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Increment version to development 0.5.x series.
+
+	* aiclient/ClientAccount.cpp, client/BaseClient.cpp,
+	  client/ClientConnection.cpp, common/BaseEntity.cpp,
+	  common/Database.cpp, common/custom.cpp, common/inheritance.cpp,
+	  common/operations.h, rulesets/BaseMind.cpp, rulesets/Creator.cpp,
+	  rulesets/Food.cpp, rulesets/MemMap.cpp, rulesets/Pedestrian.cpp,
+	  rulesets/Py_Operation.cpp, rulesets/Py_RootEntity.cpp,
+	  rulesets/Python_API.cpp, rulesets/Stackable.cpp, rulesets/Thing.cpp,
+	  rulesets/World.cpp, server/CommClient.cpp, server/Connection.cpp,
+	  server/WorldRouter.cpp, tests/inheritancetest.cpp,
+	  tools/AdminClient.h, tools/cyaddrules.cpp,
+	  tools/cycmd.cpp, tools/cydumprules.cpp,
+	  tools/cyloadrules.cpp, tools/cypasswd.cpp:
+	  Remove unnecessary using directives.
+
+	* common/utility.cpp, common/utility.h,
+	  rulesets/BaseMind.cpp, rulesets/Py_Operation.cpp,
+	  server/CommClient.cpp, tools/AdminClient.h, tools/cycmd.cpp:
+	  Remove obsolete utility function from the build.
+
+	* common/operations.h: Remove unused obsolete header from the
+	  build.
+
+2005-09-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/inheritance.h, tests/inheritancetest.cpp: Remove the
 	  newOperation declarations from the header, and removes their
 	  tests.

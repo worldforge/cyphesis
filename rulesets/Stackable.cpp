@@ -15,8 +15,6 @@
 #include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Message::Element;
-using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Delete;

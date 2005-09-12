@@ -25,9 +25,7 @@
 // TODO: Make sure the rest of the Object is preserved, rather than just
 //       blatting it with a new Object.
 
-using Atlas::Message::Element;
 using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 
 #define ADD 0
 #define SET 1

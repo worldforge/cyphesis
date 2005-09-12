@@ -33,7 +33,6 @@
 
 static const bool debug_flag = false;
 
-using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 using Atlas::Objects::Root;

@@ -18,7 +18,6 @@ static const bool debug_flag = false;
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
