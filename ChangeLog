@@ -1,5 +1,9 @@
 2005-09-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Makefile.am: Fix some missing headers.
+
+2005-09-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Increment version to development 0.5.x series.
 
 	* aiclient/ClientAccount.cpp, client/BaseClient.cpp,
