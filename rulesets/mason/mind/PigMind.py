@@ -9,7 +9,7 @@ sowee_pattern = re.compile("[Ss]owee")
 
 class PigMind(NPCMind):
     def touch_operation(self, op):
-        distance=distance_to(op.from_.location, self.location)
+        distance=distance_to(self.map.get(op.from_).location, self.location)
         destination=Location()
         destination.velocity=distance.unit_vector()
         return Operation("move", Entity(self.id, location=destination))

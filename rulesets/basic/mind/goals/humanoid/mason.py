@@ -56,7 +56,7 @@ class help(Goal):
             ent=Entity(say=message, responses=self.responses)
         else:
             ent=Entity(say=message)
-        return Operation("talk", ent) + me.face(self.target)
+        return Operation("talk", ent) + me.face(me.map.get(self.target))
 
 class add_help(add_unique_goal):
     def __init__(self, messages, responses=[], desc="help people out"):

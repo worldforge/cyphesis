@@ -94,7 +94,7 @@ int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
             fromStdVector(m_pos, ent->getPos());
         }
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-            fromStdVector(m_pos, ent->getVelocity());
+            fromStdVector(m_velocity, ent->getVelocity());
         }
         Atlas::Message::Element orientation;
         if (ent->copyAttr("orientation", orientation) == 0) {

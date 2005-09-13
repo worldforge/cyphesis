@@ -1,5 +1,16 @@
 2005-09-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.cpp: Fix a bug where POS was being corrupted
+	  whenever velocity was supposed to be set.
+
+	* rulesets/basic/mind/goals/humanoid/mason.py: Convert ID to entity
+	  before checking location.
+
+	* rulesets/mason/mind/PigMind.py: Convert ID to entity before
+	  passing location to another function.
+
+2005-09-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Report error when database connection fails.
 
 2005-09-12  Al Riddoch  <alriddoch@zepler.org>
