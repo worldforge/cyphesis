@@ -556,7 +556,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         // FIXME Thing hard about how this error is reported. Would the error
         // make it back to the client if we made an error response?
         return;
-    } else if (target->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+    } else if (!target->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         debug(std::cout << "No target" << std::endl << std::flush;);
     } else {
         rop->setArgs1(target);

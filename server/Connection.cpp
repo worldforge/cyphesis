@@ -23,6 +23,7 @@
 #include "common/inheritance.h"
 #include "common/system.h"
 #include "common/Database.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -406,10 +407,7 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
         debug(std::cout << "Get got for " << id << std::endl << std::flush;);
         Atlas::Objects::Root o = Inheritance::instance().getClass(id);
         if (!o.isValid()) {
-            std::string msg("Unknown type definition for \"");
-            msg += id;
-            msg += "\" requested";
-            error(op, msg.c_str(), res);
+            error(op, String::compose("Unknown type definition for \"%1\" requested", id).c_str(), res);
             return;
         }
         info->setArgs1(o);

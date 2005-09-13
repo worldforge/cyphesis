@@ -14,7 +14,7 @@
 #include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <cassert>
 
@@ -24,7 +24,7 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Entity::RootEntity;
-using Atlas::Objects::Factories;
+using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Objects::smart_dynamic_cast;
 
@@ -333,9 +333,9 @@ void Entity::CreateOperation(const Operation & op, OpVector & res)
 
         Operation c(op.copy());
 
-        MapType new_obj;
-        obj->addToMessage(new_obj);
-        c->setArgs1(Factories::instance()->createObject(new_obj));
+        Anonymous new_ent;
+        obj->addToEntity(new_ent);
+        c->setArgs1(new_ent);
 
         Sight s;
         s->setArgs1(c);
@@ -411,9 +411,9 @@ void Entity::LookOperation(const Operation & op, OpVector & res)
 
     Sight s;
 
-    MapType new_obj;
-    addToMessage(new_obj);
-    s->setArgs1(Factories::instance()->createObject(new_obj));
+    Anonymous new_ent;
+    addToEntity(new_ent);
+    s->setArgs1(new_ent);
 
     s->setTo(op->getFrom());
 

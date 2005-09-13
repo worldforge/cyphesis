@@ -1,3 +1,22 @@
+2005-09-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/ClientConnection.cpp: Improve error reporting when
+	  unexpected object arrives from server.
+
+	* rulesets/Character.cpp: Invert test so that tool use op arguments
+	  are now set correctly.
+
+	* rulesets/Entity.cpp: Use proper entities to handle responses to
+	  Create and Look ops.
+
+	* server/Connection.cpp, server/EntityFactory.cpp: Improve error
+	  reporting using String::compose.
+
+	* server/EntityFactory.cpp: Invert test so that all custom ops
+	  now don't fail to get installed. Ensure that custom ops that
+	  need to wait for their parent a properly inserted into the
+	  waiting queue.
+
 2005-09-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* modules/Location.cpp: Fix a bug where POS was being corrupted

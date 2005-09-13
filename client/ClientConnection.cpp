@@ -7,6 +7,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Net/Stream.h>
@@ -62,7 +63,7 @@ void ClientConnection::objectArrived(const Atlas::Objects::Root & obj)
     RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
     if (!op.isValid()) {
         // FIXME report the parents and objtype
-        log(ERROR, "Non op object received from server.");
+        log(ERROR, String::compose("Non op object of type %1 received from server.", obj->getParents().front()).c_str());
         return;
     }
     debug(std::cout << "A " << op->getParents().front() << " op from server!" << std::endl << std::flush;);

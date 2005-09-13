@@ -33,6 +33,7 @@
 #include "common/inheritance.h"
 #include "common/AtlasFileLoader.h"
 #include "common/random.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Entity.h>
@@ -261,10 +262,11 @@ int EntityFactory::installOpDefinition(const std::string & opDefName,
 {
     Inheritance & i = Inheritance::instance();
 
-    if (i.hasClass(parent)) {
+    if (!i.hasClass(parent)) {
         debug(std::cout << "op_definition \"" << opDefName
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
+        m_waitingRules.insert(make_pair(parent, make_pair(opDefName, opDefDesc)));
         return 1;
     }
 
@@ -419,10 +421,7 @@ void EntityFactory::installRules()
     RuleWaitList::const_iterator Jend = m_waitingRules.end();
     for (; J != Jend; ++J) {
         const std::string & wParentName = J->first;
-        std::string msg = std::string("Rule \"") + J->first
-                          + "\" with parent \"" + wParentName
-                          + "\" is an orphan.";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Rule \"%1\" with parent \"%2\" is an orphan", J->second.first, wParentName).c_str());
     }
 }
 
