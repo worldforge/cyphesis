@@ -8,8 +8,7 @@
 #include "debug.h"
 #include "globals.h"
 
-#include <Atlas/Message/MEncoder.h>
-#include <Atlas/Message/Element.h>
+#include <Atlas/Message/Encoder.h>
 #include <Atlas/Codecs/XML.h>
 
 #include <varconf/Config.h>
@@ -114,8 +113,14 @@ int Database::initConnection(bool createDatabase)
 
     m_connection = PQconnectdb(cinfo.c_str());
 
-    if ((m_connection == NULL) || (PQstatus(m_connection) != CONNECTION_OK)) {
-        log(ERROR, "Database connection failed");
+    if (m_connection == NULL) {
+        log(ERROR, "Database connection failed with unknown error");
+        return -1;
+    }
+
+    if (PQstatus(m_connection) != CONNECTION_OK) {
+        log(ERROR, "Connection to database failed:");
+        log(ERROR, PQerrorMessage(m_connection));
         return -1;
     }
 
@@ -180,8 +185,8 @@ bool Database::decodeObject(const std::string & data,
 
     std::stringstream str(data, std::ios::in);
 
-    Serialiser codec(str, m_d);
-    Atlas::Message::Encoder enc(codec);
+    Serialiser codec(str, &m_d);
+    Atlas::Message::Encoder enc(&codec);
 
     // Clear the decoder
     m_d.get();
@@ -202,11 +207,11 @@ bool Database::encodeObject(const MapType & o,
 {
     std::stringstream str;
 
-    Serialiser codec(str, m_d);
-    Atlas::Message::Encoder enc(codec);
+    Serialiser codec(str, &m_d);
+    Atlas::Message::Encoder enc(&codec);
 
     codec.streamBegin();
-    enc.streamMessageElement(o);
+    enc.streamMessage(o);
     codec.streamEnd();
 
     data = str.str();
@@ -266,11 +271,11 @@ bool Database::putObject(const std::string & table,
                     << std::endl << std::flush;);
     std::stringstream str;
 
-    Serialiser codec(str, m_d);
-    Atlas::Message::Encoder enc(codec);
+    Serialiser codec(str, &m_d);
+    Atlas::Message::Encoder enc(&codec);
 
     codec.streamBegin();
-    enc.streamMessageElement(o);
+    enc.streamMessage(o);
     codec.streamEnd();
 
     debug(std::cout << "Encoded to: " << str.str().c_str() << " "
@@ -295,11 +300,11 @@ bool Database::updateObject(const std::string & table,
                     << std::endl << std::flush;);
     std::stringstream str;
 
-    Serialiser codec(str, m_d);
-    Atlas::Message::Encoder enc(codec);
+    Serialiser codec(str, &m_d);
+    Atlas::Message::Encoder enc(&codec);
 
     codec.streamBegin();
-    enc.streamMessageElement(o);
+    enc.streamMessage(o);
     codec.streamEnd();
 
     std::string query = std::string("UPDATE ") + table + " SET contents = '" +
@@ -639,7 +644,7 @@ bool Database::registerSimpleTable(const std::string & name,
         const Element & type = I->second;
         if (type.isString()) {
             query += " LIKE 'foo'";
-            int size = type.String().size();
+            int size = type.asString().size();
             if (size == 0) {
                 createquery += " text";
             } else {
@@ -863,7 +868,7 @@ bool Database::registerEntityTable(const std::string & classname,
         const Element & type = I->second;
         if (type.isString()) {
             query += " LIKE 'foo'";
-            int size = type.String().size();
+            int size = type.asString().size();
             if (size == 0) {
                 createquery += " text";
             } else {
@@ -1113,7 +1118,7 @@ bool Database::registerArrayTable(const std::string & name,
 
         if (type.isString()) {
             query += " LIKE 'foo'";
-            int size = type.String().size();
+            int size = type.asString().size();
             if (size == 0) {
                 createquery += " text";
             } else {
@@ -1211,13 +1216,13 @@ bool Database::createArrayRow(const std::string & name,
         const Element & e = I->second;
         switch (e.getType()) {
           case Element::TYPE_INT:
-            query << ", " << e.Int();
+            query << ", " << e.asInt();
             break;
           case Element::TYPE_FLOAT:
-            query << ", " << e.Float();
+            query << ", " << e.asFloat();
             break;
           case Element::TYPE_STRING:
-            query << ", " << e.String();
+            query << ", " << e.asString();
             break;
           default:
             log(ERROR, "Bad type constructing array database row for insert");
@@ -1252,13 +1257,13 @@ bool Database::updateArrayRow(const std::string & name,
         const Element & e = I->second;
         switch (e.getType()) {
           case Element::TYPE_INT:
-            query << e.Int();
+            query << e.asInt();
             break;
           case Element::TYPE_FLOAT:
-            query << e.Float();
+            query << e.asFloat();
             break;
           case Element::TYPE_STRING:
-            query << "'" << e.String() << "'";
+            query << "'" << e.asString() << "'";
             break;
           default:
             log(ERROR, "Bad type constructing array database row for update");
