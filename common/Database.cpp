@@ -7,6 +7,7 @@
 #include "log.h"
 #include "debug.h"
 #include "globals.h"
+#include "compose.hpp"
 
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/Element.h>
@@ -113,8 +114,13 @@ int Database::initConnection(bool createDatabase)
 
     m_connection = PQconnectdb(cinfo.c_str());
 
-    if ((m_connection == NULL) || (PQstatus(m_connection) != CONNECTION_OK)) {
-        log(ERROR, "Database connection failed");
+    if (m_connection == NULL) {
+        log(ERROR, "Database connection failed with unknown error");
+        return -1;
+    }
+
+    if (PQstatus(m_connection) != CONNECTION_OK) {
+        log(ERROR, String::compose("Connection to database failed: \"%1\"", PQerrorMessage(m_connection)).c_str());
         return -1;
     }
 

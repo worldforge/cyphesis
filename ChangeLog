@@ -1,3 +1,7 @@
+2005-09-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Report error when database connection fails.
+
 2005-09-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Makefile.am: Fix some missing headers.
