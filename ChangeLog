@@ -1,3 +1,8 @@
+2005-09-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp: Ensure that custom ops that need to wait
+	  for their parent a properly inserted into the waiting queue.
+
 2005-09-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp: Report error when database connection fails.

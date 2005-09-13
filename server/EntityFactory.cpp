@@ -34,8 +34,8 @@
 #include "common/random.h"
 
 #include <Atlas/Message/Element.h>
-#include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/Entity/GameEntity.h>
+#include <Atlas/Objects/Operation/RootOperation.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -159,10 +159,10 @@ void EntityFactory::populateFactory(const std::string & className,
         const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
-            const std::string & scriptName = J->second.String();
+            const std::string & scriptName = J->second.asString();
             J = script.find("language");
             if ((J != script.end()) && (J->second.isString())) {
-                const std::string & scriptLanguage = J->second.String();
+                const std::string & scriptLanguage = J->second.asString();
                 if (factory->m_scriptFactory != 0) {
                     if (factory->m_scriptFactory->package() != scriptName) {
                         delete factory->m_scriptFactory;
@@ -187,11 +187,11 @@ void EntityFactory::populateFactory(const std::string & className,
         const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
-            const std::string & mindType = J->second.String();
+            const std::string mindType = J->second.asString();
             // language is unused. might need it one day
             // J = script.find("language");
             // if ((J != script.end()) && (J->second.isString())) {
-                // const std::string & mindLang = J->second.String();
+                // const std::string & mindLang = J->second.asString();
             // }
             MindFactory::instance()->addMindType(className, mindType);
         }
@@ -251,18 +251,19 @@ int EntityFactory::installOpDefinition(const std::string & opDefName,
                                        const std::string & parent,
                                        const MapType & opDefDesc)
 {
-#warning I can't currently think of a way to make this work, so Atlas-C++
-#warning may need to be re-worked a little until there is a way
     Inheritance & i = Inheritance::instance();
 
-    if (i.hasClass(parent)) {
+    if (i.get(parent) == 0) {
         debug(std::cout << "op_definition \"" << opDefName
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
+        m_waitingRules.insert(make_pair(parent, make_pair(opDefName, opDefDesc)));
         return 1;
     }
 
-    Atlas::Objects::Root r = atlasOpDefinition(opDefName, parent);
+    Atlas::Objects::Root * r = new Atlas::Objects::Operation::RootOperation(Atlas::Objects::Operation::RootOperation::Class());
+    r->setId(opDefName);
+    r->setParents(ListType(1, parent));
 
     if (i.addChild(r) != 0) {
         return -1;
@@ -284,7 +285,7 @@ int EntityFactory::installRule(const std::string & className,
         log(ERROR, msg.c_str());
         return -1;
     }
-    const std::string & objtype = J->second.String();
+    const std::string & objtype = J->second.asString();
     J = classDesc.find("parents");
     if (J == Jend) {
         std::string msg = std::string("Rule \"") + className 
@@ -306,13 +307,13 @@ int EntityFactory::installRule(const std::string & className,
         return -1;
     }
     const Element & p1 = parents.front();
-    if (!p1.isString() || p1.String().empty()) {
+    if (!p1.isString() || p1.asString().empty()) {
         std::string msg = std::string("Rule \"") + className 
                           + "\" has malformed first parent. Skipping.";
         log(ERROR, msg.c_str());
         return -1;
     }
-    const std::string & parent = p1.String();
+    const std::string & parent = p1.asString();
     if (objtype == "class") {
         int ret = installEntityClass(className, parent, classDesc);
         if (ret != 0) {
@@ -429,7 +430,10 @@ void EntityFactory::installFactory(const std::string & parent,
 
     Inheritance & i = Inheritance::instance();
 
-    i.addChild(atlasClass(className, parent));
+    Atlas::Objects::Root * r = new Atlas::Objects::Entity::GameEntity(Atlas::Objects::Entity::GameEntity::Class());
+    r->setId(className);
+    r->setParents(ListType(1, parent));
+    i.addChild(r);
 }
 
 FactoryBase * EntityFactory::getNewFactory(const std::string & parent)
