@@ -142,21 +142,16 @@ void Connection::disconnect()
     m_commClient.disconnect();
 }
 
-bool Connection::verifyCredentials(const Account & account,
-                                   const Root & creds) const
+int Connection::verifyCredentials(const Account & account,
+                                  const Root & creds) const
 {
     Element passwd_attr;
     if (creds->copyAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
-        return false;
+        return -1;
     }
     const std::string & passwd = passwd_attr.String();
 
-    std::string hash;
-    encrypt_password(passwd, hash);
-    if (hash != account.m_password) {
-        return false;
-    }
-    return true;
+    return check_password(passwd, account.m_password);
 }
 
 void Connection::operation(const Operation & op, OpVector & res)
@@ -250,7 +245,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
             m_server.addAccount(player);
         }
     }
-    if ((player == 0) || !verifyCredentials(*player, arg)) {
+    if (player == 0 || verifyCredentials(*player, arg) != 0) {
         error(op, "Login is invalid", res);
         return;
     }

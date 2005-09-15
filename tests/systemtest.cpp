@@ -5,6 +5,8 @@
 #include "common/globals.h"
 #include "common/system.h"
 
+#include <iostream>
+
 #include <cassert>
 
 #include <sys/types.h>
@@ -80,13 +82,18 @@ int main()
         return 0;
     }
 
-    std::string test_password("test_password");
+    const std::string test_password("test_password");
     std::string test_hash;
 
     encrypt_password(test_password, test_hash);
 
     assert(!test_hash.empty());
     assert(test_hash != test_password);
+
+    assert(check_password(test_password, test_hash) == 0);
+    assert(check_password(test_password, "61CEE1BB10EF20ED9D7B5D44D7D3CF56") == 0);
+    assert(check_password("zjvspoehrgopes", "247E9405E40979403510799CBBFF88BD") == 0);
+    assert(check_password("foobarbaz", test_hash) != 0);
 
     return 0;
 }

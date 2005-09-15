@@ -9,8 +9,8 @@ TrustedConnection::TrustedConnection(const std::string & id, CommClient & client
 {
 }
 
-bool TrustedConnection::verifyCredentials(const Account &,
-                                          const Atlas::Objects::Root &) const
+int TrustedConnection::verifyCredentials(const Account &,
+                                         const Atlas::Objects::Root &) const
 {
-    return true;
+    return 0;
 }

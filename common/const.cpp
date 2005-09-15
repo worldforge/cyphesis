@@ -12,7 +12,7 @@ namespace consts {
 
   // FIXME
   // Admin password used by admin account
-  const char * defaultAdminPasswordHash = "247E9405E40979403510799CBBFF88BD";
+  const char * defaultAdminPasswordHash = "$1$1A67C3C65EECBBCE$A51127573498DCB08992378D07A36A20";
   // Id of root world entity
   // const char * rootWorldId = "world_0";
   const char * rootWorldId = "0";

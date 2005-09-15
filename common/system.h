@@ -24,6 +24,11 @@ void interactive_signals();
 void daemon_signals();
 int daemonise();
 void running();
+
+void hash_password(const std::string & pwd, const std::string & hash,
+                   std::string & hash);
+
 void encrypt_password(const std::string & pwd, std::string & hash);
+int check_password(const std::string & pwd, const std::string & hash);
 
 #endif // COMMON_SYSTEM_H

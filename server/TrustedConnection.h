@@ -16,8 +16,8 @@
 /// or because it has connected over a unix domain socket.
 class TrustedConnection : public Connection {
   protected:
-    virtual bool verifyCredentials(const Account &,
-                                   const Atlas::Objects::Root &) const;
+    virtual int verifyCredentials(const Account &,
+                                  const Atlas::Objects::Root &) const;
   public:
     TrustedConnection(const std::string & id,
                       CommClient & client,

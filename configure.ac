@@ -186,14 +186,15 @@ fi
 
 PYTHON_LIBS=${python_libs}
 
-AC_CHECK_LIB(crypto, MD5,
-    [
-        AC_DEFINE(CYPHESIS_MD5_PASSWORDS, 1, [Use md5 hash for passwords])
-        COMMON_LIBS="$COMMON_LIBS -lcrypto"
-    ],
-    [
-        AC_MSG_ERROR([Cannot find a way of encrypting passwords. Please install the openssl development libraries.])
-    ])
+AM_PATH_LIBGCRYPT(1.2.0,
+[
+    CPPFLAGS="$CPPFLAGS $LIBGCRYPT_CFLAGS"
+    COMMON_LIBS="$COMMON_LIBS $LIBGCRYPT_LIBS"
+],
+[
+    AC_MSG_ERROR([Cannot find libgcrypt for encrypted passwords. Please install libgcrypt development libraries.])
+])
+
 
 dnl PKG_CHECK_MODULES(MONO, mono,
 dnl     [

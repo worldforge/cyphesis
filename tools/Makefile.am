@@ -118,4 +118,5 @@ cypasswd_LDADD = $(top_builddir)/modules/DateTime.o \
                  $(top_builddir)/common/prefix.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/system.o \
+                 $(MATH_LIBS) \
                  $(DBTOOL_LIBS)
