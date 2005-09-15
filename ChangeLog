@@ -1,3 +1,18 @@
+2005-09-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/system.cpp, common/system.h: Add new functions for handling
+	  encrypted password hashes with a salt, based on gcrypt rather
+	  than openssl. Include legacy support for hashes without a salt.
+
+	* common/const.cpp: Add a salt to the default admin password.
+
+	* tests/systemtest.cpp: Modify the password tests to use the new
+	  functions.
+
+	* server/Connection.cpp, server/Connection.h,
+	  server/TrustedConnection.cpp, server/TrustedConnection.h:
+	  Update the login code to use the new password functions.
+
 2005-09-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.cpp: Ensure that custom ops that need to wait

@@ -12,9 +12,11 @@
 #include "debug.h"
 #include "globals.h"
 
-#include <iostream>
+#include <wfmath/MersenneTwister.h>
 
-#include <openssl/md5.h>
+#include <gcrypt.h>
+
+#include <iostream>
 
 extern "C" {
     #include <sys/utsname.h>
@@ -257,19 +259,75 @@ void running()
 static const char hex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
                                     '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
-void encrypt_password(const std::string & pwd, std::string & hash)
+static const int hash_algorithm = GCRY_MD_MD5;
+static const int hash_salt_size = 8;
+
+void hash_password(const std::string & pwd, const std::string & salt,
+                   std::string & hash)
 {
-#ifdef CYPHESIS_MD5_PASSWORDS
-    unsigned char buf[MD5_DIGEST_LENGTH + 1];
-    MD5((const unsigned char *)pwd.c_str(), pwd.size(), buf);
-    buf[16] = '\0';
-    hash = "";
-    for(int i = 0; i < 16; ++i) {
+    unsigned int digest_length = gcry_md_get_algo_dlen(hash_algorithm);
+    unsigned char * buf = new unsigned char[digest_length];
+    assert(buf != 0);
+
+    std::string passwd_and_salt = pwd + salt;
+
+    // Generate an MD% hash of the password and salt concatenated
+    gcry_md_hash_buffer(hash_algorithm, buf,
+                        (const unsigned char *)passwd_and_salt.c_str(),
+                        passwd_and_salt.size());
+    // Build a string containing the salt and hash together
+    // hash = String::compose("$1$%1$", salt);
+    if (!salt.empty()) {
+        hash = "$1$";
+        hash += salt;
+        hash += "$";
+    } else {
+        hash.clear();
+    }
+    for(unsigned int i = 0; i < digest_length; ++i) {
         hash.push_back(hex_table[buf[i] & 0xf]);
         hash.push_back(hex_table[(buf[i] & 0xf0) >> 4]);
     }
     return;
-#endif
-    hash = pwd;
-    return;
+}
+
+void encrypt_password(const std::string & pwd, std::string & hash)
+{
+    std::string salt;
+    WFMath::MTRand rng;
+
+    // Generate 8 bytes of salt
+    for (int i = 0; i < hash_salt_size; ++i) {
+        unsigned char b = rng.randInt() & 0xff;
+        salt.push_back(hex_table[b & 0xf]);
+        salt.push_back(hex_table[(b & 0xf0) >> 4]);
+    }
+
+    // Get a hash of password and salt
+    hash_password(pwd, salt, hash);
+}
+
+int check_password(const std::string & pwd, const std::string & hash)
+{
+    unsigned int digest_length = gcry_md_get_algo_dlen(hash_algorithm);
+    std::string new_hash;
+    size_t hash_size = hash.size();
+
+    if ((hash_size < (digest_length * 2 + 5)) || (hash.substr(0, 3) != "$1$")) {
+        // Get a hash of password with no salt
+        hash_password(pwd, "", new_hash);
+    } else {
+        // Extract the salt from the hash string
+        size_t dp = hash.find('$', 3);
+        if (dp == std::string::npos) {
+            log(ERROR, "Password hash has no $ symbol after the salt.");
+            return -1;
+        }
+        assert(dp > 3);
+        std::string salt = hash.substr(3, dp - 3);
+        // Get a has of password and salt
+        hash_password(pwd, salt, new_hash);
+    }
+    // Check if the generated hash matches the reference hash
+    return hash == new_hash ? 0 : -1;
 }
