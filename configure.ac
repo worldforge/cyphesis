@@ -162,7 +162,7 @@ if test x"$link_static" = "xfalse"; then
 AC_CHECK_LIB(python${python_version}, Py_Initialize,
 [
     python_libs="-lpython${python_version}"
-    dnl FIXME Make the linker get rid of -export-dynamic
+    PYTHON_UTIL_LIBS=
 ],
 [
     AC_CHECK_LIB(python${python_version}, Py_Initialize,

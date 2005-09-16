@@ -1,5 +1,12 @@
 2005-09-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Don't link libdl and libutil explicitly when linking
+	  python dynamically.
+
+	* common/const.cpp: Remove some obsolete comments.
+
+2005-09-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/custom.cpp: Remove some operation types only used in
 	  scrypts.
 
