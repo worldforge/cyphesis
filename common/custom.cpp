@@ -87,27 +87,6 @@ void installCustomOperations()
     i.opInstall("unseen", OP_UNSEEN);
     Atlas::Objects::Operation::UNSEEN_NO = atlas_factories->addFactory("unseen", &Atlas::Objects::generic_factory);
 
-    // Custom ops used in scripts which do not need direct support in the
-    // core
-
-    i.opInstall("shoot", OP_OTHER);
-    atlas_factories->addFactory("shoot", &Atlas::Objects::generic_factory);
-
-    i.opInstall("extinguish", OP_OTHER);
-    atlas_factories->addFactory("extinguish", &Atlas::Objects::generic_factory);
-
-    i.opInstall("sow", OP_OTHER);
-    atlas_factories->addFactory("sow", &Atlas::Objects::generic_factory);
-
-    i.opInstall("germinate", OP_OTHER);
-    atlas_factories->addFactory("germinate", &Atlas::Objects::generic_factory);
-
-    i.opInstall("wear", OP_OTHER);
-    atlas_factories->addFactory("wear", &Atlas::Objects::generic_factory);
-
-    i.opInstall("ignite", OP_OTHER);
-    atlas_factories->addFactory("ignite", &Atlas::Objects::generic_factory);
-
 }
 
 void installCustomEntities()

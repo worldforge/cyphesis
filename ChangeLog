@@ -1,3 +1,11 @@
+2005-09-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/custom.cpp: Remove some operation types only used in
+	  scrypts.
+
+	* data/basic.xml, data/mason.xml: Add the operation definitions
+	  into the rule files.
+
 2005-09-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/system.cpp, common/system.h: Add new functions for handling

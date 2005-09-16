@@ -662,6 +662,14 @@
   </map>
 
   <map>
+    <string name="id">germinate</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
     <map name="attributes">
       <map name="mass">
         <float name="default">50</float>
@@ -674,7 +682,6 @@
       <string>character</string>
     </list>
   </map>
-
 
   <map>
     <map name="attributes">
@@ -1740,6 +1747,14 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">wear</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
     </list>
   </map>
 

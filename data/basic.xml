@@ -357,6 +357,14 @@
   </map>
 
   <map>
+    <string name="id">shoot</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
     <map name="attributes">
       <map name="mass">
         <float name="default">5</float>
