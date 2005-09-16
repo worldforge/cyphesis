@@ -1,5 +1,12 @@
 2005-09-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Don't link libdl and libutil explicitly when linking
+	  python dynamically.
+
+	* common/const.cpp: Remove some obsolete comments.
+
+2005-09-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/system.cpp: Fix typo in comment. Thanks to Michael Koch.
 
 	* tests/EntityExerciser.h: Add a virtual destructor to get rid of
