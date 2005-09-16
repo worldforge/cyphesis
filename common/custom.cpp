@@ -16,8 +16,12 @@
 #include "Setup.h"
 #include "Tick.h"
 #include "Unseen.h"
+#include "Use.h"
+#include "Wield.h"
 
-#include <Atlas/Objects/Entity.h>
+#include "Generic.h"
+
+#include <Atlas/Objects/Entity/AdminEntity.h>
 
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
@@ -34,78 +38,72 @@ using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Unseen;
+using Atlas::Objects::Operation::Use;
+using Atlas::Objects::Operation::Wield;
 
 void installCustomOperations()
 {
     Inheritance & i = Inheritance::instance();
-    Atlas::Objects::Factories * atlas_factories = Atlas::Objects::Factories::instance();
 
-    i.addChild(atlasOpDefinition("add", "set"));
+    i.addChild(new Add(Add::Class()));
     i.opInstall("add", OP_ADD, new OpFactory<Add>);
-    atlas_factories->addFactory("add", &Atlas::Objects::factory<Atlas::Objects::Operation::AddData>);
 
-    i.addChild(atlasOpDefinition("burn", "action"));
+    i.addChild(new Burn(Burn::Class()));
     i.opInstall("burn", OP_BURN, new OpFactory<Burn>);
-    atlas_factories->addFactory("burn", &Atlas::Objects::factory<Atlas::Objects::Operation::BurnData>);
 
-    i.addChild(atlasOpDefinition("chop", "affect"));
+    i.addChild(new Chop(Chop::Class()));
     i.opInstall("chop", OP_CHOP, new OpFactory<Chop>);
-    atlas_factories->addFactory("chop", &Atlas::Objects::factory<Atlas::Objects::Operation::ChopData>);
 
-    i.addChild(atlasOpDefinition("cut", "action"));
+    i.addChild(new Cut(Cut::Class()));
     i.opInstall("cut", OP_CUT, new OpFactory<Cut>);
-    atlas_factories->addFactory("cut", &Atlas::Objects::factory<Atlas::Objects::Operation::CutData>);
 
-    i.addChild(atlasOpDefinition("delve", "affect"));
+    i.addChild(new Delve(Delve::Class()));
     i.opInstall("delve", OP_OTHER, new OpFactory<Delve>);
-    atlas_factories->addFactory("delve", &Atlas::Objects::factory<Atlas::Objects::Operation::DelveData>);
 
-    i.addChild(atlasOpDefinition("dig", "affect"));
+    i.addChild(new Dig(Dig::Class()));
     i.opInstall("dig", OP_OTHER, new OpFactory<Dig>);
-    atlas_factories->addFactory("dig", &Atlas::Objects::factory<Atlas::Objects::Operation::DigData>);
 
-    i.addChild(atlasOpDefinition("eat", "action"));
+    i.addChild(new Eat(Eat::Class()));
     i.opInstall("eat", OP_EAT, new OpFactory<Eat>);
-    atlas_factories->addFactory("eat", &Atlas::Objects::factory<Atlas::Objects::Operation::EatData>);
 
-    i.addChild(atlasOpDefinition("mow", "affect"));
+    i.addChild(new Mow(Mow::Class()));
     i.opInstall("mow", OP_OTHER, new OpFactory<Mow>);
-    atlas_factories->addFactory("mow", &Atlas::Objects::factory<Atlas::Objects::Operation::MowData>);
 
-    i.addChild(atlasOpDefinition("nourish", "affect"));
+    i.addChild(new Nourish(Nourish::Class()));
     i.opInstall("nourish", OP_NOURISH, new OpFactory<Nourish>);
-    atlas_factories->addFactory("nourish", &Atlas::Objects::factory<Atlas::Objects::Operation::NourishData>);
 
-    i.addChild(atlasOpDefinition("setup", "root_operation"));
+    i.addChild(new Setup(Setup::Class()));
     i.opInstall("setup", OP_SETUP, new OpFactory<Setup>);
-    atlas_factories->addFactory("setup", &Atlas::Objects::factory<Atlas::Objects::Operation::SetupData>);
 
-    i.addChild(atlasOpDefinition("tick", "root_operation"));
+    i.addChild(new Tick(Tick::Class()));
     i.opInstall("tick", OP_TICK, new OpFactory<Tick>);
-    atlas_factories->addFactory("tick", &Atlas::Objects::factory<Atlas::Objects::Operation::TickData>);
 
-    i.addChild(atlasOpDefinition("unseen", "perception"));
+    i.addChild(new Unseen(Unseen::Class()));
     i.opInstall("unseen", OP_UNSEEN, new OpFactory<Unseen>);
-    atlas_factories->addFactory("unseen", &Atlas::Objects::factory<Atlas::Objects::Operation::UnseenData>);
 
-    // Custom ops used in scripts which do not need direct support in the
-    // core
+    i.addChild(new Use(Use::Class()));
+    i.opInstall("use", OP_USE, new OpFactory<Use>);
 
-    i.opInstall("shoot", OP_OTHER, new GenericOpFactory("shoot"));
-    i.opInstall("extinguish", OP_OTHER, new GenericOpFactory("extinguish"));
-    i.opInstall("sow", OP_OTHER, new GenericOpFactory("sow"));
-    i.opInstall("germinate", OP_OTHER, new GenericOpFactory("germinate"));
-    i.opInstall("wear", OP_OTHER, new GenericOpFactory("wear"));
-    i.opInstall("ignite", OP_OTHER, new GenericOpFactory("ignite"));
+    i.addChild(new Wield(Wield::Class()));
+    i.opInstall("wield", OP_WIELD, new OpFactory<Wield>);
 }
 
 void installCustomEntities()
 {
     Inheritance & i = Inheritance::instance();
 
-    i.addChild(atlasClass("room", "admin_entity"));
+    Root * r = new AdminEntity(AdminEntity::Class());
+    r->setId("room");
+    r->setParents(ListType(1,"admin_entity"));
+    i.addChild(r);
 
-    i.addChild(atlasClass("lobby", "admin_entity"));
+    r = new AdminEntity(AdminEntity::Class());
+    r->setId("lobby");
+    r->setParents(ListType(1,"room"));
+    i.addChild(r);
 
-    i.addChild(atlasClass("server", "admin_entity"));
+    r = new AdminEntity(AdminEntity::Class());
+    r->setId("server");
+    r->setParents(ListType(1,"admin_entity"));
+    i.addChild(r);
 }
