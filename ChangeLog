@@ -1,5 +1,10 @@
 2005-09-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.cpp, common/const.h: Git rid of bizare scheme
+	  where each constant appears twice, debug and non-debug versions.
+
+2005-09-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Don't link libdl and libutil explicitly when linking
 	  python dynamically.
 

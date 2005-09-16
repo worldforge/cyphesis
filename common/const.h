@@ -7,7 +7,6 @@
 
 namespace consts {
 
-#ifdef NDEBUG
   /// \brief Should python code emit thinking ops
   static const int debug_thinking = 0;
   /// \brief Debug level for python code
@@ -42,31 +41,6 @@ namespace consts {
   static const bool enable_database = true;
   /// \brief Should world state be persistent
   static const bool enable_persistence = false;
-
-#else // NDEBUG
-
-// When we are doing a debug build, the constants are not constant
-
-  extern int debug_thinking;
-  extern int debug_level;
-  extern float time_multiplier;
-  extern float basic_tick;
-  extern float base_velocity_coefficient;
-  extern float base_velocity;
-  extern float square_basic_tick;
-  extern float square_base_velocity;
-  extern float sight_range;
-  extern float square_sight_range;
-  extern float sight_factor;
-  extern float square_sight_factor;
-  extern float hearing_range;
-  extern bool enable_ranges;
-  extern bool enable_omnipresence;
-  extern float minSqrBoxSize;
-  extern bool enable_database;
-  extern bool enable_persistence;
-
-#endif // NDEBUG
 
   /// \brief Admin password used by admin account
   extern const char * defaultAdminPasswordHash;
