@@ -1,5 +1,14 @@
 2005-09-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/system.cpp: Fix typo in comment. Thanks to Michael Koch.
+
+	* tests/EntityExerciser.h: Add a virtual destructor to get rid of
+	  warnings.
+
+	* NEWS: Update news.
+
+2005-09-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/custom.cpp: Remove some operation types only used in
 	  scrypts.
 

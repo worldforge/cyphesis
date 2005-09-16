@@ -7,23 +7,46 @@
 
 #include "common/inheritance.h"
 
-#include "common/Add.h"
-#include "common/Burn.h"
-#include "common/Chop.h"
-#include "common/Connect.h"
-#include "common/Cut.h"
-#include "common/Delve.h"
-#include "common/Dig.h"
-#include "common/Eat.h"
-#include "common/Monitor.h"
-#include "common/Mow.h"
-#include "common/Nourish.h"
-#include "common/Setup.h"
-#include "common/Tick.h"
-#include "common/Unseen.h"
-#include "common/Update.h"
-
 #include <cassert>
+
+namespace Atlas {
+    namespace Objects {
+        namespace Operation {
+            class Login;
+            class Logout;
+            class Action;
+            class Combine;
+            class Create;
+            class Delete;
+            class Divide;
+            class Imaginary;
+            class Move;
+            class Set;
+            class Get;
+            class Perception;
+            class Sight;
+            class Sound;
+            class Touch;
+            class Talk;
+            class Look;
+            class Info;
+            class Appearance;
+            class Disappearance;
+            class Error;
+            class Setup;
+            class Tick;
+            class Eat;
+            class Nourish;
+            class Cut;
+            class Chop;
+            class Burn;
+            class Use;
+            class Wield;
+            class Unseen;
+            class Generic;
+        }
+    }
+}
 
 template <class EntityType>
 class EntityExerciser {
@@ -313,7 +336,10 @@ inline void EntityExerciser<EntityType>::runOperations()
 template <class EntityType>
 inline void EntityExerciser<EntityType>::flushOperations(OpVector & ops)
 {
-    ops.clear();
+    OpVector::const_iterator Iend = ops.end();
+    for (OpVector::const_iterator I = ops.begin(); I != Iend; ++I) {
+        delete *I;
+    }
 }
 
 

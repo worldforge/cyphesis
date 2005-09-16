@@ -12,6 +12,7 @@ config.log
 config.status
 config.sub
 configure
+cyphesis-*.tar.bz2
 cyphesis-*.tar.gz
 cyphesis.spec
 depcomp

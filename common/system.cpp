@@ -271,7 +271,7 @@ void hash_password(const std::string & pwd, const std::string & salt,
 
     std::string passwd_and_salt = pwd + salt;
 
-    // Generate an MD% hash of the password and salt concatenated
+    // Generate an MD5 hash of the password and salt concatenated
     gcry_md_hash_buffer(hash_algorithm, buf,
                         (const unsigned char *)passwd_and_salt.c_str(),
                         passwd_and_salt.size());
