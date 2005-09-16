@@ -1,3 +1,9 @@
+2005-09-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Makefile.am, tools/Makefile.am: Add gcrypt static libs.
+
+	* Release 0.4.1.
+
 2005-09-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/const.cpp, common/const.h: Git rid of bizare scheme

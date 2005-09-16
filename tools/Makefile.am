@@ -37,6 +37,8 @@ DBTOOL_LIBS = \
     /usr/lib/libkrb5.a \
     /usr/lib/libgssapi_krb5.a \
     /usr/lib/libk5crypto.a \
+    /usr/lib/libgcrypt.a \
+    /usr/lib/libgpg-error.a \
     /usr/lib/libcrypto.a \
     /usr/lib/libcrypt.a \
     /usr/lib/libresolv.a \
