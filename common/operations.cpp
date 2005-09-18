@@ -3,6 +3,7 @@
 // Copyright (C) 2000-2005 Alistair Riddoch
 
 #include "Add.h"
+#include "Attack.h"
 #include "Chop.h"
 #include "Cut.h"
 #include "Eat.h"
@@ -21,6 +22,7 @@
 namespace Atlas { namespace Objects { namespace Operation {
 
 int ADD_NO = -1;
+int ATTACK_NO = -1;
 int BURN_NO = -1;
 int CHOP_NO = -1;
 int CONNECT_NO = -1;

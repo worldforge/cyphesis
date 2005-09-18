@@ -84,6 +84,7 @@ class Character : public Character_parent {
     virtual void mindActionOperation(const Operation &, OpVector &);
     virtual void mindAddOperation(const Operation &, OpVector &);
     virtual void mindAppearanceOperation(const Operation &, OpVector &);
+    virtual void mindAttackOperation(const Operation &, OpVector &);
     virtual void mindBurnOperation(const Operation &, OpVector &);
     virtual void mindChopOperation(const Operation &, OpVector &);
     virtual void mindCombineOperation(const Operation &, OpVector &);
@@ -118,6 +119,7 @@ class Character : public Character_parent {
     bool w2mLoginOperation(const Operation &);
     bool w2mLogoutOperation(const Operation &);
     bool w2mActionOperation(const Operation &);
+    bool w2mAttackOperation(const Operation &);
     bool w2mChopOperation(const Operation &);
     bool w2mCombineOperation(const Operation &);
     bool w2mCreateOperation(const Operation &);

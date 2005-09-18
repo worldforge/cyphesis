@@ -1,3 +1,5 @@
+A
+
 Script code would be simpler if we could call the scripts in Entity::operation
 or Entity::callOperation() rather than in each method individually.
 Need to handle double op methods, and some special cases.
@@ -10,7 +12,7 @@ are checked to see if they are movement related, if not they are passed
 to script. Character never sends nourish or wield op to script.
 Thing pre-processes Setup. Thing increments m_seq when it gets Set or Move.
 
-Make Connect a standard Atlas op.
+Make Connect and Attack standard Atlas op.
 
 Sort out issue where carrying a living tree kills people. Caused by
 eat op from tree.

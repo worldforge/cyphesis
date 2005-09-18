@@ -56,6 +56,7 @@ class BaseEntity : virtual public SigC::Object {
     virtual void ActionOperation(const Operation &, OpVector &);
     virtual void AddOperation(const Operation &, OpVector &);
     virtual void AppearanceOperation(const Operation &, OpVector &);
+    virtual void AttackOperation(const Operation &, OpVector &);
     virtual void BurnOperation(const Operation &, OpVector &);
     virtual void ChopOperation(const Operation &, OpVector &);
     virtual void CombineOperation(const Operation &, OpVector &);

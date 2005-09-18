@@ -47,6 +47,7 @@ class BaseMind : public MemEntity {
 
     virtual void sightLoginOperation(const Operation &, const Operation &, OpVector &);
     virtual void sightActionOperation(const Operation &, const Operation &, OpVector &);
+    virtual void sightAttackOperation(const Operation &, const Operation &, OpVector &);
     virtual void sightChopOperation(const Operation &, const Operation &, OpVector &);
     virtual void sightCombineOperation(const Operation &, const Operation &, OpVector &);
     virtual void sightCreateOperation(const Operation &, const Operation &, OpVector &);
@@ -64,6 +65,7 @@ class BaseMind : public MemEntity {
 
     virtual void soundLoginOperation(const Operation &, const Operation &, OpVector &);
     virtual void soundActionOperation(const Operation &, const Operation &, OpVector &);
+    virtual void soundAttackOperation(const Operation &, const Operation &, OpVector &);
     virtual void soundChopOperation(const Operation &, const Operation &, OpVector &);
     virtual void soundCombineOperation(const Operation &, const Operation &, OpVector &);
     virtual void soundCreateOperation(const Operation &, const Operation &, OpVector &);

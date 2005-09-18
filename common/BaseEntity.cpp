@@ -264,6 +264,14 @@ void BaseEntity::AppearanceOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Process a Attack operation.
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseEntity::AttackOperation(const Operation & op, OpVector & res)
+{
+}
+
 /// \brief Process a Disappearance operation.
 ///
 /// @param op The operation to be processed.

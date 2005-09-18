@@ -5,6 +5,7 @@
 #include "inheritance.h"
 
 #include "Add.h"
+#include "Attack.h"
 #include "Burn.h"
 #include "Chop.h"
 #include "Cut.h"
@@ -86,6 +87,10 @@ void installCustomOperations()
     i.addChild(atlasOpDefinition("unseen", "perception"));
     i.opInstall("unseen", OP_UNSEEN);
     Atlas::Objects::Operation::UNSEEN_NO = atlas_factories->addFactory("unseen", &Atlas::Objects::generic_factory);
+
+    i.addChild(atlasOpDefinition("attack", "perception"));
+    i.opInstall("attack", OP_ATTACK);
+    Atlas::Objects::Operation::ATTACK_NO = atlas_factories->addFactory("attack", &Atlas::Objects::generic_factory);
 
 }
 

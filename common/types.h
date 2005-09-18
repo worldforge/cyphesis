@@ -18,6 +18,7 @@ typedef enum op_no {
 	OP_ACTION,
 	OP_ADD,
 	OP_APPEARANCE,
+	OP_ATTACK,
 	OP_BURN,
 	OP_CHOP,
 	OP_COMBINE,

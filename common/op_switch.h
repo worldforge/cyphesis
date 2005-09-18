@@ -16,6 +16,9 @@
         case OP_APPEARANCE: \
             _prefix ## AppearanceOperation(_op, _result); \
             break; \
+        case OP_ATTACK: \
+            _prefix ## AttackOperation(_op, _result); \
+            break; \
         case OP_BURN: \
             _prefix ## BurnOperation(_op, _result); \
             break; \
@@ -115,6 +118,9 @@
         case OP_APPEARANCE: \
             return _prefix ## AppearanceOperation(_op); \
             break; \
+        case OP_ATTACK: \
+            return _prefix ## AttackOperation(_op); \
+            break; \
         case OP_BURN: \
             return _prefix ## BurnOperation(_op); \
             break; \
@@ -208,6 +214,9 @@
     switch (_sub_op_no) { \
         case OP_ACTION: \
             _prefix ## ActionOperation(_op, _sub_op, _result); \
+            break; \
+        case OP_ATTACK: \
+            _prefix ## AttackOperation(_op, _sub_op, _result); \
             break; \
         case OP_BURN: \
             _prefix ## BurnOperation(_op, _sub_op, _result); \

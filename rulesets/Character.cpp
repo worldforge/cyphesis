@@ -406,6 +406,10 @@ void Character::mindAddOperation(const Operation & op, OpVector & res)
 {
 }
 
+void Character::mindAttackOperation(const Operation & op, OpVector & res)
+{
+}
+
 void Character::mindSetupOperation(const Operation & op, OpVector & res)
 {
     Operation s(op.copy());
@@ -948,6 +952,11 @@ void Character::mindOtherOperation(const Operation & op, OpVector & res)
 }
 
 bool Character::w2mActionOperation(const Operation & op)
+{
+    return false;
+}
+
+bool Character::w2mAttackOperation(const Operation & op)
 {
     return false;
 }

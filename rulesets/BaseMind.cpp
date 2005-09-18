@@ -137,6 +137,11 @@ void BaseMind::sightActionOperation(const Operation & op, const Operation & sub_
     m_script->operation("sight_action", op, res, &sub_op);
 }
 
+void BaseMind::sightAttackOperation(const Operation & op, const Operation & sub_op, OpVector & res)
+{
+    m_script->operation("sight_attack", op, res, &sub_op);
+}
+
 void BaseMind::sightChopOperation(const Operation & op, const Operation & sub_op, OpVector & res)
 {
     m_script->operation("sight_chop", op, res, &sub_op);
@@ -262,6 +267,11 @@ void BaseMind::soundLoginOperation(const Operation & op, const Operation & sub_o
 void BaseMind::soundActionOperation(const Operation & op, const Operation & sub_op, OpVector & res)
 {
     m_script->operation("sound_action", op, res, &sub_op);
+}
+
+void BaseMind::soundAttackOperation(const Operation & op, const Operation & sub_op, OpVector & res)
+{
+    m_script->operation("sound_attack", op, res, &sub_op);
 }
 
 void BaseMind::soundCutOperation(const Operation & op, const Operation & sub_op, OpVector & res)
