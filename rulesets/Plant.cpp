@@ -88,7 +88,7 @@ int Plant::dropFruit(OpVector & res)
 void Plant::ChopOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant got chop op" << std::endl << std::flush;);
-    if (m_script->Operation("chop", op, res)) {
+    if (m_script->operation("chop", op, res)) {
         return;
     }
     Element mode;
@@ -158,7 +158,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant::Tick(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);
-    if (m_script->Operation("tick", op, res)) {
+    if (m_script->operation("tick", op, res)) {
         return;
     }
     Tick tick_op;
@@ -234,7 +234,7 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
                     << std::endl << std::flush;);
     debug(std::cout << "Plant has " << m_fruits << " fruits right now"
                     << std::endl << std::flush;);
-    if (m_script->Operation("touch", op, res)) {
+    if (m_script->operation("touch", op, res)) {
         return;
     }
     debug(std::cout << "Checking for drop"

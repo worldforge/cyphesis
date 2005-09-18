@@ -12,10 +12,10 @@ Script::~Script()
 {
 }
 
-bool Script::Operation(const std::string & opname,
+bool Script::operation(const std::string & opname,
                        const Atlas::Objects::Operation::RootOperation & op,
                        OpVector & res,
-                       Atlas::Objects::Operation::RootOperation * sub_op)
+                       const Atlas::Objects::Operation::RootOperation * sub_op)
 {
    return false;
 }

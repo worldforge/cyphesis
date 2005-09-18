@@ -174,7 +174,7 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
 
     res.push_back(app);
 
-    if (m_script->Operation("setup", op, res) != 0) {
+    if (m_script->operation("setup", op, res) != 0) {
         return;
     }
 
@@ -249,7 +249,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
         tickOp->setArgs1(tick_arg);
         res.push_back(tickOp);
     } else {
-        m_script->Operation("tick", op, res);
+        m_script->operation("tick", op, res);
 
         // DIGEST
         if ((m_food >= foodConsumption) && (m_status < 2)) {
@@ -294,7 +294,7 @@ void Character::EatOperation(const Operation & op, OpVector & res)
 {
     // This is identical to Food::Operation(Eat &)
     // Perhaps animal should inherit from Food?
-    if (m_script->Operation("eat", op, res) != 0) {
+    if (m_script->operation("eat", op, res) != 0) {
         return;
     }
 

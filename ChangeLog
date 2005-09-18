@@ -1,3 +1,17 @@
+2005-09-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/PythonMindScript.cpp, rulesets/PythonMindScript.h,
+	  rulesets/PythonThingScript.cpp, rulesets/PythonThingScript.h
+	  rulesets/PythonScript.h, rulesets/Script.cpp, rulesets/Script.h:
+	  Clean up script API.
+
+	* rulesets/BaseMind.cpp, rulesets/Character.cpp, rulesets/Entity.cpp,
+	  rulesets/Food.cpp, rulesets/Plant.cpp, rulesets/Stackable.cpp,
+	  rulesets/Thing.cpp: Modify script calls to new API.
+
+	* rulesets/BaseMind.cpp, rulesets/BaseMind.h: All sub_op calls now
+	  take const ref for sub_op argument.
+
 2005-09-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Makefile.am, tools/Makefile.am: Add gcrypt static libs.

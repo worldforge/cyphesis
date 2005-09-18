@@ -1,3 +1,15 @@
+Script code would be simpler if we could call the scripts in Entity::operation
+or Entity::callOperation() rather than in each method individually.
+Need to handle double op methods, and some special cases.
+BaseMind blocks sight ops if character is not awake.
+We can probably block all ops to mind when its unconcious from
+the Character class. BaseMind handles Appearance and Disappearance
+even if the script handled them. Character Pre-processes Setup
+before passing to ensure a setup op happens. Character tick ops
+are checked to see if they are movement related, if not they are passed
+to script. Character never sends nourish or wield op to script.
+Thing pre-processes Setup. Thing increments m_seq when it gets Set or Move.
+
 Make Connect a standard Atlas op.
 
 Sort out issue where carrying a living tree kills people. Caused by

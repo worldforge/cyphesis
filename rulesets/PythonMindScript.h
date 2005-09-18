@@ -16,10 +16,10 @@ class PythonMindScript : public PythonScript {
   public:
     PythonMindScript(PyObject *, BaseMind &);
     virtual ~PythonMindScript();
-    virtual bool Operation(const std::string &,
+    virtual bool operation(const std::string &,
                            const Atlas::Objects::Operation::RootOperation &,
                            OpVector &,
-                           Atlas::Objects::Operation::RootOperation * = 0);
+                           const Atlas::Objects::Operation::RootOperation * = 0);
     virtual void hook(const std::string &, Entity *);
 };
 

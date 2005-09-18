@@ -28,10 +28,10 @@ PythonMindScript::~PythonMindScript()
 {
 }
 
-bool PythonMindScript::Operation(const std::string & op_type,
-                                 const Atlas::Objects::Operation::RootOperation & op,
+bool PythonMindScript::operation(const std::string & op_type,
+                                 const Operation & op,
                                  OpVector & ret_list,
-                                 Atlas::Objects::Operation::RootOperation * sub_op_ptr)
+                                 const Operation * sub_op_ptr)
 {
     std::string op_name = op_type + "_operation";
     debug( std::cout << "Got script object for " << op_name << std::endl
@@ -49,7 +49,7 @@ bool PythonMindScript::Operation(const std::string & op_type,
         ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(O)", py_op);
     } else {
-        const Atlas::Objects::Operation::RootOperation & sub_op = *sub_op_ptr;
+        const Operation & sub_op = *sub_op_ptr;
         PyOperation * py_sub_op = newPyOperation();
         py_sub_op->operation = sub_op;
         ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),

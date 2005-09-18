@@ -35,7 +35,7 @@ Stackable::~Stackable()
 
 void Stackable::CombineOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->Operation("combine", op, res) != 0) {
+    if (m_script->operation("combine", op, res) != 0) {
         return;
     }
     const std::vector<Root> & args = op->getArgs();
@@ -75,7 +75,7 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
 
 void Stackable::DivideOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->Operation("divide", op, res) != 0) {
+    if (m_script->operation("divide", op, res) != 0) {
         return;
     }
     const std::vector<Root> & args = op->getArgs();

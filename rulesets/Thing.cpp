@@ -69,7 +69,7 @@ void Thing::SetupOperation(const Operation & op, OpVector & res)
 
     res.push_back(app);
 
-    if (m_script->Operation("setup", op, res) != 0) {
+    if (m_script->operation("setup", op, res) != 0) {
         return;
     }
 
@@ -81,7 +81,7 @@ void Thing::SetupOperation(const Operation & op, OpVector & res)
 
 void Thing::ActionOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->Operation("action", op, res) != 0) {
+    if (m_script->operation("action", op, res) != 0) {
         return;
     }
     Sight s;
@@ -91,7 +91,7 @@ void Thing::ActionOperation(const Operation & op, OpVector & res)
 
 void Thing::DeleteOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->Operation("delete", op, res) != 0) {
+    if (m_script->operation("delete", op, res) != 0) {
         return;
     }
     // The actual destruction and removal of this entity will be handled
@@ -103,7 +103,7 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
 
 void Thing::BurnOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->Operation("burn", op, res) != 0) {
+    if (m_script->operation("burn", op, res) != 0) {
         return;
     }
     if (op->getArgs().empty()) {
@@ -144,7 +144,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
     m_seq++;
-    if (m_script->Operation("move", op, res) != 0) {
+    if (m_script->operation("move", op, res) != 0) {
         return;
     }
     const std::vector<Root> & args = op->getArgs();
@@ -378,7 +378,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 void Thing::SetOperation(const Operation & op, OpVector & res)
 {
     m_seq++;
-    if (m_script->Operation("set", op, res) != 0) {
+    if (m_script->operation("set", op, res) != 0) {
         return;
     }
     const std::vector<Root> & args = op->getArgs();
