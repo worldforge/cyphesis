@@ -1,11 +1,11 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2004 Alistair Riddoch
+// Copyright (C) 2004-2005 Alistair Riddoch
 
 #include "Task.h"
 
 /// \brief Task constructor for classes which inherit from Task
-Task::Task(Character & chr) : m_obsolete(false), m_character(chr)
+Task::Task(Character & chr) : m_refCount(0), m_obsolete(false), m_character(chr)
 {
 }
 

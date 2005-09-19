@@ -28,6 +28,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     AreaProperty.cpp AreaProperty.h \
 			     TerrainProperty.cpp TerrainProperty.h \
 			     Task.cpp Task.h \
+			     Combat.cpp Combat.h \
 			     Fell.cpp Fell.h
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \

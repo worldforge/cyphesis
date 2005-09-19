@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2004 Alistair Riddoch
+// Copyright (C) 2004-2005 Alistair Riddoch
 
 #ifndef RULESETS_TASK_H
 #define RULESETS_TASK_H
@@ -12,12 +12,22 @@ class Character;
 /// \brief Interface class for handling tasks which take a short while to
 /// complete
 class Task {
+  private:
+
+    /// \brief Count of references held by entities involved in this task
+    int m_refCount;
   protected:
+
     /// \brief Flag to indicate if this task is obsolete and should be removed
     bool m_obsolete;
+
     /// \brief Character performing the task
+    ///
+    /// This doesn't handle the idea that there might be multiple actors
+    /// involved.
     Character & m_character;
 
+    /// \brief Protected constructor to be called by classes which inherit
     explicit Task(Character & chr);
   private:
     /// \brief Private and un-implemented, to make sure slicing is impossible
@@ -40,6 +50,21 @@ class Task {
     /// @param res The result of the operation is returned here.
     virtual void TickOperation(const Operation & op, OpVector & res) = 0;
 
+    void incRef() {
+        ++m_refCount;
+    }
+
+    void decRef() {
+        if (m_refCount <= 1) {
+            assert(m_refCount == 1);
+            delete this;
+        } else {
+            --m_refCount;
+        }
+    }
+
+    
+    /// \brief Flag this task as obsolete
     void irrelevant();
 
     /// \brief Accessor to determine if this Task is obsolete

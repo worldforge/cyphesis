@@ -5,7 +5,7 @@
 #include "Character.h"
 
 #include "Pedestrian.h"
-#include "Task.h"
+#include "Combat.h"
 #include "MindFactory.h"
 #include "BaseMind.h"
 #include "Script.h"
@@ -408,6 +408,34 @@ void Character::mindAddOperation(const Operation & op, OpVector & res)
 
 void Character::mindAttackOperation(const Operation & op, OpVector & res)
 {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        log(ERROR, "mindAttackOperation: attack op has no argument");
+        return;
+    }
+    const Root & arg = args.front();
+    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        log(ERROR, "mindAttackOperation: attack op arg has no ID");
+        return;
+    }
+    const std::string & id = arg->getId();
+
+    EntityDict::const_iterator I = m_world->getEntities().find(id);
+    if (I == m_world->getEntities().end()) {
+        log(ERROR, "mindAttackOperation: attack op has non-existant target ID");
+        return;
+    }
+    Entity * target = I->second;
+    assert(target != NULL);
+
+    Combat * combat = new Combat(*this, *target);
+
+    m_task = combat;
+    m_task->incRef();
+
+    m_task->setup(res);
+
+    // What to reply? Change mode?
 }
 
 void Character::mindSetupOperation(const Operation & op, OpVector & res)

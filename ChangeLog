@@ -1,3 +1,11 @@
+2005-09-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Task.h, rulesets/Task.cpp: Add reference counting to the
+	  task interface.
+
+	* rulesets/Character.cpp, rulesets/Combat.cpp, rulesets/Combat.h:
+	  Add experimental code to handle initiating combat.
+
 2005-09-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Attack.h, common/operations.cpp, common/types.h:
