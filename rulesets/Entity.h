@@ -189,6 +189,7 @@ class Entity : public BaseEntity {
     virtual void LookOperation(const Operation & op, OpVector &);
     virtual void AppearanceOperation(const Operation & op, OpVector &);
     virtual void DisappearanceOperation(const Operation & op, OpVector &);
+    virtual void AttackOperation(const Operation & op, OpVector &);
     virtual void OtherOperation(const Operation & op, OpVector &);
 
     /// Signal indicating that this entity has been changed

@@ -1,4 +1,6 @@
-A
+Modify Attack handler so it is the attackee that creates the task object,
+so attacking a pointless target has no effect without any smarts required
+in mindAttackOperation().
 
 Script code would be simpler if we could call the scripts in Entity::operation
 or Entity::callOperation() rather than in each method individually.

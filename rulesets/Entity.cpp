@@ -430,6 +430,11 @@ void Entity::DisappearanceOperation(const Operation & op, OpVector & res)
     m_script->operation("disappearance", op, res);
 }
 
+void Entity::AttackOperation(const Operation & op, OpVector & res)
+{
+    m_script->operation("attack", op, res);
+}
+
 void Entity::OtherOperation(const Operation & op, OpVector & res)
 {
     const std::string & op_type = op->getParents().front();

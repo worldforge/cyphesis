@@ -122,6 +122,7 @@ Character::Character(const std::string & id) : Character_parent(id),
     mindSubscribe("touch", OP_TOUCH);
     mindSubscribe("use", OP_USE);
     mindSubscribe("wield", OP_WIELD);
+    mindSubscribe("attack", OP_ATTACK);
     mindSubscribe("shoot", OP_OTHER);
 
     // subscribe to ops for the mind
@@ -420,6 +421,9 @@ void Character::mindAttackOperation(const Operation & op, OpVector & res)
     }
     const std::string & id = arg->getId();
 
+    std::cout << "TO ARMS!" << std::endl << std::flush;
+
+#if 1
     EntityDict::const_iterator I = m_world->getEntities().find(id);
     if (I == m_world->getEntities().end()) {
         log(ERROR, "mindAttackOperation: attack op has non-existant target ID");
@@ -434,7 +438,11 @@ void Character::mindAttackOperation(const Operation & op, OpVector & res)
     m_task->incRef();
 
     m_task->setup(res);
+#endif
 
+    Operation attack(op.copy());
+    attack->setTo(id);
+    res.push_back(attack);
     // What to reply? Change mode?
 }
 

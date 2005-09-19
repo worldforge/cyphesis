@@ -1,5 +1,13 @@
 2005-09-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h, rulesets/Entity.cpp: Add default script
+	  only handler for Attack ops.
+
+	* rulesets/Character.cpp: When Attack op comes from mind,
+	  move it on to the target entity.
+
+2005-09-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp: Report if entities have velocity on
 	  creation.
 
