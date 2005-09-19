@@ -1,5 +1,10 @@
 2005-09-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Report if entities have velocity on
+	  creation.
+
+2005-09-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Task.h, rulesets/Task.cpp: Add reference counting to the
 	  task interface.
 

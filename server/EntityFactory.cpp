@@ -137,6 +137,10 @@ Entity * EntityFactory::newEntity(const std::string & id,
         // If no position coords were provided, put it somewhere near origin
         thing->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
     }
+    if (thing->m_location.m_velocity.isValid()) {
+        log(ERROR, String::compose("EntityFactory::newEntity(%1, %2): Entity has velocity set", id, type).c_str());
+        
+    }
     if (pc != 0) {
         pc->persist();
         thing->clearUpdateFlags();
