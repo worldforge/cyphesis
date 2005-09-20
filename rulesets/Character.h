@@ -81,6 +81,7 @@ class Character : public Character_parent {
     virtual void NourishOperation(const Operation & op, OpVector &);
     virtual void WieldOperation(const Operation & op, OpVector &);
     virtual void AttackOperation(const Operation & op, OpVector &);
+    virtual void ChopOperation(const Operation & op, OpVector &);
 
     virtual void mindActionOperation(const Operation &, OpVector &);
     virtual void mindAddOperation(const Operation &, OpVector &);

@@ -106,6 +106,7 @@ Character::Character(const std::string & id) : Character_parent(id),
     subscribe("nourish", OP_NOURISH);
     subscribe("wield", OP_WIELD);
     subscribe("attack", OP_ATTACK);
+    subscribe("chop", OP_CHOP);
 
     // subscribe to ops from the mind
     mindSubscribe("action", OP_ACTION);
@@ -419,6 +420,17 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     combat->incRef();
 
     m_task->setup(res);
+}
+
+void Character::ChopOperation(const Operation & op, OpVector & res)
+{
+    Set s;
+    Anonymous sarg;
+    sarg->setId(getId());
+    sarg->setAttr("status", getStatus() - 0.2);
+    s->setArgs1(sarg);
+    s->setTo(getId());
+    res.push_back(s);
 }
 
 void Character::mindLoginOperation(const Operation & op, OpVector & res)

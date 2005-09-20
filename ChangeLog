@@ -1,5 +1,11 @@
 2005-09-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp, rulesets/Character.h:
+	  Add handler for chop ops, which is a quick implementation of
+	  Axe murder to test the health bar in clients.
+
+2005-09-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/system.cpp: Make sure cassert is included before assert
 	  macro is used.
 
