@@ -16,6 +16,8 @@
 
 #include <gcrypt.h>
 
+#include <cassert>
+
 #include <iostream>
 
 extern "C" {
