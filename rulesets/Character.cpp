@@ -93,7 +93,7 @@ Character::Character(const std::string & id) : Character_parent(id),
                                             m_task(0), m_isAlive(true),
                                             m_drunkness(0.0), m_sex("female"),
                                             m_food(0), m_maxMass(100),
-                                            m_mind(NULL), m_externalMind(NULL)
+                                            m_mind(0), m_externalMind(0)
 {
     m_mass = 60;
     m_location.m_bBox = BBox(WFMath::Point<3>(-0.25, -0.25, 0),
@@ -105,6 +105,7 @@ Character::Character(const std::string & id) : Character_parent(id),
     subscribe("eat", OP_EAT);
     subscribe("nourish", OP_NOURISH);
     subscribe("wield", OP_WIELD);
+    subscribe("attack", OP_ATTACK);
 
     // subscribe to ops from the mind
     mindSubscribe("action", OP_ACTION);
@@ -143,10 +144,10 @@ Character::Character(const std::string & id) : Character_parent(id),
 Character::~Character()
 {
     delete &m_movement;
-    if (m_mind != NULL) {
+    if (m_mind != 0) {
         delete m_mind;
     }
-    if (m_externalMind != NULL) {
+    if (m_externalMind != 0) {
         delete m_externalMind;
     }
 }
@@ -214,7 +215,6 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             return;
         }
         if (sub_to.String() == "task") {
-            std::cout << "Task tick" << std::endl << std::flush;
             if (m_task == 0) {
                 log(ERROR, "Got Tick op for task, but task is null");
                 return;
@@ -388,6 +388,39 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush;);
 }
 
+void Character::AttackOperation(const Operation & op, OpVector & res)
+{
+    EntityDict::const_iterator I = m_world->getEntities().find(op->getFrom());
+    if (I == m_world->getEntities().end()) {
+        log(ERROR, "AttackOperation: Attack op from non-existant ID");
+        return;
+    }
+    Entity * attack_ent = I->second;
+    assert(attack_ent != 0);
+
+    Character * attacker = dynamic_cast<Character *>(attack_ent);
+
+    if (attacker == 0) {
+        log(ERROR, "AttackOperation: Attack op from non-character entity");
+        return;
+    }
+
+    if (attacker->m_task != 0) {
+        log(ERROR, "AttackOperation: Attack op aborted because attacker busy");
+        return;
+    }
+
+    Combat * combat = new Combat(*attacker, *this);
+
+    m_task = combat;
+    combat->incRef();
+
+    attacker->m_task = combat;
+    combat->incRef();
+
+    m_task->setup(res);
+}
+
 void Character::mindLoginOperation(const Operation & op, OpVector & res)
 {
 }
@@ -421,29 +454,14 @@ void Character::mindAttackOperation(const Operation & op, OpVector & res)
     }
     const std::string & id = arg->getId();
 
-    std::cout << "TO ARMS!" << std::endl << std::flush;
-
-#if 1
-    EntityDict::const_iterator I = m_world->getEntities().find(id);
-    if (I == m_world->getEntities().end()) {
-        log(ERROR, "mindAttackOperation: attack op has non-existant target ID");
-        return;
-    }
-    Entity * target = I->second;
-    assert(target != NULL);
-
-    Combat * combat = new Combat(*this, *target);
-
-    m_task = combat;
-    m_task->incRef();
-
-    m_task->setup(res);
-#endif
+    // FIXME Check current TASK?
+    // If already in combat, probably this should not work.
+    // If doing something else, it gets aborted.
+    // endCurrentTask();
 
     Operation attack(op.copy());
     attack->setTo(id);
     res.push_back(attack);
-    // What to reply? Change mode?
 }
 
 void Character::mindSetupOperation(const Operation & op, OpVector & res)

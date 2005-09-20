@@ -32,9 +32,15 @@ void Combat::setup(OpVector & res)
     Tick t;
     t->setAttr("sub_to", "task");
     t->setTo(m_character.getId());
+    res.push_back(t);
 }
 
 void Combat::TickOperation(const Operation & op, OpVector & res)
 {
     std::cout << "Combat::TickOperation" << std::endl << std::flush;
+    Tick t;
+    t->setAttr("sub_to", "task");
+    t->setTo(m_character.getId());
+    t->setFutureSeconds(1);
+    res.push_back(t);
 }

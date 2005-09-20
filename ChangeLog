@@ -1,3 +1,11 @@
+2005-09-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp, rulesets/Character.h: Add Attack operation
+	  handler to set up combat when sent by attacker.
+
+	* rulesets/Combat.cpp: Fix bootstrap tick op, and return a future tick
+	  op from the tick op handler.
+
 2005-09-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.h, rulesets/Entity.cpp: Add default script
