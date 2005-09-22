@@ -5,6 +5,8 @@
 #ifndef RULESETS_CONTAINER_H
 #define RULESETS_CONTAINER_H
 
+#include <Atlas/Objects/ObjectsFwd.h>
+
 #include <set>
 #include <map>
 #include <vector>
@@ -109,12 +111,13 @@ class Container {
     virtual const_iterator begin() const = 0;
     virtual const_iterator end() const = 0;
 
-    virtual int size() = 0;
-    virtual bool empty() = 0;
+    virtual int size() const = 0;
+    virtual bool empty() const = 0;
     virtual void insert(Entity *) = 0;
     virtual void erase(Entity *) = 0;
     virtual void reParent() = 0;
     virtual void addToMessage(const std::string &, Atlas::Message::MapType &) const = 0;
+    virtual void addToEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &) const = 0;
 };
 
 #if 0
@@ -128,6 +131,7 @@ class NonContainer : public Container {
     virtual void erase(Entity *);
     virtual void reParent();
     virtual void addToMessage(const std::string &, Atlas::Message::MapType &) const;
+    virtual void addToEntity(const std::string &, Atlas::Objects::Entity::RootEntity &) const = 0;
 };
 #endif
 
@@ -158,12 +162,13 @@ class StdContainer : public Container {
     virtual const_iterator begin() const;
     virtual const_iterator end() const;
 
-    virtual int size();
-    virtual bool empty();
+    virtual int size() const;
+    virtual bool empty() const;
     virtual void insert(Entity *);
     virtual void erase(Entity *);
     virtual void reParent();
     virtual void addToMessage(const std::string &, Atlas::Message::MapType &) const;
+    virtual void addToEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &) const;
 };
 
 #endif // RULESETS_CONTAINER_H

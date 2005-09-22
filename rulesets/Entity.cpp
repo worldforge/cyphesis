@@ -167,9 +167,7 @@ void Entity::addToEntity(const RootEntity & ent) const
     PropertyDict::const_iterator J = m_properties.begin();
     PropertyDict::const_iterator Jend = m_properties.end();
     for (; J != Jend; ++J) {
-        Element val;
-        J->second->get(val);
-        ent->setAttr(J->first, val);
+        J->second->add(J->first, ent);
     }
     ent->setAttr("stamp", (double)m_seq);
     ent->setParents(std::list<std::string>(1, m_type));

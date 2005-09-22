@@ -6,6 +6,7 @@
 #include "Entity.h"
 
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/RootEntity.h>
 
 Container::Container_const_iterator::Container_const_iterator() : m_refCount(0)
 {
@@ -112,12 +113,12 @@ StdContainer::~StdContainer()
 {
 }
 
-int StdContainer::size()
+int StdContainer::size() const
 {
     return m_entities.size();
 }
 
-bool StdContainer::empty()
+bool StdContainer::empty() const
 {
     return m_entities.empty();
 }
@@ -147,4 +148,16 @@ void StdContainer::addToMessage(const std::string & key,
     for (EntitySet::const_iterator I = m_entities.begin(); I != Iend; ++I) {
         contlist.push_back((*I)->getId());
     }
+}
+
+void StdContainer::addToEntity(const std::string & key,
+                               const Atlas::Objects::Entity::RootEntity & ent) const
+{
+    Atlas::Message::Element v = Atlas::Message::ListType();
+    Atlas::Message::ListType & contlist = v.asList();
+    EntitySet::const_iterator Iend = m_entities.end();
+    for (EntitySet::const_iterator I = m_entities.begin(); I != Iend; ++I) {
+        contlist.push_back((*I)->getId());
+    }
+    ent->setAttr(key, v);
 }

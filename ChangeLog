@@ -1,5 +1,15 @@
 2005-09-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Container.h, rulesets/Container.cpp,
+	  rulesets/EntityProperties.cpp: Implement add(Entity) for common
+	  poperties, and containers.
+
+	* rulesets/Entity.cpp: Use add(Entity) instead of get() on properties,
+	  ensuring that unset properties aren't copied. Fixes problem with
+	  bboxes appearing on all entities.
+
+2005-09-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: If reading quaternion from Atlas results
 	  in an invalid quaternion, report an ERROR. Abort processing
 	  the move op if any exception is thrown when reading values

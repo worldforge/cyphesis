@@ -13,14 +13,19 @@
 
 #include <wfmath/atlasconv.h>
 
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+using Atlas::Objects::Entity::RootEntity;
+
 template<>
-void Property<BBox>::get(Atlas::Message::Element & e)
+void Property<BBox>::get(Element & e)
 {
     e = m_data.toAtlas();
 }
 
 template<>
-void Property<BBox>::set(const Atlas::Message::Element & e)
+void Property<BBox>::set(const Element & e)
 {
     if (e.isList() && (e.asList().size() > 2)) {
         m_data.fromAtlas(e.asList());
@@ -28,7 +33,7 @@ void Property<BBox>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<BBox>::add(const std::string & s, Atlas::Message::MapType & ent)
+void Property<BBox>::add(const std::string & s, MapType & ent)
 {
     if (m_data.isValid()) {
         ent[s] = m_data.toAtlas();
@@ -36,14 +41,22 @@ void Property<BBox>::add(const std::string & s, Atlas::Message::MapType & ent)
 }
 
 template<>
-void Property<IdList>::get(Atlas::Message::Element & e)
+void Property<BBox>::add(const std::string & s, const RootEntity & ent)
+{
+    if (m_data.isValid()) {
+        ent->setAttr(s, m_data.toAtlas());
+    }
+}
+
+template<>
+void Property<IdList>::get(Element & e)
 {
     e = Atlas::Message::ListType();
     idListasObject(m_data, e.asList());
 }
 
 template<>
-void Property<IdList>::set(const Atlas::Message::Element & e)
+void Property<IdList>::set(const Element & e)
 {
     if (e.isList()) {
         idListFromAtlas(e.asList(), m_data);
@@ -51,18 +64,28 @@ void Property<IdList>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<IdList>::add(const std::string & s, Atlas::Message::MapType & ent)
+void Property<IdList>::add(const std::string & s, MapType & ent)
 {
     if (!m_data.empty()) {
-        get(ent["s"]);
+        get(ent[s]);
     }
 }
 
 template<>
-void ImmutableProperty<EntitySet>::get(Atlas::Message::Element & e)
+void Property<IdList>::add(const std::string & s, const RootEntity & ent)
 {
-    e = Atlas::Message::ListType();
-    Atlas::Message::ListType & contlist = e.asList();
+    if (!m_data.empty()) {
+        ListType list;
+        idListasObject(m_data, list);
+        ent->setAttr(s, list);
+    }
+}
+
+template<>
+void ImmutableProperty<EntitySet>::get(Element & e)
+{
+    e = ListType();
+    ListType & contlist = e.asList();
     EntitySet::const_iterator Iend = m_data.end();
     for (EntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
         contlist.push_back((*I)->getId());
@@ -71,7 +94,7 @@ void ImmutableProperty<EntitySet>::get(Atlas::Message::Element & e)
 
 template<>
 void ImmutableProperty<EntitySet>::add(const std::string & s,
-                                       Atlas::Message::MapType & ent)
+                                       MapType & ent)
 {
     if (!m_data.empty()) {
         get(ent[s]);
@@ -79,12 +102,23 @@ void ImmutableProperty<EntitySet>::add(const std::string & s,
 }
 
 template<>
-void ImmutableProperty<Container>::get(Atlas::Message::Element & e)
+void ImmutableProperty<EntitySet>::add(const std::string & s,
+                                       const RootEntity & ent)
+{
+    if (!m_data.empty()) {
+        Element v;
+        get(v);
+        ent->setAttr(s, v);
+    }
+}
+
+template<>
+void ImmutableProperty<Container>::get(Element & e)
 {
     // FIXME Not sure if this is best. Why did we bother to virtualise
     // addToMessage() if we have to do this here?
-    e = Atlas::Message::ListType();
-    Atlas::Message::ListType & contlist = e.asList();
+    e = ListType();
+    ListType & contlist = e.asList();
     Container::const_iterator Iend = m_data.end();
     for (Container::const_iterator I = m_data.begin(); I != Iend; ++I) {
         contlist.push_back((*I)->getId());
@@ -93,9 +127,20 @@ void ImmutableProperty<Container>::get(Atlas::Message::Element & e)
 
 template<>
 void ImmutableProperty<Container>::add(const std::string & s,
-                                       Atlas::Message::MapType & ent)
+                                       MapType & ent)
 {
-    m_data.addToMessage(s, ent);
+    if (!m_data.empty()) {
+        m_data.addToMessage(s, ent);
+    }
+}
+
+template<>
+void ImmutableProperty<Container>::add(const std::string & s,
+                                       const RootEntity & ent)
+{
+    if (!m_data.empty()) {
+        m_data.addToEntity(s, ent);
+    }
 }
 
 template class Property<BBox>;
