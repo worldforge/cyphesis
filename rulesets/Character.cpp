@@ -731,10 +731,18 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         if (arg->copyAttr("orientation", orientation_attr) == 0) {
             new_orientation.fromAtlas(orientation_attr);
             debug( std::cout << "ori set to " << new_orientation << std::endl << std::flush;);
+            if (!new_orientation.isValid()) {
+                log(ERROR, "Invalid orientation from client. Ignoring");
+            }
         }
     }
     catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "EXCEPTION: mindMoveOperation: Malformed move operation");
+        return;
+    }
+    catch (...) {
+        log(ERROR, "EXCEPTION: mindMoveOperation: Unknown exception thrown");
+        return;
     }
 
     double futureSeconds = op->getFutureSeconds();
