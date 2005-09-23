@@ -50,5 +50,11 @@ unixport="cyslave.sock"
 # TCP port to listen on
 tcpport=6768
 
+[game]
+# Can players attack other players
+player_vs_player="false"
+# Can players attack other players who are currently offline
+player_vs_player_offline="false"
+
 [mason]
 ruleset="basic"

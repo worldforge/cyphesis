@@ -1,5 +1,12 @@
 2005-09-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp, common/globals.h: Implement reading pvp settings
+	  from config file.
+
+	* data/cyphesis.vconf: Disable pvp in the default config.
+
+2005-09-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp, common/globals.h: Add config flags for
 	  pvp settings.
 

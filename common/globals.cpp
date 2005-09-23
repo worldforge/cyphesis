@@ -108,6 +108,17 @@ int loadConfig(int argc, char ** argv, bool server)
         slave_socket_name = global_conf->getItem("slave","unixport").as_string();
     }
 
+    if (global_conf->findItem("game", "player_vs_player")) {
+        pvp_flag = global_conf->getItem("game", "player_vs_player");
+        std::cout << "Setting pvp to " << pvp_flag << std::endl << std::flush;
+    }
+
+    if (global_conf->findItem("game", "player_vs_player_offline")) {
+        pvp_offl_flag = global_conf->getItem("game", "player_vs_player_offline");
+        std::cout << "Setting pvp_offline to " << pvp_offl_flag << std::endl << std::flush;
+        
+    }
+
     // Load up the rulesets. Rulesets are hierarchical, and are read in until
     // one is read in that does not specify its parent ruleset.
     std::string ruleset = "cyphesis";

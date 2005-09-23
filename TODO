@@ -1,3 +1,6 @@
+Collision code would be more reliable if collisions were check with
+current parent's siblings, as well as entities siblings.
+
 Make sure all Property classes have add(Entity)
 
 Task tick ops need to embed the ident of the task, to ensure a replacement
