@@ -1,5 +1,10 @@
 2005-09-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp, common/globals.h: Add config flags for
+	  pvp settings.
+
+2005-09-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Container.h, rulesets/Container.cpp,
 	  rulesets/EntityProperties.cpp: Implement add(Entity) for common
 	  poperties, and containers.

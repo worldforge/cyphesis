@@ -26,6 +26,8 @@ std::vector<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;
 bool restricted_flag = false;
+bool pvp_flag = false;
+bool pvp_offl_flag = false;
 int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
 int client_port_num = 6767;
 int slave_port_num = 6768;
