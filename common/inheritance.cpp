@@ -112,7 +112,7 @@ OpNo Inheritance::opEnumerate(const std::string & parent) const
 
 OpNo Inheritance::opEnumerate(const Operation & op) const
 {
-#warning This should no longer be necessary - just return the Atlas number for the class
+    // FIXME This should no longer be necessary - just return the Atlas number for the class
     const std::list<std::string> & parents = op->getParents();
     if (parents.size() != 1) {
         log(ERROR, "op with no parents");

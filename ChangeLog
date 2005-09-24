@@ -1,3 +1,7 @@
+2005-09-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/inheritance.cpp: Replace a #warning with a FIXME.
+
 2005-09-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/globals.cpp: Remove debug output.
