@@ -44,11 +44,6 @@ Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
     m_location.m_bBox = BBox(WFMath::Point<3>(-0.5, -0.5, 0),
                              WFMath::Point<3>(0.5, 0.5, 1));
 
-    subscribe("chop", OP_CHOP);
-    subscribe("tick", OP_TICK);
-    subscribe("touch", OP_TOUCH);
-    subscribe("nourish", OP_NOURISH);
-
     m_properties["fruits"] = new Property<int>(m_fruits, a_fruit);
     m_properties["radius"] = new Property<int>(m_radius, a_fruit);
     m_properties["fruitName"] = new Property<std::string>(m_fruitName, a_fruit);

@@ -52,8 +52,6 @@ Entity::Entity(const std::string & id) : BaseEntity(id),
                                          m_mass(-1), m_perceptive(false),
                                          m_world(NULL), m_update_flags(0)
 {
-    subscribe("create", OP_CREATE);
-
     m_properties["status"] = new Property<double>(m_status, a_status);
     m_properties["id"] = new ImmutableProperty<std::string>(getId());
     m_properties["name"] = new Property<std::string>(m_name, a_name);
@@ -245,6 +243,10 @@ void Entity::merge(const MapType & ent)
 /// @param op Type of operation this entity should be subscribed to
 void Entity::scriptSubscribe(const std::string & op)
 {
+    // FIXME Need to keep track efficiently of what script has, preferably
+    // with something like a std::set of class numbers for quick efficient
+    // checking
+#if 0
     OpNo n = Inheritance::instance().opEnumerate(op);
     if (n != OP_INVALID) {
         debug(std::cout << "SCRIPT requesting subscription to " << op
@@ -255,6 +257,7 @@ void Entity::scriptSubscribe(const std::string & op)
                         + op + " but inheritance could not give me a reference";
         log(ERROR, msg.c_str());
     }
+#endif
 }
 
 /// \brief Process an operation from an external source.

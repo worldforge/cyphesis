@@ -34,13 +34,7 @@ class BaseEntity : virtual public SigC::Object {
     BaseEntity(const BaseEntity &);
     const BaseEntity & operator=(const BaseEntity &);
   protected:
-    OpNoDict opLookup;
-
     explicit BaseEntity(const std::string & id);
-
-    void subscribe(const std::string& op, OpNo no) {
-        opLookup[op] = no;
-    }
   public:
     virtual ~BaseEntity();
 
@@ -89,8 +83,6 @@ class BaseEntity : virtual public SigC::Object {
     virtual void ErrorOperation(const Operation &, OpVector &);
 
     OpNo opEnumerate(const Operation &) const;
-    OpNo opEnumerate(const Operation &, const OpNoDict & d) const;
-    void subscribe(const std::string &);
     void callOperation(const Operation &, OpVector &);
     void error(const Operation &, const char * errstring, OpVector &,
                    const std::string & to = "") const;

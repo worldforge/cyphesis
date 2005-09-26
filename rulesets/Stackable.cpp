@@ -23,9 +23,6 @@ using Atlas::Objects::Entity::Anonymous;
 Stackable::Stackable(const std::string & id) : Stackable_parent(id),
                                                m_num(1)
 {
-    subscribe("combine", OP_COMBINE);
-    subscribe("divide", OP_DIVIDE);
-
     m_properties["num"] = new Property<int>(m_num, 0);
 }
 

@@ -44,15 +44,6 @@ static const bool debug_flag = false;
 /// \brief Constructor for physical or tangiable entities.
 Thing::Thing(const std::string & id) : Entity(id)
 {
-    subscribe("setup", OP_SETUP);
-    subscribe("action", OP_ACTION);
-    subscribe("delete", OP_DELETE);
-    subscribe("burn", OP_BURN);
-    subscribe("move", OP_MOVE);
-    subscribe("set", OP_SET);
-    subscribe("look", OP_LOOK);
-    subscribe("update", OP_UPDATE);
-
     m_motion = new Motion(*this);
 }
 

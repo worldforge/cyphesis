@@ -55,12 +55,6 @@ World::World(const std::string & id) : World_parent(id),
              m_terrain(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
              m_tileShader(*new Mercator::TileShader)
 {
-    subscribe("eat", OP_EAT);
-    subscribe("set", OP_SET);
-    subscribe("delve", OP_DELVE);
-    subscribe("dig", OP_DIG);
-    subscribe("mow", OP_MOW);
-
     m_properties["terrain"] = new TerrainProperty(m_terrain, m_modifiedTerrain,
                                                   m_modifiedTerrain, a_terrain);
 

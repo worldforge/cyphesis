@@ -46,12 +46,6 @@ Account::Account(Connection * conn, const std::string & uname,
                  : OOGThing(id), m_connection(conn),
                    m_username(uname), m_password(passwd)
 {
-    subscribe("logout", OP_LOGOUT);
-    subscribe("create", OP_CREATE);
-    subscribe("imaginary", OP_IMAGINARY);
-    subscribe("talk", OP_TALK);
-    subscribe("look", OP_LOOK);
-    subscribe("set", OP_SET);
 }
 
 Account::~Account()

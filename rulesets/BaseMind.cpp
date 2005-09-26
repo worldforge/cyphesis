@@ -37,20 +37,6 @@ BaseMind::BaseMind(const std::string & id, const std::string & body_name)
     setVisible(true);
     m_map.addEntity(this);
     //BaseMind::time=WorldTime();
-
-    subscribe("sight", OP_SIGHT);
-    subscribe("sound", OP_SOUND);
-    subscribe("tick", OP_TICK);
-    subscribe("setup", OP_SETUP);
-    subscribe("appearance", OP_APPEARANCE);
-    subscribe("disappearance", OP_DISAPPEARANCE);
-
-    sightSubscribe("create", OP_CREATE);
-    sightSubscribe("delete", OP_DELETE);
-    sightSubscribe("set", OP_SET);
-    sightSubscribe("move", OP_MOVE);
-
-    soundSubscribe("talk", OP_TALK);
 }
 
 BaseMind::~BaseMind()
@@ -66,6 +52,7 @@ BaseMind::~BaseMind()
 
 void BaseMind::scriptSubscribe(const std::string & op)
 {
+#if 0
     std::string::size_type l = op.find("_");
     if (l == std::string::npos) {
         OpNo n = Inheritance::instance().opEnumerate(op);
@@ -113,6 +100,7 @@ void BaseMind::scriptSubscribe(const std::string & op)
                         << " supported by the mind scriptig interface"
                         << std::endl << std::flush;);
     }
+#endif
 }
 
 void BaseMind::sightLoginOperation(const Operation & op, const Operation & sub_op, OpVector & res)
@@ -468,7 +456,7 @@ void BaseMind::callSightOperation(const Operation & op,
                                   OpVector & res)
 {
     m_map.getAdd(sub_op->getFrom());
-    OpNo op_no = opEnumerate(sub_op, opSightLookup);
+    OpNo op_no = opEnumerate(sub_op);
     if (debug_flag && (op_no == OP_INVALID)) {
         std::cout << getId() << " could not deliver sight of "
                   << sub_op->getParents().front()
@@ -482,7 +470,7 @@ void BaseMind::callSoundOperation(const Operation & op,
                                   OpVector & res)
 {
     m_map.getAdd(sub_op->getFrom());
-    OpNo op_no = opEnumerate(sub_op, opSoundLookup);
+    OpNo op_no = opEnumerate(sub_op);
     if (debug_flag && (op_no == OP_INVALID)) {
         std::cout << getId() << " could not deliver sound of "
                   << sub_op->getParents().front()

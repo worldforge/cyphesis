@@ -1,5 +1,16 @@
 2005-09-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.cpp, common/BaseEntity.h, common/inheritance.cpp,
+	  common/inheritance.h, rulesets/BaseMind.cpp, rulesets/BaseMind.h,
+	  rulesets/Character.cpp, rulesets/Character.h, rulesets/Entity.cpp,
+	  rulesets/Food.cpp, rulesets/Plant.cpp, rulesets/Stackable.cpp,
+	  rulesets/Thing.cpp, rulesets/World.cpp, server/Account.cpp,
+	  server/Admin.cpp, server/Connection.cpp, server/server.cpp:
+	  Remove the subscription mechanism as it is no longer necessary
+	  now that operations have class numbers.
+
+2005-09-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.cpp, common/custom.cpp, common/op_switch.h,
 	  common/types.h, rulesets/BaseMind.cpp, rulesets/Character.cpp,
 	  rulesets/Creator.cpp, rulesets/Food.cpp, rulesets/Plant.cpp,

@@ -36,7 +36,6 @@ static const bool debug_flag = false;
 
 BaseEntity::BaseEntity(const std::string & id) : m_id(id)
 {
-    subscribe("look", OP_LOOK);
 }
 
 BaseEntity::~BaseEntity()
@@ -333,32 +332,7 @@ void BaseEntity::ErrorOperation(const Operation & op, OpVector & res)
 
 OpNo BaseEntity::opEnumerate(const Operation & op) const
 {
-    return opEnumerate(op, opLookup);
-}
-
-OpNo BaseEntity::opEnumerate(const Operation & op, const OpNoDict & d) const
-{
-    const std::list<std::string> & parents = op->getParents();
-    if (parents.size() != 1) {
-        log(ERROR, "op with no parents");
-    }
-    const std::string & parent = parents.front();
-    OpNoDict::const_iterator I = d.find(parent);
-    if (I != d.end()) {
-        return I->second;
-    } else {
-        debug(std::cout << getId() << " is rejecting op of type " << parent
-                        << std::endl << std::flush;);
-        return OP_INVALID;
-    }
-}
-
-void BaseEntity::subscribe(const std::string & op)
-{
-    OpNo opNo = Inheritance::instance().opEnumerate(op);
-    if (opNo != OP_INVALID) {
-        subscribe(op, opNo);
-    }
+    return op->getClassNo();
 }
 
 void BaseEntity::callOperation(const Operation & op, OpVector & res)

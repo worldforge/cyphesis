@@ -22,17 +22,6 @@ class BaseMind : public MemEntity {
     bool m_isAwake;
     WorldTime m_time;
     int m_world;
-  protected:
-    OpNoDict opSightLookup;
-    OpNoDict opSoundLookup;
-
-    void sightSubscribe(const std::string & op, OpNo no) {
-        opSightLookup[op] = no;
-    }
-
-    void soundSubscribe(const std::string & op, OpNo no) {
-        opSoundLookup[op] = no;
-    }
   public:
     BaseMind(const std::string &, const std::string &);
     virtual ~BaseMind();

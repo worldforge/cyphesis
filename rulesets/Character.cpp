@@ -107,44 +107,6 @@ Character::Character(const std::string & id) : Character_parent(id),
     m_location.m_bBox = BBox(WFMath::Point<3>(-0.25, -0.25, 0),
                              WFMath::Point<3>(0.25, 0.25, 2));
 
-    subscribe("imaginary", OP_IMAGINARY);
-    subscribe("tick", OP_TICK);
-    subscribe("talk", OP_TALK);
-    subscribe("eat", OP_EAT);
-    subscribe("nourish", OP_NOURISH);
-    subscribe("wield", OP_WIELD);
-    subscribe("attack", OP_ATTACK);
-    subscribe("chop", OP_CHOP);
-
-    // subscribe to ops from the mind
-    mindSubscribe("action", OP_ACTION);
-    mindSubscribe("setup", OP_SETUP);
-    mindSubscribe("tick", OP_TICK);
-    mindSubscribe("move", OP_MOVE);
-    mindSubscribe("set", OP_SET);
-    mindSubscribe("create", OP_CREATE);
-    mindSubscribe("delete", OP_DELETE);
-    mindSubscribe("imaginary", OP_IMAGINARY);
-    mindSubscribe("talk", OP_TALK);
-    mindSubscribe("look", OP_LOOK);
-    mindSubscribe("cut", OP_CUT);
-    mindSubscribe("eat", OP_EAT);
-    mindSubscribe("touch", OP_TOUCH);
-    mindSubscribe("use", OP_USE);
-    mindSubscribe("wield", OP_WIELD);
-    mindSubscribe("attack", OP_ATTACK);
-    // FIXME mindSubscribe("shoot", OP_SHOOT);
-
-    // subscribe to ops for the mind
-    w2mSubscribe("appearance", OP_APPEARANCE);
-    w2mSubscribe("disappearance", OP_DISAPPEARANCE);
-    w2mSubscribe("error", OP_ERROR);
-    w2mSubscribe("setup", OP_SETUP);
-    w2mSubscribe("tick", OP_TICK);
-    w2mSubscribe("sight", OP_SIGHT);
-    w2mSubscribe("sound", OP_SOUND);
-    w2mSubscribe("touch", OP_TOUCH);
-
     m_properties["drunkness"] = new Property<double>(m_drunkness, a_drunk);
     m_properties["sex"] = new Property<std::string>(m_sex, a_sex);
     m_properties["right_hand_wield"] = new Property<std::string>(m_rightHandWield, a_rwield);
@@ -1242,14 +1204,14 @@ void Character::mind2body(const Operation & op, OpVector & res)
         std::cerr << "Operation \"" << op->getParents().front() << "\"from mind with TO set" << std::endl << std::flush;
         log(WARNING, "Operation from mind with TO set");
     }
-    OpNo otype = opEnumerate(op, opMindLookup);
+    OpNo otype = opEnumerate(op);
     OP_SWITCH(op, otype, res, mind)
 }
 
 bool Character::world2mind(const Operation & op)
 {
     debug( std::cout << "Character::world2mind(" << op->getParents().front() << ")" << std::endl << std::flush;);
-    OpNo otype = opEnumerate(op, opW2mLookup);
+    OpNo otype = opEnumerate(op);
     POLL_OP_SWITCH(op, otype, w2m)
     return false;
 }

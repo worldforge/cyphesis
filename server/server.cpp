@@ -118,6 +118,8 @@ int main(int argc, char ** argv)
     // world object pair (World + WorldRouter), and initialise the admin
     // account. The primary ruleset name is passed in so it
     // can be stored and queried by clients.
+    Inheritance::instance();
+
     WorldRouter world;
 
     ServerRouting server(world, rulesets.front(), serverName);

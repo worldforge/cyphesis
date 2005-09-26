@@ -22,8 +22,6 @@ Food::Food(const std::string & id) : Food_parent(id)
     m_attributes["cooked"] = 0;
     m_attributes["burn_speed"] = 0.1;
     m_mass = 1;
-
-    subscribe("eat", OP_EAT);
 }
 
 Food::~Food()
