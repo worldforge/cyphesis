@@ -783,12 +783,6 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         vel_mag = consts::base_velocity;
     }
 
-    Tick tickOp;
-    Anonymous tick_arg;
-    tick_arg->setAttr("serialno", m_movement.serialno());
-    tick_arg->setName("move");
-    tickOp->setArgs1(tick_arg);
-    tickOp->setTo(getId());
     // Need to add the arguments to this op before we return it
     // direction is already a unit vector
     debug( if (new_pos.isValid()) { std::cout<<"\tUsing target"
@@ -810,14 +804,24 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
                     << std::endl << std::flush;);
 
     Operation moveOp = m_movement.generateMove(ret_location);
-    tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.m_pos,
-                                                        ret_location.m_velocity));
-
     assert(moveOp.isValid());
-
-    // return moveOp and tickOp;
     res.push_back(moveOp);
-    res.push_back(tickOp);
+
+    if (ret_location.m_velocity.isValid() &&
+        ret_location.m_velocity != Vector3D(0,0,0)) {
+
+        Tick tickOp;
+        Anonymous tick_arg;
+        tick_arg->setAttr("serialno", m_movement.serialno());
+        tick_arg->setName("move");
+        tickOp->setArgs1(tick_arg);
+        tickOp->setTo(getId());
+        tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.m_pos,
+                                                     ret_location.m_velocity));
+
+        res.push_back(tickOp);
+    }
+
 }
 
 void Character::mindSetOperation(const Operation & op, OpVector & res)

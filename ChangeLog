@@ -1,5 +1,10 @@
 2005-09-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: When processing Move op from mind,
+	  suppress Tick op used to update if character is not moving.
+
+2005-09-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.cpp, common/BaseEntity.h, common/inheritance.cpp,
 	  common/inheritance.h, rulesets/BaseMind.cpp, rulesets/BaseMind.h,
 	  rulesets/Character.cpp, rulesets/Character.h, rulesets/Entity.cpp,
