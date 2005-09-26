@@ -41,56 +41,56 @@ void installCustomOperations()
     Atlas::Objects::Factories * atlas_factories = Atlas::Objects::Factories::instance();
 
     i.addChild(atlasOpDefinition("add", "set"));
-    i.opInstall("add", OP_ADD);
     Atlas::Objects::Operation::ADD_NO = atlas_factories->addFactory("add", &Atlas::Objects::generic_factory);
+    i.opInstall("add", OP_ADD);
 
     i.addChild(atlasOpDefinition("burn", "action"));
-    i.opInstall("burn", OP_BURN);
     Atlas::Objects::Operation::BURN_NO = atlas_factories->addFactory("burn", &Atlas::Objects::generic_factory);
+    i.opInstall("burn", OP_BURN);
 
     i.addChild(atlasOpDefinition("chop", "affect"));
-    i.opInstall("chop", OP_CHOP);
     Atlas::Objects::Operation::CHOP_NO = atlas_factories->addFactory("chop", &Atlas::Objects::generic_factory);
+    i.opInstall("chop", OP_CHOP);
 
     i.addChild(atlasOpDefinition("cut", "action"));
-    i.opInstall("cut", OP_CUT);
     Atlas::Objects::Operation::CUT_NO = atlas_factories->addFactory("cut", &Atlas::Objects::generic_factory);
+    i.opInstall("cut", OP_CUT);
 
     i.addChild(atlasOpDefinition("delve", "affect"));
-    i.opInstall("delve", OP_OTHER);
     Atlas::Objects::Operation::DELVE_NO = atlas_factories->addFactory("delve", &Atlas::Objects::generic_factory);
+    i.opInstall("delve", OP_DELVE);
 
     i.addChild(atlasOpDefinition("dig", "affect"));
-    i.opInstall("dig", OP_OTHER);
     Atlas::Objects::Operation::DIG_NO = atlas_factories->addFactory("dig", &Atlas::Objects::generic_factory);
+    i.opInstall("dig", OP_DIG);
 
     i.addChild(atlasOpDefinition("eat", "action"));
-    i.opInstall("eat", OP_EAT);
     Atlas::Objects::Operation::EAT_NO = atlas_factories->addFactory("eat", &Atlas::Objects::generic_factory);
+    i.opInstall("eat", OP_EAT);
 
     i.addChild(atlasOpDefinition("mow", "affect"));
-    i.opInstall("mow", OP_OTHER);
     Atlas::Objects::Operation::MOW_NO = atlas_factories->addFactory("mow", &Atlas::Objects::generic_factory);
+    i.opInstall("mow", OP_MOW);
 
     i.addChild(atlasOpDefinition("nourish", "affect"));
-    i.opInstall("nourish", OP_NOURISH);
     Atlas::Objects::Operation::NOURISH_NO = atlas_factories->addFactory("nourish", &Atlas::Objects::generic_factory);
+    i.opInstall("nourish", OP_NOURISH);
 
     i.addChild(atlasOpDefinition("setup", "root_operation"));
-    i.opInstall("setup", OP_SETUP);
     Atlas::Objects::Operation::SETUP_NO = atlas_factories->addFactory("setup", &Atlas::Objects::generic_factory);
+    i.opInstall("setup", OP_SETUP);
 
     i.addChild(atlasOpDefinition("tick", "root_operation"));
-    i.opInstall("tick", OP_TICK);
     Atlas::Objects::Operation::TICK_NO = atlas_factories->addFactory("tick", &Atlas::Objects::generic_factory);
+    i.opInstall("tick", OP_TICK);
 
     i.addChild(atlasOpDefinition("unseen", "perception"));
-    i.opInstall("unseen", OP_UNSEEN);
     Atlas::Objects::Operation::UNSEEN_NO = atlas_factories->addFactory("unseen", &Atlas::Objects::generic_factory);
+    i.opInstall("unseen", OP_UNSEEN);
 
     i.addChild(atlasOpDefinition("attack", "perception"));
-    i.opInstall("attack", OP_ATTACK);
     Atlas::Objects::Operation::ATTACK_NO = atlas_factories->addFactory("attack", &Atlas::Objects::generic_factory);
+    i.opInstall("attack", OP_ATTACK);
 
 }
 

@@ -5,6 +5,7 @@
 #include "Food.h"
 #include "Script.h"
 
+#include "common/Eat.h"
 #include "common/Nourish.h"
 
 #include <Atlas/Objects/Operation.h>

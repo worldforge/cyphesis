@@ -15,6 +15,8 @@
 
 #include "common/Tick.h"
 #include "common/Eat.h"
+#include "common/Chop.h"
+#include "common/Nourish.h"
 
 #include <wfmath/atlasconv.h>
 

@@ -10,29 +10,14 @@
         case OP_ACTION: \
             _prefix ## ActionOperation(_op, _result); \
             break; \
-        case OP_ADD: \
-            _prefix ## AddOperation(_op, _result); \
-            break; \
         case OP_APPEARANCE: \
             _prefix ## AppearanceOperation(_op, _result); \
-            break; \
-        case OP_ATTACK: \
-            _prefix ## AttackOperation(_op, _result); \
-            break; \
-        case OP_BURN: \
-            _prefix ## BurnOperation(_op, _result); \
-            break; \
-        case OP_CHOP: \
-            _prefix ## ChopOperation(_op, _result); \
             break; \
         case OP_COMBINE: \
             _prefix ## CombineOperation(_op, _result); \
             break; \
         case OP_CREATE: \
             _prefix ## CreateOperation(_op, _result); \
-            break; \
-        case OP_CUT: \
-            _prefix ## CutOperation(_op, _result); \
             break; \
         case OP_DELETE: \
             _prefix ## DeleteOperation(_op, _result); \
@@ -42,9 +27,6 @@
             break; \
         case OP_DIVIDE: \
             _prefix ## DivideOperation(_op, _result); \
-            break; \
-        case OP_EAT: \
-            _prefix ## EatOperation(_op, _result); \
             break; \
         case OP_ERROR: \
             _prefix ## ErrorOperation(_op, _result); \
@@ -70,14 +52,8 @@
         case OP_MOVE: \
             _prefix ## MoveOperation(_op, _result); \
             break; \
-        case OP_NOURISH: \
-            _prefix ## NourishOperation(_op, _result); \
-            break; \
         case OP_SET: \
             _prefix ## SetOperation(_op, _result); \
-            break; \
-        case OP_SETUP: \
-            _prefix ## SetupOperation(_op, _result); \
             break; \
         case OP_SIGHT: \
             _prefix ## SightOperation(_op, _result); \
@@ -88,14 +64,8 @@
         case OP_TALK: \
             _prefix ## TalkOperation(_op, _result); \
             break; \
-        case OP_TICK: \
-            _prefix ## TickOperation(_op, _result); \
-            break; \
         case OP_TOUCH: \
             _prefix ## TouchOperation(_op, _result); \
-            break; \
-        case OP_UPDATE: \
-            _prefix ## UpdateOperation(_op, _result); \
             break; \
         case OP_USE: \
             _prefix ## UseOperation(_op, _result); \
@@ -106,7 +76,29 @@
         case OP_INVALID: \
             break; \
         default: \
-            _prefix ## OtherOperation((const Operation &)_op, _result); \
+            if (_op_no == Atlas::Objects::Operation::ADD_NO) { \
+                _prefix ## AddOperation(_op, _result); \
+            } else if (_op_no == Atlas::Objects::Operation::ATTACK_NO) { \
+                _prefix ## AttackOperation(_op, _result); \
+            } else if (_op_no == Atlas::Objects::Operation::BURN_NO) { \
+                _prefix ## BurnOperation(_op, _result); \
+            } else if (_op_no == Atlas::Objects::Operation::CHOP_NO) { \
+                _prefix ## ChopOperation(_op, _result); \
+            } else if (_op_no == Atlas::Objects::Operation::CUT_NO) { \
+                _prefix ## CutOperation(_op, _result); \
+            } else if (_op_no == Atlas::Objects::Operation::EAT_NO) { \
+                _prefix ## EatOperation(_op, _result); \
+            } else if (_op_no == Atlas::Objects::Operation::NOURISH_NO) { \
+                _prefix ## NourishOperation(_op, _result); \
+            } else if (_op_no == Atlas::Objects::Operation::SETUP_NO) { \
+                _prefix ## SetupOperation(_op, _result); \
+            } else if (_op_no == Atlas::Objects::Operation::TICK_NO) { \
+                _prefix ## TickOperation(_op, _result); \
+            } else if (_op_no == Atlas::Objects::Operation::UPDATE_NO) { \
+                _prefix ## UpdateOperation(_op, _result); \
+            } else { \
+                _prefix ## OtherOperation(_op, _result); \
+            } \
             break; \
     }
 
@@ -118,23 +110,11 @@
         case OP_APPEARANCE: \
             return _prefix ## AppearanceOperation(_op); \
             break; \
-        case OP_ATTACK: \
-            return _prefix ## AttackOperation(_op); \
-            break; \
-        case OP_BURN: \
-            return _prefix ## BurnOperation(_op); \
-            break; \
-        case OP_CHOP: \
-            return _prefix ## ChopOperation(_op); \
-            break; \
         case OP_COMBINE: \
             return _prefix ## CombineOperation(_op); \
             break; \
         case OP_CREATE: \
             return _prefix ## CreateOperation(_op); \
-            break; \
-        case OP_CUT: \
-            return _prefix ## CutOperation(_op); \
             break; \
         case OP_DELETE: \
             return _prefix ## DeleteOperation(_op); \
@@ -144,9 +124,6 @@
             break; \
         case OP_DIVIDE: \
             return _prefix ## DivideOperation(_op); \
-            break; \
-        case OP_EAT: \
-            return _prefix ## EatOperation(_op); \
             break; \
         case OP_GET: \
             return _prefix ## GetOperation(_op); \
@@ -169,14 +146,8 @@
         case OP_MOVE: \
             return _prefix ## MoveOperation(_op); \
             break; \
-        case OP_NOURISH: \
-            return _prefix ## NourishOperation(_op); \
-            break; \
         case OP_SET: \
             return _prefix ## SetOperation(_op); \
-            break; \
-        case OP_SETUP: \
-            return _prefix ## SetupOperation(_op); \
             break; \
         case OP_SIGHT: \
             return _prefix ## SightOperation(_op); \
@@ -186,9 +157,6 @@
             break; \
         case OP_TALK: \
             return _prefix ## TalkOperation(_op); \
-            break; \
-        case OP_TICK: \
-            return _prefix ## TickOperation(_op); \
             break; \
         case OP_TOUCH: \
             return _prefix ## TouchOperation(_op); \
@@ -205,7 +173,25 @@
         case OP_INVALID: \
             break; \
         default: \
-            return _prefix ## OtherOperation(_op); \
+            if (_op_no == Atlas::Objects::Operation::ATTACK_NO) { \
+                return _prefix ## AttackOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::BURN_NO) { \
+                return _prefix ## BurnOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::CHOP_NO) { \
+                return _prefix ## ChopOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::CUT_NO) { \
+                return _prefix ## CutOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::EAT_NO) { \
+                return _prefix ## EatOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::NOURISH_NO) { \
+                return _prefix ## NourishOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::SETUP_NO) { \
+                return _prefix ## SetupOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::TICK_NO) { \
+                return _prefix ## TickOperation(_op); \
+            } else { \
+                return _prefix ## OtherOperation(_op); \
+            } \
             break; \
     }
 
@@ -215,32 +201,17 @@
         case OP_ACTION: \
             _prefix ## ActionOperation(_op, _sub_op, _result); \
             break; \
-        case OP_ATTACK: \
-            _prefix ## AttackOperation(_op, _sub_op, _result); \
-            break; \
-        case OP_BURN: \
-            _prefix ## BurnOperation(_op, _sub_op, _result); \
-            break; \
-        case OP_CHOP: \
-            _prefix ## ChopOperation(_op, _sub_op, _result); \
-            break; \
         case OP_COMBINE: \
             _prefix ## CombineOperation(_op, _sub_op, _result); \
             break; \
         case OP_CREATE: \
             _prefix ## CreateOperation(_op, _sub_op, _result); \
             break; \
-        case OP_CUT: \
-            _prefix ## CutOperation(_op, _sub_op, _result); \
-            break; \
         case OP_DELETE: \
             _prefix ## DeleteOperation(_op, _sub_op, _result); \
             break; \
         case OP_DIVIDE: \
             _prefix ## DivideOperation(_op, _sub_op, _result); \
-            break; \
-        case OP_EAT: \
-            _prefix ## EatOperation(_op, _sub_op, _result); \
             break; \
         case OP_IMAGINARY: \
             _prefix ## ImaginaryOperation(_op, _sub_op, _result); \
@@ -263,7 +234,19 @@
         case OP_INVALID: \
             break; \
         default: \
-            _prefix ## OtherOperation(_op, _sub_op, _result); \
+            if (_sub_op_no == Atlas::Objects::Operation::ATTACK_NO) { \
+                _prefix ## AttackOperation(_op, _sub_op, _result); \
+            } else if (_sub_op_no == Atlas::Objects::Operation::BURN_NO) { \
+                _prefix ## BurnOperation(_op, _sub_op, _result); \
+            } else if (_sub_op_no == Atlas::Objects::Operation::CHOP_NO) { \
+                _prefix ## ChopOperation(_op, _sub_op, _result); \
+            } else if (_sub_op_no == Atlas::Objects::Operation::CUT_NO) { \
+                _prefix ## CutOperation(_op, _sub_op, _result); \
+            } else if (_sub_op_no == Atlas::Objects::Operation::EAT_NO) { \
+                _prefix ## EatOperation(_op, _sub_op, _result); \
+            } else { \
+                _prefix ## OtherOperation(_op, _sub_op, _result); \
+            } \
             break; \
     }
 

@@ -12,8 +12,10 @@
 #include "common/debug.h"
 #include "common/compose.hpp"
 
-#include "common/Tick.h"
+#include "common/Burn.h"
 #include "common/Nourish.h"
+#include "common/Setup.h"
+#include "common/Tick.h"
 #include "common/Update.h"
 
 #include <wfmath/atlasconv.h>

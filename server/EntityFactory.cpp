@@ -280,8 +280,8 @@ int EntityFactory::installOpDefinition(const std::string & opDefName,
         return -1;
     }
 
-    i.opInstall(opDefName, OP_OTHER);
-    Atlas::Objects::Factories::instance()->addFactory(opDefName, &Atlas::Objects::generic_factory);
+    int op_no = Atlas::Objects::Factories::instance()->addFactory(opDefName, &Atlas::Objects::generic_factory);
+    i.opInstall(opDefName, op_no);
 
     return 0;
 }

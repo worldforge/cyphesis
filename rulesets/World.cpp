@@ -11,6 +11,10 @@
 #include "common/debug.h"
 #include "common/inheritance.h"
 
+#include "common/Delve.h"
+#include "common/Dig.h"
+#include "common/Eat.h"
+#include "common/Mow.h"
 #include "common/Nourish.h"
 
 #include <Mercator/Terrain.h>
@@ -53,9 +57,9 @@ World::World(const std::string & id) : World_parent(id),
 {
     subscribe("eat", OP_EAT);
     subscribe("set", OP_SET);
-    subscribe("delve", OP_OTHER);
-    subscribe("dig", OP_OTHER);
-    subscribe("mow", OP_OTHER);
+    subscribe("delve", OP_DELVE);
+    subscribe("dig", OP_DIG);
+    subscribe("mow", OP_MOW);
 
     m_properties["terrain"] = new TerrainProperty(m_terrain, m_modifiedTerrain,
                                                   m_modifiedTerrain, a_terrain);

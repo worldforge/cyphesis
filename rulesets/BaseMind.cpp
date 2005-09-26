@@ -11,10 +11,13 @@
 #include "common/op_switch.h"
 #include "common/inheritance.h"
 
+#include "common/Attack.h"
+#include "common/Burn.h"
 #include "common/Chop.h"
 #include "common/Cut.h"
 #include "common/Eat.h"
-#include "common/Burn.h"
+#include "common/Setup.h"
+#include "common/Tick.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/RootEntity.h>

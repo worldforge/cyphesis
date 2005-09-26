@@ -21,9 +21,17 @@
 #include "common/serialno.h"
 #include "common/compose.hpp"
 
-#include "common/Tick.h"
+#include "common/Add.h"
+#include "common/Attack.h"
+#include "common/Burn.h"
+#include "common/Chop.h"
+#include "common/Cut.h"
+#include "common/Eat.h"
 #include "common/Nourish.h"
+#include "common/Setup.h"
+#include "common/Tick.h"
 #include "common/Unseen.h"
+#include "common/Update.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -125,7 +133,7 @@ Character::Character(const std::string & id) : Character_parent(id),
     mindSubscribe("use", OP_USE);
     mindSubscribe("wield", OP_WIELD);
     mindSubscribe("attack", OP_ATTACK);
-    mindSubscribe("shoot", OP_OTHER);
+    // FIXME mindSubscribe("shoot", OP_SHOOT);
 
     // subscribe to ops for the mind
     w2mSubscribe("appearance", OP_APPEARANCE);
@@ -162,11 +170,11 @@ void Character::ImaginaryOperation(const Operation & op, OpVector & res)
 
 void Character::SetupOperation(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "CHaracter::Operation(setup)" << std::endl
+    debug( std::cout << "CHaracter::SetupOperation()" << std::endl
                      << std::flush;);
 
     if (op->hasAttr("sub_to")) {
-        debug( std::cout << "Has sub_to" << std::endl << std::flush;);
+        debug( std::cout << "Setup has sub_to" << std::endl << std::flush;);
         return;
     }
 
@@ -1203,7 +1211,7 @@ bool Character::w2mTouchOperation(const Operation & op)
 
 void Character::sendMind(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "Character::sendMind" << std::endl << std::flush;);
+    debug( std::cout << "Character::sendMind(" << op->getParents().front() << ")" << std::endl << std::flush;);
 
     if (0 != m_externalMind) {
         if (0 != m_mind) {
@@ -1225,7 +1233,7 @@ void Character::sendMind(const Operation & op, OpVector & res)
 
 void Character::mind2body(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "Character::mind2body" << std::endl << std::flush;);
+    debug( std::cout << "Character::mind2body(" << std::endl << std::flush;);
 
     if (m_drunkness > 1.0) {
         return;
@@ -1240,7 +1248,7 @@ void Character::mind2body(const Operation & op, OpVector & res)
 
 bool Character::world2mind(const Operation & op)
 {
-    debug( std::cout << "Character::world2mind" << std::endl << std::flush;);
+    debug( std::cout << "Character::world2mind(" << op->getParents().front() << ")" << std::endl << std::flush;);
     OpNo otype = opEnumerate(op, opW2mLookup);
     POLL_OP_SWITCH(op, otype, w2m)
     return false;
@@ -1248,13 +1256,14 @@ bool Character::world2mind(const Operation & op)
 
 void Character::operation(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "Character::operation" << std::endl << std::flush;);
+    debug( std::cout << "Character::operation(" << op->getParents().front() << ")" << std::endl << std::flush;);
     callOperation(op, res);
     // set refno on result?
     if (!m_isAlive) {
         return;
     }
     if (world2mind(op)) {
+        debug( std::cout << "Character::operation(" << op->getParents().front() << ") passed to mind" << std::endl << std::flush;);
         OpVector mres;
         sendMind(op, mres);
         OpVector::const_iterator Iend = mres.end();
@@ -1269,7 +1278,7 @@ void Character::operation(const Operation & op, OpVector & res)
 
 void Character::externalOperation(const Operation & op)
 {
-    debug( std::cout << "Character::externalOperation" << std::endl << std::flush;);
+    debug( std::cout << "Character::externalOperation(" << op->getParents().front() << ")" << std::endl << std::flush;);
     OpVector mres;
     mind2body(op, mres);
     

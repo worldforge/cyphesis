@@ -10,6 +10,9 @@
 #include "common/const.h"
 #include "common/serialno.h"
 
+#include "common/Setup.h"
+#include "common/Tick.h"
+
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
@@ -73,19 +76,18 @@ void Creator::operation(const Operation & op, OpVector & res)
         case OP_MOVE:
             MoveOperation(op, res);
             break;
-        case OP_SETUP:
-            m_world->addPerceptive(getId());
-            break;
         case OP_DELETE:
             DeleteOperation(op, res);
             // Prevent Delete op from being sent to mind, so another delete
             // is not created in response.
             return;
             break;
-        case OP_TICK:
-            TickOperation(op, res);
-            break;
         default:
+            if (op_no == OP_SETUP) {
+                m_world->addPerceptive(getId());
+            } else if (op_no == OP_TICK) {
+                TickOperation(op, res);
+            }
             break;
     }
     sendExternalMind(op, res);

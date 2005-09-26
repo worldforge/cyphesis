@@ -18,6 +18,9 @@
 #include "common/serialno.h"
 #include "common/inheritance.h"
 
+#include "common/Connect.h"
+#include "common/Monitor.h"
+
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>

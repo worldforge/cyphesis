@@ -1,3 +1,21 @@
+2005-09-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.cpp, common/custom.cpp, common/op_switch.h,
+	  common/types.h, rulesets/BaseMind.cpp, rulesets/Character.cpp,
+	  rulesets/Creator.cpp, rulesets/Food.cpp, rulesets/Plant.cpp,
+	  rulesets/Thing.cpp, rulesets/World.cpp, server/Admin.cpp,
+	  server/Admin.cpp: Replace OpNo enumeration with defines for the
+	  integer class numbers.  Expand the switch statements used for op
+	  dispatch because runtime extended op definitions don't have a const
+	  number. 
+
+	* server/EntityFactory.cpp: Re-order installation of ops to ensure
+	  the number registered in enumeration maps is the one returned by
+	  the Atlas factories.
+
+	* rulesets/Character.cpp: Improve debug output for op handling when
+	  debug is enabled for this file.
+
 2005-09-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/inheritance.cpp: Replace a #warning with a FIXME.

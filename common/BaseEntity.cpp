@@ -10,6 +10,17 @@
 #include "serialno.h"
 #include "inheritance.h"
 
+#include "Add.h"
+#include "Attack.h"
+#include "Burn.h"
+#include "Chop.h"
+#include "Cut.h"
+#include "Eat.h"
+#include "Nourish.h"
+#include "Setup.h"
+#include "Tick.h"
+#include "Update.h"
+
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
