@@ -88,7 +88,7 @@ void Movement::checkCollisions(const Location & location)
         m_collEntity = other_location.m_loc;
         m_collLocChange = true;
     } else if (!m_collEntity->m_location.isSimple()) {
-        debug(std::cout << "Collision with non-solid object" << std::endl
+        debug(std::cout << "Collision with complex object" << std::endl
                         << std::flush;);
         // Non solid container - check for collision with its contents.
         const Location & lc2 = m_collEntity->m_location;

@@ -1,5 +1,9 @@
 2005-09-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Movement.cpp: Re-word a comment to make it clearer.
+
+2005-09-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/inheritance.cpp, common/inheritance.h: Re-introduce
 	  opEnumerate function as its useful for scripts, and tests.
 
