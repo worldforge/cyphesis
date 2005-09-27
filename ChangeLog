@@ -1,5 +1,10 @@
 2005-09-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Report an error if a movement tick op has
+	  no serialno. Remove some obsolete comments.
+
+2005-09-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: When processing Move op from mind,
 	  suppress Tick op used to update if character is not moving.
 

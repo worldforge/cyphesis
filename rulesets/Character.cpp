@@ -206,6 +206,8 @@ void Character::TickOperation(const Operation & op, OpVector & res)
                 debug(std::cout << "Old tick" << std::endl << std::flush;);
                 return;
             }
+        } else {
+            log(ERROR, "Character::TickOperation: No serialno in tick arg");
         }
         Location return_location;
         if (m_movement.getUpdatedLocation(return_location)) {
@@ -740,12 +742,9 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     // Movement within current ref. Work out the speed and stuff and
     // use movement object to track movement.
 
-    // This will be replaced by a call to getUpdatedLocation, which should
-    // return 1 if no update is required.
     Location ret_location;
     int ret = m_movement.getUpdatedLocation(ret_location);
     if (ret) {
-        // FIXME This could probably just be implicit in getUpdatedLocation()
         ret_location = m_location;
     }
 
