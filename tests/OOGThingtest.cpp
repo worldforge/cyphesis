@@ -24,7 +24,6 @@ int main()
 
     std::set<std::string> opNames;
     ee.addAllOperations(opNames);
-    ee.subscribeOperations(opNames);
 
     ee.runOperations();
 

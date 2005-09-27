@@ -100,7 +100,6 @@ void Inheritance::clear()
     }
 }
 
-#if 0
 OpNo Inheritance::opEnumerate(const std::string & parent) const
 {
     OpNoDict::const_iterator I = opLookup.find(parent);
@@ -110,7 +109,6 @@ OpNo Inheritance::opEnumerate(const std::string & parent) const
         return OP_INVALID;
     }
 }
-#endif
 
 OpNo Inheritance::opEnumerate(const Operation & op) const
 {

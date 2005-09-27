@@ -38,7 +38,7 @@ class Inheritance {
         opLookup[op] = no;
     }
 
-    // OpNo opEnumerate(const std::string & parent) const;
+    OpNo opEnumerate(const std::string & parent) const;
     OpNo opEnumerate(const Operation &) const;
     const Atlas::Objects::Root & getClass(const std::string & parent);
     bool hasClass(const std::string & parent);

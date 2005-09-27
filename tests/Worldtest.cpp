@@ -44,7 +44,6 @@ int main()
     // Subscribe the entity to every class of op
     std::set<std::string> opNames;
     ee.addAllOperations(opNames);
-    ee.subscribeOperations(opNames);
 
     // Throw an op of every type at the entity again now it is subscribed
     ee.runOperations();

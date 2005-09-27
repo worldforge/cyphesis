@@ -39,22 +39,6 @@ class EntityExerciser {
         flushOperations(ov1);
     }
 
-    virtual void subscribeOp(const std::string & op) {
-        m_ent.subscribe(op);
-    }
-    
-    virtual void subscribeOperations(const std::set<std::string> & ops) {
-        Inheritance & i = Inheritance::instance();
-        std::set<std::string>::const_iterator I = ops.begin();
-        std::set<std::string>::const_iterator Iend = ops.end();
-        for (; I != Iend; ++I) {
-            OpNo opNo = i.opEnumerate(*I);
-            assert(opNo != OP_INVALID);
-            subscribeOp(*I);
-            opNo = OP_INVALID; // Supresses warning about unused variable.
-        }
-    }
-
     void addAllOperations(std::set<std::string> & ops);
 
     void runOperations();

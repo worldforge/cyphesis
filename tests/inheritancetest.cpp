@@ -4,7 +4,15 @@
 
 #include "common/inheritance.h"
 
-#include <Atlas/Objects/RootOperation.h>
+#include "common/Chop.h"
+#include "common/Cut.h"
+#include "common/Eat.h"
+#include "common/Burn.h"
+#include "common/Nourish.h"
+#include "common/Setup.h"
+#include "common/Tick.h"
+
+#include <Atlas/Objects/Operation.h>
 
 #include <cassert>
 

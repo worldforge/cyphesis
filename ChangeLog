@@ -1,3 +1,19 @@
+2005-09-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/inheritance.cpp, common/inheritance.h: Re-introduce
+	  opEnumerate function as its useful for scripts, and tests.
+
+	* tests/inheritancetest.cpp: Add necessary includes to pick up
+	  operation class numbers.
+
+	* tests/Areatest.cpp, tests/BaseEntitytest.cpp,
+	  tests/Charactertest.cpp, tests/Creatortest.cpp,
+	  tests/EntityExerciser.h, tests/Entitytest.cpp,
+	  tests/Foodtest.cpp, tests/Linetest.cpp, tests/OOGThingtest.cpp,
+	  tests/Planttest.cpp, tests/Stackabletest.cpp,
+	  tests/Structuretest.cpp, tests/Thingtest.cpp, tests/Worldtest.cpp:
+	  Remove all uses of the removed op subscription mechanism.
+
 2005-09-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Report an error if a movement tick op has
