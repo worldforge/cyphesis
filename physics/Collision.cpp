@@ -340,30 +340,35 @@ bool predictEmergence(const CoordList & l,         // Vertices of this mesh
 {
     const WFMath::Point<3> & on = o.lowCorner();
     const WFMath::Point<3> & of = o.highCorner();
-    float mintime = 4;
-    bool flag = false;
+    float maxtime = -1;
 
     CoordList::const_iterator Iend = l.end();
     for (CoordList::const_iterator I = l.begin(); I != Iend; ++I) {
         float xtime = (u.x() >= 0.f) ? ((of.x() - I->x()) / u.x())
-                                   : ((on.x() - I->x()) / u.x());
+                                     : ((on.x() - I->x()) / u.x());
         float ytime = (u.y() >= 0.f) ? ((of.y() - I->y()) / u.y())
-                                   : ((on.y() - I->y()) / u.y());
+                                     : ((on.y() - I->y()) / u.y());
         float ztime = (u.z() >= 0.f) ? ((of.z() - I->z()) / u.z())
-                                   : ((on.z() - I->z()) / u.z());
+                                     : ((on.z() - I->z()) / u.z());
+        // Determine the time taken for the box corner to reach the nearest
+        // edge.
         float ctime = min(xtime, ytime, ztime);
         debug(std::cout << xtime << ":" << ytime << ":" << ztime << ":" << ctime
                         << std::endl << std::flush;);
-        if (ctime < mintime) {
-            mintime = ctime;
-        }
-        if (ctime > time) {
-            time = ctime;
-            flag = true;
+        // maxtime is the time for the last corner to make contact with the
+        // edge
+        if (ctime > maxtime) {
+            maxtime = ctime;
         }
     }
+    std::cout << maxtime << std::endl << std::flush;
+    if (maxtime > 0) {
+        time = maxtime;
+    } else {
+        time = 0;
+    }
 
-    return flag;
+    return true;
 }
 
 bool predictEmergence(const Location & l,  // This location

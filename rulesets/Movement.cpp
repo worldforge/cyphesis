@@ -126,6 +126,7 @@ void Movement::checkCollisions(const Location & location)
             m_collLocChange = true;
         }
     }
+    assert(m_collEntity != NULL);
     debug( std::cout << "COLLISION" << std::endl << std::flush; );
     if (collTime < getTickAddition(location.m_pos, location.m_velocity)) {
         debug( std::cout << "Setting target loc to " << location.m_pos << "+"
