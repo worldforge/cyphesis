@@ -228,13 +228,13 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         }
     }
 
-    Point3D oldpos = m_location.m_pos;
+    Point3D oldpos = m_location.pos();
 
     // Update pos
     fromStdVector(m_location.m_pos, ent->getPos());
     // FIXME Quick height hack
     m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
-                                                    m_location.m_pos,
+                                                    m_location.pos(),
                                                     mode);
     // m_location.update(m_world->getTime());
     m_update_flags |= a_pos;
@@ -270,8 +270,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     res.push_back(s);
 
-    if (m_location.m_velocity.isValid() &&
-        m_location.m_velocity.sqrMag() > WFMATH_EPSILON) {
+    if (m_location.velocity().isValid() &&
+        m_location.velocity().sqrMag() > WFMATH_EPSILON) {
         // m_motion->genUpdateOperation(); ??
         Update u;
         u->setFutureSeconds(consts::basic_tick);
@@ -288,7 +288,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // sight of the other because of this movement
     if (consts::enable_ranges && isPerceptive()) {
         debug(std::cout << "testing range" << std::endl;);
-        float fromSquSize = boxSquareSize(m_location.m_bBox);
+        float fromSquSize = boxSquareSize(m_location.bBox());
         std::vector<Root> appear, disappear;
 
         Anonymous this_ent;
@@ -298,9 +298,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
         EntitySet::const_iterator Iend = m_location.m_loc->m_contains.end();
         for(; I != Iend; ++I) {
-            float oldDist = squareDistance((*I)->m_location.m_pos, oldpos),
-                  newDist = squareDistance((*I)->m_location.m_pos, m_location.m_pos),
-                  oSquSize = boxSquareSize((*I)->m_location.m_bBox);
+            float oldDist = squareDistance((*I)->m_location.pos(), oldpos),
+                  newDist = squareDistance((*I)->m_location.pos(), m_location.pos()),
+                  oSquSize = boxSquareSize((*I)->m_location.bBox());
 
             // Build appear and disappear lists, and send operations
             // Also so operations to (dis)appearing perceptive

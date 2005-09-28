@@ -22,7 +22,7 @@ static PyObject * Location_copy(PyLocation *self)
     }
 #endif // NDEBUG
     PyLocation * ret = newPyLocation();
-    ret->location = new Location(self->location->m_loc, self->location->m_pos, self->location->m_velocity);
+    ret->location = new Location(self->location->m_loc, self->location->pos(), self->location->velocity());
     ret->own = 1;
     return (PyObject *)ret;
 }
@@ -59,22 +59,22 @@ static PyObject * Location_getattr(PyLocation *self, char *name)
     }
     if (strcmp(name, "coordinates") == 0) {
         PyPoint3D * v = newPyPoint3D();
-        v->coords = self->location->m_pos;
+        v->coords = self->location->pos();
         return (PyObject *)v;
     }
     if (strcmp(name, "velocity") == 0) {
         PyVector3D * v = newPyVector3D();
-        v->coords = self->location->m_velocity;
+        v->coords = self->location->velocity();
         return (PyObject *)v;
     }
     if (strcmp(name, "orientation") == 0) {
         PyQuaternion * v = newPyQuaternion();
-        v->rotation = self->location->m_orientation;
+        v->rotation = self->location->orientation();
         return (PyObject *)v;
     }
     if (strcmp(name, "bbox") == 0) {
         PyBBox * b = newPyBBox();
-        b->box = self->location->m_bBox;
+        b->box = self->location->bBox();
         return (PyObject *)b;
     }
     return Py_FindMethod(Location_methods, (PyObject *)self, name);

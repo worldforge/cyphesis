@@ -63,11 +63,11 @@ int Plant::dropFruit(OpVector & res)
     m_fruits -= drop;
     debug(std::cout << "Dropping " << drop << " fruits from "
                     << m_type << " plant." << std::endl << std::flush;);
-    float height = m_location.m_bBox.highCorner().z(); 
+    float height = m_location.bBox().highCorner().z(); 
     for(int i = 0; i < drop; ++i) {
-        float rx = m_location.m_pos.x() + uniform( height * m_radius,
+        float rx = m_location.pos().x() + uniform( height * m_radius,
                                                   -height * m_radius);
-        float ry = m_location.m_pos.y() + uniform( height * m_radius,
+        float ry = m_location.pos().y() + uniform( height * m_radius,
                                                   -height * m_radius);
         Anonymous fruit_arg;
         fruit_arg->setName(m_fruitName);
@@ -99,7 +99,7 @@ void Plant::ChopOperation(const Operation & op, OpVector & res)
         set_op->setTo(getId());
         res.push_back(op);
 
-        if (m_location.m_bBox.isValid()) {
+        if (m_location.bBox().isValid()) {
             debug(std::cout << "Plant replaced by log" << std::endl << std::flush;);
             Create create_op;
             Anonymous create_arg;
@@ -124,11 +124,11 @@ void Plant::ChopOperation(const Operation & op, OpVector & res)
     axis.normalize();
     // FIXME Make tree fall away from axe, by using cross product of
     // distance to axe, and vertical axis as axis of rotation
-    Quaternion orient(m_location.m_orientation);
+    Quaternion orient(m_location.orientation());
     orient.rotation(axis, M_PI/2);
     move_arg->setAttr("orientation", orient.toAtlas());
     move_arg->setAttr("mode", "felled");
-    ::addToEntity(m_location.m_pos, move_arg->modifyPos());
+    ::addToEntity(m_location.pos(), move_arg->modifyPos());
     move_arg->setId(getId());
     move->setArgs1(move_arg);
     move->setTo(getId());
@@ -199,7 +199,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         double height_scale = pow(scale, 0.33333f);
         debug(std::cout << "scale " << scale << ", " << height_scale
                         << std::endl << std::flush;);
-        const BBox & ob = m_location.m_bBox;
+        const BBox & ob = m_location.bBox();
         BBox new_bbox(Point3D(ob.lowCorner().x() * height_scale,
                               ob.lowCorner().y() * height_scale,
                               ob.lowCorner().z() * height_scale),
@@ -212,8 +212,8 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     }
 
     int dropped = dropFruit(res);
-    if (m_location.m_bBox.isValid() && 
-        (m_location.m_bBox.highCorner().z() > m_sizeAdult)) {
+    if (m_location.bBox().isValid() && 
+        (m_location.bBox().highCorner().z() > m_sizeAdult)) {
         if (randint(1, m_fruitChance) == 1) {
             m_fruits++;
             dropped--;

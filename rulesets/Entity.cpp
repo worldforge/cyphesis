@@ -200,13 +200,13 @@ void Entity::destroy()
         // FIXME velocity and orientation  need to be adjusted
         obj->m_location.m_loc = m_location.m_loc;
         m_location.m_loc->incRef();
-        if (m_location.m_orientation.isValid()) {
-            obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.m_pos, m_location.m_orientation);
-            obj->m_location.m_velocity.rotate(m_location.m_orientation);
-            obj->m_location.m_orientation *= m_location.m_orientation;
+        if (m_location.orientation().isValid()) {
+            obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.pos(), m_location.orientation());
+            obj->m_location.m_velocity.rotate(m_location.orientation());
+            obj->m_location.m_orientation *= m_location.orientation();
         } else {
             static const Quaternion identity(1, 0, 0, 0);
-            obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.m_pos, identity);
+            obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.pos(), identity);
         }
         refContains.insert(obj);
     }
@@ -319,7 +319,7 @@ void Entity::CreateOperation(const Operation & op, OpVector & res)
             (m_location.m_loc != 0)) {
             ent->setLoc(m_location.m_loc->getId());
             if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-                ::addToEntity(m_location.m_pos, ent->modifyPos());
+                ::addToEntity(m_location.pos(), ent->modifyPos());
             }
         }
         const std::string & type = parents.front();

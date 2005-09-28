@@ -35,6 +35,13 @@ class Location {
     explicit Location(Entity * rf, const Point3D & crds);
     explicit Location(Entity * rf, const Point3D & crds, const Vector3D & vel);
 
+    const Point3D & pos() const { return m_pos; }
+    const Vector3D & velocity() const { return m_velocity; }
+    const Vector3D & acceleration() const { return m_acceleration; }
+    const Quaternion & orientation() const { return m_orientation; }
+    const Vector3D & angular() const { return m_angular; }
+    const BBox & bBox() const { return m_bBox; }
+
     bool isValid() const {
         return ((m_loc != NULL) && m_pos.isValid());
     }

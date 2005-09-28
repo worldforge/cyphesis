@@ -188,7 +188,7 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
         static const Quaternion identity(Quaternion().identity());
         assert(parent->m_location.m_loc != 0);
         // FIXME take account of orientation
-        const Point3D & ppos = parent->m_location.m_pos;
+        const Point3D & ppos = parent->m_location.pos();
         debug(std::cout << "parent " << parent->getId() << " of type "
                         << parent->getType() << " pos " << ppos.z()
                         << " my pos " << pos.z()
@@ -196,9 +196,9 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
         float h;
         // FIXME Recently swapped argument order as it appears to fix
         // a bug. Check carefully whether this is doing the right thing.
-        const Quaternion & parent_orientation = parent->m_location.m_orientation.isValid() ? parent->m_location.m_orientation : identity;
+        const Quaternion & parent_orientation = parent->m_location.orientation().isValid() ? parent->m_location.orientation() : identity;
         h =  ppos.z() - constrainHeight(parent->m_location.m_loc,
-                            pos.toParentCoords(parent->m_location.m_pos,
+                            pos.toParentCoords(parent->m_location.pos(),
                                                parent_orientation),
                             mode
                            );
@@ -246,7 +246,7 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
         }
     }
     ent->m_location.m_pos.z() = constrainHeight(ent->m_location.m_loc,
-                                                ent->m_location.m_pos, mode);
+                                                ent->m_location.pos(), mode);
     bool cont_change = ent->m_location.m_loc->m_contains.empty();
     ent->m_location.m_loc->m_contains.insert(ent);
     ent->m_location.m_loc->incRef();
@@ -426,7 +426,7 @@ void WorldRouter::operation(const Operation & op, Entity & from)
                 deliverTo(op, **I);
             }
         } else {
-            float fromSquSize = boxSquareSize(from.m_location.m_bBox);
+            float fromSquSize = boxSquareSize(from.m_location.bBox());
             EntitySet::const_iterator I = broadcast.begin();
             EntitySet::const_iterator Iend = broadcast.end();
             for (; I != Iend; ++I) {

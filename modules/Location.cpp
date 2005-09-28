@@ -41,23 +41,23 @@ void Location::addToMessage(Atlas::Message::MapType & omap) const
     if (m_loc!=NULL) {
         omap["loc"] = m_loc->getId();
     }
-    if (m_pos.isValid()) {
-        omap["pos"] = m_pos.toAtlas();
+    if (pos().isValid()) {
+        omap["pos"] = pos().toAtlas();
     }
-    if (m_velocity.isValid()) {
-        omap["velocity"] = m_velocity.toAtlas();
+    if (velocity().isValid()) {
+        omap["velocity"] = velocity().toAtlas();
     }
-    if (m_acceleration.isValid()) {
-        omap["accel"] = m_acceleration.toAtlas();
+    if (acceleration().isValid()) {
+        omap["accel"] = acceleration().toAtlas();
     }
-    if (m_orientation.isValid()) {
-        omap["orientation"] = m_orientation.toAtlas();
+    if (orientation().isValid()) {
+        omap["orientation"] = orientation().toAtlas();
     }
-    if (m_angular.isValid()) {
-        omap["angular"] = m_angular.toAtlas();
+    if (angular().isValid()) {
+        omap["angular"] = angular().toAtlas();
     }
-    if (m_bBox.isValid()) {
-        omap["bbox"] = m_bBox.toAtlas();
+    if (bBox().isValid()) {
+        omap["bbox"] = bBox().toAtlas();
     }
 }
 
@@ -66,23 +66,23 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     if (m_loc!=NULL) {
         ent->setLoc(m_loc->getId());
     }
-    if (m_pos.isValid()) {
-        ::addToEntity(m_pos, ent->modifyPos());
+    if (pos().isValid()) {
+        ::addToEntity(pos(), ent->modifyPos());
     }
-    if (m_velocity.isValid()) {
-        ::addToEntity(m_velocity, ent->modifyVelocity());
+    if (velocity().isValid()) {
+        ::addToEntity(velocity(), ent->modifyVelocity());
     }
-    if (m_acceleration.isValid()) {
-        ent->setAttr("accel", m_acceleration.toAtlas());
+    if (acceleration().isValid()) {
+        ent->setAttr("accel", acceleration().toAtlas());
     }
-    if (m_orientation.isValid()) {
-        ent->setAttr("orientation", m_orientation.toAtlas());
+    if (orientation().isValid()) {
+        ent->setAttr("orientation", orientation().toAtlas());
     }
-    if (m_angular.isValid()) {
-        ent->setAttr("angular", m_angular.toAtlas());
+    if (angular().isValid()) {
+        ent->setAttr("angular", angular().toAtlas());
     }
-    if (m_bBox.isValid()) {
-        ent->setAttr("bbox", m_bBox.toAtlas());
+    if (bBox().isValid()) {
+        ent->setAttr("bbox", bBox().toAtlas());
     }
 }
 
@@ -130,8 +130,8 @@ static bool distanceFromAncestor(const Location & self,
         return false;
     }
 
-    if (other.m_orientation.isValid()) {
-        c = c.toParentCoords(other.m_pos, other.m_orientation);
+    if (other.orientation().isValid()) {
+        c = c.toParentCoords(other.m_pos, other.orientation());
     } else {
         static const Quaternion identity(1, 0, 0, 0);
         c = c.toParentCoords(other.m_pos, identity);
@@ -148,8 +148,8 @@ static bool distanceToAncestor(const Location & self,
         return true;
     } else if ((self.m_loc != 0) &&
                distanceToAncestor(self.m_loc->m_location, other, c)) {
-        if (self.m_orientation.isValid()) {
-            c = c.toLocalCoords(self.m_pos, self.m_orientation);
+        if (self.orientation().isValid()) {
+            c = c.toLocalCoords(self.m_pos, self.orientation());
         } else {
             static const Quaternion identity(1, 0, 0, 0);
             c = c.toLocalCoords(self.m_pos, identity);
@@ -175,8 +175,8 @@ const Vector3D distanceTo(const Location & self, const Location & other)
     Point3D pos;
     distanceToAncestor(self, other, pos);
     Vector3D dist = pos - origin;
-    if (self.m_orientation.isValid()) {
-        dist.rotate(self.m_orientation);
+    if (self.orientation().isValid()) {
+        dist.rotate(self.orientation());
     }
     return dist;
 }

@@ -273,7 +273,7 @@ void Account::SetOperation(const Operation & op, OpVector & res)
     if (arg->copyAttr("height", height) == 0 && (height.isNum())) {
         debug(std::cout << "Got attempt to change characters height"
                         << std::endl << std::flush;);
-        BBox & bbox = e->m_location.m_bBox;
+        const BBox & bbox = e->m_location.bBox();
         if (bbox.isValid()) {
             float old_height = bbox.highCorner().z() - bbox.lowCorner().z();
             float scale = height.asNum() / old_height;

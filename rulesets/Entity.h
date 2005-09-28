@@ -198,7 +198,7 @@ class Entity : public BaseEntity {
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)
 {
-    return s << "{" << v.m_loc->getId() << "," << v.m_pos << ","
+    return s << "{" << v.m_loc->getId() << "," << v.pos() << ","
              << v.m_velocity << "}";
 }
 

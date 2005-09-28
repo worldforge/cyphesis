@@ -27,27 +27,27 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
     }
     if (t.getUpdateFlags() & a_pos) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "px = " << t.m_location.m_pos.x()
-          << ", py = " << t.m_location.m_pos.y()
-          << ", pz = " << t.m_location.m_pos.z();
+        q << "px = " << t.m_location.pos().x()
+          << ", py = " << t.m_location.pos().y()
+          << ", pz = " << t.m_location.pos().z();
     }
     if (t.getUpdateFlags() & a_orient) {
         if (!empty) { q << ", "; } else { empty = false; }
-        q << "ox = " << t.m_location.m_orientation.vector().x()
-          << ", oy = " << t.m_location.m_orientation.vector().y()
-          << ", oz = " << t.m_location.m_orientation.vector().z()
-          << ", ow = " << t.m_location.m_orientation.scalar();
+        q << "ox = " << t.m_location.orientation().vector().x()
+          << ", oy = " << t.m_location.orientation().vector().y()
+          << ", oz = " << t.m_location.orientation().vector().z()
+          << ", ow = " << t.m_location.orientation().scalar();
     }
     if (t.getUpdateFlags() & a_bbox) {
         if (!empty) { q << ", "; } else { empty = false; }
-        if (t.m_location.m_bBox.isValid()) {
+        if (t.m_location.bBox().isValid()) {
             q << "hasBox = 't'"
-              << ", bnx = " << t.m_location.m_bBox.lowCorner().x()
-              << ", bny = " << t.m_location.m_bBox.lowCorner().y()
-              << ", bnz = " << t.m_location.m_bBox.lowCorner().z()
-              << ", bfx = " << t.m_location.m_bBox.highCorner().x()
-              << ", bfy = " << t.m_location.m_bBox.highCorner().y()
-              << ", bfz = " << t.m_location.m_bBox.highCorner().z();
+              << ", bnx = " << t.m_location.bBox().lowCorner().x()
+              << ", bny = " << t.m_location.bBox().lowCorner().y()
+              << ", bnz = " << t.m_location.bBox().lowCorner().z()
+              << ", bfx = " << t.m_location.bBox().highCorner().x()
+              << ", bfy = " << t.m_location.bBox().highCorner().y()
+              << ", bfz = " << t.m_location.bBox().highCorner().z();
         } else {
             q << "hasBox = 'f'";
         }
@@ -148,25 +148,25 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
       << sq << t.getType() << sq << cs
       << sq << t.m_location.m_loc->getId() << sq << cs
       << t.m_contains.size() << cs
-      << t.m_location.m_pos.x() << cs
-      << t.m_location.m_pos.y() << cs
-      << t.m_location.m_pos.z() << cs;
-    if (t.m_location.m_orientation.isValid()) {
-        q << t.m_location.m_orientation.vector().x() << cs
-          << t.m_location.m_orientation.vector().y() << cs
-          << t.m_location.m_orientation.vector().z() << cs
-          << t.m_location.m_orientation.scalar() << cs;
+      << t.m_location.pos().x() << cs
+      << t.m_location.pos().y() << cs
+      << t.m_location.pos().z() << cs;
+    if (t.m_location.orientation().isValid()) {
+        q << t.m_location.orientation().vector().x() << cs
+          << t.m_location.orientation().vector().y() << cs
+          << t.m_location.orientation().vector().z() << cs
+          << t.m_location.orientation().scalar() << cs;
     } else {
         q << "0, 0, 0, 1, ";
     }
-    if (t.m_location.m_bBox.isValid()) {
+    if (t.m_location.bBox().isValid()) {
         q << "'t', "
-          << t.m_location.m_bBox.lowCorner().x() << cs
-          << t.m_location.m_bBox.lowCorner().y() << cs
-          << t.m_location.m_bBox.lowCorner().z() << cs
-          << t.m_location.m_bBox.highCorner().x() << cs
-          << t.m_location.m_bBox.highCorner().y() << cs
-          << t.m_location.m_bBox.highCorner().z() << cs;
+          << t.m_location.bBox().lowCorner().x() << cs
+          << t.m_location.bBox().lowCorner().y() << cs
+          << t.m_location.bBox().lowCorner().z() << cs
+          << t.m_location.bBox().highCorner().x() << cs
+          << t.m_location.bBox().highCorner().y() << cs
+          << t.m_location.bBox().highCorner().z() << cs;
     } else {
         q << "'f', 0, 0, 0, 0, 0, 0, ";
     }

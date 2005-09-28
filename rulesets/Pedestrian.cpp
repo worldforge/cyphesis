@@ -83,18 +83,18 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     // m_velocity and m_orient are of no interest yet. They contain old data,
     // and definitly should be the same as our current stuff.
     // new_location.m_velocity = m_velocity;
-    // new_location.m_orientation = m_orient;
+    // new_location.orientation() = m_orient;
 
-    double vel_square_mag = m_body.m_location.m_velocity.sqrMag();
+    double vel_square_mag = m_body.m_location.velocity().sqrMag();
 
     // Update location
     Point3D new_coords = m_updatedPos.isValid() ? m_updatedPos
-                                                : m_body.m_location.m_pos;
-    new_coords += (m_body.m_location.m_velocity * time_diff);
+                                                : m_body.m_location.pos();
+    new_coords += (m_body.m_location.velocity() * time_diff);
     const Point3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
     if (target.isValid()) {
         Point3D new_coords2 = new_coords;
-        new_coords2 += (m_body.m_location.m_velocity * (consts::basic_tick / 10.0));
+        new_coords2 += (m_body.m_location.velocity() * (consts::basic_tick / 10.0));
         // The values returned by squareDistance are squares, so
         // cannot be used except for comparison
         double dist = squareDistance(target, new_coords);
@@ -110,31 +110,31 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
                                 << std::endl << std::flush;);
                 if (m_collEntity == new_location.m_loc->m_location.m_loc) {
                     debug(std::cout << "OUT" << target
-                                    << new_location.m_loc->m_location.m_pos
+                                    << new_location.m_loc->m_location.pos()
                                     << std::endl << std::flush;);
-                    const Quaternion & collOrientation = m_body.m_location.m_loc->m_location.m_orientation.isValid() ?
-                                                         m_body.m_location.m_loc->m_location.m_orientation :
+                    const Quaternion & collOrientation = m_body.m_location.m_loc->m_location.orientation().isValid() ?
+                                                         m_body.m_location.m_loc->m_location.orientation() :
                                                          identity;
                     // FIXME take account of orientation
-                    new_coords = new_coords.toParentCoords(m_body.m_location.m_loc->m_location.m_pos, collOrientation);
+                    new_coords = new_coords.toParentCoords(m_body.m_location.m_loc->m_location.pos(), collOrientation);
                     new_location.m_orientation *= collOrientation;
                     new_location.m_velocity.rotate(collOrientation);
                     // FIXME velocity take account of orientation
                     if (m_targetPos.isValid()) {
-                        m_targetPos = m_targetPos.toParentCoords(m_body.m_location.m_loc->m_location.m_pos, collOrientation);
+                        m_targetPos = m_targetPos.toParentCoords(m_body.m_location.m_loc->m_location.pos(), collOrientation);
                     }
                 } else if (m_collEntity->m_location.m_loc==new_location.m_loc) {
                     debug(std::cout << "IN" << std::endl << std::flush;);
                     // FIXME take account of orientation
-                    const Quaternion & collOrientation = m_collEntity->m_location.m_orientation.isValid() ?
-                                                         m_collEntity->m_location.m_orientation :
+                    const Quaternion & collOrientation = m_collEntity->m_location.orientation().isValid() ?
+                                                         m_collEntity->m_location.orientation() :
                                                          identity;
-                    new_coords = new_coords.toLocalCoords(m_collEntity->m_location.m_pos, collOrientation);
+                    new_coords = new_coords.toLocalCoords(m_collEntity->m_location.pos(), collOrientation);
                     new_location.m_orientation /= collOrientation;
                     new_location.m_velocity.rotate(collOrientation.inverse());
                     // FIXME velocity take account of orientation
                     if (m_targetPos.isValid()) {
-                        m_targetPos = m_targetPos.toLocalCoords(m_collEntity->m_location.m_pos, collOrientation);
+                        m_targetPos = m_targetPos.toLocalCoords(m_collEntity->m_location.pos(), collOrientation);
                     }
                 } else {
                     std::string msg = std::string("BAD COLLISION: ")
@@ -212,18 +212,18 @@ Operation Pedestrian::generateMove(const Location & new_location)
     // Walk out what the mode of the character should be.
     // Performed in squares to save on that critical sqrt() call
     double vel_square_mag = 0;
-    if (new_location.m_velocity.isValid()) {
-        vel_square_mag = new_location.m_velocity.sqrMag();
+    if (new_location.velocity().isValid()) {
+        vel_square_mag = new_location.velocity().sqrMag();
     }
     double square_speed_ratio = vel_square_mag / consts::square_base_velocity;
 
     float height = 0;
-    if (m_body.m_location.m_bBox.isValid()) {
-        height = m_body.m_location.m_bBox.highCorner().z() - 
-                 m_body.m_location.m_bBox.lowCorner().z();
+    if (m_body.m_location.bBox().isValid()) {
+        height = m_body.m_location.bBox().highCorner().z() - 
+                 m_body.m_location.bBox().lowCorner().z();
     }
 
-    if (new_location.m_pos.z() < (0 - height * 0.75)) {
+    if (new_location.pos().z() < (0 - height * 0.75)) {
         move_arg->setAttr("mode", "swimming");
     } else {
         if (square_speed_ratio > 0.25) { // 0.5 ^ 2

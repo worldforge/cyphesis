@@ -12,18 +12,18 @@ int main()
         Location testloc;
 
         assert(testloc.m_loc == 0);
-        assert(!testloc.m_pos.isValid());
-        assert(!testloc.m_velocity.isValid());
-        assert(!testloc.m_orientation.isValid());
+        assert(!testloc.pos().isValid());
+        assert(!testloc.velocity().isValid());
+        assert(!testloc.orientation().isValid());
     }
 
     {
         Location testloc(0);
 
         assert(testloc.m_loc == 0);
-        assert(!testloc.m_pos.isValid());
-        assert(!testloc.m_velocity.isValid());
-        assert(!testloc.m_orientation.isValid());
+        assert(!testloc.pos().isValid());
+        assert(!testloc.velocity().isValid());
+        assert(!testloc.orientation().isValid());
     }
 
     {
@@ -33,9 +33,9 @@ int main()
         assert(!testPos.isValid());
 
         assert(testloc.m_loc == 0);
-        assert(!testloc.m_pos.isValid());
-        assert(!testloc.m_velocity.isValid());
-        assert(!testloc.m_orientation.isValid());
+        assert(!testloc.pos().isValid());
+        assert(!testloc.velocity().isValid());
+        assert(!testloc.orientation().isValid());
     }
 
     {
@@ -45,9 +45,9 @@ int main()
         assert(testPos.isValid());
 
         assert(testloc.m_loc == 0);
-        assert(testloc.m_pos.isValid());
-        assert(!testloc.m_velocity.isValid());
-        assert(!testloc.m_orientation.isValid());
+        assert(testloc.pos().isValid());
+        assert(!testloc.velocity().isValid());
+        assert(!testloc.orientation().isValid());
     }
 
     {
@@ -59,9 +59,9 @@ int main()
         assert(!testVel.isValid());
 
         assert(testloc.m_loc == 0);
-        assert(testloc.m_pos.isValid());
-        assert(!testloc.m_velocity.isValid());
-        assert(!testloc.m_orientation.isValid());
+        assert(testloc.pos().isValid());
+        assert(!testloc.velocity().isValid());
+        assert(!testloc.orientation().isValid());
     }
 
     {
@@ -73,14 +73,14 @@ int main()
         assert(testVel.isValid());
 
         assert(testloc.m_loc == 0);
-        assert(testloc.m_pos.isValid());
-        assert(testloc.m_velocity.isValid());
-        assert(!testloc.m_orientation.isValid());
+        assert(testloc.pos().isValid());
+        assert(testloc.velocity().isValid());
+        assert(!testloc.orientation().isValid());
 
         Quaternion testOrientation(1, 0, 0, 0);
         assert(testOrientation.isValid());
         testloc.m_orientation = testOrientation;
-        assert(testloc.m_orientation.isValid());
+        assert(testloc.orientation().isValid());
     }
 
     return 0;

@@ -33,12 +33,12 @@ void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
     dr.readColumn("ow", w);
     this->m_location.m_orientation = WFMath::Quaternion(w, x, y, z);
     if (checkBool(dr.column("hasBox"))) {
-        WFMath::Point<3> & lc = (WFMath::Point<3>&)this->m_location.m_bBox.lowCorner();
+        WFMath::Point<3> & lc = (WFMath::Point<3>&)this->m_location.bBox().lowCorner();
         dr.readColumn("bnx", lc.x());
         dr.readColumn("bny", lc.y());
         dr.readColumn("bnz", lc.z());
         lc.setValid();
-        WFMath::Point<3> & hc = (WFMath::Point<3>&)this->m_location.m_bBox.highCorner();
+        WFMath::Point<3> & hc = (WFMath::Point<3>&)this->m_location.bBox().highCorner();
         dr.readColumn("bfx", hc.x());
         dr.readColumn("bfy", hc.y());
         dr.readColumn("bfz", hc.z());

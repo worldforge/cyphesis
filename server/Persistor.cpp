@@ -306,25 +306,25 @@ void Persistor<World>::cEntity(Entity & t, std::string & c, std::string & v)
     q << sq << m_class << sq << cs
       << sq << t.getType() << sq << cs
       << t.m_contains.size() << cs
-      << t.m_location.m_pos.x() << cs
-      << t.m_location.m_pos.y() << cs
-      << t.m_location.m_pos.z() << cs;
-    if (t.m_location.m_orientation.isValid()) {
-        q << t.m_location.m_orientation.vector().x() << cs
-          << t.m_location.m_orientation.vector().y() << cs
-          << t.m_location.m_orientation.vector().z() << cs
-          << t.m_location.m_orientation.scalar() << cs;
+      << t.m_location.pos().x() << cs
+      << t.m_location.pos().y() << cs
+      << t.m_location.pos().z() << cs;
+    if (t.m_location.orientation().isValid()) {
+        q << t.m_location.orientation().vector().x() << cs
+          << t.m_location.orientation().vector().y() << cs
+          << t.m_location.orientation().vector().z() << cs
+          << t.m_location.orientation().scalar() << cs;
     } else {
         q << "0, 0, 0, 1, ";
     }
-    if (t.m_location.m_bBox.isValid()) {
+    if (t.m_location.bBox().isValid()) {
         q << "'t', "
-          << t.m_location.m_bBox.lowCorner().x() << cs
-          << t.m_location.m_bBox.lowCorner().y() << cs
-          << t.m_location.m_bBox.lowCorner().z() << cs
-          << t.m_location.m_bBox.highCorner().x() << cs
-          << t.m_location.m_bBox.highCorner().y() << cs
-          << t.m_location.m_bBox.highCorner().z() << cs;
+          << t.m_location.bBox().lowCorner().x() << cs
+          << t.m_location.bBox().lowCorner().y() << cs
+          << t.m_location.bBox().lowCorner().z() << cs
+          << t.m_location.bBox().highCorner().x() << cs
+          << t.m_location.bBox().highCorner().y() << cs
+          << t.m_location.bBox().highCorner().z() << cs;
     } else {
         q << "'f', 0, 0, 0, 0, 0, 0, ";
     }

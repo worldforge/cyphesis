@@ -202,28 +202,28 @@ bool predictCollision(const Location & l,  // This location
     // by generating the data when bBox or orienation are changed.
     // This would also allow us to have other mesh shapes
 
-    assert(l.m_bBox.isValid());
-    assert(o.m_bBox.isValid());
+    assert(l.bBox().isValid());
+    assert(o.bBox().isValid());
 
-    assert(l.m_velocity.isValid());
+    assert(l.velocity().isValid());
     Vector3D notMoving(0., 0., 0.);
 
-    bool oMoving = o.m_velocity.isValid();
-    const Vector3D & o_velocity = oMoving ? o.m_velocity : notMoving;
+    bool oMoving = o.velocity().isValid();
+    const Vector3D & o_velocity = oMoving ? o.velocity() : notMoving;
 
     assert(o_velocity.isValid());
 
-    Vector3D dist = o.m_pos - l.m_pos;
-    if ((dist.mag() - l.m_velocity.mag() * time - o_velocity.mag() * time) >
-        (boxBoundingRadius(l.m_bBox) + boxBoundingRadius(o.m_bBox))) {
+    Vector3D dist = o.pos() - l.pos();
+    if ((dist.mag() - l.velocity().mag() * time - o_velocity.mag() * time) >
+        (boxBoundingRadius(l.bBox()) + boxBoundingRadius(o.bBox()))) {
         return false;
     }
 
 
-    const WFMath::Point<3> & ln = l.m_bBox.lowCorner();
-    const WFMath::Point<3> & lf = l.m_bBox.highCorner();
-    const WFMath::Point<3> & on = o.m_bBox.lowCorner();
-    const WFMath::Point<3> & of = o.m_bBox.highCorner();
+    const WFMath::Point<3> & ln = l.bBox().lowCorner();
+    const WFMath::Point<3> & lf = l.bBox().highCorner();
+    const WFMath::Point<3> & on = o.bBox().lowCorner();
+    const WFMath::Point<3> & of = o.bBox().highCorner();
 
     // Create a set of vertices representing the box corners
     CoordList lbox(8), obox(8);
@@ -261,31 +261,31 @@ bool predictCollision(const Location & l,  // This location
     static const Quaternion identity(1, 0, 0, 0);
 
     // Orient the surface normals and box corners
-    if (l.m_orientation.isValid()) {
+    if (l.orientation().isValid()) {
         NormalSet::iterator Iend = lnormals.end();
         for (NormalSet::iterator I = lnormals.begin(); I != Iend; ++I) {
-            I->second.rotate(l.m_orientation);
+            I->second.rotate(l.orientation());
         }
         for (int i = 0; i < 8; ++i) {
-            lbox[i] = lbox[i].toParentCoords(l.m_pos, l.m_orientation);
+            lbox[i] = lbox[i].toParentCoords(l.pos(), l.orientation());
         }
     } else {
         for (int i = 0; i < 8; ++i) {
-            lbox[i] = lbox[i].toParentCoords(l.m_pos, identity);
+            lbox[i] = lbox[i].toParentCoords(l.pos(), identity);
         }
     }
 
-    if (o.m_orientation.isValid()) {
+    if (o.orientation().isValid()) {
         NormalSet::iterator Iend = onormals.end();
         for (NormalSet::iterator I = onormals.begin(); I != Iend; ++I) {
-            I->second.rotate(o.m_orientation);
+            I->second.rotate(o.orientation());
         }
         for (int i = 0; i < 8; ++i) {
-            obox[i] = obox[i].toParentCoords(o.m_pos, o.m_orientation);
+            obox[i] = obox[i].toParentCoords(o.pos(), o.orientation());
         }
     } else {
         for (int i = 0; i < 8; ++i) {
-            obox[i] = obox[i].toParentCoords(o.m_pos, identity);
+            obox[i] = obox[i].toParentCoords(o.pos(), identity);
         }
     }
 
@@ -293,13 +293,13 @@ bool predictCollision(const Location & l,  // This location
     // This must be done whether orientation is valid or not
     // Translate the box corners
     for(int i = 0; i < 8; ++i) {
-        lbox[i] += l.m_pos;
-        obox[i] += o.m_pos;
+        lbox[i] += l.pos();
+        obox[i] += o.pos();
     }
 #endif
 
     // Predict the collision using the generic mesh function
-    return predictCollision(lbox, lnormals, l.m_velocity,
+    return predictCollision(lbox, lnormals, l.velocity(),
                             obox, onormals, o_velocity,
                             time, normal);
 }
@@ -361,7 +361,6 @@ bool predictEmergence(const CoordList & l,         // Vertices of this mesh
             maxtime = ctime;
         }
     }
-    std::cout << maxtime << std::endl << std::flush;
     if (maxtime > 0) {
         time = maxtime;
     } else {
@@ -382,8 +381,8 @@ bool predictEmergence(const Location & l,  // This location
     // we could drop the Location, and take the bbox instead.
     // So all we need to do is get oriented points for l, and check
     // when they will first leave the axis aligned bounding values
-    const WFMath::Point<3> & ln = l.m_bBox.lowCorner();
-    const WFMath::Point<3> & lf = l.m_bBox.highCorner();
+    const WFMath::Point<3> & ln = l.bBox().lowCorner();
+    const WFMath::Point<3> & lf = l.bBox().highCorner();
 
     CoordList lbox(8);
 
@@ -397,9 +396,9 @@ bool predictEmergence(const Location & l,  // This location
     lbox[7] = WFMath::Point<3>(ln.x(), lf.y(), lf.z());
 
     // Orient the box corners
-    if (l.m_orientation.isValid()) {
+    if (l.orientation().isValid()) {
         for(int i = 0; i < 8; ++i) {
-            lbox[i] = lbox[i].toParentCoords(l.m_pos, l.m_orientation);
+            lbox[i] = lbox[i].toParentCoords(l.pos(), l.orientation());
         }
     } else {
         log(WARNING, "predictEmergence(): Entity has non-valid orientation.");
@@ -408,12 +407,12 @@ bool predictEmergence(const Location & l,  // This location
 #if 0
     // Translate the box corners
     for(int i = 0; i < 8; ++i) {
-        lbox[i] += l.m_pos;
+        lbox[i] += l.pos();
     }
 #endif
 
-    assert(l.m_velocity.isValid());
+    assert(l.velocity().isValid());
 
     // We are now ready to carry out the next step
-    return predictEmergence(lbox, l.m_velocity, o.m_bBox, time);
+    return predictEmergence(lbox, l.velocity(), o.bBox(), time);
 }

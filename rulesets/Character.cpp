@@ -219,7 +219,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
         tick_arg->setAttr("serialno", m_movement.serialno());
         Tick tickOp;
         tickOp->setTo(getId());
-        tickOp->setFutureSeconds(m_movement.getTickAddition(return_location.m_pos, return_location.m_velocity));
+        tickOp->setFutureSeconds(m_movement.getTickAddition(return_location.pos(), return_location.velocity()));
         tickOp->setArgs1(tick_arg);
         res.push_back(tickOp);
     } else {
@@ -753,7 +753,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
 
     Vector3D direction;
     if (new_pos.isValid()) {
-        direction = new_pos - ret_location.m_pos;
+        direction = new_pos - ret_location.pos();
     } else if (new_velocity.isValid()) {
         direction = new_velocity;
     }
@@ -795,19 +795,19 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     if (direction.isValid()) {
         ret_location.m_velocity = direction;
         ret_location.m_velocity *= vel_mag;
-        debug(std::cout << "Velocity" << ret_location.m_velocity
+        debug(std::cout << "Velocity" << ret_location.velocity()
                         << std::endl << std::flush;);
     }
     ret_location.m_orientation = new_orientation;
-    debug(std::cout << "Orientation" << ret_location.m_orientation
+    debug(std::cout << "Orientation" << ret_location.orientation()
                     << std::endl << std::flush;);
 
     Operation moveOp = m_movement.generateMove(ret_location);
     assert(moveOp.isValid());
     res.push_back(moveOp);
 
-    if (ret_location.m_velocity.isValid() &&
-        ret_location.m_velocity != Vector3D(0,0,0)) {
+    if (ret_location.velocity().isValid() &&
+        ret_location.velocity() != Vector3D(0,0,0)) {
 
         Tick tickOp;
         Anonymous tick_arg;
@@ -815,8 +815,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         tick_arg->setName("move");
         tickOp->setArgs1(tick_arg);
         tickOp->setTo(getId());
-        tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.m_pos,
-                                                     ret_location.m_velocity));
+        tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.pos(),
+                                                     ret_location.velocity()));
 
         res.push_back(tickOp);
     }

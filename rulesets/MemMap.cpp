@@ -294,7 +294,7 @@ MemEntityVector MemMap::findByLocation(const Location & loc, double radius)
             continue;
         }
         if ((oloc.m_loc->getId() == loc.m_loc->getId()) &&
-            (squareDistance(loc.m_pos, oloc.m_pos) < (radius * radius))) {
+            (squareDistance(loc.pos(), oloc.pos()) < (radius * radius))) {
             res.push_back(I->second);
         }
     }
