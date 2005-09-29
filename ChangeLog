@@ -1,5 +1,12 @@
 2005-09-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/Makefile.am, server/Makefile.am, tools/Makefile.am:
+	  Update static libs to Atlas-C++ 0.6.
+
+	* RELEASE-check: Add a note about autopackage building.
+
+2005-09-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* Update NEWS.
 
 	* Release 0.5.0

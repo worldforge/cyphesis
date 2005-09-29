@@ -7,3 +7,5 @@ Upload to sourceforge and ftp.
 Announce on sourceforge, sourceforge news, WF cyphesis site, WF news,
 WF general+announce, happypenguin, linuxgames, freshmeat, tucows?
 Remember Packager tags are important for rpmfind indexing.
+
+configure database off in consts, make and run makeinstaller.
