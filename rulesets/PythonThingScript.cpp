@@ -54,7 +54,7 @@ bool PythonEntityScript::operation(const std::string & op_type,
                          << " for object " << std::endl << std::flush;);
         if (PyOperation_Check(ret)) {
             PyOperation * op = (PyOperation*)ret;
-            if (!op->operation.isValid()) {
+            if (op->operation.isValid()) {
                 ret_list.push_back(op->operation);
             } else {
                 debug( std::cout << "Method returned invalid operation"

@@ -62,7 +62,7 @@ bool PythonMindScript::operation(const std::string & op_type,
                          << std::flush;);
         if (PyOperation_Check(ret)) {
             PyOperation * op = (PyOperation*)ret;
-            if (!op->operation.isValid()) {
+            if (op->operation.isValid()) {
                 ret_list.push_back(op->operation);
             } else {
                 debug( std::cout << "Method returned invalid op" << std::endl

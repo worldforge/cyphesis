@@ -1,3 +1,9 @@
+2005-09-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/PythonThingScript.cpp, rulesets/PythonMindScript.cpp: Fix a
+	  bug which meant that most operations returned from scripts were
+	  silently ignored.
+
 2005-09-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/Makefile.am, server/Makefile.am, tools/Makefile.am:
