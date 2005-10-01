@@ -1,3 +1,16 @@
+2005-10-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Re-order code so that its not necessary
+	  to lookup an entity that is to be moved unless we already know
+	  its not the current entity.
+
+	* rulesets/Character.cpp: Implement destination based movement when
+	  the target position is specified with a different LOC to the
+	  current LOC of the character.
+
+	* modules/Location.cpp: Document the functions used to determine
+	  relative distance vectors.
+
 2005-09-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/PythonThingScript.cpp, rulesets/PythonMindScript.cpp: Fix a

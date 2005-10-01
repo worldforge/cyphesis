@@ -169,6 +169,17 @@ static bool distanceToAncestor(const Location & self,
     return false;
 }
 
+/// \brief Determine the vector distance from self to other.
+///
+/// @param self Location of an entity
+/// @param other Location of an entity the distance of which is to be
+///        determined
+/// @return The vector distance from self to other.
+/// The distance calculated is a vector relative to the parent of the
+/// entity who's location is given by self. This is useful for determing
+/// both the scalar distance to another entity, and a direction vector
+/// that can be used to determine the direction for motion if it
+/// is necessary to head toward the other entity.
 const Vector3D distanceTo(const Location & self, const Location & other)
 {
     static Point3D origin(0,0,0);
@@ -181,6 +192,15 @@ const Vector3D distanceTo(const Location & self, const Location & other)
     return dist;
 }
 
+/// \brief Determine the postion of other relative to self.
+///
+/// @param self Location of an entity
+/// @param other Location of an entity this position of which is to be
+///        determined
+/// @return The position of other.
+/// The position calculated is relative to the entity who's location is given
+/// by self. The calculation is very similar to distanceTo() but an extra
+/// step is ommited.
 const Point3D relativePos(const Location & self, const Location & other)
 {
     Point3D pos;

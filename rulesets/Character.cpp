@@ -652,23 +652,23 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     const std::string & other_id = arg->getId();
     // FIXME We are looking up the object, but the vast majority of the
     // time we are moving ourselves. Bypass this lookup if possible.
-    EntityDict::const_iterator J = m_world->getEntities().find(other_id);
-    if (J == m_world->getEntities().end()) {
-        log(ERROR, "mindMoveOperation: This move op is for a phoney id");
-        log(NOTICE, "Sending Unseen op back to mind. We should not see this again.");
-        Unseen u;
-
-        Anonymous unseen_arg;
-        unseen_arg->setId(other_id);
-        u->setArgs1(unseen_arg);
-
-        u->setTo(getId());
-        res.push_back(u);
-        return;
-    }
-    Entity * obj = J->second;
-    if (obj != this) {
+    if (other_id != getId()) {
         debug( std::cout << "Moving something else. " << other_id << std::endl << std::flush;);
+        EntityDict::const_iterator J = m_world->getEntities().find(other_id);
+        if (J == m_world->getEntities().end()) {
+            log(ERROR, "mindMoveOperation: This move op is for a phoney id");
+            log(NOTICE, "Sending Unseen op back to mind. We should not see this again.");
+            Unseen u;
+
+            Anonymous unseen_arg;
+            unseen_arg->setId(other_id);
+            u->setArgs1(unseen_arg);
+
+            u->setTo(getId());
+            res.push_back(u);
+            return;
+        }
+        Entity * obj = J->second;
         if ((obj->getMass() < 0) || (obj->getMass() > m_mass)) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
@@ -729,17 +729,46 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     }
     debug( std::cout << ":" << new_loc << ":" << m_location.m_loc->getId()
                      << ":" << std::endl << std::flush;);
-    // At the moment we can't deal if the movement changes ref, or occurs
-    // in the past, so we just let it by unchanged.
-    if ((futureSeconds < 0.) ||
-        ((!new_loc.empty()) && (new_loc != m_location.m_loc->getId()))) {
-        Operation newop(op.copy());
-        newop->setTo(getId());
-        newop->setFutureSeconds(futureSeconds);
-        res.push_back(newop);
-        return;
+    if (futureSeconds < 0.) {
+        // FIXME Added 1st Oct 2005. If we don't see error before November,
+        // then take out futureSeconds handling completely.
+        log(ERROR, "For some bizare reason the client has scheduled a move operation to occur in the past.");
+        // Background - formerly if futureSeconds was < 0, the operation
+        // was passed on unmodified, except to set TO to this entity.
+        // Once this code is removed, it should also be possible to remove
+        // the code above that fiddles with futureSeconds.
+        // A general check on futureSeconds from the mind would then
+        // be apropriate. I can't think of a good reason for allowing it.
     }
-    // Movement within current ref. Work out the speed and stuff and
+    if (!new_loc.empty() && (new_loc != m_location.m_loc->getId())) {
+        debug(std::cout << "Changing loc" << std::endl << std::flush;);
+        EntityDict::const_iterator J = m_world->getEntities().find(new_loc);
+        if (J == m_world->getEntities().end()) {
+            log(ERROR, "mindMoveOperation: This move op has phoney loc");
+            log(NOTICE, "Sending Unseen op back to mind. We should not see this again.");
+            Unseen u;
+
+            Anonymous unseen_arg;
+            unseen_arg->setId(new_loc);
+            u->setArgs1(unseen_arg);
+
+            u->setTo(getId());
+            res.push_back(u);
+            return;
+        }
+        Entity * target_loc = J->second;
+        assert(target_loc != 0);
+        if (new_pos.isValid()) {
+            Location target(target_loc, new_pos);
+            Vector3D distance = distanceTo(m_location, target);
+            assert(distance.isValid());
+            // Convert target into our current frame of reference.
+            new_pos = m_location.pos() + distance;
+        } else {
+            log(WARNING, "mindMoveOperation: Argument changes LOC, but no POS specified. Not sure this makes any sense");
+        }
+    }
+    // Movement within current loc. Work out the speed and stuff and
     // use movement object to track movement.
 
     Location ret_location;
