@@ -1,5 +1,10 @@
 2005-10-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Plant.cpp: Fix bug in tree felling which caused an op
+	  to get into an infinite loop.
+
+2005-10-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/custom.cpp: Install the Monitor op type, which was missing.
 
 	* server/Admin.cpp: Use class_no to determine op types rather

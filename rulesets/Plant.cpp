@@ -97,7 +97,7 @@ void Plant::ChopOperation(const Operation & op, OpVector & res)
         set_arg->setAttr("status", -1);
         set_op->setArgs1(set_arg);
         set_op->setTo(getId());
-        res.push_back(op);
+        res.push_back(set_op);
 
         if (m_location.bBox().isValid()) {
             debug(std::cout << "Plant replaced by log" << std::endl << std::flush;);
@@ -106,9 +106,9 @@ void Plant::ChopOperation(const Operation & op, OpVector & res)
             create_arg->setParents(std::list<std::string>(1,"lumber"));
             create_arg->setAttr("mass", getMass());
             m_location.addToEntity(create_arg);
-            op->setArgs1(create_arg);
-            op->setTo(getId());
-            res.push_back(op);
+            create_op->setArgs1(create_arg);
+            create_op->setTo(getId());
+            res.push_back(create_op);
         }
         return;
     }
