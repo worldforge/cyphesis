@@ -1,5 +1,12 @@
 2005-10-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/custom.cpp: Install the Monitor op type, which was missing.
+
+	* server/Admin.cpp: Use class_no to determine op types rather
+	  than string type.
+
+2005-10-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Re-order code so that its not necessary
 	  to lookup an entity that is to be moved unless we already know
 	  its not the current entity.

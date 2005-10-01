@@ -332,10 +332,10 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
 
 void Admin::OtherOperation(const Operation & op, OpVector & res)
 {
-    const std::string & op_type = op->getParents().front();
-    if (op_type == "connect") {
+    const int op_type = op->getClassNo();
+    if (op_type == Atlas::Objects::Operation::CONNECT_NO) {
         return customConnectOperation(op, res);
-    } else if (op_type == "monitor") {
+    } else if (op_type == Atlas::Objects::Operation::MONITOR_NO) {
         return customMonitorOperation(op, res);
     }
 }

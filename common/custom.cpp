@@ -12,6 +12,7 @@
 #include "Delve.h"
 #include "Dig.h"
 #include "Eat.h"
+#include "Monitor.h"
 #include "Mow.h"
 #include "Nourish.h"
 #include "Setup.h"
@@ -29,6 +30,7 @@ using Atlas::Objects::Operation::Chop;
 using Atlas::Objects::Operation::Delve;
 using Atlas::Objects::Operation::Dig;
 using Atlas::Objects::Operation::Eat;
+using Atlas::Objects::Operation::Monitor;
 using Atlas::Objects::Operation::Mow;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Setup;
@@ -67,6 +69,10 @@ void installCustomOperations()
     i.addChild(atlasOpDefinition("eat", "action"));
     Atlas::Objects::Operation::EAT_NO = atlas_factories->addFactory("eat", &Atlas::Objects::generic_factory);
     i.opInstall("eat", OP_EAT);
+
+    i.addChild(atlasOpDefinition("monitor", "affect"));
+    Atlas::Objects::Operation::MONITOR_NO = atlas_factories->addFactory("monitor", &Atlas::Objects::generic_factory);
+    i.opInstall("monitor", OP_MONITOR);
 
     i.addChild(atlasOpDefinition("mow", "affect"));
     Atlas::Objects::Operation::MOW_NO = atlas_factories->addFactory("mow", &Atlas::Objects::generic_factory);
