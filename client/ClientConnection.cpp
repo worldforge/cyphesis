@@ -172,7 +172,7 @@ int ClientConnection::connect(const std::string & server)
 
 int ClientConnection::negotiate()
 {
-    Atlas::Net::StreamConnect conn("cyphesis_aiclient", ios, *this);
+    Atlas::Net::StreamConnect conn("cyphesis_aiclient", ios);
 
     debug(std::cout << "Negotiating... " << std::flush;);
     while (conn.getState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
@@ -185,7 +185,7 @@ int ClientConnection::negotiate()
         return -1;
     }
 
-    codec = conn.getCodec();
+    codec = conn.getCodec(*this);
 
     encoder = new Atlas::Objects::ObjectsEncoder(*codec);
 

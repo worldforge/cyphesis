@@ -1,3 +1,9 @@
+2005-10-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/ClientConnection.cpp, server/CommClient.cpp,
+	  tools/AdminClient.cpp, tools/cycmd.cpp:
+	  Update to use new Negotiate API in Atlas-C++.
+
 2005-10-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Plant.cpp: Fix bug in tree felling which caused an op

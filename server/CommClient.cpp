@@ -28,7 +28,7 @@ CommClient::CommClient(CommServer & svr, int fd, BaseEntity & c) :
 {
     m_clientIos.setTimeout(0,1000);
 
-    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + m_commServer.m_server.getName(), m_clientIos, *this);
+    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + m_commServer.m_server.getName(), m_clientIos);
 }
 
 CommClient::CommClient(CommServer & svr, BaseEntity & c) :
@@ -38,7 +38,7 @@ CommClient::CommClient(CommServer & svr, BaseEntity & c) :
 {
     m_clientIos.setTimeout(0,1000);
 
-    m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + m_commServer.m_server.getName(), m_clientIos, *this);
+    m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + m_commServer.m_server.getName(), m_clientIos);
 }
 
 CommClient::~CommClient()
@@ -85,7 +85,7 @@ int CommClient::negotiate()
     // Negotiation was successful
 
     // Get the codec that negotiation established
-    m_codec = m_negotiate->getCodec();
+    m_codec = m_negotiate->getCodec(*this);
 
     // Create a new encoder to send high level objects to the codec
     m_encoder = new Atlas::Objects::ObjectsEncoder(*m_codec);
