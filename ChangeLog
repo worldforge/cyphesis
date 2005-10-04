@@ -1,3 +1,20 @@
+2005-10-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Idle.h, server/Idle.cpp: Rename reference to CommServer
+	  so there is no ambiguity in classes which inherit from Idle
+	  and CommSocket.
+
+	* server/CommServer.h, server/CommServer.cpp: Store the current
+	  time, and a flag indicating if the server is currently handling
+	  client traffic. Modify idle handlers so they are only
+	  called if the server is not busy with internal traffic, or traffic
+	  from clients. Check for errors returned by epoll().
+
+	* server/CommUnixListener.cpp, server/CommListener.cpp,
+	  server/CommClient.h, server/CommClient.cpp: Make CommClient an
+	  idler, and use it to track clients which connect but don't
+	  negotiate, disconnecting them after a timeout.
+
 2005-10-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/ClientConnection.cpp, server/CommClient.cpp,

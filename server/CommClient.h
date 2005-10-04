@@ -6,6 +6,7 @@
 #define SERVER_COMM_CLIENT_H
 
 #include "CommSocket.h"
+#include "Idle.h"
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
@@ -27,7 +28,7 @@ class BaseEntity;
 /// \brief Base class for Atlas clients connected to the server.
 ///
 /// Used by subclasses to handle remote TCP clients and local UNIX clients.
-class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket {
+class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket, public Idle {
   public:
     /// \brief STL deque of pointers to operation objects.
     typedef std::deque<Atlas::Objects::Operation::RootOperation> DispatchQueue;
@@ -44,6 +45,8 @@ class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket {
     Atlas::Negotiate * m_negotiate;
     /// \brief Server side object for handling connection level operations.
     BaseEntity & m_connection;
+    /// \brief Time connection was opened
+    time_t m_connectTime;
 
     /// \brief Handle socket data related to codec negotiation.
     int negotiate();
@@ -57,6 +60,8 @@ class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket {
     void operation(const Atlas::Objects::Operation::RootOperation &);
 
     virtual void objectArrived(const Atlas::Objects::Root & obj);
+
+    virtual void idle(time_t t);
   public:
     CommClient(CommServer &, int fd, BaseEntity &);
     CommClient(CommServer &, BaseEntity &);

@@ -7,6 +7,8 @@
 
 #include <set>
 
+#include <sys/time.h>
+
 class CommSocket;
 class Idle;
 class ServerRouting;
@@ -27,6 +29,10 @@ class CommServer {
     IdleSet m_idlers;
     /// File descriptor used as handle for Linux epoll.
     int m_epollFd;
+    /// Current time
+    struct timeval m_timeVal;
+    /// Flag indicating whether we had network traffic last tick
+    bool m_congested;
 
     bool idle();
 
@@ -44,6 +50,10 @@ class CommServer {
     void poll();
     void addSocket(CommSocket * cs);
     void removeSocket(CommSocket * client);
+
+    long time() {
+        return m_timeVal.tv_sec;
+    }
 
     /// \brief Add a new Idle object to the manager.
     ///

@@ -122,4 +122,5 @@ void CommListener::create(int asockfd, const char * address)
 
     // Add this new client to the list.
     m_commServer.addSocket(newcli);
+    m_commServer.addIdle(newcli);
 }

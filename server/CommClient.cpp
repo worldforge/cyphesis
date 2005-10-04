@@ -21,10 +21,10 @@
 static const bool debug_flag = false;
 
 CommClient::CommClient(CommServer & svr, int fd, BaseEntity & c) :
-            CommSocket(svr),
+            CommSocket(svr), Idle(svr),
             m_clientIos(fd),
             m_codec(NULL), m_encoder(NULL),
-            m_connection(c)
+            m_connection(c), m_connectTime(svr.time())
 {
     m_clientIos.setTimeout(0,1000);
 
@@ -32,9 +32,9 @@ CommClient::CommClient(CommServer & svr, int fd, BaseEntity & c) :
 }
 
 CommClient::CommClient(CommServer & svr, BaseEntity & c) :
-            CommSocket(svr),
+            CommSocket(svr), Idle(svr),
             m_codec(NULL), m_encoder(NULL),
-            m_connection(c)
+            m_connection(c), m_connectTime(svr.time())
 {
     m_clientIos.setTimeout(0,1000);
 
@@ -133,6 +133,16 @@ void CommClient::objectArrived(const Atlas::Objects::Root & obj)
     debug(std::cout << "A " << op->getParents().front() << " op from client!" << std::endl << std::flush;);
     m_opQueue.push_back(op);
 
+}
+
+void CommClient::idle(time_t t)
+{
+    if (m_negotiate != 0) {
+        if ((t - m_connectTime) > 10) {
+            log(NOTICE, "Client disconnected because of negotiation timeout.");
+            m_clientIos.shutdown();
+        }
+    }
 }
 
 int CommClient::read()

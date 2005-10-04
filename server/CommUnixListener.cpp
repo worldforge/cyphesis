@@ -104,4 +104,5 @@ void CommUnixListener::create(int asockfd)
 
     // Add this new client to the list.
     m_commServer.addSocket(newcli);
+    m_commServer.addIdle(newcli);
 }

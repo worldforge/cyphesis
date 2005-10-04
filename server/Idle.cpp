@@ -9,11 +9,11 @@
 /// \brief Constructor for socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-Idle::Idle(CommServer & svr) : m_commServer(svr)
+Idle::Idle(CommServer & svr) : m_idleManager(svr)
 {
 }
 
 Idle::~Idle()
 {
-    m_commServer.removeIdle(this);
+    m_idleManager.removeIdle(this);
 }

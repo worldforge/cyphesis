@@ -15,6 +15,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/BaseWorld.h"
+#include "common/compose.hpp"
 
 #include <iostream>
 
@@ -22,7 +23,6 @@ extern "C" {
 #ifdef HAVE_EPOLL_CREATE
     #include <sys/epoll.h>
 #endif // HAVE_EPOLL_CREATE
-    #include <sys/time.h>
     #include <errno.h>
 }
 
@@ -30,7 +30,7 @@ static const bool debug_flag = false;
 
 /// \brief Construct a new CommServer object, storing a reference to the core
 /// server object.
-CommServer::CommServer(ServerRouting & svr) : m_server(svr)
+CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
 {
 #ifdef HAVE_EPOLL_CREATE
     // FIXME 64 is a random figure I pulled out of the air. I don't even know
@@ -69,16 +69,22 @@ bool CommServer::idle()
     // FIXME These idle methods are now getting called way too often
     // if the core server is busy. Cut it back a bit. Probably can avoid
     // calling them at all if we are busy.
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
+    gettimeofday(&m_timeVal, NULL);
 
-    IdleSet::const_iterator I = m_idlers.begin();
-    IdleSet::const_iterator Iend = m_idlers.end();
-    for (; I != Iend; ++I) {
-        (*I)->idle(tv.tv_sec);
+    bool busy = m_server.m_world.idle(m_timeVal.tv_sec, m_timeVal.tv_usec);
+
+    if (!busy && !m_congested) {
+        IdleSet::const_iterator I = m_idlers.begin();
+        IdleSet::const_iterator Iend = m_idlers.end();
+        for (; I != Iend; ++I) {
+            (*I)->idle(m_timeVal.tv_sec);
+        }
+    } else {
+        // if (busy) { std::cout << "No idle because server busy" << std::endl << std::flush; }
+        // if (m_congested) { std::cout << "No idle because clients busy" << std::endl << std::flush; }
     }
 
-    return m_server.m_world.idle(tv.tv_sec, tv.tv_usec);
+    return busy;
 }
 
 /// \brief Main program loop called repeatedly.
@@ -92,14 +98,21 @@ void CommServer::poll()
 {
     // This is the main code loop.
     // Classic select code for checking incoming data on sockets.
-    // It may be beneficial to re-write this code to use the poll(2) system
-    // call.
+
+    // It would be useful to let idle know if we are currently dealing with
+    // traffic
     bool busy = idle();
 
 #ifdef HAVE_EPOLL_CREATE
     static struct epoll_event events[16];
 
     int rval = ::epoll_wait(m_epollFd, events, 16, (busy ? 0 : 100));
+
+    if (rval <  0) {
+        log(ERROR, String::compose("epoll_wait: %1", strerror(errno)).c_str());
+    } else {
+        m_congested = (rval != 0) || m_congested && busy;
+    }
 
     for (int i = 0; i < rval; ++i) {
         struct epoll_event & event = events[i];

@@ -18,7 +18,7 @@ class Idle {
     explicit Idle(CommServer & svr);
   public:
     /// Reference to the object that manages all socket communication.
-    CommServer & m_commServer;
+    CommServer & m_idleManager;
 
     virtual ~Idle();
 
