@@ -1,3 +1,8 @@
+2005-10-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/system.cpp: Replace SA_ONESHOT with SA_RESETHAND is it
+	  seems to be a more portable way to do the same thing.
+
 2005-10-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Idle.h, server/Idle.cpp: Rename reference to CommServer

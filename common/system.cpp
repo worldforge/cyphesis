@@ -105,12 +105,12 @@ void interactive_signals()
     sigaction(SIGPIPE, &action, NULL);
 
     sigemptyset(&action.sa_mask);
-    action.sa_flags = SA_ONESHOT;
+    action.sa_flags = SA_RESETHAND;
     action.sa_handler = report_segfault;
     sigaction(SIGSEGV, &action, NULL);
 
     sigemptyset(&action.sa_mask);
-    action.sa_flags = SA_ONESHOT;
+    action.sa_flags = SA_RESETHAND;
     action.sa_handler = report_abort;
     sigaction(SIGABRT, &action, NULL);
 #else
@@ -155,12 +155,12 @@ void daemon_signals()
     sigaction(SIGPIPE, &action, NULL);
 
     sigemptyset(&action.sa_mask);
-    action.sa_flags = SA_ONESHOT;
+    action.sa_flags = SA_RESETHAND;
     action.sa_handler = report_segfault;
     sigaction(SIGSEGV, &action, NULL);
 
     sigemptyset(&action.sa_mask);
-    action.sa_flags = SA_ONESHOT;
+    action.sa_flags = SA_RESETHAND;
     action.sa_handler = report_abort;
     sigaction(SIGABRT, &action, NULL);
 #else
