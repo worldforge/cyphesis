@@ -1,3 +1,8 @@
+Define new class Volume which contains the set of points and normals
+required by the collision code. Cache the volume, and bounding radius
+of entities in Location. bounding radius is very easy. Add a course
+collision check based on bounding radius.
+
 Not sure destination based movement is working right if destination pos
 changes due to LOC change.
 
