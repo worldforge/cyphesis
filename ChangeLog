@@ -1,3 +1,11 @@
+2005-10-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* Update NEWS.
+
+	* Update version to 0.5.1 for release.
+
+	* tests/consttest.cpp: Fix warning due to unused variables.
+
 2005-10-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/system.cpp: Replace SA_ONESHOT with SA_RESETHAND is it
