@@ -1,3 +1,8 @@
+2005-10-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Combat.h, rulesets/Combat.cpp: More experiments with
+	  tasks and combat.
+
 2005-10-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* Release 0.5.1

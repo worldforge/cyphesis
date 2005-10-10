@@ -9,8 +9,11 @@
 
 /// \brief Task class for fighting
 class Combat : public Task {
+  protected:
+    Character & m_target;
+    bool m_attack;
   public:
-    explicit Combat(Character & chr, Entity & target);
+    explicit Combat(Character & chr, Character & target);
     virtual ~Combat();
 
     virtual void setup(OpVector & res);
