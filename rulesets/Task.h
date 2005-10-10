@@ -7,6 +7,8 @@
 
 #include "common/types.h"
 
+#include <cassert>
+
 class Character;
 
 /// \brief Interface class for handling tasks which take a short while to

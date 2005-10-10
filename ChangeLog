@@ -1,3 +1,7 @@
+2005-10-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Task.h: Add required <cassert> include.
+
 2005-10-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Combat.h, rulesets/Combat.cpp: More experiments with
