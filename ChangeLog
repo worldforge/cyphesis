@@ -1,5 +1,10 @@
 2005-10-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Makefile.am, server/Makefile.am, tools/Makefile.am:
+	  Add top_builddir to the include paths to catch config.h.
+
+2005-10-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Add nostdinc option, to get rid of unnecessary
 	  -I options on the compile commandlines.
 

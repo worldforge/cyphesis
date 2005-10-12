@@ -2,7 +2,7 @@ noinst_LIBRARIES = libcommon.a libtools.a
 
 if BIN_RELOC
 
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_srcdir) -I${top_builddir}
 
 else
 
