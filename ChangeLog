@@ -1,5 +1,10 @@
 2005-10-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* man/cyphesis-tools.sgml, man/cyphesis.sgml: Fix some typos on
+	  the man pages.
+
+2005-10-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommClient.h, server/CommClient.cpp: Check stream has not
 	  failed before sending ops, to ensure that failed sockets are
 	  cleared promptly. Check fail() in addition to eof() to ensure

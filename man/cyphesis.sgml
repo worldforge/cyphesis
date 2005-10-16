@@ -330,14 +330,14 @@ server is used.
      </term>
      <listitem>
       <para>
-Database account name for access.
+Database account password for access.
       </para>
       <para>
 This setting provides the password to be used to authenticate with the
 database. PostgreSQL does not usually require a password when connecting
 to a PostgreSQL RDBMS on the same system as the server, when the database
 username to be used is the same as the user running the server. If
-this is the case then the setting must obe omitted from the config file.
+this is the case then the setting must be omitted from the config file.
       </para>
      </listitem>
     </varlistentry>

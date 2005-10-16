@@ -50,7 +50,7 @@
 The cyphesis tools manage the data and configuration files used by cyphesis.
   </para>
   <para>
-The <command>cyaddrules</command> uploads Atlas XML rules files into the
+The <command>cyaddrules</command> tool uploads Atlas XML rules files into the
 a running server. If rules already exist in the server, then the default
 attributes are updated, and if the rule has a script associated with it,
 then the script is reloaded from file. <command>cyaddrules</command> can
@@ -87,7 +87,7 @@ copy of the top level ruleset from the server database, and the rest of the
 files will be ignored.
   </para>
   <para>
-The <command>cyloadrules</command> loads Atlas XML rules files into the
+The <command>cyloadrules</command> tool loads Atlas XML rules files into the
 database table used by the server. The rules table is read by the
 server at startup, so a server restart is typically required after loading
 rules. <command>cyloadrules</command> can either load the file given on
@@ -97,7 +97,7 @@ Rules can be loaded directly into a running server using
 <command>cyaddrules</command>.
   </para>
   <para>
-The <command>cypasswd</command> is used to administrate the accounts table
+The <command>cypasswd</command> tool is used to administrate the accounts table
 in the server database.
   </para>
  </refsect1>
