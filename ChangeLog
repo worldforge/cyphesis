@@ -1,5 +1,10 @@
 2005-10-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Statistics.cpp, rulesets/Statistics.h: Add class to
+	  handle skill statistics for characters.
+
+2005-10-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/random.h: Make uniform() random function inlined.
 
 2005-10-16  Al Riddoch  <alriddoch@zepler.org>
@@ -10928,4 +10933,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Started adding Python interface code.
 
-        * Starting changelog from initial attempt to port cyphesis into C++.
+	* Starting changelog from initial attempt to port cyphesis into C++.
