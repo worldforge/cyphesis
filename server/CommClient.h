@@ -57,7 +57,7 @@ class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket, pub
 
     bool timeout() { return m_clientIos.timeout(); }
 
-    void operation(const Atlas::Objects::Operation::RootOperation &);
+    int operation(const Atlas::Objects::Operation::RootOperation &);
 
     virtual void objectArrived(const Atlas::Objects::Root & obj);
 
@@ -70,7 +70,7 @@ class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket, pub
     void disconnect() { m_clientIos.shutdown(); }
 
     void setup();
-    void send(const Atlas::Objects::Operation::RootOperation &);
+    int send(const Atlas::Objects::Operation::RootOperation &);
 
     int getFd() const;
     bool isOpen() const;

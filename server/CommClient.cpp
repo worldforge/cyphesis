@@ -100,7 +100,7 @@ int CommClient::negotiate()
     return 0;
 }
 
-void CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
+int CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
 {
     OpVector reply;
     m_connection.operation(op, reply);
@@ -108,8 +108,11 @@ void CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
     for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
         debug(std::cout << "sending reply" << std::endl << std::flush;);
         (*I)->setRefno(op->getSerialno());
-        send(*I);
+        if (send(*I) != 0) {
+            return -1;
+        }
     }
+    return 0;
 }
 
 void CommClient::dispatch()
@@ -117,7 +120,9 @@ void CommClient::dispatch()
     DispatchQueue::const_iterator Iend = m_opQueue.end();
     for(DispatchQueue::const_iterator I = m_opQueue.begin(); I != Iend; ++I) {
         debug(std::cout << "dispatching op" << std::endl << std::flush;);
-        operation(*I);
+        if (operation(*I) != 0) {
+            return;
+        }
     }
     m_opQueue.clear();
 }
@@ -132,7 +137,6 @@ void CommClient::objectArrived(const Atlas::Objects::Root & obj)
     }
     debug(std::cout << "A " << op->getParents().front() << " op from client!" << std::endl << std::flush;);
     m_opQueue.push_back(op);
-
 }
 
 void CommClient::idle(time_t t)
@@ -167,29 +171,37 @@ bool CommClient::isOpen() const
 
 bool CommClient::eof()
 {
-    return m_clientIos.peek() == EOF;
+    return (m_clientIos.fail() || m_clientIos.peek() == EOF);
 }
 
-void CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
+int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
 {
-    if (isOpen()) {
-        m_encoder->streamObjectsMessage(op);
-        struct timeval tv = {0, 0};
-        fd_set sfds;
-        int cfd = m_clientIos.getSocket();
-        FD_ZERO(&sfds);
-        FD_SET(cfd, &sfds);
-        if (select(++cfd, NULL, &sfds, NULL, &tv) > 0) {
-            // We only flush to the client if the client is ready
-            m_clientIos << std::flush;
-        } else {
-            debug(std::cout << "Client not ready" << std::endl << std::flush;);
-        }
-        // This timeout should only occur if the client was really not
-        // ready
-        if (m_clientIos.timeout()) {
-            log(NOTICE, "Client disconnected because of write timeout.");
-            m_clientIos.shutdown();
-        }
+    if (!isOpen()) {
+        log(ERROR, "Writing to closed client");
+        return -1;
     }
+    if (m_clientIos.fail()) {
+        return -1;
+    }
+    m_encoder->streamObjectsMessage(op);
+    struct timeval tv = {0, 0};
+    fd_set sfds;
+    int cfd = m_clientIos.getSocket();
+    FD_ZERO(&sfds);
+    FD_SET(cfd, &sfds);
+    if (select(++cfd, NULL, &sfds, NULL, &tv) > 0) {
+        // We only flush to the client if the client is ready
+        m_clientIos << std::flush;
+    } else {
+        debug(std::cout << "Client not ready" << std::endl << std::flush;);
+    }
+    // This timeout should only occur if the client was really not
+    // ready
+    if (m_clientIos.timeout()) {
+        log(NOTICE, "Client disconnected because of write timeout.");
+        m_clientIos.shutdown();
+        m_clientIos.setstate(std::iostream::failbit);
+        return -1;
+    }
+    return 0;
 }

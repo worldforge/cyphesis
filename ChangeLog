@@ -1,3 +1,10 @@
+2005-10-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommClient.h, server/CommClient.cpp: Check stream has not
+	  failed before sending ops, to ensure that failed sockets are
+	  cleared promptly. Check fail() in addition to eof() to ensure
+	  that failed connections are detected when reading.
+
 2005-10-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Makefile.am, server/Makefile.am, tools/Makefile.am:
