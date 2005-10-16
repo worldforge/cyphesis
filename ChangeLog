@@ -1,5 +1,9 @@
 2005-10-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/random.h: Make uniform() random function inlined.
+
+2005-10-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* man/cyphesis-tools.sgml, man/cyphesis.sgml: Fix some typos on
 	  the man pages.
 
