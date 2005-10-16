@@ -23,7 +23,7 @@ Introduction
    will also be used to control NPCs in future servers such as STAGE using AI
    techniques.
 
-   ---------------------------------------------------------------------------
+   --------------------------------------------------------------------------
 
 Building from Source
 
@@ -37,7 +37,7 @@ Building from Source
    install" before it will be ready. Go to the Section called Setup for
    information on the setup steps required after installation.
 
-   ---------------------------------------------------------------------------
+   --------------------------------------------------------------------------
 
 Setup
 
@@ -68,7 +68,7 @@ Setup
    The server is now ready to run. For for more information on how to start
    the server see the Section called Usage and configuration.
 
-   ---------------------------------------------------------------------------
+   --------------------------------------------------------------------------
 
 Setup as a System Service
 
@@ -80,9 +80,9 @@ Setup as a System Service
    start these services at boot time, or by running the init scripts manually
    as root as follows:
 
-   # /etc/init.d/cyphesis start                                               
-   # /etc/init.d/cyclient start                                               
-                                                                              
+   # /etc/init.d/cyphesis start
+   # /etc/init.d/cyclient start
+
 
    The postgresql service is required and must be started before cyphesis.
    The first time the cyphesis service is run, the init script will ensure
@@ -98,15 +98,15 @@ Setup as a System Service
    services is the chkconfig command, found on most Linux systems, and some
    Unix variants. Once installed the scripts can be activated as follows:
 
-   # chkconfig --add cyphesis                                                 
-   # chkconfig --add cyclient                                                 
-                                                                              
+   # chkconfig --add cyphesis
+   # chkconfig --add cyclient
+
 
    The services are then enabled as follows:
 
-   # chkconfig cyphesis on                                                    
-   # chkconfig cyclient on                                                    
-                                                                              
+   # chkconfig cyphesis on
+   # chkconfig cyclient on
+
 
    For further details please see the chkconfig documentation. By default the
    cyphesis init scripts attempt to run the server and client as a user
@@ -121,7 +121,7 @@ Setup as a System Service
    syslog documentation for information about how to control these log
    messages.
 
-   ---------------------------------------------------------------------------
+   --------------------------------------------------------------------------
 
 Running a basic server
 
@@ -149,7 +149,7 @@ Running a basic server
    server or world development at this time then you do not need to read any
    of the rest of these instructions.
 
-   ---------------------------------------------------------------------------
+   --------------------------------------------------------------------------
 
 Usage and configuration
 
@@ -172,13 +172,13 @@ Usage and configuration
 
    As an example, the ruleset to be used is set in cyphesis.vconf as follows:
 
-       [cyphesis]                                                             
-       ruleset="mason"                                                        
+       [cyphesis]
+       ruleset="mason"
 
    This setting can be overridden by invoking cyphesis with the following
    option:
 
-       --cyphesis:ruleset=werewolf                                            
+       --cyphesis:ruleset=werewolf
 
    For more details of varconf usage see the Varconf documentation. For full
    details on configuraton options for cyphesis, see the cyphesis(1) man
@@ -226,12 +226,12 @@ Usage and configuration
    loaded into the database using the cyloadrules command with no arguments
    as follows:
 
-       $ cyloadrules                                                          
-       Reading rules from mason                                               
-       49 classes stored in rule database.                                    
-       Reading rules from basic                                               
-       29 classes stored in rule database.                                    
-       $                                                                      
+       $ cyloadrules
+       Reading rules from mason
+       49 classes stored in rule database.
+       Reading rules from basic
+       29 classes stored in rule database.
+       $
 
    This automatically loads the rulesets in order into the database, first
    ensuring that the rules table is empty.
@@ -239,11 +239,11 @@ Usage and configuration
    cyloadrules can also be used to load individual rulesets into the database
    as follows:
 
-       $ cyloadrules mason.xml                                                
-       49 classes stored in rule database.                                    
-       $ cyloadrules basic.xml                                                
-       29 classes stored in rule database.                                    
-       $                                                                      
+       $ cyloadrules mason.xml
+       49 classes stored in rule database.
+       $ cyloadrules basic.xml
+       29 classes stored in rule database.
+       $
 
    You will only need to do this if you are developing new rulesets, or
    customising existing ones.
@@ -261,7 +261,7 @@ Usage and configuration
    cyclient once the server is running. You will need to do this each time
    cyphesis is started.
 
-   ---------------------------------------------------------------------------
+   --------------------------------------------------------------------------
 
 Copyright notices
 

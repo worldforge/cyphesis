@@ -1,3 +1,8 @@
+Combat system needs to depend on character stats, armour, clothing and
+weapon at very least. Probably need a class to encapsulate important
+processed stat information for a character. This makes it harder to
+have a fully configurable combat system.
+
 Check eof() _AND_ fail() on streams when reading. Also needs to be done
 in Eris in similar place, and Atlas-C++ needs to check for EOF returned
 by iostream::get().

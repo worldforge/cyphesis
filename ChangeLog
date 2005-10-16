@@ -1,5 +1,11 @@
 2005-10-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* README: Regenerate from source.
+
+	* TODO: Add note describing eventual goals of statistics system.
+
+2005-10-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Combat.cpp: Fill out handler for combat, adding
 	  ops which apply damage to defender, and using statistics
 	  to handle combat ability.
