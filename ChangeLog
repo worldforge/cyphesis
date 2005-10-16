@@ -1,5 +1,11 @@
 2005-10-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Combat.cpp: Fill out handler for combat, adding
+	  ops which apply damage to defender, and using statistics
+	  to handle combat ability.
+
+2005-10-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, rulesets/Character.h: Add a Statistics
 	  objects as a member variable of Character, and use it to
 	  determine if a character is strong enough to move other

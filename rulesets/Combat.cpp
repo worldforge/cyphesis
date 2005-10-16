@@ -6,15 +6,21 @@
 
 #include "rulesets/Character.h"
 
+#include "common/random.h"
+
 #include "common/Attack.h"
 #include "common/Tick.h"
 
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 using Atlas::Objects::Operation::Attack;
+using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Tick;
+
+using Atlas::Objects::Entity::Anonymous;
 
 /// \brief Constructor for Fell task
 ///
@@ -31,7 +37,7 @@ Combat::~Combat()
 {
 }
 
-// FIXME Should this be what the default implemntation of this method does?
+// FIXME Should this be the default implemntation of this method in Task?
 void Combat::setup(OpVector & res)
 {
     Tick t;
@@ -50,17 +56,30 @@ void Combat::TickOperation(const Operation & op, OpVector & res)
     t->setFutureSeconds(1.75);
     res.push_back(t);
 
-    const std::string & attacker = m_attack ? m_character.getId() : m_target.getId();
-    const std::string & defender = m_attack ? m_target.getId() : m_character.getId();
+    Character & attacker = m_attack ? m_character : m_target;
+    Character & defender = m_attack ? m_target : m_character;
 
     Sight s;
     Attack a;
-    a->setTo(defender);
-    a->setFrom(attacker);
+    a->setTo(defender.getId());
+    a->setFrom(attacker.getId());
     s->setArgs1(a);
     res.push_back(s);
 
     m_attack = !m_attack;
+
+    float damage = (attacker.statistics().attack() / attacker.statistics().defence()) / uniform(2.f, 10.f);
+
+    float status = defender.getStatus() - damage;
+
+    Set set;
+    Anonymous set_arg;
+    set_arg->setAttr("status", status);
+    set->setArgs1(set_arg);
+    set->setTo(defender.getId());
+
+    attacker.statistics().increment("combat", res);
+    // FIXME Handle skill/experience increment?
 
     // Defend op
 }
