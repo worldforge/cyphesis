@@ -1,5 +1,9 @@
 2005-10-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_RootEntity.cpp: Add comments about leaked python objects.
+
+2005-10-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Statistics.cpp, rulesets/Statistics.h: Add class to
 	  handle skill statistics for characters.
 

@@ -131,6 +131,9 @@ static int RootEntity_setattr(PyRootEntity *self, char *name, PyObject *v)
         return 0;
     } else {
         // FIXME We do nothing to ensure that this reference is decremented currently
+        // This causes a memory leak. In order to solve this, we are going
+        // to need to find and remove all python attributes in the
+        // underlying object when this wrapper is destructed.
         Py_INCREF(v);
         self->entity->setAttr(name, Element((void*)v));
         return 0;
