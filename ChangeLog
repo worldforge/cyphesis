@@ -1,5 +1,12 @@
 2005-10-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp, rulesets/Character.h: Add a Statistics
+	  objects as a member variable of Character, and use it to
+	  determine if a character is strong enough to move other
+	  entities.
+
+2005-10-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_RootEntity.cpp: Add comments about leaked python objects.
 
 2005-10-16  Al Riddoch  <alriddoch@zepler.org>

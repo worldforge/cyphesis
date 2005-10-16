@@ -7,6 +7,8 @@
 
 #include "Thing.h"
 
+#include "Statistics.h"
+
 class Movement;
 class Task;
 class BaseMind;
@@ -26,6 +28,7 @@ typedef Thing Character_parent;
 /// passed to the mind.
 class Character : public Character_parent {
   protected:
+    Statistics m_statistics;
     Movement & m_movement;
     Task * m_task;
     bool m_isAlive;
@@ -53,6 +56,8 @@ class Character : public Character_parent {
 
     explicit Character(const std::string & id);
     virtual ~Character();
+
+    Statistics & statistics() { return m_statistics; }
 
     const double getDrunkness() const { return m_drunkness; }
     const std::string & getSex() const { return m_sex; }

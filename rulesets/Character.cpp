@@ -97,6 +97,7 @@ void Character::metabolise(OpVector & res, double ammount)
 }
 
 Character::Character(const std::string & id) : Character_parent(id),
+                                            m_statistics(*this),
                                             m_movement(*new Pedestrian(*this)),
                                             m_task(0), m_isAlive(true),
                                             m_drunkness(0.0), m_sex("female"),
@@ -669,7 +670,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             return;
         }
         Entity * obj = J->second;
-        if ((obj->getMass() < 0) || (obj->getMass() > m_mass)) {
+        if ((obj->getMass() < 0)||(obj->getMass() > m_statistics.strength())) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
         }
