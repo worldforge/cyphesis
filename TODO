@@ -1,3 +1,6 @@
+Optimisation: Make sure it is ok for ops passed through the mindFooOperation
+interface to be used as is or modified, rather than needing a deep copy.
+
 Combat system needs to depend on character stats, armour, clothing and
 weapon at very least. Probably need a class to encapsulate important
 processed stat information for a character. This makes it harder to

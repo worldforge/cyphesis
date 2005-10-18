@@ -995,14 +995,10 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
     }
     // Pass the modified touch operation on to target.
     res.push_back(t);
-    // Send action "touch"
-    Action a;
-    a->setTo(getId());
-    Anonymous a_arg;
-    a_arg->setId(getId());
-    a_arg->setAttr("action", "touch");
-    a->setArgs1(a_arg);
-    res.push_back(a);
+    // Send sight of touch
+    Sight s;
+    s->setArgs1(t);
+    res.push_back(s);
 }
 
 void Character::mindAppearanceOperation(const Operation & op, OpVector & res)

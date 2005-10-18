@@ -94,7 +94,7 @@ void installCustomOperations()
     Atlas::Objects::Operation::UNSEEN_NO = atlas_factories->addFactory("unseen", &Atlas::Objects::generic_factory);
     i.opInstall("unseen", OP_UNSEEN);
 
-    i.addChild(atlasOpDefinition("attack", "perception"));
+    i.addChild(atlasOpDefinition("attack", "action"));
     Atlas::Objects::Operation::ATTACK_NO = atlas_factories->addFactory("attack", &Atlas::Objects::generic_factory);
     i.opInstall("attack", OP_ATTACK);
 

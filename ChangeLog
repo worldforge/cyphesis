@@ -1,5 +1,15 @@
 2005-10-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Fix handling of Touch op so it now
+	  returns a Sight(Touch) rather than an Action op to indicate
+	  what has occured.
+
+	* common/custom.cpp: Fix inheritance of Attack op to Action.
+
+	* TODO: Add a note about optimising the mind operation interface.
+
+2005-10-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Statistics.cpp: Fix logic for incrementing existing
 	  skills, and debug output for determining whether the change
 	  should be passed to the user.
