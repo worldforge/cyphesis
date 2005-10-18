@@ -54,11 +54,11 @@ void Statistics::increment(const std::string & name, OpVector & res)
         oldval = I->second;
         // FIXME Need to replace with a more flexible function which
         // gives the right curve
-        newval = oldval + ((1.f - std::max(oldval, 1.f)) / 1000.f);
+        newval = oldval + ((1.f - std::min(oldval, 1.f)) / 1000.f);
         I->second = newval;
     }
     std::cout << "Skill change " << oldval << ":" << newval << ":"
-              << (int)(oldval * 10) << ":" << (int)(newval * 10)
+              << (int)(oldval * 1000) << ":" << (int)(newval * 1000)
               << std::endl << std::flush;
     // If value has changed by more than 0.001 then report to character.
     if ((int)(newval * 1000) != (int)(oldval * 1000)) {

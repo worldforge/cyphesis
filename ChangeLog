@@ -1,3 +1,9 @@
+2005-10-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Statistics.cpp: Fix logic for incrementing existing
+	  skills, and debug output for determining whether the change
+	  should be passed to the user.
+
 2005-10-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* README: Regenerate from source.
