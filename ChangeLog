@@ -1,5 +1,14 @@
 2005-10-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/NPCMind.py: Fix face() so that NPC doesn't crash
+	  if it turns to face something that is zero distance away.
+
+	* server/EntityFactory.cpp: Improve error reporting when an entity
+	  has velocity set at creation, and ensure that the velocity is
+	  unset before the entity goes into the world.
+
+2005-10-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Task.h: Make irrelevant() virtual so that each task
 	  class is responsible for doing most of its cleanup.
 

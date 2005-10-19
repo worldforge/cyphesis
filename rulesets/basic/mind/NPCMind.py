@@ -408,6 +408,8 @@ class NPCMind(BaseMind):
     def face(self, other):
         vector = distance_to(self.location, other.location)
         vector.z = 0
+        if vector.square_mag() < 0.1:
+            return
         vector = vector.unit_vector()
         newloc = Location(self.location.parent)
         newloc.orientation = Quaternion(Vector3D(1,0,0), vector)

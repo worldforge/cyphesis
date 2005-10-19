@@ -138,8 +138,12 @@ Entity * EntityFactory::newEntity(const std::string & id,
         thing->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
     }
     if (thing->m_location.velocity().isValid()) {
-        log(ERROR, String::compose("EntityFactory::newEntity(%1, %2): Entity has velocity set", id, type).c_str());
-        
+        if (attributes->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+            log(ERROR, String::compose("EntityFactory::newEntity(%1, %2): Entity has velocity set from the attributes given by the creator", id, type).c_str());
+        } else {
+            log(ERROR, String::compose("EntityFactory::newEntity(%1, %2): Entity has velocity set from an unknown source", id, type).c_str());
+        }
+        thing->m_location.m_velocity.setValid(false);
     }
     if (pc != 0) {
         pc->persist();
