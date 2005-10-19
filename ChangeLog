@@ -1,3 +1,24 @@
+2005-10-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Task.h: Make irrelevant() virtual so that each task
+	  class is responsible for doing most of its cleanup.
+
+	* rulesets/Movement.h: Make updateNeeded() public so other code
+	  can determine if a character is moving.
+
+	* rulesets/Character.h, rulesets/Character.cpp: Add a stamina property.
+	  Add clearTask() used to clear the current running task. Check
+	  if tasks are irrelevant immediatly after setup, or after each
+	  tick, and remove if they are.
+
+	* rulesets/Combat.h: Add irrelevant() implementation, and a static
+	  variable defining stamina level below which combat cannot occur.
+
+	* rulesets/Combat.cpp: Switch to stamina as the base stat for
+	  combat. Implement checking stamina at setup to ensure
+	  both combatants are fit to fight, and each tick to determine if
+	  someone has lost.
+
 2005-10-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Fix handling of Touch op so it now

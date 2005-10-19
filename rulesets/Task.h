@@ -44,6 +44,9 @@ class Task {
     /// @param res The result of the operation is returned here.
     virtual void setup(OpVector & res) = 0;
 
+    /// \brief Flag this task as obsolete
+    virtual void irrelevant();
+
     /// \brief Handle a tick operation to perform the task
     ///
     /// A Task gets regular ticks which cause whatever actions this
@@ -66,9 +69,6 @@ class Task {
     }
 
     
-    /// \brief Flag this task as obsolete
-    void irrelevant();
-
     /// \brief Accessor to determine if this Task is obsolete
     const bool obsolete() { return m_obsolete; }
 };

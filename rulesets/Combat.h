@@ -12,11 +12,15 @@ class Combat : public Task {
   protected:
     Character & m_target;
     bool m_attack;
+
+    static const double minStamina;
   public:
     explicit Combat(Character & chr, Character & target);
     virtual ~Combat();
 
     virtual void setup(OpVector & res);
+    virtual void irrelevant();
+
     virtual void TickOperation(const Operation & op, OpVector & res);
 };
 

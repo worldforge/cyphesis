@@ -29,7 +29,6 @@ class Movement {
     bool m_collLocChange;
     Vector3D m_collNormal;
 
-    bool updateNeeded(const Location & location) const;
     void checkCollisions(const Location & loc);
   public:
     explicit Movement(Entity & body);
@@ -44,6 +43,7 @@ class Movement {
     }
 
     void reset();
+    bool updateNeeded(const Location & location) const;
 
     virtual double getTickAddition(const Point3D & coordinates,
                                    const Vector3D & velocity) const = 0;

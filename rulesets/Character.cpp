@@ -88,6 +88,9 @@ void Character::metabolise(OpVector & res, double ammount)
     if (m_drunkness > 0) {
         set_arg->setAttr("drunkness", m_drunkness - 0.1);
     }
+    if (m_stamina < 1. && m_task == 0 && !m_movement.updateNeeded(m_location)) {
+        set_arg->setAttr("stamina", 1.);
+    }
 
     Set s;
     s->setTo(getId());
@@ -100,7 +103,8 @@ Character::Character(const std::string & id) : Character_parent(id),
                                             m_statistics(*this),
                                             m_movement(*new Pedestrian(*this)),
                                             m_task(0), m_isAlive(true),
-                                            m_drunkness(0.0), m_sex("female"),
+                                            m_stamina(1.), m_drunkness(0.),
+                                            m_sex("female"),
                                             m_food(0), m_maxMass(100),
                                             m_mind(0), m_externalMind(0)
 {
@@ -108,6 +112,7 @@ Character::Character(const std::string & id) : Character_parent(id),
     m_location.m_bBox = BBox(WFMath::Point<3>(-0.25, -0.25, 0),
                              WFMath::Point<3>(0.25, 0.25, 2));
 
+    m_properties["stamina"] = new Property<double>(m_stamina, 0);
     m_properties["drunkness"] = new Property<double>(m_drunkness, a_drunk);
     m_properties["sex"] = new Property<std::string>(m_sex, a_sex);
     m_properties["right_hand_wield"] = new Property<std::string>(m_rightHandWield, a_rwield);
@@ -122,6 +127,12 @@ Character::~Character()
     if (m_externalMind != 0) {
         delete m_externalMind;
     }
+}
+
+void Character::clearTask()
+{
+    m_task->decRef();
+    m_task = 0;
 }
 
 void Character::ImaginaryOperation(const Operation & op, OpVector & res)
@@ -192,6 +203,10 @@ void Character::TickOperation(const Operation & op, OpVector & res)
                 return;
             }
             m_task->TickOperation(op, res);
+            if (m_task->obsolete()) {
+                m_task->decRef();
+                m_task = 0;
+            }
         }
         return;
     }
@@ -393,6 +408,18 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     combat->incRef();
 
     m_task->setup(res);
+
+    if (combat->obsolete()) {
+        std::cout << "Attack aborted because one of more character is exhausted" << std::endl << std::flush;
+
+        assert(m_task == 0);
+        assert(attacker->m_task != 0);
+
+        attacker->m_task = 0;
+        combat->decRef();
+
+        return;
+    }
 }
 
 void Character::ChopOperation(const Operation & op, OpVector & res)
