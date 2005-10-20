@@ -1,5 +1,11 @@
 2005-10-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommClient.cpp: Store serialno from clients, to make sure
+	  its not being read from the op after it has been given to
+	  the core server code.
+
+2005-10-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Report a warning when action ops are sent
 	  from client or mind code.
 

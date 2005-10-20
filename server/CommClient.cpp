@@ -103,11 +103,12 @@ int CommClient::negotiate()
 int CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
 {
     OpVector reply;
+    long serialno = op->getSerialno();
     m_connection.operation(op, reply);
     OpVector::const_iterator Iend = reply.end();
     for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
         debug(std::cout << "sending reply" << std::endl << std::flush;);
-        (*I)->setRefno(op->getSerialno());
+        (*I)->setRefno(serialno);
         if (send(*I) != 0) {
             return -1;
         }
