@@ -117,10 +117,10 @@ void Creator::externalOperation(const Operation & op)
             // World will deal with it.
         }
     } else {
-        Operation new_op(op.copy());
-        //make it appear like it came from target itself;
-        new_op->setFrom("cheat");
-        sendWorld(new_op);
+        // Make it appear like it came from target itself;
+        // FIXME I am not sure we even honor this any more.
+        op->setFrom("cheat");
+        sendWorld(op);
     }
 }
 
@@ -131,30 +131,27 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Got look up from prived mind from [" << op->getFrom()
                << "] to [" << op->getTo() << "]" << std::endl << std::flush;);
     m_perceptive = true;
-    Operation l(op.copy());
-    if (op->getTo().empty()) {
-        const std::vector<Root> & args = op->getArgs();
-        if (args.empty()) {
-            l->setTo(m_world->m_gameWorld.getId());
-        } else {
-            const Root & arg = args.front();
-            if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-                l->setTo(arg->getId());
-            } else if (arg->hasAttrFlag(Atlas::Objects::NAME_FLAG)) {
-                Entity * e = m_world->findByName(arg->getName());
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        op->setTo(m_world->m_gameWorld.getId());
+    } else {
+        const Root & arg = args.front();
+        if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            op->setTo(arg->getId());
+        } else if (arg->hasAttrFlag(Atlas::Objects::NAME_FLAG)) {
+            Entity * e = m_world->findByName(arg->getName());
+            if (e != NULL) {
+                op->setTo(e->getId());
+            }
+        } else if (arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+            if (!arg->getParents().empty()) {
+                Entity * e = m_world->findByType(arg->getParents().front());
                 if (e != NULL) {
-                    l->setTo(e->getId());
-                }
-            } else if (arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
-                if (!arg->getParents().empty()) {
-                    Entity * e = m_world->findByType(arg->getParents().front());
-                    if (e != NULL) {
-                        l->setTo(e->getId());
-                    }
+                    op->setTo(e->getId());
                 }
             }
         }
     }
-    debug( std::cout <<"    now to ["<<l->getTo()<<"]"<<std::endl<<std::flush;);
-    res.push_back(l);
+    debug( std::cout <<"  now to ["<<op->getTo()<<"]"<<std::endl<<std::flush;);
+    res.push_back(op);
 }

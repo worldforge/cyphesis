@@ -460,9 +460,8 @@ void Character::mindActionOperation(const Operation & op, OpVector & res)
         std::cout << "Action: " << action.asString() << std::endl << std::flush;
     }
 
-    Operation a(op.copy());
-    a->setTo(getId());
-    res.push_back(a);
+    op->setTo(getId());
+    res.push_back(op);
 }
 
 void Character::mindAddOperation(const Operation & op, OpVector & res)
@@ -488,17 +487,15 @@ void Character::mindAttackOperation(const Operation & op, OpVector & res)
     // If doing something else, it gets aborted.
     // endCurrentTask();
 
-    Operation attack(op.copy());
-    attack->setTo(id);
-    res.push_back(attack);
+    op->setTo(id);
+    res.push_back(op);
 }
 
 void Character::mindSetupOperation(const Operation & op, OpVector & res)
 {
-    Operation s(op.copy());
-    s->setTo(getId());
-    s->setAttr("sub_to", "mind");
-    res.push_back(s);
+    op->setTo(getId());
+    op->setAttr("sub_to", "mind");
+    res.push_back(op);
 }
 
 void Character::mindUseOperation(const Operation & op, OpVector & res)
@@ -664,17 +661,15 @@ void Character::mindUpdateOperation(const Operation & op, OpVector & res)
 void Character::mindWieldOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Wield op from mind" << std::endl << std::flush;);
-    Operation w(op.copy());
-    w->setTo(getId());
-    res.push_back(w);
+    op->setTo(getId());
+    res.push_back(op);
 }
 
 void Character::mindTickOperation(const Operation & op, OpVector & res)
 {
-    Operation t(op.copy());
-    t->setTo(getId());
-    t->setAttr("sub_to", "mind");
-    res.push_back(t);
+    op->setTo(getId());
+    op->setAttr("sub_to", "mind");
+    res.push_back(op);
 }
 
 void Character::mindMoveOperation(const Operation & op, OpVector & res)
@@ -718,9 +713,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
         }
-        Operation newop(op.copy());
-        newop->setTo(other_id);
-        res.push_back(newop);
+        op->setTo(other_id);
+        res.push_back(op);
         return;
     }
     std::string new_loc;
@@ -904,14 +898,13 @@ void Character::mindSetOperation(const Operation & op, OpVector & res)
         log(ERROR, "mindSetOperation: set op has no argument");
         return;
     }
-    Operation s(op.copy());
     const Root & arg = args.front();
     if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        s->setTo(arg->getId());
+        op->setTo(arg->getId());
     } else {
-        s->setTo(getId());
+        op->setTo(getId());
     }
-    res.push_back(s);
+    res.push_back(op);
 }
 
 void Character::mindSightOperation(const Operation & op, OpVector & res)
@@ -932,16 +925,14 @@ void Character::mindCombineOperation(const Operation & op, OpVector & res)
 
 void Character::mindCreateOperation(const Operation & op, OpVector & res)
 {
-    Operation c(op.copy());
-    c->setTo(getId());
-    res.push_back(c);
+    op->setTo(getId());
+    res.push_back(op);
 }
 
 void Character::mindDeleteOperation(const Operation & op, OpVector & res)
 {
-    Operation d(op.copy());
-    d->setTo(getId());
-    res.push_back(d);
+    op->setTo(getId());
+    res.push_back(op);
 }
 
 void Character::mindDivideOperation(const Operation & op, OpVector & res)
@@ -958,9 +949,8 @@ void Character::mindGetOperation(const Operation & op, OpVector & res)
 
 void Character::mindImaginaryOperation(const Operation & op, OpVector & res)
 {
-    Operation i(op.copy());
-    i->setTo(getId());
-    res.push_back(i);
+    op->setTo(getId());
+    res.push_back(op);
 }
 
 void Character::mindInfoOperation(const Operation & op, OpVector & res)
@@ -975,9 +965,8 @@ void Character::mindTalkOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mindTalkOperation"
                      << std::endl << std::flush;);
-    Operation t(op.copy());
-    t->setTo(getId());
-    res.push_back(t);
+    op->setTo(getId());
+    res.push_back(op);
 }
 
 void Character::mindLookOperation(const Operation & op, OpVector & res)
@@ -985,28 +974,26 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Got look up from mind from [" << op->getFrom()
                << "] to [" << op->getTo() << "]" << std::endl << std::flush;);
     m_perceptive = true;
-    Operation l(op.copy());
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        l->setTo(m_world->m_gameWorld.getId());
+        op->setTo(m_world->m_gameWorld.getId());
     } else {
         const Root & arg = args.front();
         if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            l->setTo(arg->getId());
+            op->setTo(arg->getId());
         } else {
-            l->setTo(getId());
+            op->setTo(getId());
         }
     }
-    debug( std::cout <<"    now to ["<<l->getTo()<<"]"<<std::endl<<std::flush;);
-    res.push_back(l);
+    debug( std::cout <<"  now to ["<<op->getTo()<<"]"<<std::endl<<std::flush;);
+    res.push_back(op);
 }
 
 void Character::mindCutOperation(const Operation & op, OpVector & res)
 {
     log(WARNING, "mindCutOperation: Unexpected Cut op from mind");
-    Operation c(op.copy());
-    c->setTo(getId());
-    res.push_back(c);
+    op->setTo(getId());
+    res.push_back(op);
 }
 
 void Character::mindEatOperation(const Operation & op, OpVector & res)
@@ -1023,9 +1010,8 @@ void Character::mindEatOperation(const Operation & op, OpVector & res)
         log(ERROR, "mindEatOperation: Arg has no ID");
         return;
     }
-    Operation e(op.copy());
-    e->setTo(arg->getId());
-    res.push_back(e);
+    op->setTo(arg->getId());
+    res.push_back(op);
 }
 
 void Character::mindTouchOperation(const Operation & op, OpVector & res)
@@ -1042,12 +1028,11 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
         return;
     }
     // Pass the modified touch operation on to target.
-    Operation t(op.copy());
-    t->setTo(arg->getId());
-    res.push_back(t);
+    op->setTo(arg->getId());
+    res.push_back(op);
     // Send sight of touch
     Sight s;
-    s->setArgs1(t);
+    s->setArgs1(op);
     res.push_back(s);
 }
 
@@ -1066,9 +1051,8 @@ void Character::mindErrorOperation(const Operation & op, OpVector & res)
 
 void Character::mindOtherOperation(const Operation & op, OpVector & res)
 {
-    Operation e(op.copy());
-    e->setTo(getId());
-    res.push_back(e);
+    op->setTo(getId());
+    res.push_back(op);
 }
 
 bool Character::w2mActionOperation(const Operation & op)

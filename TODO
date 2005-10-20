@@ -1,3 +1,6 @@
+When queing ops, can we put in a hack because most ops will be for
+immediate dispatch?
+
 A bunch of stuff in Character::externalOperation can go if we don't care
 about ops having serialnos.
 
