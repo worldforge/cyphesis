@@ -13,6 +13,7 @@
 #include "common/BaseWorld.h"
 
 #include <iostream>
+#include <cassert>
 
 // Work in progress, this will be a way of inferring type relationships,
 // and will replace the simple string type currently used.
@@ -100,6 +101,7 @@ class Entity : public BaseEntity {
 
     void decRef() {
         if (m_refCount <= 0) {
+            assert(m_refCount == 0);
             delete this;
         } else {
             --m_refCount;

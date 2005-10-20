@@ -1,3 +1,12 @@
+2005-10-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.h: Add an assert to ensure reference counting
+	  is bug free.
+
+	* server/WorldRouter.cpp: When delivering ops, check if the op
+	  is to the same entity it is from, which avoids looking up
+	  the ID in the world dictionary.
+
 2005-10-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/NPCMind.py: Fix face() so that NPC doesn't crash

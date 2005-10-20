@@ -400,18 +400,30 @@ void WorldRouter::operation(const Operation & op, Entity & from)
                     << std::flush;);
 
     if (!to.empty()) {
-        EntityDict::const_iterator I = m_eobjects.find(to);
-        if (I == m_eobjects.end()) {
-            debug(std::cerr << "WARNING: Op to=\"" << to << "\""
-                            << " does not exist" << std::endl << std::flush;);
-            return;
+        Entity * to_entity = 0;
+
+        if (to == from.getId()) {
+            if (from.isDestroyed()) {
+                // Entity no longer exists
+                return;
+            }
+            to_entity = &from;
+        } else {
+            EntityDict::const_iterator I = m_eobjects.find(to);
+            if (I == m_eobjects.end()) {
+                debug(std::cerr << "WARNING: Op to=\"" << to << "\""
+                                << " does not exist"
+                                << std::endl << std::flush;);
+                return;
+            }
+            to_entity = I->second;
         }
 
-        Entity * to_entity = I->second;
         assert(to_entity != 0);
 
         deliverTo(op, *to_entity);
         if (op->getParents().front() == "delete") { // FIXME numeric type
+            assert(op->getClassNo() == Atlas::Objects::Operation::DELETE_NO);
             delEntity(to_entity);
         }
     } else {
