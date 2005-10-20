@@ -1,3 +1,6 @@
+Move contents of mindUseOperation to UseOperation, and have mindUseOperation
+filter ops like it should.
+
 Optimisation: Make sure it is ok for ops passed through the mindFooOperation
 interface to be used as is or modified, rather than needing a deep copy.
 

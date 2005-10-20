@@ -443,6 +443,8 @@ void Character::mindLogoutOperation(const Operation & op, OpVector & res)
 
 void Character::mindActionOperation(const Operation & op, OpVector & res)
 {
+    // FIXME Put this in, and make sure it doesn't happen again.
+    // log(WARNING, "Explicit Action operation from client");
     Operation a(op.copy());
     a->setTo(getId());
     res.push_back(a);
@@ -884,6 +886,7 @@ void Character::mindSetOperation(const Operation & op, OpVector & res)
 {
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
+        log(ERROR, "mindSetOperation: set op has no argument");
         return;
     }
     Operation s(op.copy());
@@ -891,9 +894,7 @@ void Character::mindSetOperation(const Operation & op, OpVector & res)
     if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         s->setTo(arg->getId());
     } else {
-        if (op->getTo().empty()) {
-            s->setTo(getId());
-        }
+        s->setTo(getId());
     }
     res.push_back(s);
 }
@@ -957,7 +958,7 @@ void Character::mindNourishOperation(const Operation & op, OpVector & res)
 
 void Character::mindTalkOperation(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "Character::mindOPeration(Talk)"
+    debug( std::cout << "Character::mindTalkOperation"
                      << std::endl << std::flush;);
     Operation t(op.copy());
     t->setTo(getId());
@@ -970,15 +971,15 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
                << "] to [" << op->getTo() << "]" << std::endl << std::flush;);
     m_perceptive = true;
     Operation l(op.copy());
-    if (op->getTo().empty()) {
-        const std::vector<Root> & args = op->getArgs();
-        if (args.empty()) {
-            l->setTo(m_world->m_gameWorld.getId());
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        l->setTo(m_world->m_gameWorld.getId());
+    } else {
+        const Root & arg = args.front();
+        if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            l->setTo(arg->getId());
         } else {
-            const Root & arg = args.front();
-            if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-                l->setTo(arg->getId());
-            }
+            l->setTo(getId());
         }
     }
     debug( std::cout <<"    now to ["<<l->getTo()<<"]"<<std::endl<<std::flush;);
@@ -987,40 +988,47 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
 
 void Character::mindCutOperation(const Operation & op, OpVector & res)
 {
+    log(WARNING, "mindCutOperation: Unexpected Cut op from mind");
     Operation c(op.copy());
-    if (op->getTo().empty()) {
-        c->setTo(getId());
-    }
+    c->setTo(getId());
     res.push_back(c);
 }
 
 void Character::mindEatOperation(const Operation & op, OpVector & res)
 {
-    Operation e(op.copy());
     // FIXME Need to get what food to eat from the arg, and sort out goals
     // so they don't set TO
-    if (op->getTo().empty()) {
-        e->setTo(getId());
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        log(ERROR, "mindEatOperation: Op has no ARGS");
+        return;
     }
+    const Root & arg = args.front();
+    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        log(ERROR, "mindEatOperation: Arg has no ID");
+        return;
+    }
+    Operation e(op.copy());
+    e->setTo(arg->getId());
     res.push_back(e);
 }
 
 void Character::mindTouchOperation(const Operation & op, OpVector & res)
 {
-    Operation t(op.copy());
     // Work out what is being touched.
-    if (op->getTo().empty()) {
-        const std::vector<Root> & args = op->getArgs();
-        if (args.empty()) {
-            t->setTo(m_world->m_gameWorld.getId());
-        } else {
-            const Root & arg = args.front();
-            if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-                t->setTo(arg->getId());
-            }
-        }
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        log(ERROR, "mindTouchOperation: Op has no ARGS");
+        return;
+    }
+    const Root & arg = args.front();
+    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        log(ERROR, "mindTouchOperation: Op has no ARGS");
+        return;
     }
     // Pass the modified touch operation on to target.
+    Operation t(op.copy());
+    t->setTo(arg->getId());
     res.push_back(t);
     // Send sight of touch
     Sight s;
@@ -1043,11 +1051,8 @@ void Character::mindErrorOperation(const Operation & op, OpVector & res)
 
 void Character::mindOtherOperation(const Operation & op, OpVector & res)
 {
-    // Is this modification, and therefor copy really required? Always?
     Operation e(op.copy());
-    if (op->getTo().empty()) {
-        e->setTo(getId());
-    }
+    e->setTo(getId());
     res.push_back(e);
 }
 
@@ -1249,6 +1254,16 @@ void Character::sendMind(const Operation & op, OpVector & res)
     }
 }
 
+/// \brief Filter operations from the mind destined for the body.
+///
+/// Operations from the character's mind which is either an NPC mind,
+/// or a remote client are passed in here for pre-processing and filtering
+/// before they are valid to be processed as internal ops. The operation
+/// may be modified and re-used so operations passed to this function have
+/// their ownership passed in, and caller should not modify the operation,
+/// make assumptions that it has not been modified after calling mind2body.
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
 void Character::mind2body(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mind2body(" << std::endl << std::flush;);
@@ -1257,8 +1272,7 @@ void Character::mind2body(const Operation & op, OpVector & res)
         return;
     }
     if (!op->getTo().empty()) {
-        std::cerr << "Operation \"" << op->getParents().front() << "\"from mind with TO set" << std::endl << std::flush;
-        log(WARNING, "Operation from mind with TO set");
+        log(ERROR, String::compose("Operation \"%1\" from mind with TO set", op->getParents().front()).c_str());
     }
     OpNo otype = opEnumerate(op);
     OP_SWITCH(op, otype, res, mind)

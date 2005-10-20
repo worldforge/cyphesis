@@ -262,6 +262,10 @@ void Entity::scriptSubscribe(const std::string & op)
 
 /// \brief Process an operation from an external source.
 ///
+/// The ownership of the operation passed in at this point is handed
+/// over to the entity. The calling code must not modify the operation
+/// after passing it to externalOperation, or expect the attributes
+/// of the operaration to remain the same.
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
 void Entity::externalOperation(const Operation & op)

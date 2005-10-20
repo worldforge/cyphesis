@@ -1,5 +1,15 @@
 2005-10-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Audit all mindFooOperation() methods, to
+	  ensure operations from the mind or client code are handled in
+	  a correct and consistant manner. Improve comments documenting
+	  the mind operation interface.
+
+	* rulesets/Entity.cpp: Add comments documenting how externalOperation
+	  should be used.
+
+2005-10-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.h: Add an assert to ensure reference counting
 	  is bug free.
 
