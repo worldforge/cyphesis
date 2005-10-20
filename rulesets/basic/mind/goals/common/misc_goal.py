@@ -478,10 +478,10 @@ class sell_trade(Goal):
             self.ticks=0
             es=Entity(say="Get your " + self.what + " here!")
             ret = ret + Operation("talk",es)
-            ret = ret + Operation("action", Entity(me.id, action="shout"))
+            ret = ret + Operation("imaginary", Entity("shout"))
         else:
             if randint(0,4)==1:
-                ret = ret + Operation("action", Entity(me.id, action="wave"))
+                ret = ret + Operation("imaginary", Entity("wave"))
         return ret
 
 ################ TRADE (BUY SOMETHING, USE TOOL, SELL PRODUCT) ################
@@ -615,7 +615,7 @@ class assemble(Goal):
             cmpnt=me.find_thing(item)[0]
             retops = retops + Operation("set", Entity(cmpnt.id,status=-1))
         retops = retops + Operation("create", Entity(name=self.what,parents=[self.what], location=me.location.copy()))
-        retops = retops + Operation("action", Entity(me.id, action="conjure"))
+        retops = retops + Operation("imaginary", Entity("conjure"))
         return retops
 
 ######################## TRANSACTION (Sell thing) #######################

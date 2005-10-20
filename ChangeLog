@@ -1,5 +1,22 @@
 2005-10-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Report a warning when action ops are sent
+	  from client or mind code.
+
+	* rulesets/Py_Location.cpp: Allow invalid vectors to be used
+	  to set attributes on Location.
+
+	* rulesets/acorn/world/objects/undead/Skeleton.py,
+	  rulesets/mason/world/objects/undead/Skeleton.py: Remove action
+	  ops replacing them with setting MODE of skeleton to
+	  collapsed.
+
+	* rulesets/basic/mind/NPCMind.py,
+	  rulesets/basic/mind/goals/common/misc_goal.py: Use Imaginary ops
+	  rather than Action for emotes.
+
+2005-10-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Audit all mindFooOperation() methods, to
 	  ensure operations from the mind or client code are handled in
 	  a correct and consistant manner. Improve comments documenting

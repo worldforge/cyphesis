@@ -444,7 +444,22 @@ void Character::mindLogoutOperation(const Operation & op, OpVector & res)
 void Character::mindActionOperation(const Operation & op, OpVector & res)
 {
     // FIXME Put this in, and make sure it doesn't happen again.
-    // log(WARNING, "Explicit Action operation from client");
+    log(WARNING, "Explicit Action operation from client");
+    
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        log(ERROR, "mindActionOperation: action op has no argument");
+        return;
+    }
+    const Root & arg = args.front();
+    Element action;
+    if (arg->copyAttr("action", action) == -1) {
+        log(ERROR, "mindActionOperation: action op arg has no action");
+        return;
+    } else {
+        std::cout << "Action: " << action.asString() << std::endl << std::flush;
+    }
+
     Operation a(op.copy());
     a->setTo(getId());
     res.push_back(a);
