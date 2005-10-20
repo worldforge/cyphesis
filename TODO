@@ -1,3 +1,6 @@
+A bunch of stuff in Character::externalOperation can go if we don't care
+about ops having serialnos.
+
 Move contents of mindUseOperation to UseOperation, and have mindUseOperation
 filter ops like it should.
 
