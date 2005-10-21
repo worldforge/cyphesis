@@ -1,5 +1,11 @@
 2005-10-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/Vector3D.cpp: Replace the seriously inefficient
+	  implementation of squareDistance() with one that should perform
+	  a bit better.
+
+2005-10-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Pedestrian.cpp, rulesets/Movement.h, rulesets/Movement.cpp:
 	  Store the time of the last collision, and if the next one occurs
 	  almost immediatly, stop the movement. This eliminates the judder

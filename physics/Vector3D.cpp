@@ -7,8 +7,13 @@
 
 #include "Vector3D.h"
 
+static inline float sqr(float x)
+{
+    return x * x;
+}
+
 float squareDistance(const Point3D & u, const Point3D & v)
 {
-    return ((u.x() - v.x())*(u.x() - v.x()) + (u.y() - v.y())*(u.y() - v.y()) + (u.z() - v.z())*(u.z() - v.z()));
+    return (sqr(u.x() - v.x()) + sqr(u.y() - v.y()) + sqr(u.z() - v.z()));
 }
 
