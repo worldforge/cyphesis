@@ -1,5 +1,12 @@
 2005-10-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Pedestrian.cpp, rulesets/Movement.h, rulesets/Movement.cpp:
+	  Store the time of the last collision, and if the next one occurs
+	  almost immediatly, stop the movement. This eliminates the judder
+	  which used to occur in some nasty collision scenarios.
+
+2005-10-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.h, server/WorldRouter.cpp: Add a second op
 	  queue for ops which do not have a time specified, so it is
 	  cheaper to add ops to the queue if they are to be dispatched

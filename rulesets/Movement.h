@@ -21,6 +21,7 @@ class Movement {
   protected:
     Entity & m_body;
     double m_lastMovementTime;
+    double m_lastCollisionTime;
     Point3D m_targetPos;
     Point3D m_updatedPos;
     int m_serialno;

@@ -102,9 +102,22 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
         debug( std::cout << "dist: " << dist << "," << dist2 << std::endl
                          << std::flush;);
         if (dist2 > dist) {
+            bool collision_judder = false;
             debug( std::cout << "target achieved";);
             new_coords = target;
-            if (m_collLocChange) {
+            if (m_collPos.isValid()) {
+                if ((m_body.m_world->getTime() - m_lastCollisionTime) < 0.01) {
+                    collision_judder = true;
+                }
+                m_lastCollisionTime = m_body.m_world->getTime();
+            }
+            if (collision_judder) {
+                // If collision are getting messy, just stop.
+                // This prevents the code getting in nasty tight loops where
+                // loads of CPU gets chewed.
+                reset();
+                new_location.m_velocity = Vector3D(0,0,0);
+            } else if (m_collLocChange) {
                 static const Quaternion identity(Quaternion().identity());
                 debug(std::cout << "CONTACT " << m_collEntity->getId()
                                 << std::endl << std::flush;);

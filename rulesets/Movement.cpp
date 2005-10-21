@@ -18,6 +18,7 @@
 static const bool debug_flag = false;
 
 Movement::Movement(Entity & body) : m_body(body), m_lastMovementTime(-1),
+                                    m_lastCollisionTime(-1),
                                     m_serialno(0),
                                     m_collEntity(NULL), m_collLocChange(false)
 {
