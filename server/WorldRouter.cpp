@@ -132,9 +132,15 @@ void WorldRouter::addOperationToQueue(const Operation & op, Entity & ent)
     } else {
         op->setFrom(ent.getId());
     }
-    double t = m_realTime + op->getFutureSeconds();
+    double fs = op->getFutureSeconds();
+    if (fs == 0.) {
+        op->setSeconds(m_realTime);
+        m_immediateQueue.push_back(OpQueEntry(op, ent));
+        return;
+    }
+    double t = m_realTime + fs;
     op->setSeconds(t);
-    op->setFutureSeconds(0.0);
+    op->setFutureSeconds(0.);
     OpQueue::iterator I = m_operationQueue.begin();
     OpQueue::iterator Iend = m_operationQueue.end();
     for (; (I != Iend) && ((*I).op->getSeconds() <= t) ; ++I);
@@ -507,6 +513,26 @@ bool WorldRouter::idle(int sec, int usec)
         }
         m_operationQueue.erase(I);
         I = m_operationQueue.begin();
+    }
+
+    I = m_immediateQueue.begin();
+    while ((++op_count < 10) && (I != m_immediateQueue.end())) {
+        assert(I != m_immediateQueue.end());
+        OpQueEntry & oqe = *I;
+        Dispatching.emit(oqe.op);
+        try {
+            operation(oqe.op, oqe.from);
+        }
+        catch (...) {
+            std::string msg = std::string("Exception caught in world.idle()")
+                            + " thrown while processing "
+                            // + oqe->getParents().front()
+                            + " operation sent to " + oqe->getTo()
+                            + " from " + oqe->getFrom() + ".";
+            log(ERROR, msg.c_str());
+        }
+        m_immediateQueue.erase(I);
+        I = m_immediateQueue.begin();
     }
     // If we have processed the maximum number for this call, return true
     // to tell the server not to sleep when polling clients. This ensures

@@ -46,8 +46,10 @@ typedef std::list<OpQueEntry> OpQueue;
 /// entities.
 class WorldRouter : public BaseWorld {
   private:
-    /// An ordered queue of operations yet to be dispatched.
+    /// An ordered queue of operations to be dispatched in the future
     OpQueue m_operationQueue;
+    /// An ordered queue of operations to be dispatched now
+    OpQueue m_immediateQueue;
     /// The system time when the server was started.
     time_t m_initTime;
     /// List of all IG entities.

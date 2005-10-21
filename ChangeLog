@@ -1,3 +1,10 @@
+2005-10-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.h, server/WorldRouter.cpp: Add a second op
+	  queue for ops which do not have a time specified, so it is
+	  cheaper to add ops to the queue if they are to be dispatched
+	  immediatly.
+
 2005-10-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp, rulesets/Creator.cpp: Modify operations
