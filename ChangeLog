@@ -1,5 +1,15 @@
 2005-10-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* physics/BBox.cpp: Re-core squareBoxSize() to be much more efficient.
+
+	* server/CommServer.cpp: Don't report "Interrupted System Call" as
+	  an error from epoll_wait, as its always happening.
+
+	* tools/Makefile.am: Add pthread library to static link libs for
+	  database using tools.
+
+2005-10-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* physics/Vector3D.cpp: Replace the seriously inefficient
 	  implementation of squareDistance() with one that should perform
 	  a bit better.

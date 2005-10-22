@@ -43,7 +43,7 @@ DBTOOL_LIBS = \
     /usr/lib/libcom_err.a \
     $(STATIC_LIBSTDCPP) \
     $(STATIC_LIBGCC) \
-    -lc -lm -lgcc_s
+    -lpthread -lc -lm -lgcc_s
 
 READLINETOOL_LIBS = \
     /usr/lib/libreadline.a \

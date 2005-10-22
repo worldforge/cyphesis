@@ -109,7 +109,9 @@ void CommServer::poll()
     int rval = ::epoll_wait(m_epollFd, events, 16, (busy ? 0 : 100));
 
     if (rval <  0) {
-        log(ERROR, String::compose("epoll_wait: %1", strerror(errno)).c_str());
+        if (errno != EINTR) {
+            log(ERROR, String::compose("epoll_wait: %1", strerror(errno)).c_str());
+        }
     } else {
         m_congested = (rval != 0) || m_congested && busy;
     }

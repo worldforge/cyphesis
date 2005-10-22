@@ -12,13 +12,9 @@ WFMath::CoordType boxSquareSize(const BBox & box)
         return consts::minSqrBoxSize;
     }
 
-    WFMath::CoordType ans = 0;
-
-    for(int i = 0; i < 3; ++i) {
-        ans += square(box.highCorner()[i] - box.lowCorner()[i]);
-    }
-
-    return ans;
+    return square(box.highCorner().x() - box.lowCorner().x()) +
+           square(box.highCorner().y() - box.lowCorner().y()) +
+           square(box.highCorner().z() - box.lowCorner().z());
 }
 
 static WFMath::CoordType sqrMag(const WFMath::Point<3> & p)
