@@ -1,3 +1,9 @@
+2005-10-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Cache value of std::list::end() to avoid
+	  expensive return by value in every loop iteration. Add some comments
+	  about obsolete getoperationFromQueue() function.
+
 2005-10-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* physics/BBox.cpp: Re-core squareBoxSize() to be much more efficient.

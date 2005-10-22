@@ -150,6 +150,9 @@ void WorldRouter::addOperationToQueue(const Operation & op, Entity & ent)
 /// \brief Get the next due operation from the queue.
 ///
 /// If the operation at the end of the queue is now due, return it.
+/// This function is now unused, and has become obsolete now there are
+/// two queues. If this function is needed again, it will need to be
+/// recoded. See idle for sample code that checks for the next due operation.
 /// @return a pointer to the operation due for dispatch, or 0 if none
 /// is due.
 Operation WorldRouter::getOperationFromQueue()
@@ -495,7 +498,8 @@ bool WorldRouter::idle(int sec, int usec)
     updateTime(sec, usec);
     unsigned int op_count = 0;
     OpQueue::iterator I = m_operationQueue.begin();
-    while ((++op_count < 10) && (I != m_operationQueue.end()) &&
+    OpQueue::iterator Iend = m_operationQueue.end();
+    while ((++op_count < 10) && (I != Iend) &&
            ((*I)->getSeconds() <= m_realTime)) {
         assert(I != m_operationQueue.end());
         OpQueEntry & oqe = *I;
@@ -516,7 +520,8 @@ bool WorldRouter::idle(int sec, int usec)
     }
 
     I = m_immediateQueue.begin();
-    while ((++op_count < 10) && (I != m_immediateQueue.end())) {
+    Iend = m_immediateQueue.end();
+    while ((++op_count < 10) && (I != Iend)) {
         assert(I != m_immediateQueue.end());
         OpQueEntry & oqe = *I;
         Dispatching.emit(oqe.op);
