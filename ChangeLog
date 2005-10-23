@@ -1,3 +1,12 @@
+2005-10-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Report an error if m_task becomes null
+	  while processing a task tick op.
+
+	* rulesets/Combat.cpp: Remove debug output.
+
+	* rulesets/Statistics.cpp: Remove debug output.
+
 2005-10-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp: Cache value of std::list::end() to avoid
@@ -6,7 +15,7 @@
 
 2005-10-21  Al Riddoch  <alriddoch@zepler.org>
 
-	* physics/BBox.cpp: Re-core squareBoxSize() to be much more efficient.
+	* physics/BBox.cpp: Re-code squareBoxSize() to be much more efficient.
 
 	* server/CommServer.cpp: Don't report "Interrupted System Call" as
 	  an error from epoll_wait, as its always happening.

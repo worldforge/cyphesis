@@ -69,13 +69,10 @@ void Combat::TickOperation(const Operation & op, OpVector & res)
 
     if (attacker.getStamina() <= 0.f || defender.getStamina() <= 0.f) {
         irrelevant();
-        std::cout << "A character has been defeated" << std::endl << std::flush;
         // FIXME Make the right person obviously lose.
         return;
     }
 
-    std::cout << "Combat::TickOperation " 
-              << (m_attack ? "attack" : "defend") << std::endl << std::flush;
     Tick t;
     t->setAttr("sub_to", "task");
     t->setTo(m_character.getId());
@@ -102,7 +99,6 @@ void Combat::TickOperation(const Operation & op, OpVector & res)
     set->setArgs1(set_arg);
     set->setTo(defender.getId());
     res.push_back(set);
-    std::cout << "Defender: " << defender.getStamina() << std::endl << std::flush;
 
     attacker.statistics().increment("combat", res);
     // FIXME Handle skill/experience increment?

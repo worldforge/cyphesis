@@ -203,6 +203,10 @@ void Character::TickOperation(const Operation & op, OpVector & res)
                 return;
             }
             m_task->TickOperation(op, res);
+            if (m_task == 0) {
+                log(ERROR, "task is NULL after it processed tick op");
+                return;
+            }
             if (m_task->obsolete()) {
                 m_task->decRef();
                 m_task = 0;

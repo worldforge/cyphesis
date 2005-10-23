@@ -38,8 +38,6 @@ float Statistics::defence()
 
 void Statistics::increment(const std::string & name, OpVector & res)
 {
-    std::cout << "Incrementing " << name << std::endl << std::flush;
-
     float oldval, newval;
 
     // Check if we have this skill already
@@ -57,9 +55,7 @@ void Statistics::increment(const std::string & name, OpVector & res)
         newval = oldval + ((1.f - std::min(oldval, 1.f)) / 1000.f);
         I->second = newval;
     }
-    std::cout << "Skill change " << oldval << ":" << newval << ":"
-              << (int)(oldval * 1000) << ":" << (int)(newval * 1000)
-              << std::endl << std::flush;
+
     // If value has changed by more than 0.001 then report to character.
     if ((int)(newval * 1000) != (int)(oldval * 1000)) {
         Set set;
