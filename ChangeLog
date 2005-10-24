@@ -1,3 +1,9 @@
+2005-10-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Combat.cpp: Modify win condition check, so it occurs at
+	  the end of tick. Send notification to winner and loser of combat
+	  using faked Talk ops. Make the loser lose a little health.
+
 2005-10-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Report an error if m_task becomes null

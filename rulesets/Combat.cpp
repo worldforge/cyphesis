@@ -6,6 +6,7 @@
 
 #include "rulesets/Character.h"
 
+#include "common/log.h"
 #include "common/random.h"
 
 #include "common/Attack.h"
@@ -18,6 +19,8 @@
 using Atlas::Objects::Operation::Attack;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
+using Atlas::Objects::Operation::Sound;
+using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Tick;
 
 using Atlas::Objects::Entity::Anonymous;
@@ -67,17 +70,11 @@ void Combat::TickOperation(const Operation & op, OpVector & res)
     Character & attacker = m_attack ? m_character : m_target;
     Character & defender = m_attack ? m_target : m_character;
 
-    if (attacker.getStamina() <= 0.f || defender.getStamina() <= 0.f) {
+    if (attacker.getStamina() <= 0.f) {
+        log(WARNING, "Combat::Tick: Attacker has no stamina at tick");
         irrelevant();
-        // FIXME Make the right person obviously lose.
         return;
     }
-
-    Tick t;
-    t->setAttr("sub_to", "task");
-    t->setTo(m_character.getId());
-    t->setFutureSeconds(1.75);
-    res.push_back(t);
 
     Sight s;
     Attack a;
@@ -92,10 +89,37 @@ void Combat::TickOperation(const Operation & op, OpVector & res)
 
     float stamina = std::max(defender.getStamina() - damage, 0.);
 
-    Set set;
     Anonymous set_arg;
     set_arg->setId(defender.getId());
     set_arg->setAttr("stamina", stamina);
+
+    if (stamina <= 0.f) {
+        set_arg->setAttr("status", defender.getStatus() - 0.1);
+
+        Sound s1;
+        Talk t1;
+        Anonymous say1;
+        say1->setAttr("say", "You have been defeated");
+        t1->setArgs1(say1);
+        s1->setArgs1(t1);
+        s1->setFrom(m_character.m_world->m_gameWorld.getId());
+        s1->setTo(defender.getId());
+        res.push_back(s1);
+
+        Sound s2;
+        Talk t2;
+        Anonymous say2;
+        say2->setAttr("say", "You are victorious");
+        t2->setArgs1(say2);
+        s2->setArgs1(t2);
+        s2->setFrom(m_character.m_world->m_gameWorld.getId());
+        s2->setTo(attacker.getId());
+        res.push_back(s2);
+
+        irrelevant();
+    }
+
+    Set set;
     set->setArgs1(set_arg);
     set->setTo(defender.getId());
     res.push_back(set);
@@ -104,4 +128,14 @@ void Combat::TickOperation(const Operation & op, OpVector & res)
     // FIXME Handle skill/experience increment?
 
     // Defend op
+
+    if (obsolete()) {
+        return;
+    }
+
+    Tick t;
+    t->setAttr("sub_to", "task");
+    t->setTo(m_character.getId());
+    t->setFutureSeconds(1.75);
+    res.push_back(t);
 }
