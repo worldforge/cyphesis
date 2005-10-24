@@ -1,5 +1,13 @@
 2005-10-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Immobilise character if they have no stamina.
+
+	* configure.ac, NEWS: Increment version and update news.
+
+	* TODO: Remove done TODO items.
+
+2005-10-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Combat.cpp: Modify win condition check, so it occurs at
 	  the end of tick. Send notification to winner and loser of combat
 	  using faked Talk ops. Make the loser lose a little health.

@@ -1,5 +1,5 @@
-When queing ops, can we put in a hack because most ops will be for
-immediate dispatch?
+Predator's should now use combat code to defeat prey before eating, and
+then Eat op on character should only work on incapacitated characters.
 
 A bunch of stuff in Character::externalOperation can go if we don't care
 about ops having serialnos.
@@ -7,17 +7,10 @@ about ops having serialnos.
 Move contents of mindUseOperation to UseOperation, and have mindUseOperation
 filter ops like it should.
 
-Optimisation: Make sure it is ok for ops passed through the mindFooOperation
-interface to be used as is or modified, rather than needing a deep copy.
-
 Combat system needs to depend on character stats, armour, clothing and
 weapon at very least. Probably need a class to encapsulate important
 processed stat information for a character. This makes it harder to
 have a fully configurable combat system.
-
-Check eof() _AND_ fail() on streams when reading. Also needs to be done
-in Eris in similar place, and Atlas-C++ needs to check for EOF returned
-by iostream::get().
 
 Define new class Volume which contains the set of points and normals
 required by the collision code. Cache the volume, and bounding radius
@@ -26,9 +19,6 @@ collision check based on bounding radius.
 
 Not sure destination based movement is working right if destination pos
 changes due to LOC change.
-
-If operation is TO the same as FROM, we can avoid a lookup, as we already
-have a pointer for FROM.
 
 Fix collisions. Leaving needs to be the inverse of entering, and this
 implicitly means we need to check collisions with the parents' children.

@@ -693,6 +693,10 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         log(ERROR, "mindMoveOperation: Arg has no ID");
         return;
     }
+    if (getStamina() <= 0.f) {
+        // Character is immobilised.
+        return;
+    }
     const std::string & other_id = arg->getId();
     // FIXME We are looking up the object, but the vast majority of the
     // time we are moving ourselves. Bypass this lookup if possible.
