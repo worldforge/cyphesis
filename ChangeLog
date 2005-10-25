@@ -1,3 +1,9 @@
+2005-10-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* cyphesis.spec.in: Fix dependency on Atlas-C++06
+
+	* Release 0.5.2
+
 2005-10-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Immobilise character if they have no stamina.
