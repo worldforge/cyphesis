@@ -100,7 +100,7 @@ void Creator::externalOperation(const Operation & op)
     // we handle it like a normal character.
     debug( std::cout << "Creator::externalOperation" << std::endl
                      << std::flush;);
-    if (op->getTo().empty()) {
+    if (!op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
         debug( std::cout << "Creator handling op normally" << std::endl
                          << std::flush;);
         Creator_parent::externalOperation(op);

@@ -152,12 +152,12 @@ int Connection::verifyCredentials(const Account & account,
 void Connection::operation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
-    const std::string & from = op->getFrom();
-    if (from.empty()) {
+    if (!op->hasAttrFlag(Atlas::Objects::Operation::FROM_FLAG)) {
         debug(std::cout << "deliver locally" << std::endl << std::flush;);
         callOperation(op, res);
         return;
     } else {
+        const std::string & from = op->getFrom();
         debug(std::cout << "send on to " << from << std::endl << std::flush;);
         BaseDict::const_iterator I = m_objects.find(from);
         if (I == m_objects.end()) {

@@ -181,8 +181,8 @@ class NPCMind(BaseMind):
         predicate=say[2].word
         object=say[3].word
         k=self.get_knowledge(predicate, object)
-        if k==None:
-            return Operation('talk',Entity(say="I know nothing about the "+predicate+" of "+object))
+        if k==None: pass
+            # return Operation('talk',Entity(say="I know nothing about the "+predicate+" of "+object))
         else:
             k_type = type(k)
             if k_type==type(Location()):

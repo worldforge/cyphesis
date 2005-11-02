@@ -1,3 +1,14 @@
+Carefully use flags to check for illegal stuff from client/mind ops.
+
+Walking army of the undead, daily.
+
+Spatial iterators, for map have a reference to a const_iterator, and filter
+while incrementing. Iterate between space(bot_left, top_right)  and end().
+
+Don't update POS in database if VELOCITY is non-zero.
+
+strlen.com
+
 Predator's should now use combat code to defeat prey before eating, and
 then Eat op on character should only work on incapacitated characters.
 

@@ -1278,7 +1278,7 @@ void Character::mind2body(const Operation & op, OpVector & res)
     if (m_drunkness > 1.0) {
         return;
     }
-    if (!op->getTo().empty()) {
+    if (op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
         log(ERROR, String::compose("Operation \"%1\" from mind with TO set", op->getParents().front()).c_str());
     }
     OpNo otype = opEnumerate(op);

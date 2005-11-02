@@ -1,3 +1,15 @@
+2005-11-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/NPCMind.py: Don't respond to knowledge
+	  queries if the character has no knowledge.
+
+	* server/Connection.cpp, rulesets/Creator.cpp, rulesets/Character.cpp:
+	  Use flag check to see if operations have FROM set, rather than
+	  checking for an empty string.
+
+	* rulesets/Thing.cpp: When handling move ops, avoid lookup of LOC
+	  in world unless it has changed.
+
 2005-10-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* cyphesis.spec.in: Fix dependency on Atlas-C++06

@@ -154,25 +154,32 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         error(op, "Move op does not have correct id in argument", res, getId());
         return;
     }
+
     if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         error(op, "Move op has no loc", res, getId());
         return;
     }
     const std::string & new_loc_id = ent->getLoc();
-    EntityDict::const_iterator J = m_world->getEntities().find(new_loc_id);
-    if (J == m_world->getEntities().end()) {
-        error(op, "Move op loc invalid", res, getId());
-        return;
-    }
-    debug(std::cout << "{" << new_loc_id << "}" << std::endl << std::flush;);
-    Entity * new_loc = J->second;
-    Entity * test_loc = new_loc;
-    for (; test_loc != 0; test_loc = test_loc->m_location.m_loc) {
-        if (test_loc == this) {
-            error(op, "Attempt by entity to move into itself", res, getId());
+    Entity * new_loc = 0;
+    if (new_loc_id != m_location.m_loc->getId()) {
+        // If the LOC has not changed, we don't need to look it up, or do
+        // any of the following checks.
+        EntityDict::const_iterator J = m_world->getEntities().find(new_loc_id);
+        if (J == m_world->getEntities().end()) {
+            error(op, "Move op loc does not exist", res, getId());
             return;
         }
+        debug(std::cout << "LOC: " << new_loc_id << std::endl << std::flush;);
+        new_loc = J->second;
+        Entity * test_loc = new_loc;
+        for (; test_loc != 0; test_loc = test_loc->m_location.m_loc) {
+            if (test_loc == this) {
+                error(op, "Attempt to move into itself", res, getId());
+                return;
+            }
+        }
     }
+
     if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
         error(op, "Move op has no pos", res, getId());
         return;
@@ -181,7 +188,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // Up until this point nothing should have changed, but the changes
     // have all now been checked for validity.
 
-    if (m_location.m_loc != new_loc) {
+    if (new_loc != 0 && m_location.m_loc != new_loc) {
         // Update loc
         m_location.m_loc->m_contains.erase(this);
         if (m_location.m_loc->m_contains.empty()) {
