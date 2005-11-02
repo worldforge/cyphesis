@@ -764,29 +764,13 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    double futureSeconds = op->getFutureSeconds();
-    if (!new_pos.isValid()) {
-        if (futureSeconds < 0.) {
-            futureSeconds = 0.;
-        }
-    } else {
+    if (new_pos.isValid()) {
         new_pos +=
             (Vector3D(((double)rand())/RAND_MAX, ((double)rand())/RAND_MAX, 0)
                                 * (m_drunkness * 10));
     }
     debug( std::cout << ":" << new_loc << ":" << m_location.m_loc->getId()
                      << ":" << std::endl << std::flush;);
-    if (futureSeconds < 0.) {
-        // FIXME Added 1st Oct 2005. If we don't see error before November,
-        // then take out futureSeconds handling completely.
-        log(ERROR, "For some bizare reason the client has scheduled a move operation to occur in the past.");
-        // Background - formerly if futureSeconds was < 0, the operation
-        // was passed on unmodified, except to set TO to this entity.
-        // Once this code is removed, it should also be possible to remove
-        // the code above that fiddles with futureSeconds.
-        // A general check on futureSeconds from the mind would then
-        // be apropriate. I can't think of a good reason for allowing it.
-    }
     if (!new_loc.empty() && (new_loc != m_location.m_loc->getId())) {
         debug(std::cout << "Changing loc" << std::endl << std::flush;);
         EntityDict::const_iterator J = m_world->getEntities().find(new_loc);
@@ -1280,6 +1264,10 @@ void Character::mind2body(const Operation & op, OpVector & res)
     }
     if (op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
         log(ERROR, String::compose("Operation \"%1\" from mind with TO set", op->getParents().front()).c_str());
+    }
+    if (op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG) &&
+        op->getClassNo() != OP_TICK) {
+        log(ERROR, String::compose("Operation \"%1\" from mind with FUTURE_SECONDS set", op->getParents().front()).c_str());
     }
     OpNo otype = opEnumerate(op);
     OP_SWITCH(op, otype, res, mind)

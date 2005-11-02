@@ -1,5 +1,11 @@
 2005-11-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Prevent clients and minds for using
+	  FUTURE_SECONDS on ops other than tick. Remove all handling
+	  of FUTURE_SECONDS when processing move ops from clients and minds.
+
+2005-11-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/NPCMind.py: Don't respond to knowledge
 	  queries if the character has no knowledge.
 
