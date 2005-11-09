@@ -1,3 +1,10 @@
+Are attributes inherited? I think not. Need to be.
+
+All too often an error is sent to clients for an event which is of absolutely
+no interest to the server admin or developer. Things like authentication
+failure, negotiation timeout, write timeout. Need another error method for
+this.
+
 True integer IDs.
 
 Carefully use flags to check for illegal stuff from client/mind ops.

@@ -85,7 +85,9 @@ class BaseEntity : virtual public SigC::Object {
     OpNo opEnumerate(const Operation &) const;
     void callOperation(const Operation &, OpVector &);
     void error(const Operation &, const char * errstring, OpVector &,
-                   const std::string & to = "") const;
+               const std::string & to = "") const;
+    void clientError(const Operation &, const std::string & errstring,
+                     OpVector &, const std::string & to = "") const;
 
     SigC::Signal0<void> destroyed;
 };

@@ -1,3 +1,12 @@
+2005-11-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.cpp, common/BaseEntity.h: Add a new method which
+	  generates an error operation without creating an log entry.
+
+	* server/Connection.cpp: Report routine client errors, like
+	  login failure using the new error method, so they no longer
+	  create high priority log messages.
+
 2005-11-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Prevent clients and minds for using

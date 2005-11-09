@@ -241,13 +241,13 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
         }
     }
     if (player == 0 || verifyCredentials(*player, arg) != 0) {
-        error(op, "Login is invalid", res);
+        clientError(op, "Login is invalid", res);
         return;
     }
     // Account appears to be who they say they are
     if (player->m_connection) {
         // Internals don't allow player to log in more than once.
-        error(op, "This account is already logged in", res);
+        clientError(op, "This account is already logged in", res);
         return;
     }
     // Connect everything up
@@ -273,7 +273,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got create op" << std::endl << std::flush;);
     if (!m_objects.empty()) {
-        error(op, "Already logged in", res);
+        clientError(op, "This connection is already logged in", res);
         return;
     }
     const std::vector<Root> & args = op->getArgs();
@@ -312,7 +312,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         (consts::enable_database && Persistance::instance()->findAccount(username)) ||
         (username.empty()) || (password.empty())) {
         // Account exists, or creation data is duff
-        error(op, "Account creation is invalid", res);
+        clientError(op, "Account creation is invalid", res);
         return;
     }
     Account * player = addPlayer(username, password);
