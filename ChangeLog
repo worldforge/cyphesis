@@ -1,5 +1,11 @@
 2005-11-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Combat.cpp: Use Entity::sendWorld() to ensure that
+	  notification of victory or defeat appear to come from the world
+	  rather than one of the combatants.
+
+2005-11-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.cpp, common/BaseEntity.h: Add a new method which
 	  generates an error operation without creating an log entry.
 

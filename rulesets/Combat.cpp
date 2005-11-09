@@ -102,9 +102,8 @@ void Combat::TickOperation(const Operation & op, OpVector & res)
         say1->setAttr("say", "You have been defeated");
         t1->setArgs1(say1);
         s1->setArgs1(t1);
-        s1->setFrom(m_character.m_world->m_gameWorld.getId());
         s1->setTo(defender.getId());
-        res.push_back(s1);
+        m_character.m_world->m_gameWorld.sendWorld(s1);
 
         Sound s2;
         Talk t2;
@@ -112,9 +111,8 @@ void Combat::TickOperation(const Operation & op, OpVector & res)
         say2->setAttr("say", "You are victorious");
         t2->setArgs1(say2);
         s2->setArgs1(t2);
-        s2->setFrom(m_character.m_world->m_gameWorld.getId());
         s2->setTo(attacker.getId());
-        res.push_back(s2);
+        m_character.m_world->m_gameWorld.sendWorld(s2);
 
         irrelevant();
     }
