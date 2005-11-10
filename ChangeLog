@@ -1,3 +1,8 @@
+2005-11-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Statistics.h: Add comments clarifying use of references
+	  in this class.
+
 2005-11-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Combat.cpp: Use Entity::sendWorld() to ensure that

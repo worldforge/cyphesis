@@ -15,6 +15,8 @@ class Character;
 /// it should hold a reference to the character to which it belongs.
 /// Member functions are provided so that code can determine a character's
 /// key statistics, including modifiers due to skills, buffs etc.
+/// The Character reference passed in at construction time is under
+/// construction itself, so should not be used at this time, just stored.
 class Statistics {
   public:
     typedef std::map<std::string, float> SkillDict;
