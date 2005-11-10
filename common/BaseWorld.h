@@ -23,8 +23,6 @@ class Entity;
 /// inherit from this provide the core game world system.
 class BaseWorld {
   private:
-    const std::string m_id;
-
     // Private and un-implemented to prevent slicing
     BaseWorld(const BaseWorld &);
     const BaseWorld & operator=(const BaseWorld &);

@@ -1,5 +1,9 @@
 2005-11-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseWorld.h: Remove obsolete ID member variable.
+
+2005-11-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Statistics.h: Add comments clarifying use of references
 	  in this class.
 
