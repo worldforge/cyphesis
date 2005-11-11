@@ -1,3 +1,7 @@
+2005-11-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* cyphesis.init: Don't commit without checking with me first.
+
 2005-11-11  Kai Blin  <blin@gmx.net>
 
 	* cyphesis.init: replaced a hardcoded reference to the postgres user
