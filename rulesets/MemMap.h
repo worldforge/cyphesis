@@ -15,7 +15,7 @@ class Script;
 class Location;
 
 typedef std::vector<MemEntity *> MemEntityVector;
-typedef std::map<std::string, MemEntity *> MemEntityDict;
+typedef std::map<long, MemEntity *> MemEntityDict;
 
 /// \brief Class to handle the basic entity memory of a mind
 class MemMap {
@@ -33,13 +33,16 @@ class MemMap {
     MemEntity * addEntity(MemEntity *);
     void readEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &);
     void updateEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &);
-    MemEntity * newEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &);
+    MemEntity * newEntity(const std::string &, long,
+                          const Atlas::Objects::Entity::RootEntity &);
     void addContents(const Atlas::Objects::Entity::RootEntity &);
-    MemEntity * addId(const std::string & id);
+    MemEntity * addId(const std::string &, long);
   public:
     explicit MemMap(Script *& s);
 
-    bool find(const std::string & id) const {
+    bool find(const std::string & id) const;
+
+    bool find(long id) const {
         return (m_entities.find(id) != m_entities.end());
     }
 

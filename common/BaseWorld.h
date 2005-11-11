@@ -14,6 +14,8 @@
 
 #include <sigc++/signal.h>
 
+#include <cassert>
+
 class Entity;
 
 /// \brief Base class for game world object.
@@ -36,9 +38,12 @@ class BaseWorld {
 
     virtual ~BaseWorld();
 
-    Entity * getEntity(const std::string & fid) const {
-        EntityDict::const_iterator I = m_eobjects.find(fid);
+    Entity * getEntity(const std::string & id) const;
+
+    Entity * getEntity(long id) const {
+        EntityDict::const_iterator I = m_eobjects.find(id);
         if (I != m_eobjects.end()) {
+            assert(I->second != 0);
             return I->second;
         } else {
             return 0;

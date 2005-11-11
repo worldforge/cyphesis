@@ -13,7 +13,7 @@ class Entity;
 class Account;
 class Database;
 
-typedef std::map<std::string, Entity *> EntityDict;
+typedef std::map<long, Entity *> EntityDict;
 
 /// \brief Class for managing the required database tables for persisting
 /// in-game entities and server accounts

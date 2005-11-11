@@ -16,6 +16,7 @@
 #include "common/log.h"
 #include "common/serialno.h"
 #include "common/debug.h"
+#include "common/compose.hpp"
 
 #include <wfmath/atlasconv.h>
 
@@ -58,7 +59,7 @@ Account::~Account()
     }
 }
 
-void Account::characterDestroyed(std::string id)
+void Account::characterDestroyed(long id)
 {
     m_charactersDict.erase(id);
     ConMap::iterator I = m_destroyedConnections.find(id);
@@ -67,7 +68,7 @@ void Account::characterDestroyed(std::string id)
         m_destroyedConnections.erase(I);
     }
     if (consts::enable_persistence) {
-        Persistance::instance()->delCharacter(id);
+        Persistance::instance()->delCharacter(String::compose("%1", id));
     }
 }
 
@@ -77,9 +78,9 @@ void Account::addCharacter(Entity * chr)
     if (pchar == 0) {
         return;
     }
-    m_charactersDict[chr->getId()] = chr;
-    SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<std::string>(SigC::slot(*this, &Account::characterDestroyed), chr->getId())));
-    m_destroyedConnections[chr->getId()] = con;
+    m_charactersDict[chr->getIntId()] = chr;
+    SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<long>(SigC::slot(*this, &Account::characterDestroyed), chr->getIntId())));
+    m_destroyedConnections[chr->getIntId()] = con;
 }
 
 Entity * Account::addNewCharacter(const std::string & typestr,
@@ -101,9 +102,9 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         // Only genuinely playable characters should go in here. Otherwise
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.
-        m_charactersDict[chr->getId()] = chr;
-        SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<std::string>(SigC::slot(*this, &Account::characterDestroyed), chr->getId())));
-        m_destroyedConnections[chr->getId()] = con;
+        m_charactersDict[chr->getIntId()] = chr;
+        SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<long>(SigC::slot(*this, &Account::characterDestroyed), chr->getIntId())));
+        m_destroyedConnections[chr->getIntId()] = con;
         m_connection->addObject(chr);
         if (consts::enable_persistence) {
             Persistance::instance()->addCharacter(*this, *chr);
@@ -186,7 +187,7 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     EntityDict::const_iterator I = m_charactersDict.begin();
     EntityDict::const_iterator Iend = m_charactersDict.end();
     for (; I != Iend; ++I) {
-        charlist.push_back(I->first);
+        charlist.push_back(I->second->getId());
     }
     ent->setAttr("characters", charlist);
     BaseEntity::addToEntity(ent);
@@ -253,7 +254,13 @@ void Account::SetOperation(const Operation & op, OpVector & res)
     }
 
     const std::string & id = arg->getId();
-    EntityDict::const_iterator J = m_charactersDict.find(id);
+
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+    }
+
+    EntityDict::const_iterator J = m_charactersDict.find(intId);
     if (J == m_charactersDict.end()) {
         return error(op, "Set character for unknown character", res, getId());
     }
@@ -378,7 +385,13 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & to = arg->getId();
-    EntityDict::const_iterator J = m_charactersDict.find(to);
+
+    long intId = strtol(to.c_str(), 0, 10);
+    if (intId == 0 && to != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", to).c_str());
+    }
+
+    EntityDict::const_iterator J = m_charactersDict.find(intId);
     if (J != m_charactersDict.end()) {
         Sight s;
         s->setTo(getId());

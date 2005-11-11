@@ -90,7 +90,7 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId, consts::r
     m_gameWorld.incRef();
     m_gameWorld.m_world = this;
     m_gameWorld.setType("world");
-    m_eobjects[m_gameWorld.getId()] = &m_gameWorld;
+    m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     m_perceptives.insert(&m_gameWorld);
     m_objectList.insert(&m_gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
@@ -229,7 +229,7 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
 {
     debug(std::cout << "WorldRouter::addEntity(Entity *)" << std::endl
                     << std::flush;);
-    m_eobjects[ent->getId()] = ent;
+    m_eobjects[ent->getIntId()] = ent;
     m_objectList.insert(ent);
     assert(ent->m_location.isValid());
 
@@ -332,7 +332,7 @@ void WorldRouter::delEntity(Entity * ent)
     }
     m_perceptives.erase(ent);
     m_objectList.erase(ent);
-    m_eobjects.erase(ent->getId());
+    m_eobjects.erase(ent->getIntId());
     ent->destroy();
     ent->decRef();
 }
@@ -424,14 +424,14 @@ void WorldRouter::operation(const Operation & op, Entity & from)
             }
             to_entity = &from;
         } else {
-            EntityDict::const_iterator I = m_eobjects.find(to);
-            if (I == m_eobjects.end()) {
+            to_entity = getEntity(to);
+
+            if (to_entity == 0) {
                 debug(std::cerr << "WARNING: Op to=\"" << to << "\""
                                 << " does not exist"
                                 << std::endl << std::flush;);
                 return;
             }
-            to_entity = I->second;
         }
 
         assert(to_entity != 0);
@@ -481,9 +481,9 @@ void WorldRouter::operation(const Operation & op, Entity & from)
 void WorldRouter::addPerceptive(const std::string & id)
 {
     debug(std::cout << "WorldRouter::addPerceptive" << std::endl << std::flush;);
-    EntityDict::const_iterator J = m_eobjects.find(id);
-    if (J != m_eobjects.end()) {
-        m_perceptives.insert(J->second);
+    Entity * perceptive = getEntity(id);
+    if (perceptive != 0) {
+        m_perceptives.insert(perceptive);
     }
 }
 

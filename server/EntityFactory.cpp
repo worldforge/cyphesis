@@ -121,12 +121,8 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
     if (attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        const EntityDict & eobjects = m_world.getEntities();
         const std::string & loc_id = attributes->getLoc();
-        EntityDict::const_iterator J = eobjects.find(loc_id);
-        if (J != eobjects.end()) {
-            thing->m_location.m_loc = J->second;
-        }
+        thing->m_location.m_loc = m_world.getEntity(loc_id);
     }
     if (thing->m_location.m_loc == 0) {
         // If no info was provided, put the entity in the game world

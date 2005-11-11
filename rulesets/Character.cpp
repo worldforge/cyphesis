@@ -358,13 +358,12 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & id = arg->getId();
-    EntityDict::const_iterator J = m_world->getEntities().find(id);
-    if (J == m_world->getEntities().end()) {
+    Entity * item = m_world->getEntity(id);
+    if (item == 0) {
         error(op, "Wield arg does not exist", res, getId());
         return;
     }
-    Entity * item = J->second;
-    assert(item != 0);
+
     EntitySet::const_iterator K = m_contains.find(item);
     if (K == m_contains.end()) {
         error(op, "Wield arg is not in inventory", res, getId());
@@ -385,13 +384,11 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
 
 void Character::AttackOperation(const Operation & op, OpVector & res)
 {
-    EntityDict::const_iterator I = m_world->getEntities().find(op->getFrom());
-    if (I == m_world->getEntities().end()) {
+    Entity * attack_ent = m_world->getEntity(op->getFrom());
+    if (attack_ent == 0) {
         log(ERROR, "AttackOperation: Attack op from non-existant ID");
         return;
     }
-    Entity * attack_ent = I->second;
-    assert(attack_ent != 0);
 
     Character * attacker = dynamic_cast<Character *>(attack_ent);
 
@@ -512,14 +509,11 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 
     // FIXME Get a tool id from the op attributes?
 
-    EntityDict::const_iterator I = m_world->getEntities().find(toolId);
-    if (I == m_world->getEntities().end()) {
+    Entity * tool = m_world->getEntity(toolId);
+    if (tool == 0) {
         error(op, "Use tool does not exist.", res, getId());
         return;
     }
-
-    Entity * tool = I->second;
-    assert(tool != 0);
 
     Element toolOpAttr;
     std::set<std::string> toolOps;
@@ -704,8 +698,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     // time we are moving ourselves. Bypass this lookup if possible.
     if (other_id != getId()) {
         debug( std::cout << "Moving something else. " << other_id << std::endl << std::flush;);
-        EntityDict::const_iterator J = m_world->getEntities().find(other_id);
-        if (J == m_world->getEntities().end()) {
+        Entity * other = m_world->getEntity(other_id);
+        if (other == 0) {
             log(ERROR, "mindMoveOperation: This move op is for a phoney id");
             log(NOTICE, "Sending Unseen op back to mind. We should not see this again.");
             Unseen u;
@@ -718,8 +712,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             res.push_back(u);
             return;
         }
-        Entity * obj = J->second;
-        if ((obj->getMass() < 0)||(obj->getMass() > m_statistics.strength())) {
+        if ((other->getMass() < 0) ||
+            (other->getMass() > m_statistics.strength())) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
         }
@@ -775,8 +769,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
                      << ":" << std::endl << std::flush;);
     if (!new_loc.empty() && (new_loc != m_location.m_loc->getId())) {
         debug(std::cout << "Changing loc" << std::endl << std::flush;);
-        EntityDict::const_iterator J = m_world->getEntities().find(new_loc);
-        if (J == m_world->getEntities().end()) {
+        Entity * target_loc = m_world->getEntity(new_loc);
+        if (target_loc == 0) {
             log(ERROR, "mindMoveOperation: This move op has phoney loc");
             log(NOTICE, "Sending Unseen op back to mind. We should not see this again.");
             Unseen u;
@@ -789,8 +783,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             res.push_back(u);
             return;
         }
-        Entity * target_loc = J->second;
-        assert(target_loc != 0);
+
         if (new_pos.isValid()) {
             Location target(target_loc, new_pos);
             Vector3D distance = distanceTo(m_location, target);

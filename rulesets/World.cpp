@@ -311,14 +311,11 @@ void World::mowOperation(const Operation & op, OpVector & res)
 void World::EatOperation(const Operation & op, OpVector & res)
 {
     const std::string & from_id = op->getFrom();
-    EntityDict::const_iterator I = m_world->getEntities().find(from_id);
-    if (I == m_world->getEntities().end()) {
+    Entity * from = m_world->getEntity(from_id);
+    if (from == 0) {
         log(ERROR, "World got eat op from non-existant entity.");
         return;
     }
-
-    Entity * from = I->second;
-    assert(from != 0);
 
     Point3D from_pos = relativePos(m_location, from->m_location);
     int material;
@@ -350,6 +347,8 @@ void World::LookOperation(const Operation & op, OpVector & res)
 {
     // Let the worldrouter know we have been looked at.
     assert(m_world != 0);
+    // FIXME Pass entity pointer directly to addPerceptive
+    // May need to get rid of ranges check,
     m_world->addPerceptive(op->getFrom());
 
     if (!consts::enable_ranges) {
@@ -359,15 +358,13 @@ void World::LookOperation(const Operation & op, OpVector & res)
     }
 
     debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
-    const EntityDict & eobjects = m_world->getEntities();
-    const std::string & from = op->getFrom();
-    EntityDict::const_iterator J = eobjects.find(from);
-    if (J == eobjects.end()) {
-        debug(std::cout << "ERROR: Op has invalid from" << std::endl
+    const std::string & from_id = op->getFrom();
+    Entity * from = m_world->getEntity(from_id);
+    if (from == 0) {
+        debug(std::cout << "ERROR: Look op has invalid from" << std::endl
                         << std::flush;);
         return World_parent::LookOperation(op, res);
     }
-    Entity * lookFrom = J->second;
 
     Sight s;
 
@@ -387,7 +384,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
     EntitySet::const_iterator Iend = m_contains.end();
     for (EntitySet::const_iterator I = m_contains.begin(); I != Iend; ++I) {
         float fromSquSize = boxSquareSize((*I)->m_location.bBox());
-        float dist = squareDistance((*I)->m_location, lookFrom->m_location);
+        float dist = squareDistance((*I)->m_location, from->m_location);
         float view_factor = fromSquSize / dist;
         if (view_factor > consts::square_sight_factor) {
             contlist.push_back((*I)->getId());

@@ -17,6 +17,7 @@
 #include "common/debug.h"
 #include "common/serialno.h"
 #include "common/inheritance.h"
+#include "common/compose.hpp"
 
 #include "common/Connect.h"
 #include "common/Monitor.h"
@@ -141,7 +142,13 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         const BaseDict & OOGDict = m_connection->m_server.getObjects();
         BaseDict::const_iterator J = OOGDict.find(id);
         const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
-        EntityDict::const_iterator K = worldDict.find(id);
+
+        long intId = strtol(id.c_str(), 0, 10);
+        if (intId == 0 && id != "0") {
+            log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+        }
+
+        EntityDict::const_iterator K = worldDict.find(intId);
 
         if (J != OOGDict.end()) {
             Anonymous info_arg;
@@ -204,7 +211,13 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
     // FIXME Use this id to install a type from the client
 
     if ((objtype == "object") || (objtype == "obj")) {
-        if (m_charactersDict.find(id) != m_charactersDict.end()) {
+
+        long intId = strtol(id.c_str(), 0, 10);
+        if (intId == 0 && id != "0") {
+            log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+        }
+
+        if (m_charactersDict.find(intId) != m_charactersDict.end()) {
             Account::SetOperation(op, res);
             return;
         }

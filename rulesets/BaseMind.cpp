@@ -43,7 +43,7 @@ BaseMind::BaseMind(const std::string & id, long intId,
 
 BaseMind::~BaseMind()
 {
-    m_map.m_entities.erase(getId());
+    m_map.m_entities.erase(getIntId());
     // FIXME Remove this once MemMap uses parent refcounting
     m_location.m_loc = 0;
     debug(std::cout << getId() << ":" << getType() << " flushing mind with "

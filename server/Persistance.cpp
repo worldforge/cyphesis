@@ -13,6 +13,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/Database.h"
+#include "common/compose.hpp"
 
 using Atlas::Message::MapType;
 
@@ -166,13 +167,18 @@ void Persistance::registerCharacters(Account & ac,
     }
     DatabaseResult::const_iterator Iend = dr.end();
     for (DatabaseResult::const_iterator I = dr.begin(); I != Iend; ++I) {
-        const char * c = I.column(0);
-        if (c == 0) {
+        const char * id = I.column(0);
+        if (id == 0) {
             log(ERROR, "No data in relation when examing characters");
             continue;
         }
-        std::string id(c);
-        EntityDict::const_iterator J = worldObjects.find(id);
+
+        long intId = strtol(id, 0, 10);
+        if (intId == 0 && strcmp(id, "0") != 0) {
+            log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+        }
+
+        EntityDict::const_iterator J = worldObjects.find(intId);
         if (J == worldObjects.end()) {
             log(WARNING, "Persistance: Got character id from database which does not exist in world");
             continue;

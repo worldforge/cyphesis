@@ -164,13 +164,12 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     if (new_loc_id != m_location.m_loc->getId()) {
         // If the LOC has not changed, we don't need to look it up, or do
         // any of the following checks.
-        EntityDict::const_iterator J = m_world->getEntities().find(new_loc_id);
-        if (J == m_world->getEntities().end()) {
+        new_loc = m_world->getEntity(new_loc_id);
+        if (new_loc == 0) {
             error(op, "Move op loc does not exist", res, getId());
             return;
         }
         debug(std::cout << "LOC: " << new_loc_id << std::endl << std::flush;);
-        new_loc = J->second;
         Entity * test_loc = new_loc;
         for (; test_loc != 0; test_loc = test_loc->m_location.m_loc) {
             if (test_loc == this) {

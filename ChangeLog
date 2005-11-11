@@ -1,3 +1,25 @@
+2005-11-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/types.h, server/Persistance.h, common/BaseWorld.h,
+	  common/BaseWorld.cpp, server/WorldRouter.cpp:
+	  Switch core world map to reference by integer ID rather than string.
+	  Add version of getEntity() which converts from string to integer
+	  automatically.
+
+	* rulesets/Character.cpp, rulesets/Thing.cpp, rulesets/World.cpp,
+	  server/EntityFactory.cpp, 
+	  Use getEntity() when looking up an entity, so that conversion of
+	  ID from string to integer is automatic.
+
+	* rulesets/BaseMind.cpp, rulesets/MemMap.cpp, rulesets/MemMap.h:
+	  Switch to using integer IDs in MemMap's core mapping.
+
+	* server/Account.cpp, server/Account.h: Switch a few function
+	  parameters to use integer ID values, making the code cleaner.
+
+	* server/Account.cpp, server/Admin.cpp, server/Persistance.cpp:
+	  Handle string ID to integer conversions as required.
+
 2005-11-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.h, common/BaseEntity.cpp: Add an integer ID

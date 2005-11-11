@@ -30,11 +30,11 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
 
     debug(std::cout << "MemMap::addEntity " << entity << " " << entity->getId()
                     << std::endl << std::flush;);
-    std::string next;
+    long next;
     if (m_checkIterator != m_entities.end()) {
         next = m_checkIterator->first;
     }
-    m_entities[entity->getId()] = entity;
+    m_entities[entity->getIntId()] = entity;
     m_checkIterator = m_entities.find(next);
 
     debug( std::cout << this << std::endl << std::flush;);
@@ -95,17 +95,11 @@ void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
     }
 }
 
-MemEntity * MemMap::newEntity(const std::string & id,
+MemEntity * MemMap::newEntity(const std::string & id, long intId,
                               const RootEntity & ent)
 // Create a new entity from an Atlas message.
 {
-    assert(!id.empty());
-    assert(m_entities.find(id) == m_entities.end());
-
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-    }
+    assert(m_entities.find(intId) == m_entities.end());
 
     MemEntity * entity = new MemEntity(id, intId);
 
@@ -134,16 +128,11 @@ Atlas::Objects::Operation::RootOperation MemMap::lookId()
     return NULL;
 }
 
-MemEntity * MemMap::addId(const std::string & id)
+MemEntity * MemMap::addId(const std::string & id, long intId)
 // Queue the ID of an entity we are interested in
 {
     assert(!id.empty());
-    assert(m_entities.find(id) == m_entities.end());
-
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-    }
+    assert(m_entities.find(intId) == m_entities.end());
 
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     m_additionsById.push_back(id);
@@ -155,11 +144,17 @@ void MemMap::del(const std::string & id)
 // Delete an entity from memory
 {
     debug( std::cout << "MemMap::del(" << id << ")" << std::endl << std::flush;);
-    MemEntityDict::iterator I = m_entities.find(id);
+
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+    }
+
+    MemEntityDict::iterator I = m_entities.find(intId);
     if (I != m_entities.end()) {
         MemEntity * ent = I->second;
         assert(ent != 0);
-        std::string next;
+        long next;
         if (m_checkIterator != m_entities.end()) {
             next = m_checkIterator->first;
         }
@@ -207,7 +202,13 @@ MemEntity * MemMap::get(const std::string & id) const
         log(ERROR, "MemMap::get queried for empty id string");
         return NULL;
     }
-    MemEntityDict::const_iterator I = m_entities.find(id);
+
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+    }
+
+    MemEntityDict::const_iterator I = m_entities.find(intId);
     if (I != m_entities.end()) {
         assert(I->second != 0);
         return I->second;
@@ -223,12 +224,18 @@ MemEntity * MemMap::getAdd(const std::string & id)
     if (id.empty()) {
         return NULL;
     }
-    MemEntityDict::const_iterator I = m_entities.find(id);
+
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+    }
+
+    MemEntityDict::const_iterator I = m_entities.find(intId);
     if (I != m_entities.end()) {
         assert(I->second != 0);
         return I->second;
     }
-    return addId(id);
+    return addId(id, intId);
 }
 
 void MemMap::addContents(const RootEntity & ent)
@@ -262,10 +269,16 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
         log(ERROR, "MemMap::update, Empty id in updated entity");
         return NULL;
     }
-    MemEntityDict::const_iterator I = m_entities.find(id);
+
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+    }
+
+    MemEntityDict::const_iterator I = m_entities.find(intId);
     MemEntity * entity;
     if (I == m_entities.end()) {
-        entity = newEntity(id, ent);
+        entity = newEntity(id, intId, ent);
     } else {
         entity = I->second;
         updateEntity(entity, ent);
@@ -319,7 +332,7 @@ const Element MemMap::asMessage()
     
     MemEntityDict::const_iterator Iend = m_entities.end();
     for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
-        I->second->addToMessage((omap[I->first] = MapType()).asMap());
+        I->second->addToMessage((omap[I->second->getId()] = MapType()).asMap());
     }
     return Element(omap);
 }
@@ -335,7 +348,7 @@ void MemMap::check(const double & time)
             debug(std::cout << me->getId() << "|" << me->getType()
                       << " is a waste of space" << std::endl << std::flush;);
             MemEntityDict::const_iterator J = m_checkIterator;
-            std::string next;
+            long next;
             if (++J != m_entities.end()) {
                 next = J->first;
             }

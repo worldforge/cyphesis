@@ -62,7 +62,7 @@ typedef Atlas::Objects::Operation::RootOperation Operation;
 typedef std::map<std::string, BaseEntity *> BaseDict;
 typedef std::vector<std::string> IdList;
 
-typedef std::map<std::string, Entity *> EntityDict;
+typedef std::map<long, Entity *> EntityDict;
 typedef std::set<Entity *> EntitySet;
 
 typedef std::vector<Operation> OpVector;
