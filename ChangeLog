@@ -1,3 +1,8 @@
+2005-11-11  Kai Blin  <blin@gmx.net>
+
+	* cyphesis.init: replaced a hardcoded reference to the postgres user
+	  by the $POSTGRESUSER variable
+
 2005-11-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/types.h, server/Persistance.h, common/BaseWorld.h,
