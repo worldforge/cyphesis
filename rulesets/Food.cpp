@@ -17,7 +17,7 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Entity::Anonymous;
 
-Food::Food(const std::string & id) : Food_parent(id)
+Food::Food(const std::string & id, long intId) : Food_parent(id, intId)
 {
     m_attributes["cooked"] = 0;
     m_attributes["burn_speed"] = 0.1;

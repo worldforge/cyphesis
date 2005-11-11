@@ -29,8 +29,10 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-BaseMind::BaseMind(const std::string & id, const std::string & body_name)
-                               : MemEntity(id), m_map(m_script), m_isAwake(true)
+BaseMind::BaseMind(const std::string & id, long intId,
+                   const std::string & body_name) : MemEntity(id, intId),
+                                                    m_map(m_script),
+                                                    m_isAwake(true)
 {
     // setId(id);
     m_name = body_name;

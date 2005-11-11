@@ -13,7 +13,7 @@ typedef Character Creator_parent;
 /// and world builders to manipulate the world
 class Creator : public Creator_parent {
   public:
-    explicit Creator(const std::string & id);
+    explicit Creator(const std::string & id, long intId);
 
     void sendExternalMind(const Operation & op, OpVector &);
 

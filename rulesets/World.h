@@ -32,7 +32,7 @@ class World : public World_parent {
     PointSet m_createdTerrain;
 
   public:
-    explicit World(const std::string & id);
+    explicit World(const std::string & id, long intId);
     virtual ~World();
 
     /// \brief Accessor for terrain manager

@@ -6,7 +6,7 @@
 
 #include "LineProperty.h"
 
-Line::Line(const std::string & id) : Line_parent(id)
+Line::Line(const std::string & id, long intId) : Line_parent(id, intId)
 {
     // Default to a 0.1m cube
     m_location.m_bBox = BBox(WFMath::Point<3>(0.f, 0.f, 0.f),

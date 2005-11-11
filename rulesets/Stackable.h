@@ -23,7 +23,7 @@ class Stackable : public Stackable_parent {
 
   public:
 
-    explicit Stackable(const std::string & id);
+    explicit Stackable(const std::string & id, long intId);
     virtual ~Stackable();
 
     virtual void CombineOperation(const Operation &, OpVector &);

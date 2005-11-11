@@ -59,7 +59,7 @@ class EntityFactory {
         }
     }
     void initWorld();
-    Entity * newEntity(const std::string &, const std::string &,
+    Entity * newEntity(const std::string &, long, const std::string &,
                        const Atlas::Objects::Entity::RootEntity &);
     void flushFactories();
 

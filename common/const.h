@@ -46,6 +46,8 @@ namespace consts {
   extern const char * defaultAdminPasswordHash;
   /// \brief Id of root world entity
   extern const char * rootWorldId;
+  /// \brief Integer id of root world entity
+  extern const long rootWorldIntId;
   /// \brief Version of the software we are running
   extern const char * version;
   /// \brief Time this server was built

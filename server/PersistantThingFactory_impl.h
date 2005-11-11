@@ -23,15 +23,15 @@ PersistantThingFactory<T>::~PersistantThingFactory()
 }
 
 template <class T>
-T * PersistantThingFactory<T>::newThing(const std::string & id)
+T * PersistantThingFactory<T>::newThing(const std::string & id, long intId)
 {
-    return new T(id);
+    return new T(id, intId);
 }
 
 template <class T>
-T * PersistantThingFactory<T>::newPersistantThing(const std::string &id, PersistorBase ** p)
+T * PersistantThingFactory<T>::newPersistantThing(const std::string & id, long intId, PersistorBase ** p)
 {
-    T * t = new T(id);
+    T * t = new T(id, intId);
     *p = new PersistorConnection<T>(*t, m_p);
     return t;
 }
@@ -49,13 +49,13 @@ ForbiddenThingFactory<T>::~ForbiddenThingFactory()
 }
 
 template <class T>
-T * ForbiddenThingFactory<T>::newThing(const std::string &)
+T * ForbiddenThingFactory<T>::newThing(const std::string &, long)
 {
     return 0;
 }
 
 template <class T>
-T * ForbiddenThingFactory<T>::newPersistantThing(const std::string &, PersistorBase **)
+T * ForbiddenThingFactory<T>::newPersistantThing(const std::string &, long, PersistorBase **)
 {
     return 0;
 }

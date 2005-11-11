@@ -92,7 +92,7 @@ class Entity : public BaseEntity {
     /// Flags indicating changes to attributes
     unsigned int m_update_flags;
 
-    explicit Entity(const std::string & id);
+    explicit Entity(const std::string & id, long intId);
     virtual ~Entity();
 
     void incRef() {

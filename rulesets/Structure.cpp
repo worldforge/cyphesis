@@ -4,7 +4,8 @@
 
 #include "Structure.h"
 
-Structure::Structure(const std::string & id) : Structure_parent(id)
+Structure::Structure(const std::string & id, long intId) :
+                                             Structure_parent(id, intId)
 {
     m_location.setSimple(false);
 }

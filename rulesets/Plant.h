@@ -34,7 +34,7 @@ class Plant : public Plant_parent {
     int dropFruit(OpVector & res);
   public:
 
-    explicit Plant(const std::string & id);
+    explicit Plant(const std::string & id, long intId);
     virtual ~Plant();
 
     const int getFruits() const { return m_fruits; }

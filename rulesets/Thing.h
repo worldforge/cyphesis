@@ -19,7 +19,7 @@ typedef Entity Thing_parent;
 class Thing : public Thing_parent {
   public:
 
-    explicit Thing(const std::string & id);
+    explicit Thing(const std::string & id, long intId);
     virtual ~Thing();
 
     virtual void SetupOperation(const Operation & op, OpVector &);

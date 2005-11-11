@@ -1,5 +1,42 @@
 2005-11-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.h, common/BaseEntity.cpp: Add an integer ID
+	  member variable, and accessor, and require it to be initialised
+	  along with string ID in constructor.
+
+	* common/const.cpp, common/const.h: Add a const for the integer value
+	  of the world ID.
+
+	* rulesets/Area.cpp, rulesets/Area.h, rulesets/BaseMind.cpp,
+	  rulesets/BaseMind.h, rulesets/Character.cpp, rulesets/Character.h,
+	  rulesets/Creator.cpp, rulesets/Creator.h, rulesets/Entity.cpp,
+	  rulesets/Entity.h, rulesets/Food.cpp, rulesets/Food.h,
+	  rulesets/Line.cpp, rulesets/Line.h, rulesets/MemEntity.cpp,
+	  rulesets/MemEntity.h, rulesets/Plant.cpp, rulesets/Plant.h,
+	  rulesets/Stackable.cpp, rulesets/Stackable.h, rulesets/Structure.cpp,
+	  rulesets/Structure.h, rulesets/Thing.cpp, rulesets/Thing.h,
+	  rulesets/World.cpp, rulesets/World.h: Add integer ID handling to
+	  constructors of all in-game entity classes.
+
+	* rulesets/MemMap.cpp: Initialise integer ID of entities in the mind
+	  map.
+
+	* rulesets/MindFactory.cpp, rulesets/MindFactory.h: Handle integer
+	  ID when constructing mind objects.
+
+	* server/EntityFactory.cpp, server/EntityFactory.h,
+	  server/PersistantThingFactory_impl.h: Handle integer
+	  ID when contructing entity objects.
+
+	* server/Restoration.cpp, server/Restoration.h, server/Restorer.h,
+	  server/Restorer_impl.h: Handle integer ID when restoring from
+	  database.
+
+	* server/WorldRouter.cpp: Assign integer ID when constructing the
+	  world.
+
+2005-11-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseWorld.h: Remove obsolete ID member variable.
 
 2005-11-10  Al Riddoch  <alriddoch@zepler.org>

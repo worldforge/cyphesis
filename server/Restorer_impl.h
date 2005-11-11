@@ -57,9 +57,10 @@ void Restorer<T>::populate(DatabaseResult::const_iterator & dr)
 }
 
 template <class T>
-Entity * Restorer<T>::restore(const std::string & id, DatabaseResult::const_iterator & dr)
+Entity * Restorer<T>::restore(const std::string & id, long intId, 
+                              DatabaseResult::const_iterator & dr)
 {
-    T * t = new T(id);
+    T * t = new T(id, intId);
     
     Restorer<T> * rt = (Restorer<T> *)t;
 

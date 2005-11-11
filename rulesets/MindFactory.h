@@ -33,7 +33,8 @@ class MindFactory {
             delete m_instance;
         }
     }
-    BaseMind * newMind(const std::string &, const std::string &,
+    BaseMind * newMind(const std::string &, long,
+                       const std::string &,
                        const std::string &);
 
     void addMindType(const std::string & type, const std::string & mind) {

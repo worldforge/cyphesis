@@ -9,7 +9,7 @@
 
 static const bool debug_flag = false;
 
-Area::Area(const std::string & id) : Area_parent(id)
+Area::Area(const std::string & id, long intId) : Area_parent(id, intId)
 {
     debug(std::cout << "Instanced Area" << std::endl << std::flush;);
 

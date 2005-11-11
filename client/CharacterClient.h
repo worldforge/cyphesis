@@ -16,7 +16,7 @@ class CharacterClient : public BaseMind {
 
     int sendAndWaitReply(const Operation &, OpVector &);
   public:
-    CharacterClient(const std::string&, const std::string&, ClientConnection&);
+    CharacterClient(const std::string &, long, const std::string&, ClientConnection&);
 
     virtual void sightImaginaryOperation(const Operation &,
                                          Operation &,

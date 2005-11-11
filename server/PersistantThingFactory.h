@@ -51,8 +51,8 @@ class FactoryBase {
 
     virtual ~FactoryBase();
 
-    virtual Entity * newThing(const std::string & id) = 0;
-    virtual Entity * newPersistantThing(const std::string & id, PersistorBase **) = 0;
+    virtual Entity * newThing(const std::string & id, long intId) = 0;
+    virtual Entity * newPersistantThing(const std::string & id, long intId, PersistorBase **) = 0;
     virtual FactoryBase * duplicateFactory() = 0;
 };
 
@@ -73,8 +73,8 @@ class PersistantThingFactory : public FactoryBase {
     PersistantThingFactory() : m_p(* new Persistor<T>()), m_master(true) { }
     virtual ~PersistantThingFactory();
  
-    virtual T * newThing(const std::string & id);
-    virtual T * newPersistantThing(const std::string & id, PersistorBase ** p);
+    virtual T * newThing(const std::string & id, long intId);
+    virtual T * newPersistantThing(const std::string & id, long intId, PersistorBase ** p);
     virtual FactoryBase * duplicateFactory();
 };
 
@@ -86,8 +86,8 @@ class ForbiddenThingFactory : public FactoryBase {
 
     virtual ~ForbiddenThingFactory();
  
-    virtual T * newThing(const std::string & id);
-    virtual T * newPersistantThing(const std::string & id, PersistorBase ** p);
+    virtual T * newThing(const std::string & id, long intId);
+    virtual T * newPersistantThing(const std::string & id, long intId, PersistorBase ** p);
     virtual FactoryBase * duplicateFactory();
 };
 

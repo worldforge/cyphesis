@@ -34,7 +34,8 @@ using Atlas::Objects::Entity::RootEntity;
 
 static const bool debug_flag = false;
 
-BaseEntity::BaseEntity(const std::string & id) : m_id(id)
+BaseEntity::BaseEntity(const std::string & id, long intId) : m_id(id),
+                                                            m_intId(intId)
 {
 }
 

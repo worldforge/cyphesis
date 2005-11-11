@@ -19,11 +19,11 @@ MindFactory::MindFactory()
 {
 }
 
-BaseMind * MindFactory::newMind(const std::string & id,
+BaseMind * MindFactory::newMind(const std::string & id, long intId,
                                 const std::string & name,
                                 const std::string & type)
 {
-    BaseMind * mind = new BaseMind(id, name);
+    BaseMind * mind = new BaseMind(id, intId, name);
     std::string mind_class("NPCMind"), mind_package("mind.NPCMind");
     MindFactory::mindmap_t::const_iterator I = m_mindTypes.find(type);
     if (I != m_mindTypes.end()) {

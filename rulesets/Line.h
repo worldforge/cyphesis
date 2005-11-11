@@ -22,7 +22,7 @@ class Line : public Line_parent {
 
   public:
 
-    explicit Line(const std::string & id);
+    explicit Line(const std::string & id, long intId);
     virtual ~Line();
 };
 

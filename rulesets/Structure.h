@@ -17,7 +17,7 @@ typedef Thing Structure_parent;
 /// to pass into it.
 class Structure : public Structure_parent {
   public:
-    explicit Structure(const std::string & id);
+    explicit Structure(const std::string & id, long intId);
 };
 
 #endif // RULESETS_STRUCTURE_H

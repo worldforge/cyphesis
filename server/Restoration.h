@@ -18,7 +18,7 @@ class Entity;
 /// the database at startup
 class Restoration {
   private:
-    typedef Entity * (*restoreFunc)(const std::string &, DatabaseResult::const_iterator &);
+    typedef Entity * (*restoreFunc)(const std::string &, long intId, DatabaseResult::const_iterator &);
     typedef std::map<std::string, restoreFunc> RestoreDict;
     RestoreDict m_restorers;
     

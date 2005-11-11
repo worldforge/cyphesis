@@ -1,3 +1,5 @@
+BaseEntity::error() should take string.
+
 Are attributes inherited? I think not. Need to be.
 
 All too often an error is sent to clients for an event which is of absolutely

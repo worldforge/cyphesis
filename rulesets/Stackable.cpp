@@ -20,8 +20,9 @@ using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Entity::Anonymous;
 
-Stackable::Stackable(const std::string & id) : Stackable_parent(id),
-                                               m_num(1)
+Stackable::Stackable(const std::string & id, long intId) :
+                                             Stackable_parent(id, intId),
+                                             m_num(1)
 {
     m_properties["num"] = new Property<int>(m_num, 0);
 }

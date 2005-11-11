@@ -20,6 +20,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/Database.h"
+#include "common/compose.hpp"
 
 #include <iostream>
 
@@ -105,7 +106,13 @@ void Restoration::restoreChildren(Entity * loc)
             if (id == 0) {
                 continue;
             }
-            Entity * ent = restorer(id, L);
+
+            long intId = strtol(id, 0, 10);
+            if (intId == 0 && id != "0") {
+                log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+            }
+
+            Entity * ent = restorer(id, intId, L);
             ent->m_location.m_loc = loc;
             server.m_world.addEntity(ent, true);
             const char * c = L.column("cont");

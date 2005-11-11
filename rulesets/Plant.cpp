@@ -34,11 +34,12 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-Plant::Plant(const std::string & id) : Plant_parent(id), m_fruits(0),
-                                                         m_radius(1),
-                                                         m_fruitChance(2),
-                                                         m_sizeAdult(4),
-                                                         m_nourishment(0)
+Plant::Plant(const std::string & id, long intId) : Plant_parent(id, intId),
+                                                   m_fruits(0),
+                                                   m_radius(1),
+                                                   m_fruitChance(2),
+                                                   m_sizeAdult(4),
+                                                   m_nourishment(0)
 {
     // Default to a 1m cube
     m_location.m_bBox = BBox(WFMath::Point<3>(-0.5, -0.5, 0),

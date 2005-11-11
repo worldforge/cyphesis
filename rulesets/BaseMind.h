@@ -23,7 +23,7 @@ class BaseMind : public MemEntity {
     WorldTime m_time;
     int m_world;
   public:
-    BaseMind(const std::string &, const std::string &);
+    BaseMind(const std::string &, long, const std::string &);
     virtual ~BaseMind();
 
     MemMap * getMap() { return &m_map; }

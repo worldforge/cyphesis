@@ -12,10 +12,10 @@
 
 static const bool debug_flag = false;
 
-CharacterClient::CharacterClient(const std::string & id,
+CharacterClient::CharacterClient(const std::string & id, long intId,
                                  const std::string & name,
                                  ClientConnection & c) :
-                                 BaseMind(id, name), m_connection(c)
+                                 BaseMind(id, intId, name), m_connection(c)
 {
 }
 

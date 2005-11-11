@@ -6,7 +6,9 @@
 
 #include "CreatorClient.h"
 
+#include "common/log.h"
 #include "common/debug.h"
+#include "common/compose.hpp"
 #include "common/BaseEntity.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -102,13 +104,17 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
 
     const std::string & id = ent->getId();
 
-    EntityDict tmp;
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+    }
 
-    CreatorClient * obj = new CreatorClient(id, type, m_connection);
+    CreatorClient * obj = new CreatorClient(id, intId, type, m_connection);
     obj->merge(ent->asMessage());
     // FIXME We are making no attempt to set LOC, as we have no entity to
     // set it to.
     obj->m_location.readFromEntity(ent);
+    EntityDict tmp;
     // obj = EntityFactory::instance()->newThing(type, body, tmp);
     // FIXME Do we need to create a local entity for this as is done in
     // the python version? If so, do we need to keep track of a full world

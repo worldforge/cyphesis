@@ -6,7 +6,8 @@
 
 static const bool debug_flag = false;
 
-MemEntity::MemEntity(const std::string & id) : Entity(id), m_visible(false),
+MemEntity::MemEntity(const std::string & id, long intId) : Entity(id, intId),
+                                                           m_visible(false),
                                                            m_lastSeen(0.)
 {
 }

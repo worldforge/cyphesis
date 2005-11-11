@@ -46,7 +46,7 @@ class Restorer : public T {
 
     void populate(DatabaseResult::const_iterator & dr);
 
-    static Entity * restore(const std::string & id,
+    static Entity * restore(const std::string & id, long intId,
                             DatabaseResult::const_iterator & dr);
 
 };

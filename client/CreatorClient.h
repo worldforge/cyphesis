@@ -14,7 +14,7 @@ class CreatorClient : public CharacterClient {
   private:
     Entity * sendLook(const Operation & op);
   public:
-    CreatorClient(const std::string&, const std::string&, ClientConnection&);
+    CreatorClient(const std::string &, long, const std::string&, ClientConnection&);
 
     Entity * make(const Atlas::Objects::Entity::RootEntity &);
     void sendSet(const std::string &, const Atlas::Objects::Entity::RootEntity &);

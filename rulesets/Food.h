@@ -15,7 +15,7 @@ typedef Thing Food_parent;
 /// classes will probably be in python.
 class Food : public Food_parent {
   public:
-    explicit Food(const std::string & id);
+    explicit Food(const std::string & id, long intId);
     virtual ~Food();
 
     virtual void EatOperation(const Operation & op, OpVector &);

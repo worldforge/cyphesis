@@ -8,6 +8,7 @@
 
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -94,13 +95,19 @@ void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
     }
 }
 
-MemEntity * MemMap::newEntity(const std::string & id, const RootEntity & ent)
+MemEntity * MemMap::newEntity(const std::string & id,
+                              const RootEntity & ent)
 // Create a new entity from an Atlas message.
 {
     assert(!id.empty());
     assert(m_entities.find(id) == m_entities.end());
 
-    MemEntity * entity = new MemEntity(id);
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+    }
+
+    MemEntity * entity = new MemEntity(id, intId);
 
     readEntity(entity, ent);
 
@@ -133,9 +140,14 @@ MemEntity * MemMap::addId(const std::string & id)
     assert(!id.empty());
     assert(m_entities.find(id) == m_entities.end());
 
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+    }
+
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     m_additionsById.push_back(id);
-    MemEntity * entity = new MemEntity(id);
+    MemEntity * entity = new MemEntity(id, intId);
     return addEntity(entity);
 }
 

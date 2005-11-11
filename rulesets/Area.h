@@ -20,7 +20,7 @@ class Area : public Area_parent {
 
   public:
 
-    explicit Area(const std::string & id);
+    explicit Area(const std::string & id, long intId);
     virtual ~Area();
 };
 

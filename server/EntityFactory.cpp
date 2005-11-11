@@ -84,7 +84,7 @@ void EntityFactory::initWorld()
     wft->m_p.persist((World&)m_world.m_gameWorld);
 }
 
-Entity * EntityFactory::newEntity(const std::string & id,
+Entity * EntityFactory::newEntity(const std::string & id, long intId,
                                   const std::string & type,
                                   const RootEntity & attributes)
 {
@@ -97,9 +97,9 @@ Entity * EntityFactory::newEntity(const std::string & id,
     }
     FactoryBase * factory = I->second;
     if (consts::enable_persistence) {
-        thing = factory->newPersistantThing(id, &pc);
+        thing = factory->newPersistantThing(id, intId, &pc);
     } else {
-        thing = factory->newThing(id);
+        thing = factory->newThing(id, intId);
     }
     if (thing == 0) {
         return 0;

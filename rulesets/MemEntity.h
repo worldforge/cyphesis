@@ -18,7 +18,7 @@ class MemEntity : public Entity {
     bool m_visible;
     double m_lastSeen;
   public:
-    explicit MemEntity(const std::string & id);
+    explicit MemEntity(const std::string & id, long intId);
     virtual ~MemEntity();
 
     bool isVisible() const {

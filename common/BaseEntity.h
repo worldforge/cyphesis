@@ -29,17 +29,22 @@ class BaseEntity : virtual public SigC::Object {
   private:
     /// String id.
     const std::string m_id;
+    const long m_intId;
 
     // Private and un-implemented, to make sure slicing is impossible
     BaseEntity(const BaseEntity &);
     const BaseEntity & operator=(const BaseEntity &);
   protected:
-    explicit BaseEntity(const std::string & id);
+    explicit BaseEntity(const std::string & id, long intId = -1);
   public:
     virtual ~BaseEntity();
 
     const std::string & getId() const {
         return m_id;
+    }
+
+    long getIntId() const {
+        return m_intId;
     }
 
     virtual void addToMessage(Atlas::Message::MapType &) const;

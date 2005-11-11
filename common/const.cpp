@@ -14,6 +14,8 @@ namespace consts {
   const char * defaultAdminPasswordHash = "$1$1A67C3C65EECBBCE$A51127573498DCB08992378D07A36A20";
   // Id of root world entity
   const char * rootWorldId = "0";
+  // Integer id of root world entity
+  const long rootWorldIntId = 0L;
   // Version of the software we are running
   const char * version = VERSION;
   // Time this server was built

@@ -55,7 +55,7 @@ class Character : public Character_parent {
     BaseMind * m_mind;
     BaseEntity * m_externalMind;
 
-    explicit Character(const std::string & id);
+    explicit Character(const std::string & id, long intId);
     virtual ~Character();
 
     Statistics & statistics() { return m_statistics; }

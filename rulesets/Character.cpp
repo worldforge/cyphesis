@@ -99,7 +99,8 @@ void Character::metabolise(OpVector & res, double ammount)
     res.push_back(s);
 }
 
-Character::Character(const std::string & id) : Character_parent(id),
+Character::Character(const std::string & id, long intId) :
+                                            Character_parent(id, intId),
                                             m_statistics(*this),
                                             m_movement(*new Pedestrian(*this)),
                                             m_task(0), m_isAlive(true),
@@ -171,7 +172,8 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
         // AI minds, so  we need to handle them somehow differently.
         // Perhaps the Restore op (different from Setup op) is needed?
 
-        m_mind = MindFactory::instance()->newMind(getId(), m_name, m_type);
+        m_mind = MindFactory::instance()->newMind(getId(), getIntId(),
+                                                  m_name, m_type);
 
         Operation s(op.copy());
         // THis is so not the right thing to do

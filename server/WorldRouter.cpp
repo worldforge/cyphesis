@@ -81,7 +81,7 @@ void WorldRouter::updateTime(int sec, int usec)
 /// The Entity representing the world is implicity constructed.
 /// Currently the world entity is included in the perceptives list,
 /// but I am not clear why. Need to look into why.
-WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId))
+WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId, consts::rootWorldIntId))
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -298,7 +298,13 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
         newId(id);
     }
     assert(!id.empty());
-    Entity * ent = EntityFactory::instance()->newEntity(id, typestr, attrs);
+
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+    }
+
+    Entity * ent = EntityFactory::instance()->newEntity(id, intId, typestr, attrs);
     if (ent == 0) {
         std::string msg = std::string("Attempt to create an entity of type \"")
                           + typestr + "\" but type is unknown or forbidden";

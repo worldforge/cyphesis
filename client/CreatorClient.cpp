@@ -23,8 +23,10 @@ using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Objects::smart_dynamic_cast;
 
-CreatorClient::CreatorClient(const std::string & id, const std::string & name,
-                             ClientConnection &c) : CharacterClient(id,name,c)
+CreatorClient::CreatorClient(const std::string & id, long intId,
+                             const std::string & name,
+                             ClientConnection &c) :
+                             CharacterClient(id, intId, name, c)
 {
 }
 
