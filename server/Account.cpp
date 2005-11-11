@@ -43,8 +43,8 @@ using Atlas::Objects::smart_dynamic_cast;
 static const bool debug_flag = false;
 
 Account::Account(Connection * conn, const std::string & uname,
-                 const std::string& passwd, const std::string & id)
-                 : OOGThing(id), m_connection(conn),
+                 const std::string& passwd, const std::string & id, long intId)
+                 : OOGThing(id, intId), m_connection(conn),
                    m_username(uname), m_password(passwd)
 {
 }
@@ -98,7 +98,9 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
     Character * pchar = dynamic_cast<Character *>(chr);
     if (pchar != 0) {
-        pchar->m_externalMind = new ExternalMind(*m_connection, pchar->getId());
+        pchar->m_externalMind = new ExternalMind(*m_connection,
+                                                 pchar->getId(),
+                                                 pchar->getIntId());
         // Only genuinely playable characters should go in here. Otherwise
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.

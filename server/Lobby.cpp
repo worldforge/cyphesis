@@ -23,7 +23,8 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-Lobby::Lobby(const std::string & id, ServerRouting & s) : OOGThing(id), m_server(s)
+Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
+             OOGThing(id, intId), m_server(s)
 {
 }
 

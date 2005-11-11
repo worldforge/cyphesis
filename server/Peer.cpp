@@ -5,7 +5,7 @@
 #include "Peer.h"
 
 Peer::Peer(const std::string & id, CommClient & client, ServerRouting & svr) :
-           OOGThing(id), m_commClient(client), m_server(svr)
+           OOGThing(id, -1), m_commClient(client), m_server(svr)
 {
 }
 

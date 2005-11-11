@@ -6,8 +6,9 @@
 
 #include "Connection_methods.h"
 
-ExternalMind::ExternalMind(Connection & connection, const std::string & id) :
-                           BaseEntity(id), m_connection(connection)
+ExternalMind::ExternalMind(Connection & connection,
+                           const std::string & id, long intId) :
+                           BaseEntity(id, intId), m_connection(connection)
 {
 }
 

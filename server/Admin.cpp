@@ -40,8 +40,8 @@ using Atlas::Objects::Entity::RootEntity;
 static const bool debug_flag = false;
 
 Admin::Admin(Connection * conn, const std::string& username,
-             const std::string& passwd, const std::string & id) :
-             Account(conn, username, passwd, id)
+             const std::string& passwd, const std::string & id, long intId) :
+             Account(conn, username, passwd, id, intId)
 {
 }
 

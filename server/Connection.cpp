@@ -41,7 +41,7 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Connection::Connection(const std::string & id, CommClient & client,
-                       ServerRouting & svr) : OOGThing(id),
+                       ServerRouting & svr) : OOGThing(id, -1),
                        m_obsolete(false), m_commClient(client), m_server(svr)
 {
     m_server.incClients();
@@ -99,7 +99,13 @@ Account * Connection::addPlayer(const std::string& username,
         newId(newAccountId);
     }
     assert(!newAccountId.empty());
-    Player * player = new Player(this, username, hash, newAccountId);
+
+    long intId = strtol(newAccountId.c_str(), 0, 10);
+    if (intId == 0 && newAccountId != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", newAccountId).c_str());
+    }
+
+    Player * player = new Player(this, username, hash, newAccountId, intId);
     addObject(player);
     assert(player->m_connection == this);
     player->m_connection = this;
@@ -178,7 +184,8 @@ void Connection::operation(const Operation & op, OpVector & res)
         Character * character = dynamic_cast<Character *>(b_ent);
         if ((character != NULL) && (character->m_externalMind == NULL)) {
             character->m_externalMind = new ExternalMind(*this,
-                                                         character->getId());
+                                                         character->getId(),
+                                                         character->getIntId());
             debug(std::cout << "Subscribing existing character" << std::endl
                             << std::flush;);
             Info info;

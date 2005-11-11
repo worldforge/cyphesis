@@ -35,7 +35,7 @@ class BaseEntity : virtual public SigC::Object {
     BaseEntity(const BaseEntity &);
     const BaseEntity & operator=(const BaseEntity &);
   protected:
-    explicit BaseEntity(const std::string & id, long intId = -1);
+    explicit BaseEntity(const std::string & id, long intId);
   public:
     virtual ~BaseEntity();
 

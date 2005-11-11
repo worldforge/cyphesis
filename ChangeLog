@@ -1,5 +1,17 @@
 2005-11-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.h, common/OOGThing.cpp, common/OOGThing.h,
+	  server/Account.cpp, server/Account.h, server/Admin.cpp,
+	  server/Admin.h, server/Connection.cpp, server/ExternalMind.cpp,
+	  server/ExternalMind.h, server/Lobby.cpp, server/Lobby.h,
+	  server/Peer.cpp, server/Persistance.cpp, server/Player.cpp,
+	  server/Player.h, server/ServerRouting.cpp,
+	  server/SlaveClientConnection.cpp, server/server.cpp:
+	  Add integer ID handling to accounts, and some other OOG
+	  objects.
+
+2005-11-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* cyphesis.init: Don't commit without checking with me first.
 
 2005-11-11  Kai Blin  <blin@gmx.net>

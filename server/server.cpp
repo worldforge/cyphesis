@@ -29,6 +29,7 @@
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/inheritance.h"
+#include "common/compose.hpp"
 #include "common/system.h"
 #include "common/nls.h"
 
@@ -151,7 +152,13 @@ int main(int argc, char ** argv)
         std::string adminId;
         newId(adminId);
         assert(!adminId.empty());
-        Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId);
+
+        long intId = strtol(adminId.c_str(), 0, 10);
+        if (intId == 0 && adminId != "0") {
+            log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", adminId).c_str());
+        }
+
+        Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
         server.addAccount(admin);
     }
 

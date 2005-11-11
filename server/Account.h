@@ -39,7 +39,7 @@ class Account : public OOGThing {
 
     Account(Connection * conn, const std::string & username,
                                const std::string & passwd,
-                               const std::string & id);
+                               const std::string & id, long intId);
     virtual ~Account();
 
     virtual const char * getType() const;

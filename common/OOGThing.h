@@ -13,7 +13,7 @@
 /// unknown types flag an error.
 class OOGThing : public BaseEntity {
   protected:
-    explicit OOGThing(const std::string & id);
+    explicit OOGThing(const std::string & id, long intId);
   public:
     virtual ~OOGThing();
     virtual void OtherOperation(const Operation & op, OpVector &);

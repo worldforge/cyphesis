@@ -15,8 +15,8 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Entity::RootEntity;
 
 Player::Player(Connection * conn, const std::string& username,
-               const std::string& passwd, const std::string & id) :
-               Account(conn, username, passwd, id)
+               const std::string& passwd, const std::string & id, long intId) :
+               Account(conn, username, passwd, id, intId)
 {
 }
 

@@ -7,7 +7,7 @@
 SlaveClientConnection::SlaveClientConnection(const std::string & id,
                                              CommClient & client,
                                              ServerRouting & svr) :
-                                             OOGThing(id),
+                                             OOGThing(id, -1),
                                              m_commClient(client),
                                              m_server(svr)
 {

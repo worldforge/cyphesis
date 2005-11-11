@@ -61,9 +61,14 @@ int Persistance::init()
                         << std::endl << std::flush;);
         std::string adminAccountId;
         p->m_connection.newId(adminAccountId);
+
+        long adminAccountIntId = strtol(adminAccountId.c_str(), 0, 10);
+        if (adminAccountIntId == 0 && adminAccountId != "0") {
+            log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", adminAccountId).c_str());
+        }
         
         Admin dummyAdminAccount(0, "admin", consts::defaultAdminPasswordHash,
-                                adminAccountId);
+                                adminAccountId, adminAccountIntId);
         
         p->putAccount(dummyAdminAccount);
     }
@@ -122,6 +127,10 @@ Account * Persistance::getAccount(const std::string & name)
         return 0;
     }
     std::string id = c;
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+    }
     c = dr.field("password");
     if (c == 0) {
         dr.clear();
@@ -138,9 +147,9 @@ Account * Persistance::getAccount(const std::string & name)
     std::string type = c;
     dr.clear();
     if (type == "admin") {
-        return new Admin(0, name, passwd, id);
+        return new Admin(0, name, passwd, id, intId);
     } else {
-        return new Player(0, name, passwd, id);
+        return new Player(0, name, passwd, id, intId);
     }
 }
 

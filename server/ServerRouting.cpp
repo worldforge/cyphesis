@@ -28,8 +28,8 @@ static bool debug_flag = false;
 ServerRouting::ServerRouting(BaseWorld & wrld,
                              const std::string & ruleset,
                              const std::string & name) :
-        OOGThing(name), m_svrRuleset(ruleset), m_svrName(name), m_numClients(0),
-        m_world(wrld), m_lobby(*new Lobby("lobby", *this))
+        OOGThing(name, -1), m_svrRuleset(ruleset), m_svrName(name),
+        m_numClients(0), m_world(wrld), m_lobby(*new Lobby(*this, "lobby", -1))
 {
 }
 
