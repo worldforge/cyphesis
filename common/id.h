@@ -7,7 +7,7 @@
 
 #include <string>
 
-void newId(std::string & id);
+long newId(std::string & id);
 long integerId(const std::string & id);
 
 #endif // COMMON_ID_H

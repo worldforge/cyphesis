@@ -1,5 +1,17 @@
 2005-11-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/Database.h, common/id.h, common/id.cpp:
+	  Make newId() functions return the integer value.
+
+	* common/newid.cpp: Break newId out into its own file, and make
+	  it handle whether or not the database should issue IDs.
+
+	* server/Connection.cpp, server/Persistance.cpp,
+	  server/WorldRouter.cpp, server/server.cpp: Simply generating IDs
+	  by just using the newId() function, and use its return value.
+
+2005-11-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/BaseClient.cpp, common/BaseWorld.cpp, common/id.cpp,
 	  common/id.h, rulesets/MemMap.cpp, server/Account.cpp,
 	  server/Admin.cpp, server/Connection.cpp, server/Persistance.cpp,

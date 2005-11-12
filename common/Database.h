@@ -144,7 +144,7 @@ class Database {
     // Interface for the ID generation sequence.
 
     bool registerEntityIdGenerator();
-    bool newId(std::string & id);
+    long newId(std::string & id);
 
     // Interface for inherited tables for storing IG entities.
 

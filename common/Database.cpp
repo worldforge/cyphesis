@@ -4,6 +4,7 @@
 
 #include "Database.h"
 
+#include "id.h"
 #include "log.h"
 #include "debug.h"
 #include "globals.h"
@@ -781,7 +782,7 @@ bool Database::registerEntityIdGenerator()
     return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq");
 }
 
-bool Database::newId(std::string & id)
+long Database::newId(std::string & id)
 {
     clearPendingQuery();
     int status = PQsendQuery(m_connection,
@@ -789,13 +790,13 @@ bool Database::newId(std::string & id)
     if (!status) {
         log(ERROR, "newId(): Database query error.");
         reportError();
-        return false;
+        return -1;
     }
     PGresult * res;
     if ((res = PQgetResult(m_connection)) == NULL) {
         log(ERROR, "Error getting new ID.");
         reportError();
-        return false;
+        return -1;
     }
     const char * cid = PQgetvalue(res, 0, 0);
     id = cid;
@@ -804,7 +805,7 @@ bool Database::newId(std::string & id)
         PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
-    return true;
+    return integerId(id);
 }
 
 bool Database::registerEntityTable(const std::string & classname,

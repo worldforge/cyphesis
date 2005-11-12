@@ -6,19 +6,7 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 
-#include <iostream>
-
 #include <cassert>
-
-static long idGenerator = 0;
-
-void newId(std::string & id)
-{
-    static char buf[32];
-    long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-}
 
 long integerId(const std::string & id)
 {

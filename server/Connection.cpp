@@ -22,7 +22,6 @@
 #include "common/serialno.h"
 #include "common/inheritance.h"
 #include "common/system.h"
-#include "common/Database.h"
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
@@ -93,14 +92,9 @@ Account * Connection::addPlayer(const std::string& username,
     std::string hash;
     encrypt_password(password, hash);
     std::string newAccountId;
-    if (consts::enable_database) {
-        Database::instance()->newId(newAccountId);
-    } else {
-        newId(newAccountId);
-    }
-    assert(!newAccountId.empty());
 
-    long intId = integerId(newAccountId);
+    long intId = newId(newAccountId);
+    assert(!newAccountId.empty());
 
     Player * player = new Player(this, username, hash, newAccountId, intId);
     addObject(player);

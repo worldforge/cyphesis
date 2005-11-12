@@ -14,7 +14,7 @@ endif
 
 libcommon_a_SOURCES = const.cpp const.h \
 		      prefix.c prefix.h \
-		      id.cpp id.h \
+		      newid.cpp id.cpp id.h \
 		      log.cpp log.h \
 		      debug.h random.h nls.h \
 		      compose.hpp \

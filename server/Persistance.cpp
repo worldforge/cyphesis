@@ -37,6 +37,8 @@ Persistance * Persistance::instance()
 int Persistance::init()
 {
     Persistance * p = instance();
+    assert(p != 0);
+
     if (p->m_connection.initConnection(false) != 0) {
         return -1;
     }
@@ -61,9 +63,7 @@ int Persistance::init()
         debug(std::cout << "Bootstraping admin account."
                         << std::endl << std::flush;);
         std::string adminAccountId;
-        p->m_connection.newId(adminAccountId);
-
-        long adminAccountIntId = integerId(adminAccountId);
+        long adminAccountIntId = p->m_connection.newId(adminAccountId);
 
         Admin dummyAdminAccount(0, "admin", consts::defaultAdminPasswordHash,
                                 adminAccountId, adminAccountIntId);

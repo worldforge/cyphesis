@@ -13,7 +13,6 @@
 #include "common/debug.h"
 #include "common/const.h"
 #include "common/globals.h"
-#include "common/Database.h"
 #include "common/random.h"
 #include "common/serialno.h"
 #include "common/compose.hpp"
@@ -292,14 +291,8 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
     debug(std::cout << "WorldRouter::addNewEntity(\"" << typestr << "\", attrs)"
                     << std::endl << std::flush;);
     std::string id;
-    if (consts::enable_database) {
-        Database::instance()->newId(id);
-    } else {
-        newId(id);
-    }
+    long intId = newId(id);
     assert(!id.empty());
-
-    long intId = integerId(id);
 
     Entity * ent = EntityFactory::instance()->newEntity(id, intId, typestr, attrs);
     if (ent == 0) {
