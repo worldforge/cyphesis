@@ -9,6 +9,7 @@
 
 #include "rulesets/Entity.h"
 
+#include "common/id.h"
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
@@ -62,11 +63,8 @@ int Persistance::init()
         std::string adminAccountId;
         p->m_connection.newId(adminAccountId);
 
-        long adminAccountIntId = strtol(adminAccountId.c_str(), 0, 10);
-        if (adminAccountIntId == 0 && adminAccountId != "0") {
-            log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", adminAccountId).c_str());
-        }
-        
+        long adminAccountIntId = integerId(adminAccountId);
+
         Admin dummyAdminAccount(0, "admin", consts::defaultAdminPasswordHash,
                                 adminAccountId, adminAccountIntId);
         
@@ -127,10 +125,7 @@ Account * Persistance::getAccount(const std::string & name)
         return 0;
     }
     std::string id = c;
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-    }
+    long intId = integerId(id);
     c = dr.field("password");
     if (c == 0) {
         dr.clear();
@@ -182,10 +177,7 @@ void Persistance::registerCharacters(Account & ac,
             continue;
         }
 
-        long intId = strtol(id, 0, 10);
-        if (intId == 0 && strcmp(id, "0") != 0) {
-            log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-        }
+        long intId = integerId(id);
 
         EntityDict::const_iterator J = worldObjects.find(intId);
         if (J == worldObjects.end()) {

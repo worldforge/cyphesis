@@ -6,6 +6,7 @@
 #include "MemMap.h"
 #include "Script.h"
 
+#include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
@@ -145,10 +146,7 @@ void MemMap::del(const std::string & id)
 {
     debug( std::cout << "MemMap::del(" << id << ")" << std::endl << std::flush;);
 
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-    }
+    long intId = integerId(id);
 
     MemEntityDict::iterator I = m_entities.find(intId);
     if (I != m_entities.end()) {
@@ -203,10 +201,7 @@ MemEntity * MemMap::get(const std::string & id) const
         return NULL;
     }
 
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-    }
+    long intId = integerId(id);
 
     MemEntityDict::const_iterator I = m_entities.find(intId);
     if (I != m_entities.end()) {
@@ -225,10 +220,7 @@ MemEntity * MemMap::getAdd(const std::string & id)
         return NULL;
     }
 
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-    }
+    long intId = integerId(id);
 
     MemEntityDict::const_iterator I = m_entities.find(intId);
     if (I != m_entities.end()) {
@@ -270,10 +262,7 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
         return NULL;
     }
 
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-    }
+    long intId = integerId(id);
 
     MemEntityDict::const_iterator I = m_entities.find(intId);
     MemEntity * entity;

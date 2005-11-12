@@ -153,10 +153,7 @@ int main(int argc, char ** argv)
         newId(adminId);
         assert(!adminId.empty());
 
-        long intId = strtol(adminId.c_str(), 0, 10);
-        if (intId == 0 && adminId != "0") {
-            log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", adminId).c_str());
-        }
+        long intId = integerId(adminId);
 
         Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
         server.addAccount(admin);

@@ -1,3 +1,12 @@
+2005-11-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/BaseClient.cpp, common/BaseWorld.cpp, common/id.cpp,
+	  common/id.h, rulesets/MemMap.cpp, server/Account.cpp,
+	  server/Admin.cpp, server/Connection.cpp, server/Persistance.cpp,
+	  server/Restoration.cpp, server/WorldRouter.cpp, server/server.cpp:
+	  Add intgerId() function to convert ID strings to integers, and
+	  check the conversion went okay.
+
 2005-11-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.h, common/OOGThing.cpp, common/OOGThing.h,

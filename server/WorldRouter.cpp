@@ -299,10 +299,7 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
     }
     assert(!id.empty());
 
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-    }
+    long intId = integerId(id);
 
     Entity * ent = EntityFactory::instance()->newEntity(id, intId, typestr, attrs);
     if (ent == 0) {

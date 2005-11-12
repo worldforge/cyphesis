@@ -1,3 +1,6 @@
+Convert accounts and other OOG to have integer IDs, and convert Connection
+map to use integers.
+
 Give server object and lobby real IDs.
 
 Make 4 lines for converting ID to integer ID into a function.

@@ -4,6 +4,7 @@
 
 #include "BaseWorld.h"
 
+#include "id.h"
 #include "log.h"
 #include "debug.h"
 #include "compose.hpp"
@@ -18,10 +19,7 @@ BaseWorld::~BaseWorld()
 
 Entity * BaseWorld::getEntity(const std::string & id) const
 {
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-    }
+    long intId = integerId(id);
 
     EntityDict::const_iterator I = m_eobjects.find(intId);
     if (I != m_eobjects.end()) {

@@ -100,10 +100,7 @@ Account * Connection::addPlayer(const std::string& username,
     }
     assert(!newAccountId.empty());
 
-    long intId = strtol(newAccountId.c_str(), 0, 10);
-    if (intId == 0 && newAccountId != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", newAccountId).c_str());
-    }
+    long intId = integerId(newAccountId);
 
     Player * player = new Player(this, username, hash, newAccountId, intId);
     addObject(player);

@@ -16,8 +16,9 @@
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
 
-#include "common/const.h"
+#include "common/id.h"
 #include "common/log.h"
+#include "common/const.h"
 #include "common/debug.h"
 #include "common/Database.h"
 #include "common/compose.hpp"
@@ -107,10 +108,7 @@ void Restoration::restoreChildren(Entity * loc)
                 continue;
             }
 
-            long intId = strtol(id, 0, 10);
-            if (intId == 0 && id != "0") {
-                log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-            }
+            long intId = integerId(id);
 
             Entity * ent = restorer(id, intId, L);
             ent->m_location.m_loc = loc;

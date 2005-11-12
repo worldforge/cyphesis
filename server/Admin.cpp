@@ -12,6 +12,7 @@
 
 #include "rulesets/Entity.h"
 
+#include "common/id.h"
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
@@ -143,10 +144,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         BaseDict::const_iterator J = OOGDict.find(id);
         const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
 
-        long intId = strtol(id.c_str(), 0, 10);
-        if (intId == 0 && id != "0") {
-            log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-        }
+        long intId = integerId(id);
 
         EntityDict::const_iterator K = worldDict.find(intId);
 
@@ -212,10 +210,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
 
     if ((objtype == "object") || (objtype == "obj")) {
 
-        long intId = strtol(id.c_str(), 0, 10);
-        if (intId == 0 && id != "0") {
-            log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-        }
+        long intId = integerId(id);
 
         if (m_charactersDict.find(intId) != m_charactersDict.end()) {
             Account::SetOperation(op, res);

@@ -12,10 +12,11 @@
 
 #include "rulesets/Character.h"
 
-#include "common/const.h"
+#include "common/id.h"
 #include "common/log.h"
-#include "common/serialno.h"
+#include "common/const.h"
 #include "common/debug.h"
+#include "common/serialno.h"
 #include "common/compose.hpp"
 
 #include <wfmath/atlasconv.h>
@@ -257,10 +258,7 @@ void Account::SetOperation(const Operation & op, OpVector & res)
 
     const std::string & id = arg->getId();
 
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-    }
+    long intId = integerId(id);
 
     EntityDict::const_iterator J = m_charactersDict.find(intId);
     if (J == m_charactersDict.end()) {
@@ -388,10 +386,7 @@ void Account::LookOperation(const Operation & op, OpVector & res)
     }
     const std::string & to = arg->getId();
 
-    long intId = strtol(to.c_str(), 0, 10);
-    if (intId == 0 && to != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", to).c_str());
-    }
+    long intId = integerId(to);
 
     EntityDict::const_iterator J = m_charactersDict.find(intId);
     if (J != m_charactersDict.end()) {

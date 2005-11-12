@@ -6,6 +6,7 @@
 
 #include "CreatorClient.h"
 
+#include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
@@ -104,10 +105,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
 
     const std::string & id = ent->getId();
 
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(ERROR, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
-    }
+    long intId = integerId(id);
 
     CreatorClient * obj = new CreatorClient(id, intId, type, m_connection);
     obj->merge(ent->asMessage());
