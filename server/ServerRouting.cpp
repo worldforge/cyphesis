@@ -27,9 +27,11 @@ static bool debug_flag = false;
 /// ruleset and server name. Implicitly creates the Lobby management object.
 ServerRouting::ServerRouting(BaseWorld & wrld,
                              const std::string & ruleset,
-                             const std::string & name) :
-        OOGThing(name, -1), m_svrRuleset(ruleset), m_svrName(name),
-        m_numClients(0), m_world(wrld), m_lobby(*new Lobby(*this, "lobby", -1))
+                             const std::string & name,
+                             const std::string & id, long intId,
+                             const std::string & lId, long lIntId) :
+        OOGThing(id, intId), m_svrRuleset(ruleset), m_svrName(name),
+        m_numClients(0), m_world(wrld), m_lobby(*new Lobby(*this, lId, lIntId))
 {
 }
 

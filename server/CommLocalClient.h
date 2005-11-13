@@ -10,7 +10,7 @@
 /// \brief Handle a unix socket connected to a client on the local machine.
 class CommLocalClient : public CommClient {
   public:
-    CommLocalClient(CommServer & svr, int fd);
+    CommLocalClient(CommServer & svr, int fd, const std::string & id);
     virtual ~CommLocalClient();
 
 };

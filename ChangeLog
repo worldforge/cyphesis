@@ -1,3 +1,26 @@
+2005-11-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Admin.cpp, server/CommPeer.cpp, server/CommPeer.h,
+	  server/CommPeerListener.cpp, server/Peer.cpp, server/Peer.h:
+	  Re-work classes for peer connections to use integer IDs.
+
+	* server/Lobby.cpp, server/Lobby.h: Modify interface so its more
+	  obvious that lobby only handles accounts, and adjust to have
+	  integer ID.
+
+	* server/Connection.cpp, server/Connection.h,
+	  server/TrustedConnection.cpp, server/TrustedConnection.h: Use
+	  integer IDs, and modify to match new Lobby API changes.
+
+	* server/ServerRouting.cpp, server/ServerRouting.h, server/server.cpp:
+	  Modify server to have integer ID, and handle ID for Lobby as well.
+
+	* server/CommListener.cpp, server/CommLocalClient.cpp,
+	  server/CommLocalClient.h, server/CommRemoteClient.cpp,
+	  server/CommRemoteClient.h, server/CommUnixListener.cpp:
+	  Modify communication classes for normal clients to handle
+	  integer IDs on the connection classes.
+
 2005-11-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.cpp, common/Database.h, common/id.h, common/id.cpp:

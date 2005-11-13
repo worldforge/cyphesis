@@ -7,9 +7,10 @@
 #include "CommLocalClient.h"
 #include "CommServer.h"
 
+#include "common/id.h"
+#include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"
-#include "common/log.h"
 
 #include <iostream>
 
@@ -98,7 +99,12 @@ int CommUnixListener::accept()
 
 void CommUnixListener::create(int asockfd)
 {
-    CommLocalClient * newcli = new CommLocalClient(m_commServer, asockfd);
+    std::string connection_id;
+    newId(connection_id);
+    assert(!connection_id.empty());
+
+    CommLocalClient * newcli = new CommLocalClient(m_commServer, asockfd,
+                                                   connection_id);
 
     newcli->setup();
 

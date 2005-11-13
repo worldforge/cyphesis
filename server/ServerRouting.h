@@ -7,7 +7,10 @@
 
 #include "Account.h"
 
+#include "common/id.h"
 #include "common/OOGThing.h"
+
+#include <cassert>
 
 class BaseWorld;
 class Lobby;
@@ -36,11 +39,16 @@ class ServerRouting : public OOGThing {
 
     ServerRouting(BaseWorld & wrld,
                   const std::string & ruleset,
-                  const std::string & name);
+                  const std::string & name,
+                  const std::string & id, long intId,
+                  const std::string & lId, long lIntId);
     ~ServerRouting();
 
     /// Add an OOG object to the server.
     void addObject(BaseEntity * obj) {
+        assert(!obj->getId().empty());
+        assert(integerId(obj->getId()) == obj->getIntId());
+        assert(integerId(obj->getId()) > 0);
         m_objects[obj->getId()] = obj;
     }
 
@@ -48,6 +56,11 @@ class ServerRouting : public OOGThing {
     void addAccount(Account * a) {
         m_accounts[a->m_username] = a;
         addObject(a);
+    }
+
+    /// Remove an OOG object from the server.
+    void delObject(BaseEntity * obj) {
+        m_objects.erase(obj->getId());
     }
 
     /// Accessor for OOG objects map.

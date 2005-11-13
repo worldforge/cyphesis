@@ -4,8 +4,13 @@
 
 #include "Peer.h"
 
-Peer::Peer(const std::string & id, CommClient & client, ServerRouting & svr) :
-           OOGThing(id, -1), m_commClient(client), m_server(svr)
+#include "common/id.h"
+
+Peer::Peer(CommClient & client,
+           ServerRouting & svr,
+           const std::string & addr,
+           const std::string & id) : OOGThing(id, integerId(id)),
+                                     m_commClient(client), m_server(svr)
 {
 }
 

@@ -28,39 +28,45 @@ Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
 {
 }
 
-void Lobby::addObject(Account * ac)
+Lobby::~Lobby()
 {
-    debug(std::cout << "Lobby::addObject(" << ac->getId() << ")"
+}
+
+void Lobby::addAccount(Account * ac)
+{
+    debug(std::cout << "Lobby::addAccount(" << ac->getId() << ")"
                     << std::endl << std::flush;);
 
     Appearance a;
     Anonymous us;
     us->setId(ac->getId());
-    us->setLoc("lobby");
+    us->setLoc(getId());
     a->setArgs1(us);
     a->setFrom(ac->getId());
-    a->setTo("lobby");
+    a->setTo(getId());
     a->setSerialno(newSerialNo());
 
     OpVector res;
     operation(a, res);
     assert(res.empty());
 
+    std::cout << "Added " << ac->m_username << " to lobby" << std::endl << std::flush;
+
     m_accounts[ac->getId()] = ac;
 }
 
-void Lobby::delObject(Account * ac)
+void Lobby::delAccount(Account * ac)
 {
-    debug(std::cout << "Lobby::delObject(" << ac->getId() << ")"
+    debug(std::cout << "Lobby::delAccount(" << ac->getId() << ")"
                     << std::endl << std::flush;);
                     
     Disappearance d;
     Anonymous us;
     us->setId(ac->getId());
-    us->setLoc("lobby");
+    us->setLoc(getId());
     d->setArgs1(us);
     d->setFrom(ac->getId());
-    d->setTo("lobby");
+    d->setTo(getId());
     d->setSerialno(newSerialNo());
 
     OpVector res;
@@ -76,7 +82,7 @@ void Lobby::operation(const Operation & op, OpVector & res)
     debug(std::cout << "Lobby::operation(" << op->getParents().front()
                                            << std::endl << std::flush; );
     const std::string & to = op->getTo();
-    if (to.empty() || to == "lobby") {
+    if (to.empty() || to == getId()) {
         Operation newop(op.copy());
         AccountDict::const_iterator I = m_accounts.begin();
         AccountDict::const_iterator Iend = m_accounts.end();

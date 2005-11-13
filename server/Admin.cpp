@@ -370,8 +370,12 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & hostname = hostname_attr.String();
+
+    std::string peerId;
+    newId(peerId);
+
     CommPeer * cp = new CommPeer(m_connection->m_commClient.m_commServer,
-                                 hostname);
+                                 hostname, peerId);
     std::cout << "Connecting to " << hostname << std::endl << std::flush;
     if (cp->connect(hostname) != 0) {
         error(op, "Connection failed", res, getId());

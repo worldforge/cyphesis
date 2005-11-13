@@ -48,7 +48,8 @@ class Connection : public OOGThing {
     CommClient & m_commClient;
     ServerRouting & m_server;
 
-    Connection(const std::string & id, CommClient &, ServerRouting & svr);
+    Connection(CommClient &, ServerRouting & svr,
+               const std::string & addr, const std::string & id);
     virtual ~Connection();
 
     void addObject(BaseEntity * obj);

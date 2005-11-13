@@ -13,8 +13,9 @@
 /// @param fd Socket file descriptor
 /// @param addr Address of the remote client.
 CommRemoteClient::CommRemoteClient(CommServer & svr, int fd,
-                                   const std::string & addr) :
-   CommClient(svr, fd, *new Connection(addr, *this, svr.m_server))
+                                   const std::string & address,
+                                   const std::string & id) :
+   CommClient(svr, fd, *new Connection(*this, svr.m_server, address, id))
 {
 }
 

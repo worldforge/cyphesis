@@ -13,8 +13,9 @@
 ///
 /// @param svr Reference to the object that manages all socket communication.
 /// @param addr Address of the remote peer.
-CommPeer::CommPeer(CommServer & svr, const std::string & addr) :
-   CommClient(svr, *new Peer(addr, *this, svr.m_server))
+CommPeer::CommPeer(CommServer & svr, const std::string & addr,
+                                     const std::string & id) :
+   CommClient(svr, *new Peer(*this, svr.m_server, addr, id))
 {
     std::cout << "Outgoing peer connection." << std::endl << std::flush;
 }
@@ -24,8 +25,9 @@ CommPeer::CommPeer(CommServer & svr, const std::string & addr) :
 /// @param svr Reference to the object that manages all socket communication.
 /// @param fd Socket file descriptor
 /// @param addr Address of the remote peer.
-CommPeer::CommPeer(CommServer & svr, int fd, const std::string & addr) :
-   CommClient(svr, fd, *new Peer(addr, *this, svr.m_server))
+CommPeer::CommPeer(CommServer & svr, int fd, const std::string & addr,
+                                             const std::string & id) :
+   CommClient(svr, fd, *new Peer(*this, svr.m_server, addr, id))
 {
     std::cout << "Incoming peer connection." << std::endl << std::flush;
 }

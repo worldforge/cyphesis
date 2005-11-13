@@ -102,11 +102,11 @@ int main(int argc, char ** argv)
         mserver = global_conf->getItem("cyphesis", "metaserver").as_string();
     }
 
-    std::string serverName;
+    std::string server_name;
     if (global_conf->findItem("cyphesis", "servername")) {
-        serverName = global_conf->getItem("cyphesis","servername").as_string();
+        server_name = global_conf->getItem("cyphesis","servername").as_string();
     } else {
-        serverName = get_hostname();
+        server_name = get_hostname();
     }
     
     // Start up the python subsystem.
@@ -123,7 +123,15 @@ int main(int argc, char ** argv)
 
     WorldRouter world;
 
-    ServerRouting server(world, rulesets.front(), serverName);
+    // This ID is currently generated every time, but should perhaps be
+    // persistent in future.
+    std::string server_id, lobby_id;
+    long int_id = newId(server_id);
+    long lobby_int_id = newId(lobby_id);
+
+    ServerRouting server(world, rulesets.front(), server_name,
+                         server_id, int_id,
+                         lobby_id, lobby_int_id);
 
     CommServer commServer(server);
 

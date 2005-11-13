@@ -20,9 +20,10 @@ class Lobby : public OOGThing {
     ServerRouting & m_server;
   public:
     explicit Lobby(ServerRouting &, const std::string & id, long intId);
+    virtual ~Lobby();
 
-    void addObject(Account * a);
-    void delObject(Account * a);
+    void addAccount(Account * a);
+    void delAccount(Account * a);
 
     inline const AccountDict & getAccounts() const {
         return m_accounts;

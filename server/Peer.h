@@ -21,7 +21,8 @@ class Peer : public OOGThing {
     CommClient & m_commClient;
     ServerRouting & m_server;
 
-    Peer(const std::string & id, CommClient & client, ServerRouting & svr);
+    Peer(CommClient & client, ServerRouting & svr,
+         const std::string & addr, const std::string & id);
     virtual ~Peer();
 };
 

@@ -4,8 +4,11 @@
 
 #include "TrustedConnection.h"
 
-TrustedConnection::TrustedConnection(const std::string & id, CommClient & client,
-                      ServerRouting & svr) : Connection(id, client, svr)
+TrustedConnection::TrustedConnection(CommClient & client,
+                                     ServerRouting & svr,
+                                     const std::string & addr,
+                                     const std::string & id) :
+                                     Connection(client, svr, addr, id)
 {
 }
 

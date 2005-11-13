@@ -7,8 +7,9 @@
 #include "CommRemoteClient.h"
 #include "CommServer.h"
 
-#include "common/debug.h"
+#include "common/id.h"
 #include "common/log.h"
+#include "common/debug.h"
 
 #include <iostream>
 
@@ -115,8 +116,12 @@ int CommListener::accept()
 
 void CommListener::create(int asockfd, const char * address)
 {
+    std::string connection_id;
+    newId(connection_id);
+    assert(!connection_id.empty());
+
     CommRemoteClient * newcli = new CommRemoteClient(m_commServer, asockfd,
-                                                     address);
+                                                     address, connection_id);
 
     newcli->setup();
 

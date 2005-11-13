@@ -7,6 +7,8 @@
 #include "CommPeer.h"
 #include "CommServer.h"
 
+#include "common/id.h"
+
 static const bool debug_flag = false;
 
 /// \brief Constructor for listener socket object.
@@ -22,7 +24,10 @@ CommPeerListener::~CommPeerListener()
 
 void CommPeerListener::create(int asockfd, const char * address)
 {
-    CommPeer * newpeer = new CommPeer(m_commServer, asockfd, address);
+    std::string peerId;
+    newId(peerId);
+
+    CommPeer * newpeer = new CommPeer(m_commServer, asockfd, address, peerId);
 
     newpeer->setup();
 

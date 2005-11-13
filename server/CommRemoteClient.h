@@ -10,7 +10,8 @@
 /// \brief Handle an internet socket connected to a remote client.
 class CommRemoteClient : public CommClient {
   public:
-    CommRemoteClient(CommServer & svr, int fd, const std::string & address);
+    CommRemoteClient(CommServer & svr, int fd, const std::string & address,
+                                               const std::string & id);
     virtual ~CommRemoteClient();
 
 };

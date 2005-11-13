@@ -39,9 +39,13 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-Connection::Connection(const std::string & id, CommClient & client,
-                       ServerRouting & svr) : OOGThing(id, -1),
-                       m_obsolete(false), m_commClient(client), m_server(svr)
+Connection::Connection(CommClient & client,
+                       ServerRouting & svr,
+                       const std::string & addr,
+                       const std::string & id) : OOGThing(id, integerId(id)),
+                                                 m_obsolete(false),
+                                                 m_commClient(client),
+                                                 m_server(svr)
 {
     m_server.incClients();
 }
@@ -65,7 +69,7 @@ Connection::~Connection()
     for (BaseDict::const_iterator I = m_objects.begin(); I != Iend; ++I) {
         Account * ac = dynamic_cast<Account *>(I->second);
         if (ac != NULL) {
-            m_server.m_lobby.delObject(ac);
+            m_server.m_lobby.delAccount(ac);
             ac->m_connection = NULL;
             continue;
         }
@@ -101,7 +105,7 @@ Account * Connection::addPlayer(const std::string& username,
     assert(player->m_connection == this);
     player->m_connection = this;
     m_server.addAccount(player);
-    m_server.m_lobby.addObject(player);
+    m_server.m_lobby.addAccount(player);
     return player;
 }
 
@@ -256,7 +260,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
         addObject(J->second);
     }
     player->m_connection = this;
-    m_server.m_lobby.addObject(player);
+    m_server.m_lobby.addAccount(player);
     // Let the client know they have logged in
     Info info;
     Anonymous info_arg;
