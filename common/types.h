@@ -59,7 +59,7 @@ typedef int OpNo;
 
 typedef Atlas::Objects::Operation::RootOperation Operation;
 
-typedef std::map<std::string, BaseEntity *> BaseDict;
+typedef std::map<long, BaseEntity *> BaseDict;
 typedef std::vector<std::string> IdList;
 
 typedef std::map<long, Entity *> EntityDict;

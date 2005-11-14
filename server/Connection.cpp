@@ -111,12 +111,12 @@ Account * Connection::addPlayer(const std::string& username,
 
 void Connection::addObject(BaseEntity * obj)
 {
-    m_objects[obj->getId()] = obj;
-    SigC::Connection * con = new SigC::Connection(obj->destroyed.connect(SigC::bind<std::string>(SigC::slot(*this, &Connection::objectDeleted), obj->getId())));
-    m_destroyedConnections[obj->getId()] = con;
+    m_objects[obj->getIntId()] = obj;
+    SigC::Connection * con = new SigC::Connection(obj->destroyed.connect(SigC::bind<long>(SigC::slot(*this, &Connection::objectDeleted), obj->getIntId())));
+    m_destroyedConnections[obj->getIntId()] = con;
 }
 
-void Connection::removeObject(const std::string & id)
+void Connection::removeObject(long id)
 {
     if (!m_obsolete) {
         m_objects.erase(id);
@@ -128,7 +128,7 @@ void Connection::removeObject(const std::string & id)
     }
 }
 
-void Connection::objectDeleted(std::string id)
+void Connection::objectDeleted(long id)
 {
     removeObject(id);
 }
@@ -160,7 +160,7 @@ void Connection::operation(const Operation & op, OpVector & res)
     } else {
         const std::string & from = op->getFrom();
         debug(std::cout << "send on to " << from << std::endl << std::flush;);
-        BaseDict::const_iterator I = m_objects.find(from);
+        BaseDict::const_iterator I = m_objects.find(integerId(from));
         if (I == m_objects.end()) {
             std::string err = "Client \"";
             err += op->getParents().front();

@@ -50,8 +50,6 @@ void Lobby::addAccount(Account * ac)
     operation(a, res);
     assert(res.empty());
 
-    std::cout << "Added " << ac->m_username << " to lobby" << std::endl << std::flush;
-
     m_accounts[ac->getId()] = ac;
 }
 

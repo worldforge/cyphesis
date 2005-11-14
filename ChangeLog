@@ -1,3 +1,14 @@
+2005-11-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/types.h: Switch the core object index for the server, and
+	  the subscription index for connections to use integer IDs.
+
+	* server/Admin.cpp, server/Connection.cpp, server/Connection.h,
+	  server/ExternalMind.cpp, server/ServerRouting.h:
+	  Modify code to use integer object indices.
+
+	* server/Lobby.cpp: Remove debug output.
+
 2005-11-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Admin.cpp, server/CommPeer.cpp, server/CommPeer.h,

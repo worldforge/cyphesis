@@ -22,7 +22,7 @@ class Account;
 /// like in-game characters. Clients specify which entity should handle
 /// an operation using the from attribute.
 class Connection : public OOGThing {
-    typedef std::map<std::string, SigC::Connection *> ConMap;
+    typedef std::map<long, SigC::Connection *> ConMap;
 
     BaseDict m_objects;
 
@@ -53,8 +53,8 @@ class Connection : public OOGThing {
     virtual ~Connection();
 
     void addObject(BaseEntity * obj);
-    void removeObject(const std::string & id);
-    void objectDeleted(std::string id);
+    void removeObject(long id);
+    void objectDeleted(long id);
 
     void disconnect();
     void send(const Operation & op) const;

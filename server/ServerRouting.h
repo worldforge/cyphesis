@@ -49,7 +49,7 @@ class ServerRouting : public OOGThing {
         assert(!obj->getId().empty());
         assert(integerId(obj->getId()) == obj->getIntId());
         assert(integerId(obj->getId()) > 0);
-        m_objects[obj->getId()] = obj;
+        m_objects[obj->getIntId()] = obj;
     }
 
     /// Add an Account object to the server.
@@ -60,7 +60,7 @@ class ServerRouting : public OOGThing {
 
     /// Remove an OOG object from the server.
     void delObject(BaseEntity * obj) {
-        m_objects.erase(obj->getId());
+        m_objects.erase(obj->getIntId());
     }
 
     /// Accessor for OOG objects map.
@@ -73,7 +73,7 @@ class ServerRouting : public OOGThing {
     /// @return a pointer to the object with the given id, or
     /// zero if no object with this id is present.
     BaseEntity * getObject(const std::string & id) const {
-        BaseDict::const_iterator I = m_objects.find(id);
+        BaseDict::const_iterator I = m_objects.find(integerId(id));
         if (I == m_objects.end()) {
             return 0;
         } else {
