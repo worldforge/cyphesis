@@ -43,6 +43,7 @@ void Movement::checkCollisions(const Location & location)
                      << location.velocity() << " in " << location.m_loc->getId()
                      << " against"; );
     m_collEntity = NULL;
+    m_collLocChange = false;
     // Check against everything within the current container
     EntitySet::const_iterator I = location.m_loc->m_contains.begin();
     EntitySet::const_iterator Iend = location.m_loc->m_contains.end();

@@ -1,5 +1,13 @@
 2005-11-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Movement.cpp: Reset the collision LOC change flag before
+	  running the check.
+
+	* rulesets/Pedestrian.cpp: Improve debug reporting of collision
+	  errors.
+
+2005-11-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* cyphesis.init: Fix hardcoded PostgreSQL admin user to use the
 	  shell variable as it should. Thanks to Kai Blin for the fix.
 

@@ -150,11 +150,12 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
                         m_targetPos = m_targetPos.toLocalCoords(m_collEntity->m_location.pos(), collOrientation);
                     }
                 } else {
-                    std::string msg = std::string("BAD COLLISION: ")
-                                    + m_body.getId() + " with "
-                                    + m_collEntity->getId()
-                                    + ". Making no coord adjustment.";
-                    log(ERROR, msg.c_str());
+                    log(ERROR, String::compose("BAD COLLISION: %1 with %2(%3) when LOC is currently %4(%5).",
+                                               m_body.getId(),
+                                               m_collEntity->getId(),
+                                               m_collEntity->getType(),
+                                               new_location.m_loc->getId(),
+                                               new_location.m_loc->getType()).c_str());
                 }
                 new_location.m_loc = m_collEntity;
                 m_collEntity = NULL;
