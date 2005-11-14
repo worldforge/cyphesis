@@ -1,3 +1,47 @@
+Implement tracking terrain surface, and preventing climbing of steep terrain.
+
+Implement data driven gui dialogues, in Sear and perhaps equator.
+
+<map>
+  <list name="parents><string>dialogue</string></list>
+  <string name="label">Dialogue</string>
+  <list name="contents">
+    <map>
+      <list name="parents"><string>vbox</string></list>
+      <list name="contents">
+        <map>
+          <list name="parents"><string>label</string></list>
+          <string name="label">This is a dialogue</string>
+        </map>
+        <map>
+          <list name="parents"><string>hbox</string></list>
+          <list name="contents">
+            <map>
+              <list name="parents"><string>button</string></list>
+              <string name="label">Okay</string>
+            </map>
+            <map>
+              <list name="parents"><string>button</string></list>
+              <string name="label">Cancel</string>
+            </map>
+          </list>
+        </map>
+      </list>
+    </map>
+  </list>
+<map>
+
+
+        ---------------------------------------------------------
+        |                                                       |
+        |   A dialogue                                          |
+        |                                                       |
+        |     --------------------     -------------------      |
+        |     |      Okay        |     |     Cancel      |      |
+        |     --------------------     -------------------      |
+        |                                                       |
+        ---------------------------------------------------------
+
 Convert accounts and other OOG to have integer IDs, and convert Connection
 map to use integers.
 
