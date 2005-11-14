@@ -1,5 +1,10 @@
 2005-11-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* cyphesis.init: Fix hardcoded PostgreSQL admin user to use the
+	  shell variable as it should. Thanks to Kai Blin for the fix.
+
+2005-11-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/types.h: Switch the core object index for the server, and
 	  the subscription index for connections to use integer IDs.
 

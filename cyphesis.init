@@ -45,7 +45,7 @@ start() {
         # Make sure the user has a postgres account
         if ! su $CYPHESISUSER -c "psql -c \"\" template1" >/dev/null 2>&1; then
             echo -n $"Creating PostgreSQL account: "
-            su postgres -c "createuser -A -d $CYPHESISUSER" >/dev/null 2>&1
+            su $POSTGRESUSER -c "createuser -A -d $CYPHESISUSER" >/dev/null 2>&1
             RETVAL=$?
             if [ $RETVAL -eq 0 ]; then
                 echo_success
