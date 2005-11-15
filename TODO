@@ -1,3 +1,5 @@
+Handle SQL escaping of attributes encoded string before persisting.
+
 Implement tracking terrain surface, and preventing climbing of steep terrain.
 
 Implement data driven gui dialogues, in Sear and perhaps equator.
@@ -549,34 +551,16 @@ Sort out socket address re-use, and lingering.
 Long term, try and sort out the way object factories, scripts, and atlas
 inheritance are handled, so they are a bit more coherant.
 
-Re-work Decoder on client connections so operation dispatch is not done from
-with the poll() call. Instead, the decoder should just que ops, and they
-should be read off and dispatched from elsewhere.
-
-Make sure plant base class is working.
-
-Think about how to install classes over the wire. Perhaps adding
-a bind() operation, which binds a specific script or C++ class to
-an entity class? This means that the entity class definition itself
-is clean of server internals, so can be done in a non server specific way.
-
 Modify the logging code so that it mangles script output a bit less.
-
-Fix up the pedantic checks in the python code to return AssertionError,
-and only be compiled in when DEBUG is enabled, like those in
-Py_CreatorClient.cpp. Clean up the Python type names as has been done
-in the process python API. Fix up the other error types used, including
-fixing the error messages.
 
 Fix up python checks so they work with a prefix other than /usr
 
-Is socket getting opened before it will accept or negotiate?
+Is listen socket getting opened before it will accept or negotiate because
+more work is being done before poll/select occurs.
 
 Fix up cypasswd to allow creation of additional admin accounts.
 
 Think about adding UPnP here or to skstream (or both)
-
-Replace PyExc_TypeError with the correct exception in most cases.
 
 Use PyInstance_New to create an instance given a class.
 
@@ -601,9 +585,6 @@ Either valid or invalid.
 CreateOperation and DeleteOperation behavoir probably should be moved from
 Thing to
 entity as they should work on entities.
-
-Add attribute handler objects, which hold a reference to the attribute value, so
-that the looking up of these attribute can be accelerated by a map.
 
 Implement constraints on entities, which have to be checked before movement
 is allowed.
@@ -638,34 +619,18 @@ been done. It is probably acceptible to only accept queries that do not
 return any tuples, and then the asyncronous recieve mechanism doesn't need
 to worry about who wants the tuples.
 
-Write a base class for plant which has a standard forumala for managing the
-growth of plants - the fundamental measure of which is mass, then another
-formula for calculating the size (height, width) etc from the mass, so the
-shape of the plant as it grows can be customised. This could largely eliminate
-the need to scripts to define plants.
-
 General TODO
 
   Come up with a way to persist general attributes.
 
   Persist more complex things like geo stuff.
 
-  Allow types to be installed from the client.
-
-  Calculating absolute entity position has now ignored orientation for
-  too long. This needs to be fixed after this next release of mason,
-  or we are screwed. This would probably be best achieved simultaneously
-  with the generalisation and virtualisation of the collision code,
-  and a switch to using wfmath.
-
-  Generalise and virtualise the collision code. Handle at very least obboxes
+  Generalise and virtualise the collision code.
 
   Implement jump operation, which specifies target, and comes back with,
   a sight of a jump which has the starting velocity, and finish position.
   If the client sends only velocity, then something else happens. Add
   a method to Pedestrian to handle it.
-
-  Implement ontology querying for AI code.
 
   Add Feel as the counterpoint to Touch, as Sight is to Look.
 
