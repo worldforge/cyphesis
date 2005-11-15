@@ -42,23 +42,9 @@ Implement data driven gui dialogues, in Sear and perhaps equator.
         |                                                       |
         ---------------------------------------------------------
 
-Convert accounts and other OOG to have integer IDs, and convert Connection
-map to use integers.
-
-Give server object and lobby real IDs.
-
-Make 4 lines for converting ID to integer ID into a function.
-
 BaseEntity::error() should take string.
 
 Are attributes inherited? I think not. Need to be.
-
-All too often an error is sent to clients for an event which is of absolutely
-no interest to the server admin or developer. Things like authentication
-failure, negotiation timeout, write timeout. Need another error method for
-this.
-
-True integer IDs.
 
 Carefully use flags to check for illegal stuff from client/mind ops.
 
@@ -71,7 +57,7 @@ Don't update POS in database if VELOCITY is non-zero.
 
 strlen.com
 
-Predator's should now use combat code to defeat prey before eating, and
+Predators should now use combat code to defeat prey before eating, and
 then Eat op on character should only work on incapacitated characters.
 
 A bunch of stuff in Character::externalOperation can go if we don't care
