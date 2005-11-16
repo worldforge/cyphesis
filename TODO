@@ -1,3 +1,12 @@
+In order to have attribute defaults inherit from parent classes,
+the code must first store the unmodified defaults direct from the rule
+in a separate place. Its main attributes should then be the result of merging
+those with its parent. This ensures that the result is always right, without
+having to walk all the way up to GameEntity. It is also makes propagating
+modified attributes down the tree easier, as long as a factory stores
+a list of its children. This means we have two compelling reasons why the
+parent factory needs to be available when the child is being installed.
+
 Handle SQL escaping of attributes encoded string before persisting.
 
 Implement tracking terrain surface, and preventing climbing of steep terrain.
