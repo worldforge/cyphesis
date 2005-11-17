@@ -1,3 +1,10 @@
+Add cmdline cmds to flush entities from the server to cycmd, including
+by name/type or globally.
+
+Urgently need new unit tests for class loading functionality in EntityFactory,
+to make sure attributes are inherited, with correct values, and values are
+updated and propagated.
+
 In order to have attribute defaults inherit from parent classes,
 the code must first store the unmodified defaults direct from the rule
 in a separate place. Its main attributes should then be the result of merging
