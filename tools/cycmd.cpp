@@ -72,6 +72,7 @@ struct command {
 struct command commands[] = {
     { "connect",        "Connect server to a peer", },
     { "get",            "Examine a class on the server", },
+    { "flush",          "Flush in entities from the server", },
     { "help",           "Display this help", },
     { "install",        "Install a new type", },
     { "look",           "Return the current server lobby", },
@@ -88,17 +89,12 @@ struct command commands[] = {
 static void help()
 {
     std::cout << "Cyphesis commands:" << std::endl << std::endl;
-    std::cout << "    connect   Connect server to a peer" << std::endl;
-    std::cout << "    get       Examine a class on the server" << std::endl;
-    std::cout << "    help      Display this help" << std::endl;
-    std::cout << "    install   Install a new type" << std::endl;
-    std::cout << "    look      Return current server lobby" << std::endl;
-    std::cout << "    logout    Log user out of server" << std::endl;
-    std::cout << "    monitor   Enable in-game op monitoring" << std::endl;
-    std::cout << "    query     Examine an object on the server" << std::endl;
-    std::cout << "    reload    Reload the script for a type" << std::endl;
-    std::cout << "    stat      Return current server status" << std::endl;
-    std::cout << "    unmonitor Disable in-game op monitoring" << std::endl;
+
+    for (struct command * I = &commands[0]; I->cmd_string != NULL; ++I) {
+        std::cout << "    " << I->cmd_string
+                  << std::string(10 - strlen(I->cmd_string), ' ')
+                  << I->cmd_description << std::endl;
+    }
     std::cout << std::endl << std::flush;
 }
 
