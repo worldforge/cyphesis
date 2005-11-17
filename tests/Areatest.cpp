@@ -14,7 +14,7 @@ using Atlas::Message::ListType;
 
 int main()
 {
-    Area e("testId");
+    Area e("1", 1);
 
     IGEntityExerciser<Area> ee(e);
 

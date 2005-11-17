@@ -14,7 +14,7 @@ using Atlas::Message::ListType;
 
 int main()
 {
-    Plant e("testId");
+    Plant e("1", 1);
 
     IGEntityExerciser<Plant> ee(e);
 

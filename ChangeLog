@@ -1,5 +1,16 @@
 2005-11-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Areatest.cpp, tests/BaseEntitytest.cpp,
+	  tests/Charactertest.cpp, tests/Creatortest.cpp,
+	  tests/EntityExerciser.h, tests/Entitytest.cpp, tests/Foodtest.cpp,
+	  tests/Linetest.cpp, tests/Makefile.am, tests/OOGThingtest.cpp,
+	  tests/Planttest.cpp, tests/Stackabletest.cpp,
+	  tests/Structuretest.cpp, tests/Tasktest.cpp, tests/Thingtest.cpp,
+	  tests/Worldtest.cpp, tests/distancetest.cpp:
+	  Update tests to work with integer ID changes.
+
+2005-11-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: Re-code help system to use the commands list when
 	  generating help output.
 

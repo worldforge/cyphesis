@@ -14,7 +14,7 @@ using Atlas::Message::ListType;
 
 int main()
 {
-    Stackable e("testId");
+    Stackable e("1", 1);
 
     IGEntityExerciser<Stackable> ee(e);
 

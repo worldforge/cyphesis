@@ -11,7 +11,7 @@
 
 class BaseEntityTest : public BaseEntity {
   public:
-    BaseEntityTest() : BaseEntity("testId") { }
+    BaseEntityTest() : BaseEntity("1", 1) { }
 };
 
 int main()

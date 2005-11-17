@@ -23,6 +23,8 @@
 #include "common/Unseen.h"
 #include "common/Update.h"
 
+#include <Atlas/Objects/Operation.h>
+
 #include <cassert>
 
 template <class EntityType>
@@ -149,6 +151,7 @@ inline void EntityExerciser<EntityType>::runOperations()
         Atlas::Objects::Operation::Eat op;
         dispatchOp(op);
         OpVector ov;
+        op->setFrom(m_ent.getId());
         m_ent.EatOperation(op, ov);
         flushOperations(ov);
     }
@@ -238,6 +241,7 @@ inline void EntityExerciser<EntityType>::runOperations()
     }
     {
         Atlas::Objects::Operation::Look op;
+        op->setFrom(m_ent.getId());
         dispatchOp(op);
         OpVector ov;
         m_ent.LookOperation(op, ov);

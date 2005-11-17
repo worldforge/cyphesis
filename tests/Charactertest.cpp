@@ -19,7 +19,7 @@ int main(int argc, char ** argv)
 
     init_python_api();
 
-    Character e("testId");
+    Character e("1", 1);
 
     IGEntityExerciser<Character> ee(e);
 

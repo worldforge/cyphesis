@@ -14,7 +14,7 @@ using Atlas::Message::ListType;
 
 int main()
 {
-    Structure e("testId");
+    Structure e("1", 1);
 
     IGEntityExerciser<Structure> ee(e);
 

@@ -14,7 +14,7 @@ using Atlas::Message::ListType;
 
 int main()
 {
-    Food e("testId");
+    Food e("1", 1);
 
     IGEntityExerciser<Food> ee(e);
 

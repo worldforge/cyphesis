@@ -20,7 +20,7 @@ int main()
     int ret = 0;
 
     {
-        Entity tlve("0"), ent("1");
+        Entity tlve("0", 0), ent("1", 1);
 
         ent.m_location.m_loc = &tlve;
         ent.m_location.m_pos = Point3D(1, 1, 0);
@@ -44,7 +44,7 @@ int main()
     }
 
     {
-        Entity tlve("0"), ent1("1"), ent2("2");
+        Entity tlve("0", 0), ent1("1", 1), ent2("2", 2);
 
         ent1.m_location.m_loc = &tlve;
         ent1.m_location.m_pos = Point3D(-1, 1, 0);
@@ -64,7 +64,8 @@ int main()
     }
 
     {
-        Entity tlve("0"), ent1("1"), ent2("2"), ent3("3"), ent4("4");
+        Entity tlve("0", 0), ent1("1", 1), ent2("2", 2),
+               ent3("3", 3), ent4("4", 4);
 
         ent1.m_location.m_loc = &tlve;
         ent1.m_location.m_pos = Point3D(-1, 1, 0);
@@ -94,7 +95,7 @@ int main()
     }
 
     {
-        Entity tlve("0"), ent1("1"), ent2("2"), ent3("3"), ent4("4");
+        Entity tlve("0", 0), ent1("1", 1), ent2("2", 2), ent3("3", 3), ent4("4", 4);
 
         ent1.m_location.m_loc = &tlve;
         ent1.m_location.m_pos = Point3D(-1, 1, 0);
@@ -124,7 +125,8 @@ int main()
     }
 
     {
-        Entity tlve("0"), ent1("1"), ent2("2"), ent3("3"), ent4("4");
+        Entity tlve("0", 0), ent1("1", 1), ent2("2", 2),
+               ent3("3", 3), ent4("4", 4);
 
         ent1.m_location.m_loc = &tlve;
         ent1.m_location.m_pos = Point3D(-1, 1, 0);
@@ -154,7 +156,8 @@ int main()
     }
 
     {
-        Entity tlve("0"), ent1("1"), ent2("2"), ent3("3"), ent4("4");
+        Entity tlve("0", 0), ent1("1", 1), ent2("2", 2),
+               ent3("3", 3), ent4("4", 4);
 
         ent1.m_location.m_loc = &tlve;
         ent1.m_location.m_pos = Point3D(-1, 1, 0);

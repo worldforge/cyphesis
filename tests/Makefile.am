@@ -175,6 +175,8 @@ Areatest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/common/inheritance.o \
                  $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
+                 $(top_builddir)/common/BaseWorld.o \
+                 $(top_builddir)/common/id.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/prefix.o \
                  $(top_builddir)/common/globals.o \
@@ -198,6 +200,8 @@ Foodtest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/common/inheritance.o \
                  $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
+                 $(top_builddir)/common/BaseWorld.o \
+                 $(top_builddir)/common/id.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/prefix.o \
                  $(top_builddir)/common/globals.o \
@@ -222,6 +226,8 @@ Linetest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/common/inheritance.o \
                  $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
+                 $(top_builddir)/common/BaseWorld.o \
+                 $(top_builddir)/common/id.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/prefix.o \
                  $(top_builddir)/common/globals.o \
@@ -245,6 +251,8 @@ Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/common/inheritance.o \
                   $(top_builddir)/common/Property.o \
                   $(top_builddir)/common/BaseEntity.o \
+                  $(top_builddir)/common/BaseWorld.o \
+                  $(top_builddir)/common/id.o \
                   $(top_builddir)/common/log.o \
                   $(top_builddir)/common/prefix.o \
                   $(top_builddir)/common/globals.o \
@@ -268,6 +276,8 @@ Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/common/inheritance.o \
                       $(top_builddir)/common/Property.o \
                       $(top_builddir)/common/BaseEntity.o \
+                      $(top_builddir)/common/BaseWorld.o \
+                      $(top_builddir)/common/id.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/prefix.o \
                       $(top_builddir)/common/globals.o \
@@ -291,6 +301,8 @@ Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/common/inheritance.o \
                       $(top_builddir)/common/Property.o \
                       $(top_builddir)/common/BaseEntity.o \
+                      $(top_builddir)/common/BaseWorld.o \
+                      $(top_builddir)/common/id.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/prefix.o \
                       $(top_builddir)/common/globals.o \
@@ -313,6 +325,8 @@ Thingtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/common/inheritance.o \
                   $(top_builddir)/common/Property.o \
                   $(top_builddir)/common/BaseEntity.o \
+                  $(top_builddir)/common/BaseWorld.o \
+                  $(top_builddir)/common/id.o \
                   $(top_builddir)/common/log.o \
                   $(top_builddir)/common/prefix.o \
                   $(top_builddir)/common/globals.o \
@@ -337,6 +351,7 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/common/inheritance.o \
                   $(top_builddir)/common/Property.o \
                   $(top_builddir)/common/BaseEntity.o \
+                  $(top_builddir)/common/id.o \
                   $(top_builddir)/common/log.o \
                   $(top_builddir)/common/prefix.o \
                   $(top_builddir)/common/globals.o \
@@ -358,6 +373,7 @@ Charactertest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                       $(top_builddir)/common/inheritance.o \
                       $(top_builddir)/common/Property.o \
                       $(top_builddir)/common/BaseEntity.o \
+                      $(top_builddir)/common/id.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/prefix.o \
                       $(top_builddir)/common/globals.o \
@@ -380,6 +396,7 @@ Creatortest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                     $(top_builddir)/common/inheritance.o \
                     $(top_builddir)/common/Property.o \
                     $(top_builddir)/common/BaseEntity.o \
+                    $(top_builddir)/common/id.o \
                     $(top_builddir)/common/log.o \
                     $(top_builddir)/common/prefix.o \
                     $(top_builddir)/common/globals.o \
@@ -405,6 +422,7 @@ Tasktest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/common/inheritance.o \
                  $(top_builddir)/common/Property.o \
                  $(top_builddir)/common/BaseEntity.o \
+                 $(top_builddir)/common/id.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/prefix.o \
                  $(top_builddir)/common/globals.o \

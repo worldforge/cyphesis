@@ -37,8 +37,8 @@ int main(int argc, char ** argv)
 
     init_python_api();
 
-    Creator e("testId");
-    Entity world("testWorldId");
+    Creator e("1", 1);
+    Entity world("2", 2);
     TestWorld tw(world);
 
     e.m_world = &tw;

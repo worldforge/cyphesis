@@ -32,7 +32,7 @@ class TestWorld : public BaseWorld {
 
 int main()
 {
-    World e("testId");
+    World e("1", 1);
     TestWorld tw(e);
     e.m_world = &tw;
 

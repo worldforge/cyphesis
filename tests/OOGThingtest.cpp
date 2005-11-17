@@ -11,7 +11,7 @@
 
 class OOGThingTest : public OOGThing {
   public:
-    OOGThingTest() : OOGThing("testId") { }
+    OOGThingTest() : OOGThing("1", 1) { }
 };
 
 int main()

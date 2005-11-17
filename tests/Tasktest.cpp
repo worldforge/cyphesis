@@ -28,8 +28,8 @@ int main()
         }
     }
 
-    Entity ent1("1"), ent2("2");
-    Character chr("3");
+    Entity ent1("1", 1), ent2("2", 2);
+    Character chr("3", 3);
 
     {
         Fell fell(chr, ent1, ent2);
