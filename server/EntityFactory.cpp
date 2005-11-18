@@ -223,6 +223,9 @@ void EntityFactory::populateFactory(const std::string & className,
             const MapType & attr = K->second.asMap();
             MapType::const_iterator L = attr.find("default");
             if (L != attr.end()) {
+                // Store this value in the defaults for this class
+                factory->m_classAttributes[K->first] = L->second;
+                // and merge it with the defaults inherited from the parent
                 factory->m_attributes[K->first] = L->second;
             }
         }
@@ -240,14 +243,26 @@ int EntityFactory::installEntityClass(const std::string & className,
                                       const MapType & classDesc)
 {
     // Get the new factory for this rule
-    FactoryBase * factory = getNewFactory(parent);
-    if (factory == 0) {
+    FactoryDict::const_iterator I = m_factories.find(parent);
+    if (I == m_factories.end()) {
         debug(std::cout << "class \"" << className
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
         m_waitingRules.insert(make_pair(parent, make_pair(className, classDesc)));
         return 1;
     }
+    FactoryBase * parent_factory = I->second;
+    FactoryBase * factory = parent_factory->duplicateFactory();
+    if (factory == 0) {
+        log(ERROR, String::compose("Attempt to install rule \"%1\" which has parent \"%2\" which cannot be instantiated", className, parent).c_str());
+        return -1;
+    }
+
+    assert(factory->m_parent == parent_factory);
+
+    // Copy the defaults from the parent. In populateFactory this may be
+    // overriden with the defaults for this class.
+    factory->m_attributes = parent_factory->m_attributes;
 
     populateFactory(className, factory, classDesc);
 
@@ -256,6 +271,9 @@ int EntityFactory::installEntityClass(const std::string & className,
 
     // Install the factory in place.
     installFactory(parent, className, factory);
+
+    // Add it as a child to its parent.
+    parent_factory->m_children.insert(factory);
 
     return 0;
 }
@@ -358,6 +376,22 @@ int EntityFactory::installRule(const std::string & className,
     return 0;
 }
 
+static void updateChildren(FactoryBase * factory)
+{
+    std::set<FactoryBase *>::const_iterator I = factory->m_children.begin();
+    std::set<FactoryBase *>::const_iterator Iend = factory->m_children.end();
+    for (; I != Iend; ++I) {
+        FactoryBase * child_factory = *I;
+        child_factory->m_attributes = factory->m_attributes;
+        MapType::const_iterator J = child_factory->m_classAttributes.begin();
+        MapType::const_iterator Jend = child_factory->m_classAttributes.end();
+        for (; J != Jend; ++J) {
+            child_factory->m_attributes[J->first] = J->second;
+        }
+        updateChildren(child_factory);
+    }
+}
+
 int EntityFactory::modifyRule(const std::string & className,
                               const MapType & classDesc)
 {
@@ -374,7 +408,16 @@ int EntityFactory::modifyRule(const std::string & className,
         script_factory->refreshClass();
     }
 
+    // Copy the defaults from the parent. In populateFactory this may be
+    // overriden with the defaults for this class.
+    // FIXME
+    // If the code crashes here because m_parent is NULL, it is because
+    // the client has attempted to modify the factory for a core class.
+    factory->m_attributes = factory->m_parent->m_attributes;
+
     populateFactory(className, factory, classDesc);
+
+    updateChildren(factory);
 
     return 0;
 }

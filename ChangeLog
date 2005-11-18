@@ -1,5 +1,24 @@
 2005-11-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/PersistantThingFactory.h,
+	  server/PersistantThingFactory_impl.h: Add separate tracking of
+	  class attributes, and accumulated attributes including those
+	  inherited from the parent class. Add members for storing
+	  parent and child types to a factory.
+
+	* server/EntityFactory.h: Ensure instance pointer is zeroed
+	  when instance is deleted. Make internal methods protected so
+	  its easier to test them in a unit test.
+
+	* server/EntityFactory.cpp: Add pointers to child factories to parent
+	  when installing new ones. Handle copying inherited attribute
+	  defaults from the parent factory.
+
+	* tests/EntityFactorytest.cpp: Add a new class which exposes the
+	  protected parts of EntityFactory for testing.
+
+2005-11-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: Add an AdminTask interface for tasks which
 	  take longer to complete.
 

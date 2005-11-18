@@ -1,3 +1,6 @@
+ForbiddenThingFactory::duplicateFactory could return PersistantThingFactory
+so its possible to add more abstract factories.
+
 Use Unseen to report no match in Creator::LookOperation() when finding
 by name or type.
 

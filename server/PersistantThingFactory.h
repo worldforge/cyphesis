@@ -7,6 +7,8 @@
 
 #include <Atlas/Message/Element.h>
 
+#include <set>
+
 class Entity;
 
 template <class T>
@@ -47,7 +49,17 @@ class FactoryBase {
     FactoryBase();
   public:
     ScriptFactory * m_scriptFactory;
+    /// Default attribute values for this class
+    Atlas::Message::MapType m_classAttributes;
+    /// Default attribute values for instances of this class, including
+    /// defaults from parent classes.
     Atlas::Message::MapType m_attributes;
+    /// Factory for class from which the class handled by this factory
+    /// inherits.
+    FactoryBase * m_parent;
+    /// Set of factories for classes which inherit from the class handled
+    /// by this factory.
+    std::set<FactoryBase *> m_children;
 
     virtual ~FactoryBase();
 

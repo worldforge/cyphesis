@@ -24,7 +24,7 @@ typedef std::map<std::string, FactoryBase *> FactoryDict;
 /// Uses PersistantThingFactory to store information about entity types, and
 /// create them. Handles connecting entities to their persistor as required.
 class EntityFactory {
-  private:
+  protected:
     typedef std::multimap<std::string, std::pair<std::string, Atlas::Message::MapType> > RuleWaitList;
     explicit EntityFactory(BaseWorld & w);
     static EntityFactory * m_instance;
@@ -54,8 +54,9 @@ class EntityFactory {
         return m_instance;
     }
     static void del() {
-        if (m_instance != NULL) {
+        if (m_instance != 0) {
             delete m_instance;
+            m_instance = 0;
         }
     }
     void initWorld();

@@ -39,7 +39,9 @@ T * PersistantThingFactory<T>::newPersistantThing(const std::string & id, long i
 template <class T>
 FactoryBase * PersistantThingFactory<T>::duplicateFactory()
 {
-    return new PersistantThingFactory<T>(*this);
+    FactoryBase * f = new PersistantThingFactory<T>(*this);
+    f->m_parent = this;
+    return f;
 }
 
 template <class T>

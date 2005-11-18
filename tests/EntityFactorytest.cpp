@@ -15,6 +15,41 @@
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 
+class ExposedEntityFactory : public EntityFactory {
+  public:
+    explicit ExposedEntityFactory(BaseWorld & w) : EntityFactory(w) { }
+
+    void getRulesFromFiles(Atlas::Message::MapType & rules) {
+        EntityFactory::getRulesFromFiles(rules);
+    }
+    void installRules() {
+        EntityFactory::installRules();
+    }
+    void installFactory(const std::string & parent,
+                        const std::string & clss, FactoryBase * factory) {
+        EntityFactory::installFactory(parent, clss, factory);
+    }
+    void populateFactory(const std::string & className,
+                         FactoryBase * factory,
+                         const Atlas::Message::MapType & classDesc) {
+        EntityFactory::populateFactory(className, factory, classDesc);
+    }
+    FactoryBase * getNewFactory(const std::string & clss) {
+        return EntityFactory::getNewFactory(clss);
+    }
+    int installEntityClass(const std::string & className,
+                           const std::string & parent,
+                           const Atlas::Message::MapType & classDesc) {
+        return EntityFactory::installEntityClass(className, parent, classDesc);
+    }
+    int installOpDefinition(const std::string & opDefName,
+                            const std::string & parent,
+                            const Atlas::Message::MapType & opDefDesc) {
+        return EntityFactory::installOpDefinition(opDefName, parent, opDefDesc);
+    }
+
+};
+
 int main()
 {
     {
