@@ -1,3 +1,6 @@
+Use Unseen to report no match in Creator::LookOperation() when finding
+by name or type.
+
 Add cmdline cmds to flush entities from the server to cycmd, including
 by name/type or globally.
 
