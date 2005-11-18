@@ -38,6 +38,8 @@ extern "C" {
 #endif
 
 #include <iostream>
+#include <algorithm>
+
 #include <cstdio>
 
 using Atlas::Message::Element;
@@ -70,9 +72,12 @@ struct command {
 };
 
 struct command commands[] = {
+    { "add_agent",      "Create an in-game agent", },
     { "connect",        "Connect server to a peer", },
     { "get",            "Examine a class on the server", },
-    { "flush",          "Flush in entities from the server", },
+    { "find_by_name",   "Find an entity with the given name", },
+    { "find_by_type",   "Find an entity with the given type", },
+    { "flush",          "Flush entities from the server", },
     { "help",           "Display this help", },
     { "install",        "Install a new type", },
     { "look",           "Return the current server lobby", },
@@ -88,11 +93,18 @@ struct command commands[] = {
 
 static void help()
 {
+    size_t max_length = 0;
+
+    for (struct command * I = &commands[0]; I->cmd_string != NULL; ++I) {
+       max_length = std::max(max_length, strlen(I->cmd_string));
+    }
+    max_length += 2;
+
     std::cout << "Cyphesis commands:" << std::endl << std::endl;
 
     for (struct command * I = &commands[0]; I->cmd_string != NULL; ++I) {
         std::cout << "    " << I->cmd_string
-                  << std::string(10 - strlen(I->cmd_string), ' ')
+                  << std::string(max_length - strlen(I->cmd_string), ' ')
                   << I->cmd_description << std::endl;
     }
     std::cout << std::endl << std::flush;
@@ -783,6 +795,9 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         if (agentId.empty()) {
             std::cout << "Use add_egent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
+        } else if (arg.empty()) {
+            std::cout << "Please specify the name to search for" << std::endl << std::flush;
+            reply_expected = false;
         } else {
             Look l;
 
@@ -792,10 +807,15 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
             l->setFrom(agentId);
 
             encoder->streamObjectsMessage(l);
+
+            reply_expected = false;
         }
     } else if (cmd == "find_by_type") {
         if (agentId.empty()) {
             std::cout << "Use add_egent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else if (arg.empty()) {
+            std::cout << "Please specify the type to search for" << std::endl << std::flush;
             reply_expected = false;
         } else {
             Look l;
@@ -806,6 +826,14 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
             l->setFrom(agentId);
 
             encoder->streamObjectsMessage(l);
+
+            reply_expected = false;
+        }
+    } else if (cmd == "flush") {
+        if (agentId.empty()) {
+            std::cout << "Use add_egent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
         }
     } else {
         reply_expected = false;

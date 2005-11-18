@@ -142,12 +142,16 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
             Entity * e = m_world->findByName(arg->getName());
             if (e != NULL) {
                 op->setTo(e->getId());
+            } else {
+                return;
             }
         } else if (arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
             if (!arg->getParents().empty()) {
                 Entity * e = m_world->findByType(arg->getParents().front());
                 if (e != NULL) {
                     op->setTo(e->getId());
+                } else {
+                    return;
                 }
             }
         }

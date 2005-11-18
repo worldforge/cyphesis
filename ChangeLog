@@ -1,5 +1,16 @@
 2005-11-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Creator.cpp: Ensure Look returns nothing when client
+	  is searching by name or type, and nothing is found.
+
+	* tools/cycmd.cpp: Add help for some more commands. Ensure help is
+	  formatted ok, no matter how long the commands are. Report an
+	  error if commands that required an argument don't get one.
+	  Ensure find_by_name and find_by_type still work ok if
+	  nothing is seen.
+
+2005-11-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Areatest.cpp, tests/BaseEntitytest.cpp,
 	  tests/Charactertest.cpp, tests/Creatortest.cpp,
 	  tests/EntityExerciser.h, tests/Entitytest.cpp, tests/Foodtest.cpp,
