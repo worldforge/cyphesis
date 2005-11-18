@@ -10,11 +10,13 @@ RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
                  Stackabletest Structuretest Thingtest Worldtest \
                  Charactertest Creatortest Containertest Tasktest
 
+SERVER_TESTS = EntityFactorytest
+
 INCLUDES = -I$(top_srcdir)
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)
 
-TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS)
+TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) $(SERVER_TESTS)
 
 check_PROGRAMS = $(TESTS)
 
@@ -434,3 +436,48 @@ Tasktest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/common/const.o \
                  $(MATH_LIBS)
 Tasktest_LDFLAGS = -export-dynamic
+
+EntityFactorytest_SOURCES = EntityFactorytest.cpp
+EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
+                          $(top_builddir)/server/PersistantThingFactory.o \
+                          $(top_builddir)/server/Persistor.o \
+                          $(top_builddir)/server/Persistance.o \
+                          $(top_builddir)/server/Account.o \
+                          $(top_builddir)/server/Admin.o \
+                          $(top_builddir)/server/Player.o \
+                          $(top_builddir)/server/Connection.o \
+                          $(top_builddir)/server/ExternalMind.o \
+                          $(top_builddir)/server/Lobby.o \
+                          $(top_builddir)/server/CommClient.o \
+                          $(top_builddir)/server/Idle.o \
+                          $(top_builddir)/server/CommSocket.o \
+                          $(top_builddir)/server/CommPeer.o \
+                          $(top_builddir)/server/Peer.o \
+                          $(top_builddir)/server/CommServer.o \
+                          $(top_builddir)/server/ScriptFactory.o \
+                          $(top_builddir)/rulesets/librulesetentity.a \
+                          $(top_builddir)/rulesets/librulesetmind.a \
+                          $(top_builddir)/rulesets/librulesetbase.a \
+                          $(top_builddir)/rulesets/libscriptpython.a \
+                          $(top_builddir)/modules/libmodules.a \
+                          $(top_builddir)/physics/libphysics.a \
+                          $(top_builddir)/common/AtlasFileLoader.o \
+                          $(top_builddir)/common/terrain_utils.o \
+                          $(top_builddir)/common/inheritance.o \
+                          $(top_builddir)/common/Property.o \
+                          $(top_builddir)/common/BaseEntity.o \
+                          $(top_builddir)/common/system.o \
+                          $(top_builddir)/common/id.o \
+                          $(top_builddir)/common/newid.o \
+                          $(top_builddir)/common/log.o \
+                          $(top_builddir)/common/prefix.o \
+                          $(top_builddir)/common/globals.o \
+                          $(top_builddir)/common/serialno.o \
+                          $(top_builddir)/common/custom.o \
+                          $(top_builddir)/common/operations.o \
+                          $(top_builddir)/common/OOGThing.o \
+                          $(top_builddir)/common/BaseWorld.o \
+                          $(top_builddir)/common/Database.o \
+                          $(top_builddir)/common/const.o \
+                          $(TERRAIN_LIBS) $(NETWORK_LIBS)
+EntityFactorytest_LDFLAGS = -export-dynamic

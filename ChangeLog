@@ -1,5 +1,9 @@
 2005-11-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/EntityFactorytest.cpp: Add new test to work EntityFactory.
+
+2005-11-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/TestWorld.h, tests/Creatortest.cpp, tests/Worldtest.cpp:
 	  Move test implementation of BaseWorld into its own header, as
 	  it's used in multiple places.
