@@ -1,5 +1,10 @@
 2005-11-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: Add an AdminTask interface for tasks which
+	  take longer to complete.
+
+2005-11-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/EntityFactorytest.cpp: Add new test to work EntityFactory.
 
 2005-11-18  Al Riddoch  <alriddoch@zepler.org>

@@ -7,6 +7,7 @@
 #endif
 
 #include "common/const.h"
+#include "common/types.h"
 #include "common/globals.h"
 
 #include <Atlas/Objects/Encoder.h>
@@ -110,6 +111,17 @@ static void help()
     std::cout << std::endl << std::flush;
 }
 
+class AdminTask {
+  protected:
+    bool m_complete;
+  public:
+    virtual ~AdminTask() { }
+
+    virtual void operation(const RootOperation &, OpVector &) = 0;
+
+    bool isComplete() const { return m_complete; }
+};
+
 template <class Stream>
 class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
 {
@@ -126,6 +138,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
     bool exit;
     int monitor_op_count;
     int monitor_start_time;
+    AdminTask * currentTask;
 
     void output(const Element & item, bool recurse = true);
     void logOp(const RootOperation &);
@@ -144,7 +157,8 @@ class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
   public:
     Interactive() : error_flag(false), reply_flag(false), login_flag(false),
                     avatar_flag(false), encoder(0), codec(0), exit(false),
-                    monitor_op_count(0), monitor_start_time(0) { }
+                    monitor_op_count(0), monitor_start_time(0), currentTask(0)
+                    { }
     ~Interactive() {
         if (encoder != 0) {
             delete encoder;
