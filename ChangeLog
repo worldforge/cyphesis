@@ -1,5 +1,9 @@
 2005-11-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/EntityFactorytest.cpp: Fill out comments in tests a bit better.
+
+2005-11-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/EntityFactorytest.cpp: Add new tests to verify the Entity
 	  Factory does the right thing with class attributes and inheritance.
 
