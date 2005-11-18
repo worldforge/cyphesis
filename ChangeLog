@@ -1,3 +1,9 @@
+2005-11-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/TestWorld.h, tests/Creatortest.cpp, tests/Worldtest.cpp:
+	  Move test implementation of BaseWorld into its own header, as
+	  it's used in multiple places.
+
 2005-11-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Creator.cpp: Ensure Look returns nothing when client

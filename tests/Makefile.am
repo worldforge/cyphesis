@@ -336,7 +336,7 @@ Thingtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/common/const.o \
                   $(MATH_LIBS)
 
-Worldtest_SOURCES = Worldtest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Worldtest_SOURCES = Worldtest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
 Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
                   $(top_builddir)/physics/BBox.o \
@@ -386,7 +386,7 @@ Charactertest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                       $(MATH_LIBS)
 Charactertest_LDFLAGS = -export-dynamic
 
-Creatortest_SOURCES = Creatortest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Creatortest_SOURCES = Creatortest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
 Creatortest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
                     $(top_builddir)/rulesets/librulesetmind.a \
                     $(top_builddir)/rulesets/librulesetbase.a \

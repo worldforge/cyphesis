@@ -4,6 +4,7 @@
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
+#include "TestWorld.h"
 
 #include "rulesets/Creator.h"
 #include "rulesets/Python_API.h"
@@ -12,24 +13,6 @@
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
-
-class TestWorld : public BaseWorld {
-  public:
-    explicit TestWorld(Entity & gw) : BaseWorld(gw) { }
-
-    virtual bool idle(int, int) { return false; }
-    virtual Entity * addEntity(Entity * obj, bool setup = true) { return 0; }
-    virtual Entity * addNewEntity(const std::string &,
-                                  const Atlas::Objects::Entity::RootEntity &) {
-        return 0;
-    }
-    virtual void message(const Operation & op, Entity & ent) { }
-    virtual Entity * findByName(const std::string & name) { return 0; }
-    virtual Entity * findByType(const std::string & type) { return 0; }
-    virtual float constrainHeight(Entity*, const Point3D&,
-                                  const std::string&) { return 0.f; }
-    virtual void addPerceptive(const std::string &) { }
-};
 
 int main(int argc, char ** argv)
 {
