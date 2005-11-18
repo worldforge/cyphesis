@@ -1,5 +1,10 @@
 2005-11-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/EntityFactorytest.cpp: Add new tests to verify the Entity
+	  Factory does the right thing with class attributes and inheritance.
+
+2005-11-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/PersistantThingFactory.h,
 	  server/PersistantThingFactory_impl.h: Add separate tracking of
 	  class attributes, and accumulated attributes including those
