@@ -1,5 +1,16 @@
 2005-11-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: Modify flusher so it uses tick ops to schedule
+	  regular queries, until no more are found rather then attempting
+	  to purge all entities asap, which caused race conditions. Check
+	  the type of entities before deleting them.
+
+	* rulesets/Creator.cpp: Improve debug output. Don't dispatch ops
+	  from client to creator locally if the are scheduled to occur
+	  in the future.
+
+2005-11-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: Flush output to server from AdminTask objects.
 
 2005-11-19  Al Riddoch  <alriddoch@zepler.org>

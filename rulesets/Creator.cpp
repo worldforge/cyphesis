@@ -32,7 +32,8 @@ Creator::Creator(const std::string & id, long intId) : Creator_parent(id, intId)
 
 void Creator::sendExternalMind(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Creator::sendExternalMind" << std::endl << std::flush;);
+    debug(std::cout << "Creator::sendExternalMind(" << op->getParents().front()
+                    << ")" << std::endl << std::flush;);
     // Simpified version of Character method sendMind() because local
     // mind of Creator is irrelevant
     if (0 != m_externalMind) {
@@ -98,13 +99,14 @@ void Creator::externalOperation(const Operation & op)
     // If an admin connection specifies a TO on the op, we treat
     // it specially, and make sure it goes direct, otherwise
     // we handle it like a normal character.
-    debug( std::cout << "Creator::externalOperation" << std::endl
+    debug( std::cout << "Creator::externalOperation("
+                     << op->getParents().front() << ")" << std::endl
                      << std::flush;);
     if (!op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
         debug( std::cout << "Creator handling op normally" << std::endl
                          << std::flush;);
         Creator_parent::externalOperation(op);
-    } else if (op->getTo() == getId()) {
+    } else if (op->getTo() == getId() && !op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         OpVector lres;
         callOperation(op, lres);

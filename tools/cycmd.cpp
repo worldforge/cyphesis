@@ -10,6 +10,8 @@
 #include "common/types.h"
 #include "common/globals.h"
 
+#include "common/Tick.h"
+
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Decoder.h>
@@ -59,6 +61,7 @@ using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Talk;
+using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
@@ -167,6 +170,15 @@ class Flusher : public AdminTask {
                 std::cout << "Got sight no ID" << std::endl << std::flush;
                 return;
             }
+            if (!sight_ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+                std::cout << "Got sight no PARENTS" << std::endl << std::flush;
+                return;
+            }
+            if (sight_ent->getParents().empty() ||
+                sight_ent->getParents().front() != type) {
+                std::cout << "Got sight of wrong type" << std::endl << std::flush;
+                return;
+            }
             const std::string & id = sight_ent->getId();
 
             std::cout << "Send Delete" << std::endl << std::flush;
@@ -181,6 +193,23 @@ class Flusher : public AdminTask {
 
             res.push_back(d);
 
+            Tick t;
+
+            t->setFrom(agentId);
+            t->setTo(agentId);
+            t->setFutureSeconds(0.1);
+            t->setAttr("sub_to", "flusher");
+
+            res.push_back(t);
+        } else if (op->getParents().front() == "tick") {
+            std::cout << "Got tick" << std::endl << std::flush;
+            Element val;
+            if (op->copyAttr("sub_to", val) != 0 ||
+                !val.isString() || val.String() != "flusher") {
+                std::cout << "Not for us" << std::endl << std::flush;
+                return;
+            }
+
             std::cout << "Send Look" << std::endl << std::flush;
 
             Look l;
@@ -191,7 +220,6 @@ class Flusher : public AdminTask {
             l->setFrom(agentId);
 
             res.push_back(l);
-
         }
     }
 };
