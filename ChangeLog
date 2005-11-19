@@ -1,5 +1,9 @@
 2005-11-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: Flush output to server from AdminTask objects.
+
+2005-11-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: Add task handling, and start work on a task to
 	  flush entities of a given type from the server.
 

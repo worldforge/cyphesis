@@ -339,6 +339,8 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
             encoder->streamObjectsMessage(*I);
         }
 
+        ios << std::flush;
+
         if (currentTask->isComplete()) {
             std::cout << "Task complete" << std::endl << std::flush;
             delete currentTask;
