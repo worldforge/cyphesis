@@ -1,5 +1,10 @@
 2005-11-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: Encapsulate server monitor functionality
+	  in an AdminTask class.
+
+2005-11-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Creator.cpp: Reply to client with Unseen op when client
 	  looks for an IG entity by name or type which returns no results.
 

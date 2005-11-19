@@ -226,6 +226,35 @@ class Flusher : public AdminTask {
     }
 };
 
+class OperationMonitor : public AdminTask {
+  protected:
+    int op_count;
+    int start_time;
+  public:
+    int count() {
+        return op_count;
+    }
+
+    int startTime() {
+        return start_time;
+    }
+
+    virtual void setup(const std::string & arg, OpVector &) {
+        struct timeval tv;
+
+        gettimeofday(&tv, NULL);
+        start_time = tv.tv_sec;
+        op_count = 0;
+    }
+
+    virtual void operation(const RootOperation & op, OpVector &) {
+        ++op_count;
+        std::cout << op->getParents().front() << "(from=\"" << op->getFrom()
+                  << "\",to=\"" << op->getTo() << "\")"
+                  << std::endl << std::flush;
+    }
+};
+
 template <class Stream>
 class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
 {
@@ -240,12 +269,9 @@ class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
     std::string accountId;
     std::string agentId;
     bool exit;
-    int monitor_op_count;
-    int monitor_start_time;
     AdminTask * currentTask;
 
     void output(const Element & item, bool recurse = true);
-    void logOp(const RootOperation &);
   protected:
 
     void objectArrived(const Atlas::Objects::Root &);
@@ -261,7 +287,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
   public:
     Interactive() : error_flag(false), reply_flag(false), login_flag(false),
                     avatar_flag(false), encoder(0), codec(0), exit(false),
-                    monitor_op_count(0), monitor_start_time(0), currentTask(0)
+                    currentTask(0)
                     { }
     ~Interactive() {
         if (encoder != 0) {
@@ -342,14 +368,6 @@ void Interactive<Stream>::output(const Element & item, bool recurse)
 }
 
 template <class Stream>
-void Interactive<Stream>::logOp(const RootOperation & op)
-{
-    ++monitor_op_count;
-    std::cout << op->getParents().front() << "(from=\"" << op->getFrom()
-              << "\",to=\"" << op->getTo() << "\")" << std::endl << std::flush;
-}
-
-template <class Stream>
 void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
 {
     RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
@@ -395,7 +413,6 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
             soundArrived(op);
             break;
         default:
-            logOp(op);
             break;
     }
 }
@@ -408,7 +425,6 @@ void Interactive<Stream>::appearanceArrived(const RootOperation & op)
     }
     if (accountId != op->getTo()) {
         // This is an IG op we are monitoring
-        logOp(op);
         return;
     }
     if (op->getArgs().empty()) {
@@ -445,7 +461,6 @@ void Interactive<Stream>::disappearanceArrived(const RootOperation & op)
     }
     if (accountId != op->getTo()) {
         // This is an IG op we are monitoring
-        logOp(op);
         return;
     }
     if (op->getArgs().empty()) {
@@ -538,7 +553,6 @@ void Interactive<Stream>::sightArrived(const RootOperation & op)
     }
     if (accountId != op->getTo() && agentId != op->getTo()) {
         // This is an IG op we are monitoring
-        logOp(op);
         return;
     }
     reply_flag = true;
@@ -562,7 +576,6 @@ void Interactive<Stream>::soundArrived(const RootOperation & op)
     }
     if (accountId != op->getTo()) {
         // This is an IG op we are monitoring
-        logOp(op);
         return;
     }
     reply_flag = true;
@@ -916,30 +929,41 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
 
         encoder->streamObjectsMessage(g);
     } else if (cmd == "monitor") {
+        AdminTask * task = new OperationMonitor;
+        if (runTask(task, arg) == 0) {
+            Monitor m;
+
+            m->setArgs1(Anonymous());
+            m->setFrom(accountId);
+
+            encoder->streamObjectsMessage(m);
+        }
+
         reply_expected = false;
-        Monitor m;
-
-        m->setArgs1(Anonymous());
-        m->setFrom(accountId);
-
-        encoder->streamObjectsMessage(m);
-
-        monitor_op_count = 0;
-        struct timeval tv;
-        gettimeofday(&tv, NULL);
-        monitor_start_time = tv.tv_sec;
     } else if (cmd == "unmonitor") {
-        reply_expected = false;
-        Monitor m;
+        OperationMonitor * om = dynamic_cast<OperationMonitor *>(currentTask);
 
-        m->setFrom(accountId);
+        if (om != 0) {
+            Monitor m;
 
-        encoder->streamObjectsMessage(m);
+            m->setFrom(accountId);
 
-        struct timeval tv;
-        gettimeofday(&tv, NULL);
-        int monitor_time = tv.tv_sec - monitor_start_time;
-        std::cout << monitor_op_count << " operations monitored in " << monitor_time << " seconds = " << monitor_op_count / monitor_time << " operations per second" << std::endl << std::flush;
+            encoder->streamObjectsMessage(m);
+
+            reply_expected = false;
+
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            int monitor_time = tv.tv_sec - om->startTime();
+
+            std::cout << om->count() << " operations monitored in "
+                      << monitor_time << " seconds = "
+                      << om->count() / monitor_time
+                      << " operations per second"
+                      << std::endl << std::flush;
+
+            endTask();
+        }
     } else if (cmd == "connect") {
         reply_expected = false;
         Connect m;
