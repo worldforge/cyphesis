@@ -1,5 +1,13 @@
 2005-11-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/id.cpp, common/id.h: Add a function to check a string ID
+	  can be converted to an integer.
+
+	* server/EntityFactory.cpp: Check IDs are valid integers before
+	  looking them up in the world.
+
+2005-11-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: Modify flusher so it uses tick ops to schedule
 	  regular queries, until no more are found rather then attempting
 	  to purge all entities asap, which caused race conditions. Check

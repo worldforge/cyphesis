@@ -18,3 +18,12 @@ long integerId(const std::string & id)
 
     return intId;
 }
+
+int integerIdCheck(const std::string & id)
+{
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        return -1;
+    }
+    return 0;
+}

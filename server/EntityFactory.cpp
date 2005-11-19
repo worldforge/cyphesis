@@ -26,6 +26,7 @@
 
 #include "rulesets/Python_Script_Utils.h"
 
+#include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"
@@ -122,7 +123,11 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
     // The default attributes cannot contain info on location
     if (attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         const std::string & loc_id = attributes->getLoc();
-        thing->m_location.m_loc = m_world.getEntity(loc_id);
+        if (integerIdCheck(loc_id) == 0) {
+            thing->m_location.m_loc = m_world.getEntity(loc_id);
+        } else {
+            log(ERROR, "Non int IG ID");
+        }
     }
     if (thing->m_location.m_loc == 0) {
         // If no info was provided, put the entity in the game world
