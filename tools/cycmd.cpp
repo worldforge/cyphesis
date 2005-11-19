@@ -79,6 +79,7 @@ struct command {
 struct command commands[] = {
     { "add_agent",      "Create an in-game agent", },
     { "connect",        "Connect server to a peer", },
+    { "cancel",         "Cancel the current admin task", },
     { "get",            "Examine a class on the server", },
     { "find_by_name",   "Find an entity with the given name", },
     { "find_by_type",   "Find an entity with the given type", },
@@ -137,8 +138,6 @@ class Flusher : public AdminTask {
     explicit Flusher(const std::string & agent_id) : agentId(agent_id) { }
 
     void setup(const std::string & arg, OpVector & ret) {
-        std::cout << "Send look" << std::endl << std::flush;
-
         type = arg;
 
         Look l;
@@ -153,35 +152,35 @@ class Flusher : public AdminTask {
 
     void operation(const RootOperation & op, OpVector & res) {
         if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
-            std::cout << "Got sight" << std::endl << std::flush;
+            // We have a sight op, check if its the sight of an entity we
+            // want to delete.
             const std::vector<Root> & args = op->getArgs();
             if (args.empty()) {
-                std::cout << "Got empty sight" << std::endl << std::flush;
+                std::cerr << "Got empty sight" << std::endl << std::flush;
                 return;
             }
             const Root & arg = args.front();
             assert(arg.isValid());
             RootEntity sight_ent = smart_dynamic_cast<RootEntity>(arg);
             if (!sight_ent.isValid()) {
-                std::cout << "Got sight event" << std::endl << std::flush;
                 return;
             }
             if (!sight_ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-                std::cout << "Got sight no ID" << std::endl << std::flush;
+                std::cerr << "Got sight no ID" << std::endl << std::flush;
                 return;
             }
             if (!sight_ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
-                std::cout << "Got sight no PARENTS" << std::endl << std::flush;
+                std::cerr << "Got sight no PARENTS" << std::endl << std::flush;
                 return;
             }
             if (sight_ent->getParents().empty() ||
                 sight_ent->getParents().front() != type) {
-                std::cout << "Got sight of wrong type" << std::endl << std::flush;
                 return;
             }
             const std::string & id = sight_ent->getId();
 
-            std::cout << "Send Delete" << std::endl << std::flush;
+            std::cout << "Deleting: " << type << "(" << id << ")"
+                      << std::endl << std::flush;
 
             Delete d;
 
@@ -202,15 +201,14 @@ class Flusher : public AdminTask {
 
             res.push_back(t);
         } else if (op->getParents().front() == "tick") {
-            std::cout << "Got tick" << std::endl << std::flush;
+            // We have a tick op, check if its the one we sent ourselves
+            // to schedule the next look.
             Element val;
             if (op->copyAttr("sub_to", val) != 0 ||
                 !val.isString() || val.String() != "flusher") {
                 std::cout << "Not for us" << std::endl << std::flush;
                 return;
             }
-
-            std::cout << "Send Look" << std::endl << std::flush;
 
             Look l;
 
@@ -220,6 +218,10 @@ class Flusher : public AdminTask {
             l->setFrom(agentId);
 
             res.push_back(l);
+        } else if (op->getParents().front() == "unseen") {
+            // We have an unseen op, which signals our last look returned
+            // no results.
+            m_complete = true;
         }
     }
 };
@@ -279,6 +281,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
     void getLogin();
     void runCommand(char *);
     int runTask(AdminTask * task, const std::string & arg);
+    int endTask();
 
     void setPassword(const std::string & passwd) {
         password = passwd;
@@ -357,20 +360,16 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
     }
 
     if (currentTask != 0) {
-        std::cout << "Giving op to task" << std::endl << std::flush;
         OpVector res;
         currentTask->operation(op, res);
         OpVector::const_iterator Iend = res.end();
         for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-            std::cout << "Replying with " << (*I)->getParents().front()
-                      << std::endl << std::flush;
             encoder->streamObjectsMessage(*I);
         }
 
         ios << std::flush;
 
         if (currentTask->isComplete()) {
-            std::cout << "Task complete" << std::endl << std::flush;
             delete currentTask;
             currentTask = 0;
         }
@@ -647,6 +646,17 @@ int Interactive<Stream>::runTask(AdminTask * task, const std::string & arg)
     for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
         encoder->streamObjectsMessage(*I);
     }
+    return 0;
+}
+
+template <class Stream>
+int Interactive<Stream>::endTask()
+{
+    if (currentTask == 0) {
+        return -1;
+    }
+    delete currentTask;
+    currentTask = 0;
     return 0;
 }
 
@@ -954,7 +964,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         encoder->streamObjectsMessage(c);
     } else if (cmd == "find_by_name") {
         if (agentId.empty()) {
-            std::cout << "Use add_egent to add an in-game agent first" << std::endl << std::flush;
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else if (arg.empty()) {
             std::cout << "Please specify the name to search for" << std::endl << std::flush;
@@ -973,7 +983,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         }
     } else if (cmd == "find_by_type") {
         if (agentId.empty()) {
-            std::cout << "Use add_egent to add an in-game agent first" << std::endl << std::flush;
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else if (arg.empty()) {
             std::cout << "Please specify the type to search for" << std::endl << std::flush;
@@ -992,7 +1002,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         }
     } else if (cmd == "flush") {
         if (agentId.empty()) {
-            std::cout << "Use add_egent to add an in-game agent first" << std::endl << std::flush;
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else if (arg.empty()) {
             std::cout << "Please specify the type to flush" << std::endl << std::flush;
@@ -1001,6 +1011,10 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
             AdminTask * task = new Flusher(agentId);
             runTask(task, arg);
             reply_expected = false;
+        }
+    } else if (cmd == "cancel") {
+        if (endTask() != 0) {
+            std::cout << "No task currently running" << std::endl << std::flush;
         }
     } else {
         reply_expected = false;

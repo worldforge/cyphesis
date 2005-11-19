@@ -1,5 +1,14 @@
 2005-11-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Creator.cpp: Reply to client with Unseen op when client
+	  looks for an IG entity by name or type which returns no results.
+
+	* tools/cycmd.cpp: Add a cancel command to stop current running task.
+	  Detect Unseen at the end of a flush task, and end the task.
+	  Remove a bunch of debug output. Fix typo in add_agent output.
+
+2005-11-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/id.cpp, common/id.h: Add a function to check a string ID
 	  can be converted to an integer.
 

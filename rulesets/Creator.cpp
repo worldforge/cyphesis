@@ -12,12 +12,14 @@
 
 #include "common/Setup.h"
 #include "common/Tick.h"
+#include "common/Unseen.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Delete;
+using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
@@ -145,6 +147,13 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
             if (e != NULL) {
                 op->setTo(e->getId());
             } else {
+                Unseen u;
+                u->setTo(getId());
+                u->setArgs1(arg);
+                if (op->hasAttrFlag(Atlas::Objects::Operation::SERIALNO_FLAG)) {
+                    u->setRefno(op->getSerialno());
+                }
+                sendExternalMind(u, res);
                 return;
             }
         } else if (arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
@@ -153,6 +162,13 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
                 if (e != NULL) {
                     op->setTo(e->getId());
                 } else {
+                    Unseen u;
+                    u->setTo(getId());
+                    u->setArgs1(arg);
+                    if (op->hasAttrFlag(Atlas::Objects::Operation::SERIALNO_FLAG)) {
+                        u->setRefno(op->getSerialno());
+                    }
+                    sendExternalMind(u, res);
                     return;
                 }
             }
