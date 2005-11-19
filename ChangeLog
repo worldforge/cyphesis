@@ -1,3 +1,8 @@
+2005-11-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp: Add task handling, and start work on a task to
+	  flush entities of a given type from the server.
+
 2005-11-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/EntityFactorytest.cpp: Fill out comments in tests a bit better.

@@ -51,6 +51,7 @@ using Atlas::Objects::Root;
 
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Get;
 using Atlas::Objects::Operation::Set;
@@ -114,12 +115,85 @@ static void help()
 class AdminTask {
   protected:
     bool m_complete;
+
+    AdminTask() : m_complete(false) { }
   public:
     virtual ~AdminTask() { }
 
+    virtual void setup(const std::string & arg, OpVector &) = 0;
     virtual void operation(const RootOperation &, OpVector &) = 0;
 
     bool isComplete() const { return m_complete; }
+};
+
+class Flusher : public AdminTask {
+  protected:
+    const std::string agentId;
+    std::string type;
+  public:
+    explicit Flusher(const std::string & agent_id) : agentId(agent_id) { }
+
+    void setup(const std::string & arg, OpVector & ret) {
+        std::cout << "Send look" << std::endl << std::flush;
+
+        type = arg;
+
+        Look l;
+
+        Anonymous lmap;
+        lmap->setParents(std::list<std::string>(1, type));
+        l->setArgs1(lmap);
+        l->setFrom(agentId);
+
+        ret.push_back(l);
+    }
+
+    void operation(const RootOperation & op, OpVector & res) {
+        if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
+            std::cout << "Got sight" << std::endl << std::flush;
+            const std::vector<Root> & args = op->getArgs();
+            if (args.empty()) {
+                std::cout << "Got empty sight" << std::endl << std::flush;
+                return;
+            }
+            const Root & arg = args.front();
+            assert(arg.isValid());
+            RootEntity sight_ent = smart_dynamic_cast<RootEntity>(arg);
+            if (!sight_ent.isValid()) {
+                std::cout << "Got sight event" << std::endl << std::flush;
+                return;
+            }
+            if (!sight_ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+                std::cout << "Got sight no ID" << std::endl << std::flush;
+                return;
+            }
+            const std::string & id = sight_ent->getId();
+
+            std::cout << "Send Delete" << std::endl << std::flush;
+
+            Delete d;
+
+            Anonymous dmap;
+            dmap->setId(id);
+            d->setArgs1(dmap);
+            d->setFrom(agentId);
+            d->setTo(id);
+
+            res.push_back(d);
+
+            std::cout << "Send Look" << std::endl << std::flush;
+
+            Look l;
+
+            Anonymous lmap;
+            lmap->setParents(std::list<std::string>(1, type));
+            l->setArgs1(lmap);
+            l->setFrom(agentId);
+
+            res.push_back(l);
+
+        }
+    }
 };
 
 template <class Stream>
@@ -176,6 +250,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
     void poll();
     void getLogin();
     void runCommand(char *);
+    int runTask(AdminTask * task, const std::string & arg);
 
     void setPassword(const std::string & passwd) {
         password = passwd;
@@ -250,6 +325,25 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
     if (!op.isValid()) {
         // FIXME report the parents and objtype
         std::cerr << "Non op object received from client" << std::endl << std::flush;
+        return;
+    }
+
+    if (currentTask != 0) {
+        std::cout << "Giving op to task" << std::endl << std::flush;
+        OpVector res;
+        currentTask->operation(op, res);
+        OpVector::const_iterator Iend = res.end();
+        for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
+            std::cout << "Replying with " << (*I)->getParents().front()
+                      << std::endl << std::flush;
+            encoder->streamObjectsMessage(*I);
+        }
+
+        if (currentTask->isComplete()) {
+            std::cout << "Task complete" << std::endl << std::flush;
+            delete currentTask;
+            currentTask = 0;
+        }
     }
 
     switch (op->getClassNo()) {
@@ -501,6 +595,29 @@ void Interactive<Stream>::runCommand(char * cmd)
     }
 
     exec(cmd, arg);
+}
+
+template <class Stream>
+int Interactive<Stream>::runTask(AdminTask * task, const std::string & arg)
+{
+    assert(task != 0);
+
+    if (currentTask != 0) {
+        std::cout << "Busy" << std::endl << std::flush;
+        return -1;
+    }
+
+    currentTask = task;
+
+    OpVector res;
+
+    currentTask->setup(arg, res);
+
+    OpVector::const_iterator Iend = res.end();
+    for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
+        encoder->streamObjectsMessage(*I);
+    }
+    return 0;
 }
 
 int completion_iterator = 0;
@@ -847,7 +964,13 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         if (agentId.empty()) {
             std::cout << "Use add_egent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
+        } else if (arg.empty()) {
+            std::cout << "Please specify the type to flush" << std::endl << std::flush;
+            reply_expected = false;
         } else {
+            AdminTask * task = new Flusher(agentId);
+            runTask(task, arg);
+            reply_expected = false;
         }
     } else {
         reply_expected = false;

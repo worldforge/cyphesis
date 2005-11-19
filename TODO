@@ -1,3 +1,7 @@
+In cycmd, use flag to indicate when output is written, so it is possible to
+identify when at prompt, and move to next, and also possible to more cleanly
+redraw prompt, rather than forcing it every time codec->poll() is called.
+
 ForbiddenThingFactory::duplicateFactory could return PersistantThingFactory
 so its possible to add more abstract factories.
 
