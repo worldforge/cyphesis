@@ -1,5 +1,12 @@
 2005-11-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/EntityFactorytest.cpp: Get rid of warning about unused variables
+	  in non-debug build.
+
+	* configure.ac: Increment version for release soonish.
+
+2005-11-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/EntityFactorytest.cpp: Add more tests to ensure adding or
 	  removing attributes propagates correctly down the type tree.
 

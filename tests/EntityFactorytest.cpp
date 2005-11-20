@@ -55,6 +55,8 @@ class ExposedEntityFactory : public EntityFactory {
 
 int main()
 {
+    int ret;
+
     {
         World e("1", 1);
         TestWorld test_world(e);
@@ -155,7 +157,7 @@ int main()
             attrs["test_custom_type_attr"] = test_custom_type_attr;
             custom_type_description["attributes"] = attrs;
 
-            int ret = entity_factory.installEntityClass("custom_type", "thing", custom_type_description);
+            ret = entity_factory.installEntityClass("custom_type", "thing", custom_type_description);
 
             assert(ret == 0);
         }
@@ -216,7 +218,7 @@ int main()
             attrs["test_custom_inherited_type_attr"] = test_custom_type_attr;
             custom_inherited_type_description["attributes"] = attrs;
 
-            int ret = entity_factory.installEntityClass("custom_inherited_type", "custom_type", custom_inherited_type_description);
+            ret = entity_factory.installEntityClass("custom_inherited_type", "custom_type", custom_inherited_type_description);
 
             assert(ret == 0);
         }
@@ -290,7 +292,7 @@ int main()
 
             nonexistant_description["attributes"] = attrs;
 
-            int ret = entity_factory.modifyRule("nonexistant", nonexistant_description);
+            ret = entity_factory.modifyRule("nonexistant", nonexistant_description);
 
             assert(ret != 0);
         }
@@ -300,7 +302,7 @@ int main()
             MapType new_custom_inherited_type_description;
             new_custom_inherited_type_description["attributes"] = MapType();
 
-            int ret = entity_factory.modifyRule("custom_inherited_type", new_custom_inherited_type_description);
+            ret = entity_factory.modifyRule("custom_inherited_type", new_custom_inherited_type_description);
 
             assert(ret == 0);
         }
@@ -369,7 +371,7 @@ int main()
             MapType new_custom_type_description;
             new_custom_type_description["attributes"] = MapType();
 
-            int ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
+            ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
 
             assert(ret == 0);
         }
@@ -479,7 +481,7 @@ int main()
 
             new_custom_type_description["attributes"] = attrs;
 
-            int ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
+            ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
 
             assert(ret == 0);
             
