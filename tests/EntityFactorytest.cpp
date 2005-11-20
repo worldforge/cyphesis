@@ -65,6 +65,7 @@ int main()
         assert(EntityFactory::instance() != 0);
 
         assert(EntityFactory::instance()->newEntity("1", 1, "world", attributes) == 0);
+        assert(EntityFactory::instance()->newEntity("1", 1, "nonexistant", attributes) == 0);
         assert(EntityFactory::instance()->newEntity("1", 1, "thing", attributes) != 0);
 
         EntityFactory::del();
@@ -276,6 +277,326 @@ int main()
         assert(val.String() == "test_inherited_value");
 
         // FIXME TODO Modify a type, and ensure attribute propagate to inherited types.
+
+        // Make sure than attempting to modify a non-existant type fails
+        {
+            MapType nonexistant_description;
+            MapType attrs;
+            MapType test_custom_type_attr;
+
+            test_custom_type_attr["default"] = "no_value";
+            test_custom_type_attr["visibility"] = "public";
+            attrs["no_custom_type_attr"] = test_custom_type_attr;
+
+            nonexistant_description["attributes"] = attrs;
+
+            int ret = entity_factory.modifyRule("nonexistant", nonexistant_description);
+
+            assert(ret != 0);
+        }
+
+        // Modify the second custom type removing its custom attribute
+        {
+            MapType new_custom_inherited_type_description;
+            new_custom_inherited_type_description["attributes"] = MapType();
+
+            int ret = entity_factory.modifyRule("custom_inherited_type", new_custom_inherited_type_description);
+
+            assert(ret == 0);
+        }
+
+        // Check that the factory dictionary does contain the factory for
+        // the second newly installed type
+        I = factory_dict.find("custom_inherited_type");
+        assert(I != factory_dict.end());
+        custom_inherited_type_factory = I->second;
+        assert(custom_inherited_type_factory != 0);
+
+        // Check that the factory has inherited the attributes from the
+        // first custom type
+        J = custom_inherited_type_factory->m_attributes.find("test_custom_type_attr");
+        assert(J != custom_inherited_type_factory->m_attributes.end());
+        assert(J->second.isString());
+        assert(J->second.String() == "test_value");
+
+        // Check that the factory no longer has the attributes we removed
+        J = custom_inherited_type_factory->m_attributes.find("test_custom_inherited_type_attr");
+        assert(J == custom_inherited_type_factory->m_attributes.end());
+
+        // Creat an instance of the second custom type, ensuring it works.
+        test_ent = entity_factory.newEntity("1", 1, "custom_inherited_type", attributes);
+        assert(test_ent != 0);
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Make sure test nonexistant attribute isn't present
+        assert(!test_ent->get("nonexistant", val));
+        // Make sure nonexistant attribute isn't present
+        assert(!test_ent->get("nonexistant_attribute", val));
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the custom type has the attribute we passed in when creating
+        // the instance.
+        assert(test_ent->get("funky", val));
+        assert(val.isString());
+        assert(val.String() == "true");
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the instance of the second custom type has the attribute
+        // described when the first custom type was installed.
+        assert(test_ent->get("test_custom_type_attr", val));
+        assert(val.isString());
+        assert(val.String() == "test_value");
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the custom type has the attribute described when the
+        // second custom type was installed
+        assert(!test_ent->get("test_custom_inherited_type_attr", val));
+
+        // Modify the first custom type removing its custom attribute
+        {
+            MapType new_custom_type_description;
+            new_custom_type_description["attributes"] = MapType();
+
+            int ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
+
+            assert(ret == 0);
+        }
+
+        // Check that the factory dictionary now contains a factory for
+        // the custom type we just installed.
+        I = factory_dict.find("custom_type");
+        assert(I != factory_dict.end());
+        custom_type_factory = I->second;
+
+        // Check the factory has the attributes we described on the custom
+        // type.
+        J = custom_type_factory->m_attributes.find("test_custom_type_attr");
+        assert(J == custom_type_factory->m_attributes.end());
+
+        // Create an instance of our custom type, ensuring that it works.
+        test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes);
+        assert(test_ent != 0);
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the custom type has the attribute we passed in when creating
+        // the instance.
+        assert(test_ent->get("funky", val));
+        assert(val.isString());
+        assert(val.String() == "true");
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the custom type no longer has the custom attribute
+        assert(!test_ent->get("test_custom_type_attr", val));
+
+        // Check that the factory dictionary does contain the factory for
+        // the second newly installed type
+        I = factory_dict.find("custom_inherited_type");
+        assert(I != factory_dict.end());
+        custom_inherited_type_factory = I->second;
+        assert(custom_inherited_type_factory != 0);
+
+        // Check that the factory no longer has inherited the attributes
+        // from the first custom type which we removed
+        J = custom_inherited_type_factory->m_attributes.find("test_custom_type_attr");
+        assert(J == custom_inherited_type_factory->m_attributes.end());
+
+        // Check that the factory no longer has the attributes we removed
+        J = custom_inherited_type_factory->m_attributes.find("test_custom_inherited_type_attr");
+        assert(J == custom_inherited_type_factory->m_attributes.end());
+
+        // Creat an instance of the second custom type, ensuring it works.
+        test_ent = entity_factory.newEntity("1", 1, "custom_inherited_type", attributes);
+        assert(test_ent != 0);
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Make sure test nonexistant attribute isn't present
+        assert(!test_ent->get("nonexistant", val));
+        // Make sure nonexistant attribute isn't present
+        assert(!test_ent->get("nonexistant_attribute", val));
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the custom type has the attribute we passed in when creating
+        // the instance.
+        assert(test_ent->get("funky", val));
+        assert(val.isString());
+        assert(val.String() == "true");
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the instance of the second custom type has the attribute
+        // described when the first custom type was installed.
+        assert(!test_ent->get("test_custom_type_attr", val));
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the custom type has the attribute described when the
+        // second custom type was installed
+        assert(!test_ent->get("test_custom_inherited_type_attr", val));
+
+        // Add more custom attributes to the first type
+        {
+            MapType new_custom_type_description;
+            MapType attrs;
+            MapType test_custom_type_attr;
+
+            test_custom_type_attr["default"] = "test_value";
+            test_custom_type_attr["visibility"] = "public";
+            attrs["test_custom_type_attr"] = test_custom_type_attr;
+
+            MapType new_custom_type_attr;
+
+            new_custom_type_attr["default"] = "new_value";
+            new_custom_type_attr["visibility"] = "public";
+            attrs["new_custom_type_attr"] = new_custom_type_attr;
+
+            new_custom_type_description["attributes"] = attrs;
+
+            int ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
+
+            assert(ret == 0);
+            
+        }
+
+        // Check that the factory dictionary now contains a factory for
+        // the custom type we just installed.
+        I = factory_dict.find("custom_type");
+        assert(I != factory_dict.end());
+        custom_type_factory = I->second;
+
+        // Check the factory has the attributes we described on the custom
+        // type.
+        J = custom_type_factory->m_attributes.find("test_custom_type_attr");
+        assert(J != custom_type_factory->m_attributes.end());
+        assert(J->second.isString());
+        assert(J->second.String() == "test_value");
+
+        J = custom_type_factory->m_attributes.find("new_custom_type_attr");
+        assert(J != custom_type_factory->m_attributes.end());
+        assert(J->second.isString());
+        assert(J->second.String() == "new_value");
+
+        // Create an instance of our custom type, ensuring that it works.
+        test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes);
+        assert(test_ent != 0);
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the custom type has the attribute we passed in when creating
+        // the instance.
+        assert(test_ent->get("funky", val));
+        assert(val.isString());
+        assert(val.String() == "true");
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the custom type now has the custom attributes
+        assert(test_ent->get("test_custom_type_attr", val));
+        assert(val.isString());
+        assert(val.String() == "test_value");
+
+        assert(test_ent->get("new_custom_type_attr", val));
+        assert(val.isString());
+        assert(val.String() == "new_value");
+
+        // Check that the factory dictionary does contain the factory for
+        // the second newly installed type
+        I = factory_dict.find("custom_inherited_type");
+        assert(I != factory_dict.end());
+        custom_inherited_type_factory = I->second;
+        assert(custom_inherited_type_factory != 0);
+
+        // Check that the factory now has inherited the attributes
+        // from the first custom type
+        J = custom_inherited_type_factory->m_attributes.find("test_custom_type_attr");
+        assert(J != custom_inherited_type_factory->m_attributes.end());
+        assert(J->second.isString());
+        assert(J->second.String() == "test_value");
+
+        J = custom_inherited_type_factory->m_attributes.find("new_custom_type_attr");
+        assert(J != custom_inherited_type_factory->m_attributes.end());
+        assert(J->second.isString());
+        assert(J->second.String() == "new_value");
+
+        // Check that the factory no longer has the attributes we removed
+        J = custom_inherited_type_factory->m_attributes.find("test_custom_inherited_type_attr");
+        assert(J == custom_inherited_type_factory->m_attributes.end());
+
+        // Creat an instance of the second custom type, ensuring it works.
+        test_ent = entity_factory.newEntity("1", 1, "custom_inherited_type", attributes);
+        assert(test_ent != 0);
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Make sure test nonexistant attribute isn't present
+        assert(!test_ent->get("nonexistant", val));
+        // Make sure nonexistant attribute isn't present
+        assert(!test_ent->get("nonexistant_attribute", val));
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the custom type has the attribute we passed in when creating
+        // the instance.
+        assert(test_ent->get("funky", val));
+        assert(val.isString());
+        assert(val.String() == "true");
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the instance of the second custom type has the attribute
+        // described when the first custom type was installed.
+        assert(test_ent->get("test_custom_type_attr", val));
+        assert(val.isString());
+        assert(val.String() == "test_value");
+
+        assert(test_ent->get("new_custom_type_attr", val));
+        assert(val.isString());
+        assert(val.String() == "new_value");
+
+        // Reset val.
+        val = Atlas::Message::Element();
+        assert(val.isNone());
+
+        // Check the custom type no longer has the attribute described when the
+        // second custom type was installed
+        assert(!test_ent->get("test_custom_inherited_type_attr", val));
 
     }
 }

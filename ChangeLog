@@ -1,3 +1,11 @@
+2005-11-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/EntityFactorytest.cpp: Add more tests to ensure adding or
+	  removing attributes propagates correctly down the type tree.
+
+	* server/EntityFactory.cpp: Reset class attributes when factory
+	  is modified.
+
 2005-11-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cycmd.cpp: Encapsulate server monitor functionality

@@ -419,6 +419,7 @@ int EntityFactory::modifyRule(const std::string & className,
     // If the code crashes here because m_parent is NULL, it is because
     // the client has attempted to modify the factory for a core class.
     factory->m_attributes = factory->m_parent->m_attributes;
+    factory->m_classAttributes = MapType();
 
     populateFactory(className, factory, classDesc);
 

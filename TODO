@@ -1,16 +1,9 @@
 In cycmd, use flag to indicate when output is written, so it is possible to
 identify when at prompt, and move to next, and also possible to more cleanly
 redraw prompt, rather than forcing it every time codec->poll() is called.
-Move monitor task into an AdminTask class, and make things less noisy.
 
 ForbiddenThingFactory::duplicateFactory could return PersistantThingFactory
 so its possible to add more abstract factories.
-
-Use Unseen to report no match in Creator::LookOperation() when finding
-by name or type.
-
-Add cmdline cmds to flush entities from the server to cycmd, including
-by name/type or globally.
 
 Urgently need new unit tests for class loading functionality in EntityFactory,
 to make sure attributes are inherited, with correct values, and values are
