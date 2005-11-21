@@ -12,9 +12,11 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
+#include <sigc++/object.h>
+
 class Entity;
 
-class Location {
+class Location : virtual public SigC::Object {
   private:
     bool m_simple;
     bool m_solid;
@@ -70,11 +72,17 @@ class Location {
         m_timeStamp = time;
     }
 
+    void setBBox(const BBox & b) {
+        m_bBox = b;
+        modifyBBox();
+    }
+
     void addToMessage(Atlas::Message::MapType & ent) const;
     void addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const;
     const Atlas::Objects::Root asEntity() const;
 
     int readFromEntity(const Atlas::Objects::Entity::RootEntity & ent);
+    void modifyBBox();
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };

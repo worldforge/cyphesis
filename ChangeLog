@@ -1,3 +1,17 @@
+2005-11-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* modules/Location.h, modules/Location.cpp: Add methods to modify
+	  bbox, and to report if it has been modifed so that cached values
+	  can be computed.
+
+	* common/Property.h, common/Property_impl.h: Add a new type of
+	  Property which emits a signal when modified.
+
+	* rulesets/EntityProperties.cpp, rulesets/Entity.cpp: Implement
+	  signal Property and use it for bbox, so linking its signal
+	  to Location so that the necessary values can be computed after
+	  modification.
+
 2005-11-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* Release 0.5.3

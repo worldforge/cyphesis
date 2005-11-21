@@ -16,6 +16,8 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
+#include <sigc++/object_slot.h>
+
 #include <cassert>
 
 using Atlas::Message::Element;
@@ -56,8 +58,11 @@ Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
     m_properties["id"] = new ImmutableProperty<std::string>(getId());
     m_properties["name"] = new Property<std::string>(m_name, a_name);
     m_properties["mass"] = new Property<double>(m_mass, a_mass);
-    m_properties["bbox"] = new Property<BBox>(m_location.m_bBox, a_bbox);
     m_properties["contains"] = new ImmutableProperty<EntitySet>(m_contains);
+
+    SignalProperty<BBox> * sp = new SignalProperty<BBox>(m_location.m_bBox, a_bbox);
+    sp->modified.connect(SigC::slot(m_location, &Location::modifyBBox));
+    m_properties["bbox"] = new Property<BBox>(m_location.m_bBox, a_bbox);
 }
 
 Entity::~Entity()

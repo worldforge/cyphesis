@@ -1,3 +1,8 @@
+Should ImmutableProperty inherit from Property, or the other way round so
+that implementations of get and add can be shared?
+
+Write test for SignalProperty.
+
 Adding a pre-computed box size to the bbox attribute can be done everywhere
 except the property. Add a callback to the property?
 

@@ -143,8 +143,19 @@ void ImmutableProperty<Container>::add(const std::string & s,
     }
 }
 
+template<>
+void SignalProperty<BBox>::set(const Element & e)
+{
+    if (e.isList() && (e.asList().size() > 2)) {
+        m_data.fromAtlas(e.asList());
+        modified.emit();
+    }
+}
+
 template class Property<BBox>;
 template class Property<IdList>;
 
 template class ImmutableProperty<EntitySet>;
 template class ImmutableProperty<Container>;
+
+template class SignalProperty<BBox>;

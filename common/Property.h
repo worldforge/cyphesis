@@ -8,6 +8,9 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
+#include <sigc++/object.h>
+#include <sigc++/signal.h>
+
 /// \brief Interface for Entity properties
 class PropertyBase {
   protected:
@@ -62,6 +65,17 @@ class ImmutableProperty : public PropertyBase {
     virtual void set(const Atlas::Message::Element &);
     virtual void add(const std::string &, Atlas::Message::MapType & map);
     virtual void add(const std::string &, const Atlas::Objects::Entity::RootEntity &);
+};
+
+/// \brief Entity property template for properties with single data values
+template <typename T>
+class SignalProperty : public Property<T>, virtual public SigC::Object {
+  public:
+    explicit SignalProperty(T & data, unsigned int flags);
+
+    virtual void set(const Atlas::Message::Element &);
+
+    SigC::Signal0<void> modified;
 };
 
 #endif // COMMON_PROPERTY_H

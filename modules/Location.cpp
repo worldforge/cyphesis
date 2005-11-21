@@ -112,6 +112,11 @@ int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
     return 0;
 }
 
+void Location::modifyBBox()
+{
+    // Update cached bbox diameter and diagonal size
+}
+
 const Atlas::Objects::Root Location::asEntity() const
 {
     Anonymous ret;

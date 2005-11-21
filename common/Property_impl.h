@@ -77,4 +77,17 @@ void ImmutableProperty<T>::add(const std::string & s,
     ent->setAttr(s, val);
 }
 
+template <typename T>
+SignalProperty<T>::SignalProperty(T & data, unsigned int flags) :
+                   Property<T>(data, flags)
+{
+}
+
+template <typename T>
+void SignalProperty<T>::set(const Atlas::Message::Element & e)
+{
+    this->m_data = e;
+    modified.emit();
+}
+
 #endif // COMMON_PROPERTY_IMPL_H
