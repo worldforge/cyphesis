@@ -110,8 +110,8 @@ Character::Character(const std::string & id, long intId) :
                                             m_mind(0), m_externalMind(0)
 {
     m_mass = 60;
-    m_location.m_bBox = BBox(WFMath::Point<3>(-0.25, -0.25, 0),
-                             WFMath::Point<3>(0.25, 0.25, 2));
+    m_location.setBBox(BBox(WFMath::Point<3>(-0.25, -0.25, 0),
+                            WFMath::Point<3>(0.25, 0.25, 2)));
 
     m_properties["stamina"] = new Property<double>(m_stamina, 0);
     m_properties["drunkness"] = new Property<double>(m_drunkness, a_drunk);

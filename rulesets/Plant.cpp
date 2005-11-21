@@ -42,8 +42,8 @@ Plant::Plant(const std::string & id, long intId) : Plant_parent(id, intId),
                                                    m_nourishment(0)
 {
     // Default to a 1m cube
-    m_location.m_bBox = BBox(WFMath::Point<3>(-0.5, -0.5, 0),
-                             WFMath::Point<3>(0.5, 0.5, 1));
+    m_location.setBBox(BBox(WFMath::Point<3>(-0.5, -0.5, 0),
+                            WFMath::Point<3>(0.5, 0.5, 1)));
 
     m_properties["fruits"] = new Property<int>(m_fruits, a_fruit);
     m_properties["radius"] = new Property<int>(m_radius, a_fruit);

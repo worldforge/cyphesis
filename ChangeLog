@@ -1,5 +1,14 @@
 2005-11-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp: Switch to using SignalProperty for BBOX.
+
+	* rulesets/Area.cpp, rulesets/Character.cpp, rulesets/Line.cpp,
+	  rulesets/Plant.cpp, rulesets/Py_Location.cpp:
+	  Update bbox on location using setBBox(), so cached values are
+	  updated.
+
+2005-11-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/Location.h, modules/Location.cpp: Add methods to modify
 	  bbox, and to report if it has been modifed so that cached values
 	  can be computed.

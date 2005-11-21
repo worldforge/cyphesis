@@ -62,7 +62,7 @@ Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
 
     SignalProperty<BBox> * sp = new SignalProperty<BBox>(m_location.m_bBox, a_bbox);
     sp->modified.connect(SigC::slot(m_location, &Location::modifyBBox));
-    m_properties["bbox"] = new Property<BBox>(m_location.m_bBox, a_bbox);
+    m_properties["bbox"] = sp;
 }
 
 Entity::~Entity()

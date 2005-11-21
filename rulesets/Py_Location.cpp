@@ -105,7 +105,7 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
     }
     if ((strcmp(name, "bbox") == 0) && PyBBox_Check(v)) {
         PyBBox * box = (PyBBox *)v;
-        self->location->m_bBox = box->box;
+        self->location->setBBox(box->box);
         return 0;
     }
     if ((strcmp(name, "orientation") == 0) && PyQuaternion_Check(v)) {
@@ -158,10 +158,10 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
         self->location->m_velocity = vector;
     }
     if (strcmp(name, "bbox") == 0) {
-        self->location->m_bBox = BBox(WFMath::Point<3>(0.f,0.f,0.f),
-                                      WFMath::Point<3>(vector.x(),
-                                                       vector.y(),
-                                                       vector.z()));
+        self->location->setBBox(BBox(WFMath::Point<3>(0.f,0.f,0.f),
+                                     WFMath::Point<3>(vector.x(),
+                                                      vector.y(),
+                                                      vector.z())));
     }
     return 0;
 }

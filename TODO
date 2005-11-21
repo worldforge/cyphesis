@@ -1,3 +1,5 @@
+Implement unit test for modifyBBox() and setBBox() on Location.
+
 Should ImmutableProperty inherit from Property, or the other way round so
 that implementations of get and add can be shared?
 
