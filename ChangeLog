@@ -1,3 +1,11 @@
+2005-11-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Restorer_impl.h: Notify Location that bbox is modified
+	  once it has been restored from database.
+
+	* tests/Locationtest.cpp: Add test for checking bbox related data
+	  gets updated.
+
 2005-11-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.cpp: Switch to using SignalProperty for BBOX.

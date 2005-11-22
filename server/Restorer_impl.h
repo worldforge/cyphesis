@@ -43,6 +43,7 @@ void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
         dr.readColumn("bfy", hc.y());
         dr.readColumn("bfz", hc.z());
         hc.setValid();
+        this->m_location.modifyBBox();
     }
     dr.readColumn("status", this->m_status);
     dr.readColumn("mass", this->m_mass);

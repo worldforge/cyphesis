@@ -1,6 +1,6 @@
 // This file may be redistributed and modified only under the terms of
 // the GNU General Public License (See COPYING for details).
-// Copyright (C) 2003 Alistair Riddoch
+// Copyright (C) 2003-2005 Alistair Riddoch
 
 #include "modules/Location.h"
 
@@ -81,6 +81,22 @@ int main()
         assert(testOrientation.isValid());
         testloc.m_orientation = testOrientation;
         assert(testloc.orientation().isValid());
+    }
+
+    {
+        Location testloc;
+
+        testloc.m_bBox = BBox(Point3D(0,0,0), Point3D(1,1,1));
+
+        assert(testloc.m_loc == 0);
+        assert(!testloc.pos().isValid());
+        assert(!testloc.velocity().isValid());
+        assert(!testloc.orientation().isValid());
+        assert(testloc.bBox().isValid());
+
+        testloc.setBBox(BBox(Point3D(1,1,1), Point3D(2,2,2)));
+
+        // Check cached values have been changed
     }
 
     return 0;
