@@ -96,6 +96,12 @@ int main()
 
         testloc.setBBox(BBox(Point3D(1,1,1), Point3D(2,2,2)));
 
+        assert(testloc.squareBoxSize() == 3.f);
+        assert(testloc.boxSize() == sqrtf(3.f));
+
+        assert(testloc.squareRadius() == 12.f);
+        assert(testloc.radius() == sqrtf(12.f));
+
         // Check cached values have been changed
     }
 

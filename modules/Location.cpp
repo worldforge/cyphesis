@@ -114,7 +114,22 @@ int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
 
 void Location::modifyBBox()
 {
-    // Update cached bbox diameter and diagonal size
+    if (!m_bBox.isValid()) {
+        return;
+    }
+
+    m_squareBoxSize = square(m_bBox.highCorner().x() - m_bBox.lowCorner().x()) +
+                      square(m_bBox.highCorner().y() - m_bBox.lowCorner().y()) +
+                      square(m_bBox.highCorner().z() - m_bBox.lowCorner().z());
+    m_boxSize = sqrtf(m_squareBoxSize);
+
+    m_squareRadius = std::max(square(m_bBox.lowCorner().x()) +  
+                              square(m_bBox.lowCorner().y()) +  
+                              square(m_bBox.lowCorner().z()),
+                              square(m_bBox.highCorner().x()) +  
+                              square(m_bBox.highCorner().y()) +  
+                              square(m_bBox.highCorner().z()));
+    m_radius = sqrtf(m_squareRadius);
 }
 
 const Atlas::Objects::Root Location::asEntity() const

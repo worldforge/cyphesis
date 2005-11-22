@@ -22,6 +22,12 @@ class Location : virtual public SigC::Object {
     bool m_solid;
 
     double m_timeStamp;
+
+    float m_boxSize; // Diagonal length across box
+    float m_squareBoxSize;
+
+    float m_radius; // Radius of bounding sphere of box
+    float m_squareRadius;
   public:
     Entity * m_loc;
     Point3D m_pos;   // Coords relative to m_loc entity
@@ -36,6 +42,12 @@ class Location : virtual public SigC::Object {
     explicit Location(Entity * rf);
     explicit Location(Entity * rf, const Point3D & crds);
     explicit Location(Entity * rf, const Point3D & crds, const Vector3D & vel);
+
+    const float boxSize() const { return m_boxSize; }
+    const float squareBoxSize() const { return m_squareBoxSize; }
+
+    const float radius() const { return m_radius; }
+    const float squareRadius() const { return m_squareRadius; }
 
     const Point3D & pos() const { return m_pos; }
     const Vector3D & velocity() const { return m_velocity; }

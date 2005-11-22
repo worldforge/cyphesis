@@ -1,5 +1,13 @@
 2005-11-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* modules/Location.h, modules/Location.cpp: Add members to store
+	  box diagonal size and bounding radius.
+
+	* tests/Locationtest.cpp: Test that the diagonal size and bounding
+	  radius are updated correctly.
+
+2005-11-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Restorer_impl.h: Notify Location that bbox is modified
 	  once it has been restored from database.
 
