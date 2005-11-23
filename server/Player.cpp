@@ -7,6 +7,8 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/RootEntity.h>
 
+#include "common/compose.hpp"
+
 std::set<std::string> Player::playableTypes;
 
 using Atlas::Message::Element;
@@ -81,7 +83,7 @@ int Player::characterError(const Operation & op,
     }
     const std::string & type = parents.front(); 
     if (Player::playableTypes.find(type) == Player::playableTypes.end()) {
-        error(op, "You cannot create a character of this type.", res, getId());
+        error(op, String::compose("You cannot create a character of type \"%1\".", type).c_str(), res, getId());
         return true;
     }
     return false;

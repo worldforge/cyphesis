@@ -12,6 +12,16 @@ long integerId(const std::string & id)
 {
     long intId = strtol(id.c_str(), 0, 10);
     if (intId == 0 && id != "0") {
+        intId = -1L;
+    }
+
+    return intId;
+}
+
+long forceIntegerId(const std::string & id)
+{
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
         log(CRITICAL, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
         abort();
     }

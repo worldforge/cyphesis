@@ -9,6 +9,7 @@
 
 long newId(std::string & id);
 long integerId(const std::string & id);
+long forceIntegerId(const std::string & id);
 int integerIdCheck(const std::string & id);
 
 #endif // COMMON_ID_H

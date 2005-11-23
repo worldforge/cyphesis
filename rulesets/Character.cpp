@@ -629,7 +629,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     }
 
     if (op_type.empty()) {
-        error(op, "Use unable to determine op type to for tool", res, getId());
+        error(op, "Use unable to determine op type for tool", res, getId());
         return;
     }
 

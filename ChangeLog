@@ -1,5 +1,16 @@
 2005-11-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/id.cpp, common/id.h: Break integer ID conversion into
+	  two versions, one which abort()s and one which returns a known
+	  invalid ID.
+
+	* rulesets/Character.cpp: Fix the grammar in an error message.
+
+	* server/Player.cpp: Make error message on failed character creation
+	  clearer.
+
+2005-11-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Prevent characters from attacking themselves.
 
 2005-11-23  Al Riddoch  <alriddoch@zepler.org>
