@@ -1,12 +1,7 @@
-Implement unit test for modifyBBox() and setBBox() on Location.
-
 Should ImmutableProperty inherit from Property, or the other way round so
 that implementations of get and add can be shared?
 
 Write test for SignalProperty.
-
-Adding a pre-computed box size to the bbox attribute can be done everywhere
-except the property. Add a callback to the property?
 
 In cycmd, use flag to indicate when output is written, so it is possible to
 identify when at prompt, and move to next, and also possible to more cleanly
@@ -14,10 +9,6 @@ redraw prompt, rather than forcing it every time codec->poll() is called.
 
 ForbiddenThingFactory::duplicateFactory could return PersistantThingFactory
 so its possible to add more abstract factories.
-
-Urgently need new unit tests for class loading functionality in EntityFactory,
-to make sure attributes are inherited, with correct values, and values are
-updated and propagated.
 
 In order to have attribute defaults inherit from parent classes,
 the code must first store the unmodified defaults direct from the rule
