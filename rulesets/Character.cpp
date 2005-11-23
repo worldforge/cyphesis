@@ -384,6 +384,11 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
 
 void Character::AttackOperation(const Operation & op, OpVector & res)
 {
+    const std::string & from = op->getFrom();
+    if (from == getId()) {
+        return;
+    }
+
     Entity * attack_ent = m_world->getEntity(op->getFrom());
     if (attack_ent == 0) {
         log(ERROR, "AttackOperation: Attack op from non-existant ID");
