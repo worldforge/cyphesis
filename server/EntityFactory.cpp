@@ -123,11 +123,7 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
     // The default attributes cannot contain info on location
     if (attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         const std::string & loc_id = attributes->getLoc();
-        if (integerIdCheck(loc_id) == 0) {
-            thing->m_location.m_loc = m_world.getEntity(loc_id);
-        } else {
-            log(ERROR, "Non int IG ID");
-        }
+        thing->m_location.m_loc = m_world.getEntity(loc_id);
     }
     if (thing->m_location.m_loc == 0) {
         // If no info was provided, put the entity in the game world

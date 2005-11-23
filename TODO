@@ -1,3 +1,5 @@
+Lobby accounts still indexed on string IDs. Good or bad?
+
 Should ImmutableProperty inherit from Property, or the other way round so
 that implementations of get and add can be shared?
 

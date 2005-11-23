@@ -805,7 +805,7 @@ long Database::newId(std::string & id)
         PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
-    return integerId(id);
+    return forceIntegerId(id);
 }
 
 bool Database::registerEntityTable(const std::string & classname,

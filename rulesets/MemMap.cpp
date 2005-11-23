@@ -222,6 +222,11 @@ MemEntity * MemMap::getAdd(const std::string & id)
 
     long intId = integerId(id);
 
+    if (intId == -1) {
+        log(ERROR, String::compose("MemMap::getAdd: Invalid ID \"%1\".", id).c_str());
+        return NULL;
+    }
+
     MemEntityDict::const_iterator I = m_entities.find(intId);
     if (I != m_entities.end()) {
         assert(I->second != 0);
@@ -263,6 +268,11 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
     }
 
     long intId = integerId(id);
+
+    if (intId == -1) {
+        log(ERROR, String::compose("MemMap::updateAdd: Invalid ID \"%1\".", id).c_str());
+        return NULL;
+    }
 
     MemEntityDict::const_iterator I = m_entities.find(intId);
     MemEntity * entity;

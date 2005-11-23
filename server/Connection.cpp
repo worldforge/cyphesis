@@ -42,10 +42,10 @@ static const bool debug_flag = false;
 Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
-                       const std::string & id) : OOGThing(id, integerId(id)),
-                                                 m_obsolete(false),
-                                                 m_commClient(client),
-                                                 m_server(svr)
+                       const std::string & id) :
+            OOGThing(id, forceIntegerId(id)), m_obsolete(false),
+                                              m_commClient(client),
+                                              m_server(svr)
 {
     m_server.incClients();
 }
@@ -162,12 +162,7 @@ void Connection::operation(const Operation & op, OpVector & res)
         debug(std::cout << "send on to " << from << std::endl << std::flush;);
         BaseDict::const_iterator I = m_objects.find(integerId(from));
         if (I == m_objects.end()) {
-            std::string err = "Client \"";
-            err += op->getParents().front();
-            err += "\" op from \"";
-            err += from;
-            err += "\" is from non existant object.";
-            error(op, err.c_str(), res);
+            error(op, String::compose("Client \"%1\" op from \"%2\" is from non-existant object.", op->getParents().front(), from).c_str(), res);
             return;
         }
         BaseEntity * b_ent = I->second;

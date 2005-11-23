@@ -107,6 +107,10 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
 
     long intId = integerId(id);
 
+    if (intId == -1) {
+        log(ERROR, String::compose("Invalid character ID \"%1\" from server.", id).c_str());
+    }
+
     CreatorClient * obj = new CreatorClient(id, intId, type, m_connection);
     obj->merge(ent->asMessage());
     // FIXME We are making no attempt to set LOC, as we have no entity to

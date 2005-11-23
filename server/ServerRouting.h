@@ -48,7 +48,7 @@ class ServerRouting : public OOGThing {
     void addObject(BaseEntity * obj) {
         assert(!obj->getId().empty());
         assert(integerId(obj->getId()) == obj->getIntId());
-        assert(integerId(obj->getId()) > 0);
+        assert(obj->getIntId() > 0);
         m_objects[obj->getIntId()] = obj;
     }
 

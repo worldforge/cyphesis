@@ -110,6 +110,11 @@ void Restoration::restoreChildren(Entity * loc)
 
             long intId = integerId(id);
 
+            if (intId == -1) {
+                log(ERROR, String::compose("Invalid ID \"%1\" from database while restoring.", id).c_str());
+                continue;
+            }
+
             Entity * ent = restorer(id, intId, L);
             ent->m_location.m_loc = loc;
             server.m_world.addEntity(ent, true);

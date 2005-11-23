@@ -126,6 +126,11 @@ Account * Persistance::getAccount(const std::string & name)
     }
     std::string id = c;
     long intId = integerId(id);
+    if (intId == -1) {
+        dr.clear();
+        log(ERROR, String::compose("Invalid ID \"%1\" for account from database.", id).c_str());
+        return 0;
+    }
     c = dr.field("password");
     if (c == 0) {
         dr.clear();
@@ -167,13 +172,13 @@ void Persistance::registerCharacters(Account & ac,
     DatabaseResult dr = m_connection.selectRelation(m_characterRelation,
                                                     ac.getId());
     if (dr.error()) {
-        log(ERROR, "Failure while find account.");
+        log(ERROR, "Database query failed while looking for characters for account.");
     }
     DatabaseResult::const_iterator Iend = dr.end();
     for (DatabaseResult::const_iterator I = dr.begin(); I != Iend; ++I) {
         const char * id = I.column(0);
         if (id == 0) {
-            log(ERROR, "No data in relation when examing characters");
+            log(ERROR, "No ID data in relation when examing characters");
             continue;
         }
 
@@ -181,7 +186,7 @@ void Persistance::registerCharacters(Account & ac,
 
         EntityDict::const_iterator J = worldObjects.find(intId);
         if (J == worldObjects.end()) {
-            log(WARNING, "Persistance: Got character id from database which does not exist in world");
+            log(WARNING, String::compose("Persistance: Got character id \"%1\" from database which does not exist in world", id).c_str());
             continue;
         }
         ac.addCharacter(J->second);

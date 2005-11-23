@@ -9,8 +9,8 @@
 Peer::Peer(CommClient & client,
            ServerRouting & svr,
            const std::string & addr,
-           const std::string & id) : OOGThing(id, integerId(id)),
-                                     m_commClient(client), m_server(svr)
+           const std::string & id) :
+      OOGThing(id, forceIntegerId(id)), m_commClient(client), m_server(svr)
 {
 }
 

@@ -1,5 +1,13 @@
 2005-11-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/BaseClient.cpp, common/Database.cpp, rulesets/MemMap.cpp,
+	  server/Connection.cpp, server/EntityFactory.cpp, server/Peer.cpp,
+	  server/Persistance.cpp, server/Restoration.cpp,
+	  server/ServerRouting.h: Update integer ID related checks now that
+	  integerId() function has changed.
+
+2005-11-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/id.cpp, common/id.h: Break integer ID conversion into
 	  two versions, one which abort()s and one which returns a known
 	  invalid ID.
