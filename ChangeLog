@@ -1,5 +1,10 @@
 2005-11-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Pedestrian.cpp: Improve debug output for collision code
+	  errors.
+
+2005-11-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/BaseClient.cpp, common/Database.cpp, rulesets/MemMap.cpp,
 	  server/Connection.cpp, server/EntityFactory.cpp, server/Peer.cpp,
 	  server/Persistance.cpp, server/Restoration.cpp,

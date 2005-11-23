@@ -150,8 +150,9 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
                         m_targetPos = m_targetPos.toLocalCoords(m_collEntity->m_location.pos(), collOrientation);
                     }
                 } else {
-                    log(ERROR, String::compose("BAD COLLISION: %1 with %2(%3) when LOC is currently %4(%5).",
+                    log(ERROR, String::compose("BAD COLLISION: %1(%2) with %3(%4) when LOC is currently %5(%6).",
                                                m_body.getId(),
+                                               m_body.getType(),
                                                m_collEntity->getId(),
                                                m_collEntity->getType(),
                                                new_location.m_loc->getId(),
