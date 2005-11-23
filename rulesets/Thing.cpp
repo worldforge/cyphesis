@@ -294,7 +294,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // sight of the other because of this movement
     if (consts::enable_ranges && isPerceptive()) {
         debug(std::cout << "testing range" << std::endl;);
-        float fromSquSize = boxSquareSize(m_location.bBox());
+        float fromSquSize = m_location.squareBoxSize();
         std::vector<Root> appear, disappear;
 
         Anonymous this_ent;
@@ -306,7 +306,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         for(; I != Iend; ++I) {
             float oldDist = squareDistance((*I)->m_location.pos(), oldpos),
                   newDist = squareDistance((*I)->m_location.pos(), m_location.pos()),
-                  oSquSize = boxSquareSize((*I)->m_location.bBox());
+                  oSquSize = (*I)->m_location.squareBoxSize();
 
             // Build appear and disappear lists, and send operations
             // Also so operations to (dis)appearing perceptive

@@ -1,3 +1,8 @@
+2005-11-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp, rulesets/World.cpp, server/WorldRouter.cpp:
+	  Use Location cached box size instead of calculating on the fly.
+
 2005-11-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* modules/Location.h, modules/Location.cpp: Add members to store

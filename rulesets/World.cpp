@@ -383,7 +383,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
     ListType contlist;
     EntitySet::const_iterator Iend = m_contains.end();
     for (EntitySet::const_iterator I = m_contains.begin(); I != Iend; ++I) {
-        float fromSquSize = boxSquareSize((*I)->m_location.bBox());
+        float fromSquSize = (*I)->m_location.squareBoxSize();
         float dist = squareDistance((*I)->m_location, from->m_location);
         float view_factor = fromSquSize / dist;
         if (view_factor > consts::square_sight_factor) {

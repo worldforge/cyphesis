@@ -443,7 +443,7 @@ void WorldRouter::operation(const Operation & op, Entity & from)
                 deliverTo(op, **I);
             }
         } else {
-            float fromSquSize = boxSquareSize(from.m_location.bBox());
+            float fromSquSize = from.m_location.squareBoxSize();
             EntitySet::const_iterator I = broadcast.begin();
             EntitySet::const_iterator Iend = broadcast.end();
             for (; I != Iend; ++I) {
