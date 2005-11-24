@@ -907,7 +907,7 @@
     <string name="id">house3</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>thing</string>
+      <string>structure</string>
     </list>
     <map name="script">
       <string name="language">python</string>

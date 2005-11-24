@@ -202,14 +202,11 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
                         << " my pos " << pos.z()
                         << std::endl << std::flush;);
         float h;
-        // FIXME Recently swapped argument order as it appears to fix
-        // a bug. Check carefully whether this is doing the right thing.
         const Quaternion & parent_orientation = parent->m_location.orientation().isValid() ? parent->m_location.orientation() : identity;
-        h =  ppos.z() - constrainHeight(parent->m_location.m_loc,
-                            pos.toParentCoords(parent->m_location.pos(),
-                                               parent_orientation),
-                            mode
-                           );
+        h =  constrainHeight(parent->m_location.m_loc,
+                             pos.toParentCoords(parent->m_location.pos(),
+                                                parent_orientation),
+                             mode) - ppos.z();
         debug(std::cout << "Correcting height from " << pos.z() << " to " << h
                         << std::endl << std::flush;);
         return h;
