@@ -1,5 +1,9 @@
 2005-11-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Increment version.
+
+2005-11-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Fix height correction calculation inversion.
 
 	* data/mason.xml: Make houses inherit from structure so it is possible
