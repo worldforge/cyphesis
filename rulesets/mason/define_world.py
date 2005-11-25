@@ -28,6 +28,8 @@ import time
 # can start thinking in more ernest about heights
 settlement_height=0
 forest_height=0
+graveyard_height=0
+
 
 hall_xyz=(5,3,settlement_height)
 forest_xyz=(-20,-60,settlement_height)
@@ -37,6 +39,7 @@ butcher_stall_xyz=(155,140,settlement_height)
 butcher_xyz=(153,142,settlement_height)
 tool_stall_xyz=(150,138,settlement_height)
 tool_merchant_xyz=(150,140,settlement_height)
+mausoleum_xyz=(-160, 105, graveyard_height)
 
 lake_xyz=(-40,-70,0)
 
@@ -49,9 +52,22 @@ bknowledge=[('market','location',butcher_stall_xyz)]
 mknowledge=[('market','location',pig_sty_xyz)]
 sknowledge=[('forest','location',forest_xyz),
             ('stash','location',(-98,-97,settlement_height))]
-village=[('hall','location', hall_xyz),
-         ('butcher','location', butcher_stall_xyz),
-         ('pig','location', pig_sty_xyz)]
+area=[('mausoleum','location', mausoleum_xyz),
+      ('butcher','location', butcher_stall_xyz),
+      ('sty','location', pig_sty_xyz)]
+about=[('acorn','about','Acorns are pigs favorite food.'),
+       ('apple','about','Pigs love eating apples, when they can find them.'),
+       ('building','about','You can build a house here once you have earned a claim to some land.'),
+       ('claim','about','Once you have earned your claim you can use it to make out some land by placing it on the ground.'),
+       ('jetty','about','Ships from the nearest city come into the jetty occassionally.'),
+       ('land','about','When you have contributed to our settlement, you will be rewarded with some land.'),
+       ('oak','about','Oak trees drop acorns which pigs love to eat. You can also gather strong wood from oak trees suitable for building.'),
+       ('pig','about','You can buy pigs from the sty, and sell them to the butcher once you have helped them grow big enough.'),
+       ('settlement','about','This settlement is in the frontier of our lands. We need lots of help to get established.'),
+       ('sty','about','The pig sty is where the merchant keeps the young pigs he has for sale.'),
+       ('skeleton','about','It is said that the undead haunt the area round the ancient mausoleum nearby.'),
+       ('wolf','about','Wolves live in the forest, and will eat pigs if they can catch them. However they prefer ham if they can get it.')
+      ]
 gknowledge=[('m1','location',(-17, -1,    settlement_height)),
             ('m2','location',(-29, -1,    settlement_height)),
             ('m3','location',(-29, -7.5,  settlement_height)),
@@ -375,7 +391,7 @@ def default(mapeditor):
                     sex='male',orientation=Quaternion(Vector3D([1,0,0]),Vector3D([0,-1,0])).as_list())
     sty=m.make('sty',type='sty',xyz=pig_sty_xyz)
     m.know(merchant,mknowledge)
-    m.know(merchant,village)
+    m.know(merchant,area)
     m.know(merchant,mprices)
     m.own(merchant,sty)
     m.learn(merchant,(il.keep,"keep_livestock('pig', 'sty', 'sowee')"))
@@ -394,7 +410,8 @@ def default(mapeditor):
     marshall=m.make('Gorun Iksa',type='marshall',desc='the duke\'s marshall',
                     xyz=(14,12,settlement_height), sex='male')
     m.know(marshall, [('deed','price','50')])
-    m.know(marshall, village)
+    m.know(marshall, area)
+    m.know(marshall, about)
     m.learn(marshall,(il.help,"add_help(['On behalf of the Duke I would like to welcome you to moraf.','If you are new here I suggest talking to the pig seller.','He will tell you what you can do to help out.','If you have decide you would like to settle here I can assign you some land','but you will need to show that you are a useful citizen.','If you can raise 50 coins herding pigs, then a plot of land is yours.'],['I would like to buy a deed','I will come back when I have raised some pigs'])"))
     plots=[]
     for i in range(20, 200, 20):
@@ -422,7 +439,7 @@ def default(mapeditor):
     warriors.append(warrior)
 
     # Warriors all know where stuff is in the village
-    m.know(warriors,village)
+    m.know(warriors,area)
 
     # Warriors enjoy their food and drink
     m.know(warriors, [('services','price','5')])
@@ -619,8 +636,6 @@ def test_path(mapeditor):
     m.make('path to village',type='path',xyz=(10, 20,settlement_height), area=path_area,bbox=[169,154,1])
    
     
-graveyard_height = 0
-
 lych2_knowledge=[('w1','location',(-140,110,graveyard_height)),
                 ('w2','location',(-50,160,graveyard_height)),
                 ('w3','location',(-80,40,graveyard_height)),
@@ -632,7 +647,7 @@ lych2_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm
 def test_graveyard(mapeditor):
     m = editor(mapeditor)
     
-    m.make('mausoluem of harrington', type='mausoleum', xyz=(-160, 105, graveyard_height), orientation=directions[0])
+    m.make('mausoleum of harrington', type='mausoleum', xyz=mausoleum_xyz, orientation=directions[0])
     m.make('steps',type='wall',xyz=(-160,100,graveyard_height),bbox=[4,4,2])
     
     graveyard_area={'points': [[-10, -8], [15, -11], [13,23], [-8, 8]], 'layer':7 }

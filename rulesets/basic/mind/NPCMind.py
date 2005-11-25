@@ -196,6 +196,8 @@ class NPCMind(BaseMind):
                     k='%f metres %s' % (distmag, vector_to_compass(dist))
             elif k_type!=StringType:
                 k='difficult to explain'
+            elif predicate=='about':
+                return Operation('talk', Entity(say=k)) + self.face(self.map.get(op.from_))
             return Operation('talk', Entity(say="The "+predicate+" of "+object+" is "+k)) + self.face(self.map.get(op.from_))
     def interlinguish_learn_verb1_operation(self, op, say):
         if not self.admin_sound(op):

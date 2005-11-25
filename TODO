@@ -1,3 +1,6 @@
+Character jumps to the bottom when swimming. Character needs to handle surface
+properties.
+
 Lobby accounts still indexed on string IDs. Good or bad?
 
 Should ImmutableProperty inherit from Property, or the other way round so

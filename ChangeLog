@@ -1,5 +1,13 @@
 2005-11-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/NPCMind.py: Add handling for 'about' knowledge
+	  and return it in a way that makes sense to the listener.
+
+	* rulesets/mason/define_world.py: Provide NPCs which lots of
+	  information 'about' the world, so they can help players.
+
+2005-11-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Increment version.
 
 2005-11-23  Al Riddoch  <alriddoch@zepler.org>
