@@ -1,5 +1,7 @@
 Character jumps to the bottom when swimming. Character needs to handle surface
-properties.
+properties. Jumping to bottom is because when the character rises above water
+the movement code assumes it is walking, and then height is constrained 
+accordingly to terrain.
 
 Lobby accounts still indexed on string IDs. Good or bad?
 
