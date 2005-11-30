@@ -1,5 +1,34 @@
 2005-11-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/world/objects/Thing.py: Remove self.attributes
+	  from the base class for all python scripts.
+
+	* rulesets/mason/world/objects/Weather.py,
+	  rulesets/basic/world/objects/plants/Tree.py,
+	  rulesets/basic/world/objects/animals/Animal.py,
+	  data/basic.xml, data/mason.xml: Don't use set_kw to handle default
+	  attributes, and add the to the .xml rules files.
+
+	* rulesets/basic/world/objects/buildings/House.py,
+	  rulesets/basic/world/objects/buildings/StoneHouse.py,
+	  rulesets/basic/world/objects/tools/Bow.py,
+	  rulesets/basic/world/objects/tools/Sword.py,
+	  rulesets/mason/world/objects/animals/Deer.py,
+	  rulesets/mason/world/objects/animals/Pig.py,
+	  rulesets/mason/world/objects/outdoor/Campfire.py,
+	  rulesets/mason/world/objects/outdoor/Gravestone.py,
+	  rulesets/mason/world/objects/plants/seeds/Acorn.py,
+	  rulesets/mason/world/objects/plants/seeds/Apple.py,
+	  rulesets/mason/world/objects/plants/seeds/Fircone.py,
+	  rulesets/mason/world/objects/plants/seeds/Seed.py,
+	  rulesets/mason/world/objects/tools/Cleaver.py,
+	  rulesets/mason/world/objects/undead/Skeleton.py,
+	  rulesets/werewolf/world/objects/characters/Villager.py,
+	  rulesets/werewolf/world/objects/tools/Gallows.py:
+	  Don't import set_kw from misc, as its now obsolete and unused.
+
+2005-11-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Property.h, common/Property_impl.h, common/Property.cpp:
 	  Modify property interface to make apropriate methods const,
 	  re-order inheritance to eliminate some redundant code.

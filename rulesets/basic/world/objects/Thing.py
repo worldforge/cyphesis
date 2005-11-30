@@ -2,7 +2,6 @@
 #Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
-from misc import set_kw
 from types import *
 
 def get_dict_func(self, dict, func_str, func_undefined):
@@ -24,11 +23,10 @@ def get_dict_func(self, dict, func_str, func_undefined):
 class Thing:
     def __init__(self, cppthing, **kw):
         #print "Thing.__init__"
-	self.cinit(cppthing)
-        self.attributes=[]
+        self.cinit(cppthing)
         self.op_dict={}
     def base_init(self, cppthing, kw):
-	self.cinit(cppthing)
+        self.cinit(cppthing)
         try:
             class_=self.base
         except AttributeError:

@@ -1,3 +1,6 @@
+In Thing.py, op_dict may be pointless
+I am pretty sure benchmarks show it is faster without it.
+
 Character jumps to the bottom when swimming.
 Jumping to bottom is because when the character rises above water
 the movement code assumes it is walking, and then height is constrained 

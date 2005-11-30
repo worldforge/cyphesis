@@ -495,6 +495,50 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.2</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="material">
+        <string name="default">green_wood</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="size">
+        <float name="default">1.0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="sizename">
+        <string name="default">sapling</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="energy">
+        <float name="default">20.0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="flowers">
+        <float name="default">0.0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="fruits">
+        <float name="default">0.0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="health">
+        <float name="default">100.0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="leaves">
+        <float name="default">1.0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="last_growth">
+        <float name="default">0.0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="water">
+        <float name="default">1.0</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">tree</string>
     <string name="objtype">class</string>

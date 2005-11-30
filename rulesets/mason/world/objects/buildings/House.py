@@ -6,7 +6,6 @@ from atlas import *
 from world.objects.Thing import Thing
 from common import log,const
 from world import probability
-from misc import set_kw
 
 if const.server_python:
     from world.physics.Vector3D import Vector3D

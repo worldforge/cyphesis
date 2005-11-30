@@ -6,7 +6,6 @@ from Point3D import Point3D
 from atlas import *
 
 from world.objects.Thing import Thing
-from misc import set_kw
 
 class Gallows(Thing):
     """This is the gallows, which hangs villagers"""

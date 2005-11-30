@@ -4,7 +4,6 @@
 from atlas import *
 from world.objects.Thing import Thing
 from common import log,const
-from misc import set_kw
 from Vector3D import Vector3D
 try:
   from random import *

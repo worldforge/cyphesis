@@ -4,7 +4,6 @@
 from atlas import *
 from world.objects.Thing import Thing
 from common import log,const
-from misc import set_kw
 
 # Rate at which energy is used per tick
 energyConsumption = 0.01
@@ -23,8 +22,8 @@ class Animal(Thing):
     """This is base class for all kind of animals"""
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
-        set_kw(self,kw,"status",1.0)
-        set_kw(self,kw,"mass",1.0)
+        self.status=1.0
+        self.mass=1.0
         self.food=0
         self.maxmass=50
         self.tickcount=0

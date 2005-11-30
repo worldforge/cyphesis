@@ -4,7 +4,6 @@
 from atlas import *
 
 from world.objects.Thing import Thing
-from misc import set_kw
 
 class Cleaver(Thing):
     """This is base class for axes, this one just ordinary axe"""

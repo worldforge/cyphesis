@@ -4,7 +4,6 @@
 from atlas import *
 
 from world.objects.Character import Character
-from misc import set_kw
 
 class Villager(Character):
     def reveal_operation(self,op):

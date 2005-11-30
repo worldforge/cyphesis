@@ -1,7 +1,6 @@
 from atlas import *
 
 from world.objects.Thing import Thing
-from misc import set_kw
 from common import log,const
 try:
   from random import *

@@ -4,7 +4,6 @@
 from atlas import *
 from world.objects.Thing import Thing
 from common import log,const
-from misc import set_kw
 try:
   from random import *
 except ImportError:
@@ -13,8 +12,6 @@ except ImportError:
 class Weather(Thing):
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)
-        set_kw(self,kw,"rain",1.0)
-        set_kw(self,kw,"snow",0.0)
     def tick_operation(self, op):
         res = Message()
         optick = Operation("tick", to=self)

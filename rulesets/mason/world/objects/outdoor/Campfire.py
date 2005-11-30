@@ -4,7 +4,6 @@
 from atlas import *
 
 from world.objects.Thing import Thing
-from misc import set_kw
 
 class Campfire(Thing):
     def burn_operation(self, op):

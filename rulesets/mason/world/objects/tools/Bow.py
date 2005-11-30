@@ -5,7 +5,6 @@
 from atlas import *
 
 from world.objects.Thing import Thing
-from misc import set_kw
 from Vector3D import Vector3D
 
 class Bow(Thing):

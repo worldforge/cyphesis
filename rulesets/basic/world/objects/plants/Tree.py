@@ -3,7 +3,6 @@ from atlas import *
 from world.objects.Thing import Thing
 from common import log,const
 #from world.objects.plants import prob
-from misc import set_kw
 try:
   from random import *
 except ImportError:
@@ -128,42 +127,6 @@ def cs(a, b, max):
 
 class Tree(Thing):
     #This base class for houses, building material is wood#
-    def __init__(self, cppthing, **kw):
-        self.base_init(cppthing, kw)
-        # How fast the tree will burn #
-        set_kw(self,kw,"burn_speed",0.2)
-        
-        # The material the tree is made out of #
-        set_kw(self,kw,"material","green_wood")
-        
-        # How big the tree is #
-        set_kw(self,kw,"size",1)
-        
-        # Just a name for the client #
-        set_kw(self,kw,"sizename","sapling")
-        
-        # The amount of food the tree has to use #
-        set_kw(self,kw,"energy",20)
-        
-        # The number of flowers #
-        set_kw(self,kw,"flowers",0)
-        
-        # The number of flowers #
-        set_kw(self,kw,"fruits",0)
-        
-        # The health of the tree #
-        set_kw(self,kw,"health",100)
-        
-        # The no of leaves #
-        set_kw(self,kw,"leaves",1)
-        
-        # sets the last growth time #
-        set_kw(self,kw,"last_growth",0)
-        
-        # The amount of water the tree has
-        set_kw(self,kw,"water",1)
-
-      
     def tick_operation(self, op):
         if debug_tree:
             print "I this big ", self.size

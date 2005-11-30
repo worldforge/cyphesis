@@ -3,7 +3,6 @@
 from atlas import *
 
 from world.objects.Thing import Thing
-from misc import set_kw
 try:
   from random import *
 except ImportError:
