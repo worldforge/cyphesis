@@ -1,12 +1,15 @@
-Character jumps to the bottom when swimming. Character needs to handle surface
-properties. Jumping to bottom is because when the character rises above water
+Character jumps to the bottom when swimming.
+Jumping to bottom is because when the character rises above water
 the movement code assumes it is walking, and then height is constrained 
 accordingly to terrain.
+Character/Pedestrian needs to handle surface properties, so it can't walk
+up steep slopes. Also need to handle jump, to get down steep slopes the quick
+way.
 
 Lobby accounts still indexed on string IDs. Good or bad?
 
 Should ImmutableProperty inherit from Property, or the other way round so
-that implementations of get and add can be shared?
+that implementations of get and add can be shared? Yeah.
 
 Write test for SignalProperty.
 

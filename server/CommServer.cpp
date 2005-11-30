@@ -73,6 +73,9 @@ bool CommServer::idle()
 
     bool busy = m_server.m_world.idle(m_timeVal.tv_sec, m_timeVal.tv_usec);
 
+    // We only call the idlers if the world has returned that it is not busy,
+    // and the last call to select/poll with a sleep time provided did not
+    // return any traffic.
     if (!busy && !m_congested) {
         IdleSet::const_iterator I = m_idlers.begin();
         IdleSet::const_iterator Iend = m_idlers.end();
