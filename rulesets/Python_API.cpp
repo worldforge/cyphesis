@@ -1103,70 +1103,6 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     return (PyObject *)op;
 }
 
-static PyObject * set_kw(PyObject * meth_self, PyObject * args)
-{
-    // Takes self, kw, name, default = None
-    PyObject * self;
-    PyObject * kw;
-    char * name;
-    PyObject * def = NULL;
-
-    if (!PyArg_ParseTuple(args, "OOs|O", &self, &kw, &name, &def)) {
-        return NULL;
-    }
-    PyObject * attr = PyObject_GetAttrString(self, "attributes");
-    if (attr == NULL) {
-        PyErr_SetString(PyExc_AttributeError, "SET_KW: No attributes list");
-        return NULL;
-    }
-    int i = PyList_Size(attr);
-    char * entry;
-    PyObject * item;
-    for(i = 0; i < PyList_Size(attr); i++) {
-        item = PyList_GetItem(attr, i);
-        if (!PyString_Check(item)) {
-            continue;
-        }
-        entry = PyString_AsString(item);
-        if (strcmp(entry, name) == 0) {
-            goto list_contains_it;
-        }
-        // Should I free entry at this point?
-    }
-    {
-      PyObject * namestr = PyString_FromString(name);
-      PyList_Append(attr, namestr);
-      Py_DECREF(namestr);
-    }
-list_contains_it:
-    Py_DECREF(attr);
-    if (!PyDict_Check(kw)) {
-        PyErr_SetString(PyExc_TypeError, "SET_KW: kw not a dict");
-        return NULL;
-    }
-    PyObject * value = NULL;
-    bool decvalue = false;
-    if ((value = PyDict_GetItemString(kw, name)) == NULL) {
-        PyObject * copy = PyDict_GetItemString(kw, "copy");
-        if ((copy != NULL) && (PyObject_HasAttrString(copy, name))) {
-            value = PyObject_GetAttrString(copy, name);
-            decvalue = true;
-        } else {
-            value = def;
-        }
-    }
-    if (value == NULL) {
-        Py_INCREF(Py_None);
-        value = Py_None;
-    }
-    PyObject_SetAttrString(self, name, value);
-
-    if (decvalue) { Py_DECREF(value); }
-    
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
 static PyMethodDef atlas_methods[] = {
     {"Operation",  (PyCFunction)operation_new,  METH_VARARGS|METH_KEYWORDS},
     {"isLocation", is_location,                 METH_VARARGS},
@@ -1211,11 +1147,6 @@ static PyMethodDef server_methods[] = {
 
 static PyMethodDef common_methods[] = {
     //{"null",      null_new,                   METH_VARARGS},
-    {NULL,          NULL}                       /* Sentinel */
-};
-
-static PyMethodDef misc_methods[] = {
-    {"set_kw",      set_kw,                     METH_VARARGS},
     {NULL,          NULL}                       /* Sentinel */
 };
 
@@ -1296,11 +1227,6 @@ void init_python_api()
 
     if (Py_InitModule("Quaternion", quaternion_methods) == NULL) {
         log(CRITICAL, "Python init failed to create Quaternion module\n");
-        return;
-    }
-
-    if (Py_InitModule("misc", misc_methods) == NULL) {
-        log(CRITICAL, "Python init failed to create misc module\n");
         return;
     }
 

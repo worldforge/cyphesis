@@ -1,5 +1,9 @@
 2005-11-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Remove obsolete C++ set_kw() implementation.
+
+2005-11-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/world/objects/Thing.py: Remove self.attributes
 	  from the base class for all python scripts.
 
