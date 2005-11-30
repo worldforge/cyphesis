@@ -19,7 +19,7 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Entity::RootEntity;
 
 template<>
-void Property<BBox>::get(Element & e)
+void ImmutableProperty<BBox>::get(Element & e) const
 {
     e = m_data.toAtlas();
 }
@@ -28,12 +28,12 @@ template<>
 void Property<BBox>::set(const Element & e)
 {
     if (e.isList() && (e.asList().size() > 2)) {
-        m_data.fromAtlas(e.asList());
+        m_modData.fromAtlas(e.asList());
     }
 }
 
 template<>
-void Property<BBox>::add(const std::string & s, MapType & ent)
+void ImmutableProperty<BBox>::add(const std::string & s, MapType & ent) const
 {
     if (m_data.isValid()) {
         ent[s] = m_data.toAtlas();
@@ -41,7 +41,7 @@ void Property<BBox>::add(const std::string & s, MapType & ent)
 }
 
 template<>
-void Property<BBox>::add(const std::string & s, const RootEntity & ent)
+void ImmutableProperty<BBox>::add(const std::string & s, const RootEntity & ent) const
 {
     if (m_data.isValid()) {
         ent->setAttr(s, m_data.toAtlas());
@@ -49,7 +49,7 @@ void Property<BBox>::add(const std::string & s, const RootEntity & ent)
 }
 
 template<>
-void Property<IdList>::get(Element & e)
+void ImmutableProperty<IdList>::get(Element & e) const
 {
     e = Atlas::Message::ListType();
     idListasObject(m_data, e.asList());
@@ -59,12 +59,12 @@ template<>
 void Property<IdList>::set(const Element & e)
 {
     if (e.isList()) {
-        idListFromAtlas(e.asList(), m_data);
+        idListFromAtlas(e.asList(), m_modData);
     }
 }
 
 template<>
-void Property<IdList>::add(const std::string & s, MapType & ent)
+void ImmutableProperty<IdList>::add(const std::string & s, MapType & ent) const
 {
     if (!m_data.empty()) {
         get(ent[s]);
@@ -72,7 +72,7 @@ void Property<IdList>::add(const std::string & s, MapType & ent)
 }
 
 template<>
-void Property<IdList>::add(const std::string & s, const RootEntity & ent)
+void ImmutableProperty<IdList>::add(const std::string & s, const RootEntity & ent) const
 {
     if (!m_data.empty()) {
         ListType list;
@@ -82,7 +82,7 @@ void Property<IdList>::add(const std::string & s, const RootEntity & ent)
 }
 
 template<>
-void ImmutableProperty<EntitySet>::get(Element & e)
+void ImmutableProperty<EntitySet>::get(Element & e) const
 {
     e = ListType();
     ListType & contlist = e.asList();
@@ -94,7 +94,7 @@ void ImmutableProperty<EntitySet>::get(Element & e)
 
 template<>
 void ImmutableProperty<EntitySet>::add(const std::string & s,
-                                       MapType & ent)
+                                       MapType & ent) const
 {
     if (!m_data.empty()) {
         get(ent[s]);
@@ -103,7 +103,7 @@ void ImmutableProperty<EntitySet>::add(const std::string & s,
 
 template<>
 void ImmutableProperty<EntitySet>::add(const std::string & s,
-                                       const RootEntity & ent)
+                                       const RootEntity & ent) const
 {
     if (!m_data.empty()) {
         Element v;
@@ -113,7 +113,7 @@ void ImmutableProperty<EntitySet>::add(const std::string & s,
 }
 
 template<>
-void ImmutableProperty<Container>::get(Element & e)
+void ImmutableProperty<Container>::get(Element & e) const
 {
     // FIXME Not sure if this is best. Why did we bother to virtualise
     // addToMessage() if we have to do this here?
@@ -127,7 +127,7 @@ void ImmutableProperty<Container>::get(Element & e)
 
 template<>
 void ImmutableProperty<Container>::add(const std::string & s,
-                                       MapType & ent)
+                                       MapType & ent) const
 {
     if (!m_data.empty()) {
         m_data.addToMessage(s, ent);
@@ -136,7 +136,7 @@ void ImmutableProperty<Container>::add(const std::string & s,
 
 template<>
 void ImmutableProperty<Container>::add(const std::string & s,
-                                       const RootEntity & ent)
+                                       const RootEntity & ent) const
 {
     if (!m_data.empty()) {
         m_data.addToEntity(s, ent);
@@ -147,7 +147,7 @@ template<>
 void SignalProperty<BBox>::set(const Element & e)
 {
     if (e.isList() && (e.asList().size() > 2)) {
-        m_data.fromAtlas(e.asList());
+        m_modData.fromAtlas(e.asList());
         modified.emit();
     }
 }

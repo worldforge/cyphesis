@@ -25,7 +25,7 @@ LineProperty::LineProperty(CoordList & data, unsigned int flags) :
 {
 }
 
-void LineProperty::get(Element & ent)
+void LineProperty::get(Element & ent) const
 {
     ent = ListType();
     objectListAsMessage(m_data, ent.asList());
@@ -38,7 +38,7 @@ void LineProperty::set(const Element & ent)
     }
 }
 
-void LineProperty::add(const std::string & s, MapType & ent)
+void LineProperty::add(const std::string & s, MapType & ent) const
 {
     if (!m_data.empty()) {
         get(ent[s]);

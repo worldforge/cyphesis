@@ -1,5 +1,16 @@
 2005-11-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Property.h, common/Property_impl.h, common/Property.cpp:
+	  Modify property interface to make apropriate methods const,
+	  re-order inheritance to eliminate some redundant code.
+
+	* rulesets/EntityProperties.cpp, rulesets/LineProperty.h,
+	  rulesets/LineProperty.cpp, rulesets/TerrainProperty.h,
+	  rulesets/TerrainProperty.cpp: Update methods to match modified
+	  interface.
+
+2005-11-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommServer.cpp: Update some comments about how the flags
 	  work to ensure the server is repsonsive.
 

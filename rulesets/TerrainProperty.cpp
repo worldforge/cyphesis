@@ -34,7 +34,7 @@ TerrainProperty::TerrainProperty(Mercator::Terrain & data,
 {
 }
 
-void TerrainProperty::get(Element & ent)
+void TerrainProperty::get(Element & ent) const
 {
     MapType & t = (ent = MapType()).asMap();
     MapType & terrain = (t["points"] = MapType()).asMap();

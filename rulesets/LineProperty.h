@@ -21,9 +21,9 @@ class LineProperty : public PropertyBase {
     explicit LineProperty(CoordList & data,
                           unsigned int flags);
 
-    virtual void get(Atlas::Message::Element &);
+    virtual void get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
-    virtual void add(const std::string &, Atlas::Message::MapType & map);
+    virtual void add(const std::string &, Atlas::Message::MapType & map) const;
 };
 
 #endif // RULESETS_LINE_PROPERTY_H

@@ -14,13 +14,14 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::add(const std::string & s, Atlas::Message::MapType & ent)
+void PropertyBase::add(const std::string & s,
+                       Atlas::Message::MapType & ent) const
 {
     get(ent[s]);
 }
 
 void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent)
+                       const Atlas::Objects::Entity::RootEntity & ent) const
 {
     Atlas::Message::Element val;
     get(val);
@@ -31,7 +32,7 @@ template<>
 void Property<int>::set(const Atlas::Message::Element & e)
 {
     if (e.isInt()) {
-        m_data = e.asInt();
+        m_modData = e.asInt();
     }
 }
 
@@ -39,7 +40,7 @@ template<>
 void Property<long>::set(const Atlas::Message::Element & e)
 {
     if (e.isInt()) {
-        m_data = e.asInt();
+        m_modData = e.asInt();
     }
 }
 
@@ -47,7 +48,7 @@ template<>
 void Property<float>::set(const Atlas::Message::Element & e)
 {
     if (e.isNum()) {
-        m_data = e.asNum();
+        m_modData = e.asNum();
     }
 }
 
@@ -55,7 +56,7 @@ template<>
 void Property<double>::set(const Atlas::Message::Element & e)
 {
     if (e.isNum()) {
-        m_data = e.asNum();
+        m_modData = e.asNum();
     }
 }
 
@@ -63,13 +64,13 @@ template<>
 void Property<std::string>::set(const Atlas::Message::Element & e)
 {
     if (e.isString()) {
-        m_data = e.String();
+        m_modData = e.String();
     }
 }
 
 template<>
-void Property<std::string>::add(const std::string & s,
-                                Atlas::Message::MapType & ent)
+void ImmutableProperty<std::string>::add(const std::string & s,
+                                         Atlas::Message::MapType & ent) const
 {
     if (!m_data.empty()) {
         ent[s] = m_data;
