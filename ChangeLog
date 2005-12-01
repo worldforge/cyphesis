@@ -1,5 +1,10 @@
 2005-12-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/ExternalMind.py: Remove obsolete external
+	  mind class, now completely implemented in C++.
+
+2005-12-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/mind/SkelMind.py: Remove constructor, and
 	  add Setup operation handler so that skeleton can see again.
 

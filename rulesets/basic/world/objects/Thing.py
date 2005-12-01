@@ -26,6 +26,7 @@ class Thing:
         self.cinit(cppthing)
         self.op_dict={}
     def base_init(self, cppthing, kw):
+        print "base_init"
         self.cinit(cppthing)
         try:
             class_=self.base
