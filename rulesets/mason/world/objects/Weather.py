@@ -10,8 +10,6 @@ except ImportError:
   from whrandom import *
 
 class Weather(Thing):
-    def __init__(self, cppthing, **kw):
-        self.base_init(cppthing, kw)
     def tick_operation(self, op):
         res = Message()
         optick = Operation("tick", to=self)

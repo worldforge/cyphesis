@@ -1,3 +1,11 @@
+2005-12-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/mind/SkelMind.py: Remove constructor, and
+	  add Setup operation handler so that skeleton can see again.
+
+	* rulesets/mason/world/objects/Weather.py: Remove unnecessary
+	  constructor.
+
 2005-11-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: Remove obsolete C++ set_kw() implementation.

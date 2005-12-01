@@ -8,8 +8,8 @@ from world.objects.Thing import Thing
 BaseMind = Thing
 
 class SkeletonMind(BaseMind):
-    def __init__(self, cppthing, **kw):
-        self.base_init(cppthing, kw)
+    def setup_operation(self, op):
+        return Operation("look")
     def sight_move_operation(self, original_op, op):
         other = self.map.update(op[0], op.getSeconds())
         if other.id==self.id: return
