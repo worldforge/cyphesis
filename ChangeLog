@@ -1,5 +1,10 @@
 2005-12-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/BaseMind.py: Remove obsolete base mind class,
+	  now completely implemented in C++.
+
+2005-12-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/ExternalMind.py: Remove obsolete external
 	  mind class, now completely implemented in C++.
 
