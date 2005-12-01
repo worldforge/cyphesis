@@ -1,5 +1,16 @@
 2005-12-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/world/objects/Thing.py: Get rid of redundant kw
+	  arg to constructor, move op_dict initialisation to cinit()
+	  and remove base_init completely as its only required to handle
+	  the C++ constructor behavoir which we no longer need.
+
+	* rulesets/basic/mind/NPCMind.py: Get rid of redundant args to
+	  to mind, and call cinit to handle connection to C++ core directly
+	  now that base_init is gone.
+
+2005-12-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/BaseMind.py: Remove obsolete base mind class,
 	  now completely implemented in C++.
 

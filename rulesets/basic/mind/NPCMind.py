@@ -30,9 +30,8 @@ reverse_cmp={'>':'<'}
 class NPCMind(BaseMind):
     """base class for all NPCs"""
     ########## Initialization
-    def __init__(self, cppthing, body=None, **kw):
-        self.base_init(cppthing, kw)
-        self.body=body
+    def __init__(self, cppthing):
+        self.cinit(cppthing)
 
         self.knowledge=Knowledge()
         self.mem=Memory(map=self.map)

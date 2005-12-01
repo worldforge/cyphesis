@@ -21,25 +21,12 @@ def get_dict_func(self, dict, func_str, func_undefined):
         return func
 
 class Thing:
-    def __init__(self, cppthing, **kw):
+    def __init__(self, cppthing):
         #print "Thing.__init__"
         self.cinit(cppthing)
-        self.op_dict={}
-    def base_init(self, cppthing, kw):
-        print "base_init"
-        self.cinit(cppthing)
-        try:
-            class_=self.base
-        except AttributeError:
-            class_=self.__class__
-        base=class_.__bases__
-        if base:
-            self.base=base[0]
-            apply(self.base.__init__,(self,cppthing,),kw)
-        else:
-            del self.base
     def cinit(self, cppthing):
         self.__dict__['cppthing'] = cppthing
+        self.op_dict={}
         #print "Stored reference to C++ object"
         #print cppthing
     def __getattr__(self, name):
