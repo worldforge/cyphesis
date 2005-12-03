@@ -17,7 +17,7 @@ static PyObject * Entity_as_entity(PyEntity * self)
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "invalid entity as_entity");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.as_entity");
         return NULL;
     }
 #endif // NDEBUG
@@ -49,7 +49,7 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
     // Fairly major re-write of this to use operator[] of Entity base class
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "invalid entity getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.getattr");
         return NULL;
     }
 #endif // NDEBUG
@@ -129,15 +129,12 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
 
 static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
 {
+#ifndef NDEBUG
     if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.getattr");
         return -1;
     }
-    if (self->Entity_attr == NULL) {
-        self->Entity_attr = PyDict_New();
-        if (self->Entity_attr == NULL) {
-            return -1;
-        }
-    }
+#endif // NDEBUG
     if (strcmp(name, "status") == 0) {
         // This needs to be here until we can sort the difference
         // between floats and ints in python.
@@ -167,6 +164,12 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
     }
     // If we get here, then the attribute is not Atlas compatable, so we
     // need to store it in a python dictionary
+    if (self->Entity_attr == NULL) {
+        self->Entity_attr = PyDict_New();
+        if (self->Entity_attr == NULL) {
+            return -1;
+        }
+    }
     return PyDict_SetItemString(self->Entity_attr, name, v);
 }
 

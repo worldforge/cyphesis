@@ -1,3 +1,11 @@
+2005-12-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Thing.cpp: Clean up error messages. Delay initialisation
+	  of entity's python attribute store until its required.
+
+	* rulesets/Py_Task.cpp, rulesets/Py_Task.h: Basic python wrappers
+	  written for Task.
+
 2005-12-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/world/objects/Thing.py: Get rid of redundant kw

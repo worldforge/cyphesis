@@ -1,3 +1,9 @@
+Do any Python setattr functions return 0 when they fail? I think PyOperation
+does.
+
+Do any Python types with have an _attr member initialise it before
+they have to in setattr? Py_Entity/Thing used to.
+
 In Thing.py, op_dict may be pointless
 I am pretty sure benchmarks show it is faster without it.
 
