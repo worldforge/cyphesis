@@ -1,5 +1,13 @@
 2005-12-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommUnixListener.cpp, server/CommListener.cpp: Add cassert
+	  include required by some compilers.
+
+	* configure.ac: Add experimental support for new avahi DNS service
+	  discovery implementation, using howl compatabiity API. Untested.
+
+2005-12-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Operation.cpp: Throw an attribute exception if a script
 	  tries to modify an unknown attribute on an operation.
 

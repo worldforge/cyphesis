@@ -237,14 +237,22 @@ PKG_CHECK_MODULES(WFMATH, wfmath-0.3,
         AC_MSG_ERROR([Cannot find valid versions of required WorldForge maths libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
     ])
 
-PKG_CHECK_MODULES(HOWL, howl,
+PKG_CHECK_MODULES(HOWL, avahi-compat-howl,
     [
         CPPFLAGS="$CPPFLAGS $HOWL_CFLAGS"
         MDNS_LIBS="$MDNS_LIBS $HOWL_LIBS"
         AC_DEFINE(HAVE_LIBHOWL, 1, [Define to 1 if you have howl libs.])
     ],
     [
-        AC_MSG_NOTICE([Howl libraries not found. Ommiting DNS-SD function.])
+        PKG_CHECK_MODULES(HOWL, howl,
+            [
+                CPPFLAGS="$CPPFLAGS $HOWL_CFLAGS"
+                MDNS_LIBS="$MDNS_LIBS $HOWL_LIBS"
+                AC_DEFINE(HAVE_LIBHOWL, 1, [Define to 1 if you have howl libs.])
+            ],
+            [
+                AC_MSG_NOTICE([Ommiting DNS-SD functionality.])
+            ])
     ])
 
 AM_PATH_PSQL(7.1.0,

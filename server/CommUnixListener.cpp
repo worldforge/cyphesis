@@ -14,6 +14,8 @@
 
 #include <iostream>
 
+#include <cassert>
+
 static const bool debug_flag = false;
 
 /// \brief Constructor unix listen socket object.

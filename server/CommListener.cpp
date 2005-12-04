@@ -16,6 +16,8 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
+#include <cassert>
+
 static const bool debug_flag = false;
 
 /// \brief Constructor for listener socket object.
