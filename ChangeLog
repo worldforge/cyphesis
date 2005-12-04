@@ -1,5 +1,10 @@
 2005-12-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Operation.cpp: Throw an attribute exception if a script
+	  tries to modify an unknown attribute on an operation.
+
+2005-12-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.h, rulesets/Entity.cpp: Add getProperty method
 	  which allows the property object of an attribute to be accessed.
 

@@ -589,19 +589,20 @@ static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
         Py_DECREF(thing_id);
         return 0;
     }
-    return 0;
+    PyErr_SetString(PyExc_AttributeError, "unknown attribute");
+    return -1;
 }
 
 PyTypeObject PyOperation_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                                      // ob_size
         "Operation",                            // tp_name
-        sizeof(PyOperation),            // tp_basicsize
+        sizeof(PyOperation),                    // tp_basicsize
         0,                                      // tp_itemsize
         //  methods 
         (destructor)Operation_dealloc,          // tp_dealloc
         0,                                      // tp_print
-        (getattrfunc)Operation_getattr,  // tp_getattr
+        (getattrfunc)Operation_getattr,         // tp_getattr
         (setattrfunc)Operation_setattr,         // tp_setattr
         0,                                      // tp_compare
         0,                                      // tp_repr
@@ -615,7 +616,7 @@ PyTypeObject PyConstOperation_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                                      // ob_size
         "Operation",                            // tp_name
-        sizeof(PyConstOperation),           // tp_basicsize
+        sizeof(PyConstOperation),               // tp_basicsize
         0,                                      // tp_itemsize
         //  methods 
         (destructor)Operation_dealloc,          // tp_dealloc

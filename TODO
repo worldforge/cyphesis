@@ -1,3 +1,6 @@
+Use getProperty to implement a surface property, and integrate into the
+height adjustment code.
+
 Do any Python setattr functions return 0 when they fail? I think PyOperation
 does.
 
