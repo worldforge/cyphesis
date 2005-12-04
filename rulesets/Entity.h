@@ -160,6 +160,8 @@ class Entity : public BaseEntity {
     bool get(const std::string &, Atlas::Message::Element &) const;
     void set(const std::string &, const Atlas::Message::Element &);
 
+    PropertyBase * getProperty(const std::string &) const;
+
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 

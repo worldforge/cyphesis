@@ -1,5 +1,13 @@
 2005-12-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h, rulesets/Entity.cpp: Add getProperty method
+	  which allows the property object of an attribute to be accessed.
+
+	* tests/IGEntityExerciser.h, tests/Entitytest.cpp: Add tests for
+	  getProperty() basic functionality.
+
+2005-12-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Mind.cpp, rulesets/Py_Task.cpp, rulesets/Py_Thing.cpp:
 	  Throw assertion expceptions if python code attempts to compare
 	  objects with NULL pointers.

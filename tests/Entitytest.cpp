@@ -38,6 +38,7 @@ int main()
 
     // Make sure we have all the default attributes
     assert(ee.checkAttributes(attrNames));
+    assert(ee.checkProperties(attrNames));
 
     attrNames.insert("test_int");
     attrNames.insert("test_float");
@@ -50,6 +51,7 @@ int main()
 
     // Make sure we don't have the test attributes yet
     assert(!ee.checkAttributes(attrNames));
+    assert(!ee.checkProperties(attrNames));
 
     // Add the test attributes
     e.set("test_int", 1);
@@ -68,6 +70,7 @@ int main()
     
     // Make sure we have the test attributes now
     assert(ee.checkAttributes(attrNames));
+    assert(!ee.checkProperties(attrNames));
 
     MapType entityAsAtlas;
 

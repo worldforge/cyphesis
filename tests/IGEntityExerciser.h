@@ -15,6 +15,7 @@ class IGEntityExerciser : public EntityExerciser<EntityType> {
     explicit IGEntityExerciser(EntityType & e) : EntityExerciser<EntityType>(e) { }
 
     bool checkAttributes(const std::set<std::string> & attr_names);
+    bool checkProperties(const std::set<std::string> & prop_names);
 };
 
 template <class EntityType>
@@ -26,6 +27,21 @@ inline bool IGEntityExerciser<EntityType>::checkAttributes(const std::set<std::s
     for (; I != Iend; ++I) {
         if (!this->m_ent.get(*I, null)) {
             std::cerr << "Entity does not have \"" << *I << "\" attribute."
+                      << std::endl << std::flush;
+            return false;
+        }
+    }
+    return true;
+}
+
+template <class EntityType>
+inline bool IGEntityExerciser<EntityType>::checkProperties(const std::set<std::string> & prop_names)
+{
+    std::set<std::string>::const_iterator I = prop_names.begin();
+    std::set<std::string>::const_iterator Iend = prop_names.end();
+    for (; I != Iend; ++I) {
+        if (this->m_ent.getProperty(*I) == NULL) {
+            std::cerr << "Entity does not have \"" << *I << "\" property."
                       << std::endl << std::flush;
             return false;
         }

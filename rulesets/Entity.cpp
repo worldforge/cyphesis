@@ -82,16 +82,16 @@ Entity::~Entity()
 
 /// \brief Check if this entity has a property with the given name
 ///
-/// @param aname Name of attribute to be checked
+/// @param name Name of attribute to be checked
 /// @return trye if this entity has an attribute with the name given
 /// false otherwise
-bool Entity::has(const std::string & aname) const
+bool Entity::has(const std::string & name) const
 {
-    PropertyDict::const_iterator I = m_properties.find(aname);
+    PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         return true;
     }
-    MapType::const_iterator J = m_attributes.find(aname);
+    MapType::const_iterator J = m_attributes.find(name);
     if (J != m_attributes.end()) {
         return true;
     }
@@ -101,18 +101,18 @@ bool Entity::has(const std::string & aname) const
 
 /// \brief Get the value of an attribute
 ///
-/// @param aname Name of attribute to be retrieved
+/// @param name Name of attribute to be retrieved
 /// @param attr Reference used to store value
 /// @return trye if this entity has an attribute with the name given
 /// false otherwise
-bool Entity::get(const std::string & aname, Element & attr) const
+bool Entity::get(const std::string & name, Element & attr) const
 {
-    PropertyDict::const_iterator I = m_properties.find(aname);
+    PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         I->second->get(attr);
         return true;
     }
-    MapType::const_iterator J = m_attributes.find(aname);
+    MapType::const_iterator J = m_attributes.find(name);
     if (J != m_attributes.end()) {
         attr = J->second;
         return true;
@@ -122,18 +122,32 @@ bool Entity::get(const std::string & aname, Element & attr) const
 
 /// \brief Set the value of an attribute
 ///
-/// @param aname Name of attribute to be changed
+/// @param name Name of attribute to be changed
 /// @param attr Value to be stored
-void Entity::set(const std::string & aname, const Element & attr)
+void Entity::set(const std::string & name, const Element & attr)
 {
-    PropertyDict::const_iterator I = m_properties.find(aname);
+    PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         I->second->set(attr);
         m_update_flags |= I->second->flags();
         return;
     }
-    m_attributes[aname] = attr;
+    m_attributes[name] = attr;
     m_update_flags |= a_attr;
+}
+
+/// \brief Get the property object for a given attribute
+///
+/// @param name name of the attribute for which the property is required.
+/// @return a pointer to the property, or zero if the attributes does
+/// not exist, or is not stored using a property object.
+PropertyBase * Entity::getProperty(const std::string & name) const
+{
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second;
+    }
+    return 0;
 }
 
 /// \brief Copy attributes into an Atlas element
