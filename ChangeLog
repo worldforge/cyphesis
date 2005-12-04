@@ -1,3 +1,12 @@
+2005-12-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Mind.cpp, rulesets/Py_Task.cpp, rulesets/Py_Thing.cpp:
+	  Throw assertion expceptions if python code attempts to compare
+	  objects with NULL pointers.
+
+	* rulesets/Py_Statistics.cpp, rulesets/Py_Statistics.h: Basic python
+	  wrappers for Statistics.
+
 2005-12-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Thing.cpp: Clean up error messages. Delay initialisation

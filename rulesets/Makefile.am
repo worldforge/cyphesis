@@ -52,6 +52,7 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    Py_World.cpp Py_World.h \
 			    Py_Location.cpp Py_Location.h \
 			    Py_Task.cpp Py_Task.h \
+			    Py_Statistics.cpp Py_Statistics.h \
 			    Python_API.cpp Python_API.h \
 			    Python_Script_Utils.h \
 			    PythonScript.cpp PythonScript.h \

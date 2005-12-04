@@ -176,6 +176,7 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
 static int Entity_compare(PyEntity *self, PyEntity *other)
 {
     if ((self->m_entity == NULL) || (other->m_entity == NULL)) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Entity in Entity.compare");
         return -1;
     }
     return (self->m_entity == other->m_entity) ? 0 : 1;

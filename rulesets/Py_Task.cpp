@@ -63,6 +63,7 @@ static int Task_setattr(PyTask *self, char *name, PyObject *v)
 static int Task_compare(PyTask *self, PyTask *other)
 {
     if ((self->m_task == NULL) || (other->m_task == NULL)) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Task in Task.compare");
         return -1;
     }
     return (self->m_task == other->m_task) ? 0 : 1;

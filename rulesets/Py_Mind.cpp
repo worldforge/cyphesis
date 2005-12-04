@@ -175,6 +175,7 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
 static int Mind_compare(PyMind *self, PyMind *other)
 {
     if ((self->m_mind == NULL) || (other->m_mind == NULL)) {
+        PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.compare");
         return -1;
     }
     return (self->m_mind == other->m_mind) ? 0 : 1;
