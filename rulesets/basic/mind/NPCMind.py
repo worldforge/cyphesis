@@ -27,6 +27,14 @@ import mind.goals.common
 
 reverse_cmp={'>':'<'}
 
+def get_dict_func(self, func_str, func_undefined):
+    """get method by name from instance or return default handler"""
+    try:
+        func=getattr(self,func_str)
+    except AttributeError:
+        func=func_undefined
+    return func
+
 class NPCMind(BaseMind):
     """base class for all NPCs"""
     ########## Initialization
@@ -48,6 +56,20 @@ class NPCMind(BaseMind):
         self.map.add_hooks_append("add_map")
         self.map.update_hooks_append("update_map")
         self.map.delete_hooks_append("delete_map")
+    def find_op_method(self, op_id, prefix="",undefined_op_method=None):
+        """find right operation to invoke"""
+        if not undefined_op_method: undefined_op_method=self.undefined_op_method
+        return get_dict_func(self, prefix+op_id+"_operation",undefined_op_method)
+    def undefined_op_method(self, op):
+        """this operation is used when no other matching operation is found"""
+        pass
+    def get_op_name_and_sub(self, op):
+        event_name = op.id
+        sub_op = op
+        while len(sub_op) and sub_op[0].get_name()=="op":
+            sub_op = sub_op[0]
+            event_name = event_name + "_" + sub_op.id
+        return event_name, sub_op
     ########## Map updates
     def add_map(self, obj):
         #print "Map add",obj

@@ -1,5 +1,25 @@
 2005-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/NPCMind.py,
+	  rulesets/basic/world/objects/Thing.py: Move some functionality
+	  from the Thing base class into NPCMind, leaving minimal
+	  functionality in the base class making it suitable as an interface
+	  for all scripts.
+
+2005-12-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.h, server/EntityFactory.cpp: Add a handler for
+	  objects in rules files.
+
+	* rulesets/TaskScript.h, rulesets/TaskScript.cpp: Task class which
+	  delegates functionality to a script object. Basically just a
+	  stub at this point.
+
+	* server/TaskFactory.h server/TaskFactory.cpp: Factory class for
+	  creating instances of Task classes.
+
+2005-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Mind.cpp: Delay initialisation of mind's python
 	  attribute store until it's required.
 
