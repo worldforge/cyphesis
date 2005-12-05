@@ -239,6 +239,15 @@ void EntityFactory::populateFactory(const std::string & className,
     }
 }
 
+int EntityFactory::installTaskClass(const std::string & className,
+                                    const std::string & parent,
+                                    const MapType & classDesc)
+{
+    // std::cout << "Attempting to install " << className << " which is a "
+              // << parent << std::endl << std::flush;
+    return -1;
+}
+
 int EntityFactory::installEntityClass(const std::string & className,
                                       const std::string & parent,
                                       const MapType & classDesc)
@@ -346,9 +355,16 @@ int EntityFactory::installRule(const std::string & className,
     }
     const std::string & parent = p1.String();
     if (objtype == "class") {
-        int ret = installEntityClass(className, parent, classDesc);
-        if (ret != 0) {
-            return ret;
+        if (parent == "task") {
+            int ret = installTaskClass(className, parent, classDesc);
+            if (ret != 0) {
+                return ret;
+            }
+        } else {
+            int ret = installEntityClass(className, parent, classDesc);
+            if (ret != 0) {
+                return ret;
+            }
         }
     } else if (objtype == "op_definition") {
         int ret = installOpDefinition(className, parent, classDesc);
