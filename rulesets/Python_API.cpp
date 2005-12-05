@@ -432,7 +432,7 @@ void Create_PyEntity(Entity * entity, const std::string & package,
     Py_DECREF(pyClass);
 
     if (o != NULL) {
-        entity->setScript(new PythonEntityScript(o, *entity));
+        entity->setScript(new PythonEntityScript(o));
     }
 }
 

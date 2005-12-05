@@ -16,8 +16,8 @@
 
 static const bool debug_flag = false;
 
-PythonEntityScript::PythonEntityScript(PyObject * o, Entity & t) :
-    PythonScript(o, t), m_entity(t)
+PythonEntityScript::PythonEntityScript(PyObject * o) :
+    PythonScript(o)
 {
 }
 

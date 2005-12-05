@@ -86,7 +86,7 @@ int PythonScriptFactory::addScript(Entity * entity)
         return -1;
     }
 
-    entity->setScript(new PythonEntityScript(script, *entity));
+    entity->setScript(new PythonEntityScript(script));
 
     return 0;
 }

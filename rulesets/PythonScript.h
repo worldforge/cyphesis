@@ -15,9 +15,8 @@ class Entity;
 class PythonScript : public Script {
   protected:
     PyObject * scriptObject;
-    Entity & entity;
   public:
-    PythonScript(PyObject *, Entity &);
+    PythonScript(PyObject *);
     virtual ~PythonScript();
     virtual bool operation(const std::string &,
                            const Atlas::Objects::Operation::RootOperation &,

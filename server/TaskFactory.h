@@ -5,6 +5,8 @@
 #ifndef SERVER_TASK_FACTORY_H
 #define SERVER_TASK_FACTORY_H
 
+#include <Python.h>
+
 class Task;
 class Character;
 
@@ -24,12 +26,16 @@ class TaskFactory {
     virtual Task * newTask(Character & chr) = 0;
 };
 
-class TaskScriptFactory {
+class PythonTaskScriptFactory {
   public:
-    ScriptFactory * m_scriptFactory;
+    PyObject * m_module;
+    PyObject * m_class;
 
-    TaskScriptFactory();
-    virtual ~TaskScriptFactory();
+    int getClass();
+    int addScript();
+  public:
+    PythonTaskScriptFactory();
+    virtual ~PythonTaskScriptFactory();
 
     virtual Task * newTask(Character & chr);
 };

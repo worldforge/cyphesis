@@ -11,10 +11,8 @@ class Entity;
 
 /// \brief Script class for Python scripts attached to an Entity
 class PythonEntityScript : public PythonScript {
-  private:
-    Entity & m_entity;
   public:
-    PythonEntityScript(PyObject *, Entity &);
+    PythonEntityScript(PyObject *);
     virtual ~PythonEntityScript();
     virtual bool operation(const std::string &,
                            const Atlas::Objects::Operation::RootOperation &,

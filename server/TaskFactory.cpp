@@ -14,18 +14,19 @@ TaskFactory::~TaskFactory()
 {
 }
 
-TaskScriptFactory::TaskScriptFactory() : m_scriptFactory(0)
+PythonTaskScriptFactory::PythonTaskScriptFactory() : m_module(0), m_class(0)
 {
 }
 
-TaskScriptFactory::~TaskScriptFactory()
+PythonTaskScriptFactory::~PythonTaskScriptFactory()
 {
-    if (m_scriptFactory != 0) {
-        delete m_scriptFactory;
+    if (m_module != 0) {
+    }
+    if (m_class != 0) {
     }
 }
 
-Task * TaskScriptFactory::newTask(Character & chr)
+Task * PythonTaskScriptFactory::newTask(Character & chr)
 {
     // Create the task, and use its script to add a script
     return 0;

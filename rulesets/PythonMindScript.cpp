@@ -20,7 +20,7 @@
 static const bool debug_flag = false;
 
 PythonMindScript::PythonMindScript(PyObject * o, BaseMind & m) :
-    PythonScript(o, m), mind(m)
+                  PythonScript(o), mind(m)
 {
 }
 

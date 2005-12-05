@@ -4,8 +4,7 @@
 
 #include "PythonScript.h"
 
-PythonScript::PythonScript(PyObject * o, Entity & t) :
-                 scriptObject(o), entity(t)
+PythonScript::PythonScript(PyObject * o) : scriptObject(o)
 {
 }
 

@@ -1,5 +1,18 @@
 2005-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/TaskFactory.cpp, server/TaskFactory.h: Re-write the
+	  script task to handle creating the script directly, rather than
+	  use ScriptFactory which is not suitable.
+
+	* rulesets/PythonMindScript.cpp, rulesets/PythonScript.cpp,
+	  rulesets/PythonScript.h, PythonThingScript.cpp,
+	  rulesets/PythonThingScript.h, rulesets/Python_API.cpp,
+	  server/ScriptFactory.cpp: Remove obsolete pointer to entity
+	  from script class, removing its link to Entity, making it more
+	  generally useful.
+
+2005-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/NPCMind.py,
 	  rulesets/basic/world/objects/Thing.py: Move some functionality
 	  from the Thing base class into NPCMind, leaving minimal
