@@ -240,7 +240,6 @@ class move_me_to_focus(Goal):
         target=what.location.copy()
         if target.parent.id==me.location.parent.id:
             target.velocity=me.location.coordinates.unit_vector_to_another_vector(target.coordinates)
-            target.rotation=target.velocity
             return Operation("move", Entity(me.id, location=target))
 
 ############################ MOVE THING TO ME ####################################

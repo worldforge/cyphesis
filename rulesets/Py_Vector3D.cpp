@@ -169,9 +169,9 @@ static int Vector3D_print(PyVector3D * self, FILE * fp, int)
 
 static PyObject* Vector3D_repr(PyVector3D * self)
 {
-	char buf[64];
-	::snprintf(buf, 64, "(%f, %f, %f)", self->coords.x(), self->coords.y(), self->coords.z());
-	return PyString_FromString(buf);
+    char buf[64];
+    ::snprintf(buf, 64, "(%f, %f, %f)", self->coords.x(), self->coords.y(), self->coords.z());
+    return PyString_FromString(buf);
 }
 
 static PyObject * Vector3D_getattr(PyVector3D *self, char *name)

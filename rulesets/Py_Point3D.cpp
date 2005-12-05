@@ -84,12 +84,6 @@ static PyObject * Point3D_getattr(PyPoint3D *self, char *name)
     return Py_FindMethod(Point3D_methods, (PyObject *)self, name);
 }
 
-static int Point3D_setattr(PyPoint3D *self, char *name, PyObject *v)
-{
-    PyErr_SetString(PyExc_AttributeError, "Point3D attribute cannot be set");
-    return -1;
-}
-
 static int Point3D_compare(PyPoint3D * self, PyPoint3D * other)
 {
     if (!PyPoint3D_Check(other)) {
@@ -182,7 +176,7 @@ PyTypeObject PyPoint3D_Type = {
         (destructor)Point3D_dealloc,    /*tp_dealloc*/
         (printfunc)Point3D_print,       /*tp_print*/
         (getattrfunc)Point3D_getattr,   /*tp_getattr*/
-        (setattrfunc)Point3D_setattr,   /*tp_setattr*/
+        0,                              /*tp_setattr*/
         (cmpfunc)Point3D_compare,       /*tp_compare*/
         (reprfunc)Point3D_repr,         /*tp_repr*/
         &Point3D_num,                   /*tp_as_number*/

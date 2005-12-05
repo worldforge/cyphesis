@@ -38,8 +38,8 @@ static PyObject * Mind_as_entity(PyMind * self)
 }
 
 static PyMethodDef Mind_methods[] = {
-        {"as_entity",        (PyCFunction)Mind_as_entity,  METH_NOARGS},
-        {NULL,          NULL}           /* sentinel */
+    {"as_entity",        (PyCFunction)Mind_as_entity,  METH_NOARGS},
+    {NULL,               NULL}           // sentinel
 };
 
 static void Mind_dealloc(PyMind *self)
@@ -182,22 +182,22 @@ static int Mind_compare(PyMind *self, PyMind *other)
 }
 
 PyTypeObject PyMind_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
-        "Mind",                         /*tp_name*/
-        sizeof(PyMind),                 /*tp_basicsize*/
-        0,                              /*tp_itemsize*/
-        /* methods */
-        (destructor)Mind_dealloc,       /*tp_dealloc*/
-        0,                              /*tp_print*/
-        (getattrfunc)Mind_getattr,      /*tp_getattr*/
-        (setattrfunc)Mind_setattr,      /*tp_setattr*/
-        (cmpfunc)Mind_compare,          /*tp_compare*/
-        0,                              /*tp_repr*/
-        0,                              /*tp_as_number*/
-        0,                              /*tp_as_sequence*/
-        0,                              /*tp_as_mapping*/
-        0,                              /*tp_hash*/
+    PyObject_HEAD_INIT(&PyType_Type)
+    0,                              // ob_size
+    "Mind",                         // tp_name
+    sizeof(PyMind),                 // tp_basicsize
+    0,                              // tp_itemsize
+    // methods 
+    (destructor)Mind_dealloc,       // tp_dealloc
+    0,                              // tp_print
+    (getattrfunc)Mind_getattr,      // tp_getattr
+    (setattrfunc)Mind_setattr,      // tp_setattr
+    (cmpfunc)Mind_compare,          // tp_compare
+    0,                              // tp_repr
+    0,                              // tp_as_number
+    0,                              // tp_as_sequence
+    0,                              // tp_as_mapping
+    0,                              // tp_hash
 };
 
 PyMind * newPyMind()

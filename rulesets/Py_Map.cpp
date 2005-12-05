@@ -256,25 +256,22 @@ static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * args)
 }
 
 static PyMethodDef Map_methods[] = {
-    {"find_by_location",(PyCFunction)Map_find_by_location,	METH_VARARGS},
-    {"find_by_type",	(PyCFunction)Map_find_by_type,	METH_VARARGS},
-    {"look_id",		(PyCFunction)Map_look_id,	METH_NOARGS},
-    {"add",		(PyCFunction)Map_updateAdd,	METH_VARARGS},
-    {"delete",		(PyCFunction)Map_delete,	METH_VARARGS},
-    {"get",		(PyCFunction)Map_get,		METH_VARARGS},
-    {"get_add",		(PyCFunction)Map_get_add,	METH_VARARGS},
-    {"update",		(PyCFunction)Map_updateAdd,	METH_VARARGS},
-    {"add_hooks_append",(PyCFunction)Map_add_hooks_append,	METH_VARARGS},
-    {"update_hooks_append",	(PyCFunction)Map_update_hooks_append,	METH_VARARGS},
-    {"delete_hooks_append",	(PyCFunction)Map_delete_hooks_append,	METH_VARARGS},
-    {NULL,		NULL}           /* sentinel */
+    {"find_by_location",    (PyCFunction)Map_find_by_location,    METH_VARARGS},
+    {"find_by_type",        (PyCFunction)Map_find_by_type,        METH_VARARGS},
+    {"look_id",             (PyCFunction)Map_look_id,             METH_NOARGS},
+    {"add",                 (PyCFunction)Map_updateAdd,           METH_VARARGS},
+    {"delete",              (PyCFunction)Map_delete,              METH_VARARGS},
+    {"get",                 (PyCFunction)Map_get,                 METH_VARARGS},
+    {"get_add",             (PyCFunction)Map_get_add,             METH_VARARGS},
+    {"update",              (PyCFunction)Map_updateAdd,           METH_VARARGS},
+    {"add_hooks_append",    (PyCFunction)Map_add_hooks_append,    METH_VARARGS},
+    {"update_hooks_append", (PyCFunction)Map_update_hooks_append, METH_VARARGS},
+    {"delete_hooks_append", (PyCFunction)Map_delete_hooks_append, METH_VARARGS},
+    {NULL,                  NULL}           // sentinel
 };
 
 static void Map_dealloc(PyMap *self)
 {
-    //if (self->m_entity != NULL) {
-        //delete self->m_entity;
-    //}
     PyMem_DEL(self);
 }
 
@@ -283,36 +280,31 @@ static PyObject * Map_getattr(PyMap *self, char *name)
     return Py_FindMethod(Map_methods, (PyObject *)self, name);
 }
 
-static int Map_setattr(PyMap *self, char *name, PyObject *v)
-{
-    return 0;
-}
-
 PyTypeObject Map_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,				/*ob_size*/
-	"Map",				/*tp_name*/
-	sizeof(PyMap),		/*tp_basicsize*/
-	0,				/*tp_itemsize*/
-	/* methods */
-	(destructor)Map_dealloc,	/*tp_dealloc*/
-	0,				/*tp_print*/
-	(getattrfunc)Map_getattr,	/*tp_getattr*/
-	(setattrfunc)Map_setattr,	/*tp_setattr*/
-	0,				/*tp_compare*/
-	0,				/*tp_repr*/
-	0,				/*tp_as_number*/
-	0,				/*tp_as_sequence*/
-	0,				/*tp_as_mapping*/
-	0,				/*tp_hash*/
+    PyObject_HEAD_INIT(&PyType_Type)
+    0,                              // ob_size
+    "Map",                          // tp_name
+    sizeof(PyMap),                  // tp_basicsize
+    0,                              // tp_itemsize
+    // methods
+    (destructor)Map_dealloc,        // tp_dealloc
+    0,                              // tp_print
+    (getattrfunc)Map_getattr,       // tp_getattr
+    0,                              // tp_setattr
+    0,                              // tp_compare
+    0,                              // tp_repr
+    0,                              // tp_as_number
+    0,                              // tp_as_sequence
+    0,                              // tp_as_mapping
+    0,                              // tp_hash
 };
 
 PyMap * newPyMap()
 {
-	PyMap * self;
-	self = PyObject_NEW(PyMap, &Map_Type);
-	if (self == NULL) {
-		return NULL;
-	}
-	return self;
+    PyMap * self;
+    self = PyObject_NEW(PyMap, &Map_Type);
+    if (self == NULL) {
+        return NULL;
+    }
+    return self;
 }

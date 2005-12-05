@@ -48,14 +48,17 @@ static int BBox_setattr(PyBBox *self, char *name, PyObject *v)
     if (strcmp(name, "near_point") == 0) {
         (WFMath::Point<3>&)self->box.lowCorner() = WFMath::Point<3>(vector.x(),
                                                                     vector.y(),
-                                                                    vector.z()); 
+                                                                    vector.z());
+        return 0;
     } else if (strcmp(name, "far_point") == 0) {
-        (WFMath::Point<3>&)self->box.highCorner()=WFMath::Point<3>(vector.x(),
-                                                                   vector.y(),
-                                                                   vector.z()); 
+        (WFMath::Point<3>&)self->box.highCorner()= WFMath::Point<3>(vector.x(),
+                                                                    vector.y(),
+                                                                    vector.z());
+        return 0;
     }
 
-    return 0;
+    PyErr_SetString(PyExc_AttributeError, "unknown attribute");
+    return -1;
 }
 
 static int BBox_compare(PyBBox * self, PyBBox * other)

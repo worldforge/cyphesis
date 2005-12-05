@@ -1,3 +1,21 @@
+2005-12-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_BBox.cpp, rulesets/Py_Optime.cpp,
+	  rulesets/Py_Statistics.cpp, rulesets/Py_Thing.cpp: Ensure that
+	  setattr returns an exception if the attribute is not a valid one.
+
+	* rulesets/Py_Map.cpp, rulesets/Py_Point3D.cpp,
+	  rulesets/Py_Quaternion.cpp, rulesets/Py_World.cpp,
+	  rulesets/Py_WorldTime.cpp: Remove setattr, as no attributes can
+	  be set on this type.
+
+	* rulesets/Py_Mind.cpp, rulesets/Py_Oplist.cpp,
+	  rulesets/Py_Vector3D.cpp: Clean up type structure.
+
+	* rulesets/basic/mind/goals/common/move.py: Remove attempt
+	  to set "rotation" attribute on location, as its obsolete
+	  and pointless.
+
 2005-12-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommUnixListener.cpp, server/CommListener.cpp: Add cassert

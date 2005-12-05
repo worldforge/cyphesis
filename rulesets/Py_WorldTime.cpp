@@ -39,7 +39,7 @@ static PyObject * WorldTime_is_now(PyWorldTime *self, PyObject *args)
 static PyMethodDef WorldTime_methods[] = {
     {"seconds",         (PyCFunction)WorldTime_seconds, METH_NOARGS},
     {"is_now",          (PyCFunction)WorldTime_is_now,  METH_VARARGS},
-    {NULL,              NULL}           /* sentinel */
+    {NULL,              NULL}           // sentinel
 };
 
 static void WorldTime_dealloc(PyWorldTime *self)
@@ -59,19 +59,6 @@ static PyObject * WorldTime_getattr(PyWorldTime *self, char *name)
     return Py_FindMethod(WorldTime_methods, (PyObject *)self, name);
 }
 
-static int WorldTime_setattr(PyWorldTime *self, char *name, PyObject *v)
-{
-#ifndef NDEBUG
-    if (self->time == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL WorldTime in WorldTime.setattr");
-        return -1;
-    }
-#endif // NDEBUG
-    if (strcmp(name, "foo") == 0) {
-    }
-    return -1;
-}
-
 static int WorldTime_cmp(PyWorldTime *self, PyObject *other)
 {
     if (PyString_Check(other)) {
@@ -86,21 +73,21 @@ static int WorldTime_cmp(PyWorldTime *self, PyObject *other)
 
 PyTypeObject PyWorldTime_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
-        "WorldTime",                    /*tp_name*/
-        sizeof(PyWorldTime),            /*tp_basicsize*/
-        0,                              /*tp_itemsize*/
-        /* methods */
-        (destructor)WorldTime_dealloc,  /*tp_dealloc*/
-        0,                              /*tp_print*/
-        (getattrfunc)WorldTime_getattr, /*tp_getattr*/
-        (setattrfunc)WorldTime_setattr, /*tp_setattr*/
-        (cmpfunc)WorldTime_cmp,         /*tp_compare*/
-        0,                              /*tp_repr*/
-        0,                              /*tp_as_number*/
-        0,                              /*tp_as_sequence*/
-        0,                              /*tp_as_mapping*/
-        0,                              /*tp_hash*/
+        0,                              // ob_size
+        "WorldTime",                    // tp_name
+        sizeof(PyWorldTime),            // tp_basicsize
+        0,                              // tp_itemsize
+        // methods
+        (destructor)WorldTime_dealloc,  // tp_dealloc
+        0,                              // tp_print
+        (getattrfunc)WorldTime_getattr, // tp_getattr
+        0,                              // tp_setattr
+        (cmpfunc)WorldTime_cmp,         // tp_compare
+        0,                              // tp_repr
+        0,                              // tp_as_number
+        0,                              // tp_as_sequence
+        0,                              // tp_as_mapping
+        0,                              // tp_hash
 };
 
 PyWorldTime * newPyWorldTime()

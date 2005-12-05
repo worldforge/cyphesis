@@ -29,8 +29,8 @@ static PyObject* Oplist_append(PyOplist * self, PyObject * args)
 
 
 static PyMethodDef Oplist_methods[] = {
-    {"append",		(PyCFunction)Oplist_append,	METH_VARARGS},
-    {NULL,		NULL}           /* sentinel */
+    {"append",          (PyCFunction)Oplist_append,     METH_VARARGS},
+    {NULL,              NULL}           /* sentinel */
 };
 
 static void Oplist_dealloc(PyOplist *self)
@@ -122,7 +122,7 @@ static PySequenceMethods Oplist_as_sequence = {
     (inquiry)Oplist_seq_length,      /* sq_length */
     NULL,                            /* sq_concat */
     NULL,                            /* sq_repeat */
-    NULL,			     /* sq_item */
+    NULL,                            /* sq_item */
     NULL,                            /* sq_slice */
     NULL,                            /* sq_ass_item */
     NULL                             /* sq_ass_slice */
@@ -132,56 +132,56 @@ static PySequenceMethods Oplist_as_sequence = {
 
 
 static PyNumberMethods Oplist_as_number = {
-	(binaryfunc)Oplist_num_add,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	Oplist_num_coerce,
-	0,
-	0,
-	0,
-	0,
-	0
+        (binaryfunc)Oplist_num_add,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        Oplist_num_coerce,
+        0,
+        0,
+        0,
+        0,
+        0
 };
 
 PyTypeObject PyOplist_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,				/*ob_size*/
-	"Oplist",			/*tp_name*/
-	sizeof(PyOplist),		/*tp_basicsize*/
-	0,				/*tp_itemsize*/
-	/* methods */
-	(destructor)Oplist_dealloc,	/*tp_dealloc*/
-	0,				/*tp_print*/
-	(getattrfunc)Oplist_getattr,	/*tp_getattr*/
-	0,				/*tp_setattr*/
-	0,				/*tp_compare*/
-	0,				/*tp_repr*/
-	&Oplist_as_number,		/*tp_as_number*/
-	&Oplist_as_sequence,		/*tp_as_sequence*/
-	&Oplist_as_mapping,		/*tp_as_mapping*/
-	0,				/*tp_hash*/
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "Oplist",                       /*tp_name*/
+        sizeof(PyOplist),               /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        (destructor)Oplist_dealloc,     /*tp_dealloc*/
+        0,                              /*tp_print*/
+        (getattrfunc)Oplist_getattr,    /*tp_getattr*/
+        0,                              /*tp_setattr*/
+        0,                              /*tp_compare*/
+        0,                              /*tp_repr*/
+        &Oplist_as_number,              /*tp_as_number*/
+        &Oplist_as_sequence,            /*tp_as_sequence*/
+        &Oplist_as_mapping,             /*tp_as_mapping*/
+        0,                              /*tp_hash*/
 };
 
 PyOplist * newPyOplist()
 {
-	PyOplist * self;
-	self = PyObject_NEW(PyOplist, &PyOplist_Type);
-	if (self == NULL) {
-		return NULL;
-	}
-	return self;
+        PyOplist * self;
+        self = PyObject_NEW(PyOplist, &PyOplist_Type);
+        if (self == NULL) {
+                return NULL;
+        }
+        return self;
 }

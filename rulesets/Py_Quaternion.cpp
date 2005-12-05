@@ -43,11 +43,6 @@ static PyObject * Quaternion_getattr(PyQuaternion *self, char *name)
     return Py_FindMethod(Quaternion_methods, (PyObject *)self, name);
 }
 
-static int Quaternion_setattr(PyQuaternion *self, char *name, PyObject *v)
-{
-    return 0;
-}
-
 static int Quaternion_compare(PyQuaternion * self, PyQuaternion * other)
 {
     if (!PyQuaternion_Check(other)) {
@@ -63,13 +58,13 @@ PyTypeObject PyQuaternion_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
         "Quaternion",                   /*tp_name*/
-        sizeof(PyQuaternion),               /*tp_basicsize*/
+        sizeof(PyQuaternion),           /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
         (destructor)Quaternion_dealloc, /*tp_dealloc*/
         0,                              /*tp_print*/
-        (getattrfunc)Quaternion_getattr,        /*tp_getattr*/
-        (setattrfunc)Quaternion_setattr,        /*tp_setattr*/
+        (getattrfunc)Quaternion_getattr,/*tp_getattr*/
+        0,                              /*tp_setattr*/
         (cmpfunc)Quaternion_compare,    /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/

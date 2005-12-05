@@ -153,17 +153,21 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
     }
     if (strcmp(name, "coordinates") == 0) {
         self->location->m_pos = Point3D(vector.x(), vector.y(), vector.z());
+        return 0;
     }
     if (strcmp(name, "velocity") == 0) {
         self->location->m_velocity = vector;
+        return 0;
     }
     if (strcmp(name, "bbox") == 0) {
         self->location->setBBox(BBox(WFMath::Point<3>(0.f,0.f,0.f),
                                      WFMath::Point<3>(vector.x(),
                                                       vector.y(),
                                                       vector.z())));
+        return 0;
     }
-    return 0;
+    PyErr_SetString(PyExc_AttributeError, "unknown attribute");
+    return -1;
 }
 
 PyTypeObject PyLocation_Type = {

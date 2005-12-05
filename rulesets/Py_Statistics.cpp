@@ -42,6 +42,7 @@ static int Statistics_setattr(PyStatistics *self, char *name, PyObject *v)
     }
 #endif // NDEBUG
     // FIXME Allow setting of statistics values.
+    PyErr_SetString(PyExc_AttributeError, "unknown attribute");
     return -1;
 }
 

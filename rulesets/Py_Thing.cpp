@@ -149,6 +149,7 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
         return 0;
     }
     if (strcmp(name, "map") == 0) {
+        PyErr_SetString(PyExc_AttributeError, "map attribute forbidden");
         return -1;
     }
     Entity * entity = self->m_entity;

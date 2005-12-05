@@ -44,6 +44,7 @@ static int Optime_setattr(PyOptime *self, char *name, PyObject *v)
         self->operation->setFutureSeconds(fsecs);
         return 0;
     }
+    PyErr_SetString(PyExc_AttributeError, "unknown attribute");
     return -1;
 }
 

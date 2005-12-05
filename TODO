@@ -1,3 +1,7 @@
+Look up upgrading the python API usage to 2.2 spec. In particular
+look at generic attribute handling, PyType_Ready, inheritance etc.
+Method doc strings.
+
 Use getProperty to implement a surface property, and integrate into the
 height adjustment code.
 
