@@ -134,12 +134,6 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
     if (self->m_mind == NULL) {
         return -1;
     }
-    if (self->Mind_attr == NULL) {
-        self->Mind_attr = PyDict_New();
-        if (self->Mind_attr == NULL) {
-            return -1;
-        }
-    }
     if (strcmp(name, "status") == 0) {
         // This needs to be here until we can sort the difference
         // between floats and ints in python.
@@ -162,6 +156,7 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
         //thing->attributes.erase(attr);
         //return 0;
     //}
+    // FIXME It may now be possible to accept map and list attributes.
     Element obj = PyObject_asMessageElement(v);
     if (!obj.isNone() && !obj.isMap() && !obj.isList()) {
         thing->set(name, obj);
@@ -169,6 +164,12 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
     }
     // If we get here, then the attribute is not Atlas compatable, so we
     // need to store it in a python dictionary
+    if (self->Mind_attr == NULL) {
+        self->Mind_attr = PyDict_New();
+        if (self->Mind_attr == NULL) {
+            return -1;
+        }
+    }
     return PyDict_SetItemString(self->Mind_attr, name, v);
 }
 

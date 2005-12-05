@@ -1,5 +1,13 @@
 2005-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Mind.cpp: Delay initialisation of mind's python
+	  attribute store until it's required.
+
+	* rulesets/Py_Mind.cpp, rulesets/Py_Thing.cpp: Add FIXME about
+	  allowing the client to set map and list attributes.
+
+2005-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_BBox.cpp, rulesets/Py_Optime.cpp,
 	  rulesets/Py_Statistics.cpp, rulesets/Py_Thing.cpp: Ensure that
 	  setattr returns an exception if the attribute is not a valid one.

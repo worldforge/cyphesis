@@ -158,6 +158,7 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
         //entity->attributes.erase(attr);
         //return 0;
     //}
+    // FIXME It may now be possible to accept map and list attributes.
     Element obj = PyObject_asMessageElement(v);
     if (!obj.isNone() && !obj.isMap() && !obj.isList()) {
         entity->set(name, obj);

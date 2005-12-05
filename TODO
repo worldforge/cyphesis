@@ -5,9 +5,6 @@ Method doc strings.
 Use getProperty to implement a surface property, and integrate into the
 height adjustment code.
 
-Do any Python setattr functions return 0 when they fail? I think PyOperation
-does.
-
 Do any Python types with have an _attr member initialise it before
 they have to in setattr? Py_Entity/Thing used to.
 
