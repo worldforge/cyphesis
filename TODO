@@ -1,3 +1,13 @@
+An entity typically has two python objects associated with it, its script,
+and its wrapper object, which the script uses to access the core object.
+The core object needs to retain a reference to the wrapper object to avoid
+the need to create an additional wrapper object when another entity
+wants to refer to it.
+
+Don't do the same bullshit help every time the user clicks on a helping NPC.
+Bugs: Password is visible during login
+      Crash when fire burns. (sear)
+
 Look up upgrading the python API usage to 2.2 spec. In particular
 look at generic attribute handling, PyType_Ready, inheritance etc.
 Method doc strings.
