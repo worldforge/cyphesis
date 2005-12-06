@@ -1,5 +1,11 @@
 2005-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommMDNSPublisher.cpp: Use server name rather than
+	  "WorldForge Server" when publishing via MDNS service discovery
+	  to avoid name clashes when using avahi.
+
+2005-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cyconfig.cpp: Start adding a system for processing commands,
 	  so cyconfig can be used to perform more server configuration
 	  tasks.

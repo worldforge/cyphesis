@@ -18,6 +18,9 @@
 
 #include "CommMDNSPublisher.h"
 
+#include "CommServer.h"
+#include "ServerRouting.h"
+
 #include <discovery/discovery.h>
 
 #include <common/log.h>
@@ -31,9 +34,9 @@ static sw_result reply_callback(sw_discovery,
                                 sw_opaque)
 {
     if (status == SW_DISCOVERY_PUBLISH_STARTED) {
-        // log(WARNING, "Started publishing using MDNS");
+        // log(NOTICE, "Started publishing using MDNS");
     } else if (status == SW_DISCOVERY_PUBLISH_STOPPED) {
-        // log(WARNING, "Stopped publishing using MDNS");
+        // log(NOTICE, "Stopped publishing using MDNS");
     } else if (status == SW_DISCOVERY_PUBLISH_NAME_COLLISION) {
         log(WARNING, "Name collision publishing using MDNS");
     } else if (status == SW_DISCOVERY_PUBLISH_INVALID) {
@@ -64,7 +67,8 @@ int CommMDNSPublisher::setup()
         return -1;
     }
 
-    if (sw_discovery_publish(m_session, 0, "WorldForge Server",
+    if (sw_discovery_publish(m_session, 0,
+                             m_commServer.m_server.getName().c_str(),
                              "_worldforge._tcp.", NULL, NULL,
                              client_port_num, NULL, 0,
                              reply_callback, this, &m_oid) != SW_OKAY) {
