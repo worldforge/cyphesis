@@ -1,5 +1,11 @@
 2005-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* man/cyclient.1, man/cycmd.1, man/cyphesis-tools.1, man/cyphesis.1:
+	  Commit generated manpages, as they cause problems for people with
+	  older docbook installed.
+
+2005-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Report failure as "no" when pkg-config checks don't
 	  find the right libs. Improve the clarity of error messages, and
 	  use the messages provided by pkg-config to indicate what is
