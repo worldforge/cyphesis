@@ -1,5 +1,11 @@
 2005-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cyconfig.cpp: Start adding a system for processing commands,
+	  so cyconfig can be used to perform more server configuration
+	  tasks.
+
+2005-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* man/cyclient.1, man/cycmd.1, man/cyphesis-tools.1, man/cyphesis.1:
 	  Commit generated manpages, as they cause problems for people with
 	  older docbook installed.
