@@ -1,8 +1,24 @@
 #This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 1999 Aloril (See the file COPYING for details).
+#Copyright (C) 2005 WorldForge (See the file COPYING for details).
+# Author: Miguel Guzman
+#
+# The goal of this map is to have a fancy map for demo purposes,
+# to show in conventions like LinuxTag, and also to create nice screenshots.
+# As a result, will allow for adding every media that our artists can create
+# (for example there's a big hill with room for the castle and keep)
+# It's not intented to be a mason game map, though the whole east side of the map
+# can be used as a building site.
+#
+# Changes:
+# (This is not a changelog, I'll delete older changes as to not clutter the file
+# it's provided mostly as a convenience to see the latest changes)
+# 2005-12-06 Created basic map and town
 
 from atlas import *
-from whrandom import *
+try:
+  from random import *
+except ImportError:
+  from whrandom import *
 from mind.panlingua import interlinguish
 il=interlinguish
 from world import probability
@@ -11,108 +27,8 @@ from Quaternion import Quaternion
 from Vector3D import Vector3D
 import time
 
-#goal priority
-#1) eating: certain times
-#2) market/tavern: certain times, certain probability
-#3) sleeping: nights
-#4) chop trees: winter (when not doing anything else)
-#4) other similar tasks: seasonal (-"-)
-
-#'Breakfast' goal is type of 'eating'.
-
-# Heights are all 0 for now, as uclient doesn't differentiate
-# Once clients and servers can handle terrain properlly, then we
-# can start thinking in more ernest about heights
-settlement_height=0
-forest_height=0
-
-hall_xyz=(5,3,settlement_height)
-forest_xyz=(-20,-60,settlement_height)
-
-pig_sty_xyz=(8,8,settlement_height)
-butcher_stall_xyz=(-41.5,-6.3,settlement_height)
-
-knowledge=[('axe','place','smithy'),
-           ('forest','location',forest_xyz),
-           ('hall','location',hall_xyz)]
-mprices=[('pig','price','5')]
-bprices=[('ham','price','2')]
-bknowledge=[('market','location',butcher_stall_xyz)]
-mknowledge=[('market','location',pig_sty_xyz)]
-sknowledge=[('forest','location',forest_xyz),
-            ('stash','location',(-98,-97,settlement_height))]
-village=[('hall','location', hall_xyz),
-         ('butcher','location', butcher_stall_xyz),
-         ('pig','location', pig_sty_xyz)]
-gknowledge=[('m1','location',(-17, -1,    settlement_height)),
-            ('m2','location',(-29, -1,    settlement_height)),
-            ('m3','location',(-29, -7.5,  settlement_height)),
-            ('m4','location',(-38, -10,   settlement_height)),
-            ('m5','location',(-43, -15,   settlement_height)),
-            ('m6','location',(-43, -14.5, settlement_height))]
-
-testknowledge=[('t1','location',(0, 0,    settlement_height)),
-            ('t2','location',(5, 5, settlement_height))]	
-
-wolf_knowledge=[('w1','location',(90,-90,settlement_height)),
-                ('w2','location',(110,-90,settlement_height)),
-                ('w3','location',(110,90,settlement_height)),
-                ('w4','location',(90,90,settlement_height))]
-
-lych_knowledge=[('w1','location',(0,-96,settlement_height)),
-                ('w2','location',(-70,-70,settlement_height)),
-                ('w3','location',(-100,70,settlement_height)),
-                ('w4','location',(-147,-90,settlement_height))]
-
-wander=(il.wander,"wander()")
-forage=(il.forage,"forage()")
-trade=(il.trade,"trade()")
-keep=(il.keep,"keep()")
-sell=(il.sell,"sell_trade()")
-patrol=(il.patrol,"patrol()")
-
-pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
-           (il.forage,"forage(self, 'acorn')"),
-           (il.forage,"forage(self, 'apple')"),
-           (il.forage,"forage(self, 'mushroom')"),
-           (il.herd,"herd()")]
-
-deer_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
-            (il.forage,"forage(self, 'apple')"),
-            (il.forage,"forage(self, 'mushroom')"),
-            (il.browse,"browse(self, 'fir', 0.8)"),
-            (il.flock,"flock()")]
-
-chicken_goals=[(il.avoid,"avoid(['settler','orc','wolf'],10.0)"),
-               (il.flock,"flock()")]
-
-squirrel_goals=[(il.avoid,"avoid(['wolf','crab'],10.0)"),
-                (il.forage,"forage(self, 'acorn')"),
-                (il.forage,"forage(self, 'pinekernel')")]
-
-wolf_goals=[(il.forage,"forage(self, 'ham')"),
-            (il.hunt,"predate(self,'pig',30.0)"),
-            (il.hunt,"predate(self,'crab',20.0)"),
-            (il.hunt,"predate(self,'squirrel',10.0)"),
-            (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
-
-crab_goals=[(il.avoid,"avoid('wolf',10.0)"),
-            (il.hunt,"predate_small(self,'pig',30.0,10.0)")]
-
-lych_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"),
-            (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
-
-
-# N, E, S, W, NE, SE, SW, NW in order
-directions = [[0,0,0.707,0.707],[0,0,0,1],[0,0,-0.707,0.707],[0,0,1,0],
-              [0,0,0.387,0.921],[0,0,-0.387,0.921],[0,0,-0.921,0.387],[0,0,0.921,0.387]]
-
-forests = [
-           ('oak', 20, 20, 200, -100, 100, 20),
-           ('oak', 20, -100, 100, 20, 200, 20),
-           ('fir', 200,  200,  300, -300, 300, 50),
-           ('fir', 200, -300, 300,  200,  300, 50)
-          ]
+# heights
+town_height=0
 
 #observer calls this
 def default(mapeditor):
@@ -121,72 +37,208 @@ def default(mapeditor):
     m=editor(mapeditor)
 
     world=m.look()
-    
+
     points = { }
 
-    for i in range(-5, 6):
-        for j in range(-5, 6):
-            points['%ix%i'%(i,j)] = [i, j, 5]
+# terrain
+    points['-6x-6'] = [-6, -6, 65]
+    points['-5x-6'] = [-5, -6, 60]
+    points['-4x-6'] = [-4, -6, -2]
+    points['-3x-6'] = [-3, -6, -3]
+    points['-2x-6'] = [-2, -6, -4]
+    points['-1x-6'] = [-1, -6, -6]
+    points['0x-6'] = [0, -6, -7]
+    points['1x-6'] = [1, -6, -8]
+    points['2x-6'] = [2, -6, -9]
+    points['3x-6'] = [3, -6, -10]
+    points['4x-6'] = [4, -6, -12]
+    points['5x-6'] = [5, -6, -14]
+    points['6x-6'] = [6, -6, -20]
 
-# the lake
-    points['-1x-1'] = [-1, -1, -16.8]
-    points['0x-1'] = [0, -1, -3.8]
-    points['-1x0'] = [-1, 0, -2.8]
-    points['-1x1'] = [-1, 1, 12.8]
-    points['1x-1'] = [1, -1, 15.8]
+    points['-6x-5'] = [-6, -5, 65.4]
+    points['-5x-5'] = [-5, -5, 62.1]
+    points['-4x-5'] = [-4, -5, 4]
+    points['-3x-5'] = [-3, -5, 3.9]
+    points['-2x-5'] = [-2, -5, 3.7]
+    points['-1x-5'] = [-1, -5, 3.8]
+    points['0x-5'] = [0, -5, 3.6]
+    points['1x-5'] = [1, -5, 3.2]
+    points['2x-5'] = [2, -5, 2.5]
+    points['3x-5'] = [3, -5, 1]
+    points['4x-5'] = [4, -5, 0]
+    points['5x-5'] = [5, -5, -3]
+    points['6x-5'] = [6, -5, -5]
 
-# the settlement
-    
+    points['-6x-4'] = [-6, -4, 67]
+    points['-5x-4'] = [-5, -4, 61]
+    points['-4x-4'] = [-4, -4, 5]
+    points['-3x-4'] = [-3, -4, 4.9]
+    points['-2x-4'] = [-2, -4, 4.7]
+    points['-1x-4'] = [-1, -4, 4.8]
+    points['0x-4'] = [0, -4, 4.6]
+    points['1x-4'] = [1, -4, 4.2]
+    points['2x-4'] = [2, -4, 3.5]
+    points['3x-4'] = [3, -4, 2]
+    points['4x-4'] = [4, -4, 1]
+    points['5x-4'] = [5, -4, 0]
+    points['6x-4'] = [6, -4, -5]
 
-    points['2x-1'] = [2, 1, 14.7]
-    points['3x-1'] = [3, 1, 15.8]
-    points['4x-1'] = [4, 1, 11]
-    points['5x-1'] = [5, 1, 9]
-    points['6x-1'] = [6, 1, -15.5]
+    points['-6x-3'] = [-6, -3, 69]
+    points['-5x-3'] = [-5, -3, 65]
+    points['-4x-3'] = [-4, -3, 6]
+    points['-3x-3'] = [-3, -3, 5.7]
+    points['-2x-3'] = [-2, -3, 5.6]
+    points['-1x-3'] = [-1, -3, 5.8]
+    points['0x-3'] = [0, -3, 5.6]
+    points['1x-3'] = [1, -3, 5.2]
+    points['2x-3'] = [2, -3, 4.5]
+    points['3x-3'] = [3, -3, 4.9]
+    points['4x-3'] = [4, -3, 4.5]
+    points['5x-3'] = [5, -3, 3]
+    points['6x-3'] = [6, -3, 0]
 
-    points['0x0'] = [0, 0, 12.8]
-    points['1x0'] = [1, 0, 13]
-    points['2x0'] = [2, 0, 14]
-    points['3x0'] = [3, 0, 15.5]
-    points['4x0'] = [4, 0, 10.2]
-    points['5x0'] = [5, 0, 8]
+    points['-6x-2'] = [-6, -2, 71]
+    points['-5x-2'] = [-5, -2, 30] # keep
+    points['-4x-2'] = [-4, -2, 30] # keep
+    points['-3x-2'] = [-3, -2, 30] # keep
+    points['-2x-2'] = [-2, -2, -16.8] # center of the lake
+    points['-1x-2'] = [-1, -2, -3.8] # east side of the lake
+    points['0x-2'] = [0, -2, 15.8] # east border of the lake
+    points['1x-2'] = [1, -2, 13]
+    points['2x-2'] = [2, -2, 10.5]
+    points['3x-2'] = [3, -2, 7.9]
+    points['4x-2'] = [4, -2, 6.5]
+    points['5x-2'] = [5, -2, 5]
+    points['6x-2'] = [6, -2, -4]
+
+    points['-6x-1'] = [-6, -1, 70]
+    points['-5x-1'] = [-5, -1, 64.6]
+    points['-4x-1'] = [-4, -1, 30] # keep
+    points['-3x-1'] = [-3, -1, 30] # keep
+    points['-2x-1'] = [-2, -1, -2.8] # north part of the lake
+    points['-1x-1'] = [-1, -1, 12.7] # town
+    points['0x-1'] = [0, -1, 12.7] # town
+    points['1x-1'] = [1, -1, 12.5] # town
+    points['2x-1'] = [2, -1, 14.7]
+    points['3x-1'] = [3, -1, 15.8]
+    points['4x-1'] = [4, -1, 11]
+    points['5x-1'] = [5, -1, 2]
+    points['6x-1'] = [6, -1, -10]
+
+    points['-6x0'] = [-6, 0, 72.4]
+    points['-5x0'] = [-5, 0, 65.7]
+    points['-4x0'] = [-4, 0, 30] # keep
+    points['-3x0'] = [-3, 0, 30] #keep
+    points['-2x0'] = [-2, 0, 20] # road to the keep (north border of the lake)
+    points['-1x0'] = [-1, 0, 13.2] # town 
+    points['0x0'] = [0, 0, 12.8] # town
+    points['1x0'] = [1, 0, 12.5] # town
+    points['2x0'] = [2, 0, 12]
+    points['3x0'] = [3, 0, 10.5]
+    points['4x0'] = [4, 0, 5]
+    points['5x0'] = [5, 0, 0]
     points['6x0'] = [6, 0, -15]
 
-    points['0x1'] = [0, 1, 14.2]
-    points['1x1'] = [1, 1, 14]
-    points['2x1'] = [2, 1, 14.7]
-    points['3x1'] = [3, 1, 15.8]
-    points['4x1'] = [4, 1, 11]
-    points['5x1'] = [5, 1, 9]
-    points['6x1'] = [6, 1, -15.5]
+    points['-6x1'] = [-6, 1, 75]
+    points['-5x1'] = [-5, 1, 67.5]
+    points['-4x1'] = [-4, 1, 15.2]
+    points['-3x1'] = [-3, 1, 14.6]
+    points['-2x1'] = [-2, 1, 14.5]
+    points['-1x1'] = [-1, 1, 13.1] # town
+    points['0x1'] = [0, 1, 12.9] # town
+    points['1x1'] = [1, 1, 12.7] # town
+    points['2x1'] = [2, 1, 12.5]
+    points['3x1'] = [3, 1, 10.2]
+    points['4x1'] = [4, 1, 8.9]
+    points['5x1'] = [5, 1, 4]
+    points['6x1'] = [6, 1, -9]
 
-    points['1x2'] = [1, 2, 16]
-    points['2x2'] = [2, 2, 15.7]
-    points['3x2'] = [3, 2, 18.8]
-    points['4x2'] = [4, 2, 15]
-    points['5x2'] = [5, 2, 10]
-    points['6x2'] = [6, 2, -10]
+    points['-6x2'] = [-6, 2, 77]
+    points['-5x2'] = [-5, 2, 68]
+    points['-4x2'] = [-4, 2, 13] # mine road
+    points['-3x2'] = [-3, 2, 55]
+    points['-2x2'] = [-2, 2, 57.6]
+    points['-1x2'] = [-1, 2, 14]
+    points['0x2'] = [0, 2, 20]
+    points['1x2'] = [1, 2, 14]
+    points['2x2'] = [2, 2, 22.4]
+    points['3x2'] = [3, 2, 18]
+    points['4x2'] = [4, 2, 10.7]
+    points['5x2'] = [5, 2, 6.4]
+    points['6x2'] = [6, 2, -4]
 
-    points['1x3'] = [1, 3, 16]
-    points['2x3'] = [2, 3, 15.7]
-    points['3x3'] = [3, 3, 18.8]
-    points['4x3'] = [4, 3, 15]
-    points['5x3'] = [5, 3, 10]
-    points['6x3'] = [6, 3, -10]
+    points['-6x3'] = [-6, 3, 81.2]
+    points['-5x3'] = [-5, 3, 66]
+    points['-4x3'] = [-4, 3, 13.2]
+    points['-3x3'] = [-3, 3, 56.4]
+    points['-2x3'] = [-2, 3, 60]
+    points['-1x3'] = [-1, 3, 51.1]
+    points['0x3'] = [0, 3, 19]
+    points['1x3'] = [1, 3, 25.6]
+    points['2x3'] = [2, 3, 10]
+    points['3x3'] = [3, 3, 19.5]
+    points['4x3'] = [4, 3, 11.3]
+    points['5x3'] = [5, 3, 7]
+    points['6x3'] = [6, 3, 0]
 
-    points['-1x2'] = [-1, 2, 50]
-    points['-2x3'] = [-2, 3, 52]
-    points['-2x2'] = [-2, 2, 55]
-    points['-3x3'] = [-3, 3, 57.5]
+    points['-6x4'] = [-6, 4, 85]
+    points['-5x4'] = [-5, 4, 66.7]
+    points['-4x4'] = [-4, 4, 14.2]
+    points['-3x4'] = [-3, 4, 56.4]
+    points['-2x4'] = [-2, 4, 57]
+    points['-1x4'] = [-1, 4, 52.5]
+    points['0x4'] = [0, 4, 31]
+    points['1x4'] = [1, 4, 15]
+    points['2x4'] = [2, 4, 26.2]
+    points['3x4'] = [3, 4, 22.7]
+    points['4x4'] = [4, 4, 15]
+    points['5x4'] = [5, 4, 10]
+    points['6x4'] = [6, 4, -3.5]
+
+    points['-6x5'] = [-6, 5, 91]
+    points['-5x5'] = [-5, 5, 68]
+    points['-4x5'] = [-4, 5, 65.5]
+    points['-3x5'] = [-3, 5, 62.2]
+    points['-2x5'] = [-2, 5, 58]
+    points['-1x5'] = [-1, 5, 54]
+    points['0x5'] = [0, 5, 50]
+    points['1x5'] = [1, 5, 44.4]
+    points['2x5'] = [2, 5, 45]
+    points['3x5'] = [3, 5, 38.6]
+    points['4x5'] = [4, 5, 12]
+    points['5x5'] = [5, 5, 0]
+    points['6x5'] = [6, 5, -8.7]
+
+    points['-6x6'] = [-6, 6, 100]
+    points['-5x6'] = [-5, 6, 85]
+    points['-4x6'] = [-4, 6, 75]
+    points['-3x6'] = [-3, 6, 70]
+    points['-2x6'] = [-2, 6, 65]
+    points['-1x6'] = [-1, 6, 66.7]
+    points['0x6'] = [0, 6, 65]
+    points['1x6'] = [1, 6, 64.3]
+    points['2x6'] = [2, 6, 59.7]
+    points['3x6'] = [3, 6, 55.3]
+    points['4x6'] = [4, 6, 46.7]
+    points['5x6'] = [5, 6, 12]
+    points['6x6'] = [6, 6, -5.8]
 
     m.set(world.id, terrain={'points' : points}, name="moraf")
 
 # a wall around the world
 
-    m.make('boundary',type='boundary',xyz=(-257,-257,settlement_height),bbox=[2,514,256])
-    m.make('boundary',type='boundary',xyz=(-257,-257,settlement_height),bbox=[514,2,256])
-    m.make('boundary',type='boundary',xyz=(-257, 384,settlement_height),bbox=[514,2,256])
-    m.make('boundary',type='boundary',xyz=(384,-257,settlement_height),bbox=[2,514,256])
+    m.make('boundary',type='boundary',xyz=(-384,-384,town_height),bbox=[2,514,256])
+    m.make('boundary',type='boundary',xyz=(-384,-384,town_height),bbox=[514,2,256])
+    m.make('boundary',type='boundary',xyz=(-384, 384,town_height),bbox=[514,2,256])
+    m.make('boundary',type='boundary',xyz=(384,-384,town_height),bbox=[2,514,256])
+
+# paths
+
+    statue_path_area={'points' : [ [5,0], [4.33,2.5], [2.5,4.33], [0,5], [-2.5, 4.33], [-4.33,2.5], [-5,0], [-4.33,-2.5], [-2.5,-4.33], [0,-5.0], [2.5,-4.33], [4.33,-2.5], [5.0,0] ], 'layer' : 7}
+    m.make('statue path',type='path',xyz=(0, 0, town_height), area=statue_path_area,bbox=[-5,-5,0,5,5,1])
+
+    town_path_area={'points' : [ [50,0], [43.30,25], [25,43.30], [0,50], [-25, 43.30], [-43.30,25], [-50,0], [-43.30,-25], [-25, -43.30], [0, -50], [25,-43.30], [43.30,-25], [50,-0.01], [60,-0.01], [51.96,-30], [30,-51.96], [0, -60], [-30,-51.96], [-51.96,-30], [-60,0], [-51.96,30], [-30,51.96], [0,60], [30,51.96], [51.96,30], [60,0] ], 'layer' : 7}
+    m.make('town path',type='path',xyz=(0, 0, town_height), area=town_path_area,bbox=[-38,-62,0,169,154,1])
 
     m.make('fir',type='fir',xyz=(0,0,10))
 
@@ -196,147 +248,12 @@ def default(mapeditor):
     m.make('fir',type='fir',xyz=(256,0,10))
     m.make('fir',type='fir',xyz=(320,0,10))
 
-    dog = m.make('dog',type='dog',xyz=(5,5,10))
-    m.learn(dog,(il.patrol,"patrol(['t1', 't2'])"))
-    m.know(dog,testknowledge)
+    #dog = m.make('dog',type='dog',xyz=(5,5,10))
+    #m.learn(dog,(il.patrol,"patrol(['t1', 't2'])"))
+    #m.know(dog,testknowledge)
     cfire=m.make('campfire',type='campfire',xyz=(3,9,10))
-    m.make('fire',type='fire',xyz=(0,0,0),parent=cfire.id)
-    m.make('mausoleum', type='mausoleum', xyz=(40,40,10))
-    # I am not sure if we need a guard
-    #m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))
-    #m.tell_importance(guard,il.defend,'>',il.patrol)
-
-def add_pigs(mapeditor):
-#   general things
-
-    m=editor(mapeditor)
-
-    sty = m.look_for(type='sty')
-    merchant = m.look_for(name='Dyfed Searae')
-
-    piglets=[]
-    for i in range(0, 6):
-        piglets.append(m.make('pig',type='pig',xyz=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
-    m.learn(piglets,pig_goals)
-    m.own(merchant,piglets)
-
-def add_memtest(mapeditor):
-#   general things
-
-    m=editor(mapeditor)
-
-    m.make('settler',type='settler',xyz=(0,5,5))
-    m.make('oak',type='oak',xyz=(5,0,5))
-
-def add_village(mapeditor):
-#   general things
-
-    m=editor(mapeditor)
-
-    m.make('tower',type='tower',xyz=(210,210,5))
-    m.make('gallows',type='gallows',xyz=(185,175,5))
-
-    m.make('house3',type='house3',xyz=(158,150,22),orientation=directions[1])
-    m.make('house3',type='house3',xyz=(158,158,22),orientation=directions[4])
-    m.make('house3',type='house3',xyz=(150,158,22),orientation=directions[0])
-    m.make('house3',type='house3',xyz=(142,158,22),orientation=directions[7])
-    m.make('house3',type='house3',xyz=(142,150,22),orientation=directions[3])
-    m.make('house3',type='house3',xyz=(142,142,22),orientation=directions[6])
-    m.make('house3',type='house3',xyz=(150,142,22),orientation=directions[2])
-    m.make('house3',type='house3',xyz=(158,142,22),orientation=directions[5])
-
-def test_pig(mapeditor):
-#   general things
-
-    m=editor(mapeditor)
-    pig = m.make('pig', type='pig', xyz=(3,3,settlement_height))
-    m.learn(pig,pig_goals)
-    m.make('acorn', type='acorn', xyz=(4,4,settlement_height))
-
-def test_browse(mapeditor):
-#   test if browsing works
+    #m.make('fire',type='fire',xyz=(0,0,0),parent=cfire.id)
+    #m.make('mausoleum', type='mausoleum', xyz=(40,40,10))
     
-    m=editor(mapeditor)
-    deer = m.make('deer', type='deer', xyz=(5, 0, settlement_height))
-    m.learn(deer, (il.browse,"browse(self, 'fir', 0.8)"))
-    m.make('fir',type='fir',xyz=(-10,-0,settlement_height))
-    m.make('fir',type='fir',xyz=(-0,-10,settlement_height))
-    m.make('fir',type='fir',xyz=(0,10,settlement_height))
-    m.make('fir',type='fir',xyz=(10,0,settlement_height))
-    
-def test_forest(mapeditor):
-#   test if browsing works
-    
-    m=editor(mapeditor)
-    for i in forests:
-        for j in range(0, i[1]):
-            m.make(i[0],type=i[0],xyz=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)])
-
-def modify_terrain(mapeditor):
-#   general things
-
-    m=editor(mapeditor)
-
-    world=m.look()
-    points = { }
-    for i in range(-5, 6):
-        for j in range(-5, 6):
-            if i==5 or j==5:
-                points['%ix%i'%(i,j)] = [i, j, uniform(100, 150)]
-            elif i==-5 or j == -5:
-                points['%ix%i'%(i,j)] = [i, j, uniform(-30, -10)]
-            elif (i==2 or i==3) and (j==2 or j==3):
-                points['%ix%i'%(i,j)] = [i, j, uniform(20, 25)]
-            elif i==4 or j==4:
-                points['%ix%i'%(i,j)] = [i, j, uniform(30, 80)]
-            elif i==-4 or j==-4:
-                points['%ix%i'%(i,j)] = [i, j, uniform(-2, 5)]
-            else:
-                points['%ix%i'%(i,j)] = [i, j, 1+uniform(0, 8)*(abs(i)+abs(j))]
-
-    points['-1x-1'] = [-1, -1, -16.8]
-    points['0x-1'] = [0, -1, -3.8]
-    points['-1x0'] = [-1, 0, -2.8]
-    points['-1x1'] = [-1, 1, 12.8]
-    points['1x-1'] = [1, -1, 15.8]
-    points['0x0'] = [0, 0, 12.8]
-    points['1x0'] = [1, 0, 23.1]
-    points['0x1'] = [0, 1, 14.2]
-    points['1x1'] = [1, 1, 19.7]
-
-    m.set(world.id, terrain={'points' : points})
-
-def test_coll(mapeditor):
-
-    m=editor(mapeditor)
-
-    sty=m.make('sty',type='sty',xyz=pig_sty_xyz,status=1.0,bbox=[5,5,3], orientation=directions[0])
-
-def test_butcher(mapeditor):
-
-    m=editor(mapeditor)
-
-    butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
-                 xyz=(3,3,0),age=probability.fertility_age,sex='male')
-    cleaver=m.make('cleaver', type='cleaver', desc='cleaver for cutting meat',
-                   place='market', xyz=(3,2.5,settlement_height))
-    m.own(butcher,cleaver)
-    m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'cut', 'ham', 'market')"))
-    piglet = m.make('pig', type='pig', xyz=(3,2,0))
-
-def test_pig(mapeditor):
-
-    m=editor(mapeditor)
-
-    piglet = m.make('pig', type='pig', xyz=(-3,-1,settlement_height))
-    m.learn(piglet,pig_goals)
-
-def test_settler(mapeditor):
-
-    m=editor(mapeditor)
-    settler=m.make('settler',xyz=(1,1,0), sex='male')
-    axe=m.make('axe',type='axe',xyz=(0,0,0),parent=settler.id)
-    m.own(settler,axe)
-    m.know(settler,[('forest','location',(30,30,0))])
-    m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','forest','axe')"))
-    m.make('oak',xyz=(32,32,0))
+    # tower for the keep
+    m.make('tower',type='tower',xyz=(-200,-120,30))
