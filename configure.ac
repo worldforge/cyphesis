@@ -208,7 +208,10 @@ PKG_CHECK_MODULES(DEPS, atlascpp-0.6 varconf-1.0 >= 0.6.2,
         COMMON_LIBS="$COMMON_LIBS $DEPS_LIBS"
     ],
     [
-        AC_MSG_ERROR([Cannot find valid versions of required WorldForge libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
+        AC_MSG_RESULT([no])
+        AC_MSG_ERROR([Cannot find valid versions of required WorldForge libraries:
+$DEPS_PKG_ERRORS
+Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
     ])
 
 PKG_CHECK_MODULES(MERCATOR, mercator-0.2,
@@ -217,7 +220,8 @@ PKG_CHECK_MODULES(MERCATOR, mercator-0.2,
         TERRAIN_LIBS="$TERRAIN_LIBS $MERCATOR_LIBS"
     ],
     [
-        AC_MSG_ERROR([Cannot find valid versions of required WorldForge terrain libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
+        AC_MSG_RESULT([no])
+        AC_MSG_ERROR([Cannot find valid versions of required WorldForge terrain library, mercator. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
     ])
 
 PKG_CHECK_MODULES(SKSTREAM, skstream-0.3 >= 0.3.3,
@@ -226,7 +230,8 @@ PKG_CHECK_MODULES(SKSTREAM, skstream-0.3 >= 0.3.3,
         NETWORK_LIBS="$NETWORK_LIBS $SKSTREAM_LIBS"
     ],
     [
-        AC_MSG_ERROR([Cannot find valid versions of required WorldForge network libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
+        AC_MSG_RESULT([no])
+        AC_MSG_ERROR([Cannot find valid versions of required WorldForge network library, skstream. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
     ])
 
 PKG_CHECK_MODULES(WFMATH, wfmath-0.3,
@@ -234,7 +239,8 @@ PKG_CHECK_MODULES(WFMATH, wfmath-0.3,
         MATH_LIBS="$MATH_LIBS $WFMATH_LIBS"
     ],
     [
-        AC_MSG_ERROR([Cannot find valid versions of required WorldForge maths libraries. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
+        AC_MSG_RESULT([no])
+        AC_MSG_ERROR([Cannot find valid versions of required WorldForge maths library, wfmath. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
     ])
 
 PKG_CHECK_MODULES(HOWL, avahi-compat-howl,

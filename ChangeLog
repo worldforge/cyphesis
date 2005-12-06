@@ -1,5 +1,12 @@
 2005-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Report failure as "no" when pkg-config checks don't
+	  find the right libs. Improve the clarity of error messages, and
+	  use the messages provided by pkg-config to indicate what is
+	  wrong when there are multiple posibilities.
+
+2005-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/TaskFactory.cpp, server/TaskFactory.h: Re-write the
 	  script task to handle creating the script directly, rather than
 	  use ScriptFactory which is not suitable.
