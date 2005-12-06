@@ -1,5 +1,10 @@
 2005-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Admin.h, server/Admin.cpp: Add all character and NPC types
+	  the the list of playable types available for admin.
+
+2005-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommMDNSPublisher.cpp: Use server name rather than
 	  "WorldForge Server" when publishing via MDNS service discovery
 	  to avoid name clashes when using avahi.

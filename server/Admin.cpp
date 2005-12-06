@@ -58,6 +58,50 @@ const char * Admin::getType() const
     return "admin";
 }
 
+static void addTypeToList(const Root & type, ListType & typeList)
+{
+    typeList.push_back(type->getId());
+    Element children;
+    if (type->copyAttr("children", children) != 0) {
+        return;
+    }
+    if (!children.isList()) {
+        log(ERROR, String::compose("Type %1 children attribute has type %2 instead of string.", type->getId(), Element::typeName(children.getType())).c_str());
+        return;
+    }
+    ListType::const_iterator I = children.List().begin();
+    ListType::const_iterator Iend = children.List().end();
+    for (; I != Iend; ++I) {
+        Root child = Inheritance::instance().getClass(I->asString());
+        if (!child.isValid()) {
+            log(ERROR, String::compose("Unable to find %1 in inheritance table", I->asString()).c_str());
+            continue;
+        }
+        addTypeToList(child, typeList);
+    }
+}
+
+void Admin::addToMessage(MapType & omap) const
+{
+    Account::addToMessage(omap);
+    ListType & typeList = (omap["character_types"] = ListType()).asList();
+    Root character_type = Inheritance::instance().getClass("character");
+    if (character_type.isValid()) {
+        addTypeToList(character_type, typeList);
+    }
+}
+
+void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+    Account::addToEntity(ent);
+    ListType typeList;
+    Root character_type = Inheritance::instance().getClass("character");
+    if (character_type.isValid()) {
+        addTypeToList(character_type, typeList);
+    }
+    ent->setAttr("character_types", typeList);
+}
+
 void Admin::opDispatched(Operation op)
 {
     if (m_connection != 0) {
