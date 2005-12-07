@@ -1,5 +1,16 @@
 2005-12-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/ServerRouting.h: Add accessor for client count.
+
+	* server/CommMDNSPublisher.h, server/CommMDNSPublisher.cpp:
+	  Add alternative MDNS-SD handler using Avahi, which is preferred
+	  over howl.
+
+	* server/server.cpp: CommMDNSPublisher is now an idler as well
+	  as a socket.
+
+2005-12-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/ServerRouting.h: Add accessor for server ruleset.
 
 2005-12-05  Al Riddoch  <alriddoch@zepler.org>

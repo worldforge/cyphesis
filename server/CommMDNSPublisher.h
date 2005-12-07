@@ -6,23 +6,45 @@
 #define SERVER_COMM_MDNS_PUBLISHER_H
 
 #include "CommSocket.h"
+#include "Idle.h"
+
+#include <set>
 
 #include <stdint.h>
 
 /// \brief Handle a socket used to communicate with the MDNS responder daemon.
-class CommMDNSPublisher : public CommSocket {
+class CommMDNSPublisher : public CommSocket, virtual public Idle {
   private:
+    // Howl data
     /// Discovery session identifier.
     uint32_t m_oid;
     ///
     struct _sw_discovery * m_session;
 
+    // Avahi data
+    ///
+    struct AvahiClient * m_avahiClient;
+    ///
+    int m_avahiError;
+
   public:
+    ///
+    int m_avahiFd;
+    ///
+    struct AvahiWatch * m_avahiWatch;
+    ///
+    struct AvahiEntryGroup * m_group;
+    ///
+    std::set<struct AvahiTimeout *> m_avahiTimeouts;
+
     explicit CommMDNSPublisher(CommServer & svr);
 
     virtual ~CommMDNSPublisher();
 
     int setup();
+    void setup_service(struct AvahiClient * );
+
+    virtual void idle(time_t);
 
     int getFd() const;
     bool isOpen() const;

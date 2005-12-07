@@ -101,6 +101,9 @@ class ServerRouting : public OOGThing {
     /// Decrement the number of clients connected to this server.
     void decClients() { --m_numClients; }
 
+    /// Accessor for the number of clients connected to this server.
+    int getClients() { return m_numClients; }
+
     /// Accessor for world manager object.
     BaseWorld & getWorld() { return m_world; }
 

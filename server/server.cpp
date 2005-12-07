@@ -202,13 +202,14 @@ int main(int argc, char ** argv)
         }
     }
 
-#if defined(HAVE_LIBHOWL)
+#if defined(HAVE_LIBHOWL) || defined(HAVE_AVAHI)
 
     CommMDNSPublisher * cmdns = new CommMDNSPublisher(commServer);
     if (cmdns->setup() == 0) {
         commServer.addSocket(cmdns);
+        commServer.addIdle(cmdns);
     } else {
-        log(ERROR, "No MDNS Responder for me.");
+        log(ERROR, "Unable to register service with MDNS daemon.");
         delete cmdns;
     }
 

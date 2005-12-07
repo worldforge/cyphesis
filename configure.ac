@@ -243,11 +243,11 @@ PKG_CHECK_MODULES(WFMATH, wfmath-0.3,
         AC_MSG_ERROR([Cannot find valid versions of required WorldForge maths library, wfmath. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
     ])
 
-PKG_CHECK_MODULES(HOWL, avahi-compat-howl,
+PKG_CHECK_MODULES(AVAHI, avahi-client,
     [
-        CPPFLAGS="$CPPFLAGS $HOWL_CFLAGS"
-        MDNS_LIBS="$MDNS_LIBS $HOWL_LIBS"
-        AC_DEFINE(HAVE_LIBHOWL, 1, [Define to 1 if you have howl libs.])
+        CPPFLAGS="$CPPFLAGS $AVAHI_CFLAGS"
+        MDNS_LIBS="$MDNS_LIBS $AVAHI_LIBS"
+        AC_DEFINE(HAVE_AVAHI, 1, [Define to 1 if you have avahi libs.])
     ],
     [
         PKG_CHECK_MODULES(HOWL, howl,
