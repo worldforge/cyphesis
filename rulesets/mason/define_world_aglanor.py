@@ -27,8 +27,46 @@ from Quaternion import Quaternion
 from Vector3D import Vector3D
 import time
 
+# N, E, S, W, NE, SE, SW, NW in order
+directions = [[0,0,0.707,0.707],[0,0,0,1],[0,0,-0.707,0.707],[0,0,1,0],
+              [0,0,0.387,0.921],[0,0,-0.387,0.921],[0,0,-0.921,0.387],[0,0,0.921,0.387]]
+
 # heights
-town_height=0
+town_height=12.5
+
+# knowledges
+
+#town road (tr)
+tr_e_xyz=(55,0,town_height) # town road, east point
+tr_ne_xyz=(39,39,town_height) # town road, northeast point
+tr_n_xyz=(0,55,town_height)
+tr_nw_xyz=(-39,39,town_height)
+tr_w_xyz=(-55,0,town_height)
+tr_sw_xyz=(-39,-39,town_height)
+tr_s_xyz=(0,-55,town_height)
+tr_se_xyz=(39,-39,town_height)
+tr_path=[tr_e_xyz, tr_ne_xyz, tr_n_xyz, tr_nw_xyz, tr_w_xyz, tr_sw_xyz, tr_s_xyz]
+
+tr_knowledge=[('tr_e','location',tr_e_xyz),
+              ('tr_ne','location',tr_ne_xyz),
+              ('tr_n','location',tr_n_xyz),
+              ('tr_nw','location',tr_nw_xyz),
+              ('tr_w','location',tr_w_xyz),
+              ('tr_sw','location',tr_sw_xyz),
+              ('tr_s','location',tr_se_xyz),
+              ('tr_se','location',tr_se_xyz)]
+
+# goals
+chicken_goals=[(il.avoid,"avoid(['orc','wolf'],10.0)"),
+               (il.avoid,"avoid(['settler'],1.0)"),
+               (il.flock,"flock()"),
+               (il.peck,"peck()")]
+
+dog_goals=[(il.forage,"forage('ham')"),
+           (il.hunt,"predate(self,'squirrel',20.0)"),
+           (il.hunt,"predate(self,'chicken',20.0)"),
+           (il.patrol,"patrol(['tr_e','tr_ne','tr_n','tr_nw','tr_w','tr_sw','tr_s','tr_se'])")]
+           #(il.patrol,"patrol([tr_path])")]
 
 #observer calls this
 def default(mapeditor):
@@ -169,7 +207,7 @@ def default(mapeditor):
 
     points['-6x3'] = [-6, 3, 81.2]
     points['-5x3'] = [-5, 3, 66]
-    points['-4x3'] = [-4, 3, 13.2]
+    points['-4x3'] = [-4, 3, 13.2] # mine road
     points['-3x3'] = [-3, 3, 56.4]
     points['-2x3'] = [-2, 3, 60]
     points['-1x3'] = [-1, 3, 51.1]
@@ -183,7 +221,7 @@ def default(mapeditor):
 
     points['-6x4'] = [-6, 4, 85]
     points['-5x4'] = [-5, 4, 66.7]
-    points['-4x4'] = [-4, 4, 14.2]
+    points['-4x4'] = [-4, 4, 14.2] # mine road
     points['-3x4'] = [-3, 4, 56.4]
     points['-2x4'] = [-2, 4, 57]
     points['-1x4'] = [-1, 4, 52.5]
@@ -240,7 +278,7 @@ def default(mapeditor):
     town_path_area={'points' : [ [50,0], [43.30,25], [25,43.30], [0,50], [-25, 43.30], [-43.30,25], [-50,0], [-43.30,-25], [-25, -43.30], [0, -50], [25,-43.30], [43.30,-25], [50,-0.01], [60,-0.01], [51.96,-30], [30,-51.96], [0, -60], [-30,-51.96], [-51.96,-30], [-60,0], [-51.96,30], [-30,51.96], [0,60], [30,51.96], [51.96,30], [60,0] ], 'layer' : 7}
     m.make('town path',type='path',xyz=(0, 0, town_height), area=town_path_area,bbox=[-38,-62,0,169,154,1])
 
-    m.make('fir',type='fir',xyz=(0,0,10))
+    m.make('fir',type='fir',xyz=(0,0,town_height))
 
     m.make('fir',type='fir',xyz=(64,0,10))
     m.make('fir',type='fir',xyz=(128,0,10))
@@ -248,12 +286,36 @@ def default(mapeditor):
     m.make('fir',type='fir',xyz=(256,0,10))
     m.make('fir',type='fir',xyz=(320,0,10))
 
-    #dog = m.make('dog',type='dog',xyz=(5,5,10))
-    #m.learn(dog,(il.patrol,"patrol(['t1', 't2'])"))
-    #m.know(dog,testknowledge)
+# animals
+
+    chickens=[]
+    xbase = 0;
+    ybase = 0;
+    for i in range(0,10):
+        xpos = xbase + uniform(-10,10)
+        ypos = ybase + uniform(-10,10)
+        d=m.make('chicken', type='chicken', xyz=(xpos, ypos, town_height))
+        chickens.append(d)
+    m.learn(chickens,chicken_goals)
+
+    dog = m.make('toby',type='dog',xyz=(5,5,town_height))
+    m.learn(dog,dog_goals)
+    m.know(dog,tr_knowledge)
+    m.tell_importance(dog,il.hunt,'>',il.patrol)
+    m.tell_importance(dog,il.hunt,'>',il.forage)
+    m.tell_importance(dog,il.forage,'>',il.patrol)
+
+# TEST: calling sub.methods
+    create_town_buildings(mapeditor)
+
+def create_town_buildings(mapeditor):
+
+    m = editor(mapeditor)
+
     cfire=m.make('campfire',type='campfire',xyz=(3,9,10))
-    #m.make('fire',type='fire',xyz=(0,0,0),parent=cfire.id)
-    #m.make('mausoleum', type='mausoleum', xyz=(40,40,10))
-    
+    m.make('fire',type='fire',xyz=(0,0,0),parent=cfire.id)
+    m.make('mausoleum', type='mausoleum', xyz=(40,40,10))
+    m.make('mausoleum', type='mausoleum', xyz=(40,-40,10))
+    m.make('tavern',type='house3',xyz=(-80,-20,town_height),orientation=directions[2])
     # tower for the keep
     m.make('tower',type='tower',xyz=(-200,-120,30))

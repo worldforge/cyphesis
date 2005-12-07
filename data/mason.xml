@@ -525,6 +525,35 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
+          <float>-0.75</float>
+          <float>-0.3</float>
+          <float>0</float>
+          <float>0.75</float>
+          <float>0.3</float>
+          <float>0.75</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">10</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">20</float>
+        <string name="visibility">private</string>
+      </map>
+      </map>
+      <string name="id">dog</string>
+      <string name="objtype">class</string>
+      <list name="parents">
+        <string>character</string>
+      </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
           <float>-0.25</float>
           <float>-0.25</float>
           <float>0</float>
