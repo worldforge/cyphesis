@@ -1,3 +1,7 @@
+2005-12-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/ServerRouting.h: Add accessor for server ruleset.
+
 2005-12-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Admin.h, server/Admin.cpp: Add all character and NPC types

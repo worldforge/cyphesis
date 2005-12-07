@@ -104,6 +104,9 @@ class ServerRouting : public OOGThing {
     /// Accessor for world manager object.
     BaseWorld & getWorld() { return m_world; }
 
+    /// Accessor for server ruleset.
+    const std::string & getRuleset() const { return m_svrRuleset; }
+
     /// Accessor for server name.
     const std::string & getName() const { return m_svrName; }
 
