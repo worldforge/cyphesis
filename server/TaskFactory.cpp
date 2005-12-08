@@ -78,11 +78,11 @@ Task * PythonTaskScriptFactory::newTask(Character & chr)
     assert(task != 0);
 
     PyTask * pyTask = newPyTask();
-    assert(task != 0);
+    assert(pyTask != 0);
     pyTask->m_task = task;
-    assert(task != 0);
+    assert(pyTask->m_task != 0);
     PyObject * script = Create_PyScript((PyObject *)pyTask, m_class);
-    assert(task != 0);
+    assert(script != 0);
 
     task->setScript(new PythonEntityScript(script));
     

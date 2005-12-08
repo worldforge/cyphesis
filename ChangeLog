@@ -1,5 +1,15 @@
 2005-12-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/TaskScript.cpp, server/TaskFactory.cpp: Add some assert
+	  checks.
+
+	* server/EntityFactory.cpp: Remove some debug output.
+
+	* rulesets/mason/world/tasks/Combat.py: Add a simple example
+	  of the interface required in a task script.
+
+2005-12-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/TaskFactory.h, server/TaskFactory.cpp,
 	  server/EntityFactory.h, server/EntityFactory.cpp,
 	  rulesets/TaskScript.h, rulesets/TaskScript.cpp:

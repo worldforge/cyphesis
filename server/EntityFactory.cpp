@@ -284,8 +284,8 @@ int EntityFactory::installTaskClass(const std::string & className,
         return -1;
     }
 
-    std::cout << "Attempting to install " << className << " which is a "
-              << parent << std::endl << std::flush;
+    // std::cout << "Attempting to install " << className << " which is a "
+              // << parent << std::endl << std::flush;
     m_taskFactories.insert(std::make_pair(className, factory));
     return 0;
 }

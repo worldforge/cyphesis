@@ -31,6 +31,7 @@ void TaskScript::setScript(Script * scrpt)
 
 void TaskScript::setup(OpVector & res)
 {
+    assert(m_script != 0);
     Setup op;
     m_script->operation("setup", op, res);
 }
@@ -42,5 +43,6 @@ void TaskScript::irrelevant()
 
 void TaskScript::TickOperation(const Operation & op, OpVector & res)
 {
+    assert(m_script != 0);
     m_script->operation("tick", op, res);
 }
