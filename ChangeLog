@@ -1,3 +1,10 @@
+2005-12-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/TaskFactory.h, server/TaskFactory.cpp,
+	  server/EntityFactory.h, server/EntityFactory.cpp,
+	  rulesets/TaskScript.h, rulesets/TaskScript.cpp:
+	  Implement task script interface.
+
 2005-12-07  Miguel Guzman
 
 	* data/mason.xml: Add dog.

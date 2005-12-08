@@ -459,7 +459,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.combat.Combat</string>
+      <string name="name">world.tasks.Combat</string>
     </map>
   </map>
 

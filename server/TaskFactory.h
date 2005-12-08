@@ -7,6 +7,8 @@
 
 #include <Python.h>
 
+#include <string>
+
 class Task;
 class Character;
 
@@ -18,23 +20,25 @@ class ScriptFactory;
 /// optionally with a script. Stores information about default attributes,
 /// script language and class name.
 class TaskFactory {
-  protected:
-    TaskFactory();
   public:
     virtual ~TaskFactory();
 
     virtual Task * newTask(Character & chr) = 0;
 };
 
-class PythonTaskScriptFactory {
+class PythonTaskScriptFactory : public TaskFactory {
   public:
     PyObject * m_module;
     PyObject * m_class;
 
+    std::string m_package;
+    std::string m_name;
+
     int getClass();
     int addScript();
   public:
-    PythonTaskScriptFactory();
+    PythonTaskScriptFactory(const std::string & package,
+                            const std::string & name);
     virtual ~PythonTaskScriptFactory();
 
     virtual Task * newTask(Character & chr);

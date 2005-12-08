@@ -8,6 +8,7 @@
 
 #include "PersistantThingFactory.h"
 #include "ScriptFactory.h"
+#include "TaskFactory.h"
 #include "Persistance.h"
 #include "Persistor.h"
 #include "Player.h"
@@ -87,7 +88,7 @@ void EntityFactory::initWorld()
 
 Entity * EntityFactory::newEntity(const std::string & id, long intId,
                                   const std::string & type,
-                                  const RootEntity & attributes)
+                                  const RootEntity & attributes) const
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
     Entity * thing = 0;
@@ -150,6 +151,15 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
     return thing;
 }
 
+Task * EntityFactory::newTask(const std::string & name, Character & chr) const
+{
+    TaskFactoryDict::const_iterator I = m_taskFactories.find(name);
+    if (I == m_taskFactories.end()) {
+        return 0;
+    }
+    return I->second->newTask(chr);
+}
+
 void EntityFactory::flushFactories()
 {
     FactoryDict::const_iterator Iend = m_factories.end();
@@ -173,19 +183,19 @@ void EntityFactory::populateFactory(const std::string & className,
         const MapType & script = J->second.asMap();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
-            const std::string & scriptName = J->second.String();
+            const std::string & script_name = J->second.String();
             J = script.find("language");
             if ((J != script.end()) && (J->second.isString())) {
-                const std::string & scriptLanguage = J->second.String();
+                const std::string & script_language = J->second.String();
                 if (factory->m_scriptFactory != 0) {
-                    if (factory->m_scriptFactory->package() != scriptName) {
+                    if (factory->m_scriptFactory->package() != script_name) {
                         delete factory->m_scriptFactory;
                         factory->m_scriptFactory = 0;
                     }
                 }
                 if (factory->m_scriptFactory == 0) {
-                    if (scriptLanguage == "python") {
-                        factory->m_scriptFactory = new PythonScriptFactory(scriptName, className);
+                    if (script_language == "python") {
+                        factory->m_scriptFactory = new PythonScriptFactory(script_name, className);
                     } else {
                         log(ERROR, "Unknown script language.");
                     }
@@ -243,9 +253,41 @@ int EntityFactory::installTaskClass(const std::string & className,
                                     const std::string & parent,
                                     const MapType & classDesc)
 {
-    // std::cout << "Attempting to install " << className << " which is a "
-              // << parent << std::endl << std::flush;
-    return -1;
+    TaskFactoryDict::const_iterator I = m_taskFactories.find(className);
+    if (I != m_taskFactories.end()) {
+        log(ERROR, String::compose("Attempt to install task \"%1\" which is already installed", className).c_str());
+    }
+    
+    TaskFactory * factory = 0;
+    // Establish whether this rule has an associated script, and
+    // if so, use it.
+    MapType::const_iterator J = classDesc.find("script");
+    MapType::const_iterator Jend = classDesc.end();
+    if ((J != Jend) && (J->second.isMap())) {
+        const MapType & script = J->second.asMap();
+        J = script.find("name");
+        if ((J != script.end()) && (J->second.isString())) {
+            const std::string & script_name = J->second.String();
+            J = script.find("language");
+            if ((J != script.end()) && (J->second.isString())) {
+                const std::string & script_language = J->second.String();
+                if (script_language == "python") {
+                    factory = new PythonTaskScriptFactory(script_name, className);
+                } else {
+                    log(ERROR, String::compose("Unknown script language \"%1\" for task \"%2\"", script_language, className).c_str());
+                }
+            }
+        }
+    }
+
+    if (factory == 0) {
+        return -1;
+    }
+
+    std::cout << "Attempting to install " << className << " which is a "
+              << parent << std::endl << std::flush;
+    m_taskFactories.insert(std::make_pair(className, factory));
+    return 0;
 }
 
 int EntityFactory::installEntityClass(const std::string & className,

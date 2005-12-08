@@ -11,13 +11,17 @@
 #include <sigc++/object.h>
 
 class Entity;
+class Character;
+class Task;
 class FactoryBase;
+class TaskFactory;
 class BaseWorld;
 
 template <class T>
 class PersistantThingFactory;
 
 typedef std::map<std::string, FactoryBase *> FactoryDict;
+typedef std::map<std::string, TaskFactory *> TaskFactoryDict;
 
 /// \brief Class to handle the creation of all entities for the world.
 ///
@@ -30,6 +34,8 @@ class EntityFactory {
     static EntityFactory * m_instance;
 
     FactoryDict m_factories;
+    TaskFactoryDict m_taskFactories;
+
     BaseWorld & m_world;
     RuleWaitList m_waitingRules;
     PersistantThingFactory<Entity> * m_eft;
@@ -62,9 +68,12 @@ class EntityFactory {
         }
     }
     void initWorld();
+
     Entity * newEntity(const std::string &, long, const std::string &,
-                       const Atlas::Objects::Entity::RootEntity &);
+                       const Atlas::Objects::Entity::RootEntity &) const;
     void flushFactories();
+
+    Task * newTask(const std::string &, Character &) const;
 
     int installRule(const std::string &, const Atlas::Message::MapType&);
     int modifyRule(const std::string &, const Atlas::Message::MapType&);

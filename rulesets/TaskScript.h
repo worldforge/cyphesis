@@ -7,10 +7,12 @@
 
 #include "rulesets/Task.h"
 
+class Script;
+
 /// \brief Class for handling tasks which are implemented as scripts
 class TaskScript : public Task {
   protected:
-
+    Script * m_script;
   private:
     /// \brief Private and un-implemented, to make sure slicing is impossible
     TaskScript(const TaskScript & t);
@@ -19,6 +21,8 @@ class TaskScript : public Task {
   public:
     explicit TaskScript(Character & chr);
     virtual ~TaskScript();
+
+    void setScript(Script * scrpt);
 
     virtual void setup(OpVector & res);
 
