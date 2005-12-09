@@ -3,6 +3,7 @@
 // Copyright (C) 2004 Alistair Riddoch
 
 #include "rulesets/Fell.h"
+#include "rulesets/Combat.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
@@ -41,6 +42,22 @@ int main()
         fell.irrelevant();
 
         assert(fell.obsolete());
+    }
+
+    Character chr1("4", 4), chr2("5", 5);
+
+    {
+        Combat * combat = new Combat(chr1, chr2);
+        chr1.setTask(combat);
+        chr2.setTask(combat);
+
+        assert(!combat->obsolete());
+
+        combat->TickOperation(op, res);
+
+        combat->irrelevant();
+
+        assert(combat->obsolete());
     }
 
     return ret;

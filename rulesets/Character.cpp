@@ -130,6 +130,12 @@ Character::~Character()
     }
 }
 
+void Character::setTask(Task * task)
+{
+    m_task = task;
+    task->incRef();
+}
+
 void Character::clearTask()
 {
     m_task->decRef();

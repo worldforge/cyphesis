@@ -1,5 +1,12 @@
 2005-12-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.h, rulesets/Character.cpp: Add a function to
+	  assign a task to a character.
+
+	* tests/Tasktest.cpp: Test the combat task.
+
+2005-12-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Fell.h, rulesets/Fell.cpp: Update to new interface
 	  so tests work.
 

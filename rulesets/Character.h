@@ -66,6 +66,7 @@ class Character : public Character_parent {
     const double getFood() const { return m_food; }
     const std::string & getRightHandWield() const { return m_rightHandWield; }
 
+    void setTask(Task *);
     void clearTask();
 
     virtual void operation(const Operation & op, OpVector &);
