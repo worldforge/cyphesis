@@ -3,6 +3,8 @@ and its wrapper object, which the script uses to access the core object.
 The core object needs to retain a reference to the wrapper object to avoid
 the need to create an additional wrapper object when another entity
 wants to refer to it.
+Once this is done, the wrapper can be specialised for Character so that
+task related code is exposed.
 
 Don't do the same bullshit help every time the user clicks on a helping NPC.
 Bugs: Password is visible during login
