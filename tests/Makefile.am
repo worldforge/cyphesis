@@ -455,6 +455,7 @@ EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/server/Peer.o \
                           $(top_builddir)/server/CommServer.o \
                           $(top_builddir)/server/ScriptFactory.o \
+                          $(top_builddir)/server/TaskFactory.o \
                           $(top_builddir)/rulesets/librulesetentity.a \
                           $(top_builddir)/rulesets/librulesetmind.a \
                           $(top_builddir)/rulesets/librulesetbase.a \

@@ -1,5 +1,10 @@
 2005-12-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Fell.h, rulesets/Fell.cpp: Update to new interface
+	  so tests work.
+
+2005-12-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Script.cpp: Document the script interface.
 
 	* rulesets/Task.h: Modify task interface so tasks now expect

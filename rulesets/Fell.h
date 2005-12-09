@@ -13,7 +13,7 @@ class Fell : public Task {
     explicit Fell(Character & chr, Entity & tool, Entity & target);
     virtual ~Fell();
 
-    virtual void setup(OpVector & res);
+    virtual void initTask(const Operation & op, OpVector & res);
     virtual void TickOperation(const Operation & op, OpVector & res);
 };
 
