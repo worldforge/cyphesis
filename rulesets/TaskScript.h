@@ -24,10 +24,9 @@ class TaskScript : public Task {
 
     void setScript(Script * scrpt);
 
-    virtual void setup(OpVector & res);
-
     virtual void irrelevant();
 
+    virtual void initTask(const Operation & op, OpVector & res);
     virtual void TickOperation(const Operation & op, OpVector & res);
 };
 

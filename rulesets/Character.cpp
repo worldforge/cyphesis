@@ -407,6 +407,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
+#if 1
     Combat * combat = new Combat(*attacker, *this);
 
     m_task = combat;
@@ -415,7 +416,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     attacker->m_task = combat;
     combat->incRef();
 
-    m_task->setup(res);
+    m_task->initTask(op, res);
 
     if (combat->obsolete()) {
         std::cout << "Attack aborted because one of more character is exhausted" << std::endl << std::flush;
@@ -428,6 +429,18 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
 
         return;
     }
+#else
+    Task * combat = EntityFactory::instance()->newTask("combat", *attacker);
+
+    m_task = combat;
+    combat->incRef;
+
+    attacker->m_task = combat;
+    combat->incRef();
+
+    Setup s;
+    m_task->SetupOperation (s, res);
+#endif
 }
 
 void Character::ChopOperation(const Operation & op, OpVector & res)

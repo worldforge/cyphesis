@@ -1,3 +1,25 @@
+2005-12-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Script.cpp: Document the script interface.
+
+	* rulesets/Task.h: Modify task interface so tasks now expect
+	  the operation that initiated the task to be passed in
+	  to an init function.
+
+	* rulesets/Combat.h, rulesets/Combat.cpp: Modify the combat task
+	  methods to match the interface changes.
+
+	* rulesets/Character.cpp: Modify Combat use to take account
+	  of interface changes. Prototype using script based
+	  combat.
+
+	* rulesets/TaskScript.h, rulesets/TaskScript.cpp: Implement
+	  passing the initialising op through to the script using the
+	  standard scripp operation handling functions.
+
+	* rulesets/mason/world/tasks/Combat.py: Add handler for Attack
+	  operation, which should now be passed in at init time.
+
 2005-12-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/TaskScript.cpp, server/TaskFactory.cpp: Add some assert

@@ -8,7 +8,7 @@ class Combat(Thing):
     def __init__(self, cppthing):
         self.cinit(cppthing)
         print "Task Created"
-    def setup_operation(self, op):
-        print "Got setup"
+    def attack_operation(self, op):
+        print "Got attack"
     def tick_operation(self, op):
         print "Got tick"

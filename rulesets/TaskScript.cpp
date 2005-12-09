@@ -8,9 +8,8 @@
 
 #include "common/log.h"
 
-#include "common/Setup.h"
-
-using Atlas::Objects::Operation::Setup;
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/RootOperation.h>
 
 TaskScript::TaskScript(Character & chr) : Task(chr), m_script(0)
 {
@@ -29,16 +28,18 @@ void TaskScript::setScript(Script * scrpt)
     m_script = scrpt;
 }
 
-void TaskScript::setup(OpVector & res)
-{
-    assert(m_script != 0);
-    Setup op;
-    m_script->operation("setup", op, res);
-}
-
 void TaskScript::irrelevant()
 {
     Task::irrelevant();
+}
+
+void TaskScript::initTask(const Operation & op, OpVector & res)
+{
+    assert(m_script != 0);
+    if (!m_script->operation(op->getParents().front(), op, res)) {
+        log(WARNING, "Task init failed");
+        irrelevant();
+    }
 }
 
 void TaskScript::TickOperation(const Operation & op, OpVector & res)

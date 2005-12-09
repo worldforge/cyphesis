@@ -43,7 +43,7 @@ Combat::~Combat()
 }
 
 // FIXME Should this be the default implemntation of this method in Task?
-void Combat::setup(OpVector & res)
+void Combat::initTask(const Operation & op, OpVector & res)
 {
     if (m_character.getStamina() < minStamina ||
         m_target.getStamina() < minStamina) {

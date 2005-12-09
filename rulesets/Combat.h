@@ -18,8 +18,9 @@ class Combat : public Task {
     explicit Combat(Character & chr, Character & target);
     virtual ~Combat();
 
-    virtual void setup(OpVector & res);
     virtual void irrelevant();
+
+    virtual void initTask(const Operation & op, OpVector & res);
 
     virtual void TickOperation(const Operation & op, OpVector & res);
 };

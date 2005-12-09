@@ -39,13 +39,14 @@ class Task {
   public:
     virtual ~Task();
 
-    /// \brief Initialise the task, and return the operations required
-    ///
-    /// @param res The result of the operation is returned here.
-    virtual void setup(OpVector & res) = 0;
-
     /// \brief Flag this task as obsolete
     virtual void irrelevant();
+
+    /// \brief Handle the operation that instigates the task
+    ///
+    /// @param op The operation to be processed
+    /// @param res The result of the operation is returned here.
+    virtual void initTask(const Operation & op, OpVector & res) = 0;
 
     /// \brief Handle a tick operation to perform the task
     ///
