@@ -1,3 +1,10 @@
+2005-12-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/PythonMindScript.cpp, rulesets/PythonThingScript.cpp:
+	  Clean up code which handles calling methods in python, removing
+	  some unnecessary checks, and report error messages on some more
+	  error occurences.
+
 2005-12-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.h, rulesets/Character.cpp: Add a function to

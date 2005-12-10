@@ -14,6 +14,7 @@
 
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/RootOperation.h>
 
@@ -33,15 +34,18 @@ bool PythonMindScript::operation(const std::string & op_type,
                                  OpVector & ret_list,
                                  const Operation * sub_op_ptr)
 {
+    assert(scriptObject != NULL);
     std::string op_name = op_type + "_operation";
     debug( std::cout << "Got script object for " << op_name << std::endl
                                                             << std::flush;);
-    // Construct apropriate python object thingies from op
+    // This check isn't really necessary, except it saves the conversion
+    // time.
     if (!PyObject_HasAttrString(scriptObject, (char *)(op_name.c_str()))) {
-        debug( std::cout << "No method found for " << op_name << std::endl
-                         << std::flush;);
+        debug( std::cout << "No method to be found for " << op_name
+                         << std::endl << std::flush;);
         return false;
     }
+    // Construct apropriate python object thingies from op
     PyConstOperation * py_op = newPyConstOperation();
     py_op->operation = op;
     PyObject * ret;
@@ -57,36 +61,7 @@ bool PythonMindScript::operation(const std::string & op_type,
         Py_DECREF(py_sub_op);
     }
     Py_DECREF(py_op);
-    if (ret != NULL) {
-        debug( std::cout << "Called python method " << op_name << std::endl
-                         << std::flush;);
-        if (PyOperation_Check(ret)) {
-            PyOperation * op = (PyOperation*)ret;
-            if (op->operation.isValid()) {
-                ret_list.push_back(op->operation);
-            } else {
-                debug( std::cout << "Method returned invalid op" << std::endl
-                                 << std::flush;);
-            }
-        } else if (PyOplist_Check(ret)) {
-            PyOplist * op = (PyOplist*)ret;
-            if (op->ops != NULL) {
-                const OpVector & o = *op->ops;
-                OpVector::const_iterator Iend = o.end();
-                for (OpVector::const_iterator I = o.begin(); I != Iend; ++I) {
-                    ret_list.push_back(*I);
-                }
-            } else {
-                debug(std::cout << "Method returned invalid OpVector" << std::endl
-                                << std::flush;);
-            }
-        } else {
-            debug( std::cout << "Method returned invalid object" << std::endl << std::flush;);
-        }
-        
-        Py_DECREF(ret);
-        return true;
-    } else {
+    if (ret == NULL) {
         if (PyErr_Occurred() == NULL) {
             debug( std::cout << "No method to be found for " << std::endl
                              << std::flush;);
@@ -98,8 +73,30 @@ bool PythonMindScript::operation(const std::string & op_type,
                 log(ERROR, msg.c_str());
             }
         }
+        return false;
     }
-    return false;
+    debug( std::cout << "Called python method " << op_name
+                     << std::endl << std::flush;);
+    if (ret == Py_None) {
+        debug(std::cout << "Returned none" << std::endl << std::flush;);
+    } else if (PyOperation_Check(ret)) {
+        PyOperation * op = (PyOperation*)ret;
+        assert(op->operation.isValid());
+        ret_list.push_back(op->operation);
+    } else if (PyOplist_Check(ret)) {
+        PyOplist * op = (PyOplist*)ret;
+        assert(op->ops != NULL);
+        const OpVector & o = *op->ops;
+        OpVector::const_iterator Iend = o.end();
+        for (OpVector::const_iterator I = o.begin(); I != Iend; ++I) {
+            ret_list.push_back(*I);
+        }
+    } else {
+        log(ERROR, String::compose("Python script \"%1\" returned an invalid result", op_name).c_str());
+    }
+    
+    Py_DECREF(ret);
+    return true;
 }
 
 void PythonMindScript::hook(const std::string & method, Entity * object)
