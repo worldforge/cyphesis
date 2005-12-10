@@ -10,7 +10,9 @@
 /// \brief Handle an internet socket connected to a remote master server.
 class CommMaster : public CommClient {
   public:
-    CommMaster(CommServer & svr, const std::string & addr);
+    CommMaster(CommServer & svr,
+               const std::string & addr,
+               const std::string & id);
     virtual ~CommMaster();
 
     int connect(const std::string &);

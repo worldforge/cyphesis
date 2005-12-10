@@ -4,8 +4,10 @@
 
 #include "Master.h"
 
-Master::Master(const std::string & id, CommClient & cli, ServerRouting & svr) :
-               OOGThing(id), m_commClient(cli), m_server(svr)
+#include "common/id.h"
+
+Master::Master(CommClient & cli, ServerRouting & svr, const std::string & id) :
+        OOGThing(id, forceIntegerId(id)), m_commClient(cli), m_server(svr)
 {
 }
 

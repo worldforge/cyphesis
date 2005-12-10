@@ -13,8 +13,9 @@
 ///
 /// @param svr Reference to the object that manages all socket communication.
 /// @param addr Address of the remote master server.
-CommMaster::CommMaster(CommServer & svr, const std::string & addr) :
-   CommClient(svr, *new Master(addr, *this, svr.m_server))
+CommMaster::CommMaster(CommServer & svr, const std::string & addr,
+                       const std::string & id) :
+            CommClient(svr, *new Master(*this, svr.m_server, id))
 {
     std::cout << "Outgoing master connection." << std::endl << std::flush;
 }

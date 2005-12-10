@@ -1,5 +1,11 @@
 2005-12-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommMaster.cpp, server/CommMaster.h,
+	  server/Master.cpp, server/Master.h, server/slave.cpp:
+	  Convert slave code over to use conventions for integer IDs.
+
+2005-12-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/PythonMindScript.cpp, rulesets/PythonThingScript.cpp:
 	  Clean up code which handles calling methods in python, removing
 	  some unnecessary checks, and report error messages on some more

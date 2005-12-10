@@ -37,11 +37,15 @@ SERVER_LIBS = \
 
 cyphesis_LDFLAGS = -nodefaultlibs $(PYTHON_LINKER_FLAGS)
 
+cyslave_LDFLAGS = -nodefaultlibs $(PYTHON_LINKER_FLAGS)
+
 else
 
 SERVER_LIBS = $(COMMON_LIBS) $(TERRAIN_LIBS) $(NETWORK_LIBS) $(MDNS_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS)
 
 cyphesis_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+cyslave_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 endif
 
@@ -105,6 +109,7 @@ cyslave_SOURCES = \
 		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
 		WorldRouter.cpp WorldRouter.h \
 		ScriptFactory.cpp ScriptFactory.h \
+		TaskFactory.cpp TaskFactory.h \
 		EntityFactory.cpp EntityFactory.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
@@ -126,12 +131,10 @@ cyslave_SOURCES = \
 		slave.cpp
 
 cyslave_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
-                $(top_builddir)/rulesets/librulesetbase.a \
                 $(top_builddir)/rulesets/librulesetmind.a \
                 $(top_builddir)/rulesets/librulesetentity.a \
                 $(top_builddir)/rulesets/librulesetbase.a \
                 $(top_builddir)/modules/libmodules.a \
                 $(top_builddir)/common/libcommon.a \
-                $(top_builddir)/physics/libphysics.a
-
-cyslave_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+                $(top_builddir)/physics/libphysics.a \
+                $(SERVER_LIBS)

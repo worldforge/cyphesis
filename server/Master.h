@@ -21,7 +21,7 @@ class Master : public OOGThing {
     CommClient & m_commClient;
     ServerRouting & m_server;
 
-    Master(const std::string & id, CommClient & client, ServerRouting & svr);
+    Master(CommClient & client, ServerRouting & svr, const std::string & id);
     virtual ~Master();
 };
 
