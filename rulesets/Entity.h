@@ -116,6 +116,10 @@ class Entity : public BaseEntity {
         return m_destroyed;
     }
 
+    Script * script() const {
+        return m_script;
+    }
+
     /// \brief Send an operation to the world for dispatch.
     ///
     /// sendWorld() bipasses serialno assignment, so you must ensure

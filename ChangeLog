@@ -1,5 +1,15 @@
 2005-12-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h: Add accessor for script.
+
+	* rulesets/PythonThingScript.h: Add accessor for script wrapper.
+
+	* rulesets/Py_World.cpp, rulesets/Py_Location.cpp: When getting a
+	  python wrapper for an entity for a script, check to see if the
+	  entity has a permanent wrapper already.
+
+2005-12-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/PythonThingScript.h, rulesets/PythonThingScript.cpp:
 	  Store a pointer to the core object's python wrapper, and modify
 	  constructor to initialise it.

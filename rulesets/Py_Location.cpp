@@ -8,6 +8,7 @@
 #include "Py_Point3D.h"
 #include "Py_Quaternion.h"
 #include "Py_BBox.h"
+#include "PythonThingScript.h"
 
 #include "Entity.h"
 
@@ -53,9 +54,17 @@ static PyObject * Location_getattr(PyLocation *self, char *name)
             Py_INCREF(Py_None);
             return Py_None;
         }
-        PyEntity * thing = newPyEntity();
-        thing->m_entity = self->location->m_loc;
-        return (PyObject *)thing;
+        PythonEntityScript * pts = dynamic_cast<PythonEntityScript*>(self->location->m_loc->script());
+        if (pts == 0) {
+            PyEntity * o = newPyEntity();
+            o->m_entity = self->location->m_loc;
+            return (PyObject *)o;
+        } else {
+            PyObject * o = pts->wrapper();
+            assert(o != NULL);
+            Py_INCREF(o);
+            return o;
+        }
     }
     if (strcmp(name, "coordinates") == 0) {
         PyPoint3D * v = newPyPoint3D();

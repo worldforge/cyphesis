@@ -6,7 +6,8 @@ An entity typically has two python objects associated with it, its script,
 and its wrapper object, which the script uses to access the core object.
 The core object needs to retain a reference to the wrapper object to avoid
 the need to create an additional wrapper object when another entity
-wants to refer to it.
+wants to refer to it. Entity should be checked for wrapper in:
+Location_getattr, World_get_object.
 Once this is done, the wrapper can be specialised for Character so that
 task related code is exposed.
 

@@ -16,6 +16,9 @@ class PythonEntityScript : public PythonScript {
   public:
     explicit PythonEntityScript(PyObject *, PyObject *);
     virtual ~PythonEntityScript();
+
+    PyObject * wrapper() const { return m_wrapper; }
+
     virtual bool operation(const std::string &,
                            const Atlas::Objects::Operation::RootOperation &,
                            OpVector &,
