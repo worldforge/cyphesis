@@ -425,14 +425,14 @@ void Create_PyEntity(Entity * entity, const std::string & package,
 {
     PyObject * pyClass = Get_PyClass(package, type);
     if (pyClass == NULL) { return; }
-    PyEntity * pyEntity = newPyEntity();
-    pyEntity->m_entity = entity;
+    PyEntity * wrapper = newPyEntity();
+    wrapper->m_entity = entity;
     Subscribe_Script(entity, pyClass, package);
-    PyObject * o = Create_PyScript((PyObject *)pyEntity, pyClass);
+    PyObject * o = Create_PyScript((PyObject *)wrapper, pyClass);
     Py_DECREF(pyClass);
 
     if (o != NULL) {
-        entity->setScript(new PythonEntityScript(o));
+        entity->setScript(new PythonEntityScript(o, (PyObject *)wrapper));
     }
 }
 

@@ -77,14 +77,14 @@ Task * PythonTaskScriptFactory::newTask(Character & chr)
     TaskScript * task = new TaskScript(chr);
     assert(task != 0);
 
-    PyTask * pyTask = newPyTask();
-    assert(pyTask != 0);
-    pyTask->m_task = task;
-    assert(pyTask->m_task != 0);
-    PyObject * script = Create_PyScript((PyObject *)pyTask, m_class);
+    PyTask * wrapper = newPyTask();
+    assert(wrapper != 0);
+    wrapper->m_task = task;
+    assert(wrapper->m_task != 0);
+    PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
     assert(script != 0);
 
-    task->setScript(new PythonEntityScript(script));
+    task->setScript(new PythonEntityScript(script, (PyObject *)wrapper));
     
     std::cout << "created" << std::endl << std::flush;
 

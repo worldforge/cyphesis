@@ -14,7 +14,7 @@ class PythonMindScript : public PythonScript {
   private:
     BaseMind & mind;
   public:
-    PythonMindScript(PyObject *, BaseMind &);
+    explicit PythonMindScript(PyObject *, BaseMind &);
     virtual ~PythonMindScript();
     virtual bool operation(const std::string &,
                            const Atlas::Objects::Operation::RootOperation &,

@@ -1,3 +1,17 @@
+2005-12-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/PythonThingScript.h, rulesets/PythonThingScript.cpp:
+	  Store a pointer to the core object's python wrapper, and modify
+	  constructor to initialise it.
+
+	* rulesets/Python_API.cpp, server/ScriptFactory.cpp,
+	  server/TaskFactory.cpp: Modify variable name to make it clearer
+	  what the wrapper object is. Pass wrapper to script management
+	  object constructor, so it can store the pointer.
+
+	* rulesets/PythonMindScript.h: Make constructor explicit for
+	  safety.
+
 2005-12-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommMaster.cpp, server/CommMaster.h,

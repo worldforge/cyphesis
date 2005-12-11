@@ -1,3 +1,7 @@
+Once Script returns an int which differentiates between an error, and
+a missing method, then mind reference in PythonMindScript can got, and
+error can be reported in BaseMind or somewhere similar.
+
 An entity typically has two python objects associated with it, its script,
 and its wrapper object, which the script uses to access the core object.
 The core object needs to retain a reference to the wrapper object to avoid

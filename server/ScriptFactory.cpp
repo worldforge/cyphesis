@@ -77,16 +77,16 @@ int PythonScriptFactory::addScript(Entity * entity)
     if (m_class == 0) {
         return -1;
     }
-    PyEntity * pyEntity = newPyEntity();
-    pyEntity->m_entity = entity;
+    PyEntity * wrapper = newPyEntity();
+    wrapper->m_entity = entity;
     Subscribe_Script(entity, m_class, m_package);
-    PyObject * script = Create_PyScript((PyObject *)pyEntity, m_class);
+    PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
 
     if (script == NULL) {
         return -1;
     }
 
-    entity->setScript(new PythonEntityScript(script));
+    entity->setScript(new PythonEntityScript(script, (PyObject *)wrapper));
 
     return 0;
 }
