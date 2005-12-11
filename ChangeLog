@@ -1,5 +1,13 @@
 2005-12-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Script.h, rulesets/Script.cpp: Add a default Script
+	  instance for entities that don't have a script.
+
+	* rulesets/Entity.cpp: Assign a pointer to the default script
+	  object in constructor, and check for it when deleting scripts.
+
+2005-12-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.h: Add accessor for script.
 
 	* rulesets/PythonThingScript.h: Add accessor for script wrapper.

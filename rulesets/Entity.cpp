@@ -49,7 +49,7 @@ const std::set<std::string> & Entity::immutables()
 
 Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
                                          m_refCount(0), m_destroyed(false),
-                                         m_script(new Script), m_seq(0),
+                                         m_script(&noScript), m_seq(0),
                                          m_status(1), m_type("entity"),
                                          m_mass(-1), m_perceptive(false),
                                          m_world(NULL), m_update_flags(0)
@@ -67,7 +67,7 @@ Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
 
 Entity::~Entity()
 {
-    if (m_script != NULL) {
+    if (m_script != NULL && m_script != &noScript) {
         delete m_script;
     }
     PropertyDict::const_iterator I = m_properties.begin();
@@ -198,7 +198,7 @@ void Entity::addToEntity(const RootEntity & ent) const
 /// @param scrpt Pointer to the script to be associated with this entity
 void Entity::setScript(Script * scrpt)
 {
-    if (m_script != NULL) {
+    if (m_script != NULL && m_script != &noScript) {
         delete m_script;
     }
     m_script = scrpt;

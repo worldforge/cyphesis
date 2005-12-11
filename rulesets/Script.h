@@ -29,4 +29,6 @@ class Script {
     virtual void hook(const std::string &, Entity *);
 };
 
+extern Script noScript;
+
 #endif // RULESETS_SCRIPT_H

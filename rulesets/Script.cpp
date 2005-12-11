@@ -33,3 +33,5 @@ bool Script::operation(const std::string & opname,
 void Script::hook(const std::string &, Entity *)
 {
 }
+
+Script noScript;

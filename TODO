@@ -10,6 +10,9 @@ wants to refer to it. Entity should be checked for wrapper in:
 Location_getattr, World_get_object.
 Once this is done, the wrapper can be specialised for Character so that
 task related code is exposed.
+To generalise this, create PythonWrapper which inherits from Script,
+from which PythonScript then inherits, and use it both as abstract
+and directly to store wrappers for all IG and mind entities as required.
 
 Don't do the same bullshit help every time the user clicks on a helping NPC.
 Bugs: Password is visible during login
