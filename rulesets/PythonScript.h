@@ -7,22 +7,17 @@
 
 #include <Python.h>
 
-#include "Script.h"
+#include "PythonWrapper.h"
 
 class Entity;
 
 /// \brief Base Script class for Python scripts
-class PythonScript : public Script {
+class PythonScript : public PythonWrapper {
   protected:
     PyObject * scriptObject;
   public:
-    PythonScript(PyObject *);
+    PythonScript(PyObject * object, PyObject * wrapper);
     virtual ~PythonScript();
-    virtual bool operation(const std::string &,
-                           const Atlas::Objects::Operation::RootOperation &,
-                           OpVector &,
-                           const Atlas::Objects::Operation::RootOperation * = 0) = 0;
-    virtual void hook(const std::string &, Entity *) = 0;
 };
 
 #endif // RULESETS_PYTHON_SCRIPT_H

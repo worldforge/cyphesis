@@ -4,7 +4,8 @@
 
 #include "PythonScript.h"
 
-PythonScript::PythonScript(PyObject * o) : scriptObject(o)
+PythonScript::PythonScript(PyObject * o, PyObject * wrapper) :
+              PythonWrapper(wrapper), scriptObject(o)
 {
 }
 

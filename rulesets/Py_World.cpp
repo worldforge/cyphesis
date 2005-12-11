@@ -45,13 +45,13 @@ static PyObject * World_get_object(PyWorld *self, PyObject *args)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    PythonEntityScript * pts = dynamic_cast<PythonEntityScript*>(ent->script());
-    if (pts == 0) {
+    PythonWrapper * pw = dynamic_cast<PythonWrapper *>(ent->script());
+    if (pw == 0) {
         PyEntity * o = newPyEntity();
         o->m_entity = ent;
         return (PyObject *)o;
     } else {
-        PyObject * o = pts->wrapper();
+        PyObject * o = pw->wrapper();
         assert(o != NULL);
         Py_INCREF(o);
         return o;

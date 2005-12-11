@@ -1,5 +1,23 @@
 2005-12-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/PythonWrapper.h, rulesets/PythonWrapper.cpp: Add new
+	  class which inherits from Script to store a wrapper pointer
+	  for instances which have no script.
+
+	* rulesets/PythonScript.h, rulesets/PythonScript.cpp,
+	  rulesets/PythonThingScript.h, rulesets/PythonThingScript.cpp,
+	  rulesets/PythonMindScript.h, rulesets/PythonMindScript.cpp:
+	  Refactor script classes to inherit from PythonWrapper to make
+	  storing wrappers for mind and world entities easier.
+
+	* rulesets/Py_Location.cpp, rulesets/Py_World.cpp: Use PythonWrapper
+	  interface to get wrapper pointers from Script objects.
+
+	* rulesets/Python_API.cpp: Improve variable names, and comment out
+	  some unused code.
+
+2005-12-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Script.h, rulesets/Script.cpp: Add a default Script
 	  instance for entities that don't have a script.
 

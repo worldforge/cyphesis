@@ -12,12 +12,12 @@ class Entity;
 /// \brief Script class for Python scripts attached to an Entity
 class PythonEntityScript : public PythonScript {
   protected:
-    PyObject * const m_wrapper;
+    // PyObject * const m_wrapper;
   public:
     explicit PythonEntityScript(PyObject *, PyObject *);
     virtual ~PythonEntityScript();
 
-    PyObject * wrapper() const { return m_wrapper; }
+    // PyObject * wrapper() const { return m_wrapper; }
 
     virtual bool operation(const std::string &,
                            const Atlas::Objects::Operation::RootOperation &,

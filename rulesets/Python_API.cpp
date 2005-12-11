@@ -361,9 +361,9 @@ static PyObject * Get_PyClass(const std::string & package,
     return pyClass;
 }
 
-PyObject * Create_PyScript(PyObject * pyEntity, PyObject * pyClass)
+PyObject * Create_PyScript(PyObject * wrapper, PyObject * pyClass)
 {
-    PyObject * pyob = PyEval_CallFunction(pyClass,"(O)", pyEntity);
+    PyObject * pyob = PyEval_CallFunction(pyClass,"(O)", wrapper);
     
     if (pyob == NULL) {
         if (PyErr_Occurred() == NULL) {
@@ -373,7 +373,7 @@ PyObject * Create_PyScript(PyObject * pyEntity, PyObject * pyClass)
             PyErr_Print();
         }
     }
-    Py_DECREF(pyEntity);
+    Py_DECREF(wrapper);
     return pyob;
 }
 
@@ -420,6 +420,7 @@ void Subscribe_Script(Entity * entity, PyObject * pyclass,
     Py_DECREF(keys);
 }
 
+#if 0
 void Create_PyEntity(Entity * entity, const std::string & package,
                                       const std::string & type)
 {
@@ -435,20 +436,21 @@ void Create_PyEntity(Entity * entity, const std::string & package,
         entity->setScript(new PythonEntityScript(o, (PyObject *)wrapper));
     }
 }
+#endif
 
 void Create_PyMind(BaseMind * mind, const std::string & package,
                                     const std::string & type)
 {
     PyObject * pyClass = Get_PyClass(package, type);
     if (pyClass == NULL) { return; }
-    PyMind * pyMind = newPyMind();
-    pyMind->m_mind = mind;
+    PyMind * wrapper = newPyMind();
+    wrapper->m_mind = mind;
     Subscribe_Script(mind, pyClass, package);
-    PyObject * o = Create_PyScript((PyObject *)pyMind, pyClass);
+    PyObject * o = Create_PyScript((PyObject *)wrapper, pyClass);
     Py_DECREF(pyClass);
 
     if (o != NULL) {
-        mind->setScript(new PythonMindScript(o, *mind));
+        mind->setScript(new PythonMindScript(o, (PyObject *)wrapper, *mind));
     }
 }
 

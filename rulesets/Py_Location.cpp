@@ -54,13 +54,13 @@ static PyObject * Location_getattr(PyLocation *self, char *name)
             Py_INCREF(Py_None);
             return Py_None;
         }
-        PythonEntityScript * pts = dynamic_cast<PythonEntityScript*>(self->location->m_loc->script());
-        if (pts == 0) {
+        PythonWrapper * pw = dynamic_cast<PythonWrapper *>(self->location->m_loc->script());
+        if (pw == 0) {
             PyEntity * o = newPyEntity();
             o->m_entity = self->location->m_loc;
             return (PyObject *)o;
         } else {
-            PyObject * o = pts->wrapper();
+            PyObject * o = pw->wrapper();
             assert(o != NULL);
             Py_INCREF(o);
             return o;
