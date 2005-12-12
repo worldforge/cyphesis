@@ -8,11 +8,8 @@
 #include "Py_Point3D.h"
 #include "Py_Quaternion.h"
 #include "Py_BBox.h"
-#include "PythonThingScript.h"
 
 #include "Entity.h"
-
-#include "common/log.h"
 
 static PyObject * Location_copy(PyLocation *self)
 {
@@ -54,23 +51,7 @@ static PyObject * Location_getattr(PyLocation *self, char *name)
             Py_INCREF(Py_None);
             return Py_None;
         }
-        PythonWrapper * pw = dynamic_cast<PythonWrapper *>(self->location->m_loc->script());
-        if (pw == 0) {
-            PyEntity * o = newPyEntity();
-            o->m_entity = self->location->m_loc;
-            if (self->location->m_loc->script() == &noScript) {
-                pw = new PythonWrapper((PyObject *)o);
-                self->location->m_loc->setScript(pw);
-            } else {
-                std::cerr << "Bizare script!" << std::endl << std::flush;
-            }
-            return (PyObject *)o;
-        } else {
-            PyObject * o = pw->wrapper();
-            assert(o != NULL);
-            Py_INCREF(o);
-            return o;
-        }
+        return wrapEntity(self->location->m_loc);
     }
     if (strcmp(name, "coordinates") == 0) {
         PyPoint3D * v = newPyPoint3D();

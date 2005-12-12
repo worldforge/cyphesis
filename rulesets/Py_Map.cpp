@@ -35,7 +35,6 @@ static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
         return NULL;
     }
     PyLocation * where = (PyLocation *)where_obj;
-    PyEntity * thing;
     MemEntityVector res = self->m_map->findByLocation(*where->location,
                                                           radius);
     PyObject * list = PyList_New(res.size());
@@ -45,13 +44,12 @@ static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
     MemEntityVector::const_iterator Iend = res.end();
     int i = 0;
     for (MemEntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
-        thing = newPyEntity();
+        PyObject * thing = wrapEntity(*I);
         if (thing == NULL) {
             Py_DECREF(list);
             return NULL;
         }
-        thing->m_entity = *I;
-        PyList_SetItem(list, i, (PyObject*)thing);
+        PyList_SetItem(list, i, thing);
     }
     return list;
 }
@@ -68,7 +66,6 @@ static PyObject * Map_find_by_type(PyMap * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s", &what)) {
         return NULL;
     }
-    PyEntity * thing;
     MemEntityVector res = self->m_map->findByType(std::string(what));
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
@@ -77,13 +74,12 @@ static PyObject * Map_find_by_type(PyMap * self, PyObject * args)
     MemEntityVector::const_iterator Iend = res.end();
     int i = 0;
     for (MemEntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
-        thing = newPyEntity();
+        PyObject * thing = wrapEntity(*I);
         if (thing == NULL) {
             Py_DECREF(list);
             return NULL;
         }
-        thing->m_entity = *I;
-        PyList_SetItem(list, i, (PyObject*)thing);
+        PyList_SetItem(list, i, thing);
     }
     return list;
 }
@@ -128,15 +124,19 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
             return NULL;
         }
         MemEntity * ret = self->m_map->updateAdd(ent, time);
-        PyEntity * thing = newPyEntity();
-        thing->m_entity = ret;
-        return (PyObject *)thing;
+        PyObject * thing = wrapEntity(ret);
+        if (thing == NULL) {
+            return NULL;
+        }
+        return thing;
     } else if (PyRootEntity_Check(arg)) {
         PyRootEntity * ent = (PyRootEntity*)arg;
         MemEntity * ret = self->m_map->updateAdd(ent->entity, time);
-        PyEntity * thing = newPyEntity();
-        thing->m_entity = ret;
-        return (PyObject *)thing;
+        PyObject * thing = wrapEntity(ret);
+        if (thing == NULL) {
+            return NULL;
+        }
+        return thing;
     } else {
         PyErr_SetString(PyExc_TypeError, "arg is not an Atlas Entity or Message");
         return NULL;
@@ -178,9 +178,11 @@ static PyObject * Map_get(PyMap * self, PyObject * args)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    PyEntity * thing = newPyEntity();
-    thing->m_entity = ret;
-    return (PyObject *)thing;
+    PyObject * thing = wrapEntity(ret);
+    if (thing == NULL) {
+        return NULL;
+    }
+    return thing;
 }
 
 static PyObject * Map_get_add(PyMap * self, PyObject * args)
@@ -196,9 +198,11 @@ static PyObject * Map_get_add(PyMap * self, PyObject * args)
         return NULL;
     }
     MemEntity * ret = self->m_map->getAdd(id);
-    PyEntity * thing = newPyEntity();
-    thing->m_entity = ret;
-    return (PyObject *)thing;
+    PyObject * thing = wrapEntity(ret);
+    if (thing == NULL) {
+        return NULL;
+    }
+    return thing;
 }
 
 static PyObject * Map_add_hooks_append(PyMap * self, PyObject * args)

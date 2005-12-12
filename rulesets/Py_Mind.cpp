@@ -11,7 +11,10 @@
 #include "Py_Location.h"
 #include "Py_World.h"
 #include "Py_WorldTime.h"
+#include "PythonWrapper.h"
 #include "BaseMind.h"
+
+#include "common/log.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -96,14 +99,12 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
         EntitySet::const_iterator Iend = self->m_mind->m_contains.end();
         for (; I != Iend; ++I) {
             Entity * child = *I;
-            PyEntity * wrapper = newPyEntity();
+            PyObject * wrapper = wrapEntity(child);
             if (wrapper == NULL) {
                 Py_DECREF(list);
                 return NULL;
             }
-            // FIXME Do we need to increment the reference count on this?
-            wrapper->m_entity = child;
-            PyList_Append(list, (PyObject*)wrapper);
+            PyList_Append(list, wrapper);
             Py_DECREF(wrapper);
         }
         return list;

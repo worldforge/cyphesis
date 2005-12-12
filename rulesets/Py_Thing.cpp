@@ -8,7 +8,10 @@
 #include "Py_Point3D.h"
 #include "Py_Location.h"
 #include "Py_World.h"
+#include "PythonWrapper.h"
 #include "Entity.h"
+
+#include "common/log.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -84,14 +87,12 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         EntitySet::const_iterator Iend = self->m_entity->m_contains.end();
         for (; I != Iend; ++I) {
             Entity * child = *I;
-            PyEntity * wrapper = newPyEntity();
+            PyObject * wrapper = wrapEntity(child);
             if (wrapper == NULL) {
                 Py_DECREF(list);
                 return NULL;
             }
-            // FIXME Do we need to increment the reference count on this?
-            wrapper->m_entity = child;
-            PyList_Append(list, (PyObject*)wrapper);
+            PyList_Append(list, wrapper);
             Py_DECREF(wrapper);
         }
         return list;
@@ -190,6 +191,31 @@ PyTypeObject PyEntity_Type = {
         0,                              /*tp_as_mapping*/
         0,                              /*tp_hash*/
 };
+
+PyObject * wrapEntity(Entity * entity)
+{
+    PyObject * wrapper;
+    PythonWrapper * pw = dynamic_cast<PythonWrapper *>(entity->script());
+    if (pw == 0) {
+        PyEntity * pe = newPyEntity();
+        if (pe == NULL) {
+            return NULL;
+        }
+        pe->m_entity = entity;
+        wrapper = (PyObject *)pe;
+        if (entity->script() == &noScript) {
+            pw = new PythonWrapper(wrapper);
+            entity->setScript(pw);
+        } else {
+            log(WARNING, "Entity has script of unknown type");
+        }
+    } else {
+        wrapper = pw->wrapper();
+        assert(wrapper != NULL);
+        Py_INCREF(wrapper);
+    }
+    return wrapper;
+}
 
 PyEntity * newPyEntity()
 {

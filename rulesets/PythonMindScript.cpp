@@ -99,11 +99,15 @@ bool PythonMindScript::operation(const std::string & op_type,
     return true;
 }
 
-void PythonMindScript::hook(const std::string & method, Entity * object)
+void PythonMindScript::hook(const std::string & method, Entity * entity)
 {
-    PyEntity * obj = newPyEntity();
-    obj->m_entity = object;
-    PyObject * ret = PyObject_CallMethod(scriptObject, (char *)(method.c_str()), "(O)", obj);
-    Py_DECREF(ret);
-    Py_DECREF(obj);
+    PyObject * wrapper = wrapEntity(entity);
+    if (wrapper == NULL) {
+        return;
+    }
+
+    PyObject * ret = PyObject_CallMethod(scriptObject, (char *)(method.c_str()), "(O)", wrapper);
+    // FIXME We should perhaps report an error here.
+    Py_XDECREF(ret);
+    Py_DECREF(wrapper);
 }

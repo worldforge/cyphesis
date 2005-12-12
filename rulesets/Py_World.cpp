@@ -5,7 +5,6 @@
 #include "Py_World.h"
 #include "Py_WorldTime.h"
 #include "Py_Thing.h"
-#include "PythonThingScript.h"
 
 #include "Entity.h"
 
@@ -45,17 +44,8 @@ static PyObject * World_get_object(PyWorld *self, PyObject *args)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    PythonWrapper * pw = dynamic_cast<PythonWrapper *>(ent->script());
-    if (pw == 0) {
-        PyEntity * o = newPyEntity();
-        o->m_entity = ent;
-        return (PyObject *)o;
-    } else {
-        PyObject * o = pw->wrapper();
-        assert(o != NULL);
-        Py_INCREF(o);
-        return o;
-    }
+    PyObject * wrapper = wrapEntity(ent);
+    return wrapper;
 }
 
 static PyMethodDef World_methods[] = {
