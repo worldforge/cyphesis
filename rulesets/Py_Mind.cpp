@@ -44,19 +44,15 @@ static PyMethodDef Mind_methods[] = {
 
 static void Mind_dealloc(PyMind *self)
 {
-    //if (self->m_mind != NULL) {
-        //delete self->m_mind;
-    //}
     Py_XDECREF(self->Mind_attr);
     PyMem_DEL(self);
 }
 
 static PyObject * Mind_getattr(PyMind *self, char *name)
 {
-    // Fairly major re-write of this to use operator[] of Mind base class
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "invalid mind getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.getattr");
         return NULL;
     }
 #endif // NDEBUG
@@ -108,6 +104,7 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
             // FIXME Do we need to increment the reference count on this?
             wrapper->m_entity = child;
             PyList_Append(list, (PyObject*)wrapper);
+            Py_DECREF(wrapper);
         }
         return list;
     }
@@ -132,9 +129,12 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
 
 static int Mind_setattr(PyMind *self, char *name, PyObject *v)
 {
+#ifndef NDEBUG
     if (self->m_mind == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.getattr");
         return -1;
     }
+#endif // NDEBUG
     if (strcmp(name, "status") == 0) {
         // This needs to be here until we can sort the difference
         // between floats and ints in python.

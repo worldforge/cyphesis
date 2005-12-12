@@ -37,16 +37,12 @@ static PyMethodDef Entity_methods[] = {
 
 static void Entity_dealloc(PyEntity *self)
 {
-    //if (self->m_entity != NULL) {
-        //delete self->m_entity;
-    //}
     Py_XDECREF(self->Entity_attr);
     PyMem_DEL(self);
 }
 
 static PyObject * Entity_getattr(PyEntity *self, char *name)
 {
-    // Fairly major re-write of this to use operator[] of Entity base class
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.getattr");
@@ -68,16 +64,6 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         Py_DECREF(ent);
         return list;
     }
-    // if (strcmp(name, "map") == 0) {
-        // MemMap * tMap = self->m_entity->getMap();
-        // if (tMap == NULL) {
-            // PyErr_SetString(PyExc_TypeError, "Body entity has no map");
-            // return NULL;
-        // }
-        // MapObject * map = newMapObject(NULL);
-        // map->m_map = tMap;
-        // return (PyObject *)map;
-    // }
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
         loc->location = &self->m_entity->m_location;
@@ -97,14 +83,16 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         EntitySet::const_iterator I = self->m_entity->m_contains.begin();
         EntitySet::const_iterator Iend = self->m_entity->m_contains.end();
         for (; I != Iend; ++I) {
-            PyEntity * child = newPyEntity();
-            if (child == NULL) {
+            Entity * child = *I;
+            PyEntity * wrapper = newPyEntity();
+            if (wrapper == NULL) {
                 Py_DECREF(list);
                 return NULL;
             }
             // FIXME Do we need to increment the reference count on this?
-            child->m_entity = *I;
-            PyList_Append(list, (PyObject*)child);
+            wrapper->m_entity = child;
+            PyList_Append(list, (PyObject*)wrapper);
+            Py_DECREF(wrapper);
         }
         return list;
     }

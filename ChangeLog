@@ -1,5 +1,11 @@
 2005-12-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Mind.cpp, rulesets/Py_Thing.cpp: Fix a bug where
+	  a new object was not decrefed after passing it into a list.
+	  Remove some commented out code. Fix some assertions.
+
+2005-12-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Mind.cpp: Clean up some variable names in preparation
 	  for some major changes.
 
