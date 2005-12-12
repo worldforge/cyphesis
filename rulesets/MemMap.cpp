@@ -31,7 +31,7 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
 
     debug(std::cout << "MemMap::addEntity " << entity << " " << entity->getId()
                     << std::endl << std::flush;);
-    long next;
+    long next = -1;
     if (m_checkIterator != m_entities.end()) {
         next = m_checkIterator->first;
     }

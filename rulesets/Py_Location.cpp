@@ -58,6 +58,12 @@ static PyObject * Location_getattr(PyLocation *self, char *name)
         if (pw == 0) {
             PyEntity * o = newPyEntity();
             o->m_entity = self->location->m_loc;
+            if (self->location->m_loc->script() == &noScript) {
+                pw = new PythonWrapper((PyObject *)o);
+                self->location->m_loc->setScript(pw);
+            } else {
+                std::cerr << "Bizare script!" << std::endl << std::flush;
+            }
             return (PyObject *)o;
         } else {
             PyObject * o = pw->wrapper();

@@ -1,3 +1,14 @@
+2005-12-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/PythonWrapper.cpp: Make sure PythonWrapper holds a propper
+	  reference to the wrapper object, to ensure its not dealloced.
+
+	* rulesets/Py_Location.cpp: Store a PythonWrapper when creating
+	  a new wrapper object if the entity does not already have
+	  a script.
+
+	* rulesets/MemMap.cpp: Fix an uninitialised variable.
+
 2005-12-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/PythonWrapper.h, rulesets/PythonWrapper.cpp: Add new

@@ -6,8 +6,10 @@
 
 PythonWrapper::PythonWrapper(PyObject * wrapper) : m_wrapper(wrapper)
 {
+    Py_INCREF(m_wrapper);
 }
 
 PythonWrapper::~PythonWrapper()
 {
+    Py_DECREF(m_wrapper);
 }
