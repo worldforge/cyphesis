@@ -99,14 +99,15 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
         EntitySet::const_iterator I = self->m_mind->m_contains.begin();
         EntitySet::const_iterator Iend = self->m_mind->m_contains.end();
         for (; I != Iend; ++I) {
-            PyEntity * child = newPyEntity();
-            if (child == NULL) {
+            Entity * child = *I;
+            PyEntity * wrapper = newPyEntity();
+            if (wrapper == NULL) {
                 Py_DECREF(list);
                 return NULL;
             }
             // FIXME Do we need to increment the reference count on this?
-            child->m_entity = *I;
-            PyList_Append(list, (PyObject*)child);
+            wrapper->m_entity = child;
+            PyList_Append(list, (PyObject*)wrapper);
         }
         return list;
     }

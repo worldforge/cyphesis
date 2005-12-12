@@ -1,5 +1,10 @@
 2005-12-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Mind.cpp: Clean up some variable names in preparation
+	  for some major changes.
+
+2005-12-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/PythonWrapper.cpp: Make sure PythonWrapper holds a propper
 	  reference to the wrapper object, to ensure its not dealloced.
 
