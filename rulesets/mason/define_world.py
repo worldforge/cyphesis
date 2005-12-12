@@ -253,7 +253,6 @@ def default(mapeditor):
     m.make('jetty',type='jetty',xyz=(-22,-48,0))
     m.make('boat',type='boat',xyz=(-22,-56,0),mode="floating")
 
-#def dontrunme():
 # a camp near the origin
 
     #cfire=m.make('campfire',type='campfire',xyz=(0,4,settlement_height))
