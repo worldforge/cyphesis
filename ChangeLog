@@ -1,5 +1,9 @@
 2005-12-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Remove some obsolete comments.
+
+2005-12-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Creator.cpp: When an op is being source routed by an admin
 	  client, find its target and insert it into the world using the
 	  target so it appears to be from the target, rather than using

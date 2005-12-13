@@ -121,8 +121,7 @@ WorldRouter::~WorldRouter()
 /// is added to the apropriate place in the chronologically ordered
 /// queue. The From attribute of the operation is set to the id of
 /// the entity that is responsible for adding the operation to the
-/// queue, unless it is set to "cheat". This is used to spook
-/// operations when they come from an admin.
+/// queue.
 void WorldRouter::addOperationToQueue(const Operation & op, Entity & ent)
 {
     assert(op.isValid());
