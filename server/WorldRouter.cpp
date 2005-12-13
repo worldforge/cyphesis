@@ -126,18 +126,15 @@ WorldRouter::~WorldRouter()
 void WorldRouter::addOperationToQueue(const Operation & op, Entity & ent)
 {
     assert(op.isValid());
-    if (op->getFrom() == "cheat") {
-        op->setFrom(op->getTo());
-    } else {
-        op->setFrom(ent.getId());
-    }
-    double fs = op->getFutureSeconds();
-    if (fs == 0.) {
+    assert(op->getFrom() != "cheat");
+
+    op->setFrom(ent.getId());
+    if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
         op->setSeconds(m_realTime);
         m_immediateQueue.push_back(OpQueEntry(op, ent));
         return;
     }
-    double t = m_realTime + fs;
+    double t = m_realTime + op->getFutureSeconds();
     op->setSeconds(t);
     op->setFutureSeconds(0.);
     OpQueue::iterator I = m_operationQueue.begin();

@@ -1,5 +1,15 @@
 2005-12-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Creator.cpp: When an op is being source routed by an admin
+	  client, find its target and insert it into the world using the
+	  target so it appears to be from the target, rather than using
+	  the "cheat" marker.
+
+	* server/WorldRouter.cpp: Remove check for FROM=="cheat", and
+	  simplify setting FROM on ops. Use flags to check for FUTURE_SECONDS.
+
+2005-12-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py: Don't set TO
 	  on eat ops from goals.
 

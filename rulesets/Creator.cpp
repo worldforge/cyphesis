@@ -6,9 +6,11 @@
 
 #include "BaseMind.h"
 
+#include "common/log.h"
 #include "common/debug.h"
 #include "common/const.h"
 #include "common/serialno.h"
+#include "common/compose.hpp"
 
 #include "common/Setup.h"
 #include "common/Tick.h"
@@ -121,10 +123,14 @@ void Creator::externalOperation(const Operation & op)
             // World will deal with it.
         }
     } else {
-        // Make it appear like it came from target itself;
-        // FIXME I am not sure we even honor this any more.
-        op->setFrom("cheat");
-        sendWorld(op);
+        Entity * to = m_world->getEntity(op->getTo());
+        if (to == 0) {
+            log(ERROR, String::compose("Creator operation from client is to unknown ID %1", op->getTo()).c_str());
+            // FIXME Respond with Unseen.
+        } else {
+            // Make it appear like it came from target itself;
+            to->sendWorld(op);
+        }
     }
 }
 
