@@ -1,3 +1,5 @@
+Modify mindMap so that entities are visible if they get updated.
+
 Once Script returns an int which differentiates between an error, and
 a missing method, then mind reference in PythonMindScript can got, and
 error can be reported in BaseMind or somewhere similar.

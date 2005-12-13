@@ -36,7 +36,9 @@ namespace consts {
   /// \brief Can things be omnipresent
   static const bool enable_omnipresence = false;
   /// \brief What is the minimum size of an object when calculating visibility
-  static const float minSqrBoxSize = 0.1f;
+  static const float minSqrBoxSize = 0.25f;
+  /// \brief What is the minimum size of an object when calculating visibility
+  static const float minBoxSize = 0.5f;
   /// \brief Should we use a database
   static const bool enable_database = true;
   /// \brief Should world state be persistent

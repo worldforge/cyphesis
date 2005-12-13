@@ -294,7 +294,6 @@ class pick_up_focus(Goal):
         what=self.what
         if type(what)==StringType:
             id=me.get_knowledge('focus',what)
-            me.remove_knowledge('focus',what)
             if id==None: return
             what=me.map.get(id)
             if what==None: return

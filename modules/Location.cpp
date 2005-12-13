@@ -5,6 +5,7 @@
 #include "rulesets/Entity.h"
 
 #include "common/log.h"
+#include "common/const.h"
 #include "common/debug.h"
 
 #include <wfmath/atlasconv.h>
@@ -17,22 +18,34 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Location::Location() :
-    m_simple(true), m_solid(true), m_loc(0)
+    m_simple(true), m_solid(true),
+    m_boxSize(consts::minBoxSize),
+    m_squareBoxSize(consts::minSqrBoxSize),
+    m_loc(0)
 {
 }
 
 Location::Location(Entity * rf) :
-    m_simple(true), m_solid(true), m_loc(rf)
+    m_simple(true), m_solid(true),
+    m_boxSize(consts::minBoxSize),
+    m_squareBoxSize(consts::minSqrBoxSize),
+    m_loc(rf)
 {
 }
 
 Location::Location(Entity * rf, const Point3D & crds) :
-    m_simple(true), m_solid(true), m_loc(rf), m_pos(crds)
+    m_simple(true), m_solid(true),
+    m_boxSize(consts::minBoxSize),
+    m_squareBoxSize(consts::minSqrBoxSize),
+    m_loc(rf), m_pos(crds)
 {
 }
 
 Location::Location(Entity * rf, const Point3D& crds, const Vector3D& vel) :
-    m_simple(true), m_solid(true), m_loc(rf), m_pos(crds), m_velocity(vel)
+    m_simple(true), m_solid(true),
+    m_boxSize(consts::minBoxSize),
+    m_squareBoxSize(consts::minSqrBoxSize),
+    m_loc(rf), m_pos(crds), m_velocity(vel)
 {
 }
 

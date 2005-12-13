@@ -243,6 +243,7 @@ class sit_down(Goal):
 
 class feed(Goal):
     def eat(self,me):
+        me.remove_knowledge('focus',self.what)
         if me.things.has_key(self.what)==0: return
         food=me.find_thing(self.what)[0]
         ent=Entity(food.id)

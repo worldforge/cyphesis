@@ -1,3 +1,18 @@
+2005-12-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.h: Add a second const for the non-squared default
+	  box size for visibility calculations.
+
+	* modules/Location.cpp: Initialise cached box size members with
+	  defaults from consts.
+
+	* rulesets/basic/mind/goals/common/move.py: Don't remove focus
+	  knowledge about item just because it has been picked up. This
+	  fixes eating acorns.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Remove focus knowledge
+	  when something is eaten.
+
 2005-12-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Thing.h, rulesets/Py_Thing.cpp: Add a new function to add
