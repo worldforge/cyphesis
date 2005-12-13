@@ -1,5 +1,10 @@
 2005-12-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py: Don't set TO
+	  on eat ops from goals.
+
+2005-12-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/const.h: Add a second const for the non-squared default
 	  box size for visibility calculations.
 

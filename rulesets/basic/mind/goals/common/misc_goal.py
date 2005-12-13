@@ -247,7 +247,7 @@ class feed(Goal):
         if me.things.has_key(self.what)==0: return
         food=me.find_thing(self.what)[0]
         ent=Entity(food.id)
-        return Operation("eat",ent,to=food)
+        return Operation("eat",ent)
     def am_i_full(self,me):
         if hasattr(me,"food") and hasattr(me,"mass"):
             if me.food > (self.full * me.mass):
@@ -310,7 +310,7 @@ class peck(feed):
     def do_peck(self, me):
         #world = 
         #ground = world.id 
-        #op = Operation("eat", ground, to=world)
+        #op = Operation("eat", ground)
         target = Location(me.location.parent, me.location.coordinates)
         target.coordinates = Vector3D(target.coordinates.x + uniform(-1.5,1.5), target.coordinates.y+ uniform(-1.5,1.5), target.coordinates.z)
         target.velocity = Vector3D(1,0,0)
@@ -341,7 +341,7 @@ class browse(feed):
         if food.status < self.min_status:
             me.remove_thing(food)
         ent=Entity(food.id)
-        return Operation("eat",ent,to=food)
+        return Operation("eat",ent)
 
 
 ############################ PREDATOR (HUNT SOMETHING, THEN EAT IT) ###########

@@ -1,3 +1,7 @@
+"cheat" option in op from is not necessary, as sender can tunnel it
+through receiver to make it look like it came that way by using
+sendWorld() on the receiver.
+
 Modify mindMap so that entities are visible if they get updated.
 
 Once Script returns an int which differentiates between an error, and
