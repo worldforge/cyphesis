@@ -1,5 +1,12 @@
 2005-12-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/BaseMind.cpp: When appearance arrives, check stamp and send
+	  looks if necessary.
+
+	* rulesets/basic/mind/NPCMind.py: Remove some debug output.
+
+2005-12-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Remove some obsolete comments.
 
 2005-12-13  Al Riddoch  <alriddoch@zepler.org>

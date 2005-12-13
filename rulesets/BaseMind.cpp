@@ -19,11 +19,15 @@
 #include "common/Setup.h"
 #include "common/Tick.h"
 
+#include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/Anonymous.h>
 
+using Atlas::Message::Element;
 using Atlas::Objects::Root;
+using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Objects::smart_dynamic_cast;
 
@@ -407,7 +411,23 @@ void BaseMind::AppearanceOperation(const Operation & op, OpVector & res)
         const std::string & id = (*I)->getId();
         if (id.empty()) { continue; }
         MemEntity * me = m_map.getAdd(id);
+        Element stamp;
         if (me != 0) {
+            if ((*I)->copyAttr("stamp", stamp) == 0) {
+                if (stamp.isNum()) {
+                    if ((int)stamp.asNum() != me->getSeq()) {
+                        Look l;
+                        Anonymous m;
+                        m->setId(id);
+                        l->setArgs1(m);
+                        res.push_back(l);
+                    }
+                } else {
+                    log(ERROR, "BaseMind: Appearance op does not have numeric stamp");
+                }
+            } else {
+                log(ERROR, "BaseMind: Appearance op does not have stamp");
+            }
             me->update(op->getSeconds());
             me->setVisible();
         }

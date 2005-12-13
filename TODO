@@ -1,3 +1,6 @@
+Check if disappear/appear with incremented stamp causes BaseMind to want
+another look, like it should.
+
 Use flags to check for future seconds in addOperationToQueue.
 
 "cheat" option in op from is not necessary, as sender can tunnel it

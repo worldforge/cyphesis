@@ -104,7 +104,6 @@ class NPCMind(BaseMind):
         return opTick+result
     def unseen_operation(self, op):
         obsolete_id = op[0].id
-        print "Got unseen op for ", obsolete_id
         self.map.delete(obsolete_id)
     ########## Persistance operations
     def save_operation(self, op):
