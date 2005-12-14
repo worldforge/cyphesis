@@ -7,6 +7,7 @@
 #include "Py_Thing.h"
 
 #include "Task.h"
+#include "Character.h"
 
 static PyMethodDef Task_methods[] = {
         {NULL,          NULL}           /* sentinel */
@@ -27,11 +28,9 @@ static PyObject * Task_getattr(PyTask *self, char *name)
         return NULL;
     }
 #endif // NDEBUG
-    // if (strcmp(name, "character") == 0) {
-        // PyEntity * character = newPyEntity();
-        // character->m_entity = &self->m_task->m_character;
-        // return (PyObject *)character;
-    // }
+    if (strcmp(name, "character") == 0) {
+        return wrapEntity(&self->m_task->character());
+    }
     if (self->Task_attr != NULL) {
         PyObject *v = PyDict_GetItemString(self->Task_attr, name);
         if (v != NULL) {

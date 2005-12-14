@@ -69,9 +69,11 @@ class Task {
         }
     }
 
-    
     /// \brief Accessor to determine if this Task is obsolete
     const bool obsolete() { return m_obsolete; }
+
+    /// \brief Accessor for character that owns this Task.
+    Character & character() const { return m_character; }
 };
 
 #endif // RULESETS_TASK_H

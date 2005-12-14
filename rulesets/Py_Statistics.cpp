@@ -25,11 +25,9 @@ static PyObject * Statistics_getattr(PyStatistics *self, char *name)
         return NULL;
     }
 #endif // NDEBUG
-    // if (strcmp(name, "character") == 0) {
-        // PyEntity * character = newPyEntity();
-        // character->m_entity = &self->m_entity->m_character;
-        // return (PyObject *)character;
-    // }
+    if (strcmp(name, "character") == 0) {
+        return wrapEntity(self->m_entity);
+    }
     return Py_FindMethod(Statistics_methods, (PyObject *)self, name);
 }
 

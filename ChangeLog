@@ -1,5 +1,12 @@
 2005-12-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Statistics.cpp, rulesets/Py_Task.cpp: Modify
+	  getattr handlers for "character" to use wrapEntity.
+
+	* rulesets/Task.h: Add accessor for character that owns this task.
+
+2005-12-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/BaseMind.cpp: When appearance arrives, check stamp and send
 	  looks if necessary.
 
