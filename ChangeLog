@@ -1,3 +1,15 @@
+2005-12-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Python_API.cpp: Remove an obsolete commented out function.
+
+	* rulesets/CalendarProperty.cpp, rulesets/CalendarProperty.h,
+	  rulesets/World.cpp: Add a new property to handle revealing
+	  astronomical calendar information on the world object, so clients
+	  can get day/night cycle right.
+
+	* tools/cycmd.cpp: Improve formatting of output Atlas data, to make
+	  it readable.
+
 2005-12-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Statistics.cpp, rulesets/Py_Task.cpp: Modify

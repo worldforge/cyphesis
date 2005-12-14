@@ -5,6 +5,7 @@
 #include "World.h"
 
 #include "TerrainProperty.h"
+#include "CalendarProperty.h"
 
 #include "common/log.h"
 #include "common/const.h"
@@ -57,6 +58,7 @@ World::World(const std::string & id, long intId) : World_parent(id, intId),
 {
     m_properties["terrain"] = new TerrainProperty(m_terrain, m_modifiedTerrain,
                                                   m_modifiedTerrain, a_terrain);
+    m_properties["calendar"] = new CalendarProperty(0);
 
     m_tileShader.addShader(new Mercator::FillShader(), ROCK);
     m_tileShader.addShader(new Mercator::BandShader(-2.f, 1.5f), SAND);

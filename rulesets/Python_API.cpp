@@ -420,24 +420,6 @@ void Subscribe_Script(Entity * entity, PyObject * pyclass,
     Py_DECREF(keys);
 }
 
-#if 0
-void Create_PyEntity(Entity * entity, const std::string & package,
-                                      const std::string & type)
-{
-    PyObject * pyClass = Get_PyClass(package, type);
-    if (pyClass == NULL) { return; }
-    PyEntity * wrapper = newPyEntity();
-    wrapper->m_entity = entity;
-    Subscribe_Script(entity, pyClass, package);
-    PyObject * o = Create_PyScript((PyObject *)wrapper, pyClass);
-    Py_DECREF(pyClass);
-
-    if (o != NULL) {
-        entity->setScript(new PythonEntityScript(o, (PyObject *)wrapper));
-    }
-}
-#endif
-
 void Create_PyMind(BaseMind * mind, const std::string & package,
                                     const std::string & type)
 {

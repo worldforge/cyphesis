@@ -271,7 +271,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
     bool exit;
     AdminTask * currentTask;
 
-    void output(const Element & item, bool recurse = true);
+    void output(const Element & item, int depth = 0);
   protected:
 
     void objectArrived(const Atlas::Objects::Root &);
@@ -321,9 +321,8 @@ class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
 };
 
 template <class Stream>
-void Interactive<Stream>::output(const Element & item, bool recurse)
+void Interactive<Stream>::output(const Element & item, int depth)
 {
-    std::cout << " ";
     switch (item.getType()) {
         case Element::TYPE_INT:
             std::cout << item.Int();
@@ -335,30 +334,28 @@ void Interactive<Stream>::output(const Element & item, bool recurse)
             std::cout << "\"" << item.String() << "\"";
             break;
         case Element::TYPE_LIST:
-            if (recurse) {
+            {
                 std::cout << "[ ";
                 ListType::const_iterator I = item.List().begin();
                 ListType::const_iterator Iend = item.List().end();
                 for(; I != Iend; ++I) {
-                    output(*I, true);
+                    output(*I, depth);
+                    std::cout << " ";
                 }
-                std::cout << " ]";
-            } else {
-                std::cout << "(list)";
+                std::cout << "]";
             }
             break;
         case Element::TYPE_MAP:
-            if (recurse) {
-                std::cout << "{ ";
+            {
+                std::cout << "{" << std::endl << std::flush;
                 MapType::const_iterator I = item.Map().begin();
                 MapType::const_iterator Iend = item.Map().end();
                 for(; I != Iend; ++I) {
-                    std::cout << I->first << ": ";
-                    output(I->second, true);
+                    std::cout << std::string((depth + 1) * 4, ' ') << I->first << ": ";
+                    output(I->second, depth + 1);
+                    std::cout << std::endl;
                 }
-                std::cout << " }";
-            } else {
-                std::cout << "(map)";
+                std::cout << std::string(depth * 4, ' ') << "}";
             }
             break;
         default:
@@ -521,8 +518,8 @@ void Interactive<Stream>::infoArrived(const RootOperation & op)
         MapType::const_iterator Iend = entmap.end();
         for (MapType::const_iterator I = entmap.begin(); I != Iend; ++I) {
             const Element & item = I->second;
-            std::cout << "     " << I->first << ": ";
-            output(item);
+            std::cout << "    " << I->first << ": ";
+            output(item, 1);
             std::cout << std::endl;
         }
         std::cout << ")" << std::endl << std::flush;
@@ -562,7 +559,7 @@ void Interactive<Stream>::sightArrived(const RootOperation & op)
     for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
         const Element & item = I->second;
         std::cout << "      " << I->first << ":";
-        output(item);
+        output(item, 1);
         std::cout << std::endl;
     }
     std::cout << ")" << std::endl << std::flush;
