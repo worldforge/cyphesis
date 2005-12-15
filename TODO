@@ -18,21 +18,11 @@ Once Script returns an int which differentiates between an error, and
 a missing method, then mind reference in PythonMindScript can got, and
 error can be reported in BaseMind or somewhere similar.
 
-An entity typically has two python objects associated with it, its script,
-and its wrapper object, which the script uses to access the core object.
-The core object needs to retain a reference to the wrapper object to avoid
-the need to create an additional wrapper object when another entity
-wants to refer to it. Entity should be checked for wrapper in:
-Location_getattr, World_get_object.
-Once this is done, the wrapper can be specialised for Character so that
-task related code is exposed.
-To generalise this, create PythonWrapper which inherits from Script,
-from which PythonScript then inherits, and use it both as abstract
-and directly to store wrappers for all IG and mind entities as required.
+Once stored python wrapper is done, the wrapper can be specialised for
+Character so that task related code is exposed.
 
 Don't do the same bullshit help every time the user clicks on a helping NPC.
-Bugs: Password is visible during login
-      Crash when fire burns. (sear)
+Bugs: Crash when fire burns. (sear)
 
 Look up upgrading the python API usage to 2.2 spec. In particular
 look at generic attribute handling, PyType_Ready, inheritance etc.
@@ -43,9 +33,6 @@ height adjustment code.
 
 Do any Python types with have an _attr member initialise it before
 they have to in setattr? Py_Entity/Thing used to.
-
-In Thing.py, op_dict may be pointless
-I am pretty sure benchmarks show it is faster without it.
 
 Character jumps to the bottom when swimming.
 Jumping to bottom is because when the character rises above water
