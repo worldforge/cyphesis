@@ -102,10 +102,15 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
         debug( std::cout << "dist: " << dist << "," << dist2 << std::endl
                          << std::flush;);
         if (dist2 > dist) {
-            bool collision_judder = false;
+            // If dist2 is larger than dist, then further movement
+            // is away from target, so we know we have arrived.
             debug( std::cout << "target achieved";);
-            new_coords = target;
+            new_location.m_pos = target;
+
+            bool collision_judder = false;
             if (m_collPos.isValid()) {
+                // If we are at a collision, note the time. Check if its very
+                // short time since the last collision, and if so flag this.
                 if ((m_body.m_world->getTime() - m_lastCollisionTime) < 0.01) {
                     collision_judder = true;
                 }
@@ -118,73 +123,89 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
                 reset();
                 new_location.m_velocity = Vector3D(0,0,0);
             } else if (m_collLocChange) {
+                // We are changing container (LOC)
                 static const Quaternion identity(Quaternion().identity());
                 debug(std::cout << "CONTACT " << m_collEntity->getId()
                                 << std::endl << std::flush;);
-                if (m_collEntity == new_location.m_loc->m_location.m_loc) {
+                if (m_collEntity == m_body.m_location.m_loc->m_location.m_loc) {
+                    // Passing out of current container
                     debug(std::cout << "OUT" << target
-                                    << new_location.m_loc->m_location.pos()
+                                    << m_body.m_location.m_loc->m_location.pos()
                                     << std::endl << std::flush;);
                     const Quaternion & collOrientation = m_body.m_location.m_loc->m_location.orientation().isValid() ?
                                                          m_body.m_location.m_loc->m_location.orientation() :
                                                          identity;
-                    // FIXME take account of orientation
-                    new_coords = new_coords.toParentCoords(m_body.m_location.m_loc->m_location.pos(), collOrientation);
+                    new_location.m_pos = new_location.m_pos.toParentCoords(m_body.m_location.m_loc->m_location.pos(), collOrientation);
                     new_location.m_orientation *= collOrientation;
                     new_location.m_velocity.rotate(collOrientation);
-                    // FIXME velocity take account of orientation
+                    new_location.m_loc = m_collEntity;
                     if (m_targetPos.isValid()) {
                         m_targetPos = m_targetPos.toParentCoords(m_body.m_location.m_loc->m_location.pos(), collOrientation);
                     }
-                } else if (m_collEntity->m_location.m_loc==new_location.m_loc) {
+                } else if (m_collEntity->m_location.m_loc == m_body.m_location.m_loc) {
+                    // Passing into new container
                     debug(std::cout << "IN" << std::endl << std::flush;);
-                    // FIXME take account of orientation
                     const Quaternion & collOrientation = m_collEntity->m_location.orientation().isValid() ?
                                                          m_collEntity->m_location.orientation() :
                                                          identity;
-                    new_coords = new_coords.toLocalCoords(m_collEntity->m_location.pos(), collOrientation);
+                    new_location.m_pos = new_location.m_pos.toLocalCoords(m_collEntity->m_location.pos(), collOrientation);
                     new_location.m_orientation /= collOrientation;
                     new_location.m_velocity.rotate(collOrientation.inverse());
-                    // FIXME velocity take account of orientation
+                    new_location.m_loc = m_collEntity;
                     if (m_targetPos.isValid()) {
                         m_targetPos = m_targetPos.toLocalCoords(m_collEntity->m_location.pos(), collOrientation);
                     }
                 } else {
+                    // Container we are supposed to changing to is wrong.
+                    // Just stop where we currently are. Debugging is required to work out
+                    // why this happens
                     log(ERROR, String::compose("BAD COLLISION: %1(%2) with %3(%4) when LOC is currently %5(%6).",
                                                m_body.getId(),
                                                m_body.getType(),
                                                m_collEntity->getId(),
                                                m_collEntity->getType(),
-                                               new_location.m_loc->getId(),
-                                               new_location.m_loc->getType()).c_str());
+                                               m_body.m_location.m_loc->getId(),
+                                               m_body.m_location.m_loc->getType()).c_str());
+                    reset();
+                    new_location.m_velocity = Vector3D(0,0,0);
                 }
-                new_location.m_loc = m_collEntity;
                 m_collEntity = NULL;
                 m_collLocChange = false;
                 m_collPos = Point3D();
             } else {
-                Vector3D & new_velocity = new_location.m_velocity;
+                // We have arrived at our target position and must
+                // stop, or be deflected
                 if (m_collPos.isValid()) {
                     // Generate touch ops
                     // This code relies on m_collNormal being a unit vector
-                    new_velocity -= m_collNormal * Dot(m_collNormal, new_velocity);
-                    if ((new_velocity.mag() / consts::base_velocity) > 0.05) {
+                    new_location.m_velocity -= m_collNormal * Dot(m_collNormal, new_location.m_velocity);
+                    if ((new_location.m_velocity.mag() / consts::base_velocity) > 0.05) {
                         m_collPos = Point3D();
                         m_collEntity = NULL;
-                        new_velocity.normalize();
-                        new_velocity *= sqrt(vel_square_mag);
-                        // FIXME flag as diverted, so destination based
-                        // movement doesn't get screwed up
+                        new_location.m_velocity.normalize();
+                        new_location.m_velocity *= sqrt(vel_square_mag);
+                        if (m_targetPos.isValid()) {
+                            m_diverted = true;
+                        }
                     } else {
                         reset();
-                        new_velocity = Vector3D(0,0,0);
+                        new_location.m_velocity = Vector3D(0,0,0);
                     }
                 } else {
+                    // Arrived at intended destination
+                    if (m_diverted) {
+                        new_location.m_pos = new_coords;
+                    }
                     reset();
-                    new_velocity = Vector3D(0,0,0);
+                    new_location.m_velocity = Vector3D(0,0,0);
                 }
             }
+        } else {
+            new_location.m_pos = new_coords;
+            m_diverted = false;
         }
+    } else {
+        new_location.m_pos = new_coords;
     }
 
     std::string mode("standing");
@@ -199,15 +220,15 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
         }
     }
 
-    float z = m_body.m_world->constrainHeight(new_location.m_loc, new_coords,
+    float z = m_body.m_world->constrainHeight(new_location.m_loc, new_location.m_pos,
                                               mode);
-    debug(std::cout << "Height adjustment " << z << " " << new_coords.z()
+    debug(std::cout << "Height adjustment " << z << " " << new_location.m_pos.z()
                     << std::endl << std::flush;);
 
-    new_coords.z() = z;
+    new_location.m_pos.z() = z;
 
-    new_location.m_pos = new_coords;
-    m_updatedPos = new_coords;
+    // new_location.m_pos = new_coords;
+    m_updatedPos = new_location.m_pos;
 
     return_location = new_location;
 

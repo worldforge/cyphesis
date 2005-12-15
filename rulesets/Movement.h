@@ -28,6 +28,7 @@ class Movement {
     Point3D m_collPos;
     Entity * m_collEntity;
     bool m_collLocChange;
+    bool m_diverted;
     Vector3D m_collNormal;
 
     void checkCollisions(const Location & loc);

@@ -1,3 +1,8 @@
+Try and work out why movement seems to continue sometimes even though it
+resulted in an immediate collision.
+
+Make butcher identify self when clicked on.
+
 Check if disappear/appear with incremented stamp causes BaseMind to want
 another look, like it should.
 

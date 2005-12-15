@@ -20,7 +20,9 @@ static const bool debug_flag = false;
 Movement::Movement(Entity & body) : m_body(body), m_lastMovementTime(-1),
                                     m_lastCollisionTime(-1),
                                     m_serialno(0),
-                                    m_collEntity(NULL), m_collLocChange(false)
+                                    m_collEntity(NULL),
+                                    m_collLocChange(false),
+                                    m_diverted(false)
 {
 }
 
@@ -145,6 +147,7 @@ void Movement::reset()
     ++m_serialno;
     m_collEntity = NULL;
     m_collLocChange = false;
+    m_diverted = false;
     m_collPos = Point3D();
     m_targetPos = Point3D();
     m_updatedPos = Point3D();

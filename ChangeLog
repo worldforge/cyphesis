@@ -1,3 +1,17 @@
+2005-12-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Increment version.
+
+	* rulesets/Movement.h, rulesets/Movement.cpp: Add a flag to indicate
+	  if movement has been diverted by a collision.
+
+	* rulesets/Pedestrian.cpp: Use flag to ensure that entities moving
+	  towards a target position that are diverted by a collision
+	  don't just snap to their original destination. When collision errors
+	  are detected, don't mess the entities position up by changing it.
+
+	* tests/Makefile.am: Fix broken tests.
+
 2005-12-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: Remove an obsolete commented out function.

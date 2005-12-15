@@ -347,6 +347,7 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/World.o \
                   $(top_builddir)/rulesets/TerrainProperty.o \
+                  $(top_builddir)/rulesets/CalendarProperty.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
