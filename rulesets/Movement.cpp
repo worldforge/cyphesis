@@ -36,7 +36,7 @@ bool Movement::updateNeeded(const Location & location) const
 }
 
 
-void Movement::checkCollisions(const Location & location)
+float Movement::checkCollisions(const Location & location)
 {
     // Check to see whether a collision is going to occur from now until the
     // the next tick in consts::basic_tick seconds
@@ -77,14 +77,14 @@ void Movement::checkCollisions(const Location & location)
         // Move out of it.
         const Location & other_location = location.m_loc->m_location;
         if (!other_location.bBox().isValid() || (other_location.m_loc == 0)) {
-            return;
+            return consts::basic_tick;
         }
         // float t = location.timeToExit(other_location);
         float t = 0;
         predictEmergence(location, other_location, t);
         // if (t == 0) { return; }
         // if (t < 0) { t = 0; }
-        if (t > consts::basic_tick) { return; }
+        if (t > consts::basic_tick) { return t; }
         collTime = t;
         debug(std::cout << "Collision with parent bounding box in "
                         << collTime << std::endl << std::flush;);
@@ -140,6 +140,7 @@ void Movement::checkCollisions(const Location & location)
         m_collEntity = NULL;
         m_collLocChange = false;
     }
+    return collTime;
 }
 
 void Movement::reset()

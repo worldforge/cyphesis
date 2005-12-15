@@ -235,7 +235,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     return 0;
 }
 
-Operation Pedestrian::generateMove(const Location & new_location)
+Operation Pedestrian::generateMove(Location & new_location)
 {
     // Create move operation
     Move moveOp;
@@ -252,6 +252,17 @@ Operation Pedestrian::generateMove(const Location & new_location)
         vel_square_mag = new_location.velocity().sqrMag();
     }
     double square_speed_ratio = vel_square_mag / consts::square_base_velocity;
+
+    if (vel_square_mag > 0) {
+        if (checkCollisions(new_location) <= 0) {
+            // FIXME THis ignore the possiblity that the collision might
+            // just deflect, or cause the entity to enter the collision
+            // entity. It alse leaves the collEntity, and collPos set.
+            new_location.m_velocity = Vector3D(0,0,0);
+            vel_square_mag = 0;
+            square_speed_ratio = 0;
+        }
+    }
 
     float height = 0;
     if (m_body.m_location.bBox().isValid()) {
@@ -271,10 +282,6 @@ Operation Pedestrian::generateMove(const Location & new_location)
         }
     }
     debug(std::cout << move_arg->getAttr("mode").asString() << std::endl << std::flush;);
-
-    if (vel_square_mag > 0) {
-        checkCollisions(new_location);
-    }
 
     new_location.addToEntity(move_arg);
     moveOp->setArgs1(move_arg);

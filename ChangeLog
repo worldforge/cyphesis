@@ -1,5 +1,12 @@
 2005-12-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Movement.h, rulesets/Movement.cpp,
+	  rulesets/Pedestrian.h, rulesets/Pedestrian.cpp: When processing
+	  a move operation, if its going to cause an immediate collision,
+	  set the velocity to 0.
+
+2005-12-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Increment version.
 
 	* rulesets/Movement.h, rulesets/Movement.cpp: Add a flag to indicate
