@@ -149,8 +149,8 @@ void Movement::reset()
     m_collEntity = NULL;
     m_collLocChange = false;
     m_diverted = false;
-    m_collPos = Point3D();
-    m_targetPos = Point3D();
-    m_updatedPos = Point3D();
+    m_collPos.setValid(false);
+    m_targetPos.setValid(false);
+    m_updatedPos.setValid(false);
     m_lastMovementTime = m_body.m_world->getTime();
 }

@@ -159,15 +159,18 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
                     // Container we are supposed to changing to is wrong.
                     // Just stop where we currently are. Debugging is required to work out
                     // why this happens
-                    log(ERROR, String::compose("BAD COLLISION: %1(%2) with %3(%4) when LOC is currently %5(%6).",
+                    log(ERROR, String::compose("BAD COLLISION: %1(%2) with %3(%4)%5 when LOC is currently %6(%7)%8.",
                                                m_body.getId(),
                                                m_body.getType(),
                                                m_collEntity->getId(),
                                                m_collEntity->getType(),
+                                               new_location.m_pos,
                                                m_body.m_location.m_loc->getId(),
-                                               m_body.m_location.m_loc->getType()).c_str());
+                                               m_body.m_location.m_loc->getType(),
+                                               m_body.m_location.m_pos).c_str());
                     reset();
                     new_location.m_velocity = Vector3D(0,0,0);
+                    new_location.m_pos = m_body.m_location.m_pos;
                 }
                 m_collEntity = NULL;
                 m_collLocChange = false;

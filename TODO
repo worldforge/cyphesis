@@ -1,3 +1,7 @@
+Sometimes when inside a house, the character ends up with its coords set to
+the values they would be relative to the world, but with LOC still set to
+the house, so the location is miles away. Investigate.
+
 Add face() to buy_livestock and related goals.
 
 Try and work out why movement seems to continue sometimes even though it
