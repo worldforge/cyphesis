@@ -47,6 +47,7 @@ class NPCMind(BaseMind):
         self._reverse_knowledge()
         self.goals=[]
         self.money_transfers=[]
+        self.transfers=[]
         self.trigger_goals={}
         #???self.debug=debug(self.name+".mind.log")
         self.tick_count=0
@@ -128,9 +129,12 @@ class NPCMind(BaseMind):
         obj=self.map.update(op[0], op.getSeconds())
         if obj.location.parent.id==self.id:
             self.add_thing(obj)
+            if original_op.from_ != self.id:
+                self.transfers.append((op.from_, obj.id))
+                return Operation("imaginary", Entity(description="accepts"))
             if obj.type[0]=="coin":
                 self.money_transfers.append([op.from_, 1])
-                return Operation("imaginary", Entity("sell"))
+                return Operation("imaginary", Entity(description="accepts"))
     #replaced with dynamically added add_extinguish_fire -goal
     #ie: NPC is first teached that when it sees "sight_burn" it needs to
     #execute above goal, which then adds extinguish_fire goal and executes it

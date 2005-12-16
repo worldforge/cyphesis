@@ -32,6 +32,54 @@ class hire_trade(DynamicGoal):
         me.goals.insert(0,goal)
         return Operation("talk", Entity(say=me.map.get(op.from_).name+" one day will be "+str(price)+" coins"))
 
+class buy_from(Goal):
+    def __init__(self, what, cost, who, desc="buy livestock from someone"):
+        Goal.__init__(self, desc, false,
+                      [self.check])
+        self.what=what
+        self.cost=cost
+        self.who=who
+        self.vars=["what","cost","who"]
+    def check(self, me):
+        seller = me.map.get(self.who)
+        if not seller:
+            return
+        for transfer in me.transfers:
+            if transfer[0] != self.who:
+                continue
+            item=me.map.get(transfer[1])
+            if not item:
+                continue
+            if item.type[0] != self.what:
+                continue
+            me.transfers.remove(transfer)
+            if item.mass:
+                price = int(item.mass * self.cost)
+                coins = me.find_thing("coin")
+                if len(coins) < price:
+                    me.remove_thing(item)
+                    return Operation("talk", Entity(say="I can't afford to buy that "+self.what+" at the moment.")) + Operation("move", Entity(item.id, location=Location(seller.id, Point3D(0,0,0))))
+                res=Message()
+                for i in range(0, int(price)):
+                    coin=coins[0]
+                    me.remove_thing(coin)
+                    res.append(Operation("move",Entity(coin.id, location=Location(seller, Point3D(0,0,0)))))
+                res.append(Operation("talk", Entity(say="Thankyou "+seller.name+", come again.")))
+                self.irrelevant=1
+                return res
+ 
+        if hasattr(seller, "right_hand_wield") and seller.right_hand_wield:
+            wield = me.map.get(seller.right_hand_wield)
+            if wield:
+                if self.what == wield.type[0]:
+                    if wield.mass:
+                        price = int(wield.mass * self.cost)
+                        coins = me.find_thing("coin")
+                        if len(coins) < price:
+                            return Operation("talk", Entity(say="I can't afford to bay that "+self.what+" at the moment."))
+                        else:
+                            return Operation("talk", Entity(say=seller.name+" that "+self.what+" is worth "+str(price)+" coins."))
+
 class buy_livestock(DynamicGoal):
     def __init__(self, what, cost, desc="buy livestock by the kg"):
         DynamicGoal.__init__(self,
@@ -42,9 +90,12 @@ class buy_livestock(DynamicGoal):
     def event(self, me, op, say):
         object=say[1].word
         thing=me.map.get(object)
-        if thing==None:
-            return Operation("talk", Entity(say=who.name+" which "+object+" would you like to sell?"))
         who=me.map.get(op.from_)
+        if thing==None:
+            if object != self.what:
+                return Operation("talk", Entity(say=who.name+", I am not interested in buying your "+str(object)+"."))
+            me.goals.insert(0, buy_from(self.what, self.cost, op.from_))
+            return Operation("talk", Entity(say=who.name+" which "+object+" would you like to sell?"))
         if not self.what in thing.type: return
         if thing in me.find_thing(self.what): return
         #price=me.get_knowledge("price", thing.type[0])

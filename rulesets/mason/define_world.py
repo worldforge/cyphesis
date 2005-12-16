@@ -348,7 +348,7 @@ def default(mapeditor):
 
 
     butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
-                 xyz=butcher_xyz,age=probability.fertility_age,sex='male')
+                   xyz=butcher_xyz,age=probability.fertility_age,sex='male')
     m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'ham', 'market')"))
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','open','dawn')"))

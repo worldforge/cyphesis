@@ -1,3 +1,13 @@
+2005-12-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/define_world.py: Fix formatting.
+
+	* rulesets/basic/mind/NPCMind.py: Add structure to store things
+	  an NPC has been given.
+
+	* rulesets/basic/mind/goals/humanoid/transaction.py: Add new goal
+	  for buying things from a given entity.
+
 2005-12-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Movement.h, rulesets/Movement.cpp,
