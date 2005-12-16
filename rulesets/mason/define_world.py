@@ -353,6 +353,7 @@ def default(mapeditor):
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','open','dawn')"))
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','closed','evening')"))
+    m.learn(butcher,(il.help,"add_help(['I need live pigs to restock my butcher stall.','Do you have any pigs for sale?','I prefer pigs that have grown to more than 20kg.'])"))
     m.know(butcher,bknowledge)
     m.know(butcher,bprices)
     
@@ -374,9 +375,10 @@ def default(mapeditor):
 
     tmerchant=m.make('Blackun Decker',type='merchant',desc='the tool merchant',
                  xyz=tool_merchant_xyz,age=probability.fertility_age,sex='male')
+    m.learn(tmerchant,(il.help,"add_help(['Get all your tools here.','Everything a settler needs is available at great prices.'])"))
 
     m.know(tmerchant, toolmerc_knowledge)
-    m.know(tmerchant,toolprices)
+    m.know(tmerchant, toolprices)
 
     m.own(tmerchant, stall)
 

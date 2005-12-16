@@ -1,5 +1,10 @@
 2005-12-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Add help to the tool merchant
+	  and the butcher.
+
+2005-12-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/define_world.py: Fix formatting.
 
 	* rulesets/basic/mind/NPCMind.py: Add structure to store things

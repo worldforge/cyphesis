@@ -1,3 +1,5 @@
+Add face() to buy_livestock and related goals.
+
 Try and work out why movement seems to continue sometimes even though it
 resulted in an immediate collision.
 
