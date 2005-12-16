@@ -131,7 +131,6 @@ class NPCMind(BaseMind):
             self.add_thing(obj)
             if original_op.from_ != self.id:
                 self.transfers.append((op.from_, obj.id))
-                return Operation("imaginary", Entity(description="accepts"))
             if obj.type[0]=="coin":
                 self.money_transfers.append([op.from_, 1])
                 return Operation("imaginary", Entity(description="accepts"))

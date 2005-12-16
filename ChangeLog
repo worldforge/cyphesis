@@ -1,5 +1,10 @@
 2005-12-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/NPCMind.py: Remove a return statement so
+	  legacy money handling code still works.
+
+2005-12-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Movement.cpp: Reset stored positions more efficiently.
 
 	* rulesets/Pedestrian.cpp: Improve error reporting when a bad
