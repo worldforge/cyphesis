@@ -1,3 +1,5 @@
+Butcher should tell you how much money you are getting.
+
 Sometimes when inside a house, the character ends up with its coords set to
 the values they would be relative to the world, but with LOC still set to
 the house, so the location is miles away. Investigate.
