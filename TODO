@@ -3,6 +3,12 @@ Butcher should tell you how much money you are getting.
 Sometimes when inside a house, the character ends up with its coords set to
 the values they would be relative to the world, but with LOC still set to
 the house, so the location is miles away. Investigate.
+Collisions look like this:
+COLL: house3.(-0.251465,1.45164,0.00594711).(-0.292176,1.39185,0.00594711).(-0.347352,1.31082,0.00594711).world
+COLL: house3.(-0.251465,1.45164,0.00594711).(-0.292466,1.39143,0.00594711).(143.159,141.294,21.9805).none
+First is character leaving house, second is character colliding with something
+once it has left house with last coords relative to hous, while Move 
+actually setting LOC=world has not been processed.
 
 Add face() to buy_livestock and related goals.
 
