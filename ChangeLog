@@ -1,5 +1,9 @@
 2005-12-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* Release 0.5.5
+
+2005-12-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/humanoid/transaction.py: Tell the seller
 	  how much the pig they have just sold was worth. Only value each
 	  pig rather than continuously re-pricing the same pig.
