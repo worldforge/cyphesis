@@ -90,6 +90,10 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     // Update location
     Point3D new_coords = m_updatedPos.isValid() ? m_updatedPos
                                                 : m_body.m_location.pos();
+    // m_updatedPos is required later if we detect a race, so don't
+    // invalidate it yet. Every path from this point on must either
+    // invalidate it or store an update position, except the race condition
+    // path. m_updatedPos is always invalidated by a call to reset().
     new_coords += (m_body.m_location.velocity() * time_diff);
     const Point3D & target = m_collPos.isValid() ? m_collPos : m_targetPos;
     if (target.isValid()) {
@@ -109,12 +113,26 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
 
             bool collision_judder = false;
             if (m_collPos.isValid()) {
+                assert(m_collEntity != 0);
                 // If we are at a collision, note the time. Check if its very
                 // short time since the last collision, and if so flag this.
                 if ((m_body.m_world->getTime() - m_lastCollisionTime) < 0.01) {
                     collision_judder = true;
                 }
                 m_lastCollisionTime = m_body.m_world->getTime();
+                debug(std::cout << "COLL: " << m_body.m_location.m_loc->getType()
+                                << "."      << m_body.m_location.pos()
+                                << " "      << new_coords
+                                << "."      << target
+                                << "<"      << m_collPos.isValid() << "," << m_targetPos.isValid() << ">"
+                                << " "      << (m_updatedPos.isValid() ? m_updatedPos : Point3D(-1,-1,-1))
+                                << "."      << (m_collLocChange ? "change" : "none")
+                                << "."      << (m_collEntity->getType())
+                                << std::endl << std::flush;);
+            } else {
+                assert(m_targetPos.isValid());
+                assert(m_collEntity == 0);
+                assert(!m_collLocChange);
             }
             if (collision_judder) {
                 // If collision are getting messy, just stop.
@@ -123,6 +141,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
                 reset();
                 new_location.m_velocity = Vector3D(0,0,0);
             } else if (m_collLocChange) {
+                assert(m_collPos.isValid());
                 // We are changing container (LOC)
                 static const Quaternion identity(Quaternion().identity());
                 debug(std::cout << "CONTACT " << m_collEntity->getId()
@@ -174,25 +193,40 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
                 }
                 m_collEntity = NULL;
                 m_collLocChange = false;
-                m_collPos = Point3D();
+                m_collPos.setValid(false);
+                m_updatedPos.setValid(false);
             } else {
                 // We have arrived at our target position and must
                 // stop, or be deflected
                 if (m_collPos.isValid()) {
-                    // Generate touch ops
-                    // This code relies on m_collNormal being a unit vector
-                    new_location.m_velocity -= m_collNormal * Dot(m_collNormal, new_location.m_velocity);
-                    if ((new_location.m_velocity.mag() / consts::base_velocity) > 0.05) {
-                        m_collPos = Point3D();
-                        m_collEntity = NULL;
-                        new_location.m_velocity.normalize();
-                        new_location.m_velocity *= sqrt(vel_square_mag);
-                        if (m_targetPos.isValid()) {
-                            m_diverted = true;
-                        }
+                    if (m_body.m_location.m_loc != m_collEntity->m_location.m_loc) {
+                        // Race condition
+                        // This occurs if we get asked for a new update before
+                        // the last move has taken effect, so we make the new
+                        // pos exactly as it was when the last collision was
+                        // predicted. We don't modify m_updatedPos here because
+                        // its value is still fine.
+                        log(ERROR, "NON COLLISION");
+                        new_location.m_pos = m_updatedPos.isValid() ? m_updatedPos
+                                                                    : m_body.m_location.pos();
                     } else {
-                        reset();
-                        new_location.m_velocity = Vector3D(0,0,0);
+                        // Generate touch ops
+                        // This code relies on m_collNormal being a unit vector
+                        new_location.m_velocity -= m_collNormal * Dot(m_collNormal, new_location.m_velocity);
+                        if ((new_location.m_velocity.mag() / consts::base_velocity) > 0.05) {
+                            m_collPos.setValid(false);
+                            m_collEntity = NULL;
+                            new_location.m_velocity.normalize();
+                            new_location.m_velocity *= sqrt(vel_square_mag);
+                            if (m_targetPos.isValid()) {
+                                m_diverted = true;
+                            }
+                            // m_updatedPos must only be set if no LOC change has occured.
+                            m_updatedPos = new_location.m_pos;
+                        } else {
+                            reset();
+                            new_location.m_velocity = Vector3D(0,0,0);
+                        }
                     }
                 } else {
                     // Arrived at intended destination
@@ -205,10 +239,14 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
             }
         } else {
             new_location.m_pos = new_coords;
+            // m_updatedPos must only be set if no LOC change has occured.
+            m_updatedPos = new_location.m_pos;
             m_diverted = false;
         }
     } else {
         new_location.m_pos = new_coords;
+        // m_updatedPos must only be set if no LOC change has occured.
+        m_updatedPos = new_location.m_pos;
     }
 
     std::string mode("standing");
@@ -231,7 +269,6 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     new_location.m_pos.z() = z;
 
     // new_location.m_pos = new_coords;
-    m_updatedPos = new_location.m_pos;
 
     return_location = new_location;
 

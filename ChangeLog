@@ -1,5 +1,16 @@
 2005-12-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Movement.cpp: Ensure collision position is invalidated
+	  once a collision isn't done.
+
+	* rulesets/Pedestrian.cpp: Add some assert checks. Ensure that
+	  m_updatedPos is always valid. Add a check for a race condition
+	  where a collision is predicted, and the tick that should trigger
+	  it occurs, but another move request arrives from the client
+	  before the update Move op has been applied to the entity.
+
+2005-12-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/NPCMind.py: Remove a return statement so
 	  legacy money handling code still works.
 
