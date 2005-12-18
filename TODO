@@ -8,31 +8,10 @@ certainly worked in out in previous call to generateMove().
 
 Butcher should tell you how much money you are getting.
 
-Sometimes when inside a house, the character ends up with its coords set to
-the values they would be relative to the world, but with LOC still set to
-the house, so the location is miles away. Investigate.
-Collisions look like this:
-COLL: house3.(-0.251465,1.45164,0.00594711).(-0.292176,1.39185,0.00594711).(-0.347352,1.31082,0.00594711).world
-COLL: house3.(-0.251465,1.45164,0.00594711).(-0.292466,1.39143,0.00594711).(143.159,141.294,21.9805).none
-First is character leaving house, second is character colliding with something
-once it has left house with last coords relative to hous, while Move 
-actually setting LOC=world has not been processed.
-
 Add face() to buy_livestock and related goals.
-
-Try and work out why movement seems to continue sometimes even though it
-resulted in an immediate collision.
-
-Make butcher identify self when clicked on.
 
 Check if disappear/appear with incremented stamp causes BaseMind to want
 another look, like it should.
-
-Use flags to check for future seconds in addOperationToQueue.
-
-"cheat" option in op from is not necessary, as sender can tunnel it
-through receiver to make it look like it came that way by using
-sendWorld() on the receiver.
 
 Modify mindMap so that entities are visible if they get updated.
 
