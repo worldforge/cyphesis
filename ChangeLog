@@ -1,4 +1,10 @@
-2005-12-16  Al Riddoch  <alriddoch@zepler.org>
+2005-12-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/goals/humanoid/transaction.py: Tell the seller
+	  how much the pig they have just sold was worth. Only value each
+	  pig rather than continuously re-pricing the same pig.
+
+2005-12-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Movement.cpp: Ensure collision position is invalidated
 	  once a collision isn't done.

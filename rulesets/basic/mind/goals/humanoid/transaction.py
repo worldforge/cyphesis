@@ -39,7 +39,8 @@ class buy_from(Goal):
         self.what=what
         self.cost=cost
         self.who=who
-        self.vars=["what","cost","who"]
+        self.last_valued=None
+        self.vars=["what","cost","who","last_valued"]
     def check(self, me):
         seller = me.map.get(self.who)
         if not seller:
@@ -60,25 +61,27 @@ class buy_from(Goal):
                     me.remove_thing(item)
                     return Operation("talk", Entity(say="I can't afford to buy that "+self.what+" at the moment.")) + Operation("move", Entity(item.id, location=Location(seller.id, Point3D(0,0,0))))
                 res=Message()
-                for i in range(0, int(price)):
+                for i in range(0, price):
                     coin=coins[0]
                     me.remove_thing(coin)
                     res.append(Operation("move",Entity(coin.id, location=Location(seller, Point3D(0,0,0)))))
-                res.append(Operation("talk", Entity(say="Thankyou "+seller.name+", come again.")))
+                res.append(Operation("talk", Entity(say="Thankyou "+seller.name+", here are "+str(price)+" coins for the pig.")))
                 self.irrelevant=1
                 return res
  
-        if hasattr(seller, "right_hand_wield") and seller.right_hand_wield:
-            wield = me.map.get(seller.right_hand_wield)
-            if wield:
-                if self.what == wield.type[0]:
-                    if wield.mass:
-                        price = int(wield.mass * self.cost)
-                        coins = me.find_thing("coin")
-                        if len(coins) < price:
-                            return Operation("talk", Entity(say="I can't afford to bay that "+self.what+" at the moment."))
-                        else:
-                            return Operation("talk", Entity(say=seller.name+" that "+self.what+" is worth "+str(price)+" coins."))
+        if not hasattr(seller, "right_hand_wield") or not seller.right_hand_wield: return
+        if self.last_valued and seller.right_hand_wield == self.last_valued: return
+        wield = me.map.get(seller.right_hand_wield)
+        if not wield: return
+        if self.what != wield.type[0]: return
+        if not wield.mass: return
+        price = int(wield.mass * self.cost)
+        coins = me.find_thing("coin")
+        self.last_valued=wield.id
+        if len(coins) < price:
+            return Operation("talk", Entity(say="I can't afford to bay that "+self.what+" at the moment."))
+        else:
+            return Operation("talk", Entity(say=seller.name+" that "+self.what+" is worth "+str(price)+" coins."))
 
 class buy_livestock(DynamicGoal):
     def __init__(self, what, cost, desc="buy livestock by the kg"):

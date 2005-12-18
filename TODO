@@ -1,3 +1,11 @@
+We need to be able to check if things are visible from goal scripts, so
+a MemEntity version of the Enitty wrapper is required.
+This would mean we could make buy_thing goal expire when seller goes out
+of site.
+
+The getTickAddtion calculation is almost certainly redundant. We almost
+certainly worked in out in previous call to generateMove().
+
 Butcher should tell you how much money you are getting.
 
 Sometimes when inside a house, the character ends up with its coords set to
