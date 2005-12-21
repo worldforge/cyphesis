@@ -1,3 +1,8 @@
+Clients don't get removed from the count under certain circumstances.
+This happens when negotiation timeout happens.
+
+Pig merchant seems to get things wrong when he runs out of pigs.
+
 If client specifies pure vertical movement for its own avatar, the resulting
 direction vector is zero once the vertical component has been negated,
 meaning that the code that handles it can abort().
