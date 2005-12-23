@@ -53,6 +53,7 @@ class buy_from(Goal):
                 continue
             if item.type[0] != self.what:
                 continue
+            # FIXME Removing messes up the for loop
             me.transfers.remove(transfer)
             if item.mass:
                 price = int(item.mass * self.cost)

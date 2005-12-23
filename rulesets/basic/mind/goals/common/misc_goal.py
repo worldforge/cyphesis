@@ -643,6 +643,8 @@ class transaction(Goal):
         for item in me.money_transfers:
             if item[0]==self.who:
                 payed=payed+int(item[1])
+        for item in me.money_transfers:
+            if item[0]==self.who:
                 me.money_transfers.remove(item)
         if payed != self.payed:
             self.payed=payed

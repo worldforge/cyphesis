@@ -1,3 +1,11 @@
+2005-12-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Fix a problem where
+	  an NPC seller would not count all the coins handed over immediatly.
+
+	* rulesets/basic/mind/goals/humanoid/transaction.py: Add a FIXME about
+	  a mis-coding using for loops.
+
 2005-12-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* Release 0.5.5
