@@ -11,6 +11,8 @@
 #include "Script.h"
 #include "World.h"
 
+#include "server/EntityFactory.h"
+
 #include "common/op_switch.h"
 #include "common/const.h"
 #include "common/debug.h"
@@ -49,6 +51,7 @@ using Atlas::Objects::Operation::Sound;
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Move;
+using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Action;
 using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Operation::Nourish;
@@ -436,16 +439,16 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 #else
-    Task * combat = EntityFactory::instance()->newTask("combat", *attacker);
+    Task * combat = EntityFactory::instance()->newTask("combat", *this);
 
     m_task = combat;
-    combat->incRef;
-
-    attacker->m_task = combat;
     combat->incRef();
 
-    Setup s;
-    m_task->SetupOperation (s, res);
+    // FIXME No longer has reference to attacker
+    // attacker->m_task = combat;
+    // combat->incRef();
+
+    m_task->initTask (op, res);
 #endif
 }
 

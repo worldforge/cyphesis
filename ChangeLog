@@ -1,5 +1,16 @@
 2005-12-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Combat.py: Expand the sample combat
+	  to include tick ops.
+
+	* rulesets/Python_API.cpp, rulesets/Py_Operation.cpp: Add necessary
+	  handlers for sub_to attribute on operations.
+
+	* rulesets/Character.cpp: Adapt test code for combat scripts to
+	  the latest task API.
+
+2005-12-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py: Fix a problem where
 	  an NPC seller would not count all the coins handed over immediatly.
 
