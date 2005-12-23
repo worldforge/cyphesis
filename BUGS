@@ -2,12 +2,11 @@ Clients don't get removed from the count under certain circumstances.
 This happens when negotiation timeout happens.
 
 Pig merchant seems to get things wrong when he runs out of pigs.
+ - unable to reproduce
 
 If client specifies pure vertical movement for its own avatar, the resulting
 direction vector is zero once the vertical component has been negated,
 meaning that the code that handles it can abort().
-
-Client no longer seems to be able to populate world.
 
 Persistence and other words with the same root are incorrectly spelt
 Persistance throughout.
@@ -15,11 +14,4 @@ Persistance throughout.
 If a character sets its velocity to 0 when its position is outside its
 parents bbox, then the collision code does not detect that it is outside.
 
-Destination based movement: Change in direction is wrong when specifying
-a new destination for a walking character. Still have problem if destination
-is specified inside a box. Jump to it after a period of time, whereas
-we should stay outside.
-
 Plant C++ base class is totally screwed.
-
-Are touches getting broadcast?

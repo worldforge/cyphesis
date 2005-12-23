@@ -6,12 +6,7 @@ of site.
 The getTickAddtion calculation is almost certainly redundant. We almost
 certainly worked in out in previous call to generateMove().
 
-Butcher should tell you how much money you are getting.
-
 Add face() to buy_livestock and related goals.
-
-Check if disappear/appear with incremented stamp causes BaseMind to want
-another look, like it should.
 
 Modify mindMap so that entities are visible if they get updated.
 
