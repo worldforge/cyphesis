@@ -1,3 +1,14 @@
+2005-12-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Python_API.cpp: Re-work the keywords handling in Operation()
+	  to avoid bugs in the mapping protocol by using Dict functions, and
+	  eliminate wasteful double lookup. No longer accept setting FROM
+	  in constructor as its never required.
+
+	* rulesets/werewolf/world/objects/characters/Villager.py,
+	  rulesets/basic/editor.py: No longer set FROM on operations at
+	  construction. It was never necessary.
+
 2005-12-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/world/tasks/Combat.py: Expand the sample combat

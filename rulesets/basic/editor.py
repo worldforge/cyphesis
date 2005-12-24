@@ -53,7 +53,7 @@ class editor:
         return self.m.look_for(ent)
     def _say(self,target,verb,subject,object,predicate=None):
 ##         es=Entity(verb=verb,subject=subject,object=object)
-##         self.m.send(Operation("talk",es,from_=self.m,to=target))
+##         self.m.send(Operation("talk",es,to=target))
         if type(subject)==InstanceType: subject=subject.id
         elif type(subject)==TupleType: subject=`subject`
         elif type(subject)==StringType: pass
@@ -79,7 +79,7 @@ class editor:
     #Interlinguish
     def _tell(self,target,string,interlinguish):
         es=Entity(say=target.name+", "+string)
-        self.m.send(Operation("talk",es,from_=self.m,to=target))
+        self.m.send(Operation("talk",es,to=target))
     def tell_importance(self,target,sub,cmp,obj):
         s,i=il.importance(sub,cmp,obj)
         self.tell(target,s,i)

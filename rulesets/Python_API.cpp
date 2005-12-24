@@ -1039,67 +1039,43 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
             return NULL;
         }
     }
-    if (PyMapping_HasKeyString(kwds, "to")) {
-        PyObject * to = PyMapping_GetItemString(kwds, "to");
-        PyObject * to_id = 0;
-        if (PyString_Check(to)) {
-            to_id = to;
-        } else if ((to_id = PyObject_GetAttrString(to, "id")) == NULL) {
-            Py_DECREF(to);
-            PyErr_SetString(PyExc_TypeError, "to is not a string and has no id");
-            return NULL;
-        } else {
-            // to_id == to.getattr("id") and to is finished with
-            Py_DECREF(to);
-        }
-        if (!PyString_Check(to_id)) {
+    if (kwds != NULL) {
+        PyObject * to = PyDict_GetItemString(kwds, "to");
+        if (to != NULL) {
+            PyObject * to_id = 0;
+            if (PyString_Check(to)) {
+                to_id = to;
+                Py_INCREF(to_id);
+            } else if ((to_id = PyObject_GetAttrString(to, "id")) == NULL) {
+                PyErr_SetString(PyExc_TypeError, "to is not a string and has no id");
+                return NULL;
+            }
+            if (!PyString_Check(to_id)) {
+                Py_DECREF(to_id);
+                PyErr_SetString(PyExc_TypeError, "id of to is not a string");
+                return NULL;
+            }
+            op->operation->setTo(PyString_AsString(to_id));
             Py_DECREF(to_id);
-            PyErr_SetString(PyExc_TypeError, "id of to is not a string");
-            return NULL;
         }
-        op->operation->setTo(PyString_AsString(to_id));
-        Py_DECREF(to_id);
-    }
-    if (PyMapping_HasKeyString(kwds, "sub_to")) {
-        PyObject * sub_to = PyMapping_GetItemString(kwds, "sub_to");
-        PyObject * sub_to_id = 0;
-        if (PyString_Check(sub_to)) {
-            sub_to_id = sub_to;
-        } else if ((sub_to_id = PyObject_GetAttrString(sub_to, "id")) == NULL) {
-            Py_DECREF(sub_to);
-            PyErr_SetString(PyExc_TypeError, "sub_to is not a string and has no id");
-            return NULL;
-        } else {
-            // to_id == to.getattr("id") and to is finished with
-            Py_DECREF(sub_to);
-        }
-        if (!PyString_Check(sub_to_id)) {
+        PyObject * sub_to = PyDict_GetItemString(kwds, "sub_to");
+        if (sub_to != NULL) {
+            PyObject * sub_to_id = 0;
+            if (PyString_Check(sub_to)) {
+                sub_to_id = sub_to;
+                Py_INCREF(sub_to_id);
+            } else if ((sub_to_id = PyObject_GetAttrString(sub_to, "id")) == NULL) {
+                PyErr_SetString(PyExc_TypeError, "sub_to is not a string and has no id");
+                return NULL;
+            }
+            if (!PyString_Check(sub_to_id)) {
+                Py_DECREF(sub_to_id);
+                PyErr_SetString(PyExc_TypeError, "id of sub_to is not a string");
+                return NULL;
+            }
+            op->operation->setAttr("sub_to", PyString_AsString(sub_to_id));
             Py_DECREF(sub_to_id);
-            PyErr_SetString(PyExc_TypeError, "id of sub_to is not a string");
-            return NULL;
         }
-        op->operation->setAttr("sub_to", PyString_AsString(sub_to_id));
-        Py_DECREF(sub_to_id);
-    }
-    if (PyMapping_HasKeyString(kwds, "from_")) {
-        PyObject * from = PyMapping_GetItemString(kwds, "from_");
-        PyObject * from_id = 0;
-        if (PyString_Check(from)) {
-            from_id = from;
-        } else if ((from_id = PyObject_GetAttrString(from, "id")) == NULL) {
-            Py_DECREF(from);
-            PyErr_SetString(PyExc_TypeError, "from is not a string and has no id");
-            return NULL;
-        } else {
-            Py_DECREF(from);
-        }
-        if (!PyString_Check(from_id)) {
-            Py_DECREF(from_id);
-            PyErr_SetString(PyExc_TypeError, "id of from is not a string");
-            return NULL;
-        }
-        op->operation->setFrom(PyString_AsString(from_id));
-        Py_DECREF(from_id);
     }
     std::vector<Root> & args_list = op->operation->modifyArgs();
     addToArgs(args_list, arg1);
