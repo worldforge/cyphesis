@@ -21,7 +21,6 @@ static PyObject * Location_copy(PyLocation *self)
 #endif // NDEBUG
     PyLocation * ret = newPyLocation();
     ret->location = new Location(self->location->m_loc, self->location->pos(), self->location->velocity());
-    ret->own = 1;
     return (PyObject *)ret;
 }
 
@@ -32,7 +31,7 @@ static PyMethodDef Location_methods[] = {
 
 static void Location_dealloc(PyLocation *self)
 {
-    if ((self->own != 0) && (self->location != NULL)) {
+    if ((self->owner == 0) && (self->location != NULL)) {
         delete self->location;
     }
     PyMem_DEL(self);
@@ -193,6 +192,6 @@ PyLocation * newPyLocation()
                 return NULL;
         }
         self->location = NULL;
-        self->own = 0;
+        self->owner = 0;
         return self;
 }

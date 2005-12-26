@@ -1,3 +1,26 @@
+2005-12-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Switch to using the test combat script.
+
+	* rulesets/Py_EntityWrapper.h, rulesets/Py_Statistics.h: Move the
+	  generic entity wrapper structure into its own header.
+
+	* client/Py_CreatorClient.cpp, rulesets/Py_Location.cpp,
+	  rulesets/Py_Location.h, rulesets/Py_Mind.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/Python_API.cpp: Modify PyLocation so that rather than
+	  having a flag to indicate whether the script owns the object,
+	  it instead stores a pointer to the entity that owns it in that
+	  eventuality.
+
+	* rulesets/Py_Thing.cpp: Allow map and list attributes to be set from
+	  scripts as long as the contents are Atlas compatible.
+
+	* rulesets/Python_API.cpp: Fix script output handling so only complete
+	  lines are output.
+
+	* rulesets/mason/world/tasks/Combat.py: Add code for identifying
+	  attacker and defender in a combat.
+
 2005-12-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: Re-work the keywords handling in Operation()

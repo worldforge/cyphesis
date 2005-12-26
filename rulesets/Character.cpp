@@ -416,7 +416,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-#if 1
+#if 0
     Combat * combat = new Combat(*attacker, *this);
 
     m_task = combat;

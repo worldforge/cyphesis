@@ -208,7 +208,7 @@ static PyObject * CreatorClient_getattr(PyCreatorClient *self, char *name)
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
         loc->location = &self->m_mind->m_location;
-        loc->own = 0;
+        loc->owner = self->m_mind;
         return (PyObject *)loc;
     }
     if (strcmp(name, "time") == 0) {

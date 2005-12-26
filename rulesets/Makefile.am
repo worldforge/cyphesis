@@ -46,6 +46,7 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    Py_Vector3D.cpp Py_Vector3D.h \
 			    Py_Point3D.cpp Py_Point3D.h \
 			    Py_Thing.cpp Py_Thing.h \
+			    Py_EntityWrapper.h \
 			    Py_Mind.cpp Py_Mind.h \
 			    Py_Map.cpp Py_Map.h \
 			    Py_Quaternion.cpp Py_Quaternion.h \

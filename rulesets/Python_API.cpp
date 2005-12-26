@@ -95,7 +95,9 @@ typedef struct {
 
 static void python_log(LogLevel lvl, const char * msg)
 {
-    std::string message(msg);
+    static std::string message;
+
+    message += msg;
     std::string::size_type n = 0;
     std::string::size_type p;
     for (p = message.find_first_of('\n');
@@ -105,7 +107,9 @@ static void python_log(LogLevel lvl, const char * msg)
         n = p + 1;
     }
     if (message.size() > n) {
-        log(lvl, message.substr(n, message.size() - n).c_str());
+        message = message.substr(n, message.size() - n);
+    } else {
+        message.clear();
     }
 }
 
@@ -516,7 +520,6 @@ static PyObject * location_new(PyObject * self, PyObject * args)
     if ( o == NULL ) {
         return NULL;
     }
-    o->own = 1;
     if (coords == NULL) {
         o->location = new Location(ref_ent);
     } else {

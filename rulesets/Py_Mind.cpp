@@ -82,7 +82,7 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
         loc->location = &self->m_mind->m_location;
-        loc->own = 0;
+        loc->owner = self->m_mind;
         return (PyObject *)loc;
     }
     if (strcmp(name, "time") == 0) {
@@ -164,6 +164,17 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
         thing->set(name, obj);
         return 0;
     }
+#if 0
+    if (obj.isMap()) {
+        std::cout << name << " is m map" << std::endl << std::flush;
+    }
+    if (obj.isList()) {
+        std::cout << name << " is m list" << std::endl << std::flush;
+    }
+    if (obj.isNone()) {
+        std::cout << name << " is m none" << std::endl << std::flush;
+    }
+#endif
     // If we get here, then the attribute is not Atlas compatable, so we
     // need to store it in a python dictionary
     if (self->Mind_attr == NULL) {

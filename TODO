@@ -1,3 +1,10 @@
+With the new way python types are defined, it may be possible to get
+rid of separate wrapper and script objects, and have the script inherit from
+the wrapper directly.
+
+Py_Location now holders pointer to owning Entity if any. Now we need to
+incref and decref in the important places.
+
 We need to be able to check if things are visible from goal scripts, so
 a MemEntity version of the Enitty wrapper is required.
 This would mean we could make buy_thing goal expire when seller goes out

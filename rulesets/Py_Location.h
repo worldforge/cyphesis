@@ -8,12 +8,13 @@
 #include <Python.h>
 
 class Location;
+class Entity;
 
 /// \brief Wrapper for Location in Python
 typedef struct {
     PyObject_HEAD
     Location * location;
-    int own;
+    Entity * owner;
 } PyLocation;
 
 extern PyTypeObject PyLocation_Type;

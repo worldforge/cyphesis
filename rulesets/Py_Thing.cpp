@@ -70,7 +70,7 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
         loc->location = &self->m_entity->m_location;
-        loc->own = 0;
+        loc->owner = self->m_entity;
         return (PyObject *)loc;
     }
     if (strcmp(name, "world") == 0) {
@@ -147,12 +147,19 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
         //entity->attributes.erase(attr);
         //return 0;
     //}
-    // FIXME It may now be possible to accept map and list attributes.
     Element obj = PyObject_asMessageElement(v);
-    if (!obj.isNone() && !obj.isMap() && !obj.isList()) {
+    if (!obj.isNone()) {
+        if (obj.isMap()) {
+            log(NOTICE, "Setting a map attribute on an entity from a script");
+        }
+        if (obj.isList()) {
+            log(NOTICE, "Setting a list attribute on an entity from a script");
+        }
         entity->set(name, obj);
         return 0;
     }
+    // FIXME In fact it seems that nothing currently hits this bit, so
+    // all this code is redundant for entity scripts.
     // If we get here, then the attribute is not Atlas compatable, so we
     // need to store it in a python dictionary
     if (self->Entity_attr == NULL) {
