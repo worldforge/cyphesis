@@ -1,5 +1,10 @@
 2005-12-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/TestWorld.h: Complete test world interface by adding new
+	  task method.
+
+2005-12-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseWorld.h: Add factory method for new tasks to the world
 	  interface.
 

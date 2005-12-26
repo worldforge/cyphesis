@@ -18,6 +18,7 @@ class TestWorld : public BaseWorld {
                                   const Atlas::Objects::Entity::RootEntity &) {
         return 0;
     }
+    virtual Task * newTask(const std::string &, Character &) { return 0; }
     virtual void message(const Operation & op, Entity & ent) { }
     virtual Entity * findByName(const std::string & name) { return 0; }
     virtual Entity * findByType(const std::string & type) { return 0; }
