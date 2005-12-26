@@ -17,6 +17,8 @@
 #include <cassert>
 
 class Entity;
+class Task;
+class Character;
 
 /// \brief Base class for game world object.
 ///
@@ -66,6 +68,7 @@ class BaseWorld {
     virtual Entity * addEntity(Entity * obj, bool setup = true) = 0;
     virtual Entity * addNewEntity(const std::string &,
                                   const Atlas::Objects::Entity::RootEntity &) = 0;
+    virtual Task * newTask(const std::string &, Character &) = 0;
     virtual void message(const Operation &, Entity & obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;

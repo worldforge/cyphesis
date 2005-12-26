@@ -1,5 +1,16 @@
 2005-12-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseWorld.h: Add factory method for new tasks to the world
+	  interface.
+
+	* rulesets/Character.cpp: Use world interface to create combat
+	  task, rather than using EntityFactory directly.
+
+	* server/WorldRouter.h, server/WorldRouter.cpp: Implement the
+	  new task method in the core world object.
+
+2005-12-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Switch to using the test combat script.
 
 	* rulesets/Py_EntityWrapper.h, rulesets/Py_Statistics.h: Move the

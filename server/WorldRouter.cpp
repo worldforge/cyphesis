@@ -297,6 +297,21 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
     return addEntity(ent);
 }
 
+/// \brief Create a new task
+///
+/// Construct a new task linked to the Character provided.
+/// @param name the name of the task type to be instantiated
+/// @param owner the character who will own the task
+/// @return a pointer to the new task
+Task * WorldRouter::newTask(const std::string & name, Character & owner)
+{
+    Task * task = EntityFactory::instance()->newTask(name, owner);
+    if (task == 0) {
+        log(ERROR, String::compose("Attempt to create a task of type \"%1\" but type is unknown or forbidden", name).c_str());
+    }
+    return task;
+}
+
 /// \brief Remove an entity from the world.
 ///
 /// Remove an entity from the various lists in which it is stored.

@@ -11,8 +11,6 @@
 #include "Script.h"
 #include "World.h"
 
-#include "server/EntityFactory.h"
-
 #include "common/op_switch.h"
 #include "common/const.h"
 #include "common/debug.h"
@@ -439,7 +437,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 #else
-    Task * combat = EntityFactory::instance()->newTask("combat", *this);
+    Task * combat = m_world->newTask("combat", *this);
 
     m_task = combat;
     combat->incRef();

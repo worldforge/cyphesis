@@ -72,6 +72,7 @@ class WorldRouter : public BaseWorld {
     bool idle(int, int);
     Entity * addEntity(Entity * obj, bool setup = true);
     Entity * addNewEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &);
+    Task * newTask(const std::string &, Character &);
 
     void operation(const Operation &, Entity &);
 
