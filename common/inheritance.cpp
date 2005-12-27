@@ -112,21 +112,7 @@ OpNo Inheritance::opEnumerate(const std::string & parent) const
 
 OpNo Inheritance::opEnumerate(const Operation & op) const
 {
-#if 0
-    // FIXME This should no longer be necessary - just return the Atlas number for the class
-    const std::list<std::string> & parents = op->getParents();
-    if (parents.size() != 1) {
-        log(ERROR, "op with no parents");
-    }
-    const std::string & parent = parents.front();
-    OpNo op_no = opEnumerate(parent);
-    if (op_no != op->getClassNo()) {
-        std::cerr << parent << " op does not match " << op_no << "," << op->getClassNo() << std::endl << std::flush;
-    }
-    return op_no;
-#else
     return op->getClassNo();
-#endif
 }
 
 const Atlas::Objects::Root & Inheritance::getClass(const std::string & parent)

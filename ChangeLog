@@ -1,3 +1,8 @@
+2005-12-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/inheritance.cpp: Remove commented out code for enumerating
+	  op classes.
+
 2005-12-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/MemMap.py: Remobe obsolete AI code.
