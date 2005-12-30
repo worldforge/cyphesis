@@ -48,6 +48,7 @@ Connection::Connection(CommClient & client,
                                               m_server(svr)
 {
     m_server.incClients();
+    logEvent(CONNECT, String::compose("Connect ID %1 from %2", id, addr).c_str());
 }
 
 Connection::~Connection()
@@ -71,6 +72,7 @@ Connection::~Connection()
         if (ac != NULL) {
             m_server.m_lobby.delAccount(ac);
             ac->m_connection = NULL;
+            logEvent(LOGOUT, String::compose("Logout account %1(%2) on connection %3", ac->m_username, ac->getId(), getId()).c_str());
             continue;
         }
         Character * character = dynamic_cast<Character *>(I->second);
@@ -78,10 +80,12 @@ Connection::~Connection()
             if (character->m_externalMind != NULL) {
                 delete character->m_externalMind;
                 character->m_externalMind = NULL;
+                logEvent(DROP_CHAR, String::compose("Drop character %1(%2, %3) on connection %4", character->getName(), character->getType(), character->getId(), getId()).c_str());
             }
         }
     }
 
+    logEvent(DISCONNECT, String::compose("Disconnect ID %1", getId()).c_str());
     m_server.decClients();
 }
 
@@ -264,6 +268,8 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     info->setSerialno(newSerialNo());
     debug(std::cout << "Good login" << std::endl << std::flush;);
     res.push_back(info);
+
+    logEvent(LOGIN, String::compose("Login account %1(%2) on connection %3", username, player->getId(), getId()).c_str());
 }
 
 void Connection::CreateOperation(const Operation & op, OpVector & res)
@@ -323,6 +329,8 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     info->setSerialno(newSerialNo());
     debug(std::cout << "Good create" << std::endl << std::flush;);
     res.push_back(info);
+
+    logEvent(LOGIN, String::compose("Login account %1(%2) on connection %3", username, player->getId(), getId()).c_str());
 }
 
 void Connection::LogoutOperation(const Operation & op, OpVector & res)

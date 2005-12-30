@@ -4,15 +4,17 @@
 
 #include "log.h"
 #include "globals.h"
+#include "compose.hpp"
 
 #include <iostream>
+#include <fstream>
 
 extern "C" {
   #include <syslog.h>
   #include <errno.h>
 }
 
-static void printDate()
+static void logDate(std::ostream & log_stream)
 {
     char buf[256];
     struct tm local_time;
@@ -20,24 +22,35 @@ static void printDate()
     const time_t now = time(NULL);
 
     if (localtime_r(&now, &local_time) != &local_time) {
-        std::cerr << "[TIME_ERROR]: ";
+        log_stream << "[TIME_ERROR]: ";
         return;
     }
 
     int count = strftime(buf, sizeof(buf) / sizeof(char), "%Y:%m:%d %T: ", &local_time);
 
     if (count == 0) {
-        std::cerr << "[TIME_ERROR]: ";
+        log_stream << "[TIME_ERROR]: ";
         return;
     }
 
-    std::cerr << buf;
+    log_stream << buf;
 }
+
+static std::ofstream event_log;
 
 void initLogger()
 {
     if (daemon_flag) {
         openlog("WorldForge Cyphesis", LOG_PID, LOG_USER);
+    }
+
+    std::string event_log_file = var_directory + "/tmp/cyphesis_event.log";
+
+    event_log.open(event_log_file.c_str(), std::ios::out | std::ios::app);
+
+    if (!event_log.is_open()) {
+        log(ERROR, String::compose("Unable to open event log file \"%1\"", event_log_file).c_str());
+        logSysError(ERROR);
     }
 }
 
@@ -96,9 +109,50 @@ void log(LogLevel lvl, const char * msg)
                 type = "UNKNOWN";
                 break;
         };
-        printDate();
+        logDate(std::cerr);
         std::cerr << type << ": " << msg << std::endl << std::flush;
     }
+}
+
+void logEvent(LogEvent lev, const char * msg)
+{
+    if (!event_log.is_open()) {
+        return;
+    }
+
+    char * type;
+    switch (lev) {
+        case START:
+            type = "START";
+            break;
+        case STOP:
+            type = "STOP";
+            break;
+        case CONNECT:
+            type = "CONNECT";
+            break;
+        case DISCONNECT:
+            type = "DISCONNECT";
+            break;
+        case LOGIN:
+            type = "LOGIN";
+            break;
+        case LOGOUT:
+            type = "LOGOUT";
+            break;
+        case TAKE_CHAR:
+            type = "TAKE_CHAR";
+            break;
+        case DROP_CHAR:
+            type = "DROP_CHAR";
+            break;
+        default:
+            type = "UNKNOWN";
+            break;
+    };
+
+    logDate(event_log);
+    event_log << type << ": " << msg << std::endl << std::flush;
 }
 
 void logSysError(LogLevel lvl)

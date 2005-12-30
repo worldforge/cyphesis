@@ -976,6 +976,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
 
         Anonymous cmap;
         cmap->setParents(std::list<std::string>(1, "creator"));
+        cmap->setName("cycmd agent");
         cmap->setObjtype("obj");
         c->setArgs1(cmap);
         c->setFrom(accountId);

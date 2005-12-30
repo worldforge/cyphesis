@@ -239,6 +239,12 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     info->setSerialno(newSerialNo());
 
     res.push_back(info);
+
+    Entity * ige = dynamic_cast<Entity *>(obj);
+
+    if (ige != 0) {
+        logEvent(TAKE_CHAR, String::compose("Created character %1(%2, %3) by account %4(%5) on connection %6", ige->getName(), ige->getType(), ige->getId(), m_username, getId(), m_connection->getId()).c_str());
+    }
 }
 
 void Account::SetOperation(const Operation & op, OpVector & res)

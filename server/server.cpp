@@ -216,6 +216,7 @@ int main(int argc, char ** argv)
 #endif // defined(HAVE_LIBHOWL)
 
     log(INFO, "Running");
+    logEvent(START, "Standalone server startup");
 
     // Inform things that want to know that we are running.
     running();
@@ -262,5 +263,6 @@ int main(int argc, char ** argv)
     delete global_conf;
 
     log(INFO, "Clean shutdown complete.");
+    logEvent(STOP, "Standalone server shutdown");
     return 0;
 }
