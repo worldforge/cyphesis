@@ -190,6 +190,7 @@ void Connection::operation(const Operation & op, OpVector & res)
 
             res.push_back(info);
             character->externalOperation(op);
+            logEvent(TAKE_CHAR, String::compose("Taken character %1(%2, %3) on connection %4", ig_ent->getName(), ig_ent->getType(), ig_ent->getId(), getId()).c_str());
             return;
         }
         ig_ent->externalOperation(op);

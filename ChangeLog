@@ -1,5 +1,12 @@
 2005-12-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.cpp: Move character creation logging to a place
+	  where the information is easier to get to.
+
+	* server/Connection.cpp: Add logging of taking existing character.
+
+2005-12-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/log.h, common/log.cpp: Add logging function for logging
 	  regular server activity, for statistics purposes, to a file.
 
