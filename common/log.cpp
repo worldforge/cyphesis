@@ -12,6 +12,28 @@ extern "C" {
   #include <errno.h>
 }
 
+static void printDate()
+{
+    char buf[256];
+    struct tm local_time;
+
+    const time_t now = time(NULL);
+
+    if (localtime_r(&now, &local_time) != &local_time) {
+        std::cerr << "[TIME_ERROR]: ";
+        return;
+    }
+
+    int count = strftime(buf, sizeof(buf) / sizeof(char), "%Y:%m:%d %T: ", &local_time);
+
+    if (count == 0) {
+        std::cerr << "[TIME_ERROR]: ";
+        return;
+    }
+
+    std::cerr << buf;
+}
+
 void initLogger()
 {
     if (daemon_flag) {
@@ -74,6 +96,7 @@ void log(LogLevel lvl, const char * msg)
                 type = "UNKNOWN";
                 break;
         };
+        printDate();
         std::cerr << type << ": " << msg << std::endl << std::flush;
     }
 }

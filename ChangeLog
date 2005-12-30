@@ -1,5 +1,9 @@
 2005-12-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/log.cpp: Include date and time when logging to the console.
+
+2005-12-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, rulesets/StatisticsProperty.h,
 	  rulesets/StatisticsProperty.cpp: Add a property handler for
 	  statistics.
