@@ -1,6 +1,13 @@
+Task scripts need a way to add and remove themselves from all participants
+in the task.
+
 With the new way python types are defined, it may be possible to get
 rid of separate wrapper and script objects, and have the script inherit from
-the wrapper directly.
+the wrapper directly. The C++ pointer would have to be added to the structure
+later, once the script object which inherits from the wrapper base class
+has been returned. This means no access to the core object allowed during
+__init__(). Problem may arrise when checking the type of the script to
+see if it inherits from the wrapper class. Is this possible?
 
 Py_Location now holders pointer to owning Entity if any. Now we need to
 incref and decref in the important places.

@@ -86,7 +86,5 @@ Task * PythonTaskScriptFactory::newTask(Character & chr)
 
     task->setScript(new PythonEntityScript(script, (PyObject *)wrapper));
     
-    std::cout << "created" << std::endl << std::flush;
-
     return task;
 }

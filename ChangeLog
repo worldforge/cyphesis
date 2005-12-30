@@ -1,3 +1,60 @@
+2005-12-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp, rulesets/StatisticsProperty.h,
+	  rulesets/StatisticsProperty.cpp: Add a property handler for
+	  statistics.
+
+	* rulesets/Character.cpp: When setting task, check if an existing
+	  task needs to be cleared first. When clearing a task, check
+	  whether a task exists or not.
+
+	* rulesets/Character.cpp: When initiating combat task from task
+	  factory, check to see if the task is successfully created before
+	  using it.
+
+	* rulesets/Py_Property.cpp, rulesets/Py_Property.h: New python wrapper
+	  class for entity properties.
+
+	* rulesets/Py_Mind.cpp: Re-work getattr logic to make it clearer.
+
+	* rulesets/Py_Object.cpp: Return Py_None when an Atlas Element cannot
+	  be converted to python. This ensures that this function never returns
+	  null.
+
+	* rulesets/Py_Statistics.cpp: Add temporary handlers for hardcoded
+	  statistics for "attack", "defence", and "strength".
+
+	* rulesets/Py_Task.cpp: Add wrappers for methods Task.irrelevant and
+	  Task.obsolete, as these are now required in combat scripts.
+
+	* rulesets/Py_Task.h: Fix the PyTask_Check macro, which was miscoded.
+
+	* rulesets/Py_Thing.cpp: Add wrapper for Entity.send_world so that
+	  scripts can channel ops through entities.
+
+	* rulesets/Py_Thing.h, rulesets/Py_Thing.cpp: Add an addition structure
+	  for directlty wrapping Character in a type safe way. Add method
+	  structure pointer to Entity and Character wrappers so that
+	  the same getattr method is used for both. Add new method table for
+	  Character including wrappers for set_task and clear_task, allowing
+	  task scripts to add themselves and remove themselves from
+	  characters. Modify wrapEntity() to ensure that Character entities
+	  get the right wrapper.
+
+	* rulesets/Py_Thing.cpp: Re-work getattr code so that properties and
+	  soft attributes are checked individually, rather than in a single
+	  call to Entity.get. Use new python property wrappers to wrap
+	  properties explicitly if required rather than converting to Atlas
+	  then to generic Python data.
+
+	* rulesets/TerrainProperty.h: Fix incorrect class description in
+	  documentation.
+
+	* rulesets/mason/world/tasks/Combat.py: Complete implementation of
+	  simple example combat.
+
+	* server/TaskFactory.cpp: Remove debug output.
+
 2005-12-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/inheritance.cpp: Remove commented out code for enumerating

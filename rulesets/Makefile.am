@@ -29,6 +29,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     TerrainProperty.cpp TerrainProperty.h \
 			     CalendarProperty.cpp CalendarProperty.h \
 			     Statistics.cpp Statistics.h \
+			     StatisticsProperty.cpp StatisticsProperty.h \
 			     Task.cpp Task.h \
 			     Combat.cpp Combat.h \
 			     TaskScript.cpp TaskScript.h \
@@ -56,6 +57,7 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    Py_Location.cpp Py_Location.h \
 			    Py_Task.cpp Py_Task.h \
 			    Py_Statistics.cpp Py_Statistics.h \
+			    Py_Property.cpp Py_Property.h \
 			    Python_API.cpp Python_API.h \
 			    Python_Script_Utils.h \
 			    PythonWrapper.cpp PythonWrapper.h \

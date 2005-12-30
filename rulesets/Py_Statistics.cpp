@@ -5,6 +5,7 @@
 #include "Py_Statistics.h"
 
 #include "Py_Thing.h"
+#include "Character.h"
 
 #include "Task.h"
 
@@ -27,6 +28,15 @@ static PyObject * Statistics_getattr(PyStatistics *self, char *name)
 #endif // NDEBUG
     if (strcmp(name, "character") == 0) {
         return wrapEntity(self->m_entity);
+    }
+    if (strcmp(name, "strength") == 0) {
+        return PyFloat_FromDouble(dynamic_cast<Character*>(self->m_entity)->statistics().strength());
+    }
+    if (strcmp(name, "attack") == 0) {
+        return PyFloat_FromDouble(dynamic_cast<Character*>(self->m_entity)->statistics().attack());
+    }
+    if (strcmp(name, "defence") == 0) {
+        return PyFloat_FromDouble(dynamic_cast<Character*>(self->m_entity)->statistics().defence());
     }
     return Py_FindMethod(Statistics_methods, (PyObject *)self, name);
 }

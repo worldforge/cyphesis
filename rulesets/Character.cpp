@@ -10,6 +10,7 @@
 #include "BaseMind.h"
 #include "Script.h"
 #include "World.h"
+#include "StatisticsProperty.h"
 
 #include "common/op_switch.h"
 #include "common/const.h"
@@ -17,7 +18,6 @@
 #include "common/globals.h"
 #include "common/log.h"
 #include "common/inheritance.h"
-#include "common/Property.h"
 #include "common/serialno.h"
 #include "common/compose.hpp"
 
@@ -117,6 +117,7 @@ Character::Character(const std::string & id, long intId) :
     m_properties["stamina"] = new Property<double>(m_stamina, 0);
     m_properties["drunkness"] = new Property<double>(m_drunkness, a_drunk);
     m_properties["sex"] = new Property<std::string>(m_sex, a_sex);
+    m_properties["statistics"] = new StatisticsProperty(m_statistics, 0);
     m_properties["right_hand_wield"] = new Property<std::string>(m_rightHandWield, a_rwield);
 }
 
@@ -133,12 +134,19 @@ Character::~Character()
 
 void Character::setTask(Task * task)
 {
+    if (m_task != 0) {
+        clearTask();
+    }
     m_task = task;
     task->incRef();
 }
 
 void Character::clearTask()
 {
+    if (m_task == 0) {
+        log(ERROR, "Character.clearTask: No task currently set");
+        return;
+    }
     m_task->decRef();
     m_task = 0;
 }
@@ -439,14 +447,12 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
 #else
     Task * combat = m_world->newTask("combat", *this);
 
-    m_task = combat;
-    combat->incRef();
-
-    // FIXME No longer has reference to attacker
-    // attacker->m_task = combat;
-    // combat->incRef();
-
-    m_task->initTask (op, res);
+    if (combat != 0) {
+        setTask(combat);
+        m_task->initTask(op, res);
+    } else {
+        log(ERROR, "Character::AttackOperation: Unable to create combat task");
+    }
 #endif
 }
 

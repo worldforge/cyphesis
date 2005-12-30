@@ -18,7 +18,7 @@ typedef struct {
 
 extern PyTypeObject PyTask_Type;
 
-#define PyTask_Check(_o) ((PyTypeObject(PyObject*)_o)==&PyTask_Type)
+#define PyTask_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyTask_Type)
 
 PyTask * newPyTask();
 

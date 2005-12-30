@@ -195,6 +195,8 @@ PyObject * MessageElement_asPyObject(const Element & obj)
             ret = ListType_asPyObject(obj.List());
             break;
         default:
+            Py_INCREF(Py_None);
+            ret = Py_None;
             break;
     }
     return ret;

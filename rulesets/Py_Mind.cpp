@@ -116,16 +116,12 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
             return v;
         }
     }
-    Entity * thing = self->m_mind;
+    Entity * mind = self->m_mind;
     Element attr;
-    if (!thing->get(name, attr)) {
-        return Py_FindMethod(Mind_methods, (PyObject *)self, name);
+    if (mind->get(name, attr)) {
+        return MessageElement_asPyObject(attr);
     }
-    PyObject * ret = MessageElement_asPyObject(attr);
-    if (ret == NULL) {
-        return Py_FindMethod(Mind_methods, (PyObject *)self, name);
-    }
-    return ret;
+    return Py_FindMethod(Mind_methods, (PyObject *)self, name);
 }
 
 static int Mind_setattr(PyMind *self, char *name, PyObject *v)

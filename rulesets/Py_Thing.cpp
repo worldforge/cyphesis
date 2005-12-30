@@ -8,10 +8,14 @@
 #include "Py_Point3D.h"
 #include "Py_Location.h"
 #include "Py_World.h"
+#include "Py_Property.h"
+#include "Py_Operation.h"
+#include "Py_Task.h"
 #include "PythonWrapper.h"
-#include "Entity.h"
+#include "Character.h"
 
 #include "common/log.h"
+#include "common/Property.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -33,9 +37,74 @@ static PyObject * Entity_as_entity(PyEntity * self)
     return (PyObject *)ret;
 }
 
+static PyObject * Entity_send_world(PyEntity * self, PyObject * args)
+{
+#ifndef NDEBUG
+    if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
+        return NULL;
+    }
+#endif // NDEBUG
+    PyOperation * op;
+    if (!PyArg_ParseTuple(args, "O", &op)) {
+        return NULL;
+    }
+    if (PyOperation_Check(op)) {
+        self->m_entity->sendWorld(op->operation);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Entity.send_world must be an op");
+        return NULL;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyMethodDef Entity_methods[] = {
-        {"as_entity",        (PyCFunction)Entity_as_entity,  METH_NOARGS},
-        {NULL,          NULL}           /* sentinel */
+    {"as_entity",       (PyCFunction)Entity_as_entity,  METH_NOARGS},
+    {"send_world",      (PyCFunction)Entity_send_world, METH_VARARGS},
+    {NULL,              NULL}           /* sentinel */
+};
+
+static PyObject * Character_set_task(PyCharacter * self, PyObject * args)
+{
+#ifndef NDEBUG
+    if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
+        return NULL;
+    }
+#endif // NDEBUG
+    PyTask * task;
+    if (!PyArg_ParseTuple(args, "O", &task)) {
+        return NULL;
+    }
+    if (!PyTask_Check(task)) {
+        PyErr_SetString(PyExc_TypeError, "Entity.set_task must be a task");
+        return NULL;
+    }
+    self->m_entity->setTask(task->m_task);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject * Character_clear_task(PyCharacter * self)
+{
+#ifndef NDEBUG
+    if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
+        return NULL;
+    }
+#endif // NDEBUG
+    self->m_entity->clearTask();
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef Character_methods[] = {
+    {"as_entity",       (PyCFunction)Entity_as_entity,  METH_NOARGS},
+    {"send_world",      (PyCFunction)Entity_send_world, METH_VARARGS},
+    {"set_task",        (PyCFunction)Character_set_task,   METH_VARARGS},
+    {"clear_task",      (PyCFunction)Character_clear_task, METH_NOARGS},
+    {NULL,              NULL}           /* sentinel */
 };
 
 static void Entity_dealloc(PyEntity *self)
@@ -105,15 +174,22 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         }
     }
     Entity * entity = self->m_entity;
-    Element attr;
-    if (!entity->get(name, attr)) {
-        return Py_FindMethod(Entity_methods, (PyObject *)self, name);
+    PropertyBase * prop = entity->getProperty(name);
+    if (prop != 0) {
+        PyObject * ret = Property_asPyObject(prop, entity);
+        if (ret != 0) {
+            return ret;
+        }
+        Element attr;
+        prop->get(attr);
+        return MessageElement_asPyObject(attr);
     }
-    PyObject * ret = MessageElement_asPyObject(attr);
-    if (ret == NULL) {
-        return Py_FindMethod(Entity_methods, (PyObject *)self, name);
+    const MapType & attrs = entity->getAttributes();
+    MapType::const_iterator I = attrs.find(name);
+    if (I != attrs.end()) {
+        return MessageElement_asPyObject(I->second);
     }
-    return ret;
+    return Py_FindMethod(self->m_methods, (PyObject *)self, name);
 }
 
 static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
@@ -204,12 +280,22 @@ PyObject * wrapEntity(Entity * entity)
     PyObject * wrapper;
     PythonWrapper * pw = dynamic_cast<PythonWrapper *>(entity->script());
     if (pw == 0) {
-        PyEntity * pe = newPyEntity();
-        if (pe == NULL) {
-            return NULL;
+        Character * ch_entity = dynamic_cast<Character *>(entity);
+        if (ch_entity != 0) {
+            PyCharacter * pc = newPyCharacter();
+            if (pc == NULL) {
+                return NULL;
+            }
+            pc->m_entity = ch_entity;
+            wrapper = (PyObject *)pc;
+        } else {
+            PyEntity * pe = newPyEntity();
+            if (pe == NULL) {
+                return NULL;
+            }
+            pe->m_entity = entity;
+            wrapper = (PyObject *)pe;
         }
-        pe->m_entity = entity;
-        wrapper = (PyObject *)pe;
         if (entity->script() == &noScript) {
             pw = new PythonWrapper(wrapper);
             entity->setScript(pw);
@@ -232,5 +318,18 @@ PyEntity * newPyEntity()
         return NULL;
     }
     self->Entity_attr = NULL;
+    self->m_methods = Entity_methods;
+    return self;
+}
+
+PyCharacter * newPyCharacter()
+{
+    PyCharacter * self;
+    self = PyObject_NEW(PyCharacter, &PyEntity_Type);
+    if (self == NULL) {
+        return NULL;
+    }
+    self->Entity_attr = NULL;
+    self->m_methods = Character_methods;
     return self;
 }

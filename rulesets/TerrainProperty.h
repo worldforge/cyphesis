@@ -15,7 +15,7 @@ namespace Mercator {
 
 typedef std::map<int, std::set<int> > PointSet;
 
-/// \brief Class to handle Entity line property
+/// \brief Class to handle Entity terrain property
 class TerrainProperty : public PropertyBase {
   protected:
     Mercator::Terrain & m_data;
