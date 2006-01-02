@@ -1,6 +1,3 @@
-Clients don't get removed from the count under certain circumstances.
-This happens when negotiation timeout happens.
-
 Pig merchant seems to get things wrong when he runs out of pigs.
  - unable to reproduce
 

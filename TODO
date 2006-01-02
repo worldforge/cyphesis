@@ -1,6 +1,3 @@
-Task scripts need a way to add and remove themselves from all participants
-in the task.
-
 With the new way python types are defined, it may be possible to get
 rid of separate wrapper and script objects, and have the script inherit from
 the wrapper directly. The C++ pointer would have to be added to the structure
@@ -15,7 +12,7 @@ incref and decref in the important places.
 We need to be able to check if things are visible from goal scripts, so
 a MemEntity version of the Enitty wrapper is required.
 This would mean we could make buy_thing goal expire when seller goes out
-of site.
+of sight.
 
 The getTickAddtion calculation is almost certainly redundant. We almost
 certainly worked in out in previous call to generateMove().
