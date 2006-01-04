@@ -331,7 +331,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Good create" << std::endl << std::flush;);
     res.push_back(info);
 
-    logEvent(LOGIN, String::compose("Login account %1(%2) on connection %3", username, player->getId(), getId()).c_str());
+    logEvent(LOGIN, String::compose("Create account %1(%2) on connection %3", username, player->getId(), getId()).c_str());
 }
 
 void Connection::LogoutOperation(const Operation & op, OpVector & res)

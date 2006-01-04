@@ -1,5 +1,12 @@
 2006-01-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Make skeleton playable.
+
+	* server/Connection.cpp: Differentiate in the event logs between
+	  account creation and login to an existing account.
+
+2006-01-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Require latest varconf for its new features.
 
 	* common/globals.cpp, tools/cyconfig.cpp: Use new varconf scope for
