@@ -1,5 +1,0 @@
-If its not done yet, look at movement in MoveOperation rather than in
-mindMoveOperation. Probably mean adding a new movement class linked to
-Thing. Perhaps rename Thing to PhysicalEntity.
-
-Think about migrating to Atlas-C++ 0.6.
