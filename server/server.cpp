@@ -33,7 +33,7 @@
 #include "common/system.h"
 #include "common/nls.h"
 
-#include <varconf/Config.h>
+#include <varconf/config.h>
 
 #include <sstream>
 

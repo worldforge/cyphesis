@@ -11,8 +11,6 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
-#include <varconf/Config.h>
-
 #include <skstream/skstream_unix.h>
 
 #include <iostream>

@@ -2,7 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2001 Alistair Riddoch
 
-#include <varconf/Config.h>
+#include <varconf/config.h>
 
 #include <cassert>
 
@@ -53,6 +53,6 @@ int main(int argc, char ** argv)
         runCommand(argc - optind, &argv[optind]);
     }
 
-    global_conf->writeToFile(homeDirConfig);
+    global_conf->writeToFile(homeDirConfig, (varconf::Scope)(varconf::USER | varconf::INSTANCE));
     return 0;
 }

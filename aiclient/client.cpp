@@ -16,7 +16,7 @@
 #include <Atlas/Message/DecoderBase.h>
 #include <Atlas/Message/Encoder.h>
 
-#include <varconf/Config.h>
+#include <varconf/config.h>
 
 #include <iostream.h>
 #include <fstream.h>

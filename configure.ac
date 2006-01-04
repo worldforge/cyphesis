@@ -202,7 +202,7 @@ dnl         CPPFLAGS="$CPPFLAGS $MONO_CFLAGS"
 dnl         COMMON_LIBS="$COMMON_LIBS $MONO_LIBS"
 dnl     ])
 
-PKG_CHECK_MODULES(DEPS, atlascpp-0.6 varconf-1.0 >= 0.6.2,
+PKG_CHECK_MODULES(DEPS, atlascpp-0.6 varconf-1.0 >= 0.6.4,
     [
         CPPFLAGS="$CPPFLAGS $DEPS_CFLAGS"
         COMMON_LIBS="$COMMON_LIBS $DEPS_LIBS"

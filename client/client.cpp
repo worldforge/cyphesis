@@ -8,7 +8,7 @@
 
 #include "common/globals.h"
 
-#include <varconf/Config.h>
+#include <varconf/config.h>
 
 #include <iostream>
 

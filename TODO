@@ -1,3 +1,6 @@
+When checking type of a python object, use PyObject_TypeCheck() new in 2.2
+especially when inheritance is involved.
+
 With the new way python types are defined, it may be possible to get
 rid of separate wrapper and script objects, and have the script inherit from
 the wrapper directly. The C++ pointer would have to be added to the structure

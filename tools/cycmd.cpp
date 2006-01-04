@@ -20,7 +20,7 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
-#include <varconf/Config.h>
+#include <varconf/config.h>
 
 #include "common/Monitor.h"
 #include "common/Connect.h"

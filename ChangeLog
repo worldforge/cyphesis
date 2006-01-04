@@ -1,3 +1,15 @@
+2006-01-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Require latest varconf for its new features.
+
+	* common/globals.cpp, tools/cyconfig.cpp: Use new varconf scope for
+	  settings to more suitably handle user overidden config settings.
+
+	* aiclient/ClientConnection.cpp, aiclient/client.cpp,
+	  client/client.cpp, common/Database.cpp, server/server.cpp,
+	  server/slave.cpp, tools/AdminClient.h, tools/cyaddrules.cpp,
+	  tools/cycmd.cpp: Use new varconf/config.h header.
+
 2005-12-31  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Reduce the rate at which animal mass is

@@ -12,7 +12,7 @@
 
 #include "modules/DateTime.h"
 
-#include <varconf/Config.h>
+#include <varconf/config.h>
 
 #include <cassert>
 
@@ -38,35 +38,27 @@ int loadConfig(int argc, char ** argv, bool server)
     global_conf = varconf::Config::inst();
 
     // See if the user has set the install directory on the command line
-    char * home;
-    bool home_dir_config = false, store_config = false;
-    if ((home = getenv("HOME")) != NULL) {
+    bool home_dir_config = false;
+    char * home = getenv("HOME");
+
+    // Read in only the users settings, and the commandline settings.
+    if (home != NULL) {
         home_dir_config = global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
-    // Check the command line options, and if anything
-    // has been overriden, store this value in the users home directory.
-    // The effect of this code is that config settings, once
-    // chosen are fixed.
+
     global_conf->getCmdline(argc, argv);
-    if (global_conf->findItem("cyphesis", "directory")) {
-        store_config = true;
-        share_directory = global_conf->getItem("cyphesis", "directory").as_string();
-    }
+
+    // Check if the config directory has been overriden at this point, as if
+    // it has, that will affect loading the main config.
     if (global_conf->findItem("cyphesis", "confdir")) {
-        store_config = true;
         etc_directory = global_conf->getItem("cyphesis", "confdir").as_string();
     }
-    if (global_conf->findItem("cyphesis", "vardir")) {
-        store_config = true;
-        var_directory = global_conf->getItem("cyphesis", "vardir").as_string();
-    }
-    if (store_config && (home != NULL)) {
-        global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf");
-    }
+
     // Load up the rest of the system config file, and then ensure that
     // settings are overridden in the users config file, and the command line
     bool main_config = global_conf->readFromFile(etc_directory +
-                                                 "/cyphesis/cyphesis.vconf");
+                                                 "/cyphesis/cyphesis.vconf",
+                                                 varconf::GLOBAL);
     if (!main_config) {
         std::string msg("Unable to read main config file ");
         msg += etc_directory;
@@ -84,9 +76,27 @@ int loadConfig(int argc, char ** argv, bool server)
     }
     int optind = global_conf->getCmdline(argc, argv);
 
+    // Write out any changes that have been overriden at user scope. It
+    // may be a good idea to do this at shutdown.
+    if (home != NULL) {
+        global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf", varconf::USER);
+    }
+
     assert(optind > 0);
 
     // Config is now loaded. Now set the values of some globals.
+
+    if (global_conf->findItem("cyphesis", "directory")) {
+        share_directory = global_conf->getItem("cyphesis", "directory").as_string();
+    }
+
+    if (global_conf->findItem("cyphesis", "confdir")) {
+        etc_directory = global_conf->getItem("cyphesis", "confdir").as_string();
+    }
+
+    if (global_conf->findItem("cyphesis", "vardir")) {
+        var_directory = global_conf->getItem("cyphesis", "vardir").as_string();
+    }
 
     if (global_conf->findItem("cyphesis", "daemon") && server) {
         daemon_flag = global_conf->getItem("cyphesis","daemon");

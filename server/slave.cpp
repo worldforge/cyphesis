@@ -20,7 +20,7 @@
 #include "common/inheritance.h"
 #include "common/system.h"
 
-#include <varconf/Config.h>
+#include <varconf/config.h>
 
 static const bool debug_flag = false;
 

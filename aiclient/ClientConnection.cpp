@@ -14,7 +14,7 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/Encoder.h>
 
-#include <varconf/Config.h>
+#include <varconf/config.h>
 
 #include <iostream.h>
 #include <fstream.h>
