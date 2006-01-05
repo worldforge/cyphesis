@@ -1,3 +1,16 @@
+2006-01-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_WorldTime.cpp: Extend the type object for python
+	  WorldTime to the format used by more recent python versions,
+	  adding new and init methods as well as flags, and doc string.
+
+	* rulesets/Python_API.cpp: Refactor the way the server python
+	  module and its type server.WorldTime are created to be the
+	  preferred way for more recent python versions.
+
+	* rulesets/basic/mind/NPCMind.py: Remove explicit WorldTime
+	  member, as there is already one in the C++ base class.
+
 2006-01-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Make skeleton playable.

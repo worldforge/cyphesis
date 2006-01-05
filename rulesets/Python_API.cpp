@@ -872,23 +872,6 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
         return (PyObject *)o;
 }
 
-static PyObject * worldtime_new(PyObject * self, PyObject * args)
-{
-        PyWorldTime *o;
-                
-        int seconds;
-        if (!PyArg_ParseTuple(args, "i", &seconds)) {
-                return NULL;
-        }
-        o = newPyWorldTime();
-        if ( o == NULL ) {
-                return NULL;
-        }
-        o->time = new WorldTime(seconds);
-        o->own = true;
-        return (PyObject *)o;
-}
-
 static inline void addToOplist(PyOperation * op, PyOplist * o)
 {
     if (op != NULL) {
@@ -1087,6 +1070,12 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
     return (PyObject *)op;
 }
 
+// In Python 2.3 or later this it is okay to pass in null for the methods
+// of a module, making this obsolete.
+static PyMethodDef no_methods[] = {
+    {NULL,          NULL}                       /* Sentinel */
+};
+
 static PyMethodDef atlas_methods[] = {
     {"Operation",  (PyCFunction)operation_new,  METH_VARARGS|METH_KEYWORDS},
     {"isLocation", is_location,                 METH_VARARGS},
@@ -1121,11 +1110,6 @@ static PyMethodDef bbox_methods[] = {
 
 static PyMethodDef quaternion_methods[] = {
     {"Quaternion",  quaternion_new,             METH_VARARGS},
-    {NULL,          NULL}                       /* Sentinel */
-};
-
-static PyMethodDef server_methods[] = {
-    {"WorldTime",   worldtime_new,              METH_VARARGS},
     {NULL,          NULL}                       /* Sentinel */
 };
 
@@ -1280,11 +1264,20 @@ void init_python_api()
     Py_DECREF(o);
     Py_DECREF(globals);
 
-    PyObject * server;
-    if ((server = Py_InitModule("server", server_methods)) == NULL) {
-        log(CRITICAL, "Python init failed to create server module\n");
+    PyObject * server = Py_InitModule("server", no_methods);
+    if (server == NULL) {
+        log(CRITICAL, "Python init failed to create server module");
         return;
     }
+    
+    // New module code
+    // PyWorldTime_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyWorldTime_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready WorldTime wrapper type");
+        return;
+    }
+    PyModule_AddObject(server, "WorldTime", (PyObject *)&PyWorldTime_Type);
+
     PyObject * server_dict = PyModule_GetDict(server);
     PyObject * dictlist = PyModule_New("dictlist");
     PyObject * add_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_add_value_type);
