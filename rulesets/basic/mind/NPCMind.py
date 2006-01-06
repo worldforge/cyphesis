@@ -21,7 +21,7 @@ from mind.Knowledge import Knowledge
 from mind.panlingua import interlinguish,ontology
 from mind.compass import vector_to_compass
 from common import log,const
-from server import dictlist
+import dictlist
 import mind.goals
 import mind.goals.common
 

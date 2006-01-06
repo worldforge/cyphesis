@@ -1,5 +1,15 @@
 2006-01-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Remove C++ implementation of server.dictlist
+	  as its installation was messy, and it serves no purpose being
+	  implemented in C++.
+
+	* rulesets/basic/mind/NPCMind.py, rulesets/basic/mind/dictlist.py: 
+	  Use python dictlist implementation from original Python version
+	  of cyphesis.
+
+2006-01-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Statistics.cpp: Extend type structure to comply with
 	  more recent Python API.
 

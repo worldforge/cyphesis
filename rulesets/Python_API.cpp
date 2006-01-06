@@ -203,128 +203,6 @@ PyTypeObject PyErrLogger_Type = {
         0,                   // tp_hash
 };
 
-//////////////////////////////////////////////////////////////////////////
-// dictlist
-//////////////////////////////////////////////////////////////////////////
-
-static PyObject * dictlist_remove_value(PyObject * self, PyObject * args, PyObject * kwds)
-{
-    PyObject * dict;
-    PyEntity * item;
-    long remove_empty_key = 1;
-    if (!PyArg_ParseTuple(args, "OO|i", &dict, &item, &remove_empty_key)) {
-        return NULL;
-    }
-    int flag = 0;
-    if (!PyDict_Check(dict)) {
-        PyErr_SetString(PyExc_TypeError, "Trying to set item in not dictlist");
-        return NULL;
-    }
-    PyObject * keys = PyDict_Keys(dict);
-    PyObject * values = PyDict_Values(dict);
-
-    if ((keys == NULL) || (values == NULL)) {
-        PyErr_SetString(PyExc_RuntimeError, "Error getting keys from dictlist");
-        return NULL;
-    }
-    int i, size = PyList_Size(keys);
-    for(i = 0; i < size; i++) {
-        PyObject * value = PyList_GetItem(values, i);
-        PyObject * key = PyList_GetItem(keys, i);
-        int j, lsize = PyList_Size(value);
-        for(j = 0; j < lsize; j++) {
-            PyEntity * entry = (PyEntity*)PyList_GetItem(value, j);
-            if (entry->m_entity == item->m_entity) {
-                flag = 1;
-                PyList_SetSlice(value, j, j+1, NULL);
-                j--; lsize--;
-                if ((remove_empty_key !=0) && (PyList_Size(value) == 0)) {
-                    PyDict_DelItem(dict, key);
-                }
-            }
-        }
-    }
-    Py_DECREF(keys);
-    Py_DECREF(values);
-    return PyInt_FromLong(flag);
-}
-
-PyTypeObject dictlist_remove_value_type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,
-        "Function",
-        sizeof(FunctionObject),
-        0,
-        /* methods */
-        (destructor)Function_dealloc,
-        0,              /* tp_print */
-        0,              /* tp_getattr */
-        0,              /* tp_setattr */
-        0,              /* tp_compare */
-        0,              /* tp_repr */
-        0,              /* tp_as_number */
-        0,              /* tp_as_sequence */
-        0,              /* tp_as_mapping */
-        0,              /* tp_hash */
-        dictlist_remove_value,  /* tp_call */
-};
-static PyObject * dictlist_add_value(PyObject * self, PyObject * args, PyObject * kwds)
-{
-    PyObject * dict;
-    PyEntity * item;
-    char * key;
-    if (!PyArg_ParseTuple(args, "OsO", &dict, &key, &item)) {
-        return NULL;
-    }
-    if (!PyDict_Check(dict)) {
-        PyErr_SetString(PyExc_TypeError, "Dict is not a dictionary");
-        return NULL;
-    }
-    PyObject * list = PyDict_GetItemString(dict, key);
-    if (list != NULL) {
-        if (!PyList_Check(list)) {
-            PyErr_SetString(PyExc_TypeError, "Dict does not contain a list");
-            return NULL;
-        }
-        int i, size = PyList_Size(list);
-        for(i = 0; i < size; i++) {
-            PyEntity * entry = (PyEntity*)PyList_GetItem(list,i);
-            if (entry->m_entity == item->m_entity) {
-                goto present;
-            }
-        }
-        PyList_Append(list, (PyObject*)item);
-    } else {
-        list = PyList_New(0);
-        PyList_Append(list, (PyObject*)item);
-        PyDict_SetItemString(dict, key, list);
-        Py_DECREF(list);
-    }
-present:
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-PyTypeObject dictlist_add_value_type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,
-        "Function",
-        sizeof(FunctionObject),
-        0,
-        /* methods */
-        (destructor)Function_dealloc,
-        0,              /* tp_print */
-        0,              /* tp_getattr */
-        0,              /* tp_setattr */
-        0,              /* tp_compare */
-        0,              /* tp_repr */
-        0,              /* tp_as_number */
-        0,              /* tp_as_sequence */
-        0,              /* tp_as_mapping */
-        0,              /* tp_hash */
-        dictlist_add_value,     /* tp_call */
-};
-
 static PyObject * Get_PyClass(const std::string & package,
                               const std::string & type)
 {
@@ -356,7 +234,9 @@ static PyObject * Get_PyClass(const std::string & package,
         return NULL;
     }
 #if 0
-    // In later versions of python using PyType_* will become the right thing to do.
+    // In later versions of python using PyType_* will become the right thing
+    // to do. This might become true when things have been done right with
+    // installing types.
     if (PyType_Check(pyClass) == 0) {
         std::cerr << "PyCallable_Check returned true, but PyType_Check returned false " << package << "." << type << std::endl << std::flush;
     } else {
@@ -1278,17 +1158,6 @@ void init_python_api()
         return;
     }
     PyModule_AddObject(server, "WorldTime", (PyObject *)&PyWorldTime_Type);
-
-    PyObject * server_dict = PyModule_GetDict(server);
-    PyObject * dictlist = PyModule_New("dictlist");
-    PyObject * add_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_add_value_type);
-    PyObject_SetAttrString(dictlist, "add_value", add_value);
-    Py_DECREF(add_value);
-    PyObject * remove_value = (PyObject *)PyObject_NEW(FunctionObject, &dictlist_remove_value_type);
-    PyObject_SetAttrString(dictlist, "remove_value", remove_value);
-    Py_DECREF(remove_value);
-    PyDict_SetItemString(server_dict, "dictlist", dictlist);
-    Py_DECREF(dictlist);
 
     PyObject * rules = Py_InitModule("rules", no_methods);
     if (rules == NULL) {
