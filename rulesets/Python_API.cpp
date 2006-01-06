@@ -21,6 +21,7 @@
 #include "Py_Operation.h"
 #include "Py_RootEntity.h"
 #include "Py_Oplist.h"
+#include "Py_Statistics.h"
 
 #include "PythonThingScript.h"
 #include "PythonMindScript.h"
@@ -1288,6 +1289,18 @@ void init_python_api()
     Py_DECREF(remove_value);
     PyDict_SetItemString(server_dict, "dictlist", dictlist);
     Py_DECREF(dictlist);
+
+    PyObject * rules = Py_InitModule("rules", no_methods);
+    if (rules == NULL) {
+        log(CRITICAL, "Python init failed to create rules module");
+        return;
+    }
+
+    if (PyType_Ready(&PyStatistics_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Statistics wrapper type");
+        return;
+    }
+    PyModule_AddObject(rules, "Statistics", (PyObject *)&PyStatistics_Type);
 
     PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
     PyRun_SimpleString((char *)importCmd.c_str());

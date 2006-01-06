@@ -1,3 +1,8 @@
+Move dictlist back into python. Its stoopid having it in the server.
+
+Should be able to use PyModule_New() to add submodules to existing modules,
+rather than the messy dictionary hack now used for some.
+
 When checking type of a python object, use PyObject_TypeCheck() new in 2.2
 especially when inheritance is involved.
 
