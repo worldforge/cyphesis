@@ -33,6 +33,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Task.cpp Task.h \
 			     Combat.cpp Combat.h \
 			     TaskScript.cpp TaskScript.h \
+			     ArithmeticScript.h \
 			     Fell.cpp Fell.h
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
@@ -63,7 +64,8 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    PythonWrapper.cpp PythonWrapper.h \
 			    PythonScript.cpp PythonScript.h \
 			    PythonThingScript.cpp PythonThingScript.h \
-			    PythonMindScript.cpp PythonMindScript.h
+			    PythonMindScript.cpp PythonMindScript.h \
+			    PythonArithmeticScript.cpp PythonArithmeticScript.h
 
 dist-hook:
 	tar cf - `find basic -name \*.py` | (cd $(distdir); tar xf -)

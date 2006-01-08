@@ -1,5 +1,11 @@
 2006-01-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/ArithmeticScript.h, rulesets/PythonArithmeticScript.h,
+	  rulesets/PythonArithmeticScript.cpp: Stub classes for handling
+	  adding a script to handle Statistics.
+
+2006-01-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Statistics.cpp: Re-order method and attribute handling
 	  so that the C++ default handler can be used when no other hit occurs.
 
