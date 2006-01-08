@@ -1,4 +1,9 @@
-2006-01-06  Al Riddoch  <alriddoch@zepler.org>
+2006-01-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Statistics.cpp: Re-order method and attribute handling
+	  so that the C++ default handler can be used when no other hit occurs.
+
+2006-01-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Statistics.h, rulesets/Statistics.cpp: Add methods for
 	  getting values for soft statistics.

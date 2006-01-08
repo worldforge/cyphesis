@@ -10,7 +10,7 @@
 #include "Task.h"
 
 static PyMethodDef Statistics_methods[] = {
-        {NULL,          NULL}           /* sentinel */
+    {NULL,          NULL}           /* sentinel */
 };
 
 static void Statistics_dealloc(PyStatistics *self)
@@ -26,6 +26,17 @@ static PyObject * Statistics_getattr(PyStatistics *self, char *name)
         return NULL;
     }
 #endif // NDEBUG
+    // We check for methods first rather the last as is more usual. This is
+    // so that a value is returned for any statistic requested, so we can
+    // drop back to a default for anything not expicitly supported.
+    PyObject * method = Py_FindMethod(Statistics_methods, (PyObject *)self, name);
+    if (method != 0) {
+        return method;
+    }
+    // If no method was found, Py_FindMethod sets an exception, which we don't
+    // really want.
+    PyErr_Clear();
+
     if (strcmp(name, "character") == 0) {
         return wrapEntity(self->m_entity);
     }
@@ -38,7 +49,7 @@ static PyObject * Statistics_getattr(PyStatistics *self, char *name)
     if (strcmp(name, "defence") == 0) {
         return PyFloat_FromDouble(dynamic_cast<Character*>(self->m_entity)->statistics().defence());
     }
-    return Py_FindMethod(Statistics_methods, (PyObject *)self, name);
+    return PyFloat_FromDouble(dynamic_cast<Character*>(self->m_entity)->statistics().get_default(name));
 }
 
 static int Statistics_setattr(PyStatistics *self, char *name, PyObject *v)
