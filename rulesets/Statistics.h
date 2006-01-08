@@ -28,6 +28,12 @@ class Statistics {
   public:
     Statistics(Character & chr);
 
+    // Get the value for a names statistic
+    float get(const std::string & name);
+
+    // Return a default value for a statistic not supported by this model
+    float get_default(const std::string & name);
+
     /// \brief Maximum weight character can lift
     float strength();
     /// \brief Attack power

@@ -1,5 +1,10 @@
 2006-01-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Statistics.h, rulesets/Statistics.cpp: Add methods for
+	  getting values for soft statistics.
+
+2006-01-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Remove C++ implementation of server.dictlist
 	  as its installation was messy, and it serves no purpose being
 	  implemented in C++.

@@ -21,6 +21,25 @@ Statistics::Statistics(Character & chr) : m_character(chr)
 {
 }
 
+float Statistics::get(const std::string & name)
+{
+    // FIXME query the script
+    return get_default(name);
+}
+
+float Statistics::get_default(const std::string & name)
+{
+    if (name == "strength") {
+        return m_character.getMass();
+    } else if (name == "attack") {
+        return 1.f;
+    } else if (name == "defence") {
+        return 1.f;
+    } else {
+        return 0.f;
+    }
+}
+
 float Statistics::strength()
 {
     return m_character.getMass();
