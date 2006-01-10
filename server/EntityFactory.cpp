@@ -115,6 +115,8 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
                         << std::endl << std::flush;);
         factory->m_scriptFactory->addScript(thing);
     }
+    //
+    factory->populate(*thing);
 
     // Read the defaults
     thing->merge(factory->m_attributes);

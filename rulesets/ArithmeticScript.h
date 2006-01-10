@@ -2,13 +2,10 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2005 Alistair Riddoch
 
-#warning Pre base class
 #ifndef RULESETS_ARITHMETIC_SCRIPT_H
 #define RULESETS_ARITHMETIC_SCRIPT_H
 
 #include <string>
-
-#warning Base class
 
 /// \brief Base class for script objects which handle statistics for entities.
 ///

@@ -5,6 +5,9 @@
 #include "Statistics.h"
 
 #include "Character.h"
+#include "ArithmeticScript.h"
+
+#include "common/log.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -17,12 +20,21 @@ using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Message::MapType;
 
-Statistics::Statistics(Character & chr) : m_character(chr)
+Statistics::Statistics(Character & chr) : m_script(0), m_character(chr)
 {
 }
 
 float Statistics::get(const std::string & name)
 {
+    if (m_script != 0) {
+        float val;
+        int res = m_script->attribute(name, val);
+        if (res == 0) {
+            return val;
+        } else {
+            log(ERROR, "Statistics::get: Error reading value from script");
+        }
+    }
     // FIXME query the script
     return get_default(name);
 }

@@ -8,6 +8,7 @@
 #include "common/types.h"
 
 class Character;
+class ArithmeticScript;
 
 /// \brief This class handles presentation of a characters statistics.
 ///
@@ -20,6 +21,8 @@ class Character;
 class Statistics {
   public:
     typedef std::map<std::string, float> SkillDict;
+
+    ArithmeticScript * m_script;
   protected:
     Character & m_character;
 

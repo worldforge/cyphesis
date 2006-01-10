@@ -1,5 +1,21 @@
 2006-01-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/ArithmeticScript.h: Remove compile time warnings.
+
+	* rulesets/Statistics.h, rulesets/Statistics.cpp: Pass stats request
+	  onto script object if one is available.
+
+	* server/PersistantThingFactory.h,
+	  server/PersistantThingFactory_impl.h,
+	  server/PersistantThingFactory.cpp: Add a populate method to the
+	  entity factory, and specialise it for Character so it can be
+	  used to add scripted statistics.
+
+	* server/EntityFactory.cpp: Add a call to populate() in the right
+	  place.
+
+2006-01-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/ArithmeticScript.h, rulesets/PythonArithmeticScript.h,
 	  rulesets/PythonArithmeticScript.cpp: Stub classes for handling
 	  adding a script to handle Statistics.

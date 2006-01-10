@@ -37,6 +37,12 @@ T * PersistantThingFactory<T>::newPersistantThing(const std::string & id, long i
 }
 
 template <class T>
+int PersistantThingFactory<T>::populate(Entity &)
+{
+    return 0;
+}
+
+template <class T>
 FactoryBase * PersistantThingFactory<T>::duplicateFactory()
 {
     FactoryBase * f = new PersistantThingFactory<T>(*this);
@@ -58,6 +64,12 @@ T * ForbiddenThingFactory<T>::newThing(const std::string &, long)
 
 template <class T>
 T * ForbiddenThingFactory<T>::newPersistantThing(const std::string &, long, PersistorBase **)
+{
+    return 0;
+}
+
+template <class T>
+int ForbiddenThingFactory<T>::populate(Entity &)
 {
     return 0;
 }

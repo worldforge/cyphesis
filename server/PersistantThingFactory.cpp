@@ -20,6 +20,8 @@
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
 
+#include "common/log.h"
+
 FactoryBase::FactoryBase() : m_scriptFactory(0)
 {
 }
@@ -29,6 +31,13 @@ FactoryBase::~FactoryBase()
     if (m_scriptFactory != 0) {
         delete m_scriptFactory;
     }
+}
+
+template<>
+int PersistantThingFactory<Character>::populate(Entity &)
+{
+    log(WARNING, "Making character");
+    return 0;
 }
 
 template class PersistorConnection<Entity>;

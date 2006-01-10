@@ -65,6 +65,7 @@ class FactoryBase {
 
     virtual Entity * newThing(const std::string & id, long intId) = 0;
     virtual Entity * newPersistantThing(const std::string & id, long intId, PersistorBase **) = 0;
+    virtual int populate(Entity &) = 0;
     virtual FactoryBase * duplicateFactory() = 0;
 };
 
@@ -87,6 +88,7 @@ class PersistantThingFactory : public FactoryBase {
  
     virtual T * newThing(const std::string & id, long intId);
     virtual T * newPersistantThing(const std::string & id, long intId, PersistorBase ** p);
+    virtual int populate(Entity &);
     virtual FactoryBase * duplicateFactory();
 };
 
@@ -100,6 +102,7 @@ class ForbiddenThingFactory : public FactoryBase {
  
     virtual T * newThing(const std::string & id, long intId);
     virtual T * newPersistantThing(const std::string & id, long intId, PersistorBase ** p);
+    virtual int populate(Entity &);
     virtual FactoryBase * duplicateFactory();
 };
 
