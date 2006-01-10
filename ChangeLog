@@ -1,5 +1,14 @@
 2006-01-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.cpp: Re-order checks so that type is checked
+	  for before checking to see if its legal. Add temporary code
+	  to force settler if an unknown character type is specified.
+
+	* server/Player.cpp: Remove some tests no longer required
+	  because they have already been checked in Account::CreateOperation.
+
+2006-01-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/ArithmeticScript.h: Remove redundant constructor.
 
 	* rulesets/ArithmeticScript.cpp: Provide empty virtual destructor

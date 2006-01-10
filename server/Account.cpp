@@ -213,17 +213,35 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (characterError(op, arg, res)) {
-        return;
-    }
-
-    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
-        arg->getParents().empty()) {
+    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
         error(op, "Character has no type", res, getId());
         return;
     }
+
+    const std::list<std::string> & parents = arg->getParents();
+    if (parents.empty()) {
+        error(op, "Character has empty type list.", res, getId());
+        return;
+    }
     
-    const std::string & typestr = arg->getParents().front();
+#if 0
+    const std::string & typestr = parents.front();
+
+    if (characterError(op, arg, res)) {
+        return;
+    }
+#else
+    // Interim fix because of weird client interface
+    std::string typestr = parents.front();
+    
+    if (characterError(op, arg, res)) {
+        if (typestr == "__bad__type__") {
+            return;
+        }
+        typestr = "settler";
+    }
+#endif
+
     debug( std::cout << "Account creating a " << typestr << " object"
                      << std::endl << std::flush; );
 

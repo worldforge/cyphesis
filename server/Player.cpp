@@ -72,16 +72,8 @@ int Player::characterError(const Operation & op,
     }
 #endif
 
-    if (!ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
-        error(op, "You cannot create a character with no type.", res, getId());
-        return true;
-    }
-    const std::list<std::string> & parents = ent->getParents();
-    if (parents.empty()) {
-        error(op, "You cannot create a character with empty type.", res, getId());
-        return true;
-    }
-    const std::string & type = parents.front(); 
+    // Parents must have been checked already before calling this method
+    const std::string & type = ent->getParents().front(); 
     if (Player::playableTypes.find(type) == Player::playableTypes.end()) {
         error(op, String::compose("You cannot create a character of type \"%1\".", type).c_str(), res, getId());
         return true;
