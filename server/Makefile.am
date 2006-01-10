@@ -64,6 +64,7 @@ cyphesis_SOURCES = \
 		WorldRouter.cpp WorldRouter.h \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
+		ArithmeticFactory.cpp ArithmeticFactory.h \
 		EntityFactory.cpp EntityFactory.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
@@ -110,6 +111,7 @@ cyslave_SOURCES = \
 		WorldRouter.cpp WorldRouter.h \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
+		ArithmeticFactory.cpp ArithmeticFactory.h \
 		EntityFactory.cpp EntityFactory.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \

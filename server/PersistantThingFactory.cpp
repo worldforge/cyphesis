@@ -7,6 +7,7 @@
 #include "PersistantThingFactory_impl.h"
 #include "Persistor.h"
 #include "ScriptFactory.h"
+#include "EntityFactory.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Thing.h"
@@ -34,9 +35,10 @@ FactoryBase::~FactoryBase()
 }
 
 template<>
-int PersistantThingFactory<Character>::populate(Entity &)
+int PersistantThingFactory<Character>::populate(Entity & e)
 {
     log(WARNING, "Making character");
+    EntityFactory::instance()->addStatisticsScript((Character &)e);
     return 0;
 }
 

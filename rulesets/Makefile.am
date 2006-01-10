@@ -33,7 +33,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Task.cpp Task.h \
 			     Combat.cpp Combat.h \
 			     TaskScript.cpp TaskScript.h \
-			     ArithmeticScript.h \
+			     ArithmeticScript.cpp ArithmeticScript.h \
 			     Fell.cpp Fell.h
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \

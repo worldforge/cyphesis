@@ -20,6 +20,7 @@ static void Statistics_dealloc(PyStatistics *self)
 
 static PyObject * Statistics_getattr(PyStatistics *self, char *name)
 {
+    std::cout << "Statistics_getattr " << name << std::endl << std::flush;
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.getattr");
@@ -49,11 +50,12 @@ static PyObject * Statistics_getattr(PyStatistics *self, char *name)
     if (strcmp(name, "defence") == 0) {
         return PyFloat_FromDouble(dynamic_cast<Character*>(self->m_entity)->statistics().defence());
     }
-    return PyFloat_FromDouble(dynamic_cast<Character*>(self->m_entity)->statistics().get_default(name));
+    return PyFloat_FromDouble(dynamic_cast<Character*>(self->m_entity)->statistics().get(name));
 }
 
 static int Statistics_setattr(PyStatistics *self, char *name, PyObject *v)
 {
+    std::cout << "Statistics_setattr " << name << std::endl << std::flush;
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.setattr");
@@ -86,14 +88,16 @@ static PyObject * Statistics_new(PyTypeObject * type, PyObject *, PyObject *)
 
 static int Statistics_init(PyStatistics * self, PyObject * args, PyObject * kwd)
 {
-    int seconds;
+    // int seconds;
 
-    if (!PyArg_ParseTuple(args, "i", &seconds)) {
-        return -1;
-    }
+    // if (!PyArg_ParseTuple(args, "i", &seconds)) {
+        // return -1;
+    // }
 
     // self->time = new WorldTime(seconds);
     // self->own = true;
+
+    std::cout << "Statistics_init" << std::endl << std::flush;
 
     return 0;
 }

@@ -15,6 +15,7 @@ class Character;
 class Task;
 class FactoryBase;
 class TaskFactory;
+class ArithmeticFactory;
 class BaseWorld;
 
 template <class T>
@@ -22,6 +23,7 @@ class PersistantThingFactory;
 
 typedef std::map<std::string, FactoryBase *> FactoryDict;
 typedef std::map<std::string, TaskFactory *> TaskFactoryDict;
+typedef std::map<std::string, ArithmeticFactory *> StatisticsFactoryDict;
 
 /// \brief Class to handle the creation of all entities for the world.
 ///
@@ -35,6 +37,7 @@ class EntityFactory {
 
     FactoryDict m_factories;
     TaskFactoryDict m_taskFactories;
+    StatisticsFactoryDict m_statisticsFactories;
 
     BaseWorld & m_world;
     RuleWaitList m_waitingRules;
@@ -74,6 +77,7 @@ class EntityFactory {
     void flushFactories();
 
     Task * newTask(const std::string &, Character &) const;
+    int addStatisticsScript(Character &) const;
 
     int installRule(const std::string &, const Atlas::Message::MapType&);
     int modifyRule(const std::string &, const Atlas::Message::MapType&);

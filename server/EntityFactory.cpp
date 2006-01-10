@@ -9,6 +9,7 @@
 #include "PersistantThingFactory.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
+#include "ArithmeticFactory.h"
 #include "Persistance.h"
 #include "Persistor.h"
 #include "Player.h"
@@ -69,6 +70,8 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
                    new PersistantThingFactory<Stackable>());
     installFactory("thing", "structure",
                    new PersistantThingFactory<Structure>());
+
+    m_statisticsFactories["settler"] = new PythonArithmeticFactory("world.statistics.Statistics", "Statistics");
 }
 
 void EntityFactory::initWorld()
@@ -160,6 +163,16 @@ Task * EntityFactory::newTask(const std::string & name, Character & chr) const
         return 0;
     }
     return I->second->newTask(chr);
+}
+
+int EntityFactory::addStatisticsScript(Character & chr) const
+{
+    StatisticsFactoryDict::const_iterator I = m_statisticsFactories.begin();
+    if (I == m_statisticsFactories.end()) {
+        return -1;
+    }
+    I->second->newScript(chr);
+    return 0;
 }
 
 void EntityFactory::flushFactories()

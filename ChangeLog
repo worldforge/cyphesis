@@ -1,4 +1,33 @@
-2006-01-08  Al Riddoch  <alriddoch@zepler.org>
+2006-01-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/ArithmeticScript.h: Remove redundant constructor.
+
+	* rulesets/ArithmeticScript.cpp: Provide empty virtual destructor
+	  implementation.
+
+	* rulesets/Py_Statistics.cpp: Add debugging output, and remove
+	  rubbish from __init__.
+
+	* rulesets/PythonArithmeticScript.cpp: Test implementation of
+	  attribute.
+
+	* server/ArithmeticFactory.cpp, server/ArithmeticFactory.h: New
+	  factory class to create instances of scripts to handle
+	  statistics.
+
+	* server/EntityFactory.cpp, server/EntityFactory.h: Add new method
+	  and supporting data structures to provide a way to create
+	  statistics objects for newly created Character entities.
+
+	* server/PersistantThingFactory.cpp: Add a call to
+	  EntityFactory::addStatisticsScript to the Character
+	  specialisation of PersistantThingFactory::populate, giving
+	  all characters a statistics script now.
+
+	* rulesets/mason/world/statistics/Statistics.py: Test implementation
+	  of a class for all character statistics.
+
+2006-01-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/ArithmeticScript.h: Remove compile time warnings.
 
