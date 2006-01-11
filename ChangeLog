@@ -1,5 +1,16 @@
 2006-01-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Statistics.cpp: Require that the character owning
+	  statistics is passed to the script constructor.
+
+	* rulesets/mason/world/statistics/Statistics.py: Pass entity
+	  to base class constructor.
+
+	* server/ArithmeticFactory.cpp: When building statistics constructor,
+	  passed in reference to its owner.
+
+2006-01-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/PythonArithmeticScript.cpp: Implement getting attribute
 	  values from statistics script.
 

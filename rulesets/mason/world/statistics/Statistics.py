@@ -11,11 +11,15 @@ import rules
 
 class Statistics(rules.Statistics):
     """A very simple Statistics example."""
+    def __init__(self, entity):
+        rules.Statistics.__init__(self, entity)
+        print "script init"
+        self.character = entity
     def attribute(self, name):
         if name == "attack":
             return 1
         if name == "defence":
             return 1
         if name == "strength":
-            return 50
+            return self.character.mass
         print "Script got request for ", name

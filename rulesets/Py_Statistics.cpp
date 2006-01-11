@@ -9,6 +9,8 @@
 
 #include "Task.h"
 
+#include "common/log.h"
+
 static PyMethodDef Statistics_methods[] = {
     {NULL,          NULL}           /* sentinel */
 };
@@ -79,16 +81,22 @@ static PyObject * Statistics_new(PyTypeObject * type, PyObject *, PyObject *)
 
 static int Statistics_init(PyStatistics * self, PyObject * args, PyObject * kwd)
 {
-    // int seconds;
-
-    // if (!PyArg_ParseTuple(args, "i", &seconds)) {
-        // return -1;
-    // }
-
-    // self->time = new WorldTime(seconds);
-    // self->own = true;
+    PyObject * entity;
 
     std::cout << "Statistics_init" << std::endl << std::flush;
+
+    if (!PyArg_ParseTuple(args, "O", &entity)) {
+        return -1;
+    }
+
+    if (!PyEntity_Check(entity)) {
+        log(ERROR, "Arg to statistics constructor is not an entity");
+        return -1;
+    }
+    PyCharacter * character = (PyCharacter *)entity;
+    // self->m_entity = character->m_entity;
+    // self->time = new WorldTime(seconds);
+    // self->own = true;
 
     return 0;
 }
