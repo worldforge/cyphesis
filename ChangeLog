@@ -1,5 +1,20 @@
 2006-01-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/PythonArithmeticScript.cpp: Implement getting attribute
+	  values from statistics script.
+
+	* rulesets/Statistics.cpp, rulesets/Statistics.h,
+	  rulesets/Py_Statistics.cpp, rulesets/Character.cpp,
+	  rulesets/Combat.cpp: Remove hard coded stats for combat
+	  and strength.
+
+	* rulesets/mason/world/statistics/Statistics.py: Add test support
+	  for combat and strength stats.
+
+	* server/PersistantThingFactory.cpp: Remove debug output.
+
+2006-01-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/log.cpp, server/Account.cpp, server/Connection.cpp,
 	  server/server.cpp: Make server logs much more machine readable
 	  by removing stray colons, standardising field semantics, and

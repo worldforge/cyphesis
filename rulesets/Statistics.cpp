@@ -52,21 +52,6 @@ float Statistics::get_default(const std::string & name)
     }
 }
 
-float Statistics::strength()
-{
-    return m_character.getMass();
-}
-
-float Statistics::attack()
-{
-    return 1;
-}
-
-float Statistics::defence()
-{
-    return 1;
-}
-
 void Statistics::increment(const std::string & name, OpVector & res)
 {
     float oldval, newval;

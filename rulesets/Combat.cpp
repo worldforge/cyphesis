@@ -85,7 +85,7 @@ void Combat::TickOperation(const Operation & op, OpVector & res)
 
     m_attack = !m_attack;
 
-    float damage = (attacker.statistics().attack() / attacker.statistics().defence()) / uniform(2.f, 10.f);
+    float damage = (attacker.statistics().get("attack") / attacker.statistics().get("defence")) / uniform(2.f, 10.f);
 
     float stamina = std::max(defender.getStamina() - damage, 0.);
 

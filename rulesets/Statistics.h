@@ -37,13 +37,6 @@ class Statistics {
     // Return a default value for a statistic not supported by this model
     float get_default(const std::string & name);
 
-    /// \brief Maximum weight character can lift
-    float strength();
-    /// \brief Attack power
-    float attack();
-    /// \brief Defence power
-    float defence();
-
     /// \brief Increment the characters skill in a certain area
     void increment(const std::string & name, OpVector & res);
 };

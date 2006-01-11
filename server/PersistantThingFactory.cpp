@@ -37,7 +37,6 @@ FactoryBase::~FactoryBase()
 template<>
 int PersistantThingFactory<Character>::populate(Entity & e)
 {
-    log(WARNING, "Making character");
     EntityFactory::instance()->addStatisticsScript((Character &)e);
     return 0;
 }

@@ -744,7 +744,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             return;
         }
         if ((other->getMass() < 0) ||
-            (other->getMass() > m_statistics.strength())) {
+            (other->getMass() > m_statistics.get("strength"))) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
         }
