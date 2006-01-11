@@ -22,14 +22,14 @@ static void logDate(std::ostream & log_stream)
     const time_t now = time(NULL);
 
     if (localtime_r(&now, &local_time) != &local_time) {
-        log_stream << "[TIME_ERROR]: ";
+        log_stream << "[TIME_ERROR]";
         return;
     }
 
-    int count = strftime(buf, sizeof(buf) / sizeof(char), "%Y:%m:%d %T: ", &local_time);
+    int count = strftime(buf, sizeof(buf) / sizeof(char), "%Y:%m:%d %T", &local_time);
 
     if (count == 0) {
-        log_stream << "[TIME_ERROR]: ";
+        log_stream << "[TIME_ERROR]";
         return;
     }
 
@@ -110,7 +110,7 @@ void log(LogLevel lvl, const char * msg)
                 break;
         };
         logDate(std::cerr);
-        std::cerr << type << ": " << msg << std::endl << std::flush;
+        std::cerr << " " << type << " " << msg << std::endl << std::flush;
     }
 }
 
@@ -152,7 +152,7 @@ void logEvent(LogEvent lev, const char * msg)
     };
 
     logDate(event_log);
-    event_log << type << ": " << msg << std::endl << std::flush;
+    event_log << " " << type << " " << msg << std::endl << std::flush;
 }
 
 void logSysError(LogLevel lvl)

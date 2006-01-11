@@ -131,7 +131,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         world.message(c, *chr);
     }
 
-    logEvent(TAKE_CHAR, String::compose("Created character %1(%2, %3) by account %4(%5) on connection %6", chr->getName(), chr->getType(), chr->getId(), m_username, getId(), m_connection->getId()).c_str());
+    logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character %4(%5) by account %6", m_connection->getId(), getId(), chr->getId(), chr->getName(), chr->getType(), m_username).c_str());
 
     return chr;
 }

@@ -48,7 +48,7 @@ Connection::Connection(CommClient & client,
                                               m_server(svr)
 {
     m_server.incClients();
-    logEvent(CONNECT, String::compose("Connect ID %1 from %2", id, addr).c_str());
+    logEvent(CONNECT, String::compose("%1 - - Connect from %2", id, addr).c_str());
 }
 
 Connection::~Connection()
@@ -72,7 +72,7 @@ Connection::~Connection()
         if (ac != NULL) {
             m_server.m_lobby.delAccount(ac);
             ac->m_connection = NULL;
-            logEvent(LOGOUT, String::compose("Logout account %1(%2) on connection %3", ac->m_username, ac->getId(), getId()).c_str());
+            logEvent(LOGOUT, String::compose("%1 %2 - Logout account %3", getId(), ac->getId(), ac->m_username).c_str());
             continue;
         }
         Character * character = dynamic_cast<Character *>(I->second);
@@ -80,12 +80,12 @@ Connection::~Connection()
             if (character->m_externalMind != NULL) {
                 delete character->m_externalMind;
                 character->m_externalMind = NULL;
-                logEvent(DROP_CHAR, String::compose("Drop character %1(%2, %3) on connection %4", character->getName(), character->getType(), character->getId(), getId()).c_str());
+                logEvent(DROP_CHAR, String::compose("%1 - %2 Drop character %3(%4)", getId(), character->getId(), character->getName(), character->getType()).c_str());
             }
         }
     }
 
-    logEvent(DISCONNECT, String::compose("Disconnect ID %1", getId()).c_str());
+    logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()).c_str());
     m_server.decClients();
 }
 
@@ -190,7 +190,7 @@ void Connection::operation(const Operation & op, OpVector & res)
 
             res.push_back(info);
             character->externalOperation(op);
-            logEvent(TAKE_CHAR, String::compose("Taken character %1(%2, %3) on connection %4", ig_ent->getName(), ig_ent->getType(), ig_ent->getId(), getId()).c_str());
+            logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character %3(%4)", getId(), ig_ent->getId(), ig_ent->getName(), ig_ent->getType()).c_str());
             return;
         }
         ig_ent->externalOperation(op);
@@ -270,7 +270,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Good login" << std::endl << std::flush;);
     res.push_back(info);
 
-    logEvent(LOGIN, String::compose("Login account %1(%2) on connection %3", username, player->getId(), getId()).c_str());
+    logEvent(LOGIN, String::compose("%1 %2 - Login account %3", getId(), player->getId(), username).c_str());
 }
 
 void Connection::CreateOperation(const Operation & op, OpVector & res)
@@ -331,7 +331,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Good create" << std::endl << std::flush;);
     res.push_back(info);
 
-    logEvent(LOGIN, String::compose("Create account %1(%2) on connection %3", username, player->getId(), getId()).c_str());
+    logEvent(LOGIN, String::compose("%1 %2 - Create account %3", getId(), player->getId(), username).c_str());
 }
 
 void Connection::LogoutOperation(const Operation & op, OpVector & res)

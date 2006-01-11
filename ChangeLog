@@ -1,3 +1,10 @@
+2006-01-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/log.cpp, server/Account.cpp, server/Connection.cpp,
+	  server/server.cpp: Make server logs much more machine readable
+	  by removing stray colons, standardising field semantics, and
+	  cleaning up messages.
+
 2006-01-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Account.cpp: Re-order checks so that type is checked
