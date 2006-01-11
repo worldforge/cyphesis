@@ -17,7 +17,7 @@ static PyMethodDef Statistics_methods[] = {
 
 static void Statistics_dealloc(PyStatistics *self)
 {
-    PyMem_DEL(self);
+    self->ob_type->tp_free(self);
 }
 
 static PyObject * Statistics_getattr(PyStatistics *self, char *name)
@@ -94,9 +94,7 @@ static int Statistics_init(PyStatistics * self, PyObject * args, PyObject * kwd)
         return -1;
     }
     PyCharacter * character = (PyCharacter *)entity;
-    // self->m_entity = character->m_entity;
-    // self->time = new WorldTime(seconds);
-    // self->own = true;
+    self->m_entity = character->m_entity;
 
     return 0;
 }

@@ -47,7 +47,7 @@ static void WorldTime_dealloc(PyWorldTime *self)
     if ((self->own) && (self->time != NULL)) {
         delete self->time;
     }
-    PyMem_DEL(self);
+    self->ob_type->tp_free(self);
 }
 
 static PyObject * WorldTime_getattr(PyWorldTime *self, char *name)

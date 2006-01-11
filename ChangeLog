@@ -1,5 +1,16 @@
 2006-01-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Require Python 2.2 or later. Increment version.
+
+	* rulesets/Py_Statistics.cpp: Remove commented out code, and add
+	  initialisation of the entity pointer in this type during
+	  construction.
+
+	* rulesets/Py_WorldTime.cpp, rulesets/Py_Statistics.cpp: Use tp_free
+	  in tp_dealloc as instructed by the latest documentation.
+
+2006-01-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Statistics.cpp: Require that the character owning
 	  statistics is passed to the script constructor.
 

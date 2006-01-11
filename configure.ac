@@ -1,6 +1,6 @@
 dnl Initialise autoconf
 
-AC_INIT(cyphesis, 0.5.5, alriddoch@zepler.org)
+AC_INIT(cyphesis, 0.5.6, alriddoch@zepler.org)
 AC_CONFIG_SRCDIR([server/server.cpp])
 AC_CONFIG_HEADERS([config.h])
 
@@ -108,18 +108,7 @@ AC_CHECK_HEADER(python2.4/Python.h,
             python_include_path=-I${python_prefix}/include/python2.2
             python_version=2.2
         ],[
-            AC_MSG_WARN([Cannot find Python 2.2 or later. Checking for older versions which may not support cyphesis fully.])
-            AC_CHECK_HEADER(python2.1/Python.h,
-            [
-                python_include_path=-I${python_prefix}/include/python2.1
-                python_version=2.1
-            ],[
-                AC_CHECK_HEADER(python2.0/Python.h,
-                [
-                    python_include_path=-I${python_prefix}/include/python2.0
-                    python_version=2.0
-                ],AC_MSG_ERROR([Cannot find python headers. Please install Python. If Python is installed somewhere other than in /usr the please use the --with-python=DIR option to point to the prefix where Python is installed.]))
-            ])
+            AC_MSG_ERROR([Cannot find python headers for Python 2.2 or later. Please install Python. If Python is installed somewhere other than in /usr the please use the --with-python=DIR option to point to the prefix where Python is installed.])
         ])
     ])
 ])
