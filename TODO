@@ -1,4 +1,5 @@
-Move dictlist back into python. Its stoopid having it in the server.
+Character.statistics from python needs to use the statistics script to wrap
+it.
 
 Should be able to use PyModule_New() to add submodules to existing modules,
 rather than the messy dictionary hack now used for some.
