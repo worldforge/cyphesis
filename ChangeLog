@@ -1,3 +1,14 @@
+2006-01-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Statistics.cpp: Replace getattr and setattr methods
+	  with getattro and setattro so they are inherited from the
+	  python subclass. Add lookup to get methods from the subclass
+	  so they can still be called.
+
+	* rulesets/mason/world/statistics/Statistics.py: No longer necessary
+	  to store explicit reference to owning character entity, as its
+	  now available from the inherited base class.
+
 2006-01-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Require Python 2.2 or later. Increment version.

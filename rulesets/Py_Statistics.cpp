@@ -20,19 +20,26 @@ static void Statistics_dealloc(PyStatistics *self)
     self->ob_type->tp_free(self);
 }
 
-static PyObject * Statistics_getattr(PyStatistics *self, char *name)
+static PyObject * Statistics_getattro(PyStatistics *self, PyObject *pn)
 {
-    std::cout << "Statistics_getattr " << name << std::endl << std::flush;
+    char * name = PyString_AS_STRING(pn);
+    std::cout << "Statistics_getattro " << name << std::endl << std::flush;
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.getattro");
         return NULL;
     }
 #endif // NDEBUG
     // We check for methods first rather the last as is more usual. This is
     // so that a value is returned for any statistic requested, so we can
     // drop back to a default for anything not expicitly supported.
-    PyObject * method = Py_FindMethod(Statistics_methods, (PyObject *)self, name);
+    // First check for methods in the script instance.
+    PyObject * method = PyObject_GenericGetAttr((PyObject*)self, pn);
+    if (method != 0) {
+        return method;
+    }
+    // Second check for methods in this base class method table.
+    method = Py_FindMethod(Statistics_methods, (PyObject *)self, name);
     if (method != 0) {
         return method;
     }
@@ -46,12 +53,13 @@ static PyObject * Statistics_getattr(PyStatistics *self, char *name)
     return PyFloat_FromDouble(dynamic_cast<Character*>(self->m_entity)->statistics().get(name));
 }
 
-static int Statistics_setattr(PyStatistics *self, char *name, PyObject *v)
+static int Statistics_setattro(PyStatistics *self, PyObject *pn, PyObject *v)
 {
-    std::cout << "Statistics_setattr " << name << std::endl << std::flush;
+    char * name = PyString_AS_STRING(pn);
+    std::cout << "Statistics_setattro " << name << std::endl << std::flush;
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.setattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.setattro");
         return -1;
     }
 #endif // NDEBUG
@@ -108,8 +116,8 @@ PyTypeObject PyStatistics_Type = {
         // methods 
         (destructor)Statistics_dealloc,                   // tp_dealloc
         0,                                                // tp_print
-        (getattrfunc)Statistics_getattr,                  // tp_getattr
-        (setattrfunc)Statistics_setattr,                  // tp_setattr
+        0,                                                // tp_getattr
+        0,                                                // tp_setattr
         (cmpfunc)Statistics_compare,                      // tp_compare
         0,                                                // tp_repr
         0,                                                // tp_as_number
@@ -118,8 +126,8 @@ PyTypeObject PyStatistics_Type = {
         0,                                                // tp_hash
         0,                                                // tp_call
         0,                                                // tp_str
-        0,                                                // tp_getattro
-        0,                                                // tp_setattro
+        (getattrofunc)Statistics_getattro,                // tp_getattro
+        (setattrofunc)Statistics_setattro,                // tp_setattro
         0,                                                // tp_as_buffer
         Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,         // tp_flags
         "Statistics objects",                             // tp_doc

@@ -14,7 +14,6 @@ class Statistics(rules.Statistics):
     def __init__(self, entity):
         rules.Statistics.__init__(self, entity)
         print "script init"
-        self.character = entity
     def attribute(self, name):
         if name == "attack":
             return 1
