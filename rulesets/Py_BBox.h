@@ -20,7 +20,7 @@ typedef struct {
 
 extern PyTypeObject PyBBox_Type;
 
-#define PyBBox_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyBBox_Type)
+#define PyBBox_Check(_o) ((_o)->ob_type == &PyBBox_Type)
 
 PyBBox * newPyBBox();
 

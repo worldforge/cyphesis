@@ -21,14 +21,12 @@ PythonArithmeticScript::~PythonArithmeticScript()
 
 int PythonArithmeticScript::attribute(const std::string & name, float & val)
 {
-    std::cout << "Request for attribute " << name << " from python script"
-              << std::endl << std::flush;
     PyObject * py_name = PyString_FromString(name.c_str());
     PyObject * ret = PyObject_CallMethod(m_script, "attribute", "(O)", py_name);
     Py_DECREF(py_name);
     if (ret == NULL) {
         if (PyErr_Occurred() == NULL) {
-            std::cout << "No attribute method" << std::endl << std::flush;
+            // std::cout << "No attribute method" << std::endl << std::flush;
         } else {
             log(ERROR, "Reporting python error");
             PyErr_Print();

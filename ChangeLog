@@ -1,3 +1,27 @@
+2006-01-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/Py_CreatorClient.h, rulesets/Py_BBox.h,
+	  rulesets/Py_Location.h, rulesets/Py_Map.h, rulesets/Py_Mind.h,
+	  rulesets/Py_Object.h, rulesets/Py_Operation.h, rulesets/Py_Oplist.h,
+	  rulesets/Py_Point3D.h, rulesets/Py_Quaternion.h,
+	  rulesets/Py_RootEntity.h, rulesets/Py_Task.h, rulesets/Py_Thing.h,
+	  rulesets/Py_Vector3D.h, rulesets/Py_World.h, rulesets/Py_WorldTime.h:
+	  Re-wrote PyFoo_Check macros to comply with recent conventions
+	  and be a little more efficient.
+
+	* rulesets/Py_Statistics.cpp, rulesets/PythonArithmeticScript.cpp,
+	  rulesets/mason/world/statistics/Statistics.py: Remove lots of
+	  debug output.
+
+	* rulesets/PythonArithmeticScript.h: Add an accessor to get to the
+	  python object.
+
+	* rulesets/StatisticsProperty.h: Add an accessor to get to the
+	  Statistics reference handled by this class.
+
+	* rulesets/Py_Property.cpp: Return the script for a statistics
+	  object rather than creating a wrapper for it.
+
 2006-01-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Statistics.cpp: Replace getattr and setattr methods

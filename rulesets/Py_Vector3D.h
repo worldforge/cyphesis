@@ -20,7 +20,7 @@ typedef struct {
 
 extern PyTypeObject PyVector3D_Type;
 
-#define PyVector3D_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyVector3D_Type)
+#define PyVector3D_Check(_o) ((_o)->ob_type == &PyVector3D_Type)
 
 PyVector3D * newPyVector3D();
 

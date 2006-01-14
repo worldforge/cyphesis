@@ -21,7 +21,7 @@ typedef struct {
 
 extern PyTypeObject PyOplist_Type;
 
-#define PyOplist_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyOplist_Type)
+#define PyOplist_Check(_o) ((_o)->ob_type == &PyOplist_Type)
 
 PyOplist * newPyOplist();
 

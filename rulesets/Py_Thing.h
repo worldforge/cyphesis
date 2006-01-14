@@ -28,7 +28,7 @@ typedef struct {
 
 extern PyTypeObject PyEntity_Type;
 
-#define PyEntity_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyEntity_Type)
+#define PyEntity_Check(_o) ((_o)->ob_type == &PyEntity_Type)
 
 PyObject * wrapEntity(Entity * entity);
 PyEntity * newPyEntity();

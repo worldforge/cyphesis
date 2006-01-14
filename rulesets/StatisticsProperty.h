@@ -16,6 +16,8 @@ class StatisticsProperty : public PropertyBase {
   public:
     explicit StatisticsProperty(Statistics & data, unsigned int flags);
 
+    Statistics & data() const { return m_data; }
+
     virtual void get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
 };

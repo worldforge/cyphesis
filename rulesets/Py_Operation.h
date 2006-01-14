@@ -27,8 +27,8 @@ typedef struct {
 extern PyTypeObject PyOperation_Type;
 extern PyTypeObject PyConstOperation_Type;
 
-#define PyOperation_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyOperation_Type)
-#define PyConstOperation_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyConstOperation_Type)
+#define PyOperation_Check(_o) ((_o)->ob_type == &PyOperation_Type)
+#define PyConstOperation_Check(_o) ((_o)->ob_type == &PyConstOperation_Type)
 
 PyOperation * newPyOperation();
 PyConstOperation * newPyConstOperation();

@@ -20,7 +20,7 @@ typedef struct {
     CreatorClient    * m_mind;
 } PyCreatorClient;
 
-#define PyCreatorClient_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyCreatorClient_Type)
+#define PyCreatorClient_Check(_o) ((_o)->ob_type == &PyCreatorClient_Type)
 
 PyCreatorClient * newPyCreatorClient();
 int runClientScript(CreatorClient *, const std::string &, const std::string &);

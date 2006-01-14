@@ -13,7 +13,6 @@ class Statistics(rules.Statistics):
     """A very simple Statistics example."""
     def __init__(self, entity):
         rules.Statistics.__init__(self, entity)
-        print "script init"
     def attribute(self, name):
         if name == "attack":
             return 1
@@ -21,4 +20,3 @@ class Statistics(rules.Statistics):
             return 1
         if name == "strength":
             return self.character.mass
-        print "Script got request for ", name

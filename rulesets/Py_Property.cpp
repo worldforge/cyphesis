@@ -6,6 +6,10 @@
 
 #include "Py_Statistics.h"
 #include "StatisticsProperty.h"
+#include "Statistics.h"
+#include "PythonArithmeticScript.h"
+
+#include "common/log.h"
 
 #include <iostream>
 
@@ -13,12 +17,20 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
 {
     StatisticsProperty * sp = dynamic_cast<StatisticsProperty *>(property);
     if (sp != 0) {
-        PyStatistics * ps = newPyStatistics();
-        if (ps == NULL) {
-            return NULL;
+        PythonArithmeticScript * script = dynamic_cast<PythonArithmeticScript *>(sp->data().m_script);
+        if (script != 0) {
+            PyObject * o = script->script();
+            Py_INCREF(o);
+            return o;
+        } else {
+            log(WARNING, "Unexpected type of Statistics script");
+            PyStatistics * ps = newPyStatistics();
+            if (ps == NULL) {
+                return NULL;
+            }
+            ps->m_entity = owner;
+            return (PyObject*)ps;
         }
-        ps->m_entity = owner;
-        return (PyObject*)ps;
     }
     return 0;
 }

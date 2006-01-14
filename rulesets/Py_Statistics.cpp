@@ -23,7 +23,6 @@ static void Statistics_dealloc(PyStatistics *self)
 static PyObject * Statistics_getattro(PyStatistics *self, PyObject *pn)
 {
     char * name = PyString_AS_STRING(pn);
-    std::cout << "Statistics_getattro " << name << std::endl << std::flush;
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.getattro");
@@ -56,7 +55,6 @@ static PyObject * Statistics_getattro(PyStatistics *self, PyObject *pn)
 static int Statistics_setattro(PyStatistics *self, PyObject *pn, PyObject *v)
 {
     char * name = PyString_AS_STRING(pn);
-    std::cout << "Statistics_setattro " << name << std::endl << std::flush;
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.setattro");
@@ -90,8 +88,6 @@ static PyObject * Statistics_new(PyTypeObject * type, PyObject *, PyObject *)
 static int Statistics_init(PyStatistics * self, PyObject * args, PyObject * kwd)
 {
     PyObject * entity;
-
-    std::cout << "Statistics_init" << std::endl << std::flush;
 
     if (!PyArg_ParseTuple(args, "O", &entity)) {
         return -1;

@@ -17,6 +17,8 @@ class PythonArithmeticScript : public ArithmeticScript {
     PythonArithmeticScript(struct _object *);
     virtual ~PythonArithmeticScript();
 
+    struct _object * script() const { return m_script; }
+
     virtual int attribute(const std::string &, float &);
 };
 

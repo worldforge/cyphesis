@@ -17,7 +17,7 @@ typedef struct {
 
 extern PyTypeObject PyMap_Type;
 
-#define PyMap_Check(_o) ((PyTypeObject*)PyObject_Type((PyObject*)_o)==&PyMap_Type)
+#define PyMap_Check(_o) ((_o)->ob_type == &PyMap_Type)
 
 PyMap * newPyMap();
 
