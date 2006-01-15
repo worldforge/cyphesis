@@ -1,3 +1,7 @@
+2006-01-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Thing.cpp: Add wrapper for Character::mind2body.
+
 2006-01-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/Py_CreatorClient.h, rulesets/Py_BBox.h,

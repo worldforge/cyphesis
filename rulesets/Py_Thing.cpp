@@ -10,6 +10,7 @@
 #include "Py_World.h"
 #include "Py_Property.h"
 #include "Py_Operation.h"
+#include "Py_Oplist.h"
 #include "Py_Task.h"
 #include "PythonWrapper.h"
 #include "Character.h"
@@ -99,11 +100,44 @@ static PyObject * Character_clear_task(PyCharacter * self)
     return Py_None;
 }
 
+static PyObject * Character_mind2body(PyCharacter * self, PyObject * args)
+{
+#ifndef NDEBUG
+    if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
+        return NULL;
+    }
+#endif // NDEBUG
+    PyOperation * op;
+    if (!PyArg_ParseTuple(args, "O", &op)) {
+        return NULL;
+    }
+    if (!PyOperation_Check(op)) {
+         PyErr_SetString(PyExc_TypeError, "Entity.mind2body must be an operation");
+         return NULL;
+    }
+    OpVector res;
+    self->m_entity->mind2body(op->operation, res);
+    if (res.empty()) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    } else if (res.size() == 1) {
+        PyOperation * ret = newPyOperation();
+        ret->operation = res[0];
+        return (PyObject*)ret;
+    } else {
+        PyOplist * ret = newPyOplist();
+        ret->ops = new OpVector(res);
+        return (PyObject*)ret;
+    }
+}
+
 static PyMethodDef Character_methods[] = {
     {"as_entity",       (PyCFunction)Entity_as_entity,  METH_NOARGS},
     {"send_world",      (PyCFunction)Entity_send_world, METH_VARARGS},
     {"set_task",        (PyCFunction)Character_set_task,   METH_VARARGS},
     {"clear_task",      (PyCFunction)Character_clear_task, METH_NOARGS},
+    {"mind2body",       (PyCFunction)Character_mind2body, METH_VARARGS},
     {NULL,              NULL}           /* sentinel */
 };
 
