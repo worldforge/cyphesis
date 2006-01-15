@@ -1,5 +1,16 @@
 2006-01-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Combat.py: Add method to cause one
+	  entity to turn to face the other, and use it each tick of combat.
+
+	* rulesets/Python_API.cpp: Rename "rules" python module to "rulesets"
+	  so it maps more directly onto the classes it wraps.
+
+	* rulesets/mason/world/statistics/Statistics.py: Use modified rulesets
+	  module name.
+
+2006-01-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Thing.cpp: Add wrapper for Character::mind2body.
 
 2006-01-14  Al Riddoch  <alriddoch@zepler.org>

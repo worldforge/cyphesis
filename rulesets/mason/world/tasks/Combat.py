@@ -2,6 +2,10 @@
 #Copyright (C) 2005 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
+from physics import *
+from Quaternion import Quaternion
+from Vector3D import Vector3D
+
 try:
   from random import *
 except ImportError:
@@ -104,6 +108,11 @@ class Combat(Thing):
         # change if they have been defeated
         res.append(Operation("set", set_arg, to=defender))
 
+        # Turn the attacker to face the defender. This has to go through
+        # the mind2body interface, so it does not interrupt what the
+        # the character is doing.
+        res.append(attacker.mind2body(self.face(attacker, defender)))
+
         # Toggle the attack flag for next time
         self.attack=not self.attack
 
@@ -117,3 +126,12 @@ class Combat(Thing):
         tick.setFutureSeconds(1.75)
         res.append(tick)
         return res
+    def face(self, character, other):
+        vector = distance_to(character.location, other.location)
+        vector.z = 0
+        if vector.square_mag() < 0.1:
+            return
+        vector = vector.unit_vector()
+        newloc = Location(character.location.parent)
+        newloc.orientation = Quaternion(Vector3D(1,0,0), vector)
+        return Operation("move", Entity(character.id, location=newloc))

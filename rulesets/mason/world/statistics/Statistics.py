@@ -7,12 +7,12 @@ try:
 except ImportError:
   from whrandom import *
 
-import rules
+import rulesets
 
-class Statistics(rules.Statistics):
+class Statistics(rulesets.Statistics):
     """A very simple Statistics example."""
     def __init__(self, entity):
-        rules.Statistics.__init__(self, entity)
+        rulesets.Statistics.__init__(self, entity)
     def attribute(self, name):
         if name == "attack":
             return 1

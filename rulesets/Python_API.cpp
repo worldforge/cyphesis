@@ -1159,7 +1159,7 @@ void init_python_api()
     }
     PyModule_AddObject(server, "WorldTime", (PyObject *)&PyWorldTime_Type);
 
-    PyObject * rules = Py_InitModule("rules", no_methods);
+    PyObject * rules = Py_InitModule("rulesets", no_methods);
     if (rules == NULL) {
         log(CRITICAL, "Python init failed to create rules module");
         return;
