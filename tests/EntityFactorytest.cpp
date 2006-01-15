@@ -5,6 +5,7 @@
 #include "TestWorld.h"
 
 #include "rulesets/World.h"
+#include "rulesets/Python_API.h"
 
 #include "server/EntityFactory.h"
 #include "server/PersistantThingFactory.h"
@@ -53,8 +54,12 @@ class ExposedEntityFactory : public EntityFactory {
 
 };
 
-int main()
+int main(int argc, char ** argv)
 {
+    loadConfig(argc, argv);
+
+    init_python_api();
+
     int ret;
 
     {

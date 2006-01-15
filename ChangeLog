@@ -1,5 +1,13 @@
 2006-01-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/EntityFactorytest.cpp: Initialise the python interpreter
+	  before testing the entity factory, as it is now required.
+
+	* tests/Makefile.am: Re-order the submodules of rulesets when
+	  linking, to ensure they link correctly.
+
+2006-01-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Combat.py: Add method to cause one
 	  entity to turn to face the other, and use it each tick of combat.
 

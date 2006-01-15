@@ -367,10 +367,10 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(TERRAIN_LIBS)
 
 Charactertest_SOURCES = Charactertest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
-Charactertest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
+Charactertest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
+                      $(top_builddir)/rulesets/librulesetentity.a \
                       $(top_builddir)/rulesets/librulesetmind.a \
                       $(top_builddir)/rulesets/librulesetbase.a \
-                      $(top_builddir)/rulesets/libscriptpython.a \
                       $(top_builddir)/modules/libmodules.a \
                       $(top_builddir)/physics/libphysics.a \
                       $(top_builddir)/common/inheritance.o \
@@ -390,10 +390,10 @@ Charactertest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
 Charactertest_LDFLAGS = -export-dynamic
 
 Creatortest_SOURCES = Creatortest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
-Creatortest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
+Creatortest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
+                    $(top_builddir)/rulesets/librulesetentity.a \
                     $(top_builddir)/rulesets/librulesetmind.a \
                     $(top_builddir)/rulesets/librulesetbase.a \
-                    $(top_builddir)/rulesets/libscriptpython.a \
                     $(top_builddir)/modules/libmodules.a \
                     $(top_builddir)/physics/libphysics.a \
                     $(top_builddir)/common/inheritance.o \
@@ -416,10 +416,11 @@ Containertest_SOURCES = Containertest.cpp
 Containertest_LDADD = $(top_builddir)/rulesets/Container.o
 
 Tasktest_SOURCES = Tasktest.cpp
-Tasktest_LDADD = $(top_builddir)/rulesets/librulesetentity.a \
+Tasktest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
+                 $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/rulesets/librulesetmind.a \
                  $(top_builddir)/rulesets/librulesetbase.a \
-                 $(top_builddir)/rulesets/libscriptpython.a \
+                 $(top_builddir)/rulesets/Python_API.o \
                  $(top_builddir)/modules/libmodules.a \
                  $(top_builddir)/physics/libphysics.a \
                  $(top_builddir)/common/inheritance.o \
@@ -457,10 +458,11 @@ EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/server/CommServer.o \
                           $(top_builddir)/server/ScriptFactory.o \
                           $(top_builddir)/server/TaskFactory.o \
+                          $(top_builddir)/server/ArithmeticFactory.o \
+                          $(top_builddir)/rulesets/libscriptpython.a \
                           $(top_builddir)/rulesets/librulesetentity.a \
                           $(top_builddir)/rulesets/librulesetmind.a \
                           $(top_builddir)/rulesets/librulesetbase.a \
-                          $(top_builddir)/rulesets/libscriptpython.a \
                           $(top_builddir)/modules/libmodules.a \
                           $(top_builddir)/physics/libphysics.a \
                           $(top_builddir)/common/AtlasFileLoader.o \
