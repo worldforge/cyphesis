@@ -238,6 +238,7 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
         if (typestr == "__bad__type__") {
             return;
         }
+        res.clear();
         typestr = "settler";
     }
 #endif

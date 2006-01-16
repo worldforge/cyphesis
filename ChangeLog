@@ -1,3 +1,9 @@
+2006-01-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp: Modify interim hack that allows characters
+	  of any type to be created so that it suppresses the character
+	  creation error op.
+
 2006-01-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/EntityFactorytest.cpp: Initialise the python interpreter
