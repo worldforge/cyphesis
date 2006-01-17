@@ -1,3 +1,9 @@
+2006-01-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp: When allowing a character to create a character
+	  even though it has specified a type that does not exist, install
+	  a dummy type record for the non-existant type to keep Eris happy.
+
 2006-01-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Account.cpp: Modify interim hack that allows characters

@@ -12,3 +12,8 @@ If a character sets its velocity to 0 when its position is outside its
 parents bbox, then the collision code does not detect that it is outside.
 
 Plant C++ base class is totally screwed.
+
+Leaks
+-----
+new PythonArithmeticScript() in ArithmeticFactory. Needs to be handled in
+Statistics destructor.

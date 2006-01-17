@@ -17,6 +17,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/serialno.h"
+#include "common/inheritance.h"
 #include "common/compose.hpp"
 
 #include <wfmath/atlasconv.h>
@@ -239,6 +240,9 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
             return;
         }
         res.clear();
+        if (!Inheritance::instance().hasClass(typestr)) {
+            Inheritance::instance().addChild(atlasClass(typestr, "settler"));
+        }
         typestr = "settler";
     }
 #endif
