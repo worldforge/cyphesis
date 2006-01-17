@@ -731,8 +731,6 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         debug( std::cout << "Moving something else. " << other_id << std::endl << std::flush;);
         Entity * other = m_world->getEntity(other_id);
         if (other == 0) {
-            log(ERROR, "mindMoveOperation: This move op is for a phoney id");
-            log(NOTICE, "Sending Unseen op back to mind. We should not see this again.");
             Unseen u;
 
             Anonymous unseen_arg;
@@ -802,8 +800,6 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         debug(std::cout << "Changing loc" << std::endl << std::flush;);
         Entity * target_loc = m_world->getEntity(new_loc);
         if (target_loc == 0) {
-            log(ERROR, "mindMoveOperation: This move op has phoney loc");
-            log(NOTICE, "Sending Unseen op back to mind. We should not see this again.");
             Unseen u;
 
             Anonymous unseen_arg;
