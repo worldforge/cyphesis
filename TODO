@@ -1,3 +1,6 @@
+Make more things emit suitable action operations, especially picking up,
+dropping, and combat.
+
 Character.statistics from python needs to use the statistics script to wrap
 it.
 
