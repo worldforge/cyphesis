@@ -1,3 +1,9 @@
+/opt/worldforge/share/cyphesis/rulesets/mason/world/tasks/Combat.py line 114,
+     res.append(attacker.mind2body(self.face(attacker, defender)))
+This line fails because self.face return nothing if two characters are in
+exactly the same place.
+
+
 Pig merchant seems to get things wrong when he runs out of pigs.
  - unable to reproduce
 
