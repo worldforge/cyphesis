@@ -1,5 +1,10 @@
 2006-01-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Combat.py: Fix a bug which would cause
+	  the script to stall if one combatant gets picked up by the other.
+
+2006-01-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* aiclient/ClientAccount.cpp, aiclient/ClientAccount.h,
 	  aiclient/ClientConnection.cpp, aiclient/ClientConnection.h,
 	  aiclient/client.cpp, aiclient/client.h, client/BaseClient.cpp,

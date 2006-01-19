@@ -111,7 +111,9 @@ class Combat(Thing):
         # Turn the attacker to face the defender. This has to go through
         # the mind2body interface, so it does not interrupt what the
         # the character is doing.
-        res.append(attacker.mind2body(self.face(attacker, defender)))
+        faceop=self.face(attacker, defender)
+        if faceop:
+            res.append(attacker.mind2body(faceop))
 
         # Toggle the attack flag for next time
         self.attack=not self.attack
