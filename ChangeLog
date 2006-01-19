@@ -1,3 +1,150 @@
+2006-01-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* aiclient/ClientAccount.cpp, aiclient/ClientAccount.h,
+	  aiclient/ClientConnection.cpp, aiclient/ClientConnection.h,
+	  aiclient/client.cpp, aiclient/client.h, client/BaseClient.cpp,
+	  client/BaseClient.h, client/CharacterClient.cpp,
+	  client/CharacterClient.h, client/ClientConnection.cpp,
+	  client/ClientConnection.h, client/CreatorClient.cpp,
+	  client/CreatorClient.h, client/ObserverClient.cpp,
+	  client/ObserverClient.h, client/Py_CreatorClient.cpp,
+	  client/Py_CreatorClient.h, client/client.cpp,
+	  client/define_world.cpp, client/define_world.h, common/Add.h,
+	  common/Affect.h, common/AtlasFileLoader.cpp,
+	  common/AtlasFileLoader.h, common/Attack.h, common/BaseEntity.cpp,
+	  common/BaseEntity.h, common/BaseWorld.cpp, common/BaseWorld.h,
+	  common/Burn.h, common/Chop.h, common/Connect.h, common/CustomOp.cpp,
+	  common/CustomOp.h, common/CustomOp_impl.h, common/Cut.h,
+	  common/Database.cpp, common/Database.h, common/Delve.h, common/Dig.h,
+	  common/Eat.h, common/FormattedXMLWriter.cpp,
+	  common/FormattedXMLWriter.h, common/Generic.h, common/Load.h,
+	  common/Monitor.h, common/Mow.h, common/Nourish.h,
+	  common/OOGThing.cpp, common/OOGThing.h, common/Property.cpp,
+	  common/Property.h, common/Property_impl.h, common/Save.h,
+	  common/Setup.h, common/Tick.h, common/Unseen.h, common/Update.h,
+	  common/Use.h, common/Wield.h, common/accountbase.cpp,
+	  common/accountbase.h, common/const.cpp, common/const.h,
+	  common/custom.cpp, common/debug.h, common/globals.cpp,
+	  common/globals.h, common/id.cpp, common/id.h, common/inheritance.cpp,
+	  common/inheritance.h, common/inheritance_impl.h, common/log.cpp,
+	  common/log.h, common/newid.cpp, common/nls.h, common/op_switch.h,
+	  common/operations.cpp, common/operations.h, common/random.h,
+	  common/refno.h, common/serialno.cpp, common/serialno.h,
+	  common/system.cpp, common/system.h, common/terrain_utils.cpp,
+	  common/terrain_utils.h, common/type_utils.h, common/types.h,
+	  common/utility.cpp, common/utility.h, modules/DateTime.cpp,
+	  modules/DateTime.h, modules/Location.cpp, modules/Location.h,
+	  modules/WorldTime.cpp, modules/WorldTime.h, physics/BBox.cpp,
+	  physics/BBox.h, physics/Collision.cpp, physics/Collision.h,
+	  physics/Quaternion.cpp, physics/Quaternion.h, physics/Vector3D.cpp,
+	  physics/Vector3D.h, physics/VectorPol.h, rulesets/Area.cpp,
+	  rulesets/Area.h, rulesets/AreaProperty.cpp, rulesets/AreaProperty.h,
+	  rulesets/ArithmeticScript.cpp, rulesets/ArithmeticScript.h,
+	  rulesets/BaseMind.cpp, rulesets/BaseMind.h,
+	  rulesets/CalendarProperty.cpp, rulesets/CalendarProperty.h,
+	  rulesets/Character.cpp, rulesets/Character.h, rulesets/Combat.cpp,
+	  rulesets/Combat.h, rulesets/Container.cpp, rulesets/Container.h,
+	  rulesets/Creator.cpp, rulesets/Creator.h, rulesets/Entity.cpp,
+	  rulesets/Entity.h, rulesets/EntityProperties.cpp,
+	  rulesets/Entity_getLocation.h, rulesets/Fell.cpp, rulesets/Fell.h,
+	  rulesets/Food.cpp, rulesets/Food.h, rulesets/Line.cpp,
+	  rulesets/Line.h, rulesets/LineProperty.cpp, rulesets/LineProperty.h,
+	  rulesets/MemEntity.cpp, rulesets/MemEntity.h, rulesets/MemMap.cpp,
+	  rulesets/MemMap.h, rulesets/MemMap_methods.h,
+	  rulesets/MindFactory.cpp, rulesets/MindFactory.h, rulesets/Missile.h,
+	  rulesets/Motion.cpp, rulesets/Motion.h, rulesets/Movement.cpp,
+	  rulesets/Movement.h, rulesets/Pedestrian.cpp, rulesets/Pedestrian.h,
+	  rulesets/Plant.cpp, rulesets/Plant.h, rulesets/Py_BBox.cpp,
+	  rulesets/Py_BBox.h, rulesets/Py_EntityWrapper.h,
+	  rulesets/Py_Location.cpp, rulesets/Py_Location.h,
+	  rulesets/Py_Map.cpp, rulesets/Py_Map.h, rulesets/Py_Mind.cpp,
+	  rulesets/Py_Mind.h, rulesets/Py_Object.cpp, rulesets/Py_Object.h,
+	  rulesets/Py_Operation.cpp, rulesets/Py_Operation.h,
+	  rulesets/Py_Oplist.cpp, rulesets/Py_Oplist.h, rulesets/Py_Optime.cpp,
+	  rulesets/Py_Optime.h, rulesets/Py_Point3D.cpp, rulesets/Py_Point3D.h,
+	  rulesets/Py_Property.cpp, rulesets/Py_Property.h,
+	  rulesets/Py_Quaternion.cpp, rulesets/Py_Quaternion.h,
+	  rulesets/Py_RootEntity.cpp, rulesets/Py_RootEntity.h,
+	  rulesets/Py_Statistics.cpp, rulesets/Py_Statistics.h,
+	  rulesets/Py_Task.cpp, rulesets/Py_Task.h, rulesets/Py_Thing.cpp,
+	  rulesets/Py_Thing.h, rulesets/Py_Vector3D.cpp,
+	  rulesets/Py_Vector3D.h, rulesets/Py_World.cpp, rulesets/Py_World.h,
+	  rulesets/Py_WorldTime.cpp, rulesets/Py_WorldTime.h,
+	  rulesets/PythonArithmeticScript.cpp,
+	  rulesets/PythonArithmeticScript.h, rulesets/PythonMindScript.cpp,
+	  rulesets/PythonMindScript.h, rulesets/PythonScript.cpp,
+	  rulesets/PythonScript.h, rulesets/PythonThingScript.cpp,
+	  rulesets/PythonThingScript.h, rulesets/PythonWrapper.cpp,
+	  rulesets/PythonWrapper.h, rulesets/Python_API.cpp,
+	  rulesets/Python_API.h, rulesets/Python_Script_Utils.h,
+	  rulesets/Script.cpp, rulesets/Script.h, rulesets/Stackable.cpp,
+	  rulesets/Stackable.h, rulesets/Statistics.cpp, rulesets/Statistics.h,
+	  rulesets/StatisticsProperty.cpp, rulesets/StatisticsProperty.h,
+	  rulesets/Structure.cpp, rulesets/Structure.h, rulesets/Task.cpp,
+	  rulesets/Task.h, rulesets/TaskScript.cpp, rulesets/TaskScript.h,
+	  rulesets/TerrainProperty.cpp, rulesets/TerrainProperty.h,
+	  rulesets/Thing.cpp, rulesets/Thing.h, rulesets/ThingFactory.cpp,
+	  rulesets/ThingFactory.h, rulesets/World.cpp, rulesets/World.h,
+	  rulesets/attributes.h, server/Account.cpp, server/Account.h,
+	  server/Admin.cpp, server/Admin.h, server/ArithmeticFactory.cpp,
+	  server/ArithmeticFactory.h, server/CommClient.cpp,
+	  server/CommClient.h, server/CommIdleSocket.cpp,
+	  server/CommIdleSocket.h, server/CommListener.cpp,
+	  server/CommListener.h, server/CommLocalClient.cpp,
+	  server/CommLocalClient.h, server/CommMDNSPublisher.cpp,
+	  server/CommMDNSPublisher.h, server/CommMaster.cpp,
+	  server/CommMaster.h, server/CommMetaClient.cpp,
+	  server/CommMetaClient.h, server/CommPSQLSocket.cpp,
+	  server/CommPSQLSocket.h, server/CommPeer.cpp,
+	  server/CommPeer.h, server/CommPeerListener.cpp,
+	  server/CommPeerListener.h, server/CommRemoteClient.cpp,
+	  server/CommRemoteClient.h, server/CommServer.cpp,
+	  server/CommServer.h, server/CommSlaveClient.cpp,
+	  server/CommSlaveClient.h, server/CommSlaveListener.cpp,
+	  server/CommSlaveListener.h, server/CommSocket.cpp,
+	  server/CommSocket.h, server/CommUnixListener.cpp,
+	  server/CommUnixListener.h, server/Connection.cpp,
+	  server/Connection.h, server/Connection_methods.h,
+	  server/EntityFactory.cpp, server/EntityFactory.h,
+	  server/ExternalMind.cpp, server/ExternalMind.h,
+	  server/Idle.cpp, server/Idle.h, server/Lobby.cpp, server/Lobby.h,
+	  server/Master.cpp, server/Master.h, server/Peer.cpp, server/Peer.h,
+	  server/Persistance.cpp, server/Persistance.h,
+	  server/PersistantThingFactory.cpp, server/PersistantThingFactory.h,
+	  server/PersistantThingFactory_impl.h, server/Persistor.cpp,
+	  server/Persistor.h, server/Persistor_impl.h,
+	  server/Player.cpp, server/Player.h, server/Restoration.cpp,
+	  server/Restoration.h, server/Restorer.cpp, server/Restorer.h,
+	  server/Restorer_impl.h, server/ScriptFactory.cpp,
+	  server/ScriptFactory.h, server/ServerRouting.cpp,
+	  server/ServerRouting.h, server/ServerRouting_methods.h,
+	  server/SlaveClientConnection.cpp, server/SlaveClientConnection.h,
+	  server/TaskFactory.cpp, server/TaskFactory.h,
+	  server/TrustedConnection.cpp, server/TrustedConnection.h,
+	  server/WorldRouter.cpp, server/WorldRouter.h,
+	  server/server.cpp, server/server.h, server/slave.cpp,
+	  tests/Areatest.cpp, tests/BaseEntitytest.cpp,
+	  tests/Charactertest.cpp, tests/Containertest.cpp,
+	  tests/Creatortest.cpp, tests/EntityExerciser.h,
+	  tests/EntityFactorytest.cpp, tests/Entitytest.cpp,
+	  tests/Foodtest.cpp, tests/IGEntityExerciser.h,
+	  tests/Linetest.cpp, tests/Locationtest.cpp, tests/OOGThingtest.cpp,
+	  tests/Planttest.cpp, tests/Propertytest.cpp, tests/Stackabletest.cpp,
+	  tests/Structuretest.cpp, tests/Tasktest.cpp, tests/TestWorld.h,
+	  tests/Thingtest.cpp, tests/WorldTimetest.cpp, tests/Worldtest.cpp,
+	  tests/allOperations.h, tests/collisiontest.cpp, tests/consttest.cpp,
+	  tests/distancetest.cpp, tests/emergencetest.cpp,
+	  tests/inheritancetest.cpp, tests/logtest.cpp, tests/randomtest.cpp,
+	  tests/systemtest.cpp, tests/transformtest.cpp,
+	  tests/type_utilstest.cpp, tests/utilitytest.cpp,
+	  tools/AdminClient.cpp, tools/AdminClient.h, tools/cyaddrules.cpp,
+	  tools/cycmd.cpp, tools/cyconfig.cpp, tools/cyconvertrules.cpp,
+	  tools/cyctrl.cpp, tools/cydbload.cpp, tools/cydumprules.cpp,
+	  tools/cyisoload.cpp, tools/cyloadrules.cpp, tools/cypasswd.cpp,
+	  tools/cywatchdog.cpp: Replace the copyright and license statements
+	  with new versions that include disclaimer of warranty, and
+	  permit distribution under later versions of the GPL.
+
 2006-01-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* Makefile.am: Remove TODO.mason, as it contained nothing of note.
@@ -202,7 +349,7 @@
 	  of cyphesis.
 
 2006-01-06  Al Riddoch  <alriddoch@zepler.org>
-
+,
 	* rulesets/Py_Statistics.cpp: Extend type structure to comply with
 	  more recent Python API.
 
@@ -1811,7 +1958,7 @@
 2005-09-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/PythonMindScript.cpp, rulesets/PythonMindScript.h,
-	  rulesets/PythonThingScript.cpp, rulesets/PythonThingScript.h
+	  rulesets/PythonThingScript.cpp, rulesets/PythonThingScript.h,
 	  rulesets/PythonScript.h, rulesets/Script.cpp, rulesets/Script.h:
 	  Clean up script API.
 
@@ -4437,7 +4584,7 @@
 
 	* server/CommListener.cpp,
 	  server/CommMetaClient.cpp, server/CommMetaClient.h, 
-	  server/CommPSQLSocket.cpp, server/CommPSQLSocket.h
+	  server/CommPSQLSocket.cpp, server/CommPSQLSocket.h,
 	  server/CommServer.cpp, server/CommServer.h,
 	  server/CommUnixListener.cpp, server/server.cpp:
 	  Replace CommIdleSocket with pure virtual inferface Idle,
@@ -8925,7 +9072,7 @@
 	  use, and excessive use of "using ...".
 
 	* rulesets/Movement.h, rulesets/Pedestrian.h:
-	  Use forward declarations rather than including Move.h
+	  Use forward declarations rather than including Move.h.
 
 	* server/Account.cpp, server/Account.h, server/Connection.cpp,
 	  server/Connection.h: Use destroyed signal to ensure references
@@ -10878,7 +11025,7 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 	* server/WorldTime.h: Added update method so underlying DataTime
 	  can be updated.
 
-	* server/ServerRouting.h, server/Lobby.h, server/Lobby.cpp
+	* server/ServerRouting.h, server/Lobby.h, server/Lobby.cpp,
 	  server/ServerRouting.cpp, server/Connection.h,
 	  server/Connection.cpp, server/Account.h, server/Account.cpp: Added
 	  a lobby object which handles lobby chat. Essentially it stores
