@@ -920,6 +920,24 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         }
     }
     if (kwds != NULL) {
+        PyObject * from = PyDict_GetItemString(kwds, "from_");
+        if (from != NULL) {
+            PyObject * from_id = 0;
+            if (PyString_Check(from)) {
+                from_id = from;
+                Py_INCREF(from_id);
+            } else if ((from_id = PyObject_GetAttrString(from, "id")) == NULL) {
+                PyErr_SetString(PyExc_TypeError, "from is not a string and has no id");
+                return NULL;
+            }
+            if (!PyString_Check(from_id)) {
+                Py_DECREF(from_id);
+                PyErr_SetString(PyExc_TypeError, "id of from is not a string");
+                return NULL;
+            }
+            op->operation->setFrom(PyString_AsString(from_id));
+            Py_DECREF(from_id);
+        }
         PyObject * to = PyDict_GetItemString(kwds, "to");
         if (to != NULL) {
             PyObject * to_id = 0;

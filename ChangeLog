@@ -1,5 +1,10 @@
 2006-01-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Allow FROM to be set on operations in
+	  the constructor so that attac ops from combat work better.
+
+2006-01-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Pickup.h, common/Drop.h, common/custom.cpp,
 	  common/operations.cpp, common/types.h: Add and install two new
 	  op types for Pickup and Drop.
