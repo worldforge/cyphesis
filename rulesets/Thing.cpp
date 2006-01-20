@@ -201,6 +201,15 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // have all now been checked for validity.
 
     if (new_loc != 0 && m_location.m_loc != new_loc) {
+        // Check for pickup and drop
+        if (new_loc->getId() == op->getFrom() &&
+            m_location.m_loc == new_loc->m_location.m_loc) {
+            std::cout << "PICKUP" << std::endl << std::flush;
+        }
+        if (m_location.m_loc->getId() == op->getFrom() &&
+            new_loc == m_location.m_loc->m_location.m_loc) {
+            std::cout << "DROP" << std::endl << std::flush;
+        }
         // Update loc
         m_location.m_loc->m_contains.erase(this);
         if (m_location.m_loc->m_contains.empty()) {
@@ -217,6 +226,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         m_location.m_loc = new_loc;
         m_location.m_loc->incRef();
         m_update_flags |= a_loc;
+
     }
 
     std::string mode;
