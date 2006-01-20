@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000-2004 Alistair Riddoch
+// Copyright (C) 2000-2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ class Entity;
 #define OP_DELETE Atlas::Objects::Operation::DELETE_NO
 #define OP_DISAPPEARANCE Atlas::Objects::Operation::DISAPPEARANCE_NO
 #define OP_DIVIDE Atlas::Objects::Operation::DIVIDE_NO
+#define OP_DROP Atlas::Objects::Operation::DROP_NO
 #define OP_EAT Atlas::Objects::Operation::EAT_NO
 #define OP_ERROR Atlas::Objects::Operation::ERROR_NO
 #define OP_GET Atlas::Objects::Operation::GET_NO
@@ -51,6 +52,7 @@ class Entity;
 #define OP_MONITOR Atlas::Objects::Operation::MONITOR_NO
 #define OP_MOVE Atlas::Objects::Operation::MOVE_NO
 #define OP_NOURISH Atlas::Objects::Operation::NOURISH_NO
+#define OP_PICKUP Atlas::Objects::Operation::PICKUP_NO
 #define OP_SET Atlas::Objects::Operation::SET_NO
 #define OP_SETUP Atlas::Objects::Operation::SETUP_NO
 #define OP_SIGHT Atlas::Objects::Operation::SIGHT_NO

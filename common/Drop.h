@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000-2006 Alistair Riddoch
+// Copyright (C) 2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,44 +15,23 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#include "Add.h"
-#include "Attack.h"
-#include "Chop.h"
-#include "Cut.h"
-#include "Eat.h"
-#include "Burn.h"
-#include "Delve.h"
-#include "Dig.h"
-#include "Drop.h"
-#include "Mow.h"
-#include "Nourish.h"
-#include "Pickup.h"
-#include "Setup.h"
-#include "Tick.h"
-#include "Unseen.h"
-#include "Update.h"
-#include "Monitor.h"
-#include "Connect.h"
+#ifndef COMMON_DROP_H
+#define COMMON_DROP_H
+
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-int ADD_NO = -1;
-int ATTACK_NO = -1;
-int BURN_NO = -1;
-int CHOP_NO = -1;
-int CONNECT_NO = -1;
-int CUT_NO = -1;
-int DELVE_NO = -1;
-int DIG_NO = -1;
-int DROP_NO = -1;
-int MONITOR_NO = -1;
-int MOW_NO = -1;
-int EAT_NO = -1;
-int UNSEEN_NO = -1;
-int UPDATE_NO = -1;
-int NOURISH_NO = -1;
-int PICKUP_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
+extern int DROP_NO;
+
+class Drop : public Generic
+{
+  public:
+    Drop() {
+        (*this)->setType("drop", DROP_NO);
+    }
+};
 
 } } }
+
+#endif // COMMON_DROP_H

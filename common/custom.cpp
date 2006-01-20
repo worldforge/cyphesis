@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000-2004 Alistair Riddoch
+// Copyright (C) 2000-2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,10 +24,12 @@
 #include "Cut.h"
 #include "Delve.h"
 #include "Dig.h"
+#include "Drop.h"
 #include "Eat.h"
 #include "Monitor.h"
 #include "Mow.h"
 #include "Nourish.h"
+#include "Pickup.h"
 #include "Setup.h"
 #include "Tick.h"
 #include "Unseen.h"
@@ -110,6 +112,14 @@ void installCustomOperations()
     i.addChild(atlasOpDefinition("attack", "action"));
     Atlas::Objects::Operation::ATTACK_NO = atlas_factories->addFactory("attack", &Atlas::Objects::generic_factory);
     i.opInstall("attack", OP_ATTACK);
+
+    i.addChild(atlasOpDefinition("pickup", "action"));
+    Atlas::Objects::Operation::PICKUP_NO = atlas_factories->addFactory("pickup", &Atlas::Objects::generic_factory);
+    i.opInstall("pickup", OP_PICKUP);
+
+    i.addChild(atlasOpDefinition("drop", "action"));
+    Atlas::Objects::Operation::DROP_NO = atlas_factories->addFactory("drop", &Atlas::Objects::generic_factory);
+    i.opInstall("drop", OP_DROP);
 
 }
 

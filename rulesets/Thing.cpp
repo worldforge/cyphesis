@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000-2005 Alistair Riddoch
+// Copyright (C) 2000-2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@
 #include "common/Setup.h"
 #include "common/Tick.h"
 #include "common/Update.h"
+#include "common/Pickup.h"
+#include "common/Drop.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -45,8 +47,10 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Delete;
+using Atlas::Objects::Operation::Drop;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Nourish;
+using Atlas::Objects::Operation::Pickup;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Entity::Anonymous;
@@ -201,14 +205,25 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // have all now been checked for validity.
 
     if (new_loc != 0 && m_location.m_loc != new_loc) {
-        // Check for pickup and drop
+        // Check for pickup
         if (new_loc->getId() == op->getFrom() &&
             m_location.m_loc == new_loc->m_location.m_loc) {
-            std::cout << "PICKUP" << std::endl << std::flush;
+
+            Pickup p;
+            p->setFrom(getId());
+            Sight s;
+            s->setArgs1(p);
+            res.push_back(s);
         }
+        // Check for drop
         if (m_location.m_loc->getId() == op->getFrom() &&
             new_loc == m_location.m_loc->m_location.m_loc) {
-            std::cout << "DROP" << std::endl << std::flush;
+
+            Drop d;
+            d->setFrom(getId());
+            Sight s;
+            s->setArgs1(d);
+            res.push_back(s);
         }
         // Update loc
         m_location.m_loc->m_contains.erase(this);
