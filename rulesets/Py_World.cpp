@@ -40,7 +40,7 @@ static PyObject * World_get_time(PyWorld *self)
     return (PyObject *)wtime;
 }
 
-static PyObject * World_get_object(PyWorld *self, PyObject *args)
+static PyObject * World_get_object(PyWorld *self, PyObject * id)
 {
 #ifndef NDEBUG
     if (self->world == NULL) {
@@ -48,11 +48,11 @@ static PyObject * World_get_object(PyWorld *self, PyObject *args)
         return NULL;
     }
 #endif // NDEBUG
-    char * id = NULL;
-    if (!PyArg_ParseTuple(args, "s", &id)) {
+    if (!PyString_CheckExact(id)) {
+        PyErr_SetString(PyExc_TypeError, "World.get_object must be string");
         return NULL;
     }
-    Entity * ent = self->world->getEntity(id);
+    Entity * ent = self->world->getEntity(PyString_AsString(id));
     if (ent == NULL) {
         Py_INCREF(Py_None);
         return Py_None;
@@ -63,7 +63,7 @@ static PyObject * World_get_object(PyWorld *self, PyObject *args)
 
 static PyMethodDef World_methods[] = {
     {"get_time",        (PyCFunction)World_get_time,    METH_NOARGS},
-    {"get_object",      (PyCFunction)World_get_object,  METH_VARARGS},
+    {"get_object",      (PyCFunction)World_get_object,  METH_O},
     {NULL,              NULL}           // sentinel
 };
 

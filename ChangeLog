@@ -1,5 +1,10 @@
 2006-01-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_World.cpp: Experiment to try METH_O with calls which
+	  take an argument of string type.
+
+2006-01-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/Py_CreatorClient.cpp: Switch CreatorClient.as_entity() to
 	  using METH_NOARGS flag, as it takes no arguments.
 
