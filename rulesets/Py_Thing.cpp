@@ -51,7 +51,7 @@ static PyObject * Entity_as_entity(PyEntity * self)
     return (PyObject *)ret;
 }
 
-static PyObject * Entity_send_world(PyEntity * self, PyObject * args)
+static PyObject * Entity_send_world(PyEntity * self, PyOperation * op)
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
@@ -59,10 +59,6 @@ static PyObject * Entity_send_world(PyEntity * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    PyOperation * op;
-    if (!PyArg_ParseTuple(args, "O", &op)) {
-        return NULL;
-    }
     if (PyOperation_Check(op)) {
         self->m_entity->sendWorld(op->operation);
     } else {
@@ -75,11 +71,11 @@ static PyObject * Entity_send_world(PyEntity * self, PyObject * args)
 
 static PyMethodDef Entity_methods[] = {
     {"as_entity",       (PyCFunction)Entity_as_entity,  METH_NOARGS},
-    {"send_world",      (PyCFunction)Entity_send_world, METH_VARARGS},
+    {"send_world",      (PyCFunction)Entity_send_world, METH_O},
     {NULL,              NULL}           /* sentinel */
 };
 
-static PyObject * Character_set_task(PyCharacter * self, PyObject * args)
+static PyObject * Character_set_task(PyCharacter * self, PyTask * task)
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
@@ -87,10 +83,6 @@ static PyObject * Character_set_task(PyCharacter * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    PyTask * task;
-    if (!PyArg_ParseTuple(args, "O", &task)) {
-        return NULL;
-    }
     if (!PyTask_Check(task)) {
         PyErr_SetString(PyExc_TypeError, "Entity.set_task must be a task");
         return NULL;
@@ -113,7 +105,7 @@ static PyObject * Character_clear_task(PyCharacter * self)
     return Py_None;
 }
 
-static PyObject * Character_mind2body(PyCharacter * self, PyObject * args)
+static PyObject * Character_mind2body(PyCharacter * self, PyOperation * op)
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
@@ -121,10 +113,6 @@ static PyObject * Character_mind2body(PyCharacter * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    PyOperation * op;
-    if (!PyArg_ParseTuple(args, "O", &op)) {
-        return NULL;
-    }
     if (!PyOperation_Check(op)) {
          PyErr_SetString(PyExc_TypeError, "Entity.mind2body must be an operation");
          return NULL;
@@ -146,11 +134,11 @@ static PyObject * Character_mind2body(PyCharacter * self, PyObject * args)
 }
 
 static PyMethodDef Character_methods[] = {
-    {"as_entity",       (PyCFunction)Entity_as_entity,  METH_NOARGS},
-    {"send_world",      (PyCFunction)Entity_send_world, METH_VARARGS},
-    {"set_task",        (PyCFunction)Character_set_task,   METH_VARARGS},
+    {"as_entity",       (PyCFunction)Entity_as_entity,     METH_NOARGS},
+    {"send_world",      (PyCFunction)Entity_send_world,    METH_O},
+    {"set_task",        (PyCFunction)Character_set_task,   METH_O},
     {"clear_task",      (PyCFunction)Character_clear_task, METH_NOARGS},
-    {"mind2body",       (PyCFunction)Character_mind2body, METH_VARARGS},
+    {"mind2body",       (PyCFunction)Character_mind2body,  METH_O},
     {NULL,              NULL}           /* sentinel */
 };
 

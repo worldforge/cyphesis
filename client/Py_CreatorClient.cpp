@@ -35,7 +35,7 @@ using Atlas::Message::MapType;
 
 static const bool debug_flag = false;
 
-static PyObject * CreatorClient_as_entity(PyCreatorClient * self, PyObject * args)
+static PyObject * CreatorClient_as_entity(PyCreatorClient * self, PyObject *)
 {
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
@@ -43,9 +43,6 @@ static PyObject * CreatorClient_as_entity(PyCreatorClient * self, PyObject * arg
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyArg_ParseTuple(args, "")) {
-        return NULL;
-    }
     PyMessageElement * ret = newPyMessageElement();
     if (ret == NULL) {
         return NULL;

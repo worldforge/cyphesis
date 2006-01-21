@@ -1,3 +1,11 @@
+2006-01-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/Py_CreatorClient.cpp: Switch CreatorClient.as_entity() to
+	  using METH_NOARGS flag, as it takes no arguments.
+
+	* rulesets/Py_Thing.cpp: Use METH_O for methods which take only
+	  one argument, avoiding the call to PyArg_ParseTuple().
+
 2006-01-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: Allow FROM to be set on operations in
