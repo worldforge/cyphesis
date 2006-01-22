@@ -1,3 +1,22 @@
+Sequence of events when database goes down:
+
+2006:01:22 17:58:23 NOTICE DATABASE: FATAL:  terminating connection due to administrator command
+2006:01:22 17:58:23 ERROR Got database query complete when no query was pending
+2006:01:22 17:58:37 ERROR newId(): Database query error.
+2006:01:22 17:58:37 ERROR DATABASE: server closed the connection unexpectedly
+        This probably means the server terminated abnormally
+        before or while processing the request.
+cyphesis: WorldRouter.cpp:288: virtual Entity* WorldRouter::addNewEntity(const std::string&, const Atlas::Objects::Entity::RootEntity&): Assertion `!id.empty()' failed.
+2006:01:22 17:58:37 CRITICAL Aborted
+
+Notice there is often a deley before the third event, but even so it might
+be possible to bridge a gap in database availability with some kind of
+local ID generation. Anyway, clearly we are notified that the database
+is going down quite some time before it causes, so we should be able to do
+something about trying to reconnect. Might need to separate the
+server Database Idler from the Database socket, so the idler can manage
+attempting to re-connect.
+
 Code using "unit_vector_to.." is probably only working in the same
 container, and should probably be fixed to work with distance_to().
 
