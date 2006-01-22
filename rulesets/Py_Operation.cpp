@@ -41,7 +41,7 @@ using Atlas::Objects::Entity::RootEntity;
  * Beginning of Operation methods section.
  */
 
-static PyObject * Operation_setSerialno(PyOperation * self, PyObject * args)
+static PyObject * Operation_setSerialno(PyOperation * self, PyObject * py_sno)
 {
 #ifndef NDEBUG
     if (!self->operation.isValid()) {
@@ -50,17 +50,18 @@ static PyObject * Operation_setSerialno(PyOperation * self, PyObject * args)
     }
 #endif // NDEBUG
     // Takes integer, returns none
-    int serialno;
-    if (!PyArg_ParseTuple(args, "i", &serialno)) {
+    if (!PyInt_CheckExact(py_sno)) {
+        PyErr_SetString(PyExc_TypeError, "serialno not an integer");
         return NULL;
     }
+    int serialno = PyInt_AsLong(py_sno);
     self->operation->setSerialno(serialno);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_setRefno(PyOperation * self, PyObject * args)
+static PyObject * Operation_setRefno(PyOperation * self, PyObject * py_rno)
 {
     // Takes integer, returns none
 #ifndef NDEBUG
@@ -69,17 +70,18 @@ static PyObject * Operation_setRefno(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    int refno;
-    if (!PyArg_ParseTuple(args, "i", &refno)) {
+    if (!PyInt_CheckExact(py_rno)) {
+        PyErr_SetString(PyExc_TypeError, "refno not an integer");
         return NULL;
     }
+    int refno = PyInt_AsLong(py_rno);
     self->operation->setRefno(refno);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_setFrom(PyOperation * self, PyObject * args)
+static PyObject * Operation_setFrom(PyOperation * self, PyObject * py_from)
 {
     // Takes string, returns none
 #ifndef NDEBUG
@@ -88,17 +90,18 @@ static PyObject * Operation_setFrom(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    char * from;
-    if (!PyArg_ParseTuple(args, "s", &from)) {
+    if (!PyString_CheckExact(py_from)) {
+        PyErr_SetString(PyExc_TypeError, "from not a string");
         return NULL;
     }
+    char * from = PyString_AsString(py_from);
     self->operation->setFrom(from);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_setTo(PyOperation * self, PyObject * args)
+static PyObject * Operation_setTo(PyOperation * self, PyObject * py_to)
 {
     // Takes string, returns none
 #ifndef NDEBUG
@@ -107,17 +110,18 @@ static PyObject * Operation_setTo(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    char * to;
-    if (!PyArg_ParseTuple(args, "s", &to)) {
+    if (!PyString_CheckExact(py_to)) {
+        PyErr_SetString(PyExc_TypeError, "to not a string");
         return NULL;
     }
+    char * to = PyString_AsString(py_to);
     self->operation->setTo(to);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_setSeconds(PyOperation * self, PyObject * args)
+static PyObject * Operation_setSeconds(PyOperation * self, PyObject * py_secs)
 {
     // Takes float, returns none
 #ifndef NDEBUG
@@ -126,17 +130,19 @@ static PyObject * Operation_setSeconds(PyOperation * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    double seconds;
-    if (!PyArg_ParseTuple(args, "d", &seconds)) {
+    if (!PyFloat_CheckExact(py_secs)) {
+        PyErr_SetString(PyExc_TypeError, "seconds not a float");
         return NULL;
     }
+    double seconds = PyFloat_AsDouble(py_secs);
     self->operation->setSeconds(seconds);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Operation_setFutureSeconds(PyOperation * self, PyObject * args)
+static PyObject * Operation_setFutureSeconds(PyOperation * self,
+                                             PyObject * py_fsecs)
 {
     // Takes float, returns none
 #ifndef NDEBUG
@@ -145,8 +151,13 @@ static PyObject * Operation_setFutureSeconds(PyOperation * self, PyObject * args
         return NULL;
     }
 #endif // NDEBUG
-    double futureseconds;
-    if (!PyArg_ParseTuple(args, "d", &futureseconds)) {
+    double futureseconds = PyFloat_AsDouble(py_fsecs);
+    if (PyFloat_CheckExact(py_fsecs)) {
+        futureseconds = PyFloat_AsDouble(py_fsecs);
+    } else if (PyInt_CheckExact(py_fsecs)) {
+        futureseconds = PyInt_AsLong(py_fsecs);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "future_seconds not a number");
         return NULL;
     }
     self->operation->setFutureSeconds(futureseconds);
@@ -167,17 +178,13 @@ static PyObject * Operation_setArgs(PyOperation * self, PyObject * args)
     // FIXME This is a big mess - either get rid of it in entirity, or
     // make something better.
 
-    PyObject * args_object;
-    if (!PyArg_ParseTuple(args, "O", &args_object)) {
-        return NULL;
-    }
-    if (!PyList_Check(args_object)) {
-        PyErr_SetString(PyExc_TypeError,"args not a list");
+    if (!PyList_Check(args)) {
+        PyErr_SetString(PyExc_TypeError, "args not a list");
         return NULL;
     }
     ListType argslist;
-    for(int i = 0; i < PyList_Size(args_object); i++) {
-        PyObject * item = PyList_GetItem(args_object, i);
+    for(int i = 0; i < PyList_Size(args); i++) {
+        PyObject * item = PyList_GetItem(args, i);
         if (PyMessageElement_Check(item)) {
             argslist.push_back(*((PyMessageElement*)item)->m_obj);
         } else if (PyOperation_Check(item)) {
@@ -482,13 +489,13 @@ static PySequenceMethods Operation_seq = {
  */
 
 PyMethodDef RootOperation_methods[] = {
-    {"setSerialno",     (PyCFunction)Operation_setSerialno,     METH_VARARGS},
-    {"setRefno",        (PyCFunction)Operation_setRefno,        METH_VARARGS},
-    {"setFrom",         (PyCFunction)Operation_setFrom,         METH_VARARGS},
-    {"setTo",           (PyCFunction)Operation_setTo,           METH_VARARGS},
-    {"setSeconds",      (PyCFunction)Operation_setSeconds,      METH_VARARGS},
-    {"setFutureSeconds",(PyCFunction)Operation_setFutureSeconds,METH_VARARGS},
-    {"setArgs",         (PyCFunction)Operation_setArgs,         METH_VARARGS},
+    {"setSerialno",     (PyCFunction)Operation_setSerialno,     METH_O},
+    {"setRefno",        (PyCFunction)Operation_setRefno,        METH_O},
+    {"setFrom",         (PyCFunction)Operation_setFrom,         METH_O},
+    {"setTo",           (PyCFunction)Operation_setTo,           METH_O},
+    {"setSeconds",      (PyCFunction)Operation_setSeconds,      METH_O},
+    {"setFutureSeconds",(PyCFunction)Operation_setFutureSeconds,METH_O},
+    {"setArgs",         (PyCFunction)Operation_setArgs,         METH_O},
     {"getSerialno",     (PyCFunction)Operation_getSerialno,     METH_NOARGS},
     {"getRefno",        (PyCFunction)Operation_getRefno,        METH_NOARGS},
     {"getFrom",         (PyCFunction)Operation_getFrom,         METH_NOARGS},

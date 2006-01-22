@@ -1,3 +1,6 @@
+Code using "unit_vector_to.." is probably only working in the same
+container, and should probably be fixed to work with distance_to().
+
 In operation_new, and other places where keywords are used, iterate
 over the keywords rather than checking for a number of values. Should be
 more efficient, especially when the kwds are empty. Also allows errors to

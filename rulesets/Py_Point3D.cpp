@@ -24,12 +24,8 @@ static PyObject * Point3D_mag(PyPoint3D * self)
     return PyFloat_FromDouble(sqrt(sqrMag(self->coords)));
 }
 
-static PyObject *Point3D_unit_vector_to(PyPoint3D * self, PyObject * args)
+static PyObject *Point3D_unit_vector_to(PyPoint3D * self, PyPoint3D * other)
 {
-    PyPoint3D * other;
-    if (!PyArg_ParseTuple(args, "O", &other)) {
-        return NULL;
-    }
     if (!PyPoint3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can get unit vector to Point3D");
         return NULL;
@@ -43,12 +39,8 @@ static PyObject *Point3D_unit_vector_to(PyPoint3D * self, PyObject * args)
     return (PyObject *)ret;
 }
 
-static PyObject * Point3D_distance(PyPoint3D * self, PyObject * args)
+static PyObject * Point3D_distance(PyPoint3D * self, PyPoint3D * other)
 {
-    PyPoint3D * other;
-    if (!PyArg_ParseTuple(args, "O", &other)) {
-        return NULL;
-    }
     if (!PyPoint3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can get distance to other Point3D");
         return NULL;
@@ -57,9 +49,9 @@ static PyObject * Point3D_distance(PyPoint3D * self, PyObject * args)
 }
 
 static PyMethodDef Point3D_methods[] = {
-    {"mag",             (PyCFunction)Point3D_mag,      METH_NOARGS},
-    {"unit_vector_to_another_vector",   (PyCFunction)Point3D_unit_vector_to,   METH_VARARGS},
-    {"distance",        (PyCFunction)Point3D_distance, METH_VARARGS},
+    {"mag",             (PyCFunction)Point3D_mag,              METH_NOARGS},
+    {"unit_vector_to",  (PyCFunction)Point3D_unit_vector_to,   METH_O},
+    {"distance",        (PyCFunction)Point3D_distance,         METH_O},
     {NULL,              NULL}           /* sentinel */
 };
 
@@ -79,9 +71,9 @@ static int Point3D_print(PyPoint3D * self, FILE * fp, int)
 
 static PyObject* Point3D_repr(PyPoint3D * self)
 {
-	char buf[64];
-	::snprintf(buf, 64, "(%f, %f, %f)", self->coords.x(), self->coords.y(), self->coords.z());
-	return PyString_FromString(buf);
+    char buf[64];
+    ::snprintf(buf, 64, "(%f, %f, %f)", self->coords.x(), self->coords.y(), self->coords.z());
+    return PyString_FromString(buf);
 }
 
 static PyObject * Point3D_getattr(PyPoint3D *self, char *name)

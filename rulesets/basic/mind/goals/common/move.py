@@ -153,7 +153,7 @@ class move_it(Goal):
         if self.speed==0 or what.location.parent.id!=self.location.parent.id:
             return Operation("move", Entity(what.id, location=self.location))
         iloc=what.location.copy()
-        vel=what.location.coordinates.unit_vector_to_another_vector(self.location.coordinates)
+        vel=what.location.coordinates.unit_vector_to(self.location.coordinates)
         iloc.velocity = vel * self.speed
         self.location.velocity=Vector3D(0.0,0.0,0.0)
         mOp1=Operation("move", Entity(what.id, location=iloc))
@@ -207,7 +207,7 @@ class move_me_to_possession(Goal):
             what=me.things[what][0]
         target=what.location.copy()
         if target.parent.id==me.location.parent.id:
-            target.velocity=me.location.coordinates.unit_vector_to_another_vector(target.coordinates)
+            target.velocity=me.location.coordinates.unit_vector_to(target.coordinates)
             target.rotation=target.velocity
             return Operation("move", Entity(me.id, location=target))
 
@@ -239,7 +239,7 @@ class move_me_to_focus(Goal):
             if what==None: return
         target=what.location.copy()
         if target.parent.id==me.location.parent.id:
-            target.velocity=me.location.coordinates.unit_vector_to_another_vector(target.coordinates)
+            target.velocity=me.location.coordinates.unit_vector_to(target.coordinates)
             return Operation("move", Entity(me.id, location=target))
 
 ############################ MOVE THING TO ME ####################################

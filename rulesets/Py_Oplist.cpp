@@ -18,7 +18,7 @@
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
 
-static PyObject* Oplist_append(PyOplist * self, PyObject * args)
+static PyObject* Oplist_append(PyOplist * self, PyOperation * op)
 {
 #ifndef NDEBUG
     if (self->ops == NULL) {
@@ -26,10 +26,6 @@ static PyObject* Oplist_append(PyOplist * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    PyOperation * op;
-    if (!PyArg_ParseTuple(args, "O", &op)) {
-        return NULL;
-    }
     if (PyOperation_Check(op)) {
         self->ops->push_back(op->operation);
     } else if ((PyObject*)op != Py_None) {
@@ -42,7 +38,7 @@ static PyObject* Oplist_append(PyOplist * self, PyObject * args)
 
 
 static PyMethodDef Oplist_methods[] = {
-    {"append",          (PyCFunction)Oplist_append,     METH_VARARGS},
+    {"append",          (PyCFunction)Oplist_append,     METH_O},
     {NULL,              NULL}           /* sentinel */
 };
 

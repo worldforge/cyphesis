@@ -17,12 +17,8 @@
 
 #include "Py_Vector3D.h"
 
-static PyObject * Vector3D_dot(PyVector3D * self, PyObject * args)
+static PyObject * Vector3D_dot(PyVector3D * self, PyVector3D * other)
 {
-    PyVector3D * other;
-    if (!PyArg_ParseTuple(args, "O", &other)) {
-        return NULL;
-    }
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only dot with Vector3D");
         return NULL;
@@ -30,12 +26,8 @@ static PyObject * Vector3D_dot(PyVector3D * self, PyObject * args)
     return PyFloat_FromDouble(Dot(self->coords, other->coords));
 }
 
-static PyObject * Vector3D_cross(PyVector3D * self, PyObject * args)
+static PyObject * Vector3D_cross(PyVector3D * self, PyVector3D * other)
 {
-    PyVector3D * other;
-    if (!PyArg_ParseTuple(args, "O", &other)) {
-        return NULL;
-    }
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only cross with Vector3D");
         return NULL;
@@ -48,45 +40,41 @@ static PyObject * Vector3D_cross(PyVector3D * self, PyObject * args)
     return (PyObject *)ret;
 }
 
-static PyObject * Vector3D_rotatex(PyVector3D * self, PyObject * args)
+static PyObject * Vector3D_rotatex(PyVector3D * self, PyObject * arg)
 {
-    double angle;
-    if (!PyArg_ParseTuple(args, "d", &angle)) {
-        return NULL;
+    if (!PyFloat_CheckExact(arg)) {
+        PyErr_SetString(PyExc_TypeError, "Can only rotatex with a float");
     }
+    double angle = PyFloat_AsDouble(arg);
     self->coords.rotateX(angle);
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Vector3D_rotatey(PyVector3D * self, PyObject * args)
+static PyObject * Vector3D_rotatey(PyVector3D * self, PyObject * arg)
 {
-    double angle;
-    if (!PyArg_ParseTuple(args, "d", &angle)) {
-        return NULL;
+    if (!PyFloat_CheckExact(arg)) {
+        PyErr_SetString(PyExc_TypeError, "Can only rotatey with a float");
     }
+    double angle = PyFloat_AsDouble(arg);
     self->coords.rotateY(angle);
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Vector3D_rotatez(PyVector3D * self, PyObject * args)
+static PyObject * Vector3D_rotatez(PyVector3D * self, PyObject * arg)
 {
-    double angle;
-    if (!PyArg_ParseTuple(args, "d", &angle)) {
-        return NULL;
+    if (!PyFloat_CheckExact(arg)) {
+        PyErr_SetString(PyExc_TypeError, "Can only rotatez with a float");
     }
+    double angle = PyFloat_AsDouble(arg);
     self->coords.rotateZ(angle);
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Vector3D_angle(PyVector3D * self, PyObject * args)
+static PyObject * Vector3D_angle(PyVector3D * self, PyVector3D * other)
 {
-    PyVector3D * other;
-    if (!PyArg_ParseTuple(args, "O", &other)) {
-        return NULL;
-    }
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can get angle to Vector3D");
         return NULL;
@@ -127,12 +115,8 @@ static PyObject * Vector3D_unit_vector(PyVector3D * self)
     return (PyObject *)ret;
 }
 
-static PyObject *Vector3D_unit_vector_to(PyVector3D * self, PyObject * args)
+static PyObject *Vector3D_unit_vector_to(PyVector3D * self, PyVector3D * other)
 {
-    PyVector3D * other;
-    if (!PyArg_ParseTuple(args, "O", &other)) {
-        return NULL;
-    }
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Argument must be a Vector3D");
         return NULL;
@@ -152,17 +136,17 @@ static PyObject *Vector3D_unit_vector_to(PyVector3D * self, PyObject * args)
 }
 
 static PyMethodDef Vector3D_methods[] = {
-    {"dot",             (PyCFunction)Vector3D_dot,      METH_VARARGS},
-    {"cross",           (PyCFunction)Vector3D_cross,    METH_VARARGS},
+    {"dot",             (PyCFunction)Vector3D_dot,      METH_O},
+    {"cross",           (PyCFunction)Vector3D_cross,    METH_O},
     {"rotatex",         (PyCFunction)Vector3D_rotatex,  METH_VARARGS},
     {"rotatey",         (PyCFunction)Vector3D_rotatey,  METH_VARARGS},
     {"rotatez",         (PyCFunction)Vector3D_rotatez,  METH_VARARGS},
-    {"angle",           (PyCFunction)Vector3D_angle,    METH_VARARGS},
+    {"angle",           (PyCFunction)Vector3D_angle,    METH_O},
     {"square_mag",      (PyCFunction)Vector3D_sqr_mag,  METH_NOARGS},
     {"mag",             (PyCFunction)Vector3D_mag,      METH_NOARGS},
     {"is_valid",        (PyCFunction)Vector3D_is_valid, METH_NOARGS},
     {"unit_vector",     (PyCFunction)Vector3D_unit_vector,      METH_NOARGS},
-    {"unit_vector_to_another_vector",   (PyCFunction)Vector3D_unit_vector_to,   METH_VARARGS},
+    {"unit_vector_to",  (PyCFunction)Vector3D_unit_vector_to,   METH_O},
     {NULL,              NULL}           /* sentinel */
 };
 

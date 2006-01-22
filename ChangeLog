@@ -1,5 +1,19 @@
 2006-01-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/Py_CreatorClient.cpp, rulesets/Py_Map.cpp,
+	  rulesets/Py_Operation.cpp, rulesets/Py_Oplist.cpp,
+	  rulesets/Py_Point3D.cpp, rulesets/Py_Vector3D.cpp,
+	  rulesets/Py_WorldTime.cpp, rulesets/Python_API.cpp:
+	  Convert functions that take a single argument to use METH_O
+	  and avoid calling PyArg_ParseTuple.
+
+	* rulesets/Py_Point3D.cpp, rulesets/Py_Vector3D.cpp,
+	  rulesets/basic/mind/goals/common/move.py: Rename
+	  unit_vector_to_another_vector to unit_vector_to.
+
+
+2006-01-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_World.cpp: Experiment to try METH_O with calls which
 	  take an argument of string type.
 

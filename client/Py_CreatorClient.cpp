@@ -52,7 +52,8 @@ static PyObject * CreatorClient_as_entity(PyCreatorClient * self, PyObject *)
     return (PyObject *)ret;
 }
 
-static PyObject * CreatorClient_make(PyCreatorClient * self, PyObject * args)
+static PyObject * CreatorClient_make(PyCreatorClient * self,
+                                     PyRootEntity * entity)
 {
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
@@ -60,10 +61,6 @@ static PyObject * CreatorClient_make(PyCreatorClient * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    PyRootEntity * entity = NULL;
-    if (!PyArg_ParseTuple(args, "O", &entity)) {
-        return NULL;
-    }
     if (!PyRootEntity_Check(entity)) {
         PyErr_SetString(PyExc_TypeError, "Can only make Atlas entity");
         return NULL;
@@ -100,7 +97,7 @@ static PyObject * CreatorClient_set(PyCreatorClient * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * CreatorClient_look(PyCreatorClient * self, PyObject * args)
+static PyObject * CreatorClient_look(PyCreatorClient * self, PyObject * py_id)
 {
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
@@ -108,10 +105,11 @@ static PyObject * CreatorClient_look(PyCreatorClient * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    char * id = NULL;
-    if (!PyArg_ParseTuple(args, "s", &id)) {
+    if (!PyString_CheckExact(py_id)) {
+        PyErr_SetString(PyExc_TypeError, "CreatorClient.look must be a string");
         return NULL;
     }
+    char * id = PyString_AsString(py_id);
     Entity * retval = self->m_mind->look(id);
     if (retval == NULL) {
         PyErr_SetString(PyExc_RuntimeError, "Entity look failed");
@@ -122,7 +120,7 @@ static PyObject * CreatorClient_look(PyCreatorClient * self, PyObject * args)
     return (PyObject *)ret;
 }
 static PyObject * CreatorClient_look_for(PyCreatorClient * self,
-                                         PyObject * args)
+                                         PyRootEntity * ent)
 {
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
@@ -130,10 +128,6 @@ static PyObject * CreatorClient_look_for(PyCreatorClient * self,
         return NULL;
     }
 #endif // NDEBUG
-    PyRootEntity * ent;
-    if (!PyArg_ParseTuple(args, "O", &ent)) {
-        return NULL;
-    }
     if (!PyRootEntity_Check(ent)) {
         PyErr_SetString(PyExc_TypeError, "Can only look for Atlas description");
         return NULL;
@@ -148,7 +142,7 @@ static PyObject * CreatorClient_look_for(PyCreatorClient * self,
     return (PyObject *)ret;
 }
 
-static PyObject * CreatorClient_send(PyCreatorClient * self, PyObject * args)
+static PyObject * CreatorClient_send(PyCreatorClient * self, PyOperation * op)
 {
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
@@ -156,10 +150,6 @@ static PyObject * CreatorClient_send(PyCreatorClient * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    PyOperation * op;
-    if (!PyArg_ParseTuple(args, "O", &op)) {
-        return NULL;
-    }
     if (!PyOperation_Check(op)) {
         PyErr_SetString(PyExc_TypeError, "Can only send Atlas operation");
         return NULL;
@@ -171,11 +161,11 @@ static PyObject * CreatorClient_send(PyCreatorClient * self, PyObject * args)
 
 static PyMethodDef CreatorClient_methods[] = {
 	{"as_entity",      (PyCFunction)CreatorClient_as_entity, METH_NOARGS},
-	{"make",           (PyCFunction)CreatorClient_make, METH_VARARGS},
-	{"set",            (PyCFunction)CreatorClient_set, METH_VARARGS},
-	{"look",           (PyCFunction)CreatorClient_look, METH_VARARGS},
-	{"look_for",       (PyCFunction)CreatorClient_look_for, METH_VARARGS},
-	{"send",           (PyCFunction)CreatorClient_send, METH_VARARGS},
+	{"make",           (PyCFunction)CreatorClient_make,      METH_O},
+	{"set",            (PyCFunction)CreatorClient_set,       METH_VARARGS},
+	{"look",           (PyCFunction)CreatorClient_look,      METH_O},
+	{"look_for",       (PyCFunction)CreatorClient_look_for,  METH_O},
+	{"send",           (PyCFunction)CreatorClient_send,      METH_O},
 	{NULL,          NULL}           /* sentinel */
 };
 

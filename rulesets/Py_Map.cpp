@@ -67,7 +67,7 @@ static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
     return list;
 }
 
-static PyObject * Map_find_by_type(PyMap * self, PyObject * args)
+static PyObject * Map_find_by_type(PyMap * self, PyObject * py_what)
 {
 #ifndef NDEBUG
     if (self->m_map == NULL) {
@@ -75,10 +75,11 @@ static PyObject * Map_find_by_type(PyMap * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    char * what;
-    if (!PyArg_ParseTuple(args, "s", &what)) {
+    if (!PyString_CheckExact(py_what)) {
+        PyErr_SetString(PyExc_TypeError, "Map.find_by_type must be string");
         return NULL;
     }
+    char * what = PyString_AsString(py_what);
     MemEntityVector res = self->m_map->findByType(std::string(what));
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
@@ -156,7 +157,7 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
     }
 }
 
-static PyObject * Map_delete(PyMap * self, PyObject * args)
+static PyObject * Map_delete(PyMap * self, PyObject * py_id)
 {
 #ifndef NDEBUG
     if (self->m_map == NULL) {
@@ -164,17 +165,18 @@ static PyObject * Map_delete(PyMap * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    char * id;
-    if (!PyArg_ParseTuple(args, "s", &id)) {
+    if (!PyString_CheckExact(py_id)) {
+        PyErr_SetString(PyExc_TypeError, "Map.delete must be string");
         return NULL;
     }
+    char * id = PyString_AsString(py_id);
     self->m_map->del(id);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Map_get(PyMap * self, PyObject * args)
+static PyObject * Map_get(PyMap * self, PyObject * py_id)
 {
 #ifndef NDEBUG
     if (self->m_map == NULL) {
@@ -182,10 +184,11 @@ static PyObject * Map_get(PyMap * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    char * id;
-    if (!PyArg_ParseTuple(args, "s", &id)) {
+    if (!PyString_CheckExact(py_id)) {
+        PyErr_SetString(PyExc_TypeError, "Map.get must be string");
         return NULL;
     }
+    char * id = PyString_AsString(py_id);
     MemEntity * ret = self->m_map->get(id);
     if (ret == NULL) {
         Py_INCREF(Py_None);
@@ -198,7 +201,7 @@ static PyObject * Map_get(PyMap * self, PyObject * args)
     return thing;
 }
 
-static PyObject * Map_get_add(PyMap * self, PyObject * args)
+static PyObject * Map_get_add(PyMap * self, PyObject * py_id)
 {
 #ifndef NDEBUG
     if (self->m_map == NULL) {
@@ -206,11 +209,13 @@ static PyObject * Map_get_add(PyMap * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    char * id;
-    if (!PyArg_ParseTuple(args, "s", &id)) {
+    if (!PyString_CheckExact(py_id)) {
+        PyErr_SetString(PyExc_TypeError, "Map.get_add must be string");
         return NULL;
     }
+    char * id = PyString_AsString(py_id);
     MemEntity * ret = self->m_map->getAdd(id);
+    assert(ret != 0);
     PyObject * thing = wrapEntity(ret);
     if (thing == NULL) {
         return NULL;
@@ -218,7 +223,7 @@ static PyObject * Map_get_add(PyMap * self, PyObject * args)
     return thing;
 }
 
-static PyObject * Map_add_hooks_append(PyMap * self, PyObject * args)
+static PyObject * Map_add_hooks_append(PyMap * self, PyObject * py_method)
 {
 #ifndef NDEBUG
     if (self->m_map == NULL) {
@@ -226,17 +231,18 @@ static PyObject * Map_add_hooks_append(PyMap * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    char * method;
-    if (!PyArg_ParseTuple(args, "s", &method)) {
+    if (!PyString_CheckExact(py_method)) {
+        PyErr_SetString(PyExc_TypeError, "Map.add_hooks_append must be string");
         return NULL;
     }
+    char * method = PyString_AsString(py_method);
     self->m_map->getAddHooks().push_back(std::string(method));
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Map_update_hooks_append(PyMap * self, PyObject * args)
+static PyObject * Map_update_hooks_append(PyMap * self, PyObject * py_method)
 {
 #ifndef NDEBUG
     if (self->m_map == NULL) {
@@ -244,17 +250,18 @@ static PyObject * Map_update_hooks_append(PyMap * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    char * method;
-    if (!PyArg_ParseTuple(args, "s", &method)) {
+    if (!PyString_CheckExact(py_method)) {
+        PyErr_SetString(PyExc_TypeError, "Map.update_hooks_append must be string");
         return NULL;
     }
+    char * method = PyString_AsString(py_method);
     self->m_map->getUpdateHooks().push_back(std::string(method));
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * args)
+static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * py_method)
 {
 #ifndef NDEBUG
     if (self->m_map == NULL) {
@@ -262,10 +269,11 @@ static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    char * method;
-    if (!PyArg_ParseTuple(args, "s", &method)) {
+    if (!PyString_CheckExact(py_method)) {
+        PyErr_SetString(PyExc_TypeError, "Map.delete_hooks_append must be string");
         return NULL;
     }
+    char * method = PyString_AsString(py_method);
     self->m_map->getDeleteHooks().push_back(std::string(method));
 
     Py_INCREF(Py_None);
@@ -274,16 +282,16 @@ static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * args)
 
 static PyMethodDef Map_methods[] = {
     {"find_by_location",    (PyCFunction)Map_find_by_location,    METH_VARARGS},
-    {"find_by_type",        (PyCFunction)Map_find_by_type,        METH_VARARGS},
+    {"find_by_type",        (PyCFunction)Map_find_by_type,        METH_O},
     {"look_id",             (PyCFunction)Map_look_id,             METH_NOARGS},
     {"add",                 (PyCFunction)Map_updateAdd,           METH_VARARGS},
-    {"delete",              (PyCFunction)Map_delete,              METH_VARARGS},
-    {"get",                 (PyCFunction)Map_get,                 METH_VARARGS},
-    {"get_add",             (PyCFunction)Map_get_add,             METH_VARARGS},
+    {"delete",              (PyCFunction)Map_delete,              METH_O},
+    {"get",                 (PyCFunction)Map_get,                 METH_O},
+    {"get_add",             (PyCFunction)Map_get_add,             METH_O},
     {"update",              (PyCFunction)Map_updateAdd,           METH_VARARGS},
-    {"add_hooks_append",    (PyCFunction)Map_add_hooks_append,    METH_VARARGS},
-    {"update_hooks_append", (PyCFunction)Map_update_hooks_append, METH_VARARGS},
-    {"delete_hooks_append", (PyCFunction)Map_delete_hooks_append, METH_VARARGS},
+    {"add_hooks_append",    (PyCFunction)Map_add_hooks_append,    METH_O},
+    {"update_hooks_append", (PyCFunction)Map_update_hooks_append, METH_O},
+    {"delete_hooks_append", (PyCFunction)Map_delete_hooks_append, METH_O},
     {NULL,                  NULL}           // sentinel
 };
 

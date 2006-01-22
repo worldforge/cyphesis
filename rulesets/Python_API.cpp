@@ -127,12 +127,13 @@ static void python_log(LogLevel lvl, const char * msg)
     }
 }
 
-static PyObject * PyOutLogger_write(PyObject * self, PyObject * args)
+static PyObject * PyOutLogger_write(PyObject * self, PyObject * arg)
 {
-    char * mesg;
-    if (!PyArg_ParseTuple(args, "s", &mesg)) {
+    if (!PyString_CheckExact(arg)) {
+        PyErr_SetString(PyExc_TypeError, "write must be a string");
         return 0;
     }
+    char * mesg = PyString_AsString(arg);
 
     python_log(SCRIPT, mesg);
 
@@ -140,12 +141,13 @@ static PyObject * PyOutLogger_write(PyObject * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * PyErrLogger_write(PyObject * self, PyObject * args)
+static PyObject * PyErrLogger_write(PyObject * self, PyObject * arg)
 {
-    char * mesg;
-    if (!PyArg_ParseTuple(args, "s", &mesg)) {
+    if (!PyString_CheckExact(arg)) {
+        PyErr_SetString(PyExc_TypeError, "write must be a string");
         return 0;
     }
+    char * mesg = PyString_AsString(arg);
 
     python_log(SCRIPT_ERROR, mesg);
 
@@ -154,12 +156,12 @@ static PyObject * PyErrLogger_write(PyObject * self, PyObject * args)
 }
 
 static PyMethodDef PyOutLogger_methods[] = {
-    {"write",       PyOutLogger_write,          METH_VARARGS},
+    {"write",       PyOutLogger_write,          METH_O},
     {NULL,          NULL}                       /* Sentinel */
 };
 
 static PyMethodDef PyErrLogger_methods[] = {
-    {"write",       PyErrLogger_write,          METH_VARARGS},
+    {"write",       PyErrLogger_write,          METH_O},
     {NULL,          NULL}                       /* Sentinel */
 };
 
@@ -334,12 +336,8 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
     }
 }
 
-static PyObject * is_location(PyObject * self, PyObject * args)
+static PyObject * is_location(PyObject * self, PyObject * loc)
 {
-    PyObject * loc;
-    if (!PyArg_ParseTuple(args, "O", &loc)) {
-        return NULL;
-    }
     if (PyLocation_Check(loc)) {
         Py_INCREF(Py_True);
         return Py_True;
@@ -990,7 +988,7 @@ static PyMethodDef no_methods[] = {
 
 static PyMethodDef atlas_methods[] = {
     {"Operation",  (PyCFunction)operation_new,  METH_VARARGS|METH_KEYWORDS},
-    {"isLocation", is_location,                 METH_VARARGS},
+    {"isLocation", is_location,                 METH_O},
     {"Location",   location_new,                METH_VARARGS},
     {"Entity",     (PyCFunction)entity_new,     METH_VARARGS|METH_KEYWORDS},
     {"Message",    oplist_new,                  METH_VARARGS},

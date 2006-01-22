@@ -30,7 +30,7 @@ static PyObject *WorldTime_seconds(PyWorldTime *self)
     return PyFloat_FromDouble(self->time->seconds());
 }
 
-static PyObject * WorldTime_is_now(PyWorldTime *self, PyObject *args)
+static PyObject * WorldTime_is_now(PyWorldTime * self, PyObject * py_other)
 {
 #ifndef NDEBUG
     if (self->time == NULL) {
@@ -38,10 +38,11 @@ static PyObject * WorldTime_is_now(PyWorldTime *self, PyObject *args)
         return 0;
     }
 #endif // NDEBUG
-    char * other;
-    if (!PyArg_ParseTuple(args, "s", &other)) {
+    if (!PyString_CheckExact(py_other)) {
+        PyErr_SetString(PyExc_TypeError, "time must be a string");
         return NULL;
     }
+    char * other = PyString_AsString(py_other);
     //printf("Python worldtime is string\n");
     bool eq = (*self->time == std::string(other));
     PyObject * ret = eq ? Py_True : Py_False;
@@ -51,7 +52,7 @@ static PyObject * WorldTime_is_now(PyWorldTime *self, PyObject *args)
 
 static PyMethodDef WorldTime_methods[] = {
     {"seconds",         (PyCFunction)WorldTime_seconds, METH_NOARGS},
-    {"is_now",          (PyCFunction)WorldTime_is_now,  METH_VARARGS},
+    {"is_now",          (PyCFunction)WorldTime_is_now,  METH_O},
     {NULL,              NULL}           // sentinel
 };
 
