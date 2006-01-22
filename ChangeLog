@@ -1,3 +1,7 @@
+2006-01-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* Release 0.5.6
+
 2006-01-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/Py_CreatorClient.cpp, rulesets/Py_Map.cpp,
