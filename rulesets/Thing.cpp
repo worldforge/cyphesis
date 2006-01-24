@@ -210,7 +210,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             m_location.m_loc == new_loc->m_location.m_loc) {
 
             Pickup p;
-            p->setFrom(getId());
+            p->setFrom(op->getFrom());
+            p->setTo(getId());
             Sight s;
             s->setArgs1(p);
             res.push_back(s);
@@ -220,7 +221,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             new_loc == m_location.m_loc->m_location.m_loc) {
 
             Drop d;
-            d->setFrom(getId());
+            d->setFrom(op->getFrom());
+            d->setTo(getId());
             Sight s;
             s->setArgs1(d);
             res.push_back(s);
