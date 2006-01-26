@@ -228,13 +228,13 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     }
 
     if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
-        error(op, "Character has no type", res, getId());
+        error(op, "Entity has no type", res, getId());
         return;
     }
 
     const std::list<std::string> & parents = arg->getParents();
     if (parents.empty()) {
-        error(op, "Character has empty type list.", res, getId());
+        error(op, "Entity has empty type list.", res, getId());
         return;
     }
     
@@ -300,7 +300,9 @@ void Account::SetOperation(const Operation & op, OpVector & res)
 
     EntityDict::const_iterator J = m_charactersDict.find(intId);
     if (J == m_charactersDict.end()) {
-        return error(op, "Set character for unknown character", res, getId());
+        // Client has sent a Set op for an object that is not
+        // one of our characters.
+        return error(op, "Permission denied.", res, getId());
     }
 
     Entity * e = J->second;

@@ -286,7 +286,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
             }
             return;
         }
-        error(op, "Client using Set to install new type", res, getId());
+        error(op, "Client using obsolete Set to install new type", res, getId());
         return;
 #if 0
         // We no longer accept types installed using Set ops
