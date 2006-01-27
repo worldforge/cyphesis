@@ -19,6 +19,9 @@ class Combat(Thing):
         """ The attack op is FROM the the character that initiated combat which
             we term the attacker, TO the character that is attacker which we
             term the defender. We store the IDs of both. """
+        if self.character.stamina < 0.1:
+            self.irrelevant()
+            return
         self.attack=True
         defender = op.to
         if defender != self.character.id:
@@ -29,7 +32,7 @@ class Combat(Thing):
         # Attach this task to the attacker. Its already implicitly attached
         # to the defender who owns this task.
         a=self.character.world.get_object(self.attacker)
-        if a:
+        if a and a.stamina > 0.1:
             a.set_task(self.cppthing)
         else:
             self.irrelevant()
@@ -100,6 +103,7 @@ class Combat(Thing):
         if stamina <= 0:
             set_arg.status = defender.status - 0.1
             defender.send_world(Operation("imaginary", Entity(description="has been defeated"), to=defender))
+            defender.send_world(Operation("sight", Operation("collapse", from_=d)))
             attacker.send_world(Operation("imaginary", Entity(description="is victorious"), to=attacker))
             self.make_irrelevant()
 

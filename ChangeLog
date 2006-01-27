@@ -1,5 +1,14 @@
 2006-01-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/basic.xml: Add "collapse" action op to trigger a defeated
+	  animation.
+
+	* rulesets/mason/world/tasks/Combat.py: Prevent characters from
+	  attacking characters that are exhausted. Send a sight of
+	  collapse operation when combat finishes.
+
+2006-01-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.cpp, server/Admin.cpp: Improve error messages
 	  when client use Set ops incorrectly.
 

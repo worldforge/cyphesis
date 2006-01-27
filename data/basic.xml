@@ -119,6 +119,14 @@
   </map>
 
   <map>
+    <string name="id">collapse</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
     <string name="id">disperse</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
