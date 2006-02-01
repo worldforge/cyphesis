@@ -34,7 +34,6 @@
 	  rulesets/basic/mind/goals/common/move.py: Rename
 	  unit_vector_to_another_vector to unit_vector_to.
 
-
 2006-01-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_World.cpp: Experiment to try METH_O with calls which
