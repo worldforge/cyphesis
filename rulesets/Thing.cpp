@@ -53,6 +53,7 @@ using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Pickup;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
+using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
@@ -204,8 +205,10 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // Up until this point nothing should have changed, but the changes
     // have all now been checked for validity.
 
+    // Check if the location has changed
     if (new_loc != 0 && m_location.m_loc != new_loc) {
-        // Check for pickup
+        // Check for pickup, ie if the new LOC is the actor, and the
+        // previous LOC is the actor's LOC.
         if (new_loc->getId() == op->getFrom() &&
             m_location.m_loc == new_loc->m_location.m_loc) {
 
@@ -215,8 +218,16 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             Sight s;
             s->setArgs1(p);
             res.push_back(s);
+
+            Anonymous wield_arg;
+            wield_arg->setId(getId());
+            Wield w;
+            w->setTo(op->getFrom());
+            w->setArgs1(wield_arg);
+            res.push_back(w);
         }
-        // Check for drop
+        // Check for drop, ie if the old LOC is the actor, and the
+        // new LOC is the actor's LOC.
         if (m_location.m_loc->getId() == op->getFrom() &&
             new_loc == m_location.m_loc->m_location.m_loc) {
 

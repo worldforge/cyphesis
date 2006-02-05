@@ -1,3 +1,8 @@
+2006-02-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: When a character picks something up, wield it
+	  by default.
+
 2006-01-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/basic.xml: Add "collapse" action op to trigger a defeated
