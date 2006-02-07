@@ -290,14 +290,24 @@ AC_CHECK_LIB(readline,readline,
     ],[ $READLINE_LIBS ]
 )
     
-AC_TRY_COMPILE(
+AC_COMPILE_IFELSE(
   [
-    #include <stdio.h>
-    #include <readline/readline.h>
+    AC_LANG_PROGRAM(
+      [[
+        #include <stdio.h>
+        #include <readline/readline.h>
+      ]],
+      [[
+        readline("test > ")
+      ]]
+    )
   ],
-    readline("test > "), 
-    AC_DEFINE(READLINE_CXX_SANE, 1, [Define if readline headers are C++ aware]),
+  [
+    AC_DEFINE(READLINE_CXX_SANE, 1, Define if readline headers are C++ aware)
+  ],
+  [
     AC_MSG_WARN(Readline C++ workaround enabled)
+  ]
 )
 
 AC_SUBST(VARCONF_LIBS)
