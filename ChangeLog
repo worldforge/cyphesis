@@ -1,3 +1,7 @@
+2006-02-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Minor update to autoconf syntax.
+
 2006-02-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: When a character picks something up, wield it
