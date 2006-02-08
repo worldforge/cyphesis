@@ -1,3 +1,7 @@
+Perhaps entities can have an Atlas Anonymous attached to avoid newly
+constructing one every time look is called. Ref counting objects mean
+no copy is required.
+
 Add inheritance for Task and installed task types, under like something?
 
 Add pickaxes, and trowels, and knowledge about tools to the tool merchant.
