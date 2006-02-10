@@ -1,3 +1,13 @@
+2006-02-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/World.cpp: Re-write look handling to use existing
+	  addToEntity() to create an atlas representation of the entity
+	  rather than doing most by hand. This ensures that properties
+	  and attributes now work on the world.
+
+	* rulesets/Entity.cpp: Ensure that the best use is made of static
+	  attributes on RootEntity.
+
 2006-02-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Minor update to autoconf syntax.

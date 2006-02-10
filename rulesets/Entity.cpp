@@ -199,7 +199,7 @@ void Entity::addToEntity(const RootEntity & ent) const
     for (; J != Jend; ++J) {
         J->second->add(J->first, ent);
     }
-    ent->setAttr("stamp", (double)m_seq);
+    ent->setStamp((double)m_seq);
     ent->setParents(std::list<std::string>(1, m_type));
     m_location.addToEntity(ent);
     ent->setObjtype("obj");

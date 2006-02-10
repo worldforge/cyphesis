@@ -384,16 +384,21 @@ void World::LookOperation(const Operation & op, OpVector & res)
     Sight s;
 
     Anonymous sarg;
+    addToEntity(sarg);
     s->setArgs1(sarg);
 
-    sarg->setId(getId());
-    sarg->setParents(std::list<std::string>(1, "world"));
-    sarg->setObjtype("obj");
     // FIXME integrate setting terrain with setting contains.
 
-    TerrainProperty tp(m_terrain, m_modifiedTerrain,
-                       m_createdTerrain, a_terrain);
-    tp.add("terrain", sarg);
+    // sarg->setId(getId());
+    // sarg->setParents(std::list<std::string>(1, "world"));
+    // sarg->setObjtype("obj");
+
+    // TerrainProperty tp(m_terrain, m_modifiedTerrain,
+                       // m_createdTerrain, a_terrain);
+    // tp.add("terrain", sarg);
+
+    // CalendarProperty cp(0);
+    // cp.add("calendar", sarg);
 
     ListType contlist;
     EntitySet::const_iterator Iend = m_contains.end();
@@ -407,6 +412,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
     }
     if (contlist.empty()) {
         debug(std::cout << "WARNING: contains empty." << std::endl << std::flush;);
+        sarg->removeAttr("contains");
     } else {
         sarg->setAttr("contains", contlist);
     }
