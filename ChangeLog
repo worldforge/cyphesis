@@ -1,5 +1,12 @@
 2006-02-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py: Clean up defend
+	  goal so it works with new spot_something.
+
+	* rulesets/mason/define_world.py: Add goblins.
+
+2006-02-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/World.cpp: Remove commented out code. Make use of the
 	  fact that CONTAINS is directly supported by RootEntity to
 	  make handling it much more efficient.

@@ -13,6 +13,7 @@ from editor import editor
 from Quaternion import Quaternion
 from Vector3D import Vector3D
 import time
+from math import *
 
 #goal priority
 #1) eating: certain times
@@ -34,12 +35,15 @@ graveyard_height=0
 hall_xyz=(5,3,settlement_height)
 forest_xyz=(-20,-60,settlement_height)
 
+village_xyz=(150,150,22)
 pig_sty_xyz=(8,8,settlement_height)
 butcher_stall_xyz=(155,140,settlement_height)
 butcher_xyz=(153,142,settlement_height)
 tool_stall_xyz=(150,138,settlement_height)
 tool_merchant_xyz=(150,140,settlement_height)
 mausoleum_xyz=(-160, 105, graveyard_height)
+
+camp_xyz=(100,-50,22)
 
 lake_xyz=(-40,-70,0)
 
@@ -454,6 +458,31 @@ def default(mapeditor):
     m.learn(warriors,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
     m.learn(warriors,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
 
+    # Goblins
+
+    cfire=m.make('campfire',type='campfire',xyz=(100,-50,settlement_height))
+    m.make('fire',type='fire',xyz=(0,0,0),parent=cfire.id)
+
+    cfire=m.make('campfire',type='campfire',xyz=(90,-50,settlement_height))
+    m.make('fire',type='fire',xyz=(0,0,0),parent=cfire.id)
+
+    for i in range(10, 350, 5):
+        m.make('lumber',type='lumber',xyz=(100 + 14 * sin(radians(i)), -50 + 16 * cos(radians(i)), settlement_height), bbox=[-0.5,-0.5,0,0.5,0.5,4], mass=2000)
+        
+    camp_area_points=[]
+    for i in range(10, 350, 17):
+        camp_area_points.append([14 * sin(radians(i)), 16 * cos(radians(i))])
+    camp_area={'points': camp_area_points, 'layer':7 }
+    m.make('camp_area', xyz=camp_xyz, type='path', area=camp_area, bbox=[-14, -16, 0, 14, 16, 1])
+
+    goblin_guards=[]
+    goblin=m.make('goblin', type='goblin', xyz=(102, -33, settlement_height))
+    goblin_guards.append(goblin)
+    goblin=m.make('goblin', type='goblin', xyz=(98, -33, settlement_height))
+    goblin_guards.append(goblin)
+
+    m.learn(goblin_guards,(il.defend,"defend('settler', 10)"))
+
     deers=[]
     xbase = uniform(-180,180)
     ybase = uniform(-180,180)
@@ -687,3 +716,16 @@ def test_own(mapeditor):
     settler=m.make('settler',xyz=(1,1,0), sex='male')
     axe=m.make('axe',type='axe',xyz=(0,0,0),parent=settler.id)
     m.own(settler,axe)
+
+
+def test_goblins(mapeditor):
+
+    m=editor(mapeditor)
+    goblin_guards=[]
+    goblin=m.make('goblin', type='goblin', xyz=(102, -33, settlement_height))
+    goblin_guards.append(goblin)
+    goblin=m.make('goblin', type='goblin', xyz=(98, -33, settlement_height))
+    goblin_guards.append(goblin)
+
+    m.learn(goblin_guards,(il.defend,"defend('settler', 10)"))
+

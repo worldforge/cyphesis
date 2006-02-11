@@ -1,3 +1,5 @@
+Make gobos rob after ganking.
+
 Perhaps entities can have an Atlas Anonymous attached to avoid newly
 constructing one every time look is called. Ref counting objects mean
 no copy is required.
