@@ -66,22 +66,11 @@ Account::Account(Connection * conn, const std::string & uname,
 
 Account::~Account()
 {
-    ConMap::const_iterator J = m_destroyedConnections.begin();
-    ConMap::const_iterator Jend = m_destroyedConnections.end();
-    for (; J != Jend; ++J) {
-        J->second->disconnect();
-        delete J->second;
-    }
 }
 
 void Account::characterDestroyed(long id)
 {
     m_charactersDict.erase(id);
-    ConMap::iterator I = m_destroyedConnections.find(id);
-    if (I != m_destroyedConnections.end()) {
-        delete I->second;
-        m_destroyedConnections.erase(I);
-    }
     if (consts::enable_persistence) {
         Persistance::instance()->delCharacter(String::compose("%1", id));
     }
@@ -94,8 +83,7 @@ void Account::addCharacter(Entity * chr)
         return;
     }
     m_charactersDict[chr->getIntId()] = chr;
-    SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<long>(SigC::slot(*this, &Account::characterDestroyed), chr->getIntId())));
-    m_destroyedConnections[chr->getIntId()] = con;
+    chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
 }
 
 Entity * Account::addNewCharacter(const std::string & typestr,
@@ -120,8 +108,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.
         m_charactersDict[chr->getIntId()] = chr;
-        SigC::Connection * con = new SigC::Connection(chr->destroyed.connect(SigC::bind<long>(SigC::slot(*this, &Account::characterDestroyed), chr->getIntId())));
-        m_destroyedConnections[chr->getIntId()] = con;
+        chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
         m_connection->addObject(chr);
         if (consts::enable_persistence) {
             Persistance::instance()->addCharacter(*this, *chr);

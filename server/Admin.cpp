@@ -448,7 +448,7 @@ void Admin::customMonitorOperation(const Operation & op, OpVector & res)
     if (!op->getArgs().empty()) {
         if (m_connection != 0) {
             if (!m_monitorConnection.connected()) {
-                m_monitorConnection = m_connection->m_server.m_world.Dispatching.connect(SigC::slot(*this, &Admin::opDispatched));
+                m_monitorConnection = m_connection->m_server.m_world.Dispatching.connect(sigc::mem_fun(this, &Admin::opDispatched));
             }
         }
     } else {

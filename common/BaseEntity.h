@@ -22,7 +22,7 @@
 
 #include <Atlas/Message/Element.h>
 
-#include <sigc++/object.h>
+#include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
 #include <string>
@@ -38,7 +38,7 @@
 /// possible.
 /// It has an id member which is typically used to store it in a STL map or
 /// dictionary as they are called elsewhere in this code.
-class BaseEntity : virtual public SigC::Object {
+class BaseEntity : virtual public sigc::trackable {
   private:
     /// String id.
     const std::string m_id;
@@ -107,7 +107,7 @@ class BaseEntity : virtual public SigC::Object {
     void clientError(const Operation &, const std::string & errstring,
                      OpVector &, const std::string & to = "") const;
 
-    SigC::Signal0<void> destroyed;
+    sigc::signal<void> destroyed;
 };
 
 #endif // COMMON_BASE_ENTITY_H

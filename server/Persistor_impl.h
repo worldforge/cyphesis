@@ -249,10 +249,10 @@ void Persistor<T>::cPlant(Plant & p, std::string & c, std::string & v)
 template <class T>
 void Persistor<T>::hookup(T & t)
 {
-    t.updated.connect(SigC::bind<T*>(SigC::slot(*this, &Persistor<T>::update),
-                                      &t));
-    t.destroyed.connect(SigC::bind<T*>(SigC::slot(*this, &Persistor<T>::remove),
-                                        &t));
+    t.updated.connect(sigc::bind(sigc::mem_fun(this, &Persistor<T>::update),
+                                 &t));
+    t.destroyed.connect(sigc::bind(sigc::mem_fun(this, &Persistor<T>::remove),
+                                   &t));
 }
 
 template <class T>

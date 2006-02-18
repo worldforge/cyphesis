@@ -18,7 +18,7 @@
 #ifndef SERVER_PERSISTOR_H
 #define SERVER_PERSISTOR_H
 
-#include <sigc++/object.h>
+#include <sigc++/trackable.h>
 
 #include <string>
 
@@ -31,7 +31,7 @@ class Plant;
 /// \brief Class template for handling persisting entity attributes in
 /// the database
 template <class T>
-class Persistor : virtual public SigC::Object {
+class Persistor : virtual public sigc::trackable {
   private:
     const std::string m_class;
 

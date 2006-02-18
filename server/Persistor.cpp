@@ -260,12 +260,12 @@ void Persistor<World>::update(World * t)
 template<>
 void Persistor<Character>::hookup(Character & t)
 {
-    t.updated.connect(SigC::bind<Character *>(SigC::slot(*this,
-                                              &Persistor<Character>::update),
-                                              &t));
-    t.destroyed.connect(SigC::bind<Character *>(SigC::slot(*this,
-                                                &Persistor<Character>::remove),
-                                                &t));
+    t.updated.connect(sigc::bind(sigc::mem_fun(this,
+                                               &Persistor<Character>::update),
+                                 &t));
+    t.destroyed.connect(sigc::bind(sigc::mem_fun(this,
+                                                 &Persistor<Character>::remove),
+                                   &t));
 }
 
 template<>
@@ -299,8 +299,8 @@ void Persistor<Creator>::persist(Creator & t)
 template<>
 void Persistor<World>::hookup(World & t)
 {
-    t.updated.connect(SigC::bind<World *>(SigC::slot(*this,
-                                          &Persistor<World>::update), &t));
+    t.updated.connect(sigc::bind(sigc::mem_fun(this, &Persistor<World>::update),
+                                 &t));
     // The game world should never be destroyed, so we don't connect
     // it to a remove function.
 }

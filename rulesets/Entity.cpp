@@ -74,7 +74,7 @@ Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
     m_properties["contains"] = new ImmutableProperty<EntitySet>(m_contains);
 
     SignalProperty<BBox> * sp = new SignalProperty<BBox>(m_location.m_bBox, a_bbox);
-    sp->modified.connect(SigC::slot(m_location, &Location::modifyBBox));
+    sp->modified.connect(sigc::mem_fun(&m_location, &Location::modifyBBox));
     m_properties["bbox"] = sp;
 }
 

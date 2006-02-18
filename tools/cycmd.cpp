@@ -269,7 +269,8 @@ class OperationMonitor : public AdminTask {
 };
 
 template <class Stream>
-class Interactive : public Atlas::Objects::ObjectsDecoder, public SigC::Object
+class Interactive : public Atlas::Objects::ObjectsDecoder,
+                    virtual public sigc::trackable
 {
   private:
     bool error_flag, reply_flag, login_flag, avatar_flag;
@@ -614,7 +615,7 @@ void Interactive<Stream>::soundArrived(const RootOperation & op)
               << std::endl << std::flush;
 }
 
-SigC::Signal1<void, char *> CmdLine;
+sigc::signal<void, char *> CmdLine;
 
 template <class Stream>
 void Interactive<Stream>::gotCommand(char * cmd)
@@ -704,11 +705,10 @@ void Interactive<Stream>::loop()
 {
     rl_callback_handler_install("cyphesis> ", &Interactive<Stream>::gotCommand);
     rl_completion_entry_function = &completion_generator;
-    SigC::Connection c = CmdLine.connect(SigC::slot(*this, &Interactive<Stream>::runCommand));
+    CmdLine.connect(sigc::mem_fun(this, &Interactive<Stream>::runCommand));
     while (!exit) {
         poll();
     };
-    c.disconnect();
     rl_callback_handler_remove();
 }
 

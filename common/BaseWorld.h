@@ -90,7 +90,7 @@ class BaseWorld {
     virtual void addPerceptive(const std::string & id) = 0;
 
 
-    SigC::Signal1<void, Operation> Dispatching;
+    sigc::signal<void, Operation> Dispatching;
 };
 
 #endif // COMMON_BASE_WORLD_H

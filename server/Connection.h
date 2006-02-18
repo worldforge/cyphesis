@@ -35,14 +35,7 @@ class Account;
 /// like in-game characters. Clients specify which entity should handle
 /// an operation using the from attribute.
 class Connection : public OOGThing {
-    typedef std::map<long, SigC::Connection *> ConMap;
-
     BaseDict m_objects;
-
-    /// \brief Signal connections connected to the destroyed signal of
-    /// entities associated with this object. As the entities get deleted
-    /// it is necessary to disconnect the signals.
-    ConMap m_destroyedConnections;
 
     /// \brief Flag to indicate if this connection has already been
     /// disconnected from the entities associated with it.

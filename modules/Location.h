@@ -25,11 +25,11 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
-#include <sigc++/object.h>
+#include <sigc++/trackable.h>
 
 class Entity;
 
-class Location : virtual public SigC::Object {
+class Location : virtual public sigc::trackable {
   private:
     bool m_simple;
     bool m_solid;

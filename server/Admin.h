@@ -32,7 +32,7 @@ class Admin : public Account {
                                OpVector &) const;
     void opDispatched(Operation op);
 
-    SigC::Connection m_monitorConnection;
+    sigc::connection m_monitorConnection;
   public:
     Admin(Connection * conn, const std::string & username,
                              const std::string & passwd,

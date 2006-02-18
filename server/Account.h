@@ -20,8 +20,6 @@
 
 #include "common/OOGThing.h"
 
-#include <sigc++/connection.h>
-
 class Connection;
 
 /// \brief This is the base class for storing information about uses who
@@ -32,10 +30,7 @@ class Connection;
 /// characterError().
 class Account : public OOGThing {
   protected:
-    typedef std::map<long, SigC::Connection *> ConMap;
-
     EntityDict m_charactersDict;
-    ConMap m_destroyedConnections;
 
     Entity * addNewCharacter(const std::string &,
                              const Atlas::Objects::Entity::RootEntity &);

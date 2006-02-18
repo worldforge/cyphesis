@@ -1,3 +1,15 @@
+2006-02-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.h, common/BaseWorld.h, common/Property.h,
+	  modules/Location.h, rulesets/Entity.cpp, rulesets/Entity.h,
+	  server/Account.cpp, server/Account.h, server/Admin.cpp,
+	  server/Admin.h, server/Connection.cpp, server/Connection.h,
+	  server/Persistor.cpp, server/Persistor.h, server/Persistor_impl.h,
+	  tools/cycmd.cpp: Update usage of sigc++ to the native 2.0 API
+	  rather than the deprecated compatability API. Eleminate the
+	  manual disconnection code for deleted objects, as this is now
+	  handled automatically by sigc::trackable.
+
 2006-02-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/goals/common/misc_goal.py: Clean up defend

@@ -70,12 +70,6 @@ Connection::~Connection()
     // of objects when we delete it.
     assert(!m_obsolete);
     m_obsolete = true;
-    ConMap::const_iterator J = m_destroyedConnections.begin();
-    ConMap::const_iterator Jend = m_destroyedConnections.end();
-    for (; J != Jend; ++J) {
-        J->second->disconnect();
-        delete J->second;
-    }
 
     debug(std::cout << "destroy called" << std::endl << std::flush;);
     
@@ -129,19 +123,13 @@ Account * Connection::addPlayer(const std::string& username,
 void Connection::addObject(BaseEntity * obj)
 {
     m_objects[obj->getIntId()] = obj;
-    SigC::Connection * con = new SigC::Connection(obj->destroyed.connect(SigC::bind<long>(SigC::slot(*this, &Connection::objectDeleted), obj->getIntId())));
-    m_destroyedConnections[obj->getIntId()] = con;
+    obj->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Connection::objectDeleted), obj->getIntId()));
 }
 
 void Connection::removeObject(long id)
 {
     if (!m_obsolete) {
         m_objects.erase(id);
-        ConMap::iterator I = m_destroyedConnections.find(id);
-        if (I != m_destroyedConnections.end()) {
-            delete I->second;
-            m_destroyedConnections.erase(I);
-        }
     }
 }
 

@@ -214,7 +214,7 @@ class Entity : public BaseEntity {
     virtual void OtherOperation(const Operation & op, OpVector &);
 
     /// Signal indicating that this entity has been changed
-    SigC::Signal0<void> updated;
+    sigc::signal<void> updated;
 };
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)
