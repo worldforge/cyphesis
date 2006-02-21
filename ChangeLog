@@ -1,3 +1,13 @@
+2006-02-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.h, rulesets/Thing.cpp: Add a signal to be emitted
+	  when an entities container changes, and emit it during
+	  MoveOperation processing.
+
+	* rulesets/Character.h, rulesets/Character.cpp: Hook up to the
+	  containered signal of a wielded entity, and unwield it when its
+	  container changes.
+
 2006-02-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.h, common/BaseWorld.h, common/Property.h,

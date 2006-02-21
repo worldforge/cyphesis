@@ -206,7 +206,10 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // have all now been checked for validity.
 
     // Check if the location has changed
-    if (new_loc != 0 && m_location.m_loc != new_loc) {
+    if (new_loc != 0) {
+        // new_loc should only be non-null if the LOC specified is
+        // different from the current LOC
+        assert(m_location.m_loc != new_loc);
         // Check for pickup, ie if the new LOC is the actor, and the
         // previous LOC is the actor's LOC.
         if (new_loc->getId() == op->getFrom() &&
@@ -255,6 +258,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         m_location.m_loc->incRef();
         m_update_flags |= a_loc;
 
+        containered.emit();
     }
 
     std::string mode;

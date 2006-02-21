@@ -67,6 +67,7 @@ using Atlas::Objects::Operation::Action;
 using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Appearance;
+using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
@@ -111,6 +112,13 @@ void Character::metabolise(OpVector & res, double ammount)
     s->setArgs1(set_arg);
 
     res.push_back(s);
+}
+
+void Character::wieldDropped()
+{
+    Wield wield;
+    wield->setTo(getId());
+    sendWorld(wield);
 }
 
 Character::Character(const std::string & id, long intId) :
@@ -376,8 +384,19 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
-        // FIXME Wield nothing perhaps?
-        error(op, "Wield has no argument", res, getId());
+        // Wield nothing
+        if (m_rightHandWieldConnection.connected()) {
+            m_rightHandWieldConnection.disconnect();
+        }
+
+        Set set;
+        set->setTo(getId());
+        Anonymous set_arg;
+        set_arg->setId(getId());
+        set_arg->setAttr("right_hand_wield", "");
+        set->setArgs1(set_arg);
+        res.push_back(set);
+
         return;
     }
     const Root & arg = op->getArgs().front();
@@ -398,6 +417,10 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         return;
     }
 
+    if (m_rightHandWieldConnection.connected()) {
+        m_rightHandWieldConnection.disconnect();
+    }
+
     Set set;
     set->setTo(getId());
     Anonymous set_arg;
@@ -405,6 +428,8 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     set_arg->setAttr("right_hand_wield", item->getId());
     set->setArgs1(set_arg);
     res.push_back(set);
+
+    m_rightHandWieldConnection = item->containered.connect(sigc::mem_fun(this, &Character::wieldDropped));
 
     // m_rightHandWield = item->getId();
     debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush;);

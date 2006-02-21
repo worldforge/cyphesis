@@ -22,6 +22,8 @@
 
 #include "Statistics.h"
 
+#include <sigc++/connection.h>
+
 class Movement;
 class Task;
 class BaseMind;
@@ -52,7 +54,9 @@ class Character : public Character_parent {
     std::string m_sex;
     double m_food;
     double m_maxMass;
+
     std::string m_rightHandWield;
+    sigc::connection m_rightHandWieldConnection;
 
     static const double energyConsumption;
     static const double foodConsumption;
@@ -62,6 +66,7 @@ class Character : public Character_parent {
     static const double weightGain;
 
     void metabolise(OpVector &, double ammount = 1); 
+    void wieldDropped();
 
     friend class Movement;
   public:

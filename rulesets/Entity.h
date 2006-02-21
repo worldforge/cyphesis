@@ -215,6 +215,9 @@ class Entity : public BaseEntity {
 
     /// Signal indicating that this entity has been changed
     sigc::signal<void> updated;
+
+    /// Signal indicating that this entity has changed its LOC
+    sigc::signal<void> containered;
 };
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)
