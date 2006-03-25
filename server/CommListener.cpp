@@ -76,6 +76,8 @@ int CommListener::setup(int port)
     if (!m_listener.is_open()) {
         return -1;
     }
+    // Set a linger time of 0 seconds, so that the socket is got rid
+    // of quickly.
     int socket = m_listener.getSocket();
     struct linger {
         int   l_onoff;
@@ -83,7 +85,7 @@ int CommListener::setup(int port)
     } listenLinger = { 1, 0 };
     ::setsockopt(socket, SOL_SOCKET, SO_LINGER, &listenLinger,
                                                 sizeof(listenLinger));
-
+    // Ensure the address can be reused once we are done with it.
     int flag = 1;
     ::setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
     return 0;

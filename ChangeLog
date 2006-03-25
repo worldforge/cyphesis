@@ -1,3 +1,7 @@
+2006-03-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommListener.cpp: Add comments about socket setup.
+
 2006-02-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.h, rulesets/Thing.cpp: Add a signal to be emitted
