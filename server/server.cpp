@@ -54,6 +54,11 @@ static const bool debug_flag = false;
 
 int main(int argc, char ** argv)
 {
+    if (security_check() != SECURITY_OKAY) {
+        log(CRITICAL, "Security Error. Exiting.");
+        return EXIT_SECURITY_ERROR;
+    }
+
     interactive_signals();
 
     if (loadConfig(argc, argv, true) < 0) {

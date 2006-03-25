@@ -1,3 +1,6 @@
+Need to work out a sane way to handle udp socket for sending to multiple
+clients quickly and efficiently.
+
 Add short varconf args.
 
 Refuse to run as root, unless user gives argument to force it.

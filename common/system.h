@@ -24,15 +24,20 @@
 // convery any data
 #define EXIT_CONFIG_ERROR     (EXIT_FAILURE)
 #define EXIT_FORK_ERROR       (EXIT_FAILURE)
+#define EXIT_SECURITY_ERROR   (EXIT_FAILURE)
 
 // These exit status values might be passed back to our waiting parent, so we
 // can embed information about the nature of the error.
 #define EXIT_DATABASE_ERROR   (EXIT_FAILURE | 1 << 1)
 #define EXIT_SOCKET_ERROR     (EXIT_FAILURE | 2 << 1)
 
+// Magic number returned by the security check if everything is okay.
+#define SECURITY_OKAY         (0xff7a64e1)
+
 #include <string>
 
 const std::string get_hostname();
+int security_check();
 void interactive_signals();
 void daemon_signals();
 int daemonise();

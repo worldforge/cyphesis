@@ -1,5 +1,13 @@
 2006-03-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/system.h, common/system.cpp: Add security check function
+	  which for now just ensures cyphesis is not run as root.
+
+	* server/server.cpp: Use security check function when starting
+	  the server.
+
+2006-03-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommListener.cpp: Add comments about socket setup.
 
 2006-02-20  Al Riddoch  <alriddoch@zepler.org>

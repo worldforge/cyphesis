@@ -54,6 +54,15 @@ const std::string get_hostname()
     return std::string(host_ident.nodename);
 }
 
+int security_check()
+{
+    if (getuid() == 0 || geteuid() == 0) {
+        log(ERROR, "Running cyphesis as the superuser is dangerous.");
+        return -1;
+    }
+    return SECURITY_OKAY;
+}
+
 extern "C" void shutdown_on_signal(int signo)
 {
     exit_flag = true;
