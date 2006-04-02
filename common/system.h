@@ -43,7 +43,7 @@ void daemon_signals();
 int daemonise();
 void running();
 
-void hash_password(const std::string & pwd, const std::string & hash,
+void hash_password(const std::string & pwd, const std::string & salt,
                    std::string & hash);
 
 void encrypt_password(const std::string & pwd, std::string & hash);

@@ -1027,6 +1027,24 @@
   <map>
     <map name="attributes">
     </map>
+    <string name="id">logging</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="tool">axe</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Logging</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
     <string name="id">lych</string>
     <string name="objtype">class</string>
     <list name="parents">
