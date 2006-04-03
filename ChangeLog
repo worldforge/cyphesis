@@ -1,3 +1,9 @@
+2006-04-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.h, rulesets/Character.cpp: Add stub of Use op
+	  handler on character. Re-write the mind Use op handler to be
+	  cleaner, faster and easier to understand.
+
 2006-04-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/system.h: Fix name for second argument of hash_password().

@@ -381,6 +381,10 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
     res.push_back(si);
 }
 
+void Character::UseOperation(const Operation & op, OpVector & res)
+{
+}
+
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
@@ -589,33 +593,47 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     std::string op_type;
 
     // Determine the operations this tool supports
-    if (tool->get("operations", toolOpAttr)) {
-        if (!toolOpAttr.isList()) {
-            log(ERROR, "Use tool has non list operations list");
-            return;
+    if (!tool->get("operations", toolOpAttr)) {
+        log(NOTICE, "Character::mindUseOp: Attempt to use something not a tool");
+        return;
+    }
+
+    if (!toolOpAttr.isList()) {
+        log(ERROR, "Use tool has non list operations list");
+        return;
+    }
+    const ListType & toolOpList = toolOpAttr.asList();
+    if (toolOpList.empty()) {
+        log(ERROR, "Tool operation list is empty");
+        return;
+    }
+    ListType::const_iterator J = toolOpList.begin();
+    ListType::const_iterator Jend = toolOpList.end();
+    assert(J != Jend);
+    if (!(*J).isString()) {
+        log(ERROR, "Tool operation list is malformed");
+        return;
+    }
+    op_type = (*J).String();
+    debug(std::cout << "default tool op is " << op_type << std::endl
+                                                        << std::flush;);
+    for (; J != Jend; ++J) {
+        if (!(*J).isString()) {
+            log(ERROR, "Use tool has non string in operations list");
+        } else {
+            toolOps.insert((*J).String());
         }
-        const ListType & toolOpList = toolOpAttr.asList();
-        ListType::const_iterator J = toolOpList.begin();
-        ListType::const_iterator Jend = toolOpList.end();
-        if ((J != Jend) && ((*J).isString())) {
-            op_type = (*J).String();
-            debug(std::cout << "default tool op is " << op_type << std::endl
-                                                                << std::flush;);
-        }
-        for (; J != Jend; ++J) {
-            if (!(*J).isString()) {
-                log(ERROR, "Use tool has non string in operations list");
-            } else {
-                toolOps.insert((*J).String());
-            }
-        }
-    } // FIXME else return? Not much can happen if toolOps is empty
+    }
+
+
+    RootEntity entity_arg(0);
+
+    assert(!entity_arg.isValid());
 
     // Look at Use args. If arg is an entity, this is the target.
     // If arg is an operation, this is the operation to be used, and the
     // sub op arg may be an entity specifying target. If op to be used is
     // specified, this is checked against the ops permitted by this tool.
-    Anonymous target;
     const std::vector<Root> & args = op->getArgs();
     if (!args.empty()) {
         const Root & arg = args.front();
@@ -644,51 +662,34 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 
             const std::vector<Root> & arg_op_args = arg_op->getArgs();
             if (!arg_op_args.empty()) {
-                const Root & arg_op_arg = arg_op_args.front();
-                
-                if (!arg_op_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-                    error(op, "Use arg entity has no ID", res, getId());
+                entity_arg = smart_dynamic_cast<RootEntity>(arg_op_args.front());
+                if (!entity_arg.isValid()) {
+                    error(op, "Use target is malformed", res, getId());
                     return;
-                }
-                target->setId(arg_op_arg->getId());
-                debug(std::cout << "Got target " << target->getId()
-                                << " from op arg"
-                                << std::endl << std::flush;);
-                // FIXME Duplicated code below (see FIXME)
-                Element pos_attr;
-                if (arg_op_arg->copyAttr("pos", pos_attr) == 0) {
-                    debug(std::cout << "Got a use op with POS"
-                                    << std::endl << std::flush;);
-                    if (!pos_attr.isList()) {
-                        error(op, String::compose("Use arg entity has POS of type %1 rather than list", Element::typeName(pos_attr.getType())).c_str(), res, getId());
-                        return;
-                    }
-                    target->setAttr("pos", pos_attr);
                 }
             }
         } else if (argtype == "obj") {
-            if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-                error(op, "Use arg entity has no ID", res, getId());
+            entity_arg = smart_dynamic_cast<RootEntity>(arg);
+            if (!entity_arg.isValid()) {
+                error(op, "Use target is malformed", res, getId());
                 return;
-            }
-            target->setId(arg->getId());
-            debug(std::cout << "Got target " << target->getId()
-                            << " from arg"
-                            << std::endl << std::flush;);
-            // FIXME Duplicated code above (see FIXME)
-            Element pos_attr;
-            if (arg->copyAttr("pos", pos_attr) == 0) {
-                debug(std::cout << "Got a use op with POS"
-                                << std::endl << std::flush;);
-                if (!pos_attr.isList()) {
-                    error(op, String::compose("Use arg entity has POS of type %1 rather than list", Element::typeName(pos_attr.getType())).c_str(), res, getId());
-                    return;
-                }
-                target->setAttr("pos", pos_attr);
             }
         } else {
             error(op, "Use arg has unknown objtype", res, getId());
             return;
+        }
+    }
+
+    Anonymous target;
+    if (entity_arg.isValid()) {
+        if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            error(op, "Use target entity has no ID", res, getId());
+            return;
+        }
+        target->setId(entity_arg->getId());
+ 
+        if (entity_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+            target->setPos(entity_arg->getPos());
         }
     }
 
