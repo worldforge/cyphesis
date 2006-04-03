@@ -578,13 +578,17 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Use op from mind" << std::endl << std::flush;);
 
-    std::string toolId = m_rightHandWield;
+    const std::string & toolId = m_rightHandWield;
 
+    if (toolId.empty()) {
+        error(op, "Character::mindUseOp No tool wielded.", res, getId());
+        return;
+    }
     // FIXME Get a tool id from the op attributes?
 
     Entity * tool = m_world->getEntity(toolId);
     if (tool == 0) {
-        error(op, "Use tool does not exist.", res, getId());
+        error(op, "Character::mindUseOp Tool does not exist.", res, getId());
         return;
     }
 
@@ -594,24 +598,24 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 
     // Determine the operations this tool supports
     if (!tool->get("operations", toolOpAttr)) {
-        log(NOTICE, "Character::mindUseOp: Attempt to use something not a tool");
+        log(NOTICE, "Character::mindUseOp Attempt to use something not a tool");
         return;
     }
 
     if (!toolOpAttr.isList()) {
-        log(ERROR, "Use tool has non list operations list");
+        log(ERROR, "Character::mindUseOp Tool has non list operations list");
         return;
     }
     const ListType & toolOpList = toolOpAttr.asList();
     if (toolOpList.empty()) {
-        log(ERROR, "Tool operation list is empty");
+        log(ERROR, "Character::mindUseOp Tool operation list is empty");
         return;
     }
     ListType::const_iterator J = toolOpList.begin();
     ListType::const_iterator Jend = toolOpList.end();
     assert(J != Jend);
     if (!(*J).isString()) {
-        log(ERROR, "Tool operation list is malformed");
+        log(ERROR, "Character::mindUseOp Tool operation list is malformed");
         return;
     }
     op_type = (*J).String();
@@ -619,7 +623,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
                                                         << std::flush;);
     for (; J != Jend; ++J) {
         if (!(*J).isString()) {
-            log(ERROR, "Use tool has non string in operations list");
+            log(ERROR, "Character::mindUseOp Tool has non string in operations list");
         } else {
             toolOps.insert((*J).String());
         }
@@ -639,8 +643,6 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         const Root & arg = args.front();
         const std::string & argtype = arg->getObjtype();
         if (argtype == "op") {
-            // FIXME Check if it really is a RootOperation. if so we can
-            // do the rest more easily.
             if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
                 (arg->getParents().empty())) {
                 error(op, "Use arg op has malformed parents", res, getId());
@@ -664,7 +666,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
             if (!arg_op_args.empty()) {
                 entity_arg = smart_dynamic_cast<RootEntity>(arg_op_args.front());
                 if (!entity_arg.isValid()) {
-                    error(op, "Use target is malformed", res, getId());
+                    error(op, "Use op target is malformed", res, getId());
                     return;
                 }
             }
@@ -681,20 +683,23 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     }
 
     Anonymous target;
-    if (entity_arg.isValid()) {
-        if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            error(op, "Use target entity has no ID", res, getId());
-            return;
-        }
-        target->setId(entity_arg->getId());
- 
-        if (entity_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-            target->setPos(entity_arg->getPos());
-        }
+    if (!entity_arg.isValid()) {
+        error(op, "Character::mindUseOperation No target specified", res, getId());
+        return;
+    }
+
+    if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        error(op, "Character::mindUseOperation Target entity has no ID", res, getId());
+        return;
+    }
+    target->setId(entity_arg->getId());
+
+    if (entity_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+        target->setPos(entity_arg->getPos());
     }
 
     if (op_type.empty()) {
-        error(op, "Use unable to determine op type for tool", res, getId());
+        error(op, "Character::mindUseOperation Unable to determine op type for tool", res, getId());
         return;
     }
 
@@ -704,10 +709,14 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
                     << std::endl << std::flush;);
 
     Root obj = Atlas::Objects::Factories::instance()->createObject(op_type);
+    if (!obj.isValid()) {
+        log(ERROR, String::compose("Character::mindUseOperation Unknown op type %1 requested by %2 tool", op_type, tool->getType()).c_str());
+        return;
+    }
     Operation rop = smart_dynamic_cast<Operation>(obj);
     if (!rop.isValid()) {
-        log(ERROR, String::compose("Character::mindUseMethod: Unknown op type %1 requested by %2 tool", op_type, tool->getType()).c_str());
-        // FIXME Thing hard about how this error is reported. Would the error
+        log(ERROR, String::compose("Character::mindUseOperation Op type %1 requested by %2 tool, but it is not an operation type", op_type, tool->getType()).c_str());
+        // FIXME Think hard about how this error is reported. Would the error
         // make it back to the client if we made an error response?
         return;
     } else if (!target->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
