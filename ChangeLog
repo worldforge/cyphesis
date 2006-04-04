@@ -1,3 +1,8 @@
+2006-04-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.h: Add dictionary for storing task
+	  factories by the tools and operations that activate them.
+
 2006-04-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Further cleanups of mind Use op handler,
