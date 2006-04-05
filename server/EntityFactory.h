@@ -92,6 +92,8 @@ class EntityFactory {
     void flushFactories();
 
     Task * newTask(const std::string &, Character &) const;
+    Task * activateTask(const std::string &, const std::string &,
+                        Character &) const;
     int addStatisticsScript(Character &) const;
 
     int installRule(const std::string &, const Atlas::Message::MapType&);

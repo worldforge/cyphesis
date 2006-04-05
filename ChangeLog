@@ -1,3 +1,15 @@
+2006-04-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseWorld.h, server/WorldRouter.h, server/WorldRouter.cpp:
+	  Add interface to allow world entities to activate tasks based on
+	  tool use operations.
+
+	* server/EntityFactory.h, server/EntityFactory.cpp: Add method which
+	  createa a new task in response to an activation request.
+
+	* rulesets/Character.cpp: When a character uses a tool, use the
+	  tool type and operation to activate a task if one is available.
+
 2006-04-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.h: Add dictionary for storing task

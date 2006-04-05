@@ -325,6 +325,21 @@ Task * WorldRouter::newTask(const std::string & name, Character & owner)
     return task;
 }
 
+/// \brief Activate a new task
+///
+/// Construct a task linked to the Character provided, activated by the
+/// tool and operation class given.
+/// @param tool the type of tool activating the task
+/// @param op the type of operation acitivating the task
+/// @param owner the character who will own the task
+/// @return a pointer to the new task
+Task * WorldRouter::activateTask(const std::string & tool,
+                                 const std::string & op,
+                                 Character & owner)
+{
+    return EntityFactory::instance()->activateTask(tool, op, owner);
+}
+
 /// \brief Remove an entity from the world.
 ///
 /// Remove an entity from the various lists in which it is stored.

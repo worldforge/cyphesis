@@ -726,6 +726,14 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     }
 
     rop->setTo(toolId);
+
+    Task * task = m_world->activateTask(tool->getType(), op_type, *this);
+    if (task != NULL) {
+        setTask(task);
+        m_task->initTask(rop, res);
+        return;
+    }
+
     res.push_back(rop);
 
     Sight sight;

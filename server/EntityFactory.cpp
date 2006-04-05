@@ -169,13 +169,33 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
     return thing;
 }
 
-Task * EntityFactory::newTask(const std::string & name, Character & chr) const
+Task * EntityFactory::newTask(const std::string & name, Character & owner) const
 {
     TaskFactoryDict::const_iterator I = m_taskFactories.find(name);
     if (I == m_taskFactories.end()) {
         return 0;
     }
-    return I->second->newTask(chr);
+    return I->second->newTask(owner);
+}
+
+Task * EntityFactory::activateTask(const std::string & tool,
+                                   const std::string & op,
+                                   Character & owner) const
+{
+    TaskFactoryActivationDict::const_iterator I = m_taskActivations.find(tool);
+    if (I == m_taskActivations.end()) {
+        std::cout << "No task for tool " << tool
+                        << std::endl << std::flush;
+        return 0;
+    }
+    const TaskFactoryDict & dict = I->second;
+    TaskFactoryDict::const_iterator J = dict.find(op);
+    if (J == dict.end()) {
+        std::cout << "No task for tool " << tool << " using op " << op
+                        << std::endl << std::flush;
+        return 0;
+    }
+    return J->second->newTask(owner);
 }
 
 int EntityFactory::addStatisticsScript(Character & chr) const
@@ -291,8 +311,8 @@ int EntityFactory::installTaskClass(const std::string & className,
     // if so, use it.
     MapType::const_iterator J = classDesc.find("script");
     MapType::const_iterator Jend = classDesc.end();
-    if ((J != Jend) && (J->second.isMap())) {
-        const MapType & script = J->second.asMap();
+    if ((J != Jend) && J->second.isMap()) {
+        const MapType & script = J->second.Map();
         J = script.find("name");
         if ((J != script.end()) && (J->second.isString())) {
             const std::string & script_name = J->second.String();
@@ -310,6 +330,21 @@ int EntityFactory::installTaskClass(const std::string & className,
 
     if (factory == 0) {
         return -1;
+    }
+
+    J = classDesc.find("activation");
+    if ((J != Jend) && J->second.isMap()) {
+        const MapType & activation = J->second.Map();
+        MapType::const_iterator act_end = activation.end();
+        J = activation.find("tool");
+        if (J != act_end && J->second.isString()) {
+            const std::string & activation_tool = J->second.String();
+            J = activation.find("operation");
+            if (J != act_end && J->second.isString()) {
+                const std::string & activation_op = J->second.String();
+                m_taskActivations[activation_tool][activation_op] = factory;
+            }
+        }
     }
 
     // std::cout << "Attempting to install " << className << " which is a "
