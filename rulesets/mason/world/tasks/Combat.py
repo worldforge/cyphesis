@@ -62,6 +62,10 @@ class Combat(Thing):
             self.defender is the ID of the character that was initially
             attacked The self.attack flag is used to alternate the attack from
             one combatant to the other. """
+        if self.count() < 2:
+            print "Someone has dropped out"
+            self.make_irrelevant()
+
         if self.attack:
             a=self.attacker
             d=self.defender

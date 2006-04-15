@@ -82,6 +82,11 @@ class Task {
         }
     }
 
+    /// \brief Return the number of entities involved in this task
+    int count() {
+        return m_refCount;
+    }
+
     /// \brief Accessor to determine if this Task is obsolete
     const bool obsolete() { return m_obsolete; }
 

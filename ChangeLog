@@ -1,5 +1,15 @@
 2006-04-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Improve error logging in task setup.
+
+	* rulesets/Task.h, rulesets/Py_Task.cpp: Add an accessor for the
+	  refcount of a task, and expose it to the script interface.
+
+	* rulesets/mason/world/tasks/Combat.py: Add a check that there are
+	  still at least two participants in combat, or end the task.
+
+2006-04-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseWorld.h, server/WorldRouter.h, server/WorldRouter.cpp:
 	  Add interface to allow world entities to activate tasks based on
 	  tool use operations.

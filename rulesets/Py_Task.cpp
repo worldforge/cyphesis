@@ -48,9 +48,21 @@ static PyObject * Task_obsolete(PyTask * self)
     return ret;
 }
 
+static PyObject * Task_count(PyTask * self)
+{
+#ifndef NDEBUG
+    if (self->m_task == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL task in Task.irrelevant");
+        return NULL;
+    }
+#endif // NDEBUG
+    return PyInt_FromLong(self->m_task->count());
+}
+
 static PyMethodDef Task_methods[] = {
         {"irrelevant",     (PyCFunction)Task_irrelevant, METH_NOARGS},
         {"obsolete",       (PyCFunction)Task_obsolete, METH_NOARGS},
+        {"count",          (PyCFunction)Task_count, METH_NOARGS},
         {NULL,          NULL}           /* sentinel */
 };
 

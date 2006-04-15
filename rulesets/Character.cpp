@@ -460,7 +460,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     }
 
     if (attacker->m_task != 0) {
-        log(ERROR, "AttackOperation: Attack op aborted because attacker busy");
+        log(ERROR, String::compose("AttackOperation: Attack op aborted because attacker %1(%2) busy", attacker->getId(), attacker->getType()).c_str());
         return;
     }
 
