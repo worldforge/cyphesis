@@ -246,8 +246,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
                 return;
             }
             if (m_task->obsolete()) {
-                m_task->decRef();
-                m_task = 0;
+                clearTask();
             }
         }
         return;
@@ -464,6 +463,11 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
+    if (m_task != 0) {
+        log(ERROR, String::compose("AttackOperation: Attack op aborted because defender %1(%2) busy", getId(), getType()).c_str());
+        return;
+    }
+
 #if 0
     Combat * combat = new Combat(*attacker, *this);
 
@@ -492,6 +496,9 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     if (combat != 0) {
         setTask(combat);
         m_task->initTask(op, res);
+        if (m_task->obsolete()) {
+            clearTask();
+        }
     } else {
         log(ERROR, "Character::AttackOperation: Unable to create combat task");
     }
@@ -731,6 +738,9 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     if (task != NULL) {
         setTask(task);
         m_task->initTask(rop, res);
+        if (m_task->obsolete()) {
+            clearTask();
+        }
         return;
     }
 

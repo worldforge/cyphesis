@@ -28,8 +28,14 @@ static PyObject* Oplist_append(PyOplist * self, PyOperation * op)
 #endif // NDEBUG
     if (PyOperation_Check(op)) {
         self->ops->push_back(op->operation);
+    } else if (PyOplist_Check(op)) {
+        PyOplist * opl = (PyOplist*)op;
+        OpVector::const_iterator Iend = opl->ops->end();
+        for (OpVector::const_iterator I = opl->ops->begin(); I != Iend; ++I) {
+            self->ops->push_back(*I);
+        }
     } else if ((PyObject*)op != Py_None) {
-        PyErr_SetString(PyExc_TypeError, "Append must be an op");
+        PyErr_SetString(PyExc_TypeError, "Append must be an op or message");
         return NULL;
     }
     Py_INCREF(Py_None);

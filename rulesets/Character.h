@@ -77,6 +77,7 @@ class Character : public Character_parent {
     virtual ~Character();
 
     Statistics & statistics() { return m_statistics; }
+    Task * task() { return m_task; }
 
     const double getStamina() const { return m_stamina; }
     const double getDrunkness() const { return m_drunkness; }

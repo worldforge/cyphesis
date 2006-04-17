@@ -19,10 +19,11 @@ class Combat(Thing):
         """ The attack op is FROM the the character that initiated combat which
             we term the attacker, TO the character that is attacker which we
             term the defender. We store the IDs of both. """
+        # Check if the attacked characters stamina is too low for combat
         if self.character.stamina < 0.1:
+            print "Aborting defender stamina low"
             self.irrelevant()
             return
-        self.attack=True
         defender = op.to
         if defender != self.character.id:
             print "Attack operation is wierd"
@@ -32,28 +33,39 @@ class Combat(Thing):
         # Attach this task to the attacker. Its already implicitly attached
         # to the defender who owns this task.
         a=self.character.world.get_object(self.attacker)
+        # Check if the attacking characters stamina is too low for combat
         if a and a.stamina > 0.1:
             a.set_task(self.cppthing)
         else:
+            print "Aborting attacker stamina low"
             self.irrelevant()
             return
         # Send ourselves a tick immediatly to start things going.
-        res=Operation("tick", to=self.character.id)
-        res.sub_to="task"
+        res=Message()
+
+        tick=Operation("tick", to=self.defender)
+        tick.setFutureSeconds(.75)
+        tick.sub_to="task"
+        res.append(tick)
+
+        tick=Operation("tick", to=self.attacker)
+        tick.sub_to="task"
+        res.append(tick)
+
         return res
     def make_irrelevant(self):
         """ Clear the task on whichever character is not the primary owner
             of this task. The primary owner will clear automatically once
             this task is irrelevant. Currently the owner is always the
             defender, but both are allowed for here for robustness. """
-        if self.attacker != self.character.id:
-            a=self.character.world.get_object(self.attacker)
-            if a:
-                a.clear_task()
-        if self.defender != self.character.id:
-            d=self.character.world.get_object(self.defender)
-            if d:
-                d.clear_task()
+        # if self.attacker != self.character.id:
+        #     a=self.character.world.get_object(self.attacker)
+        #     if a:
+        #         a.clear_task()
+        # if self.defender != self.character.id:
+        #     d=self.character.world.get_object(self.defender)
+        #     if d:
+        #         d.clear_task()
         self.irrelevant()
     def tick_operation(self, op):
         """ This method is called repeatedly, each time a combat turn occurs.
@@ -65,11 +77,14 @@ class Combat(Thing):
         if self.count() < 2:
             print "Someone has dropped out"
             self.make_irrelevant()
+            return
 
-        if self.attack:
+        if self.attacker == op.to:
+            print "Attacker attacking"
             a=self.attacker
             d=self.defender
         else:
+            print "Defender attacking"
             d=self.attacker
             a=self.defender
 
@@ -121,17 +136,16 @@ class Combat(Thing):
         # the character is doing.
         faceop=self.face(attacker, defender)
         if faceop:
-            res.append(attacker.mind2body(faceop))
-
-        # Toggle the attack flag for next time
-        self.attack=not self.attack
+            faceop=attacker.mind2body(faceop)
+            if faceop:
+                res.append(faceop)
 
         # Don't return the following tick op if this task is now complete
         if self.obsolete():
             return res
 
         # Schedule a new tick op
-        tick=Operation("tick", to=self.character.id)
+        tick=Operation("tick", to=op.to)
         tick.sub_to="task"
         tick.setFutureSeconds(1.75)
         res.append(tick)

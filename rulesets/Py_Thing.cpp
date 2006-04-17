@@ -75,6 +75,25 @@ static PyMethodDef Entity_methods[] = {
     {NULL,              NULL}           /* sentinel */
 };
 
+static PyObject * Character_get_task(PyCharacter * self)
+{
+#ifndef NDEBUG
+    if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
+        return NULL;
+    }
+#endif // NDEBUG
+    if (self->m_entity->task() == 0) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    // FIXME Err, probably actually want to return the real Task.
+    PyTask * ret = newPyTask();
+    ret->m_task = self->m_entity->task();
+    return (PyObject*)ret;
+    
+}
+
 static PyObject * Character_set_task(PyCharacter * self, PyTask * task)
 {
 #ifndef NDEBUG
@@ -136,6 +155,7 @@ static PyObject * Character_mind2body(PyCharacter * self, PyOperation * op)
 static PyMethodDef Character_methods[] = {
     {"as_entity",       (PyCFunction)Entity_as_entity,     METH_NOARGS},
     {"send_world",      (PyCFunction)Entity_send_world,    METH_O},
+    {"get_task",        (PyCFunction)Character_get_task,   METH_NOARGS},
     {"set_task",        (PyCFunction)Character_set_task,   METH_O},
     {"clear_task",      (PyCFunction)Character_clear_task, METH_NOARGS},
     {"mind2body",       (PyCFunction)Character_mind2body,  METH_O},

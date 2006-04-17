@@ -1,4 +1,22 @@
-2006-04-05  Al Riddoch  <alriddoch@zepler.org>
+2006-04-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/world/tasks/Combat.py: Re-work the way combat works
+	  so all involved entities do their own tick ops, rather than the
+	  whole thing being coordinated by only one entity. This simplifies
+	  removing the task once obsolete.
+
+	* rulesets/Py_Thing.cpp: Add get_task() on Character so task is
+	  available to scripts.
+
+	* rulesets/Py_Oplist.cpp: Allow an oplist to be appended to an
+	  oplist as well as being added.
+
+	* rulesets/Character.h: Add an accessor for task.
+
+	* rulesets/Character.cpp: Ensure a task is cleared if it does not
+	  get initialised.
+
+2006-04-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Improve error logging in task setup.
 
