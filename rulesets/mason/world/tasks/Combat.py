@@ -34,12 +34,10 @@ class Combat(Thing):
         # to the defender who owns this task.
         a=self.character.world.get_object(self.attacker)
         # Check if the attacking characters stamina is too low for combat
-        if a and a.stamina > 0.1:
-            a.set_task(self.cppthing)
-        else:
-            print "Aborting attacker stamina low"
+        if not a or a.stamina < 0.1:
             self.irrelevant()
             return
+        a.set_task(self.cppthing)
         # Send ourselves a tick immediatly to start things going.
         res=Message()
 

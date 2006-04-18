@@ -1,5 +1,14 @@
 2006-04-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: When tick ops are passed to mind, check
+	  that SUB_TO=="mind" so that task ticks don't get treated as mind
+	  ticks.
+
+	* rulesets/mason/world/tasks/Combat.py: Clean up logic for checking
+	  attacker stamina on initialisation.
+
+2006-04-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Combat.py: Re-work the way combat works
 	  so all involved entities do their own tick ops, rather than the
 	  whole thing being coordinated by only one entity. This simplifies

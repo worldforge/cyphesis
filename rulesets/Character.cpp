@@ -1281,8 +1281,11 @@ bool Character::w2mWieldOperation(const Operation & op)
 
 bool Character::w2mTickOperation(const Operation & op)
 {
-    if (op->hasAttr("sub_to")) {
-        return true;
+    Element sub_to;
+    if (op->copyAttr("sub_to", sub_to) == 0) {
+        if (sub_to == "mind") {
+            return true;
+        }
     }
     return false;
 }
