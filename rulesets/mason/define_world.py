@@ -467,7 +467,9 @@ def default(mapeditor):
     m.make('fire',type='fire',xyz=(0,0,0),parent=cfire.id)
 
     for i in range(10, 350, 5):
-        m.make('lumber',type='lumber',xyz=(100 + 14 * sin(radians(i)), -50 + 16 * cos(radians(i)), settlement_height), bbox=[-0.5,-0.5,0,0.5,0.5,4], mass=2000)
+        direction=Vector3D(sin(radians(i)) * uniform(0,2), cos(radians(i)) * uniform(0,2), 10).unit_vector()
+        orient=Quaternion(Vector3D(0,0,1), direction)
+        m.make('lumber',type='lumber',xyz=(100 + 14 * sin(radians(i)), -50 + 16 * cos(radians(i)), settlement_height), bbox=[-0.5,-0.5,0,0.5,0.5,3 + uniform(0,2)], orientation=orient.as_list(), mass=2000)
         
     camp_area_points=[]
     for i in range(10, 350, 17):

@@ -1,5 +1,9 @@
 2006-04-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Randomise the palissade logs a bit.
+
+2006-04-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: When tick ops are passed to mind, check
 	  that SUB_TO=="mind" so that task ticks don't get treated as mind
 	  ticks.
