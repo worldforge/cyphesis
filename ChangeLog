@@ -1,3 +1,8 @@
+2006-04-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/world/tasks/Logging.py: A test logging task.
+	  Currently does nothing.
+
 2006-04-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Randomise the palissade logs a bit.
