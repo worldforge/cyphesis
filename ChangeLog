@@ -1,5 +1,23 @@
 2006-04-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Vector3D.cpp: Fix incorrect METH_VARARGS function type
+	  of the three rotateN methods, as it should have been converted to
+	  METH_O. Add a new rotate method used to rotate a vector using a
+	  quaternion.
+
+	* rulesets/Py_Quaternion.cpp: Add a method to check the validity of
+	  the quaternion, and a type method to create a string representation
+	  of the quaternion.
+
+	* rulesets/Character.cpp: Remove commented out legacy hard coded
+	  combat task setup. Now all tasks are scripts.
+
+	* rulesets/mason/world/tasks/Logging.py: Break logging down into
+	  something that happens over many ticks, using the orientation of
+	  the tree to determine if its felled yet.
+
+2006-04-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Logging.py: A test logging task.
 	  Currently does nothing.
 

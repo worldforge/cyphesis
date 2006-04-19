@@ -35,8 +35,16 @@ static PyObject * Quaternion_as_list(PyQuaternion * self)
     return r;
 }
 
+static PyObject * Quaternion_valid(PyQuaternion * self)
+{
+    PyObject * ret = self->rotation.isValid() ? Py_True : Py_False;
+    Py_INCREF(ret);
+    return ret;
+}
+
 static PyMethodDef Quaternion_methods[] = {
     {"as_list",         (PyCFunction)Quaternion_as_list, METH_NOARGS},
+    {"valid",           (PyCFunction)Quaternion_valid,   METH_NOARGS},
     {NULL,              NULL}           /* sentinel */
 };
 
@@ -67,6 +75,15 @@ static int Quaternion_compare(PyQuaternion * self, PyQuaternion * other)
     return 1;
 }
 
+static PyObject* Quaternion_repr(PyQuaternion * self)
+{
+    char buf[128];
+    ::snprintf(buf, 128, "(%f, (%f, %f, %f))", self->rotation.scalar(),
+               self->rotation.vector().x(), self->rotation.vector().y(),
+               self->rotation.vector().z());
+    return PyString_FromString(buf);
+}
+
 PyTypeObject PyQuaternion_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -79,7 +96,7 @@ PyTypeObject PyQuaternion_Type = {
         (getattrfunc)Quaternion_getattr,/*tp_getattr*/
         0,                              /*tp_setattr*/
         (cmpfunc)Quaternion_compare,    /*tp_compare*/
-        0,                              /*tp_repr*/
+        (reprfunc)Quaternion_repr,      /*tp_repr*/
         0,                              /*tp_as_number*/
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/

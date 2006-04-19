@@ -468,29 +468,6 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-#if 0
-    Combat * combat = new Combat(*attacker, *this);
-
-    m_task = combat;
-    combat->incRef();
-
-    attacker->m_task = combat;
-    combat->incRef();
-
-    m_task->initTask(op, res);
-
-    if (combat->obsolete()) {
-        std::cout << "Attack aborted because one of more character is exhausted" << std::endl << std::flush;
-
-        assert(m_task == 0);
-        assert(attacker->m_task != 0);
-
-        attacker->m_task = 0;
-        combat->decRef();
-
-        return;
-    }
-#else
     Task * combat = m_world->newTask("combat", *this);
 
     if (combat != 0) {
@@ -502,7 +479,6 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     } else {
         log(ERROR, "Character::AttackOperation: Unable to create combat task");
     }
-#endif
 }
 
 void Character::ChopOperation(const Operation & op, OpVector & res)
@@ -737,8 +713,16 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     Task * task = m_world->activateTask(tool->getType(), op_type, *this);
     if (task != NULL) {
         setTask(task);
+        assert(res.empty());
         m_task->initTask(rop, res);
         if (m_task->obsolete()) {
+            clearTask();
+        } else if (res.empty()) {
+            // If initialising the task did not result in any operation at all
+            // then the task cannot work correctly. In this case all we can
+            // do is flag an error, and get rid of the task.
+            log(ERROR, String::compose("Character::mindUseOperation Op type %1 of tool %2 activated a task, but it did not initialise", op_type, tool->getType()).c_str());
+            m_task->irrelevant();
             clearTask();
         }
         return;

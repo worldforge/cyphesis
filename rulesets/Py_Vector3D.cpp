@@ -16,6 +16,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #include "Py_Vector3D.h"
+#include "Py_Quaternion.h"
 
 static PyObject * Vector3D_dot(PyVector3D * self, PyVector3D * other)
 {
@@ -69,6 +70,17 @@ static PyObject * Vector3D_rotatez(PyVector3D * self, PyObject * arg)
     }
     double angle = PyFloat_AsDouble(arg);
     self->coords.rotateZ(angle);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject * Vector3D_rotate(PyVector3D * self, PyQuaternion * arg)
+{
+    if (!PyQuaternion_Check(arg)) {
+        PyErr_SetString(PyExc_TypeError, "Can only rotate with a quaternion");
+        return NULL;
+    }
+    self->coords.rotate(arg->rotation);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -138,9 +150,10 @@ static PyObject *Vector3D_unit_vector_to(PyVector3D * self, PyVector3D * other)
 static PyMethodDef Vector3D_methods[] = {
     {"dot",             (PyCFunction)Vector3D_dot,      METH_O},
     {"cross",           (PyCFunction)Vector3D_cross,    METH_O},
-    {"rotatex",         (PyCFunction)Vector3D_rotatex,  METH_VARARGS},
-    {"rotatey",         (PyCFunction)Vector3D_rotatey,  METH_VARARGS},
-    {"rotatez",         (PyCFunction)Vector3D_rotatez,  METH_VARARGS},
+    {"rotatex",         (PyCFunction)Vector3D_rotatex,  METH_O},
+    {"rotatey",         (PyCFunction)Vector3D_rotatey,  METH_O},
+    {"rotatez",         (PyCFunction)Vector3D_rotatez,  METH_O},
+    {"rotate",          (PyCFunction)Vector3D_rotate,   METH_O},
     {"angle",           (PyCFunction)Vector3D_angle,    METH_O},
     {"square_mag",      (PyCFunction)Vector3D_sqr_mag,  METH_NOARGS},
     {"mag",             (PyCFunction)Vector3D_mag,      METH_NOARGS},
