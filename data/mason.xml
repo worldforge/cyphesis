@@ -1045,6 +1045,32 @@
   <map>
     <map name="attributes">
     </map>
+    <string name="id">raise</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">lever</string>
+      <string name="tool">pole</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Raise</string>
+    </map>
+  </map>
+
+  <map>
+    <string name="id">lever</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
     <string name="id">lych</string>
     <string name="objtype">class</string>
     <list name="parents">
@@ -1336,6 +1362,37 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>area</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.02</float>
+          <float>-0.02</float>
+          <float>0.0</float>
+          <float>0.02</float>
+          <float>0.02</float>
+          <float>2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="operations">
+        <list name="default">
+          <string>lever</string>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">pole</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
     </list>
   </map>
 

@@ -84,6 +84,44 @@ static PyObject* Quaternion_repr(PyQuaternion * self)
     return PyString_FromString(buf);
 }
 
+PyObject * Quaternium_num_mult(PyQuaternion * self, PyQuaternion * other)
+{
+    if (!PyQuaternion_Check(other)) {
+        PyErr_SetString(PyExc_TypeError, "Quaternion must be multiplied by Quaternion");
+        return NULL;
+    }
+    PyQuaternion * ret = newPyQuaternion();
+    ret->rotation = self->rotation * other->rotation;
+    return (PyObject *)ret;
+}
+
+static PyNumberMethods Quaternion_as_number = {
+        0,                                           // nb_add;
+        0,                                           // nb_subtract;
+        (binaryfunc)Quaternium_num_mult,             // nb_multiply;
+        0,                                           // nb_divide;
+        0,                                           // nb_remainder;
+        0,                                           // nb_divmod;
+        0,                                           // nb_power;
+        0,                                           // nb_negative;
+        0,                                           // nb_positive;
+        0,                                           // nb_absolute;
+        0,                                           // nb_nonzero;
+        0,                                           // nb_invert;
+        0,                                           // nb_lshift;
+        0,                                           // nb_rshift;
+        0,                                           // nb_and;
+        0,                                           // nb_xor;
+        0,                                           // nb_or;
+        0,                                           // nb_coerce;
+        0,                                           // nb_int;
+        0,                                           // nb_long;
+        0,                                           // nb_float;
+        0,                                           // nb_oct;
+        0,                                           // nb_hex;
+};
+
+
 PyTypeObject PyQuaternion_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -97,7 +135,7 @@ PyTypeObject PyQuaternion_Type = {
         0,                              /*tp_setattr*/
         (cmpfunc)Quaternion_compare,    /*tp_compare*/
         (reprfunc)Quaternion_repr,      /*tp_repr*/
-        0,                              /*tp_as_number*/
+        &Quaternion_as_number,          /*tp_as_number*/
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/
         0,                              /*tp_hash*/

@@ -48,10 +48,10 @@ class Logging(Thing):
         else:
             normal=Vector3D(0,0,1)
             print "LOC.ori ", target.location.orientation
-            normal.rotate(target.location.orientation)
+            if target.location.orientation.valid():
+                normal.rotate(target.location.orientation)
             print "Normal ", normal, normal.dot(Vector3D(0,0,1))
-            if not target.location.orientation.valid() or \
-               normal.dot(Vector3D(0,0,1)) > 0.8:
+            if normal.dot(Vector3D(0,0,1)) > 0.8:
                 print "Fall down"
                 chop=Operation("cut", Entity(self.target), to=self.tool)
                 res.append(chop)

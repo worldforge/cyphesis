@@ -1,5 +1,21 @@
 2006-04-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Improve the quaternion constructor
+	  so it can build one from an axis and an angle of rotation.
+
+	* rulesets/Py_Quaternion.cpp: Add support for multiplying quaternions
+	  together.
+
+	* data/mason.xml: Add rules for a pole tool, together with
+	  operations and tasks associated with the pole.
+
+	* rulesets/mason/world/tasks/Raise.py: Add a task used with the
+	  pole to lever items into different orientations. When used on an
+	  entity, the entity is oriented away from the users current
+	  position, rotating around a horizontal axis.
+
+2006-04-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Vector3D.cpp: Fix incorrect METH_VARARGS function type
 	  of the three rotateN methods, as it should have been converted to
 	  METH_O. Add a new rotate method used to rotate a vector using a

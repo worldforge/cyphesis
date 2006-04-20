@@ -723,13 +723,21 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
                 {
                 PyObject * v1 = PyTuple_GetItem(args, 0);
                 PyObject * v2 = PyTuple_GetItem(args, 1);
-                if (!PyVector3D_Check(v1) || !PyVector3D_Check(v2)) {
-                    PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take two vectors");
+                if (!PyVector3D_Check(v1)) {
+                    PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take a vector");
                     return NULL;
                 }
-                PyVector3D * from = (PyVector3D *)v1;
-                PyVector3D * to = (PyVector3D *)v2;
-                val = quaternionFromTo(from->coords, to->coords);
+                PyVector3D * arg1 = (PyVector3D *)v1;
+                if (PyVector3D_Check(v2)) {
+                    PyVector3D * to = (PyVector3D *)v2;
+                    val = quaternionFromTo(arg1->coords, to->coords);
+                } else if (PyFloat_Check(v2)) {
+                    float angle = PyFloat_AsDouble(v2);
+                    val.rotation(arg1->coords, angle);
+                } else {
+                    PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take a vector");
+                    return NULL;
+                }
                 }
                 break;
             case 4:
