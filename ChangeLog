@@ -1,4 +1,8 @@
-2006-04-19  Al Riddoch  <alriddoch@zepler.org>
+2006-04-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/client.cpp: Remove some debug output.
+
+2006-04-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: Improve the quaternion constructor
 	  so it can build one from an axis and an angle of rotation.

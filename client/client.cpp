@@ -72,12 +72,12 @@ int main(int argc, char ** argv)
         std::string arg(argv[optind]);
         std::string::size_type pos = arg.rfind(".");
         if (pos == std::string::npos) {
-            std::cout << "function " << arg << std::endl << std::flush;
+            // std::cout << "function " << arg << std::endl << std::flush;
             function = arg;
         } else {
             package = arg.substr(0, pos);
             function = arg.substr(pos + 1);
-            std::cout << "module.function " << package << "." << function << std::endl << std::flush;
+            // std::cout << "module.function " << package << "." << function << std::endl << std::flush;
         }
     } else if (optind != argc) {
         usage(argv[0]);
