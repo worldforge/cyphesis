@@ -41,30 +41,14 @@ class Combat(Thing):
         # Send ourselves a tick immediatly to start things going.
         res=Message()
 
-        tick=Operation("tick", to=self.defender)
-        tick.setFutureSeconds(.75)
-        tick.sub_to="task"
-        res.append(tick)
-
+        # Consequence of this is currently that the defender gets to
+        # hit first. Might be a good idea to try and avoid this.
         tick=Operation("tick", to=self.attacker)
+        tick.setFutureSeconds(1.75)
         tick.sub_to="task"
         res.append(tick)
 
         return res
-    def make_irrelevant(self):
-        """ Clear the task on whichever character is not the primary owner
-            of this task. The primary owner will clear automatically once
-            this task is irrelevant. Currently the owner is always the
-            defender, but both are allowed for here for robustness. """
-        # if self.attacker != self.character.id:
-        #     a=self.character.world.get_object(self.attacker)
-        #     if a:
-        #         a.clear_task()
-        # if self.defender != self.character.id:
-        #     d=self.character.world.get_object(self.defender)
-        #     if d:
-        #         d.clear_task()
-        self.irrelevant()
     def tick_operation(self, op):
         """ This method is called repeatedly, each time a combat turn occurs.
             In this example the interval is fixed, but it can be varied.
@@ -74,7 +58,7 @@ class Combat(Thing):
             one combatant to the other. """
         if self.count() < 2:
             print "Someone has dropped out"
-            self.make_irrelevant()
+            self.irrelevant()
             return
 
         if self.attacker == op.to:
@@ -88,15 +72,15 @@ class Combat(Thing):
 
         attacker = self.character.world.get_object(a)
         if not attacker:
-            self.make_irrelevant()
+            self.irrelevant()
             return
         if attacker.stamina <= 0:
-            self.make_irrelevant()
+            self.irrelevant()
             return
 
         defender = self.character.world.get_object(d)
         if not defender:
-            self.make_irrelevant()
+            self.irrelevant()
             return
 
         # A very simple formula is used to determine the damage done
@@ -122,7 +106,7 @@ class Combat(Thing):
             defender.send_world(Operation("imaginary", Entity(description="has been defeated"), to=defender))
             defender.send_world(Operation("sight", Operation("collapse", from_=d)))
             attacker.send_world(Operation("imaginary", Entity(description="is victorious"), to=attacker))
-            self.make_irrelevant()
+            self.irrelevant()
 
         res=Message()
         # This set op makes the change to defenders stamina, and a small health
@@ -149,6 +133,8 @@ class Combat(Thing):
         res.append(tick)
         return res
     def face(self, character, other):
+        """ Turn to face that another character, ensuring that
+            we are facing the character we are hitting """
         vector = distance_to(character.location, other.location)
         vector.z = 0
         if vector.square_mag() < 0.1:

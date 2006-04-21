@@ -26,10 +26,6 @@ class Logging(Thing):
         self.target = op[0].id
         self.tool = op.to
 
-        tick=Operation("tick", to=self.character.id)
-        tick.sub_to="task"
-
-        return tick
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         print "Logging.tick"

@@ -1,5 +1,17 @@
 2006-04-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/TaskScript.cpp: Add default tick operation to bootstrap
+	  tasks to all task scripts in the C++.
+
+	* rulesets/mason/world/tasks/Logging.py,
+	  rulesets/mason/world/tasks/Raise.py,
+	  rulesets/mason/world/tasks/Combat.py: Remove bootstrap tick op
+	  now handled by the C++ base class. Simplify making Combat
+	  irrelevant, as it no longer needs special handling. Add doc
+	  strings to Combat.
+
+2006-04-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Raise.py: Check if the entity being
 	  levered has a parent. If not, we cannot move it.
 

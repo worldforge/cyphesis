@@ -18,11 +18,14 @@
 #include "rulesets/TaskScript.h"
 
 #include "rulesets/Script.h"
+#include "rulesets/Character.h"
 
 #include "common/log.h"
+#include "common/Tick.h"
 
 #include <Atlas/Objects/SmartPtr.h>
-#include <Atlas/Objects/RootOperation.h>
+
+using Atlas::Objects::Operation::Tick;
 
 TaskScript::TaskScript(Character & chr) : Task(chr), m_script(0)
 {
@@ -53,6 +56,12 @@ void TaskScript::initTask(const Operation & op, OpVector & res)
         log(WARNING, "Task init failed");
         irrelevant();
     }
+
+    Tick tick;
+    tick->setAttr("sub_to", "task");
+    tick->setTo(m_character.getId());
+
+    res.push_back(tick);
 }
 
 void TaskScript::TickOperation(const Operation & op, OpVector & res)
