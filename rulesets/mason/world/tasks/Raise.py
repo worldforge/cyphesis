@@ -49,6 +49,11 @@ class Raise(Thing):
         if target.location.orientation.valid():
             rotation = rotation * target.location.orientation
 
+        if not target.location.parent:
+            # Not withstanding famous quotes to the contrary, in these
+            # system we can not move the world no matter how large a lever
+            # or firm a place to stand we have.
+            return
         target_location=Location(target.location.parent, target.location.coordinates)
         target_location.orientation=rotation
         move=Operation("move", Entity(self.target, location=target_location), to=self.target)

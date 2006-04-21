@@ -1,5 +1,10 @@
 2006-04-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Raise.py: Check if the entity being
+	  levered has a parent. If not, we cannot move it.
+
+2006-04-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/test_python_api.py: Add test script to exercise
 	  the server's Python API.
 
