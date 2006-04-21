@@ -1,5 +1,10 @@
 2006-04-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Raise.py: Fix multiplication order
+	  of quaternions, which ensures that rotation is world relative.
+
+2006-04-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/TaskScript.cpp: Add default tick operation to bootstrap
 	  tasks to all task scripts in the C++.
 

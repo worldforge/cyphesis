@@ -43,7 +43,7 @@ class Raise(Thing):
         rotation=Quaternion(axis, -0.01)
         print "ROT ", rotation
         if target.location.orientation.valid():
-            rotation = rotation * target.location.orientation
+            rotation = target.location.orientation * rotation
 
         if not target.location.parent:
             # Not withstanding famous quotes to the contrary, in these
