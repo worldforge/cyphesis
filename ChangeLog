@@ -1,5 +1,10 @@
 2006-04-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/test_python_api.py: Add test script to exercise
+	  the server's Python API.
+
+2006-04-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/client.cpp: Remove some debug output.
 
 2006-04-20  Al Riddoch  <alriddoch@zepler.org>
