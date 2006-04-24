@@ -146,7 +146,7 @@ void AdminClient::errorArrived(const RootOperation & op)
     }
     const Root & arg = args.front();
     Element message_attr;
-    if (arg->copyAttr("message", message_attr) != 0 && message_attr.isString()) {
+    if (arg->copyAttr("message", message_attr) == 0 && message_attr.isString()) {
         m_errorMessage = message_attr.String();
     }
 }
@@ -286,7 +286,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
         if (error_flag) {
             std::cerr << "Failed to update existing \"" << id << "\" class."
                       << std::endl;
-            std::cerr << "Error \"" << m_errorMessage << "\"."
+            std::cerr << "Server Error: \"" << m_errorMessage << "\"."
                       << std::endl << std::flush;
             return -1;
         }
@@ -365,7 +365,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
     if (error_flag) {
         std::cerr << "Failed to upload new \"" << id << "\" class."
                   << std::endl;
-        std::cerr << "Error \"" << m_errorMessage << "\"."
+        std::cerr << "Server Error: \"" << m_errorMessage << "\"."
                   << std::endl << std::flush;
         return -1;
     }

@@ -1,5 +1,10 @@
 2006-04-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/AdminClient.cpp: Fix a typo which meant admin clients did
+	  not report server error message strings.
+
+2006-04-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/custom.cpp: Add a "task" base class to the inheritance tree.
 
 	* server/EntityFactory.h, server/EntityFactory.cpp: Add
