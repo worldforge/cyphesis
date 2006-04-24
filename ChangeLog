@@ -1,5 +1,9 @@
 2006-04-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add new type for "stake", a sharpened version of lumber.
+
+2006-04-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/AdminClient.cpp: Fix a typo which meant admin clients did
 	  not report server error message strings.
 
