@@ -1,3 +1,11 @@
+2006-04-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/mason.xml: Add a tool, operation and class for hammering
+	  wooden stakes into the ground.
+
+	* rulesets/mason/world/tasks/Ram.py: Add stub task script for
+	  hammering things into the ground.
+
 2006-04-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/world/tasks/Raise.py: Fix multiplication order

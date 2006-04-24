@@ -856,6 +856,37 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
+          <float>-0.04</float>
+          <float>-0.04</float>
+          <float>0.0</float>
+          <float>0.04</float>
+          <float>0.04</float>
+          <float>1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">4</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="operations">
+        <list name="default">
+          <string>strike</string>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">hammer</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
           <float>1</float>
           <float>1</float>
           <float>6</float>
@@ -1039,24 +1070,6 @@
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Logging</string>
-    </map>
-  </map>
-
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="id">raise</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
-    <map name="activation">
-      <string name="operation">lever</string>
-      <string name="tool">pole</string>
-    </map>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.tasks.Raise</string>
     </map>
   </map>
 
@@ -1379,7 +1392,7 @@
         <string name="visibility">public</string>
       </map>
       <map name="mass">
-        <float name="default">1</float>
+        <float name="default">2</float>
         <string name="visibility">public</string>
       </map>
       <map name="operations">
@@ -1428,6 +1441,42 @@
     <list name="parents">
       <string>tree</string>
     </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">raise</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">lever</string>
+      <string name="tool">pole</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Raise</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">ram</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">strike</string>
+      <string name="tool">hammer</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Ram</string>
+    </map>
   </map>
 
   <map>
@@ -1604,6 +1653,14 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">strike</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
     </list>
   </map>
 
