@@ -58,6 +58,7 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
 static const bool debug_flag = false;
@@ -350,6 +351,11 @@ int EntityFactory::installTaskClass(const std::string & className,
     // std::cout << "Attempting to install " << className << " which is a "
               // << parent << std::endl << std::flush;
     m_taskFactories.insert(std::make_pair(className, factory));
+
+    Inheritance & i = Inheritance::instance();
+
+    i.addChild(atlasClass(className, parent));
+
     return 0;
 }
 
@@ -514,12 +520,12 @@ static void updateChildren(FactoryBase * factory)
     }
 }
 
-int EntityFactory::modifyRule(const std::string & className,
-                              const MapType & classDesc)
+int EntityFactory::modifyEntityClass(const std::string & className,
+                                     const MapType & classDesc)
 {
     FactoryDict::const_iterator I = m_factories.find(className);
     if (I == m_factories.end()) {
-        log(ERROR, "Could not find factory for existing type.");
+        log(ERROR, String::compose("Could not find factory for existing entity class \"%1\".", className).c_str());
         return -1;
     }
     FactoryBase * factory = I->second;
@@ -543,6 +549,37 @@ int EntityFactory::modifyRule(const std::string & className,
     updateChildren(factory);
 
     return 0;
+}
+
+int EntityFactory::modifyTaskClass(const std::string & class_name,
+                                   const MapType & classDesc)
+{
+    TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
+    if (I == m_taskFactories.end()) {
+        log(ERROR, String::compose("Could not find factory for existing task class \"%1\"", class_name).c_str());
+        return -1;
+    }
+    TaskFactory * factory = I->second;
+    assert(factory != 0);
+
+    // FIXME Actually update the task factory.
+    return 0;
+}
+
+int EntityFactory::modifyRule(const std::string & class_name,
+                              const MapType & classDesc)
+{
+    Root o = Inheritance::instance().getClass(class_name);
+    if (!o.isValid()) {
+        log(ERROR, String::compose("Could not find existing type \"%1\" in inheritance", class_name).c_str());
+        return -1;
+    }
+    if (o->getParents().front() == "task") {
+        std::cout << "TASK " << class_name << std::endl << std::flush;
+        return modifyTaskClass(class_name, classDesc);
+    } else {
+        return modifyEntityClass(class_name, classDesc);
+    }
 }
 
 void EntityFactory::getRulesFromFiles(MapType & rules)

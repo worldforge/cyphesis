@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2000-2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -192,7 +192,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
     }
     const std::string & id = arg->getId();
     if (id.empty()) {
-        error(op, "query id invalid", res, getId());
+        error(op, "Get arg id empty", res, getId());
         return;
     }
     Info info;
@@ -213,10 +213,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
             K->second->addToEntity(info_arg);
             info->setArgs1(info_arg);
         } else {
-            std::string msg("Unknown object id \"");
-            msg += id;
-            msg += "\" requested";
-            error(op, msg.c_str(), res, getId());
+            error(op, String::compose("Unknown object id \"%1\" requested", id).c_str(), res, getId());
             return;
         }
     } else if ((objtype == "class") ||
@@ -224,20 +221,12 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
                (objtype == "op_definition")) {
         const Root & o = Inheritance::instance().getClass(id);
         if (!o.isValid()) {
-            std::string msg("Unknown type definition for \"");
-            msg += id;
-            msg += "\" requested";
-            error(op, msg.c_str(), res, getId());
+            error(op, String::compose("Unknown type definition for \"%1\" requested", id).c_str(), res);
             return;
         }
         info->setArgs1(o);
     } else {
-        std::string msg("Unknown object type \"");
-        msg += objtype;
-        msg += "\" requested for \"";
-        msg += id;
-        msg += "\"";
-        error(op, msg.c_str(), res, getId());
+        error(op, String::compose("Unknown object type \"%1\" requested for \"%2\"", objtype, id).c_str(), res, getId());
         return;
     }
     info->setSerialno(newSerialNo());
@@ -282,53 +271,15 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
                 info->setArgs1(arg);
                 res.push_back(info);
             } else {
-                error(op, "Unknown error updating type", res, getId());
+                error(op, "Updating type failed", res, getId());
             }
             return;
         }
-        error(op, "Client using obsolete Set to install new type", res, getId());
+        error(op, "Client attempting to use obsolete Set to install new type", res, getId());
         return;
-#if 0
-        // We no longer accept types installed using Set ops
-        I = arg.find("parents");
-        if (I == Iend) {
-            error(op, "Attempt to install type with no parents", res, getId());
-            return;
-        }
-        if (!I->second.isList()) {
-            error(op, "Attempt to install type with non-list parents", res, getId());
-            return;
-        }
-        const ListType & parents = I->second.asList();
-        if (parents.empty() || !parents.front().isString()) {
-            error(op, "Attempt to install type with invalid parent", res, getId());
-            return;
-        }
-        const std::string & parent = parents.front().asString();
-        if (parent.empty()) {
-            error(op, "Attempt to install type with parent=\"\"", res, getId());
-            return;
-        }
-        o = Inheritance::instance().get(parent);
-        if (o == 0) {
-            std::string msg("Attempt to install type with non-existant parent \"");
-            msg += parent;
-            msg += "\"";
-            error(op, msg.c_str(), res, getId());
-            return;
-        }
-        if (EntityFactory::instance()->installRule(id, arg) == 0) {
-            Info info;
-            info->setTo(getId());
-            ListType & info_args = info->getArgs();
-            info_args.push_back(arg);
-            res.push_back(info);
-        } else {
-            error(op, "Unknown error installing new type", res, getId());
-        }
-#endif
     } else if (objtype == "op_definition") {
-        // Install a new op type? Perhaps again this should be a create.
+        error(op, "Unable to modify existing op definitions yet", res, getId());
+        return;
     } else {
         error(op, "Unknow object type set", res, getId());
         return;
@@ -355,7 +306,7 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & objtype = arg->getObjtype();
-    if (objtype == "class") {
+    if (objtype == "class" || objtype == "op_definition") {
         // New entity type
         if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             error(op, "Set arg has no id.", res, getId());
@@ -385,10 +336,8 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
             info->setArgs1(arg);
             res.push_back(info);
         } else {
-            error(op, "Unknown error installing new type", res, getId());
+            error(op, "Installing new type failed", res, getId());
         }
-    } else if (objtype == "op_definition") {
-        // New operation type
     } else {
         Account::CreateOperation(op, res);
     }

@@ -132,4 +132,6 @@ void installCustomEntities()
     i.addChild(atlasClass("lobby", "admin_entity"));
 
     i.addChild(atlasClass("server", "admin_entity"));
+
+    i.addChild(atlasClass("task", "admin_entity"));
 }

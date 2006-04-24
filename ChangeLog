@@ -1,5 +1,22 @@
 2006-04-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/custom.cpp: Add a "task" base class to the inheritance tree.
+
+	* server/EntityFactory.h, server/EntityFactory.cpp: Add
+	  functionality to allow task rules to be installed and updated from
+	  an admin client. Improve the error reporting for a number of error
+	  conditions.
+
+	* server/Connection.cpp: Correct the copyright dates.
+
+	* server/Admin.cpp: Improve error reporting for a number of error
+	  conditions. Remove obsolete commented out code for installing
+	  rules using Set ops, and add error notification when the
+	  admin client attempts to update an op definition. Allow the
+	  admin client to install an op definition.
+
+2006-04-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add a tool, operation and class for hammering
 	  wooden stakes into the ground.
 
