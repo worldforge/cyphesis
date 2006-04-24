@@ -1,6 +1,19 @@
 2006-04-24  Al Riddoch  <alriddoch@zepler.org>
 
-	* data/mason.xml: Add new type for "stake", a sharpened version of lumber.
+	* rulesets/mason/world/tasks/Ram.py: Implement hammering things into
+	  the ground.
+
+	* rulesets/mason/define_world.py: Use stakes instead of logs for the
+	  stockade.
+
+	* rulesets/TaskScript.cpp: Don't send a tick to the task if its
+	  initialisation has failed, indicated by it being flagged as
+	  obsolete.
+
+2006-04-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/mason.xml: Add new type for "stake", a sharpened version of
+	  lumber.
 
 2006-04-24  Al Riddoch  <alriddoch@zepler.org>
 

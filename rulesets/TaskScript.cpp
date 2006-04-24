@@ -57,6 +57,10 @@ void TaskScript::initTask(const Operation & op, OpVector & res)
         irrelevant();
     }
 
+    if (obsolete()) {
+        return;
+    }
+
     Tick tick;
     tick->setAttr("sub_to", "task");
     tick->setTo(m_character.getId());

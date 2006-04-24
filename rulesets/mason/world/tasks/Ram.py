@@ -5,6 +5,7 @@ from atlas import *
 from physics import *
 from Quaternion import Quaternion
 from Vector3D import Vector3D
+from Point3D import Point3D
 
 try:
   from random import *
@@ -25,3 +26,28 @@ class Ram(Thing):
         self.tool = op.to
     def tick_operation(self, op):
         """ Op handler for regular tick op """
+        res = Message()
+
+        target=self.character.world.get_object(self.target)
+        if not target:
+            print "Target is no more"
+            self.irrelevant()
+            return
+
+        if not target.location.parent:
+            return
+        target_location = Location(target.location.parent, Point3D(target.location.coordinates.x, target.location.coordinates.y, target.location.coordinates.z - 0.1))
+        target_entity = Entity(self.target, location = target_location)
+        if not hasattr(target, 'mode') or target.mode != 'fixed':
+            target_entity.mode = 'fixed'
+
+        move=Operation("move", target_entity, to = self.target)
+        res.append(move)
+
+        tick=Operation("tick", to = self.character.id)
+        tick.setFutureSeconds(1)
+        tick.sub_to="task"
+        res.append(tick)
+
+        return res
+
