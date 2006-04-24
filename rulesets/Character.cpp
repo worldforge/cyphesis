@@ -710,7 +710,13 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 
     rop->setTo(toolId);
 
-    Task * task = m_world->activateTask(tool->getType(), op_type, *this);
+    Entity * target_ent = m_world->getEntity(entity_arg->getId());
+    if (target_ent == 0) {
+        error(op, "Character::mindUseOperation Target does not exist", res, getId());
+        return;
+    }
+
+    Task * task = m_world->activateTask(tool->getType(), op_type, target_ent->getType(), *this);
     if (task != NULL) {
         setTask(task);
         assert(res.empty());

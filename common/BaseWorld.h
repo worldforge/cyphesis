@@ -83,7 +83,7 @@ class BaseWorld {
                                   const Atlas::Objects::Entity::RootEntity &) = 0;
     virtual Task * newTask(const std::string &, Character &) = 0;
     virtual Task * activateTask(const std::string &, const std::string &,
-                                Character &) = 0;
+                                const std::string &, Character &) = 0;
     virtual void message(const Operation &, Entity & obj) = 0;
     virtual Entity * findByName(const std::string & name) = 0;
     virtual Entity * findByType(const std::string & type) = 0;

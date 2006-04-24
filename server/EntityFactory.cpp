@@ -181,6 +181,7 @@ Task * EntityFactory::newTask(const std::string & name, Character & owner) const
 
 Task * EntityFactory::activateTask(const std::string & tool,
                                    const std::string & op,
+                                   const std::string & target,
                                    Character & owner) const
 {
     TaskFactoryActivationDict::const_iterator I = m_taskActivations.find(tool);
@@ -195,6 +196,13 @@ Task * EntityFactory::activateTask(const std::string & tool,
         std::cout << "No task for tool " << tool << " using op " << op
                         << std::endl << std::flush;
         return 0;
+    }
+    if (!J->second->m_target.empty()) {
+        if (!Inheritance::instance().isTypeOf(target, J->second->m_target)) {
+            std::cout << target << " is not a " << J->second->m_target
+                      << std::endl << std::flush;
+            return 0;
+        }
     }
     return J->second->newTask(owner);
 }
@@ -345,6 +353,12 @@ int EntityFactory::installTaskClass(const std::string & className,
                 const std::string & activation_op = J->second.String();
                 m_taskActivations[activation_tool][activation_op] = factory;
             }
+        }
+        J = activation.find("target");
+        if (J != act_end && J->second.isString()) {
+            const std::string & target_base = J->second.String();
+            factory->m_target = target_base;
+            std::cout << "Target base class is " << factory->m_target << std::endl << std::flush;
         }
     }
 

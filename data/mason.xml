@@ -1066,6 +1066,7 @@
     <map name="activation">
       <string name="operation">cut</string>
       <string name="tool">axe</string>
+      <string name="target">tree</string>
     </map>
     <map name="script">
       <string name="language">python</string>
@@ -1454,6 +1455,7 @@
     <map name="activation">
       <string name="operation">lever</string>
       <string name="tool">pole</string>
+      <string name="target">game_entity</string>
     </map>
     <map name="script">
       <string name="language">python</string>
@@ -1472,6 +1474,7 @@
     <map name="activation">
       <string name="operation">strike</string>
       <string name="tool">hammer</string>
+      <string name="target">game_entity</string>
     </map>
     <map name="script">
       <string name="language">python</string>
@@ -1570,6 +1573,25 @@
       <string>character</string>
     </list>
     <int name="playable">1</int>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">sharpen</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="tool">axe</string>
+      <string name="target">lumber</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Sharpen</string>
+    </map>
   </map>
 
   <map>

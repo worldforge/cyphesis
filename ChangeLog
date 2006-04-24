@@ -1,5 +1,20 @@
 2006-04-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseWorld.h, rulesets/Character.cpp,
+	  server/EntityFactory.cpp, server/EntityFactory.h,
+	  server/TaskFactory.h, server/WorldRouter.cpp,
+	  server/WorldRouter.h: Specify the target base type that a given
+	  task is valid for, and provide target type when activating a task.
+
+	* data/mason.xml: Add target base types to most task rules.
+
+	* rulesets/mason/world/tasks/Combat.py: Fix the copyright date.
+
+	* rulesets/mason/world/tasks/Sharpen.py: Proof of concept task
+	  for turning logs into stakes.
+
+2006-04-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Ram.py: Implement hammering things into
 	  the ground.
 

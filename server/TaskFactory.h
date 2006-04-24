@@ -34,13 +34,15 @@ class ScriptFactory;
 /// script language and class name.
 class TaskFactory {
   public:
+    std::string m_target;
+
     virtual ~TaskFactory();
 
     virtual Task * newTask(Character & chr) = 0;
 };
 
 class PythonTaskScriptFactory : public TaskFactory {
-  public:
+  protected:
     PyObject * m_module;
     PyObject * m_class;
 
