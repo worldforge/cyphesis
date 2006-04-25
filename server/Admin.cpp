@@ -265,7 +265,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         // Manipulate attributes of existing objects.
     } else if (objtype == "class" || objtype == "op_definition") {
         if (Inheritance::instance().hasClass(id)) {
-            if (EntityFactory::instance()->modifyRule(id, arg->asMessage()) == 0) {
+            if (EntityFactory::instance()->modifyRule(id, arg) == 0) {
                 Info info;
                 info->setTo(getId());
                 info->setArgs1(arg);

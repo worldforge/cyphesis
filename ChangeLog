@@ -1,5 +1,12 @@
 2006-04-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Admin.cpp, server/EntityFactory.cpp, server/EntityFactory.h:
+	  Change function args to take class descriptions for modification
+	  as an Object not a Message. Makes it easier to defermine when
+	  op definitions should be processed.
+
+2006-04-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Admin.cpp: Allow client to update op definition, passing
 	  it to EntityFactory, just like other types.
 

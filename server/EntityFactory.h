@@ -73,9 +73,9 @@ class EntityFactory {
     int installOpDefinition(const std::string &, const std::string &,
                             const Atlas::Message::MapType&);
 
-    int modifyTaskClass(const std::string &, const Atlas::Message::MapType&);
-    int modifyEntityClass(const std::string &, const Atlas::Message::MapType&);
-    int modifyOpDefinition(const std::string &, const Atlas::Message::MapType&);
+    int modifyTaskClass(const std::string &, const Atlas::Objects::Root &);
+    int modifyEntityClass(const std::string &, const Atlas::Objects::Root &);
+    int modifyOpDefinition(const std::string &, const Atlas::Objects::Root &);
   public:
     static void init(BaseWorld & w) {
         m_instance = new EntityFactory(w);
@@ -102,7 +102,7 @@ class EntityFactory {
     int addStatisticsScript(Character &) const;
 
     int installRule(const std::string &, const Atlas::Message::MapType&);
-    int modifyRule(const std::string &, const Atlas::Message::MapType&);
+    int modifyRule(const std::string &, const Atlas::Objects::Root &);
 };
 
 #endif // SERVER_ENTITY_FACTORY_H

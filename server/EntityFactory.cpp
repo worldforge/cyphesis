@@ -539,7 +539,7 @@ static void updateChildren(FactoryBase * factory)
 }
 
 int EntityFactory::modifyEntityClass(const std::string & className,
-                                     const MapType & classDesc)
+                                     const Root & classDesc)
 {
     FactoryDict::const_iterator I = m_factories.find(className);
     if (I == m_factories.end()) {
@@ -566,7 +566,7 @@ int EntityFactory::modifyEntityClass(const std::string & className,
     }
     factory->m_classAttributes = MapType();
 
-    populateFactory(className, factory, classDesc);
+    populateFactory(className, factory, classDesc->asMessage());
 
     updateChildren(factory);
 
@@ -574,7 +574,7 @@ int EntityFactory::modifyEntityClass(const std::string & className,
 }
 
 int EntityFactory::modifyTaskClass(const std::string & class_name,
-                                   const MapType & classDesc)
+                                   const Root & classDesc)
 {
     TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
     if (I == m_taskFactories.end()) {
@@ -589,14 +589,14 @@ int EntityFactory::modifyTaskClass(const std::string & class_name,
 }
 
 int EntityFactory::modifyOpDefinition(const std::string & class_name,
-                                      const MapType & classDesc)
+                                      const Root & classDesc)
 {
     // Nothing to actually do
     return 0;
 }
 
 int EntityFactory::modifyRule(const std::string & class_name,
-                              const MapType & classDesc)
+                              const Root & classDesc)
 {
     Root o = Inheritance::instance().getClass(class_name);
     if (!o.isValid()) {
@@ -604,8 +604,9 @@ int EntityFactory::modifyRule(const std::string & class_name,
         return -1;
     }
     if (o->getParents().front() == "task") {
-        std::cout << "TASK " << class_name << std::endl << std::flush;
         return modifyTaskClass(class_name, classDesc);
+    } else if (classDesc->getObjtype() == "op_definition") {
+        return modifyOpDefinition(class_name, classDesc);
     } else {
         return modifyEntityClass(class_name, classDesc);
     }
