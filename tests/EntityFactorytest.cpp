@@ -300,7 +300,7 @@ int main(int argc, char ** argv)
 
         // Make sure than attempting to modify a non-existant type fails
         {
-            MapType nonexistant_description;
+            Anonymous nonexistant_description;
             MapType attrs;
             MapType test_custom_type_attr;
 
@@ -308,7 +308,7 @@ int main(int argc, char ** argv)
             test_custom_type_attr["visibility"] = "public";
             attrs["no_custom_type_attr"] = test_custom_type_attr;
 
-            nonexistant_description["attributes"] = attrs;
+            nonexistant_description->setAttr("attributes", attrs);
 
             ret = entity_factory.modifyRule("nonexistant", nonexistant_description);
 
@@ -317,8 +317,8 @@ int main(int argc, char ** argv)
 
         // Modify the second custom type removing its custom attribute
         {
-            MapType new_custom_inherited_type_description;
-            new_custom_inherited_type_description["attributes"] = MapType();
+            Anonymous new_custom_inherited_type_description;
+            new_custom_inherited_type_description->setAttr("attributes", MapType());
 
             ret = entity_factory.modifyRule("custom_inherited_type", new_custom_inherited_type_description);
 
@@ -386,8 +386,8 @@ int main(int argc, char ** argv)
 
         // Modify the first custom type removing its custom attribute
         {
-            MapType new_custom_type_description;
-            new_custom_type_description["attributes"] = MapType();
+            Anonymous new_custom_type_description;
+            new_custom_type_description->setAttr("attributes", MapType());
 
             ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
 
@@ -483,7 +483,7 @@ int main(int argc, char ** argv)
 
         // Add more custom attributes to the first type
         {
-            MapType new_custom_type_description;
+            Anonymous new_custom_type_description;
             MapType attrs;
             MapType test_custom_type_attr;
 
@@ -497,7 +497,7 @@ int main(int argc, char ** argv)
             new_custom_type_attr["visibility"] = "public";
             attrs["new_custom_type_attr"] = new_custom_type_attr;
 
-            new_custom_type_description["attributes"] = attrs;
+            new_custom_type_description->setAttr("attributes", attrs);
 
             ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
 

@@ -1,5 +1,13 @@
 2006-04-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/TestWorld.h: Add changes to the world interface to the world
+	  test framework.
+
+	* tests/EntityFactorytest.cpp: Update EntityFactory tests for changes
+	  in the API.
+
+2006-04-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: When entity creation cannot get a new ID,
 	  fail cleanly.
 
