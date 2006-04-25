@@ -1,24 +1,13 @@
-Tasks involving multiple entities are broken as only one entity ticks
-on them. If both entities were ticking on it, then both would be checking
-properlly for validity. tick_op would need to be re-written to the
-protagonist was determined by the FROM of the tick op, rather than
-alternating between the participants, which would make it easier to write
-more complex combat.
-
 Need to work out a sane way to handle udp socket for sending to multiple
 clients quickly and efficiently.
 
 Add short varconf args.
-
-Refuse to run as root, unless user gives argument to force it.
 
 Make gobos rob after ganking.
 
 Perhaps entities can have an Atlas Anonymous attached to avoid newly
 constructing one every time look is called. Ref counting objects mean
 no copy is required.
-
-Add inheritance for Task and installed task types, under like something?
 
 Add pickaxes, and trowels, and knowledge about tools to the tool merchant.
 
