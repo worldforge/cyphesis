@@ -1,5 +1,9 @@
 2006-04-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Increment server version for release soon.
+
+2006-04-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/TestWorld.h: Add changes to the world interface to the world
 	  test framework.
 
