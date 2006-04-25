@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2004-2006 Alistair Riddoch
+// Copyright (C) 2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,30 +15,24 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#ifndef SERVER_IDLE_H
-#define SERVER_IDLE_H
+#ifndef SERVER_IDLE_PSQL_CONNECTOR_H
+#define SERVER_IDLE_PSQL_CONNECTOR_H
+
+#include "Idle.h"
 
 #include <time.h>
 
-class CommServer;
+class Database;
 
-/// \brief Base class for any object which needs to be polled regularly.
-///
-/// This should be treated as an interface, so can cleanly be used in
-/// multiple inheritance.
-class Idle {
+/// \brief Handle attempting to reconnect to the RDBMS if we lose connection.
+class IdlePSQLConnector : virtual public Idle {
   protected:
-    explicit Idle(CommServer & svr);
+    Database & m_db;
   public:
-    /// Reference to the object that manages all socket communication.
-    CommServer & m_idleManager;
+    IdlePSQLConnector(CommServer &, Database &);
+    virtual ~IdlePSQLConnector();
 
-    virtual ~Idle();
-
-    /// \brief Perform idle tasks.
-    ///
-    /// Called from the server's core idle function whenever it is called.
-    virtual void idle(time_t t) = 0;
+    virtual void idle(time_t t);
 };
 
-#endif // SERVER_IDLE_H
+#endif // SERVER_IDLE_PSQL_CONNECTOR_H

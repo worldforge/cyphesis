@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000-2004 Alistair Riddoch
+// Copyright (C) 2000-2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -298,7 +298,11 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
                     << std::endl << std::flush;);
     std::string id;
     long intId = newId(id);
-    assert(!id.empty());
+
+    if (intId < 0) {
+        log(ERROR, "Unable to get ID for new Entity");
+        return 0;
+    }
 
     Entity * ent = EntityFactory::instance()->newEntity(id, intId, typestr, attrs);
     if (ent == 0) {

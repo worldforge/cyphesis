@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2003 Alistair Riddoch
+// Copyright (C) 2003-2004,2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,9 +17,13 @@
 
 #include "CommPSQLSocket.h"
 
+#include "IdlePSQLConnector.h"
+#include "CommServer.h"
+
 #include "common/Database.h"
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/globals.h"
 
 #include <iostream>
 
@@ -48,6 +52,11 @@ CommPSQLSocket::CommPSQLSocket(CommServer & svr, Database & db) :
 
 CommPSQLSocket::~CommPSQLSocket()
 {
+    if (!exit_flag) {
+        std::cout << "Lost server connection" << std::endl << std::flush;
+        IdlePSQLConnector * ipsqlc = new IdlePSQLConnector(m_idleManager, m_db);
+        m_idleManager.addIdle(ipsqlc);
+    }
 }
 
 int CommPSQLSocket::getFd() const
@@ -61,7 +70,7 @@ int CommPSQLSocket::getFd() const
 bool CommPSQLSocket::eof()
 {
     debug(std::cout << "CommPSQLSocket::eof()" << std::endl << std::flush;);
-    return false;
+    return PQstatus(m_db.getConnection()) != CONNECTION_OK;
 }
 
 bool CommPSQLSocket::isOpen() const

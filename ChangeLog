@@ -1,5 +1,19 @@
 2006-04-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: When entity creation cannot get a new ID,
+	  fail cleanly.
+
+	* server/Idle.h: Clean up header, and correct copyright date.
+
+	* server/CommPSQLSocket.cpp: Implement eof() method to check the
+	  connection is still okay.
+
+	* server/CommPSQLSocket.cpp, server/IdlePSQLConnector.cpp,
+	  server/IdlePSQLConnector.h: Add class stub which will try and
+	  re-establish connection to the RDBMS once lost.
+
+2006-04-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/test_python_api.py: More tests of the Python API
 	  for Atlas Operations.
 
