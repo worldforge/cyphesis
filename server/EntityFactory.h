@@ -36,7 +36,8 @@ class PersistantThingFactory;
 
 typedef std::map<std::string, FactoryBase *> FactoryDict;
 typedef std::map<std::string, TaskFactory *> TaskFactoryDict;
-typedef std::map<std::string, TaskFactoryDict> TaskFactoryActivationDict;
+typedef std::multimap<std::string, TaskFactory *> TaskFactoryMultimap;
+typedef std::map<std::string, TaskFactoryMultimap> TaskFactoryActivationDict;
 typedef std::map<std::string, ArithmeticFactory *> StatisticsFactoryDict;
 
 /// \brief Class to handle the creation of all entities for the world.

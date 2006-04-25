@@ -190,21 +190,25 @@ Task * EntityFactory::activateTask(const std::string & tool,
                         << std::endl << std::flush;
         return 0;
     }
-    const TaskFactoryDict & dict = I->second;
-    TaskFactoryDict::const_iterator J = dict.find(op);
+    const TaskFactoryMultimap & dict = I->second;
+    TaskFactoryMultimap::const_iterator J = dict.lower_bound(op);
     if (J == dict.end()) {
         std::cout << "No task for tool " << tool << " using op " << op
                         << std::endl << std::flush;
         return 0;
     }
-    if (!J->second->m_target.empty()) {
-        if (!Inheritance::instance().isTypeOf(target, J->second->m_target)) {
-            std::cout << target << " is not a " << J->second->m_target
-                      << std::endl << std::flush;
-            return 0;
+    TaskFactoryMultimap::const_iterator Jend = dict.upper_bound(op);
+    for (; J != Jend; ++J) {
+        if (!J->second->m_target.empty()) {
+            if (!Inheritance::instance().isTypeOf(target, J->second->m_target)) {
+                std::cout << target << " is not a " << J->second->m_target
+                          << std::endl << std::flush;
+                continue;
+            }
         }
+        return J->second->newTask(owner);
     }
-    return J->second->newTask(owner);
+    return 0;
 }
 
 int EntityFactory::addStatisticsScript(Character & chr) const
@@ -351,7 +355,7 @@ int EntityFactory::installTaskClass(const std::string & className,
             J = activation.find("operation");
             if (J != act_end && J->second.isString()) {
                 const std::string & activation_op = J->second.String();
-                m_taskActivations[activation_tool][activation_op] = factory;
+                m_taskActivations[activation_tool].insert(std::make_pair(activation_op, factory));
             }
         }
         J = activation.find("target");

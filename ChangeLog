@@ -1,3 +1,9 @@
+2006-04-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.h, server/EntityFactory.cpp: Make the
+	  activation map a multimap, and search through it to find a match
+	  for the target entity.
+
 2006-04-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseWorld.h, rulesets/Character.cpp,
