@@ -1,5 +1,14 @@
 2006-04-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Admin.cpp: Allow client to update op definition, passing
+	  it to EntityFactory, just like other types.
+
+	* server/EntityFactory.h, server/EntityFactory.cpp: Add method to
+	  handle updating op definitions. Catch a bug which might cause
+	  a crash if the client updates a core C++ hard coded entity type.
+
+2006-04-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.h, server/EntityFactory.cpp: Make the
 	  activation map a multimap, and search through it to find a match
 	  for the target entity.

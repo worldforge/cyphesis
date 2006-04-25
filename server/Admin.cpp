@@ -263,7 +263,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         }
         log(WARNING, "Unable to set attributes of non-character yet");
         // Manipulate attributes of existing objects.
-    } else if (objtype == "class") {
+    } else if (objtype == "class" || objtype == "op_definition") {
         if (Inheritance::instance().hasClass(id)) {
             if (EntityFactory::instance()->modifyRule(id, arg->asMessage()) == 0) {
                 Info info;
@@ -276,9 +276,6 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
             return;
         }
         error(op, "Client attempting to use obsolete Set to install new type", res, getId());
-        return;
-    } else if (objtype == "op_definition") {
-        error(op, "Unable to modify existing op definitions yet", res, getId());
         return;
     } else {
         error(op, "Unknow object type set", res, getId());

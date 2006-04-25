@@ -556,10 +556,14 @@ int EntityFactory::modifyEntityClass(const std::string & className,
 
     // Copy the defaults from the parent. In populateFactory this may be
     // overriden with the defaults for this class.
-    // FIXME
-    // If the code crashes here because m_parent is NULL, it is because
-    // the client has attempted to modify the factory for a core class.
-    factory->m_attributes = factory->m_parent->m_attributes;
+    if (factory->m_parent != 0) {
+        factory->m_attributes = factory->m_parent->m_attributes;
+    } else {
+        // This is non fatal, but nice to know it has happened.
+        // This should only happen if the client attempted to modify the
+        // type data for a core hard coded type.
+        log(ERROR, String::compose("EntityFactory::modifyEntityClass: \"%1\" modified by client, so has no parent factory", className).c_str());
+    }
     factory->m_classAttributes = MapType();
 
     populateFactory(className, factory, classDesc);
@@ -581,6 +585,13 @@ int EntityFactory::modifyTaskClass(const std::string & class_name,
     assert(factory != 0);
 
     // FIXME Actually update the task factory.
+    return 0;
+}
+
+int EntityFactory::modifyOpDefinition(const std::string & class_name,
+                                      const MapType & classDesc)
+{
+    // Nothing to actually do
     return 0;
 }
 

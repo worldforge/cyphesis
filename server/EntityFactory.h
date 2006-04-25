@@ -75,6 +75,7 @@ class EntityFactory {
 
     int modifyTaskClass(const std::string &, const Atlas::Message::MapType&);
     int modifyEntityClass(const std::string &, const Atlas::Message::MapType&);
+    int modifyOpDefinition(const std::string &, const Atlas::Message::MapType&);
   public:
     static void init(BaseWorld & w) {
         m_instance = new EntityFactory(w);
