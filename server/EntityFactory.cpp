@@ -186,15 +186,11 @@ Task * EntityFactory::activateTask(const std::string & tool,
 {
     TaskFactoryActivationDict::const_iterator I = m_taskActivations.find(tool);
     if (I == m_taskActivations.end()) {
-        std::cout << "No task for tool " << tool
-                        << std::endl << std::flush;
         return 0;
     }
     const TaskFactoryMultimap & dict = I->second;
     TaskFactoryMultimap::const_iterator J = dict.lower_bound(op);
     if (J == dict.end()) {
-        std::cout << "No task for tool " << tool << " using op " << op
-                        << std::endl << std::flush;
         return 0;
     }
     TaskFactoryMultimap::const_iterator Jend = dict.upper_bound(op);
@@ -362,7 +358,6 @@ int EntityFactory::installTaskClass(const std::string & className,
         if (J != act_end && J->second.isString()) {
             const std::string & target_base = J->second.String();
             factory->m_target = target_base;
-            std::cout << "Target base class is " << factory->m_target << std::endl << std::flush;
         }
     }
 

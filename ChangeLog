@@ -1,5 +1,9 @@
 2006-04-25  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Remove some debug output.
+
+2006-04-25  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Increment server version for release soon.
 
 2006-04-25  Al Riddoch  <alriddoch@zepler.org>
