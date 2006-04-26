@@ -229,22 +229,13 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
 
 void Character::TickOperation(const Operation & op, OpVector & res)
 {
-    Element sub_to;
-    if (op->copyAttr("sub_to", sub_to) == 0) {
-        log(ERROR, "Tick has sub_to");
-        debug( std::cout << "Has sub_to" << std::endl << std::flush;);
-        if (sub_to == "task") {
-            log(ERROR, "Got tick sub_to=\"task\"");
-        }
-        return;
-    }
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
     const std::vector<Root> & args = op->getArgs();
     if (!args.empty()) {
-        // Deal with movement.
         const Root & arg = args.front();
         if (arg->getName() == "move") {
+            // Deal with movement.
             Element serialno;
             if (arg->copyAttr("serialno", serialno) == 0 && (serialno.isInt())) {
                 if (serialno.asInt() < m_movement.serialno()) {
@@ -268,6 +259,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             tickOp->setArgs1(tick_arg);
             res.push_back(tickOp);
         } else if (arg->getName() == "task") {
+            // Deal with task iteration
             if (m_task == 0) {
                 log(ERROR, "Got Tick op for task, but task is null");
                 return;

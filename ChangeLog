@@ -1,5 +1,11 @@
 2006-04-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp, rulesets/Py_Operation.cpp,
+	  rulesets/Python_API.cpp: Remove last remaining remnants of
+	  code using SUB_TO.
+
+2006-04-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Tasktest.cpp: Tighten up tests for the sample task.
 
 2006-04-26  Al Riddoch  <alriddoch@zepler.org>

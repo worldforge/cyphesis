@@ -609,14 +609,6 @@ static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
         Py_DECREF(thing_id);
         return 0;
     }
-    if (strcmp(name, "sub_to") == 0) {
-        if (!PyString_Check(v)) {
-            PyErr_SetString(PyExc_TypeError, "invalid sub_to");
-            return -1;
-        }
-        self->operation->setAttr("sub_to", PyString_AsString(v));
-        return 0;
-    }
     PyErr_SetString(PyExc_AttributeError, "unknown attribute");
     return -1;
 }

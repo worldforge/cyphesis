@@ -962,24 +962,6 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
             op->operation->setTo(PyString_AsString(to_id));
             Py_DECREF(to_id);
         }
-        PyObject * sub_to = PyDict_GetItemString(kwds, "sub_to");
-        if (sub_to != NULL) {
-            PyObject * sub_to_id = 0;
-            if (PyString_Check(sub_to)) {
-                sub_to_id = sub_to;
-                Py_INCREF(sub_to_id);
-            } else if ((sub_to_id = PyObject_GetAttrString(sub_to, "id")) == NULL) {
-                PyErr_SetString(PyExc_TypeError, "sub_to is not a string and has no id");
-                return NULL;
-            }
-            if (!PyString_Check(sub_to_id)) {
-                Py_DECREF(sub_to_id);
-                PyErr_SetString(PyExc_TypeError, "id of sub_to is not a string");
-                return NULL;
-            }
-            op->operation->setAttr("sub_to", PyString_AsString(sub_to_id));
-            Py_DECREF(sub_to_id);
-        }
     }
     std::vector<Root> & args_list = op->operation->modifyArgs();
     addToArgs(args_list, arg1);
