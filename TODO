@@ -1,3 +1,6 @@
+In BaseMind::Appearance, use getStamp() and flags, instead of stupid
+string munging.
+
 Need to work out a sane way to handle udp socket for sending to multiple
 clients quickly and efficiently.
 

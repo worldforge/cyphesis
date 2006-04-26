@@ -1,3 +1,18 @@
+2006-04-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp, rulesets/Task.cpp, rulesets/Task.h,
+	  rulesets/TaskScript.cpp: Re-work tick ops to tasks so they use
+	  argument, not sub_to to get routed to the task. Do the groundwork
+	  for having a serial number for each op, which resets to zero when
+	  a new task is started.
+
+	* rulesets/mason/world/tasks/Combat.py,
+	  rulesets/mason/world/tasks/Logging.py,
+	  rulesets/mason/world/tasks/Raise.py,
+	  rulesets/mason/world/tasks/Ram.py,
+	  rulesets/mason/world/tasks/Sharpen.py: Modify all current tasks
+	  to set their arg as required.
+
 2006-04-25  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.cpp: Remove some debug output.

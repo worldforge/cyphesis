@@ -55,9 +55,8 @@ class Raise(Thing):
         move=Operation("move", Entity(self.target, location=target_location), to=self.target)
         res.append(move)
 
-        tick=Operation("tick", to=self.character.id)
+        tick=Operation("tick", Entity(name="task"), to=self.character.id)
         tick.setFutureSeconds(1)
-        tick.sub_to="task"
         res.append(tick)
 
         return res

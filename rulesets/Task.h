@@ -33,6 +33,9 @@ class Task {
     int m_refCount;
   protected:
 
+    /// \brief Serial number of the tick due to arrive next at this task.
+    int m_serialno;
+
     /// \brief Flag to indicate if this task is obsolete and should be removed
     bool m_obsolete;
 
@@ -85,6 +88,11 @@ class Task {
     /// \brief Return the number of entities involved in this task
     int count() {
         return m_refCount;
+    }
+
+    /// \brief Return the number of the next to arrive at this task
+    int serialno() {
+        return m_serialno;
     }
 
     /// \brief Accessor to determine if this Task is obsolete

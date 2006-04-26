@@ -18,7 +18,7 @@
 #include "Task.h"
 
 /// \brief Task constructor for classes which inherit from Task
-Task::Task(Character & chr) : m_refCount(0), m_obsolete(false), m_character(chr)
+Task::Task(Character & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_character(chr)
 {
 }
 

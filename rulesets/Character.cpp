@@ -236,18 +236,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             return;
         }
         if (sub_to.String() == "task") {
-            if (m_task == 0) {
-                log(ERROR, "Got Tick op for task, but task is null");
-                return;
-            }
-            m_task->TickOperation(op, res);
-            if (m_task == 0) {
-                log(ERROR, "task is NULL after it processed tick op");
-                return;
-            }
-            if (m_task->obsolete()) {
-                clearTask();
-            }
+            log(ERROR, "Got tick sub_to=\"task\"");
         }
         return;
     }
@@ -257,28 +246,51 @@ void Character::TickOperation(const Operation & op, OpVector & res)
     if (!args.empty()) {
         // Deal with movement.
         const Root & arg = args.front();
-        Element serialno;
-        if (arg->copyAttr("serialno", serialno) == 0 && (serialno.isInt())) {
-            if (serialno.asInt() < m_movement.serialno()) {
-                debug(std::cout << "Old tick" << std::endl << std::flush;);
+        if (arg->getName() == "move") {
+            Element serialno;
+            if (arg->copyAttr("serialno", serialno) == 0 && (serialno.isInt())) {
+                if (serialno.asInt() < m_movement.serialno()) {
+                    debug(std::cout << "Old tick" << std::endl << std::flush;);
+                    return;
+                }
+            } else {
+                log(ERROR, "Character::TickOperation: No serialno in tick arg");
+            }
+            Location return_location;
+            if (m_movement.getUpdatedLocation(return_location)) {
                 return;
             }
+            res.push_back(m_movement.generateMove(return_location));
+            Anonymous tick_arg;
+            tick_arg->setName("move");
+            tick_arg->setAttr("serialno", m_movement.serialno());
+            Tick tickOp;
+            tickOp->setTo(getId());
+            tickOp->setFutureSeconds(m_movement.getTickAddition(return_location.pos(), return_location.velocity()));
+            tickOp->setArgs1(tick_arg);
+            res.push_back(tickOp);
+        } else if (arg->getName() == "task") {
+            if (m_task == 0) {
+                log(ERROR, "Got Tick op for task, but task is null");
+                return;
+            }
+            Element serialno;
+            if (arg->copyAttr("serialno", serialno) == 0 && (serialno.isInt())) {
+                if (serialno.asInt() != m_task->serialno()) {
+                    debug(std::cout << "Old tick" << std::endl << std::flush;);
+                    return;
+                }
+            } else {
+                log(ERROR, "Character::TickOperation: No serialno in tick arg");
+            }
+            m_task->TickOperation(op, res);
+            assert(m_task != 0);
+            if (m_task->obsolete()) {
+                clearTask();
+            }
         } else {
-            log(ERROR, "Character::TickOperation: No serialno in tick arg");
+            log(ERROR, String::compose("Tick to unknown subsystem \"%1\" arrived", arg->getName()).c_str());
         }
-        Location return_location;
-        if (m_movement.getUpdatedLocation(return_location)) {
-            return;
-        }
-        res.push_back(m_movement.generateMove(return_location));
-        Anonymous tick_arg;
-        tick_arg->setName("move");
-        tick_arg->setAttr("serialno", m_movement.serialno());
-        Tick tickOp;
-        tickOp->setTo(getId());
-        tickOp->setFutureSeconds(m_movement.getTickAddition(return_location.pos(), return_location.velocity()));
-        tickOp->setArgs1(tick_arg);
-        res.push_back(tickOp);
     } else {
         m_script->operation("tick", op, res);
 

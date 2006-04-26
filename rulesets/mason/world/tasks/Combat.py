@@ -43,9 +43,8 @@ class Combat(Thing):
 
         # Consequence of this is currently that the defender gets to
         # hit first. Might be a good idea to try and avoid this.
-        tick=Operation("tick", to=self.attacker)
+        tick=Operation("tick", Entity(name="task"), to=self.attacker)
         tick.setFutureSeconds(1.75)
-        tick.sub_to="task"
         res.append(tick)
 
         return res
@@ -127,8 +126,7 @@ class Combat(Thing):
             return res
 
         # Schedule a new tick op
-        tick=Operation("tick", to=op.to)
-        tick.sub_to="task"
+        tick=Operation("tick", Entity(name="task"), to=op.to)
         tick.setFutureSeconds(1.75)
         res.append(tick)
         return res

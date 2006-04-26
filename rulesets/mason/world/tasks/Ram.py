@@ -41,12 +41,11 @@ class Ram(Thing):
         if not hasattr(target, 'mode') or target.mode != 'fixed':
             target_entity.mode = 'fixed'
 
-        move=Operation("move", target_entity, to = self.target)
+        move=Operation("move", target_entity, to=self.target)
         res.append(move)
 
-        tick=Operation("tick", to = self.character.id)
+        tick=Operation("tick", Entity(name="task"), to=self.character.id)
         tick.setFutureSeconds(1)
-        tick.sub_to="task"
         res.append(tick)
 
         return res

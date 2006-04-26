@@ -24,8 +24,10 @@
 #include "common/Tick.h"
 
 #include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Objects::Operation::Tick;
+using Atlas::Objects::Entity::Anonymous;
 
 TaskScript::TaskScript(Character & chr) : Task(chr), m_script(0)
 {
@@ -61,8 +63,11 @@ void TaskScript::initTask(const Operation & op, OpVector & res)
         return;
     }
 
+    Anonymous tick_arg;
+    tick_arg->setName("task");
+    tick_arg->setAttr("serialno", 0);
     Tick tick;
-    tick->setAttr("sub_to", "task");
+    tick->setArgs1(tick_arg);
     tick->setTo(m_character.getId());
 
     res.push_back(tick);
