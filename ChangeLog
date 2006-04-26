@@ -1,3 +1,7 @@
+2006-04-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/Tasktest.cpp: Tighten up tests for the sample task.
+
 2006-04-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: When the client sends a Use op with

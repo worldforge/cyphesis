@@ -22,9 +22,11 @@
 #include "common/Tick.h"
 
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 using Atlas::Objects::Operation::Tick;
+using Atlas::Objects::Entity::Anonymous;
 
 /// \brief Constructor for Fell task
 ///
@@ -42,9 +44,14 @@ Fell::~Fell()
 // FIXME Should this be what the default implemntation of this method does?
 void Fell::initTask(const Operation & op, OpVector & res)
 {
+    Anonymous tick_arg;
+    tick_arg->setName("task");
+    tick_arg->setAttr("serialno", 0);
     Tick t;
-    t->setAttr("sub_to", "task");
+    t->setArgs1(tick_arg);
     t->setTo(m_character.getId());
+
+    res.push_back(t);
 }
 
 void Fell::TickOperation(const Operation & op, OpVector & res)

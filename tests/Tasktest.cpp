@@ -20,6 +20,8 @@
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
 
+#include "common/Cut.h"
+
 #include <Atlas/Objects/RootOperation.h>
 
 #include <iostream>
@@ -31,10 +33,10 @@ int main()
     int ret = 0;
 
     Operation op;
-    OpVector res;
 
     {
         Task * task;
+        OpVector res;
 
         if (0) {
             task->TickOperation(op, res);
@@ -48,6 +50,16 @@ int main()
         Fell fell(chr, ent1, ent2);
 
         assert(!fell.obsolete());
+
+        OpVector res;
+
+        assert(res.empty());
+
+        Atlas::Objects::Operation::Cut c;
+
+        fell.initTask(c, res);
+
+        assert(!res.empty());
 
         fell.TickOperation(op, res);
 
