@@ -865,14 +865,14 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
             std::cout << "usage: install <type id> <parent id>"
                       << std::endl << std::flush;
         } else {
-            Set s;
-            s->setFrom(accountId);
+            Create c;
+            c->setFrom(accountId);
             Anonymous ent;
             ent->setId(std::string(arg, 0, space));
             ent->setObjtype("class");
             ent->setParents(std::list<std::string>(1, std::string(arg, space + 1)));
-            s->setArgs1(ent);
-            encoder->streamObjectsMessage(s);
+            c->setArgs1(ent);
+            encoder->streamObjectsMessage(c);
         }
         reply_expected = false;
     } else if (cmd == "look") {

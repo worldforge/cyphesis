@@ -1,5 +1,10 @@
 2006-04-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: Switch to using Create to install types rather
+	  than the obsolete Set.
+
+2006-04-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Stop using SUB_TO for tick and setup ops to
 	  subsystems, and use argument.NAME instead to indicate the subsystem
 	  to be compatible with movement ticks.
