@@ -1,5 +1,15 @@
 2006-04-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Simplify check tick ops for subsystem.
+
+	* rulesets/Combat.h, rulesets/Fell.h: Remove obsolete hard coded
+	  tasks from the build.
+
+	* tests/Tasktest.cpp, tests/Fell.cpp, tests/Fell.h: Move old Fell
+	  class into tests, and use it to verify tasks operate correctly.
+
+2006-04-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, rulesets/Task.cpp, rulesets/Task.h,
 	  rulesets/TaskScript.cpp: Re-work tick ops to tasks so they use
 	  argument, not sub_to to get routed to the task. Do the groundwork

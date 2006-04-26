@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2004 Alistair Riddoch
+// Copyright (C) 2004-2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,44 +17,36 @@
 
 #include "Fell.h"
 
-#include "rulesets/Entity.h"
 #include "rulesets/Character.h"
 
-#include <Atlas/Objects/RootOperation.h>
+#include "common/Tick.h"
 
-#include <iostream>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/SmartPtr.h>
 
-#include <cassert>
+using Atlas::Objects::Operation::Tick;
 
-int main()
+/// \brief Constructor for Fell task
+///
+/// @param chr Character peforming the task
+/// @param tool Entity to be used as a tool for this task
+/// @param target Entity that is the target for this task
+Fell::Fell(Character & chr, Entity & tool, Entity & target) : Task(chr)
 {
-    int ret = 0;
+}
 
-    Operation op;
-    OpVector res;
+Fell::~Fell()
+{
+}
 
-    {
-        Task * task;
+// FIXME Should this be what the default implemntation of this method does?
+void Fell::initTask(const Operation & op, OpVector & res)
+{
+    Tick t;
+    t->setAttr("sub_to", "task");
+    t->setTo(m_character.getId());
+}
 
-        if (0) {
-            task->TickOperation(op, res);
-        }
-    }
-
-    Entity ent1("1", 1), ent2("2", 2);
-    Character chr("3", 3);
-
-    {
-        Fell fell(chr, ent1, ent2);
-
-        assert(!fell.obsolete());
-
-        fell.TickOperation(op, res);
-
-        fell.irrelevant();
-
-        assert(fell.obsolete());
-    }
-
-    return ret;
+void Fell::TickOperation(const Operation & op, OpVector & res)
+{
 }

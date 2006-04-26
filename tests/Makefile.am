@@ -415,7 +415,7 @@ Creatortest_LDFLAGS = -export-dynamic
 Containertest_SOURCES = Containertest.cpp
 Containertest_LDADD = $(top_builddir)/rulesets/Container.o
 
-Tasktest_SOURCES = Tasktest.cpp
+Tasktest_SOURCES = Tasktest.cpp Fell.cpp
 Tasktest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                  $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/rulesets/librulesetmind.a \

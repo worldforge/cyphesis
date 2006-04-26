@@ -31,10 +31,8 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Statistics.cpp Statistics.h \
 			     StatisticsProperty.cpp StatisticsProperty.h \
 			     Task.cpp Task.h \
-			     Combat.cpp Combat.h \
 			     TaskScript.cpp TaskScript.h \
-			     ArithmeticScript.cpp ArithmeticScript.h \
-			     Fell.cpp Fell.h
+			     ArithmeticScript.cpp ArithmeticScript.h
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 			   MindFactory.cpp MindFactory.h \

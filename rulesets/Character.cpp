@@ -18,11 +18,11 @@
 #include "Character.h"
 
 #include "Pedestrian.h"
-#include "Combat.h"
 #include "MindFactory.h"
 #include "BaseMind.h"
 #include "Script.h"
 #include "World.h"
+#include "Task.h"
 #include "StatisticsProperty.h"
 
 #include "common/op_switch.h"
@@ -231,11 +231,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
     Element sub_to;
     if (op->copyAttr("sub_to", sub_to) == 0) {
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
-        if (!sub_to.isString()) {
-            error(op, "Tick op sub_to is not string", res, getId());
-            return;
-        }
-        if (sub_to.String() == "task") {
+        if (sub_to == "task") {
             log(ERROR, "Got tick sub_to=\"task\"");
         }
         return;

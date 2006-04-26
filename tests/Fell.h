@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2005 Alistair Riddoch
+// Copyright (C) 2004-2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,29 +15,19 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#error This file has been removed from the build
-
-#ifndef RULESETS_COMBAT_H
-#define RULESETS_COMBAT_H
+#ifndef RULESETS_FELL_H
+#define RULESETS_FELL_H
 
 #include "rulesets/Task.h"
 
-/// \brief Task class for fighting
-class Combat : public Task {
-  protected:
-    Character & m_target;
-    bool m_attack;
-
-    static const double minStamina;
+/// \brief Task class for felling trees
+class Fell : public Task {
   public:
-    explicit Combat(Character & chr, Character & target);
-    virtual ~Combat();
-
-    virtual void irrelevant();
+    explicit Fell(Character & chr, Entity & tool, Entity & target);
+    virtual ~Fell();
 
     virtual void initTask(const Operation & op, OpVector & res);
-
     virtual void TickOperation(const Operation & op, OpVector & res);
 };
 
-#endif // RULESETS_COMBAT_H
+#endif // RULESETS_FELL_H

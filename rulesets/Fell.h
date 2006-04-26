@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+#error This file has been removed from the build
+
 #ifndef RULESETS_FELL_H
 #define RULESETS_FELL_H
 
