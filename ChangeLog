@@ -1,5 +1,9 @@
 2006-04-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add a cow to the world.
+
+2006-04-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: Switch to using Create to install types rather
 	  than the obsolete Set.
 
