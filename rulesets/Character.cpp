@@ -184,8 +184,8 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
     debug( std::cout << "CHaracter::SetupOperation()" << std::endl
                      << std::flush;);
 
-    if (op->hasAttr("sub_to")) {
-        debug( std::cout << "Setup has sub_to" << std::endl << std::flush;);
+    if (!op->getArgs().empty()) {
+        debug( std::cout << __func__ << " Setup op is for subsystem" << std::endl << std::flush;);
         return;
     }
 
@@ -212,8 +212,9 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
                                                   m_name, m_type);
 
         Operation s(op.copy());
-        // THis is so not the right thing to do
-        s->setAttr("sub_to", "mind");
+        Anonymous setup_arg;
+        setup_arg->setName("mind");
+        s->setArgs1(setup_arg);
         res.push_back(s);
 
         Look l;
@@ -230,6 +231,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
 {
     Element sub_to;
     if (op->copyAttr("sub_to", sub_to) == 0) {
+        log(ERROR, "Tick has sub_to");
         debug( std::cout << "Has sub_to" << std::endl << std::flush;);
         if (sub_to == "task") {
             log(ERROR, "Got tick sub_to=\"task\"");
@@ -284,6 +286,8 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             if (m_task->obsolete()) {
                 clearTask();
             }
+        } else if (arg->getName() == "mind") {
+            // Do nothing. Passed to mind.
         } else {
             log(ERROR, String::compose("Tick to unknown subsystem \"%1\" arrived", arg->getName()).c_str());
         }
@@ -560,8 +564,10 @@ void Character::mindAttackOperation(const Operation & op, OpVector & res)
 
 void Character::mindSetupOperation(const Operation & op, OpVector & res)
 {
+    Anonymous setup_arg;
+    setup_arg->setName("mind");
+    op->setArgs1(setup_arg);
     op->setTo(getId());
-    op->setAttr("sub_to", "mind");
     res.push_back(op);
 }
 
@@ -762,8 +768,10 @@ void Character::mindWieldOperation(const Operation & op, OpVector & res)
 
 void Character::mindTickOperation(const Operation & op, OpVector & res)
 {
+    Anonymous tick_arg;
+    tick_arg->setName("mind");
+    op->setArgs1(tick_arg);
     op->setTo(getId());
-    op->setAttr("sub_to", "mind");
     res.push_back(op);
 }
 
@@ -1261,8 +1269,10 @@ bool Character::w2mOtherOperation(const Operation & op)
 
 bool Character::w2mSetupOperation(const Operation & op)
 {
-    if (op->hasAttr("sub_to")) {
-        return true;
+    if (!op->getArgs().empty()) {
+        if (op->getArgs().front()->getName() == "mind") {
+            return true;
+        }
     }
     return false;
 }
@@ -1279,9 +1289,8 @@ bool Character::w2mWieldOperation(const Operation & op)
 
 bool Character::w2mTickOperation(const Operation & op)
 {
-    Element sub_to;
-    if (op->copyAttr("sub_to", sub_to) == 0) {
-        if (sub_to == "mind") {
+    if (!op->getArgs().empty()) {
+        if (op->getArgs().front()->getName() == "mind") {
             return true;
         }
     }

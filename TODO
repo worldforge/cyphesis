@@ -1,3 +1,6 @@
+Add media for boots, bowl, cow, flower, hat, knife, leaf, loaf, statue, stool,
+and longtable
+
 In BaseMind::Appearance, use getStamp() and flags, instead of stupid
 string munging.
 

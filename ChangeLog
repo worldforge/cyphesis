@@ -1,5 +1,11 @@
 2006-04-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Stop using SUB_TO for tick and setup ops to
+	  subsystems, and use argument.NAME instead to indicate the subsystem
+	  to be compatible with movement ticks.
+
+2006-04-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Simplify check tick ops for subsystem.
 
 	* rulesets/Combat.h, rulesets/Fell.h: Remove obsolete hard coded
