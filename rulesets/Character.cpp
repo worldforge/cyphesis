@@ -575,6 +575,19 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Use op from mind" << std::endl << std::flush;);
 
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        if (m_task != 0) {
+            std::cout << "Stopping task" << std::endl << std::flush;
+            if (!m_task->obsolete()) {
+                m_task->irrelevant();
+            }
+            assert(m_task->obsolete());
+            clearTask();
+        }
+        return;
+    }
+
     const std::string & toolId = m_rightHandWield;
 
     if (toolId.empty()) {
@@ -635,48 +648,45 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     // If arg is an operation, this is the operation to be used, and the
     // sub op arg may be an entity specifying target. If op to be used is
     // specified, this is checked against the ops permitted by this tool.
-    const std::vector<Root> & args = op->getArgs();
-    if (!args.empty()) {
-        const Root & arg = args.front();
-        const std::string & argtype = arg->getObjtype();
-        if (argtype == "op") {
-            if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
-                (arg->getParents().empty())) {
-                error(op, "Use arg op has malformed parents", res, getId());
-                return;
-            }
-            op_type = arg->getParents().front();
-            debug(std::cout << "Got op type " << op_type << " from arg"
-                            << std::endl << std::flush;);
-            if (toolOps.find(op_type) == toolOps.end()) {
-                error(op, "Use op is not permitted by tool", res, getId());
-                return;
-            }
-            // Check against valid ops
-            Operation arg_op = smart_dynamic_cast<Operation>(arg);
-            if (!arg_op.isValid()) {
-                error(op, "Use op arg is a malformed op", res, getId());
-                return;
-            }
-
-            const std::vector<Root> & arg_op_args = arg_op->getArgs();
-            if (!arg_op_args.empty()) {
-                entity_arg = smart_dynamic_cast<RootEntity>(arg_op_args.front());
-                if (!entity_arg.isValid()) {
-                    error(op, "Use op target is malformed", res, getId());
-                    return;
-                }
-            }
-        } else if (argtype == "obj") {
-            entity_arg = smart_dynamic_cast<RootEntity>(arg);
-            if (!entity_arg.isValid()) {
-                error(op, "Use target is malformed", res, getId());
-                return;
-            }
-        } else {
-            error(op, "Use arg has unknown objtype", res, getId());
+    const Root & arg = args.front();
+    const std::string & argtype = arg->getObjtype();
+    if (argtype == "op") {
+        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
+            (arg->getParents().empty())) {
+            error(op, "Use arg op has malformed parents", res, getId());
             return;
         }
+        op_type = arg->getParents().front();
+        debug(std::cout << "Got op type " << op_type << " from arg"
+                        << std::endl << std::flush;);
+        if (toolOps.find(op_type) == toolOps.end()) {
+            error(op, "Use op is not permitted by tool", res, getId());
+            return;
+        }
+        // Check against valid ops
+        Operation arg_op = smart_dynamic_cast<Operation>(arg);
+        if (!arg_op.isValid()) {
+            error(op, "Use op arg is a malformed op", res, getId());
+            return;
+        }
+
+        const std::vector<Root> & arg_op_args = arg_op->getArgs();
+        if (!arg_op_args.empty()) {
+            entity_arg = smart_dynamic_cast<RootEntity>(arg_op_args.front());
+            if (!entity_arg.isValid()) {
+                error(op, "Use op target is malformed", res, getId());
+                return;
+            }
+        }
+    } else if (argtype == "obj") {
+        entity_arg = smart_dynamic_cast<RootEntity>(arg);
+        if (!entity_arg.isValid()) {
+            error(op, "Use target is malformed", res, getId());
+            return;
+        }
+    } else {
+        error(op, "Use arg has unknown objtype", res, getId());
+        return;
     }
 
     Anonymous target;

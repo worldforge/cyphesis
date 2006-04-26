@@ -1,5 +1,12 @@
 2006-04-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: When the client sends a Use op with
+	  no args, stop the current task. A mechanism for testing the
+	  task for interruptibility is still required, so characters can't
+	  escape too easily from combat.
+
+2006-04-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add flower, hat, knife, longtable and statue.
 
 2006-04-26  Al Riddoch  <alriddoch@zepler.org>
