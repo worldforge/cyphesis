@@ -32,6 +32,7 @@ class Combat(Thing):
         else:
             self.oponent = op.from_
             print "Attack operation is to this character"
+            self.surprise = True
             # We do not have initiative
         # Attach this task to the attacker. Its already implicitly attached
         # to the defender who owns this task.
@@ -56,11 +57,17 @@ class Combat(Thing):
 
         assert(self.character.id == op.to)
 
+        if self.character.stamina <= 0:
+            print "I am exhausted"
+            self.irrelevant()
+            return
+
         attacker = self.character
         if not attacker:
             print "No attacker"
             self.irrelevant()
             return
+
         if attacker.stamina <= 0:
             print "Attacker exhausted"
             self.irrelevant()
@@ -71,6 +78,13 @@ class Combat(Thing):
             print "No defender"
             self.irrelevant()
             return
+
+        if hasattr(self, 'surprise') and self.surprise:
+            print 'Surprised!'
+            self.surprise = False
+            tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=op.to)
+            tick.setFutureSeconds(0.75 + uniform(0,0.25))
+            return tick
 
         a=self.character.id
         d=self.oponent
@@ -119,7 +133,7 @@ class Combat(Thing):
             return res
 
         # Schedule a new tick op
-        tick=Operation("tick", Entity(name="task"), to=op.to)
+        tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=op.to)
         tick.setFutureSeconds(1.75 + uniform(0,0.25))
         res.append(tick)
         return res

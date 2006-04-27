@@ -44,7 +44,7 @@ class Ram(Thing):
         move=Operation("move", target_entity, to=self.target)
         res.append(move)
 
-        tick=Operation("tick", Entity(name="task"), to=self.character.id)
+        tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=self.character.id)
         tick.setFutureSeconds(1)
         res.append(tick)
 

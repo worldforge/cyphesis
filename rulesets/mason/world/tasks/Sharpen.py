@@ -47,7 +47,7 @@ class Sharpen(Thing):
             create=Operation("create", Entity(name='stake',type='stake',location=new_loc), to=target)
             res.append(create)
         
-        tick=Operation("tick", Entity(name="task"), to=self.character.id)
+        tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=self.character.id)
         tick.setFutureSeconds(1.75)
         res.append(tick)
 

@@ -59,7 +59,7 @@ class Logging(Thing):
                 chop=Operation("cut", Entity(self.target), to=self.tool)
                 res.append(chop)
         
-        tick=Operation("tick", Entity(name="task"), to=self.character.id)
+        tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=self.character.id)
         tick.setFutureSeconds(1.75)
         res.append(tick)
 

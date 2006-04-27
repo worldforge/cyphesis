@@ -86,13 +86,18 @@ class Task {
     }
 
     /// \brief Return the number of entities involved in this task
-    int count() {
+    int count() const {
         return m_refCount;
     }
 
     /// \brief Return the number of the next to arrive at this task
-    int serialno() {
+    int serialno() const {
         return m_serialno;
+    }
+
+    /// \brief Return a new tick serial number.
+    int newTick() {
+        return ++m_serialno;
     }
 
     /// \brief Accessor to determine if this Task is obsolete

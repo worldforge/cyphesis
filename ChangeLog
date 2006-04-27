@@ -1,5 +1,24 @@
 2006-04-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Logging.py,
+	  rulesets/mason/world/tasks/Raise.py,
+	  rulesets/mason/world/tasks/Ram.py,
+	  rulesets/mason/world/tasks/Sharpen.py: Add serial numbers to
+	  tick ups.
+
+	* rulesets/mason/world/tasks/Combat.py: Fix the attacker initiative
+	  and detect if combat is obsolete if a character has been defeated.
+
+	* rulesets/Task.h: Add an accessor to return an incremented serial
+	  number for a new tick op.
+
+	* rulesets/Py_Task.cpp: Add python wrapper for new tick accessor.
+
+	* rulesets/Character.cpp: Add debug output to code enforcing
+	  old task ticks.
+
+2006-04-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Added leaf and loaf. Fixed hat bbox.
 
 2006-04-27  Al Riddoch  <alriddoch@zepler.org>
