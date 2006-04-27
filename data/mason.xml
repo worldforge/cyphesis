@@ -991,12 +991,12 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
-          <float>-0.07</float>
-          <float>-0.07</float>
+          <float>-0.1</float>
+          <float>-0.1</float>
           <float>0</float>
-          <float>0.07</float>
-          <float>0.07</float>
-          <float>0.2</float>
+          <float>0.1</float>
+          <float>0.1</float>
+          <float>0.3</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -1203,6 +1203,56 @@
       </map>
     </map>
     <string name="id">knife</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>0.0</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.65</float>
+          <float>0.5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">leaf</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.15</float>
+          <float>-0.3</float>
+          <float>0</float>
+          <float>0.15</float>
+          <float>0.5</float>
+          <float>0.2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">loaf</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>

@@ -1,5 +1,9 @@
 2006-04-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Added leaf and loaf. Fixed hat bbox.
+
+2006-04-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Re-write the way combat is initialised
 	  so each participant owns its own combat task object.
 
