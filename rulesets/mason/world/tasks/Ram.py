@@ -36,12 +36,21 @@ class Ram(Thing):
 
         if not target.location.parent:
             return
+        target_location = Location(target.location.parent, target.location.coordinates)
+        target_location.velocity=Vector3D(0,0,-0.5)
+        target_entity_moving = Entity(self.target, location = target_location)
+
         target_location = Location(target.location.parent, Point3D(target.location.coordinates.x, target.location.coordinates.y, target.location.coordinates.z - 0.1))
+        target_location.velocity=Vector3D(0,0,0)
         target_entity = Entity(self.target, location = target_location)
+
         if not hasattr(target, 'mode') or target.mode != 'fixed':
             target_entity.mode = 'fixed'
 
         move=Operation("move", target_entity, to=self.target)
+        move.setFutureSeconds(0.2)
+        res.append(move)
+        move=Operation("move", target_entity_moving, to=self.target)
         res.append(move)
 
         tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=self.character.id)

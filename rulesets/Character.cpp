@@ -268,11 +268,11 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             if (arg->copyAttr("serialno", serialno) == 0 && (serialno.isInt())) {
                 if (serialno.asInt() != m_task->serialno()) {
                     debug(std::cout << "Old tick" << std::endl << std::flush;);
-                    log(ERROR, "Old tick");
                     return;
                 }
             } else {
                 log(ERROR, "Character::TickOperation: No serialno in tick arg");
+                return;
             }
             m_task->TickOperation(op, res);
             assert(m_task != 0);
