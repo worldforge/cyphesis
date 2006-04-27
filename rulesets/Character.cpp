@@ -474,14 +474,31 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
 
     Task * combat = m_world->newTask("combat", *this);
 
-    if (combat != 0) {
-        setTask(combat);
-        m_task->initTask(op, res);
-        if (m_task->obsolete()) {
-            clearTask();
-        }
-    } else {
+    if (combat == 0) {
         log(ERROR, "Character::AttackOperation: Unable to create combat task");
+        return;
+    }
+
+    setTask(combat);
+    m_task->initTask(op, res);
+    if (m_task->obsolete()) {
+        clearTask();
+        return;
+    }
+
+    combat = m_world->newTask("combat", *attacker);
+
+    if (combat == 0) {
+        log(ERROR, "Character::AttackOperation: Unable to create combat task");
+        return;
+    }
+
+    attacker->setTask(combat);
+    attacker->m_task->initTask(op, res);
+    if (attacker->m_task->obsolete()) {
+        attacker->clearTask();
+        clearTask();
+        return;
     }
 }
 

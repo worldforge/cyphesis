@@ -24,30 +24,24 @@ class Combat(Thing):
             print "Aborting defender stamina low"
             self.irrelevant()
             return
-        defender = op.to
-        if defender != self.character.id:
-            print "Attack operation is wierd"
-        self.defender=defender
-        attacker = op.from_
-        self.attacker=attacker
+        assert(op.from_ != op.to)
+        if op.to != self.character.id:
+            self.oponent = op.to
+            print "Attack operation is not to this character"
+            # We have initiative
+        else:
+            self.oponent = op.from_
+            print "Attack operation is to this character"
+            # We do not have initiative
         # Attach this task to the attacker. Its already implicitly attached
         # to the defender who owns this task.
-        a=self.character.world.get_object(self.attacker)
+        a=self.character.world.get_object(self.oponent)
         # Check if the attacking characters stamina is too low for combat
         if not a or a.stamina < 0.1:
             self.irrelevant()
             return
-        a.set_task(self.cppthing)
+        # a.set_task(self.cppthing)
         # Send ourselves a tick immediatly to start things going.
-        res=Message()
-
-        # Consequence of this is currently that the defender gets to
-        # hit first. Might be a good idea to try and avoid this.
-        tick=Operation("tick", Entity(name="task"), to=self.attacker)
-        tick.setFutureSeconds(1.75)
-        res.append(tick)
-
-        return res
     def tick_operation(self, op):
         """ This method is called repeatedly, each time a combat turn occurs.
             In this example the interval is fixed, but it can be varied.
@@ -55,32 +49,31 @@ class Combat(Thing):
             self.defender is the ID of the character that was initially
             attacked The self.attack flag is used to alternate the attack from
             one combatant to the other. """
-        if self.count() < 2:
-            print "Someone has dropped out"
-            self.irrelevant()
-            return
+        # if self.count() < 2:
+            # print "Someone has dropped out"
+            # self.irrelevant()
+            # return
 
-        if self.attacker == op.to:
-            print "Attacker attacking"
-            a=self.attacker
-            d=self.defender
-        else:
-            print "Defender attacking"
-            d=self.attacker
-            a=self.defender
+        assert(self.character.id == op.to)
 
-        attacker = self.character.world.get_object(a)
+        attacker = self.character
         if not attacker:
+            print "No attacker"
             self.irrelevant()
             return
         if attacker.stamina <= 0:
+            print "Attacker exhausted"
             self.irrelevant()
             return
 
-        defender = self.character.world.get_object(d)
+        defender = self.character.world.get_object(self.oponent)
         if not defender:
+            print "No defender"
             self.irrelevant()
             return
+
+        a=self.character.id
+        d=self.oponent
 
         # A very simple formula is used to determine the damage done
         damage = (attacker.statistics.attack / defender.statistics.defence) / uniform(2,10)
@@ -88,7 +81,7 @@ class Combat(Thing):
         # and make recovery easier.
         stamina=defender.stamina-damage
         if stamina<0: stamina=0
-        set_arg=Entity(d, stamina=stamina)
+        set_arg=Entity(self.oponent, stamina=stamina)
 
         # We send 3 operations to indicate what is going on. The imginary ops
         # provide emotes for the actions. The sight(attack) operation
@@ -115,7 +108,7 @@ class Combat(Thing):
         # Turn the attacker to face the defender. This has to go through
         # the mind2body interface, so it does not interrupt what the
         # the character is doing.
-        faceop=self.face(attacker, defender)
+        faceop=self.face(defender)
         if faceop:
             faceop=attacker.mind2body(faceop)
             if faceop:
@@ -127,17 +120,17 @@ class Combat(Thing):
 
         # Schedule a new tick op
         tick=Operation("tick", Entity(name="task"), to=op.to)
-        tick.setFutureSeconds(1.75)
+        tick.setFutureSeconds(1.75 + uniform(0,0.25))
         res.append(tick)
         return res
-    def face(self, character, other):
+    def face(self, other):
         """ Turn to face that another character, ensuring that
             we are facing the character we are hitting """
-        vector = distance_to(character.location, other.location)
+        vector = distance_to(self.character.location, other.location)
         vector.z = 0
         if vector.square_mag() < 0.1:
             return
         vector = vector.unit_vector()
-        newloc = Location(character.location.parent)
+        newloc = Location(self.character.location.parent)
         newloc.orientation = Quaternion(Vector3D(1,0,0), vector)
-        return Operation("move", Entity(character.id, location=newloc))
+        return Operation("move", Entity(self.character.id, location=newloc))

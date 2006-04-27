@@ -1,5 +1,14 @@
 2006-04-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Re-write the way combat is initialised
+	  so each participant owns its own combat task object.
+
+	* rulesets/mason/world/tasks/Combat.py: Re-implement the example
+	  combat system so it works with one instance per character instead
+	  of one per battle.
+
+2006-04-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, rulesets/Py_Operation.cpp,
 	  rulesets/Python_API.cpp: Remove last remaining remnants of
 	  code using SUB_TO.
