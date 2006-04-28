@@ -1,5 +1,9 @@
 2006-04-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add new server rules for some parts of a castle.
+
+2006-04-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Task.h: Add a name member to the task class.
 
 2006-04-27  Al Riddoch  <alriddoch@zepler.org>
