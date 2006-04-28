@@ -20,6 +20,8 @@
 
 #include "common/types.h"
 
+#include <string>
+
 #include <cassert>
 
 class Character;
@@ -44,6 +46,9 @@ class Task {
     /// This doesn't handle the idea that there might be multiple actors
     /// involved.
     Character & m_character;
+
+    /// \brief Name of task presented to client
+    std::string m_name;
 
     /// \brief Protected constructor to be called by classes which inherit
     explicit Task(Character & chr);
@@ -105,6 +110,8 @@ class Task {
 
     /// \brief Accessor for character that owns this Task.
     Character & character() const { return m_character; }
+
+    std::string & name() { return m_name; }
 };
 
 #endif // RULESETS_TASK_H

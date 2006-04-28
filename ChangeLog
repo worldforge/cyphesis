@@ -1,5 +1,9 @@
 2006-04-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Task.h: Add a name member to the task class.
+
+2006-04-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Ram.py: Use two move ops to give the
 	  entity being hammered a short burst of velocity, so it being
 	  hammered in is visible.
