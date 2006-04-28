@@ -1,5 +1,10 @@
 2006-04-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/terrain.py: Add client script to allow easy
+	  setup of some basic terrain types.
+
+2006-04-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add new server rules for some parts of a castle.
 
 2006-04-27  Al Riddoch  <alriddoch@zepler.org>
