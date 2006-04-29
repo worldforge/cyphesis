@@ -1,5 +1,10 @@
 2006-04-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Set ID on the argument of set ops
+	  used to handle tasks. Remove debug output.
+
+2006-04-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Task.cpp, rulesets/Task.h: Add two members to task,
 	  progress and rate which handle the progress towards completion,
 	  and the rate at which it is changing. Add a member function which

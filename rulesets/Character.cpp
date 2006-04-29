@@ -166,13 +166,13 @@ void Character::setTask(Task * task)
 
 void Character::updateTask()
 {
-    log(NOTICE, "Character::__function__");
     if (m_task == 0) {
-        log(ERROR, "Character::__function__ called when no task running");
+        log(ERROR, "Character::updateTask called when no task running");
     }
 
     Anonymous set_arg;
     m_task->addToEntity(set_arg);
+    set_arg->setId(getId());
 
     Set set;
     set->setArgs1(set_arg);
@@ -192,6 +192,7 @@ void Character::clearTask()
 
     Anonymous set_arg;
     set_arg->setAttr("task", ListType());
+    set_arg->setId(getId());
 
     Set set;
     set->setArgs1(set_arg);
@@ -289,7 +290,6 @@ void Character::TickOperation(const Operation & op, OpVector & res)
         } else if (arg->getName() == "task") {
             // Deal with task iteration
             if (m_task == 0) {
-                log(ERROR, "Got Tick op for task, but task is null");
                 return;
             }
             Element serialno;
@@ -618,7 +618,6 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         if (m_task != 0) {
-            std::cout << "Stopping task" << std::endl << std::flush;
             if (!m_task->obsolete()) {
                 m_task->irrelevant();
             }
