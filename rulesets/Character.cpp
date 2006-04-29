@@ -160,6 +160,25 @@ void Character::setTask(Task * task)
     }
     m_task = task;
     task->incRef();
+
+    updateTask();
+}
+
+void Character::updateTask()
+{
+    log(NOTICE, "Character::__function__");
+    if (m_task == 0) {
+        log(ERROR, "Character::__function__ called when no task running");
+    }
+
+    Anonymous set_arg;
+    m_task->addToEntity(set_arg);
+
+    Set set;
+    set->setArgs1(set_arg);
+    set->setTo(getId());
+    
+    sendWorld(set);
 }
 
 void Character::clearTask()
@@ -170,6 +189,15 @@ void Character::clearTask()
     }
     m_task->decRef();
     m_task = 0;
+
+    Anonymous set_arg;
+    set_arg->setAttr("task", ListType());
+
+    Set set;
+    set->setArgs1(set_arg);
+    set->setTo(getId());
+    
+    sendWorld(set);
 }
 
 void Character::ImaginaryOperation(const Operation & op, OpVector & res)
@@ -278,6 +306,8 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             assert(m_task != 0);
             if (m_task->obsolete()) {
                 clearTask();
+            } else {
+                updateTask();
             }
         } else if (arg->getName() == "mind") {
             // Do nothing. Passed to mind.

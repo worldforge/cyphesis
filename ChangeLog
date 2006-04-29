@@ -1,3 +1,25 @@
+2006-04-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Task.cpp, rulesets/Task.h: Add two members to task,
+	  progress and rate which handle the progress towards completion,
+	  and the rate at which it is changing. Add a member function which
+	  adds an atlas representation of the task as an attribute to an
+	  Atlas entity.
+
+	* rulesets/Py_Task.cpp: Expose progress and rate attributes allowing
+	  them to be set.
+
+	* server/TaskFactory.cpp: Set the name of a task when it is created
+	  by its factory.
+
+	* rulesets/mason/world/tasks/Logging.py: Set the progress and rate
+	  of the logging task as it progresses.
+
+	* rulesets/Character.h, rulesets/Character.cpp: Add updateTask()
+	  method to be called when task ticks. Make initTask, updateTask
+	  and clearTask emit Set operations which set the TASK attribute
+	  on the character to reflect the current status of the task.
+
 2006-04-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.cpp: Clear out all the factories on shutdown,

@@ -86,6 +86,7 @@ class Character : public Character_parent {
     const std::string & getRightHandWield() const { return m_rightHandWield; }
 
     void setTask(Task *);
+    void updateTask();
     void clearTask();
 
     virtual void operation(const Operation & op, OpVector &);

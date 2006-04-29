@@ -88,6 +88,7 @@ Task * PythonTaskScriptFactory::newTask(Character & chr)
         return 0;
     }
     TaskScript * task = new TaskScript(chr);
+    task->name() = m_name;
     assert(task != 0);
 
     PyTask * wrapper = newPyTask();

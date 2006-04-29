@@ -114,6 +114,20 @@ static int Task_setattr(PyTask *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
+    if (strcmp(name, "progress") == 0) {
+        if (!PyFloat_Check(v)) {
+            PyErr_SetString(PyExc_TypeError, "progress must be a float");
+            return -1;
+        }
+        self->m_task->progress() = PyFloat_AsDouble(v);
+    }
+    if (strcmp(name, "rate") == 0) {
+        if (!PyFloat_Check(v)) {
+            PyErr_SetString(PyExc_TypeError, "rate must be a float");
+            return -1;
+        }
+        self->m_task->rate() = PyFloat_AsDouble(v);
+    }
     // FIXME Something may be required here long term, for task attributes.
     if (self->Task_attr == NULL) {
         self->Task_attr = PyDict_New();

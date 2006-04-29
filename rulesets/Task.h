@@ -41,6 +41,12 @@ class Task {
     /// \brief Flag to indicate if this task is obsolete and should be removed
     bool m_obsolete;
 
+    /// \brief Progress towards task completion
+    float m_progress;
+
+    /// \brief Rate of progress towards task completion
+    float m_rate;
+
     /// \brief Character performing the task
     ///
     /// This doesn't handle the idea that there might be multiple actors
@@ -77,6 +83,12 @@ class Task {
     /// @param res The result of the operation is returned here.
     virtual void TickOperation(const Operation & op, OpVector & res) = 0;
 
+    /// \brief Add a representation of this task to an entity
+    ///
+    /// Adds a TASK attribute to the entity, which is a list containing
+    /// an atlas representation of this task.
+    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &);
+
     void incRef() {
         ++m_refCount;
     }
@@ -111,7 +123,14 @@ class Task {
     /// \brief Accessor for character that owns this Task.
     Character & character() const { return m_character; }
 
+    /// \brief Accessor for name of this task
     std::string & name() { return m_name; }
+
+    /// \brief Accessor for progress towards completion
+    float & progress() { return m_progress; }
+
+    /// \brief Accessor for rate of progress towards completion
+    float & rate() { return m_rate; }
 };
 
 #endif // RULESETS_TASK_H

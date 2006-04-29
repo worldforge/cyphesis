@@ -17,8 +17,11 @@
 
 #include "Task.h"
 
+#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/SmartPtr.h>
+
 /// \brief Task constructor for classes which inherit from Task
-Task::Task(Character & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_character(chr)
+Task::Task(Character & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_character(chr)
 {
 }
 
@@ -37,4 +40,17 @@ Task::~Task()
 void Task::irrelevant()
 {
     m_obsolete = true;
+}
+
+void Task::addToEntity(const Atlas::Objects::Entity::RootEntity & ent)
+{
+    Atlas::Message::MapType task;
+    task["name"] = m_name;
+    if (m_progress > 0) {
+        task["progress"] = m_progress;
+    }
+    if (m_rate > 0) {
+        task["progress_rate"] = m_rate;
+    }
+    ent->setAttr("task", Atlas::Message::ListType(1, task));
 }

@@ -37,10 +37,11 @@ class Logging(Thing):
             self.irrelevant()
             return
 
-        if target.status > 0.5:
-            set=Operation("set", Entity(self.target, status=target.status-0.1), to=self.target)
+        current_status = target.status
+        if current_status > 0.5:
+            set=Operation("set", Entity(self.target, status=current_status-0.1), to=self.target)
             res.append(set)
-            print "CHOP",target.status
+            print "CHOP",current_status
         else:
             normal=Vector3D(0,0,1)
             print "LOC.ori ", target.location.orientation
@@ -51,13 +52,15 @@ class Logging(Thing):
                 print "Fall down"
                 chop=Operation("cut", Entity(self.target), to=self.tool)
                 res.append(chop)
-            elif target.status > 0.2:
-                set=Operation("set", Entity(self.target, status=target.status-0.1), to=self.target)
+            elif current_status > 0.2:
+                set=Operation("set", Entity(self.target, status=current_status-0.1), to=self.target)
                 res.append(set)
-                print "TRIM",target.status
+                print "TRIM",current_status
             else:
                 chop=Operation("cut", Entity(self.target), to=self.tool)
                 res.append(chop)
+        self.progress = current_status
+        self.rate = 0.1 / 1.75
         
         tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=self.character.id)
         tick.setFutureSeconds(1.75)
