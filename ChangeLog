@@ -1,5 +1,10 @@
 2006-04-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Clear out all the factories on shutdown,
+	  not just the entity factories.
+
+2006-04-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/define_world.py: Set the bounding box of the world
 	  entity to the encompassing volume of all the terrain points. This
 	  ensures changes to the terrain are broadcast as required.

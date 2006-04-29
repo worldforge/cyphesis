@@ -226,6 +226,18 @@ void EntityFactory::flushFactories()
     delete m_eft;
     m_eft = NULL;
     m_factories.clear();
+    StatisticsFactoryDict::const_iterator J = m_statisticsFactories.begin();
+    StatisticsFactoryDict::const_iterator Jend = m_statisticsFactories.end();
+    for (; J != Jend; ++J) {
+        delete J->second;
+    }
+    m_statisticsFactories.clear();
+    TaskFactoryDict::const_iterator K = m_taskFactories.begin();
+    TaskFactoryDict::const_iterator Kend = m_taskFactories.end();
+    for (; K != Kend; ++K) {
+        delete K->second;
+    }
+    m_taskFactories.clear();
 }
 
 void EntityFactory::populateFactory(const std::string & className,
