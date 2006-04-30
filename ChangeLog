@@ -1,5 +1,9 @@
 2006-04-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add the last 3 remaining castle components.
+
+2006-04-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Double the bounding box height of the oak to
 	  match new client scale factor.
 

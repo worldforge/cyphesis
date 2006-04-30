@@ -554,6 +554,31 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
+          <float>-5</float>
+          <float>-7</float>
+          <float>0</float>
+          <float>5</float>
+          <float>7</float>
+          <float>7</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">80</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">castle_house</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
           <float>-94</float>
           <float>-60</float>
           <float>0</float>
@@ -783,6 +808,31 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
+          <float>-18</float>
+          <float>-18</float>
+          <float>0</float>
+          <float>18</float>
+          <float>18</float>
+          <float>60</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">80</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">don_jon</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
           <float>-0.25</float>
           <float>-0.25</float>
           <float>0</float>
@@ -956,6 +1006,31 @@
       <string name="language">python</string>
       <string name="name">world.objects.clothing.Garment</string>
     </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-23</float>
+          <float>-14</float>
+          <float>0</float>
+          <float>23</float>
+          <float>14</float>
+          <float>60</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">80</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">gateway</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
   </map>
 
   <map>
