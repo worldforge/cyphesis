@@ -191,7 +191,7 @@ void Character::clearTask()
     m_task = 0;
 
     Anonymous set_arg;
-    set_arg->setAttr("task", ListType());
+    set_arg->setAttr("tasks", ListType());
     set_arg->setId(getId());
 
     Set set;

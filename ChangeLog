@@ -1,5 +1,13 @@
 2006-04-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp, rulesets/Task.cpp: Fix the name of the
+	  TASKS attribute.
+
+	* rulesets/mason/world/tasks/Logging.py: Make the logging task
+	  progress in the right direction.
+
+2006-04-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Set ID on the argument of set ops
 	  used to handle tasks. Remove debug output.
 

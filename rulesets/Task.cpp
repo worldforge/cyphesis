@@ -52,5 +52,5 @@ void Task::addToEntity(const Atlas::Objects::Entity::RootEntity & ent)
     if (m_rate > 0) {
         task["progress_rate"] = m_rate;
     }
-    ent->setAttr("task", Atlas::Message::ListType(1, task));
+    ent->setAttr("tasks", Atlas::Message::ListType(1, task));
 }

@@ -59,7 +59,7 @@ class Logging(Thing):
             else:
                 chop=Operation("cut", Entity(self.target), to=self.tool)
                 res.append(chop)
-        self.progress = current_status
+        self.progress = 1 - current_status
         self.rate = 0.1 / 1.75
         
         tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=self.character.id)
