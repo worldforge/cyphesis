@@ -197,8 +197,8 @@ Task * EntityFactory::activateTask(const std::string & tool,
     for (; J != Jend; ++J) {
         if (!J->second->m_target.empty()) {
             if (!Inheritance::instance().isTypeOf(target, J->second->m_target)) {
-                std::cout << target << " is not a " << J->second->m_target
-                          << std::endl << std::flush;
+                debug( std::cout << target << " is not a " << J->second->m_target
+                                 << std::endl << std::flush; );
                 continue;
             }
         }

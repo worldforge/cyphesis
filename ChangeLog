@@ -1,9 +1,13 @@
-2006-04-29  Al Riddoch  <alriddoch@zepler.org>
+2006-04-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp: Remove some debug output.
+
+2006-04-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/world/tasks/Sharpen.py: Add task instrumentation
 	  to the Sharpen task.
 
-2006-04-29  Al Riddoch  <alriddoch@zepler.org>
+2006-04-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp, rulesets/Task.cpp: Fix the name of the
 	  TASKS attribute.
